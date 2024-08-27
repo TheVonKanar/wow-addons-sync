@@ -1,0 +1,12216 @@
+
+_detalhes_database = {
+["savedbuffs"] = {
+},
+["mythic_dungeon_id"] = 0,
+["tabela_historico"] = {
+["tabelas"] = {
+{
+{
+["tipo"] = 2,
+["combatId"] = 31,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.007632,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 454.007632,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 454.007632,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Dragonbane Beetle"] = 454,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055330,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[357209] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["e_amt"] = 1,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Dragonbane Beetle"] = 454,
+},
+["n_total"] = 454,
+["e_dmg"] = {
+454,
+},
+["n_min"] = 148,
+["g_dmg"] = 0,
+["counter"] = 3,
+["e_lvl"] = {
+1,
+},
+["total"] = 454,
+["c_max"] = 0,
+["r_amt"] = 0,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["e_total"] = 1,
+["n_max"] = 154,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055329,
+["damage_taken"] = 6.007632,
+["start_time"] = 1739055329,
+["delay"] = 0,
+["last_dps"] = 125.2434846896552,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 6.008993,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 6.008993,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-001127CB42",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.008993,
+["fight_component"] = true,
+["end_time"] = 1739055330,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["n_total"] = 6,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 5,
+["total"] = 6,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 5,
+["n_max"] = 2,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055329,
+["damage_taken"] = 454.008993,
+["start_time"] = 1739055326,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 31,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 31,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.002281,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.002281,
+["total"] = 0.002281,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.002281,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 238.002281,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.002281,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 31,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 12,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055330,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 31,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739055326,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Kvothyr"] = {
+["total"] = 238,
+["last"] = 0,
+},
+["Dragonbane Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+14233,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:55:31",
+["hasTimer"] = 3,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160985.776,
+["CombatEndedAt"] = 2160985.776,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:55:27",
+["end_time"] = 2160985.776,
+["mapId"] = 2570,
+["combat_id"] = 31,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+["Dragonbane Beetle"] = 3,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 454.007632,
+},
+},
+},
+["combat_counter"] = 34,
+["totals_grupo"] = {
+454,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160982.151,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 30,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.007283,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 606.0072829999999,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 606.0072829999999,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Dragonbane Beetle"] = 606,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055296,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[357209] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["e_amt"] = 1,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Dragonbane Beetle"] = 606,
+},
+["n_total"] = 299,
+["e_dmg"] = {
+606,
+},
+["n_min"] = 147,
+["g_dmg"] = 0,
+["counter"] = 3,
+["e_lvl"] = {
+1,
+},
+["total"] = 606,
+["c_max"] = 307,
+["r_amt"] = 0,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 307,
+["successful_casted"] = 0,
+["c_total"] = 307,
+["n_amt"] = 2,
+["e_total"] = 1,
+["n_max"] = 152,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055295,
+["damage_taken"] = 2.007283,
+["start_time"] = 1739055295,
+["delay"] = 0,
+["last_dps"] = 497.1347686461265,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 2.006232,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 2.006232,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-000027DA8F",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 2,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.006232,
+["fight_component"] = true,
+["end_time"] = 1739055296,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 2,
+},
+["n_total"] = 2,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 2,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055295,
+["damage_taken"] = 606.006232,
+["start_time"] = 1739055295,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 30,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 30,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.008161,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.008161,
+["total"] = 0.008161,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.008161,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 208.008161,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.008161,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 30,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370636] = {
+["activedamt"] = -1,
+["id"] = 370636,
+["targets"] = {
+},
+["actived_at"] = 1739055295,
+["uptime"] = 0,
+["appliedamt"] = 0,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 3,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 0,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055296,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 30,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160980.93,
+["tempo_start"] = 1739055295,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Kvothyr"] = {
+["total"] = 208,
+["last"] = 34,
+},
+["Dragonbane Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+608,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:54:57",
+["hasTimer"] = 1.003000000026077,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160951.74,
+["CombatEndedAt"] = 2160951.74,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:54:55",
+["end_time"] = 2160951.74,
+["mapId"] = 2570,
+["combat_id"] = 30,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Dragonbane Beetle"] = 3,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 606.0072829999999,
+},
+},
+},
+["combat_counter"] = 33,
+["totals_grupo"] = {
+606,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160950.521,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 29,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.006213,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 302.006213,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 302.006213,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Dragonbane Beetle"] = 302,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055285,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Dragonbane Beetle"] = 302,
+},
+["n_total"] = 302,
+["n_min"] = 98,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 302,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["n_max"] = 103,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055284,
+["damage_taken"] = 1.006213,
+["start_time"] = 1739055283,
+["delay"] = 0,
+["last_dps"] = 124.3847664826709,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 1.006449,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 1.006449,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-000127DA97",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 1,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.006449,
+["fight_component"] = true,
+["end_time"] = 1739055285,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 1,
+},
+["n_total"] = 1,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 1,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055283,
+["damage_taken"] = 302.006449,
+["start_time"] = 1739055283,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 29,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 29,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.008333,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.008333,
+["total"] = 0.008333,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.008333,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 89.008333,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.008333,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 29,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370636] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 0,
+["id"] = 370636,
+["refreshamt"] = 1,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 6,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 0,
+["debuff_uptime_targets"] = {
+},
+["nome"] = "Kvothyr",
+["buff_uptime_targets"] = {
+},
+["spec"] = 1467,
+["grupo"] = true,
+["pets"] = {
+},
+["last_event"] = 1739055285,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 29,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160949.316,
+["tempo_start"] = 1739055283,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Dragonbane Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Kvothyr"] = {
+["total"] = 89,
+["last"] = 27,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+303,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:54:46",
+["hasTimer"] = 2.010999999940395,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160940.81,
+["CombatEndedAt"] = 2160940.81,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:54:43",
+["end_time"] = 2160940.81,
+["mapId"] = 2570,
+["combat_id"] = 29,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Dragonbane Beetle"] = 3,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 302.006213,
+},
+},
+},
+["combat_counter"] = 32,
+["totals_grupo"] = {
+302,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160938.382,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 28,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.008423,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 295.008423,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 295.008423,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Dragonbane Beetle"] = 295,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055264,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Dragonbane Beetle"] = 295,
+},
+["n_total"] = 295,
+["n_min"] = 98,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 295,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["n_max"] = 99,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055264,
+["damage_taken"] = 1.008423,
+["start_time"] = 1739055262,
+["delay"] = 0,
+["last_dps"] = 130.534700455388,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 1.004999,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 1.004999,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-0000A7DA36",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 1,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.004999,
+["fight_component"] = true,
+["end_time"] = 1739055264,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 1,
+},
+["n_total"] = 1,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 1,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055263,
+["damage_taken"] = 295.004999,
+["start_time"] = 1739055263,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 28,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 28,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.008759,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.008759,
+["total"] = 0.008759,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.008759,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 193.008759,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.008759,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 28,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 6,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055264,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 28,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160936.793,
+["tempo_start"] = 1739055262,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Dragonbane Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Kvothyr"] = {
+["total"] = 193,
+["last"] = 6,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+296,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:54:25",
+["hasTimer"] = 2.001999999862164,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160919.809,
+["CombatEndedAt"] = 2160919.809,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:54:22",
+["end_time"] = 2160919.809,
+["mapId"] = 2570,
+["combat_id"] = 28,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Dragonbane Beetle"] = 3,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 295.008423,
+},
+},
+},
+["combat_counter"] = 31,
+["totals_grupo"] = {
+295,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160917.549,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 27,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001629,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 698.001629,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 698.001629,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Dragonbane Beetle"] = 698,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055250,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Dragonbane Beetle"] = 698,
+},
+["n_total"] = 495,
+["n_min"] = 98,
+["g_dmg"] = 0,
+["counter"] = 6,
+["total"] = 698,
+["c_max"] = 203,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 203,
+["successful_casted"] = 0,
+["c_total"] = 203,
+["n_amt"] = 5,
+["n_max"] = 100,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055249,
+["damage_taken"] = 6.001629,
+["start_time"] = 1739055244,
+["delay"] = 0,
+["last_dps"] = 119.9934036484863,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 6.006827,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 6.006827,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-000027DA0D",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.006827,
+["fight_component"] = true,
+["end_time"] = 1739055250,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["n_total"] = 3,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 4,
+["total"] = 6,
+["c_max"] = 3,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 3,
+["successful_casted"] = 0,
+["c_total"] = 3,
+["n_amt"] = 3,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055248,
+["damage_taken"] = 698.0068269999999,
+["start_time"] = 1739055246,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 27,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 27,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.005711,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.005711,
+["total"] = 0.005711,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.005711,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 91.00571099999999,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.005711,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 27,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 6,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 6,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 6,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 18,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055250,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 27,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160917.368,
+["tempo_start"] = 1739055244,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Dragonbane Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Kvothyr"] = {
+["total"] = 91,
+["last"] = 42,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+704,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 3,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:54:10",
+["hasTimer"] = 5.009000000078231,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160905.272,
+["CombatEndedAt"] = 2160905.272,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:54:04",
+["end_time"] = 2160905.272,
+["mapId"] = 2570,
+["combat_id"] = 27,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Dragonbane Beetle"] = 6,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 698.001629,
+},
+},
+},
+["combat_counter"] = 30,
+["totals_grupo"] = {
+698,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160899.455,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 26,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.007146,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 190.007146,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 190.007146,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+["Scythid Steamstalker"] = 190,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055142,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 189,
+},
+["n_total"] = 189,
+["n_min"] = 94,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 189,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 95,
+["r_amt"] = 0,
+},
+[377420] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 1,
+},
+["n_total"] = 1,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 1,
+["c_max"] = 0,
+["id"] = 377420,
+["r_dmg"] = 0,
+["spellschool"] = 64,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055141,
+["damage_taken"] = 3.007146,
+["start_time"] = 1739055140,
+["delay"] = 0,
+["last_dps"] = 73.73191540412466,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.003388,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.003388,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182008-000727CB42",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.003388,
+["fight_component"] = true,
+["end_time"] = 1739055142,
+["aID"] = "182008",
+["nome"] = "Scythid Steamstalker",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 0,
+},
+["n_total"] = 0,
+["n_min"] = 0,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 0,
+["c_max"] = 0,
+["MISS"] = 1,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 0,
+["n_max"] = 0,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055141,
+["damage_taken"] = 190.003388,
+["start_time"] = 1739055142,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 26,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 26,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 26,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[377420] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 377420,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 6,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 2,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055142,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 26,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160899.154,
+["tempo_start"] = 1739055140,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Kvothyr"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Scythid Steamstalker"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 29,
+["playing_solo"] = true,
+["totals"] = {
+19017,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+["Kvothyr"] = {
+{
+true,
+1,
+1,
+1739055244.499,
+1,
+"Dragonbane Beetle",
+nil,
+1,
+false,
+-1,
+false,
+false,
+},
+{
+true,
+1,
+1,
+1739055244.499,
+1,
+"Dragonbane Beetle",
+nil,
+1,
+false,
+-1,
+false,
+false,
+},
+{
+true,
+1,
+1,
+1739055244.499,
+1,
+"Dragonbane Beetle",
+nil,
+1,
+false,
+-1,
+false,
+false,
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+["n"] = 4,
+},
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:52:22",
+["hasTimer"] = 2.007000000216067,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scythid Steamstalker",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2.577000000048429,
+["CombatEndedAt"] = 2160797.491,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:52:20",
+["end_time"] = 2160797.491,
+["mapId"] = 2570,
+["combat_id"] = 26,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scythid Steamstalker"] = 1,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+190,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 190.007146,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160794.914,
+["contra"] = "Scythid Steamstalker",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 25,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.008373,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 478.008373,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 478.008373,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Scalerender Beetle"] = true,
+},
+["targets"] = {
+["Mature Scalerender"] = 192,
+["Scalerender Beetle"] = 286,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055135,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Mature Scalerender"] = 192,
+["Scalerender Beetle"] = 286,
+},
+["n_total"] = 478,
+["n_min"] = 94,
+["g_dmg"] = 0,
+["counter"] = 5,
+["total"] = 478,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 5,
+["n_max"] = 98,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055134,
+["damage_taken"] = 3.008373,
+["start_time"] = 1739055131,
+["delay"] = 0,
+["last_dps"] = 124.3841720050198,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 3.00812,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 3.00812,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182007-000EA7CB42",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 3,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.00812,
+["fight_component"] = true,
+["end_time"] = 1739055135,
+["aID"] = "182007",
+["nome"] = "Scalerender Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 3,
+},
+["n_total"] = 3,
+["n_min"] = 3,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 3,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 3,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055133,
+["damage_taken"] = 286.00812,
+["start_time"] = 1739055133,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.008747,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.008747,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-194957-000327CB42",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.008747,
+["fight_component"] = true,
+["end_time"] = 1739055135,
+["aID"] = "194957",
+["nome"] = "Mature Scalerender",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 192.008747,
+["start_time"] = 1739055135,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 25,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 25,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 25,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 12,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 1,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055135,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 25,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739055131,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scalerender Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Mature Scalerender"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+481,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 2,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:52:15",
+["hasTimer"] = 3.006999999750406,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalerender Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160789.839,
+["CombatEndedAt"] = 2160789.839,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:52:11",
+["end_time"] = 2160789.839,
+["mapId"] = 2570,
+["combat_id"] = 25,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scalerender Beetle"] = 3,
+["Mature Scalerender"] = 1,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 478.008373,
+},
+},
+},
+["combat_counter"] = 28,
+["totals_grupo"] = {
+478,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160785.996,
+["contra"] = "Mature Scalerender",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 24,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.00744,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 294.00744,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 294.00744,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scalerender Beetle"] = 294,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055125,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalerender Beetle"] = 294,
+},
+["n_total"] = 98,
+["n_min"] = 98,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 294,
+["c_max"] = 196,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 196,
+["successful_casted"] = 0,
+["c_total"] = 196,
+["n_amt"] = 1,
+["n_max"] = 98,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055124,
+["damage_taken"] = 0.00744,
+["start_time"] = 1739055124,
+["delay"] = 0,
+["last_dps"] = 352.5269065598517,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.004458,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.004458,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182007-000027D3ED",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.004458,
+["fight_component"] = true,
+["end_time"] = 1739055125,
+["aID"] = "182007",
+["nome"] = "Scalerender Beetle",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 294.004458,
+["start_time"] = 1739055125,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 24,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 24,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 24,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 3,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055125,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 24,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160785.996,
+["tempo_start"] = 1739055124,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scalerender Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+294,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:52:05",
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalerender Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 0.8339999997988343,
+["CombatEndedAt"] = 2160780.508,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:52:05",
+["end_time"] = 2160780.508,
+["mapId"] = 2570,
+["combat_id"] = 24,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scalerender Beetle"] = 2,
+},
+["combat_counter"] = 27,
+["totals_grupo"] = {
+294,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 294.00744,
+},
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160779.674,
+["contra"] = "Scalerender Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 23,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.003165,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 573.003165,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 573.003165,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scalerender Beetle"] = 378,
+["Snake"] = 195,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055114,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalerender Beetle"] = 378,
+["Snake"] = 195,
+},
+["n_total"] = 378,
+["n_min"] = 93,
+["g_dmg"] = 0,
+["counter"] = 5,
+["total"] = 573,
+["c_max"] = 195,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 195,
+["successful_casted"] = 0,
+["c_total"] = 195,
+["n_amt"] = 4,
+["n_max"] = 96,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055113,
+["damage_taken"] = 0.003165,
+["start_time"] = 1739055111,
+["delay"] = 0,
+["last_dps"] = 176.1460697803279,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.007818,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.007818,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182007-000127D3AC",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.007818,
+["fight_component"] = true,
+["end_time"] = 1739055114,
+["aID"] = "182007",
+["nome"] = "Scalerender Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 0,
+},
+["n_total"] = 0,
+["n_min"] = 0,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 0,
+["c_max"] = 0,
+["DODGE"] = 1,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 0,
+["n_max"] = 0,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055113,
+["damage_taken"] = 378.007818,
+["start_time"] = 1739055114,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 2600,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.005063,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.005063,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-192561-000027D428",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "192561",
+["fight_component"] = true,
+["end_time"] = 1739055114,
+["totalabsorbed"] = 0.005063,
+["nome"] = "Snake",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 195.005063,
+["start_time"] = 1739055114,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 23,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 23,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 23,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 9,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055114,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 23,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739055111,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scalerender Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+573,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 2,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:54",
+["hasTimer"] = 3.004999999888241,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalerender Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160769.189,
+["CombatEndedAt"] = 2160769.189,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:51",
+["end_time"] = 2160769.189,
+["mapId"] = 2570,
+["combat_id"] = 23,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scalerender Beetle"] = 4,
+["Snake"] = 1,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 573.003165,
+},
+},
+},
+["combat_counter"] = 26,
+["totals_grupo"] = {
+573,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160765.936,
+["contra"] = "Scalerender Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 22,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.00641,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 193.00641,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 193.00641,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scythid Steamstalker"] = 193,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055109,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 192,
+},
+["n_total"] = 192,
+["n_min"] = 96,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 192,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 96,
+["r_amt"] = 0,
+},
+[377420] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 1,
+},
+["n_total"] = 1,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 1,
+["c_max"] = 0,
+["id"] = 377420,
+["r_dmg"] = 0,
+["spellschool"] = 64,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055108,
+["damage_taken"] = 0.00641,
+["start_time"] = 1739055106,
+["delay"] = 0,
+["last_dps"] = 79.39383381762549,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.003723,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.003723,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182008-000027D8BF",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.003723,
+["fight_component"] = true,
+["end_time"] = 1739055109,
+["aID"] = "182008",
+["nome"] = "Scythid Steamstalker",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 193.003723,
+["start_time"] = 1739055109,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 22,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 22,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 22,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 2,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[377420] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 2,
+["id"] = 377420,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 9,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 4,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055109,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 22,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160765.936,
+["tempo_start"] = 1739055106,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scythid Steamstalker"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+193,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:49",
+["hasTimer"] = 2.01299999980256,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scythid Steamstalker",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160763.934,
+["CombatEndedAt"] = 2160763.934,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:46",
+["end_time"] = 2160763.934,
+["mapId"] = 2570,
+["combat_id"] = 22,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scythid Steamstalker"] = 1,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 193.00641,
+},
+},
+},
+["combat_counter"] = 25,
+["totals_grupo"] = {
+193,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160761.503,
+["contra"] = "Scythid Steamstalker",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 21,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.00275,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 480.00275,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 480.00275,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Scalerender Beetle"] = true,
+},
+["targets"] = {
+["Scalerender Beetle"] = 285,
+["Mature Scalerender"] = 195,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055103,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalerender Beetle"] = 285,
+["Mature Scalerender"] = 195,
+},
+["n_total"] = 285,
+["n_min"] = 93,
+["g_dmg"] = 0,
+["counter"] = 4,
+["total"] = 480,
+["c_max"] = 195,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 195,
+["successful_casted"] = 0,
+["c_total"] = 195,
+["n_amt"] = 3,
+["n_max"] = 97,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055103,
+["damage_taken"] = 2.00275,
+["start_time"] = 1739055100,
+["delay"] = 0,
+["last_dps"] = 137.0653198226421,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 2.008625,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 2.008625,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182007-000027D870",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 2,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.008625,
+["fight_component"] = true,
+["end_time"] = 1739055103,
+["aID"] = "182007",
+["nome"] = "Scalerender Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 2,
+},
+["n_total"] = 2,
+["n_min"] = 2,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 2,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 2,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055102,
+["damage_taken"] = 285.008625,
+["start_time"] = 1739055102,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.008587,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.008587,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-194957-000027D870",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.008587,
+["fight_component"] = true,
+["end_time"] = 1739055103,
+["aID"] = "194957",
+["nome"] = "Mature Scalerender",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 195.008587,
+["start_time"] = 1739055103,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 21,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 21,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 21,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 9,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739055103,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 21,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160761.503,
+["tempo_start"] = 1739055100,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scalerender Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Mature Scalerender"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 24,
+["playing_solo"] = true,
+["totals"] = {
+482,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 2,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:44",
+["hasTimer"] = 3.010999999940395,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalerender Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 3.501999999862164,
+["CombatEndedAt"] = 2160758.675,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:40",
+["end_time"] = 2160758.675,
+["mapId"] = 2570,
+["combat_id"] = 21,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scalerender Beetle"] = 3,
+["Mature Scalerender"] = 1,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+480,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 480.00275,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160755.173,
+["contra"] = "Scalerender Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 20,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001294,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 712.001294,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 712.001294,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Scalerender Beetle"] = true,
+["Wild Argali"] = true,
+},
+["targets"] = {
+["Scalerender Beetle"] = 476,
+["Wild Argali"] = 236,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055091,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalerender Beetle"] = 190,
+["Wild Argali"] = 95,
+},
+["n_total"] = 285,
+["n_min"] = 94,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 285,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["n_max"] = 96,
+["r_amt"] = 0,
+},
+[357209] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["e_amt"] = 1,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalerender Beetle"] = 286,
+["Wild Argali"] = 141,
+},
+["n_total"] = 427,
+["e_dmg"] = {
+427,
+},
+["n_min"] = 141,
+["g_dmg"] = 0,
+["counter"] = 3,
+["e_lvl"] = {
+1,
+},
+["total"] = 427,
+["c_max"] = 0,
+["r_amt"] = 0,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["e_total"] = 1,
+["n_max"] = 145,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055091,
+["damage_taken"] = 17.001294,
+["start_time"] = 1739055087,
+["delay"] = 0,
+["last_dps"] = 189.4628243555104,
+},
+{
+["flag_original"] = 2600,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 10.005435,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 10.005435,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-188292-000027D92F",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 10,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "188292",
+["fight_component"] = true,
+["end_time"] = 1739055091,
+["totalabsorbed"] = 0.005435,
+["nome"] = "Wild Argali",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 10,
+},
+["n_total"] = 10,
+["n_min"] = 10,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 10,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 10,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055090,
+["damage_taken"] = 236.005435,
+["start_time"] = 1739055090,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 7.005796,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 7.005796,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182007-0000A7D8C1",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 7,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.005796,
+["fight_component"] = true,
+["end_time"] = 1739055091,
+["aID"] = "182007",
+["nome"] = "Scalerender Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 7,
+},
+["n_total"] = 7,
+["n_min"] = 2,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 7,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["n_max"] = 3,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055090,
+["damage_taken"] = 476.005796,
+["start_time"] = 1739055089,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 20,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 20,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 20,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 3,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 12,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 4,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 3,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055091,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 20,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2160742.374,
+["tempo_start"] = 1739055087,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scalerender Beetle"] = {
+["total"] = 0,
+["last"] = 0,
+},
+["Wild Argali"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 23,
+["playing_solo"] = true,
+["totals"] = {
+729,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:31",
+["hasTimer"] = 3.010000000242144,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalerender Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 3.75800000037998,
+["CombatEndedAt"] = 2160746.132,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:27",
+["end_time"] = 2160746.132,
+["mapId"] = 2570,
+["combat_id"] = 20,
+["overall_added"] = true,
+["frags"] = {
+["Scalerender Beetle"] = 4,
+["Wild Argali"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+712,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 712.001294,
+},
+},
+},
+["start_time"] = 2160742.374,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 19,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.002474,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 188.002474,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 188.002474,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scythid Steamstalker"] = 188,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055087,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 188,
+},
+["n_total"] = 188,
+["n_min"] = 93,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 188,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 95,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055086,
+["damage_taken"] = 0.002474,
+["start_time"] = 1739055084,
+["delay"] = 0,
+["last_dps"] = 86.20012563574522,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.00825,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.00825,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182008-000027D890",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.00825,
+["fight_component"] = true,
+["end_time"] = 1739055087,
+["aID"] = "182008",
+["nome"] = "Scythid Steamstalker",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 188.00825,
+["start_time"] = 1739055087,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 19,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 19,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 19,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 2,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 9,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 2,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055087,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 19,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160739.501,
+["tempo_start"] = 1739055084,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scythid Steamstalker"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 22,
+["playing_solo"] = true,
+["totals"] = {
+188,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:27",
+["hasTimer"] = 2.010999999940395,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scythid Steamstalker",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2.18099999986589,
+["CombatEndedAt"] = 2160741.682,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:24",
+["end_time"] = 2160741.682,
+["mapId"] = 2570,
+["combat_id"] = 19,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scythid Steamstalker"] = 1,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+188,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 188.002474,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160739.501,
+["contra"] = "Scythid Steamstalker",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 18,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.007116,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 193.007116,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 193.007116,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scythid Steamstalker"] = 193,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055079,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 192,
+},
+["n_total"] = 192,
+["n_min"] = 94,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 192,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 98,
+["r_amt"] = 0,
+},
+[377420] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scythid Steamstalker"] = 1,
+},
+["n_total"] = 1,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 1,
+["c_max"] = 0,
+["id"] = 377420,
+["r_dmg"] = 0,
+["spellschool"] = 64,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 1,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055078,
+["damage_taken"] = 0.007116,
+["start_time"] = 1739055077,
+["delay"] = 0,
+["last_dps"] = 76.895265345493,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.001668,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.001668,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-182008-000027D8E8",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.001668,
+["fight_component"] = true,
+["end_time"] = 1739055079,
+["aID"] = "182008",
+["nome"] = "Scythid Steamstalker",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 193.001668,
+["start_time"] = 1739055079,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 18,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 18,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 18,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[377420] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 377420,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 6,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 2,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739055079,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 18,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160731.899,
+["tempo_start"] = 1739055077,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Scythid Steamstalker"] = {
+["total"] = 0,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 21,
+["playing_solo"] = true,
+["totals"] = {
+193,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:51:19",
+["hasTimer"] = 2.009999999776483,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scythid Steamstalker",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2.509999999776483,
+["CombatEndedAt"] = 2160734.409,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:51:17",
+["end_time"] = 2160734.409,
+["mapId"] = 2570,
+["combat_id"] = 18,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Scythid Steamstalker"] = 1,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+193,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 193.007116,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160731.899,
+["contra"] = "Scythid Steamstalker",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 17,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 0.002648,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.002648,
+["spec"] = 1467,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Dragonbane Beetle"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739055045,
+["totalabsorbed"] = 0.002648,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 20.002648,
+["start_time"] = 1739055045,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 2632,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 20.003701,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 20.003701,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187833-000627CB42",
+["on_hold"] = false,
+["damage_from"] = {
+},
+["targets"] = {
+["Kvothyr"] = 20,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.003701,
+["fight_component"] = true,
+["end_time"] = 1739055045,
+["aID"] = "187833",
+["nome"] = "Dragonbane Beetle",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 2,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 20,
+},
+["n_total"] = 17,
+["n_min"] = 1,
+["g_dmg"] = 0,
+["counter"] = 37,
+["IMMUNE"] = 16,
+["r_amt"] = 0,
+["spellschool"] = 1,
+["MISS"] = 3,
+["id"] = 1,
+["r_dmg"] = 0,
+["c_max"] = 2,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 1,
+["successful_casted"] = 0,
+["c_total"] = 3,
+["n_amt"] = 16,
+["n_max"] = 2,
+["total"] = 20,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739055043,
+["damage_taken"] = 0.003701,
+["start_time"] = 1739055031,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 17,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 17,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.001769,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["totalover"] = 0.001769,
+["total"] = 0.001769,
+["spec"] = 1467,
+["serial"] = "Player-1390-0D1F6E7F",
+["received"] = 0.001769,
+["targets"] = {
+},
+["powertype"] = 1,
+["alternatepower"] = 100.001769,
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["grupo"] = true,
+["aID"] = "1390-0D1F6E7F",
+["tipo"] = 3,
+["passiveover"] = 0.001769,
+["last_event"] = 0,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 17,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370636] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = -1,
+["uptime"] = 13,
+["id"] = 370636,
+["refreshamt"] = 1,
+["actived"] = false,
+["counter"] = 0,
+},
+[370610] = {
+["activedamt"] = -1,
+["id"] = 370610,
+["targets"] = {
+},
+["actived_at"] = 1739055044,
+["uptime"] = 0,
+["appliedamt"] = 0,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[370638] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 4,
+["id"] = 370638,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 42,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 14,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[358733] = {
+["activedamt"] = 1,
+["id"] = 358733,
+["targets"] = {
+},
+["actived_at"] = 1739055031,
+["uptime"] = 0,
+["appliedamt"] = 1,
+["refreshamt"] = 0,
+["actived"] = true,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 14,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 14,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 17,
+["debuff_uptime_targets"] = {
+},
+["nome"] = "Kvothyr",
+["buff_uptime_targets"] = {
+},
+["spec"] = 1467,
+["grupo"] = true,
+["pets"] = {
+},
+["last_event"] = 1739055045,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 17,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739055031,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Kvothyr"] = {
+["total"] = 100,
+["last"] = 0,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+20,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = false,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:50:46",
+["hasTimer"] = 13.00499999988824,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Dragonbane Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160700.805,
+["CombatEndedAt"] = 2160700.805,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:50:32",
+["end_time"] = 2160700.805,
+["mapId"] = 2570,
+["combat_id"] = 17,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 0.002648,
+},
+},
+},
+["combat_counter"] = 20,
+["totals_grupo"] = {
+0,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160687.407,
+["contra"] = "Dragonbane Beetle",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 16,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001601,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 137.001601,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 137.001601,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Environment (Falling)"] = true,
+},
+["targets"] = {
+["Beetle"] = 137,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054563,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[357209] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Beetle"] = 137,
+},
+["n_total"] = 137,
+["n_min"] = 137,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 137,
+["c_max"] = 0,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 137,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054562,
+["damage_taken"] = 75.001601,
+["start_time"] = 1739054562,
+["delay"] = 0,
+["last_dps"] = 161.3681989826605,
+},
+{
+["flag_original"] = 2600,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.007525,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.007525,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-191599-000727CB46",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "191599",
+["fight_component"] = true,
+["end_time"] = 1739054563,
+["totalabsorbed"] = 0.007525,
+["nome"] = "Beetle",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 137.007525,
+["start_time"] = 1739054563,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 16,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 16,
+["_ActorTable"] = {
+{
+["flag_original"] = 1300,
+["resource"] = 0.005799,
+["targets"] = {
+},
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["passiveover"] = 0.005799,
+["total"] = 0.005799,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["received"] = 0.005799,
+["alternatepower"] = 47.005799,
+["classe"] = "EVOKER",
+["last_event"] = 0,
+["totalover"] = 0.005799,
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 7,
+},
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 3,
+},
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 16,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 0,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 0,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 0,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 0,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 0,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054563,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 16,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160681.731,
+["tempo_start"] = 1739054562,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+["Kvothyr"] = {
+["total"] = 47,
+["last"] = 47,
+},
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+114960,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+["Kvothyr"] = {
+{
+true,
+3,
+75,
+1739054808.298,
+0.84375,
+"Environment (Falling)",
+nil,
+3,
+false,
+-1,
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+["n"] = 2,
+},
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:42:44",
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160218.868,
+["CombatEndedAt"] = 2160218.868,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:42:43",
+["end_time"] = 2160218.868,
+["mapId"] = 2570,
+["combat_id"] = 16,
+["overall_added"] = true,
+["frags"] = {
+["Beetle"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["combat_counter"] = 19,
+["totals_grupo"] = {
+137,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 137.001601,
+},
+},
+},
+["start_time"] = 2160218.019,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 15,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001533,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 1199.001533,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 1199.001533,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scalecrawler Beetle"] = 240,
+["Beetle Swarmer"] = 959,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054553,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[357209] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalecrawler Beetle"] = 240,
+["Beetle Swarmer"] = 959,
+},
+["n_total"] = 722,
+["n_min"] = 240,
+["g_dmg"] = 0,
+["counter"] = 4,
+["total"] = 1199,
+["c_max"] = 477,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 477,
+["successful_casted"] = 0,
+["c_total"] = 477,
+["n_amt"] = 3,
+["n_max"] = 242,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054552,
+["damage_taken"] = 0.001533,
+["start_time"] = 1739054552,
+["delay"] = 0,
+["last_dps"] = 1460.415996352547,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.008768,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.008768,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187611-000C27CB42",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "187611",
+["fight_component"] = true,
+["end_time"] = 1739054553,
+["totalabsorbed"] = 0.008768,
+["nome"] = "Beetle Swarmer",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 959.008768,
+["start_time"] = 1739054553,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 2600,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.003038,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.003038,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187689-0000A7CB43",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "187689",
+["fight_component"] = true,
+["end_time"] = 1739054553,
+["totalabsorbed"] = 0.003038,
+["nome"] = "Scalecrawler Beetle",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 240.003038,
+["start_time"] = 1739054553,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 15,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 15,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 15,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054553,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 15,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160218.019,
+["tempo_start"] = 1739054552,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+1199,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:42:33",
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Beetle Swarmer",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 0.8209999999962747,
+["CombatEndedAt"] = 2160208.36,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:42:32",
+["end_time"] = 2160208.36,
+["mapId"] = 2570,
+["combat_id"] = 15,
+["overall_added"] = true,
+["frags"] = {
+["Scalecrawler Beetle"] = 1,
+["Beetle Swarmer"] = 3,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["combat_counter"] = 18,
+["totals_grupo"] = {
+1199,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 1199.001533,
+},
+},
+},
+["start_time"] = 2160207.539,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 14,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.005582,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 489.005582,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 489.005582,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Scalecrawler Beetle"] = 247,
+["Beetle"] = 242,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054535,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[357209] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Scalecrawler Beetle"] = 247,
+["Beetle"] = 242,
+},
+["n_total"] = 489,
+["n_min"] = 242,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 489,
+["c_max"] = 0,
+["id"] = 357209,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 247,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054534,
+["damage_taken"] = 0.005582,
+["start_time"] = 1739054534,
+["delay"] = 0,
+["last_dps"] = 354.6088338887802,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.00517,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.00517,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187689-000527CB42",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "187689",
+["fight_component"] = true,
+["end_time"] = 1739054535,
+["totalabsorbed"] = 0.00517,
+["nome"] = "Scalecrawler Beetle",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 247.00517,
+["start_time"] = 1739054535,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 2600,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.001522,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.001522,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-191599-000427CB42",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "191599",
+["fight_component"] = true,
+["end_time"] = 1739054535,
+["totalabsorbed"] = 0.001522,
+["nome"] = "Beetle",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 242.001522,
+["start_time"] = 1739054535,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 14,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 14,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 14,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054535,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 14,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739054534,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+489,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:42:16",
+["hasTimer"] = 1.007000000216067,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Scalecrawler Beetle",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160190.95,
+["CombatEndedAt"] = 2160190.95,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:42:14",
+["end_time"] = 2160190.95,
+["mapId"] = 2570,
+["combat_id"] = 14,
+["overall_added"] = true,
+["frags"] = {
+["Scalecrawler Beetle"] = 1,
+["Beetle"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 489.005582,
+},
+},
+},
+["combat_counter"] = 17,
+["totals_grupo"] = {
+489,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2160189.571,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 13,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.005191,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 396.005191,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 396.005191,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Lapisagos"] = true,
+},
+["targets"] = {
+["Lapisagos"] = 396,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054498,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Lapisagos"] = 267,
+},
+["n_total"] = 267,
+["n_min"] = 87,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 267,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 3,
+["n_max"] = 90,
+["r_amt"] = 0,
+},
+[356995] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Lapisagos"] = 129,
+},
+["n_total"] = 129,
+["n_min"] = 129,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 129,
+["c_max"] = 0,
+["id"] = 356995,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 129,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054498,
+["damage_taken"] = 13.005191,
+["start_time"] = 1739054493,
+["delay"] = 0,
+["last_dps"] = 78.6348671588583,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 13.006349,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 13.006349,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-186854-000027D51A",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 13,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.006349,
+["fight_component"] = true,
+["end_time"] = 1739054498,
+["aID"] = "186854",
+["nome"] = "Lapisagos",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 13,
+},
+["n_total"] = 0,
+["n_min"] = 0,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 13,
+["c_max"] = 13,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 13,
+["successful_casted"] = 0,
+["c_total"] = 13,
+["n_amt"] = 0,
+["n_max"] = 0,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054496,
+["damage_taken"] = 396.006349,
+["start_time"] = 1739054496,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 13,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 13,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 13,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 5,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[356995] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 0,
+["id"] = 356995,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 20,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 5,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054498,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 13,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160189.571,
+["tempo_start"] = 1739054493,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 16,
+["playing_solo"] = true,
+["totals"] = {
+409,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 2,
+["Disintegrate"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:41:39",
+["hasTimer"] = 5.018999999854714,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Lapisagos",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 5.035999999847263,
+["CombatEndedAt"] = 2160153.749,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:41:34",
+["end_time"] = 2160153.749,
+["mapId"] = 2570,
+["combat_id"] = 13,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Lapisagos"] = 1,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+396,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 396.005191,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160148.713,
+["contra"] = "Lapisagos",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 12,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.006056,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 88.006056,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 88.006056,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Drakonid Crechebound"] = 88,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054458,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Drakonid Crechebound"] = 88,
+},
+["n_total"] = 88,
+["n_min"] = 88,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 88,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 88,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054456,
+["damage_taken"] = 0.006056,
+["start_time"] = 1739054456,
+["delay"] = 0,
+["last_dps"] = 74.89877104602002,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.002764,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.002764,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187131-000027D648",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.002764,
+["fight_component"] = true,
+["end_time"] = 1739054458,
+["aID"] = "187131",
+["nome"] = "Drakonid Crechebound",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 88.002764,
+["start_time"] = 1739054458,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 12,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 12,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 12,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054458,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 12,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739054456,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+88,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:40:58",
+["hasTimer"] = 1,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Drakonid Crechebound",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160112.799,
+["CombatEndedAt"] = 2160112.799,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:40:56",
+["end_time"] = 2160112.799,
+["mapId"] = 2570,
+["combat_id"] = 12,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["spells_cast_timeline"] = {
+},
+["is_challenge"] = false,
+["frags"] = {
+["Drakonid Crechebound"] = 1,
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 88.006056,
+},
+},
+},
+["combat_counter"] = 15,
+["totals_grupo"] = {
+88,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["start_time"] = 2160111.624,
+["contra"] = "Drakonid Crechebound",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 11,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001142,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 353.001142,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 353.001142,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Drakonid Crechebound"] = true,
+},
+["targets"] = {
+["Drakonid Crechebound"] = 353,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054443,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Drakonid Crechebound"] = 353,
+},
+["n_total"] = 173,
+["n_min"] = 86,
+["g_dmg"] = 0,
+["counter"] = 3,
+["total"] = 353,
+["c_max"] = 180,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 180,
+["successful_casted"] = 0,
+["c_total"] = 180,
+["n_amt"] = 2,
+["n_max"] = 87,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054443,
+["damage_taken"] = 6.001142,
+["start_time"] = 1739054440,
+["delay"] = 0,
+["last_dps"] = 107.3931067839367,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 6.004225,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 6.004225,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187131-000027D669",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.004225,
+["fight_component"] = true,
+["end_time"] = 1739054443,
+["aID"] = "187131",
+["nome"] = "Drakonid Crechebound",
+["spells"] = {
+["_ActorTable"] = {
+{
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 6,
+},
+["n_total"] = 6,
+["n_min"] = 6,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 6,
+["c_max"] = 0,
+["id"] = 1,
+["r_dmg"] = 0,
+["spellschool"] = 1,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 6,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054442,
+["damage_taken"] = 353.004225,
+["start_time"] = 1739054442,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 11,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 11,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 11,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 3,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 12,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 3,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 3,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054443,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 11,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160111.624,
+["tempo_start"] = 1739054440,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 14,
+["playing_solo"] = true,
+["totals"] = {
+359,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 2,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:40:43",
+["hasTimer"] = 3.00400000018999,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Drakonid Crechebound",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 3.287000000011176,
+["CombatEndedAt"] = 2160098.293,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:40:40",
+["end_time"] = 2160098.293,
+["mapId"] = 2570,
+["combat_id"] = 11,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Drakonid Crechebound"] = 2,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+353,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 353.001142,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160095.006,
+["contra"] = "Drakonid Crechebound",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 10,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.004517,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 269.004517,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 269.004517,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Environment (Falling)"] = true,
+},
+["targets"] = {
+["Drakonid Crechebound"] = 269,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054433,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Drakonid Crechebound"] = 269,
+},
+["n_total"] = 88,
+["n_min"] = 88,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 269,
+["c_max"] = 181,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 181,
+["successful_casted"] = 0,
+["c_total"] = 181,
+["n_amt"] = 1,
+["n_max"] = 88,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054432,
+["damage_taken"] = 11.004517,
+["start_time"] = 1739054431,
+["delay"] = 0,
+["last_dps"] = 184.5024121957766,
+},
+{
+["flag_original"] = -2147483648,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 11.001412,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 11.001412,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "",
+["damage_from"] = {
+},
+["targets"] = {
+["Kvothyr"] = 11,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "",
+["fight_component"] = true,
+["end_time"] = 1739054433,
+["totalabsorbed"] = 0.001412,
+["nome"] = "Environment (Falling)",
+["spells"] = {
+["_ActorTable"] = {
+[3] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Kvothyr"] = 11,
+},
+["n_total"] = 11,
+["n_min"] = 11,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 11,
+["c_max"] = 0,
+["id"] = 3,
+["r_dmg"] = 0,
+["spellschool"] = 3,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 11,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054432,
+["damage_taken"] = 0.001412,
+["start_time"] = 1739054432,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+{
+["flag_original"] = 68168,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.007792,
+["last_dps_realtime"] = 0,
+["monster"] = true,
+["total"] = 0.007792,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-187131-000027D650",
+["on_hold"] = false,
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["totalabsorbed"] = 0.007792,
+["fight_component"] = true,
+["end_time"] = 1739054433,
+["aID"] = "187131",
+["nome"] = "Drakonid Crechebound",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["dps_started"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 269.007792,
+["start_time"] = 1739054433,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 10,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 10,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 10,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054433,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 10,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["CombatStartedAt"] = 2160086.262,
+["tempo_start"] = 1739054431,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 13,
+["playing_solo"] = true,
+["totals"] = {
+280,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:40:33",
+["hasTimer"] = 1.007999999914318,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Drakonid Crechebound",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 1.458000000100583,
+["CombatEndedAt"] = 2160087.72,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:40:31",
+["end_time"] = 2160087.72,
+["mapId"] = 2570,
+["combat_id"] = 10,
+["overall_added"] = true,
+["TimeData"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["is_challenge"] = false,
+["frags"] = {
+["Drakonid Crechebound"] = 2,
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+269,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 269.004517,
+},
+},
+},
+["spells_cast_timeline"] = {
+},
+["start_time"] = 2160086.262,
+["contra"] = "Drakonid Crechebound",
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 9,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.003371,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 142.003371,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 142.003371,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+["Environment (Falling)"] = true,
+},
+["targets"] = {
+["Ancient Construct"] = 142,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054364,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 142,
+},
+["n_total"] = 142,
+["n_min"] = 70,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 142,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 72,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054364,
+["damage_taken"] = 46.003371,
+["start_time"] = 1739054362,
+["delay"] = 0,
+["last_dps"] = 91.61507807552559,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.006487,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.006487,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-000027D573",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054364,
+["totalabsorbed"] = 0.006487,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 142.006487,
+["start_time"] = 1739054364,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 9,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 9,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 9,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 2,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 2,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054364,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 9,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2160018.166,
+["tempo_start"] = 1739054362,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 12,
+["playing_solo"] = true,
+["totals"] = {
+188,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+["Kvothyr"] = {
+{
+true,
+3,
+46,
+1739054408.548,
+0.847682119205298,
+"Environment (Falling)",
+nil,
+3,
+false,
+-1,
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+{
+},
+["n"] = 2,
+},
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:39:25",
+["hasTimer"] = 1.007999999914318,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 1.549999999813736,
+["CombatEndedAt"] = 2160019.716,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:39:23",
+["end_time"] = 2160019.716,
+["mapId"] = 2570,
+["combat_id"] = 9,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+142,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 142.003371,
+},
+},
+},
+["start_time"] = 2160018.166,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 8,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.001801,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 141.001801,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 141.001801,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Conjured Guardian"] = 141,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054352,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Conjured Guardian"] = 141,
+},
+["n_total"] = 0,
+["n_min"] = 0,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 141,
+["c_max"] = 141,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 141,
+["successful_casted"] = 0,
+["c_total"] = 141,
+["n_amt"] = 0,
+["n_max"] = 0,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054350,
+["damage_taken"] = 0.001801,
+["start_time"] = 1739054350,
+["delay"] = 0,
+["last_dps"] = 117.5015008150947,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.005959,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.005959,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-186853-000027D3E4",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "186853",
+["fight_component"] = true,
+["end_time"] = 1739054352,
+["totalabsorbed"] = 0.005959,
+["nome"] = "Conjured Guardian",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 141.005959,
+["start_time"] = 1739054352,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 8,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 8,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 8,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054352,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 8,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739054350,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+141,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:39:13",
+["hasTimer"] = 1,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Conjured Guardian",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2160007.651,
+["CombatEndedAt"] = 2160007.651,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:39:11",
+["end_time"] = 2160007.651,
+["mapId"] = 2570,
+["combat_id"] = 8,
+["overall_added"] = true,
+["frags"] = {
+["Conjured Guardian"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 141.001801,
+},
+},
+},
+["combat_counter"] = 11,
+["totals_grupo"] = {
+141,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2160006.451,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 7,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.003965,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 212.003965,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 212.003965,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Ancient Construct"] = 212,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054341,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 212,
+},
+["n_total"] = 72,
+["n_min"] = 72,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 212,
+["c_max"] = 140,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 140,
+["successful_casted"] = 0,
+["c_total"] = 140,
+["n_amt"] = 1,
+["n_max"] = 72,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054340,
+["damage_taken"] = 0.003965,
+["start_time"] = 1739054339,
+["delay"] = 0,
+["last_dps"] = 87.49647750897125,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.001078,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.001078,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-0000A7D3C5",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054341,
+["totalabsorbed"] = 0.001078,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 212.001078,
+["start_time"] = 1739054341,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 7,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 7,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 7,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 1,
+["debuff_uptime_targets"] = {
+},
+["nome"] = "Kvothyr",
+["buff_uptime_targets"] = {
+},
+["spec"] = 1467,
+["grupo"] = true,
+["pets"] = {
+},
+["last_event"] = 1739054341,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 7,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2160006.451,
+["tempo_start"] = 1739054339,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 10,
+["playing_solo"] = true,
+["totals"] = {
+212,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:39:02",
+["hasTimer"] = 2.006999999750406,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2.3230000003241,
+["CombatEndedAt"] = 2159997.146,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:39:00",
+["end_time"] = 2159997.146,
+["mapId"] = 2570,
+["combat_id"] = 7,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+212,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 212.003965,
+},
+},
+},
+["start_time"] = 2159994.723,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 6,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.004714,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 142.004714,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 142.004714,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Conjured Guardian"] = 142,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054337,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Conjured Guardian"] = 142,
+},
+["n_total"] = 142,
+["n_min"] = 71,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 142,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 71,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054337,
+["damage_taken"] = 0.004714,
+["start_time"] = 1739054336,
+["delay"] = 0,
+["last_dps"] = 95.17742224654494,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.006772,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.006772,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-186853-0000A7D3E4",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "186853",
+["fight_component"] = true,
+["end_time"] = 1739054337,
+["totalabsorbed"] = 0.006772,
+["nome"] = "Conjured Guardian",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 142.006772,
+["start_time"] = 1739054337,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 6,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 6,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 6,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 1,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 1,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054337,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 6,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739054336,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+142,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:38:58",
+["hasTimer"] = 1.007999999914318,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Conjured Guardian",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2159993.52,
+["CombatEndedAt"] = 2159993.52,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:38:57",
+["end_time"] = 2159993.52,
+["mapId"] = 2570,
+["combat_id"] = 6,
+["overall_added"] = true,
+["frags"] = {
+["Conjured Guardian"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 142.004714,
+},
+},
+},
+["combat_counter"] = 9,
+["totals_grupo"] = {
+142,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2159992.028,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 5,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.00619,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 455.00619,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 455.00619,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Ancient Construct"] = 455,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054336,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 142,
+},
+["n_total"] = 142,
+["n_min"] = 71,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 142,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 2,
+["n_max"] = 71,
+["r_amt"] = 0,
+},
+[356995] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 313,
+},
+["n_total"] = 104,
+["n_min"] = 104,
+["g_dmg"] = 0,
+["counter"] = 2,
+["total"] = 313,
+["c_max"] = 209,
+["id"] = 356995,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 209,
+["successful_casted"] = 0,
+["c_total"] = 209,
+["n_amt"] = 1,
+["n_max"] = 104,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054329,
+["damage_taken"] = 0.00619,
+["start_time"] = 1739054320,
+["delay"] = 0,
+["last_dps"] = 188.5645213654338,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.001171,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.001171,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-000027D53A",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054323,
+["totalabsorbed"] = 0.001171,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 455.001171,
+["start_time"] = 1739054323,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 5,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 5,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 5,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 2,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 8,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 2,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 2,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054323,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 5,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2159992.028,
+["tempo_start"] = 1739054320,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+455,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Azure Strike"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:38:44",
+["hasTimer"] = 2.003999999724329,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 1.075000000186265,
+["CombatEndedAt"] = 2159985.023,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:38:41",
+["end_time"] = 2159978.891,
+["mapId"] = 2570,
+["combat_id"] = 5,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 142.00619,
+},
+},
+},
+["combat_counter"] = 8,
+["totals_grupo"] = {
+455,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2159976.478,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 4,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.003666,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 154.003666,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 154.003666,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Conjured Guardian"] = 154,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054299,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[361500] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Conjured Guardian"] = 154,
+},
+["n_total"] = 154,
+["n_min"] = 154,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 154,
+["c_max"] = 0,
+["id"] = 361500,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 154,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054298,
+["damage_taken"] = 0.003666,
+["start_time"] = 1739054298,
+["delay"] = 0,
+["last_dps"] = 111.0336452692273,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.002685,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.002685,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-186853-000027D556",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "186853",
+["fight_component"] = true,
+["end_time"] = 1739054299,
+["totalabsorbed"] = 0.002685,
+["nome"] = "Conjured Guardian",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 154.002685,
+["start_time"] = 1739054299,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 4,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 4,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 4,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054299,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 4,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2159976.478,
+["tempo_start"] = 1739054298,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+154,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:38:20",
+["hasTimer"] = 1.003000000026077,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Conjured Guardian",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2159955.43,
+["CombatEndedAt"] = 2159955.43,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:38:19",
+["end_time"] = 2159955.43,
+["mapId"] = 2570,
+["combat_id"] = 4,
+["overall_added"] = true,
+["frags"] = {
+["Conjured Guardian"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 154.003666,
+},
+},
+},
+["combat_counter"] = 7,
+["totals_grupo"] = {
+154,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2159954.043,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 3,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.008528,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 225.008528,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 225.008528,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Ancient Construct"] = 225,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054292,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[362969] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 71,
+},
+["n_total"] = 71,
+["n_min"] = 71,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 71,
+["c_max"] = 0,
+["id"] = 362969,
+["r_dmg"] = 0,
+["spellschool"] = 80,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 71,
+["r_amt"] = 0,
+},
+[361500] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 154,
+},
+["n_total"] = 154,
+["n_min"] = 154,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 154,
+["c_max"] = 0,
+["id"] = 361500,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 154,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054291,
+["damage_taken"] = 0.008528,
+["start_time"] = 1739054287,
+["delay"] = 0,
+["last_dps"] = 47.39017017554085,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.003489,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.003489,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-000027D564",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054292,
+["totalabsorbed"] = 0.003489,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 225.003489,
+["start_time"] = 1739054292,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 3,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 3,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 3,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["debuff_uptime_spells"] = {
+["_ActorTable"] = {
+[370898] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 0,
+["uptime"] = 3,
+["id"] = 370898,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 20,
+["classe"] = "EVOKER",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 5,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["debuff_uptime"] = 3,
+["buff_uptime_targets"] = {
+},
+["pets"] = {
+},
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["debuff_uptime_targets"] = {
+},
+["last_event"] = 1739054292,
+["aID"] = "1390-0D1F6E7F",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 3,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2159953.431,
+["tempo_start"] = 1739054287,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["combat_counter"] = 6,
+["playing_solo"] = true,
+["totals"] = {
+225,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+["Kvothyr"] = {
+["Living Flame"] = 1,
+},
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:38:13",
+["hasTimer"] = 4.006000000052154,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 4.748000000137836,
+["CombatEndedAt"] = 2159948.128,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:38:08",
+["end_time"] = 2159948.128,
+["mapId"] = 2570,
+["combat_id"] = 3,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["cleu_events"] = {
+["n"] = 1,
+},
+["totals_grupo"] = {
+225,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 225.008528,
+},
+},
+},
+["start_time"] = 2159943.38,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 2,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.004063,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 154.004063,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 154.004063,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Ancient Construct"] = 154,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054265,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[361500] = {
+["c_amt"] = 0,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 154,
+},
+["n_total"] = 154,
+["n_min"] = 154,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 154,
+["c_max"] = 0,
+["id"] = 361500,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 0,
+["successful_casted"] = 0,
+["c_total"] = 0,
+["n_amt"] = 1,
+["n_max"] = 154,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054264,
+["damage_taken"] = 0.004063,
+["start_time"] = 1739054264,
+["delay"] = 0,
+["last_dps"] = 106.2096986070461,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.007856,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.007856,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-0000A7D3A4",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054265,
+["totalabsorbed"] = 0.007856,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 154.007856,
+["start_time"] = 1739054265,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 2,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 2,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 2,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054265,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 2,
+["_ActorTable"] = {
+},
+},
+["boss_hp"] = 1,
+["tempo_start"] = 1739054264,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+6995,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:37:46",
+["hasTimer"] = 1,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2159921.404,
+["CombatEndedAt"] = 2159921.404,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:37:45",
+["end_time"] = 2159921.404,
+["mapId"] = 2570,
+["combat_id"] = 2,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 154.004063,
+},
+},
+},
+["combat_counter"] = 5,
+["totals_grupo"] = {
+154,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2159919.954,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+{
+{
+["tipo"] = 2,
+["combatId"] = 1,
+["_ActorTable"] = {
+{
+["flag_original"] = 1297,
+["totalabsorbed"] = 0.005341,
+["pets"] = {
+},
+["classe"] = "EVOKER",
+["total_without_pet"] = 309.005341,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 309.005341,
+["transliteratedName"] = "Kvothyr",
+["spec"] = 1467,
+["colocacao"] = 1,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Player-1390-0D1F6E7F",
+["damage_from"] = {
+},
+["targets"] = {
+["Ancient Construct"] = 309,
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["end_time"] = 1739054236,
+["aID"] = "1390-0D1F6E7F",
+["nome"] = "Kvothyr",
+["spells"] = {
+["_ActorTable"] = {
+[361500] = {
+["c_amt"] = 1,
+["b_amt"] = 0,
+["g_amt"] = 0,
+["b_dmg"] = 0,
+["targets"] = {
+["Ancient Construct"] = 309,
+},
+["n_total"] = 0,
+["n_min"] = 0,
+["g_dmg"] = 0,
+["counter"] = 1,
+["total"] = 309,
+["c_max"] = 309,
+["id"] = 361500,
+["r_dmg"] = 0,
+["spellschool"] = 4,
+["extra"] = {
+},
+["a_dmg"] = 0,
+["a_amt"] = 0,
+["c_min"] = 309,
+["successful_casted"] = 0,
+["c_total"] = 309,
+["n_amt"] = 0,
+["n_max"] = 0,
+["r_amt"] = 0,
+},
+},
+["tipo"] = 2,
+},
+["grupo"] = true,
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 1739054235,
+["damage_taken"] = 0.005341,
+["start_time"] = 1739054235,
+["delay"] = 0,
+["last_dps"] = 250.6126042158417,
+},
+{
+["flag_original"] = 68136,
+["pets"] = {
+},
+["classe"] = "UNKNOW",
+["total_without_pet"] = 0.008633,
+["last_dps_realtime"] = 0,
+["dps_started"] = false,
+["total"] = 0.008633,
+["friendlyfire"] = {
+},
+["total_extra"] = 0,
+["serial"] = "Creature-0-3894-2570-2202-185272-000027D3A4",
+["damage_from"] = {
+["Kvothyr"] = true,
+},
+["targets"] = {
+},
+["friendlyfire_total"] = 0,
+["raid_targets"] = {
+},
+["aID"] = "185272",
+["fight_component"] = true,
+["end_time"] = 1739054236,
+["totalabsorbed"] = 0.008633,
+["nome"] = "Ancient Construct",
+["spells"] = {
+["_ActorTable"] = {
+},
+["tipo"] = 2,
+},
+["on_hold"] = false,
+["tipo"] = 1,
+["custom"] = 0,
+["last_event"] = 0,
+["damage_taken"] = 309.008633,
+["start_time"] = 1739054236,
+["delay"] = 0,
+["last_dps"] = 0,
+},
+},
+},
+{
+["tipo"] = 3,
+["combatId"] = 1,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 7,
+["combatId"] = 1,
+["_ActorTable"] = {
+},
+},
+{
+["tipo"] = 9,
+["combatId"] = 1,
+["_ActorTable"] = {
+{
+["flag_original"] = 1047,
+["pets"] = {
+},
+["aID"] = "1390-0D1F6E7F",
+["buff_uptime_spells"] = {
+["_ActorTable"] = {
+[225787] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 225787,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[366646] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 366646,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[430191] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 430191,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+[335148] = {
+["appliedamt"] = 1,
+["targets"] = {
+},
+["activedamt"] = 1,
+["uptime"] = 1,
+["id"] = 335148,
+["refreshamt"] = 0,
+["actived"] = false,
+["counter"] = 0,
+},
+},
+["tipo"] = 9,
+},
+["buff_uptime"] = 4,
+["nome"] = "Kvothyr",
+["spec"] = 1467,
+["grupo"] = true,
+["buff_uptime_targets"] = {
+},
+["last_event"] = 1739054236,
+["classe"] = "EVOKER",
+["serial"] = "Player-1390-0D1F6E7F",
+["tipo"] = 4,
+},
+},
+},
+{
+["tipo"] = 2,
+["combatId"] = 1,
+["_ActorTable"] = {
+},
+},
+["raid_roster"] = {
+["Kvothyr"] = "Player-1390-0D1F6E7F",
+},
+["CombatStartedAt"] = 2159919.384,
+["tempo_start"] = 1739054235,
+["last_events_tables"] = {
+},
+["alternate_power"] = {
+},
+["bossTimers"] = {
+},
+["cleu_events"] = {
+["n"] = 1,
+},
+["playing_solo"] = true,
+["totals"] = {
+309,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+["frags_total"] = 0,
+["voidzone_damage"] = 0,
+},
+["player_last_events"] = {
+},
+["frags_need_refresh"] = true,
+["amountCasts"] = {
+},
+["instance_type"] = "none",
+["zoneName"] = "10.0 The Forbidden Reach (Child of 2444)",
+["data_fim"] = "23:37:17",
+["hasTimer"] = 1,
+["pvp"] = true,
+["bIsClosed"] = true,
+["cleu_timeline"] = {
+},
+["enemy"] = "Ancient Construct",
+["trinketProcs"] = {
+},
+["TotalElapsedCombatTime"] = 2159892.27,
+["CombatEndedAt"] = 2159892.27,
+["aura_timeline"] = {
+},
+["data_inicio"] = "23:37:16",
+["end_time"] = 2159892.27,
+["mapId"] = 2570,
+["combat_id"] = 1,
+["overall_added"] = true,
+["frags"] = {
+["Ancient Construct"] = 1,
+},
+["is_challenge"] = false,
+["spells_cast_timeline"] = {
+},
+["boss_hp"] = 1,
+["PhaseData"] = {
+{
+1,
+1,
+},
+["damage_section"] = {
+},
+["heal_section"] = {
+},
+["heal"] = {
+{
+},
+},
+["damage"] = {
+{
+["Kvothyr"] = 309.005341,
+},
+},
+},
+["combat_counter"] = 4,
+["totals_grupo"] = {
+309,
+0,
+{
+0,
+[0] = 0,
+["alternatepower"] = 0,
+[3] = 0,
+[6] = 0,
+},
+{
+["buff_uptime"] = 0,
+["ress"] = 0,
+["cooldowns_defensive"] = 0,
+["dispell"] = 0,
+["interrupt"] = 0,
+["debuff_uptime"] = 0,
+["cc_break"] = 0,
+["dead"] = 0,
+},
+},
+["start_time"] = 2159891.037,
+["TimeData"] = {
+},
+["playerTalents"] = {
+},
+},
+},
+},
+["ocd_tracker"] = {
+["show_title"] = true,
+["current_cooldowns"] = {
+},
+["lines_per_column"] = 12,
+["group_frames"] = true,
+["show_options"] = false,
+["frames"] = {
+["defensive-raid"] = {
+},
+["main"] = {
+},
+["ofensive"] = {
+},
+["defensive-target"] = {
+},
+["utility"] = {
+},
+["defensive-personal"] = {
+},
+},
+["width"] = 120,
+["ignored_cooldowns"] = {
+},
+["framme_locked"] = false,
+["cooldowns"] = {
+},
+["own_frame"] = {
+["defensive-raid"] = false,
+["ofensive"] = false,
+["defensive-target"] = false,
+["utility"] = false,
+["defensive-personal"] = false,
+},
+["height"] = 18,
+["show_conditions"] = {
+["only_inside_instance"] = true,
+["only_in_group"] = true,
+},
+["enabled"] = false,
+["filters"] = {
+["itemutil"] = false,
+["itempower"] = false,
+["defensive-target"] = false,
+["itemheal"] = false,
+["defensive-personal"] = false,
+["defensive-raid"] = false,
+["ofensive"] = true,
+["crowdcontrol"] = false,
+["utility"] = false,
+},
+},
+["last_version"] = "11.0.7 13390",
+["player_stats"] = {
+},
+["force_font_outline"] = "",
+["tabela_instancias"] = {
+},
+["coach"] = {
+["enabled"] = false,
+["welcome_panel_pos"] = {
+},
+["last_coach_name"] = false,
+},
+["local_instances_config"] = {
+{
+["modo"] = 2,
+["sub_attribute"] = 1,
+["horizontalSnap"] = true,
+["verticalSnap"] = false,
+["isLocked"] = false,
+["is_open"] = true,
+["sub_atributo_last"] = {
+1,
+1,
+1,
+1,
+1,
+},
+["snap"] = {
+[3] = 2,
+},
+["segment"] = 0,
+["mode"] = 2,
+["attribute"] = 1,
+["pos"] = {
+["normal"] = {
+["y"] = 527.25,
+["x"] = -944.5875549316406,
+["w"] = 237.4997406005859,
+["h"] = 105.5001831054688,
+},
+["solo"] = {
+["y"] = 2,
+["x"] = 1,
+["w"] = 300,
+["h"] = 200,
+},
+},
+},
+{
+["modo"] = 2,
+["sub_attribute"] = 1,
+["horizontalSnap"] = true,
+["verticalSnap"] = false,
+["isLocked"] = false,
+["is_open"] = true,
+["sub_atributo_last"] = {
+1,
+1,
+1,
+1,
+1,
+},
+["snap"] = {
+1,
+},
+["segment"] = 0,
+["mode"] = 2,
+["attribute"] = 1,
+["pos"] = {
+["normal"] = {
+["y"] = 527.25,
+["x"] = -707.0877380371094,
+["w"] = 237.4998474121094,
+["h"] = 105.5001831054688,
+},
+["solo"] = {
+["y"] = 2,
+["x"] = 1,
+["w"] = 300,
+["h"] = 200,
+},
+},
+},
+},
+["cached_talents"] = {
+},
+["last_instance_id"] = 0,
+["data_harvest_for_charsts"] = {
+["players"] = {
+{
+["playerKey"] = "total",
+["combatObjectContainer"] = 1,
+["name"] = "Damage of Each Individual Player",
+["playerOnly"] = true,
+},
+},
+["totals"] = {
+{
+["combatObjectSubTableKey"] = 1,
+["name"] = "Damage of All Player Combined",
+["combatObjectSubTableName"] = "totals",
+},
+},
+},
+["announce_interrupts"] = {
+["enabled"] = false,
+["whisper"] = "",
+["channel"] = "SAY",
+["custom"] = "",
+["next"] = "",
+},
+["announce_prepots"] = {
+["enabled"] = false,
+["channel"] = "SELF",
+["reverse"] = false,
+},
+["active_profile"] = "Kvotheen-Hyjal",
+["mythic_dungeon_currentsaved"] = {
+["dungeon_name"] = "",
+["started"] = false,
+["segment_id"] = 0,
+["ej_id"] = 0,
+["started_at"] = 0,
+["run_id"] = 0,
+["level"] = 0,
+["dungeon_zone_id"] = 0,
+["previous_boss_killed_at"] = 0,
+},
+["benchmark_db"] = {
+["frame"] = {
+},
+},
+["combat_log"] = {
+["inverse_deathlog_overalldata"] = false,
+["merge_gemstones_1007"] = false,
+["track_hunter_frenzy"] = false,
+["merge_critical_heals"] = false,
+["inverse_deathlog_raid"] = false,
+["calc_evoker_damage"] = true,
+["evoker_show_realtimedps"] = false,
+["inverse_deathlog_mplus"] = false,
+},
+["last_instance_time"] = 0,
+["mythic_plus_log"] = {
+},
+["SoloTablesSaved"] = {
+["Mode"] = 1,
+},
+["data_harvested_for_charts"] = {
+},
+["announce_damagerecord"] = {
+["enabled"] = true,
+["channel"] = "SELF",
+},
+["on_death_menu"] = false,
+["nick_tag_cache"] = {
+["nextreset"] = 1740350073,
+["last_version"] = 16,
+},
+["combat_counter"] = 35,
+["last_realversion"] = 161,
+["combat_id"] = 31,
+["savedStyles"] = {
+},
+["last_day"] = "09",
+["character_data"] = {
+["logons"] = 2,
+},
+["announce_deaths"] = {
+["enabled"] = false,
+["last_hits"] = 1,
+["only_first"] = 5,
+["where"] = 1,
+},
+["plugin_database"] = {
+["DETAILS_PLUGIN_TINY_THREAT"] = {
+["enabled"] = true,
+["animate"] = false,
+["hide_pull_bar"] = false,
+["author"] = "Terciob",
+["playercolor"] = {
+1,
+1,
+1,
+},
+["usefocus"] = false,
+["updatespeed"] = 1,
+["useclasscolors"] = false,
+["showamount"] = false,
+["useplayercolor"] = false,
+["absolute_mode"] = false,
+["playSound"] = false,
+["playSoundFile"] = "Details Threat Warning Volume 3",
+["disable_gouge"] = false,
+},
+["DETAILS_PLUGIN_COMPARETWO_WINDOW"] = {
+["enabled"] = true,
+["author"] = "Terciob",
+["max_compares"] = 4,
+["compare_type"] = 1,
+},
+["DETAILS_PLUGIN_VANGUARD"] = {
+["tank_block_size_height"] = 50,
+["show_power_bar"] = false,
+["first_run"] = false,
+["aura_timer_text_size"] = 14,
+["tank_block_castbar_size_height"] = 16,
+["show_health_bar"] = true,
+["aura_offset_y"] = 0,
+["enabled"] = true,
+["show_cast_bar"] = false,
+["author"] = "Terciob",
+["tank_block_size"] = 150,
+["bar_height"] = 24,
+["tank_block_texture"] = "Details Serenity",
+["show_inc_bars"] = true,
+["tank_block_powerbar_size_height"] = 10,
+["tank_block_height"] = 40,
+["tank_block_color"] = {
+0.074509,
+0.035294,
+0.035294,
+0.832845,
+},
+},
+["DETAILS_PLUGIN_ENCOUNTER_DETAILS"] = {
+["enabled"] = true,
+["encounter_timers_bw"] = {
+},
+["max_emote_segments"] = 3,
+["last_section_selected"] = "main",
+["author"] = "Terciob",
+["window_scale"] = 1,
+["encounter_timers_dbm"] = {
+},
+["show_icon"] = 5,
+["opened"] = 0,
+["hide_on_combat"] = false,
+},
+["DETAILS_PLUGIN_RAIDCHECK"] = {
+["enabled"] = true,
+["food_tier1"] = true,
+["mythic_1_4"] = true,
+["food_tier2"] = true,
+["author"] = "Terciob",
+["use_report_panel"] = true,
+["pre_pot_healers"] = false,
+["pre_pot_tanks"] = false,
+["food_tier3"] = true,
+},
+["DETAILS_PLUGIN_STREAM_OVERLAY"] = {
+["use_square_mode"] = false,
+["is_first_run"] = false,
+["arrow_color"] = {
+1,
+1,
+1,
+0.5,
+},
+["author"] = "Terciob",
+["main_frame_size"] = {
+299.9999389648438,
+500.0000610351563,
+},
+["minimap"] = {
+["minimapPos"] = 160,
+["radius"] = 160,
+["hide"] = true,
+},
+["main_frame_locked"] = false,
+["arrow_anchor_x"] = 0,
+["font_size"] = 10,
+["row_texture"] = "Details Serenity",
+["square_grow_direction"] = "right",
+["arrow_anchor_y"] = 0,
+["use_spark"] = true,
+["square_amount"] = 5,
+["enabled"] = false,
+["arrow_size"] = 10,
+["row_color"] = {
+0.1,
+0.1,
+0.1,
+0.4,
+},
+["row_spacement"] = 21,
+["main_frame_color"] = {
+0,
+0,
+0,
+0.2,
+},
+["main_frame_strata"] = "LOW",
+["arrow_texture"] = "Interface\\CHATFRAME\\ChatFrameExpandArrow",
+["per_second"] = {
+["enabled"] = false,
+["point"] = "CENTER",
+["scale"] = 1,
+["font_shadow"] = true,
+["y"] = 6.103515625e-05,
+["x"] = -0.000244140625,
+["attribute_type"] = 1,
+["update_speed"] = 0.05,
+["size"] = 32,
+},
+["y"] = -0.0001220703125,
+["x"] = 0,
+["font_face"] = "Friz Quadrata TT",
+["square_size"] = 32,
+["point"] = "CENTER",
+["font_color"] = {
+1,
+1,
+1,
+1,
+},
+["row_height"] = 20,
+["scale"] = 1,
+},
+},
+["ignore_nicktag"] = false,
+["announce_firsthit"] = {
+["enabled"] = true,
+["channel"] = "SELF",
+},
+["announce_cooldowns"] = {
+["ignored_cooldowns"] = {
+},
+["enabled"] = false,
+["custom"] = "",
+["channel"] = "RAID",
+},
+["rank_window"] = {
+["last_difficulty"] = 15,
+["last_raid"] = "",
+},
+["cached_roles"] = {
+},
+["cached_specs"] = {
+["Player-1390-0D1F6E7F"] = 1465,
+},
+}

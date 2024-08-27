@@ -41,11 +41,11 @@ local L = Core.Locale
 local Masque = LibStub("AceAddon-3.0"):NewAddon(MASQUE)
 
 -- API Version
-local API_VERSION = 110000
+local API_VERSION = 110107
 
 -- Client Version
 local WOW_VERSION = select(4, GetBuildInfo()) or 0
-local WOW_RETAIL = ((WOW_VERSION > 100000) and true) or nil
+local WOW_RETAIL = ((WOW_VERSION > 110000) and true) or nil
 
 ----------------------------------------
 -- Utility
@@ -92,19 +92,11 @@ local function UpdateDB()
 	end
 
 	db.API_VERSION = API_VERSION
+	db.Effects.SpellAlert = nil
 
 	-- Refresh Settings
 	Core:UpdateIconPosition()
 	Core.Debug = db.Developer.Debug
-
-	-- Animations
-	if WOW_RETAIL then
-		local UpdateEffect = Core.UpdateEffect
-
-		for k, v in pairs(db.Effects) do
-			UpdateEffect(k, v)
-		end
-	end
 end
 
 ----------------------------------------
@@ -126,7 +118,7 @@ Core.WOW_VERSION = WOW_VERSION
 Core.WOW_RETAIL = WOW_RETAIL
 
 -- Add-On Info
-Core.Version = "11.0.1"
+Core.Version = "11.1.7"
 Core.Discord = "https://discord.gg/7MTWRgDzz8"
 
 Core.Authors = {
@@ -176,7 +168,7 @@ end
 -- Add-On
 ---
 
--- ADDON_LOADED Event
+-- 'ADDON_LOADED' Event
 function Masque:OnInitialize()
 	local Defaults = {
 		profile = {
@@ -214,7 +206,6 @@ function Masque:OnInitialize()
 			},
 			Effects = {
 				Castbar = true,
-				-- Cooldown = true, -- Disabled by Blizzard
 				Interrupt = true,
 				Reticle = true,
 			},
@@ -252,7 +243,7 @@ function Masque:OnInitialize()
 	end
 end
 
--- PLAYER_LOGIN Event
+-- 'PLAYER_LOGIN' Event
 function Masque:OnEnable()
 	-- Saved Variables
 	UpdateDB()
@@ -269,6 +260,26 @@ function Masque:OnEnable()
 		Setup("Core")
 		Setup("LDB")
 	end
+end
+
+-- 'PLAYER_ENTERING_WORLD' Event
+if WOW_RETAIL then
+	local MSQ_EVENTS_FRAME = CreateFrame("Frame", "MSQ_EVENTS_FRAME")
+	MSQ_EVENTS_FRAME:Hide()
+
+	local function OnEvent(...)
+		-- Animation Settings
+		local db = Core.db.profile
+		local UpdateEffect = Core.UpdateEffect
+
+		for k, v in pairs(db.Effects) do
+			UpdateEffect(k, v)
+		end
+	end
+
+	-- Delay the registering of events until after `PLAYER_LOGIN`.
+	MSQ_EVENTS_FRAME:RegisterEvent("PLAYER_ENTERING_WORLD")
+	MSQ_EVENTS_FRAME:SetScript("OnEvent", OnEvent)
 end
 
 -- Wrapper for the DB:CopyProfile method.

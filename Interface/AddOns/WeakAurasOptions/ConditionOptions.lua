@@ -401,8 +401,6 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
-
-        WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
@@ -538,7 +536,8 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       get = function()
         return conditions[i].changes[j].value;
       end,
-      set = setValue
+      set = setValue,
+      control = allProperties.propertyMap[property].control
     }
     order = order + 1;
     if propertyType == "texture" then

@@ -2,9 +2,9 @@
 LoggerHeadDB = {
 ["profileKeys"] = {
 ["Kitava - Hyjal"] = "Default",
-["Devonka - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
 ["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+["Devonka - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -12,6 +12,34 @@ LoggerHeadDB = {
 ["sink20OutputSink"] = "None",
 },
 ["log"] = {
+["raid"] = {
+["Amirdrassil, the Dream's Hope"] = {
+[17] = true,
+[15] = true,
+},
+["Aberrus, the Shadowed Crucible"] = {
+[17] = true,
+},
+["Blackrock Foundry"] = {
+[16] = false,
+},
+["Hellfire Citadel"] = {
+[16] = false,
+},
+["Highmaul"] = {
+[16] = false,
+[15] = false,
+},
+["The Nighthold"] = {
+[16] = false,
+},
+["The Emerald Nightmare"] = {
+[16] = false,
+},
+["Karazhan"] = {
+[3] = false,
+},
+},
 ["party"] = {
 ["Shadowmoon Burial Grounds"] = {
 [23] = false,
@@ -46,6 +74,9 @@ LoggerHeadDB = {
 [23] = true,
 [8] = true,
 },
+["City of Threads"] = {
+[2] = true,
+},
 ["Black Rook Hold"] = {
 [23] = true,
 [8] = true,
@@ -64,22 +95,31 @@ LoggerHeadDB = {
 [23] = true,
 [8] = true,
 },
-["Auchindoun"] = {
-[23] = false,
+["Cinderbrew Meadery"] = {
+[2] = true,
+},
+["Ara-Kara, City of Echoes"] = {
+[2] = true,
+},
+["The Stonevault"] = {
+[2] = true,
 },
 ["Bloodmaul Slag Mines"] = {
 [23] = false,
 },
-["The Forge of Souls"] = {
-[24] = true,
+["The Everbloom"] = {
+[23] = true,
+[8] = true,
 },
 ["Dawn of the Infinite"] = {
 [23] = true,
 [8] = true,
 },
-["The Everbloom"] = {
-[23] = true,
-[8] = true,
+["The Forge of Souls"] = {
+[24] = true,
+},
+["Auchindoun"] = {
+[23] = false,
 },
 ["Maw of Souls"] = {
 [23] = false,
@@ -91,37 +131,12 @@ LoggerHeadDB = {
 [23] = false,
 },
 },
-["raid"] = {
-["The Nighthold"] = {
-[16] = false,
-},
-["Blackrock Foundry"] = {
-[16] = false,
-},
-["Hellfire Citadel"] = {
-[16] = false,
-},
-["Amirdrassil, the Dream's Hope"] = {
-[17] = true,
-[15] = true,
-},
-["The Emerald Nightmare"] = {
-[16] = false,
-},
-["Aberrus, the Shadowed Crucible"] = {
-[17] = true,
-},
-["Highmaul"] = {
-[16] = false,
-[15] = false,
-},
-},
 },
 ["version"] = 3,
-["chat"] = true,
 ["minimap"] = {
 ["hide"] = true,
 },
+["chat"] = true,
 },
 },
 }

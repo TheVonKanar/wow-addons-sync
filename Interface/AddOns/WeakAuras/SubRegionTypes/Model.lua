@@ -67,7 +67,7 @@ local function PreShow(self)
       data.model_st_us / 1000);
   else
     self:SetPosition(data.model_z, data.model_x, data.model_y);
-    self:SetFacing(0);
+    self:SetFacing(rad(data.rotation))
   end
   self:SetModelAlpha(self.region.alpha)
 end
@@ -93,7 +93,7 @@ local function AcquireModel(region, data)
 
   local anchor
   if region.parentType == "aurabar" then
-    if data.bar_model_clip and WeakAuras.IsTWW() then
+    if data.bar_model_clip then
       anchor = region.parent.bar.fgMask
     else
       anchor = region.parent.bar
@@ -130,7 +130,7 @@ local function AcquireModel(region, data)
       data.model_st_us / 1000);
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(0);
+    model:SetFacing(rad(data.rotation))
   end
   return model
 end
@@ -194,9 +194,6 @@ local funcs = {
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
   subRegion:SetFlattensRenderLayers(true)
-  if not WeakAuras.IsTWW() then
-    subRegion:SetClipsChildren(true)
-  end
 
   for k, v in pairs(funcs) do
     subRegion[k] = v
@@ -261,6 +258,7 @@ local function supports(regionType)
          or regionType == "icon"
          or regionType == "aurabar"
          or regionType == "text"
+         or regionType == "empty"
 end
 
 WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);

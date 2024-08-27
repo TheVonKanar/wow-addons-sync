@@ -13,7 +13,7 @@ addon.ItemStorage = Storage
 
 --- @type Item[]
 local StoredItems = {}
-local private = { ITEM_WATCH_DELAY = 1 }
+local private = { ITEM_WATCH_DELAY = 1, }
 
 
 --- @alias AcceptedTypes
@@ -76,9 +76,9 @@ local item_class = {
 	--- Updates time_remaining
 	---@param self Item
 	UpdateTime = function(self)
-		if not self.inBags then return end -- Don't do anything if we know we haven't stored it.
+		if not self.inBags then return self end -- Don't do anything if we know we haven't stored it.
 		local _, _, t = private:findItemInBags(self.link)
-		self:SetUpdateTime(t)
+		return self:SetUpdateTime(t)
 	end,
 
 	--- Actual time remaining.
@@ -94,12 +94,16 @@ local item_class = {
 	--- @param timeRemaining? integer Remaining time
 	--- @param fallbackTime? integer Used as `timeRemaining` if that's nil. Defaults to 0.
 	SetUpdateTime = function(self, timeRemaining, fallbackTime)
-		timeRemaining = timeRemaining or fallbackTime or 0
+		self.time_updated = time()
+		-- Mounts will have 0 trade time
+		if timeRemaining == 0 then
+			self.time_remaining = 0
+			return self
+		end
 		-- Store BoEs (math.huge) as 24 hrs so we don't run into issues when displaying time.
 		self.time_remaining = timeRemaining == math.huge and 86400 or timeRemaining
-		self.time_updated = time()
 		return self
-	end
+	end,
 }
 
 -- lua
@@ -145,12 +149,13 @@ function Storage:New(item, typex, ...)
 	if not typex then typex = "other" end
 	if not self.AcceptedTypes[typex] then
 		error(
-			"Type: " .. tostring(typex) .. " is not accepted. Accepted types are: " .. table.concat(self.AcceptedTypes, ", "),
+			"Type: " ..
+			tostring(typex) .. " is not accepted. Accepted types are: " .. table.concat(self.AcceptedTypes, ", "),
 			2)
 	end
 	addon.Log:D("Storage:New", item, typex, ...)
 	local Item = private:newItem({}, item, typex)
-	Item.args = ... and type(...) == "table" and ... or { ... }
+	Item.args = ... and type(...) == "table" and ... or { ..., }
 	return Item
 end
 
@@ -159,7 +164,7 @@ end
 --- @return boolean #True if successful
 function Storage:RemoveItem(itemOrItemLink)
 	addon.Log:D("Storage:RemoveItem", itemOrItemLink)
-	if type(itemOrItemLink) == "table" then -- Maybe our Item object
+	if type(itemOrItemLink) == "table" then                 -- Maybe our Item object
 		if not (itemOrItemLink.type and itemOrItemLink.link) then -- Nope
 			return error("Item `item` is not the correct class", 2)
 		end
@@ -227,10 +232,10 @@ function Storage:GetAllItemsLessTimeRemaining(time)
 end
 
 --- Returns all stored Items based on multiple predicates
--- @param ... Predicate functions.
--- @return The filtered list of times.
+--- @param ... fun(item:Item):boolean Predicate functions.
+--- @return Item[] #The filtered list of times.
 function Storage:GetAllItemsMultiPred(...)
-	local args = { ... }
+	local args = { ..., }
 	return tFilter(StoredItems, function(v)
 		for _, func in ipairs(args) do if not func(v) then return false end end
 		return true
@@ -266,7 +271,7 @@ function Storage:WatchForItemInBags(input, onFound, onFail, max_attempts)
 	if type(input) == "table" then
 		Item = input
 	elseif type(input) == "string" then
-		Item = private:newItem(input, "temp") -- Item is not saved in storage
+		Item = private:newItem(nil, input, "temp") -- Item is not saved in storage
 	else
 		error(format("%s is not a valid input.", input))
 	end
@@ -297,6 +302,14 @@ function Storage:ItemLocationInArray(list, container, slot)
 	end)
 end
 
+--- Returns item GUID if it can be found.
+--- Must be in the player's bags.
+---@param item Item|ItemLink
+function Storage:GetItemGUID(item)
+	local c, s = self:GetItemContainerSlot(item)
+	if not (c or s) then return end
+	return Item.CreateFromBagAndSlot and Item:CreateFromBagAndSlot(c, s):GetItemGUID()
+end
 
 function private:FindItemInTable(table, item1, type)
 	if type then
@@ -362,6 +375,7 @@ function private:newItem(base, link, type)
 	Item.time_added = time()
 	Item.inBags = c and s
 	tinsert(StoredItems, Item)
+	addon.Log:D("NewItem:", Item.link, Item.type, Item.time_remaining / 3600)
 	return Item
 end
 

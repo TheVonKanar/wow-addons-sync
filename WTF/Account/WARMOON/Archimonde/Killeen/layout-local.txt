@@ -1,0 +1,15 @@
+Version: 1
+Frame: ColorPickerFrame
+FrameLevel: 23
+Anchor: CENTER
+X: 0
+Y: 0
+W: 388
+H: 380
+Frame: HeroTalentsSelectionDialog
+FrameLevel: 1
+Anchor: TOP
+X: 22
+Y: -73
+W: 970
+H: 832

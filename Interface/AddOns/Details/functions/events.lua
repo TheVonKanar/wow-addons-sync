@@ -50,6 +50,7 @@
 			["COMBAT_ARENA_END"] = {},
 			["COMBAT_MYTHICDUNGEON_START"] = {},
 			["COMBAT_MYTHICDUNGEON_END"] = {},
+			["COMBAT_MYTHICDUNGEON_CONTINUE"] = {},
 			["COMBAT_MYTHICPLUS_OVERALL_READY"] = {},
 
 		--area
@@ -116,6 +117,7 @@ local common_events = {
 	["COMBAT_ARENA_END"] = true,
 	["COMBAT_MYTHICDUNGEON_START"] = true,
 	["COMBAT_MYTHICDUNGEON_END"] = true,
+	["COMBAT_MYTHICDUNGEON_CONTINUE"] = true,
 	["COMBAT_MYTHICPLUS_OVERALL_READY"] = true,
 	["GROUP_ONENTER"] = true,
 	["GROUP_ONLEAVE"] = true,
@@ -254,7 +256,7 @@ local common_events = {
 			return
 		end
 
-		local okay, errortext = pcall(func, event, ...)
+		local okay, errortext = xpcall(func, geterrorhandler(), event, ...)
 
 		if (not okay) then
 			--trigger an error msg
@@ -278,7 +280,7 @@ local common_events = {
 			return
 		end
 
-		local okay, errortext = pcall(func, context, event, ...)
+		local okay, errortext = xpcall(func, geterrorhandler(), context, event, ...)
 
 		if (not okay) then
 			--attempt to get the context name

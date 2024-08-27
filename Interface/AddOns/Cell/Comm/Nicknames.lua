@@ -2,6 +2,7 @@ local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
 
+local LBW = LibStub:GetLibrary("LibBadWords")
 local Comm = LibStub:GetLibrary("AceComm-3.0")
 
 -----------------------------------------
@@ -23,8 +24,9 @@ end
 -----------------------------------------
 Cell.vars.nicknames = {}
 Cell.vars.nicknameCustoms = {}
+Cell.vars.nicknameBlacklist = {}
 
-function F:GetNickname(shortname, fullname)
+function F.GetNickname(shortname, fullname)
     local name
     if Cell.vars.nicknameCustomEnabled then
         name = Cell.vars.nicknameCustoms[fullname] or
@@ -47,16 +49,16 @@ local function Update(b)
 end
 
 local function UpdateName(who)
-    F:Debug("|cFF69A000UpdateName:|r|cFF696969", who, Cell.vars.nicknames[who], Cell.vars.nicknameCustoms[who])
+    F.Debug("|cFF69A000UpdateName:|r|cFF696969", who, Cell.vars.nicknames[who], Cell.vars.nicknameCustoms[who])
     -- update name
-    local handled = F:HandleUnitButton("name", who, Update)
+    local handled = F.HandleUnitButton("name", who, Update)
     if not handled then
         if strfind(who, "-") then
-            who = F:ToShortName(who)
+            who = F.ToShortName(who)
         else
             who = who.."-"..GetNormalizedRealmName()
         end
-        F:HandleUnitButton("name", who, Update)
+        F.HandleUnitButton("name", who, Update)
     end
     -- update quickAssist
     local unit = Cell.vars.names[who]
@@ -106,7 +108,7 @@ nickname:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 function nickname:PLAYER_ENTERING_WORLD()
     nickname:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    Cell:Fire("UpdateNicknames")
+    Cell.Fire("UpdateNicknames")
 end
 
 function nickname:GROUP_ROSTER_UPDATE()
@@ -115,7 +117,7 @@ end
 ---------------------------------------
 
 local function UpdateNicknames(which, value1, value2)
-    F:Debug("|cFF80FF00UpdateNicknames:|r", which, value1, value2)
+    F.Debug("|cFF80FF00UpdateNicknames:|r", which, value1, value2)
     -- init
     if not which then
         Cell.vars.playerNickname = CellDB["nicknames"]["mine"] ~= "" and CellDB["nicknames"]["mine"] or nil
@@ -128,6 +130,7 @@ local function UpdateNicknames(which, value1, value2)
         end
 
         -- customs
+        wipe(Cell.vars.nicknameCustoms)
         for _, v in ipairs(CellDB["nicknames"]["list"]) do
             local playerName, nickname = strsplit(":", v, 2)
             if playerName and nickname then
@@ -137,16 +140,21 @@ local function UpdateNicknames(which, value1, value2)
                 end
             end
         end
-    end
+
+        -- blacklist
+        wipe(Cell.vars.nicknameBlacklist)
+        for _, name in ipairs(CellDB["nicknames"]["blacklist"]) do
+            Cell.vars.nicknameBlacklist[name] = true
+        end
 
     -- enable/disable sync
-    if which == "sync" then
+    elseif which == "sync" then
         if CellDB["nicknames"]["sync"] then
             CheckNicknames()
             nickname:RegisterEvent("GROUP_ROSTER_UPDATE")
         else
             -- clear all except mine
-            F:RemoveElementsExceptKeys(Cell.vars.nicknames, Cell.vars.playerNameShort)
+            F.RemoveElementsExceptKeys(Cell.vars.nicknames, Cell.vars.playerNameShort)
             nickname:UnregisterEvent("GROUP_ROSTER_UPDATE")
 
             if nic_check then nic_check:Cancel() end
@@ -155,14 +163,13 @@ local function UpdateNicknames(which, value1, value2)
             Comm:SendCommMessage("CELL_NIC", "CELL_NONE", sendChannel)
 
             -- update all
-            F:IterateAllUnitButtons(function(b)
+            F.IterateAllUnitButtons(function(b)
                 b.indicators.nameText:UpdateName()
             end, true)
         end
-    end
 
     -- player changed nickname
-    if which == "mine" then
+    elseif which == "mine" then
         Cell.vars.playerNickname = CellDB["nicknames"]["mine"] ~= "" and CellDB["nicknames"]["mine"] or nil
 
         -- update self
@@ -173,28 +180,35 @@ local function UpdateNicknames(which, value1, value2)
             UpdateSendChannel()
             Comm:SendCommMessage("CELL_NIC", Cell.vars.playerNickname or "CELL_NONE", sendChannel)
         end
-    end
 
     -- customs
-    if which == "custom" then
+    elseif which == "custom" then
         Cell.vars.nicknameCustomEnabled = CellDB["nicknames"]["custom"]
         -- update now
         for playerName in pairs(Cell.vars.nicknameCustoms) do
             UpdateName(playerName)
         end
-    end
 
     -- list
-    if which == "list-add" or which == "list-update" then
+    elseif which == "list-add" or which == "list-update" then
         Cell.vars.nicknameCustoms[value1] = value2
         UpdateName(value1)
-    end
-    if which == "list-delete" then
+    elseif which == "list-delete" then
         Cell.vars.nicknameCustoms[value1] = nil
         UpdateName(value1)
+
+    -- blacklist
+    elseif which == "blacklist-add" then
+        Cell.vars.nicknameBlacklist[value1] = true
+        Cell.vars.nicknames[value1] = nil
+        Cell.vars.nicknames[F.ToShortName(value1)] = nil
+        UpdateName(value1)
+    elseif which == "blacklist-delete" then
+        Cell.vars.nicknameBlacklist[value1] = nil
+        -- no request
     end
 end
-Cell:RegisterCallback("UpdateNicknames", "UpdateNicknames", UpdateNicknames)
+Cell.RegisterCallback("UpdateNicknames", "UpdateNicknames", UpdateNicknames)
 
 -- check nickname received
 Comm:RegisterComm("CELL_CNIC", function(prefix, message, channel, sender)
@@ -217,7 +231,11 @@ Comm:RegisterComm("CELL_NIC", function(prefix, message, channel, sender)
     if sender == Cell.vars.playerNameShort then return end
 
     if CellDB["nicknames"]["sync"] then
-        if message == "CELL_NONE" then
+        if not string.find(sender, "-") then
+            sender = sender .. "-" .. GetNormalizedRealmName()
+        end
+
+        if message == "CELL_NONE" or Cell.vars.nicknameBlacklist[sender] or LBW.ContainsBadWords(message) then
             Cell.vars.nicknames[sender] = nil
         else
             Cell.vars.nicknames[sender] = message
@@ -242,7 +260,7 @@ f:SetScript("OnEvent", function()
 
         local function UpdateAll()
             -- update all
-            F:IterateAllUnitButtons(function(b)
+            F.IterateAllUnitButtons(function(b)
                 b.indicators.nameText:UpdateName()
             end, true)
         end

@@ -2,14 +2,14 @@
 -- Masque Blizzard Bars
 -- Enables Masque to skin the built-in WoW action bars
 --
--- Copyright 2022 - 2023 SimGuy
+-- Copyright 2022 - 2024 SimGuy
 --
 -- Use of this source code is governed by an MIT-style
 -- license that can be found in the LICENSE file or at
 -- https://opensource.org/licenses/MIT.
 --
 
-local AddonName, Shared = ...
+local _, Shared = ...
 
 -- From Locales/Locales.lua
 local L = Shared.Locale
@@ -21,9 +21,6 @@ Shared.Metadata = Metadata
 Metadata.FriendlyName = "Masque Blizzard Bars"
 Metadata.MasqueFriendlyName = "Blizzard Action Bars"
 
--- Compatibility for WoW 10.1.0
-local GetAddOnMetadata = _G.GetAddOnMetadata or C_AddOns.GetAddOnMetadata
-
 -- Title will be used for the group name shown in Masque
 -- Delayed indicates this group will be deferred to a hook or event
 -- Init is a function that will be run at load time for this group
@@ -32,10 +29,12 @@ local GetAddOnMetadata = _G.GetAddOnMetadata or C_AddOns.GetAddOnMetadata
 --  To match it must be >= low and < high.
 --  High number is the first interface unsupported
 -- Buttons should contain a list of frame names with an integer value
+--  If -2, assume to be a function that returns a table of buttons
 --  If -1, assume to be a singular button with that name
 --  If  0, this is a dynamic frame to be skinned later
 --  If >0, attempt to loop through frames with the name prefix suffixed with
 --  the integer range
+-- ButtonPools should reference parent frames containing an itemButtonPool
 -- State can be used for storing information about special buttons
 Metadata.Groups = {
 	ActionBar = {
@@ -118,7 +117,7 @@ Metadata.Groups = {
 		Notes = L["NOTES_SPELL_FLYOUTS"],
 		Versions = { 70003, nil },
 		Buttons = {
-			SpellFlyoutButton = 0
+			SpellFlyoutPopupButton = 0
 		}
 	},
 	OverrideActionBar = {
@@ -136,7 +135,7 @@ Metadata.Groups = {
 	ExtraAbilityContainer = {
 		Title = "Extra Ability Buttons",
 		Notes = L["NOTES_EXTRA_ABILITY_BUTTONS"],
-		Versions = { 50004, nil },
+		Versions = { 40402, nil },
 
 		-- Keep track of the frames that have been processed
 		State = {
@@ -160,13 +159,41 @@ Metadata.Groups = {
 			-- exist or have defined names until the first
 			-- battle
 		}
+	},
+	CooldownViewer = {
+		Title = "Cooldown Manager",
+		Versions = { 110105, nil },
+		-- These are populated after the UI loads when the RefreshLayout
+		-- function is called
+		Delayed = true,
+		Buttons = {
+			BuffIconCooldownViewer = {
+				GetItemFrames = -2
+			},
+			EssentialCooldownViewer = {
+				GetItemFrames = -2
+			},
+			UtilityCooldownViewer = {
+				GetItemFrames = -2
+			}
+		}
 	}
 }
 
 -- Specify Button Types and Regions for Buttons that need them
+local CooldownViewerMap = {
+	Icon = "Icon",
+	Cooldown = "Cooldown",
+	Count = "ChargeCount.Current",
+	Mask = "Mask"
+}
+
 Metadata.Types = {
 	-- This will be passed for all buttons unless it's otherwise overridden
 	DEFAULT = { type = "Action" },
+	BuffIconCooldownViewerGetItemFrames = { type = "Action", map = CooldownViewerMap },
+	EssentialCooldownViewerGetItemFrames = { type = "Action", map = CooldownViewerMap },
+	UtilityCooldownViewerGetItemFrames = { type = "Action", map = CooldownViewerMap }
 }
 
 -- A table indicating the defaults for Options by key.

@@ -15,6 +15,8 @@ local on_select_blizzard_nameplate_large_font = function (_, _, value)
 end
 
 function platerInternal.CreateAdvancedOptions()
+    if platerInternal.LoadOnDemand_IsLoaded.AdvancedOptions then return end -- already loaded
+    
     --templates
     local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
     local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
@@ -38,46 +40,45 @@ function platerInternal.CreateAdvancedOptions()
     ---@diagnostic disable-next-line: undefined-global
     local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 
-	local CVarDesc = "\n\n|cFFFF7700[*]|r |cFFa0a0a0CVar, saved within Plater profile and restored when loading the profile.|r"
-	local CVarIcon = "|cFFFF7700*|r"
-	local CVarNeedReload = "\n\n|cFFFF2200[*]|r |cFFa0a0a0A /reload may be required to take effect.|r"
-	local ImportantText = "|cFFFFFF00 Important |r: "
+    local L = DF.Language.GetLanguageTable(addonId)
+
+    local CVarDesc = "\n\n|cFFFF7700[*]|r |cFFa0a0a0" .. L["CVar, saved within Plater profile and restored when loading the profile."] .. "|r"
+    local CVarIcon = "|cFFFF7700*|r"
+    local CVarNeedReload = "\n\n|cFFFF2200[*]|r |cFFa0a0a0" .. L["A /reload may be required to take effect."] .. "|r"
 
     local dropdownStatusBarTexture = platerInternal.Defaults.dropdownStatusBarTexture
     local dropdownStatusBarColor = platerInternal.Defaults.dropdownStatusBarColor
 
-    local L = DF.Language.GetLanguageTable(addonId)
-
-	--outline table
-	local outline_modes = {"NONE", "MONOCHROME", "OUTLINE", "THICKOUTLINE", "MONOCHROME, OUTLINE", "MONOCHROME, THICKOUTLINE"}
-	local outline_modes_names = {"None", "Monochrome", "Outline", "Thick Outline", "Monochrome Outline", "Monochrome Thick Outline"}
-	local build_outline_modes_table = function (actorType, member)
-		local t = {}
-		for i = 1, #outline_modes do
-			local value = outline_modes[i]
-			local label = outline_modes_names[i]
-			tinsert (t, {
-				label = label,
-				value = value,
+    --outline table
+    local outline_modes = {"NONE", "MONOCHROME", "OUTLINE", "THICKOUTLINE", "MONOCHROME, OUTLINE", "MONOCHROME, THICKOUTLINE"}
+    local outline_modes_names = {"None", "Monochrome", "Outline", "Thick Outline", "Monochrome Outline", "Monochrome Thick Outline"}
+    local build_outline_modes_table = function (actorType, member)
+        local t = {}
+        for i = 1, #outline_modes do
+            local value = outline_modes[i]
+            local label = outline_modes_names[i]
+            tinsert (t, {
+                label = label,
+                value = value,
                 statusbar = dropdownStatusBarTexture,
                 statusbarcolor = dropdownStatusBarColor,
-				onclick = function (_, _, value)
-					if (actorType) then
-						Plater.db.profile.plate_config [actorType][member] = value
-						Plater.RefreshDBUpvalues()
-						Plater.UpdateAllPlates()
-						Plater.UpdateAllNames()
-					else
-						Plater.db.profile [member] = value
-						Plater.RefreshDBUpvalues()
-						Plater.UpdateAllPlates()
-						Plater.UpdateAllNames()
-					end
-				end
-			})
-		end
-		return t
-	end
+                onclick = function (_, _, value)
+                    if (actorType) then
+                        Plater.db.profile.plate_config [actorType][member] = value
+                        Plater.RefreshDBUpvalues()
+                        Plater.UpdateAllPlates()
+                        Plater.UpdateAllNames()
+                    else
+                        Plater.db.profile [member] = value
+                        Plater.RefreshDBUpvalues()
+                        Plater.UpdateAllPlates()
+                        Plater.UpdateAllNames()
+                    end
+                end
+            })
+        end
+        return t
+    end
 
     local build_number_format_options = function()
         local number_format_options = {"Western (1K - 1KK)"}
@@ -109,38 +110,38 @@ function platerInternal.CreateAdvancedOptions()
         return t
     end
 
-	--anchor table
-	local build_anchor_side_table = function (actorType, member)
-		local anchorOptions = {}
-		local phraseIdTable = Plater.AnchorNamesByPhraseId
-		local languageId = DF.Language.GetLanguageIdForAddonId(addonId)
+    --anchor table
+    local build_anchor_side_table = function (actorType, member)
+        local anchorOptions = {}
+        local phraseIdTable = Plater.AnchorNamesByPhraseId
+        local languageId = DF.Language.GetLanguageIdForAddonId(addonId)
 
-		for i = 1, 13 do
-			tinsert (anchorOptions, {
-				label = DF.Language.GetText(addonId, phraseIdTable[i]),
-				languageId = languageId,
-				phraseId = phraseIdTable[i],
-				value = i,
+        for i = 1, 13 do
+            tinsert (anchorOptions, {
+                label = DF.Language.GetText(addonId, phraseIdTable[i]),
+                languageId = languageId,
+                phraseId = phraseIdTable[i],
+                value = i,
                 statusbar = dropdownStatusBarTexture,
                 statusbarcolor = dropdownStatusBarColor,
-				onclick = function (_, _, value)
-					if (actorType) then
-						Plater.db.profile.plate_config [actorType][member].side = value
-						Plater.RefreshDBUpvalues()
+                onclick = function (_, _, value)
+                    if (actorType) then
+                        Plater.db.profile.plate_config [actorType][member].side = value
+                        Plater.RefreshDBUpvalues()
 
-						Plater.UpdateAllPlates()
-						Plater.UpdateAllNames()
-					else
-						Plater.db.profile [member].side = value
-						Plater.RefreshDBUpvalues()
-						Plater.UpdateAllPlates()
-						Plater.UpdateAllNames()
-					end
-				end
-			})
-		end
-		return anchorOptions
-	end
+                        Plater.UpdateAllPlates()
+                        Plater.UpdateAllNames()
+                    else
+                        Plater.db.profile [member].side = value
+                        Plater.RefreshDBUpvalues()
+                        Plater.UpdateAllPlates()
+                        Plater.UpdateAllNames()
+                    end
+                end
+            })
+        end
+        return anchorOptions
+    end
 
     local advanced_options = {
         {type = "label", get = function() return "General Settings:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
@@ -173,7 +174,7 @@ function platerInternal.CreateAdvancedOptions()
                 Plater.UpdateAllPlates()
             end,
             nocombat = true,
-            name = (IS_WOW_PROJECT_MAINLINE) and "Quick Hide on Death" or "Quick Hide Nameplates",
+            name = "Quick Hide on Death",
             desc = "When the unit dies, immediately hide the nameplates without playing the shrink animation.",
         },
 
@@ -251,6 +252,19 @@ function platerInternal.CreateAdvancedOptions()
             desc = "Hide Plater names game objects, such as soft-interact targets.",
         },
         {
+            type = "color",
+            get = function()
+                local color = Plater.db.profile.name_on_game_object_color
+                return {color[1], color[2], color[3], color[4]}
+            end,
+            set = function (self, r, g, b, a)
+                local color = Plater.db.profile.name_on_game_object_color
+                color[1], color[2], color[3], color[4] = r, g, b, a
+            end,
+            name = "OPTIONS_INTERACT_OBJECT_NAME_COLOR",
+            desc = "OPTIONS_INTERACT_OBJECT_NAME_COLOR_DESC",
+        },
+        {
             type = "toggle",
             get = function() return Plater.db.profile.show_softinteract_icons end,
             set = function (self, fixedparam, value)
@@ -287,7 +301,7 @@ function platerInternal.CreateAdvancedOptions()
             thumbscale = 1.7,
             usedecimals = true,
             name = "Lock to Screen (Top Side)" .. CVarIcon,
-            desc = "Min space between the nameplate and the top of the screen. Increase this if some part of the nameplate are going out of the screen.\n\n|cFFFFFFFFDefault: 0.065|r\n\n" .. ImportantText .. "if you're having issue, manually set using these macros:\n/run SetCVar ('nameplateOtherTopInset', '0.065')\n/run SetCVar ('nameplateLargeTopInset', '0.065')\n\n" .. ImportantText .. "setting to 0 disables this feature." .. CVarDesc,
+            desc = "Min space between the nameplate and the top of the screen. Increase this if some part of the nameplate are going out of the screen.\n\n|cFFFFFFFFDefault: 0.065|r\n\n|cFFFFFF00 Important |r: if you're having issue, manually set using these macros:\n/run SetCVar ('nameplateOtherTopInset', '0.065')\n/run SetCVar ('nameplateLargeTopInset', '0.065')\n\n|cFFFFFF00 Important |r: setting to 0 disables this feature." .. CVarDesc,
             nocombat = true,
         },
 
@@ -335,7 +349,7 @@ function platerInternal.CreateAdvancedOptions()
             thumbscale = 1.7,
             usedecimals = true,
             name = "Nameplate Overlap (V)" .. CVarIcon,
-            desc = "The space between each nameplate vertically when stacking is enabled.\n\n|cFFFFFFFFDefault: 1.10|r" .. CVarDesc .. "\n\n" .. ImportantText .. "if you find issues with this setting, use:\n|cFFFFFFFF/run SetCVar ('nameplateOverlapV', '1.6')|r",
+            desc = "The space between each nameplate vertically when stacking is enabled.\n\n|cFFFFFFFFDefault: 1.10|r\n\n|cFFFFFF00 Important |r: if you find issues with this setting, use:\n|cFFFFFFFF/run SetCVar ('nameplateOverlapV', '1.6')|r"  .. CVarDesc,
             nocombat = true,
         },
         {
@@ -354,7 +368,7 @@ function platerInternal.CreateAdvancedOptions()
             thumbscale = 1.7,
             usedecimals = true,
             name = "Nameplate Overlap (H)" .. CVarIcon,
-            desc = "The space between each nameplate horizontally when stacking is enabled.\n\n|cFFFFFFFFDefault: 0.8|r" .. CVarDesc .. "\n\n" .. ImportantText .. "if you find issues with this setting, use:\n|cFFFFFFFF/run SetCVar ('nameplateOverlapH', '0.8')|r",
+            desc = "The space between each nameplate horizontally when stacking is enabled.\n\n|cFFFFFFFFDefault: 0.8|r\n\n|cFFFFFF00 Important |r: if you find issues with this setting, use:\n|cFFFFFFFF/run SetCVar ('nameplateOverlapH', '0.8')|r"  .. CVarDesc,
             nocombat = true,
         },
 
@@ -413,7 +427,7 @@ function platerInternal.CreateAdvancedOptions()
             thumbscale = 1.7,
             usedecimals = true,
             name = "Min Scale" .. CVarIcon,
-            desc = "Scale applied when the nameplate is far away from the camera.\n\n" .. ImportantText .. "is the distance from the camera and |cFFFF4444not|r the distance from your character.\n\n|cFFFFFFFFDefault: 0.8|r" .. CVarDesc,
+            desc = "Scale applied when the nameplate is far away from the camera.\n\n|cFFFFFF00 Important |r: is the distance from the camera and |cFFFF4444not|r the distance from your character.\n\n|cFFFFFFFFDefault: 0.8|r" .. CVarDesc,
             nocombat = true,
         },
 
@@ -461,6 +475,90 @@ function platerInternal.CreateAdvancedOptions()
             nocombat = true,
         },
 
+        {type = "label", get = function() return "Selection Space Scaling:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+        {
+            type = "toggle",
+            get = function()
+                local hScale = GetCVarNumberOrDefault("NamePlateHorizontalScale");
+                local vScale = GetCVarNumberOrDefault("NamePlateVerticalScale");
+                local cScale = GetCVarNumberOrDefault("NamePlateClassificationScale");
+                return not (ApproximatelyEqual(hScale, 1) and ApproximatelyEqual(vScale, 1) and ApproximatelyEqual(cScale, 1));
+            end,
+            set = function (self, fixedparam, value)
+                if value then
+                    SetCVar("NamePlateHorizontalScale", 1.4);
+                    SetCVar("NamePlateVerticalScale", 2.7);
+                    SetCVar("NamePlateClassificationScale", 1.25);
+                else
+                    SetCVar("NamePlateHorizontalScale", 1);
+                    SetCVar("NamePlateVerticalScale", 1);
+                    SetCVar("NamePlateClassificationScale", 1);
+                end
+                PlaterOptionsPanelFrame.RefreshOptionsFrame()
+            end,
+            name = "Larger Nameplates" .. CVarIcon,
+            desc = "Increases the blizzard base nameplate scaling (which is impacting the selection space and default blizzard nameplate size)." .. CVarDesc,
+            nocombat = true,
+        },
+        {
+            type = "range",
+            get = function() return tonumber (GetCVar ("NamePlateVerticalScale")) end,
+            set = function (self, fixedparam, value)
+                if (not InCombatLockdown()) then
+                    SetCVar ("NamePlateVerticalScale", value)
+                else
+                    Plater:Msg (L["OPTIONS_ERROR_CVARMODIFY"])
+                end
+            end,
+            min = 0.3,
+            max = 3,
+            step = 0.1,
+            thumbscale = 1.7,
+            usedecimals = true,
+            name = "Base Vertical Scale" .. CVarIcon,
+            desc = "Increases the blizzard base nameplate scaling height (which is impacting the selection space and default blizzard nameplate size)." .. CVarDesc,
+            nocombat = true,
+        },
+        {
+            type = "range",
+            get = function() return tonumber (GetCVar ("NamePlateHorizontalScale")) end,
+            set = function (self, fixedparam, value)
+                if (not InCombatLockdown()) then
+                    SetCVar ("NamePlateHorizontalScale", value)
+                else
+                    Plater:Msg (L["OPTIONS_ERROR_CVARMODIFY"])
+                end
+            end,
+            min = 0.3,
+            max = 2,
+            step = 0.1,
+            thumbscale = 1.7,
+            usedecimals = true,
+            name = "Base Horizontal Scale" .. CVarIcon,
+            desc = "Increases the blizzard base nameplate scaling height (which is impacting the selection space and default blizzard nameplate size)." .. CVarDesc,
+            nocombat = true,
+        },
+        {
+            type = "range",
+            get = function() return tonumber (GetCVar ("NamePlateClassificationScale")) end,
+            set = function (self, fixedparam, value)
+                if (not InCombatLockdown()) then
+                    SetCVar ("NamePlateClassificationScale", value)
+                else
+                    Plater:Msg (L["OPTIONS_ERROR_CVARMODIFY"])
+                end
+            end,
+            min = 0.3,
+            max = 1.5,
+            step = 0.1,
+            thumbscale = 1.7,
+            usedecimals = true,
+            name = "Base Classification Scale" .. CVarIcon,
+            desc = "Increases the blizzard base nameplate classification scaling (which is impacting the selection space and default blizzard nameplate size)." .. CVarDesc,
+            nocombat = true,
+        },
+        
+        
         {type = "label", get = function() return "Enemy Box Selection Space:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
         {
             type = "range",
@@ -905,7 +1003,7 @@ function platerInternal.CreateAdvancedOptions()
                 Plater:Msg ("this setting require a /reload to take effect.")
             end,
             name = "Masque Support",
-            desc = "If the Masque addon is installed, enabling this will make Plater to use Masque borders.\n\n" .. ImportantText .. "require /reload after changing this setting.",
+            desc = "If the Masque addon is installed, enabling this will make Plater to use Masque borders.\n\n|cFFFFFF00 Important |r: require /reload after changing this setting.",
         },
 
         {
@@ -1203,10 +1301,10 @@ function platerInternal.CreateAdvancedOptions()
     ---@diagnostic disable-next-line: undefined-global
     local advancedFrame = PlaterOptionsPanelContainerAdvancedConfig
 
-	advanced_options.align_as_pairs = true
-	advanced_options.align_as_pairs_string_space = 181
-	advanced_options.widget_width = 150
-	advanced_options.use_scrollframe = true
+    advanced_options.align_as_pairs = true
+    advanced_options.align_as_pairs_string_space = 181
+    advanced_options.widget_width = 150
+    advanced_options.use_scrollframe = true
     advanced_options.language_addonId = addonId
     advanced_options.always_boxfirst = true
     advanced_options.Name = "Advanced Options"
@@ -1214,10 +1312,10 @@ function platerInternal.CreateAdvancedOptions()
     local canvasFrame = DF:CreateCanvasScrollBox(advancedFrame, nil, "PlaterOptionsPanelCanvasAdvancedSettings")
     canvasFrame:SetPoint("topleft", advancedFrame, "topleft", 0, platerInternal.optionsYStart)
     canvasFrame:SetPoint("bottomright", advancedFrame, "bottomright", -26, 25)
-	advancedFrame.canvasFrame = canvasFrame
+    advancedFrame.canvasFrame = canvasFrame
 
-	--when passing a canvas frame for BuildMenu, it automatically get its childscroll and use as parent for the widgets
-	--DF:BuildMenu(canvasFrame, debuff_options, startX, 0, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template, globalCallback)
+    --when passing a canvas frame for BuildMenu, it automatically get its childscroll and use as parent for the widgets
+    --DF:BuildMenu(canvasFrame, debuff_options, startX, 0, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template, globalCallback)
 
     local startX, startY, heightSize = 10, platerInternal.optionsYStart, 755
     --DF:BuildMenu (advancedFrame, advanced_options, startX, startY, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template, platerInternal.OptionsGlobalCallback)
@@ -1226,4 +1324,5 @@ function platerInternal.CreateAdvancedOptions()
     platerInternal.LoadOnDemand_IsLoaded.AdvancedOptions = true
     ---@diagnostic disable-next-line: undefined-global
     table.insert(PlaterOptionsPanelFrame.AllSettingsTable, advanced_options)
+    platerInternal.CreateAdvancedOptions = function() end
 end

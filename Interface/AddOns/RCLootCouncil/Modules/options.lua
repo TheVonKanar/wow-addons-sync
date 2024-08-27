@@ -7,7 +7,6 @@ local addon = select(2, ...)
 --- @type RCLootCouncilLocale
 local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
 local Player = addon.Require "Data.Player"
-local TempTable = addon.Require "Utils.TempTable"
 ------ Options ------
 local function DBGet(info)
 	return addon.db.profile[info[#info]]
@@ -529,6 +528,12 @@ function addon:OptionsTable()
 										type = "toggle",
 										disabled = function() return not self.db.profile.sendHistory end,
 									},
+									savePersonalLoot = {
+										order = 3.2,
+										name = L.opt_savePersonalLoot_name,
+										desc = L.opt_savePersonalLoot_desc,
+										type = "toggle",
+									},
 									header = {
 										order = 4,
 										type = "header",
@@ -547,7 +552,7 @@ function addon:OptionsTable()
 										name = L["Clear Loot History"],
 										desc = L["clear_loot_history_desc"],
 										type = "execute",
-										func = function() self.lootDB:ResetDB() end,
+										func = function() wipe(self.lootDB.factionrealm) end,
 										confirm = true,
 									},
 									spacer = {
@@ -643,47 +648,47 @@ function addon:OptionsTable()
 											selections.deleteDate = "" -- Barrow: Needs to be reset.
 										end,
 									},
-									deletePatch = {
-										order = 16,
-										name = L["Patch"],
-										desc = L["opt_deletePatch_desc"],
-										type = "select",
-										width = "double",
-										values = {
-											[1607385600] = "Castle Nathria Release",
-											[1606176000] = "Shadowlands Launch",
-											[1602547200] = "Patch 9.0.1 (Shadowlands)",
-											[1579593600] = "Ny'alotha the Waking City raid",
-											[1578988800] = "Patch 8.3.0 (Visions of N'Zoth)",
-											-- [1562644800] = "Azshara's Eternal Palace raid",
-											-- [1561521600] = "Patch 8.2.0 (Rise of Azshara)",
-											-- [1544515200] = "Patch 8.1.0",
-											-- [1534154400] = "Patch 8.0.1 (Battle for Azeroth)",
-											-- [1510225200] = "Patch 7.3.2 (Tier 21)",
-											-- [1497348000] = "Patch 7.2.5 (Tier 20)",
-											-- [1484650800] = "Patch 7.1.5 (Tier 19)",
-										},
-										get = function(info)
-											return selections[info[#info]] or ""
-										end,
-										set = function(info, val)
-											selections[info[#info]] = val
-										end,
-									},
-									deletePatchBtn = {
-										order = 17,
-										name = _G.DELETE,
-										type = "execute",
-										confirm = function() return L["opt_deletePatch_confirm"] end,
-										func = function(info)
-											if not selections.deletePatch then
-												addon:Print(L["Invalid selection"])
-												return
-											end
-											self:GetActiveModule("history"):DeleteEntriesOlderThanEpoch(selections.deletePatch)
-											selections.deletePatch = "" -- Barrow: Needs to be reset.
-										end,
-									},
+									-- deletePatch = {
+									-- 	order = 16,
+									-- 	name = L["Patch"],
+									-- 	desc = L["opt_deletePatch_desc"],
+									-- 	type = "select",
+									-- 	width = "double",
+									-- 	values = {
+									-- 		[1607385600] = "Castle Nathria Release",
+									-- 		[1606176000] = "Shadowlands Launch",
+									-- 		[1602547200] = "Patch 9.0.1 (Shadowlands)",
+									-- 		[1579593600] = "Ny'alotha the Waking City raid",
+									-- 		[1578988800] = "Patch 8.3.0 (Visions of N'Zoth)",
+									-- 		-- [1562644800] = "Azshara's Eternal Palace raid",
+									-- 		-- [1561521600] = "Patch 8.2.0 (Rise of Azshara)",
+									-- 		-- [1544515200] = "Patch 8.1.0",
+									-- 		-- [1534154400] = "Patch 8.0.1 (Battle for Azeroth)",
+									-- 		-- [1510225200] = "Patch 7.3.2 (Tier 21)",
+									-- 		-- [1497348000] = "Patch 7.2.5 (Tier 20)",
+									-- 		-- [1484650800] = "Patch 7.1.5 (Tier 19)",
+									-- 	},
+									-- 	get = function(info)
+									-- 		return selections[info[#info]] or ""
+									-- 	end,
+									-- 	set = function(info, val)
+									-- 		selections[info[#info]] = val
+									-- 	end,
+									-- },
+									-- deletePatchBtn = {
+									-- 	order = 17,
+									-- 	name = _G.DELETE,
+									-- 	type = "execute",
+									-- 	confirm = function() return L["opt_deletePatch_confirm"] end,
+									-- 	func = function(info)
+									-- 		if not selections.deletePatch then
+									-- 			addon:Print(L["Invalid selection"])
+									-- 			return
+									-- 		end
+									-- 		self:GetActiveModule("history"):DeleteEntriesOlderThanEpoch(selections.deletePatch)
+									-- 		selections.deletePatch = "" -- Barrow: Needs to be reset.
+									-- 	end,
+									-- },
 									deleteRaid = {
 										order = 20,
 										name = _G.INSTANCE,
@@ -1391,6 +1396,18 @@ function addon:OptionsTable()
 										min = 1,
 										max = self.db.profile.maxAwardReasons,
 										step = 1,
+										set = function (info, val)
+											addon.db.profile[info[#info]] = val
+											-- Update disenchant - especially if we just hid the only disenachant reason
+											addon.db.profile.disenchant = false
+											for  i = 1, self.db.profile.numAwardReasons do
+												if self.db.profile.awardReasons[i].disenchant then
+													addon.db.profile.disenchant = true
+													break
+												end
+											end
+											addon:ConfigTableChanged(info[#info])
+										end
 									},
 									-- Award reasons made further down
 									reset = {
@@ -1646,7 +1663,47 @@ function addon:OptionsTable()
 										min = 0,
 										max = self.db.profile.maxButtons,
 										step = 1,
-									}
+									},
+									moreInfoRaidDesc = {
+										order = 3,
+										type = "description",
+										name = L.opt_moreInfo_onlyShowRaids_desc,
+										disabled = function() return self.db.profile.numMoreInfoButtons == 0 end,
+									},
+									moreInfoRaids = {
+										order = 3.1,
+										name = L.opt_moreInfo_onlyShowRaids_name,
+										type = "multiselect",
+										control = "Dropdown",
+										width = "full",
+										values = function()
+											local registeredInstances = addon:GetActiveModule "history":GetAllRegisteredInstances()
+											-- Check for new registered instances that should be enabled if we're already filtering by raids
+											if next(self.db.profile.registeredInstances) then
+												for k in pairs(registeredInstances) do
+													if not self.db.profile.registeredInstances[k] then
+														-- A new instance was logged! Enable it by default
+														self.db.profile.moreInfoRaids[k] = true
+													end
+												end
+											end
+											-- Also remove instances that no longer exist in history
+											for k in pairs(self.db.profile.moreInfoRaids) do
+												if not registeredInstances[k] then
+													self.db.profile.moreInfoRaids[k] = nil
+												end
+											end
+											self.db.profile.registeredInstances = registeredInstances
+
+											return registeredInstances
+										end,
+										get = function(info, val) return self.db.profile.moreInfoRaids[val] end,
+										set = function(info, key, val)
+											self.db.profile.moreInfoRaids[key] = val or nil
+											self:ConfigTableChanged(info[#info])
+										end,
+										disabled = function() return self.db.profile.numMoreInfoButtons == 0 end,
+									},
 								},
 							},
 							responseFromChat = {
@@ -2179,14 +2236,8 @@ end
 
 function addon:GetProfileForExport()
 	local ld = LibStub("LibDeflate")
-	local profile = self.Utils:GetTableDifference(self.db.defaults.profile, self.db.profile)
-	local tt = TempTable:Acquire(profile)
-	local db = tt[1]
-	db.UI = nil -- Remove UI as it's not helpful for other players
-	db.itemStorage = nil
-	db.baggedItems = nil
+	local db = self:GetDBForExport()
 	local data = LibStub("AceSerializer-3.0"):Serialize(db)
-	TempTable:Release(tt)
 	local encoded = ld:EncodeForPrint(ld:CompressDeflate(data))
 	local t = {
 		self.PROFILE_EXPORT_IDENTIFIER,

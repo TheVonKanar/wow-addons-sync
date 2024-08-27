@@ -32,7 +32,7 @@ L["Symbol Silver"] = SILVER_AMOUNT_SYMBOL or "s";
 L["Symbol Copper"] = COPPER_AMOUNT_SYMBOL or "c";
 L["Requirements"] = REQUIREMENTS or "Requisitos";
 L["Current Colon"] = ITEM_UPGRADE_CURRENT or "Actual:";
-L["Renown Level Label"] = RENOWN_LEVEL_LABEL or "Renombre ";  --Hay un espacio
+L["Renown Level Label"] = "Renombre ";  --Hay un espacio
 L["Abilities"] = ABILITIES or "Habilidades";
 L["Traits"] = GARRISON_RECRUIT_TRAITS or "Rasgos";
 L["Costs"] = "Costos";   --Los costos para continuar una acción, generalmente en oro
@@ -57,8 +57,8 @@ L["Quest Completed On Account"] = "- ".. (ACCOUNT_COMPLETED_QUEST_NOTICE or "Tu 
 
 --String Format
 L["Format Reputation Reward Tooltip"] = QUEST_REPUTATION_REWARD_TOOLTIP or "Otorga %d de reputación con %s";
-L["Format You Have X"] = "- Tienes |cffffffff%d|r";
-L["Format You Have X And Y In Bank"] = "- Tienes |cffffffff%d|r (|cffffffff%d|r en tu banco)";
+L["Format You Have X"] = "- Tienes |cffffffff%s|r";
+L["Format You Have X And Y In Bank"] = "- Tienes |cffffffff%s|r (|cffffffff%s|r en tu banco)";
 L["Format Suggested Players"] = QUEST_SUGGESTED_GROUP_NUM or "Jugadores sugeridos: [%d]";
 L["Format Current Skill Level"] = "Current Level: |cffffffff%d/%d|r";
 L["Format Reward Title"] = HONOR_REWARD_TITLE or "Título: %s";
@@ -195,8 +195,8 @@ L["TTS Auto Stop Desc"] = "Detiene la lectura cuando te alejas del NPC.";
 --Tutorial
 L["Tutorial Settings Hotkey"] = "Presiona [KEY:PC:F1] para alternar al menú de Ajustes";
 L["Tutorial Settings Hotkey Console"] = "Presiona [KEY:PC:F1] o [KEY:CONSOLE:MENU] para alternar al menú de Ajustes";   --Usa esto si el gamepad está habilitado
-L["Instuction Open Settings"] = "Para abrir Ajustes, presiona [KEY:PC:F1] mientras interactúas con un NPC.";
-L["Instuction Open Settings Console"] = "Para abrir Ajustes, presiona [KEY:PC:F1] o [KEY:CONSOLE:MENU] mientras interactúas con un NPC.";
+L["Instruction Open Settings"] = "Para abrir Ajustes, presiona [KEY:PC:F1] mientras interactúas con un NPC.";
+L["Instruction Open Settings Console"] = "Para abrir Ajustes, presiona [KEY:PC:F1] o [KEY:CONSOLE:MENU] mientras interactúas con un NPC.";
 
 --DO NOT TRANSLATE
 L["Match Stat Armor"] = "([,%d%.]+) p. de armadura";
@@ -206,3 +206,27 @@ L["Match Stat Agility"] = "([,%d%.]+) Agilidad";
 L["Match Stat Intellect"] = "([,%d%.]+) Intelecto";
 L["Match Stat Spirit"] = "([,%d%.]+) Espíritu";
 L["Match Stat DPS"] = "([,%d%.]+) p. de daño por segundo";
+
+L["Show Answer"] = "Mostrar solución.";
+L["Quest Failed Pattern"] = "^No se pudo completar";
+L["AutoCompleteQuest HallowsEnd"] = "Cubo de caramelos";     --Quest:28981
+L["AutoCompleteQuest Midsummer"] = "Honrar la llama";   --Quest:29031
+L["AutoCompleteQuest Midsummer2"] = "¡Profana este fuego!";     --Quest:11580
+
+--Asking for Directions-- (match the name to replace gossip icon)
+L["Pin Auction House"] = "Casa de Subastas";
+L["Pin Bank"] = "Banco";
+L["Pin Barber"] = "Peluquero";
+L["Pin Battle Pet Trainer"] = "Instructor de mascotas de duelo";
+L["Pin Crafting Orders"] = "Pedidos de fabricación";
+L["Pin Flight Master"] = "Maestro de vuelo";
+L["Pin Great Vault"] = "Gran bóveda";
+L["Pin Inn"] = "Posada";
+L["Pin Item Upgrades"] = "Mejoras de objetos";
+L["Pin Mailbox"] = "Buzón";
+L["Pin Other Continents"] = "Otros continentes";
+L["Pin POI"] = "Puntos de interés";
+L["Pin Profession Trainer"] = "Instructor de profesión";
+L["Pin Rostrum"] = "Estrado de transformación";
+L["Pin Stable Master"] = "Maestro de establos";
+L["Pin Trading Post"] = "Puesto de venta";

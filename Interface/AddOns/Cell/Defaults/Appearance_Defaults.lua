@@ -17,8 +17,8 @@ Cell.defaults.appearance = {
     ["lossAlpha"] = 1,
     ["bgAlpha"] = 1,
     ["barAnimation"] = "Flash",
-    ["gradientColors"] = {{1,0,0}, {1,0.7,0}, {0.7,1,0}, 0.05, 0.95},
-    ["gradientColorsLoss"] = {{1,0,0}, {1,0.7,0}, {0.7,1,0}, 0.05, 0.95},
+    ["colorThresholds"] = {{1,0,0}, {1,0.7,0}, {0.7,1,0}, 0.05, 0.95, true},
+    ["colorThresholdsLoss"] = {{1,0,0}, {1,0.7,0}, {0.7,1,0}, 0.05, 0.95, true},
     ["auraIconOptions"] = {
         ["animation"] = "duration",
         ["durationRoundUp"] = false,
@@ -31,7 +31,7 @@ Cell.defaults.appearance = {
     ["highlightSize"] = 1,
     ["outOfRangeAlpha"] = 0.45,
     ["healPrediction"] = {true, false, {1, 1, 1, 0.4}},
-    ["healAbsorb"] = {Cell.isRetail, {1, 0.1, 0.1, 1}},
+    ["healAbsorb"] = {Cell.isRetail or Cell.isMists, {1, 0.1, 0.1, 1}},
     ["healAbsorbInvertColor"] = false,
     ["shield"] = {not Cell.isVanilla, {1, 1, 1, 0.4}},
     ["overshield"] = {not Cell.isVanilla, {1, 1, 1, 1}},
@@ -48,8 +48,8 @@ local buttonStyleIndices = {
     "deathColor",
     "bgAlpha",
     "barAnimation",
-    "gradientColors",
-    "gradientColorsLoss",
+    "colorThresholds",
+    "colorThresholdsLoss",
     "auraIconOptions",
     "targetColor",
     "mouseoverColor",
@@ -63,10 +63,10 @@ local buttonStyleIndices = {
     "overshieldReverseFill"
 }
 
-function F:ResetButtonStyle()
+function F.ResetButtonStyle()
     for _, index in pairs(buttonStyleIndices) do
         if type(Cell.defaults.appearance[index]) == "table" then
-            CellDB["appearance"][index] = F:Copy(Cell.defaults.appearance[index])
+            CellDB["appearance"][index] = F.Copy(Cell.defaults.appearance[index])
         else
             CellDB["appearance"][index] = Cell.defaults.appearance[index]
         end

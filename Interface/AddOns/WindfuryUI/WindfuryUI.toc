@@ -1,5 +1,5 @@
 ## Interface: 100200
-## Version: 11.0.2
+## Version: 11.1.7
 ## Title: |c000080FFWindfury UI|r
 ## Notes: Personal AddOn
 ## Author: TheVonKanar

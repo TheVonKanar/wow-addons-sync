@@ -9,10 +9,6 @@
 --  Taking off on Dragon with "Skyward Ascent (372610)" doesn't trigger "PLAYER_STARTED_MOVING", so we need to watch "UNIT_SPELLCAST_SUCCEEDED"
 
 local _, addon = ...
-if not addon.IsGame_10_2_0 then
-    return
-end
-
 local API = addon.API;
 local GetPlayerMapCoord = API.GetPlayerMapCoord;
 local GetCreatureIDFromGUID = API.GetCreatureIDFromGUID;
@@ -72,6 +68,15 @@ end
 local DataProvider = {};
 local EL = CreateFrame("Frame", nil, UIParent);
 
+local QUICKSLOT_DATA = {
+    buttons = {
+        {actionType = "item", itemID = 208047, spellID = 417508},   --Gigantic
+        {actionType = "item", itemID = 208067, spellID = 417645},   --Plump
+        {actionType = "item", itemID = 208066, spellID = 417642},   --Small Dreamseed
+    },
+    systemName = QUICKSLOT_NAME,
+    spellcastType = 2,      --Channel
+};
 
 function EL:IsTrackedPlantGrowing()
     return self.trackedObjectGUID and DataProvider:IsPlantGrowing(self.trackedObjectGUID);
@@ -88,7 +93,7 @@ function EL:AttemptShowUI()
 
     self.isChanneling = nil;
 
-    QuickSlot:SetButtonData(SEED_ITEM_IDS, SEED_SPELL_IDS, QUICKSLOT_NAME);
+    QuickSlot:SetButtonData(QUICKSLOT_DATA);
     QuickSlot:ShowUI();
 
     if self.trackedObjectGUID then
@@ -337,7 +342,7 @@ do
         dbKey = "EmeraldBountySeedList",
         description = addon.L["ModuleDescription EmeraldBountySeedList"],
         toggleFunc = EnableModule,
-        categoryID = 10020000,
+        categoryID = 1002,
         uiOrder = 1,
     };
 
@@ -1066,17 +1071,6 @@ do
     function YeetWidgetInfo()
         for widgetID, widgetType in pairs(EL.widgetData) do
             print("ID:", widgetID, "  Type:", widgetType)
-        end
-    end
-
-    function YeetPOI()
-        local uiMapID = C_Map.GetBestMapForUnit("player");
-        local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID);
-        local info;
-
-        for i, areaPoiID in ipairs(areaPoiIDs) do
-            info = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID);
-            print(i, info.name);
         end
     end
 

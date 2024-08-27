@@ -1,3 +1,5 @@
+[English](https://github.com/enderneko/Cell/blob/master/README.md) | [简体中文](https://github.com/enderneko/Cell/blob/master/README_zhCN.md)
+
 # Cell
 
 [![version](https://img.shields.io/github/v/release/enderneko/Cell)](https://github.com/enderneko/Cell/releases)
@@ -6,13 +8,14 @@
 ![wakatime](https://wakatime.com/badge/user/b2ffce60-8269-440f-81a0-7316f36a6085/project/82ff5b42-1fec-416d-9d8d-50b586ceea0c.svg)
 
 [![Discord](https://img.shields.io/discord/1122747237546610760?label=Discord&color=5865F2)](https://discord.gg/9PSe3fKQGJ)
+[![KOOK](https://img.shields.io/badge/KOOK-87eb00)](https://kook.top/q4T7yp)
 [![Curseforge](https://img.shields.io/curseforge/dt/409666?label=CurseForge&color=F16436)](https://www.curseforge.com/wow/addons/cell)
 [![Wago](https://img.shields.io/badge/Wago-Cell-ad1319)](https://addons.wago.io/addons/cell)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/enderneko)
 
-Cell is a nice raid frame addon inspired by several great addons, such as __CompactRaid__, __Grid2__, __Aptechka__ and __VuhDo__.
-With a more human-friendly interface, Cell can provide a better user experience, better than ever.
+Cell is a nice raid frame addon inspired by several great addons, such as __CompactRaid__, __Grid2__, __Aptechka__ and __VuhDo__.  
+With a more human-friendly interface, Cell can provide a better user experience, better than ever.  
 Hope you enjoy.
 
 &nbsp;

@@ -2,7 +2,7 @@
 -- File: Cell\RaidDebuffs\RaidDebuffs_Cata.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- Created : 2022-08-05 16:11:02 +08:00
--- Modified: 2024-08-19 11:02 +08:00
+-- Modified: 2025-02-20 16:08 +08:00
 ---------------------------------------------------------------------
 
 local _, Cell = ...
@@ -881,11 +881,11 @@ if Cell.isRetail then
         [2619] = { -- 埃鲁达克，地狱公爵
             450087, -- 深渊之攫
             448057, -- 深渊腐蚀
-            456719, -- 暗影之伤
             "449985", -- 暗影飓风
             "461513", -- 暗影飓风
+            456719, -- 暗影之伤
         },
     }
 end
 
-F:LoadBuiltInDebuffs(debuffs)
+F.LoadBuiltInDebuffs(debuffs)

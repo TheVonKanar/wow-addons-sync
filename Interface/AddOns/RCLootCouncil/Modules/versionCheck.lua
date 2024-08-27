@@ -12,7 +12,7 @@
 
 --- @type RCLootCouncil
 local addon = select(2, ...)
---- @class VersionCheck : AceTimer-3.0, AceHook-3.0, AceEvent-3.0, AceBucket-3.0
+--- @class VersionCheck : AceModule, AceTimer-3.0, AceHook-3.0, AceEvent-3.0, AceBucket-3.0
 local RCVersionCheck = addon:NewModule("VersionCheck", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0", "AceBucket-3.0")
 local ST = LibStub("ScrollingTable")
 --- @type RCLootCouncilLocale
@@ -21,6 +21,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
 local Comms = addon.Require "Services.Comms"
 local Player = addon.Require "Data.Player"
 local TT = addon.Require "Utils.TempTable"
+local GroupLoot = addon.Require "Utils.GroupLoot"
 
 local GuildRankSort
 local guildRanks = {}
@@ -32,6 +33,8 @@ local colors = {
     red = CreateColor(1,0,0,1),
     grey = CreateColor(0.75,0.75,0.75,1)
 }
+
+RCVersionCheck.statusString = getglobal "STATUS"
 
 function RCVersionCheck:OnInitialize()
     self.verCheckDisplayed = false -- Have we shown a "out-of-date"?
@@ -48,7 +51,8 @@ function RCVersionCheck:OnInitialize()
             comparesort = self.VersionSort,
             sort = ST.SORT_DSC,
             sortnext = 2
-        }
+        },
+		{ name = "", width = 20, align = "CENTER", sortnext = 4} -- GroupLoot Status
     }
 	self:InitCoreVersionComms()
     self.subscriptions = {}
@@ -73,12 +77,16 @@ function RCVersionCheck:OnEnable()
                     if senderPlayer ~= addon.player then return end
                 end
 				self:LogVersion(addon:UnitName(sender), data[3], data[4])
-                self:AddEntry(sender, data[1], data[2], data[3], data[4], data[5])
+                self:AddEntry(sender, data[1], data[2], data[3], data[4], data[5], data[7])
 				Player:Get(sender):UpdateFields{rank = data[2]}
             end
         )
     )
     self:RegisterBucketMessage("RCVersionCheckUpdate", 0.5, "UpdateTotals")
+	if addon.isMasterLooter and addon.handleLoot then
+		-- Send out `handleLoot` so that future "group loot status" can be up to date.
+		addon:Send("group", "StartHandleLoot")
+	end
 end
 
 function RCVersionCheck:OnDisable()
@@ -93,14 +101,7 @@ function RCVersionCheck:OnDisable()
 end
 
 function RCVersionCheck:Show()
-    self:AddEntry(
-        addon.player:GetName(),
-        addon.playerClass,
-        addon.guildRank,
-        addon.version,
-        addon.tVersion,
-        addon:GetInstalledModulesFormattedData()
-    ) -- add ourself
+    self:AddPlayer()
     self.frame:Show()
     self.frame.st:SetData(self.frame.rows)
     self:UpdateTotals()
@@ -108,6 +109,18 @@ end
 
 function RCVersionCheck:Hide()
     self.frame:Hide()
+end
+
+function RCVersionCheck:AddPlayer()
+	self:AddEntry(
+		addon.player:GetName(),
+		addon.playerClass,
+		addon.guildRank,
+		addon.version,
+		addon.tVersion,
+		addon:GetInstalledModulesFormattedData(),
+		GroupLoot:GetStatus()
+	)
 end
 
 function RCVersionCheck:Query(target)
@@ -133,14 +146,7 @@ function RCVersionCheck:Query(target)
         target = target,
         command = "fr"
     }
-    self:AddEntry(
-        addon.player:GetName(),
-        addon.playerClass,
-        addon.guildRank,
-        addon.version,
-        addon.tVersion,
-        addon:GetInstalledModulesFormattedData()
-    ) -- add ourself
+	self:AddPlayer()
     self:ScheduleTimer("QueryTimer", 5)
 end
 
@@ -162,11 +168,7 @@ function RCVersionCheck:LogVersion(name, version, tversion)
     if not name then
         return addon.Log:D("LogVersion", "No name", name, version, tversion)
     end
-    if addon.db.global.verTestCandidates[name] then -- Updated
-        logversion(name, version, tversion, time())
-    else -- New
-        logversion(name, version, tversion, time(), "new")
-    end
+    logversion(name, version, tversion, time())
 end
 
 function RCVersionCheck:PrintOutDatedClients()
@@ -192,7 +194,14 @@ function RCVersionCheck:PrintOutDatedClients()
     end
 end
 
-function RCVersionCheck:AddEntry(name, class, guildRank, version, tVersion, modules)
+---@param name string
+---@param class ClassFile
+---@param guildRank string
+---@param version string
+---@param tVersion string?
+---@param modules table<integer, string>
+---@param groupLootStatus integer
+function RCVersionCheck:AddEntry(name, class, guildRank, version, tVersion, modules, groupLootStatus)
     -- We need to be careful with naming conventions just as in RCLootCouncil:UnitName()
     --name = name:lower():gsub("^%l", string.upper)
     name = addon:UnitName(name)
@@ -203,48 +212,36 @@ function RCVersionCheck:AddEntry(name, class, guildRank, version, tVersion, modu
     if tVersion then
         vVal = tostring(version) .. "-" .. tVersion
     end
+
+	-- Adds entry to the provided table
+	local function addEntry(t)
+		t.cols = {
+			{ value = "", DoCellUpdate = addon.SetCellClassIcon, args = { class, }, },
+			{ value = addon.Ambiguate(name), color = addon:GetClassColor(class), },
+			{ value = guildRank,             color = self.GetVersionColor, colorargs = { self, version, tVersion, }, },
+			{
+				value = vVal or L["Waiting for response"],
+				color = self.GetVersionColor,
+				colorargs = { self, version, tVersion, },
+				DoCellUpdate = self.SetCellModules,
+				args = modules,
+			},
+		}
+		tinsert(t.cols, { DoCellUpdate = self.SetCellGroupLootStatus, args = { groupLootStatus, }, })
+		t.name = name
+		t.rank = guildRank
+		t.version = version
+		t.tVersion = tVersion
+		return t
+	end
     for _, v in ipairs(self.frame.rows) do
         if addon:UnitIsUnit(v.name, name) then -- they're already added, so update them
-            v.cols = {
-                {value = "", DoCellUpdate = addon.SetCellClassIcon, args = {class}},
-                {value = addon.Ambiguate(name), color = addon:GetClassColor(class)},
-                {value = guildRank, color = self.GetVersionColor, colorargs = {self, version, tVersion}},
-                {
-                    value = vVal or L["Waiting for response"],
-                    color = self.GetVersionColor,
-                    colorargs = {self, version, tVersion},
-                    DoCellUpdate = self.SetCellModules,
-                    args = modules
-                }
-            }
-            v.rank = guildRank
-            v.version = version
-            v.tVersion = tVersion
+			addEntry(v)
             return self:Update()
         end
     end
     -- They haven't been added yet, so do it
-    tinsert(
-        self.frame.rows,
-        {
-            name = name,
-            rank = guildRank,
-            version = version,
-            tVersion = tVersion,
-            cols = {
-                {value = "", DoCellUpdate = addon.SetCellClassIcon, args = {class}},
-                {value = addon.Ambiguate(name), color = addon:GetClassColor(class)},
-                {value = guildRank, color = self.GetVersionColor, colorargs = {self, version, tVersion}},
-                {
-                    value = vVal or L["Waiting for response"],
-                    color = self.GetVersionColor,
-                    colorargs = {self, version, tVersion},
-                    DoCellUpdate = self.SetCellModules,
-                    args = modules
-                }
-            }
-        }
-    )
+    tinsert(self.frame.rows, addEntry({}))
     listOfNames[name] = true
     self:Update()
 end
@@ -344,7 +341,8 @@ function RCVersionCheck:InitCoreVersionComms()
                     addon.version,
                     addon.tVersion,
                     addon:GetInstalledModulesFormattedData(),
-                    senderPlayer:GetForTransmit()
+                    senderPlayer:GetForTransmit(),
+					GroupLoot:GetStatus()
                 }
             }
         end
@@ -446,6 +444,7 @@ function RCVersionCheck:GetFrame()
     if self.frame then
         return self.frame
     end
+	---@class RCVersionCheck.Frame : RCFrame
     local f =
         addon.UI:NewNamed("RCFrame", UIParent, "DefaultRCVersionCheckFrame", L["RCLootCouncil Version Checker"], 250)
 
@@ -511,6 +510,7 @@ function RCVersionCheck:GetFrame()
     return f
 end
 
+--- @type DoCellUpdateFunction
 function RCVersionCheck.SetCellModules(rowFrame, f, data, cols, row, realrow, column, fShow, table, ...)
     local modules = data[realrow].cols[column].args
     if modules and #modules > 0 then
@@ -537,6 +537,41 @@ function RCVersionCheck.SetCellModules(rowFrame, f, data, cols, row, realrow, co
         )
     end
     table.DoCellUpdate(rowFrame, f, data, cols, row, realrow, column, fShow, table)
+end
+
+local targetML = tonumber("110111111", 2)
+local target 	= tonumber("110101111", 2)
+
+--- @type DoCellUpdateFunction
+function RCVersionCheck.SetCellGroupLootStatus(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
+	local status = data[realrow].cols[column].args[1]
+	local name = data[realrow].name
+	local binary = addon.Utils:Int2Bin(status)
+	data[realrow].cols[column].value = status and binary or ""
+
+	frame:SetScript("OnEnter", function()
+		if status then
+			local targetStatus = addon.masterLooter == Player:Get(name) and targetML or target
+			local description = GroupLoot:StatusToDescription(status, targetStatus)
+			addon:CreateTooltip(RCVersionCheck.statusString, unpack(description))
+			if addon.debug or addon.nnp then
+				GameTooltip:AddLine("Bin: " .. binary)
+				GameTooltip:AddLine("Dec: " .. status)
+				GameTooltip:AddLine("Hex: " .. string.format("%x", status))
+				GameTooltip:Show()
+			end
+		end
+	end)
+	frame:SetScript("OnLeave", addon.UI.HideTooltip)
+	if status then
+		local texture =
+			((addon.isMasterLooter and bit.band(status, targetML) == targetML)
+			or bit.band(status, target) == target) and "interface/raidframe/readycheck-ready"
+			or "interface/raidframe/readycheck-notready"
+		frame:SetNormalTexture(texture)
+	else
+		frame:SetNormalTexture("interface/raidframe/readycheck-waiting")
+	end
 end
 
 function GuildRankSort(table, rowa, rowb, sortbycol)

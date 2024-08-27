@@ -6,5 +6,5 @@ local _G = getfenv(0)
 
 -- Mine
 E.CHANGELOG = [[
-- Fixed an issue where the tabs and buttons wouldn't fade when the main/general tab wasn't selected.
+- Fixed an issue where old chat messages would still disappear even though message fading is disabled.
 ]]

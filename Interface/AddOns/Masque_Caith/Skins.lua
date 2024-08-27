@@ -25,10 +25,10 @@ local L = Core.Locale
 -- Locals
 ---
 
-local API_VERSION = 110000
+local API_VERSION = 110107
 
 -- Skin Info
-local Version = "11.0.1"
+local Version = "11.1.7"
 local Websites = {
 	"https://github.com/SFX-WoW/Masque_Caith",
 	"https://www.curseforge.com/wow/addons/masque-caith",
@@ -105,8 +105,6 @@ MSQ:AddSkin("Caith", {
 		TexCoords = {0.02, 0.98, 0.02, 0.98},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
-		DrawLayer = "BACKGROUND",
-		DrawLevel = 0,
 		Width = 36,
 		Height = 36,
 		Point = "CENTER",

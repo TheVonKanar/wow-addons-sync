@@ -11,7 +11,7 @@
 
 --- @type RCLootCouncil
 local addon = select(2, ...)
----@class Sync : AceSerializer-3.0
+---@class Sync : AceModule, AceSerializer-3.0
 local sync = addon:NewModule("Sync", "AceSerializer-3.0")
 local LibDialog = LibStub("LibDialog-1.1")
 local LD = LibStub("LibDeflate")
@@ -95,7 +95,7 @@ sync.syncHandlers = {
             addon:ActivateSkin(addon.db.profile.currentSkin)
         end,
         send = function()
-            return addon.db.profile
+            return addon:GetDBForExport()
         end
     },
     history = {

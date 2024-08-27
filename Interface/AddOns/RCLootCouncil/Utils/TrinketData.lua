@@ -50,7 +50,7 @@ function RCLootCouncil:ExportTrinketData(nextTier, nextIsRaid, nextIndex, nextDi
    nextIndex = nextIndex or 1
    nextDiffID = nextDiffID or 1
    if not nextTier then
-      nextTier = 10 -- Dragonflight
+      nextTier = 11 -- TWW
       self:Print("Exporting the loot specs of all trinkets in the dungeon journal\n"
          .."This command is intended to be run by the developer.\n"
          .."After exporting is done and copy and paste the data into Utils/TrinketData.lua.\n"
@@ -242,7 +242,8 @@ _G.RCTrinketCategories = {
 	["3092776070010"] = DAMAGER .. ", " .. ITEM_MOD_INTELLECT_SHORT, -- Damage + Healers, Intellect
 	["1010671040000"] = DAMAGER .. ", " .. ITEM_MOD_INTELLECT_SHORT, -- Damage, Intellect (direct damage, no affliction warlock and shadow priest)
 	["5010771040000"] = DAMAGER .. ", " .. ITEM_MOD_INTELLECT_SHORT, -- Damage, Intellect (no discipline)
-	["1134773647743"] = DAMAGER, -- Damage
+	["1134773647743"] = DAMAGER, -- Damage (Pre augmentation evoker)
+	["5134773647743"] = DAMAGER, -- Damage
 	["0325002007700"] = ITEM_MOD_AGILITY_SHORT, -- Agility (DPS + vengance and brewmaster)??
 	["73F7777077710"] = ITEM_MOD_AGILITY_SHORT .. "/" .. ITEM_MOD_INTELLECT_SHORT, -- Agility/Intellect
 	["0000000700077"] = ITEM_MOD_STRENGTH_SHORT, -- Strength
@@ -271,9 +272,9 @@ _G.RCTrinketCategories = {
 
 function RCLootCouncil:InitTrinketData ()
    -- Class specific trinket
-   for classID in pairs(RCLootCouncil.classIDToDisplayName) do
+   for classID in pairs(self.classIDToDisplayName) do
       local digit = 0
-      for specIndex = 1, RCLootCouncil.Utils:GetNumSpecializationsForClassID(classID) do
+      for specIndex = 1, self.Utils:GetNumSpecializationsForClassID(classID) do
          digit = digit + 2^(specIndex - 1)
       end
       local flag = ZERO:sub(1, numClasses - classID)..format("%X", digit)..ZERO:sub(numClasses - classID + 2, numClasses)
@@ -1927,16 +1928,16 @@ _G.RCTrinketSpecs = {
 	-- Nerub-ar Palace Normal (id: 1273).
 	[212451] = "5010771040000", -- Aberrant Spellforge,             	Damage, Intellect
 	[219915] = "0241000100024", -- Foul Behemoth's Chelicera,       	Tank
-	[212454] = "73F7777777777", -- Mad Queen's Mandate,             	All Classes
+	[212454] = "5134773647743", -- Mad Queen's Mandate,             	Damage
 	[212449] = "0124002607443", -- Sikran's Endless Arsenal,        	Damage, Melee
-	[212453] = "0000000700067", -- Skyterror's Corrosive Organ,     	Strength
+	[212453] = "0000000600043", -- Skyterror's Corrosive Organ,     	Damage, Strength
 	[212450] = "0241000100024", -- Swarmlord's Authority,           	Tank
 	[221023] = "73F7777777777", -- Treacherous Transmitter,         	All Classes
-	[212456] = "0365002007700", -- Void Reaper's Contract,          	Agility
+	[212456] = "0124002007700", -- Void Reaper's Contract,          	Damage, Agility
 	[219917] = "2082004030010", -- Creeping Coagulum,               	Healer
 	[212452] = "2082004030010", -- Gruesome Syringe,                	Healer
-	[220305] = "73F7777777777", -- Ovinax's Mercurial Egg,          	All Classes
-	[220202] = "5010771040000", -- Spymaster's Web,                 	Damage, Intellect
+	[220305] = "73F7777777777", -- Ovi'nax's Mercurial Egg,         	All Classes
+	[220202] = "7092775070010", -- Spymaster's Web,                 	Intellect
 	-- Nerub-ar Palace Heroic (id: 1273).
 	-- Nerub-ar Palace Mythic (id: 1273).
 	-- Nerub-ar Palace Looking For Raid (id: 1273).
@@ -1960,12 +1961,51 @@ _G.RCTrinketSpecs = {
 	-- Siege of Boralus Mythic Keystone (id: 1023).
 	-- Siege of Boralus Mythic (id: 1023).
 	-- Grim Batol Normal (id: 71).
-	[56463] = "2082004030010", -- Corrupted Egg Shell,             	Healer
-	[56462] = "7092775070010", -- Gale of Shadows,                 	Intellect
-	[56458] = "0000000700067", -- Mark of Khardros,                	Strength
-	[56440] = "0365002007700", -- Skardyn's Grace,                 	Agility
-	[56449] = "0201000100024", -- Throngus's Finger,               	Tank, Parry
+	[133305] = "2082004030010", -- Corrupted Egg Shell,             	Healer
+	[133304] = "7092775070010", -- Gale of Shadows,                 	Intellect
+	[133300] = "0000000600043", -- Mark of Khardros,                	Damage, Strength
+	[133282] = "0124002007700", -- Skardyn's Grace,                 	Damage, Agility
+	[133291] = "0201000100024", -- Throngus's Finger,               	Tank, Parry
 	-- Grim Batol Heroic (id: 71).
 	-- Grim Batol Mythic Keystone (id: 71).
 	-- Grim Batol Mythic (id: 71).
+
+	-- Blackrock Depths (id: 1301).
+	[231457] = "2082004030010", -- Bottled Magma,                	Healer
+	[231424] = "2082004030010", -- Burst of Knowledge,           	Healer
+	[231476] = "2082004030010", -- Dope'rel's Calling Rune,      	Healer
+	[231414] = "0241000100024", -- Force of Will,                	Tank
+	[231471] = "0365002707767", -- Golem Gearbox,                	Strength/Agility
+	[231417] = "0365002707767", -- Hand of Justice,              	Strength/Agility
+	[231456] = "0000000700067", -- Heart of Roccor,              	Strength
+	[231462] = "0241000100024", -- Molten Furnace,               	Tank
+	[231420] = "2082004030010", -- Second Wind,                  	Healer
+
+	-- Operation: Floodgate Normal (id: 1298).
+	[232542] = "6082004030010", -- Darkfuse Medichopper,            	Healer
+	[232545] = "5010771040000", -- Gigazap's Zap-Cap,               	Damage, Intellect
+	[232541] = "0365002707767", -- Improvised Seaforium Pacemaker,  	Strength/Agility
+	[232543] = "0241000100024", -- Ringing Ritual Mud,              	Tank
+	-- Operation: Floodgate Heroic (id: 1298).
+	-- Operation: Floodgate Mythic (id: 1298).
+
+	-- Liberation of Undermine Normal (id: 1296).
+	[230029] = "0241000100024", -- Chromebustible Bomb Suit,        	Tank
+	[230198] = "73F7777777777", -- Eye of Kezan,                    	All Classes
+	[230191] = "5010771040000", -- Flarendo's Pilot Light,          	Damage, Intellect
+	[230188] = "2082004030010", -- Gallagio Bottle Service,         	Healer
+	[230197] = "5134773647743", -- Geargrinder's Spare Keys,        	Damage
+	[230027] = "73F7777777777", -- House of Cards,                  	All Classes
+	[230189] = "0124002007700", -- Junkmaestro's Mega Magnet,       	Damage, Agility
+	[230193] = "5134773647743", -- Mister Lock-N-Stalk,             	Damage
+	[230186] = "2082004030010", -- Mister Pick-Me-Up,               	Healer
+	[230192] = "7092775070010", -- Mug's Moxie Jug,                 	Intellect
+	[230194] = "73F7777777777", -- Reverb Radio,                    	All Classes
+	[230026] = "0241000100024", -- Scrapfield 9001,                 	Tank
+	[230190] = "0000000600043", -- Torq's Big Red Button,           	Damage, Strength
+	[230019] = "0241000100024", -- Vexie's Pit Whistle,             	Tank
+	[230199] = "0124002607443", -- Zee's Thug Hotline,              	Damage, Melee
+	-- Liberation of Undermine Heroic (id: 1296).
+	-- Liberation of Undermine Mythic (id: 1296).
+	-- Liberation of Undermine Looking For Raid (id: 1296).
 }

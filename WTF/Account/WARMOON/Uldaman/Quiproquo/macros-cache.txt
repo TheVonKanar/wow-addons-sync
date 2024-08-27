@@ -1,21 +1,43 @@
-VER 3 0100000000000003 "CB" "Ability_CheapShot"
-/lancer Vol à la tire
-/stopcasting
-/lancer Coup bas
+VER 3 010000000000000A " " "134400"
+#showtooltip
+/castsequence reset=10 Instant Poison, Atrophic Poison, Trans-Dimensional Bird Whistle
 END
-VER 3 0100000000000002 "Embush" "Ability_Rogue_Ambush"
-/lancer Vol à la tire
-/stopcasting
-/lancer Embuscade
+VER 3 010000000000000B " " "134400"
+#showtooltip
+/use Ghostly Strike
 END
-VER 3 0100000000000001 "Garrot" "Ability_Rogue_Garrote"
-/lancer Vol à la tire
-/stopcasting
-/lancer Garrot
+VER 3 0100000000000007 " " "134400"
+#showtooltip Tricks of the Trade
+/click AutoTankMisdirect
 END
-VER 3 0100000000000004 "VuhDoDCShieldData" "Ability_Repair"
-P[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]1RM[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+VER 3 0100000000000006 " " "134400"
+#showtooltip
+/cast [@cursor] Grappling Hook
 END
-VER 3 0100000000000005 "VuhDoDCShieldNames" "Ability_Repair"
-N[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]Qui[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+VER 3 0100000000000008 " " "134400"
+#showtooltip
+/cast [stance] Cheap Shot; Kidney Shot
+END
+VER 3 010000000000000C " " "134400"
+#showtooltip
+/cast Ambush
+/cast Ghostly Strike
+END
+VER 3 010000000000000D " " "134400"
+#showtooltip
+/cast Pistol Shot
+/cast Ghostly Strike
+END
+VER 3 010000000000000E " " "134400"
+#showtooltip
+/cast [stance] Ambush; Sinister Strike
+/cast Ghostly Strike
+END
+VER 3 010000000000000F " " "134400"
+#showtooltip
+/cast [stance] Between the Eyes; Dispatch
+END
+VER 3 0100000000000010 " " "134400"
+#showtooltip
+/cast [stance] Dispatch; Between the Eyes
 END

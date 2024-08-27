@@ -31,16 +31,13 @@ L["Aggro (border)"] = "Aggro (borda)"
 L["all"] = "tudo"
 L["ALL"] = "Tudo"
 L["All Bosses"] = "Todos os Chefes"
-L["All Cell settings will be overwritten!"] = "Todas as configurações do Cell serão substituídas!"
 L["All indicators of %s will be replaced with those in %s"] = "Todos os indicadores de %s serão substituídos pelos de %s"
 L["All snippets have been disabled, due to the version update"] = "Todos os snippets foram desativados devido à atualização da versão"
---[[Translation missing --]]
---[[ L["Allow smaller value"] = ""--]]
+L["Allow smaller value"] = "Permitir valor menor"
 L["Alpha"] = "Alpha"
 L["Always"] = "Sempre"
 L["Always Targeting"] = "Sempre Alvejando"
-L["Always Update Buffs"] = "Sempre atualize os buffs"
-L["Always Update Debuffs"] = "Sempre atualize os debuffs"
+L["Always Update Auras"] = "Sempre atualize as auras"
 L["Anchor Point"] = "Ponto de Ancoragem "
 L["Anchor To"] = "Ancorar à  "
 L["Anchored To"] = "Ancorado à "
@@ -49,6 +46,8 @@ L["Any Spells"] = "Qualquer feitiço"
 L["Anyone"] = "Qualquer um"
 L["AoE Healing"] = "Cura AoE"
 L["Appearance"] = "Aparência"
+--[[Translation missing --]]
+--[[ L["Apply Recommended Scale"] = ""--]]
 L["Arena"] = "Arena"
 L["assist"] = "Assist"
 L["Assist"] = "Assist"
@@ -57,9 +56,12 @@ L["Author"] = "Autor"
 L["Autorun will be disabled for all code snippets"] = [=[A execução automática será desativada para todos os snippets
 ]=]
 L["Available slash commands"] = "Comandos de barra disponíveis"
-L["Awesome!"] = "Demais!"
 L["Background Alpha"] = "Alpha do Background"
 L["Background Color"] = "Cor do Background"
+L["BACKUP_TIPS"] = [=[Os backups nem sempre são confiáveis, especialmente quando são muito antigos. Recomendo fazer backups com frequência. Ao compartilhar perfis, os backups não são incluídos.
+]=]
+L["BACKUP_TIPS2"] = "Nota para jogadores do Classic: os backups não incluem 'Lançar com clique' e 'Troca Automática de Layout' de outros personagens"
+L["Backups"] = "Backups"
 L["Bar"] = "Barra"
 L["Bar Animation"] = "Animação da Barra"
 L["Bar Orientation"] = "Orientação da Barra"
@@ -69,12 +71,13 @@ L["Beat"] = "Pulsar"
 L["BG 1-15"] = "BG 1-15"
 L["BG 16-40"] = "BG 16-40"
 L["Big Debuffs"] = "Grandes Debuffs"
+--[[Translation missing --]]
+--[[ L["Blacklist Target Player"] = ""--]]
 L["Bleed"] = "Sangramento"
 L["Blink"] = "Piscar"
 L["Blizzard Frames"] = "Frames da Blizzard"
-L["Block"] = "Bloquear"
---[[Translation missing --]]
---[[ L["Blocks"] = ""--]]
+L["Block"] = "Bloco"
+L["Blocks"] = "Blocos"
 L["Border"] = "Borda"
 L["Border Color"] = "Cor da Borda"
 L["Boss Name"] = "Nome do Chefe"
@@ -96,8 +99,7 @@ L["Buffs Tracker"] = "Buffs Tracker"
 L["Bug Report & Suggestion"] = "Relatórios de bugs e sugestões"
 L["Built-in Spells"] = "Feitiços integrados"
 L["built-in(s)"] = "built-in(s)"
---[[Translation missing --]]
---[[ L["Button"] = ""--]]
+L["Button"] = "Botão"
 L["C"] = "Talento de classe"
 L["Cancel"] = "Cancelar"
 L["Can't change options in combat"] = "Não é possível mudar as configurações durante o combate!"
@@ -106,6 +108,7 @@ L["cast Inner spell"] = "lançar Feitiço Interno"
 L["cast Outer spell"] = "lançar Feitiço Externo"
 L["castByMe"] = "Mostrar apenas buffs lançados por mim"
 L["Casts"] = "Lançamentos"
+L["Cell settings will be overwritten!"] = "Todas as configurações do Cell serão sobrescritas!"
 L["Cell will report all deaths during a raid encounter."] = "Cell reportará todas as mortes durante um encontro de raid."
 L["Cell will report first %d deaths during a raid encounter."] = "Cell reportará as primeiras %d mortes durante um encontro de raid."
 L["CENTER"] = "Centro"
@@ -120,8 +123,8 @@ L["circledStackNums"] = "Números de stack circulados"
 L["Class Color"] = "Cor da Classe"
 L["Class Color (dark)"] = "Cor da Classe (escura)"
 L["Class Filter"] = "Filtro de Classe"
-L["clear"] = "limpar"
 L["Clear"] = "Limpar"
+L["clear"] = "limpar"
 L["clear unit"] = "limpar unidade"
 L["cleuAurasTips"] = "Verifique os eventos CLEU em busca de auras invisíveis"
 L["Click to preview"] = "Clique para pré-visualizar"
@@ -129,10 +132,13 @@ L["Click-Castings"] = "Lançar com clique"
 L["Close"] = "Fechar"
 L["Code Snippets"] = "Code Snippets"
 L["Color"] = "Cor"
---[[Translation missing --]]
---[[ L["Color By"] = ""--]]
+L["Color By"] = "Colorir Por"
 L["Color Duration Text"] = "Cor do texto de duração"
+--[[Translation missing --]]
+--[[ L["Color Thresholds"] = ""--]]
 L["Columns"] = "Colunas"
+--[[Translation missing --]]
+--[[ L["Combat Icon"] = ""--]]
 L["Combine Groups"] = "Combinar grupos"
 L["Common"] = "Comum"
 L["Condition"] = "Condição"
@@ -144,6 +150,7 @@ L["Copy"] = "Copiar"
 L["Copy indicators from one layout to another"] = "Copiar indicadores de um layout pro outro"
 L["Create"] = "Criar"
 L["create a \"Healers\" indicator"] = "Criar um indicador para \"Healers\""
+L["Create Backup"] = "Criar Backup"
 L["Create new debuff (id)"] = "Criar um novo debuff (id)"
 L["Create new indicator"] = "Criar novo indicador"
 L["Create new layout"] = "Criar um novo layout"
@@ -157,8 +164,7 @@ L["Curse"] = "Maldição"
 L["Cursor"] = "Cursor"
 L["Cursor Left"] = "Esquerda do Cursor"
 L["Cursor Right"] = "Direita do Cursor"
---[[Translation missing --]]
---[[ L["Custom"] = ""--]]
+L["Custom"] = "Personalizado"
 L["Custom Color"] = "Cor personalizada"
 L["Custom indicators will not be overwritten, even with same name"] = "Os indicadores personalizados não serão substituídos, mesmo se tiverem o mesmo nome"
 L["Custom Nicknames"] = "Apelidos Personalizados"
@@ -178,10 +184,15 @@ L["DECLINED"] = "RECUSADO"
 L["Default layout"] = "Layout padrão"
 L["Defensive Cooldowns"] = "Cooldowns Defensivos"
 L["Delete"] = "Deletar"
+L["Delete backup"] = "Deletar Backup"
 L["Delete debuff?"] = "Deletar debuff?"
 L["Delete indicator"] = "Deletar indicador"
 L["Delete layout"] = "Deletar layout"
 L["Delete spell?"] = "Deletar feitiço?"
+--[[Translation missing --]]
+--[[ L["Delimiter"] = "Delimiter"--]]
+--[[Translation missing --]]
+--[[ L["Detached"] = ""--]]
 L["Disabled"] = "Desabilitado"
 L["Disabled in battlegrounds and arenas"] = "Desabilitado em battlegrounds e arenas"
 L["Discard"] = "Descartar"
@@ -192,19 +203,22 @@ L["Dispel Request"] = "Solicitação de Dispel"
 L["Dispellable By Me"] = "Dispelável por mim"
 L["dispellableByMe"] = "Mostrar apenas debuffs dispeláveis por mim"
 L["Dispels"] = "Dispels"
---[[Translation missing --]]
---[[ L["Display a gradient texture when the unit receives a heal from your certain AoE healing spells."] = ""--]]
+L["Display a gradient texture when the unit receives a heal from your certain healing spells."] = "Exibe uma textura em degradê quando a unidade recebe uma cura de certos feitiços de cura AoE."
 L["Display elapsed time since debuff applied"] = "Mostrar o tempo decorrido desde que o debuff foi aplicado"
 L["Display One Decimal Place When"] = "Exibir uma casa decimal quando"
-L["Displayed Per Line"] = "Ícones por linha"
+L["Displayed Per Line"] = "Exibido Por Linha"
 L["Do nothing if requested spell/buff already exists on requester"] = "Não fazer nada se o feitiço/buff solicitado já existir no solicitante"
 L["DRINKING"] = "BEBENDO"
 L["Due to restrictions of the private aura system, this indicator can only use Blizzard style."] = "Devido às restrições do sistema de aura privada, este indicador só pode usar o estilo Blizzard."
 L["durationFont"] = "Fonte de duração"
 L["Edit"] = "Editar"
 L["Edit spell"] = "Editar feitiço"
+--[[Translation missing --]]
+--[[ L["Effective"] = "Effective"--]]
 L["En"] = "En"
 L["Enable"] = "Enable"
+--[[Translation missing --]]
+--[[ L["Enable Color Gradient"] = ""--]]
 L["Enable Death Color"] = "Habilitar Cor de Morte"
 L["Enable Full Health Color"] = "Habilitar Cor de Vida Cheia"
 L["Enable Spotlight Frame"] = "Habilitar o Frame de Spotlight"
@@ -224,6 +238,7 @@ L["Fade Out Menu"] = "Desvanecer o Menu"
 L["Fade out menu buttons on mouseout"] = "Desvanecer os botões de menu ao passar o mouse"
 L["Fade Out These Buttons"] = "Desvanecer estes botões"
 L["fadeOut"] = "Desvanecer com o tempo"
+L["Faster Health Updates"] = "Aumentar a Taxa de Atualização de Vida"
 L["Filter Auto Switch"] = "Filtro de Troca Automática"
 L["first %d"] = "primeiro %d"
 L["Flash"] = "Flash"
@@ -235,8 +250,7 @@ L["Font Outline"] = "Contorno da Fonte"
 L["Font Size"] = "Tamanho da Fonte"
 L["Format"] = "Formato"
 L["Frame Level"] = "Nível do Frame"
---[[Translation missing --]]
---[[ L["Frame priorities for LibGetFrame"] = ""--]]
+L["Frame priorities for LibGetFrame"] = "Prioridades de quadros para LibGetFrame."
 L["Free Cooldown Only"] = "Apenas Cooldown Livre"
 L["Frequency"] = "Frequência"
 L["Friendly NPC Frame"] = "Frame de NPC amigável"
@@ -259,11 +273,14 @@ L["Group Columns"] = "Colunas de Grupo"
 L["Group Filters"] = "Filtros de Grupo"
 L["Group Rows"] = "Linhas de Grupo"
 L["Group Spacing"] = "Espaçamento de Grupo"
---[[Translation missing --]]
---[[ L["H"] = "Hero Talent"--]]
+L["H"] = "Talentos de Herói"
 L["Half"] = "Metade"
 L["Heal Absorb"] = "Absorção de Cura"
+--[[Translation missing --]]
+--[[ L["Heal Absorbs"] = ""--]]
 L["Heal Prediction"] = "Previsão de Cura"
+--[[Translation missing --]]
+--[[ L["Health"] = ""--]]
 L["Health Bar"] = "Barra de Vida"
 L["Health Bar Alpha"] = "Alpha da Barra de Vida"
 L["Health Bar Color"] = "Cor da Barra de Vida"
@@ -292,8 +309,7 @@ L["Horizontal"] = "Horizontal"
 L["Horizontal Gradient"] = "Gradiente Horizontal"
 L["Icon"] = "Ícone"
 L["Icon Options"] = "Opções de Ícone"
---[[Translation missing --]]
---[[ L["Icon Style"] = ""--]]
+L["Icon Style"] = "Estilo de Ícone"
 L["Icons"] = "Ícones"
 L["IDs separated by whitespaces"] = "IDs separados por espaços em branco"
 L["If disabled, no check, no reply, just glow"] = "Se desativado, sem verificação, sem resposta, apenas brilha"
@@ -304,7 +320,6 @@ L["Import & Export All Settings"] = "Importar & Exportar todas as configuraçõe
 L["Include Character Settings"] = "Incluir Configurações de Personagem"
 L["Include Nickname Settings"] = "Incluir configurações de apelido"
 L["Incompatible Version"] = "Versão Incompatível"
-L["Increase Health Update Rate"] = "Aumentar a Taxa de Atualização de Vida"
 L["Indicator Settings"] = "Configurações de indicador"
 L["Indicator settings are part of Layout settings which are account-wide."] = [=[As configurações do indicador fazem parte das configurações de layout que abrangem toda a conta.
 ]=]
@@ -317,25 +332,20 @@ L["instakill"] = "instakill"
 L["Instance Name"] = "Nome da Instância"
 L["Instant Mode"] = "Modo Instantâneo"
 L["Invalid"] = "Inválido"
---[[Translation missing --]]
---[[ L["Invalid layout name."] = ""--]]
+L["Invalid layout name."] = "Nome de layout inválido."
 L["Invalid spell id."] = "ID de Feitiço Inválido."
 L["Invalid unit."] = "Unidade Inválida."
 L["INVERT"] = "Inverter"
 L["Invert Color"] = "Inverter Cor"
 L["It will be renamed if this layout name already exists"] = "Será renomeado se este nome de layout já existir"
---[[Translation missing --]]
---[[ L["Item"] = ""--]]
+L["Item"] = "Item"
 L["Known Spells Only"] = "Apenas feitiços conhecidos"
 L["Layout"] = "Layout"
---[[Translation missing --]]
---[[ L["Layout added: %s."] = ""--]]
+L["Layout added: %s."] = "Layout adicionado: %s."
 L["Layout Auto Switch"] = "Troca Automática de Layout"
---[[Translation missing --]]
---[[ L["Layout deleted: %s."] = ""--]]
+L["Layout deleted: %s."] = "Layout deletado: %s."
 L["Layout imported: %s."] = "Layout importado: %s."
---[[Translation missing --]]
---[[ L["Layout renamed: %s to %s."] = ""--]]
+L["Layout renamed: %s to %s."] = "Layout renomeado: %s."
 L["Layout Setup"] = "Setup de Layout"
 L["Layouts"] = "Layouts"
 L["Leader Icon"] = "Ícone de Líder"
@@ -359,7 +369,7 @@ L["Marks Bar"] = "Barra de Marcadores"
 L["marksTips"] = "\n|rMarcador de alvo\nLeft-Click: |cffffffff definir marcador de raid no alvo|r\nRight-Click: |cfffffffftravar marcador de raid no alvo (do seu grupo)|r"
 L["Max Buttons"] = "Máximo de Botões"
 L["Max Columns"] = "Máximo de Colunas"
-L["Max Displayed"] = "Máximo de Ícones"
+L["Max Displayed"] = "Máximo Exibido"
 L["Max Rows"] = "Máximo de Linhas"
 L["Me"] = "Eu"
 L["Menu"] = "Menu"
@@ -387,7 +397,10 @@ L["Never"] = "Nunca"
 L["New"] = "Novo"
 L["New version found (%s). Please visit %s to get the latest version."] = "Nova versão encontrada (%s). Visite %s para obter a versão mais recente."
 L["Nickname"] = "Apelido"
+--[[Translation missing --]]
+--[[ L["Nickname Blacklist"] = ""--]]
 L["Nickname Options"] = "Opções de Apelido"
+L["Nickname Sync"] = "Sincronizar apelido com Outros"
 L["No"] = "Não"
 L["No custom debuffs to export!"] = "Nenhum debuff personalizado para exportar!"
 L["No guarantee of the order of members in each subgroup"] = "Nenhuma garantia da ordem dos membros em cada subgrupo"
@@ -409,6 +422,8 @@ L["Only one threshold is displayed at a time"] = "Apenas um limite é exibido po
 L["Only show during encounter or in mythic+"] = "Mostrar apenas durante um encontro ou em mítica+"
 L["Only show when you have permission to do this"] = "Mostrar apenas quando você tiver permissão para fazer isso"
 L["Only visible to me"] = "Visível apenas para mim"
+--[[Translation missing --]]
+--[[ L["onlyEnableNotInCombat"] = "Only when I'm not in combat"--]]
 L["onlyShowOvershields"] = "Mostrar apenas overshields"
 L["onlyShowTopGlow"] = "Mostrar brilho apenas no primeiro debuff"
 L["Options"] = "Opções"
@@ -430,12 +445,12 @@ L["Party"] = "Grupo"
 L["Party Assignment Icon"] = "Ícone de atribuição do grupo"
 L["PENDING"] = "PENDENTE"
 L["Percentage"] = "Porcentagem"
-L["PET"] = "Pet"
 L["Pet"] = "Pet"
+L["PET"] = "Pet"
+L["Pets"] = "Pets de Raid"
 L["Pixel"] = "Pixel"
 L["Pixel Perfect"] = "Pixel Perfect"
---[[Translation missing --]]
---[[ L["Play animation when the unit uses a specific spell/item. The list is global shared, not layout-specific."] = ""--]]
+L["Play animation when the unit uses a specific spell/item. The list is global shared, not layout-specific."] = "Reproduzir a animação quando a unidade usa um feitiço/item específico. A lista é compartilhada globalmente, não específica para o layout."
 L["Play Icon Animation When"] = "Reproduzir animação de ícone quando"
 L["Poison"] = "Veneno"
 L["Position"] = "Posição"
@@ -449,6 +464,8 @@ L["Press Key to Bind"] = "Pressione a tecla para vincular"
 L["Preview"] = "Pré-visualizar"
 L["Primary Talents"] = "Talentos Primários"
 L["Private Auras"] = "Auras Privadas"
+--[[Translation missing --]]
+--[[ L["Profile imported successfully."] = ""--]]
 L["Profiles"] = "Perfis"
 L["Pull"] = "Pull"
 L["Pull in %d sec"] = "Pull em %d segundos"
@@ -462,7 +479,6 @@ L["Raid Debuffs"] = "Debuffs de Raid"
 L["Raid Debuffs updated: %s."] = "Debuffs de Raid atualizados: %s."
 L["Raid Icon (player)"] = "Ícone de Raid (player)"
 L["Raid Icon (target)"] = "ícone de Raid (target)"
-L["Raid Pets"] = "Pets de Raid"
 L["Raid Tools"] = "Ferramentas de Raid"
 L["RAID_DEBUFFS_TIPS"] = "Dicas: [Arraste & Solte] para mudar a ordem de debuffs. [Double-Click] no nome de uma instância para abrir o Guia de Aventura. [Shift+Left Click] numa instância/nome de chefe pra compartilhar debuffs. A prioridade dos Debuffs Gerais é maior que dos Debuffs de Chefe."
 L["raidRosterTips"] = "[Right-Click] para promover/rebaixar (assist). [Alt+Right-Click] desconvidar."
@@ -473,7 +489,12 @@ L["readyCheckTips"] = "n|rReady Check\nLeft-Click: |cffffffffiniciar um ready ch
 L["Rect"] = "Retângulo"
 L["refresh unit buttons"] = "atualizar botões de unidade"
 L["Refreshing unit buttons (%s)..."] = "Atualizando botões de unidade (%s)..."
-L["Remaining Time"] = "Tempo Restante <"
+--[[Translation missing --]]
+--[[ L["Relative Point"] = ""--]]
+--[[Translation missing --]]
+--[[ L["Relative To"] = ""--]]
+L["Remaining Time"] = "Tempo Restante"
+L["Remember to backup your profile"] = "Lembre-se de fazer backup do seu perfil"
 L["Remove"] = "Remover"
 L["Rename"] = "Renomear"
 L["Rename indicator"] = "Renomear indicador"
@@ -506,6 +527,7 @@ L["Respond to requests that are only sent to me"] = "Responder a solicitações 
 L["Respond to specific dispellable debuffs"] = "Responda a debuffs dissipáveis ​​específicos"
 L["Respond to whispers"] = "Responda aos sussurros"
 L["Response Type"] = "Tipo de Resposta"
+L["Restore backup"] = "Restaurar Backup"
 L["Reverse Fill"] = "Preenchimento Reverso"
 L["Right"] = "Direita"
 L["RIGHT"] = "Direita"
@@ -528,8 +550,7 @@ L["ScrollUp"] = "Rolar para cima"
 L["sec"] = "sec"
 L["Secondary Talents"] = "Talentos Secundários"
 L["Separate NPC Frame"] = "Separar o Frame de NPC"
---[[Translation missing --]]
---[[ L["Set Bar Max Value"] = ""--]]
+L["Set Bar Max Value"] = "Definir Valor Máximo da Barra"
 L["set unit"] = "definir unidade"
 L["set unit's name"] = "definir o nome da unidade"
 L["set unit's pet"] = "definir o pet da unidade"
@@ -541,6 +562,8 @@ L["Shield Bar"] = "Barra de Escudo"
 L["Shield Texture"] = "Textura de Escudo"
 L["shieldByMe"] = "Mostrar apenas PW:S lançados por mim"
 L["shields"] = "Escudos"
+--[[Translation missing --]]
+--[[ L["Shields"] = "Shields"--]]
 L["Shift+Enter: add a new line"] = "Shift+Enter: adicione uma nova linha"
 L["Shine"] = "Brilhar"
 L["Show All"] = "Mostrar tudo"
@@ -553,13 +576,15 @@ L["Show NPC Frame"] = "Mostrar o Frame de NPC"
 L["Show Party"] = "Mostrar grupo"
 L["Show Party/Arena Pets"] = "Mostrar Pets de Grupo/Arena"
 --[[Translation missing --]]
---[[ L["Show Raid"] = ""--]]
+--[[ L["Show pets in a separate frame"] = ""--]]
+L["Show Raid"] = "Exibir Raide"
 L["Show Raid Pets"] = "Mostrar pets de Raid"
 L["Show Solo"] = "Mostrar quando sozinho"
+--[[Translation missing --]]
+--[[ L["Show Solo Pet"] = ""--]]
 L["Show units you care about more in a separate frame"] = "Mostre as unidades mais importantes para você em um quadro separado"
 L["Show while in a party"] = "Mostrar durante um grupo"
---[[Translation missing --]]
---[[ L["Show while in a raid"] = ""--]]
+L["Show while in a raid"] = "Exibir quando estiver em uma raide."
 L["Show while not in a group"] = "Mostrar quando não estiver em um grupo"
 L["showAllSpells"] = "Mostrar todos os feitiços"
 L["showAnimation"] = "Mostrar animação"
@@ -601,7 +626,6 @@ L["Status Text Position"] = "Posição do Texto de Status"
 L["Strata"] = "Strata"
 L["Style"] = "Estilo"
 L["Supporters"] = "Apoiadores"
-L["Sync Nicknames with Others"] = "Sincronizar apelido com Outros"
 L["Sync Status"] = "Status de Sincronização"
 L["Sync With"] = "Sincronizar com"
 L["syncTips"] = "Defina o layout mestre aqui\nTodos os indicadores do slave-layout estão totalmente sincronizados com o mestre\nÉ uma sincronização bidirecional, mas todos os indicadores do slave-layout serão perdidos quando definido um mestre."
@@ -672,6 +696,7 @@ L["Unit's Target"] = "Alvo da Unidade"
 L["Unlimited"] = "Ilimitado"
 L["Unlock"] = "Destravar"
 L["unnamed"] = "sem nome"
+L["Unselected settings will remain"] = "As configurações não selecionadas permanecerão"
 L["Use %s addon"] = "Usar o addon %s"
 L["Use |cFFFFB5C5/cell buff X|r to set icon size"] = "Use |cFFFFB5C5/cell buff X|r para definir o tamanho do ícone"
 L["Use |cFFFFB5C5/cell report X|r to set the number of reports during a raid encounter"] = "Use |cFFFFB5C5/cell report X|r para definir o número de relatórios durante um encontro de raid"

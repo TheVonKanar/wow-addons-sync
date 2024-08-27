@@ -2,22 +2,24 @@
 -- Masque Blizzard Bars
 -- Enables Masque to skin the built-in WoW action bars
 --
--- Copyright 2022 - 2023 SimGuy
+-- Copyright 2022 - 2024 SimGuy
 --
 -- Use of this source code is governed by an MIT-style
 -- license that can be found in the LICENSE file or at
 -- https://opensource.org/licenses/MIT.
 --
 
-local AddonName, Shared = ...
+local _, Shared = ...
 
 -- From Locales/Locales.lua
-local L = Shared.Locale
+-- Not used yet
+--local L = Shared.Locale
 
 -- From Metadata.lua
 local Metadata = Shared.Metadata
 local Groups = Metadata.Groups
-local Callbacks = Metadata.OptionCallbacks
+-- Not used yet
+--local Callbacks = Metadata.OptionCallbacks
 
 -- From Core.lua
 local Core = Shared.Core
@@ -27,7 +29,7 @@ local Addon = {}
 Shared.Addon = Addon
 
 -- Handle events for buttons that get created dynamically by Blizzard
-function Addon:HandleEvent(event, target)
+function Addon:HandleEvent(event)
 	-- Handle ExtraActionButton on Extra ActionBar updates
 	--
 	-- We don't handle the ZAB here because if EAB and ZAB are both
@@ -41,8 +43,12 @@ function Addon:HandleEvent(event, target)
 		if not bar.State.ExtraActionButton and eab and
 		   eab:GetObjectType() == "CheckButton" then
 			-- TODO: Update this to use Core:Skin()
-			bar.Group:AddButton(eab)
+			bar.Group:AddButton(eab, nil, "Action")
 			bar.State.ExtraActionButton = true
+			-- Move the overlay art behind the Normal frame
+			if eab.style then
+				eab.style:SetDrawLayer("ARTWORK", -1)
+			end
 		end
 
 	-- Handle Pet Battle Buttons on Pet Battle start
@@ -88,7 +94,7 @@ end
 
 -- Spell Flyout buttons are created as needed when a flyout is opened, so
 -- check for any new buttons any time that happens
-function Addon:SpellFlyout_Toggle(flyoutID, ...)
+function Addon:SpellFlyout_Toggle(_, flyoutID)
 	local _, _, numSlots, _ = GetFlyoutInfo(flyoutID)
 	local activeSlots = 0
         for slot = 1, numSlots do
@@ -100,13 +106,33 @@ function Addon:SpellFlyout_Toggle(flyoutID, ...)
 
 	-- Skin any extra buttons found
 	local bar = Groups.SpellFlyout
-	local numButtons = bar.Buttons.SpellFlyoutButton
+	local numButtons = bar.Buttons.SpellFlyoutPopupButton
         if (numButtons < activeSlots) then
-		for i = numButtons + 1, activeSlots do
-			-- TODO: Update this to use Core:Skin()
-			bar.Group:AddButton(_G["SpellFlyoutButton"..i])
+		bar.Buttons.SpellFlyoutPopupButton = activeSlots
+		Core:Skin(bar.Buttons, bar.Group)
+	end
+end
+
+function Addon:CooldownViewer_RefreshLayout()
+	local frameName = self:GetName()
+	if frameName and Groups.CooldownViewer.Buttons[frameName] then
+		-- Map the Mask to a key and hide the overlay
+		for _, frame in ipairs(self:GetItemFrames()) do
+			if not frame.Mask then
+				frame.Mask = frame.Icon:GetMaskTexture(1)
+			end
+			if not frame.IconOverlay then
+				-- There should be one region left that isn't mapped
+				for i = 1, select("#", frame:GetRegions()) do
+					local texture = select(i, frame:GetRegions())
+					if texture.GetAtlas and texture:GetAtlas() == "UI-HUD-CoolDownManager-IconOverlay" then
+						frame.IconOverlay = texture
+					end
+				end
+			end
+			frame.IconOverlay:Hide()
 		end
-		bar.Buttons.SpellFlyoutButton = activeSlots
+		Core:Skin(Groups.CooldownViewer.Buttons[frameName], Groups.CooldownViewer.Group, nil, nil, self, frameName)
 	end
 end
 
@@ -156,6 +182,16 @@ function Addon:Init()
 		               Addon.SpellFlyout_Toggle)
 	end
 
+	-- Cooldown Viewer
+	if Core:CheckVersion({ 110105, nil }) then
+		hooksecurefunc(BuffIconCooldownViewer, "RefreshLayout",
+		               Addon.CooldownViewer_RefreshLayout)
+		hooksecurefunc(EssentialCooldownViewer, "RefreshLayout",
+		               Addon.CooldownViewer_RefreshLayout)
+		hooksecurefunc(UtilityCooldownViewer, "RefreshLayout",
+		               Addon.CooldownViewer_RefreshLayout)
+	end
+
         -- Check if MoveAny is installed and handle the bar modifications it makes
 	if UpdateActionBarBackground then
 		hooksecurefunc("UpdateActionBarBackground", Addon.ReSkinBars)
@@ -172,12 +208,7 @@ function Addon:Init()
 	Addon.Events = CreateFrame("Frame")
 
 	-- Extra Action Button
-	--
-	-- This was added in 40300, but in Cata Classic it's not in 40400.
-	-- It'll probably be added when Dragon Soul is released since it's needed
-	-- for Ultraxion but I have no way to know what version that will be yet.
-	--
-	if Core:CheckVersion({ 50004, nil }) then
+	if Core:CheckVersion({ 40402, nil }) then
 		Addon.Events:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
 	end
 

@@ -2,11 +2,6 @@
 
 local _, addon = ...
 
-if not addon.IsGame_11_0_2 then
-    return
-end
-
-
 local GetCreatureIDFromGUID = addon.API.GetCreatureIDFromGUID;
 local TokenDisplay;
 local TimerFrame;
@@ -14,17 +9,20 @@ local TimerFrame;
 
 local PlayerChoiceXCurrency = {
     --[choiceID] = {type, id}     --type: 0(currency) 1(item)
-    [832] = {1, 220520},    --Radian Echo, Worldsoul Memory: The Worldcarvers
+    [832] = {1, 235897},    --Radian Echo (change every season), Worldsoul Memory: The Worldcarvers
     [838] = {1, 212493},    --
+    [841] = {0, 3090},      --Flame-Blessed Iron (Siren Isle Command Map)
 };
 
 do  --Radian Echo
-    local RadianEcho = {1, 220520};
     local target = PlayerChoiceXCurrency[832];
     PlayerChoiceXCurrency[827] = target;    --Worldsoul Memory: Primal Predators
     PlayerChoiceXCurrency[829] = target;    --Worldsoul Memory: A Wounded Soul
     PlayerChoiceXCurrency[830] = target;    --Worldsoul Memory: Old Gods Forsaken
     PlayerChoiceXCurrency[831] = target;    --Worldsoul Memory: Ancient Explorers
+    PlayerChoiceXCurrency[833] = target;    --Worldsoul Memory: Descendants of Distant Waters
+    PlayerChoiceXCurrency[854] = target;    --Worldsoul Memory: Early Cartel Wars
+    PlayerChoiceXCurrency[855] = target;    --Worldsoul Memory: Kaja'mite Contact
 end
 
 
@@ -57,7 +55,7 @@ local function UpdateChoiceCurrency()
 
     local choiceID = f.choiceInfo.choiceID;
     local itemType, tokenInfo;
-
+    --print(choiceID)   --debug
     if PlayerChoiceXCurrency[choiceID] then
         itemType = 0;
         tokenInfo = PlayerChoiceXCurrency[choiceID];
@@ -68,7 +66,6 @@ local function UpdateChoiceCurrency()
             tokenInfo = GUIDXCurrency[creatureID];
         end
     end
-    
 
     if tokenInfo then
         if not TokenDisplay then

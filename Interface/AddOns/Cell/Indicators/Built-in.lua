@@ -1,7 +1,12 @@
 local _, Cell = ...
 local L = Cell.L
+---@type CellFuncs
 local F = Cell.funcs
+---@class CellIndicatorFuncs
 local I = Cell.iFuncs
+---@type CellAnimations
+local A = Cell.animations
+---@type PixelPerfectFuncs
 local P = Cell.pixelPerfectFuncs
 
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -30,18 +35,18 @@ function I.Cooldowns_UpdateSize(self, iconsShown)
         end
         if iconsShown ~= 0 then
             if self.orientation == "horizontal" then
-                self:_SetSize(self.width*iconsShown-P:Scale(iconsShown-1), self.height)
+                self:_SetSize(self.width*iconsShown-P.Scale(iconsShown-1), self.height)
             else
-                self:_SetSize(self.width, self.height*iconsShown-P:Scale(iconsShown-1))
+                self:_SetSize(self.width, self.height*iconsShown-P.Scale(iconsShown-1))
             end
         end
     else
         for i = 1, #self do
             if self[i]:IsShown() then
                 if self.orientation == "horizontal" then
-                    self:_SetSize(self.width*i-P:Scale(i-1), self.height)
+                    self:_SetSize(self.width*i-P.Scale(i-1), self.height)
                 else
-                    self:_SetSize(self.width, self.height*i-P:Scale(i-1))
+                    self:_SetSize(self.width, self.height*i-P.Scale(i-1))
                 end
             end
         end
@@ -57,18 +62,18 @@ function I.Cooldowns_UpdateSize_WithSpacing(self, iconsShown)
         end
         if iconsShown ~= 0 then
             if self.orientation == "horizontal" then
-                self:_SetSize(self.width * iconsShown + P:Scale(iconsShown - 1), self.height)
+                self:_SetSize(self.width * iconsShown + P.Scale(iconsShown - 1), self.height)
             else
-                self:_SetSize(self.width, self.height * iconsShown + P:Scale(iconsShown - 1))
+                self:_SetSize(self.width, self.height * iconsShown + P.Scale(iconsShown - 1))
             end
         end
     else
         for i = 1, #self do
             if self[i]:IsShown() then
                 if self.orientation == "horizontal" then
-                    self:_SetSize(self.width * i + P:Scale(i - 1), self.height)
+                    self:_SetSize(self.width * i + P.Scale(i - 1), self.height)
                 else
-                    self:_SetSize(self.width, self.height * i + P:Scale(i - 1))
+                    self:_SetSize(self.width, self.height * i + P.Scale(i - 1))
                 end
             end
         end
@@ -100,7 +105,7 @@ function I.Cooldowns_ShowAnimation(self, show)
 end
 
 function I.Cooldowns_UpdatePixelPerfect(self)
-    P:Repoint(self)
+    P.Repoint(self)
     for i = 1, #self do
         self[i]:UpdatePixelPerfect()
     end
@@ -136,11 +141,11 @@ function I.Cooldowns_SetOrientation(self, orientation)
     end
 
     for i = 1, #self do
-        P:ClearPoints(self[i])
+        P.ClearPoints(self[i])
         if i == 1 then
-            P:Point(self[i], point1)
+            P.Point(self[i], point1)
         else
-            P:Point(self[i], point1, self[i-1], point2, x, y)
+            P.Point(self[i], point1, self[i-1], point2, x, y)
         end
     end
 
@@ -177,11 +182,11 @@ function I.Cooldowns_SetOrientation_WithSpacing(self, orientation)
     end
 
     for i = 1, #self do
-        P:ClearPoints(self[i])
+        P.ClearPoints(self[i])
         if i == 1 then
-            P:Point(self[i], point1)
+            P.Point(self[i], point1)
         else
-            P:Point(self[i], point1, self[i-1], point2, x, y)
+            P.Point(self[i], point1, self[i-1], point2, x, y)
         end
     end
 
@@ -204,6 +209,7 @@ function I.CreateDefensiveCooldowns(parent)
     defensiveCooldowns.SetOrientation = I.Cooldowns_SetOrientation
     defensiveCooldowns.ShowDuration = I.Cooldowns_ShowDuration
     defensiveCooldowns.ShowAnimation = I.Cooldowns_ShowAnimation
+    defensiveCooldowns.SetupGlow = I.Glow_SetupForChildren
     defensiveCooldowns.UpdatePixelPerfect = I.Cooldowns_UpdatePixelPerfect
 
     for i = 1, 5 do
@@ -228,6 +234,7 @@ function I.CreateExternalCooldowns(parent)
     externalCooldowns.SetOrientation = I.Cooldowns_SetOrientation
     externalCooldowns.ShowDuration = I.Cooldowns_ShowDuration
     externalCooldowns.ShowAnimation = I.Cooldowns_ShowAnimation
+    externalCooldowns.SetupGlow = I.Glow_SetupForChildren
     externalCooldowns.UpdatePixelPerfect = I.Cooldowns_UpdatePixelPerfect
 
     for i = 1, 5 do
@@ -252,6 +259,7 @@ function I.CreateAllCooldowns(parent)
     allCooldowns.SetOrientation = I.Cooldowns_SetOrientation
     allCooldowns.ShowDuration = I.Cooldowns_ShowDuration
     allCooldowns.ShowAnimation = I.Cooldowns_ShowAnimation
+    allCooldowns.SetupGlow = I.Glow_SetupForChildren
     allCooldowns.UpdatePixelPerfect = I.Cooldowns_UpdatePixelPerfect
 
     for i = 1, 5 do
@@ -265,7 +273,7 @@ end
 -- CreateTankActiveMitigation
 -------------------------------------------------
 function I.CreateTankActiveMitigation(parent)
-    local bar = Cell:CreateStatusBar(parent:GetName().."TanckActiveMitigation", parent.widgets.indicatorFrame, 20, 6, 100)
+    local bar = Cell.CreateStatusBar(parent:GetName().."TanckActiveMitigation", parent.widgets.indicatorFrame, 20, 6, 100)
     parent.indicators.tankActiveMitigation = bar
     bar:Hide()
 
@@ -275,7 +283,7 @@ function I.CreateTankActiveMitigation(parent)
 
     local tex = bar:CreateTexture(nil, "BORDER", nil, -1)
     bar.tex = tex
-    tex:SetColorTexture(F:GetClassColor(Cell.vars.playerClass))
+    tex:SetColorTexture(F.GetClassColor(Cell.vars.playerClass))
     tex:SetPoint("TOPLEFT")
     tex:SetPoint("BOTTOMRIGHT", bar:GetStatusBarTexture(), "BOTTOMLEFT")
 
@@ -291,7 +299,7 @@ function I.CreateTankActiveMitigation(parent)
     function bar:SetCooldown(start, duration)
         if bar.cType == "class_color" then
             if not parent.states.class then parent.states.class = UnitClassBase(parent.states.unit) end --? why sometimes parent.states.class == nil ???
-            tex:SetColorTexture(F:GetClassColor(parent.states.class))
+            tex:SetColorTexture(F.GetClassColor(parent.states.class))
         else
             tex:SetColorTexture(bar.cTable[1], bar.cTable[2], bar.cTable[3])
         end
@@ -311,7 +319,7 @@ end
 -------------------------------------------------
 local function Debuffs_SetSize(self, normalSize, bigSize)
     for i = 1, 10 do
-        P:Size(self[i], normalSize[1], normalSize[2])
+        P.Size(self[i], normalSize[1], normalSize[2])
     end
     -- store sizes for SetCooldown
     self.normalSize = normalSize
@@ -339,9 +347,9 @@ local function Debuffs_UpdateSize(self, iconsShown)
         end
     end
     if self.orientation == "left-to-right" or self.orientation == "right-to-left"  then
-        self:_SetSize(P:Scale(size), P:Scale(self.normalSize[2]))
+        self:_SetSize(P.Scale(size), P.Scale(self.normalSize[2]))
     else
-        self:_SetSize(P:Scale(self.normalSize[1]), P:Scale(size))
+        self:_SetSize(P.Scale(self.normalSize[1]), P.Scale(size))
     end
 end
 
@@ -401,11 +409,11 @@ local function Debuffs_SetOrientation(self, orientation)
     end
 
     for i = 1, 10 do
-        P:ClearPoints(self[i])
+        P.ClearPoints(self[i])
         if i == 1 then
-            P:Point(self[i], point1)
+            P.Point(self[i], point1)
         else
-            P:Point(self[i], point1, self[i-1], point2)
+            P.Point(self[i], point1, self[i-1], point2)
         end
     end
 
@@ -418,7 +426,7 @@ local function Debuffs_ShowTooltip(debuffs, show)
     for i = 1, 10 do
         if show then
             debuffs[i]:SetScript("OnEnter", function(self)
-                F:ShowTooltips(debuffs.parent, "spell", debuffs.parent.states.displayedUnit, self.index, "HARMFUL")
+                F.ShowTooltips(debuffs.parent, "spell", debuffs.parent.states.displayedUnit, self.index, "HARMFUL")
             end)
 
             debuffs[i]:SetScript("OnLeave", function()
@@ -448,18 +456,18 @@ local function Debuffs_EnableBlacklistShortcut(debuffs, enabled)
         if enabled then
             debuffs[i]:SetScript("OnMouseUp", function(self, button, isInside)
                 if button == "RightButton" and isInside and IsLeftAltKeyDown() and IsLeftControlKeyDown()
-                    and self.spellId and not F:TContains(CellDB["debuffBlacklist"], self.spellId) then
+                    and self.spellId and not F.TContains(CellDB["debuffBlacklist"], self.spellId) then
                     -- print msg
-                    local name, icon = F:GetSpellInfo(self.spellId)
+                    local name, icon = F.GetSpellInfo(self.spellId)
                     if name and icon then
-                        F:Print(L["Added |T%d:0|t|cFFFF3030%s(%d)|r into debuff blacklist."]:format(icon, name, self.spellId))
+                        F.Print(L["Added |T%d:0|t|cFFFF3030%s(%d)|r into debuff blacklist."]:format(icon, name, self.spellId))
                     end
                     -- update db
                     tinsert(CellDB["debuffBlacklist"], self.spellId)
-                    Cell.vars.debuffBlacklist = F:ConvertTable(CellDB["debuffBlacklist"])
-                    Cell:Fire("UpdateIndicators", Cell.vars.currentLayout, "", "debuffBlacklist")
+                    Cell.vars.debuffBlacklist = F.ConvertTable(CellDB["debuffBlacklist"])
+                    Cell.Fire("UpdateIndicators", Cell.vars.currentLayout, "", "debuffBlacklist")
                     -- refresh
-                    F:ReloadIndicatorOptions(Cell.defaults.indicatorIndices.debuffs)
+                    F.ReloadIndicatorOptions(Cell.defaults.indicatorIndices.debuffs)
                 end
             end)
         else
@@ -506,9 +514,9 @@ function I.CreateDebuffs(parent)
         function frame:SetCooldown(start, duration, debuffType, texture, count, refreshing, isBigDebuff)
             frame:_SetCooldown(start, duration, debuffType, texture, count, refreshing)
             if isBigDebuff then
-                P:Size(frame, debuffs.bigSize[1], debuffs.bigSize[2])
+                P.Size(frame, debuffs.bigSize[1], debuffs.bigSize[2])
             else
-                P:Size(frame, debuffs.normalSize[1], debuffs.normalSize[2])
+                P.Size(frame, debuffs.normalSize[1], debuffs.normalSize[2])
             end
         end
     end
@@ -538,7 +546,6 @@ local function Dispels_UpdateSize(self, iconsShown)
 
     local width, height = self.width, self.height
     if iconsShown then -- SetDispels
-        iconsShown = iconsShown - 1
         if self.orientation == "horizontal"  then
             width = self.width + (iconsShown - 1) * floor(self.width / 2)
             height = self.height
@@ -556,6 +563,8 @@ local function Dispels_UpdateSize(self, iconsShown)
                     width = self.width
                     height = self.height + (i - 1) * floor(self.height / 2)
                 end
+            else
+                break
             end
         end
     end
@@ -579,10 +588,13 @@ local function Dispels_SetDispels(self, dispelTypes)
                 found = true
                 local r, g, b = I.GetDebuffTypeColor(dispelType)
                 if self.highlightType == "entire" then
+                    self.highlight:SetTexture(Cell.vars.whiteTexture)
                     self.highlight:SetVertexColor(r, g, b, 0.5)
                 elseif self.highlightType == "current" or self.highlightType == "current+" then
+                    self.highlight:SetTexture(Cell.vars.texture)
                     self.highlight:SetVertexColor(r, g, b, 1)
                 elseif self.highlightType == "gradient" or self.highlightType == "gradient-half" then
+                    self.highlight:SetTexture(Cell.vars.whiteTexture)
                     self.highlight:SetGradient("VERTICAL", CreateColor(r, g, b, 1), CreateColor(r, g, b, 0))
                 end
                 self.highlight:Show()
@@ -745,15 +757,15 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local function UpdateDebuffsForCurrentZone(instanceName)
     wipe(currentAreaDebuffs)
-    local iName = F:GetInstanceName()
+    local iName = F.GetInstanceName()
     if iName == "" then return end
 
     if iName == instanceName or instanceName == nil then
-        currentAreaDebuffs = F:GetDebuffList(iName)
-        F:Debug("|cffff77AARaidDebuffsChanged:|r", iName)
+        currentAreaDebuffs = F.GetDebuffList(iName)
+        F.Debug("|cffff77AARaidDebuffsChanged:|r", iName)
     end
 end
-Cell:RegisterCallback("RaidDebuffsChanged", "UpdateDebuffsForCurrentZone", UpdateDebuffsForCurrentZone)
+Cell.RegisterCallback("RaidDebuffsChanged", "UpdateDebuffsForCurrentZone", UpdateDebuffsForCurrentZone)
 eventFrame:SetScript("OnEvent", function()
     UpdateDebuffsForCurrentZone()
 end)
@@ -877,7 +889,7 @@ local function RaidDebuffs_ShowTooltip(raidDebuffs, show)
     for i = 1, 3 do
         if show then
             raidDebuffs[i]:SetScript("OnEnter", function()
-                F:ShowTooltips(raidDebuffs.parent, "spell", raidDebuffs.parent.states.displayedUnit, raidDebuffs[i].index, "HARMFUL")
+                F.ShowTooltips(raidDebuffs.parent, "spell", raidDebuffs.parent.states.displayedUnit, raidDebuffs[i].index, "HARMFUL")
             end)
             raidDebuffs[i]:SetScript("OnLeave", function()
                 GameTooltip:Hide()
@@ -1017,9 +1029,17 @@ end
 -------------------------------------------------
 local font_name = CreateFont("CELL_FONT_NAME")
 font_name:SetFont(GameFontNormal:GetFont(), 13, "")
+--! NOTE: VERY IMPORTANT, if not set, shadows will DISAPPER when wow window size changed
+font_name:SetTextColor(1, 1, 1, 1)
+font_name:SetShadowColor(0, 0, 0)
+font_name:SetShadowOffset(1, -1)
 
 local font_status = CreateFont("CELL_FONT_STATUS")
 font_status:SetFont(GameFontNormal:GetFont(), 11, "")
+--! NOTE: VERY IMPORTANT, if not set, shadows will DISAPPER when wow window size changed
+font_status:SetTextColor(1, 1, 1, 1)
+font_status:SetShadowColor(0, 0, 0)
+font_status:SetShadowOffset(1, -1)
 
 function I.CreateNameText(parent)
     local nameText = CreateFrame("Frame", parent:GetName().."NameText", parent.widgets.indicatorFrame)
@@ -1042,7 +1062,7 @@ function I.CreateNameText(parent)
     end)
 
     function nameText:SetFont(font, size, outline, shadow)
-        font = F:GetFont(font)
+        font = F.GetFont(font)
 
         local flags
         if outline == "None" then
@@ -1078,7 +1098,7 @@ function I.CreateNameText(parent)
     nameText._SetPoint = nameText.SetPoint
     function nameText:SetPoint(point, relativeTo, relativePoint, x, y)
         -- override relativeTo
-        nameText:_SetPoint(point, parent.widgets.healthBar, relativePoint, x, y)
+        nameText:_SetPoint(point, relativeTo, relativePoint, x, y)
 
         -- update name
         nameText.name:ClearAllPoints()
@@ -1108,20 +1128,20 @@ function I.CreateNameText(parent)
         local name
 
         -- supporter rainbow
-        if nameText.name.rainbow then
-            nameText.name.updater:SetScript("OnUpdate", nil)
-            if nameText.name.timer then
-                nameText.name.timer:Cancel()
-                nameText.name.timer = nil
-            end
-        end
+        -- if nameText.name.rainbow then
+        --     nameText.name.updater:SetScript("OnUpdate", nil)
+        --     if nameText.name.timer then
+        --         nameText.name.timer:Cancel()
+        --         nameText.name.timer = nil
+        --     end
+        -- end
 
         -- only check nickname for players
         if parent.states.isPlayer then
             if CELL_NICKTAG_ENABLED and Cell.NickTag then
                 name = Cell.NickTag:GetNickname(parent.states.name, nil, true)
             end
-            name = name or F:GetNickname(parent.states.name, parent.states.fullName)
+            name = name or F.GetNickname(parent.states.name, parent.states.fullName)
         else
             name = parent.states.name
         end
@@ -1130,15 +1150,15 @@ function I.CreateNameText(parent)
             name = LibTranslit:Transliterate(name)
         end
 
-        F:UpdateTextWidth(nameText.name, name, nameText.width, parent.widgets.healthBar)
+        F.UpdateTextWidth(nameText.name, name, nameText.width, parent.widgets.healthBar)
 
-        if CELL_SHOW_RAID_PET_OWNER_NAME and parent.isRaidPet then
-            local owner = F:GetPlayerUnit(parent.states.unit)
+        if CELL_SHOW_GROUP_PET_OWNER_NAME and parent.isGroupPet then
+            local owner = F.GetPlayerUnit(parent.states.unit)
             owner = UnitName(owner)
-            if CELL_SHOW_RAID_PET_OWNER_NAME == "VEHICLE" then
-                F:UpdateTextWidth(nameText.vehicle, owner, nameText.width, parent.widgets.healthBar)
-            elseif CELL_SHOW_RAID_PET_OWNER_NAME == "NAME" then
-                F:UpdateTextWidth(nameText.name, owner, nameText.width, parent.widgets.healthBar)
+            if CELL_SHOW_GROUP_PET_OWNER_NAME == "VEHICLE" then
+                F.UpdateTextWidth(nameText.vehicle, owner, nameText.width, parent.widgets.healthBar)
+            elseif CELL_SHOW_GROUP_PET_OWNER_NAME == "NAME" then
+                F.UpdateTextWidth(nameText.name, owner, nameText.width, parent.widgets.healthBar)
             end
         end
 
@@ -1163,7 +1183,7 @@ function I.CreateNameText(parent)
     end
 
     function nameText:UpdateVehicleName()
-        F:UpdateTextWidth(nameText.vehicle, nameText.isPreview and L["vehicle name"] or UnitName(parent.states.displayedUnit), nameText.width, parent.widgets.healthBar)
+        F.UpdateTextWidth(nameText.vehicle, nameText.isPreview and L["vehicle name"] or UnitName(parent.states.displayedUnit), nameText.width, parent.widgets.healthBar)
     end
 
     function nameText:UpdateVehicleNamePosition(pTable)
@@ -1197,13 +1217,13 @@ function I.CreateNameText(parent)
         nameText:UpdateName()
 
         if parent.states.inVehicle or nameText.isPreview then
-            F:UpdateTextWidth(nameText.vehicle, nameText.isPreview and L["Vehicle Name"] or UnitName(parent.states.displayedUnit), width, parent.widgets.healthBar)
+            F.UpdateTextWidth(nameText.vehicle, nameText.isPreview and L["Vehicle Name"] or UnitName(parent.states.displayedUnit), width, parent.widgets.healthBar)
         end
     end
 
     function nameText:UpdatePreviewColor(color)
         if color[1] == "class_color" then
-            nameText.name:SetTextColor(F:GetClassColor(Cell.vars.playerClass))
+            nameText.name:SetTextColor(F.GetClassColor(Cell.vars.playerClass))
         else
             nameText.name:SetTextColor(unpack(color[2]))
         end
@@ -1227,26 +1247,13 @@ function I.CreateNameText(parent)
             end
         end
     end)
-
-    function nameText:UpdatePixelPerfect()
-        if nameText.shadow then
-            -- NOTE: remove then add shadows back
-            nameText.name:SetShadowOffset(0, 0)
-            nameText.vehicle:SetShadowOffset(0, 0)
-
-            nameText.name:SetShadowOffset(1, -1)
-            nameText.name:SetShadowColor(0, 0, 0, 1)
-            nameText.vehicle:SetShadowOffset(1, -1)
-            nameText.vehicle:SetShadowColor(0, 0, 0, 1)
-        end
-    end
 end
 
 -------------------------------------------------
 -- status text
 -------------------------------------------------
 local function StatusText_SetFont(self, font, size, outline, shadow)
-    font = F:GetFont(font)
+    font = F.GetFont(font)
 
     local flags
     if outline == "None" then
@@ -1273,7 +1280,7 @@ local function StatusText_SetFont(self, font, size, outline, shadow)
     end
     self.shadow = shadow
 
-    self:SetHeight(self.text:GetHeight()+P:Scale(1)*2)
+    self:SetHeight(self.text:GetHeight()+P.Scale(1)*2)
 end
 
 local function StatusText_GetStatus(self)
@@ -1287,7 +1294,7 @@ local function StatusText_SetStatus(self, status)
         self.text:SetText(L[status])
         self.text:SetTextColor(unpack(self.colors[status]))
         self.timer:SetTextColor(unpack(self.colors[status]))
-        self:SetHeight(self.text:GetHeight()+P:Scale(1)*2)
+        self:SetHeight(self.text:GetHeight()+P.Scale(1)*2)
     else
         self:Hide()
     end
@@ -1313,7 +1320,7 @@ local function StatusText_SetPosition(self, point, yOffset, justify)
     self:ClearAllPoints()
     self:SetPoint("LEFT", self.parent.widgets.healthBar)
     self:SetPoint("RIGHT", self.parent.widgets.healthBar)
-    self:SetPoint(point, self.parent.widgets.healthBar, 0, P:Scale(yOffset))
+    self:SetPoint(point, self.parent.widgets.healthBar, 0, P.Scale(yOffset))
 
     self.text:ClearAllPoints()
     self.timer:ClearAllPoints()
@@ -1337,7 +1344,7 @@ local function StatusText_SetPosition(self, point, yOffset, justify)
         self.bg:SetGradient("HORIZONTAL", CreateColor(0, 0, 0, 0), CreateColor(0, 0, 0, 0.777))
     end
 
-    self:SetHeight(self.text:GetHeight()+P:Scale(1)*2)
+    self:SetHeight(self.text:GetHeight()+P.Scale(1)*2)
 end
 
 local startTimeCache = {}
@@ -1356,7 +1363,7 @@ local function StatusText_ShowTimer(self)
             self.parent.states.guid = UnitGUID(self.parent.states.unit)
         end
         if self.parent.states.guid and startTimeCache[self.parent.states.guid] then
-            self.timer:SetFormattedText(F:FormatTime(GetTime() - startTimeCache[self.parent.states.guid]))
+            self.timer:SetFormattedText(F.FormatTime(GetTime() - startTimeCache[self.parent.states.guid]))
         else
             self.timer:SetText("")
         end
@@ -1369,19 +1376,6 @@ local function StatusText_HideTimer(self, reset)
     if reset then
         if self.ticker then self.ticker:Cancel() end
         startTimeCache[self.parent.states.guid] = nil
-    end
-end
-
-local function StatusText_UpdatePixelPerfect(self)
-    if self.shadow then
-        -- NOTE: remove then add shadows back
-        self.text:SetShadowOffset(0, 0)
-        self.timer:SetShadowOffset(0, 0)
-
-        self.text:SetShadowOffset(1, -1)
-        self.text:SetShadowColor(0, 0, 0, 1)
-        self.timer:SetShadowOffset(1, -1)
-        self.timer:SetShadowColor(0, 0, 0, 1)
     end
 end
 
@@ -1413,104 +1407,139 @@ function I.CreateStatusText(parent)
     statusText.ShowBackground = StatusText_ShowBackground
     statusText.ShowTimer = StatusText_ShowTimer
     statusText.HideTimer = StatusText_HideTimer
-    statusText.UpdatePixelPerfect = StatusText_UpdatePixelPerfect
 end
 
 -------------------------------------------------
 -- health text
 -------------------------------------------------
-local function SetHealth_Percentage(self, current, max, totalAbsorbs)
-    self.text:SetFormattedText("%d%%", current/max*100)
-    self:SetWidth(self.text:GetStringWidth())
-end
+local sub = string.sub
+local gsub = string.gsub
+local find = string.find
+local format = string.format
+local tinsert = table.insert
 
-local function SetHealth_Percentage_Absorbs(self, current, max, totalAbsorbs)
-    if totalAbsorbs == 0 then
-        self.text:SetFormattedText("%d%%", current/max*100)
-    else
-        self.text:SetFormattedText("%d%%+%d%%", current/max*100, totalAbsorbs/max*100)
+local formatter = {
+    ["none"] = function()
+        return ""
+    end,
+
+    -- health
+    ["health"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(health)
+    end,
+    ["health_short"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(F.FormatNumber(health))
+    end,
+    ["health_percent"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(F.Round(health / maxHealth * 100))
+    end,
+    ["deficit"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(health - maxHealth)
+    end,
+    ["deficit_short"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(F.FormatNumber(health - maxHealth))
+    end,
+    ["deficit_percent"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) then return "" end
+        return pattern:format(F.Round((health - maxHealth) / maxHealth * 100))
+    end,
+
+    -- effective health
+    ["effective"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) and absorbs == 0 and healAbsorbs == 0 then return "" end
+        return pattern:format(health + absorbs - healAbsorbs)
+    end,
+    ["effective_short"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) and absorbs == 0 and healAbsorbs == 0 then return "" end
+        return pattern:format(F.FormatNumber(health + absorbs - healAbsorbs))
+    end,
+    ["effective_percent"] = function(pattern, hideIfEmptyOrFull, health, maxHealth, absorbs, healAbsorbs)
+        if hideIfEmptyOrFull and (health == 0 or health == maxHealth) and absorbs == 0 and healAbsorbs == 0 then return "" end
+        return pattern:format(F.Round((health + absorbs - healAbsorbs) / maxHealth * 100))
+    end,
+
+    -- shields
+    ["shields"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if absorbs == 0 then return "" end
+        return pattern:format(absorbs)
+    end,
+    ["shields_short"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if absorbs == 0 then return "" end
+        return pattern:format(F.FormatNumber(absorbs))
+    end,
+    ["shields_percent"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if absorbs == 0 then return "" end
+        return pattern:format(F.Round(absorbs / maxHealth * 100))
+    end,
+
+    -- heal absorbs
+    ["healabsorbs"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if healAbsorbs == 0 then return "" end
+        return pattern:format(healAbsorbs)
+    end,
+    ["healabsorbs_short"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if healAbsorbs == 0 then return "" end
+        return pattern:format(F.FormatNumber(healAbsorbs))
+    end,
+    ["healabsorbs_percent"] = function(pattern, health, maxHealth, absorbs, healAbsorbs)
+        if healAbsorbs == 0 then return "" end
+        return pattern:format(F.Round(healAbsorbs / maxHealth * 100))
+    end,
+}
+
+local function BuildPattern(config)
+    if config.format == "none" then
+        return ""
     end
-    self:SetWidth(self.text:GetStringWidth())
-end
 
-local function SetHealth_Percentage_Absorbs_Merged(self, current, max, totalAbsorbs)
-    self.text:SetFormattedText("%d%%", (current+totalAbsorbs)/max*100)
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Percentage_Deficit(self, current, max, totalAbsorbs)
-    self.text:SetFormattedText("%d%%", (current-max)/max*100)
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Number(self, current, max, totalAbsorbs)
-    self.text:SetText(current)
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Number_Short(self, current, max, totalAbsorbs)
-    self.text:SetText(F:FormatNumber(current))
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Number_Absorbs_Short(self, current, max, totalAbsorbs)
-    if totalAbsorbs == 0 then
-        self.text:SetText(F:FormatNumber(current))
+    local prefix
+    if config.delimiter == nil then
+        prefix = ""
     else
-        self.text:SetFormattedText("%s+%s", F:FormatNumber(current), F:FormatNumber(totalAbsorbs))
+        prefix = "|cffababab" .. config.delimiter .. "|r"
     end
-    self:SetWidth(self.text:GetStringWidth())
-end
 
-local function SetHealth_Number_Absorbs_Merged_Short(self, current, max, totalAbsorbs)
-    self.text:SetText(F:FormatNumber(current+totalAbsorbs))
-    self:SetWidth(self.text:GetStringWidth())
-end
+    local suffix = config.format:find("percent$") and "%%" or ""
 
-local function SetHealth_Number_Deficit(self, current, max, totalAbsorbs)
-    self.text:SetText(current-max)
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Number_Deficit_Short(self, current, max, totalAbsorbs)
-    self.text:SetText(F:FormatNumber(current-max))
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Current_Short_Percentage(self, current, max, totalAbsorbs)
-    self.text:SetFormattedText("%s %d%%", F:FormatNumber(current), (current/max*100))
-    self:SetWidth(self.text:GetStringWidth())
-end
-
-local function SetHealth_Absorbs_Only(self, current, max, totalAbsorbs)
-    if totalAbsorbs == 0 then
-        self.text:SetText("")
+    if config.color[1] == "class_color" then
+        return prefix .. "%s" .. suffix
     else
-        self.text:SetText(totalAbsorbs)
+        return prefix .. "|cff" .. F.ConvertRGBToHEX(F.ConvertRGB_256(unpack(config.color[2]))) .. "%s" .. suffix .. "|r"
     end
-    self:SetWidth(self.text:GetStringWidth())
 end
 
-local function SetHealth_Absorbs_Only_Short(self, current, max, totalAbsorbs)
-    if totalAbsorbs == 0 then
-        self.text:SetText("")
-    else
-        self.text:SetText(F:FormatNumber(totalAbsorbs))
-    end
-    self:SetWidth(self.text:GetStringWidth())
+local function HealthText_SetFormat(self, format)
+    self.GetHealth1 = formatter[format.health1.format:gsub("_no_sign$", "")]
+    self.GetHealth2 = formatter[format.health2.format:gsub("_no_sign$", "")]
+    self.GetAbsorbs = formatter[format.shields.format:gsub("_no_sign$", "")]
+    self.GetHealAbsorbs = formatter[format.healAbsorbs.format:gsub("_no_sign$", "")]
+
+    self.health1 = BuildPattern(format.health1)
+    self.health1_hideIfEmptyOrFull = format.health1.hideIfEmptyOrFull
+    self.health2 = BuildPattern(format.health2)
+    self.health2_hideIfEmptyOrFull = format.health2.hideIfEmptyOrFull
+    self.shields = BuildPattern(format.shields)
+    self.healAbsorbs = BuildPattern(format.healAbsorbs)
 end
 
-local function SetHealth_Absorbs_Only_Percentage(self, current, max, totalAbsorbs)
-    if totalAbsorbs == 0 then
-        self.text:SetText("")
-    else
-        self.text:SetFormattedText("%d%%", totalAbsorbs/max*100)
-    end
+local function HealthText_SetValue(self, health, maxHealth, shields, healAbsorbs)
+    maxHealth = maxHealth == 0 and 1 or maxHealth
+
+    self.text:SetFormattedText("%s%s%s%s",
+        self.GetHealth1(self.health1, self.health1_hideIfEmptyOrFull, health, maxHealth, shields, healAbsorbs),
+        self.GetHealth2(self.health2, self.health2_hideIfEmptyOrFull, health, maxHealth, shields, healAbsorbs),
+        self.GetAbsorbs(self.shields, health, maxHealth, shields, healAbsorbs),
+        self.GetHealAbsorbs(self.healAbsorbs, health, maxHealth, shields, healAbsorbs))
     self:SetWidth(self.text:GetStringWidth())
 end
 
 local function HealthText_SetFont(self, font, size, outline, shadow)
-    font = F:GetFont(font)
+    font = F.GetFont(font)
 
     local flags
     if outline == "None" then
@@ -1544,38 +1573,7 @@ local function HealthText_SetPoint(self, point, relativeTo, relativePoint, x, y)
         self.text:SetPoint("CENTER")
     end
     self:_SetPoint(point, relativeTo, relativePoint, x, y)
-end
-
-local function HealthText_SetFormat(self, format)
-    if format == "percentage" then
-        self.SetValue = SetHealth_Percentage
-    elseif format == "percentage-absorbs" then
-        self.SetValue = SetHealth_Percentage_Absorbs
-    elseif format == "percentage-absorbs-merged" then
-        self.SetValue = SetHealth_Percentage_Absorbs_Merged
-    elseif format == "percentage-deficit" then
-        self.SetValue = SetHealth_Percentage_Deficit
-    elseif format == "number" then
-        self.SetValue = SetHealth_Number
-    elseif format == "number-short" then
-        self.SetValue = SetHealth_Number_Short
-    elseif format == "number-absorbs-short" then
-        self.SetValue = SetHealth_Number_Absorbs_Short
-    elseif format == "number-absorbs-merged-short" then
-        self.SetValue = SetHealth_Number_Absorbs_Merged_Short
-    elseif format == "number-deficit" then
-        self.SetValue = SetHealth_Number_Deficit
-    elseif format == "number-deficit-short" then
-        self.SetValue = SetHealth_Number_Deficit_Short
-    elseif format == "current-short-percentage" then
-        self.SetValue = SetHealth_Current_Short_Percentage
-    elseif format == "absorbs-only" then
-        self.SetValue = SetHealth_Absorbs_Only
-    elseif format == "absorbs-only-short" then
-        self.SetValue = SetHealth_Absorbs_Only_Short
-    elseif format == "absorbs-only-percentage" then
-        self.SetValue = SetHealth_Absorbs_Only_Percentage
-    end
+    I.JustifyText(self.text, point)
 end
 
 local function HealthText_SetColor(self, r, g, b)
@@ -1583,11 +1581,11 @@ local function HealthText_SetColor(self, r, g, b)
 end
 
 local function HealthText_UpdatePreviewColor(self, color)
-    if color[1] == "class_color" then
-        self.text:SetTextColor(F:GetClassColor(Cell.vars.playerClass))
-    else
-        self.text:SetTextColor(unpack(color[2]))
-    end
+    -- if color[1] == "class_color" then
+        self.text:SetTextColor(F.GetClassColor(Cell.vars.playerClass))
+    -- else
+    --     self.text:SetTextColor(unpack(color[2]))
+    -- end
 end
 
 function I.CreateHealthText(parent)
@@ -1598,36 +1596,54 @@ function I.CreateHealthText(parent)
     local text = healthText:CreateFontString(nil, "OVERLAY", "CELL_FONT_STATUS")
     healthText.text = text
 
+    healthText.GetHealth = formatter.none
+    healthText.GetShields = formatter.none
+    healthText.GetHealAbsorbs = formatter.none
+
     healthText.SetFont = HealthText_SetFont
     healthText._SetPoint = healthText.SetPoint
     healthText.SetPoint = HealthText_SetPoint
     healthText.SetFormat = HealthText_SetFormat
+    healthText.SetValue = HealthText_SetValue
     healthText.SetColor = HealthText_SetColor
     healthText.UpdatePreviewColor = HealthText_UpdatePreviewColor
-
-    function healthText:SetValue() end
 end
 
 -------------------------------------------------
 -- power text
 -------------------------------------------------
-local function SetPower_Percentage(self, current, max, totalAbsorbs)
-    self.text:SetFormattedText("%d%%", current/max*100)
-    self:SetWidth(self.text:GetStringWidth())
+local function SetPower_Percentage(self, current, max)
+    if self.hideIfEmptyOrFull and (current == 0 or current == max) then
+        self:Hide()
+    else
+        self.text:SetFormattedText("%d%%", current/max*100)
+        self:SetWidth(self.text:GetStringWidth())
+        self:Show()
+    end
 end
 
-local function SetPower_Number(self, current, max, totalAbsorbs)
-    self.text:SetText(current)
-    self:SetWidth(self.text:GetStringWidth())
+local function SetPower_Number(self, current, max)
+    if self.hideIfEmptyOrFull and (current == 0 or current == max) then
+        self:Hide()
+    else
+        self.text:SetText(current)
+        self:SetWidth(self.text:GetStringWidth())
+        self:Show()
+    end
 end
 
-local function SetPower_Number_Short(self, current, max, totalAbsorbs)
-    self.text:SetText(F:FormatNumber(current))
-    self:SetWidth(self.text:GetStringWidth())
+local function SetPower_Number_Short(self, current, max)
+    if self.hideIfEmptyOrFull and (current == 0 or current == max) then
+        self:Hide()
+    else
+        self.text:SetText(F.FormatNumber(current))
+        self:SetWidth(self.text:GetStringWidth())
+        self:Show()
+    end
 end
 
 local function PowerText_SetFont(self, font, size, outline, shadow)
-    font = F:GetFont(font)
+    font = F.GetFont(font)
 
     local flags
     if outline == "None" then
@@ -1677,12 +1693,16 @@ local function PowerText_SetColor(self, r, g, b)
     self.text:SetTextColor(r, g, b)
 end
 
+local function PowerText_SetHideIfEmptyOrFull(self, hideIfEmptyOrFull)
+    self.hideIfEmptyOrFull = hideIfEmptyOrFull
+end
+
 local function PowerText_UpdatePreviewColor(self, color)
     local r, g, b
     if color[1] == "power_color" then
-        r, g, b = F:GetPowerColor("player")
+        r, g, b = F.GetPowerColor("player")
     elseif color[1] == "class_color" then
-        r, g, b = F:GetClassColor(Cell.vars.playerClass)
+        r, g, b = F.GetClassColor(Cell.vars.playerClass)
     else
         r, g, b = unpack(color[2])
     end
@@ -1702,6 +1722,7 @@ function I.CreatePowerText(parent)
     powerText.SetPoint = PowerText_SetPoint
     powerText.SetFormat = PowerText_SetFormat
     powerText.SetColor = PowerText_SetColor
+    powerText.SetHideIfEmptyOrFull = PowerText_SetHideIfEmptyOrFull
     powerText.UpdatePreviewColor = PowerText_UpdatePreviewColor
 
     function powerText:SetValue() end
@@ -1787,8 +1808,8 @@ local function RoleIcon_HideDamager(self, hide)
 end
 
 local function RoleIcon_UpdatePixelPerfect(self)
-    P:Resize(self)
-    P:Repoint(self)
+    P.Resize(self)
+    P.Repoint(self)
 end
 
 function I.CreateRoleIcon(parent)
@@ -1827,8 +1848,8 @@ function I.CreatePartyAssignmentIcon(parent)
     end
 
     function partyAssignmentIcon:UpdatePixelPerfect()
-        P:Resize(partyAssignmentIcon)
-        P:Repoint(partyAssignmentIcon)
+        P.Resize(partyAssignmentIcon)
+        P.Repoint(partyAssignmentIcon)
     end
 end
 
@@ -1856,8 +1877,8 @@ function I.CreateLeaderIcon(parent)
     end
 
     function leaderIcon:UpdatePixelPerfect()
-        P:Resize(leaderIcon)
-        P:Repoint(leaderIcon)
+        P.Resize(leaderIcon)
+        P.Repoint(leaderIcon)
     end
 end
 
@@ -1903,8 +1924,8 @@ end
 function I.CreateAggroBorder(parent)
     local aggroBorder = CreateFrame("Frame", parent:GetName().."AggroBorder", parent, "BackdropTemplate")
     parent.indicators.aggroBorder = aggroBorder
-    P:Point(aggroBorder, "TOPLEFT", parent, "TOPLEFT", 1, -1)
-    P:Point(aggroBorder, "BOTTOMRIGHT", parent, "BOTTOMRIGHT", -1, 1)
+    P.Point(aggroBorder, "TOPLEFT", parent, "TOPLEFT", 1, -1)
+    P.Point(aggroBorder, "BOTTOMRIGHT", parent, "BOTTOMRIGHT", -1, 1)
     aggroBorder:Hide()
 
     local top = aggroBorder:CreateTexture(nil, "BORDER")
@@ -1953,7 +1974,7 @@ function I.CreateAggroBorder(parent)
     end
 
     function aggroBorder:UpdatePixelPerfect()
-        P:Repoint(aggroBorder)
+        P.Repoint(aggroBorder)
     end
 end
 
@@ -1965,7 +1986,7 @@ function I.CreateAggroBlink(parent)
     parent.indicators.aggroBlink = aggroBlink
     -- aggroBlink:SetPoint("TOPLEFT")
     -- aggroBlink:SetSize(10, 10)
-    aggroBlink:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P:Scale(1)})
+    aggroBlink:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
     aggroBlink:SetBackdropColor(1, 0, 0, 1)
     aggroBlink:SetBackdropBorderColor(0, 0, 0, 1)
     aggroBlink:Hide()
@@ -1994,9 +2015,9 @@ function I.CreateAggroBlink(parent)
     end
 
     function aggroBlink:UpdatePixelPerfect()
-        P:Resize(aggroBlink)
-        P:Repoint(aggroBlink)
-        aggroBlink:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P:Scale(1)})
+        P.Resize(aggroBlink)
+        P.Repoint(aggroBlink)
+        aggroBlink:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
         aggroBlink:SetBackdropColor(1, 0, 0, 1)
         aggroBlink:SetBackdropBorderColor(0, 0, 0, 1)
     end
@@ -2013,7 +2034,7 @@ local function ShieldBar_SetHorizontalValue(bar, percent)
     else
         barWidth = maxWidth * percent
     end
-    bar:SetWidth(barWidth)
+    bar:SetWidth(max(barWidth, 3))
 end
 
 local function ShieldBar_SetVerticalValue(bar, percent)
@@ -2024,7 +2045,7 @@ local function ShieldBar_SetVerticalValue(bar, percent)
     else
         barHeight = maxHeight * percent
     end
-    bar:SetHeight(barHeight)
+    bar:SetHeight(max(barHeight, 3))
 end
 
 local function ShieldBar_SetPoint(bar, point, anchorTo, anchorPoint, x, y)
@@ -2037,8 +2058,8 @@ local function ShieldBar_SetPoint(bar, point, anchorTo, anchorPoint, x, y)
     --     bar:_SetPoint("BOTTOMLEFT", b.widgets.healthBar)
     --     bar.SetValue = ShieldBar_SetVerticalValue
     if point == "HEALTH_BAR" then
-        bar:_SetPoint("TOPLEFT", bar.parentHealthBar, P:Scale(-1), P:Scale(1))
-        bar:_SetPoint("BOTTOMLEFT", bar.parentHealthBar, P:Scale(-1), P:Scale(-1))
+        bar:_SetPoint("TOPLEFT", bar.parentHealthBar, P.Scale(-1), P.Scale(1))
+        bar:_SetPoint("BOTTOMLEFT", bar.parentHealthBar, P.Scale(-1), P.Scale(-1))
         bar.SetValue = ShieldBar_SetHorizontalValue
     else
         bar:_SetPoint(point, anchorTo, anchorPoint, x, y)
@@ -2051,7 +2072,7 @@ function I.CreateShieldBar(parent)
     parent.indicators.shieldBar = shieldBar
     -- shieldBar:SetSize(4, 4)
     shieldBar:Hide()
-    shieldBar:SetBackdrop({edgeFile=Cell.vars.whiteTexture, edgeSize=P:Scale(1)})
+    shieldBar:SetBackdrop({edgeFile=Cell.vars.whiteTexture, edgeSize=P.Scale(1)})
     shieldBar:SetBackdropBorderColor(0, 0, 0, 1)
 
     local tex = shieldBar:CreateTexture(nil, "BORDER", nil, -7)
@@ -2068,9 +2089,9 @@ function I.CreateShieldBar(parent)
     end
 
     function shieldBar:UpdatePixelPerfect()
-        P:Resize(shieldBar)
-        P:Repoint(shieldBar)
-        P:Reborder(shieldBar)
+        P.Resize(shieldBar)
+        P.Repoint(shieldBar)
+        P.Reborder(shieldBar)
     end
 end
 
@@ -2086,7 +2107,7 @@ function I.CreateHealthThresholds(parent)
 
     function healthThresholds:SetThickness(thickness)
         healthThresholds.thickness = thickness
-        P:Size(healthThresholds.tex, thickness, thickness)
+        P.Size(healthThresholds.tex, thickness, thickness)
     end
 
     function healthThresholds:SetOrientation(orientation)
@@ -2128,7 +2149,7 @@ function I.CreateHealthThresholds(parent)
         function healthThresholds:UpdateThresholdsPreview()
             for i, t in ipairs(Cell.vars.healthThresholds) do
                 healthThresholds[i] = healthThresholds[i] or healthThresholds:CreateTexture(nil, "ARTWORK")
-                P:Size(healthThresholds[i], healthThresholds.thickness, healthThresholds.thickness)
+                P.Size(healthThresholds[i], healthThresholds.thickness, healthThresholds.thickness)
                 healthThresholds[i]:SetColorTexture(unpack(t[2]))
                 -- healthThresholds[i]:SetBlendMode("ADD")
 
@@ -2157,103 +2178,7 @@ end
 -- sort and save
 function I.UpdateHealthThresholds()
     Cell.vars.healthThresholds = Cell.vars.currentLayoutTable.indicators[Cell.defaults.indicatorIndices.healthThresholds].thresholds
-    F:Sort(Cell.vars.healthThresholds, 1, "ascending")
-end
-
--------------------------------------------------
--- missing buffs
--------------------------------------------------
-function I.CreateMissingBuffs(parent)
-    local missingBuffs = CreateFrame("Frame", parent:GetName().."MissingBuffParent", parent.widgets.indicatorFrame)
-    parent.indicators.missingBuffs = missingBuffs
-    missingBuffs:Hide()
-
-    missingBuffs._SetSize = missingBuffs.SetSize
-    missingBuffs.SetSize = I.Cooldowns_SetSize
-    missingBuffs.UpdateSize = I.Cooldowns_UpdateSize
-    missingBuffs.SetOrientation = I.Cooldowns_SetOrientation
-    missingBuffs.UpdatePixelPerfect = I.Cooldowns_UpdatePixelPerfect
-
-    for i = 1, 5 do
-        local name = parent:GetName().."MissingBuff"..i
-        local frame = I.CreateAura_BarIcon(name, missingBuffs)
-        tinsert(missingBuffs, frame)
-        frame:HookScript("OnSizeChanged", function()
-            if frame.glow then
-                LCG.ButtonGlow_Start(frame)
-            else
-                LCG.ButtonGlow_Stop(frame)
-            end
-        end)
-    end
-end
-
-local missingBuffsEnabled, missingBuffsNum, missingBuffsFilters = false, 0, {}
-function I.EnableMissingBuffs(enabled)
-    missingBuffsEnabled = enabled
-
-    if enabled and CellDB["tools"]["buffTracker"][1] then
-        CellBuffTrackerFrame:GROUP_ROSTER_UPDATE(true)
-    end
-end
-
-function I.UpdateMissingBuffsNum(num, noUpdate)
-    missingBuffsNum = num
-
-    if not noUpdate and missingBuffsEnabled and CellDB["tools"]["buffTracker"][1] then
-        CellBuffTrackerFrame:GROUP_ROSTER_UPDATE(true)
-    end
-end
-
-function I.UpdateMissingBuffsFilters(filters, noUpdate)
-    if filters then missingBuffsFilters = filters end
-
-    if not noUpdate and missingBuffsEnabled and CellDB["tools"]["buffTracker"][1] then
-        CellBuffTrackerFrame:GROUP_ROSTER_UPDATE(true)
-    end
-end
-
-local function HideMissingBuffs(b)
-    for i = 1, 5 do
-        b.indicators.missingBuffs[i]:Hide()
-    end
-end
-
-local missingBuffsCounter = {}
-function I.HideMissingBuffs(unit, force)
-    if not (missingBuffsEnabled or force) then return end
-
-    missingBuffsCounter[unit] = nil
-
-    F:HandleUnitButton("unit", unit, HideMissingBuffs)
-end
-
-local function ShowMissingBuff(b, index, icon, buffByMe)
-    b.indicators.missingBuffs:UpdateSize(index)
-
-    local f = b.indicators.missingBuffs[index]
-
-    f:SetCooldown(0, 0, nil, icon, 0)
-
-    if buffByMe then
-        LCG.ButtonGlow_Start(f)
-        f.glow = true
-    else
-        LCG.ButtonGlow_Stop(f)
-        f.glow = nil
-    end
-end
-
-function I.ShowMissingBuff(unit, buff, icon, buffByMe)
-    if not missingBuffsEnabled then return end
-    if missingBuffsFilters["buffByMe"] and not buffByMe then return end
-    if not missingBuffsFilters[buff] then return end
-
-    missingBuffsCounter[unit] = (missingBuffsCounter[unit] or 0) + 1
-
-    if missingBuffsCounter[unit] > missingBuffsNum then return end
-
-    F:HandleUnitButton("unit", unit, ShowMissingBuff, missingBuffsCounter[unit], icon, buffByMe)
+    F.Sort(Cell.vars.healthThresholds, 1, "ascending")
 end
 
 -------------------------------------------------
@@ -2286,8 +2211,8 @@ function I.CreatePowerWordShield(parent)
     local shieldCooldown = CreateFrame("Cooldown", parent:GetName().."PowerWordShieldDuration", powerWordShield)
     shieldCooldown:SetFrameLevel(shieldAmount:GetFrameLevel() + 1)
     -- shieldCooldown:SetPoint("CENTER")
-    shieldCooldown:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
-    shieldCooldown:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
+    shieldCooldown:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
+    shieldCooldown:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
     shieldCooldown:SetSwipeTexture([[Interface\AddOns\Cell\Media\Shapes\circle_filled.tga]])
     shieldCooldown:SetSwipeColor(0, 1, 0)
     shieldCooldown.noCooldownCount = true -- disable omnicc
@@ -2301,8 +2226,8 @@ function I.CreatePowerWordShield(parent)
     local weakendedSoulCooldown = CreateFrame("Cooldown", parent:GetName().."WeakenedSoulDuration", powerWordShield)
     weakendedSoulCooldown:SetFrameLevel(shieldAmount:GetFrameLevel() + 2)
     -- weakendedSoulCooldown:SetPoint("CENTER")
-    weakendedSoulCooldown:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
-    weakendedSoulCooldown:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
+    weakendedSoulCooldown:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
+    weakendedSoulCooldown:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
     weakendedSoulCooldown:SetSwipeTexture([[Interface\AddOns\Cell\Media\Shapes\circle_filled.tga]])
     weakendedSoulCooldown:SetSwipeColor(1, 0, 0)
     weakendedSoulCooldown.noCooldownCount = true -- disable omnicc
@@ -2320,15 +2245,16 @@ function I.CreatePowerWordShield(parent)
 
     function powerWordShield:UpdatePixelPerfect()
         local size = powerWordShield.size
+        if not size then return end
 
-        powerWordShield:_SetSize(P:Scale(size), P:Scale(size))
-        innerBG:SetSize(P:Scale(ceil(size/2)+2), P:Scale(ceil(size/2)+2))
+        powerWordShield:_SetSize(P.Scale(size), P.Scale(size))
+        innerBG:SetSize(P.Scale(ceil(size/2)+2), P.Scale(ceil(size/2)+2))
 
-        shieldCooldown:SetSize(P:Scale(ceil(size/2)), P:Scale(ceil(size/2)))
-        weakendedSoulCooldown:SetSize(P:Scale(ceil(size/2)), P:Scale(ceil(size/2)))
+        shieldCooldown:SetSize(P.Scale(ceil(size/2)), P.Scale(ceil(size/2)))
+        weakendedSoulCooldown:SetSize(P.Scale(ceil(size/2)), P.Scale(ceil(size/2)))
 
-        shieldAmount:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
-        shieldAmount:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
+        shieldAmount:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
+        shieldAmount:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
     end
 
     function powerWordShield:SetShape(shape)
@@ -2353,15 +2279,17 @@ function I.CreatePowerWordShield(parent)
         weakendedSoulCooldown:ClearAllPoints()
 
         if value > 0 and powerWordShield.max then
-            shieldAmount:SetCooldown(GetTime()-(powerWordShield.max-value), powerWordShield.max)
+            local progress = (powerWordShield.max - value) / powerWordShield.max
+            local start = GetTime() - (progress * 100)
+            shieldAmount:SetCooldown(start, 100)
             shieldAmount:Pause()
             shieldCooldown:SetPoint("CENTER")
             weakendedSoulCooldown:SetPoint("CENTER")
         else
-            shieldCooldown:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
-            shieldCooldown:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
-            weakendedSoulCooldown:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
-            weakendedSoulCooldown:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
+            shieldCooldown:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
+            shieldCooldown:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
+            weakendedSoulCooldown:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
+            weakendedSoulCooldown:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
         end
     end
 
@@ -2418,4 +2346,109 @@ function I.CreateCrowdControls(parent)
         -- frame:SetScript("OnShow", crowdControls.UpdateSize)
         -- frame:SetScript("OnHide", crowdControls.UpdateSize)
     end
+end
+
+--------------------------------------------------
+-- Combat Icon
+--------------------------------------------------
+local function CombatIcon_UpdatePixelPerfect(self)
+    P.Resize(self)
+    P.Repoint(self)
+end
+
+function I.CreateCombatIcon(parent)
+    local combatIcon = CreateFrame("Frame", parent:GetName() .. "CombatIcon", parent.widgets.indicatorFrame)
+    parent.indicators.combatIcon = combatIcon
+    combatIcon.root = parent
+    combatIcon:Hide()
+
+    combatIcon.tex = combatIcon:CreateTexture(nil, "ARTWORK", nil, 0)
+    combatIcon.tex:SetAllPoints()
+    combatIcon.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\combat", nil, nil, "TRILINEAR")
+    -- combatIcon.tex:SetAtlas("combat_swords-dynamicIcon")
+
+    combatIcon.flashTex = combatIcon:CreateTexture(nil, "ARTWORK", nil, -5)
+    combatIcon.flashTex:SetAllPoints()
+    combatIcon.flashTex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\combat_glow", nil, nil, "TRILINEAR")
+    -- combatIcon.flashTex:SetAtlas("combat_swords-flash")
+    combatIcon.flashTex:SetBlendMode("ADD")
+
+    A.CreateBlinkAnimation(combatIcon.flashTex, nil, true)
+
+    combatIcon:SetScript("OnEvent", CombatIcon_OnEvent)
+
+    combatIcon.UpdatePixelPerfect = CombatIcon_UpdatePixelPerfect
+
+    return combatIcon
+end
+
+-------------------------------------------------
+-- missing buffs
+-------------------------------------------------
+function I.CreateMissingBuffs(parent)
+    local missingBuffs = CreateFrame("Frame", parent:GetName().."MissingBuffParent", parent.widgets.indicatorFrame)
+    parent.indicators.missingBuffs = missingBuffs
+    missingBuffs:Hide()
+
+    missingBuffs._SetSize = missingBuffs.SetSize
+    missingBuffs.SetSize = I.Cooldowns_SetSize
+    missingBuffs.UpdateSize = I.Cooldowns_UpdateSize
+    missingBuffs.SetOrientation = I.Cooldowns_SetOrientation
+    missingBuffs.UpdatePixelPerfect = I.Cooldowns_UpdatePixelPerfect
+
+    for i = 1, 3 do
+        local name = parent:GetName().."MissingBuff"..i
+        local frame = I.CreateAura_BarIcon(name, missingBuffs)
+        tinsert(missingBuffs, frame)
+        frame:HookScript("OnSizeChanged", function()
+            LCG.ButtonGlow_Start(frame)
+        end)
+    end
+end
+
+local missingBuffsEnabled = false
+function I.EnableMissingBuffs(enabled)
+    missingBuffsEnabled = enabled
+
+    if enabled and CellDB["tools"]["buffTracker"][1] then
+        CellBuffTrackerFrame:GROUP_ROSTER_UPDATE(true)
+    end
+end
+
+function I.UpdateMissingBuffsFilters(filters, noUpdate)
+    if filters then missingBuffsFilters = filters end
+
+    if not noUpdate and missingBuffsEnabled and CellDB["tools"]["buffTracker"][1] then
+        CellBuffTrackerFrame:GROUP_ROSTER_UPDATE(true)
+    end
+end
+
+local function HideMissingBuffs(b)
+    for i = 1, 3 do
+        b.indicators.missingBuffs[i]:Hide()
+    end
+end
+
+local missingBuffsCounter = {}
+function I.HideMissingBuffs(unit, force)
+    if not (missingBuffsEnabled or force) then return end
+    missingBuffsCounter[unit] = nil
+    F.HandleUnitButton("unit", unit, HideMissingBuffs)
+end
+
+local function ShowMissingBuff(b, index, icon)
+    b.indicators.missingBuffs:UpdateSize(index)
+
+    local f = b.indicators.missingBuffs[index]
+    f:SetCooldown(0, 0, nil, icon, 0)
+    LCG.ButtonGlow_Start(f)
+end
+
+function I.ShowMissingBuff(unit, icon)
+    if not missingBuffsEnabled then return end
+
+    missingBuffsCounter[unit] = (missingBuffsCounter[unit] or 0) + 1
+    if missingBuffsCounter[unit] > 3 then return end
+
+    F.HandleUnitButton("unit", unit, ShowMissingBuff, missingBuffsCounter[unit], icon)
 end

@@ -2,9 +2,9 @@
 LoggerHeadDB = {
 ["profileKeys"] = {
 ["Kitava - Hyjal"] = "Default",
-["Kvotheen - Hyjal"] = "Default",
 ["Quiproquo - Uldaman"] = "Default",
 ["Devonka - Hyjal"] = "Default",
+["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -12,31 +12,6 @@ LoggerHeadDB = {
 ["sink20OutputSink"] = "None",
 },
 ["log"] = {
-["raid"] = {
-["Amirdrassil, the Dream's Hope"] = {
-[17] = true,
-[15] = true,
-},
-["Blackrock Foundry"] = {
-[16] = false,
-},
-["Hellfire Citadel"] = {
-[16] = false,
-},
-["Highmaul"] = {
-[16] = false,
-[15] = false,
-},
-["Aberrus, the Shadowed Crucible"] = {
-[17] = true,
-},
-["The Emerald Nightmare"] = {
-[16] = false,
-},
-["The Nighthold"] = {
-[16] = false,
-},
-},
 ["party"] = {
 ["Shadowmoon Burial Grounds"] = {
 [23] = false,
@@ -71,6 +46,9 @@ LoggerHeadDB = {
 [23] = true,
 [8] = true,
 },
+["Upper Blackrock Spire"] = {
+[23] = false,
+},
 ["Black Rook Hold"] = {
 [23] = true,
 [8] = true,
@@ -85,25 +63,35 @@ LoggerHeadDB = {
 ["Halls of Infusion"] = {
 [2] = true,
 },
-["Upper Blackrock Spire"] = {
-[23] = false,
+["Darkheart Thicket"] = {
+[23] = true,
+[8] = true,
+},
+["Ara-Kara, City of Echoes"] = {
+[2] = true,
+},
+["Cinderbrew Meadery"] = {
+[2] = true,
+},
+["The Stonevault"] = {
+[2] = true,
 },
 ["Auchindoun"] = {
 [23] = false,
 },
-["Bloodmaul Slag Mines"] = {
-[23] = false,
-},
-["The Everbloom"] = {
-[23] = true,
-[8] = true,
+["The Forge of Souls"] = {
+[24] = true,
 },
 ["Dawn of the Infinite"] = {
 [23] = true,
 [8] = true,
 },
-["The Forge of Souls"] = {
-[24] = true,
+["The Everbloom"] = {
+[23] = true,
+[8] = true,
+},
+["Bloodmaul Slag Mines"] = {
+[23] = false,
 },
 ["Maw of Souls"] = {
 [23] = false,
@@ -111,17 +99,44 @@ LoggerHeadDB = {
 ["Neltharus"] = {
 [23] = true,
 },
-["Darkheart Thicket"] = {
-[23] = true,
-[8] = true,
+["City of Threads"] = {
+[2] = true,
+},
+},
+["raid"] = {
+["Highmaul"] = {
+[16] = false,
+[15] = false,
+},
+["The Emerald Nightmare"] = {
+[16] = false,
+},
+["Blackrock Foundry"] = {
+[16] = false,
+},
+["Hellfire Citadel"] = {
+[16] = false,
+},
+["Amirdrassil, the Dream's Hope"] = {
+[17] = true,
+[15] = true,
+},
+["The Nighthold"] = {
+[16] = false,
+},
+["Aberrus, the Shadowed Crucible"] = {
+[17] = true,
+},
+["Karazhan"] = {
+[3] = false,
 },
 },
 },
 ["version"] = 3,
+["chat"] = true,
 ["minimap"] = {
 ["hide"] = true,
 },
-["chat"] = true,
 },
 },
 }

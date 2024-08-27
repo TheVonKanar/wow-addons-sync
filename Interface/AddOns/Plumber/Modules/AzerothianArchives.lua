@@ -13,8 +13,8 @@ local UnitPowerBarID = UnitPowerBarID;  --659
 local IsFlying = IsFlying;
 
 local GOGGLE_NAME = C_Item.GetItemNameByID(202247);
-local GOGGLE_ITEM_ID = {202247};
-local GOGGLE_SPELL_ID = {398013};
+local GOGGLE_ITEM_ID = 202247;
+local GOGGLE_SPELL_ID = 398013;
 
 local QUICKSLOT_NAME = "technoscryers";
 
@@ -151,9 +151,17 @@ function EL:UpdateQuest()
     end
 end
 
+local QUICKSLOT_DATA = {
+    buttons = {
+        {actionType = "item", itemID = GOGGLE_ITEM_ID, spellID = GOGGLE_SPELL_ID},
+    },
+    systemName = QUICKSLOT_NAME,
+    spellcastType = 1,      --Channel
+};
+
 function EL:UpdateQuickSlot()
     if self:ShouldShowQuickSlot() then
-        QuickSlot:SetButtonData(GOGGLE_ITEM_ID, GOGGLE_SPELL_ID, QUICKSLOT_NAME);
+        QuickSlot:SetButtonData(QUICKSLOT_DATA);
         QuickSlot:ShowUI();
         if not GOGGLE_NAME then
             GOGGLE_NAME = C_Item.GetItemNameByID(202247);
@@ -205,7 +213,7 @@ do
         dbKey = "Technoscryers",
         description = addon.L["ModuleDescription Technoscryers"],
         toggleFunc = EnableModule,
-        categoryID = 10020000,
+        categoryID = 1002,
         uiOrder = 10,
         moduleAddedTime = 1706633000,
     };

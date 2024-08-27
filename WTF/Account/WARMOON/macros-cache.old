@@ -1,45 +1,54 @@
-VER 3 0000000000000057 " M+" "INV_Relics_Hourglass_02."
-/lon M+
+VER 3 0000000000000063 "Boss Mods" "236409"
+/dbm
 END
-VER 3 0000000000000058 " Raid" "Achievement_Dungeon_FirelandsRaid."
-/lon Raid
+VER 3 000000000000006C "BRez" "134400"
+#showtooltip
+/use Convincingly Realistic Jumper Cables
 END
-VER 3 000000000000004F "AddonUsage" "1392919"
-/addonusage
+VER 3 0000000000000071 "Cell" "2902386"
+/cell opt
 END
-VER 3 0000000000000049 "Details" "1392919"
+VER 3 0000000000000066 "Clear Focus" "132096"
+/clearfocus
+END
+VER 3 0000000000000049 "Details" "1506451"
 /dt options
 END
-VER 3 0000000000000061 "Kong" "1392919"
-/kong
+VER 3 0000000000000062 "Edit Mode" "134063"
+/editmode
 END
-VER 3 000000000000005E "LeatrixPlus" "1392919"
-/ltp
+VER 3 0000000000000065 "Focus" "132345"
+/clearfocus
+/focus [@mouseover,exists,harm][]
+/run if not GetRaidTargetIndex("focus") then SetRaidTarget("focus",7) end
 END
-VER 3 0000000000000060 "LS:Glass" "1392919"
-/lsg
+VER 3 0000000000000061 "KeyMaster" "134238"
+/ak
 END
-VER 3 000000000000005D "Macros" "1392919"
+VER 3 000000000000005D "Macros" "134070"
 /macro
 END
-VER 3 000000000000005C "Masque" "1392919"
+VER 3 000000000000005C "Masque" "1723998"
 /msq
 END
-VER 3 0000000000000047 "OPie" "1392919"
+VER 3 0000000000000064 "MDT" "985879"
+/mdt
+END
+VER 3 000000000000006E "Mounts" "132238"
+/litemount
+END
+VER 3 0000000000000067 "OmniCD" "132092"
+/omnicd
+END
+VER 3 0000000000000047 "OPie" "651358"
 /op
 END
-VER 3 0000000000000050 "Plater" "1392919"
+VER 3 0000000000000050 "Plater" "132750"
 /plater
 END
 VER 3 000000000000005B "Reload" "136213"
 /reload
 END
-VER 3 000000000000005F "SavedInstances" "1392919"
-/si show
-END
-VER 3 000000000000005A "WeakAuras" "1392919"
+VER 3 000000000000005A "WeakAuras" "135872"
 /wa
-END
-VER 3 0000000000000059 "World" "INV_HeartOfAzeroth."
-/lon World
 END

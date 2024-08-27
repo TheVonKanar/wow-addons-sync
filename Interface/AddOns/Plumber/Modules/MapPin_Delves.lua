@@ -9,6 +9,8 @@ local PinController = addon.MapPinController;
 
 local GetAreaPOIInfo = C_AreaPoiInfo.GetAreaPOIInfo;
 local GetDelvesForMap = C_AreaPoiInfo.GetDelvesForMap;
+local C_UIWidgetManager = C_UIWidgetManager;
+
 
 local MAPID_KHAZALGAR = 2274;
 
@@ -24,6 +26,7 @@ local DelvePOI = {
     --Ringing Deeps
     {2214, 7867, 7788},   --The Dread Pit
     {2214, 7866, 7782},   --The Waterworks
+    {2214, 8143, 8181},   --Excavation Site 9
 
     --Hallowfall
     {2215, 7869, 7780},   --Mycomancer Cavern
@@ -36,19 +39,40 @@ local DelvePOI = {
     {2255, 7874, 7790},   --The Spiral Weave
     {2255, 7872, 7786},   --The Underkeep
 
+    --Undermine
+    {2346, 8140, 8246},   --Sidestreet Sluice
+
 
     --{0, 7875, nil},    --Zekvir's Lair (Mystery 13th Delve)
-};
-
-local DelveMaps = {
-    2248, 2214, 2215, 2255,
+    --8142 Demolition Dome  --Undermine Challenge
 };
 
 local POILocation = {}; --See the bottom of this file
 
 
+local function IsOverchargedDelve(poiInfo)
+    --11.1.7 Overcharge Delve
+    if poiInfo.iconWidgetSet then
+        local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.iconWidgetSet);
+        if widgets then
+            local widgetInfo;
+            for _, widget in ipairs(widgets) do
+                if widget.widgetType == 22 then     --Enum.UIWidgetVisualizationType.Spacer
+                    widgetInfo = C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID);
+                    if widgetInfo.shownState == 1 and widgetInfo.scriptedAnimationEffectID == 183 then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+end
+
+
 local DelvesPinMixin = {};
 do
+    local ICON_WIDTH, ICON_HEIGHT = 20, 20;
+
     function DelvesPinMixin:PostMouseEnter()
         if self.data.uiMapID and self.data.poiID then
             local poiInfo = GetAreaPOIInfo(self.data.uiMapID, self.data.poiID);
@@ -59,11 +83,16 @@ do
                 tooltip:SetText(poiInfo.name, 1, 1, 1);
 
                 if poiInfo.description then
-                    tooltip:AddLine(poiInfo.description, 1, 1, 1, true);
-                    tooltip:AddLine(" ", 1, 1, 1, true);
+                    if self.data.bountiful then
+                        tooltip:AddLine(poiInfo.description, 1, 0.82, 0, true);
+                    end
+                    if self.data.overcharged then
+                        tooltip:AddLine(L["Overcharged Delve"], 0.000, 0.800, 1.000, true);
+                    end
                 end
 
                 if poiInfo.tooltipWidgetSet then
+                    tooltip:AddLine(" ");
                     self:AttachWidgetSetToTooltip(tooltip, poiInfo.tooltipWidgetSet);
                 end
 
@@ -81,9 +110,25 @@ do
     end
 
     function DelvesPinMixin:Update()
-        self:SetTexture("Interface/AddOns/Plumber/Art/MapPin/Delve-Bountiful", "LINEAR");
+        if self.data.overcharged then
+            if self.data.bountiful then
+                self:SetTexture("Interface/AddOns/Plumber/Art/MapPin/Delve-OverchargedBountiful", "LINEAR");
+            else
+                self:SetTexture("Interface/AddOns/Plumber/Art/MapPin/Delve-OverchargedOnly", "LINEAR");
+            end
+            self.sizeMultiplier = 2;
+        else
+            self:SetTexture("Interface/AddOns/Plumber/Art/MapPin/Delve-Bountiful", "LINEAR");
+            self.sizeMultiplier = 1;
+        end
         self:SetTexCoord(0, 1, 0, 1);
-        self.Texture:SetSize(20, 20);
+    end
+
+    function DelvesPinMixin:SetSizeScale(scale)
+        if not self.sizeMultiplier then
+            self.sizeMultiplier = 1;
+        end
+        self.Texture:SetSize(ICON_WIDTH * scale * self.sizeMultiplier, ICON_HEIGHT * scale * self.sizeMultiplier);
     end
 end
 
@@ -126,81 +171,74 @@ do
             end
         end
 
-        local isBountiful = {};
-
-        for delveIndex, info in ipairs(DelvePOI) do
-            isBountiful[delveIndex] = true;
-        end
-
-        --[[
-        local delveIndex, areaPoiIDs;
-        for _, mapID in ipairs(DelveMaps) do
-            areaPoiIDs = GetDelvesForMap(mapID) or {};
-            for _, poiID in ipairs(areaPoiIDs) do
-                --print((GetAreaPOIInfo(mapID, poiID)).name)
-                delveIndex = POIxDelveIndex[poiID];
-                if delveIndex then
-                    isBountiful[delveIndex] = false;
-                end
-            end
-        end
-        --]]
-
-
         local uiMapID, poiInfo;
         local positionToCache, p;
+        local bountiful, overcharged;
 
         for delveIndex, info in ipairs(DelvePOI) do
             uiMapID = info[1];
-            if isBountiful[delveIndex] then
-                poiID = info[3];
-                poiInfo = GetAreaPOIInfo(uiMapID, poiID)
+            poiID = info[3];    --bountifulPoi
+            poiInfo = GetAreaPOIInfo(uiMapID, poiID);
+            overcharged = false;
 
-                if poiInfo then
-                    if isBountiful[delveIndex] then
-                        if POILocation[poiID] then
-                            n = n + 1;
+            if poiInfo then
+                bountiful = true;
+            else
+                bountiful = false;
+                poiID = info[2];
+                poiInfo = GetAreaPOIInfo(uiMapID, poiID);
+            end
 
-                            if not data then
-                                data = {};
-                            end
+            if poiInfo then
+                overcharged = IsOverchargedDelve(poiInfo);
+            end
 
-                            data[n] = {
-                                mixin = DelvesPinMixin,
-                                x = POILocation[poiID].x,
-                                y = POILocation[poiID].y,
-                                clickable = false,
-                                uiMapID = uiMapID,
-                                poiID = poiID,
-                            };
+            if poiInfo and (bountiful or overcharged) then
+                overcharged = IsOverchargedDelve(poiInfo);
 
-                        else
-                            if poiInfo then
-                                if not positionToCache then
-                                    positionToCache = {};
-                                    p = 0;
-                                end
+                if POILocation[poiID] then
+                    n = n + 1;
 
-                                p = p + 1;
-                                local x, y = poiInfo.position:GetXY();
-                                local position = {
-                                    uiMapID = uiMapID,
-                                    poiID = poiID,
-                                    x = x,
-                                    y = y,
-                                };
+                    if not data then
+                        data = {};
+                    end
 
-                                positionToCache[p] = position;
-                            end
+                    data[n] = {
+                        mixin = DelvesPinMixin,
+                        x = POILocation[poiID].x,
+                        y = POILocation[poiID].y,
+                        clickable = false,
+                        uiMapID = uiMapID,
+                        poiID = poiID,
+                        bountiful = bountiful,
+                        overcharged = overcharged,
+                    };
+
+                else
+                    if poiInfo then
+                        if not positionToCache then
+                            positionToCache = {};
+                            p = 0;
                         end
+
+                        p = p + 1;
+                        local x, y = poiInfo.position:GetXY();
+                        local position = {
+                            uiMapID = uiMapID,
+                            poiID = poiID,
+                            x = x,
+                            y = y,
+                        };
+
+                        positionToCache[p] = position;
                     end
                 end
             end
         end
 
-        if positionToCache then
-            API.ConvertAndCacheMapPositions(positionToCache, onCoordReceivedFunc, onConvertFinishedFunc);
-        end
+        --if positionToCache then
+        --    API.ConvertAndCacheMapPositions(positionToCache, onCoordReceivedFunc, onConvertFinishedFunc);
+        --end
 
         return data
     end
@@ -221,12 +259,133 @@ do
 end
 
 
-do  --Deve Tool
+do  --Dev Tool
     local function Yeet()
         local tbl = {};
-        for index, data in ipairs(DelvePOI) do
+        local index = 0;
+        for _, data in ipairs(DelvePOI) do
+            index = index + 1;
             tbl[index] = {data[1], data[2]};
         end
+        for _, data in ipairs(DelvePOI) do
+            index = index + 1;
+            tbl[index] = {data[1], data[3]};
+        end
         addon.SavePOIPosition(tbl)
+    end
+end
+
+
+POILocation = {
+    [7786] = {
+        ["uiMapID"] = 2255,
+        ["y"] = 0.863,
+        ["x"] = 0.451,
+        ["poiID"] = 7786,
+        ["continent"] = 2274,
+    },
+    [7863] = {
+        ["uiMapID"] = 2248,
+        ["y"] = 0.339,
+        ["x"] = 0.673,
+        ["poiID"] = 7863,
+        ["continent"] = 2274,
+    },
+    [7865] = {
+        ["uiMapID"] = 2248,
+        ["y"] = 0.201,
+        ["x"] = 0.778,
+        ["poiID"] = 7865,
+        ["continent"] = 2274,
+    },
+    [7867] = {
+        ["uiMapID"] = 2214,
+        ["y"] = 0.544,
+        ["x"] = 0.62,
+        ["poiID"] = 7867,
+        ["continent"] = 2274,
+    },
+    [7868] = {
+        ["uiMapID"] = 2215,
+        ["y"] = 0.524,
+        ["x"] = 0.327,
+        ["poiID"] = 7868,
+        ["continent"] = 2274,
+    },
+    [7779] = {
+        ["uiMapID"] = 2248,
+        ["y"] = 0.303,
+        ["x"] = 0.733,
+        ["poiID"] = 7779,
+        ["continent"] = 2274,
+    },
+    [7870] = {
+        ["uiMapID"] = 2215,
+        ["y"] = 0.547,
+        ["x"] = 0.39,
+        ["poiID"] = 7870,
+        ["continent"] = 2274,
+    },
+    [7871] = {
+        ["uiMapID"] = 2215,
+        ["y"] = 0.58,
+        ["x"] = 0.448,
+        ["poiID"] = 7871,
+        ["continent"] = 2274,
+    },
+    [7782] = {
+        ["uiMapID"] = 2214,
+        ["y"] = 0.583,
+        ["x"] = 0.525,
+        ["poiID"] = 7782,
+        ["continent"] = 2274,
+    },
+    [7873] = {
+        ["uiMapID"] = 2255,
+        ["y"] = 0.816,
+        ["x"] = 0.461,
+        ["poiID"] = 7873,
+        ["continent"] = 2274,
+    },
+    [7874] = {
+        ["uiMapID"] = 2255,
+        ["y"] = 0.639,
+        ["x"] = 0.429,
+        ["poiID"] = 7874,
+        ["continent"] = 2274,
+    },
+    [7780] = {
+        ["uiMapID"] = 2215,
+        ["y"] = 0.461,
+        ["x"] = 0.47,
+        ["poiID"] = 7780,
+        ["continent"] = 2274,
+    },
+    [8181] = {
+        ["uiMapID"] = 2214,
+        ["y"] = 0.744,
+        ["x"] = 0.64,
+        ["poiID"] = 8181,
+        ["continent"] = 2274,
+    },
+    [8246] = {  --Slightly shift its position to it doesn't cover Gallywix's face
+        ["uiMapID"] = 2346,
+        ["y"] = 0.687,  --0.753
+        ["x"] = 0.744,  --0.794
+        ["poiID"] = 8246,
+        ["continent"] = 2274,
+    },
+};
+
+for _, data in pairs(DelvePOI) do
+    local poi1 = data[2];
+    local poi2 = data[3];
+
+    if POILocation[poi1] and not POILocation[poi2] then
+        POILocation[poi2] = POILocation[poi1];
+    end
+
+    if POILocation[poi2] and not POILocation[poi1] then
+        POILocation[poi1] = POILocation[poi2];
     end
 end

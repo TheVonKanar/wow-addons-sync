@@ -14,7 +14,8 @@ addon.responses = {
 		WAIT         = { color = { 1, 1, 0, 1, }, sort = 503, text = L["Candidate is selecting response, please wait"], },
 		TIMEOUT      = { color = { 1, 0, 0, 1, }, sort = 504, text = L["Candidate didn't respond on time"], },
 		REMOVED      = { color = { 0.8, 0.5, 0, 1, }, sort = 505, text = L["Candidate removed"], },
-		NOTHING      = { color = { 0.5, 0.5, 0.5, 1, }, sort = 505, text = L["Offline or RCLootCouncil not installed"], },
+		NOTHING      = { color = { 0.5, 0.5, 0.5, 1, }, sort = 506, text = L["Offline or RCLootCouncil not installed"], },
+		NOTELIGIBLE  = { color = { 0.8, 0.5, 0, 1, }, sort = 507, text = L.response_NOTELIGIBLE, },
 		BONUSROLL    = { color = { 1, 0.8, 0, 1, }, sort = 510, text = _G.BONUS_ROLL_TOOLTIP_TITLE, },
 		PASS         = { color = { 0.7, 0.7, 0.7, 1, }, sort = 800, text = _G.PASS, },
 		AUTOPASS     = { color = { 0.7, 0.7, 0.7, 1, }, sort = 801, text = L["Autopass"], },
@@ -37,14 +38,14 @@ addon.responses = {
 -- Option table defaults
 addon.defaults = {
 	global = {
-		logMaxEntries = 2000,
+		logMaxEntries = 4000,
 		log = {}, -- debug log
 		verTestCandidates = {}, -- Stores received verTests
 		errors = {},
 		cache = {},
 	},
 	profile = {
-		skipCombatLockdown = false,
+		skipCombatLockdown = true,
 
 		baggedItems = {}, -- Items that are stored in MLs inventory for award later.
 		-- i = { {link=link, winner=winner, addedTime=sec between UTC epoch to when the item is added to lootInBags, }, bop=Item is BOP?}
@@ -76,6 +77,7 @@ addon.defaults = {
 		enableHistory = true,
 		sendHistory = true,
 		sendHistoryToGuildChannel = false,
+		savePersonalLoot = true,
 
 		-- ML - General - Usage
 		usage = { -- State of enabledness
@@ -161,6 +163,8 @@ addon.defaults = {
 
 		-- ML - Buttons and responses - Timeout/Moreinfo/chat
 		numMoreInfoButtons = 1,
+		moreInfoRaids = {}, -- Specific raids to show in more info, none = all raids
+		registeredInstances = {}, -- Instances that are registered for more info
 		timeout = 60,
 		acceptWhispers = true,
 
@@ -257,6 +261,8 @@ addon.defaults = {
 			[162461] = true, -- Sanguicell (BfA crafting)
 			[213089] = true, -- Antique Bronze Bullion (DF S4 Weapon/Trinket currency)
 		},
+
+		moreInfoClampToScreen = false,
 	},
 } -- defaults end
 

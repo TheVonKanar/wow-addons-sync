@@ -4,18 +4,14 @@ local L = select( 2, ...).L
 
 L["%s in Utilities must be enabled to make this indicator work."] = "%s в Утилитах должно быть включено, что бы этот индикатор работал"
 L["%s is required"] = "%s требуется"
---[[Translation missing --]]
---[[ L["%s lock %s on %s."] = "%s lock %s on %s."--]]
---[[Translation missing --]]
---[[ L["%s unlock %s from %s."] = "%s unlock %s from %s."--]]
+L["%s lock %s on %s."] = "%s: закреплено %s к %s."
+L["%s unlock %s from %s."] = "%s: откреплено %s от %s."
 L["[Alt+Left-Click] to edit"] = "[Alt+Левый Клик] чтобы изменить"
 L["[Ctrl+Left-Click] to reset these settings"] = "[Ctrl+Левый Клик] для сброса этих настроек"
 L["|cff1Aff1AYes|r - Overwrite"] = "|cff1Aff1AДа|r - Перезаписать"
 L["|cffff1A1ANo|r - Create New"] = "|cffff1A1AНет|r - Создать Новый"
---[[Translation missing --]]
---[[ L["|cffffb5c5Left-Click:|r cast the spell"] = "|cffffb5c5Left-Click:|r cast the spell"--]]
---[[Translation missing --]]
---[[ L["|cffffb5c5Right-Click:|r report unaffected"] = "|cffffb5c5Right-Click:|r report unaffected"--]]
+L["|cffffb5c5Left-Click:|r cast the spell"] = "|cffffb5c5ЛКМ:|r использовать заклинание"
+L["|cffffb5c5Right-Click:|r report unaffected"] = "|cffffb5c5ПКМ:|r сообщить об отсутствующих баффах"
 L["+ Stack"] = "+ Стак"
 L["+ Stack & Duration"] = "+ Стак & Длительность"
 L["A 0-40 integer is required."] = "Требуется целое число 0-40"
@@ -24,882 +20,549 @@ L["A UI reload is required.\nDo it now?"] = "Необходима перезаг
 L["About"] = "Об аддоне"
 L["ABOUT"] = "Cell - хороший аддон для рейд-фреймов, вдохновленный несколькими великолепными аддонами такими как CompactRaid, Grid2, Aptechka и VuhDo.\n Более удобный интерфейс аддона Cell предоставляет лучший опыт использования, лучше, чем когда-либо.\nНадеюсь, вам понравится."
 L["ACCEPTED"] = "ПРИНЯЛ"
---[[Translation missing --]]
---[[ L["Action"] = "Action"--]]
+L["Action"] = "Действие"
 L["Add"] = "Добавить"
 L["Add new spell"] = "Добавить заклинание"
---[[Translation missing --]]
---[[ L["Added |T%d:0|t|cFFFF3030%s(%d)|r into debuff blacklist."] = ""--]]
+L["Added |T%d:0|t|cFFFF3030%s(%d)|r into debuff blacklist."] = "Добавленно |T%d:0|t|cFFFF3030%s(%d)|r в чёрный список дебаффов."
 L["AFK"] = "АФК"
-L["Aggro (bar)"] = "Аггро ( панель )"
-L["Aggro (blink)"] = "Угроза (мигание)"
-L["Aggro (border)"] = "Угроза (граница)"
+L["Aggro (bar)"] = "Аггро (панель)"
+L["Aggro (blink)"] = "Аггро (мерцание)"
+L["Aggro (border)"] = "Аггро (граница)"
 L["all"] = "все"
 L["ALL"] = "ВСЕ"
 L["All Bosses"] = "Все боссы"
-L["All Cell settings will be overwritten!"] = "Все настройки аддона будут сброшены!"
 L["All indicators of %s will be replaced with those in %s"] = "Все индикаторы из %s будут заменены индикаторами из %s"
---[[Translation missing --]]
---[[ L["All snippets have been disabled, due to the version update"] = ""--]]
---[[Translation missing --]]
---[[ L["Allow smaller value"] = ""--]]
+L["All snippets have been disabled, due to the version update"] = "Все фрагменты были отключены в связи с обновлением версии"
+L["Allow smaller value"] = "Разрешить значения меньше"
 L["Alpha"] = "Альфа"
 L["Always"] = "Всегда"
 L["Always Targeting"] = "Всегда брать в цель"
-L["Always Update Buffs"] = "Всегда Обновлять Бафы"
-L["Always Update Debuffs"] = "Всегда Обновлять Дебафы"
+L["Always Update Auras"] = "Всегда обновлять Ауры"
 L["Anchor Point"] = "Якорь"
---[[Translation missing --]]
---[[ L["Anchor To"] = "Anchor To"--]]
---[[Translation missing --]]
---[[ L["Anchored To"] = "Anchored To"--]]
+L["Anchor To"] = "Привязать К"
+L["Anchored To"] = "Привязан К"
 L["Animation"] = "Анимация"
---[[Translation missing --]]
---[[ L["Any Spells"] = "Any Spells"--]]
---[[Translation missing --]]
---[[ L["Anyone"] = ""--]]
+L["Any Spells"] = "Любые заклинания"
+L["Anyone"] = "Любой"
 L["AoE Healing"] = "АоЕ Исцеление"
 L["Appearance"] = "Внешний вид"
+L["Apply Recommended Scale"] = "Выбрать рекомендуемый масштаб"
 L["Arena"] = "Арена"
---[[Translation missing --]]
---[[ L["assist"] = "Assist"--]]
---[[Translation missing --]]
---[[ L["Assist"] = "Assist"--]]
---[[Translation missing --]]
---[[ L["Aura Icon Options"] = "Aura Icon Options"--]]
+L["assist"] = "Ассист"
+L["Assist"] = "Ассист"
+L["Aura Icon Options"] = "Настройки Иконки Ауры"
 L["Author"] = "Автор"
---[[Translation missing --]]
---[[ L["Autorun will be disabled for all code snippets"] = "Autorun will be disabled for all code snippets"--]]
---[[Translation missing --]]
---[[ L["Available slash commands"] = "Available slash commands"--]]
---[[Translation missing --]]
---[[ L["Awesome!"] = "Awesome!"--]]
---[[Translation missing --]]
---[[ L["Background Alpha"] = "Background Alpha"--]]
---[[Translation missing --]]
---[[ L["Background Color"] = ""--]]
+L["Autorun will be disabled for all code snippets"] = "Автозапуск будет отключен для всех фрагментов"
+L["Available slash commands"] = "Доступные команды чата"
+L["Background Alpha"] = "Фон: прозрачность"
+L["Background Color"] = "Фон: цвет"
+L["BACKUP_TIPS"] = "Бэкапы не всегда надёжны, особенно когда они очень устарели. Рекомендуется периодически создавать бэкапы. При обмене профиля, бэкапы не обрабатываются."
+L["BACKUP_TIPS2"] = "Заметка для игроков Классики: бэкапы не включают настройки Привязанных клавиш и Автоматического переключения макета других персонажей "
+L["Backups"] = "Бэкапы"
 L["Bar"] = "Панель"
 L["Bar Animation"] = "Панель: анимация"
 L["Bar Orientation"] = "Панель: направление"
 L["Bars"] = "Панели"
---[[Translation missing --]]
---[[ L["Battle Res Timer"] = "Battle Res Timer"--]]
---[[Translation missing --]]
---[[ L["Beat"] = ""--]]
---[[Translation missing --]]
---[[ L["BG 1-15"] = "BG 1-15"--]]
---[[Translation missing --]]
---[[ L["BG 16-40"] = "BG 16-40"--]]
+L["Battle Res Timer"] = "Таймер Возрождения в бою"
+L["Beat"] = "Пульс"
+L["BG 1-15"] = "ПБ 1-15"
+L["BG 16-40"] = "ПБ 16-40"
 L["Big Debuffs"] = "Большие Дебафы"
+L["Blacklist Target Player"] = "Добавить цель в ЧС"
 L["Bleed"] = "Кровотечение"
---[[Translation missing --]]
---[[ L["Blink"] = ""--]]
---[[Translation missing --]]
---[[ L["Blizzard Frames"] = "Blizzard Frames"--]]
---[[Translation missing --]]
---[[ L["Block"] = ""--]]
---[[Translation missing --]]
---[[ L["Blocks"] = ""--]]
+L["Blink"] = "Мерцание"
+L["Blizzard Frames"] = "Фреймы Близзард"
+L["Block"] = "Блок"
+L["Blocks"] = "Блоки"
 L["Border"] = "Граница"
---[[Translation missing --]]
---[[ L["Border Color"] = ""--]]
---[[Translation missing --]]
---[[ L["Boss Name"] = "Boss Name"--]]
---[[Translation missing --]]
---[[ L["Boss1 Target"] = "Boss1 Target"--]]
---[[Translation missing --]]
---[[ L["Both"] = "Both"--]]
---[[Translation missing --]]
---[[ L["BOTTOM"] = "Bottom"--]]
---[[Translation missing --]]
---[[ L["BOTTOMLEFT"] = "Bottom Left"--]]
---[[Translation missing --]]
---[[ L["BOTTOMRIGHT"] = "Bottom Right"--]]
---[[Translation missing --]]
---[[ L["bottom-to-top"] = "Bottom-to-Top"--]]
---[[Translation missing --]]
---[[ L["Bounce"] = ""--]]
---[[Translation missing --]]
---[[ L["BR"] = "BR"--]]
---[[Translation missing --]]
---[[ L["Buff"] = "Buff"--]]
---[[Translation missing --]]
---[[ L["Buff List"] = "Buff List"--]]
---[[Translation missing --]]
---[[ L["Buff Tracker"] = "Buff Tracker"--]]
---[[Translation missing --]]
---[[ L["Buff Tracker icon size is set to %d."] = "Buff Tracker icon size is set to %d."--]]
---[[Translation missing --]]
---[[ L["buffByMe"] = "Only show buffs I can apply"--]]
+L["Border Color"] = "Граница: цвет"
+L["Boss Name"] = "Имя Босса"
+L["Boss1 Target"] = "Босс1 Цель"
+L["Both"] = "Оба"
+L["BOTTOM"] = "Низ"
+L["BOTTOMLEFT"] = "Лево-Низ"
+L["BOTTOMRIGHT"] = "Право-Низ"
+L["bottom-to-top"] = "Снизу Вверх"
+L["Bounce"] = "Отскок"
+L["BR"] = "БР"
+L["Buff"] = "Бафф"
+L["Buff List"] = "Список баффов"
+L["Buff Tracker"] = "Бафф трекер"
+L["Buff Tracker icon size is set to %d."] = "Размер иконок Бафф Трекера установлен на %d."
+L["buffByMe"] = "Показывать только баффы, которые я могу наложить"
 L["Buffs"] = "Бафы"
---[[Translation missing --]]
---[[ L["Buffs Tracker"] = ""--]]
---[[Translation missing --]]
---[[ L["Bug Report & Suggestion"] = "Bug Report & Suggestion"--]]
---[[Translation missing --]]
---[[ L["Built-in Spells"] = "Built-in Spells"--]]
---[[Translation missing --]]
---[[ L["built-in(s)"] = "built-in(s)"--]]
---[[Translation missing --]]
---[[ L["Button"] = ""--]]
---[[Translation missing --]]
---[[ L["C"] = "Class Talent"--]]
+L["Buffs Tracker"] = "Бафф трекер"
+L["Bug Report & Suggestion"] = "Баг Репорт и Предложения"
+L["Built-in Spells"] = "Встроенные заклинания"
+L["built-in(s)"] = "встроенный(е)"
+L["Button"] = "Кнопка"
+L["C"] = "Талант Класса"
 L["Cancel"] = "Отмена"
---[[Translation missing --]]
---[[ L["Can't change options in combat"] = "Can't change options in combat"--]]
---[[Translation missing --]]
---[[ L["Cast By"] = ""--]]
---[[Translation missing --]]
---[[ L["cast Inner spell"] = ""--]]
---[[Translation missing --]]
---[[ L["cast Outer spell"] = ""--]]
---[[Translation missing --]]
---[[ L["castByMe"] = "Only show buffs cast by me"--]]
---[[Translation missing --]]
---[[ L["Casts"] = ""--]]
---[[Translation missing --]]
---[[ L["Cell will report all deaths during a raid encounter."] = "Cell will report all deaths during a raid encounter."--]]
---[[Translation missing --]]
---[[ L["Cell will report first %d deaths during a raid encounter."] = "Cell will report first %d deaths during a raid encounter."--]]
---[[Translation missing --]]
---[[ L["CENTER"] = "Center"--]]
---[[Translation missing --]]
---[[ L["change mode / apply changes"] = ""--]]
---[[Translation missing --]]
---[[ L["Change Over Time"] = ""--]]
---[[Translation missing --]]
---[[ L["change the order"] = ""--]]
+L["Can't change options in combat"] = "В бою невозможно изменять настройки"
+L["Cast By"] = "Моё"
+L["cast Inner spell"] = "использовать внутреннее заклинание"
+L["cast Outer spell"] = "использовать внутреннее заклинание"
+L["castByMe"] = "Показывать только мои баффы"
+L["Casts"] = "Касты"
+L["Cell settings will be overwritten!"] = "Настройки Cell будут перезаписаны!"
+L["Cell will report all deaths during a raid encounter."] = "Cell будет сообщать о всех смертях во время боя с рейдовым боссом."
+L["Cell will report first %d deaths during a raid encounter."] = "Cell будет сообщать о первой(ых) %d смерти(ях) во время боя с рейдовым боссом."
+L["CENTER"] = "Центр"
+L["change mode / apply changes"] = "изменить режим / применить изменения"
+L["Change Over Time"] = "Изменять со временем"
+L["change the order"] = "изменить порядок"
 L["Changelogs"] = "Журнал изменений"
---[[Translation missing --]]
---[[ L["Check all visible enemy nameplates."] = "Check all visible enemy nameplates."--]]
---[[Translation missing --]]
---[[ L["Check If Exists"] = "Check If Exists"--]]
---[[Translation missing --]]
---[[ L["Check if your group members need some raid buffs"] = "Check if your group members need some raid buffs"--]]
---[[Translation missing --]]
---[[ L["circledStackNums"] = "Circled Stack Numbers"--]]
+L["Check all visible enemy nameplates."] = "Проверять полоски всех видимых противников"
+L["Check If Exists"] = "Проверить, если существует"
+L["Check if your group members need some raid buffs"] = "Проверяет, если участники рейда требует какие-либо рейдовые баффы"
+L["circledStackNums"] = "Показывать цифры в кружках"
 L["Class Color"] = "Цвет класса"
 L["Class Color (dark)"] = "Цвет класса (тёмный)"
---[[Translation missing --]]
---[[ L["Class Filter"] = ""--]]
---[[Translation missing --]]
---[[ L["clear"] = ""--]]
---[[Translation missing --]]
---[[ L["Clear"] = "Clear"--]]
---[[Translation missing --]]
---[[ L["clear unit"] = ""--]]
---[[Translation missing --]]
---[[ L["cleuAurasTips"] = "Check CLEU events for invisible auras"--]]
---[[Translation missing --]]
---[[ L["Click to preview"] = "Click to preview"--]]
+L["Class Filter"] = "Класс: фильтр"
+L["Clear"] = "Отчистить"
+L["clear"] = "отчистить"
+L["clear unit"] = "отчистить юнита"
+L["cleuAurasTips"] = "Проверять CLEU события на предмет невидимых аур"
+L["Click to preview"] = "Нажмите для предосмотра"
 L["Click-Castings"] = "Привязка клавиш "
 L["Close"] = "Закрыть"
---[[Translation missing --]]
---[[ L["Code Snippets"] = "Code Snippets"--]]
---[[Translation missing --]]
---[[ L["Color"] = "Color"--]]
---[[Translation missing --]]
---[[ L["Color By"] = ""--]]
---[[Translation missing --]]
---[[ L["Color Duration Text"] = "Color Duration Text"--]]
---[[Translation missing --]]
---[[ L["Columns"] = ""--]]
---[[Translation missing --]]
---[[ L["Combine Groups"] = ""--]]
---[[Translation missing --]]
---[[ L["Common"] = "Common"--]]
---[[Translation missing --]]
---[[ L["Condition"] = "Condition"--]]
---[[Translation missing --]]
---[[ L["Confirm"] = "Confirm"--]]
---[[Translation missing --]]
---[[ L["Conflicts Detected!"] = "Conflicts Detected!"--]]
---[[Translation missing --]]
---[[ L["Consumables"] = "Consumables"--]]
---[[Translation missing --]]
---[[ L["Contains"] = "Contains"--]]
---[[Translation missing --]]
---[[ L["Copy"] = "Copy"--]]
-L["Copy indicators from one layout to another"] = "Скопировать индикаторы из одного макета в другой"
---[[Translation missing --]]
---[[ L["Create"] = "Create"--]]
+L["Code Snippets"] = "Фрагменты кода"
+L["Color"] = "Цвет"
+L["Color By"] = "Правило закрашивания"
+L["Color Duration Text"] = "Цвет текста длительности"
+L["Color Thresholds"] = "Цветные Пороги"
+L["Columns"] = "Столбцы"
+L["Combat Icon"] = "Иконка боя"
+L["Combine Groups"] = "Объединить Группы"
+L["Common"] = "Общий"
+L["Condition"] = "Условие"
+L["Confirm"] = "Подтвердить"
+L["Conflicts Detected!"] = "Конфликты Обнаружены!"
+L["Consumables"] = "Расходники "
+L["Contains"] = "Содержит"
+L["Copy"] = "Копировать"
+L["Copy indicators from one layout to another"] = "Скопировать индикаторы из одного макета в другой "
+L["Create"] = "Создать"
 L["create a \"Healers\" indicator"] = "создать \"Healers\" индикатор"
---[[Translation missing --]]
---[[ L["Create new debuff (id)"] = "Create new debuff (id)"--]]
+L["Create Backup"] = "Создать Бэкап"
+L["Create new debuff (id)"] = "Создать новый дебафф (id)"
 L["Create new indicator"] = "Создать новый индикатор"
 L["Create new layout"] = "Создать новый макет"
---[[Translation missing --]]
---[[ L["Create several buttons for quick casting and buff monitoring"] = ""--]]
---[[Translation missing --]]
---[[ L["Crowd Controls"] = ""--]]
---[[Translation missing --]]
---[[ L["Current"] = " Current"--]]
---[[Translation missing --]]
---[[ L["Current Boss"] = "Current Boss"--]]
---[[Translation missing --]]
---[[ L["Current Profile"] = "Current Profile"--]]
---[[Translation missing --]]
---[[ L["Current Season"] = "Current Season"--]]
+L["Create several buttons for quick casting and buff monitoring"] = "Создаёт несколько кнопок для быстрого каста и слежки за баффами"
+L["Crowd Controls"] = "Эффекты Контроля"
+L["Current"] = "Текущий(я) "
+L["Current Boss"] = "Текущий Босс"
+L["Current Profile"] = "Текущий Профиль"
+L["Current Season"] = "Текущий Сезон"
 L["Curse"] = "Проклятье"
 L["Cursor"] = "Курсор"
---[[Translation missing --]]
---[[ L["Cursor Left"] = "Cursor Left"--]]
---[[Translation missing --]]
---[[ L["Cursor Right"] = "Cursor Right"--]]
---[[Translation missing --]]
---[[ L["Custom"] = ""--]]
---[[Translation missing --]]
---[[ L["Custom Color"] = "Custom Color"--]]
+L["Cursor Left"] = "Курсор: слева"
+L["Cursor Right"] = "Курсор: справа"
+L["Custom"] = "Пользовательский"
+L["Custom Color"] = "Пользовательский цвет"
 L["Custom indicators will not be overwritten, even with same name"] = "Пользовательские индикаторы не будут перезаписаны, даже если у них одинаковые имена"
---[[Translation missing --]]
---[[ L["Custom Nicknames"] = "Custom Nicknames"--]]
---[[Translation missing --]]
---[[ L["custom(s)"] = "custom(s)"--]]
---[[Translation missing --]]
---[[ L["Data transfer failed..."] = "Data transfer failed..."--]]
+L["Custom Nicknames"] = "Пользовательский ник"
+L["custom(s)"] = "пользовательский(е)"
+L["Data transfer failed..."] = "Передача данных провалилась..."
 L["DEAD"] = "ТРУП"
---[[Translation missing --]]
---[[ L["Death Report"] = "Death Report"--]]
---[[Translation missing --]]
---[[ L["Debuff"] = "Debuff"--]]
---[[Translation missing --]]
---[[ L["Debuff already exists."] = "Debuff already exists."--]]
---[[Translation missing --]]
---[[ L["Debuff Filter (blacklist)"] = "Debuff Filter (blacklist)"--]]
---[[Translation missing --]]
---[[ L["Debuff List"] = "Debuff List"--]]
---[[Translation missing --]]
---[[ L["Debuff Type"] = "Debuff Type"--]]
+L["Death Report"] = "Лог Смерти"
+L["Debuff"] = "Дебафф"
+L["Debuff already exists."] = "Дебафф уже существует"
+L["Debuff Filter (blacklist)"] = "Фильтр дебаффов (чёрный список)"
+L["Debuff List"] = "Список дебаффов"
+L["Debuff Type"] = "Тип дебаффа"
 L["Debuff Type Color"] = "Цвет Дебафа"
---[[Translation missing --]]
---[[ L["Debuffs"] = "Debuffs"--]]
---[[Translation missing --]]
---[[ L["Debug Mode"] = "Debug Mode"--]]
---[[Translation missing --]]
---[[ L["DECLINED"] = "DECLINED"--]]
+L["Debuffs"] = "Дебаффы"
+L["Debug Mode"] = "Режим Отладки"
+L["DECLINED"] = "ОТКЛОНИЛ"
 L["Default layout"] = "Стандартный макет"
---[[Translation missing --]]
---[[ L["Defensive Cooldowns"] = "Defensive Cooldowns"--]]
+L["Defensive Cooldowns"] = "Персональные кулдауны"
 L["Delete"] = "Удалить"
---[[Translation missing --]]
---[[ L["Delete debuff?"] = "Delete debuff?"--]]
+L["Delete backup"] = "Удалить Бэкап"
+L["Delete debuff?"] = "Удалить дебафф?"
 L["Delete indicator"] = "Удалить индикатор"
 L["Delete layout"] = "Удалить макет"
---[[Translation missing --]]
---[[ L["Delete spell?"] = "Delete spell?"--]]
---[[Translation missing --]]
---[[ L["Disabled"] = "Disabled"--]]
---[[Translation missing --]]
---[[ L["Disabled in battlegrounds and arenas"] = "Disabled in battlegrounds and arenas"--]]
---[[Translation missing --]]
---[[ L["Discard"] = "Discard"--]]
---[[Translation missing --]]
---[[ L["discard changes"] = ""--]]
+L["Delete spell?"] = "Удалить заклинание?"
+L["Delimiter"] = "Разделитель"
+L["Detached"] = "Отдельно"
+L["Disabled"] = "Отключено"
+L["Disabled in battlegrounds and arenas"] = "Отключено на аренах и полях боя"
+L["Discard"] = "Скинуть"
+L["discard changes"] = "отклонить изменения"
 L["Disease"] = "Болезнь"
---[[Translation missing --]]
---[[ L["DISPEL"] = "DISPEL"--]]
---[[Translation missing --]]
---[[ L["Dispel Request"] = "Dispel Request"--]]
---[[Translation missing --]]
---[[ L["Dispellable By Me"] = "Dispellable By Me"--]]
---[[Translation missing --]]
---[[ L["dispellableByMe"] = "Only show debuffs dispellable by me"--]]
---[[Translation missing --]]
---[[ L["Dispels"] = "Dispels"--]]
---[[Translation missing --]]
---[[ L["Display a gradient texture when the unit receives a heal from your certain AoE healing spells."] = ""--]]
---[[Translation missing --]]
---[[ L["Display elapsed time since debuff applied"] = ""--]]
---[[Translation missing --]]
---[[ L["Display One Decimal Place When"] = "Display One Decimal Place When"--]]
---[[Translation missing --]]
---[[ L["Displayed Per Line"] = "Displayed Per Line"--]]
---[[Translation missing --]]
---[[ L["Do nothing if requested spell/buff already exists on requester"] = "Do nothing if requested spell/buff already exists on requester"--]]
+L["DISPEL"] = "Диспелл"
+L["Dispel Request"] = "Запрос диспелла"
+L["Dispellable By Me"] = "Я умею диспеллить"
+L["dispellableByMe"] = "Показывать только дебаффы, которые я умею диспеллить"
+L["Dispels"] = "Диспеллы"
+L["Display a gradient texture when the unit receives a heal from your certain healing spells."] = "Показывать текстуру с градиентом, когда юнит получает исцеление от некоторых ваших АоЕ заклинаний."
+L["Display elapsed time since debuff applied"] = "Показывать время прошедшее с наложения дебаффа"
+L["Display One Decimal Place When"] = "Отображать десятичный знак когда"
+L["Displayed Per Line"] = "Количество в строке"
+L["Do nothing if requested spell/buff already exists on requester"] = "Ничего не делать, если запрашиваемое заклинание/бафф уже существует на цели"
 L["DRINKING"] = "ПЬЁТ"
 L["Due to restrictions of the private aura system, this indicator can only use Blizzard style."] = "Из-за ограничений системы личных аур, этот индикатор может использовать только стиль Blizzard."
---[[Translation missing --]]
---[[ L["durationFont"] = "Duration Font"--]]
---[[Translation missing --]]
---[[ L["Edit"] = "Edit"--]]
---[[Translation missing --]]
---[[ L["Edit spell"] = "Edit spell"--]]
---[[Translation missing --]]
---[[ L["En"] = "En"--]]
+L["durationFont"] = "Длительность: текст"
+L["Edit"] = "Редактировать"
+L["Edit spell"] = "Редактировать заклинание"
+L["Effective"] = "Эффективное"
+L["En"] = "Англ."
 L["Enable"] = "Включить"
---[[Translation missing --]]
---[[ L["Enable Death Color"] = "Enable Death Color"--]]
---[[Translation missing --]]
---[[ L["Enable Full Health Color"] = "Enable Full Health Color"--]]
---[[Translation missing --]]
---[[ L["Enable Spotlight Frame"] = "Enable Spotlight Frame"--]]
---[[Translation missing --]]
---[[ L["enableBlacklistShortcut"] = "Blacklist: Alt+Ctrl+RightClick"--]]
+L["Enable Color Gradient"] = "Включить Цветовой Градиент"
+L["Enable Death Color"] = "Включить цвет мёртвого"
+L["Enable Full Health Color"] = "Использовать цвет полного здоровья"
+L["Enable Spotlight Frame"] = "Показывать панель выделенного"
+L["enableBlacklistShortcut"] = "Чёрный Список: Alt+Ctrl+ПКМ"
 L["Enabled"] = "Включено"
---[[Translation missing --]]
---[[ L["enableHighlight"] = "Highlight unit button"--]]
---[[Translation missing --]]
---[[ L["Enter: apply\nESC: discard"] = "Enter: apply\nESC: discard"--]]
---[[Translation missing --]]
---[[ L["Entire"] = "Entire"--]]
+L["enableHighlight"] = "Подсвечивать фрейм юнита"
+L["Enter: apply\nESC: discard"] = "Enter: подтвердить\nESC: отменить"
+L["Entire"] = "Весь"
 L["Error"] = "Ошибка"
-L["Even if disabled, the settings below affect \"Externals + Defensives\" indicator"] = "Даже если этот индикатор отключен, он всё ещё вливяет на последующие \"Externals + Defensives\" индикаторы"
+L["Even if disabled, the settings below affect \"Externals + Defensives\" indicator"] = "Даже если этот индикатор отключен, он всё ещё вливяет на последующие \"Внешние сейвы + Персональные кулдауны\" индикаторы"
 L["Export"] = "Экспорт"
 L["External Cooldowns"] = "Внешние сейвы"
-L["Externals + Defensives"] = "Внешние сейвы + Личные"
-L["Externals + Defensives, no need to enable all of them"] = "Externals + Defensives, нет необходимости включать их всех"
---[[Translation missing --]]
---[[ L["Extra Action Button"] = "Extra Action Button"--]]
---[[Translation missing --]]
---[[ L["Fade Out Menu"] = "Fade Out Menu"--]]
---[[Translation missing --]]
---[[ L["Fade out menu buttons on mouseout"] = "Fade out menu buttons on mouseout"--]]
---[[Translation missing --]]
---[[ L["Fade Out These Buttons"] = "Fade Out These Buttons"--]]
---[[Translation missing --]]
---[[ L["fadeOut"] = "Fade out over time"--]]
---[[Translation missing --]]
---[[ L["Filter Auto Switch"] = ""--]]
---[[Translation missing --]]
---[[ L["first %d"] = "first %d"--]]
---[[Translation missing --]]
---[[ L["Flash"] = ""--]]
+L["Externals + Defensives"] = "Внешние сейвы + Персональные кулдауны"
+L["Externals + Defensives, no need to enable all of them"] = "Внешние сейвы + Персональные кулдауны, нет необходимости включать их всех"
+L["Extra Action Button"] = "Кнопка Доп. Действия"
+L["Fade Out Menu"] = "Скрывать кнопки меню"
+L["Fade out menu buttons on mouseout"] = "Скрывать ненаведённые меню панелей"
+L["Fade Out These Buttons"] = "Скрывать эти фреймы"
+L["fadeOut"] = "Скрывать со временем"
+L["Faster Health Updates"] = "Увеличить частоту обновления Здоровья"
+L["Filter Auto Switch"] = "Авт. перекл. фильтра"
+L["first %d"] = "первый(я)"
+L["Flash"] = "Мерцание"
 L["Focus"] = "Фокус"
---[[Translation missing --]]
---[[ L["focus"] = "Focus"--]]
---[[Translation missing --]]
---[[ L["Focus Target"] = "Focus Target"--]]
+L["focus"] = "Фокус"
+L["Focus Target"] = "Фокус цели"
 L["Font"] = "Шрифт"
 L["Font Outline"] = "Обводка шрифта"
 L["Font Size"] = "Размер шрифта"
 L["Format"] = "Формат"
---[[Translation missing --]]
---[[ L["Frame Level"] = "Frame Level"--]]
---[[Translation missing --]]
---[[ L["Frame priorities for LibGetFrame"] = ""--]]
---[[Translation missing --]]
---[[ L["Free Cooldown Only"] = "Free Cooldown Only"--]]
---[[Translation missing --]]
---[[ L["Frequency"] = "Frequency"--]]
---[[Translation missing --]]
---[[ L["Friendly NPC Frame"] = "Friendly NPC Frame"--]]
---[[Translation missing --]]
---[[ L["From"] = "From"--]]
---[[Translation missing --]]
---[[ L["From: "] = "From: "--]]
+L["Frame Level"] = "Слой кадра"
+L["Frame priorities for LibGetFrame"] = "Приоритет фреймов для LibGetFrame"
+L["Free Cooldown Only"] = "Только доступные КД"
+L["Frequency"] = "Частота"
+L["Friendly NPC Frame"] = "Дружественные НПЦ панели"
+L["From"] = "От"
+L["From: "] = "От:"
 L["General"] = "Основное"
 L["GHOST"] = "ПРИЗРАК"
---[[Translation missing --]]
---[[ L["Glow"] = "Glow"--]]
---[[Translation missing --]]
---[[ L["Glow Buffs"] = ""--]]
---[[Translation missing --]]
---[[ L["Glow Casts"] = ""--]]
---[[Translation missing --]]
---[[ L["Glow Color"] = "Glow Color"--]]
---[[Translation missing --]]
---[[ L["Glow is only available to the spells in the list below"] = ""--]]
---[[Translation missing --]]
---[[ L["Glow Options"] = "Glow Options"--]]
---[[Translation missing --]]
---[[ L["Glow Type"] = "Glow Type"--]]
---[[Translation missing --]]
---[[ L["Glow unit button when a group member sends a %s request"] = "Glow unit button when a group member sends a %s request"--]]
---[[Translation missing --]]
---[[ L["Glows"] = "Glows"--]]
---[[Translation missing --]]
---[[ L["Gradient"] = "Gradient"--]]
---[[Translation missing --]]
---[[ L["Gradient Colors"] = ""--]]
---[[Translation missing --]]
---[[ L["Group Columns"] = "Group Columns"--]]
---[[Translation missing --]]
---[[ L["Group Filters"] = "Group Filters"--]]
---[[Translation missing --]]
---[[ L["Group Rows"] = "Group Rows"--]]
---[[Translation missing --]]
---[[ L["Group Spacing"] = "Group Spacing"--]]
---[[Translation missing --]]
---[[ L["H"] = "Hero Talent"--]]
---[[Translation missing --]]
---[[ L["Half"] = "Half"--]]
---[[Translation missing --]]
---[[ L["Heal Absorb"] = "Heal Absorb"--]]
---[[Translation missing --]]
---[[ L["Heal Prediction"] = "Heal Prediction"--]]
+L["Glow"] = "Свечение"
+L["Glow Buffs"] = "Подсвеченный Бафф"
+L["Glow Casts"] = "Подсвеченный Каст"
+L["Glow Color"] = "Цвет подсветки"
+L["Glow is only available to the spells in the list below"] = "Подсветка доступна только для ниже перечисленных заклинаний"
+L["Glow Options"] = "Параметры подсветки"
+L["Glow Type"] = "Подсветка: тип"
+L["Glow unit button when a group member sends a %s request"] = "Подсвечивать фрейм, когда юнит отправляет запрос типа %s"
+L["Glows"] = "Свечения"
+L["Gradient"] = "Градиент"
+L["Gradient Colors"] = "Градиент: цвет"
+L["Group Columns"] = "Групп в столбце"
+L["Group Filters"] = "Фильтр Групп"
+L["Group Rows"] = "Групп в столбце"
+L["Group Spacing"] = "Интервал групп"
+L["H"] = "Героический Талант"
+L["Half"] = "Половина"
+L["Heal Absorb"] = "Поглощение исцеления"
+L["Heal Absorbs"] = "Поглощение Исцеления"
+L["Heal Prediction"] = "Предсказывание исцеления"
+L["Health"] = "Здоровье"
 L["Health Bar"] = "Полоса здоровья"
 L["Health Bar Alpha"] = "Панель здоровья: прозрачность"
 L["Health Bar Color"] = "Панель здоровья: цвет"
---[[Translation missing --]]
---[[ L["Health Loss Alpha"] = "Health Loss Alpha"--]]
---[[Translation missing --]]
---[[ L["Health Loss Color"] = "Health Loss Color"--]]
---[[Translation missing --]]
---[[ L["Health Text"] = "Health Text"--]]
---[[Translation missing --]]
---[[ L["Health Thresholds"] = "Health Thresholds"--]]
---[[Translation missing --]]
---[[ L["Height"] = "Height"--]]
---[[Translation missing --]]
---[[ L["Hide"] = "Hide"--]]
+L["Health Loss Alpha"] = "Здоровье: прозрачность утраченного"
+L["Health Loss Color"] = "Здоровье: цвет утраченного"
+L["Health Text"] = "Здоровье: текст"
+L["Health Thresholds"] = "Здоровье: пороги"
+L["Height"] = "Высота"
+L["Hide"] = "Скрыть"
 L["Hide Blizzard Frames"] = "Скрывать фреймы Blizzard"
-L["Hide Blizzard Party"] = "Скрыть Blizzard Группы"
+L["Hide Blizzard Party"] = "Скрыть Группу Blizzard"
 L["Hide Blizzard Raid"] = "Скрыть Blizzard Рейда"
---[[Translation missing --]]
---[[ L["hide icon animation"] = "hide icon animation"--]]
+L["hide icon animation"] = "спрятать анимацию иконки"
 L["Hide in Combat"] = "Скрыть в Бою"
---[[Translation missing --]]
---[[ L["Hide Placeholder Frames"] = ""--]]
+L["Hide Placeholder Frames"] = "Спрятать плейсхолдер панели"
 L["Hide Self"] = "Скрыть Себя"
---[[Translation missing --]]
---[[ L["Hide tooltips for units"] = ""--]]
---[[Translation missing --]]
---[[ L["hideDamager"] = "Hide Damager"--]]
---[[Translation missing --]]
---[[ L["hideIfEmptyOrFull"] = "Hide if empty/full"--]]
---[[Translation missing --]]
---[[ L["hideInCombat"] = "Hide in combat"--]]
+L["Hide tooltips for units"] = "Спрятать подсказку для юнитов"
+L["hideDamager"] = "Прятать ДД"
+L["hideIfEmptyOrFull"] = "Скрыть если пусто/заполнено"
+L["hideInCombat"] = "Спрятать в бою"
 L["HIGH CPU USAGE"] = "ВЫСОКАЯ НАГРУЗКА НА ЦП"
---[[Translation missing --]]
---[[ L["Highlight Filter (blacklist)"] = "Highlight Filter (blacklist)"--]]
---[[Translation missing --]]
---[[ L["Highlight Size"] = "Highlight Size"--]]
---[[Translation missing --]]
---[[ L["Highlight Type"] = "Highlight Type"--]]
---[[Translation missing --]]
---[[ L["Horizontal"] = "Horizontal"--]]
---[[Translation missing --]]
---[[ L["Horizontal Gradient"] = "Horizontal Gradient"--]]
+L["Highlight Filter (blacklist)"] = "Подсветка: фильтр (чёрный список)"
+L["Highlight Size"] = "Подсветка: размер"
+L["Highlight Type"] = "Подсветка: тип"
+L["Horizontal"] = "Горизонтально"
+L["Horizontal Gradient"] = "Горизонтальный градиент"
 L["Icon"] = "Иконка"
---[[Translation missing --]]
---[[ L["Icon Options"] = ""--]]
---[[Translation missing --]]
---[[ L["Icon Style"] = ""--]]
---[[Translation missing --]]
---[[ L["Icons"] = "Icons"--]]
---[[Translation missing --]]
---[[ L["IDs separated by whitespaces"] = "IDs separated by whitespaces"--]]
---[[Translation missing --]]
---[[ L["If disabled, no check, no reply, just glow"] = "If disabled, no check, no reply, just glow"--]]
---[[Translation missing --]]
---[[ L["If you are a paladin or warrior, and the unit has no buffs from you, a %s icon will be displayed."] = "If you are a paladin or warrior, and the unit has no buffs from you, a %s icon will be displayed."--]]
---[[Translation missing --]]
---[[ L["Ignore UNIT_AURA payloads"] = ""--]]
+L["Icon Options"] = "Иконка: настройки"
+L["Icon Style"] = "Иконка: стиль"
+L["Icons"] = "Иконки"
+L["IDs separated by whitespaces"] = "ID через пробел"
+L["If disabled, no check, no reply, just glow"] = "Если не выбрано, нет проверки и ответа, только свечение "
+L["If you are a paladin or warrior, and the unit has no buffs from you, a %s icon will be displayed."] = "Если вы паладин или воин, и у юнита нет ваших баффов, иконка %s будет отображена."
+L["Ignore UNIT_AURA payloads"] = "Игнорировать UNIT_AURA пейлоады"
 L["Import"] = "Импорт"
 L["Import & Export All Settings"] = "Импорт и экспорт всех настроек"
---[[Translation missing --]]
---[[ L["Include Character Settings"] = ""--]]
---[[Translation missing --]]
---[[ L["Include Nickname Settings"] = "Include Nickname Settings"--]]
---[[Translation missing --]]
---[[ L["Incompatible Version"] = "Incompatible Version"--]]
---[[Translation missing --]]
---[[ L["Increase Health Update Rate"] = "Increase Health Update Rate"--]]
+L["Include Character Settings"] = "Включать настройки персонажа"
+L["Include Nickname Settings"] = "Включить настройки никнейма"
+L["Incompatible Version"] = "Несовместимая Версия"
 L["Indicator Settings"] = "Настройки индикатора"
 L["Indicator settings are part of Layout settings which are account-wide."] = "Настройки индикаторов являются частью настроек макета, и общие на весь аккаунт."
 L["Indicator Sync"] = "Синхронизация индикатора"
 L["Indicators"] = "Индикаторы"
---[[Translation missing --]]
---[[ L["Inherit: "] = "Inherit:"--]]
---[[Translation missing --]]
---[[ L["Inner Buff"] = ""--]]
---[[Translation missing --]]
---[[ L["Input spell id"] = "Input spell id"--]]
---[[Translation missing --]]
---[[ L["instakill"] = "instakill"--]]
---[[Translation missing --]]
---[[ L["Instance Name"] = "Instance Name"--]]
---[[Translation missing --]]
---[[ L["Instant Mode"] = ""--]]
---[[Translation missing --]]
---[[ L["Invalid"] = "Invalid"--]]
-L["Invalid layout name."] = "Неподходящее название макета"
---[[Translation missing --]]
---[[ L["Invalid spell id."] = "Invalid spell id."--]]
---[[Translation missing --]]
---[[ L["Invalid unit."] = "Invalid unit."--]]
---[[Translation missing --]]
---[[ L["INVERT"] = "Invert"--]]
---[[Translation missing --]]
---[[ L["Invert Color"] = ""--]]
+L["Inherit: "] = "Наследовать:"
+L["Inner Buff"] = "Внутренний Бафф"
+L["Input spell id"] = "Ввести ID заклинания"
+L["instakill"] = "ваншот "
+L["Instance Name"] = "Подземелье: имя"
+L["Instant Mode"] = "Режим Instant"
+L["Invalid"] = "Неподходящий(я)"
+L["Invalid layout name."] = "Неподходящее название макета "
+L["Invalid spell id."] = "Неподходящее ID заклинания"
+L["Invalid unit."] = "Неподходящий юнит"
+L["INVERT"] = "Инвертировать"
+L["Invert Color"] = "Инвертировать цвет"
 L["It will be renamed if this layout name already exists"] = "Если макет уже существует, он будет переименован"
---[[Translation missing --]]
---[[ L["Item"] = ""--]]
---[[Translation missing --]]
---[[ L["Known Spells Only"] = "Known Spells Only"--]]
+L["Item"] = "Предмет"
+L["Known Spells Only"] = "Только известные заклинания"
 L["Layout"] = "Макет"
 L["Layout added: %s."] = "Макет добавлен: %s."
-L["Layout Auto Switch"] = "Автоматическое переключение макета"
+L["Layout Auto Switch"] = "Автоматическое переключение макета "
 L["Layout deleted: %s."] = "Макет удалён: %s."
 L["Layout imported: %s."] = "Макет импортирован: %s."
-L["Layout renamed: %s to %s."] = "Макет переименован: из %s в %s."
+L["Layout renamed: %s to %s."] = "Макет переименован: из %s в %s. "
 L["Layout Setup"] = "Настройки макета"
 L["Layouts"] = "Расположение"
 L["Leader Icon"] = "Иконка Лидера"
---[[Translation missing --]]
---[[ L["LEFT"] = "Left"--]]
---[[Translation missing --]]
---[[ L["Left"] = "Left"--]]
---[[Translation missing --]]
---[[ L["Left Spell"] = "Left Spell"--]]
---[[Translation missing --]]
---[[ L["Left-Click"] = ""--]]
---[[Translation missing --]]
---[[ L["Left-Drag"] = ""--]]
---[[Translation missing --]]
---[[ L["left-to-right"] = "Left-to-Right"--]]
---[[Translation missing --]]
---[[ L["Length"] = "Length"--]]
---[[Translation missing --]]
---[[ L["LibHealComm needs to be installed"] = "LibHealComm needs to be installed"--]]
---[[Translation missing --]]
---[[ L["Lines"] = "Lines"--]]
+L["LEFT"] = "Лево"
+L["Left"] = "Лево"
+L["Left Spell"] = "ЛКМ Заклинание"
+L["Left-Click"] = "ЛКМ"
+L["Left-Drag"] = "ЛКМ-Перетащить"
+L["left-to-right"] = "Слева направо"
+L["Length"] = "Длинна"
+L["LibHealComm needs to be installed"] = "LibHealComm должно быть установлено"
+L["Lines"] = "Линии"
 L["Links"] = "Ссылки"
---[[Translation missing --]]
---[[ L["Lock"] = "Lock"--]]
---[[Translation missing --]]
---[[ L["Lock Cell Frames"] = "Lock Cell Frames"--]]
+L["Lock"] = "Заблокировать"
+L["Lock Cell Frames"] = "Закрепить панели Cell"
 L["Macro"] = "Макрос"
 L["Magic"] = "Магия"
 L["Main"] = "Основная"
---[[Translation missing --]]
---[[ L["many"] = "many"--]]
+L["many"] = "много"
 L["Marks Bar"] = "Панель меток"
---[[Translation missing --]]
---[[ L["marksTips"] = "\n|rTarget marker\nLeft-Click: |cffffffffset raid marker on target|r\nRight-Click: |cfffffffflock raid marker on target (in your group)|r"--]]
+L["marksTips"] = "\n|rМетка цели\nЛКМ: |cffffffffустановить рейдовую метку на цель|r\nПКМ: |cffffffffзафиксировать рейдовую иконку на цели (в вашей группе)|r"
 L["Max Buttons"] = "Максимально кнопок"
-L["Max Columns"] = "Максимально столбцов"
---[[Translation missing --]]
---[[ L["Max Displayed"] = "Max Displayed"--]]
-L["Max Rows"] = "Максимально строк"
+L["Max Columns"] = "Столбцы"
+L["Max Displayed"] = "Показывать максимум"
+L["Max Rows"] = "Строки"
 L["Me"] = "Я"
-L["menu"] = "меню"
 L["Menu"] = "Меню"
+L["menu"] = "меню"
 L["Menu Position"] = "Меню: позиция"
---[[Translation missing --]]
---[[ L["Middle"] = "Middle"--]]
+L["Middle"] = "Центр "
 L["mine"] = "моё"
 L["Misc"] = "Разное"
 L["Missing Buff"] = "Отсутствующий бафф"
 L["Missing Buffs"] = "Отсутствующие баффы"
---[[Translation missing --]]
---[[ L["MODERATE CPU USAGE"] = "MODERATE CPU USAGE"--]]
---[[Translation missing --]]
---[[ L["Monochrome"] = ""--]]
---[[Translation missing --]]
---[[ L["Mouseover Highlight Color"] = "Mouseover Highlight Color"--]]
---[[Translation missing --]]
---[[ L["move"] = ""--]]
---[[Translation missing --]]
---[[ L["Mover"] = "Mover"--]]
+L["MODERATE CPU USAGE"] = "ЗНАЧИТЕЛЬНАЯ НАГРУЗКА ЦП"
+L["Monochrome"] = "Монохромная"
+L["Mouseover Highlight Color"] = "Подсветка \"под мышкой\": цвет"
+L["move"] = "двигать"
+L["Mover"] = "Двигалка"
 L["My Nickname"] = "Мой Никнейм"
---[[Translation missing --]]
---[[ L["Name Color"] = "Name Color"--]]
---[[Translation missing --]]
---[[ L["Name Filter"] = ""--]]
---[[Translation missing --]]
---[[ L["Name List"] = ""--]]
---[[Translation missing --]]
---[[ L["Name or Name-Server"] = "Name or Name-Server"--]]
---[[Translation missing --]]
---[[ L["Name Text"] = "Name Text"--]]
---[[Translation missing --]]
---[[ L["Name Width / UnitButton Width"] = "Name Width / UnitButton Width"--]]
---[[Translation missing --]]
---[[ L["Name: "] = "Name: "--]]
+L["Name Color"] = "Цвет имени"
+L["Name Filter"] = "Имя: фильтр"
+L["Name List"] = "Список Имён"
+L["Name or Name-Server"] = "Имя или Имя-Сервер"
+L["Name Text"] = "Имя: текст"
+L["Name Width / UnitButton Width"] = "Имя: ширина / Фрейм: ширина"
+L["Name: "] = "Имя: "
 L["Never"] = "Никогда"
---[[Translation missing --]]
---[[ L["New"] = "New"--]]
---[[Translation missing --]]
---[[ L["New version found (%s). Please visit %s to get the latest version."] = "New version found (%s). Please visit %s to get the latest version."--]]
+L["New"] = "Новый"
+L["New version found (%s). Please visit %s to get the latest version."] = [=[Найдена новая версия (%s). Пожалуйста посетите %s что бы получить новую версию.
+]=]
 L["Nickname"] = "Никнейм"
---[[Translation missing --]]
---[[ L["Nickname Options"] = "Nickname Options"--]]
---[[Translation missing --]]
---[[ L["No"] = "No"--]]
---[[Translation missing --]]
---[[ L["No custom debuffs to export!"] = "No custom debuffs to export!"--]]
---[[Translation missing --]]
---[[ L["No guarantee of the order of members in each subgroup"] = ""--]]
---[[Translation missing --]]
---[[ L["No Spec"] = ""--]]
---[[Translation missing --]]
---[[ L["No support for rearrangement of members within a same subgroup"] = ""--]]
---[[Translation missing --]]
---[[ L["None"] = "None"--]]
---[[Translation missing --]]
---[[ L["Non-En"] = "Non-En"--]]
---[[Translation missing --]]
---[[ L["Normal"] = "Normal"--]]
---[[Translation missing --]]
---[[ L["Normal + Combat Res"] = "Normal + Combat Res"--]]
---[[Translation missing --]]
---[[ L["not in combat"] = ""--]]
---[[Translation missing --]]
---[[ L["OFF"] = "OFF"--]]
---[[Translation missing --]]
---[[ L["Offensives Tracker"] = ""--]]
+L["Nickname Blacklist"] = "ЧС Ников"
+L["Nickname Options"] = "Никнейм: настройки"
+L["Nickname Sync"] = "Синхр. Никнеймов"
+L["No"] = "Нет"
+L["No custom debuffs to export!"] = "Нет пользовательских дебаффов для экспорта!"
+L["No guarantee of the order of members in each subgroup"] = "Нет гарантий о порядке участников в каждой подгруппе"
+L["No Spec"] = "Нет спека"
+L["No support for rearrangement of members within a same subgroup"] = "Отсутствует поддержка перестановки участников в одной подгруппе"
+L["None"] = "Ничего"
+L["Non-En"] = "Не Англ."
+L["Normal"] = "Обычный"
+L["Normal + Combat Res"] = "Обычный + БР"
+L["not in combat"] = "вне боя"
+L["OFF"] = "ВЫКЛЮЧЕНО"
+L["Offensives Tracker"] = "Трекер Атакующих КД"
 L["OFFLINE"] = "ВНЕ СЕТИ"
---[[Translation missing --]]
---[[ L["ON"] = "ON"--]]
---[[Translation missing --]]
---[[ L["Only affects duration text"] = ""--]]
---[[Translation missing --]]
---[[ L["Only available for Spells"] = "Only available for Spells"--]]
---[[Translation missing --]]
---[[ L["only in group"] = "only in group"--]]
---[[Translation missing --]]
---[[ L["Only one threshold is displayed at a time"] = "Only one threshold is displayed at a time"--]]
---[[Translation missing --]]
---[[ L["Only show during encounter or in mythic+"] = "Only show during encounter or in mythic+"--]]
---[[Translation missing --]]
---[[ L["Only show when you have permission to do this"] = "Only show when you have permission to do this"--]]
---[[Translation missing --]]
---[[ L["Only visible to me"] = "Only visible to me"--]]
---[[Translation missing --]]
---[[ L["onlyShowOvershields"] = "Only show overshields"--]]
---[[Translation missing --]]
---[[ L["onlyShowTopGlow"] = "Only show glow for the first debuff"--]]
+L["ON"] = "ВКЛ "
+L["Only affects duration text"] = "Влияет только на текст длительности"
+L["Only available for Spells"] = "Доступно только для Заклинаний"
+L["only in group"] = "только в группе"
+L["Only one threshold is displayed at a time"] = "Только один из порогов виден в один момент"
+L["Only show during encounter or in mythic+"] = "Только во время боя с боссом или в М+"
+L["Only show when you have permission to do this"] = "Показывать только если у вас есть разрешения это делать"
+L["Only visible to me"] = "Видно только для меня"
+L["onlyEnableNotInCombat"] = "Только когда я не в бою"
+L["onlyShowOvershields"] = "Показывать только сверхщиты"
+L["onlyShowTopGlow"] = "Показывать свечение только для первого дебаффа"
 L["Options"] = "Настройки"
---[[Translation missing --]]
---[[ L["Options UI Accent Color"] = "Options UI Accent Color"--]]
---[[Translation missing --]]
---[[ L["Options UI Font Size"] = "Options UI Font Size"--]]
---[[Translation missing --]]
---[[ L["Orientation"] = "Orientation"--]]
---[[Translation missing --]]
---[[ L["Others"] = ""--]]
---[[Translation missing --]]
---[[ L["Out of Range Alpha"] = "Out of Range Alpha"--]]
+L["Options UI Accent Color"] = "Цвет интерфейса настроек"
+L["Options UI Font Size"] = "Размер шрифта интерфейса настроек"
+L["Orientation"] = "Направление"
+L["Others"] = "Другие"
+L["Out of Range Alpha"] = "Вне зоны действия: прозрачность"
 L["Outdoor"] = "Снаружи"
---[[Translation missing --]]
---[[ L["Outer Buff"] = ""--]]
---[[Translation missing --]]
---[[ L["Outline"] = "Outline"--]]
---[[Translation missing --]]
---[[ L["Overlay"] = ""--]]
---[[Translation missing --]]
---[[ L["Overshield Texture"] = "Overshield Texture"--]]
+L["Outer Buff"] = "Внешний Бафф"
+L["Outline"] = "Обводка текста"
+L["Overlay"] = "Оверлей"
+L["Overshield Texture"] = "Текстура сверхщита "
 L["Overwrite Click-Casting"] = "Переопределить привязку клавиш "
 L["Overwrite Layout"] = "Перезаписать макет"
---[[Translation missing --]]
---[[ L["P"] = "PvP Talent"--]]
---[[Translation missing --]]
---[[ L["Particles"] = "Particles"--]]
+L["P"] = "PvP Талант"
+L["Particles"] = "Частицы"
 L["Party"] = "Группа"
---[[Translation missing --]]
---[[ L["Party Assignment Icon"] = ""--]]
---[[Translation missing --]]
---[[ L["PENDING"] = "PENDING"--]]
+L["Party Assignment Icon"] = "Иконка роли группы"
+L["PENDING"] = "ОЖИДАНИЕ"
 L["Percentage"] = "Процент"
-L["PET"] = "ПИТОМЕЦ"
 L["Pet"] = "Питомец"
+L["PET"] = "ПИТОМЕЦ"
+L["Pets"] = "Петы рейда"
 L["Pixel"] = "Пиксель"
 L["Pixel Perfect"] = "С точностью до пикселя"
 L["Play animation when the unit uses a specific spell/item. The list is global shared, not layout-specific."] = "Показывать анимацию, когда юнит использует конкретное заклинание/предмет. Список глобальный на весь аддон, а не конкретен для макета."
 L["Play Icon Animation When"] = "Показывать анимацию иконки когда"
 L["Poison"] = "Яд"
 L["Position"] = "Позиция"
---[[Translation missing --]]
---[[ L["Power Bar Filters"] = "Power Bar Filters"--]]
+L["Power Bar Filters"] = "Фильтры полоски ресурса"
 L["Power Color"] = "Ресурс: цвет"
 L["Power Color (dark)"] = "Ресурс: цвет (тёмный)"
-L["Power Size"] = "Ресурс: размер"
-L["Power Text"] = "Ресурс: текст"
---[[Translation missing --]]
---[[ L["Premade Mode"] = ""--]]
+L["Power Size"] = "Ресурс: размер "
+L["Power Text"] = "Ресурс: текст "
+L["Premade Mode"] = "Режим Premade"
 L["Press Key to Bind"] = "Нажмите клавишу привязки"
 L["Preview"] = "Предосмотр"
---[[Translation missing --]]
---[[ L["Primary Talents"] = "Primary Talents"--]]
+L["Primary Talents"] = "Основные Таланты"
 L["Private Auras"] = "Приватные Ауры"
+L["Profile imported successfully."] = "Профиль успешно импортирован"
 L["Profiles"] = "Профили"
 L["Pull"] = "Пулл"
 L["Pull in %d sec"] = "Пулл через %d с"
---[[Translation missing --]]
---[[ L["Pull timer cancelled"] = "Pull timer cancelled"--]]
---[[Translation missing --]]
---[[ L["pullTimerTips"] = "\n|rPull Timer\nLeft-Click: |cffffffffstart timer|r\nRight-Click: |cffffffffcancel timer|r"--]]
---[[Translation missing --]]
---[[ L["PW:S"] = "PW:S"--]]
---[[Translation missing --]]
---[[ L["Quick Assist"] = ""--]]
---[[Translation missing --]]
---[[ L["Quick Cast"] = ""--]]
---[[Translation missing --]]
---[[ L["Raid"] = "Raid"--]]
-L["Raid Debuffs"] = "Дебафы рейда"
---[[Translation missing --]]
---[[ L["Raid Debuffs updated: %s."] = "Raid Debuffs updated: %s."--]]
---[[Translation missing --]]
---[[ L["Raid Icon (player)"] = "Raid Icon (player)"--]]
---[[Translation missing --]]
---[[ L["Raid Icon (target)"] = "Raid Icon (target)"--]]
---[[Translation missing --]]
---[[ L["Raid Pets"] = "Raid Pets"--]]
---[[Translation missing --]]
---[[ L["Raid Tools"] = "Raid Tools"--]]
---[[Translation missing --]]
---[[ L["RAID_DEBUFFS_TIPS"] = "Tips: [Drag & Drop] to change debuff order. [Double-Click] on instance name to open Encounter Journal. [Shift+Left Click] on instance/boss name to share debuffs. [Alt+Left Click] on instance/boss name to reset debuffs. The priority of General Debuffs is higher than Boss Debuffs."--]]
---[[Translation missing --]]
---[[ L["raidRosterTips"] = "[Right-Click] promote/demote (assistant). [Alt+Right-Click] uninvite."--]]
+L["Pull timer cancelled"] = "Пулл таймер отменён"
+L["pullTimerTips"] = "\n|rПулл Таймер\nЛКМ: |cffffffffзапустить таймер|r\nПКМ: |cffffffffотменить таймер|r"
+L["PW:S"] = "СС: Щит"
+L["Quick Assist"] = "Ассист Кнопки"
+L["Quick Cast"] = "Быстрый Каст"
+L["Raid"] = "Рейд"
+L["Raid Debuffs"] = "Дебаффы рейда"
+L["Raid Debuffs updated: %s."] = "Дебафы Рейда обновлены: %s."
+L["Raid Icon (player)"] = "Рейдовая иконка (игрок)"
+L["Raid Icon (target)"] = "Рейдовая иконка (цель)"
+L["Raid Tools"] = "Рейд Тулзы"
+L["RAID_DEBUFFS_TIPS"] = "Совет: [Нажать и потянуть] что бы сменить порядок дебаффов. [Двойное Нажатие] на имя подземелья что бы открыть Путеводитель по Приключениям. [Shift+ЛКМ] на имени подземелья/босса что бы поделиться дебаффами. [ALT+ЛКМ] на имени подземелья/босса что бы сбросить дебаффы. Приоритет Основных Дебаффов выше приоритета Дебаффов Босса."
+L["raidRosterTips"] = "[ПКМ] что бы повысить/понизить (помощник). [Alt+ПКМ] что бы выгнать"
 L["Ready"] = "Готов"
---[[Translation missing --]]
---[[ L["Ready Check Icon"] = "Ready Check Icon"--]]
---[[Translation missing --]]
---[[ L["ReadyCheck and PullTimer buttons"] = "ReadyCheck and PullTimer buttons"--]]
---[[Translation missing --]]
---[[ L["readyCheckTips"] = "\n|rReady Check\nLeft-Click: |cffffffffinitiate a ready check|r\nRight-Click: |cffffffffstart a role check|r"--]]
---[[Translation missing --]]
---[[ L["Rect"] = "Rect"--]]
---[[Translation missing --]]
---[[ L["refresh unit buttons"] = ""--]]
---[[Translation missing --]]
---[[ L["Refreshing unit buttons (%s)..."] = ""--]]
+L["Ready Check Icon"] = "Иконка готовности"
+L["ReadyCheck and PullTimer buttons"] = "Кнопки Готовности и Пулл Таймера"
+L["readyCheckTips"] = "\n|rГотовность\nЛКМ: |cffffffffзапустить проверку готовности|r\nПКМ: |cffffffffзапустить проверку роли|r"
+L["Rect"] = "Прямоугольник"
+L["refresh unit buttons"] = "обновить фреймы юнитов"
+L["Refreshing unit buttons (%s)..."] = "Обновляет фреймы юнитов (%s)..."
+L["Relative Point"] = "Точка крепления"
+L["Relative To"] = "Крепление к"
 L["Remaining Time"] = "Оставшееся время"
+L["Remember to backup your profile"] = "Не забывайте создавать бэкапы своего профиля"
 L["Remove"] = "Удалить"
 L["Rename"] = "Переименовать"
 L["Rename indicator"] = "Переименовать индикатор"
 L["Rename layout"] = "Переименовать макет"
 L["Replace click-castings of Spell type with resurrection spells on dead units"] = "Заменить использования заклинания нажатием использованием возрождения на мёртвых целях"
-L["Reply After Cast"] = "Отвечать после каста"
+L["Reply After Cast"] = "Отвечать после каста "
 L["Reply With Cooldown"] = "Отвечать с временем перезарядки"
---[[Translation missing --]]
---[[ L["Report deaths to group"] = "Report deaths to group"--]]
---[[Translation missing --]]
---[[ L["Request"] = "Request"--]]
---[[Translation missing --]]
---[[ L["Require font support"] = "Require font support"--]]
---[[Translation missing --]]
---[[ L["Require reload of the UI"] = "Require reload of the UI"--]]
---[[Translation missing --]]
---[[ L["Reset"] = ""--]]
---[[Translation missing --]]
---[[ L["RESET"] = "Cell requires a full reset after updating from a very old version"--]]
+L["Report deaths to group"] = "Сообщать от смертях в группу"
+L["Request"] = "Запрос"
+L["Require font support"] = "Требуется поддержка шрифта"
+L["Require reload of the UI"] = "Требует перезагрузку интерфейса"
+L["RESET"] = "Cell требует полный сброс после обновление из очень старых версий"
+L["Reset"] = "Сбросить"
 L["Reset All"] = "Сбросить Все"
---[[Translation missing --]]
---[[ L["reset all Cell settings"] = "reset all Cell settings"--]]
+L["reset all Cell settings"] = "сбросить все настройки Cell"
 L["reset all Click-Castings"] = "сбросить все привязки клавиш"
---[[Translation missing --]]
---[[ L["reset all Code Snippets"] = ""--]]
-L["reset all Layouts and Indicators"] = "сбросить все Макеты и Индикаторы"
---[[Translation missing --]]
---[[ L["reset all Raid Debuffs"] = "reset all Raid Debuffs"--]]
---[[Translation missing --]]
---[[ L["reset Cell position"] = "reset Cell position"--]]
---[[Translation missing --]]
---[[ L["Reset debuffs?"] = "Reset debuffs?"--]]
---[[Translation missing --]]
---[[ L["Reset Offensive Spells"] = ""--]]
---[[Translation missing --]]
---[[ L["reset Quick Assist for current spec"] = ""--]]
---[[Translation missing --]]
---[[ L["RESET_CHARACTER"] = "Cell requires a character profile reset after updating from a very old version"--]]
---[[Translation missing --]]
---[[ L["RESET_INCLUDES"] = "Only Click-Castings and Layout Auto Switch are included"--]]
---[[Translation missing --]]
---[[ L["RESET_YES_NO"] = "|cff22ff22Yes|r - Reset Cell\n|cffff2222No|r - I'll fix it myself"--]]
---[[Translation missing --]]
---[[ L["Respond to all dispellable debuffs"] = "Respond to all dispellable debuffs"--]]
---[[Translation missing --]]
---[[ L["Respond to all requests from group members"] = "Respond to all requests from group members"--]]
---[[Translation missing --]]
---[[ L["Respond to requests that are only sent to me"] = "Respond to requests that are only sent to me"--]]
---[[Translation missing --]]
---[[ L["Respond to specific dispellable debuffs"] = "Respond to specific dispellable debuffs"--]]
---[[Translation missing --]]
---[[ L["Respond to whispers"] = "Respond to whispers"--]]
---[[Translation missing --]]
---[[ L["Response Type"] = "Response Type"--]]
---[[Translation missing --]]
---[[ L["Reverse Fill"] = "Reverse Fill"--]]
---[[Translation missing --]]
---[[ L["Right"] = "Right"--]]
---[[Translation missing --]]
---[[ L["RIGHT"] = "Right"--]]
---[[Translation missing --]]
---[[ L["Right-Click"] = ""--]]
---[[Translation missing --]]
---[[ L["Right-Drag"] = ""--]]
---[[Translation missing --]]
---[[ L["right-to-left"] = "Right-to-Left"--]]
---[[Translation missing --]]
---[[ L["Role"] = ""--]]
---[[Translation missing --]]
---[[ L["Role Filter"] = ""--]]
-L["Role Icon"] = "Иконка роли"
---[[Translation missing --]]
---[[ L["Rotate Texture"] = "Rotate Texture"--]]
---[[Translation missing --]]
---[[ L["Rotation"] = "Rotation"--]]
---[[Translation missing --]]
---[[ L["Round Up Duration Text"] = "Round Up Duration Text"--]]
---[[Translation missing --]]
---[[ L["Rows"] = ""--]]
---[[Translation missing --]]
---[[ L["Run"] = "Run"--]]
---[[Translation missing --]]
---[[ L["S"] = "Spec Talent"--]]
---[[Translation missing --]]
---[[ L["Save"] = "Save"--]]
---[[Translation missing --]]
---[[ L["Scale"] = "Scale"--]]
---[[Translation missing --]]
---[[ L["ScrollDown"] = "ScrollDown"--]]
---[[Translation missing --]]
---[[ L["ScrollUp"] = "ScrollUp"--]]
---[[Translation missing --]]
---[[ L["sec"] = "sec"--]]
---[[Translation missing --]]
---[[ L["Secondary Talents"] = "Secondary Talents"--]]
---[[Translation missing --]]
---[[ L["Separate NPC Frame"] = "Separate NPC Frame"--]]
---[[Translation missing --]]
---[[ L["Set Bar Max Value"] = ""--]]
---[[Translation missing --]]
---[[ L["set unit"] = ""--]]
---[[Translation missing --]]
---[[ L["set unit's name"] = ""--]]
---[[Translation missing --]]
---[[ L["set unit's pet"] = ""--]]
---[[Translation missing --]]
---[[ L["Setup"] = ""--]]
---[[Translation missing --]]
---[[ L["Shadow"] = "Shadow"--]]
---[[Translation missing --]]
---[[ L["Shape"] = "Shape"--]]
---[[Translation missing --]]
---[[ L["Share"] = "Share"--]]
+L["reset all Code Snippets"] = "сбросить все фрагменты кода"
+L["reset all Layouts and Indicators"] = "сбросить все Макеты и Индикаторы "
+L["reset all Raid Debuffs"] = "сбросить все Рейдовые Дебаффы"
+L["reset Cell position"] = "сбросить позиции Cell"
+L["Reset debuffs?"] = "Сбросить дебаффы?"
+L["Reset Offensive Spells"] = "Сбросить Атакующие Заклинания"
+L["reset Quick Assist for current spec"] = "сбросить настройки Ассист Кнопок для текущей специализации"
+L["RESET_CHARACTER"] = "Cell требует сброс профиля персонажа после обновления с очень старой версии"
+L["RESET_INCLUDES"] = "Только Привязка Клавиш и Автоматическое переключение макета включены"
+L["RESET_YES_NO"] = "|cff22ff22Да|r - Сбросить Cell\n|cffff2222Нет|r - Я сам всё исправлю"
+L["Respond to all dispellable debuffs"] = "Отвечать на все рассеиваемые дебаффы"
+L["Respond to all requests from group members"] = "Отвечать на все запросы от участников группы"
+L["Respond to requests that are only sent to me"] = "Отвечать только на запросы, отправленные мне"
+L["Respond to specific dispellable debuffs"] = "Отвечать только на конкретные рассеиваемые дебаффы"
+L["Respond to whispers"] = "Отвечать на шёпот"
+L["Response Type"] = "Тип ответа"
+L["Restore backup"] = "Восстановить Бэкап"
+L["Reverse Fill"] = "Обратное заполнение"
+L["Right"] = "Право"
+L["RIGHT"] = "Право "
+L["Right-Click"] = "ПКМ"
+L["Right-Drag"] = "ПКМ-Перетащить"
+L["right-to-left"] = "Справо налево"
+L["Role"] = "Роль"
+L["Role Filter"] = "Роль: фильтр"
+L["Role Icon"] = "Иконка Роли"
+L["Rotate Texture"] = "Повернуть Текстуру"
+L["Rotation"] = "Поворот"
+L["Round Up Duration Text"] = "Округлять текст длительности"
+L["Rows"] = "Строки"
+L["Run"] = "Запустить"
+L["S"] = "Талант Специализации"
+L["Save"] = "Сохранить"
+L["Scale"] = "Масштаб"
+L["ScrollDown"] = "Колёсико Вниз"
+L["ScrollUp"] = "Колёсико Вверх"
+L["sec"] = "с"
+L["Secondary Talents"] = "Вторичные Таланты"
+L["Separate NPC Frame"] = "Отдельная НПЦ панель"
+L["Set Bar Max Value"] = "Установить максимальное значение"
+L["set unit"] = "установить юнита"
+L["set unit's name"] = "установить имя юнита"
+L["set unit's pet"] = "установить пета юнита"
+L["Setup"] = "Настройка "
+L["Shadow"] = "Тень"
+L["Shape"] = "Форма"
+L["Share"] = "Поделиться"
 L["Shield Bar"] = "Панель щитов"
---[[Translation missing --]]
---[[ L["Shield Texture"] = "Shield Texture"--]]
---[[Translation missing --]]
---[[ L["shieldByMe"] = "Only show PW:S cast by me"--]]
---[[Translation missing --]]
---[[ L["shields"] = "shields"--]]
---[[Translation missing --]]
---[[ L["Shift+Enter: add a new line"] = "Shift+Enter: add a new line"--]]
---[[Translation missing --]]
---[[ L["Shine"] = "Shine"--]]
---[[Translation missing --]]
---[[ L["Show All"] = ""--]]
---[[Translation missing --]]
---[[ L["show Cell options frame"] = "show Cell options frame"--]]
---[[Translation missing --]]
---[[ L["Show countdown number"] = "Show countdown number"--]]
---[[Translation missing --]]
---[[ L["Show countdown swipe"] = "Show countdown swipe"--]]
---[[Translation missing --]]
---[[ L["Show Current Instance"] = "Show Current Instance"--]]
+L["Shield Texture"] = "Текстура щита"
+L["shieldByMe"] = "Показывать только мой СС: Щит"
+L["shields"] = "щиты"
+L["Shields"] = "Щиты"
+L["Shift+Enter: add a new line"] = "Shift+Enter: добавить новую строку"
+L["Shine"] = "Свечение"
+L["Show All"] = "Показать Все"
+L["show Cell options frame"] = "показать интерфейс настроек Cell"
+L["Show countdown number"] = "Показать цифру отсчёта"
+L["Show countdown swipe"] = "Показать анимацию"
+L["Show Current Instance"] = "Показать текущее подземелье"
 L["Show friendly NPCs in a separate frame"] = "Показывать дружественных НПЦ в отдельной панели"
 L["Show NPC Frame"] = "Показывать панель НЦП"
 L["Show Party"] = "Отображать в Группе"
 L["Show Party/Arena Pets"] = "Отображать Питомцев в Группе/Арене"
+L["Show pets in a separate frame"] = "Показывать петов в отдельном фрейме"
 L["Show Raid"] = "Отображать в Рейде"
 L["Show Raid Pets"] = "Отображать Питомцев в Рейде"
 L["Show Solo"] = "Отображать соло"
---[[Translation missing --]]
---[[ L["Show units you care about more in a separate frame"] = "Show units you care about more in a separate frame"--]]
+L["Show Solo Pet"] = "Показывать Соло Пета"
+L["Show units you care about more in a separate frame"] = "Показывает интересующих вас юнитов в отдельной панели"
 L["Show while in a party"] = "Показывать в группе"
 L["Show while in a raid"] = "Показывать в рейде"
 L["Show while not in a group"] = "Показывать вне группы"
@@ -908,244 +571,139 @@ L["showAnimation"] = "Показывать анимацию"
 L["showBackground"] = "Показывать фон"
 L["showDuration"] = "Показывать текст длительности"
 L["showGroupNumber"] = "Показывать номер группы"
---[[Translation missing --]]
---[[ L["Shows only one spell request on a unit button at a time"] = "Shows only one spell request on a unit button at a time"--]]
---[[Translation missing --]]
---[[ L["showStack"] = "Show stack text"--]]
---[[Translation missing --]]
---[[ L["showTimer"] = "Show timer"--]]
---[[Translation missing --]]
---[[ L["showTooltip"] = "Show aura tooltip"--]]
---[[Translation missing --]]
---[[ L["Size"] = "Size"--]]
---[[Translation missing --]]
---[[ L["Size (Big)"] = "Size (Big)"--]]
+L["Shows only one spell request on a unit button at a time"] = "Показывает только один запрос заклинания на фрейме юнита за раз"
+L["showStack"] = "Показывать текст стаков"
+L["showTimer"] = "Показывать таймер"
+L["showTooltip"] = "Показывать подсказку ауры"
+L["Size"] = "Размер"
+L["Size (Big)"] = "Размер (Большой)"
 L["Slash Commands"] = "Слэш-команды"
---[[Translation missing --]]
---[[ L["Smart Resurrection"] = "Smart Resurrection"--]]
---[[Translation missing --]]
---[[ L["Smooth"] = ""--]]
---[[Translation missing --]]
---[[ L["smooth"] = "Smooth"--]]
---[[Translation missing --]]
---[[ L["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event)."--]]
---[[Translation missing --]]
---[[ L["Solid"] = "Solid"--]]
---[[Translation missing --]]
---[[ L["Solo"] = ""--]]
---[[Translation missing --]]
---[[ L["Sort By Role"] = ""--]]
---[[Translation missing --]]
---[[ L["Spacing"] = ""--]]
---[[Translation missing --]]
---[[ L["Spec"] = ""--]]
---[[Translation missing --]]
---[[ L["Spec Filter"] = ""--]]
+L["Smart Resurrection"] = "Умное воскрешение"
+L["Smooth"] = "Плавная"
+L["smooth"] = "Плавная"
+L["SNIPPETS_TIPS"] = "[Дважды нажать] что бы переименовать. [Shift-нажать] что бы удалить. Все отмеченные фрагменты кода будут автоматически запущенны в конце процесса инициализации Cell (в ADDON_LOADED событии)."
+L["Solid"] = "Сплошной"
+L["Solo"] = "Соло"
+L["Sort By Role"] = "Сортировка по Роли"
+L["Spacing"] = "Интервал"
+L["Spec"] = "Спек"
+L["Spec Filter"] = "Спек: фильтр"
 L["Special Thanks"] = "Особая благодарность"
---[[Translation missing --]]
---[[ L["SPELL"] = "SPELL"--]]
---[[Translation missing --]]
---[[ L["Spell"] = "Spell"--]]
---[[Translation missing --]]
---[[ L["Spell already exists."] = "Spell already exists."--]]
---[[Translation missing --]]
---[[ L["Spell List"] = "Spell List"--]]
---[[Translation missing --]]
---[[ L["Spell Request"] = "Spell Request"--]]
---[[Translation missing --]]
---[[ L["SpellId and BuffId are the same in most cases"] = "SpellId and BuffId are the same in most cases"--]]
---[[Translation missing --]]
---[[ L["Spells"] = "Spells"--]]
---[[Translation missing --]]
---[[ L["Spotlight"] = "Spotlight"--]]
---[[Translation missing --]]
---[[ L["Spotlight Frame"] = "Spotlight Frame"--]]
---[[Translation missing --]]
---[[ L["Spotlight frames are not supported"] = ""--]]
---[[Translation missing --]]
---[[ L["stackFont"] = "Stack Font"--]]
---[[Translation missing --]]
---[[ L["Status Icon"] = "Status Icon"--]]
---[[Translation missing --]]
---[[ L["Status Text"] = "Status Text"--]]
---[[Translation missing --]]
---[[ L["Status Text Position"] = "Status Text Position"--]]
---[[Translation missing --]]
---[[ L["Strata"] = "Strata"--]]
+L["SPELL"] = "Заклинание"
+L["Spell"] = "Заклинание"
+L["Spell already exists."] = "Заклинание уже существует"
+L["Spell List"] = "Список заклинаний"
+L["Spell Request"] = "Запрос спеллов"
+L["SpellId and BuffId are the same in most cases"] = "Зачастую ID заклинаний и баффов одинаковы"
+L["Spells"] = "Заклинания"
+L["Spotlight"] = "Выделенное"
+L["Spotlight Frame"] = "Панель выделенного "
+L["Spotlight frames are not supported"] = "Панели выделенного не поддерживаются"
+L["stackFont"] = "Стаки: текст"
+L["Status Icon"] = "Иконка статуса"
+L["Status Text"] = "Текст статуса"
+L["Status Text Position"] = "Позиция текста статуса"
+L["Strata"] = "Слой кадра"
 L["Style"] = "Стиль"
 L["Supporters"] = "Патроны"
---[[Translation missing --]]
---[[ L["Sync Nicknames with Others"] = "Sync Nicknames with Others"--]]
---[[Translation missing --]]
---[[ L["Sync Status"] = "Sync Status"--]]
---[[Translation missing --]]
---[[ L["Sync With"] = "Sync With"--]]
---[[Translation missing --]]
---[[ L["syncTips"] = "Set the master layout here\nAll indicators of slave layout are fully in-sync with the master\nIt's a two-way sync, but all indicators of slave layout will be lost when set a master"--]]
---[[Translation missing --]]
---[[ L["T"] = "Talent"--]]
---[[Translation missing --]]
---[[ L["Tank Active Mitigation"] = "Tank Active Mitigation"--]]
+L["Sync Status"] = "Статус Синхронизации"
+L["Sync With"] = "Синхронизировать С:"
+L["syncTips"] = "Установить первичный макет\nВсе вторичные макеты полностью синхронизированы с первичным макетом\nСинхронизация двухсторонняя, но все индикаторы вторичного макета будут перезаписаны при установке первичного"
+L["T"] = "Талант"
+L["Tank Active Mitigation"] = "Активная Защита Танка"
 L["Target"] = "Цель"
---[[Translation missing --]]
---[[ L["target"] = "Target"--]]
---[[Translation missing --]]
---[[ L["Target a player to autofill the name"] = ""--]]
---[[Translation missing --]]
---[[ L["Target Counter"] = "Target Counter"--]]
---[[Translation missing --]]
---[[ L["Target Highlight Color"] = "Target Highlight Color"--]]
---[[Translation missing --]]
---[[ L["Target Marks"] = "Target Marks"--]]
---[[Translation missing --]]
---[[ L["Target of Target"] = "Target of Target"--]]
---[[Translation missing --]]
---[[ L["Targeted Spells"] = "Targeted Spells"--]]
+L["target"] = "Цель"
+L["Target a player to autofill the name"] = "Автозаполняет выбранную цель"
+L["Target Counter"] = "Количество целей"
+L["Target Highlight Color"] = "Подсветка \"цель\": цвет"
+L["Target Marks"] = "Метки Цели"
+L["Target of Target"] = "Цель цели"
+L["Targeted Spells"] = "Нацеленные Заклинания"
 L["Text"] = "Текст"
---[[Translation missing --]]
---[[ L["Text Options"] = ""--]]
---[[Translation missing --]]
---[[ L["Text Width"] = "Text Width"--]]
---[[Translation missing --]]
---[[ L["Texture"] = "Texture"--]]
---[[Translation missing --]]
---[[ L["The priority of spells decreases from top to bottom."] = "The priority of spells decreases from top to bottom."--]]
---[[Translation missing --]]
---[[ L["The spell is required to apply a buff on the target"] = "The spell is required to apply a buff on the target"--]]
-L["The spells list of a icons indicator is unordered (no priority)."] = "Список заклинаний индикатора \"иконок\" не имеет порядка ( приоритета )"
---[[Translation missing --]]
---[[ L["Then create a PR or submit a ticket on GitHub"] = "Then create a PR or submit a ticket on GitHub"--]]
---[[Translation missing --]]
---[[ L["These \"reset\" commands below affect all your characters in this account"] = "These \"reset\" commands below affect all your characters in this account"--]]
---[[Translation missing --]]
---[[ L["These settings are spec-specific"] = ""--]]
---[[Translation missing --]]
---[[ L["Thickness"] = "Thickness"--]]
+L["Text Options"] = "Текст: настройки"
+L["Text Width"] = "Ширина текста"
+L["Texture"] = "Текстура"
+L["The priority of spells decreases from top to bottom."] = "Приоритет заклинания снижается сверху вниз."
+L["The spell is required to apply a buff on the target"] = "Заклинание должно накладывать бафф на цель"
+L["The spells list of a icons indicator is unordered (no priority)."] = "Список заклинаний индикатора \"иконок\" не имеет порядка (приоритета)."
+L["Then create a PR or submit a ticket on GitHub"] = "Затем создайте PR или тикет на GitHub"
+L["These \"reset\" commands below affect all your characters in this account"] = "Последующие \"reset\" команды влияют на всех персонажей вашего аккаунта"
+L["These settings are spec-specific"] = "Эти настройки индивидуальны для каждой специализации"
+L["Thickness"] = "Толщина"
 L["This may help solve issues of indicators not updating correctly"] = "Эта настройка может помочь решить проблемы с обновлениями некоторых индикаторов"
 L["This may overwrite built-in indicators"] = "Эта настройка может перезаписать встроенные индикаторы"
---[[Translation missing --]]
---[[ L["This setting will be ignored, if the %1$s option in %2$s tab is enabled"] = "This setting will be ignored, if the %1$s option in %2$s tab is enabled"--]]
---[[Translation missing --]]
---[[ L["This will make these icons not click-through-able"] = "This will make these icons not click-through-able"--]]
---[[Translation missing --]]
---[[ L["This will not affect aura tooltips"] = ""--]]
---[[Translation missing --]]
---[[ L["This will overwrite your debuffs"] = "This will overwrite your debuffs"--]]
---[[Translation missing --]]
---[[ L["Timeout"] = "Timeout"--]]
+L["This setting will be ignored, if the %1$s option in %2$s tab is enabled"] = "Эта настройка будет проигнорирована, если настройка %1$s во вкладке %2$s активно"
+L["This will make these icons not click-through-able"] = "Это сделает эти иконки не прокликиваемыми сквозь"
+L["This will not affect aura tooltips"] = "Это не повлияет на подскажу ауры"
+L["This will overwrite your debuffs"] = "Это перезапишет ваши дебаффы"
+L["Timeout"] = "Таймаут"
 L["Tip: Every layout has its own position setting"] = "Совет: Каждый макет имеет свои настройки расположения"
---[[Translation missing --]]
---[[ L["Tip: right-click to delete"] = ""--]]
---[[Translation missing --]]
---[[ L["To"] = "To"--]]
---[[Translation missing --]]
---[[ L["To HealthBar's"] = "To HealthBar's"--]]
---[[Translation missing --]]
---[[ L["To open options frame, use /cell options"] = "To open options frame, use /cell options"--]]
---[[Translation missing --]]
---[[ L["To show shield value, |cffff2727Glyph of Power Word: Shield|r is required"] = "To show shield value, |cffff2727Glyph of Power Word: Shield|r is required"--]]
---[[Translation missing --]]
---[[ L["To transfer across realm, you need to be in the same group"] = "To transfer across realm, you need to be in the same group"--]]
---[[Translation missing --]]
---[[ L["To UnitButton's"] = "To UnitButton's"--]]
---[[Translation missing --]]
---[[ L["toggle"] = ""--]]
---[[Translation missing --]]
---[[ L["togglemenu"] = "Menu"--]]
---[[Translation missing --]]
---[[ L["togglemenu_nocombat"] = "Menu (not in combat)"--]]
---[[Translation missing --]]
---[[ L["Tooltips"] = "Tooltips"--]]
---[[Translation missing --]]
---[[ L["Tooltips need to be enabled in General tab"] = "Tooltips need to be enabled in General tab"--]]
---[[Translation missing --]]
---[[ L["TOP"] = "Top"--]]
---[[Translation missing --]]
---[[ L["TOPLEFT"] = "Top Left"--]]
---[[Translation missing --]]
---[[ L["TOPRIGHT"] = "Top Right"--]]
---[[Translation missing --]]
---[[ L["top-to-bottom"] = "Top-to-Bottom"--]]
---[[Translation missing --]]
---[[ L["Track by ID"] = "Track by ID"--]]
---[[Translation missing --]]
---[[ L["trackByName"] = "Track by name"--]]
+L["Tip: right-click to delete"] = "Совет: ПКМ что бы удалить"
+L["To"] = "К"
+L["To HealthBar's"] = "Относительно панели"
+L["To open options frame, use /cell options"] = "Что бы открыть настройки, используйте команду /cell options"
+L["To show shield value, |cffff2727Glyph of Power Word: Shield|r is required"] = "Что бы показывать значение щита, необходим  |cffff2727Символ слова силы: Щит|r "
+L["To transfer across realm, you need to be in the same group"] = "Что бы передавать через реалмы, нужно быть в одной группе"
+L["To UnitButton's"] = "Относительно панели"
+L["toggle"] = "переключить"
+L["togglemenu"] = "Меню"
+L["togglemenu_nocombat"] = "Меню (вне боя)"
+L["Tooltips"] = "Подсказка"
+L["Tooltips need to be enabled in General tab"] = "Подсказка должна быть включена в настройках \"Основное\" "
+L["TOP"] = "Верх"
+L["TOPLEFT"] = "Лево-Верх"
+L["TOPRIGHT"] = "Право-Верх"
+L["top-to-bottom"] = "Сверху Вниз"
+L["Track by ID"] = "Отслеживать по ID"
+L["trackByName"] = "Отслеживать по названию"
 L["Translators"] = "Переводчики"
 L["Translit Cyrillic to Latin"] = "Транслит кириллицы в латиницу"
 L["Type"] = "Тип"
 L["Type: "] = "Тип:"
---[[Translation missing --]]
---[[ L["Unaffected"] = "Unaffected"--]]
---[[Translation missing --]]
---[[ L["Uncategorized"] = ""--]]
---[[Translation missing --]]
---[[ L["Unit"] = "Unit"--]]
---[[Translation missing --]]
---[[ L["Unit Button"] = "Unit Button"--]]
---[[Translation missing --]]
---[[ L["Unit Button Style"] = "Unit Button Style"--]]
---[[Translation missing --]]
---[[ L["Unit buttons refreshed (%s)."] = ""--]]
---[[Translation missing --]]
---[[ L["Unit Filter"] = ""--]]
---[[Translation missing --]]
---[[ L["Unit Spacing"] = "Unit Spacing"--]]
---[[Translation missing --]]
---[[ L["Unit's Name"] = ""--]]
---[[Translation missing --]]
---[[ L["Units Per Column"] = ""--]]
---[[Translation missing --]]
---[[ L["Units Per Row"] = ""--]]
---[[Translation missing --]]
---[[ L["Unit's Pet"] = "Unit's Pet"--]]
---[[Translation missing --]]
---[[ L["Unit's Target"] = "Unit's Target"--]]
---[[Translation missing --]]
---[[ L["Unlimited"] = "Unlimited"--]]
+L["Unaffected"] = "Отсутствует"
+L["Uncategorized"] = "Без категории"
+L["Unit"] = "Юнит"
+L["Unit Button"] = "Юнит: фрейм"
+L["Unit Button Style"] = "Юнит: стиль фрейма"
+L["Unit buttons refreshed (%s)."] = "Фреймы юнитов обновлены (%s)."
+L["Unit Filter"] = "Фильтр юнитов"
+L["Unit Spacing"] = "Интервал фреймов"
+L["Unit's Name"] = "Имя Юнита"
+L["Units Per Column"] = "Юнитов в столбце"
+L["Units Per Row"] = "Юнитов в строке"
+L["Unit's Pet"] = "Юнит: пет"
+L["Unit's Target"] = "Юнит: цель"
+L["Unlimited"] = "Неограниченно"
 L["Unlock"] = "Разблокировать"
---[[Translation missing --]]
---[[ L["unnamed"] = "unnamed"--]]
---[[Translation missing --]]
---[[ L["Use %s addon"] = "Use %s addon"--]]
---[[Translation missing --]]
---[[ L["Use |cFFFFB5C5/cell buff X|r to set icon size"] = "Use |cFFFFB5C5/cell buff X|r to set icon size"--]]
---[[Translation missing --]]
---[[ L["Use |cFFFFB5C5/cell report X|r to set the number of reports during a raid encounter"] = "Use |cFFFFB5C5/cell report X|r to set the number of reports during a raid encounter"--]]
+L["unnamed"] = "без имени "
+L["Unselected settings will remain"] = "Не отмеченные настройки останутся"
+L["Use %s addon"] = "Используйте аддон %s"
+L["Use |cFFFFB5C5/cell buff X|r to set icon size"] = "Используйте команду |cFFFFB5C5/cell buff X|r, что бы выставить размер иконок"
+L["Use |cFFFFB5C5/cell report X|r to set the number of reports during a raid encounter"] = "Используйте |cFFFFB5C5/cell report X|r что бы установить количество отчётов во время боя с рейдовым боссом"
 L["Use CLEU events to increase health update rate"] = "Использовать ивенты CLEU для обновления здоровья"
 L["Use common profile"] = "Использовать общий профиль"
---[[Translation missing --]]
---[[ L["Use Elapsed Time"] = ""--]]
---[[Translation missing --]]
---[[ L["Use Same Arrangement As Main"] = "Use Same Arrangement As Main"--]]
---[[Translation missing --]]
---[[ L["Use Same Size As Main"] = "Use Same Size As Main"--]]
---[[Translation missing --]]
---[[ L["use separate profile for current spec"] = ""--]]
+L["Use Elapsed Time"] = "Показывать прошедшее время"
+L["Use Same Arrangement As Main"] = "Использовать расположения Основной панели"
+L["Use Same Size As Main"] = "Использовать настройки размеров Основной панели"
+L["use separate profile for current spec"] = "использовать отдельный профиль для текущей специализации"
 L["Use separate profile for each spec"] = "Использовать отдельный профиль для каждой специализации"
 L["Utilities"] = "Утилиты"
 L["VEHICLE"] = "Транспорт"
 L["vehicle name"] = "название транспорта"
-L["Vehicle Name Position"] = "Положение названия транспорта"
---[[Translation missing --]]
---[[ L["Vertical"] = "Vertical"--]]
+L["Vehicle Name Position"] = "Текст транспорта"
+L["Vertical"] = "Вертикально"
 L["Vertical Gradient"] = "Вертикальный градиент"
---[[Translation missing --]]
---[[ L["Visibility"] = "Visibility"--]]
---[[Translation missing --]]
---[[ L["Waiting for combat to end..."] = ""--]]
---[[Translation missing --]]
---[[ L["Want to help improve Raid Debuffs?"] = "Want to help improve Raid Debuffs?"--]]
+L["Visibility"] = "Прозрачность "
+L["Waiting for combat to end..."] = "Ожидание конца боя..."
+L["Want to help improve Raid Debuffs?"] = "Хотите улучшить Дебаффы Рейда?"
 L["Width"] = "Ширина"
---[[Translation missing --]]
---[[ L["World Marks"] = "World Marks"--]]
+L["World Marks"] = "Метки Мира"
 L["Would you like Cell to create a \"Healers\" indicator (icons)?"] = "Хотели бы вы чтобы Cell создал \"Хилерские\" индикаторы (иконки)?"
 L["X Offset"] = "Смещение по X"
 L["Y Offset"] = "Смещение по Y"
 L["Yes"] = "Да"
 L["You"] = "Вы"
---[[Translation missing --]]
---[[ L["You can config debuffs in %s"] = "You can config debuffs in %s"--]]
---[[Translation missing --]]
---[[ L["You can move it in Preview mode"] = "You can move it in Preview mode"--]]
+L["You can config debuffs in %s"] = "Вы можете настроить дебаффы в %s"
+L["You can move it in Preview mode"] = "Можно двигать в режиме Предпросмотра"
 L["You can't do that while in combat."] = "Вы не можете сделать это в бою"
 L["You don't have permission to do this"] = "У вас нет разрешения сделать это"

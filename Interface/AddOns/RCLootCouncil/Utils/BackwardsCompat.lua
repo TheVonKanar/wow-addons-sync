@@ -2,7 +2,7 @@
 -- Creates 'RCLootCouncil.Compat' as a namespace for compatibility functions.
 -- @author Potdisc
 -- Create Date : 31/5-2019 05:21:28
---- @type RCLootCouncil
+--- @class RCLootCouncil
 local addon = select(2, ...)
 local Compat = {}
 addon.Compat = Compat
@@ -250,5 +250,55 @@ Compat.list = {
 		func = function ()
 			addon:ResetUI()
 		end
+	},
+
+	{
+		name = "Update 'tierToken' in history",
+		version = "3.13.2",
+		func = function ()
+			local Item = addon.Require "Utils.Item"
+			for _, factionrealm in pairs(addon.lootDB.sv.factionrealm) do
+				for _, data in pairs(factionrealm) do
+					for _, v in ipairs(data) do
+						v.tierToken = RCTokenTable[Item:GetItemIDFromLink(v.lootWon)] and true
+					end
+				end
+			end
+		end
+	},
+	{
+		name = "Removed Azerite button group",
+		version = "3.14.0",
+		func = function ()
+			for _, db in pairs(addon.db.profiles) do
+				if db.buttons then
+					db.buttons.AZERITE = nil
+				end
+				if db.enabledButtons then
+					db.enabledButtons.AZERITE = nil
+				end
+				if db.responses then
+					db.responses.AZERITE = nil
+				end
+			end
+		end
+	},
+	{
+		name = "Update history times to ISO",
+		version = "3.15.4", -- Originially v3.15.0
+		func = function ()
+			for _, factionrealm in pairs(addon.lootDB.sv.factionrealm) do
+				for _, data in pairs(factionrealm) do
+					for _, v in ipairs(data) do
+						-- We can't really guesstimate the time difference from who ML'd the item and realm time, so just update the date 
+						local d,m,y = strsplit("/", v.date, 3)
+						-- Ensure we're not trying to convert something that's already in ISO format
+						if #tostring(d) < 4 then
+							v.date = string.format("%04d/%02d/%02d", "20"..y, m, d)
+						end
+					end
+				end
+			end
+		end,
 	}
 }

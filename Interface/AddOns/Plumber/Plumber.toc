@@ -1,5 +1,7 @@
-## Interface: 110002
-## Version: 1.3.6
+## X-Flavor: retail
+## X-Expansion: TWW
+## Interface: 110107, 110200
+## Version: 1.7.2
 
 ## Title: Plumber
 
@@ -7,7 +9,8 @@
 ## Notes-zhCN: 提供多种便捷功能。|n请前往插件设置来查看更多信息。
 
 ## Author: Peterodox
-## SavedVariables: PlumberDB, PlumberDevData
+## SavedVariables: PlumberDB, PlumberDevData, PlumberStorage
+## SavedVariablesPerCharacter: PlumberDB_PC
 
 ## IconTexture: Interface\AddOns\Plumber\Art\Logo\PlumberLogo64
 
@@ -16,23 +19,29 @@ Initialization.lua
 Locales\Localization.xml
 API.lua
 
+Modules\SharedData.lua
+Modules\SharedFonts.xml
 Modules\SharedWidgets.xml
 Modules\SharedTooltip.lua
+Modules\BlizzardEditMode.lua
+Modules\ScenarioTracker.lua
+#Modules\DevTool.lua
 #Modules\DirectionArrow.lua
-Modules\SuperTrack.xml
+#Modules\SuperTrack.xml
 
 ControlCenter.lua
 
 Modules\GossipFrameMedal.lua
 Modules\BackpackItemTracker.lua
-Modules\TimeRift.lua
+Modules\AutoJoinEvents.lua
 Modules\PlayerChoiceFrameToken.lua
-#Modules\DruidModelFix.lua
-Modules\QuickSlot.lua
+Modules\QuickSlot.xml
+#Modules\SpellFlyout.lua
+Modules\SpellFlyout_Secure.lua
+Modules\QuestAreaTrigger.lua
 Modules\Dreamseed.lua
 #Modules\EventMap.lua
 Modules\MapPin.xml
-Modules\Navigator_Dreamseed.lua
 Modules\RareAnnouncement.lua
 Modules\PlayerChoiceUI.lua
 Modules\Lockpicking.lua
@@ -40,12 +49,35 @@ Modules\BlizzFix_EventToast.lua
 Modules\TalkingHead.lua
 Modules\AzerothianArchives.lua
 Modules\MerchantPrice.lua
+Modules\BossBanner.lua
 
 #TWW
-Modules\TooltipKey.lua
 Modules\DelvesScenario.lua
 Modules\DelvesDashboard.lua
 Modules\ExpansionLandingPage.xml
+Modules\LandingPageSwitch.lua
+Modules\GameTooltipExtension.xml
+Modules\LootUI.xml
+Modules\UnderlightAngler.lua
+Modules\SpellcastInfo.lua
+Modules\ChatOptions.lua
+Modules\NameplateResources.lua
+Modules\StaticPopupEnhancement.xml
+Modules\PlayerTitleUI.lua
+Modules\BlizzardSuperTrack.lua
+Modules\EquipmentFlyout.xml
+Modules\Macros.lua
+Modules\ProfessionsBook.lua
+Modules\ExpansionLandingPage\ExpansionLandingPage_TWW.xml
 
+#Modules\DruidModelFix.lua
+#Modules\MovieSubtitle.lua
+#Modules\QuestSpecialItemCooldown.lua
+#Modules\SecretOfAzeroth.lua
 #Modules\AddonList.lua
 #Modules\BlizzFix_WardrobeTrackingHelpTip.lua
+#Modules\WoWAnniversary.lua
+#Modules\Navigator_Dreamseed.lua
+#Modules\AccountStore.lua
+#Modules\MinimapMouseover.lua
+#Modules\ObjectiveTrackerModule.xml

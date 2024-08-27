@@ -2,7 +2,18 @@
 Details_StreamerDB = {
 ["characters"] = {
 ["Kvotheen - Hyjal"] = "Kvotheen - Hyjal",
+["Pandamoun - Hyjal"] = "Kvotheen - Hyjal",
 ["Quiproquo - Uldaman"] = "Kvotheen - Hyjal",
+["Pandamagee - Hyjal"] = "Kvotheen - Hyjal",
+["Pandakv - Hyjal"] = "Kvotheen - Hyjal",
+["Pandakvo - Hyjal"] = "Kvotheen - Hyjal",
+["Raptorbuyer - Hyjal"] = "Kvotheen - Hyjal",
+["Trialmagekvo - Hyjal"] = "Kvotheen - Hyjal",
+["Testkvotheen - Hyjal"] = "Kvotheen - Hyjal",
+["Pandamages - Hyjal"] = "Kvotheen - Hyjal",
+["Kvothyr - Hyjal"] = "Kvotheen - Hyjal",
+["Pandamo - Hyjal"] = "Kvotheen - Hyjal",
+["Pandkvé - Hyjal"] = "Kvotheen - Hyjal",
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
@@ -22,7 +33,7 @@ Details_StreamerDB = {
 ["minimap"] = {
 ["minimapPos"] = 160,
 ["radius"] = 160,
-["hide"] = false,
+["hide"] = true,
 },
 ["point"] = "CENTER",
 ["arrow_anchor_x"] = 0,

@@ -1,4 +1,4 @@
-local MAJ, REV, COMPAT, _, T = 1, 10, select(4,GetBuildInfo()), ...
+local MAJ, REV, COMPAT, _, T = 1, 12, select(4,GetBuildInfo()), ...
 if T.SkipLocalActionBook then return end
 if T.TenEnv then T.TenEnv() end
 
@@ -86,20 +86,31 @@ end
 
 local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference do
 	local COMMA_LIST_COMMAND_TYPES, CAST_ESCAPE_COMMAND_TYPES = {[2]=1, [3]=1}, {[0]=1, [1]=1, [3]=1}
+	local function parseListEntryPrefix(s, p)
+		local sp, spc = p, p
+		while spc do
+			sp, spc = spc, s:match("^%s*<[^<]->()", sp)
+		end
+		return sp > p and s:sub(p, sp-1), sp
+	end
 	local genParser do
 		local doRewrite, replaceFunc, critFail, critLine
 		local function replaceAlternatives(ctype, args)
-			local ret, alt2, rfCtx
-			for alt, cpos in (args .. ","):gmatch("(.-),()") do
-				alt2, rfCtx = replaceFunc(ctype, alt, rfCtx, args, cpos)
-				if alt == alt2 or (alt2 and alt2:match("%S")) then
-					if doRewrite then
-						alt2 = alt2:match("^%s*(.-)%s*$")
-						ret = ret and ret .. ", " .. alt2 or alt2
-					else
-						ret = ret and ret .. "," .. alt2 or alt2
-					end
+			local sp, ret, alt, alt2, altPrefix, rfCtx = 1
+			repeat
+				if ctype == 3 then
+					altPrefix, sp = parseListEntryPrefix(args, sp)
 				end
+				alt, sp = args:match("([^,]*),?()", sp)
+				alt2, rfCtx = replaceFunc(ctype, alt, rfCtx, args, sp)
+				if alt == alt2 or (alt2 and alt2:match("%S")) then
+					alt2 = doRewrite and alt2:match("^%s*(.-)%s*$") or alt2
+					alt2 = altPrefix and altPrefix .. alt2 or alt2
+					ret = ret and ret .. "," .. alt2 or alt2
+				end
+			until sp > #args
+			if not doRewrite and args:sub(-1) == "," then
+				ret = ret and ret .. "," or ret
 			end
 			return ret
 		end
@@ -229,17 +240,20 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 		end
 		local function findMount(prefSID, mtype, ctype)
 			local wantDragonriding, escapeContext = mtype == 402, ctype == 2 and 0 or 1
+			if prefSID and RW:IsSpellCastable(prefSID, escapeContext) then
+				return prefSID
+			end
 			local idm, myFactionId, nc, cs = C_MountJournal.GetMountIDs(), UnitFactionGroup("player") == "Horde" and 0 or 1, 0
 			local gmi, gmiex = C_MountJournal.GetMountInfoByID, C_MountJournal.GetMountInfoExtraByID
 			for i=1, #idm do
 				i = idm[i]
-				local _1, sid, _3, active, _5, _6, _7, factionLocked, factionId, hide, have, _12, isDragonriding = gmi(i)
+				local _1, sid, _3, active, _5, _6, _7, factionLocked, factionId, hide, have, _12, _isSteadyFlight = gmi(i)
 				if have and not hide
 				   and (not factionLocked or factionId == myFactionId)
 				   and RW:IsSpellCastable(sid, escapeContext)
 				   then
 					local _, _, _, _, t = gmiex(i)
-					local isTypeMatch = t == mtype or (wantDragonriding and isDragonriding)
+					local isTypeMatch = t == mtype or (wantDragonriding and t == 424)
 					if sid == prefSID or (active and isTypeMatch and prefSID == nil) then
 						return sid
 					elseif isTypeMatch and not skip[sid] then
@@ -256,25 +270,26 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 			if tag == "ground" then
 				gmSid = gmSid and IsKnownSpell(gmSid) or findMount(gmPref or gmSid, 230, ctype)
 				return replaceSpellID(ctype, tostring(gmSid), prefix)
+			elseif tag == "dragon" or MODERN and tag == "air" then
+				drSid = drSid and IsKnownSpell(drSid) or findMount(drPref or drSid, 402, ctype)
+				return replaceSpellID(ctype, tostring(drSid), prefix)
 			elseif tag == "air" then
 				fmSid = fmSid and IsKnownSpell(fmSid) or findMount(fmPref or fmSid, 248, ctype)
 				return replaceSpellID(ctype, tostring(fmSid), prefix)
-			elseif tag == "dragon" then
-				drSid = drSid and IsKnownSpell(drSid) or findMount(drPref or drSid, 402, ctype)
-				return replaceSpellID(ctype, tostring(drSid), prefix)
 			end
 			return nil
 		end
 		if not (MODERN or CF_WRATH) then
 			replaceMountTag = function () end
 		end
-		local function editPreference(orig, new)
-			return type(new) == "number" and new or new ~= false and orig or nil
+		local function editPreference(orig, new, cached)
+			local v = type(new) == "number" and new or new ~= false and orig or nil
+			return v, v == orig and cached or nil
 		end
 		function setMountPreference(groundSpellID, flyingSpellID, dragonSpellID)
-			gmPref = editPreference(gmPref, groundSpellID)
-			fmPref = editPreference(fmPref, flyingSpellID)
-			drPref = editPreference(drPref, dragonSpellID)
+			gmPref, gmSid = editPreference(gmPref, groundSpellID, gmSid)
+			fmPref, fmSid = editPreference(fmPref, flyingSpellID, fmSid)
+			drPref, drSid = editPreference(drPref, dragonSpellID, drSid)
 			return gmPref, fmPref, drPref
 		end
 	end
@@ -302,10 +317,12 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 		return value
 	end)
 	local toImpText, prepareQuantizer do
-		local spells, specialTokens, OTHER_SPELL_IDS = {}, {}, {150544, 243819}
+		local spells, specialTokens, OTHER_SPELL_IDS = {}, {}, {150544, 243819, 460013}
 		local abMountTokens = {["Ground Mount"]="{{mount:ground}}", ["Flying Mount"]="{{mount:air}}", ["Dragonriding Mount"]=MODERN and "{{mount:dragon}}" or nil}
 		toImpText = genParser(function(ctype, value, skipCount, args, cpos)
 			if type(skipCount) == "number" and skipCount > 0 then
+				-- This replaceAlternatives interaction would get bamboozled by
+				-- a castable token matching ",%s*<[^<]-,[^<]*>".
 				return nil, skipCount-1
 			end
 			local commaList, noEscapes = COMMA_LIST_COMMAND_TYPES[ctype], not CAST_ESCAPE_COMMAND_TYPES[ctype]

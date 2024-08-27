@@ -5,13 +5,14 @@
 
 --- @type RCLootCouncil
 local addon = select(2, ...)
---- @class RCSessionFrame : AceTimer-3.0, AceEvent-3.0
+--- @class RCSessionFrame : AceModule, AceTimer-3.0, AceEvent-3.0
 local RCSessionFrame = addon:NewModule("RCSessionFrame", "AceTimer-3.0", "AceEvent-3.0")
 local ST = LibStub("ScrollingTable")
 --- @type RCLootCouncilLocale
 local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
 
-local ml;
+--- @type RCLootCouncilML
+local ml
 local ROW_HEIGHT = 40
 local awardLater = false
 local loadingItems = false
@@ -233,7 +234,13 @@ function RCSessionFrame:GetFrame()
 	b2:SetPoint("LEFT", b1, "RIGHT", 10, 0)
 	b2:SetScript("OnClick", function()
 		if not ml.running then -- Don't clear lootTable on a running session.
-			ml.lootTable = {}
+			wipe(ml.lootTable)
+		else
+			for i = #ml.lootTable, 1, -1 do
+				if not ml.lootTable[i].isSent then
+					ml:RemoveItem(i) -- remove the item from MLs lootTable
+				end
+			end
 		end
 		self:Disable()
 	end)

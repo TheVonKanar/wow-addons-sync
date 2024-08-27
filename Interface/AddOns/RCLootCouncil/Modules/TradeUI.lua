@@ -10,7 +10,7 @@
 
 --- @class RCLootCouncil
 local addon = select(2, ...)
---- @class TradeUI : AceEvent-3.0, AceTimer-3.0
+--- @class TradeUI : AceModule, AceEvent-3.0, AceTimer-3.0
 local TradeUI = addon:NewModule("TradeUI", "AceEvent-3.0", "AceTimer-3.0")
 addon.TradeUI = TradeUI -- Shorthand for easier access
 local ST = LibStub("ScrollingTable")
@@ -19,6 +19,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
 local LibDialog = LibStub("LibDialog-1.1")
 local _G = _G
 local Comms = addon.Require "Services.Comms"
+local ItemUtils = addon.Require "Utils.Item"
 local PREFIX = addon.PREFIXES.MAIN
 
 local ROW_HEIGHT = 30
@@ -125,7 +126,8 @@ function TradeUI:OnDoTrade (trader, item, winner)
       local Item = addon.ItemStorage:GetItem(item, "temp")
       if not Item then
          addon.Log:E("TradeUI", "Couldn't find item for 'DoTrade'", item, winner)
-         return addon:Print(format("Couldn't find %s to trade to %s",tostring(item), tostring(winner)))
+			return addon:Print(format("Couldn't find %s to trade to %s", ItemUtils:GetItemTextWithIcon(tostring(item)),
+			addon:GetClassIconAndColoredName(tostring(winner))))
       end
       Item.type = "to_trade"
       Item.args.recipient = winner
@@ -234,7 +236,7 @@ function TradeUI:CheckTimeRemaining()
    if #Items > 0 then
       addon:Print(format(L["time_remaining_warning"], TIME_REMAINING_WARNING/60))
       for i, Item in pairs(Items) do
-         addon:Print(i, Item)
+			addon:Print(i, ItemUtils:GetItemTextWithIcon(Item))
       end
       for _, Item in pairs(Items) do
          if Item.time_remaining <= 0 and Item:SafeToRemove() then
@@ -345,6 +347,10 @@ function TradeUI:GetStoredItemBySession (session)
 end
 
 local function addItemToTradeWindow (tradeBtn, Item)
+	if not TradeUI.isTrading then
+		addon.Log:W("addItemToTradeWindow: No longer trading", TradeUI.tradeTarget, Item.link)
+		return
+	end
 	local c,s = addon.ItemStorage:GetItemContainerSlot(Item, TradeUI.itemsInTradeWindow)
 
 	if not c or not s then -- Item is gone?!
@@ -355,6 +361,10 @@ local function addItemToTradeWindow (tradeBtn, Item)
 	local containerInfo = addon.C_Container.GetContainerItemInfo(c, s)
 
 	if containerInfo and addon:ItemIsItem(containerInfo.hyperlink, Item.link) then -- Extra check, probably also redundant
+		if containerInfo.isLocked then
+			addon:Print("Item is locked")
+			addon.Log:E("<TradeUI>", "Item locked when attempting to trade", Item.link, TradeUI.tradeTarget)
+		end
 		addon.Log:d("Trading", Item.link, c,s)
 		ClearCursor()
 		addon.C_Container.PickupContainerItem(c, s)
@@ -369,13 +379,14 @@ function TradeUI:AddAwardedInBagsToTradeWindow()
    local items = addon.ItemStorage:GetAllItemsMultiPred(
       funcTradeTargetIsRecipient, funcItemHasMoreTimeLeft, funcStorageTypeIsToTrade
    )
-   addon.Log:d("Number of items to trade:", #items)
+   addon.Log:d("Number of items to trade:", #items, self.tradeTarget)
    for k, Item in ipairs(items) do
       if k > _G.MAX_TRADE_ITEMS - 1 then -- All available slots used (The last trade slot is "Will not be traded" slot).
 			break
 		end
       if self.isTrading then
          addon.Log:d("<TradeUI> Scheduling trade add timer for #", k)
+		 addon:LogItemGUID(Item)
          -- Delay the adding of items, as we can't add them all at once
          self:ScheduleTimer(addItemToTradeWindow, TRADE_ADD_DELAY * k, k, Item)
       end

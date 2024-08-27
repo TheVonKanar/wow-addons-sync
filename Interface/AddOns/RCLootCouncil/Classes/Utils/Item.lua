@@ -5,8 +5,8 @@ local addon = select(2, ...)
 --- @class Utils.Item
 local Item = addon.Init "Utils.Item"
 
----@class ItemString : string
----@class ItemLink : ItemString
+---@alias ItemString string
+---@alias ItemLink string
 
 local gsub, strmatch = string.gsub, string.match
 
@@ -45,7 +45,7 @@ end
 
 ---@param link ItemLink|ItemString
 function Item:GetItemIDFromLink(link)
-	return tonumber(strmatch(link or "", "item:(%d+):"))
+	return tonumber(strmatch(link or "", "item:(%d+):?"))
 end
 
 ---Appends the item link with `" x ``count``"`, but only if count is defined, and greater than 1.
@@ -63,7 +63,16 @@ local NEUTRALIZE_ITEM_REPLACEMENT = "item:%1:%2:%3:%4:%5:%6:%7::::"
 --- @param item string|ItemLink|ItemString Any itemlink, itemstring etc.
 --- @return string #The same item with level, specID, uniqueID removed
 function Item:NeutralizeItem(item)
-	return item:gsub(NEUTRALIZE_ITEM_PATTERN, NEUTRALIZE_ITEM_REPLACEMENT)
+	return (item:gsub(NEUTRALIZE_ITEM_PATTERN, NEUTRALIZE_ITEM_REPLACEMENT))
+end
+
+--- Creates a string with item icon in front of the item link.
+---@param item string|ItemID|ItemLink|ItemString|Item
+---@return string
+function Item:GetItemTextWithIcon(item)
+	local _, itemLink, _, _, _, _, _, _, _, texture = C_Item.GetItemInfo(type(item) == "string" and item or item.link)
+	if not texture then return item end -- No icon found, return the item link
+	return format("|T%s:0|t%s", texture, itemLink)
 end
 
 return Item

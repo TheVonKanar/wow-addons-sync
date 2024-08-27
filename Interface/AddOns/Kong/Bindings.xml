@@ -1,0 +1,18 @@
+<Bindings>
+    <Binding name="KONG_ENABLE" description="Enable UI Fading" header="KONG">
+        Kong_EnableCommandHandler();
+    </Binding>
+    <Binding name="KONG_DISABLE" description="Disable UI Fading">
+        Kong_DisableCommandHandler();
+    </Binding>
+    <Binding name="KONG_TOGGLE" description="Toggle UI Fading On/Off">
+        Kong_ToggleCommandHandler();
+    </Binding>
+    <Binding name="KONG_CONFIG" description="Open Config GUI">
+        if C_AddOns.LoadAddOn('KongConfig') then
+            KongConfig_Show()
+        else
+            Kong_Error("Kong Config is either disabled or not installed.");
+        end
+    </Binding>
+</Bindings>

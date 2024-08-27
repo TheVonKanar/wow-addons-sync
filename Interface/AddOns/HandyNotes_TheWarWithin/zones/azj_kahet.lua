@@ -12,6 +12,7 @@ local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Treasure = ns.node.Treasure
 
+local FlightMaster = ns.node.FlightMaster
 local LoreObject = ns.node.LoreObject
 local SkyridingGlyph = ns.node.SkyridingGlyph
 
@@ -21,8 +22,10 @@ local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
 local Reputation = ns.reward.Reputation
 
-local POI = ns.poi.POI
+local Circle = ns.poi.Circle
+local Entrance = ns.poi.Entrance
 local Path = ns.poi.Path
+local POI = ns.poi.POI
 
 -------------------------------------------------------------------------------
 
@@ -73,7 +76,7 @@ map.nodes[70722147] = Rare({
         Transmog({item = 221212, type = L['mail']}), -- Death Burrower Handguards
         Transmog({item = 221237, type = L['offhand']}) -- Lamentable Vagrant's Lantern
     },
-    pois = {POI({70102201})} -- Entrance
+    pois = {Entrance({70102201})} -- Entrance
 }) -- Cha'tak
 
 cot.nodes[30755599] = Rare({
@@ -101,7 +104,8 @@ map.nodes[64560668] = Rare({
         Reputation({id = 2607, gain = 50, quest = 84081}),
         Transmog({item = 223923, type = L['plate']}), -- Gilded Cryptlord's Sabatons
         Transmog({item = 223916, type = L['polearm']}), -- Nerubian Cutthroat's Reach
-        Transmog({item = 223915, type = L['dagger']}) -- Nerubian Orator's Stiletto
+        Transmog({item = 223915, type = L['dagger']}), -- Nerubian Orator's Stiletto
+        Transmog({item = 223917, type = L['cloak']}) -- Nerubian Covert's Cloak
     },
     pois = {Path({64500582, 64650782})}
 }) -- Deepcrawler Tx'kesh
@@ -129,7 +133,7 @@ map.nodes[61232730] = Rare({
         Reputation({id = 2601, gain = 50, quest = 81699}),
         Reputation({id = 2605, gain = 50, quest = 81699}),
         Reputation({id = 2607, gain = 50, quest = 81699}),
-        Transmog({item = 223369, slot = L['back']}) -- Webspeaker's Spiritual Cloak
+        Transmog({item = 223369, slot = L['cloak']}) -- Webspeaker's Spiritual Cloak
     }
 }) -- Webspeaker Grik'ik
 
@@ -142,7 +146,9 @@ akl.nodes[65198283] = Rare({
         Reputation({id = 2605, gain = 50, quest = 84079}),
         Reputation({id = 2607, gain = 50, quest = 84079}),
         Transmog({item = 223941, type = L['plate']}), -- Nerubian Cultivator's Girdle
-        Transmog({item = 223915, type = L['dagger']}) -- Nerubian Orator's Stiletto
+        Transmog({item = 223916, type = L['polearm']}), -- Nerubian Cutthroat's Reach
+        Transmog({item = 223915, type = L['dagger']}), -- Nerubian Orator's Stiletto
+        Transmog({item = 223917, type = L['cloak']}) -- Nerubian Covert's Cloak
     },
     pois = {
         Path({
@@ -162,6 +168,8 @@ akl.nodes[67438318] = Rare({
         Reputation({id = 2605, gain = 50, quest = 84077}),
         Reputation({id = 2607, gain = 50, quest = 84077}),
         Transmog({item = 223950, type = L['leather']}), -- Corruption Sifter's Treads
+        Transmog({item = 223916, type = L['polearm']}), -- Nerubian Cutthroat's Reach
+        Transmog({item = 223915, type = L['dagger']}), -- Nerubian Orator's Stiletto
         Transmog({item = 223917, type = L['cloak']}) -- Nerubian Covert's Cloak
     },
     parent = map.id
@@ -177,7 +185,8 @@ map.nodes[62400703] = Rare({ -- renamed by Blizzard?
         Reputation({id = 2607, gain = 50, quest = 84082}),
         Transmog({item = 223939, type = L['cloth']}), -- Esteemed Nerubian's Mantle
         Transmog({item = 223916, type = L['polearm']}), -- Nerubian Cutthroat's Reach
-        Transmog({item = 223915, type = L['dagger']}) -- Nerubian Orator's Stiletto
+        Transmog({item = 223915, type = L['dagger']}), -- Nerubian Orator's Stiletto
+        Transmog({item = 223917, type = L['cloak']}) -- Nerubian Covert's Cloak
     },
     pois = {Path({62870495, 62610615, 62400703, 62070804, 61830851, 61160787})}
 
@@ -249,9 +258,9 @@ map.nodes[43863678] = Rare({
         Reputation({id = 2601, gain = 50, quest = 81694}),
         Reputation({id = 2605, gain = 50, quest = 81694}),
         Reputation({id = 2607, gain = 50, quest = 81694}),
-        Transmog({item = 223378, type = L['cloth']}), -- Footguards of the Nerubian Twins
-        Transmog({item = 223407, type = L['cloth']}), -- Sabatons of the Nerubian Twins
-        Transmog({item = 223408, type = L['cloth']}), -- Treads of the Nerubian Twins
+        Transmog({item = 223378, type = L['plate']}), -- Footguards of the Nerubian Twins
+        Transmog({item = 223407, type = L['mail']}), -- Sabatons of the Nerubian Twins
+        Transmog({item = 223408, type = L['leather']}), -- Treads of the Nerubian Twins
         Transmog({item = 223406, type = L['cloth']}) -- Slippers of the Nerubian Twins
     },
     pois = {
@@ -275,7 +284,7 @@ akl.nodes[61918962] = Rare({
         Transmog({item = 223931, type = L['cloth']})
     },
     parent = map.id,
-    pois = {POI({63418984})} -- Entrance
+    pois = {Entrance({63418984})} -- Entrance
 }) -- The Oozekhan
 
 map.nodes[76585780] = Rare({
@@ -289,7 +298,7 @@ map.nodes[76585780] = Rare({
         Reputation({id = 2607, gain = 50, quest = 84072}),
         Transmog({item = 221231, type = L['leather']}) -- Steam-Powered Wristwatch
     },
-    pois = {POI({77485899})} -- Entrance
+    pois = {Entrance({77485899})} -- Entrance
 }) -- The XT-Minecrusher 8700
 
 map.nodes[64590352] = Rare({
@@ -336,6 +345,7 @@ cotl.nodes[67525826] = Rare({
         Reputation({id = 2601, gain = 50, quest = 84070}),
         Reputation({id = 2605, gain = 50, quest = 84070}),
         Reputation({id = 2607, gain = 50, quest = 84070}),
+        Transmog({item = 221239, type = L['gun']}), -- Spider Blasting Blunderbuss
         Transmog({item = 221221, type = L['plate']}), -- Venomous Lurker's Greathelm
         Transmog({item = 221506, type = L['cloak']}) -- Arachnid's Web-Sown Guise
     }
@@ -351,10 +361,21 @@ map.nodes[63479504] = Rare({
         Reputation({id = 2601, gain = 50, quest = 85167}),
         Reputation({id = 2605, gain = 50, quest = 85167}),
         Reputation({id = 2607, gain = 50, quest = 85167}),
-        Transmog({item = 221247, type = L['crossbow']}) -- Cavernous Critter Shooter
+        Transmog({item = 221247, type = L['crossbow']}), -- Cavernous Critter Shooter
+        Transmog({item = 221246, type = L['staff']}), -- Fierce Beast Staff
+        Transmog({item = 221251, type = L['2h_axe']}), -- Bestial Underground Cleaver
+        Transmog({item = 225998, type = L['cloak']}) -- Earthen Adventurer's Cloak
     },
-    pois = {POI({65309350})} -- Entrance
+    pois = {Entrance({65309350})} -- Entrance
 }) -- The One Left
+
+local BloodVial = Class('BloodVial', ns.reward.Item, {item = 225952})
+
+function BloodVial:GetStatus()
+    local collected = select(11, C_MountJournal.GetMountInfoByID(2222))
+    return collected and ns.status.Green(L['known']) or
+               ns.status.Red(L['missing'])
+end
 
 map.nodes[62816618] = Rare({
     id = 216046,
@@ -364,7 +385,9 @@ map.nodes[62816618] = Rare({
         Reputation({id = 2601, gain = 50, quest = 85166}),
         Reputation({id = 2605, gain = 50, quest = 85166}),
         Reputation({id = 2607, gain = 50, quest = 85166}),
-        ns.reward.Item({item = 225952, quest = 83627})
+        Transmog({item = 221240, type = L['1h_sword']}), -- Nerubian Stagshell Gouger
+        Transmog({item = 221252, type = L['2h_sword']}), -- Nerubian Slayer's Claymore
+        BloodVial()
     } -- starts the questchain to get the Siesbarg mount.
 }) -- Tka'ktath
 
@@ -444,13 +467,14 @@ map.nodes[54525081] = Treasure({
 
 map.nodes[67482754] = Treasure({
     quest = 82719,
+    note = L['in_small_cave'],
     rewards = {
         Achievement({id = 40828, criteria = 69647}),
         Reputation({id = 2601, gain = 50, quest = 82719}),
         Reputation({id = 2605, gain = 50, quest = 82719}),
         Reputation({id = 2607, gain = 50, quest = 82719})
     },
-    pois = {POI({65422765})}
+    pois = {Entrance({65422765, 64712965})}
 }) -- Silk-spun Supplies
 
 cot.nodes[67397441] = Treasure({
@@ -468,6 +492,7 @@ cot.nodes[67397441] = Treasure({
 
 map.nodes[78613320] = Treasure({
     quest = 82527,
+    note = L['weaving_supplies_note'],
     rewards = {
         Achievement({id = 40828, criteria = 69643}),
         Reputation({id = 2601, gain = 50, quest = 82527}),
@@ -475,22 +500,24 @@ map.nodes[78613320] = Treasure({
         Reputation({id = 2607, gain = 50, quest = 82527}), --
         Toy({item = 225347}) -- Web-Vandal's Spinning Wheel
     },
-    pois = {POI({74794285, 74183770, 72663967})}
+    pois = {
+        POI({74794285, color = 'Purple', label = '{item:223901}'}), -- Violet Silk Scrap
+        POI({72663967, color = 'Red', label = '{item:223902}'}), -- Crimson Silk Scrap
+        POI({74183770, color = 'Yellow', label = '{item:223903}'}) -- Gold Silk Scrap
+    }
 }) -- Weaving Supplies
--- TODO: write a note:
--- You need to collect Hints from Silk Scraps/Threads before you can open the treasure.
--- 74794285 Violet Thread - Item 223901
--- 74183770 Gold Thread - 223903
--- 72663967 Crimson Thread - 223902
 
 map.nodes[34056102] = Treasure({
     quest = 82525,
+    location = L['in_small_cave'],
+    note = L['concealed_contraband_note'],
     rewards = {
         Achievement({id = 40828, criteria = 70381}),
         Reputation({id = 2601, gain = 50, quest = 82525}),
         Reputation({id = 2605, gain = 50, quest = 82525}),
         Reputation({id = 2607, gain = 50, quest = 82525})
-    }
+    },
+    pois = {Entrance({33756045})}
 }) -- Concealed Contraband -- Web Cocoon
 
 -------------------------------------------------------------------------------
@@ -594,7 +621,7 @@ local Bookworm = Class('bookworm', Collectible, {
     group = ns.groups.BOOKWORM,
     requires = ns.requirement.Spell(456122), -- Polymorphic Translation: Nerubian
     note = L['nerubian_potion_note'] .. '\n\n' .. L['bookworm_note'],
-    pois = {POI({47166941, color = 'Red'})} -- Siesbarg
+    pois = {POI({47166941, label = '{npc:218192}', color = 'Red'})} -- Siesbarg
 })
 
 map.nodes[40103980] = Bookworm({
@@ -672,18 +699,11 @@ local ItsyBitsySpider = Class('ItsyBitsySpider', Collectible, {
     note = L['itsy_bitsy_spider_note']
 })
 
-map.nodes[18001200] = ItsyBitsySpider({
-    location = L['generals_scouting_shadecaster_location'],
-    rewards = {Achievement({id = 40624, criteria = 68979})}
-}) -- General's Scouting Shadecaster
-
 map.nodes[55022662] = ItsyBitsySpider({
-    location = L['rumurh_location'],
     rewards = {Achievement({id = 40624, criteria = 68976})}
 }) -- Ru'murh
 
 cot.nodes[50311591] = ItsyBitsySpider({
-    location = L['scampering_weave_rat_location'],
     rewards = {Achievement({id = 40624, criteria = 68978})},
     pois = {
         Path({
@@ -704,25 +724,17 @@ cot.nodes[50311591] = ItsyBitsySpider({
     }
 }) -- Scampering Weave-Rat
 
-map.nodes[08001200] = ItsyBitsySpider({
-    location = L['spindle_location'],
+map.nodes[55644395] = ItsyBitsySpider({
     rewards = {Achievement({id = 40624, criteria = 68973})},
     pois = {
         POI({
             63003300, 48405640, 48405660, 63003300, 45606000, 46205900,
             46605900, 56204820
-        }), -- review - just copied from wowhead
-        POI({55644395, color = 'Red'})
+        }) -- review - just copied from wowhead
     }
 }) -- Spindle
 
-map.nodes[10001200] = ItsyBitsySpider({
-    location = L['swift_location'],
-    rewards = {Achievement({id = 40624, criteria = 68974})}
-}) -- Swift
-
 map.nodes[55106876] = ItsyBitsySpider({
-    location = L['thimble_location'],
     rewards = {Achievement({id = 40624, criteria = 68977})},
     pois = {
         POI({31604740, 55607100, 60601760}), -- review - just copied from wowhead
@@ -737,10 +749,14 @@ map.nodes[55106876] = ItsyBitsySpider({
 }) -- Thimble
 -- npc:224887 npc:224889 npc:224893 npc:224895 npc:220568 npc:224892(226225114-cot) npc:224891(69898267 cot)
 
-map.nodes[06001200] = ItsyBitsySpider({
-    location = L['webster_location'],
-    rewards = {Achievement({id = 40624, criteria = 68972})}
-}) -- Webster npc:227217( 39386541 (Cot))
+cot.nodes[39386540] = ItsyBitsySpider({
+    rewards = {Achievement({id = 40624, criteria = 68972})},
+    parent = map.id
+}) -- Webster
+
+map.nodes[56344316] = ItsyBitsySpider({
+    rewards = {Achievement({id = 40624, criteria = 3236})}
+}) -- Bobbin
 
 -------------------------------------------------------------------------------
 --------------------- ACHIEVEMENT: KHAZ ALGAR LORE HUNTER ---------------------
@@ -821,7 +837,7 @@ map.nodes[62963117] = SmellingHistory({
 map.nodes[66693128] = SmellingHistory({
     location = L['smelling_history_3_location'],
     rewards = {Achievement({id = 40542, criteria = 68980})},
-    pois = {POI({65422765, 64712965})}
+    pois = {Entrance({65422765, 64712965})}
 }) -- Ethos of War, Part 2
 
 map.nodes[48852400] = SmellingHistory({
@@ -838,42 +854,42 @@ cot.nodes[38263555] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_6_location'],
     rewards = {Achievement({id = 40542, criteria = 68984})},
-    pois = {POI({40743385})}
+    pois = {Entrance({40743385})}
 }) -- Queen Xekatha
 
 cot.nodes[37103275] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_7_location'],
     rewards = {Achievement({id = 40542, criteria = 68985})},
-    pois = {POI({40743385})}
+    pois = {Entrance({40743385})}
 }) -- Queen Anub'izek
 
 cot.nodes[38423227] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_8_location'],
     rewards = {Achievement({id = 40542, criteria = 68986})},
-    pois = {POI({40743385})}
+    pois = {Entrance({40743385})}
 }) -- Queen Zaltra
 
 cot.nodes[38203910] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_9_location'],
     rewards = {Achievement({id = 40542, criteria = 68987})},
-    pois = {POI({40173874})}
+    pois = {Entrance({40173874})}
 }) -- Treatise on Forms: Sages
 
 cot.nodes[38543774] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_10_location'],
     rewards = {Achievement({id = 40542, criteria = 68988})},
-    pois = {POI({40173874})}
+    pois = {Entrance({40173874})}
 }) -- Treatise on Forms: Skitterlings
 
 cot.nodes[23645107] = SmellingHistory({
     parent = map.id,
     location = L['smelling_history_11_location'],
     rewards = {Achievement({id = 40542, criteria = 69446})},
-    pois = {POI({26115141})}
+    pois = {Entrance({26115141})}
 }) -- Treatise on Forms: Lords
 
 cot.nodes[77984103] = SmellingHistory({
@@ -923,6 +939,107 @@ cot.nodes[65255720] = SkittershawSpin({
     }
 })
 
+-----------------------------------------------------------------------------------------------------
+--------------------- ACHIEVEMENT: NO HARM EVER CAME FROM READING A BOOK  ---------------------------
+-----------------------------------------------------------------------------------------------------
+
+local NoHarmFromReading = Class('no_harm_from_reading', Collectible, {
+    icon = 463284,
+    group = ns.groups.NO_HARM_FROM_READING,
+    rewards = {Achievement({id = 40632, criteria = 0, oneline = true})}
+})
+
+cotl.nodes[68195603] = NoHarmFromReading({
+    label = '{achievement:40632}',
+    note = L['no_harm_from_reading_note'],
+    pois = {
+        Entrance({points = {72035705}, color = 'Yellow'}), -- Cave entrance
+        POI({points = {66735661}, color = 'Red'}) -- Spider Wall
+    },
+    parent = {
+        {
+            id = cot.id,
+            pois = {
+                Entrance({points = {72035705}, color = 'Yellow'}) -- Cave entrance
+            }
+        }, {
+            id = map.id,
+            pois = {
+                Entrance({points = {56468493}, color = 'Yellow'}) -- Cave entrance
+            }
+        }
+    }
+})
+
+map.nodes[24205274] = NoHarmFromReading({
+    id = 227421,
+    quest = 83744,
+    questDeps = 83741
+}) -- Another You 1
+
+map.nodes[58692012] = NoHarmFromReading({
+    id = 227421,
+    quest = 83745,
+    questDeps = 83741
+}) -- Another You 2
+
+map.nodes[78896056] = NoHarmFromReading({
+    id = 227421,
+    quest = 83746,
+    questDeps = 83741
+}) -- Another You 3
+
+map.nodes[56874401] = NoHarmFromReading({
+    id = 227421,
+    note = L['another_you_4_note'],
+    quest = 83747,
+    questDeps = 83741,
+    pois = {
+        Path({
+            points = {
+                57414429, 57324406, 57164432, 56874401, 56604340, 56514327,
+                56344326, 56264336, 56694303
+            }
+        })
+    }
+}) -- Another You 4
+
+-------------------------------------------------------------------------------
+-------------------------- ACHIEVEMENT: THE UNSEEMING -------------------------
+-------------------------------------------------------------------------------
+
+akl.nodes[62848495] = Collectible({
+    icon = 1386549,
+    label = '{achievement:40633}',
+    note = L['the_unseeming_note'],
+    group = ns.groups.THE_UNSEEMING,
+    rewards = {Achievement({id = 40633})},
+    parent = map.id
+})
+
+-------------------------------------------------------------------------------
+--------------------- ACHIEVEMENT: YOU CAN'T HANG WITH US ---------------------
+-------------------------------------------------------------------------------
+
+cot.nodes[53622079] = Collectible({
+    icon = 237431,
+    label = '{achievement:40634}',
+    note = L['you_cant_hang_with_us_note'],
+    group = ns.groups.YOU_CANT_HANG_WITH_US,
+    parent = {
+        id = map.id,
+        pois = {
+            Path({Circle({origin = 50047228, radius = 3.5})}),
+            Path({Circle({origin = 54397843, radius = 2.5})})
+        }
+    },
+    rewards = {Achievement({id = 40634})},
+    pois = {
+        Path({Circle({origin = 53622079, radius = 10})}),
+        Path({Circle({origin = 66123842, radius = 7.4})})
+    }
+})
+
 -------------------------------------------------------------------------------
 -------------------------------- DISTURBED DIRT -------------------------------
 -------------------------------------------------------------------------------
@@ -958,3 +1075,178 @@ map.nodes[39834688] = DisturbedEarth()
 -- LCoT 55704782 - 224197 Ru'murh - 82644
 -- CoT 54833455 - 224198 Ru'murh - No Quest
 -- CoT 77845369 - 224196 Ru'murh - No Quest
+
+-------------------------------------------------------------------------------
+-------------------- ACHIEVEMENT: KHAZ ALGAR FLIGHT MASTER --------------------
+-------------------------------------------------------------------------------
+
+cot.nodes[54024434] = FlightMaster({
+    parent = map.id,
+    rewards = {Achievement({id = 40430, criteria = 68176})}
+}) -- The Burrows
+
+map.nodes[23155114] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68175})}
+}) -- Wildcamp Or'lay
+
+map.nodes[44476750] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68177})}
+}) -- Wildcamp Ul'ar
+
+map.nodes[56894700] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68174})}
+}) -- Weaver's Lair
+
+map.nodes[60001869] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68178})}
+}) -- Faerin's Advance
+
+map.nodes[76846444] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68179})}
+}) -- Mmari
+
+-------------------------------------------------------------------------------
+------------------------ ACHIEVEMENT: BACK TO THE WALL ------------------------
+-------------------------------------------------------------------------------
+
+local ArathiPrisoner = Class('ArathiPrisoner', Collectible, {
+    label = '{npc:222119}',
+    icon = 'peg_yw',
+    scale = 1.5,
+    note = L['arathi_prisoner_note'],
+    group = ns.groups.BACK_TO_THE_WALL,
+    rewards = {
+        Achievement({
+            id = 40620,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['arathi_prisoner_suffix']
+            }
+        })
+    }
+})
+
+map.nodes[65901335] = ArathiPrisoner()
+map.nodes[64951100] = ArathiPrisoner()
+map.nodes[65101058] = ArathiPrisoner()
+map.nodes[64241006] = ArathiPrisoner()
+map.nodes[65080784] = ArathiPrisoner()
+map.nodes[64880760] = ArathiPrisoner()
+map.nodes[64720438] = ArathiPrisoner()
+map.nodes[64740440] = ArathiPrisoner()
+map.nodes[61690791] = ArathiPrisoner()
+map.nodes[60280928] = ArathiPrisoner()
+map.nodes[60270939] = ArathiPrisoner()
+map.nodes[62000428] = ArathiPrisoner()
+map.nodes[61210398] = ArathiPrisoner()
+map.nodes[48465780] = ArathiPrisoner()
+map.nodes[63060098] = ArathiPrisoner()
+map.nodes[63800073] = ArathiPrisoner()
+map.nodes[63880010] = ArathiPrisoner()
+
+-------------------------------------------------------------------------------
+-------------------- ACHIEVEMENT: FIGHTER OF THE NIGHTMAN ---------------------
+-------------------------------------------------------------------------------
+
+local RakZakaz = Class('RakZakaz', ns.node.SuspiciousDocument, {
+    rewards = {Achievement({id = 41999, criteria = {2, 10}})}
+})
+
+map.nodes[61903020] = RakZakaz()
+map.nodes[62702670] = RakZakaz()
+map.nodes[63103070] = RakZakaz()
+map.nodes[64102990] = RakZakaz()
+map.nodes[66003110] = RakZakaz()
+map.nodes[67502770] = RakZakaz()
+
+local SurekisEnd = Class('SurekisEnd', ns.node.SuspiciousDocument, {
+    rewards = {Achievement({id = 41999, criteria = {4, 8}})}
+})
+
+map.nodes[63700680] = SurekisEnd()
+map.nodes[64800650] = SurekisEnd()
+map.nodes[65200940] = SurekisEnd()
+
+local ToxinsAndPheromones = Class('ToxinsAndPheromones',
+    ns.node.SuspiciousDocument, {
+        rewards = {Achievement({id = 41999, criteria = {1, 12}})}
+    })
+
+map.nodes[66705090] = ToxinsAndPheromones()
+map.nodes[66705370] = ToxinsAndPheromones()
+map.nodes[68405460] = ToxinsAndPheromones()
+map.nodes[69505450] = ToxinsAndPheromones()
+
+-------------------------------------------------------------------------------
+---------------------- PET: BEAN (FRESHLY WEBBED KEBAB) -----------------------
+-------------------------------------------------------------------------------
+
+local KejPetVendor = Class('KejPetVendor', ns.node.Vendor, {
+    note = L['kej_pet_vendor_note'],
+    fgroup = 'kej_pet_vendor'
+}) -- Kej Pet Vendor
+
+cot.nodes[50472651] = KejPetVendor({
+    id = 218198,
+    rewards = {
+        Pet({item = 221850, id = 4464, note = '{npc:222202}'}) -- Bean
+    }
+}) -- Pelefien
+
+cot.nodes[49042650] = KejPetVendor({
+    id = 218197,
+    rewards = {
+        Pet({item = 221850, id = 4464, note = '{npc:222202}'}) -- Bean
+    }
+}) -- Kurth
+
+cot.nodes[49302664] = KejPetVendor({
+    id = 218199,
+    rewards = {
+        Pet({item = 221850, id = 4464, note = '{npc:222202}'}) -- Bean
+    }
+}) -- Kram'an
+
+cot.nodes[49752616] = KejPetVendor({
+    id = 218200,
+    rewards = {
+        Pet({item = 221850, id = 4464, note = '{npc:222202}'}) -- Bean
+    }
+}) -- Yaggi
+
+cot.nodes[44961666] = KejPetVendor({
+    id = 218209,
+    rewards = {
+        Pet({item = 221850, id = 4464, note = '{npc:222202}'}), -- Bean
+        Pet({item = 222973, id = 4492}), -- Fringe
+        Pet({item = 222968, id = 4476}) -- Itchbite
+    }
+}) -- Tyro Uwe
+
+cot.nodes[44201715] = KejPetVendor({
+    id = 218207,
+    rewards = {
+        Pet({item = 222973, id = 4492}), -- Fringe
+        Pet({item = 222968, id = 4476}) -- Itchbite
+    }
+}) -- Clutchmother Marntiq
+
+cot.nodes[46282915] = KejPetVendor({
+    id = 218224,
+    rewards = {
+        Pet({item = 222973, id = 4492}), -- Fringe
+        Pet({item = 222968, id = 4476}) -- Itchbite
+    }
+}) -- "Calmest" Gobbu
+
+-------------------------------------------------------------------------------
+----------------------------- WORLDSOUL MEMORIES ------------------------------
+-------------------------------------------------------------------------------
+
+cot.nodes[21074547] = ns.node.WorldsoulMemory({
+    areaPoiID = 7839,
+    parent = map.id
+}) -- Old Gods Forsaken
+
+map.nodes[65865232] = ns.node.WorldsoulMemory({areaPoiID = 7840}) -- A Wounded Soul

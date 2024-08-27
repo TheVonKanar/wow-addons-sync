@@ -1,0 +1,48 @@
+VER 3 010000000000000A " " "134400"
+#showtooltip
+/castsequence reset=10 Instant Poison, Atrophic Poison, Trans-Dimensional Bird Whistle
+END
+VER 3 0100000000000009 " " "134400"
+#showtooltip Sprint
+/cast Will to Survive
+/cast Sprint
+END
+VER 3 010000000000000B " " "134400"
+#showtooltip
+/use Ghostly Strike
+END
+VER 3 0100000000000007 " " "134400"
+#showtooltip Tricks of the Trade
+/click AutoTankMisdirect
+END
+VER 3 0100000000000006 " " "134400"
+#showtooltip
+/cast [@cursor] Grappling Hook
+END
+VER 3 0100000000000008 " " "134400"
+#showtooltip
+/cast [stance] Cheap Shot; Kidney Shot
+END
+VER 3 010000000000000C " " "134400"
+#showtooltip
+/cast Ambush
+/cast Ghostly Strike
+END
+VER 3 010000000000000D " " "134400"
+#showtooltip
+/cast Pistol Shot
+/cast Ghostly Strike
+END
+VER 3 010000000000000E " " "134400"
+#showtooltip
+/cast [stance] Ambush; Sinister Strike
+/cast Ghostly Strike
+END
+VER 3 010000000000000F " " "134400"
+#showtooltip
+/cast [stance] Between the Eyes; Dispatch
+END
+VER 3 0100000000000010 " " "134400"
+#showtooltip
+/cast [stance] Dispatch; Between the Eyes
+END

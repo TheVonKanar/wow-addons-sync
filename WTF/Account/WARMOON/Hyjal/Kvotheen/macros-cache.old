@@ -1,46 +1,111 @@
-VER 3 0100000000000031 "Astral Guidance" "538565"
+VER 3 0100000000000042 " " "134400"
 #showtooltip
 /cast Astral Shift
-/cast Ancestral Guidance
+/cast Spiritwalker's Grace
+/use Healthstone
 END
-VER 3 0100000000000025 "BL+" "136012"
+VER 3 010000000000003A " " "134400"
 #showtooltip
-/use Bloodlust
-/use Blood Fury
+/cast [known:383013] Poison Cleansing Totem; [known:370] Purge; [@Player] Earth Shield
 END
-VER 3 0100000000000022 "Buffs" "4630367"
+VER 3 010000000000005B " " "134400"
 #showtooltip
-/castsequence reset=10 Skyfury, Lightning Shield, Windfury Weapon, Flametongue Weapon, Trans-Dimensional Bird Whistle
+/cast [@cursor] Capacitor Totem
 END
-VER 3 0100000000000030 "Cleanse Spirit" "236288"
+VER 3 0100000000000040 " " "134400"
 #showtooltip
-/cast [target=mouseover] Cleanse Spirit
+/cast [known:8143] Tremor Totem; [known:5394] Healing Stream Totem; [@cursor] Earthbind Totem
 END
-VER 3 010000000000001F "Doom Winds+" "1035054"
+VER 3 010000000000003F " " "538576"
 #showtooltip
-/cast Doom Winds
-/cast Blood Fury
+/cast [@cursor] Wind Rush Totem
 END
-VER 3 0100000000000024 "Feral Spirit+" "237577"
+VER 3 0100000000000023 " " "134400"
 #showtooltip
-/cast Feral Spirit
-/use  Witherbark's Branch
-/cast Blood Fury
+/castsequence reset=600 Astral Recall, Explosive Hearthstone
 END
-VER 3 0100000000000023 "Hearthstone" "136010"
-#showtooltip
-/castsequence reset=600 Astral Recall, Hearthstone
-END
-VER 3 0100000000000032 "Self Healing" "136044"
+VER 3 0100000000000032 " " "136044"
 #showtooltip
 /cast [@player] Healing Surge
+/use Healthstone
 END
-VER 3 0100000000000020 "Wind Rush Totem" "538576"
-#showtooltip
-/cast [@player] Wind Rush Totem
-END
-VER 3 010000000000001A "Wind Shear" "136018"
+VER 3 0100000000000036 " " "136018"
 #showtooltip
 /stopcasting
-/use Wind Shear
+/cast [@focus,exists] Wind Shear; Wind Shear
+END
+VER 3 010000000000004A " " "134400"
+#showtooltip
+/cast [known:117014] Elemental Blast; Lightning Bolt
+END
+VER 3 010000000000004E " " "1035054"
+#showtooltip
+/cast Doom Winds
+END
+VER 3 0100000000000054 " " "134400"
+#showtooltip
+/cast [known:51490] Thunderstorm; [known:108285] Totemic Recall; Wind Shear
+END
+VER 3 0100000000000056 " " "134400"
+#showtooltip
+/cast Stone Bulwark Totem
+END
+VER 3 0100000000000057 " " "134400"
+#showtooltip
+/cast [known:384447] Feral Spirit; Sundering
+END
+VER 3 0100000000000058 " " "134400"
+#showtooltip
+/cast Primordial Wave
+END
+VER 3 0100000000000059 " " "134400"
+#showtooltip
+/use Algari Healing Potion
+/use Healthstone
+END
+VER 3 010000000000005E " " "134400"
+#showtooltip
+/cast [@cursor] Surging Totem
+END
+VER 3 010000000000005F " " "135791"
+#showtooltip
+/cast Ascendance
+/cast Spiritwalker's Grace
+END
+VER 3 0100000000000060 " " "134400"
+#showtooltip
+/cast [@cursor] Earthbind Totem
+END
+VER 3 0100000000000063 " " "134400"
+#showtooltip
+/cast [known:470194] Ice Strike; Lava Lash
+END
+VER 3 0100000000000064 " " "134400"
+#showtooltip
+/cast [known:375882] Primordial Wave; Feral Spirit
+END
+VER 3 0100000000000065 " " "134400"
+#showtooltip
+/cast [known:370] Purge; [@Player] Earth Shield
+END
+VER 3 0100000000000066 " " "134400"
+#showtooltip
+/cast [@player] Cleanse Spirit
+END
+VER 3 0100000000000067 " " "134400"
+#showtooltip
+/cast [@player] Earth Shield
+END
+VER 3 0100000000000062 "Chain" "134400"
+#showtooltip Chain Heal
+/cast Nature's Swiftness
+/cast Chain Heal
+END
+VER 3 0100000000000022 "ENH" "134400"
+#showtooltip
+/castsequence [@player] reset=10 Skyfury, Lightning Shield, Windfury Weapon, Flametongue Weapon, Trans-Dimensional Bird Whistle
+END
+VER 3 010000000000005C "RES" "134400"
+#showtooltip
+/castsequence [@player] reset=10 Skyfury, Water Shield, Earth Shield, Earthliving Weapon, Trans-Dimensional Bird Whistle
 END

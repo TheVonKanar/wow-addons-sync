@@ -3,10 +3,6 @@
 
 local _, addon = ...
 
-if not addon.IsGame_10_2_0 then
-    return
-end
-
 local MAPID_EMRALD_DREAM = 2200;
 local OPTION_FRAME_WIDTH = 196;
 local OPTION_FRAME_GAP = 48;
@@ -1010,7 +1006,7 @@ do
         dbKey = "AlternativePlayerChoiceUI",
         description = L["ModuleDescription AlternativePlayerChoiceUI"],
         toggleFunc = EnableModule,
-        categoryID = 10020000,
+        categoryID = 1002,
         uiOrder = 3,
     };
 

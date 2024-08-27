@@ -1,6 +1,8 @@
 local _, Cell = ...
 local L = Cell.L
+---@type CellFuncs
 local F = Cell.funcs
+---@class CellIndicatorFuncs
 local I = Cell.iFuncs
 
 -------------------------------------------------
@@ -26,27 +28,27 @@ function I.UpdateIndicatorTable(indicatorTable)
     -- NOTE: icons is different from other custom indicators, more like the Debuffs indicator
     if indicatorTable["type"] == "icons" then
         customIndicators[auraType][indicatorName] = {
-            ["auras"] = F:ConvertSpellTable(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
+            ["auras"] = F.ConvertSpellTable(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
             ["found"] = {},
             ["num"] = indicatorTable["num"],
         }
     elseif indicatorTable["type"] == "bars" or indicatorTable["type"] == "blocks" then
         customIndicators[auraType][indicatorName] = {
-            ["auras"] = F:ConvertSpellTable_WithColor(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
+            ["auras"] = F.ConvertSpellTable_WithColor(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
             ["hasColor"] = true,
             ["found"] = {},
             ["num"] = indicatorTable["num"],
         }
     elseif indicatorTable["type"] == "border" then
         customIndicators[auraType][indicatorName] = {
-            ["auras"] = F:ConvertSpellTable_WithColor(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
+            ["auras"] = F.ConvertSpellTable_WithColor(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
             ["hasColor"] = true,
             ["top"] = {},
             ["topOrder"] = {},
         }
     else
         customIndicators[auraType][indicatorName] = {
-            ["auras"] = F:ConvertSpellTable(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
+            ["auras"] = F.ConvertSpellTable(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
             ["top"] = {}, -- top aura details
             ["topOrder"] = {}, -- top aura order
         }
@@ -57,7 +59,7 @@ function I.UpdateIndicatorTable(indicatorTable)
 
     if auraType == "buff" then
         customIndicators[auraType][indicatorName]["castBy"] = indicatorTable["castBy"]
-        customIndicators[auraType][indicatorName]["_auras"] = F:Copy(indicatorTable["auras"]) --* save ids
+        customIndicators[auraType][indicatorName]["_auras"] = F.Copy(indicatorTable["auras"]) --* save ids
         customIndicators[auraType][indicatorName]["trackByName"] = indicatorTable["trackByName"]
     end
 end
@@ -66,31 +68,31 @@ function I.CreateIndicator(parent, indicatorTable)
     local indicatorName = indicatorTable["indicatorName"]
     local indicator
     if indicatorTable["type"] == "icon" then
-        indicator = I.CreateAura_BarIcon(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_BarIcon(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "text" then
-        indicator = I.CreateAura_Text(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_Text(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "bar" then
-        indicator = I.CreateAura_Bar(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_Bar(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "bars" then
-        indicator = I.CreateAura_Bars(parent:GetName()..indicatorName, parent.widgets.indicatorFrame, 10)
+        indicator = I.CreateAura_Bars(nil, parent.widgets.indicatorFrame, 10)
     elseif indicatorTable["type"] == "rect" then
-        indicator = I.CreateAura_Rect(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_Rect(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "icons" then
-        indicator = I.CreateAura_Icons(parent:GetName()..indicatorName, parent.widgets.indicatorFrame, 10)
+        indicator = I.CreateAura_Icons(nil, parent.widgets.indicatorFrame, 10)
     elseif indicatorTable["type"] == "color" then
-        indicator = I.CreateAura_Color(parent:GetName()..indicatorName, parent)
+        indicator = I.CreateAura_Color(nil, parent)
     elseif indicatorTable["type"] == "texture" then
-        indicator = I.CreateAura_Texture(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_Texture(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "glow" then
-        indicator = I.CreateAura_Glow(parent:GetName()..indicatorName, parent.widgets.highLevelFrame)
+        indicator = I.CreateAura_Glow(nil, parent.widgets.highLevelFrame)
     elseif indicatorTable["type"] == "overlay" then
-        indicator = I.CreateAura_Overlay(parent:GetName()..indicatorName, parent)
+        indicator = I.CreateAura_Overlay(nil, parent)
     elseif indicatorTable["type"] == "block" then
-        indicator = I.CreateAura_Block(parent:GetName()..indicatorName, parent.widgets.indicatorFrame)
+        indicator = I.CreateAura_Block(nil, parent.widgets.indicatorFrame)
     elseif indicatorTable["type"] == "blocks" then
-        indicator = I.CreateAura_Blocks(parent:GetName()..indicatorName, parent.widgets.indicatorFrame, 10)
+        indicator = I.CreateAura_Blocks(nil, parent.widgets.indicatorFrame, 10)
     elseif indicatorTable["type"] == "border" then
-        indicator = I.CreateAura_Border(parent:GetName()..indicatorName, parent.widgets.highLevelFrame)
+        indicator = I.CreateAura_Border(nil, parent.widgets.highLevelFrame)
     end
     parent.indicators[indicatorName] = indicator
 
@@ -149,20 +151,20 @@ local function UpdateCustomIndicators(layout, indicatorName, setting, value, val
             enabledIndicators[indicatorName] = nil
         end
     elseif setting == "auras" then
-        customIndicators[value][indicatorName]["_auras"] = F:Copy(value2) --* save ids
+        customIndicators[value][indicatorName]["_auras"] = F.Copy(value2) --* save ids
         if customIndicators[value][indicatorName]["hasColor"] then
-            customIndicators[value][indicatorName]["auras"] = F:ConvertSpellTable_WithColor(value2, customIndicators[value][indicatorName]["trackByName"])
+            customIndicators[value][indicatorName]["auras"] = F.ConvertSpellTable_WithColor(value2, customIndicators[value][indicatorName]["trackByName"])
         else
-            customIndicators[value][indicatorName]["auras"] = F:ConvertSpellTable(value2, customIndicators[value][indicatorName]["trackByName"])
+            customIndicators[value][indicatorName]["auras"] = F.ConvertSpellTable(value2, customIndicators[value][indicatorName]["trackByName"])
         end
     elseif setting == "checkbutton" then
         if customIndicators["buff"][indicatorName] then
             customIndicators["buff"][indicatorName][value] = value2
             if value == "trackByName" then
                 if customIndicators["buff"][indicatorName]["hasColor"] then
-                    customIndicators["buff"][indicatorName]["auras"] = F:ConvertSpellTable_WithColor(customIndicators["buff"][indicatorName]["_auras"], value2)
+                    customIndicators["buff"][indicatorName]["auras"] = F.ConvertSpellTable_WithColor(customIndicators["buff"][indicatorName]["_auras"], value2)
                 else
-                    customIndicators["buff"][indicatorName]["auras"] = F:ConvertSpellTable(customIndicators["buff"][indicatorName]["_auras"], value2)
+                    customIndicators["buff"][indicatorName]["auras"] = F.ConvertSpellTable(customIndicators["buff"][indicatorName]["_auras"], value2)
                 end
             end
         elseif customIndicators["debuff"][indicatorName] then
@@ -176,7 +178,7 @@ local function UpdateCustomIndicators(layout, indicatorName, setting, value, val
         end
     end
 end
-Cell:RegisterCallback("UpdateIndicators", "UpdateCustomIndicators", UpdateCustomIndicators)
+Cell.RegisterCallback("UpdateIndicators", "UpdateCustomIndicators", UpdateCustomIndicators)
 
 -------------------------------------------------
 -- reset
@@ -301,14 +303,16 @@ function I.ShowCustomIndicators(unitButton, auraType)
         if indicator and enabledIndicators[indicatorName] then
             if indicatorTable["num"] then
                 local t = indicatorTable["found"][unit]
-                sort(t, comparator)
-                for i = 1, indicatorTable["num"] do
-                    if not t[i] then break end
-                    -- 1:order, 2:start, 3:duration, 4:debuffType, 5:icon, 6:count, 7:refreshing, 8:color
-                    indicator[i]:SetCooldown(t[i][2], t[i][3], t[i][4], t[i][5], t[i][6], t[i][7], t[i][8])
+                if t[1] then
+                    sort(t, comparator)
+                    for i = 1, indicatorTable["num"] do
+                        if not t[i] then break end
+                        -- 1:order, 2:start, 3:duration, 4:debuffType, 5:icon, 6:count, 7:refreshing, 8:color
+                        indicator[i]:SetCooldown(t[i][2], t[i][3], t[i][4], t[i][5], t[i][6], t[i][7], t[i][8])
+                    end
                     indicator:Show()
+                    indicator:UpdateSize()
                 end
-                indicator:UpdateSize()
             else
                 if indicatorTable["top"][unit] and indicatorTable["top"][unit]["start"] then
                     indicator:SetCooldown(

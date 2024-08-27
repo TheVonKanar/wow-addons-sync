@@ -301,6 +301,41 @@
 		return resultTable
 	end
 
+	local aura_debugger_controlfile = function()
+		do return end
+
+		--is in a m+ dungeon?
+		Details222.MythicPlus.debug_auras = {}
+		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() or 1 --not mop friendly
+		if (mythicLevel) then
+			if (Details222.MythicPlus.debug_auras) then
+				--iterate among all actors on the utility container and store the update of each buff
+				local utilityContainer = Details:GetCurrentCombat():GetContainer(DETAILS_ATTRIBUTE_MISC)
+				for _, actorObject in utilityContainer:ListActors() do
+					---@cast actorObject actorutility
+					local spellContainer = actorObject.buff_uptime_spells
+					if (spellContainer) then
+						if (actorObject:IsGroupPlayer()) then
+							for spellId, spellTable in spellContainer:ListSpells() do
+								if (spellTable.uptime) then
+									local auraInfo = C_Spell.GetSpellInfo(spellId)
+									if (auraInfo) then
+										local auraTableOnDebugTable = Details222.MythicPlus.debug_auras[spellId]
+										if (not auraTableOnDebugTable) then
+											Details222.MythicPlus.debug_auras[spellId] = {auraInfo.name}
+											auraTableOnDebugTable = Details222.MythicPlus.debug_auras[spellId]
+										end
+										table.insert(Details222.MythicPlus.debug_auras[spellId], spellTable.uptime)
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 --internal functions
@@ -356,6 +391,8 @@
 		local bSetStartTime = true
 		newCombatObject:SetDateToNow(bSetStartTime)
 
+		newCombatObject.timeStart = time()
+
 		--set the combat id on the combat object
 		newCombatObject.combat_id = combatCounter
 
@@ -387,6 +424,7 @@
 			Details:CatchRaidBuffUptime("BUFF_UPTIME_IN")
 		end)
 		Details:CatchRaidDebuffUptime("DEBUFF_UPTIME_IN")
+
 		Details:UptadeRaidMembersCache()
 
 		--we already have boss information? build .is_boss table
@@ -526,6 +564,8 @@
 		currentCombat:SetDateToNow(bSetStartTime, bSetEndTime)
 		currentCombat:SetEndTime(GetTime())
 
+		currentCombat.timeEnd = time()
+
 		--drop player last events table to garbage collector
 		currentCombat.player_last_events = {}
 
@@ -565,7 +605,7 @@
 		end
 
 		--tag as a mythic dungeon segment, can be any type of segment, this tag also avoid the segment to be tagged as trash
-		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo()
+		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo and C_ChallengeMode.GetActiveKeystoneInfo()
 		if (mythicLevel and mythicLevel >= 2) then
 			currentCombat.is_mythic_dungeon_segment = true
 			currentCombat.is_mythic_dungeon_run_id = Details.mythic_dungeon_id
@@ -870,6 +910,8 @@
 		Details.StoreSpells()
 		Details:RunScheduledEventsAfterCombat()
 
+		aura_debugger_controlfile()
+
 		--issue: invalidCombat will be just floating around in memory if not destroyed
 	end --end of leaving combat function
 
@@ -1002,6 +1044,8 @@
 			local nTimeIntervalBetweenUpdates = 0.1
 			Details:SetWindowUpdateSpeed(nTimeIntervalBetweenUpdates, bNoSave)
 		end
+
+		Details222.ArenaSummary.OnArenaStart()
 	end
 
 	--return the GetTime() of the current or latest arena match
@@ -1017,6 +1061,9 @@
 		if (Details.debug) then
 			Details:Msg("(debug) starting a new arena segment.")
 		end
+
+		--cleanup the first death of the arena
+		Details.first_arena_deathlog = nil
 
 		local _, timeSeconds = select(1, ...)
 
@@ -1524,7 +1571,7 @@
 			if (instance.rows_showing == 0 and instance:GetSegment() == -1) then -- -1 overall data
 				if (not instance:IsShowingOverallDataWarning()) then
 					local tutorial = Details:GetTutorialCVar("OVERALLDATA_WARNING1") or 0
-					if ((type(tutorial) == "number") and (tutorial < 60)) then
+					if ((type(tutorial) == "number") and (tutorial < 10)) then
 						Details:SetTutorialCVar ("OVERALLDATA_WARNING1", tutorial + 1)
 						instance:ShowOverallDataWarning (true)
 					end

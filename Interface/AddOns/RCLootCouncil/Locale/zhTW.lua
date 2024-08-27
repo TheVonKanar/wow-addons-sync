@@ -9,7 +9,6 @@ L[" you are now the Master Looter and RCLootCouncil is now handling looting."] =
 L["&p was awarded with &i for &r!"] = "&p獲得了&i，理由為&r！"
 L["A format to copy/paste to another player."] = "一個可以給其他玩家復制/粘貼的格式。"
 L["A new session has begun, type '/rc open' to open the voting frame."] = "新的分配已經開始，輸入'/rc open'開啟投票介面"
-L["A tab delimited output for Excel. Might work with other spreadsheets."] = "以Tab字符分隔的導出格式。支持Excel。也有可能支持其他類型表格軟件。"
 L["Abort"] = "中止"
 L["Accept Whispers"] = "接受密語"
 L["accept_whispers_desc"] = "允許玩家密語他們當前的物品給你，以添加到分配界面。"
@@ -20,8 +19,8 @@ L["active_desc"] = "取消勾選以禁用RCLootCouncil。當你在團隊中但�
 L["Add Item"] = "添加物品"
 L["Add Note"] = "增加筆記"
 L["Add ranks"] = "增加階級"
-L["Add rolls"] = "添加擲骰"
 L["Add Rolls"] = "添加擲骰"
+L["Add rolls"] = "添加擲骰"
 --[[Translation missing --]]
 L["add_candidate"] = "Add Candidate"
 L["add_ranks_desc"] = "擇參與戰利品分配議會的最低會階"
@@ -120,8 +119,6 @@ L["award_reasons_desc"] = [=[用於自動分配時右鍵選單中
 L["Awarded"] = "已分配"
 L["Awarded item cannot be awarded later."] = "已分配物品無法被稍后分配。"
 L["Awards"] = "分配"
---[[Translation missing --]]
-L["Azerite Armor"] = "Azerite Armor"
 L["Background"] = "背景"
 L["Background Color"] = "背景顏色"
 L["Banking"] = "收藏"
@@ -139,6 +136,8 @@ L["Candidate removed"] = "移除可拾取成員"
 L["Candidates that can't use the item"] = "無法使用此物品的人"
 L["Cannot autoaward:"] = "無法自動分配："
 L["Cannot give 'item' to 'player' due to Blizzard limitations. Gave it to you for distribution."] = "由於暴雪限制，你無法將%s分配給%s"
+--[[Translation missing --]]
+L["Catalyst_Items"] = "Catalyst Items"
 L["Change Award"] = "變更分配"
 L["Change Response"] = "更改回應"
 L["Changing loot threshold to enable Auto Awarding"] = "更改拾取品質以啟用自動分配"
@@ -152,19 +151,49 @@ L["chat version String"] = "|cFF87CEFARCLootCouncil |cFFFFFFFF版本 |cFFFFA500 
 L["chat_cmd_add_found_items"] = "Found %d items with trade timers in your bags."
 --[[Translation missing --]]
 L["chat_cmd_add_invalid_owner"] = "The player %s was either invalid or not a candidate."
+--[[Translation missing --]]
+L["chat_command_start_error_onlyUseInRaids"] = "Cannot start: you're in a party and have the 'only use in raids' option enabled."
+--[[Translation missing --]]
+L["chat_command_start_error_start_PartyIsLFG"] = "Cannot start: you are in a LFG party."
+--[[Translation missing --]]
+L["chat_command_start_error_usageNever"] = "Cannot start: your 'usage' option is set to 'never'."
 L["chat_commands_add"] = "將一個物品加入分配"
+--[[Translation missing --]]
+L["chat_commands_add_all"] = "Adds all tradable items to the session frame"
 L["chat_commands_award"] = "開始分配你之前稍后分配的物品。"
+--[[Translation missing --]]
+L["chat_commands_clear"] = "Removes all items from the 'award later' list"
 L["chat_commands_config"] = "打開設置界面"
 L["chat_commands_council"] = "打開議會界面"
+--[[Translation missing --]]
+L["chat_commands_export"] = "Exports the items currently in session"
+--[[Translation missing --]]
+L["chat_commands_groupLeader_only"] = "Group Leader commands"
 L["chat_commands_history"] = "打開歷史界面(簡稱： 'h' 或者 'his')"
+--[[Translation missing --]]
+L["chat_commands_list"] = "Lists all items marked for 'award later'"
+--[[Translation missing --]]
+L["chat_commands_ML_only"] = "Master Looter commands"
 L["chat_commands_open"] = "打開投票界面"
 --[[Translation missing --]]
 L["chat_commands_profile"] = "Open the profile manager"
+--[[Translation missing --]]
+L["chat_commands_remove"] = "Removes the item at index from the 'award later' list"
 L["chat_commands_reset"] = "重置界面位置"
+--[[Translation missing --]]
+L["chat_commands_session"] = "Open the session frame (alt. 'ses' or 's')"
+--[[Translation missing --]]
+L["chat_commands_start"] = "Start handling loot"
+--[[Translation missing --]]
+L["chat_commands_stop"] = "Stop handling loot"
 L["chat_commands_sync"] = "打開設置同步器"
 L["chat_commands_test"] = "模擬有#個物品的分配進程。如果省略默認為一個物品"
+--[[Translation missing --]]
+L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "打開版本檢查器 (簡稱： 'v' 或者 'ver')"
 L["chat_commands_whisper"] = "顯示密語幫助"
+--[[Translation missing --]]
+L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 L["Check this to loot the items and distribute them later."] = "點擊拾取物品稍後分配"
 L["Check to append the realmname of a player from another realm"] = "顯示不同伺服器玩家的伺服器名稱"
 L["Check to have all frames minimize when entering combat"] = "進入戰鬥時最小化"
@@ -197,8 +226,6 @@ L["Customize appearance"] = "客製外觀"
 L["customize_appearance_desc"] = "你可以在這邊客製RCLootCouncil的外觀。點擊上面的保存鍵更換外觀。"
 L["Data Received"] = "數據已接收"
 L["Date"] = "日期"
-L["days and x months"] = "%s，%d月"
-L["days, x months, y years"] = "%s，%d月和%d年"
 L["Delete Skin"] = "刪除外觀"
 L["delete_skin_desc"] = "從選單中刪除目前選取的非預設外觀"
 L["Deselect responses to filter them"] = "取消回應以過濾"
@@ -242,6 +269,10 @@ L["group_council_members_head"] = "從目前隊伍添加可拾取成員"
 L["Guild Council Members"] = "公會分配者"
 L["Hide Votes"] = "隱藏投票"
 L["hide_votes_desc"] = "隱藏投票數直到有人投票"
+--[[Translation missing --]]
+L["history_export_excel_international_tip"] = "Tab delimited export for international version of Excel that uses ',' as formula delimiter."
+--[[Translation missing --]]
+L["history_export_sheets_tip"] = "Tab delimited export for Google Sheets and English version of Excel that uses ';' as formula delimiter."
 L["How to sync"] = "如何同步"
 L["huge_export_desc"] = "大量數據。隻顯示第一行以避免游戲卡頓。可以使用Ctrl+C復制全部內容。"
 L["Ignore List"] = "忽略列表"
@@ -312,6 +343,8 @@ L["ML sees voting"] = "分裝者可見投票"
 L["ML_ADD_INVALID_ITEM"] = "Invalid itemLink or itemID: %s"
 --[[Translation missing --]]
 L["ML_ADD_ITEM_MAX_ATTEMPTS"] = "Couldn't fetch item info for %s - probably not a real item."
+--[[Translation missing --]]
+L["ML_REQUEST_VOTES"] = "%s has requested you to vote for item #%d: %s"
 L["ml_sees_voting_desc"] = "允許分裝者查看投票詳情"
 L["module_tVersion_outdated_msg"] = "最新模塊 %s 的測試版本為: %s"
 L["module_version_outdated_msg"] = "模塊 %s 版本 %s 已過期。新版本為 %s。"
@@ -415,7 +448,12 @@ This cannot be undone.]=]
 --[[Translation missing --]]
 L["opt_deleteRaid_desc"] = "Delete all entries from a specific instance."
 --[[Translation missing --]]
-L["opt_moreButtons_desc"] = "Add a new set of buttons for a specific gear slot. The most specific type is used, i.e. adding buttons for 'Head' and 'Azerite Armor' will make head type armor use the head buttons instead of azerite armor."
+L["opt_moreButtons_desc"] = "Add a new set of buttons for a specific gear slot. The most specific type is used, i.e. adding buttons for 'Head' and 'Catalyst Items' will make head type armor use the head buttons instead of catalyst."
+--[[Translation missing --]]
+L["opt_moreInfo_onlyShowRaids_desc"] = [=[If any raids are selected, the 'More Info' window will only show awards from those raids. If nothing's selected, all raids will be shown.
+Note: This does not apply to the 'Winners of [item]' section.]=]
+--[[Translation missing --]]
+L["opt_moreInfo_onlyShowRaids_name"] = "Only specific raids"
 --[[Translation missing --]]
 L["opt_printCompletedTrade_Desc"] = "Check to enable a message every time a candidate trades an awarded item to the winner."
 --[[Translation missing --]]
@@ -431,6 +469,10 @@ L["opt_profileSharing_profileExistsWarning"] = "A profile named \"%s\" already e
 --[[Translation missing --]]
 L["opt_rejectTrade_Desc"] = "Check to enable candidates to choose whether they want to 'give' the item to the council or not. If unchecked, all tradeable PL items are added automatically."
 L["opt_rejectTrade_Name"] = "允許保留裝備"
+--[[Translation missing --]]
+L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
+--[[Translation missing --]]
+L["opt_savePersonalLoot_name"] = "Record Personal Loot"
 --[[Translation missing --]]
 L["opt_sharingProfile_success"] = "Succesfully imported profile: \"%s\""
 --[[Translation missing --]]
@@ -517,6 +559,8 @@ L["Response options"] = "回應選項"
 L["Response to 'item'"] = "對%s的回應"
 L["Response to 'item' acknowledged as 'response'"] = "對%s的回應被認定為\" %s \""
 L["response_color_desc"] = "為回應設置一種顏色"
+--[[Translation missing --]]
+L["response_NOTELIGIBLE"] = "Not eligible for this item"
 L["Responses"] = "回應"
 L["Responses from Chat"] = "聊天頻道回應"
 L["responses_from_chat_desc"] = [=[如果有人沒裝插件，他可以密分裝者 "rchelp" 來得知關鍵字列表
@@ -556,6 +600,8 @@ L["Standard .csv output."] = "標準.csv輸出格式"
 --[[Translation missing --]]
 L["Standard JSON output."] = "JSON array containing one JSON object per history entry."
 L["Status texts"] = "狀態文字"
+--[[Translation missing --]]
+L["Stop"] = "Stop"
 L["Store in bag and award later"] = "存入背包以稍后分配"
 L["Succesfully deleted %d entries"] = "成功刪除 %d 紀錄"
 L["Succesfully deleted %d entries from %s"] = "成功從 %s 刪除 %d 紀錄"
@@ -636,6 +682,10 @@ L["Version"] = "版本"
 L["Version Check"] = "版本檢查"
 L["version_check_desc"] = "開啓版本檢查模組"
 L["version_outdated_msg"] = "你的版本%s已經過期。最新版本為%s，請升級你的RCLootCouncil"
+--[[Translation missing --]]
+L["VF_REQUEST_VOTES"] = "Request Votes"
+--[[Translation missing --]]
+L["VF_REQUEST_VOTES_SENT"] = "Vote request sent"
 L["Vote"] = "投票"
 L["Voters"] = "投票者"
 L["Votes"] = "投票"

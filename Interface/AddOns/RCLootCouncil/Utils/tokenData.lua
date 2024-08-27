@@ -74,16 +74,17 @@ function RCLootCouncil:ExportTokenData(nextID)
 	table.sort(sorted, function(a, b) return a[1] < b[1] end)
 	for _, entry in ipairs(sorted) do
 		local slot = ""
+		-- We should just use the tooltips as it's way more reliable
 		local name = entry[2]
-		local l = name:lower()
-		for invSlot, keywords in pairs(keyWords) do
-			for _, keyword in pairs(keywords) do
-				if l:find(keyword) then
-					slot = invSlot
-					break
-				end
-			end
-		end
+		-- local l = name:lower()
+		-- for invSlot, keywords in pairs(keyWords) do
+		-- 	for _, keyword in pairs(keywords) do
+		-- 		if l:find(keyword) then
+		-- 			slot = invSlot
+		-- 			break
+		-- 		end
+		-- 	end
+		-- end
 		if slot == "" then
 			-- Can't extract slot from the item name, scan tooltip for it
 			slot = self:GetTokenSlotFromTooltip(entry[1])
@@ -833,10 +834,10 @@ _G.RCTokenTable = {
 	[225619] = "HandsSlot",  -- Mystic Stalwart's Emblem,
 	[225620] = "HandsSlot",  -- Venerated Stalwart's Emblem,
 	[225621] = "HandsSlot",  -- Zenith Stalwart's Emblem,
-	[225622] = "Trinket",    -- Dreadful Conniver's Badge,
-	[225623] = "Trinket",    -- Mystic Conniver's Badge,
-	[225624] = "Trinket",    -- Venerated Conniver's Badge,
-	[225625] = "Trinket",    -- Zenith Conniver's Badge,
+	[225622] = "HeadSlot",  -- Dreadful Conniver's Badge,
+	[225623] = "HeadSlot",  -- Mystic Conniver's Badge,
+	[225624] = "HeadSlot",  -- Venerated Conniver's Badge,
+	[225625] = "HeadSlot",  -- Zenith Conniver's Badge,
 	[225626] = "LegsSlot",   -- Dreadful Slayer's Icon,
 	[225627] = "LegsSlot",   -- Mystic Slayer's Icon,
 	[225628] = "LegsSlot",   -- Venerated Slayer's Icon,
@@ -845,6 +846,27 @@ _G.RCTokenTable = {
 	[225631] = "ShoulderSlot", -- Mystic Obscenity's Idol,
 	[225632] = "ShoulderSlot", -- Venerated Obscenity's Idol,
 	[225633] = "ShoulderSlot", -- Zenith Obscenity's Idol,
+
+	[228799] = "ChestSlot",	-- Dreadful Greased Gallybux,
+	[228800] = "ChestSlot",	-- Mystic Greased Gallybux,
+	[228801] = "ChestSlot",	-- Venerated Greased Gallybux,
+	[228802] = "ChestSlot", -- Zenith Greased Gallybux,
+	[228803] = "HandsSlot",	-- Dreadful Bloody Gallybux,
+	[228804] = "HandsSlot",	-- Mystic Bloody Gallybux,
+	[228805] = "HandsSlot",	-- Venerated Bloody Gallybux,
+	[228806] = "HandsSlot",	-- Zenith Bloody Gallybux,
+	[228807] = "HeadSlot",	-- Dreadful Gilded Gallybux,
+	[228808] = "HeadSlot",	-- Mystic Gilded Gallybux,
+	[228809] = "HeadSlot",	-- Venerated Gilded Gallybux,
+	[228810] = "HeadSlot",	-- Zenith Gilded Gallybux,
+	[228811] = "LegsSlot",	-- Dreadful Rusty Gallybux,
+	[228812] = "LegsSlot",	-- Mystic Rusty Gallybux,
+	[228813] = "LegsSlot",	-- Venerated Rusty Gallybux,
+	[228814] = "LegsSlot",	-- Zenith Rusty Gallybux,
+	[228815] = "ShoulderSlot",	-- Dreadful Polished Gallybux,
+	[228816] = "ShoulderSlot",	-- Mystic Polished Gallybux,
+	[228817] = "ShoulderSlot",	-- Venerated Polished Gallybux,
+	[228818] = "ShoulderSlot",	-- Zenith Polished Gallybux,
 }
 
 -- The base item level for the token on normal difficulty

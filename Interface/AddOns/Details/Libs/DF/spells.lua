@@ -940,6 +940,7 @@ DF.CrowdControlSpells = {
 	[277792] = "MAGE", --Polymorph Bumblebee
 	[391622] = "MAGE", --Polymorph Duck
 	[2139] = "MAGE", --Counterspell
+	[460392] = "MAGE", --Polymorph Mosswool
 	
 	[82691] = "MAGE", --Ring of Frost (debuff spellid)
 	[122] = "MAGE", --Frost Nova
@@ -1438,7 +1439,7 @@ elseif (DF.IsWotLKWow()) then
 	DF.FeastIDs = {}
 	DF.RuneIDs = {}
 --~Cata temp
-elseif (DF.IsClassicWow() or DF.IsCataWow()) then
+elseif (DF.IsClassicWow() or DF.IsCataWow() or DF.IsPandaWow()) then
 	DF.PotionIDs = {}
 	DF.FeastIDs = {}
 	DF.RuneIDs = {}
@@ -1467,7 +1468,7 @@ function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 	
 	while (nextID [1]) do
 		--get the deepest section in the hierarchy
-		local ID = tremove(nextID)
+		local ID = table.remove(nextID)
 		local sectionInfo = C_EncounterJournal.GetSectionInfo (ID)
 		
 		if (sectionInfo) then

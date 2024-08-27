@@ -32,7 +32,7 @@ L["Symbol Silver"] = Silver_AMOUNT_SYMBOL or "s";
 L["Symbol Copper"] = COPPER_AMOUNT_SYMBOL or "k";
 L["Requirements"] = REQUIREMENTS or "Anforderungen";
 L["Current Colon"] = ITEM_UPGRADE_CURRENT or "Aktuell:";
-L["Renown Level Label"] = RENOWN_LEVEL_LABEL or "Ruf ";  --There is a space
+L["Renown Level Label"] = "Ruf ";  --There is a space
 L["Abilities"] = ABILITIES or "Fähigkeiten";
 L["Traits"] = GARRISON_RECRUIT_TRAITS or "Eigenschaften";
 L["Costs"] = "Kosten";   --The costs to continue an action, usually gold
@@ -51,8 +51,8 @@ L["Different Item Types Alert"] = "Verschiedene Gegenstandstypen!";
 
 --String Format
 L["Format Reputation Reward Tooltip"] = QUEST_REPUTATION_REWARD_TOOLTIP or "Ihr erhaltet %d Ruf bei %s"; --Awards %d reputation with the %s
-L["Format You Have X"] = "- Du hast |cffffffff%d|r";
-L["Format You Have X And Y In Bank"] = "- Du hast |cffffffff%d|r (|cffffffff%d|r in deiner Bank)";
+L["Format You Have X"] = "- Du hast |cffffffff%s|r";
+L["Format You Have X And Y In Bank"] = "- Du hast |cffffffff%s|r (|cffffffff%s|r in deiner Bank)";
 L["Format Suggested Players"] = QUEST_SUGGESTED_GROUP_NUM or "Empfohlene Spieler [%d]";
 L["Format Current Skill Level"] = "Aktuelles Level: |cffffffff%d/%d|r";
 L["Format Reward Title"] = HONOR_REWARD_TITLE or "Titel: %s";
@@ -143,3 +143,27 @@ L["Match Stat Agility"] = "([,%d%.]+) Beweglichkeit";
 L["Match Stat Intellect"] = "([,%d%.]+) Intelligenz";
 L["Match Stat Spirit"] = "([,%d%.]+) Willenskraft";
 L["Match Stat DPS"] = "([,%d%.]+) Schaden pro Sekunde";
+
+L["Show Answer"] = "Lösung anzeigen.";
+L["Quest Failed Pattern"] = "^Abgabe von";
+L["AutoCompleteQuest HallowsEnd"] = "Eimer mit Süßigkeiten";     --Quest:28981
+L["AutoCompleteQuest Midsummer"] = "Ehrt die Flamme";   --Quest:29031
+L["AutoCompleteQuest Midsummer2"] = "Entweiht dieses Feuer!";     --Quest:11580
+
+--Asking for Directions-- (match the name to replace gossip icon)
+L["Pin Auction House"] = "Auktionshaus";
+L["Pin Bank"] = "Bank";
+L["Pin Barber"] = "Barbier";
+L["Pin Battle Pet Trainer"] = "Kampfhaustiertrainer";
+L["Pin Crafting Orders"] = "Handwerksaufträge";
+L["Pin Flight Master"] = "Flugmeister";
+L["Pin Great Vault"] = "Große Schatzkammer";
+L["Pin Inn"] = "Gasthaus";
+L["Pin Item Upgrades"] = "Gegenstandsaufwertungen";
+L["Pin Mailbox"] = "Briefkasten";
+L["Pin Other Continents"] = "Andere Kontinente";
+L["Pin POI"] = "Bedeutende Orte";
+L["Pin Profession Trainer"] = "Berufsausbilder";
+L["Pin Rostrum"] = "Podium der Transformation";
+L["Pin Stable Master"] = "Stallmeister";
+L["Pin Trading Post"] = "Handelsposten";

@@ -1,9 +1,9 @@
-## Interface: 11500
+## Interface: 11507
 ## Title: Cell
-## Version: r239-beta
+## Version: r258-release
 ## Author: enderneko
 ## X-Flavor: Vanilla
-## SavedVariables: CellDB
+## SavedVariables: CellDB, CellDBBackup
 ## SavedVariablesPerCharacter: CellCharacterDB
 
 ## X-Curse-Project-ID: 409666
@@ -37,7 +37,7 @@ RaidFrames\MainFrame.lua
 
 RaidDebuffs\ExpansionData\LoadExpansionData.xml
 Modules\LoadModules_Classic.xml
-Utilities\LoadUtilities_Vanilla.xml
+Utilities\LoadUtilities_Classic.xml
 RaidDebuffs\LoadRaidDebuffs_Vanilla.xml
 
 RaidFrames\UnitButton_Vanilla.lua
@@ -45,7 +45,7 @@ RaidFrames\UnitButton.xml
 RaidFrames\Groups\SoloFrame.lua
 RaidFrames\Groups\PartyFrame.lua
 RaidFrames\Groups\RaidFrame.lua
-RaidFrames\Groups\RaidPetFrame.lua
+RaidFrames\Groups\PetFrame.lua
 RaidFrames\Groups\NPCFrame.lua
 RaidFrames\Groups\SpotlightFrame.lua
 

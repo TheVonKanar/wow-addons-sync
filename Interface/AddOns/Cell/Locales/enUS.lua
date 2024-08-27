@@ -11,10 +11,10 @@ select(2, ...).L = setmetatable({
     ["togglemenu"] = "Menu",
     ["togglemenu_nocombat"] = "Menu (not in combat)",
     ["T"] = "Talent",
-    ["C"] = "Class Talent",
-    ["S"] = "Spec Talent",
-    ["H"] = "Hero Talent",
-    ["P"] = "PvP Talent",
+    ["C"] = "Class",
+    ["S"] = "Spec",
+    ["H"] = "Hero",
+    ["P"] = "PvP",
     ["notBound"] = "|cff777777".._G.NOT_BOUND,
 
     ["PET"] = "Pet",
@@ -46,6 +46,7 @@ select(2, ...).L = setmetatable({
     ["showAllSpells"] = "Show all spells",
     ["enableBlacklistShortcut"] = "Blacklist: Alt+Ctrl+RightClick",
     ["smooth"] = "Smooth",
+    ["onlyEnableNotInCombat"] = "Only when I'm not in combat",
 
     ["BOTTOM"] = "Bottom",
     ["BOTTOMLEFT"] = "Bottom Left",
@@ -66,7 +67,7 @@ select(2, ...).L = setmetatable({
     ["INVERT"] = "Invert",
     ["Default"] = _G.DEFAULT,
 
-    ["ABOUT"] = "Cell is a nice raid frame addon inspired by several great addons, such as CompactRaid, Grid2, Aptechka and VuhDo.\nWith a more human-friendly interface, Cell can provide a better user experience, better than ever.\nHope you enjoy.",
+    ["ABOUT"] = "Cell is a nice raid frame addon inspired by several great addons, such as CompactRaid, Grid2, Aptechka and VuhDo.\nWith a more human-friendly interface, Cell can provide a better user experience, better than ever.",
     ["RESET"] = "Cell requires a full reset after updating from a very old version",
     ["RESET_CHARACTER"] = "Cell requires a character profile reset after updating from a very old version",
     ["RESET_INCLUDES"] = "Only Click-Castings and Layout Auto Switch are included",
@@ -81,10 +82,176 @@ select(2, ...).L = setmetatable({
 
     ["RAID_DEBUFFS_TIPS"] = "Tips: [Drag & Drop] to change debuff order. [Double-Click] on instance name to open Encounter Journal. [Shift+Left Click] on instance/boss name to share debuffs. [Alt+Left Click] on instance/boss name to reset debuffs. The priority of General Debuffs is higher than Boss Debuffs.",
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
+    ["BACKUP_TIPS"] = "Backups are not always reliable, especially when they are too old. It is recommended to backup often. When sharing profiles, backups are not included.",
+    ["BACKUP_TIPS2"] = "Note for Classic players: Backups do not include Click-Castings and Layout Auto Switch of other characters",
 
     ["CHANGELOGS"] = [[
-        <h1>If there are any issues after an update, check through all code snippets first.</h1>
-        <p>(Retail) Enable "Always Update Buffs/Debuffs" in General tab, if indicators do not update correctly.</p>
+        <h2>If there are any issues after an update, check through all code snippets first.</h2>
+        <br/>
+
+        <h1>r258-release (Jul 13, 2025, 11:30 GMT+8)</h1>
+        <p>* Attempt to fix aura update.</p>
+        <br/>
+
+        <h1>r257-release (Jul 11, 2025, 17:00 GMT+8)</h1>
+        <p>* Bump up toc for Wrath (CN).</p>
+        <br/>
+
+        <h1>r256-release (Jul 8, 2025, 18:00 GMT+8)</h1>
+        <p>* (MoP) Fixed PW:S indicator.</p>
+        <br/>
+
+        <h1>r255-release (Jul 8, 2025, 16:00 GMT+8)</h1>
+        <p>+ Added Healer frame to spotlight (#393 by hreich).</p>
+        <p>+ (MoP) Added back PW:S indicator.</p>
+        <p>* (MoP) Fixed click-cast for Soulstone.</p>
+        <p>* Reworked BuffTracker &amp; MissingBuffs for all flavors.</p>
+        <p>- (Vanilla) Removed debuff duration limit from display logic.</p>
+        <br/>
+
+        <h1>r254-release (Jul 4, 2025, 21:20 GMT+8)</h1>
+        <p>* Updated for MoP. Updated for MoP. Layout Auto Switch and Power Filters have been reset due to the game version update.</p>
+        <p>* Disabled dragging while in combat.</p>
+        <p>* BuffTracker updated: now only available for Retail and MoP..</p>
+        <p>- Removed MissingBuffs indicator.</p>
+        <p>+ (Retail) Cell will attempt to restore the correct layout after reconnecting during combat.</p>
+        <br/>
+
+        <h1>r253-release (May 13, 2025, 20:30 GMT+8)</h1>
+        <p>* Updated libs.</p>
+        <p>* Updated targeted spells.</p>
+        <br/>
+
+        <h1>r252-release (Apr 1, 2025, 14:15 GMT+8)</h1>
+        <p>* Fixed powerfilter values (#367).</p>
+        <p>* Updated locales.</p>
+        <p>- Removed global names for custom indicators.</p>
+        <br/>
+
+        <h1>r251-release (Mar 31, 2025, 19:00 GMT+8)</h1>
+        <p>* Updated Bleed list for TWW S2 (#359).</p>
+        <p>* Updated mistweaver default spells (#364).</p>
+        <p>* Fixed missing powerFilters on importing.</p>
+        <p>* Fixed border indicator.</p>
+        <p>* Fixed height of aura list.</p>
+        <p>* Fixed issues for CN Wrath 3.4.4.</p>
+        <p>* Spotlight Tank is now available for Classic.</p>
+        <p>- Removed IsDelveInProgress check.</p>
+        <p>+ Added Cell_ExpansionDataOverrides.</p>
+        <br/>
+
+        <h1>r250-release (Mar 13, 2025, 19:00 GMT+8)</h1>
+        <p>* (Classic) Fixed "Healers" indicator.</p>
+        <p>* Fixed healthText issue.</p>
+        <p>* Fixed raid debuff glow.</p>
+        <p>* Fixed size of Dispels.</p>
+        <p>* Fixed nil error #354 #355.</p>
+        <p>* Fixed spotlight placeholders.</p>
+        <p>* Changed TankActiveMitigation to spellID.</p>
+        <p>* Attempted to fix the aura list height.</p>
+        <p>* Updated Liberation of Undermine debuffs.</p>
+        <p>* Updated some targeted spells.</p>
+        <p>* Updated button backdrops.</p>
+        <p>* Updated locales.</p>
+        <br/>
+
+        <h1>r249-release (Mar 5, 2025, 19:12 GMT+8)</h1>
+        <p>* Fixed horizontal layout.</p>
+        <br/>
+
+        <h1>r248-release (Mar 5, 2025, 18:30 GMT+8)</h1>
+        <p>* Improved the accuracy of unit button spacing.</p>
+        <p>* Fixed "Healers" indicator.</p>
+        <p>* Fixed layout hiding on classic.</p>
+        <p>* Fixed pixel accuracy of Block(s).</p>
+        <p>* Fixed raid layout preview.</p>
+        <p>* Added "Apply Recommended Scale" button and "/cell rescale".</p>
+        <p>* Updated power filter for vanilla.</p>
+        <p>* Updated max unitsPerColumn on classic.</p>
+        <p>* Update locales.</p>
+        <br/>
+
+        <h1>r247-release (Mar 4, 2025, 17:50 GMT+8)</h1>
+        <p>! Due to changes in scaling behavior, you might need to readjust the size and position of Cell.</p>
+        <p>* Updated TWW season 2 debuffs (Thanks 钛锬).</p>
+        <p>* Fixed scaling issue.</p>
+        <p>* Fixed positioning issue.</p>
+        <p>* Fixed Glow indicator.</p>
+        <br/>
+
+        <h1>r246-release (Mar 4, 2025, 13:00 GMT+8)</h1>
+        <p>! Cell now scales with UIParent.</p>
+        <p>+ Added maxValue settings to custom Bar indicator (#337).</p>
+        <p>+ Added glow to some indicators.</p>
+        <p>+ Implemented layout hiding (under Layout Auto Switch), removed old options under General tab.</p>
+        <p>+ Implemented solo pet hiding.</p>
+        <p>* Fixed hidden menu clickthrough issue.</p>
+        <p>* Fixed dispel check.</p>
+        <p>* Made BattleResTimer and PartyPets detachable.</p>
+        <p>* Made spacing options effective for solo/party pets.</p>
+        <p>* Updated locales.</p>
+        <br/>
+
+        <h1>r245-release (Feb 25, 2025, 19:35 GMT+8)</h1>
+        <p>* Fixed a layout auto switch issue.</p>
+        <p>* Fixed issues caused by spotlight on Classic.</p>
+        <p>* Fixed import.</p>
+        <p>+ Added "Health 2" for HealthText.</p>
+        <p>* HealthText no longer hides when dead/ghost.</p>
+        <p>* SpellRequest now supports nickname.</p>
+        <p>* Updated deDE, zhTW.</p>
+        <br/>
+
+        <h1>r244-release (Feb 24, 2025, 21:40 GMT+8)</h1>
+        <p>+ (Classic) Added downranking spells support for Click-Castings.</p>
+        <p>* Updated "Drinking" list (#279, #306).</p>
+        <p>* Updated range check.</p>
+        <p>* Updated Dispel Request text flipbook animation.</p>
+        <p>* Refactored HealthText indicator.</p>
+        <p>+ (Classic) Updated RaidDebuffs to include the Naxxramas raid (#294).</p>
+        <p>+ (TWW) Updated debuffs for season 2 (Thanks 钛锬).</p>
+        <p>+ (TWW) Updated Liberation of Undermine debuffs (Thanks Reat).</p>
+        <p>+ (Classic) Updated RoleIcon indicator and PowerBarFilters.</p>
+        <p>+ Implemented CombatIcon indicator.</p>
+        <p>+ Updated AoEHealings indicator.</p>
+        <p>+ Added "Relative" for indicator position settings.</p>
+        <p>+ Added class/role filter for PowerText indicator.</p>
+        <p>+ Added functions for "installer" addons.</p>
+        <p>* Fixed texture selector.</p>
+        <p>* Converted colon methods to dot notation, so some code snippets need to be updated.</p>
+        <p>* Updated locales.</p>
+        <br/>
+
+        <h1>r243-release (Oct 13, 2024, 21:37 GMT+8)</h1>
+        <p>* Fixed power filters for Wrath(CN).</p>
+        <p>* Fixed indicator revision process.</p>
+        <p>+ Added stack options for custom text indicators.</p>
+        <p>* Updated health text format option.</p>
+        <p>* Updated bleed list.</p>
+        <p>* Reverted some changes.</p>
+        <br/>
+
+        <h1>r242-release (Oct 9, 2024, 10:30 GMT+8)</h1>
+        <p>* Fixed for Classic.</p>
+        <p>* Updated deDE, esES, zhTW.</p>
+        <br/>
+
+        <h1>r241-release (Oct 8, 2024, 18:25 GMT+8)</h1>
+        <p>+ Implemented Nickname Blacklist and a hardcoded bad words list.</p>
+        <p>* Fixed Cell.GetUnitFramesForLGF.</p>
+        <p>* Fixed Power Text.</p>
+        <p>* Changed Gradient Color related options.</p>
+        <p>* Updated raid debuffs.</p>
+        <p>* Updated locales. Added esES (thanks Zurent!).</p>
+        <br/>
+
+        <h1>r240-release (Sep 9, 2024, 19:00 GMT+8)</h1>
+        <p>* Updated bleedList for TWW (PR #215).</p>
+        <p>+ Implemented Backups.</p>
+        <p>* Updated profile import.</p>
+        <p>* Fixed aura import/export.</p>
+        <p>* Fixed layout auto switch.</p>
+        <p>* Updated locales.</p>
         <br/>
 
         <h1>r239-release (Aug 23, 2024, 22:00 GMT+8)</h1>
@@ -106,6 +273,11 @@ select(2, ...).L = setmetatable({
         <p>+ Updated locales: deDE, frFR, ptBR, ruRU, zhTW.</p>
         <br/>
 
+        <p><a href="older">Click to view older changelogs</a></p>
+        <br/>
+    ]],
+
+    ["OLDER_CHANGELOGS"] = [[
         <h1>r238-release (Aug 7, 2024, 15:25 GMT+8)</h1>
         <p>* Fixed missing indicators.</p>
         <p>* Updated deDE and zhTW.</p>
@@ -423,11 +595,6 @@ select(2, ...).L = setmetatable({
         <p>* Updated zhTW.</p>
         <br/>
 
-        <p><a href="older">Click to view older changelogs</a></p>
-        <br/>
-    ]],
-
-    ["OLDER_CHANGELOGS"] = [[
         <h1>r199-release (Oct 21, 2023, 15:40 GMT+8)</h1>
         <p>* Updated spells of Defensives and Externals.</p>
         <p>+ Added "Cast By" option to custom buff indicators.</p>

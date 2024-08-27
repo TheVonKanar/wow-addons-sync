@@ -1,7 +1,10 @@
 local _, Cell = ...
 local L = Cell.L
+---@type CellFuncs
 local F = Cell.funcs
+---@class CellIndicatorFuncs
 local I = Cell.iFuncs
+---@type PixelPerfectFuncs
 local P = Cell.pixelPerfectFuncs
 
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -13,7 +16,7 @@ CELL_COOLDOWN_STYLE = "VERTICAL"
 -------------------------------------------------
 -- SetFont
 -------------------------------------------------
-local function JustifyText(text, point)
+function I.JustifyText(text, point)
     if strfind(point, "LEFT$") then
         text:SetJustifyH("LEFT")
     elseif strfind(point, "RIGHT$") then
@@ -32,7 +35,7 @@ local function JustifyText(text, point)
 end
 
 function I.SetFont(fs, anchorTo, font, size, outline, shadow, anchor, xOffset, yOffset, color)
-    font = F:GetFont(font)
+    font = F.GetFont(font)
 
     local flags
     if outline == "None" then
@@ -53,9 +56,9 @@ function I.SetFont(fs, anchorTo, font, size, outline, shadow, anchor, xOffset, y
         fs:SetShadowColor(0, 0, 0, 0)
     end
 
-    P:ClearPoints(fs)
-    P:Point(fs, anchor, anchorTo, anchor, xOffset, yOffset)
-    JustifyText(fs, anchor)
+    P.ClearPoints(fs)
+    P.Point(fs, anchor, anchorTo, anchor, xOffset, yOffset)
+    I.JustifyText(fs, anchor)
 
     if color then
         fs.r = color[1]
@@ -88,7 +91,7 @@ end
 -- VerticalCooldown
 -------------------------------------------------
 local function ReCalcTexCoord(self, width, height)
-    local texCoord = F:GetTexCoord(width, height)
+    local texCoord = F.GetTexCoord(width, height)
     self.icon:SetTexCoord(unpack(texCoord))
     if self.cooldown.icon then
         self.cooldown.icon:SetTexCoord(unpack(texCoord))
@@ -96,7 +99,7 @@ local function ReCalcTexCoord(self, width, height)
 end
 
 local function VerticalCooldown_OnUpdate(self, elapsed)
-    self.elapsed = self.elapsed + elapsed
+    self.elapsed = (self.elapsed or 0) + elapsed
     if self.elapsed >= 0.1 then
         self:SetValue(self:GetValue() + self.elapsed)
         self.elapsed = 0
@@ -134,8 +137,8 @@ local function Shared_CreateCooldown_Vertical(frame)
     cooldown.ShowCooldown = VerticalCooldown_ShowCooldown
     cooldown:SetScript("OnUpdate", VerticalCooldown_OnUpdate)
 
-    P:Point(cooldown, "TOPLEFT", frame.icon)
-    P:Point(cooldown, "BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", 0, CELL_BORDER_SIZE)
+    P.Point(cooldown, "TOPLEFT", frame.icon)
+    P.Point(cooldown, "BOTTOMRIGHT", frame.icon, "BOTTOMRIGHT", 0, CELL_BORDER_SIZE)
     cooldown:SetOrientation("VERTICAL")
     cooldown:SetReverseFill(true)
     cooldown:SetStatusBarTexture(Cell.vars.whiteTexture)
@@ -145,7 +148,7 @@ local function Shared_CreateCooldown_Vertical(frame)
 
     local spark = cooldown:CreateTexture(nil, "BORDER")
     cooldown.spark = spark
-    P:Height(spark, 1)
+    P.Height(spark, 1)
     spark:SetBlendMode("ADD")
     spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
     spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
@@ -173,8 +176,8 @@ local function Shared_CreateCooldown_Vertical_NoIcon(frame)
     cooldown.ShowCooldown = VerticalCooldown_ShowCooldown
     cooldown:SetScript("OnUpdate", VerticalCooldown_OnUpdate)
 
-    P:Point(cooldown, "TOPLEFT", frame, CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
-    P:Point(cooldown, "BOTTOMRIGHT", frame, -CELL_BORDER_SIZE, CELL_BORDER_SIZE + CELL_BORDER_SIZE)
+    P.Point(cooldown, "TOPLEFT", frame, CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
+    P.Point(cooldown, "BOTTOMRIGHT", frame, -CELL_BORDER_SIZE, CELL_BORDER_SIZE + CELL_BORDER_SIZE)
     cooldown:SetOrientation("VERTICAL")
     cooldown:SetReverseFill(true)
     cooldown:SetStatusBarTexture(Cell.vars.whiteTexture)
@@ -184,7 +187,7 @@ local function Shared_CreateCooldown_Vertical_NoIcon(frame)
 
     local spark = cooldown:CreateTexture(nil, "BORDER")
     cooldown.spark = spark
-    P:Height(spark, 1)
+    P.Height(spark, 1)
     spark:SetBlendMode("ADD")
     spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
     spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
@@ -198,12 +201,12 @@ local function Shared_CreateCooldown_Clock(frame)
     frame.cooldown = cooldown
     cooldown:Hide()
 
-    P:Point(cooldown, "TOPLEFT", frame, CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
-    P:Point(cooldown, "BOTTOMRIGHT", frame, -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
+    P.Point(cooldown, "TOPLEFT", frame, CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
+    P.Point(cooldown, "BOTTOMRIGHT", frame, -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
     cooldown:SetReverse(true)
     cooldown:SetDrawEdge(false)
     cooldown:SetSwipeTexture(Cell.vars.whiteTexture)
-    cooldown:SetSwipeColor(0, 0, 0, 0.8)
+    cooldown:SetSwipeColor(0, 0, 0, 0.77)
     -- cooldown:SetEdgeTexture([[Interface\Cooldown\UI-HUD-ActionBar-SecondaryCooldown]])
 
     -- cooldown text
@@ -236,6 +239,98 @@ local function Shared_SetCooldownStyle(frame, style, noIcon)
         else
             Shared_CreateCooldown_Vertical(frame)
         end
+    end
+end
+
+--------------------------------------------------
+-- glow
+--------------------------------------------------
+---@type function
+local ButtonGlow_Start = LCG.ButtonGlow_Start
+---@type function
+local ButtonGlow_Stop = LCG.ButtonGlow_Stop
+---@type function
+local PixelGlow_Start = LCG.PixelGlow_Start
+---@type function
+local PixelGlow_Stop = LCG.PixelGlow_Stop
+---@type function
+local AutoCastGlow_Start = LCG.AutoCastGlow_Start
+---@type function
+local AutoCastGlow_Stop = LCG.AutoCastGlow_Stop
+---@type function
+local ProcGlow_Start = LCG.ProcGlow_Start
+---@type function
+local ProcGlow_Stop = LCG.ProcGlow_Stop
+
+local StartGlow = {
+    ["none"] = function(frame)
+    end,
+    ["normal"] = function(frame)
+        ButtonGlow_Start(frame, frame.glowOptions.color)
+    end,
+    ["pixel"] = function(frame)
+        PixelGlow_Start(frame, frame.glowOptions.color, frame.glowOptions.N, frame.glowOptions.frequency, frame.glowOptions.length, frame.glowOptions.thickness)
+    end,
+    ["shine"] = function(frame)
+        AutoCastGlow_Start(frame, frame.glowOptions.color, frame.glowOptions.N, frame.glowOptions.frequency, frame.glowOptions.scale)
+    end,
+    ["proc"] = function(frame)
+        ProcGlow_Start(frame, frame.glowOptions)
+    end,
+}
+
+local StopGlow = {
+    ["none"] = function(frame)
+    end,
+    ["normal"] = ButtonGlow_Stop,
+    ["pixel"] = PixelGlow_Stop,
+    ["shine"] = AutoCastGlow_Stop,
+    ["proc"] = ProcGlow_Stop,
+}
+
+local function Shared_SetupGlow(frame, glowOptions)
+    frame.glowType = glowOptions[1]
+    frame.glowOptions = {}
+
+    ButtonGlow_Stop(frame)
+    PixelGlow_Stop(frame)
+    AutoCastGlow_Stop(frame)
+    ProcGlow_Stop(frame)
+
+    frame.StartGlow = StartGlow[strlower(frame.glowType)]
+    frame.StopGlow = StopGlow[strlower(frame.glowType)]
+
+    if frame.glowType == "Normal" then
+        frame.glowOptions.color = glowOptions[2]
+    elseif frame.glowType == "Pixel" then
+        frame.glowOptions.color = glowOptions[2]
+        frame.glowOptions.N = glowOptions[3]
+        frame.glowOptions.frequency = glowOptions[4]
+        frame.glowOptions.length = glowOptions[5]
+        frame.glowOptions.thickness = glowOptions[6]
+    elseif frame.glowType == "Shine" then
+        frame.glowOptions.color = glowOptions[2]
+        frame.glowOptions.N = glowOptions[3]
+        frame.glowOptions.frequency = glowOptions[4]
+        frame.glowOptions.scale = glowOptions[5]
+    elseif frame.glowType == "Proc" then
+        frame.glowOptions = {color = glowOptions[2], duration = glowOptions[3], startAnim = false}
+    end
+
+    if frame.glowType ~= "None" then
+        frame:StartGlow()
+        if not frame._sizeChangedHooked then
+            frame._sizeChangedHooked = true
+            frame:HookScript("OnSizeChanged", function()
+                frame:StartGlow()
+            end)
+        end
+    end
+end
+
+function I.Glow_SetupForChildren(parent, glowOptions)
+    for _, child in ipairs(parent) do
+        child:SetupGlow(glowOptions)
     end
 end
 
@@ -381,9 +476,9 @@ local function BorderIcon_SetCooldown(frame, start, duration, debuffType, textur
 end
 
 local function BorderIcon_SetBorder(frame, thickness)
-    P:ClearPoints(frame.iconFrame)
-    P:Point(frame.iconFrame, "TOPLEFT", frame, "TOPLEFT", thickness, -thickness)
-    P:Point(frame.iconFrame, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -thickness, thickness)
+    P.ClearPoints(frame.iconFrame)
+    P.Point(frame.iconFrame, "TOPLEFT", frame, "TOPLEFT", thickness, -thickness)
+    P.Point(frame.iconFrame, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -thickness, thickness)
 end
 
 local function BorderIcon_ShowDuration(frame, show)
@@ -396,11 +491,11 @@ local function BorderIcon_ShowDuration(frame, show)
 end
 
 local function BorderIcon_UpdatePixelPerfect(frame)
-    P:Resize(frame)
-    P:Repoint(frame)
-    P:Repoint(frame.iconFrame)
-    P:Repoint(frame.stack)
-    P:Repoint(frame.duration)
+    P.Resize(frame)
+    P.Repoint(frame)
+    P.Repoint(frame.iconFrame)
+    P.Repoint(frame.stack)
+    P.Repoint(frame.duration)
 end
 
 function I.CreateAura_BorderIcon(name, parent, borderSize)
@@ -429,8 +524,8 @@ function I.CreateAura_BorderIcon(name, parent, borderSize)
 
     local iconFrame = CreateFrame("Frame", name.."IconFrame", frame)
     frame.iconFrame = iconFrame
-    P:Point(iconFrame, "TOPLEFT", frame, "TOPLEFT", borderSize, -borderSize)
-    P:Point(iconFrame, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -borderSize, borderSize)
+    P.Point(iconFrame, "TOPLEFT", frame, "TOPLEFT", borderSize, -borderSize)
+    P.Point(iconFrame, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -borderSize, borderSize)
     iconFrame:SetFrameLevel(cooldown:GetFrameLevel()+1)
 
     local icon = iconFrame:CreateTexture(name.."Icon", "ARTWORK")
@@ -534,14 +629,14 @@ local function BarIcon_ShowAnimation(frame, show)
 end
 
 local function BarIcon_UpdatePixelPerfect(frame)
-    P:Resize(frame)
-    P:Repoint(frame)
-    P:Repoint(frame.icon)
-    P:Repoint(frame.stack)
-    P:Repoint(frame.duration)
-    P:Repoint(frame.cooldown)
+    P.Resize(frame)
+    P.Repoint(frame)
+    P.Repoint(frame.icon)
+    P.Repoint(frame.stack)
+    P.Repoint(frame.duration)
+    P.Repoint(frame.cooldown)
     if frame.cooldown.spark then
-        P:Resize(frame.cooldown.spark)
+        P.Resize(frame.cooldown.spark)
     end
 end
 
@@ -552,11 +647,11 @@ function I.CreateAura_BarIcon(name, parent)
     frame:SetBackdrop({bgFile = Cell.vars.whiteTexture})
     frame:SetBackdropColor(0, 0, 0, 1)
 
-    local icon = frame:CreateTexture(name.."Icon", "ARTWORK")
+    local icon = frame:CreateTexture(name and name.."Icon", "ARTWORK")
     frame.icon = icon
     -- icon:SetTexCoord(0.12, 0.88, 0.12, 0.88)
-    P:Point(icon, "TOPLEFT", frame, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
-    P:Point(icon, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
+    P.Point(icon, "TOPLEFT", frame, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
+    P.Point(icon, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
     -- icon:SetDrawLayer("ARTWORK", 1)
 
     frame.stack = frame:CreateFontString(nil, "OVERLAY", "CELL_FONT_STATUS")
@@ -580,6 +675,7 @@ function I.CreateAura_BarIcon(name, parent)
     frame.ShowDuration = Shared_ShowDuration
     frame.ShowStack = Shared_ShowStack
     frame.ShowAnimation = BarIcon_ShowAnimation
+    frame.SetupGlow = Shared_SetupGlow
     frame.UpdatePixelPerfect = BarIcon_UpdatePixelPerfect
 
     Shared_SetCooldownStyle(frame, CELL_COOLDOWN_STYLE)
@@ -623,9 +719,9 @@ local function Icons_UpdateSize(icons, numAuras)
     numAuras = min(numAuras, icons.numPerLine)
 
     if icons.isHorizontal then
-        P:SetGridSize(icons, icons.width, icons.height, icons.spacingX, icons.spacingY, numAuras, lines)
+        P.SetGridSize(icons, icons.width, icons.height, icons.spacingX, icons.spacingY, numAuras, lines)
     else
-        P:SetGridSize(icons, icons.width, icons.height, icons.spacingX, icons.spacingY, lines, numAuras)
+        P.SetGridSize(icons, icons.width, icons.height, icons.spacingX, icons.spacingY, lines, numAuras)
     end
 end
 
@@ -721,13 +817,13 @@ local function Icons_SetOrientation(icons, orientation)
     end
 
     for i = 1, icons.maxNum do
-        P:ClearPoints(icons[i])
+        P.ClearPoints(icons[i])
         if i == 1 then
-            P:Point(icons[i], point1)
+            P.Point(icons[i], point1)
         elseif i % icons.numPerLine == 1 then
-            P:Point(icons[i], point1, icons[i-icons.numPerLine], newLinePoint2, newLineX, newLineY)
+            P.Point(icons[i], point1, icons[i-icons.numPerLine], newLinePoint2, newLineX, newLineY)
         else
-            P:Point(icons[i], point1, icons[i-1], point2, x, y)
+            P.Point(icons[i], point1, icons[i-1], point2, x, y)
         end
     end
 
@@ -791,8 +887,8 @@ local function Icons_ShowAnimation(icons, show)
 end
 
 local function Icons_UpdatePixelPerfect(icons)
-    P:Repoint(icons)
-    P:Resize(icons)
+    P.Repoint(icons)
+    P.Resize(icons)
     for i = 1, icons.maxNum do
         icons[i]:UpdatePixelPerfect()
     end
@@ -820,10 +916,11 @@ function I.CreateAura_Icons(name, parent, num)
     icons.ShowDuration = Icons_ShowDuration
     icons.ShowStack = Icons_ShowStack
     icons.ShowAnimation = Icons_ShowAnimation
+    icons.SetupGlow = I.Glow_SetupForChildren
     icons.UpdatePixelPerfect = Icons_UpdatePixelPerfect
 
     for i = 1, num do
-        local name = name.."Icon"..i
+        local name = name and name.."Icon"..i
         local frame = I.CreateAura_BarIcon(name, icons)
         icons[i] = frame
     end
@@ -835,7 +932,7 @@ end
 -- CreateAura_Text
 -------------------------------------------------
 local function Text_SetFont(frame, font, size, outline, shadow)
-    font = F:GetFont(font)
+    font = F.GetFont(font)
 
     local flags
     if outline == "None" then
@@ -863,15 +960,16 @@ local function Text_SetPoint(frame, point, relativeTo, relativePoint, x, y)
     frame.text:ClearAllPoints()
     frame.text:SetPoint(point)
     frame:_SetPoint(point, relativeTo, relativePoint, x, y)
-    JustifyText(frame.text, point)
+    I.JustifyText(frame.text, point)
 end
 
 local function Text_SetDuration(frame, durationTbl)
     frame.durationTbl = durationTbl
 end
 
-local function Text_SetCircledStackNums(frame, circled)
-    frame.circledStackNums = circled
+local function Text_SetStack(frame, stack)
+    frame.showStack = stack[1]
+    frame.circledStackNums = stack[2]
 end
 
 local function Text_SetColors(frame, colors)
@@ -937,9 +1035,11 @@ end
 local circled = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳","㉑","㉒","㉓","㉔","㉕","㉖","㉗","㉘","㉙","㉚","㉛","㉜","㉝","㉞","㉟","㊱","㊲","㊳","㊴","㊵","㊶","㊷","㊸","㊹","㊺","㊻","㊼","㊽","㊾","㊿"}
 local function Text_SetCooldown(frame, start, duration, debuffType, texture, count)
     if duration == 0 then
+        -- always show stack
         count = count == 0 and 1 or count
         count = frame.circledStackNums and circled[count] or count
         frame.text:SetText(count)
+        frame.text:SetTextColor(frame.colors[1][1], frame.colors[1][2], frame.colors[1][3], frame.colors[1][4])
         frame:SetScript("OnUpdate", nil)
         frame._count = nil
         frame._start = nil
@@ -951,17 +1051,20 @@ local function Text_SetCooldown(frame, start, duration, debuffType, texture, cou
         frame._duration = duration
 
         if frame.durationTbl[1] then
-            if count == 0 then
-                frame._count = ""
-            elseif frame.circledStackNums then
-                frame._count = circled[count].." "
+            if frame.showStack and count ~= 0 then
+                if frame.circledStackNums then
+                    frame._count = circled[count].." "
+                else
+                    frame._count = count.." "
+                end
             else
-                frame._count = count.." "
+                frame._count = ""
             end
 
             frame._elapsed = 0.1 -- update immediately
             frame:SetScript("OnUpdate", Text_OnUpdateDuration)
         else
+            -- always show stack
             count = count == 0 and 1 or count
             if frame.circledStackNums then
                 frame.text:SetText(circled[count])
@@ -991,7 +1094,7 @@ function I.CreateAura_Text(name, parent)
     frame.SetPoint = Text_SetPoint
     frame.SetCooldown = Text_SetCooldown
     frame.SetDuration = Text_SetDuration
-    frame.SetCircledStackNums = Text_SetCircledStackNums
+    frame.SetStack = Text_SetStack
     frame.SetColors = Text_SetColors
 
     return frame
@@ -1096,16 +1199,16 @@ local function Rect_SetColors(frame, colors)
 end
 
 local function Rect_UpdatePixelPerfect(frame)
-    P:Resize(frame)
-    P:Reborder(frame)
-    P:Repoint(frame)
+    P.Resize(frame)
+    P.Reborder(frame)
+    P.Repoint(frame)
 end
 
 function I.CreateAura_Rect(name, parent)
     local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
     frame:Hide()
     frame.indicatorType = "rect"
-    frame:SetBackdrop({edgeFile=Cell.vars.whiteTexture, edgeSize=P:Scale(1)})
+    frame:SetBackdrop({edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(CELL_BORDER_SIZE)})
     frame:SetBackdropBorderColor(0, 0, 0, 1)
 
     local tex = frame:CreateTexture(nil, "BORDER", nil, -7)
@@ -1120,6 +1223,7 @@ function I.CreateAura_Rect(name, parent)
     frame.SetColors = Rect_SetColors
     frame.ShowStack = Shared_ShowStack
     frame.ShowDuration = Shared_ShowDuration
+    frame.SetupGlow = Shared_SetupGlow
     frame.UpdatePixelPerfect = Rect_UpdatePixelPerfect
 
     return frame
@@ -1205,7 +1309,11 @@ local function Bar_SetCooldown(bar, start, duration, debuffType, texture, count)
             bar.duration:Show()
         end
 
-        bar:SetMinMaxValues(0, duration)
+        if bar.maxValue then
+            bar:SetMinMaxValues(0, bar.allowSmaller and min(bar.maxValue, duration) or bar.maxValue)
+        else
+            bar:SetMinMaxValues(0, duration)
+        end
         bar._start = start
         bar._duration = duration
         bar._elapsed = 0.1 -- update immediately
@@ -1216,6 +1324,16 @@ local function Bar_SetCooldown(bar, start, duration, debuffType, texture, count)
     bar:Show()
 end
 
+local function Bar_SetMaxValue(bar, maxValue)
+    if maxValue[1]then
+        bar.maxValue = maxValue[2]
+        bar.allowSmaller = maxValue[3]
+    else
+        bar.maxValue = nil
+        bar.allowSmaller = nil
+    end
+end
+
 local function Bar_SetColors(bar, colors)
     bar:SetBackdropBorderColor(colors[4][1], colors[4][2], colors[4][3], colors[4][4])
     bar:SetBackdropColor(colors[5][1], colors[5][2], colors[5][3], colors[5][4])
@@ -1224,7 +1342,7 @@ local function Bar_SetColors(bar, colors)
 end
 
 function I.CreateAura_Bar(name, parent)
-    local bar = Cell:CreateStatusBar(name, parent, 18, 4, 100)
+    local bar = Cell.CreateStatusBar(name, parent, 18, 4, 100)
     bar:Hide()
     bar.indicatorType = "bar"
 
@@ -1235,6 +1353,8 @@ function I.CreateAura_Bar(name, parent)
     bar.SetCooldown = Bar_SetCooldown
     bar.ShowStack = Shared_ShowStack
     bar.ShowDuration = Shared_ShowDuration
+    bar.SetMaxValue = Bar_SetMaxValue
+    bar.SetupGlow = Shared_SetupGlow
     bar.SetColors = Bar_SetColors
 
     return bar
@@ -1294,8 +1414,8 @@ local function Bars_SetCooldown(bar, start, duration, debuffType, texture, count
             bar.duration:Show()
         end
 
-        if bar.parent.maxValue then
-            bar:SetMinMaxValues(0, bar.parent.allowSmaller and min(bar.parent.maxValue, duration) or bar.parent.maxValue)
+        if bar.maxValue then
+            bar:SetMinMaxValues(0, bar.allowSmaller and min(bar.maxValue, duration) or bar.maxValue)
         else
             bar:SetMinMaxValues(0, duration)
         end
@@ -1311,12 +1431,8 @@ local function Bars_SetCooldown(bar, start, duration, debuffType, texture, count
 end
 
 local function Bars_SetMaxValue(bars, maxValue)
-    if maxValue[1] == 0 then
-        bars.maxValue = nil
-        bars.allowSmaller = nil
-    else
-        bars.maxValue = maxValue[1]
-        bars.allowSmaller = maxValue[2]
+    for _, bar in ipairs(bars) do
+        bar:SetMaxValue(maxValue)
     end
 end
 
@@ -1340,10 +1456,11 @@ function I.CreateAura_Bars(name, parent, num)
     bars.ShowDuration = Icons_ShowDuration
     bars.ShowStack = Icons_ShowStack
     bars.SetMaxValue = Bars_SetMaxValue
+    bars.SetupGlow = I.Glow_SetupForChildren
     bars.UpdatePixelPerfect = Icons_UpdatePixelPerfect
 
     for i = 1, num do
-        local name = name.."Icons"..i
+        local name = name and name.."Icons"..i
         local frame = I.CreateAura_Bar(name, bars)
         bars[i] = frame
         frame.parent = bars
@@ -1397,7 +1514,7 @@ local function Color_SetCooldown(color, start, duration, debuffType)
             color:SetScript("OnUpdate", Color_OnUpdate)
         end
     elseif color.type == "class-color" then
-        color.solidTex:SetVertexColor(F:GetClassColor(color.parent.states.class))
+        color.solidTex:SetVertexColor(F.GetClassColor(color.parent.states.class))
     elseif color.type == "debuff-type" and debuffType then
         color.solidTex:SetVertexColor(CellDB["debuffTypeColor"][debuffType]["r"], CellDB["debuffTypeColor"][debuffType]["g"], CellDB["debuffTypeColor"][debuffType]["b"], 1)
     end
@@ -1421,8 +1538,8 @@ local function Color_SetAnchor(color, anchorTo)
         -- entire hp bar
         color:SetAllPoints(color.parent.widgets.healthBar)
     else -- unitbutton
-        P:Point(color, "TOPLEFT", color.parent, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
-        P:Point(color, "BOTTOMRIGHT", color.parent, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
+        P.Point(color, "TOPLEFT", color.parent, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
+        P.Point(color, "BOTTOMRIGHT", color.parent, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
     end
 
     -- color:SetFrameLevel(color:GetParent():GetFrameLevel() + color.configs.frameLevel)
@@ -1573,7 +1690,7 @@ local function Glow_OnUpdate(glow, elapsed)
 end
 
 local function Glow_SetCooldown(glow, start, duration)
-    if glow.fadeOut then
+    if duration ~= 0 and glow.fadeOut then
         glow._start = start
         glow._duration = duration
         glow._elapsed = 0.1 -- update immediately
@@ -1588,40 +1705,6 @@ local function Glow_SetCooldown(glow, start, duration)
     end
 
     glow:Show()
-
-    local glowOptions = glow.glowOptions
-    local glowType = glowOptions[1]
-
-    if glowType == "Normal" then
-        LCG.PixelGlow_Stop(glow)
-        LCG.AutoCastGlow_Stop(glow)
-        LCG.ProcGlow_Stop(glow)
-        LCG.ButtonGlow_Start(glow, glowOptions[2])
-    elseif glowType == "Pixel" then
-        LCG.ButtonGlow_Stop(glow)
-        LCG.AutoCastGlow_Stop(glow)
-        LCG.ProcGlow_Stop(glow)
-        -- color, N, frequency, length, thickness
-        LCG.PixelGlow_Start(glow, glowOptions[2], glowOptions[3], glowOptions[4], glowOptions[5], glowOptions[6])
-    elseif glowType == "Shine" then
-        LCG.ButtonGlow_Stop(glow)
-        LCG.PixelGlow_Stop(glow)
-        LCG.ProcGlow_Stop(glow)
-        -- color, N, frequency, scale
-        LCG.AutoCastGlow_Start(glow, glowOptions[2], glowOptions[3], glowOptions[4], glowOptions[5])
-    elseif glowType == "Proc" then
-        LCG.ButtonGlow_Stop(glow)
-        LCG.PixelGlow_Stop(glow)
-        LCG.AutoCastGlow_Stop(glow)
-        -- color, duration
-        LCG.ProcGlow_Start(glow, {color=glowOptions[2], duration=glowOptions[3], startAnim=false})
-    else
-        LCG.ButtonGlow_Stop(glow)
-        LCG.PixelGlow_Stop(glow)
-        LCG.AutoCastGlow_Stop(glow)
-        LCG.ProcGlow_Stop(glow)
-        glow:Hide()
-    end
 end
 
 function I.CreateAura_Glow(name, parent)
@@ -1636,9 +1719,7 @@ function I.CreateAura_Glow(name, parent)
         glow.fadeOut = fadeOut
     end
 
-    function glow:UpdateGlowOptions(options)
-        glow.glowOptions = options
-    end
+    glow.SetupGlow = Shared_SetupGlow
 
     -- glow:SetScript("OnHide", function()
     --     LCG.ButtonGlow_Stop(glow)
@@ -1685,12 +1766,12 @@ local function QuickAssistBars_UpdateSize(bars, barsShown)
             bars[i]:Hide()
         end
         if barsShown ~= 0 then
-            bars:_SetSize(bars.width, bars.height*barsShown-P:Scale(1)*(barsShown-1))
+            bars:_SetSize(bars.width, bars.height*barsShown-P.Scale(1)*(barsShown-1))
         end
     else
         for i = 1, bars.num do
             if bars[i]:IsShown() then
-                bars:_SetSize(bars.width, bars.height*i-P:Scale(1)*(i-1))
+                bars:_SetSize(bars.width, bars.height*i-P.Scale(1)*(i-1))
             else
                 break
             end
@@ -1722,11 +1803,11 @@ local function QuickAssistBars_SetOrientation(bars, orientation)
     end
 
     for i = 1, bars.num do
-        P:ClearPoints(bars[i])
+        P.ClearPoints(bars[i])
         if i == 1 then
-            P:Point(bars[i], point1)
+            P.Point(bars[i], point1)
         else
-            P:Point(bars[i], point1, bars[i-1], point2, 0, offset)
+            P.Point(bars[i], point1, bars[i-1], point2, 0, offset)
         end
     end
 
@@ -1743,8 +1824,8 @@ local function QuickAssistBars_Hide(bars, hideAll)
 end
 
 local function QuickAssistBars_UpdatePixelPerfect(bars)
-    -- P:Resize(bars)
-    P:Repoint(bars)
+    -- P.Resize(bars)
+    P.Repoint(bars)
     for i = 1, bars.num do
         bars[i]:UpdatePixelPerfect()
     end
@@ -1765,7 +1846,7 @@ function I.CreateAura_QuickAssistBars(name, parent, num)
     bars.UpdatePixelPerfect = QuickAssistBars_UpdatePixelPerfect
 
     for i = 1, num do
-        local name = name.."Bar"..i
+        local name = name and name.."Bar"..i
         local bar = I.CreateAura_Bar(name, bars)
         bars[i] = bar
 
@@ -2051,13 +2132,14 @@ local function Block_SetColors(frame, colors)
 end
 
 local function Block_UpdatePixelPerfect(frame)
-    P:Resize(frame)
-    P:Repoint(frame)
-    P:Repoint(frame.stack)
-    P:Repoint(frame.duration)
-    P:Repoint(frame.cooldown)
+    P.Resize(frame)
+    P.Repoint(frame)
+    P.Repoint(frame.stack)
+    P.Repoint(frame.duration)
+    P.Repoint(frame.cooldown)
+    P.Reborder(frame)
     if frame.cooldown.spark then
-        P:Resize(frame.cooldown.spark)
+        P.Resize(frame.cooldown.spark)
     end
 end
 
@@ -2066,7 +2148,7 @@ function I.CreateAura_Block(name, parent)
     frame:Hide()
     frame.indicatorType = "block"
 
-    frame:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P:Scale(CELL_BORDER_SIZE)})
+    frame:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(CELL_BORDER_SIZE)})
 
     Shared_SetCooldownStyle(frame, CELL_COOLDOWN_STYLE, true)
 
@@ -2078,6 +2160,7 @@ function I.CreateAura_Block(name, parent)
     frame.ShowStack = Shared_ShowStack
     frame.ShowDuration = Shared_ShowDuration
     frame.SetCooldown = Block_SetCooldown_Duration
+    frame.SetupGlow = Shared_SetupGlow
     frame.UpdatePixelPerfect = Block_UpdatePixelPerfect
 
     local ag = frame:CreateAnimationGroup()
@@ -2183,10 +2266,11 @@ function I.CreateAura_Blocks(name, parent, num)
     blocks.SetNumPerLine = Icons_SetNumPerLine
     blocks.ShowDuration = Icons_ShowDuration
     blocks.ShowStack = Icons_ShowStack
+    blocks.SetupGlow = I.Glow_SetupForChildren
     blocks.UpdatePixelPerfect = Icons_UpdatePixelPerfect
 
     for i = 1, num do
-        local name = name.."Icons"..i
+        local name = name and name.."Icons"..i
         local frame = I.CreateAura_Block(name, blocks)
         blocks[i] = frame
         frame.SetCooldown = Blocks_SetCooldown
@@ -2215,7 +2299,7 @@ local function Border_SetFadeOut(border, fadeOut)
 end
 
 local function Border_SetCooldown(border, start, duration, _, _, _, _, color)
-    if border.fadeOut then
+    if duration ~= 0 and border.fadeOut then
         border._start = start
         border._duration = duration
         border._elapsed = 0.1 -- update immediately
@@ -2233,18 +2317,18 @@ local function Border_SetCooldown(border, start, duration, _, _, _, _, color)
 end
 
 local function Border_UpdatePixelPerfect(border)
-    P:Repoint(border)
-    P:Repoint(border.mask)
-    P:Repoint(border.mask2)
+    P.Repoint(border)
+    P.Repoint(border.mask)
+    P.Repoint(border.mask2)
 end
 
 local function Border_SetThickness(border, thickness)
-    P:ClearPoints(border.mask)
-    P:Point(border.mask, "TOPLEFT", thickness, -thickness)
-    P:Point(border.mask, "BOTTOMRIGHT", -thickness, thickness)
-    P:ClearPoints(border.mask2)
-    P:Point(border.mask2, "TOPLEFT", thickness+CELL_BORDER_SIZE, -thickness-CELL_BORDER_SIZE)
-    P:Point(border.mask2, "BOTTOMRIGHT", -thickness-CELL_BORDER_SIZE, thickness+CELL_BORDER_SIZE)
+    P.ClearPoints(border.mask)
+    P.Point(border.mask, "TOPLEFT", thickness, -thickness)
+    P.Point(border.mask, "BOTTOMRIGHT", -thickness, thickness)
+    P.ClearPoints(border.mask2)
+    P.Point(border.mask2, "TOPLEFT", thickness+CELL_BORDER_SIZE, -thickness-CELL_BORDER_SIZE)
+    P.Point(border.mask2, "BOTTOMRIGHT", -thickness-CELL_BORDER_SIZE, thickness+CELL_BORDER_SIZE)
 end
 
 function I.CreateAura_Border(name, parent)
@@ -2252,8 +2336,8 @@ function I.CreateAura_Border(name, parent)
     border:Hide()
     border.indicatorType = "border"
 
-    P:Point(border, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
-    P:Point(border, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
+    P.Point(border, "TOPLEFT", CELL_BORDER_SIZE, -CELL_BORDER_SIZE)
+    P.Point(border, "BOTTOMRIGHT", -CELL_BORDER_SIZE, CELL_BORDER_SIZE)
 
     local mask = border:CreateMaskTexture()
     border.mask = mask

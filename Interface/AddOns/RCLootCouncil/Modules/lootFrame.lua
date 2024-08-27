@@ -4,7 +4,7 @@
 -- Create Date : 12/16/2014 8:24:04 PM
 ---@type RCLootCouncil
 local addon = select(2, ...)
---- @class RCLootFrame : AceTimer-3.0, AceEvent-3.0
+--- @class RCLootFrame : AceModule, AceTimer-3.0, AceEvent-3.0
 local LootFrame = addon:NewModule("RCLootFrame", "AceTimer-3.0", "AceEvent-3.0")
 --- @type RCLootCouncilLocale
 local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
@@ -16,7 +16,7 @@ local MAX_ENTRIES = 5
 local MIN_BUTTON_WIDTH = 40
 
 local sessionsWaitingRollResultQueue = {}
-local ROLL_TIMEOUT = 1.5
+local ROLL_TIMEOUT = 3
 local ROLL_SHOW_RESULT_TIME = 1
 local TIMEOUT_FLASH_THRESHOLD = 5
 
@@ -192,13 +192,15 @@ function LootFrame:OnRoll(entry, button)
 			addon:SendResponse("group", session, button, nil, nil, item.note)
 		end
 		if addon:Getdb().printResponse then
-			addon:Print(string.format(L["Response to 'item'"], ItemUtils:GetItemTextWithCount(item.link, #item.sessions))..
-				": "..addon:GetResponse(item.typeCode or item.equipLoc, button).text)
+			addon:Print(string.format(L["Response to 'item'"],
+					ItemUtils:GetItemTextWithCount(ItemUtils:GetItemTextWithIcon(item.link), #item.sessions)) ..
+				": "..addon:GetColoredResponseText(item.typeCode or item.equipLoc, button))
 		end
 		item.rolled = true
 		self.EntryManager:Trash(entry)
 		self:Update()
 	else
+		addon.Log:D("LootFrame:OnRoll", button)
 		if button == "ROLL" then
 			-- Need to do system roll and wait for its result.
 			local entryInQueue = {sessions=item.sessions, entry=entry}
@@ -247,7 +249,8 @@ do
 		---@param item RCItemEntry
 		Update = function(entry, item)
 			if not item then
-				return addon.Log:E("Entry update error @ item:", item)
+				addon.Require "Services.ErrorHandler":ThrowSilentError("Entry update error @ item: ".. tostring(item))
+				return
 			end
 			if item ~= entry.item then
 				entry.noteEditbox:Hide()
@@ -498,7 +501,7 @@ do
 				end
 				if entry.item.timeLeft <= 0 then --Timeout!
 					entry.timeoutBarText:SetText(L["Timeout"])
-					this:SetValue(0)
+					entry.timeoutBar:SetValue(0)
 					entry.blinkAnim:Stop()
 					return LootFrame:OnRoll(entry, "TIMEOUT")
 				end
@@ -509,7 +512,7 @@ do
 				end
 				entry.item.timeLeft = entry.item.timeLeft - elapsed
 				entry.timeoutBarText:SetText(_G.CLOSES_IN .. ": " .. ceil(entry.item.timeLeft)) -- _G.CLOSES_IN == "Time Left" for English
-				this:SetValue(entry.item.timeLeft)
+				entry.timeoutBar:SetValue(entry.item.timeLeft)
 			end)
 
 			-- We want to update the width of the timeout bar everytime the width of the whole frame changes:

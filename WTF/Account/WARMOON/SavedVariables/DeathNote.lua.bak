@@ -1,0 +1,11 @@
+
+DeathNoteDB = {
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Kvotheen - Hyjal",
+},
+["profiles"] = {
+["Kvotheen - Hyjal"] = {
+["searchbox_text"] = "",
+},
+},
+}

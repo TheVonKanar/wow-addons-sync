@@ -1,4 +1,4 @@
 
 AddonUsageSettings = {
-["sortOrder"] = 2,
+["sortOrder"] = 3,
 }

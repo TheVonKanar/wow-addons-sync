@@ -1,0 +1,14 @@
+## Interface: 11504, 40400, 110002
+## Title: Kong Config
+## Author: Xentaros
+## Notes: A GUI for configuring Kong.
+## Dependencies: Kong
+## LoadOnDemand: 1
+
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceGUIWidget-CollapsibleGroup.lua
+libs\AceGUIWidget-EasyMenuDropDown.lua
+libs\ConditionEditor.lua
+
+KongConfig.lua

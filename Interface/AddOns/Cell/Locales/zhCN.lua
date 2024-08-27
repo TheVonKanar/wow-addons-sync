@@ -3,7 +3,7 @@ if not LOCALE_zhCN then return end
 local L = select( 2, ...).L
 
 L["New version found (%s). Please visit %s to get the latest version."] = "发现新版本 (%s)。 请访问 %s 下载最新版本。"
-L["ABOUT"] = "Cell 团队框架的灵感来主要来自 CompactRaid 与 Grid2，同时也稍微参考了 Aptechka 和 VuhDo。\nCell 不轻量，也并非全能，其目标是提供相比以往更好的用户体验。\n希望你能喜欢。"
+L["ABOUT"] = "Cell 团队框架的灵感来主要来自 CompactRaid 与 Grid2，同时也稍微参考了 Aptechka 和 VuhDo。\nCell 不轻量，也并非全能，其目标是提供相比以往更好的用户体验。"
 L["RESET"] = "从过旧的版本更新，需要重置Cell"
 L["RESET_CHARACTER"] = "从过旧的版本更新，需要重置Cell的角色配置"
 L["RESET_INCLUDES"] = "这仅包括点击施法与布局自动切换"
@@ -115,8 +115,7 @@ L["Lock Cell Frames"] = "把它给我锁死"
 L["Fade Out Menu"] = "淡出菜单"
 L["Fade out menu buttons on mouseout"] = "当鼠标移开时淡出菜单按钮"
 L["Menu Position"] = "菜单位置"
-L["Always Update Buffs"] = "总是更新增益"
-L["Always Update Debuffs"] = "总是更新减益"
+L["Always Update Auras"] = "总是更新增益/减益"
 L["Ignore UNIT_AURA payloads"] = "无视 UNIT_AURA 事件的负载"
 L["This may help solve issues of indicators not updating correctly"] = "可能有助于解决指示器不能正确更新的问题"
 -- L["Override"] = "重写"
@@ -124,7 +123,7 @@ L["This may help solve issues of indicators not updating correctly"] = "可能�
 -- L["This may cause unknown issues"] = "可能导致未知问题"
 -- L["For addons/WAs not dependent on LibGetFrame, use %s"] = "对于不依赖 LibGetFrame 的插件或WA，使用 %s"
 L["Frame priorities for LibGetFrame"] = "指定 LibGetFrame 获取单位按钮的的优先级"
-L["Increase Health Update Rate"] = "增加血条刷新速率"
+L["Faster Health Updates"] = "快速血条刷新"
 L["Use CLEU events to increase health update rate"] = "使用战斗记录事件来增加血条刷新速率"
 L["Translit Cyrillic to Latin"] = "将俄文转写为英文"
 
@@ -135,17 +134,20 @@ L["Nickname Options"] = "昵称选项"
 L["Name or Name-Server"] = "角色名 或 角色名-服务器名"
 L["Nickname"] = "昵称"
 L["My Nickname"] = "我的昵称"
-L["Awesome!"] = "太棒了！"
-L["Sync Nicknames with Others"] = "与他人同步昵称"
+-- L["Awesome!"] = "太棒了！"
+L["Nickname Sync"] = "与他人同步昵称"
 L["Custom Nicknames"] = "自定义昵称"
 L["Only visible to me"] = "仅对自己可见"
 L["Target a player to autofill the name"] = "选中玩家可以自动填入名字"
+L["Nickname Blacklist"] = "昵称黑名单"
+L["Blacklist Target Player"] = "将目标加入黑名单"
 
 -------------------------------------------------
 -- appearance
 -------------------------------------------------
 L["Appearance"] = "外观"
 L["Scale"] = "缩放"
+L["Apply Recommended Scale"] = "应用推荐缩放"
 L["Strata"] = "层级"
 L["Non-integer scaling may result in abnormal display of options UI"] = "非整数缩放可能导致选项界面显示不正常"
 L["A UI reload is required.\nDo it now?"] = "需要重载界面。\n现在重载么？"
@@ -158,6 +160,8 @@ L["Power Color"] = "能量颜色"
 L["Class Color"] = "职业颜色"
 L["Class Color (dark)"] = "职业颜色 (暗)"
 L["Gradient"] = "渐变"
+L["Color Thresholds"] = "颜色阈值"
+L["Enable Color Gradient"] = "启用颜色渐变"
 L["Custom Color"] = "自定义颜色"
 L["Health Bar Color"] = "血条颜色"
 L["Health Loss Color"] = "损失血量颜色"
@@ -246,10 +250,10 @@ L["Assist"] = "协助"
 L["Menu"] = "菜单"
 
 L["T"] = "天赋"
-L["P"] = "PvP天赋"
-L["C"] = "职业天赋"
-L["S"] = "专精天赋"
-L["H"] = "英雄天赋"
+L["P"] = "PvP"
+L["C"] = "职业"
+L["S"] = "专精"
+L["H"] = "英雄"
 
 L["Edit"] = "编辑"
 L["Extra Action Button"] = "额外按键"
@@ -277,7 +281,7 @@ L["Tip: Every layout has its own position setting"] = "提示：每个布局都�
 
 -- layout preview
 L["Party"] = "小队"
-L["Raid Pets"] = "团队宠物"
+L["Pets"] = "宠物"
 L["Friendly NPC Frame"] = "友方 NPC 框体"
 
 -- layout auto switch
@@ -319,8 +323,11 @@ L["%s is required"] = "需要%s"
 L["Use Same Size As Main"] = "使用与主框体相同的尺寸"
 L["Use Same Arrangement As Main"] = "使用与主框体相同的排列"
 
+L["Show Solo Pet"] = "显示单人宠物"
 L["Show Party/Arena Pets"] = "显示小队/竞技场宠物"
+L["Detached"] = "分离"
 L["Show Raid Pets"] = "显示团队宠物"
+L["Show pets in a separate frame"] = "将宠物显示在一个单独的框体中"
 
 L["Show NPC Frame"] = "显示 NPC 框体"
 L["Separate NPC Frame"] = "分离 NPC 框体"
@@ -348,6 +355,7 @@ L["set unit's pet"] = "设置为目标单位的宠物"
 L["not in combat"] = "非战斗中"
 
 L["Invalid layout name."] = "无效布局名称。"
+L["Profile imported successfully."] = "配置导入成功。"
 L["Layout imported: %s."] = "已导入布局：%s。"
 L["Layout added: %s."] = "已创建布局：%s。"
 L["Layout deleted: %s."] = "已删除布局：%s。"
@@ -426,6 +434,7 @@ L["Status Icon"] = "状态图标"
 L["Role Icon"] = "职责图标"
 L["Party Assignment Icon"] = "职位图标"
 L["Leader Icon"] = "队长图标"
+L["Combat Icon"] = "战斗图标"
 L["Ready Check Icon"] = "就位确认图标"
 L["Raid Icon (player)"] = "团队标记 (玩家)"
 L["Raid Icon (target)"] = "团队标记 (目标)"
@@ -475,6 +484,8 @@ L["Blocks"] = "色块组"
 
 L["Enabled"] = "启用"
 L["Anchor Point"] = "锚点"
+L["Relative Point"] = "相对锚点"
+L["Relative To"] = "相对于"
 L["To UnitButton's"] = "到单位按钮的"
 L["To HealthBar's"] = "到血条的"
 L["vehicle name"] = "载具名称"
@@ -517,7 +528,12 @@ L["Alpha"] = "透明度"
 L["Max Displayed"] = "最大显示个数"
 L["Displayed Per Line"] = "每行/列显示个数"
 L["Format"] = "格式"
+L["Health"] = "生命值"
+L["Shields"] = "护盾"
 L["shields"] = "护盾"
+L["Heal Absorbs"] = "治疗吸收"
+L["Delimiter"] = "分隔符"
+L["Effective"] = "有效"
 L["hideIfEmptyOrFull"] = "当值为满或空时隐藏"
 L["Color"] = "颜色"
 L["Border Color"] = "边框颜色"
@@ -581,6 +597,7 @@ L["hideInCombat"] = "战斗中隐藏"
 L["fadeOut"] = "随时间淡出"
 L["shieldByMe"] = "只显示我施放的真言术：盾"
 L["onlyShowOvershields"] = "只显示超过血量上限的护盾"
+L["onlyEnableNotInCombat"] = "仅当我不在战斗中"
 L["showAllSpells"] = "显示所有法术"
 L["Glow is only available to the spells in the list below"] = "发光仅对列表的中的法术有效"
 L["Uncategorized"] = "未分类"
@@ -603,7 +620,7 @@ L["cleuAurasTips"] = "通过战斗记录事件匹配不可见的法术效果"
 L["%s in Utilities must be enabled to make this indicator work."] = "要使用此指示器，必须先启用工具页面下的%s功能。"
 L["If you are a paladin or warrior, and the unit has no buffs from you, a %s icon will be displayed."] = "如果你是圣骑士或战士，且该单位没有来自你的增益时，将会显示一个%s图标。"
 L["Play animation when the unit uses a specific spell/item. The list is global shared, not layout-specific."] = "当单位使用特定的法术/物品时，播放动画。这个列表是全局共享的，而非每个布局独立。"
-L["Display a gradient texture when the unit receives a heal from your certain AoE healing spells."] = "当单位受到你的特定群体治疗法术的治疗时，显示一个渐变材质。"
+L["Display a gradient texture when the unit receives a heal from your certain healing spells."] = "当单位受到你特定治疗法术的治疗时，显示一个渐变材质。"
 
 L["Would you like Cell to create a \"Healers\" indicator (icons)?"] = "需要 Cell 为你创建一个 “Healers” 指示器（图标组）？"
 
@@ -822,10 +839,18 @@ L["Slash Commands"] = "斜杠命令"
 L["Bug Report & Suggestion"] = "问题报告与建议"
 L["Links"] = "链接"
 L["Import & Export All Settings"] = "导入导出所有设置"
-L["All Cell settings will be overwritten!"] = "所有 Cell 设置将被覆盖！"
-L["Autorun will be disabled for all code snippets"] = "将禁用所有代码片段的自动运行"
+L["Cell settings will be overwritten!"] = "Cell 设置将被覆盖！"
+L["Unselected settings will remain"] = "未选中项的配置将与现在保持一致"
+L["Remember to backup your profile"] = "记得备份你的配置"
+-- L["Autorun will be disabled for all code snippets"] = "将禁用所有代码片段的自动运行"
 L["Include Nickname Settings"] = "包含昵称设置"
 L["Include Character Settings"] = "包含角色设置"
+L["Backups"] = "备份"
+L["Create Backup"] = "创建备份"
+L["Restore backup"] = "恢复备份"
+L["Delete backup"] = "删除备份"
+L["BACKUP_TIPS"] = "备份并不总是可靠，尤其当它们的年代过于久远时。推荐时常备份你的配置。当分享配置时，这些备份不包含在内。"
+L["BACKUP_TIPS2"] = "怀旧服玩家请注意：备份不包含其他角色的点击施法与布局自动切换"
 
 -------------------------------------------------
 -- code snippets
@@ -851,8 +876,173 @@ L["Click to view older changelogs"] = "点击查看远古更新记录"
 -- <br/>
 
 L["CHANGELOGS"] = [[
-    <h1>更新后如果有各种问题，先排查代码片段。</h1>
+    <h2>更新后如果有各种问题，先排查代码片段。</h2>
     <p>（正式服）如果指示器不能正常刷新，尝试启用常规页面下的“总是更新增益/减益”选项。</p>
+    <br/>
+
+    <h1>r258-release (Jul 13, 2025, 11:30 GMT+8)</h1>
+    <p>* 尝试修复指示器不刷新的问题。</p>
+    <br/>
+
+    <h1>r257-release (Jul 11, 2025, 17:00 GMT+8)</h1>
+    <p>* 提升巫妖王怀旧服版本号到30405。</p>
+    <br/>
+
+    <h1>r256-release (Jul 8, 2025, 18:00 GMT+8)</h1>
+    <p>*（熊猫人之谜）修复真言术：盾指示器。</p>
+    <br/>
+
+    <h1>r255-release (Jul 8, 2025, 16:00 GMT+8)</h1>
+    <p>+ 为特别关注框体新增“治疗者”（#393 by hreich）。</p>
+    <p>+（熊猫人之谜）真言术：盾指示器已回归。</p>
+    <p>*（熊猫人之谜）修复灵魂石的点击施法。</p>
+    <p>* 部分重写“增益检查”与“缺失增益”指示器，现在支持所有版本。</p>
+    <p>-（经典旧世）移除了减益持续时间的显示限制。</p>
+    <br/>
+
+    <h1>r254-release (Jul 4, 2025, 21:20 GMT+8)</h1>
+    <p>* 适配熊猫人之谜。由于游戏版本更新，布局自动切换与能量过滤已被重置。</p>
+    <p>* 战斗中禁用拖动。</p>
+    <p>* 增益检查已更新：现在仅支持正式服和熊猫人之谜。</p>
+    <p>- 移除“缺失增益”指示器。</p>
+    <p>+（正式服）在战斗中掉线重登后会尝试恢复正确的布局。</p>
+    <br/>
+
+    <h1>r253-release (May 13, 2025, 20:30 GMT+8)</h1>
+    <p>* 更新库。</p>
+    <p>* 更新“被法术选中”的列表。</p>
+    <br/>
+
+    <h1>r252-release (Apr 1, 2025, 14:15 GMT+8)</h1>
+    <p>* 再次修复能量条过滤 (#367)。</p>
+    <p>* 更新本地化。</p>
+    <p>- 自定义指示器不再拥有全局名称。</p>
+    <br/>
+
+    <h1>r251-release (Mar 31, 2025, 19:00 GMT+8)</h1>
+    <p>* 更新地心之战第二赛季的流血列表 (#359)。</p>
+    <p>* 更新织雾默认法术列表 (#364)。</p>
+    <p>* 修复导入时缺失的能量条过滤。</p>
+    <p>* 修复边框指示器。</p>
+    <p>* 修复指示器法术列表的高度。</p>
+    <p>* 修复国服巫妖王3.4.4版本的问题。</p>
+    <p>* 特别关注框体的“坦克”现已支持怀旧服。</p>
+    <p>- 移除深渊探索进度检查。</p>
+    <p>+ 添加 Cell_ExpansionDataOverrides。</p>
+    <br/>
+
+    <h1>r250-release (Mar 13, 2025, 19:00 GMT+8)</h1>
+    <p>* 修复怀旧服的“Healers”指示器。</p>
+    <p>* 修复血量文字的问题。</p>
+    <p>* 修复副本减益发光。</p>
+    <p>* 修复驱散指示器的尺寸。</p>
+    <p>* 修复空值错误 #354 #355。</p>
+    <p>* 修复特别关注框体的占位符。</p>
+    <p>* “坦克主动减伤”现在匹配法术ID。</p>
+    <p>* 修复增减益列表高度。</p>
+    <p>* 更新解放安德麦的副本减益。</p>
+    <p>* 更新部分“被法术选中”的法术。</p>
+    <p>* 更新按钮背景。</p>
+    <p>* 更新本地化。</p>
+    <br/>
+
+    <h1>r249-release (Mar 5, 2025, 19:12 GMT+8)</h1>
+    <p>* 修复水平布局。</p>
+    <br/>
+
+    <h1>r248-release (Mar 5, 2025, 18:30 GMT+8)</h1>
+    <p>* 提高单位按钮间距的精确度。</p>
+    <p>* 修复“Healers”指示器。</p>
+    <p>* 修复怀旧服的布局隐藏问题。</p>
+    <p>* 修复色块（组）指示器的像素精确度。</p>
+    <p>* 修复团队布局预览。</p>
+    <p>* 添加“应用推荐缩放”按钮和“/cell rescale”命令。</p>
+    <p>* 更新怀旧服的能量过滤器。</p>
+    <p>* 更新怀旧服上每列最大单位数。</p>
+    <p>* 更新本地化文本。</p>
+    <br/>
+
+    <h1>r247-release (Mar 4, 2025, 17:50 GMT+8)</h1>
+    <p>! 由于缩放行为的变更，你可能需要重新调节Cell的尺寸与位置。</p>
+    <p>* 更新地心之战第2赛季的副本减益（感谢 钛锬）。</p>
+    <p>* 修复缩放问题。</p>
+    <p>* 修复定位偏移。</p>
+    <p>* 修复“发光”类型的自定义指示器。</p>
+    <br/>
+
+    <h1>r246-release (Mar 4, 2025, 13:00 GMT+8)</h1>
+    <p>! Cell 现在随 UIParent 缩放。</p>
+    <p>+ 为进度条类型的自定义指示器添加了“最大值”的选项（#337）。</p>
+    <p>+ 为部分指示器添加了发光。</p>
+    <p>+ 实现布局隐藏（在布局自动切换下），常规页面下的旧选项已被移除。</p>
+    <p>+ 单人宠物现在可以隐藏。</p>
+    <p>* 修复菜单的鼠标穿透问题。</p>
+    <p>* 修复驱散检查。</p>
+    <p>* 战复计时器与小队宠物现在可以从主框体分离。</p>
+    <p>* 间距选项现在对单人/小队宠物有效。</p>
+    <p>* 更新本地化。</p>
+    <br/>
+
+    <h1>r245-release (Feb 25, 2025, 19:35 GMT+8)</h1>
+    <p>* 修复了一个布局自动切换时产生的异常。</p>
+    <p>* 修复了怀旧服上由特别关注框体导致的主框体指示器异常。</p>
+    <p>* 修复导入。</p>
+    <p>+ 为血量文字指示器添加了“生命值 2”的选项。</p>
+    <p>* 血量文字指示器现在不再于死亡/鬼魂状态下隐藏。</p>
+    <p>* 法术请求现在支持昵称。</p>
+    <p>* 更新德语、繁中。</p>
+    <br/>
+
+    <h1>r244-release (Feb 24, 2025, 21:40 GMT+8)</h1>
+    <p>+ （怀旧服）为点击施法添加对低级法术的直接支持。</p>
+    <p>* 更新“喝水”列表（#279, #306）。</p>
+    <p>* 更新距离检查。</p>
+    <p>* 更新驱散请求的文本动画。</p>
+    <p>* 重构血量文字指示器。</p>
+    <p>+ （经典怀旧服）将纳克萨玛斯加入副本减益列表 (#294)。</p>
+    <p>+ （地心之战）更新第二赛季副本减益（感谢 钛锬）。</p>
+    <p>+ （地心之战）更新解放安德麦的副本减益（感谢 Reat）。</p>
+    <p>+ （经典怀旧服）新增职责图标，更新能量条过滤。</p>
+    <p>+ 新增战斗图标指示器。</p>
+    <p>+ 更新AoE治疗指示器。</p>
+    <p>+ 为指示器的定位选项添加“相对于”的选项。</p>
+    <p>+ 为能量文字指示器添加职业/职责过滤。</p>
+    <p>* 修复材质选择器。</p>
+    <p>+ 为某些“插件安装器”新增一些方法。</p>
+    <p>* 将部分冒号方法转换为点方法，因此部分代码片段需要更新。</p>
+    <p>* 更新本地化。</p>
+    <br/>
+
+    <h1>r243-release (Oct 13, 2024, 21:37 GMT+8)</h1>
+    <p>* 修复怀旧服的能量过滤选项。</p>
+    <p>* 更新内置指示器自我修复策略。</p>
+    <p>+ 为“文本”类型的自定义指示器添加了层数的选项。</p>
+    <p>* 更新“血量文字”指示器的格式。</p>
+    <p>* 更新“流血”列表。</p>
+    <p>* 回滚一些导致异常的改动。</p>
+    <br/>
+
+    <h1>r242-release (Oct 9, 2024, 10:30 GMT+8)</h1>
+    <p>* 修复怀旧服的问题。</p>
+    <p>* 更新本地化。</p>
+    <br/>
+
+    <h1>r241-release (Oct 8, 2024, 18:25 GMT+8)</h1>
+    <p>+ 新增“昵称黑名单”。</p>
+    <p>* 修复 Cell.GetUnitFramesForLGF。</p>
+    <p>* 修复“能量文字”。</p>
+    <p>* 变更渐变色相关选项。</p>
+    <p>* 更新副本减益。</p>
+    <p>* 更新本地化，新增西班牙语（感谢 Zurent）。</p>
+    <br/>
+
+    <h1>r240-release (Sep 9, 2024, 19:00 GMT+8)</h1>
+    <p>* 更新地心之战“流血”列表（PR #215）。</p>
+    <p>+ 新增配置备份功能。</p>
+    <p>* 更新导入功能。</p>
+    <p>* 修复法术列表的导入导出。</p>
+    <p>* 修复布局自动切换。</p>
+    <p>* 更新本地化。</p>
     <br/>
 
     <h1>r239-release (Aug 23, 2024, 22:00 GMT+8)</h1>
@@ -874,6 +1064,11 @@ L["CHANGELOGS"] = [[
     <p>+ 更新本地化：德语、法语、葡萄牙语、俄语、繁中。</p>
     <br/>
 
+    <p><a href="older">]]..L["Click to view older changelogs"]..[[</a></p>
+    <br/>
+]]
+
+L["OLDER_CHANGELOGS"] = [[
     <h1>r238-release (Aug 7, 2024, 15:25 GMT+8)</h1>
     <p>* 修复可能缺失的指示器。</p>
     <p>* 更新本地化。</p>
@@ -1191,11 +1386,6 @@ L["CHANGELOGS"] = [[
     <p>* 更新繁中。</p>
     <br/>
 
-    <p><a href="older">]]..L["Click to view older changelogs"]..[[</a></p>
-    <br/>
-]]
-
-L["OLDER_CHANGELOGS"] = [[
     <h1>r199-release (Oct 21, 2023, 15:40 GMT+8)</h1>
     <p>* 更新“减伤”指示器的内置法术。</p>
     <p>+ 为增益类型的自定义指示器添加了“来源”选项。</p>

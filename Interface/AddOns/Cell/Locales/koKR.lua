@@ -39,19 +39,18 @@ L["Aggro (border)"] = "어그로(테두리)"
 L["all"] = "모두"
 L["ALL"] = "모두"
 L["All Bosses"] = "모든 우두머리"
-L["All Cell settings will be overwritten!"] = "모든 Cell 설정을 덮어씁니다!"
 L["All indicators of %s will be replaced with those in %s"] = "%s의 모든 표시기는 %s의 표시기로 대체됩니다."
 --[[Translation missing --]]
 --[[ L["All snippets have been disabled, due to the version update"] = ""--]]
+--[[Translation missing --]]
+--[[ L["Allow smaller value"] = ""--]]
 L["Alpha"] = "투명도"
 --[[Translation missing --]]
 --[[ L["Always"] = "Always"--]]
 --[[Translation missing --]]
 --[[ L["Always Targeting"] = "Always Targeting"--]]
 --[[Translation missing --]]
---[[ L["Always Update Buffs"] = ""--]]
---[[Translation missing --]]
---[[ L["Always Update Debuffs"] = ""--]]
+--[[ L["Always Update Auras"] = ""--]]
 L["Anchor Point"] = "고정 위치에서"
 --[[Translation missing --]]
 --[[ L["Anchor To"] = "Anchor To"--]]
@@ -65,6 +64,8 @@ L["Anchor Point"] = "고정 위치에서"
 --[[ L["Anyone"] = ""--]]
 L["AoE Healing"] = "광역 치유"
 L["Appearance"] = "외형"
+--[[Translation missing --]]
+--[[ L["Apply Recommended Scale"] = ""--]]
 L["Arena"] = "투기장"
 L["assist"] = "지원"
 L["Assist"] = "지원"
@@ -73,11 +74,15 @@ L["Author"] = "제작자"
 --[[Translation missing --]]
 --[[ L["Autorun will be disabled for all code snippets"] = "Autorun will be disabled for all code snippets"--]]
 L["Available slash commands"] = "사용 가능한 슬래시 명령"
---[[Translation missing --]]
---[[ L["Awesome!"] = "Awesome!"--]]
 L["Background Alpha"] = "배경 투명도"
 --[[Translation missing --]]
 --[[ L["Background Color"] = ""--]]
+--[[Translation missing --]]
+--[[ L["BACKUP_TIPS"] = "Backups are not always reliable, especially when they are too old. It is recommended to backup often. When sharing profiles, backups are not included."--]]
+--[[Translation missing --]]
+--[[ L["BACKUP_TIPS2"] = "Note for Classic players: Backups do not include Click-Castings and Layout Auto Switch of other characters"--]]
+--[[Translation missing --]]
+--[[ L["Backups"] = ""--]]
 L["Bar"] = "바"
 --[[Translation missing --]]
 --[[ L["Bar Animation"] = ""--]]
@@ -90,6 +95,8 @@ L["BG 1-15"] = "전장 1-15"
 L["BG 16-40"] = "전장 16-40"
 --[[Translation missing --]]
 --[[ L["Big Debuffs"] = "Big Debuffs"--]]
+--[[Translation missing --]]
+--[[ L["Blacklist Target Player"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Bleed"] = ""--]]
 --[[Translation missing --]]
@@ -129,10 +136,10 @@ L["Bug Report & Suggestion"] = "버그 신고 & 제안"
 --[[ L["Built-in Spells"] = "Built-in Spells"--]]
 --[[Translation missing --]]
 --[[ L["built-in(s)"] = "built-in(s)"--]]
-L["Button4"] = "4번 버튼"
-L["Button5"] = "5번 버튼"
 --[[Translation missing --]]
---[[ L["C"] = "Class Talent"--]]
+--[[ L["Button"] = ""--]]
+--[[Translation missing --]]
+--[[ L["C"] = "Class"--]]
 L["Cancel"] = "취소"
 L["Can't change options in combat"] = "전투 중 옵션을 바꿀 수 없습니다."
 --[[Translation missing --]]
@@ -144,6 +151,7 @@ L["Can't change options in combat"] = "전투 중 옵션을 바꿀 수 없습니
 L["castByMe"] = "자신이 시전한 강화 효과만"
 --[[Translation missing --]]
 --[[ L["Casts"] = ""--]]
+L["Cell settings will be overwritten!"] = "모든 Cell 설정을 덮어씁니다!"
 L["Cell will report all deaths during a raid encounter."] = "Cell은 공격대 교전 중 모든 죽음을 보고합니다."
 L["Cell will report first %d deaths during a raid encounter."] = "Cell은 공격대 교전 중 처음 %d명의 죽음을 보고합니다."
 L["CENTER"] = "중앙"
@@ -166,9 +174,9 @@ L["Class Color (dark)"] = "직업 색상 (어둡게)"
 --[[Translation missing --]]
 --[[ L["Class Filter"] = ""--]]
 --[[Translation missing --]]
---[[ L["clear"] = ""--]]
---[[Translation missing --]]
 --[[ L["Clear"] = "Clear"--]]
+--[[Translation missing --]]
+--[[ L["clear"] = ""--]]
 --[[Translation missing --]]
 --[[ L["clear unit"] = ""--]]
 --[[Translation missing --]]
@@ -183,7 +191,11 @@ L["Color"] = "색상"
 --[[Translation missing --]]
 --[[ L["Color Duration Text"] = "Color Duration Text"--]]
 --[[Translation missing --]]
+--[[ L["Color Thresholds"] = ""--]]
+--[[Translation missing --]]
 --[[ L["Columns"] = ""--]]
+--[[Translation missing --]]
+--[[ L["Combat Icon"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Combine Groups"] = ""--]]
 L["Common"] = "공용"
@@ -199,6 +211,8 @@ L["Copy indicators from one layout to another"] = "한 배치에서 다른 배�
 L["Create"] = "생성"
 --[[Translation missing --]]
 --[[ L["create a \"Healers\" indicator"] = "create a \"Healers\" indicator"--]]
+--[[Translation missing --]]
+--[[ L["Create Backup"] = ""--]]
 L["Create new debuff (id)"] = "새로운 약화 효과 생성 (ID)"
 L["Create new indicator"] = "새로운 지시기 생성"
 L["Create new layout"] = "새로운 배치 생성"
@@ -240,11 +254,17 @@ L["DECLINED"] = "거부"
 L["Default layout"] = "기본 배치"
 L["Defensive Cooldowns"] = "방어 재사용 시간"
 L["Delete"] = "삭제"
+--[[Translation missing --]]
+--[[ L["Delete backup"] = ""--]]
 L["Delete debuff?"] = "약화 효과 삭제?"
 L["Delete indicator"] = "지시기 삭제"
 L["Delete layout"] = "배치 삭제"
 --[[Translation missing --]]
 --[[ L["Delete spell?"] = "Delete spell?"--]]
+--[[Translation missing --]]
+--[[ L["Delimiter"] = "Delimiter"--]]
+--[[Translation missing --]]
+--[[ L["Detached"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Disabled"] = "Disabled"--]]
 L["Disabled in battlegrounds and arenas"] = "전장 및 투기장에서 꺼짐"
@@ -262,11 +282,13 @@ L["Discard"] = "취소"
 L["dispellableByMe"] = "자신이 해제 가능한 약화 효과만"
 L["Dispels"] = "해제 가능 디버프"
 --[[Translation missing --]]
---[[ L["Display a gradient texture when the unit receives a heal from your certain AoE healing spells."] = ""--]]
+--[[ L["Display a gradient texture when the unit receives a heal from your certain healing spells."] = "Display a gradient texture when the unit receives a heal from your certain healing spells."--]]
 --[[Translation missing --]]
 --[[ L["Display elapsed time since debuff applied"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Display One Decimal Place When"] = "Display One Decimal Place When"--]]
+--[[Translation missing --]]
+--[[ L["Displayed Per Line"] = "Displayed Per Line"--]]
 --[[Translation missing --]]
 --[[ L["Do nothing if requested spell/buff already exists on requester"] = "Do nothing if requested spell/buff already exists on requester"--]]
 L["DRINKING"] = "음료"
@@ -277,8 +299,12 @@ L["DRINKING"] = "음료"
 L["Edit"] = "편집"
 L["Edit spell"] = "주문 편집"
 --[[Translation missing --]]
+--[[ L["Effective"] = "Effective"--]]
+--[[Translation missing --]]
 --[[ L["En"] = "En"--]]
 L["Enable"] = "사용"
+--[[Translation missing --]]
+--[[ L["Enable Color Gradient"] = ""--]]
 L["Enable Death Color"] = "죽음 색상 사용"
 --[[Translation missing --]]
 --[[ L["Enable Full Health Color"] = "Enable Full Health Color"--]]
@@ -306,6 +332,7 @@ L["Fade out menu buttons on mouseout"] = "마우스가 벗어날때 메뉴 옵�
 --[[ L["Fade Out These Buttons"] = "Fade Out These Buttons"--]]
 --[[Translation missing --]]
 --[[ L["fadeOut"] = "Fade out over time"--]]
+L["Faster Health Updates"] = "생명력 업데이트 속도 증가"
 --[[Translation missing --]]
 --[[ L["Filter Auto Switch"] = ""--]]
 L["first %d"] = "처음 %d명"
@@ -354,9 +381,15 @@ L["Group Filters"] = "그룹 필터"
 L["Group Rows"] = "그룹 행"
 L["Group Spacing"] = "그룹 간격"
 --[[Translation missing --]]
+--[[ L["H"] = "Hero"--]]
+--[[Translation missing --]]
 --[[ L["Half"] = "Half"--]]
 L["Heal Absorb"] = "치유 흡수"
+--[[Translation missing --]]
+--[[ L["Heal Absorbs"] = ""--]]
 L["Heal Prediction"] = "치유 예측"
+--[[Translation missing --]]
+--[[ L["Health"] = ""--]]
 L["Health Bar"] = "생명력 바"
 L["Health Bar Alpha"] = "생명력 바 투명도"
 L["Health Bar Color"] = "생명력 바 색상"
@@ -397,9 +430,9 @@ L["Horizontal"] = "가로"
 L["Icon"] = "아이콘"
 --[[Translation missing --]]
 --[[ L["Icon Options"] = ""--]]
-L["Icons"] = "아이콘들"
 --[[Translation missing --]]
---[[ L["Icons Per Line"] = ""--]]
+--[[ L["Icon Style"] = ""--]]
+L["Icons"] = "아이콘들"
 L["IDs separated by whitespaces"] = "공백으로 구분된 ID"
 --[[Translation missing --]]
 --[[ L["If disabled, no check, no reply, just glow"] = "If disabled, no check, no reply, just glow"--]]
@@ -413,7 +446,6 @@ L["Import & Export All Settings"] = "모든 설정 가져오기 & 내보내기"
 --[[ L["Include Character Settings"] = ""--]]
 L["Include Nickname Settings"] = "별명 설정 포함"
 L["Incompatible Version"] = "비호환 버전"
-L["Increase Health Update Rate"] = "생명력 업데이트 속도 증가"
 L["Indicator Settings"] = "표시기 설정"
 L["Indicator settings are part of Layout settings which are account-wide."] = "표시기 설정은 계정 전체 배치 설정의 일부입니다."
 L["Indicator Sync"] = "표시기 동기화"
@@ -486,7 +518,7 @@ L["marksTips"] = "\n|r대상 표시기\n좌클릭: |cffffffff대상에 공격대
 --[[ L["Max Buttons"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Max Columns"] = ""--]]
-L["Max Icons"] = "최대 아이콘"
+L["Max Displayed"] = "최대 아이콘"
 --[[Translation missing --]]
 --[[ L["Max Rows"] = ""--]]
 --[[Translation missing --]]
@@ -525,7 +557,10 @@ L["Name: "] = "이름:"
 L["New"] = "신규"
 L["New version found (%s). Please visit %s to get the latest version."] = "새로운 버전을 찾았습니다 (%s). 최신 버전을 받으시려면 %s|1을;를; 방문하십시오."
 L["Nickname"] = "별명"
+--[[Translation missing --]]
+--[[ L["Nickname Blacklist"] = ""--]]
 L["Nickname Options"] = "별명 옵션"
+L["Nickname Sync"] = "다른 사람과 별명 동기화"
 L["No"] = "아니요"
 L["No custom debuffs to export!"] = "내보낼 사용자 정의 약화 효과가 없습니다!"
 --[[Translation missing --]]
@@ -560,6 +595,8 @@ L["Only show when you have permission to do this"] = "이 작업을 수행할 �
 --[[Translation missing --]]
 --[[ L["Only visible to me"] = "Only visible to me"--]]
 --[[Translation missing --]]
+--[[ L["onlyEnableNotInCombat"] = "Only when I'm not in combat"--]]
+--[[Translation missing --]]
 --[[ L["onlyShowOvershields"] = "Only show overshields"--]]
 L["onlyShowTopGlow"] = "Glow만 표시"
 L["Options"] = "옵션"
@@ -591,6 +628,7 @@ L["Percentage"] = "백분율"
 --[[ L["Pet"] = "Pet"--]]
 --[[Translation missing --]]
 --[[ L["PET"] = "Pet"--]]
+L["Pets"] = "공격대 소환수"
 L["Pixel"] = "픽셀"
 L["Pixel Perfect"] = "완벽한 픽셀"
 --[[Translation missing --]]
@@ -615,6 +653,8 @@ L["Preview"] = "미리보기"
 --[[ L["Primary Talents"] = "Primary Talents"--]]
 --[[Translation missing --]]
 --[[ L["Private Auras"] = "Private Auras"--]]
+--[[Translation missing --]]
+--[[ L["Profile imported successfully."] = ""--]]
 L["Profiles"] = "프로필"
 L["Pull"] = "풀링"
 --[[Translation missing --]]
@@ -634,7 +674,6 @@ L["Raid Debuffs"] = "공격대 약화 효과"
 --[[ L["Raid Debuffs updated: %s."] = "Raid Debuffs updated: %s."--]]
 L["Raid Icon (player)"] = "공격대 아이콘 (플레이어)"
 L["Raid Icon (target)"] = "공격대 아이콘 (대상)"
-L["Raid Pets"] = "공격대 소환수"
 L["Raid Tools"] = "공격대 도구"
 --[[Translation missing --]]
 --[[ L["RAID_DEBUFFS_TIPS"] = "Tips: [Drag & Drop] to change debuff order. [Double-Click] on instance name to open Encounter Journal. [Shift+Left Click] on instance/boss name to share debuffs. [Alt+Left Click] on instance/boss name to reset debuffs. The priority of General Debuffs is higher than Boss Debuffs."--]]
@@ -650,7 +689,13 @@ L["Rect"] = "모서리"
 --[[ L["refresh unit buttons"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Refreshing unit buttons (%s)..."] = ""--]]
+--[[Translation missing --]]
+--[[ L["Relative Point"] = ""--]]
+--[[Translation missing --]]
+--[[ L["Relative To"] = ""--]]
 L["Remaining Time"] = "남은 시간 <"
+--[[Translation missing --]]
+--[[ L["Remember to backup your profile"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Remove"] = "Remove"--]]
 L["Rename"] = "이름 변경"
@@ -706,6 +751,8 @@ L["reset Cell position"] = "Cell 위치 초기화"
 --[[Translation missing --]]
 --[[ L["Response Type"] = "Response Type"--]]
 --[[Translation missing --]]
+--[[ L["Restore backup"] = ""--]]
+--[[Translation missing --]]
 --[[ L["Reverse Fill"] = "Reverse Fill"--]]
 L["Right"] = "오른쪽 버튼"
 L["RIGHT"] = "우측"
@@ -728,7 +775,7 @@ L["Rotate Texture"] = "텍스처 회전"
 --[[ L["Rows"] = ""--]]
 L["Run"] = "실행"
 --[[Translation missing --]]
---[[ L["S"] = "Spec Talent"--]]
+--[[ L["S"] = "Spec"--]]
 L["Save"] = "저장"
 L["Scale"] = "크기"
 L["ScrollDown"] = "휠 버튼 아래로"
@@ -738,6 +785,8 @@ L["sec"] = "초"
 --[[ L["Secondary Talents"] = "Secondary Talents"--]]
 --[[Translation missing --]]
 --[[ L["Separate NPC Frame"] = "Separate NPC Frame"--]]
+--[[Translation missing --]]
+--[[ L["Set Bar Max Value"] = ""--]]
 --[[Translation missing --]]
 --[[ L["set unit"] = ""--]]
 --[[Translation missing --]]
@@ -757,6 +806,8 @@ L["Shield Bar"] = "보호막 바"
 --[[ L["shieldByMe"] = "Only show PW:S cast by me"--]]
 --[[Translation missing --]]
 --[[ L["shields"] = "shields"--]]
+--[[Translation missing --]]
+--[[ L["Shields"] = "Shields"--]]
 L["Shift+Enter: add a new line"] = "Shift+Enter: 새로운 라인 추가"
 L["Shine"] = "Shine"
 --[[Translation missing --]]
@@ -773,9 +824,13 @@ L["Show NPC Frame"] = "NPC 창 표시"
 L["Show Party"] = "파티시 표시"
 L["Show Party/Arena Pets"] = "파티/투기장 소환수 표시"
 --[[Translation missing --]]
+--[[ L["Show pets in a separate frame"] = ""--]]
+--[[Translation missing --]]
 --[[ L["Show Raid"] = ""--]]
 L["Show Raid Pets"] = "공격대 소환수 표시"
 L["Show Solo"] = "솔로잉시 표시"
+--[[Translation missing --]]
+--[[ L["Show Solo Pet"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Show units you care about more in a separate frame"] = "Show units you care about more in a separate frame"--]]
 L["Show while in a party"] = "파티시에만 표시합니다."
@@ -788,7 +843,6 @@ L["Show while not in a group"] = "솔로잉시 표시합니다."
 --[[ L["showAnimation"] = "Show animation"--]]
 --[[Translation missing --]]
 --[[ L["showBackground"] = "Show background"--]]
-L["showDispelTypeIcons"] = "해제 유형 아이콘 표시"
 L["showDuration"] = "지속시간 표시"
 --[[Translation missing --]]
 --[[ L["showGroupNumber"] = "Show group number"--]]
@@ -851,7 +905,6 @@ L["Status Text Position"] = "상태 문자 위치"
 --[[ L["Style"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Supporters"] = "Supporters"--]]
-L["Sync Nicknames with Others"] = "다른 사람과 별명 동기화"
 L["Sync Status"] = "동기화 상태"
 --[[Translation missing --]]
 --[[ L["Sync With"] = "Sync With"--]]
@@ -949,6 +1002,8 @@ L["Unit's Pet"] = "유닛 소환수"
 L["Unlimited"] = "제한 없음"
 L["Unlock"] = "해제"
 L["unnamed"] = "이름 없음"
+--[[Translation missing --]]
+--[[ L["Unselected settings will remain"] = ""--]]
 --[[Translation missing --]]
 --[[ L["Use %s addon"] = "Use %s addon"--]]
 L["Use |cFFFFB5C5/cell buff X|r to set icon size"] = "|cFFFFB5C5/cell buff X|r를 사용하여 아이콘 크기 설정"

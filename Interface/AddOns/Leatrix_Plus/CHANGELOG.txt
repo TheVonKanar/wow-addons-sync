@@ -1,4 +1,118 @@
-﻿11.0.05 - 21st August 2024
+﻿11.1.15 - 15th July 2025
+- PTR (11.2.0): Preliminary update for game patch 11.2.0.
+
+11.1.14 - 18th June 2025
+- Updated for game patch 11.1.7.
+
+11.1.12 - 6th May 2025
+- PTR (11.1.7): Preliminary update for game patch 11.1.7.
+- For 'Enhance tooltip' ('Intereface'), the 'right-click for frame settings' instruction will now be hidden in unit frame tooltips.
+- For 'Set additional options' ('System'), fixed a minor graphical glitch with the mount special setting.
+
+11.1.11 - 30th April 2025
+- For 'Media', added 'Undermine' ('Zones') and 'Liberation of Undermine' and 'Operation: Floodgate' ('Dungeons').
+
+11.1.10 - 23rd April 2025
+- Updated for game patch 11.1.5.
+- For 'Remove transforms' ('System'), added the Atomic Regoblinator transform.
+- For 'Media', added cinematic 'Undermined' (watch in Movies and listen in Various > Cinematics).
+
+11.1.08 - 9th April 2025
+- For 'Enhance tooltip' ('Interface'), fixed a minor issue which caused Demolition Fan NPCs in Demolition Dome to have no name.
+- For 'Show Wowhead links' ('Interface') and web link (keybindings), added support for Mexico (mx.wowhead.com) and traditional Chinese (tw.wowhead.com).
+
+11.1.03 - 7th March 2025
+- PTR (11.1.5): Preliminary update for game patch 11.1.5.
+
+11.1.02 - 1st March 2025
+- For 'Set additional options' ('System'), added a new setting to uncheck mount special animations by default.
+- For 'Enhance tooltip' ('Interface'), fixed the issue with hide tooltips for world units during combat.
+
+11.1.01 - 26th February 2025
+- For 'Enhance tooltip' ('Interface'), fixed the issue with anchor tooltip to cursor, cursor left or cursor right.
+
+11.1.00 - 26th February 2025
+- Updated for game patch 11.1.0.
+- For 'Media', added cinematic 'Gallywix and Xal'atath' (watch in Movies and listen in Various > Cinematics).
+
+11.0.30 - 29th January 2025
+- For 'Sell junk automatically' ('Automation'), fixed an issue where selling would continue for vendors that refuse to buy items or where the player has reached the gold limit.
+
+11.0.29 - 22nd January 2025
+- For 'Enhance minimap' ('Interface'), Leatrix Plus will no longer create a standard minimap button for Narcissus as Narcissus now creates its own standard button.
+
+11.0.28 - 15th January 2025
+- The 'Remove transforms' option ('System') now lets you choose which individual profession transforms you want to remove.
+- The 'Class colored frames' option ('Frames') will now be locked out if you have Easy Frames installed.
+
+11.0.27 - 8th January 2025
+- Fixed an issue with 'Sell junk automatically' ('Automation') which caused the sell junk routine to loop if you have the Rock Buddy item in your bags.  This issue is caused by a game bug.
+- Game API updates.
+- PTR (11.1.0) - The 'Lockout sharing' option ('System') is no longer available.  The achievements window now always shows warband achievement points.
+
+11.0.26 - 1st January 2025
+- Happy New Year!
+- For 'Media', added zone music for 'The Great Sea (Dragon Isles)' and 'Traitor's Rest' ('Dragonflight') and 'Sinfall' ('Shadowlands').
+- Updated translations.
+
+11.0.25 - 25th December 2024
+- Merry Christmas!
+- For 'Media', added zone music for 'The Great Sea (Khaz Algar)', 'The Maddening Deep' and 'Siren Isle' ('Khaz Algar') and 'Amirdrassil', 'Tyrhold Cavern' and 'Zaralek Cavern' ('Dragon Isles').
+- Updated translations.
+
+11.0.23 - 18th December 2024
+- Updated for game patch 11.0.7.
+- For 'Media', added movie 'Orweyna's Vision'.  You can watch in Movies and listen in Various > Cinematics.  Also added cinematic audio for 'Confronting Xal'atath'.
+- Updated translations.
+
+11.0.22 - 12th December 2024
+- The 'Keep audio sync' ('System') option will no longer sync audio while a cinematic is playing.
+- Updated translations.
+
+11.0.20 - 8th December 2024
+- For 'Sell junk automatically', fixed an issue which caused vendors that refuse to buy items to loop selling junk.
+- All versions of Leatrix Plus (The War Within, Cataclysm and Classic Era) are now under the same CurseForge project.  If you use Leatrix Plus for Cataclysm Classic or Classic Era, you need to remove the addon, find it again on CurseForge and install it again as the project IDs have changed and there will be no more updates for the old project.  There is no change for The War Within.
+- The new Leatrix Plus project for all game versions is https://www.curseforge.com/wow/addons/leatrix-plus.
+
+11.0.17 - 13th November 2024
+- Added a new option 'Set additional options' ('System').  If checked, you will be able to go into the configuration panel to set additional options.  The additional options list may be expanded over time to include minor tweaks that are useful but too small to be standalone options.
+- Game API updates.
+
+11.0.15 - 30th October 2024
+- For 'Mute game sounds' ('System'), the 'Shouts' option now includes dracthyr.
+- For 'Mute mount sounds' ('System'), added a new setting for the Coldflame Tempest.
+
+11.0.14 - 23rd October 2024
+- Updated for game patch 11.0.5.
+- For 'Accept resurrection' ('Automation'), added a new setting called 'Exclude afterlife resurrection'.  If enabled, resurrection requests will not be automatically accepted if the player resurrecting you is dead and in the afterlife (for example, a holy priest with the Afterlife talent).  This setting is disabled by default.
+- For 'Mute mount sounds' ('System'), the 'Furlines' option now includes Startouched Furline.
+- For 'Mute game sounds' ('System'), fixed the sound IDs for 'Harp'.
+- Removed the 'Show character addons' ('System') option as it's now included in the game.
+
+11.0.12 - 9th October 2024
+- For 'Mute game sounds' ('System'), the 'Shouts' option now includes more sounds for more races.
+
+11.0.11 - 2nd October 2024
+- Game API updates.
+
+11.0.10 - 25th September 2024
+- For 'Mute mount sounds' ('System'), added 'Rabbits'.  If checked, divine rabbits will be quieter.  This applies to Jade, Bright Foreseer.
+- For 'Mute game sounds' ('System'), the 'Shouts' option now applies to Earthen too.  The 'Pickaxe' option has been removed.  You can mute the sounds for this item with the 'Shouts' option.
+- For 'Enhance minimap' ('Interface'), improved compatibility with Zygor minimap button notifications.
+- PTR (11.0.5): Removed the 'Show character addons' ('System') option as it's now included in the game.
+
+11.0.08 - 11th September 2024
+- Game API updates.
+
+11.0.07 - 4th September 2024
+- For 'Remove transforms' ('System'), added 'Cursed Pickaxe'.  If enabled, the Cursed Pickaxe transform will be removed when applied.
+- For 'Mute game sounds' ('System'), added 'Pickaxe'.  If enabled, the Cursed Pickaxe sounds will be muted.
+- For 'Media', added zone music for Khaz Algar.  This includes Ringing Deeps, Isle of Dorn, Hallowfall and Azj-Kahet.
+- For 'Media', added dungeon music for The War Within.  This includes Ara-Kara, City of Threads, Dawnbreaker, Nerub-ar Palace, Priory of the Sacred Flame and Rookery.
+- For 'Media', added movies for Dragonflight.  This includes Fury Incarnate, Crown of Flame, Blessing of Amirdrassil and Iridikron and Vyranoth.  You can watch in Movies and listen in Various > Cinematics.
+- For 'Media', added movies for The War Within.  This includes The War Within, Thrall and Anduin, Threads of Destiny, The Story So Far, Dalaran Arrives at Khaz Algar, The Guardian and the Harbinger, Magni's Sacrifice, Ascension Day and Confronting Xal'atath.  You can watch in Movies and listen in Various > Cinematics.
+
+11.0.05 - 21st August 2024
 - Added a new option 'Block requested invites'.  If enabled, requests to invite a player to your group will be declined unless the player requesting to join is a friend.
 - Removed the 'Show threads of time' option since the Timerunning event has now ended.
 - For 'Enhance minimap' ('Interface'), the 'MoveAny' addon button will now show inside the combine addon buttons frame.

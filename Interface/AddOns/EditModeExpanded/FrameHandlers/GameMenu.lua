@@ -10,9 +10,18 @@ function addon:initGameMenu()
         if loaded then return end
         if InCombatLockdown() then return end
         loaded = true
-        lib:RegisterFrame(GameMenuFrame, "Game Menu", db.GameMenuFrame)
+        lib:RegisterFrame(GameMenuFrame, MAINMENU_BUTTON, db.GameMenuFrame)
         lib:RegisterResizable(GameMenuFrame)
         lib:HideByDefault(GameMenuFrame)
         GameMenuFrame.Selection:SetFrameStrata("DIALOG")
+    end)
+    
+    -- issue: edit mode is closed while in combat, the .Select never gets hidden and gets in the way when player opens menu again
+    hooksecurefunc(GameMenuFrame, "Show", function()
+        --if InCombatLockdown() then return end -- uncomment if issues are reported!
+        if not GameMenuFrame.Selection then return end
+        if not EditModeManagerFrame:IsEditModeActive() then
+            GameMenuFrame.Selection:Hide()
+        end
     end)
 end

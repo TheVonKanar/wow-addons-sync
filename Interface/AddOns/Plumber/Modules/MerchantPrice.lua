@@ -6,12 +6,12 @@ local _G = _G;
 local MERCHANT_ITEMS_PER_PAGE = 10;
 local BUYBACK_ITEMS_PER_PAGE = 12;
 local MAX_MERCHANT_CURRENCIES = 6;
+local MerchantFrame = MerchantFrame;
 local MERCHANT_FRAME = "MerchantFrame";
 
 local PRICE_FRAME_OFFSET_X = 45;
 
 local GetMerchantNumItems = GetMerchantNumItems;
-local GetMerchantItemInfo = GetMerchantItemInfo;
 local GetMerchantItemCostInfo = GetMerchantItemCostInfo;
 local GetMerchantItemCostItem = GetMerchantItemCostItem;
 local GetNumBuybackItems = GetNumBuybackItems;
@@ -27,6 +27,35 @@ local ShopUI;
 local Controller = CreateFrame("Frame");
 local TokenDisplay;
 local VendorItemPriceFrame = {};
+
+local GetMerchantItemPrice;
+if C_MerchantFrame.GetItemInfo then
+    local GetMerchantItemInfo = C_MerchantFrame.GetItemInfo;
+    function GetMerchantItemPrice(index)
+        local info = GetMerchantItemInfo(index);
+        if info then
+            return info.price, info.hasExtendedCost
+        end
+    end
+else
+    local GetMerchantItemInfo = GetMerchantItemInfo;
+    function GetMerchantItemPrice(index)
+        local _, price, hasExtendedCost;
+        _, _, price, _, _, _, _, hasExtendedCost = GetMerchantItemInfo(index);
+        return price, hasExtendedCost
+    end
+end
+
+local function HidePlumberWidgets()
+    for _, priceFrame in pairs(VendorItemPriceFrame) do
+        priceFrame:Hide();
+    end
+
+    if TokenDisplay then
+        TokenDisplay:Hide();
+    end
+end
+
 
 local function HideBlizzardUITexture()
     MerchantMoneyInset.Bg:SetTexture(nil);
@@ -158,14 +187,19 @@ end
 function Controller:UpdateShopUI()
     if not ShopUI:IsVisible() then return end;
 
+    local merchantMode = ShopUI.selectedTab == 1;
     local buybackMode = ShopUI.selectedTab == 2;    --1 Buy, 2 Buyback
 
     self.buybackMode = buybackMode;
 
     if buybackMode then
         self:UpdateBuybackInfo();
-    else
+    elseif merchantMode then
         self:UpdateMerchantInfo();
+    else
+        if TokenDisplay then
+            TokenDisplay:Hide();
+        end
     end
 
     --self:UpdateMoneyChange();
@@ -175,7 +209,9 @@ function Controller:SetupTokenDisplay()
     if not TokenDisplay then
         TokenDisplay = addon.CreateTokenDisplay(ShopUI, "CoinBox");
         TokenDisplay.numberFont = "NumberFontNormal";
+        TokenDisplay:SetIncludeBank(true);
         TokenDisplay:ShowMoneyFrame(true);
+        TokenDisplay:SetButtonClickable(true);
     end
 end
 
@@ -217,7 +253,7 @@ function Controller:UpdateMerchantInfo()
     end
 
     for i = fromIndex + 1, fromIndex + numItemsThisPage do
-        name, texture, price, stackCount, numAvailable, isPurchasable, isUsable, extendedCost, currencyID, spellID = GetMerchantItemInfo(i);
+        price, extendedCost = GetMerchantItemPrice(i);
 
         buttonIndex = buttonIndex + 1;
         merchantButton = _G["MerchantItem"..buttonIndex];
@@ -266,7 +302,7 @@ function Controller:UpdateMerchantInfo()
                             altCurreny[id] = currencyType;
                         end
 
-                        requiredCurrency[n] = {currencyType, id, itemValue, itemTexture};
+                        requiredCurrency[n] = {currencyType, id, itemValue, itemTexture, itemLink, i, n};
                     end
                 else
                     self:RequestUpdate(0.2);
@@ -274,8 +310,9 @@ function Controller:UpdateMerchantInfo()
             end
         end
 
-        priceFrame:SetFrameOwner(merchantButton, "BOTTOMLEFT", PRICE_FRAME_OFFSET_X, 0);
+        priceFrame:SetFrameOwner(merchantButton, "BOTTOMLEFT", PRICE_FRAME_OFFSET_X, 0, "MEDIUM");
         priceFrame:SetMoneyAndAltCurrency(price, requiredCurrency, playerMoney);
+        priceFrame:Show();
     end
 
     self:SetupTokenDisplay();
@@ -303,7 +340,9 @@ function Controller:UpdateMerchantInfo()
     end
 
     --TokenDisplay:DisplayCurrencyOnFrame(tokens, ShopUI, "BOTTOMLEFT", 4, 6);
-    TokenDisplay:DisplayCurrencyOnFrame(tokens, ShopUI, "BOTTOMRIGHT", -5, 6);
+    if not self.otherTabShown then
+        TokenDisplay:DisplayCurrencyOnFrame(tokens, ShopUI, "BOTTOMRIGHT", -5, 6);
+    end
 end
 
 function Controller:UpdateBuybackInfo()
@@ -328,6 +367,7 @@ function Controller:UpdateBuybackInfo()
             end
 
             priceFrame:SetMoneyAndAltCurrency(buybackPrice);
+            priceFrame:Show();
         else
             if priceFrame then
                 priceFrame:Hide();
@@ -338,7 +378,9 @@ function Controller:UpdateBuybackInfo()
     self:SetupTokenDisplay();
     TokenDisplay:ShowMoneyFrame(true);
     TokenDisplay.MoneyFrame:SetSimplified(false);
-    TokenDisplay:DisplayCurrencyOnFrame(nil, ShopUI, "BOTTOMRIGHT", -5, 6);
+    if not self.otherTabShown then
+        TokenDisplay:DisplayCurrencyOnFrame(nil, ShopUI, "BOTTOMRIGHT", -5, 6);
+    end
 end
 
 function Controller:RequestUpdate(delay)
@@ -396,6 +438,32 @@ local function MerchantFrame_Update_Callback()
     end
 end
 
+local MerchantFrameOpenedOnce = false;
+local function PanelTemplates_SelectTab_Callback(tab)
+    if tab:GetParent() == MerchantFrame then
+        if tab:GetID() == 0 then
+            HidePlumberWidgets();
+        end
+
+        if not MerchantFrameOpenedOnce then
+            MerchantFrameOpenedOnce = true;
+            if MerchantFrameCoverTab then
+                local f = CreateFrame("Frame", nil, MerchantFrameCoverTab);
+                f:SetScript("OnShow", function()
+                    Controller.otherTabShown = true;
+                end);
+                f:SetScript("OnHide", function()
+                    Controller.otherTabShown = nil;
+                    MerchantFrame_Update_Callback();
+                end);
+                if f:IsVisible() then
+                    Controller.otherTabShown = true;
+                end
+            end
+        end
+    end
+end
+
 function Controller:EnableModule(state)
     if state then
         if MerchantFrame_Update and _G[MERCHANT_FRAME] then
@@ -406,6 +474,11 @@ function Controller:EnableModule(state)
             if not self.isHooked then
                 self.isHooked = true;
                 hooksecurefunc("MerchantFrame_Update", MerchantFrame_Update_Callback);
+
+                if C_AddOns.IsAddOnLoaded("Scrap") then
+                    --Scrap (lib SecureTabs-2.0) create a overlay on the stock UI to "hide" default objects
+                    hooksecurefunc("PanelTemplates_SelectTab", PanelTemplates_SelectTab_Callback);
+                end
             end
 
             local noChangeItemPrice = C_AddOns.IsAddOnLoaded("Krowi_ExtendedVendorUI") or C_AddOns.IsAddOnLoaded("ElvUI_WindTools");
@@ -431,14 +504,7 @@ function Controller:EnableModule(state)
             self:Hide();
             self:ListenEvents(false);
             InvisibleContainer:RestoreObjects();
-
-            if TokenDisplay then
-                TokenDisplay:Hide();
-            end
-
-            for _, priceFrame in pairs(VendorItemPriceFrame) do
-                priceFrame:Hide();
-            end
+            HidePlumberWidgets();
         end
     end
 end
@@ -483,7 +549,7 @@ do  --For some Merchant UI addon users we only update the token frame
         end
 
         for i = fromIndex + 1, fromIndex + numItemsThisPage do
-            name, texture, price, stackCount, numAvailable, isPurchasable, isUsable, extendedCost, currencyID, spellID = GetMerchantItemInfo(i);
+            price, extendedCost = GetMerchantItemPrice(i);
 
             buttonIndex = buttonIndex + 1;
 
@@ -557,14 +623,18 @@ do  --For some Merchant UI addon users we only update the token frame
             TokenDisplay.MoneyFrame:SetSimplified(false);
         end
 
-        TokenDisplay:DisplayCurrencyOnFrame(tokens, ShopUI, "BOTTOMRIGHT", -5, 6);
+        if not self.otherTabShown then
+            TokenDisplay:DisplayCurrencyOnFrame(tokens, ShopUI, "BOTTOMRIGHT", -5, 6);
+        end
     end
 
     function Controller:_UpdateBuybackInfo()
         self:SetupTokenDisplay();
         TokenDisplay:ShowMoneyFrame(true);
         TokenDisplay.MoneyFrame:SetSimplified(false);
-        TokenDisplay:DisplayCurrencyOnFrame(nil, ShopUI, "BOTTOMRIGHT", -5, 6);
+        if not self.otherTabShown then
+            TokenDisplay:DisplayCurrencyOnFrame(nil, ShopUI, "BOTTOMRIGHT", -5, 6);
+        end
     end
 end
 
@@ -596,23 +666,23 @@ function Debug_ShowCurrentMerchantItemList()
 
     local numMerchantItems = GetMerchantNumItems();
 
-    local name, texture, price, stackCount, numAvailable, isPurchasable, isUsable, extendedCost, currencyID, spellID;
+    local currencyID;
     local itemID;
     local output, lineText;
-    local numCost, cost, itemTexture, itemValue, itemLink, currencyName;
+    local numCost, itemTexture, itemValue, itemLink, currencyName;
 
     for i = 1, numMerchantItems do
-        name, texture, price, stackCount, numAvailable, isPurchasable, isUsable, extendedCost, currencyID, spellID = GetMerchantItemInfo(i);
+        local info = C_MerchantFrame.GetItemInfo(i);
         itemID = GetMerchantItemID(i);
         numCost = GetMerchantItemCostInfo(i);
 
         for n = 1, numCost do
             itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(i, n);
-            price = itemValue;
-            currencyID = currencyID or string.match(itemLink, "currency:(%d+)");
+            currencyID = info.currencyID or string.match(itemLink, "currency:(%d+)");
         end
 
-        lineText = strjoin(", ", name, itemID, price, currencyID);
+        currencyID = currencyID or "";
+        lineText = strjoin(", ", info.name, itemID, info.price, currencyID);
 
         if i == 1 then
             output = lineText;

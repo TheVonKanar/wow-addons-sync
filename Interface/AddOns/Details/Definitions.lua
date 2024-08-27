@@ -40,6 +40,7 @@
 ---| "COMBAT_ARENA_END"
 ---| "COMBAT_MYTHICDUNGEON_START"
 ---| "COMBAT_MYTHICDUNGEON_END"
+---| "COMBAT_MYTHICDUNGEON_CONTINUE"
 ---| "GROUP_ONENTER"
 ---| "GROUP_ONLEAVE"
 ---| "ZONE_TYPE_CHANGED"
@@ -51,6 +52,131 @@
 ---| "UNIT_TALENTS"
 ---| "PLAYER_TARGET"
 ---| "DETAILS_PROFILE_APPLYED"
+
+---@alias detailsattributes
+---| "DETAILS_ATTRIBUTE_DAMAGE"
+---| "DETAILS_ATTRIBUTE_HEAL"
+---| "DETAILS_ATTRIBUTE_ENERGY"
+---| "DETAILS_ATTRIBUTE_MISC"
+---| "DETAILS_SUBATTRIBUTE_DAMAGEDONE"
+---| "DETAILS_SUBATTRIBUTE_DPS"
+---| "DETAILS_SUBATTRIBUTE_DAMAGETAKEN"
+---| "DETAILS_SUBATTRIBUTE_FRIENDLYFIRE"
+---| "DETAILS_SUBATTRIBUTE_FRAGS"
+---| "DETAILS_SUBATTRIBUTE_ENEMIES"
+---| "DETAILS_SUBATTRIBUTE_VOIDZONES"
+---| "DETAILS_SUBATTRIBUTE_BYSPELLS"
+---| "DETAILS_SUBATTRIBUTE_HEALDONE"
+---| "DETAILS_SUBATTRIBUTE_HPS"
+---| "DETAILS_SUBATTRIBUTE_OVERHEAL"
+---| "DETAILS_SUBATTRIBUTE_HEALTAKEN"
+---| "DETAILS_SUBATTRIBUTE_HEALENEMY"
+---| "DETAILS_SUBATTRIBUTE_HEALPREVENTED"
+---| "DETAILS_SUBATTRIBUTE_HEALABSORBED"
+---| "DETAILS_SUBATTRIBUTE_REGENMANA"
+---| "DETAILS_SUBATTRIBUTE_REGENRAGE"
+---| "DETAILS_SUBATTRIBUTE_REGENENERGY"
+---| "DETAILS_SUBATTRIBUTE_REGENRUNE"
+---| "DETAILS_SUBATTRIBUTE_RESOURCES"
+---| "DETAILS_SUBATTRIBUTE_ALTERNATEPOWER"
+---| "DETAILS_SUBATTRIBUTE_CCBREAK"
+---| "DETAILS_SUBATTRIBUTE_RESS"
+---| "DETAILS_SUBATTRIBUTE_INTERRUPT"
+---| "DETAILS_SUBATTRIBUTE_DISPELL"
+---| "DETAILS_SUBATTRIBUTE_DEATH"
+---| "DETAILS_SUBATTRIBUTE_DCOOLDOWN"
+---| "DETAILS_SUBATTRIBUTE_BUFFUPTIME"
+---| "DETAILS_SUBATTRIBUTE_DEBUFFUPTIME"
+
+--globals
+DETAILS_ATTRIBUTE_DAMAGE = 1
+DETAILS_ATTRIBUTE_HEAL = 2
+DETAILS_ATTRIBUTE_ENERGY = 3
+DETAILS_ATTRIBUTE_MISC = 4
+DETAILS_SUBATTRIBUTE_DAMAGEDONE = 1
+DETAILS_SUBATTRIBUTE_DPS = 2
+DETAILS_SUBATTRIBUTE_DAMAGETAKEN = 3
+DETAILS_SUBATTRIBUTE_FRIENDLYFIRE = 4
+DETAILS_SUBATTRIBUTE_FRAGS = 5
+DETAILS_SUBATTRIBUTE_ENEMIES = 6
+DETAILS_SUBATTRIBUTE_VOIDZONES = 7
+DETAILS_SUBATTRIBUTE_BYSPELLS = 8
+DETAILS_SUBATTRIBUTE_HEALDONE = 1
+DETAILS_SUBATTRIBUTE_HPS = 2
+DETAILS_SUBATTRIBUTE_OVERHEAL = 3
+DETAILS_SUBATTRIBUTE_HEALTAKEN = 4
+DETAILS_SUBATTRIBUTE_HEALENEMY = 5
+DETAILS_SUBATTRIBUTE_HEALPREVENTED = 6
+DETAILS_SUBATTRIBUTE_HEALABSORBED = 7
+DETAILS_SUBATTRIBUTE_REGENMANA = 1
+DETAILS_SUBATTRIBUTE_REGENRAGE = 2
+DETAILS_SUBATTRIBUTE_REGENENERGY = 3
+DETAILS_SUBATTRIBUTE_REGENRUNE = 4
+DETAILS_SUBATTRIBUTE_RESOURCES = 5
+DETAILS_SUBATTRIBUTE_ALTERNATEPOWER = 6
+DETAILS_SUBATTRIBUTE_CCBREAK = 1
+DETAILS_SUBATTRIBUTE_RESS = 2
+DETAILS_SUBATTRIBUTE_INTERRUPT = 3
+DETAILS_SUBATTRIBUTE_DISPELL = 4
+DETAILS_SUBATTRIBUTE_DEATH = 5
+DETAILS_SUBATTRIBUTE_DCOOLDOWN = 6
+DETAILS_SUBATTRIBUTE_BUFFUPTIME = 7
+DETAILS_SUBATTRIBUTE_DEBUFFUPTIME = 8
+
+---@alias detailstotals
+---| "DETAILS_TOTALS_ONLYGROUP"
+
+---@alias detailssegmentid
+---| "DETAILS_SEGMENTID_OVERALL"
+---| "DETAILS_SEGMENTID_CURRENT"
+
+---@alias detailscombatamountcontainers
+---| "DETAILS_COMBAT_AMOUNT_CONTAINERS"
+
+---@alias detailssegmenttype
+---| "DETAILS_SEGMENTTYPE_GENERIC"
+---| "DETAILS_SEGMENTTYPE_OVERALL"
+---| "DETAILS_SEGMENTTYPE_DUNGEON_TRASH"
+---| "DETAILS_SEGMENTTYPE_DUNGEON_BOSS"
+---| "DETAILS_SEGMENTTYPE_DUNGEON_OVERALL"
+---| "DETAILS_SEGMENTTYPE_RAID_TRASH"
+---| "DETAILS_SEGMENTTYPE_RAID_BOSS"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_GENERIC"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASHOVERALL"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSTRASH"
+---| "DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSWIPE"
+---| "DETAILS_SEGMENTTYPE_PVP_ARENA"
+---| "DETAILS_SEGMENTTYPE_PVP_BATTLEGROUND"
+---| "DETAILS_SEGMENTTYPE_EVENT_VALENTINEDAY"
+---| "DETAILS_SEGMENTTYPE_TRAININGDUMMY"
+
+DETAILS_TOTALS_ONLYGROUP = true
+DETAILS_SEGMENTID_OVERALL = true
+DETAILS_SEGMENTID_CURRENT = true
+DETAILS_COMBAT_AMOUNT_CONTAINERS = true
+DETAILS_SEGMENTTYPE_GENERIC = true
+DETAILS_SEGMENTTYPE_OVERALL = true
+DETAILS_SEGMENTTYPE_DUNGEON_TRASH = true
+DETAILS_SEGMENTTYPE_DUNGEON_BOSS = true
+DETAILS_SEGMENTTYPE_DUNGEON_OVERALL = true
+DETAILS_SEGMENTTYPE_RAID_TRASH = true
+DETAILS_SEGMENTTYPE_RAID_BOSS = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_GENERIC = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASHOVERALL = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSTRASH = true
+DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSWIPE = true
+DETAILS_SEGMENTTYPE_PVP_ARENA = true
+DETAILS_SEGMENTTYPE_PVP_BATTLEGROUND = true
+DETAILS_SEGMENTTYPE_EVENT_VALENTINEDAY = true
+DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 
 ---@class mythicdungeontrashinfo
 ---@field ZoneName string
@@ -64,6 +190,7 @@
 ---@field WorldStateTimerStart number?
 ---@field WorldStateTimerEnd number?
 ---@field RunTime number?
+---@field TotalTime number?
 ---@field TimeInCombat number?
 ---@field SegmentID string?
 ---@field RunID number?
@@ -130,7 +257,21 @@
 ---@field killed boolean?
 ---@field bossimage texturepath|number?
 
+---@class details_encounter_table
+---@field start number gettime() when the encounter started
+---@field end number gettime() when the encounter ended
+---@field id number the encounter id from encounter_start
+---@field name string the encounter name
+---@field diff number the difficulty id from encounter_start
+---@field size number the raid size from encounter_start
+---@field zone string the zone name from getinstanceinfo()
+---@field mapid number the zone map id from getinstanceinfo()
+---@field phase number the current phase of the encounter
+---@field kill boolean if the encounter was a kill or a wipe
+
 ---@class details
+---@field encounter_table table store the encounter data for the current encounter
+---@field boss1_health_percent number store the health percentage (one to zero) of the boss1
 ---@field pets table<guid, petinfo> store the pet guid as the key and the petinfo as the value
 ---@field SpellTableMixin spelltablemixin
 ---@field BreakdownWindowFrame breakdownwindow
@@ -140,8 +281,15 @@
 ---@field playername string
 ---@field breakdown_general profile_breakdown_settings
 ---@field DefaultTooltipIconSize number default size of the icons in the tooltip, this also dictates the size of each line in the tooltip
+---@field Format fun(self: details, number: number) : string
+---@field OpenSpecificBreakdownWindow fun(self: details, combatObject: combat, actorName: string, mainAttribute: number, subAttribute: number)
+---@field GetInstanceInfo fun(self: details, id: instanceid|instancename|mapid) : details_instanceinfo
+---@field CreatePlayerPortrait fun(self: details, parent: frame, name: string) : frame
+---@field GetCurrentEncounterInfo fun(self: details) : details_encounter_table
+---@field GetAllInstances fun(self: details) : instance[] return a table with all the instances
+---@field GetCoreVersion fun(self: details) : number return the core version, this is used to check API version for scripts and plugins
 ---@field 
----@field 
+---@field GetItemLevelFromGuid fun(self: details, guid: guid) : number return the item level of the player, if the player is not found, return 0
 ---@field GenerateActorInfo fun(self: details, actor: actor, errorText:string, bIncludeStack:boolean) : table<string, boolean|string|number> generates a table with the main attributes of the actor, this is mainly for debug purposes
 ---@field DumpActorInfo fun(self: details, actor: actor) open a window showig the main attributes of an actor, this is mainly for debug purposes
 ---@field GetDisplayClassByDisplayId fun(self: details, displayId: number) : table -return the class object for the given displayId (attributeId)
@@ -150,7 +298,7 @@
 ---@field Msg fun(self: details, msg: string) print a message to the chat frame
 ---@field RemoveSegmentByCombatObject fun(self: details, combatObject: combat) : boolean, combat|nil remove the passed combatObject from the segments list
 ---@field RemoveSegment fun(self: details, segmentIndex: number) : boolean, combat
----@field GetCombatByUID fun(self: details, uniqueCombatId: uniquecombatid) : combat|boolean get a unique combat id and return the combat object
+---@field GetCombatByUID fun(self: details, uniqueCombatId: uniquecombatid) : combat? get a unique combat id and return the combat object
 ---@field DoesCombatWithUIDExists fun(self: details, uniqueCombatId: uniquecombatid) : boolean
 ---@field GetOverallCombat fun(self: details) : combat return the overall combat
 ---@field SetCurrentCombat fun(self: details, combatObject: combat) set the current active combat
@@ -181,9 +329,10 @@
 ---@field ListInstances fun(self: details) : instance[] return a table with all the instances
 ---@field UnpackMythicDungeonInfo fun(self: details, mythicDungeonInfo: mythicdungeoninfo) : boolean, segmentid, number, number, number, string, number, string, number, number, number unpack the mythic dungeon info and return the values
 ---@field CreateRightClickToCloseLabel fun(self: details, parent: frame) : df_label return a df_label with the text "Right click to close", need to set point
----@field 
----@field 
-
+---@field IsValidActor fun(self: details, actor: actor) : boolean return true if the actor is valid
+---@field GetCrowdControlSpells fun(self: details) : table<spellid, boolean> return a table of crowd control spells
+---@field UnpackDeathTable fun(self: details, deathTable: deathtable) : actorname, actorclass, unixtime, combattime, timestring, number, table, {key1: unixtime, key2: spellid}, specializationid unpack values inside a deathTable, deathEvents is in order or first event in the first index and last event on latest index
+---@field UnpackDeathEvent fun(self: details, deathEvent: table) : any, spellid, number, number, number, string, number?, number, boolean, number, boolean, boolean evType, spellId, amount, eventTime, heathPercent, sourceName, absorbed, spellSchool, friendlyFire, overkill, criticalHit, crushing.
 
 ---@class detailseventlistener : table
 ---@field RegisterEvent fun(self: detailseventlistener, event: detailsevent, callback: function)
@@ -247,7 +396,13 @@
 ---@field training_dummy boolean if true, the combat is against a training dummy
 ---@field playerTalents table<actorname, string> [playerName] = "talent string"
 ---@field bossName string? the name of the boss, if the combat has no unitId "boss1", this value is nil
----@field 
+---@field context string? for the context manager
+---@field combat_id number
+---@field timeStart number time() when the combat started
+---@field timeEnd number time() when the combat ended
+---@field bloodlust number[]? combat time of when the player received a bloodlust/heroism
+---@field bloodlust_overall number[]? exists only in segments that received a merge, uses time()
+---@field compressed_charts table store chart data
 ---@field 
 ---@field __call table
 ---@field __index table
@@ -257,12 +412,17 @@
 ---@field bossIcon texturepath|textureid
 ---@field bIsClosed boolean if true the combat is closed (passed by the EndCombat() function)
 ---@field __destroyedBy string
----@field amountCasts {[string]: table<string, number>}
+---@field amountCasts {[string]: table<string, number>} playername -> spellname -> amount
 ---@field instance_type instancetype "raid" or "party" or "pvp" or "arena" or "none" or "scenario"
----@field run_time number
+---@field run_time number mythic plus time without death penalties
+---@field elapsed_time number mythic plus total time
+---@field is_challenge boolean mythic plus challenge mode
+---@field total_segments_added number for a mythic+ overall segment, indicates how many segments were added
 ---@field start_time gametime
 ---@field end_time gametime
 ---@field combat_counter number
+---@field is_dungeon_overall boolean
+---@field combat_type number
 ---@field is_trash boolean while in raid this is set to true if the combat isn't raid boss, in dungeon this is set to true if the combat isn't a boss or if the dungeon isn't a mythic+
 ---@field is_boss bossinfo
 ---@field is_world_trash_combat boolean when true this combat is a regular combat done in the world, not in a dungeon, raid, battleground, arena, ...
@@ -283,7 +443,11 @@
 ---@field PhaseData table
 ---@field player_last_events table<string, table[]> record the latest events of each player, latter used to build the death log
 ---@field
+---@field GetCrowdControlSpells fun(self: combat, actorName: string) : table<spellid, number> return the amount of casts of crowd control spell by an actor
+---@field GetCCCastAmount fun(self: combat, actorName: string) : number returns the number of crowd control casts made by the specified actor
+---@field GetInterruptCastAmount fun(self: combat, actorName: string) : number
 ---@field LockActivityTime fun(self: combat)
+---@field AddCombat fun(self: combat, givingCombat: combat, bSetStartDate:boolean?, bSetEndDate:boolean?)
 ---@field CutDeathEventsByTime fun(self: combat, time: number?) remove death events by time, default 10 seconds
 ---@field GetTotal fun(self: combat, attribute: number, subAttribute: number?, onlyGroup: boolean?) : number return the total amount of the requested attribute
 ---@field GetCurrentPhase fun(self: combat) : number return the current phase of the combat or the phase where the combat ended
@@ -447,7 +611,7 @@
 ---@field IsGroupPlayer fun(actor: actor) : boolean return true if the actor is a player in the group (or was in the group during the combat)
 ---@field GetSpellContainer fun(actor: actor, containerType: "debuff"|"buff"|"spell"|"cooldowns"|"dispel") : spellcontainer
 ---@field Class fun(actor: actor) : string get the ingame class of the actor
----@field Spec fun(actor: actor) : string get the ingame spec of the actor
+---@field Spec fun(actor: actor) : number get the ingame spec of the actor
 ---@field Name fun(actor: actor) : string get the name of the actor
 ---@field Tempo fun(actor: actor) : number get the activity or effective time of the actor
 ---@field GetPets fun(actor: actor) : table<number, string> get a table with all pet names that belong to the player
@@ -498,7 +662,7 @@
 ---@field dispell_spells spellcontainer
 ---@field dispell_targets table<string, number> [targetName] = amount
 ---@field dispell_oque table<number, number> [spellId] = amount, amount of times the actor dispelled the spellId
-
+---@field interrompeu_oque table<number, number> [spellId] = amount, amount of times the actor interrupted the spellId
 --interrupt_targets interrupt_spells interrompeu_oque
 --cc_break_targets cc_break_spells cc_break_oque
 
@@ -508,7 +672,7 @@
 ---@class attributeid : number
 ---@class modeid : number
 
----@class instance : table
+---@class instance : table --~i ~instance
 ---@field segmento segmentid
 ---@field showing combat
 ---@field meu_id instanceid
@@ -520,7 +684,7 @@
 ---@field freezed boolean
 ---@field sub_atributo_last table
 ---@field row_info table
----@field
+---@field show_interrupt_casts boolean
 ---@field
 ---@field
 ---@field GetActorBySubDisplayAndRank fun(self: instance, displayid: attributeid, subDisplay: attributeid, rank: number) : actor
@@ -541,7 +705,9 @@
 ---@field Freeze fun(instance: instance)
 ---@field UnFreeze fun(instance: instance)
 ---@field SetSegment fun(instance: instance, segment: segmentid, force: boolean|nil)
+---@field SetDisplay fun(instance: instance, segmentId: segmentid?, attributeId: attributeid?, subAttributeId: attributeid?, modeId: modeid?)
 ---@field GetDisplay fun(instance: instance) : attributeid, attributeid
+---@field IsShowing fun(instance: instance, segmentId: segmentid, displayId: attributeid, subDisplayId: attributeid) : boolean
 ---@field ResetWindow fun(instance: instance, resetType: number|nil, segmentId: segmentid|nil)
 ---@field RefreshData fun(instance: instance, force: boolean|nil)
 ---@field RefreshWindow fun(instance: instance, force: boolean|nil)
@@ -646,9 +812,12 @@
 ---@field amount number
 ---@field total number
 ---@field actorName string
+---@field spellId number?
 ---@field Icon texture
+---@field IconFrame frame
 ---@field InLineTexts fontstring[]
 ---@field statusBar breakdownspellbarstatusbar
+---@field overlayTexture texture
 ---@field bIsFromLeftScroll boolean
 ---@field bIsFromRightScroll boolean
 
@@ -816,6 +985,39 @@
 ---@field CreateSpellBar fun(self: breakdownspellscrollframe, index: number) : breakdownspellbar
 ---@field SetShownReportOverlay fun(bIsShown: boolean)
 
+---@class details_encounterinfo : table
+---@field name string
+---@field mapId number
+---@field instanceId number
+---@field dungeonEncounterId number
+---@field journalEncounterId number
+---@field journalInstanceId number
+---@field creatureName string
+---@field creatureIcon string
+---@field creatureId number
+---@field creatureDisplayId number
+---@field creatureUIModelSceneId number
+
+---@class details_instanceinfo : table
+---@field name string
+---@field bgImage string
+---@field mapId number
+---@field instanceId number
+---@field journalInstanceId number
+---@field encountersArray details_encounterinfo[]
+---@field encountersByName table<string, details_encounterinfo>
+---@field encountersByDungeonEncounterId table<number, details_encounterinfo>
+---@field encountersByJournalEncounterId table<number, details_encounterinfo>
+---@field icon string
+---@field iconSize table<number, number>
+---@field iconCoords table<number, number, number, number>
+---@field iconLore string
+---@field iconLoreSize table<number, number>
+---@field iconLoreCoords table<number, number, number, number>
+---@field iconTexture string
+---@field iconTextureSize table<number, number>
+---@field iconTextureCoords table<number, number, number, number>
+
 ---@class timemachine : table
 ---@field Ticker fun() runs each second and check if actors are performing damage and healing actions, if the actor isn't, stop the activity time of that actor
 ---@field Start fun() start the time machine, called once from the start.lua
@@ -826,12 +1028,121 @@
 ---@field StopTime fun(actor: actor) stop the time of the actor
 ---@field SetOrGetPauseState fun(actor: actor, bPause: boolean|nil) : boolean|nil set or get the pause state of the actor, if bPause is nil, then it will return the current pause state
 
+---@class instancedifficulty : table
+---@field DungeonNormal number
+---@field DungeonHeroic number
+---@field DungeonMythic number
+---@field DungeonMythicPlus number
+---@field RaidLFR number
+---@field RaidNormal number
+---@field RaidHeroic number
+---@field RaidMythic number
+
+
 ---@class details222 : table
 ---@field TimeMachine timemachine
 ---@field PetContainer petcontainer
+---@field InstanceDifficulty instancedifficulty
+---@field ContextManager contextmanager
 
 ---@class profile_breakdown_settings : table
 ---@field font_size number
 ---@field font_color color
 ---@field font_outline outline
 ---@field font_face string
+
+---@class animatedtexture : texture, df_frameshake
+---@field CreateRandomBounceSettings function
+---@field BounceFrameShake df_frameshake
+
+---@class playerbanner : frame
+---@field index number
+---@field BackgroundBannerMaskTexture texture
+---@field BackgroundBannerGradient texture
+---@field FadeInAnimation animationgroup
+---@field BackgroundShowAnim animationgroup
+---@field DungeonBackdropShowAnim animationgroup
+---@field BackgroundGradientAnim animationgroup
+---@field BackgroundBannerFlashTextureColorAnimation animationgroup
+---@field BounceFrameShake df_frameshake
+---@field NextLootSquare number
+---@field LootSquares details_lootsquare[]
+---@field LevelUpFrame frame
+---@field LevelUpTextFrame frame
+---@field WaitingForLootLabel df_label
+---@field RantingLabel df_label
+---@field LevelFontString fontstring
+---@field KeyStoneDungeonTexture texture
+---@field DungeonBorderTexture texture
+---@field FlashTexture texture
+---@field LootSquare frame
+---@field LootIcon texture
+---@field LootIconBorder texture
+---@field LootItemLevel fontstring
+---@field unitId string
+---@field unitName string
+---@field PlayerNameFontString fontstring
+---@field PlayerNameBackgroundTexture texture
+---@field DungeonBackdropTexture texture
+---@field BackgroundBannerTexture animatedtexture
+---@field BackgroundBannerFlashTexture animatedtexture
+---@field RoleIcon texture
+---@field Portrait texture
+---@field Border texture
+---@field Name fontstring
+---@field AnimIn animationgroup
+---@field AnimOut animationgroup
+---@field StartTextDotAnimation fun(self:playerbanner)
+---@field StopTextDotAnimation fun(self:playerbanner)
+---@field ClearLootSquares fun(self:playerbanner)
+---@field GetLootSquare fun(self:playerbanner):details_lootsquare
+
+---@class details_lootsquare : frame
+---@field LootIcon texture
+---@field LootIconBorder texture
+---@field LootItemLevel fontstring
+---@field LootItemLevelBackgroundTexture texture
+---@field itemLink string
+---@field ShadowTexture texture
+
+---@class details_loot_cache : table
+---@field playerName string
+---@field itemLink string
+---@field effectiveILvl number
+---@field itemQuality number
+---@field itemID number
+---@field time number
+
+---@class lootframe : frame
+---@field LootCache details_loot_cache[]
+
+---@class details_mplus_endframe : frame
+---@field unitCacheByName playerbanner[]
+---@field entryAnimationDuration number
+---@field AutoCloseTimeBar df_timebar
+---@field OpeningAnimation animationgroup
+---@field HeaderFadeInAnimation animationgroup
+---@field HeaderTexture texture
+---@field TopFrame frame
+---@field ContentFrame frame
+---@field ContentFrameFadeInAnimation animationgroup
+---@field YellowSpikeCircle texture
+---@field YellowFlash texture
+---@field Level fontstring
+---@field leftFiligree texture
+---@field rightFiligree texture
+---@field bottomFiligree texture
+---@field CloseButton df_closebutton
+---@field ConfigButton df_button
+---@field ShowBreakdownButton df_button
+---@field ShowChartButton df_button
+---@field PlayerBanners playerbanner[]
+---@field YouBeatTheTimerLabel fontstring
+---@field RantingLabel df_label
+---@field ElapsedTimeIcon texture
+---@field ElapsedTimeText fontstring
+---@field OutOfCombatIcon texture
+---@field OutOfCombatText fontstring
+---@field SandTimeIcon texture
+---@field KeylevelText fontstring
+---@field StrongArmIcon texture

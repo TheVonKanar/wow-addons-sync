@@ -45,6 +45,10 @@ Private.frames = {}
 ---@field state state
 ---@field states state[]
 ---@field regionType string
+---@field FrameTick fun(self: WARegion)?
+---@field UpdateValue fun(self: WARegion)?
+---@field UpdateTime fun(self: WARegion)?
+---@field Update fun(self: WARegion)?
 
 --- @class Private
 --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)
@@ -221,6 +225,7 @@ Private.frames = {}
 --- @class actionData
 --- @field do_glow boolean
 --- @field do_message boolean
+--- @field do_sound boolean
 --- @field message string
 --- @field message_type string
 
@@ -376,8 +381,8 @@ WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.17.0"
-local buildTime = "20240825220748"
+local versionString = "5.20.0"
+local buildTime = "20250721200906"
 
 local flavorFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -385,10 +390,10 @@ local flavorFromTocToNumber = {
   TBC = 2,
   Wrath = 3,
   Cata = 4,
+  Mists = 5,
   Mainline = 10
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
-
 
 if not versionString:find("beta", 1, true) then
   WeakAuras.buildType = "release"
@@ -405,7 +410,7 @@ WeakAuras.buildType = "pr"
 --@end-experimental@]=====]
 
 --[==[@debug@
-if versionStringFromToc == "5.17.0" then
+if versionStringFromToc == "5.20.0" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
   WeakAuras.buildType = "dev"
@@ -430,6 +435,11 @@ function WeakAuras.IsCataClassic()
 end
 
 ---@return boolean result
+function WeakAuras.IsMists()
+  return flavor == 5
+end
+
+---@return boolean result
 function WeakAuras.IsRetail()
   return flavor == 10
 end
@@ -437,6 +447,25 @@ end
 ---@return boolean result
 function WeakAuras.IsClassicOrCata()
   return WeakAuras.IsClassicEra() or WeakAuras.IsCataClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsClassicOrCataOrMists()
+  return WeakAuras.IsClassicOrCata() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsCataOrMists()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+end
+
+function WeakAuras.IsCataOrMistsOrRetail()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+end
+
+---@return boolean result
+function WeakAuras.IsMistsOrRetail()
+  return WeakAuras.IsMists() or WeakAuras.IsRetail()
 end
 
 ---@return boolean result

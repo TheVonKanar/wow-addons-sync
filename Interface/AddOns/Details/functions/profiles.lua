@@ -1100,6 +1100,7 @@ local default_profile = {
 			quick_detection = false,
 			faster_updates = false,
 			use_animation_accel = true,
+			no_helptips = false,
 		},
 
 	--tooltip
@@ -1397,6 +1398,7 @@ local default_global_data = {
 		current_exp_raid_encounters = {},
 		encounter_journal_cache = {}, --store a dump of the encounter journal
 		installed_skins_cache = {},
+		last_10days_cache_cleanup = 0,
 
 		auto_change_to_standard = true,
 
@@ -1445,6 +1447,11 @@ local default_global_data = {
 		all_switch_config = {
 			scale = 1,
 			font_size = 10,
+		},
+
+	--information about the transcriptor frame
+		transcriptor_frame = {
+			scale = 1,
 		},
 
 	--keystone window
@@ -1622,6 +1629,10 @@ local default_global_data = {
 			shield_overheal = false,
 			--compute the energy wasted by players when they current energy is equal to the maximum energy
 			energy_overflow = false,
+			--compute avoidance for tanks
+			tank_avoidance = false,
+			--compute resources
+			energy_resources = false,
 		},
 
 	--aura creation frame libwindow
@@ -1652,7 +1663,7 @@ local default_global_data = {
 				grow_direction = "left",
 			},
 
-			autoclose_time = 40,
+			autoclose_time = 90,
 
 			mythicrun_time_type = 1, --1: combat time (the amount of time the player is in combat) 2: run time (the amount of time it took to finish the mythic+ run)
 		}, --implementar esse time_type quando estiver dando refresh na janela
@@ -1707,6 +1718,10 @@ local default_global_data = {
 		exp90temp = {
 			delete_damage_TCOB = true, --delete damage on the concil of blood encounter
 		},
+
+	third_party = {
+		openraid_notecache = {},
+	},
 }
 
 Details.default_global_data = default_global_data
@@ -1847,7 +1862,7 @@ function Details:RestoreState_CurrentMythicDungeonRun()
 				Details:Msg("D! (debug) mythic dungeon state restored.")
 
 				C_Timer.After(2, function()
-					Details:SendEvent("COMBAT_MYTHICDUNGEON_START")
+					Details:SendEvent("COMBAT_MYTHICDUNGEON_CONTINUE")
 				end)
 				return
 			else

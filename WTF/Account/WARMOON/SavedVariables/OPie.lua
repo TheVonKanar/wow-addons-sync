@@ -1,43 +1,45 @@
 
 OneRing_Config = nil
 OPie_SavedData = {
-["CenterActions"] = {
-["arthstones"] = "ABuenZkzsve",
-},
-["_GameVersion"] = "11.0.2",
 ["CharProfiles"] = {
 ["Hyjal-Kvotheen"] = "Kvotheen",
 ["Hyjal-Kvotheen-2"] = "Kvotheen",
+["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_TimeBand"] = 0.0546875,
-["_OPieVersion"] = "Ælling 4 (4.128)",
+["_OPieVersion"] = "Ånd 6.2 (4.133)",
+["_StoreVersion"] = 122,
+["_GameLocale"] = "enUS",
+["_StoreVersion2"] = 122,
+["_GameVersion"] = "11.1.7",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
 ["InteractionMode"] = 2,
+["MotionAction"] = true,
 ["Bindings"] = {
-["AddOns"] = "F5",
-["onsumables"] = "F2",
 ["Usables"] = false,
-["rofessions"] = "F4",
 ["arthstones"] = "SHIFT-B",
+["rofessions"] = "F4",
+["onsumables"] = "F2",
 },
 ["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
-["MotionAction"] = true,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
 ["Talents"] = "F3",
-["onsumables"] = "F2",
-["Usables"] = false,
-["arthstones"] = "F5",
 ["rofessions"] = "F4",
+["onsumables"] = "F2",
+["arthstones"] = "F5",
+["rldMarkers"] = "F7",
+["Usables"] = false,
+["getMarkers"] = "F6",
 },
 ["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
 ["RingOptions"] = {
 ["arthstones#InteractionMode"] = 2,
 ["arthstones#CenterAction"] = false,
@@ -45,18 +47,109 @@ OPie_SavedData = {
 ["arthstones#MotionAction"] = true,
 ["arthstones#RingAtMouse"] = false,
 },
-["InteractionMode"] = 2,
-["RingScale"] = 1.200000047683716,
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
 ["RingKeeper"] = {
-["Talents"] = {
-{
-"toy",
-122293,
-["sliceToken"] = "ABueQbdzcVw",
+["OPieDeletedRings"] = {
+["RaidSymbols"] = true,
+["SpecMenu"] = true,
+["WorldMarkers"] = true,
+["CommonTrades"] = true,
+["OPieAutoQuest"] = true,
+["PaladinTools"] = true,
+["CommonHearth"] = true,
 },
+["rofessions"] = {
+{
+["sliceToken"] = "ABueQYX/O3w",
+["id"] = 423395,
+},
+{
+"item",
+214561,
+["sliceToken"] = "ABueQGw1gZw",
+},
+{
+"item",
+212308,
+["sliceToken"] = "ABueQGw1gZe",
+},
+{
+["sliceToken"] = "ABuenAlJMLe",
+["id"] = 818,
+},
+{
+"item",
+136377,
+["sliceToken"] = "ABueEw2Z3Qw",
+},
+["name"] = "Professions (Kvotheen)",
+["save"] = true,
+},
+["OPieFlagStore"] = {
+["StoreVersion"] = 3,
+},
+["onsumables"] = {
+{
+["id"] = 315584,
+["sliceToken"] = "ABueEEQlG4r",
+},
+{
+["id"] = 381637,
+["sliceToken"] = "ABueEEQlG4e",
+},
+{
+"macro",
+"Main",
+["sliceToken"] = "ABueEE8Ynrw",
+["show"] = "[spec:264/263/262] hide;",
+},
+{
+"macro",
+"Off",
+["sliceToken"] = "ABueEE8Ynre",
+["show"] = "[spec:264/263/262] hide;",
+},
+{
+["sliceToken"] = "ABueQKobzGw",
+["id"] = 462854,
+},
+{
+"item",
+212274,
+["sliceToken"] = "ABueWkhCVUw",
+},
+{
+"item",
+212277,
+["sliceToken"] = "ABueEEQlG4w",
+},
+{
+"item",
+212741,
+["sliceToken"] = "ABueQObc40e",
+},
+{
+"item",
+212283,
+["sliceToken"] = "ABueQNOxa/e",
+},
+{
+"item",
+224572,
+["sliceToken"] = "ABueEks7m0w",
+},
+{
+"item",
+222776,
+["sliceToken"] = "ABueQSOFXVw",
+},
+["name"] = "Buffs",
+["save"] = true,
+},
+["Talents"] = {
 {
 "toy",
 206268,
@@ -67,45 +160,75 @@ OPie_SavedData = {
 199830,
 ["sliceToken"] = "ABueQbdzcVt",
 },
+{
+"toy",
+225556,
+["sliceToken"] = "ABueWdsapkw",
+},
+{
+["sliceToken"] = "ABueEEQp4gw",
+["id"] = 460905,
+},
+{
+["sliceToken"] = "ABueEEQp4ge",
+["id"] = 83958,
+},
 ["name"] = "Toys",
 ["save"] = true,
 },
-["OPieDeletedRings"] = {
-["SpecMenu"] = true,
-["CommonTrades"] = true,
-["CommonHearth"] = true,
-["RaidSymbols"] = true,
-["TrinketSlots"] = true,
-["WorldMarkers"] = true,
-["PaladinTools"] = true,
-["OPieAutoQuest"] = true,
-},
-["onsumables"] = {
+["rldMarkers"] = {
 {
-"item",
-191341,
-["sliceToken"] = "ABuenK9tVCw",
+"worldmark",
+0,
+["sliceToken"] = "ABueQD0WJEh",
 },
 {
-"item",
-222703,
-["sliceToken"] = "ABueQYV/zYw",
+"worldmark",
+1,
+["sliceToken"] = "ABueQD0WJEo",
 },
-["name"] = "Consumables (Kvotheen)",
+{
+"worldmark",
+2,
+["sliceToken"] = "ABueQD0WJEp",
+},
+{
+"worldmark",
+3,
+["sliceToken"] = "ABueQD0WJEa",
+},
+{
+"worldmark",
+4,
+["sliceToken"] = "ABueQD0WJEs",
+},
+{
+"worldmark",
+5,
+["sliceToken"] = "ABueQD0WJE3",
+},
+{
+"worldmark",
+6,
+["sliceToken"] = "ABueQD0WJEd",
+},
+{
+"worldmark",
+7,
+["sliceToken"] = "ABueQD0WJEf",
+},
+{
+"worldmark",
+8,
+["sliceToken"] = "ABueQD0WJEg",
+},
+["name"] = "World Markers",
 ["save"] = true,
-["limit"] = "Kvotheen-Hyjal",
 },
 ["arthstones"] = {
 {
 ["sliceToken"] = "ABuenZkzsve",
 ["id"] = 556,
-["fastClick"] = true,
-},
-{
-"item",
-6948,
-["sliceToken"] = "ABuenZkzsvw",
-["fastClick"] = true,
 },
 {
 "toy",
@@ -119,71 +242,72 @@ OPie_SavedData = {
 },
 {
 "toy",
-200630,
-["sliceToken"] = "ABueQbdzcVr",
+236687,
+["sliceToken"] = "ABueElEKFiw",
 },
 {
 "item",
 141605,
 ["sliceToken"] = "ABueQlwN=Kw",
 },
+{
+"item",
+234389,
+["sliceToken"] = "ABueEgU/BDw",
+},
 ["name"] = "Hearthstones",
 ["save"] = true,
 },
-["rofessions"] = {
+["getMarkers"] = {
 {
-["sliceToken"] = "ABuen9jkdGw",
-["id"] = 2259,
+"raidmark",
+0,
+["sliceToken"] = "ABueQD0WJE4",
 },
 {
-["sliceToken"] = "ABueQYX/O3w",
-["id"] = 423395,
+"raidmark",
+6,
+["sliceToken"] = "ABueQD0WJEj",
 },
 {
-["sliceToken"] = "ABuenAlJMLe",
-["id"] = 818,
+"raidmark",
+4,
+["sliceToken"] = "ABueQD0WJEk",
 },
 {
-["sliceToken"] = "ABuenn7LKJe",
-["id"] = 158765,
+"raidmark",
+3,
+["sliceToken"] = "ABueQD0WJEl",
 },
-["name"] = "Professions (Kvotheen)",
+{
+"raidmark",
+7,
+["sliceToken"] = "ABueQD0WJEz",
+},
+{
+"raidmark",
+1,
+["sliceToken"] = "ABueQD0WJE5",
+},
+{
+"raidmark",
+2,
+["sliceToken"] = "ABueQD0WJEx",
+},
+{
+"raidmark",
+5,
+["sliceToken"] = "ABueQD0WJEv",
+},
+{
+"raidmark",
+8,
+["sliceToken"] = "ABueQD0WJEb",
+},
+["name"] = "Target Markers",
 ["save"] = true,
-["limit"] = "Kvotheen-Hyjal",
-},
-["AddOns"] = {
-{
-"macro",
-"OPie",
-["sliceToken"] = "ABuengpuo4y",
-},
-{
-"macro",
-"Auras",
-["sliceToken"] = "ABuenk4PWJw",
-},
-{
-"macro",
-"Details",
-["sliceToken"] = "ABuengpuo4u",
-},
-{
-"macro",
-"Plater",
-["sliceToken"] = "ABuenO/c9cw",
-},
-{
-"macro",
-"Perfs",
-["sliceToken"] = "ABueQzfTltw",
-},
-["name"] = "AddOns",
-["save"] = true,
-},
-["OPieFlagStore"] = {
-["StoreVersion"] = 3,
 },
 },
 },
-["_GameLocale"] = "enUS",
+["_TimeBand"] = 0.0546875,
 }

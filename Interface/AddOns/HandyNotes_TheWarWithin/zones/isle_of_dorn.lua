@@ -6,11 +6,13 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
 local DisturbedEarth = ns.node.DisturbedEarth
 local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Treasure = ns.node.Treasure
 
+local FlightMaster = ns.node.FlightMaster
 local LoreObject = ns.node.LoreObject
 local SkyridingGlyph = ns.node.SkyridingGlyph
 
@@ -19,11 +21,13 @@ local Item = ns.reward.Item
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Recipe = ns.reward.Recipe
+local Reputation = ns.reward.Reputation
+local Section = ns.reward.Section
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
-local Reputation = ns.reward.Reputation
 
 local Circle = ns.poi.Circle
+local Entrance = ns.poi.Entrance
 local Path = ns.poi.Path
 local POI = ns.poi.POI
 
@@ -42,13 +46,14 @@ map.nodes[23335817] = Rare({
     note = L['alunira_note'],
     rewards = {
         Achievement({id = 40435, criteria = 68225}),
-        Reputation({id = 2590, gain = 150, quest = 82196}),
+        Reputation({id = 2590, gain = 150, quest = 85158}),
         Mount({item = 223270, id = 2176}) -- Alunira
     }
 }) -- Alunira
 
 map.nodes[41077616] = Rare({ -- get path
     id = 219264,
+    quest = 81893, -- One Time Kill
     rewards = {
         Achievement({id = 40435, criteria = 68214}),
         Reputation({id = 2590, gain = 150, quest = 81893}),
@@ -87,7 +92,7 @@ map.nodes[47946014] = Rare({
         Transmog({item = 223346, slot = L['plate']}) -- Viper's Stone Handguards
     },
     pois = {
-        POI({45936001, 46206206, 47726173}) -- Entries
+        Entrance({45936001, 46206206, 47726173}) -- Entries
     }
 }) -- Emperor Pitfang
 
@@ -97,7 +102,8 @@ map.nodes[25784503] = Rare({
     rewards = {
         Achievement({id = 40435, criteria = 68218}),
         Reputation({id = 2590, gain = 150, quest = 84029}),
-        Transmog({item = 221208, slot = L['leather']}) -- Unseen Cutthroat's Tunic
+        Transmog({item = 221208, slot = L['leather']}), -- Unseen Cutthroat's Tunic
+        Transmog({item = 221235, slot = L['cloak']}) -- Dark Agent's Cloak
     }
 }) -- Escaped Cutthroat
 
@@ -107,7 +113,8 @@ map.nodes[63984054] = Rare({ -- get path
     rewards = {
         Achievement({id = 40435, criteria = 68223}),
         Reputation({id = 2590, gain = 150, quest = 84034}),
-        Transmog({item = 221244, slot = L['mail']}) -- Flamekeeper's Footpads
+        Transmog({item = 221244, slot = L['mail']}), -- Flamekeeper's Footpads
+        Transmog({item = 221249, slot = L['1h_mace']}) -- Kobold Rodent Squasher
     }
 }) -- Flamekeeper Graz
 
@@ -116,7 +123,10 @@ map.nodes[53527998] = Rare({
     quest = 81899, -- 84028
     rewards = {
         Achievement({id = 40435, criteria = 68217}),
-        Reputation({id = 2590, gain = 150, quest = 84028})
+        Reputation({id = 2590, gain = 150, quest = 84028}),
+        Transmog({item = 221248, type = L['1h_axe']}), -- Deep Terror Carver
+        Transmog({item = 221255, type = L['dagger']}), -- Sharpened Scalepiercer
+        Transmog({item = 221222, type = L['cloth']}) -- Water-Imbued Spaulders
     }
 }) -- Gar'loc
 
@@ -126,7 +136,9 @@ map.nodes[48212701] = Rare({
     rewards = {
         Achievement({id = 40435, criteria = 68220}),
         Reputation({id = 2590, gain = 150, quest = 84031}),
-        Transmog({item = 221210, slot = L['plate']}) -- Grips of the Earth
+        Transmog({item = 221210, slot = L['plate']}), -- Grips of the Earth
+        Transmog({item = 221507, slot = L['cloak']}), -- Earth Golem's Wrap
+        Transmog({item = 221254, slot = L['polearm']}) -- Earthshatter Lance
     }
 }) -- Kronolith, Might of the Mountain
 
@@ -135,7 +147,11 @@ map.nodes[73004009] = Rare({
     quest = 81921, -- 84039
     rewards = {
         Achievement({id = 40435, criteria = 68231}),
-        Reputation({id = 2590, gain = 150, quest = 84039})
+        Reputation({id = 2590, gain = 150, quest = 84039}),
+        Transmog({item = 223948, slot = L['plate']}), -- Stubborn Wolf's Greathelm
+        Transmog({item = 221251, type = L['2h_axe']}), -- Bestial Underground Cleaver
+        Transmog({item = 221247, type = L['crossbow']}), -- Cavernous Critter Shooter
+        Transmog({item = 221246, type = L['staff']}) -- Fierce Beast Staff
     }
 }) -- Matriarch Charfuria
 
@@ -146,7 +162,9 @@ map.nodes[50876975] = Rare({
         Achievement({id = 40435, criteria = 68216}),
         Reputation({id = 2590, gain = 150, quest = 84026}),
         Transmog({item = 221213, slot = L['cloth']}), -- Shawl of the Plagued
-        Transmog({item = 221247, slot = L['crossbow']}) -- Cavernous Critter Shooter
+        Transmog({item = 221251, type = L['2h_axe']}), -- Bestial Underground Cleaver
+        Transmog({item = 221247, type = L['crossbow']}), -- Cavernous Critter Shooter
+        Transmog({item = 221246, type = L['staff']}) -- Fierce Beast Staff
     }
 }) -- Plaguehart
 
@@ -156,7 +174,10 @@ map.nodes[35657489] = Rare({ -- get path
     rewards = {
         Achievement({id = 40435, criteria = 68210}),
         Reputation({id = 2590, gain = 150, quest = 78619}),
-        Transmog({item = 223367, slot = L['leather']}) -- Cuffs of the Titancap
+        Transmog({item = 223365, slot = L['plate']}), -- Wristguards of the Titancap
+        Transmog({item = 223367, slot = L['leather']}), -- Cuffs of the Titancap
+        Transmog({item = 223366, slot = L['mail']}), -- Bracers of the Titancap
+        Transmog({item = 223364, slot = L['cloth']}) -- Wristwraps of the Titancap
     },
     pois = {
         Path({
@@ -184,7 +205,9 @@ map.nodes[74422804] = Rare({
     rewards = {
         Achievement({id = 40435, criteria = 68221}),
         Reputation({id = 2590, gain = 150, quest = 84032}),
-        Transmog({item = 221224, slot = L['plate']})
+        Transmog({item = 221224, slot = L['plate']}), -- Bouldershell Waistguard
+        Transmog({item = 221248, type = L['1h_axe']}), -- Deep Terror Carver
+        Transmog({item = 221255, type = L['dagger']}) -- Sharpened Scalepiercer
     }
 }) -- Shallowshell the Clacker
 
@@ -206,7 +229,9 @@ map.nodes[69853850] = Rare({
     quest = 81922, -- 84038
     rewards = {
         Achievement({id = 40435, criteria = 68230}),
-        Reputation({id = 2590, gain = 150, quest = 84038})
+        Reputation({id = 2590, gain = 150, quest = 84038}),
+        Transmog({item = 223929, slot = L['cloth']}), -- Honey Sweetener's Squeezers
+        Transmog({item = 223920, slot = L['shield']}) -- Slime Deflecting Stopper
     }
 }) -- Sweetspark the Oozeful
 
@@ -215,7 +240,9 @@ map.nodes[56891601] = Rare({
     quest = 81901, -- 84030
     rewards = {
         Achievement({id = 40435, criteria = 68219}),
-        Reputation({id = 2590, gain = 150, quest = 84030})
+        Reputation({id = 2590, gain = 150, quest = 84030}),
+        Transmog({item = 221230, slot = L['mail']}), -- Storm Bindings
+        Transmog({item = 221236, slot = L['shield']}) -- Stormbreaker's Shield
     },
     pois = {Path({56891601, 57401625, 57761653})}
 }) -- Tempest Lord Incarnus
@@ -225,7 +252,9 @@ map.nodes[72913794] = Rare({
     quest = 81923, -- 84037
     rewards = {
         Achievement({id = 40435, criteria = 68229}),
-        Reputation({id = 2590, gain = 150, quest = 84037})
+        Reputation({id = 2590, gain = 150, quest = 84037}),
+        Transmog({item = 223937, slot = L['leather']}), -- Honey Deliverer's Leggings
+        Transmog({item = 223922, slot = L['cloak']}) -- Cinder Pollen Cloak
     },
     pois = {Path({73823883, 73463864, 71373784})}
 }) -- Tephratennae
@@ -236,7 +265,9 @@ map.nodes[57122241] = Rare({
     rewards = {
         Achievement({id = 40435, criteria = 68222}),
         Reputation({id = 2590, gain = 150, quest = 84033}),
-        Transmog({item = 221219, slot = L['leather']}) -- Silkwing Trousers
+        Transmog({item = 221219, slot = L['leather']}), -- Silkwing Trousers
+        Transmog({item = 221239, slot = L['gun']}), -- Spider Blasting Blunderbuss
+        Transmog({item = 221506, slot = L['cloak']}) -- Arachnid's Web-Sown Guise
     }
 }) -- Twice-Stinger the Wretched
 
@@ -254,18 +285,21 @@ map.nodes[30905239] = Rare({
                 {id = 68226, quest = 82203} -- Zovex
             }
         }), --
-        Reputation({id = 2590, gain = 150, quest = 85160, note = '{npc:222378}'}),
-        Reputation({id = 2590, gain = 150, quest = 85161, note = '{npc:222380}'}),
-        Reputation({id = 2590, gain = 150, quest = 85159, note = '{npc:219284}'}),
-        Transmog({item = 226111, type = L['staff'], note = '{npc:222378}'}), -- Arakkoan Ritual Staff
-        Transmog({item = 226113, type = L['1h_sword'], note = '{npc:222378}'}), -- Kereke's Flourishing Sabre
-        Transmog({item = 226114, type = L['polearm'], note = '{npc:222378}'}), -- Windslicer's Lance
-        Transmog({item = 226112, type = L['1h_sword'], note = '{npc:222380}'}), -- Rotfist Flesh Carver
-        Transmog({item = 226115, type = L['2h_axe'], note = '{npc:222380}'}), -- Contaminating Cleaver
-        Transmog({item = 226116, note = '{npc:222380}'}), -- Coagulating Phlegm Churner
-        Transmog({item = 226117, type = L['offhand'], note = '{npc:219284}'}), -- Dalaran Guardian's Arcanotool
-        Transmog({item = 226118, type = L['fist'], note = '{npc:219284}'}), -- Arcane Prisoner's Puncher
-        Transmog({item = 226119, type = L['crossbow'], note = '{npc:219284}'}) -- Arcane Sharpshooter's Crossbow
+        Section('{npc:222378}'), -- Kereke
+        Reputation({id = 2590, gain = 150, quest = 85160}),
+        Transmog({item = 226113, type = L['1h_sword']}), -- Kereke's Flourishing Sabre
+        Transmog({item = 226114, type = L['polearm']}), -- Windslicer's Lance
+        Transmog({item = 226111, type = L['staff']}), -- Arakkoan Ritual Staff
+        Section('{npc:222380}'), -- Rotfist
+        Reputation({id = 2590, gain = 150, quest = 85161}),
+        Transmog({item = 226116}), -- Coagulating Phlegm Churner
+        Transmog({item = 226115, type = L['2h_axe']}), -- Contaminating Cleaver
+        Transmog({item = 226112, type = L['1h_sword']}), -- Rotfist Flesh Carver
+        Section('{npc:219284}'), -- Zovex
+        Reputation({id = 2590, gain = 150, quest = 85159}),
+        Transmog({item = 226119, type = L['crossbow']}), -- Arcane Sharpshooter's Crossbow
+        Transmog({item = 226118, type = L['fist']}), -- Arcane Prisoner's Puncher
+        Transmog({item = 226117, type = L['offhand']}) -- Dalaran Guardian's Arcanotool
     }
 }) -- Violet Hold Prisoner (Kereke, Rotfist, Zovex)
 
@@ -292,7 +326,7 @@ map.nodes[56833477] = Rare({
 
 -------------------------------------------------------------------------------
 
-map.nodes[46153217] = Rare({id = 220846, quest = 81515}) -- Rowdy Rubble
+-- map.nodes[46153217] = Rare({id = 220846, quest = 81515}) -- Rowdy Rubble
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -301,7 +335,7 @@ map.nodes[46153217] = Rare({id = 220846, quest = 81515}) -- Rowdy Rubble
 map.nodes[59122348] = Treasure({ -- You may have to wait until it spawns.
     quest = 82715,
     -- vignette = 6293,
-    note = L['in_building'] .. '' .. L['web_wrapped_axe_note'],
+    note = L['in_building'] .. ' ' .. L['web_wrapped_axe_note'],
     rewards = {
         Achievement({id = 40434, criteria = 68209}),
         Reputation({id = 2590, gain = 150, quest = 82715}),
@@ -361,7 +395,7 @@ map.nodes[59732868] = Treasure({ -- 59602460, 59102708  follow {npc:222963}
 
     },
     pois = {
-        POI({59602460, 59102708, 59732868}), -- Lost Mosswool
+        POI({label = '{npc:222956}', points = {59602460, 59102708, 59732868}}), -- Lost Mosswool
         Path({59602460, 59102708, 59732868}) -- Walking Path
     }
 }) -- Mosswool Flower (Lost Mosswool)
@@ -379,7 +413,12 @@ map.nodes[55006564] = Treasure({ -- more Boskroot Cap locations ?
         Reputation({id = 2590, gain = 150, quest = 83245})
     },
     pois = {
-        POI({51837032, 52326982, 52466780, 52687038, 52346737, 52646562}) -- Boskroot Caps
+        POI({
+            label = '{item:221550}',
+            points = {
+                51837032, 52326982, 52466780, 52687038, 52346737, 52646562
+            }
+        }) -- Boskroot Caps
     }
 }) -- Mushroom Cap (U'llwort The Self-Exiled)
 
@@ -392,7 +431,7 @@ map.nodes[53951920] = Treasure({
         Reputation({id = 2590, gain = 150, quest = 83244})
     },
     pois = {
-        POI({53081855}) -- Elemental Pearl {item:221504}
+        POI({label = '{item:221504}', points = {53081855}}) -- Elemental Pearl
     }
 }) -- Mysterious Orb (Weary Water Elemental)
 
@@ -405,7 +444,7 @@ map.nodes[48896087] = Treasure({ -- You may have to wait until it spawns.
         Reputation({id = 2590, gain = 150, quest = 82326})
     },
     pois = {
-        POI({45936001, 46206206, 47726173}) -- Entries
+        Entrance({45936001, 46206206, 47726173}) -- Entries
     }
 }) -- Shimmering Opal Lily
 
@@ -429,13 +468,49 @@ map.nodes[48513004] = Treasure({
         Toy({item = 224585}) -- Hanna's Locket
     },
     pois = {
-        POI({48683103}), -- Entrance
-        POI({19735843, quest = 82755, color = 'Green'}), -- Pearlescent Shellcrab
-        POI({38264202, quest = 82756, color = 'Green'}), -- Pearlescent Shellcrab / Up in the Tree
-        POI({41852701, quest = 82754, color = 'Green'}), -- Pearlescent Shellcrab
-        POI({50717057, quest = 82751, color = 'Green'}), -- Pearlescent Shellcrab / under a root
-        POI({70771999, quest = 82753, color = 'Green'}), -- Pearlescent Shellcrab
-        POI({74924939, quest = 82752, color = 'Green'}) -- Pearlescent Shellcrab / on a root
+        Entrance({48683103}), -- Entrance
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_1_note'],
+            color = 'Green',
+            quest = 82755,
+            points = {19735843}
+        }), -- Pearlescent Shellcrab
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_2_note'],
+            color = 'Green',
+            quest = 82756,
+            points = {38264202}
+        }), -- Pearlescent Shellcrab / Up in the Tree
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_3_note'],
+            color = 'Green',
+            quest = 82754,
+            points = {41852701}
+        }), -- Pearlescent Shellcrab
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_4_note'],
+            color = 'Green',
+            quest = 82751,
+            points = {50717057}
+        }), -- Pearlescent Shellcrab / under a root
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_5_note'],
+            quest = 82753,
+            color = 'Green',
+            points = {70771999}
+        }), -- Pearlescent Shellcrab
+        POI({
+            label = '{npc:224548}',
+            note = L['trees_treasure_crab_6_note'],
+            quest = 82752,
+            color = 'Green',
+            points = {74924939}
+        }) -- Pearlescent Shellcrab / on a root
     }
 }) -- Tree's Treasure (Pearlescent Shellcrab)
 
@@ -466,6 +541,17 @@ dor.nodes[58283026] = TurtlesThanks({
     -- vignette = 6246
     note = L['turtles_thanks_3_note']
 })
+
+map.nodes[31445130] = Treasure({
+    quest = 83094,
+    label = '{npc:225537}',
+    requires = {
+        ns.requirement.Reputation(1272, 33600, false, true),
+        ns.requirement.Quest(30526)
+    },
+    note = L['faithful_dog_note'],
+    rewards = {Pet({item = 224766, id = 4596})}
+}) -- Faithful Dog
 
 -------------------------------------------------------------------------------
 
@@ -558,7 +644,7 @@ dor.nodes[34845219] = PT.Jewelcrafting({
     id = 226317,
     parent = map.id
 }) -- Earthen Gem Pliers
-dor.nodes[59242352] = PT.Leatherworking({
+dor.nodes[68252334] = PT.Leatherworking({
     quest = 83898,
     id = 226324,
     parent = map.id
@@ -695,8 +781,30 @@ map.nodes[71553114] = DisturbedEarth()
 map.nodes[72613005] = DisturbedEarth()
 
 -------------------------------------------------------------------------------
+-------------------- ACHIEVEMENT: KHAZ ALGAR FLIGHT MASTER --------------------
+-------------------------------------------------------------------------------
 
-dor.nodes[50006188] = ns.node.Collectible({
+map.nodes[41047295] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68171})}
+}) -- Freywold Village
+
+map.nodes[44675116] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68170})}
+}) -- Doronogal
+
+map.nodes[59162859] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68173})}
+}) -- Rambleshire
+
+map.nodes[67484330] = FlightMaster({
+    rewards = {Achievement({id = 40430, criteria = 68172})}
+}) -- Durgaz Cabin
+
+-------------------------------------------------------------------------------
+-------------------------- ACHIEVEMENT: FLAT EARTHEN --------------------------
+-------------------------------------------------------------------------------
+
+dor.nodes[50006188] = Collectible({
     icon = 4620670,
     label = '{achievement:40606}',
     group = ns.groups.FLAT_EARTHEN,
@@ -704,7 +812,20 @@ dor.nodes[50006188] = ns.node.Collectible({
     parent = map.id
 }) -- Flat Earthen
 
-map.nodes[74334530] = ns.node.Collectible({
+-------------------------------------------------------------------------------
+----------------------------- WORLDSOUL MEMORIES ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[51262924] = ns.node.WorldsoulMemory({areaPoiID = 7838}) -- The Worldcarvers
+map.nodes[55417749] = ns.node.WorldsoulMemory({areaPoiID = 7837}) -- Ancient Explorers
+
+-------------------------------------------------------------------------------
+-------------------------------- MISCELLANEOUS --------------------------------
+-------------------------------------------------------------------------------
+
+------------------------ SIZZLING CINDERPOLLEN REWARDS ------------------------
+
+map.nodes[74334530] = Collectible({
     icon = 5633720,
     label = '{npc:226205}',
     note = L['cendvin_note'],
@@ -714,3 +835,90 @@ map.nodes[74334530] = ns.node.Collectible({
     },
     pois = {Path({Circle({origin = 71423755, radius = 3.5})})} -- Sizzling Cinderpollen farm
 }) -- Cendvin
+
+------------------------- TOME OF POLYMORPH: MOSSWOOL -------------------------
+
+dor.nodes[60960531] = ns.node.Node({
+    label = '{item:227710}',
+    icon = 133739,
+    quest = 84438,
+    note = L['tome_of_polymorph_mosswool'],
+    class = 'MAGE',
+    rewards = {Item({item = 227710})}, -- Tome of Polymorph: Mosswool
+    pois = {
+        Entrance({58700650}),
+        Path({58700650, 61420248, 62900470, 62340547, 60980548})
+    }
+}) -- Tome of Polymorph: Mosswool
+
+----------------------- ARADAN: STORMROOK SPIRIT BEAST ------------------------
+
+local rookeryLanding = ns.maps[2315] or Map({id = 2315, settings = false})
+local stormsRoost = ns.maps[2316] or Map({id = 2316, settings = false})
+local stormriderBarracks = ns.maps[2318] or Map({id = 2318, settings = false})
+
+local Aradan = Class('Aradan', ns.node.Node, {
+    label = '{item:220770}',
+    icon = 5357845,
+    class = 'HUNTER',
+    requires = ns.requirement.Specialization(253), -- Beast Mastery
+    -- LuaFormatter off
+    note = format('%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s',
+        L['aradan_note_start'],
+        L['aradan_note_step_1'],
+        L['aradan_note_step_2'],
+        L['aradan_note_step_3'],
+        L['aradan_note_step_4'],
+        L['aradan_note_step_5'],
+        L['aradan_note_end']),
+    -- LuaFormatter on
+    rewards = {
+        Item({item = 220770, note = L['item'], bag = true}) -- Void-Scarred Warhammer
+    }
+}) -- Void-Scarred Warhammer
+
+map.nodes[29063621] = Aradan() -- Step 1
+
+rookeryLanding.nodes[82424706] = Aradan({fgroup = 'aradan'}) -- Step 2
+
+stormsRoost.nodes[50005900] = Aradan({
+    pois = {
+        Path({points = {Circle({origin = 50005000, radius = 9})}, color = 'Red'})
+    }
+}) -- Step 3
+
+stormriderBarracks.nodes[55523425] = Aradan({
+    pois = {
+        Path({points = {Circle({origin = 44882511, radius = 3})}, color = 'Red'}), -- Storm Rookery
+        Path({
+            points = {44882986, 44883425, 55523425, 55522654, 61562654},
+            color = 'Red'
+        }), -- Storm Rookery >> Rookery Landing
+        Path({points = {Circle({origin = 64732654, radius = 3})}, color = 'Red'}) -- Rookery Landing
+
+    }
+}) -- Step 3
+
+rookeryLanding.nodes[12481399] = Aradan({
+    fgroup = 'aradan',
+    pois = {
+        Path({points = {82424706, 13504706}, color = 'Blue'}), -- Entrance >> Storm's Roost
+        Path({
+            points = {Circle({origin = 10334706, radius = 3})},
+            color = 'Blue'
+        }), -- Storm's Roost
+        --
+        Path({
+            points = {Circle({origin = 18344724, radius = 3})},
+            color = 'Green'
+        }), -- Stormrider Barracks
+        Path({
+            points = {18344249, 18343085, 12483085, 12481874},
+            color = 'Green'
+        }), -- Stormrider Barraks >> Targeting
+        Path({
+            points = {Circle({origin = 12481399, radius = 3})},
+            color = 'Green'
+        }) -- Targeting
+    }
+}) -- Step 4
