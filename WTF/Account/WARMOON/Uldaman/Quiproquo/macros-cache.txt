@@ -1,0 +1,21 @@
+VER 3 0100000000000003 "CB" "Ability_CheapShot"
+/lancer Vol à la tire
+/stopcasting
+/lancer Coup bas
+END
+VER 3 0100000000000002 "Embush" "Ability_Rogue_Ambush"
+/lancer Vol à la tire
+/stopcasting
+/lancer Embuscade
+END
+VER 3 0100000000000001 "Garrot" "Ability_Rogue_Garrote"
+/lancer Vol à la tire
+/stopcasting
+/lancer Garrot
+END
+VER 3 0100000000000004 "VuhDoDCShieldData" "Ability_Repair"
+P[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]1RM[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+END
+VER 3 0100000000000005 "VuhDoDCShieldNames" "Ability_Repair"
+N[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]Qui[x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x][x]
+END

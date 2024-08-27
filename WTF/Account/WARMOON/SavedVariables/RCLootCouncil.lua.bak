@@ -1,0 +1,3307 @@
+
+RCLootCouncilDB = {
+	["profileKeys"] = {
+		["Kvotheen - Hyjal"] = "Default",
+		["Kitava - Hyjal"] = "Default",
+	},
+	["global"] = {
+		["log"] = {
+			"<14:12:25> <DEBUG>		Event:	LOOT_READY	true", -- [1]
+			"<14:12:26> <DEBUG>		Event:	LOOT_READY	true", -- [2]
+			"<14:18:07> <DEBUG>		Event:	LOOT_READY	true", -- [3]
+			"<14:18:07> <DEBUG>		Event:	LOOT_READY	true", -- [4]
+			"<14:18:08> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	6	Kvotheen	SHAMAN", -- [5]
+			"<14:18:32> <DEBUG>		Event:	LOOT_READY	true", -- [6]
+			"<14:18:33> <DEBUG>		Event:	LOOT_READY	true", -- [7]
+			"<14:18:33> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	201387	|cff0070dd|Hitem:201387::::::::70:263::::1:28:2214:::::|h[Drakonid Stalker's Halberd]|h|r	1	Kvotheen	SHAMAN", -- [8]
+			"<14:19:00> <DEBUG>		Event:	LOOT_READY	true", -- [9]
+			"<14:19:00> <DEBUG>		Event:	LOOT_READY	true", -- [10]
+			"<14:19:22> <DEBUG>		Event:	LOOT_READY	true", -- [11]
+			"<14:19:22> <DEBUG>		Event:	LOOT_READY	true", -- [12]
+			"<14:19:37> <DEBUG>		Event:	LOOT_READY	true", -- [13]
+			"<14:19:38> <DEBUG>		Event:	LOOT_READY	true", -- [14]
+			"<14:19:43> <DEBUG>		Event:	LOOT_READY	true", -- [15]
+			"<14:19:43> <DEBUG>		Event:	LOOT_READY	true", -- [16]
+			"<14:19:59> <DEBUG>		Event:	LOOT_READY	true", -- [17]
+			"<14:19:59> <DEBUG>		Event:	LOOT_READY	true", -- [18]
+			"<14:20:18> <DEBUG>		Event:	LOOT_READY	true", -- [19]
+			"<14:20:18> <DEBUG>		Event:	LOOT_READY	true", -- [20]
+			"<14:20:32> <DEBUG>		Event:	LOOT_READY	true", -- [21]
+			"<14:20:32> <DEBUG>		Event:	LOOT_READY	true", -- [22]
+			"<14:20:38> <DEBUG>		Event:	LOOT_READY	true", -- [23]
+			"<14:20:38> <DEBUG>		Event:	LOOT_READY	true", -- [24]
+			"<14:20:46> <DEBUG>		Event:	LOOT_READY	true", -- [25]
+			"<14:20:47> <DEBUG>		Event:	LOOT_READY	true", -- [26]
+			"<14:21:01> <DEBUG>		Event:	LOOT_READY	true", -- [27]
+			"<14:21:01> <DEBUG>		Event:	LOOT_READY	true", -- [28]
+			"<14:21:16> <DEBUG>		Event:	LOOT_READY	true", -- [29]
+			"<14:21:16> <DEBUG>		Event:	LOOT_READY	true", -- [30]
+			"<14:21:29> <DEBUG>		Event:	LOOT_READY	true", -- [31]
+			"<14:21:30> <DEBUG>		Event:	LOOT_READY	true", -- [32]
+			"<14:21:42> <DEBUG>		Event:	LOOT_READY	true", -- [33]
+			"<14:21:43> <DEBUG>		Event:	LOOT_READY	true", -- [34]
+			"<14:21:55> <DEBUG>		Event:	LOOT_READY	true", -- [35]
+			"<14:21:56> <DEBUG>		Event:	LOOT_READY	true", -- [36]
+			"<14:22:01> <DEBUG>		Event:	LOOT_READY	true", -- [37]
+			"<14:22:01> <DEBUG>		Event:	LOOT_READY	true", -- [38]
+			"<14:22:15> <DEBUG>		Event:	LOOT_READY	true", -- [39]
+			"<14:22:15> <DEBUG>		Event:	LOOT_READY	true", -- [40]
+			"<14:23:42> <DEBUG>		Event:	LOOT_READY	true", -- [41]
+			"<14:23:42> <DEBUG>		Event:	LOOT_READY	true", -- [42]
+			"<14:23:43> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	3	Kvotheen	SHAMAN", -- [43]
+			"<14:25:47> <DEBUG>		Event:	LOOT_READY	true", -- [44]
+			"<14:25:48> <DEBUG>		Event:	LOOT_READY	true", -- [45]
+			"<14:26:07> <DEBUG>		Event:	LOOT_READY	true", -- [46]
+			"<14:26:07> <DEBUG>		Event:	LOOT_READY	true", -- [47]
+			"<14:26:20> <DEBUG>		Event:	LOOT_READY	true", -- [48]
+			"<14:26:20> <DEBUG>		Event:	LOOT_READY	true", -- [49]
+			"<14:26:36> <DEBUG>		Event:	LOOT_READY	true", -- [50]
+			"<14:26:37> <DEBUG>		Event:	LOOT_READY	true", -- [51]
+			"<14:26:50> <DEBUG>		Event:	LOOT_READY	true", -- [52]
+			"<14:26:50> <DEBUG>		Event:	LOOT_READY	true", -- [53]
+			"<14:27:07> <DEBUG>		Event:	LOOT_READY	true", -- [54]
+			"<14:27:07> <DEBUG>		Event:	LOOT_READY	true", -- [55]
+			"<14:27:31> <DEBUG>		Event:	LOOT_READY	true", -- [56]
+			"<14:27:31> <DEBUG>		Event:	LOOT_READY	true", -- [57]
+			"<14:28:28> <DEBUG>		Event:	LOOT_READY	true", -- [58]
+			"<14:28:28> <DEBUG>		Event:	LOOT_READY	true", -- [59]
+			"<14:28:29> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	203710	|cffa335ee|Hitem:203710::::::::70:263:::::::::|h[Everburning Key]|h|r	1	Kvotheen	SHAMAN", -- [60]
+			"<14:28:53> <DEBUG>		Event:	LOOT_READY	true", -- [61]
+			"<14:28:53> <DEBUG>		Event:	LOOT_READY	true", -- [62]
+			"<14:29:04> <DEBUG>		Event:	LOOT_READY	true", -- [63]
+			"<14:29:05> <DEBUG>		Event:	LOOT_READY	true", -- [64]
+			"<14:29:18> <DEBUG>		Event:	LOOT_READY	true", -- [65]
+			"<14:29:18> <DEBUG>		Event:	LOOT_READY	true", -- [66]
+			"<14:32:03> <DEBUG>		Event:	LOOT_READY	true", -- [67]
+			"<14:32:03> <DEBUG>		Event:	LOOT_READY	true", -- [68]
+			"<14:32:04> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	203710	|cffa335ee|Hitem:203710::::::::70:263:::::::::|h[Everburning Key]|h|r	1	Kvotheen	SHAMAN", -- [69]
+			"<14:32:04> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	204896	|cff0070dd|Hitem:204896::::::::70:263::43:6:9536:6652:9223:9220:1550:8766:1:28:2641:::::|h[Suffused Greatcloak]|h|r	1	Kvotheen	SHAMAN", -- [70]
+			"<14:32:04> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	204717	|cffa335ee|Hitem:204717::::::::70:263:::::::::|h[Splintered Spark of Shadowflame]|h|r	1	Kvotheen	SHAMAN", -- [71]
+			"<14:33:00> <DEBUG>		Event:	LOOT_READY	true", -- [72]
+			"<14:33:00> <DEBUG>		Event:	LOOT_READY	true", -- [73]
+			"<14:33:46> <DEBUG>		Event:	LOOT_READY	true", -- [74]
+			"<14:33:46> <DEBUG>		Event:	LOOT_READY	true", -- [75]
+			"<14:33:46> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	203710	|cffa335ee|Hitem:203710::::::::70:263:::::::::|h[Everburning Key]|h|r	1	Kvotheen	SHAMAN", -- [76]
+			"<14:33:47> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	203683	|cff0070dd|Hitem:203683::::::::70:263:::::::::|h[Ward of Fyrakk]|h|r	1	Kvotheen	SHAMAN", -- [77]
+			"<14:34:13> <DEBUG>		Event:	LOOT_READY	true", -- [78]
+			"<14:34:13> <DEBUG>		Event:	LOOT_READY	true", -- [79]
+			"<14:34:21> <DEBUG>		Event:	LOOT_READY	true", -- [80]
+			"<14:34:21> <DEBUG>		Event:	LOOT_READY	true", -- [81]
+			"<14:35:16> <DEBUG>		Event:	LOOT_READY	true", -- [82]
+			"<14:35:16> <DEBUG>		Event:	LOOT_READY	true", -- [83]
+			"<14:36:11> <DEBUG>		Event:	LOOT_READY	true", -- [84]
+			"<14:36:11> <DEBUG>		Event:	LOOT_READY	true", -- [85]
+			"<14:36:37> <DEBUG>		Event:	LOOT_READY	true", -- [86]
+			"<14:36:38> <DEBUG>		Event:	LOOT_READY	true", -- [87]
+			"<14:39:02> <DEBUG>		Event:	LOOT_READY	true", -- [88]
+			"<14:39:02> <DEBUG>		Event:	LOOT_READY	true", -- [89]
+			"<14:40:27> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [90]
+			"<14:40:29> <DEBUG>		GetML()", -- [91]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-3702-09F151C8", -- [92]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-512-0712E9E9", -- [93]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-3682-05C5950C", -- [94]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-1403-06F13A31", -- [95]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-570-0A8C4F2A", -- [96]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-2073-043FACC1", -- [97]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-1303-0CC22034", -- [98]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-1928-0BF69C4C", -- [99]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-1402-07421798", -- [100]
+			"<14:40:29> <Data.Player>		CreatePlayer	Player-1084-095AE2F6", -- [101]
+			"<14:40:29> <DEBUG>		Resetting council as we have a new ML!", -- [102]
+			"<14:40:29> <INFO>		MasterLooter	Daryna-ArgentDawn	LootMethod	personalloot", -- [103]
+			"<14:40:39> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	193259	|cff0070dd|Hitem:193259::::::::70:263:::::::::|h[Flawless Proto Dragon Scale]|h|r	1	Golm-Turalyon	HUNTER", -- [104]
+			"<14:40:44> <DEBUG>		Timer MLdb_check passed", -- [105]
+			"<14:40:45> <Comm>		^1^Sxrealm^T^N1^SDaryna-ArgentDawn^N2^SMLdb_request^t^^	RAID	Kvotheen-Hyjal", -- [106]
+			"<14:40:45> <Comm>		^1^Sxrealm^T^N1^SDaryna-ArgentDawn^N2^Scouncil_request^t^^	RAID	Kvotheen-Hyjal", -- [107]
+			"<14:41:19> <DEBUG>		Event:	GROUP_LEFT	1	Party-3702-1-00006A04376A", -- [108]
+			"<14:41:19> <DEBUG>		GetML()", -- [109]
+			"<14:41:28> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [110]
+			"<14:41:30> <DEBUG>		GetML()", -- [111]
+			"<14:41:30> <Data.Player>		CreatePlayer	Player-1329-094D8DA3", -- [112]
+			"<14:41:30> <Data.Player>		CreatePlayer	Player-1587-07398B12", -- [113]
+			"<14:41:30> <DEBUG>		Resetting council as we have a new ML!", -- [114]
+			"<14:41:30> <INFO>		MasterLooter	Clankz-Ravencrest	LootMethod	personalloot", -- [115]
+			"<14:41:35> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Suiffeur-Hyjal", -- [116]
+			"<14:41:45> <DEBUG>		Timer MLdb_check passed", -- [117]
+			"<14:41:45> <Comm>		^1^Sxrealm^T^N1^SClankz-Ravencrest^N2^SMLdb_request^t^^	PARTY	Kvotheen-Hyjal", -- [118]
+			"<14:41:45> <Comm>		^1^Sxrealm^T^N1^SClankz-Ravencrest^N2^Scouncil_request^t^^	PARTY	Kvotheen-Hyjal", -- [119]
+			"<14:42:51> <DEBUG>		Event:	LOOT_READY	true", -- [120]
+			"<14:42:51> <DEBUG>		Event:	LOOT_READY	true", -- [121]
+			"<14:42:54> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [122]
+			"<14:42:54> <DEBUG>		Event:	GROUP_LEFT	1	Party-1329-1-000032DEB174", -- [123]
+			"<14:42:54> <DEBUG>		GetML()", -- [124]
+			"<14:42:56> <DEBUG>		GetML()", -- [125]
+			"<14:44:52> <DEBUG>		Event:	LOOT_READY	true", -- [126]
+			"<14:44:53> <DEBUG>		Event:	LOOT_READY	true", -- [127]
+			"<14:45:20> <DEBUG>		Event:	LOOT_READY	true", -- [128]
+			"<14:45:20> <DEBUG>		Event:	LOOT_READY	true", -- [129]
+			"<14:46:09> <DEBUG>		Event:	LOOT_READY	true", -- [130]
+			"<14:46:09> <DEBUG>		Event:	LOOT_READY	true", -- [131]
+			"<14:46:49> <DEBUG>		Event:	LOOT_READY	true", -- [132]
+			"<14:46:49> <DEBUG>		Event:	LOOT_READY	true", -- [133]
+			"<14:46:50> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190328	|cff0070dd|Hitem:190328::::::::70:263:::::::::|h[Rousing Frost]|h|r	3	Kvotheen	SHAMAN", -- [134]
+			"<14:47:29> <DEBUG>		Event:	LOOT_READY	true", -- [135]
+			"<14:47:30> <DEBUG>		Event:	LOOT_READY	true", -- [136]
+			"<14:47:57> <DEBUG>		Event:	LOOT_READY	true", -- [137]
+			"<14:47:57> <DEBUG>		Event:	LOOT_READY	true", -- [138]
+			"<14:47:58> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	2	Kvotheen	SHAMAN", -- [139]
+			"<14:47:58> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	200677	|cff0070dd|Hitem:200677::::::::70:263:::::::::|h[Dreambloom Petal]|h|r	1	Kvotheen	SHAMAN", -- [140]
+			"<14:48:34> <DEBUG>		Event:	LOOT_READY	true", -- [141]
+			"<14:48:34> <DEBUG>		Event:	LOOT_READY	true", -- [142]
+			"<14:48:49> <DEBUG>		Event:	LOOT_READY	true", -- [143]
+			"<14:48:49> <DEBUG>		Event:	LOOT_READY	true", -- [144]
+			"<14:49:05> <DEBUG>		Event:	LOOT_READY	true", -- [145]
+			"<14:49:05> <DEBUG>		Event:	LOOT_READY	true", -- [146]
+			"<14:49:25> <DEBUG>		Event:	LOOT_READY	true", -- [147]
+			"<14:49:25> <DEBUG>		Event:	LOOT_READY	true", -- [148]
+			"<14:49:42> <DEBUG>		Event:	LOOT_READY	true", -- [149]
+			"<14:49:43> <DEBUG>		Event:	LOOT_READY	true", -- [150]
+			"<14:50:19> <DEBUG>		Event:	LOOT_READY	true", -- [151]
+			"<14:50:20> <DEBUG>		Event:	LOOT_READY	true", -- [152]
+			"<14:50:43> <DEBUG>		Event:	LOOT_READY	true", -- [153]
+			"<14:50:43> <DEBUG>		Event:	LOOT_READY	true", -- [154]
+			"<14:50:55> <DEBUG>		Event:	LOOT_READY	true", -- [155]
+			"<14:50:55> <DEBUG>		Event:	LOOT_READY	true", -- [156]
+			"<14:51:10> <DEBUG>		Event:	LOOT_READY	true", -- [157]
+			"<14:51:10> <DEBUG>		Event:	LOOT_READY	true", -- [158]
+			"<14:51:34> <DEBUG>		Event:	LOOT_READY	true", -- [159]
+			"<14:51:34> <DEBUG>		Event:	LOOT_READY	true", -- [160]
+			"<14:51:48> <DEBUG>		Event:	LOOT_READY	true", -- [161]
+			"<14:51:48> <DEBUG>		Event:	LOOT_READY	true", -- [162]
+			"<14:53:39> <DEBUG>		Event:	LOOT_READY	true", -- [163]
+			"<14:53:39> <DEBUG>		Event:	LOOT_READY	true", -- [164]
+			"<14:53:45> <DEBUG>		Event:	LOOT_READY	true", -- [165]
+			"<14:53:46> <DEBUG>		Event:	LOOT_READY	true", -- [166]
+			"<14:53:51> <DEBUG>		Event:	LOOT_READY	true", -- [167]
+			"<14:53:52> <DEBUG>		Event:	LOOT_READY	true", -- [168]
+			"<14:53:55> <DEBUG>		Event:	LOOT_READY	true", -- [169]
+			"<14:53:56> <DEBUG>		Event:	LOOT_READY	true", -- [170]
+			"<14:54:02> <DEBUG>		Event:	LOOT_READY	true", -- [171]
+			"<14:54:02> <DEBUG>		Event:	LOOT_READY	true", -- [172]
+			"<14:54:04> <DEBUG>		Event:	LOOT_READY	true", -- [173]
+			"<14:54:04> <DEBUG>		Event:	LOOT_READY	true", -- [174]
+			"<14:54:11> <DEBUG>		Event:	LOOT_READY	true", -- [175]
+			"<14:54:11> <DEBUG>		Event:	LOOT_READY	true", -- [176]
+			"<14:54:22> <DEBUG>		Event:	LOOT_READY	true", -- [177]
+			"<14:54:22> <DEBUG>		Event:	LOOT_READY	true", -- [178]
+			"<14:54:30> <DEBUG>		Event:	LOOT_READY	true", -- [179]
+			"<14:54:30> <DEBUG>		Event:	LOOT_READY	true", -- [180]
+			"<14:54:35> <DEBUG>		Event:	LOOT_READY	true", -- [181]
+			"<14:54:35> <DEBUG>		Event:	LOOT_READY	true", -- [182]
+			"<14:55:29> <DEBUG>		Event:	LOOT_READY	true", -- [183]
+			"<14:55:29> <DEBUG>		Event:	LOOT_READY	true", -- [184]
+			"<14:56:05> <DEBUG>		Event:	LOOT_READY	true", -- [185]
+			"<14:56:06> <DEBUG>		Event:	LOOT_READY	true", -- [186]
+			"<14:56:19> <DEBUG>		Event:	LOOT_READY	true", -- [187]
+			"<14:56:19> <DEBUG>		Event:	LOOT_READY	true", -- [188]
+			"<14:56:22> <DEBUG>		Event:	LOOT_READY	true", -- [189]
+			"<14:56:22> <DEBUG>		Event:	LOOT_READY	true", -- [190]
+			"<14:56:25> <DEBUG>		Event:	LOOT_READY	true", -- [191]
+			"<14:56:25> <DEBUG>		Event:	LOOT_READY	true", -- [192]
+			"<14:56:28> <DEBUG>		Event:	LOOT_READY	true", -- [193]
+			"<14:56:29> <DEBUG>		Event:	LOOT_READY	true", -- [194]
+			"<14:56:34> <DEBUG>		Event:	LOOT_READY	true", -- [195]
+			"<14:56:34> <DEBUG>		Event:	LOOT_READY	true", -- [196]
+			"<14:56:42> <DEBUG>		Event:	LOOT_READY	true", -- [197]
+			"<14:56:42> <DEBUG>		Event:	LOOT_READY	true", -- [198]
+			"<14:56:55> <DEBUG>		Event:	LOOT_READY	true", -- [199]
+			"<14:56:56> <DEBUG>		Event:	LOOT_READY	true", -- [200]
+			"<14:57:02> <DEBUG>		Event:	LOOT_READY	true", -- [201]
+			"<14:57:02> <DEBUG>		Event:	LOOT_READY	true", -- [202]
+			"<14:57:08> <DEBUG>		Event:	LOOT_READY	true", -- [203]
+			"<14:57:08> <DEBUG>		Event:	LOOT_READY	true", -- [204]
+			"<14:57:17> <DEBUG>		Event:	LOOT_READY	true", -- [205]
+			"<14:57:17> <DEBUG>		Event:	LOOT_READY	true", -- [206]
+			"<14:57:23> <DEBUG>		Event:	LOOT_READY	true", -- [207]
+			"<14:57:24> <DEBUG>		Event:	LOOT_READY	true", -- [208]
+			"<14:57:36> <DEBUG>		Event:	LOOT_READY	true", -- [209]
+			"<14:57:36> <DEBUG>		Event:	LOOT_READY	true", -- [210]
+			"<14:57:44> <DEBUG>		Event:	LOOT_READY	true", -- [211]
+			"<14:57:45> <DEBUG>		Event:	LOOT_READY	true", -- [212]
+			"<14:57:49> <DEBUG>		Event:	LOOT_READY	true", -- [213]
+			"<14:57:50> <DEBUG>		Event:	LOOT_READY	true", -- [214]
+			"<14:57:53> <DEBUG>		Event:	LOOT_READY	true", -- [215]
+			"<14:57:54> <DEBUG>		Event:	LOOT_READY	true", -- [216]
+			"<14:58:53> <DEBUG>		Event:	LOOT_READY	true", -- [217]
+			"<14:58:54> <DEBUG>		Event:	LOOT_READY	true", -- [218]
+			"<14:58:59> <DEBUG>		Event:	LOOT_READY	true", -- [219]
+			"<14:58:59> <DEBUG>		Event:	LOOT_READY	true", -- [220]
+			"<14:58:59> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	6	Kvotheen	SHAMAN", -- [221]
+			"<14:59:28> <DEBUG>		Event:	LOOT_READY	true", -- [222]
+			"<14:59:29> <DEBUG>		Event:	LOOT_READY	true", -- [223]
+			"<14:59:33> <DEBUG>		Event:	LOOT_READY	true", -- [224]
+			"<14:59:34> <DEBUG>		Event:	LOOT_READY	true", -- [225]
+			"<14:59:41> <DEBUG>		Event:	LOOT_READY	true", -- [226]
+			"<14:59:41> <DEBUG>		Event:	LOOT_READY	true", -- [227]
+			"<14:59:49> <DEBUG>		Event:	LOOT_READY	true", -- [228]
+			"<14:59:49> <DEBUG>		Event:	LOOT_READY	true", -- [229]
+			"<14:59:56> <DEBUG>		Event:	LOOT_READY	true", -- [230]
+			"<14:59:57> <DEBUG>		Event:	LOOT_READY	true", -- [231]
+			"<15:00:13> <DEBUG>		Event:	LOOT_READY	true", -- [232]
+			"<15:00:14> <DEBUG>		Event:	LOOT_READY	true", -- [233]
+			"<15:00:25> <DEBUG>		Event:	LOOT_READY	true", -- [234]
+			"<15:00:25> <DEBUG>		Event:	LOOT_READY	true", -- [235]
+			"<15:00:32> <DEBUG>		Event:	LOOT_READY	true", -- [236]
+			"<15:00:32> <DEBUG>		Event:	LOOT_READY	true", -- [237]
+			"<15:01:10> <DEBUG>		Event:	LOOT_READY	true", -- [238]
+			"<15:01:10> <DEBUG>		Event:	LOOT_READY	true", -- [239]
+			"<15:02:08> <DEBUG>		Event:	LOOT_READY	true", -- [240]
+			"<15:02:09> <DEBUG>		Event:	LOOT_READY	true", -- [241]
+			"<15:02:21> <DEBUG>		Event:	LOOT_READY	true", -- [242]
+			"<15:02:22> <DEBUG>		Event:	LOOT_READY	true", -- [243]
+			"<15:02:22> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190330	|cff0070dd|Hitem:190330::::::::70:263:::::::::|h[Rousing Decay]|h|r	3	Kvotheen	SHAMAN", -- [244]
+			"<15:09:28> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [245]
+			"<15:09:30> <DEBUG>		GetML()", -- [246]
+			"<15:09:30> <Data.Player>		CreatePlayer	Player-1084-0AC7C667", -- [247]
+			"<15:09:30> <Data.Player>		CreatePlayer	Player-581-0A936BF4", -- [248]
+			"<15:09:30> <Data.Player>		CreatePlayer	Player-1417-0696ACB3", -- [249]
+			"<15:09:30> <DEBUG>		Resetting council as we have a new ML!", -- [250]
+			"<15:09:30> <INFO>		MasterLooter	Hardyz-TarrenMill	LootMethod	personalloot", -- [251]
+			"<15:09:45> <DEBUG>		Timer MLdb_check passed", -- [252]
+			"<15:09:45> <Comm>		^1^Sxrealm^T^N1^SHardyz-TarrenMill^N2^SMLdb_request^t^^	PARTY	Kvotheen-Hyjal", -- [253]
+			"<15:09:45> <Comm>		^1^Sxrealm^T^N1^SHardyz-TarrenMill^N2^Scouncil_request^t^^	PARTY	Kvotheen-Hyjal", -- [254]
+			"<15:09:45> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	PARTY	Hardyz-TarrenMill", -- [255]
+			"<15:09:45> <INFO>		OnMLDBReceived", -- [256]
+			"<15:09:45> <Comm>		^1^Scouncil^T^N1^T^S1084-0AC7C667^B^t^t^^	PARTY	Hardyz-TarrenMill", -- [257]
+			"<15:09:45> <DEBUG>		isCouncil	false", -- [258]
+			"<15:10:05> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [259]
+			"<15:10:05> <INFO>		UpdatePlayersData()", -- [260]
+			"<15:10:06> <DEBUG>		GetML()", -- [261]
+			"<15:10:06> <Data.Player>		CreatePlayer	Player-3686-05F587C1", -- [262]
+			"<15:10:50> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [263]
+			"<15:10:50> <INFO>		UpdatePlayersData()", -- [264]
+			"<15:10:52> <DEBUG>		GetML()", -- [265]
+			"<15:11:13> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [266]
+			"<15:11:13> <INFO>		UpdatePlayersData()", -- [267]
+			"<15:11:14> <DEBUG>		GetML()", -- [268]
+			"<15:11:50> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [269]
+			"<15:11:50> <INFO>		UpdatePlayersData()", -- [270]
+			"<15:11:52> <DEBUG>		GetML()", -- [271]
+			"<15:12:07> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	Black Rook Hold (Mythic)	222472	0	0", -- [272]
+			"<15:12:08> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [273]
+			"<15:12:08> <INFO>		UpdatePlayersData()", -- [274]
+			"<15:12:10> <DEBUG>		GetML()", -- [275]
+			"<15:14:30> <DEBUG>		Event:	ENCOUNTER_START	1832	Amalgam of Souls	8	5", -- [276]
+			"<15:14:30> <INFO>		UpdatePlayersData()", -- [277]
+			"<15:16:02> <DEBUG>		Event:	ENCOUNTER_END	1832	Amalgam of Souls	8	5	1", -- [278]
+			"<15:20:29> <DEBUG>		Event:	ENCOUNTER_START	1833	Ilysanna Ravencrest	8	5", -- [279]
+			"<15:20:29> <INFO>		UpdatePlayersData()", -- [280]
+			"<15:22:20> <DEBUG>		Event:	ENCOUNTER_END	1833	Ilysanna Ravencrest	8	5	1", -- [281]
+			"<15:25:41> <DEBUG>		Event:	ENCOUNTER_START	1834	Smashspite the Hateful	8	5", -- [282]
+			"<15:25:41> <INFO>		UpdatePlayersData()", -- [283]
+			"<15:27:22> <DEBUG>		Event:	ENCOUNTER_END	1834	Smashspite the Hateful	8	5	1", -- [284]
+			"<15:28:57> <DEBUG>		Event:	ENCOUNTER_START	1835	Lord Kur'talos Ravencrest	8	5", -- [285]
+			"<15:28:57> <INFO>		UpdatePlayersData()", -- [286]
+			"<15:31:09> <DEBUG>		Event:	ENCOUNTER_END	1835	Lord Kur'talos Ravencrest	8	5	1", -- [287]
+			"<15:31:16> <DEBUG>		Event:	LOOT_READY	true", -- [288]
+			"<15:31:16> <DEBUG>		Ignoring	nil	as it's a currency", -- [289]
+			"<15:31:16> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	4	1	GameObject-0-4251-1501-5727-407488-00002D2AAE	1", -- [290]
+			"<15:31:16> <DEBUG>		Event:	LOOT_READY	true", -- [291]
+			"<15:31:16> <DEBUG>		Ignoring	nil	as it's a currency", -- [292]
+			"<15:31:16> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	4	1	GameObject-0-4251-1501-5727-407488-00002D2AAE	1", -- [293]
+			"<15:31:16> <DEBUG>		OnLootSlotCleared()	2	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	4", -- [294]
+			"<15:31:16> <DEBUG>		Event:	LOOT_CLOSED", -- [295]
+			"<15:31:16> <DEBUG>		Event:	LOOT_CLOSED", -- [296]
+			"<15:31:16> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1835	134490	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	1	Kvotheen	SHAMAN", -- [297]
+			"<15:31:16> <Comm>		^1^Sl^T^N1^S407488^t^^	PARTY	Kvotheen-Hyjal", -- [298]
+			"<15:31:16> <Comm>		^1^Sl^T^N1^S407488^t^^	PARTY	Kvotheen-Hyjal", -- [299]
+			"<15:31:18> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1835	134431	|cffa335ee|Hitem:134431::::::::70:263::16:7:9562:9639:6652:9506:9144:9466:8767:1:28:1279:::::|h[Latosius's Blasting Gloves]|h|r	1	Comaxx-Antonidas	WARLOCK", -- [300]
+			"<15:31:18> <DEBUG>		Storage:New	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	temp", -- [301]
+			"<15:31:18> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::||h[Ring of Contempt]||h||r	5", -- [302]
+			"<15:31:18> <DEBUG>		Found item at	1	26", -- [303]
+			"<15:31:19> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::||h[Ring of Contempt]||h||r	5", -- [304]
+			"<15:31:19> <DEBUG>		Found item at	1	26", -- [305]
+			"<15:31:20> <Comm>		^1^Stradable^T^N1^S|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring~`of~`Contempt]|h|r^N2^S407488^t^^	PARTY	Kvotheen-Hyjal", -- [306]
+			"<15:31:54> <DEBUG>		Event:	GROUP_LEFT	1	Party-1084-1-00006A0451A0", -- [307]
+			"<15:31:54> <DEBUG>		GetML()", -- [308]
+			"<15:32:07> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [309]
+			"<15:32:07> <INFO>		UpdatePlayersData()", -- [310]
+			"<15:32:08> <DEBUG>		GetML()", -- [311]
+			"<16:01:29> <DEBUG>		Event:	LOOT_READY	true", -- [312]
+			"<16:01:29> <DEBUG>		Event:	LOOT_READY	true", -- [313]
+			"<16:01:44> <DEBUG>		Event:	LOOT_READY	true", -- [314]
+			"<16:01:45> <DEBUG>		Event:	LOOT_READY	true", -- [315]
+			"<16:01:50> <DEBUG>		Event:	LOOT_READY	true", -- [316]
+			"<16:01:51> <DEBUG>		Event:	LOOT_READY	true", -- [317]
+			"<16:01:58> <DEBUG>		Event:	LOOT_READY	true", -- [318]
+			"<16:01:59> <DEBUG>		Event:	LOOT_READY	true", -- [319]
+			"<16:01:59> <DEBUG>		Event:	LOOT_READY	true", -- [320]
+			"<16:01:59> <DEBUG>		Event:	LOOT_READY	true", -- [321]
+			"<16:02:08> <DEBUG>		Event:	LOOT_READY	true", -- [322]
+			"<16:02:09> <DEBUG>		Event:	LOOT_READY	true", -- [323]
+			"<16:02:12> <DEBUG>		Event:	LOOT_READY	true", -- [324]
+			"<16:02:13> <DEBUG>		Event:	LOOT_READY	true", -- [325]
+			"<16:02:37> <DEBUG>		Event:	LOOT_READY	true", -- [326]
+			"<16:02:38> <DEBUG>		Event:	LOOT_READY	true", -- [327]
+			"<16:02:45> <DEBUG>		Event:	LOOT_READY	true", -- [328]
+			"<16:02:45> <DEBUG>		Event:	LOOT_READY	true", -- [329]
+			"<16:02:49> <DEBUG>		Event:	LOOT_READY	true", -- [330]
+			"<16:02:49> <DEBUG>		Event:	LOOT_READY	true", -- [331]
+			"<16:02:57> <DEBUG>		Event:	LOOT_READY	true", -- [332]
+			"<16:02:57> <DEBUG>		Event:	LOOT_READY	true", -- [333]
+			"<16:03:04> <DEBUG>		Event:	LOOT_READY	true", -- [334]
+			"<16:03:04> <DEBUG>		Event:	LOOT_READY	true", -- [335]
+			"<16:03:10> <DEBUG>		Event:	LOOT_READY	true", -- [336]
+			"<16:03:10> <DEBUG>		Event:	LOOT_READY	true", -- [337]
+			"<16:03:16> <DEBUG>		Event:	LOOT_READY	true", -- [338]
+			"<16:03:16> <DEBUG>		Event:	LOOT_READY	true", -- [339]
+			"<16:03:26> <DEBUG>		Event:	LOOT_READY	true", -- [340]
+			"<16:03:26> <DEBUG>		Event:	LOOT_READY	true", -- [341]
+			"01/21/24", -- [342]
+			"<21:17:55> <INFO>		Logged In", -- [343]
+			"<21:17:55> <INFO>[ML]		Init", -- [344]
+			"<21:17:55> <INFO>		RCLootCouncil	TradeUI enabled", -- [345]
+			"<21:18:08> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [346]
+			"<21:18:08> <DEBUG>		ActivateSkin	bfa", -- [347]
+			"<21:18:11> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [348]
+			"<21:18:11> <INFO>		UpdatePlayersData()", -- [349]
+			"<21:18:11> <INFO>		Player relog...", -- [350]
+			"<21:18:11> <DEBUG>		GetPlayersGuildRank()", -- [351]
+			"<21:18:11> <DEBUG>		GetPlayersGuildRank()", -- [352]
+			"<21:18:11> <DEBUG>		Found Guild Rank: O'New", -- [353]
+			"<21:18:12> <DEBUG>		GetML()", -- [354]
+			"<21:18:13> <WARNING>		ItemStorage, db item no link or timeout	|cffa335ee|Hitem:134490::::::::70:263::33:7:9562:9639:6652:9599:9144:9466:8767:1:28:1279:::::|h[Ring of Contempt]|h|r	14340	1705847478	temp", -- [355]
+			"<21:18:13> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [356]
+			"<21:19:23> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [357]
+			"<21:19:30> <DEBUG>		GetML()", -- [358]
+			"<21:19:30> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [359]
+			"<21:19:30> <INFO>		UpdatePlayersData()", -- [360]
+			"<21:19:32> <DEBUG>		GetML()", -- [361]
+			"<21:20:26> <DEBUG>		Event:	LOOT_READY	true", -- [362]
+			"<21:20:26> <DEBUG>		Ignoring	nil	as it's a currency", -- [363]
+			"<21:20:26> <DEBUG>		Event:	LOOT_READY	true", -- [364]
+			"<21:20:26> <DEBUG>		Ignoring	nil	as it's a currency", -- [365]
+			"<21:20:27> <DEBUG>		Event:	LOOT_CLOSED", -- [366]
+			"<21:20:27> <DEBUG>		Event:	LOOT_CLOSED", -- [367]
+			"<21:20:44> <DEBUG>		Event:	LOOT_READY	true", -- [368]
+			"<21:20:44> <DEBUG>		Ignoring	nil	as it's a currency", -- [369]
+			"<21:20:44> <DEBUG>		Event:	LOOT_READY	true", -- [370]
+			"<21:20:44> <DEBUG>		Ignoring	nil	as it's a currency", -- [371]
+			"<21:20:44> <DEBUG>		Event:	LOOT_CLOSED", -- [372]
+			"<21:20:44> <DEBUG>		Event:	LOOT_CLOSED", -- [373]
+			"<21:21:04> <DEBUG>		Event:	LOOT_READY	true", -- [374]
+			"<21:21:04> <DEBUG>		Ignoring	nil	as it's a currency", -- [375]
+			"<21:21:05> <DEBUG>		Event:	LOOT_READY	true", -- [376]
+			"<21:21:05> <DEBUG>		Ignoring	nil	as it's a currency", -- [377]
+			"<21:21:05> <DEBUG>		Event:	LOOT_CLOSED", -- [378]
+			"<21:21:05> <DEBUG>		Event:	LOOT_CLOSED", -- [379]
+			"<21:21:37> <DEBUG>		Event:	LOOT_READY	true", -- [380]
+			"<21:21:37> <DEBUG>		Ignoring	nil	as it's a currency", -- [381]
+			"<21:21:37> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188715::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Legguards]|h|r	0	1	Creature-0-3151-2516-13023-192796-0000AD7C49	1", -- [382]
+			"<21:21:37> <DEBUG>		Event:	LOOT_READY	true", -- [383]
+			"<21:21:37> <DEBUG>		Ignoring	nil	as it's a currency", -- [384]
+			"<21:21:37> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188715::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Legguards]|h|r	0	1	Creature-0-3151-2516-13023-192796-0000AD7C49	1", -- [385]
+			"<21:21:38> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:188715::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Legguards]|h|r	0", -- [386]
+			"<21:21:38> <DEBUG>		Event:	LOOT_CLOSED", -- [387]
+			"<21:21:38> <DEBUG>		Event:	LOOT_CLOSED", -- [388]
+			"<21:21:38> <Comm>		^1^Sl^T^N1^S192796^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [389]
+			"<21:21:38> <Comm>		^1^Sl^T^N1^S192796^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [390]
+			"<21:21:45> <DEBUG>		Event:	LOOT_READY	true", -- [391]
+			"<21:21:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [392]
+			"<21:21:45> <DEBUG>		Event:	LOOT_READY	true", -- [393]
+			"<21:21:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [394]
+			"<21:21:45> <DEBUG>		Event:	LOOT_CLOSED", -- [395]
+			"<21:21:45> <DEBUG>		Event:	LOOT_CLOSED", -- [396]
+			"<21:22:16> <DEBUG>		Event:	LOOT_READY	true", -- [397]
+			"<21:22:16> <DEBUG>		Ignoring	nil	as it's a currency", -- [398]
+			"<21:22:16> <DEBUG>		Adding to self.lootSlotInfo	4	|cff9d9d9d|Hitem:188721::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Vestments]|h|r	0	1	Creature-0-3151-2516-13023-192789-00042D7C49	1", -- [399]
+			"<21:22:16> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:188734::::::::70:263::1:1:7966:1:28:2587:::::|h[Timeworn Chain Helm]|h|r	0	1	Creature-0-3151-2516-13023-192794-00012D7C49	1", -- [400]
+			"<21:22:16> <DEBUG>		Event:	LOOT_READY	true", -- [401]
+			"<21:22:16> <DEBUG>		Ignoring	nil	as it's a currency", -- [402]
+			"<21:22:16> <DEBUG>		Adding to self.lootSlotInfo	4	|cff9d9d9d|Hitem:188721::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Vestments]|h|r	0	1	Creature-0-3151-2516-13023-192789-00042D7C49	1", -- [403]
+			"<21:22:16> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:188734::::::::70:263::1:1:7966:1:28:2587:::::|h[Timeworn Chain Helm]|h|r	0	1	Creature-0-3151-2516-13023-192794-00012D7C49	1", -- [404]
+			"<21:22:17> <DEBUG>		OnLootSlotCleared()	4	|cff9d9d9d|Hitem:188721::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Vestments]|h|r	0", -- [405]
+			"<21:22:17> <DEBUG>		Event:	LOOT_CLOSED", -- [406]
+			"<21:22:17> <DEBUG>		OnLootSlotCleared()	5	|cff9d9d9d|Hitem:188734::::::::70:263::1:1:7966:1:28:2587:::::|h[Timeworn Chain Helm]|h|r	0", -- [407]
+			"<21:22:17> <DEBUG>		Event:	LOOT_CLOSED", -- [408]
+			"<21:22:17> <Comm>		^1^Sl^T^N1^S192794^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [409]
+			"<21:22:38> <DEBUG>		Event:	ENCOUNTER_START	2637	Granyth	205	5", -- [410]
+			"<21:22:38> <INFO>		UpdatePlayersData()", -- [411]
+			"<21:22:58> <DEBUG>		Event:	ENCOUNTER_END	2637	Granyth	205	5	1", -- [412]
+			"<21:23:03> <DEBUG>		Event:	LOOT_READY	true", -- [413]
+			"<21:23:03> <DEBUG>		Ignoring	nil	as it's a currency", -- [414]
+			"<21:23:03> <DEBUG>		Adding to self.lootSlotInfo	2	|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar Ranger Bracers]|h|r	3	1	Creature-0-3151-2516-13023-186616-00002D7C49	1", -- [415]
+			"<21:23:03> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192623::::::::70:263:::::::::|h[Massive Proto-Dragon Claw]|h|r	0	1	Creature-0-3151-2516-13023-186616-00002D7C49	1", -- [416]
+			"<21:23:04> <DEBUG>		Event:	LOOT_READY	true", -- [417]
+			"<21:23:04> <DEBUG>		Ignoring	nil	as it's a currency", -- [418]
+			"<21:23:04> <DEBUG>		Adding to self.lootSlotInfo	2	|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar Ranger Bracers]|h|r	3	1	Creature-0-3151-2516-13023-186616-00002D7C49	1", -- [419]
+			"<21:23:04> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192623::::::::70:263:::::::::|h[Massive Proto-Dragon Claw]|h|r	0	1	Creature-0-3151-2516-13023-186616-00002D7C49	1", -- [420]
+			"<21:23:04> <DEBUG>		OnLootSlotCleared()	2	|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar Ranger Bracers]|h|r	3", -- [421]
+			"<21:23:04> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2637	193693	|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar Ranger Bracers]|h|r	1	Kvotheen	SHAMAN", -- [422]
+			"<21:23:04> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:192623::::::::70:263:::::::::|h[Massive Proto-Dragon Claw]|h|r	0", -- [423]
+			"<21:23:04> <DEBUG>		Event:	LOOT_CLOSED", -- [424]
+			"<21:23:04> <DEBUG>		Event:	LOOT_CLOSED", -- [425]
+			"<21:23:04> <Comm>		^1^Sl^T^N1^S186616^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [426]
+			"<21:23:04> <Comm>		^1^Sl^T^N1^S186616^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [427]
+			"<21:23:06> <DEBUG>		Storage:New	|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar Ranger Bracers]|h|r	temp", -- [428]
+			"<21:23:06> <DEBUG>		Storage: searching for item:	||cff0070dd||Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::||h[Shikaar Ranger Bracers]||h||r	5", -- [429]
+			"<21:23:06> <DEBUG>		Found item at	0	9", -- [430]
+			"<21:23:06> <DEBUG>		Found:	0	9	0", -- [431]
+			"<21:23:07> <DEBUG>		Storage: searching for item:	||cff0070dd||Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::||h[Shikaar Ranger Bracers]||h||r	5", -- [432]
+			"<21:23:07> <DEBUG>		Found item at	0	9", -- [433]
+			"<21:23:07> <DEBUG>		Found:	0	9	0", -- [434]
+			"<21:23:07> <Comm>		^1^Sn_t^T^N1^S|cff0070dd|Hitem:193693::::::::70:263::1:7:9546:7974:6652:9599:9504:1643:8766:1:28:2587:::::|h[Shikaar~`Ranger~`Bracers]|h|r^N2^S186616^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [435]
+			"<21:24:51> <DEBUG>		Event:	LOOT_READY	true", -- [436]
+			"<21:24:51> <DEBUG>		Ignoring	nil	as it's a currency", -- [437]
+			"<21:24:51> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188726::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Cincture]|h|r	0	1	Creature-0-3151-2516-13023-194317-00002D7C49	1", -- [438]
+			"<21:24:52> <DEBUG>		Event:	LOOT_READY	true", -- [439]
+			"<21:24:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [440]
+			"<21:24:52> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188726::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Cincture]|h|r	0	1	Creature-0-3151-2516-13023-194317-00002D7C49	1", -- [441]
+			"<21:24:52> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:188726::::::::70:263::1:1:7966:1:28:2587:::::|h[Singed Cloth Cincture]|h|r	0", -- [442]
+			"<21:24:52> <DEBUG>		Event:	LOOT_CLOSED", -- [443]
+			"<21:24:52> <DEBUG>		Event:	LOOT_CLOSED", -- [444]
+			"<21:24:52> <Comm>		^1^Sl^T^N1^S194317^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [445]
+			"<21:24:52> <Comm>		^1^Sl^T^N1^S194317^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [446]
+			"<21:25:13> <DEBUG>		Event:	LOOT_READY	true", -- [447]
+			"<21:25:13> <DEBUG>		Ignoring	nil	as it's a currency", -- [448]
+			"<21:25:13> <DEBUG>		Event:	LOOT_READY	true", -- [449]
+			"<21:25:13> <DEBUG>		Ignoring	nil	as it's a currency", -- [450]
+			"<21:25:14> <DEBUG>		Event:	LOOT_CLOSED", -- [451]
+			"<21:25:34> <DEBUG>		Event:	LOOT_READY	true", -- [452]
+			"<21:25:34> <DEBUG>		Ignoring	nil	as it's a currency", -- [453]
+			"<21:25:34> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	1	Creature-0-3151-2516-13023-194896-00002D7C4A	1", -- [454]
+			"<21:25:35> <DEBUG>		Event:	LOOT_READY	true", -- [455]
+			"<21:25:35> <DEBUG>		Ignoring	nil	as it's a currency", -- [456]
+			"<21:25:35> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	1	Creature-0-3151-2516-13023-194896-00002D7C4A	1", -- [457]
+			"<21:25:35> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0", -- [458]
+			"<21:25:35> <DEBUG>		Event:	LOOT_CLOSED", -- [459]
+			"<21:25:35> <DEBUG>		Event:	LOOT_CLOSED", -- [460]
+			"<21:25:35> <Comm>		^1^Sl^T^N1^S194896^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [461]
+			"<21:25:35> <Comm>		^1^Sl^T^N1^S194896^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [462]
+			"<21:25:53> <DEBUG>		Event:	LOOT_READY	true", -- [463]
+			"<21:25:53> <DEBUG>		Ignoring	nil	as it's a currency", -- [464]
+			"<21:25:53> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:188714::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Shoulderguards]|h|r	0	1	Creature-0-3151-2516-13023-194316-00002D7C49	1", -- [465]
+			"<21:25:53> <DEBUG>		Event:	LOOT_READY	true", -- [466]
+			"<21:25:53> <DEBUG>		Ignoring	nil	as it's a currency", -- [467]
+			"<21:25:53> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:188714::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Shoulderguards]|h|r	0	1	Creature-0-3151-2516-13023-194316-00002D7C49	1", -- [468]
+			"<21:25:54> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:188714::::::::70:263::1:1:7966:1:28:2587:::::|h[Corroded Plate Shoulderguards]|h|r	0", -- [469]
+			"<21:25:54> <DEBUG>		Event:	LOOT_CLOSED", -- [470]
+			"<21:25:54> <DEBUG>		Event:	LOOT_CLOSED", -- [471]
+			"<21:25:54> <Comm>		^1^Sl^T^N1^S194316^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [472]
+			"<21:25:54> <Comm>		^1^Sl^T^N1^S194316^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [473]
+			"<21:26:01> <DEBUG>		Event:	ENCOUNTER_START	2636	The Raging Tempest	205	5", -- [474]
+			"<21:26:01> <INFO>		UpdatePlayersData()", -- [475]
+			"<21:26:30> <DEBUG>		Event:	ENCOUNTER_END	2636	The Raging Tempest	205	5	1", -- [476]
+			"<21:27:10> <DEBUG>		Event:	LOOT_READY	true", -- [477]
+			"<21:27:10> <DEBUG>		Ignoring	nil	as it's a currency", -- [478]
+			"<21:27:10> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	1	Creature-0-3151-2516-13023-186615-00002D7C49	1", -- [479]
+			"<21:27:11> <DEBUG>		Event:	LOOT_READY	true", -- [480]
+			"<21:27:11> <DEBUG>		Ignoring	nil	as it's a currency", -- [481]
+			"<21:27:11> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	1	Creature-0-3151-2516-13023-186615-00002D7C49	1", -- [482]
+			"<21:27:11> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0", -- [483]
+			"<21:27:11> <DEBUG>		Event:	LOOT_CLOSED", -- [484]
+			"<21:27:11> <DEBUG>		Event:	LOOT_CLOSED", -- [485]
+			"<21:27:11> <Comm>		^1^Sl^T^N1^S186615^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [486]
+			"<21:27:11> <Comm>		^1^Sl^T^N1^S186615^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [487]
+			"<21:27:53> <DEBUG>		Event:	LOOT_READY	true", -- [488]
+			"<21:27:53> <DEBUG>		Ignoring	nil	as it's a currency", -- [489]
+			"<21:27:53> <DEBUG>		Event:	LOOT_READY	true", -- [490]
+			"<21:27:53> <DEBUG>		Ignoring	nil	as it's a currency", -- [491]
+			"<21:27:53> <DEBUG>		Event:	LOOT_CLOSED", -- [492]
+			"<21:27:53> <DEBUG>		Event:	LOOT_CLOSED", -- [493]
+			"<21:28:15> <DEBUG>		Event:	LOOT_READY	true", -- [494]
+			"<21:28:15> <DEBUG>		Ignoring	nil	as it's a currency", -- [495]
+			"<21:28:16> <DEBUG>		Event:	LOOT_READY	true", -- [496]
+			"<21:28:16> <DEBUG>		Ignoring	nil	as it's a currency", -- [497]
+			"<21:28:16> <DEBUG>		Event:	LOOT_CLOSED", -- [498]
+			"<21:28:16> <DEBUG>		Event:	LOOT_CLOSED", -- [499]
+			"<21:28:33> <DEBUG>		Event:	LOOT_READY	true", -- [500]
+			"<21:28:33> <DEBUG>		Ignoring	nil	as it's a currency", -- [501]
+			"<21:28:33> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	1	Creature-0-3151-2516-13023-195876-00002D7C49	1", -- [502]
+			"<21:28:33> <DEBUG>		Event:	LOOT_READY	true", -- [503]
+			"<21:28:33> <DEBUG>		Ignoring	nil	as it's a currency", -- [504]
+			"<21:28:33> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	2	Creature-0-3151-2516-13023-195876-0002AD7C49	1	Creature-0-3151-2516-13023-195876-00002D7C49	1", -- [505]
+			"<21:28:34> <DEBUG>		Event:	LOOT_READY	true", -- [506]
+			"<21:28:34> <DEBUG>		Ignoring	nil	as it's a currency", -- [507]
+			"<21:28:34> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	2	Creature-0-3151-2516-13023-195876-0002AD7C49	1	Creature-0-3151-2516-13023-195876-00002D7C49	1", -- [508]
+			"<21:28:34> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0", -- [509]
+			"<21:28:34> <DEBUG>		Event:	LOOT_CLOSED", -- [510]
+			"<21:28:34> <DEBUG>		Event:	LOOT_CLOSED", -- [511]
+			"<21:28:34> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [512]
+			"<21:28:34> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [513]
+			"<21:28:52> <DEBUG>		Event:	LOOT_READY	true", -- [514]
+			"<21:28:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [515]
+			"<21:28:52> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	2	Creature-0-3151-2516-13023-195876-0000AD7C4A	1	Creature-0-3151-2516-13023-195876-00012D7C4A	1", -- [516]
+			"<21:28:52> <DEBUG>		Event:	LOOT_READY	true", -- [517]
+			"<21:28:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [518]
+			"<21:28:52> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	2	Creature-0-3151-2516-13023-195876-0000AD7C4A	1	Creature-0-3151-2516-13023-195876-00012D7C4A	1", -- [519]
+			"<21:28:53> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0", -- [520]
+			"<21:28:53> <DEBUG>		Event:	LOOT_CLOSED", -- [521]
+			"<21:28:53> <DEBUG>		Event:	LOOT_CLOSED", -- [522]
+			"<21:28:53> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [523]
+			"<21:28:53> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [524]
+			"<21:29:37> <DEBUG>		Event:	LOOT_READY	true", -- [525]
+			"<21:29:37> <DEBUG>		Ignoring	nil	as it's a currency", -- [526]
+			"<21:29:38> <DEBUG>		Event:	LOOT_READY	true", -- [527]
+			"<21:29:38> <DEBUG>		Ignoring	nil	as it's a currency", -- [528]
+			"<21:29:38> <DEBUG>		Event:	LOOT_CLOSED", -- [529]
+			"<21:29:38> <DEBUG>		Event:	LOOT_CLOSED", -- [530]
+			"<21:30:16> <DEBUG>		Event:	ENCOUNTER_START	2581	Teera and Maruuk	205	5", -- [531]
+			"<21:30:16> <INFO>		UpdatePlayersData()", -- [532]
+			"<21:30:41> <DEBUG>		Event:	ENCOUNTER_END	2581	Teera and Maruuk	205	5	1", -- [533]
+			"<21:30:49> <DEBUG>		Event:	LOOT_READY	true", -- [534]
+			"<21:30:49> <DEBUG>		Ignoring	nil	as it's a currency", -- [535]
+			"<21:30:49> <DEBUG>		Event:	LOOT_READY	true", -- [536]
+			"<21:30:49> <DEBUG>		Ignoring	nil	as it's a currency", -- [537]
+			"<21:30:49> <DEBUG>		Event:	LOOT_CLOSED", -- [538]
+			"<21:30:49> <DEBUG>		Event:	LOOT_CLOSED", -- [539]
+			"<21:31:41> <DEBUG>		Event:	LOOT_READY	true", -- [540]
+			"<21:31:41> <DEBUG>		Ignoring	nil	as it's a currency", -- [541]
+			"<21:31:42> <DEBUG>		Event:	LOOT_READY	true", -- [542]
+			"<21:31:42> <DEBUG>		Ignoring	nil	as it's a currency", -- [543]
+			"<21:31:42> <DEBUG>		Event:	LOOT_CLOSED", -- [544]
+			"<21:31:42> <DEBUG>		Event:	LOOT_CLOSED", -- [545]
+			"<21:32:06> <DEBUG>		Event:	LOOT_READY	true", -- [546]
+			"<21:32:06> <DEBUG>		Ignoring	nil	as it's a currency", -- [547]
+			"<21:32:06> <DEBUG>		Event:	LOOT_READY	true", -- [548]
+			"<21:32:06> <DEBUG>		Ignoring	nil	as it's a currency", -- [549]
+			"<21:32:06> <DEBUG>		Event:	LOOT_CLOSED", -- [550]
+			"<21:32:06> <DEBUG>		Event:	LOOT_CLOSED", -- [551]
+			"<21:32:11> <DEBUG>		Event:	LOOT_READY	true", -- [552]
+			"<21:32:11> <DEBUG>		Ignoring	nil	as it's a currency", -- [553]
+			"<21:32:12> <DEBUG>		Event:	LOOT_READY	true", -- [554]
+			"<21:32:12> <DEBUG>		Ignoring	nil	as it's a currency", -- [555]
+			"<21:32:12> <DEBUG>		Event:	LOOT_CLOSED", -- [556]
+			"<21:32:12> <DEBUG>		Event:	LOOT_CLOSED", -- [557]
+			"<21:32:26> <DEBUG>		Event:	LOOT_READY	true", -- [558]
+			"<21:32:26> <DEBUG>		Ignoring	nil	as it's a currency", -- [559]
+			"<21:32:27> <DEBUG>		Event:	LOOT_READY	true", -- [560]
+			"<21:32:27> <DEBUG>		Ignoring	nil	as it's a currency", -- [561]
+			"<21:32:27> <DEBUG>		Event:	LOOT_CLOSED", -- [562]
+			"<21:32:46> <DEBUG>		Event:	LOOT_READY	true", -- [563]
+			"<21:32:46> <DEBUG>		Ignoring	nil	as it's a currency", -- [564]
+			"<21:32:46> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:188705::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Footwraps]|h|r	0	1	Creature-0-3151-2516-13023-193373-0000AD7EF2	1", -- [565]
+			"<21:32:46> <DEBUG>		Event:	LOOT_READY	true", -- [566]
+			"<21:32:46> <DEBUG>		Ignoring	nil	as it's a currency", -- [567]
+			"<21:32:46> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:188705::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Footwraps]|h|r	0	1	Creature-0-3151-2516-13023-193373-0000AD7EF2	1", -- [568]
+			"<21:32:47> <DEBUG>		Event:	LOOT_READY	true", -- [569]
+			"<21:32:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [570]
+			"<21:32:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:188705::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Footwraps]|h|r	0	1	Creature-0-3151-2516-13023-193373-0000AD7EF2	1", -- [571]
+			"<21:32:47> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:188705::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Footwraps]|h|r	0", -- [572]
+			"<21:32:47> <DEBUG>		Event:	LOOT_CLOSED", -- [573]
+			"<21:32:47> <DEBUG>		Event:	LOOT_CLOSED", -- [574]
+			"<21:32:47> <Comm>		^1^Sl^T^N1^S193373^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [575]
+			"<21:32:47> <Comm>		^1^Sl^T^N1^S193373^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [576]
+			"<21:33:13> <DEBUG>		Event:	LOOT_READY	true", -- [577]
+			"<21:33:13> <DEBUG>		Ignoring	nil	as it's a currency", -- [578]
+			"<21:33:14> <DEBUG>		Event:	LOOT_READY	true", -- [579]
+			"<21:33:14> <DEBUG>		Ignoring	nil	as it's a currency", -- [580]
+			"<21:33:14> <DEBUG>		Event:	LOOT_CLOSED", -- [581]
+			"<21:33:14> <DEBUG>		Event:	LOOT_CLOSED", -- [582]
+			"<21:33:18> <DEBUG>		Event:	ENCOUNTER_START	2580	Balakar Khan	205	5", -- [583]
+			"<21:33:18> <INFO>		UpdatePlayersData()", -- [584]
+			"<21:33:51> <DEBUG>		Event:	ENCOUNTER_END	2580	Balakar Khan	205	5	1", -- [585]
+			"<21:33:52> <DEBUG>		Event:	LOOT_READY	true", -- [586]
+			"<21:33:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [587]
+			"<21:33:52> <DEBUG>		Adding to self.lootSlotInfo	4	|cff1eff00|Hitem:201929::::::::70:263:::::::::|h[Stolen Breath of Ohn'ahra]|h|r	2	1	Creature-0-3151-2516-13023-186151-00002D7C49	1", -- [588]
+			"<21:33:52> <DEBUG>		Ignoring	|cff0070dd|Hcurrency:2245:15|h[Flightstones]|h|r	as it's a currency", -- [589]
+			"<21:33:52> <DEBUG>		Event:	LOOT_READY	true", -- [590]
+			"<21:33:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [591]
+			"<21:33:52> <DEBUG>		Adding to self.lootSlotInfo	4	|cff1eff00|Hitem:201929::::::::70:263:::::::::|h[Stolen Breath of Ohn'ahra]|h|r	2	1	Creature-0-3151-2516-13023-186151-00002D7C49	1", -- [592]
+			"<21:33:52> <DEBUG>		Ignoring	|cff0070dd|Hcurrency:2245:15|h[Flightstones]|h|r	as it's a currency", -- [593]
+			"<21:33:52> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2580	197625	|cff0070dd|Hitem:197625::::::::70:263::1::1:28:2587:::::|h[Windborne Velocidrake: Feathery Tail]|h|r	1	Kvotheen	SHAMAN", -- [594]
+			"<21:33:53> <DEBUG>		OnLootSlotCleared()	4	|cff1eff00|Hitem:201929::::::::70:263:::::::::|h[Stolen Breath of Ohn'ahra]|h|r	2", -- [595]
+			"<21:33:53> <DEBUG>		Event:	LOOT_CLOSED", -- [596]
+			"<21:33:53> <DEBUG>		Event:	LOOT_CLOSED", -- [597]
+			"<21:33:53> <Comm>		^1^Sl^T^N1^S186151^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [598]
+			"<21:33:53> <Comm>		^1^Sl^T^N1^S186151^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [599]
+			"<21:34:08> <DEBUG>		Event:	GROUP_LEFT	2	Party-1461-1-00006A062512", -- [600]
+			"<21:34:08> <DEBUG>		GetML()", -- [601]
+			"<21:34:14> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [602]
+			"<21:34:14> <INFO>		UpdatePlayersData()", -- [603]
+			"<21:34:16> <DEBUG>		GetML()", -- [604]
+			"<21:47:40> <DEBUG>		Event:	LOOT_READY	true", -- [605]
+			"<21:47:40> <DEBUG>		Event:	LOOT_READY	true", -- [606]
+			"<21:48:31> <DEBUG>		Event:	LOOT_READY	true", -- [607]
+			"<21:48:31> <DEBUG>		Event:	LOOT_READY	true", -- [608]
+			"<21:49:44> <DEBUG>		Event:	LOOT_READY	true", -- [609]
+			"<21:49:44> <DEBUG>		Event:	LOOT_READY	true", -- [610]
+			"<21:49:49> <DEBUG>		Event:	LOOT_READY	true", -- [611]
+			"<21:49:50> <DEBUG>		Event:	LOOT_READY	true", -- [612]
+			"<21:49:54> <DEBUG>		Event:	LOOT_READY	true", -- [613]
+			"<21:49:54> <DEBUG>		Event:	LOOT_READY	true", -- [614]
+			"<21:59:42> <DEBUG>		Event:	LOOT_READY	true", -- [615]
+			"<21:59:43> <DEBUG>		Event:	LOOT_READY	true", -- [616]
+			"<22:02:10> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Prometheu-Hyjal", -- [617]
+			"<22:02:39> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [618]
+			"<22:02:40> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Prometheu-Hyjal", -- [619]
+			"<22:02:40> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [620]
+			"<22:02:40> <WARNING>		Non-ML:	Prometheu-Hyjal	sent Mldb!", -- [621]
+			"<22:02:41> <DEBUG>		GetML()", -- [622]
+			"<22:02:41> <DEBUG>		Resetting council as we have a new ML!", -- [623]
+			"<22:02:41> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [624]
+			"<22:02:42> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [625]
+			"<22:02:42> <DEBUG>		isCouncil	false", -- [626]
+			"<22:02:56> <DEBUG>		Timer MLdb_check passed", -- [627]
+			"<22:02:56> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [628]
+			"<22:02:56> <INFO>		OnMLDBReceived", -- [629]
+			"<22:02:59> <DEBUG>		Event:	LOOT_READY	true", -- [630]
+			"<22:02:59> <DEBUG>		Event:	LOOT_READY	true", -- [631]
+			"<22:03:53> <DEBUG>		Event:	LOOT_READY	true", -- [632]
+			"<22:03:53> <DEBUG>		Event:	LOOT_READY	true", -- [633]
+			"<22:03:54> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	2	Kvotheen	SHAMAN", -- [634]
+			"<22:04:08> <DEBUG>		Event:	LOOT_READY	true", -- [635]
+			"<22:04:08> <DEBUG>		Event:	LOOT_READY	true", -- [636]
+			"<22:04:32> <DEBUG>		Event:	LOOT_READY	true", -- [637]
+			"<22:04:32> <DEBUG>		Event:	LOOT_READY	true", -- [638]
+			"<22:04:44> <DEBUG>		Event:	LOOT_READY	true", -- [639]
+			"<22:04:44> <DEBUG>		Event:	LOOT_READY	true", -- [640]
+			"<22:05:27> <DEBUG>		Event:	LOOT_READY	true", -- [641]
+			"<22:05:27> <DEBUG>		Event:	LOOT_READY	true", -- [642]
+			"<22:08:02> <DEBUG>		Event:	LOOT_READY	true", -- [643]
+			"<22:08:02> <DEBUG>		Event:	LOOT_READY	true", -- [644]
+			"<22:08:19> <DEBUG>		Event:	LOOT_READY	true", -- [645]
+			"<22:08:19> <DEBUG>		Event:	LOOT_READY	true", -- [646]
+			"<22:08:32> <DEBUG>		Event:	LOOT_READY	true", -- [647]
+			"<22:08:32> <DEBUG>		Event:	LOOT_READY	true", -- [648]
+			"<22:08:44> <DEBUG>		Event:	LOOT_READY	true", -- [649]
+			"<22:08:45> <DEBUG>		Event:	LOOT_READY	true", -- [650]
+			"<22:08:57> <DEBUG>		Event:	LOOT_READY	true", -- [651]
+			"<22:08:58> <DEBUG>		Event:	LOOT_READY	true", -- [652]
+			"<22:09:25> <DEBUG>		Event:	LOOT_READY	true", -- [653]
+			"<22:09:26> <DEBUG>		Event:	LOOT_READY	true", -- [654]
+			"<22:09:47> <DEBUG>		Event:	LOOT_READY	true", -- [655]
+			"<22:09:47> <DEBUG>		Event:	LOOT_READY	true", -- [656]
+			"<22:10:02> <DEBUG>		Event:	LOOT_READY	true", -- [657]
+			"<22:10:03> <DEBUG>		Event:	LOOT_READY	true", -- [658]
+			"<22:10:13> <DEBUG>		Event:	LOOT_READY	true", -- [659]
+			"<22:10:13> <DEBUG>		Event:	LOOT_READY	true", -- [660]
+			"<22:11:09> <DEBUG>		Event:	LOOT_READY	true", -- [661]
+			"<22:11:09> <DEBUG>		Event:	LOOT_READY	true", -- [662]
+			"<22:15:56> <DEBUG>		Event:	GROUP_LEFT	1	Party-1390-1-0000634E2A92", -- [663]
+			"<22:15:56> <DEBUG>		GetML()", -- [664]
+			"<22:15:56> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [665]
+			"<22:15:58> <DEBUG>		GetML()", -- [666]
+			"<22:15:58> <Data.Player>		CreatePlayer	Player-1602-0F44317E", -- [667]
+			"<22:15:58> <DEBUG>		Resetting council as we have a new ML!", -- [668]
+			"<22:15:58> <INFO>		MasterLooter	хуъйсуй-Гордунни	LootMethod	personalloot", -- [669]
+			"<22:16:13> <DEBUG>		Timer MLdb_check passed", -- [670]
+			"<22:19:19> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [671]
+			"<22:19:19> <INFO>		UpdatePlayersData()", -- [672]
+			"<22:19:20> <DEBUG>		GetML()", -- [673]
+			"<22:19:20> <Data.Player>		CreatePlayer	Player-581-09DE77B2", -- [674]
+			"<22:19:39> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	Dawn of the Infinite (Mythic)	196820	0	0", -- [675]
+			"<22:19:39> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [676]
+			"<22:19:39> <INFO>		UpdatePlayersData()", -- [677]
+			"<22:19:41> <DEBUG>		GetML()", -- [678]
+			"<22:22:31> <DEBUG>		Event:	ENCOUNTER_START	2666	Chronikar	8	5", -- [679]
+			"<22:22:31> <INFO>		UpdatePlayersData()", -- [680]
+			"<22:23:55> <DEBUG>		Event:	ENCOUNTER_END	2666	Chronikar	8	5	0", -- [681]
+			"<22:24:43> <DEBUG>		Event:	ENCOUNTER_START	2666	Chronikar	8	5", -- [682]
+			"<22:24:43> <INFO>		UpdatePlayersData()", -- [683]
+			"<22:26:21> <DEBUG>		Event:	ENCOUNTER_END	2666	Chronikar	8	5	1", -- [684]
+			"<22:29:23> <DEBUG>		Event:	ENCOUNTER_START	2667	Manifested Timeways	8	5", -- [685]
+			"<22:29:23> <INFO>		UpdatePlayersData()", -- [686]
+			"<22:29:24> <DEBUG>		Event:	ENCOUNTER_END	2667	Manifested Timeways	8	5	0", -- [687]
+			"<22:29:55> <DEBUG>		Event:	ENCOUNTER_START	2667	Manifested Timeways	8	5", -- [688]
+			"<22:29:55> <INFO>		UpdatePlayersData()", -- [689]
+			"<22:31:30> <DEBUG>		Event:	ENCOUNTER_END	2667	Manifested Timeways	8	5	1", -- [690]
+			"<22:35:30> <DEBUG>		Event:	ENCOUNTER_START	2668	Blight of Galakrond	8	5", -- [691]
+			"<22:35:30> <INFO>		UpdatePlayersData()", -- [692]
+			"<22:37:31> <DEBUG>		Event:	ENCOUNTER_END	2668	Blight of Galakrond	8	5	1", -- [693]
+			"<22:40:19> <DEBUG>		Event:	ENCOUNTER_START	2669	Iridikron	8	5", -- [694]
+			"<22:40:19> <INFO>		UpdatePlayersData()", -- [695]
+			"<22:42:26> <DEBUG>		Event:	ENCOUNTER_END	2669	Iridikron	8	5	1", -- [696]
+			"<22:42:34> <DEBUG>		Event:	LOOT_READY	true", -- [697]
+			"<22:42:34> <DEBUG>		Ignoring	nil	as it's a currency", -- [698]
+			"<22:42:34> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r	4	1	GameObject-0-4245-2579-29786-407494-00002D8FC3	1", -- [699]
+			"<22:42:34> <DEBUG>		Event:	LOOT_READY	true", -- [700]
+			"<22:42:34> <DEBUG>		Ignoring	nil	as it's a currency", -- [701]
+			"<22:42:34> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r	4	1	GameObject-0-4245-2579-29786-407494-00002D8FC3	1", -- [702]
+			"<22:42:35> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2669	208396	|cffa335ee|Hitem:208396::::::::70:263:::::::::|h[Splintered Spark of Dreams]|h|r	1	Mortardes-Blackrock	PRIEST", -- [703]
+			"<22:42:35> <DEBUG>		OnLootSlotCleared()	2	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r	4", -- [704]
+			"<22:42:35> <DEBUG>		Event:	LOOT_CLOSED", -- [705]
+			"<22:42:35> <DEBUG>		Event:	LOOT_CLOSED", -- [706]
+			"<22:42:35> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2669	207992	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r	1	Kvotheen	SHAMAN", -- [707]
+			"<22:42:35> <Comm>		^1^Sl^T^N1^S407494^t^^	PARTY	Kvotheen-Hyjal", -- [708]
+			"<22:42:35> <Comm>		^1^Sl^T^N1^S407494^t^^	PARTY	Kvotheen-Hyjal", -- [709]
+			"<22:42:35> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2669	208321	|cffa335ee|Hitem:208321::::::::70:263::16:7:9562:9639:6652:9147:9529:1530:8767:1:28:1279:::::|h[Iridal, the Earth's Master]|h|r	1	Mortardes-Blackrock	PRIEST", -- [710]
+			"<22:42:37> <DEBUG>		Storage:New	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r	temp", -- [711]
+			"<22:42:37> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::||h[Fallen Drake's Bonesplitter]||h||r	5", -- [712]
+			"<22:42:37> <DEBUG>		Found item at	1	3", -- [713]
+			"<22:42:38> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::||h[Fallen Drake's Bonesplitter]||h||r	5", -- [714]
+			"<22:42:38> <DEBUG>		Found item at	1	3", -- [715]
+			"<22:42:38> <Comm>		^1^Stradable^T^N1^S|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen~`Drake's~`Bonesplitter]|h|r^N2^S407494^t^^	PARTY	Kvotheen-Hyjal", -- [716]
+			"<22:43:09> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [717]
+			"<22:43:11> <DEBUG>		GetML()", -- [718]
+			"<22:43:11> <DEBUG>		Resetting council as we have a new ML!", -- [719]
+			"<22:43:11> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [720]
+			"<22:43:11> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Prometheu-Hyjal", -- [721]
+			"<22:43:11> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [722]
+			"<22:43:11> <INFO>		OnMLDBReceived", -- [723]
+			"<22:43:13> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [724]
+			"<22:43:13> <DEBUG>		isCouncil	false", -- [725]
+			"<22:43:13> <DEBUG>		GetLootDBStatistics()", -- [726]
+			"<22:43:13> <DEBUG>		GetGuildRankNum()", -- [727]
+			"<22:43:13> <INFO>		RCVotingFrame	enabled", -- [728]
+			"<22:43:26> <DEBUG>		Timer MLdb_check passed", -- [729]
+			"<22:43:41> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [730]
+			"<22:44:06> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [731]
+			"<22:44:06> <INFO>		UpdatePlayersData()", -- [732]
+			"<22:44:07> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [733]
+			"<22:44:08> <DEBUG>		GetML()", -- [734]
+			"<22:44:08> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [735]
+			"01/21/24", -- [736]
+			"<22:44:22> <INFO>		Logged In", -- [737]
+			"<22:44:22> <INFO>[ML]		Init", -- [738]
+			"<22:44:22> <INFO>		RCLootCouncil	TradeUI enabled", -- [739]
+			"<22:44:23> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [740]
+			"<22:44:23> <DEBUG>		ActivateSkin	bfa", -- [741]
+			"<22:44:25> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	true", -- [742]
+			"<22:44:25> <INFO>		UpdatePlayersData()", -- [743]
+			"<22:44:25> <INFO>		Player relog...", -- [744]
+			"<22:44:26> <DEBUG>		GetPlayersGuildRank()", -- [745]
+			"<22:44:26> <DEBUG>		Found Guild Rank: O'New", -- [746]
+			"<22:44:26> <DEBUG>		GetML()", -- [747]
+			"<22:44:26> <DEBUG>		Resetting council as we have a new ML!", -- [748]
+			"<22:44:26> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [749]
+			"<22:44:26> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::||h[Fallen Drake's Bonesplitter]||h||r	5", -- [750]
+			"<22:44:26> <DEBUG>		Found item at	1	3", -- [751]
+			"<22:44:26> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::||h[Fallen Drake's Bonesplitter]||h||r	5", -- [752]
+			"<22:44:26> <DEBUG>		Found item at	1	3", -- [753]
+			"<22:44:26> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [754]
+			"<22:44:26> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.125^N6^N263^t^^	PARTY	Kvotheen-Hyjal", -- [755]
+			"<22:44:27> <DEBUG>		Event:	GROUP_LEFT	1	Party-1602-1-00004820E520", -- [756]
+			"<22:44:27> <DEBUG>		GetML()", -- [757]
+			"<22:44:27> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [758]
+			"<22:44:29> <DEBUG>		GetML()", -- [759]
+			"<22:44:29> <Data.Player>		CreatePlayer	Player-1390-0A950851", -- [760]
+			"<22:44:29> <DEBUG>		Resetting council as we have a new ML!", -- [761]
+			"<22:44:29> <INFO>		MasterLooter	ãrrôw-Hyjal	LootMethod	personalloot", -- [762]
+			"<22:44:41> <DEBUG>		Timer MLdb_check passed", -- [763]
+			"<22:44:41> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	PARTY	ãrrôw-Hyjal", -- [764]
+			"<22:44:41> <INFO>		OnMLDBReceived", -- [765]
+			"<22:44:41> <Comm>		^1^Scouncil^T^N1^T^S1390-0A950851^B^t^t^^	PARTY	ãrrôw-Hyjal", -- [766]
+			"<22:44:41> <DEBUG>		isCouncil	false", -- [767]
+			"<22:44:44> <DEBUG>		Timer MLdb_check passed", -- [768]
+			"<22:45:11> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Draguignol-Hyjal", -- [769]
+			"<22:46:02> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Lussious-Hyjal", -- [770]
+			"<22:46:03> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'Peon^N4^N0^N5^N477.25^N6^N577^t^^	PARTY	Lussious-Hyjal", -- [771]
+			"<22:53:03> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [772]
+			"<22:53:03> <INFO>		UpdatePlayersData()", -- [773]
+			"<22:53:04> <DEBUG>		GetML()", -- [774]
+			"<22:53:04> <Data.Player>		CreatePlayer	Player-1929-0E2954D6", -- [775]
+			"01/21/24", -- [776]
+			"<22:54:08> <INFO>		Logged In", -- [777]
+			"<22:54:08> <INFO>[ML]		Init", -- [778]
+			"<22:54:08> <INFO>		RCLootCouncil	TradeUI enabled", -- [779]
+			"<22:54:09> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [780]
+			"<22:54:09> <DEBUG>		ActivateSkin	bfa", -- [781]
+			"<22:54:12> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	true", -- [782]
+			"<22:54:12> <INFO>		UpdatePlayersData()", -- [783]
+			"<22:54:12> <INFO>		Player relog...", -- [784]
+			"<22:54:12> <DEBUG>		GetPlayersGuildRank()", -- [785]
+			"<22:54:12> <DEBUG>		Found Guild Rank: O'New", -- [786]
+			"<22:54:12> <DEBUG>		GetML()", -- [787]
+			"<22:54:12> <DEBUG>		Resetting council as we have a new ML!", -- [788]
+			"<22:54:12> <INFO>		MasterLooter	ãrrôw-Hyjal	LootMethod	personalloot", -- [789]
+			"<22:54:12> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::||h[Fallen Drake's Bonesplitter]||h||r	5", -- [790]
+			"<22:54:12> <DEBUG>		Found:	nil	nil	nil", -- [791]
+			"<22:54:12> <WARNING>		ItemStorage, db item no longer in bags	|cffa335ee|Hitem:207992::::::::70:263::33:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Fallen Drake's Bonesplitter]|h|r", -- [792]
+			"<22:54:12> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [793]
+			"<22:54:12> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.3125^N6^N263^t^^	PARTY	Kvotheen-Hyjal", -- [794]
+			"<22:54:13> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	WHISPER	ãrrôw-Hyjal", -- [795]
+			"<22:54:13> <INFO>		OnMLDBReceived", -- [796]
+			"<22:54:13> <Comm>		^1^Scouncil^T^N1^T^S1390-0A950851^B^t^t^^	WHISPER	ãrrôw-Hyjal", -- [797]
+			"<22:54:13> <DEBUG>		isCouncil	false", -- [798]
+			"<22:54:26> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [799]
+			"<22:54:26> <INFO>		UpdatePlayersData()", -- [800]
+			"<22:54:27> <DEBUG>		Timer MLdb_check passed", -- [801]
+			"<22:54:28> <DEBUG>		GetML()", -- [802]
+			"<22:54:53> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [803]
+			"<22:54:53> <INFO>		UpdatePlayersData()", -- [804]
+			"<22:54:55> <DEBUG>		GetML()", -- [805]
+			"<22:55:21> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [806]
+			"<22:55:21> <INFO>		UpdatePlayersData()", -- [807]
+			"<22:55:23> <DEBUG>		GetML()", -- [808]
+			"<22:55:40> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [809]
+			"<22:55:40> <INFO>		UpdatePlayersData()", -- [810]
+			"<22:55:41> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	The Everbloom (Mythic)	194658	0	0", -- [811]
+			"<22:55:42> <DEBUG>		GetML()", -- [812]
+			"<23:00:22> <DEBUG>		Event:	ENCOUNTER_START	1746	Witherbark	8	5", -- [813]
+			"<23:00:22> <INFO>		UpdatePlayersData()", -- [814]
+			"<23:02:12> <DEBUG>		Event:	ENCOUNTER_END	1746	Witherbark	8	5	1", -- [815]
+			"<23:06:22> <DEBUG>		Event:	ENCOUNTER_START	1757	Ancient Protectors	8	5", -- [816]
+			"<23:06:22> <INFO>		UpdatePlayersData()", -- [817]
+			"<23:08:18> <DEBUG>		Event:	ENCOUNTER_END	1757	Ancient Protectors	8	5	1", -- [818]
+			"<23:10:35> <DEBUG>		Event:	ENCOUNTER_START	1751	Archmage Sol	8	5", -- [819]
+			"<23:10:35> <INFO>		UpdatePlayersData()", -- [820]
+			"<23:12:01> <DEBUG>		Event:	ENCOUNTER_END	1751	Archmage Sol	8	5	1", -- [821]
+			"<23:12:50> <DEBUG>		Event:	ENCOUNTER_START	1756	Yalnu	8	5", -- [822]
+			"<23:12:50> <INFO>		UpdatePlayersData()", -- [823]
+			"<23:14:42> <DEBUG>		Event:	ENCOUNTER_END	1756	Yalnu	8	5	1", -- [824]
+			"<23:14:51> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1756	119174	|cffa335ee|Hitem:119174::::::::70:263::16:6:9562:9639:6652:9147:9839:8767:1:28:1279:::::|h[Sol's Magestaff]|h|r	1	Prometheu	MONK", -- [825]
+			"<23:14:51> <Comm>		^1^Sl^T^N1^S407490^t^^	PARTY	Prometheu-Hyjal", -- [826]
+			"<23:14:51> <Comm>		^1^Sl^T^N1^S407490^t^^	PARTY	Prometheu-Hyjal", -- [827]
+			"<23:14:51> <DEBUG>		Event:	LOOT_READY	true", -- [828]
+			"<23:14:51> <DEBUG>		Ignoring	nil	as it's a currency", -- [829]
+			"<23:14:52> <DEBUG>		Event:	LOOT_READY	true", -- [830]
+			"<23:14:52> <DEBUG>		Ignoring	nil	as it's a currency", -- [831]
+			"<23:14:52> <DEBUG>		Event:	LOOT_CLOSED", -- [832]
+			"<23:14:52> <DEBUG>		Event:	LOOT_CLOSED", -- [833]
+			"<23:14:54> <Comm>		^1^Sn_t^T^N1^S|cffa335ee|Hitem:119174::::::::70:270::16:6:9562:9639:6652:9147:9839:8767:1:28:1279:::::|h[Bâton~`de~`mage~`de~`Sol]|h|r^N2^S407490^t^^	PARTY	Prometheu-Hyjal", -- [834]
+			"<23:14:57> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1756	109986	|cffa335ee|Hitem:109986::::::::70:263::33:8:9562:9639:6652:9600:9506:9144:9839:8767:1:28:1279:::::|h[Verdant Plate Crown]|h|r	1	Рекстор-Борейскаятундра	PALADIN", -- [835]
+			"<23:15:14> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [836]
+			"<23:15:16> <DEBUG>		GetML()", -- [837]
+			"<23:15:16> <DEBUG>		Resetting council as we have a new ML!", -- [838]
+			"<23:15:16> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [839]
+			"<23:15:16> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Prometheu-Hyjal", -- [840]
+			"<23:15:16> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [841]
+			"<23:15:16> <INFO>		OnMLDBReceived", -- [842]
+			"<23:15:18> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [843]
+			"<23:15:18> <DEBUG>		isCouncil	false", -- [844]
+			"<23:15:18> <DEBUG>		GetLootDBStatistics()", -- [845]
+			"<23:15:18> <DEBUG>		GetGuildRankNum()", -- [846]
+			"<23:15:18> <INFO>		RCVotingFrame	enabled", -- [847]
+			"<23:15:37> <DEBUG>		Timer MLdb_check passed", -- [848]
+			"<23:15:38> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [849]
+			"<23:15:38> <INFO>		UpdatePlayersData()", -- [850]
+			"<23:15:40> <DEBUG>		GetML()", -- [851]
+			"<23:15:40> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [852]
+			"<23:16:03> <DEBUG>		Event:	GROUP_LEFT	1	Party-1390-1-0000634E4FED", -- [853]
+			"<23:16:03> <DEBUG>		GetML()", -- [854]
+			"<23:16:03> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [855]
+			"<23:16:04> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [856]
+			"<23:16:05> <DEBUG>		GetML()", -- [857]
+			"<23:16:05> <Data.Player>		CreatePlayer	Player-1302-0C9A8AA4", -- [858]
+			"<23:16:05> <Data.Player>		CreatePlayer	Player-1302-0CBE194E", -- [859]
+			"<23:16:05> <DEBUG>		Resetting council as we have a new ML!", -- [860]
+			"<23:16:05> <INFO>		MasterLooter	Littletank-Archimonde	LootMethod	personalloot", -- [861]
+			"<23:16:05> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [862]
+			"<23:16:20> <DEBUG>		Timer MLdb_check passed", -- [863]
+			"<23:16:27> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [864]
+			"<23:16:29> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [865]
+			"<23:16:49> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [866]
+			"<23:16:50> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [867]
+			"<23:16:50> <INFO>		UpdatePlayersData()", -- [868]
+			"<23:16:50> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [869]
+			"<23:16:51> <DEBUG>		GetML()", -- [870]
+			"<23:16:53> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [871]
+			"<23:16:54> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [872]
+			"<23:17:05> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [873]
+			"<23:17:06> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [874]
+			"<23:17:32> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [875]
+			"<23:17:32> <INFO>		UpdatePlayersData()", -- [876]
+			"<23:17:33> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [877]
+			"<23:17:34> <DEBUG>		GetML()", -- [878]
+			"01/21/24", -- [879]
+			"<23:17:52> <INFO>		Logged In", -- [880]
+			"<23:17:52> <INFO>[ML]		Init", -- [881]
+			"<23:17:52> <INFO>		RCLootCouncil	TradeUI enabled", -- [882]
+			"<23:17:52> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [883]
+			"<23:17:52> <DEBUG>		ActivateSkin	bfa", -- [884]
+			"<23:17:55> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	true", -- [885]
+			"<23:17:55> <INFO>		UpdatePlayersData()", -- [886]
+			"<23:17:55> <INFO>		Player relog...", -- [887]
+			"<23:17:55> <DEBUG>		GetPlayersGuildRank()", -- [888]
+			"<23:17:55> <DEBUG>		Found Guild Rank: O'New", -- [889]
+			"<23:17:55> <DEBUG>		GetML()", -- [890]
+			"<23:17:55> <DEBUG>		Resetting council as we have a new ML!", -- [891]
+			"<23:17:55> <INFO>		MasterLooter	Littletank-Archimonde	LootMethod	personalloot", -- [892]
+			"<23:17:55> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [893]
+			"<23:17:55> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.5^N6^N263^t^^	PARTY	Kvotheen-Hyjal", -- [894]
+			"<23:17:55> <Comm>		^1^Sxrealm^T^N1^SLittletank-Archimonde^N2^Sreconnect^t^^	PARTY	Kvotheen-Hyjal", -- [895]
+			"<23:18:10> <DEBUG>		Timer MLdb_check passed", -- [896]
+			"<23:18:10> <Comm>		^1^Sxrealm^T^N1^SLittletank-Archimonde^N2^SMLdb_request^t^^	PARTY	Kvotheen-Hyjal", -- [897]
+			"<23:18:10> <Comm>		^1^Sxrealm^T^N1^SLittletank-Archimonde^N2^Scouncil_request^t^^	PARTY	Kvotheen-Hyjal", -- [898]
+			"<23:18:22> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	Darkheart Thicket (Mythic)	193297	0	0", -- [899]
+			"<23:18:22> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [900]
+			"<23:18:22> <INFO>		UpdatePlayersData()", -- [901]
+			"<23:18:24> <DEBUG>		GetML()", -- [902]
+			"<23:22:22> <DEBUG>		Event:	ENCOUNTER_START	1836	Archdruid Glaidalis	8	5", -- [903]
+			"<23:22:22> <INFO>		UpdatePlayersData()", -- [904]
+			"<23:23:57> <DEBUG>		Event:	ENCOUNTER_END	1836	Archdruid Glaidalis	8	5	1", -- [905]
+			"<23:27:07> <DEBUG>		Event:	ENCOUNTER_START	1837	Oakheart	8	5", -- [906]
+			"<23:27:07> <INFO>		UpdatePlayersData()", -- [907]
+			"<23:28:40> <DEBUG>		Event:	ENCOUNTER_END	1837	Oakheart	8	5	1", -- [908]
+			"<23:30:47> <DEBUG>		Event:	ENCOUNTER_START	1838	Dresaron	8	5", -- [909]
+			"<23:30:47> <INFO>		UpdatePlayersData()", -- [910]
+			"<23:32:18> <DEBUG>		Event:	ENCOUNTER_END	1838	Dresaron	8	5	1", -- [911]
+			"<23:34:14> <DEBUG>		Event:	ENCOUNTER_START	1839	Shade of Xavius	8	5", -- [912]
+			"<23:34:14> <INFO>		UpdatePlayersData()", -- [913]
+			"<23:36:54> <DEBUG>		Event:	ENCOUNTER_END	1839	Shade of Xavius	8	5	1", -- [914]
+			"<23:37:04> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [915]
+			"<23:37:06> <DEBUG>		GetML()", -- [916]
+			"<23:37:06> <DEBUG>		Resetting council as we have a new ML!", -- [917]
+			"<23:37:06> <INFO>		MasterLooter	Wohxx-Archimonde	LootMethod	personalloot", -- [918]
+			"<23:37:21> <DEBUG>		Timer MLdb_check passed", -- [919]
+			"<23:37:21> <Comm>		^1^Sxrealm^T^N1^SWohxx-Archimonde^N2^SMLdb_request^t^^	PARTY	Kvotheen-Hyjal", -- [920]
+			"<23:37:21> <Comm>		^1^Sxrealm^T^N1^SWohxx-Archimonde^N2^Scouncil_request^t^^	PARTY	Kvotheen-Hyjal", -- [921]
+			"<23:38:20> <DEBUG>		Event:	LOOT_READY	true", -- [922]
+			"<23:38:20> <DEBUG>		Ignoring	nil	as it's a currency", -- [923]
+			"<23:38:20> <DEBUG>		Event:	LOOT_READY	true", -- [924]
+			"<23:38:20> <DEBUG>		Ignoring	nil	as it's a currency", -- [925]
+			"<23:38:20> <DEBUG>		Event:	LOOT_CLOSED", -- [926]
+			"<23:38:20> <DEBUG>		Event:	LOOT_CLOSED", -- [927]
+			"<23:38:38> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1839	134405	|cffa335ee|Hitem:134405::::::::70:263::33:7:9563:9639:6652:9506:9144:9836:8767:1:28:1279:::::|h[Cloak of Fading Echoes]|h|r	1	Lussious	DEMONHUNTER", -- [928]
+			"<23:38:38> <Comm>		^1^Sl^T^N1^S407487^t^^	PARTY	Lussious-Hyjal", -- [929]
+			"<23:38:38> <Comm>		^1^Sl^T^N1^S407487^t^^	PARTY	Lussious-Hyjal", -- [930]
+			"<23:38:41> <Comm>		^1^Stradable^T^N1^S|cffa335ee|Hitem:134405::::::::70:577::33:7:9563:9639:6652:9506:9144:9836:8767:1:28:1279:::::|h[Cape~`des~`échos~`faiblissants]|h|r^N2^S407487^t^^	PARTY	Lussious-Hyjal", -- [931]
+			"<23:39:14> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	1839	137309	|cffa335ee|Hitem:137309::::::::70:263::16:7:9563:9639:6652:9506:9144:9836:8767:1:28:1279:::::|h[Slipstream Shoulderpads]|h|r	1	Wohxx-Archimonde	PRIEST", -- [932]
+			"<23:39:44> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [933]
+			"<23:39:44> <INFO>		UpdatePlayersData()", -- [934]
+			"<23:39:44> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [935]
+			"<23:39:45> <DEBUG>		GetML()", -- [936]
+			"<23:39:45> <DEBUG>		Resetting council as we have a new ML!", -- [937]
+			"<23:39:45> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [938]
+			"<23:39:46> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Prometheu-Hyjal", -- [939]
+			"<23:39:46> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [940]
+			"<23:39:46> <INFO>		OnMLDBReceived", -- [941]
+			"<23:39:46> <DEBUG>		GetML()", -- [942]
+			"<23:39:48> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [943]
+			"<23:39:48> <DEBUG>		isCouncil	false", -- [944]
+			"<23:39:48> <DEBUG>		GetLootDBStatistics()", -- [945]
+			"<23:39:48> <DEBUG>		GetGuildRankNum()", -- [946]
+			"<23:39:48> <INFO>		RCVotingFrame	enabled", -- [947]
+			"<23:39:55> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [948]
+			"<23:39:57> <DEBUG>		GetML()", -- [949]
+			"<23:39:57> <DEBUG>		Resetting council as we have a new ML!", -- [950]
+			"<23:39:57> <INFO>		MasterLooter	Kvotheen-Hyjal	LootMethod	personalloot", -- [951]
+			"<23:39:57> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [952]
+			"<23:39:57> <DEBUG>[ML]		NewML	Kvotheen-Hyjal", -- [953]
+			"<23:39:57> <DEBUG>[ML]		UpdateMLdb", -- [954]
+			"<23:39:57> <INFO>		OnMLDBReceived", -- [955]
+			"<23:39:58> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Kvotheen-Hyjal", -- [956]
+			"<23:39:58> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [957]
+			"<23:39:58> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.5^N6^N263^t^^	WHISPER	Kvotheen-Hyjal", -- [958]
+			"<23:39:58> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'Peon^N4^N0^N5^N477.25^N6^N577^t^^	WHISPER	Lussious-Hyjal", -- [959]
+			"<23:39:59> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [960]
+			"<23:40:00> <Comm>		^1^Scouncil^T^N1^T^S1390-09230B89^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [961]
+			"<23:40:00> <DEBUG>		isCouncil	true", -- [962]
+			"<23:40:00> <DEBUG>		Timer MLdb_check passed", -- [963]
+			"<23:40:12> <DEBUG>		Timer MLdb_check passed", -- [964]
+			"<23:40:21> <DEBUG>		Event:	GROUP_LEFT	1	Party-1302-1-0000634E62D3", -- [965]
+			"<23:40:21> <DEBUG>		GetML()", -- [966]
+			"<23:40:21> <INFO>		Stop handling loot", -- [967]
+			"<23:40:21> <INFO>[ML]		Disabled", -- [968]
+			"<23:40:21> <Comm>		^1^SStopHandleLoot^T^t^^	WHISPER	Kvotheen-Hyjal", -- [969]
+			"<23:43:20> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [970]
+			"<23:43:21> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [971]
+			"<23:43:36> <DEBUG>		Event:	LOOT_READY	true", -- [972]
+			"<23:43:36> <DEBUG>		Event:	LOOT_READY	true", -- [973]
+			"<23:43:42> <DEBUG>		Event:	LOOT_READY	true", -- [974]
+			"<23:43:43> <DEBUG>		Event:	LOOT_READY	true", -- [975]
+			"<23:48:28> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Suiffeur-Hyjal", -- [976]
+			"<23:48:49> <DEBUG>		Event:	LOOT_READY	true", -- [977]
+			"<23:48:49> <DEBUG>		Event:	LOOT_READY	true", -- [978]
+			"<23:48:49> <DEBUG>		Event:	LOOT_READY	true", -- [979]
+			"<23:49:00> <DEBUG>		Event:	LOOT_READY	true", -- [980]
+			"<23:49:00> <DEBUG>		Event:	LOOT_READY	true", -- [981]
+			"<23:49:18> <DEBUG>		Event:	LOOT_READY	true", -- [982]
+			"<23:49:18> <DEBUG>		Event:	LOOT_READY	true", -- [983]
+			"<23:49:18> <DEBUG>		Event:	LOOT_READY	true", -- [984]
+			"<23:49:36> <DEBUG>		Event:	LOOT_READY	true", -- [985]
+			"<23:49:36> <DEBUG>		Event:	LOOT_READY	true", -- [986]
+			"<23:49:36> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Uglysquid-Hyjal", -- [987]
+			"<23:49:50> <DEBUG>		Event:	LOOT_READY	true", -- [988]
+			"<23:49:51> <DEBUG>		Event:	LOOT_READY	true", -- [989]
+			"<23:50:02> <DEBUG>		Event:	LOOT_READY	true", -- [990]
+			"<23:50:02> <DEBUG>		Event:	LOOT_READY	true", -- [991]
+			"<23:50:07> <DEBUG>		Event:	LOOT_READY	true", -- [992]
+			"<23:50:07> <DEBUG>		Event:	LOOT_READY	true", -- [993]
+			"<23:50:12> <DEBUG>		Event:	LOOT_READY	true", -- [994]
+			"<23:50:13> <DEBUG>		Event:	LOOT_READY	true", -- [995]
+			"<23:50:16> <DEBUG>		Event:	LOOT_READY	true", -- [996]
+			"<23:50:17> <DEBUG>		Event:	LOOT_READY	true", -- [997]
+			"<23:50:23> <DEBUG>		Event:	LOOT_READY	true", -- [998]
+			"<23:50:23> <DEBUG>		Event:	LOOT_READY	true", -- [999]
+			"<23:50:31> <DEBUG>		Event:	LOOT_READY	true", -- [1000]
+			"<23:50:31> <DEBUG>		Event:	LOOT_READY	true", -- [1001]
+			"<23:50:44> <DEBUG>		Event:	LOOT_READY	true", -- [1002]
+			"<23:50:44> <DEBUG>		Event:	LOOT_READY	true", -- [1003]
+			"<23:51:00> <DEBUG>		Event:	LOOT_READY	true", -- [1004]
+			"<23:51:00> <DEBUG>		Event:	LOOT_READY	true", -- [1005]
+			"<23:51:02> <DEBUG>		Event:	LOOT_READY	true", -- [1006]
+			"<23:51:02> <DEBUG>		Event:	LOOT_READY	true", -- [1007]
+			"<23:51:09> <DEBUG>		Event:	LOOT_READY	true", -- [1008]
+			"<23:51:09> <DEBUG>		Event:	LOOT_READY	true", -- [1009]
+			"<23:51:09> <DEBUG>		Event:	LOOT_READY	true", -- [1010]
+			"<23:51:10> <DEBUG>		Event:	LOOT_READY	true", -- [1011]
+			"<23:51:10> <DEBUG>		Event:	LOOT_READY	true", -- [1012]
+			"<23:51:19> <DEBUG>		Event:	LOOT_READY	true", -- [1013]
+			"<23:51:19> <DEBUG>		Event:	LOOT_READY	true", -- [1014]
+			"<23:51:26> <DEBUG>		Event:	LOOT_READY	true", -- [1015]
+			"<23:51:27> <DEBUG>		Event:	LOOT_READY	true", -- [1016]
+			"<23:51:36> <DEBUG>		Event:	LOOT_READY	true", -- [1017]
+			"<23:51:36> <DEBUG>		Event:	LOOT_READY	true", -- [1018]
+			"<23:51:37> <DEBUG>		Event:	LOOT_READY	true", -- [1019]
+			"<23:51:37> <DEBUG>		Event:	LOOT_READY	true", -- [1020]
+			"<23:51:37> <DEBUG>		Event:	LOOT_READY	true", -- [1021]
+			"<23:52:28> <DEBUG>		Event:	LOOT_READY	true", -- [1022]
+			"<23:52:29> <DEBUG>		Event:	LOOT_READY	true", -- [1023]
+			"<23:52:37> <DEBUG>		Event:	LOOT_READY	true", -- [1024]
+			"<23:52:37> <DEBUG>		Event:	LOOT_READY	true", -- [1025]
+			"<23:52:45> <DEBUG>		Event:	LOOT_READY	true", -- [1026]
+			"<23:52:45> <DEBUG>		Event:	LOOT_READY	true", -- [1027]
+			"<23:52:54> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Uglysquid-Hyjal", -- [1028]
+			"<23:53:14> <DEBUG>		Event:	LOOT_READY	true", -- [1029]
+			"<23:53:14> <DEBUG>		Event:	LOOT_READY	true", -- [1030]
+			"<23:53:46> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1031]
+			"<23:53:46> <INFO>		UpdatePlayersData()", -- [1032]
+			"<23:53:47> <DEBUG>		GetML()", -- [1033]
+			"<23:53:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1034]
+			"01/22/24", -- [1035]
+			"<13:20:06> <INFO>		Logged In", -- [1036]
+			"<13:20:06> <INFO>[ML]		Init", -- [1037]
+			"<13:20:06> <INFO>		RCLootCouncil	TradeUI enabled", -- [1038]
+			"<13:20:18> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1039]
+			"<13:20:18> <DEBUG>		ActivateSkin	bfa", -- [1040]
+			"<13:20:20> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1041]
+			"<13:20:20> <INFO>		UpdatePlayersData()", -- [1042]
+			"<13:20:20> <INFO>		Player relog...", -- [1043]
+			"<13:20:20> <DEBUG>		GetPlayersGuildRank()", -- [1044]
+			"<13:20:20> <DEBUG>		GetPlayersGuildRank()", -- [1045]
+			"<13:20:20> <DEBUG>		Found Guild Rank: O'New", -- [1046]
+			"<13:20:22> <DEBUG>		GetML()", -- [1047]
+			"<13:20:22> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1048]
+			"<13:21:49> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Lussious-Hyjal", -- [1049]
+			"<13:28:02> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1050]
+			"<13:28:02> <INFO>		UpdatePlayersData()", -- [1051]
+			"<13:28:04> <DEBUG>		GetML()", -- [1052]
+			"<13:32:00> <DEBUG>		Event:	LOOT_READY	true", -- [1053]
+			"<13:32:00> <DEBUG>		Event:	LOOT_READY	true", -- [1054]
+			"<13:32:00> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	2	Kvotheen	SHAMAN", -- [1055]
+			"<13:32:20> <DEBUG>		Event:	LOOT_READY	true", -- [1056]
+			"<13:32:20> <DEBUG>		Event:	LOOT_READY	true", -- [1057]
+			"<13:32:23> <DEBUG>		Event:	LOOT_READY	true", -- [1058]
+			"<13:32:23> <DEBUG>		Event:	LOOT_READY	true", -- [1059]
+			"<13:32:31> <DEBUG>		Event:	LOOT_READY	true", -- [1060]
+			"<13:32:32> <DEBUG>		Event:	LOOT_READY	true", -- [1061]
+			"<13:32:40> <DEBUG>		Event:	LOOT_READY	true", -- [1062]
+			"<13:32:40> <DEBUG>		Event:	LOOT_READY	true", -- [1063]
+			"<13:32:46> <DEBUG>		Event:	LOOT_READY	true", -- [1064]
+			"<13:32:46> <DEBUG>		Event:	LOOT_READY	true", -- [1065]
+			"<13:33:02> <DEBUG>		Event:	LOOT_READY	true", -- [1066]
+			"<13:33:02> <DEBUG>		Event:	LOOT_READY	true", -- [1067]
+			"<13:33:03> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190328	|cff0070dd|Hitem:190328::::::::70:263:::::::::|h[Rousing Frost]|h|r	1	Kvotheen	SHAMAN", -- [1068]
+			"<13:33:13> <DEBUG>		Event:	LOOT_READY	true", -- [1069]
+			"<13:33:13> <DEBUG>		Event:	LOOT_READY	true", -- [1070]
+			"<13:33:14> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	1	Kvotheen	SHAMAN", -- [1071]
+			"<13:33:27> <DEBUG>		Event:	LOOT_READY	true", -- [1072]
+			"<13:33:27> <DEBUG>		Event:	LOOT_READY	true", -- [1073]
+			"<13:33:32> <DEBUG>		Event:	LOOT_READY	true", -- [1074]
+			"<13:33:32> <DEBUG>		Event:	LOOT_READY	true", -- [1075]
+			"<13:33:39> <DEBUG>		Event:	LOOT_READY	true", -- [1076]
+			"<13:33:39> <DEBUG>		Event:	LOOT_READY	true", -- [1077]
+			"<13:33:44> <DEBUG>		Event:	LOOT_READY	true", -- [1078]
+			"<13:33:45> <DEBUG>		Event:	LOOT_READY	true", -- [1079]
+			"<13:33:53> <DEBUG>		Event:	LOOT_READY	true", -- [1080]
+			"<13:33:54> <DEBUG>		Event:	LOOT_READY	true", -- [1081]
+			"<13:34:02> <DEBUG>		Event:	LOOT_READY	true", -- [1082]
+			"<13:34:02> <DEBUG>		Event:	LOOT_READY	true", -- [1083]
+			"<13:34:03> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	3	Kvotheen	SHAMAN", -- [1084]
+			"<13:34:09> <DEBUG>		Event:	LOOT_READY	true", -- [1085]
+			"<13:34:09> <DEBUG>		Event:	LOOT_READY	true", -- [1086]
+			"<13:34:59> <DEBUG>		Event:	LOOT_READY	true", -- [1087]
+			"<13:35:00> <DEBUG>		Event:	LOOT_READY	true", -- [1088]
+			"<13:35:11> <DEBUG>		Event:	LOOT_READY	true", -- [1089]
+			"<13:35:11> <DEBUG>		Event:	LOOT_READY	true", -- [1090]
+			"<13:35:35> <DEBUG>		Event:	LOOT_READY	true", -- [1091]
+			"<13:35:35> <DEBUG>		Event:	LOOT_READY	true", -- [1092]
+			"<13:36:06> <DEBUG>		Event:	LOOT_READY	true", -- [1093]
+			"<13:36:06> <DEBUG>		Event:	LOOT_READY	true", -- [1094]
+			"<13:36:47> <DEBUG>		Event:	LOOT_READY	true", -- [1095]
+			"<13:36:47> <DEBUG>		Event:	LOOT_READY	true", -- [1096]
+			"<13:37:06> <DEBUG>		Event:	LOOT_READY	true", -- [1097]
+			"<13:37:06> <DEBUG>		Event:	LOOT_READY	true", -- [1098]
+			"01/22/24", -- [1099]
+			"<21:33:39> <INFO>		Logged In", -- [1100]
+			"<21:33:39> <INFO>[ML]		Init", -- [1101]
+			"<21:33:39> <INFO>		RCLootCouncil	TradeUI enabled", -- [1102]
+			"<21:33:50> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1103]
+			"<21:33:50> <DEBUG>		ActivateSkin	bfa", -- [1104]
+			"<21:33:52> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1105]
+			"<21:33:52> <INFO>		UpdatePlayersData()", -- [1106]
+			"<21:33:52> <INFO>		Player relog...", -- [1107]
+			"<21:33:52> <DEBUG>		GetPlayersGuildRank()", -- [1108]
+			"<21:33:52> <DEBUG>		GetPlayersGuildRank()", -- [1109]
+			"<21:33:52> <DEBUG>		Found Guild Rank: O'New", -- [1110]
+			"<21:33:54> <DEBUG>		GetML()", -- [1111]
+			"<21:33:54> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1112]
+			"<21:34:39> <DEBUG>		Event:	LOOT_READY	true", -- [1113]
+			"<21:34:39> <DEBUG>		Event:	LOOT_READY	true", -- [1114]
+			"<21:35:01> <DEBUG>		Event:	LOOT_READY	true", -- [1115]
+			"<21:35:01> <DEBUG>		Event:	LOOT_READY	true", -- [1116]
+			"<21:35:03> <DEBUG>		Event:	LOOT_READY	true", -- [1117]
+			"<21:35:03> <DEBUG>		Event:	LOOT_READY	true", -- [1118]
+			"<21:35:08> <DEBUG>		Event:	LOOT_READY	true", -- [1119]
+			"<21:35:09> <DEBUG>		Event:	LOOT_READY	true", -- [1120]
+			"<21:35:27> <DEBUG>		Event:	LOOT_READY	true", -- [1121]
+			"<21:35:27> <DEBUG>		Event:	LOOT_READY	true", -- [1122]
+			"<21:35:32> <DEBUG>		Event:	LOOT_READY	true", -- [1123]
+			"<21:35:32> <DEBUG>		Event:	LOOT_READY	true", -- [1124]
+			"<21:35:44> <DEBUG>		Event:	LOOT_READY	true", -- [1125]
+			"<21:35:44> <DEBUG>		Event:	LOOT_READY	true", -- [1126]
+			"<21:36:05> <DEBUG>		Event:	LOOT_READY	true", -- [1127]
+			"<21:36:05> <DEBUG>		Event:	LOOT_READY	true", -- [1128]
+			"<21:36:19> <DEBUG>		Event:	LOOT_READY	true", -- [1129]
+			"<21:36:19> <DEBUG>		Event:	LOOT_READY	true", -- [1130]
+			"<21:36:21> <DEBUG>		Event:	LOOT_READY	true", -- [1131]
+			"<21:36:21> <DEBUG>		Event:	LOOT_READY	true", -- [1132]
+			"<21:36:23> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Pâpätte-Hyjal", -- [1133]
+			"<21:37:58> <DEBUG>		Event:	LOOT_READY	true", -- [1134]
+			"<21:37:58> <DEBUG>		Event:	LOOT_READY	true", -- [1135]
+			"<21:37:58> <DEBUG>		Event:	LOOT_READY	true", -- [1136]
+			"<21:39:02> <DEBUG>		Event:	LOOT_READY	true", -- [1137]
+			"<21:39:02> <DEBUG>		Event:	LOOT_READY	true", -- [1138]
+			"<21:39:02> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190328	|cff0070dd|Hitem:190328::::::::70:263:::::::::|h[Rousing Frost]|h|r	1	Kvotheen	SHAMAN", -- [1139]
+			"<21:39:23> <DEBUG>		Event:	LOOT_READY	true", -- [1140]
+			"<21:39:23> <DEBUG>		Event:	LOOT_READY	true", -- [1141]
+			"<21:39:23> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	201443	|cff0070dd|Hitem:201443::::::::70:263::::1:28:2437:::::|h[Primal Revenant's Icewall]|h|r	1	Kvotheen	SHAMAN", -- [1142]
+			"<21:39:25> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	209837	|cff0070dd|Hitem:209837::::::::70:263:::::::::|h[Faint Whispers of Dreaming]|h|r	1	Kvotheen	SHAMAN", -- [1143]
+			"<21:39:46> <DEBUG>		Event:	LOOT_READY	true", -- [1144]
+			"<21:39:46> <DEBUG>		Event:	LOOT_READY	true", -- [1145]
+			"<21:39:55> <DEBUG>		Event:	LOOT_READY	true", -- [1146]
+			"<21:39:56> <DEBUG>		Event:	LOOT_READY	true", -- [1147]
+			"<21:43:16> <DEBUG>		Event:	LOOT_READY	true", -- [1148]
+			"<21:43:16> <DEBUG>		Event:	LOOT_READY	true", -- [1149]
+			"<21:43:17> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190328	|cff0070dd|Hitem:190328::::::::70:263:::::::::|h[Rousing Frost]|h|r	2	Kvotheen	SHAMAN", -- [1150]
+			"<21:44:07> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Suiffeur-Hyjal", -- [1151]
+			"<21:45:44> <DEBUG>		Event:	LOOT_READY	true", -- [1152]
+			"<21:45:45> <DEBUG>		Event:	LOOT_READY	true", -- [1153]
+			"<21:46:00> <DEBUG>		Event:	LOOT_READY	true", -- [1154]
+			"<21:46:00> <DEBUG>		Event:	LOOT_READY	true", -- [1155]
+			"<21:46:02> <DEBUG>		Event:	LOOT_READY	true", -- [1156]
+			"<21:46:03> <DEBUG>		Event:	LOOT_READY	true", -- [1157]
+			"<21:46:25> <DEBUG>		Event:	LOOT_READY	true", -- [1158]
+			"<21:46:25> <DEBUG>		Event:	LOOT_READY	true", -- [1159]
+			"<21:46:37> <DEBUG>		Event:	LOOT_READY	true", -- [1160]
+			"<21:46:37> <DEBUG>		Event:	LOOT_READY	true", -- [1161]
+			"<21:46:41> <DEBUG>		Event:	LOOT_READY	true", -- [1162]
+			"<21:46:41> <DEBUG>		Event:	LOOT_READY	true", -- [1163]
+			"<21:46:41> <DEBUG>		Event:	LOOT_READY	true", -- [1164]
+			"<21:46:55> <DEBUG>		Event:	LOOT_READY	true", -- [1165]
+			"<21:46:55> <DEBUG>		Event:	LOOT_READY	true", -- [1166]
+			"<21:46:57> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Uglysquid-Hyjal", -- [1167]
+			"<21:47:17> <DEBUG>		Event:	LOOT_READY	true", -- [1168]
+			"<21:47:17> <DEBUG>		Event:	LOOT_READY	true", -- [1169]
+			"<21:47:40> <DEBUG>		Event:	LOOT_READY	true", -- [1170]
+			"<21:47:40> <DEBUG>		Event:	LOOT_READY	true", -- [1171]
+			"<21:47:41> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190328	|cff0070dd|Hitem:190328::::::::70:263:::::::::|h[Rousing Frost]|h|r	1	Kvotheen	SHAMAN", -- [1172]
+			"<21:48:23> <DEBUG>		Event:	LOOT_READY	true", -- [1173]
+			"<21:48:24> <DEBUG>		Event:	LOOT_READY	true", -- [1174]
+			"<21:49:32> <DEBUG>		Event:	LOOT_READY	true", -- [1175]
+			"<21:49:32> <DEBUG>		Event:	LOOT_READY	true", -- [1176]
+			"<21:52:28> <DEBUG>		Event:	LOOT_READY	true", -- [1177]
+			"<21:52:28> <DEBUG>		Event:	LOOT_READY	true", -- [1178]
+			"<21:52:30> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	200673	|cffa335ee|Hitem:200673::::::::70:263::25:4:40:1478:5865:8767:1:28:2437:::::|h[Beogoka's Tooth and Claw]|h|r	1	Kvotheen	SHAMAN", -- [1179]
+			"<21:54:39> <DEBUG>		Event:	LOOT_READY	true", -- [1180]
+			"<21:54:40> <DEBUG>		Event:	LOOT_READY	true", -- [1181]
+			"<21:54:50> <DEBUG>		Event:	LOOT_READY	true", -- [1182]
+			"<21:54:50> <DEBUG>		Event:	LOOT_READY	true", -- [1183]
+			"<21:55:10> <DEBUG>		Event:	LOOT_READY	true", -- [1184]
+			"<21:55:10> <DEBUG>		Event:	LOOT_READY	true", -- [1185]
+			"<21:55:37> <DEBUG>		Event:	LOOT_READY	true", -- [1186]
+			"<21:55:37> <DEBUG>		Event:	LOOT_READY	true", -- [1187]
+			"<21:56:07> <DEBUG>		Event:	LOOT_READY	true", -- [1188]
+			"<21:56:07> <DEBUG>		Event:	LOOT_READY	true", -- [1189]
+			"<21:56:41> <DEBUG>		Event:	LOOT_READY	true", -- [1190]
+			"<21:56:41> <DEBUG>		Event:	LOOT_READY	true", -- [1191]
+			"<22:22:53> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1192]
+			"<22:22:53> <INFO>		UpdatePlayersData()", -- [1193]
+			"<22:22:54> <DEBUG>		GetML()", -- [1194]
+			"<22:23:14> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1195]
+			"<22:23:14> <INFO>		UpdatePlayersData()", -- [1196]
+			"<22:23:16> <DEBUG>		GetML()", -- [1197]
+			"<22:23:37> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1198]
+			"<22:23:37> <INFO>		UpdatePlayersData()", -- [1199]
+			"<22:23:38> <DEBUG>		GetML()", -- [1200]
+			"<22:24:58> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1201]
+			"<22:24:58> <INFO>		UpdatePlayersData()", -- [1202]
+			"<22:25:00> <DEBUG>		GetML()", -- [1203]
+			"<22:25:45> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1204]
+			"<22:25:45> <INFO>		UpdatePlayersData()", -- [1205]
+			"<22:25:47> <DEBUG>		GetML()", -- [1206]
+			"<22:26:35> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1207]
+			"<22:26:37> <DEBUG>		GetML()", -- [1208]
+			"<22:26:37> <DEBUG>		Resetting council as we have a new ML!", -- [1209]
+			"<22:26:37> <INFO>		MasterLooter	Kvotheen-Hyjal	LootMethod	personalloot", -- [1210]
+			"<22:26:37> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [1211]
+			"<22:26:37> <DEBUG>[ML]		NewML	Kvotheen-Hyjal", -- [1212]
+			"<22:26:37> <DEBUG>[ML]		UpdateMLdb", -- [1213]
+			"<22:26:37> <INFO>		OnMLDBReceived", -- [1214]
+			"<22:26:37> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Kvotheen-Hyjal", -- [1215]
+			"<22:26:37> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [1216]
+			"<22:26:37> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.5^N6^N263^t^^	WHISPER	Kvotheen-Hyjal", -- [1217]
+			"<22:26:39> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [1218]
+			"<22:26:39> <Comm>		^1^Scouncil^T^N1^T^S1390-09230B89^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [1219]
+			"<22:26:39> <DEBUG>		isCouncil	true", -- [1220]
+			"<22:26:39> <DEBUG>		GetLootDBStatistics()", -- [1221]
+			"<22:26:39> <DEBUG>		GetGuildRankNum()", -- [1222]
+			"<22:26:39> <INFO>		RCVotingFrame	enabled", -- [1223]
+			"<22:26:52> <DEBUG>		Timer MLdb_check passed", -- [1224]
+			"<22:27:34> <DEBUG>		Event:	GROUP_LEFT	1	Party-1390-1-00006350EB56", -- [1225]
+			"<22:27:34> <DEBUG>		GetML()", -- [1226]
+			"<22:27:34> <INFO>		Stop handling loot", -- [1227]
+			"<22:27:34> <INFO>[ML]		Disabled", -- [1228]
+			"<22:27:34> <Comm>		^1^SStopHandleLoot^T^t^^	WHISPER	Kvotheen-Hyjal", -- [1229]
+			"<22:29:37> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1230]
+			"<22:29:38> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1231]
+			"<22:29:39> <DEBUG>		GetML()", -- [1232]
+			"<22:29:39> <Data.Player>		CreatePlayer	Player-1092-0AB927D4", -- [1233]
+			"<22:29:39> <DEBUG>		Resetting council as we have a new ML!", -- [1234]
+			"<22:29:39> <INFO>		MasterLooter	Mætthew-Drak'thul	LootMethod	personalloot", -- [1235]
+			"<22:29:54> <DEBUG>		Timer MLdb_check passed", -- [1236]
+			"<22:30:58> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1237]
+			"<22:31:06> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1238]
+			"<22:31:12> <DEBUG>		Event:	LOOT_READY	true", -- [1239]
+			"<22:31:13> <DEBUG>		Event:	LOOT_READY	true", -- [1240]
+			"<22:31:13> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190322	|cff0070dd|Hitem:190322::::::::70:263:::::::::|h[Rousing Order]|h|r	5	Kvotheen	SHAMAN", -- [1241]
+			"<22:31:45> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1242]
+			"<22:31:54> <DEBUG>		Event:	GROUP_LEFT	1	Party-1092-1-00006A099D85", -- [1243]
+			"<22:31:54> <DEBUG>		GetML()", -- [1244]
+			"<22:32:57> <DEBUG>		Event:	LOOT_READY	true", -- [1245]
+			"<22:32:57> <DEBUG>		Event:	LOOT_READY	true", -- [1246]
+			"<22:33:12> <DEBUG>		Event:	LOOT_READY	true", -- [1247]
+			"<22:33:12> <DEBUG>		Event:	LOOT_READY	true", -- [1248]
+			"<22:33:19> <DEBUG>		Event:	LOOT_READY	true", -- [1249]
+			"<22:33:19> <DEBUG>		Event:	LOOT_READY	true", -- [1250]
+			"<22:33:40> <DEBUG>		Event:	LOOT_READY	true", -- [1251]
+			"<22:33:41> <DEBUG>		Event:	LOOT_READY	true", -- [1252]
+			"<22:33:53> <DEBUG>		Event:	LOOT_READY	true", -- [1253]
+			"<22:33:53> <DEBUG>		Event:	LOOT_READY	true", -- [1254]
+			"<22:34:18> <DEBUG>		Event:	LOOT_READY	true", -- [1255]
+			"<22:34:18> <DEBUG>		Event:	LOOT_READY	true", -- [1256]
+			"<22:35:51> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1257]
+			"<22:35:52> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1258]
+			"<22:35:53> <DEBUG>		GetML()", -- [1259]
+			"<22:35:53> <Data.Player>		CreatePlayer	Player-1396-0880D61D", -- [1260]
+			"<22:35:53> <Data.Player>		CreatePlayer	Player-1302-0A06F0E5", -- [1261]
+			"<22:35:53> <Data.Player>		CreatePlayer	Player-1403-0A9BB59C", -- [1262]
+			"<22:35:53> <DEBUG>		Resetting council as we have a new ML!", -- [1263]
+			"<22:35:53> <INFO>		MasterLooter	Graterman-AzjolNerub	LootMethod	personalloot", -- [1264]
+			"<22:36:08> <DEBUG>		Timer MLdb_check passed", -- [1265]
+			"<22:36:29> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1266]
+			"<22:36:39> <DEBUG>		Event:	LOOT_READY	true", -- [1267]
+			"<22:36:39> <DEBUG>		Event:	LOOT_READY	true", -- [1268]
+			"<22:37:02> <DEBUG>		Event:	LOOT_READY	true", -- [1269]
+			"<22:37:03> <DEBUG>		Event:	LOOT_READY	true", -- [1270]
+			"<22:37:10> <DEBUG>		Event:	LOOT_READY	true", -- [1271]
+			"<22:37:10> <DEBUG>		Event:	LOOT_READY	true", -- [1272]
+			"<22:37:26> <DEBUG>		Event:	LOOT_READY	true", -- [1273]
+			"<22:37:26> <DEBUG>		Event:	LOOT_READY	true", -- [1274]
+			"<22:37:44> <DEBUG>		Event:	LOOT_READY	true", -- [1275]
+			"<22:37:44> <DEBUG>		Event:	LOOT_READY	true", -- [1276]
+			"01/22/24", -- [1277]
+			"<22:37:57> <INFO>		Logged In", -- [1278]
+			"<22:37:57> <INFO>[ML]		Init", -- [1279]
+			"<22:37:57> <INFO>		RCLootCouncil	TradeUI enabled", -- [1280]
+			"<22:37:58> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1281]
+			"<22:37:58> <DEBUG>		ActivateSkin	bfa", -- [1282]
+			"<22:38:00> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	true", -- [1283]
+			"<22:38:00> <INFO>		UpdatePlayersData()", -- [1284]
+			"<22:38:00> <INFO>		Player relog...", -- [1285]
+			"<22:38:01> <DEBUG>		GetPlayersGuildRank()", -- [1286]
+			"<22:38:01> <DEBUG>		Found Guild Rank: O'New", -- [1287]
+			"<22:38:01> <DEBUG>		GetML()", -- [1288]
+			"<22:38:01> <DEBUG>		Resetting council as we have a new ML!", -- [1289]
+			"<22:38:01> <INFO>		MasterLooter	Graterman-AzjolNerub	LootMethod	personalloot", -- [1290]
+			"<22:38:01> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1291]
+			"<22:38:01> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.5^N6^N263^t^^	PARTY	Kvotheen-Hyjal", -- [1292]
+			"<22:38:01> <Comm>		^1^Sxrealm^T^N1^SGraterman-AzjolNerub^N2^Sreconnect^t^^	PARTY	Kvotheen-Hyjal", -- [1293]
+			"<22:38:09> <DEBUG>		Event:	LOOT_READY	true", -- [1294]
+			"<22:38:09> <DEBUG>		Event:	LOOT_READY	true", -- [1295]
+			"<22:38:16> <DEBUG>		Timer MLdb_check passed", -- [1296]
+			"<22:38:16> <Comm>		^1^Sxrealm^T^N1^SGraterman-AzjolNerub^N2^SMLdb_request^t^^	PARTY	Kvotheen-Hyjal", -- [1297]
+			"<22:38:16> <Comm>		^1^Sxrealm^T^N1^SGraterman-AzjolNerub^N2^Scouncil_request^t^^	PARTY	Kvotheen-Hyjal", -- [1298]
+			"<22:38:25> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1299]
+			"<22:38:25> <INFO>		UpdatePlayersData()", -- [1300]
+			"<22:38:26> <DEBUG>		GetML()", -- [1301]
+			"<22:38:26> <Data.Player>		CreatePlayer	Player-1313-0CBF35FF", -- [1302]
+			"<22:39:53> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	Dawn of the Infinite (Mythic)	109206	0	0", -- [1303]
+			"<22:39:54> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1304]
+			"<22:39:54> <INFO>		UpdatePlayersData()", -- [1305]
+			"<22:39:56> <DEBUG>		GetML()", -- [1306]
+			"<22:46:28> <DEBUG>		Event:	ENCOUNTER_START	2670	Tyr, the Infinite Keeper	8	5", -- [1307]
+			"<22:46:28> <INFO>		UpdatePlayersData()", -- [1308]
+			"<22:48:51> <DEBUG>		Event:	ENCOUNTER_END	2670	Tyr, the Infinite Keeper	8	5	1", -- [1309]
+			"<22:57:39> <DEBUG>		Event:	ENCOUNTER_START	2672	Time-Lost Battlefield	8	5", -- [1310]
+			"<22:57:39> <INFO>		UpdatePlayersData()", -- [1311]
+			"<22:59:59> <DEBUG>		Event:	ENCOUNTER_END	2672	Time-Lost Battlefield	8	5	1", -- [1312]
+			"<23:02:47> <DEBUG>		Event:	ENCOUNTER_START	2671	Morchie	8	5", -- [1313]
+			"<23:02:47> <INFO>		UpdatePlayersData()", -- [1314]
+			"<23:06:05> <DEBUG>		Event:	ENCOUNTER_END	2671	Morchie	8	5	1", -- [1315]
+			"<23:10:38> <DEBUG>		Event:	ENCOUNTER_START	2673	Chrono-Lord Deios	8	5", -- [1316]
+			"<23:10:38> <INFO>		UpdatePlayersData()", -- [1317]
+			"<23:14:25> <DEBUG>		Event:	ENCOUNTER_END	2673	Chrono-Lord Deios	8	5	1", -- [1318]
+			"<23:15:03> <DEBUG>		Event:	LOOT_READY	true", -- [1319]
+			"<23:15:03> <DEBUG>		Ignoring	nil	as it's a currency", -- [1320]
+			"<23:15:03> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	4	1	GameObject-0-4247-2579-11941-407496-00002EE8C2	1", -- [1321]
+			"<23:15:03> <DEBUG>		Event:	LOOT_READY	true", -- [1322]
+			"<23:15:03> <DEBUG>		Ignoring	nil	as it's a currency", -- [1323]
+			"<23:15:03> <DEBUG>		Adding to self.lootSlotInfo	2	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	4	1	GameObject-0-4247-2579-11941-407496-00002EE8C2	1", -- [1324]
+			"<23:15:04> <DEBUG>		OnLootSlotCleared()	2	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	4", -- [1325]
+			"<23:15:04> <DEBUG>		Event:	LOOT_CLOSED", -- [1326]
+			"<23:15:04> <DEBUG>		Event:	LOOT_CLOSED", -- [1327]
+			"<23:15:04> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2673	207878	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	1	Kvotheen	SHAMAN", -- [1328]
+			"<23:15:04> <Comm>		^1^Sl^T^N1^S407496^t^^	PARTY	Kvotheen-Hyjal", -- [1329]
+			"<23:15:04> <Comm>		^1^Sl^T^N1^S407496^t^^	PARTY	Kvotheen-Hyjal", -- [1330]
+			"<23:15:06> <DEBUG>		Storage:New	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	temp", -- [1331]
+			"<23:15:06> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::||h[Grunt's Eternal Treads]||h||r	5", -- [1332]
+			"<23:15:06> <DEBUG>		Found item at	0	1", -- [1333]
+			"<23:15:07> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2673	208113	|cffa335ee|Hitem:208113::::::::70:263::16::1:28:1279:::::|h[Quantum Greataxe]|h|r	1	Zirrax-Wildhammer	SHAMAN", -- [1334]
+			"<23:15:07> <DEBUG>		Storage: searching for item:	||cffa335ee||Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::||h[Grunt's Eternal Treads]||h||r	5", -- [1335]
+			"<23:15:07> <DEBUG>		Found item at	0	1", -- [1336]
+			"<23:15:07> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2673	208103	|cff0070dd|Hitem:208103::::::::70:263::16::1:28:1279:::::|h[Highland Drake: Visage of the Infinite]|h|r	1	Zirrax-Wildhammer	SHAMAN", -- [1337]
+			"<23:15:07> <Comm>		^1^Stradable^T^N1^S|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's~`Eternal~`Treads]|h|r^N2^S407496^t^^	PARTY	Kvotheen-Hyjal", -- [1338]
+			"<23:15:11> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2673	208396	|cffa335ee|Hitem:208396::::::::70:263:::::::::|h[Splintered Spark of Dreams]|h|r	1	Graterman-AzjolNerub	MAGE", -- [1339]
+			"<23:15:14> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2673	208000	|cffa335ee|Hitem:208000::::::::70:263::16:6:9562:9639:6652:9147:1582:8767:1:28:1279:::::|h[Cudgel of Bygone Victories]|h|r	1	Krombopulose-Draenor	MONK", -- [1340]
+			"<23:15:23> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1341]
+			"<23:15:25> <DEBUG>		GetML()", -- [1342]
+			"<23:15:25> <DEBUG>		Resetting council as we have a new ML!", -- [1343]
+			"<23:15:25> <INFO>		MasterLooter	Kvotheen-Hyjal	LootMethod	personalloot", -- [1344]
+			"<23:15:25> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [1345]
+			"<23:15:25> <DEBUG>[ML]		NewML	Kvotheen-Hyjal", -- [1346]
+			"<23:15:25> <DEBUG>[ML]		UpdateMLdb", -- [1347]
+			"<23:15:25> <INFO>		OnMLDBReceived", -- [1348]
+			"<23:15:25> <Comm>		^1^SplayerInfoRequest^T^t^^	PARTY	Kvotheen-Hyjal", -- [1349]
+			"<23:15:25> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [1350]
+			"<23:15:25> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SO'New^N4^N0^N5^N466.5^N6^N263^t^^	WHISPER	Kvotheen-Hyjal", -- [1351]
+			"<23:15:27> <DEBUG>[ML]		UpdateGroupCouncil	Kvotheen-Hyjal", -- [1352]
+			"<23:15:27> <Comm>		^1^Scouncil^T^N1^T^S1390-09230B89^B^t^t^^	PARTY	Kvotheen-Hyjal", -- [1353]
+			"<23:15:27> <DEBUG>		isCouncil	true", -- [1354]
+			"<23:15:27> <DEBUG>		GetLootDBStatistics()", -- [1355]
+			"<23:15:27> <DEBUG>		GetGuildRankNum()", -- [1356]
+			"<23:15:27> <INFO>		RCVotingFrame	enabled", -- [1357]
+			"<23:15:40> <DEBUG>		Timer MLdb_check passed", -- [1358]
+			"<23:15:51> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1359]
+			"<23:15:58> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1360]
+			"<23:16:01> <DEBUG>		Event:	GROUP_LEFT	1	Party-1396-1-00002FE73350", -- [1361]
+			"<23:16:01> <DEBUG>		GetML()", -- [1362]
+			"<23:16:01> <INFO>		Stop handling loot", -- [1363]
+			"<23:16:01> <INFO>[ML]		Disabled", -- [1364]
+			"<23:16:01> <Comm>		^1^SStopHandleLoot^T^t^^	WHISPER	Kvotheen-Hyjal", -- [1365]
+			"<23:16:16> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1366]
+			"<23:16:16> <INFO>		UpdatePlayersData()", -- [1367]
+			"<23:16:17> <DEBUG>		GetML()", -- [1368]
+			"<23:16:18> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1369]
+			"<23:25:02> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1370]
+			"<23:25:08> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1371]
+			"<23:32:50> <DEBUG>		Event:	LOOT_READY	true", -- [1372]
+			"<23:32:50> <DEBUG>		Event:	LOOT_READY	true", -- [1373]
+			"<23:36:44> <DEBUG>		Event:	LOOT_READY	true", -- [1374]
+			"<23:36:44> <DEBUG>		Event:	LOOT_READY	true", -- [1375]
+			"<23:36:45> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	3	Kvotheen	SHAMAN", -- [1376]
+			"<23:36:45> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	200506	|cff0070dd|Hitem:200506::::::::70:263:::::::::|h[Roused Seedling]|h|r	1	Kvotheen	SHAMAN", -- [1377]
+			"<23:38:19> <DEBUG>		Event:	LOOT_READY	true", -- [1378]
+			"<23:38:19> <DEBUG>		Event:	LOOT_READY	true", -- [1379]
+			"<23:38:37> <DEBUG>		Event:	LOOT_READY	true", -- [1380]
+			"<23:38:37> <DEBUG>		Event:	LOOT_READY	true", -- [1381]
+			"<23:38:44> <DEBUG>		Event:	LOOT_READY	true", -- [1382]
+			"<23:38:45> <DEBUG>		Event:	LOOT_READY	true", -- [1383]
+			"<23:39:25> <DEBUG>		Event:	LOOT_READY	true", -- [1384]
+			"<23:39:25> <DEBUG>		Event:	LOOT_READY	true", -- [1385]
+			"<23:43:00> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1386]
+			"<23:43:00> <INFO>		UpdatePlayersData()", -- [1387]
+			"<23:43:01> <DEBUG>		GetML()", -- [1388]
+			"<23:43:02> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1389]
+			"<23:43:58> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1390]
+			"<23:44:05> <DEBUG>		GetML()", -- [1391]
+			"<23:44:05> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1392]
+			"<23:44:05> <INFO>		UpdatePlayersData()", -- [1393]
+			"<23:44:07> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1394]
+			"<23:44:07> <DEBUG>		GetML()", -- [1395]
+			"<23:44:46> <DEBUG>		Event:	LOOT_READY	true", -- [1396]
+			"<23:44:46> <DEBUG>		Ignoring	nil	as it's a currency", -- [1397]
+			"<23:44:46> <DEBUG>		Event:	LOOT_READY	true", -- [1398]
+			"<23:44:46> <DEBUG>		Ignoring	nil	as it's a currency", -- [1399]
+			"<23:44:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1400]
+			"<23:44:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1401]
+			"<23:45:45> <DEBUG>		Event:	LOOT_READY	true", -- [1402]
+			"<23:45:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [1403]
+			"<23:45:45> <DEBUG>		Event:	LOOT_READY	true", -- [1404]
+			"<23:45:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [1405]
+			"<23:45:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1406]
+			"<23:45:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1407]
+			"<23:45:50> <DEBUG>		Event:	ENCOUNTER_START	2637	Granyth	205	5", -- [1408]
+			"<23:45:50> <INFO>		UpdatePlayersData()", -- [1409]
+			"<23:46:07> <DEBUG>		Event:	ENCOUNTER_END	2637	Granyth	205	5	1", -- [1410]
+			"<23:46:08> <DEBUG>		Event:	LOOT_READY	true", -- [1411]
+			"<23:46:08> <DEBUG>		Ignoring	nil	as it's a currency", -- [1412]
+			"<23:46:08> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192717::::::::70:263:::::::::|h[Flickering Primeval Element]|h|r	0	1	Creature-0-3151-2516-7699-186616-00002EEFAC	1", -- [1413]
+			"<23:46:08> <DEBUG>		Event:	LOOT_READY	true", -- [1414]
+			"<23:46:08> <DEBUG>		Ignoring	nil	as it's a currency", -- [1415]
+			"<23:46:08> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192717::::::::70:263:::::::::|h[Flickering Primeval Element]|h|r	0	1	Creature-0-3151-2516-7699-186616-00002EEFAC	1", -- [1416]
+			"<23:46:09> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:192717::::::::70:263:::::::::|h[Flickering Primeval Element]|h|r	0", -- [1417]
+			"<23:46:09> <DEBUG>		Event:	LOOT_CLOSED", -- [1418]
+			"<23:46:09> <DEBUG>		Event:	LOOT_CLOSED", -- [1419]
+			"<23:46:09> <Comm>		^1^Sl^T^N1^S186616^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1420]
+			"<23:46:09> <Comm>		^1^Sl^T^N1^S186616^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1421]
+			"<23:48:44> <DEBUG>		Event:	LOOT_READY	true", -- [1422]
+			"<23:48:44> <DEBUG>		Adding to self.lootSlotInfo	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	1	Creature-0-3151-2516-7699-194896-00002EEFAC	1", -- [1423]
+			"<23:48:44> <DEBUG>		Event:	LOOT_READY	true", -- [1424]
+			"<23:48:44> <DEBUG>		Adding to self.lootSlotInfo	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	2	Creature-0-3151-2516-7699-194896-0000AEEFAC	1	Creature-0-3151-2516-7699-194896-00002EEFAC	1", -- [1425]
+			"<23:48:44> <DEBUG>		Event:	LOOT_READY	true", -- [1426]
+			"<23:48:44> <DEBUG>		Adding to self.lootSlotInfo	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	2	Creature-0-3151-2516-7699-194896-0000AEEFAC	1	Creature-0-3151-2516-7699-194896-00002EEFAC	1", -- [1427]
+			"<23:48:45> <DEBUG>		OnLootSlotCleared()	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0", -- [1428]
+			"<23:48:45> <DEBUG>		Event:	LOOT_CLOSED", -- [1429]
+			"<23:48:45> <DEBUG>		Event:	LOOT_CLOSED", -- [1430]
+			"<23:48:45> <Comm>		^1^Sl^T^N1^S194896^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1431]
+			"<23:48:45> <Comm>		^1^Sl^T^N1^S194896^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1432]
+			"<23:49:05> <DEBUG>		Event:	ENCOUNTER_START	2636	The Raging Tempest	205	5", -- [1433]
+			"<23:49:05> <INFO>		UpdatePlayersData()", -- [1434]
+			"<23:49:28> <DEBUG>		Event:	ENCOUNTER_END	2636	The Raging Tempest	205	5	1", -- [1435]
+			"<23:49:40> <DEBUG>		Event:	LOOT_READY	true", -- [1436]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	5	Creature-0-3151-2516-7699-194896-00042EEFAC	1	Creature-0-3151-2516-7699-194896-0004AEEFAC	1	Creature-0-3151-2516-7699-195579-0000AEEFAC	1	Creature-0-3151-2516-7699-195579-0001AEEFAC	1	Creature-0-3151-2516-7699-186615-00002EEFAC	1", -- [1437]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	2	|cffffffff|Hitem:202071::::::::70:263:::::::::|h[Elemental Mote]|h|r	1	2	Creature-0-3151-2516-7699-195579-00012EEFAC	1	Creature-0-3151-2516-7699-195579-0001AEEFAC	1", -- [1438]
+			"<23:49:40> <DEBUG>		Ignoring	nil	as it's a currency", -- [1439]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:192644::::::::70:263:::::::::|h[Aeriform Speck]|h|r	0	2	Creature-0-3151-2516-7699-195579-00002EEFAC	1	Creature-0-3151-2516-7699-195579-00012EEFAC	1", -- [1440]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	6	|cff9d9d9d|Hitem:192620::::::::70:263:::::::::|h[Large Tail Spikes]|h|r	0	1	Vehicle-0-3151-2516-7699-195696-00012EEFAC	1", -- [1441]
+			"<23:49:40> <DEBUG>		Event:	LOOT_READY	true", -- [1442]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0	5	Creature-0-3151-2516-7699-194896-00042EEFAC	1	Creature-0-3151-2516-7699-194896-0004AEEFAC	1	Creature-0-3151-2516-7699-195579-0000AEEFAC	1	Creature-0-3151-2516-7699-195579-0001AEEFAC	1	Creature-0-3151-2516-7699-186615-00002EEFAC	1", -- [1443]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	2	|cffffffff|Hitem:202071::::::::70:263:::::::::|h[Elemental Mote]|h|r	1	2	Creature-0-3151-2516-7699-195579-00012EEFAC	1	Creature-0-3151-2516-7699-195579-0001AEEFAC	1", -- [1444]
+			"<23:49:40> <DEBUG>		Ignoring	nil	as it's a currency", -- [1445]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:192644::::::::70:263:::::::::|h[Aeriform Speck]|h|r	0	2	Creature-0-3151-2516-7699-195579-00002EEFAC	1	Creature-0-3151-2516-7699-195579-00012EEFAC	1", -- [1446]
+			"<23:49:40> <DEBUG>		Adding to self.lootSlotInfo	6	|cff9d9d9d|Hitem:192620::::::::70:263:::::::::|h[Large Tail Spikes]|h|r	0	1	Vehicle-0-3151-2516-7699-195696-00012EEFAC	1", -- [1447]
+			"<23:49:41> <DEBUG>		OnLootSlotCleared()	1	|cff9d9d9d|Hitem:192626::::::::70:263:::::::::|h[Mound of Dust]|h|r	0", -- [1448]
+			"<23:49:41> <DEBUG>		OnLootSlotCleared()	2	|cffffffff|Hitem:202071::::::::70:263:::::::::|h[Elemental Mote]|h|r	1", -- [1449]
+			"<23:49:41> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2636	190326	|cff0070dd|Hitem:190326::::::::70:263:::::::::|h[Rousing Air]|h|r	1	Kvotheen	SHAMAN", -- [1450]
+			"<23:49:41> <DEBUG>		OnLootSlotCleared()	5	|cff9d9d9d|Hitem:192644::::::::70:263:::::::::|h[Aeriform Speck]|h|r	0", -- [1451]
+			"<23:49:42> <DEBUG>		OnLootSlotCleared()	6	|cff9d9d9d|Hitem:192620::::::::70:263:::::::::|h[Large Tail Spikes]|h|r	0", -- [1452]
+			"<23:49:42> <DEBUG>		Event:	LOOT_CLOSED", -- [1453]
+			"<23:49:42> <DEBUG>		Event:	LOOT_CLOSED", -- [1454]
+			"<23:49:42> <Comm>		^1^Sl^T^N1^S195696^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1455]
+			"<23:49:42> <Comm>		^1^Sl^T^N1^S195696^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1456]
+			"<23:50:28> <DEBUG>		Event:	LOOT_READY	true", -- [1457]
+			"<23:50:28> <DEBUG>		Ignoring	nil	as it's a currency", -- [1458]
+			"<23:50:28> <DEBUG>		Adding to self.lootSlotInfo	4	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	4	Creature-0-3151-2516-7699-195876-0000AEEFAD	1	Creature-0-3151-2516-7699-195876-00012EEFAD	1	Creature-0-3151-2516-7699-195876-00032EEFAC	1	Creature-0-3151-2516-7699-195876-00002EEFAD	1", -- [1459]
+			"<23:50:28> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0	1	Creature-0-3151-2516-7699-195876-0002AEEFAC	1", -- [1460]
+			"<23:50:28> <DEBUG>		Event:	LOOT_READY	true", -- [1461]
+			"<23:50:28> <DEBUG>		Ignoring	nil	as it's a currency", -- [1462]
+			"<23:50:28> <DEBUG>		Adding to self.lootSlotInfo	4	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	4	Creature-0-3151-2516-7699-195876-0000AEEFAD	1	Creature-0-3151-2516-7699-195876-00012EEFAD	1	Creature-0-3151-2516-7699-195876-00032EEFAC	1	Creature-0-3151-2516-7699-195876-00002EEFAD	1", -- [1463]
+			"<23:50:28> <DEBUG>		Adding to self.lootSlotInfo	5	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0	1	Creature-0-3151-2516-7699-195876-0002AEEFAC	1", -- [1464]
+			"<23:50:29> <DEBUG>		OnLootSlotCleared()	4	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0", -- [1465]
+			"<23:50:29> <DEBUG>		Event:	LOOT_CLOSED", -- [1466]
+			"<23:50:29> <DEBUG>		OnLootSlotCleared()	5	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0", -- [1467]
+			"<23:50:29> <DEBUG>		Event:	LOOT_CLOSED", -- [1468]
+			"<23:50:29> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1469]
+			"<23:50:45> <DEBUG>		Event:	LOOT_READY	true", -- [1470]
+			"<23:50:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [1471]
+			"<23:50:45> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0	1	Creature-0-3151-2516-7699-195876-0001AEEFAC	1", -- [1472]
+			"<23:50:45> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	1	Creature-0-3151-2516-7699-195876-0001AEEFAD	1", -- [1473]
+			"<23:50:45> <DEBUG>		Event:	LOOT_READY	true", -- [1474]
+			"<23:50:45> <DEBUG>		Ignoring	nil	as it's a currency", -- [1475]
+			"<23:50:45> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0	1	Creature-0-3151-2516-7699-195876-0001AEEFAC	1", -- [1476]
+			"<23:50:45> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0	1	Creature-0-3151-2516-7699-195876-0001AEEFAD	1", -- [1477]
+			"<23:50:45> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:192669::::::::70:263:::::::::|h[Sizeable Feather]|h|r	0", -- [1478]
+			"<23:50:46> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:192621::::::::70:263:::::::::|h[Long-Toed Talon]|h|r	0", -- [1479]
+			"<23:50:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1480]
+			"<23:50:46> <DEBUG>		Event:	LOOT_CLOSED", -- [1481]
+			"<23:50:46> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1482]
+			"<23:50:46> <Comm>		^1^Sl^T^N1^S195876^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1483]
+			"<23:51:34> <DEBUG>		Event:	LOOT_READY	true", -- [1484]
+			"<23:51:34> <DEBUG>		Ignoring	nil	as it's a currency", -- [1485]
+			"<23:51:35> <DEBUG>		Event:	LOOT_READY	true", -- [1486]
+			"<23:51:35> <DEBUG>		Ignoring	nil	as it's a currency", -- [1487]
+			"<23:51:35> <DEBUG>		Event:	LOOT_CLOSED", -- [1488]
+			"<23:51:35> <DEBUG>		Event:	LOOT_CLOSED", -- [1489]
+			"<23:52:08> <DEBUG>		Event:	ENCOUNTER_START	2581	Teera and Maruuk	205	5", -- [1490]
+			"<23:52:08> <INFO>		UpdatePlayersData()", -- [1491]
+			"<23:52:44> <DEBUG>		Event:	ENCOUNTER_END	2581	Teera and Maruuk	205	5	1", -- [1492]
+			"<23:52:47> <DEBUG>		Event:	LOOT_READY	true", -- [1493]
+			"<23:52:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1494]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0	1	Creature-0-3151-2516-7699-195855-0000AEEFAC	1", -- [1495]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0	1	Creature-0-3151-2516-7699-195875-0002AEEFAC	1", -- [1496]
+			"<23:52:47> <DEBUG>		Event:	LOOT_READY	true", -- [1497]
+			"<23:52:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1498]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0	1	Creature-0-3151-2516-7699-195855-0000AEEFAC	1", -- [1499]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0	2	Creature-0-3151-2516-7699-195875-00022EEFAC	1	Creature-0-3151-2516-7699-195875-0002AEEFAC	1", -- [1500]
+			"<23:52:47> <DEBUG>		Event:	LOOT_READY	true", -- [1501]
+			"<23:52:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1502]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0	1	Creature-0-3151-2516-7699-195855-0000AEEFAC	1", -- [1503]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0	3	Creature-0-3151-2516-7699-195875-0001AEEFAC	1	Creature-0-3151-2516-7699-195875-00022EEFAC	1	Creature-0-3151-2516-7699-195875-0002AEEFAC	1", -- [1504]
+			"<23:52:47> <DEBUG>		Event:	LOOT_READY	true", -- [1505]
+			"<23:52:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1506]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0	1	Creature-0-3151-2516-7699-195855-0000AEEFAC	1", -- [1507]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0	4	Creature-0-3151-2516-7699-195875-00012EEFAC	1	Creature-0-3151-2516-7699-195875-0001AEEFAC	1	Creature-0-3151-2516-7699-195875-00022EEFAC	1	Creature-0-3151-2516-7699-195875-0002AEEFAC	1", -- [1508]
+			"<23:52:47> <DEBUG>		Event:	LOOT_READY	true", -- [1509]
+			"<23:52:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1510]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0	1	Creature-0-3151-2516-7699-195855-0000AEEFAC	1", -- [1511]
+			"<23:52:47> <DEBUG>		Adding to self.lootSlotInfo	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0	4	Creature-0-3151-2516-7699-195875-00012EEFAC	1	Creature-0-3151-2516-7699-195875-0001AEEFAC	1	Creature-0-3151-2516-7699-195875-00022EEFAC	1	Creature-0-3151-2516-7699-195875-0002AEEFAC	1", -- [1512]
+			"<23:52:48> <DEBUG>		Event:	LOOT_CLOSED", -- [1513]
+			"<23:52:48> <DEBUG>		OnLootSlotCleared()	2	|cff9d9d9d|Hitem:188711::::::::70:263::1:1:7966:1:28:2587:::::|h[Rotten Leather Bracers]|h|r	0", -- [1514]
+			"<23:52:48> <DEBUG>		Event:	LOOT_CLOSED", -- [1515]
+			"<23:52:48> <DEBUG>		OnLootSlotCleared()	3	|cff9d9d9d|Hitem:192617::::::::70:263:::::::::|h[Hound Paw]|h|r	0", -- [1516]
+			"<23:52:48> <DEBUG>		Event:	LOOT_CLOSED", -- [1517]
+			"<23:52:48> <Comm>		^1^Sl^T^N1^S195875^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1518]
+			"<23:53:27> <DEBUG>		Event:	LOOT_READY	true", -- [1519]
+			"<23:53:27> <DEBUG>		Ignoring	nil	as it's a currency", -- [1520]
+			"<23:53:27> <DEBUG>		Adding to self.lootSlotInfo	2	|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel Ancestry Beads]|h|r	3	1	GameObject-0-3151-2516-7699-385357-00002EF1BC	1", -- [1521]
+			"<23:53:27> <DEBUG>		Event:	LOOT_READY	true", -- [1522]
+			"<23:53:27> <DEBUG>		Ignoring	nil	as it's a currency", -- [1523]
+			"<23:53:27> <DEBUG>		Adding to self.lootSlotInfo	2	|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel Ancestry Beads]|h|r	3	1	GameObject-0-3151-2516-7699-385357-00002EF1BC	1", -- [1524]
+			"<23:53:28> <DEBUG>		OnLootSlotCleared()	2	|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel Ancestry Beads]|h|r	3", -- [1525]
+			"<23:53:28> <DEBUG>		Event:	LOOT_CLOSED", -- [1526]
+			"<23:53:28> <DEBUG>		Event:	LOOT_CLOSED", -- [1527]
+			"<23:53:28> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2581	193676	|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel Ancestry Beads]|h|r	1	Kvotheen	SHAMAN", -- [1528]
+			"<23:53:28> <Comm>		^1^Sl^T^N1^S385357^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1529]
+			"<23:53:28> <Comm>		^1^Sl^T^N1^S385357^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1530]
+			"<23:53:30> <DEBUG>		Storage:New	|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel Ancestry Beads]|h|r	temp", -- [1531]
+			"<23:53:30> <DEBUG>		Storage: searching for item:	||cff0070dd||Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::||h[Ukhel Ancestry Beads]||h||r	5", -- [1532]
+			"<23:53:30> <DEBUG>		Found item at	0	10", -- [1533]
+			"<23:53:30> <DEBUG>		Found:	0	10	0", -- [1534]
+			"<23:53:31> <DEBUG>		Storage: searching for item:	||cff0070dd||Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::||h[Ukhel Ancestry Beads]||h||r	5", -- [1535]
+			"<23:53:31> <DEBUG>		Found item at	0	10", -- [1536]
+			"<23:53:31> <DEBUG>		Found:	0	10	0", -- [1537]
+			"<23:53:31> <Comm>		^1^Sn_t^T^N1^S|cff0070dd|Hitem:193676::::::::70:263::1:7:9546:7974:41:8784:10245:1643:8766:1:28:2155:::::|h[Ukhel~`Ancestry~`Beads]|h|r^N2^S385357^t^^	INSTANCE_CHAT	Kvotheen-Hyjal", -- [1538]
+			"<23:54:32> <DEBUG>		Event:	LOOT_READY	true", -- [1539]
+			"<23:54:32> <DEBUG>		Ignoring	nil	as it's a currency", -- [1540]
+			"<23:54:32> <DEBUG>		Event:	LOOT_READY	true", -- [1541]
+			"<23:54:32> <DEBUG>		Ignoring	nil	as it's a currency", -- [1542]
+			"<23:54:33> <DEBUG>		Event:	LOOT_CLOSED", -- [1543]
+			"<23:54:33> <DEBUG>		Event:	LOOT_CLOSED", -- [1544]
+			"<23:55:03> <DEBUG>		Event:	ENCOUNTER_START	2580	Balakar Khan	205	5", -- [1545]
+			"<23:55:03> <INFO>		UpdatePlayersData()", -- [1546]
+			"<23:55:35> <DEBUG>		Event:	ENCOUNTER_END	2580	Balakar Khan	205	5	1", -- [1547]
+			"<23:55:36> <DEBUG>		Event:	LOOT_READY	true", -- [1548]
+			"<23:55:36> <DEBUG>		Ignoring	nil	as it's a currency", -- [1549]
+			"<23:55:36> <DEBUG>		Ignoring	|cff0070dd|Hcurrency:2245:15|h[Flightstones]|h|r	as it's a currency", -- [1550]
+			"<23:55:36> <DEBUG>		Event:	LOOT_READY	true", -- [1551]
+			"<23:55:36> <DEBUG>		Ignoring	nil	as it's a currency", -- [1552]
+			"<23:55:36> <DEBUG>		Ignoring	|cff0070dd|Hcurrency:2245:15|h[Flightstones]|h|r	as it's a currency", -- [1553]
+			"<23:55:37> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	2580	197635	|cff0070dd|Hitem:197635::::::::70:263::1::1:28:2587:::::|h[Windborne Velocidrake: Reaver Pattern]|h|r	1	Kvotheen	SHAMAN", -- [1554]
+			"<23:55:37> <DEBUG>		Event:	LOOT_CLOSED", -- [1555]
+			"<23:55:37> <DEBUG>		Event:	LOOT_CLOSED", -- [1556]
+			"<23:55:47> <DEBUG>		Event:	LOOT_READY	true", -- [1557]
+			"<23:55:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1558]
+			"<23:55:47> <DEBUG>		Event:	LOOT_READY	true", -- [1559]
+			"<23:55:47> <DEBUG>		Ignoring	nil	as it's a currency", -- [1560]
+			"<23:55:48> <DEBUG>		Event:	LOOT_CLOSED", -- [1561]
+			"<23:55:48> <DEBUG>		Event:	LOOT_CLOSED", -- [1562]
+			"<23:56:04> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1563]
+			"<23:56:04> <INFO>		UpdatePlayersData()", -- [1564]
+			"<23:56:05> <DEBUG>		GetML()", -- [1565]
+			"<23:56:06> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1566]
+			"<23:56:06> <DEBUG>		Event:	GROUP_LEFT	2	Party-1461-2-00006A09E31E", -- [1567]
+			"<23:56:06> <DEBUG>		GetML()", -- [1568]
+			"<23:56:25> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1569]
+			"<23:56:36> <DEBUG>		Event:	LOOT_READY	true", -- [1570]
+			"<23:56:36> <DEBUG>		Event:	LOOT_READY	true", -- [1571]
+			"<23:57:00> <DEBUG>		Event:	LOOT_READY	true", -- [1572]
+			"<23:57:01> <DEBUG>		Event:	LOOT_READY	true", -- [1573]
+			"<23:57:11> <DEBUG>		Event:	LOOT_READY	true", -- [1574]
+			"<23:57:11> <DEBUG>		Event:	LOOT_READY	true", -- [1575]
+			"<23:57:28> <DEBUG>		Event:	LOOT_READY	true", -- [1576]
+			"<23:57:28> <DEBUG>		Event:	LOOT_READY	true", -- [1577]
+			"<23:57:29> <DEBUG>		Event:	LOOT_READY	true", -- [1578]
+			"<23:57:30> <DEBUG>		Event:	LOOT_READY	true", -- [1579]
+			"<23:57:48> <DEBUG>		Event:	LOOT_READY	true", -- [1580]
+			"<23:57:48> <DEBUG>		Event:	LOOT_READY	true", -- [1581]
+			"<23:58:06> <DEBUG>		Event:	LOOT_READY	true", -- [1582]
+			"<23:58:06> <DEBUG>		Event:	LOOT_READY	true", -- [1583]
+			"<23:58:26> <DEBUG>		Event:	LOOT_READY	true", -- [1584]
+			"<23:58:26> <DEBUG>		Event:	LOOT_READY	true", -- [1585]
+			"<23:58:35> <DEBUG>		Event:	LOOT_READY	true", -- [1586]
+			"<23:58:36> <DEBUG>		Event:	LOOT_READY	true", -- [1587]
+			"<23:58:51> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1588]
+			"<23:58:53> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1589]
+			"<23:59:03> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1590]
+			"<23:59:38> <DEBUG>		Event:	LOOT_READY	true", -- [1591]
+			"<23:59:38> <DEBUG>		Event:	LOOT_READY	true", -- [1592]
+			"<23:59:49> <DEBUG>		Event:	LOOT_READY	true", -- [1593]
+			"<23:59:49> <DEBUG>		Event:	LOOT_READY	true", -- [1594]
+			"<23:59:58> <DEBUG>		Event:	LOOT_READY	true", -- [1595]
+			"<23:59:58> <DEBUG>		Event:	LOOT_READY	true", -- [1596]
+			"<00:00:25> <DEBUG>		Event:	LOOT_READY	true", -- [1597]
+			"<00:00:25> <DEBUG>		Event:	LOOT_READY	true", -- [1598]
+			"<00:00:37> <DEBUG>		Event:	LOOT_READY	true", -- [1599]
+			"<00:00:37> <DEBUG>		Event:	LOOT_READY	true", -- [1600]
+			"01/24/24", -- [1601]
+			"<08:29:03> <INFO>		Logged In", -- [1602]
+			"<08:29:03> <INFO>[ML]		Init", -- [1603]
+			"<08:29:03> <INFO>		RCLootCouncil	TradeUI enabled", -- [1604]
+			"<08:29:17> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1605]
+			"<08:29:17> <DEBUG>		ActivateSkin	bfa", -- [1606]
+			"<08:29:19> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1607]
+			"<08:29:19> <INFO>		UpdatePlayersData()", -- [1608]
+			"<08:29:19> <INFO>		Player relog...", -- [1609]
+			"<08:29:20> <DEBUG>		GetPlayersGuildRank()", -- [1610]
+			"<08:29:20> <DEBUG>		Found Guild Rank: O'New", -- [1611]
+			"<08:29:21> <DEBUG>		GetML()", -- [1612]
+			"<08:29:22> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1613]
+			"<08:29:22> <WARNING>		ItemStorage, db item no link or timeout	|cffa335ee|Hitem:207878::::::::70:263::33:7:9562:9639:6652:9506:9144:1553:8767:1:28:1279:::::|h[Grunt's Eternal Treads]|h|r	14340	1705961706	temp", -- [1614]
+			"<08:29:45> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1615]
+			"<08:29:45> <INFO>		UpdatePlayersData()", -- [1616]
+			"<08:29:46> <DEBUG>		GetML()", -- [1617]
+			"01/24/24", -- [1618]
+			"<08:46:19> <INFO>		Logged In", -- [1619]
+			"<08:46:19> <INFO>[ML]		Init", -- [1620]
+			"<08:46:19> <INFO>		RCLootCouncil	TradeUI enabled", -- [1621]
+			"<08:46:30> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1622]
+			"<08:46:30> <DEBUG>		ActivateSkin	bfa", -- [1623]
+			"<08:46:33> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1624]
+			"<08:46:33> <INFO>		UpdatePlayersData()", -- [1625]
+			"<08:46:33> <INFO>		Player relog...", -- [1626]
+			"<08:46:33> <DEBUG>		GetPlayersGuildRank()", -- [1627]
+			"<08:46:33> <DEBUG>		Found Guild Rank: O'New", -- [1628]
+			"<08:46:35> <DEBUG>		GetML()", -- [1629]
+			"<08:46:36> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1630]
+			"<08:52:33> <DEBUG>		Event:	LOOT_READY	true", -- [1631]
+			"<08:52:33> <DEBUG>		Event:	LOOT_READY	true", -- [1632]
+			"<08:53:41> <DEBUG>		Event:	LOOT_READY	true", -- [1633]
+			"<08:53:42> <DEBUG>		Event:	LOOT_READY	true", -- [1634]
+			"<08:53:42> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	200677	|cff0070dd|Hitem:200677::::::::70:263:::::::::|h[Dreambloom Petal]|h|r	1	Kvotheen	SHAMAN", -- [1635]
+			"<08:55:46> <DEBUG>		Event:	LOOT_READY	true", -- [1636]
+			"<08:55:46> <DEBUG>		Event:	LOOT_READY	true", -- [1637]
+			"<08:55:51> <DEBUG>		Event:	LOOT_READY	true", -- [1638]
+			"<08:55:51> <DEBUG>		Event:	LOOT_READY	true", -- [1639]
+			"<08:55:51> <DEBUG>		Event:	LOOT_READY	true", -- [1640]
+			"<08:55:51> <DEBUG>		Event:	LOOT_READY	true", -- [1641]
+			"<08:56:39> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1642]
+			"<08:56:39> <INFO>		UpdatePlayersData()", -- [1643]
+			"<08:56:40> <DEBUG>		GetML()", -- [1644]
+			"<08:58:26> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1645]
+			"<08:58:28> <DEBUG>		GetML()", -- [1646]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-3674-0B0D0EB0", -- [1647]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-1403-0A2FB81A", -- [1648]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-1104-075AF9D6", -- [1649]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-1403-09BBDF26", -- [1650]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-3674-0B4087C7", -- [1651]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-1092-0AB00AB0", -- [1652]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-3702-097E94F8", -- [1653]
+			"<08:58:28> <Data.Player>		CreatePlayer	Player-1305-08B3B672", -- [1654]
+			"<08:58:28> <DEBUG>		Resetting council as we have a new ML!", -- [1655]
+			"<08:58:28> <INFO>		MasterLooter	Kitsos-TwistingNether	LootMethod	personalloot", -- [1656]
+			"<08:58:43> <DEBUG>		Timer MLdb_check passed", -- [1657]
+			"<08:58:43> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^SMLdb_request^t^^	RAID	Kvotheen-Hyjal", -- [1658]
+			"<08:58:43> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^Scouncil_request^t^^	RAID	Kvotheen-Hyjal", -- [1659]
+			"<08:58:57> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^SMLdb_request^t^^	RAID	Bossebosse-Ragnaros", -- [1660]
+			"<08:58:57> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^Scouncil_request^t^^	RAID	Bossebosse-Ragnaros", -- [1661]
+			"<08:59:21> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^SMLdb_request^t^^	RAID	Dazan-Forscherliga", -- [1662]
+			"<08:59:21> <Comm>		^1^Sxrealm^T^N1^SKitsos-TwistingNether^N2^Scouncil_request^t^^	RAID	Dazan-Forscherliga", -- [1663]
+			"<08:59:25> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1664]
+			"<08:59:27> <DEBUG>		GetML()", -- [1665]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3682-0B46EC0F", -- [1666]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1305-0CBB05FF", -- [1667]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1084-0A62A7FC", -- [1668]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1403-0A7689BA", -- [1669]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1127-097440EA", -- [1670]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3674-0AD47983", -- [1671]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3690-0B1F59B4", -- [1672]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1379-0AB0B84F", -- [1673]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1615-0B448ACD", -- [1674]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1615-09C7F96B", -- [1675]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1615-0ACFD986", -- [1676]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1615-0B466D07", -- [1677]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1408-06F49357", -- [1678]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1402-0A73B02C", -- [1679]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1127-0A976425", -- [1680]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3691-049AE00E", -- [1681]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-512-03E99E72", -- [1682]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-1405-0A8F86F5", -- [1683]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3713-0AEFE8BB", -- [1684]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-3713-072D685D", -- [1685]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-604-0527E6BA", -- [1686]
+			"<08:59:27> <Data.Player>		CreatePlayer	Player-512-03E71E90", -- [1687]
+			"<08:59:27> <DEBUG>		Resetting council as we have a new ML!", -- [1688]
+			"<08:59:27> <INFO>		MasterLooter	Bossebosse-Ragnaros	LootMethod	personalloot", -- [1689]
+			"<08:59:27> <Comm>		^1^SplayerInfoRequest^T^t^^	RAID	Bossebosse-Ragnaros", -- [1690]
+			"<08:59:27> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	RAID	Bossebosse-Ragnaros", -- [1691]
+			"<08:59:27> <INFO>		OnMLDBReceived", -- [1692]
+			"<08:59:27> <Comm>		^1^Sxrealm^T^N1^SBossebosse-Ragnaros^N2^SpI^N3^SHEALER^N4^SRaid^N6^N0^N7^N478.0625^N8^N105^t^^	RAID	Dazan-Forscherliga", -- [1693]
+			"<08:59:27> <Comm>		^1^Sxrealm^T^N1^SBossebosse-Ragnaros^N2^SpI^N3^SDAMAGER^N4^SO'New^N6^N0^N7^N468.0625^N8^N263^t^^	RAID	Kvotheen-Hyjal", -- [1694]
+			"<08:59:27> <Comm>		^1^Sxrealm^T^N1^SBossebosse-Ragnaros^N2^SpI^N3^STANK^N4^SUnguilded^N6^N0^N7^N411^N8^N104^t^^	RAID	Nissu-BurningLegion", -- [1695]
+			"<08:59:29> <Comm>		^1^Scouncil^T^N1^T^S3682-0B46EC0F^B^t^t^^	RAID	Bossebosse-Ragnaros", -- [1696]
+			"<08:59:29> <DEBUG>		isCouncil	false", -- [1697]
+			"<08:59:39> <Comm>		^1^SStopHandleLoot^T^t^^	RAID	Bossebosse-Ragnaros", -- [1698]
+			"<08:59:42> <DEBUG>		Timer MLdb_check passed", -- [1699]
+			"<08:59:43> <DEBUG>		Event:	LOOT_READY	true", -- [1700]
+			"<08:59:43> <DEBUG>		Event:	LOOT_READY	true", -- [1701]
+			"<08:59:53> <Comm>		^1^Sxrealm^T^N1^SBossebosse-Ragnaros^N2^SMLdb_request^t^^	RAID	Diunm-Eredar", -- [1702]
+			"<08:59:53> <Comm>		^1^Sxrealm^T^N1^SBossebosse-Ragnaros^N2^Scouncil_request^t^^	RAID	Diunm-Eredar", -- [1703]
+			"<08:59:55> <DEBUG>		Event:	LOOT_READY	true", -- [1704]
+			"<08:59:55> <DEBUG>		Event:	LOOT_READY	true", -- [1705]
+			"<09:00:09> <DEBUG>		Event:	LOOT_READY	true", -- [1706]
+			"<09:00:09> <DEBUG>		Event:	LOOT_READY	true", -- [1707]
+			"<09:00:26> <DEBUG>		Event:	LOOT_READY	true", -- [1708]
+			"<09:00:26> <DEBUG>		Event:	LOOT_READY	true", -- [1709]
+			"<09:00:28> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1710]
+			"<09:00:30> <DEBUG>		GetML()", -- [1711]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-2073-06CC86C4", -- [1712]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1390-0CBB8BA5", -- [1713]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-3691-060B9DC2", -- [1714]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1084-05C0F9DA", -- [1715]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1316-0ACFB1BB", -- [1716]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-3692-0A075072", -- [1717]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1085-0945A702", -- [1718]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-604-03FD0CDF", -- [1719]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1105-06A3A4A3", -- [1720]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1403-0A8CFB9D", -- [1721]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-3691-09248367", -- [1722]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1097-0A5DAD7F", -- [1723]
+			"<09:00:30> <Data.Player>		CreatePlayer	Player-1084-0A55C29D", -- [1724]
+			"<09:00:30> <DEBUG>		Resetting council as we have a new ML!", -- [1725]
+			"<09:00:30> <INFO>		MasterLooter	Kitsos-TwistingNether	LootMethod	personalloot", -- [1726]
+			"<09:00:39> <DEBUG>		Event:	GROUP_LEFT	1	Party-3674-1-000039AC970F", -- [1727]
+			"<09:00:39> <DEBUG>		GetML()", -- [1728]
+			"<09:00:43> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1729]
+			"<09:00:45> <DEBUG>		GetML()", -- [1730]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-581-0A6AB37E", -- [1731]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1403-09D89D4E", -- [1732]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3681-06FDFB33", -- [1733]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-578-05BB069B", -- [1734]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3691-0A027C72", -- [1735]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3682-0A7EE526", -- [1736]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-2073-0A1D1E2C", -- [1737]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3674-0B2918A7", -- [1738]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1084-0A95027F", -- [1739]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1403-055AACD0", -- [1740]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-578-0A463338", -- [1741]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-580-0A7B10EA", -- [1742]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1384-0845C823", -- [1743]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1615-09299246", -- [1744]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1127-096A70EF", -- [1745]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3691-061F4738", -- [1746]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3691-09F1A1F5", -- [1747]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1624-0567C1F6", -- [1748]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-3674-08B36FD6", -- [1749]
+			"<09:00:45> <Data.Player>		CreatePlayer	Player-1084-0A71B6AB", -- [1750]
+			"<09:00:45> <DEBUG>		Resetting council as we have a new ML!", -- [1751]
+			"<09:00:45> <INFO>		MasterLooter	Laserbummels-Blackrock	LootMethod	personalloot", -- [1752]
+			"<09:00:45> <DEBUG>		Timer MLdb_check passed", -- [1753]
+			"<09:01:00> <DEBUG>		Timer MLdb_check passed", -- [1754]
+			"<09:01:10> <Comm>		^1^SpI^T^N1^SDAMAGER^N2^SMitglied^N4^N0^N5^N473.1875^N6^N102^t^^	RAID	Arcencial-Blackmoore", -- [1755]
+			"<09:01:10> <Comm>		^1^Sxrealm^T^N1^SLaserbummels-Blackrock^N2^Sreconnect^t^^	RAID	Arcencial-Blackmoore", -- [1756]
+			"<09:01:23> <Comm>		^1^Sxrealm^T^N1^SLaserbummels-Blackrock^N2^SMLdb_request^t^^	RAID	Arcencial-Blackmoore", -- [1757]
+			"<09:01:23> <Comm>		^1^Sxrealm^T^N1^SLaserbummels-Blackrock^N2^Scouncil_request^t^^	RAID	Arcencial-Blackmoore", -- [1758]
+			"<09:01:36> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1759]
+			"<09:01:37> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1760]
+			"<09:01:38> <DEBUG>		GetML()", -- [1761]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-3682-0638E008", -- [1762]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-1305-0CC08621", -- [1763]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-3674-0A9EAEFB", -- [1764]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-1104-07F55A41", -- [1765]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-1587-0B3F3F91", -- [1766]
+			"<09:01:38> <Data.Player>		CreatePlayer	Player-604-0A04C9C1", -- [1767]
+			"<09:01:38> <DEBUG>		Resetting council as we have a new ML!", -- [1768]
+			"<09:01:38> <INFO>		MasterLooter	Nissu-BurningLegion	LootMethod	personalloot", -- [1769]
+			"<09:01:38> <Comm>		^1^SplayerInfoRequest^T^t^^	RAID	Nissu-BurningLegion", -- [1770]
+			"<09:01:38> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^S|5^N3^t^t^S|12^N60^S|11^T^S|14^T^t^t^S|1^B^S|2^B^S|5^N3^S|17^B^t^t^^	RAID	Nissu-BurningLegion", -- [1771]
+			"<09:01:38> <INFO>		OnMLDBReceived", -- [1772]
+			"<09:01:38> <Comm>		^1^Sxrealm^T^N1^SNissu-BurningLegion^N2^SpI^N3^SDAMAGER^N4^SO'New^N6^N0^N7^N468.0625^N8^N263^t^^	RAID	Kvotheen-Hyjal", -- [1773]
+			"<09:01:38> <DEBUG>		GetML()", -- [1774]
+			"<09:01:40> <Comm>		^1^Scouncil^T^N1^T^S3713-0AEFE8BB^B^t^t^^	RAID	Nissu-BurningLegion", -- [1775]
+			"<09:01:40> <DEBUG>		isCouncil	false", -- [1776]
+			"<09:01:42> <Comm>		^1^SStopHandleLoot^T^t^^	RAID	Nissu-BurningLegion", -- [1777]
+			"<09:01:53> <DEBUG>		Timer MLdb_check passed", -- [1778]
+			"<09:01:53> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1779]
+			"<09:01:55> <DEBUG>		GetML()", -- [1780]
+			"<09:01:55> <DEBUG>		Resetting council as we have a new ML!", -- [1781]
+			"<09:01:55> <INFO>		MasterLooter	рёбрышки-Ревущийфьорд	LootMethod	personalloot", -- [1782]
+			"<09:02:03> <DEBUG>		Event:	GROUP_LEFT	1	Party-581-1-0000321E2AFD", -- [1783]
+			"<09:02:03> <DEBUG>		GetML()", -- [1784]
+			"<09:02:10> <DEBUG>		Timer MLdb_check passed", -- [1785]
+			"<09:02:38> <DEBUG>		Event:	LOOT_READY	true", -- [1786]
+			"<09:02:39> <DEBUG>		Event:	LOOT_READY	true", -- [1787]
+			"<09:06:45> <DEBUG>		Event:	LOOT_READY	true", -- [1788]
+			"<09:06:45> <DEBUG>		Event:	LOOT_READY	true", -- [1789]
+			"<09:07:19> <DEBUG>		Event:	LOOT_READY	true", -- [1790]
+			"<09:07:20> <DEBUG>		Event:	LOOT_READY	true", -- [1791]
+			"<09:09:40> <DEBUG>		Event:	LOOT_READY	true", -- [1792]
+			"<09:09:40> <DEBUG>		Event:	LOOT_READY	true", -- [1793]
+			"<09:11:51> <DEBUG>		Event:	LOOT_READY	true", -- [1794]
+			"<09:11:52> <DEBUG>		Event:	LOOT_READY	true", -- [1795]
+			"<09:13:58> <DEBUG>		Event:	LOOT_READY	true", -- [1796]
+			"<09:13:59> <DEBUG>		Event:	LOOT_READY	true", -- [1797]
+			"<09:14:43> <DEBUG>		Event:	LOOT_READY	true", -- [1798]
+			"<09:14:43> <DEBUG>		Event:	LOOT_READY	true", -- [1799]
+			"01/24/24", -- [1800]
+			"<19:35:55> <INFO>		Logged In", -- [1801]
+			"<19:35:55> <INFO>[ML]		Init", -- [1802]
+			"<19:35:55> <INFO>		RCLootCouncil	TradeUI enabled", -- [1803]
+			"<19:36:04> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1804]
+			"<19:36:04> <DEBUG>		ActivateSkin	bfa", -- [1805]
+			"<19:36:07> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1806]
+			"<19:36:07> <INFO>		UpdatePlayersData()", -- [1807]
+			"<19:36:07> <INFO>		Player relog...", -- [1808]
+			"<19:36:07> <DEBUG>		GetPlayersGuildRank()", -- [1809]
+			"<19:36:07> <DEBUG>		Found Guild Rank: O'New", -- [1810]
+			"<19:36:08> <DEBUG>		GetML()", -- [1811]
+			"<19:36:09> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1812]
+			"01/24/24", -- [1813]
+			"<19:44:10> <INFO>		Logged In", -- [1814]
+			"<19:44:10> <INFO>[ML]		Init", -- [1815]
+			"<19:44:10> <INFO>		RCLootCouncil	TradeUI enabled", -- [1816]
+			"<19:44:16> <INFO>		Kvotheen-Hyjal	3.10.5	nil", -- [1817]
+			"<19:44:16> <DEBUG>		ActivateSkin	bfa", -- [1818]
+			"<19:44:18> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	true	false", -- [1819]
+			"<19:44:18> <INFO>		UpdatePlayersData()", -- [1820]
+			"<19:44:18> <INFO>		Player relog...", -- [1821]
+			"<19:44:18> <DEBUG>		GetPlayersGuildRank()", -- [1822]
+			"<19:44:18> <DEBUG>		Found Guild Rank: O'New", -- [1823]
+			"<19:44:20> <DEBUG>		GetML()", -- [1824]
+			"<19:44:20> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Kvotheen-Hyjal", -- [1825]
+			"<19:57:44> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Prometheu-Hyjal", -- [1826]
+			"<20:00:19> <DEBUG>		Event:	PARTY_LEADER_CHANGED", -- [1827]
+			"<20:00:21> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [1828]
+			"<20:00:21> <WARNING>		Non ML sent council", -- [1829]
+			"<20:00:21> <DEBUG>		GetML()", -- [1830]
+			"<20:00:21> <DEBUG>		Resetting council as we have a new ML!", -- [1831]
+			"<20:00:21> <INFO>		MasterLooter	Prometheu-Hyjal	LootMethod	personalloot", -- [1832]
+			"<20:00:36> <DEBUG>		Timer MLdb_check passed", -- [1833]
+			"<20:00:37> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	PARTY	Prometheu-Hyjal", -- [1834]
+			"<20:00:37> <INFO>		OnMLDBReceived", -- [1835]
+			"<20:00:37> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	PARTY	Prometheu-Hyjal", -- [1836]
+			"<20:00:37> <DEBUG>		isCouncil	false", -- [1837]
+			"<20:00:37> <DEBUG>		GetLootDBStatistics()", -- [1838]
+			"<20:00:37> <DEBUG>		GetGuildRankNum()", -- [1839]
+			"<20:00:37> <INFO>		RCVotingFrame	enabled", -- [1840]
+			"<20:06:44> <DEBUG>		Event:	LOOT_READY	true", -- [1841]
+			"<20:06:44> <DEBUG>		Event:	LOOT_READY	true", -- [1842]
+			"<20:06:44> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	210571	|cff0070dd|Hitem:210571::::::::70:263::::1:28:373:::::|h[Snoozles]|h|r	1	Kvotheen	SHAMAN", -- [1843]
+			"<20:07:25> <DEBUG>		Event:	LOOT_READY	true", -- [1844]
+			"<20:07:25> <DEBUG>		Event:	LOOT_READY	true", -- [1845]
+			"<20:07:59> <DEBUG>		Event:	LOOT_READY	true", -- [1846]
+			"<20:07:59> <DEBUG>		Event:	LOOT_READY	true", -- [1847]
+			"<20:09:27> <DEBUG>		Event:	LOOT_READY	true", -- [1848]
+			"<20:09:28> <DEBUG>		Event:	LOOT_READY	true", -- [1849]
+			"<20:10:13> <DEBUG>		Event:	LOOT_READY	true", -- [1850]
+			"<20:10:13> <DEBUG>		Event:	LOOT_READY	true", -- [1851]
+			"<20:10:49> <DEBUG>		Event:	LOOT_READY	true", -- [1852]
+			"<20:10:49> <DEBUG>		Event:	LOOT_READY	true", -- [1853]
+			"<20:11:26> <DEBUG>		Event:	LOOT_READY	true", -- [1854]
+			"<20:11:26> <DEBUG>		Event:	LOOT_READY	true", -- [1855]
+			"<20:11:44> <DEBUG>		Event:	LOOT_READY	true", -- [1856]
+			"<20:11:44> <DEBUG>		Event:	LOOT_READY	true", -- [1857]
+			"<20:12:18> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1858]
+			"<20:13:53> <DEBUG>		Event:	LOOT_READY	true", -- [1859]
+			"<20:13:53> <DEBUG>		Event:	LOOT_READY	true", -- [1860]
+			"<20:13:54> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	198964	|cff0070dd|Hitem:198964::::::::70:263:::::::::|h[Elementious Splinter]|h|r	1	Kvotheen	SHAMAN", -- [1861]
+			"<20:13:54> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	191578	|cff0070dd|Hitem:191578::::::::70:263::::1:28:2699:::::|h[Recipe: Transmute: Awakened Fire]|h|r	1	Kvotheen	SHAMAN", -- [1862]
+			"<20:14:17> <DEBUG>		Event:	LOOT_READY	true", -- [1863]
+			"<20:14:17> <DEBUG>		Event:	LOOT_READY	true", -- [1864]
+			"<20:14:18> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	190320	|cff0070dd|Hitem:190320::::::::70:263:::::::::|h[Rousing Fire]|h|r	3	Kvotheen	SHAMAN", -- [1865]
+			"<20:15:20> <DEBUG>		Event:	LOOT_READY	true", -- [1866]
+			"<20:15:20> <DEBUG>		Event:	LOOT_READY	true", -- [1867]
+			"<20:15:21> <DEBUG>		Event:	ENCOUNTER_LOOT_RECEIVED	0	203332	|cff0070dd|Hitem:203332::::::::70:263::::1:28:2699:::::|h[Winding Slitherdrake: Spiked Horns]|h|r	1	Kvotheen	SHAMAN", -- [1868]
+			"<20:16:11> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1869]
+			"<20:16:11> <INFO>		UpdatePlayersData()", -- [1870]
+			"<20:16:12> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1871]
+			"<20:16:13> <DEBUG>		GetML()", -- [1872]
+			"<20:16:13> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1873]
+			"<20:17:59> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1874]
+			"<20:18:08> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1875]
+			"<20:21:55> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1876]
+			"<20:21:56> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1877]
+			"<20:22:32> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1878]
+			"<20:22:38> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1879]
+			"<20:23:12> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1880]
+			"<20:25:48> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1881]
+			"<20:25:48> <INFO>		UpdatePlayersData()", -- [1882]
+			"<20:25:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1883]
+			"<20:25:49> <DEBUG>		GetML()", -- [1884]
+			"<20:25:49> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1885]
+			"<20:30:52> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Suiffeur-Hyjal", -- [1886]
+			"<20:32:13> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Uglysquid-Hyjal", -- [1887]
+			"<20:32:54> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1888]
+			"<20:33:09> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	RAID	Prometheu-Hyjal", -- [1889]
+			"<20:33:09> <INFO>		OnMLDBReceived", -- [1890]
+			"<20:33:09> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	RAID	Prometheu-Hyjal", -- [1891]
+			"<20:33:09> <DEBUG>		isCouncil	false", -- [1892]
+			"<20:33:28> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1893]
+			"<20:34:42> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1894]
+			"<20:35:06> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1895]
+			"<20:35:27> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1896]
+			"<20:35:53> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1897]
+			"<20:35:59> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1898]
+			"<20:38:44> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1899]
+			"<20:38:45> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1900]
+			"<20:39:00> <Comm>		^1^Sxrealm^T^N1^SPrometheu-Hyjal^N2^SMLdb_request^t^^	RAID	Fîrenâik-Archimonde", -- [1901]
+			"<20:39:00> <Comm>		^1^Sxrealm^T^N1^SPrometheu-Hyjal^N2^Scouncil_request^t^^	RAID	Fîrenâik-Archimonde", -- [1902]
+			"<20:39:00> <Comm>		^1^Smldb^T^N1^T^S|8^T^S|14^T^N1^T^S|15^SBISS^S|18^b^t^N2^T^S|15^SUpgrade^S|18^b^t^N3^T^S|15^SSeconde~`Spé^S|18^b^t^N4^T^S|15^STransmog^S|18^b^t^S|5^N4^t^t^S|12^N60^S|2^B^S|3^B^S|11^T^S|14^T^N1^T^S|15^SBest~`In~`Slot^S|4^N1^S|16^T^N1^N0^N2^N1^N3^N0^N4^N1^t^t^N2^T^S|15^SUpgrade~`iLv^S|4^N2^S|16^T^N1^N1^N2^N0.5^N3^N0^N4^N1^t^t^N3^T^S|15^SAutre~`Spé^S|4^N3^S|16^T^N1^N0.09^N2^N0.22^N3^N0.7^N4^N1^t^t^N4^T^S|15^SC~`JOLI^S|4^N4^S|16^T^N1^N0.55^N2^N0^N3^N0.7^N4^N1^t^t^t^t^S|1^B^S|7^B^S|17^B^S|5^N4^t^t^^	RAID	Prometheu-Hyjal", -- [1903]
+			"<20:39:00> <INFO>		OnMLDBReceived", -- [1904]
+			"<20:39:00> <Comm>		^1^Scouncil^T^N1^T^S1390-0791D20F^B^t^t^^	RAID	Prometheu-Hyjal", -- [1905]
+			"<20:39:00> <DEBUG>		isCouncil	false", -- [1906]
+			"<20:39:32> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1907]
+			"<20:39:37> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1908]
+			"<20:39:57> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1909]
+			"<20:40:01> <Comm>		^1^SStopHandleLoot^T^t^^	RAID	Prometheu-Hyjal", -- [1910]
+			"<20:40:20> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1911]
+			"<20:40:30> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1912]
+			"<20:41:07> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1913]
+			"<20:41:18> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1914]
+			"<20:41:56> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1915]
+			"<20:42:28> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1916]
+			"<20:42:43> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1917]
+			"<20:42:58> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1918]
+			"<20:43:13> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1919]
+			"<20:43:16> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1920]
+			"<20:43:19> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1921]
+			"<20:43:22> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1922]
+			"<20:43:24> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Vaalkyra-Hyjal", -- [1923]
+			"<20:43:24> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1924]
+			"<20:43:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1925]
+			"<20:43:53> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1926]
+			"<20:43:58> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1927]
+			"<20:44:11> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1928]
+			"<20:44:14> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1929]
+			"<20:44:18> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1930]
+			"<20:44:22> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1931]
+			"<20:44:27> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1932]
+			"<20:44:45> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1933]
+			"<20:44:52> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1934]
+			"<20:45:00> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1935]
+			"<20:45:26> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1936]
+			"<20:45:37> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1937]
+			"<20:45:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1938]
+			"<20:45:51> <Comm>		^1^Sv^T^N1^S3.10.5^t^^	GUILD	Uglysquid-Hyjal", -- [1939]
+			"<20:45:51> <Comm>		^1^SpI^T^N1^STANK^N2^SO'Peon^N4^N0^N5^N484^N6^N250^t^^	RAID	Uglysquid-Hyjal", -- [1940]
+			"<20:45:53> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1941]
+			"<20:46:19> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1942]
+			"<20:46:29> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1943]
+			"<20:46:40> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1944]
+			"<20:46:46> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1945]
+			"<20:46:56> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1946]
+			"<20:47:08> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1947]
+			"<20:47:36> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1948]
+			"<20:47:37> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1949]
+			"<20:47:42> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1950]
+			"<20:47:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1951]
+			"<20:47:54> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1952]
+			"<20:48:03> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1953]
+			"<20:48:04> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1954]
+			"<20:48:23> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1955]
+			"<20:48:24> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1956]
+			"<20:48:29> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1957]
+			"<20:48:30> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1958]
+			"<20:48:34> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1959]
+			"<20:48:36> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1960]
+			"<20:48:43> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1961]
+			"<20:48:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1962]
+			"<20:48:52> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1963]
+			"<20:48:59> <DEBUG>		Event:	RAID_INSTANCE_WELCOME	Amirdrassil, the Dream's Hope (Heroic)	547860	0	0", -- [1964]
+			"<20:48:59> <DEBUG>		Event:	PLAYER_ENTERING_WORLD	false	false", -- [1965]
+			"<20:48:59> <INFO>		UpdatePlayersData()", -- [1966]
+			"<20:49:01> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1967]
+			"<20:49:01> <DEBUG>		GetML()", -- [1968]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1621-0AFBFA28", -- [1969]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1621-0B00CFBB", -- [1970]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1602-0EB3CBD6", -- [1971]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1602-0F717426", -- [1972]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1302-0CA13152", -- [1973]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1335-038D3D6E", -- [1974]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1302-0BA1CBCA", -- [1975]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1602-0F7AFA1C", -- [1976]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1390-0A3C3313", -- [1977]
+			"<20:49:01> <Data.Player>		CreatePlayer	Player-1390-0C86DECD", -- [1978]
+			"<20:49:01> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1979]
+			"<20:49:04> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1980]
+			"<20:49:30> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1981]
+			"<20:49:48> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1982]
+			"<20:50:05> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1983]
+			"<20:50:21> <Comm>		^1^Sxrealm^T^N1^SPrometheu-Hyjal^N2^SMLdb_request^t^^	RAID	Ylariia-TarrenMill", -- [1984]
+			"<20:50:21> <Comm>		^1^Sxrealm^T^N1^SPrometheu-Hyjal^N2^Scouncil_request^t^^	RAID	Ylariia-TarrenMill", -- [1985]
+			"<20:51:51> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1986]
+			"<20:52:12> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1987]
+			"<20:52:51> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1988]
+			"<20:54:23> <DEBUG>		Event:	LOOT_READY	true", -- [1989]
+			"<20:54:23> <DEBUG>		Ignoring	nil	as it's a currency", -- [1990]
+			"<20:54:23> <DEBUG>		Event:	LOOT_READY	true", -- [1991]
+			"<20:54:23> <DEBUG>		Ignoring	nil	as it's a currency", -- [1992]
+			"<20:54:24> <DEBUG>		Event:	LOOT_CLOSED", -- [1993]
+			"<20:54:24> <DEBUG>		Event:	LOOT_CLOSED", -- [1994]
+			"<20:54:25> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1995]
+			"<20:54:30> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1996]
+			"<20:54:36> <DEBUG>		VotingFrame:Update() without lootTable!!", -- [1997]
+			"<20:55:26> <DEBUG>		Event:	ENCOUNTER_START	2820	Gnarlroot	15	15", -- [1998]
+			"<20:55:26> <INFO>		UpdatePlayersData()", -- [1999]
+			"<20:55:27> <DEBUG>		Event:	ENCOUNTER_END	2820	Gnarlroot	15	15	0", -- [2000]
+		},
+		["cache"] = {
+			["player"] = {
+				["Player-1403-06F13A31"] = {
+					["name"] = "Lunaesca-Draenor",
+					["guid"] = "Player-1403-06F13A31",
+					["class"] = "DRUID",
+					["cache_time"] = 1705844429,
+					["realm"] = "Draenor",
+				},
+				["Player-1390-0C84E84C"] = {
+					["name"] = "Vaccinodröme-Hyjal",
+					["guid"] = "Player-1390-0C84E84C",
+					["class"] = "PRIEST",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+				},
+				["Player-1615-0B466D07"] = {
+					["name"] = "омепрозол-Ревущийфьорд",
+					["guid"] = "Player-1615-0B466D07",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083229,
+					["realm"] = "Ревущийфьорд",
+				},
+				["Player-2073-043FACC1"] = {
+					["name"] = "Gorl-Stormscale",
+					["guid"] = "Player-2073-043FACC1",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705844429,
+					["realm"] = "Stormscale",
+				},
+				["Player-1084-0A62A7FC"] = {
+					["name"] = "Marrino-TarrenMill",
+					["guid"] = "Player-1084-0A62A7FC",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083297,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1127-0396A603"] = {
+					["name"] = "Nécros-ConfrérieduThorium",
+					["guid"] = "Player-1127-0396A603",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705495082,
+					["realm"] = "ConfrérieduThorium",
+				},
+				["Player-581-0A936BF4"] = {
+					["name"] = "âzràil-Blackrock",
+					["guid"] = "Player-581-0A936BF4",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705846330,
+					["realm"] = "Blackrock",
+				},
+				["Player-3656-0AC10687"] = {
+					["name"] = "Carolebaskin-Spinebreaker",
+					["guid"] = "Player-3656-0AC10687",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705771424,
+					["realm"] = "Spinebreaker",
+				},
+				["Player-1402-07421798"] = {
+					["name"] = "Golm-Turalyon",
+					["guid"] = "Player-1402-07421798",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705844429,
+					["realm"] = "Turalyon",
+				},
+				["Player-1406-0A49D611"] = {
+					["name"] = "Fosi-Khaz'goroth",
+					["guid"] = "Player-1406-0A49D611",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705773767,
+					["realm"] = "Khaz'goroth",
+				},
+				["Player-1621-0AFBFA28"] = {
+					["name"] = "Deepwrath-Dalaran",
+					["guid"] = "Player-1621-0AFBFA28",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706125740,
+					["realm"] = "Dalaran",
+				},
+				["Player-3702-09F151C8"] = {
+					["name"] = "Daryna-ArgentDawn",
+					["guid"] = "Player-3702-09F151C8",
+					["class"] = "MAGE",
+					["cache_time"] = 1705844429,
+					["realm"] = "ArgentDawn",
+				},
+				["Player-1127-097440EA"] = {
+					["name"] = "Até-ConseildesOmbres",
+					["guid"] = "Player-1127-097440EA",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "ConseildesOmbres",
+				},
+				["Player-1305-08B4F659"] = {
+					["name"] = "Oculty-Kazzak",
+					["guid"] = "Player-1305-08B4F659",
+					["class"] = "MONK",
+					["cache_time"] = 1705783377,
+					["realm"] = "Kazzak",
+				},
+				["Player-1615-09C7F96B"] = {
+					["name"] = "лотостян-Ревущийфьорд",
+					["guid"] = "Player-1615-09C7F96B",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Ревущийфьорд",
+				},
+				["Player-3674-0B4087C7"] = {
+					["name"] = "Blisste-TwistingNether",
+					["guid"] = "Player-3674-0B4087C7",
+					["class"] = "EVOKER",
+					["cache_time"] = 1706083229,
+					["realm"] = "TwistingNether",
+				},
+				["Player-1403-0A8CFB9D"] = {
+					["name"] = "Fediuk-Draenor",
+					["guid"] = "Player-1403-0A8CFB9D",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Draenor",
+				},
+				["Player-3702-097E94F8"] = {
+					["name"] = "Tzaia-ArgentDawn",
+					["guid"] = "Player-3702-097E94F8",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083297,
+					["realm"] = "ArgentDawn",
+				},
+				["Player-3656-04F25431"] = {
+					["name"] = "Skytemannen-Vashj",
+					["guid"] = "Player-3656-04F25431",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705495082,
+					["realm"] = "Vashj",
+				},
+				["Player-1390-0A950851"] = {
+					["name"] = "ãrrôw-Hyjal",
+					["guid"] = "Player-1390-0A950851",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705874142,
+					["realm"] = "Hyjal",
+				},
+				["Player-580-0A037A04"] = {
+					["name"] = "Gêspenst-Blackmoore",
+					["guid"] = "Player-580-0A037A04",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705389776,
+					["realm"] = "Blackmoore",
+				},
+				["Player-581-09DE77B2"] = {
+					["name"] = "Mortardes-Blackrock",
+					["guid"] = "Player-581-09DE77B2",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705873391,
+					["realm"] = "Blackrock",
+				},
+				["Player-3682-05C5950C"] = {
+					["name"] = "Puttmethresh-Ragnaros",
+					["guid"] = "Player-3682-05C5950C",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705844429,
+					["realm"] = "Ragnaros",
+				},
+				["Player-1587-07398B12"] = {
+					["name"] = "Arnorian-Arathor",
+					["guid"] = "Player-1587-07398B12",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705844490,
+					["realm"] = "Arathor",
+				},
+				["Player-581-08F7C8F9"] = {
+					["name"] = "Mylissa-Blackrock",
+					["guid"] = "Player-581-08F7C8F9",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705771426,
+					["realm"] = "Blackrock",
+				},
+				["Player-1305-0CBB05FF"] = {
+					["name"] = "Hoogy-Kazzak",
+					["guid"] = "Player-1305-0CBB05FF",
+					["class"] = "EVOKER",
+					["cache_time"] = 1706083229,
+					["realm"] = "Kazzak",
+				},
+				["Player-1396-067E2C9B"] = {
+					["name"] = "Assasinoo-Quel'Thalas",
+					["guid"] = "Player-1396-067E2C9B",
+					["class"] = "ROGUE",
+					["cache_time"] = 1705356798,
+					["realm"] = "Quel'Thalas",
+				},
+				["Player-1929-0A51D4A6"] = {
+					["name"] = "вулъфис-ЧерныйШрам",
+					["guid"] = "Player-1929-0A51D4A6",
+					["class"] = "DRUID",
+					["cache_time"] = 1705495082,
+					["realm"] = "ЧерныйШрам",
+				},
+				["Player-1097-0A5DAD7F"] = {
+					["name"] = "Leîlo-Malorne",
+					["guid"] = "Player-1097-0A5DAD7F",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083229,
+					["realm"] = "Malorne",
+				},
+				["Player-604-0526CB7D"] = {
+					["name"] = "Püppcchen-Thrall",
+					["guid"] = "Player-604-0526CB7D",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705773767,
+					["realm"] = "Thrall",
+				},
+				["Player-3691-061F4738"] = {
+					["name"] = "Dietryn-Blackhand",
+					["guid"] = "Player-3691-061F4738",
+					["class"] = "MONK",
+					["cache_time"] = 1706083297,
+					["realm"] = "Blackhand",
+				},
+				["Player-1305-04F7564A"] = {
+					["name"] = "Redeyejedi-Kazzak",
+					["guid"] = "Player-1305-04F7564A",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1705524017,
+					["realm"] = "Kazzak",
+				},
+				["Player-1390-0CBBF6DC"] = {
+					["ilvl"] = 483.875,
+					["guid"] = "Player-1390-0CBBF6DC",
+					["class"] = "DRUID",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1705525843,
+					["rank"] = "O'Peon",
+					["name"] = "Pâpätte-Hyjal",
+					["specID"] = 102,
+					["enchantingLvl"] = 0,
+					["realm"] = "Hyjal",
+				},
+				["Player-1384-0845C823"] = {
+					["name"] = "Laën-Tyrande",
+					["guid"] = "Player-1384-0845C823",
+					["class"] = "MAGE",
+					["cache_time"] = 1706083244,
+					["realm"] = "Tyrande",
+				},
+				["Player-1390-0CBBA0F5"] = {
+					["name"] = "Traksor-Hyjal",
+					["guid"] = "Player-1390-0CBBA0F5",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705528225,
+					["realm"] = "Hyjal",
+				},
+				["Player-3691-049AE00E"] = {
+					["name"] = "Lazey-Blackhand",
+					["guid"] = "Player-3691-049AE00E",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083297,
+					["realm"] = "Blackhand",
+				},
+				["Player-1305-0CA30217"] = {
+					["name"] = "Daresimus-Kazzak",
+					["guid"] = "Player-1305-0CA30217",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705524017,
+					["realm"] = "Kazzak",
+				},
+				["Player-1127-0A976425"] = {
+					["name"] = "Morthyfère-ConfrérieduThorium",
+					["guid"] = "Player-1127-0A976425",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1706083229,
+					["realm"] = "ConfrérieduThorium",
+				},
+				["Player-3690-0B1F59B4"] = {
+					["name"] = "Athuaw-KhazModan",
+					["guid"] = "Player-3690-0B1F59B4",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083229,
+					["realm"] = "KhazModan",
+				},
+				["Player-604-0A28CCF6"] = {
+					["name"] = "Seychandra-Thrall",
+					["guid"] = "Player-604-0A28CCF6",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705389776,
+					["realm"] = "Thrall",
+				},
+				["Player-1329-0A221FF2"] = {
+					["name"] = "Aeirn-Ravencrest",
+					["guid"] = "Player-1329-0A221FF2",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705443579,
+					["realm"] = "Ravencrest",
+				},
+				["Player-1303-0C0E8950"] = {
+					["name"] = "Kiiara-Aggra(Português)",
+					["guid"] = "Player-1303-0C0E8950",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705356798,
+					["realm"] = "Aggra(Português)",
+				},
+				["Player-1390-06D01A8A"] = {
+					["ilvl"] = 484,
+					["guid"] = "Player-1390-06D01A8A",
+					["class"] = "DEATHKNIGHT",
+					["role"] = "TANK",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+					["name"] = "Uglysquid-Hyjal",
+					["specID"] = 250,
+					["enchantingLvl"] = 0,
+					["rank"] = "O'Peon",
+				},
+				["Player-633-0AF7324E"] = {
+					["name"] = "Simbina-BurningSteppes",
+					["guid"] = "Player-633-0AF7324E",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705495082,
+					["realm"] = "BurningSteppes",
+				},
+				["Player-1408-06F49357"] = {
+					["name"] = "Floh-DunMorogh",
+					["guid"] = "Player-1408-06F49357",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083229,
+					["realm"] = "DunMorogh",
+				},
+				["Player-1403-055AACD0"] = {
+					["name"] = "Sonnia-Draenor",
+					["guid"] = "Player-1403-055AACD0",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083244,
+					["realm"] = "Draenor",
+				},
+				["Player-1305-088DEBA0"] = {
+					["name"] = "Dalmara-Kazzak",
+					["guid"] = "Player-1305-088DEBA0",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705773767,
+					["realm"] = "Kazzak",
+				},
+				["Player-1302-0C9A8AA4"] = {
+					["name"] = "Littletank-Archimonde",
+					["guid"] = "Player-1302-0C9A8AA4",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1705875504,
+					["realm"] = "Archimonde",
+				},
+				["Player-2073-0A1D1E2C"] = {
+					["name"] = "Atoka-Stormscale",
+					["guid"] = "Player-2073-0A1D1E2C",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083297,
+					["realm"] = "Stormscale",
+				},
+				["Player-1928-0BF69C4C"] = {
+					["name"] = "голтак-Голдринн",
+					["guid"] = "Player-1928-0BF69C4C",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705844429,
+					["realm"] = "Голдринн",
+				},
+				["Player-3713-0AEFE8BB"] = {
+					["name"] = "Nissu-BurningLegion",
+					["guid"] = "Player-3713-0AEFE8BB",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083299,
+					["realm"] = "BurningLegion",
+				},
+				["Player-1085-0945A702"] = {
+					["name"] = "Frogslasher-SteamwheedleCartel",
+					["guid"] = "Player-1085-0945A702",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "SteamwheedleCartel",
+				},
+				["Player-604-03FD0CDF"] = {
+					["name"] = "Debitorin-Thrall",
+					["guid"] = "Player-604-03FD0CDF",
+					["class"] = "ROGUE",
+					["cache_time"] = 1706083229,
+					["realm"] = "Thrall",
+				},
+				["Player-1104-075AF9D6"] = {
+					["name"] = "Proserpîna-Gul'dan",
+					["guid"] = "Player-1104-075AF9D6",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "Gul'dan",
+				},
+				["Player-1602-0F7B3DB9"] = {
+					["name"] = "куримседим-Гордунни",
+					["guid"] = "Player-1602-0F7B3DB9",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705389352,
+					["realm"] = "Гордунни",
+				},
+				["Player-1105-06A3A4A3"] = {
+					["name"] = "Rîndeastwóòd-Nazjatar",
+					["guid"] = "Player-1105-06A3A4A3",
+					["class"] = "PRIEST",
+					["cache_time"] = 1706083229,
+					["realm"] = "Nazjatar",
+				},
+				["Player-1329-09E9BEE7"] = {
+					["name"] = "Skifreak-Ravencrest",
+					["guid"] = "Player-1329-09E9BEE7",
+					["class"] = "MONK",
+					["cache_time"] = 1705443579,
+					["realm"] = "Ravencrest",
+				},
+				["Player-512-03E99E72"] = {
+					["name"] = "Tayu-Throk'Feroth",
+					["guid"] = "Player-512-03E99E72",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "Throk'Feroth",
+				},
+				["Player-1417-0696ACB3"] = {
+					["name"] = "Aldos-Azuremyst",
+					["guid"] = "Player-1417-0696ACB3",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705846330,
+					["realm"] = "Azuremyst",
+				},
+				["Player-1302-0CBE194E"] = {
+					["name"] = "Wohxx-Archimonde",
+					["guid"] = "Player-1302-0CBE194E",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705876626,
+					["realm"] = "Archimonde",
+				},
+				["Player-1104-07F55A41"] = {
+					["name"] = "Liraden-Nathrezim",
+					["guid"] = "Player-1104-07F55A41",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083314,
+					["realm"] = "Nathrezim",
+				},
+				["Player-510-080677BE"] = {
+					["name"] = "Deadmôm-Chantséternels",
+					["guid"] = "Player-510-080677BE",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705443579,
+					["realm"] = "Chantséternels",
+				},
+				["Player-1390-0C86DECD"] = {
+					["name"] = "Vaalkyra-Hyjal",
+					["guid"] = "Player-1390-0C86DECD",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+				},
+				["Player-1602-0EB3CBD6"] = {
+					["name"] = "афектейшен-Гордунни",
+					["guid"] = "Player-1602-0EB3CBD6",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706125740,
+					["realm"] = "Гордунни",
+				},
+				["Player-3713-0AFDFE5B"] = {
+					["name"] = "Bambuus-Al'Akir",
+					["guid"] = "Player-3713-0AFDFE5B",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1705389352,
+					["realm"] = "Al'Akir",
+				},
+				["Player-3681-06FDFB33"] = {
+					["name"] = "Lamesòn-Magtheridon",
+					["guid"] = "Player-3681-06FDFB33",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083314,
+					["realm"] = "Magtheridon",
+				},
+				["Player-1092-0A91E134"] = {
+					["name"] = "Chapadlakp-Drak'thul",
+					["guid"] = "Player-1092-0A91E134",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705390956,
+					["realm"] = "Drak'thul",
+				},
+				["Player-1390-0CBEDE96"] = {
+					["name"] = "Hulberh-Hyjal",
+					["guid"] = "Player-1390-0CBEDE96",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705784820,
+					["realm"] = "Hyjal",
+				},
+				["Player-1390-0CB9453E"] = {
+					["ilvl"] = 485.0625,
+					["guid"] = "Player-1390-0CB9453E",
+					["class"] = "WARRIOR",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1705524017,
+					["rank"] = "O'New",
+					["name"] = "ïjïn-Hyjal",
+					["specID"] = 71,
+					["enchantingLvl"] = 0,
+					["realm"] = "Hyjal",
+				},
+				["Player-1302-0CA13152"] = {
+					["name"] = "Anàdor-Archimonde",
+					["guid"] = "Player-1302-0CA13152",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706125740,
+					["realm"] = "Archimonde",
+				},
+				["Player-3682-0638E008"] = {
+					["name"] = "Agronn-Ragnaros",
+					["guid"] = "Player-3682-0638E008",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083314,
+					["realm"] = "Ragnaros",
+				},
+				["Player-1305-0AEC5BB6"] = {
+					["name"] = "Pebblethief-Kazzak",
+					["guid"] = "Player-1305-0AEC5BB6",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1705773767,
+					["realm"] = "Kazzak",
+				},
+				["Player-1305-090208CC"] = {
+					["name"] = "Klegnutz-Kazzak",
+					["guid"] = "Player-1305-090208CC",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705524017,
+					["realm"] = "Kazzak",
+				},
+				["Player-1403-09BBDF26"] = {
+					["name"] = "Hukaido-Draenor",
+					["guid"] = "Player-1403-09BBDF26",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083229,
+					["realm"] = "Draenor",
+				},
+				["Player-1403-09D89D4E"] = {
+					["name"] = "Nazarius-Draenor",
+					["guid"] = "Player-1403-09D89D4E",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1706083297,
+					["realm"] = "Draenor",
+				},
+				["Player-1405-0A662729"] = {
+					["name"] = "Hetzmichnich-DieNachtwache",
+					["guid"] = "Player-1405-0A662729",
+					["class"] = "DRUID",
+					["cache_time"] = 1705390956,
+					["realm"] = "DieNachtwache",
+				},
+				["Player-1396-0880D61D"] = {
+					["name"] = "Graterman-AzjolNerub",
+					["guid"] = "Player-1396-0880D61D",
+					["class"] = "MAGE",
+					["cache_time"] = 1705959595,
+					["realm"] = "AzjolNerub",
+				},
+				["Player-3691-09248367"] = {
+					["name"] = "Chaosbold-Mal'Ganis",
+					["guid"] = "Player-3691-09248367",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Mal'Ganis",
+				},
+				["Player-604-0527E6BA"] = {
+					["name"] = "Anshura-Thrall",
+					["guid"] = "Player-604-0527E6BA",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Thrall",
+				},
+				["Player-1390-0A3C3313"] = {
+					["name"] = "Tylouh-Hyjal",
+					["guid"] = "Player-1390-0A3C3313",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+				},
+				["Player-3682-0B46EC0F"] = {
+					["name"] = "Bossebosse-Ragnaros",
+					["guid"] = "Player-3682-0B46EC0F",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1706083244,
+					["realm"] = "Ragnaros",
+				},
+				["Player-3686-046A98EB"] = {
+					["name"] = "Blacksun-Antonidas",
+					["guid"] = "Player-3686-046A98EB",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705389776,
+					["realm"] = "Antonidas",
+				},
+				["Player-1084-095AE2F6"] = {
+					["name"] = "Pøllefis-TarrenMill",
+					["guid"] = "Player-1084-095AE2F6",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705844429,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1602-0F7AFA1C"] = {
+					["name"] = "роневу-Гордунни",
+					["guid"] = "Player-1602-0F7AFA1C",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1706125740,
+					["realm"] = "Гордунни",
+				},
+				["Player-1602-0F717426"] = {
+					["name"] = "пегольн-Гордунни",
+					["guid"] = "Player-1602-0F717426",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706125740,
+					["realm"] = "Гордунни",
+				},
+				["Player-1405-0A8F86F5"] = {
+					["name"] = "Dazan-Forscherliga",
+					["guid"] = "Player-1405-0A8F86F5",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083244,
+					["realm"] = "Forscherliga",
+				},
+				["Player-1302-0BA1CBCA"] = {
+					["name"] = "Fîrenâik-Archimonde",
+					["guid"] = "Player-1302-0BA1CBCA",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706125740,
+					["realm"] = "Archimonde",
+				},
+				["Player-1084-0AB7A7B6"] = {
+					["name"] = "Amarall-TarrenMill",
+					["guid"] = "Player-1084-0AB7A7B6",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705495082,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1403-0A9BB59C"] = {
+					["name"] = "Krombopulose-Draenor",
+					["guid"] = "Player-1403-0A9BB59C",
+					["class"] = "MONK",
+					["cache_time"] = 1705961724,
+					["realm"] = "Draenor",
+				},
+				["Player-1084-0A95027F"] = {
+					["name"] = "Valithriå-TarrenMill",
+					["guid"] = "Player-1084-0A95027F",
+					["class"] = "EVOKER",
+					["cache_time"] = 1706083244,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1602-0F44317E"] = {
+					["name"] = "хуъйсуй-Гордунни",
+					["guid"] = "Player-1602-0F44317E",
+					["class"] = "DRUID",
+					["cache_time"] = 1705871981,
+					["realm"] = "Гордунни",
+				},
+				["Player-1316-0ACFB1BB"] = {
+					["name"] = "Pillupillu-Nemesis",
+					["guid"] = "Player-1316-0ACFB1BB",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1706083229,
+					["realm"] = "Nemesis",
+				},
+				["Player-3682-0A7EE526"] = {
+					["name"] = "Murdingo-Ragnaros",
+					["guid"] = "Player-3682-0A7EE526",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083297,
+					["realm"] = "Ragnaros",
+				},
+				["Player-1302-0B9B0789"] = {
+					["name"] = "Nayatí-Archimonde",
+					["guid"] = "Player-1302-0B9B0789",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1705526362,
+					["realm"] = "Archimonde",
+				},
+				["Player-604-0A04C9C1"] = {
+					["name"] = "Muténjoshi-Thrall",
+					["guid"] = "Player-604-0A04C9C1",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083297,
+					["realm"] = "Thrall",
+				},
+				["Player-1587-0B3F3F91"] = {
+					["name"] = "Zulmalah-Arathor",
+					["guid"] = "Player-1587-0B3F3F91",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083297,
+					["realm"] = "Arathor",
+				},
+				["Player-3691-0A027C72"] = {
+					["name"] = "Gorfinia-Blackhand",
+					["guid"] = "Player-3691-0A027C72",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083297,
+					["realm"] = "Blackhand",
+				},
+				["Player-1403-0A2FB81A"] = {
+					["name"] = "Jijix-Draenor",
+					["guid"] = "Player-1403-0A2FB81A",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083107,
+					["realm"] = "Draenor",
+				},
+				["Player-1084-05C0F9DA"] = {
+					["name"] = "Babau-TarrenMill",
+					["guid"] = "Player-1084-05C0F9DA",
+					["class"] = "MAGE",
+					["cache_time"] = 1706083229,
+					["realm"] = "TarrenMill",
+				},
+				["Player-604-0A5933F1"] = {
+					["name"] = "Wrede-Thrall",
+					["guid"] = "Player-604-0A5933F1",
+					["class"] = "PRIEST",
+					["cache_time"] = 1705356798,
+					["realm"] = "Thrall",
+				},
+				["Player-3674-08B36FD6"] = {
+					["name"] = "Nitoryu-TwistingNether",
+					["guid"] = "Player-3674-08B36FD6",
+					["class"] = "ROGUE",
+					["cache_time"] = 1706083244,
+					["realm"] = "TwistingNether",
+				},
+				["Player-3692-0A075072"] = {
+					["name"] = "Diunm-Eredar",
+					["guid"] = "Player-3692-0A075072",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Eredar",
+				},
+				["Player-3691-09F1A1F5"] = {
+					["name"] = "Andoron-Blackhand",
+					["guid"] = "Player-3691-09F1A1F5",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706083244,
+					["realm"] = "Blackhand",
+				},
+				["Player-3691-060B9DC2"] = {
+					["name"] = "Moondrink-Blackhand",
+					["guid"] = "Player-3691-060B9DC2",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083229,
+					["realm"] = "Blackhand",
+				},
+				["Player-578-0A463338"] = {
+					["name"] = "Lagruda-Arthas",
+					["guid"] = "Player-578-0A463338",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1706083297,
+					["realm"] = "Arthas",
+				},
+				["Player-3674-0AD47983"] = {
+					["name"] = "Dromi-TwistingNether",
+					["guid"] = "Player-3674-0AD47983",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706083229,
+					["realm"] = "TwistingNether",
+				},
+				["Player-512-0712E9E9"] = {
+					["name"] = "Malédiscia-Arakarahm",
+					["guid"] = "Player-512-0712E9E9",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705844429,
+					["realm"] = "Arakarahm",
+				},
+				["Player-580-0A7B10EA"] = {
+					["ilvl"] = 473.1875,
+					["guid"] = "Player-580-0A7B10EA",
+					["class"] = "DRUID",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1706083269,
+					["realm"] = "Blackmoore",
+					["name"] = "Arcencial-Blackmoore",
+					["specID"] = 102,
+					["enchantingLvl"] = 0,
+					["rank"] = "Mitglied",
+				},
+				["Player-1615-0ACFD986"] = {
+					["name"] = "джекибригз-Ревущийфьорд",
+					["guid"] = "Player-1615-0ACFD986",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Ревущийфьорд",
+				},
+				["Player-1127-096A70EF"] = {
+					["name"] = "Moreta-ConseildesOmbres",
+					["guid"] = "Player-1127-096A70EF",
+					["class"] = "DEATHKNIGHT",
+					["cache_time"] = 1706083297,
+					["realm"] = "ConseildesOmbres",
+				},
+				["Player-578-05BB069B"] = {
+					["name"] = "Callandro-Wrathbringer",
+					["guid"] = "Player-578-05BB069B",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083314,
+					["realm"] = "Wrathbringer",
+				},
+				["Player-581-0A6AB37E"] = {
+					["name"] = "Laserbummels-Blackrock",
+					["guid"] = "Player-581-0A6AB37E",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083244,
+					["realm"] = "Blackrock",
+				},
+				["Player-1329-094D8DA3"] = {
+					["name"] = "Clankz-Ravencrest",
+					["guid"] = "Player-1329-094D8DA3",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705844490,
+					["realm"] = "Ravencrest",
+				},
+				["Player-3674-0A09064E"] = {
+					["name"] = "Antimechanic-TwistingNether",
+					["guid"] = "Player-3674-0A09064E",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705390956,
+					["realm"] = "TwistingNether",
+				},
+				["Player-1402-0A73B02C"] = {
+					["name"] = "Jakobt-Turalyon",
+					["guid"] = "Player-1402-0A73B02C",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083166,
+					["realm"] = "Turalyon",
+				},
+				["Player-2073-06CC86C4"] = {
+					["name"] = "Berooze-Stormscale",
+					["guid"] = "Player-2073-06CC86C4",
+					["class"] = "PALADIN",
+					["cache_time"] = 1706083229,
+					["realm"] = "Stormscale",
+				},
+				["Player-1403-0A9450E6"] = {
+					["name"] = "Saurm-Draenor",
+					["guid"] = "Player-1403-0A9450E6",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705781586,
+					["realm"] = "Draenor",
+				},
+				["Player-1313-0CBF35FF"] = {
+					["name"] = "Zirrax-Wildhammer",
+					["guid"] = "Player-1313-0CBF35FF",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1705961724,
+					["realm"] = "Wildhammer",
+				},
+				["Player-1092-0AB00AB0"] = {
+					["name"] = "Dzurhunt-Drak'thul",
+					["guid"] = "Player-1092-0AB00AB0",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "Drak'thul",
+				},
+				["Player-1305-0C4D1ED9"] = {
+					["name"] = "Gigantour-Kazzak",
+					["guid"] = "Player-1305-0C4D1ED9",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705390956,
+					["realm"] = "Kazzak",
+				},
+				["Player-1302-0A06F0E5"] = {
+					["name"] = "åkio-Archimonde",
+					["guid"] = "Player-1302-0A06F0E5",
+					["class"] = "MONK",
+					["cache_time"] = 1705961724,
+					["realm"] = "Archimonde",
+				},
+				["Player-512-03E71E90"] = {
+					["name"] = "Maszo-Throk'Feroth",
+					["guid"] = "Player-512-03E71E90",
+					["class"] = "MAGE",
+					["cache_time"] = 1706083166,
+					["realm"] = "Throk'Feroth",
+				},
+				["Player-1615-0B448ACD"] = {
+					["name"] = "рёбрышки-Ревущийфьорд",
+					["guid"] = "Player-1615-0B448ACD",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083314,
+					["realm"] = "Ревущийфьорд",
+				},
+				["Player-3674-0A9EAEFB"] = {
+					["name"] = "Restourant-TwistingNether",
+					["guid"] = "Player-3674-0A9EAEFB",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083297,
+					["realm"] = "TwistingNether",
+				},
+				["Player-1390-0C4FD0AC"] = {
+					["ilvl"] = 434.3125,
+					["guid"] = "Player-1390-0C4FD0AC",
+					["class"] = "PRIEST",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1705528234,
+					["realm"] = "Hyjal",
+					["name"] = "Prochoco-Hyjal",
+					["specID"] = 258,
+					["enchantingLvl"] = 0,
+					["rank"] = "O'fficier",
+				},
+				["Player-3674-0B2918A7"] = {
+					["name"] = "Boushkara-TwistingNether",
+					["guid"] = "Player-3674-0B2918A7",
+					["class"] = "PRIEST",
+					["cache_time"] = 1706083297,
+					["realm"] = "TwistingNether",
+				},
+				["Player-1390-0B3EAA8E"] = {
+					["ilvl"] = 477.25,
+					["guid"] = "Player-1390-0B3EAA8E",
+					["class"] = "DEMONHUNTER",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1705876798,
+					["rank"] = "O'Peon",
+					["name"] = "Lussious-Hyjal",
+					["specID"] = 577,
+					["enchantingLvl"] = 0,
+					["realm"] = "Hyjal",
+				},
+				["Player-1390-0791D20F"] = {
+					["name"] = "Prometheu-Hyjal",
+					["guid"] = "Player-1390-0791D20F",
+					["class"] = "MONK",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+				},
+				["Player-3656-04E77F2B"] = {
+					["name"] = "Moohamed-Spinebreaker",
+					["guid"] = "Player-3656-04E77F2B",
+					["class"] = "DRUID",
+					["cache_time"] = 1705771424,
+					["realm"] = "Spinebreaker",
+				},
+				["Player-1621-0B00CFBB"] = {
+					["name"] = "Makëla-Dalaran",
+					["guid"] = "Player-1621-0B00CFBB",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706125740,
+					["realm"] = "Dalaran",
+				},
+				["Player-1305-0CC08621"] = {
+					["name"] = "Homsedruid-Kazzak",
+					["guid"] = "Player-1305-0CC08621",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083314,
+					["realm"] = "Kazzak",
+				},
+				["Player-1092-0AB927D4"] = {
+					["name"] = "Mætthew-Drak'thul",
+					["guid"] = "Player-1092-0AB927D4",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1705958978,
+					["realm"] = "Drak'thul",
+				},
+				["Player-3391-0CBE7C9D"] = {
+					["name"] = "Dilix-Silvermoon",
+					["guid"] = "Player-3391-0CBE7C9D",
+					["class"] = "MONK",
+					["cache_time"] = 1705771424,
+					["realm"] = "Silvermoon",
+				},
+				["Player-1127-0A2EDA9A"] = {
+					["name"] = "Lebourin-ConseildesOmbres",
+					["guid"] = "Player-1127-0A2EDA9A",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705356798,
+					["realm"] = "ConseildesOmbres",
+				},
+				["Player-1305-08B3B672"] = {
+					["name"] = "Mindglow-Kazzak",
+					["guid"] = "Player-1305-08B3B672",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "Kazzak",
+				},
+				["Player-570-0A8C4F2A"] = {
+					["name"] = "Khalesie-Lothar",
+					["guid"] = "Player-570-0A8C4F2A",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705844429,
+					["realm"] = "Lothar",
+				},
+				["Player-3674-0B0D0EB0"] = {
+					["name"] = "Kitsos-TwistingNether",
+					["guid"] = "Player-3674-0B0D0EB0",
+					["class"] = "EVOKER",
+					["cache_time"] = 1706083229,
+					["realm"] = "TwistingNether",
+				},
+				["Player-1379-0AB0B84F"] = {
+					["name"] = "Sarite-Sanguino",
+					["guid"] = "Player-1379-0AB0B84F",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083166,
+					["realm"] = "Sanguino",
+				},
+				["Player-3713-072D685D"] = {
+					["name"] = "Dragy-BurningLegion",
+					["guid"] = "Player-3713-072D685D",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083166,
+					["realm"] = "BurningLegion",
+				},
+				["Player-1929-0E2954D6"] = {
+					["name"] = "рекстор-Борейскаятундра",
+					["guid"] = "Player-1929-0E2954D6",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705875316,
+					["realm"] = "Борейскаятундра",
+				},
+				["Player-1597-0F596E19"] = {
+					["name"] = "Palarias-Sylvanas",
+					["guid"] = "Player-1597-0F596E19",
+					["class"] = "PALADIN",
+					["cache_time"] = 1705495082,
+					["realm"] = "Sylvanas",
+				},
+				["Player-1624-0567C1F6"] = {
+					["name"] = "Apolyon-Illidan",
+					["guid"] = "Player-1624-0567C1F6",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1706083244,
+					["realm"] = "Illidan",
+				},
+				["Player-1329-09B6006D"] = {
+					["name"] = "Xoj-Ravencrest",
+					["guid"] = "Player-1329-09B6006D",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705443579,
+					["realm"] = "Ravencrest",
+				},
+				["Player-3686-05F587C1"] = {
+					["name"] = "Comaxx-Antonidas",
+					["guid"] = "Player-3686-05F587C1",
+					["class"] = "WARLOCK",
+					["cache_time"] = 1705846330,
+					["realm"] = "Antonidas",
+				},
+				["Player-1390-09230B89"] = {
+					["ilvl"] = 466.5,
+					["guid"] = "Player-1390-09230B89",
+					["class"] = "SHAMAN",
+					["role"] = "DAMAGER",
+					["cache_time"] = 1706125740,
+					["realm"] = "Hyjal",
+					["name"] = "Kvotheen-Hyjal",
+					["specID"] = 263,
+					["enchantingLvl"] = 0,
+					["rank"] = "O'New",
+				},
+				["Player-1084-0A55C29D"] = {
+					["name"] = "Moroccangirl-TarrenMill",
+					["guid"] = "Player-1084-0A55C29D",
+					["class"] = "MONK",
+					["cache_time"] = 1706083229,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1602-0F4D0826"] = {
+					["name"] = "эльвиднир-Гордунни",
+					["guid"] = "Player-1602-0F4D0826",
+					["class"] = "SHAMAN",
+					["cache_time"] = 1705389776,
+					["realm"] = "Гордунни",
+				},
+				["Player-1390-09D4B8D9"] = {
+					["name"] = "Kitava-Hyjal",
+					["guid"] = "Player-1390-09D4B8D9",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705839878,
+					["realm"] = "Hyjal",
+				},
+				["Player-1403-0A7689BA"] = {
+					["name"] = "Timeôut-Draenor",
+					["guid"] = "Player-1403-0A7689BA",
+					["class"] = "HUNTER",
+					["cache_time"] = 1706083229,
+					["realm"] = "Draenor",
+				},
+				["Player-1390-0CBB8BA5"] = {
+					["name"] = "Kùros-Hyjal",
+					["guid"] = "Player-1390-0CBB8BA5",
+					["class"] = "DRUID",
+					["cache_time"] = 1706083229,
+					["realm"] = "Hyjal",
+				},
+				["Player-1084-0AC7C667"] = {
+					["name"] = "Hardyz-TarrenMill",
+					["guid"] = "Player-1084-0AC7C667",
+					["class"] = "HUNTER",
+					["cache_time"] = 1705846330,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1615-09299246"] = {
+					["name"] = "соулслэйер-Ревущийфьорд",
+					["guid"] = "Player-1615-09299246",
+					["class"] = "ROGUE",
+					["cache_time"] = 1706083297,
+					["realm"] = "Ревущийфьорд",
+				},
+				["Player-1390-0C55EA19"] = {
+					["name"] = "Procooper-Hyjal",
+					["guid"] = "Player-1390-0C55EA19",
+					["class"] = "ROGUE",
+					["cache_time"] = 1705525855,
+					["realm"] = "Hyjal",
+				},
+				["Player-1084-0A71B6AB"] = {
+					["name"] = "Shinjiro-TarrenMill",
+					["guid"] = "Player-1084-0A71B6AB",
+					["class"] = "MONK",
+					["cache_time"] = 1706083297,
+					["realm"] = "TarrenMill",
+				},
+				["Player-1403-06BF16F0"] = {
+					["name"] = "Futortune-Draenor",
+					["guid"] = "Player-1403-06BF16F0",
+					["class"] = "DEMONHUNTER",
+					["cache_time"] = 1705495082,
+					["realm"] = "Draenor",
+				},
+				["Player-1335-038D3D6E"] = {
+					["name"] = "Miisteriious-Ysondre",
+					["guid"] = "Player-1335-038D3D6E",
+					["class"] = "WARRIOR",
+					["cache_time"] = 1706125740,
+					["realm"] = "Ysondre",
+				},
+				["Player-1303-0CC22034"] = {
+					["name"] = "Dexx-Frostmane",
+					["guid"] = "Player-1303-0CC22034",
+					["class"] = "MAGE",
+					["cache_time"] = 1705844429,
+					["realm"] = "Frostmane",
+				},
+			},
+		},
+		["oldVersion"] = "3.10.4",
+		["verTestCandidates"] = {
+			["Ratariar-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705775463, -- [3]
+			},
+			["Traksor-Hyjal"] = {
+				"3.10.4", -- [1]
+				nil, -- [2]
+				1705840970, -- [3]
+			},
+			["Prochoco-Hyjal"] = {
+				"3.10.4", -- [1]
+				nil, -- [2]
+				1705528353, -- [3]
+			},
+			["Bourdon-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705528966, -- [3]
+			},
+			["Aetralia-Hyjal"] = {
+				"3.10.4", -- [1]
+				nil, -- [2]
+				1705840614, -- [3]
+			},
+			["Pâpätte-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705955783, -- [3]
+			},
+			["Prometheu-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1706122664, -- [3]
+			},
+			["Domjåm-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705526726, -- [3]
+			},
+			["Lussious-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705926109, -- [3]
+			},
+			["ïjïn-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705784718, -- [3]
+			},
+			["Suiffeur-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1706124652, -- [3]
+			},
+			["Procooper-Hyjal"] = {
+				"3.10.4", -- [1]
+				nil, -- [2]
+				1705525895, -- [3]
+			},
+			["Draguignol-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705873511, -- [3]
+			},
+			["Câramël-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705528353, -- [3]
+			},
+			["Uglysquid-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1706125551, -- [3]
+			},
+			["Hulberh-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705775708, -- [3]
+			},
+			["ézuu-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1705529087, -- [3]
+			},
+			["Vaalkyra-Hyjal"] = {
+				"3.10.5", -- [1]
+				nil, -- [2]
+				1706125404, -- [3]
+			},
+			["Traksør-Hyjal"] = {
+				"3.10.4", -- [1]
+				nil, -- [2]
+				1705841026, -- [3]
+			},
+		},
+		["regionID"] = 3,
+		["locale"] = "enUS",
+		["version"] = "3.10.5",
+	},
+	["profiles"] = {
+		["Default"] = {
+			["UI"] = {
+				["tradeui"] = {
+					["bgColor"] = {
+						0.55, -- [1]
+						0.84, -- [2]
+						1, -- [3]
+					},
+					["borderColor"] = {
+						0.62, -- [1]
+						0.86, -- [2]
+						0.87, -- [3]
+						0.85, -- [4]
+					},
+					["background"] = "Blizzard Garrison Background 3",
+					["border"] = "Blizzard Dialog",
+				},
+				["lootframe"] = {
+					["bgColor"] = {
+						0.55, -- [1]
+						0.84, -- [2]
+						1, -- [3]
+					},
+					["borderColor"] = {
+						0.62, -- [1]
+						0.86, -- [2]
+						0.87, -- [3]
+						0.85, -- [4]
+					},
+					["background"] = "Blizzard Garrison Background 3",
+					["border"] = "Blizzard Dialog",
+				},
+				["default"] = {
+					["bgColor"] = {
+						0.55, -- [1]
+						0.84, -- [2]
+						1, -- [3]
+					},
+					["borderColor"] = {
+						0.62, -- [1]
+						0.86, -- [2]
+						0.87, -- [3]
+						0.85, -- [4]
+					},
+					["background"] = "Blizzard Garrison Background 3",
+					["border"] = "Blizzard Dialog",
+				},
+			},
+		},
+	},
+}
+RCLootCouncilLootDB = {
+	["profileKeys"] = {
+		["Kvotheen - Hyjal"] = "Kvotheen - Hyjal",
+		["Kitava - Hyjal"] = "Kitava - Hyjal",
+	},
+}

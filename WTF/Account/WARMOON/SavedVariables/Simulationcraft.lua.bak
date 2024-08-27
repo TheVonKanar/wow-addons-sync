@@ -1,0 +1,23 @@
+
+SimulationCraftDB = {
+["profileKeys"] = {
+["Kitava - Hyjal"] = "Kitava - Hyjal",
+["Kvotheen - Hyjal"] = "Kvotheen - Hyjal",
+["Quiproquo - Uldaman"] = "Quiproquo - Uldaman",
+["Devonka - Hyjal"] = "Devonka - Hyjal",
+},
+["profiles"] = {
+["Kitava - Hyjal"] = {
+},
+["Kvotheen - Hyjal"] = {
+["minimap"] = {
+["minimapPos"] = 41.2481980314233,
+["hide"] = true,
+},
+},
+["Quiproquo - Uldaman"] = {
+},
+["Devonka - Hyjal"] = {
+},
+},
+}

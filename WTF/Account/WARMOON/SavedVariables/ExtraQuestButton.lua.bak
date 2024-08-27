@@ -1,0 +1,19 @@
+
+ExtraQuestButtonDB3 = {
+["profiles"] = {
+["Default"] = {
+["artworkAlpha"] = 1,
+["scale"] = 1,
+["trackingOnly"] = true,
+["position"] = {
+["y"] = 244.0005645751953,
+["x"] = -354.1679382324219,
+["point"] = "BOTTOM",
+},
+["noCooldownText"] = false,
+["zoneOnly"] = false,
+["distanceYd"] = 200,
+["artworkStyle"] = "Default",
+},
+},
+}
