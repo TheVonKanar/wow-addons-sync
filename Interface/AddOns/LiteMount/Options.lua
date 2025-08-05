@@ -109,6 +109,7 @@ local defaults = {
         announceViaUI       = false,
         announceColors      = false,
         announceFlightStyle = true,
+        mountSpecialTimer   = 0,
     },
     char = {
         unavailableMacro    = "",
@@ -472,7 +473,6 @@ local PseudoFlags = {
     "COLLECTED",
     "SLOW",
     "JOURNAL",
-    "MAWUSABLE",
     "DRAGONRIDING",
     "ZONEMATCH",
     "FAVORITES", FAVORITES,

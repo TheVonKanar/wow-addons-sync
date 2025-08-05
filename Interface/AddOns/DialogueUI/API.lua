@@ -821,6 +821,18 @@ do  -- NPC Interaction
     end
     API.GetCurrentNPCInfo = GetCurrentNPCInfo;
 
+    local function GetUnitTypeAndID(unit)
+        unit = unit or "npc";
+        local guid = UnitGUID("npc");
+        if guid then
+            local unitType, id = match(guid, "^(%a+)%-0%-%d*%-%d*%-%d*%-(%d*)");
+            if unitType and id then
+                return unitType, tonumber(id)
+            end
+        end
+    end
+    API.GetUnitTypeAndID = GetUnitTypeAndID;
+
     local SkippedNPC = {
         [94398] = true,     --Fleet Command Table
         [94399] = true,     --Fleet Command Table
@@ -830,9 +842,8 @@ do  -- NPC Interaction
         [215758] = true,    --Mission Command Table
     };
     local function IsInteractingWithGameObject()
-        local guid = UnitGUID("npc");
-        if guid then
-            local unitType, id = match(guid, "^(%a+)%-0%-%d*%-%d*%-%d*%-(%d*)");
+        local unitType, id = GetUnitTypeAndID("npc");
+        if id then
             if unitType == "GameObject" or unitType == "Vehicle" then
                 return true
             elseif unitType == "Creature" and id then
@@ -1311,7 +1322,7 @@ do  -- Quest
         if not item then return end;
         local classID, subclassID = select(6, GetItemInfoInstant(item));
         --print(item, classID, subclassID)
-        return (classID == 12) or (classID == 0 and subclassID == 8) or (classID == 15 and (subclassID == 0 or subclassID == 4))
+        return (classID == 12) or (classID == 0 and subclassID == 8) or (classID == 15 and subclassID == 4)     ---Re-ignore Junk?
     end
     API.IsQuestLoreItem = IsQuestLoreItem;
 
@@ -2066,6 +2077,41 @@ do  -- Model
         model:SetLight(enabled, lightValues);
     end
     API.SetModelLight = SetModelLight;
+
+
+    do  --UnitPortraitSetter
+        local UnitPortraitSetter = CreateFrame("Frame");
+        UnitPortraitSetter.queue = {};
+
+        function UnitPortraitSetter:SetPortraitTexture(textureObject, unit)
+            if IsUnitModelReadyForUI(unit) then
+                self.queue[textureObject] = nil;
+                SetPortraitTexture(textureObject, unit);
+            else
+                self.queue[textureObject] = unit;
+                self.t = 0;
+                self:SetScript("OnUpdate", self.OnUpdate);
+            end
+        end
+
+        function UnitPortraitSetter:OnUpdate(elapsed)
+            self.t = self.t + elapsed;
+            if self.t >= 1.0 then
+                self.t = 0;
+                self:SetScript("OnUpdate", nil);
+                for textureObject, unit in pairs(self.queue) do
+                    if textureObject:IsVisible() then
+                        SetPortraitTexture(textureObject, unit);
+                    end
+                end
+                self.queue = {};
+            end
+        end
+
+        API.SetPortraitTexture = function(textureObject, unit)
+            UnitPortraitSetter:SetPortraitTexture(textureObject, unit);
+        end
+    end
 end
 
 do  -- Faction -- Reputation
@@ -3256,6 +3302,27 @@ do  -- System
     end
     CallbackRegistry:Register("DialogueUI.Show", API.ClearEditBoxFocus);
     CallbackRegistry:Register("BookUI.Show", API.ClearEditBoxFocus);
+
+
+    if StaticPopup_FindVisible then
+        function API.CloseGossipStaticPopups()
+            local whiches = {"GOSSIP_CONFIRM", "GOSSIP_ENTER_CODE"};
+            local soundUnmuted = true;
+            for _, which in ipairs(whiches) do
+                local dialog = StaticPopup_FindVisible(which);
+                if dialog then
+                    if soundUnmuted then
+                        soundUnmuted = false;
+                        API.BrieflyMuteUIOpenHideSound();
+                    end
+                    dialog:Show();
+                    dialog:Hide();
+                end
+            end
+        end
+    else
+        API.CloseGossipStaticPopups = AlwaysNil;
+    end
 end
 
 do  -- Zone -- Location -- Area

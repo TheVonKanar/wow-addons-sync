@@ -1,3 +1,5 @@
+local T = Angleur_Translate
+
 angleurDelayers = CreateFramePool("Frame", angleurDelayers, nil, function(framePool, frame)
     frame:ClearAllPoints()
     frame:SetScript("OnUpdate", nil)
@@ -6,8 +8,7 @@ end)
 
 AngleurConfig = {
     angleurKey,
-    angleurKeyModifier,
-    angleurKeyMain,
+    angleurKey_Base,
     raftEnabled,
     chosenRaft = {toyID = 0, name = 0, dropDownID = 0},
     baitEnabled,
@@ -17,6 +18,8 @@ AngleurConfig = {
     chosenCrateBobber = {toyID = 0, name = 0, dropDownID = 0},
     chosenMethod,
     doubleClickChosenID = 2,
+    recastEnabled,
+    recastKey,
     visualHidden,
     visualLocation,
     ultraFocusAudioEnabled,
@@ -24,6 +27,15 @@ AngleurConfig = {
     ultraFocusTurnOffInteract,
     ultraFocusingAudio,
     ultraFocusingAutoLoot,
+}
+
+AngleurClassicConfig = {
+    softInteract = {
+        enabled = false,
+        bobberScanner = false,
+        warningSound = false,
+        recastWhenOOB = false,
+    },
 }
 
 AngleurCharacter = {
@@ -34,6 +46,9 @@ AngleurCharacter = {
 Angleur_CVars = {
     ultraFocus = {musicOn, ambienceOn, dialogOn, effectsOn,  effectsVolume, masterOn, masterVolume, backgroundOn},
     autoLoot
+}
+AngleurClassic_CVars = {
+    softInteract,
 }
 
 AngleurMinimapButton = {
@@ -61,7 +76,31 @@ function Init_AngleurSavedVariables()
     if AngleurConfig.chosenBait == nil then
         AngleurConfig.chosenBait = {itemID = 0, name = 0, dropDownID = 0}
     end
+    if AngleurConfig.recastEnabled == nil then
+        AngleurConfig.recastEnabled = false
+    end
 
+    local gameVersion = Angleur_CheckVersion()
+    if gameVersion == 2 or gameVersion == 3 then
+        if AngleurClassicConfig == nil then
+            AngleurClassicConfig = {}
+        end
+        if AngleurClassicConfig.softInteract == nil then
+            AngleurClassicConfig.softInteract = {}
+        end
+        if AngleurClassicConfig.softInteract.enabled == nil then
+            AngleurClassicConfig.softInteract.enabled = false
+        end
+        if AngleurClassicConfig.softInteract.bobberScanner == nil then
+            AngleurClassicConfig.softInteract.bobberScanner = false
+        end
+        if AngleurClassicConfig.softInteract.bobberScanner == nil then
+            AngleurClassicConfig.softInteract.bobberScanner = false
+        end
+        if AngleurClassicConfig.softInteract.recastWhenOOB == nil then
+            AngleurClassicConfig.softInteract.recastWhenOOB = false
+        end
+    end
     
 
     if AngleurCharacter.sleeping == nil then
@@ -100,7 +139,105 @@ function Init_AngleurSavedVariables()
     if AngleurTutorial.part == nil then
         AngleurTutorial.part = 1
     end
+
+    --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    -- cleanup for older version's saved variables, may delete in a month
+    --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    if AngleurConfig.angleurKeyModifier then
+        AngleurConfig.angleurKeyModifier = nil
+        AngleurConfig.angleurKeyMain = nil
+        AngleurConfig.angleurKey = nil
+        print(T["Angleur: VERSION UPDATED. Please re-set your \'OneKey\' from the Config Panel."])
+    end
+    --|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+    
+    Angleur_AngleurKey.savedVarTable = AngleurConfig
+    Angleur_AngleurKey.keybindRef = "angleurKey"
+    Angleur_AngleurKey.baseRef = "angleurKey_Base"
+
+    Angleur_RecastKey.savedVarTable = AngleurConfig
+    Angleur_RecastKey.keybindRef = "recastKey"
 end
+
+AngleurVanilla_FishingPoleTable = {
+    6256,
+    6365,
+    6366,
+    6367,
+    12225,
+    19022,
+    19970,
+    25978,
+    44050,
+    45120,
+    45858,
+    45991,
+    45992,
+    46337,
+    52678
+}
+AngleurVanilla_FishingSpellTable = {
+    7620,
+    7731,
+    7732,
+    18248,
+    33095,
+    51294,
+    88868
+}
+AngleurMoP_FishingPoleTable = {
+    6256, --Fishing Pole
+    6365, --Strong Fishing Pole
+    6366, --Darkwood Fishing Pole
+    6367, --Big Iron Fishing Pole
+    12225, --Blump Family Fishing Pole
+    19022, --Nat Pagle's Extreme Angler FC-5000
+    19970, --Arcanite Fishing Pole
+    25978, --Seth's Graphite Fishing Pole
+    44050, --Mastercraft Kalu'ak Fishing Pole
+    45120, --Basic Fishing Pole
+    45858, --Nat's Lucky Fishing Pole
+    45991, --Bone Fishing Pole
+    45992, --Jeweled Fishing Pole
+    46337, --Staat's Fishing Pole
+    52678, --Jonathan's Fishing Pole
+    -----------------
+    --MoP Additions--
+    -----------------
+    84661, --Dragon Fishing Pole  
+    84660, --Pandaren Fishing Pole
+}
+AngleurMoP_FishingSpellTable = {
+    7620,
+    7731,
+    7732,
+    18248,
+    33095,
+    51294,
+    88868,
+    --MoP Additions
+    110410,
+    131474,
+    131476,
+    131490,
+    --Skumblade Spear Fishing
+    139505,
+    --MoP Uncategorized
+    62734,
+    131475,
+    131477,
+    131478,
+    131479,
+    131480,
+    131481,
+    131482,
+    131483,
+    131484,
+    131491,
+    --MoP NPC Abilities
+    63275,
+}
 
 -- 1 : Retail, 2 : Cata Classic, 3 : Classic 19 : MoP Classic    (0: None, fail)
 function Angleur_CheckVersion()
@@ -125,7 +262,7 @@ function Angleur_SingleDelayer(delay, timeElapsed, elapsedThreshhold, delayFrame
         if timeElapsed > elapsedThreshhold then
             if cycleFunk then
                 if cycleFunk() == true then
-                    --print("Breaking delayer")
+                    -- If cycleFunk returns true the delayer is stopped, and the script set to nil. endFunk is not executed..
                     self:SetScript("OnUpdate", nil)
                     return
                 end
@@ -136,7 +273,7 @@ function Angleur_SingleDelayer(delay, timeElapsed, elapsedThreshhold, delayFrame
         
         if delay <= 0 then
             self:SetScript("OnUpdate", nil)
-            endFunk()
+            if endFunk then endFunk() end
             return
         end
     end)

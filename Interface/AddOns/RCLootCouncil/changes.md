@@ -1,14 +1,11 @@
+Updated for patch 11.2.5.
+
 ## Changes
 
-### Chat commands
-
-Added chat command to directly open the Master Looter options menu:
-
-`/rc ml`
+- Trade time remaining checks are no longer performed in combat as they would be easy to overlook.
 
 ## Bugfixes
 
-- *Reduced voting frame row jumping.*
-- *Switching characters will no longer apply cached state.*
-- *Removing an item from the session frame mid session now actually removes it, i.e. the voting frame no longer thinks there's still items to award.*
+- *Fixed issue with running `/rc add` commands after having declined usage could lead to errors.*
+- *Leaving a group will now properly disable the voting frame fixing certain errors that could happen with it being enabled.*
 

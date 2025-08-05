@@ -1,6 +1,6 @@
 local IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local IS_CLASSIC_ERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local IS_CLASSIC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+local IS_CLASSIC = not IS_RETAIL and not IS_CLASSIC_ERA
 
 local addonName = ... ---@type string @The name of the addon.
 local ns = select(2, ...) ---@class ns @The addon namespace.
@@ -22,7 +22,7 @@ local ScrollBoxUtil do
     ---@class CallbackRegistryMixin
     ---@field public RegisterCallback fun(event: string|any, callback: fun())
 
-    ---@class ScrollBoxBaseMixin : CallbackRegistryMixin
+    ---@class ScrollBoxBaseMixin : CallbackRegistryMixin, Frame
     ---@field public GetFrames fun(): Frame[]
     ---@field public Update fun()
     ---@field public buttons? Button[]
@@ -76,13 +76,34 @@ end
 
 local HookUtil do
 
+    ---@alias ScriptAnyWidgetHandler
+    ---|ScriptAnimation
+    ---|ScriptAnimationGroup
+    ---|ScriptBrowser
+    ---|ScriptButton
+    ---|ScriptCheckout
+    ---|ScriptCinematicModel
+    ---|ScriptColorSelect
+    ---|ScriptCooldown
+    ---|ScriptDressUpModel
+    ---|ScriptEditBox
+    ---|ScriptFogOfWarFrame
+    ---|ScriptFrame
+    ---|ScriptGameTooltip
+    ---|ScriptModel
+    ---|ScriptModelSceneActor
+    ---|ScriptMovieFrame
+    ---|ScriptScrollFrame
+    ---|ScriptSlider
+    ---|ScriptStatusBar
+
     HookUtil = {}
 
     local hooked = {}
 
     ---@param frame Frame
     ---@param callback fun(self: Frame, ...)
-    ---@param ... string
+    ---@param ... ScriptAnyWidgetHandler
     function HookUtil:On(frame, callback, ...)
         local hook = hooked[frame]
         if not hook then
@@ -104,7 +125,7 @@ local HookUtil do
 
     ---@param frames Frame[]
     ---@param callback fun(self: Frame, ...)
-    ---@param ... string
+    ---@param ... ScriptAnyWidgetHandler
     function HookUtil:OnAll(frames, callback, ...)
         for _, frame in ipairs(frames) do
             HookUtil:On(frame, callback, ...)
@@ -112,7 +133,7 @@ local HookUtil do
     end
 
     ---@param object Frame[]|Frame
-    ---@param map table<string, fun()>
+    ---@param map table<ScriptAnyWidgetHandler, fun()>
     function HookUtil:MapOn(object, map)
         if type(object) ~= "table" then
             return
@@ -359,11 +380,119 @@ local DropDownUtil do
 
 end
 
+local StaticPopupUtil do
+
+    ---@param widget? Region
+    local function isTextFontString(widget)
+        return widget and widget:GetObjectType() == "FontString"
+    end
+
+    ---@param widget? Region
+    ---@param reqShown? boolean
+    local function isEditBox(widget, reqShown)
+        return widget and widget:GetObjectType() == "EditBox" and (not reqShown or widget:IsShown())
+    end
+
+    ---@param widget? Region
+    local function isButton(widget)
+        return widget and widget:GetObjectType() == "Button"
+    end
+
+    StaticPopupUtil = {}
+
+    ---@param popup InternalStaticPopupDialog
+    ---@param ... any
+    ---@return InternalStaticPopupDialog
+    function StaticPopupUtil:Show(popup, ...)
+        local id = popup.id
+        if not StaticPopupDialogs[id] then
+            if type(popup.text) == "function" then
+                popup.text = popup.text()
+            end
+            if not popup.which then
+                popup.which = popup.id
+            end
+            StaticPopupDialogs[id] = popup
+        end
+        return StaticPopup_Show(id, ...)
+    end
+
+    ---@param popup InternalStaticPopupFrame
+    function StaticPopupUtil:GetTextFontString(popup)
+        local text = popup.Text
+        if isTextFontString(text) then
+            return text
+        end
+        if popup.GetTextFontString then
+            text = popup:GetTextFontString()
+        end
+        if isTextFontString(text) then
+            return text
+        end
+        text = popup.text
+        if isTextFontString(text) then
+            return text
+        end
+        local name = popup:GetName()
+        text = _G[name .. "Text"]
+        return text
+    end
+
+    ---@param popup InternalStaticPopupFrame
+    function StaticPopupUtil:GetEditBox(popup)
+        local editBox = popup.EditBox
+        if isEditBox(editBox) then
+            return editBox
+        end
+        if popup.GetEditBox then
+            editBox = popup:GetEditBox()
+        end
+        if isEditBox(editBox) then
+            return editBox
+        end
+        local name = popup:GetName()
+        editBox = _G[name .. "WideEditBox"]
+        if isEditBox(editBox, true) then
+            return editBox
+        end
+        editBox = _G[name .. "EditBox"]
+        return editBox
+    end
+
+    ---@param popup InternalStaticPopupFrame
+    ---@param index number
+    function StaticPopupUtil:GetButton(popup, index)
+        local button ---@type Button?
+        if popup.GetButton then
+            button = popup:GetButton(index)
+        end
+        if isButton(button) then
+            return button
+        end
+        local func = popup[format("GetButton%d", index)] ---@type (fun(self: InternalStaticPopupFrame): Button?)?
+        if func then
+            button = func(popup)
+        end
+        if isButton(button) then
+            return button
+        end
+        button = popup[format("button%d", index)] ---@type Button?
+        if isButton(button) then
+            return button
+        end
+        local name = popup:GetName()
+        button = _G[format("%sButton%d", name, index)]
+        return button
+    end
+
+end
+
 -- clients have API naming variants and this helps bridge that gap (this will require revisions/deletion as the clients unify their API's)
 local GetDetailedItemLevelInfo = GetDetailedItemLevelInfo or C_Item.GetDetailedItemLevelInfo ---@diagnostic disable-line: deprecated
 local GetItemInfo = GetItemInfo or C_Item.GetItemInfo ---@diagnostic disable-line: deprecated
 local GetItemInfoInstant = GetItemInfoInstant or C_Item.GetItemInfoInstant ---@diagnostic disable-line: deprecated
 local GetItemQualityColor = GetItemQualityColor or C_Item.GetItemQualityColor ---@diagnostic disable-line: deprecated
+local ReloadUI = ReloadUI or C_UI.Reload
 
 -- constants.lua (ns)
 -- dependencies: none
@@ -1917,6 +2046,11 @@ do
         -- whotooltip.lua
         if IsParentedBy(frame, WhoFrame.ScrollBox) then return true end
         if IsParentedBy(frame, WhoListScrollFrame and WhoListScrollFrame:GetParent()) then return true end
+        -- lfgtooltip.lua
+        if LFGListFrame and LFGListFrame.SearchPanel and LFGListFrame.ApplicationViewer then
+            if IsParentedBy(frame, LFGListFrame.SearchPanel.ScrollBox) then return true end
+            if IsParentedBy(frame, LFGListFrame.ApplicationViewer.ScrollBox) then return true end
+        end
         -- guildtooltip.lua
         if IsParentedBy(frame, GuildRosterContainer) then return true end
         if IsParentedBy(frame, GuildListScrollFrame and GuildListScrollFrame:GetParent()) then return true end
@@ -1937,9 +2071,12 @@ do
     ---| 1 #Script handler ignored due to safety concerns.
     ---| 2 #Script handler executed successfully.
     ---| 3 #Script handler executed but silently errored.
+    ---| 4 #Script handler ignored due to before-callback.
+
+    ---@alias ExecuteWidgetOnEnterSafelyBefore fun(focus: Frame|ScriptRegion): boolean?
 
     ---@param object? Frame|ScriptRegion @Any interface widget object that supports the methods GetScript.
-    ---@param before? fun() @Optional function to run right before the OnEnter script executes.
+    ---@param before? ExecuteWidgetOnEnterSafelyBefore @Optional function to run right before the OnEnter script executes.
     ---@return ExecuteWidgetOnEnterSafelyStatus @Returns a status enum to indicate the outcome of the call.
     function util:ExecuteWidgetOnEnterSafely(object, before)
         if not object or type(object) ~= "table" or type(object.GetScript) ~= "function" then
@@ -1952,8 +2089,12 @@ do
         if not IsOnEnterSafe(object, func) then
             return 1
         end
+        local call ---@type boolean?
         if type(before) == "function" then
-            before()
+            call = before(object)
+        end
+        if call == false then
+            return 4
         end
         if not pcall(func, object) then
             return 3
@@ -1986,9 +2127,23 @@ do
         end
     end
 
-    ---@param before? fun() @Optional function to run right before the OnEnter script executes.
+    ---@param before? ExecuteWidgetOnEnterSafelyBefore @Optional function to run right before the OnEnter script executes.
     ---@return ExecuteWidgetOnEnterSafelyStatus @Returns a status enum to indicate the outcome of the call.
     function util:ExecuteFocusWidgetOnEnterSafely(before)
+        local focus = util:GetMouseFocus()
+        if not focus then
+            return 0
+        end
+        return self:ExecuteWidgetOnEnterSafely(focus, before)
+    end
+
+    ---@param widget ScriptRegion
+    ---@param before? ExecuteWidgetOnEnterSafelyBefore @Optional function to run right before the OnEnter script executes.
+    ---@return ExecuteWidgetOnEnterSafelyStatus @Returns a status enum to indicate the outcome of the call.
+    function util:ExecuteIsMouseOverWidgetOnEnterSafely(widget, before)
+        if not widget:IsMouseOver() then
+            return 0
+        end
         local focus = util:GetMouseFocus()
         if not focus then
             return 0
@@ -2690,8 +2845,22 @@ do
         return format("https://%s/characters/%s/%s/%s/%s?utm_source=addon", ns.RAIDERIO_DOMAIN, ns.PLAYER_REGION, realmSlug, name, urlSuffix), name, realm, realmSlug
     end
 
+    ---@class InternalStaticPopupFrameText : FontString
+    ---@field public text_arg1? string
+    ---@field public text_arg2? string
+
     ---@class InternalStaticPopupFrame : Frame
     ---@field public OnAcceptCallback? function
+    ---@field public Text? InternalStaticPopupFrameText
+    ---@field public GetTextFontString? fun(): InternalStaticPopupFrameText
+    ---@field public EditBox? EditBox
+    ---@field public GetEditBox? fun(): EditBox
+    ---@field public GetButton? fun(self, index: number): Button
+    ---@field public GetButton1? fun(): Button
+    ---@field public GetButton2? fun(): Button
+    ---@field public text? InternalStaticPopupFrameText Deprecated in 11.2 (Used as fallback strategy in case other clients are using the older variant.)
+    ---@field public button1? Button Deprecated in 11.2 (Used as fallback strategy in case other clients are using the older variant.)
+    ---@field public button2? Button Deprecated in 11.2 (Used as fallback strategy in case other clients are using the older variant.)
 
     ---@class InternalStaticPopupDialog
     ---@field public id string
@@ -2703,6 +2872,8 @@ do
     ---@field public editBoxWidth? number
     ---@field public hasEditBox? boolean
     ---@field public hasWideEditBox? boolean
+    ---@field public maxLetters? number `0` removes the limit
+    ---@field public countInvisibleLetters? boolean Only used in tandem with `maxLetters`
     ---@field public hideOnEscape? boolean
     ---@field public OnAccept? fun(self: InternalStaticPopupFrame)
     ---@field public OnCancel? fun(self: InternalStaticPopupFrame)
@@ -2715,19 +2886,8 @@ do
 
     ---@param popup InternalStaticPopupDialog
     ---@param ... any
-    ---@return InternalStaticPopupDialog
     function util:ShowStaticPopupDialog(popup, ...)
-        local id = popup.id
-        if not StaticPopupDialogs[id] then
-            if type(popup.text) == "function" then
-                popup.text = popup.text()
-            end
-            if not popup.which then
-                popup.which = popup.id
-            end
-            StaticPopupDialogs[id] = popup
-        end
-        return StaticPopup_Show(id, ...)
+        return StaticPopupUtil:Show(popup, ...)
     end
 
     ---@type InternalStaticPopupDialog
@@ -2737,6 +2897,7 @@ do
         button2 = CLOSE,
         hasEditBox = true,
         hasWideEditBox = true,
+        maxLetters = 0,
         editBoxWidth = 350,
         preferredIndex = 3,
         timeout = 0,
@@ -2744,11 +2905,12 @@ do
         hideOnEscape = true,
         OnShow = function(self)
             self:SetWidth(420)
-            local editBox = _G[self:GetName() .. "WideEditBox"] or _G[self:GetName() .. "EditBox"]
-            editBox:SetText(self.text.text_arg2) ---@diagnostic disable-line: undefined-field
+            local textFontString = StaticPopupUtil:GetTextFontString(self)
+            local editBox = StaticPopupUtil:GetEditBox(self)
+            editBox:SetText(textFontString.text_arg2)
             editBox:SetFocus()
             editBox:HighlightText()
-            local button = _G[self:GetName() .. "Button2"]
+            local button = StaticPopupUtil:GetButton(self, 2)
             button:ClearAllPoints()
             button:SetWidth(200)
             button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
@@ -3094,6 +3256,7 @@ do
         button2 = CLOSE,
         hasEditBox = true,
         hasWideEditBox = true,
+        maxLetters = 0,
         editBoxWidth = 350,
         preferredIndex = 3,
         timeout = 0,
@@ -5782,7 +5945,8 @@ do
                                 tooltip:AddDoubleLine(L.MAINS_SCORE, GetScoreText(keystoneProfile.mplusMainCurrent), 1, 1, 1, util:GetScoreColor(keystoneProfile.mplusMainCurrent.score))
                             end
                         else
-                            local isMainPreviousScoreRelevant = keystoneProfile.mplusMainCurrent.score < (ns.PREVIOUS_SEASON_MAIN_SCORE_RELEVANCE_THRESHOLD * keystoneProfile.mplusMainPrevious.score)
+                            local mainPreviousScoreThreshold = (ns.PREVIOUS_SEASON_MAIN_SCORE_RELEVANCE_THRESHOLD * keystoneProfile.mplusMainPrevious.score)
+                            local isMainPreviousScoreRelevant = mainPreviousScoreThreshold > keystoneProfile.mplusMainCurrent.score and mainPreviousScoreThreshold > keystoneProfile.mplusCurrent.score
                             local isMainCurrentScoreBetter = keystoneProfile.mplusMainCurrent.score > keystoneProfile.mplusCurrent.score
                             if isMainCurrentScoreBetter or isMainPreviousScoreRelevant then
                                 if isMainPreviousScoreRelevant then
@@ -6206,8 +6370,12 @@ do
         GameTooltip:Hide()
     end
 
-    local function OnScroll()
+    ---@param frame Frame
+    local function OnScroll(frame)
         if not config:Get("enableWhoTooltips") then
+            return
+        end
+        if not frame:IsMouseOver() then
             return
         end
         GameTooltip:Hide()
@@ -7276,7 +7444,11 @@ if not IS_CLASSIC_ERA then
         return false
     end
 
-    local function OnScroll()
+    ---@param frame ScrollBoxBaseMixin
+    local function OnScroll(frame)
+        if not frame:IsMouseOver() then
+            return
+        end
         GameTooltip:Hide()
         util:ExecuteFocusWidgetOnEnterSafely()
     end
@@ -7334,13 +7506,6 @@ if not IS_CLASSIC_ERA then
             frame:EnableMouseWheel(false)
             frame:SetToplevel(false)
         end
-        -- this issue has been lingering for a while, so it might be worth to add this workaround to avoid taint breaking issues
-        -- it only affects the dropdown option "Report Advertisement" that would without this fix block due to taint
-        -- we can't avoid this because it automatically happens when we modify the dropdown menu (even when using the intended method)
-        -- https://github.com/Stanzilla/WoWUIBugs/issues/237
-        if LFGList_ReportAdvertisement and LFGList_ReportListing then
-            LFGList_ReportAdvertisement = LFGList_ReportListing
-        end
     end
 
 end
@@ -7393,8 +7558,12 @@ if IS_CLASSIC_ERA then
         GameTooltip:Hide()
     end
 
-    local function OnScroll()
+    ---@param frame Frame
+    local function OnScroll(frame)
         if not config:Get("enableGuildTooltips") then
+            return
+        end
+        if not frame:IsMouseOver() then
             return
         end
         GameTooltip:Hide()
@@ -7514,8 +7683,12 @@ do
         return true
     end
 
-    local function OnScroll()
+    ---@param frame ScrollBoxBaseMixin
+    local function OnScroll(frame)
         if not config:Get("enableGuildTooltips") then
+            return
+        end
+        if not frame:IsMouseOver() then
             return
         end
         GameTooltip:Hide()
@@ -7916,12 +8089,7 @@ if IS_RETAIL then
             self.GuildBests[i]:SetUp(currentRuns[i + self.offset])
         end
 
-        if self:IsMouseOver(0, 0, 0, 0) then
-            local focus = util:GetMouseFocus()
-            if focus and focus ~= GameTooltip:GetOwner() then
-                util:ExecuteWidgetOnEnterSafely(focus) ---@diagnostic disable-line: param-type-mismatch
-            end
-        end
+        util:ExecuteIsMouseOverWidgetOnEnterSafely(self, function(focus) return focus ~= GameTooltip:GetOwner() end)
 
         self:SetHeight(35 + (numVisibleRuns > 0 and numVisibleRuns * self.GuildBests[1]:GetHeight() or 0) + switchRealHeight)
 
@@ -13142,7 +13310,7 @@ do
     end
 
     function combatlog:CanLoad()
-        return config:IsEnabled() and not util:IsTimerunning()
+        return config:IsEnabled()
     end
 
     function combatlog:OnLoad()
@@ -15014,7 +15182,7 @@ do
     end
 
     ---@param frame Frame
-    ---@param button MouseAction
+    ---@param button mouseButton
     function shortcuts:OnButtonClick(frame, button)
         if button == "RightButton" then
             settings:Toggle()

@@ -525,7 +525,7 @@ end
 -------------------------------------------------
 function F.Getn(t)
     local count = 0
-    for k, v in pairs(t) do
+    for _ in next, t do
         count = count + 1
     end
     return count
@@ -930,8 +930,10 @@ function F.IterateAllUnitButtons(func, updateCurrentGroupOnly, updateQuickAssist
         for _, b in pairs(Cell.unitButtons.arena) do
             func(b)
         end
+    end
 
-        -- group pet
+    -- group pet
+    if not updateCurrentGroupOnly or (updateCurrentGroupOnly and Cell.vars.groupType == "raid") or (updateCurrentGroupOnly and Cell.vars.groupType == "party") then
         for index, b in pairs(Cell.unitButtons.pet) do
             if index ~= "units" then
                 func(b)
@@ -1550,7 +1552,7 @@ Cell.vars.whiteTexture = "Interface\\AddOns\\Cell\\Media\\white.tga"
 
 local LSM = LibStub("LibSharedMedia-3.0", true)
 LSM:Register("statusbar", "Cell ".._G.DEFAULT, Cell.vars.texture)
-LSM:Register("font", "visitor", [[Interface\Addons\Cell\Media\Fonts\visitor.ttf]], 255)
+LSM:Register("font", "Visitor", [[Interface\Addons\Cell\Media\Fonts\visitor.ttf]], 255)
 
 function F.GetBarTexture()
     --! update Cell.vars.texture for further use in UnitButton_OnLoad

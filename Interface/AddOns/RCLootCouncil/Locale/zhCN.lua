@@ -19,8 +19,8 @@ L["active_desc"] = "取消勾选以禁用RCLootCouncil。当你在团队中但�
 L["Add Item"] = "添加物品"
 L["Add Note"] = "添加备注"
 L["Add ranks"] = "添加会阶"
-L["Add Rolls"] = "添加掷骰"
 L["Add rolls"] = "添加掷骰"
+L["Add Rolls"] = "添加掷骰"
 --[[Translation missing --]]
 L["add_candidate"] = "Add Candidate"
 L["add_ranks_desc"] = "选择参与战利品分配议会的最低会阶"
@@ -253,6 +253,10 @@ L["enable_timeout_desc"] = "勾选以启用拾取窗口限时"
 L["Enter your note:"] = "输入你的备注："
 L["EQdkp-Plus XML output, tailored for Enjin import."] = "EQdkp-Plus XML导出，适用 Enjin。"
 --[[Translation missing --]]
+L["error_no_autoAward_candidates"] = "You've enabled auto awarding of items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
+L["error_no_autoAwardBoE_candidates"] = "You've enabled auto awarding of BoE items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
 L["error_test_as_non_leader"] = "You cannot initiate a test while in a group without being the group leader."
 --[[Translation missing --]]
 L["Everybody is up to date."] = "Everybody is up to date."
@@ -411,6 +415,8 @@ L["Opens the synchronizer"] = "打开同步界面"
 --[[Translation missing --]]
 L["opt_addButton_desc"] = "Add a new button group for the selected slot."
 --[[Translation missing --]]
+L["opt_announceAward_WHISPER_WINNER"] = "/w winner"
+--[[Translation missing --]]
 L["opt_autoAddBoEs_desc"] = "Automatically add all BoE (Bind on Equip) items to a session."
 --[[Translation missing --]]
 L["opt_autoAddBoEs_name"] = "Auto Add BoEs"
@@ -433,7 +439,7 @@ L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will on
 --[[Translation missing --]]
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Guild Groups Only"
 --[[Translation missing --]]
-L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons your class can't equip."
+L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
 --[[Translation missing --]]
@@ -553,6 +559,8 @@ L["Please wait before trying to sync again."] = "请稍后再尝试同步。"
 L["Print Responses"] = "输出回应"
 L["print_response_desc"] = "在聊天窗口中显示你的回应"
 L["Protector Token"] = "保卫者代币"
+--[[Translation missing --]]
+L["Rare_Items"] = "Rare items"
 L["Raw lua output. Doesn't work well with date selection."] = "原始 Lua 脚本导出。已知日期选择存在问题。"
 --[[Translation missing --]]
 L["rcframe_help"] = [=[Double click here to minimize
@@ -630,6 +638,8 @@ L["Something went wrong :'("] = "出现了一些问题"
 L["Something went wrong during syncing, please try again."] = "同步出现错误，请重试。"
 L["Sort Items"] = "物品排序"
 L["sort_items_desc"] = "将物品按照类型与装等排序。"
+--[[Translation missing --]]
+L["Special_Effects_Items"] = "Items /w special effects"
 L["Standard .csv output."] = "标准csv格式导出。"
 --[[Translation missing --]]
 L["Standard JSON output."] = "JSON array containing one JSON object per history entry."

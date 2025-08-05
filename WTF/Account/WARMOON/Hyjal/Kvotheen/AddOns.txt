@@ -97,7 +97,7 @@ BigWigs_Core: enabled
 BigWigs_Options: enabled
 BigWigs_Plugins: enabled
 Blizzard_CombatText: enabled
-LittleWigs: enabled
+LittleWigs: disabled
 LittleWigs_BattleForAzeroth: disabled
 ElvUI_AuraBarsMovers: disabled
 ElvUI_CastBarOverlay: disabled
@@ -125,14 +125,14 @@ BigWigs_Aberrus: enabled
 LittleWigs_WarlordsOfDraenor: disabled
 PitBull4: disabled
 PitBull4_DogTagTexts: disabled
-BigWigs: enabled
+BigWigs: disabled
 BigWigs_DragonIsles: enabled
 BigWigs_VaultOfTheIncarnates: enabled
 !BugGrabber: enabled
 BugSack: enabled
 ColorPickerPlus: enabled
 HandyNotes: enabled
-HandyNotes_Dragonflight: enabled
+HandyNotes_Dragonflight: disabled
 LittleWigs_BurningCrusade: disabled
 LittleWigs_Cataclysm: disabled
 LittleWigs_Classic: disabled
@@ -155,7 +155,7 @@ Nys_ToDoList_Backup: disabled
 TomTom: enabled
 Details_Elitism: enabled
 ElitismHelper: enabled
-MythicDungeonTools: enabled
+MythicDungeonTools: disabled
 Grid2LDB: disabled
 Grid2: disabled
 Grid2Options: disabled
@@ -193,8 +193,8 @@ AdvancedInterfaceOptions: enabled
 SimpleItemLevel: disabled
 elWigo: enabled
 DeathNote: enabled
-BigWigs_KhazAlgar: enabled
-BigWigs_NerubarPalace: enabled
+BigWigs_KhazAlgar: disabled
+BigWigs_NerubarPalace: disabled
 LittleWigs_Dragonflight: disabled
 KeyMaster: enabled
 AngryKeystones: enabled
@@ -207,8 +207,8 @@ TipTacItemRef: disabled
 TipTacOptions: disabled
 TipTacTalents: disabled
 TipTac: disabled
-LargerMacroIconSelectionData: enabled
-LargerMacroIconSelection: enabled
+LargerMacroIconSelectionData: disabled
+LargerMacroIconSelection: disabled
 AutoPotion: disabled
 DBM-KhazAlgar: disabled
 DBM-Test: disabled
@@ -231,3 +231,5 @@ CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled
 Masque_CleanUI: enabled
+BigWigs_LiberationOfUndermine: disabled
+BigWigs_ManaforgeOmega: disabled

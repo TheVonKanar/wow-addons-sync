@@ -1,3 +1,3 @@
-# [Full Changelog](https://github.com/enderneko/Cell/compare/r257-release...998adb17d4d65541e048284fb263659b76dc707f)
+[View Full Changelog](https://github.com/enderneko/Cell/compare/r265-release...2a322cdfda4704076f29afdb800614630dcfdaf4)
 
-- Attempt to fix aura update
+- Delay creation of some indicators to avoid potential issues

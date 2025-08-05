@@ -379,6 +379,7 @@ end
 
 do  --TabUtil
     local Tabs = {};
+    local SelectedTabIndex = 1;
     local SelectedTabKay;
 
     local function SortFunc_Tab(a, b)
@@ -391,6 +392,35 @@ do  --TabUtil
     function LandingPageUtil.AddTab(tabInfo)
         table.insert(Tabs, tabInfo);
         table.sort(Tabs, SortFunc_Tab);
+    end
+
+    function LandingPageUtil.DeleteTab(tabKey)
+        for i, tabInfo in ipairs(Tabs) do
+            if tabInfo.key == tabKey then
+                table.remove(Tabs, i);
+                break
+            end
+        end
+    end
+
+    function LandingPageUtil.ReplaceTab(newTabInfo)
+        --If found the same key, replace
+        --Otherwise add this tab
+        local found;
+
+        for i, tabInfo in ipairs(Tabs) do
+            if tabInfo.key == newTabInfo.key then
+                Tabs[i] = newTabInfo;
+                found = true;
+                break
+            end
+        end
+
+        if found then
+            table.sort(Tabs, SortFunc_Tab);
+        else
+            LandingPageUtil.AddTab(newTabInfo)
+        end
     end
 
     function LandingPageUtil.AcquireTabFrame(tabContainer, index)
@@ -432,12 +462,14 @@ do  --TabUtil
 
         SelectedTabKay = tabKey;
 
-        for _, tabInfo in ipairs(Tabs) do
+        for index, tabInfo in ipairs(Tabs) do
             if tabInfo.frame then
                 tabInfo.frame:SetShown(tabInfo.key == tabKey);
             end
 
             if tabInfo.key == tabKey then
+                SelectedTabIndex = index;
+
                 if not tabInfo.useCustomLeftFrame then
                     LandingPageUtil.ShowLeftFrame(true);
                 end
@@ -462,6 +494,20 @@ do  --TabUtil
 
     function LandingPageUtil.GetSelectedTabKey()
         return SelectedTabKay
+    end
+
+    function LandingPageUtil.SelectTabByDelta(delta)
+        --Prev -1, Next +1
+        local index = SelectedTabIndex + (delta > 0 and 1 or -1);
+        local numTabs = #Tabs;
+        if index < 0 then
+            index = numTabs;
+        elseif index > numTabs then
+            index = 1;
+        else
+            LandingPageUtil.SelectTabByIndex(index);
+            return true
+        end
     end
 end
 
@@ -1125,8 +1171,8 @@ do  --Red Button
         self.ButtonText:SetText(text);
     end
 
-    function RedButtonMixin:UpdateVisual()
-        local isFocused = self:IsMouseMotionFocus();
+    function RedButtonMixin:UpdateVisual(forceFocus)
+        local isFocused = self:IsMouseMotionFocus() or forceFocus;
         local top;
         if self.buttonState == 1 then
             if isFocused then
@@ -1179,10 +1225,16 @@ do  --Red Button
 
     function RedButtonMixin:OnEnter()
         self:UpdateVisual();
+        if self.onEnterFunc then
+            self.onEnterFunc(self);
+        end
     end
 
     function RedButtonMixin:OnLeave()
         self:UpdateVisual();
+        if self.onLeaveFunc then
+            self.onLeaveFunc(self);
+        end
     end
 
     function RedButtonMixin:OnEnable()
@@ -1197,6 +1249,33 @@ do  --Red Button
 
     function RedButtonMixin:OnClick(button)
 
+    end
+
+    function RedButtonMixin:SetTheme(theme)
+        local file;
+        if theme == "LEGION" then
+            file = "Interface/AddOns/Plumber/Art/ExpansionLandingPage/ExpansionBorder_LEGION";
+        else
+            file = TEXTURE_FILE;
+        end
+        SetupThreeSliceBackground(self, file, -2.5, 2.5);
+    end
+
+    function RedButtonMixin:ShowLoadingIndicator(state)
+        if state then
+            if not self.LoadingIndicator then
+                self.LoadingIndicator = CreateFrame("Frame", nil, self, "PlumberLoadingIndicatorTemplate");
+                self.LoadingIndicator:SetSize(14, 14);
+                self.LoadingIndicator:SetAlpha(0.5);
+            end
+            local offset = -4 - 0.5 * (self.ButtonText:GetWrappedWidth() or 0);
+            self.LoadingIndicator:Show();
+            self.LoadingIndicator:SetPoint("RIGHT", self, "CENTER", offset, 0);
+        else
+            if self.LoadingIndicator then
+                self.LoadingIndicator:Hide();
+            end
+        end
     end
 
     local function CreateRedButton(parent)

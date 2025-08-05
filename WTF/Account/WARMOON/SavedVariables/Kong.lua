@@ -1,35 +1,34 @@
 
 Kong_Profiles = {
 ["pandamagee_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
+},
+["Frames"] = {
 },
 },
 ["pandakv_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
+},
+["Frames"] = {
 },
 },
 ["trialmagekvo_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
+},
+["Frames"] = {
 },
 },
 ["pandamo_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 ["kvotheen_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
@@ -72,62 +71,66 @@ Kong_Profiles = {
 },
 ["TriggerDefaults"] = {
 },
+["index"] = "[\"AceConfigDialogScrollFrame1ScrollBar\"]:GetParent():GetParent():GetParent():GetParent()",
 ["version"] = "1.6a",
 ["hideAtZeroAlpha"] = true,
-["index"] = "[\"AceConfigDialogScrollFrame1ScrollBar\"]:GetParent():GetParent():GetParent():GetParent()",
 },
 },
+["version"] = "1.6a",
 },
 ["killeen_of_archimonde"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
-},
-["testkvotheen_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
-},
-["Frames"] = {
-},
-},
-["pandamages_of_hyjal"] = {
-["version"] = "1.6a",
-["Groups"] = {
-},
-["Frames"] = {
-},
-},
-["pandamoun_of_hyjal"] = {
-["version"] = "1.6a",
-["Groups"] = {
-},
-["Frames"] = {
-},
-},
-["pandkvé_of_hyjal"] = {
-["version"] = "1.6a",
-["Groups"] = {
-},
-["Frames"] = {
 },
 },
 ["raptorbuyer_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
 },
+["Frames"] = {
+},
+},
+["testkvotheen_of_hyjal"] = {
+["Groups"] = {
+},
+["Frames"] = {
+},
+["version"] = "1.6a",
+},
+["pandamoun_of_hyjal"] = {
+["Groups"] = {
+},
+["Frames"] = {
+},
+["version"] = "1.6a",
+},
+["pandkvé_of_hyjal"] = {
+["Groups"] = {
+},
+["Frames"] = {
+},
+["version"] = "1.6a",
+},
+["pandamages_of_hyjal"] = {
+["Groups"] = {
+},
+["Frames"] = {
+},
+["version"] = "1.6a",
 },
 ["pandakvo_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
 },
+["version"] = "1.6a",
 },
 ["quiproquo_of_uldaman"] = {
+["version"] = "1.6a",
+["Groups"] = {
+},
 ["Frames"] = {
 {
 {
@@ -150,15 +153,12 @@ Kong_Profiles = {
 ["index"] = "[\"StatusTrackingBarManager\"]",
 },
 },
-["version"] = "1.6a",
-["Groups"] = {
-},
 },
 ["kvothyr_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 }

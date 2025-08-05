@@ -66,6 +66,7 @@ local TT = RCLootCouncil.Require "Utils.TempTable"
 local ItemUtils = RCLootCouncil.Require "Utils.Item"
 
 -- Init shorthands
+--- @type RCLootCouncilDB
 local db, debugLog; -- = self.db.profile, self.db.global.log
 -- init modules
 ---@enum (key) DefaultModules
@@ -115,7 +116,6 @@ local playersData = { -- Update on login/encounter starts. it stores the informa
 } -- player's data that can be changed by the player (spec, equipped ilvl, gaers, relics etc)
 
 function RCLootCouncil:OnInitialize()
-	self.Log = self.Require "Utils.Log":New()
 	-- IDEA Consider if we want everything on self, or just whatever modules could need.
 	self.version = C_AddOns.GetAddOnMetadata("RCLootCouncil", "Version")
 	self.nnp = false
@@ -128,7 +128,7 @@ function RCLootCouncil:OnInitialize()
 	self.isMasterLooter = false -- Are we the ML?
 	---@type Player
 	self.masterLooter = nil -- Masterlooter
-	self.lootMethod = GetLootMethod() or "personalloot"
+	self.lootMethod = self:GetLootMethod() or Enum.LootMethod.Personal
 	self.handleLoot = false -- Does RC handle loot(Start session from loot window)?
 	self.isCouncil = false -- Are we in the Council?
 	self.enabled = true -- turn addon on/off
@@ -224,7 +224,10 @@ function RCLootCouncil:OnInitialize()
 
 	-- init db
 	self.db = LibStub("AceDB-3.0"):New("RCLootCouncilDB", self.defaults, true)
-	self:InitLogging()
+	local numLogs = self.tVersion and 2 * self.db.global.logMaxEntries or self.db.global.logMaxEntries
+	local UtilsLog = self.Require "Utils.Log"
+	UtilsLog:InitLogging(self.db.global.log, numLogs)
+	self.Log = UtilsLog:New(nil, numLogs)
 	self.lootDB = LibStub("AceDB-3.0"):New("RCLootCouncilLootDB")
 	--[[ Format:
 	"playerName" = {
@@ -241,6 +244,7 @@ function RCLootCouncil:OnInitialize()
 	self:InitTrinketData()
 
 	-- add shortcuts
+	---@type RCLootCouncilDB
 	db = self.db.profile
 	debugLog = self.db.global.log
 
@@ -326,6 +330,7 @@ function RCLootCouncil:OnEnable()
 	local filterFunc = function(_, event, msg, player, ...) return strfind(msg, "[[RCLootCouncil]]:") end
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filterFunc)
 	self:CouncilChanged() -- Call to initialize council
+	self:ModulesOnEnable()
 end
 
 function RCLootCouncil:OnDisable()
@@ -560,6 +565,7 @@ function RCLootCouncil:ChatCommand(msg)
 
 	elseif input == "clearcache" then
 		self.db.global.cache = {}
+		self.db.global.playerCache = {}
 		self:Print("Cache cleared")
 
 	elseif input == "sync" then
@@ -592,8 +598,8 @@ function RCLootCouncil:ChatCommand(msg)
 		self.nnp = not self.nnp
 		self:Print("nnp = " .. tostring(self.nnp))
 
-	elseif input == "exporttrinketdata" then
-		self:ExportTrinketData(tonumber(args[1]), 0, tonumber(args[2]), 1)
+	elseif input == "exportitemdata" then
+		self:ExportEJData(tonumber(args[1]), 0, tonumber(args[2]) or self.EJLatestInstanceID, 1)
 
 	elseif input == "trinkettest" or input == "ttest" then
 		self.playerClass = string.upper(args[1])
@@ -613,6 +619,29 @@ function RCLootCouncil:ChatCommand(msg)
 			end
 		end
 	--@end-debug@]==]
+	elseif input == "sv" or input == "saved" or input == "savedvariables" then
+		local exportFrame = self.UI:New("RCHugeExportFrame")
+		local temp = TT:Acquire("-- ", addonname, " Saved Variables\n",
+			table.concat(select(2, self.Utils:DumpLuaFormat(_G.RCLootCouncilDB or {}, "RCLootCouncilDB")), "\n"),
+			"\n\n"
+		)
+		local export = table.concat(temp)
+		TT:Release(temp)
+
+		if args[1] and (args[1] == "his" or args[1] == "history") then
+			if args[2] and args[2] == "only" then
+				export = "-- " .. addonname .. " History\n"
+			end
+			temp = TT:Acquire(export,
+				table.concat(select(2, self.Utils:DumpLuaFormat(_G.RCLootCouncilLootDB or {}, "RCLootCouncilLootDB")), "\n")
+			)
+			export = table.concat(temp)
+			TT:Release(temp)
+		end
+		exportFrame.edit:SetText(export)
+		exportFrame:Show()
+		exportFrame.edit:SetFocus()
+		exportFrame.edit:HighlightText()
 	else
 		-- Check if the input matches anything
 		for k, v in pairs(self.customChatCmd) do if k == input then return v.module[v.func](v.module, unpack(args)) end end
@@ -658,8 +687,11 @@ function RCLootCouncil:UpdateAndSendRecentTradableItem(info, count)
 	end)
 end
 
--- Send the msg to the channel if it is valid. Otherwise just print the messsage.
-function RCLootCouncil:SendAnnouncement(msg, channel)
+--- Send the msg to the channel if it is valid. Otherwise just print the messsage.
+--- @param msg string - The message to send.
+--- @param channel string - The channel to send the message to.
+--- @param whisperTarget string? - The target to whisper the message to, if channel is "WHISPER".
+function RCLootCouncil:SendAnnouncement(msg, channel, whisperTarget)
 	if channel == "NONE" then return end
 	if self.testMode then msg = "(" .. L["Test"] .. ") " .. msg end
 	if (not IsInGroup()
@@ -667,9 +699,11 @@ function RCLootCouncil:SendAnnouncement(msg, channel)
 									== "INSTANCE_CHAT")) or channel == "chat" or (not IsInGuild() and (channel == "GUILD" or channel == "OFFICER")) then
 		self:Print(msg)
 	elseif (not IsInRaid() and (channel == "RAID" or channel == "RAID_WARNING")) then
-		SendChatMessage(msg, "PARTY")
+		self.SendChatMessage(msg, "PARTY")
+	elseif channel == "WHISPER" then
+		self.SendChatMessage(msg, "WHISPER", nil, whisperTarget)
 	else
-		SendChatMessage(msg, self.Utils:GetAnnounceChannel(channel))
+		self.SendChatMessage(msg, self.Utils:GetAnnounceChannel(channel))
 	end
 end
 
@@ -680,7 +714,11 @@ end
 
 function RCLootCouncil:ChatCmdAdd(args)
 	if not args[1] or args[1] == "" then return end -- We need at least 1 arg
-
+	-- If usage has been declined, MLDB is cleared, meaning potentially not received by some
+	if not self.handleLoot then
+		MLDB:Send("group")
+		self:OnMLDBReceived(MLDB:Get())
+	end
 	-- Add all items in bags with trade timers
 	if args[1] == "bags" or args[1] == "all" then
 		local items = self:GetAllItemsInBagsWithTradeTimer()
@@ -922,7 +960,9 @@ end
 -- Update player's data which is changable by the player. (specid, equipped ilvl, specs, gears, etc)
 function RCLootCouncil:UpdatePlayersData()
 	self.Log("UpdatePlayersData()")
-	playersData.specID = GetSpecialization() and GetSpecializationInfo(GetSpecialization())
+	playersData.specID = C_SpecializationInfo and
+	C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization())
+	or GetSpecialization() and GetSpecializationInfo(GetSpecialization())
 	playersData.ilvl = select(2, GetAverageItemLevel())
 	self:UpdatePlayersGears()
 end
@@ -979,7 +1019,12 @@ function RCLootCouncil:GetTypeCodeForItem(item)
 
 	for _, func in ipairs(self.RESPONSE_CODE_GENERATORS) do
 		local val = func(item, db, itemID, itemEquipLoc, itemClassID, itemSubClassID)
-		if val then return val end
+		if val then
+			-- Rare items are the only ones bypassing normal specificity checks.
+			if not db.enabledButtons[itemEquipLoc] or val == "RARE" then
+				return val
+			end
+		end
 	end
 	-- Remaining is simply their equipLoc, if set
 	return db.enabledButtons[itemEquipLoc] and itemEquipLoc or "default"
@@ -1164,7 +1209,7 @@ function RCLootCouncil:SendLootAck(table, skip)
 		local session = v.session or k
 		if session > (skip or 0) then
 			hasData = true
-			local g1, g2 = self:GetGear(v.link, v.equipLoc, v.relic)
+			local g1, g2 = self:GetGear(v.link, v.equipLoc)
 			local diff = self:GetIlvlDifference(v.link, g1, g2)
 			toSend.gear1[session] = g1 and ItemUtils:GetItemStringClean(g1) or nil
 			toSend.gear2[session] = g2 and ItemUtils:GetItemStringClean(g2) or nil
@@ -1185,7 +1230,7 @@ function RCLootCouncil:DoAutoPasses(table, skip)
 		if session > (skip or 0) then
 			if db.autoPass and not v.noAutopass then
 				if (v.boe and db.autoPassBoE) or not v.boe then
-					if self:AutoPassCheck(v.link, v.equipLoc, v.typeID, v.subTypeID, v.classes, v.token, v.relic) then
+					if self.AutoPass:AutoPassCheck(v.link, v.equipLoc, v.typeID, v.subTypeID, v.classes) then
 						self.Log("Autopassed on: ", v.link)
 						if not db.silentAutoPass then self:Print(format(L["Autopassed on 'item'"], ItemUtils:GetItemTextWithIcon(v.link))) end
 						v.autopass = true
@@ -1488,10 +1533,14 @@ function RCLootCouncil:GetPlayerInfo()
 	return self.Utils:GetPlayerRole(), self.guildRank, enchant, lvl, ilvl, playersData.specID
 end
 
+function RCLootCouncil:OnGroupJoined()
+	self:SendPlayerInfo("group")
+end
+
 --- Send player info to the target/group
 ---@param target string? Player name or "group". Defaults to "group".
 function RCLootCouncil:SendPlayerInfo(target)
-	local commsTarget = target and Player:Get(target) or "group"
+	local commsTarget = target and target ~= "group" and Player:Get(target) or "group"
 	Comms:Send { target = commsTarget, command = "pI", data = { self:GetPlayerInfo(), }, }
 end
 
@@ -1565,6 +1614,16 @@ function RCLootCouncil:OnEvent(event, ...)
 		self:ScheduleTimer(CandidateAndNewMLCheck, 2)
 	elseif event == "GROUP_LEFT" then
 		self.Log:d("Event:", event, ...)
+		-- Clear cache, and undo any mldb changes
+		wipe(self.db.global.cache)
+		wipe(self.mldb)
+		if self:GetActiveModule("votingframe"):IsEnabled() then
+			self:GetActiveModule("votingframe"):Disable()
+		end
+		MLDB:Clear()
+		self.isCouncil = false
+		self.handleLoot = false
+
 		self:UpdateCandidatesInGroup()
 		self:NewMLCheck()
 
@@ -1590,34 +1649,7 @@ function RCLootCouncil:OnEvent(event, ...)
 
 			-- Don't restore if we're switching to a different character.
 			if self.db.global.cache.cachePlayer == self.player:GetName() then
-				-- Restore masterlooter from cache, but only if not already set.
-				if not self:HasValidMasterLooter() and self.db.global.cache.masterLooter then
-					self.masterLooter = Player:Get(self.db.global.cache.masterLooter)
-					self.isMasterLooter = self.masterLooter == self.player
-					if self.isMasterLooter then
-						self:CallModule("masterlooter")
-						self:GetActiveModule("masterlooter"):NewML(self.masterLooter)
-					end
-				end
-				self.Log:d("ML, Cached:", self.masterLooter, self.isMasterLooter, self.db.global.cache.masterLooter)
-
-				-- Restore mldb and council
-				if self.db.global.cache.mldb then
-					self:OnMLDBReceived(self.db.global.cache.mldb)
-				end
-				if self.masterLooter and self.db.global.cache.council then
-					self:OnCouncilReceived(self.masterLooter, self.db.global.cache.council)
-				end
-
-				-- Restore handleLoot
-				self.Log:D("Cached handleLoot:", self.db.global.cache.handleLoot)
-				if self.db.global.cache.handleLoot and self.isMasterLooter then
-					self:StartHandleLoot()
-				elseif self.db.global.cache.handleLoot then
-					self:OnStartHandleLoot()
-				end
-
-				self.instanceDataSnapshot = self.db.global.cache.lastEncounterInstanceData
+				self:RestoreCachedData()
 			end
 			wipe(self.db.global.cache) -- No reason to store data forever
 
@@ -1641,6 +1673,10 @@ function RCLootCouncil:OnEvent(event, ...)
 		self.db.global.cache.handleLoot = self.handleLoot
 		self.db.global.cache.instanceData = self.instanceDataSnapshot
 		self.db.global.cache.cachePlayer = self.player:GetName()
+		self.db.global.cache.cacheTime = time()
+		if self.isCouncil then
+			self.db.global.cache.lootTable = self:GetActiveModule("votingframe"):GetLootTable()
+		end
 
 	elseif event == "ENCOUNTER_START" then
 		self.Log:d("Event:", event, ...)
@@ -1733,6 +1769,46 @@ function RCLootCouncil:OnEvent(event, ...)
 	end
 end
 
+function RCLootCouncil:RestoreCachedData()
+	-- Don't restore anything if it's outdated
+	if self.db.global.cache.cacheTime then
+		local timeDiff = time() - self.db.global.cache.cacheTime
+		if timeDiff > 900 then -- 15 minutes
+			self.Log:d("Cache too old, clearing cache")
+			wipe(self.db.global.cache) -- Clear cache if it's too old
+			return
+		end
+	end
+	-- Restore masterlooter from cache, but only if not already set.
+	if not self:HasValidMasterLooter() and self.db.global.cache.masterLooter then
+		self.masterLooter = Player:Get(self.db.global.cache.masterLooter)
+		self.isMasterLooter = self.masterLooter == self.player
+		if self.isMasterLooter then
+			self:CallModule("masterlooter")
+			self:GetActiveModule("masterlooter"):NewML(self.masterLooter)
+		end
+	end
+	self.Log:d("ML, Cached:", self.masterLooter, self.isMasterLooter, self.db.global.cache.masterLooter)
+
+	-- Restore mldb and council
+	if self.masterLooter and self.db.global.cache.mldb then
+		self:OnMLDBReceived(self.db.global.cache.mldb)
+	end
+	if self.masterLooter and self.db.global.cache.council then
+		self:OnCouncilReceived(self.masterLooter, self.db.global.cache.council)
+	end
+
+	-- Restore handleLoot
+	self.Log:D("Cached handleLoot:", self.db.global.cache.handleLoot)
+	if self.db.global.cache.handleLoot and self.isMasterLooter then
+		self:StartHandleLoot()
+	elseif self.db.global.cache.handleLoot then
+		self:OnStartHandleLoot()
+	end
+
+	self.instanceDataSnapshot = self.db.global.cache.lastEncounterInstanceData
+end
+
 function RCLootCouncil:OnBonusRoll(_, type, link, ...)
 	self.Log:d("BONUS_ROLL", type, link, ...)
 	if type == "item" or type == "artifact_power" then
@@ -1787,12 +1863,16 @@ function RCLootCouncil:IsInGuildGroup()
 	local numGroupMembers = GetNumGroupMembers()
 	if numGroupMembers == 1 then return true end -- Always when alone
 	local guildMembers = 0
-	local isInGuild
-	local guid
+	local player, guid, isInGuild
 	for name in self:GroupIterator() do
-		guid = Player:Get(name):GetGUID()
+		player = Player:Get(name)
+		guid = player:GetGUID()
 		if guid and guid ~= "" then
 			isInGuild = IsGuildMember(guid)
+			if player.isInGuild ~= isInGuild then
+				player.isInGuild = isInGuild
+				player:Cache()
+			end
 			guildMembers = guildMembers + (isInGuild and 1 or 0)
 		else
 			self.Log:e("IsInGuildGroup: No GUID for player", name)
@@ -1820,7 +1900,7 @@ function RCLootCouncil:NewMLCheck()
 	local old_ml = self.masterLooter
 	local old_lm = self.lootMethod
 	self.isMasterLooter, self.masterLooter = self:GetML()
-	self.lootMethod = GetLootMethod()
+	self.lootMethod = self:GetLootMethod()
 	local instance_type = select(2, IsInInstance())
 	if instance_type == "pvp" or instance_type == "arena" or instance_type == "scenario" then return end -- Don't do anything here
 	if self.masterLooter and type(self.masterLooter) == "string"
@@ -1870,19 +1950,15 @@ function RCLootCouncil:NewMLCheck()
 	if type == "arena" or type == "pvp" then return end
 
 	-- New group loot is reported as "personalloot" -.-
-	if (self.lootMethod == "group" and db.usage.gl) or (self.lootMethod == "personalloot" and db.usage.gl) then -- auto start
+	if (self.lootMethod == Enum.LootMethod.Group and db.usage.gl) or (self.lootMethod == Enum.LootMethod.Personal and db.usage.gl) then -- auto start
 		self:StartHandleLoot()
-	elseif (self.lootMethod == "group" and db.usage.ask_gl) or (self.lootMethod == "personalloot" and db.usage.ask_gl) then
+	elseif (self.lootMethod == Enum.LootMethod.Group and db.usage.ask_gl) or (self.lootMethod == Enum.LootMethod.Personal and db.usage.ask_gl) then
 		return LibDialog:Spawn("RCLOOTCOUNCIL_CONFIRM_USAGE")
 	end
 end
 
 --- Enables the addon to automatically handle looting
 function RCLootCouncil:StartHandleLoot()
-	-- local lootMethod = GetLootMethod()
-	-- if lootMethod ~= "group" and self.lootMethod ~= "personalloot" then -- Set it
-	-- 	SetLootMethod("group")
-	-- end
 	-- We might call StartHandleLoot() without ML being initialized, e.g. with `/rc start`.
 	if not self:GetActiveModule("masterlooter"):IsEnabled() then
 		self:CallModule("masterlooter")
@@ -1902,6 +1978,7 @@ function RCLootCouncil:StopHandleLoot()
 	self.Log("Stop handling loot")
 	self.handleLoot = false
 	self:GetActiveModule("masterlooter"):Disable()
+	MLDB:Clear()
 	self:Send("group", "StopHandleLoot")
 end
 
@@ -1968,7 +2045,7 @@ end
 --- @param entry HistoryEntry
 --- @return boolean #True if the entry is not filtered, false if it is.
 function RCLootCouncil:IsHistoryEntryAvailableWithMoreInfoSettings(entry)
-	return not next(db.moreInfoRaids) or db.moreInfoRaids[entry.mapID .. "-" .. entry.difficultyID]
+	return not next(db.moreInfoRaids) or db.moreInfoRaids[entry.mapID .. "-" .. (entry.difficultyID == 0 and "" or entry.difficultyID)]
 end
 
 --- Returns statistics for use in various detailed views.
@@ -2078,6 +2155,7 @@ function RCLootCouncil:SessionError(...)
 	self.Log:E(...)
 end
 
+---@return RCLootCouncilDB
 function RCLootCouncil:Getdb() return db end
 
 ---@return RCLootCouncil.HistoryDB
@@ -2086,6 +2164,7 @@ function RCLootCouncil:GetHistoryDB() return self.lootDB.factionrealm end
 function RCLootCouncil:UpdateDB()
 	self.Log:D("UpdateDB")
 	self.db:RegisterDefaults(self.defaults)
+	---@type RCLootCouncilDB
 	db = self.db.profile
 	self:ActivateSkin(self.db.profile.currentSkin)
 	self:SendMessage("RCUpdateDB")
@@ -2685,6 +2764,10 @@ end
 function RCLootCouncil:GetButtons(type)
 	type = type and type or "default"
 	self.Log:d("GetButtons", type)
+	if self.mldb and not self.mldb.buttons then
+		self.Log:E("Missing mldb.buttons", next(self.mldb))
+		return self.defaults.profile.buttons[type]
+	end
 	-- Check if the type should be translated to something else
 	if self.mldb and not self.mldb.buttons[type] and self.BTN_SLOTS[type] and self.mldb.buttons[self.BTN_SLOTS[type]] then
 		type = self.BTN_SLOTS[type]
@@ -2750,7 +2833,7 @@ function RCLootCouncil:SubscribeToPermanentComms()
 		council = function(data, sender) self:OnCouncilReceived(sender, unpack(data)) end,
 		--
 		playerInfoRequest = function(_, sender)
-			self:SendPlayerInfo(sender)
+			self:SendPlayerInfo(IsInGroup() and "group" or sender)
 		end,
 
 		pI = function(data, sender) self:OnPlayerInfoReceived(sender, unpack(data)) end,
@@ -2950,7 +3033,12 @@ function RCLootCouncil:OnMLDBReceived(input)
 	self.Log("OnMLDBReceived")
 	-- mldb inheritance from db
 	self.mldb = MLDB:RestoreFromTransmit(input)
-	for type, responses in pairs(self.mldb.responses) do
+	-- 22/8-25: Have seen "blank" mldb being transmitted, so correct for that.
+	if not self.mldb.responses then
+		self.Log:E("Received mldb without responses, using defaults")
+		self.mldb.responses = CopyTable(self.defaults.profile.responses)
+	end
+	for type, responses in pairs(self.mldb.responses or {}) do
 		for _ in pairs(responses) do
 			if not self.defaults.profile.responses[type] then
 				setmetatable(self.mldb.responses[type], {__index = self.defaults.profile.responses.default})
@@ -3037,7 +3125,7 @@ end
 
 function RCLootCouncil:OnStartHandleLoot()
 	self.handleLoot = true
-
+	self:ScheduleTimer("Timer", 5, "MLdb_check")
 	if not self.autoGroupLootWarningShown and db.showAutoGroupLootWarning and self.Require "Utils.GroupLoot":ShouldPassOnLoot() then
 		self.autoGroupLootWarningShown = true
 		self:Print(L.autoGroupLoot_warning)
@@ -3118,4 +3206,28 @@ function RCLootCouncil:GetDBForExport()
 	db.modules = nil -- Personal stuff, don't export
 	db.moreInfoClampToScreen = nil
 	return db
+end
+
+do -- fix player chache
+	local function checkPlayerName(name)
+		local player = Player:Get(name)
+		if player and player.name ~= name then
+			RCLootCouncil.Require "Services.ErrorHandler":ThrowSilentError(("Invalid cached player: %s ~= %s"):format( player.name, name))
+			player.name = name
+			player:Cache()
+		end
+	end
+	Comms:BulkSubscribe(RCLootCouncil.PREFIXES.MAIN, {
+		pI = function(_, sender) 
+			checkPlayerName(sender)
+	end,
+	})
+	Comms:BulkSubscribe(RCLootCouncil.PREFIXES.VERSION, {
+		r = function(_, sender)
+			checkPlayerName(sender)
+		end,
+		f = function(_, sender)
+			checkPlayerName(sender)
+	end,
+	})
 end

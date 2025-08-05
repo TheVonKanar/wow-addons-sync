@@ -45,7 +45,7 @@ function Angleur_SetTab1(self)
     self.ultraFocus.autoLoot.disabledText:SetWordWrap(true)
     self.ultraFocus.autoLoot.disabledText:SetText(T["(Already on)"])
     self.ultraFocus.autoLoot.disabledText:ClearAllPoints()
-    self.ultraFocus.autoLoot.disabledText:SetPoint("LEFT", self.ultraFocus.autoLoot.text, "RIGHT")
+    self.ultraFocus.autoLoot.disabledText:SetPoint("TOP", self.ultraFocus.autoLoot.text, "BOTTOM")
     self.ultraFocus.autoLoot:SetScript("OnClick", function(self)
         if self:GetChecked() then
             AngleurConfig.ultraFocusAutoLootEnabled = true
@@ -59,9 +59,7 @@ function Angleur_SetTab1(self)
 
 
     self.fishingMethod.menuTitle:SetText(T["FISHING METHOD:"])
-    if AngleurConfig.angleurKey then 
-        self.fishingMethod.oneKey.contents.angleurKey:SetText(AngleurConfig.angleurKey)
-    elseif AngleurTutorial.part > 1 then
+    if not AngleurConfig.angleurKey and AngleurTutorial.part > 1 then
         self.fishingMethod.oneKey.contents.angleurKey.warning:Show()
     end
 
@@ -80,6 +78,25 @@ function Angleur_SetTab1(self)
     
     self.fishingMethod.doubleClick.contents.dropDownMenu.menuTitle:SetText(T["Double Click"])
     Angleur_FishingMethodSetSelected(self.fishingMethod)
+
+
+    self.recastEnable.text:SetText(T["Enable Recast Key"])
+    self.recastEnable:reposition()
+    self.recastEnable.disabledText:SetText(T[""])
+    self.recastEnable:SetScript("OnClick", function()
+        if self.recastEnable:GetChecked() then
+            AngleurConfig.recastEnabled = true
+            self.recastEnable.recastKey:Show()
+        elseif self.recastEnable:GetChecked() == false then
+            AngleurConfig.recastEnabled = false
+            self.recastEnable.recastKey:Hide()
+        end
+    end)
+    if AngleurConfig.recastEnabled == true then
+        self.recastEnable:SetChecked(true)
+        self.recastEnable.recastKey:Show()
+    end
+
 
     self.returnButton:SetText(T["Return\nAngleur Visual"])
 end

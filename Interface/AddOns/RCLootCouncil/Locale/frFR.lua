@@ -18,8 +18,8 @@ L["active_desc"] = "Décocher pour désactiver RCLootCouncil. Cette option est u
 L["Add Item"] = "Ajouter un objet"
 L["Add Note"] = "Ajouter une note"
 L["Add ranks"] = "Ajouter des rangs"
-L["Add Rolls"] = "Ajouter des lancers de dés"
 L["Add rolls"] = "Ajouter des lancers de dés"
+L["Add Rolls"] = "Ajouter des lancers de dés"
 L["add_candidate"] = "Ajouter un candidat"
 L["add_ranks_desc"] = "Définir le rang minimum pour pouvoir participer au conseil du butin :"
 L["add_ranks_desc2"] = [=[Sélectionnez un rang ci-dessus pour ajouter au conseil tous les membres de ce rang et au-dessus.
@@ -231,6 +231,10 @@ L["enable_loot_history_desc"] = "Active l'historique. RCLootCouncil ne répertor
 L["enable_timeout_desc"] = "Cocher pour activer le délai de vote dans la fenêtre de butin"
 L["Enter your note:"] = "Saisissez votre note"
 L["EQdkp-Plus XML output, tailored for Enjin import."] = "Exporter en EQdkp-Plus XML, adapté pour être importé sur Enjin."
+--[[Translation missing --]]
+L["error_no_autoAward_candidates"] = "You've enabled auto awarding of items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
+L["error_no_autoAwardBoE_candidates"] = "You've enabled auto awarding of BoE items, but haven't set any candidate(s) to auto award to."
 L["error_test_as_non_leader"] = "Vous ne pouvez pas lancer un test en étant dans un groupe sans en être le chef."
 L["Everybody is up to date."] = "Tout le monde est à jour."
 L["Everyone have voted"] = "Tout le monde a voté"
@@ -362,6 +366,8 @@ L["Open the Loot History"] = "Ouvrir l'historique du butin"
 L["open_the_loot_history_desc"] = "Cliquer pour ouvrir l'historique du butin."
 L["Opens the synchronizer"] = "Ouvre le synchroniseur "
 L["opt_addButton_desc"] = "Ajouter un nouveau groupe de bouton pour le créneau sélectionné."
+--[[Translation missing --]]
+L["opt_announceAward_WHISPER_WINNER"] = "/w winner"
 L["opt_autoAddBoEs_desc"] = "Ajouter automatiquement tous les objets LQE (Lié quand équipé) à la session."
 L["opt_autoAddBoEs_name"] = "Ajouter automatiquement les LQE"
 L["opt_autoAddItems_desc"] = "Ajouter automatiquement tous les objets éligibles à la session."
@@ -377,7 +383,7 @@ L["opt_autoGroupLoot_name"] = "Auto Group Loot"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will only do group loot auto pass when you're in a guild group."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Groupe de Guilde uniquement; Si activé RCLootCouncil ne passera automatiquement que si vous êtes en groupe de guilde"
 --[[Translation missing --]]
-L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons your class can't equip."
+L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
 L["opt_autoTrade_desc"] = "Cochez pour automatiquement ajouter les objets assignés à la fenêtre d'échange lorsque vous échanger avec le gagnant. Si décoché, vous verrez une popup avant que les objets ne soient ajoutés."
@@ -460,6 +466,8 @@ L["Please wait before trying to sync again."] = "Merci d'attendre avant d'à nou
 L["Print Responses"] = "Afficher la réponse"
 L["print_response_desc"] = "Afficher votre réponse dans la fenêtre de discussion"
 L["Protector Token"] = "Jeton de protection"
+--[[Translation missing --]]
+L["Rare_Items"] = "Rare items"
 L["Raw lua output. Doesn't work well with date selection."] = "Exporter données lua brutes. Ne fonctionne pas bien avec la sélection de dates."
 --[[Translation missing --]]
 L["rcframe_help"] = [=[Double click here to minimize
@@ -533,6 +541,8 @@ L["Something went wrong :'("] = "Une erreur s'est produite :'("
 L["Something went wrong during syncing, please try again."] = "Il y a eu un problème durant la synchronisation, merci d'essayer à nouveau."
 L["Sort Items"] = "Trier les objets"
 L["sort_items_desc"] = "Trier les sessions par type d'objet et niveau d'objet."
+--[[Translation missing --]]
+L["Special_Effects_Items"] = "Items /w special effects"
 L["Standard .csv output."] = "Exporter en .csv standard."
 L["Standard JSON output."] = "Tableau JSON contenant un objet JSON par entrée de l'historique."
 L["Status texts"] = "Textes de statut"

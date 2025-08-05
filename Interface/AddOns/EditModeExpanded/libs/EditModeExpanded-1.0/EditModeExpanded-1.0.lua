@@ -2,7 +2,7 @@
 -- Internal variables
 --
 
-local MAJOR, MINOR = "EditModeExpanded-1.0", 93
+local MAJOR, MINOR = "EditModeExpanded-1.0", 95
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -235,7 +235,9 @@ function lib:RegisterFrame(frame, name, db, anchorTo, anchorPoint, clamped)
     frame.Selection:Hide()
     
     frame.systemNameString = name
-    frame.Selection:SetGetLabelTextFunction(function() return name end)
+    
+    frame.Selection:SetSystem(frame)
+    
     frame:SetupSettingsDialogAnchor();
     
     --frame.snappedFrames = {}; -- this was spreading taint, need to check for the absence causing errors

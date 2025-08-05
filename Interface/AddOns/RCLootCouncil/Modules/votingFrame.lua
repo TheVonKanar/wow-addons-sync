@@ -122,6 +122,9 @@ function RCVotingFrame:OnDisable() -- We never really call this
 	self:Hide()
 	self.frame:SetParent(nil)
 	self.frame = nil
+	self:UnregisterAllBuckets()
+	self:UnregisterAllMessages()
+	self:UnregisterAllEvents()
 	wipe(lootTable)
 	active = false
 	session = 1
@@ -284,7 +287,7 @@ end
 
 --- Removes a specific entry from the voting frame's columns
 -- Takes either index or colName as the identifier, and returns the removed rows
--- if succesful, or nil if not. Should be called before any session begins.
+-- if successfull, or nil if not. Should be called before any session begins.
 function RCVotingFrame:RemoveColumn(id)
 	addon.Log:D("Removing Column", id)
 	local removedCol, removedIndex
@@ -301,6 +304,14 @@ function RCVotingFrame:RemoveColumn(id)
 		for _,col in ipairs(self.scrollCols) do
 			if col.sortnext and col.sortnext > removedIndex then
 				col.sortnext = col.sortnext - 1
+			end
+		end
+		-- If the frame has already been created, we need to update it
+		if self:IsEnabled() and self.frame then
+			if self.frame:IsShown() then
+				addon.Log:E("Tried to remove column while voting frame is shown")
+			else
+				self.frame.UpdateSt()
 			end
 		end
 		return removedCol
@@ -1116,7 +1127,7 @@ function RCVotingFrame:UpdateMoreInfo(row, data)
 	end
 
 	local tip = self.frame.moreInfo -- shortening
-	tip:SetOwner(self.frame, "ANCHOR_RIGHT")
+	tip:SetOwner(self.frame.content, "ANCHOR_TOPRIGHT")
 
 	tip:AddLine(addon:GetClassIconAndColoredName(name, 16))
 	if moreInfoData and moreInfoData[name] then
@@ -1179,8 +1190,8 @@ end
 
 function RCVotingFrame:GetFrame()
 	if self.frame then return self.frame end
-
 	-- Container and title
+	---@class DefaultRCLootCouncilFrame : RCFrame
 	local f = addon.UI:NewNamed("RCFrame", UIParent, "DefaultRCLootCouncilFrame", L["RCLootCouncil Voting Frame"], 250, 410)
 	-- Scrolling table
 	function f.UpdateSt()
@@ -1567,7 +1578,17 @@ function RCVotingFrame.SetCellClass(rowFrame, frame, data, cols, row, realrow, c
 				addon.Log:E(candName)
 			end
 		end
-		return
+		-- 28/8-25: It appears people can be added to a session with the wrong realm name, 
+		-- but be in `data[realrow].name` with the correct realm name.
+		-- If the name is there, we should have all the info to create them, so just add them.
+		-- This should also fix any issues arrising in other handlers.
+		Player:Get(name)
+		if name and name ~= "" then
+			RCVotingFrame:SetupCandidate(lootTable[session], name, "ANNOUNCED")
+			addon.Log:D("Added missing player", name, "lootTable")
+		else
+			return
+		end
 	end
 	local specID = lootTable[session].candidates[name].specID
 	local _, specName, _, specIcon = GetSpecializationInfoByID(specID or 0)
@@ -1598,9 +1619,10 @@ function RCVotingFrame.SetCellName(rowFrame, frame, data, cols, row, realrow, co
 	else
 		frame.text:SetText(addon.Ambiguate(name))
 	end
+	data[realrow].cols[column].value = name or ""
+	if not lootTable[session].candidates[name] then return end
 	local c = addon:GetClassColor(lootTable[session].candidates[name].class)
 	frame.text:SetTextColor(c.r, c.g, c.b, c.a)
-	data[realrow].cols[column].value = name or ""
 end
 
 function RCVotingFrame.SetCellRank(rowFrame, frame, data, cols, row, realrow, column, fShow, table, ...)
@@ -1822,7 +1844,7 @@ function RCVotingFrame.filterFunc(table, row)
 	local response = lootTable[session].candidates[row.name].response
 	if not db.modules["RCVotingFrame"].filters.showPlayersCantUseTheItem then
 		local v = lootTable[session]
-		if addon:AutoPassCheck(v.link, v.equipLoc, v.typeID, v.subTypeID, v.classes, v.token, v.relic, lootTable[session].candidates[row.name].class) then
+		if addon.AutoPass:AutoPassCheck(v.link, v.equipLoc, v.typeID, v.subTypeID, v.classes, lootTable[session].candidates[row.name].class) then
 			return false
 		end
 	end
@@ -1843,6 +1865,9 @@ function ResponseSort(table, rowa, rowb, sortbycol)
 	end
 	a, b = addon:GetResponse(lootTable[session].typeCode or lootTable[session].equipLoc, lootTable[session].candidates[a.name].response).sort,
 			 addon:GetResponse(lootTable[session].typeCode or lootTable[session].equipLoc, lootTable[session].candidates[b.name].response).sort
+	if not a or not b then
+		return a or b or 0
+	end
 	if a == b then
 		if column.sortnext then
 			local nextcol = table.cols[column.sortnext];

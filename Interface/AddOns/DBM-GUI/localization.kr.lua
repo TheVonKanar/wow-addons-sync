@@ -15,7 +15,19 @@ L.OTabWorld						= "필드 보스"--Since there are so many world mods, enough t
 L.OTabScenarios						= "시나리오"--Future use, will be used for scenarios and delves, likely after there are more than 2 mods (so probably 12.x or later)
 L.OTabPlugins						= "기타"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
 L.OTabOptions					= "핵심 설정"
+L.OTabTools						= "도구"--Such as break timer button, durability checks, latency checks, keystone checks (in future)
 L.OTabAbout						= "소개"
+
+--Main Tab, Tools checks
+L.Tools_LatencyCheck				= "지연시간 검사"
+L.Tools_DurabilityCheck				= "내구도 검사"
+L.Tools_KeystoneCheck				= "쐐기돌 확인"
+
+L.Tools_BreakTimer					= "휴식 타이머 시작"
+L.Tools_PizzaTimer					= "일반 타이머 시작"
+
+L.Tools_Duration					= "지속시간"
+L.Tools_Message						= "타이머 메시지"
 
 L.TabCategory_CURRENT_SEASON		= "현재 시즌"
 
@@ -535,6 +547,7 @@ L.HideBossEmoteFrame		= "보스 전투중 보스 감정표현 프레임 숨기�
 L.HideWatchFrame			= "추적중인 업적이 없고 신화+ 난이도가 아니라면 보스 전투시 퀘스트 추적 프레임 숨기기"
 L.HideQuestTooltips			= "보스 전투중 툴팁에서 퀘스트 목표 숨기기"--Currently hidden (NYI)
 L.HideTooltips				= "보스 전투중 툴팁 완전히 숨기기"
+L.HideBlizzardTimeline				= "보스 전투중 블리자드 기본 공격대 타임라인 숨기기"
 
 -- Panel: Raid Leader Controls
 L.Tab_RLControls					= "공대장 제어 설정"
@@ -589,6 +602,7 @@ L.Panel_Range				= "거리 창"
 -- Panel: Nameplate
 L.Panel_Nameplates			= "이름표"
 L.Plater_Config						= "Plater 설정창 열기"
+L.ThreatPlates_Config						= "Threat Plates 설정창 열기"
 L.Area_NPStyle				= "외형 (알림: Plater를 사용하지 않을 때만 설정이 가능합니다)"
 L.NPAuraText					= "이름표 아이콘에 타이머 텍스트 표시"
 L.NPAuraSize				= "아이콘 픽셀 크기 (정사각형): %d"

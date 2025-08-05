@@ -39,6 +39,9 @@ L["Module Category Tooltip"] = "鼠标提示";   --Additional Info on Tooltips
 L["Module Category Class"] = "职业";   --Player Class (rogue, paladin...)
 --- order: 5
 L["Module Category Reduction"] = "做减法";   --Reduce UI elements
+--- order: -1
+L["Module Category Timerunning"] = "军团再临：幻境新生";    --Change this based on timerunning season
+
 
 L["Module Category Dragonflight"] = "巨龙时代";
 L["Module Category Plumber"] = "Plumber";   --This addon's name
@@ -85,6 +88,7 @@ L["ModuleDescription GossipFrameMedal Format"] = "将默认图标 %s 替换为�
 --DruidModelFix (Disabled after 10.2.0)
 L["ModuleName DruidModelFix"] = "德鲁伊模型修复";
 L["ModuleDescription DruidModelFix"] = "修复使用群星雕文导致人物界面模型变白的问题。\n\n暴雪将在10.2.0版本修复这个问题。";
+L["Model Layout"] = "模型布局";
 
 
 --PlayerChoiceFrameToken (PlayerChoiceFrame)
@@ -194,6 +198,12 @@ L["ModuleDescription TooltipItemReagents"] = "如果一个物品可被使用来�
 L["Can Create Multiple Item Format"] = "你拥有的材料能够合成|cffffffff%d|r件物品。";
 
 
+--Tooltip DelvesItem
+L["ModuleName TooltipDelvesItem"] = "地下堡宝匣钥匙";
+L["ModuleDescription TooltipDelvesItem"] = "在周常宝箱的鼠标提示上显示你本CD已获得的宝匣钥匙及碎片数量。";
+L["You Have Received Weekly Item Format"] = "你本周已获得%s。";
+
+
 --Plunderstore
 L["ModuleName Plunderstore"] = "霸业风暴：珍宝商店";
 L["ModuleDescription Plunderstore"] = "调整从队伍查找器界面打开的珍宝商店：\n\n- 允许仅显示未收集物品。\n\n- 在类别按钮上显示未收集物品的数量。\n\n- 在武器和护甲的鼠标提示上显示其穿戴位置。\n\n- 允许你在试衣间里显示可穿戴的物品。";
@@ -208,6 +218,7 @@ L["Num Items In Bank Format"] = "银行: |cffffffff%d|r";
 L["Num Items In Bag Format"] = "背包: |cffffffff%d|r";
 L["Number Thousands"] = "K";
 L["Number Millions"] = "M";
+L["Questionable Item Count Tooltip"] = "受技术所限该物品数量可能不准确。";
 
 
 --Landing Page (Expansion Summary Minimap)
@@ -239,10 +250,14 @@ L["ModuleName Delves_SeasonProgress"] = "地下堡: 赛季进度";
 L["ModuleDescription Delves_SeasonProgress"] = "在你提升“地下堡行者的旅程”时显示一个进度条。";
 L["ModuleName Delves_Dashboard"] = "地下堡: 每周奖励";
 L["ModuleDescription Delves_Dashboard"] = "在地下堡赛季界面显示宏伟宝库和鎏金藏匿物的进度。";
+L["ModuleName Delves_Automation"] = "地下堡: 自动选择特效";
+L["ModuleDescription Delves_Automation"] = "当你在地下堡内时，自动选择宝藏或稀有精英掉落的特效。";
 L["Delve Crest Stash No Info"] = "你所在区域无法获取该信息。";
 L["Delve Crest Stash Requirement"] = "仅在11层丰裕地下堡出现。";
 L["Overcharged Delve"] = "超载地下堡";
 L["Delves History Requires AddOn"] = "地下堡记录由Plumber插件在本地保存。";
+L["Auto Select"] = "自动选择";
+L["Power Borrowed"] = "获得特效";
 
 
 --WoW Anniversary
@@ -338,6 +353,69 @@ L["BossBanner Valuable Item Only"] = "仅显示稀有物品";
 L["BossBanner Valuable Item Only Tooltip"] = "仅显示坐骑、职业套装兑换物和地下城手册中标注为稀有掉落的物品。";
 
 
+--AppearanceTab
+L["ModuleName AppearanceTab"] = "外观页面";
+L["ModuleDescription AppearanceTab"] = "修改战团藏品-外观页面：\n\n- 调整模型加载进程并减少每页显示的模型数量来改善显卡负载，从而此降低你使用此界面时显卡崩溃的几率。\n\n- 当你改变装备栏时，自动跳转到上次浏览的页码。";
+
+
+--SoftTargetName
+L["ModuleName SoftTargetName"] = "姓名板: 软目标";
+L["ModuleDescription SoftTargetName"] = "显示软目标物体的名字。";
+L["SoftTargetName Req Title"] = "|cffd4641c你还需要手动更改以下设置来使此功能生效：|r";
+L["SoftTargetName Req 1"] = "前往游戏选项> 游戏功能> 控制，|cffffd100开启交互按键|r";
+L["SoftTargetName Req 2"] = "将CVar |cffffd100SoftTargetIconGameObject|r 的值设为 |cffffffff1|r";
+L["SoftTargetName CastBar"] = "显示施法条";
+L["SoftTargetName CastBar Tooltip"] = "在姓名版上显示环形施法条。\n\n|cffff4800此插件无法辨别你的软目标是否为当前施法目标。|r"
+L["SoftTargetName QuestObjective"] = "显示任务目标";
+L["SoftTargetName QuestObjective Tooltip"] = "在名字下方显示任务目标（如果存在的话）。";
+L["SoftTargetName QuestObjective Alert"] = "此功能需要你前往游戏选项> 辅助功能> 综合，并勾选|cffffffff动作瞄准提示信息|r。";   --See globals: TARGET_TOOLTIP_OPTION
+L["SoftTargetName ShowNPC"] = "包括NPC";
+L["SoftTargetName ShowNPC Tooltip"] = "若禁用此选项，我们将只显示可互动物体（Game Objects）的名字。";
+
+
+--LegionRemix
+L["ModuleName LegionRemix"] = "军团再临：幻境新生";
+L["ModuleDescription LegionRemix"] = "- 自动解锁神器特质。\n\n- 在角色界面上显示一个提供各种信息的小部件。你可以点击它来打开全新的神器UI。";
+L["ModuleName LegionRemix_HideWorldTier"] = "隐藏世界难度图标";
+L["ModuleDescription LegionRemix_HideWorldTier"] = "隐藏小地图下方的世界难度图标。";
+L["Artifact Weapon"] = "神器武器";
+L["Artifact Ability"] = "神器技能";
+L["Artifact Traits"] = "神器特质";
+L["Earn X To Upgrade Y Format"] = "还差 |cffffffff%s|r %s 即可升级%s";
+L["Until Next Upgrade Format"] = "距下一级还差 %s";
+L["New Trait Available"] = "有新特质可用。";
+L["Rank Format"] = "等级 %s";
+L["Rank Increased"] = "等级已提升";
+L["Infinite Knowledge Tooltip"] = "某些军团再临成就会奖励你永恒知识。";
+L["Stat Bonuses"] = "属性提升";
+L["Bonus Traits"] = "特质加成：";
+L["Instruction Open Artifact UI"] = "左键点击显示神器界面\n右键点击显示设置";
+L["LegionRemix Widget Title"] = "Plumber小部件";
+L["Trait Icon Mode"] = "特质图标样式：";
+L["Trait Icon Mode Hidden"] = "不显示";
+L["Trait Icon Mode Mini"] = "显示小型图标";
+L["Trait Icon Mode Replace"] = "替换装备图标";
+L["Error Drag Spell In Combat"] = "战斗中不可拖拽技能。";
+L["Error Change Trait In Combat"] = "战斗中不能更改特质。";
+L["Amount Required To Unlock Format"] = "%s 后解锁";   --Earn another x amount to unlock (something)
+L["Soon To Unlock"] = "即将解锁";
+L["Artifact Ability Auto Unlock Tooltip"] = "此特质将在你获得足够的永恒能量后自动解锁。";
+L["Require More Bag Slot Alert"] = "你需要腾出一些背包格子才能进行此操作。";
+L["Spell Not Known"] = "未找到法术";
+L["Fully Upgraded"] = "已升至顶级";
+L["Unlock Level Requirement Format"] = "角色升至%d级后解锁";
+L["Auto Learn Traits"] = "自动升级特质";
+L["Auto Learn Traits Tooltip"] = "当你有足够的永恒能量时自动升级神器特质。";
+L["Infinite Power Yield Format"] = "在你当前知识等级下将奖励|cffffffff%s|r点永恒能量。";
+L["Infinite Knowledge Bonus Format"] = "当前增益：|cffffffff%s|r";
+L["Infinite Knowledge Bonus Next Format"] = "下级增益：%s";
+
+
+--ItemUpgradeUI
+L["ModuleName ItemUpgradeUI"] = "物品升级：自动打开装备栏";
+L["ModuleDescription ItemUpgradeUI"] = "当你与物品升级NPC交互时自动打开角色面板。";
+
+
 --Loot UI
 L["ModuleName LootUI"] = "拾取窗口";
 L["ModuleDescription LootUI"] = "替换默认的拾取窗口并提供以下功能：\n\n- 快速拾取所有物品\n\n- 修复自动拾取有时失效的问题\n\n- 手动拾取时显示“全部拾取”按钮";
@@ -373,6 +451,11 @@ L["LootUI Option Custom Quality Color Tooltip"] = "使用你在 游戏设置> �
 L["LootUI Option Grow Direction"] = "向上生长";
 L["LootUI Option Grow Direction Tooltip 1"] = "勾选时：窗口左下角位置保持不变，新提示出现在旧提示的上方。";
 L["LootUI Option Grow Direction Tooltip 2"] = "未勾选时：窗口左上角位置保持不变，新提示出现在旧提示的下方。";
+L["Junk Items"] = "垃圾物品";
+L["LootUI Option Combine Items"] = "合并相似物品";
+L["LootUI Option Combine Items Tooltip"] = "在同一行显示相似物品。目前支持的分类为：\n\n- 垃圾物品\n- 纪元纪念品（军团再临：幻境新生）";
+L["LootUI Option Low Frame Strata"] = "置于底层";
+L["LootUI Option Low Frame Strata Tooltip"] = "在处于通知模式时，将拾取窗口置于其他界面的后方。\n\n此选项不影响手动拾取模式。";
 
 
 --Quick Slot For Third-party Dev
@@ -438,6 +521,17 @@ L["Completed"] = "已完成";
 L["Filter Hide Completed Format"] = "隐藏已完成的条目 (%d)";
 L["Weeky Reset Format"] = "周常重置：%s";
 L["Ready To Turn In Tooltip"] = "可以上交任务。";
+L["Weekly Coffer Key Tooltip"] = "每周获得的前四个周常宝箱里有一把修复的宝匣钥匙。";
+L["Weekly Coffer Key Shards Tooltip"] = "每周获得的前四个周常宝箱里有宝匣钥匙碎片。";
+L["Weekly Cap"] = "每周上限";
+L["Weekly Cap Reached"] = "已达到每周上限。";
+L["Instruction Right Click To Use"] = "<右键单击来使用>"
+L["Join Queue"] = "加入队列";
+L["In Queue"] = "在队列中";
+L["Click To Switch"] = "点击以切换为|cffffffff%s|r";
+L["Click To Queue"] = "点击以加入|cffffffff%s|r";
+L["Click to Open Format"] = "点击以打开%s";
+L["List Is Empty"] = "暂无可显示内容";
 
 
 --Generic
@@ -446,6 +540,7 @@ L["Reposition Button Horizontal"] = "水平方向移动";   --Move the window ho
 L["Reposition Button Vertical"] = "竖直方向移动";
 L["Reposition Button Tooltip"] = "左键点击并拖拉来移动这个窗口。";
 L["Font Size"] = "字体大小";
+L["Icon Size"] = "图标大小";
 L["Reset To Default Position"] = "重置到默认位置";
 L["Renown Level Label"] = "名望 ";  --There is a space
 L["Paragon Reputation"] = "巅峰";
@@ -482,6 +577,10 @@ L["Delve Chest 1 Rare"] = "丰裕宝匣";
 L["Season Maximum Colon"] = "赛季上限："
 L["Item Changed"] = "已被替换为";   --CHANGED_OWN_ITEM
 L["Completed CHETT List"] = "完成的C.H.E.T.T.清单";
+L["Devourer Attack"] = "吞噬者入侵";
+L["Restored Coffer Key"] = "修复的宝匣钥匙";
+L["Coffer Key Shard"] = "宝匣钥匙碎片";
+L["Epoch Mementos"] = "纪元纪念品";
 
 
 --Map Pin Filter Name (name should be plural)

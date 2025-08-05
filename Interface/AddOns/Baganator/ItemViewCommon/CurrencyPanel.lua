@@ -18,14 +18,6 @@ local function Unmute()
   end)
 end
 
-local transferImpossibleDialogName = "Baganator_TransferImpossible"
-StaticPopupDialogs[transferImpossibleDialogName] = {
-  text = CURRENCY_TRANSFER_DISABLED_NO_VALID_SOURCES,
-  button1 = OKAY,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 BaganatorCurrencyPanelMixin = {}
 
 function BaganatorCurrencyPanelMixin:OnLoad()
@@ -403,7 +395,7 @@ function BaganatorCurrencyPanelMixin:SetupRow(row, details)
       end)
       row:SetScript("OnClick", function()
         local GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink or GetCurrencyLink
-        if IsModifiedClick("CHATLINK") and ChatEdit_InsertLink(GetCurrencyLink(details.currencyID, 1)) then
+        if IsModifiedClick("CHATLINK") and addonTable.Utilities.ChatInsertLink(GetCurrencyLink(details.currencyID, 1)) then
           return
         end
         if details.isLive and IsShiftKeyDown() then
@@ -475,7 +467,7 @@ function BaganatorCurrencyPanelMixin:GetTransferButton(parent)
     GameTooltip:Hide()
     TokenFramePopup:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT", 3, -28)
     if not TokenFramePopup.CurrencyTransferToggleButton:IsEnabled() then
-      StaticPopup_Show(transferImpossibleDialogName)
+      addonTable.Dialogs.ShowAcknowledge(CURRENCY_TRANSFER_DISABLED_NO_VALID_SOURCES)
     end
   end)
 

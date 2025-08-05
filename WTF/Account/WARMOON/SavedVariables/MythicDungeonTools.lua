@@ -28,9 +28,8 @@ MythicDungeonToolsDB = {
 [118] = 2,
 [120] = 4,
 },
-["selectedDungeonList"] = 2,
+["selectedDungeonList"] = 3,
 ["maximized"] = false,
-["currentDungeonIdx"] = 120,
 ["presets"] = {
 [19] = {
 {
@@ -6880,6 +6879,30 @@ nil,
 },
 },
 },
+[123] = {
+{
+["week"] = 1,
+["difficulty"] = 10,
+["value"] = {
+["currentPull"] = 1,
+["currentSublevel"] = 1,
+["selection"] = {
+1,
+},
+["currentDungeonIdx"] = 123,
+["teeming"] = false,
+["riftOffsets"] = {
+{
+},
+},
+["pulls"] = {
+{
+["color"] = "ff3eff",
+},
+},
+},
+},
+},
 },
 ["toolbar"] = {
 ["color"] = {
@@ -6889,7 +6912,7 @@ nil,
 ["brushSize"] = 4,
 },
 ["latestSeenDungeonList"] = 9,
-["version"] = 543,
+["version"] = 550,
 ["xoffset"] = -104.1666412353516,
 ["colorPaletteInfo"] = {
 ["customPaletteValues"] = {
@@ -6955,7 +6978,7 @@ nil,
 },
 },
 },
-["latestDungeonSeen"] = 115,
+["latestDungeonSeen"] = 123,
 ["yoffset"] = 73.16650390625,
 },
 }

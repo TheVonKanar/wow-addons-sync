@@ -1,7 +1,7 @@
 
 AngleurCharacter = {
-["angleurSet"] = false,
 ["sleeping"] = false,
+["angleurSet"] = false,
 }
 Angleur_SlottedExtraToys = {
 ["first"] = {
@@ -12,7 +12,7 @@ Angleur_SlottedExtraToys = {
 ["icon"] = 0,
 ["spellID"] = 0,
 },
-["third"] = {
+["second"] = {
 ["name"] = 0,
 ["toyID"] = 0,
 ["auraActive"] = false,
@@ -20,7 +20,7 @@ Angleur_SlottedExtraToys = {
 ["icon"] = 0,
 ["spellID"] = 0,
 },
-["second"] = {
+["third"] = {
 ["name"] = 0,
 ["toyID"] = 0,
 ["auraActive"] = false,
@@ -41,31 +41,12 @@ Angleur_SlottedExtraItems = {
 ["auraActive"] = false,
 ["lastUpdateTime"] = 0,
 ["macroSpellID"] = 0,
-["macroIcon"] = 0,
+["delay"] = 0,
 ["name"] = 0,
 ["forceEquip"] = false,
-["lastUsed"] = 0,
-["itemID"] = 0,
-["delay"] = 0,
-["spellID"] = 0,
-},
-["third"] = {
-["equipLoc"] = 0,
-["macroName"] = 0,
-["loaded"] = false,
-["macroBody"] = 0,
-["macroItemID"] = 0,
-["remainingTime"] = 0,
-["icon"] = 0,
-["auraActive"] = false,
-["lastUpdateTime"] = 0,
-["macroSpellID"] = 0,
 ["macroIcon"] = 0,
-["name"] = 0,
-["forceEquip"] = false,
-["lastUsed"] = 0,
 ["itemID"] = 0,
-["delay"] = 0,
+["lastUsed"] = 0,
 ["spellID"] = 0,
 },
 ["second"] = {
@@ -79,12 +60,31 @@ Angleur_SlottedExtraItems = {
 ["auraActive"] = false,
 ["lastUpdateTime"] = 0,
 ["macroSpellID"] = 0,
-["macroIcon"] = 0,
+["delay"] = 0,
 ["name"] = 0,
 ["forceEquip"] = false,
-["lastUsed"] = 0,
+["macroIcon"] = 0,
 ["itemID"] = 0,
+["lastUsed"] = 0,
+["spellID"] = 0,
+},
+["third"] = {
+["equipLoc"] = 0,
+["macroName"] = 0,
+["loaded"] = false,
+["macroBody"] = 0,
+["macroItemID"] = 0,
+["remainingTime"] = 0,
+["icon"] = 0,
+["auraActive"] = false,
+["lastUpdateTime"] = 0,
+["macroSpellID"] = 0,
 ["delay"] = 0,
+["name"] = 0,
+["forceEquip"] = false,
+["macroIcon"] = 0,
+["itemID"] = 0,
+["lastUsed"] = 0,
 ["spellID"] = 0,
 },
 }
@@ -92,13 +92,13 @@ Angleur_SwapoutItemsSaved = {
 }
 Angleur_CVars = {
 ["ultraFocus"] = {
-["musicOn"] = "0",
+["masterOn"] = "1",
 ["backgroundOn"] = "0",
 ["effectsOn"] = "1",
 ["ambienceOn"] = "1",
-["dialogOn"] = "1",
+["musicOn"] = "0",
 ["masterVolume"] = "0.20000000298023",
 ["effectsVolume"] = "0.40000000596046",
-["masterOn"] = "1",
+["dialogOn"] = "1",
 },
 }

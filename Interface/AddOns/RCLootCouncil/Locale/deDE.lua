@@ -18,8 +18,8 @@ L["active_desc"] = "Abwählen, um RCLootCouncil zu deaktivieren. Dies ist nützl
 L["Add Item"] = "Gegenstand hinzufügen"
 L["Add Note"] = "Notiz hinzufügen"
 L["Add ranks"] = "Ränge hinzufügen"
-L["Add Rolls"] = "Würfe hinzufügen"
 L["Add rolls"] = "Würfe hinzufügen"
+L["Add Rolls"] = "Würfe hinzufügen"
 L["add_candidate"] = "Kandidat hinzufügen"
 L["add_ranks_desc"] = "Wähle einen Mindestrang aus, der am Beuterat teilnehmen darf:"
 L["add_ranks_desc2"] = [=[
@@ -235,6 +235,10 @@ L["enable_loot_history_desc"] = "Aktiviert den Verlauf. RCLootCouncil wird nicht
 L["enable_timeout_desc"] = "Anhaken, um eine Zeitbeschränkung im Beutefenster zu aktivieren"
 L["Enter your note:"] = "Gib deine Notiz ein:"
 L["EQdkp-Plus XML output, tailored for Enjin import."] = "EQdkp-Plus-XML-Ausgabe, maßgeschneidert für den Enjin-Import."
+--[[Translation missing --]]
+L["error_no_autoAward_candidates"] = "You've enabled auto awarding of items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
+L["error_no_autoAwardBoE_candidates"] = "You've enabled auto awarding of BoE items, but haven't set any candidate(s) to auto award to."
 L["error_test_as_non_leader"] = "Du kannst keinen Test initiieren, wenn du dich in einer Gruppe befindest aber nicht der Gruppenleiter bist. "
 L["Everybody is up to date."] = "Jeder ist auf dem neuesten Stand."
 L["Everyone have voted"] = "Jeder hat abgestimmt"
@@ -369,6 +373,8 @@ L["Open the Loot History"] = "Beuteverlauf öffnen"
 L["open_the_loot_history_desc"] = "Klicken, um den Beuteverlauf zu öffnen."
 L["Opens the synchronizer"] = "Öffnet den Synchronisierer"
 L["opt_addButton_desc"] = "Füge eine neue Schaltflächengruppe für den ausgewählten Slot hinzu."
+--[[Translation missing --]]
+L["opt_announceAward_WHISPER_WINNER"] = "/w winner"
 L["opt_autoAddBoEs_desc"] = "Automatisch alle BoE (Beim Anlegen gebundenen) Gegenstände zu dieser Sitzung hinzufügen"
 L["opt_autoAddBoEs_name"] = "BoEs automatisch hinzufügen"
 L["opt_autoAddItems_desc"] = "Automatisch alle wählbaren Gegenstände einer Sitzung hinzufügen."
@@ -460,6 +466,8 @@ L["Please wait before trying to sync again."] = "Bitte warte, bevor Du versuchst
 L["Print Responses"] = "Antworten ausgeben"
 L["print_response_desc"] = "Gib Deine Antwort im Chatfenster aus"
 L["Protector Token"] = "Beschützer-Marke"
+--[[Translation missing --]]
+L["Rare_Items"] = "Rare items"
 L["Raw lua output. Doesn't work well with date selection."] = "Unbearbeitete Lua-Ausgabe. Funktioniert nicht gut mit Datumsauswahl."
 --[[Translation missing --]]
 L["rcframe_help"] = [=[Double click here to minimize
@@ -531,6 +539,8 @@ L["Something went wrong :'("] = "Irgendwas ist schief gelaufen :'("
 L["Something went wrong during syncing, please try again."] = "Während der Synchronisierung ist ein Fehler aufgetreten. Bitte versuche es erneut."
 L["Sort Items"] = "Gegenstände sortieren"
 L["sort_items_desc"] = "Sortiere Session nach Gegenstandstyp und -stufe."
+--[[Translation missing --]]
+L["Special_Effects_Items"] = "Items /w special effects"
 L["Standard .csv output."] = "Standard"
 L["Standard JSON output."] = "JSON-Array beinhaltet ein JSON-Objekt pro Verlaufseintrag."
 L["Status texts"] = "Statustexte"

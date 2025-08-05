@@ -21,14 +21,14 @@ StaticPopupDialogs["LibUSC_EnterValue"] = {
     button1 = ACCEPT,
     button2 = CANCEL,
     OnShow = function(self, data)
-        self.button1:Disable()
+        self:GetButton1():Disable()
     end,
     OnAccept = function(self, Parameters)
         for _, Parameter in ipairs(Parameters) do
             if "Number" == Parameter.type then
-                Parameter:SetValue(tonumber(self.editBox:GetText()))
+                Parameter:SetValue(tonumber(self:GetEditBox():GetText()))
             else
-                Parameter:SetValue(self.editBox:GetText())
+                Parameter:SetValue(self:GetEditBox():GetText())
             end
             Parameter:FireStructureChanged();
         end
@@ -43,25 +43,25 @@ StaticPopupDialogs["LibUSC_EnterValue"] = {
         for _, Parameter in ipairs(self.data) do
             if "Number" == Parameter.type then
                 if nil ~= tonumber(EditBox:GetText()) then
-                    self.button1:Enable()
+                    self:GetButton1():Enable()
                 else
-                    self.button1:Disable()
+                    self:GetButton1():Disable()
                 end
             else
                 if "" ~= EditBox:GetText() then
-                    self.button1:Enable()
+                    self:GetButton1():Enable()
                 else
-                    self.button1:Disable()
+                    self:GetButton1():Disable()
                 end
             end
             break
         end
     end,
     EditBoxOnEnterPressed = function(EditBox, Parameter)
-        EditBox:GetParent().button1:Click()
+        EditBox:GetParent():GetButton1():Click()
     end,
     EditBoxOnEscapePressed = function(EditBox, Parameter)
-        EditBox:GetParent().button2:Click()
+        EditBox:GetParent():GetButton2():Click()
     end,
     timeout = 0,
     whileDead = true,
@@ -234,8 +234,8 @@ local function OnConditionChanged(Dropdown, _, value)
         if UserEnteredParams then
             local dialog = StaticPopup_Show("LibUSC_EnterValue", Parameter:GetName())
             if (dialog) then
-                dialog.editBox:SetText(Parameter:GetValue())
-                dialog.editBox:HighlightText()
+                dialog:GetEditBox():SetText(Parameter:GetValue())
+                dialog:GetEditBox():HighlightText()
                 dialog.widget = self
                 dialog.data = UserEnteredParams
             end

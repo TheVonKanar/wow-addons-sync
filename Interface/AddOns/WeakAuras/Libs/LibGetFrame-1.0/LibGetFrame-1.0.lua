@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 67
+local MINOR_VERSION = 69
 if not LibStub then
   error(MAJOR_VERSION .. " requires LibStub.")
 end
@@ -116,7 +116,8 @@ local defaultTargettargetFrames = {
   "^oUF_ToT$",
   "^UUF_TargetTarget$",
   "^TargetTargetFrame$",
-  "^XPerl_TargetTarget$"
+  "^XPerl_TargetTarget$",
+  "^TargetFrameToT$"
 }
 local getDefaultTargettargetFrames = function()
   return CopyTable(defaultTargettargetFrames)
@@ -627,7 +628,7 @@ function lib.GetUnitFrame(target, opt)
   end
 
   local ignoredFrames = CopyTable(opt.ignoreFrames)
-  if opt.ignorePlayerFrame and not (defaultOpt and target == "player") then
+  if opt.ignorePlayerFrame then
     for _, v in pairs(opt.playerFrames) do
       tinsert(ignoredFrames, v)
     end

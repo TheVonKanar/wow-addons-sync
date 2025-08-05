@@ -1,7 +1,7 @@
 ## X-Flavor: retail
 ## X-Expansion: TWW
-## Interface: 110107, 110200
-## Version: 1.7.2
+## Interface: 110205
+## Version: 1.7.7
 
 ## Title: Plumber
 
@@ -25,9 +25,11 @@ Modules\SharedWidgets.xml
 Modules\SharedTooltip.lua
 Modules\BlizzardEditMode.lua
 Modules\ScenarioTracker.lua
-#Modules\DevTool.lua
 #Modules\DirectionArrow.lua
 #Modules\SuperTrack.xml
+
+#Modules\DevTool.lua
+#Modules\DevTool_HyperlinkEditor.lua
 
 ControlCenter.lua
 
@@ -50,10 +52,12 @@ Modules\TalkingHead.lua
 Modules\AzerothianArchives.lua
 Modules\MerchantPrice.lua
 Modules\BossBanner.lua
+Modules\SoftTargetName.lua
 
 #TWW
 Modules\DelvesScenario.lua
 Modules\DelvesDashboard.lua
+Modules\DelvesAutomation.lua
 Modules\ExpansionLandingPage.xml
 Modules\LandingPageSwitch.lua
 Modules\GameTooltipExtension.xml
@@ -65,10 +69,14 @@ Modules\NameplateResources.lua
 Modules\StaticPopupEnhancement.xml
 Modules\PlayerTitleUI.lua
 Modules\BlizzardSuperTrack.lua
-Modules\EquipmentFlyout.xml
+Modules\ItemUpgradeUI.xml
 Modules\Macros.lua
 Modules\ProfessionsBook.lua
 Modules\ExpansionLandingPage\ExpansionLandingPage_TWW.xml
+Modules\BlizzFix_ModelLoading.lua
+Modules\Timerunning\LegionRemix.xml
+
+#Modules\MerchantUI\MerchantUI.xml
 
 #Modules\DruidModelFix.lua
 #Modules\MovieSubtitle.lua

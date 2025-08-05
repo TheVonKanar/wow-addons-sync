@@ -21,14 +21,21 @@ function Syndicator.Search.GetExpansionInfo(itemID)
     if #results > 0 then
       local parent = results[1]
       local xpac
+      local awp
       while parent and not xpac do
         if parent.expansionID then
           xpac = math.floor(parent.expansionID)
+        end
+        if parent.awp and parent.mapID then
+          awp = math.floor(parent.awp / 10000)
         end
         parent = parent.parent
       end
       if xpac then
         return xpac
+      end
+      if awp then
+        return awp
       end
     end
   end
@@ -170,6 +177,13 @@ do
       return o["region"]
     end,
     validation = function() return OEMarketInfo ~= nil end
+  }
+  priceSources["recrystallize"] = {
+    func = function(itemLink)
+      return (RECrystallize_PriceCheck(itemLink))
+    end,
+    validation = function() return RECrystallize_PriceCheck ~= nil end,
+    priority = 40,
   }
 
   local frame = CreateFrame("Frame")

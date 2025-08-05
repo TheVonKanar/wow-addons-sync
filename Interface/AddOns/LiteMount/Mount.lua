@@ -22,8 +22,10 @@ local MountsRarity = LibStub("MountsRarity-2.0")
 LM.Mount = { }
 LM.Mount.__index = LM.Mount
 
-function LM.Mount:new()
-    return setmetatable({ }, self)
+function LM.Mount:new(t)
+    local m = t and CopyTable(t) or {}
+    m.flags = m.flags or {}
+    return setmetatable(m, self)
 end
 
 function LM.Mount:Get(className, ...)
@@ -70,6 +72,9 @@ function LM.Mount.FilterToDisplay(f)
     elseif f:match('^family:') then
         local _, family = string.split(':', f, 2)
         return L.LM_FAMILY .. ' : ' .. L[family]
+    elseif f:match('^expansion:') then
+        local _, expansion = string.split(':', f, 2)
+        return EXPANSION_FILTER_TEXT .. ' : ' .. GetExpansionName(expansion)
     elseif f:match('^mt:%d+$') then
         local _, id = string.split(':', f, 2)
         local typeInfo = LM.MOUNT_TYPE_INFO[tonumber(id)]
@@ -104,8 +109,6 @@ function LM.Mount:MatchesOneFilter(flags, groups, f)
         return self:IsUsable() == true
     elseif f == "COLLECTED" then
         return self:IsCollected() == true
-    elseif f == "MAWUSABLE" then
-        return self:MawUsable() == true
     elseif f == "JOURNAL" then
         return self.mountTypeID ~= nil
     elseif f == "FAVORITES" then
@@ -123,6 +126,8 @@ function LM.Mount:MatchesOneFilter(flags, groups, f)
         return self.mountID == tonumber(f:sub(4))
     elseif f:sub(1, 3) == 'mt:' then
         return self.mountTypeID == tonumber(f:sub(4))
+    elseif f:sub(1, 10) == 'expansion:' then
+        return self.expansion == tonumber(f:sub(11))
     elseif f:sub(1, 7) == 'family:' then
         return ( self.family == f:sub(8) or L[self.family] == f:sub(8) )
     elseif f:sub(1, 5) == 'prio:' then
@@ -213,6 +218,10 @@ function LM.Mount:IsCastable()
         if info.castTime > 0 then return false end
     elseif LM.Options:GetOption('instantOnlyMoving') then
         if info.castTime == 0 then return false end
+    end
+    -- This is so annoying, the performance impact of having to check this forever
+    if LM.Environment:IsTheMaw() then
+        if not self:IsMawCastable() then return false end
     end
     return true
 end
@@ -321,7 +330,7 @@ local MawUsableSpells = {
     [344577] = true,                -- Bound Shadehound
 }
 
-function LM.Mount:MawUsable()
+function LM.Mount:IsMawCastable()
     -- The True Maw Walker unlocks all mounts, but the spell (353214) doesn't
     -- seem to return true for IsPlayerSpell(). The unlock is not account-wide
     -- so the quest is good enough (for now).

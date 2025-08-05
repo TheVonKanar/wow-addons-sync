@@ -116,3 +116,5 @@ Kong: enabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
 KeyMaster: enabled
+BigWigs_LiberationOfUndermine: enabled
+BigWigs_ManaforgeOmega: enabled

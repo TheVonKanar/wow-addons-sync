@@ -47,14 +47,16 @@ function LM.Journal:Get(id)
     local name, spellID, icon, _, _, sourceType, _, _, faction, _, _, _, isSteadyFlight = C_MountJournal.GetMountInfoByID(id)
     local creatureDisplayID, descriptionText, sourceText, isSelfMount, mountTypeID, modelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(id)
 
-    if not creatureDisplayID then
-        local allCreatureDisplays = C_MountJournal.GetMountAllCreatureDisplayInfoByID(id)
-        if allCreatureDisplays and allCreatureDisplays[1] then
-            creatureDisplayID = allCreatureDisplays[1].creatureDisplayID
+    if C_MountJournal.GetMountAllCreatureDisplayInfoByID then
+        creatureDisplayID = {}
+        for _, info in ipairs(C_MountJournal.GetMountAllCreatureDisplayInfoByID(id)) do
+            table.insert(creatureDisplayID, info.creatureDisplayID)
         end
+    else
+        creatureDisplayID = { creatureDisplayID }
     end
 
-    if not name then
+    if not name or not icon then
         LM.Debug("LM.Mount: Failed GetMountInfo for ID = #%d", id)
         return
     end
@@ -109,14 +111,16 @@ function LM.Journal:Get(id)
     end
 
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-        m.family = LM.MOUNTFAMILY_BY_SPELL_ID[m.spellID]
+        m.family = LM.MountDB.GetModelBySpellID(m.spellID)
 
         if not m.family then
             m.family = UNKNOWN
             --[==[@debug@
-            LM.PrintError('No family: [%d] = true, -- %s', m.spellID, m.name)
+            LM.PrintError('No family: [%d] = true, -- % 4d %s', m.spellID, m.mountID, m.name)
             --@end-debug@]==]
         end
+
+        m.expansion = LM.MountDB.GetExpansionByID(id)
     end
 
     return m
@@ -156,12 +160,30 @@ function LM.Journal:IsFilterUsable()
     return self.isFilterUsable
 end
 
+-- looks like anything with an NPC on it won't work
+local NotUsableInPhaseDiving = {
+     [470]  = true,     -- Grand Expedition Yak
+    [1039]  = true,     -- Mighty Caravan Brutosaur
+    [2237]  = true,     -- Grizzly Hills Packmaster
+    [2265]  = true,     -- Trader's Gilded Brutosaur
+}
+
 function LM.Journal:IsCastable()
     if not self:IsUsable() then
         return false
     end
     if not C_Spell.IsSpellUsable(self.spellID) then
         return false
+    end
+    -- Phase diving is weird. You can mount most mounts, but it turns them all
+    -- into Phase-Lost Slateback afterwards, kind of the same way the holly
+    -- does at Xmas time.
+    if LM.Environment:IsPhaseDiving() then
+        if NotUsableInPhaseDiving[self.mountID] then
+            return false
+        elseif not LM.Environment:CanMountInPhaseDiving() then
+            return false
+        end
     end
     return LM.Mount.IsCastable(self)
 end
@@ -211,7 +233,7 @@ local ForceSummonByID = {
 -- alliance versions share the same spell and Blizzard have fubared something.
 -- Summon (Great) Exarch's Elekk and Summon (Great) Sunwalker Kodo work fine.
 
-if WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+if WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
     ForceSummonByID[41] = true  -- Warhorse
     ForceSummonByID[84] = true  -- Charger
     ForceSummonByID[149] = true -- Thalassian Charger
@@ -259,6 +281,7 @@ end
 function LM.Journal:Dump(prefix)
     prefix = prefix or ""
     LM.Mount.Dump(self, prefix)
+    LM.Print(prefix .. " expansion: " .. tostring(self.expansion))
     LM.Print(prefix .. " isFilterUsable: " .. tostring(self.isFilterUsable))
     LM.Print(prefix .. " mountTypeID: " .. tostring(self.mountTypeID))
     LM.Print(prefix .. " sourceType: " .. tostring(self.sourceType))

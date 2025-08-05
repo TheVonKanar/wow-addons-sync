@@ -1626,6 +1626,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "6838756",
+      text = "bloodelementalmount.m2",
+      value = "bloodelementalmount.m2",
+     },
+    },
+    text = "bloodelementalmount",
+    value = "bloodelementalmount",
+   },
+   {
+    children = {
+     {
       fileId = "123079",
       text = "bloodelffemalekid.m2",
       value = "bloodelffemalekid.m2",
@@ -3095,6 +3106,17 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "7288557",
+      text = "dimensionalshippet.m2",
+      value = "dimensionalshippet.m2",
+     },
+    },
+    text = "dimensionalshippet",
+    value = "dimensionalshippet",
+   },
+   {
+    children = {
+     {
       fileId = "123382",
       text = "direfurbolg.m2",
       value = "direfurbolg.m2",
@@ -4203,6 +4225,17 @@ WeakAuras.ModelPaths = {
     },
     text = "elitewyvern",
     value = "elitewyvern",
+   },
+   {
+    children = {
+     {
+      fileId = "2712551",
+      text = "encrypted13.m2",
+      value = "encrypted13.m2",
+     },
+    },
+    text = "encrypted13",
+    value = "encrypted13",
    },
    {
     children = {
@@ -16807,11 +16840,6 @@ WeakAuras.ModelPaths = {
      },
      {
       children = {
-       {
-        fileId = "6426176",
-        text = "belt_armor_chen_c_01_armor_icons.m2",
-        value = "belt_armor_chen_c_01_armor_icons.m2",
-       },
        {
         fileId = "1718333",
         text = "worgencombattransformation_wo_f.m2",
@@ -87945,6 +87973,11 @@ WeakAuras.ModelPaths = {
      {
       children = {
        {
+        fileId = "6426176",
+        text = "buckle_armor_chen_c_01.m2",
+        value = "buckle_armor_chen_c_01.m2",
+       },
+       {
         fileId = "616015",
         text = "buckle_cloth_challengemage_d_01.m2",
         value = "buckle_cloth_challengemage_d_01.m2",
@@ -98224,6 +98257,34 @@ WeakAuras.ModelPaths = {
  },
  {
   children = {
+   {
+    children = {
+     {
+      children = {
+       {
+        fileId = "7083790",
+        text = "7083790.m2",
+        value = "7083790.m2",
+       },
+      },
+      text = "unk_exp10_7083790",
+      value = "unk_exp10_7083790",
+     },
+     {
+      children = {
+       {
+        fileId = "7276845",
+        text = "7276845.m2",
+        value = "7276845.m2",
+       },
+      },
+      text = "unk_exp10_7276845",
+      value = "unk_exp10_7276845",
+     },
+    },
+    text = "creature",
+    value = "creature",
+   },
    {
     children = {
      {

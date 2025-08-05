@@ -184,6 +184,8 @@ L["Primary Control Key"] = "Confirm Button";
 L["Primary Control Key Desc"] = "Press this key to select the first available option like Accept Quest."
 L["Press Button To Scroll Down"] = "Press Button To Scroll Down";
 L["Press Button To Scroll Down Desc"] = "If the content is taller than the viewport, pressing the Confirm Button will scroll the page down instead of accepting quest.";
+L["Press Escape To Decline Quest"] = "Press Escape To Decline Quest";
+L["Press Escape To Decline Quest Desc"] = "When viewing a quest from an NPC that has other dialogues, pressing the Escape key leads you back to the previous page instead of closing the UI.";
 L["Right Click To Close UI"] = "Right Click To Close UI";
 L["Right Click To Close UI Desc"] = "Right click on the dialogue UI to close it.";
 L["Press Tab To Select Reward"] = "Press Tab To Select Reward";
@@ -335,6 +337,10 @@ L["Translator Source"] = "Source: ";
 L["Translator No Quest Data Format"] = "No entry found for [Quest: %s]";
 L["Translator Click To Hide Translation"] = "Click to hide the translation";
 L["Translator Click To Show Translation"] = "Click to show the translation";
+
+--AddOn Compatibility for Voiceover AddOns
+L["VO Provider Format"] = "|cffffffff%s|r is handling the voiceover";
+L["VO No File Format"] = "|cffffffff%s|r could not find the voiceover file.";
 
 --DO NOT TRANSLATE
 L["Abbrev Breakpoint 1000"] = FIRST_NUMBER_CAP_NO_SPACE or "K";     --1,000 = 1K

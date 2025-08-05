@@ -4,8 +4,8 @@
 ## Notes-ruRU: Версия Cataclysm лучшего дополнения для рыбалки одной кнопкой, Angleur!
 ## Version: Angleur Cata - Angleur 2.2 - The Great Merge + Translation Support
 ## Author: LegolandoBloom
-## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial
-## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars
+## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial, AngleurClassicConfig, AngleurBobberScannerUI
+## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars, AngleurClassic_CVars
 ## IconTexture: Interface\AddOns\Angleur\images\angleuriconsmall
 ## X-Curse-Project-ID: 893895
 
@@ -48,12 +48,15 @@ tabs\tiny_cata.lua
 tabs\tiny_base.lua
 
 doubleClick.lua
-oneKey.lua
 firstInstall.lua
 advancedAngling.lua
 slashcommands.lua
 minimap.lua
 animations.xml
+
+bobberScanner\Legolando_CheckboxTemplate\Legolando_CheckboxTemplate.xml
+bobberScanner\Legolando_CollapseConfigTemplate\Legolando_CollapseConfigTemplate.xml
+bobberScanner\bobberScanner.lua
 
 AngleurCata.xml
 

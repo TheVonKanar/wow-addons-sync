@@ -1,6 +1,6 @@
 # Edit Mode Expanded
 
-## [11.1-076](https://github.com/teelolws/EditModeExpanded/tree/11.1-076) (2025-07-05)
-[Full Changelog](https://github.com/teelolws/EditModeExpanded/compare/11.1-075...11.1-076) [Previous Releases](https://github.com/teelolws/EditModeExpanded/releases)
+## [11.2-015](https://github.com/teelolws/EditModeExpanded/tree/11.2-015) (2025-10-19)
+[Full Changelog](https://github.com/teelolws/EditModeExpanded/compare/11.2-014...11.2-015) [Previous Releases](https://github.com/teelolws/EditModeExpanded/releases)
 
-- Update Raid.lua  
+- Cooldown manager: add ability to add custom item IDs  

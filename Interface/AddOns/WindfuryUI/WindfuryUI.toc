@@ -1,10 +1,10 @@
 ## Interface: 100200
-## Version: 11.1.7
+## Version: 11.2.0
 ## Title: |c000080FFWindfury UI|r
-## Notes: Personal AddOn
+## Notes: Companion addon for https://wago.io/X7kp1507T
 ## Author: TheVonKanar
 
-## Dependencies: Masque, LibSharedMedia-3.0
+## Dependencies: Masque, LibSharedMedia-3.0, WeakAuras, WeakAurasStopMotion
 ## IconTexture: Interface\AddOns\WindfuryUI\Textures\Icon
 
 WindfuryUI.lua

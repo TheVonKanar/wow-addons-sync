@@ -39,6 +39,9 @@ L["Module Category Tooltip"] = "Tooltip";   --Additional Info on Tooltips
 L["Module Category Class"] = "Class";   --Player Class (rogue, paladin...)
 --- order: 5
 L["Module Category Reduction"] = "Reduction";   --Reduce UI elements
+--- order: -1
+L["Module Category Timerunning"] = "Legion Remix";   --Change this based on timerunning season
+
 
 L["Module Category Dragonflight"] = EXPANSION_NAME9 or "Dragonflight";  --Merge Expansion Feature (Dreamseeds, AzerothianArchives) Modules into this
 L["Module Category Plumber"] = "Plumber";   --This addon's name
@@ -85,6 +88,7 @@ L["ModuleDescription GossipFrameMedal Format"] = "Replace the default icon %s wi
 --DruidModelFix (Disabled after 10.2.0)
 L["ModuleName DruidModelFix"] = "Druid Model Fix";
 L["ModuleDescription DruidModelFix"] = "Fix the Character UI model display issue caused by using Glyph of Stars\n\nThis bug will be fixed by Blizzard in 10.2.0 and this module will be removed.";
+L["Model Layout"] = "Model Layout";
 
 
 --PlayerChoiceFrameToken (PlayerChoiceFrame)
@@ -194,6 +198,12 @@ L["ModuleDescription TooltipItemReagents"] = "If an item can be used to combine 
 L["Can Create Multiple Item Format"] = "You have the resources to create |cffffffff%d|r items.";
 
 
+--Tooltip DelvesItem
+L["ModuleName TooltipDelvesItem"] = "Delves Items";
+L["ModuleDescription TooltipDelvesItem"] = "Show how many Coffer Keys and Shards you have earned from weekly caches.";
+L["You Have Received Weekly Item Format"] = "You have received %s this week.";
+
+
 --Plunderstore
 L["ModuleName Plunderstore"] = "Plunderstore";
 L["ModuleDescription Plunderstore"] = "Modify the store opened via Group Finder:\n\n- Added a checkbox to hide collected items.\n\n- Display the number of uncollected items on the category buttons.\n\n- Added weapon and armor equip location to their tooltips.\n\n- Allow you to view equippable items in the Dressing Room.";
@@ -208,6 +218,7 @@ L["Num Items In Bank Format"] = (BANK or "Bank") ..": |cffffffff%d|r";
 L["Num Items In Bag Format"] = (HUD_EDIT_MODE_BAGS_LABEL or "Bags") ..": |cffffffff%d|r";
 L["Number Thousands"] = "K";    --15K  15,000
 L["Number Millions"] = "M";     --1.5M 1,500,000
+L["Questionable Item Count Tooltip"] = "The item count may be incorrect due to addon limitations.";
 
 
 --Landing Page (Expansion Summary Minimap)
@@ -239,10 +250,14 @@ L["ModuleName Delves_SeasonProgress"] = "Delves: Delver's Journey";
 L["ModuleDescription Delves_SeasonProgress"] = "Display a progress bar on the top of the screen whenever you earn Delver's Journey";
 L["ModuleName Delves_Dashboard"] = "Delves: Weekly Reward";
 L["ModuleDescription Delves_Dashboard"] = "Show your Great Vault and Gilded Stash progress on the Delves Dashboard.";
+L["ModuleName Delves_Automation"] = "Delves: Auto Choose Power";
+L["ModuleDescription Delves_Automation"] = "Automatically choose the power dropped by treasures and rares.";
 L["Delve Crest Stash No Info"] = "This info is unavailable in your current location.";
 L["Delve Crest Stash Requirement"] = "Appears in Tier 11 Bountiful Delves.";
 L["Overcharged Delve"] = "Overcharged Delve";
 L["Delves History Requires AddOn"] = "Delves history is stored locally by the Plumber AddOn.";
+L["Auto Select"] = "Auto Select";
+L["Power Borrowed"] = "Power Borrowed";
 
 
 --WoW Anniversary
@@ -338,6 +353,70 @@ L["BossBanner Valuable Item Only"] = "Valuable Items Only";
 L["BossBanner Valuable Item Only Tooltip"] = "Only display mounts, class tokens, and items that are marked as Very Rare or Extremely Rare on the banner.";
 
 
+--AppearanceTab
+L["ModuleName AppearanceTab"] = "Appearances Tab";
+L["ModuleDescription AppearanceTab"] = "Modify the Appearances Tab in the Warband Collections:\n\n- Reduce GPU load by improving model loading sequence and changing the number of items shown per page. It can reduce the chance of graphics crash when opening this UI.\n\n- Remember the page you visit after changing slots.";
+
+
+--SoftTargetName
+L["ModuleName SoftTargetName"] = "Nameplate: Soft Target";
+L["ModuleDescription SoftTargetName"] = "Display the soft target object's name.";
+L["SoftTargetName Req Title"] = "|cffd4641cYou need to manually change these settings to make it work:|r";
+L["SoftTargetName Req 1"] = "|cffffd100Enable Interact Key|r in Game Options> Gameplay> Controls.";
+L["SoftTargetName Req 2"] = "Set CVar |cffffd100SoftTargetIconGameObject|r to |cffffffff1|r";
+L["SoftTargetName CastBar"] = "Show Cast Bar";
+L["SoftTargetName CastBar Tooltip"] = "Show a radial cast bar on the nameplate.\n\n|cffff4800The addon will not be able to tell which object is your spell's target.|r"
+L["SoftTargetName QuestObjective"] = QUEST_LOG_SHOW_OBJECTIVES or "Show Quest Objectives";
+L["SoftTargetName QuestObjective Tooltip"] = "Show quest objectives (if any) below the name.";
+L["SoftTargetName QuestObjective Alert"] = "This feature requires enabling |cffffffffShow Target Tooltip|r in Game Options> Accessibility> General.";   --See globals: TARGET_TOOLTIP_OPTION
+L["SoftTargetName ShowNPC"] = "Include NPC";
+L["SoftTargetName ShowNPC Tooltip"] = "If disabled, the name will only appear on interactable Game Objects";
+
+
+--LegionRemix
+L["ModuleName LegionRemix"] = "Legion Remix";
+L["ModuleDescription LegionRemix"] = "- Automatically learn traits.\n\n- Add a widget to the Paper Doll that provides various types of info. You can click this widget to open a new Artifact UI.";
+L["ModuleName LegionRemix_HideWorldTier"] = "Hide World Tier Icon";
+L["ModuleDescription LegionRemix_HideWorldTier"] = "Hide the Heroic World Tier icon below the minimap.";
+L["Artifact Weapon"] = "Artifact Weapon";
+L["Artifact Ability"] = "Artifact Ability";
+L["Artifact Traits"] = "Artifact Traits";
+L["Earn X To Upgrade Y Format"] = "Earn another |cffffffff%s|r %s to upgrade %s"; --Example: Earn another 100 Infinite Power to upgrade Artifact Weapon
+L["Until Next Upgrade Format"] = "%s until next upgrade";
+L["New Trait Available"] = "New trait available.";
+L["Rank Format"] = "Rank %s";
+L["Rank Increased"] = "Rank Increased";
+L["Infinite Knowledge Tooltip"] = "You can obtain Infinite Knowledge by earning certain Legion Remix achievements.";
+L["Stat Bonuses"] = "Stat Bonuses";
+L["Bonus Traits"] = "Bonus Traits:";
+L["Instruction Open Artifact UI"] = "Left click to toggle Artifact UI\nRight click to show settings";
+L["LegionRemix Widget Title"] = "Plumber Widget";
+L["Trait Icon Mode"] = "Trait Icon Mode:";
+L["Trait Icon Mode Hidden"] = "Don't show";
+L["Trait Icon Mode Mini"] = "Show mini icons";
+L["Trait Icon Mode Replace"] = "Replace item icons";
+L["Error Drag Spell In Combat"] = "You cannot drag a spell while in combat.";
+L["Error Change Trait In Combat"] = "You cannot change traits in combat.";
+L["Amount Required To Unlock Format"] = "%s to unlock";   --Earn another x amount to unlock (something)
+L["Soon To Unlock"] = "Soon to unlock";
+L["You Can Unlock Title"] = "You can unlock";
+L["Artifact Ability Auto Unlock Tooltip"] = "This trait will be automatically unlocked once you have enough Infinite Power.";
+L["Require More Bag Slot Alert"] = "You need to free up bag space before performing this action";
+L["Spell Not Known"] = SPELL_FAILED_NOT_KNOWN or "Spell not learned";
+L["Fully Upgraded"] = AZERITE_EMPOWERED_ITEM_FULLY_UPGRADED or "Fully Upgraded";
+L["Unlock Level Requirement Format"] = "Reach level %d to unlock";
+L["Auto Learn Traits"] = "Auto Learn Traits";
+L["Auto Learn Traits Tooltip"] = "Automatically upgrade artifact traits when you have enough Infinite Power";
+L["Infinite Power Yield Format"] = "Grant |cffffffff%s|r Power at your current Knowledge level.";
+L["Infinite Knowledge Bonus Format"] = "Current Bonus: |cffffffff%s|r";
+L["Infinite Knowledge Bonus Next Format"] = "Next Rank: %s";
+
+
+--ItemUpgradeUI
+L["ModuleName ItemUpgradeUI"] = "Item Upgrades: Show Character Pane";
+L["ModuleDescription ItemUpgradeUI"] = "Automatically open Character Pane when you interact with an Item Upgrades NPC.";
+
+
 --Loot UI
 L["ModuleName LootUI"] = HUD_EDIT_MODE_LOOT_FRAME_LABEL or "Loot Window";
 L["ModuleDescription LootUI"] = "Replace the default Loot Window and provide some optional features:\n\n- Loot items fast.\n\n- Fix Auto Loot failure bug.\n\n- Show a Take All button when looting manually.";
@@ -373,6 +452,11 @@ L["LootUI Option Custom Quality Color Tooltip"] = "Use the colors you set in Gam
 L["LootUI Option Grow Direction"] = "Grow Upwards";
 L["LootUI Option Grow Direction Tooltip 1"] = "When enabled: the bottom left of the window remains still, and new notifications will appear on top of the old ones.";
 L["LootUI Option Grow Direction Tooltip 2"] = "When disabled: the top left of the window remains still, and new notifications will appear on bottom of the old ones.";
+L["Junk Items"] = "Junk Items";
+L["LootUI Option Combine Items"] = "Combine Similar Items";
+L["LootUI Option Combine Items Tooltip"] = "Display similar items on a single row. Supported Categories:\n\n- Junk Items\n- Epoch Mementos (Legion Remix)";
+L["LootUI Option Low Frame Strata"] = "Send to Back";
+L["LootUI Option Low Frame Strata Tooltip"] = "While in Loot Notification Mode, place the loot window behind other UI.\n\nThis option doesn't affect Manual Loot Mode.";
 
 
 --Quick Slot For Third-party Dev
@@ -470,6 +554,17 @@ L["Delete"] = DELETE or "Delete";
 L["Visit Quest Hub To Log Quests"] = "Visit the quest hub and interact with the quest givers to log today's quests."
 L["Quest Hub Instruction Celestials"] = "Visit the August Celestials Quartermaster in Vale of Eternal Blossoms to find out which temple needs your assistance."
 L["Unavailable Klaxxi Paragons"] = "Unavailable Klaxxi Paragons:";
+L["Weekly Coffer Key Tooltip"] = "The first four weekly caches you earn each week contain a Restored Coffer Key.";
+L["Weekly Coffer Key Shards Tooltip"] = "The first four weekly caches you earn each week contain Coffer Key Shards.";
+L["Weekly Cap"] = "Weekly Cap";
+L["Weekly Cap Reached"] = "Weekly cap reached.";
+L["Instruction Right Click To Use"] = "<Right Click to Use>";
+L["Join Queue"] = WOW_LABS_JOIN_QUEUE or "Join Queue";
+L["In Queue"] = BATTLEFIELD_QUEUE_STATUS or "In Queue";
+L["Click To Switch"] = "Click to switch to |cffffffff%s|r";
+L["Click To Queue"] = "Click to queue for |cffffffff%s|r";
+L["Click to Open Format"] = "Click to open %s";
+L["List Is Empty"] = "The list is empty.";
 
 
 --Generic
@@ -478,6 +573,7 @@ L["Reposition Button Horizontal"] = "Move Horizontally";   --Move the window hor
 L["Reposition Button Vertical"] = "Move Vertically";
 L["Reposition Button Tooltip"] = "Left click and drag to move the window";
 L["Font Size"] = FONT_SIZE or "Font Size";
+L["Icon Size"] = "Icon Size";
 L["Reset To Default Position"] = HUD_EDIT_MODE_RESET_POSITION or "Reset To Default Position";
 L["Renown Level Label"] = "Renown ";  --There is a space
 L["Paragon Reputation"] = "Paragon";
@@ -494,6 +590,16 @@ L["New Feature Auto Enabled Format"] = "New Module %s has been enabled.";
 L["Click To See Details"] = "Click to see details";
 
 
+--WIP Merchant UI
+L["ItemType Consumables"] = AUCTION_CATEGORY_CONSUMABLES or "Consumables";
+L["ItemType Weapons"] = AUCTION_CATEGORY_WEAPONS or "Weapons";
+L["ItemType Gems"] = AUCTION_CATEGORY_GEMS or "Gems";
+L["ItemType Armor Generic"] = AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES or "Accessories";  --Trinkets, Rings, Necks
+L["ItemType Mounts"] = MOUNTS or "Mounts";
+L["ItemType Pets"] = PETS or "Pets";
+L["ItemType Toys"] = "Toys";
+L["ItemType TransmogSet"] = PERKS_VENDOR_CATEGORY_TRANSMOG_SET or "Transmog Set";
+L["ItemType Transmog"] = "Transmog";
 
 
 -- !! Do NOT translate the following entries
@@ -514,6 +620,10 @@ L["Delve Chest 1 Rare"] = "Bountiful Coffer";   --We'll use the GameObjectID onc
 L["Season Maximum Colon"] = "Season Maximum:";  --CURRENCY_SEASON_TOTAL_MAXIMUM
 L["Item Changed"] = "was changed to";   --CHANGED_OWN_ITEM
 L["Completed CHETT List"] = "Completed C.H.E.T.T. List";
+L["Devourer Attack"] = "Devourer Attack";
+L["Restored Coffer Key"] = "Restored Coffer Key";
+L["Coffer Key Shard"] = "Coffer Key Shard";
+L["Epoch Mementos"] = "Epoch Mementos";     --See currency:3293
 
 
 --Map Pin Filter Name (name should be plural)

@@ -1,7 +1,6 @@
 # BugSack
 
-## [v11.1.4](https://github.com/funkydude/BugSack/tree/v11.1.4) (2025-07-12)
-[Full Changelog](https://github.com/funkydude/BugSack/compare/v11.1.3...v11.1.4) [Previous Releases](https://github.com/funkydude/BugSack/releases)
+## [v11.2.3](https://github.com/funkydude/BugSack/tree/v11.2.3) (2025-10-15)
+[Full Changelog](https://github.com/funkydude/BugSack/compare/v11.2.2...v11.2.3) [Previous Releases](https://github.com/funkydude/BugSack/releases)
 
-- Update issue template  
 - Bump toc  

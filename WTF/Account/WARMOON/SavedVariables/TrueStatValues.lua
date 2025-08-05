@@ -10,9 +10,9 @@ TSV_DB = {
 ["Pandakvo - Hyjal"] = "Pandakvo - Hyjal",
 ["Raptorbuyer - Hyjal"] = "Raptorbuyer - Hyjal",
 ["Trialmagekvo - Hyjal"] = "Trialmagekvo - Hyjal",
-["Pandamo - Hyjal"] = "Pandamo - Hyjal",
+["Pandkvé - Hyjal"] = "Pandkvé - Hyjal",
 ["Kvothyr - Hyjal"] = "Kvothyr - Hyjal",
 ["Pandamages - Hyjal"] = "Pandamages - Hyjal",
-["Pandkvé - Hyjal"] = "Pandkvé - Hyjal",
+["Pandamo - Hyjal"] = "Pandamo - Hyjal",
 },
 }

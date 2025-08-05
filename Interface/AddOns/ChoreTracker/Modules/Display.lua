@@ -271,7 +271,8 @@ function Module:ConfigChanged()
 
                     for _, typeKey in ipairs({ 'dungeons', 'quests', 'drops' }) do
                         for _, choreData in ipairs(catData[typeKey] or {}) do
-                            local choreEnabled = Addon.db.profile.chores[sectionKey][catData.key][typeKey][choreData.key]
+                            local actualKey = choreData.checkKey or choreData.key
+                            local choreEnabled = Addon.db.profile.chores[sectionKey][catData.key][typeKey][actualKey]
                             if choreEnabled == true
                                 and (
                                     choreData.requiredEventIds == nil or
@@ -291,7 +292,7 @@ function Module:ConfigChanged()
                                 table.insert(section.chores, {
                                     data = choreData,
                                     translated = L
-                                        ['chore:' .. sectionData.key .. ':' .. catData.key .. ':' .. typeKey .. ':' .. choreData.key],
+                                        ['chore:' .. sectionData.key .. ':' .. catData.key .. ':' .. typeKey .. ':' .. actualKey],
                                     typeKey = typeKey,
                                 })
                             end
@@ -449,9 +450,9 @@ function Module:AddDelves(changed, newChildren, seenFrames)
                             status = 0
 
                             labelText = STATUS_COLOR[0] .. mapInfo.name .. '|r: '
-                            if poiData.overcharged then
-                                labelText = labelText .. LIGHTNING_ICON .. ' '
-                            end
+                            -- if poiData.overcharged then
+                            --     labelText = labelText .. LIGHTNING_ICON .. ' '
+                            -- end
                             labelText = labelText .. poiData.name
 
                         else
@@ -582,8 +583,8 @@ function Module:GetSections()
             else
                 local quest = ScannerModule.quests[chore.data.requiredQuest]
                 if chore.data.requiredQuest == nil or (
-                    (quest ~= nil and quest.status == 2) or
-                    chore.data.preEntries ~= nil
+                    (quest ~= nil and quest.status == 2)
+                    -- chore.data.preEntries ~= nil
                 ) then
                     if chore.typeKey == 'drops' or chore.data.groupSameItem == true then
                         self:GetSectionDrops(section, chore)
@@ -725,10 +726,13 @@ function Module:GetSectionQuests(week, section, chore, showAnniversaryAccount, s
             for index, questId in ipairs(questIds) do
                 local entryState = ScannerModule.quests[questId]
                 if entryState ~= nil then
-                    if entryState.accountCompleted and (
-                        chore.data.oncePerAccount or
-                        (chore.data.anniversaryAccount and not showAnniversaryAccount)
-                    ) then
+                    if entryState.accountCompleted and
+                        questId ~= choreEntry.unlockQuest and
+                        (
+                            chore.data.oncePerAccount or
+                            (chore.data.anniversaryAccount and not showAnniversaryAccount)
+                        )
+                    then
                         entryState = {
                             objectives = entryState.objectives,
                             status = 2,

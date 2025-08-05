@@ -1,5 +1,6 @@
-local MAJ, REV, COMPAT, _, T = 1, 12, select(4,GetBuildInfo()), ...
+local MAJ, REV, COMPAT, _, T = 1, 14, select(4,GetBuildInfo()), ...
 if T.SkipLocalActionBook then return end
+local _GG, TWELVE = _G, COMPAT >= 12e4
 if T.TenEnv then T.TenEnv() end
 
 local EV, AB, RW = T.Evie, T.ActionBook:compatible(2,34), T.ActionBook:compatible("Rewire", 1,27)
@@ -83,6 +84,8 @@ local commandType, addCommandType = {["#show"]=0, ["#showtooltip"]=0, ["#imp"]=-
 		addCommandType("PING", 4)
 	end
 end
+
+local extTokenText, extAbilityToken = {}, {}
 
 local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference do
 	local COMMA_LIST_COMMAND_TYPES, CAST_ESCAPE_COMMAND_TYPES = {[2]=1, [3]=1}, {[0]=1, [1]=1, [3]=1}
@@ -234,6 +237,10 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 	end
 	local replaceMountTag do -- +setMountPreference
 		local skip, gmSid, gmPref, fmSid, fmPref, drSid, drPref = {[44153]=1, [44151]=1, [61451]=1, [75596]=1, [61309]=1, [169952]=1, [171844]=1, [213339]=1,}
+		local avoid = {
+			[446052]=1, [446133]=1, [1224048]=1,
+			[448689]=1, [327407]=1, [448680]=1, [448685]=1, [359401]=1,
+		}
 		local function IsKnownSpell(sid)
 			local sn, sr = GetSpellInfo(sid or 0), GetSpellSubtext(sid or 0)
 			return GetSpellInfo(sn, sr) ~= nil and sid or (RW:GetCastEscapeAction(sn) and sid)
@@ -243,7 +250,8 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 			if prefSID and RW:IsSpellCastable(prefSID, escapeContext) then
 				return prefSID
 			end
-			local idm, myFactionId, nc, cs = C_MountJournal.GetMountIDs(), UnitFactionGroup("player") == "Horde" and 0 or 1, 0
+			local idm, myFactionId = C_MountJournal.GetMountIDs(), UnitFactionGroup("player") == "Horde" and 0 or 1
+			local csAvoid, nc, cs = 1, 0
 			local gmi, gmiex = C_MountJournal.GetMountInfoByID, C_MountJournal.GetMountInfoExtraByID
 			for i=1, #idm do
 				i = idm[i]
@@ -256,10 +264,10 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 					local isTypeMatch = t == mtype or (wantDragonriding and t == 424)
 					if sid == prefSID or (active and isTypeMatch and prefSID == nil) then
 						return sid
-					elseif isTypeMatch and not skip[sid] then
+					elseif isTypeMatch and not skip[sid] and (csAvoid or not avoid[sid]) then
 						nc = nc + 1
 						if math.random(1,nc) == 1 then
-							cs = sid
+							cs, csAvoid = sid, avoid[sid]
 						end
 					end
 				end
@@ -304,13 +312,15 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 	end
 	toMacroText = genParser(function(ctype, value)
 		local varPrefix = parseVarPrefix(value, ctype)
-		local prefix, tkey, tval = value:match("^%s*(!?){{(%a+):([%a%d/]+)}}%s*$", #varPrefix+1)
+		local prefix, tw, tkey, tval = value:match("^%s*(!?){{((%a+):([%a%d/]+))}}%s*$", #varPrefix+1)
 		if tkey == "spell" or tkey == "spellr" then
 			return restoreVarPrefix(varPrefix, replaceSpellID(ctype, tval, prefix, tkey))
 		elseif tkey == "mount" then
 			return restoreVarPrefix(varPrefix, replaceMountTag(ctype, tval, prefix))
 		elseif tkey == "ping" and ctype == 4 then
 			return restoreVarPrefix(varPrefix, pingTokenMap[tval] or value)
+		elseif extTokenText[tw] ~= nil then
+			return restoreVarPrefix(varPrefix, extTokenText[tw] or nil)
 		elseif value:match('^%s*!?|Hiptok|h|h%s*$') then
 			return '-'
 		end
@@ -330,7 +340,7 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 			local cc, pre, name, tws = 0, value:match("^(%s*!?)(.-)(%s*)$", #varPrefix+1)
 			repeat
 				local lowname = name:lower()
-				local sid, peek, cnpos = spells[lowname]
+				local sid, stok, peek, cnpos = spells[lowname], specialTokens[lowname] or extAbilityToken[lowname]
 				if ctype == 4 then
 					name = pingTextMap[lowname]
 					if name then
@@ -347,8 +357,8 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 						end
 					end
 					return restoreVarPrefix(varPrefix, (pre .. "{{spell:" .. sid .. "}}" .. tws)), cc
-				elseif specialTokens[lowname] then
-					return restoreVarPrefix(varPrefix, pre .. specialTokens[lowname] .. tws), cc
+				elseif stok then
+					return restoreVarPrefix(varPrefix, pre .. stok .. tws), cc
 				elseif name:match("^{{.*}}$") then
 					return restoreVarPrefix(varPrefix, pre .. name .. tws), cc
 				end
@@ -467,7 +477,7 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 				air   ="|cff71d5ff|Hiltmount:air|h" .. L"Flying Mount" .. "|h|r",
 				dragon="|cff71d5ff|Hiltmount:dragon|h" .. L"Dragonriding Mount" .. "|h|r",
 			}
-			function formatTokenInner(token, targ)
+			function formatTokenInner(token, targ, tw)
 				if token == "spell" or token == "spellr" then
 					local forceRank, tname = token == "spellr"
 					tag = tag + 1
@@ -491,14 +501,16 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 					if tname then
 						return "|cff71d5ff|Hilt" .. token .. ":" .. targ .. "|h" .. tname .. "|h|r"
 					end
+				elseif extTokenText[tw] then
+					return "|cff71d5ff|Hilt" .. token .. ":" .. targ .. "|h" .. extTokenText[tw] .. "|h|r"
 				end
 				return '{{' .. token .. ':' .. targ .. '}}'
 			end
 		end
 		local toUIText = genParser(function(ctype, value)
 			local varPrefix = parseVarPrefix(value, ctype)
-			local prefix, token, targ, suf = value:match("^(%s*!?){{(%a+):([%a%d/]+)}}(%s*)$", #varPrefix+1)
-			local v = token and formatTokenInner(token, targ)
+			local prefix, tw, token, targ, suf = value:match("^(%s*!?){{((%a+):([%a%d/]+))}}(%s*)$", #varPrefix+1)
+			local v = token and formatTokenInner(token, targ, tw)
 			return v and restoreVarPrefix(varPrefix, prefix .. v .. suf) or value
 		end)
 		local linkTag = 0
@@ -700,7 +712,7 @@ do -- Editor UI
 	local function stripUIEscapes(link)
 		return (link:gsub("(|*)|H.-|h", stripUIEscapeCheck):gsub("(|*)|[hr]", stripUIEscapeCheck):gsub("(|*)|c%x%x%x%x%x%x%x%x", stripUIEscapeCheck))
 	end
-	hooksecurefunc("ChatEdit_InsertLink", function(link)
+	local function insertLinkHook(link)
 		if not eb:HasFocus() then return end
 		local isItemLink = link:match("%f[|]|Hitem:")
 		local sid = not isItemLink and link:match("%f[|]|Hspell:(%d+)") or link:match("%f[|]|Htrade:[^:]+:(%d+)") or (CI_ERA and select(7,GetSpellInfo(link)))
@@ -752,7 +764,8 @@ do -- Editor UI
 		end
 		prefix = skipPrefixSpace and (prefix or "") or (prefix and prefix .. " " or " ")
 		eb:Insert(prefix .. (atext or link:match("|h%[?(.-[^%]])%]?|h") or stripUIEscapes(link)))
-	end)
+	end
+	hooksecurefunc(TWELVE and ChatFrameUtil or _GG, TWELVE and "InsertLink" or "ChatEdit_InsertLink", insertLinkHook)
 
 	function eb:SetAction(owner, action)
 		local op = eb:GetParent()
@@ -817,6 +830,16 @@ function IM:AddTokenizableCommand(slashKey, behavesLikeCommand)
 	assert((commandType[behavesLikeCommand] or -1) >= 0, 'Unrecognized behaves-like command %q', 2, behavesLikeCommand)
 	addCommandType(slashKey, commandType[behavesLikeCommand])
 	AB:NotifyObservers("imptext")
+end
+function IM:AddTokenizableAbility(abilityText, token)
+	assert(type(abilityText) == "string" and type(token) == "string",
+	       'Syntax: IM:AddTokenizableAbility("abilityText", "token")')
+	extAbilityToken[abilityText:lower()] = '{{' .. token .. '}}'
+end
+function IM:SetTokenReplacement(token, castText)
+	assert(type(token) == "string" and (type(castText) == "string" or castText == false),
+	       'Syntax: IM:SetTokenReplacement("token", "castText" or false)')
+	extTokenText[token] = castText
 end
 
 function IM:SetMountPreference(groundSpellID, flyingSpellID, dragonSpellID)

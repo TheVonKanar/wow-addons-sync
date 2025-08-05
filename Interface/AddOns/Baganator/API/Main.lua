@@ -267,7 +267,7 @@ Baganator.API.Constants.ContainerType = {
 }
 
 -- Register a sort function for bags and bank.
--- callback: function(isReverse, containerType)
+-- callback: function(isReverse, containerType, tabIndex?)
 --  isReverse: boolean
 --  containerType: Baganator.API.Constants.ContainerType
 function Baganator.API.RegisterContainerSort(label, id, callback)
@@ -291,9 +291,6 @@ end
 
 function Baganator.API.Skins.RegisterListener(callback)
   table.insert(addonTable.Skins.skinListeners, callback)
-  if addonTable.WagoAnalytics then
-    addonTable.WagoAnalytics:Switch("UsingSkinRaw", true)
-  end
 end
 
 local blockedSkins = {

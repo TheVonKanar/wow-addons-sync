@@ -1,3 +1,7 @@
+VER 3 0000000000000072 " " "134400"
+#showtooltip
+/cast Whirling Surge
+END
 VER 3 0000000000000063 "Boss Mods" "236409"
 /dbm
 END
@@ -28,12 +32,6 @@ END
 VER 3 000000000000005D "Macros" "134070"
 /macro
 END
-VER 3 0000000000000072 "Main" "134400"
-#show
-/use Ironclaw Whetstone
-/use 16
-/click StaticPopup1Button1
-END
 VER 3 000000000000005C "Masque" "1723998"
 /msq
 END
@@ -43,11 +41,8 @@ END
 VER 3 000000000000006E "Mounts" "132238"
 /litemount
 END
-VER 3 0000000000000073 "Off" "134400"
-#show
-/use Ironclaw Whetstone
-/use 17
-/click StaticPopup1Button1
+VER 3 0000000000000073 "MRT" "519384"
+/mrt
 END
 VER 3 0000000000000067 "OmniCD" "132092"
 /omnicd

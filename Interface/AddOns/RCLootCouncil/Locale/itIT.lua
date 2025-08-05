@@ -31,9 +31,9 @@ L["Add Note"] = "Add Note"
 --[[Translation missing --]]
 L["Add ranks"] = "Add ranks"
 --[[Translation missing --]]
-L["Add Rolls"] = "Add Rolls"
---[[Translation missing --]]
 L["Add rolls"] = "Add rolls"
+--[[Translation missing --]]
+L["Add Rolls"] = "Add Rolls"
 --[[Translation missing --]]
 L["add_candidate"] = "Add Candidate"
 --[[Translation missing --]]
@@ -412,6 +412,10 @@ L["Enter your note:"] = "Enter your note:"
 --[[Translation missing --]]
 L["EQdkp-Plus XML output, tailored for Enjin import."] = "EQdkp-Plus XML output, tailored for Enjin import."
 --[[Translation missing --]]
+L["error_no_autoAward_candidates"] = "You've enabled auto awarding of items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
+L["error_no_autoAwardBoE_candidates"] = "You've enabled auto awarding of BoE items, but haven't set any candidate(s) to auto award to."
+--[[Translation missing --]]
 L["error_test_as_non_leader"] = "You cannot initiate a test while in a group without being the group leader."
 --[[Translation missing --]]
 L["Everybody is up to date."] = "Everybody is up to date."
@@ -662,6 +666,8 @@ L["Opens the synchronizer"] = "Opens the synchronizer"
 --[[Translation missing --]]
 L["opt_addButton_desc"] = "Add a new button group for the selected slot."
 --[[Translation missing --]]
+L["opt_announceAward_WHISPER_WINNER"] = "/w winner"
+--[[Translation missing --]]
 L["opt_autoAddBoEs_desc"] = "Automatically add all BoE (Bind on Equip) items to a session."
 --[[Translation missing --]]
 L["opt_autoAddBoEs_name"] = "Auto Add BoEs"
@@ -684,7 +690,7 @@ L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will on
 --[[Translation missing --]]
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Guild Groups Only"
 --[[Translation missing --]]
-L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons your class can't equip."
+L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
 --[[Translation missing --]]
@@ -817,6 +823,8 @@ L["Print Responses"] = "Print Responses"
 L["print_response_desc"] = "Print your response in the chat window"
 --[[Translation missing --]]
 L["Protector Token"] = "Protector Token"
+--[[Translation missing --]]
+L["Rare_Items"] = "Rare items"
 --[[Translation missing --]]
 L["Raw lua output. Doesn't work well with date selection."] = "Raw lua output. Doesn't work well with date selection."
 --[[Translation missing --]]
@@ -951,6 +959,8 @@ L["Something went wrong during syncing, please try again."] = "Something went wr
 L["Sort Items"] = "Sort Items"
 --[[Translation missing --]]
 L["sort_items_desc"] = "Sort sessions by item type and item level."
+--[[Translation missing --]]
+L["Special_Effects_Items"] = "Items /w special effects"
 --[[Translation missing --]]
 L["Standard .csv output."] = "Standard CSV export that can be edited and reimported."
 --[[Translation missing --]]

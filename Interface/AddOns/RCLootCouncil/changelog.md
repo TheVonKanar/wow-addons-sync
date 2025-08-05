@@ -1,3 +1,100 @@
+# 3.18.0
+
+Updated for patch 11.2.5.
+
+## Changes
+
+- Trade time remaining checks are no longer performed in combat as they would be easy to overlook.
+
+## Bugfixes
+
+- *Fixed issue with running `/rc add` commands after having declined usage could lead to errors.*
+- *Leaving a group will now properly disable the voting frame fixing certain errors that could happen with it being enabled.*
+
+# 3.17.6
+
+## Bugfixes
+
+- *Changing realms, name, or class should now properly be reflected.*
+- *Final fix for various issues of late.*
+
+# 3.17.5
+
+## Bugfixes
+
+- *(Hopefully) fixed various issues regarding missing player info.*
+- *Fixed issue with reloads at specific moments causing missing data (#271).*
+- *Send player info to everyone in the group all the time instead of at specific intervals to prevent missing guild ranks etc (#270).*
+- *Prevent cached player info on council members from expiring, which could cause errors if said player info isn't readily available, such as a council member not being in the guild or from a different realm.*
+
+# 3.17.4
+
+## Bugfixes
+
+- *Fixed potential error when joining a group (#269).*
+- *Fixed caching issue that deleted things such as guild ranks causing them to show up inconsistently.*
+- *Trade time remaining show now be more accurate.*
+
+# 3.17.3
+
+## Bugfixes
+
+- *Fixed broken Auto Award.*
+- *Fixed issue with the usage pop-up not working when changing group leaders.*
+
+# 3.17.2
+
+## Bugfixes
+
+- *Soulbinder's Nethermantle is no longer group looted.*
+- *Loombeast Silk and Ethereal Essence Silver (MFO transmog currency) are now ignored, and existing history entries removed.*
+
+# 3.17.1
+
+## Bugfixes
+
+- *Added warning when enabling AutoLoot without setting recipients.*
+- *Fixed issues with certain items not being registered as special.*
+- *Fixed issue with the addon not always disabling properly when leaving a group.*
+
+# 3.17.0
+
+## Changes
+
+### Patch 11.2
+
+Added tokens, trinkets and rare items from new raid and dungeons.
+
+### Announce awards
+
+Added option to whisper the winner when announcing awards.
+
+### Chat Commands
+
+Added `/rc sv` for exporting the addons raw saved variables ingame.
+
+- `sv` can be replaced with `saved`/`savedvariables`.
+- `/rc sv history` (or `his`) to also add the loot history to the export.
+- `/rc sv history only` to only export the history. *Note: this format cannot be reimported!* .
+
+### New button groups
+
+#### Items /w special effects
+
+This group will match all equippable items that have special effects listed in their tooltip, such as "Use:", "Equip:", "Chance on hit:" etc.
+
+This group is considered more specific than "Catalyst" items, and less specific than weapons and individual equip location item groups.
+
+#### Rare Items
+
+This group matches all items marked as "Very Rare" or higher in the Encounter Journal (only The War Within items are recorded).
+
+This group is considered *most* specific, and is always used for those items when enabled.
+
+## Bugfixes
+
+- *Most specific button group is now again chosen.*
+
 # v3.16.1
 
 ## Changes

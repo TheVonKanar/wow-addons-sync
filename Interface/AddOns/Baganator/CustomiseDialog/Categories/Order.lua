@@ -1,23 +1,5 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
-local exportDialog = "Baganator_Export_Dialog"
-StaticPopupDialogs[exportDialog] = {
-  text = addonTable.Locales.CTRL_C_TO_COPY,
-  button1 = DONE,
-  hasEditBox = 1,
-  OnShow = function(self, data)
-    (self.editBox or self.EditBox):SetText(data);
-    (self.editBox or self.EditBox):HighlightText();
-  end,
-  EditBoxOnEnterPressed = function(self)
-    self:GetParent():Hide()
-  end,
-  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-  editBoxWidth = 230,
-  maxLetters = 0,
-  timeout = 0,
-  hideOnEscape = 1,
-}
 
 local folderMarker
 if C_Texture.GetAtlasInfo("AnimCreate_Icon_Folder") then
@@ -188,7 +170,7 @@ local function GetCategoryContainer(parent, pickupCallback)
   ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
   addonTable.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
 
-  container:SetSize(250, 600)
+  container:SetSize(250, 630)
 
   PopulateCategoryOrder(container)
 
@@ -281,7 +263,7 @@ end
 
 function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 670)
+  container:SetSize(300, 700)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER))
@@ -314,7 +296,6 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
 
       if draggable.value:match("^_") then
         local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
-        sections[draggable.value:gsub("^_", "")] = draggable.sectionDetails
         table.insert(categoryOrder.elements, insertIndex, draggable.value)
         for _, value in ipairs(draggable.sectionValues) do
           insertIndex = insertIndex + 1
@@ -324,6 +305,11 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
         table.insert(categoryOrder.elements, insertIndex, draggable.value)
       end
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
+    elseif draggable.value:match("^_") then
+      local key = draggable.value:match("^_(.*)")
+      local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
+      sections[key] = nil
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)))
     end
     for _, frame in categoryOrder.ScrollBox:EnumerateFrames() do
       frame:UnlockHighlight()
@@ -378,16 +364,10 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
 
   local function Pickup(value, label, index)
     draggable.value = value
-    draggable.sectionDetails = nil
     draggable.sectionValues = {}
     if index ~= nil then
       table.remove(categoryOrder.elements, index)
       if value:match("^_") then -- section
-        local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
-        local key = value:match("^_(.*)")
-        draggable.sectionDetails = sections[key]
-        sections[key] = nil
-
         local level = 1
         while level ~= 0 and #categoryOrder.elements > 0 do
           local tmp = categoryOrder.elements[index]
@@ -416,12 +396,16 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   dropdown.OnEntryClicked = function(_, option)
     if option.value == "_" then
       addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", (option.value:match("^_(.*)")))
+      local newOption = categoryOrder.dataProviderElements[1] -- Assumes that the section editor will put it as the first item
+      Pickup(newOption.value, newOption.label, 1)
     elseif option.value == addonTable.CategoryViews.Constants.DividerName then
       Pickup(option.value, addonTable.CategoryViews.Constants.DividerLabel, nil)
     elseif option.value ~= "" then
       Pickup(option.value, option.label, tIndexOf(categoryOrder.elements, option.value))
     else
       addonTable.CallbackRegistry:TriggerEvent("EditCategory", option.value)
+      local newOption = categoryOrder.dataProviderElements[1] -- Assumes that the category editor will put it as the first item
+      Pickup(newOption.value, newOption.label, 1)
     end
   end
   draggable:SetScript("OnHide", function()
@@ -456,7 +440,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
-    StaticPopup_Show(exportDialog, nil, nil, (addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n")))
+    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.CleanupSearch(addonTable.CustomiseDialog.CategoriesExport()))
   end)
   addonTable.Skins.AddFrame("Button", exportButton)
 

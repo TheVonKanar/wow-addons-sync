@@ -57,6 +57,7 @@ end
 function Angleur_EventLoader(self, event, unit, ...)
     local arg4, arg5 = ...
     if event == "ADDON_LOADED" and unit == "Angleur" then
+        Init_AngleurSavedVariables()
         Angleur_SetTab1(self.configPanel.tab1.contents)
         Angleur_SetTab3(self.configPanel.tab3.contents)
         self.visual.texture:SetTexture("Interface/ICONS/UI_Profession_Fishing")
@@ -90,7 +91,6 @@ function Angleur_EventLoader(self, event, unit, ...)
         undangLoaded = C_AddOns.IsAddOnLoaded("Angleur_Underlight")
         if AngleurConfig.ultraFocusingAudio then Angleur_UltraFocusAudio(false) end
         if AngleurConfig.ultraFocusingAutoLoot then Angleur_UltraFocusAutoLoot(false) end
-        Init_AngleurSavedVariables()
         if GetCVar("autoLootDefault") == "1" then
             Angleur.configPanel.tab1.contents.ultraFocus.autoLoot:greyOut()
             AngleurConfig.ultraFocusAutoLootEnabled = false
@@ -150,12 +150,8 @@ local function isChosenKeyDown()
             return false
         end
         local keybind = AngleurConfig.angleurKey
-        if AngleurConfig.angleurKeyModifier then
-            if AngleurConfig.angleurKeyMain then
-                keybind = AngleurConfig.angleurKeyMain
-            else
-                print(T["Angleur unexpected error: Modifier exists, but main key doesn't. Please let the author know."])
-            end
+        if AngleurConfig.angleurKey_Base then
+            keybind = AngleurConfig.angleurKey_Base
         end
         if keybind == "MOUSEWHEELUP" or keybind == "MOUSEWHEELDOWN" then
             return false
@@ -246,6 +242,7 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
                     iceFishing = true
                 elseif string.match(arg4, "%-35591%-") then
                     midFishing = true
+                    EventRegistry:TriggerEvent("Angleur_StartFishing")
                 end
             end
             local compressedOcean = string.gsub(arg4, "%-0%-4211%-870%-18037-", "")
@@ -260,6 +257,7 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
         end
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" and unit == "player" and (arg5 == 131476 or arg5 == 377895 or arg5 == 7620) then
         midFishing = true
+        EventRegistry:TriggerEvent("Angleur_StartFishing")
         Angleur_ActionHandler(Angleur)
         warnPlater()
         if AngleurConfig.ultraFocusAudioEnabled then Angleur_UltraFocusAudio(true) end
@@ -271,14 +269,17 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
         if Angleur_TinyOptions.turnOffSoftInteract then Angleur_UltraFocusInteractOff(false) end
         if isChosenKeyDown() == false then
             midFishing = false
+            EventRegistry:TriggerEvent("Angleur_StopFishing")
         else
             Angleur_PoolDelayer(1, 0, 0.2, angleurDelayers, function()
                 if isChosenKeyDown() == false then
                     midFishing = false
+                    EventRegistry:TriggerEvent("Angleur_StopFishing")
                     return true
                 end
             end, function()
                 midFishing = false
+                EventRegistry:TriggerEvent("Angleur_StopFishing")
             end)
         end
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" or event == "UPDATE_SHAPESHIFT_FORM" then
@@ -423,6 +424,9 @@ function Angleur_ActionHandler(self)
     if midFishing then
         SetOverrideBinding_Custom(self, true, assignKey, "INTERACTTARGET")
         self.visual.texture:SetTexture("Interface/ICONS/misc_arrowlup")
+        if AngleurConfig.recastEnabled and AngleurConfig.recastKey then
+            SetOverrideBindingSpell_Custom(self, true, AngleurConfig.recastKey, PROFESSIONS_FISHING)
+        end
     elseif swimming then
         --print("I am swimming")
         if mounted and Angleur_TinyOptions.allowDismount == false then
@@ -603,6 +607,7 @@ function Angleur_SetSleep()
             Angleur_UltraFocusBackground(false)
         end
         Angleur_FishingForAttentionAura()
+        EventRegistry:TriggerEvent("Angleur_Sleep")
     elseif AngleurCharacter.sleeping == false then
         Angleur.visual.texture:SetDesaturated(false)
         Angleur.configPanel.tab1:DesaturateHierarchy(0)
@@ -616,6 +621,7 @@ function Angleur_SetSleep()
         if undangLoaded then
             AngleurUnderlight_AngleurWakeUpPing()
         end
+        EventRegistry:TriggerEvent("Angleur_Wake")
     end
     Angleur_SetMinimapSleep()
 end

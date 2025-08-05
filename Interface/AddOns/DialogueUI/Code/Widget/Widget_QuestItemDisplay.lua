@@ -911,6 +911,7 @@ end
 do
     local OneTimeItem = {
         29433,      --Grisly Trophy
+        86143,      --Battle Pet Bandage
         163036,     --Polished Pet Charm
         191140,     --Bronze Timepiece
         206350,     --Radiant Remnant
@@ -933,6 +934,11 @@ do
         239118,     --Pinnacle Cache
         239120,     --Seasoned Adventurer's Cache
         245589,     --Hellcaller Chest
+        244842,     --Fabled Veteran's Cache
+        244865,     --Pinnacle Cache
+        245611,     --Wriggling Pinnacle Cache
+        245653,     --Coffer Key Shard S3
+        248017,     --Shrieking Quartz
     };
 
     for _, itemID in ipairs(OneTimeItem) do

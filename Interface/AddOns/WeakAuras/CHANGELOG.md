@@ -1,74 +1,41 @@
-# [5.20.0](https://github.com/WeakAuras/WeakAuras2/tree/5.20.0) (2025-07-21)
+# [5.20.6](https://github.com/WeakAuras/WeakAuras2/tree/5.20.6) (2025-10-21)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.19.12...5.20.0)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.20.5...5.20.6)
 
 ## Highlights
 
-- **Added Undo & Redo Framework:** This lays the groundwork for undoing and redoing all aura edits. While the feature is still in development, you can test it now on URL edits. To enable it, type `/wa feature enable undo`.
-- **New default formatters**: Setting `%unit` or `%guid` or `%p` will now auto select proper formatting options
-- **Mists of Pandaria Updates:** Lots of Template updates and bug fixes to WA features.
-- **Performance and Stability:** Addressed various bugs.
+bugfix release for 1.15.8 & toc bump for classic era & mop classic
+
+fixes:
+
+- icon visible condition behavior is more sane now
+- another workaround for insane AbbreviateNumbers behavior
+- adjusted to new api environment in classic era
+
+removals:
+
+- WeakAuras now detects & refuses to boot if it was installed on a Midnight client, instead of spewing thousands of errors.
 
 ## Commits
 
-InfusOnWoW (16):
+Adal (1):
 
-- Update Atlas File List from wago.tools
-- Update Discord List
-- Mop templates: Druid, Monk, DK, Warlock and Paladin Update
-- Don't announce destroyng an empty universe
-- Update WeakAurasModelPaths from wago.tools
-- Update Discord List
-- Update Atlas File List from wago.tools
-- Mists: Add Power/Stagger trigger
-- Don't send watch trigger events while Options are open
-- Text: Call UpdateProgress so that relative animations work
-- Progress Settings: Adjust on moving/deleting triggers
-- Range Trigger: Fix progress source setting
-- Add Default Formatters for text replacements
-- Fix locale on english realms
-- Update Discord List
-- Update Discord List
+- update mists toc for 5.5.1
 
-Stanzilla (3):
+InfusOnWoW (5):
+
+- Update Discord List
+- Update Discord List
+- Fix Icon visible Condition not reversing correctly
+- Midnight: Disable WeakAuras with an message
+- Mop/Classic: Workaround another bug in AbbreviateNumbers
+
+Stanzilla (2):
 
 - Update WeakAurasModelPaths from wago.tools
 - Update WeakAurasModelPaths from wago.tools
-- Update WeakAurasModelPaths from wago.tools
 
-emptyrivers (2):
+mrbuds (1):
 
-- always advance mergeOptions pointer to the end if no merge is found
-- undo & redo support (#4863)
-
-github-actions[bot] (2):
-
-- Update Discord List (#5943)
-- Update WeakAurasModelPaths from wago.tools (#5944)
-
-mopstats (1):
-
-- Add pet battle events for mop (#5938)
-
-mrbuds (19):
-
-- LibSpecialization tiny update
-- LibSpecialization update
-- Mists rogue templates
-- Mists priest templates
-- Load the Time Machine on Mists
-- Mists mage templates
-- Mists shaman templates
-- Fix Mists talent known trigger
-- Add missing shaman talents
-- Fix Glyph data on first load
-- Mists use a dedicated file for modelpaths
-- Remove missing "Blizzard Alerts" textures on Mists
-- timed format default set time_dynamic_threshold = 3
-- default color for guid
-- Fix formatter type test
-- Allow default formatter to have sub formatter options
-- Mists Template: Hunter
-- Mists Template: Warrior
-- Fix error with talent tree on 11.2.0 beta
+- Classic Era 1.15.8 update
 

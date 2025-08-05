@@ -6,14 +6,14 @@ TomTomDB = {
 ["Quiproquo - Uldaman"] = "Default",
 ["Pandamagee - Hyjal"] = "Default",
 ["Killeen - Archimonde"] = "Default",
-["Pandamo - Hyjal"] = "Default",
 ["Pandamages - Hyjal"] = "Default",
+["Pandamo - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
 ["general"] = {
-["corpse_arrow"] = false,
 ["confirmremoveall"] = false,
+["corpse_arrow"] = false,
 },
 ["arrow"] = {
 ["position"] = {
@@ -25,8 +25,8 @@ nil,
 },
 },
 ["mapcoords"] = {
-["cursorenable"] = false,
 ["playerenable"] = false,
+["cursorenable"] = false,
 },
 ["block"] = {
 ["enable"] = false,
@@ -49,8 +49,8 @@ TomTomWaypointsM = {
 ["Quiproquo - Uldaman"] = "Quiproquo - Uldaman",
 ["Pandamagee - Hyjal"] = "Pandamagee - Hyjal",
 ["Killeen - Archimonde"] = "Killeen - Archimonde",
-["Pandamo - Hyjal"] = "Pandamo - Hyjal",
 ["Pandamages - Hyjal"] = "Pandamages - Hyjal",
+["Pandamo - Hyjal"] = "Pandamo - Hyjal",
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
@@ -63,9 +63,9 @@ TomTomWaypointsM = {
 },
 ["Killeen - Archimonde"] = {
 },
-["Pandamo - Hyjal"] = {
-},
 ["Pandamages - Hyjal"] = {
+},
+["Pandamo - Hyjal"] = {
 },
 },
 }

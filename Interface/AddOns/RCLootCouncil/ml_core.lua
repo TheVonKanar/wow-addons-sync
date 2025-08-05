@@ -379,6 +379,9 @@ function RCLootCouncilML:ItemsInBagsLowTradeTimeRemainingReminder()
 	if GetTime() - lastCheckItemsInBagsLowTradeTimeRemainingReminder < 120 then -- Dont spam
 		return
 	end
+	if addon.inCombat then
+		return self:ScheduleTimer("ItemsInBagsLowTradeTimeRemainingReminder", 30, self)
+	end
 	local entriesToRemind = TempTable:Acquire()
 	local remindThreshold = 1200 -- 20min
 	local Items = addon.ItemStorage:GetAllItemsOfType("award_later")
@@ -495,7 +498,7 @@ function RCLootCouncilML:HandleReceivedTradeable (sender, item)
 	self.Log:d("ML:HandleReceivedTradeable", item, sender)
 
 	-- For ML loot method, ourselve must be excluded because it should be handled in self:LootOpen()
-	if not addon:UnitIsUnit(sender, "player") or addon.lootMethod ~= "master" then
+	if not addon:UnitIsUnit(sender, "player") or addon.lootMethod ~= Enum.LootMethod.Masterlooter then
 		local quality = select(3, C_Item.GetItemInfo(item))
 		local autoAward, mode, winner = self:ShouldAutoAward(item, quality)
 		if autoAward then
@@ -1105,7 +1108,11 @@ function RCLootCouncilML:AnnounceAward(name, link, response, roll, session, chan
 			if changeAward then
 				message = "("..L["Change Award"]..") "..message
 			end
-			addon:SendAnnouncement(message, v.channel)
+			if v.channel == "WHISPER" then
+				addon:SendAnnouncement(message, "WHISPER", name)
+			else
+				addon:SendAnnouncement(message, v.channel)
+			end
 		end
 	end
 end
@@ -1144,7 +1151,11 @@ function RCLootCouncilML:ShouldAutoAward(item, quality)
 		if name then
 			return true, "boe", addon:UnitName(name)
 		end
-		self:PrintAutoAwardErrorWithPlayer(db.autoAwardBoETo[1])
+		if #db.autoAwardBoETo == 0 then
+			addon:Print(L.error_no_autoAwardBoE_candidates)
+		else
+			self:PrintAutoAwardErrorWithPlayer(db.autoAwardBoETo[1])
+		end
 		return false
 	end
 	if db.autoAward and quality >= db.autoAwardLowerThreshold and quality <= db.autoAwardUpperThreshold
@@ -1154,7 +1165,11 @@ function RCLootCouncilML:ShouldAutoAward(item, quality)
 			if name then
 				return true, "normal", addon:UnitName(name)
 			end
-			self:PrintAutoAwardErrorWithPlayer(db.autoAwardTo[1])
+			if #db.autoAwardTo == 0 then
+				addon:Print(L.error_no_autoAward_candidates)
+			else
+				self:PrintAutoAwardErrorWithPlayer(db.autoAwardTo[1])
+			end
 		else
 			addon:Print(format(L["Could not Auto Award i because the Loot Threshold is too high!"], item))
 		end
@@ -1176,7 +1191,7 @@ function RCLootCouncilML:AutoAward(lootIndex, item, quality, name, mode, boss, o
 	self.Log:D("ML:AutoAward", lootIndex, item, quality, name, mode, boss, owner)
 	local reason = mode == "boe" and db.autoAwardBoEReason or db.autoAwardReason
 
-	if addon.lootMethod == "personalloot" then -- Normal restrictions doesn't apply here
+	if addon.lootMethod == Enum.LootMethod.Personal then -- Normal restrictions doesn't apply here
 		addon:Print(format(L["Auto awarded 'item'"], item))
 		self:Send("group", "do_trade", owner, item, name)
 		self:AnnounceAward(name, item, db.awardReasons[reason].text, nil, nil, nil, owner)
@@ -1430,8 +1445,8 @@ function RCLootCouncilML:GetItemsFromMessage(msg, sender, retryCount)
 
 	-- Let people know we've done stuff
 	addon:Print(format(L["Item received and added from 'player'"], addon:GetClassIconAndColoredName(sender)))
-	SendChatMessage("[RCLootCouncil]: "..format(L["Response to 'item' acknowledged as 'response'"],
-		addon:GetItemTextWithCount(link, count), addon:GetResponse(typeCode, response).text), "WHISPER", nil, sender)
+	addon.SendChatMessage("[RCLootCouncil]: "..format(L["Response to 'item' acknowledged as 'response'"],
+		ItemUtils:GetItemTextWithCount(link, count), addon:GetResponse(typeCode, response).text), "WHISPER", nil, sender)
 end
 
 function RCLootCouncilML:SendWhisperHelp(target)
@@ -1439,18 +1454,18 @@ function RCLootCouncilML:SendWhisperHelp(target)
 	local msg
 	local guide1 = L["whisper_guide"]
 	if #guide1 > 254 then -- French locale reported too long
-		SendChatMessage(strsub(guide1, 0, 254), "WHISPER", nil, target)
-		SendChatMessage(strsub(guide1, 255), "WHISPER", nil, target)
+		addon.SendChatMessage(strsub(guide1, 0, 254), "WHISPER", nil, target)
+		addon.SendChatMessage(strsub(guide1, 255), "WHISPER", nil, target)
 	else
-		SendChatMessage(guide1, "WHISPER", nil, target)
+		addon.SendChatMessage(guide1, "WHISPER", nil, target)
 	end
 
 	for i = 1, db.buttons.default.numButtons do
 		msg = "[RCLootCouncil]: "..db.buttons.default[i]["text"]..":  " -- i.e. MainSpec/Need:
 		msg = msg..""..db.buttons.default[i]["whisperKey"].."." -- need, mainspec, etc
-		SendChatMessage(msg, "WHISPER", nil, target)
+		addon.SendChatMessage(msg, "WHISPER", nil, target)
 	end
-	SendChatMessage(L["whisper_guide2"], "WHISPER", nil, target)
+	addon.SendChatMessage(L["whisper_guide2"], "WHISPER", nil, target)
 	addon:Print(format(L["Sent whisper help to 'player'"], addon:GetClassIconAndColoredName(target)))
 end
 

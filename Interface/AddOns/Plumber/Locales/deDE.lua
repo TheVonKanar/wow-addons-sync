@@ -461,6 +461,9 @@ L["Delve Chest 1 Rare"] = "Großzügiger Kasten";
 L["Season Maximum Colon"] = "Saisonmaximum:";
 L["Item Changed"] = "r Gegenstand";   --CHANGED_OWN_ITEM
 L["Completed CHETT List"] = "Abgeschlossene C.H.E.T.T.-Liste";
+L["Restored Coffer Key"] = "Restaurierter Kastenschlüssel";
+L["Coffer Key Shard"] = "Kastenschlüsselsplitter";
+L["Epoch Mementos"] = "Epochenandenken";
 
 
 --Map Pin Filter Name (name should be plural)

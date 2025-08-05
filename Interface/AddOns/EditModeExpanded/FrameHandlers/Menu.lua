@@ -18,19 +18,38 @@ function addon:initMenuBar()
         local dropdownOptions = {-4, -3, -2, -1, 0, 1, 2, 3, 4, 5}
         
         local function updatePadding()
-           local db = getSettingDB()
-           if not db.checked then return end
-           
-           for key, button in ipairs(MicroMenu:GetLayoutChildren()) do
-                if key ~= 1 then
-                    local a, b, c, d, e = button:GetPoint(1)
-                    button:ClearAllPoints()
-                    button:SetPoint(a, b, c, (db.checked + button:GetWidth() - 3) * (key-1), e)
+            local db = getSettingDB()
+            if not db.checked then return end
+            if MicroMenu.overrideScale then return end
+            
+            local padding = db.checked - 3
+            
+            if MicroMenu.isHorizontal then
+                for key, button in ipairs(MicroMenu:GetLayoutChildren()) do
+                    if key ~= 1 then
+                        local a, b, c, d, e = button:GetPoint(1)
+                        button:ClearAllPoints()
+                        button:SetPoint(a, b, c, (db.checked + button:GetWidth() - 3) * (key-1), e)
+                    end
+                end
+                
+                -- This is a simpler, alternative method I tried. 
+                -- Turns out, it spreads taint into Override Actions Bars. Do not use.
+                --MicroMenu.childXPadding = padding
+                --MicroMenu:Layout()
+                --MicroMenuContainer:SetWidth(MicroMenu:GetWidth()*MicroMenu:GetScale())
+            else
+                for key, button in ipairs(MicroMenu:GetLayoutChildren()) do
+                    if key ~= 1 then
+                        local a, b, c, d, e = button:GetPoint(1)
+                        button:ClearAllPoints()
+                        button:SetPoint(a, b, c, d, -1 * (db.checked + button:GetHeight() - 3) * (key-1))
+                    end
                 end
             end
-            MicroMenu:SetWidth(MicroMenu:GetWidth() - 30)
-            MicroMenuContainer:SetWidth(MicroMenu:GetWidth()*MicroMenu:GetScale())
         end
+        
+        hooksecurefunc(MicroMenuContainer, "Layout", updatePadding)
         
         libDD:UIDropDownMenu_Initialize(dropdown, function(self, level, menuList)
             local db = getSettingDB()
@@ -57,6 +76,24 @@ function addon:initMenuBar()
         
         lib:RegisterCustomCheckbox(MicroMenuContainer, L["MENU_CHECKBOX_DF_BUTTONS_DESCRIPTION"], addon.EnableSkinMicroMenuBW, addon.DisableSkinMicroMenuBW, "10.0Style")
         lib:RegisterCustomCheckbox(MicroMenuContainer, L["MENU_CHECKBOX_SL_BUTTONS_DESCRIPTION"], addon.EnableSkinMicroMenuSL, addon.DisableSkinMicroMenuSL, "SLStyle")
+        
+        RunNextFrame(function()
+            if InCombatLockdown() then return end
+            
+            -- check if the sound file has already been muted by something else, if it has, lets skip the mute/unmute
+            local soundFileID = 567481
+            local willPlay, soundHandle = PlaySoundFile(soundFileID)
+            if willPlay then
+                StopSound(soundHandle)
+                MuteSoundFile(soundFileID)
+                ShowUIPanel(EditModeManagerFrame, true)
+                HideUIPanel(EditModeManagerFrame)
+                UnmuteSoundFile(soundFileID)
+            else
+                ShowUIPanel(EditModeManagerFrame, true)
+                HideUIPanel(EditModeManagerFrame)
+            end
+        end)
     end
     
     if db.EMEOptions.bags then

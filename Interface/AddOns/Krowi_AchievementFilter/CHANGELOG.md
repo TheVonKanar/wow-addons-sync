@@ -1,6 +1,42 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 87.1 - 2025-10-09
+### Fixed
+- FindIndex Error on achievement click from popup and ObjectTracker
+
+## 87.0 - 2025-10-05
+### Added
+- Missing season 2 and 3 transmog sets
+- Legion Remix achievements and event
+
+### Changed
+- Transfered some Shadowlands and Dragonflight map data into the new system
+
+## 86.2 - 2025-08-30
+### Added
+- Additional zhCN localization
+- Additional delve and Midnight edition achievements
+
+### Fixed
+- With Flying Colors is now faction specific
+
+## 86.1 - 2025-08-10
+### Fixed
+- Moved Court is Now in Session to a more fitting category
+- Raiding with Leashes II: Attunement Edition should now have proper tooltip data
+
+### Mists Classic
+- Raiding with Leashes II: Attunement Edition should now have proper tooltip data
+- Multiple Wrath and Cata schievements should now have proper tooltip data
+
+## 86.0 - 2025-08-05
+### Added
+- New 11.2.0 achievements
+
+### Fixed
+- Popup dialog errors
+
 ## 85.2 - 2025-07-19
 ### Fixed
 - GW2_UI compatibility issue when disabling Event Reminders

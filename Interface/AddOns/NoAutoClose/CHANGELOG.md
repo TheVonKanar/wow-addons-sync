@@ -1,6 +1,6 @@
 # NoAutoClose
 
-## [v1.3.20](https://github.com/NumyAddon/NoAutoClose/tree/v1.3.20) (2025-06-25)
-[Full Changelog](https://github.com/NumyAddon/NoAutoClose/compare/v1.3.19...v1.3.20) [Previous Releases](https://github.com/NumyAddon/NoAutoClose/releases)
+## [v1.3.26](https://github.com/NumyAddon/NoAutoClose/tree/v1.3.26) (2025-10-22)
+[Full Changelog](https://github.com/NumyAddon/NoAutoClose/compare/v1.3.25...v1.3.26) [Previous Releases](https://github.com/NumyAddon/NoAutoClose/releases)
 
-- Added some detection and automatic fixing of situations that could stop ESC from opening the menu  
+- Classic TOC Bump  

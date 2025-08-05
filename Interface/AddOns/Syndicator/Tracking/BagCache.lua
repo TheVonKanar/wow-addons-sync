@@ -93,7 +93,7 @@ function SyndicatorBagCacheMixin:OnEvent(eventName, ...)
       self.pending.bags[bagID] = true
     elseif bankBags[bagID] and self.bankOpen then
       self.pending.bank[bagID] = true
-    elseif warbandBags[bagID] and self.bankOpen and C_PlayerInfo.HasAccountInventoryLock() then
+    elseif warbandBags[bagID] and self.bankOpen and C_Bank.FetchBankLockedReason(Enum.BankType.Account) == nil then
       self.pending.warband[bagID] = true
     end
     self:QueueCaching()
@@ -146,7 +146,7 @@ function SyndicatorBagCacheMixin:OnEvent(eventName, ...)
     end
 
   elseif eventName == "PLAYER_ACCOUNT_BANK_TAB_SLOTS_CHANGED" then
-    if (self.bankOpen or time() - self.craftingTime < craftingItemUpdateDelay) and C_PlayerInfo.HasAccountInventoryLock() then
+    if (self.bankOpen or time() - self.craftingTime < craftingItemUpdateDelay) and C_Bank.FetchBankLockedReason(Enum.BankType.Account) == nil then
       local tab = ...
       if tab then
         self.pending.warband[Syndicator.Constants.AllWarbandIndexes[tab]] = true
@@ -159,7 +159,7 @@ function SyndicatorBagCacheMixin:OnEvent(eventName, ...)
     for bagID in pairs(bankBags) do
       self.pending.bank[bagID] = true
     end
-    if next(warbandBags) and C_PlayerInfo.HasAccountInventoryLock() then
+    if next(warbandBags) and C_Bank.FetchBankLockedReason(Enum.BankType.Account) == nil then
       for bagID in pairs(warbandBags) do
         self.pending.warband[bagID] = true
       end
@@ -227,21 +227,29 @@ function SyndicatorBagCacheMixin:ScanBankTabs()
     return
   end
 
-  local allTabs = C_Bank.FetchPurchasedBankTabData(Enum.BankType.Character)
-  local bank = SYNDICATOR_DATA.Characters[self.currentCharacter].bankTabs
+  if Syndicator.Constants.CharacterBankTabsActive then
+    local allTabs = C_Bank.FetchPurchasedBankTabData(Enum.BankType.Character)
+    local characterData = SYNDICATOR_DATA.Characters[self.currentCharacter]
+    local bank = characterData.bankTabs
 
-  for index, tabDetails in ipairs(allTabs) do
-    if not bank[index] then
-      bank[index] = { slots = {}, iconTexture = QUESTION_MARK_ICON, name = "", depositFlags = 0 }
+    for index, tabDetails in ipairs(allTabs) do
+      if not bank[index] then
+        bank[index] = { slots = {}, iconTexture = QUESTION_MARK_ICON, name = "", depositFlags = 0 }
+      end
+      bank[index].iconTexture = tabDetails.icon
+      bank[index].name = tabDetails.name
+      bank[index].depositFlags = tabDetails.depositFlags
     end
-    bank[index].iconTexture = tabDetails.icon
-    bank[index].name = tabDetails.name
-    bank[index].depositFlags = tabDetails.depositFlags
+    if next(characterData.bank) then
+      characterData.bank = {}
+      characterData.void = {}
+      characterData.containerInfo.bank = {}
+      Syndicator.CallbackRegistry:TriggerEvent("VoidCacheUpdate", self.currentCharacter)
+    end
+    self.pending.containerBags.bank = true
   end
 
-  self.pending.containerBags.bank = true
-
-  if not C_PlayerInfo.HasAccountInventoryLock() then
+  if C_Bank.FetchBankLockedReason(Enum.BankType.Account) ~= nil then
     return
   end
 
@@ -428,7 +436,8 @@ function SyndicatorBagCacheMixin:OnUpdate()
       end
     end
   else
-    local bankTabs = SYNDICATOR_DATA.Characters[self.currentCharacter].bankTabs
+    local characterData = SYNDICATOR_DATA.Characters[self.currentCharacter]
+    local bankTabs = characterData.bankTabs
     for bagID in pairs(self.pending.bank) do
       local bagIndex = bankBags[bagID]
       if bankTabs[bagIndex] then
@@ -439,7 +448,6 @@ function SyndicatorBagCacheMixin:OnUpdate()
         end
       end
     end
-    SYNDICATOR_DATA.Characters[self.currentCharacter].bank = {}
   end
 
   local warband = SYNDICATOR_DATA.Warband[1]

@@ -1,3 +1,49 @@
+v11.2.0.6
+---------
+- Fixed CHETT List chore weirdness. Probably.
+
+v11.2.0.5
+---------
+- Added Delver's Bounty chore.
+- Added the 4th Restored Coffer Key quest (again).
+- Changed More Than Just a Phase back to per-character, it gives a key now.
+- Updated koKR locale (thanks Crazyyoungs).
+- Updated zhCN locale (thanks Sefank).
+
+v11.2.0.4
+---------
+- Added 11.2 world boss account loot (Reshanor).
+- Added 11.1 world boss account loot (The Gobfather).
+- Changed CHETT List chores to handle get list/do tasks/turn in list states properly.
+- Removed the 4th Restored Coffer Key quest, it exists but nothing gives a 4th key :|
+- Updated koKR locale (thanks Crazyyoungs).
+- Updated ruRU locale (thanks Hubbotu).
+
+v11.2.0.3
+---------
+- Added K'aresh > Devourer weekly quests.
+- Added K'aresh > Warrant weekly quest.
+- Added the 4th Restored Coffer Key quest.
+- Changed More Than a Phase to account wide, rewards suck.
+- Fixed Restored Coffer Key item ID.
+- Updated koKR locale (thanks Crazyyoungs).
+- Updated ruRU locale (thanks Hubbotu).
+
+v11.2.0.2
+---------
+- Added K'aresh > More Than Just a Phase weekly quest.
+- Added Archival Assault delve.
+- Fixed quest auto-accept.
+
+v11.2.0.1
+---------
+- Added K'aresh > Ecological Succession weekly quest.
+- Added K'aresh > Special Assignment weekly quests.
+- Added Sparks of War: K'aresh weekly quest.
+- Fixed delve key quest IDs.
+- Fixed missing Worldsoul quests.
+- Updated ToC for 11.2.0.
+
 v11.1.7.4
 ---------
 - Added ruRU locale (thanks ZamestoTV).

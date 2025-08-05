@@ -83,7 +83,10 @@ if not addonTable.Constants.IsEra and Syndicator then
         for _, locationID in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
           if locationID ~= -1 and locationID ~= 0 and locationID ~= 1 then
             local player, bank, bags, _, slot, bag
-            if addonTable.Constants.IsClassic then
+            if EquipmentManager_GetLocationData then
+              local locationData = EquipmentManager_GetLocationData(locationID)
+              player, bank, bags, slot, bag = locationData.isPlayer, locationData.isBank, locationData.isBags, locationData.slot, locationData.bag
+            elseif addonTable.Constants.IsClassic then
               player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(locationID)
             else
               player, bank, bags, _, slot, bag = EquipmentManager_UnpackLocation(locationID)
@@ -188,15 +191,25 @@ if not addonTable.Constants.IsRetail then
         if name:sub(1, 1) ~= "~" then
           table.insert(equipmentSetNames, name)
           local setInfo = {name = name, iconTexture = details.icon}
+          local seenRefs = {}
           for _, itemRef in pairs(details.equip) do
             if itemRef ~= 0 then
+              if seenRefs[itemRef] then -- Some sets use 2 trinkets/rings, this adds a special key for that
+                itemRef = ";" .. itemRef
+              end
               if not equipmentSetInfo[itemRef] then
                 equipmentSetInfo[itemRef] = {}
               end
               table.insert(equipmentSetInfo[itemRef], setInfo)
+              seenRefs[itemRef] = true
             end
           end
         end
+      end
+      for _, info in pairs(equipmentSetInfo) do
+        table.sort(info, function(a, b)
+          return a.name < b.name
+        end)
       end
       table.sort(equipmentSetNames)
       updatePending = true
@@ -226,6 +239,11 @@ if not addonTable.Constants.IsRetail then
       end
     end)
 
+    Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
+      updatePending = true
+      Baganator.API.RequestItemButtonsRefresh()
+    end)
+
     local guidToItemRef = {}
     -- Elaborate routine to mimic ItemRack's selection of items that match the
     -- set. Checks exact matches first, then inexact by item ID.
@@ -240,7 +258,8 @@ if not addonTable.Constants.IsRetail then
       end
       local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
       local function DoLocation(location, slotInfo)
-        if slotInfo.itemLink and Syndicator.Utilities.IsEquipment(slotInfo.itemLink) and C_Item.DoesItemExist(location) then
+        -- We check by inventory slot because some classic era trinkets are Trade Goods -> Devices
+        if slotInfo.itemLink and select(4, C_Item.GetItemInfoInstant(slotInfo.itemLink)) ~= "INVTYPE_NON_EQUIP_IGNORE" and C_Item.DoesItemExist(location) then
           local runeSuffix = ""
           if ItemRack.AppendRuneID then
             local info
@@ -260,10 +279,11 @@ if not addonTable.Constants.IsRetail then
           if missing[itemRackID] then
             missing[itemRackID] = nil
             guidToItemRef[guid] = itemRackID
+          elseif missing[";" .. itemRackID] then
+            guidToItemRef[guid] = ";" .. itemRackID
           else
-          end
-          if itemIDToGUID[slotInfo.itemID] == nil then
-            itemIDToGUID[slotInfo.itemID] = guid
+            itemIDToGUID[slotInfo.itemID] = itemIDToGUID[slotInfo.itemID] or {}
+            table.insert(itemIDToGUID[slotInfo.itemID], guid)
           end
         end
       end
@@ -288,11 +308,17 @@ if not addonTable.Constants.IsRetail then
         end
       end
       if next(missing) then
-        for key in pairs(missing) do
-          local itemID = tonumber(key:match("^%-?%d+"))
-          local guid = itemIDToGUID[itemID]
-          if guid then
-            guidToItemRef[guid] = key
+        local keys = GetKeysArray(missing)
+        table.sort(keys, function(a, b)
+          return equipmentSetInfo[a][1].name < equipmentSetInfo[b][1].name
+        end)
+        for _, key in ipairs(keys) do
+          local itemID = tonumber((key:match("^;?%-?(%d+)")))
+          if itemIDToGUID[itemID] and #itemIDToGUID[itemID] > 0 then
+            local guid = table.remove(itemIDToGUID[itemID])
+            if guid then
+              guidToItemRef[guid] = key
+            end
           end
         end
       end

@@ -16,7 +16,7 @@ local L = LM.Localize
 LiteMountTooltipPreviewMixin = {}
 
 function LiteMountTooltipPreviewMixin:SetAsMount(mount, parent)
-    if mount.creatureDisplayID and mount.modelSceneID then
+    if mount.creatureDisplayID then
         self:SetParent(parent)
         self:Attach(parent)
         self.ModelScene:SetMount(mount)
@@ -74,6 +74,11 @@ function LiteMountTooltipMixin:SetMount(m, hasMenu)
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         if m.family then
             self:AddLine("|cffffffff"..L.LM_FAMILY..":|r "..L[m.family])
+        end
+
+        if m.expansion then
+            local text = GetExpansionName(m.expansion)
+            self:AddLine("|cffffffff"..EXPANSION_FILTER_TEXT..":|r "..text)
         end
 
         local r = m:GetRarity()

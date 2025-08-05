@@ -18,6 +18,7 @@ local names = {
     {text = "Trustyulf ", r = 0.62, g = 0.52, b = 0.38, logo = "kofi"},
     {text = "ZamestoTV\n", smalltext = "youtube.com/@ZamestoTV", r = 0.25, g = 0.78, b = 0.92, logo = "youtube"},
     {text = "Crazyyoungs", r = 0.17, g = 0.52, b = 0.23},
+    {text = "Cathtail\n", smalltext = "@cathtail", r = 0.95, g = 0.43, b = 0.59},
 }
 
 local function iterateAndAdd(parent, anchorFrame)
@@ -58,5 +59,66 @@ function Angleur_Thanks_OnLoad(self)
     self.thanksFrame.supportMe:SetText(T["You can support the project\nby donating on " .. colorYello:WrapTextInColorCode("Ko-Fi ") .. "or " .. colorYello:WrapTextInColorCode("Patreon!")])
     self.thanksFrame.supportMe:SetJustifyH("LEFT")
     iterateAndAdd(self.thanksFrame, self.thanksFrame.supporters)
-    --self.thanksFrame.supporters:SetText("T3chnological")
+end
+
+
+local addonsTable = {
+    [1] = { 
+            icon = "Interface/AddOns/Angleur/images/other-addons/icon-niche.png",
+            link = "https://www.curseforge.com/wow/addons/angleur-nicheoptions",
+            tooltipPicture = "Interface/AddOns/Angleur/images/other-addons/tooltip-picture-niche.png",
+            tooltipPictureWidth = 240,
+            tooltipPictureHeight = 120,
+            tooltipPictureAnchor = "BOTTOMLEFT",
+            tooltipTitle = "Angleur_NicheOptions",
+            tooltipText = T["Niche functionality plugin for Angleur. Adding niche user requests through this plugin!"],
+    },
+    [2] = { 
+            icon = "Interface/AddOns/Angleur/images/other-addons/icon-ang-und.png",
+            link = "https://www.curseforge.com/wow/addons/angleur-underlight",
+            tooltipPicture = "Interface/AddOns/Angleur/images/other-addons/tooltip-picture-ang-und.jpg",
+            tooltipPictureWidth = 240,
+            tooltipPictureHeight = 120,
+            tooltipPictureAnchor = "BOTTOMLEFT",
+            tooltipTitle = "Angleur_Underlight",
+            tooltipText = T["Automatic Aquatic Form for ALL CLASSES, ALL THE TIME!\n\nEquip Underlight_Angler when swimming, re-equip your \'Main\' Fishing Rod when not."],
+    },
+    [3] = { 
+        icon = "Interface/AddOns/Angleur/images/other-addons/icon-thievery.png",
+        link = "https://www.curseforge.com/wow/addons/thievery",
+        tooltipPicture = "Interface/AddOns/Angleur/images/other-addons/tooltip-picture-thievery.jpg",
+        tooltipPictureWidth = 256,
+        tooltipPictureHeight = 64,
+        tooltipPictureAnchor = "TOPLEFT",
+        tooltipTitle = "Thievery",
+        tooltipText = T["Pickpocket overhaul for Rogues!\n\nSingle player RPG-like Pickpocket Prompt System with dynamic keybind(released back when not pick pocketing)."],
+    },
+    [4] = { 
+        icon = "Interface/AddOns/Angleur/images/other-addons/icon-trueform.png",
+        link = "https://www.curseforge.com/wow/addons/angleur-underlight",
+            tooltipPicture = "Interface/AddOns/Angleur/images/other-addons/tooltip-picture-trueform.jpg",
+            tooltipPictureWidth = 128,
+            tooltipPictureHeight = 128,
+            tooltipPictureAnchor = "TOPRIGHT",
+            tooltipTitle = "TrueForm",
+            tooltipText = T["Two-Way Transformations to Worgens when you cast abilities or use items!\n\nFeatures a built-in drag&drop Macro Maker."],
+        },
+}
+function MyOtherAddons_OnLoad(self)
+    local gameVersion = Angleur_CheckVersion()
+    if gameVersion == 1 then
+        --do nothing
+    elseif gameVersion == 2 or gameVersion == 3 then
+        addonsTable[2].tooltipPictureAnchor = "BOTTOMLEFT"
+    end
+    self.title:SetText(T["My Other Addons!"])
+    self.addonsTable = addonsTable
+    self.lines = 1
+    self.columns = 3
+    self.spaceBetweenColumns = 20
+    self.pageButtonsAnchor = "Bottom"
+    self.pageButtonsOffsetY = 5
+    self.pageButtonsTextAnchor = "Bottom"
+    self.buttonSize = 36
+    self:Init()
 end

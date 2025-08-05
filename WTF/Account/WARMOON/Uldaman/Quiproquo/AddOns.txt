@@ -99,3 +99,6 @@ DBM-Party-WotLK: enabled
 OmniCD: disabled
 Hekili: disabled
 MRT: disabled
+BigWigs_KhazAlgar: enabled
+BigWigs_LiberationOfUndermine: enabled
+BigWigs_ManaforgeOmega: enabled

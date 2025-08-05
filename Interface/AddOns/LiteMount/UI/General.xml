@@ -120,14 +120,23 @@
                 <Anchor point="TOPLEFT" relativeKey="$parent.RandomPersist" relativePoint="BOTTOMLEFT" x="16" y="-8" />
             </Anchors>
         </DropdownButton>
-        <CheckButton parentKey="Debugging" inherits="LiteMountOptionsCheckButtonTemplate">
+    </Frames>
+    <Layers>
+        <Layer level="OVERLAY">
+            <FontString parentKey="MountSpecialTimer" inherits="GameFontHighlight">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.RandomPersist" relativePoint="BOTTOMLEFT" y="-56" />
+                </Anchors>
+            </FontString>
+        </Layer>
+    </Layers>
+    <Frames>
+        <DropdownButton parentKey="MountSpecialTimerDropDown" inherits="WoWStyle1DropdownTemplate">
+            <Size x="448" y="26" />
             <Anchors>
-                <Anchor point="TOPLEFT" relativeKey="$parent.RandomPersist" relativePoint="BOTTOMLEFT" x="0" y="-72" />
+                <Anchor point="TOPLEFT" relativeKey="$parent.MountSpecialTimer" relativePoint="BOTTOMLEFT" x="16" y="-8" />
             </Anchors>
-            <Scripts>
-                <OnClick function="LiteMountOptionsControl_OnChanged" />
-            </Scripts>
-        </CheckButton>
+        </DropdownButton>
     </Frames>
 </Frame>
 

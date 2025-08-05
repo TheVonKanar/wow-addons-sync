@@ -105,20 +105,37 @@ function LM.Environment:IsMovingOrFalling()
     return (GetUnitSpeed("player") > 0 or IsFalling())
 end
 
-function LM.Environment:IsTheMaw(mapPath)
-    local instanceID = select(8, GetInstanceInfo())
+function LM.Environment:IsPhaseDiving()
+    if WOW_PROJECT_ID == 1 then
+        return C_UnitAuras.GetPlayerAuraBySpellID(1214374) ~= nil
+    end
+end
 
-    -- This is the instanced starting experience
-    if instanceID == 2364 then return true end
+-- "Orbs of Power", the third node unlock in the Reshii Wraps talent tree
+function LM.Environment:CanMountInPhaseDiving()
+    if WOW_PROJECT_ID == 1 then
+        local configID = C_Traits.GetConfigIDByTreeID(1115)
+        local nodeInfo = C_Traits.GetNodeInfo(configID, 105869)
+        return nodeInfo.currentRank == 1
+    end
+end
 
-    -- This is the instanced post-Maldraxxus questing
-    if instanceID == 2456 then return true end
+function LM.Environment:IsTheMaw()
+    if WOW_PROJECT_ID == 1 then
+        local instanceID = select(8, GetInstanceInfo())
 
-    -- Sanctum of Domination raid allows mounting normally
-    if instanceID == 2450 then return false end
+        -- This is the instanced starting experience
+        if instanceID == 2364 then return true end
 
-    -- Otherwise, The Maw is just zones in instance 2222
-    return LM.Environment:IsMapInPath(1543, mapPath)
+        -- This is the instanced post-Maldraxxus questing
+        if instanceID == 2456 then return true end
+
+        -- Sanctum of Domination raid allows mounting normally
+        if instanceID == 2450 then return false end
+
+        -- Otherwise, The Maw is just zones in instance 2222
+        return LM.Environment:IsMapInPath(1543)
+    end
 end
 
 function LM.Environment:PLAYER_LOGIN()
@@ -267,22 +284,27 @@ function LM.Environment:IsOnMap(mapID, checkGroup)
     end
 end
 
+-- C_Map.GetMapInfo use a terrific amount of (garbage collected) memory, so
+-- cache the map paths for efficiency. This is absoluately required because
+-- this is called many times during activation.
+
+LM.Environment.mapPathCache = {}
+
 function LM.Environment:GetMapPath()
-    local out = {}
-    local mapID = C_Map.GetBestMapForUnit('player')
-    while mapID and mapID > 0 do
-        table.insert(out, mapID)
-        mapID = C_Map.GetMapInfo(mapID).parentMapID
+    local mapID = C_Map.GetBestMapForUnit('player') or 0
+    if mapID and not self.mapPathCache[mapID] then
+        self.mapPathCache[mapID] = {}
+        local id = mapID
+        while id and id > 0 do
+            table.insert(self.mapPathCache[mapID], id)
+            id = C_Map.GetMapInfo(id).parentMapID
+        end
     end
-    return out
+    return self.mapPathCache[mapID]
 end
 
--- C_Map.GetMapInfo use a terrific amount of (garbage collected) memory, which
--- is why this takes a mapPath optional argument so we can save the mapPath in
--- the context for actions.
-
-function LM.Environment:IsMapInPath(mapID, mapPath, checkGroup)
-    for _, pathMapID in ipairs(mapPath or self:GetMapPath()) do
+function LM.Environment:IsMapInPath(mapID, checkGroup)
+    for _, pathMapID in ipairs(self:GetMapPath()) do
         if self:MapIsMap(mapID, pathMapID, checkGroup) then return true end
     end
     return false
@@ -307,9 +329,9 @@ local steadyInfo = C_Spell.GetSpellInfo(LM.SPELL.FLIGHT_STYLE_STEADY_FLIGHT)
 local skyridingInfo = C_Spell.GetSpellInfo(LM.SPELL.FLIGHT_STYLE_SKYRIDING)
 
 function LM.Environment:GetFlightStyle()
-    if not steadyInfo and skyridingInfo then return end
+    if not (steadyInfo and skyridingInfo) then return end
 
-    if IsAdvancedFlyableArea() == false then
+    if LM.UnitAura('player', steadyInfo.spellID) then
         return steadyInfo.name, "steady"
     else
         return skyridingInfo.name, "skyriding"
@@ -335,7 +357,8 @@ function LM.Environment:KnowsRidingSkill()
 end
 
 function LM.Environment:KnowsFlyingSkill()
-    return IsPlayerSpell(54197)
+    return IsPlayerSpell(90265)
+        or IsPlayerSpell(54197)
         or IsPlayerSpell(34091)
         or IsPlayerSpell(34090)
 end
@@ -343,7 +366,7 @@ end
 
 -- Overrides have 3 possible return values, true, false, nil (no override)
 local InstanceFlyableOverride = {
-    -- Clear these out for TWW, everything I tested is flagged correctly.
+    [2275] = false,     -- Lesser Vision Vale of Eternal Twilight
     [2512] = true,      -- The Primalist Future
     [2549] =            -- Amirdrassil Raid
         function ()
@@ -358,25 +381,25 @@ local InstanceFlyableOverride = {
     [2662] = true,      -- The Dawnbreaker (Dungeon) after /reload it goes wrong
 }
 
-function LM.Environment:GetFlyableOverride(mapPath)
+function LM.Environment:GetFlyableOverride()
     local instanceID = select(8, GetInstanceInfo())
     local override = InstanceFlyableOverride[instanceID]
     if type(override) == 'function' then
-        local value = override(mapPath)
+        local value = override()
         if value ~= nil then return value end
     else
         if override ~= nil then return override end
     end
 end
 
-function LM.Environment:IsFlyableArea(mapPath)
+function LM.Environment:IsFlyableArea()
 
-    local override = self:GetFlyableOverride(mapPath)
+    local override = self:GetFlyableOverride()
     if override ~= nil then
         return override
     end
 
-    if WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+    if false and WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
         -- Northrend requires Cold Weather Flying
         if self:InInstance(571) then
             if not IsPlayerSpell(54197) then
@@ -389,20 +412,41 @@ function LM.Environment:IsFlyableArea(mapPath)
                 return false
             end
         end
+        -- Pandaria requires Wisdom of the Four Winds
+        if self:InInstance(870) then
+            if not IsPlayerSpell(115913) then
+                return false
+            end
+        end
     end
 
-    if self:InInstance(2552, 2601) then
-        -- In Khaz Algar (Surface) (2552) and Khaz Algar (2601) before you
-        -- unlock Steady Flight, IsFlyableArea() is false and I don't know of a
-        -- check to see if Skyriding would work.
+    if self:InInstance(2552, 2601, 2738) then
+        -- In Khaz Algar (Surface) (2552), Khaz Algar (2601) and K'aresh (2739)
+        -- before unlocking Steady Flight, IsFlyableArea() is false and I don't
+        -- know of a check to see if Skyriding would work.
         if select(4, GetAchievementInfo(40231)) == false then
             return true
         end
-    elseif self:IsMapInPath(1978, mapPath) then
+    elseif self:IsMapInPath(1978) then
         -- In Dragon Isles (1978) IsFlyableArea() is false until you unlock
         -- Dragon Isles Pathfinder.
         if select(4, GetAchievementInfo(19307)) == false then
             return true
+        end
+    end
+
+    -- Detect Legion: Remix with aura and require unlock for dragonriding.
+    -- This is a massive mess by Blizzard. You can steady fly from the start
+    -- but you can't skyride (opposite of normal). The game says Skyriding
+    -- is unlocked by completing quest A Fixed Point In Time (89418) but it's
+    -- unlocked a handful of quests earlier by Eternal Gratitude (89416). All
+    -- of this might be different if you never unlocked Steady Flight on your
+    -- account.
+
+    if PlayerIsTimerunning and PlayerIsTimerunning() and LM.UnitAura('player', 1213439) then
+        local _, flightStyle = self:GetFlightStyle()
+        if flightStyle == 'skyriding' and not C_QuestLog.IsQuestFlaggedCompleted(89416) then
+            return false
         end
     end
 
@@ -419,16 +463,21 @@ function LM.Environment:IsFlyableArea(mapPath)
         return false
     end
 
+    -- You would think, if anything was sensible at all, that IsFlyableArea()
+    -- would return whether you could steady fly, and IsAdvancedFlyableArea()
+    -- would return whether you could skyride. You would be wrong. Huge amounts
+    -- of the world are not marked for advanced flying, despite it working fine.
+
     return IsFlyableArea()
 end
 
 -- Area allows flying and you know how to fly
-function LM.Environment:CanFly(mapPath)
+function LM.Environment:CanFly()
 
     if IsAdvancedFlyableArea and IsAdvancedFlyableArea() then
         -- This has a compat for Cataclysm Classic to return false always
         if not C_MountJournal.IsDragonridingUnlocked() then
-            -- This enables soar for Dracthyr on new accounts withouth Skyriding
+            -- This enables soar for Dracthyr on new accounts without Skyriding
             if not C_Spell.IsSpellUsable(LM.SPELL.SOAR) then
                 return false
             end
@@ -437,7 +486,7 @@ function LM.Environment:CanFly(mapPath)
         return false
     end
 
-    return self:IsFlyableArea(mapPath)
+    return self:IsFlyableArea()
 end
 
 -- Blizzard's IsDrivableArea is always false so far. If the mount is usable
@@ -478,9 +527,9 @@ ModelScanFrame:Hide()
 function LM.Environment:GetPlayerModel()
     ModelScanFrame:Show()
     ModelScanFrame:SetUnit('player')
-    local id = ModelScanFrame:GetModelFileID()
+    local modelFileID = ModelScanFrame:GetModelFileID()
     ModelScanFrame:Hide()
-    return id
+    return modelFileID
 end
 
 -- The level of black magic shenanigans here is off the charts. What on earth

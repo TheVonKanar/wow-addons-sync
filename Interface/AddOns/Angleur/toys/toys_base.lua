@@ -93,7 +93,8 @@ function Angleur_LoadToys(self)
     --________________
     --DO RETAIL THING
     --________________
-    if Angleur_CheckVersion() == 1 then retail:LoadToysExtra() end
+    if Angleur_CheckVersion() == 1 then retail:ToysStandardTab() end
+    if Angleur_CheckVersion() == 2 then cata:ToysStandardTab() end
 
     Angleur_LoadExtraToys(Angleur.configPanel.tab2.contents.extraToys)
 end
@@ -113,19 +114,10 @@ end
     --DO RETAIL THING
     --________________
 
-function Angleur_SetSelectedToy(selectedToyTable, ownedToysTable, chosenByPlayer)
-    local selection = {}
-    for i, ownedToy in pairs(ownedToysTable) do
-        selection = ownedToy
-        if chosenByPlayer == ownedToy.toyID then
-            break
-        end
-    end
-    --________________
-    --DO RETAIL THING
-    --________________
-    AngleurToysRetail:setTableToSelectedTable(selection, selectedToyTable)
-end
+
+--________________
+--DO RETAIL THING
+--________________
 
 function Angleur_LoadExtraToys(extraToyButtons)
     local gameVersion = Angleur_CheckVersion()

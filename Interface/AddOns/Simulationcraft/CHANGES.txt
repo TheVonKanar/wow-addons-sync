@@ -1,10 +1,10 @@
-lightweight tag febe6299e6cf2ebfb60d9ce4280c67068d8be344 patch-11.2.0-01
+lightweight tag a0ea176f951651f6b9c33acb93a61833c1dcec89 12.0.0-02
 Author:	Dave Hendler <sollaires@gmail.com>
-Date:	Wed Jul 9 10:56:54 2025 -0700
+Date:	Wed Oct 8 14:49:46 2025 -0500
 
-commit febe6299e6cf2ebfb60d9ce4280c67068d8be344
+commit a0ea176f951651f6b9c33acb93a61833c1dcec89
 Author: Dave Hendler <sollaires@gmail.com>
-Date:   Wed Jul 9 10:56:54 2025 -0700
+Date:   Wed Oct 8 14:49:46 2025 -0500
 
-    Add Undermine Gilded achievement
+    Add Starlight Matrix to currency export
 

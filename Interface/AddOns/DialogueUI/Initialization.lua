@@ -1,5 +1,5 @@
-local VERSION_TEXT = "v0.6.6";
-local VERSION_DATE = 1751900000;
+local VERSION_TEXT = "v0.6.7";
+local VERSION_DATE = 1760800000;
 
 
 local addonName, addon = ...
@@ -43,6 +43,7 @@ local DefaultValues = {
     UseCustomBindings = false,
     PrimaryControlKey = 1,                      --1: Space  2:Interact Key
     ScrollDownThenAcceptQuest = false,
+    EscapeToDeclineQuest = false,
     RightClickToCloseUI = true,
     CycleRewardHotkeyEnabled = false,           --Press Tab to cycle through choosable rewards
     DisableHotkeyForTeleport = false,           --Disable gossip hotkey when select teleportation

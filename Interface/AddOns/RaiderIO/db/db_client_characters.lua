@@ -1,5 +1,5 @@
 --
--- RaiderIO Client Data. Generated on Wed Jul 23 2025 17:31:59 GMT+0000 (Coordinated Universal Time)
+-- RaiderIO Client Data. Generated on Sun Oct 19 2025 21:30:21 GMT+0000 (Coordinated Universal Time)
 --
 local _, ns = ...
 ns.CLIENT_CHARACTERS = {
@@ -13,48 +13,48 @@ ns.CLIENT_CHARACTERS = {
     },
     ["mythic_keystone"] = {
       ["all"] = {
-        ["score"] = 2795.8,
-        ["color"] = "#357cd0",
+        ["score"] = 2227,
+        ["color"] = "#5ec580",
         ["best"] = {
-          ["zone_id"] = 14882,
+          ["zone_id"] = 16104,
           ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.991,
-          ["score"] = 380.34183253188206,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/13671771-13-darkflame-cleft?utm_source=client"
+          ["fraction"] = 0.842,
+          ["score"] = 385.9385039970467,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/23698488-13-ecodome-aldani?utm_source=client"
         },
         ["bestRun"] = {
-          ["zone_id"] = 14882,
+          ["zone_id"] = 16104,
           ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.991,
-          ["score"] = 380.34183253188206,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/13671771-13-darkflame-cleft?utm_source=client"
+          ["fraction"] = 0.842,
+          ["score"] = 385.9385039970467,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/23698488-13-ecodome-aldani?utm_source=client"
         },
         ["bestFortified"] = {
-          ["zone_id"] = 15452,
-          ["level"] = 11,
-          ["upgrades"] = 1,
-          ["fraction"] = 0.834,
-          ["score"] = 341.21525427322274,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/9758975-11-operation-floodgate?utm_source=client"
-        },
-        ["bestTyrannical"] = {
-          ["zone_id"] = 14882,
+          ["zone_id"] = 16104,
           ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.991,
-          ["score"] = 380.34183253188206,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/13671771-13-darkflame-cleft?utm_source=client"
+          ["fraction"] = 0.842,
+          ["score"] = 385.9385039970467,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/23698488-13-ecodome-aldani?utm_source=client"
+        },
+        ["bestTyrannical"] = {
+          ["zone_id"] = 12831,
+          ["level"] = 10,
+          ["upgrades"] = 1,
+          ["fraction"] = 0.928,
+          ["score"] = 322.6998452367752,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/8581317-10-halls-of-atonement?utm_source=client"
         },
         ["runs"] = {
           {
             ["zone_id"] = 14882,
-            ["level"] = 13,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.991,
-            ["score"] = 380.34183253188206,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/13671771-13-darkflame-cleft?utm_source=client"
+            ["level"] = 0,
+            ["upgrades"] = 0,
+            ["fraction"] = 0,
+            ["score"] = 0,
+            ["url"] = nil
           },
           {
             ["zone_id"] = 14883,
@@ -66,27 +66,27 @@ ns.CLIENT_CHARACTERS = {
           },
           {
             ["zone_id"] = 14938,
-            ["level"] = 11,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.88,
-            ["score"] = 339.49377771038354,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/9669312-11-the-rookery?utm_source=client"
-          },
-          {
-            ["zone_id"] = 14954,
-            ["level"] = 12,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.973,
-            ["score"] = 366.0264164666409,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/11378459-12-priory-of-the-sacred-flame?utm_source=client"
-          },
-          {
-            ["zone_id"] = 14971,
             ["level"] = 0,
             ["upgrades"] = 0,
             ["fraction"] = 0,
             ["score"] = 0,
             ["url"] = nil
+          },
+          {
+            ["zone_id"] = 14954,
+            ["level"] = 10,
+            ["upgrades"] = 0,
+            ["fraction"] = 1.018,
+            ["score"] = 304.31961779580615,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/5879821-10-priory-of-the-sacred-flame?utm_source=client"
+          },
+          {
+            ["zone_id"] = 14971,
+            ["level"] = 6,
+            ["upgrades"] = 2,
+            ["fraction"] = 0.629,
+            ["score"] = 243.91863321796518,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/5879737-6-the-dawnbreaker?utm_source=client"
           },
           {
             ["zone_id"] = 14979,
@@ -98,36 +98,58 @@ ns.CLIENT_CHARACTERS = {
           },
           {
             ["zone_id"] = 15093,
-            ["level"] = 0,
-            ["upgrades"] = 0,
-            ["fraction"] = 0,
-            ["score"] = 0,
-            ["url"] = nil
+            ["level"] = 8,
+            ["upgrades"] = 1,
+            ["fraction"] = 0.927,
+            ["score"] = 277.7525556649393,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/6514019-8-arakara-city-of-echoes?utm_source=client"
           },
           {
             ["zone_id"] = 15103,
-            ["level"] = 11,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.958,
-            ["score"] = 336.56479760969086,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/10759276-11-cinderbrew-meadery?utm_source=client"
-          },
-          {
-            ["zone_id"] = 15452,
-            ["level"] = 11,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.834,
-            ["score"] = 341.21525427322274,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-2/9758975-11-operation-floodgate?utm_source=client"
-          },
-          {
-            ["zone_id"] = 16104,
             ["level"] = 0,
             ["upgrades"] = 0,
             ["fraction"] = 0,
             ["score"] = 0,
             ["url"] = nil
+          },
+          {
+            ["zone_id"] = 15452,
+            ["level"] = 12,
+            ["upgrades"] = 1,
+            ["fraction"] = 0.876,
+            ["score"] = 369.6534475787216,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/23704572-12-operation-floodgate?utm_source=client"
+          },
+          {
+            ["zone_id"] = 16104,
+            ["level"] = 13,
+            ["upgrades"] = 1,
+            ["fraction"] = 0.842,
+            ["score"] = 385.9385039970467,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-tww-3/23698488-13-ecodome-aldani?utm_source=client"
           }
+        }
+      }
+    }
+  },
+  ["Quiproquo-Uldaman"] = {
+    ["profile"] = {
+      ["name"] = "Quiproquo",
+      ["realm"] = "Uldaman",
+      ["faction"] = "alliance",
+      ["race"] = 1,
+      ["class"] = 4
+    },
+    ["mythic_keystone"] = {
+      ["all"] = {
+        ["score"] = 0,
+        ["color"] = "#ffffff",
+        ["best"] = nil,
+        ["bestRun"] = nil,
+        ["bestFortified"] = nil,
+        ["bestTyrannical"] = nil,
+        ["runs"] = {
+
         }
       }
     }

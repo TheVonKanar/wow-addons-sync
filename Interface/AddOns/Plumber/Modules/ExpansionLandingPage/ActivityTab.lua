@@ -54,7 +54,7 @@ do  --Checklist Button
             if self.completed then
                 self.Icon:SetAtlas("checkmark-minimal-disabled");
             elseif data.icon then
-                if data.itemID then
+                if data.itemID or data.useItemIcon then
                     self.Icon:SetTexCoord(6/64, 58/64, 6/64, 58/64);
                 else
                     self.Icon:SetTexCoord(0, 1, 0, 1);
@@ -215,25 +215,33 @@ do  --Checklist Button
             end
         else
             local data = ActivityUtil.GetActivityData(self.dataIndex);
-            if data and data.tooltip then
-                TooltipUpdator:SetFocusedObject(self);
-                TooltipUpdator:SetHeaderText(self.Name:GetText());
-                local tooltipLines = {};
+            if data then
+                if data.tooltip or data.children then
+                    TooltipUpdator:SetFocusedObject(self);
+                    TooltipUpdator:SetHeaderText(self.Name:GetText());
+                    local tooltipLines = {};
 
-                if data.completed then
-                    table.insert(tooltipLines, string.format("|cff808080%s|r", L["Completed"]));
-                    table.insert(tooltipLines, " ");
+                    if data.children and data.addChildrenToTooltip then
+                        TooltipUpdator:RequestEntryChildren(data.children);
+                    else
+                        if data.completed then
+                            table.insert(tooltipLines, string.format("|cff808080%s|r", L["Completed"]));
+                            table.insert(tooltipLines, " ");
+                        end
+                    end
+
+                    if data.tooltip then
+                        table.insert(tooltipLines, data.tooltip);
+                    end
+
+                    if data.accountwide then
+                        table.insert(tooltipLines, " ");
+                        table.insert(tooltipLines, string.format("|cff00ccff%s|r", L["Warband Weekly Reward Tooltip"]));
+                    end
+
+                    TooltipUpdator:RequestTooltipLines(tooltipLines);
+                    TooltipUpdator:RequestTooltipSetter(data.tooltipSetter);
                 end
-
-                table.insert(tooltipLines, data.tooltip);
-
-                if data.accountwide then
-                    table.insert(tooltipLines, " ");
-                    table.insert(tooltipLines, string.format("|cff00ccff%s|r", L["Warband Weekly Reward Tooltip"]));
-                end
-
-                TooltipUpdator:RequestTooltipLines(tooltipLines);
-                TooltipUpdator:RequestTooltipSetter(data.tooltipSetter);
             end
         end
     end
@@ -265,6 +273,7 @@ do
         "QUEST_TURNED_IN",
         --"LOOT_CLOSED",       --Looting some items triggers hidden quest flag, but the quest events don't fire
         "ZONE_CHANGED_NEW_AREA",
+        "BAG_UPDATE_DELAYED",
     };
 
     local OptionalEvents = {
@@ -364,7 +373,7 @@ do
     function ActivityTabMixin:OnEvent(event, ...)
         if event == "QUEST_LOG_UPDATE" then
             self:RequestUpdate();
-        elseif event == "QUEST_REMOVED" or event == "QUEST_ACCEPTED" or event == "QUEST_TURNED_IN" or event == "QUESTLINE_UPDATE" or event == "UPDATE_FACTION" then
+        elseif event == "QUEST_REMOVED" or event == "QUEST_ACCEPTED" or event == "QUEST_TURNED_IN" or event == "QUESTLINE_UPDATE" or event == "UPDATE_FACTION" or event == "BAG_UPDATE_DELAYED" then
             self:RequestUpdate(true);
         elseif event == "ZONE_CHANGED_NEW_AREA" then
             self:UpdateMap(true);

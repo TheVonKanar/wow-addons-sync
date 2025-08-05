@@ -9,6 +9,73 @@ Addon.data.chores.choresWarWithin = {
     minimumLevel = 70,
     categories = {
         {
+            key = 'patch_11_2_0',
+            minimumLevel = 70,
+            quests = {
+                {
+                    key = 'worldBoss',
+                    minimumLevel = 80,
+                    oncePerAccount = true,
+                    entries = {
+                        { quest = 87352, actualQuest = 87354 }, -- The Main Event
+                    },
+                },
+                {
+                    key = 'ecologicalSuccession',
+                    minimumLevel = 70,
+                    entries = {
+                        { quest = 85460 },
+                    },
+                },
+                {
+                    key = 'makingDeposit',
+                    minimumLevel = 80,
+                    pick = 4,
+                    entries = {
+                        { quest = 89062 }, -- Devourer Attack: The Atrium
+                        { quest = 89061 }, -- Devourer Attack: Eco-dome: Primus
+                        { quest = 85722 }, -- Devourer Attack: The Oasis
+                        { quest = 89063 }, -- Devourer Attack: Tazavesh
+                    }
+                },
+                {
+                    key = 'moreThanPhase',
+                    minimumLevel = 80,
+                    requiredQuest = 89345, -- The Untethered Horror
+                    entries = {
+                        { quest = 91093 }, -- More Than Just a Phase
+                    }
+                },
+                {
+                    key = 'specialAssignment',
+                    minimumLevel = 80,
+                    entries = {
+                        {
+                            quest = 89293, -- Overshadowed
+                            unlockQuest = 91193, -- Capstone 1 - Unlock
+                        },
+                        {
+                            quest = 89294, -- Aligned Views
+                            unlockQuest = 91203, -- Capstone 2 - Unlock
+                        },
+                    },
+                },
+                {
+                    key = 'warrant',
+                    minimumLevel = 80,
+                    -- oncePerAccount = true, -- rewards suck?
+                    entries = {
+                        { quest = 90122, unlockQuest = 87345 }, -- Eliminate Xy'vox the Twisted
+                        { quest = 90123, unlockQuest = 87343 }, -- Eliminate Hollowbane
+                        { quest = 90124, unlockQuest = 87001 }, -- Eliminate Shatterpulse
+                        { quest = 90125, unlockQuest = 87546 }, -- Eliminate Purple Peat
+                        { quest = 90126, unlockQuest = 87405 }, -- Eliminate Grubber
+                        { quest = 90127, unlockQuest = 89490 }, -- Eliminate Arcana-Monger So'zer
+                    },
+                }
+            },
+        },
+        {
             key = 'patch_11_1_5',
             minimumLevel = 70,
             quests = {
@@ -40,7 +107,16 @@ Addon.data.chores.choresWarWithin = {
             minimumLevel = 80,
             quests = {
                 {
+                    key = 'worldBoss',
+                    minimumLevel = 80,
+                    oncePerAccount = true,
+                    entries = {
+                        { quest = 89401, actualQuest = 85088 }, -- The Main Event
+                    },
+                },
+                {
                     key = 'cartelChoose',
+                    oncePerAccount = true,
                     minimumLevel = 80,
                     entries = {
                         { quest = 84948 }, -- Contract Work
@@ -48,28 +124,44 @@ Addon.data.chores.choresWarWithin = {
                     },
                 },
                 {
+                    key = 'chettGet',
+                    checkKey = 'chett',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest = 5000002 },
+                    },
+                },
+                {
                     key = 'chett',
                     minimumLevel = 80,
                     need = 4,
                     pick = 8,
-                    requiredQuest = 87296,
+                    requiredQuest = 5000001,
                     preEntries = {
-                        { quest = 87296 }, -- C.H.E.T.T. List
+                        { quest = 5000002 },
                     },
                     entries = {
-                        { quest = 86915, unlockQuest = 87296 }, -- Side with a Cartel
-                        { quest = 86919, unlockQuest = 87296 }, -- Side Gig
-                        { quest = 87304, unlockQuest = 87296 }, -- Time to Vacate [Excavation Site 9]
-                        { quest = 87303, unlockQuest = 87296 }, -- Clean the Sidestreets [Sidestreet Sluice]
-                        { quest = 87305, unlockQuest = 87296 }, -- Desire to D.R.I.V.E. [2x race]
-                        { quest = 87302, unlockQuest = 87296 }, -- Rare Rivals [3x rare]
-                        { quest = 86924, unlockQuest = 87296 }, -- Gotta Catch at Least a Few [5x battle pet]
-                        { quest = 86920, unlockQuest = 87296 }, -- War Mode Violence [5x war mode kill]
-                        { quest = 86917, unlockQuest = 87296 }, -- Ship Right [10x job]
-                        { quest = 87307, unlockQuest = 87296 }, -- Garbage Day [25x trash]
-                        { quest = 87306, unlockQuest = 87296 }, -- Kaja Cruising [50x car can]
-                        { quest = 86923, unlockQuest = 87296 }, -- Go Fish [50x fishing]
-                        { quest = 86918, unlockQuest = 87296 }, -- Reclaimed Scrap [100x empty can]
+                        { quest = 86915 }, -- Side with a Cartel
+                        { quest = 86919 }, -- Side Gig
+                        { quest = 87304 }, -- Time to Vacate [Excavation Site 9]
+                        { quest = 87303 }, -- Clean the Sidestreets [Sidestreet Sluice]
+                        { quest = 87305 }, -- Desire to D.R.I.V.E. [2x race]
+                        { quest = 87302 }, -- Rare Rivals [3x rare]
+                        { quest = 86924 }, -- Gotta Catch at Least a Few [5x battle pet]
+                        { quest = 86920 }, -- War Mode Violence [5x war mode kill]
+                        { quest = 86917 }, -- Ship Right [10x job]
+                        { quest = 87307 }, -- Garbage Day [25x trash]
+                        { quest = 87306 }, -- Kaja Cruising [50x car can]
+                        { quest = 86923 }, -- Go Fish [50x fishing]
+                        { quest = 86918 }, -- Reclaimed Scrap [100x empty can]
+                    },
+                },
+                {
+                    key = 'chettTurnIn',
+                    checkKey = 'chett',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest = 5000003 },
                     },
                 },
                 {
@@ -125,7 +217,7 @@ Addon.data.chores.choresWarWithin = {
                         { quest = 86177 }, -- Side Gig: The Tides Provide
                         { quest = 85962 }, -- Side Gig: Unseemly Reagents
                     },
-                }
+                },
             },
         },
         {
@@ -201,9 +293,16 @@ Addon.data.chores.choresWarWithin = {
                     }
                 },
                 {
+                    key = 'delversBounty',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest=86371, item=248142 },
+                    },
+                },
+                {
                     key = 'delveArchaic',
                     minimumLevel = 70,
-                    accountWide = true,
+                    oncePerAccount = true,
                     entries = {
                         { quest=84370, item=227794 },
                     },
@@ -220,10 +319,10 @@ Addon.data.chores.choresWarWithin = {
                     minimumLevel = 80,
                     groupSameItem = true,
                     entries = {
-                        { quest=84736, item=235531 }, -- Restored Coffer Key
-                        { quest=84737, item=235531 }, -- Restored Coffer Key
-                        { quest=84738, item=235531 }, -- Restored Coffer Key
-                        { quest=84739, item=235531 }, -- Restored Coffer Key
+                        { quest=91175, item=238526 }, -- Restored Coffer Key
+                        { quest=91176, item=238526 }, -- Restored Coffer Key
+                        { quest=91177, item=238526 }, -- Restored Coffer Key
+                        { quest=91178, item=238526 }, -- Restored Coffer Key
                     },
                 },
                 {
@@ -257,6 +356,10 @@ Addon.data.chores.choresWarWithin = {
                         { quest = 87417 }, -- Worldsoul: Dungeons
                         { quest = 82453 }, -- Worldsoul: Encore!
                         { quest = 82516 }, -- Worldsoul: Forging a Pact
+                        { quest = 89514 }, -- Worldsoul: Horrific Visions Revisited
+                        { quest = 91855 }, -- Worldsoul: K'aresh World Quests
+                        { quest = 89502 }, -- Worldsoul: Nightfall
+                        { quest = 91052 }, -- Worldsoul: Overcharged Delves
                         { quest = 82458 }, -- Worldsoul: Renown
                         { quest = 82482 }, -- Worldsoul: Snuffling
                         { quest = 82483 }, -- Worldsoul: Spreading the Light

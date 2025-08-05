@@ -5165,10 +5165,16 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "overEnergize",
+        display = L["Over Energize"],
+        type = "number",
+        init = "arg",
+        store = true,
+        conditionType = "number",
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ENERGIZE")
         end
-      }, -- unknown argument for _ENERGIZE ignored
+      },
       {
         name = "powerType",
         display = L["Power Type"],
@@ -5187,7 +5193,7 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and (trigger.subeventSuffix == "_ENERGIZE" or trigger.subeventSuffix == "_DRAIN" or trigger.subeventSuffix == "_LEECH")
+          return trigger.subeventSuffix and (trigger.subeventSuffix == "_DRAIN" or trigger.subeventSuffix == "_LEECH")
         end,
         store = true,
         conditionType = "number"
@@ -7504,11 +7510,13 @@ Private.event_prototypes = {
     progressType = "timed",
     triggerFunction = function(trigger)
       local ret = [[return
-      function (states)
+      function (states, event, slotId)
         local totemType = %s;
         local triggerTotemName = %q
         local triggerTotemPattern = %q
         local triggerTotemPatternOperator = %q
+        local triggerSpellId = %s
+        local followoverride = %s
         local triggerTotemIcon = %s
         local triggerTotemIconOperator = %q
         local clone = %s
@@ -7520,7 +7528,12 @@ Private.event_prototypes = {
         end
 
         if (totemType) then -- Check a specific totem slot
-          local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
+          if slotId and event == "PLAYER_TOTEM_UPDATE" and totemType ~= slotId then
+            -- PLAYER_TOTEM_UPDATE for a different slot
+            return false
+          end
+
+          local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
 
           if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -7528,6 +7541,10 @@ Private.event_prototypes = {
           end
 
           if not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator) then
+            active = false
+          end
+
+          if not Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverride) then
             active = false
           end
 
@@ -7554,15 +7571,18 @@ Private.event_prototypes = {
             state.progressType = "timed";
             state.duration = duration;
             state.expirationTime = startTime and (startTime + duration);
+            state.modRate = modRate
+            state.spellId = spellId
             state.icon = icon;
           end
         elseif inverse then -- inverse without a specific slot
           local found = false;
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(i);
             if ((startTime and startTime ~= 0)
               and Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
               and Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
+              and Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverride)
             ) then
               found = true;
             end
@@ -7577,13 +7597,14 @@ Private.event_prototypes = {
           if (triggerTotemName) then
             state.icon = Private.ExecEnv.GetSpellIcon(triggerTotemName)
           end
-        else -- check all slots
+        else -- cloning, check all slots
           for i = 1, 5 do
-            local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            local _, totemName, startTime, duration, icon, modRate, spellId = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
             if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
               or not Private.ExecEnv.CheckTotemIcon(icon, triggerTotemIcon, triggerTotemIconOperator)
+              or not Private.ExecEnv.CheckTotemSpellId(spellId, triggerSpellId, followoverride)
             then
               active = false;
             end
@@ -7606,6 +7627,8 @@ Private.event_prototypes = {
               state.totemName = totemName;
               state.progressType = "timed";
               state.duration = duration;
+              state.modRate = modRate
+              state.spellId = spellId
               state.expirationTime = startTime and (startTime + duration);
               state.icon = icon;
             end
@@ -7622,6 +7645,8 @@ Private.event_prototypes = {
         trigger.use_totemName and totemName or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
+        WeakAuras.IsRetail() and trigger.use_totemSpellId and trigger.totemSpellId or "nil",
+        WeakAuras.IsRetail() and not trigger.use_ignoreoverride and "true" or "false",
         trigger.use_icon and trigger.icon or "nil",
         trigger.use_icon and trigger.icon_operator or "",
         trigger.use_clones and "true" or "false",
@@ -7651,6 +7676,23 @@ Private.event_prototypes = {
         type = "longstring",
       },
       {
+        name = "totemSpellId",
+        display = L["Spell Id"],
+        type = "spell",
+        conditionType = "number",
+        operator_types = "only_equal",
+        enable = WeakAuras.IsRetail(),
+      },
+      {
+        name = "ignoreoverride",
+        display = L["Ignore Spell Override"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return trigger.use_totemSpellId and WeakAuras.IsRetail()
+        end,
+      },
+      {
         name = "icon",
         display = L["Totem Icon"],
         type = "number",
@@ -7659,11 +7701,17 @@ Private.event_prototypes = {
         store = true,
       },
       {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
         name = "clones",
         display = L["Clone per Match"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return not trigger.use_totemType end,
+        enable = function(trigger) return not (trigger.use_totemType or trigger.use_inverse) end,
       },
       {
         name = "remaining",
@@ -7671,13 +7719,6 @@ Private.event_prototypes = {
         type = "number",
         enable = function(trigger) return not(trigger.use_inverse) end
       },
-      {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
-        test = "true",
-        enable = function(trigger) return (trigger.use_totemName or trigger.use_totemNamePattern) and not trigger.use_clones end
-      }
     },
     automaticrequired = true
   },
@@ -7708,7 +7749,7 @@ Private.event_prototypes = {
         if not exactSpellMatch and tonumber(itemName) then
           itemName = itemId
         end
-        local count = C_Item.GetItemCount(itemName or "", %s, %s, %s, %s);
+        local count = C_Item.GetItemCount(itemName or "", %s, %s, nil, %s);
         local reagentQuality, reagentQualityTexture
         if WeakAuras.IsRetail() and itemName then
           reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
@@ -7722,7 +7763,6 @@ Private.event_prototypes = {
         trigger.use_exact_itemName and "true" or "nil",
         trigger.use_includeBank and "true" or "nil",
         trigger.use_includeCharges and "true" or "nil",
-        WeakAuras.IsRetail() and trigger.use_includeReagentBank and "true" or "nil",
         WeakAuras.IsRetail() and trigger.use_includeWarBandBank and "true" or "nil"
       )
     end,
@@ -7760,13 +7800,6 @@ Private.event_prototypes = {
         display = L["Include Bank"],
         type = "toggle",
         test = "true"
-      },
-      {
-        name = "includeReagentBank",
-        display = L["Include Reagent Bank"],
-        type = "toggle",
-        test = "true",
-        enable = WeakAuras.IsRetail(),
       },
       {
         name = "includeWarBandBank",

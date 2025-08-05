@@ -49,5 +49,25 @@ KrowiAF.BuildVersionData.TheWarWithin = { -- 11
                 },
             }
         },
+        { -- 11.2
+            Minor = 2,
+            Patches = {
+                { -- 11.2.0
+                    Patch = 0,
+                    BuildVersionId = "110200",
+                    Name = addon.L["Ghosts of K'aresh"]
+                },
+                { -- 11.2.5
+                    Patch = 5,
+                    BuildVersionId = "110205",
+                    Name = addon.L["Legion Remix"]
+                },
+                -- { -- 11.1.7
+                --     Patch = 7,
+                --     BuildVersionId = "110107",
+                --     Name = addon.L["Legacy of Arathor"]
+                -- },
+            }
+        },
 	},
 };

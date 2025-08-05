@@ -184,6 +184,8 @@ L["Primary Control Key"] = "确认键";
 L["Primary Control Key Desc"] = "按下此按钮将自动选择第一个最佳选项，例如接受任务。"
 L["Press Button To Scroll Down"] = "按确认键来向下滚屏";
 L["Press Button To Scroll Down Desc"] = "如果当前页面盛不下所有任务文本，按下确认键会向下滚屏而不是接受任务。";
+L["Press Escape To Decline Quest"] = "按Esc键拒绝任务";
+L["Press Escape To Decline Quest Desc"] = "在你浏览任务详情时，如果该NPC还有其他对话选项，按Esc键会尝试返回上一级而不是直接关闭对话界面。";
 L["Right Click To Close UI"] = "右键关闭界面";
 L["Right Click To Close UI Desc"] = "在对话界面上按右键即可关闭窗口。";
 L["Press Tab To Select Reward"] = "按Tab键选择任务奖励";
@@ -325,6 +327,18 @@ L["Instruction Open Settings Keybind Format"] = "在对话界面可见时按 [%s
 L["Instruction Open Settings No Keybind"] = "你未设定打开设置界面的快捷键";
 L["HelpTip Warband Completed Quest"] = "这个图标表示你战团里的角色完成过此任务。";
 L["Got It"] = "我悟了";     --HELP_TIP_BUTTON_GOT_IT
+L["Open Settings"] = "打开设置界面";
+
+--AddOn Compatibility for Language Translator
+L["Translator"] = "翻译器";
+L["Translator Source"] = "来源：";
+L["Translator No Quest Data Format"] = "未找到条目 [Quest: %s]";
+L["Translator Click To Hide Translation"] = "点击以隐藏翻译";
+L["Translator Click To Show Translation"] = "点击以显示翻译";
+
+--AddOn Compatibility for Voiceover AddOns
+L["VO Provider Format"] = "|cffffffff%s|r 正在管理语音。";
+L["VO No File Format"] = "|cffffffff%s|r 无法找到相关的语音文件。";
 
 --DO NOT TRANSLATE
 L["Abbrev Breakpoint 1000"] = "千";     --1,000 = 1K

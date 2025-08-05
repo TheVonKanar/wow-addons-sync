@@ -1,4 +1,4 @@
--- Generated from CurseForge on Wed Jul 23 09:06:37 UTC 2025
+-- Generated from CurseForge on Sun Oct 19 21:03:39 UTC 2025
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("zhTW") then
@@ -397,8 +397,16 @@ L["RAID_BOSS_SOD_7"] = "首創者的守護者"
 L["RAID_BOSS_SOD_8"] = "述命者羅卡洛"
 L["RAID_BOSS_SOD_9"] = "科爾蘇加德"
 L["RAID_BOSS_ToES_1"] = "豐泉守衛者"
+--[[Translation missing --]]
+--[[ L["RAID_BOSS_TOES_1"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["RAID_BOSS_TOES_2"] = ""--]] 
 L["RAID_BOSS_ToES_2"] = "楚龍"
 L["RAID_BOSS_ToES_3"] = "蕾希"
+--[[Translation missing --]]
+--[[ L["RAID_BOSS_TOES_3"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["RAID_BOSS_TOES_4"] = ""--]] 
 L["RAID_BOSS_ToES_4"] = "恐懼之煞"
 L["RAID_BOSS_TOTFW_1"] = "風之議會"
 L["RAID_BOSS_TOTFW_2"] = "奧拉基爾"
@@ -438,6 +446,8 @@ L["RAID_MSV"] = "魔古山寶庫"
 L["RAID_NP"] = "奈幽巴宮殿"
 L["RAID_RS"] = "晶紅聖所"
 L["RAID_ToES"] = "豐泉臺"
+--[[Translation missing --]]
+--[[ L["RAID_TOES"] = ""--]] 
 L["RAID_TOTFW"] = "四風王座"
 L["RAIDERIO_AVERAGE_PLAYER_SCORE"] = "時限內%s層的平均分數"
 L["RAIDERIO_BEST_RUN"] = "Raider.IO M+最佳紀錄"

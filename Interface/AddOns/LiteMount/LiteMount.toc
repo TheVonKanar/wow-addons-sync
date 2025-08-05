@@ -1,6 +1,6 @@
-## Interface: 110107, 50507, 40402
+## Interface: 110205, 50501
 ## Title: LiteMount
-## Version: 11.1.7-2
+## Version: 11.2.5-6
 ## Author: Xodiv-Nagrand
 ## Email: mib@post.com
 ## IconTexture: 132247
@@ -32,8 +32,9 @@ TableUtil.lua
 Print.lua
 
 
+MountDB\MountDB.xml
+
 SpellInfo.lua
-FamilyInfo.lua
 Environment.lua
 Options.lua
 SecureAction.lua

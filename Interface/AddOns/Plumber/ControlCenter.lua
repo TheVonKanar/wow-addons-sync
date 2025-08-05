@@ -15,6 +15,7 @@ local LEFT_SECTOR_WIDTH = math.floor(0.618*FRAME_WIDTH + 0.5);
 
 local CATEGORY_ORDER = {
     --Must match the keys in the localization
+    [-1] = "Timerunning",
 
     [0] = "Unknown",    --Used during development
 
@@ -424,12 +425,23 @@ local function CreateUI()
     parent.CategoryButtons = {};
 
     local function Checkbox_OnEnter(self)
-        description:SetText(self.data.description);
+        local desc = self.data.description;
+        local additonalDesc = self.data.descriptionFunc and self.data.descriptionFunc() or nil;
+        if additonalDesc then
+            if desc then
+                desc = desc.."\n\n"..additonalDesc;
+            else
+                desc = additonalDesc;
+            end
+        end
+        description:SetText(desc);
+
         if self.parentDBKey then
             preview:SetTexture("Interface/AddOns/Plumber/Art/ControlCenter/Preview_"..self.parentDBKey);
         else
             preview:SetTexture("Interface/AddOns/Plumber/Art/ControlCenter/Preview_"..self.dbKey);
         end
+
         SelectionTexture:ClearAllPoints();
         SelectionTexture:SetPoint("LEFT", self, "LEFT", -PADDING, 0);
         SelectionTexture:Show();
@@ -677,6 +689,16 @@ function ControlCenter:InitializeModules()
     local db = PlumberDB;
     local enabled, isForceEnabled;
 
+    local timerunningSeason = API.GetTimerunningSeason();
+
+    for _, moduleData in pairs(self.modules) do
+        if moduleData.timerunningSeason and moduleData.timerunningSeason ~= timerunningSeason then
+            moduleData.validityCheck = function()
+                return false
+            end;
+        end
+    end
+
     for _, moduleData in pairs(self.modules) do
         isForceEnabled = false;
         if (not moduleData.validityCheck) or (moduleData.validityCheck()) then
@@ -763,7 +785,7 @@ ControlCenter:SetScript("OnEvent", function(self, event, ...)
 end);
 
 ControlCenter:SetScript("OnShow", function(self)
-    local hideBackground = true;
+    local hideBackground = SettingsPanel and SettingsPanel:IsShown();
     self:ShowUI(hideBackground);
 end);
 
@@ -794,7 +816,6 @@ do
     addon.CallbackRegistry:Register("NewDBKeysAdded", function(newDBKeys)
         ControlCenter.newDBKeys = newDBKeys;
     end);
-
 
     local function ToggleFunc_EnableNewByDefault(state)
 

@@ -28,7 +28,7 @@ local L = Core.Locale
 local API_VERSION = 110107
 
 -- Skin Info
-local Version = "11.1.7"
+local Version = "11.2.5"
 local Websites = {
 	"https://github.com/SFX-WoW/Masque_Caith",
 	"https://www.curseforge.com/wow/addons/masque-caith",

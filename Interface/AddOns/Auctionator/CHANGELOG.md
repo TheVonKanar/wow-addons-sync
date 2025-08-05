@@ -1,7 +1,6 @@
 # Auctionator
 
-## [284](https://github.com/Auctionator/Auctionator/tree/284) (2025-07-18)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/283...284) 
+## [299](https://github.com/TheMouseNest/Auctionator/tree/299) (2025-10-21)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/298...299) 
 
-- Fix CBOR serialization on logout  
-- Rework price database storage to use CBOR serialization on logout  
+- Fix for 1.15.8  

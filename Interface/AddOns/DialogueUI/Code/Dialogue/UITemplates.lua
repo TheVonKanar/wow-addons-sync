@@ -476,6 +476,7 @@ function DUIDialogOptionButtonMixin:SetQuestTypeText(questInfo)
             local frameWidth = questTypeFrame:GetContentWidth();
             self.hasQuestType = true;
             self.rightFrameWidth = Round(frameWidth);
+            self:SetButtonText(questInfo.title, true);
         end
 
         local rightIcon = self:GetExtraObject("Warband");
@@ -1259,7 +1260,6 @@ function ItemButtonSharedMixin:FitToName()
 
     if isTruncated and self.dynamicResize then
         --If the name is truncated, increase the button's width by one grid width (repeat once if still being truncated)
-
         local gridTakenX = self.baseGridTakenX + 1;
         local buttonWidth = self:SetWidthByGridTaken(gridTakenX);
 
@@ -1436,6 +1436,11 @@ function DUIDialogItemButtonMixin:UpdatePixel(scale)
 end
 
 function DUIDialogItemButtonMixin:OnClick(button)
+    if button == "RightButton" and addon.GetDBBool("RightClickToCloseUI") then
+        addon.DialogueUI:Hide();
+        return
+    end
+
     local modifiedAction;
     if IsModifiedClick("CHATLINK") then
         modifiedAction = 1;

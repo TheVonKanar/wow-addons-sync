@@ -5,7 +5,8 @@ local swapTracker = CreateFrame("Frame")
 
 function ApplyCursor(targetInventorySlot, associatedTargetBag)
   local location = C_Cursor.GetCursorItem()
-  if location == nil or not C_Item.DoesItemExist(location) or select(6, C_Item.GetItemInfoInstant(C_Item.GetItemID(location))) ~= Enum.ItemClass.Container then
+  -- Handle bags dragged from other equipment slots or items dropped into bags
+  if location == nil or not location:HasAnyLocation() or not C_Item.DoesItemExist(location) or select(6, C_Item.GetItemInfoInstant(C_Item.GetItemID(location))) ~= Enum.ItemClass.Container then
     PutItemInBag(targetInventorySlot)
     return
   end
@@ -229,21 +230,6 @@ local function GetBankInventorySlot(button)
   return BankButtonIDToInvSlotID(button:GetID(), 1)
 end
 
-StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
-  text = CONFIRM_BUY_BANK_SLOT,
-  button1 = YES,
-  button2 = NO,
-  OnAccept = function()
-    PurchaseSlot()
-  end,
-  OnShow = function(self)
-    MoneyFrame_Update(self.moneyFrame, GetBankSlotCost(GetNumBankSlots()))
-  end,
-  hasMoneyFrame = 1,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 local function OnBankSlotClick(self, button)
   if button == "RightButton" then
     addonTable.ItemViewCommon.AddBlizzardBagContextMenu(Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
@@ -254,7 +240,9 @@ local function OnBankSlotClick(self, button)
       ApplyCursor(GetBankInventorySlot(self), Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
     end
   else
-    StaticPopup_Show("Baganator.ConfirmBuyBankSlot")
+    addonTable.Dialogs.ShowMoney(CONFIRM_BUY_BANK_SLOT, GetBankSlotCost(GetNumBankSlots()), YES, NO, function()
+      PurchaseSlot()
+    end)
   end
 end
 
@@ -472,7 +460,6 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     else
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
-    addonTable.Utilities.MasqueRegistration(bb)
     addonTable.Skins.AddFrame("ItemButton", bb, {"containerBag"})
   end
 
@@ -491,7 +478,6 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
   for index = 1, bagSlotsCount do
     local bb = GetCachedBagSlotButton()
     bb.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
-    addonTable.Utilities.MasqueRegistration(bb)
     addonTable.Skins.AddFrame("ItemButton", bb, {"containerBag"})
     bb:UpdateTextures()
     bb.isBag = true

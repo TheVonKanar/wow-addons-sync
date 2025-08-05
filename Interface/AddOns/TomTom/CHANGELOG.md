@@ -1,8 +1,14 @@
 # TomTom
 
-## [v4.0.12-release](https://github.com/jnwhiteh/TomTom/tree/v4.0.12-release) (2025-07-03)
-[Full Changelog](https://github.com/jnwhiteh/TomTom/commits/v4.0.12-release) [Previous Releases](https://github.com/jnwhiteh/TomTom/releases)
+## [v4.0.19-release](https://github.com/jnwhiteh/TomTom/tree/v4.0.19-release) (2025-10-08)
+[Full Changelog](https://github.com/jnwhiteh/TomTom/commits/v4.0.19-release) [Previous Releases](https://github.com/jnwhiteh/TomTom/releases)
 
+- Update TOC for 11.2.5  
+- Initial support for Midnight  
+- Update embedded libraries  
+- Fix remove waypoint  
+- Re-implement dropdowns using MenuUtil  
+- Update TOC for 11.2  
 - Update TOC for Mists  
 - Fix an issue with release  
 - Update for 11.0.7  
@@ -690,11 +696,3 @@
 - I changed things  
 - * Added an option to clear waypoints (set the distance > 0)  
     * Altered the callback system to allow for arbitrary distance callbacks  
-- * Re-working the internals of TomTom yet again.  Tooltips for minimap nodes should work  
-- * Uhh.. return  
-- * Fixed the error upon login  
-    * Added a middle color, which is used for proper shading between good and bad  
-    * Fixed the coloring of the crazy arrow so it properly turns green when you're "Arrived"  
-- * Updated Astrolabe externals  
-- * Reworking of the Waypoints API... callbacks are broken as a result  
-- * Enable a /way command, fix a bunch of things, control-right click works  

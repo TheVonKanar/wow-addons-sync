@@ -1,1155 +1,35 @@
 
 DetailsDataStorage = {
 ["normal"] = {
-[3016] = {
-{
-["time"] = 1741295975,
-["guild"] = "Adasträ",
-["elapsed"] = 390.6070000000182,
-["date"] = "22:19 06/03/25",
-["servertime"] = 1741295976,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 424468344,
-["itemLevel"] = 639.9375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 453662831,
-["itemLevel"] = 632.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 408659312,
-["itemLevel"] = 637.6875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 220943999,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 598241759,
-["itemLevel"] = 640.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 522075584,
-["itemLevel"] = 634.25,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 315515765,
-["itemLevel"] = 633.625,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 459809893,
-["itemLevel"] = 638,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 425124243,
-["itemLevel"] = 636,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 228169282,
-["itemLevel"] = 631.375,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 294686278,
-["itemLevel"] = 627.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 574876026,
-["itemLevel"] = 638.625,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 440664242,
-["itemLevel"] = 633.1875,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 225672419,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 492519053,
-["itemLevel"] = 642,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 325413587,
-["itemLevel"] = 630.25,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 346929288,
-["itemLevel"] = 626.75,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 464239599,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 403906088,
-["itemLevel"] = 633.0625,
-["classId"] = 5,
-},
-},
-},
-{
-["time"] = 1741818837,
-["guild"] = "Adasträ",
-["elapsed"] = 323.4040000000023,
-["date"] = "23:33 12/03/25",
-["servertime"] = 1741818836,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 452668378,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 335402876,
-["itemLevel"] = 637.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 247479000,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 382393164,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 541048656,
-["itemLevel"] = 645.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 479648644,
-["itemLevel"] = 645.625,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 430073607,
-["itemLevel"] = 642.1875,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 387643905,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 383629252,
-["itemLevel"] = 644.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 224391094,
-["itemLevel"] = 648.1875,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 492257545,
-["itemLevel"] = 645,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 540614262,
-["itemLevel"] = 644.6875,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 198649246,
-["itemLevel"] = 637,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 243940109,
-["itemLevel"] = 648.0625,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 520654268,
-["itemLevel"] = 647.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 324457590,
-["itemLevel"] = 644.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 395692272,
-["itemLevel"] = 646.125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 499480785,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 525719020,
-["itemLevel"] = 647.5625,
-["classId"] = 5,
-},
-},
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 531334112,
-["itemLevel"] = 654.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 484847530,
-["itemLevel"] = 647.375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 412417295,
-["itemLevel"] = 649,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 383557156,
-["itemLevel"] = 653.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 206088283,
-["itemLevel"] = 653.75,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 417435372,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 468462745,
-["itemLevel"] = 650.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 461056551,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 184419278,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 464392808,
-["itemLevel"] = 654.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 340312786,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 446036395,
-["itemLevel"] = 655.3125,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 344603328,
-["itemLevel"] = 642.0625,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 521272402,
-["itemLevel"] = 654.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742420843,
-["date"] = "22:47 19/03/25",
-["elapsed"] = 289.7399999999907,
-["servertime"] = 1742420842,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 180030846,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 278776798,
-["itemLevel"] = 647.5,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 397707516,
-["itemLevel"] = 652.9375,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 264931611,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1743025110,
-["elapsed"] = 268.9820000000036,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 510032752,
-["itemLevel"] = 658.5625,
-["classId"] = 7,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 276118578,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Dordok-Ysondre"] = {
-["total"] = 419501149,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 292331442,
-["itemLevel"] = 636.4375,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 440407327,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 213942738,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 499598651,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 496996823,
-["itemLevel"] = 657.75,
-["classId"] = 12,
-},
-["Uztek"] = {
-["total"] = 455024174,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 396321793,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 446146015,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Orlith-KirinTor"] = {
-["total"] = 292686652,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 470173922,
-["itemLevel"] = 654.5,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 404410796,
-["itemLevel"] = 652.6875,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 468310674,
-["itemLevel"] = 656,
-["classId"] = 5,
-},
-},
-["servertime"] = 1743025110,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 299607024,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 309370302,
-["itemLevel"] = 649.3125,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 394178264,
-["itemLevel"] = 660.125,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 230163669,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-},
-["date"] = "22:38 26/03/25",
-},
-{
-["date"] = "22:59 08/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 531956260,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
-},
-["Blackløtus-KirinTor"] = {
-["total"] = 175469722,
-["itemLevel"] = 651.375,
-["classId"] = 11,
-},
-["Villiidøns-Dalaran"] = {
-["total"] = 393724583,
-["itemLevel"] = 633.5,
-["classId"] = 11,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 181619618,
-["itemLevel"] = 641.4375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 512007790,
-["itemLevel"] = 651.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 589777845,
-["itemLevel"] = 665.75,
-["classId"] = 3,
-},
-["Earendor"] = {
-["total"] = 342050699,
-["itemLevel"] = 620.0625,
-["classId"] = 3,
-},
-["Âssahî-Dalaran"] = {
-["total"] = 266860413,
-["itemLevel"] = 636.8125,
-["classId"] = 4,
-},
-},
-["elapsed"] = 339.0460000000894,
-["servertime"] = 1744145976,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 333703014,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 480090065,
-["itemLevel"] = 664,
-["classId"] = 7,
-},
-},
-["time"] = 1744145978,
-},
-},
-[2919] = {
-{
-["date"] = "22:32 26/02/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 204213797,
-["itemLevel"] = 627.5,
-["classId"] = 7,
-},
-["Dordok-Ysondre"] = {
-["total"] = 95001638,
-["itemLevel"] = 623.25,
-["classId"] = 3,
-},
-["Pewpewtre"] = {
-["total"] = 139819380,
-["itemLevel"] = 625.1875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 114004970,
-["itemLevel"] = 619.5,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 140961296,
-["itemLevel"] = 626,
-["classId"] = 1,
-},
-["Kayex"] = {
-["total"] = 116040835,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
-},
-["Erami-Sargeras"] = {
-["total"] = 112101697,
-["itemLevel"] = 633.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 223520331,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 160453515,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 182159708,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 150178377,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 179424599,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-},
-["elapsed"] = 162.5079999999143,
-["servertime"] = 1740605579,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 63636179,
-["itemLevel"] = 632.0666666666667,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 83703032,
-["itemLevel"] = 629.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 124324934,
-["itemLevel"] = 620.4375,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 74901978,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-},
-["time"] = 1740605578,
-},
-},
-[2921] = {
-{
-["date"] = "22:51 26/02/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 347702599,
-["itemLevel"] = 627.5,
-["classId"] = 7,
-},
-["Dordok-Ysondre"] = {
-["total"] = 263732882,
-["itemLevel"] = 623.25,
-["classId"] = 3,
-},
-["Pewpewtre"] = {
-["total"] = 303603464,
-["itemLevel"] = 625.1875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 111556899,
-["itemLevel"] = 619.5,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 381431837,
-["itemLevel"] = 626,
-["classId"] = 1,
-},
-["Kayex"] = {
-["total"] = 227818642,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
-},
-["Erami-Sargeras"] = {
-["total"] = 132087657,
-["itemLevel"] = 633.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 360617127,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 353818399,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 375791847,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 278937890,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 302977861,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-},
-["elapsed"] = 255.6680000000633,
-["servertime"] = 1740606687,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 74122094,
-["itemLevel"] = 632.0666666666667,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 122434008,
-["itemLevel"] = 629.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 175528209,
-["itemLevel"] = 620.4375,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 119365376,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-},
-["time"] = 1740606686,
-},
-},
-[3010] = {
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 268058080,
-["itemLevel"] = 637.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 265281021,
-["itemLevel"] = 633.6875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 223792339,
-["itemLevel"] = 628,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 236851293,
-["itemLevel"] = 629.75,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 206859423,
-["itemLevel"] = 636,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 124999885,
-["itemLevel"] = 626.4375,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 278726888,
-["itemLevel"] = 627.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 299772751,
-["itemLevel"] = 632.25,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 221310120,
-["itemLevel"] = 631.3125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 134028530,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 262412123,
-["itemLevel"] = 635.875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 175467271,
-["itemLevel"] = 627.3125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 147530414,
-["itemLevel"] = 617.1875,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 266970563,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 204624402,
-["itemLevel"] = 631.0625,
-["classId"] = 5,
-},
-},
-["time"] = 1741208572,
-["date"] = "22:02 05/03/25",
-["elapsed"] = 209.49099999998,
-["servertime"] = 1741208572,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 121885255,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 139208679,
-["itemLevel"] = 630.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 203781412,
-["itemLevel"] = 621.8125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 224642810,
-["itemLevel"] = 631.6875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 300518978,
-["itemLevel"] = 645.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 271590386,
-["itemLevel"] = 644.1875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 223349159,
-["itemLevel"] = 642.1875,
-["classId"] = 3,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 110717471,
-["itemLevel"] = 645.3125,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 199871523,
-["itemLevel"] = 644.5,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 230759968,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 241672133,
-["itemLevel"] = 645,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 281106357,
-["itemLevel"] = 643.0625,
-["classId"] = 12,
-},
-["Morkai-Sargeras"] = {
-["total"] = 247026446,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
-},
-["Erami-Sargeras"] = {
-["total"] = 121292340,
-["itemLevel"] = 648.625,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 254902640,
-["itemLevel"] = 647.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 200199604,
-["itemLevel"] = 644.9375,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 203907112,
-["itemLevel"] = 646.125,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 247667646,
-["itemLevel"] = 637,
-["classId"] = 1,
-},
-["Jamelmoignon"] = {
-["total"] = 230830278,
-["itemLevel"] = 647.5625,
-["classId"] = 5,
-},
-},
-["time"] = 1741812273,
-["date"] = "21:44 12/03/25",
-["elapsed"] = 159.5149999999994,
-["servertime"] = 1741812272,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 159505492,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 100220036,
-["itemLevel"] = 636.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 111167314,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 114663401,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 295496363,
-["itemLevel"] = 654.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 250414924,
-["itemLevel"] = 647.375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 201854396,
-["itemLevel"] = 646,
-["classId"] = 3,
-},
-["Putchie"] = {
-["total"] = 202300298,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 211809847,
-["itemLevel"] = 653.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 114686712,
-["itemLevel"] = 653.75,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 248299676,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 290513040,
-["itemLevel"] = 650.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 251417734,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 193738664,
-["itemLevel"] = 646.125,
-["classId"] = 10,
-},
-["Erami-Sargeras"] = {
-["total"] = 94385487,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 185693085,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 283740505,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 179237034,
-["itemLevel"] = 642.6875,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 71691924,
-["itemLevel"] = 654.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742416683,
-["date"] = "21:38 19/03/25",
-["elapsed"] = 148.0530000000726,
-["servertime"] = 1742416684,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 191079921,
-["itemLevel"] = 646.5,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 118502180,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1743021551,
-["elapsed"] = 117.2179999999935,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 266212640,
-["itemLevel"] = 658.5625,
-["classId"] = 7,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 131360836,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 116664046,
-["itemLevel"] = 635.25,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 226898063,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 205252363,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 234289503,
-["itemLevel"] = 657.9375,
-["classId"] = 12,
-},
-["Orlith-KirinTor"] = {
-["total"] = 156035282,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 217757898,
-["itemLevel"] = 656,
-["classId"] = 5,
-},
-["Putchie"] = {
-["total"] = 190639194,
-["itemLevel"] = 658,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 197021099,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 118418675,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 249992105,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 185650604,
-["itemLevel"] = 654.4375,
-["classId"] = 10,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 228234325,
-["itemLevel"] = 661.375,
-["classId"] = 7,
-},
-["Uztek"] = {
-["total"] = 301061951,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 240096923,
-["itemLevel"] = 654.6875,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 169262394,
-["itemLevel"] = 652.6875,
-["classId"] = 13,
-},
-["Dordok-Ysondre"] = {
-["total"] = 193291928,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
-},
-},
-["servertime"] = 1743021551,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 157403166,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 165250950,
-["itemLevel"] = 649.9375,
-["classId"] = 7,
-},
-},
-["date"] = "21:39 26/03/25",
-},
-{
-["time"] = 1744141900,
-["guild"] = "Adasträ",
-["elapsed"] = 178.3269999998156,
-["date"] = "21:51 08/04/25",
-["servertime"] = 1744141898,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 147214934,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 143808822,
-["itemLevel"] = 664,
-["classId"] = 7,
-},
-},
-["DAMAGER"] = {
-["Blackløtus-KirinTor"] = {
-["total"] = 102350231,
-["itemLevel"] = 651.375,
-["classId"] = 11,
-},
-["Âssahî-Dalaran"] = {
-["total"] = 163493829,
-["itemLevel"] = 632.75,
-["classId"] = 4,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 115354666,
-["itemLevel"] = 641.625,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 305860788,
-["itemLevel"] = 651.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 359035692,
-["itemLevel"] = 665.75,
-["classId"] = 3,
-},
-["Earendor"] = {
-["total"] = 189943737,
-["itemLevel"] = 613.375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 299169549,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
-},
-},
-},
-},
 [2898] = {
 {
-["date"] = "22:16 26/02/25",
+["time"] = 1740604576,
 ["guild"] = "Adasträ",
+["elapsed"] = 110.9860000000335,
+["date"] = "22:16 26/02/25",
+["servertime"] = 1740604577,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 93775563,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 64479018,
+["itemLevel"] = 629.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 110405520,
+["itemLevel"] = 620.4375,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 50680679,
+["itemLevel"] = 632.3125,
+["classId"] = 11,
+},
+},
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 163689008,
@@ -1176,10 +56,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 626,
 ["classId"] = 1,
 },
-["Kayex"] = {
-["total"] = 78552438,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
+["Anydâ-Archimonde"] = {
+["total"] = 103226997,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 67384454,
@@ -1206,1088 +86,667 @@ DetailsDataStorage = {
 ["itemLevel"] = 628.5625,
 ["classId"] = 1,
 },
-["Anydâ-Archimonde"] = {
-["total"] = 103226997,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
+["Kayex"] = {
+["total"] = 78552438,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
 },
 },
-["elapsed"] = 110.9860000000335,
-["servertime"] = 1740604577,
+},
+},
+[2902] = {
+{
+["time"] = 1740602296,
+["guild"] = "Adasträ",
+["elapsed"] = 58.50699999998324,
+["date"] = "21:38 26/02/25",
+["servertime"] = 1740602297,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 50680679,
-["itemLevel"] = 632.3125,
-["classId"] = 11,
-},
 ["Amsët"] = {
-["total"] = 64479018,
+["total"] = 32911696,
 ["itemLevel"] = 629.4375,
 ["classId"] = 7,
 },
-["Opøpoî-Dalaran"] = {
-["total"] = 110405520,
-["itemLevel"] = 620.4375,
-["classId"] = 10,
-},
 ["Ässahi-Dalaran"] = {
-["total"] = 93775563,
+["total"] = 34826040,
 ["itemLevel"] = 623.375,
 ["classId"] = 5,
 },
 },
-["time"] = 1740604576,
-},
-},
-[3011] = {
-{
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 355105495,
-["itemLevel"] = 637.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 364271124,
-["itemLevel"] = 633.6875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 280051371,
-["itemLevel"] = 628,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 122915829,
-["itemLevel"] = 629.75,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 263048643,
-["itemLevel"] = 636,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 126686337,
-["itemLevel"] = 626.4375,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 150558762,
-["itemLevel"] = 626.7333333333333,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 363484563,
-["itemLevel"] = 632.25,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 282518606,
-["itemLevel"] = 631.3125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 155724067,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 248822297,
-["itemLevel"] = 635.875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 102880759,
-["itemLevel"] = 627.3125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 259750156,
-["itemLevel"] = 617.1875,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 167116437,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 273036527,
-["itemLevel"] = 631.0625,
-["classId"] = 5,
-},
-},
-["time"] = 1741209609,
-["date"] = "22:20 05/03/25",
-["elapsed"] = 320.1529999999912,
-["servertime"] = 1741209609,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 155660859,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 241659126,
-["itemLevel"] = 630.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 282845156,
-["itemLevel"] = 621.8125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 256168157,
-["itemLevel"] = 631.6875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 272517930,
-["itemLevel"] = 645.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 330717514,
-["itemLevel"] = 644.1875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 223998843,
-["itemLevel"] = 642.1875,
-["classId"] = 3,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 124716685,
-["itemLevel"] = 645.3125,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 225747410,
-["itemLevel"] = 644.5,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 240325670,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 283114015,
-["itemLevel"] = 645,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 258459601,
-["itemLevel"] = 643.0625,
-["classId"] = 12,
-},
-["Morkai-Sargeras"] = {
-["total"] = 268055703,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
-},
-["Erami-Sargeras"] = {
-["total"] = 130850146,
-["itemLevel"] = 648.625,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 191441757,
-["itemLevel"] = 647.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 211393029,
-["itemLevel"] = 644.9375,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 248668145,
-["itemLevel"] = 646.125,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 247765757,
-["itemLevel"] = 637,
-["classId"] = 1,
-},
-["Jamelmoignon"] = {
-["total"] = 286300035,
-["itemLevel"] = 647.5625,
-["classId"] = 5,
-},
-},
-["time"] = 1741813197,
-["date"] = "21:59 12/03/25",
-["elapsed"] = 215.8810000000012,
-["servertime"] = 1741813196,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 154148358,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 200069030,
-["itemLevel"] = 636.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 188556873,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 146712802,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 298160669,
-["itemLevel"] = 654.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 228351491,
-["itemLevel"] = 647.375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 218600465,
-["itemLevel"] = 646,
-["classId"] = 3,
-},
-["Putchie"] = {
-["total"] = 161814368,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 221087268,
-["itemLevel"] = 653.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 105426192,
-["itemLevel"] = 653.75,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 228185845,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 272710675,
-["itemLevel"] = 650.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 267765177,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 194483445,
-["itemLevel"] = 646.125,
-["classId"] = 10,
-},
-["Erami-Sargeras"] = {
-["total"] = 102677229,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 174935209,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 255104206,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 166462618,
-["itemLevel"] = 642.6875,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 316764559,
-["itemLevel"] = 654.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742417272,
-["date"] = "21:47 19/03/25",
-["elapsed"] = 180.9349999999395,
-["servertime"] = 1742417273,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 220501308,
-["itemLevel"] = 646.5,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 205521118,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1743022017,
-["elapsed"] = 162.4449999999924,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 285542400,
-["itemLevel"] = 658.5625,
-["classId"] = 7,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 146448912,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 169809818,
-["itemLevel"] = 635.25,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 235181104,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 209117229,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 289340765,
-["itemLevel"] = 657.9375,
-["classId"] = 12,
-},
-["Orlith-KirinTor"] = {
-["total"] = 157229199,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 258306425,
-["itemLevel"] = 656,
-["classId"] = 5,
-},
-["Putchie"] = {
-["total"] = 232387180,
-["itemLevel"] = 658,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 216744146,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 119823230,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 95690175,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 198354251,
-["itemLevel"] = 654.4375,
-["classId"] = 10,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 236812718,
-["itemLevel"] = 661.375,
-["classId"] = 7,
-},
-["Uztek"] = {
-["total"] = 278724347,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 253258492,
-["itemLevel"] = 654.6875,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 193728807,
-["itemLevel"] = 652.6875,
-["classId"] = 13,
-},
-["Dordok-Ysondre"] = {
-["total"] = 225045657,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
-},
-},
-["servertime"] = 1743022017,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 296392416,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 242209437,
-["itemLevel"] = 649.9375,
-["classId"] = 7,
-},
-},
-["date"] = "21:46 26/03/25",
-},
-{
-["time"] = 1744142423,
-["guild"] = "Adasträ",
-["elapsed"] = 219.2729999998119,
-["date"] = "22:00 08/04/25",
-["servertime"] = 1744142421,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 211481110,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 199786490,
-["itemLevel"] = 664,
-["classId"] = 7,
-},
-},
-["DAMAGER"] = {
-["Blackløtus-KirinTor"] = {
-["total"] = 97620854,
-["itemLevel"] = 651.375,
-["classId"] = 11,
-},
-["Âssahî-Dalaran"] = {
-["total"] = 166760979,
-["itemLevel"] = 632.75,
-["classId"] = 4,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 125915504,
-["itemLevel"] = 641.4375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 331265808,
-["itemLevel"] = 651.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 379738801,
-["itemLevel"] = 665.75,
-["classId"] = 3,
-},
-["Earendor"] = {
-["total"] = 189721314,
-["itemLevel"] = 616.625,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 303075941,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
-},
-},
-},
-},
-[2922] = {
-{
-["date"] = "23:07 26/02/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 201096383,
+["total"] = 110884143,
 ["itemLevel"] = 627.5,
 ["classId"] = 7,
 },
-["Dordok-Ysondre"] = {
-["total"] = 132881833,
-["itemLevel"] = 623.25,
-["classId"] = 3,
-},
-["Pewpewtre"] = {
-["total"] = 242766167,
-["itemLevel"] = 625.1875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 101985988,
-["itemLevel"] = 619.5,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 208228307,
-["itemLevel"] = 626,
-["classId"] = 1,
-},
 ["Kayex"] = {
-["total"] = 101848857,
+["total"] = 60984776,
 ["itemLevel"] = 630.4375,
 ["classId"] = 6,
 },
-["Erami-Sargeras"] = {
-["total"] = 133783700,
-["itemLevel"] = 633.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 162905482,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 169877454,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 179721055,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 215739453,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 169267907,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-},
-["elapsed"] = 277.0349999999162,
-["servertime"] = 1740607668,
-["HEALER"] = {
 ["Putchie"] = {
-["total"] = 89514671,
+["total"] = 52578032,
 ["itemLevel"] = 632.3125,
 ["classId"] = 11,
 },
-["Amsët"] = {
-["total"] = 112295672,
-["itemLevel"] = 629.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 123056026,
-["itemLevel"] = 620.4375,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 135853388,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-},
-["time"] = 1740607669,
-},
-},
-[3012] = {
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 609761478,
-["itemLevel"] = 637.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 573921406,
-["itemLevel"] = 633.6875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 425700958,
-["itemLevel"] = 628,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 458189868,
-["itemLevel"] = 629.75,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 413084110,
-["itemLevel"] = 636,
+["Pewpewtre"] = {
+["total"] = 87546765,
+["itemLevel"] = 625.1875,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 229489165,
-["itemLevel"] = 627.6875,
-["classId"] = 12,
-},
 ["Zroyele"] = {
-["total"] = 481099097,
-["itemLevel"] = 626.7333333333333,
+["total"] = 95173019,
+["itemLevel"] = 626,
 ["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 595967210,
-["itemLevel"] = 633.5,
-["classId"] = 12,
-},
 ["Durnedin-Dalaran"] = {
-["total"] = 435932803,
-["itemLevel"] = 631.3125,
+["total"] = 74336749,
+["itemLevel"] = 622.5625,
 ["classId"] = 2,
 },
-["Erami-Sargeras"] = {
-["total"] = 325548125,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 352280214,
-["itemLevel"] = 635.875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 254832804,
+["Grodar-Archimonde"] = {
+["total"] = 78478312,
 ["itemLevel"] = 628.5625,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 352287775,
-["itemLevel"] = 619.8125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 387033610,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 356121028,
-["itemLevel"] = 631.0625,
-["classId"] = 5,
-},
-},
-["time"] = 1741210584,
-["date"] = "22:36 05/03/25",
-["elapsed"] = 344.3510000000242,
-["servertime"] = 1741210583,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 259724884,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 337190639,
-["itemLevel"] = 630.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 366126978,
-["itemLevel"] = 622.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 399622762,
-["itemLevel"] = 634.125,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["time"] = 1741814168,
-["guild"] = "Adasträ",
-["elapsed"] = 254.4949999999953,
-["date"] = "22:16 12/03/25",
-["servertime"] = 1741814167,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 205390868,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 216149634,
-["itemLevel"] = 637.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 239953129,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 205803616,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 491676896,
-["itemLevel"] = 645.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 412813716,
-["itemLevel"] = 644.1875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 354888160,
-["itemLevel"] = 642.1875,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 400339130,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 386870489,
-["itemLevel"] = 644.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 183673247,
-["itemLevel"] = 645.3125,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 364325601,
-["itemLevel"] = 645,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 488903125,
-["itemLevel"] = 643.0625,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 346385558,
-["itemLevel"] = 637,
 ["classId"] = 1,
 },
 ["Erami-Sargeras"] = {
-["total"] = 157975251,
-["itemLevel"] = 648.0625,
+["total"] = 108769289,
+["itemLevel"] = 633.625,
 ["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 84035272,
+["itemLevel"] = 626.25,
+["classId"] = 13,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 60113361,
+["itemLevel"] = 616.4375,
+["classId"] = 10,
 },
 ["Gydzitt-KhazModan"] = {
-["total"] = 346472313,
-["itemLevel"] = 647.125,
+["total"] = 83368930,
+["itemLevel"] = 633.75,
 ["classId"] = 7,
 },
-["Orlith-KirinTor"] = {
-["total"] = 307360378,
-["itemLevel"] = 644.9375,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 346599832,
-["itemLevel"] = 646.125,
+["Anydâ-Archimonde"] = {
+["total"] = 89323794,
+["itemLevel"] = 623.5625,
 ["classId"] = 9,
 },
 ["Morkai-Sargeras"] = {
-["total"] = 356487742,
-["itemLevel"] = 644.4375,
+["total"] = 100220367,
+["itemLevel"] = 636.875,
 ["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 364993195,
-["itemLevel"] = 647.5625,
-["classId"] = 5,
-},
-},
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 406588377,
-["itemLevel"] = 654.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 325479528,
-["itemLevel"] = 647.375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 271410740,
-["itemLevel"] = 646,
-["classId"] = 3,
-},
-["Putchie"] = {
-["total"] = 291286555,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 315155509,
-["itemLevel"] = 653.5,
-["classId"] = 8,
 },
 ["Øskydh-Archimonde"] = {
-["total"] = 133451761,
-["itemLevel"] = 653.75,
+["total"] = 36960828,
+["itemLevel"] = 619.5,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 294066065,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 341624615,
-["itemLevel"] = 650.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 317411517,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 385853495,
-["itemLevel"] = 646.125,
-["classId"] = 10,
-},
-["Erami-Sargeras"] = {
-["total"] = 126201095,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 309304498,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 336161374,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 221719600,
-["itemLevel"] = 642.6875,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 361958836,
-["itemLevel"] = 654.375,
-["classId"] = 5,
+["Dordok-Ysondre"] = {
+["total"] = 79855785,
+["itemLevel"] = 623.25,
+["classId"] = 3,
 },
 },
-["time"] = 1742417808,
-["date"] = "21:56 19/03/25",
-["elapsed"] = 197.2050000000745,
-["servertime"] = 1742417807,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 183490878,
-["itemLevel"] = 646.5,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 200606528,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
 },
 },
-["guild"] = "Adasträ",
-},
+[3129] = {
 {
 ["guild"] = "Adasträ",
-["time"] = 1743022652,
-["elapsed"] = 193.1360000000132,
+["time"] = 1755804686,
+["elapsed"] = 177.5469999999914,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 357295288,
-["itemLevel"] = 658.5625,
+["total"] = 491915932,
+["itemLevel"] = 691.4375,
 ["classId"] = 7,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 154395525,
-["itemLevel"] = 654.5,
+["Yugekok-Archimonde"] = {
+["total"] = 580156457,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Natariis"] = {
+["total"] = 403981298,
+["itemLevel"] = 688,
 ["classId"] = 1,
 },
-["Juicedmk-Archimonde"] = {
-["total"] = 198101226,
-["itemLevel"] = 635.25,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 362363478,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 289762583,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 400231295,
-["itemLevel"] = 657.75,
+["Øskydh-Archimonde"] = {
+["total"] = 235765037,
+["itemLevel"] = 702.5,
 ["classId"] = 12,
 },
-["Orlith-KirinTor"] = {
-["total"] = 297181180,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 266695927,
-["itemLevel"] = 656,
-["classId"] = 5,
+["Gydzitpala-KhazModan"] = {
+["total"] = 691753292,
+["itemLevel"] = 701.25,
+["classId"] = 2,
 },
 ["Putchie"] = {
-["total"] = 289995614,
-["itemLevel"] = 658,
+["total"] = 559317596,
+["itemLevel"] = 692.625,
 ["classId"] = 11,
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 246587771,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
+["Arrhad"] = {
+["total"] = 638805049,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 495511007,
+["itemLevel"] = 700.625,
+["classId"] = 9,
 },
 ["Kayex"] = {
-["total"] = 127440412,
-["itemLevel"] = 660,
+["total"] = 241678671,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 515604851,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 446183957,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 391327783,
+["itemLevel"] = 670.875,
+["classId"] = 5,
+},
+},
+["servertime"] = 1755804685,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 276589074,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 345429711,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 285671430,
+["itemLevel"] = 688.25,
+["classId"] = 7,
+},
+},
+["date"] = "21:31 21/08/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756409806,
+["elapsed"] = 173.6870000000345,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 359904733,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 569727489,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 570605456,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 587425455,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 269333101,
+["itemLevel"] = 706.5,
 ["classId"] = 6,
 },
 ["Zroyele"] = {
-["total"] = 386062258,
-["itemLevel"] = 657.5,
+["total"] = 471062036,
+["itemLevel"] = 685.625,
 ["classId"] = 1,
 },
-["Opopoi-Dalaran"] = {
-["total"] = 299032429,
-["itemLevel"] = 654.4375,
-["classId"] = 10,
+["Dordok-Ysondre"] = {
+["total"] = 549736256,
+["itemLevel"] = 700.5,
+["classId"] = 3,
 },
 ["Gydzitt-KhazModan"] = {
-["total"] = 376802060,
-["itemLevel"] = 661.375,
+["total"] = 519028905,
+["itemLevel"] = 698.1875,
 ["classId"] = 7,
 },
-["Uztek"] = {
-["total"] = 318803656,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 288459660,
-["itemLevel"] = 654.6875,
+["Arrhad"] = {
+["total"] = 570229918,
+["itemLevel"] = 703.0625,
 ["classId"] = 3,
 },
-["Mescà-Dalaran"] = {
-["total"] = 308945452,
-["itemLevel"] = 652.6875,
-["classId"] = 13,
+["Yugekok-Archimonde"] = {
+["total"] = 617032792,
+["itemLevel"] = 700.5,
+["classId"] = 6,
 },
-["Dordok-Ysondre"] = {
-["total"] = 246958106,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
+["Øskÿ-Archimonde"] = {
+["total"] = 211450836,
+["itemLevel"] = 691,
+["classId"] = 1,
 },
-},
-["servertime"] = 1743022652,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 274552993,
-["itemLevel"] = 660.0625,
+["Anymind-Archimonde"] = {
+["total"] = 412543738,
+["itemLevel"] = 689.375,
 ["classId"] = 5,
 },
-["Amsët"] = {
-["total"] = 234800508,
-["itemLevel"] = 649.9375,
-["classId"] = 7,
 },
-},
-["date"] = "21:57 26/03/25",
-},
-{
-["date"] = "22:10 08/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Blackløtus-KirinTor"] = {
-["total"] = 162598834,
-["itemLevel"] = 651.375,
-["classId"] = 11,
-},
-["Âssahî-Dalaran"] = {
-["total"] = 218085331,
-["itemLevel"] = 633.1875,
-["classId"] = 4,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 203210291,
-["itemLevel"] = 641.4375,
+["servertime"] = 1756409806,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 398394564,
+["itemLevel"] = 704,
 ["classId"] = 2,
 },
-["Pipoteur"] = {
-["total"] = 386001738,
-["itemLevel"] = 651.3125,
-["classId"] = 9,
+["Heliopsis-Archimonde"] = {
+["total"] = 134459381,
+["itemLevel"] = 704.4375,
+["classId"] = 7,
 },
-["Morkai-Sargeras"] = {
-["total"] = 512838318,
-["itemLevel"] = 665.75,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 326210442,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
-},
-["Earendor"] = {
-["total"] = 259832276,
-["itemLevel"] = 616.625,
-["classId"] = 3,
-},
-},
-["elapsed"] = 255.2260000000242,
-["servertime"] = 1744143034,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 172122094,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 247397294,
-["itemLevel"] = 664,
+["Amsët"] = {
+["total"] = 308174011,
+["itemLevel"] = 691.125,
 ["classId"] = 7,
 },
 },
-["time"] = 1744143036,
+["date"] = "21:36 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 556389634,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 539345299,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 527445762,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 545385683,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 545863818,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 162220473,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 621539825,
+["itemLevel"] = 705.875,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 514462726,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 404735383,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 425525269,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 167239662,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 402186113,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 458145921,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 459056770,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 533780797,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756928656,
+["date"] = "21:44 03/09/25",
+["elapsed"] = 132.6389999999665,
+["servertime"] = 1756928655,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 194892225,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 195801428,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 260419255,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3131] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1755805258,
+["elapsed"] = 181.2289999999921,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 760469598,
+["itemLevel"] = 691.4375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 628525424,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Natariis"] = {
+["total"] = 468049975,
+["itemLevel"] = 688,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 274399585,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 756597692,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 658456544,
+["itemLevel"] = 692.625,
+["classId"] = 11,
+},
+["Arrhad"] = {
+["total"] = 666326797,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 537127125,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 270591838,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 606627648,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 744937901,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 403541015,
+["itemLevel"] = 673.3125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1755805257,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 309912218,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 477943292,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 380074328,
+["itemLevel"] = 688.25,
+["classId"] = 7,
+},
+},
+["date"] = "21:40 21/08/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756410300,
+["elapsed"] = 189.6310000000522,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 680132467,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 694035986,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 687079352,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 617653965,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 261618713,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 491349377,
+["itemLevel"] = 685.625,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 665725571,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 568043346,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 677660370,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 709420312,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 281201345,
+["itemLevel"] = 691,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 507954331,
+["itemLevel"] = 689.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756410299,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 499318496,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 418364790,
+["itemLevel"] = 704.4375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 395920735,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "21:45 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 559139726,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 638804969,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 530228206,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 717810546,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 628315516,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 250183501,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 801548457,
+["itemLevel"] = 704.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 687725513,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 526583959,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 604340718,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 197745606,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 456657440,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 547454919,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 551026384,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 573835101,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756929097,
+["date"] = "21:51 03/09/25",
+["elapsed"] = 137.0500000000466,
+["servertime"] = 1756929096,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 286217110,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 302678720,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 384909627,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
 },
 },
 [3009] = {
 {
+["guild"] = "Adasträ",
+["time"] = 1741207423,
+["elapsed"] = 224.8190000000177,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 416644246,
@@ -2304,9 +763,9 @@ DetailsDataStorage = {
 ["itemLevel"] = 628,
 ["classId"] = 3,
 },
-["Zroyele"] = {
-["total"] = 374625826,
-["itemLevel"] = 626.625,
+["Grodar-Archimonde"] = {
+["total"] = 312869517,
+["itemLevel"] = 629.75,
 ["classId"] = 1,
 },
 ["Ânydâ-Archimonde"] = {
@@ -2319,9 +778,9 @@ DetailsDataStorage = {
 ["itemLevel"] = 626.4375,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 312869517,
-["itemLevel"] = 629.75,
+["Zroyele"] = {
+["total"] = 374625826,
+["itemLevel"] = 626.625,
 ["classId"] = 1,
 },
 ["Vilidøns-Dalaran"] = {
@@ -2329,10 +788,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 632.25,
 ["classId"] = 12,
 },
-["Morkai-Sargeras"] = {
-["total"] = 336276232,
-["itemLevel"] = 638.875,
-["classId"] = 3,
+["Durnedin-Dalaran"] = {
+["total"] = 342482776,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 206788411,
@@ -2349,15 +808,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 627.3125,
 ["classId"] = 13,
 },
+["Morkai-Sargeras"] = {
+["total"] = 336276232,
+["itemLevel"] = 638.875,
+["classId"] = 3,
+},
 ["Uztek"] = {
 ["total"] = 266995319,
 ["itemLevel"] = 615.5625,
 ["classId"] = 9,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 342482776,
-["itemLevel"] = 631.3125,
-["classId"] = 2,
 },
 ["Jamelmoignon"] = {
 ["total"] = 350083160,
@@ -2365,15 +824,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1741207423,
-["date"] = "21:43 05/03/25",
-["elapsed"] = 224.8190000000177,
 ["servertime"] = 1741207423,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 195088220,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 217480832,
+["itemLevel"] = 631.6875,
+["classId"] = 5,
 },
 ["Amsët"] = {
 ["total"] = 247737050,
@@ -2385,15 +841,18 @@ DetailsDataStorage = {
 ["itemLevel"] = 621.8125,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 217480832,
-["itemLevel"] = 631.6875,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 195088220,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
 },
 },
-["guild"] = "Adasträ",
+["date"] = "21:43 05/03/25",
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1741811765,
+["elapsed"] = 180.2799999999988,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 403529093,
@@ -2410,20 +869,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 642.1875,
 ["classId"] = 3,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 140963859,
+["Durnedin-Dalaran"] = {
+["total"] = 312632944,
 ["itemLevel"] = 645.3125,
-["classId"] = 12,
+["classId"] = 2,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 331370399,
 ["itemLevel"] = 644.5,
 ["classId"] = 8,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 312632944,
+["Øskydh-Archimonde"] = {
+["total"] = 140963859,
 ["itemLevel"] = 645.3125,
-["classId"] = 2,
+["classId"] = 12,
 },
 ["Zroyele"] = {
 ["total"] = 343136297,
@@ -2435,10 +894,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 643.0625,
 ["classId"] = 12,
 },
-["Morkai-Sargeras"] = {
-["total"] = 282960619,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
+["Grodar-Archimonde"] = {
+["total"] = 299395388,
+["itemLevel"] = 637,
+["classId"] = 1,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 188864322,
@@ -2455,15 +914,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 644.9375,
 ["classId"] = 13,
 },
+["Morkai-Sargeras"] = {
+["total"] = 282960619,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
 ["Uztek"] = {
 ["total"] = 301600543,
 ["itemLevel"] = 646.125,
 ["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 299395388,
-["itemLevel"] = 637,
-["classId"] = 1,
 },
 ["Jamelmoignon"] = {
 ["total"] = 318393484,
@@ -2471,15 +930,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1741811765,
-["date"] = "21:36 12/03/25",
-["elapsed"] = 180.2799999999988,
 ["servertime"] = 1741811764,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 169114549,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 212919927,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
 },
 ["Amsët"] = {
 ["total"] = 184422268,
@@ -2491,15 +947,18 @@ DetailsDataStorage = {
 ["itemLevel"] = 643.1875,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 212919927,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 169114549,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
 },
 },
-["guild"] = "Adasträ",
+["date"] = "21:36 12/03/25",
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1742416215,
+["elapsed"] = 128.35699999996,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 385706215,
@@ -2516,20 +975,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 651.1875,
 ["classId"] = 11,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 357270270,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 153583714,
+["itemLevel"] = 653.75,
+["classId"] = 12,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 308465210,
 ["itemLevel"] = 653.5,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 153583714,
-["itemLevel"] = 653.75,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 357270270,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
 },
 ["Grodar-Archimonde"] = {
 ["total"] = 290838546,
@@ -2541,15 +1000,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 650.75,
 ["classId"] = 12,
 },
-["Erami-Sargeras"] = {
-["total"] = 140977372,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
 ["Opøpoî-Dalaran"] = {
 ["total"] = 288023233,
 ["itemLevel"] = 645.0625,
 ["classId"] = 10,
+},
+["Erami-Sargeras"] = {
+["total"] = 140977372,
+["itemLevel"] = 650.5,
+["classId"] = 6,
 },
 ["Dordok-Ysondre"] = {
 ["total"] = 243605737,
@@ -2577,28 +1036,24 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1742416215,
-["date"] = "21:30 19/03/25",
-["elapsed"] = 128.35699999996,
 ["servertime"] = 1742416216,
 ["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 215401873,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
-},
 ["Amsët"] = {
 ["total"] = 194127282,
 ["itemLevel"] = 646.5,
 ["classId"] = 7,
 },
+["Ässahi-Dalaran"] = {
+["total"] = 215401873,
+["itemLevel"] = 657.1875,
+["classId"] = 5,
 },
-["guild"] = "Adasträ",
+},
+["date"] = "21:30 19/03/25",
 },
 {
+["date"] = "21:31 26/03/25",
 ["guild"] = "Adasträ",
-["time"] = 1743021095,
-["elapsed"] = 125.5299999999988,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 361182305,
@@ -2655,70 +1110,54 @@ DetailsDataStorage = {
 ["itemLevel"] = 657.5,
 ["classId"] = 1,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 198872550,
-["itemLevel"] = 654.5,
-["classId"] = 1,
+["Dordok-Ysondre"] = {
+["total"] = 252081052,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
 },
 ["Gydzitt-KhazModan"] = {
 ["total"] = 322209268,
 ["itemLevel"] = 661.375,
 ["classId"] = 7,
 },
-["Uztek"] = {
-["total"] = 355172757,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
 ["Morkai-Sargeras"] = {
 ["total"] = 317283252,
 ["itemLevel"] = 654.6875,
 ["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 355172757,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
 ["total"] = 227709696,
 ["itemLevel"] = 652.6875,
 ["classId"] = 13,
 },
-["Dordok-Ysondre"] = {
-["total"] = 252081052,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
+["Øskÿ-Archimonde"] = {
+["total"] = 198872550,
+["itemLevel"] = 654.5,
+["classId"] = 1,
 },
 },
+["elapsed"] = 125.5299999999988,
 ["servertime"] = 1743021095,
 ["HEALER"] = {
-["Amsët"] = {
-["total"] = 250488078,
-["itemLevel"] = 649.9375,
-["classId"] = 7,
-},
 ["Ässahi-Dalaran"] = {
 ["total"] = 247490466,
 ["itemLevel"] = 660.0625,
 ["classId"] = 5,
 },
-},
-["date"] = "21:31 26/03/25",
-},
-{
-["time"] = 1744141350,
-["guild"] = "Adasträ",
-["elapsed"] = 210.650999999838,
-["date"] = "21:42 08/04/25",
-["servertime"] = 1744141348,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 287206129,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 257223342,
-["itemLevel"] = 664,
+["Amsët"] = {
+["total"] = 250488078,
+["itemLevel"] = 649.9375,
 ["classId"] = 7,
 },
 },
+["time"] = 1743021095,
+},
+{
 ["DAMAGER"] = {
 ["Blackløtus-KirinTor"] = {
 ["total"] = 189832901,
@@ -2745,21 +1184,134 @@ DetailsDataStorage = {
 ["itemLevel"] = 665.75,
 ["classId"] = 3,
 },
+["Earendor"] = {
+["total"] = 224326946,
+["itemLevel"] = 612.125,
+["classId"] = 3,
+},
 ["Dordok-Ysondre"] = {
 ["total"] = 399585488,
 ["itemLevel"] = 659.4375,
 ["classId"] = 3,
 },
-["Earendor"] = {
-["total"] = 224326946,
-["itemLevel"] = 612.125,
+},
+["time"] = 1744141350,
+["date"] = "21:42 08/04/25",
+["elapsed"] = 210.650999999838,
+["servertime"] = 1744141348,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 287206129,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 257223342,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[2918] = {
+{
+["time"] = 1740604892,
+["guild"] = "Adasträ",
+["elapsed"] = 113.9459999999963,
+["date"] = "22:21 26/02/25",
+["servertime"] = 1740604893,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 64815304,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 68298250,
+["itemLevel"] = 629.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 121538628,
+["itemLevel"] = 620.4375,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 50980365,
+["itemLevel"] = 632.3125,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 148832881,
+["itemLevel"] = 627.5,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 98995423,
+["itemLevel"] = 623.25,
 ["classId"] = 3,
+},
+["Pewpewtre"] = {
+["total"] = 128173500,
+["itemLevel"] = 626.4375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 51036776,
+["itemLevel"] = 619.5,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 152850972,
+["itemLevel"] = 626,
+["classId"] = 1,
+},
+["Anydâ-Archimonde"] = {
+["total"] = 119420794,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
+},
+["Erami-Sargeras"] = {
+["total"] = 68200029,
+["itemLevel"] = 633.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 177458579,
+["itemLevel"] = 633.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 104710915,
+["itemLevel"] = 626.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 139637015,
+["itemLevel"] = 636.875,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 145334186,
+["itemLevel"] = 628.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 69233428,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
 },
 },
 },
 },
 [3013] = {
 {
+["guild"] = "Adasträ",
+["time"] = 1741212838,
+["elapsed"] = 241.6140000000014,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 363881926,
@@ -2776,9 +1328,9 @@ DetailsDataStorage = {
 ["itemLevel"] = 628,
 ["classId"] = 3,
 },
-["Grodar-Archimonde"] = {
-["total"] = 263852118,
-["itemLevel"] = 629.75,
+["Zroyele"] = {
+["total"] = 241291720,
+["itemLevel"] = 627.3125,
 ["classId"] = 1,
 },
 ["Ânydâ-Archimonde"] = {
@@ -2791,9 +1343,9 @@ DetailsDataStorage = {
 ["itemLevel"] = 627.6875,
 ["classId"] = 12,
 },
-["Zroyele"] = {
-["total"] = 241291720,
-["itemLevel"] = 627.3125,
+["Grodar-Archimonde"] = {
+["total"] = 263852118,
+["itemLevel"] = 629.75,
 ["classId"] = 1,
 },
 ["Vilidøns-Dalaran"] = {
@@ -2801,10 +1353,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 633.5,
 ["classId"] = 12,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 285947245,
-["itemLevel"] = 631.3125,
-["classId"] = 2,
+["Morkai-Sargeras"] = {
+["total"] = 330149825,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 153695993,
@@ -2826,10 +1378,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 621.25,
 ["classId"] = 9,
 },
-["Morkai-Sargeras"] = {
-["total"] = 330149825,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
+["Durnedin-Dalaran"] = {
+["total"] = 285947245,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
 },
 ["Jamelmoignon"] = {
 ["total"] = 20302232,
@@ -2837,15 +1389,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1741212838,
-["date"] = "23:13 05/03/25",
-["elapsed"] = 241.6140000000014,
 ["servertime"] = 1741212837,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 144002013,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 180642842,
+["itemLevel"] = 634.125,
+["classId"] = 5,
 },
 ["Amsët"] = {
 ["total"] = 173683363,
@@ -2857,42 +1406,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 622.625,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 180642842,
-["itemLevel"] = 634.125,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["time"] = 1741815638,
-["guild"] = "Adasträ",
-["elapsed"] = 180.6979999999967,
-["date"] = "22:40 12/03/25",
-["servertime"] = 1741815637,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 131985426,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 129966581,
-["itemLevel"] = 637.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 127303406,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
 ["Putchie"] = {
-["total"] = 76616240,
-["itemLevel"] = 641.6875,
+["total"] = 144002013,
+["itemLevel"] = 636.3125,
 ["classId"] = 11,
 },
 },
+["date"] = "23:13 05/03/25",
+},
+{
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 328030818,
@@ -2909,20 +1431,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 642.1875,
 ["classId"] = 3,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 263403023,
-["itemLevel"] = 321.5,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 98807042,
+["itemLevel"] = 648.1875,
+["classId"] = 12,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 204488697,
 ["itemLevel"] = 644.5,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 98807042,
-["itemLevel"] = 648.1875,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 263403023,
+["itemLevel"] = 321.5,
+["classId"] = 2,
 },
 ["Zroyele"] = {
 ["total"] = 292507962,
@@ -2934,10 +1456,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 643.0625,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 234655945,
-["itemLevel"] = 637,
-["classId"] = 1,
+["Morkai-Sargeras"] = {
+["total"] = 282184535,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 126842280,
@@ -2959,10 +1481,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 646.125,
 ["classId"] = 9,
 },
-["Morkai-Sargeras"] = {
-["total"] = 282184535,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
+["Grodar-Archimonde"] = {
+["total"] = 234655945,
+["itemLevel"] = 637,
+["classId"] = 1,
 },
 ["Jamelmoignon"] = {
 ["total"] = 260051814,
@@ -2970,13 +1492,43 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["time"] = 1741815638,
+["date"] = "22:40 12/03/25",
+["elapsed"] = 180.6979999999967,
+["servertime"] = 1741815637,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 76616240,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 129966581,
+["itemLevel"] = 637.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 127303406,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 131985426,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1742418512,
+["elapsed"] = 162.045999999973,
 ["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 232460556,
-["itemLevel"] = 648.25,
-["classId"] = 3,
+["Putchie"] = {
+["total"] = 66433878,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
 },
 ["Kvotheen"] = {
 ["total"] = 337765728,
@@ -2988,25 +1540,25 @@ DetailsDataStorage = {
 ["itemLevel"] = 647.375,
 ["classId"] = 3,
 },
-["Putchie"] = {
-["total"] = 66433878,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
+["Dordok-Ysondre"] = {
+["total"] = 232460556,
+["itemLevel"] = 648.25,
+["classId"] = 3,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 85128780,
-["itemLevel"] = 653.75,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 264617523,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 246963008,
 ["itemLevel"] = 653.5,
 ["classId"] = 8,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 264617523,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 85128780,
+["itemLevel"] = 653.75,
+["classId"] = 12,
 },
 ["Grodar-Archimonde"] = {
 ["total"] = 251010276,
@@ -3018,15 +1570,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 650.75,
 ["classId"] = 12,
 },
-["Opøpoî-Dalaran"] = {
-["total"] = 240709710,
-["itemLevel"] = 647.5625,
-["classId"] = 10,
-},
 ["Erami-Sargeras"] = {
 ["total"] = 106016493,
 ["itemLevel"] = 650.5,
 ["classId"] = 6,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 240709710,
+["itemLevel"] = 647.5625,
+["classId"] = 10,
 },
 ["Gydzitt-KhazModan"] = {
 ["total"] = 247362228,
@@ -3054,28 +1606,24 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1742418512,
-["date"] = "22:08 19/03/25",
-["elapsed"] = 162.045999999973,
 ["servertime"] = 1742418511,
 ["HEALER"] = {
-["Amsët"] = {
-["total"] = 153223672,
-["itemLevel"] = 647.3125,
-["classId"] = 7,
-},
 ["Ässahi-Dalaran"] = {
 ["total"] = 155646587,
 ["itemLevel"] = 657.1875,
 ["classId"] = 5,
 },
+["Amsët"] = {
+["total"] = 153223672,
+["itemLevel"] = 647.3125,
+["classId"] = 7,
 },
-["guild"] = "Adasträ",
+},
+["date"] = "22:08 19/03/25",
 },
 {
+["date"] = "22:05 26/03/25",
 ["guild"] = "Adasträ",
-["time"] = 1743023100,
-["elapsed"] = 133.1779999999999,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 304658907,
@@ -3137,55 +1685,71 @@ DetailsDataStorage = {
 ["itemLevel"] = 657.5,
 ["classId"] = 1,
 },
-["Opopoi-Dalaran"] = {
-["total"] = 236445728,
-["itemLevel"] = 654.4375,
-["classId"] = 10,
+["Dordok-Ysondre"] = {
+["total"] = 222582428,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
 },
 ["Gydzitt-KhazModan"] = {
 ["total"] = 0,
 ["itemLevel"] = 661.375,
 ["classId"] = 7,
 },
-["Uztek"] = {
-["total"] = 261598400,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
 ["Morkai-Sargeras"] = {
 ["total"] = 282859855,
 ["itemLevel"] = 654.6875,
 ["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 261598400,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
 ["total"] = 213427346,
 ["itemLevel"] = 652.6875,
 ["classId"] = 13,
 },
-["Dordok-Ysondre"] = {
-["total"] = 222582428,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
+["Opopoi-Dalaran"] = {
+["total"] = 236445728,
+["itemLevel"] = 654.4375,
+["classId"] = 10,
 },
 },
+["elapsed"] = 133.1779999999999,
 ["servertime"] = 1743023100,
 ["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 141918741,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
 ["Amsët"] = {
 ["total"] = 164437781,
 ["itemLevel"] = 649.9375,
 ["classId"] = 7,
 },
+["Ässahi-Dalaran"] = {
+["total"] = 141918741,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
 },
-["date"] = "22:05 26/03/25",
+},
+["time"] = 1743023100,
 },
 {
-["date"] = "22:20 08/04/25",
+["time"] = 1744143617,
 ["guild"] = "Adasträ",
+["elapsed"] = 177.4890000000596,
+["date"] = "22:20 08/04/25",
+["servertime"] = 1744143615,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 109861069,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 161175056,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
 ["DAMAGER"] = {
 ["Blackløtus-KirinTor"] = {
 ["total"] = 77417813,
@@ -3212,736 +1776,21 @@ DetailsDataStorage = {
 ["itemLevel"] = 665.75,
 ["classId"] = 3,
 },
-["Dordok-Ysondre"] = {
-["total"] = 317343197,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
-},
 ["Earendor"] = {
 ["total"] = 180403481,
 ["itemLevel"] = 616.625,
 ["classId"] = 3,
 },
-},
-["elapsed"] = 177.4890000000596,
-["servertime"] = 1744143615,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 109861069,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 161175056,
-["itemLevel"] = 664,
-["classId"] = 7,
-},
-},
-["time"] = 1744143617,
-},
-},
-[2917] = {
-{
-["date"] = "22:08 26/02/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 162157449,
-["itemLevel"] = 627.5,
-["classId"] = 7,
-},
 ["Dordok-Ysondre"] = {
-["total"] = 97028737,
-["itemLevel"] = 623.25,
-["classId"] = 3,
-},
-["Pewpewtre"] = {
-["total"] = 127517846,
-["itemLevel"] = 625.1875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 107769895,
-["itemLevel"] = 619.5,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 83251568,
-["itemLevel"] = 626,
-["classId"] = 1,
-},
-["Kayex"] = {
-["total"] = 73710666,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
-},
-["Erami-Sargeras"] = {
-["total"] = 152380599,
-["itemLevel"] = 633.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 138744490,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 131238318,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 128012926,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 99682019,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 103958883,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-},
-["elapsed"] = 274.4169999998994,
-["servertime"] = 1740604112,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 84291498,
-["itemLevel"] = 632.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 174115183,
-["itemLevel"] = 629.4375,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 221570455,
-["itemLevel"] = 620.4375,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 143828106,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-},
-["time"] = 1740604111,
-},
-},
-[3014] = {
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 482404189,
-["itemLevel"] = 637.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 445075578,
-["itemLevel"] = 633.6875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 134300778,
-["itemLevel"] = 628,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 402530074,
-["itemLevel"] = 629.75,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 132580596,
-["itemLevel"] = 636,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 211038998,
-["itemLevel"] = 627.6875,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 405642842,
-["itemLevel"] = 627.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 466976450,
-["itemLevel"] = 634.3125,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 348125659,
-["itemLevel"] = 631.3125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 197990362,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 379305985,
-["itemLevel"] = 635.875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 184069534,
-["itemLevel"] = 628.5625,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 347548262,
-["itemLevel"] = 621.25,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 446118926,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 154846788,
-["itemLevel"] = 631.0625,
-["classId"] = 5,
-},
-},
-["time"] = 1741214023,
-["date"] = "23:33 05/03/25",
-["elapsed"] = 332.4919999999693,
-["servertime"] = 1741214022,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 72545225,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 214405676,
-["itemLevel"] = 632.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 277216968,
-["itemLevel"] = 622.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 278588048,
-["itemLevel"] = 634.5,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["time"] = 1741816635,
-["guild"] = "Adasträ",
-["elapsed"] = 226.9049999999988,
-["date"] = "22:57 12/03/25",
-["servertime"] = 1741816634,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 163795903,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 161713380,
-["itemLevel"] = 637.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 166027776,
-["itemLevel"] = 643.1875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 137997659,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 400573011,
-["itemLevel"] = 645.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 360586862,
-["itemLevel"] = 644.1875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 272667838,
-["itemLevel"] = 642.1875,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 299886859,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 259479867,
-["itemLevel"] = 644.5,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 176738317,
-["itemLevel"] = 648.1875,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 331044301,
-["itemLevel"] = 645,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 399984056,
-["itemLevel"] = 644.6875,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 345159176,
-["itemLevel"] = 637,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 174955323,
-["itemLevel"] = 648.0625,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 304803923,
-["itemLevel"] = 647.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 281183096,
-["itemLevel"] = 644.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 293488747,
-["itemLevel"] = 646.125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 326658655,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 375796335,
-["itemLevel"] = 647.5625,
-["classId"] = 5,
-},
-},
-},
-{
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 271605107,
-["itemLevel"] = 649,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 368293020,
-["itemLevel"] = 654.4375,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 321265255,
-["itemLevel"] = 647.375,
-["classId"] = 3,
-},
-["Putchie"] = {
-["total"] = 237819773,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 104091261,
-["itemLevel"] = 653.75,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 252684175,
-["itemLevel"] = 653.5,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 278673232,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 269299301,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 286175695,
-["itemLevel"] = 650.75,
-["classId"] = 12,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 240839301,
-["itemLevel"] = 648.3125,
-["classId"] = 10,
-},
-["Erami-Sargeras"] = {
-["total"] = 141488894,
-["itemLevel"] = 650.5,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 319353297,
-["itemLevel"] = 654.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 232604533,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 310528744,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 237995309,
-["itemLevel"] = 642.0625,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 350406646,
-["itemLevel"] = 654.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742419377,
-["date"] = "22:22 19/03/25",
-["elapsed"] = 167.0590000000084,
-["servertime"] = 1742419376,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 181571171,
-["itemLevel"] = 647.5,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 212861564,
-["itemLevel"] = 657.1875,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1743023725,
-["elapsed"] = 170.2690000000002,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 358662495,
-["itemLevel"] = 658.5625,
-["classId"] = 7,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 164213521,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 181967612,
-["itemLevel"] = 636.4375,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 310966957,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 306159457,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 350342359,
-["itemLevel"] = 657.75,
-["classId"] = 12,
-},
-["Orlith-KirinTor"] = {
-["total"] = 290026854,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 308653345,
-["itemLevel"] = 656,
-["classId"] = 5,
-},
-["Putchie"] = {
-["total"] = 275492325,
-["itemLevel"] = 658,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 275560000,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 152663940,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 315612223,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 229280503,
-["itemLevel"] = 654.4375,
-["classId"] = 10,
-},
-["Uztek"] = {
-["total"] = 345119139,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 298584765,
-["itemLevel"] = 654.6875,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 311775714,
-["itemLevel"] = 652.6875,
-["classId"] = 13,
-},
-["Dordok-Ysondre"] = {
-["total"] = 279741084,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
-},
-},
-["servertime"] = 1743023725,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 249881967,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 174342775,
-["itemLevel"] = 649.9375,
-["classId"] = 7,
-},
-},
-["date"] = "22:15 26/03/25",
-},
-{
-["date"] = "22:35 08/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 348235452,
+["total"] = 317343197,
 ["itemLevel"] = 659.4375,
 ["classId"] = 3,
 },
-["Blackløtus-KirinTor"] = {
-["total"] = 121158980,
-["itemLevel"] = 651.375,
-["classId"] = 11,
 },
-["Villiidøns-Dalaran"] = {
-["total"] = 280257561,
-["itemLevel"] = 633.3125,
-["classId"] = 11,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 177064311,
-["itemLevel"] = 641.4375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 397950561,
-["itemLevel"] = 651.3125,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 470047962,
-["itemLevel"] = 665.75,
-["classId"] = 3,
-},
-["Earendor"] = {
-["total"] = 235515377,
-["itemLevel"] = 616.625,
-["classId"] = 3,
-},
-["Âssahî-Dalaran"] = {
-["total"] = 199305457,
-["itemLevel"] = 636.8125,
-["classId"] = 4,
-},
-},
-["elapsed"] = 239.0100000000093,
-["servertime"] = 1744144518,
-["HEALER"] = {
-["Adémi-Sargeras"] = {
-["total"] = 234944494,
-["itemLevel"] = 648.5625,
-["classId"] = 5,
-},
-["Kvotheen"] = {
-["total"] = 250457286,
-["itemLevel"] = 664,
-["classId"] = 7,
-},
-},
-["time"] = 1744144520,
-},
-},
-[2902] = {
-{
-["date"] = "21:38 26/02/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 110884143,
-["itemLevel"] = 627.5,
-["classId"] = 7,
-},
-["Putchie"] = {
-["total"] = 52578032,
-["itemLevel"] = 632.3125,
-["classId"] = 11,
-},
-["Dordok-Ysondre"] = {
-["total"] = 79855785,
-["itemLevel"] = 623.25,
-["classId"] = 3,
-},
-["Pewpewtre"] = {
-["total"] = 87546765,
-["itemLevel"] = 625.1875,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 60984776,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 74336749,
-["itemLevel"] = 622.5625,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 78478312,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 60113361,
-["itemLevel"] = 616.4375,
-["classId"] = 10,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 89323794,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-["Erami-Sargeras"] = {
-["total"] = 108769289,
-["itemLevel"] = 633.625,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 83368930,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 84035272,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 100220367,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 95173019,
-["itemLevel"] = 626,
-["classId"] = 1,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 36960828,
-["itemLevel"] = 619.5,
-["classId"] = 12,
-},
-},
-["elapsed"] = 58.50699999998324,
-["servertime"] = 1740602297,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 34826040,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 32911696,
-["itemLevel"] = 629.4375,
-["classId"] = 7,
-},
-},
-["time"] = 1740602296,
 },
 },
 [3015] = {
 {
-["time"] = 1741294007,
-["guild"] = "Adasträ",
-["elapsed"] = 306.7480000000214,
-["date"] = "21:46 06/03/25",
-["servertime"] = 1741294008,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 386878656,
-["itemLevel"] = 639.9375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 324418154,
-["itemLevel"] = 632.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 338005139,
-["itemLevel"] = 635.875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 226727645,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-},
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 378679539,
@@ -3958,20 +1807,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 633.625,
 ["classId"] = 3,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 338117870,
-["itemLevel"] = 638,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 170908101,
+["itemLevel"] = 631.375,
+["classId"] = 12,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 382382587,
 ["itemLevel"] = 636,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 170908101,
-["itemLevel"] = 631.375,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 338117870,
+["itemLevel"] = 638,
+["classId"] = 2,
 },
 ["Zroyele"] = {
 ["total"] = 356290949,
@@ -3983,10 +1832,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 638.625,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 319129629,
-["itemLevel"] = 633.1875,
-["classId"] = 1,
+["Morkai-Sargeras"] = {
+["total"] = 403911913,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 160090505,
@@ -4008,10 +1857,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 626.75,
 ["classId"] = 9,
 },
-["Morkai-Sargeras"] = {
-["total"] = 403911913,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
+["Grodar-Archimonde"] = {
+["total"] = 319129629,
+["itemLevel"] = 633.1875,
+["classId"] = 1,
 },
 ["Jamelmoignon"] = {
 ["total"] = 308945309,
@@ -4019,35 +1868,35 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-},
-{
-["time"] = 1741817585,
-["guild"] = "Adasträ",
-["elapsed"] = 250.6489999999976,
-["date"] = "23:13 12/03/25",
-["servertime"] = 1741817584,
+["time"] = 1741294007,
+["date"] = "21:46 06/03/25",
+["elapsed"] = 306.7480000000214,
+["servertime"] = 1741294008,
 ["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 274482013,
-["itemLevel"] = 651.5625,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 226727645,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
 },
 ["Amsët"] = {
-["total"] = 244595460,
-["itemLevel"] = 637.3125,
+["total"] = 324418154,
+["itemLevel"] = 632.0625,
 ["classId"] = 7,
 },
 ["Opøpoî-Dalaran"] = {
-["total"] = 284218030,
-["itemLevel"] = 643.1875,
+["total"] = 338005139,
+["itemLevel"] = 635.875,
 ["classId"] = 10,
 },
-["Putchie"] = {
-["total"] = 193418949,
-["itemLevel"] = 641.6875,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 386878656,
+["itemLevel"] = 639.9375,
+["classId"] = 5,
 },
 },
+["guild"] = "Adasträ",
+},
+{
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 442384641,
@@ -4064,20 +1913,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 642.1875,
 ["classId"] = 3,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 322556443,
-["itemLevel"] = 645.3125,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 155338363,
+["itemLevel"] = 648.1875,
+["classId"] = 12,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 272251103,
 ["itemLevel"] = 644.5,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 155338363,
-["itemLevel"] = 648.1875,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 322556443,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
 },
 ["Zroyele"] = {
 ["total"] = 409756080,
@@ -4089,10 +1938,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 644.6875,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 332466313,
-["itemLevel"] = 637,
-["classId"] = 1,
+["Morkai-Sargeras"] = {
+["total"] = 317203625,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 158877236,
@@ -4114,10 +1963,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 646.125,
 ["classId"] = 9,
 },
-["Morkai-Sargeras"] = {
-["total"] = 317203625,
-["itemLevel"] = 644.4375,
-["classId"] = 3,
+["Grodar-Archimonde"] = {
+["total"] = 332466313,
+["itemLevel"] = 637,
+["classId"] = 1,
 },
 ["Jamelmoignon"] = {
 ["total"] = 347660844,
@@ -4125,8 +1974,38 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["time"] = 1741817585,
+["date"] = "23:13 12/03/25",
+["elapsed"] = 250.6489999999976,
+["servertime"] = 1741817584,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 193418949,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 244595460,
+["itemLevel"] = 637.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 284218030,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 274482013,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1742420303,
+["elapsed"] = 209.8719999999739,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 399399923,
@@ -4204,9 +2083,6 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1742420303,
-["date"] = "22:38 19/03/25",
-["elapsed"] = 209.8719999999739,
 ["servertime"] = 1742420302,
 ["HEALER"] = {
 ["Amsët"] = {
@@ -4225,42 +2101,41 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["guild"] = "Adasträ",
+["date"] = "22:38 19/03/25",
 },
 {
+["date"] = "22:28 26/03/25",
 ["guild"] = "Adasträ",
-["time"] = 1743024490,
-["elapsed"] = 173.4759999999951,
 ["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 283161387,
-["itemLevel"] = 654.1875,
-["classId"] = 3,
+["Putchie"] = {
+["total"] = 215210807,
+["itemLevel"] = 658,
+["classId"] = 11,
 },
 ["Kvotheen"] = {
 ["total"] = 375347760,
 ["itemLevel"] = 658.5625,
 ["classId"] = 7,
 },
-["Juicedmk-Archimonde"] = {
-["total"] = 173340796,
-["itemLevel"] = 636.4375,
-["classId"] = 11,
-},
-["Putchie"] = {
-["total"] = 215210807,
-["itemLevel"] = 658,
-["classId"] = 11,
-},
-["Uztek"] = {
-["total"] = 354097551,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
 ["Ânydâ-Archimonde"] = {
 ["total"] = 255339202,
 ["itemLevel"] = 659.4375,
 ["classId"] = 8,
+},
+["Dordok-Ysondre"] = {
+["total"] = 283161387,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Morkai-Sargeras"] = {
+["total"] = 352549661,
+["itemLevel"] = 654.6875,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 173340796,
+["itemLevel"] = 636.4375,
+["classId"] = 11,
 },
 ["Durnedin-Dalaran"] = {
 ["total"] = 289457466,
@@ -4282,25 +2157,25 @@ DetailsDataStorage = {
 ["itemLevel"] = 653.25,
 ["classId"] = 1,
 },
-["Kayex"] = {
-["total"] = 109582509,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
 ["Øskÿ-Archimonde"] = {
 ["total"] = 152089072,
 ["itemLevel"] = 654.5,
 ["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 109582509,
+["itemLevel"] = 660,
+["classId"] = 6,
 },
 ["Orlith-KirinTor"] = {
 ["total"] = 223840556,
 ["itemLevel"] = 655,
 ["classId"] = 13,
 },
-["Morkai-Sargeras"] = {
-["total"] = 352549661,
-["itemLevel"] = 654.6875,
-["classId"] = 3,
+["Uztek"] = {
+["total"] = 354097551,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
 ["total"] = 280466949,
@@ -4313,6 +2188,7 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["elapsed"] = 173.4759999999951,
 ["servertime"] = 1743024490,
 ["HEALER"] = {
 ["Amsët"] = {
@@ -4320,27 +2196,42 @@ DetailsDataStorage = {
 ["itemLevel"] = 649.9375,
 ["classId"] = 7,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 157387839,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
 ["Opopoi-Dalaran"] = {
 ["total"] = 133108377,
 ["itemLevel"] = 659.1333333333333,
 ["classId"] = 10,
 },
+["Ässahi-Dalaran"] = {
+["total"] = 157387839,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
 },
-["date"] = "22:28 26/03/25",
+},
+["time"] = 1743024490,
 },
 {
-["date"] = "22:48 08/04/25",
+["time"] = 1744145288,
 ["guild"] = "Adasträ",
+["elapsed"] = 213.4290000000037,
+["date"] = "22:48 08/04/25",
+["servertime"] = 1744145286,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 203753961,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 204583716,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
 ["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 339223107,
-["itemLevel"] = 659.4375,
-["classId"] = 3,
+["Âssahî-Dalaran"] = {
+["total"] = 176689907,
+["itemLevel"] = 636.8125,
+["classId"] = 4,
 },
 ["Blackløtus-KirinTor"] = {
 ["total"] = 107058122,
@@ -4352,10 +2243,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 633.3125,
 ["classId"] = 11,
 },
-["Øskypal-Archimonde"] = {
-["total"] = 128402427,
-["itemLevel"] = 641.4375,
-["classId"] = 2,
+["Dordok-Ysondre"] = {
+["total"] = 339223107,
+["itemLevel"] = 659.4375,
+["classId"] = 3,
 },
 ["Pipoteur"] = {
 ["total"] = 353023843,
@@ -4372,126 +2263,1821 @@ DetailsDataStorage = {
 ["itemLevel"] = 616.625,
 ["classId"] = 3,
 },
+["Øskypal-Archimonde"] = {
+["total"] = 128402427,
+["itemLevel"] = 641.4375,
+["classId"] = 2,
+},
+},
+},
+},
+[3011] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1741209609,
+["elapsed"] = 320.1529999999912,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 355105495,
+["itemLevel"] = 637.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 364271124,
+["itemLevel"] = 633.6875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 280051371,
+["itemLevel"] = 628,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 150558762,
+["itemLevel"] = 626.7333333333333,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 263048643,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 126686337,
+["itemLevel"] = 626.4375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 122915829,
+["itemLevel"] = 629.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 363484563,
+["itemLevel"] = 632.25,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 167116437,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 155724067,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 248822297,
+["itemLevel"] = 635.875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 102880759,
+["itemLevel"] = 627.3125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 259750156,
+["itemLevel"] = 617.1875,
+["classId"] = 9,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 282518606,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
+},
+["Jamelmoignon"] = {
+["total"] = 273036527,
+["itemLevel"] = 631.0625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741209609,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 256168157,
+["itemLevel"] = 631.6875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 241659126,
+["itemLevel"] = 630.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 282845156,
+["itemLevel"] = 621.8125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 155660859,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+},
+["date"] = "22:20 05/03/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1741813197,
+["elapsed"] = 215.8810000000012,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 272517930,
+["itemLevel"] = 645.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 330717514,
+["itemLevel"] = 644.1875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 223998843,
+["itemLevel"] = 642.1875,
+["classId"] = 3,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 240325670,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 225747410,
+["itemLevel"] = 644.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 124716685,
+["itemLevel"] = 645.3125,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 283114015,
+["itemLevel"] = 645,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 258459601,
+["itemLevel"] = 643.0625,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 247765757,
+["itemLevel"] = 637,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 130850146,
+["itemLevel"] = 648.625,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 191441757,
+["itemLevel"] = 647.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 211393029,
+["itemLevel"] = 644.9375,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 268055703,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 248668145,
+["itemLevel"] = 646.125,
+["classId"] = 9,
+},
+["Jamelmoignon"] = {
+["total"] = 286300035,
+["itemLevel"] = 647.5625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741813196,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 146712802,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 200069030,
+["itemLevel"] = 636.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 188556873,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 154148358,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+},
+["date"] = "21:59 12/03/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742417272,
+["elapsed"] = 180.9349999999395,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 298160669,
+["itemLevel"] = 654.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 228351491,
+["itemLevel"] = 647.375,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 218600465,
+["itemLevel"] = 646,
+["classId"] = 3,
+},
+["Putchie"] = {
+["total"] = 161814368,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 221087268,
+["itemLevel"] = 653.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 105426192,
+["itemLevel"] = 653.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 228185845,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 272710675,
+["itemLevel"] = 650.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 267765177,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 194483445,
+["itemLevel"] = 646.125,
+["classId"] = 10,
+},
+["Erami-Sargeras"] = {
+["total"] = 102677229,
+["itemLevel"] = 650.5,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 174935209,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 255104206,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 166462618,
+["itemLevel"] = 642.6875,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 316764559,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742417273,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 205521118,
+["itemLevel"] = 657.1875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 220501308,
+["itemLevel"] = 646.5,
+["classId"] = 7,
+},
+},
+["date"] = "21:47 19/03/25",
+},
+{
+["date"] = "21:46 26/03/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 285542400,
+["itemLevel"] = 658.5625,
+["classId"] = 7,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 146448912,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 169809818,
+["itemLevel"] = 635.25,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 235181104,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 209117229,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 289340765,
+["itemLevel"] = 657.9375,
+["classId"] = 12,
+},
+["Orlith-KirinTor"] = {
+["total"] = 157229199,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 258306425,
+["itemLevel"] = 656,
+["classId"] = 5,
+},
+["Putchie"] = {
+["total"] = 232387180,
+["itemLevel"] = 658,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 216744146,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Kayex"] = {
+["total"] = 119823230,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 95690175,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 225045657,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 236812718,
+["itemLevel"] = 661.375,
+["classId"] = 7,
+},
+["Morkai-Sargeras"] = {
+["total"] = 253258492,
+["itemLevel"] = 654.6875,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 278724347,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 193728807,
+["itemLevel"] = 652.6875,
+["classId"] = 13,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 198354251,
+["itemLevel"] = 654.4375,
+["classId"] = 10,
+},
+},
+["elapsed"] = 162.4449999999924,
+["servertime"] = 1743022017,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 242209437,
+["itemLevel"] = 649.9375,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 296392416,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1743022017,
+},
+{
+["DAMAGER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 97620854,
+["itemLevel"] = 651.375,
+["classId"] = 11,
+},
 ["Âssahî-Dalaran"] = {
-["total"] = 176689907,
-["itemLevel"] = 636.8125,
+["total"] = 166760979,
+["itemLevel"] = 632.75,
 ["classId"] = 4,
 },
+["Øskypal-Archimonde"] = {
+["total"] = 125915504,
+["itemLevel"] = 641.4375,
+["classId"] = 2,
 },
-["elapsed"] = 213.4290000000037,
-["servertime"] = 1744145286,
+["Pipoteur"] = {
+["total"] = 331265808,
+["itemLevel"] = 651.3125,
+["classId"] = 9,
+},
+["Morkai-Sargeras"] = {
+["total"] = 379738801,
+["itemLevel"] = 665.75,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 303075941,
+["itemLevel"] = 659.4375,
+["classId"] = 3,
+},
+["Earendor"] = {
+["total"] = 189721314,
+["itemLevel"] = 616.625,
+["classId"] = 3,
+},
+},
+["time"] = 1744142423,
+["date"] = "22:00 08/04/25",
+["elapsed"] = 219.2729999998119,
+["servertime"] = 1744142421,
 ["HEALER"] = {
 ["Adémi-Sargeras"] = {
-["total"] = 203753961,
+["total"] = 211481110,
 ["itemLevel"] = 648.5625,
 ["classId"] = 5,
 },
 ["Kvotheen"] = {
-["total"] = 204583716,
+["total"] = 199786490,
 ["itemLevel"] = 664,
 ["classId"] = 7,
 },
 },
-["time"] = 1744145288,
-},
-},
-[2918] = {
-{
-["date"] = "22:21 26/02/25",
 ["guild"] = "Adasträ",
+},
+},
+[3133] = {
+{
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 148832881,
-["itemLevel"] = 627.5,
+["total"] = 555788836,
+["itemLevel"] = 691.4375,
 ["classId"] = 7,
 },
-["Dordok-Ysondre"] = {
-["total"] = 98995423,
-["itemLevel"] = 623.25,
-["classId"] = 3,
+["Yugekok-Archimonde"] = {
+["total"] = 480153775,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
 },
-["Pewpewtre"] = {
-["total"] = 128173500,
-["itemLevel"] = 626.4375,
-["classId"] = 8,
+["Natariis"] = {
+["total"] = 482712953,
+["itemLevel"] = 689.25,
+["classId"] = 1,
 },
 ["Øskydh-Archimonde"] = {
-["total"] = 51036776,
-["itemLevel"] = 619.5,
+["total"] = 236872285,
+["itemLevel"] = 702.5,
 ["classId"] = 12,
 },
-["Zroyele"] = {
-["total"] = 152850972,
-["itemLevel"] = 626,
-["classId"] = 1,
+["Gydzitpala-KhazModan"] = {
+["total"] = 626536301,
+["itemLevel"] = 701.25,
+["classId"] = 2,
 },
-["Kayex"] = {
-["total"] = 69233428,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
-},
-["Erami-Sargeras"] = {
-["total"] = 68200029,
-["itemLevel"] = 633.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 177458579,
-["itemLevel"] = 633.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 104710915,
-["itemLevel"] = 626.25,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 139637015,
-["itemLevel"] = 636.875,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 145334186,
-["itemLevel"] = 628.5625,
-["classId"] = 1,
-},
-["Anydâ-Archimonde"] = {
-["total"] = 119420794,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
-},
-},
-["elapsed"] = 113.9459999999963,
-["servertime"] = 1740604893,
-["HEALER"] = {
 ["Putchie"] = {
-["total"] = 50980365,
-["itemLevel"] = 632.3125,
+["total"] = 528818138,
+["itemLevel"] = 693.6875,
 ["classId"] = 11,
 },
+["Dordok-Ysondre"] = {
+["total"] = 561564825,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 405302622,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 237823807,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 604392438,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 459616009,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 358333649,
+["itemLevel"] = 678.1875,
+["classId"] = 5,
+},
+},
+["time"] = 1755807595,
+["date"] = "22:19 21/08/25",
+["elapsed"] = 183.8719999999739,
+["servertime"] = 1755807594,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 286706350,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 432365540,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
 ["Amsët"] = {
-["total"] = 68298250,
+["total"] = 320437994,
+["itemLevel"] = 689.0625,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756412416,
+["elapsed"] = 150.6599999999162,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 548028265,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 561225350,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 558838789,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 554859235,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 231661322,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 413777438,
+["itemLevel"] = 686.6875,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 508524427,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 503833032,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 487472036,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 544039369,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 242771802,
+["itemLevel"] = 692,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 408557625,
+["itemLevel"] = 689.625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756412415,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 275237819,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 228993402,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 152884208,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "22:20 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 619199694,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 468122908,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 443696754,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 556203064,
+["itemLevel"] = 702.3333333333334,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 472416123,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 212151415,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 584102465,
+["itemLevel"] = 705.875,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 442450572,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 474338005,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 424676997,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 160100692,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 387096323,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 515337286,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 418980637,
+["itemLevel"] = 705.1333333333333,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 479572135,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756930844,
+["date"] = "22:20 03/09/25",
+["elapsed"] = 118.0449999999255,
+["servertime"] = 1756930843,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 129345374,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 102396672,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 212108593,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[2921] = {
+{
+["time"] = 1740606686,
+["guild"] = "Adasträ",
+["elapsed"] = 255.6680000000633,
+["date"] = "22:51 26/02/25",
+["servertime"] = 1740606687,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 119365376,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 122434008,
 ["itemLevel"] = 629.4375,
 ["classId"] = 7,
 },
 ["Opøpoî-Dalaran"] = {
-["total"] = 121538628,
+["total"] = 175528209,
 ["itemLevel"] = 620.4375,
 ["classId"] = 10,
 },
+["Putchie"] = {
+["total"] = 74122094,
+["itemLevel"] = 632.0666666666667,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 347702599,
+["itemLevel"] = 627.5,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 263732882,
+["itemLevel"] = 623.25,
+["classId"] = 3,
+},
+["Pewpewtre"] = {
+["total"] = 303603464,
+["itemLevel"] = 625.1875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 111556899,
+["itemLevel"] = 619.5,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 381431837,
+["itemLevel"] = 626,
+["classId"] = 1,
+},
+["Anydâ-Archimonde"] = {
+["total"] = 302977861,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
+},
+["Erami-Sargeras"] = {
+["total"] = 132087657,
+["itemLevel"] = 633.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 360617127,
+["itemLevel"] = 633.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 353818399,
+["itemLevel"] = 626.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 375791847,
+["itemLevel"] = 636.875,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 278937890,
+["itemLevel"] = 628.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 227818642,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
+},
+},
+},
+},
+[2919] = {
+{
+["time"] = 1740605578,
+["guild"] = "Adasträ",
+["elapsed"] = 162.5079999999143,
+["date"] = "22:32 26/02/25",
+["servertime"] = 1740605579,
+["HEALER"] = {
 ["Ässahi-Dalaran"] = {
-["total"] = 64815304,
+["total"] = 74901978,
 ["itemLevel"] = 623.375,
 ["classId"] = 5,
 },
+["Amsët"] = {
+["total"] = 83703032,
+["itemLevel"] = 629.4375,
+["classId"] = 7,
 },
-["time"] = 1740604892,
+["Opøpoî-Dalaran"] = {
+["total"] = 124324934,
+["itemLevel"] = 620.4375,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 63636179,
+["itemLevel"] = 632.0666666666667,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 204213797,
+["itemLevel"] = 627.5,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 95001638,
+["itemLevel"] = 623.25,
+["classId"] = 3,
+},
+["Pewpewtre"] = {
+["total"] = 139819380,
+["itemLevel"] = 625.1875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 114004970,
+["itemLevel"] = 619.5,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 140961296,
+["itemLevel"] = 626,
+["classId"] = 1,
+},
+["Anydâ-Archimonde"] = {
+["total"] = 179424599,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
+},
+["Erami-Sargeras"] = {
+["total"] = 112101697,
+["itemLevel"] = 633.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 223520331,
+["itemLevel"] = 633.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 160453515,
+["itemLevel"] = 626.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 182159708,
+["itemLevel"] = 636.875,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 150178377,
+["itemLevel"] = 628.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 116040835,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
+},
+},
+},
+},
+[3010] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1741208572,
+["elapsed"] = 209.49099999998,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 268058080,
+["itemLevel"] = 637.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 265281021,
+["itemLevel"] = 633.6875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 223792339,
+["itemLevel"] = 628,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 278726888,
+["itemLevel"] = 627.3125,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 206859423,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 124999885,
+["itemLevel"] = 626.4375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 236851293,
+["itemLevel"] = 629.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 299772751,
+["itemLevel"] = 632.25,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 266970563,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 134028530,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 262412123,
+["itemLevel"] = 635.875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 175467271,
+["itemLevel"] = 627.3125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 147530414,
+["itemLevel"] = 617.1875,
+["classId"] = 9,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 221310120,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
+},
+["Jamelmoignon"] = {
+["total"] = 204624402,
+["itemLevel"] = 631.0625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741208572,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 224642810,
+["itemLevel"] = 631.6875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 139208679,
+["itemLevel"] = 630.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 203781412,
+["itemLevel"] = 621.8125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 121885255,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+},
+["date"] = "22:02 05/03/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1741812273,
+["elapsed"] = 159.5149999999994,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 300518978,
+["itemLevel"] = 645.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 271590386,
+["itemLevel"] = 644.1875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 223349159,
+["itemLevel"] = 642.1875,
+["classId"] = 3,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 230759968,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 199871523,
+["itemLevel"] = 644.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 110717471,
+["itemLevel"] = 645.3125,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 241672133,
+["itemLevel"] = 645,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 281106357,
+["itemLevel"] = 643.0625,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 247667646,
+["itemLevel"] = 637,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 121292340,
+["itemLevel"] = 648.625,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 254902640,
+["itemLevel"] = 647.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 200199604,
+["itemLevel"] = 644.9375,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 247026446,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 203907112,
+["itemLevel"] = 646.125,
+["classId"] = 9,
+},
+["Jamelmoignon"] = {
+["total"] = 230830278,
+["itemLevel"] = 647.5625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741812272,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 114663401,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 100220036,
+["itemLevel"] = 636.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 111167314,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 159505492,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+},
+["date"] = "21:44 12/03/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742416683,
+["elapsed"] = 148.0530000000726,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 295496363,
+["itemLevel"] = 654.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 250414924,
+["itemLevel"] = 647.375,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 201854396,
+["itemLevel"] = 646,
+["classId"] = 3,
+},
+["Putchie"] = {
+["total"] = 202300298,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 211809847,
+["itemLevel"] = 653.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 114686712,
+["itemLevel"] = 653.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 248299676,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 290513040,
+["itemLevel"] = 650.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 251417734,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 193738664,
+["itemLevel"] = 646.125,
+["classId"] = 10,
+},
+["Erami-Sargeras"] = {
+["total"] = 94385487,
+["itemLevel"] = 650.5,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 185693085,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 283740505,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 179237034,
+["itemLevel"] = 642.6875,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 71691924,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742416684,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 118502180,
+["itemLevel"] = 657.1875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 191079921,
+["itemLevel"] = 646.5,
+["classId"] = 7,
+},
+},
+["date"] = "21:38 19/03/25",
+},
+{
+["date"] = "21:39 26/03/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 266212640,
+["itemLevel"] = 658.5625,
+["classId"] = 7,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 131360836,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 116664046,
+["itemLevel"] = 635.25,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 226898063,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 205252363,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 234289503,
+["itemLevel"] = 657.9375,
+["classId"] = 12,
+},
+["Orlith-KirinTor"] = {
+["total"] = 156035282,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 217757898,
+["itemLevel"] = 656,
+["classId"] = 5,
+},
+["Putchie"] = {
+["total"] = 190639194,
+["itemLevel"] = 658,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 197021099,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Kayex"] = {
+["total"] = 118418675,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 249992105,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 193291928,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 228234325,
+["itemLevel"] = 661.375,
+["classId"] = 7,
+},
+["Morkai-Sargeras"] = {
+["total"] = 240096923,
+["itemLevel"] = 654.6875,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 301061951,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 169262394,
+["itemLevel"] = 652.6875,
+["classId"] = 13,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 185650604,
+["itemLevel"] = 654.4375,
+["classId"] = 10,
+},
+},
+["elapsed"] = 117.2179999999935,
+["servertime"] = 1743021551,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 165250950,
+["itemLevel"] = 649.9375,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 157403166,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1743021551,
+},
+{
+["DAMAGER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 102350231,
+["itemLevel"] = 651.375,
+["classId"] = 11,
+},
+["Âssahî-Dalaran"] = {
+["total"] = 163493829,
+["itemLevel"] = 632.75,
+["classId"] = 4,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 115354666,
+["itemLevel"] = 641.625,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 305860788,
+["itemLevel"] = 651.3125,
+["classId"] = 9,
+},
+["Morkai-Sargeras"] = {
+["total"] = 359035692,
+["itemLevel"] = 665.75,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 299169549,
+["itemLevel"] = 659.4375,
+["classId"] = 3,
+},
+["Earendor"] = {
+["total"] = 189943737,
+["itemLevel"] = 613.375,
+["classId"] = 3,
+},
+},
+["time"] = 1744141900,
+["date"] = "21:51 08/04/25",
+["elapsed"] = 178.3269999998156,
+["servertime"] = 1744141898,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 147214934,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 143808822,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3122] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1382208418,
+["itemLevel"] = 691.4375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1290182785,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Natariis"] = {
+["total"] = 966353292,
+["itemLevel"] = 688,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 633623771,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1393603285,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 1109860914,
+["itemLevel"] = 692.625,
+["classId"] = 11,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1236292284,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 695649840,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 513096474,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1009052590,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 998332351,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 973498995,
+["itemLevel"] = 676.3125,
+["classId"] = 5,
+},
+},
+["time"] = 1755807093,
+["date"] = "22:11 21/08/25",
+["elapsed"] = 306.5749999999825,
+["servertime"] = 1755807092,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 714402886,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 726163410,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 626439732,
+["itemLevel"] = 689.0625,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756412086,
+["elapsed"] = 248.9449999999488,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1219012376,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 942887672,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1215525677,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1235617702,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 519592921,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 905732296,
+["itemLevel"] = 685.625,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1003679462,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 1013812470,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 1438023900,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1361784751,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 438169135,
+["itemLevel"] = 692,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 919351191,
+["itemLevel"] = 689.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756412085,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 653486776,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 471957365,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 496070848,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "22:14 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1303930835,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1222488845,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 1134398863,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1032350489,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1262143675,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 463889862,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 1244786278,
+["itemLevel"] = 704.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1307351778,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 890125176,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 731398099,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 386910007,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 793460069,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 942286385,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 996358187,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1092701038,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756930525,
+["date"] = "22:15 03/09/25",
+["elapsed"] = 202.377000000095,
+["servertime"] = 1756930524,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 488683154,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 624327006,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 673845526,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[2922] = {
+{
+["time"] = 1740607669,
+["guild"] = "Adasträ",
+["elapsed"] = 277.0349999999162,
+["date"] = "23:07 26/02/25",
+["servertime"] = 1740607668,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 135853388,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 112295672,
+["itemLevel"] = 629.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 123056026,
+["itemLevel"] = 620.4375,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 89514671,
+["itemLevel"] = 632.3125,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 201096383,
+["itemLevel"] = 627.5,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 132881833,
+["itemLevel"] = 623.25,
+["classId"] = 3,
+},
+["Pewpewtre"] = {
+["total"] = 242766167,
+["itemLevel"] = 625.1875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 101985988,
+["itemLevel"] = 619.5,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 208228307,
+["itemLevel"] = 626,
+["classId"] = 1,
+},
+["Anydâ-Archimonde"] = {
+["total"] = 169267907,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
+},
+["Erami-Sargeras"] = {
+["total"] = 133783700,
+["itemLevel"] = 633.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 162905482,
+["itemLevel"] = 633.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 169877454,
+["itemLevel"] = 626.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 179721055,
+["itemLevel"] = 636.875,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 215739453,
+["itemLevel"] = 628.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 101848857,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
+},
+},
 },
 },
 [2920] = {
 {
-["date"] = "22:42 26/02/25",
+["time"] = 1740606133,
 ["guild"] = "Adasträ",
+["elapsed"] = 97.6909999998752,
+["date"] = "22:42 26/02/25",
+["servertime"] = 1740606134,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 18782243,
+["itemLevel"] = 629.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 58984382,
+["itemLevel"] = 620.4375,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 49335886,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
+},
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 150504605,
@@ -4518,10 +4104,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 626,
 ["classId"] = 1,
 },
-["Kayex"] = {
-["total"] = 85785860,
-["itemLevel"] = 630.4375,
-["classId"] = 6,
+["Anydâ-Archimonde"] = {
+["total"] = 126396296,
+["itemLevel"] = 623.5625,
+["classId"] = 9,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 64772862,
@@ -4548,1156 +4134,2664 @@ DetailsDataStorage = {
 ["itemLevel"] = 628.5625,
 ["classId"] = 1,
 },
-["Anydâ-Archimonde"] = {
-["total"] = 126396296,
-["itemLevel"] = 623.5625,
-["classId"] = 9,
+["Kayex"] = {
+["total"] = 85785860,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
 },
 },
-["elapsed"] = 97.6909999998752,
-["servertime"] = 1740606134,
+},
+},
+[2917] = {
+{
+["time"] = 1740604111,
+["guild"] = "Adasträ",
+["elapsed"] = 274.4169999998994,
+["date"] = "22:08 26/02/25",
+["servertime"] = 1740604112,
 ["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 143828106,
+["itemLevel"] = 623.375,
+["classId"] = 5,
+},
 ["Amsët"] = {
-["total"] = 18782243,
+["total"] = 174115183,
 ["itemLevel"] = 629.4375,
 ["classId"] = 7,
 },
 ["Opøpoî-Dalaran"] = {
-["total"] = 58984382,
+["total"] = 221570455,
 ["itemLevel"] = 620.4375,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 49335886,
-["itemLevel"] = 623.375,
-["classId"] = 5,
-},
-},
-["time"] = 1740606133,
-},
-},
-},
-["heroic"] = {
-[3016] = {
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 1186491211,
-["itemLevel"] = 668.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 679734380,
-["itemLevel"] = 660.4375,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 629510888,
-["itemLevel"] = 666.75,
-["classId"] = 1,
-},
-["Pipoteur"] = {
-["total"] = 998120658,
-["itemLevel"] = 666,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 778747164,
-["itemLevel"] = 667.5625,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 926050330,
-["itemLevel"] = 665.125,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 934405120,
-["itemLevel"] = 668.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 1123725484,
-["itemLevel"] = 667,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 617295247,
-["itemLevel"] = 669.4375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 531161339,
-["itemLevel"] = 667.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 795875467,
-["itemLevel"] = 664.125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 1079865140,
-["itemLevel"] = 669.25,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 614394449,
-["itemLevel"] = 663,
-["classId"] = 3,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 443613860,
-["itemLevel"] = 657.1875,
-["classId"] = 11,
-},
-},
-["time"] = 1745441806,
-["date"] = "22:56 23/04/25",
-["elapsed"] = 512.7709999999497,
-["servertime"] = 1745441805,
-["HEALER"] = {
 ["Putchie"] = {
-["total"] = 1096124675,
-["itemLevel"] = 666.3125,
+["total"] = 84291498,
+["itemLevel"] = 632.3125,
 ["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 1193865617,
-["itemLevel"] = 664.5,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 1183247781,
-["itemLevel"] = 667.0625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 1075325549,
-["itemLevel"] = 668,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-},
-[2919] = {
-{
-["time"] = 1728247796,
-["guild"] = "La chope de fer",
-["elapsed"] = 503.7490000003018,
-["date"] = "22:49 06/10/24",
-["servertime"] = 1728247794,
-["HEALER"] = {
-["Kiljim-Dalaran"] = {
-["total"] = 485680714,
-["itemLevel"] = 613,
-["classId"] = 7,
-},
-["Tälindä"] = {
-["total"] = 420691449,
-["itemLevel"] = 607.1875,
-["classId"] = 2,
-},
-["Sonydl-Archimonde"] = {
-["total"] = 532630848,
-["itemLevel"] = 613.875,
-["classId"] = 10,
-},
-["Naincurable"] = {
-["total"] = 385374017,
-["itemLevel"] = 606.25,
-["classId"] = 7,
 },
 },
 ["DAMAGER"] = {
-["Barabell-Cho'gall"] = {
-["total"] = 446731499,
-["itemLevel"] = 612.875,
-["classId"] = 10,
-},
-["Sithi-Dalaran"] = {
-["total"] = 242949167,
-["itemLevel"] = 612.4375,
-["classId"] = 6,
-},
-["Nahilis-Dalaran"] = {
-["total"] = 376832721,
-["itemLevel"] = 615.0625,
-["classId"] = 11,
-},
-["Rôcksteady"] = {
-["total"] = 209399790,
-["itemLevel"] = 610.375,
-["classId"] = 11,
-},
-["Jilano"] = {
-["total"] = 302933733,
-["itemLevel"] = 612.625,
-["classId"] = 12,
-},
-["Thenérius-Dalaran"] = {
-["total"] = 340736756,
-["itemLevel"] = 610.875,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 453068837,
-["itemLevel"] = 612.0625,
-["classId"] = 3,
-},
 ["Kvotheen"] = {
-["total"] = 514610697,
-["itemLevel"] = 612.125,
+["total"] = 162157449,
+["itemLevel"] = 627.5,
 ["classId"] = 7,
-},
-["Ælîî-KhazModan"] = {
-["total"] = 456726775,
-["itemLevel"] = 609.125,
-["classId"] = 8,
-},
-["Eshydna"] = {
-["total"] = 282294114,
-["itemLevel"] = 605.9375,
-["classId"] = 12,
-},
-["Flydidjecte-Archimonde"] = {
-["total"] = 455130310,
-["itemLevel"] = 614.125,
-["classId"] = 12,
-},
-["Thargar-Dalaran"] = {
-["total"] = 667822685,
-["itemLevel"] = 614.125,
-["classId"] = 1,
-},
-},
-},
-{
-["guild"] = "La chope de fer",
-["time"] = 1732137485,
-["elapsed"] = 357.1520000000019,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 449051251,
-["itemLevel"] = 622.125,
-["classId"] = 7,
-},
-["Hazraen-CultedelaRivenoire"] = {
-["total"] = 261802058,
-["itemLevel"] = 610.5,
-["classId"] = 3,
-},
-["Sithi-Dalaran"] = {
-["total"] = 185008206,
-["itemLevel"] = 619.75,
-["classId"] = 6,
-},
-["Ashdêuzo"] = {
-["total"] = 157038052,
-["itemLevel"] = 617.125,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 436229372,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 192359588,
-["itemLevel"] = 611.375,
-["classId"] = 12,
-},
-["Voda-Dalaran"] = {
-["total"] = 354670684,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Edixed-Dalaran"] = {
-["total"] = 326404271,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 405001028,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-},
-["servertime"] = 1732137485,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 477451890,
-["itemLevel"] = 617.3125,
-["classId"] = 10,
-},
-["Deïna-Dalaran"] = {
-["total"] = 358987660,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
-},
-},
-["date"] = "22:18 20/11/24",
-},
-},
-[3011] = {
-{
-["guild"] = "Adasträ",
-["time"] = 1741899884,
-["elapsed"] = 354.2539999999863,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 526007648,
-["itemLevel"] = 646.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 397506303,
-["itemLevel"] = 645.2,
-["classId"] = 3,
 },
 ["Dordok-Ysondre"] = {
-["total"] = 349553548,
-["itemLevel"] = 643.1875,
+["total"] = 97028737,
+["itemLevel"] = 623.25,
 ["classId"] = 3,
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 233060468,
-["itemLevel"] = 645.9375,
+["Pewpewtre"] = {
+["total"] = 127517846,
+["itemLevel"] = 625.1875,
 ["classId"] = 8,
 },
 ["Øskydh-Archimonde"] = {
-["total"] = 209850395,
-["itemLevel"] = 649.375,
+["total"] = 107769895,
+["itemLevel"] = 619.5,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 426810293,
-["itemLevel"] = 639,
+["Zroyele"] = {
+["total"] = 83251568,
+["itemLevel"] = 626,
 ["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 422735856,
-["itemLevel"] = 646.25,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 431787924,
-["itemLevel"] = 647.8125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 204010463,
-["itemLevel"] = 648.625,
-["classId"] = 6,
-},
-["Uztek"] = {
-["total"] = 409900120,
-["itemLevel"] = 646.875,
+["Anydâ-Archimonde"] = {
+["total"] = 103958883,
+["itemLevel"] = 623.5625,
 ["classId"] = 9,
 },
+["Erami-Sargeras"] = {
+["total"] = 152380599,
+["itemLevel"] = 633.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 138744490,
+["itemLevel"] = 633.75,
+["classId"] = 7,
+},
 ["Orlith-KirinTor"] = {
-["total"] = 341910287,
-["itemLevel"] = 645,
+["total"] = 131238318,
+["itemLevel"] = 626.25,
 ["classId"] = 13,
 },
 ["Morkai-Sargeras"] = {
-["total"] = 332760521,
+["total"] = 128012926,
+["itemLevel"] = 636.875,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 99682019,
+["itemLevel"] = 628.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 73710666,
+["itemLevel"] = 630.4375,
+["classId"] = 6,
+},
+},
+},
+},
+[3130] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1755805903,
+["elapsed"] = 219.8650000000198,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 914085343,
+["itemLevel"] = 691.4375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 794785599,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Natariis"] = {
+["total"] = 764716300,
+["itemLevel"] = 688,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 404348699,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1026612410,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 714054854,
+["itemLevel"] = 692.625,
+["classId"] = 11,
+},
+["Arrhad"] = {
+["total"] = 787200439,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 578674709,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 376870849,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 813844690,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 778690484,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 495184229,
+["itemLevel"] = 674.9375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1755805902,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 354042961,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 385466057,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 263053592,
+["itemLevel"] = 688.25,
+["classId"] = 7,
+},
+},
+["date"] = "21:51 21/08/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756410938,
+["elapsed"] = 204.8360000000102,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1004624489,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 639769649,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 925466360,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 810461038,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 316450490,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 149879006,
+["itemLevel"] = 685.625,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 885385609,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 700792923,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 969572818,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 915770844,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 424609987,
+["itemLevel"] = 691,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 694781202,
+["itemLevel"] = 689.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756410937,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 389943520,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 292763491,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 309533286,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "21:55 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 818662130,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 732008349,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 472474781,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 804600682,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 725982055,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 275630112,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 873803170,
+["itemLevel"] = 705.875,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 762289941,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 688312199,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 638752165,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 247094530,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 530585576,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 664025212,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 740967514,
+["itemLevel"] = 705.1333333333333,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 585265629,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756929601,
+["date"] = "22:00 03/09/25",
+["elapsed"] = 170.2489999998361,
+["servertime"] = 1756929600,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 247725876,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 262075236,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 379651499,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3132] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1755806592,
+["elapsed"] = 214.2429999999877,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 997750069,
+["itemLevel"] = 691.4375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 764977597,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Natariis"] = {
+["total"] = 608996394,
+["itemLevel"] = 688,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 371224976,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1039114463,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 767173249,
+["itemLevel"] = 692.625,
+["classId"] = 11,
+},
+["Arrhad"] = {
+["total"] = 645566278,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 739532177,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 281251622,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 740647378,
+["itemLevel"] = 696.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 655269155,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 467205421,
+["itemLevel"] = 676.3125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1755806591,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 196376426,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 324802117,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 226088002,
+["itemLevel"] = 689.0625,
+["classId"] = 7,
+},
+},
+["date"] = "22:03 21/08/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756411580,
+["elapsed"] = 194.7859999999637,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 858725539,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 758689512,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 816209951,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 794298875,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 438508485,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 622598878,
+["itemLevel"] = 685.625,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 652900893,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 651355341,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 842386869,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 754879197,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 321578526,
+["itemLevel"] = 691,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 569974827,
+["itemLevel"] = 689.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756411579,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 298029898,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 258081704,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 239502274,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "22:06 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 694641854,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 627243181,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 582509918,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 707795788,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 636416899,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 276183794,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 698722816,
+["itemLevel"] = 705.875,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 613042720,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 561695308,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 515456839,
+["itemLevel"] = 705.4375,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 215483377,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 536812861,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 600977356,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 488901578,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 608386604,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756930122,
+["date"] = "22:08 03/09/25",
+["elapsed"] = 143.3170000000391,
+["servertime"] = 1756930121,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 123703730,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 87059210,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 88428344,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3134] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 910559689,
+["itemLevel"] = 692.25,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 965822278,
+["itemLevel"] = 693.6875,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 802411822,
+["itemLevel"] = 689.25,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 945503045,
+["itemLevel"] = 694.75,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 505076270,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 1002070839,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 783022477,
+["itemLevel"] = 700.625,
+["classId"] = 9,
+},
+["Dordok-Ysondre"] = {
+["total"] = 952972356,
+["itemLevel"] = 693.3125,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1222995992,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1033524980,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 536814783,
+["itemLevel"] = 696.5,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 481583688,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Anymind-Archimonde"] = {
+["total"] = 651713920,
+["itemLevel"] = 678.1875,
+["classId"] = 5,
+},
+},
+["time"] = 1755808781,
+["date"] = "22:39 21/08/25",
+["elapsed"] = 294.5280000000203,
+["servertime"] = 1755808780,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 413031685,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 430200340,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 684672120,
+["itemLevel"] = 689.0625,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756412939,
+["elapsed"] = 196.8429999999935,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 841888949,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 777968725,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 811049380,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 755014244,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 313467074,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 618354687,
+["itemLevel"] = 686.6875,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 810409915,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 768800559,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 909954917,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 822116088,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 338320740,
+["itemLevel"] = 692,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 595216144,
+["itemLevel"] = 689.625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756412938,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 564624089,
+["itemLevel"] = 704,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 505035559,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 341190450,
+["itemLevel"] = 691.75,
+["classId"] = 7,
+},
+},
+["date"] = "22:28 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 822133173,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 781090941,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 638899783,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 766515214,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 792613728,
+["itemLevel"] = 707.5,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 282431252,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Arrhad"] = {
+["total"] = 859032749,
+["itemLevel"] = 704.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 889669432,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 570299223,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 696446426,
+["itemLevel"] = 704.2666666666667,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 660802528,
+["itemLevel"] = 692.75,
+["classId"] = 1,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 262703225,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 718737608,
+["itemLevel"] = 703.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 635455086,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 711784604,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
+},
+},
+["time"] = 1756931345,
+["date"] = "22:29 03/09/25",
+["elapsed"] = 163.0009999999311,
+["servertime"] = 1756931344,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 332983758,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 450465474,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 541567627,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3012] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1741210584,
+["elapsed"] = 344.3510000000242,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 609761478,
+["itemLevel"] = 637.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 573921406,
+["itemLevel"] = 633.6875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 425700958,
+["itemLevel"] = 628,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 481099097,
+["itemLevel"] = 626.7333333333333,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 413084110,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 229489165,
+["itemLevel"] = 627.6875,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 458189868,
+["itemLevel"] = 629.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 595967210,
+["itemLevel"] = 633.5,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 387033610,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 325548125,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 352280214,
+["itemLevel"] = 635.875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 254832804,
+["itemLevel"] = 628.5625,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 352287775,
+["itemLevel"] = 619.8125,
+["classId"] = 9,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 435932803,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
+},
+["Jamelmoignon"] = {
+["total"] = 356121028,
+["itemLevel"] = 631.0625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741210583,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 399622762,
+["itemLevel"] = 634.125,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 337190639,
+["itemLevel"] = 630.4375,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 366126978,
+["itemLevel"] = 622.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 259724884,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+},
+["date"] = "22:36 05/03/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 491676896,
+["itemLevel"] = 645.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 412813716,
+["itemLevel"] = 644.1875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 354888160,
+["itemLevel"] = 642.1875,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 183673247,
+["itemLevel"] = 645.3125,
+["classId"] = 12,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 386870489,
+["itemLevel"] = 644.5,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 400339130,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 364325601,
+["itemLevel"] = 645,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 488903125,
+["itemLevel"] = 643.0625,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 356487742,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 157975251,
+["itemLevel"] = 648.0625,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 346472313,
+["itemLevel"] = 647.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 307360378,
+["itemLevel"] = 644.9375,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 346599832,
+["itemLevel"] = 646.125,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 346385558,
+["itemLevel"] = 637,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 364993195,
+["itemLevel"] = 647.5625,
+["classId"] = 5,
+},
+},
+["time"] = 1741814168,
+["date"] = "22:16 12/03/25",
+["elapsed"] = 254.4949999999953,
+["servertime"] = 1741814167,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 205803616,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 216149634,
+["itemLevel"] = 637.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 239953129,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 205390868,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742417808,
+["elapsed"] = 197.2050000000745,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 406588377,
+["itemLevel"] = 654.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 325479528,
+["itemLevel"] = 647.375,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 271410740,
 ["itemLevel"] = 646,
 ["classId"] = 3,
 },
 ["Putchie"] = {
-["total"] = 289061087,
-["itemLevel"] = 644.125,
+["total"] = 291286555,
+["itemLevel"] = 651.1875,
 ["classId"] = 11,
 },
-["Jamelmoignon"] = {
-["total"] = 201960387,
-["itemLevel"] = 648.1875,
-["classId"] = 5,
-},
-},
-["servertime"] = 1741899883,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 501954937,
-["itemLevel"] = 638.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 419868680,
-["itemLevel"] = 645.125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 608760819,
-["itemLevel"] = 652.375,
-["classId"] = 5,
-},
-},
-["date"] = "22:04 13/03/25",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 506833939,
-["itemLevel"] = 654.8125,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 413395700,
-["itemLevel"] = 651.6875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 142696275,
-["itemLevel"] = 650.25,
-["classId"] = 3,
-},
 ["Ânydâ-Archimonde"] = {
-["total"] = 338634824,
-["itemLevel"] = 654.6875,
+["total"] = 315155509,
+["itemLevel"] = 653.5,
 ["classId"] = 8,
 },
 ["Øskydh-Archimonde"] = {
-["total"] = 204213442,
-["itemLevel"] = 654,
+["total"] = 133451761,
+["itemLevel"] = 653.75,
 ["classId"] = 12,
 },
 ["Grodar-Archimonde"] = {
-["total"] = 361401024,
+["total"] = 294066065,
 ["itemLevel"] = 651.3125,
 ["classId"] = 1,
 },
 ["Vilidøns-Dalaran"] = {
-["total"] = 459276802,
-["itemLevel"] = 652.75,
+["total"] = 341624615,
+["itemLevel"] = 650.75,
 ["classId"] = 12,
 },
 ["Durnedin-Dalaran"] = {
-["total"] = 370351108,
+["total"] = 317411517,
 ["itemLevel"] = 653.8125,
 ["classId"] = 2,
 },
+["Opøpoî-Dalaran"] = {
+["total"] = 385853495,
+["itemLevel"] = 646.125,
+["classId"] = 10,
+},
 ["Erami-Sargeras"] = {
-["total"] = 173895597,
-["itemLevel"] = 651.9375,
+["total"] = 126201095,
+["itemLevel"] = 650.5,
 ["classId"] = 6,
 },
-["Gydzitt-KhazModan"] = {
-["total"] = 356532799,
-["itemLevel"] = 658,
-["classId"] = 7,
-},
 ["Orlith-KirinTor"] = {
-["total"] = 349023756,
+["total"] = 309304498,
 ["itemLevel"] = 650.125,
 ["classId"] = 13,
 },
 ["Uztek"] = {
-["total"] = 420323277,
+["total"] = 336161374,
 ["itemLevel"] = 655.75,
 ["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
-["total"] = 293808807,
-["itemLevel"] = 642.9375,
+["total"] = 221719600,
+["itemLevel"] = 642.6875,
 ["classId"] = 13,
 },
 ["Jamelmoignon"] = {
-["total"] = 386149673,
+["total"] = 361958836,
 ["itemLevel"] = 654.375,
 ["classId"] = 5,
 },
 },
-["time"] = 1742423610,
-["date"] = "23:33 19/03/25",
-["elapsed"] = 263.4910000000382,
-["servertime"] = 1742423609,
+["servertime"] = 1742417807,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 262406780,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 312142616,
-["itemLevel"] = 648.5,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 409257755,
-["itemLevel"] = 654.125,
-["classId"] = 10,
-},
 ["Ässahi-Dalaran"] = {
-["total"] = 394731394,
-["itemLevel"] = 657.5625,
+["total"] = 200606528,
+["itemLevel"] = 657.1875,
 ["classId"] = 5,
 },
+["Amsët"] = {
+["total"] = 183490878,
+["itemLevel"] = 646.5,
+["classId"] = 7,
 },
-["guild"] = "Adasträ",
+},
+["date"] = "21:56 19/03/25",
 },
 {
-["time"] = 1743027399,
+["date"] = "21:57 26/03/25",
 ["guild"] = "Adasträ",
-["elapsed"] = 227.6059999999998,
-["date"] = "23:16 26/03/25",
-["servertime"] = 1743027399,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 298052451,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 290818946,
-["itemLevel"] = 648.25,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 368212781,
-["itemLevel"] = 660.125,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 302796060,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-},
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 354474641,
-["itemLevel"] = 659.1875,
+["total"] = 357295288,
+["itemLevel"] = 658.5625,
 ["classId"] = 7,
 },
 ["Øskÿ-Archimonde"] = {
-["total"] = 217359148,
+["total"] = 154395525,
 ["itemLevel"] = 654.5,
 ["classId"] = 1,
 },
-["Dordok-Ysondre"] = {
-["total"] = 244698570,
-["itemLevel"] = 654.5625,
-["classId"] = 3,
-},
 ["Juicedmk-Archimonde"] = {
-["total"] = 258927452,
-["itemLevel"] = 639.6875,
+["total"] = 198101226,
+["itemLevel"] = 635.25,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 362363478,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 289762583,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 400231295,
+["itemLevel"] = 657.75,
+["classId"] = 12,
+},
+["Orlith-KirinTor"] = {
+["total"] = 297181180,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 266695927,
+["itemLevel"] = 656,
+["classId"] = 5,
+},
+["Putchie"] = {
+["total"] = 289995614,
+["itemLevel"] = 658,
 ["classId"] = 11,
 },
 ["Ânydâ-Archimonde"] = {
-["total"] = 335168299,
+["total"] = 246587771,
 ["itemLevel"] = 659.4375,
 ["classId"] = 8,
 },
 ["Kayex"] = {
-["total"] = 172081615,
+["total"] = 127440412,
 ["itemLevel"] = 660,
 ["classId"] = 6,
 },
 ["Zroyele"] = {
-["total"] = 383640741,
+["total"] = 386062258,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 246958106,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 376802060,
+["itemLevel"] = 661.375,
+["classId"] = 7,
+},
+["Morkai-Sargeras"] = {
+["total"] = 288459660,
+["itemLevel"] = 654.6875,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 318803656,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 308945452,
+["itemLevel"] = 652.6875,
+["classId"] = 13,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 299032429,
+["itemLevel"] = 654.4375,
+["classId"] = 10,
+},
+},
+["elapsed"] = 193.1360000000132,
+["servertime"] = 1743022652,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 234800508,
+["itemLevel"] = 649.9375,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 274552993,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1743022652,
+},
+{
+["time"] = 1744143036,
+["guild"] = "Adasträ",
+["elapsed"] = 255.2260000000242,
+["date"] = "22:10 08/04/25",
+["servertime"] = 1744143034,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 172122094,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 247397294,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
+["DAMAGER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 162598834,
+["itemLevel"] = 651.375,
+["classId"] = 11,
+},
+["Âssahî-Dalaran"] = {
+["total"] = 218085331,
+["itemLevel"] = 633.1875,
+["classId"] = 4,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 203210291,
+["itemLevel"] = 641.4375,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 386001738,
+["itemLevel"] = 651.3125,
+["classId"] = 9,
+},
+["Morkai-Sargeras"] = {
+["total"] = 512838318,
+["itemLevel"] = 665.75,
+["classId"] = 3,
+},
+["Earendor"] = {
+["total"] = 259832276,
+["itemLevel"] = 616.625,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 326210442,
+["itemLevel"] = 659.4375,
+["classId"] = 3,
+},
+},
+},
+},
+[3014] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1741214023,
+["elapsed"] = 332.4919999999693,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 482404189,
+["itemLevel"] = 637.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 445075578,
+["itemLevel"] = 633.6875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 134300778,
+["itemLevel"] = 628,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 405642842,
+["itemLevel"] = 627.3125,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 132580596,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 211038998,
+["itemLevel"] = 627.6875,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 402530074,
+["itemLevel"] = 629.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 466976450,
+["itemLevel"] = 634.3125,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 446118926,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 197990362,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 379305985,
+["itemLevel"] = 635.875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 184069534,
+["itemLevel"] = 628.5625,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 347548262,
+["itemLevel"] = 621.25,
+["classId"] = 9,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 348125659,
+["itemLevel"] = 631.3125,
+["classId"] = 2,
+},
+["Jamelmoignon"] = {
+["total"] = 154846788,
+["itemLevel"] = 631.0625,
+["classId"] = 5,
+},
+},
+["servertime"] = 1741214022,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 278588048,
+["itemLevel"] = 634.5,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 214405676,
+["itemLevel"] = 632.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 277216968,
+["itemLevel"] = 622.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 72545225,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+},
+["date"] = "23:33 05/03/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 400573011,
+["itemLevel"] = 645.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 360586862,
+["itemLevel"] = 644.1875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 272667838,
+["itemLevel"] = 642.1875,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 176738317,
+["itemLevel"] = 648.1875,
+["classId"] = 12,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 259479867,
+["itemLevel"] = 644.5,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 299886859,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 331044301,
+["itemLevel"] = 645,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 399984056,
+["itemLevel"] = 644.6875,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 326658655,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 174955323,
+["itemLevel"] = 648.0625,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 304803923,
+["itemLevel"] = 647.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 281183096,
+["itemLevel"] = 644.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 293488747,
+["itemLevel"] = 646.125,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 345159176,
+["itemLevel"] = 637,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 375796335,
+["itemLevel"] = 647.5625,
+["classId"] = 5,
+},
+},
+["time"] = 1741816635,
+["date"] = "22:57 12/03/25",
+["elapsed"] = 226.9049999999988,
+["servertime"] = 1741816634,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 137997659,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 161713380,
+["itemLevel"] = 637.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 166027776,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 163795903,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742419377,
+["elapsed"] = 167.0590000000084,
+["DAMAGER"] = {
+["Putchie"] = {
+["total"] = 237819773,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+["Kvotheen"] = {
+["total"] = 368293020,
+["itemLevel"] = 654.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 321265255,
+["itemLevel"] = 647.375,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 271605107,
+["itemLevel"] = 649,
+["classId"] = 3,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 278673232,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 252684175,
+["itemLevel"] = 653.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 104091261,
+["itemLevel"] = 653.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 269299301,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 286175695,
+["itemLevel"] = 650.75,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 141488894,
+["itemLevel"] = 650.5,
+["classId"] = 6,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 240839301,
+["itemLevel"] = 648.3125,
+["classId"] = 10,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 319353297,
+["itemLevel"] = 654.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 232604533,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 310528744,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 237995309,
+["itemLevel"] = 642.0625,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 350406646,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742419376,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 212861564,
+["itemLevel"] = 657.1875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 181571171,
+["itemLevel"] = 647.5,
+["classId"] = 7,
+},
+},
+["date"] = "22:22 19/03/25",
+},
+{
+["date"] = "22:15 26/03/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 358662495,
+["itemLevel"] = 658.5625,
+["classId"] = 7,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 164213521,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 181967612,
+["itemLevel"] = 636.4375,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 310966957,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 306159457,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 350342359,
+["itemLevel"] = 657.75,
+["classId"] = 12,
+},
+["Orlith-KirinTor"] = {
+["total"] = 290026854,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 308653345,
+["itemLevel"] = 656,
+["classId"] = 5,
+},
+["Putchie"] = {
+["total"] = 275492325,
+["itemLevel"] = 658,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 275560000,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Kayex"] = {
+["total"] = 152663940,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 315612223,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 279741084,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Morkai-Sargeras"] = {
+["total"] = 298584765,
+["itemLevel"] = 654.6875,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 345119139,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 311775714,
+["itemLevel"] = 652.6875,
+["classId"] = 13,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 229280503,
+["itemLevel"] = 654.4375,
+["classId"] = 10,
+},
+},
+["elapsed"] = 170.2690000000002,
+["servertime"] = 1743023725,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 174342775,
+["itemLevel"] = 649.9375,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 249881967,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1743023725,
+},
+{
+["time"] = 1744144520,
+["guild"] = "Adasträ",
+["elapsed"] = 239.0100000000093,
+["date"] = "22:35 08/04/25",
+["servertime"] = 1744144518,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 234944494,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
+["Kvotheen"] = {
+["total"] = 250457286,
+["itemLevel"] = 664,
+["classId"] = 7,
+},
+},
+["DAMAGER"] = {
+["Âssahî-Dalaran"] = {
+["total"] = 199305457,
+["itemLevel"] = 636.8125,
+["classId"] = 4,
+},
+["Blackløtus-KirinTor"] = {
+["total"] = 121158980,
+["itemLevel"] = 651.375,
+["classId"] = 11,
+},
+["Villiidøns-Dalaran"] = {
+["total"] = 280257561,
+["itemLevel"] = 633.3125,
+["classId"] = 11,
+},
+["Dordok-Ysondre"] = {
+["total"] = 348235452,
+["itemLevel"] = 659.4375,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 397950561,
+["itemLevel"] = 651.3125,
+["classId"] = 9,
+},
+["Morkai-Sargeras"] = {
+["total"] = 470047962,
+["itemLevel"] = 665.75,
+["classId"] = 3,
+},
+["Earendor"] = {
+["total"] = 235515377,
+["itemLevel"] = 616.625,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 177064311,
+["itemLevel"] = 641.4375,
+["classId"] = 2,
+},
+},
+},
+},
+[3016] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 598241759,
+["itemLevel"] = 640.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 522075584,
+["itemLevel"] = 634.25,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 315515765,
+["itemLevel"] = 633.625,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 228169282,
+["itemLevel"] = 631.375,
+["classId"] = 12,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 425124243,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 459809893,
+["itemLevel"] = 638,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 294686278,
+["itemLevel"] = 627.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 574876026,
+["itemLevel"] = 638.625,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 464239599,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 225672419,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 492519053,
+["itemLevel"] = 642,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 325413587,
+["itemLevel"] = 630.25,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 346929288,
+["itemLevel"] = 626.75,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 440664242,
+["itemLevel"] = 633.1875,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 403906088,
+["itemLevel"] = 633.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1741295975,
+["date"] = "22:19 06/03/25",
+["elapsed"] = 390.6070000000182,
+["servertime"] = 1741295976,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 220943999,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 453662831,
+["itemLevel"] = 632.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 408659312,
+["itemLevel"] = 637.6875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 424468344,
+["itemLevel"] = 639.9375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 541048656,
+["itemLevel"] = 645.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 479648644,
+["itemLevel"] = 645.625,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 430073607,
+["itemLevel"] = 642.1875,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 224391094,
+["itemLevel"] = 648.1875,
+["classId"] = 12,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 383629252,
+["itemLevel"] = 644.5,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 387643905,
+["itemLevel"] = 645.3125,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 492257545,
+["itemLevel"] = 645,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 540614262,
+["itemLevel"] = 644.6875,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 499480785,
+["itemLevel"] = 644.4375,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 243940109,
+["itemLevel"] = 648.0625,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 520654268,
+["itemLevel"] = 647.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 324457590,
+["itemLevel"] = 644.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 395692272,
+["itemLevel"] = 646.125,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 198649246,
+["itemLevel"] = 637,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 525719020,
+["itemLevel"] = 647.5625,
+["classId"] = 5,
+},
+},
+["time"] = 1741818837,
+["date"] = "23:33 12/03/25",
+["elapsed"] = 323.4040000000023,
+["servertime"] = 1741818836,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 382393164,
+["itemLevel"] = 641.6875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 335402876,
+["itemLevel"] = 637.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 247479000,
+["itemLevel"] = 643.1875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 452668378,
+["itemLevel"] = 651.5625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742420843,
+["elapsed"] = 289.7399999999907,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 531334112,
+["itemLevel"] = 654.4375,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 484847530,
+["itemLevel"] = 647.375,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 412417295,
+["itemLevel"] = 649,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 383557156,
+["itemLevel"] = 653.5,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 206088283,
+["itemLevel"] = 653.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 417435372,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 468462745,
+["itemLevel"] = 650.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 461056551,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 184419278,
+["itemLevel"] = 650.5,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 464392808,
+["itemLevel"] = 654.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 340312786,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 446036395,
+["itemLevel"] = 655.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 344603328,
+["itemLevel"] = 642.0625,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 521272402,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742420842,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 264931611,
+["itemLevel"] = 657.1875,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 278776798,
+["itemLevel"] = 647.5,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 397707516,
+["itemLevel"] = 652.9375,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 180030846,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+},
+["date"] = "22:47 19/03/25",
+},
+{
+["date"] = "22:38 26/03/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 510032752,
+["itemLevel"] = 658.5625,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 419501149,
+["itemLevel"] = 654.1875,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 276118578,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 440407327,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 292331442,
+["itemLevel"] = 636.4375,
+["classId"] = 11,
+},
+["Kayex"] = {
+["total"] = 213942738,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 499598651,
 ["itemLevel"] = 657.5,
 ["classId"] = 1,
 },
 ["Vilidøns-Dalaran"] = {
-["total"] = 470984541,
+["total"] = 496996823,
 ["itemLevel"] = 657.75,
 ["classId"] = 12,
 },
-["Uztek"] = {
-["total"] = 407749311,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
+["Morkai-Sargeras"] = {
+["total"] = 470173922,
+["itemLevel"] = 654.5,
+["classId"] = 3,
 },
 ["Grodar-Archimonde"] = {
-["total"] = 298442973,
+["total"] = 396321793,
 ["itemLevel"] = 653.25,
 ["classId"] = 1,
 },
 ["Durnedin-Dalaran"] = {
-["total"] = 355279173,
+["total"] = 446146015,
 ["itemLevel"] = 658.0625,
 ["classId"] = 2,
 },
 ["Orlith-KirinTor"] = {
-["total"] = 330874357,
+["total"] = 292686652,
 ["itemLevel"] = 655,
 ["classId"] = 13,
 },
-["Morkai-Sargeras"] = {
-["total"] = 366456243,
-["itemLevel"] = 654.5,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 306182364,
-["itemLevel"] = 120.375,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 420198033,
-["itemLevel"] = 658.25,
-["classId"] = 5,
-},
-},
-},
-{
-["date"] = "21:58 02/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 308773610,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 459591447,
-["itemLevel"] = 664.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 412810087,
-["itemLevel"] = 655.3125,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 220388254,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 278325729,
-["itemLevel"] = 645.4375,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 214296321,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Morkai-Sargeras"] = {
-["total"] = 423499411,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 397033934,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 433385718,
-["itemLevel"] = 661.625,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 415785599,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 154593560,
-["itemLevel"] = 660.75,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 338923688,
-["itemLevel"] = 663.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 344358291,
-["itemLevel"] = 664,
-["classId"] = 13,
-},
 ["Uztek"] = {
-["total"] = 459087965,
-["itemLevel"] = 664.5,
+["total"] = 455024174,
+["itemLevel"] = 660.3125,
 ["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
-["total"] = 269295425,
-["itemLevel"] = 655.9375,
+["total"] = 404410796,
+["itemLevel"] = 652.6875,
 ["classId"] = 13,
 },
 ["Jamelmoignon"] = {
-["total"] = 472378253,
-["itemLevel"] = 660.75,
+["total"] = 468310674,
+["itemLevel"] = 656,
 ["classId"] = 5,
 },
 },
-["elapsed"] = 256.5359999999637,
-["servertime"] = 1743623921,
+["elapsed"] = 268.9820000000036,
+["servertime"] = 1743025110,
 ["HEALER"] = {
 ["Putchie"] = {
-["total"] = 391652857,
-["itemLevel"] = 660.625,
+["total"] = 230163669,
+["itemLevel"] = 659.25,
 ["classId"] = 11,
 },
 ["Amsët"] = {
-["total"] = 473085598,
-["itemLevel"] = 654.9375,
+["total"] = 309370302,
+["itemLevel"] = 649.3125,
 ["classId"] = 7,
 },
 ["Opopoi-Dalaran"] = {
-["total"] = 387698844,
-["itemLevel"] = 662.625,
+["total"] = 394178264,
+["itemLevel"] = 660.125,
 ["classId"] = 10,
 },
 ["Ässahi-Dalaran"] = {
-["total"] = 518260506,
-["itemLevel"] = 663.625,
+["total"] = 299607024,
+["itemLevel"] = 660.0625,
 ["classId"] = 5,
 },
 },
-["time"] = 1743623920,
+["time"] = 1743025110,
 },
 {
+["time"] = 1744145978,
 ["guild"] = "Adasträ",
-["time"] = 1744228500,
-["elapsed"] = 204.9859999999999,
-["DAMAGER"] = {
+["elapsed"] = 339.0460000000894,
+["date"] = "22:59 08/04/25",
+["servertime"] = 1744145976,
+["HEALER"] = {
+["Adémi-Sargeras"] = {
+["total"] = 333703014,
+["itemLevel"] = 648.5625,
+["classId"] = 5,
+},
 ["Kvotheen"] = {
-["total"] = 442673070,
-["itemLevel"] = 665.0625,
+["total"] = 480090065,
+["itemLevel"] = 664,
 ["classId"] = 7,
 },
-["Ðaitiø"] = {
-["total"] = 400387139,
-["itemLevel"] = 657.875,
-["classId"] = 3,
+},
+["DAMAGER"] = {
+["Âssahî-Dalaran"] = {
+["total"] = 266860413,
+["itemLevel"] = 636.8125,
+["classId"] = 4,
+},
+["Blackløtus-KirinTor"] = {
+["total"] = 175469722,
+["itemLevel"] = 651.375,
+["classId"] = 11,
+},
+["Villiidøns-Dalaran"] = {
+["total"] = 393724583,
+["itemLevel"] = 633.5,
+["classId"] = 11,
 },
 ["Dordok-Ysondre"] = {
-["total"] = 324419063,
-["itemLevel"] = 662.5,
+["total"] = 531956260,
+["itemLevel"] = 659.4375,
 ["classId"] = 3,
 },
 ["Pipoteur"] = {
-["total"] = 360864793,
-["itemLevel"] = 656.5625,
+["total"] = 512007790,
+["itemLevel"] = 651.3125,
 ["classId"] = 9,
 },
-["Juicedmk-Archimonde"] = {
-["total"] = 264764529,
-["itemLevel"] = 649.5625,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 352912811,
-["itemLevel"] = 661.75,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 413023323,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 400603861,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 319692163,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Erami-Sargeras"] = {
-["total"] = 203778483,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 321058434,
-["itemLevel"] = 665.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 280183851,
-["itemLevel"] = 665.4375,
-["classId"] = 13,
-},
 ["Morkai-Sargeras"] = {
-["total"] = 330608877,
-["itemLevel"] = 666.375,
+["total"] = 589777845,
+["itemLevel"] = 665.75,
 ["classId"] = 3,
 },
-["Grodar-Archimonde"] = {
-["total"] = 323569166,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 202654105,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744228499,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 277141059,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 293290638,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 315497463,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 303515407,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
-},
-},
-["date"] = "21:55 09/04/25",
-},
-{
-["date"] = "21:52 16/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 417656528,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 307605823,
-["itemLevel"] = 658.75,
+["Earendor"] = {
+["total"] = 342050699,
+["itemLevel"] = 620.0625,
 ["classId"] = 3,
 },
 ["Øskypal-Archimonde"] = {
-["total"] = 166269146,
-["itemLevel"] = 653.3125,
+["total"] = 181619618,
+["itemLevel"] = 641.4375,
 ["classId"] = 2,
 },
-["Pipoteur"] = {
-["total"] = 371530345,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 356262596,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 343051341,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 333995299,
-["itemLevel"] = 667.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 384803985,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 175934761,
-["itemLevel"] = 668.4375,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 293362049,
-["itemLevel"] = 664.6875,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 346427586,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 360214438,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 257181404,
-["itemLevel"] = 652,
-["classId"] = 11,
 },
 },
-["elapsed"] = 194.1889999998966,
-["servertime"] = 1744833143,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 249861627,
-["itemLevel"] = 662.1875,
-["classId"] = 7,
 },
-["Opopoi-Dalaran"] = {
-["total"] = 334654779,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 323617567,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-},
-["time"] = 1744833143,
-},
+[3135] = {
 {
-["guild"] = "Adasträ",
-["time"] = 1753300868,
-["elapsed"] = 212.875,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 409268173,
-["itemLevel"] = 673.25,
+["total"] = 1362430846,
+["itemLevel"] = 692.25,
 ["classId"] = 7,
 },
-["Ðaitiø"] = {
-["total"] = 358028885,
-["itemLevel"] = 667.1875,
+["Putchie"] = {
+["total"] = 325400034,
+["itemLevel"] = 693.6875,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 844286442,
+["itemLevel"] = 689.25,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1398698869,
+["itemLevel"] = 694.75,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 348673175,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 333812415,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1397949061,
+["itemLevel"] = 693.3125,
 ["classId"] = 3,
 },
 ["Assähi-Dalaran"] = {
-["total"] = 329011022,
-["itemLevel"] = 660.0625,
+["total"] = 273143138,
+["itemLevel"] = 700.625,
 ["classId"] = 9,
 },
-["Gydzitpala-KhazModan"] = {
-["total"] = 482888218,
-["itemLevel"] = 681.6875,
-["classId"] = 2,
-},
-["Ylenis-Dalaran"] = {
-["total"] = 337302142,
-["itemLevel"] = 683.9375,
+["Øskydh-Archimonde"] = {
+["total"] = 647756518,
+["itemLevel"] = 702.5,
 ["classId"] = 12,
 },
-["Gwokayou-Archimonde"] = {
-["total"] = 153985779,
-["itemLevel"] = 664,
-["classId"] = 11,
+["Yugekok-Archimonde"] = {
+["total"] = 1048851139,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
 },
-["Brelanas"] = {
-["total"] = 414222731,
-["itemLevel"] = 681.875,
-["classId"] = 8,
-},
-["Øskytankul-Archimonde"] = {
-["total"] = 128419037,
-["itemLevel"] = 656.625,
-["classId"] = 10,
-},
-["Peche-Illidan"] = {
-["total"] = 334768671,
-["itemLevel"] = 0,
-["classId"] = 2,
+["Arrhad"] = {
+["total"] = 1021205105,
+["itemLevel"] = 693.4375,
+["classId"] = 3,
 },
 ["Anymind-Archimonde"] = {
-["total"] = 357237305,
-["itemLevel"] = 665.125,
+["total"] = 866140162,
+["itemLevel"] = 678.1875,
 ["classId"] = 5,
 },
 },
-["servertime"] = 1753300868,
+["time"] = 1755811339,
+["date"] = "23:22 21/08/25",
+["elapsed"] = 564.627999999997,
+["servertime"] = 1755811338,
 ["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 1205574113,
+["itemLevel"] = 695.6875,
+["classId"] = 2,
+},
 ["Amsët"] = {
-["total"] = 255131478,
-["itemLevel"] = 674.9375,
+["total"] = 733923714,
+["itemLevel"] = 689.0625,
 ["classId"] = 7,
 },
 ["Heliopsis-Archimonde"] = {
-["total"] = 243403041,
-["itemLevel"] = 680.4375,
+["total"] = 281756756,
+["itemLevel"] = 701.0625,
 ["classId"] = 7,
 },
-["Opopøï-Dalaran"] = {
-["total"] = 297945621,
-["itemLevel"] = 679.25,
+["Blackløtus-KirinTor"] = {
+["total"] = 560382710,
+["itemLevel"] = 688.875,
+["classId"] = 11,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756413816,
+["elapsed"] = 381.5039999999572,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 902285890,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 729557726,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 995370195,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1004322951,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 400423221,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 557622860,
+["itemLevel"] = 688.375,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 851268542,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 810225451,
+["itemLevel"] = 698.1875,
+["classId"] = 7,
+},
+["Arrhad"] = {
+["total"] = 959291808,
+["itemLevel"] = 703.0625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 782555044,
+["itemLevel"] = 700.5,
+["classId"] = 6,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 397472958,
+["itemLevel"] = 692,
+["classId"] = 1,
+},
+["Anymind-Archimonde"] = {
+["total"] = 661758805,
+["itemLevel"] = 689.625,
 ["classId"] = 5,
 },
 },
-["date"] = "22:01 23/07/25",
+["servertime"] = 1756413815,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 801799747,
+["itemLevel"] = 704,
+["classId"] = 2,
 },
-},
-[2920] = {
-{
-["date"] = "23:16 09/10/24",
-["guild"] = "La chope de fer",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 314862742,
-["itemLevel"] = 612.6875,
+["Heliopsis-Archimonde"] = {
+["total"] = 605756375,
+["itemLevel"] = 703.375,
 ["classId"] = 7,
 },
-["Sithi-Dalaran"] = {
-["total"] = 150389771,
-["itemLevel"] = 613.4375,
-["classId"] = 6,
+["Amsët"] = {
+["total"] = 569322080,
+["itemLevel"] = 691.75,
+["classId"] = 7,
 },
-["Thargar-Dalaran"] = {
-["total"] = 295871950,
-["itemLevel"] = 616.1875,
+},
+["date"] = "22:43 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1153225745,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 738687701,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1072051687,
+["itemLevel"] = 703.4375,
 ["classId"] = 1,
 },
-["Rôcksteady"] = {
-["total"] = 118404248,
-["itemLevel"] = 610.625,
-["classId"] = 11,
-},
-["Flydidjecte-Archimonde"] = {
-["total"] = 291850885,
-["itemLevel"] = 615,
-["classId"] = 12,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 300597379,
-["itemLevel"] = 613.25,
-["classId"] = 10,
-},
-["Naincurable"] = {
-["total"] = 133420772,
-["itemLevel"] = 607.3125,
-["classId"] = 7,
-},
-["Edixed-Dalaran"] = {
-["total"] = 275534144,
-["itemLevel"] = 611.75,
-["classId"] = 10,
-},
-["Därin"] = {
-["total"] = 230478572,
-["itemLevel"] = 612.875,
-["classId"] = 3,
-},
-["Ælîî-KhazModan"] = {
-["total"] = 238032497,
-["itemLevel"] = 610.8125,
-["classId"] = 8,
-},
-["Eshydna"] = {
-["total"] = 200301779,
-["itemLevel"] = 608.1875,
-["classId"] = 12,
-},
-["Maøss-Dalaran"] = {
-["total"] = 170017122,
-["itemLevel"] = 610.6666666666666,
-["classId"] = 9,
-},
-["Nahilis-Dalaran"] = {
-["total"] = 225580508,
-["itemLevel"] = 615.875,
-["classId"] = 11,
-},
-},
-["elapsed"] = 345.969000000041,
-["servertime"] = 1728508613,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 376315520,
-["itemLevel"] = 614.6875,
-["classId"] = 10,
-},
-["Tälindä"] = {
-["total"] = 252277278,
-["itemLevel"] = 609.8125,
-["classId"] = 2,
-},
-["Konì-Dalaran"] = {
-["total"] = 255228637,
-["itemLevel"] = 607.5,
-["classId"] = 11,
-},
-["Kiljim-Dalaran"] = {
-["total"] = 273344806,
-["itemLevel"] = 613.5625,
-["classId"] = 7,
-},
-},
-["time"] = 1728508614,
-},
-{
-["guild"] = "La chope de fer",
-["time"] = 1732136835,
-["elapsed"] = 259.1419999999926,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 284889852,
-["itemLevel"] = 622.125,
-["classId"] = 7,
-},
-["Hazraen-CultedelaRivenoire"] = {
-["total"] = 120527626,
-["itemLevel"] = 610.5,
-["classId"] = 3,
-},
-["Sithi-Dalaran"] = {
-["total"] = 114964732,
-["itemLevel"] = 619.75,
-["classId"] = 6,
-},
-["Ashdêuzo"] = {
-["total"] = 95977252,
-["itemLevel"] = 617.125,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 270005784,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 110453680,
-["itemLevel"] = 611.375,
-["classId"] = 12,
-},
-["Voda-Dalaran"] = {
-["total"] = 258608528,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Edixed-Dalaran"] = {
-["total"] = 259788961,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 297944745,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-},
-["servertime"] = 1732136835,
-["HEALER"] = {
-["Deïna-Dalaran"] = {
-["total"] = 318863766,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
-},
-["Sonydx-Archimonde"] = {
-["total"] = 230538140,
-["itemLevel"] = 604.5,
+["Villidøns-Dalaran"] = {
+["total"] = 1212725940,
+["itemLevel"] = 707.5,
 ["classId"] = 13,
 },
+["Kayex"] = {
+["total"] = 358686010,
+["itemLevel"] = 707.5,
+["classId"] = 6,
 },
-["date"] = "22:07 20/11/24",
+["Gydzitpala-KhazModan"] = {
+["total"] = 859691043,
+["itemLevel"] = 709.4375,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 480720935,
+["itemLevel"] = 706.0625,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 679367692,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 161064220,
+["itemLevel"] = 704.2666666666667,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1020036246,
+["itemLevel"] = 705.875,
+["classId"] = 3,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 324319413,
+["itemLevel"] = 694.75,
+["classId"] = 10,
+},
+["Zroyele"] = {
+["total"] = 710227418,
+["itemLevel"] = 694.375,
+["classId"] = 1,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1079800077,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 944591044,
+["itemLevel"] = 703.6875,
+["classId"] = 5,
 },
 },
+["time"] = 1756932202,
+["date"] = "22:43 03/09/25",
+["elapsed"] = 379.4350000000559,
+["servertime"] = 1756932201,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 541280743,
+["itemLevel"] = 704.875,
+["classId"] = 2,
+},
+["Amsët"] = {
+["total"] = 437262539,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 455763133,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 709296718,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+},
+["heroic"] = {
 [2898] = {
 {
+["date"] = "21:47 09/10/24",
 ["guild"] = "La chope de fer",
-["time"] = 1728503272,
-["elapsed"] = 223.4860000000335,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 204782776,
@@ -5724,15 +6818,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 614.8125,
 ["classId"] = 12,
 },
-["Nahilis-Dalaran"] = {
-["total"] = 211066971,
-["itemLevel"] = 615.875,
-["classId"] = 11,
+["Barabell-Cho'gall"] = {
+["total"] = 190821028,
+["itemLevel"] = 613.25,
+["classId"] = 10,
 },
-["Maøss-Dalaran"] = {
-["total"] = 173136248,
-["itemLevel"] = 611.1875,
-["classId"] = 9,
+["Naincurable"] = {
+["total"] = 123979238,
+["itemLevel"] = 607.3125,
+["classId"] = 7,
 },
 ["Edixed-Dalaran"] = {
 ["total"] = 196703132,
@@ -5754,17 +6848,18 @@ DetailsDataStorage = {
 ["itemLevel"] = 606.375,
 ["classId"] = 12,
 },
-["Naincurable"] = {
-["total"] = 123979238,
-["itemLevel"] = 607.3125,
-["classId"] = 7,
+["Maøss-Dalaran"] = {
+["total"] = 173136248,
+["itemLevel"] = 611.1875,
+["classId"] = 9,
 },
-["Barabell-Cho'gall"] = {
-["total"] = 190821028,
-["itemLevel"] = 613.25,
-["classId"] = 10,
+["Nahilis-Dalaran"] = {
+["total"] = 211066971,
+["itemLevel"] = 615.875,
+["classId"] = 11,
 },
 },
+["elapsed"] = 223.4860000000335,
 ["servertime"] = 1728503271,
 ["HEALER"] = {
 ["Sonydl-Archimonde"] = {
@@ -5772,28 +6867,27 @@ DetailsDataStorage = {
 ["itemLevel"] = 614.6875,
 ["classId"] = 10,
 },
-["Kiljim-Dalaran"] = {
-["total"] = 147356227,
-["itemLevel"] = 613.5625,
-["classId"] = 7,
+["Tälindä"] = {
+["total"] = 123802041,
+["itemLevel"] = 609.8125,
+["classId"] = 2,
 },
 ["Konì-Dalaran"] = {
 ["total"] = 151769339,
 ["itemLevel"] = 607.0625,
 ["classId"] = 11,
 },
-["Tälindä"] = {
-["total"] = 123802041,
-["itemLevel"] = 609.8125,
-["classId"] = 2,
+["Kiljim-Dalaran"] = {
+["total"] = 147356227,
+["itemLevel"] = 613.5625,
+["classId"] = 7,
 },
 },
-["date"] = "21:47 09/10/24",
+["time"] = 1728503272,
 },
 {
+["date"] = "21:47 20/11/24",
 ["guild"] = "La chope de fer",
-["time"] = 1732135660,
-["elapsed"] = 196.0800000000163,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 217350780,
@@ -5820,10 +6914,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 621.5625,
 ["classId"] = 3,
 },
-["Deïna-Dalaran"] = {
-["total"] = 129614955,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
+["Barabell-Cho'gall"] = {
+["total"] = 211571037,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Edixed-Dalaran"] = {
+["total"] = 192589824,
+["itemLevel"] = 620.125,
+["classId"] = 10,
 },
 ["Eshydna"] = {
 ["total"] = 100181532,
@@ -5835,17 +6934,13 @@ DetailsDataStorage = {
 ["itemLevel"] = 618.3125,
 ["classId"] = 2,
 },
-["Edixed-Dalaran"] = {
-["total"] = 192589824,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 211571037,
-["itemLevel"] = 624.75,
-["classId"] = 10,
+["Deïna-Dalaran"] = {
+["total"] = 129614955,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
 },
 },
+["elapsed"] = 196.0800000000163,
 ["servertime"] = 1732135660,
 ["HEALER"] = {
 ["Sonydx-Archimonde"] = {
@@ -5854,2364 +6949,13 @@ DetailsDataStorage = {
 ["classId"] = 13,
 },
 },
-["date"] = "21:47 20/11/24",
-},
-},
-[2921] = {
-{
-["guild"] = "La chope de fer",
-["time"] = 1732138721,
-["elapsed"] = 385.0689999999595,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 599066987,
-["itemLevel"] = 622.125,
-["classId"] = 7,
-},
-["Sithi-Dalaran"] = {
-["total"] = 213969012,
-["itemLevel"] = 619.75,
-["classId"] = 6,
-},
-["Nilaïe-Dalaran"] = {
-["total"] = 438830633,
-["itemLevel"] = 622.25,
-["classId"] = 7,
-},
-["Ashdêuzo"] = {
-["total"] = 170200352,
-["itemLevel"] = 616.7333333333333,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 445163686,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 223687064,
-["itemLevel"] = 611.375,
-["classId"] = 12,
-},
-["Voda-Dalaran"] = {
-["total"] = 477133590,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Edixed-Dalaran"] = {
-["total"] = 486423692,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 449519096,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-},
-["servertime"] = 1732138721,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 394092691,
-["itemLevel"] = 617.3125,
-["classId"] = 10,
-},
-["Deïna-Dalaran"] = {
-["total"] = 306256234,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
-},
-},
-["date"] = "22:38 20/11/24",
-},
-},
-[2922] = {
-{
-["date"] = "21:37 19/11/24",
-["guild"] = "La chope de fer",
-["DAMAGER"] = {
-["Barabell-Cho'gall"] = {
-["total"] = 453999861,
-["itemLevel"] = 624.3125,
-["classId"] = 10,
-},
-["Därin"] = {
-["total"] = 388953445,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 398488392,
-["itemLevel"] = 621.625,
-["classId"] = 7,
-},
-["Nilaïe-Dalaran"] = {
-["total"] = 362855872,
-["itemLevel"] = 620.5,
-["classId"] = 7,
-},
-["Voda-Dalaran"] = {
-["total"] = 339274577,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Ashdêuzo"] = {
-["total"] = 146457180,
-["itemLevel"] = 617.25,
-["classId"] = 11,
-},
-["Flydidjecte-Archimonde"] = {
-["total"] = 418855624,
-["itemLevel"] = 616.125,
-["classId"] = 12,
-},
-},
-["elapsed"] = 447.7239999999874,
-["servertime"] = 1732048663,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 419939403,
-["itemLevel"] = 617.3125,
-["classId"] = 10,
-},
-},
-["time"] = 1732048663,
-},
-{
-["DAMAGER"] = {
-["Barabell-Cho'gall"] = {
-["total"] = 421323545,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-["Sithi-Dalaran"] = {
-["total"] = 175162285,
-["itemLevel"] = 620.5625,
-["classId"] = 6,
-},
-["Ashdêuzo"] = {
-["total"] = 172277048,
-["itemLevel"] = 617.125,
-["classId"] = 11,
-},
-["Flydidjecte-Archimonde"] = {
-["total"] = 450915810,
-["itemLevel"] = 618.125,
-["classId"] = 12,
-},
-["Edixed-Dalaran"] = {
-["total"] = 347220265,
-["itemLevel"] = 620.3125,
-["classId"] = 10,
-},
-["Därin"] = {
-["total"] = 442615833,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 200757993,
-["itemLevel"] = 611.75,
-["classId"] = 12,
-},
-["Kvotheen"] = {
-["total"] = 497701032,
-["itemLevel"] = 622.0625,
-["classId"] = 7,
-},
-["Voda-Dalaran"] = {
-["total"] = 383223286,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-},
-["time"] = 1732309076,
-["date"] = "21:57 22/11/24",
-["elapsed"] = 479.60699999996,
-["servertime"] = 1732309077,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 502216767,
-["itemLevel"] = 617.3125,
-["classId"] = 10,
-},
-["Nawella-Dalaran"] = {
-["total"] = 460521383,
-["itemLevel"] = 618.2666666666667,
-["classId"] = 11,
-},
-},
-["guild"] = "La chope de fer",
-},
-},
-[3012] = {
-{
-["time"] = 1741904240,
-["guild"] = "Adasträ",
-["elapsed"] = 428.8529999999737,
-["date"] = "23:17 13/03/25",
-["servertime"] = 1741904239,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 532473442,
-["itemLevel"] = 652.375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 451595047,
-["itemLevel"] = 638.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 689324443,
-["itemLevel"] = 645.125,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 540907671,
-["itemLevel"] = 644.125,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 902355675,
-["itemLevel"] = 646.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 754657778,
-["itemLevel"] = 644.625,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 613510323,
-["itemLevel"] = 643.1875,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 526089389,
-["itemLevel"] = 645.9375,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 410735720,
-["itemLevel"] = 649.375,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 692423477,
-["itemLevel"] = 639,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 789484332,
-["itemLevel"] = 646.25,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 310055274,
-["itemLevel"] = 648.625,
-["classId"] = 6,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 753176305,
-["itemLevel"] = 648.25,
-["classId"] = 2,
-},
-["Orlith-KirinTor"] = {
-["total"] = 531810819,
-["itemLevel"] = 645,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 691910205,
-["itemLevel"] = 646,
-["classId"] = 3,
-},
-["Uztek"] = {
-["total"] = 755465986,
-["itemLevel"] = 646.875,
-["classId"] = 9,
-},
-["Jamelmoignon"] = {
-["total"] = 654131658,
-["itemLevel"] = 648.1875,
-["classId"] = 5,
-},
-},
-},
-{
-["time"] = 1742503934,
-["guild"] = "Adasträ",
-["elapsed"] = 375.969000000041,
-["date"] = "21:52 20/03/25",
-["servertime"] = 1742503933,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 501495442,
-["itemLevel"] = 658.375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 441144806,
-["itemLevel"] = 648.6875,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 676232201,
-["itemLevel"] = 654.5625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 438798006,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 851597407,
-["itemLevel"] = 655.8125,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 710379780,
-["itemLevel"] = 652.8125,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 540644745,
-["itemLevel"] = 651.8125,
-["classId"] = 3,
-},
-["Vanhylle"] = {
-["total"] = 592863319,
-["itemLevel"] = 640.125,
-["classId"] = 6,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 569989871,
-["itemLevel"] = 654.6875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 263653471,
-["itemLevel"] = 655.25,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 649540259,
-["itemLevel"] = 648.75,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 915110283,
-["itemLevel"] = 652.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 692564960,
-["itemLevel"] = 656.25,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 334136066,
-["itemLevel"] = 652.5,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 789473219,
-["itemLevel"] = 658,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 516648380,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 922534512,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 503447881,
-["itemLevel"] = 647.25,
-["classId"] = 13,
-},
-["Grodar-Archimonde"] = {
-["total"] = 578578532,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-},
-},
-{
-["date"] = "23:34 26/03/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 976087502,
-["itemLevel"] = 659.1875,
-["classId"] = 7,
-},
-["Dordok-Ysondre"] = {
-["total"] = 547868735,
-["itemLevel"] = 654.5625,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 429083189,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 808682268,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 465272517,
-["itemLevel"] = 640.125,
-["classId"] = 11,
-},
-["Kayex"] = {
-["total"] = 299640303,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 744233991,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 1047165618,
-["itemLevel"] = 657.75,
-["classId"] = 12,
-},
-["Morkai-Sargeras"] = {
-["total"] = 587935162,
-["itemLevel"] = 654.5,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 664525973,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 632209993,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Orlith-KirinTor"] = {
-["total"] = 673673100,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 873273154,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 725997402,
-["itemLevel"] = 653.125,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 717226698,
-["itemLevel"] = 658.25,
-["classId"] = 5,
-},
-},
-["elapsed"] = 391.9560000000056,
-["servertime"] = 1743028494,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 593915167,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 519040408,
-["itemLevel"] = 648.25,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 699884826,
-["itemLevel"] = 660.125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 462106940,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-},
-["time"] = 1743028494,
-},
-{
-["date"] = "22:09 02/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 490086788,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 822028674,
-["itemLevel"] = 664.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 749096061,
-["itemLevel"] = 655.3125,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 293497696,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 423636228,
-["itemLevel"] = 645.4375,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 575805505,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Morkai-Sargeras"] = {
-["total"] = 689217003,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 636649585,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 873133345,
-["itemLevel"] = 661.625,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 719935795,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 327799089,
-["itemLevel"] = 660.75,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 669152069,
-["itemLevel"] = 663.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 630428476,
-["itemLevel"] = 664,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 895505333,
-["itemLevel"] = 664.5,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 570287034,
-["itemLevel"] = 655.9375,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 707411308,
-["itemLevel"] = 660.75,
-["classId"] = 5,
-},
-},
-["elapsed"] = 338.1010000000242,
-["servertime"] = 1743624586,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 491838863,
-["itemLevel"] = 660.625,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 509496148,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 472293738,
-["itemLevel"] = 662.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 441546614,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
-},
-["time"] = 1743624585,
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1744229165,
-["elapsed"] = 330.2640000000001,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 735145350,
-["itemLevel"] = 665.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 684803312,
-["itemLevel"] = 657.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 523557403,
-["itemLevel"] = 662.5,
-["classId"] = 3,
-},
-["Pipoteur"] = {
-["total"] = 631937720,
-["itemLevel"] = 656.5625,
-["classId"] = 9,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 582420078,
-["itemLevel"] = 649.5625,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 709161629,
-["itemLevel"] = 661.75,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 744223205,
-["itemLevel"] = 662.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 909247259,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 707709262,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Erami-Sargeras"] = {
-["total"] = 347582498,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 637752144,
-["itemLevel"] = 665.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 639924213,
-["itemLevel"] = 665.0625,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 683673798,
-["itemLevel"] = 666.375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 702708575,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 351874310,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744229164,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 436555081,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 500520093,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 504135345,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 496086748,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
-},
-},
-["date"] = "22:06 09/04/25",
-},
-{
-["date"] = "22:02 16/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 669778279,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 526535616,
-["itemLevel"] = 658.75,
-["classId"] = 3,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 250990110,
-["itemLevel"] = 653.9375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 738573466,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 542544272,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 486885310,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 712030891,
-["itemLevel"] = 667.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 794460423,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 298803447,
-["itemLevel"] = 668.4375,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 612946995,
-["itemLevel"] = 664.3125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 513459739,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 677213904,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 484795226,
-["itemLevel"] = 652,
-["classId"] = 11,
-},
-},
-["elapsed"] = 283.3739999999525,
-["servertime"] = 1744833733,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 431504452,
-["itemLevel"] = 662.1875,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 404762561,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 378213229,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-},
-["time"] = 1744833733,
-},
-{
-["date"] = "23:23 23/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Pixelshm-Hyjal"] = {
-["total"] = 482815181,
-["itemLevel"] = 0,
-["classId"] = 7,
-},
-["Xpewpew-Dalaran"] = {
-["total"] = 632516364,
-["itemLevel"] = 658.9375,
-["classId"] = 6,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 314705156,
-["itemLevel"] = 657.5,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 776817086,
-["itemLevel"] = 668.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 1071858566,
-["itemLevel"] = 667,
-["classId"] = 12,
-},
-["Ðaitiø-Hyjal"] = {
-["total"] = 744607804,
-["itemLevel"] = 660.4375,
-["classId"] = 3,
-},
-["Erami-Sargeras"] = {
-["total"] = 450741805,
-["itemLevel"] = 669.4375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 927187101,
-["itemLevel"] = 667.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 708421227,
-["itemLevel"] = 664.125,
-["classId"] = 13,
-},
-["Quiproquo"] = {
-["total"] = 429935513,
-["itemLevel"] = 643.875,
-["classId"] = 4,
-},
-["Dordok-Ysondre"] = {
-["total"] = 550399536,
-["itemLevel"] = 663.1875,
-["classId"] = 3,
-},
-},
-["elapsed"] = 372.9879999998957,
-["servertime"] = 1745443387,
-["HEALER"] = {
-["Opopoï-Dalaran"] = {
-["total"] = 497985690,
-["itemLevel"] = 661.0625,
-["classId"] = 2,
-},
-["Amsët-Hyjal"] = {
-["total"] = 564492007,
-["itemLevel"] = 664.9375,
-["classId"] = 7,
-},
-["Putchie-Hyjal"] = {
-["total"] = 551235420,
-["itemLevel"] = 666.3125,
-["classId"] = 11,
-},
-},
-["time"] = 1745443388,
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1753301518,
-["elapsed"] = 276.8360000000102,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 593861077,
-["itemLevel"] = 673.25,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 510754963,
-["itemLevel"] = 667.1875,
-["classId"] = 3,
-},
-["Assähi-Dalaran"] = {
-["total"] = 519472601,
-["itemLevel"] = 660.0625,
-["classId"] = 9,
-},
-["Gydzitpala-KhazModan"] = {
-["total"] = 881916438,
-["itemLevel"] = 681.6875,
-["classId"] = 2,
-},
-["Ylenis-Dalaran"] = {
-["total"] = 798996644,
-["itemLevel"] = 683.9375,
-["classId"] = 12,
-},
-["Gwokayou-Archimonde"] = {
-["total"] = 283761834,
-["itemLevel"] = 664.625,
-["classId"] = 11,
-},
-["Brelanas"] = {
-["total"] = 607659280,
-["itemLevel"] = 681.875,
-["classId"] = 8,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 401008389,
-["itemLevel"] = 680.8125,
-["classId"] = 1,
-},
-["Peche-Illidan"] = {
-["total"] = 581375541,
-["itemLevel"] = 0,
-["classId"] = 2,
-},
-["Anymind-Archimonde"] = {
-["total"] = 567785499,
-["itemLevel"] = 665.125,
-["classId"] = 5,
-},
-},
-["servertime"] = 1753301518,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 346287365,
-["itemLevel"] = 674.9375,
-["classId"] = 7,
-},
-["Heliopsis-Archimonde"] = {
-["total"] = 292057382,
-["itemLevel"] = 680.4375,
-["classId"] = 7,
-},
-["Opopøï-Dalaran"] = {
-["total"] = 349469444,
-["itemLevel"] = 679.25,
-["classId"] = 5,
-},
-},
-["date"] = "22:11 23/07/25",
-},
-},
-[3010] = {
-{
-["time"] = 1741300199,
-["guild"] = "Adasträ",
-["elapsed"] = 442.0999999999767,
-["date"] = "23:29 06/03/25",
-["servertime"] = 1741300200,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 611717043,
-["itemLevel"] = 639.9375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 451746393,
-["itemLevel"] = 632.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 518221437,
-["itemLevel"] = 638.875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 458395146,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 515870892,
-["itemLevel"] = 642.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 392305385,
-["itemLevel"] = 635.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 210938546,
-["itemLevel"] = 636.5,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 458494647,
-["itemLevel"] = 638,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 167059085,
-["itemLevel"] = 636,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 227862526,
-["itemLevel"] = 631.375,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 598151035,
-["itemLevel"] = 627.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 651315827,
-["itemLevel"] = 638.625,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 488234910,
-["itemLevel"] = 633.1875,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 192551591,
-["itemLevel"] = 636.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 79040329,
-["itemLevel"] = 641.8125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 231374823,
-["itemLevel"] = 630.875,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 423006078,
-["itemLevel"] = 626.75,
-["classId"] = 9,
-},
-["Morkai-Sargeras"] = {
-["total"] = 527751287,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
-},
-["Jamelmoignon"] = {
-["total"] = 127381770,
-["itemLevel"] = 634.3125,
-["classId"] = 5,
-},
-},
-},
-{
-["time"] = 1741898951,
-["guild"] = "Adasträ",
-["elapsed"] = 358.9799999999814,
-["date"] = "21:49 13/03/25",
-["servertime"] = 1741898950,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 461972555,
-["itemLevel"] = 638.3125,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 445059707,
-["itemLevel"] = 645.125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 602820148,
-["itemLevel"] = 652.375,
-["classId"] = 5,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 264320763,
-["itemLevel"] = 646.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 481209605,
-["itemLevel"] = 644.625,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 89709572,
-["itemLevel"] = 643.1875,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 351181070,
-["itemLevel"] = 645.9375,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 263447766,
-["itemLevel"] = 649.375,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 406367883,
-["itemLevel"] = 639,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 563141894,
-["itemLevel"] = 646.25,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 432640485,
-["itemLevel"] = 647.8125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 192138807,
-["itemLevel"] = 648.625,
-["classId"] = 6,
-},
-["Morkai-Sargeras"] = {
-["total"] = 526254530,
-["itemLevel"] = 646,
-["classId"] = 3,
-},
-["Orlith-KirinTor"] = {
-["total"] = 316089181,
-["itemLevel"] = 645,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 483417965,
-["itemLevel"] = 646.875,
-["classId"] = 9,
-},
-["Putchie"] = {
-["total"] = 244734721,
-["itemLevel"] = 644.125,
-["classId"] = 11,
-},
-["Jamelmoignon"] = {
-["total"] = 189130457,
-["itemLevel"] = 648.1875,
-["classId"] = 5,
-},
-},
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 617884922,
-["itemLevel"] = 654.8125,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 264661476,
-["itemLevel"] = 650.25,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 496687531,
-["itemLevel"] = 650.25,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 516898376,
-["itemLevel"] = 654.6875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 257765409,
-["itemLevel"] = 653.75,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 184933199,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 100281297,
-["itemLevel"] = 652.75,
-["classId"] = 12,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 517102870,
-["itemLevel"] = 653.8125,
-["classId"] = 2,
-},
-["Erami-Sargeras"] = {
-["total"] = 172415188,
-["itemLevel"] = 651.9375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 493078657,
-["itemLevel"] = 658,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 182727083,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 317601813,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 388254540,
-["itemLevel"] = 643.3125,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 509591579,
-["itemLevel"] = 654.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742422880,
-["date"] = "23:21 19/03/25",
-["elapsed"] = 340.6080000000075,
-["servertime"] = 1742422879,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 360070691,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 375705474,
-["itemLevel"] = 648.5,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 500637792,
-["itemLevel"] = 654.125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 343312464,
-["itemLevel"] = 657.5625,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 397773052,
-["itemLevel"] = 659.1875,
-["classId"] = 7,
-},
-["Dordok-Ysondre"] = {
-["total"] = 367928361,
-["itemLevel"] = 654.5625,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 253014943,
-["itemLevel"] = 654.5,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 396446205,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 234564740,
-["itemLevel"] = 639.6875,
-["classId"] = 11,
-},
-["Kayex"] = {
-["total"] = 201898790,
-["itemLevel"] = 660,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 531370877,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 501269831,
-["itemLevel"] = 657.75,
-["classId"] = 12,
-},
-["Morkai-Sargeras"] = {
-["total"] = 475480916,
-["itemLevel"] = 654.5,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 407268638,
-["itemLevel"] = 653.25,
-["classId"] = 1,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 463034943,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Orlith-KirinTor"] = {
-["total"] = 280723695,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 532320805,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 228607361,
-["itemLevel"] = 651.6666666666666,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 112627421,
-["itemLevel"] = 658.25,
-["classId"] = 5,
-},
-},
-["time"] = 1743026762,
-["date"] = "23:06 26/03/25",
-["elapsed"] = 252.2660000000033,
-["servertime"] = 1743026762,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 349452891,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 311609496,
-["itemLevel"] = 648.25,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 346673081,
-["itemLevel"] = 660.125,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 304658502,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["time"] = 1743622945,
-["guild"] = "Adasträ",
-["elapsed"] = 213.7880000000587,
-["date"] = "21:42 02/04/25",
-["servertime"] = 1743622946,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 299495155,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 269705856,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 234351714,
-["itemLevel"] = 662.625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 332295879,
-["itemLevel"] = 660.625,
-["classId"] = 11,
-},
-},
-["DAMAGER"] = {
-["Øskÿ-Archimonde"] = {
-["total"] = 242013441,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Kvotheen"] = {
-["total"] = 464221062,
-["itemLevel"] = 664.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 418110938,
-["itemLevel"] = 655.3125,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 358946258,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 377570014,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 63202998,
-["itemLevel"] = 645.4375,
-["classId"] = 11,
-},
-["Uztek"] = {
-["total"] = 527204553,
-["itemLevel"] = 664.5,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 406778377,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 444360881,
-["itemLevel"] = 661.625,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 465708499,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 176151981,
-["itemLevel"] = 660.75,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 382508276,
-["itemLevel"] = 663.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 283472635,
-["itemLevel"] = 664,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 402110607,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
-},
-["Mescà-Dalaran"] = {
-["total"] = 319174385,
-["itemLevel"] = 655.9375,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 384848687,
-["itemLevel"] = 660.75,
-["classId"] = 5,
-},
-},
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1744227967,
-["elapsed"] = 209.9760000000006,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 422075247,
-["itemLevel"] = 665.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 393047282,
-["itemLevel"] = 657.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 395177603,
-["itemLevel"] = 662.5,
-["classId"] = 3,
-},
-["Pipoteur"] = {
-["total"] = 371151411,
-["itemLevel"] = 656.5625,
-["classId"] = 9,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 282578616,
-["itemLevel"] = 649.125,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 385268365,
-["itemLevel"] = 661.75,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 454195938,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 461123984,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 419226077,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Erami-Sargeras"] = {
-["total"] = 195000753,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 288171134,
-["itemLevel"] = 665.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 273311780,
-["itemLevel"] = 665.4375,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 427662483,
-["itemLevel"] = 666.4666666666667,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 373987901,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 225940396,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744227966,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 276435072,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 287109543,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 287825300,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 320457701,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
-},
-},
-["date"] = "21:46 09/04/25",
-},
-{
-["time"] = 1744832536,
-["guild"] = "Adasträ",
-["elapsed"] = 198.7079999999842,
-["date"] = "21:42 16/04/25",
-["servertime"] = 1744832536,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 230725215,
-["itemLevel"] = 662.1875,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 245150752,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 366777289,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-},
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 417116670,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 439598248,
-["itemLevel"] = 658.75,
-["classId"] = 3,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 161838551,
-["itemLevel"] = 653.3125,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 401804473,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 413113676,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 362019925,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 295655186,
-["itemLevel"] = 667.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 440278063,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 233258107,
-["itemLevel"] = 668.4375,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 280992808,
-["itemLevel"] = 664.6875,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 342750547,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 285454073,
-["itemLevel"] = 652,
-["classId"] = 11,
-},
-["Zroyele"] = {
-["total"] = 465471159,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-},
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1753300330,
-["elapsed"] = 221.3690000000061,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 435983682,
-["itemLevel"] = 673.25,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 461888484,
-["itemLevel"] = 667.1875,
-["classId"] = 3,
-},
-["Assähi-Dalaran"] = {
-["total"] = 315866463,
-["itemLevel"] = 660.0625,
-["classId"] = 9,
-},
-["Gydzitpala-KhazModan"] = {
-["total"] = 602790704,
-["itemLevel"] = 681.6875,
-["classId"] = 2,
-},
-["Ylenis-Dalaran"] = {
-["total"] = 369895450,
-["itemLevel"] = 683.9375,
-["classId"] = 12,
-},
-["Gwokayou-Archimonde"] = {
-["total"] = 163892264,
-["itemLevel"] = 664,
-["classId"] = 11,
-},
-["Brelanas"] = {
-["total"] = 365697757,
-["itemLevel"] = 681.875,
-["classId"] = 8,
-},
-["Øskytankul-Archimonde"] = {
-["total"] = 155263823,
-["itemLevel"] = 656.625,
-["classId"] = 10,
-},
-["Peche-Illidan"] = {
-["total"] = 367580349,
-["itemLevel"] = 0,
-["classId"] = 2,
-},
-["Anymind-Archimonde"] = {
-["total"] = 376665443,
-["itemLevel"] = 665.125,
-["classId"] = 5,
-},
-},
-["servertime"] = 1753300330,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 270481918,
-["itemLevel"] = 674.9375,
-["classId"] = 7,
-},
-["Heliopsis-Archimonde"] = {
-["total"] = 268824547,
-["itemLevel"] = 680.4375,
-["classId"] = 7,
-},
-["Opopøï-Dalaran"] = {
-["total"] = 235587823,
-["itemLevel"] = 679.25,
-["classId"] = 5,
-},
-},
-["date"] = "21:52 23/07/25",
-},
-},
-[3013] = {
-{
-["date"] = "22:25 20/03/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 648997374,
-["itemLevel"] = 655.8125,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 558643056,
-["itemLevel"] = 652.8125,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 427003876,
-["itemLevel"] = 651.8125,
-["classId"] = 3,
-},
-["Vanhylle"] = {
-["total"] = 392255120,
-["itemLevel"] = 640.125,
-["classId"] = 6,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 387050618,
-["itemLevel"] = 654.6875,
-["classId"] = 8,
-},
-["Øskydh-Archimonde"] = {
-["total"] = 173440386,
-["itemLevel"] = 655.25,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 591417680,
-["itemLevel"] = 648.75,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 551320280,
-["itemLevel"] = 652.75,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 532381230,
-["itemLevel"] = 651.3125,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 221828231,
-["itemLevel"] = 653.5,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 500371503,
-["itemLevel"] = 658,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 245939245,
-["itemLevel"] = 650.125,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 549190168,
-["itemLevel"] = 655.75,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 291542406,
-["itemLevel"] = 647.25,
-["classId"] = 13,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 578992584,
-["itemLevel"] = 656.25,
-["classId"] = 2,
-},
-},
-["elapsed"] = 331.6969999999274,
-["servertime"] = 1742505931,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 468852784,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 360656987,
-["itemLevel"] = 648.6875,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 539388921,
-["itemLevel"] = 654.5625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 389110087,
-["itemLevel"] = 658.375,
-["classId"] = 5,
-},
-},
-["time"] = 1742505932,
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 551290086,
-["itemLevel"] = 659.75,
-["classId"] = 7,
-},
-["Dordok-Ysondre"] = {
-["total"] = 416981661,
-["itemLevel"] = 655.75,
-["classId"] = 3,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 506889123,
-["itemLevel"] = 658.0625,
-["classId"] = 2,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 460148875,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
-},
-["Kayex"] = {
-["total"] = 190538521,
-["itemLevel"] = 661.75,
-["classId"] = 6,
-},
-["Zroyele"] = {
-["total"] = 544915181,
-["itemLevel"] = 657.5,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 510644777,
-["itemLevel"] = 659.375,
-["classId"] = 12,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 247005979,
-["itemLevel"] = 655.25,
-["classId"] = 1,
-},
-["Morkai-Sargeras"] = {
-["total"] = 490180546,
-["itemLevel"] = 658.6875,
-["classId"] = 3,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 514446913,
-["itemLevel"] = 661.5625,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 294568028,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 483561069,
-["itemLevel"] = 661.75,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 465089355,
-["itemLevel"] = 655.25,
-["classId"] = 1,
-},
-["Jamelmoignon"] = {
-["total"] = 398676488,
-["itemLevel"] = 658.25,
-["classId"] = 5,
-},
-},
-["time"] = 1743108737,
-["date"] = "21:52 27/03/25",
-["elapsed"] = 271.0679999999993,
-["servertime"] = 1743108737,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 486346360,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 426522251,
-["itemLevel"] = 651.875,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 473662495,
-["itemLevel"] = 660.6875,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 335254599,
-["itemLevel"] = 662.4375,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["date"] = "22:27 02/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 352419709,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 612348260,
-["itemLevel"] = 664.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 535239620,
-["itemLevel"] = 655.3125,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 231978864,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 258304273,
-["itemLevel"] = 645.625,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 505484090,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Morkai-Sargeras"] = {
-["total"] = 563445317,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 515478338,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 545400048,
-["itemLevel"] = 661.625,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 575903902,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 226914051,
-["itemLevel"] = 660.75,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 549854367,
-["itemLevel"] = 663.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 242070015,
-["itemLevel"] = 664,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 522682950,
-["itemLevel"] = 664.5,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 238635486,
-["itemLevel"] = 656.3125,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 450963068,
-["itemLevel"] = 660.75,
-["classId"] = 5,
-},
-},
-["elapsed"] = 267.1509999999544,
-["servertime"] = 1743625630,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 447874303,
-["itemLevel"] = 660.625,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 495073115,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 411551849,
-["itemLevel"] = 662.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 444796324,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
-},
-["time"] = 1743625629,
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1744229791,
-["elapsed"] = 261.2599999999993,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 620621626,
-["itemLevel"] = 665.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 397048960,
-["itemLevel"] = 657.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 480071876,
-["itemLevel"] = 662.5,
-["classId"] = 3,
-},
-["Pipoteur"] = {
-["total"] = 443681994,
-["itemLevel"] = 657.8125,
-["classId"] = 9,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 187333114,
-["itemLevel"] = 649.5625,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 494804257,
-["itemLevel"] = 661.75,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 580221013,
-["itemLevel"] = 662.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 498182638,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 472761831,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Erami-Sargeras"] = {
-["total"] = 250450043,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 471762394,
-["itemLevel"] = 665.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 348820687,
-["itemLevel"] = 665.0625,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 490987186,
-["itemLevel"] = 666.375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 514474335,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 228972814,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744229790,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 477611609,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 208700098,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 426279292,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 499979900,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
-},
-},
-["date"] = "22:16 09/04/25",
-},
-{
-["date"] = "22:12 16/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 550877070,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 517860070,
-["itemLevel"] = 658.75,
-["classId"] = 3,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 173542312,
-["itemLevel"] = 653.9375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 449293097,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 398705474,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 473120745,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 449531078,
-["itemLevel"] = 667.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 494374443,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 188314575,
-["itemLevel"] = 668.4375,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 329414933,
-["itemLevel"] = 664.3125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 473261681,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 518995506,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 294934979,
-["itemLevel"] = 652,
-["classId"] = 11,
-},
-},
-["elapsed"] = 222.3549999999814,
-["servertime"] = 1744834351,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 393402968,
-["itemLevel"] = 662.1875,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 373328528,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 366819025,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-},
-["time"] = 1744834351,
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1753302658,
-["elapsed"] = 220.570000000007,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 508575593,
-["itemLevel"] = 673.25,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 408891366,
-["itemLevel"] = 667.1875,
-["classId"] = 3,
-},
-["Assähi-Dalaran"] = {
-["total"] = 394560722,
-["itemLevel"] = 660.0625,
-["classId"] = 9,
-},
-["Gydzitpala-KhazModan"] = {
-["total"] = 458286217,
-["itemLevel"] = 681.6875,
-["classId"] = 2,
-},
-["Ylenis-Dalaran"] = {
-["total"] = 552186518,
-["itemLevel"] = 683.9375,
-["classId"] = 12,
-},
-["Gwokayou-Archimonde"] = {
-["total"] = 157618451,
-["itemLevel"] = 664.625,
-["classId"] = 11,
-},
-["Brelanas"] = {
-["total"] = 505742208,
-["itemLevel"] = 681.875,
-["classId"] = 8,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 285983614,
-["itemLevel"] = 680.8125,
-["classId"] = 1,
-},
-["Peche-Illidan"] = {
-["total"] = 501933648,
-["itemLevel"] = 0,
-["classId"] = 2,
-},
-["Anymind-Archimonde"] = {
-["total"] = 438640659,
-["itemLevel"] = 665.125,
-["classId"] = 5,
-},
-},
-["servertime"] = 1753302658,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 395314784,
-["itemLevel"] = 674.9375,
-["classId"] = 7,
-},
-["Heliopsis-Archimonde"] = {
-["total"] = 296901454,
-["itemLevel"] = 680.4375,
-["classId"] = 7,
-},
-["Opopøï-Dalaran"] = {
-["total"] = 333084479,
-["itemLevel"] = 679.25,
-["classId"] = 5,
-},
-},
-["date"] = "22:30 23/07/25",
+["time"] = 1732135660,
 },
 },
 [2902] = {
 {
+["date"] = "21:21 09/10/24",
 ["guild"] = "La chope de fer",
-["time"] = 1728501680,
-["elapsed"] = 356.5789999999106,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 224321760,
@@ -8238,15 +6982,15 @@ DetailsDataStorage = {
 ["itemLevel"] = 614.5625,
 ["classId"] = 12,
 },
-["Nahilis-Dalaran"] = {
-["total"] = 239355701,
-["itemLevel"] = 615.875,
-["classId"] = 11,
+["Barabell-Cho'gall"] = {
+["total"] = 251451102,
+["itemLevel"] = 613.25,
+["classId"] = 10,
 },
-["Maøss-Dalaran"] = {
-["total"] = 250957613,
-["itemLevel"] = 611.1875,
-["classId"] = 9,
+["Naincurable"] = {
+["total"] = 172542595,
+["itemLevel"] = 607.3125,
+["classId"] = 7,
 },
 ["Edixed-Dalaran"] = {
 ["total"] = 205030608,
@@ -8268,17 +7012,18 @@ DetailsDataStorage = {
 ["itemLevel"] = 605.9375,
 ["classId"] = 12,
 },
-["Naincurable"] = {
-["total"] = 172542595,
-["itemLevel"] = 607.3125,
-["classId"] = 7,
+["Maøss-Dalaran"] = {
+["total"] = 250957613,
+["itemLevel"] = 611.1875,
+["classId"] = 9,
 },
-["Barabell-Cho'gall"] = {
-["total"] = 251451102,
-["itemLevel"] = 613.25,
-["classId"] = 10,
+["Nahilis-Dalaran"] = {
+["total"] = 239355701,
+["itemLevel"] = 615.875,
+["classId"] = 11,
 },
 },
+["elapsed"] = 356.5789999999106,
 ["servertime"] = 1728501679,
 ["HEALER"] = {
 ["Sonydl-Archimonde"] = {
@@ -8286,28 +7031,27 @@ DetailsDataStorage = {
 ["itemLevel"] = 614.6875,
 ["classId"] = 10,
 },
-["Kiljim-Dalaran"] = {
-["total"] = 196803979,
-["itemLevel"] = 613.5625,
-["classId"] = 7,
+["Tälindä"] = {
+["total"] = 168988423,
+["itemLevel"] = 609.8125,
+["classId"] = 2,
 },
 ["Konì-Dalaran"] = {
 ["total"] = 182250135,
 ["itemLevel"] = 607.0625,
 ["classId"] = 11,
 },
-["Tälindä"] = {
-["total"] = 168988423,
-["itemLevel"] = 609.8125,
-["classId"] = 2,
+["Kiljim-Dalaran"] = {
+["total"] = 196803979,
+["itemLevel"] = 613.5625,
+["classId"] = 7,
 },
 },
-["date"] = "21:21 09/10/24",
+["time"] = 1728501680,
 },
 {
+["date"] = "21:30 20/11/24",
 ["guild"] = "La chope de fer",
-["time"] = 1732134602,
-["elapsed"] = 219.7630000000354,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 206832065,
@@ -8334,9 +7078,9 @@ DetailsDataStorage = {
 ["itemLevel"] = 621.5625,
 ["classId"] = 3,
 },
-["Edixed-Dalaran"] = {
-["total"] = 182540460,
-["itemLevel"] = 620.125,
+["Barabell-Cho'gall"] = {
+["total"] = 233257948,
+["itemLevel"] = 624.75,
 ["classId"] = 10,
 },
 ["Eshydna"] = {
@@ -8349,12 +7093,13 @@ DetailsDataStorage = {
 ["itemLevel"] = 618.2666666666667,
 ["classId"] = 2,
 },
-["Barabell-Cho'gall"] = {
-["total"] = 233257948,
-["itemLevel"] = 624.75,
+["Edixed-Dalaran"] = {
+["total"] = 182540460,
+["itemLevel"] = 620.125,
 ["classId"] = 10,
 },
 },
+["elapsed"] = 219.7630000000354,
 ["servertime"] = 1732134602,
 ["HEALER"] = {
 ["Deïna-Dalaran"] = {
@@ -8363,1431 +7108,1269 @@ DetailsDataStorage = {
 ["classId"] = 7,
 },
 },
-["date"] = "21:30 20/11/24",
+["time"] = 1732134602,
 },
 },
-[3014] = {
+[3129] = {
 {
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 879642928,
-["itemLevel"] = 659.75,
+["total"] = 969355272,
+["itemLevel"] = 692.625,
 ["classId"] = 7,
 },
-["Dordok-Ysondre"] = {
-["total"] = 161149808,
-["itemLevel"] = 655.75,
+["Putchie"] = {
+["total"] = 984217349,
+["itemLevel"] = 694.75,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 785038172,
+["itemLevel"] = 689.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 842175199,
+["itemLevel"] = 694.75,
+["classId"] = 13,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 425058890,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1018835991,
+["itemLevel"] = 693.625,
 ["classId"] = 3,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 766161963,
-["itemLevel"] = 658.0625,
+["Gydzitpala-KhazModan"] = {
+["total"] = 1245846459,
+["itemLevel"] = 701.25,
 ["classId"] = 2,
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 671038912,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
+["Yugekok-Archimonde"] = {
+["total"] = 934862178,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
 },
 ["Kayex"] = {
-["total"] = 327997473,
-["itemLevel"] = 661.75,
+["total"] = 417389938,
+["itemLevel"] = 700.3125,
 ["classId"] = 6,
 },
-["Zroyele"] = {
-["total"] = 819479291,
-["itemLevel"] = 657.3125,
-["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 898839240,
-["itemLevel"] = 659.375,
-["classId"] = 12,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 391753602,
-["itemLevel"] = 655.25,
-["classId"] = 1,
-},
-["Morkai-Sargeras"] = {
-["total"] = 176440753,
-["itemLevel"] = 658.6875,
-["classId"] = 3,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 719415559,
-["itemLevel"] = 661.5625,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 584218612,
-["itemLevel"] = 655,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 972129290,
-["itemLevel"] = 661.75,
-["classId"] = 9,
-},
-["Grodar-Archimonde"] = {
-["total"] = 630396909,
-["itemLevel"] = 655.25,
-["classId"] = 1,
-},
-["Jamelmoignon"] = {
-["total"] = 828558563,
-["itemLevel"] = 658.25,
-["classId"] = 5,
-},
-},
-["time"] = 1743110832,
-["date"] = "22:27 27/03/25",
-["elapsed"] = 411.8999999999942,
-["servertime"] = 1743110832,
+["time"] = 1755813069,
+["date"] = "23:51 21/08/25",
+["elapsed"] = 365.054999999993,
+["servertime"] = 1755813068,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 514881060,
-["itemLevel"] = 659.25,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 594996390,
-["itemLevel"] = 651.875,
+["Heliopsis-Archimonde"] = {
+["total"] = 1142601317,
+["itemLevel"] = 701.0625,
 ["classId"] = 7,
 },
-["Opopoi-Dalaran"] = {
-["total"] = 608565424,
-["itemLevel"] = 660.6875,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 680924430,
-["itemLevel"] = 662.4375,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["date"] = "22:53 02/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 499324719,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
-},
-["Kvotheen"] = {
-["total"] = 778086735,
-["itemLevel"] = 664.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 628809036,
-["itemLevel"] = 655.3125,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 402216454,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 317184793,
-["itemLevel"] = 645.625,
-["classId"] = 11,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 564885072,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Morkai-Sargeras"] = {
-["total"] = 727704520,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 618606229,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 831192482,
-["itemLevel"] = 661.625,
-["classId"] = 12,
-},
-["Zroyele"] = {
-["total"] = 789957594,
-["itemLevel"] = 661.625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 378167685,
-["itemLevel"] = 660.75,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 706874881,
-["itemLevel"] = 663.125,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 528984215,
-["itemLevel"] = 664.25,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 877020350,
-["itemLevel"] = 664.5,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 638719552,
-["itemLevel"] = 656.3125,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 780888745,
-["itemLevel"] = 660.75,
-["classId"] = 5,
-},
-},
-["elapsed"] = 376.3020000000252,
-["servertime"] = 1743627188,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 584940836,
-["itemLevel"] = 660.625,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 624129846,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 728133276,
-["itemLevel"] = 662.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 705629965,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
-},
-["time"] = 1743627189,
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1744231829,
-["elapsed"] = 356.7959999999994,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 889788941,
-["itemLevel"] = 665.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 694505404,
-["itemLevel"] = 657.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 218340552,
-["itemLevel"] = 662.5,
-["classId"] = 3,
-},
-["Pipoteur"] = {
-["total"] = 738510700,
-["itemLevel"] = 658.4375,
-["classId"] = 9,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 456290243,
-["itemLevel"] = 649.5625,
-["classId"] = 11,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 577390019,
-["itemLevel"] = 661.75,
+["Opopoï-Dalaran"] = {
+["total"] = 1381277686,
+["itemLevel"] = 695.6875,
 ["classId"] = 2,
 },
-["Zroyele"] = {
-["total"] = 776405040,
-["itemLevel"] = 662.0625,
-["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 769923813,
-["itemLevel"] = 662.5,
-["classId"] = 12,
+["guild"] = "Adasträ",
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 726370257,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Erami-Sargeras"] = {
-["total"] = 384089820,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 748455698,
-["itemLevel"] = 665.1875,
+{
+["guild"] = "Adasträ",
+["time"] = 1756414934,
+["elapsed"] = 265.7269999999553,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 986532864,
+["itemLevel"] = 702.1875,
 ["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 602317056,
-["itemLevel"] = 665.0625,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 711618370,
-["itemLevel"] = 666.375,
-["classId"] = 3,
-},
-["Grodar-Archimonde"] = {
-["total"] = 701753728,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 399136249,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744231828,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 615059964,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 559894177,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 600451863,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
 },
 ["Putchie"] = {
-["total"] = 468486172,
-["itemLevel"] = 663.1875,
+["total"] = 868600987,
+["itemLevel"] = 702.9375,
 ["classId"] = 11,
 },
-},
-["date"] = "22:50 09/04/25",
-},
-{
-["date"] = "22:25 16/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 811228963,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 600314984,
-["itemLevel"] = 658.75,
-["classId"] = 3,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 283924633,
-["itemLevel"] = 653.9375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 704731634,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 614513425,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 645453490,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 652039438,
-["itemLevel"] = 667.4375,
+["Natariis"] = {
+["total"] = 864905701,
+["itemLevel"] = 703.4375,
 ["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 717407406,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 335374164,
-["itemLevel"] = 668.4375,
-["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 531893587,
-["itemLevel"] = 664.125,
+["Villidøns-Dalaran"] = {
+["total"] = 855093856,
+["itemLevel"] = 701.625,
 ["classId"] = 13,
 },
-["Morkai-Sargeras"] = {
-["total"] = 599789246,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 682365112,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 298955057,
-["itemLevel"] = 651.625,
-["classId"] = 11,
-},
-},
-["elapsed"] = 320.7149999999674,
-["servertime"] = 1744835117,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 496360444,
-["itemLevel"] = 662.1875,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 578802161,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 554260511,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-},
-["time"] = 1744835117,
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 745463595,
-["itemLevel"] = 668.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 620427600,
-["itemLevel"] = 660.4375,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 451402525,
-["itemLevel"] = 666.75,
-["classId"] = 1,
-},
-["Pipoteur"] = {
-["total"] = 734031434,
-["itemLevel"] = 665.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 531146284,
-["itemLevel"] = 667.5625,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 676058188,
-["itemLevel"] = 665.125,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 644023162,
-["itemLevel"] = 668.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 679943757,
-["itemLevel"] = 667,
+["Øskydh-Archimonde"] = {
+["total"] = 331513202,
+["itemLevel"] = 708.9375,
 ["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 298760368,
-["itemLevel"] = 669.4375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 626328670,
-["itemLevel"] = 667.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 566033065,
-["itemLevel"] = 664.125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 625120241,
-["itemLevel"] = 669.25,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 566494931,
-["itemLevel"] = 663,
-["classId"] = 3,
-},
-},
-["time"] = 1745437798,
-["date"] = "21:49 23/04/25",
-["elapsed"] = 315.814000000013,
-["servertime"] = 1745437797,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 497482749,
-["itemLevel"] = 666.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 463751397,
-["itemLevel"] = 664.5,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 526788952,
-["itemLevel"] = 666.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 455315067,
-["itemLevel"] = 668,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1753304013,
-["elapsed"] = 290.9760000000242,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 637741216,
-["itemLevel"] = 673.25,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 608192899,
-["itemLevel"] = 667.1875,
-["classId"] = 3,
-},
-["Assähi-Dalaran"] = {
-["total"] = 526838855,
-["itemLevel"] = 660.0625,
-["classId"] = 9,
 },
 ["Gydzitpala-KhazModan"] = {
-["total"] = 764904489,
-["itemLevel"] = 681.6875,
+["total"] = 1095873935,
+["itemLevel"] = 709.25,
 ["classId"] = 2,
 },
-["Ylenis-Dalaran"] = {
-["total"] = 660429994,
-["itemLevel"] = 683.9375,
-["classId"] = 12,
+["Dordok-Ysondre"] = {
+["total"] = 835448578,
+["itemLevel"] = 700.5,
+["classId"] = 3,
 },
-["Gwokayou-Archimonde"] = {
-["total"] = 264139818,
-["itemLevel"] = 664.625,
-["classId"] = 11,
+["Arrhad"] = {
+["total"] = 972647402,
+["itemLevel"] = 703.625,
+["classId"] = 3,
 },
-["Brelanas"] = {
-["total"] = 717783626,
-["itemLevel"] = 681.875,
-["classId"] = 8,
+["Yugekok-Archimonde"] = {
+["total"] = 1043950026,
+["itemLevel"] = 700.6875,
+["classId"] = 6,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 374963780,
-["itemLevel"] = 680.8125,
+["Zroyele"] = {
+["total"] = 684593507,
+["itemLevel"] = 688.375,
 ["classId"] = 1,
 },
-["Peche-Illidan"] = {
-["total"] = 610854885,
-["itemLevel"] = 0,
-["classId"] = 2,
+["Kayex"] = {
+["total"] = 378979053,
+["itemLevel"] = 706.5,
+["classId"] = 6,
 },
 ["Anymind-Archimonde"] = {
-["total"] = 555433079,
-["itemLevel"] = 665.125,
+["total"] = 751179286,
+["itemLevel"] = 692.125,
 ["classId"] = 5,
 },
 },
-["servertime"] = 1753304013,
+["servertime"] = 1756414933,
 ["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 966071244,
+["itemLevel"] = 705.4375,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 731154767,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
 ["Amsët"] = {
-["total"] = 401267102,
-["itemLevel"] = 674.9375,
+["total"] = 672627967,
+["itemLevel"] = 692.5625,
+["classId"] = 7,
+},
+},
+["date"] = "23:02 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 971105233,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 851539479,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1015029329,
+["itemLevel"] = 704.8125,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 964425726,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 336914872,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1067984834,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 767855882,
+["itemLevel"] = 706.3125,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 767699924,
+["itemLevel"] = 704.0625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 758800047,
+["itemLevel"] = 704.8666666666667,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1202987291,
+["itemLevel"] = 708.3125,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 360784909,
+["itemLevel"] = 709.125,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 783071217,
+["itemLevel"] = 694.75,
+["classId"] = 1,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 974198761,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 897740292,
+["itemLevel"] = 704.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1756933182,
+["date"] = "22:59 03/09/25",
+["elapsed"] = 264.3479999999981,
+["servertime"] = 1756933181,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 908419126,
+["itemLevel"] = 705.6875,
+["classId"] = 2,
+},
+["Amsët"] = {
+["total"] = 504995699,
+["itemLevel"] = 696.5625,
 ["classId"] = 7,
 },
 ["Heliopsis-Archimonde"] = {
-["total"] = 395712918,
-["itemLevel"] = 680.4375,
+["total"] = 584427009,
+["itemLevel"] = 709.4375,
 ["classId"] = 7,
 },
-["Opopøï-Dalaran"] = {
-["total"] = 413373475,
-["itemLevel"] = 679.25,
+["Hise-MarécagedeZangar"] = {
+["total"] = 903996925,
+["itemLevel"] = 705.6875,
 ["classId"] = 5,
 },
 },
-["date"] = "22:53 23/07/25",
+["guild"] = "Adasträ",
 },
-},
-[2917] = {
-{
-["guild"] = "La chope de fer",
-["time"] = 1728502520,
-["elapsed"] = 365.4809999996796,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 203557449,
-["itemLevel"] = 612.6875,
-["classId"] = 7,
-},
-["Sithi-Dalaran"] = {
-["total"] = 128544927,
-["itemLevel"] = 613.25,
-["classId"] = 6,
-},
-["Thargar-Dalaran"] = {
-["total"] = 315721912,
-["itemLevel"] = 614.9375,
-["classId"] = 1,
-},
-["Rôcksteady"] = {
-["total"] = 133768633,
-["itemLevel"] = 610.625,
-["classId"] = 11,
-},
-["Flydidjecte-Archimonde"] = {
-["total"] = 208869254,
-["itemLevel"] = 614.8125,
-["classId"] = 12,
-},
-["Nahilis-Dalaran"] = {
-["total"] = 184852993,
-["itemLevel"] = 615.875,
-["classId"] = 11,
-},
-["Maøss-Dalaran"] = {
-["total"] = 195426936,
-["itemLevel"] = 611.1875,
-["classId"] = 9,
-},
-["Edixed-Dalaran"] = {
-["total"] = 276831340,
-["itemLevel"] = 611.75,
-["classId"] = 10,
-},
-["Därin"] = {
-["total"] = 184703772,
-["itemLevel"] = 612.875,
-["classId"] = 3,
-},
-["Ælîî-KhazModan"] = {
-["total"] = 236672216,
-["itemLevel"] = 609.125,
-["classId"] = 8,
-},
-["Eshydna"] = {
-["total"] = 131477899,
-["itemLevel"] = 606.375,
-["classId"] = 12,
-},
-["Naincurable"] = {
-["total"] = 182515762,
-["itemLevel"] = 607.3125,
-["classId"] = 7,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 317045936,
-["itemLevel"] = 613.25,
-["classId"] = 10,
-},
-},
-["servertime"] = 1728502519,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 166183589,
-["itemLevel"] = 614.6875,
-["classId"] = 10,
-},
-["Kiljim-Dalaran"] = {
-["total"] = 248757028,
-["itemLevel"] = 613.5625,
-["classId"] = 7,
-},
-["Konì-Dalaran"] = {
-["total"] = 97650723,
-["itemLevel"] = 607.0625,
-["classId"] = 11,
-},
-["Tälindä"] = {
-["total"] = 202566708,
-["itemLevel"] = 609.8125,
-["classId"] = 2,
-},
-},
-["date"] = "21:35 09/10/24",
-},
-{
-["guild"] = "La chope de fer",
-["time"] = 1732135138,
-["elapsed"] = 202.6359999999986,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 232846029,
-["itemLevel"] = 622.125,
-["classId"] = 7,
-},
-["Hazraen-CultedelaRivenoire"] = {
-["total"] = 161984636,
-["itemLevel"] = 610.0625,
-["classId"] = 3,
-},
-["Sithi-Dalaran"] = {
-["total"] = 104722212,
-["itemLevel"] = 619.75,
-["classId"] = 6,
-},
-["Ashdêuzo"] = {
-["total"] = 67751349,
-["itemLevel"] = 617.125,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 226939324,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 100342889,
-["itemLevel"] = 611.375,
-["classId"] = 12,
-},
-["Voda-Dalaran"] = {
-["total"] = 170697245,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Edixed-Dalaran"] = {
-["total"] = 211461499,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 244336410,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-},
-["servertime"] = 1732135138,
-["HEALER"] = {
-["Deïna-Dalaran"] = {
-["total"] = 143975402,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
-},
-["Sonydx-Archimonde"] = {
-["total"] = 87128777,
-["itemLevel"] = 604.5,
-["classId"] = 13,
-},
-},
-["date"] = "21:38 20/11/24",
-},
-},
-[3015] = {
 {
 ["guild"] = "Adasträ",
-["time"] = 1743712153,
-["elapsed"] = 336.2509999999311,
+["time"] = 1757533512,
+["elapsed"] = 248.7989999999991,
 ["DAMAGER"] = {
-["Øskÿ-Archimonde"] = {
-["total"] = 349608236,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
 ["Kvotheen"] = {
-["total"] = 643456072,
-["itemLevel"] = 664.625,
+["total"] = 882822333,
+["itemLevel"] = 709.75,
 ["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 624978934,
-["itemLevel"] = 657.4375,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 551342287,
-["itemLevel"] = 657.375,
-["classId"] = 3,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 491603866,
-["itemLevel"] = 661.375,
-["classId"] = 8,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 369113911,
-["itemLevel"] = 645.625,
-["classId"] = 11,
-},
-["Morkai-Sargeras"] = {
-["total"] = 636313157,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
 },
 ["Zroyele"] = {
-["total"] = 660756820,
-["itemLevel"] = 661.625,
+["total"] = 804779722,
+["itemLevel"] = 697.375,
 ["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 621071383,
-["itemLevel"] = 662.4375,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 545309365,
-["itemLevel"] = 663.0625,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 305060750,
-["itemLevel"] = 661.3125,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 566968308,
-["itemLevel"] = 663.5,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 469332371,
-["itemLevel"] = 664.25,
-["classId"] = 13,
-},
-["Uztek"] = {
-["total"] = 709450353,
-["itemLevel"] = 665.0625,
-["classId"] = 9,
-},
-["Mescà-Dalaran"] = {
-["total"] = 481069467,
-["itemLevel"] = 656.6875,
-["classId"] = 13,
-},
-["Jamelmoignon"] = {
-["total"] = 579066183,
-["itemLevel"] = 660.75,
-["classId"] = 5,
-},
-},
-["servertime"] = 1743712153,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 522786270,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 574908107,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 615219628,
-["itemLevel"] = 662.625,
-["classId"] = 10,
 },
 ["Putchie"] = {
-["total"] = 553559458,
-["itemLevel"] = 661.375,
+["total"] = 974520370,
+["itemLevel"] = 710.625,
 ["classId"] = 11,
 },
-},
-["date"] = "22:29 03/04/25",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1744232655,
-["elapsed"] = 330.0300000000007,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 645719635,
-["itemLevel"] = 665.0625,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 623759466,
-["itemLevel"] = 657.875,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 559537457,
-["itemLevel"] = 662.5,
-["classId"] = 3,
-},
-["Pipoteur"] = {
-["total"] = 482972432,
-["itemLevel"] = 658.4375,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 511267015,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 482757049,
-["itemLevel"] = 661.75,
-["classId"] = 2,
-},
-["Zroyele"] = {
-["total"] = 690630127,
-["itemLevel"] = 662.0625,
+["Natariis"] = {
+["total"] = 986543339,
+["itemLevel"] = 705.625,
 ["classId"] = 1,
 },
-["Vilidøns-Dalaran"] = {
-["total"] = 721116310,
-["itemLevel"] = 662.5,
-["classId"] = 12,
-},
-["Grodar-Archimonde"] = {
-["total"] = 603915928,
-["itemLevel"] = 664.875,
-["classId"] = 1,
-},
-["Erami-Sargeras"] = {
-["total"] = 311983502,
-["itemLevel"] = 664.375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 544170310,
-["itemLevel"] = 665.1875,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 460693240,
-["itemLevel"] = 665.0625,
+["Villidøns-Dalaran"] = {
+["total"] = 1018313685,
+["itemLevel"] = 709.4375,
 ["classId"] = 13,
 },
-["Morkai-Sargeras"] = {
-["total"] = 646705785,
-["itemLevel"] = 666.375,
-["classId"] = 3,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 420685277,
-["itemLevel"] = 649.5625,
-["classId"] = 11,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 328344455,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
-},
-},
-["servertime"] = 1744232654,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 471618824,
-["itemLevel"] = 665.875,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 574981539,
-["itemLevel"] = 657.625,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 581034615,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 508255651,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
-},
-},
-["date"] = "23:04 09/04/25",
-},
-{
-["date"] = "22:45 16/04/25",
-["guild"] = "Adasträ",
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 626710263,
-["itemLevel"] = 666.5,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 566999867,
-["itemLevel"] = 658.75,
-["classId"] = 3,
-},
-["Øskypal-Archimonde"] = {
-["total"] = 224245369,
-["itemLevel"] = 653.9375,
-["classId"] = 2,
-},
-["Pipoteur"] = {
-["total"] = 545010661,
-["itemLevel"] = 662.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 512402911,
-["itemLevel"] = 666.75,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 569096100,
-["itemLevel"] = 664.875,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 555824684,
-["itemLevel"] = 667.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 576455757,
-["itemLevel"] = 662.9375,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 296302681,
-["itemLevel"] = 668.4375,
+["Kayex"] = {
+["total"] = 348764995,
+["itemLevel"] = 712.5,
 ["classId"] = 6,
-},
-["Orlith-KirinTor"] = {
-["total"] = 391687479,
-["itemLevel"] = 664.125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 554195776,
-["itemLevel"] = 667.8125,
-["classId"] = 3,
-},
-["Zroyele"] = {
-["total"] = 633104931,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
-["Juicedmk-Archimonde"] = {
-["total"] = 386622747,
-["itemLevel"] = 651.625,
-["classId"] = 11,
-},
-},
-["elapsed"] = 308.795999999973,
-["servertime"] = 1744836305,
-["HEALER"] = {
-["Amsët"] = {
-["total"] = 508548036,
-["itemLevel"] = 662.625,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 413901920,
-["itemLevel"] = 666.125,
-["classId"] = 5,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 472316603,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
-},
-["time"] = 1744836305,
-},
-{
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 640503670,
-["itemLevel"] = 668.1875,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 624456946,
-["itemLevel"] = 660.4375,
-["classId"] = 3,
-},
-["Øskÿ-Archimonde"] = {
-["total"] = 385135045,
-["itemLevel"] = 666.75,
-["classId"] = 1,
-},
-["Pipoteur"] = {
-["total"] = 623925570,
-["itemLevel"] = 665.8125,
-["classId"] = 9,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 478577645,
-["itemLevel"] = 667.5625,
-["classId"] = 8,
-},
-["Durnedin-Dalaran"] = {
-["total"] = 588612135,
-["itemLevel"] = 665.125,
-["classId"] = 2,
-},
-["Grodar-Archimonde"] = {
-["total"] = 512219307,
-["itemLevel"] = 668.4375,
-["classId"] = 1,
-},
-["Vilidøns-Dalaran"] = {
-["total"] = 649093476,
-["itemLevel"] = 667,
-["classId"] = 12,
-},
-["Erami-Sargeras"] = {
-["total"] = 336713012,
-["itemLevel"] = 669.4375,
-["classId"] = 6,
-},
-["Gydzitt-KhazModan"] = {
-["total"] = 534091995,
-["itemLevel"] = 667.75,
-["classId"] = 7,
-},
-["Orlith-KirinTor"] = {
-["total"] = 486742002,
-["itemLevel"] = 664.125,
-["classId"] = 13,
-},
-["Morkai-Sargeras"] = {
-["total"] = 680954273,
-["itemLevel"] = 669.25,
-["classId"] = 3,
-},
-["Dordok-Ysondre"] = {
-["total"] = 504309470,
-["itemLevel"] = 663,
-["classId"] = 3,
-},
-},
-["time"] = 1745438607,
-["date"] = "22:03 23/04/25",
-["elapsed"] = 327.1319999999832,
-["servertime"] = 1745438606,
-["HEALER"] = {
-["Putchie"] = {
-["total"] = 398226538,
-["itemLevel"] = 666.3125,
-["classId"] = 11,
-},
-["Amsët"] = {
-["total"] = 468953874,
-["itemLevel"] = 664.5,
-["classId"] = 7,
-},
-["Opopoi-Dalaran"] = {
-["total"] = 588771043,
-["itemLevel"] = 666.625,
-["classId"] = 10,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 384787246,
-["itemLevel"] = 668,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["guild"] = "Adasträ",
-["time"] = 1753304657,
-["elapsed"] = 274.2840000000142,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 552857399,
-["itemLevel"] = 673.25,
-["classId"] = 7,
-},
-["Ðaitiø"] = {
-["total"] = 503301587,
-["itemLevel"] = 667.1875,
-["classId"] = 3,
-},
-["Assähi-Dalaran"] = {
-["total"] = 401438432,
-["itemLevel"] = 660.0625,
-["classId"] = 9,
 },
 ["Gydzitpala-KhazModan"] = {
-["total"] = 670607009,
-["itemLevel"] = 681.6875,
+["total"] = 1032133903,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 1243182859,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 827221557,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 589545880,
+["itemLevel"] = 711.5,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 864439433,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 981238708,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 291254473,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 778499428,
+["itemLevel"] = 708.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 701098915,
+["itemLevel"] = 707.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757533512,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 565044521,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 426253989,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 489595540,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1026864882,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "21:45 10/09/25",
+},
+{
+["date"] = "21:35 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1017599356,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 903498955,
+["itemLevel"] = 710.3125,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 304505677,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1061317953,
+["itemLevel"] = 713.1875,
 ["classId"] = 2,
 },
 ["Ylenis-Dalaran"] = {
-["total"] = 539356391,
-["itemLevel"] = 683.9375,
+["total"] = 914099776,
+["itemLevel"] = 711.5,
 ["classId"] = 12,
 },
-["Gwokayou-Archimonde"] = {
-["total"] = 263170236,
-["itemLevel"] = 664.625,
-["classId"] = 11,
+["Salidaris-Dalaran"] = {
+["total"] = 799423626,
+["itemLevel"] = 713.4375,
+["classId"] = 3,
 },
-["Brelanas"] = {
-["total"] = 660780403,
-["itemLevel"] = 681.875,
-["classId"] = 8,
+["Yugekok-Archimonde"] = {
+["total"] = 1033913088,
+["itemLevel"] = 710.4375,
+["classId"] = 6,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 397113974,
-["itemLevel"] = 680.8125,
+["Arrhad"] = {
+["total"] = 1390622356,
+["itemLevel"] = 713.6875,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 981675816,
+["itemLevel"] = 703.25,
 ["classId"] = 1,
 },
-["Peche-Illidan"] = {
-["total"] = 528682422,
-["itemLevel"] = 0,
-["classId"] = 2,
+["Kayex"] = {
+["total"] = 375673760,
+["itemLevel"] = 713.625,
+["classId"] = 6,
 },
 ["Anymind-Archimonde"] = {
-["total"] = 451319729,
-["itemLevel"] = 665.125,
+["total"] = 868529354,
+["itemLevel"] = 709.3125,
 ["classId"] = 5,
 },
 },
-["servertime"] = 1753304657,
+["elapsed"] = 261.8790000000008,
+["servertime"] = 1758137704,
 ["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 793079126,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 658788485,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 562822058,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
 ["Amsët"] = {
-["total"] = 442455548,
-["itemLevel"] = 674.9375,
+["total"] = 492630845,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+},
+["time"] = 1758137705,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1758742580,
+["elapsed"] = 239.2729999999865,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1051587545,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 282067687,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 1034453350,
+["itemLevel"] = 711.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 918957979,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 417850307,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 983621366,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 965315898,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 987453681,
+["itemLevel"] = 715.0625,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1014898527,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 333002678,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+["Putchie"] = {
+["total"] = 1031170939,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+},
+["servertime"] = 1758742579,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 793690108,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 571872765,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 491335762,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["date"] = "21:36 24/09/25",
+},
+{
+["time"] = 1759351718,
+["guild"] = "Adasträ",
+["elapsed"] = 221.4420000000391,
+["date"] = "22:48 01/10/25",
+["servertime"] = 1759351718,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 589726963,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Ellerinä"] = {
+["total"] = 527168981,
+["itemLevel"] = 709.875,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Justhunt-Ysondre"] = {
+["total"] = 767682878,
+["itemLevel"] = 713,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 866785130,
+["itemLevel"] = 712.375,
+["classId"] = 7,
+},
+["Opopøî-Dalaran"] = {
+["total"] = 755234222,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 983967351,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Dordok-Ysondre"] = {
+["total"] = 764313798,
+["itemLevel"] = 712.5,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 877382466,
+["itemLevel"] = 705.8125,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 367674968,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1004896482,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 810919531,
+["itemLevel"] = 705.25,
+["classId"] = 12,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 868115218,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 988564951,
+["itemLevel"] = 713.9375,
+["classId"] = 9,
+},
+["Vanân"] = {
+["total"] = 1054714989,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 295020411,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 197518686,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Putchie"] = {
+["total"] = 1027870041,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 781233156,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+},
+},
+[3131] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 336131919,
+["itemLevel"] = 692.625,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1130902511,
+["itemLevel"] = 694.75,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1027755033,
+["itemLevel"] = 689.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1103326056,
+["itemLevel"] = 694.75,
+["classId"] = 13,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 644354349,
+["itemLevel"] = 702.5,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1413854124,
+["itemLevel"] = 693.625,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1412017499,
+["itemLevel"] = 701.25,
+["classId"] = 2,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1036573430,
+["itemLevel"] = 693.3125,
+["classId"] = 6,
+},
+["Kayex"] = {
+["total"] = 507720609,
+["itemLevel"] = 700.3125,
+["classId"] = 6,
+},
+},
+["time"] = 1755815325,
+["date"] = "00:28 22/08/25",
+["elapsed"] = 418.737999999983,
+["servertime"] = 1755815324,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 1034557912,
+["itemLevel"] = 701.0625,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1353724734,
+["itemLevel"] = 695.6875,
+["classId"] = 2,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1756415713,
+["elapsed"] = 283.6430000000401,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1271197624,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1059852305,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1057608424,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 993892345,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 490566288,
+["itemLevel"] = 708.9375,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1274786363,
+["itemLevel"] = 709.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 969198316,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1258286025,
+["itemLevel"] = 703.625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 960954223,
+["itemLevel"] = 700.6875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 857490014,
+["itemLevel"] = 688.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 463308824,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 848933909,
+["itemLevel"] = 692.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1756415712,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 1079261935,
+["itemLevel"] = 705.4375,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 745039033,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 756787193,
+["itemLevel"] = 692.5625,
+["classId"] = 7,
+},
+},
+["date"] = "23:15 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1239962289,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1039440339,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1297668650,
+["itemLevel"] = 703.6,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1224963454,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 459952813,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1243154950,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1088539989,
+["itemLevel"] = 706.3125,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1014913109,
+["itemLevel"] = 704.25,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1067445031,
+["itemLevel"] = 704.8666666666667,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1498958619,
+["itemLevel"] = 708.3125,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 503143108,
+["itemLevel"] = 709.125,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 196772644,
+["itemLevel"] = 694.75,
+["classId"] = 1,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1145646867,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1023037206,
+["itemLevel"] = 704.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1756933972,
+["date"] = "23:12 03/09/25",
+["elapsed"] = 297.5009999999311,
+["servertime"] = 1756933971,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 921899191,
+["itemLevel"] = 705.6875,
+["classId"] = 2,
+},
+["Amsët"] = {
+["total"] = 628972489,
+["itemLevel"] = 696.5625,
 ["classId"] = 7,
 },
 ["Heliopsis-Archimonde"] = {
-["total"] = 339005093,
-["itemLevel"] = 680.4375,
+["total"] = 615234036,
+["itemLevel"] = 709.4375,
 ["classId"] = 7,
 },
-["Opopøï-Dalaran"] = {
-["total"] = 463375855,
-["itemLevel"] = 679.25,
+["Hise-MarécagedeZangar"] = {
+["total"] = 1044882034,
+["itemLevel"] = 705.6875,
 ["classId"] = 5,
 },
 },
-["date"] = "23:04 23/07/25",
+["guild"] = "Adasträ",
 },
-},
-[2918] = {
 {
-["guild"] = "La chope de fer",
-["time"] = 1728503906,
-["elapsed"] = 326.2669999999926,
+["guild"] = "Adasträ",
+["time"] = 1757534189,
+["elapsed"] = 247.2419999999984,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
-["total"] = 232860392,
-["itemLevel"] = 612.6875,
+["total"] = 1181225435,
+["itemLevel"] = 709.75,
 ["classId"] = 7,
 },
-["Sithi-Dalaran"] = {
-["total"] = 113450251,
-["itemLevel"] = 613.25,
-["classId"] = 6,
-},
-["Thargar-Dalaran"] = {
-["total"] = 273272777,
-["itemLevel"] = 614.9375,
+["Zroyele"] = {
+["total"] = 917144948,
+["itemLevel"] = 697.375,
 ["classId"] = 1,
 },
-["Rôcksteady"] = {
-["total"] = 116791326,
-["itemLevel"] = 610.625,
+["Putchie"] = {
+["total"] = 1180941710,
+["itemLevel"] = 710.625,
 ["classId"] = 11,
 },
-["Flydidjecte-Archimonde"] = {
-["total"] = 261869331,
-["itemLevel"] = 614.8125,
-["classId"] = 12,
+["Natariis"] = {
+["total"] = 1088606801,
+["itemLevel"] = 704.4666666666667,
+["classId"] = 1,
 },
-["Nahilis-Dalaran"] = {
-["total"] = 138578630,
-["itemLevel"] = 615.875,
-["classId"] = 11,
-},
-["Maøss-Dalaran"] = {
-["total"] = 244885537,
-["itemLevel"] = 611.1875,
-["classId"] = 9,
-},
-["Edixed-Dalaran"] = {
-["total"] = 245935283,
-["itemLevel"] = 611.75,
-["classId"] = 10,
-},
-["Därin"] = {
-["total"] = 244140289,
-["itemLevel"] = 612.875,
-["classId"] = 3,
-},
-["Ælîî-KhazModan"] = {
-["total"] = 241826532,
-["itemLevel"] = 610.8125,
-["classId"] = 8,
-},
-["Eshydna"] = {
-["total"] = 145868877,
-["itemLevel"] = 606.375,
-["classId"] = 12,
-},
-["Naincurable"] = {
-["total"] = 156548785,
-["itemLevel"] = 607.3125,
-["classId"] = 7,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 303163986,
-["itemLevel"] = 613.25,
-["classId"] = 10,
-},
-},
-["servertime"] = 1728503905,
-["HEALER"] = {
-["Sonydl-Archimonde"] = {
-["total"] = 276043176,
-["itemLevel"] = 614.6875,
-["classId"] = 10,
-},
-["Kiljim-Dalaran"] = {
-["total"] = 258851257,
-["itemLevel"] = 613.5625,
-["classId"] = 7,
-},
-["Konì-Dalaran"] = {
-["total"] = 241493659,
-["itemLevel"] = 607.0625,
-["classId"] = 11,
-},
-["Tälindä"] = {
-["total"] = 225588167,
-["itemLevel"] = 609.8125,
-["classId"] = 2,
-},
-},
-["date"] = "21:58 09/10/24",
-},
-{
-["guild"] = "La chope de fer",
-["time"] = 1732136240,
-["elapsed"] = 210.2480000000214,
-["DAMAGER"] = {
-["Kvotheen"] = {
-["total"] = 244504948,
-["itemLevel"] = 622.125,
-["classId"] = 7,
-},
-["Hazraen-CultedelaRivenoire"] = {
-["total"] = 165118494,
-["itemLevel"] = 610.0625,
-["classId"] = 3,
-},
-["Sithi-Dalaran"] = {
-["total"] = 97904937,
-["itemLevel"] = 619.75,
-["classId"] = 6,
-},
-["Ashdêuzo"] = {
-["total"] = 84172499,
-["itemLevel"] = 617.125,
-["classId"] = 11,
-},
-["Därin"] = {
-["total"] = 219646955,
-["itemLevel"] = 621.5625,
-["classId"] = 3,
-},
-["Eshydna"] = {
-["total"] = 107144075,
-["itemLevel"] = 611.375,
-["classId"] = 12,
-},
-["Voda-Dalaran"] = {
-["total"] = 220059000,
-["itemLevel"] = 618.3125,
-["classId"] = 2,
-},
-["Edixed-Dalaran"] = {
-["total"] = 211798706,
-["itemLevel"] = 620.125,
-["classId"] = 10,
-},
-["Barabell-Cho'gall"] = {
-["total"] = 237754060,
-["itemLevel"] = 624.75,
-["classId"] = 10,
-},
-},
-["servertime"] = 1732136240,
-["HEALER"] = {
-["Deïna-Dalaran"] = {
-["total"] = 234905762,
-["itemLevel"] = 626.8125,
-["classId"] = 7,
-},
-["Sonydx-Archimonde"] = {
-["total"] = 175386085,
-["itemLevel"] = 604.5,
+["Villidøns-Dalaran"] = {
+["total"] = 1116305842,
+["itemLevel"] = 709.4375,
 ["classId"] = 13,
 },
+["Kayex"] = {
+["total"] = 418621810,
+["itemLevel"] = 712.5,
+["classId"] = 6,
 },
-["date"] = "21:57 20/11/24",
+["Gydzitpala-KhazModan"] = {
+["total"] = 1058743310,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 1223162165,
+["itemLevel"] = 710.1333333333333,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1049655384,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 940204870,
+["itemLevel"] = 711.5,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 977549553,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 1282675166,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 420521193,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 925927405,
+["itemLevel"] = 708.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 930296048,
+["itemLevel"] = 707.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757534189,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 598583109,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 797250915,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 480406379,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 939367381,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "21:56 10/09/25",
+},
+{
+["date"] = "21:50 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1272598961,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1338028685,
+["itemLevel"] = 710.3125,
+["classId"] = 3,
+},
+["Kayex"] = {
+["total"] = 609787502,
+["itemLevel"] = 713.625,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1436574661,
+["itemLevel"] = 703.25,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1402400594,
+["itemLevel"] = 711.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1091190200,
+["itemLevel"] = 713.4375,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1448348286,
+["itemLevel"] = 713.1875,
+["classId"] = 2,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 511891106,
+["itemLevel"] = 710.4375,
+["classId"] = 6,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 537506384,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1695559402,
+["itemLevel"] = 713.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 196087329,
+["itemLevel"] = 709.3125,
+["classId"] = 5,
+},
+},
+["elapsed"] = 344.5209999999997,
+["servertime"] = 1758138601,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 690258791,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1022167867,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 757554535,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 981806534,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+},
+["time"] = 1758138602,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1758743185,
+["elapsed"] = 232.7539999999572,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1191057483,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1058134812,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 1139102432,
+["itemLevel"] = 710.6666666666666,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1048672025,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 402672002,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1047195062,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1036316001,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 965511204,
+["itemLevel"] = 715.0625,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1187354061,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 448225385,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+["Putchie"] = {
+["total"] = 1141965370,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+},
+["servertime"] = 1758743184,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 765022501,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 601671761,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 568812445,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["date"] = "21:46 24/09/25",
+},
+{
+["date"] = "22:57 01/10/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Justhunt-Ysondre"] = {
+["total"] = 837744126,
+["itemLevel"] = 713,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 1234056619,
+["itemLevel"] = 712.375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1086094575,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Opopøî-Dalaran"] = {
+["total"] = 860659987,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1115559859,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 1133119021,
+["itemLevel"] = 713.9375,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 442655351,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 985451454,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 890774151,
+["itemLevel"] = 705.25,
+["classId"] = 12,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 900092700,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 985874928,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Vanân"] = {
+["total"] = 1059125936,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 417196397,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 953431618,
+["itemLevel"] = 705.8125,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 829551977,
+["itemLevel"] = 712,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 925112802,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+["elapsed"] = 202.8000000000466,
+["servertime"] = 1759352276,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 662817291,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Ellerinä"] = {
+["total"] = 494683516,
+["itemLevel"] = 709.8666666666667,
+["classId"] = 11,
+},
+},
+["time"] = 1759352276,
 },
 },
 [3009] = {
 {
-["time"] = 1741297968,
-["guild"] = "Adasträ",
-["elapsed"] = 322.7729999999865,
-["date"] = "22:52 06/03/25",
-["servertime"] = 1741297969,
-["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 510818252,
-["itemLevel"] = 639.9375,
-["classId"] = 5,
-},
-["Amsët"] = {
-["total"] = 442651474,
-["itemLevel"] = 632.0625,
-["classId"] = 7,
-},
-["Opøpoî-Dalaran"] = {
-["total"] = 521607624,
-["itemLevel"] = 638.875,
-["classId"] = 10,
-},
-["Putchie"] = {
-["total"] = 285176993,
-["itemLevel"] = 636.3125,
-["classId"] = 11,
-},
-},
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 739909362,
@@ -9804,20 +8387,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 636.5,
 ["classId"] = 3,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 684264108,
-["itemLevel"] = 638,
-["classId"] = 2,
+["Øskydh-Archimonde"] = {
+["total"] = 277418693,
+["itemLevel"] = 631.375,
+["classId"] = 12,
 },
 ["Ânydâ-Archimonde"] = {
 ["total"] = 634811753,
 ["itemLevel"] = 636,
 ["classId"] = 8,
 },
-["Øskydh-Archimonde"] = {
-["total"] = 277418693,
-["itemLevel"] = 631.375,
-["classId"] = 12,
+["Durnedin-Dalaran"] = {
+["total"] = 684264108,
+["itemLevel"] = 638,
+["classId"] = 2,
 },
 ["Zroyele"] = {
 ["total"] = 602928623,
@@ -9829,10 +8412,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 638.625,
 ["classId"] = 12,
 },
-["Grodar-Archimonde"] = {
-["total"] = 566980513,
-["itemLevel"] = 633.1875,
-["classId"] = 1,
+["Morkai-Sargeras"] = {
+["total"] = 530192712,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 258630593,
@@ -9854,10 +8437,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 626.75,
 ["classId"] = 9,
 },
-["Morkai-Sargeras"] = {
-["total"] = 530192712,
-["itemLevel"] = 638.0625,
-["classId"] = 3,
+["Grodar-Archimonde"] = {
+["total"] = 566980513,
+["itemLevel"] = 633.1875,
+["classId"] = 1,
 },
 ["Jamelmoignon"] = {
 ["total"] = 67295458,
@@ -9865,11 +8448,37 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["time"] = 1741297968,
+["date"] = "22:52 06/03/25",
+["elapsed"] = 322.7729999999865,
+["servertime"] = 1741297969,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 285176993,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 442651474,
+["itemLevel"] = 632.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 521607624,
+["itemLevel"] = 638.875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 510818252,
+["itemLevel"] = 639.9375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
 },
 {
+["date"] = "21:37 13/03/25",
 ["guild"] = "Adasträ",
-["time"] = 1741898255,
-["elapsed"] = 272.5430000000051,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 586746599,
@@ -9916,10 +8525,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 648.625,
 ["classId"] = 6,
 },
-["Durnedin-Dalaran"] = {
-["total"] = 456324816,
-["itemLevel"] = 647.8125,
-["classId"] = 2,
+["Uztek"] = {
+["total"] = 480019929,
+["itemLevel"] = 646.875,
+["classId"] = 9,
 },
 ["Orlith-KirinTor"] = {
 ["total"] = 423546638,
@@ -9931,10 +8540,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 646,
 ["classId"] = 3,
 },
-["Uztek"] = {
-["total"] = 480019929,
-["itemLevel"] = 646.875,
-["classId"] = 9,
+["Durnedin-Dalaran"] = {
+["total"] = 456324816,
+["itemLevel"] = 647.8125,
+["classId"] = 2,
 },
 ["Jamelmoignon"] = {
 ["total"] = 447527431,
@@ -9942,6 +8551,7 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["elapsed"] = 272.5430000000051,
 ["servertime"] = 1741898254,
 ["HEALER"] = {
 ["Amsët"] = {
@@ -9960,9 +8570,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["date"] = "21:37 13/03/25",
+["time"] = 1741898255,
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1742422138,
+["elapsed"] = 256.5169999999926,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 685400644,
@@ -10035,15 +8648,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1742422138,
-["date"] = "23:08 19/03/25",
-["elapsed"] = 256.5169999999926,
 ["servertime"] = 1742422137,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 337098029,
-["itemLevel"] = 651.1875,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 411233639,
+["itemLevel"] = 657.5625,
+["classId"] = 5,
 },
 ["Amsët"] = {
 ["total"] = 327408725,
@@ -10055,40 +8665,43 @@ DetailsDataStorage = {
 ["itemLevel"] = 653.9375,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 411233639,
-["itemLevel"] = 657.5625,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 337098029,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
 },
 },
-["guild"] = "Adasträ",
+["date"] = "23:08 19/03/25",
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1743026190,
+["elapsed"] = 235.2609999999986,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 541463380,
 ["itemLevel"] = 659.1875,
 ["classId"] = 7,
 },
-["Dordok-Ysondre"] = {
-["total"] = 487535679,
-["itemLevel"] = 654.5625,
-["classId"] = 3,
-},
 ["Øskÿ-Archimonde"] = {
 ["total"] = 300422620,
 ["itemLevel"] = 654.5,
 ["classId"] = 1,
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 432603567,
-["itemLevel"] = 659.4375,
-["classId"] = 8,
+["Dordok-Ysondre"] = {
+["total"] = 487535679,
+["itemLevel"] = 654.5625,
+["classId"] = 3,
 },
 ["Juicedmk-Archimonde"] = {
 ["total"] = 329818756,
 ["itemLevel"] = 639.6875,
 ["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 432603567,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
 },
 ["Kayex"] = {
 ["total"] = 288761512,
@@ -10105,10 +8718,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 657.75,
 ["classId"] = 12,
 },
-["Morkai-Sargeras"] = {
-["total"] = 554221426,
-["itemLevel"] = 654.5,
-["classId"] = 3,
+["Uztek"] = {
+["total"] = 599684127,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
 },
 ["Grodar-Archimonde"] = {
 ["total"] = 423248811,
@@ -10125,10 +8738,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 655,
 ["classId"] = 13,
 },
-["Uztek"] = {
-["total"] = 599684127,
-["itemLevel"] = 660.3125,
-["classId"] = 9,
+["Morkai-Sargeras"] = {
+["total"] = 554221426,
+["itemLevel"] = 654.5,
+["classId"] = 3,
 },
 ["Mescà-Dalaran"] = {
 ["total"] = 442213551,
@@ -10141,15 +8754,12 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["time"] = 1743026190,
-["date"] = "22:56 26/03/25",
-["elapsed"] = 235.2609999999986,
 ["servertime"] = 1743026190,
 ["HEALER"] = {
-["Putchie"] = {
-["total"] = 269731233,
-["itemLevel"] = 659.25,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 408461574,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
 },
 ["Amsët"] = {
 ["total"] = 383492609,
@@ -10161,47 +8771,20 @@ DetailsDataStorage = {
 ["itemLevel"] = 660.125,
 ["classId"] = 10,
 },
-["Ässahi-Dalaran"] = {
-["total"] = 408461574,
-["itemLevel"] = 660.0625,
-["classId"] = 5,
-},
-},
-["guild"] = "Adasträ",
-},
-{
-["time"] = 1743622382,
-["guild"] = "Adasträ",
-["elapsed"] = 229.6199999999953,
-["date"] = "21:33 02/04/25",
-["servertime"] = 1743622383,
-["HEALER"] = {
-["Opopoi-Dalaran"] = {
-["total"] = 387352402,
-["itemLevel"] = 662.625,
-["classId"] = 10,
-},
-["Amsët"] = {
-["total"] = 349801215,
-["itemLevel"] = 654.9375,
-["classId"] = 7,
-},
-["Ässahi-Dalaran"] = {
-["total"] = 422585554,
-["itemLevel"] = 663.625,
-["classId"] = 5,
-},
 ["Putchie"] = {
-["total"] = 369147858,
-["itemLevel"] = 660.625,
+["total"] = 269731233,
+["itemLevel"] = 659.25,
 ["classId"] = 11,
 },
 },
+["date"] = "22:56 26/03/25",
+},
+{
 ["DAMAGER"] = {
-["Dordok-Ysondre"] = {
-["total"] = 431153235,
-["itemLevel"] = 656.5625,
-["classId"] = 3,
+["Øskÿ-Archimonde"] = {
+["total"] = 326927128,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
 },
 ["Kvotheen"] = {
 ["total"] = 643835953,
@@ -10213,25 +8796,25 @@ DetailsDataStorage = {
 ["itemLevel"] = 653.3125,
 ["classId"] = 3,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 326927128,
-["itemLevel"] = 658.9375,
-["classId"] = 1,
-},
-["Ânydâ-Archimonde"] = {
-["total"] = 435916365,
-["itemLevel"] = 661.375,
-["classId"] = 8,
+["Dordok-Ysondre"] = {
+["total"] = 431153235,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
 },
 ["Juicedmk-Archimonde"] = {
 ["total"] = 332773330,
 ["itemLevel"] = 645.625,
 ["classId"] = 11,
 },
-["Uztek"] = {
-["total"] = 544348315,
-["itemLevel"] = 664.5,
-["classId"] = 9,
+["Ânydâ-Archimonde"] = {
+["total"] = 435916365,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Morkai-Sargeras"] = {
+["total"] = 577841147,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
 },
 ["Grodar-Archimonde"] = {
 ["total"] = 473430467,
@@ -10263,10 +8846,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 664,
 ["classId"] = 13,
 },
-["Morkai-Sargeras"] = {
-["total"] = 577841147,
-["itemLevel"] = 663.4375,
-["classId"] = 3,
+["Uztek"] = {
+["total"] = 544348315,
+["itemLevel"] = 664.5,
+["classId"] = 9,
 },
 ["Mescà-Dalaran"] = {
 ["total"] = 399991898,
@@ -10279,11 +8862,37 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
+["time"] = 1743622382,
+["date"] = "21:33 02/04/25",
+["elapsed"] = 229.6199999999953,
+["servertime"] = 1743622383,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 369147858,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 349801215,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 422585554,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 387352402,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+},
+["guild"] = "Adasträ",
 },
 {
+["date"] = "21:36 09/04/25",
 ["guild"] = "Adasträ",
-["time"] = 1744227395,
-["elapsed"] = 197.9249999999997,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 607086930,
@@ -10325,10 +8934,10 @@ DetailsDataStorage = {
 ["itemLevel"] = 662.5,
 ["classId"] = 12,
 },
-["Ânydâ-Archimonde"] = {
-["total"] = 561451897,
-["itemLevel"] = 662.8125,
-["classId"] = 8,
+["Øskÿ-Archimonde"] = {
+["total"] = 267972936,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
 },
 ["Erami-Sargeras"] = {
 ["total"] = 279408613,
@@ -10355,18 +8964,19 @@ DetailsDataStorage = {
 ["itemLevel"] = 664.875,
 ["classId"] = 1,
 },
-["Øskÿ-Archimonde"] = {
-["total"] = 267972936,
-["itemLevel"] = 663.1875,
-["classId"] = 1,
+["Ânydâ-Archimonde"] = {
+["total"] = 561451897,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
 },
 },
+["elapsed"] = 197.9249999999997,
 ["servertime"] = 1744227395,
 ["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 294383625,
-["itemLevel"] = 665.875,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 320863670,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
 },
 ["Amsët"] = {
 ["total"] = 291467952,
@@ -10378,15 +8988,18 @@ DetailsDataStorage = {
 ["itemLevel"] = 665.0625,
 ["classId"] = 10,
 },
-["Putchie"] = {
-["total"] = 320863670,
-["itemLevel"] = 663.1875,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 294383625,
+["itemLevel"] = 665.875,
+["classId"] = 5,
 },
 },
-["date"] = "21:36 09/04/25",
+["time"] = 1744227395,
 },
 {
+["guild"] = "Adasträ",
+["time"] = 1744831950,
+["elapsed"] = 203.6720000000205,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 613019246,
@@ -10443,20 +9056,17 @@ DetailsDataStorage = {
 ["itemLevel"] = 667.8125,
 ["classId"] = 3,
 },
-["Zroyele"] = {
-["total"] = 594050222,
-["itemLevel"] = 663.625,
-["classId"] = 1,
-},
 ["Juicedmk-Archimonde"] = {
 ["total"] = 367884534,
 ["itemLevel"] = 652,
 ["classId"] = 11,
 },
+["Zroyele"] = {
+["total"] = 594050222,
+["itemLevel"] = 663.625,
+["classId"] = 1,
 },
-["time"] = 1744831950,
-["date"] = "21:32 16/04/25",
-["elapsed"] = 203.6720000000205,
+},
 ["servertime"] = 1744831951,
 ["HEALER"] = {
 ["Amsët"] = {
@@ -10464,23 +9074,22 @@ DetailsDataStorage = {
 ["itemLevel"] = 662.1875,
 ["classId"] = 7,
 },
-["Opopoi-Dalaran"] = {
-["total"] = 412639341,
-["itemLevel"] = 665.0625,
-["classId"] = 10,
-},
 ["Ässahi-Dalaran"] = {
 ["total"] = 315368813,
 ["itemLevel"] = 666.125,
 ["classId"] = 5,
 },
+["Opopoi-Dalaran"] = {
+["total"] = 412639341,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
 },
-["guild"] = "Adasträ",
+},
+["date"] = "21:32 16/04/25",
 },
 {
+["date"] = "21:32 23/04/25",
 ["guild"] = "Adasträ",
-["time"] = 1745436775,
-["elapsed"] = 221.7660000000615,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 717777810,
@@ -10543,12 +9152,13 @@ DetailsDataStorage = {
 ["classId"] = 3,
 },
 },
+["elapsed"] = 221.7660000000615,
 ["servertime"] = 1745436774,
 ["HEALER"] = {
-["Ässahi-Dalaran"] = {
-["total"] = 236279381,
-["itemLevel"] = 668,
-["classId"] = 5,
+["Putchie"] = {
+["total"] = 232790937,
+["itemLevel"] = 666.3125,
+["classId"] = 11,
 },
 ["Amsët"] = {
 ["total"] = 369045309,
@@ -10560,18 +9170,17 @@ DetailsDataStorage = {
 ["itemLevel"] = 667.0625,
 ["classId"] = 10,
 },
-["Putchie"] = {
-["total"] = 232790937,
-["itemLevel"] = 666.3125,
-["classId"] = 11,
+["Ässahi-Dalaran"] = {
+["total"] = 236279381,
+["itemLevel"] = 668,
+["classId"] = 5,
 },
 },
-["date"] = "21:32 23/04/25",
+["time"] = 1745436775,
 },
 {
+["date"] = "21:43 23/07/25",
 ["guild"] = "Adasträ",
-["time"] = 1753299825,
-["elapsed"] = 213.6090000000258,
 ["DAMAGER"] = {
 ["Kvotheen"] = {
 ["total"] = 565096685,
@@ -10603,6 +9212,11 @@ DetailsDataStorage = {
 ["itemLevel"] = 664,
 ["classId"] = 11,
 },
+["Anymind-Archimonde"] = {
+["total"] = 490618697,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
 ["Brelanas"] = {
 ["total"] = 560886328,
 ["itemLevel"] = 681.875,
@@ -10618,12 +9232,8 @@ DetailsDataStorage = {
 ["itemLevel"] = 0,
 ["classId"] = 2,
 },
-["Anymind-Archimonde"] = {
-["total"] = 490618697,
-["itemLevel"] = 665.125,
-["classId"] = 5,
 },
-},
+["elapsed"] = 213.6090000000258,
 ["servertime"] = 1753299825,
 ["HEALER"] = {
 ["Amsët"] = {
@@ -10642,7 +9252,7218 @@ DetailsDataStorage = {
 ["classId"] = 5,
 },
 },
-["date"] = "21:43 23/07/25",
+["time"] = 1753299825,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1753904296,
+["elapsed"] = 199.7840000001015,
+["DAMAGER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 519303573,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Kvotheen"] = {
+["total"] = 605247148,
+["itemLevel"] = 674.25,
+["classId"] = 7,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 166456745,
+["itemLevel"] = 659.3125,
+["classId"] = 3,
+},
+["Putchie"] = {
+["total"] = 691827636,
+["itemLevel"] = 680.8125,
+["classId"] = 11,
+},
+["Assähi-Dalaran"] = {
+["total"] = 459358103,
+["itemLevel"] = 663.625,
+["classId"] = 9,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 659076574,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 350595421,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 239939708,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+},
+["servertime"] = 1753904297,
+["HEALER"] = {
+["Blackløtus-KirinTor"] = {
+["total"] = 219059639,
+["itemLevel"] = 674.8125,
+["classId"] = 11,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 437024427,
+["itemLevel"] = 679.1875,
+["classId"] = 2,
+},
+},
+["date"] = "21:38 30/07/25",
+},
+},
+[2918] = {
+{
+["date"] = "21:58 09/10/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 232860392,
+["itemLevel"] = 612.6875,
+["classId"] = 7,
+},
+["Sithi-Dalaran"] = {
+["total"] = 113450251,
+["itemLevel"] = 613.25,
+["classId"] = 6,
+},
+["Thargar-Dalaran"] = {
+["total"] = 273272777,
+["itemLevel"] = 614.9375,
+["classId"] = 1,
+},
+["Rôcksteady"] = {
+["total"] = 116791326,
+["itemLevel"] = 610.625,
+["classId"] = 11,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 261869331,
+["itemLevel"] = 614.8125,
+["classId"] = 12,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 303163986,
+["itemLevel"] = 613.25,
+["classId"] = 10,
+},
+["Naincurable"] = {
+["total"] = 156548785,
+["itemLevel"] = 607.3125,
+["classId"] = 7,
+},
+["Edixed-Dalaran"] = {
+["total"] = 245935283,
+["itemLevel"] = 611.75,
+["classId"] = 10,
+},
+["Därin"] = {
+["total"] = 244140289,
+["itemLevel"] = 612.875,
+["classId"] = 3,
+},
+["Ælîî-KhazModan"] = {
+["total"] = 241826532,
+["itemLevel"] = 610.8125,
+["classId"] = 8,
+},
+["Eshydna"] = {
+["total"] = 145868877,
+["itemLevel"] = 606.375,
+["classId"] = 12,
+},
+["Maøss-Dalaran"] = {
+["total"] = 244885537,
+["itemLevel"] = 611.1875,
+["classId"] = 9,
+},
+["Nahilis-Dalaran"] = {
+["total"] = 138578630,
+["itemLevel"] = 615.875,
+["classId"] = 11,
+},
+},
+["elapsed"] = 326.2669999999926,
+["servertime"] = 1728503905,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 276043176,
+["itemLevel"] = 614.6875,
+["classId"] = 10,
+},
+["Tälindä"] = {
+["total"] = 225588167,
+["itemLevel"] = 609.8125,
+["classId"] = 2,
+},
+["Konì-Dalaran"] = {
+["total"] = 241493659,
+["itemLevel"] = 607.0625,
+["classId"] = 11,
+},
+["Kiljim-Dalaran"] = {
+["total"] = 258851257,
+["itemLevel"] = 613.5625,
+["classId"] = 7,
+},
+},
+["time"] = 1728503906,
+},
+{
+["date"] = "21:57 20/11/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 244504948,
+["itemLevel"] = 622.125,
+["classId"] = 7,
+},
+["Hazraen-CultedelaRivenoire"] = {
+["total"] = 165118494,
+["itemLevel"] = 610.0625,
+["classId"] = 3,
+},
+["Sithi-Dalaran"] = {
+["total"] = 97904937,
+["itemLevel"] = 619.75,
+["classId"] = 6,
+},
+["Ashdêuzo"] = {
+["total"] = 84172499,
+["itemLevel"] = 617.125,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 219646955,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 237754060,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Eshydna"] = {
+["total"] = 107144075,
+["itemLevel"] = 611.375,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 211798706,
+["itemLevel"] = 620.125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 220059000,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+},
+["elapsed"] = 210.2480000000214,
+["servertime"] = 1732136240,
+["HEALER"] = {
+["Deïna-Dalaran"] = {
+["total"] = 234905762,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
+},
+["Sonydx-Archimonde"] = {
+["total"] = 175386085,
+["itemLevel"] = 604.5,
+["classId"] = 13,
+},
+},
+["time"] = 1732136240,
+},
+},
+[3013] = {
+{
+["time"] = 1742505932,
+["guild"] = "Adasträ",
+["elapsed"] = 331.6969999999274,
+["date"] = "22:25 20/03/25",
+["servertime"] = 1742505931,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 389110087,
+["itemLevel"] = 658.375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 360656987,
+["itemLevel"] = 648.6875,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 539388921,
+["itemLevel"] = 654.5625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 468852784,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 648997374,
+["itemLevel"] = 655.8125,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 558643056,
+["itemLevel"] = 652.8125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 427003876,
+["itemLevel"] = 651.8125,
+["classId"] = 3,
+},
+["Vanhylle"] = {
+["total"] = 392255120,
+["itemLevel"] = 640.125,
+["classId"] = 6,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 387050618,
+["itemLevel"] = 654.6875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 173440386,
+["itemLevel"] = 655.25,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 591417680,
+["itemLevel"] = 648.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 551320280,
+["itemLevel"] = 652.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 578992584,
+["itemLevel"] = 656.25,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 221828231,
+["itemLevel"] = 653.5,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 500371503,
+["itemLevel"] = 658,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 245939245,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 549190168,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 291542406,
+["itemLevel"] = 647.25,
+["classId"] = 13,
+},
+["Grodar-Archimonde"] = {
+["total"] = 532381230,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1743108737,
+["elapsed"] = 271.0679999999993,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 551290086,
+["itemLevel"] = 659.75,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 416981661,
+["itemLevel"] = 655.75,
+["classId"] = 3,
+},
+["Kayex"] = {
+["total"] = 190538521,
+["itemLevel"] = 661.75,
+["classId"] = 6,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 460148875,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 506889123,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 544915181,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 510644777,
+["itemLevel"] = 659.375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 465089355,
+["itemLevel"] = 655.25,
+["classId"] = 1,
+},
+["Uztek"] = {
+["total"] = 483561069,
+["itemLevel"] = 661.75,
+["classId"] = 9,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 514446913,
+["itemLevel"] = 661.5625,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 294568028,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 490180546,
+["itemLevel"] = 658.6875,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 247005979,
+["itemLevel"] = 655.25,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 398676488,
+["itemLevel"] = 658.25,
+["classId"] = 5,
+},
+},
+["servertime"] = 1743108737,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 335254599,
+["itemLevel"] = 662.4375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 426522251,
+["itemLevel"] = 651.875,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 473662495,
+["itemLevel"] = 660.6875,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 486346360,
+["itemLevel"] = 659.25,
+["classId"] = 11,
+},
+},
+["date"] = "21:52 27/03/25",
+},
+{
+["time"] = 1743625629,
+["guild"] = "Adasträ",
+["elapsed"] = 267.1509999999544,
+["date"] = "22:27 02/04/25",
+["servertime"] = 1743625630,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 444796324,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 495073115,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 411551849,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 447874303,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Øskÿ-Archimonde"] = {
+["total"] = 231978864,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Kvotheen"] = {
+["total"] = 612348260,
+["itemLevel"] = 664.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 535239620,
+["itemLevel"] = 655.3125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 352419709,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 505484090,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 258304273,
+["itemLevel"] = 645.625,
+["classId"] = 11,
+},
+["Uztek"] = {
+["total"] = 522682950,
+["itemLevel"] = 664.5,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 515478338,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 545400048,
+["itemLevel"] = 661.625,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 575903902,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 226914051,
+["itemLevel"] = 660.75,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 549854367,
+["itemLevel"] = 663.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 242070015,
+["itemLevel"] = 664,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 563445317,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 238635486,
+["itemLevel"] = 656.3125,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 450963068,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+},
+{
+["date"] = "22:16 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 620621626,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 397048960,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 480071876,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 443681994,
+["itemLevel"] = 657.8125,
+["classId"] = 9,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 187333114,
+["itemLevel"] = 649.5625,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 494804257,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 580221013,
+["itemLevel"] = 662.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 498182638,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 228972814,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 250450043,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 471762394,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 348820687,
+["itemLevel"] = 665.0625,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 490987186,
+["itemLevel"] = 666.375,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 514474335,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 472761831,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+},
+["elapsed"] = 261.2599999999993,
+["servertime"] = 1744229790,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 499979900,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 208700098,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 426279292,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 477611609,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744229791,
+},
+{
+["time"] = 1744834351,
+["guild"] = "Adasträ",
+["elapsed"] = 222.3549999999814,
+["date"] = "22:12 16/04/25",
+["servertime"] = 1744834351,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 393402968,
+["itemLevel"] = 662.1875,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 366819025,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 373328528,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 550877070,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 517860070,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 173542312,
+["itemLevel"] = 653.9375,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 449293097,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 398705474,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 473120745,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 449531078,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 494374443,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 188314575,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 329414933,
+["itemLevel"] = 664.3125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 473261681,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 294934979,
+["itemLevel"] = 652,
+["classId"] = 11,
+},
+["Zroyele"] = {
+["total"] = 518995506,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+},
+},
+{
+["date"] = "22:30 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 508575593,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 408891366,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 394560722,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 458286217,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 552186518,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 157618451,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 438640659,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 505742208,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 285983614,
+["itemLevel"] = 680.8125,
+["classId"] = 1,
+},
+["Peche-Illidan"] = {
+["total"] = 501933648,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 220.570000000007,
+["servertime"] = 1753302658,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 395314784,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 296901454,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 333084479,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753302658,
+},
+},
+[3015] = {
+{
+["date"] = "22:29 03/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Dordok-Ysondre"] = {
+["total"] = 551342287,
+["itemLevel"] = 657.375,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 643456072,
+["itemLevel"] = 664.625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 624978934,
+["itemLevel"] = 657.4375,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 349608236,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 369113911,
+["itemLevel"] = 645.625,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 491603866,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Uztek"] = {
+["total"] = 709450353,
+["itemLevel"] = 665.0625,
+["classId"] = 9,
+},
+["Zroyele"] = {
+["total"] = 660756820,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 621071383,
+["itemLevel"] = 662.4375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 545309365,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 305060750,
+["itemLevel"] = 661.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 566968308,
+["itemLevel"] = 663.5,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 469332371,
+["itemLevel"] = 664.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 636313157,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 481069467,
+["itemLevel"] = 656.6875,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 579066183,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+["elapsed"] = 336.2509999999311,
+["servertime"] = 1743712153,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 553559458,
+["itemLevel"] = 661.375,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 574908107,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 615219628,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 522786270,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+},
+["time"] = 1743712153,
+},
+{
+["date"] = "23:04 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 645719635,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 623759466,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 559537457,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 482972432,
+["itemLevel"] = 658.4375,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 511267015,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 482757049,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 690630127,
+["itemLevel"] = 662.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 721116310,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 328344455,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 311983502,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 544170310,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 460693240,
+["itemLevel"] = 665.0625,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 646705785,
+["itemLevel"] = 666.375,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 420685277,
+["itemLevel"] = 649.5625,
+["classId"] = 11,
+},
+["Grodar-Archimonde"] = {
+["total"] = 603915928,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+},
+["elapsed"] = 330.0300000000007,
+["servertime"] = 1744232654,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 508255651,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 574981539,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 581034615,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 471618824,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744232655,
+},
+{
+["time"] = 1744836305,
+["guild"] = "Adasträ",
+["elapsed"] = 308.795999999973,
+["date"] = "22:45 16/04/25",
+["servertime"] = 1744836305,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 508548036,
+["itemLevel"] = 662.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 472316603,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 413901920,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 626710263,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 566999867,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 224245369,
+["itemLevel"] = 653.9375,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 545010661,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 512402911,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 569096100,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 555824684,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 576455757,
+["itemLevel"] = 662.9375,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 296302681,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 391687479,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 554195776,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 386622747,
+["itemLevel"] = 651.625,
+["classId"] = 11,
+},
+["Zroyele"] = {
+["total"] = 633104931,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1745438607,
+["elapsed"] = 327.1319999999832,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 640503670,
+["itemLevel"] = 668.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 624456946,
+["itemLevel"] = 660.4375,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 385135045,
+["itemLevel"] = 666.75,
+["classId"] = 1,
+},
+["Pipoteur"] = {
+["total"] = 623925570,
+["itemLevel"] = 665.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 478577645,
+["itemLevel"] = 667.5625,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 588612135,
+["itemLevel"] = 665.125,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 512219307,
+["itemLevel"] = 668.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 649093476,
+["itemLevel"] = 667,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 336713012,
+["itemLevel"] = 669.4375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 534091995,
+["itemLevel"] = 667.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 486742002,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 680954273,
+["itemLevel"] = 669.25,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 504309470,
+["itemLevel"] = 663,
+["classId"] = 3,
+},
+},
+["servertime"] = 1745438606,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 384787246,
+["itemLevel"] = 668,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 468953874,
+["itemLevel"] = 664.5,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 588771043,
+["itemLevel"] = 666.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 398226538,
+["itemLevel"] = 666.3125,
+["classId"] = 11,
+},
+},
+["date"] = "22:03 23/04/25",
+},
+{
+["date"] = "23:04 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 552857399,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 503301587,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 401438432,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 670607009,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 539356391,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 263170236,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 451319729,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 660780403,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 397113974,
+["itemLevel"] = 680.8125,
+["classId"] = 1,
+},
+["Peche-Illidan"] = {
+["total"] = 528682422,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 274.2840000000142,
+["servertime"] = 1753304657,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 442455548,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 339005093,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 463375855,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753304657,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1753908155,
+["elapsed"] = 277.7709999999497,
+["DAMAGER"] = {
+["Putchie"] = {
+["total"] = 549339730,
+["itemLevel"] = 680.8125,
+["classId"] = 11,
+},
+["Kvotheen"] = {
+["total"] = 550341128,
+["itemLevel"] = 674.25,
+["classId"] = 7,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 384346805,
+["itemLevel"] = 659.3125,
+["classId"] = 3,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 210612244,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 463129889,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 584132591,
+["itemLevel"] = 676.9375,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 338007563,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Assähi-Dalaran"] = {
+["total"] = 316852134,
+["itemLevel"] = 663.625,
+["classId"] = 9,
+},
+},
+["servertime"] = 1753908155,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 429137076,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Blackløtus-KirinTor"] = {
+["total"] = 334433485,
+["itemLevel"] = 674.8125,
+["classId"] = 11,
+},
+},
+["date"] = "22:42 30/07/25",
+},
+},
+[3135] = {
+{
+["time"] = 1759350742,
+["guild"] = "Adasträ",
+["elapsed"] = 518.9739999999292,
+["date"] = "22:32 01/10/25",
+["servertime"] = 1759350742,
+["HEALER"] = {
+["Ellerinä"] = {
+["total"] = 1184814646,
+["itemLevel"] = 709.875,
+["classId"] = 11,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1417512108,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Opopøî-Dalaran"] = {
+["total"] = 1692819553,
+["itemLevel"] = 715.25,
+["classId"] = 7,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1816034386,
+["itemLevel"] = 712,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1472224965,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1506081938,
+["itemLevel"] = 712.6875,
+["classId"] = 3,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1707017448,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 748614510,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1543846049,
+["itemLevel"] = 705.8125,
+["classId"] = 1,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1574758363,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1520291569,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1398684673,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Vanân"] = {
+["total"] = 1631397809,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 761559820,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 1360743816,
+["itemLevel"] = 713.9375,
+["classId"] = 9,
+},
+["Putchie"] = {
+["total"] = 1670321585,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1503773930,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+},
+},
+[3133] = {
+{
+["time"] = 1757017107,
+["guild"] = "Adasträ",
+["elapsed"] = 277.4890000000596,
+["date"] = "22:18 04/09/25",
+["servertime"] = 1757017106,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 477099290,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 702944006,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 394124774,
+["itemLevel"] = 710,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 742762166,
+["itemLevel"] = 706.625,
+["classId"] = 2,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1125200652,
+["itemLevel"] = 708.375,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 813664092,
+["itemLevel"] = 707.6875,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1088345819,
+["itemLevel"] = 703.6,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1144302527,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 402320253,
+["itemLevel"] = 710.5625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1122734410,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 943785360,
+["itemLevel"] = 705.8,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 813498904,
+["itemLevel"] = 706.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 885658271,
+["itemLevel"] = 706.8666666666667,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1007021715,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 922511942,
+["itemLevel"] = 695.5625,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 415455262,
+["itemLevel"] = 709.3125,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1049318814,
+["itemLevel"] = 708.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1027039640,
+["itemLevel"] = 705.0625,
+["classId"] = 5,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1757538210,
+["elapsed"] = 264.6299999999974,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1112413221,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Zroyele"] = {
+["total"] = 934984912,
+["itemLevel"] = 699.1875,
+["classId"] = 1,
+},
+["Putchie"] = {
+["total"] = 1021623404,
+["itemLevel"] = 710.4375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1069010231,
+["itemLevel"] = 704.4666666666667,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 564924496,
+["itemLevel"] = 709.4375,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 464487264,
+["itemLevel"] = 712.0625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1135721861,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 1026705073,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1017201519,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 780558775,
+["itemLevel"] = 710.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1012326734,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 1092326811,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 421078377,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 897607827,
+["itemLevel"] = 707.9333333333333,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 969528717,
+["itemLevel"] = 707.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757538210,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 463402481,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 747565011,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 576075929,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 826223494,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "23:03 10/09/25",
+},
+{
+["date"] = "23:18 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1351546340,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 681977007,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 508508702,
+["itemLevel"] = 709.6666666666666,
+["classId"] = 3,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 927222951,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 397889793,
+["itemLevel"] = 713.625,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1145425304,
+["itemLevel"] = 703.25,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 756450548,
+["itemLevel"] = 711.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 850367861,
+["itemLevel"] = 712.8,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1272484610,
+["itemLevel"] = 713.1875,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 413639120,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1298956987,
+["itemLevel"] = 713.0666666666667,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 855041455,
+["itemLevel"] = 709.3125,
+["classId"] = 5,
+},
+},
+["elapsed"] = 284.7440000000006,
+["servertime"] = 1758143892,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 572448369,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 834087226,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 820582158,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+},
+["time"] = 1758143893,
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1081400461,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 832197043,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 1132822508,
+["itemLevel"] = 711.0625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 944764937,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 391312762,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1026821841,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1018579170,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 701308715,
+["itemLevel"] = 714.5333333333333,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1046854620,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 1044697048,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 444527820,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+},
+["time"] = 1758746267,
+["date"] = "22:37 24/09/25",
+["elapsed"] = 239.0119999999879,
+["servertime"] = 1758746266,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 697421693,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 529658771,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 425425325,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[3014] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1743110832,
+["elapsed"] = 411.8999999999942,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 879642928,
+["itemLevel"] = 659.75,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 161149808,
+["itemLevel"] = 655.75,
+["classId"] = 3,
+},
+["Kayex"] = {
+["total"] = 327997473,
+["itemLevel"] = 661.75,
+["classId"] = 6,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 671038912,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 766161963,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 819479291,
+["itemLevel"] = 657.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 898839240,
+["itemLevel"] = 659.375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 630396909,
+["itemLevel"] = 655.25,
+["classId"] = 1,
+},
+["Uztek"] = {
+["total"] = 972129290,
+["itemLevel"] = 661.75,
+["classId"] = 9,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 719415559,
+["itemLevel"] = 661.5625,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 584218612,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 176440753,
+["itemLevel"] = 658.6875,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 391753602,
+["itemLevel"] = 655.25,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 828558563,
+["itemLevel"] = 658.25,
+["classId"] = 5,
+},
+},
+["servertime"] = 1743110832,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 680924430,
+["itemLevel"] = 662.4375,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 594996390,
+["itemLevel"] = 651.875,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 608565424,
+["itemLevel"] = 660.6875,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 514881060,
+["itemLevel"] = 659.25,
+["classId"] = 11,
+},
+},
+["date"] = "22:27 27/03/25",
+},
+{
+["time"] = 1743627189,
+["guild"] = "Adasträ",
+["elapsed"] = 376.3020000000252,
+["date"] = "22:53 02/04/25",
+["servertime"] = 1743627188,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 705629965,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 624129846,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 728133276,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 584940836,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Øskÿ-Archimonde"] = {
+["total"] = 402216454,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Kvotheen"] = {
+["total"] = 778086735,
+["itemLevel"] = 664.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 628809036,
+["itemLevel"] = 655.3125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 499324719,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 564885072,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 317184793,
+["itemLevel"] = 645.625,
+["classId"] = 11,
+},
+["Uztek"] = {
+["total"] = 877020350,
+["itemLevel"] = 664.5,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 618606229,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 831192482,
+["itemLevel"] = 661.625,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 789957594,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 378167685,
+["itemLevel"] = 660.75,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 706874881,
+["itemLevel"] = 663.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 528984215,
+["itemLevel"] = 664.25,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 727704520,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 638719552,
+["itemLevel"] = 656.3125,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 780888745,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+},
+{
+["date"] = "22:50 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 889788941,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 694505404,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 218340552,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 738510700,
+["itemLevel"] = 658.4375,
+["classId"] = 9,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 456290243,
+["itemLevel"] = 649.5625,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 577390019,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 776405040,
+["itemLevel"] = 662.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 769923813,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 399136249,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 384089820,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 748455698,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 602317056,
+["itemLevel"] = 665.0625,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 711618370,
+["itemLevel"] = 666.375,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 701753728,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 726370257,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+},
+["elapsed"] = 356.7959999999994,
+["servertime"] = 1744231828,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 468486172,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 559894177,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 600451863,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 615059964,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744231829,
+},
+{
+["time"] = 1744835117,
+["guild"] = "Adasträ",
+["elapsed"] = 320.7149999999674,
+["date"] = "22:25 16/04/25",
+["servertime"] = 1744835117,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 496360444,
+["itemLevel"] = 662.1875,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 554260511,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 578802161,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 811228963,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 600314984,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 283924633,
+["itemLevel"] = 653.9375,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 704731634,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 614513425,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 645453490,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 652039438,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 717407406,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 335374164,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 531893587,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 599789246,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 298955057,
+["itemLevel"] = 651.625,
+["classId"] = 11,
+},
+["Zroyele"] = {
+["total"] = 682365112,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1745437798,
+["elapsed"] = 315.814000000013,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 745463595,
+["itemLevel"] = 668.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 620427600,
+["itemLevel"] = 660.4375,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 451402525,
+["itemLevel"] = 666.75,
+["classId"] = 1,
+},
+["Pipoteur"] = {
+["total"] = 734031434,
+["itemLevel"] = 665.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 531146284,
+["itemLevel"] = 667.5625,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 676058188,
+["itemLevel"] = 665.125,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 644023162,
+["itemLevel"] = 668.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 679943757,
+["itemLevel"] = 667,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 298760368,
+["itemLevel"] = 669.4375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 626328670,
+["itemLevel"] = 667.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 566033065,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 625120241,
+["itemLevel"] = 669.25,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 566494931,
+["itemLevel"] = 663,
+["classId"] = 3,
+},
+},
+["servertime"] = 1745437797,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 455315067,
+["itemLevel"] = 668,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 463751397,
+["itemLevel"] = 664.5,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 526788952,
+["itemLevel"] = 666.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 497482749,
+["itemLevel"] = 666.3125,
+["classId"] = 11,
+},
+},
+["date"] = "21:49 23/04/25",
+},
+{
+["date"] = "22:53 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 637741216,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 608192899,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 526838855,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 764904489,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 660429994,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 264139818,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 555433079,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 717783626,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 374963780,
+["itemLevel"] = 680.8125,
+["classId"] = 1,
+},
+["Peche-Illidan"] = {
+["total"] = 610854885,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 290.9760000000242,
+["servertime"] = 1753304013,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 401267102,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 395712918,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 413373475,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753304013,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1753904957,
+["elapsed"] = 315.1140000000596,
+["DAMAGER"] = {
+["Putchie"] = {
+["total"] = 735625003,
+["itemLevel"] = 680.8125,
+["classId"] = 11,
+},
+["Kvotheen"] = {
+["total"] = 753219774,
+["itemLevel"] = 674.25,
+["classId"] = 7,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 340827416,
+["itemLevel"] = 659.3125,
+["classId"] = 3,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 273005027,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 626696625,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 684198521,
+["itemLevel"] = 676.9375,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 405819398,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Assähi-Dalaran"] = {
+["total"] = 504465640,
+["itemLevel"] = 663.625,
+["classId"] = 9,
+},
+},
+["servertime"] = 1753904958,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 584768879,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Blackløtus-KirinTor"] = {
+["total"] = 430164365,
+["itemLevel"] = 674.8125,
+["classId"] = 11,
+},
+},
+["date"] = "21:49 30/07/25",
+},
+},
+[3012] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 902355675,
+["itemLevel"] = 646.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 754657778,
+["itemLevel"] = 644.625,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 613510323,
+["itemLevel"] = 643.1875,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 526089389,
+["itemLevel"] = 645.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 410735720,
+["itemLevel"] = 649.375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 692423477,
+["itemLevel"] = 639,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 789484332,
+["itemLevel"] = 646.25,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 310055274,
+["itemLevel"] = 648.625,
+["classId"] = 6,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 753176305,
+["itemLevel"] = 648.25,
+["classId"] = 2,
+},
+["Orlith-KirinTor"] = {
+["total"] = 531810819,
+["itemLevel"] = 645,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 691910205,
+["itemLevel"] = 646,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 755465986,
+["itemLevel"] = 646.875,
+["classId"] = 9,
+},
+["Jamelmoignon"] = {
+["total"] = 654131658,
+["itemLevel"] = 648.1875,
+["classId"] = 5,
+},
+},
+["time"] = 1741904240,
+["date"] = "23:17 13/03/25",
+["elapsed"] = 428.8529999999737,
+["servertime"] = 1741904239,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 540907671,
+["itemLevel"] = 644.125,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 451595047,
+["itemLevel"] = 638.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 689324443,
+["itemLevel"] = 645.125,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 532473442,
+["itemLevel"] = 652.375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 851597407,
+["itemLevel"] = 655.8125,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 710379780,
+["itemLevel"] = 652.8125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 540644745,
+["itemLevel"] = 651.8125,
+["classId"] = 3,
+},
+["Vanhylle"] = {
+["total"] = 592863319,
+["itemLevel"] = 640.125,
+["classId"] = 6,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 569989871,
+["itemLevel"] = 654.6875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 263653471,
+["itemLevel"] = 655.25,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 649540259,
+["itemLevel"] = 648.75,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 915110283,
+["itemLevel"] = 652.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 578578532,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 334136066,
+["itemLevel"] = 652.5,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 789473219,
+["itemLevel"] = 658,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 516648380,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 922534512,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 503447881,
+["itemLevel"] = 647.25,
+["classId"] = 13,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 692564960,
+["itemLevel"] = 656.25,
+["classId"] = 2,
+},
+},
+["time"] = 1742503934,
+["date"] = "21:52 20/03/25",
+["elapsed"] = 375.969000000041,
+["servertime"] = 1742503933,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 438798006,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 441144806,
+["itemLevel"] = 648.6875,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 676232201,
+["itemLevel"] = 654.5625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 501495442,
+["itemLevel"] = 658.375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["time"] = 1743028494,
+["guild"] = "Adasträ",
+["elapsed"] = 391.9560000000056,
+["date"] = "23:34 26/03/25",
+["servertime"] = 1743028494,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 462106940,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 519040408,
+["itemLevel"] = 648.25,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 699884826,
+["itemLevel"] = 660.125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 593915167,
+["itemLevel"] = 659.25,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 976087502,
+["itemLevel"] = 659.1875,
+["classId"] = 7,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 429083189,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 547868735,
+["itemLevel"] = 654.5625,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 465272517,
+["itemLevel"] = 640.125,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 808682268,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Kayex"] = {
+["total"] = 299640303,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 744233991,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 1047165618,
+["itemLevel"] = 657.75,
+["classId"] = 12,
+},
+["Uztek"] = {
+["total"] = 873273154,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 664525973,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 632209993,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Orlith-KirinTor"] = {
+["total"] = 673673100,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 587935162,
+["itemLevel"] = 654.5,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 725997402,
+["itemLevel"] = 653.125,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 717226698,
+["itemLevel"] = 658.25,
+["classId"] = 5,
+},
+},
+},
+{
+["time"] = 1743624585,
+["guild"] = "Adasträ",
+["elapsed"] = 338.1010000000242,
+["date"] = "22:09 02/04/25",
+["servertime"] = 1743624586,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 441546614,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 509496148,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 472293738,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 491838863,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Øskÿ-Archimonde"] = {
+["total"] = 293497696,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Kvotheen"] = {
+["total"] = 822028674,
+["itemLevel"] = 664.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 749096061,
+["itemLevel"] = 655.3125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 490086788,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 575805505,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 423636228,
+["itemLevel"] = 645.4375,
+["classId"] = 11,
+},
+["Uztek"] = {
+["total"] = 895505333,
+["itemLevel"] = 664.5,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 636649585,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 873133345,
+["itemLevel"] = 661.625,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 719935795,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 327799089,
+["itemLevel"] = 660.75,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 669152069,
+["itemLevel"] = 663.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 630428476,
+["itemLevel"] = 664,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 689217003,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 570287034,
+["itemLevel"] = 655.9375,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 707411308,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+},
+{
+["date"] = "22:06 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 735145350,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 684803312,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 523557403,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 631937720,
+["itemLevel"] = 656.5625,
+["classId"] = 9,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 582420078,
+["itemLevel"] = 649.5625,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 709161629,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 744223205,
+["itemLevel"] = 662.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 909247259,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 351874310,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 347582498,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 637752144,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 639924213,
+["itemLevel"] = 665.0625,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 683673798,
+["itemLevel"] = 666.375,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 702708575,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 707709262,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+},
+["elapsed"] = 330.2640000000001,
+["servertime"] = 1744229164,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 496086748,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 500520093,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 504135345,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 436555081,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744229165,
+},
+{
+["time"] = 1744833733,
+["guild"] = "Adasträ",
+["elapsed"] = 283.3739999999525,
+["date"] = "22:02 16/04/25",
+["servertime"] = 1744833733,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 431504452,
+["itemLevel"] = 662.1875,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 378213229,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 404762561,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 669778279,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 526535616,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 250990110,
+["itemLevel"] = 653.9375,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 738573466,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 542544272,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 486885310,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 712030891,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 794460423,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 298803447,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 612946995,
+["itemLevel"] = 664.3125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 513459739,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 484795226,
+["itemLevel"] = 652,
+["classId"] = 11,
+},
+["Zroyele"] = {
+["total"] = 677213904,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+},
+},
+{
+["time"] = 1745443388,
+["guild"] = "Adasträ",
+["elapsed"] = 372.9879999998957,
+["date"] = "23:23 23/04/25",
+["servertime"] = 1745443387,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 497985690,
+["itemLevel"] = 661.0625,
+["classId"] = 2,
+},
+["Amsët-Hyjal"] = {
+["total"] = 564492007,
+["itemLevel"] = 664.9375,
+["classId"] = 7,
+},
+["Putchie-Hyjal"] = {
+["total"] = 551235420,
+["itemLevel"] = 666.3125,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Pixelshm-Hyjal"] = {
+["total"] = 482815181,
+["itemLevel"] = 0,
+["classId"] = 7,
+},
+["Xpewpew-Dalaran"] = {
+["total"] = 632516364,
+["itemLevel"] = 658.9375,
+["classId"] = 6,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 314705156,
+["itemLevel"] = 657.5,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 776817086,
+["itemLevel"] = 668.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 1071858566,
+["itemLevel"] = 667,
+["classId"] = 12,
+},
+["Ðaitiø-Hyjal"] = {
+["total"] = 744607804,
+["itemLevel"] = 660.4375,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 450741805,
+["itemLevel"] = 669.4375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 927187101,
+["itemLevel"] = 667.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 708421227,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Quiproquo"] = {
+["total"] = 429935513,
+["itemLevel"] = 643.875,
+["classId"] = 4,
+},
+["Dordok-Ysondre"] = {
+["total"] = 550399536,
+["itemLevel"] = 663.1875,
+["classId"] = 3,
+},
+},
+},
+{
+["date"] = "22:11 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 593861077,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 510754963,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 519472601,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 881916438,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 798996644,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 283761834,
+["itemLevel"] = 664.625,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 567785499,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 607659280,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 401008389,
+["itemLevel"] = 680.8125,
+["classId"] = 1,
+},
+["Peche-Illidan"] = {
+["total"] = 581375541,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 276.8360000000102,
+["servertime"] = 1753301518,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 346287365,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 292057382,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 349469444,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753301518,
+},
+},
+[3134] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1757539334,
+["elapsed"] = 394.8800000000047,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1968395318,
+["itemLevel"] = 709.5625,
+["classId"] = 7,
+},
+["Zroyele"] = {
+["total"] = 1144074094,
+["itemLevel"] = 699.1875,
+["classId"] = 1,
+},
+["Putchie"] = {
+["total"] = 1713733960,
+["itemLevel"] = 710.625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1883879861,
+["itemLevel"] = 705.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1995669436,
+["itemLevel"] = 709.4375,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 832625576,
+["itemLevel"] = 712.0625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1900724787,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 2385531161,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1445079460,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1293900072,
+["itemLevel"] = 710.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1731658788,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 2393537744,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 754163216,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1485831594,
+["itemLevel"] = 707.9333333333333,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1705958162,
+["itemLevel"] = 707.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757539334,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 932352556,
+["itemLevel"] = 697.625,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1344092438,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1077511262,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1627709673,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "23:22 10/09/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2036191156,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1784069609,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1957358051,
+["itemLevel"] = 711.0625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1798433468,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 1054494707,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1711395274,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1876754526,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1885551187,
+["itemLevel"] = 714.5333333333333,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1667141989,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 735611177,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1565484836,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+},
+["time"] = 1758747427,
+["date"] = "22:57 24/09/25",
+["elapsed"] = 385.9100000000326,
+["servertime"] = 1758747426,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 1322460048,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1064085976,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 886673402,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["time"] = 1759347811,
+["guild"] = "Adasträ",
+["elapsed"] = 319.8760000000475,
+["date"] = "21:43 01/10/25",
+["servertime"] = 1759347811,
+["HEALER"] = {
+["Opopøî-Dalaran"] = {
+["total"] = 1333685018,
+["itemLevel"] = 715.25,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1141167690,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Ellerinä"] = {
+["total"] = 627846528,
+["itemLevel"] = 709.875,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1896842452,
+["itemLevel"] = 712,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1313097674,
+["itemLevel"] = 712.2,
+["classId"] = 3,
+},
+["Putchie"] = {
+["total"] = 1575973761,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1811064505,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 954208417,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1806832360,
+["itemLevel"] = 704.8666666666667,
+["classId"] = 1,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1749813799,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1566192996,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 1699269008,
+["itemLevel"] = 713.5333333333333,
+["classId"] = 9,
+},
+["Vanân"] = {
+["total"] = 1787331877,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1774775033,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 744766643,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 2019659812,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1509007203,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+},
+},
+[3122] = {
+{
+["time"] = 1757016106,
+["guild"] = "Adasträ",
+["elapsed"] = 418.4329999999609,
+["date"] = "22:01 04/09/25",
+["servertime"] = 1757016105,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 1011116542,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1459381714,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1158831661,
+["itemLevel"] = 710,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1604591335,
+["itemLevel"] = 706.625,
+["classId"] = 2,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2111810197,
+["itemLevel"] = 708.375,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 2171418408,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 2040160297,
+["itemLevel"] = 704.8125,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 2069755856,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 802745160,
+["itemLevel"] = 710.5625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 2022485249,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1924303540,
+["itemLevel"] = 705.8,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1246746514,
+["itemLevel"] = 706.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1597521847,
+["itemLevel"] = 706.2,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 2311725176,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 2045533924,
+["itemLevel"] = 695.5625,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 1035644011,
+["itemLevel"] = 709.3125,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 2668200870,
+["itemLevel"] = 708.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1841837055,
+["itemLevel"] = 705.0625,
+["classId"] = 5,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1757537486,
+["elapsed"] = 355.6809999999969,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2049824539,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Zroyele"] = {
+["total"] = 1788997039,
+["itemLevel"] = 699.1875,
+["classId"] = 1,
+},
+["Putchie"] = {
+["total"] = 2251166024,
+["itemLevel"] = 710.4375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1846307218,
+["itemLevel"] = 705.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 2355077337,
+["itemLevel"] = 709.4375,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 925973985,
+["itemLevel"] = 712.0625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1942010350,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 2538116152,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1510734155,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1506484027,
+["itemLevel"] = 710.7333333333333,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 2201640777,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 2221313206,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 921670580,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1660310982,
+["itemLevel"] = 708.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1738736161,
+["itemLevel"] = 707.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757537486,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 951098389,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1358769010,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1129103419,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1423207804,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "22:51 10/09/25",
+},
+{
+["date"] = "23:05 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2003177994,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1462681565,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1749473438,
+["itemLevel"] = 710.3125,
+["classId"] = 3,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 2175083827,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 926151562,
+["itemLevel"] = 713.625,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1997264643,
+["itemLevel"] = 703.25,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 2024659494,
+["itemLevel"] = 711.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 2064755590,
+["itemLevel"] = 712.8,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1654614299,
+["itemLevel"] = 713.1875,
+["classId"] = 2,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 750277211,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 2515648599,
+["itemLevel"] = 713.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1808723050,
+["itemLevel"] = 709.3125,
+["classId"] = 5,
+},
+},
+["elapsed"] = 348.9539999999997,
+["servertime"] = 1758143136,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 928812530,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1110069115,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1587126175,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+},
+["time"] = 1758143137,
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2228207525,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1847681344,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 2045097459,
+["itemLevel"] = 711.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 2176392857,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 895816714,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 2036078658,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1649117859,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1727088168,
+["itemLevel"] = 715.0625,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1879034808,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 2199190979,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 832549269,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+},
+["time"] = 1758745275,
+["date"] = "22:21 24/09/25",
+["elapsed"] = 355.0579999999609,
+["servertime"] = 1758745274,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 1195139734,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1184118343,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 1076410681,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+},
+[2920] = {
+{
+["time"] = 1728508614,
+["guild"] = "La chope de fer",
+["elapsed"] = 345.969000000041,
+["date"] = "23:16 09/10/24",
+["servertime"] = 1728508613,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 376315520,
+["itemLevel"] = 614.6875,
+["classId"] = 10,
+},
+["Kiljim-Dalaran"] = {
+["total"] = 273344806,
+["itemLevel"] = 613.5625,
+["classId"] = 7,
+},
+["Konì-Dalaran"] = {
+["total"] = 255228637,
+["itemLevel"] = 607.5,
+["classId"] = 11,
+},
+["Tälindä"] = {
+["total"] = 252277278,
+["itemLevel"] = 609.8125,
+["classId"] = 2,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 314862742,
+["itemLevel"] = 612.6875,
+["classId"] = 7,
+},
+["Sithi-Dalaran"] = {
+["total"] = 150389771,
+["itemLevel"] = 613.4375,
+["classId"] = 6,
+},
+["Thargar-Dalaran"] = {
+["total"] = 295871950,
+["itemLevel"] = 616.1875,
+["classId"] = 1,
+},
+["Rôcksteady"] = {
+["total"] = 118404248,
+["itemLevel"] = 610.625,
+["classId"] = 11,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 291850885,
+["itemLevel"] = 615,
+["classId"] = 12,
+},
+["Nahilis-Dalaran"] = {
+["total"] = 225580508,
+["itemLevel"] = 615.875,
+["classId"] = 11,
+},
+["Maøss-Dalaran"] = {
+["total"] = 170017122,
+["itemLevel"] = 610.6666666666666,
+["classId"] = 9,
+},
+["Edixed-Dalaran"] = {
+["total"] = 275534144,
+["itemLevel"] = 611.75,
+["classId"] = 10,
+},
+["Därin"] = {
+["total"] = 230478572,
+["itemLevel"] = 612.875,
+["classId"] = 3,
+},
+["Ælîî-KhazModan"] = {
+["total"] = 238032497,
+["itemLevel"] = 610.8125,
+["classId"] = 8,
+},
+["Eshydna"] = {
+["total"] = 200301779,
+["itemLevel"] = 608.1875,
+["classId"] = 12,
+},
+["Naincurable"] = {
+["total"] = 133420772,
+["itemLevel"] = 607.3125,
+["classId"] = 7,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 300597379,
+["itemLevel"] = 613.25,
+["classId"] = 10,
+},
+},
+},
+{
+["date"] = "22:07 20/11/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 284889852,
+["itemLevel"] = 622.125,
+["classId"] = 7,
+},
+["Hazraen-CultedelaRivenoire"] = {
+["total"] = 120527626,
+["itemLevel"] = 610.5,
+["classId"] = 3,
+},
+["Sithi-Dalaran"] = {
+["total"] = 114964732,
+["itemLevel"] = 619.75,
+["classId"] = 6,
+},
+["Ashdêuzo"] = {
+["total"] = 95977252,
+["itemLevel"] = 617.125,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 270005784,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 297944745,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Eshydna"] = {
+["total"] = 110453680,
+["itemLevel"] = 611.375,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 259788961,
+["itemLevel"] = 620.125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 258608528,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+},
+["elapsed"] = 259.1419999999926,
+["servertime"] = 1732136835,
+["HEALER"] = {
+["Deïna-Dalaran"] = {
+["total"] = 318863766,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
+},
+["Sonydx-Archimonde"] = {
+["total"] = 230538140,
+["itemLevel"] = 604.5,
+["classId"] = 13,
+},
+},
+["time"] = 1732136835,
+},
+},
+[3010] = {
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 515870892,
+["itemLevel"] = 642.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 392305385,
+["itemLevel"] = 635.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 210938546,
+["itemLevel"] = 636.5,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 227862526,
+["itemLevel"] = 631.375,
+["classId"] = 12,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 167059085,
+["itemLevel"] = 636,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 458494647,
+["itemLevel"] = 638,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 598151035,
+["itemLevel"] = 627.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 651315827,
+["itemLevel"] = 638.625,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 527751287,
+["itemLevel"] = 638.0625,
+["classId"] = 3,
+},
+["Erami-Sargeras"] = {
+["total"] = 192551591,
+["itemLevel"] = 636.3125,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 79040329,
+["itemLevel"] = 641.8125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 231374823,
+["itemLevel"] = 630.875,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 423006078,
+["itemLevel"] = 626.75,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 488234910,
+["itemLevel"] = 633.1875,
+["classId"] = 1,
+},
+["Jamelmoignon"] = {
+["total"] = 127381770,
+["itemLevel"] = 634.3125,
+["classId"] = 5,
+},
+},
+["time"] = 1741300199,
+["date"] = "23:29 06/03/25",
+["elapsed"] = 442.0999999999767,
+["servertime"] = 1741300200,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 458395146,
+["itemLevel"] = 636.3125,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 451746393,
+["itemLevel"] = 632.0625,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 518221437,
+["itemLevel"] = 638.875,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 611717043,
+["itemLevel"] = 639.9375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 264320763,
+["itemLevel"] = 646.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 481209605,
+["itemLevel"] = 644.625,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 89709572,
+["itemLevel"] = 643.1875,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 351181070,
+["itemLevel"] = 645.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 263447766,
+["itemLevel"] = 649.375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 406367883,
+["itemLevel"] = 639,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 563141894,
+["itemLevel"] = 646.25,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 432640485,
+["itemLevel"] = 647.8125,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 192138807,
+["itemLevel"] = 648.625,
+["classId"] = 6,
+},
+["Putchie"] = {
+["total"] = 244734721,
+["itemLevel"] = 644.125,
+["classId"] = 11,
+},
+["Orlith-KirinTor"] = {
+["total"] = 316089181,
+["itemLevel"] = 645,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 526254530,
+["itemLevel"] = 646,
+["classId"] = 3,
+},
+["Uztek"] = {
+["total"] = 483417965,
+["itemLevel"] = 646.875,
+["classId"] = 9,
+},
+["Jamelmoignon"] = {
+["total"] = 189130457,
+["itemLevel"] = 648.1875,
+["classId"] = 5,
+},
+},
+["time"] = 1741898951,
+["date"] = "21:49 13/03/25",
+["elapsed"] = 358.9799999999814,
+["servertime"] = 1741898950,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 461972555,
+["itemLevel"] = 638.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 445059707,
+["itemLevel"] = 645.125,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 602820148,
+["itemLevel"] = 652.375,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742422880,
+["elapsed"] = 340.6080000000075,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 617884922,
+["itemLevel"] = 654.8125,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 264661476,
+["itemLevel"] = 650.25,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 496687531,
+["itemLevel"] = 650.25,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 516898376,
+["itemLevel"] = 654.6875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 257765409,
+["itemLevel"] = 653.75,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 184933199,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 100281297,
+["itemLevel"] = 652.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 517102870,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 172415188,
+["itemLevel"] = 651.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 493078657,
+["itemLevel"] = 658,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 182727083,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 317601813,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 388254540,
+["itemLevel"] = 643.3125,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 509591579,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742422879,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 343312464,
+["itemLevel"] = 657.5625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 375705474,
+["itemLevel"] = 648.5,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 500637792,
+["itemLevel"] = 654.125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 360070691,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+},
+["date"] = "23:21 19/03/25",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1743026762,
+["elapsed"] = 252.2660000000033,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 397773052,
+["itemLevel"] = 659.1875,
+["classId"] = 7,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 253014943,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 367928361,
+["itemLevel"] = 654.5625,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 234564740,
+["itemLevel"] = 639.6875,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 396446205,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Kayex"] = {
+["total"] = 201898790,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 531370877,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 501269831,
+["itemLevel"] = 657.75,
+["classId"] = 12,
+},
+["Uztek"] = {
+["total"] = 532320805,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 407268638,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 463034943,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Orlith-KirinTor"] = {
+["total"] = 280723695,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 475480916,
+["itemLevel"] = 654.5,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 228607361,
+["itemLevel"] = 651.6666666666666,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 112627421,
+["itemLevel"] = 658.25,
+["classId"] = 5,
+},
+},
+["servertime"] = 1743026762,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 304658502,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 311609496,
+["itemLevel"] = 648.25,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 346673081,
+["itemLevel"] = 660.125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 349452891,
+["itemLevel"] = 659.25,
+["classId"] = 11,
+},
+},
+["date"] = "23:06 26/03/25",
+},
+{
+["DAMAGER"] = {
+["Dordok-Ysondre"] = {
+["total"] = 358946258,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 464221062,
+["itemLevel"] = 664.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 418110938,
+["itemLevel"] = 655.3125,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 242013441,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 63202998,
+["itemLevel"] = 645.4375,
+["classId"] = 11,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 377570014,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Morkai-Sargeras"] = {
+["total"] = 402110607,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 406778377,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 444360881,
+["itemLevel"] = 661.625,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 465708499,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 176151981,
+["itemLevel"] = 660.75,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 382508276,
+["itemLevel"] = 663.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 283472635,
+["itemLevel"] = 664,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 527204553,
+["itemLevel"] = 664.5,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 319174385,
+["itemLevel"] = 655.9375,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 384848687,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+["time"] = 1743622945,
+["date"] = "21:42 02/04/25",
+["elapsed"] = 213.7880000000587,
+["servertime"] = 1743622946,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 332295879,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 269705856,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 234351714,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 299495155,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["date"] = "21:46 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 422075247,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 393047282,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 395177603,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 371151411,
+["itemLevel"] = 656.5625,
+["classId"] = 9,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 282578616,
+["itemLevel"] = 649.125,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 385268365,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 454195938,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 461123984,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 225940396,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 195000753,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 288171134,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 273311780,
+["itemLevel"] = 665.4375,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 427662483,
+["itemLevel"] = 666.4666666666667,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 373987901,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 419226077,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+},
+["elapsed"] = 209.9760000000006,
+["servertime"] = 1744227966,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 320457701,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 287109543,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 287825300,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 276435072,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744227967,
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 417116670,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 439598248,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 161838551,
+["itemLevel"] = 653.3125,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 401804473,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 413113676,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 362019925,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 295655186,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 440278063,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 233258107,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 280992808,
+["itemLevel"] = 664.6875,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 342750547,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Zroyele"] = {
+["total"] = 465471159,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 285454073,
+["itemLevel"] = 652,
+["classId"] = 11,
+},
+},
+["time"] = 1744832536,
+["date"] = "21:42 16/04/25",
+["elapsed"] = 198.7079999999842,
+["servertime"] = 1744832536,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 230725215,
+["itemLevel"] = 662.1875,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 366777289,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 245150752,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["date"] = "21:52 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 435983682,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 461888484,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 315866463,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 602790704,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 369895450,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 163892264,
+["itemLevel"] = 664,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 376665443,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 365697757,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 155263823,
+["itemLevel"] = 656.625,
+["classId"] = 10,
+},
+["Peche-Illidan"] = {
+["total"] = 367580349,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 221.3690000000061,
+["servertime"] = 1753300330,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 270481918,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 268824547,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 235587823,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753300330,
+},
+},
+[3011] = {
+{
+["date"] = "22:04 13/03/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 526007648,
+["itemLevel"] = 646.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 397506303,
+["itemLevel"] = 645.2,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 349553548,
+["itemLevel"] = 643.1875,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 233060468,
+["itemLevel"] = 645.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 209850395,
+["itemLevel"] = 649.375,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 426810293,
+["itemLevel"] = 639,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 422735856,
+["itemLevel"] = 646.25,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 431787924,
+["itemLevel"] = 647.8125,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 204010463,
+["itemLevel"] = 648.625,
+["classId"] = 6,
+},
+["Putchie"] = {
+["total"] = 289061087,
+["itemLevel"] = 644.125,
+["classId"] = 11,
+},
+["Orlith-KirinTor"] = {
+["total"] = 341910287,
+["itemLevel"] = 645,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 409900120,
+["itemLevel"] = 646.875,
+["classId"] = 9,
+},
+["Morkai-Sargeras"] = {
+["total"] = 332760521,
+["itemLevel"] = 646,
+["classId"] = 3,
+},
+["Jamelmoignon"] = {
+["total"] = 201960387,
+["itemLevel"] = 648.1875,
+["classId"] = 5,
+},
+},
+["elapsed"] = 354.2539999999863,
+["servertime"] = 1741899883,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 501954937,
+["itemLevel"] = 638.3125,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 419868680,
+["itemLevel"] = 645.125,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 608760819,
+["itemLevel"] = 652.375,
+["classId"] = 5,
+},
+},
+["time"] = 1741899884,
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1742423610,
+["elapsed"] = 263.4910000000382,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 506833939,
+["itemLevel"] = 654.8125,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 413395700,
+["itemLevel"] = 651.6875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 142696275,
+["itemLevel"] = 650.25,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 338634824,
+["itemLevel"] = 654.6875,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 204213442,
+["itemLevel"] = 654,
+["classId"] = 12,
+},
+["Grodar-Archimonde"] = {
+["total"] = 361401024,
+["itemLevel"] = 651.3125,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 459276802,
+["itemLevel"] = 652.75,
+["classId"] = 12,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 370351108,
+["itemLevel"] = 653.8125,
+["classId"] = 2,
+},
+["Erami-Sargeras"] = {
+["total"] = 173895597,
+["itemLevel"] = 651.9375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 356532799,
+["itemLevel"] = 658,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 349023756,
+["itemLevel"] = 650.125,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 420323277,
+["itemLevel"] = 655.75,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 293808807,
+["itemLevel"] = 642.9375,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 386149673,
+["itemLevel"] = 654.375,
+["classId"] = 5,
+},
+},
+["servertime"] = 1742423609,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 394731394,
+["itemLevel"] = 657.5625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 312142616,
+["itemLevel"] = 648.5,
+["classId"] = 7,
+},
+["Opøpoî-Dalaran"] = {
+["total"] = 409257755,
+["itemLevel"] = 654.125,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 262406780,
+["itemLevel"] = 651.1875,
+["classId"] = 11,
+},
+},
+["date"] = "23:33 19/03/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 354474641,
+["itemLevel"] = 659.1875,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 244698570,
+["itemLevel"] = 654.5625,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 217359148,
+["itemLevel"] = 654.5,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 335168299,
+["itemLevel"] = 659.4375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 258927452,
+["itemLevel"] = 639.6875,
+["classId"] = 11,
+},
+["Kayex"] = {
+["total"] = 172081615,
+["itemLevel"] = 660,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 383640741,
+["itemLevel"] = 657.5,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 470984541,
+["itemLevel"] = 657.75,
+["classId"] = 12,
+},
+["Morkai-Sargeras"] = {
+["total"] = 366456243,
+["itemLevel"] = 654.5,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 298442973,
+["itemLevel"] = 653.25,
+["classId"] = 1,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 355279173,
+["itemLevel"] = 658.0625,
+["classId"] = 2,
+},
+["Orlith-KirinTor"] = {
+["total"] = 330874357,
+["itemLevel"] = 655,
+["classId"] = 13,
+},
+["Uztek"] = {
+["total"] = 407749311,
+["itemLevel"] = 660.3125,
+["classId"] = 9,
+},
+["Mescà-Dalaran"] = {
+["total"] = 306182364,
+["itemLevel"] = 120.375,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 420198033,
+["itemLevel"] = 658.25,
+["classId"] = 5,
+},
+},
+["time"] = 1743027399,
+["date"] = "23:16 26/03/25",
+["elapsed"] = 227.6059999999998,
+["servertime"] = 1743027399,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 302796060,
+["itemLevel"] = 659.25,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 290818946,
+["itemLevel"] = 648.25,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 368212781,
+["itemLevel"] = 660.125,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 298052451,
+["itemLevel"] = 660.0625,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["time"] = 1743623920,
+["guild"] = "Adasträ",
+["elapsed"] = 256.5359999999637,
+["date"] = "21:58 02/04/25",
+["servertime"] = 1743623921,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 518260506,
+["itemLevel"] = 663.625,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 473085598,
+["itemLevel"] = 654.9375,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 387698844,
+["itemLevel"] = 662.625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 391652857,
+["itemLevel"] = 660.625,
+["classId"] = 11,
+},
+},
+["DAMAGER"] = {
+["Øskÿ-Archimonde"] = {
+["total"] = 220388254,
+["itemLevel"] = 658.9375,
+["classId"] = 1,
+},
+["Kvotheen"] = {
+["total"] = 459591447,
+["itemLevel"] = 664.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 412810087,
+["itemLevel"] = 655.3125,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 308773610,
+["itemLevel"] = 656.5625,
+["classId"] = 3,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 214296321,
+["itemLevel"] = 661.375,
+["classId"] = 8,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 278325729,
+["itemLevel"] = 645.4375,
+["classId"] = 11,
+},
+["Uztek"] = {
+["total"] = 459087965,
+["itemLevel"] = 664.5,
+["classId"] = 9,
+},
+["Grodar-Archimonde"] = {
+["total"] = 397033934,
+["itemLevel"] = 663.0625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 433385718,
+["itemLevel"] = 661.625,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 415785599,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 154593560,
+["itemLevel"] = 660.75,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 338923688,
+["itemLevel"] = 663.125,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 344358291,
+["itemLevel"] = 664,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 423499411,
+["itemLevel"] = 663.4375,
+["classId"] = 3,
+},
+["Mescà-Dalaran"] = {
+["total"] = 269295425,
+["itemLevel"] = 655.9375,
+["classId"] = 13,
+},
+["Jamelmoignon"] = {
+["total"] = 472378253,
+["itemLevel"] = 660.75,
+["classId"] = 5,
+},
+},
+},
+{
+["date"] = "21:55 09/04/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 442673070,
+["itemLevel"] = 665.0625,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 400387139,
+["itemLevel"] = 657.875,
+["classId"] = 3,
+},
+["Dordok-Ysondre"] = {
+["total"] = 324419063,
+["itemLevel"] = 662.5,
+["classId"] = 3,
+},
+["Pipoteur"] = {
+["total"] = 360864793,
+["itemLevel"] = 656.5625,
+["classId"] = 9,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 264764529,
+["itemLevel"] = 649.5625,
+["classId"] = 11,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 352912811,
+["itemLevel"] = 661.75,
+["classId"] = 2,
+},
+["Zroyele"] = {
+["total"] = 413023323,
+["itemLevel"] = 661.625,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 400603861,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 202654105,
+["itemLevel"] = 663.1875,
+["classId"] = 1,
+},
+["Erami-Sargeras"] = {
+["total"] = 203778483,
+["itemLevel"] = 664.375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 321058434,
+["itemLevel"] = 665.1875,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 280183851,
+["itemLevel"] = 665.4375,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 330608877,
+["itemLevel"] = 666.375,
+["classId"] = 3,
+},
+["Grodar-Archimonde"] = {
+["total"] = 323569166,
+["itemLevel"] = 664.875,
+["classId"] = 1,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 319692163,
+["itemLevel"] = 662.8125,
+["classId"] = 8,
+},
+},
+["elapsed"] = 204.9859999999999,
+["servertime"] = 1744228499,
+["HEALER"] = {
+["Putchie"] = {
+["total"] = 303515407,
+["itemLevel"] = 663.1875,
+["classId"] = 11,
+},
+["Amsët"] = {
+["total"] = 293290638,
+["itemLevel"] = 657.625,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 315497463,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 277141059,
+["itemLevel"] = 665.875,
+["classId"] = 5,
+},
+},
+["time"] = 1744228500,
+},
+{
+["time"] = 1744833143,
+["guild"] = "Adasträ",
+["elapsed"] = 194.1889999998966,
+["date"] = "21:52 16/04/25",
+["servertime"] = 1744833143,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 249861627,
+["itemLevel"] = 662.1875,
+["classId"] = 7,
+},
+["Ässahi-Dalaran"] = {
+["total"] = 323617567,
+["itemLevel"] = 666.125,
+["classId"] = 5,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 334654779,
+["itemLevel"] = 665.0625,
+["classId"] = 10,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 417656528,
+["itemLevel"] = 666.5,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 307605823,
+["itemLevel"] = 658.75,
+["classId"] = 3,
+},
+["Øskypal-Archimonde"] = {
+["total"] = 166269146,
+["itemLevel"] = 653.3125,
+["classId"] = 2,
+},
+["Pipoteur"] = {
+["total"] = 371530345,
+["itemLevel"] = 662.8125,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 356262596,
+["itemLevel"] = 666.75,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 343051341,
+["itemLevel"] = 664.875,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 333995299,
+["itemLevel"] = 667.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 384803985,
+["itemLevel"] = 662.5,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 175934761,
+["itemLevel"] = 668.4375,
+["classId"] = 6,
+},
+["Orlith-KirinTor"] = {
+["total"] = 293362049,
+["itemLevel"] = 664.6875,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 346427586,
+["itemLevel"] = 667.8125,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 257181404,
+["itemLevel"] = 652,
+["classId"] = 11,
+},
+["Zroyele"] = {
+["total"] = 360214438,
+["itemLevel"] = 663.625,
+["classId"] = 1,
+},
+},
+},
+{
+["date"] = "22:01 23/07/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 409268173,
+["itemLevel"] = 673.25,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 358028885,
+["itemLevel"] = 667.1875,
+["classId"] = 3,
+},
+["Assähi-Dalaran"] = {
+["total"] = 329011022,
+["itemLevel"] = 660.0625,
+["classId"] = 9,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 482888218,
+["itemLevel"] = 681.6875,
+["classId"] = 2,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 337302142,
+["itemLevel"] = 683.9375,
+["classId"] = 12,
+},
+["Gwokayou-Archimonde"] = {
+["total"] = 153985779,
+["itemLevel"] = 664,
+["classId"] = 11,
+},
+["Anymind-Archimonde"] = {
+["total"] = 357237305,
+["itemLevel"] = 665.125,
+["classId"] = 5,
+},
+["Brelanas"] = {
+["total"] = 414222731,
+["itemLevel"] = 681.875,
+["classId"] = 8,
+},
+["Øskytankul-Archimonde"] = {
+["total"] = 128419037,
+["itemLevel"] = 656.625,
+["classId"] = 10,
+},
+["Peche-Illidan"] = {
+["total"] = 334768671,
+["itemLevel"] = 0,
+["classId"] = 2,
+},
+},
+["elapsed"] = 212.875,
+["servertime"] = 1753300868,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 255131478,
+["itemLevel"] = 674.9375,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 243403041,
+["itemLevel"] = 680.4375,
+["classId"] = 7,
+},
+["Opopøï-Dalaran"] = {
+["total"] = 297945621,
+["itemLevel"] = 679.25,
+["classId"] = 5,
+},
+},
+["time"] = 1753300868,
+},
+},
+[3130] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1756416416,
+["elapsed"] = 290.7480000000214,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1773247128,
+["itemLevel"] = 702.1875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1057817592,
+["itemLevel"] = 702.9375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1395213578,
+["itemLevel"] = 703.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1320163650,
+["itemLevel"] = 701.625,
+["classId"] = 13,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 614930671,
+["itemLevel"] = 708.9375,
+["classId"] = 12,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1513354306,
+["itemLevel"] = 709.25,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1256246582,
+["itemLevel"] = 700.5,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1475108273,
+["itemLevel"] = 703.625,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1534623543,
+["itemLevel"] = 700.6875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1002786075,
+["itemLevel"] = 688.5625,
+["classId"] = 1,
+},
+["Kayex"] = {
+["total"] = 519308901,
+["itemLevel"] = 706.5,
+["classId"] = 6,
+},
+},
+["servertime"] = 1756416415,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 1129328555,
+["itemLevel"] = 704.625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 874011390,
+["itemLevel"] = 703.375,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 746582897,
+["itemLevel"] = 693.125,
+["classId"] = 7,
+},
+},
+["date"] = "23:26 28/08/25",
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1569017884,
+["itemLevel"] = 704.6875,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1156309785,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1526167189,
+["itemLevel"] = 703.6,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1714181321,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 655807393,
+["itemLevel"] = 707.5,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1345678703,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1425905368,
+["itemLevel"] = 705.4,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1291815433,
+["itemLevel"] = 704.25,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1146021120,
+["itemLevel"] = 704.8666666666667,
+["classId"] = 3,
+},
+["Arrhad"] = {
+["total"] = 1895983051,
+["itemLevel"] = 707.3333333333334,
+["classId"] = 3,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 592548307,
+["itemLevel"] = 709.125,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 1374029122,
+["itemLevel"] = 694.75,
+["classId"] = 1,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1426017541,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1189329073,
+["itemLevel"] = 704.0625,
+["classId"] = 5,
+},
+},
+["time"] = 1756934750,
+["date"] = "23:25 03/09/25",
+["elapsed"] = 286.3699999998789,
+["servertime"] = 1756934749,
+["HEALER"] = {
+["Opopoï-Dalaran"] = {
+["total"] = 1034709709,
+["itemLevel"] = 705.6875,
+["classId"] = 2,
+},
+["Amsët"] = {
+["total"] = 640617424,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 747794502,
+["itemLevel"] = 709.4375,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 1006680695,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1757535427,
+["elapsed"] = 234.6100000000006,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1488895460,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Zroyele"] = {
+["total"] = 1103522644,
+["itemLevel"] = 699.1875,
+["classId"] = 1,
+},
+["Putchie"] = {
+["total"] = 1079783124,
+["itemLevel"] = 710.4375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1286510987,
+["itemLevel"] = 705.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1351617940,
+["itemLevel"] = 709.4375,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 479810266,
+["itemLevel"] = 712.5,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1339424770,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 1668074060,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1275239890,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1026019943,
+["itemLevel"] = 711.5,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1067219159,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 1280693805,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 520053683,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1348527555,
+["itemLevel"] = 708.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 954625871,
+["itemLevel"] = 707.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757535427,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 531321365,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 856865468,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 627874658,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 835499500,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "22:17 10/09/25",
+},
+{
+["date"] = "22:01 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1562336488,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1432699171,
+["itemLevel"] = 710.3125,
+["classId"] = 3,
+},
+["Kayex"] = {
+["total"] = 569219783,
+["itemLevel"] = 713.625,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1567246485,
+["itemLevel"] = 703.25,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1346470021,
+["itemLevel"] = 711.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1087945347,
+["itemLevel"] = 713.4375,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1325441191,
+["itemLevel"] = 713.1875,
+["classId"] = 2,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1276185552,
+["itemLevel"] = 710.4375,
+["classId"] = 6,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 542059398,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1937295769,
+["itemLevel"] = 713.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1203806835,
+["itemLevel"] = 709.3125,
+["classId"] = 5,
+},
+},
+["elapsed"] = 272.6859999999997,
+["servertime"] = 1758139310,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 492919596,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 787765252,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 551496451,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 928877702,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+},
+["time"] = 1758139311,
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1288774286,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 964284852,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 1296407537,
+["itemLevel"] = 711.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1282356210,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 533328364,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1348875333,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1257360370,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1260554600,
+["itemLevel"] = 715.0625,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1257602662,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 1299878733,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 571322197,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+},
+["time"] = 1758744017,
+["date"] = "22:00 24/09/25",
+["elapsed"] = 248.3910000000033,
+["servertime"] = 1758744016,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 898156105,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 582229026,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 561247842,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["date"] = "23:07 01/10/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Justhunt-Ysondre"] = {
+["total"] = 1112451161,
+["itemLevel"] = 712.5333333333333,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 1240308459,
+["itemLevel"] = 712.375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1109972185,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Opopøî-Dalaran"] = {
+["total"] = 945623761,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1075853308,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 1172558993,
+["itemLevel"] = 713.9375,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 437630037,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1175722336,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 995998128,
+["itemLevel"] = 705.25,
+["classId"] = 12,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1137099028,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 888689046,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Vanân"] = {
+["total"] = 1227654064,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 448615897,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 1321851528,
+["itemLevel"] = 705.8125,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1140726831,
+["itemLevel"] = 712,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 977649800,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+["elapsed"] = 207.7679999999236,
+["servertime"] = 1759352853,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 744934637,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Ellerinä"] = {
+["total"] = 545981079,
+["itemLevel"] = 709.875,
+["classId"] = 11,
+},
+},
+["time"] = 1759352853,
+},
+},
+[3132] = {
+{
+["time"] = 1757015265,
+["guild"] = "Adasträ",
+["elapsed"] = 408.3580000000075,
+["date"] = "21:47 04/09/25",
+["servertime"] = 1757015264,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 589772767,
+["itemLevel"] = 696.5625,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 846678856,
+["itemLevel"] = 705.6875,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 609075537,
+["itemLevel"] = 710,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 947216554,
+["itemLevel"] = 706.625,
+["classId"] = 2,
+},
+},
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 2124063314,
+["itemLevel"] = 708.375,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1385822604,
+["itemLevel"] = 707.0625,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1726230081,
+["itemLevel"] = 704.8125,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1876146286,
+["itemLevel"] = 708.125,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 809638438,
+["itemLevel"] = 710.5625,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1860157510,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1605110389,
+["itemLevel"] = 706.6875,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1461024874,
+["itemLevel"] = 705.625,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1332242741,
+["itemLevel"] = 706.2,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1546149206,
+["itemLevel"] = 701.125,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1656616812,
+["itemLevel"] = 695.5625,
+["classId"] = 1,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 723378515,
+["itemLevel"] = 709.3125,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 1935254388,
+["itemLevel"] = 708.3125,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1473044549,
+["itemLevel"] = 705.0625,
+["classId"] = 5,
+},
+},
+},
+{
+["guild"] = "Adasträ",
+["time"] = 1757536556,
+["elapsed"] = 308.4130000000005,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1680198079,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Zroyele"] = {
+["total"] = 1331806064,
+["itemLevel"] = 699.1875,
+["classId"] = 1,
+},
+["Putchie"] = {
+["total"] = 1427406771,
+["itemLevel"] = 710.4375,
+["classId"] = 11,
+},
+["Natariis"] = {
+["total"] = 1456988608,
+["itemLevel"] = 705.625,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1707968830,
+["itemLevel"] = 709.4375,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 651928824,
+["itemLevel"] = 712.5,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1527682604,
+["itemLevel"] = 711.625,
+["classId"] = 2,
+},
+["Arrhad"] = {
+["total"] = 1749030805,
+["itemLevel"] = 710.9375,
+["classId"] = 3,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1428882250,
+["itemLevel"] = 709.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1183916553,
+["itemLevel"] = 711.5,
+["classId"] = 3,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1333762637,
+["itemLevel"] = 707.4375,
+["classId"] = 6,
+},
+["Madrâz-Silvermoon"] = {
+["total"] = 1889865676,
+["itemLevel"] = 710.625,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 530337201,
+["itemLevel"] = 711,
+["classId"] = 12,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1306625317,
+["itemLevel"] = 708.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1279581721,
+["itemLevel"] = 707.125,
+["classId"] = 5,
+},
+},
+["servertime"] = 1757536556,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 441176170,
+["itemLevel"] = 696.375,
+["classId"] = 7,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 714112082,
+["itemLevel"] = 710.0625,
+["classId"] = 2,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 501301456,
+["itemLevel"] = 710.75,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 605299220,
+["itemLevel"] = 707.875,
+["classId"] = 5,
+},
+},
+["date"] = "22:35 10/09/25",
+},
+{
+["date"] = "22:25 17/09/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1719773044,
+["itemLevel"] = 710.6875,
+["classId"] = 7,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 1307216988,
+["itemLevel"] = 712.75,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1548007081,
+["itemLevel"] = 710.3125,
+["classId"] = 3,
+},
+["Kayex"] = {
+["total"] = 702012713,
+["itemLevel"] = 713.625,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1697969607,
+["itemLevel"] = 703.25,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1568524636,
+["itemLevel"] = 711.5,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1496172540,
+["itemLevel"] = 713.4375,
+["classId"] = 3,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1898384002,
+["itemLevel"] = 713.1875,
+["classId"] = 2,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1529864230,
+["itemLevel"] = 710.4375,
+["classId"] = 6,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 604513931,
+["itemLevel"] = 712.1875,
+["classId"] = 12,
+},
+["Arrhad"] = {
+["total"] = 2130194452,
+["itemLevel"] = 713.6875,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1332953478,
+["itemLevel"] = 709.3125,
+["classId"] = 5,
+},
+},
+["elapsed"] = 389.9970000000003,
+["servertime"] = 1758140752,
+["HEALER"] = {
+["Amsët"] = {
+["total"] = 690596195,
+["itemLevel"] = 703.6875,
+["classId"] = 7,
+},
+["Hise-MarécagedeZangar"] = {
+["total"] = 754221700,
+["itemLevel"] = 708.875,
+["classId"] = 5,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1000108111,
+["itemLevel"] = 712,
+["classId"] = 2,
+},
+},
+["time"] = 1758140753,
+},
+{
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1590767815,
+["itemLevel"] = 711.4375,
+["classId"] = 7,
+},
+["Dordok-Ysondre"] = {
+["total"] = 1401122848,
+["itemLevel"] = 711.125,
+["classId"] = 3,
+},
+["Natariis"] = {
+["total"] = 1454210003,
+["itemLevel"] = 711.4375,
+["classId"] = 1,
+},
+["Villidøns-Dalaran"] = {
+["total"] = 1578767161,
+["itemLevel"] = 711.5625,
+["classId"] = 13,
+},
+["Kayex"] = {
+["total"] = 679181446,
+["itemLevel"] = 715.1875,
+["classId"] = 6,
+},
+["Zroyele"] = {
+["total"] = 1426544748,
+["itemLevel"] = 705.5625,
+["classId"] = 1,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1557040715,
+["itemLevel"] = 713.1875,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1487058578,
+["itemLevel"] = 714.5333333333333,
+["classId"] = 3,
+},
+["Opopoï-Dalaran"] = {
+["total"] = 1285117229,
+["itemLevel"] = 711.75,
+["classId"] = 2,
+},
+["Putchie"] = {
+["total"] = 1369029616,
+["itemLevel"] = 713.875,
+["classId"] = 11,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 586168520,
+["itemLevel"] = 713.375,
+["classId"] = 12,
+},
+},
+["time"] = 1758744740,
+["date"] = "22:12 24/09/25",
+["elapsed"] = 313.0460000000312,
+["servertime"] = 1758744739,
+["HEALER"] = {
+["Hise-MarécagedeZangar"] = {
+["total"] = 627761712,
+["itemLevel"] = 709.0625,
+["classId"] = 5,
+},
+["Heliopsis-Archimonde"] = {
+["total"] = 609681268,
+["itemLevel"] = 713.75,
+["classId"] = 7,
+},
+["Amsët"] = {
+["total"] = 482917769,
+["itemLevel"] = 706.6875,
+["classId"] = 7,
+},
+},
+["guild"] = "Adasträ",
+},
+{
+["date"] = "23:22 01/10/25",
+["guild"] = "Adasträ",
+["DAMAGER"] = {
+["Justhunt-Ysondre"] = {
+["total"] = 1103659300,
+["itemLevel"] = 713,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 1523052460,
+["itemLevel"] = 712.375,
+["classId"] = 7,
+},
+["Yugekok-Archimonde"] = {
+["total"] = 1355853871,
+["itemLevel"] = 715,
+["classId"] = 6,
+},
+["Opopøî-Dalaran"] = {
+["total"] = 1259796290,
+["itemLevel"] = 709.75,
+["classId"] = 7,
+},
+["Putchie"] = {
+["total"] = 1410854985,
+["itemLevel"] = 714.25,
+["classId"] = 11,
+},
+["Ocaeldan-KirinTor"] = {
+["total"] = 1287506512,
+["itemLevel"] = 713.9375,
+["classId"] = 9,
+},
+["Kayex"] = {
+["total"] = 558398623,
+["itemLevel"] = 715.75,
+["classId"] = 6,
+},
+["Gydzitpala-KhazModan"] = {
+["total"] = 1320013225,
+["itemLevel"] = 715.375,
+["classId"] = 2,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 1216074480,
+["itemLevel"] = 705.25,
+["classId"] = 12,
+},
+["Ylenis-Dalaran"] = {
+["total"] = 1125960697,
+["itemLevel"] = 714.375,
+["classId"] = 12,
+},
+["Salidaris-Dalaran"] = {
+["total"] = 1227133636,
+["itemLevel"] = 0,
+["classId"] = 3,
+},
+["Vanân"] = {
+["total"] = 1197679628,
+["itemLevel"] = 715.9375,
+["classId"] = 8,
+},
+["Øskydh-Archimonde"] = {
+["total"] = 541432727,
+["itemLevel"] = 715.375,
+["classId"] = 12,
+},
+["Zroyele"] = {
+["total"] = 1250795786,
+["itemLevel"] = 705.8125,
+["classId"] = 1,
+},
+["Dordok-Ysondre"] = {
+["total"] = 995098943,
+["itemLevel"] = 712.5,
+["classId"] = 3,
+},
+["Anymind-Archimonde"] = {
+["total"] = 1006000307,
+["itemLevel"] = 712.625,
+["classId"] = 5,
+},
+},
+["elapsed"] = 245.435999999987,
+["servertime"] = 1759353733,
+["HEALER"] = {
+["Heliopsis-Archimonde"] = {
+["total"] = 436001680,
+["itemLevel"] = 714.875,
+["classId"] = 7,
+},
+["Ellerinä"] = {
+["total"] = 303631496,
+["itemLevel"] = 709.875,
+["classId"] = 11,
+},
+},
+["time"] = 1759353733,
+},
+},
+[2917] = {
+{
+["date"] = "21:35 09/10/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 203557449,
+["itemLevel"] = 612.6875,
+["classId"] = 7,
+},
+["Sithi-Dalaran"] = {
+["total"] = 128544927,
+["itemLevel"] = 613.25,
+["classId"] = 6,
+},
+["Thargar-Dalaran"] = {
+["total"] = 315721912,
+["itemLevel"] = 614.9375,
+["classId"] = 1,
+},
+["Rôcksteady"] = {
+["total"] = 133768633,
+["itemLevel"] = 610.625,
+["classId"] = 11,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 208869254,
+["itemLevel"] = 614.8125,
+["classId"] = 12,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 317045936,
+["itemLevel"] = 613.25,
+["classId"] = 10,
+},
+["Naincurable"] = {
+["total"] = 182515762,
+["itemLevel"] = 607.3125,
+["classId"] = 7,
+},
+["Edixed-Dalaran"] = {
+["total"] = 276831340,
+["itemLevel"] = 611.75,
+["classId"] = 10,
+},
+["Därin"] = {
+["total"] = 184703772,
+["itemLevel"] = 612.875,
+["classId"] = 3,
+},
+["Ælîî-KhazModan"] = {
+["total"] = 236672216,
+["itemLevel"] = 609.125,
+["classId"] = 8,
+},
+["Eshydna"] = {
+["total"] = 131477899,
+["itemLevel"] = 606.375,
+["classId"] = 12,
+},
+["Maøss-Dalaran"] = {
+["total"] = 195426936,
+["itemLevel"] = 611.1875,
+["classId"] = 9,
+},
+["Nahilis-Dalaran"] = {
+["total"] = 184852993,
+["itemLevel"] = 615.875,
+["classId"] = 11,
+},
+},
+["elapsed"] = 365.4809999996796,
+["servertime"] = 1728502519,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 166183589,
+["itemLevel"] = 614.6875,
+["classId"] = 10,
+},
+["Tälindä"] = {
+["total"] = 202566708,
+["itemLevel"] = 609.8125,
+["classId"] = 2,
+},
+["Konì-Dalaran"] = {
+["total"] = 97650723,
+["itemLevel"] = 607.0625,
+["classId"] = 11,
+},
+["Kiljim-Dalaran"] = {
+["total"] = 248757028,
+["itemLevel"] = 613.5625,
+["classId"] = 7,
+},
+},
+["time"] = 1728502520,
+},
+{
+["date"] = "21:38 20/11/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 232846029,
+["itemLevel"] = 622.125,
+["classId"] = 7,
+},
+["Hazraen-CultedelaRivenoire"] = {
+["total"] = 161984636,
+["itemLevel"] = 610.0625,
+["classId"] = 3,
+},
+["Sithi-Dalaran"] = {
+["total"] = 104722212,
+["itemLevel"] = 619.75,
+["classId"] = 6,
+},
+["Ashdêuzo"] = {
+["total"] = 67751349,
+["itemLevel"] = 617.125,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 226939324,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 244336410,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Eshydna"] = {
+["total"] = 100342889,
+["itemLevel"] = 611.375,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 211461499,
+["itemLevel"] = 620.125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 170697245,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+},
+["elapsed"] = 202.6359999999986,
+["servertime"] = 1732135138,
+["HEALER"] = {
+["Deïna-Dalaran"] = {
+["total"] = 143975402,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
+},
+["Sonydx-Archimonde"] = {
+["total"] = 87128777,
+["itemLevel"] = 604.5,
+["classId"] = 13,
+},
+},
+["time"] = 1732135138,
+},
+},
+[2919] = {
+{
+["DAMAGER"] = {
+["Barabell-Cho'gall"] = {
+["total"] = 446731499,
+["itemLevel"] = 612.875,
+["classId"] = 10,
+},
+["Sithi-Dalaran"] = {
+["total"] = 242949167,
+["itemLevel"] = 612.4375,
+["classId"] = 6,
+},
+["Nahilis-Dalaran"] = {
+["total"] = 376832721,
+["itemLevel"] = 615.0625,
+["classId"] = 11,
+},
+["Rôcksteady"] = {
+["total"] = 209399790,
+["itemLevel"] = 610.375,
+["classId"] = 11,
+},
+["Jilano"] = {
+["total"] = 302933733,
+["itemLevel"] = 612.625,
+["classId"] = 12,
+},
+["Thenérius-Dalaran"] = {
+["total"] = 340736756,
+["itemLevel"] = 610.875,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 453068837,
+["itemLevel"] = 612.0625,
+["classId"] = 3,
+},
+["Thargar-Dalaran"] = {
+["total"] = 667822685,
+["itemLevel"] = 614.125,
+["classId"] = 1,
+},
+["Ælîî-KhazModan"] = {
+["total"] = 456726775,
+["itemLevel"] = 609.125,
+["classId"] = 8,
+},
+["Eshydna"] = {
+["total"] = 282294114,
+["itemLevel"] = 605.9375,
+["classId"] = 12,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 455130310,
+["itemLevel"] = 614.125,
+["classId"] = 12,
+},
+["Kvotheen"] = {
+["total"] = 514610697,
+["itemLevel"] = 612.125,
+["classId"] = 7,
+},
+},
+["time"] = 1728247796,
+["date"] = "22:49 06/10/24",
+["elapsed"] = 503.7490000003018,
+["servertime"] = 1728247794,
+["HEALER"] = {
+["Kiljim-Dalaran"] = {
+["total"] = 485680714,
+["itemLevel"] = 613,
+["classId"] = 7,
+},
+["Tälindä"] = {
+["total"] = 420691449,
+["itemLevel"] = 607.1875,
+["classId"] = 2,
+},
+["Sonydl-Archimonde"] = {
+["total"] = 532630848,
+["itemLevel"] = 613.875,
+["classId"] = 10,
+},
+["Naincurable"] = {
+["total"] = 385374017,
+["itemLevel"] = 606.25,
+["classId"] = 7,
+},
+},
+["guild"] = "La chope de fer",
+},
+{
+["date"] = "22:18 20/11/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 449051251,
+["itemLevel"] = 622.125,
+["classId"] = 7,
+},
+["Hazraen-CultedelaRivenoire"] = {
+["total"] = 261802058,
+["itemLevel"] = 610.5,
+["classId"] = 3,
+},
+["Sithi-Dalaran"] = {
+["total"] = 185008206,
+["itemLevel"] = 619.75,
+["classId"] = 6,
+},
+["Ashdêuzo"] = {
+["total"] = 157038052,
+["itemLevel"] = 617.125,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 436229372,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 405001028,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Eshydna"] = {
+["total"] = 192359588,
+["itemLevel"] = 611.375,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 326404271,
+["itemLevel"] = 620.125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 354670684,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+},
+["elapsed"] = 357.1520000000019,
+["servertime"] = 1732137485,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 477451890,
+["itemLevel"] = 617.3125,
+["classId"] = 10,
+},
+["Deïna-Dalaran"] = {
+["total"] = 358987660,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
+},
+},
+["time"] = 1732137485,
+},
+},
+[2921] = {
+{
+["date"] = "22:38 20/11/24",
+["guild"] = "La chope de fer",
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 599066987,
+["itemLevel"] = 622.125,
+["classId"] = 7,
+},
+["Sithi-Dalaran"] = {
+["total"] = 213969012,
+["itemLevel"] = 619.75,
+["classId"] = 6,
+},
+["Nilaïe-Dalaran"] = {
+["total"] = 438830633,
+["itemLevel"] = 622.25,
+["classId"] = 7,
+},
+["Ashdêuzo"] = {
+["total"] = 170200352,
+["itemLevel"] = 616.7333333333333,
+["classId"] = 11,
+},
+["Därin"] = {
+["total"] = 445163686,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Barabell-Cho'gall"] = {
+["total"] = 449519096,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Eshydna"] = {
+["total"] = 223687064,
+["itemLevel"] = 611.375,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 486423692,
+["itemLevel"] = 620.125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 477133590,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+},
+["elapsed"] = 385.0689999999595,
+["servertime"] = 1732138721,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 394092691,
+["itemLevel"] = 617.3125,
+["classId"] = 10,
+},
+["Deïna-Dalaran"] = {
+["total"] = 306256234,
+["itemLevel"] = 626.8125,
+["classId"] = 7,
+},
+},
+["time"] = 1732138721,
+},
+},
+[3016] = {
+{
+["guild"] = "Adasträ",
+["time"] = 1745441806,
+["elapsed"] = 512.7709999999497,
+["DAMAGER"] = {
+["Kvotheen"] = {
+["total"] = 1186491211,
+["itemLevel"] = 668.1875,
+["classId"] = 7,
+},
+["Ðaitiø"] = {
+["total"] = 679734380,
+["itemLevel"] = 660.4375,
+["classId"] = 3,
+},
+["Øskÿ-Archimonde"] = {
+["total"] = 629510888,
+["itemLevel"] = 666.75,
+["classId"] = 1,
+},
+["Pipoteur"] = {
+["total"] = 998120658,
+["itemLevel"] = 666,
+["classId"] = 9,
+},
+["Ânydâ-Archimonde"] = {
+["total"] = 778747164,
+["itemLevel"] = 667.5625,
+["classId"] = 8,
+},
+["Durnedin-Dalaran"] = {
+["total"] = 926050330,
+["itemLevel"] = 665.125,
+["classId"] = 2,
+},
+["Grodar-Archimonde"] = {
+["total"] = 934405120,
+["itemLevel"] = 668.4375,
+["classId"] = 1,
+},
+["Vilidøns-Dalaran"] = {
+["total"] = 1123725484,
+["itemLevel"] = 667,
+["classId"] = 12,
+},
+["Erami-Sargeras"] = {
+["total"] = 617295247,
+["itemLevel"] = 669.4375,
+["classId"] = 6,
+},
+["Gydzitt-KhazModan"] = {
+["total"] = 531161339,
+["itemLevel"] = 667.75,
+["classId"] = 7,
+},
+["Orlith-KirinTor"] = {
+["total"] = 795875467,
+["itemLevel"] = 664.125,
+["classId"] = 13,
+},
+["Morkai-Sargeras"] = {
+["total"] = 1079865140,
+["itemLevel"] = 669.25,
+["classId"] = 3,
+},
+["Juicedmk-Archimonde"] = {
+["total"] = 443613860,
+["itemLevel"] = 657.1875,
+["classId"] = 11,
+},
+["Dordok-Ysondre"] = {
+["total"] = 614394449,
+["itemLevel"] = 663,
+["classId"] = 3,
+},
+},
+["servertime"] = 1745441805,
+["HEALER"] = {
+["Ässahi-Dalaran"] = {
+["total"] = 1075325549,
+["itemLevel"] = 668,
+["classId"] = 5,
+},
+["Amsët"] = {
+["total"] = 1193865617,
+["itemLevel"] = 664.5,
+["classId"] = 7,
+},
+["Opopoi-Dalaran"] = {
+["total"] = 1183247781,
+["itemLevel"] = 667.0625,
+["classId"] = 10,
+},
+["Putchie"] = {
+["total"] = 1096124675,
+["itemLevel"] = 666.3125,
+["classId"] = 11,
+},
+},
+["date"] = "22:56 23/04/25",
+},
+},
+[2922] = {
+{
+["time"] = 1732048663,
+["guild"] = "La chope de fer",
+["elapsed"] = 447.7239999999874,
+["date"] = "21:37 19/11/24",
+["servertime"] = 1732048663,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 419939403,
+["itemLevel"] = 617.3125,
+["classId"] = 10,
+},
+},
+["DAMAGER"] = {
+["Barabell-Cho'gall"] = {
+["total"] = 453999861,
+["itemLevel"] = 624.3125,
+["classId"] = 10,
+},
+["Därin"] = {
+["total"] = 388953445,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+["Kvotheen"] = {
+["total"] = 398488392,
+["itemLevel"] = 621.625,
+["classId"] = 7,
+},
+["Voda-Dalaran"] = {
+["total"] = 339274577,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+["Nilaïe-Dalaran"] = {
+["total"] = 362855872,
+["itemLevel"] = 620.5,
+["classId"] = 7,
+},
+["Ashdêuzo"] = {
+["total"] = 146457180,
+["itemLevel"] = 617.25,
+["classId"] = 11,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 418855624,
+["itemLevel"] = 616.125,
+["classId"] = 12,
+},
+},
+},
+{
+["guild"] = "La chope de fer",
+["time"] = 1732309076,
+["elapsed"] = 479.60699999996,
+["DAMAGER"] = {
+["Barabell-Cho'gall"] = {
+["total"] = 421323545,
+["itemLevel"] = 624.75,
+["classId"] = 10,
+},
+["Sithi-Dalaran"] = {
+["total"] = 175162285,
+["itemLevel"] = 620.5625,
+["classId"] = 6,
+},
+["Ashdêuzo"] = {
+["total"] = 172277048,
+["itemLevel"] = 617.125,
+["classId"] = 11,
+},
+["Flydidjecte-Archimonde"] = {
+["total"] = 450915810,
+["itemLevel"] = 618.125,
+["classId"] = 12,
+},
+["Edixed-Dalaran"] = {
+["total"] = 347220265,
+["itemLevel"] = 620.3125,
+["classId"] = 10,
+},
+["Voda-Dalaran"] = {
+["total"] = 383223286,
+["itemLevel"] = 618.3125,
+["classId"] = 2,
+},
+["Eshydna"] = {
+["total"] = 200757993,
+["itemLevel"] = 611.75,
+["classId"] = 12,
+},
+["Kvotheen"] = {
+["total"] = 497701032,
+["itemLevel"] = 622.0625,
+["classId"] = 7,
+},
+["Därin"] = {
+["total"] = 442615833,
+["itemLevel"] = 621.5625,
+["classId"] = 3,
+},
+},
+["servertime"] = 1732309077,
+["HEALER"] = {
+["Sonydl-Archimonde"] = {
+["total"] = 502216767,
+["itemLevel"] = 617.3125,
+["classId"] = 10,
+},
+["Nawella-Dalaran"] = {
+["total"] = 460521383,
+["itemLevel"] = 618.2666666666667,
+["classId"] = 11,
+},
+},
+["date"] = "21:57 22/11/24",
 },
 },
 },
@@ -10656,10 +16477,10 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 4,
 ["dps_best"] = 1108480.11017068,
-["dps_best_raid_when"] = 1739047578,
-["time_fasterkill_when"] = 1739047578,
-["dps_best_when"] = 1732135660,
 ["dps_best_raid"] = 23336246.88793666,
+["time_fasterkill_when"] = 1739047578,
+["dps_best_raid_when"] = 1739047578,
+["dps_best_when"] = 1732135660,
 },
 ["normal"] = {
 ["time_incombat"] = 110.9860000000335,
@@ -10667,10 +16488,10 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 1,
 ["dps_best"] = 1474861.766381242,
-["dps_best_raid"] = 10081079.75780425,
+["dps_best_when"] = 1740604576,
 ["time_fasterkill_when"] = 1740604576,
 ["dps_best_raid_when"] = 1740604576,
-["dps_best_when"] = 1740604576,
+["dps_best_raid"] = 10081079.75780425,
 },
 },
 [2902] = {
@@ -10680,10 +16501,10 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 4,
 ["dps_best"] = 941159.6356373352,
-["dps_best_raid_when"] = 1739046478,
-["time_fasterkill_when"] = 1739046478,
-["dps_best_when"] = 1732134602,
 ["dps_best_raid"] = 13793451.77064998,
+["time_fasterkill_when"] = 1739046478,
+["dps_best_raid_when"] = 1739046478,
+["dps_best_when"] = 1732134602,
 },
 ["normal"] = {
 ["time_incombat"] = 58.50699999998324,
@@ -10691,10 +16512,10 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 1,
 ["dps_best"] = 1895228.656434149,
-["dps_best_raid"] = 16053264.56663765,
+["dps_best_when"] = 1740602296,
 ["time_fasterkill_when"] = 1740602296,
 ["dps_best_raid_when"] = 1740602296,
-["dps_best_when"] = 1740602296,
+["dps_best_raid"] = 16053264.56663765,
 },
 ["raidfinder"] = {
 ["time_incombat"] = 432.3389999999458,
@@ -10702,165 +16523,14 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 2,
 ["dps_best"] = 860725.1089668077,
-["dps_best_raid_when"] = 1731619727,
-["time_fasterkill_when"] = 1731619727,
-["dps_best_when"] = 1731619727,
 ["dps_best_raid"] = 6908919.283268824,
+["time_fasterkill_when"] = 1731619727,
+["dps_best_raid_when"] = 1731619727,
+["dps_best_when"] = 1731619727,
 },
-},
-[3009] = {
-["normal"] = {
-["time_incombat"] = 869.6369999998133,
-["time_fasterkill"] = 125.5299999999988,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 3004948.814678368,
-["dps_best_raid"] = 31523896.35943629,
-["time_fasterkill_when"] = 1743021095,
-["dps_best_when"] = 1742416215,
-["dps_best_raid_when"] = 1743021095,
 },
 ["heroic"] = {
-["time_incombat"] = 2153.686000000087,
-["time_fasterkill"] = 197.9249999999997,
-["wipes"] = 0,
-["kills"] = 9,
-["dps_best"] = 3236644.977147877,
-["dps_best_when"] = 1745436775,
-["time_fasterkill_when"] = 1744227395,
-["dps_best_raid_when"] = 1744227395,
-["dps_best_raid"] = 33217691.67614,
-},
-},
-[3011] = {
-["normal"] = {
-["time_incombat"] = 1098.686999999736,
-["time_fasterkill"] = 162.4449999999924,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 1757778.940604286,
-["dps_best_raid"] = 20551188.17446001,
-["time_fasterkill_when"] = 1743022017,
-["dps_best_when"] = 1743022017,
-["dps_best_raid_when"] = 1743022017,
-},
-["heroic"] = {
-["time_incombat"] = 1713.936999999885,
-["time_fasterkill"] = 194.1889999998966,
-["wipes"] = 0,
-["kills"] = 7,
-["dps_best"] = 2159528.309285606,
-["dps_best_raid_when"] = 1744228500,
-["time_fasterkill_when"] = 1744833143,
-["dps_best_when"] = 1744228500,
-["dps_best_raid"] = 22831511.35199478,
-},
-["raidfinder"] = {
-["time_incombat"] = 582.7460000000065,
-["time_fasterkill"] = 227.8170000000027,
-["wipes"] = 0,
-["kills"] = 2,
-["dps_best"] = 1374468.468132116,
-["dps_best_raid_when"] = 1741804501,
-["time_fasterkill_when"] = 1741804501,
-["dps_best_when"] = 1741804501,
-["dps_best_raid"] = 12843788.30376998,
-},
-},
-[3013] = {
-["normal"] = {
-["time_incombat"] = 895.0250000000306,
-["time_fasterkill"] = 133.1779999999999,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 2287606.864516769,
-["dps_best_raid"] = 25462271.77161395,
-["time_fasterkill_when"] = 1743023100,
-["dps_best_when"] = 1743023100,
-["dps_best_raid_when"] = 1743023100,
-},
-["heroic"] = {
-["time_incombat"] = 1574.100999999869,
-["time_fasterkill"] = 220.570000000007,
-["wipes"] = 0,
-["kills"] = 6,
-["dps_best"] = 2477466.528780738,
-["dps_best_raid"] = 23865526.94115466,
-["time_fasterkill_when"] = 1753302658,
-["dps_best_raid_when"] = 1744834351,
-["dps_best_when"] = 1744834351,
-},
-["raidfinder"] = {
-["time_incombat"] = 226.1209999999992,
-["time_fasterkill"] = 226.1209999999992,
-["wipes"] = 0,
-["kills"] = 1,
-["dps_best"] = 1549087.293996388,
-["dps_best_raid"] = 14271697.94048324,
-["time_fasterkill_when"] = 1741784541,
-["dps_best_raid_when"] = 1741784541,
-["dps_best_when"] = 1741784541,
-},
-},
-[2922] = {
-["heroic"] = {
-["time_incombat"] = 1283.434000000067,
-["time_fasterkill"] = 356.1030000001192,
-["wipes"] = 0,
-["kills"] = 3,
-["dps_best"] = 1133444.562393313,
-["dps_best_raid"] = 18758017.02877472,
-["time_fasterkill_when"] = 1739051136,
-["dps_best_raid_when"] = 1739051136,
-["dps_best_when"] = 1739051136,
-},
-["normal"] = {
-["time_incombat"] = 277.0349999999162,
-["time_fasterkill"] = 277.0349999999162,
-["wipes"] = 0,
-["kills"] = 1,
-["dps_best"] = 725888.0033248176,
-["dps_best_raid"] = 6473421.816739916,
-["time_fasterkill_when"] = 1740607669,
-["dps_best_raid_when"] = 1740607669,
-["dps_best_when"] = 1740607669,
-},
-},
-["normal"] = {
-[3016] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 5,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[2919] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_when"] = 0,
-},
-[3010] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[3011] = {
+[3129] = {
 ["time_incombat"] = 0,
 ["time_fasterkill"] = 0,
 ["wipes"] = 2,
@@ -10871,327 +16541,38 @@ DetailsDataStorage = {
 ["dps_best_when"] = 0,
 ["dps_best_raid_when"] = 0,
 },
-[3012] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 3,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[3013] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 4,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[2922] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_when"] = 0,
-},
-[3014] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 3,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[2902] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_when"] = 0,
-},
-[3015] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 5,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[2917] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_when"] = 0,
-},
-[3009] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 5,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-},
-[3015] = {
-["normal"] = {
-["time_incombat"] = 1154.173999999992,
-["time_fasterkill"] = 173.4759999999951,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 2163686.965384212,
-["dps_best_when"] = 1743024490,
-["time_fasterkill_when"] = 1743024490,
-["dps_best_raid_when"] = 1743024490,
-["dps_best_raid"] = 21915957.15833952,
-},
-["heroic"] = {
-["time_incombat"] = 1576.492999999902,
-["time_fasterkill"] = 274.2840000000142,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 2029528.436257522,
-["dps_best_raid_when"] = 1744232655,
-["time_fasterkill_when"] = 1753304657,
-["dps_best_when"] = 1744836305,
-["dps_best_raid"] = 22844474.61139892,
-},
-},
-[2918] = {
-["heroic"] = {
-["time_incombat"] = 916.3430000002918,
-["time_fasterkill"] = 166.6750000002794,
-["wipes"] = 0,
-["kills"] = 4,
-["dps_best"] = 1241850.10352306,
-["dps_best_raid_when"] = 1739047971,
-["time_fasterkill_when"] = 1739047971,
-["dps_best_when"] = 1739047971,
-["dps_best_raid"] = 20909140.2849507,
-},
-["normal"] = {
-["time_incombat"] = 113.9459999999963,
-["time_fasterkill"] = 113.9459999999963,
-["wipes"] = 0,
-["kills"] = 1,
-["dps_best"] = 1306170.300005317,
-["dps_best_raid"] = 10510243.43987537,
-["time_fasterkill_when"] = 1740604892,
-["dps_best_raid_when"] = 1740604892,
-["dps_best_when"] = 1740604892,
-},
-},
-[2921] = {
-["heroic"] = {
-["time_incombat"] = 1102.97599999985,
-["time_fasterkill"] = 295.3799999998882,
-["wipes"] = 0,
-["kills"] = 3,
-["dps_best"] = 1760438.719644772,
-["dps_best_raid"] = 27328818.63702029,
-["time_fasterkill_when"] = 1739049599,
-["dps_best_when"] = 1739049599,
-["dps_best_raid_when"] = 1739049599,
-},
-["normal"] = {
-["time_incombat"] = 255.6680000000633,
-["time_fasterkill"] = 255.6680000000633,
-["wipes"] = 0,
-["kills"] = 1,
-["dps_best"] = 1359976.997542715,
-["dps_best_raid"] = 11593063.58245563,
-["time_fasterkill_when"] = 1740606686,
-["dps_best_raid_when"] = 1740606686,
-["dps_best_when"] = 1740606686,
-},
-},
-["raidfinder"] = {
-[3011] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid"] = 0,
-},
-},
-[3012] = {
-["normal"] = {
-["time_incombat"] = 1244.413000000131,
-["time_fasterkill"] = 193.1360000000132,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 2061754.90987924,
-["dps_best_raid"] = 24787965.87378673,
-["time_fasterkill_when"] = 1743022652,
-["dps_best_when"] = 1742417808,
-["dps_best_raid_when"] = 1743022652,
-},
-["heroic"] = {
-["time_incombat"] = 2798.340999999902,
-["time_fasterkill"] = 276.8360000000102,
-["wipes"] = 0,
-["kills"] = 8,
-["dps_best"] = 2490298.661082354,
-["dps_best_when"] = 1743028494,
-["time_fasterkill_when"] = 1753301518,
-["dps_best_raid_when"] = 1744229165,
-["dps_best_raid"] = 28781894.32393478,
-},
-["raidfinder"] = {
-["time_incombat"] = 269.5390000000007,
-["time_fasterkill"] = 269.5390000000007,
-["wipes"] = 0,
-["kills"] = 1,
-["dps_best"] = 1713853.783701126,
-["dps_best_raid"] = 18852600.30273907,
-["time_fasterkill_when"] = 1741783813,
-["dps_best_raid_when"] = 1741783813,
-["dps_best_when"] = 1741783813,
-},
-},
-[3010] = {
-["normal"] = {
-["time_incombat"] = 812.6039999998611,
-["time_fasterkill"] = 117.2179999999935,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 2271090.105628503,
-["dps_best_raid"] = 26848061.34723485,
-["time_fasterkill_when"] = 1743021551,
-["dps_best_when"] = 1743021551,
-["dps_best_raid_when"] = 1743021551,
-},
-["heroic"] = {
-["time_incombat"] = 2237.795000000019,
-["time_fasterkill"] = 198.7079999999842,
-["wipes"] = 0,
-["kills"] = 8,
-["dps_best"] = 2171408.41396037,
-["dps_best_when"] = 1743622945,
-["time_fasterkill_when"] = 1744832536,
-["dps_best_raid_when"] = 1743622945,
-["dps_best_raid"] = 23944072.30526781,
-},
-["raidfinder"] = {
-["time_incombat"] = 380.416000000012,
-["time_fasterkill"] = 158.7920000000013,
-["wipes"] = 0,
-["kills"] = 2,
-["dps_best"] = 1524834.821700665,
-["dps_best_raid_when"] = 1741803945,
-["time_fasterkill_when"] = 1741803945,
-["dps_best_when"] = 1741803945,
-["dps_best_raid"] = 17433229.08584802,
-},
-},
-["heroic"] = {
-[3016] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 52,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[3009] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 3,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_raid"] = 0,
-},
-[3010] = {
+[3131] = {
 ["time_incombat"] = 0,
 ["time_fasterkill"] = 0,
 ["wipes"] = 6,
 ["kills"] = 0,
 ["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
 ["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
 },
-[2921] = {
+[3009] = {
 ["time_incombat"] = 0,
 ["time_fasterkill"] = 0,
 ["wipes"] = 3,
 ["kills"] = 0,
 ["dps_best"] = 0,
-["dps_best_when"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
 ["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
 },
-[2920] = {
+[2918] = {
 ["time_incombat"] = 0,
 ["time_fasterkill"] = 0,
-["wipes"] = 11,
+["wipes"] = 2,
 ["kills"] = 0,
 ["dps_best"] = 0,
 ["dps_best_raid_when"] = 0,
 ["time_fasterkill_when"] = 0,
 ["dps_best_when"] = 0,
 ["dps_best_raid"] = 0,
-},
-[2922] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 50,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[3012] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 13,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
 },
 [3013] = {
 ["time_incombat"] = 0,
@@ -11199,10 +16580,32 @@ DetailsDataStorage = {
 ["wipes"] = 13,
 ["kills"] = 0,
 ["dps_best"] = 0,
-["dps_best_raid"] = 0,
+["dps_best_when"] = 0,
 ["time_fasterkill_when"] = 0,
 ["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3015] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 29,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
 ["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3135] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 32,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
 },
 [3011] = {
 ["time_incombat"] = 0,
@@ -11210,48 +16613,15 @@ DetailsDataStorage = {
 ["wipes"] = 7,
 ["kills"] = 0,
 ["dps_best"] = 0,
-["dps_best_raid"] = 0,
+["dps_best_raid_when"] = 0,
 ["time_fasterkill_when"] = 0,
 ["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[3014] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 22,
-["kills"] = 0,
-["dps_best"] = 0,
 ["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_raid_when"] = 0,
-["dps_best_when"] = 0,
 },
-[2917] = {
+[2921] = {
 ["time_incombat"] = 0,
 ["time_fasterkill"] = 0,
-["wipes"] = 1,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[3015] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 22,
-["kills"] = 0,
-["dps_best"] = 0,
-["dps_best_raid"] = 0,
-["time_fasterkill_when"] = 0,
-["dps_best_when"] = 0,
-["dps_best_raid_when"] = 0,
-},
-[2918] = {
-["time_incombat"] = 0,
-["time_fasterkill"] = 0,
-["wipes"] = 2,
+["wipes"] = 3,
 ["kills"] = 0,
 ["dps_best"] = 0,
 ["dps_best_raid"] = 0,
@@ -11265,58 +16635,354 @@ DetailsDataStorage = {
 ["wipes"] = 12,
 ["kills"] = 0,
 ["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+[3134] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 9,
+["kills"] = 0,
+["dps_best"] = 0,
 ["dps_best_when"] = 0,
 ["time_fasterkill_when"] = 0,
 ["dps_best_raid_when"] = 0,
 ["dps_best_raid"] = 0,
 },
+[3122] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 2,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+[2920] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 11,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+[2922] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 50,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
 },
 [2917] = {
-["heroic"] = {
-["time_incombat"] = 913.7209999996849,
-["time_fasterkill"] = 139.7330000000075,
-["wipes"] = 0,
-["kills"] = 4,
-["dps_best"] = 1402036.748664979,
-["dps_best_raid_when"] = 1739046982,
-["time_fasterkill_when"] = 1739046982,
-["dps_best_when"] = 1739046982,
-["dps_best_raid"] = 18610073.97679762,
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
 },
+[3130] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 2,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3132] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 3,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3010] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 6,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+[3012] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 13,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3014] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 22,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3016] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 62,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+[3133] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 3,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+},
+[3135] = {
 ["normal"] = {
-["time_incombat"] = 274.4169999998994,
-["time_fasterkill"] = 274.4169999998994,
+["time_incombat"] = 1325.56700000001,
+["time_fasterkill"] = 379.4350000000559,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 3039323.586400095,
+["dps_best_raid"] = 29283617.61566109,
+["time_fasterkill_when"] = 1756932202,
+["dps_best_when"] = 1756932202,
+["dps_best_raid_when"] = 1756932202,
+},
+["heroic"] = {
+["time_incombat"] = 518.9739999999292,
+["time_fasterkill"] = 518.9739999999292,
 ["wipes"] = 0,
 ["kills"] = 1,
-["dps_best"] = 590916.1932509226,
-["dps_best_raid"] = 4449205.584932594,
-["time_fasterkill_when"] = 1740604111,
-["dps_best_raid_when"] = 1740604111,
-["dps_best_when"] = 1740604111,
+["dps_best"] = 3499278.164231194,
+["dps_best_when"] = 1759350742,
+["time_fasterkill_when"] = 1759350742,
+["dps_best_raid_when"] = 1759350742,
+["dps_best_raid"] = 39993918.18665835,
 },
 },
-[2919] = {
-["heroic"] = {
-["time_incombat"] = 1476.766000000262,
-["time_fasterkill"] = 222.155999999959,
+[3129] = {
+["normal"] = {
+["time_incombat"] = 805.3929999999964,
+["time_fasterkill"] = 132.6389999999665,
 ["wipes"] = 0,
 ["kills"] = 4,
-["dps_best"] = 1257311.315649549,
-["dps_best_when"] = 1732137485,
-["time_fasterkill_when"] = 1739048498,
-["dps_best_raid_when"] = 1739048498,
-["dps_best_raid"] = 21401975.45869064,
+["dps_best"] = 4194766.501588678,
+["dps_best_when"] = 1756928656,
+["time_fasterkill_when"] = 1756928656,
+["dps_best_raid_when"] = 1756928656,
+["dps_best_raid"] = 52778303.9000729,
 },
-["normal"] = {
-["time_incombat"] = 162.5079999999143,
-["time_fasterkill"] = 162.5079999999143,
+["heroic"] = {
+["time_incombat"] = 1866.522999999973,
+["time_fasterkill"] = 221.4420000000391,
+["wipes"] = 0,
+["kills"] = 7,
+["dps_best"] = 4394927.7394617,
+["dps_best_raid"] = 57212769.89007398,
+["time_fasterkill_when"] = 1759351718,
+["dps_best_when"] = 1758742580,
+["dps_best_raid_when"] = 1759351718,
+},
+["raidfinder"] = {
+["time_incombat"] = 324.8040000000037,
+["time_fasterkill"] = 324.8040000000037,
 ["wipes"] = 0,
 ["kills"] = 1,
-["dps_best"] = 1256638.423996847,
-["dps_best_raid"] = 9663577.799251901,
-["time_fasterkill_when"] = 1740605578,
-["dps_best_raid_when"] = 1740605578,
-["dps_best_when"] = 1740605578,
+["dps_best"] = 2391119.241155928,
+["dps_best_raid"] = 23739115.70362407,
+["time_fasterkill_when"] = 1755545304,
+["dps_best_when"] = 1755545304,
+["dps_best_raid_when"] = 1755545304,
+},
+},
+[3131] = {
+["normal"] = {
+["time_incombat"] = 770.9820000000909,
+["time_fasterkill"] = 137.0500000000466,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 4196180.51197735,
+["dps_best_when"] = 1755805258,
+["time_fasterkill_when"] = 1756929097,
+["dps_best_raid_when"] = 1756929097,
+["dps_best_raid"] = 61554980.23347051,
+},
+["heroic"] = {
+["time_incombat"] = 2027.198999999957,
+["time_fasterkill"] = 202.8000000000466,
+["wipes"] = 0,
+["kills"] = 7,
+["dps_best"] = 6085091.809675452,
+["dps_best_raid"] = 73684875.77907579,
+["time_fasterkill_when"] = 1759352276,
+["dps_best_when"] = 1759352276,
+["dps_best_raid_when"] = 1759352276,
+},
+["raidfinder"] = {
+["time_incombat"] = 325.7639999999665,
+["time_fasterkill"] = 325.7639999999665,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 2416222.31739706,
+["dps_best_raid"] = 27990510.48305196,
+["time_fasterkill_when"] = 1755546781,
+["dps_best_when"] = 1755546781,
+["dps_best_raid_when"] = 1755546781,
+},
+},
+[3009] = {
+["normal"] = {
+["time_incombat"] = 869.6369999998133,
+["time_fasterkill"] = 125.5299999999988,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 3004948.814678368,
+["dps_best_raid_when"] = 1743021095,
+["time_fasterkill_when"] = 1743021095,
+["dps_best_when"] = 1742416215,
+["dps_best_raid"] = 31523896.35943629,
+},
+["heroic"] = {
+["time_incombat"] = 2353.470000000189,
+["time_fasterkill"] = 197.9249999999997,
+["wipes"] = 0,
+["kills"] = 10,
+["dps_best"] = 3236644.977147877,
+["dps_best_raid"] = 33217691.67614,
+["time_fasterkill_when"] = 1744227395,
+["dps_best_when"] = 1745436775,
+["dps_best_raid_when"] = 1744227395,
+},
+},
+[3011] = {
+["normal"] = {
+["time_incombat"] = 1098.686999999736,
+["time_fasterkill"] = 162.4449999999924,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 1757778.940604286,
+["dps_best_raid_when"] = 1743022017,
+["time_fasterkill_when"] = 1743022017,
+["dps_best_when"] = 1743022017,
+["dps_best_raid"] = 20551188.17446001,
+},
+["heroic"] = {
+["time_incombat"] = 1713.936999999885,
+["time_fasterkill"] = 194.1889999998966,
+["wipes"] = 0,
+["kills"] = 7,
+["dps_best"] = 2159528.309285606,
+["dps_best_raid"] = 22831511.35199478,
+["time_fasterkill_when"] = 1744833143,
+["dps_best_raid_when"] = 1744228500,
+["dps_best_when"] = 1744228500,
+},
+["raidfinder"] = {
+["time_incombat"] = 582.7460000000065,
+["time_fasterkill"] = 227.8170000000027,
+["wipes"] = 0,
+["kills"] = 2,
+["dps_best"] = 1374468.468132116,
+["dps_best_raid"] = 12843788.30376998,
+["time_fasterkill_when"] = 1741804501,
+["dps_best_raid_when"] = 1741804501,
+["dps_best_when"] = 1741804501,
+},
+},
+[3013] = {
+["normal"] = {
+["time_incombat"] = 895.0250000000306,
+["time_fasterkill"] = 133.1779999999999,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 2287606.864516769,
+["dps_best_raid_when"] = 1743023100,
+["time_fasterkill_when"] = 1743023100,
+["dps_best_when"] = 1743023100,
+["dps_best_raid"] = 25462271.77161395,
+},
+["heroic"] = {
+["time_incombat"] = 1574.100999999869,
+["time_fasterkill"] = 220.570000000007,
+["wipes"] = 0,
+["kills"] = 6,
+["dps_best"] = 2477466.528780738,
+["dps_best_when"] = 1744834351,
+["time_fasterkill_when"] = 1753302658,
+["dps_best_raid_when"] = 1744834351,
+["dps_best_raid"] = 23865526.94115466,
+},
+["raidfinder"] = {
+["time_incombat"] = 226.1209999999992,
+["time_fasterkill"] = 226.1209999999992,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 1549087.293996388,
+["dps_best_when"] = 1741784541,
+["time_fasterkill_when"] = 1741784541,
+["dps_best_raid_when"] = 1741784541,
+["dps_best_raid"] = 14271697.94048324,
+},
+},
+[2922] = {
+["heroic"] = {
+["time_incombat"] = 1283.434000000067,
+["time_fasterkill"] = 356.1030000001192,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 1133444.562393313,
+["dps_best_when"] = 1739051136,
+["time_fasterkill_when"] = 1739051136,
+["dps_best_raid_when"] = 1739051136,
+["dps_best_raid"] = 18758017.02877472,
+},
+["normal"] = {
+["time_incombat"] = 277.0349999999162,
+["time_fasterkill"] = 277.0349999999162,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 725888.0033248176,
+["dps_best_when"] = 1740607669,
+["time_fasterkill_when"] = 1740607669,
+["dps_best_raid_when"] = 1740607669,
+["dps_best_raid"] = 6473421.816739916,
 },
 },
 [3014] = {
@@ -11326,45 +16992,258 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 5,
 ["dps_best"] = 2204568.565642387,
-["dps_best_raid"] = 24697089.17066521,
+["dps_best_raid_when"] = 1743023725,
 ["time_fasterkill_when"] = 1742419377,
 ["dps_best_when"] = 1742419377,
-["dps_best_raid_when"] = 1743023725,
+["dps_best_raid"] = 24697089.17066521,
 },
 ["heroic"] = {
-["time_incombat"] = 2072.503000000023,
+["time_incombat"] = 2387.617000000083,
 ["time_fasterkill"] = 290.9760000000242,
 ["wipes"] = 0,
-["kills"] = 6,
+["kills"] = 7,
 ["dps_best"] = 2529438.79457584,
-["dps_best_raid"] = 25409039.25772715,
+["dps_best_raid_when"] = 1744231829,
 ["time_fasterkill_when"] = 1753304013,
 ["dps_best_when"] = 1744835117,
-["dps_best_raid_when"] = 1744231829,
+["dps_best_raid"] = 25409039.25772715,
 },
+},
+["normal"] = {
+[2902] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3009] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 5,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3135] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 6,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+[3013] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 4,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3015] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 5,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+[3011] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 2,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3122] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3010] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+[2917] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[2919] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3130] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3132] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 2,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3134] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+[3012] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 3,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid"] = 0,
+},
+[3014] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 3,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
 },
 [3016] = {
-["normal"] = {
-["time_incombat"] = 1611.779000000104,
-["time_fasterkill"] = 268.9820000000036,
-["wipes"] = 0,
-["kills"] = 5,
-["dps_best"] = 1896159.415888934,
-["dps_best_when"] = 1743025110,
-["time_fasterkill_when"] = 1743025110,
-["dps_best_raid_when"] = 1743025110,
-["dps_best_raid"] = 20382333.44238621,
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 5,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
 },
+[2922] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_when"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_raid"] = 0,
+},
+},
+[2919] = {
 ["heroic"] = {
-["time_incombat"] = 512.7709999999497,
-["time_fasterkill"] = 512.7709999999497,
+["time_incombat"] = 1476.766000000262,
+["time_fasterkill"] = 222.155999999959,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 1257311.315649549,
+["dps_best_raid"] = 21401975.45869064,
+["time_fasterkill_when"] = 1739048498,
+["dps_best_when"] = 1732137485,
+["dps_best_raid_when"] = 1739048498,
+},
+["normal"] = {
+["time_incombat"] = 162.5079999999143,
+["time_fasterkill"] = 162.5079999999143,
 ["wipes"] = 0,
 ["kills"] = 1,
-["dps_best"] = 2313881.266703527,
-["dps_best_raid"] = 20629334.12381168,
-["time_fasterkill_when"] = 1745441806,
-["dps_best_when"] = 1745441806,
-["dps_best_raid_when"] = 1745441806,
+["dps_best"] = 1256638.423996847,
+["dps_best_when"] = 1740605578,
+["time_fasterkill_when"] = 1740605578,
+["dps_best_raid_when"] = 1740605578,
+["dps_best_raid"] = 9663577.799251901,
+},
+},
+[2917] = {
+["heroic"] = {
+["time_incombat"] = 913.7209999996849,
+["time_fasterkill"] = 139.7330000000075,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 1402036.748664979,
+["dps_best_raid"] = 18610073.97679762,
+["time_fasterkill_when"] = 1739046982,
+["dps_best_raid_when"] = 1739046982,
+["dps_best_when"] = 1739046982,
+},
+["normal"] = {
+["time_incombat"] = 274.4169999998994,
+["time_fasterkill"] = 274.4169999998994,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 590916.1932509226,
+["dps_best_when"] = 1740604111,
+["time_fasterkill_when"] = 1740604111,
+["dps_best_raid_when"] = 1740604111,
+["dps_best_raid"] = 4449205.584932594,
 },
 },
 [2920] = {
@@ -11374,10 +17253,10 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 4,
 ["dps_best"] = 1464383.025062893,
-["dps_best_raid"] = 22580377.91074332,
+["dps_best_when"] = 1739048913,
 ["time_fasterkill_when"] = 1739048913,
 ["dps_best_raid_when"] = 1739048913,
-["dps_best_when"] = 1739048913,
+["dps_best_raid"] = 22580377.91074332,
 },
 ["normal"] = {
 ["time_incombat"] = 97.6909999998752,
@@ -11385,43 +17264,370 @@ DetailsDataStorage = {
 ["wipes"] = 0,
 ["kills"] = 1,
 ["dps_best"] = 1540618.941421976,
-["dps_best_raid"] = 11848738.87053545,
+["dps_best_when"] = 1740606133,
 ["time_fasterkill_when"] = 1740606133,
 ["dps_best_raid_when"] = 1740606133,
-["dps_best_when"] = 1740606133,
+["dps_best_raid"] = 11848738.87053545,
+},
+},
+[3015] = {
+["normal"] = {
+["time_incombat"] = 1154.173999999992,
+["time_fasterkill"] = 173.4759999999951,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 2163686.965384212,
+["dps_best_raid"] = 21915957.15833952,
+["time_fasterkill_when"] = 1743024490,
+["dps_best_when"] = 1743024490,
+["dps_best_raid_when"] = 1743024490,
+},
+["heroic"] = {
+["time_incombat"] = 1854.263999999852,
+["time_fasterkill"] = 274.2840000000142,
+["wipes"] = 0,
+["kills"] = 6,
+["dps_best"] = 2029528.436257522,
+["dps_best_raid"] = 22844474.61139892,
+["time_fasterkill_when"] = 1753304657,
+["dps_best_raid_when"] = 1744232655,
+["dps_best_when"] = 1744836305,
+},
+},
+[3122] = {
+["normal"] = {
+["time_incombat"] = 757.8970000000263,
+["time_fasterkill"] = 202.377000000095,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 6443078.190719923,
+["dps_best_raid"] = 74325541.8204289,
+["time_fasterkill_when"] = 1756930525,
+["dps_best_when"] = 1756930525,
+["dps_best_raid_when"] = 1756930525,
+},
+["heroic"] = {
+["time_incombat"] = 1478.125999999919,
+["time_fasterkill"] = 348.9539999999997,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 6275615.603653373,
+["dps_best_when"] = 1758745275,
+["time_fasterkill_when"] = 1758143137,
+["dps_best_raid_when"] = 1757537486,
+["dps_best_raid"] = 78336291.3031628,
+},
+},
+[2918] = {
+["heroic"] = {
+["time_incombat"] = 916.3430000002918,
+["time_fasterkill"] = 166.6750000002794,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 1241850.10352306,
+["dps_best_raid"] = 20909140.2849507,
+["time_fasterkill_when"] = 1739047971,
+["dps_best_raid_when"] = 1739047971,
+["dps_best_when"] = 1739047971,
+},
+["normal"] = {
+["time_incombat"] = 113.9459999999963,
+["time_fasterkill"] = 113.9459999999963,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 1306170.300005317,
+["dps_best_when"] = 1740604892,
+["time_fasterkill_when"] = 1740604892,
+["dps_best_raid_when"] = 1740604892,
+["dps_best_raid"] = 10510243.43987537,
+},
+},
+["raidfinder"] = {
+[3011] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_raid_when"] = 0,
+["dps_best_when"] = 0,
+},
+[3131] = {
+["time_incombat"] = 0,
+["time_fasterkill"] = 0,
+["wipes"] = 1,
+["kills"] = 0,
+["dps_best"] = 0,
+["dps_best_raid"] = 0,
+["time_fasterkill_when"] = 0,
+["dps_best_when"] = 0,
+["dps_best_raid_when"] = 0,
+},
+},
+[3010] = {
+["normal"] = {
+["time_incombat"] = 812.6039999998611,
+["time_fasterkill"] = 117.2179999999935,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 2271090.105628503,
+["dps_best_raid_when"] = 1743021551,
+["time_fasterkill_when"] = 1743021551,
+["dps_best_when"] = 1743021551,
+["dps_best_raid"] = 26848061.34723485,
+},
+["heroic"] = {
+["time_incombat"] = 2237.795000000019,
+["time_fasterkill"] = 198.7079999999842,
+["wipes"] = 0,
+["kills"] = 8,
+["dps_best"] = 2171408.41396037,
+["dps_best_raid"] = 23944072.30526781,
+["time_fasterkill_when"] = 1744832536,
+["dps_best_when"] = 1743622945,
+["dps_best_raid_when"] = 1743622945,
+},
+["raidfinder"] = {
+["time_incombat"] = 380.416000000012,
+["time_fasterkill"] = 158.7920000000013,
+["wipes"] = 0,
+["kills"] = 2,
+["dps_best"] = 1524834.821700665,
+["dps_best_raid"] = 17433229.08584802,
+["time_fasterkill_when"] = 1741803945,
+["dps_best_raid_when"] = 1741803945,
+["dps_best_when"] = 1741803945,
+},
+},
+[3130] = {
+["normal"] = {
+["time_incombat"] = 943.3619999998627,
+["time_fasterkill"] = 170.2489999998361,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 4904530.888147717,
+["dps_best_when"] = 1756410938,
+["time_fasterkill_when"] = 1756929601,
+["dps_best_raid_when"] = 1756929601,
+["dps_best_raid"] = 57483149.88639829,
+},
+["heroic"] = {
+["time_incombat"] = 1540.572999999828,
+["time_fasterkill"] = 207.7679999999236,
+["wipes"] = 0,
+["kills"] = 6,
+["dps_best"] = 6346257.448563276,
+["dps_best_raid_when"] = 1759352853,
+["time_fasterkill_when"] = 1759352853,
+["dps_best_when"] = 1757535427,
+["dps_best_raid"] = 80364153.10830416,
+},
+["raidfinder"] = {
+["time_incombat"] = 355.8510000002571,
+["time_fasterkill"] = 355.8510000002571,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 2729799.815096376,
+["dps_best_raid"] = 30145250.78190662,
+["time_fasterkill_when"] = 1755547759,
+["dps_best_when"] = 1755547759,
+["dps_best_raid_when"] = 1755547759,
+},
+},
+[3132] = {
+["normal"] = {
+["time_incombat"] = 948.6329999999871,
+["time_fasterkill"] = 143.3170000000391,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 4846890.836440663,
+["dps_best_when"] = 1756930122,
+["time_fasterkill_when"] = 1756930122,
+["dps_best_raid_when"] = 1756930122,
+["dps_best_raid"] = 59866420.76653613,
+},
+["heroic"] = {
+["time_incombat"] = 1665.250000000026,
+["time_fasterkill"] = 245.435999999987,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 6205497.400575742,
+["dps_best_when"] = 1759353733,
+["time_fasterkill_when"] = 1759353733,
+["dps_best_raid_when"] = 1759353733,
+["dps_best_raid"] = 76664119.65237781,
+},
+},
+[3134] = {
+["normal"] = {
+["time_incombat"] = 654.3719999999448,
+["time_fasterkill"] = 163.0009999999311,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 5043730.854445891,
+["dps_best_raid"] = 62901774.94619257,
+["time_fasterkill_when"] = 1756931345,
+["dps_best_when"] = 1756931345,
+["dps_best_raid_when"] = 1756931345,
+},
+["heroic"] = {
+["time_incombat"] = 1100.666000000085,
+["time_fasterkill"] = 319.8760000000475,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 5929930.510580867,
+["dps_best_raid_when"] = 1759347811,
+["time_fasterkill_when"] = 1759347811,
+["dps_best_when"] = 1759347811,
+["dps_best_raid"] = 70275716.00244051,
+},
+},
+[3012] = {
+["normal"] = {
+["time_incombat"] = 1244.413000000131,
+["time_fasterkill"] = 193.1360000000132,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 2061754.90987924,
+["dps_best_raid_when"] = 1743022652,
+["time_fasterkill_when"] = 1743022652,
+["dps_best_when"] = 1742417808,
+["dps_best_raid"] = 24787965.87378673,
+},
+["heroic"] = {
+["time_incombat"] = 2798.340999999902,
+["time_fasterkill"] = 276.8360000000102,
+["wipes"] = 0,
+["kills"] = 8,
+["dps_best"] = 2490298.661082354,
+["dps_best_raid"] = 28781894.32393478,
+["time_fasterkill_when"] = 1753301518,
+["dps_best_when"] = 1743028494,
+["dps_best_raid_when"] = 1744229165,
+},
+["raidfinder"] = {
+["time_incombat"] = 269.5390000000007,
+["time_fasterkill"] = 269.5390000000007,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 1713853.783701126,
+["dps_best_when"] = 1741783813,
+["time_fasterkill_when"] = 1741783813,
+["dps_best_raid_when"] = 1741783813,
+["dps_best_raid"] = 18852600.30273907,
+},
+},
+[2921] = {
+["heroic"] = {
+["time_incombat"] = 1102.97599999985,
+["time_fasterkill"] = 295.3799999998882,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 1760438.719644772,
+["dps_best_raid_when"] = 1739049599,
+["time_fasterkill_when"] = 1739049599,
+["dps_best_when"] = 1739049599,
+["dps_best_raid"] = 27328818.63702029,
+},
+["normal"] = {
+["time_incombat"] = 255.6680000000633,
+["time_fasterkill"] = 255.6680000000633,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 1359976.997542715,
+["dps_best_when"] = 1740606686,
+["time_fasterkill_when"] = 1740606686,
+["dps_best_raid_when"] = 1740606686,
+["dps_best_raid"] = 11593063.58245563,
+},
+},
+[3016] = {
+["normal"] = {
+["time_incombat"] = 1611.779000000104,
+["time_fasterkill"] = 268.9820000000036,
+["wipes"] = 0,
+["kills"] = 5,
+["dps_best"] = 1896159.415888934,
+["dps_best_raid"] = 20382333.44238621,
+["time_fasterkill_when"] = 1743025110,
+["dps_best_when"] = 1743025110,
+["dps_best_raid_when"] = 1743025110,
+},
+["heroic"] = {
+["time_incombat"] = 512.7709999999497,
+["time_fasterkill"] = 512.7709999999497,
+["wipes"] = 0,
+["kills"] = 1,
+["dps_best"] = 2313881.266703527,
+["dps_best_raid_when"] = 1745441806,
+["time_fasterkill_when"] = 1745441806,
+["dps_best_when"] = 1745441806,
+["dps_best_raid"] = 20629334.12381168,
+},
+},
+[3133] = {
+["normal"] = {
+["time_incombat"] = 452.5769999998156,
+["time_fasterkill"] = 118.0449999999255,
+["wipes"] = 0,
+["kills"] = 3,
+["dps_best"] = 5245454.648685339,
+["dps_best_raid"] = 57709889.67770172,
+["time_fasterkill_when"] = 1756930844,
+["dps_best_when"] = 1756930844,
+["dps_best_raid_when"] = 1756930844,
+},
+["heroic"] = {
+["time_incombat"] = 1065.875000000046,
+["time_fasterkill"] = 239.0119999999879,
+["wipes"] = 0,
+["kills"] = 4,
+["dps_best"] = 4746531.41068326,
+["dps_best_when"] = 1758143893,
+["time_fasterkill_when"] = 1758746267,
+["dps_best_raid_when"] = 1757538210,
+["dps_best_raid"] = 52270351.41518398,
 },
 },
 },
 ["VERSION"] = 7,
+["mythic_plus"] = {
+},
+["Data"] = {
+},
+["mythic"] = {
+[1690] = {
+{
+["guild"] = "O Méga Wipe",
+["time"] = 1721718694,
+["elapsed"] = 517.8639999999432,
+["DAMAGER"] = {
+},
+["servertime"] = 1721718693,
+["HEALER"] = {
+},
+["date"] = "09:11 23/07/24",
+},
+},
+},
 ["raidfinder"] = {
 [3010] = {
 },
+[3012] = {
+},
+[3129] = {
+},
 [3011] = {
 },
-[3012] = {
+[3131] = {
 },
 [3013] = {
 },
 [2902] = {
 },
+[3130] = {
 },
-["mythic"] = {
-[1690] = {
-{
-["DAMAGER"] = {
-},
-["time"] = 1721718694,
-["date"] = "09:11 23/07/24",
-["elapsed"] = 517.8639999999432,
-["servertime"] = 1721718693,
-["HEALER"] = {
-},
-["guild"] = "O Méga Wipe",
-},
-},
-},
-["Data"] = {
-},
-["mythic_plus"] = {
 },
 }

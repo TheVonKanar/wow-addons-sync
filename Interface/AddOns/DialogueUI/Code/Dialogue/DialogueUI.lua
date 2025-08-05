@@ -74,7 +74,6 @@ local GetActiveTitle = GetActiveTitle;
 local GetSuggestedGroupSize = API.GetSuggestedGroupSize;
 local UnitExists = UnitExists;
 local UnitName = UnitName;
-local SetPortraitTexture = SetPortraitTexture;
 local AcceptQuest = AcceptQuest;
 local GetQuestPortraitGiver = GetQuestPortraitGiver;
 local GetNumQuestChoices = GetNumQuestChoices;
@@ -734,7 +733,7 @@ function DUIDialogBaseMixin:UseQuestLayout(state)
         end
 
         local unit = UnitExists("npc") and "npc" or "player";
-        SetPortraitTexture(self.FrontFrame.Header.Portrait, unit);
+        API.SetPortraitTexture(self.FrontFrame.Header.Portrait, unit);
 
         if ThemeUtil:IsDarkMode() then
             self.FrontFrame.Header.Portrait:SetVertexColor(1, 1, 1);
@@ -758,6 +757,7 @@ function DUIDialogBaseMixin:UseQuestLayout(state)
     elseif self.questLayout ~= false or forceUpdate then
         self.questLayout = false;
         self.questID = nil;
+        self.questIsFromGossip = nil;
         self.scrollViewHeight = self.scrollFrameBaseHeight;
         --self.ScrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", PADDING_H, -PADDING_TOP);
         self.ScrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -42);
@@ -1141,6 +1141,12 @@ local function HandleAutoSelect(options, activeQuests, availableQuests, anyOptio
 end
 addon.DialogueHandleAutoSelect = HandleAutoSelect;
 
+
+local LowPriorityQuestGossip = {
+    [134831] = true,    --Legion Remix: Eternus (Quest) How did Dalaran come to be on the Broken Isles?
+};
+
+
 function DUIDialogBaseMixin:HandleGossip()
     if self:IsGossipHandledExternally() then
         if self:IsShown() then
@@ -1243,7 +1249,8 @@ function DUIDialogBaseMixin:HandleGossip()
         end
     end
 
-    local showGossipFirst = (options[1] and options[1].flags == 1) or (not anyNewOrCompleteQuest);
+    local firstGossipOptionID = options[1] and options[1] and options[1].gossipOptionID;
+    local showGossipFirst = (firstGossipOptionID and options[1].flags == 1 and (not LowPriorityQuestGossip[firstGossipOptionID])) or (not anyNewOrCompleteQuest);
 
     if showGossipFirst then
         --Show gossip first if there is a (Quest) Gossip
@@ -1552,8 +1559,6 @@ function DUIDialogBaseMixin:HandleQuestDetail(playFadeIn)
         ExitButton:SetButtonDeclineQuest(self.questIsFromGossip);
     end
 
-    self.questIsFromGossip = nil;
-
     if playFadeIn then
         self:FadeInContentFrame();
     end
@@ -1685,7 +1690,6 @@ function DUIDialogBaseMixin:HandleQuestProgress(playFadeIn)
 
     local CancelButton = self:AcquireExitButton();
     CancelButton:SetButtonCancelQuestProgress(self.questIsFromGossip);
-    self.questIsFromGossip = nil;
 
     if not canComplete then
         KeyboardControl:SetAction("Confirm", CancelButton);
@@ -2289,14 +2293,19 @@ function DUIDialogBaseMixin:ShowUI(event, ...)
 
     TooltipFrame:Hide();
 
-    CallbackRegistry:Trigger("DialogueUI.HandleEvent", event);
+    CallbackRegistry:Trigger("DialogueUI.HandleEvent", event, self.questID);
 end
 
-function DUIDialogBaseMixin:HideUI(cancelPopupFirst)
+function DUIDialogBaseMixin:HideUI(cancelPopupFirst, fromPressingKey)
     if not self:IsShown() then return end;
 
     if cancelPopupFirst and self.requireGossipConfirm then
         self:OnEvent("GOSSIP_CONFIRM_CANCEL");
+        return
+    end
+
+    if fromPressingKey and self.questIsFromGossip and GetDBBool("EscapeToDeclineQuest") and (not InCombatLockdown()) then
+        DeclineQuest();
         return
     end
 
@@ -2344,7 +2353,6 @@ function DUIDialogBaseMixin:OnHide()
 
     self:CloseDialogInteraction();
     self.keepGossipHistory = false;
-    self.requireGossipConfirm = false;
     self.selectedGossipIndex = nil;
     self.consumeGossipClose = nil;
     self.questIsFromGossip = nil;
@@ -2384,6 +2392,11 @@ function DUIDialogBaseMixin:OnHide()
     if self.acknowledgeAutoAcceptQuest then
         self.acknowledgeAutoAcceptQuest = nil;
         AcknowledgeAutoAcceptQuest();
+    end
+
+    if self.requireGossipConfirm ~= nil then
+        self.requireGossipConfirm = nil;
+        API.CloseGossipStaticPopups();
     end
 end
 
@@ -2482,13 +2495,16 @@ function DUIDialogBaseMixin:OnEvent(event, ...)
             CameraUtil:OnEnterCombatDuringInteraction();
         end
     elseif event == "GOSSIP_CONFIRM" then
+        --CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
         local gossipID, text, cost = ...
         self:RegisterEvent("GOSSIP_CONFIRM_CANCEL");
         self:HandleGossipConfirm(gossipID, text, cost);
     elseif event == "GOSSIP_CONFIRM_CANCEL" then
+        --CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
         self:UnregisterEvent(event);
         self:HideGossipConfirm();
     elseif event == "GOSSIP_ENTER_CODE" then
+        --CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
         local gossipID = ...
         self:HandleGossipEnterCode(gossipID);
     elseif event == "LOADING_SCREEN_ENABLED" then
