@@ -19,6 +19,7 @@ local defaults = {
         BuffBarCooldownViewerSpellIDs = {
             ["*"] = {},
         },
+        AutoLayoutSwitching = {},
     },
     global = {
         EMEOptions = {
@@ -70,6 +71,9 @@ local defaults = {
             extraActionButton = true,
             cooldownManager = true,
             durationBars = true,
+            allowSetCoordinates = false,
+            raidSizeLayoutSwitching = false,
+            vigorBar = false,
         },
         QueueStatusButton = {},
         TotemFrame = {},
@@ -124,6 +128,7 @@ local defaults = {
         BuffIconCooldownViewer = {},
         BuffBarCooldownViewer = {},
         MirrorTimerContainer = {},
+        VigorBar = {},
     }
 }
 
@@ -281,6 +286,11 @@ local options = {
             desc = L["SHOW_COORDINATES_DESCRIPTION"],
             type = "toggle",
         },
+        allowSetCoordinates = {
+            name = "Allow custom coordinates",
+            desc = "Allows frames to be positioned using screen coordinates entered into text fields",
+            type = "toggle",
+        },
         playerFrame = {
             name = HUD_EDIT_MODE_PLAYER_FRAME_LABEL,
             desc = string.format(L["TOGGLE_ADDITIONAL_OPTIONS_SUPPORT_STRING"], HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
@@ -405,6 +415,16 @@ local options = {
             name = HUD_EDIT_MODE_TIMER_BARS_LABEL,
             desc = string.format(L["TOGGLE_ADDITIONAL_OPTIONS_SUPPORT_STRING"], HUD_EDIT_MODE_TIMER_BARS_LABEL),
             type = "toggle",
+        },
+        raidSizeLayoutSwitching = {
+            name = "Layout Switching",
+            type = "group",
+            args = addon.GetLayoutChangeOptions(),
+        },
+        vigorBar = {
+            name = "Vigor Bar",
+            type = "toggle",
+            desc = "Add the pre-11.2.7 Dragonriding Vigor bar"
         },
     },
 }

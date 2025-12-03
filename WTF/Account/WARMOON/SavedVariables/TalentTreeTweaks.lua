@@ -1,2 +1,0 @@
-
-TalentTreeTweaksDB = nil

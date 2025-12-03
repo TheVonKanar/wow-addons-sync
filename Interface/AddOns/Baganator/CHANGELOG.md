@@ -1,7 +1,6 @@
 # Baganator
 
-## [766](https://github.com/TheMouseNest/Baganator/tree/766) (2025-10-21)
-[Full Changelog](https://github.com/TheMouseNest/Baganator/compare/765...766) 
+## [771](https://github.com/TheMouseNest/Baganator/tree/771) (2025-12-02)
+[Full Changelog](https://github.com/TheMouseNest/Baganator/compare/770...771) 
 
-- Vanilla: Update toc for 1.15.8  
-- Tag exported json with "Baganator"  
+- Update toc for 11.2.7  

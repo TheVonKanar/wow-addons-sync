@@ -1,0 +1,2450 @@
+---@class addonTableBaganator
+local addonTable = select(2, ...)
+local Locales = {
+  enUS = {},
+  frFR = {},
+  deDE = {},
+  ruRU = {},
+  ptBR = {},
+  esES = {},
+  esMX = {},
+  zhTW = {},
+  zhCN = {},
+  koKR = {},
+  itIT = {},
+}
+
+PLATYNATOR_LOCALES = Locales
+
+local L = Locales.enUS
+
+L["PLATYNATOR"] = "Platynator"
+L["DESIGNER"] = "Designer"
+L["BEHAVIOUR"] = "Behaviour"
+L["GENERAL"] = "General"
+L["FONT"] = "Font"
+L["SHOW_OUTLINE"] = "Show outline"
+L["SHOW_SHADOW"] = "Show shadow"
+L["STYLE"] = "Style"
+L["CUSTOMISE_PLATYNATOR"] = "Customise Platynator"
+L["CTRL_C_TO_COPY"] = "Ctrl+C to copy"
+L["JOIN_THE_DISCORD"] = "Join the Discord"
+L["DISCORD_DESCRIPTION"] = "Updates, feature suggestions and support"
+L["BY_PLUSMOUSE"] = "by plusmouse"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Development takes a huge amount of time|r"
+L["DONATE"] = "Donate"
+L["LINK"] = "Link"
+L["VERSION_COLON_X"] = "Version: %s"
+L["TO_OPEN_OPTIONS_X"] = "Access options with /platy"
+L["OPEN_OPTIONS"] = "Open Options"
+L["GLOBAL_SCALE"] = "Global scale"
+L["SCALE"] = "Scale"
+L["FILLED"] = "Filled"
+L["EMPTY"] = "Empty"
+L["BORDER_COLOR"] = "Border color"
+L["ABSOLUTE_VALUE"] = "Absolute value"
+L["PERCENTAGE_VALUE"] = "Percentage value"
+L["NO_VALUE_UPPER"] = "NO VALUE"
+L["ARCANE_FLURRY"] = "Arcane Flurry"
+L["NORMAL_CAST_COLOR"] = "Normal cast color"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Uninterruptable cast color"
+L["INTERRUPTED_CAST_COLOR"] = "Interrupted cast color"
+L["INTERRUPTED"] = "Interrupted"
+L["WIDTH_RESTRICTION"] = "Width restriction"
+L["CENTER"] = "Center"
+L["LEFT"] = "Left"
+L["RIGHT"] = "Right"
+L["ALIGNMENT"] = "Alignment"
+L["TEXTURES"] = "Textures"
+L["COLORS"] = "Colors"
+L["SIZE_AND_POSITION"] = "Size and position"
+L["SAFE"] = "Safe"
+L["TRANSITION"] = "Transition"
+L["WARNING"] = "Warning"
+L["OFFTANK"] = "Off-tank"
+L["FRIENDLY"] = "Friendly"
+L["NEUTRAL"] = "Neutral"
+L["HOSTILE"] = "Hostile"
+L["UNFRIENDLY"] = "Unfriendly"
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+L["MULTIPLE_SELECTED"] = "Multiple Selected"
+L["FADE"] = "Fade"
+L["DIRECTION"] = "Direction"
+L["HEIGHT"] = "Height"
+L["CLICK_REGION_WIDTH"] = "Click region width"
+L["CLICK_REGION_HEIGHT"] = "Click region height"
+L["STACKING_REGION_WIDTH"] = "Stacking region width"
+L["STACKING_REGION_HEIGHT"] = "Stacking region height"
+L["ABSORB"] = "Absorb"
+L["ABSORB_COLOR"] = "Absorb color"
+L["HIGHLIGHT_BAR_EDGE"] = "Highlight bar edge"
+L["SHOW_COUNTDOWN"] = "Show countdown"
+L["FOCUSED"] = "Focused"
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+L["NORMAL"] = "Normal"
+L["MINION"] = "Minion"
+L["MINOR"] = "Minor"
+L["LAYER"] = "Layer"
+L["SQUARE"] = "Square"
+L["CLEAR_SELECTION"] = "Clear Selection"
+L["TEXT_SCALE"] = "Text scale"
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+L["MOVE"] = "Move"
+L["THREAT"] = "Threat"
+L["ELITE_TYPE"] = "Elite Type"
+L["BOSS"] = "Boss"
+L["MINIBOSS"] = "Miniboss"
+L["CASTER"] = "Caster"
+L["MELEE"] = "Melee"
+L["QUEST"] = "Quest"
+L["CLASS_COLORS"] = "Class Colors"
+L["REACTION"] = "Reaction"
+L["ADD_COLORS"] = "Add Colors"
+L["DIFFICULTY"] = "Difficulty"
+L["AUTOMATIC"] = "Automatic"
+
+L["FOREGROUND"] = "Foreground"
+L["VISUAL"] = "Visual"
+L["BACKGROUND"] = "Background"
+L["BACKGROUND_COLOR"] = "Background color"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Apply main color to background"
+L["BORDER"] = "Border"
+L["COLOR"] = "Color"
+L["CLASS_COLORED"] = "Class colored"
+
+L["ON_TARGET_OR_CASTING"] = "On target (or casting)"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "On non-target (and non-casting)"
+L["ENLARGE_NAMEPLATE"] = "Enlarge nameplate"
+L["DO_NOTHING"] = "Do nothing"
+L["SPECIAL_BRACKETS"] = "(Special)"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["NONE"] = "None"
+L["USE_NAMEPLATES_FOR"] = "Use nameplates for"
+L["PLAYERS"] = "Players"
+L["PLAYERS_AND_FRIENDS"] = "Players and friends"
+L["FRIENDLY_NPCS"] = "Friendly NPCs"
+L["ENEMY_NPCS"] = "Enemy NPCs"
+L["STACKING_NAMEPLATES"] = "Stacking nameplates"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Show friendly in instances"
+L["TAPPED"] = "Tapped"
+L["FOCUS"] = "Focus"
+
+L["ENTER_PROFILE_NAME"] = "Enter Profile Name:"
+L["PROFILES"] = "Profiles"
+L["NEW_PROFILE_CLONE"] = "New Profile (clone current)"
+L["NEW_PROFILE_BLANK"] = "New Profile (blank)"
+L["CONFIRM_DELETE_PROFILE_X"] = "Are you sure you want to delete profile \"%s\"?"
+L["CONFIRM_DELETE_STYLE_X"] = "Are you sure you want to delete style \"%s\"?"
+L["IMPORT_DEFAULT_STYLE"] = "Import Default Style"
+
+L["EXPORT"] = "Export"
+L["IMPORT"] = "Import"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Paste your import string here"
+
+L["SQUIRREL"] = "Squirrel"
+L["RABBIT"] = "Rabbit"
+L["BEAVER"] = "Beaver"
+L["HARE"] = "Hare"
+L["HEDGEHOG"] = "Hedgehog"
+L["TYPE_COLORS"] = "Type Colors"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Classic"
+L["NAME_ONLY"] = "Name Only"
+L["CUSTOM"] = "Custom"
+L["SAVE_AS"] = "Save as"
+
+L["FRIENDLY_STYLE"] = "Friendly Style"
+L["ENEMY_STYLE"] = "Enemy Style"
+L["DEFAULT_BRACKETS"] = "(Default)"
+
+L["ADD_WIDGET"] = "Add Widget"
+L["DELETE_WIDGET"] = "Delete Widget"
+L["BARS"] = "Bars"
+L["HEALTH"] = "Health"
+L["CAST"] = "Cast"
+L["POWER"] = "Power"
+L["HIGHLIGHTS"] = "Highlights"
+L["TARGETED"] = "Targeted"
+L["MOUSEOVER"] = "Mouseover"
+L["AURAS"] = "Auras"
+L["BUFFS"] = "Buffs"
+L["DEBUFFS"] = "Debuffs"
+L["CROWD_CONTROL"] = "Crowd Control"
+L["TEXTS"] = "Texts"
+L["CREATURE_NAME"] = "Creature Name"
+L["HEALTH_VALUE"] = "Health Value"
+L["CAST_NAME"] = "Cast Name"
+L["GUILD"] = "Guild"
+L["LEVEL"] = "Level"
+L["ICONS"] = "Icons"
+L["TARGET"] = "Target"
+L["CAST_TARGET"] = "Cast Target"
+L["QUEST_OBJECTIVE"] = "Quest Objective"
+L["CANNOT_INTERRUPT"] = "Cannot Interrupt"
+L["CAST"] = "Cast"
+L["ELITE"] = "Elite"
+L["RARE"] = "Rare"
+L["PVP"] = "PvP"
+L["RAID_MARKER"] = "Raid Marker"
+L["IMPOSSIBLE"] = "Impossible"
+L["VERY_DIFFICULT"] = "Very difficult"
+L["DIFFICULT"] = "Difficult"
+L["STANDARD"] = "Standard"
+L["TRIVIAL"] = "Trivial"
+L["DIFFICULTY_COLORED"] = "Difficulty colored"
+L["TRUNCATE"] = "Truncate"
+
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "This will overwrite style \"Custom\". Continue?"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Enter the new style name"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "That style name already exists"
+
+L["SLASH_RESET"] = "reset"
+L["SLASH_RESET_HELP"] = "Reset all Platynator settings, then reload."
+L["SLASH_HELP"] = "Open the Platynator settings."
+L["SLASH_UNKNOWN_COMMAND"] = "Unknown command '%s'"
+
+local L = Locales.frFR
+L["ABSOLUTE_VALUE"] = "Valeur absolue"
+L["ABSORB"] = "Absorption"
+L["ABSORB_COLOR"] = "Couleur d'absorption"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+L["ADD_WIDGET"] = "Ajouter un widget"
+L["ALIGNMENT"] = "Alignement"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Appliquer la couleur principale pour l’arrière-plan"
+L["ARCANE_FLURRY"] = "Déluge des Arcanes"
+L["AURAS"] = "Auras"
+L["BACKGROUND"] = "Arrière-plan"
+L["BACKGROUND_TRANSPARENCY"] = "Transparence de l’arrière-plan"
+L["BARS"] = "Barres"
+L["BEAVER"] = "Castor"
+L["BEHAVIOUR"] = "Comportement"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Classique"
+L["BORDER"] = "Bordure"
+L["BORDER_COLOR"] = "Couleur de la bordure"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+L["BUFFS"] = "Améliorations"
+L["BY_PLUSMOUSE"] = "par plusmouse"
+L["CANNOT_INTERRUPT"] = "Ne peut pas être interrompu"
+L["CAST"] = "Incantation"
+L["CAST_NAME"] = "Nom de l’incantation"
+L["CAST_TARGET"] = "Cible de l'incantation"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+L["CENTER"] = "Centre"
+L["CLASS_COLORED"] = "Couleur de classe"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+--[[Translation missing --]]
+L["CLICK_REGION_HEIGHT"] = "Click region height"
+--[[Translation missing --]]
+L["CLICK_REGION_WIDTH"] = "Click region width"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+L["COLOR"] = "Couleur"
+L["COLORS"] = "Couleurs"
+L["CONFIRM_DELETE_PROFILE_X"] = "Voulez-vous vraiment supprimer le profil « %s » ?"
+L["CONFIRM_DELETE_STYLE_X"] = "Voulez-vous vraiment supprimer le style « %s » ?"
+L["CREATURE_NAME"] = "Nom de créature"
+L["CROWD_CONTROL"] = "Contrôles de foule"
+L["CTRL_C_TO_COPY"] = "Ctrl+C pour copier"
+L["CUSTOM"] = "Personnalisé"
+L["CUSTOMISE_PLATYNATOR"] = "Personnaliser Platynator"
+L["DEBUFFS"] = "Affaiblissements"
+L["DEFAULT_BRACKETS"] = "(Défaut)"
+L["DELETE_WIDGET"] = "Supprimer le widget"
+L["DESIGNER"] = "Concepteur"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Le développement prend énormément de temps.|r"
+L["DIFFICULT"] = "Difficile"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+L["DIFFICULTY_COLORED"] = "Coloré selon la difficulté"
+L["DIRECTION"] = "Direction"
+L["DISCORD_DESCRIPTION"] = "Mises à jour, suggestions et assistance"
+L["DO_NOTHING"] = "Ne rien faire"
+L["DONATE"] = "Faire un don"
+L["ELITE"] = "Élite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+L["EMPTY"] = "Vide"
+L["ENEMY_NPCS"] = "PNJ ennemis"
+L["ENEMY_STYLE"] = "Style des cibles ennemies"
+L["ENLARGE_NAMEPLATE"] = "Agrandir la plaque de nom"
+L["ENTER_PROFILE_NAME"] = "Entrez le nom du profil :"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Entrez le nom du nouveau style"
+L["EXPORT"] = "Exporter"
+L["FADE"] = "S’effacer"
+L["FILLED"] = "Rempli"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+--[[Translation missing --]]
+L["FOCUSED"] = "Focused"
+L["FONT"] = "Police"
+L["FOREGROUND"] = "Premier plan"
+L["FRIENDLY"] = "Amical"
+L["FRIENDLY_NPCS"] = "PNJ alliés"
+L["FRIENDLY_STYLE"] = "Style des cibles amicales"
+L["GENERAL"] = "Général"
+L["GLOBAL_SCALE"] = "Échelle globale"
+L["GUILD"] = "Guilde"
+L["HARE"] = "Lièvre"
+L["HEALTH"] = "Vie"
+L["HEALTH_VALUE"] = "Valeur de vie"
+L["HEDGEHOG"] = "Hérisson"
+L["HEIGHT"] = "Hauteur"
+L["HIGHLIGHT_BAR_EDGE"] = "Surbrillance du bord de barre"
+L["HIGHLIGHTS"] = "Surbrillances"
+L["HOSTILE"] = "Hostile"
+L["ICONS"] = "Icônes"
+L["IMPORT"] = "Importer"
+L["IMPORT_DEFAULT_STYLE"] = "Importer des styles par défaut"
+L["IMPOSSIBLE"] = "Impossible"
+L["INTERRUPTED"] = "Interrompu"
+L["INTERRUPTED_CAST_COLOR"] = "Couleur d'incantation interrompue"
+L["JOIN_THE_DISCORD"] = "Rejoignez le Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+L["LEFT"] = "Gauche"
+L["LEVEL"] = "Niveau"
+L["LINK"] = "Lien"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+L["MOUSEOVER"] = "Survol de souris"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+L["MULTIPLE_SELECTED"] = "Sélection multiple"
+L["NAME_ONLY"] = "Nom uniquement"
+L["NEUTRAL"] = "Neutre"
+L["NEW_PROFILE_BLANK"] = "Nouveau profil (vide)"
+L["NEW_PROFILE_CLONE"] = "Nouveau profil (copier l’actuel)"
+L["NO_VALUE_UPPER"] = "AUCUNE VALEUR"
+L["NONE"] = "Aucun"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+L["NORMAL_CAST_COLOR"] = "Couleur d’incantation normale"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "En non ciblage (ou non incantation)"
+L["ON_TARGET_OR_CASTING"] = "En ciblage (ou incantation)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+L["OPEN_OPTIONS"] = "Ouvrir les options"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Collez votre chaîne d’importation ici"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "Valeur en pourcentage"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "Joueurs"
+L["PLAYERS_AND_FRIENDS"] = "Joueurs et alliés"
+L["POWER"] = "Puissance"
+L["PROFILES"] = "Profils"
+L["PVP"] = "JcJ"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+L["QUEST_OBJECTIVE"] = "Objectif de quête"
+L["RABBIT"] = "Lapin"
+L["RAID_MARKER"] = "Marqueur de raid"
+L["RARE"] = "Rare"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+L["RIGHT"] = "Droite"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+L["SAVE_AS"] = "Sauvegarder en tant que"
+L["SCALE"] = "Échelle"
+--[[Translation missing --]]
+L["SHOW_COUNTDOWN"] = "Show countdown"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Montrer les barres alliées en instance"
+L["SHOW_OUTLINE"] = "Afficher le contour"
+L["SHOW_SHADOW"] = "Afficher l’ombre"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+L["SIZE_AND_POSITION"] = "Taille et position"
+L["SLASH_HELP"] = "Ouvrir les paramètres de Platynator"
+L["SLASH_RESET"] = "Réinitialiser"
+L["SLASH_RESET_HELP"] = "Réinitialiser tous les paramètres de Platynator, et recharger."
+L["SLASH_UNKNOWN_COMMAND"] = "Commande inconnue '%s'"
+L["SPECIAL_BRACKETS"] = "(Spécial)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+L["SQUIRREL"] = "Écureuil"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+L["STACKING_NAMEPLATES"] = "Empilement des barres d'info"
+--[[Translation missing --]]
+L["STACKING_REGION_HEIGHT"] = "Stacking region height"
+--[[Translation missing --]]
+L["STACKING_REGION_WIDTH"] = "Stacking region width"
+L["STANDARD"] = "Standard"
+L["STYLE"] = "Style"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+L["TARGET"] = "Cible"
+L["TARGETED"] = "Ciblé"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+L["TEXTS"] = "Textes"
+L["TEXTURES"] = "Textures"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "Ce nom de style existe déjà"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "Vous allez écraser le style \"Personnalisé\". Continuer ?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+L["TO_OPEN_OPTIONS_X"] = "Accédez aux options avec /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+L["TRIVIAL"] = "Trivial"
+L["TRUNCATE"] = "Tronquer"
+L["UNFRIENDLY"] = "Inamical"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Couleur d’incantation ininterrompable"
+L["USE_NAMEPLATES_FOR"] = "Utiliser les barres d'info pour"
+L["VERSION_COLON_X"] = "Version : %s"
+L["VERY_DIFFICULT"] = "Très difficile"
+L["VISUAL"] = "Visuel"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+L["WIDTH_RESTRICTION"] = "Restriction de largeur"
+
+
+local L = Locales.deDE
+--[[Translation missing --]]
+L["ABSOLUTE_VALUE"] = "Absolute value"
+--[[Translation missing --]]
+L["ABSORB"] = "Absorb"
+--[[Translation missing --]]
+L["ABSORB_COLOR"] = "Absorb color"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+--[[Translation missing --]]
+L["ADD_WIDGET"] = "Add Widget"
+--[[Translation missing --]]
+L["ALIGNMENT"] = "Alignment"
+--[[Translation missing --]]
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Apply main color to background"
+--[[Translation missing --]]
+L["ARCANE_FLURRY"] = "Arcane Flurry"
+--[[Translation missing --]]
+L["AURAS"] = "Auras"
+--[[Translation missing --]]
+L["BACKGROUND"] = "Background"
+--[[Translation missing --]]
+L["BACKGROUND_TRANSPARENCY"] = "Background transparency"
+--[[Translation missing --]]
+L["BARS"] = "Bars"
+--[[Translation missing --]]
+L["BEAVER"] = "Beaver"
+--[[Translation missing --]]
+L["BEHAVIOUR"] = "Behaviour"
+--[[Translation missing --]]
+L["BLIZZARD"] = "Blizzard"
+--[[Translation missing --]]
+L["BLIZZARD_CLASSIC"] = "Blizzard Classic"
+--[[Translation missing --]]
+L["BORDER"] = "Border"
+--[[Translation missing --]]
+L["BORDER_COLOR"] = "Border color"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+--[[Translation missing --]]
+L["BUFFS"] = "Buffs"
+--[[Translation missing --]]
+L["BY_PLUSMOUSE"] = "by plusmouse"
+--[[Translation missing --]]
+L["CANNOT_INTERRUPT"] = "Cannot Interrupt"
+--[[Translation missing --]]
+L["CAST"] = "Cast"
+--[[Translation missing --]]
+L["CAST_NAME"] = "Cast Name"
+--[[Translation missing --]]
+L["CAST_TARGET"] = "Cast Target"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+--[[Translation missing --]]
+L["CENTER"] = "Center"
+--[[Translation missing --]]
+L["CLASS_COLORED"] = "Class colored"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+--[[Translation missing --]]
+L["CLICK_REGION_HEIGHT"] = "Click region height"
+--[[Translation missing --]]
+L["CLICK_REGION_WIDTH"] = "Click region width"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+--[[Translation missing --]]
+L["COLOR"] = "Color"
+--[[Translation missing --]]
+L["COLORS"] = "Colors"
+--[[Translation missing --]]
+L["CONFIRM_DELETE_PROFILE_X"] = "Are you sure you want to delete profile \"%s\"?"
+--[[Translation missing --]]
+L["CONFIRM_DELETE_STYLE_X"] = "Are you sure you want to delete style \"%s\"?"
+--[[Translation missing --]]
+L["CREATURE_NAME"] = "Creature Name"
+--[[Translation missing --]]
+L["CROWD_CONTROL"] = "Crowd Control"
+--[[Translation missing --]]
+L["CTRL_C_TO_COPY"] = "Ctrl+C to copy"
+--[[Translation missing --]]
+L["CUSTOM"] = "Custom"
+--[[Translation missing --]]
+L["CUSTOMISE_PLATYNATOR"] = "Customise Platynator"
+--[[Translation missing --]]
+L["DEBUFFS"] = "Debuffs"
+--[[Translation missing --]]
+L["DEFAULT_BRACKETS"] = "(Default)"
+--[[Translation missing --]]
+L["DELETE_WIDGET"] = "Delete Widget"
+--[[Translation missing --]]
+L["DESIGNER"] = "Designer"
+--[[Translation missing --]]
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Development takes a huge amount of time|r"
+--[[Translation missing --]]
+L["DIFFICULT"] = "Difficult"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+--[[Translation missing --]]
+L["DIFFICULTY_COLORED"] = "Difficulty colored"
+--[[Translation missing --]]
+L["DIRECTION"] = "Direction"
+--[[Translation missing --]]
+L["DISCORD_DESCRIPTION"] = "Updates, feature suggestions and support"
+--[[Translation missing --]]
+L["DO_NOTHING"] = "Do nothing"
+--[[Translation missing --]]
+L["DONATE"] = "Donate"
+--[[Translation missing --]]
+L["ELITE"] = "Elite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+--[[Translation missing --]]
+L["EMPTY"] = "Empty"
+--[[Translation missing --]]
+L["ENEMY_NPCS"] = "Enemy NPCs"
+--[[Translation missing --]]
+L["ENEMY_STYLE"] = "Enemy Style"
+--[[Translation missing --]]
+L["ENLARGE_NAMEPLATE"] = "Enlarge nameplate"
+--[[Translation missing --]]
+L["ENTER_PROFILE_NAME"] = "Enter Profile Name:"
+--[[Translation missing --]]
+L["ENTER_THE_NEW_STYLE_NAME"] = "Enter the new style name"
+--[[Translation missing --]]
+L["EXPORT"] = "Export"
+--[[Translation missing --]]
+L["FADE"] = "Fade"
+--[[Translation missing --]]
+L["FILLED"] = "Filled"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+--[[Translation missing --]]
+L["FOCUSED"] = "Focused"
+--[[Translation missing --]]
+L["FONT"] = "Font"
+--[[Translation missing --]]
+L["FOREGROUND"] = "Foreground"
+--[[Translation missing --]]
+L["FRIENDLY"] = "Friendly"
+--[[Translation missing --]]
+L["FRIENDLY_NPCS"] = "Friendly NPCs"
+--[[Translation missing --]]
+L["FRIENDLY_STYLE"] = "Friendly Style"
+--[[Translation missing --]]
+L["GENERAL"] = "General"
+--[[Translation missing --]]
+L["GLOBAL_SCALE"] = "Global scale"
+--[[Translation missing --]]
+L["GUILD"] = "Guild"
+--[[Translation missing --]]
+L["HARE"] = "Hare"
+--[[Translation missing --]]
+L["HEALTH"] = "Health"
+--[[Translation missing --]]
+L["HEALTH_VALUE"] = "Health Value"
+--[[Translation missing --]]
+L["HEDGEHOG"] = "Hedgehog"
+--[[Translation missing --]]
+L["HEIGHT"] = "Height"
+--[[Translation missing --]]
+L["HIGHLIGHT_BAR_EDGE"] = "Highlight bar edge"
+--[[Translation missing --]]
+L["HIGHLIGHTS"] = "Highlights"
+--[[Translation missing --]]
+L["HOSTILE"] = "Hostile"
+--[[Translation missing --]]
+L["ICONS"] = "Icons"
+--[[Translation missing --]]
+L["IMPORT"] = "Import"
+--[[Translation missing --]]
+L["IMPORT_DEFAULT_STYLE"] = "Import Default Style"
+--[[Translation missing --]]
+L["IMPOSSIBLE"] = "Impossible"
+--[[Translation missing --]]
+L["INTERRUPTED"] = "Interrupted"
+--[[Translation missing --]]
+L["INTERRUPTED_CAST_COLOR"] = "Interrupted cast color"
+--[[Translation missing --]]
+L["JOIN_THE_DISCORD"] = "Join the Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+--[[Translation missing --]]
+L["LEFT"] = "Left"
+--[[Translation missing --]]
+L["LEVEL"] = "Level"
+--[[Translation missing --]]
+L["LINK"] = "Link"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+--[[Translation missing --]]
+L["MOUSEOVER"] = "Mouseover"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+--[[Translation missing --]]
+L["MULTIPLE_SELECTED"] = "Multiple Selected"
+--[[Translation missing --]]
+L["NAME_ONLY"] = "Name Only"
+--[[Translation missing --]]
+L["NEUTRAL"] = "Neutral"
+--[[Translation missing --]]
+L["NEW_PROFILE_BLANK"] = "New Profile (blank)"
+--[[Translation missing --]]
+L["NEW_PROFILE_CLONE"] = "New Profile (clone current)"
+--[[Translation missing --]]
+L["NO_VALUE_UPPER"] = "NO VALUE"
+--[[Translation missing --]]
+L["NONE"] = "None"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+--[[Translation missing --]]
+L["NORMAL_CAST_COLOR"] = "Normal cast color"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+--[[Translation missing --]]
+L["ON_NON_TARGET_AND_NON_CASTING"] = "On non-target (and non-casting)"
+--[[Translation missing --]]
+L["ON_TARGET_OR_CASTING"] = "On target (or casting)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+--[[Translation missing --]]
+L["OPEN_OPTIONS"] = "Open Options"
+--[[Translation missing --]]
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Paste your import string here"
+--[[Translation missing --]]
+L["PERCENT_BRACKETS"] = "(%d%%)"
+--[[Translation missing --]]
+L["PERCENTAGE_VALUE"] = "Percentage value"
+--[[Translation missing --]]
+L["PLATYNATOR"] = "Platynator"
+--[[Translation missing --]]
+L["PLAYERS"] = "Players"
+--[[Translation missing --]]
+L["PLAYERS_AND_FRIENDS"] = "Players and friends"
+--[[Translation missing --]]
+L["POWER"] = "Power"
+--[[Translation missing --]]
+L["PROFILES"] = "Profiles"
+--[[Translation missing --]]
+L["PVP"] = "PvP"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+--[[Translation missing --]]
+L["QUEST_OBJECTIVE"] = "Quest Objective"
+--[[Translation missing --]]
+L["RABBIT"] = "Rabbit"
+--[[Translation missing --]]
+L["RAID_MARKER"] = "Raid Marker"
+--[[Translation missing --]]
+L["RARE"] = "Rare"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+--[[Translation missing --]]
+L["RIGHT"] = "Right"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+--[[Translation missing --]]
+L["SAVE_AS"] = "Save as"
+--[[Translation missing --]]
+L["SCALE"] = "Scale"
+--[[Translation missing --]]
+L["SHOW_COUNTDOWN"] = "Show countdown"
+--[[Translation missing --]]
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Show friendly in instances"
+--[[Translation missing --]]
+L["SHOW_OUTLINE"] = "Show outline"
+--[[Translation missing --]]
+L["SHOW_SHADOW"] = "Show shadow"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+--[[Translation missing --]]
+L["SIZE_AND_POSITION"] = "Size and position"
+--[[Translation missing --]]
+L["SLASH_HELP"] = "Open the Platynator settings."
+--[[Translation missing --]]
+L["SLASH_RESET"] = "reset"
+--[[Translation missing --]]
+L["SLASH_RESET_HELP"] = "Reset all Platynator settings, then reload."
+--[[Translation missing --]]
+L["SLASH_UNKNOWN_COMMAND"] = "Unknown command '%s'"
+--[[Translation missing --]]
+L["SPECIAL_BRACKETS"] = "(Special)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+--[[Translation missing --]]
+L["SQUIRREL"] = "Squirrel"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+--[[Translation missing --]]
+L["STACKING_NAMEPLATES"] = "Stacking nameplates"
+--[[Translation missing --]]
+L["STACKING_REGION_HEIGHT"] = "Stacking region height"
+--[[Translation missing --]]
+L["STACKING_REGION_WIDTH"] = "Stacking region width"
+--[[Translation missing --]]
+L["STANDARD"] = "Standard"
+--[[Translation missing --]]
+L["STYLE"] = "Style"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+--[[Translation missing --]]
+L["TARGET"] = "Target"
+--[[Translation missing --]]
+L["TARGETED"] = "Targeted"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+--[[Translation missing --]]
+L["TEXTS"] = "Texts"
+--[[Translation missing --]]
+L["TEXTURES"] = "Textures"
+--[[Translation missing --]]
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "That style name already exists"
+--[[Translation missing --]]
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "This will overwrite style \"Custom\". Continue?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+--[[Translation missing --]]
+L["TO_OPEN_OPTIONS_X"] = "Access options with /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+--[[Translation missing --]]
+L["TRIVIAL"] = "Trivial"
+--[[Translation missing --]]
+L["TRUNCATE"] = "Truncate"
+--[[Translation missing --]]
+L["UNFRIENDLY"] = "Unfriendly"
+--[[Translation missing --]]
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Uninterruptable cast color"
+--[[Translation missing --]]
+L["USE_NAMEPLATES_FOR"] = "Use nameplates for"
+--[[Translation missing --]]
+L["VERSION_COLON_X"] = "Version: %s"
+--[[Translation missing --]]
+L["VERY_DIFFICULT"] = "Very difficult"
+--[[Translation missing --]]
+L["VISUAL"] = "Visual"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+--[[Translation missing --]]
+L["WIDTH_RESTRICTION"] = "Width restriction"
+
+
+local L = Locales.ruRU
+L["ABSOLUTE_VALUE"] = "Абсолютное значение"
+L["ABSORB"] = "Поглощение"
+L["ABSORB_COLOR"] = "Цвет поглощения"
+L["ADD_COLORS"] = "Добавить цвета"
+L["ADD_WIDGET"] = "Добавить виджет"
+L["ALIGNMENT"] = "Выравнивание"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Применить основной цвет к фону"
+L["ARCANE_FLURRY"] = "Чародейский шквал"
+L["AURAS"] = "Ауры"
+L["BACKGROUND"] = "Фон"
+L["BACKGROUND_TRANSPARENCY"] = "Прозрачность фона"
+L["BARS"] = "Панели"
+L["BEAVER"] = "Бобр"
+L["BEHAVIOUR"] = "Поведение"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Classic"
+L["BORDER"] = "Граница"
+L["BORDER_COLOR"] = "Цвет границы"
+L["BOSS"] = "Босс"
+L["BUFFS"] = "Баффы"
+L["BY_PLUSMOUSE"] = "от plusmouse"
+L["CANNOT_INTERRUPT"] = "Невозможно прервать"
+L["CAST"] = "Заклинание"
+L["CAST_NAME"] = "Название заклинания"
+L["CAST_TARGET"] = "Цель заклинания"
+L["CASTER"] = "Заклинатель"
+L["CENTER"] = "По центру"
+L["CLASS_COLORED"] = "Цвет класса"
+L["CLASS_COLORS"] = "Цвета класса"
+L["CLEAR_SELECTION"] = "Очистить выбор"
+L["CLICK_REGION_HEIGHT"] = "Высота области нажатия"
+L["CLICK_REGION_WIDTH"] = "Ширина области нажатия"
+L["CLOSER_TO_SCREEN_EDGES"] = "Ближе к краям экрана"
+L["COLOR"] = "Цвет"
+L["COLORS"] = "Цвета"
+L["CONFIRM_DELETE_PROFILE_X"] = "Вы уверены, что хотите удалить профиль \"%s\"?"
+L["CONFIRM_DELETE_STYLE_X"] = "Вы уверены, что хотите удалить стиль \"%s\"?"
+L["CREATURE_NAME"] = "Имя существа"
+L["CROWD_CONTROL"] = "Массовый контроль"
+L["CTRL_C_TO_COPY"] = "Ctrl+C для копирования"
+L["CUSTOM"] = "Пользовательский"
+L["CUSTOMISE_PLATYNATOR"] = "Настройка Platynator"
+L["DEBUFFS"] = "Дебаффы"
+L["DEFAULT_BRACKETS"] = "(По умолчанию)"
+L["DELETE_WIDGET"] = "Удалить виджет"
+L["DESIGNER"] = "Дизайн"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Разработка требует огромного количества времени|r"
+L["DIFFICULT"] = "Сложно"
+L["DIFFICULTY"] = "Сложность"
+L["DIFFICULTY_COLORED"] = "Окрашивание по сложности"
+L["DIRECTION"] = "Расположение"
+L["DISCORD_DESCRIPTION"] = "Обновления, предложения и поддержка"
+L["DO_NOTHING"] = "Ничего не делать"
+L["DONATE"] = "Пожертвовать"
+L["ELITE"] = "Элита"
+L["ELITE_TYPE"] = "Тип элиты"
+L["EMPTY"] = "Пустой"
+L["ENEMY_NPCS"] = "Враждебные NPC"
+L["ENEMY_STYLE"] = "Стиль враждебных"
+L["ENLARGE_NAMEPLATE"] = "Увеличение"
+L["ENTER_PROFILE_NAME"] = "Введите название профиля:"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Введите имя нового стиля"
+L["EXPORT"] = "Экспорт"
+L["FADE"] = "Затенение"
+L["FILLED"] = "Заполненный"
+L["FOCUS"] = "Фокус"
+L["FOCUSED"] = "В фокусе"
+L["FONT"] = "Шрифт"
+L["FOREGROUND"] = "Передний план"
+L["FRIENDLY"] = "Дружелюбие"
+L["FRIENDLY_NPCS"] = "Дружественные NPC"
+L["FRIENDLY_STYLE"] = "Стиль дружественных"
+L["GENERAL"] = "Общее"
+L["GLOBAL_SCALE"] = "Глобальный масштаб"
+L["GUILD"] = "Гильдия"
+L["HARE"] = "Заяц"
+L["HEALTH"] = "Здоровье"
+L["HEALTH_VALUE"] = "Значение здоровья"
+L["HEDGEHOG"] = "Ёж"
+L["HEIGHT"] = "Высота"
+L["HIGHLIGHT_BAR_EDGE"] = "Подсветка края панели"
+L["HIGHLIGHTS"] = "Подсветка"
+L["HOSTILE"] = "Враждебность"
+L["ICONS"] = "Значки"
+L["IMPORT"] = "Импорт"
+L["IMPORT_DEFAULT_STYLE"] = "Импорт стиля по умолчанию"
+L["IMPOSSIBLE"] = "Невозможно"
+L["INTERRUPTED"] = "Прервано"
+L["INTERRUPTED_CAST_COLOR"] = "Цвет прерванного заклинания"
+L["JOIN_THE_DISCORD"] = "Присоединяйтесь к Discord"
+L["LAYER"] = "Слой"
+L["LEFT"] = "Слева"
+L["LEVEL"] = "Уровень"
+L["LINK"] = "Ссылка"
+L["MELEE"] = "Ближний бой"
+L["MINIBOSS"] = "Минибосс"
+L["MINION"] = "Прислужник"
+L["MINOR"] = "Незначительный"
+L["MOUSEOVER"] = "Наведение курсора"
+L["MOVE"] = "Перемещать"
+L["MULTIPLE_SELECTED"] = "Несколько выбранных"
+L["NAME_ONLY"] = "Только имя"
+L["NEUTRAL"] = "Равнодушие"
+L["NEW_PROFILE_BLANK"] = "Новый профиль (пустой)"
+L["NEW_PROFILE_CLONE"] = "Новый профиль (клонировать текущий)"
+L["NO_VALUE_UPPER"] = "НЕ ИМЕЕТ ЗНАЧЕНИЯ"
+L["NONE"] = "Нет"
+L["NORMAL"] = "Нормальный"
+L["NORMAL_CAST_COLOR"] = "Цвет обычного заклинания"
+L["OFFTANK"] = "Офф-танк"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "Вне цели (или вне применения заклинания)"
+L["ON_TARGET_OR_CASTING"] = "В цели (или применение заклинания)"
+L["ONLY_APPLY_IN_COMBAT"] = "Применять только в бою"
+L["ONLY_APPLY_IN_INSTANCES"] = "Применять только в подземельях"
+L["OPEN_OPTIONS"] = "Открыть настройки"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Вставьте сюда строку импорта"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "Процентное значение"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "Игроки"
+L["PLAYERS_AND_FRIENDS"] = "Игроки и друзья"
+L["POWER"] = "Ресурс"
+L["PROFILES"] = "Профили"
+L["PVP"] = "PvP"
+L["QUEST"] = "Задание"
+L["QUEST_OBJECTIVE"] = "Цель задания"
+L["RABBIT"] = "Кролик"
+L["RAID_MARKER"] = "Рейдовая метка"
+L["RARE"] = "Редкий"
+L["REACTION"] = "Реакция"
+L["RIGHT"] = "Справа"
+L["SAFE"] = "Безопасный"
+L["SAVE_AS"] = "Сохранить как"
+L["SCALE"] = "Масштаб"
+L["SHOW_COUNTDOWN"] = "Показать обратный отсчет"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Показывать дружественных в подземельях"
+L["SHOW_OUTLINE"] = "Показать контур"
+L["SHOW_SHADOW"] = "Показать тень"
+L["SHOW_WHEN_WOW_DOES"] = "Аналогично настройкам WoW"
+L["SIZE_AND_POSITION"] = "Размер и позиция"
+L["SLASH_HELP"] = "Открыть настройки Platynator."
+L["SLASH_RESET"] = "сброс"
+L["SLASH_RESET_HELP"] = "Сброс всех настроек Platynator, затем перезагрузка UI."
+L["SLASH_UNKNOWN_COMMAND"] = "Неизвестная команда '%s'"
+L["SPECIAL_BRACKETS"] = "(Особое)"
+L["SQUARE"] = "Квадрат"
+L["SQUIRREL"] = "Белка"
+L["STACKING_APPLIES_TO"] = "Наложение применяется к"
+L["STACKING_NAMEPLATES"] = "Наложение панелей"
+L["STACKING_REGION_HEIGHT"] = "Высота области наложения"
+L["STACKING_REGION_WIDTH"] = "Ширина области наложения"
+L["STANDARD"] = "Нормально"
+L["STYLE"] = "Стиль"
+L["TAPPED"] = "Нажатый"
+L["TARGET"] = "Цель"
+L["TARGETED"] = "В цели"
+L["TEXT_SCALE"] = "Масштаб текста"
+L["TEXTS"] = "Тексты"
+L["TEXTURES"] = "Текстуры"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "Такое имя стиля уже существует"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "Это перезапишет стиль \"Пользовательский\". Продолжить?"
+L["THREAT"] = "Угроза"
+L["TO_OPEN_OPTIONS_X"] = "Доступ к настройкам с помощью /platy"
+L["TRANSITION"] = "Переход"
+L["TRIVIAL"] = "Легко"
+L["TRUNCATE"] = "Усечение"
+L["UNFRIENDLY"] = "Неприязнь"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Цвет непрерываемого заклинания"
+L["USE_NAMEPLATES_FOR"] = "Использовать панели для"
+L["VERSION_COLON_X"] = "Версия: %s"
+L["VERY_DIFFICULT"] = "Очень сложно"
+L["VISUAL"] = "Внешний вид"
+L["WARNING"] = "Предупреждение"
+L["WIDTH_RESTRICTION"] = "Ограничение по ширине"
+
+
+local L = Locales.ptBR
+L["ABSOLUTE_VALUE"] = "Valor absoluto"
+L["ABSORB"] = "Absorção"
+L["ABSORB_COLOR"] = "Cor de absorção"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+L["ADD_WIDGET"] = "Adicionar widget"
+L["ALIGNMENT"] = "Alinhamento"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Aplicar cor principal ao fundo"
+L["ARCANE_FLURRY"] = "Rajada Arcana"
+L["AURAS"] = "Auras"
+L["BACKGROUND"] = "Fundo"
+L["BACKGROUND_TRANSPARENCY"] = "Transparência de fundo"
+L["BARS"] = "Barras"
+L["BEAVER"] = "Castor"
+L["BEHAVIOUR"] = "Comportamento"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Clássico"
+L["BORDER"] = "Borda"
+L["BORDER_COLOR"] = "Cor da borda"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+L["BUFFS"] = "Bônus"
+L["BY_PLUSMOUSE"] = "por plusmouse"
+L["CANNOT_INTERRUPT"] = "Não pode ser interrompido"
+L["CAST"] = "Lançamento"
+L["CAST_NAME"] = "Nome do lançamento"
+L["CAST_TARGET"] = "Alvo de lançamento"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+L["CENTER"] = "Centro"
+L["CLASS_COLORED"] = "Colorido por classe"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+L["CLICK_REGION_HEIGHT"] = "Altura da região de clique"
+L["CLICK_REGION_WIDTH"] = "Largura da região de clique"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+L["COLOR"] = "Cor"
+L["COLORS"] = "Cores"
+L["CONFIRM_DELETE_PROFILE_X"] = "Tem certeza de que deseja excluir o perfil \"%s\"?"
+L["CONFIRM_DELETE_STYLE_X"] = "Tem certeza de que deseja excluir o estilo \"%s\"?"
+L["CREATURE_NAME"] = "Nome da criatura"
+L["CROWD_CONTROL"] = "Controle de grupo"
+L["CTRL_C_TO_COPY"] = "Ctrl+C para copiar"
+L["CUSTOM"] = "Personalizado"
+L["CUSTOMISE_PLATYNATOR"] = "Personalizar Platynator"
+L["DEBUFFS"] = "Penalidades"
+L["DEFAULT_BRACKETS"] = "(Padrão)"
+L["DELETE_WIDGET"] = "Excluir widget"
+L["DESIGNER"] = "Designer"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4O desenvolvimento leva muito tempo|r"
+L["DIFFICULT"] = "Difícil"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+L["DIFFICULTY_COLORED"] = "Colorido por dificuldade"
+L["DIRECTION"] = "Direção"
+L["DISCORD_DESCRIPTION"] = "Atualizações, sugestões e suporte"
+L["DO_NOTHING"] = "Não fazer nada"
+L["DONATE"] = "Doar"
+L["ELITE"] = "Elite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+L["EMPTY"] = "Vazio"
+L["ENEMY_NPCS"] = "NPC inimigo"
+L["ENEMY_STYLE"] = "Estilo para inimigos"
+L["ENLARGE_NAMEPLATE"] = "Aumentar a placa de nome"
+L["ENTER_PROFILE_NAME"] = "Digite o nome do perfil:"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Digite o novo nome do estilo"
+L["EXPORT"] = "Exportar"
+L["FADE"] = "Desvanecer"
+L["FILLED"] = "Preenchido"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+L["FOCUSED"] = "Focado"
+L["FONT"] = "Fonte"
+L["FOREGROUND"] = "Primeiro plano"
+L["FRIENDLY"] = "Respeitado"
+L["FRIENDLY_NPCS"] = "NPC aliados"
+L["FRIENDLY_STYLE"] = "Estilo para aliados"
+L["GENERAL"] = "Geral"
+L["GLOBAL_SCALE"] = "Escala global"
+L["GUILD"] = "Guilda"
+L["HARE"] = "Lebre"
+L["HEALTH"] = "Barra de vida"
+L["HEALTH_VALUE"] = "Valor da barra de vida"
+L["HEDGEHOG"] = "Ouriço"
+L["HEIGHT"] = "Altura"
+L["HIGHLIGHT_BAR_EDGE"] = "Borda da barra de destaque"
+L["HIGHLIGHTS"] = "Destaques"
+L["HOSTILE"] = "Hostil"
+L["ICONS"] = "Ícones"
+L["IMPORT"] = "Importar"
+L["IMPORT_DEFAULT_STYLE"] = "Importar estilo padrão"
+L["IMPOSSIBLE"] = "Impossível"
+L["INTERRUPTED"] = "Interrompido"
+L["INTERRUPTED_CAST_COLOR"] = "Cor de lançamento interrompido"
+L["JOIN_THE_DISCORD"] = "Junte-se ao Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+L["LEFT"] = "Esquerda"
+L["LEVEL"] = "Nível"
+L["LINK"] = "Link"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+L["MOUSEOVER"] = "Mouseover"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+L["MULTIPLE_SELECTED"] = "Múltiplos selecionados"
+L["NAME_ONLY"] = "Somente nome"
+L["NEUTRAL"] = "Tolerado"
+L["NEW_PROFILE_BLANK"] = "Novo perfil (vazio)"
+L["NEW_PROFILE_CLONE"] = "Novo perfil (clonar atual)"
+L["NO_VALUE_UPPER"] = "SEM VALOR"
+L["NONE"] = "Nenhum"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+L["NORMAL_CAST_COLOR"] = "Cor de lançamento normal"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "Em alvo nenhum (e sem lançar)"
+L["ON_TARGET_OR_CASTING"] = "Em alvo (ou lançando)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+L["OPEN_OPTIONS"] = "Abrir opções"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Cole sua cadeia de importação aqui"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "Valor percentual"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "Jogadores"
+L["PLAYERS_AND_FRIENDS"] = "Jogadores e amigos"
+L["POWER"] = "Poder"
+L["PROFILES"] = "Perfis"
+L["PVP"] = "JxJ"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+L["QUEST_OBJECTIVE"] = "Objetivo da missão"
+L["RABBIT"] = "Coelho"
+L["RAID_MARKER"] = "Marcador de raide"
+L["RARE"] = "Raro"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+L["RIGHT"] = "Direita"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+L["SAVE_AS"] = "Salvar como"
+L["SCALE"] = "Escala"
+L["SHOW_COUNTDOWN"] = "Mostrar contagem regressiva"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Mostrar aliados em instâncias"
+L["SHOW_OUTLINE"] = "Mostrar contorno"
+L["SHOW_SHADOW"] = "Mostrar sombra"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+L["SIZE_AND_POSITION"] = "Tamanho e posição"
+L["SLASH_HELP"] = "Abra as configurações do Platynator"
+L["SLASH_RESET"] = "redefinir"
+L["SLASH_RESET_HELP"] = "Redefina todas as configurações do Platynator e recarregue"
+L["SLASH_UNKNOWN_COMMAND"] = "Comando desconhecido '%s'"
+L["SPECIAL_BRACKETS"] = "(Especial)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+L["SQUIRREL"] = "Esquilo"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+L["STACKING_NAMEPLATES"] = "Empilhamento de placas de nome"
+L["STACKING_REGION_HEIGHT"] = "Altura da região de empilhamento"
+L["STACKING_REGION_WIDTH"] = "Largura da região de empilhamento"
+L["STANDARD"] = "Normal"
+L["STYLE"] = "Estilo"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+L["TARGET"] = "Alvo"
+L["TARGETED"] = "Alvejados"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+L["TEXTS"] = "Textos"
+L["TEXTURES"] = "Texturas"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "Esse nome de estilo já existe"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "Isso irá sobrescrever o estilo \"Personalizado\". Continuar?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+L["TO_OPEN_OPTIONS_X"] = "Acesse as opções com /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+L["TRIVIAL"] = "Trivial"
+L["TRUNCATE"] = "Truncar"
+L["UNFRIENDLY"] = "Ignorado"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Cor de lançamento ininterrupto"
+L["USE_NAMEPLATES_FOR"] = "Usar placas de nome para"
+L["VERSION_COLON_X"] = "Versão: %s"
+L["VERY_DIFFICULT"] = "Muito difícil"
+L["VISUAL"] = "Visual"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+L["WIDTH_RESTRICTION"] = "Restrição de largura"
+
+
+local L = Locales.esES
+L["ABSOLUTE_VALUE"] = "Valor absoluto"
+L["ABSORB"] = "Absorción"
+L["ABSORB_COLOR"] = "Color de absorción"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+L["ADD_WIDGET"] = "Agregar widget"
+L["ALIGNMENT"] = "Alineación"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Aplicar color principal al fondo"
+L["ARCANE_FLURRY"] = "Aluvión Arcano"
+L["AURAS"] = "Auras"
+L["BACKGROUND"] = "Fondo"
+L["BACKGROUND_TRANSPARENCY"] = "Transparencia de fondo"
+L["BARS"] = "Barras"
+L["BEAVER"] = "Castor"
+L["BEHAVIOUR"] = "Comportamiento"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Clásico"
+L["BORDER"] = "Borde"
+L["BORDER_COLOR"] = "Color del borde"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+L["BUFFS"] = "Beneficios"
+L["BY_PLUSMOUSE"] = "por plusmouse"
+L["CANNOT_INTERRUPT"] = "No se puede interrumpir"
+L["CAST"] = "Lanzamiento"
+L["CAST_NAME"] = "Nombre de lanzamiento"
+L["CAST_TARGET"] = "Objetivo de lanzamiento"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+L["CENTER"] = "Centro"
+L["CLASS_COLORED"] = "Coloreado por clase"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+L["CLICK_REGION_HEIGHT"] = "Altura de la región de clic"
+L["CLICK_REGION_WIDTH"] = "Anchura de la región de clic"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+L["COLOR"] = "Color"
+L["COLORS"] = "Colores"
+L["CONFIRM_DELETE_PROFILE_X"] = "¿Seguro que quieres eliminar el perfil \"%s\"?"
+L["CONFIRM_DELETE_STYLE_X"] = "¿Estás seguro de que quieres eliminar el estilo \"%s\"?"
+L["CREATURE_NAME"] = "Nombre de criatura"
+L["CROWD_CONTROL"] = "Control de masas"
+L["CTRL_C_TO_COPY"] = "Ctrl+C para copiar"
+L["CUSTOM"] = "Personalizado"
+L["CUSTOMISE_PLATYNATOR"] = "Personalizar Platynator"
+L["DEBUFFS"] = "Perjuicios"
+L["DEFAULT_BRACKETS"] = "(Predeterminado)"
+L["DELETE_WIDGET"] = "Eliminar widget"
+L["DESIGNER"] = "Diseñador"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4El desarrollo lleva mucho tiempo|r"
+L["DIFFICULT"] = "Difícil"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+L["DIFFICULTY_COLORED"] = "Coloreado por dificultad"
+L["DIRECTION"] = "Dirección"
+L["DISCORD_DESCRIPTION"] = "Actualizaciones, sugerencias y soporte"
+L["DO_NOTHING"] = "No hacer nada"
+L["DONATE"] = "Donar"
+L["ELITE"] = "Élite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+L["EMPTY"] = "Vacío"
+L["ENEMY_NPCS"] = "PNJ enemigos"
+L["ENEMY_STYLE"] = "Estilo para enemigos"
+L["ENLARGE_NAMEPLATE"] = "Ampliar placa de nombre"
+L["ENTER_PROFILE_NAME"] = "Introduce el nombre del perfil:"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Introduce el nuevo nombre del estilo"
+L["EXPORT"] = "Exportar"
+L["FADE"] = "Desvanecer"
+L["FILLED"] = "Relleno"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+L["FOCUSED"] = "Enfocado"
+L["FONT"] = "Fuente"
+L["FOREGROUND"] = "Primer plano"
+L["FRIENDLY"] = "Amistoso"
+L["FRIENDLY_NPCS"] = "PNJ amistosos"
+L["FRIENDLY_STYLE"] = "Estilo para amistosos"
+L["GENERAL"] = "General"
+L["GLOBAL_SCALE"] = "Escala global"
+L["GUILD"] = "Hermandad"
+L["HARE"] = "Liebre"
+L["HEALTH"] = "Salud"
+L["HEALTH_VALUE"] = "Valor de salud"
+L["HEDGEHOG"] = "Erizo"
+L["HEIGHT"] = "Altura"
+L["HIGHLIGHT_BAR_EDGE"] = "Borde de la barra de resalte"
+L["HIGHLIGHTS"] = "Resaltados"
+L["HOSTILE"] = "Hostil"
+L["ICONS"] = "Iconos"
+L["IMPORT"] = "Importar"
+L["IMPORT_DEFAULT_STYLE"] = "Importar estilo predeterminado"
+L["IMPOSSIBLE"] = "Imposible"
+L["INTERRUPTED"] = "Interrumpido"
+L["INTERRUPTED_CAST_COLOR"] = "Color de lanzamiento interrumpido"
+L["JOIN_THE_DISCORD"] = "Únete al Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+L["LEFT"] = "Izquierda"
+L["LEVEL"] = "Nivel"
+L["LINK"] = "Enlace"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+L["MOUSEOVER"] = "Pasar el ratón"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+L["MULTIPLE_SELECTED"] = "Varias seleccionadas"
+L["NAME_ONLY"] = "Solo nombre"
+L["NEUTRAL"] = "Neutral"
+L["NEW_PROFILE_BLANK"] = "Nuevo perfil (vacío)"
+L["NEW_PROFILE_CLONE"] = "Nuevo perfil (clonar actual)"
+L["NO_VALUE_UPPER"] = "SIN VALOR"
+L["NONE"] = "Ninguno"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+L["NORMAL_CAST_COLOR"] = "Color de lanzamiento normal"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "Sin objetivo (y sin lanzar)"
+L["ON_TARGET_OR_CASTING"] = "Objetivo (o lanzando)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+L["OPEN_OPTIONS"] = "Abrir opciones"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Pega tu cadena de importación aquí"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "Valor porcentual"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "Jugadores"
+L["PLAYERS_AND_FRIENDS"] = "Jugadores y amigos"
+L["POWER"] = "Poder"
+L["PROFILES"] = "Perfiles"
+L["PVP"] = "JcJ"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+L["QUEST_OBJECTIVE"] = "Objetivo de misión"
+L["RABBIT"] = "Conejo"
+L["RAID_MARKER"] = "Marcador de banda"
+L["RARE"] = "Raro"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+L["RIGHT"] = "Derecha"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+L["SAVE_AS"] = "Guardar como"
+L["SCALE"] = "Escala"
+L["SHOW_COUNTDOWN"] = "Mostrar cuenta atrás"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Mostrar amistosos en estancias"
+L["SHOW_OUTLINE"] = "Mostrar contorno"
+L["SHOW_SHADOW"] = "Mostrar sombra"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+L["SIZE_AND_POSITION"] = "Tamaño y posición"
+L["SLASH_HELP"] = "Abre la configuración de Platynator."
+L["SLASH_RESET"] = "restablecer"
+L["SLASH_RESET_HELP"] = "Restablece toda la configuración de Platynator y luego recargar"
+L["SLASH_UNKNOWN_COMMAND"] = "Comando desconocido '%s'"
+L["SPECIAL_BRACKETS"] = "(Especial)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+L["SQUIRREL"] = "Ardilla"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+L["STACKING_NAMEPLATES"] = "Apilamiento de placas de nombre"
+L["STACKING_REGION_HEIGHT"] = "Altura de la región de apilamiento"
+L["STACKING_REGION_WIDTH"] = "Anchura de la región de apilamiento"
+L["STANDARD"] = "Normal"
+L["STYLE"] = "Estilo"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+L["TARGET"] = "Objetivo"
+L["TARGETED"] = "Objetivado"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+L["TEXTS"] = "Textos"
+L["TEXTURES"] = "Texturas"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "Ese nombre de estilo ya existe"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "Esto sobrescribirá el estilo \"Personalizado\". ¿Continuar?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+L["TO_OPEN_OPTIONS_X"] = "Accede a las opciones con /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+L["TRIVIAL"] = "Trivial"
+L["TRUNCATE"] = "Truncar"
+L["UNFRIENDLY"] = "Adverso"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Color de lanzamiento ininterrumpible"
+L["USE_NAMEPLATES_FOR"] = "Usar placas de nombre para"
+L["VERSION_COLON_X"] = "Versión: %s"
+L["VERY_DIFFICULT"] = "Muy difícil"
+L["VISUAL"] = "Visual"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+L["WIDTH_RESTRICTION"] = "Restricción de ancho"
+
+
+local L = Locales.esMX
+L["ABSOLUTE_VALUE"] = "Valor absoluto"
+L["ABSORB"] = "Absorción"
+L["ABSORB_COLOR"] = "Color de absorción"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+L["ADD_WIDGET"] = "Agregar widget"
+L["ALIGNMENT"] = "Alineación"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Aplicar color principal al fondo"
+L["ARCANE_FLURRY"] = "Aluvión Arcano"
+L["AURAS"] = "Auras"
+L["BACKGROUND"] = "Fondo"
+L["BACKGROUND_TRANSPARENCY"] = "Transparencia de fondo"
+L["BARS"] = "Barras"
+L["BEAVER"] = "Castor"
+L["BEHAVIOUR"] = "Comportamiento"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_CLASSIC"] = "Blizzard Clásico"
+L["BORDER"] = "Borde"
+L["BORDER_COLOR"] = "Color del borde"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+L["BUFFS"] = "Beneficios"
+L["BY_PLUSMOUSE"] = "por plusmouse"
+L["CANNOT_INTERRUPT"] = "No se puede interrumpir"
+L["CAST"] = "Lanzamiento"
+L["CAST_NAME"] = "Nombre de lanzamiento"
+L["CAST_TARGET"] = "Objetivo de lanzamiento"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+L["CENTER"] = "Centro"
+L["CLASS_COLORED"] = "Coloreado por clase"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+L["CLICK_REGION_HEIGHT"] = "Altura de la región de clic"
+L["CLICK_REGION_WIDTH"] = "Anchura de la región de clic"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+L["COLOR"] = "Color"
+L["COLORS"] = "Colores"
+L["CONFIRM_DELETE_PROFILE_X"] = "¿Seguro que quieres eliminar el perfil \"%s\"?"
+L["CONFIRM_DELETE_STYLE_X"] = "¿Estás seguro de que quieres eliminar el estilo \"%s\"?"
+L["CREATURE_NAME"] = "Nombre de criatura"
+L["CROWD_CONTROL"] = "Control de masas"
+L["CTRL_C_TO_COPY"] = "Ctrl+C para copiar"
+L["CUSTOM"] = "Personalizado"
+L["CUSTOMISE_PLATYNATOR"] = "Personalizar Platynator"
+L["DEBUFFS"] = "Perjuicios"
+L["DEFAULT_BRACKETS"] = "(Predeterminado)"
+L["DELETE_WIDGET"] = "Eliminar widget"
+L["DESIGNER"] = "Diseñador"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4El desarrollo lleva mucho tiempo|r"
+L["DIFFICULT"] = "Difícil"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+L["DIFFICULTY_COLORED"] = "Coloreado por dificultad"
+L["DIRECTION"] = "Dirección"
+L["DISCORD_DESCRIPTION"] = "Actualizaciones, sugerencias y soporte"
+L["DO_NOTHING"] = "No hacer nada"
+L["DONATE"] = "Donar"
+L["ELITE"] = "Élite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+L["EMPTY"] = "Vacío"
+L["ENEMY_NPCS"] = "PNJ enemigos"
+L["ENEMY_STYLE"] = "Estilo para enemigos"
+L["ENLARGE_NAMEPLATE"] = "Ampliar placa de nombre"
+L["ENTER_PROFILE_NAME"] = "Introduce el nombre del perfil:"
+L["ENTER_THE_NEW_STYLE_NAME"] = "Introduce el nuevo nombre del estilo"
+L["EXPORT"] = "Exportar"
+L["FADE"] = "Desvanecer"
+L["FILLED"] = "Relleno"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+L["FOCUSED"] = "Enfocado"
+L["FONT"] = "Fuente"
+L["FOREGROUND"] = "Primer plano"
+L["FRIENDLY"] = "Amistoso"
+L["FRIENDLY_NPCS"] = "PNJ amistosos"
+L["FRIENDLY_STYLE"] = "Estilo para amistosos"
+L["GENERAL"] = "General"
+L["GLOBAL_SCALE"] = "Escala global"
+L["GUILD"] = "Hermandad"
+L["HARE"] = "Liebre"
+L["HEALTH"] = "Salud"
+L["HEALTH_VALUE"] = "Valor de salud"
+L["HEDGEHOG"] = "Erizo"
+L["HEIGHT"] = "Altura"
+L["HIGHLIGHT_BAR_EDGE"] = "Borde de la barra de resalte"
+L["HIGHLIGHTS"] = "Resaltados"
+L["HOSTILE"] = "Hostil"
+L["ICONS"] = "Iconos"
+L["IMPORT"] = "Importar"
+L["IMPORT_DEFAULT_STYLE"] = "Importar estilo predeterminado"
+L["IMPOSSIBLE"] = "Imposible"
+L["INTERRUPTED"] = "Interrumpido"
+L["INTERRUPTED_CAST_COLOR"] = "Color de lanzamiento interrumpido"
+L["JOIN_THE_DISCORD"] = "Únete al Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+L["LEFT"] = "Izquierda"
+L["LEVEL"] = "Nivel"
+L["LINK"] = "Enlace"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+L["MOUSEOVER"] = "Pasar el ratón"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+L["MULTIPLE_SELECTED"] = "Varias seleccionadas"
+L["NAME_ONLY"] = "Solo nombre"
+L["NEUTRAL"] = "Neutral"
+L["NEW_PROFILE_BLANK"] = "Nuevo perfil (vacío)"
+L["NEW_PROFILE_CLONE"] = "Nuevo perfil (clonar actual)"
+L["NO_VALUE_UPPER"] = "SIN VALOR"
+L["NONE"] = "Ninguno"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+L["NORMAL_CAST_COLOR"] = "Color de lanzamiento normal"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "Sin objetivo (y sin lanzar)"
+L["ON_TARGET_OR_CASTING"] = "Objetivo (o lanzando)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+L["OPEN_OPTIONS"] = "Abrir opciones"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Pega tu cadena de importación aquí"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "Valor porcentual"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "Jugadores"
+L["PLAYERS_AND_FRIENDS"] = "Jugadores y amigos"
+L["POWER"] = "Poder"
+L["PROFILES"] = "Perfiles"
+L["PVP"] = "JcJ"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+L["QUEST_OBJECTIVE"] = "Objetivo de misión"
+L["RABBIT"] = "Conejo"
+L["RAID_MARKER"] = "Marcador de banda"
+L["RARE"] = "Raro"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+L["RIGHT"] = "Derecha"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+L["SAVE_AS"] = "Guardar como"
+L["SCALE"] = "Escala"
+L["SHOW_COUNTDOWN"] = "Mostrar cuenta atrás"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Mostrar amistosos en estancias"
+L["SHOW_OUTLINE"] = "Mostrar contorno"
+L["SHOW_SHADOW"] = "Mostrar sombra"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+L["SIZE_AND_POSITION"] = "Tamaño y posición"
+L["SLASH_HELP"] = "Abre la configuración de Platynator."
+L["SLASH_RESET"] = "restablecer"
+L["SLASH_RESET_HELP"] = "Restablece toda la configuración de Platynator y luego recargar"
+L["SLASH_UNKNOWN_COMMAND"] = "Comando desconocido '%s'"
+L["SPECIAL_BRACKETS"] = "(Especial)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+L["SQUIRREL"] = "Ardilla"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+L["STACKING_NAMEPLATES"] = "Apilamiento de placas de nombre"
+L["STACKING_REGION_HEIGHT"] = "Altura de la región de apilamiento"
+L["STACKING_REGION_WIDTH"] = "Anchura de la región de apilamiento"
+L["STANDARD"] = "Normal"
+L["STYLE"] = "Estilo"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+L["TARGET"] = "Objetivo"
+L["TARGETED"] = "Objetivado"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+L["TEXTS"] = "Textos"
+L["TEXTURES"] = "Texturas"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "Ese nombre de estilo ya existe"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "Esto sobrescribirá el estilo \"Personalizado\". ¿Continuar?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+L["TO_OPEN_OPTIONS_X"] = "Accede a las opciones con /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+L["TRIVIAL"] = "Trivial"
+L["TRUNCATE"] = "Truncar"
+L["UNFRIENDLY"] = "Adverso"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Color de lanzamiento ininterrumpible"
+L["USE_NAMEPLATES_FOR"] = "Usar placas de nombre para"
+L["VERSION_COLON_X"] = "Versión: %s"
+L["VERY_DIFFICULT"] = "Muy difícil"
+L["VISUAL"] = "Visual"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+L["WIDTH_RESTRICTION"] = "Restricción de ancho"
+
+
+local L = Locales.zhTW
+L["ABSOLUTE_VALUE"] = "絕對值"
+L["ABSORB"] = "吸收"
+L["ABSORB_COLOR"] = "吸收顏色"
+L["ADD_COLORS"] = "加入顏色"
+L["ADD_WIDGET"] = "新增小工具"
+L["ALIGNMENT"] = "對齊"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "將主色套用至背景"
+L["ARCANE_FLURRY"] = "祕法疾風"
+L["AURAS"] = "光環"
+L["BACKGROUND"] = "背景"
+L["BACKGROUND_TRANSPARENCY"] = "背景透明度"
+L["BARS"] = "條"
+L["BEAVER"] = "河貍"
+L["BEHAVIOUR"] = "行為"
+L["BLIZZARD"] = "暴雪"
+L["BLIZZARD_CLASSIC"] = "暴雪經典"
+L["BORDER"] = "邊框"
+L["BORDER_COLOR"] = "邊框顏色"
+L["BOSS"] = "首領"
+L["BUFFS"] = "增益"
+L["BY_PLUSMOUSE"] = "作者：plusmouse"
+L["CANNOT_INTERRUPT"] = "無法打斷"
+L["CAST"] = "施法"
+L["CAST_NAME"] = "施法名稱"
+L["CAST_TARGET"] = "施法目標"
+L["CASTER"] = "施法者"
+L["CENTER"] = "中央"
+L["CLASS_COLORED"] = "職業著色"
+L["CLASS_COLORS"] = "職業顏色"
+L["CLEAR_SELECTION"] = "清除選擇"
+L["CLICK_REGION_HEIGHT"] = "點選區域高度"
+L["CLICK_REGION_WIDTH"] = "點選區域寬度"
+L["CLOSER_TO_SCREEN_EDGES"] = "靠近螢幕邊緣"
+L["COLOR"] = "顏色"
+L["COLORS"] = "顏色"
+L["CONFIRM_DELETE_PROFILE_X"] = "確定要刪除設定檔\"%s\"嗎？"
+L["CONFIRM_DELETE_STYLE_X"] = "您確定要刪除樣式 \"%s\" 嗎？"
+L["CREATURE_NAME"] = "生物名稱"
+L["CROWD_CONTROL"] = "控場"
+L["CTRL_C_TO_COPY"] = "Ctrl+C 複製"
+L["CUSTOM"] = "自訂"
+L["CUSTOMISE_PLATYNATOR"] = "自訂Platynator"
+L["DEBUFFS"] = "減益"
+L["DEFAULT_BRACKETS"] = "(預設)"
+L["DELETE_WIDGET"] = "刪除小工具"
+L["DESIGNER"] = "構思者"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4開發工作耗費大量時間|r"
+L["DIFFICULT"] = "難度"
+L["DIFFICULTY"] = "難度"
+L["DIFFICULTY_COLORED"] = "難度著色"
+L["DIRECTION"] = "方向"
+L["DISCORD_DESCRIPTION"] = "獲取更新、功能建議和技術支援"
+L["DO_NOTHING"] = "不做什麼"
+L["DONATE"] = "捐助"
+L["ELITE"] = "精英"
+L["ELITE_TYPE"] = "精英類型"
+L["EMPTY"] = "空白"
+L["ENEMY_NPCS"] = "敵對NPC"
+L["ENEMY_STYLE"] = "敵對樣式"
+L["ENLARGE_NAMEPLATE"] = "放大名條"
+L["ENTER_PROFILE_NAME"] = "輸入設定檔名稱："
+L["ENTER_THE_NEW_STYLE_NAME"] = "輸入新樣式名稱"
+L["EXPORT"] = "匯出"
+L["FADE"] = "淡出"
+L["FILLED"] = "填滿"
+L["FOCUS"] = "焦點"
+L["FOCUSED"] = "聚焦"
+L["FONT"] = "字型"
+L["FOREGROUND"] = "前景"
+L["FRIENDLY"] = "友好"
+L["FRIENDLY_NPCS"] = "友方NPC"
+L["FRIENDLY_STYLE"] = "友方樣式"
+L["GENERAL"] = "一般"
+L["GLOBAL_SCALE"] = "全局縮放"
+L["GUILD"] = "公會"
+L["HARE"] = "野兔"
+L["HEALTH"] = "生命值"
+L["HEALTH_VALUE"] = "生命值"
+L["HEDGEHOG"] = "豪豬"
+L["HEIGHT"] = "高度"
+L["HIGHLIGHT_BAR_EDGE"] = "高亮條邊緣"
+L["HIGHLIGHTS"] = "高亮"
+L["HOSTILE"] = "敵對"
+L["ICONS"] = "圖示"
+L["IMPORT"] = "匯入"
+L["IMPORT_DEFAULT_STYLE"] = "匯入預設樣式"
+L["IMPOSSIBLE"] = "不可能對付"
+L["INTERRUPTED"] = "可打斷"
+L["INTERRUPTED_CAST_COLOR"] = "可打斷施法顏色"
+L["JOIN_THE_DISCORD"] = "加入Discord"
+L["LAYER"] = "圖層"
+L["LEFT"] = "左"
+L["LEVEL"] = "等級"
+L["LINK"] = "連結"
+L["MELEE"] = "近戰"
+L["MINIBOSS"] = "小首領"
+L["MINION"] = "僕從"
+L["MINOR"] = "小儸儸"
+L["MOUSEOVER"] = "滑鼠停留"
+L["MOVE"] = "移動"
+L["MULTIPLE_SELECTED"] = "多重選擇"
+L["NAME_ONLY"] = "只有名字"
+L["NEUTRAL"] = "中立"
+L["NEW_PROFILE_BLANK"] = "新設定檔 (空白)"
+L["NEW_PROFILE_CLONE"] = "新設定檔 (複製當前)"
+L["NO_VALUE_UPPER"] = "無數值"
+L["NONE"] = "無"
+L["NORMAL"] = "普通"
+L["NORMAL_CAST_COLOR"] = "一般施法顏色"
+L["OFFTANK"] = "副坦克"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "在非目標 (並且非施法中)"
+L["ON_TARGET_OR_CASTING"] = "在目標 (或施法中)"
+L["ONLY_APPLY_IN_COMBAT"] = "只適用於戰鬥"
+L["ONLY_APPLY_IN_INSTANCES"] = "只適用於副本"
+L["OPEN_OPTIONS"] = "開啟選項"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "在此貼上您的匯入字串"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "百分比值"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "玩家"
+L["PLAYERS_AND_FRIENDS"] = "玩家與好友"
+L["POWER"] = "能量"
+L["PROFILES"] = "設定檔"
+L["PVP"] = "PvP"
+L["QUEST"] = "任務"
+L["QUEST_OBJECTIVE"] = "任務目標"
+L["RABBIT"] = "野兔"
+L["RAID_MARKER"] = "團隊標記"
+L["RARE"] = "稀有"
+L["REACTION"] = "陣營"
+L["RIGHT"] = "右"
+L["SAFE"] = "安全"
+L["SAVE_AS"] = "另存為"
+L["SCALE"] = "縮放"
+L["SHOW_COUNTDOWN"] = "顯示倒數"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "在副本中顯示友方"
+L["SHOW_OUTLINE"] = "顯示描線"
+L["SHOW_SHADOW"] = "顯示陰影"
+L["SHOW_WHEN_WOW_DOES"] = "與遊戲同步顯示"
+L["SIZE_AND_POSITION"] = "大小與位置"
+L["SLASH_HELP"] = "開啟Platynator的設定。"
+L["SLASH_RESET"] = "重置"
+L["SLASH_RESET_HELP"] = "重置全部Platynator的設定然後重新載入。"
+L["SLASH_UNKNOWN_COMMAND"] = "未知指令 '%s'"
+L["SPECIAL_BRACKETS"] = "(特別)"
+L["SQUARE"] = "方形"
+L["SQUIRREL"] = "松鼠"
+L["STACKING_APPLIES_TO"] = "堆疊適用於"
+L["STACKING_NAMEPLATES"] = "堆疊名條"
+L["STACKING_REGION_HEIGHT"] = "堆疊區域高度"
+L["STACKING_REGION_WIDTH"] = "堆疊區域寬度"
+L["STANDARD"] = "基本"
+L["STYLE"] = "樣式"
+L["TAPPED"] = "已接觸"
+L["TARGET"] = "目標"
+L["TARGETED"] = "選為目標"
+L["TEXT_SCALE"] = "文字縮放"
+L["TEXTS"] = "文字"
+L["TEXTURES"] = "材質"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "樣式名稱已經存在"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "這會覆蓋樣式 \"自定義\"，繼續嗎？"
+L["THREAT"] = "威脅"
+L["TO_OPEN_OPTIONS_X"] = "使用/platy開啟選項"
+L["TRANSITION"] = "目標轉換"
+L["TRIVIAL"] = "嘍囉"
+L["TRUNCATE"] = "截短"
+L["UNFRIENDLY"] = "不友好"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "無法打斷施法顏色"
+L["USE_NAMEPLATES_FOR"] = "使用名條在"
+L["VERSION_COLON_X"] = "版本：%s"
+L["VERY_DIFFICULT"] = "非常困難"
+L["VISUAL"] = "視覺"
+L["WARNING"] = "警告"
+L["WIDTH_RESTRICTION"] = "寬度限制"
+
+
+local L = Locales.zhCN
+L["ABSOLUTE_VALUE"] = "详细数值"
+L["ABSORB"] = "吸收"
+L["ABSORB_COLOR"] = "吸收颜色"
+L["ADD_COLORS"] = "添加颜色"
+L["ADD_WIDGET"] = "添加组件"
+L["ALIGNMENT"] = "对齐"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "将主色调应用到背景"
+L["ARCANE_FLURRY"] = "奥术飓风"
+L["AURAS"] = "光环"
+L["BACKGROUND"] = "背景"
+L["BACKGROUND_TRANSPARENCY"] = "背景透明度"
+L["BARS"] = "条"
+L["BEAVER"] = "窄条（粗暗）"
+L["BEHAVIOUR"] = "特点"
+L["BLIZZARD"] = "暴雪样式"
+L["BLIZZARD_CLASSIC"] = "暴雪经典样式"
+L["BORDER"] = "边框"
+L["BORDER_COLOR"] = "边框颜色"
+L["BOSS"] = "首领"
+L["BUFFS"] = "增益"
+L["BY_PLUSMOUSE"] = "作者：plusmouse"
+L["CANNOT_INTERRUPT"] = "无法打断"
+L["CAST"] = "施法条"
+L["CAST_NAME"] = "施法名称"
+L["CAST_TARGET"] = "施法目标"
+L["CASTER"] = "施法者"
+L["CENTER"] = "中"
+L["CLASS_COLORED"] = "职业着色"
+L["CLASS_COLORS"] = "职业颜色"
+L["CLEAR_SELECTION"] = "清除选择"
+L["CLICK_REGION_HEIGHT"] = "点击区域高度"
+L["CLICK_REGION_WIDTH"] = "点击区域宽度"
+L["CLOSER_TO_SCREEN_EDGES"] = "更靠近屏幕边缘"
+L["COLOR"] = "颜色"
+L["COLORS"] = "颜色"
+L["CONFIRM_DELETE_PROFILE_X"] = "确定要删除配置文件\"%s\"吗？"
+L["CONFIRM_DELETE_STYLE_X"] = "确定要删除 “%s” 样式吗？"
+L["CREATURE_NAME"] = "名称"
+L["CROWD_CONTROL"] = "控制技能"
+L["CTRL_C_TO_COPY"] = "Ctrl+C复制"
+L["CUSTOM"] = "自定义"
+L["CUSTOMISE_PLATYNATOR"] = "自定义Platynator"
+L["DEBUFFS"] = "减益"
+L["DEFAULT_BRACKETS"] = "（默认）"
+L["DELETE_WIDGET"] = "删除组件"
+L["DESIGNER"] = "选择样式"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4开发工作耗费大量时间|r"
+L["DIFFICULT"] = "困难"
+L["DIFFICULTY"] = "难度"
+L["DIFFICULTY_COLORED"] = "难度染色"
+L["DIRECTION"] = "方向"
+L["DISCORD_DESCRIPTION"] = "获取更新、功能建议和技术支持"
+L["DO_NOTHING"] = "无操作"
+L["DONATE"] = "捐赠"
+L["ELITE"] = "精英"
+L["ELITE_TYPE"] = "精英类型"
+L["EMPTY"] = "空"
+L["ENEMY_NPCS"] = "敌方NPC"
+L["ENEMY_STYLE"] = "敌方样式"
+L["ENLARGE_NAMEPLATE"] = "放大姓名板"
+L["ENTER_PROFILE_NAME"] = "输入配置文件名："
+L["ENTER_THE_NEW_STYLE_NAME"] = "输入新样式名称"
+L["EXPORT"] = "导出"
+L["FADE"] = "渐隐"
+L["FILLED"] = "已填充"
+L["FOCUS"] = "焦点"
+L["FOCUSED"] = "焦点"
+L["FONT"] = "字体"
+L["FOREGROUND"] = "前景"
+L["FRIENDLY"] = "友善"
+L["FRIENDLY_NPCS"] = "友方NPC"
+L["FRIENDLY_STYLE"] = "友方样式"
+L["GENERAL"] = "设置"
+L["GLOBAL_SCALE"] = "全局缩放"
+L["GUILD"] = "公会"
+L["HARE"] = "炫光（紫）"
+L["HEALTH"] = "生命值"
+L["HEALTH_VALUE"] = "生命值数值"
+L["HEDGEHOG"] = "炫光（青）"
+L["HEIGHT"] = "高度"
+L["HIGHLIGHT_BAR_EDGE"] = "边框高亮"
+L["HIGHLIGHTS"] = "高亮效果"
+L["HOSTILE"] = "敌对"
+L["ICONS"] = "图标"
+L["IMPORT"] = "导入"
+L["IMPORT_DEFAULT_STYLE"] = "导入默认样式"
+L["IMPOSSIBLE"] = "极难"
+L["INTERRUPTED"] = "已打断"
+L["INTERRUPTED_CAST_COLOR"] = "被打断的施法颜色"
+L["JOIN_THE_DISCORD"] = "加入Discord"
+L["LAYER"] = "层级"
+L["LEFT"] = "左"
+L["LEVEL"] = "等级"
+L["LINK"] = "链接"
+L["MELEE"] = "近战"
+L["MINIBOSS"] = "精英首领"
+L["MINION"] = "仆从"
+L["MINOR"] = "次要"
+L["MOUSEOVER"] = "鼠标指向"
+L["MOVE"] = "移动"
+L["MULTIPLE_SELECTED"] = "已选择多项"
+L["NAME_ONLY"] = "仅名字"
+L["NEUTRAL"] = "中立"
+L["NEW_PROFILE_BLANK"] = "新建配置（空白）"
+L["NEW_PROFILE_CLONE"] = "新建配置（复制当前）"
+L["NO_VALUE_UPPER"] = "无数值"
+L["NONE"] = "无"
+L["NORMAL"] = "普通"
+L["NORMAL_CAST_COLOR"] = "可打断施法颜色"
+L["OFFTANK"] = "副坦克"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "非目标时（且非施法中）"
+L["ON_TARGET_OR_CASTING"] = "目标时（或施法中）"
+L["ONLY_APPLY_IN_COMBAT"] = "仅战斗时"
+L["ONLY_APPLY_IN_INSTANCES"] = "仅副本时"
+L["OPEN_OPTIONS"] = "打开选项"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "在此处粘贴导入字符串"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "百分比"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "玩家"
+L["PLAYERS_AND_FRIENDS"] = "玩家和友方"
+L["POWER"] = "能量条"
+L["PROFILES"] = "配置文件"
+L["PVP"] = "PvP"
+L["QUEST"] = "任务"
+L["QUEST_OBJECTIVE"] = "任务目标"
+L["RABBIT"] = "粗边框（白）"
+L["RAID_MARKER"] = "团队标记"
+L["RARE"] = "稀有"
+L["REACTION"] = "阵营声望"
+L["RIGHT"] = "右"
+L["SAFE"] = "安全"
+L["SAVE_AS"] = "另存为"
+L["SCALE"] = "尺寸"
+L["SHOW_COUNTDOWN"] = "显示倒计时"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "在副本中显示友方姓名板"
+L["SHOW_OUTLINE"] = "显示轮廓"
+L["SHOW_SHADOW"] = "显示阴影"
+L["SHOW_WHEN_WOW_DOES"] = "与游戏同步显示"
+L["SIZE_AND_POSITION"] = "缩放与位置"
+L["SLASH_HELP"] = "打开Platynator设置。"
+L["SLASH_RESET"] = "重置"
+L["SLASH_RESET_HELP"] = "重置所有Platynator设置并重载界面。"
+L["SLASH_UNKNOWN_COMMAND"] = "未知命令“%s”"
+L["SPECIAL_BRACKETS"] = "（特殊）"
+L["SQUARE"] = "方形"
+L["SQUIRREL"] = "粗边框（暗）"
+L["STACKING_APPLIES_TO"] = "堆叠适用于"
+L["STACKING_NAMEPLATES"] = "堆叠姓名板"
+L["STACKING_REGION_HEIGHT"] = "堆叠高度"
+L["STACKING_REGION_WIDTH"] = "堆叠宽度"
+L["STANDARD"] = "普通"
+L["STYLE"] = "样式"
+L["TAPPED"] = "已被接触"
+L["TARGET"] = "目标"
+L["TARGETED"] = "选中时"
+L["TEXT_SCALE"] = "文字缩放"
+L["TEXTS"] = "文本"
+L["TEXTURES"] = "材质"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "该样式名称已存在"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "这将覆盖“自定义”样式，是否继续？"
+L["THREAT"] = "威胁"
+L["TO_OPEN_OPTIONS_X"] = "输入/platy打开选项"
+L["TRANSITION"] = "目标改变"
+L["TRIVIAL"] = "简单"
+L["TRUNCATE"] = "缩写"
+L["UNFRIENDLY"] = "冷淡"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "不可打断施法颜色"
+L["USE_NAMEPLATES_FOR"] = "使用姓名板"
+L["VERSION_COLON_X"] = "版本：%s"
+L["VERY_DIFFICULT"] = "非常困难"
+L["VISUAL"] = "外观"
+L["WARNING"] = "警告"
+L["WIDTH_RESTRICTION"] = "宽度限制"
+
+
+local L = Locales.koKR
+L["ABSOLUTE_VALUE"] = "절대값"
+L["ABSORB"] = "흡수"
+L["ABSORB_COLOR"] = "흡수 색상"
+L["ADD_COLORS"] = "색상 추가"
+L["ADD_WIDGET"] = "구성 요소 추가"
+L["ALIGNMENT"] = "정렬"
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "배경에 주 색상 적용"
+L["ARCANE_FLURRY"] = "비전 질풍"
+L["AURAS"] = "오라"
+L["BACKGROUND"] = "배경"
+L["BACKGROUND_TRANSPARENCY"] = "배경 투명도"
+L["BARS"] = "바"
+L["BEAVER"] = "비버"
+L["BEHAVIOUR"] = "특징"
+L["BLIZZARD"] = "블리자드"
+L["BLIZZARD_CLASSIC"] = "블리자드 기본"
+L["BORDER"] = "테두리"
+L["BORDER_COLOR"] = "테두리 색상"
+L["BOSS"] = "우두머리"
+L["BUFFS"] = "버프"
+L["BY_PLUSMOUSE"] = "by plusmouse"
+L["CANNOT_INTERRUPT"] = "차단 불가"
+L["CAST"] = "시전 바"
+L["CAST_NAME"] = "주문 이름"
+L["CAST_TARGET"] = "시전 대상"
+L["CASTER"] = "시전자"
+L["CENTER"] = "가운데"
+L["CLASS_COLORED"] = "직업 색상"
+L["CLASS_COLORS"] = "직업 색상"
+L["CLEAR_SELECTION"] = "선택 취소"
+L["CLICK_REGION_HEIGHT"] = "클릭 영역 높이"
+L["CLICK_REGION_WIDTH"] = "클릭 영역 너비"
+L["CLOSER_TO_SCREEN_EDGES"] = "화면 가장자리에 가깝게"
+L["COLOR"] = "색상"
+L["COLORS"] = "색상"
+L["CONFIRM_DELETE_PROFILE_X"] = "\"%s\" 프로필을 삭제하시겠습니까?"
+L["CONFIRM_DELETE_STYLE_X"] = "\"%s\" 스타일을 삭제하시겠습니까?"
+L["CREATURE_NAME"] = "이름"
+L["CROWD_CONTROL"] = "CC"
+L["CTRL_C_TO_COPY"] = "Ctrl+C로 복사"
+L["CUSTOM"] = "사용자 정의"
+L["CUSTOMISE_PLATYNATOR"] = "Platynator 사용자 정의"
+L["DEBUFFS"] = "디버프"
+L["DEFAULT_BRACKETS"] = "(기본값)"
+L["DELETE_WIDGET"] = "구성 요소 삭제"
+L["DESIGNER"] = "스타일"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4개발에는 엄청난 시간이 소요됩니다.|r"
+L["DIFFICULT"] = "난이도"
+L["DIFFICULTY"] = "난이도"
+L["DIFFICULTY_COLORED"] = "난이도 색상"
+L["DIRECTION"] = "방향"
+L["DISCORD_DESCRIPTION"] = "업데이트, 기능 제안 및 지원"
+L["DO_NOTHING"] = "아무것도 하지 않음"
+L["DONATE"] = "기부하기"
+L["ELITE"] = "정예"
+L["ELITE_TYPE"] = "정예 종류"
+L["EMPTY"] = "비어 있음"
+L["ENEMY_NPCS"] = "적대적 NPC"
+L["ENEMY_STYLE"] = "적 스타일"
+L["ENLARGE_NAMEPLATE"] = "이름표 확대"
+L["ENTER_PROFILE_NAME"] = "프로필 이름 입력:"
+L["ENTER_THE_NEW_STYLE_NAME"] = "새 스타일 이름 입력"
+L["EXPORT"] = "내보내기"
+L["FADE"] = "사라짐"
+L["FILLED"] = "채워진"
+L["FOCUS"] = "주시 대상"
+L["FOCUSED"] = "주시 대상"
+L["FONT"] = "글꼴"
+L["FOREGROUND"] = "전경"
+L["FRIENDLY"] = "우호적"
+L["FRIENDLY_NPCS"] = "우호적 NPC"
+L["FRIENDLY_STYLE"] = "아군 스타일"
+L["GENERAL"] = "일반"
+L["GLOBAL_SCALE"] = "전역 비율"
+L["GUILD"] = "길드"
+L["HARE"] = "토끼"
+L["HEALTH"] = "체력"
+L["HEALTH_VALUE"] = "체력 수치"
+L["HEDGEHOG"] = "고슴도치"
+L["HEIGHT"] = "높이"
+L["HIGHLIGHT_BAR_EDGE"] = "바 가장자리 강조"
+L["HIGHLIGHTS"] = "강조"
+L["HOSTILE"] = "적대적"
+L["ICONS"] = "아이콘"
+L["IMPORT"] = "가져오기"
+L["IMPORT_DEFAULT_STYLE"] = "기본 스타일 가져오기"
+L["IMPOSSIBLE"] = "불가능"
+L["INTERRUPTED"] = "차단됨"
+L["INTERRUPTED_CAST_COLOR"] = "차단된 시전 색상"
+L["JOIN_THE_DISCORD"] = "디스코드 참여"
+L["LAYER"] = "층"
+L["LEFT"] = "왼쪽"
+L["LEVEL"] = "레벨"
+L["LINK"] = "링크"
+L["MELEE"] = "근접"
+L["MINIBOSS"] = "중간 우두머리"
+L["MINION"] = "하수인"
+L["MINOR"] = "하급"
+L["MOUSEOVER"] = "마우스 오버"
+L["MOVE"] = "이동"
+L["MULTIPLE_SELECTED"] = "다중 선택"
+L["NAME_ONLY"] = "이름만"
+L["NEUTRAL"] = "중립"
+L["NEW_PROFILE_BLANK"] = "새 프로필 (빈 프로필)"
+L["NEW_PROFILE_CLONE"] = "새 프로필 (현재 프로필 복제)"
+L["NO_VALUE_UPPER"] = "값 없음"
+L["NONE"] = "없음"
+L["NORMAL"] = "일반"
+L["NORMAL_CAST_COLOR"] = "일반 시전 색상"
+L["OFFTANK"] = "보조 탱커"
+L["ON_NON_TARGET_AND_NON_CASTING"] = "비대상 (및 비시전)"
+L["ON_TARGET_OR_CASTING"] = "대상 (또는 시전 중)"
+L["ONLY_APPLY_IN_COMBAT"] = "전투 중에만 적용"
+L["ONLY_APPLY_IN_INSTANCES"] = "인스턴스에만 적용"
+L["OPEN_OPTIONS"] = "옵션 열기"
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "여기에 가져오기 문자열 붙여넣기"
+L["PERCENT_BRACKETS"] = "(%d%%)"
+L["PERCENTAGE_VALUE"] = "백분율"
+L["PLATYNATOR"] = "Platynator"
+L["PLAYERS"] = "플레이어"
+L["PLAYERS_AND_FRIENDS"] = "플레이어와 아군"
+L["POWER"] = "자원"
+L["PROFILES"] = "프로필"
+L["PVP"] = "PvP"
+L["QUEST"] = "퀘스트"
+L["QUEST_OBJECTIVE"] = "퀘스트 목표"
+L["RABBIT"] = "토끼"
+L["RAID_MARKER"] = "공격대 징표"
+L["RARE"] = "희귀"
+L["REACTION"] = "반응"
+L["RIGHT"] = "오른쪽"
+L["SAFE"] = "안전"
+L["SAVE_AS"] = "다른 이름으로 저장"
+L["SCALE"] = "비율"
+L["SHOW_COUNTDOWN"] = "카운트다운 표시"
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "인스턴스에서 우호적 대상 표시"
+L["SHOW_OUTLINE"] = "외곽선 표시"
+L["SHOW_SHADOW"] = "그림자 표시"
+L["SHOW_WHEN_WOW_DOES"] = "WoW가 실행될 때 표시"
+L["SIZE_AND_POSITION"] = "크기와 위치"
+L["SLASH_HELP"] = "Platynator 설정을 엽니다."
+L["SLASH_RESET"] = "초기화"
+L["SLASH_RESET_HELP"] = "모든 Platynator 설정을 초기화한 후 리로드하십시오."
+L["SLASH_UNKNOWN_COMMAND"] = "알 수 없는 명령어 '%s'"
+L["SPECIAL_BRACKETS"] = "(특별)"
+L["SQUARE"] = "사각형"
+L["SQUIRREL"] = "다람쥐"
+L["STACKING_APPLIES_TO"] = "중첩 적용 대상"
+L["STACKING_NAMEPLATES"] = "이름표 중첩"
+L["STACKING_REGION_HEIGHT"] = "중첩 영역 높이"
+L["STACKING_REGION_WIDTH"] = "중첩 영역 너비"
+L["STANDARD"] = "일반"
+L["STYLE"] = "스타일"
+L["TAPPED"] = "선점됨"
+L["TARGET"] = "대상"
+L["TARGETED"] = "대상"
+L["TEXT_SCALE"] = "텍스트 크기"
+L["TEXTS"] = "텍스트"
+L["TEXTURES"] = "텍스처"
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "해당 스타일 이름이 이미 존재함"
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = " \"사용자 정의\" 스타일을 덮어씁니다. 계속 하시겠습니까?"
+L["THREAT"] = "위협 수준"
+L["TO_OPEN_OPTIONS_X"] = "/platy 옵션 접근"
+L["TRANSITION"] = "경계"
+L["TRIVIAL"] = "쉬움"
+L["TRUNCATE"] = "자르기"
+L["UNFRIENDLY"] = "비우호적"
+L["UNINTERRUPTABLE_CAST_COLOR"] = "차단 불가능한 시전 색상"
+L["USE_NAMEPLATES_FOR"] = "이름표 사용"
+L["VERSION_COLON_X"] = "버전: %s"
+L["VERY_DIFFICULT"] = "매우 어려움"
+L["VISUAL"] = "디자인"
+L["WARNING"] = "위험"
+L["WIDTH_RESTRICTION"] = "폭 제한"
+
+
+local L = Locales.itIT
+--[[Translation missing --]]
+L["ABSOLUTE_VALUE"] = "Absolute value"
+--[[Translation missing --]]
+L["ABSORB"] = "Absorb"
+--[[Translation missing --]]
+L["ABSORB_COLOR"] = "Absorb color"
+--[[Translation missing --]]
+L["ADD_COLORS"] = "Add Colors"
+--[[Translation missing --]]
+L["ADD_WIDGET"] = "Add Widget"
+--[[Translation missing --]]
+L["ALIGNMENT"] = "Alignment"
+--[[Translation missing --]]
+L["APPLY_MAIN_COLOR_TO_BACKGROUND"] = "Apply main color to background"
+--[[Translation missing --]]
+L["ARCANE_FLURRY"] = "Arcane Flurry"
+--[[Translation missing --]]
+L["AURAS"] = "Auras"
+--[[Translation missing --]]
+L["BACKGROUND"] = "Background"
+--[[Translation missing --]]
+L["BACKGROUND_TRANSPARENCY"] = "Background transparency"
+--[[Translation missing --]]
+L["BARS"] = "Bars"
+--[[Translation missing --]]
+L["BEAVER"] = "Beaver"
+--[[Translation missing --]]
+L["BEHAVIOUR"] = "Behaviour"
+--[[Translation missing --]]
+L["BLIZZARD"] = "Blizzard"
+--[[Translation missing --]]
+L["BLIZZARD_CLASSIC"] = "Blizzard Classic"
+--[[Translation missing --]]
+L["BORDER"] = "Border"
+--[[Translation missing --]]
+L["BORDER_COLOR"] = "Border color"
+--[[Translation missing --]]
+L["BOSS"] = "Boss"
+--[[Translation missing --]]
+L["BUFFS"] = "Buffs"
+--[[Translation missing --]]
+L["BY_PLUSMOUSE"] = "by plusmouse"
+--[[Translation missing --]]
+L["CANNOT_INTERRUPT"] = "Cannot Interrupt"
+--[[Translation missing --]]
+L["CAST"] = "Cast"
+--[[Translation missing --]]
+L["CAST_NAME"] = "Cast Name"
+--[[Translation missing --]]
+L["CAST_TARGET"] = "Cast Target"
+--[[Translation missing --]]
+L["CASTER"] = "Caster"
+--[[Translation missing --]]
+L["CENTER"] = "Center"
+--[[Translation missing --]]
+L["CLASS_COLORED"] = "Class colored"
+--[[Translation missing --]]
+L["CLASS_COLORS"] = "Class Colors"
+--[[Translation missing --]]
+L["CLEAR_SELECTION"] = "Clear Selection"
+--[[Translation missing --]]
+L["CLICK_REGION_HEIGHT"] = "Click region height"
+--[[Translation missing --]]
+L["CLICK_REGION_WIDTH"] = "Click region width"
+--[[Translation missing --]]
+L["CLOSER_TO_SCREEN_EDGES"] = "Closer to screen edges"
+--[[Translation missing --]]
+L["COLOR"] = "Color"
+--[[Translation missing --]]
+L["COLORS"] = "Colors"
+--[[Translation missing --]]
+L["CONFIRM_DELETE_PROFILE_X"] = "Are you sure you want to delete profile \"%s\"?"
+--[[Translation missing --]]
+L["CONFIRM_DELETE_STYLE_X"] = "Are you sure you want to delete style \"%s\"?"
+--[[Translation missing --]]
+L["CREATURE_NAME"] = "Creature Name"
+--[[Translation missing --]]
+L["CROWD_CONTROL"] = "Crowd Control"
+--[[Translation missing --]]
+L["CTRL_C_TO_COPY"] = "Ctrl+C to copy"
+--[[Translation missing --]]
+L["CUSTOM"] = "Custom"
+--[[Translation missing --]]
+L["CUSTOMISE_PLATYNATOR"] = "Customise Platynator"
+--[[Translation missing --]]
+L["DEBUFFS"] = "Debuffs"
+--[[Translation missing --]]
+L["DEFAULT_BRACKETS"] = "(Default)"
+--[[Translation missing --]]
+L["DELETE_WIDGET"] = "Delete Widget"
+--[[Translation missing --]]
+L["DESIGNER"] = "Designer"
+--[[Translation missing --]]
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Development takes a huge amount of time|r"
+--[[Translation missing --]]
+L["DIFFICULT"] = "Difficult"
+--[[Translation missing --]]
+L["DIFFICULTY"] = "Difficulty"
+--[[Translation missing --]]
+L["DIFFICULTY_COLORED"] = "Difficulty colored"
+--[[Translation missing --]]
+L["DIRECTION"] = "Direction"
+--[[Translation missing --]]
+L["DISCORD_DESCRIPTION"] = "Updates, feature suggestions and support"
+--[[Translation missing --]]
+L["DO_NOTHING"] = "Do nothing"
+--[[Translation missing --]]
+L["DONATE"] = "Donate"
+--[[Translation missing --]]
+L["ELITE"] = "Elite"
+--[[Translation missing --]]
+L["ELITE_TYPE"] = "Elite Type"
+--[[Translation missing --]]
+L["EMPTY"] = "Empty"
+--[[Translation missing --]]
+L["ENEMY_NPCS"] = "Enemy NPCs"
+--[[Translation missing --]]
+L["ENEMY_STYLE"] = "Enemy Style"
+--[[Translation missing --]]
+L["ENLARGE_NAMEPLATE"] = "Enlarge nameplate"
+--[[Translation missing --]]
+L["ENTER_PROFILE_NAME"] = "Enter Profile Name:"
+--[[Translation missing --]]
+L["ENTER_THE_NEW_STYLE_NAME"] = "Enter the new style name"
+--[[Translation missing --]]
+L["EXPORT"] = "Export"
+--[[Translation missing --]]
+L["FADE"] = "Fade"
+--[[Translation missing --]]
+L["FILLED"] = "Filled"
+--[[Translation missing --]]
+L["FOCUS"] = "Focus"
+--[[Translation missing --]]
+L["FOCUSED"] = "Focused"
+--[[Translation missing --]]
+L["FONT"] = "Font"
+--[[Translation missing --]]
+L["FOREGROUND"] = "Foreground"
+--[[Translation missing --]]
+L["FRIENDLY"] = "Friendly"
+--[[Translation missing --]]
+L["FRIENDLY_NPCS"] = "Friendly NPCs"
+--[[Translation missing --]]
+L["FRIENDLY_STYLE"] = "Friendly Style"
+--[[Translation missing --]]
+L["GENERAL"] = "General"
+--[[Translation missing --]]
+L["GLOBAL_SCALE"] = "Global scale"
+--[[Translation missing --]]
+L["GUILD"] = "Guild"
+--[[Translation missing --]]
+L["HARE"] = "Hare"
+--[[Translation missing --]]
+L["HEALTH"] = "Health"
+--[[Translation missing --]]
+L["HEALTH_VALUE"] = "Health Value"
+--[[Translation missing --]]
+L["HEDGEHOG"] = "Hedgehog"
+--[[Translation missing --]]
+L["HEIGHT"] = "Height"
+--[[Translation missing --]]
+L["HIGHLIGHT_BAR_EDGE"] = "Highlight bar edge"
+--[[Translation missing --]]
+L["HIGHLIGHTS"] = "Highlights"
+--[[Translation missing --]]
+L["HOSTILE"] = "Hostile"
+--[[Translation missing --]]
+L["ICONS"] = "Icons"
+--[[Translation missing --]]
+L["IMPORT"] = "Import"
+--[[Translation missing --]]
+L["IMPORT_DEFAULT_STYLE"] = "Import Default Style"
+--[[Translation missing --]]
+L["IMPOSSIBLE"] = "Impossible"
+--[[Translation missing --]]
+L["INTERRUPTED"] = "Interrupted"
+--[[Translation missing --]]
+L["INTERRUPTED_CAST_COLOR"] = "Interrupted cast color"
+--[[Translation missing --]]
+L["JOIN_THE_DISCORD"] = "Join the Discord"
+--[[Translation missing --]]
+L["LAYER"] = "Layer"
+--[[Translation missing --]]
+L["LEFT"] = "Left"
+--[[Translation missing --]]
+L["LEVEL"] = "Level"
+--[[Translation missing --]]
+L["LINK"] = "Link"
+--[[Translation missing --]]
+L["MELEE"] = "Melee"
+--[[Translation missing --]]
+L["MINIBOSS"] = "Miniboss"
+--[[Translation missing --]]
+L["MINION"] = "Minion"
+--[[Translation missing --]]
+L["MINOR"] = "Minor"
+--[[Translation missing --]]
+L["MOUSEOVER"] = "Mouseover"
+--[[Translation missing --]]
+L["MOVE"] = "Move"
+--[[Translation missing --]]
+L["MULTIPLE_SELECTED"] = "Multiple Selected"
+--[[Translation missing --]]
+L["NAME_ONLY"] = "Name Only"
+--[[Translation missing --]]
+L["NEUTRAL"] = "Neutral"
+--[[Translation missing --]]
+L["NEW_PROFILE_BLANK"] = "New Profile (blank)"
+--[[Translation missing --]]
+L["NEW_PROFILE_CLONE"] = "New Profile (clone current)"
+--[[Translation missing --]]
+L["NO_VALUE_UPPER"] = "NO VALUE"
+--[[Translation missing --]]
+L["NONE"] = "None"
+--[[Translation missing --]]
+L["NORMAL"] = "Normal"
+--[[Translation missing --]]
+L["NORMAL_CAST_COLOR"] = "Normal cast color"
+--[[Translation missing --]]
+L["OFFTANK"] = "Off-tank"
+--[[Translation missing --]]
+L["ON_NON_TARGET_AND_NON_CASTING"] = "On non-target (and non-casting)"
+--[[Translation missing --]]
+L["ON_TARGET_OR_CASTING"] = "On target (or casting)"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_COMBAT"] = "Only apply in combat"
+--[[Translation missing --]]
+L["ONLY_APPLY_IN_INSTANCES"] = "Only apply in instances"
+--[[Translation missing --]]
+L["OPEN_OPTIONS"] = "Open Options"
+--[[Translation missing --]]
+L["PASTE_YOUR_IMPORT_STRING_HERE"] = "Paste your import string here"
+--[[Translation missing --]]
+L["PERCENT_BRACKETS"] = "(%d%%)"
+--[[Translation missing --]]
+L["PERCENTAGE_VALUE"] = "Percentage value"
+--[[Translation missing --]]
+L["PLATYNATOR"] = "Platynator"
+--[[Translation missing --]]
+L["PLAYERS"] = "Players"
+--[[Translation missing --]]
+L["PLAYERS_AND_FRIENDS"] = "Players and friends"
+--[[Translation missing --]]
+L["POWER"] = "Power"
+--[[Translation missing --]]
+L["PROFILES"] = "Profiles"
+--[[Translation missing --]]
+L["PVP"] = "PvP"
+--[[Translation missing --]]
+L["QUEST"] = "Quest"
+--[[Translation missing --]]
+L["QUEST_OBJECTIVE"] = "Quest Objective"
+--[[Translation missing --]]
+L["RABBIT"] = "Rabbit"
+--[[Translation missing --]]
+L["RAID_MARKER"] = "Raid Marker"
+--[[Translation missing --]]
+L["RARE"] = "Rare"
+--[[Translation missing --]]
+L["REACTION"] = "Reaction"
+--[[Translation missing --]]
+L["RIGHT"] = "Right"
+--[[Translation missing --]]
+L["SAFE"] = "Safe"
+--[[Translation missing --]]
+L["SAVE_AS"] = "Save as"
+--[[Translation missing --]]
+L["SCALE"] = "Scale"
+--[[Translation missing --]]
+L["SHOW_COUNTDOWN"] = "Show countdown"
+--[[Translation missing --]]
+L["SHOW_FRIENDLY_IN_INSTANCES"] = "Show friendly in instances"
+--[[Translation missing --]]
+L["SHOW_OUTLINE"] = "Show outline"
+--[[Translation missing --]]
+L["SHOW_SHADOW"] = "Show shadow"
+--[[Translation missing --]]
+L["SHOW_WHEN_WOW_DOES"] = "Show when WoW does"
+--[[Translation missing --]]
+L["SIZE_AND_POSITION"] = "Size and position"
+--[[Translation missing --]]
+L["SLASH_HELP"] = "Open the Platynator settings."
+--[[Translation missing --]]
+L["SLASH_RESET"] = "reset"
+--[[Translation missing --]]
+L["SLASH_RESET_HELP"] = "Reset all Platynator settings, then reload."
+--[[Translation missing --]]
+L["SLASH_UNKNOWN_COMMAND"] = "Unknown command '%s'"
+--[[Translation missing --]]
+L["SPECIAL_BRACKETS"] = "(Special)"
+--[[Translation missing --]]
+L["SQUARE"] = "Square"
+--[[Translation missing --]]
+L["SQUIRREL"] = "Squirrel"
+--[[Translation missing --]]
+L["STACKING_APPLIES_TO"] = "Stacking applies to"
+--[[Translation missing --]]
+L["STACKING_NAMEPLATES"] = "Stacking nameplates"
+--[[Translation missing --]]
+L["STACKING_REGION_HEIGHT"] = "Stacking region height"
+--[[Translation missing --]]
+L["STACKING_REGION_WIDTH"] = "Stacking region width"
+--[[Translation missing --]]
+L["STANDARD"] = "Standard"
+--[[Translation missing --]]
+L["STYLE"] = "Style"
+--[[Translation missing --]]
+L["TAPPED"] = "Tapped"
+--[[Translation missing --]]
+L["TARGET"] = "Target"
+--[[Translation missing --]]
+L["TARGETED"] = "Targeted"
+--[[Translation missing --]]
+L["TEXT_SCALE"] = "Text scale"
+--[[Translation missing --]]
+L["TEXTS"] = "Texts"
+--[[Translation missing --]]
+L["TEXTURES"] = "Textures"
+--[[Translation missing --]]
+L["THAT_STYLE_NAME_ALREADY_EXISTS"] = "That style name already exists"
+--[[Translation missing --]]
+L["THIS_WILL_OVERWRITE_STYLE_CUSTOM"] = "This will overwrite style \"Custom\". Continue?"
+--[[Translation missing --]]
+L["THREAT"] = "Threat"
+--[[Translation missing --]]
+L["TO_OPEN_OPTIONS_X"] = "Access options with /platy"
+--[[Translation missing --]]
+L["TRANSITION"] = "Transition"
+--[[Translation missing --]]
+L["TRIVIAL"] = "Trivial"
+--[[Translation missing --]]
+L["TRUNCATE"] = "Truncate"
+--[[Translation missing --]]
+L["UNFRIENDLY"] = "Unfriendly"
+--[[Translation missing --]]
+L["UNINTERRUPTABLE_CAST_COLOR"] = "Uninterruptable cast color"
+--[[Translation missing --]]
+L["USE_NAMEPLATES_FOR"] = "Use nameplates for"
+--[[Translation missing --]]
+L["VERSION_COLON_X"] = "Version: %s"
+--[[Translation missing --]]
+L["VERY_DIFFICULT"] = "Very difficult"
+--[[Translation missing --]]
+L["VISUAL"] = "Visual"
+--[[Translation missing --]]
+L["WARNING"] = "Warning"
+--[[Translation missing --]]
+L["WIDTH_RESTRICTION"] = "Width restriction"
+

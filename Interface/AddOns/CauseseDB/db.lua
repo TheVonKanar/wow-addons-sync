@@ -35,7 +35,7 @@ CauseseDB = {
         [1221483] = {"Targeted", ""}, --Arcing Energy
         --[355642] = {"Targeted", ""}, --Hyperlight Salvo (double check)
     },
-    trash_cc = {
+    trash_cc = { --[spellID] = {"name", category, "soundFile", "role", "show target" (true/false), "important" (true/false)},
     -- SEASON 1
         --Ara-Kara
         [438618] = {"Spit",2,"","ALL",true,false}, --Venomous Spit
@@ -57,7 +57,6 @@ CauseseDB = {
         [451097] = {"Silken Shell",0,"","ALL",false,true}, --Silken Shell
         --[452099] = {"BOLT",1,"","ALL",true,false}, --Congealed Darkness (tank)
     -- SEASON 2
-        --[spellID] = {"name", category, "soundFile", "role", "show target" (true/false), "important" (true/false)},
         --Rookery
         [430109] = {"Bolt",1,"","ALL",true,false}, --Lightning Bolt
         [427260] = {"Surge",0,"","ALL",false,false}, --Lightning Surge
@@ -292,9 +291,9 @@ CauseseDB = {
         ["178141"] = {[355132] = {"SPELL_CAST_SUCCESS", 2, "ALL", "Stick Inc", 9.7, 27.9}}, --Invigorating Fish Stick
         ["180429"] = {[357238] = {"SPELL_CAST_SUCCESS", 0, "ALL", "Pulsar Inc", 13.6, 26.7}}, --Wandering Pulsar
         ["179386"] = {[368661] = {"SPELL_CAST_SUCCESS", 2, "ALL", "Toss Inc", 8.3, 14.5}}, --Sword Toss
-        ["177716"] = {[351119] = {"SPELL_CAST_START", 6, "ALL", "TP Inc", 8, 18.2}}, --Shuriken Blitz
+        ["177716"] = {[351119] = {"SPELL_CAST_START", 6, "ALL", "TP Inc", 5.4, 18.2}}, --Shuriken Blitz
         ["177816"] = {[355915] = {"SPELL_CAST_SUCCESS", 3, "ALL", "Dispel Inc", 7.3, 17}}, --Glyph of Restraint
-        ["180431"] = {[357260] = {"SPELL_CAST_START", 6, "ALL", "Rift Inc", 13.3, 21.8}}, --Unstable Rift
+        ["180431"] = {[357260] = {"SPELL_CAST_START", 6, "ALL", "Rift Inc", 12, 21.8}}, --Unstable Rift
         --Halls of Attonement
         ["164557"] = {[326409] = {"SPELL_CAST_START", 0, "ALL", "AoE Inc", 8.9, 23}}, --Shard of Halkias
         ["167607"] = {[1235326] = {"SPELL_CAST_START", 1, "ALL", "Stopcast Inc", 15.9, 32.8}}, --Disrupting Screech
@@ -343,7 +342,7 @@ CauseseDB = {
         [357226] = {"Frontal", 4, true, "Dodge.ogg"}, --Drifting Star
         [1219482] = {"Bleed", 4, true, "Bite.ogg"}, --Rift Claws
         [1222341] = {"Backstep", 4, true, "Bite.ogg"}, --Gloom Bite
-        [351047] = {"Buster", 4, true, "Bite.ogg"}, --Proxy Strike
+        [352796] = {"Buster", 4, true, "Bite.ogg"}, --Proxy Strike
         [349934] = {"Buster", 4, true, "Bite.ogg"}, --Flagellation Protocol
         [356967] = {"Knock", 4, true, "Knock.ogg"}, --Hyperlight Backhand
         [347716] = {"Bleed", 4, true, ""}, --Letter opener

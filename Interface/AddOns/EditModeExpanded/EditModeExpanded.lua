@@ -44,6 +44,7 @@ EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
     addon:initCooldownManager()
     addon:initTotemFrame()
     addon:initDurationBars()
+    addon:initVigorBar()
         
     local class = UnitClassBase("player")
         
@@ -111,7 +112,7 @@ EventUtil.ContinueOnAddOnLoaded("Blizzard_AuctionHouseUI", function()
     
     if db.EMEOptions.auctionMultisell then
         addon.hookScriptOnce(AuctionHouseMultisellProgressFrame, "OnShow", function()
-            lib:RegisterFrame(AuctionHouseMultisellProgressFrame, L["Auction Multisell"], db.AuctionHouseMultisellProgressFrame)
+            addon:registerFrame(AuctionHouseMultisellProgressFrame, L["Auction Multisell"], db.AuctionHouseMultisellProgressFrame)
             hooksecurefunc(UIParentBottomManagedFrameContainer, "Layout", function()
                 addon.ResetFrame(AuctionHouseMultisellProgressFrame)
             end)

@@ -1,3 +1,3 @@
-[View Full Changelog](https://github.com/enderneko/Cell/compare/r265-release...2a322cdfda4704076f29afdb800614630dcfdaf4)
+[View Full Changelog](https://github.com/enderneko/Cell/compare/r268-release...c287e980b23695859b9b067efd2b8639c345a0be)
 
-- Delay creation of some indicators to avoid potential issues
+- Fix Monk-related issues

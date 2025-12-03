@@ -1,45 +1,0 @@
-
-KeyMaster_DB = {
-["addonConfig"] = {
-["showRatingFloat"] = false,
-["interfaceFramePos"] = {
-["yOfs"] = -89.16680908203125,
-["xOfs"] = 1192.666137695313,
-["relativePoint"] = "TOPLEFT",
-},
-["version"] = "1.4.0-release",
-["showErrors"] = false,
-["miniMapButtonPos"] = {
-["minimapPos"] = 206,
-["hide"] = true,
-},
-["splashViewed"] = true,
-["characterFilters"] = {
-["serverFilter"] = true,
-["filterMaxLvl"] = true,
-["filterNoKey"] = false,
-["filterNoRating"] = false,
-},
-["showDebugging"] = false,
-},
-}
-KeyMaster_C_DB = {
-["Player-1390-09230B89"] = {
-["season"] = 14,
-["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸ÍE^mSRjq‰YjQbN#LÒ%±$Ñ­)(’™›š‘”X’™—’.²òó‚S“ƒ|RËRs¯(¨]`a¼Àêv-ã;ãÆœŒ&òXUÄ‚_8a¢©*\r@pãHÖNÖ~,zžˆc\\2}	X4dPRm(\\àXÒ4¨›åI¥y™%ž)Ià ™”œ‘XvÿÂII¥™9)!•©EE©9©‰Å©‡À\"a©EÅ@Ÿê™è8å%æ¦6y—å—d¤¦æ]Ê/ÏKMñN­›ÀºÆõLq‘oÊH,vLIÉÏK(È­,ÉÈLÈ)-†„ß¡ ¢ÔÄœÜ Ê¬ÄÀ",
-["keyId"] = 500,
-["class"] = 7,
-["keyLevel"] = 2,
-["teams"] = {
-},
-["vault"] = {
-},
-["level"] = 80,
-["name"] = "Kvotheen",
-["timestamp"] = 1741378108,
-["expire"] = 1741762800,
-["client"] = true,
-["rating"] = 297,
-["realm"] = "Hyjal",
-},
-}

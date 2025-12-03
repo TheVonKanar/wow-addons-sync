@@ -319,12 +319,20 @@ function DUIDialogBaseMixin:OnLoad()
     API.DisableSharpening(wb.Icon);
 
 
+    local tintableTextures = {};
+    self.tintableTextures = tintableTextures;
+    tinsert(tintableTextures, self.FrontFrame.FooterDivider);
+    tinsert(tintableTextures, self.FrontFrame.HeaderDivider);
+    tinsert(tintableTextures, self.FrontFrame.Header.Divider);
+
+
     --Frame Background
     self.Parchments = {};
 
     for i = 1, 3 do
         local piece = self.BackgroundFrame:CreateTexture(nil, "BACKGROUND", nil, -1);
         self.Parchments[i] = piece;
+        tinsert(tintableTextures, piece);
     end
 
     self.Parchments[1]:SetTexCoord(0, 1, 0, 256/2048);
@@ -768,6 +776,8 @@ function DUIDialogBaseMixin:UseQuestLayout(state)
         CallbackRegistry:Trigger("StopViewingQuest");
     end
 
+    self.ScrollFrame.questTextRange = nil;
+
     return isQuestChanged
 end
 
@@ -853,8 +863,21 @@ function DUIDialogBaseMixin:IsScrollAtBottom()
     end
 
     local current = self.ScrollFrame.scrollTarget or self.ScrollFrame.value;
-    local range = self.ScrollFrame.range;
-    return current + 0.5 > range;
+    local target = self.ScrollFrame.range;
+    return current + 0.5 > target;
+end
+
+function DUIDialogBaseMixin:IsScrollPassObjectives()
+    --when SCROLLDOWN_THEN_ACCEPT_QUEST = true
+    --If the quest texts have fully displayed, pressing Space accepts the quest instead of scroll to rewards
+
+    if not self:IsScrollable() then
+        return true
+    end
+
+    local current = self.ScrollFrame.scrollTarget or self.ScrollFrame.value;
+    local target = self.ScrollFrame.questTextRange or self.ScrollFrame.range;
+    return current + 0.5 > target;
 end
 
 function DUIDialogBaseMixin:ResetScroll()
@@ -923,6 +946,14 @@ function DUIDialogBaseMixin:SetScrollRange(contentHeight)
     self:SetScrollable(scrollable);
 end
 
+function DUIDialogBaseMixin:SetQuestTextRange(questTextRange)
+    if questTextRange then
+        local scrollViewHeight = self.scrollViewHeight;
+        self.ScrollFrame.questTextRange = questTextRange + PARAGRAPH_SPACING - scrollViewHeight;
+    else
+        self.ScrollFrame.questTextRange = nil;
+    end
+end
 
 local function SortFunc_GossipOrder(a, b)
 	return a.orderIndex < b.orderIndex;
@@ -931,7 +962,14 @@ end
 local GOSSIP_QUEST_LABEL = L["Gossip Quest Option Prepend"] or "(Quest)";
 
 local function SortFunc_GossipPrioritizeQuest(a, b)
+    if not (a and b) then
+        return false
+    end
+
     if a.flags and b.flags and (a.flags ~= b.flags) then
+        if a.flags == 1 then    --1:Quest, 4:PlayMovie?
+            return true
+        end
         return a.flags > b.flags
     end
 
@@ -1058,7 +1096,7 @@ end
 local function ConcatenateNPCName(text)
     if GetDBBool("ShowNPCNameOnPage") and UnitExists("npc") then
         local name = UnitName("npc");
-        if text and name and name ~= "" then
+        if API.canaccessvalue(name) and text and name and name ~= "" then
             return name..": "..text
         end
     end
@@ -1436,6 +1474,7 @@ function DUIDialogBaseMixin:HandleGossip()
     local contentHeight = fromOffsetY + objectHeight;  --self.ContentFrame:GetTop()
     contentHeight = contentHeight + (hasPreviousGossip and PARAGRAPH_SPACING or 0);     --Compensate for the top divider
     self:SetScrollRange(contentHeight);
+    self:SetQuestTextRange(nil);
 
     if hasPreviousGossip then
         local scrollRangeDiff = objectHeight - self.scrollViewHeight + PARAGRAPH_SPACING;
@@ -1529,6 +1568,8 @@ function DUIDialogBaseMixin:HandleQuestDetail(playFadeIn)
         self.FrontFrame.QuestPortrait:FadeOut();
     end
 
+    self:SetQuestTextRange(offsetY);
+
     --Rewards
     local rewardList;
     rewardList, self.chooseItems = addon.BuildRewardList();
@@ -1621,6 +1662,8 @@ function DUIDialogBaseMixin:HandleQuestProgress(playFadeIn)
 
     --Progress
     offsetY = self:FormatQuestText(offsetY, "Progress");
+
+    self:SetQuestTextRange(offsetY);
 
     --Required Items
     local numRequiredItems = GetNumQuestItems();
@@ -1774,6 +1817,12 @@ function DUIDialogBaseMixin:HandleQuestComplete(playFadeIn)
 
     --Progress
     offsetY = self:FormatQuestText(offsetY, "Complete");
+
+    if self.chooseItems then
+        self:SetQuestTextRange(nil);
+    else
+        self:SetQuestTextRange(offsetY);
+    end
 
     if rewardList and #rewardList > 0 then
         self:RegisterEvent("QUEST_ITEM_UPDATE");
@@ -2558,7 +2607,7 @@ end
 
 function DUIDialogBaseMixin:ScrollDownOrAcceptQuest(fromMouseClick)
     if SCROLLDOWN_THEN_ACCEPT_QUEST and not fromMouseClick then
-        if not self:IsScrollAtBottom() then
+        if not self:IsScrollPassObjectives() then
             self:ScrollToBottom();
             local noFeedback = true;
             return noFeedback
@@ -2579,6 +2628,17 @@ function DUIDialogBaseMixin:SetHintText(hintText)
     --After clicking "Show Answer" button
     --We add the answer to the next GOSSIP_SHOW
     self.hintText = hintText;
+end
+
+function DUIDialogBaseMixin:TintBackground(r, g, b)
+    --240/255, 235/255, 255/255
+    if not (r and g and b) then
+        r, g, b = 1, 1, 1;
+    end
+
+    for _, obj in ipairs(self.tintableTextures) do
+        obj:SetVertexColor(r, g, b);
+    end
 end
 
 do  --Clipboard
@@ -2609,6 +2669,8 @@ do  --Clipboard
             name = data.name;
             if data.flags == 1 then
                 name = "(Quest) "..name;
+            elseif data.flags and data.flags ~= 0 then
+                name = string.format("(Flag: %s) %s", data.flags, name);
             end
             text = idFormat:format(data.gossipOptionID, name);
             str = JoinText(str, text);

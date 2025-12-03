@@ -68,8 +68,8 @@ local L = namespace.L 				--localization
 				DCSAboutDCSFrame:Hide()
 			else
 				DCSAboutDCSFrame:Show()
-				local difference = DCSAboutDCSFrame:GetRight() - DCSAboutDCSFrame:GetLeft() - 50 --probably can be moved outside of function. since won't be often used, let remain 
-				DCSAboutDCS_FS:SetWidth(difference) --somehow feels wrong to set a width of fontstring repeatedly to the same number. 
+				local difference = DCSAboutDCSFrame:GetRight() - DCSAboutDCSFrame:GetLeft() - 50  
+				DCSAboutDCS_FS:SetWidth(difference)  
 				DCSAboutDCS_ThanksFS:SetWidth(difference)
 			end
 		end)
@@ -120,7 +120,7 @@ local L = namespace.L 				--localization
 			"|cff0094c4Special Thanks:|r" .. "|n" ..
 			"|cff0094c4    Communities:|r WoWInterface, Curse, Wago," .. "|n" .. 
 			"        Sloot, Eiya, BabaShareShow, kevinjordan," .. "|n" ..
-			"        ElvUI, Blizzard, and Reddit's /r/wow" .. "|n" ..
+			"        ElvUI, DBM, and Team Liquid" .. "|n" ..
 			"|cff0094c4    Individuals:|r Baudzila, 10leej, wizardanim," .. "|n" ..
 			"        Phanx, Ro, Choonster, Zork, Lombra," .. "|n" ..
 			"        myrroddin, Darth_Predator, sirann," .. "|n" ..

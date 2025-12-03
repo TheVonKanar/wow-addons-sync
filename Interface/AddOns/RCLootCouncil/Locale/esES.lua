@@ -373,6 +373,12 @@ L["opt_autoPassWeapons_desc"] = "Marca esta casilla para activar el pasar autom�
 L["opt_autoPassWeapons_name"] = "Auto Pasar Armas"
 L["opt_autoTrade_desc"] = "Seleccionar para añadir automáticamente los objetos a la ventana de comercio cuando se comercie con un ganador. Si se deshabilita, se pedirá confirmación antes de añadir los objetos."
 L["opt_award_later_desc"] = "Activar para comprobar automáticamente la opción 'Recompensar más tarde' en la ventana de sesión."
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_desc"] = "When enabled, any trade attempts will be cancelled while the voting frame is active."
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_message"] = "Trade from %s blocked"
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_name"] = "Block Trades"
 L["opt_buttonsGroup_desc"] = "Grupo de opciones para los botones de %s y las respuestas. Ver más arriba para una explicación detallada."
 L["opt_chatFrameName_desc"] = "Selecciona en qué ventana de chat quieres que RCLootCouncil muestre la información de salida."
 L["opt_chatFrameName_name"] = "Ventana de Chat"

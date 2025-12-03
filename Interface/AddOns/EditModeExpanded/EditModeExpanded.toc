@@ -1,6 +1,6 @@
-## Interface: 110200
+## Interface: 110207
 ## Title: Edit Mode Expanded
-## Version: 11.2-015
+## Version: 11.2-021
 ## Notes: Expands Edit Mode to apply to other frames
 ## Author: Teelo
 ## SavedVariables: EditModeExpandedADB
@@ -75,7 +75,9 @@ FrameHandlers\ClassResources\HolyPower.lua
 FrameHandlers\ClassResources\Runes.lua
 FrameHandlers\ClassResources\SoulShards.lua
 
+AutoLayoutChanges.lua
 Options.lua
+RegisterFrame.lua
 ResetFrame.lua
 HookOnce.lua
 AnchorToDropdown.lua
@@ -84,3 +86,5 @@ RegisteredSystemFrames.lua
 CombatManager.lua
 EditModeExpanded.lua
 WarningFrame.xml
+Vigor.lua
+Vigor.xml

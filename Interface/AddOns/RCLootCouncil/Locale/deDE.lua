@@ -390,6 +390,12 @@ L["opt_autoPassWeapons_desc"] = "Anhaken damit automatisch auf Waffen gepasst wi
 L["opt_autoPassWeapons_name"] = "Auf Waffen automatisch passen"
 L["opt_autoTrade_desc"] = "Anhaken, um vergebene Gegenstände dem Handelsfenster automatisch hinzuzufügen, wenn man mit dem Gewinner handelt. Wenn deaktiviert, wird ein Pop-up eingeblendet bevor die Gegenstände hinzugefügt werden. "
 L["opt_award_later_desc"] = "Anhaken, um die \"Später vergeben\"-Funktion im Sitzungsfenster automatisch zu aktivieren."
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_desc"] = "When enabled, any trade attempts will be cancelled while the voting frame is active."
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_message"] = "Trade from %s blocked"
+--[[Translation missing --]]
+L["opt_blockTradesInVoting_name"] = "Block Trades"
 L["opt_buttonsGroup_desc"] = "Optionsgruppe für %s Schaltflächen und Antworten. Für eine detaillierte Erklärung siehe oben. "
 L["opt_chatFrameName_desc"] = "Wähle aus, in welchem Chatfenster RCLootCouncil Informationen ausgeben soll."
 L["opt_chatFrameName_name"] = "Chatfenster"

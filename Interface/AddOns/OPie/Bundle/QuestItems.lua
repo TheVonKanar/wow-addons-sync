@@ -68,6 +68,7 @@ if MODERN or CF_WRATH then
 			[33634]=true, [35797]=true, [37888]=true, [37860]=true, [37859]=true, [37815]=true, [46847]=true, [47030]=true, [39213]=true, [42986]=true, [49278]=true,
 			[86425]={31332, 31333, 31334, 31335, 31336, 31337}, [90006]=true, [86536]=true, [86534]=true,
 			[49351]=crownChemical, [49352]=crownChemical, -- perfume/cologne neutralizers
+			[37586]=have1, -- handful of treats [hallow's end]
 			[180008]=-60609, [180009]=-60609, [180170]=-60649,
 			[174464]=true, [168035]=true,
 			[191251]=isOnKeysOfLoyalty, [202096]=isInPrimalistFutureScenario, [203478]=isInPrimalistFutureScenario,
@@ -117,13 +118,16 @@ if MODERN or CF_WRATH then
 			[255676]=have1, -- phase diver's cache [11.2]
 			[247820]=have1, -- cache of k'areshi treasures [11.2 sign of the warrior]
 			-- Legion Remix
-			[237812]=have1, [245553]=have1, [256763]=have1, -- cache of infinite treasure/heroic/armory
+			[242617]=c1, -- curious simulacrum
+			[237812]=have1, [239303]=have1, [245553]=have1, [256763]=have1, -- cache of infinite treasure/heroic/armory
 			[248247]=have1, [251821]=have1, -- cache of infinite power
 			[253224]=have10, -- mote of a broken time
 			[254267]=have100, -- fragmented memento
 			[246812]=c1, [246815]=c1, [246814]=c1, [246813]=c1, -- minor/lesser//greater bronze cache
 			[245925]=c1, [249891]=c1, -- artifactium sand
 			[246936]=c1, [246937]=c1, -- epoch memento
+			[152102]=have1, [152103]=have1, [152104]=have1, [152105]=have1,
+			[152106]=have1, [152107]=have1, [152108]=have1, -- paragon boxes
 		}
 		filtered = {
 			[228988]=ebIsNotRockReviver, -- siren isle rock reviver

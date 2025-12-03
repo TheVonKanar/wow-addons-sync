@@ -9,7 +9,7 @@ function addon:initSystemFrames()
     for _, frame in ipairs(EditModeManagerFrame.registeredSystemFrames) do
         local name = frame:GetName()
         if not db[name] then db[name] = {} end
-        lib:RegisterFrame(frame, "", db[name])
+        addon:registerFrame(frame, "", db[name])
     end
     
     -- The earlier RegisterFrame will :SetShown(true) the TalkingHeadFrame if it was set to Hide then unset.
@@ -25,7 +25,7 @@ local function getToggleInCombatText(hidden)
     end
 end
     
-local actionbars = {[MainMenuBar]=true, [MultiBarBottomLeft]=true, [MultiBarBottomRight]=true, [MultiBarRight]=true, [MultiBarLeft]=true, [MultiBar5]=true, [MultiBar6]=true, [MultiBar7]=true}
+local actionbars = {[MainActionBar]=true, [MultiBarBottomLeft]=true, [MultiBarBottomRight]=true, [MultiBarRight]=true, [MultiBarLeft]=true, [MultiBar5]=true, [MultiBar6]=true, [MultiBar7]=true}
 function addon:registerSecureFrameHideable(frame, usePoint, onHide, onShow)
     local hidden, toggleInCombat, x, y, point, parent, relativePoint
     local override

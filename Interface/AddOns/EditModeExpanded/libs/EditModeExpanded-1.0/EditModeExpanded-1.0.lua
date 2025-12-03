@@ -2,7 +2,7 @@
 -- Internal variables
 --
 
-local MAJOR, MINOR = "EditModeExpanded-1.0", 95
+local MAJOR, MINOR = "EditModeExpanded-1.0", 98
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -35,6 +35,8 @@ local ENUM_EDITMODEACTIONBARSETTING_BUTTON = 15
 local ENUM_EDITMODEACTIONBARSETTING_FRAMESIZE = 16 -- Enum.EditModeUnitFrameSetting.FrameSize
 local ENUM_EDITMODEACTIONBARSETTING_DROPDOWN = 17
 local ENUM_EDITMODEACTIONBARSETTING_SLIDER = 18
+local ENUM_EDITMODEACTIONBARSETTING_COORDINATES = 19
+local ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER = 20
 
 -- run OnLoad the first time RegisterFrame is called by an addon
 local f = lib.internalOnLoadFrame or {}
@@ -731,6 +733,91 @@ function lib:RegisterCustomButton(frame, name, onClick)
     table.insert(extraDialogItems, button)
 end
 
+-- call this to register a frame to have its position specified by the user using screen coordinates
+function lib:RegisterCoordinates(frame)
+    local systemID = getSystemID(frame)
+    if not framesDialogs[systemID] then framesDialogs[systemID] = {} end
+    
+    for _, settings in pairs(framesDialogs[systemID]) do
+        if settings.type == ENUM_EDITMODEACTIONBARSETTING_COORDINATES then
+            return
+        end
+    end
+    
+    local coordinatePanel = CreateFrame("Frame", nil, EditModeExpandedSystemSettingsDialog.Settings, "HorizontalLayoutFrame")
+    coordinatePanel.widthPadding = 15
+    coordinatePanel.fixedHeight = 28
+    coordinatePanel.SetupSetting = nop
+    coordinatePanel.spacing = 20
+    table.insert(extraDialogItems, coordinatePanel)
+    
+    coordinatePanel.label = coordinatePanel:CreateFontString(nil, nil, "GameTooltipText")
+    local label = coordinatePanel.label
+    label.layoutIndex = 1
+    label:SetText("Coordinates:")
+    
+    coordinatePanel.xEditBox = CreateFrame("EditBox", nil, coordinatePanel, "InputBoxTemplate")
+    local xEditBox = coordinatePanel.xEditBox
+    xEditBox.layoutIndex = 2
+    xEditBox.topPadding = -5
+    xEditBox:SetSize(30, 20)
+    xEditBox:SetNumeric(true)
+    xEditBox:SetAutoFocus(false)
+    
+    coordinatePanel.yEditBox = CreateFrame("EditBox", nil, coordinatePanel, "InputBoxTemplate")
+    local yEditBox = coordinatePanel.yEditBox
+    yEditBox.layoutIndex = 3
+    yEditBox.topPadding = -5
+    yEditBox:SetSize(30, 20)
+    yEditBox:SetNumeric(true)
+    yEditBox:SetAutoFocus(false)
+    
+    local function onEnterPressed()
+        local db = framesDB[getSystemID(frame)]
+        local x, y = tonumber(xEditBox:GetText()), tonumber(yEditBox:GetText())
+        if (type(x) ~= "number") or (type(y) ~= "number") then return end
+        
+        if frame.EMESystemID then
+            -- Frame is a base UI frame already handled by Edit Mode
+            -- So we need to store the new coordinates into the Edit Mode profile
+            frame:ClearAllPoints()
+            frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
+            frame:SetUserPlaced(true)
+            --EditModeSystemSettingsDialog:UpdateSettings(frame)
+            EditModeManagerFrame:OnSystemPositionChange(frame)
+        else
+            db.x, db.y = x, y
+            frame.EMEanchorTo = UIParent
+            frame.EMEanchorPoint = "BOTTOMLEFT"
+            
+            frame:ClearAllPoints()
+            frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
+            
+            if frame:IsUserPlaced() then
+                frame:SetUserPlaced(false)
+            end
+        end
+    end
+    
+    xEditBox:SetScript("OnEnterPressed", onEnterPressed)
+    yEditBox:SetScript("OnEnterPressed", onEnterPressed)
+    
+    xEditBox:SetScript("OnTabPressed", function()
+        yEditBox:SetFocus()
+    end)
+    yEditBox:SetScript("OnTabPressed", function()
+        xEditBox:SetFocus()
+    end)
+    
+    table.insert(framesDialogs[systemID],
+        {
+            setting = ENUM_EDITMODEACTIONBARSETTING_COORDINATES,
+            type = ENUM_EDITMODEACTIONBARSETTING_COORDINATES,
+            settingFrame = coordinatePanel,
+        }
+    )
+end
+
 -- call this to register a custom dropdown menu
 -- requirement: must have LibUIDropDownMenu installed
 -- @param1: frame - parent frame to create a dropdown about
@@ -825,6 +912,34 @@ local function clearSelectedSystem(index, systemFrame)
 end
 
 hooksecurefunc(f, "OnLoad", function()
+    -- this will stop the handlers being called more than once if multiple versions of this library exist
+    -- will only work from version 97 onward, implemented just before expansion Midnight
+    f.hookScriptWrappers = f.hookScriptWrappers or {}
+    local function hookScriptWrapper(frame, event, hookfunc)
+        f.hookScriptWrappers[frame] = f.hookScriptWrappers[frame] or {}
+        f.hookScriptWrappers[frame][event] = f.hookScriptWrappers[frame][event] or {}
+        wipe(f.hookScriptWrappers[frame][event])
+        f.hookScriptWrappers[frame][event][MINOR] = hookfunc
+        frame:HookScript(event, function(...)
+            if f.hookScriptWrappers[frame][event][MINOR] then
+                f.hookScriptWrappers[frame][event][MINOR](...)
+            end
+        end)
+    end
+    
+    f.hooksecurefuncWrappers = f.hooksecurefuncWrappers or {}
+    local function hooksecurefuncWrapper(frame, functionName, hookfunc)
+        f.hooksecurefuncWrappers[frame] = f.hooksecurefuncWrappers[frame] or {}
+        f.hooksecurefuncWrappers[frame][functionName] = f.hooksecurefuncWrappers[frame][functionName] or {}
+        wipe(f.hooksecurefuncWrappers[frame][functionName])
+        f.hooksecurefuncWrappers[frame][functionName][MINOR] = hookfunc
+        hooksecurefunc(frame, functionName, function(...)
+            if f.hooksecurefuncWrappers[frame][functionName][MINOR] then
+                f.hooksecurefuncWrappers[frame][functionName][MINOR](...)
+            end
+        end)
+    end
+    
     if not EditModeManagerExpandedFrame then
         CreateFrame("Frame", "EditModeManagerExpandedFrame", nil, UIParent)
     end
@@ -849,11 +964,11 @@ hooksecurefunc(f, "OnLoad", function()
     EditModeManagerExpandedFrame.CloseButton = EditModeManagerExpandedFrame.CloseButton or CreateFrame("Button", nil, EditModeManagerExpandedFrame, "UIPanelCloseButton")
     EditModeManagerExpandedFrame.CloseButton:SetPoint("TOPRIGHT")
     
-    EditModeManagerFrame:HookScript("OnShow", function()
+    hookScriptWrapper(EditModeManagerFrame, "OnShow", function()
         EditModeManagerExpandedFrame:Show()
     end)
     
-    EditModeManagerFrame:HookScript("OnHide", function()
+    hookScriptWrapper(EditModeManagerFrame, "OnHide", function()
         EditModeManagerExpandedFrame:Hide()
     end)
     
@@ -862,7 +977,7 @@ hooksecurefunc(f, "OnLoad", function()
         EditModeExpandedSystemSettingsDialog:Hide()
     end
 
-    hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function(self)
+    hooksecurefuncWrapper(EditModeManagerFrame, "EnterEditMode", function(self)
         -- can cause errors if the player is in combat - eg trying to move or show/hide protected frames
         if InCombatLockdown() then return end
         if not EditModeManagerExpandedFrame then return end -- happens if library is embedded but nothing has been registered
@@ -902,7 +1017,7 @@ hooksecurefunc(f, "OnLoad", function()
         end
     end)
 
-    hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function()
+    hooksecurefuncWrapper(EditModeManagerFrame, "ExitEditMode", function(self)
         if InCombatLockdown() then
             print("EditModeExpanded Error: could not hide Edit Mode properly - you were in combat!")
             return
@@ -949,7 +1064,7 @@ hooksecurefunc(f, "OnLoad", function()
         EditModeExpandedSystemSettingsDialog:Hide()
     end)
 
-    hooksecurefunc(EditModeManagerFrame, "SelectSystem", function(self, systemFrame)
+    hooksecurefuncWrapper(EditModeManagerFrame, "SelectSystem", function(self, systemFrame)
         if EditModeExpandedSystemSettingsDialog and EditModeExpandedSystemSettingsDialog.attachedToSystem ~= systemFrame then
             EditModeExpandedSystemSettingsDialog:Hide()
         end
@@ -961,7 +1076,7 @@ hooksecurefunc(f, "OnLoad", function()
         end
     end)
     
-    hooksecurefunc(EditModeManagerFrame, "MakeNewLayout", function(self, newLayoutInfo, layoutType, layoutName, isLayoutImported)
+    hooksecurefuncWrapper(EditModeManagerFrame, "MakeNewLayout", function(self, newLayoutInfo, layoutType, layoutName, isLayoutImported)
         local oldProfileName = previousProfileNames[2]
         if not oldProfileName then
             oldProfileName = previousProfileNames[1]
@@ -1010,7 +1125,7 @@ hooksecurefunc(f, "OnLoad", function()
     frame:SetPoint("TOPLEFT")
     frame.widthPadding = 40
     frame.heightPadding = 10
-    frame.Title = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
+    frame.Title = frame.Title or frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
     frame.Title:SetPoint("TOP", 0, -15)
     frame.Border = frame.Border or CreateFrame("Frame", nil, frame, "DialogBorderTranslucentTemplate")
     frame.Border.ignoreInLayout = true
@@ -1099,6 +1214,34 @@ end)
 
 local function GetSystemSettingDisplayInfo(dialogs)
     return dialogs
+end
+
+local function hideFrameUntilMouseover(frame)
+    local handler = frame.EMESecureHandlerEnterLeave
+    if not handler then
+        frame.EMESecureHandlerEnterLeave = CreateFrame("Frame", nil, nil, "SecureHandlerEnterLeaveTemplate")
+        handler = frame.EMESecureHandlerEnterLeave
+        handler:SetPoint("TOPLEFT", frame, "TOPLEFT")
+        handler:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT")
+        handler:SetFrameRef("parent", frame)
+        handler:SetFrameStrata("TOOLTIP")
+        handler:EnableMouse(false)
+        handler:EnableMouseMotion(true)
+        handler:SetPropagateMouseMotion(true)
+    end
+    
+    handler:SetAttribute("_onenter", "self:GetFrameRef('parent'):Show()")
+    handler:SetAttribute("_onleave", "self:GetFrameRef('parent'):Hide()")
+    frame:Hide()
+end
+
+local function pauseHideFrameUntilMouseover(frame)
+    local handler = frame.EMESecureHandlerEnterLeave
+    if not handler then return end
+    
+    handler:SetAttribute("_onenter", "")
+    handler:SetAttribute("_onleave", "")
+    frame:Show()
 end
 
 hooksecurefunc(f, "OnLoad", function()
@@ -1260,6 +1403,22 @@ hooksecurefunc(f, "OnLoad", function()
                                     framesDB[systemID].settings[displayInfo.setting] = 1
                                 else
                                     framesDB[systemID].settings[displayInfo.setting] = 0
+                                end
+                            end)
+                        end
+                        
+                        if displayInfo.setting == ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER then
+                            savedValue = framesDB[systemID].settings[displayInfo.setting]
+                            if savedValue == nil then savedValue = 0 end
+                            settingFrame.Button:SetChecked(savedValue)
+                            settingFrame.Button:SetScript("OnClick", function()
+                                if settingFrame.Button:GetChecked() then
+                                    framesDB[systemID].settings[displayInfo.setting] = 1
+                                    hideFrameUntilMouseover(systemFrame)
+                                else
+                                    framesDB[systemID].settings[displayInfo.setting] = 0
+                                    pauseHideFrameUntilMouseover(systemFrame)
+                                    systemFrame:Show()
                                 end
                             end)
                         end
@@ -1901,4 +2060,42 @@ function lib:GroupOptions(frames, name)
             frame.EMEResetButton:Hide()
         end
     end
+end
+
+-- Adds the option to make this frame hidden except while mouseover
+-- @param 2: localized description for the checkbox to show
+function lib:RegisterHiddenUntilMouseover(frame, name)
+    local systemID = getSystemID(frame)
+    
+    if not framesDialogs[systemID] then framesDialogs[systemID] = {} end
+    if framesDialogsKeys[systemID] and framesDialogsKeys[systemID][ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER] then return end
+    if not framesDialogsKeys[systemID] then framesDialogsKeys[systemID] = {} end
+    framesDialogsKeys[systemID][ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER] = true
+    table.insert(framesDialogs[systemID],
+        {
+            setting = ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER,
+            name = name or "Hide Until Mouseover",
+            type = Enum.EditModeSettingDisplayType.Checkbox,
+        }
+    )
+    
+    local function callLater()
+        local db = framesDB[systemID]
+        if not db.settings then db.settings = {} end
+        if not db.settings[ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER] then db.settings[ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER] = {} end
+        
+        if db.settings[ENUM_EDITMODEACTIONBARSETTING_HIDDENUNTILMOUSEOVER] == 1 then
+            hideFrameUntilMouseover(frame)
+        else
+            pauseHideFrameUntilMouseover(frame)
+        end
+    end
+    
+    if profilesInitialised then
+        callLater()
+    else
+        table.insert(customCheckboxCallDuringProfileInit, callLater)
+    end
+
+    EventRegistry:RegisterFrameEventAndCallback("EDIT_MODE_LAYOUTS_UPDATED", callLater)
 end
