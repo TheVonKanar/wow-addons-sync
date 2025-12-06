@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1270,
 ["lastSanitation"] = 3,
-["session"] = 1267,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -813,9 +813,39 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
+["time"] = "2025/12/05 18:53:20",
+["locals"] = "",
+["stack"] = "",
+["session"] = 1270,
+["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/AstralKeys/Lists/Friends.lua:469: attempt to call field 'AddListFilter' (a nil value)",
+["time"] = "2025/12/05 18:53:20",
+["locals"] = "",
+["stack"] = "",
+["session"] = 1270,
+["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/AstralKeys/Lists/Guild.lua:283: attempt to call field 'AddListSort' (a nil value)",
+["time"] = "2025/12/05 18:53:20",
+["locals"] = "",
+["stack"] = "",
+["session"] = 1270,
+["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
+["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
+["counter"] = 2,
 },
 },
 }

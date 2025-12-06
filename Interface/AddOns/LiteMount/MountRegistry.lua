@@ -10,7 +10,6 @@
 
 local _, LM = ...
 
-local C_MountJournal = LM.C_MountJournal or C_MountJournal
 local C_Spell = LM.C_Spell
 
 local CallbackHandler = LibStub:GetLibrary("CallbackHandler-1.0", true)
@@ -76,7 +75,11 @@ local EXTRA_MOUNT_DATA = {
         {
             itemID = LM.ITEM.MAGIC_BROOM,
             spellID = LM.SPELL.MAGIC_BROOM,
-            flags = { ['RUN'] = true, ['FLY'] = true, },
+            flags = {
+                ['RUN'] = true,
+                ['FLY'] = true,
+                ['DRAGONRIDING'] = true,
+            },
             creatureDisplayID = { 21939 },
             expansion = 1,
         }
@@ -416,12 +419,18 @@ local function MatchMountToBuff(m, buffNames)
     if spellName and buffNames[spellName] then return true end
 end
 
+local issecretvalue = issecretvalue or function () return false end
+
 function LM.MountRegistry:GetMountFromUnitAura(unitid)
     local buffNames = { }
     local i = 1
     while true do
         local auraInfo = C_UnitAuras.GetAuraDataByIndex(unitid, i)
-        if auraInfo then buffNames[auraInfo.name] = true else break end
+        if auraInfo == nil then
+            break
+        elseif not issecretvalue(auraInfo.name) then
+            buffNames[auraInfo.name] = true
+        end
         i = i + 1
     end
     return self.mounts:Find(MatchMountToBuff, buffNames)
@@ -436,7 +445,11 @@ function LM.MountRegistry:GetActiveMount()
     local i = 1
     while true do
         local auraInfo = C_UnitAuras.GetAuraDataByIndex('player', i)
-        if auraInfo then buffIDs[auraInfo.spellId] = true else break end
+        if auraInfo == nil then
+            break
+        elseif not issecretvalue(auraInfo.spellId) then
+            buffIDs[auraInfo.spellId] = true
+        end
         i = i + 1
     end
     return self.mounts:Find(function (m) return m:IsActive(buffIDs) end)
@@ -461,7 +474,7 @@ end
 function LM.MountRegistry:GetMountByShapeshiftForm(i)
     if not i then
         return
-    elseif i == 1 and select(2, UnitClass("player")) == "SHAMAN" then
+    elseif i == 1 and UnitClassBase("player") == "SHAMAN" then
          return self:GetMountBySpell(LM.SPELL.GHOST_WOLF)
     else
         local spellID

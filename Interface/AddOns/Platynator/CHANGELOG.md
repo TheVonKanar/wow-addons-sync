@@ -1,7 +1,9 @@
 # Platynator
 
-## [188](https://github.com/TheMouseNest/Platynator/tree/188) (2025-12-03)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/187...188) 
+## [191](https://github.com/TheMouseNest/Platynator/tree/191) (2025-12-04)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/190...191) 
 
-- Remove fix for asset rename, because it wasn't renamed in the first place  
-    (issue came from a custom build of Platynator)  
+- Disable Blizzard nameplate cast bar (not needed anymore)  
+- Midnight: Use SetAlphaToBoolean to do not interruptible casts display  
+- Add separate colour for interruptible channels  
+- Midnight: Fix cast target staying visible after the spellcast has stopped  

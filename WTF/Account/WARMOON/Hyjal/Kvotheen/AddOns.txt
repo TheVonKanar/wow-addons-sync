@@ -171,7 +171,7 @@ BigDebuffs: enabled
 Narcissus: disabled
 TomPoints: enabled
 SharedMediaAdditionalFonts: disabled
-SharedMedia: enabled
+SharedMedia: disabled
 Dejunk: enabled
 DialogueUI: enabled
 ExtraQuestButton: enabled
@@ -198,7 +198,7 @@ BigWigs_NerubarPalace: disabled
 LittleWigs_Dragonflight: disabled
 KeyMaster: enabled
 AngryKeystones: enabled
-LibSharedMedia-3.0: enabled
+LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
 KongConfig: enabled
 Kong: enabled
@@ -219,7 +219,7 @@ TalentTreeTweaks: disabled
 DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
 Krowi_AchievementFilter: enabled
 TrufiGCD: disabled
 OmniAuras: disabled
@@ -233,3 +233,6 @@ LoggerHeadLite: enabled
 Masque_CleanUI: enabled
 BigWigs_LiberationOfUndermine: disabled
 BigWigs_ManaforgeOmega: disabled
+GTFO: disabled
+WeakAurasStopMotion: enabled
+Platynator: disabled

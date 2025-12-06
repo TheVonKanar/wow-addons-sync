@@ -7,15 +7,15 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "Ånd 7.4 (4.136)",
+["_OPieVersion"] = "7.11.1 (4.136)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
-["_GameVersion"] = "11.2.5",
+["_GameVersion"] = "11.2.7",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
 ["Usables"] = false,
 ["arthstones"] = "SHIFT-B",
@@ -23,7 +23,7 @@ OPie_SavedData = {
 ["onsumables"] = "F2",
 },
 ["MotionAction"] = true,
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
@@ -32,12 +32,12 @@ OPie_SavedData = {
 ["RingScale"] = 1.200000047683716,
 ["ShowCooldowns"] = true,
 ["Bindings"] = {
-["rofessions"] = "F4",
 ["Talents"] = "F3",
+["rofessions"] = "F4",
 ["onsumables"] = "F2",
 ["arthstones"] = "F5",
-["Usables"] = false,
 ["rldMarkers"] = "F7",
+["Usables"] = false,
 ["getMarkers"] = "F6",
 },
 ["RingOptions"] = {
@@ -82,8 +82,8 @@ OPie_SavedData = {
 ["id"] = 460905,
 },
 {
-["sliceToken"] = "ABueEEQp4ge",
 ["id"] = 83958,
+["sliceToken"] = "ABueEEQp4ge",
 },
 ["name"] = "Toys",
 ["save"] = true,

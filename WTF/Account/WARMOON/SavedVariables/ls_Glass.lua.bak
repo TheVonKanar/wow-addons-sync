@@ -11,11 +11,11 @@ LS_GLASS_GLOBAL_CONFIG = {
 ["Raptorbuyer - Hyjal"] = "Default",
 ["Trialmagekvo - Hyjal"] = "Default",
 ["Testkvotheen - Hyjal"] = "Default",
-["Pandamo - Hyjal"] = "Default",
-["Killeen - Archimonde"] = "Default",
-["Kvothyr - Hyjal"] = "Default",
-["Pandamages - Hyjal"] = "Default",
 ["Pandkvé - Hyjal"] = "Default",
+["Pandamages - Hyjal"] = "Default",
+["Kvothyr - Hyjal"] = "Default",
+["Killeen - Archimonde"] = "Default",
+["Pandamo - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

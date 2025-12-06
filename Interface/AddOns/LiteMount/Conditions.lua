@@ -10,6 +10,8 @@
 
 local _, LM = ...
 
+local Env = LM.Environment
+
 local C_Spell = LM.C_Spell or C_Spell
 
 local L = LM.Localize
@@ -42,19 +44,19 @@ local ANY_TEXT = CLUB_FINDER_ANY_FLAG or SPELL_TARGET_TYPE1_DESC:upper()
 ]]
 
 local function IterateGroupUnits()
-   local unit, numMembers
-   if IsInRaid() then
-      unit, numMembers = 'raid', GetNumGroupMembers()
-   else
-      unit, numMembers = 'party', GetNumSubgroupMembers()
-   end
-   local i = 0
-   return function ()
-      i = i + 1
-      if i <= numMembers then
-         return unit..i
-      end
-   end
+    local unit, numMembers
+    if IsInRaid() then
+        unit, numMembers = 'raid', GetNumGroupMembers()
+    else
+        unit, numMembers = 'party', GetNumSubgroupMembers()
+    end
+    local i = 0
+    return function ()
+        i = i + 1
+        if i <= numMembers then
+            return unit..i
+        end
+    end
 end
 
 -- If any condition starts with "no" we're screwed
@@ -129,7 +131,7 @@ CONDITIONS["btn"] = {
     },
     handler =
         function (cond, context, v)
-            local inputButton = LM.Environment:GetMouseButtonClicked() or context.inputButton
+            local inputButton = Env.mouseButtonClicked or context.inputButton
             if not inputButton or not v then
                 return false
             elseif inputButton == "LeftButton" and v == "1" then
@@ -179,7 +181,12 @@ CONDITIONS["class"] = {
     menu = function ()
         local out = { }
         for _, v in ipairs(CLASS_SORT_ORDER) do
-            table.insert(out, { val = "class:" .. v})
+            local name = LOCALIZED_CLASS_NAMES_FEMALE[v]
+            local atlas = GetClassAtlas(v)
+            if atlas then
+                name = string.format("|A:%s:18:18|a %s", atlas, name)
+            end
+            table.insert(out, { val = "class:" .. v, text=name, sortKey=v })
         end
         return out
     end,
@@ -294,14 +301,13 @@ CONDITIONS["cursor"] = {
 
 --- Note that this diverges from the macro [dead] defaults to "target".
 CONDITIONS["dead"] = {
-    -- name = DEAD,
     handler =
         function (cond, context)
             return UnitIsDead(context.rule.unit or "player")
         end
 }
 
--- https://wow.gamepedia.com/DifficultyID
+-- https://warcraft.wiki.gg/wiki/DifficultyID
 CONDITIONS["difficulty"] = {
     name = LFG_LIST_DIFFICULTY,
     toDisplay =
@@ -389,7 +395,7 @@ CONDITIONS["drivable"] = {
         function (cond, context)
             -- Should work, doesn't so far
             -- return IsDrivableArea and IsDrivableArea()
-            return LM.Environment:IsDrivableArea()
+            return Env.isDrivableArea
         end,
 }
 
@@ -398,7 +404,7 @@ CONDITIONS["driving"] = {
         function (cond, context)
             -- Only one D.R.I.V.E. mount so far. Maybe in the future Blizzard will
             -- add IsDriving(), otherwise it'll be vehicle UI detection of some kind.
-            return LM.UnitAura('player', LM.SPELL.G_99_BREAKNECK) ~= nil
+            return Env.playerBuffIDs[LM.SPELL.G_99_BREAKNECK] or false
         end,
 }
 
@@ -416,22 +422,15 @@ CONDITIONS["elapsed"] = {
         end
 }
 
--- This is here in case I want to use it in the combat handler code, it doesn't work
--- for player actions because you're in combat at the time. In general it's not reliable
--- because if you are the first hit you will start combat before the encounter info is
--- available.
-
-CONDITIONS["encounter"] = {
-    handler =
-        function (cond, context, v)
-            v = tonumber(v)
-            if v then
-                return LM.Environment:GetEncounterInfo() == v
-            end
-        end
-}
-
 CONDITIONS["equipped"] = {
+    name = L.LM_ITEM_EQUIPPED,
+    textentry = true,
+    toDisplay =
+        function (v)
+            if v then
+                return C_Item.GetItemName(v) or v
+            end
+        end,
     handler =
         function (cond, context, v)
             if not v then
@@ -465,6 +464,19 @@ CONDITIONS["exists"] = {
 
 -- Check for an extraactionbutton, optionally with a specific spell id
 CONDITIONS["extra"] = {
+    name = BINDING_NAME_EXTRAACTIONBUTTON1,
+    textentry = true,
+    toDisplay =
+        function (v)
+            if v then
+                local name = C_Spell.GetSpellName(v)
+                if name then
+                    return string.format("%s (%d)", name, v)
+                else
+                    return v
+                end
+            end
+        end,
     handler =
         function (cond, context, v)
             if HasExtraActionBar and HasExtraActionBar() then
@@ -494,8 +506,8 @@ CONDITIONS["faction"] = {
     menu =
         function ()
             return {
-                { val = "faction:" .. PLAYER_FACTION_GROUP[0] },
-                { val = "faction:" .. PLAYER_FACTION_GROUP[1] },
+                { val = "faction:" .. PLAYER_FACTION_GROUP[0], text=string.format("|T%s:18:18|t %s", FACTION_LOGO_TEXTURES[0], PLAYER_FACTION_GROUP[0]) },
+                { val = "faction:" .. PLAYER_FACTION_GROUP[1], text=string.format("|T%s:18:18|t %s", FACTION_LOGO_TEXTURES[1], PLAYER_FACTION_GROUP[1]) },
             }
         end,
     handler =
@@ -510,7 +522,7 @@ CONDITIONS["falling"] = {
     name = STRING_ENVIRONMENTAL_DAMAGE_FALLING,
     handler =
         function (cond, context)
-            return LM.Environment:IsFalling()
+            return Env.isFalling
         end
 }
 
@@ -544,15 +556,14 @@ CONDITIONS["flightstyle"] = {
         end,
     handler =
         function (cond, context, v)
-            local _, currentStyle = LM.Environment:GetFlightStyle()
-            return currentStyle == v
+            return Env.flightStyle == v
         end,
 }
 
 CONDITIONS["floating"] = {
     handler =
         function (cond, context)
-            return LM.Environment:IsFloating()
+            return Env.isFloating
         end
 }
 
@@ -560,7 +571,7 @@ CONDITIONS["flyable"] = {
     name = format(L.LM_AREA_FMT_S, MOUNT_JOURNAL_FILTER_FLYING),
     handler =
         function (cond, context)
-            return LM.Environment:CanFly()
+            return Env.canFly
         end,
 }
 
@@ -571,15 +582,65 @@ CONDITIONS["flying"] = {
         end
 }
 
+-- You would think this would be easy to add a menu to. It is not.
 CONDITIONS["form"] = {
     handler =
         function (cond, context, v)
             if v == "slow" then
-                return LM.Environment:IsCombatTravelForm()
+                return Env.isCombatTravelForm
             elseif v then
                 return GetShapeshiftForm() == tonumber(v)
             else
                 return GetShapeshiftForm() > 0
+            end
+        end
+}
+
+-- This has signifant overlap with "member", and I suspect "member" should be
+-- removed, but for now I'll leave both,
+--
+-- Note that info.accountName is a kstring, but this seems to work for display
+-- purposes. You can't match/compare info.accountName.
+
+CONDITIONS["friend"] = {
+    name = L.LM_FRIEND_IN_GROUP,
+    toDisplay =
+        function (v)
+            if not v then
+                return ANY_TEXT
+            end
+            for i = 1, BNGetNumFriends() do
+                local info = C_BattleNet.GetFriendAccountInfo(i)
+                if info and info.battleTag == v then
+                    return BATTLENET_FONT_COLOR:WrapTextInColorCode(info.accountName)
+                end
+            end
+            return v
+        end,
+    menu =
+        function ()
+            local out = { nosort=true, { val="friend", text=ANY_TEXT } }
+            for i = 1, BNGetNumFriends() do
+                local info = C_BattleNet.GetFriendAccountInfo(i)
+                local name = BATTLENET_FONT_COLOR:WrapTextInColorCode(info.accountName)
+                local text = string.format('%s (%s)', name, info.battleTag)
+                table.insert(out,
+                    {
+                        val = 'friend:'..info.battleTag,
+                        text = text,
+                        tooltip = info.note ~= "" and ( NOTE_COLON .. ' ' .. info.note)
+                    })
+            end
+            return out
+        end,
+    handler =
+        function (cond, context, v)
+            for unit in IterateGroupUnits() do
+                local guid = UnitGUID(unit)
+                local info = C_BattleNet.GetAccountInfoByGUID(guid)
+                if info and info.isFriend and ( not v or v == info.battleTag ) then
+                    return true
+                end
             end
         end
 }
@@ -604,8 +665,8 @@ CONDITIONS["gather"] = {
     args = true,
     handler =
         function (cond, context, what, n)
-            local sinceHerb = GetTime() - LM.Environment:GetHerbTime()
-            local sinceMine = GetTime() - LM.Environment:GetMineTime()
+            local sinceHerb = GetTime() - (Env.herbTime or 0)
+            local sinceMine = GetTime() - (Env.mineTime or 0)
             n = tonumber(n) or 30
             if what == "herb" then
                 return sinceHerb < n
@@ -685,12 +746,12 @@ CONDITIONS["holiday"] = {
     name = L.LM_HOLIDAY,
     toDisplay =
         function (v)
-            return LM.Environment:GetHolidayName(tonumber(v)) or v
+            return Env:GetHolidayName(tonumber(v)) or v
         end,
     menu =
         function ()
             local out = {}
-            for id, title in pairs(LM.Environment:GetHolidays()) do
+            for id, title in pairs(Env:GetHolidays()) do
                 table.insert(out, { val="holiday:"..id, text=string.format("%s (%d)", title, id) })
             end
             return out
@@ -698,7 +759,7 @@ CONDITIONS["holiday"] = {
     handler =
         function (cond, context, v)
             if v then
-                return LM.Environment:IsHolidayActive(tonumber(v) or v)
+                return Env:IsHolidayActive(tonumber(v) or v)
             end
         end
 }
@@ -722,7 +783,7 @@ CONDITIONS["instance"] = {
     menu =
         function ()
             local out = { }
-            for id, name in pairs(LM.Environment:GetInstances()) do
+            for id, name in pairs(Env:GetInstances()) do
                 table.insert(out, { val = "instance:" .. id })
             end
             return out
@@ -748,7 +809,7 @@ CONDITIONS["jump"] = {
     -- name = BINDING_NAME_JUMP,
     handler =
         function (cond, context)
-            local jumpTime = LM.Environment:GetJumpTime()
+            local jumpTime = Env.jumpTime
             return ( jumpTime and jumpTime < 2 )
         end
 }
@@ -763,7 +824,54 @@ CONDITIONS["keybind"] = {
         end
 }
 
+CONDITIONS["keystone"] = {
+    name = WEEKLY_REWARDS_MYTHIC_KEYSTONE,
+    disabled = C_ChallengeMode.GetActiveKeystoneInfo == nil,
+    args = true,
+    toDisplay =
+        function (minLevel, maxLevel)
+            if not minLevel then
+                return ANY_TEXT
+            elseif not maxLevel then
+                return string.format(MYTHIC_PLUS_POWER_LEVEL, minLevel) .. '+'
+            elseif minLevel == maxLevel then
+                return string.format(MYTHIC_PLUS_POWER_LEVEL, minLevel)
+            else
+                return string.format(MEETINGSTONE_LEVEL, minLevel, maxLevel)
+            end
+        end,
+    menu =
+        function ()
+            local out = {
+                nosort = true,
+                { val = "keystone" },
+                { val = "keystone:2/5" },
+                { val = "keystone:6/9" },
+                { val = "keystone:10/11" },
+            }
+            for i = 12, 25 do
+                table.insert(out, { val = "keystone:"..i })
+            end
+            return out
+        end,
+    handler =
+        function (cond, context, minLevel, maxLevel)
+            minLevel = tonumber(minLevel) or 0
+            maxLevel = tonumber(maxLevel) or math.huge
+            local keyLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+            return (keyLevel >= minLevel) and (keyLevel <= maxLevel)
+        end
+}
+
 CONDITIONS["known"] = {
+    name = L.LM_SPELL_KNOWN,
+    textentry = true,
+    toDisplay =
+        function (v)
+            if v then
+                return C_Spell.GetSpellName(v) or v
+            end
+        end,
     handler =
         function (cond, context, v)
             if v then
@@ -822,7 +930,7 @@ CONDITIONS["loadout"] = {
         function ()
             local loadoutMenu = {}
             local loadoutNames = {}
-            local _, _, classIndex = UnitClass('player')
+            local _, classIndex = UnitClassBase('player')
             for specIndex = 1, 4 do
                 local specID = GetSpecializationInfoForClassID(classIndex, specIndex)
                 if not specID then break end
@@ -883,15 +991,15 @@ CONDITIONS["map"] = {
         end,
     menu =
         function ()
-            return MapTreeToMenu(LM.Environment:GetMapTree())
+            return MapTreeToMenu(Env:GetMapTree())
         end,
     handler =
         function (cond, context, v)
             if tonumber(v) then
                 if v:sub(1,1) == '*' then
-                    return LM.Environment:IsOnMap(tonumber(v:sub(2)))
+                    return Env:IsOnMap(tonumber(v:sub(2)))
                 else
-                    return LM.Environment:IsMapInPath(tonumber(v), true)
+                    return Env:IsMapInPath(tonumber(v), true)
                 end
             end
         end,
@@ -900,7 +1008,7 @@ CONDITIONS["map"] = {
 CONDITIONS["maw"] = {
     handler =
         function (cond, context, v)
-            return LM.Environment:IsTheMaw()
+            return Env.isTheMaw
         end
 }
 
@@ -1001,6 +1109,7 @@ CONDITIONS["mod"] = {
 }
 
 CONDITIONS["mounted"] = {
+    name = L.LM_MOUNTED,
     handler =
         function (cond, context, v)
             if not v then
@@ -1019,13 +1128,16 @@ CONDITIONS["mounted"] = {
 }
 
 CONDITIONS["moving"] = {
+    -- name = L.LM_MOVING_OR_FALLING,
     handler =
         function (cond, context)
-            return LM.Environment:IsMovingOrFalling()
+            return Env.isMovingOrFalling
         end
 }
 
 CONDITIONS["name"] = {
+    name = CHARACTER_NAME_PROMPT,
+    textentry = true,
     handler =
         function (cond, context, v)
             if v then
@@ -1085,6 +1197,7 @@ CONDITIONS["party"] = {
 }
 
 CONDITIONS["pet"] = {
+    -- name = L.LM_HAS_PET,
     handler =
         function (cond, context, v)
             local petunit
@@ -1105,7 +1218,7 @@ CONDITIONS["playermodel"] = {
     handler =
         function (cond, context, v)
             if v then
-                return LM.Environment:GetPlayerModel() == tonumber(v)
+                return Env:GetPlayerModel() == tonumber(v)
             end
         end
 }
@@ -1397,7 +1510,7 @@ CONDITIONS["stationary"] = {
         function (cond, context, minv, maxv)
             minv = tonumber(minv)
             maxv = tonumber(maxv)
-            local stationaryTime = LM.Environment:GetStationaryTime()
+            local stationaryTime = Env:GetStationaryTime()
             if stationaryTime then
                 if stationaryTime < ( minv or 0 ) then
                     return false
@@ -1426,7 +1539,7 @@ CONDITIONS["submerged"] = {
     name = TUTORIAL_TITLE28,
     handler =
         function (cond, context)
-            return (IsSubmerged() and not LM.Environment:IsFloating())
+            return (IsSubmerged() and not Env.isFloating)
         end,
 }
 
@@ -1446,8 +1559,46 @@ CONDITIONS["timerunning"] = {
         end
 }
 
+CONDITIONS["title"] = {
+    name = HONOR_REWARD_TITLE_TOOLTIP,
+    toDisplay =
+        function (v)
+            return GetTitleName(v)
+        end,
+    menu =
+        function ()
+            local out = {}
+            for i = 1, GetNumTitles() do
+                local name, isPlayerTitle = GetTitleName(i)
+                if isPlayerTitle then
+                    table.insert(out, { val="title:"..i, text=name })
+                end
+            end
+            return out
+        end,
+    handler =
+        function (cond, context, v)
+            return GetCurrentTitle() == tonumber(v)
+        end
+}
+
 CONDITIONS["tracking"] = {
+    name = TRACKING,
     disabled = not ( C_Minimap and C_Minimap.GetNumTrackingTypes ),
+    toDisplay =
+        function (v)
+            local info = C_Minimap.GetTrackingInfo(v)
+            if info then return info.name end
+        end,
+    menu =
+        function ()
+            local out = { }
+            for i = 1, C_Minimap.GetNumTrackingTypes() do
+                local info = C_Minimap.GetTrackingInfo(i)
+                table.insert(out, { val="tracking:"..i, text=string.format("|T%d:18:18|t %s", info.texture, info.name), sortKey=info.name })
+            end
+            return out
+        end,
     handler =
         function (cond, context, v)
             local name, active, _
@@ -1488,15 +1639,15 @@ CONDITIONS["waterwalking"] = {
             end
 
             -- Water Walking (546)
-            if LM.UnitAura('player', 546) then
+            if Env.playerBuffIDs[546] then
                 return true
             end
             -- Elixir of Water Walking (11319)
-            if LM.UnitAura('player', 11319) then
+            if Env.playerBuffIDs[11319] then
                 return true
             end
             --  Path of Frost (3714)
-            if LM.UnitAura('player', 3714) then
+            if Env.playerBuffIDs[3714] then
                 return true
             end
         end
@@ -1557,7 +1708,7 @@ local function IsTransmogOutfitActive(outfitID)
     local outfitInfoList = C_TransmogCollection.GetOutfitItemTransmogInfoList(outfitID)
     if not outfitInfoList then return end
 
-    local currentInfoList = LM.Environment:GetPlayerTransmogInfo()
+    local currentInfoList = Env:GetPlayerTransmogInfo()
     if not currentInfoList then return end
 
     for slotID, info in ipairs(currentInfoList) do
@@ -1580,19 +1731,17 @@ local function GetTransmogOutfitsMenu()
 end
 
 local function GetTransmogSetsMenu()
-    C_AddOns.LoadAddOn("Blizzard_EncounterJournal")
     local byExpansion = { }
-    for _,info in ipairs(C_TransmogSets.GetUsableSets()) do
-        local expansion = info.expansionID + 1
-        if not byExpansion[expansion] then
-            local name = EJ_GetTierInfo(expansion) or NONE
-            byExpansion[expansion] = { text = name }
+    for _,info in ipairs(C_TransmogSets.GetAllSets()) do
+        if not byExpansion[info.expansionID] then
+            local name = GetExpansionName(info.expansionID)
+            byExpansion[info.expansionID] = { text = name }
         end
         local text = info.name
         if info.description then
             text = text .. " (" .. info.description .. ")"
         end
-        table.insert(byExpansion[expansion], { val = "xmog:"..info.setID, text = text })
+        table.insert(byExpansion[info.expansionID], { val = "xmog:"..info.setID, text = text })
     end
     local sets = { nosort = true, text = WARDROBE_SETS }
     for _,t in LM.PairsByKeys(byExpansion) do
@@ -1694,7 +1843,7 @@ local function FillMenuTextsRecursive(t)
         FillMenuTextsRecursive(item)
     end
     if not t.nosort then
-        table.sort(t, function (a,b) return a.text < b.text end)
+        table.sort(t, function (a,b) return (a.sortKey or a.text) < (b.sortKey or b.text) end)
     end
     return t
 end
@@ -1719,6 +1868,7 @@ function LM.Conditions:IsValidCondition(text)
 end
 
 function LM.Conditions:TestAllConditions()
+    LM.Environment:RefreshState()
     local context = LM.RuleContext:New({ id = 99 })
     for name, cond in pairs(CONDITIONS) do
         if not cond.disabled then
@@ -1740,7 +1890,7 @@ function LM.Conditions:ToDisplay(text)
     end
 
     if not c.toDisplay then
-        return c.name, nil
+        return c.name, c.textentry and valuestr or nil
     end
 
     local values

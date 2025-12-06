@@ -11,7 +11,6 @@
 local _, LM = ...
 
 local C_Spell = LM.C_Spell or C_Spell
-local C_MountJournal = LM.C_MountJournal or C_MountJournal
 
 local L = LM.Localize
 
@@ -422,7 +421,7 @@ ACTIONS['SwitchFlightStyle'] = {
         function (args, context)
             if IsPlayerSpell(switchSpellID) then
                 local argList = args:ParseList()
-                local _, currentStyle = LM.Environment:GetFlightStyle()
+                local _, currentStyle = LM.Environment.flightStyle
                 if #argList == 0 or currentStyle ~= argList[1] then
                     LM.Debug("  * setting action to spell " .. switchSpellInfo.name)
                     return LM.SecureAction:Spell(switchSpellID, context.rule.unit)
@@ -563,8 +562,8 @@ ACTIONS['Macro'] = {
     argType = 'none',
     handler =
         function (args, context)
-            local macrotext = LM.Options:GetOption('unavailableMacro')
-            if macrotext ~= "" then
+            local macrotext = LM.Macro:GetMacro()
+            if macrotext then
                 if GetRunningMacro() then
                     LM.Debug("  * unavailable macro not possible from actionbar")
                 else
@@ -634,7 +633,7 @@ end
 
 local function GetCombatMountAction(context, flag)
     -- C_MountJournal.SummonByID will fail if you are in a shapeshift form.
-    if select(2, UnitClass("player")) == "DRUID" then
+    if UnitClassBase("player") == "DRUID" then
         local act = LM.SecureAction:Macro("/cancelform [form]")
         act:AddExecute(function () SummonJournalMountDirect(context, flag) end)
         return act
@@ -644,11 +643,6 @@ end
 
 local function CombatHandlerOverride(args, context)
     -- For speed these should try to return ASAP.
-
-    local id, name = LM.Environment:GetEncounterInfo()
-    if id and name then
-        LM.Debug("  * matched encounter %s (%d)", name, id)
-    end
 
     -- It seems obvious that you should use the encounter info here, but
     -- if you are the one who pulled it's not set yet and doesn't work.
@@ -665,7 +659,7 @@ local function CombatHandlerOverride(args, context)
     end
 
     -- Dimensius, Manaforge Omega raid (TWW)
-    if LM.Environment:InInstance(2810) then
+    if LM.Environment:IsInInstance(2810) then
         local mapID = C_Map.GetBestMapForUnit('player')
         if mapID >= 2467 and mapID <= 2470 then
             return GetCombatMountAction(context, 'DRAGONRIDING')
@@ -673,7 +667,7 @@ local function CombatHandlerOverride(args, context)
     end
 
     -- The Dawnbreaker dungeon (The War Within)
-    if LM.Environment:InInstance(2662) then
+    if LM.Environment:IsInInstance(2662) then
         return GetCombatMountAction(context, 'DRAGONRIDING')
     end
 end
@@ -686,9 +680,9 @@ ACTIONS['Combat'] = {
     handler =
         function (args, context)
             -- If specific combat macro is set always use it
-            if LM.Options:GetOption('useCombatMacro') then
+            local macrotext = LM.Macro:GetMacro(true)
+            if macrotext then
                 LM.Debug("  * setting action to options combat macro")
-                local macrotext = LM.Options:GetOption('combatMacro')
                 return LM.SecureAction:Macro(macrotext)
             end
             -- Check for an override combat setting
@@ -699,7 +693,7 @@ ACTIONS['Combat'] = {
             end
             -- Otherwise use the default actions
             LM.Debug("  * setting action to default combat macro")
-            local macrotext = LM.Actions:DefaultCombatMacro()
+            local macrotext = LM.Macro:DefaultCombatMacro()
             return LM.SecureAction:Macro(macrotext)
         end
 }
@@ -855,49 +849,6 @@ end
 --[[------------------------------------------------------------------------]]--
 
 LM.Actions = { }
-
-local function GetDruidMountForms()
-    local forms = {}
-    for i = 1,GetNumShapeshiftForms() do
-        local spell = select(4, GetShapeshiftFormInfo(i))
-        if spell == LM.SPELL.TRAVEL_FORM or spell == LM.SPELL.MOUNT_FORM then
-            tinsert(forms, i)
-        end
-    end
-    return table.concat(forms, "/")
-end
-
--- This is the macro that gets set as the default and will trigger if
--- we are in combat.  Don't put anything in here that isn't specifically
--- combat-only, because out of combat we've got proper code available.
--- Note that macros are limited to 255 chars, even inside a SecureActionButton.
-
-function LM.Actions:DefaultCombatMacro()
-
-    local mt = "/dismount [mounted]\n/stopmacro [mounted]\n"
-
-    local _, playerClass = UnitClass("player")
-
-    if playerClass ==  "DRUID" then
-        local forms = GetDruidMountForms()
-        local mount = LM.MountRegistry:GetMountBySpell(LM.SPELL.TRAVEL_FORM)
-        if mount and mount:GetPriority() > 0 then
-            mt = mt .. format("/cast [noform:%s] %s\n", forms, mount.name)
-            mt = mt .. format("/cancelform [form:%s]\n", forms)
-        end
-    elseif playerClass == "SHAMAN" then
-        local mount = LM.MountRegistry:GetMountBySpell(LM.SPELL.GHOST_WOLF)
-        if mount and mount:GetPriority() > 0 then
-            local s = C_Spell.GetSpellName(LM.SPELL.GHOST_WOLF)
-            mt = mt .. "/cast [noform] " .. s .. "\n"
-            mt = mt .. "/cancelform [form]\n"
-        end
-    end
-
-    mt = mt .. "/leavevehicle\n"
-
-    return mt
-end
 
 function LM.Actions:GetArgType(action)
     if FLOWCONTROLS[action] then
