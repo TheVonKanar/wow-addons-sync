@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 1270,
 ["lastSanitation"] = 3,
+["session"] = 1273,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["session"] = 379,
 ["time"] = "2024/09/20 09:27:39",
+["session"] = 379,
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["session"] = 475,
 ["time"] = "2024/10/07 08:13:04",
+["session"] = 475,
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["time"] = "2024/11/12 06:05:20",
 ["session"] = 560,
+["time"] = "2024/11/12 06:05:20",
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["session"] = 897,
 ["time"] = "2025/03/25 19:16:23",
+["session"] = 897,
 ["counter"] = 2,
 },
 {
@@ -813,8 +813,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["session"] = 1253,
 ["time"] = "2025/10/08 09:26:56",
+["session"] = 1253,
 ["counter"] = 1,
 },
 {
@@ -843,8 +843,48 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["session"] = 1270,
 ["time"] = "2025/12/05 18:53:28",
+["session"] = 1270,
+["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/Angleur/thanks/thanks.lua:123: attempt to call method 'Init' (a nil value)",
+["time"] = "2025/12/07 00:14:44",
+["locals"] = "self = MyOtherAddons {\n pageButtonsAnchor = \"Bottom\"\n columns = 3\n buttonSize = 36\n spaceBetweenColumns = 20\n pageButtonsOffsetY = 5\n title = FontString {\n }\n pageButtonsTextAnchor = \"Bottom\"\n lines = 1\n addonsTable = <table> {\n }\n}\ngameVersion = 1\n(*temporary) = nil\n(*temporary) = MyOtherAddons {\n pageButtonsAnchor = \"Bottom\"\n columns = 3\n buttonSize = 36\n spaceBetweenColumns = 20\n pageButtonsOffsetY = 5\n title = FontString {\n }\n pageButtonsTextAnchor = \"Bottom\"\n lines = 1\n addonsTable = <table> {\n }\n}\n(*temporary) = \"attempt to call method 'Init' (a nil value)\"\naddonsTable = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 4 = <table> {\n }\n 3 = <table> {\n }\n}\nT = <table> {\n Couldn't find any bait \n in your bags, feature disabled = \"Couldn't find any bait \n in your bags, feature disabled\"\n |cff9cd9ebAngleur: |rIf you experience stiffness with the Double-Click, do a |cffffd100/reload|r to fix it. = \"|cff9cd9ebAngleur: |rIf you experience stiffness with the Double-Click, do a |cffffd100/reload|r to fix it.\"\n |cff9cd9ebCast |r, |cff9cd9ebReel |rand |cff9cd9ebuse Items and Configured Macros |rusing \none button. = \"|cff9cd9ebCast |r, |cff9cd9ebReel |rand |cff9cd9ebuse Items and Configured Macros |rusing \none button.\"\n Angleur Warning = \"Angleur Warning\"\n Lower Elevation = \"Lower Elevation\"\n Debug Mode = \"Debug Mode\"\n Feathered Lure = \"Feathered Lure\"\n Having Problems? = \"Having Problems?\"\n Disable Soft Icon = \"Disable Soft Icon\"\n This will restart the tutorial, are you sure? = \"This will restart the tutorial, are you sure?\"\n |cff9cd9ebCast |r, |cff9cd9ebReel |r, use |cffa34db5Toys|r, |cff9cd9eb Items and Configured Macros |rusing \none button. = \"|cff9cd9ebCast |r, |cff9cd9ebReel |r, use |cffa34db5Toys|r, |cff9cd9eb Items and Configured Macros |rusing \none button.\"\n Extra Toys = \"Extra Toys\"\n Artisan Beverage Goblet Bobber = \"Artisan Beverage Goblet Bobber\"\n Angleur Configuration = \"Angleur Configuration\"\n Redo Tutorial = \"Redo Tutorial\"\n Plays a warning sound when the bobber lands too far for the soft interact system to capture. = \"Plays a |cffffd100warning sound |rwhen the bobber lands too far for the soft interact system to capture.\"\n Fish, cast Toys, Items and Macros using double mouse clicks!\n = \"Fish, cast Toys, Items and Macros using double mouse clicks!\n\"\n Crate of Bobbers: Carved Wooden Helm = \"Crate of Bobbers: Carved Wooden Helm\"\n Fun toy recommendations from mod author, Legolando: = \"Fun toy recommendations from mod author, Legolando:\"\n Use this when you are inside the water, making the bobber land higher than you. = \"|cffffffffUse this when you are inside the water, making the bobber land higher than you.|r\"\n Can't drag item in combat. = \"Can't drag item in combat.\"\n Enable Recast Key = \"Enable Recast Key\"\n Set Timer = \"Set Timer\"\n To access the configuration menu, type  = \"To access the configuration menu, type \"\n  or\n = \" or\n\"\n Fishing Mode: |cff9cd9ebOne Key|r = \"Fishing Mode: |cff9cd9ebOne Key|r\"\n |cff9cd9ebAngleur: |rMacro successfully slotted. If you make changes to it, you need to |cffffd100re-drag |rthe new version to the slot. You can also delete the macro to save space, Angleur will remember it. = \"|cff9cd9ebAngleur: |rMacro successfully slotted. If you make changes to it, you need to |cffffd100re-drag |rthe new version to the slot. You can also delete the macro to save space, Angleur will remember it.\"\n Angleur Config Panel |cffffd100-> |rTiny tab(tab 3) |cffffd100-> |rDisable Soft-Interact = \"Angleur Config Panel |cffffd100-> |rTiny tab(tab 3) |cffffd100-> |rDisable Soft-Interact\"\n Sharpened Fish Hook = \"Sharpened Fish Hook\"\n Advanced Angling = \"Advanced Angling\"\n Must be |cff00ff00checked ON |rfor Angleur to reel properly. = \"Must be |cff00ff00checked ON |rfor Angleur to reel properly.\"\n login messages disabled = \"login messages disabled\"\n Otherwise, you will have to manually target your fishing rod every time.If you want to see an example of how to slot macros, click the |cffff0000[HOW?] |rbutton on the |cffffd100Extra Tab|r = \"Otherwise, you will have to manually target your fishing rod every time.I",
+["stack"] = "[Interface/AddOns/Angleur/thanks/thanks.lua]:123: in function <Interface/AddOns/Angleur/thanks/thanks.lua:107>",
+["session"] = 1271,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
+["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
+["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
+["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/Gui.lua:126: attempt to index field 'AchievementFrameTabButtonFactory' (a nil value)",
+["time"] = "2025/12/07 00:14:58",
+["locals"] = "self = <table> {\n WorldMapButton = Krowi_WorldMapButtons4 {\n }\n EventReminderAlertSystem = <table> {\n }\n Tabs = <table> {\n }\n EventReminderSideButtonSystem = <table> {\n }\n AchievementTooltip = <table> {\n }\n BrowsingHistory = <table> {\n }\n AchievementFrameHeader = <table> {\n }\n DataManager = <table> {\n }\n AchievementButtonExtraIconFactory = <table> {\n }\n RightClickMenu = <table> {\n }\n SubFrames = <table> {\n }\n}\nmedia = \"Interface/AddOns/Krowi_AchievementFilter/Media/\"\nwaterMarks = <table> {\n 1 = \"Interface/AddOns/Krowi_AchievementFilter/Media/kaf_achievements\"\n 2 = \"Interface/AddOns/Krowi_AchievementFilter/Media/kaf_expansions\"\n 3 = \"Interface/AddOns/Krowi_AchievementFilter/Media/kaf_events\"\n 4 = \"Interface/AddOns/Krowi_AchievementFilter/Media/kaf_pvp\"\n 5 = \"Interface/AddOns/Krowi_AchievementFilter/Media/kaf_special\"\n}\n(for state) = <table> {\n 1 = \"Achievements\"\n 2 = \"Expansions\"\n 3 = \"Events\"\n 4 = \"PvP\"\n 5 = \"Specials\"\n}\n(for control) = 1\ni = 1\nt = \"Achievements\"\n(*temporary) = <table> {\n Text = \"Achievements\"\n Name = \"Achievements\"\n Filters = <table> {\n }\n}\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = <table> {\n Frames = <table> {\n }\n modules = <table> {\n }\n defaultModuleState = true\n MoveHandles = <table> {\n }\n FrameData = <table> {\n }\n enabledState = true\n initialized = true\n defaultModuleLibraries = <table> {\n }\n baseName = \"BlizzMove\"\n Config = <table> {\n }\n name = \"BlizzMove\"\n orderedModules = <table> {\n }\n DB = <table> {\n }\n gameBuild = 64743\n FrameRegistry = <table> {\n }\n gameVersion = 110207\n CurrentMouseoverFrames = <table> {\n }\n hooks = <table> {\n }\n CombatLockdownQueue = <table> {\n }\n}\n(*temporary) = AchievementFrame {\n Categories = AchievementFrameCategories {\n }\n PlaceholderHiddenDescription = FontString {\n }\n RightEdge = Texture {\n }\n BackgroundBlackCover = Texture {\n }\n SearchPreviewContainer = Frame {\n }\n searchProgressBar = StatusBar {\n }\n Tab2 = AchievementFrameTab2 {\n }\n SearchBox = EditBox {\n }\n BottomLeftCorner = Texture {\n }\n selectedTab = 1\n numTabs = 3\n Center = Texture {\n }\n backdropInfo = <table> {\n }\n Background = Texture {\n }\n PlaceholderName = FontString {\n }\n BottomEdge = Texture {\n }\n BottomRightCorner = Texture {\n }\n Tab1 = AchievementFrameTab1 {\n }\n TopEdge = Texture {\n }\n TopRightCorner = Texture {\n }\n TopLeftCorner = Texture {\n }\n Tab3 = AchievementFrameTab3 {\n }\n SearchResults = Frame {\n }\n FilterDropdown = AchievementFrameFilterDropdown {\n }\n LeftEdge = Texture {\n }\n Header = Frame {\n }\n}\n(*temporary) = <table> {\n 1 = <table> {\n }\n}\n(*temporary) = <table> {\n 1 = <table> {\n }\n}\n(*temporary) = nil\n(*temporary) = \"attempt to index field 'AchievementFrameTabButtonFactory' (a nil value)\"\ndefaultAchievementFrameWidth = 768\ndefaultAchievementFrameHeight = 500.000031\ndefaultAchievementFrameMetalBorderHeight = 436\neventReminderSideButtonSystemIsLoaded = false\naddon = <table> {\n WorldMapButtons = <table> {\n }\n Diagnostics = <table> {\n }\n MenuUtil = <table> {\n }\n Modifiers = <table> {\n }\n Metadata = <table> {\n }\n Util = <table> {\n }\n WeekdayNames = <table> {\n }\n SearchOptions = <table> {\n }\n Icon = <table> {\n }\n Options = <table> {\n }\n Event = <table> {\n }\n SpecialCategories = <table> {\n }\n Data = <table> {\n }\n UncategorizedAchievements = <table> {\n }\n TooltipData = <table> {\n }\n EventData = <table> {\n }\n Tabs = <table> {\n }\n Faction = <table> {\n }\n Libs = <table> {\n }\n TrackingAchievements = <table> {\n }\n Objects = <table> {\n }\n Gui = <table> {\n }\n TabsOrder = <table> {\n }\n BrowsingHistory = <table> {\n }\n L = <table> {\n }\n Filters = <table> {\n }\n MonthNames = <table> {\n }\n Tutorials = <table> {\n }\n InjectOptions = <table> {\n }\n Localization = <table> {\n }\n}\naddonName = \"Krowi_AchievementFilter\"\n",
+["stack"] = "[Interface/AddOns/Krowi_AchievementFilter/Gui/Gui.lua]:126: in function 'LoadWithBlizzard_AchievementUI'\n[Interface/AddOns/Krowi_AchievementFilter/Krowi_AchievementFilter.lua]:62: in function <.../Krowi_AchievementFilter/Krowi_AchievementFilter.lua:61>\n[Interface/AddOns/Krowi_AchievementFilter/Krowi_AchievementFilter.lua]:99: in function <.../Krowi_AchievementFilter/Krowi_AchievementFilter.lua:94>\n[C]: ?\n[C]: in function 'LoadAddOn'\n[Interface/AddOns/Blizzard_UIParent/Shared/UIParent.lua]:268: in function 'UIParentLoadAddOn'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:458: in function 'AchievementFrame_LoadUI'\n[Interface/AddOns/EditModeExpanded/FrameHandlers/AlertFrame.lua]:24: in function 'initAlertFrame'\n[Interface/AddOns/EditModeExpanded/EditModeExpanded.lua]:18: in function <...terface/AddOns/EditModeExpanded/EditModeExpanded.lua:6>\n[Interface/AddOns/Blizzard_SharedXML/EventUtil.lua]:109: in function <Interface/AddOns/Blizzard_SharedXML/EventUtil.lua:101>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:144: in function <...e/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua:143>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:147: in function 'TriggerEvent'\n[Interface/AddOns/Blizzard_SharedXMLBase/GlobalCallbackRegistry.lua]:9: in function <...ns/Blizzard_SharedXMLBase/GlobalCallbackRegistry.lua:8>",
+["session"] = 1272,
+["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
+["time"] = "2025/12/07 00:14:59",
+["session"] = 1272,
 ["counter"] = 2,
 },
 },

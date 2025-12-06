@@ -4,13 +4,13 @@ ChoreTrackerDB = {
 ["Kvotheen - Hyjal"] = {
 ["skillLines"] = {
 [182] = true,
-[356] = true,
+[171] = true,
 [2877] = 100,
 [2871] = 100,
 [2823] = 75,
-[794] = true,
-[171] = true,
 [185] = true,
+[794] = true,
+[356] = true,
 },
 },
 ["Killeen - Archimonde"] = {
@@ -29,29 +29,37 @@ ChoreTrackerDB = {
 },
 },
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Pandamoun - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-["Pandamagee - Hyjal"] = "Default",
-["Pandakv - Hyjal"] = "Default",
-["Killeen - Archimonde"] = "Default",
-["Pandakvo - Hyjal"] = "Default",
-["Raptorbuyer - Hyjal"] = "Default",
-["Trialmagekvo - Hyjal"] = "Default",
-["Testkvotheen - Hyjal"] = "Default",
-["Pandamo - Hyjal"] = "Default",
-["Kvothyr - Hyjal"] = "Default",
-["Pandamages - Hyjal"] = "Default",
-["Pandkvé - Hyjal"] = "Default",
-},
 ["global"] = {
 ["questWeeks"] = {
 [1765339199] = {
+[82653] = {
+["status"] = 1,
+["questId"] = 82653,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/3 Breakers Escorted",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
 [89345] = {
 ["status"] = 2,
 ["questId"] = 89345,
 ["objectives"] = {
+},
+},
+[88916] = {
+["status"] = 1,
+["questId"] = 88916,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Sureki Forces disrupted (0%)",
+["have"] = 0,
+["need"] = 100,
+},
 },
 },
 [87303] = {
@@ -84,6 +92,18 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
+[87477] = {
+["status"] = 1,
+["questId"] = 87477,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Sureki swarm thwarted (0%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
 [87304] = {
 ["status"] = 1,
 ["questId"] = 87304,
@@ -96,37 +116,31 @@ ChoreTrackerDB = {
 },
 },
 },
-[86775] = {
-["status"] = 1,
-["questId"] = 86775,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Participated in Surge Pricing",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
 [75721] = {
 ["status"] = 2,
 ["questId"] = 75721,
 ["objectives"] = {
 },
 },
-[86919] = {
+[91193] = {
 ["status"] = 1,
-["questId"] = 86919,
+["questId"] = 91193,
 ["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/3 Complete World Quests in K'aresh",
+["have"] = 0,
+["need"] = 3,
 },
 },
-[88945] = {
+},
+[84851] = {
 ["status"] = 1,
-["questId"] = 88945,
+["questId"] = 84851,
 ["objectives"] = {
 {
 ["type"] = "progressbar",
-["text"] = "Sureki Sympathizers disrupted (0%)",
+["text"] = "Complete activities and secure the Siren Isle (0%)",
 ["have"] = 0,
 ["need"] = 100,
 },
@@ -151,42 +165,6 @@ ChoreTrackerDB = {
 {
 ["type"] = "progressbar",
 ["text"] = "Sureki invasion disrupted (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[86915] = {
-["status"] = 1,
-["questId"] = 86915,
-["objectives"] = {
-{
-["type"] = "log",
-["text"] = "",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[88916] = {
-["status"] = 1,
-["questId"] = 88916,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki Forces disrupted (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[84851] = {
-["status"] = 1,
-["questId"] = 84851,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Complete activities and secure the Siren Isle (0%)",
 ["have"] = 0,
 ["need"] = 100,
 },
@@ -228,16 +206,46 @@ ChoreTrackerDB = {
 },
 },
 },
+[82154] = {
+["status"] = 1,
+["questId"] = 82154,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
+[88945] = {
+["status"] = 1,
+["questId"] = 88945,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Sureki Sympathizers disrupted (0%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
 [82158] = {
 ["status"] = 1,
 ["questId"] = 82158,
 ["objectives"] = {
 {
-["type"] = "object",
 ["text"] = "0/3 Complete World Quests in Hallowfall",
-["have"] = 0,
+["type"] = "object",
 ["need"] = 3,
+["have"] = 0,
 },
+},
+},
+[81416] = {
+["status"] = 2,
+["questId"] = 81416,
+["objectives"] = {
 },
 },
 [84735] = {
@@ -282,15 +290,15 @@ ChoreTrackerDB = {
 },
 },
 },
-[91193] = {
+[86915] = {
 ["status"] = 1,
-["questId"] = 91193,
+["questId"] = 86915,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/3 Complete World Quests in K'aresh",
+["type"] = "log",
+["text"] = "",
 ["have"] = 0,
-["need"] = 3,
+["need"] = 1,
 },
 },
 },
@@ -306,27 +314,21 @@ ChoreTrackerDB = {
 },
 },
 },
-[87477] = {
+[86919] = {
 ["status"] = 1,
-["questId"] = 87477,
+["questId"] = 86919,
 ["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki swarm thwarted (0%)",
-["have"] = 0,
-["need"] = 100,
 },
 },
-},
-[85879] = {
+[86775] = {
 ["status"] = 1,
-["questId"] = 85879,
+["questId"] = 86775,
 ["objectives"] = {
 {
 ["type"] = "monster",
-["text"] = "0/3 S.C.R.A.P. jobs completed",
+["text"] = "0/1 Participated in Surge Pricing",
 ["have"] = 0,
-["need"] = 3,
+["need"] = 1,
 },
 },
 },
@@ -342,13 +344,13 @@ ChoreTrackerDB = {
 },
 },
 },
-[82653] = {
+[85879] = {
 ["status"] = 1,
-["questId"] = 82653,
+["questId"] = 85879,
 ["objectives"] = {
 {
 ["type"] = "monster",
-["text"] = "0/3 Breakers Escorted",
+["text"] = "0/3 S.C.R.A.P. jobs completed",
 ["have"] = 0,
 ["need"] = 3,
 },
@@ -357,6 +359,22 @@ ChoreTrackerDB = {
 },
 },
 ["seenAutoAcceptMessage"] = true,
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Pandamoun - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+["Pandamagee - Hyjal"] = "Default",
+["Pandakv - Hyjal"] = "Default",
+["Killeen - Archimonde"] = "Default",
+["Pandakvo - Hyjal"] = "Default",
+["Raptorbuyer - Hyjal"] = "Default",
+["Trialmagekvo - Hyjal"] = "Default",
+["Testkvotheen - Hyjal"] = "Default",
+["Pandkvé - Hyjal"] = "Default",
+["Kvothyr - Hyjal"] = "Default",
+["Pandamages - Hyjal"] = "Default",
+["Pandamo - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -400,29 +418,19 @@ ChoreTrackerDB = {
 ["cartelChoose"] = false,
 ["surge"] = false,
 ["chett"] = false,
-["scrap"] = false,
+["worldBoss"] = false,
 ["chettTurnIn"] = false,
-["worldBoss"] = false,
+["scrap"] = false,
 },
 },
-["patch_11_0_0"] = {
+["patch_11_2_0"] = {
 ["quests"] = {
-["awakeningTheMachine"] = false,
 ["specialAssignment"] = false,
-["theaterTroupe"] = false,
-["delversBounty"] = false,
-["rollinDown"] = false,
-["spiderWeekly"] = false,
-["emissaryDelves"] = false,
-["spreadingTheLight"] = false,
-["dungeon"] = false,
-["delveKeys"] = false,
 ["worldBoss"] = false,
-["delveArchaic"] = false,
-["spiderPact"] = false,
-["delveGilded"] = false,
-["emissaryArchives"] = false,
-["emissaryWorldsoul"] = false,
+["makingDeposit"] = false,
+["moreThanPhase"] = false,
+["warrant"] = false,
+["ecologicalSuccession"] = false,
 },
 },
 ["patch_11_0_7"] = {
@@ -432,14 +440,24 @@ ChoreTrackerDB = {
 ["weeklies"] = false,
 },
 },
-["patch_11_2_0"] = {
+["patch_11_0_0"] = {
 ["quests"] = {
+["awakeningTheMachine"] = false,
 ["specialAssignment"] = false,
+["theaterTroupe"] = false,
+["spiderPact"] = false,
+["rollinDown"] = false,
+["spiderWeekly"] = false,
+["emissaryDelves"] = false,
+["spreadingTheLight"] = false,
+["dungeon"] = false,
+["delveKeys"] = false,
 ["worldBoss"] = false,
-["makingDeposit"] = false,
-["moreThanPhase"] = false,
-["ecologicalSuccession"] = false,
-["warrant"] = false,
+["delveArchaic"] = false,
+["delversBounty"] = false,
+["emissaryArchives"] = false,
+["delveGilded"] = false,
+["emissaryWorldsoul"] = false,
 },
 },
 },
@@ -461,13 +479,13 @@ ChoreTrackerDB = {
 },
 ["holidays"] = {
 ["quests"] = {
-["timewalkingRaids"] = false,
+["worldQuests"] = false,
 ["timewalkingDungeons"] = false,
 ["pvpPetBattles"] = false,
 ["mythicDungeons"] = false,
 ["delves"] = false,
 ["timewalkingTurnIn"] = false,
-["worldQuests"] = false,
+["timewalkingRaids"] = false,
 },
 },
 ["special"] = {
@@ -483,14 +501,14 @@ ChoreTrackerDB = {
 },
 },
 },
-["professionAlchemy"] = {
+["professionHerbalism"] = {
 ["warWithin"] = {
 ["quests"] = {
 ["treatise"] = false,
-["orders"] = false,
+["task"] = false,
 },
 ["drops"] = {
-["mob/treasure"] = false,
+["gather"] = false,
 },
 },
 ["event"] = {
@@ -503,19 +521,19 @@ ChoreTrackerDB = {
 ["anniversary"] = {
 ["quests"] = {
 ["dragonsOfNightmareKill"] = false,
-["chromieCodex"] = false,
-["truth"] = false,
-["azuregosKill"] = false,
 ["shopping"] = false,
-["meetGreet"] = false,
+["truth"] = false,
 ["doomwalkerKill"] = false,
+["shaOfAngerKill"] = false,
+["meetGreet"] = false,
+["azuregosKill"] = false,
 ["lordKazzakKill"] = false,
 ["timely"] = false,
 ["archavonKill"] = false,
 ["soldier"] = false,
 ["celebrate"] = false,
 ["reflect"] = false,
-["shaOfAngerKill"] = false,
+["chromieCodex"] = false,
 },
 },
 },
@@ -533,14 +551,14 @@ ChoreTrackerDB = {
 },
 },
 },
-["professionHerbalism"] = {
+["professionAlchemy"] = {
 ["warWithin"] = {
 ["quests"] = {
 ["treatise"] = false,
-["task"] = false,
+["orders"] = false,
 },
 ["drops"] = {
-["gather"] = false,
+["mob/treasure"] = false,
 },
 },
 ["event"] = {

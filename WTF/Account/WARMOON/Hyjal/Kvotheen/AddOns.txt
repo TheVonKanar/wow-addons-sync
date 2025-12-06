@@ -220,13 +220,13 @@ DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
 Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
-Krowi_AchievementFilter: enabled
+Krowi_AchievementFilter: disabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
 AstralKeys: enabled
 ChoreTracker: enabled
-Angleur: enabled
+Angleur: disabled
 CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled

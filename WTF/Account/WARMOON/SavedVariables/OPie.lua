@@ -15,31 +15,31 @@ OPie_SavedData = {
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
+["MotionAction"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 ["arthstones"] = "SHIFT-B",
 ["rofessions"] = "F4",
 ["onsumables"] = "F2",
 },
-["MotionAction"] = true,
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["RingScale"] = 1.200000047683716,
-["ShowCooldowns"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
-["Talents"] = "F3",
 ["rofessions"] = "F4",
+["Talents"] = "F3",
 ["onsumables"] = "F2",
 ["arthstones"] = "F5",
-["rldMarkers"] = "F7",
 ["Usables"] = false,
+["rldMarkers"] = "F7",
 ["getMarkers"] = "F6",
 },
+["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
 ["RingOptions"] = {
 ["arthstones#InteractionMode"] = 2,
 ["arthstones#CenterAction"] = false,
@@ -47,7 +47,7 @@ OPie_SavedData = {
 ["arthstones#MotionAction"] = true,
 ["arthstones#RingAtMouse"] = false,
 },
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
