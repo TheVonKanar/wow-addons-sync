@@ -11,10 +11,12 @@ local settings = {
   LEGACY_DESIGN = {key = "design_all", default = {}},
 
   DESIGNS = {key = "designs", default = {}, refresh = {addonTable.Constants.RefreshReason.Design}},
-  DESIGNS_ASSIGNED = {key = "designs_assigned", default = {["friend"] = "_name-only", ["enemy"] = "_hare"}},
+  DESIGNS_ASSIGNED = {key = "designs_assigned", default = {["friend"] = "_name-only", ["enemy"] = "_hare", ["enemySimplified"] = "_hare_simplified"}},
 
-  TARGET_BEHAVIOUR = {key = "target_behaviour", default = "enlarge", refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
-  NOT_TARGET_BEHAVIOUR = {key = "not_target_behaviour", default = "none", refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
+  TARGET_SCALE = {key = "target_scale", default = 1.2, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
+  CAST_SCALE = {key = "cast_scale", default = 1.1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
+  CAST_ALPHA = {key = "cast_alpha", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
+  NOT_TARGET_ALPHA = {key = "not_target_alpha", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
 
   STACKING_NAMEPLATES = {key = "stacking_nameplates", default = true, refresh = {addonTable.Constants.RefreshReason.StackingBehaviour}},
   CLOSER_TO_SCREEN_EDGES = {key = "closer_to_screen_edges", default = true, refresh = {addonTable.Constants.RefreshReason.StackingBehaviour}},
@@ -24,9 +26,12 @@ local settings = {
   STACK_REGION_SCALE_X = {key = "stack_region_scale_x", default = 1.2, refresh = {addonTable.Constants.RefreshReason.StackingBehaviour}},
   STACK_REGION_SCALE_Y = {key = "stack_region_scale_y", default = 1.1, refresh = {addonTable.Constants.RefreshReason.StackingBehaviour}},
 
+  SHOW_NAMEPLATES_ONLY_NEEDED = {key = "show_nameplates_only_needed", default = false, refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
   SHOW_NAMEPLATES = {key = "show_nameplates", default = {npc = true, player = true, enemy = true}, refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
-  STACK_APPLIES_TO = {key = "stack_applies_to", default = {normal = true, minion = false, minor = false}},
-  SHOW_FRIENDLY_IN_INSTANCES = {key = "show_friendly_in_instances", default = true, refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
+  SHOW_FRIENDLY_IN_INSTANCES = {key = "show_friendly_in_instances_1", default = "always", refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
+  SIMPLIFIED_NAMEPLATES = {key = "simplified_nameplates", default = {minion = true, minor = true, instancesNormal = true}, refresh = {addonTable.Constants.RefreshReason.Simplified}},
+
+  APPLY_CVARS = {key = "apply_cvars", default = true},
 }
 
 addonTable.Config.RefreshType = {}
@@ -230,14 +235,19 @@ function addonTable.Config.DeleteProfile(profileName)
   PLATYNATOR_CONFIG.Profiles[profileName] = nil
 end
 
-function addonTable.Config.ChangeProfile(newProfileName)
+function addonTable.Config.DumpCurrentProfile()
+  return CopyTable(PLATYNATOR_CONFIG.Profiles[PLATYNATOR_CURRENT_PROFILE])
+end
+
+function addonTable.Config.ChangeProfile(newProfileName, comparisonData)
   assert(tIndexOf(addonTable.Config.GetProfileNames(), newProfileName) ~= nil, "Invalid Profile")
 
   local changedOptions = {}
   local refreshState = {}
   local newProfile = PLATYNATOR_CONFIG.Profiles[newProfileName]
+  oldProfile = comparisonData or addonTable.Config.CurrentProfile
 
-  for name, value in pairs(addonTable.Config.CurrentProfile) do
+  for name, value in pairs(oldProfile) do
     if value ~= newProfile[name] then
       table.insert(changedOptions, name)
       Mixin(refreshState, addonTable.Config.RefreshType[name] or {})
@@ -259,8 +269,6 @@ function addonTable.Config.ChangeProfile(newProfileName)
   addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
 end
 
--- characterName is optional, only use if need a character specific setting for
--- a character other than the current one.
 function addonTable.Config.Get(name)
   -- This is ONLY if a config is asked for before variables are loaded
   if addonTable.Config.CurrentProfile == nil then

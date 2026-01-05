@@ -1,6 +1,6 @@
 ## Interface: 110207
 ## Title: Edit Mode Expanded
-## Version: 11.2-022
+## Version: 11.2-033
 ## Notes: Expands Edit Mode to apply to other frames
 ## Author: Teelo
 ## SavedVariables: EditModeExpandedADB
@@ -49,6 +49,7 @@ FrameHandlers\FocusFrame.lua
 FrameHandlers\FocusToT.lua
 FrameHandlers\GameMenu.lua
 FrameHandlers\GroupLoot.lua
+FrameHandlers\Housing.lua
 FrameHandlers\LFG.lua
 FrameHandlers\LossOfControl.lua
 FrameHandlers\Menu.lua

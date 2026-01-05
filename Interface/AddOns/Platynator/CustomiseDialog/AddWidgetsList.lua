@@ -29,8 +29,10 @@ addonTable.CustomiseDialog.DesignWidgets = {
         asset = "wide/fade-bottom",
       },
       border = {
-        asset = "wide/bold",
-        color = GetColor("000000", 1)
+        asset = "bold",
+        color = GetColor("000000", 1),
+        width = 1,
+        height = 1,
       },
       absorb = {
         asset = "wide/blizzard-absorb",
@@ -54,10 +56,12 @@ addonTable.CustomiseDialog.DesignWidgets = {
       kind = "cast",
       anchor = {"TOPLEFT", -140, 50},
       colors = {
-        normal = GetColor("FC8C00"),
+        normalCast = GetColor("FC8C00"),
         normalChannel = GetColor("3ec637"),
+        importantCast = GetColor("ff1827"),
+        importantChannel = GetColor("0a43ff"),
         uninterruptable = GetColor("83C0C3"),
-        interrupted = CreateColorFromRGBHexString("FC36E0"),
+        interrupted = GetColor("FC36E0"),
       },
       marker = {
         asset = "none",
@@ -71,8 +75,10 @@ addonTable.CustomiseDialog.DesignWidgets = {
         asset = "wide/fade-bottom",
       },
       border = {
-        asset = "wide/bold",
-        color = GetColor("000000", 1)
+        asset = "bold",
+        color = GetColor("000000", 1),
+        width = 1,
+        height = 1,
       },
       scale = 1,
       layer = 1,
@@ -100,7 +106,9 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       anchor = {"TOPLEFT", -140, 50},
       kind = "automatic",
-      asset = "wide/soft-glow",
+      asset = "soft-glow",
+      width = 1.07,
+      height = 1.54,
       color = GetColor("FFFFFF", 1),
       autoColors = {
         addonTable.CustomiseDialog.AddAlphaToColors(CopyTable(addonTable.CustomiseDialog.ColorsConfig["threat"].default)),
@@ -115,7 +123,9 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       anchor = {"TOPLEFT", -140, 50},
       kind = "target",
-      asset = "wide/glow",
+      asset = "glow",
+      width = 1,
+      height = 1,
       color = GetColor("FFFFFF", 1),
       scale = 1,
       layer = 0,
@@ -127,7 +137,9 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       anchor = {"TOPLEFT", -140, 50},
       kind = "focus",
-      asset = "wide/glow",
+      asset = "glow",
+      width = 1,
+      height = 1,
       color = GetColor("FFFFFF", 1),
       scale = 1,
       layer = 0,
@@ -139,7 +151,23 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       anchor = {"TOPLEFT", -140, 50},
       kind = "mouseover",
-      asset = "wide/glow",
+      asset = "glow",
+      width = 1,
+      height = 1,
+      color = GetColor("AAAAAA", 1),
+      scale = 1,
+      layer = 0,
+    },
+  },
+  {
+    name = addonTable.Locales.FIXED,
+    kind = "highlights",
+    default = {
+      anchor = {"TOPLEFT", -140, 50},
+      kind = "fixed",
+      asset = "feathered",
+      height = 1.1,
+      width = 1,
       color = GetColor("AAAAAA", 1),
       scale = 1,
       layer = 0,
@@ -160,6 +188,15 @@ addonTable.CustomiseDialog.DesignWidgets = {
       height = 1,
       showCountdown = true,
       direction = "RIGHT",
+      textScale = 1,
+      sorting = {
+        kind = "duration",
+        reversed = false,
+      },
+      filters = {
+        important = true,
+        fromYou = true,
+      },
     },
   },
   {
@@ -173,6 +210,15 @@ addonTable.CustomiseDialog.DesignWidgets = {
       height = 1,
       showCountdown = true,
       direction = "LEFT",
+      textScale = 1,
+      sorting = {
+        kind = "duration",
+        reversed = false,
+      },
+      filters = {
+        dispelable = true,
+        important = true,
+      },
     },
   },
   {
@@ -186,6 +232,14 @@ addonTable.CustomiseDialog.DesignWidgets = {
       height = 1,
       showCountdown = true,
       direction = "RIGHT",
+      textScale = 1,
+      sorting = {
+        kind = "duration",
+        reversed = false,
+      },
+      filters = {
+        fromYou = false,
+      },
     },
   },
   {
@@ -258,6 +312,19 @@ addonTable.CustomiseDialog.DesignWidgets = {
           tapped = GetColor("6E6E6E"),
         },
       },
+    },
+  },
+  {
+    name = addonTable.Locales.CAST_TIME_LEFT,
+    kind = "texts",
+    default = {
+      kind = "castTimeLeft",
+      scale = 1,
+      layer = 2,
+      anchor = {"TOPLEFT", -140, 50},
+      color = GetColor("FFFFFF"),
+      align = "CENTER",
+      shorten = "NONE",
     },
   },
   {

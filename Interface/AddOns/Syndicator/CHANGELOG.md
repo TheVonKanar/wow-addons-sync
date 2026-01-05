@@ -1,6 +1,7 @@
 # Syndicator
 
-## [251](https://github.com/TheMouseNest/Syndicator/tree/251) (2025-12-02)
-[Full Changelog](https://github.com/TheMouseNest/Syndicator/compare/250...251) 
+## [255](https://github.com/TheMouseNest/Syndicator/tree/255) (2026-01-04)
+[Full Changelog](https://github.com/TheMouseNest/Syndicator/compare/254...255) 
 
-- Update toc for 11.2.7  
+- Search: New keyword "Transmog Upgrade"  
+- Forgot to commit a file  

@@ -5,6 +5,9 @@ addonTable.Display.NameplateMixin = {}
 function addonTable.Display.NameplateMixin:OnLoad()
   self:SetFlattensRenderLayers(true)
   self:SetIgnoreParentScale(true)
+  self:SetCollapsesLayout(true)
+
+  self.widgets = {}
 
   self.SoftTargetIcon = self:CreateTexture(nil, "OVERLAY")
   self.SoftTargetIcon:SetSize(34, 34)
@@ -18,109 +21,159 @@ function addonTable.Display.NameplateMixin:OnLoad()
   self.CrowdControlDisplay = CreateFrame("Frame", nil, self)
   self.CrowdControlDisplay:SetSize(10, 10)
 
-  if not addonTable.Constants.IsMidnight then
-    self.AurasManager = addonTable.Utilities.InitFrameWithMixin(self, addonTable.Display.AurasForNameplateMixin)
-    self.AurasPool = CreateFramePool("Frame", self, "PlatynatorNameplateBuffButtonTemplate", nil, false, function(frame)
-      frame.Cooldown:SetCountdownAbbrevThreshold(20)
-      frame.Cooldown.Text = frame.Cooldown:GetRegions()
-    end)
-
-    local function GetCallback(frame)
-      return function(data)
-        local keys = GetKeysArray(data)
-        table.sort(keys)
-        if frame.items then
-          for _, item in ipairs(frame.items) do
-            self.AurasPool:Release(item)
+  self.AurasManager = addonTable.Utilities.InitFrameWithMixin(self, addonTable.Display.AurasManagerMixin)
+  self.AurasPool = CreateFramePool("Frame", self, "PlatynatorNameplateBuffButtonTemplate", nil, false, function(frame)
+    frame.Cooldown:SetCountdownAbbrevThreshold(20)
+    frame.Cooldown.Text = frame.Cooldown:GetRegions()
+    frame:SetScript("OnEnter", function()
+      GameTooltip_SetDefaultAnchor(GameTooltip, frame)
+      if GameTooltip.SetUnitAuraByAuraInstanceID then
+        GameTooltip:SetUnitAuraByAuraInstanceID(self.unit, frame.auraInstanceID)
+        GameTooltip:Show()
+      elseif frame.auraIndex then
+        if frame.auraIndex ~= -1 then
+          GameTooltip:SetUnitAura(self.unit, frame.auraIndex, frame.auraFilter)
+          GameTooltip:Show()
+        end
+      else
+        local index = 1
+        while true do
+          local aura = C_UnitAuras.GetAuraDataByIndex(self.unit, index, frame.auraFilter)
+          if not aura then
+            break
           end
-          frame.items = nil
-        end
-
-        if not frame:GetParent():IsShown() then
-          return
-        end
-
-        local currentX = 0
-        local currentY = 0
-        local xOffset = 0
-        local yOffset = 0
-        local details = frame:GetParent().details
-        if details.direction == "LEFT" then
-          xOffset = -22
-        elseif details.direction == "RIGHT" then
-          xOffset = 22
-        else -- CENTER
-          xOffset = 22
-          currentX = #keys * 22 / 2
-        end
-        local anchor = details.anchor[1]
-        if type(anchor) ~= "string" then
-          anchor = "CENTER"
-        end
-
-        frame.items = {}
-        local texBase = 0.95 * (1 - details.height) / 2
-        for _, auraInstanceID in ipairs(keys) do
-          local aura = data[auraInstanceID]
-          local buff = self.AurasPool:Acquire()
-          table.insert(frame.items, buff)
-          buff:SetParent(frame)
-          buff.auraInstanceID = auraInstanceID
-          buff.isBuff = aura.isHelpful;
-          buff.spellID = aura.spellId;
-
-          buff.Icon:SetTexture(aura.icon);
-          if (aura.applications > 1) then
-            buff.CountFrame.Count:SetText(aura.applications);
-            buff.CountFrame.Count:SetFontObject(addonTable.CurrentFont)
-            buff.CountFrame.Count:SetTextScale(11/12 * details.textScale)
-            buff.CountFrame.Count:Show();
-          else
-            buff.CountFrame.Count:Hide();
+          if aura.auraInstanceID == frame.auraInstanceID then
+            frame.auraIndex = index
+            break
           end
-          buff.Cooldown:SetHideCountdownNumbers(not details.showCountdown)
-          if details.showCountdown then
-            buff.Cooldown.Text:SetFontObject(addonTable.CurrentFont)
-            buff.Cooldown.Text:SetTextScale(14/12 * details.textScale)
-          end
-          buff:SetHeight(20 * details.height)
-          buff.Icon:SetHeight(19 * details.height)
-          buff.Icon:SetTexCoord(0.05, 0.95, 0.05 + texBase, 0.95 - texBase)
-          CooldownFrame_Set(buff.Cooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0, true);
+          index = index + 1
+        end
 
-          buff:Show();
-
-          buff:SetPoint(anchor, currentX, currentY)
-          currentX = currentX + xOffset
+        if frame.auraIndex then
+          GameTooltip:SetUnitAura(self.unit, frame.auraIndex, frame.auraFilter)
+          GameTooltip:Show()
+        else
+          frame.auraIndex = -1
         end
       end
+    end)
+    frame:SetScript("OnLeave", function()
+      GameTooltip:Hide()
+    end)
+  end)
+
+  local function GetCallback(frame)
+    return function(data, auraFilter)
+      if frame.items then
+        for _, item in ipairs(frame.items) do
+          self.AurasPool:Release(item)
+        end
+        frame.items = nil
+      end
+
+      if not frame:GetParent():IsShown() then
+        return
+      end
+
+      local step = PixelUtil.ConvertPixelsToUIForRegion(22, frame)
+      local currentX = 0
+      local currentY = 0
+      local xOffset = 0
+      local yOffset = 0
+      local details = frame:GetParent().details
+      if details.direction == "LEFT" then
+        xOffset = -step
+      elseif details.direction == "RIGHT" then
+        xOffset = step
+      else -- CENTER
+        xOffset = step
+        currentX = #keys * step / 2
+      end
+      local anchor = details.anchor[1]
+      if type(anchor) ~= "string" then
+        anchor = "CENTER"
+      end
+
+      frame.items = {}
+      local texBase = 0.95 * (1 - details.height) / 2
+      for _, auraInstanceID in ipairs(data) do
+        local aura = self.AurasManager:GetByInstanceID(auraInstanceID)
+        local auraFrame = self.AurasPool:Acquire()
+        table.insert(frame.items, auraFrame)
+        auraFrame:SetParent(frame)
+        auraFrame.auraInstanceID = auraInstanceID
+        auraFrame.auraIndex = nil
+        auraFrame.auraFilter = auraFilter
+
+        auraFrame.Icon:SetTexture(aura.icon);
+        auraFrame.CountFrame.Count:SetText(aura.applicationsString)
+        auraFrame.CountFrame.Count:SetFontObject(addonTable.CurrentFont)
+        auraFrame.CountFrame.Count:SetTextScale(11/12 * details.textScale)
+        auraFrame.CountFrame.Count:Show();
+
+        auraFrame.Cooldown:SetHideCountdownNumbers(not details.showCountdown)
+
+        if details.showCountdown then
+          auraFrame.Cooldown.Text:SetFontObject(addonTable.CurrentFont)
+          auraFrame.Cooldown.Text:SetTextScale(14/12 * details.textScale)
+        end
+
+        PixelUtil.SetSize(auraFrame, 20, 20 * details.height)
+        PixelUtil.SetSize(auraFrame.Icon, 19, 19 * details.height)
+        auraFrame.Icon:SetTexCoord(0.05, 0.95, 0.05 + texBase, 0.95 - texBase)
+
+        if aura.durationSecret then
+          auraFrame.Cooldown:SetCooldownFromDurationObject(aura.durationSecret)
+        else
+          CooldownFrame_Set(auraFrame.Cooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0, true);
+        end
+
+        auraFrame:Show();
+
+        PixelUtil.SetPoint(auraFrame, anchor, frame, anchor, currentX, currentY)
+        currentX = currentX + xOffset
+      end
     end
-
-    self.BuffDisplay.Wrapped = CreateFrame("Frame", nil, self.BuffDisplay)
-    self.BuffDisplay.Wrapped:SetSize(10, 10)
-    self.DebuffDisplay.Wrapped = CreateFrame("Frame", nil, self.DebuffDisplay)
-    self.DebuffDisplay.Wrapped:SetSize(10, 10)
-    self.CrowdControlDisplay.Wrapped = CreateFrame("Frame", nil, self.CrowdControlDisplay)
-    self.CrowdControlDisplay.Wrapped:SetSize(10, 10)
-
-    self.DebuffDisplay:Hide()
-    self.BuffDisplay:Hide()
-    self.CrowdControlDisplay:Hide()
-
-    self.AurasManager:SetDebuffsCallback(GetCallback(self.DebuffDisplay.Wrapped))
-    self.AurasManager:SetBuffsCallback(GetCallback(self.BuffDisplay.Wrapped))
-    self.AurasManager:SetCrowdControlCallback(GetCallback(self.CrowdControlDisplay.Wrapped))
   end
+
+  self.BuffDisplay.Wrapped = CreateFrame("Frame", nil, self.BuffDisplay)
+  self.BuffDisplay.Wrapped:SetSize(10, 10)
+  self.DebuffDisplay.Wrapped = CreateFrame("Frame", nil, self.DebuffDisplay)
+  self.DebuffDisplay.Wrapped:SetSize(10, 10)
+  self.CrowdControlDisplay.Wrapped = CreateFrame("Frame", nil, self.CrowdControlDisplay)
+  self.CrowdControlDisplay.Wrapped:SetSize(10, 10)
+
+  self.DebuffDisplay:Hide()
+  self.BuffDisplay:Hide()
+  self.CrowdControlDisplay:Hide()
+
+  self.AurasManager:SetDebuffsCallback(GetCallback(self.DebuffDisplay.Wrapped))
+  self.AurasManager:SetBuffsCallback(GetCallback(self.BuffDisplay.Wrapped))
+  self.AurasManager:SetCrowdControlCallback(GetCallback(self.CrowdControlDisplay.Wrapped))
 
   self:SetScript("OnEvent", self.OnEvent)
 
   self:SetSize(10, 10)
-  self:SetPoint("CENTER")
 
   self.casting = false
+
+  self:SetScript("OnSizeChanged", function()
+    if not self.widgets or not self:IsVisible() then
+      return
+    end
+    for _, w in ipairs(self.widgets) do
+      w:ApplyAnchor()
+      w:ApplySize()
+    end
+  end)
 end
 
-function addonTable.Display.NameplateMixin:InitializeWidgets(design)
+function addonTable.Display.NameplateMixin:InitializeWidgets(design, scale)
+  self.scale = scale or 1
+
+  self.unit = nil
+  self:UpdateVisual()
+
   if self.widgets then
     addonTable.Display.ReleaseWidgets(self.widgets)
     self.widgets = nil
@@ -147,7 +200,7 @@ function addonTable.Display.NameplateMixin:InitializeWidgets(design)
       self.DebuffDisplay.Wrapped:SetPoint(designInfo.debuffs.anchor[1] or "CENTER")
       self.DebuffDisplay.Wrapped:SetScale(designInfo.debuffs.scale)
     end
-    self.DebuffDisplay:SetSize(defaultSize * designInfo.debuffs.scale, defaultSize * designInfo.debuffs.scale)
+    PixelUtil.SetSize(self.DebuffDisplay, defaultSize * designInfo.debuffs.scale, defaultSize * designInfo.debuffs.scale)
     addonTable.Display.ApplyAnchor(self.DebuffDisplay, designInfo.debuffs.anchor)
   end
   if designInfo.buffs then
@@ -161,7 +214,7 @@ function addonTable.Display.NameplateMixin:InitializeWidgets(design)
       self.BuffDisplay.Wrapped:SetScale(designInfo.buffs.scale)
       self.BuffDisplay.Wrapped:SetPoint(designInfo.buffs.anchor[1] or "CENTER")
     end
-    self.BuffDisplay:SetSize(defaultSize * designInfo.buffs.scale, defaultSize * designInfo.buffs.scale)
+    PixelUtil.SetSize(self.BuffDisplay, defaultSize * designInfo.buffs.scale, defaultSize * designInfo.buffs.scale)
     addonTable.Display.ApplyAnchor(self.BuffDisplay, designInfo.buffs.anchor)
   end
   if designInfo.crowdControl then
@@ -175,27 +228,28 @@ function addonTable.Display.NameplateMixin:InitializeWidgets(design)
       self.CrowdControlDisplay.Wrapped:SetScale(designInfo.crowdControl.scale)
       self.CrowdControlDisplay.Wrapped:SetPoint(designInfo.crowdControl.anchor[1] or "CENTER")
     end
-    self.CrowdControlDisplay:SetSize(defaultSize * designInfo.crowdControl.scale, defaultSize * designInfo.crowdControl.scale)
+    PixelUtil.SetSize(self.CrowdControlDisplay, defaultSize * designInfo.crowdControl.scale, defaultSize * designInfo.crowdControl.scale)
     addonTable.Display.ApplyAnchor(self.CrowdControlDisplay, designInfo.crowdControl.anchor)
   end
+
+  self.AurasManager:PostInit(designInfo.buffs, designInfo.debuffs, designInfo.crowdControl)
 end
 
 function addonTable.Display.NameplateMixin:Install(nameplate)
   self:Show()
   self:SetFrameStrata("BACKGROUND")
   self:SetPoint("CENTER", nameplate)
+  self:SetSize(10, 10)
 end
 
 function addonTable.Display.NameplateMixin:SetUnit(unit)
   self.SoftTargetIcon:Hide()
-  self.interactUnit = nil
   self:SetAlpha(0)
+
+  self.interactUnit = unit
   if unit and (not UnitNameplateShowsWidgetsOnly or not UnitNameplateShowsWidgetsOnly(unit)) and not UnitIsGameObject(unit) then
     self.unit = unit
     self:Show()
-    if addonTable.Constants.IsMidnight then
-      C_NamePlateManager.SetNamePlateSimplified(self.unit, false)
-    end
 
     for _, w in ipairs(self.widgets) do
       w:Show()
@@ -209,15 +263,16 @@ function addonTable.Display.NameplateMixin:SetUnit(unit)
       if w.ApplyFocus then
         w:ApplyFocus()
       end
+      if addonTable.API.TextOverrides.isActive and w.ApplyTextOverride then
+        w:ApplyTextOverride()
+      end
     end
 
     self.BuffDisplay:SetShown(self.BuffDisplay.enabled)
     self.DebuffDisplay:SetShown(self.DebuffDisplay.enabled)
     self.CrowdControlDisplay:SetShown(self.CrowdControlDisplay.enabled)
 
-    if self.AurasManager then
-      self.AurasManager:SetUnit(self.unit)
-    end
+    self.AurasManager:SetUnit(self.unit)
 
     if UnitCanAttack("player", self.unit) then
       self:RegisterUnitEvent("UNIT_SPELLCAST_START", self.unit)
@@ -225,6 +280,17 @@ function addonTable.Display.NameplateMixin:SetUnit(unit)
       self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", self.unit)
       self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", self.unit)
     end
+
+    addonTable.CallbackRegistry:RegisterCallback("TextOverrideUpdated", function(_, unit)
+      if unit ~= self.unit then
+        return
+      end
+      for _, w in ipairs(self.widgets) do
+        if w.ApplyTextOverride then
+          w:ApplyTextOverride()
+        end
+      end
+    end, self)
   else
     self.unit = nil
     for _, w in ipairs(self.widgets) do
@@ -236,15 +302,13 @@ function addonTable.Display.NameplateMixin:SetUnit(unit)
     self.DebuffDisplay:Hide()
     self.CrowdControlDisplay:Hide()
 
-    if self.AurasManager then
-      self.AurasManager:SetUnit()
-    end
+    self.AurasManager:SetUnit()
 
     self:UnregisterAllEvents()
     self.casting = false
-  end
 
-  self.interactUnit = unit
+    addonTable.CallbackRegistry:UnregisterCallback("TextOverrideUpdated", self)
+  end
 
   self:UpdateVisual()
 end
@@ -294,7 +358,7 @@ end
 function addonTable.Display.NameplateMixin:UpdateVisual()
   if not self.unit then
     self.overrideAlpha = 1
-    self:SetScale(addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
+    self:SetScale(self.scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
     return
   end
 
@@ -302,22 +366,14 @@ function addonTable.Display.NameplateMixin:UpdateVisual()
   local alpha = 1
   local isTarget = UnitIsUnit("target", self.unit)
   if isTarget then
-    local change = addonTable.Config.Get(addonTable.Config.Options.TARGET_BEHAVIOUR)
-    if change == "enlarge" then
-      scale = 1.25
-    end
+    scale = scale * addonTable.Config.Get(addonTable.Config.Options.TARGET_SCALE)
   elseif self.casting then
-    local change = addonTable.Config.Get(addonTable.Config.Options.TARGET_BEHAVIOUR)
-    if change == "enlarge" then
-      scale = 1.1
-    end
+    scale = scale * addonTable.Config.Get(addonTable.Config.Options.CAST_SCALE)
+    alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.CAST_ALPHA)
   else
-    local change = addonTable.Config.Get(addonTable.Config.Options.NOT_TARGET_BEHAVIOUR)
-    if change == "fade" then
-      alpha = 0.5
-    end
+    alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.NOT_TARGET_ALPHA)
   end
-  self:SetScale(scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
+  self:SetScale(self.scale * scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
   self.overrideAlpha = alpha
 end
 

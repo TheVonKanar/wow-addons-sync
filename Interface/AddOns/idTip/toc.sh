@@ -2,16 +2,17 @@
 set -euo pipefail
 
 function toc {
-  local version="$(curl -fsSL "https://us.version.battle.net/v2/products/$1/versions" | awk -F "|" '/^us/{print $6}')"
-  version="${version%.*}"
-  if [[ "$version" == 1.* ]]; then
-    version="${version/./}"
-  fi
-  version="${version//./0}"
-  echo "$version"
+  VERSIONS="$(curl -s https://us.version.battle.net/v2/products/$1/versions | awk -F "|" '/^[a-z]{2}\|/{print $6}')"
+  for VERSION in $VERSIONS; do
+    VERSION="${VERSION%.*}"
+    if [[ "$VERSION" == 1.* ]] || [[ "$VERSION" == 3.* ]]; then
+      VERSION="${VERSION/./}"
+    fi
+    VERSION="${VERSION//./0}"
+    echo "$VERSION"
+  done
 }
 
-# 38000 = titan
 VERSION_STRING="$(echo -e \
   "$(toc "wow")\n" \
   "$(toc "wowt")\n" \
@@ -22,7 +23,7 @@ VERSION_STRING="$(echo -e \
   "$(toc "wow_classic_ptr")\n" \
   "$(toc "wow_classic_era")\n" \
   "$(toc "wow_classic_era_ptr")\n" \
-  "$(echo "38000")\n" \
+  "$(toc "wow_classic_titan")\n" \
   | awk '{$1=$1};1' | sort -n | uniq | xargs | perl -p -e "s# #, #g")"
 
 if [[ "$VERSION_STRING" =~ ^[0-9,\ ]+$ ]]; then

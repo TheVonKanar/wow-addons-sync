@@ -1,6 +1,6 @@
 --Reserved space below so all localization files line up
 -- Traductions françaises : Zazou89, KatyPurry et Klep-Ysondre
-if not (GetLocale() == "frFR") then return end;
+if not (GetLocale() == "frFR") then return end
 
 local _, addon = ...
 local L = addon.L;
@@ -9,6 +9,8 @@ local L = addon.L;
 --Globals
 BINDING_HEADER_PLUMBER = "Addon Plumber";
 BINDING_NAME_TOGGLE_PLUMBER_LANDINGPAGE = "Activer / désactiver le résumé de l'extension";   --Show/hide Expansion Summary UI
+BINDING_NAME_PLUMBER_QUESTWATCH_NEXT = "Passer à la quête suivante";
+BINDING_NAME_PLUMBER_QUESTWATCH_PREVIOUS = "Passer à la quête précédente";
 
 
 --Module Control Panel
@@ -38,6 +40,8 @@ L["Version"] = "Version";
 L["New Features"] = "Nouvelles fonctionnalités";
 L["New Feature Abbr"] = "Nouv.";
 L["Format Month Day"] = EVENT_SCHEDULER_DAY_FORMAT or "%s %d";
+L["Always On Module"] = "Ce module est toujours activé.";
+L["Return To Module List"] = "Retour à la liste";
 
 
 --Settings Category
@@ -54,18 +58,22 @@ L["SC Profession"] = "Métiers";
 L["SC Quest"] = "Quêtes";
 L["SC UnitFrame"] = "Cadres d'unité";
 L["SC Old"] = "Ancien contenu";
+L["SC Housing"] = AUCTION_CATEGORY_HOUSING or "Logis";
 L["SC Uncategorized"] = "Non classé";
 
 --Settings Search Keywords, Search Tags
-L["KW Tooltip"] = "Info-bulle";
+L["KW Tooltip"] = "infobulle";
 L["KW Transmog"] = "Transmogrification";
 L["KW Vendor"] = "Vendeur";
 L["KW LegionRemix"] = "Remix de Legion";
 L["KW Housing"] = "Maison du joueur";
+L["KW Combat"] = "Combat";
+L["KW ActionBar"] = "Barres d'action";
+L["KW Console"] = "Contrôleur de jeu"; -- à revoir
 
 --Filter Sort Method
-L["SortMethod 1"] = "Nom";          --Ordre alphabétique
-L["SortMethod 2"] = "Date d'ajout"; --Les nouveautés en premier
+L["SortMethod 1"] = "Nom";  --Alphabetical Order
+L["SortMethod 2"] = "Date d'ajout";  --New on the top
 
 
 --Module Categories
@@ -76,7 +84,7 @@ L["Module Category General"] = "Général";
 --- order: 2
 L["Module Category NPC Interaction"] = "Interaction avec les PNJ";
 --- order: 3
-L["Module Category Tooltip"] = "Info-bulle";   --Additional Info on Tooltips
+L["Module Category Tooltip"] = "Infobulle";   --Additional Info on Tooltips
 --- order: 4
 L["Module Category Class"] = "Classe";   --Player Class (rogue, paladin...)
 --- order: 5
@@ -92,7 +100,7 @@ L["Module Category Plumber"] = "Plumber";   --This addon's name
 
 --Deprecated
 L["Module Category Dreamseeds"] = "Graines oniriques";     --Added in patch 10.2.0
-L["Module Category AzerothianArchives"] = "Archives d'Azeroth";     --Added in patch 10.2.5
+L["Module Category AzerothianArchives"] = "Archives d’Azeroth";     --Added in patch 10.2.5
 
 
 --AutoJoinEvents
@@ -106,7 +114,7 @@ L["ModuleDescription BackpackItemTracker"] = "Suivez les objets empilables dans 
 L["Instruction Track Item"] = "Suivre l'objet";
 L["Hide Not Owned Items"] = "Masquer les objets non possédés";
 L["Hide Not Owned Items Tooltip"] = "Si vous ne possédez plus un objet que vous suiviez, il sera déplacé vers un menu caché.";
-L["Concise Tooltip"] = "Info-bulle concise";
+L["Concise Tooltip"] = "infobulle concise";
 L["Concise Tooltip Tooltip"] = "Afficher uniquement le type de liaison de l'objet et sa quantité maximale.";
 L["Item Track Too Many"] = "Vous pouvez suivre seulement %d objets à la fois.";
 L["Tracking List Empty"] = "Votre liste de suivi personnalisée est vide.";
@@ -155,10 +163,10 @@ L["Pin Size"] = "Taille du repère";
 L["ModuleName AlternativePlayerChoiceUI"] = "Choix de l'interface : Manne d'émeraude";
 L["ModuleDescription AlternativePlayerChoiceUI"] = "Remplace l'interface de la Graine onirique par défaut par une interface moins bloquante, affiche le nombre d'objets que vous possédez et vous permet de contribuer automatiquement en cliquant et en maintenant le bouton.";
 
+
 --HandyLockpick (Right-click a lockbox in your bag to unlock when you are not in combat. Available to rogues and mechagnomes)
 L["ModuleName HandyLockpick"] = "Crochetage pratique";
 L["ModuleDescription HandyLockpick"] = "Clic droit sur un coffre verrouillé dans votre sac ou dans l'interface d'échange pour le déverrouiller.\n\n|cffd4641c- " ..L["Restriction Combat"].. "\n- Impossible de déverrouiller directement un objet dans la banque\n- Affecté par le mode de ciblage doux";
-
 L["Instruction Pick Lock"] = "<Clic droit pour crocheter>";
 
 
@@ -240,7 +248,7 @@ L["Color Applied"] = "Ceci est la couleur actuellement appliquée.";
 
 --Tooltip Item Reagents
 L["ModuleName TooltipItemReagents"] = "Réactifs";
-L["ModuleDescription TooltipItemReagents"] = "Si un objet peut être utilisé pour se combiner en quelque chose de nouveau, affiche tous les « Réactifs » utilisés dans le processus.\n\nAppuyez sur la touche Maj et maintenez-la enfoncée pour afficher l'objet fabriqué si cette option est prise en charge.";
+L["ModuleDescription TooltipItemReagents"] = "Si un objet peut être utilisé pour se combiner en quelque chose de nouveau, alors afficher tous les « Réactifs » utilisés dans le processus.\n\nAppuyez sur la touche Maj et maintenez-la enfoncée pour afficher l'objet fabriqué si cette option est prise en charge.";
 L["Can Create Multiple Item Format"] = "Vous disposez des ressources pour créer |cffffffff%d|r éléments.";
 
 
@@ -257,7 +265,7 @@ L["Instruction Show In Quest Log"] = "<Ctrl + clic gauche pour afficher le journ
 
 
 L["ModuleName TooltipTransmogEnsemble"] = "Ensembles de transmogrification";
-L["ModuleDescription TooltipTransmogEnsemble"] = "- Affiche le nombre d'apparences d'un ensemble à collectionner.\n\n- Correction du problème où l'Info-bulle indiquait « Déjà connu » mais vous pouviez quand même l'utiliser pour débloquer de nouvelles apparences.";
+L["ModuleDescription TooltipTransmogEnsemble"] = "- Affiche le nombre d'apparences d'un ensemble à collectionner.\n\n- Correction du problème où l'infobulle indiquait « Déjà connu » mais vous pouviez quand même l'utiliser pour débloquer de nouvelles apparences.";
 L["Collected Appearances"] = "Apparences collectées";
 L["Collected Items"] = "Objets collectés";
 
@@ -271,7 +279,7 @@ L["Data Loading In Progress"] = "Plumber charge les données";
 
 --Plunderstore
 L["ModuleName Plunderstore"] = "Plunderstore";
-L["ModuleDescription Plunderstore"] = "Modification de la boutique accessible via la Recherche de groupe :\n\n– Ajout d'une case à cocher pour masquer les objets déjà collectés.\n\n– Affichage du nombre d'objets non collectés sur les boutons de catégorie.\n\n– Ajout de l'emplacement d'équipement (arme ou armure) dans les info-bulles.\n\n– Possibilité de visualiser les objets équipables dans la salle d'essayage.";
+L["ModuleDescription Plunderstore"] = "Modification de la boutique accessible via la Recherche de groupe :\n\n– Ajout d'une case à cocher pour masquer les objets déjà collectés.\n\n– Affichage du nombre d'objets non collectés sur les boutons de catégorie.\n\n– Ajout de l'emplacement d'équipement (arme ou armure) dans les infobulles.\n\n– Possibilité de visualiser les objets équipables dans la salle d'essayage.";
 L["Store Full Purchase Price Format"] = "Gagnez |cffffffff%s|r de butin pour acheter tout ce que contient la boutique.";
 L["Store Item Fully Collected"] = "Vous avez tout récupéré dans la boutique !";
 
@@ -351,7 +359,7 @@ L["ModuleDescription QuestItemDestroyAlert"] = "Afficher les informations de qu�
 
 --SpellcastingInfo
 L["ModuleName SpellcastingInfo"] = "Informations sur les sorts de la cible";
-L["ModuleDescription SpellcastingInfo"] = "– Affiche l'info-bulle du sort lorsque vous survolez la barre d'incantation sur le cadre de la cible.\n\n– Enregistre les capacités des monstres, consultables ultérieurement par un clic droit sur le cadre de la cible.";
+L["ModuleDescription SpellcastingInfo"] = "– Affiche l'infobulle du sort lorsque vous survolez la barre d'incantation sur le cadre de la cible.\n\n– Enregistre les capacités des monstres, consultables ultérieurement par un clic droit sur le cadre de la cible.";
 L["Abilities"] = "Capacités";
 L["Spell Colon"] = "Sort : ";   --Display SpellID
 L["Icon Colon"] = "Icône : ";     --Display IconFileID
@@ -396,7 +404,7 @@ L["Unearned Filter Tooltip"] = "Vous pouvez voir des Titres en double qui ne son
 
 --BlizzardSuperTrack
 L["ModuleName BlizzardSuperTrack"] = "Point de passage : Minuteur d'événement";
-L["ModuleDescription BlizzardSuperTrack"] = "Ajouter un minuteur sur votre point de passage actif si son info-bulle de carte en possède un.";
+L["ModuleDescription BlizzardSuperTrack"] = "Ajouter un minuteur sur votre point de passage actif si son infobulle de carte en possède un.";
 
 
 --ProfessionsBook
@@ -442,7 +450,12 @@ L["SoftTargetName QuestObjective"] = "Afficher les objectifs de quête";
 L["SoftTargetName QuestObjective Tooltip"] = "Affiche les objectifs de quête (le cas échéant) sous le nom.";
 L["SoftTargetName QuestObjective Alert"] = "Cette fonctionnalité nécessite d'activer |cffffffffAfficher la bulle d'aide de la cible|r dans Options du jeu > Accessibilité > Général.";
 L["SoftTargetName ShowNPC"] = "Inclure les PNJ";
-L["SoftTargetName ShowNPC Tooltip"] = "Si cette option est désactivée, le nom n'apparaîtra que sur les objets interactifs.";
+L["SoftTargetName ShowNPC Tooltip"] = "Si cette option est désactivée, le nom n'apparaîtra que sur les objets de jeu interactifs.";
+L["SoftTargetName HideIcon"] = "Masquer l'icône d'interaction";
+L["SoftTargetName HideIcon Tooltip"] = "Masquer l'icône d'interaction et la barre de lancement radiale lorsque vous êtes dans une maison.";
+L["SoftTargetName HideName"] = "Masquer le nom de l'objet";
+L["SoftTargetName HideName Tooltip"] = "Masquer le nom de l'objet cible lorsque vous êtes dans une maison."
+
 
 
 --LegionRemix
@@ -560,7 +573,9 @@ L["QuickSlot Error 3"] = "Emplacement rapide : un contrôleur avec la même clé
 
 --Plumber Macro
 L["PlumberMacro Drive"] = "Macro V.R.O.U.M. de Plumber";
-L["PlumberMacro Drawer"] = "Création de macro Plumber";
+L["PlumberMacro Drawer"] = "Macro Plumber";
+L["PlumberMacro Housing"] = "Macro Logis de Plumber";
+L["PlumberMacro Torch"] = "Macro Torche de Plumber";
 L["PlumberMacro DrawerFlag Combat"] = "La macro sera mise à jour après avoir quitté le combat.";
 L["PlumberMacro DrawerFlag Stuck"] = "Une erreur s'est produite lors de la mise à jour de la macro.";
 L["PlumberMacro Error Combat"] = "Indisponible en combat";
@@ -579,12 +594,14 @@ L["Drawer Option Global Tooltip"] = "Ce paramètre est partagé par toutes les m
 L["Drawer Option CloseAfterClick"] = "Fermer après avoir cliqué";
 L["Drawer Option CloseAfterClick Tooltip"] = "Fermer la macro après avoir cliqué sur n'importe quel bouton, que cela soit réussi ou non.";
 L["Drawer Option SingleRow"] = "Ligne unique";
-L["Drawer Option SingleRow Tooltip"] = "Si cette option est cochée, alignez tous les boutons sur la même ligne au lieu de 4 éléments par ligne.";
+L["Drawer Option SingleRow Tooltip"] = "Si cette option est cochée, aligner tous les boutons sur la même ligne au lieu de 4 par ligne.";
 L["Drawer Option Hide Unusable"] = "Masquer les actions inutilisables";
 L["Drawer Option Hide Unusable Tooltip"] = "Masquer les objets non possédés et les sorts non appris.";
 L["Drawer Option Hide Unusable Tooltip 2"] = "Les objets consommables comme les potions seront toujours affichés."
 L["Drawer Option Update Frequently"] = "Mis à jour fréquemment";
 L["Drawer Option Update Frequently Tooltip"] = "Essaie de mettre à jour l'état des boutons dès qu'un changement survient dans vos sacs ou grimoires. Activer cette option peut légèrement augmenter la consommation de ressources.";
+L["ModuleName DrawerMacro"] = "Macro Plumber";
+L["ModuleDescription DrawerMacro"] = "Créer un menu déroulant personnalisé pour gérer vos objets, sorts, mascottes, montures et jouets.\n\nPour créer une Macro Plumber, créez d'abord une nouvelle macro, puis entrez |cffd7c0a3#plumber:drawer|r dans la zone d'édition de la macro.";
 
 
 --New Expansion Landing Page
@@ -674,9 +691,70 @@ L["Missing Appearances Format"] = "%d |4apparence manquante:apparences manquante
 L["Press Key To Copy Format"] = "Appuyez sur |cffffd100%s|r pour copier";
 
 
+--QuestWatchCycle
+L["ModuleName QuestWatchCycle"] = "Raccourcis clavier : Quête";
+L["ModuleDescription QuestWatchCycle"] = "Permet d'utiliser des raccourcis clavier pour passer à la quête suivante/précédente dans le suivi des objectifs.\n\n|cffd4641cConfigurer vos raccourcis clavier dans Raccourcis clavier > Plumber.|r";
+
+
+--CraftSearchExtended
+L["ModuleName CraftSearchExtended"] = "Élargir les résultats de recherche";
+L["ModuleDescription CraftSearchExtended"] = "Afficher plus de résultats lors de la recherche de certains mots.\n\n- Alchimie et Calligraphie : Trouver des recettes de Pigments pour la construction en recherchant des couleurs de teinture.";
+
+
 --DecorModelScaleRef
-L["ModuleName DecorModelScaleRef"] = "Catalogue d'éléments de décoration : Échelle de la Banane"; --See HOUSING_DASHBOARD_CATALOG_TOOLTIP
+L["ModuleName DecorModelScaleRef"] = "Éléments de décoration : Échelle de la Banane"; --See HOUSING_DASHBOARD_CATALOG_TOOLTIP
 L["ModuleDescription DecorModelScaleRef"] = "- Ajoute une référence de taille (une banane) à la fenêtre d'aperçu du décor, vous permettant d'évaluer la taille des objets.\n\n- Vous permet également de modifier l'inclinaison de la caméra en maintenant le bouton gauche enfoncé et en vous déplaçant verticalement.";
+
+
+--Player Housing
+L["ModuleName Housing_Macro"] = "Macros de Logis";
+L["ModuleDescription Housing_Macro"] = "Vous pouvez créer une macro de téléportation à votre Logi : créez d'abord une nouvelle macro, puis saisissez |cffd7c0a3#plumber:home|r dans la zone de commande.";
+L["Teleport Home"] = "Téléportation au domicile";
+L["Instruction Drag To Action Bar"] = "<Cliquez et faites glisser ceci vers vos barres d'action>";
+L["Toggle Torch"] = "Activer / désactiver la torche";
+L["ModuleName Housing_DecorHover"] = "Éditeur : Nom d'objet et Duplication";
+L["ModuleDescription Housing_DecorHover"] = "En mode Décoration :\n\n- Survolez un décor pour afficher son nom et le nombre d'exemplaires en stock.\n\n- Permet de « dupliquer » un décor en appuyant sur Alt.\n\nLe nouvel objet n'héritera pas des angles et échelles actuels.";
+L["Duplicate"] = "Dupliquer";
+L["Duplicate Decor Key"] = "Touche « Dupliquer »";
+L["Enable Duplicate"] = "Activer « Dupliquer »";
+L["Enable Duplicate tooltip"] = "En mode Décoration, vous pouvez survoler un décor puis appuyer sur une touche pour placer un autre exemplaire de cet objet.";
+L["ModuleName Housing_CustomizeMode"] = "Éditeur : 3 Mode de personnalisation";
+L["ModuleDescription Housing_CustomizeMode"] = "En mode Personnalisation :\n\n- Permet de copier les teintures d'un décor à un autre.\n\n- Modifie le nom de l'emplacement de teinture : remplace l'index par le nom de la couleur.";
+L["Copy Dyes"] = "Copier";
+L["Dyes Copied"] = "Teintures copiées";
+L["Apply Dyes"] = "Appliquer";
+L["Preview Dyes"] = "Aperçu";
+L["ModuleName TooltipDyeDeez"] = "Infobulle : Pigment de teinture";
+L["ModuleDescription TooltipDyeDeez"] = "Affiche le nom des couleurs de teinture dans l'infobulle des pigments de logis.";
+L["Instruction Show More Info"] = "<Appuyez sur Alt pour afficher plus d'informations>";
+L["Instruction Show Less Info"] = "<Appuyez sur Alt pour afficher moins d'informations>";
+L["ModuleName Housing_ItemAcquiredAlert"] = "Alerte Décoration collectée";
+L["ModuleDescription Housing_ItemAcquiredAlert"] = "Permet de cliquer avec le bouton gauche sur l'alerte « Décoration collectée » pour prévisualiser son modèle.";
+
+
+--Housing Clock
+L["ModuleName Housing_Clock"] = "Éditeur : Horloge";
+L["ModuleDescription Housing_Clock"] = "Lors de l'utilisation de l'éditeur de maison, afficher une horloge en haut de l'écran.";
+L["Time Spent In Editor"] = "Temps passé dans l'éditeur";
+L["This Session Colon"] = "Cette session : ";
+L["Time Spent Total Colon"] = "Total : ";
+L["Right Click Show Settings"] = "Clic droit pour afficher les paramètres.";
+L["Plumber Clock"] = "Horloge de Plumber";
+L["Clock Type"] = "Type d'horloge";
+L["Clock Type Analog"] = "Analogique";
+L["Clock Type Digital"] = "Numérique";
+
+
+--CatalogExtendedSearch
+L["ModuleName Housing_CatalogSearch"] = "Catalogue de décoration : Élargir les résultats de recherche";
+L["ModuleDescription Housing_CatalogSearch"] = "Améliorer la zone de recherche des onglets Catalogue de décoration et Stockage, vous permettant de trouver des objets par haut fait, vendeur, zone ou monnaie.";
+L["Match Sources"] = "Correspondance des sources";
+
+
+--SourceAchievementLink
+L["ModuleName SourceAchievementLink"] = "Informations sur la source interactive";
+L["ModuleDescription SourceAchievementLink"] = "Rend la plupart des noms de haut fait de l'interface cliquables, vous permettant ainsi de consulter leurs détails ou de suivre leur progression.\n\n- Catalogue de décorations\n\n- Journal des montures";
+
 
 --Generic
 L["Total Colon"] = FROM_TOTAL or "Total :";
@@ -692,6 +770,13 @@ L["Level Maxed"] = "(Maximum)";   --Reached max level
 L["Current Colon"] = "Actuel :";
 L["Unclaimed Reward Alert"] = "Vous avez des récompenses non réclamées";
 L["Uncollected Set Counter Format"] = "Vous avez |cffffffff%d|r transmogrifications non collectées |4set:sets;.";
+L["InstructionFormat Left Click"] = "Clic gaucge pour %s";
+L["InstructionFormat Right Click"] = "Clic droit pour %s";
+L["InstructionFormat Ctrl Left Click"] = "Ctrl + Clic gauche pour %s";
+L["InstructionFormat Ctrl Right Click"] = "Ctrl + Clic droit pour %s";
+L["InstructionFormat Alt Left Click"] = "Alt + Clic gauche pour %s";
+L["InstructionFormat Alt Right Click"] = "Alt + Clic droite pour %s";
+L["Close Frame Format"]= "|cff808080(Fermer %s)|r";
 
 
 --Plumber AddOn Settings
@@ -736,7 +821,7 @@ L["Devourer Attack"] = "Attaque de dévoreur";
 L["Restored Coffer Key"] = "Clé de coffret réparée";
 L["Coffer Key Shard"] = "Fragment de clé de coffre";
 L["Epoch Mementos"] = "Souvenir d'époque";     --See currency:3293
-L["Timeless Scrolls"] = "Parchemin intemporel";
+L["Timeless Scrolls"] = "Parchemin intemporel"; --item: 217605
 
 L["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"] = "Souhaitez-vous vraiment échanger %s contre l'objet suivant ?\n\n|cffff2020Votre achat ne pourra pas être remboursé.|r\n %s";
 
@@ -761,4 +846,15 @@ L["Upgrade Track 4"] = "Champion";
 L["Upgrade Track 5"] = "Héroïque";
 L["Upgrade Track 6"] = "Mythique";
 
-L["Match Pattern Transmog Set Partially Known"] = "^Comprend (%d+) ";   --TRANSMOG_SET_PARTIALLY_KNOWN_CLASS
+L["Match Pattern Transmog Set Partially Known"] = "^Comprend (%d+) non collectées";   --TRANSMOG_SET_PARTIALLY_KNOWN_CLASS
+
+L["DyeColorNameAbbr Black"] = "Noire";
+L["DyeColorNameAbbr Blue"] = "Bleue";
+L["DyeColorNameAbbr Brown"] = "Marron";
+L["DyeColorNameAbbr Green"] = "Verte";
+L["DyeColorNameAbbr Orange"] = "Orange";
+L["DyeColorNameAbbr Purple"] = "Violette";
+L["DyeColorNameAbbr Red"] = "Rouge";
+L["DyeColorNameAbbr Teal"] = "Turquoise";
+L["DyeColorNameAbbr White"] = "Blanche";
+L["DyeColorNameAbbr Yellow"] = "Jaune";

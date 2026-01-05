@@ -7,7 +7,7 @@ KrowiAF.PluginsApi:LoadPluginLocalization(L);
 -- [[ https://legacy.curseforge.com/wow/addons/krowi-achievement-filter/localization ]] --
 -- [[ Everything after this line is automatically generated from CurseForge and is not meant for manual edit - SOURCETOKEN - AUTOGENTOKEN ]] --
 
--- [[ Exported at 2025-11-28 08-36-11 ]] --
+-- [[ Exported at 2025-12-27 11-13-56 ]] --
 L["%c"] = true
 L["%d/%m/%Y %I:%M %p"] = true
 L["%m/%d/%Y %I:%M %p"] = true
@@ -507,6 +507,7 @@ L["Fyrakk Assaults"] = true
 L["Garden Gallivant"] = true
 L["Garrisons Update"] = true
 L["Gathering"] = true
+L["Ghosts of K'aresh"] = true
 L["Gifts"] = true
 L["Gladiator's Sanctum"] = true
 L["Glory"] = true
@@ -579,6 +580,7 @@ L["Left Ctrl"] = true
 L["Left Shift"] = true
 L["Legacy of Arathor"] = true
 L["Legion Assaults"] = true
+L["Legion Remix"] = true
 L["Legion: Remix"] = true
 L["Level 80"] = true
 L["Level 85"] = true
@@ -1164,4 +1166,3 @@ L["Zaqali Ruin Investigation: Next"] = true
 L["Zaqali Ruin Investigation: Soon"] = true
 L["Zaqali Ruin Investigation: Starting Soon"] = true
 L["Zones"] = true
-L["Zuldazar"] = true

@@ -1,8 +1,8 @@
 
 NewSettingsSeen = {
 ["ASSISTED_COMBAT_ROTATION"] = true,
-["GameplaySoundEffects"] = true,
 ["cooldownViewerEnabled"] = true,
+["GameplaySoundEffects"] = true,
 ["PROXY_SPELL_DENSITY"] = true,
 ["PROXY_RAID_SPELL_DENSITY"] = true,
 ["panelItemQualityColorOverrides"] = true,

@@ -1,4 +1,5 @@
-[View Full Changelog](https://github.com/enderneko/Cell/compare/r269-release...f27efa556a63231dd5b9d7bfa3bebbf375dd941d)
+[View Full Changelog](https://github.com/enderneko/Cell/compare/r272-release...88207cb30a4c56463185d44fdf0472fbecc4cd23)
 
-- Bump up toc
-- Fix separate pet frame
+- Improve range check
+- Add TBC support
+- Update locales

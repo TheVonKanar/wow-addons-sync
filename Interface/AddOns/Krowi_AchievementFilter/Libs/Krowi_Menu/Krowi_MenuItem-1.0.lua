@@ -1,30 +1,32 @@
 --[[
-	Krowi's Menu License
-        Copyright ©2020 The contents of this library, excluding third-party resources, are
-        copyrighted to their authors with all rights reserved.
+    Copyright (c) 2023 Krowi
 
-        This library is free to use and the authors hereby grants you the following rights:
+    All Rights Reserved unless otherwise explicitly stated.
 
-        1. 	You may make modifications to this library for private use only, you
-            may not publicize any portion of this library. The only exception being you may
-            upload to the github website.
-
-        2. 	Do not modify the name of this library, including the library folders.
-
-        3. 	This copyright notice shall be included in all copies or substantial
-            portions of the Software.
-
-        All rights not explicitly addressed in this license are reserved by
-        the copyright holders.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 ]]
 
-local lib = LibStub:NewLibrary("Krowi_MenuItem-1.0", 4);
+---@diagnostic disable: undefined-global
+
+-- Define shared minor version for all Krowi_Menu libraries
+KROWI_MENU_LIBRARY_MINOR = KROWI_MENU_LIBRARY_MINOR or 8
+
+local MAJOR, MINOR = "Krowi_MenuItem-1.0", KROWI_MENU_LIBRARY_MINOR
+local lib = LibStub:NewLibrary(MAJOR, MINOR);
 
 if not lib then
 	return;
 end
 
-local popupDialog = LibStub("Krowi_PopopDialog-1.0");
+-- Store version constants
+lib.MAJOR = MAJOR
+lib.MINOR = MINOR
 
 lib.__index = lib;
 function lib:New(info, hideOnClick)
@@ -39,15 +41,6 @@ function lib:New(info, hideOnClick)
         instance[k] = v;
     end
     return instance;
-end
-
-function lib:NewExtLink(text, externalLink)
-    return self:New({
-        Text = text,
-        Func = function()
-            popupDialog.ShowExternalLink(externalLink);
-        end
-    });
 end
 
 function lib:Add(item)
@@ -71,8 +64,4 @@ end
 
 function lib:AddSeparator()
     return self:AddFull({IsSeparator = true});
-end
-
-function lib:AddExtLinkFull(text, externalLink)
-    return self:Add(self:NewExtLink(text, externalLink));
 end

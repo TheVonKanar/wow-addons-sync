@@ -1,16 +1,23 @@
 local T = Angleur_Translate
+
+local debugChannel = 5
+
 local colorYello = CreateColor(1.0, 0.82, 0.0)
 local colorGrae = CreateColor(0.85, 0.85, 0.85)
 local colorBlu = CreateColor(0.61, 0.85, 0.92)
 
-local retail = AngleurTinyPanelRetail
-local cata = AngleurTinyPanelCata
+-- 'ang' is the angleur namespace
+local addonName, ang = ...
+local retailTinyTab = ang.retail.tinyTab
+local mistsTinyTab = ang.mists.tinyTab
 
 function Angleur_SetTab3(self)
     local gameVersion = Angleur_CheckVersion()
     if gameVersion == 1 then
-        retail:ExtraButtons(self)
-    elseif gameVersion == 2 or gameVersion == 3 then
+        retailTinyTab:ExtraButtons(self)
+    elseif gameVersion == 2 then
+        mistsTinyTab:ExtraButtons(self)
+    elseif gameVersion == 3 then
         --nothing
     end
     
@@ -108,9 +115,9 @@ function Angleur_SetTab3(self)
     self.defaults.text:SetPoint("CENTER", self.defaults, "CENTER", 2, -2)
     self.defaults.text:SetText(colorYello:WrapTextInColorCode(T["Defaults"]))
     if gameVersion == 1 then
-        retail:SetDefaultsButtonScript(self)
+        retailTinyTab:SetDefaultsButtonScript(self)
     elseif gameVersion == 2 or gameVersion == 3 then
-        cata:SetDefaultsButtonScript(self)
+        mistsTinyTab:SetDefaultsButtonScript(self)
     end
     
     self.redoTutorial.title:SetText(T["Redo Tutorial"])
@@ -127,7 +134,7 @@ function Angleur_SetTab3(self)
         warningFrame:Hide()
         AngleurTutorial.part = 1
         print(T["First install tutorial restarting."])
-        Angleur_BetaPrint(AngleurTutorial.part)
+        Angleur_BetaPrint(debugChannel, AngleurTutorial.part)
         Angleur_FirstInstall()
     end)
     warningFrame.noButton:SetText(colorYello:WrapTextInColorCode(T["No"]))

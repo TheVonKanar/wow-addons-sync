@@ -9,6 +9,8 @@ local L = addon.L;
 --Globals
 BINDING_HEADER_PLUMBER = "Plumber 애드온";
 BINDING_NAME_TOGGLE_PLUMBER_LANDINGPAGE = "Plumber 추가 기능 요약 전환";   --Show/hide Expansion Summary UI
+BINDING_NAME_PLUMBER_QUESTWATCH_NEXT = "다음 퀘스트에 포커스";
+BINDING_NAME_PLUMBER_QUESTWATCH_PREVIOUS = "이전 퀘스트에 포커스";
 
 
 --Module Control Panel
@@ -67,6 +69,7 @@ L["KW LegionRemix"] = "군단 리믹스";
 L["KW Housing"] = "하우징";
 L["KW Combat"] = "전투";
 L["KW ActionBar"] = "행동 단축바";
+L["KW Console"] = "콘솔 게임패드 컨트롤러";
 
 --Filter Sort Method
 L["SortMethod 1"] = "이름";  --Alphabetical Order
@@ -114,7 +117,7 @@ L["Hide Not Owned Items Tooltip"] = "추적 중인 아이템을 더 이상 보�
 L["Concise Tooltip"] = "간결한 툴팁";
 L["Concise Tooltip Tooltip"] = "아이템의 귀속 방식과 최대 수량만 표시합니다.";
 L["Item Track Too Many"] = "한 번에 최대 %d개의 아이템만 추적할 수 있습니다.";
-L["Tracking List Empty"] = "사용자 지정 추적 목록이 비어 있습니다.";
+L["Tracking List Empty"] = "사용자 정의 추적 목록이 비어 있습니다.";
 L["Holiday Ends Format"] = "종료: %s";
 L["Not Found"] = "찾을 수 없음";   --Item not found
 L["Own"] = "보유 중";   --Something that the player has/owns
@@ -448,6 +451,11 @@ L["SoftTargetName QuestObjective Tooltip"] = "이름 아래에 퀘스트 목표(
 L["SoftTargetName QuestObjective Alert"] = "이 기능을 사용하려면 게임 설정 > 손쉬운 사용 > 일반에서 |cffffffff대상 표시 툴팁|r 옵션을 활성화해야 합니다.";   --See globals: TARGET_TOOLTIP_OPTION
 L["SoftTargetName ShowNPC"] = "NPC 포함";
 L["SoftTargetName ShowNPC Tooltip"] = "비활성화하면 이름은 상호작용 가능한 게임 오브젝트에만 표시됩니다.";
+L["SoftTargetName HideIcon"] = "상호작용 아이콘 숨기기";
+L["SoftTargetName HideIcon Tooltip"] = "내부에 있을 때 상호작용 아이콘과 원형 시전 바를 숨깁니다.";
+L["SoftTargetName HideName"] = "오브젝트 이름 숨기기";
+L["SoftTargetName HideName Tooltip"] = "내부에 있을 때 오브젝트 이름을 숨깁니다."
+
 
 
 --LegionRemix
@@ -544,7 +552,7 @@ L["LootUI Option Use Default UI"] = "기본 전리품 창 사용";
 L["LootUI Option Use Default UI Tooltip"] = "기본 전리품 창을 사용합니다\n\n|cffff4800이 항목을 사용하면 앞서 설정한 옵션들이 적용되지 않습니다.|r";
 L["LootUI Option Background Opacity"] = "투명도";
 L["LootUI Option Background Opacity Tooltip"] = "전리품 알림 모드에서 배경 투명도를 조절할 수 있어요. 이 설정은 수동 루팅 모드에는 적용되지 않아요.";
-L["LootUI Option Custom Quality Color"] = "사용자 지정 품질 색상 사용";
+L["LootUI Option Custom Quality Color"] = "사용자 정의 품질 색상 사용";
 L["LootUI Option Custom Quality Color Tooltip"] = "게임 설정 > 손쉬운 사용 > 색상 - 설정한 색상을 사용합니다.";
 L["LootUI Option Grow Direction"] = "위로 쌓기";
 L["LootUI Option Grow Direction Tooltip 1"] = "활성화 시: 창의 왼쪽 하단이 고정되며, 새로운 알림이 기존 알림 위에 표시됩니다.";
@@ -672,6 +680,10 @@ L["List Is Empty"] = "목록이 비어 있습니다.";
 L["ModuleName InstanceDifficulty"] = "인스턴스 난이도";
 L["ModuleDescription InstanceDifficulty"] = "- 공격대나 던전 입구에 있을 때 난이도 선택기를 표시합니다.\n\n- 인스턴스에 입장하면 화면 상단에 현재 난이도와 귀속 정보를 표시합니다.";
 L["Cannot Change Difficulty"] = "현재는 인스턴스 난이도를 변경할 수 없습니다.";
+L["Cannot Reset Instance"] = "지금은 인스턴스를 초기화할 수 없습니다.";
+L["Difficulty Not Accurate"] = "파티장이 아니어서 난이도 정보가 정확하지 않을 수 있습니다.";
+L["Instruction Click To Open Adventure Guide"] = "좌클릭: |cffffffff모험 안내서 열기|r";
+L["Instruction Alt Click To Reset Instance"] = "Alt+우클릭: |cffffffff모든 인스턴스 초기화|r";
 
 
 --TransmogChatCommand
@@ -683,8 +695,18 @@ L["Missing Appearances Format"] = "%d개 외형 누락";
 L["Press Key To Copy Format"] = "|cffffd100%s|r 키를 눌러 복사";
 
 
+--QuestWatchCycle
+L["ModuleName QuestWatchCycle"] = "단축키: 퀘스트 포커스";
+L["ModuleDescription QuestWatchCycle"] = "단축키로 목표 추적기에서 다음/이전 퀘스트에 포커스를 이동할 수 있습니다.\n\n|cffd4641c단축키 설정: 설정 > 단축키 > Plumber 애드온.|r";
+
+
+--CraftSearchExtended
+L["ModuleName CraftSearchExtended"] = "검색 결과 확장";
+L["ModuleDescription CraftSearchExtended"] = "특정 단어를 검색할 때 더 많은 결과를 표시합니다.\n\n- 연금술과 주문각인: 염료 색상을 검색하여 하우징 색상 제조법을 찾으세요.";
+
+
 --DecorModelScaleRef
-L["ModuleName DecorModelScaleRef"] = "장식품: 크기 비교용 바나나";
+L["ModuleName DecorModelScaleRef"] = "장식품: 크기 비교용 바나나"; --See HOUSING_DASHBOARD_CATALOG_TOOLTIP
 L["ModuleDescription DecorModelScaleRef"] = "- 장식 미리보기 창에 크기 참조용 바나나를 추가하여 오브젝트의 크기를 가늠할 수 있습니다.\n\n- 또한 왼쪽 버튼을 누른 채 수직으로 이동하여 카메라 각도를 변경할 수 있습니다.";
 
 
@@ -694,6 +716,48 @@ L["ModuleDescription Housing_Macro"] = "하우징 순간이동 매크로를 생�
 L["Teleport Home"] = "집으로 순간이동";
 L["Instruction Drag To Action Bar"] = "<클릭하고 드래그하여 행동 단축바로 이동>";
 L["Toggle Torch"] = "횃불 전환";
+L["ModuleName Housing_DecorHover"] = "편집기: 객체 이름 및 복제";
+L["ModuleDescription Housing_DecorHover"] = "장식 모드:\n\n- 커서를 장식 위에 올려놓으면 해당 장식 이름과 저장된 아이템 수가 표시됩니다.\n\n- Alt를 눌러 장식을 \"복제\"할 수 있습니다.\n\n새로 생성된 오브젝트는 현재 각도와 크기를 상속받지 않습니다.";
+L["Duplicate"] = "복제";
+L["Duplicate Decor Key"] = "\"복제\" 키";
+L["Enable Duplicate"] = "\"복제\" 활성화";
+L["Enable Duplicate tooltip"] = "장식 모드에서는 커서를 장식 위에 올려놓은 후 키를 눌러 해당 객체의 다른 인스턴스를 배치할 수 있습니다.";
+L["ModuleName Housing_CustomizeMode"] = "편집기: 사용자 정의 모드";
+L["ModuleDescription Housing_CustomizeMode"] = "사용자 정의 모드:\n\n- 한 장식에서 다른 장식으로 염료를 복사할 수 있습니다.\n\n- 염료 이름을 색상 이름으로 변경합니다.";
+L["Copy Dyes"] = "염색 복사";
+L["Dyes Copied"] = "염색 설정이 복사되었습니다";
+L["Apply Dyes"] = "염색 적용";
+L["Preview Dyes"] = "염색 미리보기";
+L["ModuleName TooltipDyeDeez"] = "툴팁: 염료 색상";
+L["ModuleDescription TooltipDyeDeez"] = "아이템 툴팁에 염료 색상 이름을 표시합니다.";
+L["Instruction Show More Info"] = "<Alt 키를 눌러 추가 정보 보기>";
+L["Instruction Show Less Info"] = "<Alt 키를 눌러 정보 줄이기>";
+L["ModuleName Housing_ItemAcquiredAlert"] = "장식 수집 알림";
+L["ModuleDescription Housing_ItemAcquiredAlert"] = "‘장식 수집’ 알림을 왼쪽 클릭해서 해당 장식의 모델을 미리 볼 수 있습니다.";
+
+
+--Housing Clock
+L["ModuleName Housing_Clock"] = "편집기: 시계";
+L["ModuleDescription Housing_Clock"] = "하우징 편집기 사용 중 화면 상단에 시계를 표시합니다.\n\n편집기에서 보낸 시간도 추적합니다.";
+L["Time Spent In Editor"] = "편집기 사용 시간";
+L["This Session Colon"] = "이번 세션: ";
+L["Time Spent Total Colon"] = "총 시간: ";
+L["Right Click Show Settings"] = "우클릭으로 설정을 엽니다.";
+L["Plumber Clock"] = "Plumber 시계";
+L["Clock Type"] = "시계 유형";
+L["Clock Type Analog"] = "아날로그";
+L["Clock Type Digital"] = "디지털";
+
+
+--CatalogExtendedSearch
+L["ModuleName Housing_CatalogSearch"] = "장식 카탈로그";
+L["ModuleDescription Housing_CatalogSearch"] = "- 장식 목록과 창고 탭의 검색창을 강화하여 업적, 판매자, 지역 또는 화폐로 아이템을 검색할 수 있습니다.\n\n- 카테고리 옆에 일치하는 항목의 수를 표시합니다.\n\n- 채팅에 장식을 링크할 수 있습니다.";
+L["Match Sources"] = "출처 일치";
+
+
+--SourceAchievementLink
+L["ModuleName SourceAchievementLink"] = "상호작용 가능한 출처 정보";
+L["ModuleDescription SourceAchievementLink"] = "다음 UI의 업적 이름이 상호작용 가능해져 세부 정보 확인 또는 추적이 가능합니다.\n\n- 탈것 사전\n\n- 장식 카탈로그";
 
 
 --Generic
@@ -710,6 +774,13 @@ L["Level Maxed"] = "(최대)";   --Reached max level
 L["Current Colon"] = ITEM_UPGRADE_CURRENT or "현재:";
 L["Unclaimed Reward Alert"] = WEEKLY_REWARDS_UNCLAIMED_TITLE or "수령하지 않은 보상이 있습니다";
 L["Uncollected Set Counter Format"] = "아직 수집하지 않은 형상변환 세트: |cffffffff%d|r개";
+L["InstructionFormat Left Click"] = "좌클릭: %s";
+L["InstructionFormat Right Click"] = "우클릭: %s";
+L["InstructionFormat Ctrl Left Click"] = "Ctrl+좌클릭: %s";
+L["InstructionFormat Ctrl Right Click"] = "Ctrl+우클릭: %s";
+L["InstructionFormat Alt Left Click"] = "Alt+좌클릭: %s";
+L["InstructionFormat Alt Right Click"] = "Alt+우클릭: %s";
+L["Close Frame Format"]= "|cff808080(%s 닫기)|r";
 
 
 --Plumber AddOn Settings
@@ -780,3 +851,14 @@ L["Upgrade Track 5"] = "영웅";
 L["Upgrade Track 6"] = "신화";
 
 L["Match Pattern Transmog Set Partially Known"] = "^미획득 형상 (%d+)";   --TRANSMOG_SET_PARTIALLY_KNOWN_CLASS
+
+L["DyeColorNameAbbr Black"] = "블랙";
+L["DyeColorNameAbbr Blue"] = "블루";
+L["DyeColorNameAbbr Brown"] = "브라운";
+L["DyeColorNameAbbr Green"] = "그린";
+L["DyeColorNameAbbr Orange"] = "오렌지";
+L["DyeColorNameAbbr Purple"] = "퍼플";
+L["DyeColorNameAbbr Red"] = "레드";
+L["DyeColorNameAbbr Teal"] = "틸";
+L["DyeColorNameAbbr White"] = "화이트";
+L["DyeColorNameAbbr Yellow"] = "옐로우";

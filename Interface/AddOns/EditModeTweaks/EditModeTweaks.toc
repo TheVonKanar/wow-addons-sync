@@ -1,0 +1,10 @@
+## Interface: 120000
+## Title: Edit Mode Tweaks
+## Notes: Adds pixel-perfect nudging controls for Edit Mode UI elements
+## Author: Josh Thompson
+## Version: 2.5.1
+## SavedVariables: EditModeTweaksDB
+
+Core.lua
+NudgeFrame.lua
+ProfileWindow.lua

@@ -98,20 +98,53 @@ function addonTable.Core.UpgradeDesign(design)
     if not aura.textScale then
       aura.textScale = 1
     end
+    if aura.kind == "debuffs" and not aura.filters then
+      aura.showPandemic = true
+      aura.filters = {
+        important = true,
+        fromYou = true,
+      }
+    end
+    if aura.kind == "buffs" and not aura.filters then
+      aura.filters = {
+        dispelable = true,
+        important = true,
+      }
+    end
+    if aura.kind == "crowdControl" and not aura.filters then
+      aura.filters = {
+        fromYou = false,
+      }
+    end
+    if not aura.sorting then
+      aura.sorting = {
+        kind = "duration",
+        reversed = false,
+      }
+    end
   end
 
   local function UpdateAutoColors(autoColors)
     for _, ac in ipairs(autoColors) do
       if ac.kind == "eliteType" and ac.colors.trivial == nil then
         ac.colors.trivial = GetColor("b28e55")
+      elseif ac.kind == "threat" and ac.useSafeColor == nil then
+        ac.useSafeColor = true
+      elseif ac.kind == "quest" and ac.colors.hostile == nil then
+        ac.colors.hostile = ac.colors.quest
+        ac.colors.neutral = ac.colors.quest
+        ac.colors.friendly = ac.colors.quest
+        ac.colors.quest = nil
+      elseif ac.kind == "classColors" and ac.colors == nil then
+        ac.colors = {}
       end
     end
   end
 
   for _, bar in ipairs(design.bars) do
     if bar.kind == "health" and not bar.absorb then
-      local mode = addonTable.Assets.BarBorders[bar.border.asset].mode
-      local isNarrow = mode == addonTable.Assets.Mode.Percent50
+      local mode = bar.border.height and bar.border.height * 100 or addonTable.Assets.BarBordersLegacy[bar.border.asset].mode
+      local isNarrow = mode < 75
       bar.absorb = {asset = isNarrow and "narrow/blizzard-absorb" or "wide/blizzard-absorb", color = {r = 1, g = 1, b = 1}}
     end
     if bar.kind == "health" and not bar.absorb.color then
@@ -165,16 +198,63 @@ function addonTable.Core.UpgradeDesign(design)
       }
       bar.colors = nil
     end
-    if bar.autoColors then
-      UpdateAutoColors(bar.autoColors)
-    end
     if not bar.background.color then
       bar.background.color = GetColor("FFFFFF")
       bar.background.color.a = bar.background.alpha or 1
       bar.background.alpha = nil
     end
-    if bar.kind == "cast" and bar.colors.normalChannel == nil then
+    if bar.kind == "cast" and bar.colors and bar.colors.normalChannel == nil then
       bar.colors.normalChannel = GetColor("3ec637")
+    end
+    if bar.kind == "cast" and bar.colors and bar.colors.normalCast == nil then
+      bar.colors.importantCast = GetColor("ff1827")
+      bar.colors.importantChannel = GetColor("0a43ff")
+      bar.colors.normalCast = bar.colors.normal
+      bar.colors.normal = nil
+    end
+    if bar.kind == "cast" and not bar.autoColors then
+      local cast = {
+        kind = "cast",
+        colors = {
+          cast = bar.colors.normalCast,
+          channel = bar.colors.normalChannel,
+          uninterruptable = bar.colors.uninterruptable,
+          interrupted = bar.colors.interrupted,
+        },
+      }
+      local important = {
+        kind = "importantCast",
+        colors = {
+          cast = bar.colors.importantCast,
+          channel = bar.colors.importantChannel,
+        },
+      }
+      bar.autoColors = {
+        important,
+        cast,
+      }
+      bar.colors = nil
+    end
+    if not addonTable.Assets.BarBordersSliced[bar.border.asset] then
+      local size = addonTable.Assets.BarBordersLegacy[bar.border.asset].mode
+      bar.border.asset = addonTable.Assets.BarBordersLegacy[bar.border.asset].tag
+      bar.border.width = 1
+      bar.border.height = size ~= 50 and size/100 or 3.8/7.5
+
+      if bar.border.asset == "blizzard-classic-level" then
+        bar.border.asset = "blizzard-classic"
+        table.insert(design.highlights, {
+          kind = "fixed",
+          asset = "100/classic-level",
+          layer = bar.layer + 1,
+          scale = bar.scale,
+          color = CopyTable(bar.border.color),
+          anchor = {"RIGHT", 84 * bar.scale, 0}
+        })
+      end
+    end
+    if bar.autoColors then
+      UpdateAutoColors(bar.autoColors)
     end
   end
 
@@ -234,6 +314,24 @@ function addonTable.Core.UpgradeDesign(design)
     if highlight.color.a == nil then
       highlight.color.a = 1
     end
+
+    if not addonTable.Assets.Highlights[highlight.asset] then
+      local old = addonTable.Assets.HighlightsLegacy[highlight.asset]
+      highlight.asset = addonTable.Assets.HighlightsLegacy[highlight.asset].tag
+      local new = addonTable.Assets.Highlights[highlight.asset]
+
+      if new.mode == addonTable.Assets.RenderMode.Sliced then
+        local baseWidth, baseHeight = 125, 15.625
+        highlight.width = old.width / baseWidth
+        highlight.height = old.height / baseHeight
+      elseif new.mode == addonTable.Assets.RenderMode.Stretch then
+        highlight.width = old.width / new.width
+        highlight.height = old.height / new.height
+      else
+        highlight.width = 1
+        highlight.height = 1
+      end
+    end
   end
 
   for _, bar in ipairs(design.specialBars) do
@@ -271,6 +369,16 @@ function addonTable.Core.MigrateSettings()
     addonTable.Config.Set(addonTable.Config.Options.STYLE, mapping["friend"])
   end
 
+  local mapping = addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)
+  if mapping["enemySimplified"] == nil then
+    mapping["enemySimplified"] = "_hare_simplified"
+  end
+
+  local simplified = addonTable.Config.Get(addonTable.Config.Options.SIMPLIFIED_NAMEPLATES)
+  if simplified["instancesNormal"] == nil then
+    simplified["instancesNormal"] = true
+  end
+
   for _, design in pairs(addonTable.Config.Get(addonTable.Config.Options.DESIGNS)) do
     addonTable.Core.UpgradeDesign(design)
   end
@@ -283,7 +391,7 @@ local function SetStyle()
   if mapping["friend"] == mapping["enemy"] then
     mapping["friend"] = styleName
     mapping["enemy"] = styleName
-  elseif mapping["friend"] ~= styleName and mapping["enemy"] ~= styleName then
+  elseif mapping["friend"] ~= styleName and mapping["enemy"] ~= styleName and mapping["enemySimplified"] ~= styleName then
     mapping["enemy"] = styleName
   end
   if styleName:match("^_") then
@@ -340,19 +448,7 @@ local function UpdateRect(design)
 
   for index, barDetails in ipairs(design.bars) do
     if barDetails.kind == "health" then
-      local foregroundDetails = addonTable.Assets.BarBackgrounds[barDetails.foreground.asset]
-      local borderDetails = addonTable.Assets.BarBorders[barDetails.border.asset]
-      local borderMaskDetails = addonTable.Assets.BarMasks[barDetails.border.asset]
-      local width, height = foregroundDetails.width, foregroundDetails.height
-      if borderDetails.mode and borderDetails.mode ~= foregroundDetails.mode then
-        if borderMaskDetails and (borderMaskDetails.mode > 0 and borderMaskDetails.mode <= 100) then
-          width, height = math.min(borderMaskDetails.width, width), math.min(borderMaskDetails.height, height)
-        elseif borderMaskDetails then
-          width, height = math.min(borderMaskDetails.width, width), math.max(borderMaskDetails.height, height)
-        else
-          width, height = math.min(borderDetails.width, width), math.min(borderDetails.height, height)
-        end
-      end
+      local width, height = barDetails.border.width * addonTable.Assets.BarBordersSize.width, barDetails.border.height * addonTable.Assets.BarBordersSize.height
       local rect = GetRect({width = width, height = height}, barDetails.scale, barDetails.anchor)
       CacheSize(rect)
     end
@@ -362,7 +458,7 @@ local function UpdateRect(design)
 
   for _, textDetails in ipairs(design.texts) do
     if textDetails.kind == "creatureName" then
-      local rect = GetRect({width = textDetails.widthLimit, height = 10}, textDetails.scale, textDetails.anchor)
+      local rect = GetRect({width = textDetails.widthLimit, height = 10 * textDetails.scale}, 1, textDetails.anchor)
       CacheSize(rect)
     end
   end
@@ -386,6 +482,14 @@ end
 function addonTable.Core.GetDesign(kind)
   local name = addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)[kind]
   return addonTable.Core.GetDesignByName(name)
+end
+
+function addonTable.Core.GetDesignScale(kind)
+  if kind:find("Simplified") then
+    return 0.3
+  else
+    return 1
+  end
 end
 
 function addonTable.Core.Initialize()

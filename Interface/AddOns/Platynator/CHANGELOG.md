@@ -1,9 +1,6 @@
 # Platynator
 
-## [191](https://github.com/TheMouseNest/Platynator/tree/191) (2025-12-04)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/190...191) 
+## [239](https://github.com/TheMouseNest/Platynator/tree/239) (2026-01-05)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/238...239) 
 
-- Disable Blizzard nameplate cast bar (not needed anymore)  
-- Midnight: Use SetAlphaToBoolean to do not interruptible casts display  
-- Add separate colour for interruptible channels  
-- Midnight: Fix cast target staying visible after the spellcast has stopped  
+- Fix some cvars not being set properly on first login  

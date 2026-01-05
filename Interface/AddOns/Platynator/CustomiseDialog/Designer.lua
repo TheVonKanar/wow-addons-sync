@@ -126,6 +126,7 @@ local function GetAutomaticColors(rootParent, lockedElements)
             table.insert(container.details, 1, addonTable.CustomiseDialog.AddAlphaToColors(CopyTable(details.default)))
           end
           Announce()
+          UpdateSelected(details.default.kind)
         end)
       end
     end
@@ -326,6 +327,15 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
   preview:SetFlattensRenderLayers(true)
   preview:SetScale(2)
 
+  local contextHoverMarker = CreateFrame("Frame", nil, container)
+  local contextHoverTexture = contextHoverMarker:CreateTexture()
+  contextHoverTexture:SetTexture("Interface/AddOns/Platynator/Assets/selection-outline.png")
+  contextHoverTexture:SetVertexColor(78/255, 165/255, 252/255, 0.8)
+  contextHoverTexture:SetTextureSliceMargins(45, 45, 45, 45)
+  contextHoverTexture:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
+  contextHoverTexture:SetScale(0.25)
+  contextHoverTexture:SetAllPoints()
+
   local function ToggleSelection(rawFoci)
     local foci = tFilter(rawFoci, function(w) return w:GetParent() == preview end, true)
     local ApplyIndex
@@ -352,9 +362,19 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
     if #foci > 1 then
       MenuUtil.CreateContextMenu(foci[1], function(_, rootDescription)
         for _, w in ipairs(foci) do
-          rootDescription:CreateButton(titleMap[w.kind][w.details.kind], function()
+          local button = rootDescription:CreateButton(titleMap[w.kind][w.details.kind], function()
             local index = tIndexOf(widgets, w)
             ApplyIndex(index)
+          end)
+          button:SetOnEnter(function()
+            contextHoverMarker:Show()
+            contextHoverMarker:SetFrameStrata("HIGH")
+            contextHoverMarker:ClearAllPoints()
+            contextHoverMarker:SetPoint("TOPLEFT", w, "TOPLEFT", -2, 2)
+            contextHoverMarker:SetPoint("BOTTOMRIGHT", w, "BOTTOMRIGHT", 2, -2)
+          end)
+          button:SetOnLeave(function()
+            contextHoverMarker:Hide()
           end)
         end
         rootDescription:CreateDivider()
@@ -512,7 +532,11 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       newCursorY = newCursorY / preview:GetEffectiveScale()
       for _, index in ipairs(backupSelectionIndexes) do
         local w = widgets[index]
-        w:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
+        if w.kind == "texts" then -- Because the Wrapper determines the base position
+          w.Wrapper:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
+        else
+          w:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
+        end
       end
       cursorX = newCursorX
       cursorY = newCursorY
@@ -566,9 +590,8 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
 
   local titleText = container:CreateFontString(nil, nil, "GameFontHighlightLarge")
   titleText:SetPoint("TOP", previewInset, "BOTTOM", 0, -15)
-  titleText:SetPoint("LEFT", 40, 0)
-  titleText:SetJustifyH("CENTER")
-  titleText:SetPoint("RIGHT", -20, 0)
+  titleText:SetJustifyH("RIGHT")
+  titleText:SetPoint("RIGHT", -40, 0)
   titleText:SetShadowOffset(1, -1)
 
   local function OffsetWidgets(x, y)
@@ -644,9 +667,9 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
   end)
 
   local auraContainers = {
-    buffs = CreateFrame("Frame", nil, preview),
-    debuffs = CreateFrame("Frame", nil, preview),
-    crowdControl = CreateFrame("Frame", nil, preview),
+    buffs = CreateFrame("Frame", nil, preview, "PlatynatorPropagateMouseTemplate"),
+    debuffs = CreateFrame("Frame", nil, preview, "PlatynatorPropagateMouseTemplate"),
+    crowdControl = CreateFrame("Frame", nil, preview, "PlatynatorPropagateMouseTemplate"),
   }
   do
     local textures = {
@@ -724,7 +747,7 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
             end
           end
         else
-          defaultColor = w.details.colors.normal
+          defaultColor = w.details.autoColors[#w.details.autoColors].colors.cast
         end
         w.statusBar:SetMinMaxValues(0, 100)
         w.statusBar:SetValue(70)
@@ -775,6 +798,8 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
               end
             end
           end
+        elseif w.details.kind == "castTimeLeft" then
+          w.text:SetText("1.2")
         elseif w.details.kind == "guild" then
           display = "Surge of Awesome"
         elseif w.details.kind == "castSpellName" then
@@ -785,6 +810,7 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         if display then
           w.text:SetText(display)
         end
+
       elseif w.kind == "specialBars" and w.details.kind == "power" then
         w.main:GetStatusBarTexture():SetVertexColor(234/255, 61/255, 247/255)
         w.main:SetValue(4)
@@ -794,8 +820,11 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         if asset.preview then
           w.marker:SetTexture(asset.preview)
         end
+        if w.details.kind == "castIcon" and w.details.square then
+          w.background:Show()
+        end
       elseif w.kind == "highlights" then
-        w.highlight:SetChecked(true)
+        w:Show(true)
       end
 
       w:SetScript("OnEnter", function()
@@ -853,7 +882,8 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       container.auras[1].CountFrame.Count:SetFontObject(addonTable.CurrentFont)
       container.auras[1].CountFrame.Count:SetTextScale(11/12 * details.textScale)
       container.auras[1].CountFrame.Count:Show();
-      container:SetSize(22 * container.count * details.scale, 20 * details.scale)
+      container:SetSize(22 * container.count * details.scale, 20 * details.height * details.scale)
+      container.Wrapper:SetHeight(20 * details.height)
       container.Wrapper:SetScale(details.scale)
       container.details = details
       local texBase = 0.95 * (1 - details.height) / 2
@@ -865,13 +895,6 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       table.insert(widgets, container)
       container:ClearAllPoints()
       addonTable.Display.ApplyAnchor(container, details.anchor)
-    end
-
-    if not InCombatLockdown() then
-      for _, w in ipairs(widgets) do
-        w:SetPropagateMouseMotion(true)
-        w:SetPropagateMouseClicks(false)
-      end
     end
   end
 
@@ -1087,6 +1110,7 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
             tabButton:Hide()
           end
         end
+        titleText:SetPoint("LEFT", lastTab, "RIGHT", 10, 0)
         tabManager:SetTab(tabs[settingsContainer.tabIndex].button.label)
       end
       if details["*"] then
@@ -1184,26 +1208,9 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       end
     end
 
-    if not InCombatLockdown() then
-      for _, w in ipairs(widgets) do
-        w:SetPropagateMouseMotion(true)
-        w:SetPropagateMouseClicks(false)
-      end
-    end
     selectionIndexes = {}
     UpdateSelection()
 
-    container:RegisterEvent("PLAYER_REGEN_ENABLED")
-  end)
-  container:SetScript("OnHide", function()
-    container:UnregisterEvent("PLAYER_REGEN_ENABLED")
-  end)
-
-  container:SetScript("OnEvent", function()
-    for _, w in ipairs(widgets) do
-      w:SetPropagateMouseMotion(true)
-      w:SetPropagateMouseClicks(false)
-    end
   end)
 
   return container

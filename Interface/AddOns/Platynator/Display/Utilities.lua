@@ -54,3 +54,15 @@ function addonTable.Display.Utilities.GetUnitDifficulty(unit)
     end
   end
 end
+
+function addonTable.Display.Utilities.ConvertColor(color)
+  return CreateColor(color.r, color.g, color.b, color.a)
+end
+
+function addonTable.Display.Utilities.IsInRelevantInstance()
+  if not IsInInstance() then
+    return false
+  end
+  local _, instanceType = GetInstanceInfo()
+  return instanceType == "raid" or instanceType == "party" or instanceType == "arenas"
+end

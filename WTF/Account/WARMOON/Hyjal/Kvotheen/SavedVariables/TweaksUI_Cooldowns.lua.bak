@@ -1,0 +1,419 @@
+
+TweaksUI_Cooldowns_CharDB = {
+["containerPositions"] = {
+},
+["essentialHighlights"] = {
+["enabled"] = {
+},
+["labelEnabled"] = {
+},
+["labelOffsetY"] = {
+},
+["labelText"] = {
+},
+["labelFontSize"] = {
+},
+["inactive"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+["labelOffsetX"] = {
+},
+["labelColor"] = {
+},
+["positions"] = {
+},
+["active"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+},
+["specProfiles"] = {
+["enabled"] = false,
+},
+["profileInfo"] = {
+},
+["utilityHighlights"] = {
+["enabled"] = {
+},
+["labelEnabled"] = {
+},
+["labelOffsetY"] = {
+},
+["labelText"] = {
+},
+["labelFontSize"] = {
+},
+["inactive"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+["labelOffsetX"] = {
+},
+["labelColor"] = {
+},
+["positions"] = {
+},
+["active"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+},
+["customHighlights"] = {
+["enabled"] = {
+},
+["labelEnabled"] = {
+},
+["labelOffsetY"] = {
+},
+["labelText"] = {
+},
+["labelFontSize"] = {
+},
+["inactive"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+["labelOffsetX"] = {
+},
+["labelColor"] = {
+},
+["positions"] = {
+},
+["active"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+},
+["cooldowns"] = {
+["trackerCache"] = {
+},
+["customEntries"] = {
+[263] = {
+},
+},
+},
+["customEntries"] = {
+},
+["trackers"] = {
+["essential"] = {
+["showSolo"] = true,
+["visibilityEnabled"] = false,
+["growSecondary"] = "DOWN",
+["spacingH"] = 2,
+["rows"] = 0,
+["showInArena"] = true,
+["reverseOrder"] = false,
+["fadeAlpha"] = 0.3,
+["cooldownTextScale"] = 1,
+["growDirection"] = "RIGHT",
+["iconSize"] = 36,
+["aspectRatio"] = "1:1",
+["spacingV"] = 2,
+["borderAlpha"] = 1,
+["enabled"] = true,
+["zoom"] = 0.08,
+["columns"] = 8,
+["showInParty"] = true,
+["iconOpacity"] = 1,
+["showInBattleground"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["showNoTarget"] = true,
+["showInInstance"] = true,
+["alignment"] = "LEFT",
+["showOutOfCombat"] = true,
+["countTextScale"] = 1,
+["showHasTarget"] = true,
+["customLayout"] = "",
+["savedIconOrder"] = {
+135813,
+236289,
+132314,
+135845,
+},
+},
+["custom"] = {
+["showSolo"] = true,
+["spacingV"] = 2,
+["growSecondary"] = "DOWN",
+["spacingH"] = 2,
+["rows"] = 0,
+["showInArena"] = true,
+["savedIconOrder"] = {
+},
+["fadeAlpha"] = 0.3,
+["cooldownTextScale"] = 1,
+["growDirection"] = "RIGHT",
+["iconSize"] = 36,
+["visibilityEnabled"] = false,
+["reverseOrder"] = false,
+["borderAlpha"] = 1,
+["enabled"] = true,
+["zoom"] = 0.08,
+["columns"] = 8,
+["showInParty"] = true,
+["iconOpacity"] = 1,
+["showOutOfCombat"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["countTextScale"] = 1,
+["showInInstance"] = true,
+["alignment"] = "LEFT",
+["showNoTarget"] = true,
+["showInBattleground"] = true,
+["showHasTarget"] = true,
+["customLayout"] = "",
+["aspectRatio"] = "1:1",
+},
+["customTrackers"] = {
+["showSolo"] = true,
+["spacingV"] = 2,
+["spacingH"] = 2,
+["showInArena"] = true,
+["savedIconOrder"] = {
+},
+["fadeAlpha"] = 0.3,
+["cooldownTextScale"] = 1,
+["showInParty"] = true,
+["enabled"] = true,
+["showInInstance"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["y"] = -200,
+["x"] = 0,
+["showNoTarget"] = true,
+["point"] = "CENTER",
+["growSecondary"] = "DOWN",
+["rows"] = 0,
+["reverseOrder"] = false,
+["growDirection"] = "RIGHT",
+["iconSize"] = 36,
+["zoom"] = 0.08,
+["columns"] = 4,
+["iconOpacity"] = 1,
+["visibilityEnabled"] = false,
+["showInBattleground"] = true,
+["showOutOfCombat"] = true,
+["alignment"] = "LEFT",
+["countTextScale"] = 1,
+["aspectRatio"] = "1:1",
+["showHasTarget"] = true,
+["customLayout"] = "",
+["borderAlpha"] = 1,
+},
+["buffs"] = {
+["showSolo"] = true,
+["visibilityEnabled"] = false,
+["reverseOrder"] = false,
+["growSecondary"] = "DOWN",
+["spacingH"] = 2,
+["rows"] = 0,
+["iconSize"] = 36,
+["showInArena"] = true,
+["greyscaleInactive"] = true,
+["aspectRatio"] = "1:1",
+["cooldownTextScale"] = 1,
+["growDirection"] = "RIGHT",
+["inactiveAlpha"] = 0.5,
+["savedIconOrder"] = {
+237584,
+},
+["showInBattleground"] = true,
+["borderAlpha"] = 1,
+["enabled"] = true,
+["zoom"] = 0.08,
+["columns"] = 8,
+["showNoTarget"] = true,
+["iconOpacity"] = 1,
+["showInParty"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["showInInstance"] = true,
+["countTextScale"] = 1,
+["alignment"] = "LEFT",
+["showOutOfCombat"] = true,
+["spacingV"] = 2,
+["showHasTarget"] = true,
+["customLayout"] = "",
+["fadeAlpha"] = 0.3,
+},
+["global"] = {
+["showSolo"] = true,
+["spacingV"] = 2,
+["growSecondary"] = "DOWN",
+["spacingH"] = 2,
+["rows"] = 0,
+["showInArena"] = true,
+["savedIconOrder"] = {
+},
+["fadeAlpha"] = 0.3,
+["cooldownTextScale"] = 1,
+["growDirection"] = "RIGHT",
+["iconSize"] = 36,
+["visibilityEnabled"] = false,
+["reverseOrder"] = false,
+["borderAlpha"] = 1,
+["enabled"] = true,
+["zoom"] = 0.08,
+["columns"] = 8,
+["showInParty"] = true,
+["iconOpacity"] = 1,
+["showOutOfCombat"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["countTextScale"] = 1,
+["showInInstance"] = true,
+["alignment"] = "LEFT",
+["showNoTarget"] = true,
+["showInBattleground"] = true,
+["showHasTarget"] = true,
+["customLayout"] = "",
+["aspectRatio"] = "1:1",
+},
+["utility"] = {
+["showSolo"] = true,
+["visibilityEnabled"] = false,
+["growSecondary"] = "DOWN",
+["spacingH"] = 2,
+["rows"] = 0,
+["showInArena"] = true,
+["reverseOrder"] = false,
+["fadeAlpha"] = 0.3,
+["cooldownTextScale"] = 1,
+["growDirection"] = "RIGHT",
+["iconSize"] = 36,
+["aspectRatio"] = "1:1",
+["spacingV"] = 2,
+["borderAlpha"] = 1,
+["enabled"] = true,
+["zoom"] = 0.08,
+["columns"] = 8,
+["showInParty"] = true,
+["iconOpacity"] = 1,
+["showInBattleground"] = true,
+["showInCombat"] = true,
+["showInRaid"] = true,
+["showNoTarget"] = true,
+["showInInstance"] = true,
+["alignment"] = "LEFT",
+["showOutOfCombat"] = true,
+["countTextScale"] = 1,
+["showHasTarget"] = true,
+["customLayout"] = "",
+["savedIconOrder"] = {
+1035054,
+},
+},
+},
+["buffHighlights"] = {
+["enabled"] = {
+},
+["inactive"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+["positions"] = {
+},
+["active"] = {
+["show"] = {
+},
+["aspectRatio"] = {
+},
+["saturation"] = {
+},
+["customAspectW"] = {
+},
+["opacity"] = {
+},
+["customAspectH"] = {
+},
+["size"] = {
+},
+},
+},
+}

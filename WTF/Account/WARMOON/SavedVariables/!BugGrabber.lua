@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1290,
 ["lastSanitation"] = 3,
-["session"] = 1273,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -813,8 +813,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
 },
 {
@@ -843,8 +843,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["time"] = "2025/12/05 18:53:28",
 ["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
 ["counter"] = 2,
 },
 {
@@ -857,20 +857,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
@@ -883,9 +883,25 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1272,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/ArcUI/ArcUI_Core.lua:2988: attempt to call global 'issecretvalue' (a nil value)",
+["time"] = "2026/01/05 21:34:40",
+["locals"] = "totalCount = 0\n(for state) = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n}\n(for control) = 1\n_ = 1\nviewerInfo = <table> {\n viewerType = \"aura\"\n isAura = true\n name = \"BuffIconCooldownViewer\"\n category = \"TrackedBuff\"\n}\nviewer = BuffIconCooldownViewer {\n iconLimit = 1\n systemInfo = <table> {\n }\n downKeys = <table> {\n }\n visibleSetting = 0\n oldGridSettings = <table> {\n }\n EMEanchorTo = UIParent {\n }\n dirty = false\n _TUI_applying = false\n isHighlighted = false\n isManagedFrame = true\n hasActiveChanges = false\n ignoreInLayoutWhenActionBarIsOverriden = true\n isEditing = false\n _TUI_Key = \"buffs\"\n iconDirection = 1\n stride = 3\n childYPadding = 5\n layoutFramesGoingUp = false\n layoutFramesGoingRight = true\n isBottomManagedFrame = true\n layoutIndex = 9\n hideWhenInactive = true\n orientationSetting = 0\n dirtySettings = <table> {\n }\n settingMap = <table> {\n }\n snappedFrames = <table> {\n }\n EMESystemID = 59\n EMEanchorPoint = \"BOTTOMLEFT\"\n tooltipsShown = true\n timerShown = true\n iconScale = 1\n isHorizontal = true\n itemFramePool = <table> {\n }\n settingDisplayInfoMap = <table> {\n }\n settingsDialogAnchor = <table> {\n }\n layoutParent = UIParentBottomManagedFrameContainer {\n }\n iconPadding = 5\n savedSystemInfo = <table> {\n }\n alwaysUpdateLayout = true\n cooldownViewerCategory = 2\n itemTemplate = \"CooldownViewerBuffIconItemTemplate\"\n systemNameString = \"Tracked Buffs\"\n systemIndex = 3\n auraInstanceIDToItemFramesMap = <table> {\n }\n childXPadding = 5\n hideWhenActionBarIsOverriden = true\n system = 20\n Selection = Frame {\n }\n align = \"center\"\n defaultHideSelection = true\n}\nchildren = <table> {\n 1 = Frame {\n }\n 2 = Frame {\n }\n 3 = Frame {\n }\n 4 = Frame {\n }\n}\nslotIndex = 1\n(for state) = <table> {\n 1 = Frame {\n }\n 2 = Frame {\n }\n 3 = Frame {\n }\n 4 = Frame {\n }\n}\n(for control) = 2\n_ = 2\nframe = Frame {\n IconOverlay = Texture {\n }\n includeAsLayoutChildWhenHidden = true\n allowHideWhenInactive = true\n viewerFrame = BuffIconCooldownViewer {\n }\n hideWhenInactive = true\n cooldownInfo = <table> {\n }\n cooldownID = 70413\n isEditing = false\n isActive = false\n _MSQ_CFG = <table> {\n }\n Mask = MaskTexture {\n }\n Applications = Frame {\n }\n Cooldown = Cooldown {\n }\n layoutIndex = 1\n Icon = Texture {\n }\n}\ncdID = 70413\ninfo = <table> {\n overrideSpellID = 462131\n charges = false\n hasAura = false\n linkedSpellIDs = <table> {\n }\n selfAura = true\n flags = 0\n isKnown = true\n spellID = 462131\n}\nspellID = 462131\nname = \"Awakening Storms\"\nicon = nil\nbaseSpellID = 462131\noverrideSpellID = 462131\noverrideTooltipSpellID = nil\nlinkedSpellIDs = <table> {\n}\nfirstLinkedSpellID = nil\ndisplaySpellID = 462131\ntex = 136099\n(*temporary) = nil\n(*temporary) = 136099\n(*temporary) = \"attempt to call global 'issecretvalue' (a nil value)\"\nns = <table> {\n devMode = false\n scannedBarBuffs = <table> {\n }\n CDMEnhanceOptions = <table> {\n }\n CooldownBarOptions = <table> {\n }\n TalentPicker = <table> {\n }\n ThresholdPresets = <table> {\n }\n CDMEnhance = <table> {\n }\n Resources = <table> {\n }\n API = <table> {\n }\n TrackingOptions = <table> {\n }\n DropIndicator = CDMGroups_DropIndicator {\n }\n debugMode = false\n Catalog = <table> {\n }\n CustomTracking = <table> {\n }\n CooldownBars = <table> {\n }\n Sounds = <table> {\n }\n db = <table> {\n }\n CDMSetup = <table> {\n }\n DB_DEFAULTS = <table> {\n }\n InsertRowLine = CDMGroups_InsertRowLine {\n }\n CUSTOM_SOUNDS = <table> {\n }\n Options = <table> {\n }\n CustomOptions = <table> {\n }\n FrameRegistry = <table> {\n }\n CDMIcons = <table> {\n }\n CDMContainerSync = <table> {\n }\n AddonInfo = <table> {\n }\n AppearanceOptions = <table> {\n }\n ResourceOptions = <table> {\n }\n selectedPerStack = 1\n Display = <table> {\n }\n InsertLine = CDMGroups_InsertLine {\n }\n CDMGroups = <table> {\n }\n}\ncdmIconCache = <table> {\n}\nCDM_VIEWERS = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n}\nCATEGORY_NAMES = <table> {\n TrackedBar = \"Tracked Bars\"\n Essential = \"Essential Cooldowns\"\n TrackedBuff+Bar = \"Tracked Buffs + Bars\"\n TrackedBuff = \"Tracked Buffs\"\n Utility = \"Utility Cooldowns\"\n}\nlastScanTime = 0\n",
+["stack"] = "[Interface/AddOns/ArcUI/ArcUI_Core.lua]:2988: in function 'ScanAllCDMIcons'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:277: in function 'ScanTrackedFrames'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:964: in function <Interface/AddOns/ArcUI/ArcUI_Catalog.lua:963>",
+["session"] = 1283,
+["counter"] = 15,
+},
+{
+["message"] = "Interface/AddOns/ArcUI/ArcUI_Core.lua:3003: attempt to call global 'issecretvalue' (a nil value)",
+["time"] = "2026/01/05 21:41:14",
+["locals"] = "totalCount = 0\n(for state) = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n}\n(for control) = 2\n_ = 2\nviewerInfo = <table> {\n viewerType = \"aura\"\n isAura = true\n name = \"BuffBarCooldownViewer\"\n category = \"TrackedBar\"\n}\nviewer = BuffBarCooldownViewer {\n iconLimit = 1\n systemInfo = <table> {\n }\n downKeys = <table> {\n }\n visibleSetting = 0\n EMEanchorTo = UIParent {\n }\n hasActiveChanges = false\n iconDirection = 0\n isHighlighted = false\n isEditing = false\n stride = 1\n childYPadding = 5\n layoutFramesGoingUp = false\n layoutFramesGoingRight = true\n hideWhenInactive = true\n orientationSetting = 1\n dirtySettings = <table> {\n }\n snappedFrames = <table> {\n }\n settingMap = <table> {\n }\n EMESystemID = 60\n EMEanchorPoint = \"BOTTOMLEFT\"\n cooldownViewerCategory = 3\n tooltipsShown = true\n timerShown = true\n iconScale = 1\n isHorizontal = false\n itemFramePool = <table> {\n }\n settingDisplayInfoMap = <table> {\n }\n settingsDialogAnchor = <table> {\n }\n system = 20\n iconPadding = 5\n savedSystemInfo = <table> {\n }\n alwaysUpdateLayout = true\n systemNameString = \"Tracked Bars\"\n auraInstanceIDToItemFramesMap = <table> {\n }\n itemTemplate = \"CooldownViewerBuffBarItemTemplate\"\n systemIndex = 4\n childXPadding = 5\n Selection = Frame {\n }\n defaultHideSelection = true\n barContent = 0\n}\nchildren = <table> {\n 1 = Frame {\n }\n 2 = Frame {\n }\n 3 = Frame {\n }\n}\nslotIndex = 1\n(for state) = <table> {\n 1 = Frame {\n }\n 2 = Frame {\n }\n 3 = Frame {\n }\n}\n(for control) = 1\n_ = 1\nframe = Frame {\n includeAsLayoutChildWhenHidden = true\n allowHideWhenInactive = true\n viewerFrame = BuffBarCooldownViewer {\n }\n Bar = StatusBar {\n }\n cooldownInfo = <table> {\n }\n cooldownID = 13163\n isEditing = false\n hideWhenInactive = true\n isActive = false\n layoutIndex = 1\n Icon = Frame {\n }\n}\ncdID = 13163\ninfo = <table> {\n overrideSpellID = 114051\n charges = false\n hasAura = false\n linkedSpellIDs = <table> {\n }\n selfAura = true\n flags = 0\n isKnown = true\n spellID = 114051\n}\nspellID = 114051\nname = \"Ascendance\"\nicon = nil\nbaseSpellID = 114051\noverrideSpellID = 114051\noverrideTooltipSpellID = nil\nlinkedSpellIDs = <table> {\n}\nfirstLinkedSpellID = nil\ndisplaySpellID = 114051\ntex = 135791\n(*temporary) = nil\n(*temporary) = 135791\n(*temporary) = \"attempt to call global 'issecretvalue' (a nil value)\"\nns = <table> {\n devMode = false\n scannedBarBuffs = <table> {\n }\n CDMEnhanceOptions = <table> {\n }\n CooldownBarOptions = <table> {\n }\n TalentPicker = <table> {\n }\n ThresholdPresets = <table> {\n }\n CDMEnhance = <table> {\n }\n Resources = <table> {\n }\n API = <table> {\n }\n TrackingOptions = <table> {\n }\n DropIndicator = CDMGroups_DropIndicator {\n }\n debugMode = false\n Catalog = <table> {\n }\n CustomTracking = <table> {\n }\n CooldownBars = <table> {\n }\n Sounds = <table> {\n }\n db = <table> {\n }\n CDMSetup = <table> {\n }\n DB_DEFAULTS = <table> {\n }\n InsertRowLine = CDMGroups_InsertRowLine {\n }\n CUSTOM_SOUNDS = <table> {\n }\n Options = <table> {\n }\n CustomOptions = <table> {\n }\n FrameRegistry = <table> {\n }\n CDMIcons = <table> {\n }\n CDMContainerSync = <table> {\n }\n AddonInfo = <table> {\n }\n AppearanceOptions = <table> {\n }\n ResourceOptions = <table> {\n }\n selectedPerStack = 1\n Display = <table> {\n }\n InsertLine = CDMGroups_InsertLine {\n }\n CDMGroups = <table> {\n }\n}\ncdmIconCache = <table> {\n}\nCDM_VIEWERS = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n}\nCATEGORY_NAMES = <table> {\n TrackedBar = \"Tracked Bars\"\n Essential = \"Essential Cooldowns\"\n TrackedBuff+Bar = \"Tracked Buffs + Bars\"\n TrackedBuff = \"Tracked Buffs\"\n Utility = \"Utility Cooldowns\"\n}\nlastScanTime = 0\n",
+["stack"] = "[Interface/AddOns/ArcUI/ArcUI_Core.lua]:3003: in function 'ScanAllCDMIcons'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:277: in function 'ScanTrackedFrames'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:927: in function <Interface/AddOns/ArcUI/ArcUI_Catalog.lua:926>",
+["session"] = 1283,
+["counter"] = 3,
 },
 },
 }

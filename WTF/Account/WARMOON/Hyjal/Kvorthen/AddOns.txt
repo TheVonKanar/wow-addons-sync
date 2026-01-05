@@ -18,7 +18,7 @@ HandyNotes_TheWarWithin: enabled
 idTip: enabled
 Kong: enabled
 KongConfig: enabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
 LargerMacroIconSelection: disabled
 LargerMacroIconSelectionData: disabled
 Leatrix_Plus: enabled
@@ -49,3 +49,4 @@ Blizzard_CompactRaidFrames: enabled
 OPie_Classic: disabled
 WeakAurasCompanion: enabled
 WeakAurasArchive: enabled
+!TweaksUI: disabled

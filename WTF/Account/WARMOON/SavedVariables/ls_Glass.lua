@@ -11,16 +11,18 @@ LS_GLASS_GLOBAL_CONFIG = {
 ["Raptorbuyer - Hyjal"] = "Default",
 ["Trialmagekvo - Hyjal"] = "Default",
 ["Testkvotheen - Hyjal"] = "Default",
-["Pandkvé - Hyjal"] = "Default",
-["Pandamages - Hyjal"] = "Default",
-["Kvothyr - Hyjal"] = "Default",
-["Killeen - Archimonde"] = "Default",
 ["Pandamo - Hyjal"] = "Default",
+["Killeen - Archimonde"] = "Default",
+["Kvothyr - Hyjal"] = "Default",
+["Pandamages - Hyjal"] = "Default",
+["Pandkvé - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
-["font"] = "Fira Sans Condensed Medium",
-["version"] = 11020501,
+["font"] = {
+["name"] = "Fira Sans Condensed Medium",
+},
+["version"] = 11020702,
 ["edit"] = {
 ["font"] = {
 ["size"] = 13,

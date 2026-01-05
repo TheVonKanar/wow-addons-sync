@@ -12,9 +12,12 @@ function addonTable.Display.CastIconMarkerMixin:PostInit()
     self.background = borderPool:Acquire()
     self.background:SetParent(self)
     self.background:ClearAllPoints()
-    self.background:SetPoint("TOPLEFT", -1, 1)
-    self.background:SetPoint("BOTTOMRIGHT", 1, -1)
     self.marker:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+
+    self.PostApplyAnchor = function()
+      PixelUtil.SetPoint(self.background, "TOPLEFT", self, "TOPLEFT", -1, 1)
+      PixelUtil.SetPoint(self.background, "BOTTOMRIGHT", self, "BOTTOMRIGHT", 1, -1)
+    end
   end
 end
 
@@ -43,10 +46,28 @@ function addonTable.Display.CastIconMarkerMixin:Strip()
     borderPool:Release(self.background)
     self.background = nil
   end
+  self.PostApplyAnchor = nil
 end
 
 function addonTable.Display.CastIconMarkerMixin:OnEvent(eventName, ...)
-  self:ApplyCasting()
+  if eventName == "UNIT_SPELLCAST_INTERRUPTED" then
+    self.interrupted = true
+    self.marker:Show()
+    if self.background then
+      self.background:Show()
+    end
+    self.timer = C_Timer.NewTimer(0.8, function()
+      if self.interrupted then
+        self.interrupted = nil
+        self.marker:Hide()
+        if self.background then
+          self.background:Hide()
+        end
+      end
+    end)
+  else
+    self:ApplyCasting()
+  end
 end
 
 function addonTable.Display.CastIconMarkerMixin:ApplyCasting()
@@ -61,7 +82,7 @@ function addonTable.Display.CastIconMarkerMixin:ApplyCasting()
     if self.background then
       self.background:Show()
     end
-  else
+  elseif not self.interrupted then
     self.marker:Hide()
     if self.background then
       self.background:Hide()

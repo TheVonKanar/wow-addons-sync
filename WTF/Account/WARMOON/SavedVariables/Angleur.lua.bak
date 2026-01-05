@@ -27,13 +27,14 @@ AngleurConfig = {
 ["ultraFocusAutoLootEnabled"] = false,
 }
 Angleur_TinyOptions = {
-["visualScale"] = 1,
-["allowDismount"] = true,
-["doubleClickWindow"] = 0.4,
-["turnOffSoftInteract"] = false,
 ["errorsDisabled"] = true,
 ["softTargetIcon"] = true,
 ["ultraFocusMaster"] = 1,
+["doubleClickWindow"] = 0.4,
+["turnOffSoftInteract"] = false,
+["poleSleep"] = true,
+["visualScale"] = 1,
+["allowDismount"] = true,
 ["loginDisabled"] = true,
 }
 AngleurMinimapButton = {

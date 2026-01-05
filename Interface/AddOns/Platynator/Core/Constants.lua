@@ -24,6 +24,8 @@ addonTable.Constants.Events = {
   "RefreshStateChange",
 
   "SkinLoaded",
+
+  "TextOverrideUpdated",
 }
 
 addonTable.Constants.RefreshReason = {
@@ -32,6 +34,7 @@ addonTable.Constants.RefreshReason = {
   TargetBehaviour = 3,
   StackingBehaviour = 4,
   ShowBehaviour = 5,
+  Simplified = 6,
 }
 
 addonTable.Constants.OldFontMapping = {

@@ -2,15 +2,15 @@ VER 3 0000000000000072 " " "134400"
 #showtooltip
 /cast Whirling Surge
 END
-VER 3 0000000000000063 "Boss Mods" "236409"
-/dbm
-END
 VER 3 000000000000006C "BRez" "134400"
 #showtooltip
 /use Convincingly Realistic Jumper Cables
 END
 VER 3 0000000000000071 "Cell" "2902386"
 /cell opt
+END
+VER 3 0000000000000073 "Chores" "134331"
+/choretracker toggle
 END
 VER 3 0000000000000066 "Clear Focus" "132096"
 /clearfocus
@@ -26,35 +26,26 @@ VER 3 0000000000000065 "Focus" "132345"
 /focus [@mouseover,exists,harm][]
 /run if not GetRaidTargetIndex("focus") then SetRaidTarget("focus",7) end
 END
-VER 3 0000000000000061 "KeyMaster" "134238"
-/ak
-END
 VER 3 000000000000005D "Macros" "134070"
 /macro
 END
 VER 3 000000000000005C "Masque" "1723998"
 /msq
 END
-VER 3 0000000000000064 "MDT" "985879"
-/mdt
-END
 VER 3 000000000000006E "Mounts" "132238"
 /litemount
-END
-VER 3 0000000000000073 "MRT" "519384"
-/mrt
-END
-VER 3 0000000000000067 "OmniCD" "132092"
-/omnicd
 END
 VER 3 0000000000000047 "OPie" "651358"
 /op
 END
 VER 3 0000000000000050 "Plater" "132750"
-/plater
+/platynator
 END
 VER 3 000000000000005B "Reload" "136213"
 /reload
+END
+VER 3 0000000000000074 "Tweaks" "136026"
+/tuicd
 END
 VER 3 000000000000005A "WeakAuras" "135872"
 /wa

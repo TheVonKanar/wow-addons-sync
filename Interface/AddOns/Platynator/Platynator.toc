@@ -1,6 +1,6 @@
 ## Interface: 120000, 110207, 110205, 50502, 11508
 ## Title: Platynator
-## Version: 191
+## Version: 239
 ## Author: plusmouse
 ## SavedVariables: PLATYNATOR_CONFIG
 ## SavedVariablesPerCharacter: PLATYNATOR_CURRENT_PROFILE, PLATYNATOR_LAST_INSTANCE
@@ -34,8 +34,11 @@ Core/SlashCmd.lua
 Core/Fonts.lua
 Core/Initialize.lua
 
+Display/Templates.xml
+
 Display/Initialize.lua
 Display/Utilities.lua
+Display/CVars.lua
 Display/Colors.lua
 Display/Nameplate.lua
 Display/Auras.lua
@@ -47,6 +50,7 @@ Display/CreatureTextMSP.lua
 Display/GuildText.lua
 Display/HealthText.lua
 Display/CastText.lua
+Display/CastTimeText.lua
 Display/CastTargetText.lua
 Display/LevelText.lua
 Display/UnitTargetText.lua
@@ -54,6 +58,7 @@ Display/AutomaticHighlight.lua
 Display/TargetHighlight.lua
 Display/FocusHighlight.lua
 Display/MouseoverHighlight.lua
+Display/FixedHighlight.lua
 Display/QuestMarker.lua
 Display/CannotInterruptMarker.lua
 Display/CastIconMarker.lua
@@ -62,7 +67,6 @@ Display/RareMarker.lua
 Display/RaidMarker.lua
 Display/PvPMarker.lua
 Display/Widgets.lua
-Display/LegacyBuffTemplate.xml
 
 API/Main.lua
 

@@ -1,10 +1,12 @@
 local T = Angleur_Translate
-local colorYello = CreateColor(1.0, 0.82, 0.0)
-local colorGrae = CreateColor(0.85, 0.85, 0.85)
-local colorBlu = CreateColor(0.61, 0.85, 0.92)
 
-AngleurStandardPanelRetail = {}
-local retail = AngleurStandardPanelRetail
+local debugChannel = 5
+
+-- 'ang' is the angleur namespace
+local addonName, ang = ...
+ang.retail.standardTab = {}
+local retailStandardTab = ang.retail.standardTab
+local retailToys = ang.retail.toys
 
 local function DropDown_CreateTitle(self, titleText)
     local info = UIDropDownMenu_CreateInfo()
@@ -16,9 +18,22 @@ end
 local function RaftDropDownOnClick(self)
     UIDropDownMenu_SetSelectedID(Angleur.configPanel.tab1.contents.raftEnable.dropDown, self:GetID())
     AngleurConfig.chosenRaft.dropDownID = self:GetID()
-    --AngleurConfig.chosenRaft.name = angleurToys.ownedRafts[self:GetID()].name --> Changed into the below for localisation
-    AngleurConfig.chosenRaft.toyID = angleurToys.ownedRafts[self:GetID()].toyID
-    AngleurToysRetail:SetSelectedToy(angleurToys.selectedRaftTable, angleurToys.ownedRafts, AngleurConfig.chosenRaft.toyID)
+    if self.value == T["Random Raft"] then
+        AngleurConfig.chosenRaft.toyID = 0
+        AngleurConfig.chosenRaft.name = T["Random Raft"]
+        angleurToys.selectedRaftTable.name = 0
+        angleurToys.selectedRaftTable.icon = 0
+        angleurToys.selectedRaftTable.toyID = 0
+        angleurToys.selectedRaftTable.spellID = 0
+        angleurToys.selectedRaftTable.hasToy = false
+        angleurToys.selectedRaftTable.loaded = false
+        retailToys:PickRandomToy("raft", angleurToys.ownedRafts, angleurToys.selectedRaftTable, true)
+    else
+        AngleurConfig.chosenRaft.toyID = angleurToys.ownedRafts[self:GetID()].toyID
+        AngleurConfig.chosenRaft.name = self:GetText()
+        
+        retailToys:SetSelectedToy(angleurToys.selectedRaftTable, angleurToys.ownedRafts, AngleurConfig.chosenRaft.toyID)
+    end 
 end
 
 local function CrateDropDownOnClick(self)
@@ -33,12 +48,12 @@ local function CrateDropDownOnClick(self)
         angleurToys.selectedCrateBobberTable.spellID = 0
         angleurToys.selectedCrateBobberTable.hasToy = false
         angleurToys.selectedCrateBobberTable.loaded = false
-        AngleurToysRetail:PickRandomBobber()
+        retailToys:PickRandomToy("bobber", angleurToys.ownedCrateBobbers, angleurToys.selectedCrateBobberTable, true)
     else
         AngleurConfig.chosenCrateBobber.toyID = angleurToys.ownedCrateBobbers[self:GetID()].toyID
         AngleurConfig.chosenCrateBobber.name = self:GetText()
         
-        AngleurToysRetail:SetSelectedToy(angleurToys.selectedCrateBobberTable, angleurToys.ownedCrateBobbers, AngleurConfig.chosenCrateBobber.toyID)
+        retailToys:SetSelectedToy(angleurToys.selectedCrateBobberTable, angleurToys.ownedCrateBobbers, AngleurConfig.chosenCrateBobber.toyID)
     end 
     --AngleurConfig.chosenCrateBobber.name = angleurToys.ownedCrateBobbers[self:GetID()].name --> Changed into the below for localisation
 end
@@ -52,12 +67,17 @@ local function InitializeDropDownRafts(self, level)
     end
     --Contents
     for i, rafts in pairs(angleurToys.ownedRafts) do
-        info = UIDropDownMenu_CreateInfo()
+        local info = UIDropDownMenu_CreateInfo()
         info.text = rafts.name
         info.value = rafts.name
         info.func = RaftDropDownOnClick
         UIDropDownMenu_AddButton(info)
     end
+    local info = UIDropDownMenu_CreateInfo()
+    info.text = T["Random Raft"]
+    info.value = T["Random Raft"]
+    info.func = RaftDropDownOnClick
+    UIDropDownMenu_AddButton(info)
     UIDropDownMenu_SetSelectedID(Angleur.configPanel.tab1.contents.raftEnable.dropDown, AngleurConfig.chosenRaft.dropDownID)
 end
 
@@ -84,7 +104,7 @@ local function InitializeDropDownCrateBobbers(self, level)
     UIDropDownMenu_SetSelectedID(Angleur.configPanel.tab1.contents.crateBobberEnable.dropDown, AngleurConfig.chosenCrateBobber.dropDownID)
 end
 
-function retail:ExtraButtons(tab1contents)
+function retailStandardTab:ExtraButtons(tab1contents)
     tab1contents.raftEnable.text:SetText(T["Raft"])
     tab1contents.raftEnable:reposition()
     tab1contents.raftEnable.disabledText:SetText(T["Couldn't find any rafts \n in toybox, feature disabled"])

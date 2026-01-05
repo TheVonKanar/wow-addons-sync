@@ -1,6 +1,10 @@
 ---@class addonTablePlatynator
 local addonTable = select(2, ...)
 
+local specializationToDivisor = {
+  [265] = addonTable.Constants.IsMists and 100 or nil,
+  [267] = addonTable.Constants.IsMists and 10 or nil,
+}
 local specializationToPower = {
   --Rogue (all specs)
   [259] = Enum.PowerType.ComboPoints,
@@ -14,8 +18,8 @@ local specializationToPower = {
   [252] = Enum.PowerType.Runes,
   --Warlock (all specs)
   [265] = Enum.PowerType.SoulShards,
-  [266] = Enum.PowerType.SoulShards,
-  [267] = Enum.PowerType.SoulShards,
+  [266] = addonTable.Constants.IsRetail and Enum.PowerType.SoulShards or nil,
+  [267] = addonTable.Constants.IsMists and Enum.PowerType.BurningEmbers or Enum.PowerType.SoulShards,
   --Paladin (all specs)
   [65] = Enum.PowerType.HolyPower,
   [66] = Enum.PowerType.HolyPower,
@@ -67,7 +71,7 @@ local specializationToColor = {
   [1473] = CreateColorFromRGBHexString("37e5fc"),
 }
 
-local powerKind, powerColor
+local powerKind, powerColor, powerDivisor
 
 local specializationMonitor = CreateFrame("Frame")
 specializationMonitor:RegisterEvent("PLAYER_LOGIN")
@@ -90,6 +94,7 @@ specializationMonitor:SetScript("OnEvent", function()
 
   powerKind = specializationToPower[specID]
   powerColor = specializationToColor[specID]
+  powerDivisor = specializationToDivisor[specID]
 end)
 
 addonTable.Display.PowerBarMixin = {}
@@ -105,10 +110,10 @@ function addonTable.Display.PowerBarMixin:ApplyTarget()
   if powerKind and UnitIsUnit("target", self.unit) and UnitCanAttack("player", self.unit) then
     self:Show()
 
-    local maxPower = UnitPowerMax("player", powerKind)
-    self.background:SetValue(maxPower)
+    local maxPower
     local currentPower = 0
     if powerKind == Enum.PowerType.Runes then
+      maxPower = addonTable.Constants.DeathKnightMaxRunes
       for index = 1, addonTable.Constants.DeathKnightMaxRunes do
         local _, _, ready = GetRuneCooldown(index)
         if ready then
@@ -116,8 +121,14 @@ function addonTable.Display.PowerBarMixin:ApplyTarget()
         end
       end
     else
+      maxPower = UnitPowerMax("player", powerKind)
       currentPower = UnitPower("player", powerKind)
+      if powerDivisor then
+        currentPower = currentPower / powerDivisor
+        maxPower = maxPower / powerDivisor
+      end
     end
+    self.background:SetValue(maxPower)
     self.main:SetValue(currentPower)
     self.main:GetStatusBarTexture():SetVertexColor(powerColor.r, powerColor.g, powerColor.b)
   else

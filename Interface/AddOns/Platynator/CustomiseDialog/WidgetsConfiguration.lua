@@ -99,32 +99,25 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           {
             label = addonTable.Locales.HEIGHT,
             kind = "slider",
-            min = minSize, max = maxSize,
-            formatter = sizeFormatter,
+            min = 50, max = 300,
+            formatter = function(value) return value .. "%" end,
             setter = function(details, value)
-              local newMode = sizes[value] 
-
-              local asset = addonTable.Assets.BarBorders[details.border.asset]
-              local mode = asset.mode
-              local tag = asset.tag
-              for key, alt in pairs(addonTable.Assets.BarBorders) do
-                if alt.tag == tag and alt.mode == newMode then
-                  details.border.asset = key
-                  return
-                end
-              end
-
-              for key, alt in pairs(addonTable.Assets.BarBorders) do
-                if alt.tag == "soft" and alt.mode == newMode then
-                  details.border.asset = key
-                  break
-                end
-              end
+              details.border.height = value / 100
             end,
             getter = function(details)
-              local mode = addonTable.Assets.BarBorders[details.border.asset].mode
-              assert(mode)
-              return tIndexOf(sizes, mode) or 3
+              return details.border.height * 100
+            end,
+          },
+          {
+            label = addonTable.Locales.WIDTH,
+            kind = "slider",
+            min = 50, max = 300,
+            formatter = function(value) return value .. "%" end,
+            setter = function(details, value)
+              details.border.width = value / 100
+            end,
+            getter = function(details)
+              return details.border.width * 100
             end,
           },
         },
@@ -136,8 +129,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             label = addonTable.Locales.BORDER,
             kind = "dropdown",
             getInitData = function(details)
-              local height = addonTable.Assets.BarBorders[details.border.asset].mode
-              return GetLabelsValues(addonTable.Assets.BarBorders, function(asset) return asset.mode == height end)
+              return GetLabelsValues(addonTable.Assets.BarBordersSliced)
             end,
             setter = function(details, value)
               details.border.asset = value
@@ -264,43 +256,12 @@ addonTable.CustomiseDialog.WidgetsConfig = {
         label = addonTable.Locales.COLORS,
         entries = {
           {
-            label = addonTable.Locales.NORMAL_CAST_COLOR,
-            kind = "colorPicker",
-            setter = function(details, value)
-              details.colors.normal = value
-            end,
+            label = "",
+            kind = "autoColors",
+            lockedElements = {cast = true},
+            setter = function() end,
             getter = function(details)
-              return details.colors.normal
-            end,
-          },
-          {
-            label = addonTable.Locales.NORMAL_CHANNEL_COLOR,
-            kind = "colorPicker",
-            setter = function(details, value)
-              details.colors.normalChannel = value
-            end,
-            getter = function(details)
-              return details.colors.normalChannel
-            end,
-          },
-          {
-            label = addonTable.Locales.UNINTERRUPTABLE_COLOR,
-            kind = "colorPicker",
-            setter = function(details, value)
-              details.colors.uninterruptable = value
-            end,
-            getter = function(details)
-              return details.colors.uninterruptable
-            end,
-          },
-          {
-            label = addonTable.Locales.INTERRUPTED_CAST_COLOR,
-            kind = "colorPicker",
-            setter = function(details, value)
-              details.colors.interrupted = value
-            end,
-            getter = function(details)
-              return details.colors.interrupted
+              return details.autoColors
             end,
           },
         },
@@ -680,6 +641,128 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           },
         },
       },
+      {
+        label = addonTable.Locales.SORTING,
+        entries = {
+          {
+            label = addonTable.Locales.METHOD,
+            kind = "dropdown",
+            getInitData = function()
+              return {
+                addonTable.Locales.BLIZZARD,
+                addonTable.Locales.DURATION,
+              }, {
+                "blizzard",
+                "duration",
+              }
+            end,
+            setter = function(details, value)
+              details.sorting.kind = value
+            end,
+            getter = function(details)
+              return details.sorting.kind
+            end
+          },
+          {
+            label = addonTable.Locales.REVERSED,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.sorting.reversed = value
+            end,
+            getter = function(details)
+              return details.sorting.reversed
+            end,
+          },
+        }
+      }
+    },
+    ["debuffs"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.SHOW_PANDEMIC,
+            kind = "checkbox",
+            hide = true,
+            setter = function(details, value)
+              details.showPandemic = value
+            end,
+            getter = function(details)
+              return details.showPandemic
+            end,
+          },
+        },
+      },
+      {
+        label = addonTable.Locales.FILTERS,
+        entries = {
+          {
+            label = addonTable.Locales.IMPORTANT,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.filters.important = value
+            end,
+            getter = function(details)
+              return details.filters.important
+            end,
+            hide = not addonTable.Constants.IsMidnight,
+          },
+          {
+            label = addonTable.Locales.FROM_YOU,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.filters.fromYou = value
+            end,
+            getter = function(details)
+              return details.filters.fromYou
+            end,
+          },
+        }
+      }
+    },
+    ["buffs"] = {
+      {
+        label = addonTable.Locales.FILTERS,
+        entries = {
+          {
+            label = addonTable.Locales.IMPORTANT,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.filters.important = value
+            end,
+            getter = function(details)
+              return details.filters.important
+            end,
+          },
+          {
+            label = addonTable.Locales.DISPELABLE,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.filters.dispelable = value
+            end,
+            getter = function(details)
+              return details.filters.dispelable
+            end,
+          },
+        }
+      }
+    },
+    ["crowdControl"] = {
+      {
+        label = addonTable.Locales.FILTERS,
+        entries = {
+          {
+            label = addonTable.Locales.FROM_YOU,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.filters.fromYou = value
+            end,
+            getter = function(details)
+              return details.filters.fromYou
+            end,
+          },
+        }
+      }
     },
   },
   ["highlights"] = {
@@ -690,7 +773,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           {
             label = addonTable.Locales.SCALE,
             kind = "slider",
-            min = 1, max = 300,
+            min = 50, max = 300,
             valuePattern = "%d%%",
             setter = function(details, value)
               details.scale = value / 100
@@ -715,43 +798,48 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           {
             label = addonTable.Locales.HEIGHT,
             kind = "slider",
-            min = minSize, max = maxSize,
-            formatter = sizeFormatter,
+            min = 50, max = 300,
+            valuePattern = "%d%%",
             setter = function(details, value)
-              local newMode = sizes[value]
-
               local asset = addonTable.Assets.Highlights[details.asset]
-              local mode = asset.mode
-              local tag = asset.tag
-              for key, alt in pairs(addonTable.Assets.Highlights) do
-                if alt.tag == tag and alt.mode == newMode then
-                  details.asset = key
-                  return
-                end
+              if asset.mode == addonTable.Assets.RenderMode.Fixed then
+                return
               end
-
-              for key, alt in pairs(addonTable.Assets.Highlights) do
-                if alt.tag == "soft-glow" and alt.mode == newMode then
-                  details.asset = key
-                  break
-                end
-              end
+              details.height = value / 100
             end,
             getter = function(details)
-              local mode = addonTable.Assets.Highlights[details.asset].mode
-              assert(mode)
-              return tIndexOf(sizes, mode) or 3
+              return details.height * 100
+            end,
+          },
+          {
+            label = addonTable.Locales.WIDTH,
+            kind = "slider",
+            min = 50, max = 300,
+            valuePattern = "%d%%",
+            setter = function(details, value)
+              local asset = addonTable.Assets.Highlights[details.asset]
+              if asset.mode == addonTable.Assets.RenderMode.Fixed then
+                return
+              end
+              details.width = value / 100
+            end,
+            getter = function(details)
+              return details.width * 100
             end,
           },
           {
             label = addonTable.Locales.VISUAL,
             kind = "dropdown",
             getInitData = function(details)
-              local height = addonTable.Assets.Highlights[details.asset].mode
-              return GetLabelsValues(addonTable.Assets.Highlights, function(asset) return asset.mode == height or (asset.tag == "arrows") end)
+              return GetLabelsValues(addonTable.Assets.Highlights)
             end,
             setter = function(details, value)
               details.asset = value
+              local asset = addonTable.Assets.Highlights[details.asset]
+              if asset.mode == addonTable.Assets.RenderMode.Fixed then
+                details.width = 1
+                details.height = 1
+              end
             end,
             getter = function(details)
               return details.asset

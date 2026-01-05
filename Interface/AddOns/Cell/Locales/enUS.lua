@@ -89,6 +89,23 @@ select(2, ...).L = setmetatable({
         <h2>If there are any issues after an update, check through all code snippets first.</h2>
         <br/>
 
+        <h1>r273-release (2025-12-29 17:40 GMT+8)</h1>
+        <p>+ Added support for TBC classic.</p>
+        <p>* Improved range check.</p>
+        <p>* Updated locales.</p>
+        <br/>
+
+        <h1>r272-release (2025-12-10 11:00 GMT+8)</h1>
+        <p>* Updated debuffs for Throne of Thunder (#436, thanks Ekkles).</p>
+        <p>* Fixed boss list for Throne of Thunder.</p>
+        <p>* (MoP) Added Eternal Flame for "Healers".</p>
+        <br/>
+
+        <h1>r271-release (2025-12-08 12:00 GMT+8)</h1>
+        <p>* Fixed a OmniCD related issue.</p>
+        <p>* (Classic) The "Debuffs" indicator no longer shows WeakenedSoul for non-priests.</p>
+        <br/>
+
         <h1>r270-release (2025-12-04 10:00 GMT+8)</h1>
         <p>* Updated toc version.</p>
         <p>* Fixed display of the separate pet frame in arenas.</p>
