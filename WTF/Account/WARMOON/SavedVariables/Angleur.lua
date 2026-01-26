@@ -21,20 +21,21 @@ AngleurConfig = {
 ["ultraFocusAudioEnabled"] = false,
 ["visualHidden"] = true,
 ["oversizedEnabled"] = true,
-["ultraFocusAutoLootEnabled"] = false,
+["recastEnabled"] = false,
 ["ultraFocusingAudio"] = false,
 ["doubleClickChosenID"] = 2,
-["recastEnabled"] = false,
+["ultraFocusAutoLootEnabled"] = false,
 }
 Angleur_TinyOptions = {
 ["errorsDisabled"] = true,
 ["softTargetIcon"] = true,
 ["ultraFocusMaster"] = 1,
-["doubleClickWindow"] = 0.4,
 ["turnOffSoftInteract"] = false,
-["poleSleep"] = true,
-["allowDismount"] = true,
+["doubleClickWindow"] = 0.4,
+["swimRelease"] = true,
 ["visualScale"] = 1,
+["allowDismount"] = true,
+["poleSleep"] = true,
 ["loginDisabled"] = true,
 }
 AngleurMinimapButton = {

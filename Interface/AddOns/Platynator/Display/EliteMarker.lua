@@ -18,6 +18,11 @@ end
 function addonTable.Display.EliteMarkerMixin:SetUnit(unit)
   self.unit = unit
   if self.unit then
+    if self.details.openWorldOnly and addonTable.Display.Utilities.IsInRelevantInstance() then
+      self.marker:Hide()
+      return
+    end
+
     local classification = UnitClassification(self.unit)
     if classification == "elite" or classification == "worldboss" then
       self.marker:Show()
@@ -28,11 +33,11 @@ function addonTable.Display.EliteMarkerMixin:SetUnit(unit)
     else
       self.marker:Hide()
     end
-  else
-    self:Strip()
   end
 end
 
 function addonTable.Display.EliteMarkerMixin:Strip()
-  self:UnregisterAllEvents()
+  self.eliteTexture = nil
+  self.rareEliteTexture = nil
+  self.PostInit = nil
 end

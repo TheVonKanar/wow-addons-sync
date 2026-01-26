@@ -1,10 +1,18 @@
 ---@class addonTablePlatynator
 local addonTable = select(2, ...)
 
+local pandemicCurve
+local pandemicPercentage = 0.3
+if C_CurveUtil then
+  pandemicCurve = C_CurveUtil.CreateCurve()
+  pandemicCurve:SetType(Enum.LuaCurveType.Step)
+  pandemicCurve:AddPoint(0, 1)
+  pandemicCurve:AddPoint(0.3, 0)
+end
+
 addonTable.Display.NameplateMixin = {}
 function addonTable.Display.NameplateMixin:OnLoad()
   self:SetFlattensRenderLayers(true)
-  self:SetIgnoreParentScale(true)
   self:SetCollapsesLayout(true)
 
   self.widgets = {}
@@ -25,6 +33,52 @@ function addonTable.Display.NameplateMixin:OnLoad()
   self.AurasPool = CreateFramePool("Frame", self, "PlatynatorNameplateBuffButtonTemplate", nil, false, function(frame)
     frame.Cooldown:SetCountdownAbbrevThreshold(20)
     frame.Cooldown.Text = frame.Cooldown:GetRegions()
+    frame.Pandemic = CreateFrame("Frame", nil, frame)
+    frame.Pandemic:SetAllPoints()
+    frame.Pandemic.Animation = frame.Pandemic:CreateAnimationGroup()
+    frame.Pandemic:SetFrameLevel(frame.Cooldown:GetFrameLevel() + 5)
+    do
+      frame.Pandemic.Top = frame.Pandemic:CreateTexture()
+      frame.Pandemic.Top:SetPoint("TOPLEFT")
+      frame.Pandemic.Top:SetPoint("TOPRIGHT")
+      frame.Pandemic.Top:SetTexture("Interface/AddOns/Platynator/Assets/Special/pandemic.png")
+      frame.Pandemic.Bottom = frame.Pandemic:CreateTexture()
+      frame.Pandemic.Bottom:SetPoint("BOTTOMLEFT")
+      frame.Pandemic.Bottom:SetPoint("BOTTOMRIGHT")
+      frame.Pandemic.Bottom:SetTexture("Interface/AddOns/Platynator/Assets/Special/pandemic.png")
+      frame.Pandemic.Bottom:SetRotation(math.pi)
+      frame.Pandemic.Left = frame.Pandemic:CreateTexture()
+      frame.Pandemic.Left:SetPoint("TOPLEFT")
+      frame.Pandemic.Left:SetPoint("BOTTOMLEFT")
+      frame.Pandemic.Left:SetTexture("Interface/AddOns/Platynator/Assets/Special/pandemic-90.png")
+      frame.Pandemic.Right = frame.Pandemic:CreateTexture()
+      frame.Pandemic.Right:SetPoint("TOPRIGHT")
+      frame.Pandemic.Right:SetPoint("BOTTOMRIGHT")
+      frame.Pandemic.Right:SetTexture("Interface/AddOns/Platynator/Assets/Special/pandemic-90.png")
+      frame.Pandemic.Right:SetRotation(math.pi)
+      local fb = frame.Pandemic.Animation:CreateAnimation("Flipbook")
+      fb:SetFlipBookColumns(1)
+      fb:SetFlipBookRows(11)
+      fb:SetDuration(0.5)
+      fb:SetTarget(frame.Pandemic.Top)
+      local fb = frame.Pandemic.Animation:CreateAnimation("Flipbook")
+      fb:SetFlipBookColumns(1)
+      fb:SetFlipBookRows(11)
+      fb:SetDuration(0.5)
+      fb:SetTarget(frame.Pandemic.Bottom)
+      local fb = frame.Pandemic.Animation:CreateAnimation("Flipbook")
+      fb:SetFlipBookColumns(11)
+      fb:SetFlipBookRows(1)
+      fb:SetDuration(0.5)
+      fb:SetTarget(frame.Pandemic.Left)
+      local fb = frame.Pandemic.Animation:CreateAnimation("Flipbook")
+      fb:SetFlipBookColumns(11)
+      fb:SetFlipBookRows(1)
+      fb:SetDuration(0.5)
+      fb:SetTarget(frame.Pandemic.Right)
+      frame.Pandemic.Animation:SetLooping("REPEAT")
+      frame.Pandemic.Animation:Play()
+    end
     frame:SetScript("OnEnter", function()
       GameTooltip_SetDefaultAnchor(GameTooltip, frame)
       if GameTooltip.SetUnitAuraByAuraInstanceID then
@@ -75,6 +129,8 @@ function addonTable.Display.NameplateMixin:OnLoad()
         return
       end
 
+      local pandemicDim = PixelUtil.ConvertPixelsToUIForRegion(1, frame)
+
       local step = PixelUtil.ConvertPixelsToUIForRegion(22, frame)
       local currentX = 0
       local currentY = 0
@@ -101,9 +157,23 @@ function addonTable.Display.NameplateMixin:OnLoad()
         local auraFrame = self.AurasPool:Acquire()
         table.insert(frame.items, auraFrame)
         auraFrame:SetParent(frame)
+
         auraFrame.auraInstanceID = auraInstanceID
         auraFrame.auraIndex = nil
         auraFrame.auraFilter = auraFilter
+        auraFrame.durationSecret = aura.durationSecret
+        if not C_Secrets then
+          auraFrame.duration = aura.duration
+          auraFrame.expirationTime = aura.expirationTime
+        end
+
+        auraFrame.Pandemic:SetShown(details.showPandemic)
+        if details.showPandemic then
+          auraFrame.Pandemic.Top:SetHeight(pandemicDim)
+          auraFrame.Pandemic.Bottom:SetHeight(pandemicDim)
+          auraFrame.Pandemic.Left:SetWidth(pandemicDim)
+          auraFrame.Pandemic.Right:SetWidth(pandemicDim)
+        end
 
         auraFrame.Icon:SetTexture(aura.icon);
         auraFrame.CountFrame.Count:SetText(aura.applicationsString)
@@ -124,8 +194,17 @@ function addonTable.Display.NameplateMixin:OnLoad()
 
         if aura.durationSecret then
           auraFrame.Cooldown:SetCooldownFromDurationObject(aura.durationSecret)
-        else
+          if details.showPandemic then
+            auraFrame.Pandemic:SetAlpha(C_CurveUtil.EvaluateColorValueFromBoolean(auraFrame.durationSecret:IsZero(), 0, auraFrame.durationSecret:EvaluateRemainingPercent(pandemicCurve)))
+          end
+        elseif auraFrame.expirationTime then
           CooldownFrame_Set(auraFrame.Cooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0, true);
+          if details.showPandemic then
+            auraFrame.Pandemic:SetAlpha(aura.duration > 0 and aura.expirationTime - GetTime() <= aura.duration * pandemicPercentage and 1 or 0)
+          end
+        else
+          auraFrame.Cooldown:Clear()
+          auraFrame.Pandemic:SetAlpha(0)
         end
 
         auraFrame:Show();
@@ -157,19 +236,52 @@ function addonTable.Display.NameplateMixin:OnLoad()
 
   self.casting = false
 
-  self:SetScript("OnSizeChanged", function()
-    if not self.widgets or not self:IsVisible() then
-      return
-    end
-    for _, w in ipairs(self.widgets) do
-      w:ApplyAnchor()
-      w:ApplySize()
+  self.sizeChangeCount = -1
+end
+
+function addonTable.Display.NameplateMixin:OnSizeChanged()
+  -- Optimisation to avoid recalculating anchors/sizes while nameplate scales up/down
+  self.sizeChangeCount = 0
+  self:SetScript("OnUpdate", function()
+    self.sizeChangeCount = self.sizeChangeCount + 1
+    if self.sizeChangeCount >= 2 then
+      self:ApplyPixelPerfectSizing()
+      self:SetScript("OnUpdate", nil)
     end
   end)
 end
 
+-- Avoid pixel-perfecting the alignment if the scale hasn't changed, or its
+-- shrinking cause the nameplate is disappearing
+function addonTable.Display.NameplateMixin:ShouldNotSize()
+  -- Detect sizing down, which we should ignore
+  if not self.unit or not self:IsVisible() then
+    return true
+  end
+  local scale = self:GetEffectiveScale()
+  return scale == self.lastScale or scale < self.offsetScale
+end
+
+function addonTable.Display.NameplateMixin:ApplyPixelPerfectSizing()
+  if self:ShouldNotSize() then
+    return
+  end
+  for _, w in ipairs(self.widgets) do
+    w:ApplyAnchor()
+    w:ApplySize()
+  end
+  self.lastScale = self:GetEffectiveScale()
+end
+
 function addonTable.Display.NameplateMixin:InitializeWidgets(design, scale)
-  self.scale = scale or 1
+  self.offsetScale = (scale or 1) * UIParent:GetEffectiveScale() * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE)
+  if addonTable.Constants.ParentedToNameplates then
+    self.scale = design.scale
+  else
+    self.scale = scale * design.scale or design.scale
+  end
+
+  self.lastScale = self:GetEffectiveScale()
 
   self.unit = nil
   self:UpdateVisual()
@@ -233,6 +345,11 @@ function addonTable.Display.NameplateMixin:InitializeWidgets(design, scale)
   end
 
   self.AurasManager:PostInit(designInfo.buffs, designInfo.debuffs, designInfo.crowdControl)
+
+  if self:GetScript("OnSizeChanged") == nil then
+    self:SetScript("OnSizeChanged", self.OnSizeChanged)
+  end
+  self:SetScript("OnUpdate", nil)
 end
 
 function addonTable.Display.NameplateMixin:Install(nameplate)
@@ -240,11 +357,18 @@ function addonTable.Display.NameplateMixin:Install(nameplate)
   self:SetFrameStrata("BACKGROUND")
   self:SetPoint("CENTER", nameplate)
   self:SetSize(10, 10)
+
+  -- We force a sizing immediately to avoid 0 size widgets breaking the textures from the Blizz animations
+  self:ApplyPixelPerfectSizing()
+  self:SetScript("OnUpdate", nil)
+
+  if not addonTable.Constants.ParentedToNameplates then
+    self:SetAlpha(0)
+  end
 end
 
 function addonTable.Display.NameplateMixin:SetUnit(unit)
   self.SoftTargetIcon:Hide()
-  self:SetAlpha(0)
 
   self.interactUnit = unit
   if unit and (not UnitNameplateShowsWidgetsOnly or not UnitNameplateShowsWidgetsOnly(unit)) and not UnitIsGameObject(unit) then
@@ -356,25 +480,37 @@ function addonTable.Display.NameplateMixin:UpdateForFocus()
 end
 
 function addonTable.Display.NameplateMixin:UpdateVisual()
+  local scaleMod = addonTable.Constants.IsMidnight and 1 or UIParent:GetEffectiveScale()
   if not self.unit then
-    self.overrideAlpha = 1
-    self:SetScale(self.scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
+    if not addonTable.Constants.ParentedToNameplates then
+      self.overrideAlpha = 1
+    else
+      self:SetAlpha(1)
+    end
+    self:SetScale(self.scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * scaleMod)
     return
   end
 
   local scale = 1
   local alpha = 1
-  local isTarget = UnitIsUnit("target", self.unit)
+  local isTarget = UnitIsUnit("target", self.unit) or UnitIsUnit("softenemy", self.unit) or UnitIsUnit("softfriend", self.unit)
   if isTarget then
-    scale = scale * addonTable.Config.Get(addonTable.Config.Options.TARGET_SCALE)
+    if not addonTable.Constants.ParentedToNameplates then
+      scale = scale * addonTable.Config.Get(addonTable.Config.Options.TARGET_SCALE)
+    end
+    -- Nothing to do if its parented to the nameplate, as that will handle scaling for us
   elseif self.casting then
     scale = scale * addonTable.Config.Get(addonTable.Config.Options.CAST_SCALE)
     alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.CAST_ALPHA)
   else
     alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.NOT_TARGET_ALPHA)
   end
-  self:SetScale(self.scale * scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * UIParent:GetEffectiveScale())
-  self.overrideAlpha = alpha
+  self:SetScale(self.scale * scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * scaleMod)
+  if not addonTable.Constants.ParentedToNameplates then
+    self.overrideAlpha = alpha
+  else
+    self:SetAlpha(alpha)
+  end
 end
 
 function addonTable.Display.NameplateMixin:UpdateSoftInteract()
@@ -391,7 +527,21 @@ function addonTable.Display.NameplateMixin:UpdateSoftInteract()
   end
   self.SoftTargetIcon:SetShown(hasCursorTexture)
 end
+
 function addonTable.Display.NameplateMixin:OnEvent(eventName)
   self:UpdateCastingState()
   self:UpdateVisual()
+end
+
+function addonTable.Display.NameplateMixin:UpdateAurasForPandemic()
+  local time = GetTime()
+  if self.DebuffDisplay.details and self.DebuffDisplay.details.showPandemic and self.DebuffDisplay.Wrapped.items then
+    for _, item in ipairs(self.DebuffDisplay.Wrapped.items) do
+      if item.durationSecret then
+        item.Pandemic:SetAlpha(C_CurveUtil.EvaluateColorValueFromBoolean(item.durationSecret:IsZero(), 0, item.durationSecret:EvaluateRemainingPercent(pandemicCurve)))
+      elseif item.expirationTime then
+        item.Pandemic:SetAlpha(item.duration > 0 and item.expirationTime - time <= item.duration * pandemicPercentage and 1 or 0)
+      end
+    end
+  end
 end

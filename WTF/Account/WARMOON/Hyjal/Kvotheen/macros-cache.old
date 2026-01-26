@@ -75,19 +75,9 @@ VER 3 0100000000000067 " " "134400"
 END
 VER 3 010000000000006A " " "134400"
 #showtooltip Doom Winds
-/use 13
 /cast Doom Winds
-END
-VER 3 010000000000006D " " "134400"
-#showtooltip
-/cast Spiritwalker's Grace
-END
-VER 3 010000000000005F "+pot" "134400"
-#showtooltip Ascendance
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Spiritwalker's Grace
-/cast Ascendance
+/cast Crash Lightning
+/cast Stormstrike
 END
 VER 3 0100000000000068 "+pot" "134400"
 #showtooltip Bloodlust
@@ -102,9 +92,16 @@ VER 3 010000000000004E "+pot" "1035054"
 /use Tempered Potion
 /cast Doom Winds
 END
+VER 3 010000000000005F "+pot" "134400"
+#showtooltip Ascendance
+/use Fleeting Tempered Potion
+/use Tempered Potion
+/cast Spiritwalker's Grace
+/cast Ascendance
+END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
-/castsequence [@player] reset=10 Skyfury, Lightning Shield, Windfury Weapon, Flametongue Weapon, Trans-Dimensional Bird Whistle
+/castsequence [@player] reset=10 Skyfury, Lightning Shield, Earth Shield, Windfury Weapon, Flametongue Weapon, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
 END
 VER 3 010000000000005C "RES" "134400"

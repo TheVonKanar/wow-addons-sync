@@ -57,6 +57,27 @@ addonTable.CustomiseDialog.ColorsConfig = {
       },
     },
   },
+  ["softTarget"] = {
+    label = addonTable.Locales.SOFT_TARGET,
+    default = {
+      kind = "softTarget",
+      colors = {
+        softTarget = GetColor("34edd1"),
+      },
+    },
+    entries = {
+      {
+        label = addonTable.Locales.SOFT_TARGET_SENTENCE_CASE,
+        kind = "colorPicker",
+        setter = function(details, value)
+          details.colors.softTarget = value
+        end,
+        getter = function(details)
+          return details.colors.softTarget
+        end,
+      },
+    },
+  },
   ["focus"] = {
     label = addonTable.Locales.FOCUS,
     default = {
@@ -460,7 +481,6 @@ addonTable.CustomiseDialog.ColorsConfig = {
       kind = "interruptReady",
       colors = {
         ready = GetColor("00FF00"),
-        notReady = GetColor("FF0000"),
       },
     },
     entries = {
@@ -474,14 +494,25 @@ addonTable.CustomiseDialog.ColorsConfig = {
           return details.colors.ready
         end,
       },
+    },
+  },
+  ["castTargetsYou"] = {
+    label = addonTable.Locales.CAST_TARGETS_YOU,
+    default = {
+      kind = "castTargetsYou",
+      colors = {
+        targeted = GetColor("FF0000"),
+      },
+    },
+    entries = {
       {
-        label = addonTable.Locales.NOT_READY,
+        label = addonTable.Locales.TARGETED,
         kind = "colorPicker",
         setter = function(details, value)
-          details.colors.notReady = value
+          details.colors.targeted = value
         end,
         getter = function(details)
-          return details.colors.notReady
+          return details.colors.targeted
         end,
       },
     },
@@ -526,7 +557,6 @@ addonTable.CustomiseDialog.ColorsConfig = {
         cast = GetColor("FC8C00"),
         channel = GetColor("3EC637"),
         interrupted = GetColor("FC36E0"),
-        uninterruptable = GetColor("83C0C3"),
       },
     },
     entries = {
@@ -560,7 +590,17 @@ addonTable.CustomiseDialog.ColorsConfig = {
           return details.colors.interrupted
         end,
       },
-      { kind = "spacer" },
+    }
+  },
+  ["uninterruptableCast"] = {
+    label = addonTable.Locales.UNINTERRUPTABLE_CAST,
+    default = {
+      kind = "uninterruptableCast",
+      colors = {
+        uninterruptable = GetColor("83C0C3"),
+      },
+    },
+    entries = {
       {
         label = addonTable.Locales.UNINTERRUPTABLE,
         kind = "colorPicker",
@@ -578,6 +618,7 @@ addonTable.CustomiseDialog.ColorsConfig = {
 addonTable.CustomiseDialog.ColorsConfigOrder = {
   "tapped",
   "target",
+  "softTarget",
   "focus",
   "threat",
   "eliteType",
@@ -587,6 +628,8 @@ addonTable.CustomiseDialog.ColorsConfigOrder = {
   "difficulty",
   "reaction",
   "interruptReady",
+  "castTargetsYou",
   "importantCast",
+  "uninterruptableCast",
   "cast",
 }

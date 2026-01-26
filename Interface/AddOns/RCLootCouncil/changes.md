@@ -1,16 +1,12 @@
-Updated for patch 11.2.7.
+Updated for Midnight pre-patch.
 
 ## Changes
 
-### Trade Blocker
+### Restrictions
 
-Added an option for the group leader to block trade requests while their voting frame is open. When enabled, any trade attempts will be cancelled.
+Due to the restrictions added with Midnight, you can no longer do anything that results in sending addon messages during boss encounters. Everything *should* work as normal though.
 
-## Bugfixes
+### Loot History Export
 
-- *v3.18.1 didn't include the fix for `escapePatternSymbols`.*
-
-### Button group
-
-Added new button group for housing decor.
+The selected export option now defaults to the last selected option.
 

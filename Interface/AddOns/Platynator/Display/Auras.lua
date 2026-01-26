@@ -11,14 +11,15 @@ function addonTable.Display.AurasManagerMixin:OnLoad()
   self.OnCrowdControlUpdate = function() end
   self.OnBuffsUpdate = function() end
 
-  if not addonTable.Constants.IsMidnight then -- XXX: Until Blizzard adds in important aura filtering we call this differently
-    self:SetScript("OnEvent", self.OnEvent)
-  end
+  self:SetScript("OnEvent", self.OnEvent)
+  self.processingAuras = not addonTable.Constants.IsMidnight
 
   self:Reset()
 end
 
 function addonTable.Display.AurasManagerMixin:PostInit(buffs, debuffs, crowdControl)
+  self.processingAuras = not addonTable.Constants.IsMidnight
+
   self:Reset()
 
   self.buffFilter = "HELPFUL"
@@ -28,10 +29,11 @@ function addonTable.Display.AurasManagerMixin:PostInit(buffs, debuffs, crowdCont
       if buffs.sorting.kind == "blizzard" then
         self.buffSort = Enum.UnitAuraSortRule.Default
       else
-        self.buffSort = Enum.UnitAuraSortRule.Expiration
+        self.buffSort = Enum.UnitAuraSortRule.ExpirationOnly
       end
       self.buffOrder = buffs.sorting.reversed and Enum.UnitAuraSortDirection.Reverse or Enum.UnitAuraSortDirection.Normal
       self.buffUseImportant = buffs.filters.important
+      self.processingAuras = self.processingAuras or buffs.filters.important
     else
       if buffs.sorting.kind == "blizzard" and not buffs.sorting.reversed then
         self.buffSortFunc = function(a, b)
@@ -70,10 +72,11 @@ function addonTable.Display.AurasManagerMixin:PostInit(buffs, debuffs, crowdCont
       if debuffs.sorting.kind == "blizzard" then
         self.debuffSort = Enum.UnitAuraSortRule.Default
       else
-        self.debuffSort = Enum.UnitAuraSortRule.Expiration
+        self.debuffSort = Enum.UnitAuraSortRule.ExpirationOnly
       end
       self.debuffOrder = debuffs.sorting.reversed and Enum.UnitAuraSortDirection.Reverse or Enum.UnitAuraSortDirection.Normal
       self.debuffUseImportant = debuffs.filters.important
+      self.processingAuras = self.processingAuras or debuffs.filters.important
     else
       if debuffs.sorting.kind == "blizzard" and not debuffs.sorting.reversed then
         self.debuffSortFunc = function(a, b)
@@ -160,7 +163,7 @@ function addonTable.Display.AurasManagerMixin:PostInit(buffs, debuffs, crowdCont
       if crowdControl.sorting.kind == "blizzard" then
         self.crowdControlSort = Enum.UnitAuraSortRule.Default
       else
-        self.crowdControlSort = Enum.UnitAuraSortRule.Expiration
+        self.crowdControlSort = Enum.UnitAuraSortRule.ExpirationOnly
       end
       self.crowdControlOrder = crowdControl.sorting.reversed and Enum.UnitAuraSortDirection.Reverse or Enum.UnitAuraSortDirection.Normal
     else
@@ -201,6 +204,7 @@ function addonTable.Display.AurasManagerMixin:Reset()
   self.debuffs = {}
   self.crowdControl = {}
   self.buffs = {}
+  self.lossOfControlApplied = nil
 
   self.auraData = {}
 end
@@ -213,11 +217,15 @@ function addonTable.Display.AurasManagerMixin:SetUnit(unit)
       self:FullRefresh()
     else
       self:Reset()
-      self.OnDebuffsUpdate(self.debuffs)
-      self.OnCrowdControlUpdate(self.crowdControl)
-      self.OnBuffsUpdate(self.buffs)
+      self.OnBuffsUpdate(self.buffs, self.buffFilter)
+      self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
+      self.OnCrowdControlUpdate(self.crowdControl, self.crowdControlFilter)
     end
     self:RegisterUnitEvent("UNIT_AURA", unit)
+    if addonTable.Constants.IsMidnight and UnitIsPlayer(unit) then
+      self:RegisterUnitEvent("LOSS_OF_CONTROL_UPDATE", unit)
+      self:RegisterUnitEvent("LOSS_OF_CONTROL_ADDED", unit)
+    end
   else
     self:UnregisterAllEvents()
   end
@@ -225,6 +233,21 @@ end
 
 function addonTable.Display.AurasManagerMixin:GetByInstanceID(auraInstanceID)
   return self.auraData[auraInstanceID]
+end
+
+local function FilterCommon(a1, a2)
+  local include = {}
+  for _, id in ipairs(a1) do
+    include[id] = true
+  end
+  local res = {}
+  for _, id in ipairs(a2) do
+    if include[id] then
+      table.insert(res, id)
+    end
+  end
+
+  return res
 end
 
 function addonTable.Display.AurasManagerMixin:FullRefresh()
@@ -293,7 +316,7 @@ function addonTable.Display.AurasManagerMixin:FullRefresh()
         if not aura then
           break
         end
-        if aura.isHarmful and (aura.nameplateShowPersonal or legacy.whitelistedDebuffs[aura.spellId] or addonTable.Constants.IsClassic) and not legacy.crowdControlSpells[aura.spellId] then
+        if aura.isHarmful and (not self.debuffsDetails.filters.important or aura.nameplateShowPersonal or legacy.whitelistedDebuffs[aura.spellId] or addonTable.Constants.IsClassic) and not legacy.crowdControlSpells[aura.spellId] then
           table.insert(self.debuffs, aura.auraInstanceID)
           aura.applicationsString = aura.applications > 1 and tostring(aura.applications) or ""
           aura.kind = "debuffs"
@@ -322,20 +345,81 @@ function addonTable.Display.AurasManagerMixin:FullRefresh()
     end
   end
 
+  if addonTable.Constants.IsMidnight then
+    self:UpdateLossOfControl()
+  end
+
   self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
   self.OnCrowdControlUpdate(self.crowdControl, self.crowdControlFilter)
   self.OnBuffsUpdate(self.buffs, self.buffFilter)
 end
 
-function addonTable.Display.AurasManagerMixin:OnEvent(_, _, refreshData)
+function addonTable.Display.AurasManagerMixin:UpdateLossOfControl()
+  local changes = {}
+
+  if not UnitIsPlayer(self.unit) then
+    return changes
+  end
+
+  local lossOfControlData = C_LossOfControl.GetActiveLossOfControlDataByUnit(self.unit, LOSS_OF_CONTROL_ACTIVE_INDEX);
+  if lossOfControlData and lossOfControlData.auraInstanceID then
+    local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(self.unit, lossOfControlData.auraInstanceID)
+
+    if aura then
+      aura.applicationsString = C_UnitAuras.GetAuraApplicationDisplayCount(self.unit, aura.auraInstanceID, 2, 1000)
+      aura.durationSecret = C_UnitAuras.GetAuraDuration(self.unit, aura.auraInstanceID)
+      aura.kind = "crowdControl"
+      self.auraData[aura.auraInstanceID] = aura
+
+      self.crowdControl = {lossOfControlData.auraInstanceID}
+      local oldIndex = tIndexOf(self.debuffs, lossOfControlData.auraInstanceID)
+      if oldIndex then
+        table.remove(self.debuffs, oldIndex)
+        changes["debuffs"] = true
+      end
+
+      self.lossOfControlApplied = lossOfControlData.auraInstanceID
+      changes["crowdControl"] = true
+    end
+  elseif self.lossOfControlApplied then
+    self.crowdControl = {}
+    self.auraData[self.lossOfControlApplied] = nil
+    self.lossOfControlApplied = nil
+    changes["crowdControl"] = true
+  end
+
+  return changes
+end
+
+function addonTable.Display.AurasManagerMixin:OnEvent(event, _, refreshData)
+  if event == "LOSS_OF_CONTROL_ADDED" or event == "LOSS_OF_CONTROL_UPDATE" then
+    local changes = self:UpdateLossOfControl()
+    self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
+    if changes.debuffs then
+      self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
+    end
+    if changes.crowdControl then
+      self.OnCrowdControlUpdate(self.crowdControl, self.crowdControlFilter)
+    end
+    if changes.buffs then
+      self.OnBuffsUpdate(self.buffs, self.buffFilter)
+    end
+
+    return
+  end
+
+  if not self.processingAuras and event ~= "" then
+    return
+  end
+
   if not UnitCanAttack("player", self.unit) then
     if next(self.buffs) or next(self.debuffs) or next(self.crowdControl) then
       self.buffs = {}
       self.debuffs = {}
       self.crowdControl = {}
-      self.OnBuffsUpdate(self.buffs)
-      self.OnDebuffsUpdate(self.debuffs)
-      self.OnCrowdControlUpdate(self.crowdControl)
+      self.OnBuffsUpdate(self.buffs, self.buffFilter)
+      self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
+      self.OnCrowdControlUpdate(self.crowdControl, self.crowdControlFilter)
     end
     return
   end
@@ -350,28 +434,37 @@ function addonTable.Display.AurasManagerMixin:OnEvent(_, _, refreshData)
   if refreshData.addedAuras then
     if self.GetImportantAuras then 
       local important, crowdControl = self.GetImportantAuras()
+
+      if self.lossOfControlApplied then
+        crowdControl[self.lossOfControlApplied] = true
+      end
+
       for _, aura in ipairs(refreshData.addedAuras) do
-        local keep = false
-        if self.buffsDetails and not C_UnitAuras.IsAuraFilteredOutByInstanceID(self.unit, aura.auraInstanceID, self.buffFilter) and 
-          (not self.buffsDetails.filters.important or important[aura.auraInstanceID]) and (not self.buffsDetails.dispelable or type(aura.dispelName) ~= "nil") then
-          keep = true
-          table.insert(self.buffs, aura.auraInstanceID)
-          aura.kind = "buffs"
-        elseif self.debuffsDetails and not C_UnitAuras.IsAuraFilteredOutByInstanceID(self.unit, aura.auraInstanceID, self.debuffFilter) and
-          (not self.debuffsDetails.filters.important or important[aura.auraInstanceID]) and not crowdControl[aura.auraInstanceID] then
-          keep = true
-          table.insert(self.debuffs, aura.auraInstanceID)
-          aura.kind = "debuffs"
-        elseif self.crowdControlDetails and crowdControl[aura.auraInstanceID] then
-          keep = true
-          table.insert(self.crowdControl, aura.auraInstanceID)
-          aura.kind = "crowdControl"
-        end
-        if keep then
-          aura.applicationsString = C_UnitAuras.GetAuraApplicationDisplayCount(self.unit, aura.auraInstanceID, 2, 1000)
-          aura.durationSecret = C_UnitAuras.GetAuraDuration(self.unit, aura.auraInstanceID)
-          self.auraData[aura.auraInstanceID] = aura
-          changes[aura.kind] = true
+        if self.auraData[aura.auraInstanceID] == nil then
+          local keep = false
+          if self.buffsDetails and not C_UnitAuras.IsAuraFilteredOutByInstanceID(self.unit, aura.auraInstanceID, self.buffFilter) and 
+            (not self.buffsDetails.filters.important or important[aura.auraInstanceID]) and (not self.buffsDetails.dispelable or type(aura.dispelName) ~= "nil") then
+            keep = true
+            table.insert(self.buffs, aura.auraInstanceID)
+            aura.kind = "buffs"
+          elseif self.crowdControlDetails and crowdControl[aura.auraInstanceID] then
+            if aura.auraInstanceID ~= self.lossOfControlApplied then
+              keep = true
+              table.insert(self.crowdControl, aura.auraInstanceID)
+              aura.kind = "crowdControl"
+            end
+          elseif self.debuffsDetails and not C_UnitAuras.IsAuraFilteredOutByInstanceID(self.unit, aura.auraInstanceID, self.debuffFilter) and
+            (not self.debuffsDetails.filters.important or important[aura.auraInstanceID]) and not crowdControl[aura.auraInstanceID] then
+            keep = true
+            table.insert(self.debuffs, aura.auraInstanceID)
+            aura.kind = "debuffs"
+          end
+          if keep then
+            aura.applicationsString = C_UnitAuras.GetAuraApplicationDisplayCount(self.unit, aura.auraInstanceID, 2, 1000)
+            aura.durationSecret = C_UnitAuras.GetAuraDuration(self.unit, aura.auraInstanceID)
+            self.auraData[aura.auraInstanceID] = aura
+            changes[aura.kind] = true
+          end
         end
       end
     else
@@ -388,7 +481,7 @@ function addonTable.Display.AurasManagerMixin:OnEvent(_, _, refreshData)
             table.insert(self.crowdControl, aura.auraInstanceID)
             aura.kind = "crowdControl"
           end
-        elseif self.debuffsDetails and aura.isHarmful and (aura.nameplateShowPersonal or legacy.whitelistedDebuffs[aura.spellId] or addonTable.Constants.IsClassic) and aura.sourceUnit == "player" then
+        elseif self.debuffsDetails and aura.isHarmful and (not self.debuffsDetails.filters.important or aura.nameplateShowPersonal or legacy.whitelistedDebuffs[aura.spellId] or addonTable.Constants.IsClassic) and aura.sourceUnit == "player" then
           keep = true
           table.insert(self.debuffs, aura.auraInstanceID)
           aura.kind = "debuffs"
@@ -427,27 +520,40 @@ function addonTable.Display.AurasManagerMixin:OnEvent(_, _, refreshData)
       local stored = self.auraData[auraInstanceID]
       if stored then
         self.auraData[auraInstanceID] = nil
-        changes[stored.kind] = true
 
         local list = self[stored.kind]
         local index = tIndexOf(list, auraInstanceID)
-        assert(index)
-        table.remove(list, index)
+        if index then
+          changes[stored.kind] = true
+          table.remove(list, index)
+        end
       end
     end
   end
 
   if changes.debuffs then
-    table.sort(self.debuffs, self.debuffSortFunc)
+    if self.debuffSortFunc then
+      table.sort(self.debuffs, self.debuffSortFunc)
+    else
+      self.debuffs = FilterCommon(self.debuffs, C_UnitAuras.GetUnitAuraInstanceIDs(self.unit, self.debuffFilter, nil, self.debuffSort, self.debuffOrder))
+    end
     self.OnDebuffsUpdate(self.debuffs, self.debuffFilter)
   end
   if changes.crowdControl then
-    table.sort(self.crowdControl, self.crowdControlSortFunc)
+    if self.crowdControlSortFunc then
+      table.sort(self.crowdControl, self.crowdControlSortFunc)
+    else
+      self.crowdControl = FilterCommon(self.crowdControl, C_UnitAuras.GetUnitAuraInstanceIDs(self.unit, self.crowdControlFilter, nil, self.crowdControlSort, self.crowdControlOrder))
+    end
     self.OnCrowdControlUpdate(self.crowdControl, self.crowdControlFilter)
   end
   if changes.buffs then
-    table.sort(self.buffs, self.buffSortFunc, self.buffFilter)
-    self.OnBuffsUpdate(self.buffs)
+    if self.buffSortFunc then
+      table.sort(self.buffs, self.buffSortFunc)
+    else
+      self.buffs = FilterCommon(self.buffs, C_UnitAuras.GetUnitAuraInstanceIDs(self.unit, self.buffFilter, nil, self.buffSort, self.buffOrder))
+    end
+    self.OnBuffsUpdate(self.buffs, self.buffFilter)
   end
 end
 

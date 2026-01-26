@@ -1,4 +1,4 @@
-## Interface: 11504, 40400, 110002
+## Interface: 11504, 40400, 120000
 ## Title: Kong Config
 ## Author: Xentaros
 ## Notes: A GUI for configuring Kong.

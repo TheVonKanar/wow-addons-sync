@@ -322,7 +322,7 @@ function AuctionatorSaleItemMixin:SetItemName()
   end
   local itemName = self.itemInfo.itemName
   if reagentQuality then
-    itemName = itemName .. " " .. C_Texture.GetCraftingReagentQualityChatIcon(reagentQuality)
+    itemName = itemName .. " " .. Auctionator.Utilities.GetCraftingQualityMarkup(reagentQuality)
   elseif self.itemInfo.itemLevel then
     itemName = AUCTIONATOR_L_ITEM_NAME_X_ITEM_LEVEL_X:format(itemName, self.itemInfo.itemLevel)
   elseif self.itemInfo.itemLink:find("battlepet", nil, true) then
@@ -413,7 +413,8 @@ function AuctionatorSaleItemMixin:DoSearch(itemInfo, ...)
     end
     Auctionator.AH.SendSearchQueryByItemKey(self.expectedItemKey, {sortingOrder}, true)
   end
-  Auctionator.EventBus:Fire(self, Auctionator.Selling.Events.SellSearchStart, self.expectedItemKey, itemInfo.itemLink)
+  local originalKey = IsValidItem(itemInfo) and C_AuctionHouse.GetItemKeyFromItem(itemInfo.location) or itemKey
+  Auctionator.EventBus:Fire(self, Auctionator.Selling.Events.SellSearchStart, self.expectedItemKey, itemInfo.itemLink, originalKey)
 end
 
 function AuctionatorSaleItemMixin:Reset()
@@ -534,9 +535,10 @@ end
 
 function AuctionatorSaleItemMixin:GetItemResult(itemKey)
   local itemInfo = self.itemInfo or self.lastItemInfo
-  for i = 1, C_AuctionHouse.GetItemSearchResultsQuantity(itemKey) do
+  local compareKey = IsValidItem(itemInfo) and C_AuctionHouse.GetItemKeyFromItem(itemInfo.location) or itemKey
+  for i = 1, C_AuctionHouse.GetNumItemSearchResults(itemKey) do
     local resultInfo = C_AuctionHouse.GetItemSearchResultInfo(itemKey, i)
-    if Auctionator.Selling.DoesItemMatchFromLink(itemInfo.itemLink, resultInfo.itemKey, resultInfo.itemLink) then
+    if Auctionator.Selling.DoesItemMatchFromKey(compareKey, itemInfo.itemLink, resultInfo.itemKey, resultInfo.itemLink) then
       return resultInfo
     end
   end

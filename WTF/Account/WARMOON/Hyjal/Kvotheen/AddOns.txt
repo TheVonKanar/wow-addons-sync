@@ -77,8 +77,8 @@ Bagnon_GuildBank: disabled
 Bagnon: disabled
 Bagnon_Config: disabled
 BagBrother: disabled
-Masque_Squat: disabled
-Masque_Raeli: enabled
+Masque_Squat: enabled
+Masque_Raeli: disabled
 Masque_Caith: enabled
 PixelPerfectAlign: disabled
 ArkInventorySearch: disabled
@@ -90,7 +90,7 @@ BetterVendorPrice: enabled
 OribosExchange: enabled
 idTip: enabled
 Hekili: disabled
-OPie: enabled
+OPie: disabled
 Bagnon_ItemInfo: disabled
 WindfuryUI: enabled
 BigWigs_Core: enabled
@@ -142,7 +142,7 @@ LittleWigs_WrathOfTheLichKing: disabled
 LoggerHead: disabled
 MacroToolkit: disabled
 MacroToolkitIcons: disabled
-MapCoords: enabled
+MapCoords: disabled
 Masque: enabled
 Masque_FlatSquares: disabled
 SavedInstances: disabled
@@ -171,10 +171,10 @@ BigDebuffs: enabled
 Narcissus: disabled
 TomPoints: enabled
 SharedMediaAdditionalFonts: disabled
-SharedMedia: enabled
+SharedMedia: disabled
 Dejunk: enabled
 DialogueUI: enabled
-ExtraQuestButton: enabled
+ExtraQuestButton: disabled
 Leatrix_Plus: enabled
 HandyNotes_DragonGlyphs: disabled
 Masque_Diablo_III: disabled
@@ -200,8 +200,8 @@ KeyMaster: enabled
 AngryKeystones: enabled
 LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
-KongConfig: disabled
-Kong: disabled
+KongConfig: enabled
+Kong: enabled
 PremadeGroupsFilter: enabled
 TipTacItemRef: disabled
 TipTacOptions: disabled
@@ -238,5 +238,13 @@ WeakAurasStopMotion: enabled
 Platynator: enabled
 Krowi_AchievementFilter_Khamuls_HouseDecorAchievementFilter: disabled
 !TweaksUI: disabled
-ArcUI: disabled
+ArcUI: enabled
 MinimapButtonButton: disabled
+EditModeTweaks: disabled
+TweaksUI_Cooldowns: disabled
+BlizzardBars_Mouseover: disabled
+MacroManager: disabled
+MacroManagerData: disabled
+UnhaltedUnitFrames: enabled
+Cell: disabled
+TrueStatValues: enabled

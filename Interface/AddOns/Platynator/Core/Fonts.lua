@@ -32,7 +32,7 @@ function addonTable.Core.GetFontByID(id)
   return fonts[key] or fonts[addonTable.Constants.DefaultFont:lower() .. outline .. shadow]
 end
 
-local alphabet = {"roman", "korean", "simplifiedchinese", "traditionalchinese", "russian"}
+local alphabet = addonTable.Constants.FontFamilies
 
 local locale = GetLocale()
 local overrideAlphabet = "roman"
@@ -88,7 +88,7 @@ function addonTable.Core.CreateFont(assetKey, outline, shadow, useDefault)
     return
   end
 
-  if addonTable.Constants.IsMidnight then
+  if addonTable.Constants.IsMidnight and (outline ~= "" or shadow == "") then
     outline = outline .. " SLUG"
   end
 

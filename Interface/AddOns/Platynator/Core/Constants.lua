@@ -5,7 +5,8 @@ addonTable.Constants = {
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
   IsMists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC,
   --IsCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC,
-  --IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC,
+  IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC,
+  IsBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
@@ -17,7 +18,10 @@ addonTable.Constants = {
 
   CustomName = "_custom",
 
-  DefaultFont = "Roboto Condensed Bold"
+  ParentedToNameplates = (select(4, GetBuildInfo())) ~= 120000,
+
+  DefaultFont = "Roboto Condensed Bold",
+  FontFamilies = {"roman", "korean", "simplifiedchinese", "traditionalchinese", "russian"},
 }
 addonTable.Constants.Events = {
   "SettingChanged",
@@ -26,6 +30,8 @@ addonTable.Constants.Events = {
   "SkinLoaded",
 
   "TextOverrideUpdated",
+
+  "LegacyInterrupter"
 }
 
 addonTable.Constants.RefreshReason = {
@@ -35,6 +41,8 @@ addonTable.Constants.RefreshReason = {
   StackingBehaviour = 4,
   ShowBehaviour = 5,
   Simplified = 6,
+  SimplifiedScale = 7,
+  Clickable = 8,
 }
 
 addonTable.Constants.OldFontMapping = {

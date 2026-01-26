@@ -7,7 +7,7 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "7.11.2 (4.137)",
+["_OPieVersion"] = "7.11.3 (4.137)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
@@ -54,44 +54,38 @@ OPie_SavedData = {
 ["RingKeeper"] = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
-["WorldMarkers"] = true,
-["SpecMenu"] = true,
-["CommonTrades"] = true,
 ["OPieAutoQuest"] = true,
+["WorldMarkers"] = true,
+["CommonTrades"] = true,
+["SpecMenu"] = true,
 ["CommonHearth"] = true,
 ["PaladinTools"] = true,
 },
-["arthstones"] = {
+["Talents"] = {
 {
-["sliceToken"] = "ABuenZkzsve",
-["id"] = 556,
+"toy",
+206268,
+["sliceToken"] = "ABueQbdzcVe",
 },
 {
 "toy",
-140192,
-["sliceToken"] = "ABuenZkzsv1",
+199830,
+["sliceToken"] = "ABueQbdzcVt",
 },
 {
 "toy",
-110560,
-["sliceToken"] = "ABueQle13H1",
+225556,
+["sliceToken"] = "ABueWdsapkw",
 },
 {
-"toy",
-236687,
-["sliceToken"] = "ABueElEKFiw",
+["sliceToken"] = "ABueEEQp4gw",
+["id"] = 460905,
 },
 {
-"item",
-141605,
-["sliceToken"] = "ABueQlwN=Kw",
+["sliceToken"] = "ABueEEQp4ge",
+["id"] = 83958,
 },
-{
-"item",
-234389,
-["sliceToken"] = "ABueEgU/BDw",
-},
-["name"] = "Hearthstones",
+["name"] = "Toys",
 ["save"] = true,
 },
 ["OPieFlagStore"] = {
@@ -164,31 +158,31 @@ OPie_SavedData = {
 ["name"] = "Buffs",
 ["save"] = true,
 },
-["Talents"] = {
+["rofessions"] = {
 {
-"toy",
-206268,
-["sliceToken"] = "ABueQbdzcVe",
+["sliceToken"] = "ABueQYX/O3w",
+["id"] = 423395,
 },
 {
-"toy",
-199830,
-["sliceToken"] = "ABueQbdzcVt",
+"item",
+214561,
+["sliceToken"] = "ABueQGw1gZw",
 },
 {
-"toy",
-225556,
-["sliceToken"] = "ABueWdsapkw",
+"item",
+212308,
+["sliceToken"] = "ABueQGw1gZe",
 },
 {
-["sliceToken"] = "ABueEEQp4gw",
-["id"] = 460905,
+["sliceToken"] = "ABuenAlJMLe",
+["id"] = 818,
 },
 {
-["id"] = 83958,
-["sliceToken"] = "ABueEEQp4ge",
+"item",
+136377,
+["sliceToken"] = "ABueEw2Z3Qw",
 },
-["name"] = "Toys",
+["name"] = "Professions (Kvotheen)",
 ["save"] = true,
 },
 ["rldMarkers"] = {
@@ -240,31 +234,37 @@ OPie_SavedData = {
 ["name"] = "World Markers",
 ["save"] = true,
 },
-["rofessions"] = {
+["arthstones"] = {
 {
-["sliceToken"] = "ABueQYX/O3w",
-["id"] = 423395,
+["sliceToken"] = "ABuenZkzsve",
+["id"] = 556,
+},
+{
+"toy",
+140192,
+["sliceToken"] = "ABuenZkzsv1",
+},
+{
+"toy",
+110560,
+["sliceToken"] = "ABueQle13H1",
+},
+{
+"toy",
+236687,
+["sliceToken"] = "ABueElEKFiw",
 },
 {
 "item",
-214561,
-["sliceToken"] = "ABueQGw1gZw",
+141605,
+["sliceToken"] = "ABueQlwN=Kw",
 },
 {
 "item",
-212308,
-["sliceToken"] = "ABueQGw1gZe",
+234389,
+["sliceToken"] = "ABueEgU/BDw",
 },
-{
-["sliceToken"] = "ABuenAlJMLe",
-["id"] = 818,
-},
-{
-"item",
-136377,
-["sliceToken"] = "ABueEw2Z3Qw",
-},
-["name"] = "Professions (Kvotheen)",
+["name"] = "Hearthstones",
 ["save"] = true,
 },
 ["getMarkers"] = {

@@ -35,11 +35,21 @@ function addonTable.Display.CastIconMarkerMixin:SetUnit(unit)
 
     self:ApplyCasting()
   else
-    self:UnregisterAllEvents()
+    self:StripInternal()
   end
 end
 
+function addonTable.Display.CastIconMarkerMixin:StripInternal()
+  self:UnregisterAllEvents()
+  if self.timer then
+    self.timer:Cancel()
+    self.timer = nil
+  end
+  self.interrupted = nil
+end
+
 function addonTable.Display.CastIconMarkerMixin:Strip()
+  self:StripInternal()
   self.marker:SetTexCoord(0, 1, 0, 1)
   if self.background then
     self.background:Hide()
@@ -47,10 +57,11 @@ function addonTable.Display.CastIconMarkerMixin:Strip()
     self.background = nil
   end
   self.PostApplyAnchor = nil
+  self.PostInit = nil
 end
 
 function addonTable.Display.CastIconMarkerMixin:OnEvent(eventName, ...)
-  if eventName == "UNIT_SPELLCAST_INTERRUPTED" then
+  if eventName == "UNIT_SPELLCAST_INTERRUPTED" or eventName == "UNIT_SPELLCAST_CHANNEL_STOP" and select(4, ...) ~= nil then
     self.interrupted = true
     self.marker:Show()
     if self.background then

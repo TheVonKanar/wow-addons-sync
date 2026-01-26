@@ -8,9 +8,9 @@ EditModeTweaksDB = {
 ["Default"] = {
 ["mouseOverFrames"] = {
 },
-["combatFrames"] = {
-},
 ["targetFrames"] = {
+},
+["combatFrames"] = {
 },
 },
 },

@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 1290,
 ["lastSanitation"] = 3,
+["session"] = 1343,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["session"] = 379,
 ["time"] = "2024/09/20 09:27:39",
+["session"] = 379,
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["session"] = 475,
 ["time"] = "2024/10/07 08:13:04",
+["session"] = 475,
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["time"] = "2024/11/12 06:05:20",
 ["session"] = 560,
+["time"] = "2024/11/12 06:05:20",
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["session"] = 897,
 ["time"] = "2025/03/25 19:16:23",
+["session"] = 897,
 ["counter"] = 2,
 },
 {
@@ -813,8 +813,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["session"] = 1253,
 ["time"] = "2025/10/08 09:26:56",
+["session"] = 1253,
 ["counter"] = 1,
 },
 {
@@ -843,8 +843,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["session"] = 1270,
 ["time"] = "2025/12/05 18:53:28",
+["session"] = 1270,
 ["counter"] = 2,
 },
 {
@@ -857,20 +857,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
@@ -883,8 +883,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["session"] = 1272,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1272,
 ["counter"] = 2,
 },
 {
@@ -902,6 +902,100 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/ArcUI/ArcUI_Core.lua]:3003: in function 'ScanAllCDMIcons'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:277: in function 'ScanTrackedFrames'\n[Interface/AddOns/ArcUI/ArcUI_Catalog.lua]:927: in function <Interface/AddOns/ArcUI/ArcUI_Catalog.lua:926>",
 ["session"] = 1283,
 ["counter"] = 3,
+},
+{
+["message"] = "...dOns/PremadeGroupsFilter/Modules/Specializations.lua:90: attempt to index local 'class' (a nil value)",
+["time"] = "2026/01/16 22:18:24",
+["locals"] = "(for state) = <table> {\n 62 = <table> {\n }\n 1467 = <table> {\n }\n 63 = <table> {\n }\n 250 = <table> {\n }\n 251 = <table> {\n }\n 252 = <table> {\n }\n 1468 = <table> {\n }\n 253 = <table> {\n }\n 1480 = <table> {\n }\n 255 = <table> {\n }\n 66 = <table> {\n }\n 257 = <table> {\n }\n 258 = <table> {\n }\n 259 = <table> {\n }\n 260 = <table> {\n }\n 577 = <table> {\n }\n 262 = <table> {\n }\n 581 = <table> {\n }\n 264 = <table> {\n }\n 265 = <table> {\n }\n 1473 = <table> {\n }\n 267 = <table> {\n }\n 268 = <table> {\n }\n 269 = <table> {\n }\n 270 = <table> {\n }\n 70 = <table> {\n }\n 102 = <table> {\n }\n 71 = <table> {\n }\n 103 = <table> {\n }\n 72 = <table> {\n }\n 263 = <table> {\n }\n 104 = <table> {\n }\n 266 = <table> {\n }\n 73 = <table> {\n }\n 261 = <table> {\n }\n 105 = <table> {\n }\n 64 = <table> {\n }\n 256 = <table> {\n }\n 65 = <table> {\n }\n 254 = <table> {\n }\n}\n(for control) = 1480\nspecID = 1480\nspecInfo = <table> {\n melee = true\n class = \"DEMONHUNTER\"\n range = true\n spec = \"DEVOURER\"\n}\nid = nil\nspecLocalized = nil\ndescription = nil\nicon = nil\nrole = nil\nclass = nil\nclassLocalized = nil\n(*temporary) = <table> {\n 252 = <table> {\n }\n 1468 = <table> {\n }\n 253 = <table> {\n }\n 250 = <table> {\n }\n 251 = <table> {\n }\n 62 = <table> {\n }\n 63 = <table> {\n }\n 1467 = <table> {\n }\n}\n(*temporary) = <table> {\n specID = 1480\n}\n(*temporary) = \"%ss\"\n(*temporary) = \"roleicon-tiny-dps\"\n(*temporary) = nil\n(*temporary) = \"hunter_dps\"\n(*temporary) = \"attempt to index local 'class' (a nil value)\"\nC = <table> {\n MAP_ID_TO_KEYWORDS = <table> {\n }\n DIFFICULTY_KEYWORD = <table> {\n }\n COLOR_ENTRY_DECLINED_SOFT = <table> {\n }\n LEAVER_ATLAS = \"groupfinder-icon-leaver\"\n COLOR_LOCKOUT_PARTIAL = <table> {\n }\n PVP_TIER_MAP = <table> {\n }\n ROLE_SUFFIX = <table> {\n }\n ROLE_REMAINING_KEYS = <table> {\n }\n COLOR_LOCKOUT_FULL = <table> {\n }\n ACTIVITY_ID_TO_KEYWORDS = <table> {\n }\n ROLE_ATLAS = <table> {\n }\n SETTINGS_DEFAULT = <table> {\n }\n DIFFICULTY_MAP = <table> {\n }\n DPS_CLASS_TYPE = <table> {\n }\n LOG_LEVEL = <table> {\n }\n DECLINED_GROUPS_RESET = 900\n ROLE_PREFIX = <table> {\n }\n LEADER_ATLAS = \"groupfinder-icon-leader\"\n ACTIVITY = <table> {\n }\n COLOR_LOCKOUT_MATCH = <table> {\n }\n COLOR_ENTRY_NEW = <table> {\n }\n HEROIC = 2\n NORMAL = 1\n FONTSIZE_TEXTBOX = 12\n ARENA2V2 = 5\n ROLE_ATLAS_BORDERLESS = <table> {\n }\n COLOR_ENTRY_DECLINED_HARD = <table> {\n }\n MYTHICPLUS = 4\n ARENA5V5 = 7\n ARENA3V3 = 6\n SEARCH_ENTRY_RESET_WAIT = 2\n SPECIALIZATIONS = <table> {\n }\n MYTHIC = 3\n COLOR_ENTRY_CANCELED = <table> {\n }\n CATEGORY_ID = <table> {\n }\n}\nspecs = <table> {\n 252 = <table> {\n }\n 1468 = <table> {\n }\n 253 = <table> {\n }\n 250 = <table> {\n }\n 251 = <table> {\n }\n 62 = <table> {\n }\n 63 = <table> {\n }\n 1467 = <table> {\n }\n}\n",
+["stack"] = "[Interface/AddOns/PremadeGroupsFilter/Modules/Specializations.lua]:90: in function 'InitSpecializations'\n[Interface/AddOns/PremadeGroupsFilter/Init.lua]:355: in function 'OnAddonLoaded'\n[Interface/AddOns/PremadeGroupsFilter/Init.lua]:365: in function <Interface/AddOns/PremadeGroupsFilter/Init.lua:364>",
+["session"] = 1295,
+["counter"] = 2,
+},
+{
+["message"] = "...lector-1.0-LMIS/LibAdvancedIconSelector-1.0-LMIS.lua:277: attempt to call method 'SetMinResize' (a nil value)",
+["time"] = "2026/01/17 22:14:58",
+["locals"] = "(*temporary) = \"LeftButton\"\n(*temporary) = false\n",
+["stack"] = "[tail call]: ?\n[Interface/AddOns/LargerMacroIconSelection/Libs/LibAdvancedIconSelector-1.0-LMIS/LibAdvancedIconSelector-1.0-LMIS.lua]:277: in function <...lector-1.0-LMIS/LibAdvancedIconSelector-1.0-LMIS.lua:268>\n[tail call]: ?\n[Interface/AddOns/MacroManager/Layout/MacroEditor.lua]:266: in function <Interface/AddOns/MacroManager/Layout/MacroEditor.lua:259>\n[C]: ?\n[Interface/AddOns/Masque/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:66: in function <...terface/AddOns/Masque/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/Masque/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:300: in function 'Fire'\n[Interface/AddOns/Masque/Libs/AceGUI-3.0-41/widgets/AceGUIWidget-Button.lua]:22: in function <...sque/Libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua:19>",
+["session"] = 1300,
+["counter"] = 1,
+},
+{
+["message"] = "...e/AddOns/UnhaltedUnitFrames/Libraries/oUF/colors.lua:25: attempt to index global 'C_CurveUtil' (a nil value)",
+["time"] = "2026/01/20 19:02:52",
+["locals"] = "self = <table> {\n a = 1\n b = 0.145098\n g = 0.811765\n r = 0.192157\n}\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to index global 'C_CurveUtil' (a nil value)\"\n",
+["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/colors.lua]:25: in function 'SetCurve'\n[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/colors.lua]:71: in function 'CreateColor'\n[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/colors.lua]:81: in main chunk",
+["session"] = 1309,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/UnhaltedUnitFrames/Core/Globals.lua:136: attempt to index field 'colors' (a nil value)",
+["time"] = "2026/01/20 19:03:03",
+["locals"] = "",
+["stack"] = "[tail call]: ?\n[Interface/AddOns/UnhaltedUnitFrames/Core/Globals.lua]:136: in function 'LoadCustomColours'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Globals.lua]:168: in function 'Init'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Core.lua]:20: in function <Interface/AddOns/UnhaltedUnitFrames/Core/Core.lua:19>\n[C]: ?\n[Interface/AddOns/Masque/Libs/AceAddon-3.0-13/AceAddon-3.0.lua]:66: in function <...ace/AddOns/Masque/Libs/AceAddon-3.0/AceAddon-3.0.lua:61>\n[Interface/AddOns/Masque/Libs/AceAddon-3.0-13/AceAddon-3.0.lua]:523: in function 'EnableAddon'\n[Interface/AddOns/Masque/Libs/AceAddon-3.0-13/AceAddon-3.0.lua]:626: in function <...ace/AddOns/Masque/Libs/AceAddon-3.0/AceAddon-3.0.lua:611>\n[C]: ?\n[C]: in function 'LoadAddOn'\n[Interface/AddOns/Blizzard_UIParent/Shared/UIParent.lua]:268: in function 'UIParentLoadAddOn'\n[Interface/AddOns/ChoreTracker/Modules/Display.lua]:80: in function <Interface/AddOns/ChoreTracker/Modules/Display.lua:75>\n...[Interface/AddOns/Blizzard_UIParent/Shared/UIParent.lua]:268: in function 'UIParentLoadAddOn'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:495: in function 'MajorFactions_LoadUI'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_WarWithinLandingPage.lua]:96: in function 'SetUpMajorFactionList'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_WarWithinLandingPage.lua]:89: in function 'RefreshMajorFactionList'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_WarWithinLandingPage.lua]:84: in function 'RefreshOverlay'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_WarWithinLandingPage.lua]:76: in function <...pansionLandingPage/Blizzard_WarWithinLandingPage.lua:72>\n[C]: in function 'CreateFrame'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_WarWithinLandingPage.lua]:48: in function 'CreateOverlay'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_ExpansionLandingPage.lua]:82: in function 'RefreshExpansionOverlay'\n[Interface/AddOns/Blizzard_ExpansionLandingPage/Blizzard_ExpansionLandingPage.lua]:37: in function <...pansionLandingPage/Blizzard_ExpansionLandingPage.lua:35>",
+["session"] = 1309,
+["counter"] = 1,
+},
+{
+["message"] = "...izzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua:605: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: Button:SetPoint.",
+["time"] = "2026/01/23 00:15:36",
+["locals"] = "self = Frame {\n HeroTalentsContainer = Frame {\n }\n commitFlashAnims = <table> {\n }\n leftPadding = 0\n buttonSize = 40\n nextNewConfigRequiresPopulatedCheck = false\n talentCardPool = <table> {\n }\n disabledOverlayAlpha = 0.300000\n LoadSystem = Frame {\n }\n BlackBG = Texture {\n }\n configurationInfo = <table> {\n }\n FxModelScene = ModelScene {\n }\n talentTreeID = 786\n AirParticlesClose = Texture {\n }\n enableCommitCastBar = true\n AnimationHolder = Frame {\n }\n OverlayBackgroundRight = Texture {\n }\n Clouds1 = Texture {\n }\n definitionInfoCache = <table> {\n }\n ButtonsParent = Frame {\n }\n bitWidthHeaderVersion = 8\n enableCommitSpinner = true\n CommitSpinner = Frame {\n }\n executingEvents = <table> {\n }\n PvPTalentSlotTray = Frame {\n }\n lastSelectedConfigID = 95245547\n traitCurrencyIDToGate = <table> {\n }\n treeCurrencyInfo = <table> {\n }\n OverlayBackgroundRightMask = MaskTexture {\n }\n talentTreeInfo = <table> {\n }\n previousCommitUpdateReason = 1\n nodeInfoCache = <table> {\n }\n variablesLoaded = true\n Textures = <table> {\n }\n isInspecting = false\n searchController = <table> {\n }\n configIDToName = <table> {\n }\n configIDs = <table> {\n }\n BackgroundFlash = Texture {\n }\n eventRegisteredNodes = <table> {\n }\n rightPadding = 0\n FullMask = MaskTexture {\n }\n panOffsetX = 0\n dirtySubTreeIDSet = <table> {\n }\n maximumCommitTime = 6\n subTreeInfoCache = <table> {\n }\n heroSpecSelectionDialog = HeroTalentsSelectionDialog {\n }\n dirtyCondIDSet = <table> {\n }\n condInfoCache = <table> {\n }\n dirtyNodeIDSet = <table> {\n }\n ActivationExpandFx = Texture {\n }\n dirtyEntryIDSet = <table> {\n }\n entryInfoCache = <table> {\n }\n dirtyDefinitionIDSet = <table> {\n }\n buttonsWithDirtyEdges = <table> {\n }\n nodeIDToButton = <table> {\n }\n gatePool = <table> {\n }\n SearchBox = EditBox {\n }\n talentDisplayFramePool = <table> {\n }\n talentButtonCollection = <table> {\n }\n deferredCallbacks = <table> {\n }\n callbackTables = <table> {\n }\n areClassTalentCommitVisualsActive = false\n areClassTalentCommitCompleteVisualsActive = true\n initialBasePanOffsetY = 21\n initialBasePanOffsetX = 49\n backgroundAnims = <table> {\n }\n Event = <table> {\n }\n PvPTalentList = Frame {\n }\n WarmodeButton = Button {\n }\n UndoButton = Button {\n }\n ResetButton = Button {\n }\n InspectCopyButton = Button {\n }\n enableCommitEndFlash = true\n SearchPreviewContainer = Frame {\n }\n SpecCurrencyDisplay = Frame {\n }\n ClassCurrencyDisplay = Frame {\n }\n panOffsetY = 0\n basePanOffsetY = 20\n ActivationTitansFX = Texture {\n }\n ActivationClassFx4 = Texture {\n }\n ActivationClassFx3 = Texture {\n }\n ActivationClassFx2 = Texture {\n }\n ActivationClassFx = Texture {\n }\n ActivationExpandFxMask = MaskTexture {\n }\n AirParticlesFar = Texture {\n }\n Clouds2 = Texture {\n }\n OverlayBackgroundMidMask = MaskTexture {\n }\n OverlayBackgroundMid = Texture {\n }\n treeCurrencyInfoMap = <table> {\n }\n specBackgrounds = <table> {\n }\n Background = Texture {\n }\n BottomBar = Texture {\n }\n areBaseCommitVisualsActive = false\n commitSound = 207767\n bottomPadding = 82\n edgePool = <table> {\n }\n basePanOffsetX = 49\n bitWidthRanksPurchased = 6\n isConfigReadyToApply = false\n CommitUpdateReasons = <table> {\n }\n commitedConfigID = 31710420\n stagedPurchaseNodes = <table> {\n }\n excludeStagedChangesForCurrencies = false\n classActivationTextures = <table> {\n }\n treeInfoDirty = false\n ApplyButton = Button {\n }\n talentAnimationFramePoolCollection = <table> {\n }\n SelectionChoiceFrame = Frame {\n }\n VisualsUpdateReasons = <table> {\n }\n enableZoomAndPan = true\n topPadding = 0\n bitWidthSpecID = 16\n DisabledOverlay = Frame {\n }\n}\nnodeInfo = <table> {\n meetsEdgeRequirements = true\n entryIDs = <table> {\n }\n ranksIncreased = 0\n subTreeActive = true\n subTreeID = 54\n posX = 15600\n ID = 94866\n canPurchaseRank = false\n currentRank = 1\n isCascadeRepurchasable = false\n visibleEdges = <table> {\n }\n isVisible = true\n posY = 3000\n conditionIDs = <table> {\n }\n entryIDsWithCommittedRanks = <table> {\n }\n entryIDToRanksIncreased = <table> {\n }\n isDisplayError = false\n activeEntry = <table> {\n }\n flags = 1\n type = 2\n maxRanks = 1\n activeRank = 1\n groupIDs = <table> {\n }\n isAvailable = true\n ranksPurch",
+["stack"] = "[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:605: in function 'AcquireTalentButton'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:885: in function 'InstantiateTalentButton'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:1481: in function 'LoadTalentTreeInternal'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:814: in function 'LoadTalentTreeInternal'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:1455: in function 'LoadTalentTree'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:1336: in function 'SetTalentTreeID'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:873: in function 'SetTalentTreeID'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:1323: in function 'SetConfigID'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:868: in function 'SetConfigID'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:359: in function 'OnTraitConfigUpdated'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:345: in function 'OnEvent'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:341: in function <...erSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua:270>",
+["session"] = 1322,
+["counter"] = 1,
+},
+{
+["message"] = "Line:SetStartPoint()(): Not allowed to depend on Button",
+["time"] = "2026/01/23 00:15:36",
+["locals"] = "self = Frame {\n GhostLine = Line {\n }\n Line = Line {\n }\n endButton = Button {\n }\n isPositionDirty = true\n edgeInfo = <table> {\n }\n startButton = Button {\n }\n GhostArrowHead = Texture {\n }\n ArrowHead = Texture {\n }\n ignoreInLayout = \"true\"\n}\nstartButton = Button {\n BorderSheen = Texture {\n }\n Shadow = Texture {\n }\n spendTextShadows = <table> {\n }\n StateBorder = Texture {\n }\n SpendTextShadow2 = FontString {\n }\n Glow = Texture {\n }\n ArtSet = <table> {\n }\n SpendTextShadow4 = FontString {\n }\n deselectSound = 207762\n SelectableGlowMaxAlpha = 0.150000\n sheenMaskAtlas = \"talents-node-square-sheenmask\"\n selectSound = 207763\n frameLevelOffset = 2\n SpendTextShadow1 = FontString {\n }\n SearchIcon = Frame {\n }\n animStateActiveConditions = <table> {\n }\n SpendText = FontString {\n }\n visualState = 6\n isGhosted = false\n definitionInfo = <table> {\n }\n entryInfo = <table> {\n }\n IconMask = MaskTexture {\n }\n Icon = Texture {\n }\n SpendTextShadow3 = FontString {\n }\n nodeInfo = <table> {\n }\n actionBarStatus = 2\n currAnimsForAnimStates = <table> {\n }\n talentFrame = Frame {\n }\n tooltipBackdropStyle = <table> {\n }\n SelectableGlow = Texture {\n }\n StateBorderHover = Texture {\n }\n artSet = <table> {\n }\n nodeID = 80958\n SelectableIcon = Texture {\n }\n Ghost = Texture {\n }\n DisabledOverlay = Texture {\n }\n currAnimStates = <table> {\n }\n entryID = 101823\n BorderSheenMask = MaskTexture {\n }\n DisabledOverlayMask = MaskTexture {\n }\n definitionID = 106876\n}\nendButton = Button {\n BorderSheen = Texture {\n }\n Shadow = Texture {\n }\n spendTextShadows = <table> {\n }\n StateBorder = Texture {\n }\n SpendTextShadow2 = FontString {\n }\n Glow = Texture {\n }\n ArtSet = <table> {\n }\n SpendTextShadow4 = FontString {\n }\n deselectSound = 207762\n SelectableGlowMaxAlpha = 0.150000\n sheenMaskAtlas = \"talents-node-square-sheenmask\"\n selectSound = 207763\n frameLevelOffset = 2\n SpendTextShadow1 = FontString {\n }\n SearchIcon = Frame {\n }\n animStateActiveConditions = <table> {\n }\n SpendText = FontString {\n }\n visualState = 6\n isGhosted = false\n definitionInfo = <table> {\n }\n entryInfo = <table> {\n }\n IconMask = MaskTexture {\n }\n Icon = Texture {\n }\n SpendTextShadow3 = FontString {\n }\n nodeInfo = <table> {\n }\n actionBarStatus = 1\n currAnimsForAnimStates = <table> {\n }\n talentFrame = Frame {\n }\n tooltipBackdropStyle = <table> {\n }\n SelectableGlow = Texture {\n }\n StateBorderHover = Texture {\n }\n artSet = <table> {\n }\n nodeID = 80974\n SelectableIcon = Texture {\n }\n Ghost = Texture {\n }\n DisabledOverlay = Texture {\n }\n currAnimStates = <table> {\n }\n entryID = 101840\n BorderSheenMask = MaskTexture {\n }\n DisabledOverlayMask = MaskTexture {\n }\n definitionID = 106879\n}\nangle = 2.356191\ndiameterOffset = 1.435619\nxOffset = -20.302623\nyOffset = 20.302836\n",
+["stack"] = "[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentEdgeTemplates.lua]:172: in function 'UpdatePosition'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentEdgeTemplates.lua]:150: in function 'UpdateState'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentEdgeTemplates.lua]:43: in function 'UpdateState'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentEdgeTemplates.lua]:94: in function 'Init'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:836: in function 'AcquireEdge'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:798: in function 'UpdateEdgesForButton'\n[Interface/AddOns/Blizzard_SharedTalentUI/Blizzard_SharedTalentFrame.lua]:273: in function 'OnUpdate'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua]:118: in function <...erSpells/ClassTalents/Blizzard_ClassTalentsFrame.lua:117>",
+["session"] = 1322,
+["counter"] = 1,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'UnhaltedUnitFrames' tried to call the protected function 'UUF_Boss1:SetAttribute()'.",
+["time"] = "2026/01/23 00:22:06",
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"UnhaltedUnitFrames\"\naddonFunc = \"UUF_Boss1:SetAttribute()\"\nname = \"UnhaltedUnitFrames\"\nbadAddons = <table> {\n UnhaltedUnitFrames = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:583: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:507: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:507>\n[C]: in function 'SetAttribute'\n[Interface/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua]:365: in function 'CreateTestBossFrames'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:133: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:123>\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2651: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2651>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:300: in function 'Fire'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-Frame.lua]:29: in function <...UI/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua:28>\n[C]: in function 'Hide'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-Frame.lua]:125: in function 'Hide'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-Frame.lua]:21: in function <...UI/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua:19>",
+["session"] = 1323,
+["counter"] = 1,
+},
+{
+["message"] = "[ADDON_ACTION_FORBIDDEN] AddOn '*** ForceTaint_Strong ***' tried to call the protected function 'SetRaidTarget()'.",
+["time"] = "2026/01/23 18:50:00",
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_FORBIDDEN\"\naddonName = \"*** ForceTaint_Strong ***\"\naddonFunc = \"SetRaidTarget()\"\nname = \"*** ForceTaint_Strong ***\"\nbadAddons = <table> {\n *** ForceTaint_Strong *** = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:583: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:507: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:507>\n[C]: in function 'SetRaidTarget'\n[if not GetRaidTargetIndex(\"focus\") then SetRaidTarget(\"focus\",7) end]:1: in main chunk\n[C]: in function 'RunScript'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/SlashCommands.lua]:1172: in function '?'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua]:259: in function 'ParseText'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua]:284: in function 'SendText'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/MacroExecutionManager.lua]:27: in function <...zzard_ChatFrameBase/Shared/MacroExecutionManager.lua:20>\n[C]: in function 'UseAction'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:349: in function 'handler'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:732: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:710>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:746: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:739>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:798: in function 'SecureActionButton_OnClick'\n[Interface/AddOns/Blizzard_ActionBar/Shared/ActionButton.lua]:112: in function 'TryUseActionButton'\n[Interface/AddOns/Blizzard_ActionBar/Shared/MultiActionBars.lua]:41: in function 'MultiActionButtonDown'\n[MULTIACTIONBAR5BUTTON3]:2: in function <[string \"MULTIACTIONBAR5BUTTON3\"]:1>",
+["session"] = 1330,
+["counter"] = 1,
+},
+{
+["message"] = "attempt to call a secret value",
+["time"] = "2026/01/23 18:56:51",
+["locals"] = "funcTbl = <no value>\ncanTerminate = false\n(for state) = <no value>\n(for control) = <no value>\ni = <no value>\nfunc = <no value>\n",
+["stack"] = "[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:67: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:62>\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:87: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:83>\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:123: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:113>\n[C]: in function 'SetAttribute'\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:148: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:141>\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:298: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:245>\n[C]: in function 'securecallfunction'\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:242: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:241>\n[tail call]: ?\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua]:517: in function <...lizzard_SharedXMLGame/Tooltip/TooltipDataHandler.lua:506>\n[C]: in function 'SetSpellByID'\n[Interface/AddOns/Blizzard_EncounterWarnings/EncounterWarningsView.lua]:204: in function 'SetTooltipShown'\n[Interface/AddOns/Blizzard_EncounterWarnings/EncounterWarningsView.lua]:23: in function <...Blizzard_EncounterWarnings/EncounterWarningsView.lua:21>",
+["session"] = 1330,
+["counter"] = 2,
+},
+{
+["message"] = "...AddOns/ArcUI/CDM_Module/Arc_Auras/ArcUI_ArcAuras.lua:2038: attempt to call global 'EasyMenu' (a nil value)",
+["time"] = "2026/01/25 16:56:59",
+["locals"] = "frame = ArcAura_arc_item_219314 {\n BottomLeftCorner = Texture {\n }\n _cdmgSettingPosition = false\n _arcCooldownText = FontString {\n }\n _arcShowSwipe = true\n IconOverlay = Texture {\n }\n _arcFrameAlphaHooked = true\n _fcScaleHooked = true\n _cdmgClearPointsFreeHooked = true\n _freeDragging = false\n RightEdge = Texture {\n }\n _cdmgFreeTargetSize = 36\n _arcRangeWatcher = Frame {\n }\n _cdmgIsFreeIcon = true\n _remaining = 0\n _arcIconOverlayScanned = true\n _arcSwipeWaitChargeSpell = false\n _lastStartTime = 0\n _fcSizeHooked = true\n _MSQ_CFG = <table> {\n }\n _arcTexCoords = <table> {\n }\n _arcNoGCDSwipeEnabled = false\n _lastUsableCheckTime = 2178.416000\n _arcAuraStateHooked = true\n BottomEdge = Texture {\n }\n _arcBorderEdges = <table> {\n }\n _cdmgScaleHooked = true\n _arcHideTextWithSwipe = false\n _arcReadyGlowActive = false\n _cdmgParentHooked = true\n _lastAppliedAlpha = 1\n _arcShowDebuffBorder = false\n Icon = Texture {\n }\n _arcAlertCdID = \"arc_item_219314\"\n _lastUsableResult = false\n _arcGlowLCG = <table> {\n }\n _lastDuration = 0\n TopEdge = Texture {\n }\n _arcEditButton = Button {\n }\n _arcBorderWatcher = true\n _arcAuraID = \"arc_item_219314\"\n _arcOverlay = Button {\n }\n _arcTextOverlay = Frame {\n }\n _arcMasqueGroupKey = \"_FreePosition\"\n _arcGlowAnchor = Frame {\n }\n LeftEdge = Texture {\n }\n _arcOrigW = 36.000092\n _arcIsArcAura = true\n _arcOrigH = 36.000092\n _fcStrataHooked = true\n _fcClearPointsHooked = true\n _arcShowPandemic = false\n _arcMasqueAdded = true\n _arcOriginalX = 1261.999878\n _arcMasqueCdID = \"arc_item_219314\"\n _arcZoom = 0\n TopLeftCorner = Texture {\n }\n _arcReverse = false\n _arcLockedOut = true\n Count = FontString {\n }\n _arcLastEnhancedCdID = \"arc_item_219314\"\n BottomRightCorner = Texture {\n }\n _arcCfgVersion = 173\n _arcCfg = <table> {\n }\n _arcRangeCfg = <table> {\n }\n _currentItemName = \"Ara-Kara Sacbrood\"\n _arcPadding = 0\n _arcBorderOverlay = Frame {\n }\n Cooldown = ArcAura_arc_item_219314_Cooldown {\n }\n _arcFrameSizeHooked = true\n TopRightCorner = Texture {\n }\n _arcCountContainer = Frame {\n }\n _arcIsChargeSpellCached = false\n _arcEnhanced = true\n _startTime = 0\n _arcIconType = \"item\"\n _arcInitialized = true\n _lastVisualState = \"ready\"\n backdropInfo = <table> {\n }\n cooldownID = \"arc_item_219314\"\n _arcIgnoreAuraOverride = false\n _lastCooldownState = false\n _arcShowEdge = true\n _arcGlowCfg = <table> {\n }\n _arcConfig = <table> {\n }\n Center = Texture {\n }\n _cdmgSizeHooked = true\n _arcSwipeWaitForNoCharges = false\n _arcStyled = true\n _currentItemID = 219314\n _arcSwipeMode = \"normal\"\n _isOnCooldown = false\n _arcOriginalY = 851.999878\n _duration = 0\n}\nmenu = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n 5 = <table> {\n }\n}\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = <table> {\n 1 = <table> {\n }\n 2 = <table> {\n }\n 3 = <table> {\n }\n 4 = <table> {\n }\n 5 = <table> {\n }\n}\n(*temporary) = ArcAurasContextMenu {\n Text = ArcAurasContextMenuText {\n }\n Icon = ArcAurasContextMenuIcon {\n }\n Button = ArcAurasContextMenuButton {\n }\n Right = ArcAurasContextMenuRight {\n }\n Middle = ArcAurasContextMenuMiddle {\n }\n Left = ArcAurasContextMenuLeft {\n }\n}\n(*temporary) = \"cursor\"\n(*temporary) = 0\n(*temporary) = 0\n(*temporary) = \"MENU\"\n(*temporary) = \"attempt to call global 'EasyMenu' (a nil value)\"\nArcAuras = <table> {\n initialized = true\n isEnabled = true\n masqueGroup = <table> {\n }\n frames = <table> {\n }\n}\n",
+["stack"] = "[Interface/AddOns/ArcUI/CDM_Module/Arc_Auras/ArcUI_ArcAuras.lua]:2038: in function 'ShowContextMenu'\n[Interface/AddOns/ArcUI/CDM_Module/Arc_Auras/ArcUI_ArcAuras.lua]:796: in function <...AddOns/ArcUI/CDM_Module/Arc_Auras/ArcUI_ArcAuras.lua:794>",
+["session"] = 1337,
+["counter"] = 1,
+},
+{
+["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
+["time"] = "2026/01/25 22:59:53",
+["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
+["session"] = 1338,
+["counter"] = 4,
+},
+{
+["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
+["time"] = "2026/01/26 20:42:33",
+["session"] = 1339,
+["counter"] = 1,
 },
 },
 }

@@ -6,20 +6,16 @@ local function GetLabelsValues(allAssets, filter, showHeight)
 
   local allKeys = GetKeysArray(allAssets)
   table.sort(allKeys, function(a, b)
-    local aType, aMain = a:match("(.+)%/(.+)")
-    local bType, bMain = b:match("(.+)%/(.+)")
-    local aMode, bMode = allAssets[a].mode, allAssets[b].mode
-    if not aMode and bMode then
-      return true
-    elseif not bMode and aMode then
-      return false
-    elseif not bMode and not aMode then
-      return a < b
-    elseif bMain == aMain then
-      return aMode > bMode
-    else
-      return aMain < bMain
+    local aGroup, bGroup = allAssets[a].group, allAssets[b].group
+    local aOrder, bOrder = allAssets[a].order, allAssets[b].order
+    if aOrder then
+      if aGroup == bGroup then
+        return aOrder < bOrder
+      else
+        return aGroup < bGroup
+      end
     end
+    return a < b
   end)
 
   for _, key in ipairs(allKeys) do
@@ -31,7 +27,7 @@ local function GetLabelsValues(allAssets, filter, showHeight)
         height = 180/width * height
         width = 180
       end
-      local text = "|T".. (details.preview or details.file) .. ":" .. height .. ":" .. width .. "|t"
+      local text = "|T".. (details.preview or details.file) .. ":" .. (height - 1) .. ":" .. (width - 1) .. "|t"
       if details.isTransparent then
         text = addonTable.Locales.NONE
       end
@@ -253,6 +249,31 @@ addonTable.CustomiseDialog.WidgetsConfig = {
     },
     ["cast"] = {
       {
+        label = addonTable.Locales.TEXTURES,
+        entries = {
+          {
+            label = addonTable.Locales.MARK_INTERRUPT_READY_POINT,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.interruptMarker.asset = value and "wide/glow" or "none"
+            end,
+            getter = function(details)
+              return details.interruptMarker.asset ~= "none"
+            end,
+          },
+          {
+            label = addonTable.Locales.INTERRUPT_POINT_COLOR,
+            kind = "colorPicker",
+            setter = function(details, value)
+              details.interruptMarker.color = value
+            end,
+            getter = function(details)
+              return details.interruptMarker.color
+            end,
+          },
+        },
+      },
+      {
         label = addonTable.Locales.COLORS,
         entries = {
           {
@@ -356,10 +377,10 @@ addonTable.CustomiseDialog.WidgetsConfig = {
     },
     ["health"] = {
       {
-        label = addonTable.Locales.GENERAL,
+        label = addonTable.Locales.VALUES,
         entries = {
           {
-            label = addonTable.Locales.ABSOLUTE_VALUE,
+            label = addonTable.Locales.ABSOLUTE,
             kind = "checkbox",
             setter = function(details, value)
               if value and tIndexOf(details.displayTypes, "absolute") == nil then
@@ -375,8 +396,9 @@ addonTable.CustomiseDialog.WidgetsConfig = {
               return tIndexOf(details.displayTypes, "absolute") ~= nil
             end,
           },
+          { kind = "spacer" },
           {
-            label = addonTable.Locales.PERCENTAGE_VALUE,
+            label = addonTable.Locales.PERCENTAGE,
             kind = "checkbox",
             setter = function(details, value)
               if value and tIndexOf(details.displayTypes, "percentage") == nil then
@@ -390,6 +412,32 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
             getter = function(details)
               return tIndexOf(details.displayTypes, "percentage") ~= nil
+            end,
+          },
+          {
+            label = addonTable.Locales.SIGNIFICANT_FIGURES,
+            kind = "slider",
+            min = 0, max = 4,
+            formatter = function(value)
+              if value == 0 then
+                return addonTable.Locales.ROUNDED
+              else
+                return tostring(value + 1)
+              end
+            end,
+            setter = function(details, value)
+              if value == 0 then
+                details.significantFigures = value
+              else
+                details.significantFigures = value + 1
+              end
+            end,
+            getter = function(details)
+              if value == 0 then
+                return details.significantFigures
+              else
+                return details.significantFigures - 1
+              end
             end,
           },
         }
@@ -456,6 +504,24 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             getter = function(details)
               return details.applyClassColors
             end,
+          },
+        }
+      }
+    },
+    ["castInterrupter"] = {
+      {
+        label = addonTable.Locales.COLORS,
+        entries = {
+          {
+            label = addonTable.Locales.CLASS_COLORED,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.applyClassColors = value
+            end,
+            getter = function(details)
+              return details.applyClassColors
+            end,
+            hide = addonTable.Constants.IsMidnight,t
           },
         }
       }
@@ -561,7 +627,41 @@ addonTable.CustomiseDialog.WidgetsConfig = {
               details.square = value
             end,
             getter = function(details)
-              return details.square == true
+              return details.square
+            end,
+          }
+        }
+      },
+    },
+    ["elite"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.SHOW_ONLY_IN_OPEN_WORLD,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.openWorldOnly = value
+            end,
+            getter = function(details)
+              return details.openWorldOnly
+            end,
+          }
+        }
+      },
+    },
+    ["rare"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.INCLUDE_ELITE_RARES,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.includeElites = value
+            end,
+            getter = function(details)
+              return details.includeElites
             end,
           }
         }
@@ -683,7 +783,6 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           {
             label = addonTable.Locales.SHOW_PANDEMIC,
             kind = "checkbox",
-            hide = true,
             setter = function(details, value)
               details.showPandemic = value
             end,
@@ -705,7 +804,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             getter = function(details)
               return details.filters.important
             end,
-            hide = not addonTable.Constants.IsMidnight,
+            hide = addonTable.Constants.IsClassic,
           },
           {
             label = addonTable.Locales.FROM_YOU,
@@ -735,7 +834,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
           },
           {
-            label = addonTable.Locales.DISPELABLE,
+            label = addonTable.Locales.DISPELLABLE,
             kind = "checkbox",
             setter = function(details, value)
               details.filters.dispelable = value

@@ -1,10 +1,19 @@
-VER 3 0000000000000072 " " "134400"
-#showtooltip
-/cast Whirling Surge
+VER 3 0000000000000077 " " "450905"
+END
+VER 3 0000000000000076 " " "450906"
+END
+VER 3 0000000000000075 " " "450907"
+END
+VER 3 0000000000000079 " " "132296"
+END
+VER 3 0000000000000078 " " "450908"
 END
 VER 3 000000000000006C "BRez" "134400"
 #showtooltip
 /use Convincingly Realistic Jumper Cables
+END
+VER 3 000000000000007A "CDM" "1392950"
+/arcui
 END
 VER 3 0000000000000071 "Cell" "2902386"
 /cell opt
@@ -15,16 +24,15 @@ END
 VER 3 0000000000000066 "Clear Focus" "132096"
 /clearfocus
 END
-VER 3 0000000000000049 "Details" "1506451"
-/dt options
-END
 VER 3 0000000000000062 "Edit Mode" "134063"
 /editmode
 END
 VER 3 0000000000000065 "Focus" "132345"
 /clearfocus
 /focus [@mouseover,exists,harm][]
-/run if not GetRaidTargetIndex("focus") then SetRaidTarget("focus",7) end
+END
+VER 3 000000000000007B "Frames" "132089"
+/uuf
 END
 VER 3 000000000000005D "Macros" "134070"
 /macro
@@ -38,15 +46,9 @@ END
 VER 3 0000000000000047 "OPie" "651358"
 /op
 END
-VER 3 0000000000000050 "Plater" "132750"
+VER 3 0000000000000050 "Platynator" "132750"
 /platynator
 END
 VER 3 000000000000005B "Reload" "136213"
 /reload
-END
-VER 3 0000000000000074 "Tweaks" "136026"
-/tuicd
-END
-VER 3 000000000000005A "WeakAuras" "135872"
-/wa
 END

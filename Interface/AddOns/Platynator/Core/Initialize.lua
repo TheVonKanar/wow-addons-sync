@@ -26,6 +26,12 @@ local truncateMap = {
 
 function addonTable.Core.UpgradeDesign(design)
   design.appliesToAll = nil
+  design.addon = nil
+  design.kind = nil
+
+  if design.scale == nil then
+    design.scale = 1
+  end
 
   for _, text in ipairs(design.texts) do
     if not text.color then
@@ -51,6 +57,15 @@ function addonTable.Core.UpgradeDesign(design)
     end
     if marker.layer == nil then
       marker.layer = 3
+    end
+    if marker.kind == "castIcon" and marker.square == nil then
+      marker.square = false
+    end
+    if marker.kind == "elite" and marker.openWorldOnly == nil then
+      marker.openWorldOnly = false
+    end
+    if marker.kind == "rare" and marker.includeElites == nil then
+      marker.includeElites = false
     end
   end
   if not design.auras then
@@ -107,7 +122,7 @@ function addonTable.Core.UpgradeDesign(design)
     end
     if aura.kind == "buffs" and not aura.filters then
       aura.filters = {
-        dispelable = true,
+        dispelable = false,
         important = true,
       }
     end
@@ -122,10 +137,15 @@ function addonTable.Core.UpgradeDesign(design)
         reversed = false,
       }
     end
+    if aura.kind == "debuffs" and aura.showPandemic == nil then
+      aura.showPandemic = true
+    end
   end
 
   local function UpdateAutoColors(autoColors)
-    for _, ac in ipairs(autoColors) do
+    local index = 1
+    while index <= #autoColors do
+      local ac = autoColors[index]
       if ac.kind == "eliteType" and ac.colors.trivial == nil then
         ac.colors.trivial = GetColor("b28e55")
       elseif ac.kind == "threat" and ac.useSafeColor == nil then
@@ -137,7 +157,17 @@ function addonTable.Core.UpgradeDesign(design)
         ac.colors.quest = nil
       elseif ac.kind == "classColors" and ac.colors == nil then
         ac.colors = {}
+      elseif ac.kind == "cast" and ac.colors.uninterruptable then
+        local new = CopyTable(addonTable.CustomiseDialog.ColorsConfig["uninterruptableCast"].default)
+        new.colors.uninterruptable = ac.colors.uninterruptable
+        table.insert(autoColors, index, new)
+        ac.colors.uninterruptable = nil
+        index = index - 1
+      elseif ac.kind == "interruptReady" and ac.notReady then
+        ac.notReady = nil
       end
+
+      index = index + 1
     end
   end
 
@@ -253,6 +283,12 @@ function addonTable.Core.UpgradeDesign(design)
         })
       end
     end
+    if bar.kind == "cast" and bar.interruptMarker == nil then
+      bar.interruptMarker = {asset = "none"}
+    end
+    if bar.kind == "cast" and bar.interruptMarker.color == nil then
+      bar.interruptMarker.color = GetColor("FFFFFF")
+    end
     if bar.autoColors then
       UpdateAutoColors(bar.autoColors)
     end
@@ -301,6 +337,9 @@ function addonTable.Core.UpgradeDesign(design)
       end
       text.applyDifficultyColors = nil
       text.colors = nil
+    end
+    if text.kind == "health" and text.significantFigures == nil then
+      text.significantFigures = 0
     end
     if text.autoColors then
       UpdateAutoColors(text.autoColors)
@@ -369,8 +408,12 @@ function addonTable.Core.MigrateSettings()
     addonTable.Config.Set(addonTable.Config.Options.STYLE, mapping["friend"])
   end
 
+  for _, design in pairs(addonTable.Config.Get(addonTable.Config.Options.DESIGNS)) do
+    addonTable.Core.UpgradeDesign(design)
+  end
+
   local mapping = addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)
-  if mapping["enemySimplified"] == nil then
+  if mapping["enemySimplified"] == nil or addonTable.Core.GetDesignByName(mapping["enemySimplified"]) == nil then
     mapping["enemySimplified"] = "_hare_simplified"
   end
 
@@ -379,8 +422,23 @@ function addonTable.Core.MigrateSettings()
     simplified["instancesNormal"] = true
   end
 
-  for _, design in pairs(addonTable.Config.Get(addonTable.Config.Options.DESIGNS)) do
-    addonTable.Core.UpgradeDesign(design)
+  if type(addonTable.Config.Get(addonTable.Config.Options.STACKING_NAMEPLATES)) == "boolean" then
+    local state = addonTable.Config.Get(addonTable.Config.Options.STACKING_NAMEPLATES)
+    addonTable.Config.Set(addonTable.Config.Options.STACKING_NAMEPLATES, {
+      friend = false,
+      enemy = state,
+    })
+  end
+
+  if addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES).enemyMinion == nil then
+    local state = addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)
+    state.enemyMinion = true
+    state.enemyMinor = true
+    state.friendlyMinion = false
+    state.friendlyPlayer = state.player
+    state.friendlyNPC = state.npc
+    state.player = nil
+    state.npc = nil
   end
 end
 
@@ -388,7 +446,7 @@ local function SetStyle()
   local mapping = addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)
 
   local styleName = addonTable.Config.Get(addonTable.Config.Options.STYLE)
-  if mapping["friend"] == mapping["enemy"] then
+  if mapping["friend"] == mapping["enemy"] and mapping["enemySimplified"] ~= styleName then
     mapping["friend"] = styleName
     mapping["enemy"] = styleName
   elseif mapping["friend"] ~= styleName and mapping["enemy"] ~= styleName and mapping["enemySimplified"] ~= styleName then
@@ -454,7 +512,7 @@ local function UpdateRect(design)
     end
   end
 
-  addonTable.Rect = {left = left, bottom = bottom, width = right ~= left and right - left or 125, height = top ~= bottom and top - bottom or 10}
+  addonTable.Rect = {left = left * design.scale, bottom = bottom * design.scale, width = (right ~= left and right - left or 125) * design.scale, height = (top ~= bottom and top - bottom or 10) * design.scale}
 
   for _, textDetails in ipairs(design.texts) do
     if textDetails.kind == "creatureName" then
@@ -463,13 +521,15 @@ local function UpdateRect(design)
     end
   end
 
-  addonTable.StackRect = {left = left, bottom = bottom, width = right ~= left and right - left or 125, height = top ~= bottom and top - bottom or 10}
+  addonTable.StackRect = {left = left * design.scale, bottom = bottom * design.scale, width = (right ~= left and right - left or 125) * design.scale, height = (top ~= bottom and top - bottom or 10) * design.scale}
 end
 
 function addonTable.Core.GetDesignByName(name)
   if addonTable.Design.Defaults[name] then
     if not addonTable.Design.ParsedDefaults[name] then
       local design = C_EncodingUtil.DeserializeJSON(addonTable.Design.Defaults[name])
+      design.kind = nil
+      design.addon = nil
       addonTable.Core.UpgradeDesign(design)
       addonTable.Design.ParsedDefaults[name] = design
     end
@@ -484,9 +544,15 @@ function addonTable.Core.GetDesign(kind)
   return addonTable.Core.GetDesignByName(name)
 end
 
+local hasSimplifiedScale = C_CVar.GetCVarInfo("nameplateSimplifiedScale")
+
 function addonTable.Core.GetDesignScale(kind)
   if kind:find("Simplified") then
-    return 0.3
+    if hasSimplifiedScale then
+      return addonTable.Config.Get(addonTable.Config.Options.SIMPLIFIED_SCALE)
+    else
+      return 0.3
+    end
   else
     return 1
   end

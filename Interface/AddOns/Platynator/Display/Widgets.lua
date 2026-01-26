@@ -24,6 +24,8 @@ local function InitBar(frame, details)
   local borderDetails = addonTable.Assets.BarBordersSliced[details.border.asset]
   local foregroundDetails = addonTable.Assets.BarBackgrounds[details.foreground.asset]
   frame.statusBar:SetScale(1/borderDetails.lowerScale * details.scale)
+  frame.statusBar:SetMinMaxValues(0, 1)
+  frame.statusBar:SetValue(1)
   frame.statusBar:SetStatusBarTexture(foregroundDetails.file)
   frame.statusBar:GetStatusBarTexture():SetDrawLayer("ARTWORK")
 
@@ -50,8 +52,8 @@ local function InitBar(frame, details)
   frame.marker:RemoveMaskTexture(frame.mask)
 
   local maskDetails = addonTable.Assets.BarMasks[details.border.asset]
+  frame.mask:SetBlockingLoadsRequested(true)
   if maskDetails then
-    frame.mask:SetBlockingLoadsRequested(true)
     frame.mask:SetTexture(maskDetails.file, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     frame.mask:SetTextureSliceMargins(maskDetails.width * maskDetails.margin, maskDetails.height * maskDetails.margin, maskDetails.width * maskDetails.margin, maskDetails.height * maskDetails.margin)
   else
@@ -179,21 +181,32 @@ function addonTable.Display.GetCastBar(frame, parent)
     if value then
       if addonTable.Constants.IsMidnight then
         frame.statusBar:SetFillStyle(Enum.StatusBarFillStyle.Reverse)
+        frame.interruptMarker:SetFillStyle(Enum.StatusBarFillStyle.Reverse)
       else
         frame.statusBar:SetFillStyle("REVERSE")
+        frame.interruptMarker:SetFillStyle("REVERSE")
       end
-      frame.marker:SetPoint("CENTER", frame.reverseStatusTexture, "RIGHT")
+
       self.statusBar:GetStatusBarTexture():SetColorTexture(1, 1, 1, 0)
       self.reverseStatusTexture:Show()
+
+      frame.marker:SetPoint("CENTER", frame.reverseStatusTexture, "RIGHT")
+      frame.interruptMarker:ClearAllPoints()
+      frame.interruptMarker:SetPoint("RIGHT", frame.statusBar:GetStatusBarTexture(), "LEFT")
+      frame.interruptMarkerPoint:SetPoint("CENTER", frame.interruptMarker:GetStatusBarTexture(), "LEFT")
     else
       if addonTable.Constants.IsMidnight then
         frame.statusBar:SetFillStyle(Enum.StatusBarFillStyle.Standard)
       else
         frame.statusBar:SetFillStyle("STANDARD")
       end
-      frame.marker:SetPoint("CENTER", frame.statusBar:GetStatusBarTexture(), "RIGHT")
       self.statusBar:SetStatusBarTexture(addonTable.Assets.BarBackgrounds[frame.details.foreground.asset].file)
       self.reverseStatusTexture:Hide()
+
+      frame.marker:SetPoint("CENTER", frame.statusBar:GetStatusBarTexture(), "RIGHT")
+      frame.interruptMarker:ClearAllPoints()
+      frame.interruptMarker:SetPoint("LEFT", frame.statusBar:GetStatusBarTexture(), "RIGHT")
+      frame.interruptMarkerPoint:SetPoint("CENTER", frame.interruptMarker:GetStatusBarTexture(), "RIGHT")
     end
   end
 
@@ -204,13 +217,22 @@ function addonTable.Display.GetCastBar(frame, parent)
   frame.background:SetPoint("CENTER")
   frame.background:SetDrawLayer("BACKGROUND")
 
+  frame.interruptMarker = CreateFrame("StatusBar", nil, frame)
+  frame.interruptMarker:SetStatusBarTexture("Interface/AddOns/Platynator/Special/transparent.png")
+  frame.interruptMarkerPoint = frame.interruptMarker:CreateTexture()
+  frame.interruptMarkerPoint:SetColorTexture(1, 1, 1)
+  frame.interruptMarkerPoint:SetWidth(5)
+  frame.interruptMarkerPoint:SetPoint("CENTER", frame.interruptMarker:GetStatusBarTexture(), "RIGHT")
+  frame.interruptMarker:SetClipsChildren(true)
+
   function frame:Init(details)
     InitBar(frame, details)
 
     local borderDetails = addonTable.Assets.BarBordersSliced[details.border.asset]
 
     frame.statusBar:SetFrameLevel(frame:GetFrameLevel() + 2)
-    borderHolder:SetFrameLevel(frame:GetFrameLevel() + 4)
+    frame.interruptMarker:SetFrameLevel(frame:GetFrameLevel() + 5)
+    borderHolder:SetFrameLevel(frame:GetFrameLevel() + 6)
 
     local foregroundDetails = addonTable.Assets.BarBackgrounds[details.foreground.asset]
     frame.reverseStatusTexture:Hide()
@@ -218,14 +240,21 @@ function addonTable.Display.GetCastBar(frame, parent)
     frame.reverseStatusTexture:SetPoint("RIGHT", frame.statusBar:GetStatusBarTexture(), "LEFT")
     frame.reverseStatusTexture:SetHorizTile(true)
 
+    frame.interruptMarker:SetScale(1/borderDetails.lowerScale)
+    frame.interruptMarker:ClearAllPoints()
+    frame.interruptMarker:SetPoint("LEFT", frame.statusBar:GetStatusBarTexture(), "RIGHT")
+    if details.interruptMarker.asset ~= "none" then
+      local markerDetails = addonTable.Assets.BarPositionHighlights[details.interruptMarker.asset]
+      frame.interruptMarkerPoint:SetTexture(markerDetails.file)
+      local color = details.interruptMarker.color
+      frame.interruptMarkerPoint:SetVertexColor(color.r, color.g, color.b)
+    end
+
     local backgroundDetails = addonTable.Assets.BarBackgrounds[details.background.asset]
 
     frame.reverseStatusTexture:RemoveMaskTexture(frame.mask)
-
-    local maskInfo = addonTable.Assets.BarMasks[details.border.asset]
-    if maskInfo then
-      frame.reverseStatusTexture:AddMaskTexture(frame.mask)
-    end
+    frame.reverseStatusTexture:AddMaskTexture(frame.mask)
+    frame.interruptMarkerPoint:AddMaskTexture(frame.mask)
 
     frame.details = details
 
@@ -251,6 +280,12 @@ function addonTable.Display.GetCastBar(frame, parent)
     SizeBar(frame, details)
     local borderDetails = addonTable.Assets.BarBordersSliced[details.border.asset]
     frame.reverseStatusTexture:SetHeight(frame.rawHeight * borderDetails.lowerScale)
+    frame.interruptMarkerPoint:SetHeight(frame.rawHeight * borderDetails.lowerScale)
+    frame.interruptMarker:SetSize(frame.rawWidth * borderDetails.lowerScale, frame.rawHeight * borderDetails.lowerScale)
+    if details.interruptMarker.asset ~= "none" then
+      local markerDetails = addonTable.Assets.BarPositionHighlights[details.interruptMarker.asset]
+      PixelUtil.SetSize(frame.interruptMarkerPoint, markerDetails.width * details.scale * borderDetails.lowerScale, frame.rawHeight * borderDetails.lowerScale)
+    end
   end
 
   return frame
@@ -333,6 +368,8 @@ function addonTable.Display.GetHighlight(frame, parent)
 
     if details.kind == "target" then
       Mixin(frame, addonTable.Display.TargetHighlightMixin)
+    elseif details.kind == "softTarget" then
+      Mixin(frame, addonTable.Display.SoftTargetHighlightMixin)
     elseif details.kind == "focus" then
       Mixin(frame, addonTable.Display.FocusHighlightMixin)
     elseif details.kind == "mouseover" then
@@ -360,7 +397,7 @@ function addonTable.Display.GetHighlight(frame, parent)
     local details = frame.details
     local highlightDetails = addonTable.Assets.Highlights[details.asset]
     if highlightDetails.mode == addonTable.Assets.RenderMode.Sliced then
-      local width, height = details.width * addonTable.Assets.BarBordersSize.width, details.height * addonTable.Assets.BarBordersSize.height
+      local width, height = details.width * addonTable.Assets.BarBordersSize.width * highlightDetails.shiftModifierH, details.height * addonTable.Assets.BarBordersSize.height * highlightDetails.shiftModifierV
       PixelUtil.SetSize(frame, width * details.scale, height * details.scale)
       PixelUtil.SetSize(frame.highlight, (width + highlightDetails.extra / 2) * highlightDetails.lowerScale, (height + highlightDetails.extra / 2) * highlightDetails.lowerScale)
     elseif highlightDetails.mode == addonTable.Assets.RenderMode.Fixed then
@@ -480,6 +517,8 @@ function addonTable.Display.GetText(frame, parent)
 
     if details.kind == "health" then
       Mixin(frame, addonTable.Display.HealthTextMixin)
+    elseif details.kind == "damageAbsorb" then
+      Mixin(frame, addonTable.Display.AbsorbTextMixin)
     elseif details.kind == "creatureName" then
       Mixin(frame, addonTable.Display.CreatureTextMSPMixin or addonTable.Display.CreatureTextMixin)
     elseif details.kind == "guild" then
@@ -492,6 +531,8 @@ function addonTable.Display.GetText(frame, parent)
       Mixin(frame, addonTable.Display.UnitTargetTextMixin)
     elseif details.kind == "castTarget" then
       Mixin(frame, addonTable.Display.CastTargetTextMixin)
+    elseif details.kind == "castInterrupter" then
+      Mixin(frame, addonTable.Display.CastInterrupterTextMixin)
     elseif details.kind == "castTimeLeft" then
       Mixin(frame, addonTable.Display.CastTimeLeftTextMixin)
     else

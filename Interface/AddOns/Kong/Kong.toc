@@ -1,4 +1,4 @@
-## Interface: 11504, 40400, 110002
+## Interface: 11504, 40400, 120000
 ## Title: Kong
 ## Author: Xentaros
 ## Notes: Fades UI regions in and out based on user-specified conditions.

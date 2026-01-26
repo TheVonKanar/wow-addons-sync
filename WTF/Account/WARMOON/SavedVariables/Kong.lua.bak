@@ -35,6 +35,39 @@ Kong_Profiles = {
 ["Frames"] = {
 {
 {
+["alphaIn"] = 1,
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
+["secondsIn"] = 0.2,
+["secondsOut"] = 0.5,
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["index"] = "[\"MultiBarLeft\"]",
+["version"] = "1.6a",
+},
+{
+{
 ["Condition"] = {
 ["name"] = "Condition",
 ["Parameters"] = {
@@ -75,6 +108,39 @@ Kong_Profiles = {
 ["version"] = "1.6a",
 ["hideAtZeroAlpha"] = true,
 ["index"] = "[\"AceConfigDialogScrollFrame1ScrollBar\"]:GetParent():GetParent():GetParent():GetParent()",
+},
+{
+{
+["secondsOut"] = 0.5,
+["alphaIn"] = 1,
+["secondsIn"] = 0.2,
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["index"] = "[\"MultiBar6\"]",
+["version"] = "1.6a",
 },
 },
 },

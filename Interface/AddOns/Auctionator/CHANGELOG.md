@@ -1,7 +1,8 @@
 # Auctionator
 
-## [307](https://github.com/TheMouseNest/Auctionator/tree/307) (2025-12-31)
-[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/306...307) 
+## [312](https://github.com/TheMouseNest/Auctionator/tree/312) (2026-01-25)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/311...312) 
 
-- Update links on "About" section  
-- Support showing auction prices on RareScanner tooltips  
+- Retail: Fix item level matching failing (causing 0 results to show)  
+    Note: Favourites you \_do not\_ have in your bags will not do item level  
+    matching properly, this is a limitation of the APIs from Blizzard  

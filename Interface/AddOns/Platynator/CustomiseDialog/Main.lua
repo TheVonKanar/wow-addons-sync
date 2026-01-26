@@ -68,6 +68,14 @@ local function SetupGeneral(parent)
     table.insert(allFrames, donateFrame)
   end
 
+  local globalScale = addonTable.CustomiseDialog.Components.GetSlider(container, addonTable.Locales.GLOBAL_SCALE, 1, 300, function(val) return ("%d%%"):format(val) end, function(value)
+    addonTable.Config.Set(addonTable.Config.Options.GLOBAL_SCALE, value/100)
+  end)
+  globalScale:SetValue(addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * 100)
+
+  globalScale:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+  table.insert(allFrames, globalScale)
+
   local styleDropdown = addonTable.CustomiseDialog.GetStyleDropdown(container)
   styleDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
   table.insert(allFrames, styleDropdown)
@@ -95,14 +103,13 @@ local function SetupGeneral(parent)
         local button = rootDescription:CreateRadio(name ~= "DEFAULT" and name or LIGHTBLUE_FONT_COLOR:WrapTextInColorCode(DEFAULT), function()
           return PLATYNATOR_CURRENT_PROFILE == name
         end, function()
-          local oldSkin = addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
           addonTable.Config.ChangeProfile(name)
-          if addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN) ~= oldSkin then
-            addonTable.Dialogs.ShowConfirm(addonTable.Locales.RELOAD_REQUIRED, YES, NO, function() ReloadUI() end)
-          end
         end)
         if name ~= "DEFAULT" and name ~= PLATYNATOR_CURRENT_PROFILE then
           button:AddInitializer(function(button, description, menu)
+            if InCombatLockdown() then
+              return
+            end
             local delete = MenuTemplates.AttachAutoHideButton(button, "transmog-icon-remove")
             delete:SetPoint("RIGHT")
             delete:SetSize(18, 18)
@@ -127,6 +134,7 @@ local function SetupGeneral(parent)
         clone = false
         addonTable.Dialogs.ShowEditBox(addonTable.Locales.ENTER_PROFILE_NAME, ACCEPT, CANCEL, ValidateAndCreate)
       end)
+      rootDescription:SetScrollMode(30 * 20)
     end)
   end
   table.insert(allFrames, profileDropdown)
@@ -166,48 +174,27 @@ local function SetupGeneral(parent)
           addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.INVALID_IMPORT)
           return
         end
-        import.version = nil
-        import.addon = nil
         if import.kind == nil or import.kind == "style" then
-          import.kind = nil
-          addonTable.Core.UpgradeDesign(import)
           addonTable.Dialogs.ShowEditBox(addonTable.Locales.ENTER_THE_NEW_STYLE_NAME, OKAY, CANCEL, function(value)
             local designs = addonTable.Config.Get(addonTable.Config.Options.DESIGNS)
             if designs[value] or value:match("^_") then
               addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.THAT_STYLE_NAME_ALREADY_EXISTS)
             else
-              addonTable.Config.Get(addonTable.Config.Options.DESIGNS)[value] = import
-              addonTable.Config.Set(addonTable.Config.Options.STYLE, value)
+              addonTable.CustomiseDialog.ImportData(import, value, false)
+              styleDropdown.DropDown:GenerateMenu()
             end
           end)
         elseif import.kind == "profile" then
-          import.kind = nil
           addonTable.Dialogs.ShowDualChoice(addonTable.Locales.OVERWRITE_CURRENT_PROFILE, addonTable.Locales.OVERWRITE, addonTable.Locales.MAKE_NEW,
             function()
-              local oldDesigns = PLATYNATOR_CONFIG.Profiles[PLATYNATOR_CURRENT_PROFILE].designs
-              local old = addonTable.Config.CurrentProfile
-              PLATYNATOR_CONFIG.Profiles[PLATYNATOR_CURRENT_PROFILE] = import
-              local designs = PLATYNATOR_CONFIG.Profiles[PLATYNATOR_CURRENT_PROFILE].designs
-              for key, design in pairs(oldDesigns) do
-                if designs[key] == nil then
-                  designs[key] = design
-                end
-              end
-              if import.style and not import.designs[import.style] then
-                import.style = import.designs_assigned["enemy"]
-              end
-              addonTable.Config.ChangeProfile(PLATYNATOR_CURRENT_PROFILE, old)
+              addonTable.CustomiseDialog.ImportData(import, PLATYNATOR_CURRENT_PROFILE, true)
+              profileDropdown.DropDown:GenerateMenu()
             end,
             function()
               addonTable.Dialogs.ShowEditBox(addonTable.Locales.ENTER_THE_NEW_PROFILE_NAME, OKAY, CANCEL, function(value)
                 if PLATYNATOR_CONFIG.Profiles[value] == nil then
-                  addonTable.Config.MakeProfile(value, false)
-                  local old = addonTable.Config.CurrentProfile
-                  PLATYNATOR_CONFIG.Profiles[PLATYNATOR_CURRENT_PROFILE] = import
-                  if import.style and not import.designs[import.style] then
-                    import.style = import.designs_assigned["enemy"]
-                  end
-                  addonTable.Config.ChangeProfile(PLATYNATOR_CURRENT_PROFILE, old)
+                  addonTable.CustomiseDialog.ImportData(import, value, false)
+                  profileDropdown.DropDown:GenerateMenu()
                 else
                   addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.THAT_PROFILE_NAME_ALREADY_EXISTS)
                 end
@@ -222,10 +209,11 @@ local function SetupGeneral(parent)
 
   container:SetScript("OnShow", function()
     for _, f in ipairs(allFrames) do
-      if f.SetValue then
+      if f.SetValue and f.option then
         f:SetValue(addonTable.Config.Get(f.option))
       end
     end
+    globalScale:SetValue(addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * 100)
   end)
 
   return container
@@ -257,42 +245,56 @@ local function SetupBehaviour(parent)
     }
     if C_CVar.GetCVarInfo("nameplateShowFriendlyPlayers") ~= nil then
       labels = {
-        addonTable.Locales.PLAYERS,
+        addonTable.Locales.FRIENDLY_PLAYERS,
         addonTable.Locales.FRIENDLY_NPCS,
-        addonTable.Locales.ENEMY_NPCS,
+        addonTable.Locales.ENEMIES,
       }
     else
       labels = {
         addonTable.Locales.PLAYERS_AND_FRIENDS,
         addonTable.Locales.FRIENDLY_NPCS,
-        addonTable.Locales.ENEMY_NPCS,
+        addonTable.Locales.ENEMIES,
       }
+    end
+
+    local function GetCheckbox(rootDescription, label, value)
+      return rootDescription:CreateCheckbox(label, function()
+        return addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[value]
+      end, function()
+        if InCombatLockdown() then
+          return
+        end
+        local current = addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[value]
+        addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[value] = not current
+        addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.ShowBehaviour] = true})
+      end)
     end
 
     applyNameplatesDropdown.DropDown:SetDefaultText(NONE)
     applyNameplatesDropdown.DropDown:SetupMenu(function(_, rootDescription)
-      for index, l in ipairs(labels) do
-        rootDescription:CreateCheckbox(l, function()
-          return addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[values[index]]
-        end, function()
-          if InCombatLockdown() then
-            return
-          end
-          local current = addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[values[index]]
-          addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)[values[index]] = not current
-          addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.ShowBehaviour] = true})
-        end)
-        if index == 1 then
-          rootDescription:CreateDivider()
-        end
+      if C_CVar.GetCVarInfo("nameplateShowFriendlyPlayers") ~= nil then
+        local friendlyPlayer = GetCheckbox(rootDescription, addonTable.Locales.FRIENDLY_PLAYERS, "friendlyPlayer")
+        GetCheckbox(friendlyPlayer, addonTable.Locales.MINIONS, "friendlyMinion")
+        GetCheckbox(rootDescription, addonTable.Locales.FRIENDLY_NPCS, "friendlyNPC")
+        local enemies = GetCheckbox(rootDescription, addonTable.Locales.ENEMIES, "enemy")
+        GetCheckbox(enemies, addonTable.Locales.MINIONS, "enemyMinion")
+        GetCheckbox(enemies, addonTable.Locales.MINORS, "enemyMinor")
+      else
+        local friendlyPlayer = GetCheckbox(rootDescription, addonTable.Locales.PLAYERS_AND_FRIENDS, "friendlyPlayer")
+        GetCheckbox(friendlyPlayer, addonTable.Locales.FRIENDLY_NPCS, "friendlyNPC")
+        GetCheckbox(friendlyPlayer, addonTable.Locales.MINIONS, "friendlyMinion")
+        local enemies = GetCheckbox(rootDescription, addonTable.Locales.ENEMIES, "enemy")
+        GetCheckbox(enemies, addonTable.Locales.MINIONS, "enemyMinion")
+        GetCheckbox(enemies, addonTable.Locales.MINORS, "enemyMinor")
       end
     end)
   end
   table.insert(allFrames, applyNameplatesDropdown)
 
+  local simplifiedScaleSlider
   if addonTable.Constants.IsMidnight then
     local simplifiedPlatesDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.SIMPLIFIED_NAMEPLATES)
-    simplifiedPlatesDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, 0)
+    simplifiedPlatesDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
     do
       local values = {
         "instancesNormal",
@@ -319,13 +321,48 @@ local function SetupBehaviour(parent)
       end)
     end
     table.insert(allFrames, simplifiedPlatesDropdown)
+
+    if C_CVar.GetCVarInfo("nameplateSimplifiedScale") then
+      simplifiedScaleSlider = addonTable.CustomiseDialog.Components.GetSlider(container, addonTable.Locales.SIMPLIFIED_SCALE, 1, 100, function(value) return ("%d%%"):format(value) end, function(value)
+        addonTable.Config.Set(addonTable.Config.Options.SIMPLIFIED_SCALE, value / 100)
+      end)
+      simplifiedScaleSlider:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, 0)
+      table.insert(allFrames, simplifiedScaleSlider)
+    end
   end
+
+  local clickableNameplatesDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.CLICKABLE_NAMEPLATES)
+  clickableNameplatesDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+  local values = {
+    "friend",
+    "enemy",
+  }
+  local labels = {
+    addonTable.Locales.FRIENDLY,
+    addonTable.Locales.ENEMY,
+  }
+  clickableNameplatesDropdown.DropDown:SetDefaultText(NONE)
+  clickableNameplatesDropdown.DropDown:SetupMenu(function(_, rootDescription)
+    for index, l in ipairs(labels) do
+      rootDescription:CreateCheckbox(l, function()
+        return addonTable.Config.Get(addonTable.Config.Options.CLICKABLE_NAMEPLATES)[values[index]]
+      end, function()
+        local current = addonTable.Config.Get(addonTable.Config.Options.CLICKABLE_NAMEPLATES)[values[index]]
+        addonTable.Config.Get(addonTable.Config.Options.CLICKABLE_NAMEPLATES)[values[index]] = not current
+        addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.Clickable] = true})
+      end)
+    end
+  end)
+  table.insert(allFrames, clickableNameplatesDropdown)
 
   local friendlyInInstancesDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.SHOW_FRIENDLY_IN_INSTANCES, function(value)
     return addonTable.Config.Get(addonTable.Config.Options.SHOW_FRIENDLY_IN_INSTANCES) == value
   end, function(value)
     addonTable.Config.Set(addonTable.Config.Options.SHOW_FRIENDLY_IN_INSTANCES, value)
-    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.ShowBehaviour] = true})
+    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {
+      [addonTable.Constants.RefreshReason.ShowBehaviour] = true,
+      --[addonTable.Constants.RefreshReason.Design] = true,
+    })
   end)
   friendlyInInstancesDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
   do
@@ -369,6 +406,12 @@ local function SetupBehaviour(parent)
   notTargetTransparencySlider:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, 0)
   table.insert(allFrames, notTargetTransparencySlider)
 
+  local obscuredTransparencySlider = addonTable.CustomiseDialog.Components.GetSlider(container, addonTable.Locales.OBSCURED_TRANSPARENCY, 0, 100, function(value) return ("%d%%"):format(value) end, function(value)
+    addonTable.Config.Set(addonTable.Config.Options.OBSCURED_ALPHA, 1 - value / 100)
+  end)
+  obscuredTransparencySlider:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+  table.insert(allFrames, obscuredTransparencySlider)
+
   local applyCvarsCheckbox = addonTable.CustomiseDialog.Components.GetCheckbox(container, addonTable.Locales.APPLY_OTHER_CVARS, 28, function(value)
     if InCombatLockdown() then
       return
@@ -384,6 +427,11 @@ local function SetupBehaviour(parent)
     castScaleSlider:SetValue(addonTable.Config.Get(addonTable.Config.Options.CAST_SCALE) * 100)
     castTransparencySlider:SetValue(100 - addonTable.Config.Get(addonTable.Config.Options.CAST_ALPHA) * 100)
     notTargetTransparencySlider:SetValue(100 - addonTable.Config.Get(addonTable.Config.Options.NOT_TARGET_ALPHA) * 100)
+    obscuredTransparencySlider:SetValue(100 - addonTable.Config.Get(addonTable.Config.Options.OBSCURED_ALPHA) * 100)
+
+    if simplifiedScaleSlider then
+      simplifiedScaleSlider:SetValue(addonTable.Config.Get(addonTable.Config.Options.SIMPLIFIED_SCALE) * 100)
+    end
 
     for _, f in ipairs(allFrames) do
       if f.SetValue then
@@ -404,15 +452,29 @@ local function SetupPositioning(parent)
 
   local allFrames = {}
 
-  local stackingNameplatesCheckbox = addonTable.CustomiseDialog.Components.GetCheckbox(container, addonTable.Locales.STACKING_NAMEPLATES, 28, function(value)
-    if InCombatLockdown() then
-      return
+  local stackingNameplatesDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.STACKING_NAMEPLATES)
+  stackingNameplatesDropdown:SetPoint("TOP")
+  local values = {
+    "friend",
+    "enemy",
+  }
+  local labels = {
+    addonTable.Locales.FRIENDLY,
+    addonTable.Locales.ENEMY,
+  }
+  stackingNameplatesDropdown.DropDown:SetDefaultText(NONE)
+  stackingNameplatesDropdown.DropDown:SetupMenu(function(_, rootDescription)
+    for index, l in ipairs(labels) do
+      rootDescription:CreateCheckbox(l, function()
+        return addonTable.Config.Get(addonTable.Config.Options.STACKING_NAMEPLATES)[values[index]]
+      end, function()
+        local current = addonTable.Config.Get(addonTable.Config.Options.STACKING_NAMEPLATES)[values[index]]
+        addonTable.Config.Get(addonTable.Config.Options.STACKING_NAMEPLATES)[values[index]] = not current
+        addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.StackingBehaviour] = true})
+      end)
     end
-    addonTable.Config.Set(addonTable.Config.Options.STACKING_NAMEPLATES, value)
   end)
-  stackingNameplatesCheckbox.option = addonTable.Config.Options.STACKING_NAMEPLATES
-  stackingNameplatesCheckbox:SetPoint("TOP")
-  table.insert(allFrames, stackingNameplatesCheckbox)
+  table.insert(allFrames, stackingNameplatesDropdown)
 
   if C_CVar.GetCVarInfo("nameplateOtherTopInset") then
     local closerToScreenEdgesCheckbox = addonTable.CustomiseDialog.Components.GetCheckbox(container, addonTable.Locales.CLOSER_TO_SCREEN_EDGES, 28, function(value)
@@ -471,7 +533,7 @@ local function SetupStyleSelect(parent)
 
   local allFrames = {}
 
-  local friendlyStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.FRIENDLY_STYLE, function(value)
+  local friendlyStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.FRIENDLY, function(value)
     return addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["friend"] == value
   end, function(value)
     addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["friend"] = value
@@ -480,7 +542,7 @@ local function SetupStyleSelect(parent)
   friendlyStyleDropdown:SetPoint("TOP")
   table.insert(allFrames, friendlyStyleDropdown)
 
-  local enemyStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.ENEMY_STYLE, function(value)
+  local enemyStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.ENEMY, function(value)
     return addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["enemy"] == value
   end, function(value)
     addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["enemy"] = value
@@ -491,7 +553,7 @@ local function SetupStyleSelect(parent)
 
   local simplifiedStyleDropdown
   if C_NamePlateManager and C_NamePlateManager.SetNamePlateSimplified then
-    simplifiedStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.SIMPLIFIED_STYLE, function(value)
+    simplifiedStyleDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.SIMPLIFIED, function(value)
       return addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["enemySimplified"] == value
     end, function(value)
       addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)["enemySimplified"] = value
@@ -644,6 +706,9 @@ function addonTable.CustomiseDialog.GetStyleDropdown(parent)
       end)
 
       button:AddInitializer(function(button, description, menu)
+        if InCombatLockdown() then
+          return
+        end
         local delete = MenuTemplates.AttachAutoHideButton(button, "transmog-icon-remove")
         delete:SetPoint("RIGHT")
         delete:SetSize(18, 18)
@@ -658,6 +723,9 @@ function addonTable.CustomiseDialog.GetStyleDropdown(parent)
             end
             if assigned["enemy"] == entry.value then
               assigned["enemy"] = addonTable.Constants.CustomName
+            end
+            if assigned["enemySimplified"] == entry.value then
+              assigned["enemySimplified"] = "_hare_simplified"
             end
             if addonTable.Config.Get(addonTable.Config.Options.STYLE) == entry.value then
               addonTable.Config.Set(addonTable.Config.Options.STYLE, addonTable.Constants.CustomName) 
@@ -707,11 +775,23 @@ function addonTable.CustomiseDialog.GetStyleDropdown(parent)
       local button = rootDescription:CreateRadio(entry.label, function()
         return entry.value == currentStyle
       end, function()
-        addonTable.Dialogs.ShowConfirm(addonTable.Locales.THIS_WILL_OVERWRITE_STYLE_CUSTOM, OKAY, CANCEL, function()
+        addonTable.Dialogs.ShowDualChoice(addonTable.Locales.THIS_WILL_OVERWRITE_STYLE_CUSTOM, addonTable.Locales.OVERWRITE, addonTable.Locales.SAVE_CUSTOM_AS, function()
           addonTable.Config.Set(addonTable.Config.Options.STYLE, entry.value)
+        end, function()
+          addonTable.Dialogs.ShowEditBox(addonTable.Locales.ENTER_THE_CUSTOM_STYLE_NAME, OKAY, CANCEL, function(value)
+            local allDesigns = addonTable.Config.Get(addonTable.Config.Options.DESIGNS)
+            if allDesigns[value] or value:match("^_") then
+              addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.THAT_STYLE_NAME_ALREADY_EXISTS)
+            else
+              allDesigns[value] = CopyTable(addonTable.Core.GetDesignByName(addonTable.Constants.CustomName))
+              addonTable.Config.Set(addonTable.Config.Options.STYLE, entry.value)
+            end
+          end)
         end)
       end)
     end
+
+    rootDescription:SetScrollMode(30 * 20)
   end)
 
   styleDropdown:SetPoint("TOP")
@@ -756,7 +836,7 @@ function addonTable.CustomiseDialog.Toggle()
   table.insert(UISpecialFrames, frame:GetName())
   frame:SetSize(600, 830)
   frame:SetPoint("CENTER")
-  frame:Raise()
+  frame:Hide()
 
   frame.CloseButton:SetScript("OnClick", function()
     frame:Hide()
@@ -816,11 +896,16 @@ function addonTable.CustomiseDialog.Toggle()
   containers[1].button:Click()
 
   frame:SetScript("OnShow", function()
+    local tabsWidth = frame.Tabs[#frame.Tabs]:GetRight() - frame.Tabs[1]:GetLeft()
+    frame:SetWidth(math.max(frame:GetWidth(), tabsWidth + 20))
+
     local shownContainer = FindValueInTableIf(containers, function(c) return c:IsShown() end)
     if shownContainer then
       PanelTemplates_SetTab(frame, tIndexOf(containers, shownContainer))
     end
   end)
+
+  frame:Show()
 
   --addonTable.Skins.AddFrame("ButtonFrame", frame, {"customise"})
 end

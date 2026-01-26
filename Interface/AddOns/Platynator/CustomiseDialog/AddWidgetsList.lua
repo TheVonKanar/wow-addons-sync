@@ -55,16 +55,17 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       kind = "cast",
       anchor = {"TOPLEFT", -140, 50},
-      colors = {
-        normalCast = GetColor("FC8C00"),
-        normalChannel = GetColor("3ec637"),
-        importantCast = GetColor("ff1827"),
-        importantChannel = GetColor("0a43ff"),
-        uninterruptable = GetColor("83C0C3"),
-        interrupted = GetColor("FC36E0"),
+      autoColors = {
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["importantCast"].default),
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["uninterruptableCast"].default),
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["cast"].default),
       },
       marker = {
         asset = "none",
+      },
+      interruptMarker = {
+        asset = "none",
+        color = GetColor("FFFFFF"),
       },
       background = {
         asset = "wide/fade-bottom",
@@ -123,6 +124,20 @@ addonTable.CustomiseDialog.DesignWidgets = {
     default = {
       anchor = {"TOPLEFT", -140, 50},
       kind = "target",
+      asset = "glow",
+      width = 1,
+      height = 1,
+      color = GetColor("FFFFFF", 1),
+      scale = 1,
+      layer = 0,
+    },
+  },
+  {
+    name = addonTable.Locales.SOFT_TARGET,
+    kind = "highlights",
+    default = {
+      anchor = {"TOPLEFT", -140, 50},
+      kind = "softTarget",
       asset = "glow",
       width = 1,
       height = 1,
@@ -216,7 +231,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
         reversed = false,
       },
       filters = {
-        dispelable = true,
+        dispelable = false,
         important = true,
       },
     },
@@ -286,6 +301,21 @@ addonTable.CustomiseDialog.DesignWidgets = {
       layer = 2,
       anchor = {"TOPLEFT", -140, 50},
       displayTypes = {"percentage"}, -- or "absolute", or both
+      color = GetColor("FFFFFF"),
+      align = "CENTER",
+      shorten = "NONE",
+      truncate = false,
+      significantFigures = 0,
+    },
+  },
+  {
+    name = addonTable.Locales.DAMAGE_ABSORB_VALUE,
+    kind = "texts",
+    default = {
+      kind = "damageAbsorb",
+      scale = 0.98,
+      layer = 2,
+      anchor = {"TOPLEFT", -140, 50},
       color = GetColor("FFFFFF"),
       align = "CENTER",
       shorten = "NONE",
@@ -374,6 +404,20 @@ addonTable.CustomiseDialog.DesignWidgets = {
     },
   },
   {
+    name = addonTable.Locales.CAST_INTERRUPTER,
+    kind = "texts",
+    default = {
+      kind = "castInterrupter",
+      scale = 1,
+      layer = 2,
+      anchor = {"TOPLEFT", -140, 50},
+      color = GetColor("FFFFFF"),
+      applyClassColors = true,
+      align = "CENTER",
+      shorten = "NONE",
+    },
+  },
+  {
     name = addonTable.Locales.ICONS,
     special = "header",
   },
@@ -435,6 +479,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       asset = "normal/blizzard-rare-midnight",
       color = GetColor("ffffff"),
       anchor = {"TOPLEFT", -140, 50},
+      includeElites = true,
     },
   },
   {
