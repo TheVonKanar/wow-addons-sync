@@ -325,6 +325,7 @@ L["ModuleDescription WorldMapPin_TWW"] = "Show additional pins on Khaz Algar con
 
 --Delves
 L["Great Vault Tier Format"] = GREAT_VAULT_WORLD_TIER or "Tier %s";
+L["Great Vault World Activity Tooltip"] = "Tier 1 and World Activities";
 L["Item Level Format"] = ITEM_LEVEL or "Item Level %d";
 L["Item Level Abbr"] = ITEM_LEVEL_ABBR or "iLvl";
 L["Delves Reputation Name"] = "Delver's Journey";
@@ -564,6 +565,8 @@ L["LootUI Option Low Frame Strata"] = "Send to Back";
 L["LootUI Option Low Frame Strata Tooltip"] = "While in Loot Notification Mode, place the loot window behind other UI.\n\nThis option doesn't affect Manual Loot Mode.";
 L["LootUI Option Show Reputation"] = "Show Reputation Changes";
 L["LootUI Option Show Reputation Tooltip"] = "Display any reputation increases in the loot window.\n\nReputations earned during combat or in PvP instances will be displayed afterwards.";
+L["LootUI Option Show All Money"] = "Show Any Money Changes";
+L["LootUI Option Show All Money Tooltip"] = "Show money earned from all sources, not just loot.";
 
 
 --Quick Slot For Third-party Dev

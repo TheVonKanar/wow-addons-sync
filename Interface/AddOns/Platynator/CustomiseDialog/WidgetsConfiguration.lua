@@ -521,7 +521,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             getter = function(details)
               return details.applyClassColors
             end,
-            hide = addonTable.Constants.IsMidnight,t
+            hide = addonTable.Constants.IsRetail,
           },
         }
       }
@@ -558,6 +558,31 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           },
         }
       },
+      {
+        label = addonTable.Locales.VALUES,
+        entries = {
+          {
+            label = addonTable.Locales.PLAYER_GUILD,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.playerGuild = value
+            end,
+            getter = function(details)
+              return details.playerGuild
+            end,
+          },
+          {
+            label = addonTable.Locales.NPC_ROLE,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.npcRole = value
+            end,
+            getter = function(details)
+              return details.npcRole
+            end,
+          },
+        }
+      }
     },
   },
   ["markers"] = {

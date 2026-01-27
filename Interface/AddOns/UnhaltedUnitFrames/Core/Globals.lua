@@ -10,6 +10,7 @@ UUF.MAX_BOSS_FRAMES = 10
 UUF.LSM = LibStub("LibSharedMedia-3.0")
 UUF.LDS = LibStub("LibDualSpec-1.0")
 UUF.AG = LibStub("AceGUI-3.0")
+UUF.LD = LibStub("LibDispel-1.0")
 UUF.BACKDROP = { bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, insets = {left = 0, right = 0, top = 0, bottom = 0} }
 UUF.INFOBUTTON = "|TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Textures\\InfoButton.png:16:16|t "
 UUF.ADDON_NAME = C_AddOns.GetAddOnMetadata("UnhaltedUnitFrames", "Title")
@@ -103,7 +104,7 @@ local function SetupSlashCommands()
 
     -- RL command
     SLASH_UUFRELOAD1 = "/rl"
-    SlashCmdList["UUFRELOAD"] = function() ReloadUI() end
+    SlashCmdList["UUFRELOAD"] = function() C_UI.Reload() end
 end
 
 function UUF:SetUIScale()
@@ -118,30 +119,63 @@ end
 function UUF:LoadCustomColours()
     local General = UUF.db.profile.General
 
+    -- Map power type enums to their string names
     local PowerTypesToString = {
-        [0] = "MANA",
-        [1] = "RAGE",
-        [2] = "FOCUS",
-        [3] = "ENERGY",
-        [6] = "RUNIC_POWER",
-        [8] = "LUNAR_POWER",
-        [11] = "MAELSTROM",
-        [13] = "INSANITY",
-        [17] = "FURY",
-        [18] = "PAIN"
+        [Enum.PowerType.Mana or 0] = "MANA",
+        [Enum.PowerType.Rage or 1] = "RAGE",
+        [Enum.PowerType.Focus or 2] = "FOCUS",
+        [Enum.PowerType.Energy or 3] = "ENERGY",
+        [Enum.PowerType.ComboPoints or 4] = "COMBO_POINTS",
+        [Enum.PowerType.Runes or 5] = "RUNES",
+        [Enum.PowerType.RunicPower or 6] = "RUNIC_POWER",
+        [Enum.PowerType.SoulShards or 7] = "SOUL_SHARDS",
+        [Enum.PowerType.LunarPower or 8] = "LUNAR_POWER",
+        [Enum.PowerType.HolyPower or 9] = "HOLY_POWER",
+        [Enum.PowerType.Alternate or 10] = "ALTERNATE",
+        [Enum.PowerType.Maelstrom or 11] = "MAELSTROM",
+        [Enum.PowerType.Chi or 12] = "CHI",
+        [Enum.PowerType.Insanity or 13] = "INSANITY",
+        [Enum.PowerType.ArcaneCharges or 16] = "ARCANE_CHARGES",
+        [Enum.PowerType.Fury or 17] = "FURY",
+        [Enum.PowerType.Pain or 18] = "PAIN",
+        [Enum.PowerType.Essence or 19] = "ESSENCE",
     }
 
     for powerType, color in pairs(General.Colours.Power) do
         local powerTypeString = PowerTypesToString[powerType]
-        if powerTypeString then oUF.colors.power[powerTypeString] = oUF:CreateColor(color[1], color[2], color[3]) end
+        if powerTypeString then
+            oUF.colors.power[powerTypeString] = oUF:CreateColor(color[1], color[2], color[3])
+            oUF.colors.power[powerType] = oUF.colors.power[powerTypeString]
+        end
     end
 
-    for powerType, color in pairs(General.Colours.Power) do
-        if powerType then oUF.colors.power[powerType] = oUF:CreateColor(color[1], color[2], color[3]) end
+    for powerType, color in pairs(General.Colours.SecondaryPower) do
+        local powerTypeString = PowerTypesToString[powerType]
+        if powerTypeString then
+            oUF.colors.power[powerTypeString] = oUF:CreateColor(color[1], color[2], color[3])
+            oUF.colors.power[powerType] = oUF.colors.power[powerTypeString]
+        end
     end
 
     for reaction, color in pairs(General.Colours.Reaction) do
         oUF.colors.reaction[reaction] = oUF:CreateColor(color[1], color[2], color[3])
+    end
+
+    if General.Colours.Dispel then
+        local dispelMap = {
+            Magic = oUF.Enum.DispelType.Magic,
+            Curse = oUF.Enum.DispelType.Curse,
+            Disease = oUF.Enum.DispelType.Disease,
+            Poison = oUF.Enum.DispelType.Poison,
+            Bleed = oUF.Enum.DispelType.Bleed,
+        }
+        for dispelType, index in pairs(dispelMap) do
+            local color = General.Colours.Dispel[dispelType]
+            if color then
+                oUF.colors.dispel[index] = oUF:CreateColor(color[1], color[2], color[3])
+            end
+        end
+        UUF.dispelColorGeneration = (UUF.dispelColorGeneration or 0) + 1
     end
 
     for _, obj in next, oUF.objects do
@@ -158,7 +192,7 @@ local function AddAnchorsToBCDM()
         ["UUF_Target"] = "|cFF8080FFUnhalted|rUnitFrames: Target Frame",
         ["UUF_Pet"] = "|cFF8080FFUnhalted|rUnitFrames: Pet Frame",
     }
-    BCDMG.AddAnchors("UnhaltedUnitFrames", {"Utility", "Custom", "AdditionalCustom", "Item", "ItemSpell", "Trinket"}, UUF_Anchors)
+    BCDMG:AddAnchors("UnhaltedUnitFrames", {"Utility", "Custom", "AdditionalCustom", "Item", "ItemSpell", "Trinket"}, UUF_Anchors)
 end
 
 function UUF:Init()
@@ -170,11 +204,11 @@ function UUF:Init()
     AddAnchorsToBCDM()
 end
 
-function UUF:CopyTabe(originalTable, destinationTable)
+function UUF:CopyTable(originalTable, destinationTable)
     for key, value in pairs(originalTable) do
         if type(value) == "table" then
             destinationTable[key] = destinationTable[key] or {}
-            UUF:CopyTabe(value, destinationTable[key])
+            UUF:CopyTable(value, destinationTable[key])
         else
             destinationTable[key] = value
         end
@@ -329,4 +363,57 @@ function UUF:CleanTruncateUTF8String(text)
         return DetailsFramework:CleanTruncateUTF8String(text)
     end
     return text
+end
+
+function UUF:GetSecondaryPowerType()
+    local class = select(2, UnitClass("player"))
+    local spec = C_SpecializationInfo.GetSpecialization()
+
+    if class == "ROGUE" then
+        return Enum.PowerType.ComboPoints
+    elseif class == "DRUID" then
+        local form = GetShapeshiftFormID()
+        if form == 1 then return Enum.PowerType.ComboPoints end
+    elseif class == "PALADIN" then
+        return Enum.PowerType.HolyPower
+    elseif class == "WARLOCK" then
+        return Enum.PowerType.SoulShards
+    elseif class == "MAGE" then
+        if spec == 1 then return Enum.PowerType.ArcaneCharges end
+    elseif class == "MONK" then
+        if spec == 3 then return Enum.PowerType.Chi end
+    elseif class == "EVOKER" then
+        return Enum.PowerType.Essence
+    end
+
+    return nil
+end
+
+function UUF:UpdateHealthBarLayout(unitFrame, unit)
+    local PowerBarDB = UUF.db.profile.Units[UUF:GetNormalizedUnit(unit)].PowerBar
+    local SecondaryPowerBarDB = UUF.db.profile.Units[UUF:GetNormalizedUnit(unit)].SecondaryPowerBar
+
+    local topOffset = -1
+    local bottomOffset = 1
+
+    local hasSecondaryPower =
+        SecondaryPowerBarDB
+        and SecondaryPowerBarDB.Enabled
+        and (unitFrame.Runes or unitFrame.ClassPower)
+
+    if hasSecondaryPower then
+        topOffset = topOffset - SecondaryPowerBarDB.Height - 1
+    end
+
+    if PowerBarDB and PowerBarDB.Enabled then
+        bottomOffset = bottomOffset + PowerBarDB.Height + 1
+    end
+
+    unitFrame.HealthBackground:ClearAllPoints()
+    unitFrame.HealthBackground:SetPoint("TOPLEFT", unitFrame.Container, "TOPLEFT", 1, topOffset)
+    unitFrame.HealthBackground:SetPoint("BOTTOMRIGHT", unitFrame.Container, "BOTTOMRIGHT", -1, bottomOffset)
+
+    unitFrame.Health:ClearAllPoints()
+    unitFrame.Health:SetPoint("TOPLEFT", unitFrame.Container, "TOPLEFT", 1, topOffset)
+    unitFrame.Health:SetPoint("BOTTOMRIGHT", unitFrame.Container, "BOTTOMRIGHT", -1, bottomOffset)
 end

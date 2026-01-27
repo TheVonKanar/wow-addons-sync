@@ -46,17 +46,33 @@ local Defaults = {
                     [8] = {64/255, 204/255, 64/255},            -- Exalted
                 },
                 Power = {
-                    [0] = {0, 0, 1},            -- Mana
-                    [1] = {1, 0, 0},            -- Rage
-                    [2] = {1, 0.5, 0.25},       -- Focus
-                    [3] = {1, 1, 0},            -- Energy
-                    [6] = {0, 0.82, 1},         -- Runic Power
-                    [8] = {0.75, 0.52, 0.9},    -- Astral Power
-                    [11] = {0, 0.5, 1},         -- Maelstrom
-                    [13] = {0.4, 0, 0.8},       -- Insanity
-                    [17] = {0.79, 0.26, 0.99},  -- Fury
-                    [18] = {1, 0.61, 0}         -- Pain
+                    [0] = {0, 0, 1},                    -- Mana
+                    [1] = {1, 0, 0},                    -- Rage
+                    [2] = {1, 0.5, 0.25},               -- Focus
+                    [3] = {1, 1, 0},                    -- Energy
+                    [6] = {0, 0.82, 1},                 -- Runic Power
+                    [8] = {0.75, 0.52, 0.9},            -- Lunar Power (Astral Power)
+                    [11] = {0, 0.5, 1},                 -- Maelstrom
+                    [13] = {0.4, 0, 0.8},               -- Insanity
+                    [17] = {0.79, 0.26, 0.99},          -- Fury
+                    [18] = {1, 0.61, 0},                -- Pain
                 },
+                SecondaryPower = {
+                    [4] = {1, 0.96, 0.41},              -- Combo Points
+                    [5] = {0.5, 0.5, 0.5},              -- Runes
+                    [7] = {0.58, 0.51, 0.79},           -- Soul Shards
+                    [9] = {0.95, 0.9, 0.6},             -- Holy Power
+                    [12] = {0.71, 1, 0.92},             -- Chi
+                    [16] = {0.41, 0.8, 0.94},           -- Arcane Charges
+                    [19] = {100/255, 173/255, 206/255}, -- Essence
+                },
+                Dispel = {
+                    ["Magic"] = {0.2, 0.6, 1 },
+                    ["Curse"] = {0.6, 0, 1 },
+                    ["Disease"] = {0.6, 0.4, 0 },
+                    ["Poison"] = {0, 0.6, 0 },
+                    ["Bleed"] = {0.6, 0, 0.1 }
+                }
             }
         },
         Units = {
@@ -80,6 +96,10 @@ local Defaults = {
                     ForegroundOpacity = 0.8,
                     Background = {34/255, 34/255, 34/255},
                     BackgroundOpacity = 1.0,
+                    DispelHighlight = {
+                        Enabled = true,
+                        Style = "GRADIENT",
+                    },
                 },
                 HealPrediction = {
                     Absorbs = {
@@ -87,12 +107,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 40,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 40,
                     },
                 },
                 PowerBar = {
@@ -106,6 +128,13 @@ local Defaults = {
                     Smooth = true,
                     Inverse = false,
                     BackgroundMultiplier = 0.75,
+                },
+                SecondaryPowerBar = {
+                    Enabled = false,
+                    Height = 3,
+                    ColourByType = true,
+                    Foreground = {8/255, 8/255, 8/255},
+                    Background = {128/255, 128/255, 128/255},
                 },
                 AlternativePowerBar = {
                     Enabled = true,
@@ -156,6 +185,7 @@ local Defaults = {
                     Layout = {"RIGHT", "LEFT", -1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -186,6 +216,18 @@ local Defaults = {
                         HighlightOpacity = 0.75,
                         Style = "GRADIENT"
                     },
+                    Totems = {
+                        Enabled = true,
+                        Size = 42,
+                        Layout = {"RIGHT", "LEFT", -1, 0, 1},
+                        GrowthDirection = "LEFT",
+                        TotemDuration = {
+                            Layout = {"CENTER", "CENTER", 0, 0},
+                            FontSize = 12,
+                            ScaleByIconSize = false,
+                            Colour = {1, 1, 1},
+                        },
+                    },
                 },
                 Auras = {
                     FrameStrata = "LOW",
@@ -204,6 +246,8 @@ local Defaults = {
                         Wrap = 4,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -219,6 +263,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -279,6 +325,10 @@ local Defaults = {
                     ForegroundOpacity = 0.8,
                     Background = {34/255, 34/255, 34/255},
                     BackgroundOpacity = 1.0,
+                    DispelHighlight = {
+                        Enabled = true,
+                        Style = "GRADIENT",
+                    },
                 },
                 HealPrediction = {
                     Absorbs = {
@@ -286,12 +336,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 40,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 40,
                     },
                 },
                 PowerBar = {
@@ -345,6 +397,7 @@ local Defaults = {
                     Layout = {"LEFT", "RIGHT", 1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -396,6 +449,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -411,6 +466,8 @@ local Defaults = {
                         Wrap = 4,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -466,7 +523,6 @@ local Defaults = {
                     ColourBackgroundByClass = false,
                     ColourByReaction = true,
                     ColourWhenTapped = true,
-                    AnchorToCooldownViewer = false,
                     Inverse = false,
                     Foreground = {8/255, 8/255, 8/255},
                     ForegroundOpacity = 0.8,
@@ -479,12 +535,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 20,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 20,
                     },
                 },
                 PowerBar = {
@@ -537,6 +595,7 @@ local Defaults = {
                     Layout = {"RIGHT", "LEFT", -1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -572,6 +631,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -587,6 +648,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -642,12 +705,15 @@ local Defaults = {
                     ColourBackgroundByClass = false,
                     ColourByReaction = true,
                     ColourWhenTapped = true,
-                    AnchorToCooldownViewer = false,
                     Inverse = false,
                     Foreground = {8/255, 8/255, 8/255},
                     ForegroundOpacity = 0.8,
                     Background = {34/255, 34/255, 34/255},
                     BackgroundOpacity = 1.0,
+                    DispelHighlight = {
+                        Enabled = false,
+                        Style = "GRADIENT",
+                    },
                 },
                 HealPrediction = {
                     Absorbs = {
@@ -655,12 +721,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 20,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 20,
                     },
                 },
                 PowerBar = {
@@ -714,6 +782,7 @@ local Defaults = {
                     Layout = {"LEFT", "RIGHT", 1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -749,6 +818,8 @@ local Defaults = {
                         Wrap = 1,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -764,6 +835,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -819,7 +892,6 @@ local Defaults = {
                     ColourBackgroundByClass = false,
                     ColourByReaction = true,
                     ColourWhenTapped = true,
-                    AnchorToCooldownViewer = false,
                     Inverse = false,
                     Foreground = {8/255, 8/255, 8/255},
                     ForegroundOpacity = 0.8,
@@ -832,12 +904,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 20,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 20,
                     },
                 },
                 PowerBar = {
@@ -890,6 +964,7 @@ local Defaults = {
                     Layout = {"RIGHT", "LEFT", -1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -925,6 +1000,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -940,6 +1017,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -995,7 +1074,6 @@ local Defaults = {
                     ColourBackgroundByClass = false,
                     ColourByReaction = true,
                     ColourWhenTapped = true,
-                    AnchorToCooldownViewer = false,
                     Inverse = false,
                     Foreground = {8/255, 8/255, 8/255},
                     ForegroundOpacity = 0.8,
@@ -1008,12 +1086,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 20,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 20,
                     },
                 },
                 PowerBar = {
@@ -1067,6 +1147,7 @@ local Defaults = {
                     Layout = {"LEFT", "RIGHT", 1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -1102,6 +1183,8 @@ local Defaults = {
                         Wrap = 1,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -1117,6 +1200,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -1172,7 +1257,6 @@ local Defaults = {
                     ColourBackgroundByClass = false,
                     ColourByReaction = true,
                     ColourWhenTapped = true,
-                    AnchorToCooldownViewer = false,
                     Inverse = false,
                     Foreground = {8/255, 8/255, 8/255},
                     ForegroundOpacity = 0.8,
@@ -1185,12 +1269,14 @@ local Defaults = {
                         UseStripedTexture = true,
                         Colour = {255/255, 204/255, 0/255, 1.0},
                         Position = "LEFT",
+                        Height = 40,
                     },
                     HealAbsorbs = {
                         Enabled = true,
                         UseStripedTexture = false,
                         Colour = {128/255, 64/255, 255/255, 1.0},
                         Position = "RIGHT",
+                        Height = 40,
                     },
                 },
                 PowerBar = {
@@ -1244,6 +1330,7 @@ local Defaults = {
                     Layout = {"RIGHT", "LEFT", -1, 0},
                     Zoom = 0.3,
                     UseClassPortrait = false,
+                    Style = "2D",
                 },
                 Indicators = {
                     RaidTargetMarker = {
@@ -1279,6 +1366,8 @@ local Defaults = {
                         Wrap = 3,
                         GrowthDirection = "RIGHT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HELPFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,
@@ -1294,6 +1383,8 @@ local Defaults = {
                         Wrap = 4,
                         GrowthDirection = "LEFT",
                         WrapDirection = "UP",
+                        ShowType = false,
+                        Filter = "HARMFUL",
                         Count = {
                             Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 2},
                             FontSize = 12,

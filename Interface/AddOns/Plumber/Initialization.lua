@@ -1,5 +1,5 @@
-local VERSION_TEXT = "1.8.5 d";
-local VERSION_DATE = 1769300000;
+local VERSION_TEXT = "1.8.5 e";
+local VERSION_DATE = 1769500000;
 
 
 local addonName, addon = ...
@@ -266,6 +266,7 @@ local DefaultValues = {
         LootUI_CombineItems = false,
         LootUI_LowFrameStrata = false,
         LootUI_ShowReputation = false,
+        LootUI_ShowAllMoneyChange = false,
 
 
     --Unified Map Pin System

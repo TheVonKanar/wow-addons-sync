@@ -292,7 +292,7 @@ local function SetupBehaviour(parent)
   table.insert(allFrames, applyNameplatesDropdown)
 
   local simplifiedScaleSlider
-  if addonTable.Constants.IsMidnight then
+  if addonTable.Constants.IsRetail then
     local simplifiedPlatesDropdown = addonTable.CustomiseDialog.Components.GetBasicDropdown(container, addonTable.Locales.SIMPLIFIED_NAMEPLATES)
     simplifiedPlatesDropdown:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
     do
@@ -837,6 +837,10 @@ function addonTable.CustomiseDialog.Toggle()
   frame:SetSize(600, 830)
   frame:SetPoint("CENTER")
   frame:Hide()
+
+  if frame:GetHeight() >= UIParent:GetHeight() then
+    frame:SetScale(UIParent:GetHeight() / frame:GetHeight() * 0.99)
+  end
 
   frame.CloseButton:SetScript("OnClick", function()
     frame:Hide()

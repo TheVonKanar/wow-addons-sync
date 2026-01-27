@@ -1,6 +1,7 @@
 # Platynator
 
-## [287](https://github.com/TheMouseNest/Platynator/tree/287) (2026-01-26)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/286...287) 
+## [289](https://github.com/TheMouseNest/Platynator/tree/289) (2026-01-27)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/288...289) 
 
-- Classic: Fix showing wrong threat colors for tanks  
+- Replace IsMidnight checks with IsRetail (as they all apply to retail pre-patch)  
+- Add options to hide player guilds only (and leave NPC roles visible)  
