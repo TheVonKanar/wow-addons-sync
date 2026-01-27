@@ -207,8 +207,8 @@ TipTacItemRef: disabled
 TipTacOptions: disabled
 TipTacTalents: disabled
 TipTac: disabled
-LargerMacroIconSelectionData: disabled
-LargerMacroIconSelection: disabled
+LargerMacroIconSelectionData: enabled
+LargerMacroIconSelection: enabled
 AutoPotion: disabled
 DBM-KhazAlgar: disabled
 DBM-Test: disabled

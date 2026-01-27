@@ -528,10 +528,10 @@ CHATTYNATOR_CONFIG = {
 ["invert"] = true,
 ["name"] = "GENERAL",
 ["groups"] = {
-["COMBAT_MISC_INFO"] = false,
-["OPENING"] = false,
-["COMBAT_XP_GAIN"] = false,
 ["PET_BATTLE_COMBAT_LOG"] = false,
+["COMBAT_MISC_INFO"] = false,
+["COMBAT_XP_GAIN"] = false,
+["OPENING"] = false,
 ["VOICE_TEXT"] = false,
 ["PET_INFO"] = false,
 ["TRADESKILLS"] = false,
@@ -598,7 +598,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 143,
+["cleanIndex"] = 157,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -3543,8 +3543,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskyhunt-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3564,8 +3564,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskyhunt-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3585,8 +3585,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3606,8 +3606,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Orlith-KirinTor",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3627,8 +3627,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3648,8 +3648,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3669,8 +3669,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3690,8 +3690,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3711,8 +3711,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3722,6 +3722,111 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Matrox-Eitrigg:153:GUILD:|h[|cffff7c0aMatrox-Eitrigg|r]|h: on est bien",
 ["id"] = "s0_152",
 ["timestamp"] = 1769457810,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "BloodElf",
+["name"] = "Øskÿ-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskÿ-Archimonde:30:GUILD:|h[|cffc69b6dØskÿ|r]|h: i kick first",
+["timestamp"] = 1769468500,
+["id"] = "s0_153",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Grodar-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Grodar-Archimonde|h[|cffc69b6dGrodar-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:14370:Player-1302-0C8AD4A9:1:1:27:26:4294967295:4294967295:4294967295:4294967295|h[Halls of Atonement]|h|r !",
+["timestamp"] = 1769469153,
+["id"] = "s0_154",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Grodar-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Grodar-Archimonde|h[|cffc69b6dGrodar-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:14410:Player-1302-0C8AD4A9:1:1:27:26:4294967295:4294967295:4294967295:4294967295|h[Heroic: Halls of Atonement]|h|r !",
+["timestamp"] = 1769469153,
+["id"] = "s0_155",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Grodar-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Grodar-Archimonde|h[|cffc69b6dGrodar-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:14411:Player-1302-0C8AD4A9:1:1:27:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: Halls of Atonement]|h|r !",
+["timestamp"] = 1769469153,
+["id"] = "s0_156",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Stashmou-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Stashmou-Archimonde|h[|cff0070ddStashmou-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:15048:Player-1302-0D58CD08:1:1:27:26:4294967295:4294967295:4294967295:4294967295|h[Keystone Hero: Halls of Atonement]|h|r !",
+["timestamp"] = 1769469153,
+["id"] = "s0_157",
 },
 },
 ["version"] = 1,

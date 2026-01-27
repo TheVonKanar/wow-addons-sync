@@ -5,12 +5,12 @@ BlizzMove_Debug: enabled
 !BugGrabber: enabled
 BugSack: enabled
 CauseseDB: enabled
-Cell: enabled
+Cell: disabled
 ChoreTracker: enabled
 DejaCharacterStats: enabled
 DialogueUI: enabled
 EditModeExpanded: enabled
-ExtraQuestButton: enabled
+ExtraQuestButton: disabled
 GTFO: enabled
 HandyNotes: enabled
 HandyNotes_Dragonflight: disabled
@@ -19,8 +19,8 @@ idTip: enabled
 Kong: enabled
 KongConfig: enabled
 Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
-LargerMacroIconSelection: disabled
-LargerMacroIconSelectionData: disabled
+LargerMacroIconSelection: enabled
+LargerMacroIconSelectionData: enabled
 Leatrix_Plus: enabled
 LibSharedMedia-3.0: disabled
 LiteMount: enabled
@@ -33,7 +33,7 @@ Masque_Caith: enabled
 Masque_Raeli: enabled
 Masque_CleanUI: enabled
 MRT: enabled
-OPie: enabled
+OPie: disabled
 Platynator: disabled
 RCLootCouncil: enabled
 SharedMedia: disabled

@@ -833,7 +833,7 @@ BlizzMoveDB = {
 },
 },
 },
-["Baganator_SingleViewBankViewFrameblizzard"] = {
+["TabardFrame"] = {
 },
 ["AuctionHouseFrame"] = {
 ["startPoints"] = {
@@ -863,11 +863,11 @@ BlizzMoveDB = {
 },
 ["GarrisonCapacitiveDisplayFrame"] = {
 },
-["TabardFrame"] = {
+["Baganator_SingleViewBankViewFrameblizzard"] = {
 },
 ["PingSystemTutorial"] = {
 },
-["BlackMarketFrame"] = {
+["GarrisonRecruitSelectFrame"] = {
 },
 ["InspectPVPFrame"] = {
 },
@@ -1010,7 +1010,7 @@ BlizzMoveDB = {
 },
 },
 },
-["GarrisonRecruitSelectFrame"] = {
+["BlackMarketFrame"] = {
 },
 ["ReadyCheckFrame"] = {
 ["startPoints"] = {

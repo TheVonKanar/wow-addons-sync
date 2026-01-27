@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
 ["lastSanitation"] = 3,
-["session"] = 1343,
+["session"] = 1345,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -995,6 +995,14 @@ BugGrabberDB = {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
 ["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
+["counter"] = 1,
+},
+{
+["message"] = ".../UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua:87: attempt to index field '__owner' (a nil value)",
+["time"] = "2026/01/27 23:49:18",
+["locals"] = "self = UUF_Player_BuffsContainerButton4 {\n auraInstanceID = 21\n Count = FontString {\n }\n Stealable = Texture {\n }\n Overlay = Texture {\n }\n Icon = Texture {\n }\n Cooldown = UUF_Player_BuffsContainerButton4Cooldown {\n }\n}\n(*temporary) = GameTooltip {\n ItemTooltip = Frame {\n }\n BottomOverlay = Texture {\n }\n NineSlice = Frame {\n }\n suppressAutomaticCompareItem = false\n textLeft1Font = \"GameTooltipHeaderText\"\n TopOverlay = Texture {\n }\n TextLeft1 = GameTooltipTextLeft1 {\n }\n supportsDataRefresh = true\n waitingForData = false\n shoppingTooltips = <table> {\n }\n updateTooltipTimer = 0.060000\n TextRight1 = GameTooltipTextRight1 {\n }\n StatusBar = GameTooltipStatusBar {\n }\n supportsItemComparison = true\n textLeft2Font = \"GameTooltipText\"\n layoutType = \"TooltipDefaultLayout\"\n textRight1Font = \"GameTooltipHeaderText\"\n TextRight2 = GameTooltipTextRight2 {\n }\n TextLeft2 = GameTooltipTextLeft2 {\n }\n textRight2Font = \"GameTooltipText\"\n}\n(*temporary) = nil\n(*temporary) = UUF_Player_BuffsContainerButton4 {\n auraInstanceID = 21\n Count = FontString {\n }\n Stealable = Texture {\n }\n Overlay = Texture {\n }\n Icon = Texture {\n }\n Cooldown = UUF_Player_BuffsContainerButton4Cooldown {\n }\n}\n(*temporary) = \"attempt to index field '__owner' (a nil value)\"\n",
+["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:87: in function 'UpdateTooltip'\n[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:97: in function <.../UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua:90>",
+["session"] = 1344,
 ["counter"] = 1,
 },
 },

@@ -935,11 +935,11 @@ BlizzMoveDB = {
 },
 ["GarrisonCapacitiveDisplayFrame"] = {
 },
-["TabardFrame"] = {
-},
-["BlackMarketFrame"] = {
+["Baganator_SingleViewBankViewFrameblizzard"] = {
 },
 ["GarrisonRecruitSelectFrame"] = {
+},
+["BlackMarketFrame"] = {
 },
 ["DeathRecapFrame"] = {
 ["startPoints"] = {
@@ -1084,7 +1084,7 @@ BlizzMoveDB = {
 },
 ["PingSystemTutorial"] = {
 },
-["Baganator_SingleViewBankViewFrameblizzard"] = {
+["TabardFrame"] = {
 },
 ["ChallengesKeystoneFrame"] = {
 ["startPoints"] = {

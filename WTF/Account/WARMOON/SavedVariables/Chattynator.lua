@@ -531,10 +531,10 @@ CHATTYNATOR_CONFIG = {
 ["isTemporary"] = false,
 ["backgroundColor"] = "1a1a1a",
 ["groups"] = {
-["OPENING"] = false,
-["PET_BATTLE_COMBAT_LOG"] = false,
-["VOICE_TEXT"] = false,
 ["COMBAT_MISC_INFO"] = false,
+["OPENING"] = false,
+["VOICE_TEXT"] = false,
+["PET_BATTLE_COMBAT_LOG"] = false,
 ["COMBAT_XP_GAIN"] = false,
 ["PET_INFO"] = false,
 ["TRADESKILLS"] = false,
@@ -598,7 +598,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 152,
+["cleanIndex"] = 157,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -3732,8 +3732,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskÿ-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3753,8 +3753,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Grodar-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3774,8 +3774,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Grodar-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3795,8 +3795,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Grodar-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -3816,8 +3816,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Stashmou-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
