@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
 ["lastSanitation"] = 3,
-["session"] = 1345,
+["session"] = 1349,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -984,14 +984,6 @@ BugGrabberDB = {
 ["counter"] = 1,
 },
 {
-["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
-["time"] = "2026/01/25 22:59:53",
-["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
-["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
-["session"] = 1338,
-["counter"] = 4,
-},
-{
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
 ["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
@@ -1003,6 +995,22 @@ BugGrabberDB = {
 ["locals"] = "self = UUF_Player_BuffsContainerButton4 {\n auraInstanceID = 21\n Count = FontString {\n }\n Stealable = Texture {\n }\n Overlay = Texture {\n }\n Icon = Texture {\n }\n Cooldown = UUF_Player_BuffsContainerButton4Cooldown {\n }\n}\n(*temporary) = GameTooltip {\n ItemTooltip = Frame {\n }\n BottomOverlay = Texture {\n }\n NineSlice = Frame {\n }\n suppressAutomaticCompareItem = false\n textLeft1Font = \"GameTooltipHeaderText\"\n TopOverlay = Texture {\n }\n TextLeft1 = GameTooltipTextLeft1 {\n }\n supportsDataRefresh = true\n waitingForData = false\n shoppingTooltips = <table> {\n }\n updateTooltipTimer = 0.060000\n TextRight1 = GameTooltipTextRight1 {\n }\n StatusBar = GameTooltipStatusBar {\n }\n supportsItemComparison = true\n textLeft2Font = \"GameTooltipText\"\n layoutType = \"TooltipDefaultLayout\"\n textRight1Font = \"GameTooltipHeaderText\"\n TextRight2 = GameTooltipTextRight2 {\n }\n TextLeft2 = GameTooltipTextLeft2 {\n }\n textRight2Font = \"GameTooltipText\"\n}\n(*temporary) = nil\n(*temporary) = UUF_Player_BuffsContainerButton4 {\n auraInstanceID = 21\n Count = FontString {\n }\n Stealable = Texture {\n }\n Overlay = Texture {\n }\n Icon = Texture {\n }\n Cooldown = UUF_Player_BuffsContainerButton4Cooldown {\n }\n}\n(*temporary) = \"attempt to index field '__owner' (a nil value)\"\n",
 ["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:87: in function 'UpdateTooltip'\n[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:97: in function <.../UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua:90>",
 ["session"] = 1344,
+["counter"] = 1,
+},
+{
+["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
+["time"] = "2026/01/25 22:59:53",
+["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
+["session"] = 1346,
+["counter"] = 6,
+},
+{
+["message"] = "...Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua:425: attempt to index local 'tab' (a nil value)",
+["time"] = "2026/01/28 09:28:55",
+["locals"] = "(*temporary) = \"LeftButton\"\n(*temporary) = false\n",
+["stack"] = "[tail call]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua]:425: in function 'BuildTabs'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua]:461: in function 'OnWidthSet'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:311: in function '?'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:670: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:668>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:762: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:675>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:426: in function 'PerformLayout'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:431: in function 'DoLayout'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2186: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2163>\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2688: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2665>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/AceGUI-3.0.lua]:300: in function 'Fire'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua]:342: in function 'SelectTab'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua]:200: in function <...Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua:197>",
+["session"] = 1346,
 ["counter"] = 1,
 },
 },

@@ -191,7 +191,7 @@ BAGANATOR_CONFIG = {
 ["category_horizontal_spacing_2"] = 0.3,
 ["currency_headers_collapsed"] = {
 },
-["category_default_import"] = 2,
+["category_default_import"] = 3,
 ["debug_categories"] = false,
 ["character_bank_current_tab"] = 0,
 ["bag_empty_space_at_top"] = false,
@@ -371,20 +371,22 @@ BAGANATOR_CONFIG = {
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
+["recent_characters_main_view"] = {
+"Kvotheen-Hyjal",
+"Quiproquo-Uldaman",
+"Killeen-Archimonde",
+"Pandamages-Hyjal",
+"Pandamagee-Hyjal",
+"Pandamo-Hyjal",
+"Pandamoun-Hyjal",
+"Raptorbuyer-Hyjal",
+"Pandkvé-Hyjal",
+"Pandakv-Hyjal",
+"Pandakvo-Hyjal",
+"Kvothyr-Hyjal",
+"Trialmagekvo-Hyjal",
+},
 ["debug_keywords"] = false,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
 ["currencies_tracked"] = {
 ["Pandakv-Hyjal"] = {
 },
@@ -446,20 +448,18 @@ BAGANATOR_CONFIG = {
 },
 ["setting_anchors"] = false,
 ["guild_current_tab"] = 1,
-["recent_characters_main_view"] = {
-"Kvotheen-Hyjal",
-"Quiproquo-Uldaman",
-"Killeen-Archimonde",
-"Pandamages-Hyjal",
-"Pandamagee-Hyjal",
-"Pandamo-Hyjal",
-"Pandamoun-Hyjal",
-"Raptorbuyer-Hyjal",
-"Pandkvé-Hyjal",
-"Pandakv-Hyjal",
-"Pandakvo-Hyjal",
-"Kvothyr-Hyjal",
-"Trialmagekvo-Hyjal",
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
 },
 ["guild_view_dialog_position"] = {
 "BOTTOM",

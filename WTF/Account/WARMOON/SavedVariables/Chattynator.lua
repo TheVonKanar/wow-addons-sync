@@ -531,10 +531,10 @@ CHATTYNATOR_CONFIG = {
 ["isTemporary"] = false,
 ["backgroundColor"] = "1a1a1a",
 ["groups"] = {
-["COMBAT_MISC_INFO"] = false,
 ["OPENING"] = false,
-["VOICE_TEXT"] = false,
 ["PET_BATTLE_COMBAT_LOG"] = false,
+["VOICE_TEXT"] = false,
+["COMBAT_MISC_INFO"] = false,
 ["COMBAT_XP_GAIN"] = false,
 ["PET_INFO"] = false,
 ["TRADESKILLS"] = false,
@@ -598,7 +598,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 157,
+["cleanIndex"] = 159,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -3827,6 +3827,42 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["text"] = "|Hplayer:Stashmou-Archimonde|h[|cff0070ddStashmou-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:15048:Player-1302-0D58CD08:1:1:27:26:4294967295:4294967295:4294967295:4294967295|h[Keystone Hero: Halls of Atonement]|h|r !",
 ["id"] = "s0_157",
 ["timestamp"] = 1769469153,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Grand Magister Rommath",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Grand Magister Rommath says: Kvotheen, I have heard unsettling rumors that Xal'atath's Twilight's Blade cult is recruiting within Horde cities.",
+["timestamp"] = 1769588737,
+["id"] = "s0_158",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Grand Magister Rommath",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Grand Magister Rommath says: Meet me in Orgrimmar so we may root out this evil. We cannot suffer a single cultist within our walls.",
+["timestamp"] = 1769588746,
+["id"] = "s0_159",
 },
 },
 ["version"] = 1,

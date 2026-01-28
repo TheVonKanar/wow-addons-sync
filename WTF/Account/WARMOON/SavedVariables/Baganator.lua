@@ -207,7 +207,7 @@ BAGANATOR_CONFIG = {
 ["search"] = "#legendary|#artifact",
 },
 },
-["category_default_import"] = 2,
+["category_default_import"] = 3,
 ["debug_categories"] = false,
 ["character_bank_current_tab"] = 0,
 ["category_sections"] = {
@@ -398,6 +398,19 @@ BAGANATOR_CONFIG = {
 ["bag_view_width"] = 14,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -413,7 +426,6 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
-["debug_keywords"] = false,
 ["guild_current_tab"] = 1,
 ["auto_sort_on_open"] = false,
 ["setting_anchors"] = false,
@@ -475,19 +487,7 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
+["debug_keywords"] = false,
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",

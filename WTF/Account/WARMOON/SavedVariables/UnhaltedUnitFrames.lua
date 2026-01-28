@@ -152,15 +152,15 @@ UUFDB = {
 0.52,
 0.9,
 },
-[17] = {
-0.79,
-0.26,
-0.99,
-},
 [18] = {
 1,
 0.61,
 0,
+},
+[17] = {
+0.79,
+0.26,
+0.99,
 },
 [6] = {
 0,
@@ -222,7 +222,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -252,7 +252,7 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -267,7 +267,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagOne"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -557,17 +557,17 @@ UUFDB = {
 },
 ["AlternativePowerBar"] = {
 ["Enabled"] = true,
+["Foreground"] = {
+0.03137254901960784,
+0.03137254901960784,
+0.03137254901960784,
+},
+["Inverse"] = false,
 ["Layout"] = {
 "LEFT",
 "BOTTOMLEFT",
 3,
 1,
-},
-["Inverse"] = false,
-["Foreground"] = {
-0.03137254901960784,
-0.03137254901960784,
-0.03137254901960784,
 },
 ["Height"] = 5,
 ["Background"] = {
@@ -668,7 +668,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -698,13 +698,13 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
 ["Colour"] = {
@@ -713,13 +713,13 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
-"CENTER",
-"CENTER",
-0,
+"LEFT",
+"LEFT",
+3,
 0,
 },
 ["Colour"] = {
@@ -1022,7 +1022,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1052,8 +1052,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1067,8 +1067,8 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1379,7 +1379,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1409,13 +1409,13 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
 ["Colour"] = {
@@ -1424,13 +1424,13 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
-"CENTER",
-"CENTER",
-0,
+"LEFT",
+"LEFT",
+3,
 0,
 },
 ["Colour"] = {
@@ -1762,7 +1762,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1792,8 +1792,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1807,8 +1807,8 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2048,7 +2048,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -2078,8 +2078,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2093,8 +2093,8 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2334,7 +2334,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -2364,8 +2364,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFive"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2379,8 +2379,8 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2675,16 +2675,16 @@ UUFDB = {
 ["GlobalProfileName"] = "Default",
 },
 ["General"] = {
-["UIScale"] = {
-["Enabled"] = true,
-["Scale"] = 0.5333333333333,
-},
 ["Fonts"] = {
 ["Font"] = "Fira Sans Condensed Medium",
 ["FontFlag"] = "NONE",
 ["Shadow"] = {
 ["Enabled"] = true,
 },
+},
+["UIScale"] = {
+["Enabled"] = true,
+["Scale"] = 0.5333333333333,
 },
 },
 ["Units"] = {
@@ -2719,9 +2719,22 @@ UUFDB = {
 },
 },
 ["target"] = {
+["HealthBar"] = {
+["ForegroundOpacity"] = 1,
+},
 ["Tags"] = {
 ["TagThree"] = {
 ["Tag"] = "",
+},
+["TagTwo"] = {
+["FontSize"] = 15,
+["Layout"] = {
+"LEFT",
+"LEFT",
+6,
+-1,
+},
+["Tag"] = "[perhp]%",
 },
 ["TagFour"] = {
 ["FontSize"] = 14,
@@ -2731,26 +2744,15 @@ UUFDB = {
 -6,
 5,
 },
-["Tag"] = "[perhp]%",
-},
-["TagTwo"] = {
-["FontSize"] = 14,
-["Layout"] = {
-"TOPRIGHT",
-"TOPRIGHT",
--6,
--5,
-},
 },
 ["TagOne"] = {
 ["FontSize"] = 14,
 ["Layout"] = {
-[3] = 6,
+"RIGHT",
+"RIGHT",
+-6,
 },
 },
-},
-["HealthBar"] = {
-["ForegroundOpacity"] = 1,
 },
 ["Frame"] = {
 ["Height"] = 40,
@@ -2807,6 +2809,15 @@ nil,
 },
 ["Tag"] = "[perhp]%",
 },
+["TagOne"] = {
+["FontSize"] = 14,
+["Layout"] = {
+"LEFT",
+"LEFT",
+6,
+},
+["Tag"] = "[name]",
+},
 },
 ["Auras"] = {
 ["Buffs"] = {
@@ -2822,9 +2833,6 @@ nil,
 -2,
 },
 ["Width"] = 258,
-},
-["HealthBar"] = {
-["ForegroundOpacity"] = 1,
 },
 ["AlternativePowerBar"] = {
 ["Enabled"] = false,
@@ -2843,6 +2851,9 @@ nil,
 -300,
 -300,
 },
+},
+["HealthBar"] = {
+["ForegroundOpacity"] = 1,
 },
 },
 },

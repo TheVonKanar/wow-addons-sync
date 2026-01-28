@@ -1,0 +1,27 @@
+## Interface: 11508, 40402, 50503, 120000
+
+## Author: StormFX, dlecina, ricgingell
+## Title: Masque: Squat
+## Version: 2.0.0
+
+## Category: Masque
+## Dependencies: Masque
+## IconTexture: Interface\AddOns\Masque_Squat\Textures\Icon
+
+## Notes: Squat skin for Masque.
+## Notes-deDE: Squat-Skin für Masque.
+## Notes-esMX: Skin Squat para Masque.
+## Notes-esES: Skin Squat para Masque.
+## Notes-frFR: Skin de Squat pour Masque.
+## Notes-itIT: Skin Squat per Masque.
+## Notes-ruRU: Скин Squat для Masque.
+## Notes-zhTW: Masque的Squat皮膚。
+
+## X-Category: Interface Enhancements
+## X-Credits: Zeal, Caith, StormFX, dlecina, ricgingell
+
+# Locales
+Locales.lua
+
+# Skins
+Skins.lua

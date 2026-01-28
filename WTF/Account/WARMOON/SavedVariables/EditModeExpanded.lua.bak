@@ -2198,38 +2198,34 @@ EditModeExpandedADB = {
 },
 },
 },
-["TotemFrame"] = {
+["MultiBarLeft"] = {
+["settings"] = {
+},
 ["profiles"] = {
 ["1-Default"] = {
-["defaultScale"] = 1,
-["defaultY"] = 166.0000152587891,
 ["settings"] = {
-[16] = 100,
-[10] = 0,
 },
-["defaultX"] = 989.0000610351562,
-["x"] = 622.2005615234375,
-["enabled"] = false,
-["y"] = 108.1669845581055,
-["clamped"] = 1,
 },
 ["0-Modern"] = {
-["defaultScale"] = 1,
-["defaultY"] = 269.9999694824219,
-["defaultX"] = 751.666748046875,
-["x"] = 751.666748046875,
-["enabled"] = true,
-["y"] = 269.9999694824219,
-["clamped"] = 1,
 },
 },
 },
-["EncounterTimeline"] = {
+["BuffIconCooldownViewer"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
+["y"] = 1199,
+["x"] = 0,
 ["settings"] = {
+[17] = {
+["RearrangeCooldownDropdown"] = {
+},
+["ExcludeCooldownDropdown"] = {
+},
+},
+[12] = {
+},
 },
 },
 },
@@ -2279,30 +2275,19 @@ EditModeExpandedADB = {
 },
 },
 },
-["BuffBarCooldownViewer"] = {
+["ChatFrame1"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
-["y"] = 429.9999389648438,
-["x"] = 1486.166870117188,
 ["settings"] = {
-[17] = {
-["RearrangeCooldownDropdown"] = {
-},
-["Resort"] = {
-["checked"] = "None",
-},
-["ExcludeCooldownDropdown"] = {
 },
 },
-[12] = {
+["0-Modern"] = {
 },
 },
 },
-},
-},
-["PersonalResourceDisplayFrame"] = {
+["EncounterTimeline"] = {
 ["settings"] = {
 },
 ["profiles"] = {
@@ -2332,15 +2317,24 @@ EditModeExpandedADB = {
 },
 },
 },
-["MultiBarLeft"] = {
-["settings"] = {
-},
+["Chi"] = {
 ["profiles"] = {
-["1-Default"] = {
-["settings"] = {
-},
-},
 ["0-Modern"] = {
+["defaultScale"] = 1,
+["defaultY"] = 246.9999847412109,
+["settings"] = {
+[17] = {
+["AnchorToDropdown"] = {
+},
+},
+[12] = {
+},
+},
+["defaultX"] = 634.1666259765625,
+["x"] = 634.1666259765625,
+["y"] = 246.9999847412109,
+["enabled"] = true,
+["clamped"] = 1,
 },
 },
 },
@@ -2397,7 +2391,7 @@ EditModeExpandedADB = {
 },
 },
 },
-["MediumEncounterWarnings"] = {
+["PersonalResourceDisplayFrame"] = {
 ["settings"] = {
 },
 ["profiles"] = {
@@ -2491,61 +2485,52 @@ EditModeExpandedADB = {
 },
 },
 },
-["ChatFrameMenuButton"] = {
-["profiles"] = {
-["1-Default"] = {
-["defaultScale"] = 1,
-["defaultY"] = 183.1665649414063,
-["settings"] = {
-[10] = 1,
-},
-["defaultX"] = 7.166659832000732,
-["x"] = 1.799997806549072,
-["enabled"] = false,
-["y"] = 1103.199951171875,
-["clamped"] = 1,
-},
-["0-Modern"] = {
-["defaultScale"] = 1,
-["defaultY"] = 97.99998474121094,
-["defaultX"] = 12.00000286102295,
-["x"] = 12.00000095367432,
-["enabled"] = true,
-["y"] = 97.99998474121094,
-["clamped"] = 1,
-},
-},
-},
-["PossessActionBar"] = {
+["BuffBarCooldownViewer"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
-["settings"] = {
-},
-},
-["0-Modern"] = {
-},
-},
-},
-["Chi"] = {
-["profiles"] = {
-["0-Modern"] = {
-["defaultScale"] = 1,
-["defaultY"] = 246.9999847412109,
+["y"] = 429.9999389648438,
+["x"] = 1486.166870117188,
 ["settings"] = {
 [17] = {
-["AnchorToDropdown"] = {
+["RearrangeCooldownDropdown"] = {
+},
+["Resort"] = {
+["checked"] = "None",
+},
+["ExcludeCooldownDropdown"] = {
 },
 },
 [12] = {
 },
 },
-["defaultX"] = 634.1666259765625,
-["x"] = 634.1666259765625,
-["y"] = 246.9999847412109,
-["enabled"] = true,
-["clamped"] = 1,
+},
+},
+},
+["MultiBar5"] = {
+["settings"] = {
+},
+["profiles"] = {
+["1-Default"] = {
+["settings"] = {
+},
+},
+["0-Modern"] = {
+},
+},
+},
+["PartyFrame"] = {
+["settings"] = {
+},
+["profiles"] = {
+["1-Default"] = {
+["settings"] = {
+[12] = {
+},
+},
+},
+["0-Modern"] = {
 },
 },
 },
@@ -2562,7 +2547,7 @@ EditModeExpandedADB = {
 },
 },
 },
-["MultiBar5"] = {
+["PossessActionBar"] = {
 ["settings"] = {
 },
 ["profiles"] = {
@@ -2574,7 +2559,7 @@ EditModeExpandedADB = {
 },
 },
 },
-["ChatFrame1"] = {
+["MediumEncounterWarnings"] = {
 ["settings"] = {
 },
 ["profiles"] = {
@@ -2582,32 +2567,41 @@ EditModeExpandedADB = {
 ["settings"] = {
 },
 },
-["0-Modern"] = {
 },
 },
-},
-["SecondaryStatusTrackingBarContainer"] = {
+["ExternalDefensivesFrame"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
-["y"] = 17,
-["x"] = 781.166748046875,
 ["settings"] = {
+},
+},
+},
+},
+["TotemFrame"] = {
+["profiles"] = {
+["1-Default"] = {
+["defaultScale"] = 1,
+["defaultY"] = 166.0000152587891,
+["settings"] = {
+[16] = 100,
 [10] = 0,
 },
+["defaultX"] = 989.0000610351562,
+["x"] = 622.2005615234375,
+["enabled"] = false,
+["y"] = 108.1669845581055,
+["clamped"] = 1,
 },
 ["0-Modern"] = {
-},
-},
-},
-["MainActionBar"] = {
-["settings"] = {
-},
-["profiles"] = {
-["1-Default"] = {
-["settings"] = {
-},
+["defaultScale"] = 1,
+["defaultY"] = 269.9999694824219,
+["defaultX"] = 751.666748046875,
+["x"] = 751.666748046875,
+["enabled"] = true,
+["y"] = 269.9999694824219,
+["clamped"] = 1,
 },
 },
 },
@@ -2814,28 +2808,27 @@ EditModeExpandedADB = {
 },
 },
 },
-["GameMenuFrame"] = {
+["ChatFrameMenuButton"] = {
 ["profiles"] = {
 ["1-Default"] = {
 ["defaultScale"] = 1,
-["defaultY"] = 842,
+["defaultY"] = 183.1665649414063,
 ["settings"] = {
-[16] = 100,
-[10] = 0,
+[10] = 1,
 },
-["defaultX"] = 1149.1669921875,
-["x"] = 935.8335571289062,
+["defaultX"] = 7.166659832000732,
+["x"] = 1.799997806549072,
 ["enabled"] = false,
-["y"] = 602.0001220703125,
+["y"] = 1103.199951171875,
 ["clamped"] = 1,
 },
 ["0-Modern"] = {
 ["defaultScale"] = 1,
-["defaultY"] = 600.3333740234375,
-["defaultX"] = 935.0001831054688,
-["x"] = 936.6668701171875,
-["enabled"] = false,
-["y"] = 599.5,
+["defaultY"] = 97.99998474121094,
+["defaultX"] = 12.00000286102295,
+["x"] = 12.00000095367432,
+["enabled"] = true,
+["y"] = 97.99998474121094,
 ["clamped"] = 1,
 },
 },
@@ -2887,23 +2880,18 @@ EditModeExpandedADB = {
 },
 },
 },
-["BuffIconCooldownViewer"] = {
+["SecondaryStatusTrackingBarContainer"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
-["y"] = 1199,
-["x"] = 0,
+["y"] = 17,
+["x"] = 781.166748046875,
 ["settings"] = {
-[17] = {
-["RearrangeCooldownDropdown"] = {
-},
-["ExcludeCooldownDropdown"] = {
+[10] = 0,
 },
 },
-[12] = {
-},
-},
+["0-Modern"] = {
 },
 },
 },
@@ -2926,13 +2914,29 @@ EditModeExpandedADB = {
 },
 },
 },
-["ExternalDefensivesFrame"] = {
-["settings"] = {
-},
+["GameMenuFrame"] = {
 ["profiles"] = {
 ["1-Default"] = {
+["defaultScale"] = 1,
+["defaultY"] = 842,
 ["settings"] = {
+[16] = 100,
+[10] = 0,
 },
+["defaultX"] = 1149.1669921875,
+["x"] = 935.8335571289062,
+["enabled"] = false,
+["y"] = 602.0001220703125,
+["clamped"] = 1,
+},
+["0-Modern"] = {
+["defaultScale"] = 1,
+["defaultY"] = 600.3333740234375,
+["defaultX"] = 935.0001831054688,
+["x"] = 936.6668701171875,
+["enabled"] = false,
+["y"] = 599.5,
+["clamped"] = 1,
 },
 },
 },
@@ -2961,17 +2965,13 @@ EditModeExpandedADB = {
 },
 },
 },
-["PartyFrame"] = {
+["MainActionBar"] = {
 ["settings"] = {
 },
 ["profiles"] = {
 ["1-Default"] = {
 ["settings"] = {
-[12] = {
 },
-},
-},
-["0-Modern"] = {
 },
 },
 },
