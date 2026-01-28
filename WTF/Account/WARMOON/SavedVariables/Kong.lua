@@ -42,6 +42,39 @@ Kong_Profiles = {
 },
 },
 },
+["secondsOut"] = 0.5,
+["secondsIn"] = 0.2,
+["alphaIn"] = 1,
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["version"] = "1.6a",
+["index"] = "[\"MultiBar6\"]",
+},
+{
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
 ["secondsTillOut"] = 20,
 },
 {
@@ -75,6 +108,9 @@ Kong_Profiles = {
 },
 {
 {
+["secondsOut"] = 0.5,
+["alphaIn"] = 1,
+["secondsIn"] = 0.2,
 ["Condition"] = {
 ["name"] = "Condition",
 ["Parameters"] = {
@@ -85,9 +121,6 @@ Kong_Profiles = {
 },
 },
 },
-["secondsOut"] = 0.5,
-["secondsIn"] = 0.2,
-["alphaIn"] = 1,
 },
 {
 ["Condition"] = {
@@ -103,41 +136,8 @@ Kong_Profiles = {
 },
 ["TriggerDefaults"] = {
 },
-["index"] = "[\"MultiBar6\"]",
 ["version"] = "1.6a",
-},
-{
-{
-["secondsOut"] = 0.5,
-["alphaIn"] = 1,
-["secondsIn"] = 0.2,
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Frame has Mouse Focus",
-["Parameters"] = {
-},
-},
-},
-},
-},
-{
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Unit in Combat",
-["Parameters"] = {
-},
-},
-},
-},
-},
-["TriggerDefaults"] = {
-},
 ["index"] = "[\"MultiBarLeft\"]",
-["version"] = "1.6a",
 },
 },
 ["version"] = "1.6a",

@@ -1,4 +1,5 @@
-### Changes in 120000.65-Release:
+### Changes in 120000.66-Release:
 
-- Fixed: Settings not updating properly when renaming/copying/deleting Edit Mode profiles
+- Changed: Update Interface version
+- Changed: Update embeds
 

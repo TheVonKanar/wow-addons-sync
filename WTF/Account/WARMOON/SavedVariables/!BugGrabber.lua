@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 1352,
 ["lastSanitation"] = 3,
+["session"] = 1355,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["session"] = 379,
 ["time"] = "2024/09/20 09:27:39",
+["session"] = 379,
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["session"] = 475,
 ["time"] = "2024/10/07 08:13:04",
+["session"] = 475,
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["time"] = "2024/11/12 06:05:20",
 ["session"] = 560,
+["time"] = "2024/11/12 06:05:20",
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["session"] = 897,
 ["time"] = "2025/03/25 19:16:23",
+["session"] = 897,
 ["counter"] = 2,
 },
 {
@@ -813,8 +813,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["session"] = 1253,
 ["time"] = "2025/10/08 09:26:56",
+["session"] = 1253,
 ["counter"] = 1,
 },
 {
@@ -843,8 +843,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["session"] = 1270,
 ["time"] = "2025/12/05 18:53:28",
+["session"] = 1270,
 ["counter"] = 2,
 },
 {
@@ -857,20 +857,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
@@ -883,8 +883,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["session"] = 1272,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1272,
 ["counter"] = 2,
 },
 {
@@ -985,8 +985,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["session"] = 1339,
 ["time"] = "2026/01/26 20:42:33",
+["session"] = 1339,
 ["counter"] = 1,
 },
 {
@@ -996,14 +996,6 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:87: in function 'UpdateTooltip'\n[Interface/AddOns/UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua]:97: in function <.../UnhaltedUnitFrames/Libraries/oUF/elements/auras.lua:90>",
 ["session"] = 1344,
 ["counter"] = 1,
-},
-{
-["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
-["time"] = "2026/01/25 22:59:53",
-["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
-["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
-["session"] = 1346,
-["counter"] = 6,
 },
 {
 ["message"] = "...Libs/AceGUI-3.0-41/widgets/AceGUIContainer-TabGroup.lua:425: attempt to index local 'tab' (a nil value)",
@@ -1023,8 +1015,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["time"] = "2026/01/28 18:15:55",
 ["session"] = 1350,
+["time"] = "2026/01/28 18:15:55",
 ["counter"] = 1,
 },
 {
@@ -1034,6 +1026,14 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:1026: in function 'CompactUnitFrame_UpdateInRange'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:457: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:322: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_CompactRaidFrames/Blizzard_CompactRaidFrameContainer.lua]:156: in function 'TryUpdate'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:479: in function 'UpdateRaidContainerFlow'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1989: in function 'ResetRaidFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:45: in function 'EditModeFrameReset'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1844: in function 'OnEditModeExit'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:129: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>",
 ["session"] = 1350,
 ["counter"] = 5,
+},
+{
+["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
+["time"] = "2026/01/25 22:59:53",
+["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
+["session"] = 1353,
+["counter"] = 7,
 },
 },
 }

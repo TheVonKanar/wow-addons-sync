@@ -3,11 +3,11 @@ Frame: DamageMeterSessionWindow2
 FrameLevel: 2
 Anchor: BOTTOMRIGHT
 X: 0
-Y: 159
+Y: 157
 W: 341
-H: 126
+H: 139
 Frame: ColorPickerFrame
-FrameLevel: 129
+FrameLevel: 121
 Anchor: CENTER
 X: 0
 Y: 0

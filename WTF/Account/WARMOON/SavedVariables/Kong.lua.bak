@@ -35,9 +35,7 @@ Kong_Profiles = {
 ["Frames"] = {
 {
 {
-["secondsOut"] = 0.5,
 ["alphaIn"] = 1,
-["secondsIn"] = 0.2,
 ["Condition"] = {
 ["name"] = "Condition",
 ["Parameters"] = {
@@ -48,6 +46,8 @@ Kong_Profiles = {
 },
 },
 },
+["secondsIn"] = 0.2,
+["secondsOut"] = 0.5,
 },
 {
 ["Condition"] = {
@@ -63,8 +63,8 @@ Kong_Profiles = {
 },
 ["TriggerDefaults"] = {
 },
+["index"] = "[\"MultiBarLeft\"]",
 ["version"] = "1.6a",
-["index"] = "[\"MultiBar6\"]",
 },
 {
 {
@@ -111,7 +111,9 @@ Kong_Profiles = {
 },
 {
 {
+["secondsOut"] = 0.5,
 ["alphaIn"] = 1,
+["secondsIn"] = 0.2,
 ["Condition"] = {
 ["name"] = "Condition",
 ["Parameters"] = {
@@ -122,8 +124,6 @@ Kong_Profiles = {
 },
 },
 },
-["secondsIn"] = 0.2,
-["secondsOut"] = 0.5,
 },
 {
 ["Condition"] = {
@@ -139,8 +139,8 @@ Kong_Profiles = {
 },
 ["TriggerDefaults"] = {
 },
+["index"] = "[\"MultiBar6\"]",
 ["version"] = "1.6a",
-["index"] = "[\"MultiBarLeft\"]",
 },
 },
 },

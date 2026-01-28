@@ -323,12 +323,12 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             label = addonTable.Locales.WIDTH_RESTRICTION,
             kind = "slider",
             min = 0, max = 300,
-            valuePattern = "%dpx",
+            valuePattern = "%d%%",
             setter = function(details, value)
-              details.widthLimit = value
+              details.maxWidth = value / 100
             end,
             getter = function(details)
-              return details.widthLimit or 0
+              return details.maxWidth * 100
             end,
           },
           {
@@ -977,6 +977,23 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
             getter = function(details)
               return details.color
+            end,
+          },
+        },
+      },
+    },
+    ["mouseover"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.INCLUDE_TARGET,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.includeTarget = value
+            end,
+            getter = function(details)
+              return details.includeTarget
             end,
           },
         },

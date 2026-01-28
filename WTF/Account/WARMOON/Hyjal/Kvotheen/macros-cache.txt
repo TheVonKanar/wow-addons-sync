@@ -34,10 +34,6 @@ VER 3 0100000000000036 " " "136018"
 /stopcasting
 /cast [@focus,exists] Wind Shear; Wind Shear
 END
-VER 3 010000000000004A " " "134400"
-#showtooltip
-/cast [known:117014] Elemental Blast; Lightning Bolt
-END
 VER 3 0100000000000069 " " "134400"
 #showtooltip
 /cast Spirit Walk
@@ -65,19 +61,25 @@ VER 3 0100000000000064 " " "134400"
 #showtooltip
 /cast [known:375982] Primordial Wave; Feral Spirit
 END
-VER 3 0100000000000066 " " "134400"
-#showtooltip
-/cast [known:8143] Tremor Totem; [@player] Cleanse Spirit
-END
-VER 3 0100000000000067 " " "134400"
-#showtooltip
-/cast [@player] Earth Shield
-END
 VER 3 010000000000006A " " "134400"
 #showtooltip Doom Winds
 /cast Doom Winds
 /cast Crash Lightning
 /cast Stormstrike
+END
+VER 3 010000000000006D " " "7252953"
+#plumber:home
+/click PLMR_HOME1
+END
+VER 3 010000000000006F " " "5927655"
+#showtooltip
+/cast [@cursor] Surging Totem
+END
+VER 3 0100000000000068 "+pot" "134400"
+#showtooltip Bloodlust
+/use Fleeting Tempered Potion
+/use Tempered Potion
+/cast Bloodlust
 END
 VER 3 010000000000005F "+pot" "134400"
 #showtooltip Ascendance
@@ -85,12 +87,6 @@ VER 3 010000000000005F "+pot" "134400"
 /use Tempered Potion
 /cast Spiritwalker's Grace
 /cast Ascendance
-END
-VER 3 0100000000000068 "+pot" "134400"
-#showtooltip Bloodlust
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Bloodlust
 END
 VER 3 010000000000004E "+pot" "1035054"
 #showtooltip Doom Winds
@@ -101,8 +97,12 @@ VER 3 010000000000004E "+pot" "1035054"
 END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
-/castsequence [@player] reset=10 Skyfury, Lightning Shield, Earth Shield, Windfury Weapon, Flametongue Weapon, Trans-Dimensional Bird Whistle
+/castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
+END
+VER 3 010000000000006E "Outfit Collection" "2869702"
+#plumber:outfit
+/click PLMR_OUTFIT
 END
 VER 3 010000000000005C "RES" "134400"
 #showtooltip
