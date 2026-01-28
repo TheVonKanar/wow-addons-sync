@@ -30,7 +30,6 @@ END
 VER 3 0000000000000065 "Focus" "132345"
 /clearfocus
 /focus [@mouseover,exists,harm][]
-/run if not GetRaidTargetIndex("focus") then SetRaidTarget("focus",7) end
 END
 VER 3 000000000000007B "Frames" "132089"
 /uuf
@@ -52,6 +51,4 @@ VER 3 0000000000000050 "Platynator" "132750"
 END
 VER 3 000000000000005B "Reload" "136213"
 /reload
-END
-VER 3 000000000000007C "SRM" "134400"
 END

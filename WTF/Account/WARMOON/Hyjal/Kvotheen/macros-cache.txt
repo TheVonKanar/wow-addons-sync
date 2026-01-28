@@ -79,13 +79,6 @@ VER 3 010000000000006A " " "134400"
 /cast Crash Lightning
 /cast Stormstrike
 END
-VER 3 010000000000004E "+pot" "1035054"
-#showtooltip Doom Winds
-/use 13
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Doom Winds
-END
 VER 3 010000000000005F "+pot" "134400"
 #showtooltip Ascendance
 /use Fleeting Tempered Potion
@@ -98,6 +91,13 @@ VER 3 0100000000000068 "+pot" "134400"
 /use Fleeting Tempered Potion
 /use Tempered Potion
 /cast Bloodlust
+END
+VER 3 010000000000004E "+pot" "1035054"
+#showtooltip Doom Winds
+/use 13
+/use Fleeting Tempered Potion
+/use Tempered Potion
+/cast Doom Winds
 END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
