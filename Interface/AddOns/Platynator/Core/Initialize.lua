@@ -184,6 +184,9 @@ function addonTable.Core.UpgradeDesign(design)
     if bar.kind == "health" and not bar.absorb.color then
       bar.absorb.color = GetColor("FFFFFF")
     end
+    if bar.kind == "health" and bar.animate == nil then
+      bar.animate = false
+    end
     if bar.layer == nil then
       bar.layer = 1
     end
@@ -396,6 +399,11 @@ function addonTable.Core.UpgradeDesign(design)
     design.font.outline = design.font.flags == "OUTLINE"
     design.font.flags = nil
   end
+
+  if design.font.slug == nil then
+    design.font.slug = true
+  end
+  design.slug = nil
 
   if design.font.asset == "ArialShort" then
     design.font.asset = "ArialNarrow"

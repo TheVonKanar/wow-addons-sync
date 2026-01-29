@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
 ["lastSanitation"] = 3,
-["session"] = 1355,
+["session"] = 1357,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -489,14 +489,6 @@ BugGrabberDB = {
 ["locals"] = "(*temporary) = Frame {\n isAnySpecActive = true\n NodesContainer = Frame {\n }\n ActivatedBackgroundRight2 = Texture {\n }\n isActiveSpec = false\n isRightMostSpec = false\n isLeftMostSpec = true\n ActivationExpandFx = Texture {\n }\n ActivatedBackgroundLeft2 = Texture {\n }\n ActivatedBackgroundLeft4 = Texture {\n }\n ActivatedText = FontString {\n }\n ActivateButton = Button {\n }\n CurrencyFrame = Frame {\n }\n name = \"Farseer\"\n SpecImageBorderSelected = Texture {\n }\n ApplyChangesButton = Button {\n }\n ActivatedBackFrames = <table> {\n }\n SpecImageBorder = Texture {\n }\n ActivatedLeftFrames = <table> {\n }\n ActivatedBackgroundLeft1 = Texture {\n }\n Description = FontString {\n }\n SpecImage = Texture {\n }\n ActivatedBackgroundBack1 = Texture {\n }\n layoutIndex = 1\n expand = \"true\"\n ActivationExpandFxMask2 = MaskTexture {\n }\n ActivationExpandFxMask = MaskTexture {\n }\n ActivatedBackgroundRight4 = Texture {\n }\n SpecName = FontString {\n }\n ActivatedRightFrames = <table> {\n }\n subTreeID = 56\n helpTipOffsetY = -80\n helpTipOffsetX = 0\n ActivationFlash = AnimationGroup {\n }\n SpecImageMask = MaskTexture {\n }\n ColumnDivider = Texture {\n }\n ActivatedBackgroundBack2 = Texture {\n }\n subTreeInfo = <table> {\n }\n ActivatedBackgroundRight3 = Texture {\n }\n ActivatedBackgroundLeft3 = Texture {\n }\n ActivatedBackgroundRight1 = Texture {\n }\n}\n(*temporary) = \"TOPLEFT\"\n(*temporary) = 0\n(*temporary) = 0\n",
 ["stack"] = "[C]: in function 'SetPoint'\n[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:433: in function 'LayoutChildren'\n[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:246: in function 'Layout'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_HeroTalentsSelectionDialog.lua]:127: in function 'ShowDialog'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_HeroTalentsContainer.lua]:557: in function 'OnHeroSpecButtonClicked'\n[Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_HeroTalentsContainer.lua]:687: in function <...pells/ClassTalents/Blizzard_HeroTalentsContainer.lua:685>",
 ["session"] = 925,
-["counter"] = 1,
-},
-{
-["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'LargerMacroIconSelection' tried to call the protected function 'EditMacro()'.",
-["time"] = "2025/04/08 22:03:25",
-["locals"] = "_ = Frame {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\nevents = <table> {\n}\n",
-["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:485: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:485>\n[C]: in function 'EditMacro'\n[Interface/AddOns/Blizzard_MacroUI/Blizzard_MacroIconSelector.lua]:112: in function 'OkayButton_OnClick'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:2076: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:2074>",
-["session"] = 956,
 ["counter"] = 1,
 },
 {
@@ -1034,6 +1026,26 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
 ["session"] = 1353,
 ["counter"] = 7,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'LargerMacroIconSelection' tried to call the protected function 'EditMacro()'.",
+["time"] = "2025/04/08 22:03:25",
+["locals"] = "_ = Frame {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\nevents = <table> {\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:485: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:485>\n[C]: in function 'EditMacro'\n[Interface/AddOns/Blizzard_MacroUI/Blizzard_MacroIconSelector.lua]:112: in function 'OkayButton_OnClick'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:2076: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:2074>",
+["session"] = 1357,
+["counter"] = 2,
+},
+{
+["message"] = "attempted to index a forbidden table",
+["time"] = "2026/01/30 00:15:27",
+["session"] = 1357,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
+["time"] = "2026/01/30 00:15:28",
+["session"] = 1357,
+["counter"] = 1,
 },
 },
 }

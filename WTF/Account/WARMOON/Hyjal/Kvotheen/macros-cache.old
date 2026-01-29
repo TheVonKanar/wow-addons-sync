@@ -75,13 +75,6 @@ VER 3 010000000000006F " " "5927655"
 #showtooltip
 /cast [@cursor] Surging Totem
 END
-VER 3 010000000000004E "+pot" "1035054"
-#showtooltip Doom Winds
-/use 13
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Doom Winds
-END
 VER 3 0100000000000068 "+pot" "134400"
 #showtooltip Bloodlust
 /use Fleeting Tempered Potion
@@ -94,6 +87,13 @@ VER 3 010000000000005F "+pot" "134400"
 /use Tempered Potion
 /cast Spiritwalker's Grace
 /cast Ascendance
+END
+VER 3 010000000000004E "+pot" "1035054"
+#showtooltip Doom Winds
+/use 13
+/use Fleeting Tempered Potion
+/use Tempered Potion
+/cast Doom Winds
 END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
