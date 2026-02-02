@@ -19,4 +19,12 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g MDR",
 "/cw Orlith-KirinTor Coucouuuuu, Chaman amelio comme d'hab :)",
 "/g SLT!!!",
+"/cw Øskÿ-Archimonde +1",
+"/s /bugsack",
+"/g ptete",
+"/g la guilde existe sur wlogs?",
+"/g faut la creen",
+"/g mon micro marche pas wtf",
+"/g npnp",
+"/g mon micro snob discord jpp jvoulais trash talk grodar",
 }

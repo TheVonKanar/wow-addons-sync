@@ -753,6 +753,8 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         -- Enable DB caching now that SavedVariables are loaded
         C_Timer.After(0.1, function()
             Shared.EnableDBCache()
+            -- NOTE: Removed auto-cleanup call (OnProfileReady) to prevent any data deletion
+            -- Users can manually clean up via /arcui cleanup if needed
         end)
     end
 end)

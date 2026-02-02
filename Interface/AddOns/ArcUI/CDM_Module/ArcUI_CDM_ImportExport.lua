@@ -756,24 +756,44 @@ function IE.Import(importString, options)
                 profileData.groupLayouts = {}
                 if DEFAULT_GROUPS then
                     for groupName, groupData in pairs(DEFAULT_GROUPS) do
+                        local layout = groupData.layout
                         profileData.groupLayouts[groupName] = {
                             position = groupData.position and DeepCopy(groupData.position) or { x = 0, y = 100 },
-                            gridRows = groupData.layout and groupData.layout.gridRows or 2,
-                            gridCols = groupData.layout and groupData.layout.gridCols or 4,
-                            iconSize = groupData.layout and groupData.layout.iconSize or 36,
-                            spacing = groupData.layout and groupData.layout.spacing or 2,
+                            gridRows = layout and layout.gridRows or 2,
+                            gridCols = layout and layout.gridCols or 4,
+                            iconSize = layout and layout.iconSize or 36,
+                            iconWidth = layout and layout.iconWidth or 36,
+                            iconHeight = layout and layout.iconHeight or 36,
+                            spacing = layout and layout.spacing or 2,
+                            spacingX = layout and layout.spacingX,
+                            spacingY = layout and layout.spacingY,
+                            separateSpacing = layout and layout.separateSpacing,
+                            alignment = layout and layout.alignment,
+                            horizontalGrowth = layout and layout.horizontalGrowth,
+                            verticalGrowth = layout and layout.verticalGrowth,
                             showBorder = groupData.showBorder or false,
                             showBackground = groupData.showBackground or false,
                             autoReflow = groupData.autoReflow or false,
+                            dynamicLayout = groupData.dynamicLayout or false,
+                            lockGridSize = groupData.lockGridSize or false,
+                            containerPadding = groupData.containerPadding or 0,
+                            borderColor = groupData.borderColor and DeepCopy(groupData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
+                            bgColor = groupData.bgColor and DeepCopy(groupData.bgColor) or { r = 0, g = 0, b = 0, a = 0.6 },
                             visibility = groupData.visibility or "always",
                         }
                     end
                 else
-                    -- Fallback
+                    -- Fallback (no DEFAULT_GROUPS available)
+                    local fallbackDefaults = { iconWidth = 36, iconHeight = 36, showBorder = false, showBackground = false, autoReflow = false, containerPadding = 0, borderColor = { r = 0.5, g = 0.5, b = 0.5, a = 1 }, bgColor = { r = 0, g = 0, b = 0, a = 0.6 }, visibility = "always" }
+                    local function MakeFallback(x, y)
+                        local g = { position = { x = x, y = y }, gridRows = 2, gridCols = 4, iconSize = 36, spacing = 2 }
+                        for k, v in pairs(fallbackDefaults) do g[k] = type(v) == "table" and DeepCopy(v) or v end
+                        return g
+                    end
                     profileData.groupLayouts = {
-                        ["Essential"] = { position = { x = 0, y = 100 }, gridRows = 2, gridCols = 4, iconSize = 36, spacing = 2 },
-                        ["Utility"] = { position = { x = 0, y = 0 }, gridRows = 2, gridCols = 4, iconSize = 36, spacing = 2 },
-                        ["Buffs"] = { position = { x = 0, y = 200 }, gridRows = 2, gridCols = 4, iconSize = 36, spacing = 2 },
+                        ["Essential"] = MakeFallback(0, 100),
+                        ["Utility"] = MakeFallback(0, 0),
+                        ["Buffs"] = MakeFallback(0, 200),
                     }
                 end
             end
@@ -2395,6 +2415,9 @@ function IE.SaveSpecAsTemplate(layoutKey, templateName)
             spacingX = layout.spacingX,
             spacingY = layout.spacingY,
             separateSpacing = layout.separateSpacing,
+            alignment = layout.alignment,
+            horizontalGrowth = layout.horizontalGrowth,
+            verticalGrowth = layout.verticalGrowth,
             -- Appearance
             showBorder = group.showBorder,
             showBackground = group.showBackground,

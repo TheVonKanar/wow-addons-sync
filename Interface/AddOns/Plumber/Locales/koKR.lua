@@ -24,6 +24,7 @@ L["Quick Slot Layout"] = "배치 방식";
 L["Quick Slot Layout Linear"] = "직선형";
 L["Quick Slot Layout Radial"] = "원형";
 L["Restriction Combat"] = "전투 중에는 작동하지 않습니다.";  --Indicate a feature can only work when out of combat
+L["Restriction Instance"] = "이 기능은 인스턴스에서는 작동하지 않습니다.";
 L["Map Pin Change Size Method"] = "\n\n*세계 지도 > 지도 필터 > Plumber에서 핀 크기를 변경";
 L["Toggle Plumber UI"] = "Plumber UI 전환";
 L["Toggle Plumber UI Tooltip"] = "편집 모드에서 다음 Plumber UI를 표시합니다:\n\n%s\n\n이 체크박스는 편집 모드에서의 UI 표시 여부만 제어합니다.\n이 모듈들을 활성화하거나 비활성화하지는 않습니다.";
@@ -43,6 +44,7 @@ L["New Feature Abbr"] = "신규";
 L["Format Month Day"] = EVENT_SCHEDULER_DAY_FORMAT or "%s %d";
 L["Always On Module"] = "이 모듈은 항상 활성화되어 있습니다.";
 L["Return To Module List"] = "목록으로 돌아가기";
+L["Generic Addon Conflict"] = "이 모듈은 유사한 기능을 가진 다른 애드온과 호환되지 않을 수 있습니다.";
 
 
 --Settings Category
@@ -385,6 +387,16 @@ L["ModuleName NameplateWidget"] = "이름표: 열쇠창";
 L["ModuleDescription NameplateWidget"] = "광휘의 잔재 보유 수 이름표에 표시.";
 
 
+--NameplateQuestIndicator
+L["ModuleName NameplateQuest"] = "이름표: 퀘스트 표시기r";
+L["ModuleDescription NameplateQuest"] = "이름표에 퀘스트 표시기 표시\n\n- (선택 사항) 대상의 퀘스트 목표 진행도 표시\n\n- (선택 사항) 파티원이 목표를 완료하지 않은 경우 퀘스트 표시기 표시";
+L["NameplateQuest ShowPartyQuest"] = "파티원 퀘스트 표시";
+L["NameplateQuest ShowPartyQuest Tooltip"] = "파티원 중 퀘스트 목표를 완료하지 않은 사람이 있을 경우 %s 표시기 표시.";
+L["NameplateQuest ShowTargetProgress"] = "목표 진행 상황 표시";
+L["NameplateQuest ShowTargetProgress Tooltip"] = "대상 이름표에 퀘스트 목표 진행 상황을 표시합니다.";
+L["NameplateQuest Instruction Find Nameplate"] = "아이콘 위치를 조정하려면 NPC 이름표가 보이는 장소로 이동하세요.";
+
+
 --PartyInviterInfo
 L["ModuleName PartyInviterInfo"] = "파티 초대자 정보";
 L["ModuleDescription PartyInviterInfo"] = "파티 또는 길드 초대를 받을 때, 초대한 캐릭터의 레벨과 직업을 표시.";
@@ -565,6 +577,10 @@ L["LootUI Option Low Frame Strata"] = "뒤로 보내기";
 L["LootUI Option Low Frame Strata Tooltip"] = "전리품 알림 모드에서 전리품 창을 다른 UI 뒤로 배치합니다.\n\n이 옵션은 수동 전리품 모드에는 영향을 주지 않습니다.";
 L["LootUI Option Show Reputation"] = "평판 변화 표시";
 L["LootUI Option Show Reputation Tooltip"] = "전리품 창에 평판 증가량을 표시합니다.\n\n전투 중 또는 PvP에서 획득한 평판은 이후에 표시됩니다.";
+L["LootUI Option Show All Money"] = "모든 화폐 변동 사항 표시";
+L["LootUI Option Show All Money Tooltip"] = "전리품뿐만 아니라 모든 출처에서 얻은 화폐를 표시해줍니다.";
+L["LootUI Option Hide Title"] = "\"획득했습니다\" 텍스트 숨기기";
+L["LootUI Option Hide Title Tooltip"] = "전리품 창 상단의 \"획득함\" 텍스트를 숨깁니다.";
 
 
 --Quick Slot For Third-party Dev
@@ -612,6 +628,7 @@ L["No Slot For New Character Macro Alert"] = "이 작업을 완료하려면 여�
 --New Expansion Landing Page
 L["ModuleName NewExpansionLandingPage"] = "확장팩 개요";
 L["ModuleDescription NewExpansionLandingPage"] = "진영, 주간 활동, 공격대 귀속 정보를 표시하는 UI입니다. 다음 방법으로 열 수 있습니다:\n\n- 게임 설정 > 단축키 > Plumber 애드온에서 단축키를 설정하세요.\n\n- 달력 버튼 아래에 있는 애드온 항목을 사용하세요.";
+L["Abbr NewExpansionLandingPage"] = "확장팩 개요";
 L["Reward Available"] = "보상 가능";
 L["Paragon Reward Available"] = "불멸의 동맹 평판 보상 가능";
 L["Until Next Level Format"] = "%d 다음 레벨까지";   --Earn x reputation to reach the next level
@@ -725,6 +742,7 @@ L["ModuleDescription CraftSearchExtended"] = "특정 단어를 검색할 때 더
 --DecorModelScaleRef
 L["ModuleName DecorModelScaleRef"] = "장식품: 크기 비교용 바나나"; --See HOUSING_DASHBOARD_CATALOG_TOOLTIP
 L["ModuleDescription DecorModelScaleRef"] = "- 장식 미리보기 창에 크기 참조용 바나나를 추가하여 오브젝트의 크기를 가늠할 수 있습니다.\n\n- 또한 왼쪽 버튼을 누른 채 수직으로 이동하여 카메라 각도를 변경할 수 있습니다.";
+L["Toggle Banana"] = "바나나 전환";
 
 
 --Player Housing

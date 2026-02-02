@@ -126,9 +126,9 @@ end
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- Track which frames we've hooked for center alignment
-local centerAlignHookedFrames = {}
+local dynamicLayoutHookedFrames = {}
 
--- Check if options panel is open (defined here so it's available for TriggerCenterAlignLayout)
+-- Check if options panel is open (defined here so it's available for TriggerDynamicLayout)
 local function IsOptionsPanelOpen()
     if ns.CDMGroups.IsOptionsPanelOpen then
         return ns.CDMGroups.IsOptionsPanelOpen()
@@ -139,44 +139,82 @@ end
 
 -- Trigger immediate layout for a center-aligned group
 -- Helper to add trace if debugger is available
-local function Trace(event, cdID, details)
+local function Trace(event, cdID, details, groupName)
     -- Try multiple ways to access the debugger
     local debugger = ns.DynamicLayoutDebug or (ArcUI_NS and ArcUI_NS.DynamicLayoutDebug)
-    if debugger and debugger.IsCenterAlignTraceEnabled and debugger.IsCenterAlignTraceEnabled() then
-        debugger.AddCenterAlignTrace(event, cdID, details)
+    if debugger then
+        -- Send to Center Align Trace (if enabled)
+        if debugger.IsPixelTraceEnabled and debugger.IsPixelTraceEnabled() then
+            debugger.AddPixelTrace(event, cdID, details)
+        end
+        -- ALSO send to CDM Event Monitor (if enabled)
+        if debugger.AddDynamicLayoutTrace then
+            debugger.AddDynamicLayoutTrace(event, cdID, details, groupName)
+        end
     end
 end
 
-local function TriggerCenterAlignLayout(group, reason, triggerFrame)
-    if not group or not group.Layout then return end
-    
+local function TriggerDynamicLayout(group, reason, triggerFrame)
     local cdID = triggerFrame and triggerFrame.cooldownID
+    local groupName = group and group.name or nil
+    
+    if not group or not group.Layout then 
+        Trace("LAYOUT_SKIP", cdID, "no group or no Layout method", groupName)
+        return 
+    end
+    
     local now = GetTime()
     
     -- TRACE: Hook triggered
-    Trace("HOOK_" .. (reason or "UNKNOWN"), cdID, string.format("group=%s frame=%s", group.name or "?", triggerFrame and "yes" or "no"))
+    Trace("HOOK_" .. (reason or "UNKNOWN"), cdID, string.format("group=%s frame=%s", groupName or "?", triggerFrame and "yes" or "no"), groupName)
     
     -- Guard against recursive calls (Layout calling CalculateDynamicSlots calling hooks)
-    if group._centerAlignLayoutInProgress then 
-        Trace("LAYOUT_BLOCKED", cdID, "recursive guard")
+    if group._pixelLayoutInProgress then 
+        Trace("LAYOUT_BLOCKED", cdID, "recursive guard", groupName)
         return 
+    end
+    
+    -- Check if icon is actually visible/active (has aura)
+    -- EXCEPTION: SetAuraInstanceInfo means the aura data IS now present, so don't skip
+    
+    -- CRITICAL: Only trigger layout for CONFIRMED aura frames.
+    -- Cooldown frames have aura methods (CDM reuses BuffIcon templates) but
+    -- cooldowns are ALWAYS active - their state never changes layout.
+    -- During Edit Mode transitions, members can be nil (frame recycling) - skip those too.
+    if triggerFrame and cdID then
+        local member = group.members and group.members[cdID]
+        if not member or not DL.IsAuraFrame(member) then
+            Trace("LAYOUT_SKIP", cdID, "not a confirmed aura frame - skipping", groupName)
+            return
+        end
+    end
+    
+    if triggerFrame and reason ~= "SetAuraInstanceInfo" then
+        local auraInstanceID = triggerFrame.auraInstanceID
+        if reason == "OnUnitAuraAddedEvent" then
+            -- For aura added, check if frame has aura data yet
+            -- NOTE: We only check auraInstanceID (non-secret), NOT isActive (secret in combat)
+            if not auraInstanceID then
+                Trace("LAYOUT_SKIP", cdID, "aura not yet active (no auraInstanceID)", groupName)
+                return
+            end
+        end
     end
     
     -- Check if options panel is open
     local optionsPanelOpen = IsOptionsPanelOpen()
     
-    -- If options panel just opened, clear flags and trigger ONE restore layout
+    -- If options panel is open, clear pixel positioning and restore grid
     if optionsPanelOpen then
-        if group._useCenterAlignPixels then
-            -- Clear center align flags so Layout uses grid positions
-            group._useCenterAlignPixels = nil
-            group._centerAlignPixelOffsets = nil
-            group._centerAlignActiveOrder = nil
-            group._centerAlignIsVertical = nil
+        Trace("LAYOUT_BLOCKED", cdID, "options panel open", groupName)
+        if group._usePixelPositioning then
+            -- Clear pixel flags so Layout uses grid positions
+            group._usePixelPositioning = nil
+            group._pixelOffsets = nil
+            group._activeOrder = nil
             
-            -- CRITICAL: Restore member.row/col to saved positions
+            -- Restore member.row/col to saved positions
             local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
-            local groupName = group.name
             if group.members then
                 for cdID, member in pairs(group.members) do
                     local saved = savedPositions[cdID]
@@ -190,109 +228,220 @@ local function TriggerCenterAlignLayout(group, reason, triggerFrame)
             end
             
             -- Trigger one layout to restore grid positions
-            group._centerAlignLayoutInProgress = true
+            group._pixelLayoutInProgress = true
             group:Layout()
-            group._centerAlignLayoutInProgress = nil
+            group._pixelLayoutInProgress = nil
         end
         return
     end
     
     -- SYNCHRONOUS HIDE-POSITION-SHOW:
-    -- 1. Hide the triggering frame immediately (alpha=0)
+    -- 1. Hide the triggering frame immediately (alpha=0) - ONLY FOR AURA FRAMES
     -- 2. Layout() positions all frames correctly
     -- 3. Show all frames by calling OptimizedApplyIconVisuals
     
+    -- FIX: Check if triggering frame is an aura frame
+    -- Cooldown frames can also have aura methods and get hooked, but we should NOT
+    -- manipulate their alpha - only auras need the hide-position-show sequence
+    local isAuraFrame = false
+    if triggerFrame and cdID then
+        -- Look up member to check viewerType
+        local member = group.members and group.members[cdID]
+        if member then
+            isAuraFrame = DL.IsAuraFrame(member)
+        end
+    end
+    
     -- Step 1: Hide the triggering frame to prevent flash at wrong position
+    -- ONLY for aura frames - cooldowns should never be hidden by dynamic layout
     local savedAlpha = nil
-    if triggerFrame and triggerFrame.SetAlpha then
+    if isAuraFrame and triggerFrame and triggerFrame.SetAlpha then
         savedAlpha = triggerFrame:GetAlpha()
-        Trace("ALPHA_HIDE", cdID, string.format("was=%.2f now=0", savedAlpha or 0))
+        Trace("ALPHA_HIDE", cdID, string.format("was=%.2f now=0", savedAlpha or 0), groupName)
         triggerFrame:SetAlpha(0)
         if triggerFrame.Cooldown then
             triggerFrame.Cooldown:SetAlpha(0)
         end
+    elseif triggerFrame and not isAuraFrame then
+        Trace("ALPHA_SKIP", cdID, "not an aura frame - skipping alpha manipulation", groupName)
     end
     
     -- Step 2: Call Layout() to reposition all frames
-    Trace("LAYOUT_START", cdID, "calling group:Layout()")
+    Trace("LAYOUT_START", cdID, "calling group:Layout()", groupName)
     local layoutStart = GetTime()
-    group._centerAlignLayoutInProgress = true
+    group._pixelLayoutInProgress = true
     group:Layout()
-    group._centerAlignLayoutInProgress = nil
+    group._pixelLayoutInProgress = nil
     local layoutEnd = GetTime()
-    Trace("LAYOUT_END", cdID, string.format("took=%.1fms", (layoutEnd - layoutStart) * 1000))
+    Trace("LAYOUT_END", cdID, string.format("took=%.1fms", (layoutEnd - layoutStart) * 1000), groupName)
     
     -- Step 3: Restore alpha by calling OptimizedApplyIconVisuals
     -- This ensures proper state-based alpha (ready/cooldown) is applied AFTER positioning
-    if triggerFrame and ns.CDMEnhance and ns.CDMEnhance.OptimizedApplyIconVisuals then
+    -- ONLY for aura frames - cooldowns were never hidden, so no restore needed
+    if isAuraFrame and triggerFrame and ns.CDMEnhance and ns.CDMEnhance.OptimizedApplyIconVisuals then
         -- Bypass throttle
         triggerFrame._arcLastOptimizedCall = 0
         triggerFrame._arcTargetAlpha = nil  -- Force alpha recalculation
-        Trace("OPTIMIZE_VISUALS", cdID, "calling OptimizedApplyIconVisuals")
+        Trace("OPTIMIZE_VISUALS", cdID, "calling OptimizedApplyIconVisuals", groupName)
         ns.CDMEnhance.OptimizedApplyIconVisuals(triggerFrame)
-        Trace("ALPHA_SHOW", cdID, string.format("final=%.2f", triggerFrame:GetAlpha()))
-    elseif triggerFrame and savedAlpha then
+        Trace("ALPHA_SHOW", cdID, string.format("final=%.2f", triggerFrame:GetAlpha()), groupName)
+    elseif isAuraFrame and triggerFrame and savedAlpha then
         -- Fallback: restore original alpha if OptimizedApplyIconVisuals not available
         triggerFrame:SetAlpha(savedAlpha)
         if triggerFrame.Cooldown then
             triggerFrame.Cooldown:SetAlpha(savedAlpha)
         end
-        Trace("ALPHA_SHOW", cdID, string.format("fallback=%.2f", savedAlpha))
+        Trace("ALPHA_SHOW", cdID, string.format("fallback=%.2f", savedAlpha), groupName)
     end
     
     -- Total time for this trigger
     local totalTime = GetTime() - now
-    Trace("TRIGGER_COMPLETE", cdID, string.format("total=%.1fms", totalTime * 1000))
+    Trace("TRIGGER_COMPLETE", cdID, string.format("total=%.1fms", totalTime * 1000), groupName)
 end
 
 -- Hook a frame's aura events for center alignment immediate response
-local function HookFrameForCenterAlign(frame, group)
-    if not frame or centerAlignHookedFrames[frame] then return end
+-- NOTE: We do NOT capture 'group' in the closure because frames can move between groups.
+-- Instead, we look up the frame's current group dynamically via the Registry.
+local function HookFrameForDynamicLayout(frame, group)
+    if not frame or dynamicLayoutHookedFrames[frame] then return end
+    
+    -- Helper to get frame's CURRENT group (not the one captured at hook time)
+    local function GetFrameCurrentGroup(f)
+        local Registry = ns.FrameRegistry
+        local entry = nil
+        
+        -- Method 1: Try Registry.byAddress
+        if Registry and Registry.byAddress then
+            entry = Registry.byAddress[tostring(f)]
+            if entry and entry.group then
+                local entryGroup = entry.group
+                -- entry.group can be either a group object or a group name string
+                if type(entryGroup) == "table" then
+                    return entryGroup
+                elseif type(entryGroup) == "string" then
+                    local groups = ns.CDMGroups and ns.CDMGroups.groups
+                    if groups and groups[entryGroup] then
+                        -- FIX: Upgrade string to object for future calls
+                        entry.group = groups[entryGroup]
+                        return groups[entryGroup]
+                    end
+                end
+            end
+        end
+        
+        -- Method 2: Fallback - search through groups to find frame's parent
+        local groups = ns.CDMGroups and ns.CDMGroups.groups
+        if groups then
+            local cdID = f.cooldownID
+            if cdID then
+                for _, g in pairs(groups) do
+                    if g.members and g.members[cdID] then
+                        local member = g.members[cdID]
+                        if member.frame == f then
+                            -- FIX: Set entry.group so future lookups are fast
+                            if entry then
+                                entry.group = g
+                            elseif Registry and Registry.GetOrCreate then
+                                -- Create entry if it doesn't exist
+                                local newEntry = Registry:GetOrCreate(f, "DynamicLayout")
+                                if newEntry then
+                                    newEntry.group = g
+                                    newEntry.manipulated = true
+                                    newEntry.manipulationType = "group"
+                                end
+                            end
+                            return g
+                        end
+                    end
+                end
+            end
+        end
+        
+        return nil
+    end
+    
+    -- Helper to check if a group should trigger instant layout
+    -- ONLY triggers for CONFIRMED aura frames in groups with Dynamic Auras enabled.
+    -- Cooldown frames also have aura methods (CDM reuses BuffIcon templates) but
+    -- their state never changes which icons participate in layout.
+    -- During Edit Mode/frame recycling, members may be nil - skip those too.
+    local function ShouldTriggerDynamicLayout(g, triggerFrame)
+        if not g then return false end
+        if not g.dynamicLayout then return false end
+        -- Require positive confirmation: frame must be a KNOWN aura
+        if triggerFrame then
+            local cdID = triggerFrame.cooldownID
+            if cdID and g.members then
+                local member = g.members[cdID]
+                -- Only trigger if member exists AND is confirmed aura frame
+                -- nil member (frame recycling) or cooldown frame → skip
+                if not member or not DL.IsAuraFrame(member) then
+                    return false
+                end
+            else
+                -- No cdID or no members table → can't confirm aura, skip
+                return false
+            end
+        end
+        return true
+    end
     
     -- Only hook BuffIcon frames (they have these methods)
     if frame.OnActiveStateChanged then
         hooksecurefunc(frame, "OnActiveStateChanged", function(self)
-            -- Only trigger for center-aligned groups
-            if group._useCenterAlignPixels or (group.layout and group.layout.alignment == "center") then
-                TriggerCenterAlignLayout(group, "OnActiveStateChanged", self)
+            local currentGroup = GetFrameCurrentGroup(self)
+            if ShouldTriggerDynamicLayout(currentGroup, self) then
+                TriggerDynamicLayout(currentGroup, "OnActiveStateChanged", self)
             end
         end)
     end
     if frame.OnUnitAuraAddedEvent then
         hooksecurefunc(frame, "OnUnitAuraAddedEvent", function(self)
-            -- Only trigger for center-aligned groups
-            if group._useCenterAlignPixels or (group.layout and group.layout.alignment == "center") then
-                TriggerCenterAlignLayout(group, "OnUnitAuraAddedEvent", self)
+            local currentGroup = GetFrameCurrentGroup(self)
+            if ShouldTriggerDynamicLayout(currentGroup, self) then
+                TriggerDynamicLayout(currentGroup, "OnUnitAuraAddedEvent", self)
             end
         end)
     end
     if frame.OnUnitAuraRemovedEvent then
         hooksecurefunc(frame, "OnUnitAuraRemovedEvent", function(self)
-            -- Always trigger for removals (need to recenter remaining auras)
-            if group._useCenterAlignPixels or (group.layout and group.layout.alignment == "center") then
-                TriggerCenterAlignLayout(group, "OnUnitAuraRemovedEvent", self)
+            local currentGroup = GetFrameCurrentGroup(self)
+            if ShouldTriggerDynamicLayout(currentGroup, self) then
+                TriggerDynamicLayout(currentGroup, "OnUnitAuraRemovedEvent", self)
             end
         end)
     end
     
-    centerAlignHookedFrames[frame] = true
+    -- CRITICAL: Hook SetAuraInstanceInfo - this fires when CDM actually has the aura data
+    -- This is often delayed from OnUnitAuraAddedEvent due to secret value processing
+    if frame.SetAuraInstanceInfo then
+        hooksecurefunc(frame, "SetAuraInstanceInfo", function(self, auraData)
+            local currentGroup = GetFrameCurrentGroup(self)
+            if ShouldTriggerDynamicLayout(currentGroup, self) then
+                TriggerDynamicLayout(currentGroup, "SetAuraInstanceInfo", self)
+            end
+        end)
+    end
+    
+    dynamicLayoutHookedFrames[frame] = true
 end
 
--- Hook all frames in a center-aligned group for immediate response
-function DL.SetupCenterAlignHooks(group)
+-- Hook all frames in a group with dynamic layout for immediate response
+-- Works for ALL alignments (center, left, right, top, bottom) when Dynamic Auras is enabled
+function DL.SetupDynamicLayoutHooks(group)
     if not group or not group.members then return end
     
-    -- Check if this group uses center alignment
-    local alignment = group.layout and group.layout.alignment
-    if alignment ~= "center" then return end
-    
-    -- Check if dynamic layout is enabled
+    -- Check if dynamic layout is enabled - that's all we need!
+    -- Any alignment benefits from instant layout when auras change
     if not group.dynamicLayout then return end
     
-    -- Hook all aura frames in this group
+    -- Hook ALL frames in this group that have aura methods
+    -- We removed IsAuraFrame check because it fails during profile load
+    -- when member.viewerType isn't cached yet. HookFrameForDynamicLayout 
+    -- already checks if the frame has the required methods.
     for cdID, member in pairs(group.members) do
-        if member and member.frame and DL.IsAuraFrame(member) then
-            HookFrameForCenterAlign(member.frame, group)
+        if member and member.frame then
+            HookFrameForDynamicLayout(member.frame, group)
         end
     end
 end
@@ -335,31 +484,16 @@ function DL.IsIconInvisible(member)
     local frame = member.frame
     local result
     
-    -- FAST PATH: Check totemData directly (avoids GetTotemState function call overhead)
-    -- This runs at 4Hz for every member, so inline check is much faster
-    local totemData = frame.totemData
-    if totemData then
-        local slotVal = totemData.slot
-        if slotVal and type(slotVal) == "number" and slotVal > 0 then
-            -- Has active totem slot = totem is active = visible
-            result = false
-        else
-            -- Has totemData structure but no valid slot = totem inactive = invisible
-            result = true
-        end
+    -- WoW 12.0: totemData ONLY EXISTS when totem is active (it's a secret table)
+    -- When totem expires, totemData becomes nil
+    -- We can check existence (nil vs not-nil) without triggering secret comparison
+    -- preferredTotemUpdateSlot persists even after totem expires, so don't use it!
+    if frame.totemData ~= nil then
+        result = false  -- totemData exists = totem active = visible
+    elseif frame.auraInstanceID and frame.auraInstanceID > 0 then
+        result = false  -- has aura = visible
     else
-        -- Second check: Regular aura with auraInstanceID
-        -- auraInstanceID is non-secret and works for both buffs and debuffs
-        local auraID = frame.auraInstanceID
-        
-        if auraID and type(auraID) == "number" and auraID > 0 then
-            -- Has a valid auraInstanceID = aura is active = include in layout
-            result = false
-        else
-            -- No auraInstanceID and not a totem = aura is not active
-            -- Treat as invisible for dynamic layout (don't occupy grid space)
-            result = true
-        end
+        result = true   -- no totemData, no aura = invisible
     end
     
     -- Cache result for this tick
@@ -415,19 +549,15 @@ function DL.IsAuraActive(member)
     
     local frame = member.frame
     
-    -- FAST PATH: Check totemData directly (avoids GetTotemState function call overhead)
-    local totemData = frame.totemData
-    if totemData then
-        local slotVal = totemData.slot
-        if slotVal and type(slotVal) == "number" and slotVal > 0 then
-            return true, "totem_active"
-        end
-        return false, "totem_inactive"
+    -- WoW 12.0: totemData ONLY EXISTS when totem is active (it's a secret table)
+    -- When totem expires, totemData becomes nil
+    -- preferredTotemUpdateSlot persists after totem expires, so don't use it!
+    if frame.totemData ~= nil then
+        return true, "totem_active"
     end
     
-    -- Check auraInstanceID
-    local auraID = frame.auraInstanceID
-    if auraID and type(auraID) == "number" and auraID > 0 then
+    -- Regular aura - check auraInstanceID
+    if frame.auraInstanceID and frame.auraInstanceID > 0 then
         return true, "has_auraInstanceID"
     end
     
@@ -542,32 +672,35 @@ function DL.BuildAvailableSlots(rows, cols, alignment, blockedSlots)
     return availableSlots
 end
 
--- Calculate dynamic slot positions for active auras
--- This is the main function called by CDMGroups.Layout()
--- Returns: dynamicPositions table, activeAuras table
+-- ═══════════════════════════════════════════════════════════════════════════
+-- UNIFIED PIXEL POSITIONING (v2.0)
+-- Computes pixel {x,y} offsets from container CENTER for ALL alignments.
+-- Replaces the old grid-slot system (Fill Gaps) and the center-only pixel system.
+-- 
+-- ALL groups always use pixel positioning when options panel is closed.
+-- The excludeInactiveAuras parameter controls whether inactive auras are gaps.
 --
--- STABLE SLOT ASSIGNMENT (v1.4):
---   - Existing auras keep their slot unless compaction is needed
---   - Uses cdID as stable tiebreaker to prevent thrashing
---   - Only compacts when actual gaps exist
-function DL.CalculateDynamicSlots(group, rows, cols)
-    local dynamicPositions = {}  -- [cdID] = {row=, col=}
-    local activeAuras = {}       -- [cdID] = true
+-- When options panel is open: returns empty, Layout() uses grid positions.
+-- When options panel is closed: returns pixel positions for all active items.
+-- ═══════════════════════════════════════════════════════════════════════════
+function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
+    local dynamicPositions = {}  -- [cdID] = {row=, col=} (for tracking/grid sync)
+    local activeAuras = {}       -- [cdID] = true (items participating in layout)
     
     if not group or not group.members then
         return dynamicPositions, activeAuras
     end
     
-    -- Skip dynamic layout when options panel is open - show all icons at saved positions
+    -- Setup instant layout hooks for all frames in this group
+    DL.SetupDynamicLayoutHooks(group)
+    
+    -- Skip pixel positioning when options panel is open - show all icons at saved grid positions
     if IsOptionsPanelOpen() then
-        -- CRITICAL: Clear center align flags so Layout() uses grid-based positioning
-        group._useCenterAlignPixels = nil
-        group._centerAlignPixelOffsets = nil
-        group._centerAlignActiveOrder = nil
-        group._centerAlignIsVertical = nil
+        group._usePixelPositioning = nil
+        group._pixelOffsets = nil
+        group._activeOrder = nil
         
-        -- CRITICAL: Restore member.row/col to saved positions
-        -- During center alignment, these get updated to dynamic positions
+        -- Restore member.row/col to saved positions for grid-based editing
         local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
         local groupName = group.name
         if group.members then
@@ -585,409 +718,377 @@ function DL.CalculateDynamicSlots(group, rows, cols)
         return dynamicPositions, activeAuras
     end
     
-    -- Get alignment setting
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- COLLECT ACTIVE ITEMS
+    -- Cooldowns = always active. Auras = check state when excludeInactiveAuras.
+    -- ═══════════════════════════════════════════════════════════════════════
+    local allActiveItems = {}
+    
+    for cdID, member in pairs(group.members) do
+        if member and member.frame and not member.isPlaceholder then
+            member.cdID = cdID
+            
+            local isAura = DL.IsAuraFrame(member)
+            local isActive = true
+            
+            if isAura and excludeInactiveAuras then
+                -- Only exclude inactive auras when Dynamic Auras is on
+                isActive = DL.IsAuraActive(member)
+            end
+            -- Cooldowns and auras (when Dynamic Auras off) are always active
+            
+            if isActive then
+                activeAuras[cdID] = true
+                table.insert(allActiveItems, { cdID = cdID, member = member, isAura = isAura })
+            else
+                -- Inactive aura - clear dynamic slot
+                member._dynamicSlot = nil
+            end
+        end
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- SORT BY SAVED POSITION ORDER
+    -- The saved grid position defines the user's intended icon ORDER.
+    -- ═══════════════════════════════════════════════════════════════════════
+    local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
+    local groupName = group.name
     local gridShape = ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "multi"
     local alignment = group.layout and group.layout.alignment
     if alignment == nil then
         alignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "left"
     end
     
-    -- Build available slots in alignment order (no blocked slots yet)
-    local availableSlots = DL.BuildAvailableSlots(rows, cols, alignment, {})
+    local horizontalGrowth = group.layout and group.layout.horizontalGrowth or "RIGHT"
+    local verticalGrowth = group.layout and group.layout.verticalGrowth or "DOWN"
     
-    -- Build slot-to-order map for sorting
-    local slotOrderMap = {}  -- [slotIndex] = order (1-based)
-    for order, slotIdx in ipairs(availableSlots) do
-        slotOrderMap[slotIdx] = order
-    end
-    
-    -- ═══════════════════════════════════════════════════════════════════════
-    -- COOLDOWNS CLAIM FIRST SLOTS (sorted by alignment order)
-    -- CD at rightmost position gets first slot with right alignment, etc.
-    -- ═══════════════════════════════════════════════════════════════════════
-    local cooldowns = {}
-    local usedSlots = {}  -- [slotIndex] = true
-    
-    for cdID, member in pairs(group.members) do
-        if member and member.frame and not member.isPlaceholder then
-            member.cdID = cdID
-            if not DL.IsAuraFrame(member) then
-                local currentSlot = (member.row or 0) * cols + (member.col or 0)
-                table.insert(cooldowns, { 
-                    cdID = cdID, 
-                    member = member,
-                    currentSlot = currentSlot,
-                    order = slotOrderMap[currentSlot] or 9999,
-                })
+    local function getSavedOrder(cdID)
+        local saved = savedPositions[cdID]
+        if saved and saved.type == "group" and saved.target == groupName then
+            if saved.sortIndex then
+                return saved.sortIndex
+            end
+            if saved.row ~= nil and saved.col ~= nil then
+                if gridShape == "vertical" then
+                    return saved.col * rows + saved.row
+                end
+                return saved.row * cols + saved.col
             end
         end
+        return 9999
     end
     
-    -- Sort cooldowns by their ORDER in alignment (first in alignment order gets first slot)
-    table.sort(cooldowns, function(a, b)
-        if a.order ~= b.order then
-            return a.order < b.order
+    table.sort(allActiveItems, function(a, b)
+        local aOrder = getSavedOrder(a.cdID)
+        local bOrder = getSavedOrder(b.cdID)
+        if aOrder ~= bOrder then
+            if gridShape == "vertical" and verticalGrowth == "UP" then
+                return aOrder > bOrder
+            elseif gridShape ~= "vertical" and horizontalGrowth == "LEFT" then
+                return aOrder > bOrder
+            end
+            return aOrder < bOrder
         end
-        -- Handle mixed types (string Arc Auras vs numeric CDM IDs)
-        local aType, bType = type(a.cdID), type(b.cdID)
-        if aType ~= bType then
-            return aType == "number"
-        end
-        return a.cdID < b.cdID
+        -- Tiebreaker: cdID for stability
+        local aCdID, bCdID = a.cdID, b.cdID
+        local aType, bType = type(aCdID), type(bCdID)
+        if aType ~= bType then return aType == "number" end
+        return aCdID < bCdID
     end)
     
-    -- Assign cooldowns to first available slots
-    local nextSlotIdx = 1
-    for _, data in ipairs(cooldowns) do
-        if nextSlotIdx <= #availableSlots then
-            local slotIndex = availableSlots[nextSlotIdx]
-            local dynRow = math.floor(slotIndex / cols)
-            local dynCol = slotIndex % cols
-            dynamicPositions[data.cdID] = { row = dynRow, col = dynCol }
-            data.member._dynamicSlot = slotIndex
-            usedSlots[slotIndex] = true
-            nextSlotIdx = nextSlotIdx + 1
-        end
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- LAYOUT SETTINGS
+    -- ═══════════════════════════════════════════════════════════════════════
+    local slotW, slotH
+    if ns.CDMGroups.GetSlotDimensions and group.layout then
+        slotW, slotH = ns.CDMGroups.GetSlotDimensions(group.layout)
+    else
+        slotW = 36
+        slotH = 36
+    end
+    local spacingX = group.layout and group.layout.spacingX or group.layout and group.layout.spacing or 2
+    local spacingY = group.layout and group.layout.spacingY or group.layout and group.layout.spacing or 2
+    local activeCount = #allActiveItems
+    
+    -- Content area dimensions (full grid capacity)
+    local contentW = cols * slotW + (cols - 1) * spacingX
+    local contentH = rows * slotH + (rows - 1) * spacingY
+    
+    -- Initialize pixel offset storage
+    group._pixelOffsets = {}
+    group._activeOrder = {}
+    group._usePixelPositioning = true
+    
+    if activeCount == 0 then
+        return dynamicPositions, activeAuras
     end
     
     -- ═══════════════════════════════════════════════════════════════════════
-    -- AURAS: First-come-first-serve with compaction
-    -- - Existing auras keep their slots (stable)
-    -- - New auras get next available slot
-    -- - When gaps appear, compact to fill them (train behavior)
+    -- HORIZONTAL: Single row - compute X pixel offsets
     -- ═══════════════════════════════════════════════════════════════════════
-    local aurasWithSlot = {}   -- Already have valid _dynamicSlot
-    local aurasNeedSlot = {}   -- Need slot assignment
-    
-    for cdID, member in pairs(group.members) do
-        if member and member.frame and not member.isPlaceholder then
-            member.cdID = cdID
-            
-            if DL.IsAuraFrame(member) then
-                local isActive, reason = DL.IsAuraActive(member)
-                
-                if isActive then
-                    activeAuras[cdID] = true
-                    
-                    -- Check if existing slot is still valid (not taken by cooldown)
-                    local existingSlot = member._dynamicSlot
-                    if existingSlot ~= nil and not usedSlots[existingSlot] and slotOrderMap[existingSlot] then
-                        -- Keep this slot for now
-                        table.insert(aurasWithSlot, {
-                            cdID = cdID,
-                            member = member,
-                            slot = existingSlot,
-                            order = slotOrderMap[existingSlot],
-                        })
-                    else
-                        -- Slot invalid or taken by cooldown - need new assignment
-                        member._dynamicSlot = nil
-                        table.insert(aurasNeedSlot, { cdID = cdID, member = member })
-                    end
-                else
-                    -- Inactive - clear slot
-                    member._dynamicSlot = nil
-                end
-            end
-        end
-    end
-    
-    -- Sort existing auras by their ORDER in alignment (not raw slot number!)
-    -- This ensures correct compaction direction
-    table.sort(aurasWithSlot, function(a, b)
-        return a.order < b.order
-    end)
-    
-    -- ═══════════════════════════════════════════════════════════════════════════
-    -- CENTER ALIGNMENT SPECIAL HANDLING
-    -- For center alignment, we recalculate ALL aura positions every time
-    -- to keep the group of active auras visually centered.
-    -- As auras come/go, the whole group shifts to stay centered.
-    -- Example with 8 cols (no cooldowns):
-    --   1 aura  → col 3 (center)
-    --   2 auras → cols 3,4 (centered pair)
-    --   3 auras → cols 2,3,4 (centered trio)
-    -- ═══════════════════════════════════════════════════════════════════════════
-    if alignment == "center" and (gridShape == "horizontal" or rows == 1) then
-        -- Setup hooks for immediate response to aura changes
-        DL.SetupCenterAlignHooks(group)
-        
-        -- Combine all active auras (existing + new) into one list
-        local allActiveAuras = {}
-        for _, data in ipairs(aurasWithSlot) do
-            table.insert(allActiveAuras, { cdID = data.cdID, member = data.member })
-        end
-        for _, data in ipairs(aurasNeedSlot) do
-            table.insert(allActiveAuras, { cdID = data.cdID, member = data.member })
-        end
-        
-        -- Get SAVED positions from database
-        -- Field is "target" (not "groupName") and must be type == "group"
-        local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
-        local groupName = group.name
-        
-        -- Get growth direction - determines ordering of icons
-        local horizontalGrowth = group.layout and group.layout.horizontalGrowth or "RIGHT"
-        
-        -- Build a lookup of saved positions for sorting
-        local function getSavedOrder(cdID)
-            local saved = savedPositions[cdID]
-            -- Must be type="group" and target matches our group name
-            if saved and saved.type == "group" and saved.target == groupName then
-                if saved.row ~= nil and saved.col ~= nil then
-                    return saved.row * cols + saved.col
-                end
-            end
-            -- No saved position in this group - put at end, use cdID as tiebreaker
-            return 9999
-        end
-        
-        -- Sort by SAVED grid position (the order user arranged their icons in)
-        table.sort(allActiveAuras, function(a, b)
-            local aOrder = getSavedOrder(a.cdID)
-            local bOrder = getSavedOrder(b.cdID)
-            if aOrder ~= bOrder then
-                -- Reverse order if growth is LEFT
-                if horizontalGrowth == "LEFT" then
-                    return aOrder > bOrder
-                end
-                return aOrder < bOrder
-            end
-            -- Tie-breaker for items without saved positions: use cdID
-            local aCdID, bCdID = a.cdID, b.cdID
-            local aType, bType = type(aCdID), type(bCdID)
-            if aType ~= bType then return aType == "number" end
-            if horizontalGrowth == "LEFT" then
-                return aCdID > bCdID
-            end
-            return aCdID < bCdID
-        end)
-        
-        -- Get layout settings
-        local slotW = group.layout and group.layout.slotWidth or 36
-        local slotH = group.layout and group.layout.slotHeight or 36
-        local spacingX = group.layout and group.layout.spacingX or group.layout and group.layout.spacing or 2
-        
-        -- Collect actual effective widths for each icon
+    if gridShape == "horizontal" or rows == 1 then
+        -- Compute total width of active icons
         local iconWidths = {}
         local totalWidth = 0
-        local activeCount = #allActiveAuras
-        
-        for i, data in ipairs(allActiveAuras) do
-            -- Use effective width if set, otherwise slot width
+        for i, data in ipairs(allActiveItems) do
             local effectiveW = data.member._effectiveIconW or slotW
             iconWidths[i] = effectiveW
             totalWidth = totalWidth + effectiveW
         end
-        
-        -- Add spacing between icons
         if activeCount > 1 then
             totalWidth = totalWidth + (activeCount - 1) * spacingX
         end
         
-        -- Calculate positions from CENTER anchor
-        -- Start at left edge of the row, work rightward
-        local currentX = -totalWidth / 2
+        -- Start X based on alignment (relative to container CENTER)
+        local currentX
+        if alignment == "center" then
+            currentX = -totalWidth / 2
+        elseif alignment == "right" then
+            currentX = contentW / 2 - totalWidth
+        else -- left (default)
+            currentX = -contentW / 2
+        end
         
-        -- Store pixel offsets for Layout() to use
-        -- These are X offsets from CENTER of container to CENTER of each icon
-        group._centerAlignPixelOffsets = {}
-        group._centerAlignActiveOrder = {}
-        
-        for i, data in ipairs(allActiveAuras) do
+        -- Assign pixel positions
+        for i, data in ipairs(allActiveItems) do
             local iconW = iconWidths[i]
-            -- Offset to center of this icon
             local centerX = currentX + iconW / 2
-            group._centerAlignPixelOffsets[data.cdID] = centerX
-            group._centerAlignActiveOrder[i] = data.cdID
             
-            -- Move to start of next icon (current icon width + spacing)
+            group._pixelOffsets[data.cdID] = { x = centerX, y = 0 }
+            group._activeOrder[i] = data.cdID
+            
             currentX = currentX + iconW + spacingX
             
-            -- Still set dynamicPositions for compatibility (slot index for tracking)
             dynamicPositions[data.cdID] = { row = 0, col = i - 1 }
             data.member._dynamicSlot = i - 1
         end
-        
-        -- Mark that we're using pixel centering
-        group._useCenterAlignPixels = true
-        group._centerAlignIsVertical = false
-        
-        return dynamicPositions, activeAuras
-    end
     
-    -- CENTER ALIGNMENT FOR VERTICAL (single column) GRIDS
-    if alignment == "center" and (gridShape == "vertical" or cols == 1) then
-        -- Setup hooks for immediate response to aura changes
-        DL.SetupCenterAlignHooks(group)
-        
-        -- Combine all active auras into one list
-        local allActiveAuras = {}
-        for _, data in ipairs(aurasWithSlot) do
-            table.insert(allActiveAuras, { cdID = data.cdID, member = data.member })
-        end
-        for _, data in ipairs(aurasNeedSlot) do
-            table.insert(allActiveAuras, { cdID = data.cdID, member = data.member })
-        end
-        
-        -- Get SAVED positions from database
-        -- Field is "target" (not "groupName") and must be type == "group"
-        local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
-        local groupName = group.name
-        
-        -- Get growth direction - determines ordering of icons
-        local verticalGrowth = group.layout and group.layout.verticalGrowth or "DOWN"
-        
-        -- Build a lookup of saved positions for sorting (vertical: col first, then row)
-        local function getSavedOrder(cdID)
-            local saved = savedPositions[cdID]
-            if saved and saved.type == "group" and saved.target == groupName then
-                if saved.row ~= nil and saved.col ~= nil then
-                    return saved.col * rows + saved.row
-                end
-            end
-            return 9999
-        end
-        
-        -- Sort by SAVED grid position
-        table.sort(allActiveAuras, function(a, b)
-            local aOrder = getSavedOrder(a.cdID)
-            local bOrder = getSavedOrder(b.cdID)
-            if aOrder ~= bOrder then
-                -- Reverse order if growth is UP
-                if verticalGrowth == "UP" then
-                    return aOrder > bOrder
-                end
-                return aOrder < bOrder
-            end
-            -- Tie-breaker
-            local aCdID, bCdID = a.cdID, b.cdID
-            local aType, bType = type(aCdID), type(bCdID)
-            if aType ~= bType then return aType == "number" end
-            if verticalGrowth == "UP" then
-                return aCdID > bCdID
-            end
-            return aCdID < bCdID
-        end)
-        
-        -- Get layout settings
-        local slotW = group.layout and group.layout.slotWidth or 36
-        local slotH = group.layout and group.layout.slotHeight or 36
-        local spacingY = group.layout and group.layout.spacingY or group.layout and group.layout.spacing or 2
-        
-        -- Collect actual effective heights for each icon
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- VERTICAL: Single column - compute Y pixel offsets
+    -- ═══════════════════════════════════════════════════════════════════════
+    elseif gridShape == "vertical" or cols == 1 then
+        -- Compute total height of active icons
         local iconHeights = {}
         local totalHeight = 0
-        local activeCount = #allActiveAuras
-        
-        for i, data in ipairs(allActiveAuras) do
-            -- Use effective height if set, otherwise slot height
+        for i, data in ipairs(allActiveItems) do
             local effectiveH = data.member._effectiveIconH or slotH
             iconHeights[i] = effectiveH
             totalHeight = totalHeight + effectiveH
         end
-        
-        -- Add spacing between icons
         if activeCount > 1 then
             totalHeight = totalHeight + (activeCount - 1) * spacingY
         end
         
-        -- Calculate positions from CENTER anchor
-        -- Start at top edge of the column, work downward
-        local currentY = totalHeight / 2
+        -- Start Y based on alignment (Y is positive upward from center)
+        local currentY
+        if alignment == "center" then
+            currentY = totalHeight / 2
+        elseif alignment == "bottom" then
+            currentY = -(contentH / 2) + totalHeight
+        else -- top (default)
+            currentY = contentH / 2
+        end
         
-        -- Store pixel offsets for Layout() to use
-        -- These are Y offsets from CENTER of container to CENTER of each icon
-        group._centerAlignPixelOffsets = {}
-        group._centerAlignActiveOrder = {}
-        
-        for i, data in ipairs(allActiveAuras) do
+        -- Assign pixel positions
+        for i, data in ipairs(allActiveItems) do
             local iconH = iconHeights[i]
-            -- Offset to center of this icon (Y goes down, so subtract)
             local centerY = currentY - iconH / 2
-            group._centerAlignPixelOffsets[data.cdID] = centerY
-            group._centerAlignActiveOrder[i] = data.cdID
             
-            -- Move to start of next icon (downward)
+            group._pixelOffsets[data.cdID] = { x = 0, y = centerY }
+            group._activeOrder[i] = data.cdID
+            
             currentY = currentY - iconH - spacingY
             
-            -- Still set dynamicPositions for compatibility
             dynamicPositions[data.cdID] = { row = i - 1, col = 0 }
             data.member._dynamicSlot = i - 1
         end
+    
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- MULTI-DIMENSIONAL GRAVITY
+    --
+    -- Icons are placed at their saved grid positions, then gravity compacts:
+    --   top    → column gravity UP (icons keep column, compact toward row 0)
+    --   bottom → column gravity DOWN (icons keep column, compact toward last row)
+    --   left   → row gravity LEFT (icons keep row, pixel-pack from left)
+    --   right  → row gravity RIGHT (icons keep row, pixel-pack from right)
+    --   center → row gravity + pixel-center each row horizontally
+    -- ═══════════════════════════════════════════════════════════════════════
+    else
+        -- Step 1: Build 2D grid from saved positions
+        local grid = {}
+        for r = 0, rows - 1 do grid[r] = {} end
+        local unplaced = {}
         
-        -- Mark that we're using pixel centering
-        group._useCenterAlignPixels = true
-        group._centerAlignIsVertical = true
-        
-        return dynamicPositions, activeAuras
-    end
-    
-    -- NOT using center alignment - clear any pixel centering state from previous Layout
-    group._useCenterAlignPixels = nil
-    group._centerAlignPixelOffsets = nil
-    group._centerAlignActiveOrder = nil
-    group._centerAlignIsVertical = nil
-    
-    -- Mark all existing aura slots as used FIRST (prevents fighting)
-    for _, data in ipairs(aurasWithSlot) do
-        usedSlots[data.slot] = true
-    end
-    
-    -- Check if compaction is needed (gaps between cooldowns and existing auras)
-    local firstAuraSlotIdx = #cooldowns + 1  -- First slot for auras (after CDs)
-    local needsCompaction = false
-    local expectedSlotIdx = firstAuraSlotIdx
-    
-    for _, data in ipairs(aurasWithSlot) do
-        local expectedSlot = availableSlots[expectedSlotIdx]
-        if data.slot ~= expectedSlot then
-            needsCompaction = true
-            break
-        end
-        expectedSlotIdx = expectedSlotIdx + 1
-    end
-    
-    -- Assign aura positions
-    if needsCompaction then
-        -- Compact: reassign all auras to fill gaps (maintains their order)
-        nextSlotIdx = firstAuraSlotIdx
-        for _, data in ipairs(aurasWithSlot) do
-            if nextSlotIdx <= #availableSlots then
-                local slotIndex = availableSlots[nextSlotIdx]
-                local dynRow = math.floor(slotIndex / cols)
-                local dynCol = slotIndex % cols
-                dynamicPositions[data.cdID] = { row = dynRow, col = dynCol }
-                data.member._dynamicSlot = slotIndex
-                nextSlotIdx = nextSlotIdx + 1
+        for _, data in ipairs(allActiveItems) do
+            local saved = savedPositions[data.cdID]
+            local sRow, sCol
+            if saved and saved.type == "group" and saved.target == groupName then
+                sRow, sCol = saved.row, saved.col
+            end
+            if sRow and sCol and sRow >= 0 and sRow < rows and sCol >= 0 and sCol < cols and not grid[sRow][sCol] then
+                grid[sRow][sCol] = data
+            else
+                table.insert(unplaced, data)
             end
         end
-    else
-        -- No compaction: keep existing assignments stable
-        for _, data in ipairs(aurasWithSlot) do
-            local slotIndex = data.slot
-            local dynRow = math.floor(slotIndex / cols)
-            local dynCol = slotIndex % cols
-            dynamicPositions[data.cdID] = { row = dynRow, col = dynCol }
-        end
-        nextSlotIdx = firstAuraSlotIdx + #aurasWithSlot
-    end
-    
-    -- Assign NEW auras to next available slots
-    for _, data in ipairs(aurasNeedSlot) do
-        -- Find next unused slot
-        while nextSlotIdx <= #availableSlots and usedSlots[availableSlots[nextSlotIdx]] do
-            nextSlotIdx = nextSlotIdx + 1
+        
+        -- Step 2: Apply gravity
+        if alignment == "top" or alignment == "bottom" or alignment == "center_v" then
+            -- COLUMN GRAVITY: for each column, collect icons and compact vertically
+            for c = 0, cols - 1 do
+                local colItems = {}
+                for r = 0, rows - 1 do
+                    if grid[r][c] then
+                        table.insert(colItems, grid[r][c])
+                        grid[r][c] = nil
+                    end
+                end
+                if alignment == "top" then
+                    for i, d in ipairs(colItems) do grid[i - 1][c] = d end
+                elseif alignment == "bottom" then
+                    local startRow = rows - #colItems
+                    for i, d in ipairs(colItems) do grid[startRow + i - 1][c] = d end
+                else -- center_v: center within column
+                    local startRow = math.floor((rows - #colItems) / 2)
+                    for i, d in ipairs(colItems) do grid[startRow + i - 1][c] = d end
+                end
+            end
+        else -- left, right, center_h
+            -- ROW GRAVITY: for each row, collect icons and compact horizontally
+            for r = 0, rows - 1 do
+                local rowItems = {}
+                for c = 0, cols - 1 do
+                    if grid[r][c] then
+                        table.insert(rowItems, grid[r][c])
+                        grid[r][c] = nil
+                    end
+                end
+                if alignment == "right" then
+                    local startCol = cols - #rowItems
+                    for i, d in ipairs(rowItems) do grid[r][startCol + i - 1] = d end
+                else -- left, center_h (center_h grid positions are temporary, pixel step handles actual X)
+                    for i, d in ipairs(rowItems) do grid[r][i - 1] = d end
+                end
+            end
         end
         
-        if nextSlotIdx <= #availableSlots then
-            local slotIndex = availableSlots[nextSlotIdx]
-            local dynRow = math.floor(slotIndex / cols)
-            local dynCol = slotIndex % cols
-            dynamicPositions[data.cdID] = { row = dynRow, col = dynCol }
-            data.member._dynamicSlot = slotIndex
-            usedSlots[slotIndex] = true
-            nextSlotIdx = nextSlotIdx + 1
+        -- Step 3: Place unplaced items in first available slot
+        for _, data in ipairs(unplaced) do
+            local placed = false
+            for r = 0, rows - 1 do
+                for c = 0, cols - 1 do
+                    if not grid[r][c] then
+                        grid[r][c] = data
+                        placed = true
+                        break
+                    end
+                end
+                if placed then break end
+            end
+        end
+        
+        -- Step 4: Convert grid to pixel offsets from container CENTER
+        local orderIdx = 1
+        for r = 0, rows - 1 do
+            -- Y position for this row (from container center, Y+ is up)
+            local rowCenterY = contentH / 2 - r * (slotH + spacingY) - slotH / 2
+            
+            -- Collect items in this row (left-to-right order)
+            local rowItems = {}
+            for c = 0, cols - 1 do
+                if grid[r][c] then
+                    table.insert(rowItems, { data = grid[r][c], col = c })
+                end
+            end
+            
+            if #rowItems > 0 then
+                if alignment == "top" or alignment == "bottom" then
+                    -- Column gravity: icons keep their column position
+                    -- X = grid-slot center based on column index
+                    for _, item in ipairs(rowItems) do
+                        local colCenterX = -contentW / 2 + item.col * (slotW + spacingX) + slotW / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = rowCenterY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = r, col = item.col }
+                        item.data.member._dynamicSlot = r * cols + item.col
+                    end
+                    
+                elseif alignment == "center_v" then
+                    -- Column gravity + vertical centering: icons keep their column X position
+                    -- Y was already set by centered gravity in Step 2
+                    for _, item in ipairs(rowItems) do
+                        local colCenterX = -contentW / 2 + item.col * (slotW + spacingX) + slotW / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = rowCenterY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = r, col = item.col }
+                        item.data.member._dynamicSlot = r * cols + item.col
+                    end
+                    
+                elseif alignment == "center_h" then
+                    -- Row gravity + pixel-center: center this row's icons horizontally
+                    local rowTotalW = 0
+                    local widths = {}
+                    for i, item in ipairs(rowItems) do
+                        local w = item.data.member._effectiveIconW or slotW
+                        widths[i] = w
+                        rowTotalW = rowTotalW + w
+                    end
+                    if #rowItems > 1 then
+                        rowTotalW = rowTotalW + (#rowItems - 1) * spacingX
+                    end
+                    
+                    local currentX = -rowTotalW / 2
+                    for i, item in ipairs(rowItems) do
+                        local iconW = widths[i]
+                        local centerX = currentX + iconW / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = centerX, y = rowCenterY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = r, col = i - 1 }
+                        item.data.member._dynamicSlot = r * cols + (i - 1)
+                        
+                        currentX = currentX + iconW + spacingX
+                    end
+                    
+                elseif alignment == "left" then
+                    -- Row gravity: pixel-pack from left edge
+                    local currentX = -contentW / 2
+                    for i, item in ipairs(rowItems) do
+                        local iconW = item.data.member._effectiveIconW or slotW
+                        local centerX = currentX + iconW / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = centerX, y = rowCenterY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = r, col = i - 1 }
+                        item.data.member._dynamicSlot = r * cols + (i - 1)
+                        
+                        currentX = currentX + iconW + spacingX
+                    end
+                    
+                else -- right
+                    -- Row gravity: pixel-pack from right edge
+                    local currentX = contentW / 2
+                    for i = #rowItems, 1, -1 do
+                        local item = rowItems[i]
+                        local iconW = item.data.member._effectiveIconW or slotW
+                        local centerX = currentX - iconW / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = centerX, y = rowCenterY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = r, col = cols - (#rowItems - i + 1) }
+                        item.data.member._dynamicSlot = r * cols + cols - (#rowItems - i + 1)
+                        
+                        currentX = currentX - iconW - spacingX
+                    end
+                end
+            end
         end
     end
     
@@ -998,8 +1099,9 @@ end
 -- LAYOUT HELPERS (Used by CDMGroups.lua Layout())
 -- ═══════════════════════════════════════════════════════════════════════════
 
--- Build processing order for members: cooldowns first (walls), then active auras, then inactive
--- This ensures cooldowns claim their positions FIRST as immovable walls
+-- Build processing order for members: active items first, then inactive auras
+-- Since cooldowns are now treated as "always active" in dynamic layout,
+-- they are included in activeAuras and processed with other active items.
 -- Returns: ordered list of cdIDs
 function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
     local processingOrder = {}
@@ -1009,8 +1111,7 @@ function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
     end
     
     if dynEnabled then
-        local cooldownList = {}   -- Cooldowns are WALLS - process first!
-        local activeList = {}     -- Active auras get dynamic positions
+        local activeList = {}     -- Active items (cooldowns + active auras)
         local inactiveList = {}   -- Inactive auras get whatever's left
         
         for cdID, member in pairs(group.members) do
@@ -1018,13 +1119,9 @@ function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
                 -- Store cdID on member for fallback lookup
                 member.cdID = cdID
                 
-                -- Use robust IsAuraFrame check
-                local isAura = DL.IsAuraFrame(member)
-                
-                if not isAura then
-                    -- Cooldowns/utilities are WALLS - process first!
-                    table.insert(cooldownList, cdID)
-                elseif isAura and activeAuras[cdID] then
+                -- Check if this item is active (in activeAuras table)
+                -- Cooldowns are now marked as active in CalculateDynamicSlots
+                if activeAuras[cdID] then
                     table.insert(activeList, cdID)
                 else
                     table.insert(inactiveList, cdID)
@@ -1032,8 +1129,7 @@ function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
             end
         end
         
-        -- Combine in priority order: COOLDOWNS FIRST (walls), then active auras, then inactive
-        for _, cdID in ipairs(cooldownList) do table.insert(processingOrder, cdID) end
+        -- Combine in priority order: active items first, then inactive
         for _, cdID in ipairs(activeList) do table.insert(processingOrder, cdID) end
         for _, cdID in ipairs(inactiveList) do table.insert(processingOrder, cdID) end
     else
@@ -1318,21 +1414,19 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
     local wasOpen = state.optionsPanelWasOpen
     state.optionsPanelWasOpen = optionsPanelOpen
     
-    -- When options panel JUST OPENED, reset center-aligned groups to grid positions
-    -- This runs immediately without throttle to ensure instant visual feedback
+    -- When options panel JUST OPENED, reset ALL groups to grid positions
+    -- Pixel positioning is cleared so users can freely edit icon positions
     if optionsPanelOpen and not wasOpen then
         if ns.CDMGroups.groups then
             local savedPositions = ns.CDMGroups.savedPositions or {}
             for groupName, group in pairs(ns.CDMGroups.groups) do
-                if group._useCenterAlignPixels then
-                    -- Clear center align flags
-                    group._useCenterAlignPixels = nil
-                    group._centerAlignPixelOffsets = nil
-                    group._centerAlignActiveOrder = nil
-                    group._centerAlignIsVertical = nil
+                if group._usePixelPositioning then
+                    -- Clear pixel positioning flags
+                    group._usePixelPositioning = nil
+                    group._pixelOffsets = nil
+                    group._activeOrder = nil
                     
-                    -- CRITICAL: Restore member.row/col to saved positions
-                    -- During center alignment, these get updated to dynamic positions
+                    -- Restore member.row/col to saved positions for grid editing
                     if group.members then
                         for cdID, member in pairs(group.members) do
                             local saved = savedPositions[cdID]
@@ -1354,18 +1448,18 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
         end
     end
     
-    -- When options panel JUST CLOSED, trigger reflow/layout to restore proper positions
+    -- When options panel JUST CLOSED, trigger layout to restore pixel positioning
     if not optionsPanelOpen and wasOpen then
         if ns.CDMGroups.groups then
             for groupName, group in pairs(ns.CDMGroups.groups) do
-                -- For autoReflow groups: call ReflowIcons to fill gaps
-                -- This handles BOTH dynamicLayout and non-dynamicLayout groups with Fill Gaps enabled
-                if group.autoReflow and group.ReflowIcons then
-                    group:ReflowIcons()
-                elseif group.dynamicLayout and group.Layout then
-                    -- For dynamicLayout-only groups (no autoReflow), just trigger layout
-                    -- CalculateDynamicSlots will re-enable center alignment
-                    group:Layout()
+                -- All groups get Layout() to re-enable pixel positioning
+                -- For groups with Dynamic Auras, this also handles aura compaction
+                if group.Layout then
+                    if group.autoReflow and group.ReflowIcons then
+                        group:ReflowIcons()
+                    else
+                        group:Layout()
+                    end
                 end
             end
         end
@@ -1430,6 +1524,22 @@ function DL.SetEnabled(group, enabled)
     if not group then return end
     
     group.dynamicLayout = enabled
+    
+    -- Ensure alignment has a default value when enabling dynamicLayout
+    -- The UI shows "Center" as default but if alignment was never changed, it's nil
+    -- Having an explicit alignment value ensures consistent behavior across all code paths
+    if enabled and group.layout and not group.layout.alignment then
+        local rows = group.layout.gridRows or 1
+        local cols = group.layout.gridCols or 1
+        local gridShape = ns.CDMGroups and ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "horizontal"
+        local defaultAlignment = ns.CDMGroups and ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "center"
+        group.layout.alignment = defaultAlignment
+        -- Also save to DB
+        local db = group.getDB and group.getDB()
+        if db then
+            db.alignment = defaultAlignment
+        end
+    end
     
     -- Clear visibility tracking for this group
     if group.members then

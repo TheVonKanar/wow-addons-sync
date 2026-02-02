@@ -1,6 +1,8 @@
 # Platynator
 
-## [293](https://github.com/TheMouseNest/Platynator/tree/293) (2026-01-29)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/292...293) 
+## [299](https://github.com/TheMouseNest/Platynator/tree/299) (2026-02-02)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/298...299) 
 
-- Midnight Beta: Fix health being locked at 100% on health bar  
+- Revert "Fix transition detection between open-world and delves"  
+- Add "Raid Grey" texture for bar backgrounds  
+- Make scroll region for style dropdown in "Style Select" tab longer  

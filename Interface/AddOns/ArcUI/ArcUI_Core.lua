@@ -1,6 +1,10 @@
 -- ===================================================================
 -- ArcUI_Core.lua
 -- Core tracking system supporting multiple bar slots
+-- v2.10.0: Hook-based stack updates (replaces polling)
+--   - Hooks CDM frame RefreshData for instant stack updates
+--   - No more polling delays for high-haste builds
+--   - Arcane Salvo, Maelstrom Weapon, etc. now update immediately
 -- v2.7.0: Added sound utilities for conditional events system
 -- 
 -- DEBUFF DURATION FIX (v2.2.1):
@@ -238,7 +242,87 @@ local UpdateAllBars
 local UpdateBarBuffInfo
 
 -- ===================================================================
--- POLLING SYSTEM
+-- HOOK-BASED STACK UPDATES (v2.10.0)
+-- Instead of polling, we hook CDM frame's RefreshData method
+-- This gives us instant updates when stacks change
+-- ===================================================================
+local hookedCDMFrames = {}  -- [frame] = { barNumbers = {barNum = true, ...} }
+local frameToBarMapping = {}  -- [frame] = {barNum1, barNum2, ...}
+
+-- Called when a hooked CDM frame's RefreshData fires
+local function OnCDMFrameRefreshData(frame)
+  -- Find which bars use this frame and update them immediately
+  local bars = frameToBarMapping[frame]
+  if bars then
+    for _, barNumber in ipairs(bars) do
+      UpdateBarBuffInfo(barNumber)
+    end
+  end
+end
+
+-- Hook a CDM frame for instant stack updates
+local function HookCDMFrameForStackUpdates(frame, barNumber)
+  if not frame then return end
+  
+  -- Initialize tracking for this frame
+  if not hookedCDMFrames[frame] then
+    hookedCDMFrames[frame] = { barNumbers = {} }
+    frameToBarMapping[frame] = {}
+    
+    -- Hook RefreshData - this is called when aura data (including stacks) changes
+    if frame.RefreshData then
+      hooksecurefunc(frame, "RefreshData", function(self)
+        OnCDMFrameRefreshData(self)
+      end)
+    end
+    
+    -- Also hook RefreshApplications for extra safety (called within RefreshData)
+    if frame.RefreshApplications then
+      hooksecurefunc(frame, "RefreshApplications", function(self)
+        OnCDMFrameRefreshData(self)
+      end)
+    end
+    
+    -- Hook SetAuraInstanceInfo - fires when aura data becomes available
+    if frame.SetAuraInstanceInfo then
+      hooksecurefunc(frame, "SetAuraInstanceInfo", function(self, auraData)
+        OnCDMFrameRefreshData(self)
+      end)
+    end
+  end
+  
+  -- Register this bar as using this frame
+  if not hookedCDMFrames[frame].barNumbers[barNumber] then
+    hookedCDMFrames[frame].barNumbers[barNumber] = true
+    table.insert(frameToBarMapping[frame], barNumber)
+  end
+end
+
+-- Unregister a bar from a frame's hooks
+local function UnhookBarFromFrame(frame, barNumber)
+  if not frame or not hookedCDMFrames[frame] then return end
+  
+  hookedCDMFrames[frame].barNumbers[barNumber] = nil
+  
+  -- Rebuild the bar list for this frame
+  local newList = {}
+  for bn in pairs(hookedCDMFrames[frame].barNumbers) do
+    table.insert(newList, bn)
+  end
+  frameToBarMapping[frame] = newList
+end
+
+-- Clear all bar registrations (call on spec change, reload, etc.)
+local function ClearAllFrameHookRegistrations()
+  for frame in pairs(hookedCDMFrames) do
+    hookedCDMFrames[frame].barNumbers = {}
+    frameToBarMapping[frame] = {}
+  end
+end
+
+-- ===================================================================
+-- LEGACY POLLING (kept for fallback/compatibility)
+-- Only used for bars without direct CDM frame hooks
 -- ===================================================================
 local updatePollTimers = {}
 
@@ -1512,6 +1596,10 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       barCdID = state.cachedBarFrame.cooldownInfo.cooldownID
                     end
                     barValid = (barCdID == activeCooldownID)
+                    -- v2.10.0: Hook frame for instant stack updates
+                    if barValid then
+                      HookCDMFrameForStackUpdates(state.cachedBarFrame, barNum)
+                    end
                   end
                   local iconValid = false
                   if state.cachedFrame then
@@ -1520,6 +1608,10 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       iconCdID = state.cachedFrame.cooldownInfo.cooldownID
                     end
                     iconValid = (iconCdID == activeCooldownID)
+                    -- v2.10.0: Hook frame for instant stack updates
+                    if iconValid then
+                      HookCDMFrameForStackUpdates(state.cachedFrame, barNum)
+                    end
                   end
                   state.trackingOK = barValid or iconValid
                   if not state.trackingOK then
@@ -1545,6 +1637,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       tostring(frameCdID), tostring(frameCdID == activeCooldownID)))
                     if frameCdID == activeCooldownID then
                       state.trackingOK = true
+                      -- v2.10.0: Hook frame for instant stack updates
+                      HookCDMFrameForStackUpdates(state.cachedFrame, barNum)
                     else
                       state.trackingOK = false
                       state.cachedFrame = nil
@@ -1569,6 +1663,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                   state.trackingOK = true
                   state.cachedFrame = frame
                   validCooldownIDs[activeCooldownID] = "icon"
+                  -- v2.10.0: Hook frame for instant stack updates
+                  HookCDMFrameForStackUpdates(frame, barNum)
                 else
                   -- Try bar frame
                   local barFrame = FindBarFrameByCooldownID(activeCooldownID)
@@ -1581,6 +1677,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       state.trackingOK = true
                       state.cachedBarFrame = barFrame
                       validCooldownIDs[activeCooldownID] = "bar"
+                      -- v2.10.0: Hook frame for instant stack updates
+                      HookCDMFrameForStackUpdates(barFrame, barNum)
                     else
                       state.trackingOK = false
                     end
@@ -1599,6 +1697,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                     state.trackingOK = true
                     state.cachedBarFrame = barFrame
                     validCooldownIDs[activeCooldownID] = "bar"
+                    -- v2.10.0: Hook frame for instant stack updates
+                    HookCDMFrameForStackUpdates(barFrame, barNum)
                   else
                     state.trackingOK = false
                   end
@@ -1623,6 +1723,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                   state.cachedFrame = recoveredFrame
                   validCooldownIDs[originalCdID] = "icon"
                   debugPrint(string.format("    RECOVERED via CDMEnhance, trackingOK=true"))
+                  -- v2.10.0: Hook frame for instant stack updates
+                  HookCDMFrameForStackUpdates(recoveredFrame, barNum)
                 end
               end
             end
@@ -2199,47 +2301,51 @@ UpdateBarBuffInfo = function(barNumber)
       stacks = 0
     end
   -- ═══════════════════════════════════════════════════════════════════
-  -- PET/TOTEM/GROUND EFFECT TRACKING - Use totemData from CDM frame
-  -- Creates DurationObject from totemData for secret-safe duration bars
+  -- PET/TOTEM/GROUND EFFECT TRACKING - Use preferredTotemUpdateSlot from CDM frame
+  -- WoW 12.0: frame.totemData AND GetTotemInfo() returns are SECRET!
+  -- Use issecretvalue() to detect existence: secret = data exists = totem active
   -- "pet" = guardians/pets (Dreadstalkers, Wild Imps, etc.)
   -- "totem" = actual totems (Healing Stream, Capacitor, etc.)
   -- "ground" = ground effects (Consecration, Efflorescence, Death and Decay, etc.)
-  -- All use the same totemData internally
   -- ═══════════════════════════════════════════════════════════════════
   elseif trackType == "pet" or trackType == "totem" or trackType == "ground" then
     local cdmFrame = sourceType == "bar" and barFrame or frame or barFrame
     
-    if cdmFrame and cdmFrame.totemData then
-      local totemData = cdmFrame.totemData
-      -- totemData.slot is NON-SECRET, use it to check if totem is active
-      local slot = totemData.slot
-      if slot and type(slot) == "number" and slot > 0 then
+    -- PRIMARY: Use preferredTotemUpdateSlot (Beta) or totemData.slot (Live)
+    -- Beta: preferredTotemUpdateSlot is non-secret, totemData is secret table
+    -- Live: preferredTotemUpdateSlot may not exist, totemData.slot is accessible
+    local slot = cdmFrame and (cdmFrame.preferredTotemUpdateSlot or (cdmFrame.totemData and cdmFrame.totemData.slot))
+    if slot and type(slot) == "number" and slot > 0 then
+      -- Verify totem is active using game API
+      -- WoW 12.0: GetTotemInfo returns SECRET values when totem exists
+      local haveTotem, name, startTime, duration = GetTotemInfo(slot)
+      
+      -- Check if totem exists: secret return = data protected = totem active
+      local totemExists = false
+      if issecretvalue(haveTotem) then
+        -- Secret boolean means totem data exists
+        totemExists = true
+      elseif haveTotem then
+        -- Non-secret truthy value
+        totemExists = true
+      end
+      
+      if totemExists then
         active = true
         stacks = 0  -- Totems don't have stacks
-        -- Store totemData reference for duration bar creation later
-        state.totemData = totemData
-        state.totemSlot = slot
+        -- Store cdmFrame reference - query slot fresh each time!
+        -- This handles frame recycling where preferredTotemUpdateSlot changes
+        state.totemCdmFrame = cdmFrame
       else
         active = false
         stacks = 0
-        state.totemData = nil
-        state.totemSlot = nil
+        state.totemCdmFrame = nil
       end
     else
-      -- No totemData - check using GetTotemInfo API as fallback
-      -- We need the cooldownInfo to get the totem slot
-      local cooldownInfo = cdmFrame and cdmFrame.cooldownInfo
-      if cooldownInfo then
-        -- Try to find which totem slot this corresponds to
-        -- For now, mark as inactive if no totemData
-        active = false
-        stacks = 0
-      else
-        active = false
-        stacks = 0
-      end
-      state.totemData = nil
-      state.totemSlot = nil
+      -- No preferredTotemUpdateSlot - mark as inactive
+      active = false
+      stacks = 0
+      state.totemCdmFrame = nil
     end
   -- ═══════════════════════════════════════════════════════════════════
   -- DEBUFF TRACKING - Check if CDM frame has auraInstanceID set
@@ -2883,49 +2989,68 @@ UpdateBarBuffInfo = function(barNumber)
         }
       end
     elseif trackType == "pet" or trackType == "totem" or trackType == "ground" then
-      -- PET/TOTEM/GROUND EFFECT TRACKING: Create DurationObject from totemData
-      -- totemData contains secret values, but DurationObject accepts secrets!
-      if state.totemData then
-        local totemData = state.totemData
-        local totemSlot = state.totemSlot
+      -- PET/TOTEM/GROUND EFFECT TRACKING: Create duration reference
+      -- WoW 12.0: Use fast polling with GetTotemTimeLeft + SetValue
+      -- SetValue is "AllowedWhenTainted" - addon code CAN pass secrets
+      if state.totemCdmFrame then
+        local totemCdmFrame = state.totemCdmFrame
+        -- Capture original cooldownID - this identifies OUR specific totem
+        local originalCooldownID = totemCdmFrame.cooldownID
+        
         effectiveDurationRef = {
           GetValue = function()
-            -- Use GetTotemTimeLeft for remaining duration
-            if totemSlot and GetTotemTimeLeft then
-              local timeLeft = GetTotemTimeLeft(totemSlot)
-              -- timeLeft may be secret in combat, but Display.lua handles this
-              return timeLeft or 0
+            -- Check if frame is still tracking OUR cooldown (non-secret check)
+            if totemCdmFrame.cooldownID ~= originalCooldownID then return 0 end
+            
+            -- Check if frame is still active
+            local isActive = totemCdmFrame.isActive
+            local frameActive = false
+            if issecretvalue(isActive) then
+              frameActive = true  -- Secret = combat state = still tracking
+            elseif isActive then
+              frameActive = true
+            end
+            if not frameActive then return 0 end
+            
+            -- Query slot FRESH from frame each time (Beta: preferredTotemUpdateSlot, Live: totemData.slot)
+            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot or (totemCdmFrame.totemData and totemCdmFrame.totemData.slot)
+            if not currentSlot or currentSlot <= 0 then return 0 end
+            
+            -- Use GetTotemTimeLeft - returns secret in combat but SetValue accepts it
+            if GetTotemTimeLeft then
+              local timeLeft = GetTotemTimeLeft(currentSlot)
+              if timeLeft then
+                return timeLeft
+              end
             end
             return 0
           end,
           GetMinMaxValues = function()
-            -- Return user-configured maxDuration as non-secret
             local maxDur = barConfig.tracking.maxDuration or 30
             return 0, maxDur
           end,
-          -- For ColorCurve support - provide totem info for DurationObject creation
           GetTotemInfo = function()
-            return totemSlot, totemData
-          end,
-          -- Create a DurationObject from totemData (for SetTimerDuration and EvaluateRemainingPercent)
-          GetDurationObject = function()
-            if not totemData then return nil end
-            if not C_DurationUtil or not C_DurationUtil.CreateDuration then return nil end
+            -- Check if frame is still tracking OUR cooldown
+            if totemCdmFrame.cooldownID ~= originalCooldownID then return nil, nil end
             
-            local durObj = C_DurationUtil.CreateDuration()
-            -- SetTimeFromEnd accepts secrets!
-            local ok = pcall(function()
-              durObj:SetTimeFromEnd(
-                totemData.expirationTime,  -- secret
-                totemData.duration,         -- secret
-                totemData.modRate or 1      -- secret (with fallback)
-              )
-            end)
-            if ok then
-              return durObj
+            local isActive = totemCdmFrame.isActive
+            local frameActive = false
+            if issecretvalue(isActive) then
+              frameActive = true
+            elseif isActive then
+              frameActive = true
             end
+            if not frameActive then return nil, nil end
+            
+            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot or (totemCdmFrame.totemData and totemCdmFrame.totemData.slot)
+            return currentSlot, nil
+          end,
+          -- No DurationObject - use polling
+          GetDurationObject = function()
             return nil
-          end
+          end,
+          needsFastPolling = true,
+          pollingInterval = 0.02
         }
       end
     end
@@ -3024,11 +3149,11 @@ eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")  -- For cooldown bars
 eventFrame:RegisterEvent("SPELL_UPDATE_CHARGES")   -- For charge-based abilities
 
 -- ═══════════════════════════════════════════════════════════════════════════
--- EVENT THROTTLING: Prevent excessive updates from rapid event firing
--- UNIT_AURA can fire 20+ times/sec, we only need to update 8-10 times/sec
+-- EVENT THROTTLING (v2.10.0): Reduced importance since hooks handle instant updates
+-- This is now just a safety net for events that don't trigger hooks directly
 -- ═══════════════════════════════════════════════════════════════════════════
 local lastUpdateTime = 0
-local UPDATE_THROTTLE = 0.5  -- PERFORMANCE TEST: Max 2 updates/sec from events (was 10)
+local UPDATE_THROTTLE = 0.1  -- 10 updates/sec max (hooks provide instant updates)
 local pendingUpdate = false
 
 local function ThrottledUpdateAllBars()
@@ -3067,13 +3192,20 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     ThrottledUpdateAllBars()  -- Throttled!
     SchedulePollsForAllBars()
   elseif event == "PLAYER_ENTERING_WORLD" then
-    -- Update immediately
-    UpdateCooldownChargeBars()
-    UpdateAllBars()
-    -- Validate CDM frames, then update again
-    C_Timer.After(1.0, function() 
+    -- Bars stay hidden until initialization completes (prevents flash on reload)
+    -- Delay allows frames to be created and positioned before showing
+    C_Timer.After(0.5, function() 
       ns.API.ValidateAllBarTracking()
-      UpdateCooldownChargeBars()  -- Update again after validation
+      UpdateCooldownChargeBars()
+      -- Mark initialization complete - bars can now show
+      if ns.Display and ns.Display.MarkInitializationComplete then
+        ns.Display.MarkInitializationComplete()
+      end
+      -- Now refresh all bars with proper appearance
+      if ns.Display and ns.Display.RefreshAllBars then
+        ns.Display.RefreshAllBars()
+      end
+      UpdateAllBars()
     end)
   elseif event == "PLAYER_REGEN_ENABLED" then
     -- Left combat - invalidate visibility cache
@@ -3124,6 +3256,9 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
   elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
     -- Invalidate cross-spec cooldownID cache first
     InvalidateSpellToCooldownIDCache()
+    
+    -- v2.10.0: Clear frame hook registrations (frames may change on spec change)
+    ClearAllFrameHookRegistrations()
     
     -- Invalidate spec cache in Display module
     if ns.Display and ns.Display.InvalidateSpecCache then

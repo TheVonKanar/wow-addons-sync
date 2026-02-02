@@ -1396,6 +1396,79 @@ function ns.ResourceOptions.GetOptionsTable()
         width = 0.6
       },
       
+      -- Talent Condition
+      talentHeader = {
+        type = "header",
+        name = "Talent Condition",
+        order = 170
+      },
+      talentConditionSummary = {
+        type = "description",
+        name = function()
+          local cfg = ns.API.GetResourceBarConfig(ns.API.GetSelectedResourceBar())
+          if cfg and ns.TalentPicker and ns.TalentPicker.GetConditionSummary then
+            return ns.TalentPicker.GetConditionSummary(cfg.behavior.talentConditions, cfg.behavior.talentMatchMode)
+          end
+          return "|cff888888No talent conditions|r"
+        end,
+        order = 170.1
+      },
+      openTalentPicker = {
+        type = "execute",
+        name = "Edit Talent Conditions",
+        desc = "Open the talent picker to set conditions for when this bar should show",
+        func = function()
+          local barNum = ns.API.GetSelectedResourceBar()
+          local cfg = ns.API.GetResourceBarConfig(barNum)
+          if cfg and ns.TalentPicker and ns.TalentPicker.OpenPicker then
+            ns.TalentPicker.OpenPicker(
+              cfg.behavior.talentConditions,
+              cfg.behavior.talentMatchMode or "all",
+              function(conditions, matchMode)
+                cfg.behavior.talentConditions = conditions
+                cfg.behavior.talentMatchMode = matchMode
+                -- Clear color curve cache since visibility may have changed
+                if ns.Resources and ns.Resources.ClearResourceColorCurve then
+                  ns.Resources.ClearResourceColorCurve(barNum)
+                end
+                if ns.Resources then ns.Resources.UpdateBar(barNum) end
+                -- Refresh options panel
+                local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                if AceConfigRegistry then
+                  AceConfigRegistry:NotifyChange("ArcUI")
+                end
+              end
+            )
+          end
+        end,
+        order = 171,
+        width = 0.8
+      },
+      clearTalentConditions = {
+        type = "execute",
+        name = "Clear",
+        desc = "Remove all talent conditions",
+        func = function()
+          local barNum = ns.API.GetSelectedResourceBar()
+          local cfg = ns.API.GetResourceBarConfig(barNum)
+          if cfg then
+            cfg.behavior.talentConditions = nil
+            cfg.behavior.talentMatchMode = nil
+            if ns.Resources then ns.Resources.UpdateBar(barNum) end
+            local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+            if AceConfigRegistry then
+              AceConfigRegistry:NotifyChange("ArcUI")
+            end
+          end
+        end,
+        order = 172,
+        width = 0.4,
+        hidden = function()
+          local cfg = ns.API.GetResourceBarConfig(ns.API.GetSelectedResourceBar())
+          return not cfg or not cfg.behavior.talentConditions or #(cfg.behavior.talentConditions or {}) == 0
+        end
+      },
+      
       -- ============================================================
       -- DELETE
       -- ============================================================

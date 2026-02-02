@@ -1,8 +1,7 @@
 # Auctionator
 
-## [312](https://github.com/TheMouseNest/Auctionator/tree/312) (2026-01-25)
-[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/311...312) 
+## [314](https://github.com/TheMouseNest/Auctionator/tree/314) (2026-02-02)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/313...314) 
 
-- Retail: Fix item level matching failing (causing 0 results to show)  
-    Note: Favourites you \_do not\_ have in your bags will not do item level  
-    matching properly, this is a limitation of the APIs from Blizzard  
+- [Fixes #1762] Retail: Fix error caused by :Show call on tooltip  
+- [Fixes #1763] Retail: Adding gear to favourites via Alt+Click from bags  

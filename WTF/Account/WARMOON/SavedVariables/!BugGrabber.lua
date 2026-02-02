@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1370,
 ["lastSanitation"] = 3,
-["session"] = 1357,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -805,8 +805,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
 },
 {
@@ -835,8 +835,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["time"] = "2025/12/05 18:53:28",
 ["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
 ["counter"] = 2,
 },
 {
@@ -849,20 +849,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
@@ -875,8 +875,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1272,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 2,
 },
 {
@@ -977,8 +977,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
+["time"] = "2026/01/26 20:42:33",
 ["counter"] = 1,
 },
 {
@@ -1007,25 +1007,9 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["session"] = 1350,
 ["time"] = "2026/01/28 18:15:55",
+["session"] = 1350,
 ["counter"] = 1,
-},
-{
-["message"] = "...ddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua:1026: attempt to perform boolean test on local 'checkedRange' (a secret value)",
-["time"] = "2026/01/28 18:15:55",
-["locals"] = "frame = CompactPartyFrameMember1 {\n dispelDebuffFrames = <table> {\n }\n debuffFrames = <table> {\n }\n DispelOverlayAuraOffset = 2\n Debuff2 = CompactPartyFrameMember1Debuff2 {\n }\n maxDispelDebuffs = 3\n healthDirty = true\n powerBar = CompactPartyFrameMember1PowerBar {\n }\n privateAuraBorderScale = 1\n updateAllEvent = \"GROUP_ROSTER_UPDATE\"\n myHealPrediction = CompactPartyFrameMember1MyHealPrediction {\n }\n CenterDefensiveBuff = Button {\n }\n needsUpdate = true\n groupType = 4\n overHealAbsorbGlow = CompactPartyFrameMember1OverHealAbsorbGlow {\n }\n newUnit = true\n myHealAbsorbOverlay = CompactPartyFrameMember1MyHealAbsorbOverlay {\n }\n maxDebuffs = 3\n unit = \"player\"\n aurasDirty = true\n dispels = <table> {\n }\n maxBuffs = 6\n editModeStatus = \"IncomingSummonDeclined\"\n displayedUnit = \"player\"\n debuffs = <table> {\n }\n inVehicle = false\n privateAuraSize = 16.500000\n background = CompactPartyFrameMember1Background {\n }\n PrivateAuraAnchor1 = Frame {\n }\n optionTable = <table> {\n }\n overAbsorbGlow = CompactPartyFrameMember1OverAbsorbGlow {\n }\n PrivateAuraAnchor5 = Frame {\n }\n PrivateAuraAnchors = <table> {\n }\n totalAbsorb = CompactPartyFrameMember1TotalAbsorb {\n }\n name = CompactPartyFrameMember1Name {\n }\n aggroHighlight = CompactPartyFrameMember1AggroHighlight {\n }\n hideCastbar = false\n myHealAbsorbRightShadow = CompactPartyFrameMember1MyHealAbsorbRightShadow {\n }\n healPredictionDirty = true\n selectionHighlight = CompactPartyFrameMember1SelectionHighlight {\n }\n bigDefensives = <table> {\n }\n Debuff3 = CompactPartyFrameMember1Debuff3 {\n }\n myHealAbsorbLeftShadow = CompactPartyFrameMember1MyHealAbsorbLeftShadow {\n }\n buffs = <table> {\n }\n PrivateAuraAnchor2 = Frame {\n }\n otherHealPrediction = CompactPartyFrameMember1OtherHealPrediction {\n }\n DispelOverlay = Frame {\n }\n dispelsChanged = false\n totalAbsorbOverlay = CompactPartyFrameMember1TotalAbsorbOverlay {\n }\n debuffsChanged = false\n statusText = CompactPartyFrameMember1StatusText {\n }\n inDistance = true\n PrivateAuraAnchor4 = Frame {\n }\n roleIcon = CompactPartyFrameMember1RoleIcon {\n }\n PrivateAuraAnchor3 = Frame {\n }\n IsPingable = true\n healthBar = CompactPartyFrameMember1HealthBar {\n }\n buffFrames = <table> {\n }\n Debuff1 = CompactPartyFrameMember1Debuff1 {\n }\n powerBarUsedHeight = 0\n outOfRange = <no value>\n myHealAbsorb = CompactPartyFrameMember1MyHealAbsorb {\n }\n buffsChanged = false\n unitExists = true\n centerStatusIcon = CompactPartyFrameMember1CenterStatusIcon {\n }\n isLootObject = false\n readyCheckIcon = CompactPartyFrameMember1ReadyCheckIcon {\n }\n TempMaxHealthLoss = CompactPartyFrameMember1TempMaxHealthLoss {\n }\n}\ninRange = <no value>\ncheckedRange = <no value>\n(*temporary) = <no value>\n(*temporary) = <no value>\n(*temporary) = nil\n(*temporary) = \"attempt to perform boolean test on local 'checkedRange' (a secret value)\"\n",
-["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:1026: in function 'CompactUnitFrame_UpdateInRange'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:457: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:322: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_CompactRaidFrames/Blizzard_CompactRaidFrameContainer.lua]:156: in function 'TryUpdate'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:479: in function 'UpdateRaidContainerFlow'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1989: in function 'ResetRaidFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:45: in function 'EditModeFrameReset'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1844: in function 'OnEditModeExit'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:129: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>",
-["session"] = 1350,
-["counter"] = 5,
-},
-{
-["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
-["time"] = "2026/01/25 22:59:53",
-["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
-["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
-["session"] = 1353,
-["counter"] = 7,
 },
 {
 ["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'LargerMacroIconSelection' tried to call the protected function 'EditMacro()'.",
@@ -1037,15 +1021,47 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["time"] = "2026/01/30 00:15:27",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:27",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["time"] = "2026/01/30 00:15:28",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:28",
 ["counter"] = 1,
+},
+{
+["message"] = "...ddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua:1026: attempt to perform boolean test on local 'checkedRange' (a secret value)",
+["time"] = "2026/01/28 18:15:55",
+["locals"] = "frame = CompactPartyFrameMember1 {\n dispelDebuffFrames = <table> {\n }\n debuffFrames = <table> {\n }\n DispelOverlayAuraOffset = 2\n Debuff2 = CompactPartyFrameMember1Debuff2 {\n }\n maxDispelDebuffs = 3\n healthDirty = true\n powerBar = CompactPartyFrameMember1PowerBar {\n }\n privateAuraBorderScale = 1\n updateAllEvent = \"GROUP_ROSTER_UPDATE\"\n myHealPrediction = CompactPartyFrameMember1MyHealPrediction {\n }\n CenterDefensiveBuff = Button {\n }\n needsUpdate = true\n groupType = 4\n overHealAbsorbGlow = CompactPartyFrameMember1OverHealAbsorbGlow {\n }\n newUnit = true\n myHealAbsorbOverlay = CompactPartyFrameMember1MyHealAbsorbOverlay {\n }\n maxDebuffs = 3\n unit = \"player\"\n aurasDirty = true\n dispels = <table> {\n }\n maxBuffs = 6\n editModeStatus = \"IncomingSummonDeclined\"\n displayedUnit = \"player\"\n debuffs = <table> {\n }\n inVehicle = false\n privateAuraSize = 16.500000\n background = CompactPartyFrameMember1Background {\n }\n PrivateAuraAnchor1 = Frame {\n }\n optionTable = <table> {\n }\n overAbsorbGlow = CompactPartyFrameMember1OverAbsorbGlow {\n }\n PrivateAuraAnchor5 = Frame {\n }\n PrivateAuraAnchors = <table> {\n }\n totalAbsorb = CompactPartyFrameMember1TotalAbsorb {\n }\n name = CompactPartyFrameMember1Name {\n }\n aggroHighlight = CompactPartyFrameMember1AggroHighlight {\n }\n hideCastbar = false\n myHealAbsorbRightShadow = CompactPartyFrameMember1MyHealAbsorbRightShadow {\n }\n healPredictionDirty = true\n selectionHighlight = CompactPartyFrameMember1SelectionHighlight {\n }\n bigDefensives = <table> {\n }\n Debuff3 = CompactPartyFrameMember1Debuff3 {\n }\n myHealAbsorbLeftShadow = CompactPartyFrameMember1MyHealAbsorbLeftShadow {\n }\n buffs = <table> {\n }\n PrivateAuraAnchor2 = Frame {\n }\n otherHealPrediction = CompactPartyFrameMember1OtherHealPrediction {\n }\n DispelOverlay = Frame {\n }\n dispelsChanged = false\n totalAbsorbOverlay = CompactPartyFrameMember1TotalAbsorbOverlay {\n }\n debuffsChanged = false\n statusText = CompactPartyFrameMember1StatusText {\n }\n inDistance = true\n PrivateAuraAnchor4 = Frame {\n }\n roleIcon = CompactPartyFrameMember1RoleIcon {\n }\n PrivateAuraAnchor3 = Frame {\n }\n IsPingable = true\n healthBar = CompactPartyFrameMember1HealthBar {\n }\n buffFrames = <table> {\n }\n Debuff1 = CompactPartyFrameMember1Debuff1 {\n }\n powerBarUsedHeight = 0\n outOfRange = <no value>\n myHealAbsorb = CompactPartyFrameMember1MyHealAbsorb {\n }\n buffsChanged = false\n unitExists = true\n centerStatusIcon = CompactPartyFrameMember1CenterStatusIcon {\n }\n isLootObject = false\n readyCheckIcon = CompactPartyFrameMember1ReadyCheckIcon {\n }\n TempMaxHealthLoss = CompactPartyFrameMember1TempMaxHealthLoss {\n }\n}\ninRange = <no value>\ncheckedRange = <no value>\n(*temporary) = <no value>\n(*temporary) = <no value>\n(*temporary) = nil\n(*temporary) = \"attempt to perform boolean test on local 'checkedRange' (a secret value)\"\n",
+["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:1026: in function 'CompactUnitFrame_UpdateInRange'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:457: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:322: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_CompactRaidFrames/Blizzard_CompactRaidFrameContainer.lua]:156: in function 'TryUpdate'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:479: in function 'UpdateRaidContainerFlow'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1989: in function 'ResetRaidFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:45: in function 'EditModeFrameReset'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1844: in function 'OnEditModeExit'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:129: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>",
+["session"] = 1358,
+["counter"] = 9,
+},
+{
+["message"] = "Lua error in Aura 'Dungeon Teleport Buttons': Trigger 2\nWeakAuras Version: 0.1.4\nAura Version: 1.0.22\nStack trace:\n[string \"return function() aura_env.mapIDtoSpellID =...\"]:241: attempt to compare field 'duration' (a secret value)",
+["time"] = "2026/02/02 21:07:20",
+["locals"] = "errorMessage = \"[string \"return function() aura_env.mapIDtoSpellID =...\"]:241: attempt to compare field 'duration' (a secret value)\"\njuicedMessage = <table> {\n 1 = \"Lua error in Aura 'Dungeon Teleport Buttons': Trigger 2\"\n 2 = \"WeakAuras Version: 0.1.4\"\n 3 = \"Aura Version: 1.0.22\"\n 4 = \"Stack trace:\"\n 5 = \"[string \"return function() aura_env.mapIDtoSpellID =...\"]:241: attempt to compare field 'duration' (a secret value)\"\n}\ndata = <table> {\n iconSource = 0\n wagoID = \"ta0H8fHbk\"\n authorOptions = <table> {\n }\n adjustedMax = \"\"\n adjustedMin = \"\"\n yOffset = -25\n anchorPoint = \"TOPRIGHT\"\n cooldownSwipe = true\n url = \"https://wago.io/ta0H8fHbk/23\"\n icon = true\n triggers = <table> {\n }\n internalVersion = 88\n progressSource = <table> {\n }\n selfPoint = \"TOPRIGHT\"\n desaturate = false\n version = 23\n subRegions = <table> {\n }\n height = 32\n load = <table> {\n }\n useAdjustededMax = false\n cooldownEdge = false\n uid = \"SLSm9lW)aGv\"\n xOffset = -10\n customAnchor = \"function()\n  if not C_AddOns.IsAddOnLoaded(\"Blizzard_ChallengesUI\") then C_AddOns.LoadAddOn(\"Blizzard_ChallengesUI\") end\n  return ChallengesFrame\nend \n\n\"\n color = <table> {\n }\n useAdjustededMin = false\n regionType = \"icon\"\n cooldown = true\n conditions = <table> {\n }\n animation = <table> {\n }\n actions = <table> {\n }\n anchorFrameType = \"CUSTOM\"\n frameStrata = 1\n zoom = 0\n semver = \"1.0.22\"\n tocversion = 110100\n id = \"Dungeon Teleport Buttons\"\n cooldownTextDisabled = false\n alpha = 1\n width = 32\n useCooldownModRate = true\n config = <table> {\n }\n inverse = false\n keepAspectRatio = false\n displayIcon = 1394890\n information = <table> {\n }\n preferToUpdate = false\n}\nversion = \"1.0.22\"\ncurrentErrorHandlerId = \"Dungeon Teleport Buttons\"\nWeakAuras = <table> {\n normalWidth = 1.300000\n classes_sorted = <table> {\n }\n raidUnits = <table> {\n }\n buildType = \"pr\"\n defaultFont = \"Friz Quadrata TT\"\n BuildInfo = 120000\n HiddenFrames = WeakAurasHiddenFrames {\n }\n CurrentEncounter = <table> {\n }\n class_types = <table> {\n }\n spec_types_specific = <table> {\n }\n GrowFunctions = <table> {\n }\n SortFunctions = <table> {\n }\n doubleWidth = 2.600000\n buildTime = \"@build-time@\"\n EJIcons = <table> {\n }\n raidpetUnits = <table> {\n }\n genericTriggerTypes = <table> {\n }\n class_ids = <table> {\n }\n item_weapon_types = <table> {\n }\n petUnitToUnit = <table> {\n }\n defaultFontSize = 12\n newFeatureString = \"|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t\"\n partypetUnits = <table> {\n }\n StopMotion = <table> {\n }\n timer = <table> {\n }\n halfWidth = 0.650000\n race_types = <table> {\n }\n partyUnits = <table> {\n }\n unitToPetUnit = <table> {\n }\n versionString = \"0.1.4\"\n L = <table> {\n }\n}\ncurrentErrorHandlerUid = nil\nPrivate = <table> {\n TextureBase = <table> {\n }\n frame_strata_types = <table> {\n }\n combat_event_type = <table> {\n }\n regions = <table> {\n }\n frameLevels = <table> {\n }\n talent_extra_option_types = <table> {\n }\n tooltip_count = <table> {\n }\n SmoothStatusBarMixin = <table> {\n }\n pet_spec_types = <table> {\n }\n regionOptions = <table> {\n }\n author_option_classes = <table> {\n }\n grid_types = <table> {\n }\n creature_family_types = <table> {\n }\n absorb_modes = <table> {\n }\n pad_types = <table> {\n }\n miss_types = <table> {\n }\n faction_group = <table> {\n }\n talent_types = <table> {\n }\n money_precision_types = <table> {\n }\n spec_types_all = <table> {\n }\n creature_type_types = <table> {\n }\n player_target_events = <table> {\n }\n subRegionTypes = <table> {\n }\n array_entry_name_types = <table> {\n }\n combatlog_spell_school_types = <table> {\n }\n blend_types = <table> {\n }\n specs_sorted = <table> {\n }\n custom_trigger_types = <table> {\n }\n group_types = <table> {\n }\n subRegionOptions = <table> {\n }\n text_rotate_types = <table> {\n }\n spec_types = <table> {\n }\n anim_ease_types = <table> {\n }\n group_member_types = <table> {\n }\n multiUnitUnits = <table> {\n }\n anim_color_types = <table> {\n }\n loaded = <table> {\n }\n sound_channel_types = <table> {\n }\n event_prototypes = <table> {\n }\n classification_types = <table> {\n }\n unit_types_bufftrigger_2 = <table> {\n }\n bossmods_timerTypes = <table> {\n }\n db = <table> {\n }\n StopMotionBase =",
+["stack"] = "[Interface/AddOns/WeakAuras/WeakAuras.lua]:128: in function <Interface/AddOns/WeakAuras/WeakAuras.lua:106>\n[return function() aura_env.mapIDtoSpellID = {]:241: in function 'updateCooldowns'\n[return function(event)]:3: in function <[string \"return function(event)\"]:1>\n[C]: in function 'xpcall'\n[Interface/AddOns/WeakAuras/GenericTrigger.lua]:751: in function <Interface/AddOns/WeakAuras/GenericTrigger.lua:655>\n[Interface/AddOns/WeakAuras/GenericTrigger.lua]:990: in function 'ScanEventsInternal'\n[Interface/AddOns/WeakAuras/GenericTrigger.lua]:896: in function 'ScanEvents'\n[Interface/AddOns/WeakAuras/GenericTrigger.lua]:1220: in function <Interface/AddOns/WeakAuras/GenericTrigger.lua:1208>",
+["session"] = 1363,
+["counter"] = 2,
+},
+{
+["message"] = "...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:933: bad argument #1 to 'SetText' (Usage: self:SetText(text [, color, alpha, wrap]))",
+["time"] = "2026/01/25 22:59:53",
+["locals"] = "self = ExpansionLandingPageMinimapButton {\n EMEResetButton = Button {\n }\n LoopingGlow = Texture {\n }\n pulseLocks = <table> {\n }\n EMEanchorTo = UIParent {\n }\n CircleGlow = Texture {\n }\n defaultOffsetY = -150\n EMEanchorPoint = \"BOTTOMLEFT\"\n defaultOffsetX = -3\n AlertBG = Texture {\n }\n MinimapAlertAnim = AnimationGroup {\n }\n AlertText = FontString {\n }\n MinimapLoopPulseAnim = AnimationGroup {\n }\n systemNameString = \"Expansion Button\"\n MinimapPulseAnim = AnimationGroup {\n }\n SideToastGlow = Texture {\n }\n defaultGlowWidth = 46\n EMECheckButtonFrame = CheckButton {\n }\n defaultHideSelection = true\n Selection = Frame {\n }\n system = 80\n defaultWidth = 53\n defaultHeight = 53\n defaultGlowHeight = 46\n SoftButtonGlow = Texture {\n }\n mode = 1\n settingsDialogAnchor = <table> {\n }\n isInitialLogin = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:933: in function 'SetTooltip'\n[Interface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua]:939: in function <...terface/AddOns/Blizzard_Minimap/Mainline/Minimap.lua:938>\n[C]: ?",
+["session"] = 1365,
+["counter"] = 9,
+},
+{
+["message"] = "...e/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua:131: attempt to perform arithmetic on local 'currentValue' (a secret value)",
+["time"] = "2026/02/02 22:24:19",
+["locals"] = "currentValue = <no value>\n(*temporary) = UUF_Boss_CastBar {\n holdTime = 0\n Time = UUF_Boss_CastBarDurationText {\n }\n Background = Texture {\n }\n Icon = UUF_Boss_CastBarIcon {\n }\n __owner = UUF_Boss5 {\n }\n Text = UUF_Boss_CastBarSpellNameText {\n }\n smoothing = 0\n Pips = <table> {\n }\n NotInterruptibleOverlay = Texture {\n }\n delay = 0\n}\n(*temporary) = <no value>\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to perform arithmetic on local 'currentValue' (a secret value)\"\nBossFrame = UUF_Boss5 {\n HealthPrediction = <table> {\n }\n __tags = <table> {\n }\n Range = <table> {\n }\n unitEvents = <table> {\n }\n BuffContainer = UUF_Boss_BuffsContainer {\n }\n UNIT_MAXHEALTH = <table> {\n }\n __elements = <table> {\n }\n Tags = <table> {\n }\n TargetIndicator = UUF_Boss_TargetIndicator {\n }\n UNIT_HEALTH = <table> {\n }\n Health = UUF_Boss_HealthBar {\n }\n HighLevelContainer = UUF_Boss_HighLevelContainer {\n }\n Portrait = UUF_Boss_Portrait2D {\n }\n RaidTargetIndicator = UUF_Boss_RaidTargetMarkerIndicator {\n }\n unit = \"boss5\"\n UNIT_MAX_HEALTH_MODIFIERS_CHANGED = <table> {\n }\n DebuffContainer = UUF_Boss_DebuffsContainer {\n }\n id = \"5\"\n Container = UUF_Boss_Container {\n }\n HealthBackground = UUF_Boss_HealthBackground {\n }\n Castbar = UUF_Boss_CastBar {\n }\n Buffs = UUF_Boss_BuffsContainer {\n }\n style = \"UUF_Boss\"\n}\n",
+["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua]:131: in function <...e/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua:131>",
+["session"] = 1367,
+["counter"] = 29,
 },
 },
 }

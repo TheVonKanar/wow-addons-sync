@@ -224,6 +224,42 @@ end
 -- INITIALIZATION
 -- ===================================================================
 
+-- Callback handler when Masque disables/enables our groups from their UI
+local function OnMasqueGroupStateChanged(group, option, value)
+    if option == "Disabled" then
+        local groupName = group.Group or group.ID or "Unknown"
+        
+        if value then
+            -- Group was DISABLED in Masque's settings
+            print("|cff00CCFF[ArcUI Masque]|r Group '" .. groupName .. "' disabled in Masque settings")
+            
+            -- Notify CDMEnhance to refresh styles (will show ArcUI borders instead of Masque)
+            if ns.CDMEnhance and ns.CDMEnhance.RefreshAllStyles then
+                C_Timer.After(0.1, function()
+                    ns.CDMEnhance.RefreshAllStyles()
+                end)
+            end
+            
+            -- Refresh Arc Auras if present
+            if ns.ArcAuras and ns.ArcAuras.RefreshAllSettings then
+                C_Timer.After(0.15, function()
+                    ns.ArcAuras.RefreshAllSettings()
+                end)
+            end
+        else
+            -- Group was ENABLED in Masque's settings
+            print("|cff00CCFF[ArcUI Masque]|r Group '" .. groupName .. "' enabled in Masque settings")
+            
+            -- Re-register frames and refresh
+            if ns.Masque.ReregisterAllFrames then
+                C_Timer.After(0.1, function()
+                    ns.Masque.ReregisterAllFrames()
+                end)
+            end
+        end
+    end
+end
+
 InitMasque = function()
     if masqueInitialized then return end
     
@@ -235,6 +271,11 @@ InitMasque = function()
     -- Register Free Position group (for icons not in any CDMGroups group)
     local freeGroupID = ARCUI_GROUP_NAME .. "_" .. FREE_POSITION_GROUP_KEY
     registeredGroups[FREE_POSITION_GROUP_KEY] = Masque:Group(ARCUI_GROUP_NAME, FREE_POSITION_TITLE, freeGroupID)
+    
+    -- Register callback for when Masque disables/enables this group from their UI
+    if registeredGroups[FREE_POSITION_GROUP_KEY].RegisterCallback then
+        registeredGroups[FREE_POSITION_GROUP_KEY]:RegisterCallback(OnMasqueGroupStateChanged, "Disabled")
+    end
     
     -- Note: CDMGroups groups (like "Buffs", "Essential", "Utility", "Group1", etc.)
     -- are registered dynamically via RegisterCustomGroup when icons are added
@@ -249,6 +290,11 @@ local function RegisterCustomGroup(groupName)
     local groupID = ARCUI_GROUP_NAME .. "_Custom_" .. groupName
     local group = Masque:Group(ARCUI_GROUP_NAME, groupName, groupID)
     customGroups[groupName] = group
+    
+    -- Register callback for when Masque disables/enables this group from their UI
+    if group.RegisterCallback then
+        group:RegisterCallback(OnMasqueGroupStateChanged, "Disabled")
+    end
     
     return group
 end

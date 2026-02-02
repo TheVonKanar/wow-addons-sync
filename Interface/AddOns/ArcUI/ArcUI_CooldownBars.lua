@@ -30,6 +30,20 @@ end
 ns.CooldownBars.Log = Log
 
 -- ===================================================================
+-- HELPER: CONFIGURE STATUSBAR FOR CRISP RENDERING
+-- Prevents pixel snapping artifacts
+-- ===================================================================
+local function ConfigureStatusBar(bar)
+  if not bar then return end
+  -- Note: SetRotatesTexture is set later when orientation is known
+  local tex = bar:GetStatusBarTexture()
+  if tex then
+    tex:SetSnapToPixelGrid(false)
+    tex:SetTexelSnappingBias(0)
+  end
+end
+
+-- ===================================================================
 -- DATABASE DEFAULTS (merged into ArcUI's defaults)
 -- ===================================================================
 ns.CooldownBars.dbDefaults = {
@@ -58,6 +72,10 @@ ns.CooldownBars.activeResources = {}  -- Resource bars
 -- Flag to prevent SaveBarConfig from running during RestoreBarConfig
 -- (AddCooldownBar/AddChargeBar call SaveBarConfig, which would overwrite the DB mid-restore)
 local isRestoring = false
+
+-- Flag to track if RestoreBarConfig has completed at least once
+-- Prevents SaveBarConfig from overwriting saved bars if reload happened mid-combat
+local hasRestoredBars = false
 
 -- ===================================================================
 -- DATABASE ACCESS HELPERS
@@ -599,6 +617,13 @@ function ns.CooldownBars.SaveBarConfig()
     return
   end
   
+  -- CRITICAL: Don't save if RestoreBarConfig hasn't run yet
+  -- This prevents overwriting saved bars when reloading during combat
+  if not hasRestoredBars then
+    Log("SaveBarConfig: Skipping - bars not yet restored (combat reload protection)")
+    return
+  end
+  
   local db = GetDB()
   if not db then
     Log("SaveBarConfig: No database available yet")
@@ -707,6 +732,9 @@ function ns.CooldownBars.RestoreBarConfig()
   -- Clear restore flag now that all bars are loaded
   isRestoring = false
   
+  -- Mark that restore has completed (allows SaveBarConfig to work)
+  hasRestoredBars = true
+  
   -- Now apply spec visibility (hides bars that shouldn't show for current spec)
   ns.CooldownBars.UpdateBarVisibilityForSpec()
   
@@ -750,6 +778,31 @@ local SLOT_DEFAULT_COLORS = {
 
 -- Curves for ready state detection
 local readyAlphaCurve100, onCooldownAlphaCurve, outOfChargesCurve
+
+-- Slot visibility curves: slotVisibilityCurves[threshold] returns 1 when value >= threshold
+-- Used for instant slot visibility via SetAlphaFromBoolean
+local slotVisibilityCurves = {}
+
+-- Get or create a visibility curve for a given threshold
+-- Returns 1 when charge count >= threshold, 0 otherwise
+local function GetSlotVisibilityCurve(threshold)
+  if slotVisibilityCurves[threshold] then
+    return slotVisibilityCurves[threshold]
+  end
+  
+  -- Create step curve: 0 below threshold, 1 at/above threshold
+  local curve = C_CurveUtil.CreateCurve()
+  curve:SetType(Enum.LuaCurveType.Step)
+  -- For max 10 charges, we need points from 0 to 10
+  -- Step at threshold: value < threshold = 0, value >= threshold = 1
+  curve:AddPoint(0, 0)
+  curve:AddPoint(threshold - 0.01, 0)
+  curve:AddPoint(threshold, 1)
+  curve:AddPoint(10, 1)  -- Max reasonable charges
+  
+  slotVisibilityCurves[threshold] = curve
+  return curve
+end
 
 local function InitCurves()
   if readyAlphaCurve100 then return end
@@ -1214,6 +1267,8 @@ local function CreateCooldownBar(index)
   -- Icon border/background (drawn behind icon)
   local iconBorder = frame:CreateTexture(nil, "BORDER")
   iconBorder:SetColorTexture(0, 0, 0, 1)
+  iconBorder:SetSnapToPixelGrid(false)
+  iconBorder:SetTexelSnappingBias(0)
   iconBorder:Hide()  -- Hidden by default
   
   -- Icon
@@ -1221,6 +1276,8 @@ local function CreateCooldownBar(index)
   icon:SetSize(config.barHeight - 4, config.barHeight - 4)
   icon:SetPoint("LEFT", frame, "LEFT", 2, 0)
   icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+  icon:SetSnapToPixelGrid(false)
+  icon:SetTexelSnappingBias(0)
   
   -- Status bar
   local bar = CreateFrame("StatusBar", nil, frame)
@@ -1232,19 +1289,25 @@ local function CreateCooldownBar(index)
   bar:SetStatusBarColor(1, 1, 1, 1)
   bar:SetMinMaxValues(0, 1)
   bar:SetValue(1)
+  ConfigureStatusBar(bar)  -- Prevent pixel snapping, keep texture pattern stable
   
   -- Bar background
   local barBg = bar:CreateTexture(nil, "BACKGROUND")
   barBg:SetAllPoints()
   barBg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
   barBg:SetVertexColor(0.15, 0.15, 0.15, 0.9)
+  barBg:SetSnapToPixelGrid(false)
+  barBg:SetTexelSnappingBias(0)
   
-  -- Ready fill (shows when cooldown ready)
-  local readyFill = bar:CreateTexture(nil, "BORDER")
+  -- Ready fill (shows when cooldown ready) - StatusBar for proper vertical orientation
+  local readyFill = CreateFrame("StatusBar", nil, bar)
   readyFill:SetAllPoints()
-  readyFill:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
-  readyFill:SetVertexColor(1, 1, 1, 1)
+  readyFill:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  readyFill:SetStatusBarColor(1, 1, 1, 1)
+  readyFill:SetMinMaxValues(0, 1)
+  readyFill:SetValue(1)  -- Always full when shown
   readyFill:SetAlpha(0)
+  ConfigureStatusBar(readyFill)
   
   -- Name text container (allows independent frame level)
   local nameTextContainer = CreateFrame("Frame", nil, bar)
@@ -1276,13 +1339,26 @@ local function CreateCooldownBar(index)
   readyText:SetAlpha(0)
   
   -- Bar border frame (border around the actual bar, not the frame)
-  local barBorderFrame = CreateFrame("Frame", nil, bar, "BackdropTemplate")
+  -- Uses 4 manual textures for pixel-perfect borders
+  local barBorderFrame = CreateFrame("Frame", nil, bar)
   barBorderFrame:SetAllPoints(bar)
-  barBorderFrame:SetBackdrop({
-    edgeFile = "Interface\\Buttons\\WHITE8x8",
-    edgeSize = 1,
-  })
-  barBorderFrame:SetBackdropBorderColor(0, 0, 0, 1)
+  
+  barBorderFrame.top = barBorderFrame:CreateTexture(nil, "OVERLAY")
+  barBorderFrame.top:SetSnapToPixelGrid(false)
+  barBorderFrame.top:SetTexelSnappingBias(0)
+  
+  barBorderFrame.bottom = barBorderFrame:CreateTexture(nil, "OVERLAY")
+  barBorderFrame.bottom:SetSnapToPixelGrid(false)
+  barBorderFrame.bottom:SetTexelSnappingBias(0)
+  
+  barBorderFrame.left = barBorderFrame:CreateTexture(nil, "OVERLAY")
+  barBorderFrame.left:SetSnapToPixelGrid(false)
+  barBorderFrame.left:SetTexelSnappingBias(0)
+  
+  barBorderFrame.right = barBorderFrame:CreateTexture(nil, "OVERLAY")
+  barBorderFrame.right:SetSnapToPixelGrid(false)
+  barBorderFrame.right:SetTexelSnappingBias(0)
+  
   barBorderFrame:Hide()  -- Hidden by default
   
   local barData = {
@@ -1475,8 +1551,12 @@ local function CreateChargeBar(index)
     if event == "SPELL_UPDATE_CHARGES" then
       bd.needsChargeRefresh = true
       bd.needsDurationRefresh = true
+      -- Trigger immediate update for faster slot visibility response
+      UpdateChargeBar(bd)
     elseif event == "SPELL_UPDATE_COOLDOWN" then
       bd.needsDurationRefresh = true
+      -- Also trigger immediate update for smoother bar updates
+      UpdateChargeBar(bd)
     end
   end)
   
@@ -1487,27 +1567,6 @@ end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- HELPER: Rotate StatusBar Texture for Vertical Bars
--- When a bar is vertical, the texture needs to be rotated 90° so the
--- texture pattern goes along the fill direction (bottom-to-top) instead
--- of staying horizontal.
--- ═══════════════════════════════════════════════════════════════════════════
-local function RotateStatusBarTexture(statusBar, isVertical)
-  if not statusBar then return end
-  local texture = statusBar:GetStatusBarTexture()
-  if not texture then return end
-  
-  if isVertical then
-    -- Rotate texture 90° clockwise for vertical fill direction
-    -- SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
-    -- Maps: UL rect <- BL tex (0,1), LL rect <- BR tex (1,1), 
-    --       UR rect <- TL tex (0,0), LR rect <- TR tex (1,0)
-    texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0)
-  else
-    -- Reset to default (no rotation)
-    texture:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1)
-  end
-end
-
 -- Create a single charge slot with background, recharge bar, full bar, and optional border
 local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset, isVertical, displayCfg)
   local slot = {}
@@ -1555,6 +1614,8 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   slot.background:SetSize(w, h)
   slot.background:SetPoint(anchorPoint, parent, anchorPoint, xOff, yOff)
   slot.background:SetColorTexture(slotBgColor.r, slotBgColor.g, slotBgColor.b, (slotBgColor.a or 1) * opacity)
+  slot.background:SetSnapToPixelGrid(false)
+  slot.background:SetTexelSnappingBias(0)
   
   -- Recharge progress bar (shows recharge animation - fills up)
   slot.rechargeBar = CreateFrame("StatusBar", nil, parent)
@@ -1567,8 +1628,14 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   slot.rechargeBar:SetFrameLevel(parent:GetFrameLevel() + 1)
   -- Set fill orientation based on bar orientation
   slot.rechargeBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
-  -- Rotate texture to match fill direction
-  RotateStatusBarTexture(slot.rechargeBar, isVertical)
+  -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
+  slot.rechargeBar:SetRotatesTexture(isVertical)
+  -- Prevent pixel snapping
+  local rechargeTex = slot.rechargeBar:GetStatusBarTexture()
+  if rechargeTex then
+    rechargeTex:SetSnapToPixelGrid(false)
+    rechargeTex:SetTexelSnappingBias(0)
+  end
   
   -- Full bar (shows when charge is complete)
   slot.fullBar = CreateFrame("StatusBar", nil, parent)
@@ -1582,22 +1649,74 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   slot.fullBar:SetValue(0)
   -- Set fill orientation based on bar orientation
   slot.fullBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
-  -- Rotate texture to match fill direction
-  RotateStatusBarTexture(slot.fullBar, isVertical)
+  -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
+  slot.fullBar:SetRotatesTexture(isVertical)
+  -- Prevent pixel snapping
+  local fullTex = slot.fullBar:GetStatusBarTexture()
+  if fullTex then
+    fullTex:SetSnapToPixelGrid(false)
+    fullTex:SetTexelSnappingBias(0)
+  end
   
-  -- Slot border (drawn on top of everything)
-  slot.borderFrame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+  -- Slot border (4 manual textures for pixel-perfect borders)
+  -- Position relative to the slot's background texture
+  slot.borderFrame = CreateFrame("Frame", nil, parent)
   slot.borderFrame:SetSize(w, h)
   slot.borderFrame:SetPoint(anchorPoint, parent, anchorPoint, xOff, yOff)
   slot.borderFrame:SetFrameLevel(parent:GetFrameLevel() + 3)
+  
+  slot.borderFrame.top = slot.borderFrame:CreateTexture(nil, "OVERLAY")
+  slot.borderFrame.top:SetSnapToPixelGrid(false)
+  slot.borderFrame.top:SetTexelSnappingBias(0)
+  
+  slot.borderFrame.bottom = slot.borderFrame:CreateTexture(nil, "OVERLAY")
+  slot.borderFrame.bottom:SetSnapToPixelGrid(false)
+  slot.borderFrame.bottom:SetTexelSnappingBias(0)
+  
+  slot.borderFrame.left = slot.borderFrame:CreateTexture(nil, "OVERLAY")
+  slot.borderFrame.left:SetSnapToPixelGrid(false)
+  slot.borderFrame.left:SetTexelSnappingBias(0)
+  
+  slot.borderFrame.right = slot.borderFrame:CreateTexture(nil, "OVERLAY")
+  slot.borderFrame.right:SetSnapToPixelGrid(false)
+  slot.borderFrame.right:SetTexelSnappingBias(0)
+  
   if showSlotBorder then
-    slot.borderFrame:SetBackdrop({
-      edgeFile = "Interface\\Buttons\\WHITE8x8",
-      edgeSize = slotBorderThickness,
-    })
-    slot.borderFrame:SetBackdropBorderColor(slotBorderColor.r, slotBorderColor.g, slotBorderColor.b, (slotBorderColor.a or 1) * opacity)
+    local bt = slotBorderThickness
+    local bc = slotBorderColor
+    local alpha = (bc.a or 1) * opacity
+    
+    -- Top border
+    slot.borderFrame.top:SetPoint("TOPLEFT", slot.borderFrame, "TOPLEFT", 0, 0)
+    slot.borderFrame.top:SetPoint("TOPRIGHT", slot.borderFrame, "TOPRIGHT", 0, 0)
+    slot.borderFrame.top:SetHeight(bt)
+    slot.borderFrame.top:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+    slot.borderFrame.top:Show()
+    
+    -- Bottom border
+    slot.borderFrame.bottom:SetPoint("BOTTOMLEFT", slot.borderFrame, "BOTTOMLEFT", 0, 0)
+    slot.borderFrame.bottom:SetPoint("BOTTOMRIGHT", slot.borderFrame, "BOTTOMRIGHT", 0, 0)
+    slot.borderFrame.bottom:SetHeight(bt)
+    slot.borderFrame.bottom:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+    slot.borderFrame.bottom:Show()
+    
+    -- Left border
+    slot.borderFrame.left:SetPoint("TOPLEFT", slot.borderFrame, "TOPLEFT", 0, -bt)
+    slot.borderFrame.left:SetPoint("BOTTOMLEFT", slot.borderFrame, "BOTTOMLEFT", 0, bt)
+    slot.borderFrame.left:SetWidth(bt)
+    slot.borderFrame.left:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+    slot.borderFrame.left:Show()
+    
+    -- Right border
+    slot.borderFrame.right:SetPoint("TOPRIGHT", slot.borderFrame, "TOPRIGHT", 0, -bt)
+    slot.borderFrame.right:SetPoint("BOTTOMRIGHT", slot.borderFrame, "BOTTOMRIGHT", 0, bt)
+    slot.borderFrame.right:SetWidth(bt)
+    slot.borderFrame.right:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+    slot.borderFrame.right:Show()
+    
+    slot.borderFrame:Show()
   else
-    slot.borderFrame:SetBackdrop(nil)
+    slot.borderFrame:Hide()
   end
   
   slot.slotIndex = slotIndex
@@ -2003,7 +2122,7 @@ local function UpdateCooldownBar(barData)
         end
       end
     end
-    barData.readyFill:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, 1)
+    barData.readyFill:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, 1)
     barData.readyFill:SetAlpha(readyAlpha)
   else
     -- No duration (ready state) - clear color curve OnUpdate
@@ -2044,7 +2163,7 @@ local function UpdateCooldownBar(barData)
         end
       end
     end
-    barData.readyFill:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, 1)
+    barData.readyFill:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, 1)
     barData.readyFill:SetAlpha(1)
   end
 end
@@ -2414,16 +2533,23 @@ UpdateChargeBar = function(barData)
     slot.fullBar:SetStatusBarColor(fullBarColor.r, fullBarColor.g, fullBarColor.b, fullBarColor.a or 1)
     
     -- Recharge bar (progress fill texture) - uses per-slot color if enabled
-    slot.rechargeBar:SetStatusBarColor(slotFillColor.r, slotFillColor.g, slotFillColor.b, slotFillColor.a or 1)
+    -- Skip color setting when color curve is active (it handles colors via OnUpdate)
+    if not barData.usingColorCurve then
+      slot.rechargeBar:SetStatusBarColor(slotFillColor.r, slotFillColor.g, slotFillColor.b, slotFillColor.a or 1)
+    end
     
-    -- Slot visibility: slot 1 always visible, others only if previous is full
+    -- Slot visibility: slot 1 always visible, others only if previous slot is full
+    -- Use previous slot's fullBar texture visibility for instant response (no arc detector delay)
     slot.background:SetAlpha(1)
     
     if i == 1 then
       slot.rechargeBar:SetAlpha(1)
       slot.fullBar:SetAlpha(1)
     else
-      local thresholdMet = IsChargeThresholdMetForBar(barData, i - 1)
+      -- Check if previous slot's fullBar is showing (charges >= i-1)
+      -- This is faster than arc detector because fullBar was just updated with SetValue
+      local prevSlot = barData.chargeSlots[i - 1]
+      local thresholdMet = prevSlot and prevSlot.fullBar:GetStatusBarTexture():IsShown() or false
       local alpha = thresholdMet and 1 or 0
       slot.rechargeBar:SetAlpha(alpha)
       slot.fullBar:SetAlpha(alpha)
@@ -3516,6 +3642,9 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
   local frame = barData.frame
   local isVertical = (display.barOrientation == "vertical")
   
+  -- Update stored isVertical for charge slot updates
+  barData.isVertical = isVertical
+  
   -- ═══════════════════════════════════════════════════════════════
   -- SCALE - Apply to SIZE instead of SetScale() to prevent position drift
   -- (Same pattern as ArcUI_Display.lua aura bars)
@@ -3582,16 +3711,16 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       
       if iconAnchor == "TOP" then
         -- Icon at top
-        barData.icon:SetPoint("TOP", frame, "TOP", iconOffsetX, -padding + iconOffsetY)
+        barData.icon:SetPoint("TOP", frame, "TOP", iconOffsetX, -iconBarSpacing + iconOffsetY)
       elseif iconAnchor == "BOTTOM" then
         -- Icon at bottom
-        barData.icon:SetPoint("BOTTOM", frame, "BOTTOM", iconOffsetX, padding + iconOffsetY)
+        barData.icon:SetPoint("BOTTOM", frame, "BOTTOM", iconOffsetX, iconBarSpacing + iconOffsetY)
       elseif iconAnchor == "RIGHT" then
         -- Icon at right
-        barData.icon:SetPoint("RIGHT", frame, "RIGHT", -padding + iconOffsetX, iconOffsetY)
+        barData.icon:SetPoint("RIGHT", frame, "RIGHT", -iconBarSpacing + iconOffsetX, iconOffsetY)
       else
         -- Icon at left (default)
-        barData.icon:SetPoint("LEFT", frame, "LEFT", padding + iconOffsetX, iconOffsetY)
+        barData.icon:SetPoint("LEFT", frame, "LEFT", iconBarSpacing + iconOffsetX, iconOffsetY)
       end
       
       -- Icon border (background behind icon)
@@ -3619,13 +3748,14 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     if barData.slotsContainer then
       barData.slotsContainer:ClearAllPoints()
       -- Always anchor slots to frame CENTER with offsets
-      -- This allows positioning slots anywhere within the frame background
-      barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetX, slotOffsetY)
-      
+      -- For vertical mode, swap offsets so X offset becomes Y and vice versa
       if isVertical then
+        -- Swap offsets for vertical: X becomes Y, Y becomes X
+        barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetY, slotOffsetX)
         -- Container is narrow and tall for vertical (swapped)
         barData.slotsContainer:SetSize(slotHeight, slotsWidth)
       else
+        barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetX, slotOffsetY)
         barData.slotsContainer:SetSize(slotsWidth, slotHeight)
       end
     end
@@ -4117,8 +4247,8 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     -- Set orientation (matches Display.lua pattern)
     local barOrientation = isVertical and "VERTICAL" or "HORIZONTAL"
     barData.bar:SetOrientation(barOrientation)
-    -- Rotate texture to match fill direction
-    RotateStatusBarTexture(barData.bar, isVertical)
+    -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
+    barData.bar:SetRotatesTexture(isVertical)
     
     -- Set reverse fill
     barData.bar:SetReverseFill(display.barReverseFill or false)
@@ -4132,19 +4262,50 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       barData.barBg:SetVertexColor(0.15, 0.15, 0.15, 0.9)
     end
     
-    -- Bar border (around the actual bar, not the frame) - cooldown duration bars only
+    -- Bar border (around the actual bar, not the frame) - uses 4 manual textures
     if barData.barBorderFrame then
       if display.showBarBorder then
-        local borderColor = display.barBorderColor or {r = 0, g = 0, b = 0, a = 1}
-        local borderThickness = display.barBorderThickness or 1
+        local bc = display.barBorderColor or {r = 0, g = 0, b = 0, a = 1}
+        local bt = display.barBorderThickness or 1
         
-        barData.barBorderFrame:SetBackdrop({
-          edgeFile = "Interface\\Buttons\\WHITE8x8",
-          edgeSize = borderThickness,
-        })
-        barData.barBorderFrame:SetBackdropBorderColor(borderColor.r or 0, borderColor.g or 0, borderColor.b or 0, borderColor.a or 1)
+        -- Top border (spans full width at top)
+        barData.barBorderFrame.top:ClearAllPoints()
+        barData.barBorderFrame.top:SetPoint("TOPLEFT", barData.bar, "TOPLEFT", 0, 0)
+        barData.barBorderFrame.top:SetPoint("TOPRIGHT", barData.bar, "TOPRIGHT", 0, 0)
+        barData.barBorderFrame.top:SetHeight(bt)
+        barData.barBorderFrame.top:SetColorTexture(bc.r or 0, bc.g or 0, bc.b or 0, bc.a or 1)
+        barData.barBorderFrame.top:Show()
+        
+        -- Bottom border (spans full width at bottom)
+        barData.barBorderFrame.bottom:ClearAllPoints()
+        barData.barBorderFrame.bottom:SetPoint("BOTTOMLEFT", barData.bar, "BOTTOMLEFT", 0, 0)
+        barData.barBorderFrame.bottom:SetPoint("BOTTOMRIGHT", barData.bar, "BOTTOMRIGHT", 0, 0)
+        barData.barBorderFrame.bottom:SetHeight(bt)
+        barData.barBorderFrame.bottom:SetColorTexture(bc.r or 0, bc.g or 0, bc.b or 0, bc.a or 1)
+        barData.barBorderFrame.bottom:Show()
+        
+        -- Left border (between top and bottom borders)
+        barData.barBorderFrame.left:ClearAllPoints()
+        barData.barBorderFrame.left:SetPoint("TOPLEFT", barData.bar, "TOPLEFT", 0, -bt)
+        barData.barBorderFrame.left:SetPoint("BOTTOMLEFT", barData.bar, "BOTTOMLEFT", 0, bt)
+        barData.barBorderFrame.left:SetWidth(bt)
+        barData.barBorderFrame.left:SetColorTexture(bc.r or 0, bc.g or 0, bc.b or 0, bc.a or 1)
+        barData.barBorderFrame.left:Show()
+        
+        -- Right border (between top and bottom borders)
+        barData.barBorderFrame.right:ClearAllPoints()
+        barData.barBorderFrame.right:SetPoint("TOPRIGHT", barData.bar, "TOPRIGHT", 0, -bt)
+        barData.barBorderFrame.right:SetPoint("BOTTOMRIGHT", barData.bar, "BOTTOMRIGHT", 0, bt)
+        barData.barBorderFrame.right:SetWidth(bt)
+        barData.barBorderFrame.right:SetColorTexture(bc.r or 0, bc.g or 0, bc.b or 0, bc.a or 1)
+        barData.barBorderFrame.right:Show()
+        
         barData.barBorderFrame:Show()
       else
+        if barData.barBorderFrame.top then barData.barBorderFrame.top:Hide() end
+        if barData.barBorderFrame.bottom then barData.barBorderFrame.bottom:Hide() end
+        if barData.barBorderFrame.left then barData.barBorderFrame.left:Hide() end
+        if barData.barBorderFrame.right then barData.barBorderFrame.right:Hide() end
         barData.barBorderFrame:Hide()
       end
     end
@@ -4403,15 +4564,19 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         slot.fullBar:SetStatusBarTexture(texturePath)
         slot.fullBar:SetStatusBarColor(fullBarColor.r, fullBarColor.g, fullBarColor.b, (fullBarColor.a or 1) * opacity)
         slot.fullBar:SetReverseFill(reverseFill)
-        -- Rotate texture to match fill direction
-        RotateStatusBarTexture(slot.fullBar, barData.isVertical)
+        -- Update orientation when settings change
+        slot.fullBar:SetOrientation(barData.isVertical and "VERTICAL" or "HORIZONTAL")
+        -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
+        slot.fullBar:SetRotatesTexture(barData.isVertical)
       end
       if slot.rechargeBar then
         slot.rechargeBar:SetStatusBarTexture(texturePath)
         slot.rechargeBar:SetStatusBarColor(slotFillColor.r, slotFillColor.g, slotFillColor.b, (slotFillColor.a or 1) * opacity)
         slot.rechargeBar:SetReverseFill(reverseFill)
-        -- Rotate texture to match fill direction
-        RotateStatusBarTexture(slot.rechargeBar, barData.isVertical)
+        -- Update orientation when settings change
+        slot.rechargeBar:SetOrientation(barData.isVertical and "VERTICAL" or "HORIZONTAL")
+        -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
+        slot.rechargeBar:SetRotatesTexture(barData.isVertical)
       end
       if slot.background then
         if showSlotBackground then
@@ -4428,16 +4593,52 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         end
       end
       
-      -- Slot border styling
+      -- Slot border styling (4 manual textures)
       if slot.borderFrame then
         if showSlotBorder then
-          slot.borderFrame:SetBackdrop({
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = slotBorderThickness,
-          })
-          slot.borderFrame:SetBackdropBorderColor(slotBorderColor.r, slotBorderColor.g, slotBorderColor.b, (slotBorderColor.a or 1) * opacity)
+          local bt = slotBorderThickness
+          local bc = slotBorderColor
+          local alpha = (bc.a or 1) * opacity
+          
+          -- Top border
+          slot.borderFrame.top:ClearAllPoints()
+          slot.borderFrame.top:SetPoint("TOPLEFT", slot.borderFrame, "TOPLEFT", 0, 0)
+          slot.borderFrame.top:SetPoint("TOPRIGHT", slot.borderFrame, "TOPRIGHT", 0, 0)
+          slot.borderFrame.top:SetHeight(bt)
+          slot.borderFrame.top:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+          slot.borderFrame.top:Show()
+          
+          -- Bottom border
+          slot.borderFrame.bottom:ClearAllPoints()
+          slot.borderFrame.bottom:SetPoint("BOTTOMLEFT", slot.borderFrame, "BOTTOMLEFT", 0, 0)
+          slot.borderFrame.bottom:SetPoint("BOTTOMRIGHT", slot.borderFrame, "BOTTOMRIGHT", 0, 0)
+          slot.borderFrame.bottom:SetHeight(bt)
+          slot.borderFrame.bottom:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+          slot.borderFrame.bottom:Show()
+          
+          -- Left border
+          slot.borderFrame.left:ClearAllPoints()
+          slot.borderFrame.left:SetPoint("TOPLEFT", slot.borderFrame, "TOPLEFT", 0, -bt)
+          slot.borderFrame.left:SetPoint("BOTTOMLEFT", slot.borderFrame, "BOTTOMLEFT", 0, bt)
+          slot.borderFrame.left:SetWidth(bt)
+          slot.borderFrame.left:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+          slot.borderFrame.left:Show()
+          
+          -- Right border
+          slot.borderFrame.right:ClearAllPoints()
+          slot.borderFrame.right:SetPoint("TOPRIGHT", slot.borderFrame, "TOPRIGHT", 0, -bt)
+          slot.borderFrame.right:SetPoint("BOTTOMRIGHT", slot.borderFrame, "BOTTOMRIGHT", 0, bt)
+          slot.borderFrame.right:SetWidth(bt)
+          slot.borderFrame.right:SetColorTexture(bc.r, bc.g, bc.b, alpha)
+          slot.borderFrame.right:Show()
+          
+          slot.borderFrame:Show()
         else
-          slot.borderFrame:SetBackdrop(nil)
+          if slot.borderFrame.top then slot.borderFrame.top:Hide() end
+          if slot.borderFrame.bottom then slot.borderFrame.bottom:Hide() end
+          if slot.borderFrame.left then slot.borderFrame.left:Hide() end
+          if slot.borderFrame.right then slot.borderFrame.right:Hide() end
+          slot.borderFrame:Hide()
         end
       end
     end
@@ -4812,9 +5013,12 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     -- Ready fill color AND texture (matches bar settings when ready)
     if barData.readyFill then
       local texturePath = GetTexturePath(display.texture or "Blizzard")
-      barData.readyFill:SetTexture(texturePath)
+      barData.readyFill:SetStatusBarTexture(texturePath)
       local barColor = display.barColor or {r = 1, g = 0.5, b = 0.2, a = 1}
-      barData.readyFill:SetVertexColor(barColor.r or 1, barColor.g or 0.5, barColor.b or 0.2, barColor.a or 1)
+      barData.readyFill:SetStatusBarColor(barColor.r or 1, barColor.g or 0.5, barColor.b or 0.2, barColor.a or 1)
+      -- Set orientation to match main bar (for proper vertical texture rotation)
+      barData.readyFill:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
+      barData.readyFill:SetRotatesTexture(isVertical)
     end
   end
   
@@ -4942,20 +5146,27 @@ initFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")  -- Fires when talents change (m
 initFrame:SetScript("OnEvent", function(self, event)
   if event == "PLAYER_LOGIN" then
     C_Timer.After(1.5, function()
+      -- ALWAYS restore saved bars first (even in combat)
+      -- This prevents losing bars on combat reload
+      ns.CooldownBars.RestoreBarConfig()
+      
+      -- Only scan spells if not in combat (scan can wait, restore cannot)
       if not InCombatLockdown() then
         local count = ns.CooldownBars.ScanPlayerSpells()
-        -- Restore saved bars after scan
-        ns.CooldownBars.RestoreBarConfig()
         if ns.devMode then
           print("|cff00ff00[ArcUI CooldownBars]|r Found " .. count .. " spells. Use /cdbar to test.")
         end
+      else
+        -- Queue scan for when combat ends
+        ns.CooldownBars._pendingScan = true
+        Log("In combat - bars restored, spell scan queued for after combat")
       end
     end)
   elseif event == "PLAYER_LOGOUT" or event == "PLAYER_LEAVING_WORLD" then
     -- Save on both logout and character switch
     ns.CooldownBars.SaveBarConfig()
   elseif event == "PLAYER_REGEN_ENABLED" then
-    -- Only scan if we queued one during combat (SPELLS_CHANGED fired while in combat)
+    -- Process pending scan queued during combat
     if ns.CooldownBars._pendingScan then
       ns.CooldownBars._pendingScan = nil
       C_Timer.After(0.5, function()

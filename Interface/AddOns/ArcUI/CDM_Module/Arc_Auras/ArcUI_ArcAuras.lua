@@ -34,6 +34,14 @@ local ID_PREFIX = {
     SPELL = "arc_spell_",
 }
 
+-- Frame Strata/Level Constants - Standardized to match CDM icons
+-- CDM viewers use MEDIUM strata; we match for consistent z-ordering
+local FRAME_STRATA = "MEDIUM"
+local BASE_FRAME_LEVEL = 10
+local FRAME_LEVEL_BORDER = 5     -- Offset for border overlay above base
+local FRAME_LEVEL_GLOW = 3       -- Offset for glow anchor above base
+local FRAME_LEVEL_COUNT = 10     -- Offset for count/stack text (above cooldown swipe)
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- STATE
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -138,104 +146,118 @@ ArcAuras.InvalidateStackCache = InvalidateStackCache
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DATABASE
+-- BYPASS ACEDB: Access ArcUIDB directly to avoid removeDefaults stripping data
+-- This follows the same pattern as CDMShared.GetCDMGroupsDB()
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local function GetDB()
-    if not ns.db then return nil end
+-- Cache for GetDB to avoid repeated string concatenation and table lookups
+local cachedArcAurasDB = nil
+local cachedCharKey = nil
+local arcAurasDBCacheEnabled = false  -- Only enable after PLAYER_LOGIN
+
+-- Forward declaration (needed because EnableDBCache references GetDB)
+local GetDB
+
+-- Define GetDB first
+GetDB = function()
+    -- Return cached result if available AND caching is enabled
+    if arcAurasDBCacheEnabled and cachedArcAurasDB then
+        return cachedArcAurasDB
+    end
     
-    -- Ensure char table exists
-    if not ns.db.char then ns.db.char = {} end
+    -- CRITICAL: Access the raw SavedVariables table directly, not through AceDB
+    -- AceDB's removeDefaults strips tables that "match defaults" on logout,
+    -- which can cause data loss for complex nested structures like trackedItems.
     
-    -- Initialize character-specific Arc Auras storage
-    if not ns.db.char.arcAuras then
-        ns.db.char.arcAuras = {
-            enabled = true,  -- Enabled by default
-            
-            -- Auto-track equipped trinkets (master toggle)
-            autoTrackEquippedTrinkets = true,
-            
-            -- Per-slot auto-track settings
+    -- Ensure base structure exists
+    if not ArcUIDB then 
+        -- SavedVariables not loaded yet - return nil and caller should retry
+        return nil 
+    end
+    if not ArcUIDB.char then ArcUIDB.char = {} end
+    
+    -- Get character key the same way AceDB does
+    local playerName = UnitName("player")
+    local realmName = GetRealmName()
+    
+    -- Guard against early calls before player info is available
+    if not playerName or playerName == "" or not realmName or realmName == "" then
+        return nil
+    end
+    
+    local charKey = playerName .. " - " .. realmName
+    
+    if not ArcUIDB.char[charKey] then ArcUIDB.char[charKey] = {} end
+    
+    local charDB = ArcUIDB.char[charKey]
+    
+    -- Initialize arcAuras if missing (first time setup for this character)
+    if not charDB.arcAuras then
+        charDB.arcAuras = {
+            enabled = true,
+            autoTrackEquippedTrinkets = false,
             autoTrackSlots = {
-                [13] = true,  -- Trinket 1 enabled by default
-                [14] = true,  -- Trinket 2 enabled by default
+                [13] = true,
+                [14] = true,
             },
-            
-            -- Only track on-use trinkets (filter passive trinkets)
             onlyOnUseTrinkets = false,
-            
-            -- Tracked items (per-character)
             trackedItems = {},
-            
-            -- Saved positions (per-character)
             positions = {},
-            
-            -- Global defaults for Arc Auras
             globalSettings = {},
-            
-            -- Update rate
             updateRate = UPDATE_RATE,
-            
-            -- Migration flag
-            _migratedFromProfile = false,
         }
     end
     
-    -- Ensure autoTrackSlots exists (for existing users upgrading)
-    if not ns.db.char.arcAuras.autoTrackSlots then
-        ns.db.char.arcAuras.autoTrackSlots = {
-            [13] = true,
-            [14] = true,
-        }
-    end
+    local db = charDB.arcAuras
     
-    -- Ensure onlyOnUseTrinkets exists (for existing users upgrading)
-    if ns.db.char.arcAuras.onlyOnUseTrinkets == nil then
-        ns.db.char.arcAuras.onlyOnUseTrinkets = false
+    -- Ensure sub-tables exist (defensive - for existing data that may be missing keys)
+    if not db.trackedItems then db.trackedItems = {} end
+    if not db.positions then db.positions = {} end
+    if not db.globalSettings then db.globalSettings = {} end
+    if not db.autoTrackSlots then
+        db.autoTrackSlots = { [13] = true, [14] = true }
     end
+    if db.enabled == nil then db.enabled = true end
+    if db.autoTrackEquippedTrinkets == nil then db.autoTrackEquippedTrinkets = false end
+    if db.onlyOnUseTrinkets == nil then db.onlyOnUseTrinkets = false end
+    if not db.updateRate then db.updateRate = UPDATE_RATE end
     
     -- ═══════════════════════════════════════════════════════════════════════════
-    -- MIGRATION: Move Arc Auras from profile to char (one-time TOTAL)
-    -- This preserves existing setups when updating from profile-based storage
-    -- CRITICAL: After migration, we CLEAR the profile data so it doesn't get
-    -- copied to other characters that share the same profile.
+    -- MIGRATION: Move Arc Auras from old ns.db.profile location (one-time)
+    -- Only runs if old profile location has data AND new location is empty
     -- ═══════════════════════════════════════════════════════════════════════════
-    if ns.db.profile and ns.db.profile.arcAuras then
+    if ns.db and ns.db.profile and ns.db.profile.arcAuras then
         local profileData = ns.db.profile.arcAuras
-        local charData = ns.db.char.arcAuras
         
-        -- Only migrate if profile has tracked items (migration hasn't happened yet)
+        -- Only migrate if profile has tracked items AND our trackedItems is empty
         if profileData.trackedItems and next(profileData.trackedItems) then
-            -- Only migrate to a character that doesn't already have Arc Auras items
-            -- This prevents overwriting a character's own items
-            if not charData.trackedItems or not next(charData.trackedItems) then
+            if not next(db.trackedItems) then
                 -- Copy tracked items
                 for arcID, config in pairs(profileData.trackedItems) do
-                    charData.trackedItems[arcID] = CopyTable(config)
+                    db.trackedItems[arcID] = CopyTable(config)
                 end
                 
                 -- Copy positions
                 if profileData.positions then
                     for arcID, pos in pairs(profileData.positions) do
-                        charData.positions[arcID] = CopyTable(pos)
+                        db.positions[arcID] = CopyTable(pos)
                     end
                 end
                 
                 -- Copy enabled state
                 if profileData.enabled then
-                    charData.enabled = true
+                    db.enabled = true
                 end
                 
                 -- Copy global settings
                 if profileData.globalSettings and next(profileData.globalSettings) then
-                    charData.globalSettings = CopyTable(profileData.globalSettings)
+                    db.globalSettings = CopyTable(profileData.globalSettings)
                 end
                 
                 print("|cff00ccffArcUI|r: Migrated Arc Auras to character-specific storage")
             end
             
-            -- CRITICAL: Clear the profile data after migration attempt
-            -- This prevents the same items from being copied to OTHER characters
-            -- that share this profile. Each character should have independent Arc Auras.
+            -- Clear profile data after migration attempt
             wipe(profileData.trackedItems)
             if profileData.positions then wipe(profileData.positions) end
             profileData.enabled = false
@@ -243,7 +265,27 @@ local function GetDB()
         end
     end
     
-    return ns.db.char.arcAuras
+    -- Cache the result if caching is enabled (after PLAYER_LOGIN)
+    if arcAurasDBCacheEnabled then
+        cachedArcAurasDB = db
+        cachedCharKey = charKey
+    end
+    
+    return db
+end
+
+-- NOW define EnableDBCache (after GetDB is defined)
+function ArcAuras.EnableDBCache()
+    arcAurasDBCacheEnabled = true
+    -- Force a DB fetch to populate the cache
+    cachedArcAurasDB = nil  -- Clear first to force refresh
+    GetDB()
+end
+
+-- Clear cache - call when DB needs to be re-fetched
+function ArcAuras.ClearDBCache()
+    cachedArcAurasDB = nil
+    cachedCharKey = nil
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -688,8 +730,8 @@ local function CreateArcAuraFrame(arcID, config)
     local frame = CreateFrame("Button", frameName, UIParent, "BackdropTemplate")
     frame:SetSize(DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE)
     frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-    frame:SetFrameStrata("MEDIUM")
-    frame:SetFrameLevel(10)
+    frame:SetFrameStrata(FRAME_STRATA)
+    frame:SetFrameLevel(BASE_FRAME_LEVEL)
     
     -- Arc Aura identification
     -- cooldownID is REQUIRED for CDMGroups drag handlers (they read self.cooldownID)
@@ -747,20 +789,20 @@ local function CreateArcAuraFrame(arcID, config)
     -- Border overlay frame (for custom borders)
     local borderOverlay = CreateFrame("Frame", nil, frame)
     borderOverlay:SetAllPoints()
-    borderOverlay:SetFrameLevel(frame:GetFrameLevel() + 5)
+    borderOverlay:SetFrameLevel(frame:GetFrameLevel() + FRAME_LEVEL_BORDER)
     frame._arcBorderOverlay = borderOverlay
     
     -- Glow anchor frame (for LibCustomGlow)
     local glowAnchor = CreateFrame("Frame", nil, frame)
     glowAnchor:SetAllPoints()
-    glowAnchor:SetFrameLevel(frame:GetFrameLevel() + 3)
+    glowAnchor:SetFrameLevel(frame:GetFrameLevel() + FRAME_LEVEL_GLOW)
     frame._arcGlowAnchor = glowAnchor
     
     -- Count container frame (sits ABOVE cooldown swipe for proper layering)
     -- Cooldown frame inherits frame level, so we need count on a higher level frame
     local countContainer = CreateFrame("Frame", nil, frame)
     countContainer:SetAllPoints()
-    countContainer:SetFrameLevel(frame:GetFrameLevel() + 10)  -- Above cooldown swipe and border
+    countContainer:SetFrameLevel(frame:GetFrameLevel() + FRAME_LEVEL_COUNT)
     frame._arcCountContainer = countContainer
     
     -- Stack/charge text - parented to container for proper strata
@@ -1697,6 +1739,7 @@ local function OnArcAurasUpdate()
                                 readyGlowType = rs.glowType or "button",
                                 readyGlowColor = rs.glowColor,
                                 readyGlowIntensity = rs.glowIntensity or 1.0,
+                                readyGlowScale = rs.glowScale or 1.0,
                                 readyGlowSpeed = rs.glowSpeed or 0.25,
                                 readyGlowLines = rs.glowLines or 8,
                                 readyGlowThickness = rs.glowThickness or 2,
@@ -2189,9 +2232,15 @@ end
 
 function ArcAuras.AddTrackedItem(config)
     local db = GetDB()
-    if not db then return false end
+    if not db then 
+        print("|cffFF4444[Arc Auras]|r ERROR: Database not ready, cannot add item")
+        return false 
+    end
     
-    if not db.trackedItems then db.trackedItems = {} end
+    -- CRITICAL: Ensure trackedItems exists
+    if not db.trackedItems then 
+        db.trackedItems = {} 
+    end
     
     local arcID
     local itemID  -- For passive detection
@@ -2204,23 +2253,38 @@ function ArcAuras.AddTrackedItem(config)
         arcID = ArcAuras.MakeItemID(config.itemID)
         itemID = config.itemID
     else
+        print("|cffFF4444[Arc Auras]|r ERROR: Invalid item type:", config.type)
         return false
+    end
+    
+    -- Check if already tracked
+    if db.trackedItems[arcID] then
+        -- Already exists - just return true without creating duplicate
+        return true
     end
     
     -- Detect if item is passive (no on-use spell)
     local isPassive = IsItemPassive(itemID)
     
-    db.trackedItems[arcID] = {
+    -- Create the entry
+    local entry = {
         type = config.type,
         slotID = config.slotID,
         itemID = config.itemID,
         enabled = true,
         isPassive = isPassive,
-        -- Flag to distinguish auto-track slot frames from manually added ones
         isAutoTrackSlot = config.isAutoTrackSlot or false,
-        -- For item-based frames: hide when the specific item is not equipped
         hideWhenUnequipped = config.hideWhenUnequipped or false,
     }
+    
+    -- Save to database
+    db.trackedItems[arcID] = entry
+    
+    -- VALIDATION: Verify it was actually saved
+    if not db.trackedItems[arcID] then
+        print("|cffFF4444[Arc Auras]|r ERROR: Failed to save item to database!")
+        return false
+    end
     
     -- Invalidate caches
     InvalidateSettingsCache(arcID)
@@ -2319,10 +2383,26 @@ end
 -- Removes from group so it doesn't occupy space, preserves position for restoration
 function ArcAuras.HideTrinketSlotFrame(arcID)
     local frame = ArcAuras.frames[arcID]
-    if not frame then return end
+    if not frame then 
+        return 
+    end
     
     -- Mark as hidden due to empty slot
     frame._arcSlotEmpty = true
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- CRITICAL: Hook the frame's Show method to PREVENT re-showing
+    -- CDMGroups and other systems may try to Show() the frame after we hide it
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if not frame._arcOriginalShow then
+        frame._arcOriginalShow = frame.Show
+        frame.Show = function(self)
+            if self._arcSlotEmpty then
+                return  -- Block the show
+            end
+            return self._arcOriginalShow(self)
+        end
+    end
     
     -- Save current group position before removing
     if ns.CDMGroups and ns.CDMGroups.groups then
@@ -2354,7 +2434,8 @@ function ArcAuras.HideTrinketSlotFrame(arcID)
             frame._arcSavedFreeY = freeData.y
             frame._arcSavedFreeSize = freeData.iconSize
             frame._arcWasFreeIcon = true
-            ns.CDMGroups.ReleaseFreeIcon(arcID, true)  -- keepFrame = true
+            -- CRITICAL: ReleaseFreeIcon parameter is clearSaved - pass FALSE to keep savedPositions!
+            ns.CDMGroups.ReleaseFreeIcon(arcID, false)  -- false = DON'T clear saved position
         end
     end
     
@@ -2429,6 +2510,11 @@ function ArcAuras.ShowTrinketSlotFrame(arcID)
         else
             -- No saved position - this is first time showing
             -- Check if CDMGroups has a saved position or register as new
+            -- CRITICAL: Ensure savedPositions reference is correct for current spec
+            if ns.CDMGroups.GetProfileSavedPositions then
+                ns.CDMGroups.GetProfileSavedPositions()
+            end
+            
             if ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID] then
                 -- CDMGroups has a saved position - use RegisterExternalFrame to restore
                 if ns.CDMGroups.RegisterExternalFrame then
@@ -2684,6 +2770,7 @@ function ArcAuras.HideItemFrame(arcID)
     frame._arcHiddenUnequipped = true
     
     -- Save current group position before removing (same as HideTrinketSlotFrame)
+    -- CRITICAL: Do NOT clear savedPositions - we need it to restore when item is re-equipped
     if ns.CDMGroups and ns.CDMGroups.groups then
         for groupName, group in pairs(ns.CDMGroups.groups) do
             if group.members and group.members[arcID] then
@@ -2692,10 +2779,12 @@ function ArcAuras.HideItemFrame(arcID)
                 frame._arcSavedRow = member.row
                 frame._arcSavedCol = member.col
                 
+                -- Remove from group tracking but PRESERVE savedPositions
+                -- Pass skipSavePosition=true to prevent clearing savedPositions
                 if group.RemoveMemberKeepFrame then
                     group:RemoveMemberKeepFrame(arcID)
                 elseif group.RemoveMember then
-                    group:RemoveMember(arcID, true)
+                    group:RemoveMember(arcID, true)  -- true = skipSavePosition
                 end
                 
                 if group.Layout then group:Layout() end
@@ -2709,7 +2798,15 @@ function ArcAuras.HideItemFrame(arcID)
             frame._arcSavedFreeY = freeData.y
             frame._arcSavedFreeSize = freeData.iconSize
             frame._arcWasFreeIcon = true
-            ns.CDMGroups.ReleaseFreeIcon(arcID, true)
+            
+            -- Remove from freeIcons tracking but PRESERVE savedPositions
+            -- CRITICAL: ReleaseFreeIcon parameter is clearSaved - pass FALSE to keep savedPositions!
+            if ns.CDMGroups.ReleaseFreeIcon then
+                ns.CDMGroups.ReleaseFreeIcon(arcID, false)  -- false = DON'T clear saved position
+            else
+                -- Manual removal if ReleaseFreeIcon doesn't exist
+                ns.CDMGroups.freeIcons[arcID] = nil
+            end
         end
     end
     
@@ -2736,9 +2833,52 @@ function ArcAuras.ShowItemFrame(arcID)
     -- Apply proper state visuals (respects saved alpha settings)
     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
     
-    -- Restore to group or free position (same as ShowTrinketSlotFrame)
+    -- Restore to group or free position
+    -- CRITICAL: Check CDMGroups.savedPositions FIRST - this is the authoritative source
+    -- for the CURRENT spec's position. The frame._arcSaved* variables can be stale after spec change.
     if ns.CDMGroups then
-        if frame._arcWasFreeIcon then
+        -- CRITICAL: Ensure savedPositions reference is correct for current spec
+        -- The ns.CDMGroups.savedPositions reference may be stale after spec change
+        if ns.CDMGroups.GetProfileSavedPositions then
+            ns.CDMGroups.GetProfileSavedPositions()
+        end
+        
+        local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
+        
+        if saved then
+            -- Use savedPositions (authoritative for current spec)
+            if saved.type == "group" and saved.target then
+                local group = ns.CDMGroups.groups and ns.CDMGroups.groups[saved.target]
+                if group then
+                    local row = saved.row or 0
+                    local col = saved.col or 0
+                    
+                    if group.AddMemberAtWithFrame then
+                        group:AddMemberAtWithFrame(arcID, row, col, frame, nil)
+                    elseif group.AddMemberAt then
+                        group:AddMemberAt(arcID, row, col)
+                    end
+                    
+                    if group.Layout then group:Layout() end
+                    
+                    if ns.Masque and ns.Masque.QueueRefresh then
+                        ns.Masque.QueueRefresh()
+                    end
+                else
+                    -- Group doesn't exist in current spec - use LoadFramePosition as fallback
+                    ArcAuras.LoadFramePosition(arcID, frame)
+                end
+            elseif saved.type == "free" then
+                local x = saved.x or 0
+                local y = saved.y or 0
+                local size = saved.iconSize or 36
+                ns.CDMGroups.TrackFreeIcon(arcID, x, y, size, frame)
+            else
+                -- Unknown saved type - use LoadFramePosition
+                ArcAuras.LoadFramePosition(arcID, frame)
+            end
+        elseif frame._arcWasFreeIcon then
+            -- Fallback: use frame's temporary saved position (same spec hide/show)
             local x = frame._arcSavedFreeX or 0
             local y = frame._arcSavedFreeY or 0
             local size = frame._arcSavedFreeSize or 36
@@ -2749,6 +2889,7 @@ function ArcAuras.ShowItemFrame(arcID)
             frame._arcSavedFreeY = nil
             frame._arcSavedFreeSize = nil
         elseif frame._arcSavedGroupName then
+            -- Fallback: use frame's temporary saved group (same spec hide/show)
             local groupName = frame._arcSavedGroupName
             local row = frame._arcSavedRow or 0
             local col = frame._arcSavedCol or 0
@@ -2776,6 +2917,15 @@ function ArcAuras.ShowItemFrame(arcID)
             ArcAuras.LoadFramePosition(arcID, frame)
         end
     end
+    
+    -- Clear temporary saved position flags (already used or not needed)
+    frame._arcWasFreeIcon = nil
+    frame._arcSavedFreeX = nil
+    frame._arcSavedFreeY = nil
+    frame._arcSavedFreeSize = nil
+    frame._arcSavedGroupName = nil
+    frame._arcSavedRow = nil
+    frame._arcSavedCol = nil
 end
 
 -- Check all item-based frames for equipped state and hide/show accordingly
@@ -3012,14 +3162,46 @@ function ArcAuras.RefreshAllFrames()
     end
     wipe(ArcAuras.frames)
     
+    -- Get on-use filter setting
+    local onlyOnUse = db.onlyOnUseTrinkets
+    
     -- Recreate all enabled tracked items
     for arcID, config in pairs(db.trackedItems or {}) do
         if config.enabled then
             local frame = ArcAuras.CreateFrame(arcID, config)
-            if frame then 
-                frame:Show()
-                -- Apply proper state visuals (respects saved alpha settings)
-                ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+            if frame then
+                local shouldHide = false
+                
+                -- For trinket slot trackers, check visibility conditions
+                if config.type == "trinket" and config.slotID then
+                    local itemID = GetInventoryItemID("player", config.slotID)
+                    
+                    if not itemID then
+                        -- Slot is empty
+                        shouldHide = true
+                        frame._arcSlotEmpty = true
+                    elseif config.isAutoTrackSlot and onlyOnUse and IsItemPassive(itemID) then
+                        -- Passive trinket with on-use filter
+                        shouldHide = true
+                        frame._arcSlotEmpty = true
+                    end
+                    
+                -- For item-based frames, check hideWhenUnequipped
+                elseif config.type == "item" and config.itemID and config.hideWhenUnequipped then
+                    if not IsItemEquipped(config.itemID) then
+                        shouldHide = true
+                        frame._arcHiddenUnequipped = true
+                    end
+                end
+                
+                if shouldHide then
+                    frame:Hide()
+                    frame:SetAlpha(0)
+                else
+                    frame:Show()
+                    -- Apply proper state visuals (respects saved alpha settings)
+                    ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+                end
             end
         end
     end
@@ -3344,16 +3526,35 @@ end
 -- INITIALIZATION
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- Track initialization attempts for debugging
+local initAttempts = 0
+
 function ArcAuras.Initialize()
     if ArcAuras.initialized then return end
     
+    initAttempts = initAttempts + 1
+    
     local db = GetDB()
     if not db then
-        C_Timer.After(1, ArcAuras.Initialize)
+        if initAttempts < 10 then
+            -- Keep trying for up to 10 seconds
+            C_Timer.After(1, ArcAuras.Initialize)
+        else
+            print("|cffFF4444[Arc Auras]|r ERROR: Database failed to initialize after 10 attempts")
+        end
         return
     end
     
     ArcAuras.initialized = true
+    
+    -- Debug: Report tracked items found
+    local itemCount = 0
+    if db.trackedItems then
+        for _ in pairs(db.trackedItems) do itemCount = itemCount + 1 end
+    end
+    if itemCount > 0 then
+        -- Silent load - items found, everything is good
+    end
     
     -- Enable if saved as enabled
     if db.enabled then
@@ -3399,6 +3600,11 @@ local lastEquipedSpellsTime = 0
 
 eventFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "PLAYER_LOGIN" then
+        -- Enable DB caching now that SavedVariables are loaded
+        C_Timer.After(0.1, function()
+            ArcAuras.EnableDBCache()
+        end)
+        -- Then initialize
         C_Timer.After(2, function()
             ArcAuras.Initialize()
         end)
@@ -3499,38 +3705,142 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         -- Debounce: Both events can fire during spec change, only refresh once
         if not ArcAuras._specChangeRefreshPending then
             ArcAuras._specChangeRefreshPending = true
-            -- Wait for CDMGroups to fully load the new spec (spec change takes ~2-3 seconds to settle)
-            C_Timer.After(2.5, function()
+            -- Wait for CDMGroups to fully load the new spec
+            -- CDMGroups does: Reconcile at ~1.0s, FOLLOWUP_SWEEP_2 at ~2.5s
+            -- We must run AFTER ForceRepositionAllFrames completes (at ~2.5s)
+            C_Timer.After(3.0, function()
                 ArcAuras._specChangeRefreshPending = false
                 ArcAuras.RefreshAllSettings()
                 
                 -- ═══════════════════════════════════════════════════════════════════════════
-                -- CRITICAL: Re-register Arc Auras frames with CDMGroups after spec change
-                -- The new spec might not have positions for Arc Auras, so we need to either:
-                -- 1. Use existing position from savedPositions (if any)
-                -- 2. Register as new (to default group)
+                -- APPLY ON-USE FILTER FIRST: Hide passive trinkets if filter is enabled
+                -- Must run BEFORE CDMGroups registration to prevent showing hidden frames
+                -- ═══════════════════════════════════════════════════════════════════════════
+                local hiddenByFilter = {}
+                local filterEnabled = ArcAuras.isEnabled and ArcAuras.IsOnlyOnUseTrinketsEnabled()
+                
+                if filterEnabled then
+                    for _, slot in ipairs(TRINKET_SLOTS) do
+                        local arcID = ArcAuras.MakeTrinketID(slot.slotID)
+                        local frame = ArcAuras.frames[arcID]
+                        local itemID = GetInventoryItemID("player", slot.slotID)
+                        local isPassive = itemID and IsItemPassive(itemID)
+                        
+                        if frame then
+                            if itemID and isPassive then
+                                -- Hide passive trinket (removes from group, hides frame)
+                                ArcAuras.HideTrinketSlotFrame(arcID)
+                                hiddenByFilter[arcID] = true
+                            end
+                        end
+                    end
+                end
+                
+                -- ═══════════════════════════════════════════════════════════════════════════
+                -- APPLY HIDE-WHEN-UNEQUIPPED: Show/hide item-based frames based on equipped state
+                -- Must run BEFORE CDMGroups registration to prevent showing hidden frames
+                -- ═══════════════════════════════════════════════════════════════════════════
+                if ArcAuras.isEnabled then
+                    -- Check visibility for all item-based frames with hideWhenUnequipped
+                    local db = GetDB()
+                    if db and db.trackedItems then
+                        for arcID, config in pairs(db.trackedItems) do
+                            if config.type == "item" and config.itemID and config.hideWhenUnequipped then
+                                local frame = ArcAuras.frames[arcID]
+                                if frame then
+                                    local isEquipped = IsItemEquipped(config.itemID)
+                                    
+                                    if isEquipped then
+                                        -- Item is equipped - ensure frame is shown
+                                        frame._arcHiddenUnequipped = nil
+                                        frame:Show()
+                                        frame:SetAlpha(1)
+                                        ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+                                    else
+                                        -- Item is not equipped - hide the frame AND remove from group
+                                        -- Must remove from group so Layout() doesn't re-show it
+                                        frame._arcHiddenUnequipped = true
+                                        hiddenByFilter[arcID] = true
+                                        
+                                        -- Remove from any group it might be in
+                                        if ns.CDMGroups and ns.CDMGroups.groups then
+                                            for groupName, group in pairs(ns.CDMGroups.groups) do
+                                                if group.members and group.members[arcID] then
+                                                    -- Save position before removing
+                                                    local member = group.members[arcID]
+                                                    frame._arcSavedGroupName = groupName
+                                                    frame._arcSavedRow = member.row
+                                                    frame._arcSavedCol = member.col
+                                                    
+                                                    -- Remove from group (but keep frame reference for later restore)
+                                                    group.members[arcID] = nil
+                                                    break
+                                                end
+                                            end
+                                            
+                                            -- Also check/clear from freeIcons
+                                            if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
+                                                local freeData = ns.CDMGroups.freeIcons[arcID]
+                                                frame._arcSavedFreeX = freeData.x
+                                                frame._arcSavedFreeY = freeData.y
+                                                frame._arcSavedFreeSize = freeData.iconSize
+                                                frame._arcWasFreeIcon = true
+                                                ns.CDMGroups.freeIcons[arcID] = nil
+                                            end
+                                        end
+                                        
+                                        frame:Hide()
+                                        frame:SetAlpha(0)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                
+                -- ═══════════════════════════════════════════════════════════════════════════
+                -- Re-register Arc Auras frames with CDMGroups after spec change
+                -- FORCE re-registration regardless of current state - CDMGroups may have
+                -- stale member entries after spec change that prevent proper drag/positioning
                 -- ═══════════════════════════════════════════════════════════════════════════
                 if ns.CDMGroups and ArcAuras.isEnabled then
+                    -- CRITICAL: Ensure savedPositions reference is correct for current spec
+                    -- The ns.CDMGroups.savedPositions reference may be stale after spec change
+                    -- GetProfileSavedPositions syncs it to the current spec's profile data
+                    if ns.CDMGroups.GetProfileSavedPositions then
+                        ns.CDMGroups.GetProfileSavedPositions()
+                    end
+                    
                     local registeredCount = 0
                     for arcID, frame in pairs(ArcAuras.frames) do
-                        if frame and frame:IsShown() then
-                            -- Check if CDMGroups already has a position for this arc aura
+                        -- Skip frames hidden by filters
+                        if not hiddenByFilter[arcID] and frame and frame:IsShown() then
+                            -- Check if CDMGroups has a saved position for this arc aura
                             local hasSavedPosition = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
                             
                             if hasSavedPosition then
-                                -- Position exists - ensure frame is properly assigned
                                 local saved = ns.CDMGroups.savedPositions[arcID]
                                 if saved.type == "group" and saved.target then
                                     local targetGroup = ns.CDMGroups.groups and ns.CDMGroups.groups[saved.target]
-                                    if targetGroup and not targetGroup.members[arcID] then
-                                        -- Not in group yet - register it
+                                    if targetGroup then
+                                        -- FORCE re-registration: Remove stale entry first, then register fresh
+                                        -- This ensures hooks and member.frame are properly set up
+                                        if targetGroup.members and targetGroup.members[arcID] then
+                                            -- Clear stale member entry
+                                            targetGroup.members[arcID] = nil
+                                        end
+                                        
+                                        -- Register with fresh state
                                         if ns.CDMGroups.RegisterExternalFrame then
                                             ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", saved.target)
                                             registeredCount = registeredCount + 1
                                         end
                                     end
                                 elseif saved.type == "free" then
-                                    -- Free icon - ensure tracked
+                                    -- Free icon - re-track to ensure proper setup
+                                    if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
+                                        ns.CDMGroups.freeIcons[arcID] = nil
+                                    end
                                     if ns.CDMGroups.TrackFreeIcon then
                                         ns.CDMGroups.TrackFreeIcon(arcID, saved.x or 0, saved.y or 0, saved.iconSize or 36, frame)
                                         registeredCount = registeredCount + 1
@@ -3546,12 +3856,10 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                         end
                     end
                     
-                    if registeredCount > 0 then
-                        -- Layout all groups after registration
-                        if ns.CDMGroups.groups then
-                            for _, group in pairs(ns.CDMGroups.groups) do
-                                if group.Layout then group:Layout() end
-                            end
+                    -- Always layout all groups after spec change to ensure proper positioning
+                    if ns.CDMGroups.groups then
+                        for _, group in pairs(ns.CDMGroups.groups) do
+                            if group.Layout then group:Layout() end
                         end
                     end
                 end
@@ -3740,55 +4048,4 @@ function ArcAuras.GetItemInfoForArcID(cdID)
     end
     
     return itemID, name, icon
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
--- DEBUG: Print state of all Arc Aura frames
--- ═══════════════════════════════════════════════════════════════════════════
-function ArcAuras.DebugPrintState()
-    print("|cff00CCFF[Arc Auras Debug]|r Frame State Report:")
-    print("  Update ticker running: " .. tostring(ArcAuras.updateTicker ~= nil))
-    print("  isEnabled: " .. tostring(ArcAuras.isEnabled))
-    print("  Settings cache entries: " .. tostring(next(settingsCache) and "has entries" or "empty"))
-    print("  Stack cache entries: " .. tostring(next(stackCache) and "has entries" or "empty"))
-    
-    local count = 0
-    for arcID, frame in pairs(ArcAuras.frames or {}) do
-        count = count + 1
-        local cdVisible = frame.Cooldown and frame.Cooldown:IsVisible()
-        local iconTex = frame.Icon
-        
-        print(string.format("  [%d] %s:", count, arcID))
-        print(string.format("      frame shown=%s, Cooldown:IsVisible()=%s", tostring(frame:IsShown()), tostring(cdVisible)))
-        print(string.format("      _lastVisualState=%s", tostring(frame._lastVisualState)))
-        
-        if iconTex then
-            local isDesat = iconTex.IsDesaturated and iconTex:IsDesaturated()
-            local desatVal = iconTex.GetDesaturation and iconTex:GetDesaturation()
-            local texPath = iconTex:GetTexture()
-            
-            print(string.format("      Icon: IsDesaturated()=%s, GetDesaturation()=%s", tostring(isDesat), tostring(desatVal)))
-            print(string.format("      Icon texture: %s", tostring(texPath)))
-            print(string.format("      Icon._arcParentFrame=%s", tostring(iconTex._arcParentFrame)))
-        else
-            print("      Icon: NIL")
-        end
-        
-        -- Show settings info
-        local settings = ArcAuras.GetCachedSettings(arcID)
-        if settings and settings.cooldownStateVisuals then
-            local cs = settings.cooldownStateVisuals.cooldownState or {}
-            print(string.format("      Settings: cs.noDesaturate=%s", tostring(cs.noDesaturate)))
-        else
-            print("      Settings: cooldownStateVisuals NOT FOUND")
-        end
-    end
-    
-    print("  Total frames: " .. count)
-end
-
--- Slash command for debug
-SLASH_ARCAURASDEBUG1 = "/arcdebug"
-SlashCmdList["ARCAURASDEBUG"] = function(msg)
-    ArcAuras.DebugPrintState()
 end

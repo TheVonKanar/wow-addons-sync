@@ -1,5 +1,5 @@
-local VERSION_TEXT = "1.8.5 e";
-local VERSION_DATE = 1769500000;
+local VERSION_TEXT = "1.8.6";
+local VERSION_DATE = 1769870000;
 
 
 local addonName, addon = ...
@@ -267,6 +267,7 @@ local DefaultValues = {
         LootUI_LowFrameStrata = false,
         LootUI_ShowReputation = false,
         LootUI_ShowAllMoneyChange = false,
+        LootUI_HideTitle = false,
 
 
     --Unified Map Pin System
@@ -337,6 +338,17 @@ local DefaultValues = {
     Housing_ItemAcquiredAlert = true,       --Click AlertFrame to view decor model
 
 
+    --Namaplte: Quest Indicator
+    NameplateQuest = false,
+        NameplateQuest_IconSize = 2,
+        NameplateQuest_ShowPartyQuest = false,
+        NameplateQuest_ShowTargetProgress = false,
+            NameplateQuest_TextOutline = true,
+        NameplateQuest_WidgetOffsetX = 0,
+        NameplateQuest_WidgetOffsetY = 0,
+        --NameplateQuest_Side = "RIGHT",    --Initial value dedfined by detecting addon
+
+
     --Declared elsewhere:
         --DreamseedChestABTesting = math.random(100) >= 50
 
@@ -350,6 +362,7 @@ local DefaultValues = {
 
 local NeverEnableByDefault = {
     AppearanceTab = true,
+    NameplateQuest = true,
 };
 
 

@@ -57,6 +57,9 @@ do
   end)
 end
 
+local executeCurve = addonTable.Display.Utilities.GetExecuteCurve()
+local executeConverter = UIParent:CreateTexture()
+
 local GetInterruptSpell = addonTable.Display.Utilities.GetInterruptSpell
 
 local transparency = {r = 1, g = 1, b = 1, a = 0}
@@ -106,7 +109,7 @@ local stateToCalculator = {
     state.channelInfo = {UnitChannelInfo(unit)}
   end,
   quest = function(state, unit)
-    state.quest = C_QuestLog.UnitIsRelatedToActiveQuest and C_QuestLog.UnitIsRelatedToActiveQuest(unit)
+    state.quest = #addonTable.Display.Utilities.GetQuestInfo(unit) > 0
   end,
   threat = function(state, unit)
     state.threat = UnitThreatSituation("player", unit)
@@ -131,6 +134,7 @@ local kindToEvent = {
   focus = {"PLAYER_FOCUS_CHANGED"},
   threat = {"UNIT_THREAT_LIST_UPDATE"},
   quest = {"QUEST_LOG_UPDATE"},
+  execute = {"UNIT_HEALTH"},
   interruptReady = {
     "UNIT_SPELLCAST_START",
     "UNIT_SPELLCAST_STOP",
@@ -180,15 +184,31 @@ local kindToEvent = {
     "UNIT_SPELLCAST_CHANNEL_STOP",
   },
 }
+local kindToCallback = {
+  quest = {"QuestInfoUpdate"},
+}
 
 function addonTable.Display.UnregisterForColorEvents(frame)
+  if frame.colorState then
+    for _, s in ipairs(frame.colorSettings) do
+      local ec = kindToCallback[s.kind]
+      if ec then
+        for _, e in ipairs(ec) do
+          addonTable.CallbackRegistry:UnregisterCallback(e, frame.colorState)
+        end
+      end
+    end
+  end
+
   frame.ColorEventHandler = nil
   frame.colorState = nil
+  frame.colorSettings = nil
 end
 
 function addonTable.Display.RegisterForColorEvents(frame, settings)
   local events = {}
   frame.colorState = {}
+  frame.colorSettings = settings
   for _, s in ipairs(settings) do
     local es = kindToEvent[s.kind]
     if es then
@@ -204,6 +224,14 @@ function addonTable.Display.RegisterForColorEvents(frame, settings)
         else
           frame:RegisterEvent(e)
         end
+      end
+    end
+    local ec = kindToCallback[s.kind]
+    if ec then
+      for _, e in ipairs(ec) do
+        addonTable.CallbackRegistry:RegisterCallback(e, function()
+          frame:SetColor(addonTable.Display.GetColor(settings, frame.colorState, frame.unit))
+        end, frame.colorState)
       end
     end
   end
@@ -266,6 +294,14 @@ function addonTable.Display.GetColor(settings, state, unit)
           table.insert(colorQueue, {color = s.colors.offtank})
           break
         end
+      end
+    elseif s.kind == "rarity" then
+      local classification = UnitClassification(unit)
+
+      if classification == "rare" then
+        table.insert(colorQueue, {color = s.colors.rare})
+      elseif classification == "rareelite" then
+        table.insert(colorQueue, {color = s.colors.rareElite})
       end
     elseif s.kind == "eliteType" then
       if (inRelevantInstance or not s.instancesOnly) and not addonTable.Display.Utilities.IsNeutralUnit(unit) then
@@ -419,6 +455,20 @@ function addonTable.Display.GetColor(settings, state, unit)
     elseif s.kind == "fixed" then
       table.insert(colorQueue, {color = s.colors.fixed})
       break
+    elseif s.kind == "execute" then
+      local executeRange = addonTable.Display.Utilities.GetExecuteRange()
+      if executeRange > 0 then
+        if UnitHealthPercent then
+          local alpha = UnitHealthPercent(unit, true, executeCurve)
+          executeConverter:SetDesaturation(alpha)
+          table.insert(colorQueue, {state = {{value = executeConverter:IsDesaturated()}}, color = s.colors.execute})
+        else
+          local percent = UnitHealth(unit) / UnitHealthMax(unit)
+          if percent <= addonTable.Display.Utilities.GetExecuteRange() then
+            table.insert(colorQueue, {color = s.colors.execute})
+          end
+        end
+      end
     end
   end
 

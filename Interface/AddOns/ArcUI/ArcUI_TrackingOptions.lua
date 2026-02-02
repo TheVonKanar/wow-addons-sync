@@ -1629,7 +1629,12 @@ function ns.TrackingOptions.SelectBarForAppearance(barType, barNum)
   if ns.AppearanceOptions and ns.AppearanceOptions.SetSelectedBar then
     ns.AppearanceOptions.SetSelectedBar(barType, barNum)
   end
-  LibStub("AceConfigDialog-3.0"):SelectGroup("ArcUI", "bars", "appearance")
+  -- Resource bars go to resources -> appearance, all others go to bars -> appearance
+  if barType == "resource" then
+    LibStub("AceConfigDialog-3.0"):SelectGroup("ArcUI", "resources", "appearance")
+  else
+    LibStub("AceConfigDialog-3.0"):SelectGroup("ArcUI", "bars", "appearance")
+  end
 end
 
 function ns.TrackingOptions.IdentifyBar(barType, barNum)

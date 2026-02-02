@@ -19,6 +19,48 @@ local function DeepCopy(t)
     return copy
 end
 
+-- Remap alignment when grid shape changes so user's intent is preserved
+local function RemapAlignmentForShape(oldShape, newShape, currentAlignment)
+    if oldShape == newShape then return nil end
+    
+    local mapped
+    if oldShape == "horizontal" and newShape == "multi" then
+        local map = { center = "center_h", left = "left", right = "right" }
+        mapped = map[currentAlignment]
+    elseif oldShape == "vertical" and newShape == "multi" then
+        local map = { center = "center_v", top = "top", bottom = "bottom" }
+        mapped = map[currentAlignment]
+    elseif newShape == "horizontal" then
+        local map = { center_h = "center", center_v = "center", left = "left", right = "right", top = "left", bottom = "right", center = "center" }
+        mapped = map[currentAlignment]
+    elseif newShape == "vertical" then
+        local map = { center_h = "center", center_v = "center", top = "top", bottom = "bottom", left = "top", right = "bottom", center = "center" }
+        mapped = map[currentAlignment]
+    end
+    
+    return mapped
+end
+
+-- Remap and save alignment BEFORE SetGridSize so Layout() uses the correct value
+-- Does NOT call Layout - SetGridSize already does that internally
+local function RemapAlignmentBeforeResize(g, oldRows, oldCols, newRows, newCols)
+    local DetectGridShape = ns.CDMGroups.DetectGridShape
+    local GetDefaultAlignment = ns.CDMGroups.GetDefaultAlignment
+    if not DetectGridShape or not GetDefaultAlignment then return end
+    
+    local oldShape = DetectGridShape(oldRows, oldCols)
+    local newShape = DetectGridShape(newRows, newCols)
+    if oldShape == newShape then return end
+    
+    local old = g.layout.alignment or GetDefaultAlignment(oldShape)
+    local mapped = RemapAlignmentForShape(oldShape, newShape, old)
+    local newAlignment = mapped or GetDefaultAlignment(newShape)
+    
+    g.layout.alignment = newAlignment
+    local db = g.getDB and g.getDB()
+    if db then db.alignment = newAlignment end
+end
+
 -- CRITICAL: Use the exported GetSpecData from main module (reads from char storage)
 -- DO NOT use ns.db.profile.cdmGroups - that's the OLD account-wide storage!
 local function GetSpecData(specIndex)
@@ -47,7 +89,7 @@ local DEFAULT_GROUPS = {
         position = { x = -200, y = 150 },
         showBorder = false,
         showBackground = false,
-        autoReflow = false,
+        autoReflow = true,  -- Default true for new groups
         lockGridSize = false,
         containerPadding = 0,
         borderColor = { r = 0.3, g = 0.8, b = 0.3, a = 1 },
@@ -1298,37 +1340,11 @@ local function GetOptionsTable()
                 fontSize = "small",
                 hidden = function() return collapsedSections.globalOptions end,
             },
-            showTooltips = {
-                type = "toggle",
-                name = "Show Tooltips",
-                desc = "When enabled, hovering over icons shows spell tooltips.\n\nWhen disabled, tooltips are hidden on all icons managed by ArcUI.",
-                order = 16.2,
-                width = 0.7,
-                hidden = function() return collapsedSections.globalOptions end,
-                get = function()
-                    -- Use shared DB accessor (reads from char.cdmGroups)
-                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
-                    if not db then return true end  -- Default: show tooltips
-                    -- disableTooltips = true means hide, so invert for display
-                    return db.disableTooltips ~= true
-                end,
-                set = function(_, val)
-                    -- Use shared DB accessor (writes to char.cdmGroups)
-                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
-                    if not db then return end
-                    -- Invert: toggle shows "Show Tooltips", we store "disableTooltips"
-                    db.disableTooltips = not val
-                    -- Apply the change immediately
-                    if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
-                        ns.CDMGroups.RefreshIconSettings()
-                    end
-                end,
-            },
             clickThrough = {
                 type = "toggle",
                 name = "Click-Through",
-                desc = "When enabled, icons cannot be clicked - mouse clicks pass through to whatever is behind them.\n\nUseful if icons overlap clickable UI elements.",
-                order = 16.3,
+                desc = "When enabled, icons cannot be clicked - mouse clicks pass through to whatever is behind them.\n\nThis also disables tooltips since mouse events don't register.\n\nUseful if icons overlap clickable UI elements.",
+                order = 16.2,
                 width = 0.7,
                 hidden = function() return collapsedSections.globalOptions end,
                 get = function()
@@ -1342,9 +1358,13 @@ local function GetOptionsTable()
                     local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
                     if not db then return end
                     db.clickThrough = val
-                    -- Apply the change immediately
-                    if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
-                        ns.CDMGroups.RefreshIconSettings()
+                    -- Refresh cache
+                    if ns.CDMGroups and ns.CDMGroups.RefreshCachedLayoutSettings then
+                        ns.CDMGroups.RefreshCachedLayoutSettings()
+                    end
+                    -- FORCE apply click-through immediately to all frames
+                    if ns.CDMGroups and ns.CDMGroups.ForceApplyClickThrough then
+                        ns.CDMGroups.ForceApplyClickThrough(val)
                     end
                 end,
             },
@@ -1582,7 +1602,15 @@ local function GetOptionsTable()
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
-                    if g then g:SetGridSize(val, g.layout.gridCols) end
+                    if g then
+                        local oldRows = g.layout.gridRows or 1
+                        local oldCols = g.layout.gridCols or 1
+                        -- Remap alignment BEFORE SetGridSize (which calls Layout internally)
+                        RemapAlignmentBeforeResize(g, oldRows, oldCols, val, oldCols)
+                        g:SetGridSize(val, oldCols)
+                        local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
+                        if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                    end
                 end,
             },
             gridCols = {
@@ -1599,7 +1627,15 @@ local function GetOptionsTable()
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
-                    if g then g:SetGridSize(g.layout.gridRows, val) end
+                    if g then
+                        local oldRows = g.layout.gridRows or 1
+                        local oldCols = g.layout.gridCols or 1
+                        -- Remap alignment BEFORE SetGridSize (which calls Layout internally)
+                        RemapAlignmentBeforeResize(g, oldRows, oldCols, oldRows, val)
+                        g:SetGridSize(oldRows, val)
+                        local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
+                        if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                    end
                 end,
             },
             horizontalGrowth = {
@@ -1708,7 +1744,7 @@ local function GetOptionsTable()
                     if g then g:SetContainerPadding(val - 4) end
                 end,
             },
-            fillGapsSpacer = {
+            layoutSpacer = {
                 type = "description",
                 name = "",
                 order = 35.9,
@@ -1717,10 +1753,10 @@ local function GetOptionsTable()
             },
             autoReflow = {
                 type = "toggle",
-                name = "Fill Gaps",
-                desc = "Automatically fills empty slots by shifting icons together. When disabled, icons stay in their assigned positions even if gaps appear.",
+                name = "Dynamic Layout",
+                desc = "Automatically compacts icons together with no gaps. Uses alignment setting to control positioning direction. When disabled, icons stay at their assigned grid positions.",
                 order = 36,
-                width = 0.6,
+                width = 0.7,
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
                 get = function()
                     local g = GetSelectedGroup()
@@ -1728,18 +1764,31 @@ local function GetOptionsTable()
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
-                    if g then g:SetAutoReflow(val) end
+                    if g then 
+                        -- When enabling, ensure alignment is saved
+                        if val and not g.layout.alignment then
+                            local rows = g.layout.gridRows or 1
+                            local cols = g.layout.gridCols or 1
+                            local gridShape = ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "horizontal"
+                            local defaultAlignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "center"
+                            g.layout.alignment = defaultAlignment
+                            local db = g.getDB and g.getDB()
+                            if db then
+                                db.alignment = defaultAlignment
+                            end
+                        end
+                        g:SetAutoReflow(val) 
+                    end
                 end,
             },
             alignmentAnchor = {
                 type = "select",
                 name = "Alignment",
-                desc = "Where icons align when Fill Gaps is enabled",
+                desc = "Where icons align within the group when Dynamic Layout is enabled.",
                 order = 36.5,
                 width = 0.8,
                 hidden = function() 
                     local g = GetSelectedGroup()
-                    -- Only show when Fill Gaps is enabled
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
                 end,
                 values = function()
@@ -1755,21 +1804,54 @@ local function GetOptionsTable()
                     elseif gridShape == "vertical" then
                         return { top = "Top", center = "Center", bottom = "Bottom" }
                     else -- multi
-                        return { top = "Top", bottom = "Bottom", left = "Left", right = "Right" }
+                        return { top = "Top", bottom = "Bottom", left = "Left", right = "Right", center_h = "Center Horizontal", center_v = "Center Vertical" }
                     end
                 end,
                 get = function()
                     local g = GetSelectedGroup()
                     if not g then return "center" end
                     
-                    local alignment = g.layout.alignment
-                    if alignment then return alignment end
-                    
-                    -- Return default based on grid shape
                     local rows = g.layout.gridRows or 1
                     local cols = g.layout.gridCols or 1
                     local gridShape = ns.CDMGroups.DetectGridShape(rows, cols)
-                    return ns.CDMGroups.GetDefaultAlignment(gridShape)
+                    
+                    local alignment = g.layout.alignment
+                    if not alignment then
+                        return ns.CDMGroups.GetDefaultAlignment(gridShape)
+                    end
+                    
+                    -- Validate: check if stored value is valid for current shape
+                    local validValues
+                    if gridShape == "horizontal" then
+                        validValues = { left = true, center = true, right = true }
+                    elseif gridShape == "vertical" then
+                        validValues = { top = true, center = true, bottom = true }
+                    else
+                        validValues = { top = true, bottom = true, left = true, right = true, center_h = true, center_v = true }
+                    end
+                    
+                    if validValues[alignment] then
+                        return alignment
+                    end
+                    
+                    -- Stale value - infer old shape from the alignment value
+                    local horizOnly = { left = true, right = true }
+                    local vertOnly  = { top = true, bottom = true }
+                    local multiOnly = { center_h = true, center_v = true }
+                    local oldShape
+                    if multiOnly[alignment] then oldShape = "multi"
+                    elseif vertOnly[alignment] then oldShape = "vertical"
+                    else oldShape = "horizontal"
+                    end
+                    
+                    local mapped = RemapAlignmentForShape(oldShape, gridShape, alignment)
+                    local newAlignment = mapped or ns.CDMGroups.GetDefaultAlignment(gridShape)
+                    
+                    g.layout.alignment = newAlignment
+                    local db = g.getDB and g.getDB()
+                    if db then db.alignment = newAlignment end
+                    
+                    return newAlignment
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
@@ -1780,7 +1862,7 @@ local function GetOptionsTable()
                         if db then
                             db.alignment = val
                         end
-                        -- Trigger reflow to reposition icons (alignment affects slot assignment)
+                        -- Trigger layout to reposition icons with new alignment
                         if g.autoReflow and g.ReflowIcons then 
                             g:ReflowIcons() 
                         elseif g.Layout then 
@@ -1796,12 +1878,11 @@ local function GetOptionsTable()
             dynamicLayout = {
                 type = "toggle",
                 name = "Dynamic Auras",
-                desc = "When enabled, aura icons compact based on active aura state. Icons without an active aura (no buff/debuff/totem active) don't occupy grid space. Only affects aura icons - cooldowns are not affected. Requires Fill Gaps enabled.",
+                desc = "When enabled, aura icons without an active buff/debuff/totem don't occupy space in the group. The remaining icons (cooldowns + active auras) compact together. Only affects aura icons - cooldowns always take space. Requires Dynamic Layout enabled.",
                 order = 36.7,
                 width = 0.7,
                 hidden = function() 
                     local g = GetSelectedGroup()
-                    -- Only show when Fill Gaps is enabled
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
                 end,
                 get = function()
@@ -1812,21 +1893,83 @@ local function GetOptionsTable()
                 set = function(_, val)
                     local g = GetSelectedGroup()
                     if g then
-                        -- Use DynamicLayout module to set (handles tracking state)
-                        if ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.SetEnabled then
-                            ns.CDMGroups.DynamicLayout.SetEnabled(g, val)
-                        else
-                            g.dynamicLayout = val
-                        end
-                        -- Save to DB
-                        local db = g.getDB and g.getDB()
-                        if db then
-                            db.dynamicLayout = val
+                        -- Helper to actually enable/disable Dynamic Auras
+                        local function ApplyDynamicAuras(enabled)
+                            -- CRITICAL FIX: When enabling Dynamic Auras, ensure alignment is saved
+                            if enabled and not g.layout.alignment then
+                                local rows = g.layout.gridRows or 1
+                                local cols = g.layout.gridCols or 1
+                                local gridShape = ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "horizontal"
+                                local defaultAlignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "center"
+                                g.layout.alignment = defaultAlignment
+                                local db = g.getDB and g.getDB()
+                                if db then
+                                    db.alignment = defaultAlignment
+                                end
+                            end
+                            
+                            -- Use DynamicLayout module to set (handles tracking state)
+                            if ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.SetEnabled then
+                                ns.CDMGroups.DynamicLayout.SetEnabled(g, enabled)
+                            else
+                                g.dynamicLayout = enabled
+                            end
+                            -- Save to DB
+                            local db = g.getDB and g.getDB()
+                            if db then
+                                db.dynamicLayout = enabled
+                            end
+                            
+                            -- Trigger auto-save to linked template
+                            if ns.CDMGroups.TriggerTemplateAutoSave then
+                                ns.CDMGroups.TriggerTemplateAutoSave()
+                            end
+                            
+                            local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
+                            if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
                         end
                         
-                        -- Trigger auto-save to linked template
-                        if ns.CDMGroups.TriggerTemplateAutoSave then
-                            ns.CDMGroups.TriggerTemplateAutoSave()
+                        if val then
+                            -- Enabling: Check if global aura "missing" alpha is > 0
+                            local auraCfg = ns.CDMEnhance and ns.CDMEnhance.GetGlobalSettings and ns.CDMEnhance.GetGlobalSettings("aura")
+                            local currentAlpha = 1.0
+                            if auraCfg and auraCfg.cooldownStateVisuals and auraCfg.cooldownStateVisuals.cooldownState then
+                                currentAlpha = auraCfg.cooldownStateVisuals.cooldownState.alpha or 1.0
+                            end
+                            
+                            if currentAlpha > 0 then
+                                -- Show confirmation popup
+                                StaticPopupDialogs["ARCUI_DYNAMIC_AURAS_ALPHA"] = {
+                                    text = "Dynamic Auras works best when inactive aura icons are fully hidden.\n\nSet global |cff00ff00Aura Missing Alpha|r to |cffff80000|r?\n\n(You can change this later in CDM Enhancement > Aura Defaults > Aura Missing)",
+                                    button1 = "Yes, Set to 0",
+                                    button2 = "No, Keep Current",
+                                    OnAccept = function()
+                                        -- Set global aura missing alpha to 0
+                                        if auraCfg then
+                                            if not auraCfg.cooldownStateVisuals then auraCfg.cooldownStateVisuals = {} end
+                                            if not auraCfg.cooldownStateVisuals.cooldownState then auraCfg.cooldownStateVisuals.cooldownState = {} end
+                                            auraCfg.cooldownStateVisuals.cooldownState.alpha = 0
+                                            -- Refresh all aura icons
+                                            if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+                                                ns.CDMEnhance.RefreshIconType("aura")
+                                            end
+                                        end
+                                        ApplyDynamicAuras(true)
+                                    end,
+                                    OnCancel = function()
+                                        -- Enable Dynamic Auras without changing alpha
+                                        ApplyDynamicAuras(true)
+                                    end,
+                                    timeout = 0, whileDead = true, hideOnEscape = false, preferredIndex = 3,
+                                }
+                                StaticPopup_Show("ARCUI_DYNAMIC_AURAS_ALPHA")
+                            else
+                                -- Alpha already 0, just enable
+                                ApplyDynamicAuras(true)
+                            end
+                        else
+                            -- Disabling: just turn it off
+                            ApplyDynamicAuras(false)
                         end
                     end
                 end,

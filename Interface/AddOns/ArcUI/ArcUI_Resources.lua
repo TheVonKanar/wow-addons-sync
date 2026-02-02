@@ -15,12 +15,75 @@ local deleteButtonsVisible = false
 local ShowResourceDeleteConfirmation
 
 -- ===================================================================
+-- HELPER: CHECK IF OPTIONS PANEL IS OPEN
+-- Used to show bars hidden by talent conditions when editing
+-- ===================================================================
+local function IsOptionsOpen()
+  -- Check namespace flag first (set explicitly by Options.lua)
+  if ns._arcUIOptionsOpen then
+    return true
+  end
+  -- Fallback: Check AceConfigDialog directly
+  local AceConfigDialog = LibStub and LibStub("AceConfigDialog-3.0", true)
+  if AceConfigDialog and AceConfigDialog.OpenFrames and AceConfigDialog.OpenFrames["ArcUI"] then
+    return true
+  end
+  return false
+end
+
+-- ===================================================================
+-- HELPER: CHECK TALENT CONDITIONS
+-- Returns true if conditions are met (or no conditions set)
+-- ===================================================================
+local function AreTalentConditionsMet(cfg)
+  if not cfg or not cfg.behavior then return true end
+  if not cfg.behavior.talentConditions or #cfg.behavior.talentConditions == 0 then return true end
+  
+  if ns.TalentPicker and ns.TalentPicker.CheckTalentConditions then
+    local matchMode = cfg.behavior.talentMatchMode or "all"
+    return ns.TalentPicker.CheckTalentConditions(cfg.behavior.talentConditions, matchMode)
+  end
+  
+  return true
+end
+
+-- ===================================================================
 -- HELPER: APPLY SMOOTHING TO STATUSBAR
 -- ===================================================================
 local function ApplyBarSmoothing(bar, enableSmooth)
   if not bar then return end
   if bar.SetSmoothing then
     bar:SetSmoothing(enableSmooth)
+  end
+end
+
+-- ===================================================================
+-- HELPER: GET ORIENTATION FROM CONFIG
+-- Config uses lowercase "horizontal"/"vertical", WoW API uses uppercase
+-- ===================================================================
+local function GetBarOrientation(cfg)
+  local orient = cfg and cfg.display and cfg.display.barOrientation or "horizontal"
+  if orient == "vertical" then
+    return "VERTICAL"
+  end
+  return "HORIZONTAL"
+end
+
+local function GetBarReverseFill(cfg)
+  return cfg and cfg.display and cfg.display.barReverseFill or false
+end
+
+-- ===================================================================
+-- HELPER: CONFIGURE STATUSBAR FOR CRISP RENDERING
+-- Prevents pixel snapping artifacts
+-- ===================================================================
+local function ConfigureStatusBar(bar)
+  if not bar then return end
+  -- Note: SetRotatesTexture is set later when orientation is known
+  local tex = bar:GetStatusBarTexture()
+  if tex then
+    tex:SetSnapToPixelGrid(false)
+    tex:SetTexelSnappingBias(0)
   end
 end
 
@@ -89,27 +152,6 @@ local LSM = LibStub and LibStub("LibSharedMedia-3.0", true)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- HELPER: Rotate StatusBar Texture for Vertical Bars
--- When a bar is vertical, the texture needs to be rotated 90° so the
--- texture pattern goes along the fill direction (bottom-to-top) instead
--- of staying horizontal.
--- ═══════════════════════════════════════════════════════════════════════════
-local function RotateStatusBarTexture(statusBar, isVertical)
-  if not statusBar then return end
-  local texture = statusBar:GetStatusBarTexture()
-  if not texture then return end
-  
-  if isVertical then
-    -- Rotate texture 90° clockwise for vertical fill direction
-    -- SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
-    -- Maps: UL rect <- BL tex (0,1), LL rect <- BR tex (1,1), 
-    --       UR rect <- TL tex (0,0), LR rect <- TR tex (1,0)
-    texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0)
-  else
-    -- Reset to default (no rotation)
-    texture:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1)
-  end
-end
-
 -- ===================================================================
 -- HELPER: APPLY FILL TEXTURE SCALE
 -- ===================================================================
@@ -422,6 +464,211 @@ function ns.Resources.DetectSecondaryResource()
 end
 
 -- ===================================================================
+-- COLORCURVE SYSTEM FOR RESOURCE BARS
+-- Uses WoW 12.0's ColorCurve API for secret-value-safe color thresholds
+-- Much simpler than the multi-stacked bar approach!
+-- ===================================================================
+
+-- Cache for max power values (needed for numeric threshold mode)
+local cachedMaxPower = {}  -- [powerType] = maxValue
+
+-- Cache for ColorCurves
+local resourceColorCurves = {}  -- [barNumber] = { curve, settingsHash }
+
+-- Default threshold colors
+local RESOURCE_THRESHOLD_DEFAULT_COLORS = {
+  [2] = {r = 1, g = 1, b = 0, a = 1},     -- Yellow
+  [3] = {r = 1, g = 0.5, b = 0, a = 1},   -- Orange
+  [4] = {r = 1, g = 0, b = 0, a = 1},     -- Red
+  [5] = {r = 0.5, g = 0, b = 0.5, a = 1}, -- Purple
+}
+
+local RESOURCE_THRESHOLD_DEFAULT_VALUES = {
+  [2] = 75,  -- 75%
+  [3] = 50,  -- 50%
+  [4] = 25,  -- 25%
+  [5] = 10,  -- 10%
+}
+
+-- Cache max power when non-secret (out of combat)
+local function CacheMaxPowerValue(powerType)
+  if not powerType or powerType < 0 then return end
+  
+  local max = UnitPowerMax("player", powerType)
+  if not max then return end
+  
+  -- Check if it's secret
+  if issecretvalue and issecretvalue(max) then
+    return  -- Can't cache secret value
+  end
+  
+  if max and max > 0 then
+    cachedMaxPower[powerType] = max
+  end
+end
+
+-- Get cached max power (for numeric threshold conversion)
+local function GetCachedMaxPower(powerType)
+  return cachedMaxPower[powerType]
+end
+
+-- Hash function for cache invalidation
+local function GetResourceThresholdHash(cfg, baseColor)
+  local parts = {}
+  local bc = baseColor or {r = 0, g = 0.8, b = 1, a = 1}
+  table.insert(parts, string.format("bc:%.2f,%.2f,%.2f", bc.r, bc.g, bc.b))
+  
+  for i = 2, 5 do
+    local enabled = cfg["colorCurveThreshold" .. i .. "Enabled"]
+    local value = cfg["colorCurveThreshold" .. i .. "Value"] or RESOURCE_THRESHOLD_DEFAULT_VALUES[i]
+    local color = cfg["colorCurveThreshold" .. i .. "Color"] or RESOURCE_THRESHOLD_DEFAULT_COLORS[i]
+    if enabled then
+      table.insert(parts, string.format("t%d:%d,%.2f,%.2f,%.2f", i, value, color.r, color.g, color.b))
+    end
+  end
+  
+  table.insert(parts, cfg.colorCurveThresholdAsPercent and "pct" or "num")
+  table.insert(parts, tostring(cfg.colorCurveMaxValue or 100))
+  return table.concat(parts, "|")
+end
+
+-- Create or get cached ColorCurve for resource bar
+-- NOTE: For resources, thresholds work OPPOSITE to cooldowns:
+-- - Cooldowns: low % = urgent (about to be ready)
+-- - Resources: low % = urgent (almost empty/out of resource)
+local function GetResourceColorCurve(barNumber, barConfig, powerType)
+  if not barConfig or not barConfig.display then return nil end
+  
+  local cfg = barConfig.display
+  if not cfg.colorCurveEnabled then return nil end
+  
+  -- Check if ColorCurve API exists (WoW 12.0+)
+  if not C_CurveUtil or not C_CurveUtil.CreateColorCurve then
+    return nil
+  end
+  
+  -- Get base bar color (used above all thresholds - "healthy" color)
+  local baseColor = cfg.barColor or {r = 0, g = 0.8, b = 1, a = 1}
+  
+  -- Check if we need to rebuild the curve
+  local currentHash = GetResourceThresholdHash(cfg, baseColor)
+  local cached = resourceColorCurves[barNumber]
+  
+  if cached and cached.settingsHash == currentHash then
+    return cached.curve
+  end
+  
+  -- Build threshold points from UI settings
+  local thresholds = {}
+  
+  for i = 2, 5 do
+    local enabled = cfg["colorCurveThreshold" .. i .. "Enabled"]
+    local value = cfg["colorCurveThreshold" .. i .. "Value"] or RESOURCE_THRESHOLD_DEFAULT_VALUES[i]
+    local color = cfg["colorCurveThreshold" .. i .. "Color"] or RESOURCE_THRESHOLD_DEFAULT_COLORS[i]
+    
+    if enabled then
+      table.insert(thresholds, { value = value, color = color })
+    end
+  end
+  
+  -- If no thresholds enabled, return nil (use base color only)
+  if #thresholds == 0 then
+    resourceColorCurves[barNumber] = nil
+    return nil
+  end
+  
+  -- Sort thresholds by value ASCENDING (lowest % first)
+  -- e.g., [{10%, Red}, {25%, Orange}, {50%, Yellow}]
+  -- At 0% = most urgent color, at 100% = base color
+  table.sort(thresholds, function(a, b) return a.value < b.value end)
+  
+  -- Create the ColorCurve
+  local curve = C_CurveUtil.CreateColorCurve()
+  
+  -- Mode settings
+  local asPercent = cfg.colorCurveThresholdAsPercent ~= false  -- Default true for resources
+  local maxValue = cfg.colorCurveMaxValue or 100
+  
+  -- For numeric mode, try to get actual max power
+  if not asPercent and powerType then
+    local cachedMax = GetCachedMaxPower(powerType)
+    if cachedMax and cachedMax > 0 then
+      maxValue = cachedMax
+    end
+  end
+  
+  local EPSILON = 0.0001
+  
+  -- Build curve: 0% = empty (urgent), 100% = full (healthy)
+  -- We want: low % = threshold colors, high % = base color
+  --
+  -- Example: thresholds = [{10%, Red}, {25%, Orange}, {50%, Yellow}], base = Green
+  -- 0% to 10%: Red
+  -- 10% to 25%: Orange
+  -- 25% to 50%: Yellow
+  -- 50% to 100%: Green (base)
+  
+  -- Start at 0% with the lowest (most urgent) threshold color
+  local lowestThreshold = thresholds[1]
+  curve:AddPoint(0.0, CreateColor(lowestThreshold.color.r, lowestThreshold.color.g, lowestThreshold.color.b, lowestThreshold.color.a or 1))
+  
+  -- Add transition points for each threshold (going from lowest to highest)
+  for i = 1, #thresholds do
+    local t = thresholds[i]
+    local pct
+    if asPercent then
+      pct = t.value / 100
+    else
+      pct = t.value / maxValue
+    end
+    pct = math.max(0, math.min(1, pct))
+    
+    -- Determine next color (above this threshold / more resource)
+    local nextColor
+    if i == #thresholds then
+      -- Highest threshold - above this use base color
+      nextColor = baseColor
+    else
+      -- Use next threshold's color
+      nextColor = thresholds[i + 1].color
+    end
+    
+    local currentColor = t.color
+    
+    -- Add point just before threshold (current color)
+    if pct > EPSILON then
+      curve:AddPoint(pct - EPSILON, CreateColor(currentColor.r, currentColor.g, currentColor.b, currentColor.a or 1))
+    end
+    
+    -- Add point at threshold (next color begins)
+    curve:AddPoint(pct, CreateColor(nextColor.r, nextColor.g, nextColor.b, nextColor.a or 1))
+  end
+  
+  -- End with base color at 100%
+  curve:AddPoint(1.0, CreateColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1))
+  
+  -- Cache
+  resourceColorCurves[barNumber] = { curve = curve, settingsHash = currentHash }
+  return curve
+end
+
+-- Clear cached curve (called when settings change)
+function ns.Resources.ClearResourceColorCurve(barNumber)
+  resourceColorCurves[barNumber] = nil
+end
+
+function ns.Resources.ClearAllResourceColorCurves()
+  wipe(resourceColorCurves)
+end
+
+-- Cache max power for all common power types (call on PLAYER_ENTERING_WORLD, etc.)
+function ns.Resources.CacheAllMaxPowerValues()
+  for _, pt in ipairs(ns.Resources.PowerTypes) do
+    CacheMaxPowerValue(pt.id)
+  end
+end
+
+-- ===================================================================
 -- CREATE RESOURCE BAR FRAME
 -- ===================================================================
 local function CreateResourceBarFrame(barNumber)
@@ -436,8 +683,10 @@ local function CreateResourceBarFrame(barNumber)
   frame.bg = frame:CreateTexture(nil, "BACKGROUND")
   frame.bg:SetAllPoints()
   frame.bg:SetColorTexture(0.1, 0.1, 0.1, 0.9)
+  frame.bg:SetSnapToPixelGrid(false)
+  frame.bg:SetTexelSnappingBias(0)
   
-  -- Border lines will be created later on borderOverlay
+  -- Border textures created later on borderOverlay frame
   
   -- Threshold layers container (bars stacked on top of each other)
   -- These create the "color change" illusion with secret values!
@@ -453,6 +702,7 @@ local function CreateResourceBarFrame(barNumber)
     layer:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
     layer:SetStatusBarColor(1, 1, 1, 1)
     layer:SetFrameLevel(frame:GetFrameLevel() + i)  -- Stack in order
+    ConfigureStatusBar(layer)  -- Enable rotation and prevent pixel snapping
     layer:Hide()
     frame.layers[i] = layer
   end
@@ -472,19 +722,27 @@ local function CreateResourceBarFrame(barNumber)
     frame.tickMarks[i] = tick
   end
   
-  -- Border overlay (must be above everything)
+  -- Border textures (4 separate textures for pixel-perfect borders - no centered edge issues)
+  -- This approach gives precise control unlike BackdropTemplate which centers edges
   frame.borderOverlay = CreateFrame("Frame", nil, frame)
   frame.borderOverlay:SetAllPoints(frame)
   frame.borderOverlay:SetFrameLevel(frame:GetFrameLevel() + 151)
   
-  -- Border lines (on border overlay so they're above all bars)
-  frame.borderLines = {}
-  for i = 1, 4 do
-    frame.borderLines[i] = frame.borderOverlay:CreateLine(nil, "OVERLAY")
-    frame.borderLines[i]:SetDrawLayer("OVERLAY", 5)  -- Below ticks (7) but above fill
-    frame.borderLines[i]:SetColorTexture(0, 0, 0, 1)
-    frame.borderLines[i]:SetThickness(2)
-  end
+  frame.borderOverlay.top = frame.borderOverlay:CreateTexture(nil, "OVERLAY")
+  frame.borderOverlay.top:SetSnapToPixelGrid(false)
+  frame.borderOverlay.top:SetTexelSnappingBias(0)
+  
+  frame.borderOverlay.bottom = frame.borderOverlay:CreateTexture(nil, "OVERLAY")
+  frame.borderOverlay.bottom:SetSnapToPixelGrid(false)
+  frame.borderOverlay.bottom:SetTexelSnappingBias(0)
+  
+  frame.borderOverlay.left = frame.borderOverlay:CreateTexture(nil, "OVERLAY")
+  frame.borderOverlay.left:SetSnapToPixelGrid(false)
+  frame.borderOverlay.left:SetTexelSnappingBias(0)
+  
+  frame.borderOverlay.right = frame.borderOverlay:CreateTexture(nil, "OVERLAY")
+  frame.borderOverlay.right:SetSnapToPixelGrid(false)
+  frame.borderOverlay.right:SetTexelSnappingBias(0)
   
   -- Drag functionality + right-click to edit
   frame:SetScript("OnMouseDown", function(self, button)
@@ -574,11 +832,10 @@ local function CreateResourceTextFrame(barNumber)
   
   frame.text = frame:CreateFontString(nil, "OVERLAY")
   frame.text:SetPoint("CENTER")
-  frame.text:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
+  frame.text:SetFont("Fonts\\FRIZQT__.TTF", 20, "THICKOUTLINE")
   frame.text:SetText("0")
   frame.text:SetTextColor(1, 1, 1, 1)
-  frame.text:SetShadowOffset(2, -2)
-  frame.text:SetShadowColor(0, 0, 0, 1)
+  frame.text:SetShadowOffset(0, 0)  -- Default to no shadow (setting controls this)
   
   -- Drag functionality
   frame:SetScript("OnMouseDown", function(self, button)
@@ -801,15 +1058,19 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       mainFrame.granularBars = {}
     end
     
-    -- Get smoothing setting
+    -- Get smoothing and orientation settings
     local enableSmooth = cfg.display.enableSmoothing
+    local orientation = GetBarOrientation(cfg)
+    local reverseFill = GetBarReverseFill(cfg)
+    local isVertical = (orientation == "VERTICAL")
     
     -- Ensure we have enough bars
     while #mainFrame.granularBars < numBars do
       local bar = CreateFrame("StatusBar", nil, mainFrame)
       bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation("HORIZONTAL")
-      bar:SetReverseFill(false)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       table.insert(mainFrame.granularBars, bar)
     end
     
@@ -817,22 +1078,31 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     for value = 1, numBars do
       local bar = mainFrame.granularBars[value]
       
-      -- Width proportional to this value (like working file)
-      local widthPercent = value / maxValue
-      local totalWidth = mainFrame:GetWidth()
-      local barWidth = widthPercent * totalWidth
+      -- Size proportional to this value
+      local sizePercent = value / maxValue
+      local totalSize = isVertical and mainFrame:GetHeight() or mainFrame:GetWidth()
+      local barSize = sizePercent * totalSize
       
-      -- Position bar with proportional width
+      -- Position bar with proportional size
       bar:ClearAllPoints()
-      bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, 0)
-      bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
-      bar:SetWidth(math.max(2, barWidth))
+      if isVertical then
+        bar:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, 0)
+        bar:SetPoint("RIGHT", mainFrame, "RIGHT", 0, 0)
+        bar:SetHeight(math.max(2, barSize))
+      else
+        bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, 0)
+        bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
+        bar:SetWidth(math.max(2, barSize))
+      end
       
       -- BINARY FILL: Bar is 100% full when value >= barValue, 0% otherwise
       bar:SetMinMaxValues(value - 1, value)
       
       -- Set texture and color for this bar
       bar:SetStatusBarTexture(texturePath)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       local color = GetColorForValue(value)
       bar:SetStatusBarColor(color.r, color.g, color.b, color.a or 1)
       
@@ -930,15 +1200,19 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       mainFrame.stackedBars = {}
     end
     
-    -- Get smoothing setting
+    -- Get smoothing and orientation settings
     local enableSmooth = cfg.display.enableSmoothing
+    local orientation = GetBarOrientation(cfg)
+    local reverseFill = GetBarReverseFill(cfg)
+    local isVertical = (orientation == "VERTICAL")
     
     -- Ensure we have enough stacked bars
     while #mainFrame.stackedBars < #ranges do
       local bar = CreateFrame("StatusBar", nil, mainFrame)
       bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation("HORIZONTAL")
-      bar:SetReverseFill(false)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -946,16 +1220,22 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     for i, range in ipairs(ranges) do
       local bar = mainFrame.stackedBars[i]
       
-      -- Calculate proportional width and position (no padding)
-      local totalWidth = mainFrame:GetWidth()
-      local barWidth = totalWidth * (range.maxVal - range.minVal) / maxValue
-      local xOffset = totalWidth * range.minVal / maxValue
+      -- Calculate proportional size and position (no padding)
+      local totalSize = isVertical and mainFrame:GetHeight() or mainFrame:GetWidth()
+      local barSize = totalSize * (range.maxVal - range.minVal) / maxValue
+      local offset = totalSize * range.minVal / maxValue
       
-      -- Use SetAllPoints-style positioning (no padding) like MWRB
+      -- Position bar based on orientation
       bar:ClearAllPoints()
-      bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", xOffset, 0)
-      bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
-      bar:SetWidth(math.max(1, barWidth))
+      if isVertical then
+        bar:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, offset)
+        bar:SetPoint("RIGHT", mainFrame, "RIGHT", 0, 0)
+        bar:SetHeight(math.max(1, barSize))
+      else
+        bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", offset, 0)
+        bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
+        bar:SetWidth(math.max(1, barSize))
+      end
       
       -- Set the range this bar responds to
       bar:SetMinMaxValues(range.minVal, range.maxVal)
@@ -963,6 +1243,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       -- Set texture and color
       bar:SetStatusBarTexture(texturePath)
       bar:SetStatusBarColor(range.color.r, range.color.g, range.color.b, range.color.a or 1)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       
       -- Layer order - later bars on top
       bar:SetFrameLevel(mainFrame:GetFrameLevel() + i + 5)
@@ -990,8 +1273,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       -- Ensure we have a max color overlay bar
       if not mainFrame.maxColorBar then
         mainFrame.maxColorBar = CreateFrame("StatusBar", nil, mainFrame)
-        mainFrame.maxColorBar:SetOrientation("HORIZONTAL")
-        mainFrame.maxColorBar:SetReverseFill(false)
+        mainFrame.maxColorBar:SetOrientation(orientation)
+        mainFrame.maxColorBar:SetReverseFill(reverseFill)
+        mainFrame.maxColorBar:SetRotatesTexture(isVertical)
       end
       
       local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
@@ -1002,6 +1286,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       maxBar:SetMinMaxValues(maxValue - 1, maxValue)  -- Only fills when at max
       maxBar:SetStatusBarTexture(texturePath)
       maxBar:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
+      maxBar:SetOrientation(orientation)
+      maxBar:SetReverseFill(reverseFill)
+      maxBar:SetRotatesTexture(isVertical)
       maxBar:SetFrameLevel(mainFrame:GetFrameLevel() + #ranges + 10)  -- On top of all threshold bars
       maxBar:SetValue(secretValue)
       maxBar:Show()
@@ -1018,8 +1305,11 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local color1 = cfg.display.foldedColor1 or {r=0, g=0.5, b=1, a=1}
     local color2 = cfg.display.foldedColor2 or {r=0, g=1, b=0, a=1}
     
-    -- Get smoothing setting
+    -- Get smoothing and orientation settings
     local enableSmooth = cfg.display.enableSmoothing
+    local orientation = GetBarOrientation(cfg)
+    local reverseFill = GetBarReverseFill(cfg)
+    local isVertical = (orientation == "VERTICAL")
     
     -- Hide other bar types
     if mainFrame.granularBars then
@@ -1048,8 +1338,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     while #mainFrame.stackedBars < 2 do
       local bar = CreateFrame("StatusBar", nil, mainFrame)
       bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation("HORIZONTAL")
-      bar:SetReverseFill(false)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -1061,6 +1352,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar1:SetMinMaxValues(0, midpoint)
     bar1:SetStatusBarTexture(texturePath)
     bar1:SetStatusBarColor(color1.r, color1.g, color1.b, color1.a or 1)
+    bar1:SetOrientation(orientation)
+    bar1:SetReverseFill(reverseFill)
+    bar1:SetRotatesTexture(isVertical)
     bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
     ApplyBarSmoothing(bar1, enableSmooth)
     bar1:SetValue(secretValue)  -- Will cap at midpoint naturally
@@ -1074,6 +1368,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar2:SetMinMaxValues(midpoint, maxValue)
     bar2:SetStatusBarTexture(texturePath)
     bar2:SetStatusBarColor(color2.r, color2.g, color2.b, color2.a or 1)
+    bar2:SetOrientation(orientation)
+    bar2:SetReverseFill(reverseFill)
+    bar2:SetRotatesTexture(isVertical)
     bar2:SetFrameLevel(mainFrame:GetFrameLevel() + 7)
     ApplyBarSmoothing(bar2, enableSmooth)
     bar2:SetValue(secretValue)  -- Only fills when value > midpoint
@@ -1084,8 +1381,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     if enableMaxColor and maxValue > 1 then
       if not mainFrame.maxColorBar then
         mainFrame.maxColorBar = CreateFrame("StatusBar", nil, mainFrame)
-        mainFrame.maxColorBar:SetOrientation("HORIZONTAL")
-        mainFrame.maxColorBar:SetReverseFill(false)
+        mainFrame.maxColorBar:SetOrientation(orientation)
+        mainFrame.maxColorBar:SetReverseFill(reverseFill)
+        mainFrame.maxColorBar:SetRotatesTexture(isVertical)
       end
       
       local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
@@ -1096,6 +1394,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       maxBar:SetMinMaxValues(maxValue - 1, maxValue)
       maxBar:SetStatusBarTexture(texturePath)
       maxBar:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
+      maxBar:SetOrientation(orientation)
+      maxBar:SetReverseFill(reverseFill)
+      maxBar:SetRotatesTexture(isVertical)
       maxBar:SetFrameLevel(mainFrame:GetFrameLevel() + 8)
       ApplyBarSmoothing(maxBar, enableSmooth)
       maxBar:SetValue(secretValue)
@@ -1131,12 +1432,12 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     if mainFrame.bg then
       mainFrame.bg:Hide()
     end
-    if mainFrame.borderLines then
-      for i = 1, 4 do
-        if mainFrame.borderLines[i] then
-          mainFrame.borderLines[i]:Hide()
-        end
-      end
+    if mainFrame.borderOverlay then
+      if mainFrame.borderOverlay.top then mainFrame.borderOverlay.top:Hide() end
+      if mainFrame.borderOverlay.bottom then mainFrame.borderOverlay.bottom:Hide() end
+      if mainFrame.borderOverlay.left then mainFrame.borderOverlay.left:Hide() end
+      if mainFrame.borderOverlay.right then mainFrame.borderOverlay.right:Hide() end
+      mainFrame.borderOverlay:Hide()
     end
     -- Hide icon frames if they exist
     if mainFrame.iconFrames then
@@ -1198,6 +1499,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       segFrame.bg = segFrame:CreateTexture(nil, "BACKGROUND")
       segFrame.bg:SetAllPoints()
       segFrame.bg:SetTexture(texturePath)
+      segFrame.bg:SetSnapToPixelGrid(false)
+      segFrame.bg:SetTexelSnappingBias(0)
       
       -- Fill StatusBar
       segFrame.fill = CreateFrame("StatusBar", nil, segFrame)
@@ -1208,12 +1511,21 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       segFrame.fill:SetReverseFill(false)
       segFrame.fill:SetMinMaxValues(0, 1)
       segFrame.fill:SetFrameLevel(segFrame:GetFrameLevel() + 1)
+      ConfigureStatusBar(segFrame.fill)  -- Prevent pixel snapping
       
       -- Border (drawn style)
       segFrame.borderTop = segFrame:CreateTexture(nil, "OVERLAY")
+      segFrame.borderTop:SetSnapToPixelGrid(false)
+      segFrame.borderTop:SetTexelSnappingBias(0)
       segFrame.borderBottom = segFrame:CreateTexture(nil, "OVERLAY")
+      segFrame.borderBottom:SetSnapToPixelGrid(false)
+      segFrame.borderBottom:SetTexelSnappingBias(0)
       segFrame.borderLeft = segFrame:CreateTexture(nil, "OVERLAY")
+      segFrame.borderLeft:SetSnapToPixelGrid(false)
+      segFrame.borderLeft:SetTexelSnappingBias(0)
       segFrame.borderRight = segFrame:CreateTexture(nil, "OVERLAY")
+      segFrame.borderRight:SetSnapToPixelGrid(false)
+      segFrame.borderRight:SetTexelSnappingBias(0)
       
       -- Cooldown text
       segFrame.cdText = segFrame.fill:CreateFontString(nil, "OVERLAY")
@@ -1449,12 +1761,12 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     if mainFrame.bg then
       mainFrame.bg:Hide()
     end
-    if mainFrame.borderLines then
-      for i = 1, 4 do
-        if mainFrame.borderLines[i] then
-          mainFrame.borderLines[i]:Hide()
-        end
-      end
+    if mainFrame.borderOverlay then
+      if mainFrame.borderOverlay.top then mainFrame.borderOverlay.top:Hide() end
+      if mainFrame.borderOverlay.bottom then mainFrame.borderOverlay.bottom:Hide() end
+      if mainFrame.borderOverlay.left then mainFrame.borderOverlay.left:Hide() end
+      if mainFrame.borderOverlay.right then mainFrame.borderOverlay.right:Hide() end
+      mainFrame.borderOverlay:Hide()
     end
     
     -- Get resource type from config
@@ -1759,6 +2071,106 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       mainFrame.iconsOnUpdate = nil
     end
     
+  elseif displayMode == "colorCurve" then
+    -- ═══════════════════════════════════════════════════════════════
+    -- COLORCURVE MODE: Single bar with dynamic color from ColorCurve API
+    -- Uses UnitPowerPercent(unit, powerType, unmod, curve) which returns Color directly!
+    -- Much simpler than multi-stacked bar approach, and fully secret-value safe.
+    -- ═══════════════════════════════════════════════════════════════
+    
+    -- Hide all other bar types
+    if mainFrame.fragmentFrames then
+      for _, frame in ipairs(mainFrame.fragmentFrames) do frame:Hide() end
+    end
+    if mainFrame.iconFrames then
+      for _, frame in ipairs(mainFrame.iconFrames) do frame:Hide() end
+    end
+    if mainFrame.granularBars then
+      for _, bar in ipairs(mainFrame.granularBars) do bar:Hide() end
+    end
+    if mainFrame.maxColorBar then
+      mainFrame.maxColorBar:Hide()
+    end
+    
+    -- Get power type for ColorCurve
+    local powerType = cfg.tracking.powerType
+    
+    -- Cache max power value when available (for numeric threshold conversion)
+    if powerType and powerType >= 0 then
+      CacheMaxPowerValue(powerType)
+    end
+    
+    -- Get or create the ColorCurve
+    local colorCurve = GetResourceColorCurve(barNumber, cfg, powerType)
+    local baseColor = cfg.display.barColor or thresholds[1] and thresholds[1].color or {r=0, g=0.8, b=1, a=1}
+    
+    -- Get smoothing and orientation settings
+    local enableSmooth = cfg.display.enableSmoothing
+    local orientation = GetBarOrientation(cfg)
+    local reverseFill = GetBarReverseFill(cfg)
+    local isVertical = (orientation == "VERTICAL")
+    
+    -- Create stacked bars container if it doesn't exist (we only use 1 bar)
+    if not mainFrame.stackedBars then
+      mainFrame.stackedBars = {}
+    end
+    
+    -- Ensure we have at least 1 bar
+    if #mainFrame.stackedBars < 1 then
+      local bar = CreateFrame("StatusBar", nil, mainFrame)
+      bar:SetStatusBarTexture(texturePath)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
+      table.insert(mainFrame.stackedBars, bar)
+    end
+    
+    -- Hide any extra bars from other modes
+    for i = 2, #mainFrame.stackedBars do
+      mainFrame.stackedBars[i]:Hide()
+    end
+    
+    -- Setup the single bar
+    local bar = mainFrame.stackedBars[1]
+    bar:ClearAllPoints()
+    bar:SetAllPoints(mainFrame)
+    bar:SetMinMaxValues(0, maxValue)
+    bar:SetStatusBarTexture(texturePath)
+    bar:SetOrientation(orientation)
+    bar:SetReverseFill(reverseFill)
+    bar:SetRotatesTexture(isVertical)
+    bar:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
+    ApplyBarSmoothing(bar, enableSmooth)
+    bar:SetValue(secretValue)
+    bar:Show()
+    
+    -- Get the bar texture for color application
+    local barTexture = bar:GetStatusBarTexture()
+    
+    -- Apply color using ColorCurve
+    if colorCurve and powerType and powerType >= 0 then
+      -- Use UnitPowerPercent with curve - returns Color directly, handles secrets internally!
+      local colorOK = pcall(function()
+        local colorResult = UnitPowerPercent("player", powerType, false, colorCurve)
+        if colorResult and colorResult.GetRGB then
+          barTexture:SetVertexColor(colorResult:GetRGB())
+        else
+          barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+        end
+      end)
+      if not colorOK then
+        barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+      end
+    else
+      -- No color curve - use base color
+      barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+    end
+    
+    -- Clear any OnUpdate handlers from other modes
+    mainFrame:SetScript("OnUpdate", nil)
+    mainFrame.fragmentedOnUpdate = nil
+    mainFrame.iconsOnUpdate = nil
+    
   else
     -- ═══════════════════════════════════════════════════════════════
     -- SIMPLE MODE: 2 bars (base color + optional max color overlay)
@@ -1783,8 +2195,11 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
     local enableMaxColor = cfg.display.enableMaxColor
     
-    -- Get smoothing setting
+    -- Get smoothing and orientation settings
     local enableSmooth = cfg.display.enableSmoothing
+    local orientation = GetBarOrientation(cfg)
+    local reverseFill = GetBarReverseFill(cfg)
+    local isVertical = (orientation == "VERTICAL")
     
     -- Hide maxColorBar from continuous mode (simple mode uses stackedBars[2] instead)
     if mainFrame.maxColorBar then
@@ -1800,8 +2215,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     while #mainFrame.stackedBars < 2 do
       local bar = CreateFrame("StatusBar", nil, mainFrame)
       bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation("HORIZONTAL")
-      bar:SetReverseFill(false)
+      bar:SetOrientation(orientation)
+      bar:SetReverseFill(reverseFill)
+      bar:SetRotatesTexture(isVertical)
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -1816,6 +2232,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar1:SetMinMaxValues(0, maxValue)
       bar1:SetStatusBarTexture(texturePath)
       bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+      bar1:SetOrientation(orientation)
+      bar1:SetReverseFill(reverseFill)
+      bar1:SetRotatesTexture(isVertical)
       bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
       ApplyBarSmoothing(bar1, enableSmooth)
       bar1:SetValue(secretValue)
@@ -1830,6 +2249,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar2:SetMinMaxValues(maxValue - 1, maxValue)
       bar2:SetStatusBarTexture(texturePath)
       bar2:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
+      bar2:SetOrientation(orientation)
+      bar2:SetReverseFill(reverseFill)
+      bar2:SetRotatesTexture(isVertical)
       bar2:SetFrameLevel(mainFrame:GetFrameLevel() + 7)
       ApplyBarSmoothing(bar2, enableSmooth)
       bar2:SetValue(secretValue)
@@ -1844,6 +2266,9 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar1:SetMinMaxValues(0, maxValue)
       bar1:SetStatusBarTexture(texturePath)
       bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+      bar1:SetOrientation(orientation)
+      bar1:SetReverseFill(reverseFill)
+      bar1:SetRotatesTexture(isVertical)
       bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
       ApplyBarSmoothing(bar1, enableSmooth)
       bar1:SetValue(secretValue)
@@ -1868,9 +2293,13 @@ function ns.Resources.UpdateBar(barNumber)
     return
   end
   
+  -- Check if options panel is open - bypass spec/talent checks to allow editing
+  local optionsOpen = IsOptionsOpen()
+  
   -- ═══════════════════════════════════════════════════════════════════
   -- EARLY SPEC CHECK - Don't create/update frames for wrong spec
   -- This prevents "phantom bars" from appearing on other specs
+  -- (Bypassed when options panel is open for editing)
   -- ═══════════════════════════════════════════════════════════════════
   local currentSpec = GetSpecialization() or 0
   local showOnSpecs = cfg.behavior and cfg.behavior.showOnSpecs
@@ -1890,8 +2319,21 @@ function ns.Resources.UpdateBar(barNumber)
     specAllowed = (currentSpec == cfg.behavior.showOnSpec)
   end
   
-  -- If wrong spec, hide existing frames and return early
-  if not specAllowed then
+  -- If wrong spec, hide existing frames and return early (unless options open)
+  if not specAllowed and not optionsOpen then
+    if resourceFrames[barNumber] then
+      resourceFrames[barNumber].mainFrame:Hide()
+      resourceFrames[barNumber].textFrame:Hide()
+    end
+    return
+  end
+  
+  -- ═══════════════════════════════════════════════════════════════════
+  -- TALENT CONDITION CHECK
+  -- Hide bar if talent conditions not met (unless options panel is open)
+  -- ═══════════════════════════════════════════════════════════════════
+  local talentsMet = AreTalentConditionsMet(cfg)
+  if not talentsMet and not optionsOpen then
     if resourceFrames[barNumber] then
       resourceFrames[barNumber].mainFrame:Hide()
       resourceFrames[barNumber].textFrame:Hide()
@@ -1962,10 +2404,23 @@ function ns.Resources.UpdateBar(barNumber)
   
   -- Update text (SetText handles secret values!)
   if cfg.display.showText then
-    if displayFormat == "decimal" then
+    local textFormat = cfg.display.textFormat or "value"
+    
+    if textFormat == "percent" and cfg.tracking.resourceCategory ~= "secondary" then
+      -- Percentage format using CurveConstants.ScaleTo100 for secret-safe 0-100 scaling
+      local powerType = cfg.tracking.powerType
+      if powerType and powerType >= 0 then
+        -- CurveConstants.ScaleTo100 scales 0-1 to 0-100 internally (handles secrets!)
+        local pct = UnitPowerPercent("player", powerType, false, CurveConstants.ScaleTo100)
+        textFrame.text:SetFormattedText("%.0f%%", pct)
+      else
+        textFrame.text:SetText(secretValue)
+      end
+    elseif displayFormat == "decimal" then
       -- Format as decimal (e.g., Soul Shards for Destruction)
       textFrame.text:SetFormattedText("%.1f", displayValue)
     else
+      -- Default: raw value
       textFrame.text:SetText(secretValue)
     end
     local tc = cfg.display.textColor
@@ -2063,10 +2518,11 @@ function ns.Resources.UpdateBar(barNumber)
   end
   
   -- Show bar
-  -- Note: Spec check was already done at the top of this function
+  -- Note: Spec and talent checks were already done at the top of this function
   local shouldShow = cfg.display.enabled
   
-  if cfg.behavior and cfg.behavior.hideOutOfCombat and not InCombatLockdown() then
+  -- Bypass hideOutOfCombat when options panel is open for editing
+  if cfg.behavior and cfg.behavior.hideOutOfCombat and not InCombatLockdown() and not optionsOpen then
     shouldShow = false
   end
   
@@ -2085,7 +2541,10 @@ function ns.Resources.ApplyAppearance(barNumber)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg then return end
   
-  -- Early spec check - don't apply appearance for wrong spec bars
+  -- Check if options panel is open - bypass spec/talent checks to allow editing
+  local optionsOpen = IsOptionsOpen()
+  
+  -- Early spec check - don't apply appearance for wrong spec bars (unless options open)
   local currentSpec = GetSpecialization() or 0
   local showOnSpecs = cfg.behavior and cfg.behavior.showOnSpecs
   local specAllowed = true
@@ -2102,8 +2561,8 @@ function ns.Resources.ApplyAppearance(barNumber)
     specAllowed = (currentSpec == cfg.behavior.showOnSpec)
   end
   
-  -- If wrong spec, just hide any existing frames and return
-  if not specAllowed then
+  -- If wrong spec, just hide any existing frames and return (unless options open)
+  if not specAllowed and not optionsOpen then
     if resourceFrames[barNumber] then
       resourceFrames[barNumber].mainFrame:Hide()
       resourceFrames[barNumber].textFrame:Hide()
@@ -2114,9 +2573,20 @@ function ns.Resources.ApplyAppearance(barNumber)
   local mainFrame, textFrame = GetResourceFrames(barNumber)
   local display = cfg.display
   
-  -- Size
-  mainFrame:SetSize(display.width, display.height)
-  mainFrame:SetScale(display.barScale or 1.0)
+  -- Size - SWAP width and height for vertical bars (like aura bars do)
+  local isVertical = (display.barOrientation == "vertical")
+  local scale = display.barScale or 1.0
+  local scaledWidth = display.width * scale
+  local scaledHeight = display.height * scale
+  
+  if isVertical then
+    mainFrame:SetSize(scaledHeight, scaledWidth)  -- Swap dimensions for vertical!
+  else
+    mainFrame:SetSize(scaledWidth, scaledHeight)  -- Normal horizontal
+  end
+  
+  -- NOTE: We apply scale to SIZE instead of SetScale() to avoid anchor drift
+  -- mainFrame:SetScale(display.barScale or 1.0)  -- REMOVED - scale applied to size above
   mainFrame:SetAlpha(display.opacity or 1.0)
   
   -- Position
@@ -2135,7 +2605,18 @@ function ns.Resources.ApplyAppearance(barNumber)
   if LSM and display.font then
     local font = LSM:Fetch("font", display.font)
     if font then
-      textFrame.text:SetFont(font, display.fontSize, "OUTLINE")
+      -- Use textOutline setting (default to THICKOUTLINE for backwards compatibility)
+      local outline = display.textOutline or "THICKOUTLINE"
+      textFrame.text:SetFont(font, display.fontSize, outline)
+      
+      -- Apply text shadow setting
+      if display.textShadow then
+        textFrame.text:SetShadowOffset(2, -2)
+        textFrame.text:SetShadowColor(0, 0, 0, 1)
+      else
+        textFrame.text:SetShadowOffset(0, 0)
+      end
+      
       -- Size frame based on fontSize (avoid secret value issues with GetStringWidth)
       local estimatedWidth = display.fontSize * 3  -- Enough for 2-3 digit numbers
       local estimatedHeight = display.fontSize + 4
@@ -2233,49 +2714,51 @@ function ns.Resources.ApplyAppearance(barNumber)
     mainFrame.bg:Hide()
   end
   
-  -- Border - draw around entire frame using explicit dimensions like MWRB
+  -- Border - draw around entire frame using 4 manual textures for pixel-perfect borders
   -- Skip if in fragmented mode (each segment has its own border)
   if display.showBorder and not isFragmented then
-    local thickness = display.drawnBorderThickness or 2
+    local bt = display.drawnBorderThickness or 2
     local bc = display.borderColor
-    local width = mainFrame:GetWidth()
-    local height = mainFrame:GetHeight()
     
-    -- Top border
-    mainFrame.borderLines[1]:ClearAllPoints()
-    mainFrame.borderLines[1]:SetStartPoint("TOPLEFT", mainFrame.borderOverlay, 0, 0)
-    mainFrame.borderLines[1]:SetEndPoint("TOPLEFT", mainFrame.borderOverlay, width, 0)
-    mainFrame.borderLines[1]:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
-    mainFrame.borderLines[1]:SetThickness(thickness)
-    mainFrame.borderLines[1]:Show()
+    -- Top border (spans full width at top)
+    mainFrame.borderOverlay.top:ClearAllPoints()
+    mainFrame.borderOverlay.top:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, 0)
+    mainFrame.borderOverlay.top:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", 0, 0)
+    mainFrame.borderOverlay.top:SetHeight(bt)
+    mainFrame.borderOverlay.top:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
+    mainFrame.borderOverlay.top:Show()
     
-    -- Bottom border
-    mainFrame.borderLines[2]:ClearAllPoints()
-    mainFrame.borderLines[2]:SetStartPoint("BOTTOMLEFT", mainFrame.borderOverlay, 0, 0)
-    mainFrame.borderLines[2]:SetEndPoint("BOTTOMLEFT", mainFrame.borderOverlay, width, 0)
-    mainFrame.borderLines[2]:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
-    mainFrame.borderLines[2]:SetThickness(thickness)
-    mainFrame.borderLines[2]:Show()
+    -- Bottom border (spans full width at bottom)
+    mainFrame.borderOverlay.bottom:ClearAllPoints()
+    mainFrame.borderOverlay.bottom:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, 0)
+    mainFrame.borderOverlay.bottom:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", 0, 0)
+    mainFrame.borderOverlay.bottom:SetHeight(bt)
+    mainFrame.borderOverlay.bottom:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
+    mainFrame.borderOverlay.bottom:Show()
     
-    -- Left border
-    mainFrame.borderLines[3]:ClearAllPoints()
-    mainFrame.borderLines[3]:SetStartPoint("TOPLEFT", mainFrame.borderOverlay, 0, 0)
-    mainFrame.borderLines[3]:SetEndPoint("TOPLEFT", mainFrame.borderOverlay, 0, -height)
-    mainFrame.borderLines[3]:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
-    mainFrame.borderLines[3]:SetThickness(thickness)
-    mainFrame.borderLines[3]:Show()
+    -- Left border (between top and bottom borders)
+    mainFrame.borderOverlay.left:ClearAllPoints()
+    mainFrame.borderOverlay.left:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, -bt)
+    mainFrame.borderOverlay.left:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, bt)
+    mainFrame.borderOverlay.left:SetWidth(bt)
+    mainFrame.borderOverlay.left:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
+    mainFrame.borderOverlay.left:Show()
     
-    -- Right border
-    mainFrame.borderLines[4]:ClearAllPoints()
-    mainFrame.borderLines[4]:SetStartPoint("TOPRIGHT", mainFrame.borderOverlay, 0, 0)
-    mainFrame.borderLines[4]:SetEndPoint("TOPRIGHT", mainFrame.borderOverlay, 0, -height)
-    mainFrame.borderLines[4]:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
-    mainFrame.borderLines[4]:SetThickness(thickness)
-    mainFrame.borderLines[4]:Show()
+    -- Right border (between top and bottom borders)
+    mainFrame.borderOverlay.right:ClearAllPoints()
+    mainFrame.borderOverlay.right:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", 0, -bt)
+    mainFrame.borderOverlay.right:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", 0, bt)
+    mainFrame.borderOverlay.right:SetWidth(bt)
+    mainFrame.borderOverlay.right:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
+    mainFrame.borderOverlay.right:Show()
+    
+    mainFrame.borderOverlay:Show()
   else
-    for i = 1, 4 do
-      mainFrame.borderLines[i]:Hide()
-    end
+    if mainFrame.borderOverlay.top then mainFrame.borderOverlay.top:Hide() end
+    if mainFrame.borderOverlay.bottom then mainFrame.borderOverlay.bottom:Hide() end
+    if mainFrame.borderOverlay.left then mainFrame.borderOverlay.left:Hide() end
+    if mainFrame.borderOverlay.right then mainFrame.borderOverlay.right:Hide() end
+    mainFrame.borderOverlay:Hide()
   end
   
   -- Texture for all layers (positioning is done in UpdateThresholdLayers)
@@ -2293,14 +2776,12 @@ function ns.Resources.ApplyAppearance(barNumber)
       end
     end
     
-    -- Fill direction
-    local isVertical = (display.fillDirection == "BOTTOM_TO_TOP" or display.fillDirection == "TOP_TO_BOTTOM")
+    -- Fill direction - use barOrientation and barReverseFill
+    local isVertical = (display.barOrientation == "vertical")
     layer:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
-    layer:SetReverseFill(
-      display.fillDirection == "RIGHT_TO_LEFT" or display.fillDirection == "TOP_TO_BOTTOM"
-    )
+    layer:SetReverseFill(display.barReverseFill or false)
     -- Rotate texture to match fill direction
-    RotateStatusBarTexture(layer, isVertical)
+    layer:SetRotatesTexture(isVertical)
   end
   
   -- Movability
@@ -2348,12 +2829,28 @@ end
 -- ===================================================================
 function ns.Resources.RefreshAllBars()
   local currentSpec = GetSpecialization() or 0
+  local optionsOpen = IsOptionsOpen()
   
-  -- Refresh visibility for all resource bars (including ones that might need hiding)
-  for barNumber = 1, 10 do
+  -- Get all active bars from DB (supports bars beyond index 10)
+  local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
+  local activeSet = {}
+  for _, barNum in ipairs(activeBars) do
+    activeSet[barNum] = true
+  end
+  
+  -- Also check bars 1-30 in case some are configured but not in activeBars yet
+  for barNumber = 1, 30 do
     local cfg = ns.API.GetResourceBarConfig(barNumber)
     if cfg and cfg.tracking.enabled then
-      -- Check spec visibility first
+      activeSet[barNumber] = true
+    end
+  end
+  
+  -- Refresh all bars we found
+  for barNumber, _ in pairs(activeSet) do
+    local cfg = ns.API.GetResourceBarConfig(barNumber)
+    if cfg and cfg.tracking.enabled then
+      -- Check spec visibility first (bypassed when options panel open)
       local showOnSpecs = cfg.behavior and cfg.behavior.showOnSpecs
       local specAllowed = true
       
@@ -2371,27 +2868,24 @@ function ns.Resources.RefreshAllBars()
         specAllowed = (currentSpec == cfg.behavior.showOnSpec)
       end
       
-      if specAllowed then
-        -- Update the bar (this will also check other visibility conditions)
+      -- Show bar if spec allowed OR options panel is open for editing
+      if specAllowed or optionsOpen then
+        -- CRITICAL: Apply appearance FIRST to restore saved position/styling
+        -- Then update the bar values
+        ns.Resources.ApplyAppearance(barNumber)
         ns.Resources.UpdateBar(barNumber)
       else
-        -- Hide bar - wrong spec
-        local mainFrame, textFrame = GetResourceFrames(barNumber)
-        if mainFrame then
-          mainFrame:Hide()
-        end
-        if textFrame then
-          textFrame:Hide()
+        -- Hide bar - wrong spec (only hide if frames exist, don't create them)
+        if resourceFrames[barNumber] then
+          resourceFrames[barNumber].mainFrame:Hide()
+          resourceFrames[barNumber].textFrame:Hide()
         end
       end
     else
-      -- Hide bars that aren't enabled
-      local mainFrame, textFrame = GetResourceFrames(barNumber)
-      if mainFrame then
-        mainFrame:Hide()
-      end
-      if textFrame then
-        textFrame:Hide()
+      -- Hide bars that aren't enabled (only hide if frames exist, don't create them)
+      if resourceFrames[barNumber] then
+        resourceFrames[barNumber].mainFrame:Hide()
+        resourceFrames[barNumber].textFrame:Hide()
       end
     end
   end
@@ -2431,8 +2925,8 @@ function ns.Resources.OpenOptionsForBar(barNumber)
   -- Refresh the options to show updated selection
   AceConfigRegistry:NotifyChange("ArcUI")
   
-  -- Select the appearance tab
-  AceConfigDialog:SelectGroup("ArcUI", "appearance")
+  -- Select the appearance tab under resources
+  AceConfigDialog:SelectGroup("ArcUI", "resources", "appearance")
 end
 
 -- ===================================================================
@@ -2698,7 +3192,20 @@ function ns.Resources.UpdateMaxValues()
   local db = ns.API.GetDB()
   if not db or not db.resourceBars then return end
   
-  for barNumber = 1, 10 do
+  -- Cache max power values for ColorCurve numeric threshold conversion
+  ns.Resources.CacheAllMaxPowerValues()
+  
+  -- Get active bars and also check bars 1-30 for any enabled
+  local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
+  local checkedBars = {}
+  for _, barNum in ipairs(activeBars) do
+    checkedBars[barNum] = true
+  end
+  for i = 1, 30 do
+    checkedBars[i] = true
+  end
+  
+  for barNumber, _ in pairs(checkedBars) do
     local cfg = ns.API.GetResourceBarConfig(barNumber)
     if cfg and cfg.tracking.enabled then
       local resourceCategory = cfg.tracking.resourceCategory or "primary"

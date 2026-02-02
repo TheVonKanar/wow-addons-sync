@@ -312,7 +312,11 @@ local function SetupFreeIconFrame(cdID, frame, x, y, iconSize, viewerType, viewe
     frame:SetFrameStrata("MEDIUM")
     frame:SetScale(1)
     frame:SetSize(iconSize, iconSize)
-    frame:Show()
+    
+    -- Only show if not hidden due to hideWhenUnequipped setting
+    if not frame._arcHiddenUnequipped then
+        frame:Show()
+    end
     
     -- Create or update freeIcons entry
     if existingData then

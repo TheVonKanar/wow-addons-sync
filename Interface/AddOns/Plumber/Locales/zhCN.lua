@@ -43,6 +43,7 @@ L["New Feature Abbr"] = "新";
 L["Format Month Day"] = "%s%d日";
 L["Always On Module"] = "此模块将被一直启用。";
 L["Return To Module List"] = "返回模块列表";
+L["LootUI Addon Conflict"] = "此模块可能与以下功能类似的插件不兼容：";
 
 
 --Settings Category
@@ -385,6 +386,18 @@ L["ModuleName NameplateWidget"] = "姓名板: 钥焰";
 L["ModuleDescription NameplateWidget"] = "在钥焰的姓名板进度条上显示你拥有的光耀残渣的数量。";
 
 
+--NameplateQuestIndicator
+L["ModuleName NameplateQuest"] = "姓名板: 任务标记";
+L["ModuleDescription NameplateQuest"] = "在姓名板上显示任务标记。\n\n-（可选）在目标姓名板上显示任务进度。\n\n-（可选）如果你的队友还没有完成任务，在姓名板上显示任务标记。";
+L["NameplateQuest ShowPartyQuest"] = "显示队友任务";
+L["NameplateQuest ShowPartyQuest Tooltip"] = "如果你的队友还没有完成任务目标，在姓名板上显示 %s 图标。";
+L["NameplateQuest ShowTargetProgress"] = "显示当前目标进度";
+L["NameplateQuest ShowTargetProgress Tooltip"] = "在当前目标姓名板上显示任务进度";
+L["NameplateQuest ShowProgressOnHover"] = "显示鼠标经过的单位进度";
+L["NameplateQuest ShowProgressOnHover Tooltip"] = "在鼠标经过的单位姓名板上显示任务进度。";
+L["NameplateQuest Instruction Find Nameplate"] = "请前往一个有NPC姓名板的地方来调整图标位置。";
+
+
 --PartyInviterInfo
 L["ModuleName PartyInviterInfo"] = "队伍邀请人信息";
 L["ModuleDescription PartyInviterInfo"] = "显示队伍以及公会邀请人的等级、职业等信息。";
@@ -567,6 +580,8 @@ L["LootUI Option Show Reputation"] = "显示声望变化";
 L["LootUI Option Show Reputation Tooltip"] = "在拾取窗口内显示获得的声望。\n\n在战斗中或是战场内获得的声望将在结束后合并显示。";
 L["LootUI Option Show All Money"] = "显示任何金钱变动";
 L["LootUI Option Show All Money Tooltip"] = "显示从任何来源获得的金钱，而不仅限于从战利品中拾取到的。";
+L["LootUI Option Hide Title"] = "隐藏“你获得了”标题";
+L["LootUI Option Hide Title Tooltip"] = "隐藏拾取窗口上方显示的“你获得了”标题。";
 
 
 --Quick Slot For Third-party Dev
@@ -614,6 +629,7 @@ L["No Slot For New Character Macro Alert"] = "需要一个空的角色专用宏�
 --New Expansion Landing Page
 L["ModuleName NewExpansionLandingPage"] = "资料片概要";
 L["ModuleDescription NewExpansionLandingPage"] = "一个显示声望、每周事件和团本进度的界面。你可从以下方式访问：\n\n- 点击小地图上的卡兹阿加概要按钮。\n\n- 在游戏设置-快捷键中设置一个快捷键。";
+L["Abbr NewExpansionLandingPage"] = "资料片概要";
 L["Reward Available"] = "奖励待领取";  --As brief as possible
 L["Paragon Reward Available"] = "巅峰奖励待领取";
 L["Until Next Level Format"] = "离下一级还有 %d";   --Earn x reputation to reach the next level
@@ -695,6 +711,7 @@ L["ModuleDescription CraftSearchExtended"] = "在搜索某些词语时显示更�
 --DecorModelScaleRef
 L["ModuleName DecorModelScaleRef"] = "装饰品: 参照物";
 L["ModuleDescription DecorModelScaleRef"] = "- 为装饰品预览窗口增加一个参照物（一根香蕉），帮助你理解物体的大小。\n\n- 允许你按住鼠标左键并在模型上上下拖动来改变镜头的俯仰角。";
+L["Toggle Banana"] = "勾选香蕉";
 
 
 --Player Housing

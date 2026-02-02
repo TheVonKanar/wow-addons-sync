@@ -175,6 +175,14 @@ function addonTable.Core.UpgradeDesign(design)
     end
   end
 
+  local function RemoveAutoColorsAlpha(autoColors)
+    for _, ac in ipairs(autoColors) do
+      for _, color in pairs(ac.colors) do
+        color.a = nil
+      end
+    end
+  end
+
   for _, bar in ipairs(design.bars) do
     if bar.kind == "health" and not bar.absorb then
       local mode = bar.border.height and bar.border.height * 100 or addonTable.Assets.BarBordersLegacy[bar.border.asset].mode
@@ -298,6 +306,7 @@ function addonTable.Core.UpgradeDesign(design)
     end
     if bar.autoColors then
       UpdateAutoColors(bar.autoColors)
+      RemoveAutoColorsAlpha(bar.autoColors)
     end
   end
 
@@ -354,6 +363,7 @@ function addonTable.Core.UpgradeDesign(design)
     end
     if text.autoColors then
       UpdateAutoColors(text.autoColors)
+      RemoveAutoColorsAlpha(text.autoColors)
     end
   end
 
@@ -385,6 +395,10 @@ function addonTable.Core.UpgradeDesign(design)
         highlight.width = 1
         highlight.height = 1
       end
+    end
+
+    if highlight.autoColors then
+      UpdateAutoColors(highlight.autoColors)
     end
   end
 
@@ -462,15 +476,17 @@ function addonTable.Core.MigrateSettings()
   end
 end
 
-local function SetStyle()
+local function SetStyle(isInit)
   local mapping = addonTable.Config.Get(addonTable.Config.Options.DESIGNS_ASSIGNED)
 
   local styleName = addonTable.Config.Get(addonTable.Config.Options.STYLE)
-  if mapping["friend"] == mapping["enemy"] and mapping["enemySimplified"] ~= styleName then
-    mapping["friend"] = styleName
-    mapping["enemy"] = styleName
-  elseif mapping["friend"] ~= styleName and mapping["enemy"] ~= styleName and mapping["enemySimplified"] ~= styleName then
-    mapping["enemy"] = styleName
+  if not isInit then
+    if mapping["friend"] == mapping["enemy"] and mapping["enemySimplified"] ~= styleName then
+      mapping["friend"] = styleName
+      mapping["enemy"] = styleName
+    elseif mapping["friend"] ~= styleName and mapping["enemy"] ~= styleName and mapping["enemySimplified"] ~= styleName then
+      mapping["enemy"] = styleName
+    end
   end
   if styleName:match("^_") then
     local designs = addonTable.Config.Get(addonTable.Config.Options.DESIGNS)
@@ -590,7 +606,7 @@ function addonTable.Core.Initialize()
 
   addonTable.Core.MigrateSettings()
 
-  SetStyle()
+  SetStyle(true)
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, name)
     if name == addonTable.Config.Options.STYLE then
       SetStyle()

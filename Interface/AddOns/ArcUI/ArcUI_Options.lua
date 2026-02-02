@@ -1,6 +1,7 @@
 -- ===================================================================
 -- ArcUI_Options.lua  
 -- Main Options registration for Arc UI
+-- v3.4.2: Fixed OpenOptions nil error and added AceDB error handling
 -- ===================================================================
 
 local ADDON, ns = ...
@@ -28,6 +29,174 @@ ns.AddonInfo = {
   Discord = "https://discord.gg/yMZmnFjUTd",
   Author = "Arc",
 }
+
+-- ===================================================================
+-- DISCORD LINK BUTTON (must be defined before OpenOptions)
+-- ===================================================================
+local function CreateDiscordLink(parentFrame)
+  if parentFrame._arcUIDiscordLink then return end
+  
+  local container = CreateFrame("Frame", nil, parentFrame)
+  container:SetSize(200, 20)
+  container:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", -10, -8)
+  
+  local label = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  label:SetPoint("RIGHT", container, "RIGHT", 0, 0)
+  label:SetText("|cff5865F2Discord:|r |cff7289DA" .. ns.AddonInfo.Discord .. "|r")
+  
+  local link = CreateFrame("EditBox", nil, container)
+  link:SetSize(200, 20)
+  link:SetPoint("RIGHT", container, "RIGHT", 0, 0)
+  link:SetFontObject(GameFontNormal)
+  link:SetAutoFocus(false)
+  link:EnableMouse(true)
+  link:SetText(ns.AddonInfo.Discord)
+  link:SetCursorPosition(0)
+  link:Hide()
+  
+  container:EnableMouse(true)
+  container:SetScript("OnEnter", function(self)
+    label:SetText("|cff5865F2Discord:|r |cffffffffClick to copy|r")
+    GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+    GameTooltip:AddLine("Click to copy Discord link", 1, 1, 1)
+    GameTooltip:Show()
+  end)
+  container:SetScript("OnLeave", function(self)
+    label:SetText("|cff5865F2Discord:|r |cff7289DA" .. ns.AddonInfo.Discord .. "|r")
+    GameTooltip:Hide()
+  end)
+  container:SetScript("OnMouseDown", function(self)
+    link:Show()
+    link:SetFocus()
+    link:HighlightText()
+    label:Hide()
+  end)
+  
+  link:SetScript("OnEditFocusLost", function(self)
+    self:Hide()
+    label:Show()
+  end)
+  link:SetScript("OnEscapePressed", function(self)
+    self:ClearFocus()
+  end)
+  link:SetScript("OnEnterPressed", function(self)
+    self:ClearFocus()
+  end)
+  
+  parentFrame._arcUIDiscordLink = container
+end
+
+-- ===================================================================
+-- EARLY OPENOPTIONS DEFINITION (before PLAYER_LOGIN)
+-- This ensures /arcui always has a function to call, even if DB fails
+-- ===================================================================
+local optionsRegistered = false
+
+ns.API = ns.API or {}
+
+-- Define OpenOptions early - will be replaced with full version after registration
+ns.API.OpenOptions = function()
+  if not optionsRegistered then
+    print("|cff00ccffArc UI|r Options not ready yet. Try again in a moment.")
+    print("|cff00ccffArc UI|r If this persists, type: /arcui reset-db")
+    return
+  end
+  
+  if InCombatLockdown() then
+    ns._arcPendingOptionsOpen = true
+    print("|cff00ccffArc UI|r Options will open when combat ends.")
+    return
+  end
+  
+  ns._arcPendingOptionsOpen = nil
+  ns._arcUIOptionsOpen = true  -- Flag for Resources module to detect options are open
+  AceConfigDialog:Open("ArcUI")
+  
+  -- Refresh resource bars immediately so they show despite talent/spec/combat conditions
+  if ns.Resources and ns.Resources.RefreshAllBars then
+    ns.Resources.RefreshAllBars()
+  end
+  
+  C_Timer.After(0.05, function()
+    local widget = AceConfigDialog.OpenFrames["ArcUI"]
+    if widget and widget.frame then
+      local actualFrame = widget.frame
+      local globalDB = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+      local alpha = globalDB and globalDB.menuBackgroundAlpha or 1.0
+      
+      -- Create solid background
+      if not actualFrame._arcUISolidBgFrame then
+        actualFrame._arcUISolidBgFrame = CreateFrame("Frame", nil, actualFrame)
+        actualFrame._arcUISolidBgFrame:SetPoint("TOPLEFT", actualFrame, "TOPLEFT", 8, -8)
+        actualFrame._arcUISolidBgFrame:SetPoint("BOTTOMRIGHT", actualFrame, "BOTTOMRIGHT", -8, 8)
+        actualFrame._arcUISolidBgFrame:SetFrameLevel(math.max(1, actualFrame:GetFrameLevel() - 1))
+        
+        actualFrame._arcUISolidBgFrame.tex = actualFrame._arcUISolidBgFrame:CreateTexture(nil, "BACKGROUND")
+        actualFrame._arcUISolidBgFrame.tex:SetAllPoints()
+        actualFrame._arcUISolidBgFrame.tex:SetColorTexture(0.02, 0.02, 0.02, 1)
+      end
+      
+      actualFrame._arcUISolidBgFrame:SetAlpha(alpha)
+      actualFrame._arcUISolidBgFrame:Show()
+      
+      -- Create Discord link at top right (or show existing one)
+      CreateDiscordLink(actualFrame)
+      if actualFrame._arcUIDiscordLink then
+        actualFrame._arcUIDiscordLink:Show()
+      end
+      
+      -- Hook OnHide
+      if not actualFrame._arcUIOnHideHooked then
+        actualFrame._arcUIOnHideHooked = true
+        local originalOnHide = actualFrame:GetScript("OnHide")
+        actualFrame:SetScript("OnHide", function(self, ...)
+          if originalOnHide then originalOnHide(self, ...) end
+          
+          -- Clear options open flag
+          ns._arcUIOptionsOpen = false
+          
+          -- CRITICAL: Hide Discord link when panel closes
+          -- AceConfigDialog reuses frame objects, so our Discord link would
+          -- appear on other addons' config panels if we don't hide it
+          if self._arcUIDiscordLink then
+            self._arcUIDiscordLink:Hide()
+          end
+          if self._arcUISolidBgFrame then
+            self._arcUISolidBgFrame:Hide()
+          end
+          
+          if ns.Display and ns.Display.HideDeleteButtons then
+            ns.Display.HideDeleteButtons()
+          end
+          if ns.Resources and ns.Resources.HideDeleteButtons then
+            ns.Resources.HideDeleteButtons()
+          end
+          if ns.CDMEnhance and ns.CDMEnhance.SetUnlocked then
+            ns.CDMEnhance.SetUnlocked(false)
+          end
+          if ns.CDMGroups and ns.CDMGroups.SetDragMode then
+            ns.CDMGroups.SetDragMode(false)
+          end
+          
+          C_Timer.After(0.1, function()
+            if ns.API.ValidateAllBarTracking then
+              ns.API.ValidateAllBarTracking()
+            end
+            -- Refresh resource bars to re-apply visibility rules now that options panel is closed
+            -- (bars with unmet talent conditions or wrong spec should now be hidden again)
+            if ns.Resources and ns.Resources.RefreshAllBars then
+              ns.Resources.RefreshAllBars()
+            end
+          end)
+        end)
+      end
+    end
+    
+    if ns.API.ValidateAllBarTracking then
+      ns.API.ValidateAllBarTracking()
+    end
+  end)
+end
 
 -- ===================================================================
 -- MAIN OPTIONS TABLE
@@ -170,16 +339,35 @@ local function GetOptionsTable()
         },
       },
       
-      resources = (function()
-        local tbl = ns.TrackingOptions and ns.TrackingOptions.GetResourceSetupTable() or {
-          type = "group",
-          name = "Resources",
-          args = { loading = { type = "description", name = "Loading...", order = 1 } }
-        }
-        tbl.name = "Resources"
-        tbl.order = 3
-        return tbl
-      end)(),
+      resources = {
+        type = "group",
+        name = "Resources",
+        order = 3,
+        childGroups = "tab",
+        args = {
+          setup = (function()
+            local tbl = ns.TrackingOptions and ns.TrackingOptions.GetResourceSetupTable() or {
+              type = "group",
+              name = "Setup",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Setup"
+            tbl.order = 1
+            return tbl
+          end)(),
+          
+          appearance = (function()
+            local tbl = ns.AppearanceOptions and ns.AppearanceOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Appearance",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Appearance"
+            tbl.order = 2
+            return tbl
+          end)(),
+        },
+      },
       
       settings = {
         type = "group",
@@ -277,157 +465,28 @@ local function GetOptionsTable()
 end
 
 -- ===================================================================
--- DISCORD LINK BUTTON
--- ===================================================================
-local function CreateDiscordLink(parentFrame)
-  if parentFrame._arcUIDiscordLink then return end
-  
-  local container = CreateFrame("Frame", nil, parentFrame)
-  container:SetSize(200, 20)
-  container:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", -10, -8)
-  
-  local label = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  label:SetPoint("RIGHT", container, "RIGHT", 0, 0)
-  label:SetText("|cff5865F2Discord:|r |cff7289DA" .. ns.AddonInfo.Discord .. "|r")
-  
-  local link = CreateFrame("EditBox", nil, container)
-  link:SetSize(200, 20)
-  link:SetPoint("RIGHT", container, "RIGHT", 0, 0)
-  link:SetFontObject(GameFontNormal)
-  link:SetAutoFocus(false)
-  link:EnableMouse(true)
-  link:SetText(ns.AddonInfo.Discord)
-  link:SetCursorPosition(0)
-  link:Hide()
-  
-  container:EnableMouse(true)
-  container:SetScript("OnEnter", function(self)
-    label:SetText("|cff5865F2Discord:|r |cffffffffClick to copy|r")
-    GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-    GameTooltip:AddLine("Click to copy Discord link", 1, 1, 1)
-    GameTooltip:Show()
-  end)
-  container:SetScript("OnLeave", function(self)
-    label:SetText("|cff5865F2Discord:|r |cff7289DA" .. ns.AddonInfo.Discord .. "|r")
-    GameTooltip:Hide()
-  end)
-  container:SetScript("OnMouseDown", function(self)
-    link:Show()
-    link:SetFocus()
-    link:HighlightText()
-    label:Hide()
-  end)
-  
-  link:SetScript("OnEditFocusLost", function(self)
-    self:Hide()
-    label:Show()
-  end)
-  link:SetScript("OnEscapePressed", function(self)
-    self:ClearFocus()
-  end)
-  link:SetScript("OnEnterPressed", function(self)
-    self:ClearFocus()
-  end)
-  
-  parentFrame._arcUIDiscordLink = container
-end
-
--- ===================================================================
 -- OPTIONS REGISTRATION
 -- ===================================================================
 local function RegisterOptions()
   AceConfig:RegisterOptionsTable("ArcUI", GetOptionsTable)
   AceConfigDialog:SetDefaultSize("ArcUI", 900, 700)
-  
-  ns.API.OpenOptions = function()
-    -- Prevent opening options during combat, but queue for when combat ends
-    if InCombatLockdown() then
-      ns._arcPendingOptionsOpen = true
-      print("|cff00ccffArc UI|r Options will open when combat ends.")
-      return
-    end
-    
-    -- Clear any pending flag
-    ns._arcPendingOptionsOpen = nil
-    
-    AceConfigDialog:Open("ArcUI")
-    
-    C_Timer.After(0.05, function()
-      local widget = AceConfigDialog.OpenFrames["ArcUI"]
-      if widget and widget.frame then
-        local actualFrame = widget.frame
-        local globalDB = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
-        local alpha = globalDB and globalDB.menuBackgroundAlpha or 1.0
-        
-        -- Create solid background
-        if not actualFrame._arcUISolidBgFrame then
-          actualFrame._arcUISolidBgFrame = CreateFrame("Frame", nil, actualFrame)
-          actualFrame._arcUISolidBgFrame:SetPoint("TOPLEFT", actualFrame, "TOPLEFT", 8, -8)
-          actualFrame._arcUISolidBgFrame:SetPoint("BOTTOMRIGHT", actualFrame, "BOTTOMRIGHT", -8, 8)
-          actualFrame._arcUISolidBgFrame:SetFrameLevel(math.max(1, actualFrame:GetFrameLevel() - 1))
-          
-          actualFrame._arcUISolidBgFrame.tex = actualFrame._arcUISolidBgFrame:CreateTexture(nil, "BACKGROUND")
-          actualFrame._arcUISolidBgFrame.tex:SetAllPoints()
-          actualFrame._arcUISolidBgFrame.tex:SetColorTexture(0.02, 0.02, 0.02, 1)
-        end
-        
-        actualFrame._arcUISolidBgFrame:SetAlpha(alpha)
-        actualFrame._arcUISolidBgFrame:Show()
-        
-        -- Create Discord link at top right (or show existing one)
-        CreateDiscordLink(actualFrame)
-        if actualFrame._arcUIDiscordLink then
-          actualFrame._arcUIDiscordLink:Show()
-        end
-        
-        -- Hook OnHide
-        if not actualFrame._arcUIOnHideHooked then
-          actualFrame._arcUIOnHideHooked = true
-          local originalOnHide = actualFrame:GetScript("OnHide")
-          actualFrame:SetScript("OnHide", function(self, ...)
-            if originalOnHide then originalOnHide(self, ...) end
-            
-            -- CRITICAL: Hide Discord link when panel closes
-            -- AceConfigDialog reuses frame objects, so our Discord link would
-            -- appear on other addons' config panels if we don't hide it
-            if self._arcUIDiscordLink then
-              self._arcUIDiscordLink:Hide()
-            end
-            if self._arcUISolidBgFrame then
-              self._arcUISolidBgFrame:Hide()
-            end
-            
-            if ns.Display and ns.Display.HideDeleteButtons then
-              ns.Display.HideDeleteButtons()
-            end
-            if ns.Resources and ns.Resources.HideDeleteButtons then
-              ns.Resources.HideDeleteButtons()
-            end
-            if ns.CDMEnhance and ns.CDMEnhance.SetUnlocked then
-              ns.CDMEnhance.SetUnlocked(false)
-            end
-            if ns.CDMGroups and ns.CDMGroups.SetDragMode then
-              ns.CDMGroups.SetDragMode(false)
-            end
-            
-            C_Timer.After(0.1, function()
-              if ns.API.ValidateAllBarTracking then
-                ns.API.ValidateAllBarTracking()
-              end
-            end)
-          end)
-        end
-      end
-      
-      if ns.API.ValidateAllBarTracking then
-        ns.API.ValidateAllBarTracking()
-      end
-    end)
-  end
+  optionsRegistered = true
 end
 
 -- ===================================================================
--- SLASH COMMANDS
+-- DATABASE RESET FUNCTION
+-- ===================================================================
+local function ResetDatabase()
+  -- Clear the corrupted SavedVariables
+  ArcUIDB = nil
+  ArcUI_CDMEnhance_Debug = nil
+  
+  print("|cff00ccffArc UI|r Database has been reset. Please |cffff0000/reload|r to complete the reset.")
+  print("|cff00ccffArc UI|r Your settings will be restored to defaults.")
+end
+
+-- ===================================================================
+-- SLASH COMMANDS (defined early so they always work)
 -- ===================================================================
 SLASH_ARCBARS1 = "/arcbars"
 SLASH_ARCBARS2 = "/ab"
@@ -435,6 +494,24 @@ SLASH_ARCBARS3 = "/arcui"
 SLASH_ARCBARS4 = "/aui"
 SlashCmdList["ARCBARS"] = function(msg)
   msg = msg:lower():trim()
+  
+  -- Database reset command (always available, even if options fail)
+  if msg == "reset-db" or msg == "resetdb" then
+    StaticPopupDialogs["ARCUI_RESET_DB"] = {
+      text = "This will reset ALL Arc UI settings to defaults.\n\nAre you sure?",
+      button1 = "Yes, Reset",
+      button2 = "Cancel",
+      OnAccept = function()
+        ResetDatabase()
+      end,
+      timeout = 0,
+      whileDead = true,
+      hideOnEscape = true,
+      preferredIndex = 3,
+    }
+    StaticPopup_Show("ARCUI_RESET_DB")
+    return
+  end
   
   if msg == "" or msg == "options" or msg == "config" then
     ns.API.OpenOptions()
@@ -499,19 +576,23 @@ SlashCmdList["ARCBARS"] = function(msg)
     end
   elseif msg == "export" then
     -- Quick export shortcut
-    if ns.API and ns.API.OpenOptions then
+    if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
         AceConfigDialog:SelectGroup("ArcUI", "icons", "importExport")
       end)
+    else
+      print("|cff00ccffArc UI|r Options not ready yet.")
     end
   elseif msg == "import" then
     -- Quick import shortcut
-    if ns.API and ns.API.OpenOptions then
+    if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
         AceConfigDialog:SelectGroup("ArcUI", "icons", "importExport")
       end)
+    else
+      print("|cff00ccffArc UI|r Options not ready yet.")
     end
   elseif msg == "help" then
     print("|cff00ccffArc UI|r Commands:")
@@ -522,6 +603,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     print("  /arcui minimap - Toggle minimap button")
     print("  /arcui export - Open import/export panel")
     print("  /arcui import - Open import/export panel")
+    print("  /arcui reset-db - |cffff0000Reset ALL settings to defaults|r")
   else
     print("|cff00ccffArc UI|r Unknown command. Use /arcui help")
   end
@@ -551,7 +633,7 @@ initFrame:SetScript("OnEvent", function(self, event)
     if ns._arcPendingOptionsOpen then
       ns._arcPendingOptionsOpen = nil
       C_Timer.After(0.1, function()
-        if not InCombatLockdown() and ns.API.OpenOptions then
+        if not InCombatLockdown() then
           ns.API.OpenOptions()
         end
       end)
@@ -560,7 +642,33 @@ initFrame:SetScript("OnEvent", function(self, event)
   end
   
   if event == "PLAYER_LOGIN" then
-    ns.db = AceDB:New("ArcUIDB", ns.DB_DEFAULTS, true)
+    -- ═══════════════════════════════════════════════════════════════════
+    -- ACEDB INITIALIZATION WITH ERROR HANDLING
+    -- ═══════════════════════════════════════════════════════════════════
+    local dbSuccess, dbError = pcall(function()
+      ns.db = AceDB:New("ArcUIDB", ns.DB_DEFAULTS, true)
+    end)
+    
+    if not dbSuccess then
+      -- Database failed to load - likely corrupted
+      print("|cff00ccffArc UI|r |cffff0000ERROR:|r Database failed to load!")
+      print("|cff00ccffArc UI|r Error: " .. tostring(dbError))
+      print("|cff00ccffArc UI|r Type |cffff0000/arcui reset-db|r to reset settings and fix this.")
+      
+      -- Create a minimal database so the addon doesn't completely break
+      ns.db = {
+        char = {},
+        profile = {},
+        global = ns.DB_DEFAULTS.global,
+      }
+      
+      -- Still register options so the UI can open (even if limited)
+      C_Timer.After(0.1, function()
+        RegisterOptions()
+        print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded with LIMITED functionality.")
+      end)
+      return
+    end
     
     -- ═══════════════════════════════════════════════════════════════════
     -- FIX SPARSE ARRAYS: Fill holes in resourceBars/cooldownBars after DB load

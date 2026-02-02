@@ -75,9 +75,11 @@ local function ShouldMakeClickThrough()
     if not cachedSettings.initialized then
         RefreshCachedLayoutSettings()
     end
-    -- These checks must be live (state changes frequently)
+    -- These checks must be DIRECT (not cached) - state changes immediately when panel closes
     -- Don't apply click-through when options panel is open - user needs to interact with icons
-    if ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen and ns.CDMEnhance.IsOptionsPanelOpen() then
+    local ACD = LibStub("AceConfigDialog-3.0", true)
+    local panelOpen = ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] and true or false
+    if panelOpen then
         return false
     end
     -- Don't apply click-through when drag mode is enabled
@@ -125,15 +127,39 @@ local function ApplyClickThrough(frame, enable)
             end
         end
     else
-        -- Re-enable mouse on frame and overlays
+        -- Re-enable mouse on frame
         frame:EnableMouse(true)
         
-        -- Re-enable ArcUI overlays directly (avoid circular calls)
-        if frame._arcOverlay and frame._arcOverlay.EnableMouse then
-            frame._arcOverlay:EnableMouse(true)
+        -- CRITICAL: For CDMGroups-managed frames, NEVER enable overlay mouse!
+        -- The overlay sits on TOP of the frame and would INTERCEPT all clicks.
+        -- Only enable overlays for non-CDMGroups frames (legacy behavior).
+        local parent = frame:GetParent()
+        local isCDMGroupsManaged = (parent and parent._isCDMGContainer)
+        
+        -- Also check if it's a CDMGroups free icon
+        if not isCDMGroupsManaged and ns.CDMGroups and ns.CDMGroups.freeIcons then
+            local cdID = frame.cooldownID
+            if cdID and ns.CDMGroups.freeIcons[cdID] then
+                isCDMGroupsManaged = true
+            end
         end
-        if frame._arcTextOverlay and frame._arcTextOverlay.EnableMouse then
-            frame._arcTextOverlay:EnableMouse(true)
+        
+        if not isCDMGroupsManaged then
+            -- Non-CDMGroups frames: re-enable overlays (legacy behavior)
+            if frame._arcOverlay and frame._arcOverlay.EnableMouse then
+                frame._arcOverlay:EnableMouse(true)
+            end
+            if frame._arcTextOverlay and frame._arcTextOverlay.EnableMouse then
+                frame._arcTextOverlay:EnableMouse(true)
+            end
+        else
+            -- CDMGroups-managed: ALWAYS keep overlays disabled
+            if frame._arcOverlay and frame._arcOverlay.EnableMouse then
+                frame._arcOverlay:EnableMouse(false)
+            end
+            if frame._arcTextOverlay and frame._arcTextOverlay.EnableMouse then
+                frame._arcTextOverlay:EnableMouse(false)
+            end
         end
         
         -- Re-enable text drag overlays if text drag mode is active
@@ -226,8 +252,11 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     frame:ClearAllPoints()
     
     -- CRITICAL: MUST show frame initially - CDMEnhance will hide if inactive LATER
-    frame:SetAlpha(1)
-    frame:Show()
+    -- EXCEPT: Skip showing if frame is hidden due to hideWhenUnequipped setting
+    if not frame._arcHiddenUnequipped then
+        frame:SetAlpha(1)
+        frame:Show()
+    end
     frame._arcRecoveryProtection = GetTime() + 0.5
     
     -- Default to slot dimensions
@@ -258,17 +287,32 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     frame._cdmgSettingSize = false
     
     -- Disable any CDMEnhance overlay stealing mouse events
+    -- CDMGroups-managed frames should NEVER have overlay mouse enabled
     if frame._arcOverlay then
         frame._arcOverlay:EnableMouse(false)
         frame._arcOverlay:RegisterForDrag()
     end
+    if frame._arcTextOverlay then
+        frame._arcTextOverlay:EnableMouse(false)
+    end
     
-    -- TOOLTIP CONTROL
-    ApplyTooltipSettings(frame, ShouldDisableTooltips())
-    
-    -- CLICK-THROUGH (unless dragging is allowed - drag mode OR options panel open)
-    if not (ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag()) then
-        ApplyClickThrough(frame, ShouldMakeClickThrough())
+    -- CLICK-THROUGH: Apply based on DIRECT DB read and DIRECT panel check
+    -- Do NOT use ShouldMakeClickThrough() or ShouldAllowDrag() - they use cached values
+    -- that can be stale for 0.25s after panel closes
+    if not ns.CDMGroups.dragModeEnabled then
+        -- Check panel directly
+        local ACD = LibStub("AceConfigDialog-3.0", true)
+        local panelOpen = ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] and true or false
+        
+        if not panelOpen then
+            -- Read click-through directly from DB
+            local clickThroughEnabled = false
+            local db = Shared and Shared.GetCDMGroupsDB and Shared.GetCDMGroupsDB()
+            if db then
+                clickThroughEnabled = db.clickThrough == true
+            end
+            ApplyClickThrough(frame, clickThroughEnabled)
+        end
     end
     
     -- Return effective dimensions for centering calculations
@@ -286,18 +330,38 @@ ns.CDMGroups.SetupFrameInContainer = SetupFrameInContainer
 
 -- Called when global options are changed or when options panel closes
 function ns.CDMGroups.RefreshIconSettings()
+    -- CRITICAL: Refresh cached settings first - DB values may have changed
+    RefreshCachedLayoutSettings()
+    
     local inDragMode = ns.CDMGroups.dragModeEnabled
-    local clickThrough = ShouldMakeClickThrough()
-    local disableTooltips = ShouldDisableTooltips()
+    
+    -- CRITICAL: Read click-through setting DIRECTLY from DB
+    -- Do NOT use ShouldMakeClickThrough() because it checks cached panel state
+    -- which may be stale (0.25s update interval) when panel just closed
+    local clickThroughEnabled = false
+    local db = Shared and Shared.GetCDMGroupsDB and Shared.GetCDMGroupsDB()
+    if db then
+        clickThroughEnabled = db.clickThrough == true
+    end
+    
+    -- Check if panel is ACTUALLY open right now (direct check, not cached)
+    local ACD = LibStub("AceConfigDialog-3.0", true)
+    local panelActuallyOpen = ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] and true or false
+    
+    -- Only apply click-through if: setting enabled AND drag mode off AND panel closed
+    local clickThrough = clickThroughEnabled and not inDragMode and not panelActuallyOpen
     
     -- Re-setup all icons in groups
     for groupName, group in pairs(ns.CDMGroups.groups or {}) do
-        -- Apply click-through to container
+        -- Container mouse: NEVER enable when not in edit mode
+        -- Container sits above child frames and would intercept clicks
+        -- Only enable when inDragMode or panel is open (edit mode)
         if group and group.container then
-            if clickThrough then
-                group.container:EnableMouse(false)
-            else
+            local editModeActive = inDragMode or panelActuallyOpen
+            if editModeActive then
                 group.container:EnableMouse(true)
+            else
+                group.container:EnableMouse(false)
             end
         end
         
@@ -336,8 +400,6 @@ function ns.CDMGroups.RefreshIconSettings()
                         member._effectiveCacheVersion = ns.CDMEnhance and ns.CDMEnhance.GetCacheVersion and ns.CDMEnhance.GetCacheVersion() or 0
                     end
                     ApplyClickThrough(member.frame, clickThrough)
-                    -- FIX: Also apply tooltip settings to group members (was missing!)
-                    ApplyTooltipSettings(member.frame, disableTooltips)
                 end
             end
         end
@@ -346,7 +408,6 @@ function ns.CDMGroups.RefreshIconSettings()
     -- Also refresh free icons
     for cdID, data in pairs(ns.CDMGroups.freeIcons or {}) do
         if data.frame then
-            ApplyTooltipSettings(data.frame, disableTooltips)
             ApplyClickThrough(data.frame, clickThrough)
         end
     end
@@ -636,7 +697,7 @@ local function DetectGridShape(rows, cols)
     elseif cols == 1 then
         return "vertical"    -- Single column: top/center/bottom
     else
-        return "multi"       -- Multi-dimensional: top/bottom/left/right (no center)
+        return "multi"       -- Multi-dimensional: top/bottom/left/right/center
     end
 end
 ns.CDMGroups.DetectGridShape = DetectGridShape
@@ -648,7 +709,7 @@ local function GetAlignmentOptions(gridShape)
     elseif gridShape == "vertical" then
         return { "top", "center", "bottom" }
     else -- multi
-        return { "top", "bottom", "left", "right" }
+        return { "top", "bottom", "left", "right", "center_h", "center_v" }
     end
 end
 ns.CDMGroups.GetAlignmentOptions = GetAlignmentOptions

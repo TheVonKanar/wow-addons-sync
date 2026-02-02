@@ -708,7 +708,7 @@ local function MakeDefaultGroup(x, y, borderR, borderG, borderB)
         position = { x = x, y = y },
         showBorder = false,
         showBackground = false,
-        autoReflow = false,
+        autoReflow = true,
         lockGridSize = false,
         containerPadding = -4,  -- Padding around icons in container (-4 = tight/internal, 0 = compact, 4 = classic)
         visibility = "always",  -- "always", "combat" (In Combat Only), or "ooc" (Out of Combat Only)
@@ -765,7 +765,7 @@ local function SerializeDefaultGroupToLayoutData(groupData)
         -- Appearance
         showBorder = groupData.showBorder or false,
         showBackground = groupData.showBackground or false,
-        autoReflow = groupData.autoReflow or false,
+        autoReflow = groupData.autoReflow ~= false,  -- Default true, user can disable
         dynamicLayout = groupData.dynamicLayout or false,
         lockGridSize = groupData.lockGridSize or false,
         containerPadding = groupData.containerPadding or -4,
@@ -909,8 +909,11 @@ function ns.CDMGroups.TrackFreeIcon(cooldownID, x, y, iconSize, optionalFrame)
     frame:SetSize(effectiveW, effectiveH)
     
     -- CRITICAL: MUST show frame when tracking - CDMEnhance will handle inactive state LATER
-    frame:SetAlpha(1)
-    frame:Show()
+    -- EXCEPT: Skip showing if frame is hidden due to hideWhenUnequipped setting
+    if not frame._arcHiddenUnequipped then
+        frame:SetAlpha(1)
+        frame:Show()
+    end
     frame._arcRecoveryProtection = GetTime() + 0.5
     
     ns.CDMGroups.freeIcons[cooldownID] = {
@@ -1483,13 +1486,19 @@ function ns.CDMGroups.IsOptionsPanelOpen()
     -- The cdmOptionsPanelOpen flag is updated by hooks on Show/Hide events
     local cdmOpen = ns.CDMGroups.cdmOptionsPanelOpen
     
-    return arcUIOpen or cdmOpen
+    -- Check Blizzard Edit Mode - when Edit Mode is open, CDM refreshes all frames
+    -- which fires aura hooks and causes pixel positioning during what should be grid mode.
+    -- Treating Edit Mode as "panel open" disables pixel positioning and hooks.
+    local blizzEditMode = EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive()
+    
+    return arcUIOpen or cdmOpen or blizzEditMode
 end
 
 -- Separate check for just ArcUI panel (for edit mode features like edit buttons)
+-- NOTE: This does a DIRECT check, not cached, to avoid stale values after panel closes
 function ns.CDMGroups.IsArcUIOptionsPanelOpen()
-    -- Uses cached value from Shared - cheap!
-    return Shared.IsOptionsPanelOpen()
+    local ACD = LibStub("AceConfigDialog-3.0", true)
+    return ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] and true or false
 end
 
 -- Check if dragging should be allowed
@@ -1497,6 +1506,7 @@ end
 function ns.CDMGroups.ShouldAllowDrag()
     if ns.CDMGroups.dragModeEnabled then return true end
     -- Allow dragging when options panel is open (for easy icon arrangement)
+    -- NOTE: Uses DIRECT check, not cached
     return ns.CDMGroups.IsArcUIOptionsPanelOpen()
 end
 
@@ -2206,7 +2216,10 @@ function ns.CDMGroups.EmergencyRescue()
                     frame:SetParent(UIParent)
                     frame:SetFrameStrata("MEDIUM")
                     frame:SetScale(1)
-                    frame:Show()
+                    -- Only show if not hidden due to hideWhenUnequipped setting
+                    if not frame._arcHiddenUnequipped then
+                        frame:Show()
+                    end
                     
                     -- Install hooks
                     if ns.FrameController and ns.FrameController.InstallFrameHooks then
@@ -2266,7 +2279,10 @@ function ns.CDMGroups.EmergencyRescue()
                     frame:SetParent(UIParent)
                     frame:SetFrameStrata("MEDIUM")
                     frame:SetScale(1)
-                    frame:Show()
+                    -- Only show if not hidden due to hideWhenUnequipped setting
+                    if not frame._arcHiddenUnequipped then
+                        frame:Show()
+                    end
                     
                     -- Install hooks
                     if ns.FrameController and ns.FrameController.InstallFrameHooks then
@@ -2689,7 +2705,7 @@ GetDefaultSpecData = function()
                             position = layoutData.position and DeepCopy(layoutData.position) or { x = 0, y = 0 },
                             showBorder = layoutData.showBorder,
                             showBackground = layoutData.showBackground,
-                            autoReflow = layoutData.autoReflow,
+                            autoReflow = layoutData.autoReflow ~= false,
                             dynamicLayout = layoutData.dynamicLayout,
                             lockGridSize = layoutData.lockGridSize,
                             containerPadding = layoutData.containerPadding,
@@ -2969,7 +2985,7 @@ local function EnsureLayoutProfiles(specData)
                         verticalGrowth = groupData.layout and groupData.layout.verticalGrowth,
                         showBorder = groupData.showBorder,
                         showBackground = groupData.showBackground,
-                        autoReflow = groupData.autoReflow,
+                        autoReflow = groupData.autoReflow ~= false,
                         dynamicLayout = groupData.dynamicLayout,
                         lockGridSize = groupData.lockGridSize,
                         containerPadding = groupData.containerPadding,
@@ -3106,7 +3122,7 @@ local function EnsureLayoutProfiles(specData)
                         verticalGrowth = groupData.layout and groupData.layout.verticalGrowth,
                         showBorder = groupData.showBorder,
                         showBackground = groupData.showBackground,
-                        autoReflow = groupData.autoReflow,
+                        autoReflow = groupData.autoReflow ~= false,
                         dynamicLayout = groupData.dynamicLayout,
                         lockGridSize = groupData.lockGridSize,
                         containerPadding = groupData.containerPadding,
@@ -3989,6 +4005,13 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
         local entry = frameData.entry
         local saved = profile.savedPositions and profile.savedPositions[cdID]
         
+        -- CRITICAL FIX: Create entry if nil (for CDM-sourced frames)
+        -- Without this, entry.group is never set and instant layout fails
+        if not entry and frame and ns.FrameRegistry and ns.FrameRegistry.GetOrCreate then
+            entry = ns.FrameRegistry:GetOrCreate(frame, frameData.originalViewerName or "LoadProfile")
+            frameData.entry = entry
+        end
+        
         if saved and saved.type == "group" and saved.target then
             -- Assign to group at saved position
             local group = ns.CDMGroups.groups[saved.target]
@@ -3996,10 +4019,10 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 local row = saved.row or 0
                 local col = saved.col or 0
                 
-                -- Add to group members
+                -- Add to group members (INCLUDE entry reference!)
                 group.members[cdID] = {
                     frame = frame,
-                    entry = entry,
+                    entry = entry,  -- Now entry is not nil
                     row = row,
                     col = col,
                     targetParent = group.container,
@@ -4013,12 +4036,17 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 
                 -- Parent to group container
                 frame:SetParent(group.container)
-                frame:Show()
+                -- Only show if not hidden due to hideWhenUnequipped setting
+                if not frame._arcHiddenUnequipped then
+                    frame:Show()
+                end
                 
+                -- CRITICAL FIX: Set entry.group to GROUP OBJECT, not string!
+                -- This is what AddMemberAtWithFrame does, and why drag fixes the issue
                 if entry then
                     entry.manipulated = true
                     entry.manipulationType = "group"
-                    entry.group = saved.target
+                    entry.group = group  -- GROUP OBJECT, not saved.target (string)!
                 end
                 
                 assignedToGroup = assignedToGroup + 1
@@ -4039,8 +4067,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 frame:SetPoint("CENTER", UIParent, "CENTER", orphanX, orphanY)
                 frame:SetFrameStrata("MEDIUM")
                 frame:SetScale(1)
-                frame:SetAlpha(1)
-                frame:Show()
+                -- Only show if not hidden due to hideWhenUnequipped setting
+                if not frame._arcHiddenUnequipped then
+                    frame:SetAlpha(1)
+                    frame:Show()
+                end
                 frame._cdmgIsFreeIcon = true
                 
                 ns.CDMGroups.freeIcons[cdID] = {
@@ -4079,8 +4110,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
             frame:SetFrameStrata("MEDIUM")
             frame:SetScale(1)
-            frame:SetAlpha(1)
-            frame:Show()
+            -- Only show if not hidden due to hideWhenUnequipped setting
+            if not frame._arcHiddenUnequipped then
+                frame:SetAlpha(1)
+                frame:Show()
+            end
             frame._cdmgIsFreeIcon = true
             
             ns.CDMGroups.freeIcons[cdID] = {
@@ -4122,8 +4156,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             frame:SetPoint("CENTER", UIParent, "CENTER", orphanX, orphanY)
             frame:SetFrameStrata("MEDIUM")
             frame:SetScale(1)
-            frame:SetAlpha(1)
-            frame:Show()
+            -- Only show if not hidden due to hideWhenUnequipped setting
+            if not frame._arcHiddenUnequipped then
+                frame:SetAlpha(1)
+                frame:Show()
+            end
             frame._cdmgIsFreeIcon = true
             
             ns.CDMGroups.freeIcons[cdID] = {
@@ -4204,11 +4241,24 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                     group.showBackground = layoutData.showBackground
                 end
                 if layoutData.autoReflow ~= nil then
-                    group.autoReflow = layoutData.autoReflow
+                    group.autoReflow = layoutData.autoReflow ~= false
                 end
                 if layoutData.dynamicLayout ~= nil then
                     group.dynamicLayout = layoutData.dynamicLayout
                 end
+                
+                -- Ensure alignment has a default value when dynamicLayout is enabled
+                -- The UI shows "Center" as default but if user never changed it, alignment is nil
+                -- Having an explicit value ensures consistent behavior in layout calculations
+                if group.dynamicLayout and not group.layout.alignment then
+                    local rows = group.layout.gridRows or 1
+                    local cols = group.layout.gridCols or 1
+                    local gridShape = ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "horizontal"
+                    local defaultAlignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "center"
+                    group.layout.alignment = defaultAlignment
+                    DebugPrint("|cffff9900[LoadProfile]|r Set default alignment for", groupName, ":", defaultAlignment)
+                end
+                
                 if layoutData.lockGridSize ~= nil then
                     group.lockGridSize = layoutData.lockGridSize
                 end
@@ -4308,6 +4358,17 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
         -- Layout all groups to position frames correctly
         for _, group in pairs(ns.CDMGroups.groups) do
             if group.Layout then group:Layout() end
+        end
+        
+        -- CRITICAL: Setup dynamic layout hooks for ALL groups with Dynamic Auras enabled
+        -- This ensures instant layout works for ALL alignments after profile load
+        local DL = ns.CDMGroups.DynamicLayout
+        if DL and DL.SetupDynamicLayoutHooks then
+            for groupName, group in pairs(ns.CDMGroups.groups) do
+                if group.dynamicLayout then
+                    DL.SetupDynamicLayoutHooks(group)
+                end
+            end
         end
         
         -- Reflow icons for groups with Fill Gaps enabled
@@ -4845,89 +4906,95 @@ function ns.CDMGroups.RestoreArcAurasPositions(debugPrefix)
     
     for arcID, frame in pairs(ns.ArcAuras.frames) do
         if frame then
-            -- Check current tracking state
-            local isTrackedGroup = false
-            for groupName, group in pairs(ns.CDMGroups.groups or {}) do
-                if group.members and group.members[arcID] then
-                    isTrackedGroup = true
-                    break
-                end
-            end
-            
-            -- For grouped Arc Auras, skip (Layout handles them)
-            if isTrackedGroup then
-                DebugPrint(debugPrefix, "Arc Aura already in group:", arcID)
+            -- CRITICAL: Skip frames that are hidden due to hideWhenUnequipped setting
+            -- These frames should NOT be shown or positioned until the item is equipped
+            if frame._arcHiddenUnequipped then
+                DebugPrint(debugPrefix, "Skipping Arc Aura (hideWhenUnequipped):", arcID)
             else
-                -- For FREE Arc Auras: ALWAYS restore position directly on frame
-                local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
-                local hasValidPosition = frame:GetNumPoints() > 0
+                -- Check current tracking state
+                local isTrackedGroup = false
+                for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+                    if group.members and group.members[arcID] then
+                        isTrackedGroup = true
+                        break
+                    end
+                end
                 
-                if saved then
-                    if saved.type == "group" and saved.target then
-                        -- Restore to group
-                        local targetGroup = ns.CDMGroups.groups[saved.target]
-                        if targetGroup then
-                            DebugPrint(debugPrefix, "Restoring Arc Aura to group:", arcID, "->", saved.target)
-                            ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", saved.target)
-                            restoredCount = restoredCount + 1
-                        else
-                            -- Group doesn't exist - fall back to free position
-                            DebugPrint(debugPrefix, "Group", saved.target, "not found, making Arc Aura free:", arcID)
-                            local col = orphanIndex % ARC_AURAS_ICONS_PER_ROW
-                            local row = math.floor(orphanIndex / ARC_AURAS_ICONS_PER_ROW)
-                            local x = (col - math.floor(ARC_AURAS_ICONS_PER_ROW / 2)) * ARC_AURAS_ORPHAN_SPACING
-                            local y = ARC_AURAS_START_Y - (row * ARC_AURAS_ORPHAN_SPACING)
+                -- For grouped Arc Auras, skip (Layout handles them)
+                if isTrackedGroup then
+                    DebugPrint(debugPrefix, "Arc Aura already in group:", arcID)
+                else
+                    -- For FREE Arc Auras: ALWAYS restore position directly on frame
+                    local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
+                    local hasValidPosition = frame:GetNumPoints() > 0
+                    
+                    if saved then
+                        if saved.type == "group" and saved.target then
+                            -- Restore to group
+                            local targetGroup = ns.CDMGroups.groups[saved.target]
+                            if targetGroup then
+                                DebugPrint(debugPrefix, "Restoring Arc Aura to group:", arcID, "->", saved.target)
+                                ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", saved.target)
+                                restoredCount = restoredCount + 1
+                            else
+                                -- Group doesn't exist - fall back to free position
+                                DebugPrint(debugPrefix, "Group", saved.target, "not found, making Arc Aura free:", arcID)
+                                local col = orphanIndex % ARC_AURAS_ICONS_PER_ROW
+                                local row = math.floor(orphanIndex / ARC_AURAS_ICONS_PER_ROW)
+                                local x = (col - math.floor(ARC_AURAS_ICONS_PER_ROW / 2)) * ARC_AURAS_ORPHAN_SPACING
+                                local y = ARC_AURAS_START_Y - (row * ARC_AURAS_ORPHAN_SPACING)
+                                
+                                -- Set position directly
+                                frame:SetParent(UIParent)
+                                frame:ClearAllPoints()
+                                frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+                                frame:SetFrameStrata("MEDIUM")
+                                frame:SetAlpha(1)
+                                frame:Show()
+                                
+                                ns.CDMGroups.TrackFreeIcon(arcID, x, y, 36, frame)
+                                orphanIndex = orphanIndex + 1
+                                orphanCount = orphanCount + 1
+                            end
+                        elseif saved.type == "free" then
+                            -- Restore as free icon at saved position
+                            DebugPrint(debugPrefix, "Restoring Arc Aura as free:", arcID, "at", saved.x, saved.y)
                             
-                            -- Set position directly
+                            -- Set position DIRECTLY on frame (critical fix!)
                             frame:SetParent(UIParent)
                             frame:ClearAllPoints()
-                            frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+                            frame:SetPoint("CENTER", UIParent, "CENTER", saved.x or 0, saved.y or 0)
                             frame:SetFrameStrata("MEDIUM")
                             frame:SetAlpha(1)
                             frame:Show()
                             
-                            ns.CDMGroups.TrackFreeIcon(arcID, x, y, 36, frame)
-                            orphanIndex = orphanIndex + 1
-                            orphanCount = orphanCount + 1
+                            -- Also call TrackFreeIcon to ensure tracking is set up
+                            ns.CDMGroups.TrackFreeIcon(arcID, saved.x or 0, saved.y or 0, saved.iconSize or 36, frame)
+                            restoredCount = restoredCount + 1
                         end
-                    elseif saved.type == "free" then
-                        -- Restore as free icon at saved position
-                        DebugPrint(debugPrefix, "Restoring Arc Aura as free:", arcID, "at", saved.x, saved.y)
+                    elseif not hasValidPosition then
+                        -- NO saved position AND no valid position - create as orphan
+                        local col = orphanIndex % ARC_AURAS_ICONS_PER_ROW
+                        local row = math.floor(orphanIndex / ARC_AURAS_ICONS_PER_ROW)
+                        local x = (col - math.floor(ARC_AURAS_ICONS_PER_ROW / 2)) * ARC_AURAS_ORPHAN_SPACING
+                        local y = ARC_AURAS_START_Y - (row * ARC_AURAS_ORPHAN_SPACING)
                         
-                        -- Set position DIRECTLY on frame (critical fix!)
+                        DebugPrint(debugPrefix, "Creating orphan Arc Aura:", arcID, "at", x, y)
+                        
+                        -- Set position directly
                         frame:SetParent(UIParent)
                         frame:ClearAllPoints()
-                        frame:SetPoint("CENTER", UIParent, "CENTER", saved.x or 0, saved.y or 0)
+                        frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
                         frame:SetFrameStrata("MEDIUM")
                         frame:SetAlpha(1)
                         frame:Show()
                         
-                        -- Also call TrackFreeIcon to ensure tracking is set up
-                        ns.CDMGroups.TrackFreeIcon(arcID, saved.x or 0, saved.y or 0, saved.iconSize or 36, frame)
-                        restoredCount = restoredCount + 1
+                        ns.CDMGroups.TrackFreeIcon(arcID, x, y, 36, frame)
+                        orphanIndex = orphanIndex + 1
+                        orphanCount = orphanCount + 1
+                    else
+                        DebugPrint(debugPrefix, "Arc Aura has valid position, skipping:", arcID)
                     end
-                elseif not hasValidPosition then
-                    -- NO saved position AND no valid position - create as orphan
-                    local col = orphanIndex % ARC_AURAS_ICONS_PER_ROW
-                    local row = math.floor(orphanIndex / ARC_AURAS_ICONS_PER_ROW)
-                    local x = (col - math.floor(ARC_AURAS_ICONS_PER_ROW / 2)) * ARC_AURAS_ORPHAN_SPACING
-                    local y = ARC_AURAS_START_Y - (row * ARC_AURAS_ORPHAN_SPACING)
-                    
-                    DebugPrint(debugPrefix, "Creating orphan Arc Aura:", arcID, "at", x, y)
-                    
-                    -- Set position directly
-                    frame:SetParent(UIParent)
-                    frame:ClearAllPoints()
-                    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
-                    frame:SetFrameStrata("MEDIUM")
-                    frame:SetAlpha(1)
-                    frame:Show()
-                    
-                    ns.CDMGroups.TrackFreeIcon(arcID, x, y, 36, frame)
-                    orphanIndex = orphanIndex + 1
-                    orphanCount = orphanCount + 1
-                else
-                    DebugPrint(debugPrefix, "Arc Aura has valid position, skipping:", arcID)
                 end
             end
         end
@@ -4937,15 +5004,19 @@ function ns.CDMGroups.RestoreArcAurasPositions(debugPrefix)
 end
 
 -- Force show all Arc Auras (used after restoration to ensure visibility)
+-- NOTE: Respects _arcHiddenUnequipped flag - frames hidden due to hideWhenUnequipped setting remain hidden
 function ns.CDMGroups.ForceShowAllArcAuras()
     if not ns.ArcAuras or not ns.ArcAuras.frames then return 0 end
     
     local count = 0
     for arcID, frame in pairs(ns.ArcAuras.frames) do
         if frame then
-            frame:SetAlpha(1)
-            frame:Show()
-            count = count + 1
+            -- Skip frames that are hidden due to hideWhenUnequipped setting
+            if not frame._arcHiddenUnequipped then
+                frame:SetAlpha(1)
+                frame:Show()
+                count = count + 1
+            end
         end
     end
     return count
@@ -5320,7 +5391,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                         -- Appearance
                         showBorder = layoutData.showBorder,
                         showBackground = layoutData.showBackground,
-                        autoReflow = layoutData.autoReflow,
+                        autoReflow = layoutData.autoReflow ~= false,
                         dynamicLayout = layoutData.dynamicLayout,
                         lockGridSize = layoutData.lockGridSize,
                         containerPadding = layoutData.containerPadding,
@@ -5796,7 +5867,7 @@ function ns.CDMGroups.CreateGroup(name)
             position = defaultTemplate.position and DeepCopy(defaultTemplate.position) or { x = 0, y = 100 },
             showBorder = defaultTemplate.showBorder or false,
             showBackground = defaultTemplate.showBackground or false,
-            autoReflow = defaultTemplate.autoReflow or false,
+            autoReflow = defaultTemplate.autoReflow ~= false,
             dynamicLayout = defaultTemplate.dynamicLayout or false,
             lockGridSize = defaultTemplate.lockGridSize or false,
             containerPadding = defaultTemplate.containerPadding or -4,
@@ -5842,7 +5913,7 @@ function ns.CDMGroups.CreateGroup(name)
             perRow = layoutData.gridCols or 4,
         },
         position = layoutData.position and DeepCopy(layoutData.position) or { x = 0, y = 100 },
-        autoReflow = layoutData.autoReflow or false,
+        autoReflow = layoutData.autoReflow ~= false,
         dynamicLayout = layoutData.dynamicLayout or false,
         lockGridSize = layoutData.lockGridSize or false,
         containerPadding = layoutData.containerPadding or -4,
@@ -5865,7 +5936,7 @@ function ns.CDMGroups.CreateGroup(name)
         grid = {},  -- Start empty - will be rebuilt from saved positions with valid frames
         layout = DeepCopy(db.layout),  -- Use copy to avoid shared reference issues
         position = DeepCopy(db.position),  -- Use copy
-        autoReflow = db.autoReflow,
+        autoReflow = db.autoReflow ~= false,
         dynamicLayout = db.dynamicLayout,
         lockGridSize = db.lockGridSize,
         containerPadding = db.containerPadding,
@@ -5877,6 +5948,18 @@ function ns.CDMGroups.CreateGroup(name)
         container = nil,
         color = color,
     }
+    
+    -- Ensure alignment has a default value when dynamicLayout is enabled
+    -- The UI shows "Center" as default but if alignment was never saved, it's nil
+    -- Having an explicit value ensures consistent behavior in layout calculations
+    if group.dynamicLayout and not group.layout.alignment then
+        local rows = group.layout.gridRows or 1
+        local cols = group.layout.gridCols or 1
+        local gridShape = ns.CDMGroups.DetectGridShape and ns.CDMGroups.DetectGridShape(rows, cols) or "horizontal"
+        local defaultAlignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "center"
+        group.layout.alignment = defaultAlignment
+        DebugPrint("|cff00ff00[CreateGroup]|r Set default alignment for", name, ":", defaultAlignment)
+    end
     
     -- Helper to safely get layout from PROFILE (single source of truth)
     -- MUST be defined before any group methods that use it
@@ -8154,8 +8237,11 @@ function ns.CDMGroups.CreateGroup(name)
                         local effectiveW, effectiveH = SetupFrameInContainer(newFrame, self.container, slotW, slotH, cdID)
                         
                         -- CRITICAL: MUST show frame after recovery
-                        newFrame:SetAlpha(1)
-                        newFrame:Show()
+                        -- EXCEPT: Skip if frame is hidden due to hideWhenUnequipped setting
+                        if not newFrame._arcHiddenUnequipped then
+                            newFrame:SetAlpha(1)
+                            newFrame:Show()
+                        end
                         newFrame._arcRecoveryProtection = GetTime() + 0.5
                         
                         member.frame = newFrame
@@ -8421,8 +8507,11 @@ function ns.CDMGroups.CreateGroup(name)
                             self.members[cdID]._effectiveIconH = effectiveH
                             
                             -- CRITICAL: MUST show frame after recovery
-                            foundFrame:SetAlpha(1)
-                            foundFrame:Show()
+                            -- EXCEPT: Skip if frame is hidden due to hideWhenUnequipped setting
+                            if not foundFrame._arcHiddenUnequipped then
+                                foundFrame:SetAlpha(1)
+                                foundFrame:Show()
+                            end
                             foundFrame._arcRecoveryProtection = GetTime() + 0.5
                             
                             -- Enable drag if dragging is allowed
@@ -8630,36 +8719,29 @@ function ns.CDMGroups.CreateGroup(name)
         end
         
         -- Position icons
-        -- DYNAMIC LAYOUT: Get helper to check if icons should be skipped
+        -- PIXEL POSITIONING: Compute pixel positions when Dynamic Layout (autoReflow) is ON and panel closed
+        -- excludeInactiveAuras: only when Dynamic Auras toggle is ON
         local DL = ns.CDMGroups.DynamicLayout
-        local dynEnabled = self.dynamicLayout and self.autoReflow and not (ns.CDMGroups.IsOptionsPanelOpen and ns.CDMGroups.IsOptionsPanelOpen())
+        local optionsPanelOpen = ns.CDMGroups.IsOptionsPanelOpen and ns.CDMGroups.IsOptionsPanelOpen()
+        local usePixelLayout = self.autoReflow and not optionsPanelOpen
+        local excludeInactiveAuras = self.dynamicLayout and usePixelLayout
         
-        -- DYNAMIC LAYOUT: Calculate positions for visible AURA icons
-        -- Uses DL.CalculateDynamicSlots() which implements:
-        --   - Stable slot assignment (existing auras keep slots unless compaction needed)
-        --   - cdID tiebreaker for deterministic ordering (prevents thrashing)
-        --   - Alignment-aware slot ordering (left/right/center/bottom)
-        --   - Cooldown blocking (non-aura icons act as walls)
-        local dynamicPositions = {}  -- [cdID] = {row=, col=}
-        local activeAuras = {}       -- [cdID] = true - track which auras are active
-        if dynEnabled and DL and DL.CalculateDynamicSlots then
-            dynamicPositions, activeAuras = DL.CalculateDynamicSlots(self, rows, cols)
-            
-            -- If options panel is open, clear pixel centering flags to use grid positions
-            if DL.IsOptionsPanelOpen and DL.IsOptionsPanelOpen() then
-                self._useCenterAlignPixels = nil
-                self._centerAlignPixelOffsets = nil
-            end
+        -- Calculate pixel positions for all active items
+        -- CalculateDynamicSlots handles the panel-open check internally
+        local dynamicPositions = {}  -- [cdID] = {row=, col=} (for tracking)
+        local activeAuras = {}       -- [cdID] = true (items in pixel layout)
+        if usePixelLayout and DL and DL.CalculateDynamicSlots then
+            dynamicPositions, activeAuras = DL.CalculateDynamicSlots(self, rows, cols, excludeInactiveAuras)
         end
         
         
         -- Track occupied positions to prevent two frames from sharing the same spot
         local occupiedPositions = {}  -- ["row,col"] = cdID
         
-        -- DYNAMIC LAYOUT: Build processing order (active auras first, then cooldowns, then inactive)
-        -- This prevents inactive auras from "stealing" positions from active auras
+        -- Build processing order: active items first, then inactive auras
+        local usePixelPositioning = self._usePixelPositioning and true or false
         local processingOrder = (DL and DL.BuildProcessingOrder) 
-            and DL.BuildProcessingOrder(self, activeAuras, dynEnabled)
+            and DL.BuildProcessingOrder(self, activeAuras, usePixelPositioning)
             or {}
         
         -- Fallback if DL not available
@@ -8679,10 +8761,10 @@ function ns.CDMGroups.CreateGroup(name)
             if member and member.frame and member.row ~= nil and member.col ~= nil then
                 local frame = member.frame
                 
-                -- DYNAMIC LAYOUT: Get position (dynamic for active auras, saved for others)
+                -- Get position (pixel-positioned items use dynamicPositions for tracking)
                 local row, col, usesDynamicPosition
                 if DL and DL.GetMemberPosition then
-                    row, col, usesDynamicPosition = DL.GetMemberPosition(member, cdID, activeAuras, dynamicPositions, dynEnabled)
+                    row, col, usesDynamicPosition = DL.GetMemberPosition(member, cdID, activeAuras, dynamicPositions, usePixelPositioning)
                 else
                     row, col = member.row, member.col
                     usesDynamicPosition = false
@@ -8739,14 +8821,10 @@ function ns.CDMGroups.CreateGroup(name)
                     frame._cdmgSettingPosition = true
                     frame:ClearAllPoints()
                     
-                    -- Use pixel-based centering if active (CENTER anchor)
-                    if self._useCenterAlignPixels and self._centerAlignPixelOffsets and self._centerAlignPixelOffsets[cdID] then
-                        local pixelOffset = self._centerAlignPixelOffsets[cdID]
-                        if self._centerAlignIsVertical then
-                            frame:SetPoint("CENTER", self.container, "CENTER", 0, pixelOffset)
-                        else
-                            frame:SetPoint("CENTER", self.container, "CENTER", pixelOffset, 0)
-                        end
+                    -- Use pixel-based positioning if active
+                    if self._usePixelPositioning and self._pixelOffsets and self._pixelOffsets[cdID] then
+                        local offset = self._pixelOffsets[cdID]
+                        frame:SetPoint("CENTER", self.container, "CENTER", offset.x, offset.y)
                     else
                         -- Grid-based positioning
                         local slotX, slotY = getSlotPosition(row, col, self._leftOverflow, self._topOverflow)
@@ -8761,8 +8839,12 @@ function ns.CDMGroups.CreateGroup(name)
                     frame._cdmgSettingSize = true
                     frame:SetSize(effectiveW, effectiveH)
                     frame._cdmgSettingSize = false
-                    frame:SetAlpha(1)
-                    frame:Show()
+                    
+                    -- Only show if not hidden due to hideWhenUnequipped setting
+                    if not frame._arcHiddenUnequipped then
+                        frame:SetAlpha(1)
+                        frame:Show()
+                    end
                     
                     -- Refresh drag handlers if dragging is allowed
                     if ns.CDMGroups.ShouldAllowDrag() then
@@ -8814,24 +8896,18 @@ function ns.CDMGroups.CreateGroup(name)
                     local targetPoint, targetRelPoint = "TOPLEFT", "TOPLEFT"
                     
                     -- ═══════════════════════════════════════════════════════════════════════
-                    -- PIXEL-BASED CENTER ALIGNMENT
-                    -- Positions active auras centered on the container, not in grid slots
+                    -- PIXEL-BASED POSITIONING
+                    -- Positions icons using CENTER anchor with pixel offsets
+                    -- Active for ALL groups when options panel is closed
                     -- ═══════════════════════════════════════════════════════════════════════
-                    if self._useCenterAlignPixels and self._centerAlignPixelOffsets and self._centerAlignPixelOffsets[cdID] then
+                    if self._usePixelPositioning and self._pixelOffsets and self._pixelOffsets[cdID] then
                         -- Position from CENTER of container using stored pixel offset
-                        local pixelOffset = self._centerAlignPixelOffsets[cdID]
+                        local offset = self._pixelOffsets[cdID]
                         local effectiveW = member._effectiveIconW or slotW
                         local effectiveH = member._effectiveIconH or slotH
                         
-                        if self._centerAlignIsVertical then
-                            -- Vertical center alignment: offset is Y from center
-                            targetX = 0
-                            targetY = pixelOffset
-                        else
-                            -- Horizontal center alignment: offset is X from center
-                            targetX = pixelOffset
-                            targetY = 0
-                        end
+                        targetX = offset.x
+                        targetY = offset.y
                         
                         targetPoint = "CENTER"
                         targetRelPoint = "CENTER"
@@ -8948,10 +9024,10 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- ═══════════════════════════════════════════════════════════════════════
         -- GRID SYNC: Rebuild grid to match actual visual positions
-        -- This ensures grid reflects where icons actually ARE, not just saved positions
-        -- Critical for dynamic layout where inactive auras may overlap saved positions
+        -- When pixel positioning is active, sync grid from dynamicPositions
+        -- This ensures grid reflects where icons actually ARE
         -- ═══════════════════════════════════════════════════════════════════════
-        if dynEnabled then
+        if usePixelPositioning then
             -- Clear grid
             self.grid = {}
             for r = 0, rows - 1 do
@@ -9926,14 +10002,24 @@ function ns.CDMGroups.CreateGroup(name)
         frame:SetMovable(true)
         frame:RegisterForDrag("LeftButton")
         
-        -- CLICK-THROUGH: Enable mouse if dragging is allowed (drag mode OR options panel open)
-        if ns.CDMGroups.ShouldAllowDrag() then
+        -- CLICK-THROUGH: Check dragModeEnabled and panel DIRECTLY, not cached
+        local ACD = LibStub("AceConfigDialog-3.0", true)
+        local panelOpen = ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] and true or false
+        local allowDrag = ns.CDMGroups.dragModeEnabled or panelOpen
+        
+        if allowDrag then
             frame:EnableMouse(true)
             if frame.SetMouseClickThrough then
                 frame:SetMouseClickThrough(false)
             end
         else
-            ApplyClickThrough(frame, ShouldMakeClickThrough())
+            -- Read click-through directly from DB
+            local clickThroughEnabled = false
+            local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+            if db then
+                clickThroughEnabled = db.clickThrough == true
+            end
+            ApplyClickThrough(frame, clickThroughEnabled)
         end
         
         -- Create edit button if it doesn't exist (shows only when options panel is open)
@@ -10423,14 +10509,20 @@ function ns.CDMGroups.CreateGroup(name)
                     member.frame._sourceGroup = nil
                     member.frame._sourceCdID = nil
                     
-                    -- CLICK-THROUGH: Respect setting when drag mode is disabled
-                    ApplyClickThrough(member.frame, ShouldMakeClickThrough())
+                    -- CLICK-THROUGH: Read DB directly to avoid stale cache issues
+                    -- When drag mode is disabled (panel closing), apply the saved setting
+                    local clickThroughEnabled = false
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if db then
+                        clickThroughEnabled = db.clickThrough == true
+                    end
+                    ApplyClickThrough(member.frame, clickThroughEnabled)
                     
                     -- Re-enable overlay for right-click when drag mode is disabled
                     -- Let CDMEnhance's UpdateOverlayState handle proper state
                     if member.frame._arcOverlay and ns.CDMEnhance and ns.CDMEnhance.UpdateOverlayStateForFrame then
                         -- Only update overlay if click-through is disabled
-                        if not ShouldMakeClickThrough() then
+                        if not clickThroughEnabled then
                             ns.CDMEnhance.UpdateOverlayStateForFrame(member.frame)
                         end
                     end
@@ -10515,6 +10607,28 @@ function ns.CDMGroups.CreateGroup(name)
     -- Notify Masque about the new custom group
     if ns.Masque and ns.Masque.OnGroupCreated then
         ns.Masque.OnGroupCreated(name)
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- CRITICAL: Ensure new groups are fully initialized like default groups
+    -- Without these calls, user-created groups can have:
+    --   - Stale container sizing (no Layout)
+    --   - Incorrect visibility state (combat-only settings not applied)
+    --   - Orphan frames not assigned (FrameController unaware of new group)
+    -- ═══════════════════════════════════════════════════════════════════════════
+    
+    -- Call Layout() to ensure container is properly sized
+    group:Layout()
+    
+    -- Update visibility based on combat/visibility settings
+    if ns.CDMGroups.UpdateGroupVisibility then
+        ns.CDMGroups.UpdateGroupVisibility()
+    end
+    
+    -- Notify FrameController to check for orphan frames that could go in this group
+    -- Use short debounce - group is ready, just need to scan for orphans
+    if ns.FrameController and ns.FrameController.ScheduleReconcile then
+        ns.FrameController.ScheduleReconcile(0.15)  -- Short debounce for group creation
     end
     
     return group
@@ -10928,13 +11042,18 @@ function ns.CDMGroups.SetDragMode(enabled)
                 data.frame:RegisterForDrag()
                 data.frame._freeDragging = nil
                 
-                -- CLICK-THROUGH: Respect setting when drag mode is disabled
-                ApplyClickThrough(data.frame, ShouldMakeClickThrough())
+                -- CLICK-THROUGH: Read DB directly to avoid stale cache issues
+                local clickThroughEnabled = false
+                local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                if db then
+                    clickThroughEnabled = db.clickThrough == true
+                end
+                ApplyClickThrough(data.frame, clickThroughEnabled)
                 
                 -- Re-enable overlay for right-click when drag mode is disabled
                 if data.frame._arcOverlay and ns.CDMEnhance and ns.CDMEnhance.UpdateOverlayStateForFrame then
                     -- Only update overlay if click-through is disabled
-                    if not ShouldMakeClickThrough() then
+                    if not clickThroughEnabled then
                         ns.CDMEnhance.UpdateOverlayStateForFrame(data.frame)
                     end
                 end

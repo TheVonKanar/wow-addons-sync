@@ -338,6 +338,7 @@ ns.DB_DEFAULTS = {
           tickThickness = 2,
           tickColor = {r=1, g=1, b=1, a=0.8},
           showText = true,
+          textFormat = "value",  -- "value" or "percent"
           font = "Friz Quadrata TT",
           fontSize = 20,
           textColor = {r=1, g=1, b=1, a=1},

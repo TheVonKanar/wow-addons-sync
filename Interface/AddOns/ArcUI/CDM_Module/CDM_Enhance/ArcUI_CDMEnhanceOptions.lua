@@ -70,20 +70,44 @@ local RebuildUnifiedIconCache
 local SECTION_FIELDS = {
   iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "hideShadow", "debuffBorder.enabled", "pandemicBorder.enabled" },
   position = { "position" },
-  activeState = { "cooldownStateVisuals.readyState" },
-  inactiveState = { "cooldownStateVisuals.cooldownState" },
+  -- Ready State / Aura Active - all actual stored fields
+  activeState = { 
+    "cooldownStateVisuals.readyState.alpha",
+    "cooldownStateVisuals.readyState.glow",
+    "cooldownStateVisuals.readyState.glowCombatOnly",
+    "cooldownStateVisuals.readyState.glowType",
+    "cooldownStateVisuals.readyState.glowColor",
+    "cooldownStateVisuals.readyState.glowIntensity",
+    "cooldownStateVisuals.readyState.glowScale",
+    "cooldownStateVisuals.readyState.glowSpeed",
+    "cooldownStateVisuals.readyState.glowLines",
+    "cooldownStateVisuals.readyState.glowThickness",
+    "cooldownStateVisuals.readyState.glowParticles",
+    "cooldownStateVisuals.readyState.glowXOffset",
+    "cooldownStateVisuals.readyState.glowYOffset",
+  },
+  -- On Cooldown State / Aura Missing - all actual stored fields
+  inactiveState = { 
+    "cooldownStateVisuals.cooldownState.alpha",
+    "cooldownStateVisuals.cooldownState.desaturate",
+    "cooldownStateVisuals.cooldownState.noDesaturate",
+    "cooldownStateVisuals.cooldownState.tint",
+    "cooldownStateVisuals.cooldownState.tintColor",
+    "cooldownStateVisuals.cooldownState.preserveDurationText",
+    "cooldownStateVisuals.cooldownState.waitForNoCharges",
+  },
   auraActiveState = { "auraActiveState.ignoreAuraOverride" },  -- Aura Active State settings
   rangeIndicator = { "rangeIndicator.rangeAlpha", "rangeIndicator.showRangeOverlay", "rangeIndicator.enabled" },
   procGlow = { "procGlow.showProcGlow", "procGlow.procGlowType", "procGlow.procGlowColor", "procGlow.color", "procGlow.enabled" },
   border = { "border.enabled", "border.texture", "border.color", "border.thickness", "border.inset", "border.useClassColor", "border.followDesaturation" },
   cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride" },
-  chargeText = { "chargeText.show", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY" },
-  cooldownText = { "cooldownText.show", "cooldownText.font", "cooldownText.size", "cooldownText.color", "cooldownText.outline", "cooldownText.anchor", "cooldownText.offsetX", "cooldownText.offsetY", "cooldownText.shadow", "cooldownText.shadowColor", "cooldownText.shadowOffsetX", "cooldownText.shadowOffsetY", "cooldownText.mmss", "cooldownText.decimals" },
+  chargeText = { "chargeText.enabled", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY", "chargeText.mode", "chargeText.position", "chargeText.freeX", "chargeText.freeY" },
+  cooldownText = { "cooldownText.enabled", "cooldownText.font", "cooldownText.size", "cooldownText.color", "cooldownText.outline", "cooldownText.anchor", "cooldownText.offsetX", "cooldownText.offsetY", "cooldownText.shadow", "cooldownText.shadowColor", "cooldownText.shadowOffsetX", "cooldownText.shadowOffsetY", "cooldownText.mmss", "cooldownText.decimals", "cooldownText.mode", "cooldownText.position", "cooldownText.freeX", "cooldownText.freeY" },
   alertEvents = { "alertEvents" },
 }
 
 -- Purple indicator for customized sections
-local CUSTOM_INDICATOR = "|cffaa55ff*|r "
+local CUSTOM_INDICATOR = "|cffaa55ffEdited|r "
 
 -- Helper: Check if Masque skinning is active (disables zoom/aspectRatio/padding controls)
 -- Returns true only if Masque is installed, enabled in ArcUI settings, and has active groups
@@ -913,6 +937,56 @@ end
 -- Removes specific section fields from per-icon settings
 -- Now using spec-based iconSettings storage
 -- ===================================================================
+
+-- Helper to clear a nested field by dot-separated path (e.g., "a.b.c")
+-- Returns true if something was cleared, and cleans up empty parent tables
+local function ClearNestedField(settings, path)
+  local keys = {}
+  for key in path:gmatch("[^.]+") do
+    table.insert(keys, key)
+  end
+  
+  if #keys == 0 then return false end
+  
+  -- Navigate to parent table
+  local current = settings
+  local parents = {{tbl = settings, key = nil}}
+  
+  for i = 1, #keys - 1 do
+    if type(current) ~= "table" then return false end
+    local nextTbl = current[keys[i]]
+    if nextTbl == nil then return false end
+    current = nextTbl
+    table.insert(parents, {tbl = current, key = keys[i]})
+  end
+  
+  -- Clear the final key
+  local finalKey = keys[#keys]
+  if type(current) ~= "table" or current[finalKey] == nil then
+    return false
+  end
+  
+  current[finalKey] = nil
+  
+  -- Clean up empty parent tables (walk backwards)
+  for i = #parents, 2, -1 do
+    local parent = parents[i]
+    if parent.tbl and not next(parent.tbl) then
+      -- This table is empty, remove it from its parent
+      local grandparent = parents[i-1]
+      if grandparent and grandparent.tbl and parent.key then
+        -- Actually we need the key used to access this table
+        local keyToRemove = keys[i-1]
+        grandparent.tbl[keyToRemove] = nil
+      end
+    else
+      break  -- Stop if we hit a non-empty table
+    end
+  end
+  
+  return true
+end
+
 local function ResetAuraSectionSettings(sectionName)
   local fields = SECTION_FIELDS[sectionName]
   if not fields then return end
@@ -926,19 +1000,7 @@ local function ResetAuraSectionSettings(sectionName)
       local settings = iconSettings[key]
       if settings then
         for _, field in ipairs(fields) do
-          -- Check for dot notation (subtable.key)
-          local subtable, subkey = field:match("^([^.]+)%.(.+)$")
-          if subtable and subkey then
-            if settings[subtable] then
-              settings[subtable][subkey] = nil
-              -- Remove empty subtable
-              if not next(settings[subtable]) then
-                settings[subtable] = nil
-              end
-            end
-          else
-            settings[field] = nil
-          end
+          ClearNestedField(settings, field)
         end
         -- Remove empty settings entry
         if not next(settings) then
@@ -965,17 +1027,7 @@ local function ResetAuraSectionSettings(sectionName)
         local settings = iconSettings[key]
         if settings then
           for _, field in ipairs(fields) do
-            local subtable, subkey = field:match("^([^.]+)%.(.+)$")
-            if subtable and subkey then
-              if settings[subtable] then
-                settings[subtable][subkey] = nil
-                if not next(settings[subtable]) then
-                  settings[subtable] = nil
-                end
-              end
-            else
-              settings[field] = nil
-            end
+            ClearNestedField(settings, field)
           end
           if not next(settings) then
             iconSettings[key] = nil
@@ -1008,17 +1060,7 @@ local function ResetCooldownSectionSettings(sectionName)
       local settings = iconSettings[key]
       if settings then
         for _, field in ipairs(fields) do
-          local subtable, subkey = field:match("^([^.]+)%.(.+)$")
-          if subtable and subkey then
-            if settings[subtable] then
-              settings[subtable][subkey] = nil
-              if not next(settings[subtable]) then
-                settings[subtable] = nil
-              end
-            end
-          else
-            settings[field] = nil
-          end
+          ClearNestedField(settings, field)
         end
         if not next(settings) then
           iconSettings[key] = nil
@@ -3309,7 +3351,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Show Range Overlay",
       desc = "Show the out-of-range darkening overlay when spells are out of range",
       get = function() return GetAuraBoolSetting(function(c) return c and c.rangeIndicator and c.rangeIndicator.enabled ~= false end, function() local c = GetAuraCfg(); return c and c.rangeIndicator and c.rangeIndicator.enabled ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.rangeIndicator then c.rangeIndicator.enabled = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.rangeIndicator then c.rangeIndicator = {} end; c.rangeIndicator.enabled = v end) end,
       order = 108.1, width = 1.0, hidden = HideAuraRangeIndicator,
     },
     resetRangeIndicator = {
@@ -3340,7 +3382,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Show Glow",
       desc = "Show the proc glow animation when ability procs",
       get = function() return GetAuraBoolSetting(function(c) return c and c.procGlow and c.procGlow.enabled ~= false end, function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.enabled ~= false end) end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.enabled = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.enabled = v end) end,
       order = 109.1, width = 0.6, hidden = HideAuraProcGlow,
     },
     procGlowPreview = {
@@ -3366,7 +3408,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       },
       sorting = {"default", "proc", "pixel", "autocast", "button"},
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.glowType = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.glowType = v end) end,
       order = 109.15, width = 0.8, hidden = HideAuraProcGlow,
     },
     procGlowColor = {
@@ -3380,12 +3422,11 @@ function ns.GetCDMAuraIconsOptionsTable()
       end,
       set = function(_, r, g, b)
         ApplyAuraGlowSetting(function(c)
-          if c.procGlow then 
-            if r == 1 and g == 1 and b == 1 then
-              c.procGlow.color = nil  -- Reset to default
-            else
-              c.procGlow.color = {r=r, g=g, b=b}
-            end
+          if not c.procGlow then c.procGlow = {} end
+          if r == 1 and g == 1 and b == 1 then
+            c.procGlow.color = nil  -- Reset to default
+          else
+            c.procGlow.color = {r=r, g=g, b=b}
           end
         end)
       end,
@@ -3402,7 +3443,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Intensity", min = 0, max = 1.0, step = 0.05,
       desc = "How bright the glow appears",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.alpha or 1.0 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.alpha = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.alpha = v end) end,
       order = 109.25, width = 0.6,
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3416,7 +3457,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Scale", min = 0.25, max = 4.0, step = 0.05,
       desc = "Size of the glow effect",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.scale or 1.0 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.scale = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.scale = v end) end,
       order = 109.3, width = 0.55, 
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3430,7 +3471,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Speed", min = 0.05, max = 1.0, step = 0.05,
       desc = "Animation speed (Pixel, AutoCast, Button only)",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.speed or 0.25 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.speed = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.speed = v end) end,
       order = 109.35, width = 0.55,
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3444,7 +3485,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Lines", min = 1, max = 16, step = 1,
       desc = "Number of glow lines",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.lines or 8 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.lines = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.lines = v end) end,
       order = 109.4, width = 0.6,
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3458,7 +3499,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Thickness", min = 1, max = 10, step = 0.5,
       desc = "Thickness of glow lines",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.thickness or 2 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.thickness = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.thickness = v end) end,
       order = 109.45, width = 0.65,
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3472,7 +3513,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Particles", min = 1, max = 16, step = 1,
       desc = "Number of sparkle groups",
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.particles or 4 end,
-      set = function(_, v) ApplyAuraGlowSetting(function(c) if c.procGlow then c.procGlow.particles = v end end) end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.particles = v end) end,
       order = 109.5, width = 0.6,
       hidden = function()
         if HideAuraProcGlow() then return true end
@@ -3613,21 +3654,21 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Finish Flash",
       desc = "Flash when cooldown finishes",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showBling = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showBling = v end) end,
       order = 120.2, width = 0.7, hidden = HideAuraCooldownSwipe,
     },
     noGCDSwipe = {
       type = "toggle", name = "No GCD",
       desc = "Hide GCD swipes (cooldowns 1.5s or less). Only shows the swipe animation for actual spell cooldowns.",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe or false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.noGCDSwipe = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.noGCDSwipe = v end) end,
       order = 120.3, width = 0.5, hidden = HideAuraCooldownSwipe,
     },
     swipeWaitForNoCharges = {
       type = "toggle", name = "Wait No Charges",
       desc = "For charge spells: Only show swipe when ALL charges are consumed. When disabled, shows swipe during any charge recharge.",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges or false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeWaitForNoCharges = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeWaitForNoCharges = v end) end,
       order = 120.4, width = 0.7, hidden = HideAuraCooldownSwipe,
     },
     
@@ -3643,14 +3684,14 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "The darkening clock animation overlay",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showSwipe = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showSwipe = v end) end,
       order = 121.1, width = 0.4, hidden = HideAuraCooldownSwipe,
     },
     reverseSwipe = {
       type = "toggle", name = "Reverse",
       desc = "Reverse the swipe direction",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverse end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.reverse end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.reverse = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.reverse = v end) end,
       order = 121.2, width = 0.5, hidden = HideAuraCooldownSwipe,
     },
     useCustomSwipeColor = {
@@ -3659,12 +3700,11 @@ function ns.GetCDMAuraIconsOptionsTable()
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end) end,
       set = function(_, v)
         ApplyAuraSetting(function(c)
-          if c.cooldownSwipe then
-            if v then
-              c.cooldownSwipe.swipeColor = {r=0, g=0, b=0, a=0.8}
-            else
-              c.cooldownSwipe.swipeColor = nil
-            end
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          if v then
+            c.cooldownSwipe.swipeColor = {r=0, g=0, b=0, a=0.8}
+          else
+            c.cooldownSwipe.swipeColor = nil
           end
         end)
       end,
@@ -3679,7 +3719,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         return col.r or 0, col.g or 0, col.b or 0, col.a or 0.8
       end,
       set = function(_, r, g, b, a)
-        ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeColor = {r=r, g=g, b=b, a=a} end end)
+        ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeColor = {r=r, g=g, b=b, a=a} end)
       end,
       order = 121.4, width = 0.3,
       hidden = function()
@@ -3693,7 +3733,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Inset", min = -20, max = 40, step = 1,
       desc = "Inset for the swipe animation (all sides). Positive = smaller, negative = larger.",
       get = function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInset or 0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInset = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInset = v end) end,
       order = 121.5, width = 0.7,
       hidden = function()
         if HideAuraCooldownSwipe() then return true end
@@ -3705,14 +3745,14 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "W/H",
       desc = "Enable separate Width and Height insets instead of a single inset",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.separateInsets = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.separateInsets = v end) end,
       order = 121.6, width = 0.35, hidden = HideAuraCooldownSwipe,
     },
     swipeInsetX = {
       type = "range", name = "Inset W", min = -20, max = 40, step = 1,
       desc = "Horizontal inset (left/right). Positive = narrower, negative = wider.",
       get = function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInsetX or 0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInsetX = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInsetX = v end) end,
       order = 121.7, width = 0.55,
       hidden = function()
         if HideAuraCooldownSwipe() then return true end
@@ -3724,7 +3764,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "H", min = -20, max = 40, step = 1,
       desc = "Vertical inset (top/bottom). Positive = shorter, negative = taller.",
       get = function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInsetY or 0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInsetY = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInsetY = v end) end,
       order = 121.8, width = 0.45,
       hidden = function()
         if HideAuraCooldownSwipe() then return true end
@@ -3745,14 +3785,14 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "The spinning bright line on the cooldown edge",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showEdge = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showEdge = v end) end,
       order = 122.1, width = 0.4, hidden = HideAuraCooldownSwipe,
     },
     edgeScale = {
       type = "range", name = "Scale", min = 0.1, max = 3.0, step = 0.1,
       desc = "Size of the cooldown edge spinner",
       get = function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeScale or 1.0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.edgeScale = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeScale = v end) end,
       order = 122.2, width = 0.6, hidden = HideAuraCooldownSwipe,
     },
     edgeColorEnabled = {
@@ -3761,13 +3801,12 @@ function ns.GetCDMAuraIconsOptionsTable()
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.edgeColor ~= nil end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeColor ~= nil end) end,
       set = function(_, v)
         ApplyAuraSetting(function(c) 
-          if c.cooldownSwipe then 
-            if v then
-              c.cooldownSwipe.edgeColor = {r=1, g=1, b=1, a=1}
-            else
-              c.cooldownSwipe.edgeColor = nil
-            end
-          end 
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          if v then
+            c.cooldownSwipe.edgeColor = {r=1, g=1, b=1, a=1}
+          else
+            c.cooldownSwipe.edgeColor = nil
+          end
         end)
       end,
       order = 122.3, width = 0.4, hidden = HideAuraCooldownSwipe,
@@ -3781,7 +3820,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 1, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplyAuraSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.edgeColor = {r=r, g=g, b=b, a=a} end end)
+        ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeColor = {r=r, g=g, b=b, a=a} end)
       end,
       order = 122.4, width = 0.3,
       hidden = function()
@@ -3819,7 +3858,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     chargeEnabled = {
       type = "toggle", name = "Show",
       get = function() return GetAuraBoolSetting(function(c) return c and c.chargeText and c.chargeText.enabled ~= false end, function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.enabled ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.enabled = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.enabled = v end) end,
       order = 131, width = 0.55, hidden = HideAuraChargeText,
     },
     chargeTextDrag = {
@@ -3832,7 +3871,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     chargeSize = {
       type = "range", name = "Size", min = 4, max = 64, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.size or 16 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.size = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.size = v end) end,
       order = 132, width = 0.6, hidden = HideAuraChargeText,
     },
     chargeColor = {
@@ -3843,7 +3882,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 0, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.color = {r=r, g=g, b=b, a=a} end end)
+        ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.color = {r=r, g=g, b=b, a=a} end)
       end,
       order = 133, width = 0.55, hidden = HideAuraChargeText,
     },
@@ -3851,31 +3890,31 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "select", name = "Font", dialogControl = "LSM30_Font",
       values = LSM and LSM:HashTable("font") or {},
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.font or "Friz Quadrata TT" end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.font = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.font = v end) end,
       order = 134, width = 0.9, hidden = HideAuraChargeText,
     },
     chargeOutline = {
       type = "select", name = "Outline", values = FONT_OUTLINES,
       get = function() local c = GetAuraCfg(); return GetOutlineValue(c and c.chargeText and c.chargeText.outline) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.outline = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.outline = v end) end,
       order = 135, width = 0.85, hidden = HideAuraChargeText,
     },
     chargeShadow = {
       type = "toggle", name = "Shadow",
       get = function() return GetAuraBoolSetting(function(c) return c and c.chargeText and c.chargeText.shadow end, function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.shadow end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.shadow = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadow = v end) end,
       order = 136, width = 0.55, hidden = HideAuraChargeText,
     },
     chargeShadowX = {
       type = "range", name = "Shadow X", min = -20, max = 20, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.shadowOffsetX or 1 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.shadowOffsetX = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadowOffsetX = v end) end,
       order = 137, width = 0.6, hidden = function() return HideAuraChargeText() or not (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.shadow) end,
     },
     chargeShadowY = {
       type = "range", name = "Shadow Y", min = -20, max = 20, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.shadowOffsetY or -1 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.shadowOffsetY = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadowOffsetY = v end) end,
       order = 138, width = 0.6, hidden = function() return HideAuraChargeText() or not (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.shadow) end,
     },
     
@@ -3889,9 +3928,8 @@ function ns.GetCDMAuraIconsOptionsTable()
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.mode or "anchor" end,
       set = function(_, v)
         ApplyAuraSetting(function(c)
-          if c.chargeText then
-            c.chargeText.mode = v
-          end
+          if not c.chargeText then c.chargeText = {} end
+          c.chargeText.mode = v
         end)
         -- Auto-enable text drag mode when switching to free
         if v == "free" and ns.CDMEnhance and not ns.CDMEnhance.IsTextDragMode() then
@@ -3903,19 +3941,19 @@ function ns.GetCDMAuraIconsOptionsTable()
     chargeAnchor = {
       type = "select", name = "Anchor", values = TEXT_ANCHORS,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and (c.chargeText.anchor or c.chargeText.position) or "BOTTOMRIGHT" end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.anchor = v; c.chargeText.position = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.anchor = v; c.chargeText.position = v end) end,
       order = 141, width = 0.75, hidden = function() return HideAuraChargeText() or (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.mode == "free") end,
     },
     chargeOffsetX = {
       type = "range", name = "X Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.offsetX or -2 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.offsetX = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.offsetX = v end) end,
       order = 142, width = 0.55, hidden = function() return HideAuraChargeText() or (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.mode == "free") end,
     },
     chargeOffsetY = {
       type = "range", name = "Y Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.offsetY or 2 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.chargeText then c.chargeText.offsetY = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.offsetY = v end) end,
       order = 143, width = 0.55, hidden = function() return HideAuraChargeText() or (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.mode == "free") end,
     },
     chargeFreeHint = {
@@ -3952,7 +3990,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "Show custom cooldown timer text",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownText and c.cooldownText.enabled ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.enabled ~= false end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.enabled = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.enabled = v end) end,
       order = 151, width = 0.55, hidden = HideAuraCooldownText,
     },
     cdTextDrag = {
@@ -3965,7 +4003,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     cdSize = {
       type = "range", name = "Size", min = 4, max = 64, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.size or 14 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.size = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.size = v end) end,
       order = 152, width = 0.6, hidden = HideAuraCooldownText,
     },
     cdColor = {
@@ -3976,7 +4014,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 1, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.color = {r=r, g=g, b=b, a=a} end end)
+        ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.color = {r=r, g=g, b=b, a=a} end)
       end,
       order = 153, width = 0.55, hidden = HideAuraCooldownText,
     },
@@ -3984,31 +4022,31 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "select", name = "Font", dialogControl = "LSM30_Font",
       values = LSM and LSM:HashTable("font") or {},
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.font or "Friz Quadrata TT" end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.font = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.font = v end) end,
       order = 154, width = 0.9, hidden = HideAuraCooldownText,
     },
     cdOutline = {
       type = "select", name = "Outline", values = FONT_OUTLINES,
       get = function() local c = GetAuraCfg(); return GetOutlineValue(c and c.cooldownText and c.cooldownText.outline) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.outline = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.outline = v end) end,
       order = 155, width = 0.85, hidden = HideAuraCooldownText,
     },
     cdShadow = {
       type = "toggle", name = "Shadow",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownText and c.cooldownText.shadow end, function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.shadow end) end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.shadow = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadow = v end) end,
       order = 156, width = 0.55, hidden = HideAuraCooldownText,
     },
     cdShadowX = {
       type = "range", name = "Shadow X", min = -20, max = 20, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.shadowOffsetX or 1 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.shadowOffsetX = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadowOffsetX = v end) end,
       order = 157, width = 0.6, hidden = function() return HideAuraCooldownText() or not (GetAuraCfg() and GetAuraCfg().cooldownText and GetAuraCfg().cooldownText.shadow) end,
     },
     cdShadowY = {
       type = "range", name = "Shadow Y", min = -20, max = 20, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.shadowOffsetY or -1 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.shadowOffsetY = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadowOffsetY = v end) end,
       order = 158, width = 0.6, hidden = function() return HideAuraCooldownText() or not (GetAuraCfg() and GetAuraCfg().cooldownText and GetAuraCfg().cooldownText.shadow) end,
     },
     
@@ -4022,9 +4060,8 @@ function ns.GetCDMAuraIconsOptionsTable()
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.mode or "anchor" end,
       set = function(_, v)
         ApplyAuraSetting(function(c)
-          if c.cooldownText then
-            c.cooldownText.mode = v
-          end
+          if not c.cooldownText then c.cooldownText = {} end
+          c.cooldownText.mode = v
         end)
         -- Auto-enable text drag mode when switching to free
         if v == "free" and ns.CDMEnhance and not ns.CDMEnhance.IsTextDragMode() then
@@ -4036,19 +4073,19 @@ function ns.GetCDMAuraIconsOptionsTable()
     cdAnchor = {
       type = "select", name = "Anchor", values = TEXT_ANCHORS,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.anchor or "CENTER" end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.anchor = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.anchor = v end) end,
       order = 161, width = 0.75, hidden = function() return HideAuraCooldownText() or (GetAuraCfg() and GetAuraCfg().cooldownText and GetAuraCfg().cooldownText.mode == "free") end,
     },
     cdOffsetX = {
       type = "range", name = "X Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.offsetX or 0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.offsetX = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.offsetX = v end) end,
       order = 162, width = 0.55, hidden = function() return HideAuraCooldownText() or (GetAuraCfg() and GetAuraCfg().cooldownText and GetAuraCfg().cooldownText.mode == "free") end,
     },
     cdOffsetY = {
       type = "range", name = "Y Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetAuraCfg(); return c and c.cooldownText and c.cooldownText.offsetY or 0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) if c.cooldownText then c.cooldownText.offsetY = v end end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.offsetY = v end) end,
       order = 163, width = 0.55, hidden = function() return HideAuraCooldownText() or (GetAuraCfg() and GetAuraCfg().cooldownText and GetAuraCfg().cooldownText.mode == "free") end,
     },
     cdFreeHint = {
@@ -5417,7 +5454,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Show Range Overlay",
       desc = "Show the out-of-range darkening overlay when spells are out of range",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.rangeIndicator and c.rangeIndicator.enabled ~= false end, function() local c = GetCooldownCfg(); return c and c.rangeIndicator and c.rangeIndicator.enabled ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.rangeIndicator then c.rangeIndicator.enabled = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.rangeIndicator then c.rangeIndicator = {} end; c.rangeIndicator.enabled = v end) end,
       order = 108.1, width = 1.0, hidden = HideCooldownRangeIndicator,
     },
     resetRangeIndicator = {
@@ -5452,7 +5489,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Show Glow",
       desc = "Show the proc glow animation when ability procs",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.procGlow and c.procGlow.enabled ~= false end, function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.enabled ~= false end) end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.enabled = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.enabled = v end) end,
       order = 109.1, width = 0.6, hidden = HideCooldownProcGlow,
     },
     procGlowPreview = {
@@ -5478,7 +5515,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       },
       sorting = {"default", "proc", "pixel", "autocast", "button"},
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.glowType = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.glowType = v end) end,
       order = 109.15, width = 0.8, hidden = HideCooldownProcGlow,
     },
     procGlowColor = {
@@ -5492,12 +5529,11 @@ function ns.GetCDMCooldownIconsOptionsTable()
       end,
       set = function(_, r, g, b)
         ApplyCooldownGlowSetting(function(c)
-          if c.procGlow then 
-            if r == 1 and g == 1 and b == 1 then
-              c.procGlow.color = nil  -- Reset to default
-            else
-              c.procGlow.color = {r=r, g=g, b=b}
-            end
+          if not c.procGlow then c.procGlow = {} end
+          if r == 1 and g == 1 and b == 1 then
+            c.procGlow.color = nil  -- Reset to default
+          else
+            c.procGlow.color = {r=r, g=g, b=b}
           end
         end)
       end,
@@ -5514,7 +5550,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Intensity", min = 0, max = 1.0, step = 0.05,
       desc = "How bright the glow appears",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.alpha or 1.0 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.alpha = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.alpha = v end) end,
       order = 109.25, width = 0.6,
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5528,7 +5564,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Scale", min = 0.25, max = 4.0, step = 0.05,
       desc = "Size of the glow effect",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.scale or 1.0 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.scale = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.scale = v end) end,
       order = 109.3, width = 0.55, 
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5542,7 +5578,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Speed", min = 0.05, max = 1.0, step = 0.05,
       desc = "Animation speed (Pixel, AutoCast, Button only)",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.speed or 0.25 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.speed = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.speed = v end) end,
       order = 109.35, width = 0.55,
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5556,7 +5592,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Lines", min = 1, max = 16, step = 1,
       desc = "Number of glow lines",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.lines or 8 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.lines = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.lines = v end) end,
       order = 109.4, width = 0.6,
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5570,7 +5606,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Thickness", min = 1, max = 10, step = 0.5,
       desc = "Thickness of glow lines",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.thickness or 2 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.thickness = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.thickness = v end) end,
       order = 109.45, width = 0.65,
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5584,7 +5620,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Particles", min = 1, max = 16, step = 1,
       desc = "Number of sparkle groups",
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.particles or 4 end,
-      set = function(_, v) ApplyCooldownGlowSetting(function(c) if c.procGlow then c.procGlow.particles = v end end) end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.particles = v end) end,
       order = 109.5, width = 0.6,
       hidden = function()
         if HideCooldownProcGlow() then return true end
@@ -5711,21 +5747,21 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Finish Flash",
       desc = "Flash when cooldown finishes",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showBling = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showBling = v end) end,
       order = 120.2, width = 0.7, hidden = HideCooldownCooldownSwipe,
     },
     noGCDSwipe = {
       type = "toggle", name = "No GCD",
       desc = "Hide GCD swipes (cooldowns 1.5s or less). Only shows the swipe animation for actual spell cooldowns.",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe or false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.noGCDSwipe = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.noGCDSwipe = v end) end,
       order = 120.3, width = 0.5, hidden = HideCooldownCooldownSwipe,
     },
     swipeWaitForNoCharges = {
       type = "toggle", name = "Wait No Charges",
       desc = "For charge spells: Only show swipe when ALL charges are consumed. When disabled, shows swipe during any charge recharge.",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges or false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeWaitForNoCharges = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeWaitForNoCharges = v end) end,
       order = 120.4, width = 0.7, hidden = HideCooldownCooldownSwipe,
     },
     
@@ -5741,14 +5777,14 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "The darkening clock animation overlay",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showSwipe = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showSwipe = v end) end,
       order = 121.1, width = 0.4, hidden = HideCooldownCooldownSwipe,
     },
     reverseSwipe = {
       type = "toggle", name = "Reverse",
       desc = "Reverse the swipe direction",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverse end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.reverse end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.reverse = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.reverse = v end) end,
       order = 121.2, width = 0.5, hidden = HideCooldownCooldownSwipe,
     },
     useCustomSwipeColor = {
@@ -5757,12 +5793,11 @@ function ns.GetCDMCooldownIconsOptionsTable()
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end) end,
       set = function(_, v)
         ApplySharedCooldownSetting(function(c)
-          if c.cooldownSwipe then
-            if v then
-              c.cooldownSwipe.swipeColor = {r=0, g=0, b=0, a=0.8}
-            else
-              c.cooldownSwipe.swipeColor = nil
-            end
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          if v then
+            c.cooldownSwipe.swipeColor = {r=0, g=0, b=0, a=0.8}
+          else
+            c.cooldownSwipe.swipeColor = nil
           end
         end)
       end,
@@ -5777,7 +5812,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return col.r or 0, col.g or 0, col.b or 0, col.a or 0.8
       end,
       set = function(_, r, g, b, a)
-        ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeColor = {r=r, g=g, b=b, a=a} end end)
+        ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeColor = {r=r, g=g, b=b, a=a} end)
       end,
       order = 121.4, width = 0.3,
       hidden = function()
@@ -5791,7 +5826,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "Inset", min = -20, max = 40, step = 1,
       desc = "Inset for the swipe animation (all sides). Positive = smaller, negative = larger.",
       get = function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInset or 0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInset = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInset = v end) end,
       order = 121.5, width = 0.7,
       hidden = function()
         if HideCooldownCooldownSwipe() then return true end
@@ -5803,14 +5838,14 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "W/H",
       desc = "Enable separate Width and Height insets instead of a single inset",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.separateInsets = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.separateInsets = v end) end,
       order = 121.6, width = 0.35, hidden = HideCooldownCooldownSwipe,
     },
     swipeInsetX = {
       type = "range", name = "Inset W", min = -20, max = 40, step = 1,
       desc = "Horizontal inset (left/right). Positive = narrower, negative = wider.",
       get = function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInsetX or 0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInsetX = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInsetX = v end) end,
       order = 121.7, width = 0.55,
       hidden = function()
         if HideCooldownCooldownSwipe() then return true end
@@ -5822,7 +5857,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "range", name = "H", min = -20, max = 40, step = 1,
       desc = "Vertical inset (top/bottom). Positive = shorter, negative = taller.",
       get = function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeInsetY or 0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.swipeInsetY = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeInsetY = v end) end,
       order = 121.8, width = 0.45,
       hidden = function()
         if HideCooldownCooldownSwipe() then return true end
@@ -5843,14 +5878,14 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "The spinning bright line on the cooldown edge",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.showEdge = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showEdge = v end) end,
       order = 122.1, width = 0.4, hidden = HideCooldownCooldownSwipe,
     },
     edgeScale = {
       type = "range", name = "Scale", min = 0.1, max = 3.0, step = 0.1,
       desc = "Size of the cooldown edge spinner",
       get = function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeScale or 1.0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.edgeScale = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeScale = v end) end,
       order = 122.2, width = 0.6, hidden = HideCooldownCooldownSwipe,
     },
     edgeColorEnabled = {
@@ -5859,13 +5894,12 @@ function ns.GetCDMCooldownIconsOptionsTable()
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.edgeColor ~= nil end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeColor ~= nil end) end,
       set = function(_, v)
         ApplySharedCooldownSetting(function(c) 
-          if c.cooldownSwipe then 
-            if v then
-              c.cooldownSwipe.edgeColor = {r=1, g=1, b=1, a=1}
-            else
-              c.cooldownSwipe.edgeColor = nil
-            end
-          end 
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          if v then
+            c.cooldownSwipe.edgeColor = {r=1, g=1, b=1, a=1}
+          else
+            c.cooldownSwipe.edgeColor = nil
+          end
         end)
       end,
       order = 122.3, width = 0.4, hidden = HideCooldownCooldownSwipe,
@@ -5879,7 +5913,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 1, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplySharedCooldownSetting(function(c) if c.cooldownSwipe then c.cooldownSwipe.edgeColor = {r=r, g=g, b=b, a=a} end end)
+        ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeColor = {r=r, g=g, b=b, a=a} end)
       end,
       order = 122.4, width = 0.3,
       hidden = function()
@@ -5921,7 +5955,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     chargeEnabled = {
       type = "toggle", name = "Show",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.chargeText and c.chargeText.enabled ~= false end, function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.enabled ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.enabled = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.enabled = v end) end,
       order = 131, width = 0.55, hidden = HideCooldownChargeText,
     },
     chargeTextDrag = {
@@ -5934,7 +5968,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     chargeSize = {
       type = "range", name = "Size", min = 4, max = 64, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.size or 16 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.size = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.size = v end) end,
       order = 132, width = 0.6, hidden = HideCooldownChargeText,
     },
     chargeColor = {
@@ -5945,7 +5979,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 0, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.color = {r=r, g=g, b=b, a=a} end end)
+        ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.color = {r=r, g=g, b=b, a=a} end)
       end,
       order = 133, width = 0.55, hidden = HideCooldownChargeText,
     },
@@ -5953,31 +5987,31 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "select", name = "Font", dialogControl = "LSM30_Font",
       values = LSM and LSM:HashTable("font") or {},
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.font or "Friz Quadrata TT" end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.font = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.font = v end) end,
       order = 134, width = 0.9, hidden = HideCooldownChargeText,
     },
     chargeOutline = {
       type = "select", name = "Outline", values = FONT_OUTLINES,
       get = function() local c = GetCooldownCfg(); return GetOutlineValue(c and c.chargeText and c.chargeText.outline) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.outline = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.outline = v end) end,
       order = 135, width = 0.85, hidden = HideCooldownChargeText,
     },
     chargeShadow = {
       type = "toggle", name = "Shadow",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.chargeText and c.chargeText.shadow end, function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.shadow end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.shadow = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadow = v end) end,
       order = 136, width = 0.55, hidden = HideCooldownChargeText,
     },
     chargeShadowX = {
       type = "range", name = "Shadow X", min = -20, max = 20, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.shadowOffsetX or 1 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.shadowOffsetX = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadowOffsetX = v end) end,
       order = 137, width = 0.55, hidden = function() return HideCooldownChargeText() or not (GetCooldownCfg() and GetCooldownCfg().chargeText and GetCooldownCfg().chargeText.shadow) end,
     },
     chargeShadowY = {
       type = "range", name = "Shadow Y", min = -20, max = 20, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.shadowOffsetY or -1 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.shadowOffsetY = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.shadowOffsetY = v end) end,
       order = 138, width = 0.55, hidden = function() return HideCooldownChargeText() or not (GetCooldownCfg() and GetCooldownCfg().chargeText and GetCooldownCfg().chargeText.shadow) end,
     },
     
@@ -5991,9 +6025,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.mode or "anchor" end,
       set = function(_, v)
         ApplySharedCooldownSetting(function(c)
-          if c.chargeText then
-            c.chargeText.mode = v
-          end
+          if not c.chargeText then c.chargeText = {} end
+          c.chargeText.mode = v
         end)
         -- Auto-enable text drag mode when switching to free
         if v == "free" and ns.CDMEnhance and not ns.CDMEnhance.IsTextDragMode() then
@@ -6005,19 +6038,19 @@ function ns.GetCDMCooldownIconsOptionsTable()
     chargeAnchor = {
       type = "select", name = "Anchor", values = TEXT_ANCHORS,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and (c.chargeText.anchor or c.chargeText.position) or "BOTTOMRIGHT" end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.anchor = v; c.chargeText.position = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.anchor = v; c.chargeText.position = v end) end,
       order = 141, width = 0.75, hidden = function() return HideCooldownChargeText() or (GetCooldownCfg() and GetCooldownCfg().chargeText and GetCooldownCfg().chargeText.mode == "free") end,
     },
     chargeOffsetX = {
       type = "range", name = "X Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.offsetX or -2 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.offsetX = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.offsetX = v end) end,
       order = 142, width = 0.55, hidden = function() return HideCooldownChargeText() or (GetCooldownCfg() and GetCooldownCfg().chargeText and GetCooldownCfg().chargeText.mode == "free") end,
     },
     chargeOffsetY = {
       type = "range", name = "Y Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.chargeText and c.chargeText.offsetY or 2 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.chargeText then c.chargeText.offsetY = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.offsetY = v end) end,
       order = 143, width = 0.55, hidden = function() return HideCooldownChargeText() or (GetCooldownCfg() and GetCooldownCfg().chargeText and GetCooldownCfg().chargeText.mode == "free") end,
     },
     chargeFreeHint = {
@@ -6058,7 +6091,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "toggle", name = "Show",
       desc = "Show custom cooldown timer text",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownText and c.cooldownText.enabled ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.enabled ~= false end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.enabled = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.enabled = v end) end,
       order = 151, width = 0.55, hidden = HideCooldownCooldownText,
     },
     cdTextDrag = {
@@ -6071,7 +6104,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     cdSize = {
       type = "range", name = "Size", min = 4, max = 64, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.size or 14 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.size = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.size = v end) end,
       order = 152, width = 0.6, hidden = HideCooldownCooldownText,
     },
     cdColor = {
@@ -6082,7 +6115,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return col.r or 1, col.g or 1, col.b or 1, col.a or 1
       end,
       set = function(_, r, g, b, a)
-        ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.color = {r=r, g=g, b=b, a=a} end end)
+        ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.color = {r=r, g=g, b=b, a=a} end)
       end,
       order = 153, width = 0.55, hidden = HideCooldownCooldownText,
     },
@@ -6090,31 +6123,31 @@ function ns.GetCDMCooldownIconsOptionsTable()
       type = "select", name = "Font", dialogControl = "LSM30_Font",
       values = LSM and LSM:HashTable("font") or {},
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.font or "Friz Quadrata TT" end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.font = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.font = v end) end,
       order = 154, width = 0.9, hidden = HideCooldownCooldownText,
     },
     cdOutline = {
       type = "select", name = "Outline", values = FONT_OUTLINES,
       get = function() local c = GetCooldownCfg(); return GetOutlineValue(c and c.cooldownText and c.cooldownText.outline) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.outline = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.outline = v end) end,
       order = 155, width = 0.85, hidden = HideCooldownCooldownText,
     },
     cdShadow = {
       type = "toggle", name = "Shadow",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownText and c.cooldownText.shadow end, function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.shadow end) end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.shadow = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadow = v end) end,
       order = 156, width = 0.55, hidden = HideCooldownCooldownText,
     },
     cdShadowX = {
       type = "range", name = "Shadow X", min = -20, max = 20, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.shadowOffsetX or 1 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.shadowOffsetX = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadowOffsetX = v end) end,
       order = 157, width = 0.55, hidden = function() return HideCooldownCooldownText() or not (GetCooldownCfg() and GetCooldownCfg().cooldownText and GetCooldownCfg().cooldownText.shadow) end,
     },
     cdShadowY = {
       type = "range", name = "Shadow Y", min = -20, max = 20, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.shadowOffsetY or -1 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.shadowOffsetY = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.shadowOffsetY = v end) end,
       order = 158, width = 0.55, hidden = function() return HideCooldownCooldownText() or not (GetCooldownCfg() and GetCooldownCfg().cooldownText and GetCooldownCfg().cooldownText.shadow) end,
     },
     
@@ -6128,9 +6161,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.mode or "anchor" end,
       set = function(_, v)
         ApplySharedCooldownSetting(function(c)
-          if c.cooldownText then
-            c.cooldownText.mode = v
-          end
+          if not c.cooldownText then c.cooldownText = {} end
+          c.cooldownText.mode = v
         end)
         -- Auto-enable text drag mode when switching to free
         if v == "free" and ns.CDMEnhance and not ns.CDMEnhance.IsTextDragMode() then
@@ -6142,19 +6174,19 @@ function ns.GetCDMCooldownIconsOptionsTable()
     cdAnchor = {
       type = "select", name = "Anchor", values = TEXT_ANCHORS,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.anchor or "CENTER" end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.anchor = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.anchor = v end) end,
       order = 161, width = 0.75, hidden = function() return HideCooldownCooldownText() or (GetCooldownCfg() and GetCooldownCfg().cooldownText and GetCooldownCfg().cooldownText.mode == "free") end,
     },
     cdOffsetX = {
       type = "range", name = "X Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.offsetX or 0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.offsetX = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.offsetX = v end) end,
       order = 162, width = 0.55, hidden = function() return HideCooldownCooldownText() or (GetCooldownCfg() and GetCooldownCfg().cooldownText and GetCooldownCfg().cooldownText.mode == "free") end,
     },
     cdOffsetY = {
       type = "range", name = "Y Offset", min = -100, max = 100, step = 1,
       get = function() local c = GetCooldownCfg(); return c and c.cooldownText and c.cooldownText.offsetY or 0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) if c.cooldownText then c.cooldownText.offsetY = v end end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownText then c.cooldownText = {} end; c.cooldownText.offsetY = v end) end,
       order = 163, width = 0.55, hidden = function() return HideCooldownCooldownText() or (GetCooldownCfg() and GetCooldownCfg().cooldownText and GetCooldownCfg().cooldownText.mode == "free") end,
     },
     cdFreeHint = {

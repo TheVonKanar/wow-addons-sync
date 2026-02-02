@@ -725,8 +725,12 @@ local function AssignFrameToFree(cdID, frame, x, y, iconSize, viewerType, viewer
     frame:SetSize(iconSize, iconSize)
     frame:ClearAllPoints()
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
-    frame:SetAlpha(1)
-    frame:Show()
+    
+    -- Only show if not hidden due to hideWhenUnequipped setting
+    if not frame._arcHiddenUnequipped then
+        frame:SetAlpha(1)
+        frame:Show()
+    end
     
     -- Install frame hooks (generic hooks for position/scale/size/strata)
     InstallFrameHooks(frame)
@@ -1177,7 +1181,7 @@ local function Reconcile()
                 
                 -- CRITICAL: Re-apply drag handlers for all managed frames during talent/spec changes
                 -- CDM may have reset frame scripts, so we need to re-setup drag
-                if ns.CDMGroups.dragModeEnabled then
+                if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() then
                     -- Check if this is in a group
                     for groupName, group in pairs(ns.CDMGroups.groups or {}) do
                         if group.members and group.members[cdID] then
@@ -1484,7 +1488,7 @@ local function Reconcile()
     
     -- CRITICAL: Refresh drag handlers after reconcile if drag mode is enabled
     -- This ensures all icons (including newly assigned ones) have working drag
-    if ns.CDMGroups.dragModeEnabled then
+    if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() then
         -- Slight delay to let frames fully settle
         C_Timer.After(0.1, function()
             if not state.isProcessing then
@@ -1569,7 +1573,7 @@ local function Reconcile()
                         InstallFrameHooks(frame)
                         
                         -- CRITICAL: Re-enable drag handlers if drag mode is active
-                        if ns.CDMGroups.dragModeEnabled and group.SetupMemberDrag then
+                        if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() and group.SetupMemberDrag then
                             group:SetupMemberDrag(cdID)
                             frame:EnableMouse(true)
                         end
@@ -1601,7 +1605,7 @@ local function Reconcile()
                     InstallFrameHooks(frame)
                     
                     -- CRITICAL: Re-enable drag handlers if drag mode is active
-                    if ns.CDMGroups.dragModeEnabled and ns.CDMGroups.SetupFreeIconDrag then
+                    if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() and ns.CDMGroups.SetupFreeIconDrag then
                         ns.CDMGroups.SetupFreeIconDrag(cdID)
                     end
                     
@@ -1765,7 +1769,7 @@ local function Reconcile()
                             InstallFrameHooks(cdmFrame)
                             
                             -- CRITICAL: Re-enable drag handlers if drag mode is active
-                            if ns.CDMGroups.dragModeEnabled and group.SetupMemberDrag then
+                            if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() and group.SetupMemberDrag then
                                 group:SetupMemberDrag(cdID)
                                 cdmFrame:EnableMouse(true)
                             end
@@ -1791,7 +1795,7 @@ local function Reconcile()
                         InstallFrameHooks(cdmFrame)
                         
                         -- CRITICAL: Re-enable drag handlers if drag mode is active
-                        if ns.CDMGroups.dragModeEnabled and ns.CDMGroups.SetupFreeIconDrag then
+                        if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() and ns.CDMGroups.SetupFreeIconDrag then
                             ns.CDMGroups.SetupFreeIconDrag(cdID)
                         end
                         
@@ -1922,13 +1926,16 @@ local function Reconcile()
         -- Free icons: position them at their saved coordinates
         for cdID, freeData in pairs(ns.CDMGroups.freeIcons or {}) do
             if freeData.frame and freeData.x and freeData.y then
-                freeData.frame:ClearAllPoints()
-                freeData.frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x, freeData.y)
-                freeData.frame:SetParent(UIParent)
-                freeData.frame:SetFrameStrata("MEDIUM")
-                freeData.frame:SetScale(1)
-                freeData.frame:SetAlpha(1)
-                freeData.frame:Show()
+                -- Skip frames hidden due to hideWhenUnequipped setting
+                if not freeData.frame._arcHiddenUnequipped then
+                    freeData.frame:ClearAllPoints()
+                    freeData.frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x, freeData.y)
+                    freeData.frame:SetParent(UIParent)
+                    freeData.frame:SetFrameStrata("MEDIUM")
+                    freeData.frame:SetScale(1)
+                    freeData.frame:SetAlpha(1)
+                    freeData.frame:Show()
+                end
             end
         end
         
@@ -2517,7 +2524,10 @@ VisualMaintainer:SetScript("OnUpdate", function(self, elapsed)
                                         ns.CDMEnhance.ApplyIconVisuals(frame)
                                     end
                                     
-                                    -- CRITICAL: Setup drag handlers when drag mode is enabled
+                                    -- CRITICAL: Setup drag handlers ONLY when dragModeEnabled is true
+                                    -- Do NOT use ShouldAllowDrag() because it uses cached panel state
+                                    -- which can be stale for 0.25s after panel closes, causing the
+                                    -- visual maintainer to re-enable mouse and undo click-through!
                                     if ns.CDMGroups.dragModeEnabled then
                                         -- Apply mouse state (handles click-through logic too)
                                         if ns.CDMEnhance.ApplyFrameMouseState then
@@ -2671,7 +2681,9 @@ VisualMaintainer:SetScript("OnUpdate", function(self, elapsed)
                     ns.CDMEnhance.ApplyIconVisuals(frame)
                 end
                 
-                -- Setup drag for free icons if drag mode enabled
+                -- Setup drag for free icons ONLY when dragModeEnabled is true
+                -- Do NOT use ShouldAllowDrag() because it uses cached panel state
+                -- which can be stale for 0.25s after panel closes
                 if ns.CDMGroups.dragModeEnabled then
                     -- Apply mouse state (handles click-through logic too)
                     if ns.CDMEnhance.ApplyFrameMouseState then
@@ -2804,7 +2816,7 @@ end
 -- Refresh drag handlers on all icons (like toggling Edit Mode off/on)
 -- Call this after CDM changes if drag handlers stop working
 local function RefreshDragHandlers()
-    if not ns.CDMGroups.dragModeEnabled then return end
+    if not (ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag()) then return end
     
     Debug("RefreshDragHandlers: Re-applying drag handlers to all icons")
     

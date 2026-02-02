@@ -179,10 +179,10 @@ function addonTable.Display.ManagerMixin:OnLoad()
             locked = false
           end)
           hooksecurefunc(nameplate.UnitFrame.AurasFrame, "RefreshAuras", function(af, data)
-            if not af:IsForbidden() and data then
+            if not af:IsForbidden() then
               local display = self.nameplateDisplays[af:GetParent().unit]
               if display and display.unit then
-                display.AurasManager:OnEvent("", "", data)
+                display.AurasManager:OnEvent("", "", data or {isFullUpdate = true})
               end
             end
           end)
@@ -413,17 +413,19 @@ function addonTable.Display.ManagerMixin:UpdateInstanceShowState()
     return
   end
 
+  local relevantInstance = addonTable.Display.Utilities.IsInRelevantInstance()
+
   if state == "name_only" and C_CVar.GetCVarInfo("nameplateShowOnlyNameForFriendlyPlayerUnits") then
-    C_CVar.SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", "1")
+    C_CVar.SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", relevantInstance and "1" or "0")
   end
   if state == "name_only" and C_CVar.GetCVarInfo("nameplateUseClassColorForFriendlyPlayerUnitNames") then
-    C_CVar.SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", "1")
+    C_CVar.SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", relevantInstance and "1" or "0")
   end
 
   local values = GetCVarsForNameplates()
   local currentShow = addonTable.Config.Get(addonTable.Config.Options.SHOW_NAMEPLATES)
 
-  if addonTable.Display.Utilities.IsInRelevantInstance() then
+  if relevantInstance then
     if not self.toggledFriendly and
       (state == "name_only" and not currentShow.friendlyPlayer
       or state == "never" and (currentShow.friendlyPlayer or currentShow.friendlyNPC)
