@@ -1,9 +1,8 @@
 ## Interface: 120000, 120001
 ## Title: Arc UI
-## Notes: Buff/Debuff stack tracking bars, icons, resource bars, and cooldown bars with CD Manager integration
+## Notes: Buff/Debuff stack tracking bars, icons, resource bars, cooldown bars, and timer bars with CD Manager integration
 ## Author: Arc
-## Version: 3.4.3
-
+## Version: 3.4.9.b
 ## SavedVariables: ArcUIDB, ArcUI_CDMEnhance_Debug
 
 
@@ -43,14 +42,15 @@ ArcUI_TalentPicker.lua
 # Main Options (creates AceDB)
 ArcUI_Options.lua
 
-# Data Repair (runs after AceDB init, fixes corrupted SavedVariables)
-#ArcUI_DataRepair.lua
+
 
 # Options Panels
 ArcUI_TrackingOptions.lua
-ArcUI_ResourceOptions.lua
+#ArcUI_ResourceOptions.lua
 ArcUI_AppearanceOptions.lua
 ArcUI_CooldownBarOptions.lua
+#ArcUI_TimerBars.lua
+ArcUI_TimerBarOptions.lua
 ArcUI_CustomOptions.lua
 
 # Bars Import/Export
@@ -63,6 +63,8 @@ ArcUI_Bars_ImportExport.lua
 CDM_Module\ArcUI_CDM_Shared.lua
 CDM_Module\CDM_Enhance\ArcUI_CDMEnhance.lua
 CDM_Module\CDM_Enhance\ArcUI_CooldownState.lua 
+CDM_Module\CDM_Enhance\ArcUI_Keybinds.lua
+CDM_Module\CDM_Enhance\ArcUI_CustomLabel.lua
 CDM_Module\CDM_Enhance\ArcUI_Masque.lua
 
 # CDM Groups Registry (frame tracking - must load before CDMGroups)
@@ -81,6 +83,7 @@ CDM_Module\CDM_Groups\ArcUI_CDMGroups_Integration.lua
 
 # Arc Auras - Custom Item/Spell Tracking (uses Integration API)
 CDM_Module\Arc_Auras\ArcUI_ArcAuras.lua
+#CDM_Module\Arc_Auras\ArcUI_ArcAurasCooldown.lua
 CDM_Module\Arc_Auras\ArcUI_ArcAuras_Options.lua
 
 # Edit Mode Containers - LibEQOL-based positioning (replaces CDMContainerSync)
@@ -88,6 +91,8 @@ CDM_Module\ArcUI_EditModeContainers.lua
 
 CDM_Module\ArcUI_CDMSetup.lua
 CDM_Module\ArcUI_CDM_ImportExport.lua
+#CDM_Module\ArcUI_CDM_MasterExport.lua
 # CDM Options Panels
 CDM_Module\CDM_Groups\ArcUI_CDMGroupsOptions.lua
 CDM_Module\CDM_Enhance\ArcUI_CDMEnhanceOptions.lua
+CDM_Module\CDM_Enhance\ArcUI_CustomLabelOptions.lua

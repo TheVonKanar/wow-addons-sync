@@ -153,6 +153,8 @@ L["chat_commands_test"] = "Emula una sesión de botín con # objetos, 1 si se om
 L["chat_commands_trade"] = "Abre la interfaz de transferencias"
 L["chat_commands_version"] = "Abre el verificador de versión (alt. 'v' o 'ver')"
 L["chat_commands_whisper"] = "Muestra la ayuda de los comandos por susurro"
+--[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
 L["chatCommand_stop_error_notHandlingLoot"] = "No se puede detener: no se está administrando el botín."
 L["Check this to loot the items and distribute them later."] = "Marca esto para despojar los objetos y repartirlos más tarde."
 L["Check to append the realmname of a player from another realm"] = "Marca esto para añadir el nombre del reino de un jugador de otro reino"
@@ -339,6 +341,8 @@ L["opt_autoGroupLoot_desc"] = "Cuando está habilitado, RCLootCouncil hará clic
 L["opt_autoGroupLoot_name"] = "Botín de grupo automático"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Cuando está habilitado, RCLootCouncil solo hará un pase automático de botín grupal cuando estés en un grupo de hermandad."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Solo grupos de hermandad"
+--[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
 L["opt_autoPassWeapons_desc"] = "Marque para habilitar el paso automático de armas que no tienen la estadística principal de tu clase."
 L["opt_autoPassWeapons_name"] = "Pasar automáticamente armas"
 L["opt_autoTrade_desc"] = "Marque para agregar automáticamente los objetos otorgados a la ventana de intercambio cuando intercambie con el ganador. Si está deshabilitado, verá una ventana emergente antes de agregar elementos."
@@ -394,6 +398,8 @@ L["options_requireNotes_desc"] = "Si está habilitado, los candidatos no pueden 
 L["Original Owner"] = "Propietario original"
 L["Out of instance"] = "Fuera de instancia"
 L["Patch"] = "Parche"
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 L["Personal Loot - Non tradeable"] = "Botín personal: no intercambiable"
 L["Personal Loot - Rejected Trade"] = "Botín personal - Comercio rechazado"
 L["'player' can't receive 'type'"] = "%s no puede recibir %s - ¿discrepancia de versión?"

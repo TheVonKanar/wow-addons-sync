@@ -1,7 +1,9 @@
 # Sensei Class Resource Bar
 
-## [1.4.8](https://github.com/Snsei987/SenseiClassResourceBar/tree/1.4.8) (2026-01-31)
-[Full Changelog](https://github.com/Snsei987/SenseiClassResourceBar/compare/1.4.7...1.4.8) [Previous Releases](https://github.com/Snsei987/SenseiClassResourceBar/releases)
+## [1.5.7](https://github.com/Snsei987/SenseiClassResourceBar/tree/1.5.7) (2026-02-10)
+[Full Changelog](https://github.com/Snsei987/SenseiClassResourceBar/compare/1.5.6...1.5.7) [Previous Releases](https://github.com/Snsei987/SenseiClassResourceBar/releases)
 
-- Remove debug print  
-- Fix Whirlwind bar showing without correct talent  
+- Allow translations for dropdown values  
+- Fix min. width slider not disabled if manual width mode  
+- Another try at pixel perfect... fixes #95  
+- Less memory usage, #102  

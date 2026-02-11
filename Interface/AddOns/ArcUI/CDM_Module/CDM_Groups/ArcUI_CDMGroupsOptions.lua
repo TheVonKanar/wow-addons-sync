@@ -153,6 +153,12 @@ local function GetOptionsTable()
         return not GetSelectedGroup()
     end
     
+    -- Helper for fine tuning mode
+    local function IsFineTuning()
+        local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+        return db and db.fineTuningLayout
+    end
+    
     -- Build group dropdown values (from runtime groups primarily)
     local function GetGroupValues()
         local values = {}
@@ -489,7 +495,7 @@ local function GetOptionsTable()
                 type = "execute",
                 name = "|cff88ff88+ Default Groups|r",
                 desc = "Create the 3 default groups (Buffs, Essential, Utility) if they don't exist.\n\nThis does NOT delete any existing groups or positions.",
-                order = 0.7,
+                order = 22.5,
                 width = 0.85,
                 func = function()
                     if InCombatLockdown() then
@@ -566,6 +572,35 @@ local function GetOptionsTable()
                     if not db then return end
                     db.showControlButtons = val
                     ns.CDMGroups.UpdateGroupSelectionVisuals()
+                end,
+            },
+            showDragHandle = {
+                type = "toggle",
+                name = "Show Drag Handle",
+                desc = "Show the drag handle icon on groups when in edit mode. You can still move groups via the Edit Mode overlay even with this hidden.",
+                order = 1.65,
+                width = 0.9,
+                get = function()
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if not db then return true end
+                    local val = db.showDragHandle
+                    if val == nil then return true end
+                    return val
+                end,
+                set = function(_, val)
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if not db then return end
+                    db.showDragHandle = val
+                    -- Immediately show/hide drag handles on all groups
+                    for _, group in pairs(ns.CDMGroups.groups or {}) do
+                        if group.container and group.container.dragToggleBtn then
+                            if val and ns.CDMGroups.dragModeEnabled then
+                                group.container.dragToggleBtn:Show()
+                            else
+                                group.container.dragToggleBtn:Hide()
+                            end
+                        end
+                    end
                 end,
             },
             showPlaceholders = {
@@ -1608,8 +1643,6 @@ local function GetOptionsTable()
                         -- Remap alignment BEFORE SetGridSize (which calls Layout internally)
                         RemapAlignmentBeforeResize(g, oldRows, oldCols, val, oldCols)
                         g:SetGridSize(val, oldCols)
-                        local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
-                        if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
                     end
                 end,
             },
@@ -1633,8 +1666,6 @@ local function GetOptionsTable()
                         -- Remap alignment BEFORE SetGridSize (which calls Layout internally)
                         RemapAlignmentBeforeResize(g, oldRows, oldCols, oldRows, val)
                         g:SetGridSize(oldRows, val)
-                        local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
-                        if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
                     end
                 end,
             },
@@ -1726,10 +1757,10 @@ local function GetOptionsTable()
             containerPadding = {
                 type = "range",
                 name = "Container Padding",
-                desc = "Space around icons inside the container. 0 = icons touch border, 4 = compact, 8 = classic with border room.",
+                desc = "Space around icons inside the container.\n\n|cffffd700-6|r = Tight (Masque-friendly)\n|cffffd7000|r = Compact\n|cffffd7004|r = Default\n|cffffd7008+|r = Spacious",
                 order = 35,
                 width = 1.0,
-                min = 0,
+                min = -6,
                 max = 12,
                 step = 1,
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
@@ -1756,7 +1787,7 @@ local function GetOptionsTable()
                 name = "Dynamic Layout",
                 desc = "Automatically compacts icons together with no gaps. Uses alignment setting to control positioning direction. When disabled, icons stay at their assigned grid positions.",
                 order = 36,
-                width = 0.7,
+                width = 1.0,
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
                 get = function()
                     local g = GetSelectedGroup()
@@ -1880,7 +1911,7 @@ local function GetOptionsTable()
                 name = "Dynamic Auras",
                 desc = "When enabled, aura icons without an active buff/debuff/totem don't occupy space in the group. The remaining icons (cooldowns + active auras) compact together. Only affects aura icons - cooldowns always take space. Requires Dynamic Layout enabled.",
                 order = 36.7,
-                width = 0.7,
+                width = 1.0,
                 hidden = function() 
                     local g = GetSelectedGroup()
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
@@ -1974,6 +2005,38 @@ local function GetOptionsTable()
                     end
                 end,
             },
+            dynamicContainerSize = {
+                type = "toggle",
+                name = "Dynamic Container",
+                desc = "When enabled, the group container shrinks to fit only the visible icons. When disabled, container stays at full grid size. Only applies when Dynamic Layout is enabled and options panel is closed.",
+                order = 36.8,
+                width = 1.0,
+                hidden = function() 
+                    local g = GetSelectedGroup()
+                    return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    if not g then return false end
+                    return g.dynamicContainerSize or false
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if g then
+                        g.dynamicContainerSize = val
+                        local db = g.getDB and g.getDB()
+                        if db then
+                            db.dynamicContainerSize = val
+                        end
+                        -- Trigger layout refresh
+                        g:Layout()
+                        -- Trigger auto-save to linked template
+                        if ns.CDMGroups.TriggerTemplateAutoSave then
+                            ns.CDMGroups.TriggerTemplateAutoSave()
+                        end
+                    end
+                end,
+            },
             
             -- LAYOUT SETTINGS SECTION
             layoutHeader = {
@@ -1986,6 +2049,23 @@ local function GetOptionsTable()
                 get = function() return not collapsedSections.layout end,
                 set = function(_, v) collapsedSections.layout = not v end,
             },
+            fineTuningLayout = {
+                type = "toggle",
+                name = "Fine Tuning",
+                desc = "Switch to direct input boxes for pixel-precise width, height, and spacing values.",
+                order = 40.5,
+                width = 0.75,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout end,
+                get = function()
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    return db and db.fineTuningLayout
+                end,
+                set = function(_, val)
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if db then db.fineTuningLayout = val end
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            },
             iconSize = {
                 type = "range",
                 name = "Scale",
@@ -1993,7 +2073,7 @@ local function GetOptionsTable()
                 order = 41,
                 min = 16, max = 128, step = 1,
                 width = 0.7,
-                hidden = function() return HideIfNoGroup() or collapsedSections.layout end,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or IsFineTuning() end,
                 get = function()
                     local g = GetSelectedGroup()
                     return g and g.layout.iconSize or 36
@@ -2003,6 +2083,24 @@ local function GetOptionsTable()
                     if g then g:SetIconSize(val) end
                 end,
             },
+            iconSizeInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "Scale",
+                desc = "Scale factor for icons (type exact value)",
+                order = 41,
+                width = 0.4,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.layout.iconSize or 36)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetIconSize(num) end
+                end,
+            },
             iconWidth = {
                 type = "range",
                 name = "Width",
@@ -2010,7 +2108,7 @@ local function GetOptionsTable()
                 order = 41.1,
                 min = 8, max = 128, step = 1,
                 width = 0.55,
-                hidden = function() return HideIfNoGroup() or collapsedSections.layout end,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or IsFineTuning() end,
                 get = function()
                     local g = GetSelectedGroup()
                     return g and g.layout.iconWidth or 36
@@ -2020,6 +2118,24 @@ local function GetOptionsTable()
                     if g then g:SetIconWidth(val) end
                 end,
             },
+            iconWidthInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "Width",
+                desc = "Base icon width in pixels (type exact value)",
+                order = 41.1,
+                width = 0.4,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.layout.iconWidth or 36)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetIconWidth(num) end
+                end,
+            },
             iconHeight = {
                 type = "range",
                 name = "Height",
@@ -2027,7 +2143,7 @@ local function GetOptionsTable()
                 order = 41.2,
                 min = 8, max = 128, step = 1,
                 width = 0.55,
-                hidden = function() return HideIfNoGroup() or collapsedSections.layout end,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or IsFineTuning() end,
                 get = function()
                     local g = GetSelectedGroup()
                     return g and g.layout.iconHeight or 36
@@ -2035,6 +2151,24 @@ local function GetOptionsTable()
                 set = function(_, val)
                     local g = GetSelectedGroup()
                     if g then g:SetIconHeight(val) end
+                end,
+            },
+            iconHeightInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "Height",
+                desc = "Base icon height in pixels (type exact value)",
+                order = 41.2,
+                width = 0.4,
+                hidden = function() return HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.layout.iconHeight or 36)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetIconHeight(num) end
                 end,
             },
             spacing = {
@@ -2045,7 +2179,7 @@ local function GetOptionsTable()
                 min = -20, max = 50, step = 0.5,
                 width = 0.8,
                 hidden = function() 
-                    if HideIfNoGroup() or collapsedSections.layout then return true end
+                    if HideIfNoGroup() or collapsedSections.layout or IsFineTuning() then return true end
                     local g = GetSelectedGroup()
                     return g and g.layout.separateSpacing
                 end,
@@ -2056,6 +2190,28 @@ local function GetOptionsTable()
                 set = function(_, val)
                     local g = GetSelectedGroup()
                     if g then g:SetSpacing(val) end
+                end,
+            },
+            spacingInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "Spacing",
+                desc = "Space between icons (type exact value)",
+                order = 42,
+                width = 0.4,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() then return true end
+                    local g = GetSelectedGroup()
+                    return g and g.layout.separateSpacing
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.layout.spacing or 2)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetSpacing(num) end
                 end,
             },
             separateSpacing = {
@@ -2093,7 +2249,7 @@ local function GetOptionsTable()
                 min = -20, max = 50, step = 0.5,
                 width = 0.7,
                 hidden = function() 
-                    if HideIfNoGroup() or collapsedSections.layout then return true end
+                    if HideIfNoGroup() or collapsedSections.layout or IsFineTuning() then return true end
                     local g = GetSelectedGroup()
                     return not (g and g.layout.separateSpacing)
                 end,
@@ -2109,6 +2265,31 @@ local function GetOptionsTable()
                     if g then g:SetSpacingX(val) end
                 end,
             },
+            spacingXInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "X Spacing",
+                desc = "Horizontal space between columns (type exact value)",
+                order = 42.5,
+                width = 0.4,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() then return true end
+                    local g = GetSelectedGroup()
+                    return not (g and g.layout.separateSpacing)
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    if g and g.layout.spacingX then
+                        return tostring(g.layout.spacingX)
+                    end
+                    return tostring(g and g.layout.spacing or 2)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetSpacingX(num) end
+                end,
+            },
             spacingY = {
                 type = "range",
                 name = "Y Spacing",
@@ -2117,7 +2298,7 @@ local function GetOptionsTable()
                 min = -20, max = 50, step = 0.5,
                 width = 0.7,
                 hidden = function() 
-                    if HideIfNoGroup() or collapsedSections.layout then return true end
+                    if HideIfNoGroup() or collapsedSections.layout or IsFineTuning() then return true end
                     local g = GetSelectedGroup()
                     return not (g and g.layout.separateSpacing)
                 end,
@@ -2133,6 +2314,31 @@ local function GetOptionsTable()
                     if g then g:SetSpacingY(val) end
                 end,
             },
+            spacingYInput = {
+                type = "input",
+                dialogControl = "ArcUI_EditBox",
+                name = "Y Spacing",
+                desc = "Vertical space between rows (type exact value)",
+                order = 42.6,
+                width = 0.4,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.layout or not IsFineTuning() then return true end
+                    local g = GetSelectedGroup()
+                    return not (g and g.layout.separateSpacing)
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    if g and g.layout.spacingY then
+                        return tostring(g.layout.spacingY)
+                    end
+                    return tostring(g and g.layout.spacing or 2)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num then g:SetSpacingY(num) end
+                end,
+            },
             
             -- POSITION SETTINGS SECTION
             positionHeader = {
@@ -2146,37 +2352,47 @@ local function GetOptionsTable()
                 set = function(_, v) collapsedSections.position = not v end,
             },
             posX = {
-                type = "range",
+                type = "input",
                 name = "X Offset",
                 desc = "Horizontal position from screen center",
+                dialogControl = "ArcUI_EditBox",
                 order = 51,
-                min = -1000, max = 1000, step = 1,
-                width = 0.9,
+                width = 0.6,
                 hidden = function() return HideIfNoGroup() or collapsedSections.position end,
                 get = function()
                     local g = GetSelectedGroup()
-                    return g and g.position.x or 0
+                    return g and tostring(g.position.x) or "0"
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
-                    if g then g:SetPosition(val, g.position.y) end
+                    if g then 
+                        local num = tonumber(val)
+                        if num then
+                            g:SetPosition(num, g.position.y) 
+                        end
+                    end
                 end,
             },
             posY = {
-                type = "range",
+                type = "input",
                 name = "Y Offset",
                 desc = "Vertical position from screen center",
+                dialogControl = "ArcUI_EditBox",
                 order = 52,
-                min = -600, max = 600, step = 1,
-                width = 0.9,
+                width = 0.6,
                 hidden = function() return HideIfNoGroup() or collapsedSections.position end,
                 get = function()
                     local g = GetSelectedGroup()
-                    return g and g.position.y or 0
+                    return g and tostring(g.position.y) or "0"
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
-                    if g then g:SetPosition(g.position.x, val) end
+                    if g then 
+                        local num = tonumber(val)
+                        if num then
+                            g:SetPosition(g.position.x, num) 
+                        end
+                    end
                 end,
             },
             dragToggleAnchor = {

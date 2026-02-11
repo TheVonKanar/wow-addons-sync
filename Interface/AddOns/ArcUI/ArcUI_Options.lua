@@ -12,6 +12,35 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceDB = LibStub("AceDB-3.0")
 
 -- ===================================================================
+-- RELIABLE PANEL OPEN/CLOSE DETECTION
+-- Hook AceConfigDialog:Open and :Close directly - much more reliable
+-- than trying to hook frame OnShow/OnHide
+-- ===================================================================
+if not AceConfigDialog._arcUIHooked then
+    AceConfigDialog._arcUIHooked = true
+    
+    -- Hook Close
+    hooksecurefunc(AceConfigDialog, "Close", function(self, appName)
+        if appName == "ArcUI" then
+            ns._arcUIOptionsOpen = false
+            if ns.CDMGroups and ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.OnOptionsPanelClosed then
+                ns.CDMGroups.DynamicLayout.OnOptionsPanelClosed()
+            end
+        end
+    end)
+    
+    -- Hook Open (backup - we also call directly in OpenOptions)
+    hooksecurefunc(AceConfigDialog, "Open", function(self, appName)
+        if appName == "ArcUI" then
+            ns._arcUIOptionsOpen = true
+            if ns.CDMGroups and ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened then
+                ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened()
+            end
+        end
+    end)
+end
+
+-- ===================================================================
 -- ADDON INFO
 -- ===================================================================
 -- Get version from TOC file (auto-updates when TOC changes)
@@ -111,11 +140,19 @@ ns.API.OpenOptions = function()
   ns._arcPendingOptionsOpen = nil
   ns._arcUIOptionsOpen = true  -- Flag for Resources module to detect options are open
   AceConfigDialog:Open("ArcUI")
+  -- NOTE: OnOptionsPanelOpened is called automatically via AceConfigDialog:Open hook above
   
   -- Refresh resource bars immediately so they show despite talent/spec/combat conditions
   if ns.Resources and ns.Resources.RefreshAllBars then
     ns.Resources.RefreshAllBars()
   end
+  
+  -- Show "Hidden by Bar" overlays on CDM icons that are being hidden
+  C_Timer.After(0.1, function()
+    if ns.API.ShowHiddenByBarOverlays then
+      ns.API.ShowHiddenByBarOverlays()
+    end
+  end)
   
   C_Timer.After(0.05, function()
     local widget = AceConfigDialog.OpenFrames["ArcUI"]
@@ -145,15 +182,21 @@ ns.API.OpenOptions = function()
         actualFrame._arcUIDiscordLink:Show()
       end
       
-      -- Hook OnHide
+      -- Hook OnHide for cleanup (visual elements, drag mode, etc)
+      -- NOTE: OnOptionsPanelClosed is called via AceConfigDialog:Close hook, not here
       if not actualFrame._arcUIOnHideHooked then
         actualFrame._arcUIOnHideHooked = true
         local originalOnHide = actualFrame:GetScript("OnHide")
         actualFrame:SetScript("OnHide", function(self, ...)
           if originalOnHide then originalOnHide(self, ...) end
           
-          -- Clear options open flag
+          -- Clear options open flag (backup - hook also sets this)
           ns._arcUIOptionsOpen = false
+          
+          -- Hide "Hidden by Bar" overlays
+          if ns.API.HideHiddenByBarOverlays then
+            ns.API.HideHiddenByBarOverlays()
+          end
           
           -- CRITICAL: Hide Discord link when panel closes
           -- AceConfigDialog reuses frame objects, so our Discord link would
@@ -315,6 +358,17 @@ local function GetOptionsTable()
             return tbl
           end)(),
           
+          timerBars = (function()
+            local tbl = ns.TimerBarOptions and ns.TimerBarOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Timer Bars",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Timer Bars"
+            tbl.order = 2.5
+            return tbl
+          end)(),
+          
           appearance = (function()
             local tbl = ns.AppearanceOptions and ns.AppearanceOptions.GetOptionsTable() or {
               type = "group",
@@ -366,13 +420,53 @@ local function GetOptionsTable()
             tbl.order = 2
             return tbl
           end)(),
+          
+          importExport = (function()
+            local tbl = ns.GetBarsImportExportOptionsTable and ns.GetBarsImportExportOptionsTable() or {
+              type = "group",
+              name = "Import/Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Import/Export"
+            tbl.order = 3
+            return tbl
+          end)(),
+        },
+      },
+      
+      -- ═══════════════════════════════════════════════════════════════
+      -- MASTER EXPORT (top-level tab)
+      -- ═══════════════════════════════════════════════════════════════
+      masterExport = {
+        type = "group",
+        name = "Master Export",
+        order = 4,
+        args = {
+          comingSoonHeader = {
+            type = "header",
+            name = "Master Export",
+            order = 1,
+          },
+          comingSoonDesc = {
+            type = "description",
+            name = "|cffffd100Master Export|r lets you pick individual Arc Manager profiles from any character and spec, then bundle them into a single export string.\n\n" ..
+                   "|cff00ccffFeatures:|r\n" ..
+                   "1. Browse all your characters and specs in one place\n" ..
+                   "2. Cherry-pick individual profiles to export\n" ..
+                   "3. Export Icons (CDM) and Bars together in a single string\n" ..
+                   "4. Import on any character — profiles for your class merge directly, other classes are stored and auto-applied when you log that class\n" ..
+                   "5. Same-account profile loader — easily copy your main's setup to alts of the same class/spec without needing an export string\n\n" ..
+                   "|cffff8800Coming in the next update!|r",
+            order = 2,
+            fontSize = "medium",
+          },
         },
       },
       
       settings = {
         type = "group",
         name = "Settings",
-        order = 4,
+        order = 5,
         args = {
           menuHeader = {
             type = "header",

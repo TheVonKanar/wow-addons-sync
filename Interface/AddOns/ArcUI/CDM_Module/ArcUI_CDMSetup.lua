@@ -195,6 +195,8 @@ end
 -- CONSTANTS
 -- ===================================================================
 local CDM_SETTING_VISIBILITY = 6
+local CDM_SETTING_TIMER = 9  -- Enum.EditModeCooldownViewerSetting.ShowTimer
+local CDM_SETTING_HIDE_WHEN_INACTIVE = 8  -- Enum.EditModeCooldownViewerSetting.HideWhenInactive
 local VIS_ALWAYS = 0
 
 local CDM_VIEWERS = {
@@ -276,6 +278,36 @@ function ns.CDMSetup.CheckRequirements()
                 })
             end
         end
+        
+        -- Check 3: Viewer Timer (must be enabled for ArcUI to work properly)
+        for _, viewerInfo in ipairs(CDM_VIEWERS) do
+            local viewer = _G[viewerInfo.frame]
+            if viewer and viewer.timerShown == false then
+                table.insert(issues, {
+                    id = "timer_" .. viewerInfo.frame,
+                    text = viewerInfo.name .. " has Timer disabled",
+                    priority = 2,
+                    requiresReload = false,
+                    viewer = viewer,
+                    setting = CDM_SETTING_TIMER,
+                    targetValue = 1,  -- 1 = enabled
+                })
+            end
+        end
+        
+        -- Check 4: Hide When Inactive (only for BuffIconCooldownViewer - must be disabled or icons disappear)
+        local buffViewer = _G["BuffIconCooldownViewer"]
+        if buffViewer and buffViewer.hideWhenInactive == true then
+            table.insert(issues, {
+                id = "hide_inactive_BuffIconCooldownViewer",
+                text = "Tracked Buffs has 'Hide When Inactive' enabled",
+                priority = 2,
+                requiresReload = false,
+                viewer = buffViewer,
+                setting = CDM_SETTING_HIDE_WHEN_INACTIVE,
+                targetValue = 0,  -- 0 = disabled (don't hide)
+            })
+        end
     end
     
     -- Sort by priority
@@ -307,6 +339,253 @@ function ns.CDMSetup.IsCDMStylingEnabled()
 end
 
 -- ===================================================================
+-- ELVUI CONFLICT DETECTION
+-- ===================================================================
+
+--- Check if ElvUI is loaded
+function ns.CDMSetup.IsElvUILoaded()
+    return C_AddOns and C_AddOns.IsAddOnLoaded("ElvUI")
+end
+
+--- Check if ElvUI has CDM skinning enabled
+-- ElvUI stores this in E.private.skins.blizzard.cooldownManager
+-- The skin module checks: E.private.skins.blizzard.enable AND E.private.skins.blizzard.cooldownManager
+function ns.CDMSetup.IsElvUICDMSkinningEnabled()
+    if not ns.CDMSetup.IsElvUILoaded() then return false end
+    
+    -- Access ElvUI's engine object
+    local E = ElvUI and ElvUI[1]
+    if not E or not E.private then return false end
+    
+    local skins = E.private.skins
+    if not skins or not skins.blizzard then return false end
+    
+    -- Both must be true for the CDM skin to actually load
+    return skins.blizzard.enable and skins.blizzard.cooldownManager
+end
+
+--- Disable ElvUI's CDM skinning
+-- Sets E.private.skins.blizzard.cooldownManager = false
+-- Requires reload to take effect since ElvUI skins load during initialization
+function ns.CDMSetup.DisableElvUICDMSkinning()
+    if not ns.CDMSetup.IsElvUILoaded() then return false end
+    
+    local E = ElvUI and ElvUI[1]
+    if not E or not E.private then return false end
+    
+    local skins = E.private.skins
+    if not skins or not skins.blizzard then return false end
+    
+    skins.blizzard.cooldownManager = false
+    return true
+end
+
+--- Check if the ElvUI alert should show
+function ns.CDMSetup.ShouldShowElvUIAlert()
+    -- Only relevant if ArcUI CDM styling is enabled
+    if not ns.CDMSetup.IsCDMStylingEnabled() then
+        return false
+    end
+    
+    -- Only relevant if ElvUI CDM skinning is active
+    if not ns.CDMSetup.IsElvUICDMSkinningEnabled() then
+        return false
+    end
+    
+    -- Check if user dismissed
+    if ns.db and ns.db.global and ns.db.global.elvuiCDMSkinAlertDismissed then
+        return false
+    end
+    
+    return true
+end
+
+-- ===================================================================
+-- ELVUI ALERT UI
+-- ===================================================================
+local elvuiAlertFrame = nil
+
+local function CreateElvUIAlert()
+    if elvuiAlertFrame then return elvuiAlertFrame end
+    
+    local f = CreateFrame("Frame", "ArcUI_ElvUICDMAlert", UIParent, "BackdropTemplate")
+    f:SetSize(420, 240)
+    f:SetPoint("CENTER", 0, 100)
+    f:SetFrameStrata("DIALOG")
+    f:SetFrameLevel(500)
+    f:EnableMouse(true)
+    f:SetMovable(true)
+    f:RegisterForDrag("LeftButton")
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    
+    -- Backdrop
+    f:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile = true, tileSize = 32, edgeSize = 32,
+        insets = { left = 11, right = 11, top = 12, bottom = 11 }
+    })
+    f:SetBackdropColor(0.1, 0.08, 0.02, 1)
+    
+    -- Warning Icon
+    local icon = f:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(40, 40)
+    icon:SetPoint("TOPLEFT", 20, -20)
+    icon:SetTexture("Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew")
+    
+    -- Title
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", icon, "TOPRIGHT", 10, -2)
+    title:SetText("|cffFFAA33ArcUI - ElvUI Conflict|r")
+    f.title = title
+    
+    -- Subtitle
+    local subtitle = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -4)
+    subtitle:SetWidth(330)
+    subtitle:SetJustifyH("LEFT")
+    subtitle:SetText("ElvUI's Cooldown Manager skinning is enabled")
+    f.subtitle = subtitle
+    
+    -- Message
+    local message = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    message:SetPoint("TOPLEFT", f, "TOPLEFT", 25, -80)
+    message:SetPoint("RIGHT", f, "RIGHT", -25, 0)
+    message:SetJustifyH("LEFT")
+    message:SetSpacing(2)
+    message:SetText(
+        "ElvUI's CDM skinning conflicts with ArcUI's Cooldown\n" ..
+        "Manager enhancements. Both addons modify the same\n" ..
+        "CDM icon frames, which causes visual glitches.\n\n" ..
+        "ArcUI can disable ElvUI's CDM skin for you.\n" ..
+        "This only affects CDM — all other ElvUI skins stay active."
+    )
+    f.message = message
+    
+    -- Disable Button
+    local disableBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    disableBtn:SetSize(160, 28)
+    disableBtn:SetPoint("BOTTOMRIGHT", f, "BOTTOM", -5, 38)
+    disableBtn:SetText("Disable & Reload")
+    disableBtn:SetScript("OnClick", function()
+        local ok = ns.CDMSetup.DisableElvUICDMSkinning()
+        if ok then
+            ReloadUI()
+        else
+            f.statusText:SetText("|cffFF6666Could not disable ElvUI CDM skin.|r")
+        end
+    end)
+    f.disableBtn = disableBtn
+    
+    -- Later Button
+    local laterBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    laterBtn:SetSize(100, 28)
+    laterBtn:SetPoint("BOTTOMLEFT", f, "BOTTOM", 5, 38)
+    laterBtn:SetText("Later")
+    laterBtn:SetScript("OnClick", function()
+        f:Hide()
+    end)
+    f.laterBtn = laterBtn
+    
+    -- Don't Show Again checkbox
+    local dontShowCheck = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+    dontShowCheck:SetSize(24, 24)
+    dontShowCheck:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 18)
+    dontShowCheck:SetChecked(false)
+    dontShowCheck:SetScript("OnClick", function(self)
+        if ns.db and ns.db.global then
+            ns.db.global.elvuiCDMSkinAlertDismissed = self:GetChecked() or nil
+        end
+    end)
+    f.dontShowCheck = dontShowCheck
+    
+    local dontShowLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    dontShowLabel:SetPoint("LEFT", dontShowCheck, "RIGHT", 2, 0)
+    dontShowLabel:SetText("Don't show this again")
+    dontShowLabel:SetTextColor(0.7, 0.7, 0.7)
+    
+    -- Make label clickable
+    local labelBtn = CreateFrame("Button", nil, f)
+    labelBtn:SetAllPoints(dontShowLabel)
+    labelBtn:SetScript("OnClick", function() dontShowCheck:Click() end)
+    
+    -- Status text
+    local statusText = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    statusText:SetPoint("BOTTOM", f, "BOTTOM", 40, 22)
+    statusText:SetWidth(200)
+    f.statusText = statusText
+    
+    -- Close X button
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -4, -4)
+    closeBtn:SetScript("OnClick", function()
+        f:Hide()
+    end)
+    
+    elvuiAlertFrame = f
+    return f
+end
+
+--- Show the ElvUI conflict alert
+function ns.CDMSetup.ShowElvUIAlert()
+    local f = CreateElvUIAlert()
+    
+    -- Reset state
+    if f.statusText then f.statusText:SetText("") end
+    if f.dontShowCheck then
+        f.dontShowCheck:SetChecked(ns.db and ns.db.global and ns.db.global.elvuiCDMSkinAlertDismissed or false)
+    end
+    
+    -- Reset the disable button in case it was changed by a prior click
+    f.disableBtn:SetText("Disable & Reload")
+    f.disableBtn:SetScript("OnClick", function()
+        local ok = ns.CDMSetup.DisableElvUICDMSkinning()
+        if ok then
+            ReloadUI()
+        else
+            f.statusText:SetText("|cffFF6666Could not disable ElvUI CDM skin.|r")
+        end
+    end)
+    
+    f:Show()
+    f:Raise()
+end
+
+--- Hide the ElvUI alert
+function ns.CDMSetup.HideElvUIAlert()
+    if elvuiAlertFrame then
+        elvuiAlertFrame:Hide()
+    end
+end
+
+--- Check for ElvUI conflict and show alert if needed
+-- @param forceShow boolean - Show even if dismissed
+function ns.CDMSetup.CheckElvUIConflict(forceShow)
+    if forceShow then
+        if ns.CDMSetup.IsElvUICDMSkinningEnabled() then
+            ns.CDMSetup.ShowElvUIAlert()
+            return true
+        end
+        return false
+    end
+    
+    if ns.CDMSetup.ShouldShowElvUIAlert() then
+        ns.CDMSetup.ShowElvUIAlert()
+        return true
+    end
+    
+    return false
+end
+
+--- Reset the ElvUI alert dismissed flag
+function ns.CDMSetup.ResetElvUIDismissed()
+    if ns.db and ns.db.global then
+        ns.db.global.elvuiCDMSkinAlertDismissed = nil
+    end
+end
+
+-- ===================================================================
 -- FIX FUNCTIONS
 -- ===================================================================
 
@@ -328,7 +607,7 @@ local function FixViewerSetting(viewer, settingID, value)
     return ok
 end
 
---- Fix all viewer settings (visibility)
+--- Fix all viewer settings (visibility, timer, and hideWhenInactive)
 function ns.CDMSetup.FixViewerSettings()
     local mgr = EditModeManagerFrame
     if not mgr or not mgr.OnSystemSettingChange then
@@ -344,6 +623,24 @@ function ns.CDMSetup.FixViewerSettings()
             if FixViewerSetting(viewer, CDM_SETTING_VISIBILITY, VIS_ALWAYS) then
                 changesMade = true
             end
+        end
+    end
+    
+    -- Fix timer for all viewers (must be enabled for ArcUI)
+    for _, viewerInfo in ipairs(CDM_VIEWERS) do
+        local viewer = _G[viewerInfo.frame]
+        if viewer and viewer.timerShown == false then
+            if FixViewerSetting(viewer, CDM_SETTING_TIMER, 1) then
+                changesMade = true
+            end
+        end
+    end
+    
+    -- Fix hideWhenInactive for BuffIconCooldownViewer only (must be disabled or icons disappear)
+    local buffViewer = _G["BuffIconCooldownViewer"]
+    if buffViewer and buffViewer.hideWhenInactive == true then
+        if FixViewerSetting(buffViewer, CDM_SETTING_HIDE_WHEN_INACTIVE, 0) then
+            changesMade = true
         end
     end
     
@@ -677,6 +974,9 @@ end
 function ns.CDMSetup.OnCDMStylingEnabled()
     -- Delay slightly to ensure CDM frames are ready
     C_Timer.After(0.5, function()
+        -- Check ElvUI conflict first
+        ns.CDMSetup.CheckElvUIConflict()
+        -- Then check CDM requirements
         ns.CDMSetup.RunCheck(false)
     end)
 end
@@ -717,6 +1017,9 @@ local function Initialize()
     
     -- Run CDM check on login if CDM styling is enabled
     C_Timer.After(2, function()
+        -- Check for ElvUI CDM skinning conflict first
+        ns.CDMSetup.CheckElvUIConflict()
+        
         if ns.CDMSetup.IsCDMStylingEnabled() then
             ns.CDMSetup.RunCheck(false)
         end
@@ -776,6 +1079,14 @@ SlashCmdList["ARCUICDMSETUP"] = function(msg)
         print("  CDM Enabled: " .. (ns.CDMSetup.IsCDMEnabled() and "|cff00FF00Yes|r" or "|cffFF0000No|r"))
         print("  CDM Styling: " .. (ns.CDMSetup.IsCDMStylingEnabled() and "|cff00FF00Enabled|r" or "|cffaaaaaa Disabled|r"))
         
+        -- ElvUI status
+        if ns.CDMSetup.IsElvUILoaded() then
+            local elvSkinning = ns.CDMSetup.IsElvUICDMSkinningEnabled()
+            print("  ElvUI: |cffFFD100Loaded|r | CDM Skin: " .. (elvSkinning and "|cffFF6666Enabled (conflict!)|r" or "|cff00FF00Disabled|r"))
+        else
+            print("  ElvUI: |cffaaaaaaNot loaded|r")
+        end
+        
         -- Check layout type
         local isPreset, presetName = ns.CDMSetup.IsOnPresetLayout()
         if isPreset then
@@ -793,20 +1104,40 @@ SlashCmdList["ARCUICDMSETUP"] = function(msg)
             for _, viewerInfo in ipairs(CDM_VIEWERS) do
                 local viewer = _G[viewerInfo.frame]
                 if viewer then
-                    print("  " .. viewerInfo.name .. ": " .. (visNames[viewer.visibleSetting] or "?"))
+                    local timerStatus = viewer.timerShown and "|cff00FF00On|r" or "|cffFF0000Off|r"
+                    local statusLine = "  " .. viewerInfo.name .. ": Vis=" .. (visNames[viewer.visibleSetting] or "?") .. " Timer=" .. timerStatus
+                    -- Only show HideInactive for BuffIconCooldownViewer (only viewer with this option)
+                    if viewerInfo.frame == "BuffIconCooldownViewer" then
+                        local hideInactiveStatus = viewer.hideWhenInactive and "|cffFF0000On|r" or "|cff00FF00Off|r"
+                        statusLine = statusLine .. " HideInactive=" .. hideInactiveStatus
+                    end
+                    print(statusLine)
                 end
             end
         end
     elseif msg == "1" then
         -- Quick reset of alert dismissed state
         ns.CDMSetup.ResetDismissed()
+        ns.CDMSetup.ResetElvUIDismissed()
         print("|cff00ccffArcUI|r: Alert reset. Checking...")
+        ns.CDMSetup.CheckElvUIConflict(true)
         ns.CDMSetup.RunCheck(false, true)
+    elseif msg == "elvui" then
+        -- ElvUI CDM skin check
+        if not ns.CDMSetup.IsElvUILoaded() then
+            print("|cff00ccffArcUI|r: ElvUI is not loaded.")
+        elseif ns.CDMSetup.IsElvUICDMSkinningEnabled() then
+            print("|cff00ccffArcUI|r: ElvUI CDM skinning is |cffFF6666enabled|r (conflicts with ArcUI).")
+            ns.CDMSetup.ShowElvUIAlert()
+        else
+            print("|cff00ccffArcUI|r: ElvUI CDM skinning is |cff00FF00disabled|r. No conflict.")
+        end
     else
         print("|cff00ccffArcUI CDM Setup:|r")
         print("  /arcsetup - Check CDM requirements (shows alert)")
         print("  /arcsetup fix - Fix CDM settings")
         print("  /arcsetup status - Show current status")
-        print("  /arcsetup 1 - Reset alert and show again")
+        print("  /arcsetup elvui - Check ElvUI CDM skin conflict")
+        print("  /arcsetup 1 - Reset alerts and show again")
     end
 end

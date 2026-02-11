@@ -44,12 +44,13 @@ local CLASS_POWER_TYPES = {
   ["WARRIOR"] = {1}, ["PALADIN"] = {0, 9}, ["HUNTER"] = {2},
   ["ROGUE"] = {3, 4}, ["PRIEST"] = {0, 13}, ["DEATHKNIGHT"] = {6, 5},
   ["SHAMAN"] = {0}, ["MAGE"] = {0, 16}, ["WARLOCK"] = {0, 7},
-  ["MONK"] = {3, 12}, ["DRUID"] = {0, 1, 3, 8, 4},
+  ["MONK"] = {12}, ["DRUID"] = {0, 1, 3, 8, 4},
   ["DEMONHUNTER"] = {17, 18}, ["EVOKER"] = {0, 19}
 }
 
 local SPEC_POWER_TYPES = {
-  ["SHAMAN"] = { [1] = {11}, [2] = {}, [3] = {} }
+  ["SHAMAN"] = { [1] = {11}, [2] = {}, [3] = {} },
+  ["MONK"]   = { [1] = {3}, [2] = {0}, [3] = {3} },  -- BrM=Energy, MW=Mana, WW=Energy
 }
 
 -- ===================================================================
@@ -2989,6 +2990,14 @@ function ns.TrackingOptions.GetResourceSetupTable()
           local _, playerClass = UnitClass("player")
           local classPowers = CLASS_POWER_TYPES[playerClass] or {}
           for _, pType in ipairs(classPowers) do
+            if not SECONDARY_POWER_TYPES[pType] then
+              return true
+            end
+          end
+          -- Also check spec-specific power types
+          local currentSpec = GetSpecialization() or 1
+          local specPowers = SPEC_POWER_TYPES[playerClass] and SPEC_POWER_TYPES[playerClass][currentSpec] or {}
+          for _, pType in ipairs(specPowers) do
             if not SECONDARY_POWER_TYPES[pType] then
               return true
             end

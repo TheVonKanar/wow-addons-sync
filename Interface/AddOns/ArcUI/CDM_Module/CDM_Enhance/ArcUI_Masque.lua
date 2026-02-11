@@ -28,6 +28,49 @@ local Masque = nil
 local masqueInitialized = false
 
 -- ===================================================================
+-- ALPHA TAINT GUARD - Fix Masque secret value errors
+-- Masque's Skin_Icon (Icon.lua:179) compares GetAlpha() == 0 which
+-- errors when alpha is a secret value (WoW 12.0+). ArcUI's frame
+-- manipulation during combat can taint Icon alpha, and this persists
+-- until reload. MasqueBlizzBars doesn't have this issue because it
+-- doesn't manipulate alpha on its frames.
+--
+-- Fix: Wrap GetAlpha on each Icon texture we register with Masque.
+-- WoW widgets let user-set keys shadow C API methods, so setting
+-- Icon.GetAlpha = wrappedFunc makes ALL callers (including Masque's
+-- internal Skin_Icon) get a non-secret value. This is completely
+-- transparent and doesn't require hooking Masque's internals at all.
+-- ===================================================================
+
+--- Wrap GetAlpha on a frame's Icon texture to defuse secret values.
+--- After this, any code calling Icon:GetAlpha() gets a non-secret result.
+--- Idempotent - safe to call multiple times on the same icon.
+local function WrapIconGetAlpha(frame)
+    if not frame or not frame.Icon then return end
+    if not issecretvalue then return end  -- Pre-12.0, no taint possible
+    if frame.Icon._arcGetAlphaWrapped then return end
+    
+    local icon = frame.Icon
+    -- Store the original C API GetAlpha (from __index metatable)
+    local origGetAlpha = icon.GetAlpha
+    if not origGetAlpha then return end
+    
+    -- Shadow the C method with our wrapper on the object itself
+    icon.GetAlpha = function(self)
+        local alpha = origGetAlpha(self)
+        if issecretvalue(alpha) then
+            -- Return 1 (non-secret) - the icon is visible, Masque just needs
+            -- to know it's not hidden (the == 0 check). The actual alpha
+            -- doesn't matter for Masque's skinning logic.
+            return 1
+        end
+        return alpha
+    end
+    
+    icon._arcGetAlphaWrapped = true
+end
+
+-- ===================================================================
 -- SETTINGS - What Masque controls vs ArcUI
 -- Stored in db.masqueSettings
 -- ===================================================================
@@ -37,6 +80,7 @@ local InitMasque
 
 local DEFAULT_SETTINGS = {
     enabled = false,  -- Masque skinning enabled (default OFF - user must manually enable)
+    useMasqueCooldowns = false,  -- Let Masque control cooldown animations (swipe, edge, bling)
 }
 
 --- Get settings from DB
@@ -55,6 +99,7 @@ local function GetMasqueSettings()
     
     return {
         enabled = db.masqueSettings.enabled == true,  -- default false, must explicitly enable
+        useMasqueCooldowns = db.masqueSettings.useMasqueCooldowns == true,  -- default false
     }
 end
 
@@ -76,6 +121,21 @@ function ns.Masque.IsEnabled()
     end
     
     return true
+end
+
+--- Check if Masque should control cooldown animations (swipe, edge, bling)
+--- Returns true ONLY if:
+--- 1. Masque skinning is enabled (IsEnabled() = true)
+--- 2. useMasqueCooldowns setting is ON
+function ns.Masque.ShouldMasqueControlCooldowns()
+    -- First check if Masque skinning is enabled at all
+    if not ns.Masque.IsEnabled() then
+        return false
+    end
+    
+    -- Then check if user wants Masque to handle cooldowns
+    local settings = GetMasqueSettings()
+    return settings.useMasqueCooldowns == true
 end
 
 --- Get a setting value
@@ -104,19 +164,27 @@ function ns.Masque.SetSetting(key, value)
     
     db.masqueSettings[key] = value
     
-    -- When toggling enabled, invalidate CDMEnhance cache IMMEDIATELY
+    -- When toggling enabled or useMasqueCooldowns, invalidate CDMEnhance cache IMMEDIATELY
     -- This ensures any code that runs before RefreshAllStyles gets the correct values
-    if key == "enabled" then
+    if key == "enabled" or key == "useMasqueCooldowns" then
         if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
             ns.CDMEnhance.InvalidateCache()
         end
     end
     
     -- Re-register all frames with new settings
-    ns.Masque.ReregisterAllFrames()
+    -- For 'enabled' toggle: frames are added/removed from Masque
+    -- For 'useMasqueCooldowns' toggle: frames need re-registration to include/exclude Cooldown region
+    if key == "enabled" or key == "useMasqueCooldowns" then
+        -- Force full re-registration by removing all frames first
+        if key == "useMasqueCooldowns" then
+            ns.Masque.RemoveAllFrames()
+        end
+        ns.Masque.ReregisterAllFrames()
+    end
     
-    -- When toggling enabled, do extra cleanup and refresh
-    if key == "enabled" then
+    -- When toggling enabled or useMasqueCooldowns, do extra cleanup and refresh
+    if key == "enabled" or key == "useMasqueCooldowns" then
         C_Timer.After(0.05, function()
             -- Refresh all Masque groups
             ns.Masque.RefreshAllGroups()
@@ -437,16 +505,27 @@ function ns.Masque.AddFrame(frame, viewerName, cdID)
         return
     end
     
-    -- Remove from old group if switching
+    -- Find the right group FIRST (before any remove/add decisions)
+    local group, groupKey = GetMasqueGroupForFrame(cdID, viewerName)
+    if not group then return end
+    
+    -- CRITICAL: If already registered in the correct group, skip entirely.
+    -- Re-registering triggers Masque's SkinButton which resets Icon dimensions
+    -- from the skin's intended inset size (e.g. 44.2x44.2) to full frame size (45x45),
+    -- causing icon textures to bleed under Masque border artwork.
+    if frame._arcMasqueAdded and frame._arcMasqueGroupKey == groupKey then
+        return
+    end
+    
+    -- Wrap GetAlpha on Icon to defuse secret values for Masque (idempotent)
+    WrapIconGetAlpha(frame)
+    
+    -- Remove from old group if switching to a different group
     if frame._arcMasqueAdded and frame._arcMasqueGroupKey then
         ns.Masque.RemoveFrame(frame)
     end
     
-    -- Find the right group
-    local group, groupKey = GetMasqueGroupForFrame(cdID, viewerName)
-    if not group then return end
-    
-    -- Build regions table - ONLY include Icon
+    -- Build regions table - ONLY include Icon by default
     -- By not including other regions at all, Masque won't try to manage them
     -- Previously we set regions to false which could cause Masque to hide them
     local regions = {}
@@ -455,9 +534,14 @@ function ns.Masque.AddFrame(frame, viewerName, cdID)
         regions.Icon = frame.Icon
     end
     
-    -- NOTE: We intentionally do NOT include any other regions in the table
+    -- Include Cooldown region ONLY if useMasqueCooldowns is enabled
+    -- When enabled, Masque will control the cooldown swipe appearance (texture, color)
+    if settings.useMasqueCooldowns and frame.Cooldown then
+        regions.Cooldown = frame.Cooldown
+    end
+    
+    -- NOTE: We intentionally do NOT include other regions (like Count) in the table
     -- Setting regions.Count = false was causing Masque to hide application stacks
-    -- Setting regions.Cooldown = false was interfering with cooldown swipe
     -- By omitting them entirely, Masque will leave them alone
     
     -- Only add if we have an Icon region
@@ -503,8 +587,7 @@ function ns.Masque.RemoveFrame(frame)
     local group = registeredGroups[groupKey] or customGroups[groupKey:gsub("^Custom_", "")]
     
     if group and group.RemoveButton then
-        -- Wrap in pcall - Masque may error with secret values in WoW 12.0
-        -- when trying to compare icon dimensions during unskinning
+        -- Wrap in pcall for safety
         local ok, err = pcall(function()
             group:RemoveButton(frame)
         end)
@@ -516,6 +599,43 @@ function ns.Masque.RemoveFrame(frame)
     frame._arcMasqueAdded = nil
     frame._arcMasqueGroupKey = nil
     frame._arcMasqueCdID = nil
+end
+
+--- Remove all frames from Masque (used when settings change that require re-registration)
+function ns.Masque.RemoveAllFrames()
+    InitMasque()
+    if not Masque then return end
+    
+    -- Remove all CDMGroups group members
+    if ns.CDMGroups and ns.CDMGroups.groups then
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            if group.members then
+                for cdID, member in pairs(group.members) do
+                    if member.frame and member.frame._arcMasqueAdded then
+                        ns.Masque.RemoveFrame(member.frame)
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Remove all free position icons
+    if ns.CDMGroups and ns.CDMGroups.freeIcons then
+        for cdID, data in pairs(ns.CDMGroups.freeIcons) do
+            if data.frame and data.frame._arcMasqueAdded then
+                ns.Masque.RemoveFrame(data.frame)
+            end
+        end
+    end
+    
+    -- Remove all Arc Auras frames
+    if ns.ArcAuras and ns.ArcAuras.frames then
+        for arcID, frame in pairs(ns.ArcAuras.frames) do
+            if frame and frame._arcMasqueAdded then
+                ns.Masque.RemoveFrame(frame)
+            end
+        end
+    end
 end
 
 --- Update a frame's group (when it moves between groups or to/from free position)
@@ -551,7 +671,7 @@ end
 function ns.Masque.ReapplyCooldownPositioning()
     -- Only re-apply if ArcUI controls cooldown (not Masque)
     local settings = GetMasqueSettings()
-    if settings.controlCooldown then
+    if settings.useMasqueCooldowns then
         return  -- Masque controls cooldown, don't override
     end
     
@@ -563,26 +683,13 @@ function ns.Masque.ReapplyCooldownPositioning()
     for cdID, data in pairs(enhancedFrames) do
         local frame = data.frame
         if frame and frame.Cooldown then
-            local padX = frame.Cooldown._arcPaddingX or 0
-            local padY = frame.Cooldown._arcPaddingY or 0
-            
-            frame.Cooldown:ClearAllPoints()
-            frame.Cooldown:SetPoint("TOPLEFT", frame, "TOPLEFT", padX, -padY)
-            frame.Cooldown:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -padX, padY)
-            
-            if frame._arcTexCoords and frame.Cooldown.SetTexCoordRange then
-                local tc = frame._arcTexCoords
-                local lowVec = CreateVector2D(tc.left, tc.top)
-                local highVec = CreateVector2D(tc.right, tc.bottom)
-                frame.Cooldown:SetTexCoordRange(lowVec, highVec)
-            end
-        end
-    end
-    
-    -- Also handle Arc Auras frames
-    if ns.ArcAuras and ns.ArcAuras.frames then
-        for arcID, frame in pairs(ns.ArcAuras.frames) do
-            if frame and frame.Cooldown then
+            -- If Masque is actively skinning this frame, don't apply inset positioning.
+            -- CDMEnhance already set SetAllPoints correctly - don't overwrite with TOPLEFT/BOTTOMRIGHT.
+            if frame.Cooldown._arcMasqueActive then
+                -- Just ensure it fills the frame (Masque-compatible)
+                frame.Cooldown:ClearAllPoints()
+                frame.Cooldown:SetAllPoints(frame)
+            else
                 local padX = frame.Cooldown._arcPaddingX or 0
                 local padY = frame.Cooldown._arcPaddingY or 0
                 
@@ -595,6 +702,33 @@ function ns.Masque.ReapplyCooldownPositioning()
                     local lowVec = CreateVector2D(tc.left, tc.top)
                     local highVec = CreateVector2D(tc.right, tc.bottom)
                     frame.Cooldown:SetTexCoordRange(lowVec, highVec)
+                end
+            end
+        end
+    end
+    
+    -- Also handle Arc Auras frames
+    if ns.ArcAuras and ns.ArcAuras.frames then
+        for arcID, frame in pairs(ns.ArcAuras.frames) do
+            if frame and frame.Cooldown then
+                -- Same check for Arc Auras
+                if frame.Cooldown._arcMasqueActive then
+                    frame.Cooldown:ClearAllPoints()
+                    frame.Cooldown:SetAllPoints(frame)
+                else
+                    local padX = frame.Cooldown._arcPaddingX or 0
+                    local padY = frame.Cooldown._arcPaddingY or 0
+                    
+                    frame.Cooldown:ClearAllPoints()
+                    frame.Cooldown:SetPoint("TOPLEFT", frame, "TOPLEFT", padX, -padY)
+                    frame.Cooldown:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -padX, padY)
+                    
+                    if frame._arcTexCoords and frame.Cooldown.SetTexCoordRange then
+                        local tc = frame._arcTexCoords
+                        local lowVec = CreateVector2D(tc.left, tc.top)
+                        local highVec = CreateVector2D(tc.right, tc.bottom)
+                        frame.Cooldown:SetTexCoordRange(lowVec, highVec)
+                    end
                 end
             end
         end
@@ -992,6 +1126,10 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
             if ns.Masque.IsMasqueActive() then
                 ns.Masque.ReregisterAllFrames()
             end
+            -- Also refresh Arc Auras to ensure correct Masque state
+            if ns.ArcAuras and ns.ArcAuras.RefreshMasqueState then
+                ns.ArcAuras.RefreshMasqueState()
+            end
         end)
         
         -- Second pass for any stragglers
@@ -1009,6 +1147,10 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
         C_Timer.After(0.3, function()
             if ns.Masque.IsMasqueActive() then
                 ns.Masque.ReregisterAllFrames()
+            end
+            -- Also refresh Arc Auras to ensure correct Masque state
+            if ns.ArcAuras and ns.ArcAuras.RefreshMasqueState then
+                ns.ArcAuras.RefreshMasqueState()
             end
         end)
     end

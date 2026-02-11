@@ -50,6 +50,8 @@ BlizzMove.MoveHandles = {};
 BlizzMove.CombatLockdownQueue = {};
 --- @type table<Frame, true>
 BlizzMove.CurrentMouseoverFrames = {};
+--- @type table<string, number> # [frameName] = scale
+BlizzMove.SessionScales = {}
 
 local MAX_SCALE = 2.5;
 local MIN_SCALE = 0.3; -- steps are in 0.1 increments, and we'd like to stay above 0.25
@@ -599,7 +601,7 @@ do
     end
 
     function SetFrameScale(frame, frameScale)
-        if InCombatLockdown() and frame:IsProtected() then return false; end
+        if InCombatLockdown() and frame:IsProtected() then return true; end
         local frameData = BlizzMove.FrameData[frame];
         local oldScale = GetFrameScale(frame);
         local newScale = frameScale;
@@ -614,6 +616,7 @@ do
         end
 
         BlizzMove.DB.scales[frameData.storage.frameName] = newScale;
+        BlizzMove.SessionScales[frameData.storage.frameName] = newScale;
         frame:SetScale(newScale);
         BlizzMove:DebugPrint("SetFrameScale:", frameData.storage.frameName, string__format("%.2f %.2f %.2f", frameScale, frame:GetScale(), GetFrameScale(frame)));
 
@@ -858,8 +861,11 @@ do
 
         SetFrameParent(frame);
 
-        if BlizzMove.DB.saveScaleStrategy == 'permanent' and BlizzMove.DB.scales[BlizzMove:GetFrameName(frame)] then
-            SetFrameScale(frame, BlizzMove.DB.scales[BlizzMove:GetFrameName(frame)]);
+        local frameName = BlizzMove:GetFrameName(frame);
+        if BlizzMove.DB.saveScaleStrategy == 'permanent' and BlizzMove.DB.scales[frameName] then
+            SetFrameScale(frame, BlizzMove.DB.scales[frameName]);
+        elseif BlizzMove.SessionScales[frameName] then
+            SetFrameScale(frame, BlizzMove.SessionScales[frameName]);
         end
 
         if not skipAdditionalRunNextFrame then
@@ -923,7 +929,7 @@ do
         captureFrame:SetScript("OnEvent", function() self:CheckMouseWheelCapture(); end);
         captureFrame:RegisterEvent("MODIFIER_STATE_CHANGED")
         captureFrame:SetScript("OnMouseWheel", function(_, delta)
-            for i, frame in ipairs(GetMouseFoci()) do
+            for _, frame in ipairs(GetMouseFoci()) do
                 --- @type BlizzMoveAPI_FrameData?
                 local frameData = self.FrameData[frame];
 
@@ -1042,8 +1048,11 @@ do
             return;
         end
 
-        if BlizzMove.DB.scales[BlizzMove:GetFrameName(frame)] then
-            SetFrameScale(frame, BlizzMove.DB.scales[BlizzMove:GetFrameName(frame)]);
+        local frameName = BlizzMove:GetFrameName(frame);
+        if BlizzMove.DB.saveScaleStrategy == 'permanent' and BlizzMove.DB.scales[frameName] then
+            SetFrameScale(frame, BlizzMove.DB.scales[frameName]);
+        elseif BlizzMove.SessionScales[frameName] then
+            SetFrameScale(frame, BlizzMove.SessionScales[frameName]);
         end
     end
 end

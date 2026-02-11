@@ -183,6 +183,8 @@ L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "Ouvrir la vérification de version (alt. 'v' ou 'ver')"
 L["chat_commands_whisper"] = "Afficher l'aide dans la commande de chuchotement"
 --[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
+--[[Translation missing --]]
 L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 L["Check this to loot the items and distribute them later."] = "Cocher cette case pour récupérer les objets et les attribuer plus tard."
 L["Check to append the realmname of a player from another realm"] = "Cocher pour ajouter le nom du royaume d'un joueur provenant d'un autre royaume"
@@ -383,6 +385,8 @@ L["opt_autoGroupLoot_name"] = "Auto Group Loot"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will only do group loot auto pass when you're in a guild group."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Groupe de Guilde uniquement; Si activé RCLootCouncil ne passera automatiquement que si vous êtes en groupe de guilde"
 --[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
+--[[Translation missing --]]
 L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
@@ -455,6 +459,8 @@ L["options_requireNotes_desc"] = "Si activé, les candidats ne peuvent pas envoy
 L["Original Owner"] = "Détenteur originel"
 L["Out of instance"] = "Hors de l'instance"
 L["Patch"] = "Correctif"
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 L["Personal Loot - Non tradeable"] = "Butin personnel - non-échangeable"
 L["Personal Loot - Rejected Trade"] = "Butin personnel - échange rejeté"
 L["'player' can't receive 'type'"] = "%s ne peut pas recevoir %s - versions non correspondantes ?"

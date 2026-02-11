@@ -512,22 +512,34 @@ local function GetCachedMaxPower(powerType)
   return cachedMaxPower[powerType]
 end
 
+-- Safe color extraction: handles both {r=, g=, b=} tables and indexed {[1]=r, [2]=g, [3]=b} arrays
+local function SafeColorRGBA(color, defaultR, defaultG, defaultB, defaultA)
+  if not color then return defaultR or 1, defaultG or 1, defaultB or 1, defaultA or 1 end
+  local r = color.r or color[1] or defaultR or 1
+  local g = color.g or color[2] or defaultG or 1
+  local b = color.b or color[3] or defaultB or 1
+  local a = color.a or color[4] or defaultA or 1
+  return r, g, b, a
+end
+
 -- Hash function for cache invalidation
 local function GetResourceThresholdHash(cfg, baseColor)
   local parts = {}
-  local bc = baseColor or {r = 0, g = 0.8, b = 1, a = 1}
-  table.insert(parts, string.format("bc:%.2f,%.2f,%.2f", bc.r, bc.g, bc.b))
+  local bcR, bcG, bcB, bcA = SafeColorRGBA(baseColor, 0, 0.8, 1, 1)
+  table.insert(parts, string.format("bc:%.2f,%.2f,%.2f,%.2f", bcR, bcG, bcB, bcA))
   
   for i = 2, 5 do
     local enabled = cfg["colorCurveThreshold" .. i .. "Enabled"]
     local value = cfg["colorCurveThreshold" .. i .. "Value"] or RESOURCE_THRESHOLD_DEFAULT_VALUES[i]
     local color = cfg["colorCurveThreshold" .. i .. "Color"] or RESOURCE_THRESHOLD_DEFAULT_COLORS[i]
     if enabled then
-      table.insert(parts, string.format("t%d:%d,%.2f,%.2f,%.2f", i, value, color.r, color.g, color.b))
+      local cR, cG, cB, cA = SafeColorRGBA(color, 1, 1, 1, 1)
+      table.insert(parts, string.format("t%d:%d,%.2f,%.2f,%.2f,%.2f", i, value, cR, cG, cB, cA))
     end
   end
   
   table.insert(parts, cfg.colorCurveThresholdAsPercent and "pct" or "num")
+  table.insert(parts, (cfg.colorCurveDirection == "fill" or cfg.colorCurveDirectionFilling) and "fill" or "drain")
   table.insert(parts, tostring(cfg.colorCurveMaxValue or 100))
   return table.concat(parts, "|")
 end
@@ -548,7 +560,12 @@ local function GetResourceColorCurve(barNumber, barConfig, powerType)
   end
   
   -- Get base bar color (used above all thresholds - "healthy" color)
-  local baseColor = cfg.barColor or {r = 0, g = 0.8, b = 1, a = 1}
+  -- Check display.barColor first, then fall back to thresholds[1].color for older configs
+  local baseColor = cfg.barColor
+  if not baseColor and barConfig.thresholds and barConfig.thresholds[1] then
+    baseColor = barConfig.thresholds[1].color
+  end
+  baseColor = baseColor or {r = 0, g = 0.8, b = 1, a = 1}
   
   -- Check if we need to rebuild the curve
   local currentHash = GetResourceThresholdHash(cfg, baseColor)
@@ -578,8 +595,6 @@ local function GetResourceColorCurve(barNumber, barConfig, powerType)
   end
   
   -- Sort thresholds by value ASCENDING (lowest % first)
-  -- e.g., [{10%, Red}, {25%, Orange}, {50%, Yellow}]
-  -- At 0% = most urgent color, at 100% = base color
   table.sort(thresholds, function(a, b) return a.value < b.value end)
   
   -- Create the ColorCurve
@@ -587,6 +602,7 @@ local function GetResourceColorCurve(barNumber, barConfig, powerType)
   
   -- Mode settings
   local asPercent = cfg.colorCurveThresholdAsPercent ~= false  -- Default true for resources
+  local isFilling = (cfg.colorCurveDirection == "fill") or cfg.colorCurveDirectionFilling
   local maxValue = cfg.colorCurveMaxValue or 100
   
   -- For numeric mode, try to get actual max power
@@ -599,53 +615,99 @@ local function GetResourceColorCurve(barNumber, barConfig, powerType)
   
   local EPSILON = 0.0001
   
-  -- Build curve: 0% = empty (urgent), 100% = full (healthy)
-  -- We want: low % = threshold colors, high % = base color
-  --
-  -- Example: thresholds = [{10%, Red}, {25%, Orange}, {50%, Yellow}], base = Green
-  -- 0% to 10%: Red
-  -- 10% to 25%: Orange
-  -- 25% to 50%: Yellow
-  -- 50% to 100%: Green (base)
-  
-  -- Start at 0% with the lowest (most urgent) threshold color
-  local lowestThreshold = thresholds[1]
-  curve:AddPoint(0.0, CreateColor(lowestThreshold.color.r, lowestThreshold.color.g, lowestThreshold.color.b, lowestThreshold.color.a or 1))
-  
-  -- Add transition points for each threshold (going from lowest to highest)
-  for i = 1, #thresholds do
-    local t = thresholds[i]
-    local pct
-    if asPercent then
-      pct = t.value / 100
-    else
-      pct = t.value / maxValue
+  if isFilling then
+    -- FILLING MODE: base color at 0%, threshold colors as resource builds up
+    -- Example: thresholds = [{50%, Yellow}, {75%, Orange}], base = Blue
+    -- 0% to 50%: Blue (base)
+    -- 50% to 75%: Yellow
+    -- 75% to 100%: Orange
+    
+    -- Start at 0% with base color
+    local bR, bG, bB, bA = SafeColorRGBA(baseColor)
+    curve:AddPoint(0.0, CreateColor(bR, bG, bB, bA))
+    
+    for i = 1, #thresholds do
+      local t = thresholds[i]
+      local pct
+      if asPercent then
+        pct = t.value / 100
+      else
+        pct = t.value / maxValue
+      end
+      pct = math.max(0, math.min(1, pct))
+      
+      -- Color before this threshold (base or previous threshold)
+      local prevColor
+      if i == 1 then
+        prevColor = baseColor
+      else
+        prevColor = thresholds[i - 1].color
+      end
+      
+      -- Add point just before threshold (previous color)
+      if pct > EPSILON then
+        local pR, pG, pB, pA = SafeColorRGBA(prevColor)
+        curve:AddPoint(pct - EPSILON, CreateColor(pR, pG, pB, pA))
+      end
+      
+      -- At threshold: switch to this threshold's color
+      local tR, tG, tB, tA = SafeColorRGBA(t.color)
+      curve:AddPoint(pct, CreateColor(tR, tG, tB, tA))
     end
-    pct = math.max(0, math.min(1, pct))
     
-    -- Determine next color (above this threshold / more resource)
-    local nextColor
-    if i == #thresholds then
-      -- Highest threshold - above this use base color
-      nextColor = baseColor
-    else
-      -- Use next threshold's color
-      nextColor = thresholds[i + 1].color
+    -- End at 100% with highest threshold color
+    local highestColor = thresholds[#thresholds].color
+    local hR, hG, hB, hA = SafeColorRGBA(highestColor)
+    curve:AddPoint(1.0, CreateColor(hR, hG, hB, hA))
+    
+  else
+    -- DRAINING MODE (default): threshold colors at low %, base color at full
+    -- Example: thresholds = [{10%, Red}, {25%, Orange}, {50%, Yellow}], base = Green
+    -- 0% to 10%: Red
+    -- 10% to 25%: Orange
+    -- 25% to 50%: Yellow
+    -- 50% to 100%: Green (base)
+    
+    -- Start at 0% with the lowest (most urgent) threshold color
+    local lowestThreshold = thresholds[1]
+    local lR, lG, lB, lA = SafeColorRGBA(lowestThreshold.color)
+    curve:AddPoint(0.0, CreateColor(lR, lG, lB, lA))
+    
+    for i = 1, #thresholds do
+      local t = thresholds[i]
+      local pct
+      if asPercent then
+        pct = t.value / 100
+      else
+        pct = t.value / maxValue
+      end
+      pct = math.max(0, math.min(1, pct))
+      
+      -- Determine next color (above this threshold)
+      local nextColor
+      if i == #thresholds then
+        nextColor = baseColor
+      else
+        nextColor = thresholds[i + 1].color
+      end
+      
+      local currentColor = t.color
+      
+      -- Add point just before threshold (current color)
+      if pct > EPSILON then
+        local cR, cG, cB, cA = SafeColorRGBA(currentColor)
+        curve:AddPoint(pct - EPSILON, CreateColor(cR, cG, cB, cA))
+      end
+      
+      -- Add point at threshold (next color begins)
+      local nR, nG, nB, nA = SafeColorRGBA(nextColor)
+      curve:AddPoint(pct, CreateColor(nR, nG, nB, nA))
     end
     
-    local currentColor = t.color
-    
-    -- Add point just before threshold (current color)
-    if pct > EPSILON then
-      curve:AddPoint(pct - EPSILON, CreateColor(currentColor.r, currentColor.g, currentColor.b, currentColor.a or 1))
-    end
-    
-    -- Add point at threshold (next color begins)
-    curve:AddPoint(pct, CreateColor(nextColor.r, nextColor.g, nextColor.b, nextColor.a or 1))
+    -- End with base color at 100%
+    local bR, bG, bB, bA = SafeColorRGBA(baseColor)
+    curve:AddPoint(1.0, CreateColor(bR, bG, bB, bA))
   end
-  
-  -- End with base color at 100%
-  curve:AddPoint(1.0, CreateColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1))
   
   -- Cache
   resourceColorCurves[barNumber] = { curve = curve, settingsHash = currentHash }
@@ -825,10 +887,9 @@ local function CreateResourceTextFrame(barNumber)
   frame:SetMovable(true)
   frame:EnableMouse(false)
   frame:SetClampedToScreen(true)
-  -- Use MEDIUM strata so we don't overlap Blizzard UI panels
-  -- Frame level 200 to be above tick overlay (~151) but still in MEDIUM strata
-  frame:SetFrameStrata("MEDIUM")
-  frame:SetFrameLevel(250)
+  -- Default strata/level - will be overridden by ApplyAppearance with config values
+  frame:SetFrameStrata("HIGH")
+  frame:SetFrameLevel(110)
   
   frame.text = frame:CreateFontString(nil, "OVERLAY")
   frame.text:SetPoint("CENTER")
@@ -896,16 +957,29 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
   local maxValue = passedMaxValue or cfg.tracking.maxValue or 100
   local displayMode = cfg.display.thresholdMode or "simple"
   
-  -- Helper function to convert threshold values
-  -- If thresholdAsPercent is true, convert percentage to actual value
-  -- If false (default), use raw values directly
-  local function GetThresholdValue(thresholdMinValue, defaultValue)
-    local value = thresholdMinValue or defaultValue
-    if cfg.display.thresholdAsPercent then
-      -- Convert percentage to actual value
-      return math.floor(maxValue * value / 100)
+  -- MIGRATION: Convert old granular/threshold modes to colorCurve
+  -- Granular mode (1 StatusBar per unit) caused "script ran too long" on high-value resources
+  -- and threshold mode (stacked bars) is redundant with colorCurve. Both are now removed.
+  if displayMode == "granular" or displayMode == "threshold" then
+    -- Migrate old thresholds[2-5] config to colorCurve keys if present
+    if cfg.thresholds and not cfg.display.colorCurveEnabled then
+      cfg.display.colorCurveEnabled = true
+      cfg.display.colorCurveThresholdAsPercent = cfg.display.thresholdAsPercent or false
+      for i = 2, 5 do
+        if cfg.thresholds[i] then
+          cfg.display["colorCurveThreshold" .. i .. "Enabled"] = cfg.thresholds[i].enabled
+          cfg.display["colorCurveThreshold" .. i .. "Value"] = cfg.thresholds[i].minValue
+          -- Normalize color to {r=, g=, b=, a=} format (old data may use indexed arrays)
+          local oldColor = cfg.thresholds[i].color
+          if oldColor then
+            local r, g, b, a = SafeColorRGBA(oldColor)
+            cfg.display["colorCurveThreshold" .. i .. "Color"] = {r=r, g=g, b=b, a=a}
+          end
+        end
+      end
     end
-    return value
+    cfg.display.thresholdMode = "colorCurve"
+    displayMode = "colorCurve"
   end
   
   -- Hide all existing layers
@@ -957,346 +1031,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
   -- Get fill texture scale
   local fillTextureScale = cfg.display.fillTextureScale or 1.0
   
-  if displayMode == "granular" then
-    -- ═══════════════════════════════════════════════════════════════
-    -- GRANULAR MODE: 1 bar per resource unit
-    -- ═══════════════════════════════════════════════════════════════
-    -- Creates maxValue number of bars, each colored based on thresholds
-    
-    -- Hide other bar types
-    if mainFrame.stackedBars then
-      for _, bar in ipairs(mainFrame.stackedBars) do bar:Hide() end
-    end
-    if mainFrame.maxColorBar then
-      mainFrame.maxColorBar:Hide()
-    end
-    -- Hide fragment frames if they exist
-    if mainFrame.fragmentFrames then
-      for _, frame in ipairs(mainFrame.fragmentFrames) do frame:Hide() end
-    end
-    -- Hide icon frames if they exist
-    if mainFrame.iconFrames then
-      for _, frame in ipairs(mainFrame.iconFrames) do frame:Hide() end
-    end
-    
-    -- Build color ranges from thresholds
-    local colorRanges = {}
-    
-    -- Color 1 always starts at 0
-    local baseColor = thresholds[1] and thresholds[1].color or {r=0, g=0.8, b=1, a=1}
-    table.insert(colorRanges, { startValue = 0, color = baseColor })
-    
-    -- Color 2 starts at threshold 2's value
-    if thresholds[2] and thresholds[2].enabled then
-      table.insert(colorRanges, {
-        startValue = GetThresholdValue(thresholds[2].minValue, math.floor(maxValue/2)),
-        color = thresholds[2].color
-      })
-    end
-    
-    -- Color 3 starts at threshold 3's value
-    if thresholds[3] and thresholds[3].enabled then
-      table.insert(colorRanges, {
-        startValue = GetThresholdValue(thresholds[3].minValue, math.floor(maxValue*0.8)),
-        color = thresholds[3].color
-      })
-    end
-    
-    -- Color 4 starts at threshold 4's value
-    if thresholds[4] and thresholds[4].enabled then
-      table.insert(colorRanges, {
-        startValue = GetThresholdValue(thresholds[4].minValue, math.floor(maxValue*0.5)),
-        color = thresholds[4].color
-      })
-    end
-    
-    -- Color 5 starts at threshold 5's value
-    if thresholds[5] and thresholds[5].enabled then
-      table.insert(colorRanges, {
-        startValue = GetThresholdValue(thresholds[5].minValue, math.floor(maxValue*0.7)),
-        color = thresholds[5].color
-      })
-    end
-    
-    -- Color 6 starts at threshold 6's value
-    if thresholds[6] and thresholds[6].enabled then
-      table.insert(colorRanges, {
-        startValue = GetThresholdValue(thresholds[6].minValue, math.floor(maxValue*0.9)),
-        color = thresholds[6].color
-      })
-    end
-    
-    -- Sort by start value
-    table.sort(colorRanges, function(a, b) return a.startValue < b.startValue end)
-    
-    -- Get max color settings
-    local enableMaxColor = cfg.display.enableMaxColor
-    local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
-    
-    -- Function to get color for a specific value
-    local function GetColorForValue(val)
-      -- If at max and enableMaxColor, use max color
-      if enableMaxColor and val == maxValue then
-        return maxColor
-      end
-      local color = colorRanges[1] and colorRanges[1].color or {r=1, g=1, b=1, a=1}
-      for _, range in ipairs(colorRanges) do
-        if val >= range.startValue then
-          color = range.color
-        else
-          break
-        end
-      end
-      return color
-    end
-    
-    -- Number of bars = maxValue (1 per unit)
-    local numBars = maxValue
-    
-    -- Create granular bars container if it doesn't exist
-    if not mainFrame.granularBars then
-      mainFrame.granularBars = {}
-    end
-    
-    -- Get smoothing and orientation settings
-    local enableSmooth = cfg.display.enableSmoothing
-    local orientation = GetBarOrientation(cfg)
-    local reverseFill = GetBarReverseFill(cfg)
-    local isVertical = (orientation == "VERTICAL")
-    
-    -- Ensure we have enough bars
-    while #mainFrame.granularBars < numBars do
-      local bar = CreateFrame("StatusBar", nil, mainFrame)
-      bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation(orientation)
-      bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
-      table.insert(mainFrame.granularBars, bar)
-    end
-    
-    -- Position and color each granular bar
-    for value = 1, numBars do
-      local bar = mainFrame.granularBars[value]
-      
-      -- Size proportional to this value
-      local sizePercent = value / maxValue
-      local totalSize = isVertical and mainFrame:GetHeight() or mainFrame:GetWidth()
-      local barSize = sizePercent * totalSize
-      
-      -- Position bar with proportional size
-      bar:ClearAllPoints()
-      if isVertical then
-        bar:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, 0)
-        bar:SetPoint("RIGHT", mainFrame, "RIGHT", 0, 0)
-        bar:SetHeight(math.max(2, barSize))
-      else
-        bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, 0)
-        bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
-        bar:SetWidth(math.max(2, barSize))
-      end
-      
-      -- BINARY FILL: Bar is 100% full when value >= barValue, 0% otherwise
-      bar:SetMinMaxValues(value - 1, value)
-      
-      -- Set texture and color for this bar
-      bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation(orientation)
-      bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
-      local color = GetColorForValue(value)
-      bar:SetStatusBarColor(color.r, color.g, color.b, color.a or 1)
-      
-      -- Larger bars on TOP (higher frame level)
-      bar:SetFrameLevel(mainFrame:GetFrameLevel() + value + 5)
-      
-      -- Apply smoothing
-      ApplyBarSmoothing(bar, enableSmooth)
-      
-      -- Feed the secret value to this bar
-      bar:SetValue(secretValue)
-      
-      bar:Show()
-    end
-    
-    -- Hide unused bars
-    for i = numBars + 1, #mainFrame.granularBars do
-      if mainFrame.granularBars[i] then
-        mainFrame.granularBars[i]:Hide()
-      end
-    end
-    
-  elseif displayMode == "threshold" then
-    -- ═══════════════════════════════════════════════════════════════
-    -- THRESHOLD MODE (Continuous): 2-3 bars positioned end-to-end
-    -- Color changes smoothly at threshold boundaries
-    -- ═══════════════════════════════════════════════════════════════
-    
-    -- Hide granular bars if they exist
-    if mainFrame.granularBars then
-      for _, bar in ipairs(mainFrame.granularBars) do bar:Hide() end
-    end
-    -- Hide fragment frames if they exist
-    if mainFrame.fragmentFrames then
-      for _, frame in ipairs(mainFrame.fragmentFrames) do frame:Hide() end
-    end
-    -- Hide icon frames if they exist
-    if mainFrame.iconFrames then
-      for _, frame in ipairs(mainFrame.iconFrames) do frame:Hide() end
-    end
-    
-    -- Build ranges based on enabled thresholds
-    local ranges = {}
-    local baseColor = thresholds[1] and thresholds[1].color or {r=0, g=0.8, b=1, a=1}
-    
-    -- Collect all enabled thresholds with their values
-    local enabledThresholds = {}
-    for i = 2, 6 do
-      if thresholds[i] and thresholds[i].enabled then
-        local defaultVal = math.floor(maxValue * (0.2 + (i-2) * 0.15))  -- Default spread
-        table.insert(enabledThresholds, {
-          value = GetThresholdValue(thresholds[i].minValue, defaultVal),
-          color = thresholds[i].color
-        })
-      end
-    end
-    
-    -- Sort by value
-    table.sort(enabledThresholds, function(a, b) return a.value < b.value end)
-    
-    if #enabledThresholds > 0 then
-      -- First range: 0 to first threshold
-      table.insert(ranges, {
-        minVal = 0,
-        maxVal = enabledThresholds[1].value,
-        color = baseColor
-      })
-      
-      -- Middle ranges: threshold to threshold
-      for i = 1, #enabledThresholds - 1 do
-        table.insert(ranges, {
-          minVal = enabledThresholds[i].value,
-          maxVal = enabledThresholds[i+1].value,
-          color = enabledThresholds[i].color
-        })
-      end
-      
-      -- Last range: last threshold to max
-      table.insert(ranges, {
-        minVal = enabledThresholds[#enabledThresholds].value,
-        maxVal = maxValue,
-        color = enabledThresholds[#enabledThresholds].color
-      })
-    else
-      -- No thresholds, just one range
-      table.insert(ranges, {
-        minVal = 0,
-        maxVal = maxValue,
-        color = baseColor
-      })
-    end
-    
-    -- Create stacked bars container if it doesn't exist
-    if not mainFrame.stackedBars then
-      mainFrame.stackedBars = {}
-    end
-    
-    -- Get smoothing and orientation settings
-    local enableSmooth = cfg.display.enableSmoothing
-    local orientation = GetBarOrientation(cfg)
-    local reverseFill = GetBarReverseFill(cfg)
-    local isVertical = (orientation == "VERTICAL")
-    
-    -- Ensure we have enough stacked bars
-    while #mainFrame.stackedBars < #ranges do
-      local bar = CreateFrame("StatusBar", nil, mainFrame)
-      bar:SetStatusBarTexture(texturePath)
-      bar:SetOrientation(orientation)
-      bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
-      table.insert(mainFrame.stackedBars, bar)
-    end
-    
-    -- Position each bar end-to-end
-    for i, range in ipairs(ranges) do
-      local bar = mainFrame.stackedBars[i]
-      
-      -- Calculate proportional size and position (no padding)
-      local totalSize = isVertical and mainFrame:GetHeight() or mainFrame:GetWidth()
-      local barSize = totalSize * (range.maxVal - range.minVal) / maxValue
-      local offset = totalSize * range.minVal / maxValue
-      
-      -- Position bar based on orientation
-      bar:ClearAllPoints()
-      if isVertical then
-        bar:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, offset)
-        bar:SetPoint("RIGHT", mainFrame, "RIGHT", 0, 0)
-        bar:SetHeight(math.max(1, barSize))
-      else
-        bar:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", offset, 0)
-        bar:SetPoint("BOTTOM", mainFrame, "BOTTOM", 0, 0)
-        bar:SetWidth(math.max(1, barSize))
-      end
-      
-      -- Set the range this bar responds to
-      bar:SetMinMaxValues(range.minVal, range.maxVal)
-      
-      -- Set texture and color
-      bar:SetStatusBarTexture(texturePath)
-      bar:SetStatusBarColor(range.color.r, range.color.g, range.color.b, range.color.a or 1)
-      bar:SetOrientation(orientation)
-      bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
-      
-      -- Layer order - later bars on top
-      bar:SetFrameLevel(mainFrame:GetFrameLevel() + i + 5)
-      
-      -- Apply smoothing
-      ApplyBarSmoothing(bar, enableSmooth)
-      
-      -- Feed the secret value to this bar
-      bar:SetValue(secretValue)
-      
-      bar:Show()
-    end
-    
-    -- Hide unused threshold bars
-    for i = #ranges + 1, #mainFrame.stackedBars do
-      if mainFrame.stackedBars[i] then
-        mainFrame.stackedBars[i]:Hide()
-      end
-    end
-    
-    -- MAX COLOR OVERLAY for continuous mode
-    -- Add an overlay bar that only shows when at max value
-    local enableMaxColor = cfg.display.enableMaxColor
-    if enableMaxColor and maxValue > 1 then
-      -- Ensure we have a max color overlay bar
-      if not mainFrame.maxColorBar then
-        mainFrame.maxColorBar = CreateFrame("StatusBar", nil, mainFrame)
-        mainFrame.maxColorBar:SetOrientation(orientation)
-        mainFrame.maxColorBar:SetReverseFill(reverseFill)
-        mainFrame.maxColorBar:SetRotatesTexture(isVertical)
-      end
-      
-      local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
-      local maxBar = mainFrame.maxColorBar
-      
-      maxBar:ClearAllPoints()
-      maxBar:SetAllPoints(mainFrame)  -- Full width overlay
-      maxBar:SetMinMaxValues(maxValue - 1, maxValue)  -- Only fills when at max
-      maxBar:SetStatusBarTexture(texturePath)
-      maxBar:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
-      maxBar:SetOrientation(orientation)
-      maxBar:SetReverseFill(reverseFill)
-      maxBar:SetRotatesTexture(isVertical)
-      maxBar:SetFrameLevel(mainFrame:GetFrameLevel() + #ranges + 10)  -- On top of all threshold bars
-      maxBar:SetValue(secretValue)
-      maxBar:Show()
-    elseif mainFrame.maxColorBar then
-      mainFrame.maxColorBar:Hide()
-    end
-    
-  elseif displayMode == "folded" then
+  if displayMode == "folded" then
     -- ═══════════════════════════════════════════════════════════════
     -- FOLDED MODE: Bar folds at midpoint, second color overlays first
     -- Visual: 2nd color fills over 1st after midpoint
@@ -2088,9 +1823,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     if mainFrame.granularBars then
       for _, bar in ipairs(mainFrame.granularBars) do bar:Hide() end
     end
-    if mainFrame.maxColorBar then
-      mainFrame.maxColorBar:Hide()
-    end
     
     -- Get power type for ColorCurve
     local powerType = cfg.tracking.powerType
@@ -2102,7 +1834,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     
     -- Get or create the ColorCurve
     local colorCurve = GetResourceColorCurve(barNumber, cfg, powerType)
-    local baseColor = cfg.display.barColor or thresholds[1] and thresholds[1].color or {r=0, g=0.8, b=1, a=1}
+    local baseColor = cfg.display.barColor or (thresholds[1] and thresholds[1].color) or {r=0, g=0.8, b=1, a=1}
+    local bcR, bcG, bcB, bcA = SafeColorRGBA(baseColor, 0, 0.8, 1, 1)
     
     -- Get smoothing and orientation settings
     local enableSmooth = cfg.display.enableSmoothing
@@ -2110,7 +1843,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local reverseFill = GetBarReverseFill(cfg)
     local isVertical = (orientation == "VERTICAL")
     
-    -- Create stacked bars container if it doesn't exist (we only use 1 bar)
+    -- Create stacked bars container if it doesn't exist
     if not mainFrame.stackedBars then
       mainFrame.stackedBars = {}
     end
@@ -2152,18 +1885,43 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       -- Use UnitPowerPercent with curve - returns Color directly, handles secrets internally!
       local colorOK = pcall(function()
         local colorResult = UnitPowerPercent("player", powerType, false, colorCurve)
-        if colorResult and colorResult.GetRGB then
-          barTexture:SetVertexColor(colorResult:GetRGB())
+        if colorResult and colorResult.GetRGBA then
+          barTexture:SetVertexColor(colorResult:GetRGBA())
         else
-          barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+          barTexture:SetVertexColor(bcR, bcG, bcB, bcA)
         end
       end)
       if not colorOK then
-        barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+        barTexture:SetVertexColor(bcR, bcG, bcB, bcA)
       end
     else
       -- No color curve - use base color
-      barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+      barTexture:SetVertexColor(bcR, bcG, bcB, bcA)
+    end
+    
+    -- AT MAX COLOR OVERLAY for colorCurve mode
+    local enableMaxColor = cfg.display.enableMaxColor
+    if enableMaxColor and maxValue > 1 then
+      if not mainFrame.maxColorBar then
+        mainFrame.maxColorBar = CreateFrame("StatusBar", nil, mainFrame)
+      end
+      local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
+      local mcR, mcG, mcB, mcA = SafeColorRGBA(maxColor, 0, 1, 0, 1)
+      local maxBar = mainFrame.maxColorBar
+      maxBar:ClearAllPoints()
+      maxBar:SetAllPoints(mainFrame)
+      maxBar:SetMinMaxValues(maxValue - 1, maxValue)
+      maxBar:SetStatusBarTexture(texturePath)
+      maxBar:SetStatusBarColor(mcR, mcG, mcB, mcA)
+      maxBar:SetOrientation(orientation)
+      maxBar:SetReverseFill(reverseFill)
+      maxBar:SetRotatesTexture(isVertical)
+      maxBar:SetFrameLevel(mainFrame:GetFrameLevel() + 7)
+      ApplyBarSmoothing(maxBar, enableSmooth)
+      maxBar:SetValue(secretValue)
+      maxBar:Show()
+    elseif mainFrame.maxColorBar then
+      mainFrame.maxColorBar:Hide()
     end
     
     -- Clear any OnUpdate handlers from other modes
@@ -2589,8 +2347,97 @@ function ns.Resources.ApplyAppearance(barNumber)
   -- mainFrame:SetScale(display.barScale or 1.0)  -- REMOVED - scale applied to size above
   mainFrame:SetAlpha(display.opacity or 1.0)
   
-  -- Position
-  if display.barPosition then
+  -- Frame strata and level
+  local strata = display.barFrameStrata or "HIGH"
+  mainFrame:SetFrameStrata(strata)
+  textFrame:SetFrameStrata(strata)
+  
+  local level = display.barFrameLevel or 10
+  mainFrame:SetFrameLevel(level)
+  textFrame:SetFrameLevel(level + 100)
+  
+  -- Update layer levels
+  if mainFrame.layers then
+    for i, layer in ipairs(mainFrame.layers) do
+      layer:SetFrameLevel(level + i)
+    end
+  end
+  if mainFrame.fragmentFrames then
+    for i, segFrame in ipairs(mainFrame.fragmentFrames) do
+      segFrame:SetFrameLevel(level + 1)
+      if segFrame.fill then segFrame.fill:SetFrameLevel(level + 2) end
+    end
+  end
+  if mainFrame.iconFrames then
+    for i, iconFrame in ipairs(mainFrame.iconFrames) do
+      iconFrame:SetFrameLevel(level + 1)
+    end
+  end
+  if mainFrame.tickOverlay then mainFrame.tickOverlay:SetFrameLevel(level + 50) end
+  if mainFrame.borderOverlay then mainFrame.borderOverlay:SetFrameLevel(level + 51) end
+  if mainFrame.deleteButton then mainFrame.deleteButton:SetFrameLevel(level + 60) end
+  
+  -- Position - check for CDM Group anchor first
+  local anchoredToGroup = false
+  if display.anchorToGroup and display.anchorGroupName then
+    local group = ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.groups[display.anchorGroupName]
+    if group and group.container then
+      local container = group.container
+      local anchorPoint = display.anchorPoint or "BOTTOM"
+      local offsetX = display.anchorOffsetX or 0
+      local offsetY = display.anchorOffsetY or 0
+      
+      mainFrame:ClearAllPoints()
+      if anchorPoint == "TOP" then
+        mainFrame:SetPoint("BOTTOM", container, "TOP", offsetX, offsetY)
+      elseif anchorPoint == "BOTTOM" then
+        mainFrame:SetPoint("TOP", container, "BOTTOM", offsetX, offsetY)
+      elseif anchorPoint == "LEFT" then
+        mainFrame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+      elseif anchorPoint == "RIGHT" then
+        mainFrame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+      end
+      
+      -- Match size to container if enabled
+      -- TOP/BOTTOM: bar width = container width
+      -- LEFT/RIGHT: bar width = container height
+      if display.matchGroupWidth then
+        local containerWidth = container:GetWidth()
+        local containerHeight = container:GetHeight()
+        local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
+        
+        -- Use container height for side anchors, container width for top/bottom
+        local matchDimension = isSideAnchor and containerHeight or containerWidth
+        
+        if matchDimension and matchDimension > 0 then
+          local sizeAdjust = display.matchWidthAdjust or 0
+          local barWidth = matchDimension + sizeAdjust
+          local barHeight = display.height * scale
+          
+          -- Swap for vertical orientation (rotates the bar)
+          if isVertical then
+            mainFrame:SetSize(barHeight, barWidth)
+          else
+            mainFrame:SetSize(barWidth, barHeight)
+          end
+        end
+        
+        -- Hook the container's OnSizeChanged event
+        mainFrame._anchoredGroupName = display.anchorGroupName
+        mainFrame._anchoredBarNumber = barNumber
+        if ns.Resources.HookContainerForAnchoredBars then
+          ns.Resources.HookContainerForAnchoredBars(display.anchorGroupName)
+        end
+      else
+        mainFrame._anchoredGroupName = nil
+      end
+      
+      anchoredToGroup = true
+    end
+  end
+  
+  -- Fallback to normal position if not anchored
+  if not anchoredToGroup and display.barPosition then
     mainFrame:ClearAllPoints()
     mainFrame:SetPoint(
       display.barPosition.point,
@@ -2599,6 +2446,7 @@ function ns.Resources.ApplyAppearance(barNumber)
       display.barPosition.x,
       display.barPosition.y
     )
+    mainFrame._anchoredGroupName = nil
   end
   
   -- Text font and sizing (MUST happen before anchor positioning)
@@ -2839,10 +2687,14 @@ function ns.Resources.RefreshAllBars()
   end
   
   -- Also check bars 1-30 in case some are configured but not in activeBars yet
-  for barNumber = 1, 30 do
-    local cfg = ns.API.GetResourceBarConfig(barNumber)
-    if cfg and cfg.tracking.enabled then
-      activeSet[barNumber] = true
+  -- IMPORTANT: Check db.resourceBars directly to avoid creating bars via GetResourceBarConfig
+  local db = ns.API.GetDB()
+  if db and db.resourceBars then
+    for barNumber = 1, 30 do
+      local barData = db.resourceBars[barNumber]
+      if barData and barData.tracking and barData.tracking.enabled then
+        activeSet[barNumber] = true
+      end
     end
   end
   
@@ -3196,17 +3048,22 @@ function ns.Resources.UpdateMaxValues()
   ns.Resources.CacheAllMaxPowerValues()
   
   -- Get active bars and also check bars 1-30 for any enabled
+  -- IMPORTANT: Only check bars that actually exist to avoid creating empty bars
   local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
   local checkedBars = {}
   for _, barNum in ipairs(activeBars) do
     checkedBars[barNum] = true
   end
+  -- Only add bars that exist in db.resourceBars (don't create new ones)
   for i = 1, 30 do
-    checkedBars[i] = true
+    if db.resourceBars[i] and db.resourceBars[i].tracking and db.resourceBars[i].tracking.enabled then
+      checkedBars[i] = true
+    end
   end
   
   for barNumber, _ in pairs(checkedBars) do
-    local cfg = ns.API.GetResourceBarConfig(barNumber)
+    -- Bar is known to exist, safe to get config
+    local cfg = db.resourceBars[barNumber]
     if cfg and cfg.tracking.enabled then
       local resourceCategory = cfg.tracking.resourceCategory or "primary"
       
@@ -3378,6 +3235,112 @@ end
 
 function ns.Resources.AreDeleteButtonsVisible()
   return deleteButtonsVisible
+end
+
+-- ===================================================================
+-- CDM GROUP CONTAINER SIZE CHANGE CALLBACK
+-- Called by CDMGroups when a container's size changes (dynamic sizing)
+-- ===================================================================
+function ns.Resources.OnGroupContainerSizeChanged(groupName, newWidth, newHeight)
+  -- Find all resource bars anchored to this group with matchGroupWidth enabled
+  local activeBars = ns.API and ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
+  
+  for _, barNumber in ipairs(activeBars) do
+    local cfg = ns.API.GetResourceBarConfig(barNumber)
+    if cfg and cfg.display and cfg.display.anchorToGroup and cfg.display.matchGroupWidth then
+      if cfg.display.anchorGroupName == groupName and resourceFrames[barNumber] then
+        local mainFrame = resourceFrames[barNumber].mainFrame
+        if mainFrame then
+          local scale = cfg.display.barScale or 1.0
+          local isVertical = (cfg.display.barOrientation == "vertical")
+          local anchorPoint = cfg.display.anchorPoint or "BOTTOM"
+          local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
+          
+          -- Use container height for side anchors, container width for top/bottom
+          local matchDimension = isSideAnchor and newHeight or newWidth
+          local sizeAdjust = cfg.display.matchWidthAdjust or 0
+          local barWidth = matchDimension + sizeAdjust
+          local barHeight = cfg.display.height * scale
+          
+          -- Swap for vertical orientation (rotates the bar)
+          if isVertical then
+            mainFrame:SetSize(barHeight, barWidth)
+          else
+            mainFrame:SetSize(barWidth, barHeight)
+          end
+        end
+      end
+    end
+  end
+end
+
+-- ===================================================================
+-- CONTAINER SIZE HOOK FOR ANCHORED RESOURCE BARS
+-- Hooks container's OnSizeChanged - fires only when size actually changes
+-- Zero CPU overhead when nothing is happening
+-- ===================================================================
+local hookedContainers = {}  -- [container] = true
+
+local function OnContainerSizeChanged(container, width, height)
+  if not width or not height or width <= 0 or height <= 0 then return end
+  if not ns.API or not ns.API.GetActiveResourceBars then return end
+  
+  -- Find which group this container belongs to
+  local groupName
+  if ns.CDMGroups and ns.CDMGroups.groups then
+    for name, group in pairs(ns.CDMGroups.groups) do
+      if group.container == container then
+        groupName = name
+        break
+      end
+    end
+  end
+  
+  if not groupName then return end
+  
+  -- Update all resource bars anchored to this group
+  local activeBars = ns.API.GetActiveResourceBars()
+  for _, barNumber in ipairs(activeBars) do
+    local cfg = ns.API.GetResourceBarConfig(barNumber)
+    if cfg and cfg.display and cfg.display.anchorToGroup and cfg.display.anchorGroupName == groupName then
+      if cfg.display.matchGroupWidth and resourceFrames[barNumber] then
+        local mainFrame = resourceFrames[barNumber].mainFrame
+        if mainFrame then
+          local scale = cfg.display.barScale or 1.0
+          local isVertical = (cfg.display.barOrientation == "vertical")
+          local anchorPoint = cfg.display.anchorPoint or "BOTTOM"
+          local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
+          
+          -- Use container height for side anchors, container width for top/bottom
+          local matchDimension = isSideAnchor and height or width
+          local sizeAdjust = cfg.display.matchWidthAdjust or 0
+          local barWidth = matchDimension + sizeAdjust
+          local barHeight = cfg.display.height * scale
+          
+          -- Swap for vertical orientation (rotates the bar)
+          if isVertical then
+            mainFrame:SetSize(barHeight, barWidth)
+          else
+            mainFrame:SetSize(barWidth, barHeight)
+          end
+        end
+      end
+    end
+  end
+end
+
+-- Hook a container for size change events
+function ns.Resources.HookContainerForAnchoredBars(groupName)
+  if not ns.CDMGroups or not ns.CDMGroups.groups then return end
+  
+  local group = ns.CDMGroups.groups[groupName]
+  if not group or not group.container then return end
+  
+  local container = group.container
+  if hookedContainers[container] then return end  -- Already hooked
+  
+  hookedContainers[container] = true
+  container:HookScript("OnSizeChanged", OnContainerSizeChanged)
 end
 
 -- ===================================================================

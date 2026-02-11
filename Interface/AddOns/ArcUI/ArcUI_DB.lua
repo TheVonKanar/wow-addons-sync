@@ -37,6 +37,8 @@ ns.DB_DEFAULTS = {
     menuBackgroundAlpha = 1.0,
     -- CDM Master Kill Switch - stored in global so it's checked before CDM modules init
     cdmStylingEnabled = true,
+    -- Pending CDM profiles from master import (for classes not yet logged)
+    masterCDMPending = nil,
   },
   
   -- Profile storage (shared across characters using same profile)

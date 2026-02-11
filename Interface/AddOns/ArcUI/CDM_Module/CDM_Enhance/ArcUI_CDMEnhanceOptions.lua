@@ -34,6 +34,7 @@ local cooldownFilterMode = "all"
 -- Collapsible sections (shared between aura and cooldown options display)
 local collapsedSections = {
   globalOptions = true,
+  keybinds = true,
   iconAppearance = true,
   position = true,
   activeState = true,      -- For auras
@@ -48,6 +49,8 @@ local collapsedSections = {
   cooldownSwipe = true,
   chargeText = true,
   cooldownText = true,
+  keybindText = true,      -- Per-icon keybind display settings
+  customLabel = true,      -- Per-icon custom label text
 }
 
 -- Cache for unified icon list
@@ -103,6 +106,8 @@ local SECTION_FIELDS = {
   cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride" },
   chargeText = { "chargeText.enabled", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY", "chargeText.mode", "chargeText.position", "chargeText.freeX", "chargeText.freeY" },
   cooldownText = { "cooldownText.enabled", "cooldownText.font", "cooldownText.size", "cooldownText.color", "cooldownText.outline", "cooldownText.anchor", "cooldownText.offsetX", "cooldownText.offsetY", "cooldownText.shadow", "cooldownText.shadowColor", "cooldownText.shadowOffsetX", "cooldownText.shadowOffsetY", "cooldownText.mmss", "cooldownText.decimals", "cooldownText.mode", "cooldownText.position", "cooldownText.freeX", "cooldownText.freeY" },
+  keybindText = { "keybindText.enabled", "keybindText.font", "keybindText.size", "keybindText.color", "keybindText.outline", "keybindText.anchor", "keybindText.offsetX", "keybindText.offsetY", "hideKeybind" },
+  customLabel = { "customLabel.text", "customLabel.size", "customLabel.color", "customLabel.anchor", "customLabel.xOffset", "customLabel.yOffset", "customLabel.showWhenActive", "customLabel.showWhenInactive", "customLabel.showInReadyState", "customLabel.showInCooldownState", "customLabel.showWhileRecharging", "customLabel.text2", "customLabel.size2", "customLabel.color2", "customLabel.anchor2", "customLabel.xOffset2", "customLabel.yOffset2", "customLabel.showWhenActive2", "customLabel.showWhenInactive2", "customLabel.showInReadyState2", "customLabel.showInCooldownState2", "customLabel.showWhileRecharging2", "customLabel.text3", "customLabel.size3", "customLabel.color3", "customLabel.anchor3", "customLabel.xOffset3", "customLabel.yOffset3", "customLabel.showWhenActive3", "customLabel.showWhenInactive3", "customLabel.showInReadyState3", "customLabel.showInCooldownState3", "customLabel.showWhileRecharging3", "customLabel.labelCount", "customLabel.font", "customLabel.outline", "customLabel.frameStrata", "customLabel.frameLevel" },
   alertEvents = { "alertEvents" },
 }
 
@@ -127,9 +132,35 @@ local function IsMasqueActive()
     return false
 end
 
+-- Helper: Check if Masque controls cooldown animations (disables cooldown swipe options)
+-- Returns true only if Masque is active AND useMasqueCooldowns is enabled
+local function IsMasqueCooldownsActive()
+    if not IsMasqueActive() then return false end
+    
+    -- Check if Masque should control cooldowns
+    if ns.Masque.ShouldMasqueControlCooldowns then
+        return ns.Masque.ShouldMasqueControlCooldowns()
+    end
+    
+    return false
+end
+
 -- Static popup for Masque disable reload prompt
 StaticPopupDialogs["ARCUI_MASQUE_DISABLE_RELOAD"] = {
     text = "Masque skinning has been disabled.\n\nA UI reload is recommended to fully remove Masque elements from icons.",
+    button1 = "Reload Now",
+    button2 = "Later",
+    OnAccept = function()
+        ReloadUI()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
+StaticPopupDialogs["ARCUI_MASQUE_ENABLE_RELOAD"] = {
+    text = "Masque skinning has been enabled.\n\nA UI reload is recommended for Masque to properly skin all icons.",
     button1 = "Reload Now",
     button2 = "Later",
     OnAccept = function()
@@ -388,7 +419,38 @@ local function HideAuraCooldownText()
 end
 
 local function HideAuraCooldownSwipe()
-  return HideIfNoAuraSelection() or collapsedSections.cooldownSwipe
+  if HideIfNoAuraSelection() then return true end
+  return collapsedSections.cooldownSwipe
+end
+
+-- Check if cooldown swipe options should be disabled (when Masque controls cooldowns)
+-- Show Swipe and Show Edge are NOT disabled - user can still toggle visibility
+local function DisableAuraCooldownSwipe()
+  return false  -- Always enabled - user can toggle swipe/edge visibility even with Masque
+end
+
+-- Disable function for options that ARE controlled by Masque (insets, colors, etc)
+local function DisableAuraCooldownSwipeMasqueControlled()
+  return IsMasqueCooldownsActive()
+end
+
+-- Swipe color options ARE disabled when Masque controls cooldowns
+-- ArcUI helps Masque apply its skin color by reading _MSQ_Color and calling SetSwipeColor
+-- (This works in combat because our method doesn't do secret value comparisons)
+local function DisableAuraCooldownSwipeExceptColor()
+  return IsMasqueCooldownsActive()
+end
+
+-- No GCD Swipe is NOT disabled when Masque controls cooldowns
+-- Hiding GCD swipes doesn't conflict with Masque's visual styling
+local function DisableAuraCooldownSwipeExceptNoGCD()
+  return false  -- Always enabled
+end
+
+-- Finish Flash (Bling) is NOT disabled when Masque controls cooldowns
+-- ArcUI can control the flash animation independently of Masque
+local function DisableAuraCooldownSwipeExceptBling()
+  return false  -- Always enabled
 end
 
 local function HideAuraRangeIndicator()
@@ -1134,10 +1196,45 @@ local function HideCooldownCooldownText()
   return collapsedSections.cooldownText
 end
 
+local function HideCooldownKeybindText()
+  if HideIfNoCooldownSelection() then return true end
+  if IsEditingMixedTypes() then return true end
+  return collapsedSections.keybindText
+end
+
 local function HideCooldownCooldownSwipe()
   if HideIfNoCooldownSelection() then return true end
   if IsEditingMixedTypes() then return true end
   return collapsedSections.cooldownSwipe
+end
+
+-- Check if cooldown swipe options should be disabled (when Masque controls cooldowns)
+-- Show Swipe and Show Edge are NOT disabled - user can still toggle visibility
+local function DisableCooldownCooldownSwipe()
+  return false  -- Always enabled - user can toggle swipe/edge visibility even with Masque
+end
+
+-- Disable function for options that ARE controlled by Masque (insets, colors, etc)
+local function DisableCooldownCooldownSwipeMasqueControlled()
+  return IsMasqueCooldownsActive()
+end
+
+-- Swipe color options ARE disabled when Masque controls cooldowns
+-- ArcUI helps Masque apply its skin color by reading _MSQ_Color and calling SetSwipeColor
+local function DisableCooldownCooldownSwipeExceptColor()
+  return IsMasqueCooldownsActive()
+end
+
+-- No GCD Swipe is NOT disabled when Masque controls cooldowns
+-- Hiding GCD swipes doesn't conflict with Masque's visual styling
+local function DisableCooldownCooldownSwipeExceptNoGCD()
+  return false  -- Always enabled
+end
+
+-- Finish Flash (Bling) is NOT disabled when Masque controls cooldowns
+-- ArcUI can control the flash animation independently of Masque
+local function DisableCooldownCooldownSwipeExceptBling()
+  return false  -- Always enabled
 end
 
 local function HideCooldownRangeIndicator()
@@ -1380,6 +1477,27 @@ local function ApplySharedCooldownSetting(setter)
     ns.CDMEnhance.RefreshCooldownPreview()
   end
 end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- EXPORT HELPERS FOR EXTERNAL OPTION MODULES
+-- External option files (e.g. ArcUI_CustomLabelOptions) use these to build
+-- option entries that work seamlessly with edit-all / multi-select.
+-- Placed AFTER all local helper functions are defined so references are valid.
+-- ═══════════════════════════════════════════════════════════════════════════
+ns.OptionsHelpers = {
+  collapsedSections       = collapsedSections,
+  GetAuraCfg              = GetAuraCfg,
+  GetCooldownCfg          = GetCooldownCfg,
+  ApplyAuraSetting        = ApplyAuraSetting,
+  ApplySharedCooldownSetting = ApplySharedCooldownSetting,
+  HideIfNoAuraSelection   = HideIfNoAuraSelection,
+  HideIfNoCooldownSelection = HideIfNoCooldownSelection,
+  IsEditingMixedTypes     = IsEditingMixedTypes,
+  GetAuraHeaderName       = GetAuraHeaderName,
+  GetCooldownHeaderName   = GetCooldownHeaderName,
+  ResetAuraSectionSettings   = ResetAuraSectionSettings,
+  ResetCooldownSectionSettings = ResetCooldownSectionSettings,
+}
 
 -- Wrapper for proc glow settings (CDM built-in glow) - SHARED setting
 -- Applies to both types in mixed mode since proc glow is shared
@@ -2215,7 +2333,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     masqueHeader = {
       type = "header",
       name = "Masque Integration",
-      order = 6,
+      order = 8,
       hidden = function()
         return not (ns.Masque and ns.Masque.IsMasqueActive and ns.Masque.IsMasqueActive())
       end,
@@ -2223,7 +2341,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     masqueDesc = {
       type = "description",
       name = "|cff888888Enable Masque to skin icon borders and textures. When disabled, ArcUI controls everything.|r",
-      order = 6.1,
+      order = 8.1,
       fontSize = "small",
       hidden = function()
         return not (ns.Masque and ns.Masque.IsMasqueActive and ns.Masque.IsMasqueActive())
@@ -2232,8 +2350,8 @@ function ns.GetCDMAuraIconsOptionsTable()
     masqueEnabled = {
       type = "toggle",
       name = "Enable Masque Skinning",
-      desc = "When enabled, Masque controls icon borders and textures.\n\nWhen disabled, ArcUI controls everything (zoom, padding, borders).\n\n|cffFFAA00Note:|r ArcUI always controls cooldown swipe and charge text regardless of this setting.\n\n|cff888888Disabling requires a UI reload to fully remove Masque elements.|r",
-      order = 6.2,
+      desc = "When enabled, Masque controls icon borders and textures.\n\nWhen disabled, ArcUI controls everything (zoom, padding, borders).\n\n|cffFFAA00Note:|r Use 'Use Masque Cooldowns' below to choose whether Masque or ArcUI handles cooldown animations.\n\n|cff888888Disabling requires a UI reload to fully remove Masque elements.|r",
+      order = 8.2,
       width = 1.2,
       hidden = function()
         return not (ns.Masque and ns.Masque.IsMasqueActive and ns.Masque.IsMasqueActive())
@@ -2250,16 +2368,43 @@ function ns.GetCDMAuraIconsOptionsTable()
         end
         LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
         
-        -- When DISABLING Masque, prompt for reload to fully clean up
-        if not val then
+        -- Prompt for reload when toggling Masque
+        if val then
+          StaticPopup_Show("ARCUI_MASQUE_ENABLE_RELOAD")
+        else
           StaticPopup_Show("ARCUI_MASQUE_DISABLE_RELOAD")
         end
+      end,
+    },
+    masqueCooldowns = {
+      type = "toggle",
+      name = "Use Masque Cooldowns",
+      desc = "Let Masque control the cooldown animation (swipe overlay, spinning edge, finish flash).\n\n|cff00FF00When enabled:|r Masque's skin handles all cooldown visuals. ArcUI's Cooldown Animation options are hidden.\n\n|cffFFAA00When disabled:|r ArcUI controls cooldown animations with full customization (swipe color, edge scale, insets, etc.).",
+      order = 8.25,
+      width = 1.2,
+      hidden = function()
+        return not IsMasqueActive()
+      end,
+      disabled = function()
+        return not IsMasqueActive()
+      end,
+      get = function()
+        if ns.Masque and ns.Masque.ShouldMasqueControlCooldowns then
+          return ns.Masque.ShouldMasqueControlCooldowns()
+        end
+        return false
+      end,
+      set = function(_, val)
+        if ns.Masque and ns.Masque.SetSetting then
+          ns.Masque.SetSetting("useMasqueCooldowns", val)
+        end
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
       end,
     },
     masqueZoomNote = {
       type = "description",
       name = "|cffFFAA00When Masque is enabled:|r Zoom, Aspect Ratio, and Padding controls are disabled. Use Masque's settings to adjust icon appearance.",
-      order = 6.3,
+      order = 8.3,
       fontSize = "small",
       hidden = function()
         return not IsMasqueActive()
@@ -2269,7 +2414,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "execute",
       name = "Reset All Zoom Settings",
       desc = "Reset Zoom, Aspect Ratio, and Padding to default (0) for ALL icons.\n\n|cffFF6600Use this if:|r You have old zoom settings from before enabling Masque.",
-      order = 6.5,
+      order = 8.5,
       width = 1.1,
       hidden = function()
         return not (ns.Masque and ns.Masque.IsMasqueActive and ns.Masque.IsMasqueActive())
@@ -2484,6 +2629,19 @@ function ns.GetCDMAuraIconsOptionsTable()
       desc = "Per-icon scale multiplier (only used when Group Scale is disabled)",
       get = function() local c = GetAuraCfg(); return c and c.scale or 1.0 end,
       set = function(_, v)
+        -- For single Arc Aura: direct resize (no heavy refresh)
+        if not editAllUnifiedMode and not next(selectedAuraIcons) and selectedAuraIcon then
+          local cfg = ns.CDMEnhance.GetOrCreateIconSettings(selectedAuraIcon)
+          if cfg then
+            cfg.scale = v
+            -- Direct frame resize for Arc Auras
+            if ns.ArcAuras and ns.ArcAuras.SetFrameSizeDirectly and type(selectedAuraIcon) == "string" and selectedAuraIcon:match("^arc_") then
+              ns.ArcAuras.SetFrameSizeDirectly(selectedAuraIcon, v, cfg.width or 40, cfg.height or 40)
+              return
+            end
+          end
+        end
+        -- Multi-select / edit-all: use normal flow
         ApplyAuraSetting(function(c) c.scale = v end)
       end,
       order = 101, width = 0.7,
@@ -2498,7 +2656,22 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Width", min = 5, max = 200, step = 1,
       desc = "Icon width in pixels (before scale). Default is CDM's native size (36).",
       get = function() local c = GetAuraCfg(); return c and c.width or 36 end,
-      set = function(_, v) ApplyAuraSetting(function(c) c.width = v end) end,
+      set = function(_, v)
+        -- For single Arc Aura: direct resize (no heavy refresh)
+        if not editAllUnifiedMode and not next(selectedAuraIcons) and selectedAuraIcon then
+          local cfg = ns.CDMEnhance.GetOrCreateIconSettings(selectedAuraIcon)
+          if cfg then
+            cfg.width = v
+            -- Direct frame resize for Arc Auras
+            if ns.ArcAuras and ns.ArcAuras.SetFrameSizeDirectly and type(selectedAuraIcon) == "string" and selectedAuraIcon:match("^arc_") then
+              ns.ArcAuras.SetFrameSizeDirectly(selectedAuraIcon, cfg.scale or 1, v, cfg.height or 40)
+              return
+            end
+          end
+        end
+        -- Multi-select / edit-all: use normal flow
+        ApplyAuraSetting(function(c) c.width = v end)
+      end,
       order = 102, width = 0.65,
       hidden = function()
         if HideAuraIconAppearance() then return true end
@@ -2516,7 +2689,22 @@ function ns.GetCDMAuraIconsOptionsTable()
       type = "range", name = "Height", min = 5, max = 200, step = 1,
       desc = "Icon height in pixels (before scale). Default is CDM's native size (36).",
       get = function() local c = GetAuraCfg(); return c and c.height or 36 end,
-      set = function(_, v) ApplyAuraSetting(function(c) c.height = v end) end,
+      set = function(_, v)
+        -- For single Arc Aura: direct resize (no heavy refresh)
+        if not editAllUnifiedMode and not next(selectedAuraIcons) and selectedAuraIcon then
+          local cfg = ns.CDMEnhance.GetOrCreateIconSettings(selectedAuraIcon)
+          if cfg then
+            cfg.height = v
+            -- Direct frame resize for Arc Auras
+            if ns.ArcAuras and ns.ArcAuras.SetFrameSizeDirectly and type(selectedAuraIcon) == "string" and selectedAuraIcon:match("^arc_") then
+              ns.ArcAuras.SetFrameSizeDirectly(selectedAuraIcon, cfg.scale or 1, cfg.width or 40, v)
+              return
+            end
+          end
+        end
+        -- Multi-select / edit-all: use normal flow
+        ApplyAuraSetting(function(c) c.height = v end)
+      end,
       order = 103, width = 0.65,
       hidden = function()
         if HideAuraIconAppearance() then return true end
@@ -2955,7 +3143,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
         local c = GetAuraCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        return c.cooldownStateVisuals.readyState.glowType ~= "autocast"
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button"
       end,
     },
     activeStateGlowSpeed = {
@@ -3463,8 +3651,8 @@ function ns.GetCDMAuraIconsOptionsTable()
         if HideAuraProcGlow() then return true end
         local c = GetAuraCfg()
         local glowType = c and c.procGlow and c.procGlow.glowType or "default"
-        -- Only show for autocast type (scale doesn't work well on others)
-        return glowType ~= "autocast"
+        -- Show for autocast and button types (scale works via SetScale)
+        return glowType ~= "autocast" and glowType ~= "button"
       end,
     },
     procGlowSpeed = {
@@ -3629,14 +3817,26 @@ function ns.GetCDMAuraIconsOptionsTable()
     -- ═══════════════════════════════════════════════════════════════════
     cooldownSwipeHeader = {
       type = "toggle",
-      name = function() return GetAuraHeaderName("cooldownSwipe", "Cooldown Animation") end,
-      desc = "Click to expand/collapse. Purple dot indicates per-icon customizations.",
+      name = function() 
+        local baseName = GetAuraHeaderName("cooldownSwipe", "Cooldown Animation")
+        if IsMasqueCooldownsActive() then
+          return baseName .. " |cff00CCFF(Masque)|r"
+        end
+        return baseName
+      end,
+      desc = function()
+        if IsMasqueCooldownsActive() then
+          return "|cff00CCFFMasque controls most cooldown settings.|r You can still change swipe COLOR here (works in combat). Other options require disabling 'Use Masque Cooldowns' in Global Options."
+        end
+        return "Click to expand/collapse. Purple dot indicates per-icon customizations."
+      end,
       dialogControl = "CollapsibleHeader",
       get = function() return not collapsedSections.cooldownSwipe end,
       set = function(_, v) collapsedSections.cooldownSwipe = not v end,
       order = 120,
       width = "full",
       hidden = HideIfNoAuraSelection,
+      -- NOT disabled - users need to expand this to access swipe color options
     },
     -- Row 1: Preview + Finish Flash + No GCD
     cooldownPreview = {
@@ -3648,28 +3848,28 @@ function ns.GetCDMAuraIconsOptionsTable()
           ns.CDMEnhance.SetCooldownPreviewMode(v) 
         end 
       end,
-      order = 120.1, width = 0.5, hidden = HideAuraCooldownSwipe,
+      order = 120.1, width = 0.5, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     showBling = {
       type = "toggle", name = "Finish Flash",
       desc = "Flash when cooldown finishes",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showBling = v end) end,
-      order = 120.2, width = 0.7, hidden = HideAuraCooldownSwipe,
+      order = 120.2, width = 0.7, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipeExceptBling,
     },
     noGCDSwipe = {
       type = "toggle", name = "No GCD",
       desc = "Hide GCD swipes (cooldowns 1.5s or less). Only shows the swipe animation for actual spell cooldowns.",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe or false end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.noGCDSwipe = v end) end,
-      order = 120.3, width = 0.5, hidden = HideAuraCooldownSwipe,
+      order = 120.3, width = 0.5, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipeExceptNoGCD,
     },
     swipeWaitForNoCharges = {
       type = "toggle", name = "Wait No Charges",
       desc = "For charge spells: Only show swipe when ALL charges are consumed. When disabled, shows swipe during any charge recharge.",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges or false end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeWaitForNoCharges = v end) end,
-      order = 120.4, width = 0.7, hidden = HideAuraCooldownSwipe,
+      order = 120.4, width = 0.7, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     
     -- ═══════════════════════════════════════════════════════════════════
@@ -3678,25 +3878,30 @@ function ns.GetCDMAuraIconsOptionsTable()
     swipeSpacer = { type = "description", name = "", order = 121, width = "full", hidden = HideAuraCooldownSwipe },
     swipeLabel = {
       type = "description", name = "|cffccccccSwipe|r",
-      order = 121.05, width = 0.35, fontSize = "medium", hidden = HideAuraCooldownSwipe,
+      order = 121.05, width = 0.35, fontSize = "medium", hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     showSwipe = {
       type = "toggle", name = "Show",
       desc = "The darkening clock animation overlay",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showSwipe = v end) end,
-      order = 121.1, width = 0.4, hidden = HideAuraCooldownSwipe,
+      order = 121.1, width = 0.4, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     reverseSwipe = {
       type = "toggle", name = "Reverse",
       desc = "Reverse the swipe direction",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverse end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.reverse end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.reverse = v end) end,
-      order = 121.2, width = 0.5, hidden = HideAuraCooldownSwipe,
+      order = 121.2, width = 0.5, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     useCustomSwipeColor = {
       type = "toggle", name = "Color",
-      desc = "Use a custom swipe color instead of the default",
+      desc = function()
+        if IsMasqueCooldownsActive() then
+          return "|cff00CCFFMasque controls swipe color.|r ArcUI applies Masque's skin color using a method that works in combat."
+        end
+        return "Use a custom swipe color instead of the default"
+      end,
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end) end,
       set = function(_, v)
         ApplyAuraSetting(function(c)
@@ -3708,7 +3913,7 @@ function ns.GetCDMAuraIconsOptionsTable()
           end
         end)
       end,
-      order = 121.3, width = 0.4, hidden = HideAuraCooldownSwipe,
+      order = 121.3, width = 0.4, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipeExceptColor,
     },
     swipeColor = {
       type = "color", name = "", hasAlpha = true,
@@ -3746,7 +3951,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       desc = "Enable separate Width and Height insets instead of a single inset",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.separateInsets = v end) end,
-      order = 121.6, width = 0.35, hidden = HideAuraCooldownSwipe,
+      order = 121.6, width = 0.35, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     swipeInsetX = {
       type = "range", name = "Inset W", min = -20, max = 40, step = 1,
@@ -3779,21 +3984,21 @@ function ns.GetCDMAuraIconsOptionsTable()
     edgeSpacer = { type = "description", name = "", order = 122, width = "full", hidden = HideAuraCooldownSwipe },
     edgeLabel = {
       type = "description", name = "|cffccccccEdge|r",
-      order = 122.05, width = 0.35, fontSize = "medium", hidden = HideAuraCooldownSwipe,
+      order = 122.05, width = 0.35, fontSize = "medium", hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     showEdge = {
       type = "toggle", name = "Show",
       desc = "The spinning bright line on the cooldown edge",
       get = function() return GetAuraBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end, function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end) end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showEdge = v end) end,
-      order = 122.1, width = 0.4, hidden = HideAuraCooldownSwipe,
+      order = 122.1, width = 0.4, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     edgeScale = {
       type = "range", name = "Scale", min = 0.1, max = 3.0, step = 0.1,
       desc = "Size of the cooldown edge spinner",
       get = function() local c = GetAuraCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeScale or 1.0 end,
       set = function(_, v) ApplyAuraSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeScale = v end) end,
-      order = 122.2, width = 0.6, hidden = HideAuraCooldownSwipe,
+      order = 122.2, width = 0.6, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     edgeColorEnabled = {
       type = "toggle", name = "Color",
@@ -3809,7 +4014,7 @@ function ns.GetCDMAuraIconsOptionsTable()
           end
         end)
       end,
-      order = 122.3, width = 0.4, hidden = HideAuraCooldownSwipe,
+      order = 122.3, width = 0.4, hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
     },
     edgeColor = {
       type = "color", name = "", hasAlpha = true,
@@ -3837,7 +4042,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       desc = "Reset Cooldown Animation settings to defaults for selected icon(s)",
       order = 129,
       width = 0.7,
-      hidden = HideAuraCooldownSwipe,
+      hidden = HideAuraCooldownSwipe, disabled = DisableAuraCooldownSwipe,
       func = function() ResetAuraSectionSettings("cooldownSwipe") end,
     },
     
@@ -4105,6 +4310,11 @@ function ns.GetCDMAuraIconsOptionsTable()
     },
     
     -- ═══════════════════════════════════════════════════════════════════
+    -- CUSTOM LABEL SECTION  → defined in ArcUI_CustomLabelOptions.lua
+    -- Entries are merged into this args table below (after catalog icons)
+    -- ═══════════════════════════════════════════════════════════════════
+    
+    -- ═══════════════════════════════════════════════════════════════════
     -- BOTTOM BUTTONS (side by side)
     -- ═══════════════════════════════════════════════════════════════════
     bottomSpacer = {
@@ -4192,6 +4402,13 @@ function ns.GetCDMAuraIconsOptionsTable()
   -- Add catalog icon grid (auras only)
   for i = 1, 50 do
     args["catalogIcon" .. i] = CreateAuraCatalogIconEntry(i)
+  end
+  
+  -- Merge Custom Label options from external module
+  if ns.CustomLabelOptions and ns.CustomLabelOptions.GetAuraArgs then
+    for k, v in pairs(ns.CustomLabelOptions.GetAuraArgs()) do
+      args[k] = v
+    end
   end
   
   return {
@@ -4631,6 +4848,15 @@ function ns.GetCDMCooldownIconsOptionsTable()
       set = function(_, v) ApplySharedCooldownSetting(function(c) c.hideShadow = v end) end,
       order = 107.5, width = 0.85, hidden = HideCooldownIconAppearance,
     },
+    showPandemicBorder = {
+      type = "toggle", name = "Pandemic Glow",
+      desc = "Shows the red pandemic glow when cooldown is at 30% remaining.\n\n|cff888888Note:|r If glow persists after disabling, /reload fixes it.",
+      get = function()
+        return GetCooldownBoolSetting(function(c) return c.pandemicBorder and c.pandemicBorder.enabled end, function() local c = GetCooldownCfg(); return c and c.pandemicBorder and c.pandemicBorder.enabled end)
+      end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.pandemicBorder then c.pandemicBorder = {} end; c.pandemicBorder.enabled = v end) end,
+      order = 107.52, width = 0.85, hidden = HideCooldownIconAppearance,
+    },
     resetIconAppearance = {
       type = "execute",
       name = "Reset Section",
@@ -5033,7 +5259,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
         local c = GetCooldownCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        return c.cooldownStateVisuals.readyState.glowType ~= "autocast"
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button"
       end,
     },
     readyStateGlowSpeed = {
@@ -5570,8 +5796,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideCooldownProcGlow() then return true end
         local c = GetCooldownCfg()
         local glowType = c and c.procGlow and c.procGlow.glowType or "default"
-        -- Only show for autocast type
-        return glowType ~= "autocast"
+        -- Show for autocast and button types (scale works via SetScale)
+        return glowType ~= "autocast" and glowType ~= "button"
       end,
     },
     procGlowSpeed = {
@@ -5718,8 +5944,19 @@ function ns.GetCDMCooldownIconsOptionsTable()
     -- ═══════════════════════════════════════════════════════════════════
     cooldownSwipeHeader = {
       type = "toggle",
-      name = function() return GetCooldownHeaderName("cooldownSwipe", "Cooldown Animation") end,
-      desc = "Click to expand/collapse. Purple dot indicates per-icon customizations.",
+      name = function() 
+        local baseName = GetCooldownHeaderName("cooldownSwipe", "Cooldown Animation")
+        if IsMasqueCooldownsActive() then
+          return baseName .. " |cff00CCFF(Masque)|r"
+        end
+        return baseName
+      end,
+      desc = function()
+        if IsMasqueCooldownsActive() then
+          return "|cff00CCFFMasque controls most cooldown settings.|r You can still change swipe COLOR here (works in combat). Other options require disabling 'Use Masque Cooldowns' in Global Options."
+        end
+        return "Click to expand/collapse. Purple dot indicates per-icon customizations."
+      end,
       dialogControl = "CollapsibleHeader",
       get = function() return not collapsedSections.cooldownSwipe end,
       set = function(_, v) collapsedSections.cooldownSwipe = not v end,
@@ -5730,6 +5967,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if IsEditingMixedTypes() then return true end
         return false
       end,
+      -- NOT disabled - users need to expand this to access swipe color options
     },
     -- Row 1: Preview + Finish Flash + No GCD
     cooldownPreview = {
@@ -5741,28 +5979,28 @@ function ns.GetCDMCooldownIconsOptionsTable()
           ns.CDMEnhance.SetCooldownPreviewMode(v) 
         end 
       end,
-      order = 120.1, width = 0.5, hidden = HideCooldownCooldownSwipe,
+      order = 120.1, width = 0.5, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     showBling = {
       type = "toggle", name = "Finish Flash",
       desc = "Flash when cooldown finishes",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showBling ~= false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showBling = v end) end,
-      order = 120.2, width = 0.7, hidden = HideCooldownCooldownSwipe,
+      order = 120.2, width = 0.7, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipeExceptBling,
     },
     noGCDSwipe = {
       type = "toggle", name = "No GCD",
       desc = "Hide GCD swipes (cooldowns 1.5s or less). Only shows the swipe animation for actual spell cooldowns.",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.noGCDSwipe or false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.noGCDSwipe = v end) end,
-      order = 120.3, width = 0.5, hidden = HideCooldownCooldownSwipe,
+      order = 120.3, width = 0.5, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipeExceptNoGCD,
     },
     swipeWaitForNoCharges = {
       type = "toggle", name = "Wait No Charges",
       desc = "For charge spells: Only show swipe when ALL charges are consumed. When disabled, shows swipe during any charge recharge.",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges or false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeWaitForNoCharges = v end) end,
-      order = 120.4, width = 0.7, hidden = HideCooldownCooldownSwipe,
+      order = 120.4, width = 0.7, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     
     -- ═══════════════════════════════════════════════════════════════════
@@ -5771,25 +6009,30 @@ function ns.GetCDMCooldownIconsOptionsTable()
     swipeSpacer = { type = "description", name = "", order = 121, width = "full", hidden = HideCooldownCooldownSwipe },
     swipeLabel = {
       type = "description", name = "|cffccccccSwipe|r",
-      order = 121.05, width = 0.35, fontSize = "medium", hidden = HideCooldownCooldownSwipe,
+      order = 121.05, width = 0.35, fontSize = "medium", hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     showSwipe = {
       type = "toggle", name = "Show",
       desc = "The darkening clock animation overlay",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showSwipe ~= false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showSwipe = v end) end,
-      order = 121.1, width = 0.4, hidden = HideCooldownCooldownSwipe,
+      order = 121.1, width = 0.4, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     reverseSwipe = {
       type = "toggle", name = "Reverse",
       desc = "Reverse the swipe direction",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverse end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.reverse end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.reverse = v end) end,
-      order = 121.2, width = 0.5, hidden = HideCooldownCooldownSwipe,
+      order = 121.2, width = 0.5, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     useCustomSwipeColor = {
       type = "toggle", name = "Color",
-      desc = "Use a custom swipe color instead of the default",
+      desc = function()
+        if IsMasqueCooldownsActive() then
+          return "|cff00CCFFMasque controls swipe color.|r ArcUI applies Masque's skin color using a method that works in combat."
+        end
+        return "Use a custom swipe color instead of the default"
+      end,
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeColor ~= nil end) end,
       set = function(_, v)
         ApplySharedCooldownSetting(function(c)
@@ -5801,7 +6044,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
           end
         end)
       end,
-      order = 121.3, width = 0.4, hidden = HideCooldownCooldownSwipe,
+      order = 121.3, width = 0.4, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipeExceptColor,
     },
     swipeColor = {
       type = "color", name = "", hasAlpha = true,
@@ -5839,7 +6082,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       desc = "Enable separate Width and Height insets instead of a single inset",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.separateInsets end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.separateInsets = v end) end,
-      order = 121.6, width = 0.35, hidden = HideCooldownCooldownSwipe,
+      order = 121.6, width = 0.35, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     swipeInsetX = {
       type = "range", name = "Inset W", min = -20, max = 40, step = 1,
@@ -5872,21 +6115,21 @@ function ns.GetCDMCooldownIconsOptionsTable()
     edgeSpacer = { type = "description", name = "", order = 122, width = "full", hidden = HideCooldownCooldownSwipe },
     edgeLabel = {
       type = "description", name = "|cffccccccEdge|r",
-      order = 122.05, width = 0.35, fontSize = "medium", hidden = HideCooldownCooldownSwipe,
+      order = 122.05, width = 0.35, fontSize = "medium", hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     showEdge = {
       type = "toggle", name = "Show",
       desc = "The spinning bright line on the cooldown edge",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.showEdge ~= false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.showEdge = v end) end,
-      order = 122.1, width = 0.4, hidden = HideCooldownCooldownSwipe,
+      order = 122.1, width = 0.4, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     edgeScale = {
       type = "range", name = "Scale", min = 0.1, max = 3.0, step = 0.1,
       desc = "Size of the cooldown edge spinner",
       get = function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeScale or 1.0 end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeScale = v end) end,
-      order = 122.2, width = 0.6, hidden = HideCooldownCooldownSwipe,
+      order = 122.2, width = 0.6, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     edgeColorEnabled = {
       type = "toggle", name = "Color",
@@ -5902,7 +6145,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
           end
         end)
       end,
-      order = 122.3, width = 0.4, hidden = HideCooldownCooldownSwipe,
+      order = 122.3, width = 0.4, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
     },
     edgeColor = {
       type = "color", name = "", hasAlpha = true,
@@ -5930,7 +6173,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       desc = "Reset Cooldown Animation settings to defaults for selected icon(s)",
       order = 129,
       width = 0.7,
-      hidden = HideCooldownCooldownSwipe,
+      hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
       func = function() ResetCooldownSectionSettings("cooldownSwipe") end,
     },
     
@@ -6206,6 +6449,271 @@ function ns.GetCDMCooldownIconsOptionsTable()
     },
     
     -- ═══════════════════════════════════════════════════════════════════
+    -- KEYBIND TEXT SECTION
+    -- ═══════════════════════════════════════════════════════════════════
+    keybindTextHeader = {
+      type = "toggle",
+      name = function() return GetCooldownHeaderName("keybindText", "Keybind Display") end,
+      desc = "Click to expand/collapse. Per-icon keybind display settings. Purple dot indicates per-icon customizations.",
+      dialogControl = "CollapsibleHeader",
+      get = function() return not collapsedSections.keybindText end,
+      set = function(_, v) collapsedSections.keybindText = not v end,
+      order = 170,
+      width = "full",
+      hidden = function()
+        if HideIfNoCooldownSelection() then return true end
+        if IsEditingMixedTypes() then return true end
+        return false
+      end,
+    },
+    keybindEnabled = {
+      type = "toggle", name = "Show",
+      desc = "Show keybind text on this icon. Uses global settings if no per-icon overrides are set.",
+      get = function()
+        local c = GetCooldownCfg()
+        -- hideKeybind = true means disabled, so invert
+        return not (c and c.hideKeybind == true)
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          c.hideKeybind = (not v) or nil  -- nil when showing to keep settings clean
+        end)
+        if ns.Keybinds and ns.Keybinds.RefreshAll then
+          ns.Keybinds.RefreshAll()
+        end
+      end,
+      order = 171, width = 0.5, hidden = HideCooldownKeybindText,
+    },
+    keybindUsePerIcon = {
+      type = "toggle", name = "Override Global",
+      desc = "Use per-icon settings instead of global keybind settings",
+      get = function()
+        local c = GetCooldownCfg()
+        return c and c.keybindText and c.keybindText.enabled == true
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.enabled = v or nil
+        end)
+        if ns.Keybinds and ns.Keybinds.RefreshAll then
+          ns.Keybinds.RefreshAll()
+        end
+      end,
+      order = 171.5, width = 0.7, hidden = HideCooldownKeybindText,
+    },
+    keybindSize = {
+      type = "range", name = "Size", min = 6, max = 32, step = 1,
+      desc = "Font size for keybind text",
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.size or 12 end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.size = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 172, width = 0.6,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindColor = {
+      type = "color", name = "Color", hasAlpha = true,
+      desc = "Color of keybind text",
+      get = function()
+        local c = GetCooldownCfg()
+        local col = c and c.keybindText and c.keybindText.color or {1,1,1,1}
+        return col[1] or 1, col[2] or 1, col[3] or 1, col[4] or 1
+      end,
+      set = function(_, r, g, b, a)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.color = {r, g, b, a}
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 173, width = 0.5,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindFont = {
+      type = "select", name = "Font",
+      desc = "Font for keybind text",
+      dialogControl = "LSM30_Font",
+      values = AceGUIWidgetLSMlists and AceGUIWidgetLSMlists.font or {},
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.font or "Friz Quadrata TT" end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.font = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 174, width = 1.0,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindOutline = {
+      type = "select", name = "Outline",
+      desc = "Font outline style",
+      values = { [""] = "None", ["OUTLINE"] = "Thin", ["THICKOUTLINE"] = "Thick", ["MONOCHROME"] = "Mono" },
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.outline or "OUTLINE" end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.outline = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 175, width = 0.6,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindAnchor = {
+      type = "select", name = "Anchor",
+      desc = "Position of keybind text on icon",
+      values = TEXT_ANCHORS,
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.anchor or "TOPRIGHT" end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.anchor = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 176, width = 0.7,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindOffsetX = {
+      type = "range", name = "X Offset", min = -50, max = 50, step = 1,
+      desc = "Horizontal offset",
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.offsetX or 0 end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.offsetX = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 177, width = 0.6,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindOffsetXInput = {
+      type = "input", name = "X",
+      desc = "Type an exact X offset value (any integer)",
+      dialogControl = "ArcUI_EditBox",
+      get = function() local c = GetCooldownCfg(); return tostring(c and c.keybindText and c.keybindText.offsetX or 0) end,
+      set = function(_, v)
+        local num = tonumber(v)
+        if num then
+          ApplyCooldownSetting(function(c)
+            if not c.keybindText then c.keybindText = {} end
+            c.keybindText.offsetX = math.floor(num)
+          end)
+          if ns.Keybinds and ns.Keybinds.QueueRefresh then
+            ns.Keybinds.QueueRefresh()
+          end
+        end
+      end,
+      order = 177.5, width = 0.35,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindOffsetY = {
+      type = "range", name = "Y Offset", min = -50, max = 50, step = 1,
+      desc = "Vertical offset",
+      get = function() local c = GetCooldownCfg(); return c and c.keybindText and c.keybindText.offsetY or 0 end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.keybindText then c.keybindText = {} end
+          c.keybindText.offsetY = v
+        end)
+        if ns.Keybinds and ns.Keybinds.QueueRefresh then
+          ns.Keybinds.QueueRefresh()
+        end
+      end,
+      order = 178, width = 0.6,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    keybindOffsetYInput = {
+      type = "input", name = "Y",
+      desc = "Type an exact Y offset value (any integer)",
+      dialogControl = "ArcUI_EditBox",
+      get = function() local c = GetCooldownCfg(); return tostring(c and c.keybindText and c.keybindText.offsetY or 0) end,
+      set = function(_, v)
+        local num = tonumber(v)
+        if num then
+          ApplyCooldownSetting(function(c)
+            if not c.keybindText then c.keybindText = {} end
+            c.keybindText.offsetY = math.floor(num)
+          end)
+          if ns.Keybinds and ns.Keybinds.QueueRefresh then
+            ns.Keybinds.QueueRefresh()
+          end
+        end
+      end,
+      order = 178.5, width = 0.35,
+      hidden = function()
+        if HideCooldownKeybindText() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.keybindText and c.keybindText.enabled)
+      end,
+    },
+    resetKeybindText = {
+      type = "execute",
+      name = "Reset Section",
+      desc = "Reset Keybind Display settings to defaults for selected icon(s)",
+      order = 185,
+      width = 0.7,
+      hidden = HideCooldownKeybindText,
+      func = function() ResetCooldownSectionSettings("keybindText") end,
+    },
+    
+    -- ═══════════════════════════════════════════════════════════════════
+    -- CUSTOM LABEL SECTION  → defined in ArcUI_CustomLabelOptions.lua
+    -- Entries are merged into this args table below (after catalog icons)
+    -- ═══════════════════════════════════════════════════════════════════
+    
+    -- ═══════════════════════════════════════════════════════════════════
     -- BOTTOM BUTTONS (side by side)
     -- ═══════════════════════════════════════════════════════════════════
     bottomSpacer = {
@@ -6293,6 +6801,13 @@ function ns.GetCDMCooldownIconsOptionsTable()
   -- Add catalog icon grid (cooldowns only)
   for i = 1, 50 do
     args["catalogIcon" .. i] = CreateCooldownCatalogIconEntry(i)
+  end
+  
+  -- Merge Custom Label options from external module
+  if ns.CustomLabelOptions and ns.CustomLabelOptions.GetCooldownArgs then
+    for k, v in pairs(ns.CustomLabelOptions.GetCooldownArgs()) do
+      args[k] = v
+    end
   end
   
   return {
@@ -6699,7 +7214,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.activeState then return true end
           local g = GetAuraGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          return g.cooldownStateVisuals.readyState.glowType ~= "autocast"
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button"
         end,
       },
       activeStateGlowSpeed = {
@@ -7016,16 +7531,30 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
       -- COOLDOWN SWIPE
       -- ═══════════════════════════════════════════════════════════════════
       cooldownSwipeHeader = {
-        type = "toggle", name = "Cooldown Swipe", dialogControl = "CollapsibleHeader",
+        type = "toggle", dialogControl = "CollapsibleHeader",
+        name = function()
+          if IsMasqueCooldownsActive() then
+            return "Cooldown Swipe |cff00CCFF(Masque)|r"
+          end
+          return "Cooldown Swipe"
+        end,
+        desc = function()
+          if IsMasqueCooldownsActive() then
+            return "|cff00CCFFMasque controls most cooldown settings.|r You can still change swipe COLOR here (works in combat). Other options require disabling 'Use Masque Cooldowns' above."
+          end
+          return "Click to expand/collapse cooldown animation settings."
+        end,
         get = function() return not collapsedGlobalAuraSections.cooldownSwipe end,
         set = function(_, v) collapsedGlobalAuraSections.cooldownSwipe = not v end,
         order = 20, width = "full",
+        -- NOT disabled - users need to expand this to access swipe color options
       },
       showSwipe = {
         type = "toggle", name = "Show Swipe",
         get = function() local g = GetAuraGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showSwipe ~= false end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.showSwipe", v); RefreshGlobalAuras() end,
         order = 21, width = 0.6, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - user can still toggle swipe visibility
       },
       noGCDSwipe = {
         type = "toggle", name = "No GCD Swipe",
@@ -7037,6 +7566,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
         end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.noGCDSwipe", v); RefreshGlobalAuras() end,
         order = 22, width = 0.7, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - hiding GCD doesn't conflict with Masque
       },
       swipeWaitForNoCharges = {
         type = "toggle", name = "Wait No Charges",
@@ -7047,29 +7577,36 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           return g.cooldownSwipe.swipeWaitForNoCharges or false
         end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.swipeWaitForNoCharges", v); RefreshGlobalAuras() end,
-        order = 22.5, width = 0.8, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        order = 22.5, width = 0.8, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       showEdge = {
         type = "toggle", name = "Edge",
         get = function() local g = GetAuraGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showEdge ~= false end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.showEdge", v); RefreshGlobalAuras() end,
         order = 23, width = 0.4, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - user can still toggle edge visibility
       },
       showBling = {
         type = "toggle", name = "Bling",
         get = function() local g = GetAuraGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showBling ~= false end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.showBling", v); RefreshGlobalAuras() end,
         order = 24, width = 0.4, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - finish flash can be controlled independently
       },
       reverse = {
         type = "toggle", name = "Reverse",
         get = function() local g = GetAuraGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.reverse end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.reverse", v); RefreshGlobalAuras() end,
-        order = 25, width = 0.5, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        order = 25, width = 0.5, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       swipeColorEnabled = {
         type = "toggle", name = "Custom Color",
-        desc = "Use a custom swipe color instead of CDM default",
+        desc = function()
+          if IsMasqueCooldownsActive() then
+            return "|cff00CCFFMasque controls swipe color.|r ArcUI applies Masque's skin color using a method that works in combat."
+          end
+          return "Use a custom swipe color instead of CDM default"
+        end,
         get = function() local g = GetAuraGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.swipeColor ~= nil end,
         set = function(_, v)
           if v then
@@ -7080,6 +7617,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           RefreshGlobalAuras()
         end,
         order = 26, width = 0.7, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        disabled = IsMasqueCooldownsActive,  -- Masque controls color, ArcUI applies it
       },
       swipeColor = {
         type = "color", name = "Color", hasAlpha = true,
@@ -7104,7 +7642,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
         desc = "Size of the cooldown edge spinner",
         get = function() local g = GetAuraGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.edgeScale or 1.0 end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.edgeScale", v); RefreshGlobalAuras() end,
-        order = 27.1, width = 0.7, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        order = 27.1, width = 0.7, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       edgeColorEnabled = {
         type = "toggle", name = "Edge Color",
@@ -7118,7 +7656,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           end
           RefreshGlobalAuras()
         end,
-        order = 27.2, width = 0.65, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        order = 27.2, width = 0.65, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       edgeColor = {
         type = "color", name = "Edge", hasAlpha = true,
@@ -7156,7 +7694,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
         desc = "Enable separate Width and Height insets instead of a single inset",
         get = function() local g = GetAuraGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.separateInsets end,
         set = function(_, v) ApplyAuraGlobalSetting("cooldownSwipe.separateInsets", v); RefreshGlobalAuras() end,
-        order = 27.45, width = 0.35, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end,
+        order = 27.45, width = 0.35, hidden = function() return collapsedGlobalAuraSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       swipeInsetX = {
         type = "range", name = "Width", min = -20, max = 40, step = 1,
@@ -7453,7 +7991,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.procGlow then return true end
           local g = GetAuraGlobalCfg()
           local glowType = g.procGlow and g.procGlow.glowType or "default"
-          return glowType ~= "autocast"
+          return glowType ~= "autocast" and glowType ~= "button"
         end,
       },
       glowSpeed = {
@@ -7777,6 +8315,13 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         set = function(_, v) ApplyCooldownGlobalSetting("hideShadow", v); RefreshGlobalCooldowns() end,
         order = 13, width = 0.75, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
       },
+      showPandemicBorder = {
+        type = "toggle", name = "Pandemic Glow",
+        desc = "Show red pandemic glow when cooldown is at 30% remaining.\n\n|cff888888Note:|r If glow persists after disabling, /reload fixes it.",
+        get = function() local g = GetCooldownGlobalCfg(); return g.pandemicBorder and g.pandemicBorder.enabled end,
+        set = function(_, v) ApplyCooldownGlobalSetting("pandemicBorder.enabled", v); RefreshGlobalCooldowns() end,
+        order = 13.5, width = 0.85, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
+      },
       
       -- ═══════════════════════════════════════════════════════════════════
       -- READY STATE
@@ -8005,7 +8550,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.readyState then return true end
           local g = GetCooldownGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          return g.cooldownStateVisuals.readyState.glowType ~= "autocast"
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button"
         end,
       },
       readyStateGlowSpeed = {
@@ -8295,16 +8840,30 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
       -- COOLDOWN SWIPE
       -- ═══════════════════════════════════════════════════════════════════
       cooldownSwipeHeader = {
-        type = "toggle", name = "Cooldown Swipe", dialogControl = "CollapsibleHeader",
+        type = "toggle", dialogControl = "CollapsibleHeader",
+        name = function()
+          if IsMasqueCooldownsActive() then
+            return "Cooldown Swipe |cff00CCFF(Masque)|r"
+          end
+          return "Cooldown Swipe"
+        end,
+        desc = function()
+          if IsMasqueCooldownsActive() then
+            return "|cff00CCFFMasque controls most cooldown settings.|r You can still change swipe COLOR here (works in combat). Other options require disabling 'Use Masque Cooldowns' above."
+          end
+          return "Click to expand/collapse cooldown animation settings."
+        end,
         get = function() return not collapsedGlobalCooldownSections.cooldownSwipe end,
         set = function(_, v) collapsedGlobalCooldownSections.cooldownSwipe = not v end,
         order = 20, width = "full",
+        -- NOT disabled - users need to expand this to access swipe color options
       },
       showSwipe = {
         type = "toggle", name = "Show Swipe",
         get = function() local g = GetCooldownGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showSwipe ~= false end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.showSwipe", v); RefreshGlobalCooldowns() end,
         order = 21, width = 0.6, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - user can still toggle swipe visibility
       },
       noGCDSwipe = {
         type = "toggle", name = "No GCD Swipe",
@@ -8316,6 +8875,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.noGCDSwipe", v); RefreshGlobalCooldowns() end,
         order = 22, width = 0.7, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - hiding GCD doesn't conflict with Masque
       },
       swipeWaitForNoCharges = {
         type = "toggle", name = "Wait No Charges",
@@ -8326,29 +8886,36 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           return g.cooldownSwipe.swipeWaitForNoCharges or false
         end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.swipeWaitForNoCharges", v); RefreshGlobalCooldowns() end,
-        order = 22.5, width = 0.8, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        order = 22.5, width = 0.8, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       showEdge = {
         type = "toggle", name = "Edge",
         get = function() local g = GetCooldownGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showEdge ~= false end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.showEdge", v); RefreshGlobalCooldowns() end,
         order = 23, width = 0.4, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - user can still toggle edge visibility
       },
       showBling = {
         type = "toggle", name = "Bling",
         get = function() local g = GetCooldownGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showBling ~= false end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.showBling", v); RefreshGlobalCooldowns() end,
         order = 24, width = 0.4, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        -- NOT disabled when Masque controls cooldowns - finish flash can be controlled independently
       },
       reverse = {
         type = "toggle", name = "Reverse",
         get = function() local g = GetCooldownGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.reverse end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.reverse", v); RefreshGlobalCooldowns() end,
-        order = 25, width = 0.5, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        order = 25, width = 0.5, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       swipeColorEnabled = {
         type = "toggle", name = "Custom Color",
-        desc = "Use a custom swipe color instead of CDM default",
+        desc = function()
+          if IsMasqueCooldownsActive() then
+            return "|cff00CCFFMasque controls swipe color.|r ArcUI applies Masque's skin color using a method that works in combat."
+          end
+          return "Use a custom swipe color instead of CDM default"
+        end,
         get = function() local g = GetCooldownGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.swipeColor ~= nil end,
         set = function(_, v)
           if v then
@@ -8359,6 +8926,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           RefreshGlobalCooldowns()
         end,
         order = 26, width = 0.7, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        disabled = IsMasqueCooldownsActive,  -- Masque controls color, ArcUI applies it
       },
       swipeColor = {
         type = "color", name = "Color", hasAlpha = true,
@@ -8395,7 +8963,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         desc = "Enable separate Width and Height insets instead of a single inset",
         get = function() local g = GetCooldownGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.separateInsets end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.separateInsets", v); RefreshGlobalCooldowns() end,
-        order = 27.45, width = 0.35, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        order = 27.45, width = 0.35, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       swipeInsetX = {
         type = "range", name = "Width", min = -20, max = 40, step = 1,
@@ -8426,7 +8994,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         desc = "Size of the cooldown edge spinner",
         get = function() local g = GetCooldownGlobalCfg(); return g.cooldownSwipe and g.cooldownSwipe.edgeScale or 1.0 end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.edgeScale", v); RefreshGlobalCooldowns() end,
-        order = 28.1, width = 0.7, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        order = 28.1, width = 0.7, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       edgeColorEnabled = {
         type = "toggle", name = "Edge Color",
@@ -8440,7 +9008,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           end
           RefreshGlobalCooldowns()
         end,
-        order = 28.2, width = 0.65, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
+        order = 28.2, width = 0.65, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end, disabled = IsMasqueCooldownsActive,
       },
       edgeColor = {
         type = "color", name = "Edge", hasAlpha = true,
@@ -8732,7 +9300,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.procGlow then return true end
           local g = GetCooldownGlobalCfg()
           local glowType = g.procGlow and g.procGlow.glowType or "default"
-          return glowType ~= "autocast"
+          return glowType ~= "autocast" and glowType ~= "button"
         end,
       },
       glowSpeed = {
@@ -9104,6 +9672,327 @@ function ns.GetCDMIconsOptionsTable()
         db.clickThrough = val
         if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
           ns.CDMGroups.RefreshIconSettings()
+        end
+      end,
+    },
+    
+    -- ═══════════════════════════════════════════════════════════════════
+    -- KEYBINDS SECTION
+    -- ═══════════════════════════════════════════════════════════════════
+    keybindsToggle = {
+      type = "toggle",
+      name = "Keybind Display",
+      desc = "Click to expand/collapse",
+      dialogControl = "CollapsibleHeader",
+      order = 6,
+      width = "full",
+      get = function() return not collapsedSections.keybinds end,
+      set = function(_, v)
+        collapsedSections.keybinds = not v
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+      end,
+    },
+    showKeybinds = {
+      type = "toggle",
+      name = "Enable",
+      desc = "When enabled, action bar keybinds are displayed on cooldown icons.\n\nShows the key you press to activate each ability.",
+      order = 6.02,
+      width = 0.5,
+      hidden = function() return collapsedSections.keybinds end,
+      get = function()
+        return ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled() or false
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetEnabled then
+          ns.Keybinds.SetEnabled(val)
+        end
+      end,
+    },
+    keybindFont = {
+      type = "select",
+      name = "Font",
+      dialogControl = "LSM30_Font",
+      values = LSM and LSM:HashTable("font") or {},
+      order = 6.03,
+      width = 0.9,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.font or "Friz Quadrata TT"
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("font", val)
+        end
+      end,
+    },
+    keybindFontSize = {
+      type = "range",
+      name = "Size",
+      desc = "Font size for keybind text",
+      order = 6.04,
+      width = 0.7,
+      min = 6, max = 32, step = 1,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.fontSize or 12
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("fontSize", val)
+        end
+      end,
+    },
+    keybindOutline = {
+      type = "select",
+      name = "Outline",
+      values = {
+        [""] = "None",
+        ["OUTLINE"] = "Outline",
+        ["THICKOUTLINE"] = "Thick",
+        ["MONOCHROME"] = "Mono",
+      },
+      order = 6.05,
+      width = 0.55,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.fontOutline or "OUTLINE"
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("fontOutline", val)
+        end
+      end,
+    },
+    keybindColor = {
+      type = "color",
+      name = "Color",
+      hasAlpha = true,
+      order = 6.06,
+      width = 0.45,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        local c = settings and settings.color or { 1, 1, 1, 1 }
+        return c[1] or 1, c[2] or 1, c[3] or 1, c[4] or 1
+      end,
+      set = function(_, r, g, b, a)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("color", { r, g, b, a })
+        end
+      end,
+    },
+    keybindAnchor = {
+      type = "select",
+      name = "Anchor",
+      desc = "Position to display keybind text on the icon",
+      order = 6.07,
+      width = 0.65,
+      values = {
+        TOPLEFT = "Top Left",
+        TOP = "Top",
+        TOPRIGHT = "Top Right",
+        LEFT = "Left",
+        CENTER = "Center",
+        RIGHT = "Right",
+        BOTTOMLEFT = "Bottom Left",
+        BOTTOM = "Bottom",
+        BOTTOMRIGHT = "Bottom Right",
+      },
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.anchor or "TOPRIGHT"
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("anchor", val)
+        end
+      end,
+    },
+    keybindOffsetX = {
+      type = "range",
+      name = "X Offset",
+      desc = "Horizontal offset for keybind text",
+      order = 6.08,
+      width = 0.6,
+      min = -50, max = 50, step = 1,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.offsetX or -1
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("offsetX", val)
+        end
+      end,
+    },
+    keybindOffsetXInput = {
+      type = "input",
+      name = "X",
+      desc = "Type an exact X offset value (any integer)",
+      dialogControl = "ArcUI_EditBox",
+      order = 6.081,
+      width = 0.35,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return tostring(settings and settings.offsetX or -1)
+      end,
+      set = function(_, val)
+        local num = tonumber(val)
+        if num and ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("offsetX", math.floor(num))
+        end
+      end,
+    },
+    keybindOffsetY = {
+      type = "range",
+      name = "Y Offset",
+      desc = "Vertical offset for keybind text",
+      order = 6.09,
+      width = 0.6,
+      min = -50, max = 50, step = 1,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.offsetY or -1
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("offsetY", val)
+        end
+      end,
+    },
+    keybindOffsetYInput = {
+      type = "input",
+      name = "Y",
+      desc = "Type an exact Y offset value (any integer)",
+      dialogControl = "ArcUI_EditBox",
+      order = 6.091,
+      width = 0.35,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return tostring(settings and settings.offsetY or -1)
+      end,
+      set = function(_, val)
+        local num = tonumber(val)
+        if num and ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("offsetY", math.floor(num))
+        end
+      end,
+    },
+    keybindStrata = {
+      type = "select",
+      name = "Strata",
+      desc = "Frame strata for keybind text. 'Inherit' uses the icon's strata.",
+      order = 6.10,
+      width = 0.55,
+      values = {
+        [""] = "Inherit",
+        ["BACKGROUND"] = "Background",
+        ["LOW"] = "Low",
+        ["MEDIUM"] = "Medium",
+        ["HIGH"] = "High",
+        ["DIALOG"] = "Dialog",
+        ["TOOLTIP"] = "Tooltip",
+      },
+      sorting = { "", "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" },
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.frameStrata or ""
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("frameStrata", val)
+        end
+      end,
+    },
+    keybindLevel = {
+      type = "input",
+      name = "Level",
+      desc = "Frame level for keybind text (higher = on top). 0 = inherit from icon.",
+      dialogControl = "ArcUI_EditBox",
+      order = 6.11,
+      width = 0.4,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return tostring(settings and settings.frameLevel or 0)
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          local num = tonumber(val)
+          if num then
+            ns.Keybinds.SetSetting("frameLevel", math.max(0, math.floor(num)))
+          end
+        end
+      end,
+    },
+    keybindCustomReplacementsLabel = {
+      type = "description",
+      name = "\n|cff888888Custom Text Replacements|r",
+      order = 6.12,
+      width = "full",
+      hidden = function() return collapsedSections.keybinds end,
+    },
+    keybindReplaceFindText = {
+      type = "input",
+      name = "Find",
+      desc = "Text to find in keybinds (comma-separated).\n\nExample: META,CTRL,ALT\n\nMatched by position with 'Replace With' field.",
+      dialogControl = "ArcUI_EditBox",
+      order = 6.13,
+      width = 0.75,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.replaceFindText or ""
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("replaceFindText", val or "")
+          if ns.Keybinds.RefreshAll then
+            ns.Keybinds.RefreshAll()
+          end
+        end
+      end,
+    },
+    keybindReplaceWithText = {
+      type = "input",
+      name = "Replace",
+      desc = "Replacement text (comma-separated).\n\nExample: M,C,A\n\nMatched by position with 'Find' field.\nLeave a position empty to remove text.",
+      dialogControl = "ArcUI_EditBox",
+      order = 6.14,
+      width = 0.75,
+      hidden = function() return collapsedSections.keybinds end,
+      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
+      get = function()
+        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+        return settings and settings.replaceWithText or ""
+      end,
+      set = function(_, val)
+        if ns.Keybinds and ns.Keybinds.SetSetting then
+          ns.Keybinds.SetSetting("replaceWithText", val or "")
+          if ns.Keybinds.RefreshAll then
+            ns.Keybinds.RefreshAll()
+          end
         end
       end,
     },

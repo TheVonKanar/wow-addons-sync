@@ -175,6 +175,8 @@ L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "Abre el Comprobador de Versión (alt. 'v' o 'ver')"
 L["chat_commands_whisper"] = "Muestra los comandos de susurro"
 --[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
+--[[Translation missing --]]
 L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 L["Check this to loot the items and distribute them later."] = "Marque esta para recojer los articulos y distribuirlos despues."
 L["Check to append the realmname of a player from another realm"] = "marca la casilla para ajunta el nombre del reino al que el jugador pertenece"
@@ -369,6 +371,8 @@ L["opt_autoGroupLoot_desc"] = "Si se habilita, RCLootCouncil pulsará automátic
 L["opt_autoGroupLoot_name"] = "Botín de Grupo Automático"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Cuando está activado, RCLootCouncil solo hará el pase automático de botín de grupo cuando estés en un grupo de hermandad."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Solo grupos de hermandad"
+--[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
 L["opt_autoPassWeapons_desc"] = "Marca esta casilla para activar el pasar automáticamente las armas que tu clase no puede equipar."
 L["opt_autoPassWeapons_name"] = "Auto Pasar Armas"
 L["opt_autoTrade_desc"] = "Seleccionar para añadir automáticamente los objetos a la ventana de comercio cuando se comercie con un ganador. Si se deshabilita, se pedirá confirmación antes de añadir los objetos."
@@ -428,6 +432,8 @@ L["options_requireNotes_desc"] = "Si se habilita, los candidatos no podrán mand
 L["Original Owner"] = "Propietario original"
 L["Out of instance"] = "Fuera de la instancia"
 L["Patch"] = "Parche"
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 L["Personal Loot - Non tradeable"] = "Loot Personal - no comerciable"
 L["Personal Loot - Rejected Trade"] = "Loot Personal - Se ha rechazado comerciar"
 L["'player' can't receive 'type'"] = "%s no puede recibir %s - versión anterior?"

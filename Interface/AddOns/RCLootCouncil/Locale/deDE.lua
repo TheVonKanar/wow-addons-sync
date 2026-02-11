@@ -186,6 +186,8 @@ L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "Den Versionscheck öffnen (alt. 'v' oder 'ver')"
 L["chat_commands_whisper"] = "Bietet Unterstützung für Flüsterkommandos"
 --[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
+--[[Translation missing --]]
 L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 L["Check this to loot the items and distribute them later."] = "Aktiviere dies, um die Gegenstände zu plündern und sie später zu verteilen."
 L["Check to append the realmname of a player from another realm"] = "Hake diese Option an, damit der Realmname eines Spielers hinzugefügt wird, falls dieser Spieler auf einem anderen Realm spielt."
@@ -386,6 +388,8 @@ L["opt_autoGroupLoot_desc"] = "Wenn aktiviert, wird RCLootCouncil automatisch au
 L["opt_autoGroupLoot_name"] = "Automatisches Gruppenplündern"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Wenn diese Option aktiviert ist, führt RCLootCouncil die automatische Gruppenbeute nur dann durch, wenn du in einer Gildengruppe bist."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Nur in Gildengruppen"
+--[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
 L["opt_autoPassWeapons_desc"] = "Anhaken damit automatisch auf Waffen gepasst wird, die deine Klasse nicht anlegen kann."
 L["opt_autoPassWeapons_name"] = "Auf Waffen automatisch passen"
 L["opt_autoTrade_desc"] = "Anhaken, um vergebene Gegenstände dem Handelsfenster automatisch hinzuzufügen, wenn man mit dem Gewinner handelt. Wenn deaktiviert, wird ein Pop-up eingeblendet bevor die Gegenstände hinzugefügt werden. "
@@ -455,6 +459,8 @@ L["options_requireNotes_desc"] = "Wenn diese Option aktiviert ist, können Kandi
 L["Original Owner"] = "Ursprünglicher Besitzer"
 L["Out of instance"] = "Keine Instanz"
 L["Patch"] = true
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 L["Personal Loot - Non tradeable"] = "Persönliche Beute – Nicht handelbar"
 L["Personal Loot - Rejected Trade"] = "Persönliche Beute – Handel abgelehnt"
 L["'player' can't receive 'type'"] = "%s kann %s nicht empfangen – Version stimmt nicht überein?"

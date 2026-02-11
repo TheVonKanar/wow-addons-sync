@@ -927,14 +927,17 @@ function ArcAuras.CreateFrame(arcID, config)
         C_Item.RequestLoadItemDataByID(config.itemID)
     end
     
-    -- Check if trinket slot is empty - if so, skip CDMGroups registration
-    -- (will be registered when trinket is equipped)
+    -- Check if trinket slot is empty
     local skipCDMGroups = false
     if config.type == "trinket" and config.slotID then
         local itemID = GetInventoryItemID("player", config.slotID)
         if not itemID then
-            skipCDMGroups = true
             frame._arcSlotEmpty = true
+            -- Still register with CDMGroups if there's a saved position (imported profiles)
+            -- so the frame holds its group slot while hidden
+            if not (ns.CDMGroups and ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]) then
+                skipCDMGroups = true
+            end
         end
     end
     
@@ -946,7 +949,7 @@ function ArcAuras.CreateFrame(arcID, config)
         else
             -- CDMGroups Integration not loaded yet, defer
             C_Timer.After(1.0, function()
-                if ArcAuras.frames[arcID] and not ArcAuras.frames[arcID]._arcSlotEmpty then
+                if ArcAuras.frames[arcID] then
                     if ns.CDMGroups and ns.CDMGroups.RegisterExternalFrame then
                         ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", "Essential")
                     end
@@ -1492,9 +1495,10 @@ local function OnArcAurasUpdate()
                     UpdateItemCooldown(frame, config.itemID)
                 end
                 
-                -- Step 2: Determine if on cooldown using COOLDOWN:ISVISIBLE()
-                -- This is the most reliable method per the debugger tests
-                local isOnCooldown = frame.Cooldown and frame.Cooldown:IsVisible()
+                -- Step 2: Use the internal cooldown state set by UpdateItemCooldown/UpdateTrinketCooldown
+                -- frame._isOnCooldown is set by the actual cooldown API query and is authoritative
+                -- Do NOT use frame.Cooldown:IsVisible() - it can return stale/incorrect values!
+                local isOnCooldown = frame._isOnCooldown
                 local remaining = frame._remaining or 0
                 local iconTex = frame.Icon
                 
@@ -1983,8 +1987,9 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
     -- Ensure scale is 1 (size is handled above)
     frame:SetScale(1)
     
-    -- Check if Masque is controlling this frame's icon
-    local masqueActive = frame._arcAuraMasqueRegistered and ns.Masque and ns.Masque.IsEnabled and ns.Masque.IsEnabled()
+    -- Check if Masque is globally enabled - skip ArcUI visuals even if frame not yet registered
+    -- This prevents visual conflicts during zone load when frames are updated before Masque registration
+    local masqueActive = ns.Masque and ns.Masque.IsEnabled and ns.Masque.IsEnabled()
     
     -- Get zoom and padding from config (needed for cooldown positioning even when Masque is active)
     local zoom = cfg.zoom or 0.08
@@ -1993,11 +1998,8 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
     -- Apply zoom/texcoords (skip if Masque is active)
     if frame.Icon then
         if masqueActive then
-            -- Masque controls icon - reset to defaults
-            frame.Icon:SetTexCoord(0, 1, 0, 1)
-            frame.Icon:ClearAllPoints()
-            frame.Icon:SetAllPoints()
-            -- Override padding/zoom when Masque is active
+            -- Masque controls icon completely - don't touch it at all
+            -- Just override padding/zoom values so any later code doesn't try to use them
             zoom = 0
             padding = 0
         else
@@ -2022,7 +2024,7 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
     if frame.Cooldown then
         local swipe = cfg.cooldownSwipe or {}
         
-        -- Basic swipe settings
+        -- Basic swipe settings (apply regardless of Masque - these are user preferences)
         frame.Cooldown:SetDrawSwipe(swipe.showSwipe ~= false)
         frame.Cooldown:SetDrawEdge(swipe.showEdge ~= false)
         frame.Cooldown:SetDrawBling(swipe.showBling ~= false)
@@ -2049,34 +2051,37 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
         end
         
         -- Swipe insets (adjust cooldown frame positioning)
-        local swipeInsetX, swipeInsetY
-        
-        if swipe.separateInsets then
-            swipeInsetX = swipe.swipeInsetX or 0
-            swipeInsetY = swipe.swipeInsetY or 0
-        else
-            local inset = swipe.swipeInset or 0
-            swipeInsetX = inset
-            swipeInsetY = inset
-        end
-        
-        local totalPaddingX = padding + swipeInsetX
-        local totalPaddingY = padding + swipeInsetY
-        
-        -- Apply insets to cooldown frame
-        frame.Cooldown:ClearAllPoints()
-        frame.Cooldown:SetPoint("TOPLEFT", frame, "TOPLEFT", totalPaddingX, -totalPaddingY)
-        frame.Cooldown:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -totalPaddingX, totalPaddingY)
-        
-        -- Store padding for hooks
-        frame.Cooldown._arcPaddingX = totalPaddingX
-        frame.Cooldown._arcPaddingY = totalPaddingY
-        
-        -- Apply texcoord range to cooldown swipe to match icon crop
-        if swipe.showSwipe ~= false then
-            local left, right, top, bottom = zoom, 1 - zoom, zoom, 1 - zoom
-            if frame.Cooldown.SetSwipeTexCoords then
-                frame.Cooldown:SetSwipeTexCoords(left, right, top, bottom)
+        -- Skip positioning when Masque is active - Masque controls size and position
+        if not masqueActive then
+            local swipeInsetX, swipeInsetY
+            
+            if swipe.separateInsets then
+                swipeInsetX = swipe.swipeInsetX or 0
+                swipeInsetY = swipe.swipeInsetY or 0
+            else
+                local inset = swipe.swipeInset or 0
+                swipeInsetX = inset
+                swipeInsetY = inset
+            end
+            
+            local totalPaddingX = padding + swipeInsetX
+            local totalPaddingY = padding + swipeInsetY
+            
+            -- Apply insets to cooldown frame
+            frame.Cooldown:ClearAllPoints()
+            frame.Cooldown:SetPoint("TOPLEFT", frame, "TOPLEFT", totalPaddingX, -totalPaddingY)
+            frame.Cooldown:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -totalPaddingX, totalPaddingY)
+            
+            -- Store padding for hooks
+            frame.Cooldown._arcPaddingX = totalPaddingX
+            frame.Cooldown._arcPaddingY = totalPaddingY
+            
+            -- Apply texcoord range to cooldown swipe to match icon crop
+            if swipe.showSwipe ~= false then
+                local left, right, top, bottom = zoom, 1 - zoom, zoom, 1 - zoom
+                if frame.Cooldown.SetSwipeTexCoords then
+                    frame.Cooldown:SetSwipeTexCoords(left, right, top, bottom)
+                end
             end
         end
         
@@ -2387,7 +2392,7 @@ function ArcAuras.HideTrinketSlotFrame(arcID)
         return 
     end
     
-    -- Mark as hidden due to empty slot
+    -- Mark as hidden due to empty slot or passive filter
     frame._arcSlotEmpty = true
     
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -2404,48 +2409,28 @@ function ArcAuras.HideTrinketSlotFrame(arcID)
         end
     end
     
-    -- Save current group position before removing
+    -- Hide the frame (but keep it in its group - dynamic layout treats _arcSlotEmpty as a gap)
+    frame:Hide()
+    frame:SetAlpha(0)
+    
+    -- Trigger group reflow so dynamic layout compacts around the hidden frame
+    -- Must call ReflowIcons (not just Layout) to update grid positions AND pixel offsets
     if ns.CDMGroups and ns.CDMGroups.groups then
         for groupName, group in pairs(ns.CDMGroups.groups) do
             if group.members and group.members[arcID] then
-                -- Save the position for restoration
-                local member = group.members[arcID]
-                frame._arcSavedGroupName = groupName
-                frame._arcSavedRow = member.row
-                frame._arcSavedCol = member.col
-                
-                -- Remove from group (but keep savedPositions intact)
-                if group.RemoveMemberKeepFrame then
-                    group:RemoveMemberKeepFrame(arcID)
-                elseif group.RemoveMember then
-                    group:RemoveMember(arcID, true)  -- keepFrame = true
+                if group.autoReflow and group.ReflowIcons then
+                    group:ReflowIcons()
+                elseif group.Layout then
+                    group:Layout()
                 end
-                
-                -- Layout the group to close the gap
-                if group.Layout then group:Layout() end
                 break
             end
         end
-        
-        -- Also check if it's a free icon
-        if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-            local freeData = ns.CDMGroups.freeIcons[arcID]
-            frame._arcSavedFreeX = freeData.x
-            frame._arcSavedFreeY = freeData.y
-            frame._arcSavedFreeSize = freeData.iconSize
-            frame._arcWasFreeIcon = true
-            -- CRITICAL: ReleaseFreeIcon parameter is clearSaved - pass FALSE to keep savedPositions!
-            ns.CDMGroups.ReleaseFreeIcon(arcID, false)  -- false = DON'T clear saved position
-        end
     end
-    
-    -- Hide the frame
-    frame:Hide()
-    frame:SetAlpha(0)
 end
 
--- Restore a trinket slot frame (when trinket is equipped)
--- Re-adds to group at saved position or registers as new
+-- Restore a trinket slot frame (when trinket is equipped or filter changed)
+-- Frame stays in its group - just clears the hidden flag and triggers re-layout
 function ArcAuras.ShowTrinketSlotFrame(arcID)
     local frame = ArcAuras.frames[arcID]
     if not frame then return end
@@ -2466,70 +2451,52 @@ function ArcAuras.ShowTrinketSlotFrame(arcID)
     -- Apply proper state visuals (respects saved alpha settings)
     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
     
-    -- Restore to group or free position
-    if ns.CDMGroups then
-        if frame._arcWasFreeIcon then
-            -- Was a free icon - restore as free
-            local x = frame._arcSavedFreeX or 0
-            local y = frame._arcSavedFreeY or 0
-            local size = frame._arcSavedFreeSize or 36
-            ns.CDMGroups.TrackFreeIcon(arcID, x, y, size, frame)
-            
-            -- Clear saved data
-            frame._arcWasFreeIcon = nil
-            frame._arcSavedFreeX = nil
-            frame._arcSavedFreeY = nil
-            frame._arcSavedFreeSize = nil
-        elseif frame._arcSavedGroupName then
-            local groupName = frame._arcSavedGroupName
-            local row = frame._arcSavedRow or 0
-            local col = frame._arcSavedCol or 0
-            local group = ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
-            
-            if group then
-                -- Re-add to the saved group position
-                if group.AddMemberAtWithFrame then
-                    group:AddMemberAtWithFrame(arcID, row, col, frame, nil)
-                elseif group.AddMemberAt then
-                    group:AddMemberAt(arcID, row, col)
+    -- Check if frame is already in a group - if so, reflow to include it
+    local inGroup = false
+    if ns.CDMGroups and ns.CDMGroups.groups then
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            if group.members and group.members[arcID] then
+                inGroup = true
+                -- Trigger reflow so dynamic layout includes this frame again
+                if group.autoReflow and group.ReflowIcons then
+                    group:ReflowIcons()
+                elseif group.Layout then
+                    group:Layout()
                 end
-                
-                -- Layout the group
-                if group.Layout then group:Layout() end
-                
-                -- Trigger Masque refresh for proper sizing
-                if ns.Masque and ns.Masque.QueueRefresh then
-                    ns.Masque.QueueRefresh()
-                end
-            end
-            
-            -- Clear saved position
-            frame._arcSavedGroupName = nil
-            frame._arcSavedRow = nil
-            frame._arcSavedCol = nil
-        else
-            -- No saved position - this is first time showing
-            -- Check if CDMGroups has a saved position or register as new
-            -- CRITICAL: Ensure savedPositions reference is correct for current spec
-            if ns.CDMGroups.GetProfileSavedPositions then
-                ns.CDMGroups.GetProfileSavedPositions()
-            end
-            
-            if ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID] then
-                -- CDMGroups has a saved position - use RegisterExternalFrame to restore
-                if ns.CDMGroups.RegisterExternalFrame then
-                    ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", "Essential")
-                end
-            elseif ns.CDMGroups.RegisterExternalFrame then
-                -- No saved position - register as new (will go to default group)
-                ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", "Essential")
-            end
-            
-            -- Trigger Masque refresh for proper sizing
-            if ns.Masque and ns.Masque.QueueRefresh then
-                ns.Masque.QueueRefresh()
+                break
             end
         end
+    end
+    
+    -- Also check free icons
+    if not inGroup and ns.CDMGroups and ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
+        inGroup = true
+        -- Free icon - just ensure it's visible at its saved position
+        local freeData = ns.CDMGroups.freeIcons[arcID]
+        if freeData then
+            frame:SetParent(UIParent)
+            frame:ClearAllPoints()
+            frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x or 0, freeData.y or 0)
+            frame:SetFrameStrata("MEDIUM")
+            frame:SetAlpha(1)
+        end
+    end
+    
+    -- Not in any group yet (first time showing) - register with CDMGroups
+    if not inGroup and ns.CDMGroups then
+        -- Ensure savedPositions reference is correct for current spec
+        if ns.CDMGroups.GetProfileSavedPositions then
+            ns.CDMGroups.GetProfileSavedPositions()
+        end
+        
+        if ns.CDMGroups.RegisterExternalFrame then
+            ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", "Essential")
+        end
+    end
+    
+    -- Trigger Masque refresh for proper sizing
+    if ns.Masque and ns.Masque.QueueRefresh then
+        ns.Masque.QueueRefresh()
     end
 end
 
@@ -2568,28 +2535,52 @@ function ArcAuras.SetAutoTrackEquippedTrinkets(enabled)
     local wasEnabled = db.autoTrackEquippedTrinkets
     db.autoTrackEquippedTrinkets = enabled
     
-    -- If disabling, remove ONLY auto-track slot frames (not manually added trinkets)
+    -- If disabling, HIDE auto-track slot frames (preserve position for re-enable)
     if wasEnabled ~= false and not enabled then
         if db.trackedItems then
-            local toRemove = {}
+            local hidCount = 0
             for arcID, config in pairs(db.trackedItems) do
-                -- Only remove if it was created by auto-track (has isAutoTrackSlot flag)
                 if config.isAutoTrackSlot then
-                    table.insert(toRemove, arcID)
+                    local frame = ArcAuras.frames[arcID]
+                    if frame then
+                        ArcAuras.HideTrinketSlotFrame(arcID)
+                        hidCount = hidCount + 1
+                    end
                 end
             end
-            for _, arcID in ipairs(toRemove) do
-                ArcAuras.RemoveTrackedItem(arcID)
-            end
-            if #toRemove > 0 then
-                -- Invalidate caches
+            if hidCount > 0 then
                 InvalidateSettingsCache()
                 InvalidateStackCache()
             end
         end
-    -- If enabling, auto-add current trinkets based on slot settings
+    -- If enabling, show existing hidden frames or create new ones
     elseif enabled and wasEnabled == false then
-        ArcAuras.AutoAddTrinkets(nil, true)  -- nil = use onlyOnUseTrinkets setting, true = mark as auto-track
+        local needsAutoAdd = false
+        for _, slot in ipairs(TRINKET_SLOTS) do
+            local arcID = ArcAuras.MakeTrinketID(slot.slotID)
+            local frame = ArcAuras.frames[arcID]
+            local config = db.trackedItems and db.trackedItems[arcID]
+            
+            if frame and config and config.isAutoTrackSlot then
+                -- Frame exists but hidden - check if slot is enabled and should show
+                if ArcAuras.IsAutoTrackSlotEnabled(slot.slotID) then
+                    local itemID = GetInventoryItemID("player", slot.slotID)
+                    if itemID then
+                        local onlyOnUse = db.onlyOnUseTrinkets
+                        if not onlyOnUse or not IsItemPassive(itemID) then
+                            ArcAuras.ShowTrinketSlotFrame(arcID)
+                        end
+                    end
+                end
+            elseif not frame and not config then
+                -- No frame at all - need AutoAddTrinkets
+                needsAutoAdd = true
+            end
+        end
+        
+        if needsAutoAdd then
+            ArcAuras.AutoAddTrinkets(nil, true)
+        end
     end
 end
 
@@ -2624,28 +2615,41 @@ function ArcAuras.SetAutoTrackSlotEnabled(slotID, enabled)
     local arcID = ArcAuras.MakeTrinketID(slotID)
     
     if enabled and wasEnabled == false then
-        -- Slot was disabled, now enabled - add the frame if auto-track is on
+        -- Slot was disabled, now enabled
         if ArcAuras.IsAutoTrackEquippedTrinketsEnabled() then
             local itemID = GetInventoryItemID("player", slotID)
             if itemID then
-                -- Check on-use filter
                 local onlyOnUse = db.onlyOnUseTrinkets
-                if not onlyOnUse or IsItemOnUse(itemID) then
-                    if not db.trackedItems or not db.trackedItems[arcID] then
-                        ArcAuras.AddTrackedItem({
-                            type = "trinket",
-                            slotID = slotID,
-                            enabled = true,
-                            isAutoTrackSlot = true,
-                        })
+                local isPassive = onlyOnUse and IsItemPassive(itemID)
+                
+                -- Check if frame already exists (was hidden, not destroyed)
+                local frame = ArcAuras.frames[arcID]
+                if frame then
+                    -- Frame exists - just show it (restores to saved group/position)
+                    if not isPassive then
+                        ArcAuras.ShowTrinketSlotFrame(arcID)
+                    end
+                    -- If passive with on-use filter, keep hidden
+                elseif not db.trackedItems or not db.trackedItems[arcID] then
+                    -- No frame and no tracked entry - create fresh
+                    ArcAuras.AddTrackedItem({
+                        type = "trinket",
+                        slotID = slotID,
+                        enabled = true,
+                        isAutoTrackSlot = true,
+                    })
+                    -- If passive with on-use filter, hide immediately
+                    if isPassive then
+                        ArcAuras.HideTrinketSlotFrame(arcID)
                     end
                 end
             end
         end
     elseif not enabled and wasEnabled ~= false then
-        -- Slot was enabled, now disabled - remove the auto-track frame
-        if db.trackedItems and db.trackedItems[arcID] and db.trackedItems[arcID].isAutoTrackSlot then
-            ArcAuras.RemoveTrackedItem(arcID)
+        -- Slot was enabled, now disabled - HIDE the frame (preserve position)
+        local frame = ArcAuras.frames[arcID]
+        if frame then
+            ArcAuras.HideTrinketSlotFrame(arcID)
         end
     end
     
@@ -3074,11 +3078,9 @@ function ArcAuras.Enable()
                     if not itemID then
                         -- Slot is empty
                         shouldHide = true
-                        frame._arcSlotEmpty = true
                     elseif config.isAutoTrackSlot and onlyOnUse and IsItemPassive(itemID) then
                         -- Passive trinket with on-use filter
                         shouldHide = true
-                        frame._arcSlotEmpty = true
                     end
                     
                 -- For item-based frames, check hideWhenUnequipped
@@ -3089,7 +3091,10 @@ function ArcAuras.Enable()
                     end
                 end
                 
-                if shouldHide then
+                if shouldHide and not frame._arcHiddenUnequipped then
+                    -- Use HideTrinketSlotFrame for trinkets - properly hooks Show() to block re-showing
+                    ArcAuras.HideTrinketSlotFrame(arcID)
+                elseif shouldHide then
                     frame:Hide()
                     frame:SetAlpha(0)
                 else
@@ -3128,6 +3133,38 @@ end
 
 function ArcAuras.IsEnabled()
     return ArcAuras.isEnabled
+end
+
+-- Reload all frames from DB (used after import/profile load)
+-- Destroys all existing frames and recreates them from current trackedItems
+function ArcAuras.Reload()
+    local db = GetDB()
+    if not db then return end
+    
+    local wasEnabled = ArcAuras.isEnabled
+    
+    -- Destroy all existing frames
+    if ArcAuras.isEnabled then
+        ArcAuras.Disable()
+    end
+    
+    -- Force clear all frame objects (Disable may leave some behind)
+    for arcID, frame in pairs(ArcAuras.frames) do
+        if frame then
+            -- Clear Show hook so new frame gets a fresh one
+            if frame._arcOriginalShow then
+                frame.Show = frame._arcOriginalShow
+                frame._arcOriginalShow = nil
+            end
+            frame:Hide()
+        end
+    end
+    wipe(ArcAuras.frames)
+    
+    -- Re-enable if it was enabled or DB says enabled
+    if wasEnabled or db.enabled then
+        ArcAuras.Enable()
+    end
 end
 
 -- Refresh all frames (called after spec change)
@@ -3383,8 +3420,9 @@ function ArcAuras.ApplyInitialStateVisuals(arcID, frame)
     local cs = csv.cooldownState or {}
     local rs = csv.readyState or {}
     
-    -- Determine cooldown state
-    local isOnCooldown = frame.Cooldown and frame.Cooldown:IsVisible()
+    -- Determine cooldown state using internal state set by UpdateItemCooldown/UpdateTrinketCooldown
+    -- frame._isOnCooldown is authoritative - do NOT use frame.Cooldown:IsVisible() which can be stale
+    local isOnCooldown = frame._isOnCooldown
     
     local iconTex = frame.Icon
     
@@ -3462,6 +3500,12 @@ function ArcAuras.RefreshFrameSettings(arcID)
     frame._lastAppliedAlpha = nil  -- Force alpha re-application
     frame._lastVisualState = nil   -- Force visual state re-evaluation
     
+    -- CRITICAL: Reset cached cooldown values so next OnArcAurasUpdate reapplies the cooldown swipe
+    -- This fixes the issue where zone changes or Masque refresh clears the cooldown display
+    -- but the cached values prevent SetCooldown from being called again
+    frame._lastStartTime = nil
+    frame._lastDuration = nil
+    
     -- Apply settings from CDMEnhance cascade
     ArcAuras.ApplySettingsToFrame(arcID, frame)
     
@@ -3476,8 +3520,19 @@ function ArcAuras.RefreshFrameSettings(arcID)
         frame._arcStackStyleApplied = true
     end
     
-    -- CRITICAL: Apply state visuals immediately (don't wait for OnArcAurasUpdate tick)
-    -- This ensures alpha/desat changes are visible instantly when settings change
+    -- CRITICAL: Update cooldown state BEFORE applying visuals
+    -- After zone change, frame._isOnCooldown may be stale - query the real state first
+    -- so ApplyInitialStateVisuals uses the correct cooldown state for alpha
+    local config = frame._arcConfig
+    if config then
+        if config.type == "trinket" and config.slotID then
+            UpdateTrinketCooldown(frame, config.slotID)
+        elseif config.type == "item" and config.itemID then
+            UpdateItemCooldown(frame, config.itemID)
+        end
+    end
+    
+    -- Now apply state visuals with the CURRENT cooldown state
     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
 end
 

@@ -26,6 +26,23 @@ local Shared = ns.CDMShared
 local Registry = ns.FrameRegistry
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- SECRET-SAFE AURA INSTANCE ID CHECK
+-- auraInstanceID may become secret in future WoW versions
+-- Uses ns.API.HasAuraInstanceID from Core.lua (handles secret values)
+-- ═══════════════════════════════════════════════════════════════════════════
+local function HasAuraInstanceID(value)
+    -- Use Core's implementation if available
+    if ns.API and ns.API.HasAuraInstanceID then
+        return ns.API.HasAuraInstanceID(value)
+    end
+    -- Fallback (shouldn't happen - Core loads first)
+    if value == nil then return false end
+    if issecretvalue and issecretvalue(value) then return true end
+    if type(value) == "number" and value == 0 then return false end
+    return value ~= nil
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- CONFIGURATION
 -- ═══════════════════════════════════════════════════════════════════════════
 
@@ -63,6 +80,15 @@ local function IsFrameValid(frame)
     if not getType then return false end
     local ok, objType = pcall(getType, frame)
     return ok and objType ~= nil
+end
+
+-- Check if frame is hidden by bar tracking (with cooldownID verification)
+local function IsFrameHiddenByBar(frame)
+    if not frame then return false end
+    if ns.CDMEnhance and ns.CDMEnhance.IsFrameHiddenByBar then
+        return ns.CDMEnhance.IsFrameHiddenByBar(frame)
+    end
+    return frame._arcHiddenByBar == true
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -398,13 +424,12 @@ local function ShouldHideFromDynamicGrid(group, frame, viewerType)
         end
     end
     
-    -- Second check: Regular aura with auraInstanceID
-    local auraID = frame.auraInstanceID
-    if auraID and type(auraID) == "number" and auraID > 0 then
+    -- Second check: Regular aura with auraInstanceID (secret-safe)
+    if HasAuraInstanceID(frame.auraInstanceID) then
         -- Has auraInstanceID - check if still active
         local CS = ArcUI and ArcUI.CooldownState
         if CS and CS.IsAuraActive then
-            local isActive = CS.IsAuraActive(auraID)
+            local isActive = CS.IsAuraActive(frame.auraInstanceID)
             return not isActive  -- Hide from grid if inactive
         end
         return false  -- Can't verify, assume active
@@ -589,8 +614,10 @@ local function AssignFrameToGroup(cdID, frame, groupName, row, col, viewerType, 
         frame:SetAlpha(1)
     end
     
-    -- ALWAYS ensure frame is shown
-    frame:Show()
+    -- Ensure frame is shown (unless hidden by bar tracking or unequipped hiding)
+    if not frame._arcHiddenUnequipped and not IsFrameHiddenByBar(frame) then
+        frame:Show()
+    end
     
     -- Install frame hooks
     InstallFrameHooks(frame)
@@ -726,8 +753,8 @@ local function AssignFrameToFree(cdID, frame, x, y, iconSize, viewerType, viewer
     frame:ClearAllPoints()
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
     
-    -- Only show if not hidden due to hideWhenUnequipped setting
-    if not frame._arcHiddenUnequipped then
+    -- Only show if not hidden due to hideWhenUnequipped or bar tracking settings
+    if not frame._arcHiddenUnequipped and not IsFrameHiddenByBar(frame) then
         frame:SetAlpha(1)
         frame:Show()
     end
@@ -1161,10 +1188,12 @@ local function Reconcile()
                 if needsFix then
                     TimelineAdd("FRAME", "STATE_FIX_NEEDED", string.format("cdID=%d issues: %s", cdID, table.concat(issues, ", ")))
                     
-                    -- Fix the frame state
+                    -- Fix the frame state (skip if legitimately hidden by bar tracking)
                     frame:SetScale(1)
-                    frame:SetAlpha(1)
-                    frame:Show()
+                    if not frame._arcHiddenUnequipped and not IsFrameHiddenByBar(frame) then
+                        frame:SetAlpha(1)
+                        frame:Show()
+                    end
                     frame._arcRecoveryProtection = GetTime() + 0.5
                     
                     -- Re-enhance the frame
@@ -1486,6 +1515,59 @@ local function Reconcile()
     -- Set protection window
     SetProtection(CONFIG.POST_RECONCILE_PROTECTION)
     
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- POST-RECONCILE VISUAL REFRESH: When frames were newly assigned or reassigned,
+    -- force a visual refresh to ensure per-icon settings (borders, textures, colors)
+    -- are applied to the correct frames. This is the same thing that panel-close does
+    -- via RefreshIconType("all"), but targeted at post-reconcile changes.
+    -- Without this, per-icon visuals only update when the options panel closes.
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if (assigned > 0 or reassigned > 0) and not wasTalentChange and not wasSpecChange then
+        -- Short delay to let frame setup complete (EnhanceFrame may still be finishing)
+        C_Timer.After(0.05, function()
+            if state.isProcessing then return end
+            
+            TimelineAdd("ACTION", "POST_RECONCILE_REFRESH", string.format(
+                "Refreshing visuals after %d assigned, %d reassigned", assigned, reassigned))
+            
+            -- Clear cached visual states so everything recalculates
+            for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+                if group.members then
+                    for cdID, member in pairs(group.members) do
+                        if member and member.frame and not member.isPlaceholder then
+                            member.frame._arcTargetAlpha = nil
+                            member.frame._arcTargetDesat = nil
+                            member.frame._arcTargetTint = nil
+                            member.frame._arcTargetGlow = nil
+                            member.frame._arcCooldownEventDriven = nil
+                            member.frame._arcCurrentGlowSig = nil
+                        end
+                    end
+                end
+            end
+            for _, data in pairs(ns.CDMGroups.freeIcons or {}) do
+                if data.frame then
+                    data.frame._arcTargetAlpha = nil
+                    data.frame._arcTargetDesat = nil
+                    data.frame._arcTargetTint = nil
+                    data.frame._arcTargetGlow = nil
+                    data.frame._arcCooldownEventDriven = nil
+                    data.frame._arcCurrentGlowSig = nil
+                end
+            end
+            
+            -- Re-apply per-icon styles (borders, textures, pandemic, etc.)
+            if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+                ns.CDMEnhance.RefreshIconType("all")
+            end
+            
+            -- Refresh keybind overlays on reassigned/repooled frames
+            if ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled() then
+                ns.Keybinds.RefreshAll()
+            end
+        end)
+    end
+    
     -- CRITICAL: Refresh drag handlers after reconcile if drag mode is enabled
     -- This ensures all icons (including newly assigned ones) have working drag
     if ns.CDMGroups.ShouldAllowDrag and ns.CDMGroups.ShouldAllowDrag() then
@@ -1555,6 +1637,14 @@ local function Reconcile()
                         -- Frame was swapped - update reference
                         TimelineAdd("FRAME", "FOLLOWUP_FIX", string.format("cdID=%d frame swapped in %s", cdID, groupName))
                         member.frame = frame
+                        
+                        -- CRITICAL: Clear placeholder flags since we now have a real frame
+                        -- This fixes the STALE_PH_FLAG bug where isPlaceholder wasn't cleared
+                        member.isPlaceholder = nil
+                        member.placeholderInfo = nil
+                        if ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[cdID] then
+                            ns.CDMGroups.savedPositions[cdID].isPlaceholder = nil
+                        end
                         
                         -- Update cooldownCatalog too
                         if ns.CDMGroups.cooldownCatalog and ns.CDMGroups.cooldownCatalog[cdID] then
@@ -1753,8 +1843,19 @@ local function Reconcile()
                 for groupName, group in pairs(ns.CDMGroups.groups or {}) do
                     if group.members and group.members[cdID] then
                         local member = group.members[cdID]
-                        if member.frame ~= cdmFrame and not member.isPlaceholder then
-                            TimelineAdd("FRAME", "MEMBER_SYNC", string.format("cdID=%d member frame updated in %s", cdID, groupName))
+                        -- Update frame ref if different (skip placeholders - they shouldn't have frames)
+                        if member.frame ~= cdmFrame then
+                            -- If this was a placeholder, clear the flag now that we have a real frame
+                            if member.isPlaceholder then
+                                TimelineAdd("FRAME", "PLACEHOLDER_RESOLVED", string.format("cdID=%d placeholder->real in %s", cdID, groupName))
+                                member.isPlaceholder = nil
+                                member.placeholderInfo = nil
+                                if ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[cdID] then
+                                    ns.CDMGroups.savedPositions[cdID].isPlaceholder = nil
+                                end
+                            else
+                                TimelineAdd("FRAME", "MEMBER_SYNC", string.format("cdID=%d member frame updated in %s", cdID, groupName))
+                            end
                             member.frame = cdmFrame
                             
                             -- Re-setup in container with correct frame
@@ -1927,7 +2028,8 @@ local function Reconcile()
         for cdID, freeData in pairs(ns.CDMGroups.freeIcons or {}) do
             if freeData.frame and freeData.x and freeData.y then
                 -- Skip frames hidden due to hideWhenUnequipped setting
-                if not freeData.frame._arcHiddenUnequipped then
+                -- Skip frames hidden due to hideWhenUnequipped or bar tracking settings
+                if not freeData.frame._arcHiddenUnequipped and not IsFrameHiddenByBar(freeData.frame) then
                     freeData.frame:ClearAllPoints()
                     freeData.frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x, freeData.y)
                     freeData.frame:SetParent(UIParent)
@@ -2054,6 +2156,11 @@ local function Reconcile()
             local DL = ns.CDMGroups.DynamicLayout
             if DL and DL.OnReconcileComplete then
                 DL.OnReconcileComplete()
+            end
+            
+            -- Refresh keybind overlays after spec/talent change repooling
+            if ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled() then
+                ns.Keybinds.RefreshAll()
             end
         end)
     end
@@ -2508,8 +2615,21 @@ VisualMaintainer:SetScript("OnUpdate", function(self, elapsed)
                                 -- Check if frame still belongs to this cooldownID
                                 local currentCdID = frame.cooldownID
                                 if currentCdID and currentCdID ~= cdID then
-                                    -- Frame was reassigned by CDM - need Layout() to fix
+                                    -- Frame was reassigned by CDM - need full reconcile to update membership
                                     needsLayout = true
+                                    -- Clear stale caches on this frame so it doesn't use old cdID's settings
+                                    frame._arcCfg = nil
+                                    frame._arcCfgVersion = nil
+                                    frame._arcCfgCdID = nil
+                                    frame._arcTargetAlpha = nil
+                                    frame._arcTargetDesat = nil
+                                    frame._arcTargetTint = nil
+                                    frame._arcTargetGlow = nil
+                                    frame._arcCooldownEventDriven = nil
+                                    -- Schedule reconcile as fallback (SetCooldownID hook is primary detection)
+                                    if not state.pendingReconcile then
+                                        ScheduleReconcile(CONFIG.DEBOUNCE_NORMAL)
+                                    end
                                 else
                                     -- CRITICAL: Call EnhanceFrame if settings haven't been applied yet
                                     if frame._arcShowPandemic == nil and ns.CDMEnhance.EnhanceFrame then
@@ -2763,6 +2883,138 @@ local function InstallCDMHooks()
             ScheduleReconcile(CONFIG.DEBOUNCE_NORMAL)
         end)
         Debug("Hooked CooldownViewerMixin.OnAcquireItemFrame")
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- INSTANT RESHUFFLE DETECTION: Hook SetCooldownID / ClearCooldownID
+    -- CDM calls SetCooldownID on every frame when it reshuffles cooldownIDs.
+    -- This fires during: settings panel drags, add/remove cooldowns, talent changes,
+    -- and any other CDM RefreshLayout → RefreshData cycle.
+    -- Previously we only detected this on panel close. Now it's instant.
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if CooldownViewerItemDataMixin then
+        -- Hook SetCooldownID - fires when CDM assigns a (possibly new) cooldownID to a frame
+        if CooldownViewerItemDataMixin.SetCooldownID then
+            hooksecurefunc(CooldownViewerItemDataMixin, "SetCooldownID", function(itemFrame, cooldownID)
+                if not _cdmGroupsEnabled then return end
+                
+                -- CRITICAL: Check hidden-by-bar BEFORE container gate.
+                -- Hidden frames may be in standard CDM viewers, not our containers.
+                -- When options panel is OPEN, _arcHiddenByBar is nil (cleared by ShowAllHiddenByBarOverlays)
+                -- so we also check ns._arcUIOptionsOpen to catch overlay-bearing frames.
+                if itemFrame._arcHiddenByBar or ns._arcUIOptionsOpen then
+                    -- Clear flags if set
+                    itemFrame._arcHiddenByBar = nil
+                    itemFrame._arcHiddenByBarCdID = nil
+                    -- Immediately hide overlay on this frame so it doesn't linger on wrong icon
+                    if ns.API and ns.API.HideOverlayOnFrame then
+                        ns.API.HideOverlayOnFrame(itemFrame)
+                    end
+                    -- Defer refresh: CDM assigns cooldownIDs sequentially during reshuffle,
+                    -- the new frame for the hidden cdID may not exist yet.
+                    if not state._pendingHiddenRefresh then
+                        state._pendingHiddenRefresh = true
+                        C_Timer.After(0.2, function()
+                            state._pendingHiddenRefresh = nil
+                            if ns.API and ns.API.RefreshHiddenCDMFrames then
+                                ns.API.RefreshHiddenCDMFrames()
+                            end
+                        end)
+                    end
+                end
+                
+                -- Only care about frames we're managing (in our containers or free icons)
+                local parent = itemFrame:GetParent()
+                local isInContainer = parent and parent._isCDMGContainer
+                local isFreeIcon = itemFrame._cdmgIsFreeIcon
+                if not isInContainer and not isFreeIcon then return end
+                
+                -- Check if cooldownID actually changed from what we last enhanced
+                local prevCdID = itemFrame._arcLastEnhancedCdID
+                if prevCdID and prevCdID == cooldownID then return end  -- Same cdID, no reshuffle
+                
+                -- Frame got a NEW cooldownID - clear ALL stale caches immediately
+                itemFrame._arcCfg = nil
+                itemFrame._arcCfgVersion = nil
+                itemFrame._arcCfgCdID = nil
+                itemFrame._arcTargetAlpha = nil
+                itemFrame._arcTargetDesat = nil
+                itemFrame._arcTargetTint = nil
+                itemFrame._arcTargetGlow = nil
+                itemFrame._arcCooldownEventDriven = nil
+                itemFrame._arcCurrentGlowSig = nil  -- Force glow re-evaluation
+                
+                if ns.devMode then
+                    print(string.format("|cffFFAA00[ArcUI]|r SetCooldownID: frame %s reassigned %s → %s",
+                        tostring(itemFrame:GetName() or tostring(itemFrame)),
+                        tostring(prevCdID), tostring(cooldownID)))
+                end
+                
+                -- Schedule a debounced reconcile to update group membership tracking
+                -- DEBOUNCE_NORMAL (0.15s) batches multiple SetCooldownID calls from a single RefreshData cycle
+                if not state.pendingReconcile then
+                    ScheduleReconcile(CONFIG.DEBOUNCE_NORMAL)
+                end
+            end)
+            Debug("Hooked CooldownViewerItemDataMixin.SetCooldownID (instant reshuffle detection)")
+        end
+        
+        -- Hook ClearCooldownID - fires when CDM releases/clears a frame (during ReleaseAll before reshuffle)
+        if CooldownViewerItemDataMixin.ClearCooldownID then
+            hooksecurefunc(CooldownViewerItemDataMixin, "ClearCooldownID", function(itemFrame)
+                if not _cdmGroupsEnabled then return end
+                
+                -- CRITICAL: Check hidden-by-bar BEFORE container gate (same as SetCooldownID).
+                -- When options open, _arcHiddenByBar is nil, so also check options flag.
+                if itemFrame._arcHiddenByBar or ns._arcUIOptionsOpen then
+                    itemFrame._arcHiddenByBar = nil
+                    itemFrame._arcHiddenByBarCdID = nil
+                    if ns.API and ns.API.HideOverlayOnFrame then
+                        ns.API.HideOverlayOnFrame(itemFrame)
+                    end
+                    if not state._pendingHiddenRefresh then
+                        state._pendingHiddenRefresh = true
+                        C_Timer.After(0.2, function()
+                            state._pendingHiddenRefresh = nil
+                            if ns.API and ns.API.RefreshHiddenCDMFrames then
+                                ns.API.RefreshHiddenCDMFrames()
+                            end
+                        end)
+                    end
+                end
+                
+                local parent = itemFrame:GetParent()
+                local isInContainer = parent and parent._isCDMGContainer
+                local isFreeIcon = itemFrame._cdmgIsFreeIcon
+                if not isInContainer and not isFreeIcon then return end
+                
+                -- Frame's cooldownID was cleared - purge stale caches
+                itemFrame._arcCfg = nil
+                itemFrame._arcCfgVersion = nil
+                itemFrame._arcCfgCdID = nil
+                itemFrame._arcTargetAlpha = nil
+                itemFrame._arcTargetDesat = nil
+                itemFrame._arcTargetTint = nil
+                itemFrame._arcTargetGlow = nil
+                itemFrame._arcCooldownEventDriven = nil
+            end)
+            Debug("Hooked CooldownViewerItemDataMixin.ClearCooldownID")
+        end
+    end
+    
+    -- Register for CooldownViewerSettings.OnDataChanged EventRegistry callback
+    -- This fires when user adds/removes/reorders cooldowns in CDM settings
+    -- Acts as an early heads-up that a reshuffle is coming
+    if EventRegistry and EventRegistry.RegisterCallback then
+        EventRegistry:RegisterCallback("CooldownViewerSettings.OnDataChanged", function()
+            if not _cdmGroupsEnabled then return end
+            TimelineAdd("CDM", "OnDataChanged", "CDM settings data changed - reshuffle incoming")
+            Debug("CooldownViewerSettings.OnDataChanged fired - scheduling reconcile")
+            -- Schedule reconcile with normal debounce - the SetCooldownID hooks will fire shortly
+            -- after this as each viewer calls RefreshLayout → RefreshData
+            ScheduleReconcile(CONFIG.DEBOUNCE_NORMAL)
+        end, "ArcUI_FrameController")
+        Debug("Registered CooldownViewerSettings.OnDataChanged callback")
     end
     
     state.hooksInstalled = true

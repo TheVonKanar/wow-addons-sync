@@ -1,7 +1,9 @@
 # Chattynator
 
-## [189](https://github.com/TheMouseNest/Chattynator/tree/189) (2026-01-27)
-[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/188...189) 
+## [190](https://github.com/TheMouseNest/Chattynator/tree/190) (2026-02-10)
+[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/189...190) 
 
-- Fix toggling "Keep edit box visible" setting off  
-- Add option to keep edit box visible/clickable  
+- Update toc for 12.0.1  
+- [Fixes #146] Error when joining/leaving unrecognised channel  
+- Reduce inset size slightly  
+- Remove usage of "trim" (doesn't work with secrets)  

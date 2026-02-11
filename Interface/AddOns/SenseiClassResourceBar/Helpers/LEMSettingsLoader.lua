@@ -82,6 +82,23 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = L["CATEGORY_POSITION_AND_SIZE"],
+            order = 201,
+            name = L["POSITION"],
+            kind = LEM.SettingType.Dropdown,
+            default = defaults.positionMode,
+            useOldStyle = true,
+            values = addonTable.availablePositionModeOptions(config),
+            get = function(layoutName)
+                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].positionMode) or defaults.positionMode
+            end,
+            set = function(layoutName, value)
+                SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
+                SenseiClassResourceBarDB[config.dbName][layoutName].positionMode = value
+                bar:ApplyLayout(layoutName)
+            end,
+        },
+        {
+            parentId = L["CATEGORY_POSITION_AND_SIZE"],
             order = 202,
             name = L["X_POSITION"],
             kind = LEM.SettingType.Slider,
@@ -214,7 +231,8 @@ local function BuildLemSettings(bar, defaults)
             useOldStyle = true,
             values = addonTable.availableWidthModes,
             get = function(layoutName)
-                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].widthMode) or defaults.widthMode
+                local widthMode = (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].widthMode) or defaults.widthMode
+                return addonTable.availableCustomFrames[widthMode] or widthMode
             end,
             set = function(layoutName, value)
                 SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
@@ -268,7 +286,7 @@ local function BuildLemSettings(bar, defaults)
             tooltip = L["MINIMUM_WIDTH_TOOLTIP"],
             isEnabled = function (layoutName)
                 local data = SenseiClassResourceBarDB[config.dbName][layoutName]
-                return data ~= nil and data ~= "Manual"
+                return data ~= nil and data.widthMode ~= "Manual"
             end,
         },
         {
@@ -368,7 +386,7 @@ local function BuildLemSettings(bar, defaults)
         {
             parentId = L["CATEGORY_BAR_STYLE"],
             order = 405,
-            name = L["BORDER"],
+            name = L["BAR_BORDER"],
             kind = LEM.SettingType.DropdownColor,
             default = defaults.maskAndBorderStyle,
             colorDefault = defaults.borderColor,
@@ -395,7 +413,7 @@ local function BuildLemSettings(bar, defaults)
         {
             parentId = L["CATEGORY_BAR_STYLE"],
             order = 403,
-            name = L["BACKGROUND"],
+            name = L["BAR_BACKGROUND"],
             kind = LEM.SettingType.DropdownColor,
             default = defaults.backgroundStyle,
             colorDefault = defaults.backgroundColor,
@@ -409,7 +427,7 @@ local function BuildLemSettings(bar, defaults)
                 if not data then return end
 
                 if not dropdown._SCRB_Background_Dropdown_OnMenuClosed_hooked then
-                    hooksecurefunc(dropdown, "OnMenuClosed", function() 
+                    hooksecurefunc(dropdown, "OnMenuClosed", function()
                         for _, texture in pairs(dropdown.texturePool) do
                             texture:Hide()
                         end
@@ -505,7 +523,7 @@ local function BuildLemSettings(bar, defaults)
                 if not data then return end
 
                 if not dropdown._SCRB_Foreground_Dropdown_OnMenuClosed_hooked then
-                    hooksecurefunc(dropdown, "OnMenuClosed", function() 
+                    hooksecurefunc(dropdown, "OnMenuClosed", function()
                         for _, texture in pairs(dropdown.texturePool) do
                             texture:Hide()
                         end
@@ -684,7 +702,7 @@ local function BuildLemSettings(bar, defaults)
                 if not data then return end
 
                 if not dropdown._SCRB_FontFace_Dropdown_OnMenuClosed_hooked then
-                    hooksecurefunc(dropdown, "OnMenuClosed", function() 
+                    hooksecurefunc(dropdown, "OnMenuClosed", function()
                         for _, fontDisplay in pairs(dropdown.fontPool) do
                             fontDisplay:Hide()
                         end
@@ -844,6 +862,7 @@ function LEMSettingsLoaderMixin:Init(bar, defaults)
         SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
         bar:OnLayoutChange(layoutName)
         bar:InitCooldownManagerWidthHook(layoutName)
+        bar:InitCustomFrameWidthHook(layoutName)
         bar:ApplyVisibilitySettings(layoutName)
         bar:ApplyLayout(layoutName, true)
         bar:UpdateDisplay(layoutName, true)
@@ -853,15 +872,21 @@ function LEMSettingsLoaderMixin:Init(bar, defaults)
         local original = LEM:GetLayouts()[duplicateIndices[1]].name
         SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][original] and CopyTable(SenseiClassResourceBarDB[config.dbName][original]) or CopyTable(defaults)
         bar:InitCooldownManagerWidthHook(layoutName)
+        bar:InitCustomFrameWidthHook(layoutName)
         bar:ApplyVisibilitySettings(layoutName)
         bar:ApplyLayout(layoutName, true)
         bar:UpdateDisplay(layoutName, true)
     end)
 
     LEM:RegisterCallback("layoutrenamed", function(oldLayoutName, newLayoutName)
+        if #LEM.internal.layoutNameSnapshot ~= #C_EditMode.GetLayouts().layouts then
+            return
+        end
+
         SenseiClassResourceBarDB[config.dbName][newLayoutName] = SenseiClassResourceBarDB[config.dbName][oldLayoutName] and CopyTable(SenseiClassResourceBarDB[config.dbName][oldLayoutName]) or CopyTable(defaults)
         SenseiClassResourceBarDB[config.dbName][oldLayoutName] = nil
         bar:InitCooldownManagerWidthHook(newLayoutName)
+        bar:InitCustomFrameWidthHook(newLayoutName)
         bar:ApplyVisibilitySettings()
         bar:ApplyLayout()
         bar:UpdateDisplay()
@@ -917,16 +942,6 @@ function LEMSettingsLoaderMixin:LoadSettings()
                     return
                 end
                 StaticPopupDialogs["SCRB_EXPORT_SETTINGS"] = StaticPopupDialogs["SCRB_EXPORT_SETTINGS"]
-                    or {
-                        text = L["EXPORT"],
-                        button1 = L["CLOSE"],
-                        hasEditBox = true,
-                        editBoxWidth = 320,
-                        timeout = 0,
-                        whileDead = true,
-                        hideOnEscape = true,
-                        preferredIndex = 3,
-                    }
                 StaticPopupDialogs["SCRB_EXPORT_SETTINGS"].OnShow = function(self)
                     self:SetFrameStrata("TOOLTIP")
                     local editBox = self.editBox or self:GetEditBox()
@@ -942,27 +957,7 @@ function LEMSettingsLoaderMixin:LoadSettings()
             click = function()
                 local dbName = self.bar:GetConfig().dbName
                 StaticPopupDialogs["SCRB_IMPORT_SETTINGS"] = StaticPopupDialogs["SCRB_IMPORT_SETTINGS"]
-				or {
-					text = L["IMPORT"],
-					button1 = L["OKAY"],
-					button2 = L["CANCEL"],
-					hasEditBox = true,
-					editBoxWidth = 320,
-					timeout = 0,
-					whileDead = true,
-					hideOnEscape = true,
-					preferredIndex = 3,
-				}
-                StaticPopupDialogs["SCRB_IMPORT_SETTINGS"].OnShow = function(self)
-                    self:SetFrameStrata("TOOLTIP")
-                    local editBox = self.editBox or self:GetEditBox()
-                    editBox:SetText("")
-                    editBox:SetFocus()
-                end
-                StaticPopupDialogs["SCRB_IMPORT_SETTINGS"].EditBoxOnEnterPressed = function(editBox)
-                    local parent = editBox:GetParent()
-                    if parent and parent.button1 then parent.button1:Click() end
-                end
+                
                 StaticPopupDialogs["SCRB_IMPORT_SETTINGS"].OnAccept = function(self)
                     local editBox = self.editBox or self:GetEditBox()
                     local input = editBox:GetText() or ""

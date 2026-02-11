@@ -533,6 +533,85 @@ local function CreateActiveBarEntry(spellID, barType, orderBase)
         end,
       },
       
+      -- Talent conditions
+      talentCondLabel = {
+        type = "description",
+        name = "|cffffd700Talent:|r",
+        order = 4.0,
+        width = 0.35,
+        fontSize = "medium",
+        hidden = function() return not expandedBars[barKey] end,
+      },
+      talentCondBtn = {
+        type = "execute",
+        name = function()
+          local cfg = GetBarConfig(spellID, barType)
+          if cfg and cfg.behavior and cfg.behavior.talentConditions and #cfg.behavior.talentConditions > 0 then
+            return "|cff00ff00Active|r"
+          end
+          return "None"
+        end,
+        desc = function()
+          local cfg = GetBarConfig(spellID, barType)
+          if cfg and cfg.behavior and cfg.behavior.talentConditions and #cfg.behavior.talentConditions > 0 then
+            local summary = ns.TalentPicker and ns.TalentPicker.GetConditionSummary and 
+                            ns.TalentPicker.GetConditionSummary(cfg.behavior.talentConditions, cfg.behavior.talentMatchMode) or "Active"
+            return summary .. "\n\n|cffffd700Click to edit talent conditions|r"
+          end
+          return "Show/hide this bar based on your talent choices.\n\n|cffffd700Click to open talent picker|r"
+        end,
+        func = function()
+          local cfg = GetBarConfig(spellID, barType)
+          local existingConditions = cfg and cfg.behavior and cfg.behavior.talentConditions
+          local matchMode = cfg and cfg.behavior and cfg.behavior.talentMatchMode or "all"
+          
+          if ns.TalentPicker and ns.TalentPicker.OpenPicker then
+            ns.TalentPicker.OpenPicker(existingConditions, matchMode, function(conditions, newMatchMode)
+              local barCfg = GetBarConfig(spellID, barType)
+              if barCfg then
+                if not barCfg.behavior then barCfg.behavior = {} end
+                barCfg.behavior.talentConditions = conditions
+                barCfg.behavior.talentMatchMode = newMatchMode
+                -- Refresh bar visibility immediately
+                if ns.CooldownBars and ns.CooldownBars.UpdateBarVisibilityForSpec then
+                  ns.CooldownBars.UpdateBarVisibilityForSpec()
+                end
+                LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+              end
+            end)
+          else
+            print("|cff00ccffArc UI|r: Talent picker not available")
+          end
+        end,
+        order = 4.1,
+        width = 0.45,
+        hidden = function() return not expandedBars[barKey] end,
+      },
+      talentCondClear = {
+        type = "execute",
+        name = "X",
+        desc = "Clear talent conditions",
+        func = function()
+          local cfg = GetBarConfig(spellID, barType)
+          if cfg and cfg.behavior then
+            cfg.behavior.talentConditions = nil
+            cfg.behavior.talentMatchMode = nil
+            -- Refresh bar visibility immediately
+            if ns.CooldownBars and ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 4.2,
+        width = 0.2,
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = GetBarConfig(spellID, barType)
+          return not cfg or not cfg.behavior or not cfg.behavior.talentConditions or #cfg.behavior.talentConditions == 0
+        end,
+      },
+      
       -- Delete button
       deleteBtn = {
         type = "execute",
@@ -707,6 +786,16 @@ function ns.CooldownBarOptions.GetOptionsTable()
       type = "description",
       name = function()
         if not selectedSpellID then return "" end
+        
+        -- Special handling for GCD spell (not in normal catalog)
+        if selectedSpellID == 61304 then
+          local lines = {}
+          table.insert(lines, "|cffffd700Spell ID:|r 61304")
+          table.insert(lines, "|cffffd700Features:|r GCD Tracker")
+          table.insert(lines, "|cff888888Tracks the Global Cooldown when any ability is used|r")
+          return table.concat(lines, "\n")
+        end
+        
         local data = GetSpellDataByID(selectedSpellID)
         if not data then return "Spell not found in catalog" end
         
@@ -759,6 +848,8 @@ function ns.CooldownBarOptions.GetOptionsTable()
       width = 0.75,
       hidden = function()
         if not selectedSpellID then return true end
+        -- Always show for GCD spell
+        if selectedSpellID == 61304 then return false end
         local data = GetSpellDataByID(selectedSpellID)
         return not (data and data.hasCooldown)
       end,
@@ -861,6 +952,38 @@ function ns.CooldownBarOptions.GetOptionsTable()
   -- ═══════════════════════════════════════════════════════════════
   local entries = GetCatalogEntries()
   local iconOrder = 100
+  
+  -- SPECIAL ENTRY: GCD Bar (spell 61304) - always shown first
+  local GCD_SPELL_ID = 61304
+  local gcdStates = GetBarStates(GCD_SPELL_ID)
+  local gcdHasBar = gcdStates.hasCooldownBar
+  
+  args["spell_" .. GCD_SPELL_ID] = {
+    type = "execute",
+    name = " ",
+    image = function() return 136243 end,  -- Global Cooldown icon
+    imageWidth = 28,
+    imageHeight = 28,
+    func = function()
+      if selectedSpellID == GCD_SPELL_ID then
+        selectedSpellID = nil
+      else
+        selectedSpellID = GCD_SPELL_ID
+      end
+      LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+    end,
+    order = 99,  -- Before regular spells
+    width = 0.22,
+    desc = function()
+      local tooltip = "|cffffd700Global Cooldown|r\nID: 61304"
+      tooltip = tooltip .. "\n|cff888888Tracks the GCD timer|r"
+      if gcdHasBar then
+        tooltip = tooltip .. "\n\n|cff00ff00[Has Active Bar]|r"
+      end
+      tooltip = tooltip .. "\n\n|cff888888Click to select|r"
+      return tooltip
+    end,
+  }
   
   for i, data in ipairs(entries) do
     if i <= 60 then

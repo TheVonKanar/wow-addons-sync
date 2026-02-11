@@ -37,6 +37,23 @@ local DL = ns.CDMGroups.DynamicLayout
 local Shared = ns.CDMShared
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- SECRET-SAFE AURA INSTANCE ID CHECK
+-- auraInstanceID may become secret in future WoW versions
+-- Uses ns.API.HasAuraInstanceID from Core.lua (handles secret values)
+-- ═══════════════════════════════════════════════════════════════════════════
+local function HasAuraInstanceID(value)
+    -- Use Core's implementation if available
+    if ns.API and ns.API.HasAuraInstanceID then
+        return ns.API.HasAuraInstanceID(value)
+    end
+    -- Fallback (shouldn't happen - Core loads first)
+    if value == nil then return false end
+    if issecretvalue and issecretvalue(value) then return true end
+    if type(value) == "number" and value == 0 then return false end
+    return value ~= nil
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- MODULE-LEVEL CACHED ENABLED STATE
 -- Direct boolean check - NO function call overhead in OnUpdate
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -56,7 +73,9 @@ DL.RefreshCachedEnabledState = RefreshCachedEnabledState
 
 local CONFIG = {
     -- How often to check for visibility changes (seconds)
-    CHECK_INTERVAL = 0.5,  -- 2Hz (was 0.25 = 4Hz) - cut in half
+    -- How often to check for visibility changes (controls responsiveness vs CPU)
+    -- PERFORMANCE: Increased from 0.5 to 1.0 - user won't notice 1 second delay
+    CHECK_INTERVAL = 1.0,  -- 1Hz (was 2Hz)
     
     -- How often to check for grid mismatches (more expensive, do less often)
     MISMATCH_CHECK_INTERVAL = 2.0,  -- 0.5Hz (was 1Hz) - cut in half
@@ -100,9 +119,87 @@ local state = {
     -- Cleared at start of each tick, avoids duplicate API calls
     tickInvisibleCache = {},  -- [cdID] = result (true/false/nil)
     
+    -- PERFORMANCE: Per-tick cache for IsAuraFrame results
+    tickAuraFrameCache = {},  -- [cdID] = result (true/false)
+    
     -- PERFORMANCE: Throttle HasGridMismatch checks (expensive)
     lastMismatchCheckTime = 0,  -- GetTime() of last mismatch check
+    
+    -- PERFORMANCE: Module-level cached panel state (updated once per tick)
+    -- All functions should use this instead of calling IsOptionsPanelOpen()
+    cachedPanelOpenThisTick = false,
 }
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- TABLE POOLING - Reuse tables to avoid garbage collection pressure
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local tablePool = {
+    iconData = {},      -- Pool of iconData tables
+    results = {},       -- Pool of result tables for CollectMembersForReflow
+}
+
+local function GetPooledIconData()
+    local t = table.remove(tablePool.iconData)
+    if t then
+        -- Clear existing data
+        t.cdID = nil
+        t.member = nil
+        t.isAura = nil
+        t.isActive = nil
+        t.isTrulyHidden = nil
+        t.sortIndex = nil
+        t.row = nil
+        t.col = nil
+        return t
+    end
+    return {}
+end
+
+local function ReleasePooledIconData(t)
+    if #tablePool.iconData < 200 then  -- Max pool size
+        table.insert(tablePool.iconData, t)
+    end
+end
+
+local function GetPooledResult()
+    local t = table.remove(tablePool.results)
+    if t then
+        wipe(t.toReflow)
+        wipe(t.toSkip)
+        wipe(t.toRemove)
+        return t
+    end
+    return {
+        toReflow = {},
+        toSkip = {},
+        toRemove = {},
+    }
+end
+
+local function ReleasePooledResult(result)
+    -- Release all iconData tables back to pool
+    for _, iconData in ipairs(result.toReflow) do
+        ReleasePooledIconData(iconData)
+    end
+    for _, iconData in ipairs(result.toSkip) do
+        ReleasePooledIconData(iconData)
+    end
+    for _, iconData in ipairs(result.toRemove) do
+        ReleasePooledIconData(iconData)
+    end
+    
+    wipe(result.toReflow)
+    wipe(result.toSkip)
+    wipe(result.toRemove)
+    
+    if #tablePool.results < 20 then
+        table.insert(tablePool.results, result)
+    end
+end
+
+-- Export for cleanup
+DL.ReleasePooledResult = ReleasePooledResult
 
 -- Add event to log
 local function LogEvent(eventType, groupName, details)
@@ -128,13 +225,37 @@ end
 -- Track which frames we've hooked for center alignment
 local dynamicLayoutHookedFrames = {}
 
--- Check if options panel is open (defined here so it's available for TriggerDynamicLayout)
+-- Check if options panel is open
+-- PERFORMANCE: Returns cached value from current tick if available
+-- The maintainer updates state.cachedPanelOpenThisTick once per tick
 local function IsOptionsPanelOpen()
-    if ns.CDMGroups.IsOptionsPanelOpen then
-        return ns.CDMGroups.IsOptionsPanelOpen()
+    -- Use tick-cached value (set by maintainer OnUpdate)
+    return state.cachedPanelOpenThisTick
+end
+
+-- Cache for AceConfigDialog reference (avoid LibStub calls)
+local _cachedACD = nil
+
+-- Force-update the panel cache (called by maintainer and when fresh value needed)
+-- PERFORMANCE: Inlined logic to avoid calling profiled ns.CDMGroups.IsOptionsPanelOpen
+local function UpdatePanelCache()
+    -- Check ArcUI AceConfig panel (cached ACD reference)
+    if not _cachedACD then
+        _cachedACD = LibStub("AceConfigDialog-3.0", true)
     end
-    local ACD = LibStub("AceConfigDialog-3.0", true)
-    return ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"]
+    local arcUIOpen = _cachedACD and _cachedACD.OpenFrames and _cachedACD.OpenFrames["ArcUI"] and true or false
+    
+    -- Check CDM options panel (cached flag from CDMGroups)
+    local cdmOpen = ns.CDMGroups and ns.CDMGroups.cdmOptionsPanelOpen or false
+    
+    -- Check Blizzard Edit Mode (skip if already open)
+    local blizzEditMode = false
+    if not arcUIOpen and not cdmOpen then
+        blizzEditMode = EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() or false
+    end
+    
+    state.cachedPanelOpenThisTick = arcUIOpen or cdmOpen or blizzEditMode
+    return state.cachedPanelOpenThisTick
 end
 
 -- Trigger immediate layout for a center-aligned group
@@ -190,11 +311,9 @@ local function TriggerDynamicLayout(group, reason, triggerFrame)
     end
     
     if triggerFrame and reason ~= "SetAuraInstanceInfo" then
-        local auraInstanceID = triggerFrame.auraInstanceID
         if reason == "OnUnitAuraAddedEvent" then
-            -- For aura added, check if frame has aura data yet
-            -- NOTE: We only check auraInstanceID (non-secret), NOT isActive (secret in combat)
-            if not auraInstanceID then
+            -- For aura added, check if frame has aura data yet (secret-safe)
+            if not HasAuraInstanceID(triggerFrame.auraInstanceID) then
                 Trace("LAYOUT_SKIP", cdID, "aura not yet active (no auraInstanceID)", groupName)
                 return
             end
@@ -216,8 +335,8 @@ local function TriggerDynamicLayout(group, reason, triggerFrame)
             -- Restore member.row/col to saved positions
             local savedPositions = ns.CDMGroups and ns.CDMGroups.savedPositions or {}
             if group.members then
-                for cdID, member in pairs(group.members) do
-                    local saved = savedPositions[cdID]
+                for memberCdID, member in pairs(group.members) do
+                    local saved = savedPositions[memberCdID]
                     if saved and saved.type == "group" and saved.target == groupName then
                         if saved.row ~= nil and saved.col ~= nil then
                             member.row = saved.row
@@ -235,38 +354,8 @@ local function TriggerDynamicLayout(group, reason, triggerFrame)
         return
     end
     
-    -- SYNCHRONOUS HIDE-POSITION-SHOW:
-    -- 1. Hide the triggering frame immediately (alpha=0) - ONLY FOR AURA FRAMES
-    -- 2. Layout() positions all frames correctly
-    -- 3. Show all frames by calling OptimizedApplyIconVisuals
-    
-    -- FIX: Check if triggering frame is an aura frame
-    -- Cooldown frames can also have aura methods and get hooked, but we should NOT
-    -- manipulate their alpha - only auras need the hide-position-show sequence
-    local isAuraFrame = false
-    if triggerFrame and cdID then
-        -- Look up member to check viewerType
-        local member = group.members and group.members[cdID]
-        if member then
-            isAuraFrame = DL.IsAuraFrame(member)
-        end
-    end
-    
-    -- Step 1: Hide the triggering frame to prevent flash at wrong position
-    -- ONLY for aura frames - cooldowns should never be hidden by dynamic layout
-    local savedAlpha = nil
-    if isAuraFrame and triggerFrame and triggerFrame.SetAlpha then
-        savedAlpha = triggerFrame:GetAlpha()
-        Trace("ALPHA_HIDE", cdID, string.format("was=%.2f now=0", savedAlpha or 0), groupName)
-        triggerFrame:SetAlpha(0)
-        if triggerFrame.Cooldown then
-            triggerFrame.Cooldown:SetAlpha(0)
-        end
-    elseif triggerFrame and not isAuraFrame then
-        Trace("ALPHA_SKIP", cdID, "not an aura frame - skipping alpha manipulation", groupName)
-    end
-    
-    -- Step 2: Call Layout() to reposition all frames
+    -- Call Layout() to reposition all frames
+    -- NOTE: DynamicLayout ONLY handles positioning - CDMEnhance handles all visibility/alpha
     Trace("LAYOUT_START", cdID, "calling group:Layout()", groupName)
     local layoutStart = GetTime()
     group._pixelLayoutInProgress = true
@@ -274,25 +363,6 @@ local function TriggerDynamicLayout(group, reason, triggerFrame)
     group._pixelLayoutInProgress = nil
     local layoutEnd = GetTime()
     Trace("LAYOUT_END", cdID, string.format("took=%.1fms", (layoutEnd - layoutStart) * 1000), groupName)
-    
-    -- Step 3: Restore alpha by calling OptimizedApplyIconVisuals
-    -- This ensures proper state-based alpha (ready/cooldown) is applied AFTER positioning
-    -- ONLY for aura frames - cooldowns were never hidden, so no restore needed
-    if isAuraFrame and triggerFrame and ns.CDMEnhance and ns.CDMEnhance.OptimizedApplyIconVisuals then
-        -- Bypass throttle
-        triggerFrame._arcLastOptimizedCall = 0
-        triggerFrame._arcTargetAlpha = nil  -- Force alpha recalculation
-        Trace("OPTIMIZE_VISUALS", cdID, "calling OptimizedApplyIconVisuals", groupName)
-        ns.CDMEnhance.OptimizedApplyIconVisuals(triggerFrame)
-        Trace("ALPHA_SHOW", cdID, string.format("final=%.2f", triggerFrame:GetAlpha()), groupName)
-    elseif isAuraFrame and triggerFrame and savedAlpha then
-        -- Fallback: restore original alpha if OptimizedApplyIconVisuals not available
-        triggerFrame:SetAlpha(savedAlpha)
-        if triggerFrame.Cooldown then
-            triggerFrame.Cooldown:SetAlpha(savedAlpha)
-        end
-        Trace("ALPHA_SHOW", cdID, string.format("fallback=%.2f", savedAlpha), groupName)
-    end
     
     -- Total time for this trigger
     local totalTime = GetTime() - now
@@ -367,6 +437,9 @@ local function HookFrameForDynamicLayout(frame, group)
     -- During Edit Mode/frame recycling, members may be nil - skip those too.
     local function ShouldTriggerDynamicLayout(g, triggerFrame)
         if not g then return false end
+        -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
+        -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
+        if not g.autoReflow then return false end
         if not g.dynamicLayout then return false end
         -- Require positive confirmation: frame must be a KNOWN aura
         if triggerFrame then
@@ -431,8 +504,9 @@ end
 function DL.SetupDynamicLayoutHooks(group)
     if not group or not group.members then return end
     
-    -- Check if dynamic layout is enabled - that's all we need!
-    -- Any alignment benefits from instant layout when auras change
+    -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
+    -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
+    if not group.autoReflow then return end
     if not group.dynamicLayout then return end
     
     -- Hook ALL frames in this group that have aura methods
@@ -453,19 +527,56 @@ end
 -- Export IsOptionsPanelOpen to module (defined above in CENTER ALIGNMENT section)
 DL.IsOptionsPanelOpen = IsOptionsPanelOpen
 
+-- Get the effective alpha for "aura missing" state from the frame's cached CDMEnhance settings
+-- Reads frame._arcCfg (cached by CDMEnhance, no API call needed)
+-- Returns: alpha value (0-1), defaults to 1.0 if no settings found
+function DL.GetFrameMissingAlpha(frame)
+    if not frame then return 1.0 end
+    
+    -- Fast path: read directly from frame's cached CDMEnhance settings
+    local cfg = frame._arcCfg
+    if cfg and cfg.cooldownStateVisuals then
+        local cs = cfg.cooldownStateVisuals.cooldownState
+        if cs and cs.alpha ~= nil then
+            return cs.alpha
+        end
+    end
+    
+    -- Fallback: try CDMEnhance.GetIconSettings if frame cache isn't populated yet
+    local cdID = frame.cooldownID
+    if cdID and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings then
+        local settings = ns.CDMEnhance.GetIconSettings(cdID)
+        if settings and settings.cooldownStateVisuals then
+            local cs = settings.cooldownStateVisuals.cooldownState
+            if cs and cs.alpha ~= nil then
+                return cs.alpha
+            end
+        end
+    end
+    
+    -- No settings at all → default is 1.0 (fully visible)
+    return 1.0
+end
+
 -- Check if an icon should be treated as invisible for dynamic layout
 -- Only handles AURA icons (including totems) - cooldowns are excluded
--- For auras: invisible when aura is NOT active, visible when aura IS active
--- For totems: invisible when totem is NOT active, visible when totem IS active
--- Returns true if should be treated as a gap (no active aura/totem)
+-- Returns true if should be treated as a gap (aura missing AND frame would be hidden)
+-- Returns false if aura active, OR aura missing but frame stays visible (alpha > 0)
 -- Returns nil for non-aura icons (exclude from dynamic layout processing)
 --
--- IMPORTANT: This only checks AURA STATE (auraInstanceID, totem active)
--- It does NOT check cooldown state, spell availability, or alpha
--- CDMEnhance handles visibility/alpha separately - this is ONLY for positioning
+-- VISIBILITY-AWARE: Reads the frame's cached CDMEnhance settings (frame._arcCfg)
+-- to check cooldownStateVisuals.cooldownState.alpha. If the user hasn't set
+-- the "aura missing" alpha to ~0, the frame stays visible → NOT a gap.
 function DL.IsIconInvisible(member)
     if not member or not member.frame then
         return nil  -- No frame = can't determine, exclude from dynamic layout
+    end
+    
+    -- Hidden by bar tracking = always treat as invisible gap
+    if member.frame._arcHiddenByBar then
+        local cdID = member.cdID or member.frame.cooldownID
+        if cdID then state.tickInvisibleCache[cdID] = true end
+        return true
     end
     
     -- PER-TICK CACHE: Avoid duplicate API lookups within same tick
@@ -490,10 +601,19 @@ function DL.IsIconInvisible(member)
     -- preferredTotemUpdateSlot persists even after totem expires, so don't use it!
     if frame.totemData ~= nil then
         result = false  -- totemData exists = totem active = visible
-    elseif frame.auraInstanceID and frame.auraInstanceID > 0 then
+    elseif HasAuraInstanceID(frame.auraInstanceID) then
         result = false  -- has aura = visible
     else
-        result = true   -- no totemData, no aura = invisible
+        -- Aura is inactive — check if CDMEnhance would actually hide this frame
+        -- Read the cached effective settings directly from the frame (no API call)
+        -- cooldownStateVisuals.cooldownState.alpha controls "aura missing" opacity
+        -- Default is 1.0 (fully visible), only compact when user has set it to ~0
+        local missingAlpha = DL.GetFrameMissingAlpha(frame)
+        if missingAlpha <= CONFIG.INVISIBLE_THRESHOLD then
+            result = true   -- Alpha ≈ 0 → frame will be hidden → gap
+        else
+            result = false  -- Frame stays visible when inactive → NOT a gap
+        end
     end
     
     -- Cache result for this tick
@@ -556,8 +676,8 @@ function DL.IsAuraActive(member)
         return true, "totem_active"
     end
     
-    -- Regular aura - check auraInstanceID
-    if frame.auraInstanceID and frame.auraInstanceID > 0 then
+    -- Regular aura - check auraInstanceID (secret-safe)
+    if HasAuraInstanceID(frame.auraInstanceID) then
         return true, "has_auraInstanceID"
     end
     
@@ -576,24 +696,35 @@ end
 function DL.IsAuraFrame(member)
     if not member then return false end
     
-    -- FIRST: Use cached viewerType (fast path - no API call)
+    -- FIRST: Use cached viewerType on member (fast path - no API call)
     if member.viewerType then
         return member.viewerType == "aura"
     end
     
-    -- SECOND: Try CDM category lookup only if cache is missing
-    local Shared = ns.CDMShared
+    -- SECOND: Check per-tick cache (avoid redundant lookups same tick)
     local cdID = member.cdID or (member.frame and member.frame.cooldownID)
+    if cdID then
+        local cached = state.tickAuraFrameCache[cdID]
+        if cached ~= nil then
+            return cached
+        end
+    end
+    
+    -- THIRD: Try CDM category lookup only if cache is missing
+    local Shared = ns.CDMShared
     if cdID and Shared and Shared.GetViewerTypeFromCooldownID then
         local viewerType = Shared.GetViewerTypeFromCooldownID(cdID)
         if viewerType then
             -- Cache for future calls
             member.viewerType = viewerType
-            return viewerType == "aura"
+            local result = viewerType == "aura"
+            state.tickAuraFrameCache[cdID] = result
+            return result
         end
     end
     
     -- Default: assume NOT an aura (safer - treats as wall)
+    if cdID then state.tickAuraFrameCache[cdID] = false end
     return false
 end
 
@@ -721,6 +852,9 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
     -- ═══════════════════════════════════════════════════════════════════════
     -- COLLECT ACTIVE ITEMS
     -- Cooldowns = always active. Auras = check state when excludeInactiveAuras.
+    -- VISIBILITY-AWARE: Inactive auras whose CDMEnhance "aura missing" alpha
+    -- is > 0 are treated as active (like cooldowns) to prevent clumping.
+    -- Only auras with alpha ≈ 0 are excluded from layout.
     -- ═══════════════════════════════════════════════════════════════════════
     local allActiveItems = {}
     
@@ -728,21 +862,38 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         if member and member.frame and not member.isPlaceholder then
             member.cdID = cdID
             
-            local isAura = DL.IsAuraFrame(member)
-            local isActive = true
-            
-            if isAura and excludeInactiveAuras then
-                -- Only exclude inactive auras when Dynamic Auras is on
-                isActive = DL.IsAuraActive(member)
-            end
-            -- Cooldowns and auras (when Dynamic Auras off) are always active
-            
-            if isActive then
-                activeAuras[cdID] = true
-                table.insert(allActiveItems, { cdID = cdID, member = member, isAura = isAura })
-            else
-                -- Inactive aura - clear dynamic slot
+            -- Hidden by bar tracking, empty/passive trinket slot, or unequipped item = always treat as gap (empty space)
+            -- This applies to ALL icon types (auras AND cooldowns)
+            if member.frame._arcHiddenByBar or member.frame._arcSlotEmpty or member.frame._arcHiddenUnequipped then
                 member._dynamicSlot = nil
+                -- Skip to next member (don't add to allActiveItems)
+            else
+                local isAura = DL.IsAuraFrame(member)
+                local isActive = true
+                
+                -- ONLY exclude inactive auras when BOTH the parameter AND the group toggle agree
+                -- When Dynamic Auras is OFF, auras are treated identically to cooldowns (always active)
+                if isAura and excludeInactiveAuras and group.dynamicLayout then
+                    isActive = DL.IsAuraActive(member)
+                    
+                    -- If aura is inactive, check if CDMEnhance would actually hide it
+                    -- Read frame._arcCfg.cooldownStateVisuals.cooldownState.alpha
+                    -- If alpha > 0, frame stays visible → treat as active for layout
+                    if not isActive then
+                        local missingAlpha = DL.GetFrameMissingAlpha(member.frame)
+                        if missingAlpha > CONFIG.INVISIBLE_THRESHOLD then
+                            isActive = true  -- Frame stays visible → keep in layout
+                        end
+                    end
+                end
+                
+                if isActive then
+                    activeAuras[cdID] = true
+                    table.insert(allActiveItems, { cdID = cdID, member = member, isAura = isAura })
+                else
+                    -- Inactive aura with alpha ≈ 0 - clear dynamic slot (it's a real gap)
+                    member._dynamicSlot = nil
+                end
             end
         end
     end
@@ -759,8 +910,9 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         alignment = ns.CDMGroups.GetDefaultAlignment and ns.CDMGroups.GetDefaultAlignment(gridShape) or "left"
     end
     
-    local horizontalGrowth = group.layout and group.layout.horizontalGrowth or "RIGHT"
-    local verticalGrowth = group.layout and group.layout.verticalGrowth or "DOWN"
+    -- NOTE: Growth direction no longer affects sort order.
+    -- Layout positions icons at their logical row/col without flipping.
+    -- Growth direction only affects where NEW icons are placed (FindNextSlot).
     
     local function getSavedOrder(cdID)
         local saved = savedPositions[cdID]
@@ -782,11 +934,6 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         local aOrder = getSavedOrder(a.cdID)
         local bOrder = getSavedOrder(b.cdID)
         if aOrder ~= bOrder then
-            if gridShape == "vertical" and verticalGrowth == "UP" then
-                return aOrder > bOrder
-            elseif gridShape ~= "vertical" and horizontalGrowth == "LEFT" then
-                return aOrder > bOrder
-            end
             return aOrder < bOrder
         end
         -- Tiebreaker: cdID for stability
@@ -948,9 +1095,8 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                 elseif alignment == "bottom" then
                     local startRow = rows - #colItems
                     for i, d in ipairs(colItems) do grid[startRow + i - 1][c] = d end
-                else -- center_v: center within column
-                    local startRow = math.floor((rows - #colItems) / 2)
-                    for i, d in ipairs(colItems) do grid[startRow + i - 1][c] = d end
+                else -- center_v: compact to top for ordering, pixel centering in Step 4
+                    for i, d in ipairs(colItems) do grid[i - 1][c] = d end
                 end
             end
         else -- left, right, center_h
@@ -989,6 +1135,45 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         
         -- Step 4: Convert grid to pixel offsets from container CENTER
         local orderIdx = 1
+        
+        if alignment == "center_v" then
+            -- ═══════════════════════════════════════════════════════════════
+            -- COLUMN-MAJOR: pixel-center items vertically per column
+            -- Like center_h does per-row, but for vertical axis
+            -- ═══════════════════════════════════════════════════════════════
+            for c = 0, cols - 1 do
+                local colItems = {}
+                for r = 0, rows - 1 do
+                    if grid[r][c] then
+                        table.insert(colItems, { data = grid[r][c], row = r })
+                    end
+                end
+                
+                if #colItems > 0 then
+                    -- X position: fixed column position
+                    local colCenterX = -contentW / 2 + c * (slotW + spacingX) + slotW / 2
+                    
+                    -- Calculate total height of items in this column
+                    local colTotalH = #colItems * slotH + math.max(0, #colItems - 1) * spacingY
+                    
+                    -- Start from top of centered block (Y+ is up in WoW)
+                    local currentY = colTotalH / 2
+                    
+                    for i, item in ipairs(colItems) do
+                        local centerY = currentY - slotH / 2
+                        
+                        group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = centerY }
+                        group._activeOrder[orderIdx] = item.data.cdID
+                        orderIdx = orderIdx + 1
+                        dynamicPositions[item.data.cdID] = { row = i - 1, col = c }
+                        item.data.member._dynamicSlot = (i - 1) * cols + c
+                        
+                        currentY = currentY - slotH - spacingY
+                    end
+                end
+            end
+        else
+        -- All other alignments: row-major iteration
         for r = 0, rows - 1 do
             -- Y position for this row (from container center, Y+ is up)
             local rowCenterY = contentH / 2 - r * (slotH + spacingY) - slotH / 2
@@ -1005,19 +1190,6 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                 if alignment == "top" or alignment == "bottom" then
                     -- Column gravity: icons keep their column position
                     -- X = grid-slot center based on column index
-                    for _, item in ipairs(rowItems) do
-                        local colCenterX = -contentW / 2 + item.col * (slotW + spacingX) + slotW / 2
-                        
-                        group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = rowCenterY }
-                        group._activeOrder[orderIdx] = item.data.cdID
-                        orderIdx = orderIdx + 1
-                        dynamicPositions[item.data.cdID] = { row = r, col = item.col }
-                        item.data.member._dynamicSlot = r * cols + item.col
-                    end
-                    
-                elseif alignment == "center_v" then
-                    -- Column gravity + vertical centering: icons keep their column X position
-                    -- Y was already set by centered gravity in Step 2
                     for _, item in ipairs(rowItems) do
                         local colCenterX = -contentW / 2 + item.col * (slotW + spacingX) + slotW / 2
                         
@@ -1090,6 +1262,31 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                 end
             end
         end
+        end -- else (non center_v alignments)
+    end
+    
+    -- Store content center for container position adjustment
+    -- Icons are positioned relative to container CENTER at their gravity positions.
+    -- CDMGroups.lua will use this to move container and adjust icon positions
+    -- so icons stay at their screen positions when container shrinks.
+    if group._pixelOffsets and next(group._pixelOffsets) then
+        local minX, maxX, minY, maxY = math.huge, -math.huge, math.huge, -math.huge
+        for cdID, offset in pairs(group._pixelOffsets) do
+            if offset.x < minX then minX = offset.x end
+            if offset.x > maxX then maxX = offset.x end
+            if offset.y < minY then minY = offset.y end
+            if offset.y > maxY then maxY = offset.y end
+        end
+        if minX ~= math.huge then
+            group._contentCenterX = (minX + maxX) / 2
+            group._contentCenterY = (minY + maxY) / 2
+        else
+            group._contentCenterX = 0
+            group._contentCenterY = 0
+        end
+    else
+        group._contentCenterX = 0
+        group._contentCenterY = 0
     end
     
     return dynamicPositions, activeAuras
@@ -1110,21 +1307,32 @@ function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
         return processingOrder
     end
     
+    -- When options panel is open, include bar-hidden frames so they get
+    -- repositioned to their saved grid positions (shown with red overlay).
+    -- When closed, bar-hidden frames are empty spaces for dynamic compaction.
+    local optionsOpen = IsOptionsPanelOpen()
+    
     if dynEnabled then
         local activeList = {}     -- Active items (cooldowns + active auras)
         local inactiveList = {}   -- Inactive auras get whatever's left
         
         for cdID, member in pairs(group.members) do
             if member and member.frame and member.row ~= nil and member.col ~= nil then
-                -- Store cdID on member for fallback lookup
-                member.cdID = cdID
-                
-                -- Check if this item is active (in activeAuras table)
-                -- Cooldowns are now marked as active in CalculateDynamicSlots
-                if activeAuras[cdID] then
-                    table.insert(activeList, cdID)
+                -- Hidden by bar tracking, empty/passive trinket slot, or unequipped item = exclude during runtime (treat as gap)
+                -- Include when options panel is open (user needs to see saved positions)
+                if not optionsOpen and (member.frame._arcHiddenByBar or member.frame._arcSlotEmpty or member.frame._arcHiddenUnequipped) then
+                    -- Don't position bar-hidden frames at all
                 else
-                    table.insert(inactiveList, cdID)
+                    -- Store cdID on member for fallback lookup
+                    member.cdID = cdID
+                    
+                    -- Check if this item is active (in activeAuras table)
+                    -- Cooldowns are now marked as active in CalculateDynamicSlots
+                    if activeAuras[cdID] then
+                        table.insert(activeList, cdID)
+                    else
+                        table.insert(inactiveList, cdID)
+                    end
                 end
             end
         end
@@ -1135,7 +1343,8 @@ function DL.BuildProcessingOrder(group, activeAuras, dynEnabled)
     else
         -- No dynamic layout - process in any order
         for cdID, member in pairs(group.members) do
-            if member and member.frame and member.row ~= nil and member.col ~= nil then
+            if member and member.frame and member.row ~= nil and member.col ~= nil
+               and (optionsOpen or not (member.frame._arcHiddenByBar or member.frame._arcSlotEmpty or member.frame._arcHiddenUnequipped)) then
                 table.insert(processingOrder, cdID)
             end
         end
@@ -1273,18 +1482,36 @@ local function CheckGroupForChanges(group, shouldCheckMismatch)
     
     for cdID, member in pairs(group.members) do
         if not member.isPlaceholder and member.frame then
-            local isVisible = not DL.IsIconInvisible(member)
-            local wasVisible = state.iconVisibility[cdID]
+            -- PERFORMANCE: Only check aura frames for visibility changes
+            -- Cooldowns and utilities don't change visibility based on aura state
+            -- Use cached viewerType when available (fast path)
+            local isAura = member.viewerType == "aura"
+            if not isAura and not member.viewerType then
+                -- Cache miss - do the lookup once
+                isAura = DL.IsAuraFrame(member)
+            end
             
-            -- First check - just record state
-            if wasVisible == nil then
-                state.iconVisibility[cdID] = isVisible
-                LogEvent("INIT", groupName, string.format("cdID %d initial state: %s", cdID, isVisible and "visible" or "hidden"))
-            elseif wasVisible ~= isVisible then
-                -- Visibility changed!
-                state.iconVisibility[cdID] = isVisible
-                anyChanged = true
-                table.insert(changedIcons, string.format("%d: %s->%s", cdID, wasVisible and "V" or "H", isVisible and "V" or "H"))
+            -- Skip non-aura frames - they're always "visible" for dynamic layout purposes
+            if not isAura then
+                -- Just ensure they're tracked as visible
+                if state.iconVisibility[cdID] == nil then
+                    state.iconVisibility[cdID] = true
+                end
+            else
+                -- Aura frame - check visibility
+                local isVisible = not DL.IsIconInvisible(member)
+                local wasVisible = state.iconVisibility[cdID]
+                
+                -- First check - just record state
+                if wasVisible == nil then
+                    state.iconVisibility[cdID] = isVisible
+                    LogEvent("INIT", groupName, string.format("cdID %d initial state: %s", cdID, isVisible and "visible" or "hidden"))
+                elseif wasVisible ~= isVisible then
+                    -- Visibility changed!
+                    state.iconVisibility[cdID] = isVisible
+                    anyChanged = true
+                    table.insert(changedIcons, string.format("%d: %s->%s", cdID, wasVisible and "V" or "H", isVisible and "V" or "H"))
+                end
             end
         end
     end
@@ -1372,9 +1599,11 @@ function DL.OnReconcileComplete()
         wipe(state.iconVisibility)
         
         -- Force reflow all dynamic groups
+        -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
+        -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
         if ns.CDMGroups.groups then
             for groupName, group in pairs(ns.CDMGroups.groups) do
-                if group.dynamicLayout and group.ReflowIcons then
+                if group.autoReflow and group.dynamicLayout and group.ReflowIcons then
                     -- Re-initialize visibility tracking for this group
                     if group.members then
                         for cdID, member in pairs(group.members) do
@@ -1403,66 +1632,102 @@ end
 local DynamicMaintainer = CreateFrame("Frame")
 local elapsed = 0
 
+-- PERFORMANCE: Separate throttle for options panel check
+-- ArcUI and CDM panels use direct hooks - polling only needed for Blizzard Edit Mode
+local panelCheckElapsed = 0
+local PANEL_CHECK_INTERVAL = 0.1  -- 100ms = 10 checks/second
+
+-- Called directly by ArcUI_Options.lua when panel opens
+function DL.OnOptionsPanelOpened()
+    -- Update cache immediately
+    state.cachedPanelOpenThisTick = true
+    state.optionsPanelWasOpen = true
+    
+    -- Reset ALL groups to grid positions
+    -- Pixel positioning is cleared so users can freely edit icon positions
+    if ns.CDMGroups.groups then
+        local savedPositions = ns.CDMGroups.savedPositions or {}
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            -- Clear pixel positioning flags
+            group._usePixelPositioning = nil
+            group._pixelOffsets = nil
+            group._activeOrder = nil
+            group._appliedOffsetX = nil
+            group._appliedOffsetY = nil
+            
+            -- Restore member.row/col to saved positions for grid editing
+            if group.members then
+                for cdID, member in pairs(group.members) do
+                    local saved = savedPositions[cdID]
+                    if saved and saved.type == "group" and saved.target == groupName then
+                        if saved.row ~= nil and saved.col ~= nil then
+                            member.row = saved.row
+                            member.col = saved.col
+                        end
+                    end
+                end
+            end
+            
+            -- Trigger layout to reposition icons to grid
+            if group.Layout then
+                group:Layout()
+            end
+        end
+    end
+end
+
+-- Called directly by ArcUI_Options.lua when panel closes
+-- No polling needed - immediate response
+function DL.OnOptionsPanelClosed()
+    -- Update cache immediately
+    state.cachedPanelOpenThisTick = false
+    state.optionsPanelWasOpen = false
+    
+    -- Clear any applied container offsets so positions reset properly
+    if ns.CDMGroups.groups then
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            group._appliedOffsetX = nil
+            group._appliedOffsetY = nil
+        end
+    end
+    
+    -- Trigger layout for all groups
+    if ns.CDMGroups.groups then
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            if group.Layout then
+                if group.autoReflow and group.ReflowIcons then
+                    group:ReflowIcons()
+                else
+                    group:Layout()
+                end
+            end
+        end
+    end
+end
+
 DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
     -- Skip if CDMGroups not enabled (direct boolean check - no function call)
     if not _cdmGroupsEnabled then
         return
     end
     
-    -- Track options panel state BEFORE throttle (so we don't miss open/close)
-    local optionsPanelOpen = IsOptionsPanelOpen()
-    local wasOpen = state.optionsPanelWasOpen
-    state.optionsPanelWasOpen = optionsPanelOpen
+    -- PERFORMANCE: Throttle the options panel check
+    -- ArcUI and CDM panels use direct hooks - this only catches Blizzard Edit Mode
+    panelCheckElapsed = panelCheckElapsed + dt
+    local optionsPanelOpen = state.cachedPanelOpenThisTick  -- Use cached value by default
     
-    -- When options panel JUST OPENED, reset ALL groups to grid positions
-    -- Pixel positioning is cleared so users can freely edit icon positions
-    if optionsPanelOpen and not wasOpen then
-        if ns.CDMGroups.groups then
-            local savedPositions = ns.CDMGroups.savedPositions or {}
-            for groupName, group in pairs(ns.CDMGroups.groups) do
-                if group._usePixelPositioning then
-                    -- Clear pixel positioning flags
-                    group._usePixelPositioning = nil
-                    group._pixelOffsets = nil
-                    group._activeOrder = nil
-                    
-                    -- Restore member.row/col to saved positions for grid editing
-                    if group.members then
-                        for cdID, member in pairs(group.members) do
-                            local saved = savedPositions[cdID]
-                            if saved and saved.type == "group" and saved.target == groupName then
-                                if saved.row ~= nil and saved.col ~= nil then
-                                    member.row = saved.row
-                                    member.col = saved.col
-                                end
-                            end
-                        end
-                    end
-                    
-                    -- Trigger layout to reposition icons to grid
-                    if group.Layout then
-                        group:Layout()
-                    end
-                end
-            end
+    if panelCheckElapsed >= PANEL_CHECK_INTERVAL then
+        panelCheckElapsed = 0
+        optionsPanelOpen = UpdatePanelCache()  -- Updates state.cachedPanelOpenThisTick
+        
+        -- FALLBACK: If polling detects panel just closed but direct hook didn't fire
+        local wasOpen = state.optionsPanelWasOpen
+        if wasOpen and not optionsPanelOpen then
+            DL.OnOptionsPanelClosed()
+        elseif not wasOpen and optionsPanelOpen then
+            DL.OnOptionsPanelOpened()
         end
-    end
-    
-    -- When options panel JUST CLOSED, trigger layout to restore pixel positioning
-    if not optionsPanelOpen and wasOpen then
-        if ns.CDMGroups.groups then
-            for groupName, group in pairs(ns.CDMGroups.groups) do
-                -- All groups get Layout() to re-enable pixel positioning
-                -- For groups with Dynamic Auras, this also handles aura compaction
-                if group.Layout then
-                    if group.autoReflow and group.ReflowIcons then
-                        group:ReflowIcons()
-                    else
-                        group:Layout()
-                    end
-                end
-            end
-        end
+        state.optionsPanelWasOpen = optionsPanelOpen
     end
     
     -- Skip all processing when options panel is open
@@ -1473,8 +1738,9 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
     if elapsed < CONFIG.CHECK_INTERVAL then return end
     elapsed = 0
     
-    -- PERFORMANCE: Clear per-tick cache at start of each check cycle
+    -- PERFORMANCE: Clear per-tick caches at start of each check cycle (not every frame!)
     wipe(state.tickInvisibleCache)
+    wipe(state.tickAuraFrameCache)
     
     -- Skip during spec changes
     if ns.CDMGroups.specChangeInProgress then return end
@@ -1496,7 +1762,9 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
     local shouldCheckMismatch = (now - state.lastMismatchCheckTime) >= CONFIG.MISMATCH_CHECK_INTERVAL
     
     for groupName, group in pairs(ns.CDMGroups.groups) do
-        if group.dynamicLayout then
+        -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
+        -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
+        if group.autoReflow and group.dynamicLayout then
             local changed = CheckGroupForChanges(group, shouldCheckMismatch)
             if changed then
                 state.pendingReflows[groupName] = group
@@ -1548,12 +1816,34 @@ function DL.SetEnabled(group, enabled)
         end
     end
     
-    -- If enabling, trigger immediate reflow
-    if enabled and not IsOptionsPanelOpen() then
-        if group.ReflowIcons then
+    -- Clear any pending reflows for this group
+    if group.name then
+        state.pendingReflows[group.name] = nil
+    end
+    
+    if enabled then
+        -- If enabling, trigger immediate reflow
+        if not IsOptionsPanelOpen() then
+            if group.ReflowIcons then
+                C_Timer.After(0.1, function()
+                    if group.ReflowIcons and not IsOptionsPanelOpen() then
+                        group:ReflowIcons()
+                    end
+                end)
+            end
+        end
+    else
+        -- If DISABLING, clear pixel positioning state so it doesn't persist
+        -- This prevents "ghost" dynamic layout behavior after toggle off
+        group._usePixelPositioning = nil
+        group._pixelOffsets = nil
+        group._activeOrder = nil
+        
+        -- Trigger layout to restore grid-based positions
+        if group.Layout and not IsOptionsPanelOpen() then
             C_Timer.After(0.1, function()
-                if group.ReflowIcons and not IsOptionsPanelOpen() then
-                    group:ReflowIcons()
+                if group.Layout and not IsOptionsPanelOpen() then
+                    group:Layout()
                 end
             end)
         end
@@ -1635,11 +1925,8 @@ end
 -- Note: "Walls" concept only applies in Layout's CalculateDynamicSlots,
 -- where CDs stay at their REFLOWED position while auras animate around them.
 function DL.CollectMembersForReflow(group)
-    local result = {
-        toReflow = {},   -- Icons that will be reflowed (cooldowns + active auras)
-        toSkip = {},     -- Icons to skip (inactive auras when dynamic ON)
-        toRemove = {},   -- Members without valid frames (cleanup)
-    }
+    -- PERFORMANCE: Use pooled result table instead of creating new one
+    local result = GetPooledResult()
     
     if not group or not group.members then
         return result
@@ -1657,44 +1944,59 @@ function DL.CollectMembersForReflow(group)
             -- Placeholders don't participate in reflow
         elseif not HasValidFrame(member, cdID) then
             -- No valid frame - mark for removal (but save position first)
-            table.insert(result.toRemove, {
-                cdID = cdID,
-                member = member,
-            })
+            -- PERFORMANCE: Use pooled iconData
+            local iconData = GetPooledIconData()
+            iconData.cdID = cdID
+            iconData.member = member
+            table.insert(result.toRemove, iconData)
         else
             -- Has valid frame - categorize
             local isAura = DL.IsAuraFrame(member)
             local isActive = true
+            local isTrulyHidden = false  -- Frame completely invisible (free slot for compaction)
             
-            if isAura then
+            -- Hidden trinket slot (empty or passive filter) = invisible gap, free the slot
+            if member.frame and (member.frame._arcSlotEmpty or member.frame._arcHiddenUnequipped) then
+                isActive = false
+                isTrulyHidden = true
+            -- Hidden by bar tracking = always treat as inactive gap (slot stays blocked)
+            elseif member.frame and member.frame._arcHiddenByBar then
+                isActive = false
+            -- Only check aura active state when dynamic layout is enabled
+            -- When Dynamic Auras is OFF, auras are always "active" (same as cooldowns)
+            elseif dynEnabled and isAura then
                 isActive = DL.IsAuraActive(member)
             end
             
-            -- Get sort index from saved position
-            local saved = GetSavedPosition(cdID, group.name)
+            -- Always compute sortIndex from SAVED position (authoritative user order)
+            -- member.row/col can be overwritten by dynamic layout compaction
             local sortIndex
-            if saved and saved.sortIndex then
-                sortIndex = saved.sortIndex
+            local saved = GetSavedPosition(cdID, group.name)
+            if saved and saved.row ~= nil and saved.col ~= nil then
+                sortIndex = saved.row * maxCols + saved.col
             elseif member.row ~= nil and member.col ~= nil then
+                -- Fallback to member position if no saved position yet
                 sortIndex = member.row * maxCols + member.col
             else
                 sortIndex = 9999
             end
             
-            local iconData = {
-                cdID = cdID,
-                member = member,
-                isAura = isAura,
-                isActive = isActive,
-                sortIndex = sortIndex,
-                row = member.row,
-                col = member.col,
-            }
+            -- PERFORMANCE: Use pooled iconData instead of creating new table
+            local iconData = GetPooledIconData()
+            iconData.cdID = cdID
+            iconData.member = member
+            iconData.isAura = isAura
+            iconData.isActive = isActive
+            iconData.isTrulyHidden = isTrulyHidden
+            iconData.sortIndex = sortIndex
+            iconData.row = member.row
+            iconData.col = member.col
             
-            -- When dynamic is ON: inactive auras are gaps
-            -- When dynamic is OFF: everything reflows
-            if dynEnabled and isAura and not isActive then
-                -- Inactive aura with dynamic ON = skip (treat as gap)
+            -- When dynamic is ON: inactive auras, bar-hidden, and truly hidden frames are gaps
+            -- When dynamic is OFF: everything reflows (except bar-hidden and truly hidden)
+            local isBarHidden = member.frame and member.frame._arcHiddenByBar
+            if isTrulyHidden or isBarHidden or (dynEnabled and isAura and not isActive) then
+                -- Inactive/hidden = skip (treat as gap)
                 table.insert(result.toSkip, iconData)
             else
                 -- Cooldown OR active aura = include in reflow
@@ -1724,7 +2026,8 @@ end
 
 -- Calculate slot positions for reflow based on grid shape and alignment
 -- Returns: list of {row, col} positions in fill order
-function DL.BuildReflowSlotOrder(group, count)
+function DL.BuildReflowSlotOrder(group, count, blockedSlots)
+    blockedSlots = blockedSlots or {}
     local maxRows = group.layout and group.layout.gridRows or 2
     local maxCols = group.layout and group.layout.gridCols or 4
     local alignment = group.layout and group.layout.alignment
@@ -1735,79 +2038,113 @@ function DL.BuildReflowSlotOrder(group, count)
     end
     
     local slots = {}
-    local totalSlots = maxRows * maxCols
     
     if gridShape == "horizontal" then
-        -- Single row: apply horizontal alignment
-        local startCol = 0
-        local emptySlots = maxCols - count
-        if emptySlots > 0 then
-            if alignment == "center" then
-                startCol = math.floor(emptySlots / 2)
-            elseif alignment == "right" then
-                startCol = emptySlots
+        -- Single row: collect available (non-blocked) columns
+        local availCols = {}
+        for col = 0, maxCols - 1 do
+            if not blockedSlots[col] then  -- row 0, so linear index = col
+                table.insert(availCols, col)
             end
         end
+        
+        local numAvail = #availCols
+        local startIdx = 1  -- 1-indexed into availCols
+        local emptySlots = numAvail - count
+        if emptySlots > 0 then
+            if alignment == "center" then
+                startIdx = math.floor(emptySlots / 2) + 1
+            elseif alignment == "right" then
+                startIdx = emptySlots + 1
+            end
+        end
+        
         for i = 0, count - 1 do
-            local col = startCol + i
-            if col < maxCols then
-                table.insert(slots, { row = 0, col = col })
+            local idx = startIdx + i
+            if availCols[idx] then
+                table.insert(slots, { row = 0, col = availCols[idx] })
             end
         end
         
     elseif gridShape == "vertical" then
-        -- Single column: apply vertical alignment
-        local startRow = 0
-        local emptySlots = maxRows - count
-        if emptySlots > 0 then
-            if alignment == "center" then
-                startRow = math.floor(emptySlots / 2)
-            elseif alignment == "bottom" then
-                startRow = emptySlots
+        -- Single column: collect available (non-blocked) rows
+        local availRows = {}
+        for row = 0, maxRows - 1 do
+            local linearIdx = row * maxCols  -- col 0
+            if not blockedSlots[linearIdx] then
+                table.insert(availRows, row)
             end
         end
+        
+        local numAvail = #availRows
+        local startIdx = 1
+        local emptySlots = numAvail - count
+        if emptySlots > 0 then
+            if alignment == "center" then
+                startIdx = math.floor(emptySlots / 2) + 1
+            elseif alignment == "bottom" then
+                startIdx = emptySlots + 1
+            end
+        end
+        
         for i = 0, count - 1 do
-            local row = startRow + i
-            if row < maxRows then
-                table.insert(slots, { row = row, col = 0 })
+            local idx = startIdx + i
+            if availRows[idx] then
+                table.insert(slots, { row = availRows[idx], col = 0 })
             end
         end
         
     else
-        -- Multi-dimensional: linear fill (left-to-right, top-to-bottom)
-        -- Alignment affects where gaps appear
+        -- Multi-dimensional: linear fill skipping blocked slots
         if alignment == "right" then
-            -- Fill from right side of each row
-            local idx = 0
+            -- Collect available slots per row, fill from right
+            local placed = 0
             for row = 0, maxRows - 1 do
-                local rowStart = maxCols - math.min(count - idx, maxCols)
-                for col = rowStart, maxCols - 1 do
-                    if idx < count then
-                        table.insert(slots, { row = row, col = col })
-                        idx = idx + 1
+                local rowAvail = {}
+                for col = 0, maxCols - 1 do
+                    local linearIdx = row * maxCols + col
+                    if not blockedSlots[linearIdx] then
+                        table.insert(rowAvail, col)
+                    end
+                end
+                -- Fill from right side of available slots
+                local needed = math.min(count - placed, #rowAvail)
+                local start = #rowAvail - needed + 1
+                for i = start, #rowAvail do
+                    if placed < count then
+                        table.insert(slots, { row = row, col = rowAvail[i] })
+                        placed = placed + 1
                     end
                 end
             end
         elseif alignment == "bottom" then
-            -- Fill from bottom
-            local startRow = math.max(0, maxRows - math.ceil(count / maxCols))
-            local idx = 0
-            for row = startRow, maxRows - 1 do
+            -- Collect all available slots, fill from bottom
+            local allAvail = {}
+            for row = 0, maxRows - 1 do
                 for col = 0, maxCols - 1 do
-                    if idx < count then
-                        table.insert(slots, { row = row, col = col })
-                        idx = idx + 1
+                    local linearIdx = row * maxCols + col
+                    if not blockedSlots[linearIdx] then
+                        table.insert(allAvail, { row = row, col = col })
                     end
                 end
             end
+            local startIdx = math.max(1, #allAvail - count + 1)
+            for i = startIdx, #allAvail do
+                table.insert(slots, allAvail[i])
+            end
         else
-            -- Default: left/top alignment (linear fill)
-            for i = 0, count - 1 do
-                local row = math.floor(i / maxCols)
-                local col = i % maxCols
-                if row < maxRows and col < maxCols then
-                    table.insert(slots, { row = row, col = col })
+            -- Default: left/top alignment (linear fill, skip blocked)
+            local placed = 0
+            for row = 0, maxRows - 1 do
+                for col = 0, maxCols - 1 do
+                    if placed >= count then break end
+                    local linearIdx = row * maxCols + col
+                    if not blockedSlots[linearIdx] then
+                        table.insert(slots, { row = row, col = col })
+                        placed = placed + 1
+                    end
                 end
+                if placed >= count then break end
             end
         end
     end
@@ -1853,8 +2190,31 @@ function DL.ReflowGroup(group)
         group.grid[row] = {}
     end
     
-    -- Get slot order for reflow
-    local slots = DL.BuildReflowSlotOrder(group, #members.toReflow)
+    -- ═══════════════════════════════════════════════════════════════════════
+    -- CRITICAL FIX: Reserve toSkip members' positions BEFORE building slots
+    -- Bar-hidden and inactive aura members stay at their current positions.
+    -- Their slots must be blocked so toReflow members don't land on top.
+    -- EXCEPTION: Truly hidden frames (empty/passive trinkets, unequipped items)
+    -- should NOT block slots - they're invisible and we want compaction.
+    -- ═══════════════════════════════════════════════════════════════════════
+    local blockedSlots = {}
+    for _, iconData in ipairs(members.toSkip) do
+        -- Only block slots for frames that are visually present (dimmed/inactive)
+        -- Truly hidden frames (empty slot, passive filter) free their slot for compaction
+        if not iconData.isTrulyHidden then
+            local member = iconData.member
+            if member.row and member.col and member.row >= 0 and member.col >= 0
+               and member.row < maxRows and member.col < maxCols then
+                local linearIdx = member.row * maxCols + member.col
+                blockedSlots[linearIdx] = true
+                -- Place in grid to reserve the slot
+                group.grid[member.row][member.col] = iconData.cdID
+            end
+        end
+    end
+    
+    -- Get slot order for reflow (respects blocked slots from toSkip members)
+    local slots = DL.BuildReflowSlotOrder(group, #members.toReflow, blockedSlots)
     
     -- Place icons into slots
     for i, iconData in ipairs(members.toReflow) do
@@ -1866,6 +2226,10 @@ function DL.ReflowGroup(group)
             -- Update member position
             member.row = slot.row
             member.col = slot.col
+            
+            -- CRITICAL: Set _dynamicSlot for proper tracking
+            -- This is the compacted slot index (0-based)
+            member._dynamicSlot = i - 1
             
             -- Update grid
             group.grid[slot.row][slot.col] = cdID
@@ -1881,7 +2245,11 @@ function DL.ReflowGroup(group)
     state.lastReflowTime[group.name] = GetTime()
     state.reflowCount[group.name] = (state.reflowCount[group.name] or 0) + 1
     
-    return #members.toReflow, #members.toSkip, #members.toRemove
+    -- PERFORMANCE: Release pooled tables back to pool
+    local reflowCount, skipCount, removeCount = #members.toReflow, #members.toSkip, #members.toRemove
+    ReleasePooledResult(members)
+    
+    return reflowCount, skipCount, removeCount
 end
 
 -- Clear all visibility tracking (call on spec change, profile switch, etc.)
@@ -1892,6 +2260,8 @@ function DL.ClearTracking()
     wipe(state.reflowCount)
     wipe(state.lastMismatchDetected)
     wipe(state.eventLog)
+    wipe(state.tickInvisibleCache)
+    wipe(state.tickAuraFrameCache)
     state.talentChangeTime = 0
     state.pendingPostTalentRefresh = false
 end
@@ -1905,7 +2275,9 @@ function DL.RefreshAll()
     wipe(state.iconVisibility)
     
     for groupName, group in pairs(ns.CDMGroups.groups) do
-        if group.dynamicLayout then
+        -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
+        -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
+        if group.autoReflow and group.dynamicLayout then
             -- Re-initialize visibility tracking
             if group.members then
                 for cdID, member in pairs(group.members) do
@@ -1940,7 +2312,11 @@ function DL.OnPlaceholderResolved(cdID, groupName)
     -- If we know the group, queue it for potential reflow
     if groupName and ns.CDMGroups.groups then
         local group = ns.CDMGroups.groups[groupName]
-        if group and group.dynamicLayout then
+        -- CRITICAL FIX: Only require autoReflow to be ON
+        -- When a placeholder resolves (real frame appears), we MUST reflow to put
+        -- the icon at its correct sorted position. dynamicLayout only controls
+        -- how AURAS behave (animate vs stay), not whether compaction happens.
+        if group and group.autoReflow then
             state.pendingReflows[groupName] = group
             LogEvent("PLACEHOLDER_RESOLVED", groupName, string.format("cdID %s resolved, queued reflow", tostring(cdID)))
         end

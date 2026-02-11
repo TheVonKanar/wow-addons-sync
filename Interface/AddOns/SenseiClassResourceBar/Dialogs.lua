@@ -36,3 +36,17 @@ StaticPopupDialogs["SCRB_IMPORT_SETTINGS"].EditBoxOnEnterPressed = function(edit
     local parent = editBox:GetParent()
     if parent and parent.button1 then parent.button1:Click() end
 end
+
+StaticPopupDialogs["SCRB_RELOADUI"] = StaticPopupDialogs["SCRB_RELOADUI"]
+    or {
+        text = L["RELOADUI_TEXT"],
+        button1 = L["RELOADUI"],
+        button2 = L["CANCEL"],
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,
+    }
+StaticPopupDialogs["SCRB_RELOADUI"].OnAccept = function()
+    ReloadUI()
+end

@@ -25,9 +25,14 @@ addonTable.fullUpdateBar = function(name)
     if not bar then return end
 
     bar:InitCooldownManagerWidthHook()
+    bar:InitCustomFrameWidthHook()
     bar:ApplyVisibilitySettings()
     bar:ApplyLayout()
     bar:UpdateDisplay()
+
+    if type(bar.ApplyMouseSettings) == "function" then
+        bar:ApplyMouseSettings()
+    end
 end
 
 addonTable.fullUpdateBars = function()
@@ -223,8 +228,37 @@ addonTable.rounded = function(num, idp)
     return math.floor(num * mult + 0.5) / mult
 end
 
-addonTable.getPixelPerfectScale = function()
-    local _, screenHeight = GetPhysicalScreenSize()
-    local scale = UIParent:GetEffectiveScale()
+addonTable.getPixelPerfectScale = function(customUIScale)
+    local screenHeight = select(2, GetPhysicalScreenSize())
+    local scale = customUIScale or UIParent:GetEffectiveScale()
+
+    if scale == 0 or screenHeight == 0 then
+        return 1
+    end
+
     return 768 / screenHeight / scale
 end
+
+addonTable.getNearestPixel = function(value, customUIScale)
+    if value == 0 then
+        return 0
+    end
+
+    local ppScale = addonTable.getPixelPerfectScale(customUIScale)
+    return addonTable.rounded(value / ppScale) * ppScale
+end
+
+addonTable.registerCustomFrame = function(customFrame, customFrameName)
+	if type(customFrame) == "table" then
+		customFrame = customFrame.GetName and customFrame:GetName() or nil
+	end
+
+	if customFrame and not addonTable.availableCustomFrames[customFrame] then
+		addonTable.availableCustomFrames[customFrame] = customFrameName or customFrame
+		addonTable.customFrameNamesToFrame[customFrameName or customFrame] = customFrame
+
+		tinsert(addonTable.availableWidthModes, { text = customFrameName or customFrame })
+		addonTable.fullUpdateBars()
+	end
+end
+SCRB.registerCustomFrame = addonTable.registerCustomFrame

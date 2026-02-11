@@ -1,8 +1,7 @@
 # Platynator
 
-## [299](https://github.com/TheMouseNest/Platynator/tree/299) (2026-02-02)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/298...299) 
+## [312](https://github.com/TheMouseNest/Platynator/tree/312) (2026-02-10)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/311...312) 
 
-- Revert "Fix transition detection between open-world and delves"  
-- Add "Raid Grey" texture for bar backgrounds  
-- Make scroll region for style dropdown in "Style Select" tab longer  
+- Increase default simplified scale  
+- Revert "Automatically rescale simplified nameplates based on design scale"  

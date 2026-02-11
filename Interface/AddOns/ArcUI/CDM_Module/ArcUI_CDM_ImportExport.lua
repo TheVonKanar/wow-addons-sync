@@ -183,22 +183,14 @@ local function BuildExportData(options)
         exportData.sourceSpec = currentSpec
     end
     
-    print(MSG_PREFIX .. "BuildExportData: currentSpec=" .. tostring(currentSpec))
-    
     -- ─────────────────────────────────────────────────────────────────────────
     -- CDMGroups Data (group layouts, positions, free icons, iconSettings, groupSettings)
     -- Uses character-specific storage via Shared.GetCDMGroupsDB()
     -- iconSettings and groupSettings are now stored per-spec alongside layouts
     -- ─────────────────────────────────────────────────────────────────────────
     local cdmGroupsDB = Shared.GetCDMGroupsDB()
-    print(MSG_PREFIX .. "BuildExportData: cdmGroupsDB exists=" .. tostring(cdmGroupsDB ~= nil))
     
     if cdmGroupsDB then
-        print(MSG_PREFIX .. "BuildExportData: specData exists=" .. tostring(cdmGroupsDB.specData ~= nil))
-        if cdmGroupsDB.specData then
-            print(MSG_PREFIX .. "BuildExportData: specData[currentSpec] exists=" .. tostring(cdmGroupsDB.specData[currentSpec] ~= nil))
-        end
-        
         -- Export current spec data
         if cdmGroupsDB.specData and currentSpec and cdmGroupsDB.specData[currentSpec] then
             local specData = cdmGroupsDB.specData[currentSpec]
@@ -208,14 +200,6 @@ local function BuildExportData(options)
             -- ═══════════════════════════════════════════════════════════════════════════
             local activeProfileName = specData.activeProfile or "Default"
             local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
-            
-            -- Debug: count iconSettings from PROFILE (now that profile is defined!)
-            local iconCount = 0
-            if profile and profile.iconSettings then
-                for _ in pairs(profile.iconSettings) do iconCount = iconCount + 1 end
-            end
-            print(MSG_PREFIX .. "BuildExportData: profile.iconSettings has " .. iconCount .. " entries")
-            print(MSG_PREFIX .. "BuildExportData: options.includeIconSettings=" .. tostring(options.includeIconSettings))
             
             -- Build layoutProfiles with ONLY the active profile
             local exportedLayoutProfiles = nil
@@ -231,6 +215,16 @@ local function BuildExportData(options)
                 exportedIconSettings = DeepCopy(profile.iconSettings)
             end
             
+            -- Export global icon settings (stored at root of cdmGroups, not per-spec)
+            -- These include: disableTooltips, clickThrough
+            local exportedGlobalIconSettings = nil
+            if options.includeGroupSettings ~= false then
+                exportedGlobalIconSettings = {
+                    disableTooltips = cdmGroupsDB.disableTooltips,
+                    clickThrough = cdmGroupsDB.clickThrough,
+                }
+            end
+            
             exportData.cdmGroups = {
                 -- DEPRECATED: Don't export specData.groups (has runtime data)
                 groups = nil,
@@ -244,25 +238,9 @@ local function BuildExportData(options)
                 -- (Also in profile.iconSettings within layoutProfiles above)
                 iconSettings = exportedIconSettings,
                 groupSettings = (options.includeGroupSettings ~= false) and specData.groupSettings and DeepCopy(specData.groupSettings) or nil,
+                -- Global icon settings (tooltips, click-through) - stored at root, not per-spec
+                globalIconSettings = exportedGlobalIconSettings,
             }
-            
-            -- Debug: verify what was copied
-            local exportedIconCount = 0
-            if exportData.cdmGroups.iconSettings then
-                for _ in pairs(exportData.cdmGroups.iconSettings) do exportedIconCount = exportedIconCount + 1 end
-            end
-            print(MSG_PREFIX .. "BuildExportData: exportData.cdmGroups.iconSettings has " .. exportedIconCount .. " entries")
-            
-            -- Debug: count positions
-            local posCount = 0
-            local freeCount = 0
-            if exportData.cdmGroups.savedPositions then
-                for _ in pairs(exportData.cdmGroups.savedPositions) do posCount = posCount + 1 end
-            end
-            if exportData.cdmGroups.freeIcons then
-                for _ in pairs(exportData.cdmGroups.freeIcons) do freeCount = freeCount + 1 end
-            end
-            print(MSG_PREFIX .. "BuildExportData: Exported " .. posCount .. " positions, " .. freeCount .. " freeIcons from PROFILE")
             
             -- Clean runtime data from layout profiles (shouldn't have any, but be safe)
             if exportData.cdmGroups.layoutProfiles then
@@ -313,12 +291,25 @@ local function BuildExportData(options)
                 positions = arcAuras.positions and DeepCopy(arcAuras.positions) or nil,
                 globalSettings = arcAuras.globalSettings and next(arcAuras.globalSettings) and DeepCopy(arcAuras.globalSettings) or nil,
                 enabled = arcAuras.enabled,
+                autoTrackEquippedTrinkets = arcAuras.autoTrackEquippedTrinkets,
+                autoTrackSlots = arcAuras.autoTrackSlots and DeepCopy(arcAuras.autoTrackSlots) or nil,
+                onlyOnUseTrinkets = arcAuras.onlyOnUseTrinkets,
             }
-            
-            -- Debug count
-            local itemCount = 0
-            for _ in pairs(arcAuras.trackedItems) do itemCount = itemCount + 1 end
-            print(MSG_PREFIX .. "BuildExportData: arcAuras.trackedItems has " .. itemCount .. " entries")
+        end
+        
+        -- Also export tracked spell cooldowns (if any)
+        if (options.includeArcAuras ~= false) and arcAuras.trackedSpells and next(arcAuras.trackedSpells) then
+            if not exportData.arcAuras then
+                exportData.arcAuras = {
+                    positions = arcAuras.positions and DeepCopy(arcAuras.positions) or nil,
+                    globalSettings = arcAuras.globalSettings and next(arcAuras.globalSettings) and DeepCopy(arcAuras.globalSettings) or nil,
+                    enabled = arcAuras.enabled,
+                    autoTrackEquippedTrinkets = arcAuras.autoTrackEquippedTrinkets,
+                    autoTrackSlots = arcAuras.autoTrackSlots and DeepCopy(arcAuras.autoTrackSlots) or nil,
+                    onlyOnUseTrinkets = arcAuras.onlyOnUseTrinkets,
+                }
+            end
+            exportData.arcAuras.trackedSpells = DeepCopy(arcAuras.trackedSpells)
         end
     end
     
@@ -442,6 +433,12 @@ function IE.GetExportStats()
     if ns.db and ns.db.char and ns.db.char.arcAuras and ns.db.char.arcAuras.trackedItems then
         for _ in pairs(ns.db.char.arcAuras.trackedItems) do
             stats.arcAuras = stats.arcAuras + 1
+        end
+    end
+    stats.arcAurasSpells = 0
+    if ns.db and ns.db.char and ns.db.char.arcAuras and ns.db.char.arcAuras.trackedSpells then
+        for _ in pairs(ns.db.char.arcAuras.trackedSpells) do
+            stats.arcAurasSpells = stats.arcAurasSpells + 1
         end
     end
     
@@ -617,6 +614,12 @@ function IE.GetImportStats(data)
             stats.arcAuras = stats.arcAuras + 1
         end
     end
+    stats.arcAurasSpells = 0
+    if data.arcAuras and data.arcAuras.trackedSpells then
+        for _ in pairs(data.arcAuras.trackedSpells) do
+            stats.arcAurasSpells = stats.arcAurasSpells + 1
+        end
+    end
     
     return stats
 end
@@ -727,7 +730,6 @@ function IE.Import(importString, options)
                 specData.layoutProfiles[finalName] = DeepCopy(profileData)
                 importedCounts.layoutProfiles = importedCounts.layoutProfiles + 1
                 importedProfileName = importedProfileName or finalName
-                print(MSG_PREFIX .. "Added profile: " .. finalName)
             end
         end
         
@@ -775,6 +777,7 @@ function IE.Import(importString, options)
                             showBackground = groupData.showBackground or false,
                             autoReflow = groupData.autoReflow or false,
                             dynamicLayout = groupData.dynamicLayout or false,
+                            dynamicContainerSize = groupData.dynamicContainerSize,
                             lockGridSize = groupData.lockGridSize or false,
                             containerPadding = groupData.containerPadding or 0,
                             borderColor = groupData.borderColor and DeepCopy(groupData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -800,10 +803,29 @@ function IE.Import(importString, options)
         end
         
         -- ═══════════════════════════════════════════════════════════════════════════
+        -- BACKWARDS COMPAT: Merge top-level iconSettings into imported profile
+        -- Old exports stored iconSettings at cdmGroups root level, not inside profiles.
+        -- This includes customLabel settings which need to be preserved.
+        -- ═══════════════════════════════════════════════════════════════════════════
+        if data.cdmGroups.iconSettings and next(data.cdmGroups.iconSettings) then
+            local targetProfile = specData.layoutProfiles[importedProfileName]
+            if targetProfile then
+                if not targetProfile.iconSettings then
+                    targetProfile.iconSettings = {}
+                end
+                -- Merge each icon's settings (don't overwrite if already exists in profile)
+                for cdID, settings in pairs(data.cdmGroups.iconSettings) do
+                    if not targetProfile.iconSettings[cdID] then
+                        targetProfile.iconSettings[cdID] = DeepCopy(settings)
+                    end
+                end
+            end
+        end
+        
+        -- ═══════════════════════════════════════════════════════════════════════════
         -- SET ACTIVE PROFILE to the imported one
         -- ═══════════════════════════════════════════════════════════════════════════
         specData.activeProfile = importedProfileName
-        print(MSG_PREFIX .. "Set active profile to: " .. importedProfileName)
         
         -- ═══════════════════════════════════════════════════════════════════════════
         -- IMPORT GROUP SETTINGS (scale, padding, direction, rowLimit for aura/cooldown/utility)
@@ -811,7 +833,25 @@ function IE.Import(importString, options)
         -- ═══════════════════════════════════════════════════════════════════════════
         if data.cdmGroups.groupSettings then
             specData.groupSettings = DeepCopy(data.cdmGroups.groupSettings)
-            print(MSG_PREFIX .. "Imported groupSettings (aura/cooldown/utility scale, padding, direction)")
+        end
+        
+        -- ═══════════════════════════════════════════════════════════════════════════
+        -- IMPORT GLOBAL ICON SETTINGS (tooltips, click-through)
+        -- These are at cdmGroups root level, not per-spec
+        -- ═══════════════════════════════════════════════════════════════════════════
+        if data.cdmGroups.globalIconSettings then
+            local globalSettings = data.cdmGroups.globalIconSettings
+            if globalSettings.disableTooltips ~= nil then
+                cdmGroupsDB.disableTooltips = globalSettings.disableTooltips
+            end
+            if globalSettings.clickThrough ~= nil then
+                cdmGroupsDB.clickThrough = globalSettings.clickThrough
+            end
+            
+            -- Refresh cached settings so changes take effect
+            if ns.CDMGroups and ns.CDMGroups.RefreshCachedLayoutSettings then
+                ns.CDMGroups.RefreshCachedLayoutSettings()
+            end
         end
     end
     
@@ -830,13 +870,11 @@ function IE.Import(importString, options)
         -- Import global aura settings
         if data.cdmEnhance.globalAuraSettings then
             cdmEnhance.globalAuraSettings = DeepCopy(data.cdmEnhance.globalAuraSettings)
-            print(MSG_PREFIX .. "Imported globalAuraSettings (aura visuals, text, glow)")
         end
         
         -- Import global cooldown settings  
         if data.cdmEnhance.globalCooldownSettings then
             cdmEnhance.globalCooldownSettings = DeepCopy(data.cdmEnhance.globalCooldownSettings)
-            print(MSG_PREFIX .. "Imported globalCooldownSettings (cooldown visuals, text, glow)")
         end
         
         -- Import other CDMEnhance flags
@@ -857,12 +895,13 @@ function IE.Import(importString, options)
     -- ═══════════════════════════════════════════════════════════════════════════
     -- IMPORT ARC AURAS (if present)
     -- ═══════════════════════════════════════════════════════════════════════════
-    if data.arcAuras and data.arcAuras.trackedItems then
+    if data.arcAuras and (data.arcAuras.trackedItems or data.arcAuras.trackedSpells) then
         if not ns.db.char then ns.db.char = {} end
         if not ns.db.char.arcAuras then
             ns.db.char.arcAuras = {
                 enabled = false,
                 trackedItems = {},
+                trackedSpells = {},
                 positions = {},
             }
         end
@@ -870,9 +909,22 @@ function IE.Import(importString, options)
         local arcAuras = ns.db.char.arcAuras
         
         -- Add tracked items
+        if data.arcAuras.trackedItems then
         for arcID, config in pairs(data.arcAuras.trackedItems) do
             arcAuras.trackedItems[arcID] = DeepCopy(config)
             importedCounts.arcAuras = importedCounts.arcAuras + 1
+        end
+        end
+        
+        -- Add tracked spell cooldowns
+        if data.arcAuras.trackedSpells then
+            if not arcAuras.trackedSpells then
+                arcAuras.trackedSpells = {}
+            end
+            for arcID, config in pairs(data.arcAuras.trackedSpells) do
+                arcAuras.trackedSpells[arcID] = DeepCopy(config)
+                importedCounts.arcAuras = importedCounts.arcAuras + 1
+            end
         end
         
         -- Add positions
@@ -887,7 +939,16 @@ function IE.Import(importString, options)
             arcAuras.enabled = data.arcAuras.enabled
         end
         
-        print(MSG_PREFIX .. "Imported " .. importedCounts.arcAuras .. " Arc Auras")
+        -- Restore auto-track settings
+        if data.arcAuras.autoTrackEquippedTrinkets ~= nil then
+            arcAuras.autoTrackEquippedTrinkets = data.arcAuras.autoTrackEquippedTrinkets
+        end
+        if data.arcAuras.autoTrackSlots then
+            arcAuras.autoTrackSlots = DeepCopy(data.arcAuras.autoTrackSlots)
+        end
+        if data.arcAuras.onlyOnUseTrinkets ~= nil then
+            arcAuras.onlyOnUseTrinkets = data.arcAuras.onlyOnUseTrinkets
+        end
         
         -- Also copy to target profile for profile system
         local cdmGroupsDB = ns.db.char.cdmGroups
@@ -897,8 +958,12 @@ function IE.Import(importString, options)
             if targetProfile then
                 targetProfile.arcAuras = {
                     trackedItems = DeepCopy(arcAuras.trackedItems),
+                    trackedSpells = arcAuras.trackedSpells and DeepCopy(arcAuras.trackedSpells) or nil,
                     positions = DeepCopy(arcAuras.positions),
                     enabled = arcAuras.enabled,
+                    autoTrackEquippedTrinkets = arcAuras.autoTrackEquippedTrinkets,
+                    autoTrackSlots = arcAuras.autoTrackSlots and DeepCopy(arcAuras.autoTrackSlots) or nil,
+                    onlyOnUseTrinkets = arcAuras.onlyOnUseTrinkets,
                 }
             end
         end
@@ -1213,6 +1278,7 @@ function IE.ImportLayoutFromAccount(importKey)
                 showBackground = layoutData.showBackground,
                 autoReflow = layoutData.autoReflow,
                 dynamicLayout = layoutData.dynamicLayout,
+                dynamicContainerSize = layoutData.dynamicContainerSize,
                 lockGridSize = layoutData.lockGridSize,
                 containerPadding = layoutData.containerPadding,
                 visibility = layoutData.visibility or "always",
@@ -1360,6 +1426,7 @@ function IE.ImportLayoutFromAccount(importKey)
                 showBackground = groupData.showBackground,
                 autoReflow = groupData.autoReflow,
                 dynamicLayout = groupData.dynamicLayout,
+                dynamicContainerSize = groupData.dynamicContainerSize,
                 lockGridSize = groupData.lockGridSize,
                 containerPadding = groupData.containerPadding,
                 visibility = groupData.visibility or "always",
@@ -1779,6 +1846,7 @@ function IE.SaveGroupTemplate(name, description, silent)
                 showBackground = group.showBackground,
                 autoReflow = group.autoReflow,
                 dynamicLayout = group.dynamicLayout,
+                dynamicContainerSize = group.dynamicContainerSize,
                 lockGridSize = group.lockGridSize,
                 containerPadding = group.containerPadding,
                 borderColor = group.borderColor and DeepCopy(group.borderColor),
@@ -1959,6 +2027,7 @@ function IE.LoadGroupTemplate(name)
                     showBackground = layoutData.showBackground,
                     autoReflow = layoutData.autoReflow,
                     dynamicLayout = layoutData.dynamicLayout,
+                    dynamicContainerSize = layoutData.dynamicContainerSize,
                     lockGridSize = layoutData.lockGridSize,
                     containerPadding = layoutData.containerPadding,
                     visibility = layoutData.visibility or "always",
@@ -2423,6 +2492,7 @@ function IE.SaveSpecAsTemplate(layoutKey, templateName)
             showBackground = group.showBackground,
             autoReflow = group.autoReflow,
             dynamicLayout = group.dynamicLayout,
+            dynamicContainerSize = group.dynamicContainerSize,
             lockGridSize = group.lockGridSize,
             containerPadding = group.containerPadding,
             borderColor = group.borderColor and DeepCopy(group.borderColor),
@@ -3198,6 +3268,7 @@ local function GetOptionsTable()
                        "- |cff00ccffIcon Settings|r - Per-icon borders, text styles, glows, state visuals\n" ..
                        "- |cff00ccffGlobal Defaults|r - Default settings for all auras/cooldowns\n" ..
                        "- |cff00ccffGroup Settings|r - Spacing, scale, direction per viewer type\n" ..
+                       "- |cff00ccffGlobal Icon Settings|r - Tooltip visibility, click-through\n" ..
                        "- |cff00ccffLayout Profiles|r - Saved profiles with talent conditions\n\n" ..
                        "|cffffd100Note:|r Icon positions use internal cooldownIDs which are spec-specific.\n" ..
                        "Importing positions from a different spec may not work correctly.",

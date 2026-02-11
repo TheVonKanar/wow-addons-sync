@@ -252,8 +252,8 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     frame:ClearAllPoints()
     
     -- CRITICAL: MUST show frame initially - CDMEnhance will hide if inactive LATER
-    -- EXCEPT: Skip showing if frame is hidden due to hideWhenUnequipped setting
-    if not frame._arcHiddenUnequipped then
+    -- EXCEPT: Skip showing if frame is hidden due to hideWhenUnequipped setting or hidden by bar tracking
+    if not frame._arcHiddenUnequipped and not frame._arcHiddenByBar then
         frame:SetAlpha(1)
         frame:Show()
     end

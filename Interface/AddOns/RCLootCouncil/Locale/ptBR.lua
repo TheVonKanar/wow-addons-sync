@@ -129,7 +129,7 @@ L["auto_open_desc"] = "Check to Auto Open the voting frame when available. The v
 --[[Translation missing --]]
 L["auto_pass_boe_desc"] = "Uncheck to never autopass Bind on Equip items."
 --[[Translation missing --]]
-L["auto_pass_desc"] = "Check to enable autopassing of items your class cannot use."
+L["auto_pass_desc"] = "When enabled, items you cannot or should not use will be automatically passed. Other auto pass options can modify this behavior."
 --[[Translation missing --]]
 L["auto_pass_transmog_desc"] = "Check to enable autopassing of items your class can only use for transmog."
 --[[Translation missing --]]
@@ -283,6 +283,8 @@ L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "Open the Version Checker (alt. 'v' or 'ver')"
 --[[Translation missing --]]
 L["chat_commands_whisper"] = "Displays help to whisper commands"
+--[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
 --[[Translation missing --]]
 L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 --[[Translation missing --]]
@@ -660,6 +662,8 @@ L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will on
 --[[Translation missing --]]
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Guild Groups Only"
 --[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
+--[[Translation missing --]]
 L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
@@ -765,6 +769,8 @@ L["Original Owner"] = "Original Owner"
 L["Out of instance"] = "Out of instance"
 --[[Translation missing --]]
 L["Patch"] = "Patch"
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 --[[Translation missing --]]
 L["Personal Loot - Non tradeable"] = "Personal Loot - Non tradeable"
 --[[Translation missing --]]

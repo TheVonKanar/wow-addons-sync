@@ -38,18 +38,32 @@ local function GetPowerTypeDropdown()
   local dropdown = {}
   if ns.Resources and ns.Resources.PowerTypes then
     for _, pt in ipairs(ns.Resources.PowerTypes) do
-      dropdown[tostring(pt.id)] = pt.name
+      -- Only show power types the player actually has access to
+      -- UnitPowerMax returns 0 for unused power types in WoW 12.0+
+      local max = UnitPowerMax("player", pt.id)
+      if max and max > 0 then
+        dropdown[tostring(pt.id)] = pt.name
+      end
+    end
+    -- Always include the player's current primary power type (safety net)
+    local currentType = UnitPowerType("player")
+    if currentType then
+      for _, pt in ipairs(ns.Resources.PowerTypes) do
+        if pt.id == currentType then
+          dropdown[tostring(pt.id)] = pt.name
+          break
+        end
+      end
     end
   else
-    -- Fallback if Resources not loaded yet
-    dropdown["0"] = "Mana"
-    dropdown["1"] = "Rage"
-    dropdown["2"] = "Focus"
-    dropdown["3"] = "Energy"
-    dropdown["6"] = "Runic Power"
-    dropdown["11"] = "Maelstrom"
-    dropdown["17"] = "Fury"
-    dropdown["18"] = "Pain"
+    -- Fallback: just show the player's current power type
+    local currentType = UnitPowerType("player")
+    local names = {[0]="Mana",[1]="Rage",[2]="Focus",[3]="Energy",[6]="Runic Power",[8]="Astral Power",[11]="Maelstrom",[13]="Insanity",[17]="Fury",[18]="Pain"}
+    if currentType and names[currentType] then
+      dropdown[tostring(currentType)] = names[currentType]
+    else
+      dropdown["0"] = "Mana"
+    end
   end
   return dropdown
 end
@@ -217,12 +231,21 @@ function ns.ResourceOptions.GetOptionsTable()
         type = "select",
         name = "Power Type",
         desc = "Select which primary resource to track",
-        values = GetPowerTypeDropdown,
+        values = function()
+          local dropdown = GetPowerTypeDropdown()
+          dropdown["none"] = "|cff888888-- Select Power Type --|r"
+          return dropdown
+        end,
         get = function()
           local cfg = ns.API.GetResourceBarConfig(ns.API.GetSelectedResourceBar())
-          return cfg and tostring(cfg.tracking.powerType) or "0"
+          -- If bar is not enabled yet, show placeholder so user can click any option (including Mana)
+          if cfg and not cfg.tracking.enabled then
+            return "none"
+          end
+          return cfg and tostring(cfg.tracking.powerType) or "none"
         end,
         set = function(info, value)
+          if value == "none" then return end  -- Ignore placeholder selection
           local barNum = ns.API.GetSelectedResourceBar()
           local cfg = ns.API.GetResourceBarConfig(barNum)
           if cfg then
@@ -1175,6 +1198,35 @@ function ns.ResourceOptions.GetOptionsTable()
         end,
         order = 131,
         width = 0.5
+      },
+      textFormat = {
+        type = "select",
+        name = "Text Format",
+        desc = "Value shows the raw number (e.g. 45000). Percentage shows as percent (e.g. 72%).",
+        values = {
+          ["value"] = "Value",
+          ["percent"] = "Percentage",
+        },
+        get = function()
+          local cfg = ns.API.GetResourceBarConfig(ns.API.GetSelectedResourceBar())
+          return cfg and cfg.display.textFormat or "value"
+        end,
+        set = function(info, value)
+          local barNum = ns.API.GetSelectedResourceBar()
+          local cfg = ns.API.GetResourceBarConfig(barNum)
+          if cfg then
+            cfg.display.textFormat = value
+            if ns.Resources then ns.Resources.ApplyAppearance(barNum) end
+          end
+        end,
+        order = 131.5,
+        width = 0.7,
+        hidden = function()
+          local cfg = ns.API.GetResourceBarConfig(ns.API.GetSelectedResourceBar())
+          if not cfg or not cfg.display.showText then return true end
+          -- Only show for primary resources (percentage doesn't make sense for 5 combo points)
+          return cfg.tracking.resourceCategory == "secondary"
+        end
       },
       font = {
         type = "select",

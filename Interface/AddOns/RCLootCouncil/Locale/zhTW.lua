@@ -193,6 +193,8 @@ L["chat_commands_trade"] = "Open the TradeUI"
 L["chat_commands_version"] = "打開版本檢查器 (簡稱： 'v' 或者 'ver')"
 L["chat_commands_whisper"] = "顯示密語幫助"
 --[[Translation missing --]]
+L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
+--[[Translation missing --]]
 L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
 L["Check this to loot the items and distribute them later."] = "點擊拾取物品稍後分配"
 L["Check to append the realmname of a player from another realm"] = "顯示不同伺服器玩家的伺服器名稱"
@@ -420,6 +422,8 @@ L["opt_autoGroupLootGuildGroupOnly_desc"] = "When enabled, RCLootCouncil will on
 --[[Translation missing --]]
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Guild Groups Only"
 --[[Translation missing --]]
+L["opt_autoPass_name"] = "Enable Auto Pass"
+--[[Translation missing --]]
 L["opt_autoPassWeapons_desc"] = "Check to enable auto passing of weapons that doesn't have your classes primary stat."
 --[[Translation missing --]]
 L["opt_autoPassWeapons_name"] = "Auto Pass Weapons"
@@ -518,6 +522,8 @@ L["Original Owner"] = "Original Owner"
 L["Out of instance"] = "不在副本內"
 --[[Translation missing --]]
 L["Patch"] = "Patch"
+--[[Translation missing --]]
+L["PAUSED"] = "Paused"
 L["Personal Loot - Non tradeable"] = "個人拾取 - 無法交易"
 L["Personal Loot - Rejected Trade"] = "個人拾取 - 拒絕交易"
 L["'player' can't receive 'type'"] = "%s無法獲得%s - 版本不同?"

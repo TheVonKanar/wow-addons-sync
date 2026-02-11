@@ -1,7 +1,6 @@
 # Edit Mode Expanded
 
-## [12.0-013](https://github.com/teelolws/EditModeExpanded/tree/12.0-013) (2026-02-01)
-[Full Changelog](https://github.com/teelolws/EditModeExpanded/compare/12.0-012...12.0-013) [Previous Releases](https://github.com/teelolws/EditModeExpanded/releases)
+## [12.0-018](https://github.com/teelolws/EditModeExpanded/tree/12.0-018) (2026-02-10)
+[Full Changelog](https://github.com/teelolws/EditModeExpanded/compare/12.0-017...12.0-018) [Previous Releases](https://github.com/teelolws/EditModeExpanded/releases)
 
-- Fix combat taint issue  
-    Closes: https://github.com/teelolws/EditModeExpanded/issues/206  
+- TOC Update: 12.0.1  

@@ -12,12 +12,14 @@ local LibDeflate = LibStub("LibDeflate")
 local AceSerializer = LibStub("AceSerializer-3.0")
 
 -- Constants
-local EXPORT_VERSION = 2  -- Bumped for cooldown bar support
+local EXPORT_VERSION = 3  -- Bumped for resource bar support
 local EXPORT_PREFIX = "ARCUI_BARS"
 
 -- Module state
 local selectedBarsForExport = {}
 local selectedCooldownBarsForExport = {}  -- keyed by "spellID_barType"
+local selectedResourceBarsForExport = {}  -- keyed by slot number
+local selectedTimerBarsForExport = {}     -- keyed by timerID
 local importPreviewData = nil
 local lastExportString = ""
 local lastImportString = ""
@@ -39,6 +41,74 @@ local function DeepCopy(orig)
         copy = orig
     end
     return copy
+end
+
+-- ===================================================================
+-- ExtractAuraBarConfig: Reads an aura bar config by explicitly
+-- accessing every field by name, NOT via pairs(). This is critical
+-- because AceDB proxy tables only expose non-default values through
+-- pairs(), silently dropping fields that match defaults (like
+-- cooldownID=0 or alternateCooldownIDs={}).
+--
+-- By reading each field through bar.tracking.fieldName, we go through
+-- AceDB's __index which ALWAYS returns the value (from sv or defaults).
+-- ===================================================================
+local function ExtractAuraBarConfig(bar)
+    if not bar then return nil end
+    local t = bar.tracking or {}
+    local d = bar.display or {}
+    local b = bar.behavior or {}
+    
+    local out = {}
+    
+    -- TRACKING: read every field by name through __index
+    out.tracking = {
+        enabled         = t.enabled,
+        trackType       = t.trackType,
+        spellID         = t.spellID,
+        buffName        = t.buffName,
+        iconTextureID   = t.iconTextureID,
+        cooldownID      = t.cooldownID,
+        slotNumber      = t.slotNumber,
+        maxStacks       = t.maxStacks,
+        auraInstanceID  = t.auraInstanceID,
+        useBaseSpell    = t.useBaseSpell,
+        customEnabled   = t.customEnabled,
+        customSpellID   = t.customSpellID,
+        customDuration  = t.customDuration,
+        customStacksPerCast = t.customStacksPerCast,
+        customMaxStacks = t.customMaxStacks,
+        customRefreshMode = t.customRefreshMode,
+        sourceType      = t.sourceType,
+        useDurationBar  = t.useDurationBar,
+        dynamicMaxDuration = t.dynamicMaxDuration,
+        maxDuration     = t.maxDuration,
+        customDefinitionID = t.customDefinitionID,
+        trackedSpellID  = t.trackedSpellID,
+        displaySpellID  = t.displaySpellID,
+    }
+    -- Explicitly copy alternateCooldownIDs array element-by-element
+    out.tracking.alternateCooldownIDs = {}
+    if t.alternateCooldownIDs then
+        for i = 1, #t.alternateCooldownIDs do
+            out.tracking.alternateCooldownIDs[i] = t.alternateCooldownIDs[i]
+        end
+    end
+    
+    -- DISPLAY: DeepCopy is fine here since display is a plain data subtable
+    -- (no cooldownID-like fields that need special handling)
+    out.display = DeepCopy(d)
+    
+    -- BEHAVIOR
+    out.behavior = DeepCopy(b)
+    
+    -- THRESHOLDS, STACK COLORS, COLOR RANGES, EVENTS
+    out.thresholds = bar.thresholds and DeepCopy(bar.thresholds) or {}
+    out.stackColors = bar.stackColors and DeepCopy(bar.stackColors) or {}
+    out.colorRanges = bar.colorRanges and DeepCopy(bar.colorRanges) or {}
+    out.events = bar.events and DeepCopy(bar.events) or {}
+    
+    return out
 end
 
 local function GetEnabledBars()
@@ -91,6 +161,67 @@ local function GetEnabledCooldownBars()
     return enabled
 end
 
+local function GetEnabledResourceBars()
+    local db = ns.API.GetDB and ns.API.GetDB()
+    if not db or not db.resourceBars then return {} end
+    
+    local enabled = {}
+    for i = 1, 500 do
+        local bar = db.resourceBars[i]
+        if bar and bar.tracking and bar.tracking.enabled then
+            -- Determine resource name
+            local resourceName = bar.tracking.powerName or ""
+            if resourceName == "" then
+                if bar.tracking.resourceCategory == "secondary" and bar.tracking.secondaryType then
+                    resourceName = bar.tracking.secondaryType
+                elseif bar.tracking.powerType then
+                    local powerInfo = PowerBarColor[bar.tracking.powerType]
+                    resourceName = powerInfo and powerInfo.name or ("Power " .. bar.tracking.powerType)
+                else
+                    resourceName = "Unknown Resource"
+                end
+            end
+            
+            table.insert(enabled, {
+                slot = i,
+                name = resourceName,
+                resourceCategory = bar.tracking.resourceCategory or "primary",
+                powerType = bar.tracking.powerType,
+                secondaryType = bar.tracking.secondaryType,
+            })
+        end
+    end
+    return enabled
+end
+
+local function GetEnabledTimerBars()
+    if not ns.TimerBars or not ns.TimerBars.activeTimers then 
+        return {} 
+    end
+    
+    local enabled = {}
+    for timerID in pairs(ns.TimerBars.activeTimers) do
+        local cfg = ns.TimerBars.GetTimerConfig and ns.TimerBars.GetTimerConfig(timerID)
+        if cfg and cfg.tracking then
+            local name = cfg.tracking.barName or "Timer"
+            local duration = cfg.tracking.customDuration or 10
+            local triggerType = cfg.tracking.triggerType or "spellcast"
+            
+            table.insert(enabled, {
+                timerID = timerID,
+                name = name,
+                duration = duration,
+                triggerType = triggerType,
+            })
+        end
+    end
+    
+    -- Sort by name
+    table.sort(enabled, function(a, b) return a.name < b.name end)
+    
+    return enabled
+end
+
 local function FindFirstEmptySlot()
     local db = ns.API.GetDB and ns.API.GetDB()
     if not db or not db.bars then return nil end
@@ -118,6 +249,35 @@ local function CountEmptySlots()
     return count
 end
 
+local function FindFirstEmptyResourceSlot()
+    local db = ns.API.GetDB and ns.API.GetDB()
+    if not db then return nil end
+    if not db.resourceBars then db.resourceBars = {} end
+    
+    for i = 1, 500 do
+        local bar = db.resourceBars[i]
+        if not bar or not bar.tracking or not bar.tracking.enabled then
+            return i
+        end
+    end
+    return nil
+end
+
+local function CountEmptyResourceSlots()
+    local db = ns.API.GetDB and ns.API.GetDB()
+    if not db then return 0 end
+    if not db.resourceBars then return 500 end
+    
+    local count = 0
+    for i = 1, 500 do
+        local bar = db.resourceBars[i]
+        if not bar or not bar.tracking or not bar.tracking.enabled then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 -- ===================================================================
 -- EXPORT FUNCTIONS
 -- ===================================================================
@@ -130,8 +290,10 @@ local function ExportSelectedBars()
     
     local barsToExport = {}
     local cooldownBarsToExport = {}
+    local resourceBarsToExport = {}
     local auraExportCount = 0
     local cooldownExportCount = 0
+    local resourceExportCount = 0
     
     -- Export selected aura bars
     if db.bars then
@@ -139,9 +301,10 @@ local function ExportSelectedBars()
             if isSelected then
                 local bar = db.bars[slot]
                 if bar and bar.tracking and bar.tracking.enabled then
-                    -- Deep copy the bar config
-                    local barCopy = DeepCopy(bar)
-                    barCopy._category = "aura"  -- Mark as aura bar
+                    -- Extract config by reading every field by name (not pairs)
+                    -- This ensures AceDB proxy values are captured correctly
+                    local barCopy = ExtractAuraBarConfig(bar)
+                    barCopy._category = "aura"
                     table.insert(barsToExport, barCopy)
                     auraExportCount = auraExportCount + 1
                 end
@@ -172,7 +335,40 @@ local function ExportSelectedBars()
         end
     end
     
-    local totalCount = auraExportCount + cooldownExportCount
+    -- Export selected resource bars
+    if db.resourceBars then
+        for slot, isSelected in pairs(selectedResourceBarsForExport) do
+            if isSelected then
+                local bar = db.resourceBars[slot]
+                if bar and bar.tracking and bar.tracking.enabled then
+                    local barCopy = DeepCopy(bar)
+                    barCopy._category = "resource"
+                    table.insert(resourceBarsToExport, barCopy)
+                    resourceExportCount = resourceExportCount + 1
+                end
+            end
+        end
+    end
+    
+    -- Export selected timer bars
+    local timerBarsToExport = {}
+    local timerExportCount = 0
+    if ns.db and ns.db.char and ns.db.char.timerBarConfigs then
+        for timerID, isSelected in pairs(selectedTimerBarsForExport) do
+            if isSelected then
+                local cfg = ns.db.char.timerBarConfigs[timerID]
+                if cfg and cfg.tracking then
+                    local barCopy = DeepCopy(cfg)
+                    barCopy._category = "timer"
+                    barCopy._timerID = timerID
+                    table.insert(timerBarsToExport, barCopy)
+                    timerExportCount = timerExportCount + 1
+                end
+            end
+        end
+    end
+    
+    local totalCount = auraExportCount + cooldownExportCount + resourceExportCount + timerExportCount
     if totalCount == 0 then
         return nil, "No bars selected for export"
     end
@@ -187,8 +383,12 @@ local function ExportSelectedBars()
         barCount = totalCount,
         auraBarCount = auraExportCount,
         cooldownBarCount = cooldownExportCount,
+        resourceBarCount = resourceExportCount,
+        timerBarCount = timerExportCount,
         bars = barsToExport,              -- Aura bars (for backward compatibility)
-        cooldownBars = cooldownBarsToExport,  -- Cooldown bars (new)
+        cooldownBars = cooldownBarsToExport,  -- Cooldown bars
+        resourceBars = resourceBarsToExport,  -- Resource bars
+        timerBars = timerBarsToExport,        -- Timer bars
     }
     
     -- Serialize → Compress → Encode
@@ -247,8 +447,10 @@ local function ParseImportString(importString)
     -- Check for at least some bars
     local hasAuraBars = data.bars and #data.bars > 0
     local hasCooldownBars = data.cooldownBars and #data.cooldownBars > 0
+    local hasResourceBars = data.resourceBars and #data.resourceBars > 0
+    local hasTimerBars = data.timerBars and #data.timerBars > 0
     
-    if not hasAuraBars and not hasCooldownBars then
+    if not hasAuraBars and not hasCooldownBars and not hasResourceBars and not hasTimerBars then
         return nil, "No bars found in import data"
     end
     
@@ -263,7 +465,9 @@ local function GenerateImportPreview(data)
     -- Header with counts
     local auraCount = data.bars and #data.bars or 0
     local cooldownCount = data.cooldownBars and #data.cooldownBars or 0
-    local totalCount = auraCount + cooldownCount
+    local resourceCount = data.resourceBars and #data.resourceBars or 0
+    local timerCount = data.timerBars and #data.timerBars or 0
+    local totalCount = auraCount + cooldownCount + resourceCount + timerCount
     
     table.insert(lines, string.format(
         "|cff00FF00Found %d bar(s)|r from %s @ %s",
@@ -277,9 +481,19 @@ local function GenerateImportPreview(data)
         local barNames = {}
         for i, bar in ipairs(data.bars) do
             local name = bar.tracking and bar.tracking.buffName or "Unknown"
-            local altCount = bar.tracking and bar.tracking.alternateCooldownIDs and #bar.tracking.alternateCooldownIDs or 0
+            local cdID = bar.tracking and bar.tracking.cooldownID or 0
+            local alts = bar.tracking and bar.tracking.alternateCooldownIDs
+            local altCount = alts and #alts or 0
+            
+            if cdID > 0 then
+                name = name .. string.format(" |cffAADDFF[cd:%d]|r", cdID)
+            end
             if altCount > 0 then
-                name = name .. " |cff00FF00(+" .. altCount .. " alt)|r"
+                local altIDs = {}
+                for j = 1, altCount do
+                    altIDs[j] = tostring(alts[j])
+                end
+                name = name .. string.format(" |cff00FF00(+%d alt: %s)|r", altCount, table.concat(altIDs, ","))
             end
             table.insert(barNames, name)
         end
@@ -299,7 +513,88 @@ local function GenerateImportPreview(data)
         table.insert(lines, "|cff00FFFFCooldown Bars:|r " .. table.concat(barNames, ", "))
     end
     
+    -- Resource bars
+    if resourceCount > 0 then
+        local barNames = {}
+        for i, bar in ipairs(data.resourceBars) do
+            local name = bar.tracking and bar.tracking.powerName or ""
+            if name == "" then
+                if bar.tracking and bar.tracking.resourceCategory == "secondary" and bar.tracking.secondaryType then
+                    name = bar.tracking.secondaryType
+                else
+                    name = "Resource"
+                end
+            end
+            local category = bar.tracking and bar.tracking.resourceCategory or "primary"
+            local categoryLabel = category == "secondary" and "|cffFF00FFSecondary|r" or "|cff00FF88Primary|r"
+            table.insert(barNames, name .. " (" .. categoryLabel .. ")")
+        end
+        table.insert(lines, "|cff00FF88Resource Bars:|r " .. table.concat(barNames, ", "))
+    end
+    
+    -- Timer bars
+    if timerCount > 0 then
+        local barNames = {}
+        for i, bar in ipairs(data.timerBars) do
+            local name = bar.tracking and bar.tracking.barName or "Timer"
+            local duration = bar.tracking and bar.tracking.customDuration or 10
+            table.insert(barNames, name .. " (" .. duration .. "s)")
+        end
+        table.insert(lines, "|cffCC66FFTimer Bars:|r " .. table.concat(barNames, ", "))
+    end
+    
     return table.concat(lines, "\n")
+end
+
+-- ===================================================================
+-- WriteAuraBarToSlot: Writes an imported aura bar config to a DB slot
+-- by explicitly setting each tracking field through the AceDB path.
+-- This ensures __newindex fires for every critical field, preventing
+-- AceDB proxy quirks from silently dropping nested values.
+-- ===================================================================
+local function WriteAuraBarToSlot(db, slot, importedBar)
+    -- Save alternateCooldownIDs BEFORE any assignment, because
+    -- db.bars[slot] = importedBar stores a reference, making
+    -- importedBar.tracking and db.bars[slot].tracking the SAME object.
+    -- If we clear target.alternateCooldownIDs first, we also destroy
+    -- the source data we're trying to copy from.
+    local savedAlts = {}
+    if importedBar.tracking and importedBar.tracking.alternateCooldownIDs then
+        for i = 1, #importedBar.tracking.alternateCooldownIDs do
+            savedAlts[i] = importedBar.tracking.alternateCooldownIDs[i]
+        end
+    end
+    local savedCooldownID = importedBar.tracking and importedBar.tracking.cooldownID or 0
+    local savedSpellID = importedBar.tracking and importedBar.tracking.spellID or 0
+    
+    -- Assign the full table to create the slot
+    importedBar._category = nil  -- Remove internal marker
+    db.bars[slot] = importedBar
+    
+    -- Now explicitly write critical tracking fields through the DB path
+    local target = db.bars[slot].tracking
+    if target then
+        target.cooldownID = savedCooldownID
+        target.spellID = savedSpellID
+        
+        -- Write the saved alts array
+        target.alternateCooldownIDs = savedAlts
+    end
+    
+    -- Debug output for verification
+    local cdID = db.bars[slot].tracking.cooldownID or 0
+    local altCount = db.bars[slot].tracking.alternateCooldownIDs and #db.bars[slot].tracking.alternateCooldownIDs or 0
+    local name = db.bars[slot].tracking.buffName or "?"
+    
+    local altList = ""
+    if altCount > 0 then
+        local ids = {}
+        for i = 1, altCount do
+            ids[i] = tostring(db.bars[slot].tracking.alternateCooldownIDs[i])
+        end
+        altList = " alts=[" .. table.concat(ids, ",") .. "]"
+    end
+    print(string.format("|cff00ccffArc UI Import|r: Slot %d '%s' → cdID=%d%s", slot, name, cdID, altList))
 end
 
 local function ImportBars(data, mode)
@@ -333,9 +628,7 @@ local function ImportBars(data, mode)
             -- Import from slot 1
             for i, importedBar in ipairs(data.bars) do
                 if i <= 500 then
-                    local barCopy = DeepCopy(importedBar)
-                    barCopy._category = nil  -- Remove internal marker
-                    db.bars[i] = barCopy
+                    WriteAuraBarToSlot(db, i, importedBar)
                     imported = imported + 1
                 else
                     table.insert(messages, "Slot limit reached, skipped: " .. (importedBar.tracking and importedBar.tracking.buffName or "Unknown"))
@@ -347,9 +640,7 @@ local function ImportBars(data, mode)
             for _, importedBar in ipairs(data.bars) do
                 local emptySlot = FindFirstEmptySlot()
                 if emptySlot then
-                    local barCopy = DeepCopy(importedBar)
-                    barCopy._category = nil  -- Remove internal marker
-                    db.bars[emptySlot] = barCopy
+                    WriteAuraBarToSlot(db, emptySlot, importedBar)
                     imported = imported + 1
                 else
                     local name = importedBar.tracking and importedBar.tracking.buffName or "Unknown"
@@ -479,6 +770,116 @@ local function ImportBars(data, mode)
         end
     end
     
+    -- ═══════════════════════════════════════════════════════════════
+    -- IMPORT RESOURCE BARS
+    -- ═══════════════════════════════════════════════════════════════
+    if data.resourceBars and #data.resourceBars > 0 then
+        -- Ensure resourceBars table exists
+        if not db.resourceBars then
+            db.resourceBars = {}
+        end
+        
+        if mode == "replace" then
+            -- Reset all resource bars to disabled first
+            for i = 1, 500 do
+                if db.resourceBars[i] then
+                    db.resourceBars[i].tracking = db.resourceBars[i].tracking or {}
+                    db.resourceBars[i].tracking.enabled = false
+                end
+            end
+            
+            -- Import from slot 1
+            for i, importedBar in ipairs(data.resourceBars) do
+                if i <= 500 then
+                    local barCopy = DeepCopy(importedBar)
+                    barCopy._category = nil  -- Remove internal marker
+                    db.resourceBars[i] = barCopy
+                    imported = imported + 1
+                else
+                    local name = importedBar.tracking and importedBar.tracking.powerName or "Unknown Resource"
+                    table.insert(messages, "Resource slot limit reached, skipped: " .. name)
+                    skipped = skipped + 1
+                end
+            end
+        else
+            -- Add mode: find empty slots
+            for _, importedBar in ipairs(data.resourceBars) do
+                local emptySlot = FindFirstEmptyResourceSlot()
+                if emptySlot then
+                    local barCopy = DeepCopy(importedBar)
+                    barCopy._category = nil  -- Remove internal marker
+                    db.resourceBars[emptySlot] = barCopy
+                    imported = imported + 1
+                else
+                    local name = importedBar.tracking and importedBar.tracking.powerName or "Unknown Resource"
+                    table.insert(messages, "No empty resource slots, skipped: " .. name)
+                    skipped = skipped + 1
+                end
+            end
+        end
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════
+    -- IMPORT TIMER BARS
+    -- ═══════════════════════════════════════════════════════════════
+    if data.timerBars and #data.timerBars > 0 then
+        -- Ensure timer bar structure exists
+        if not ns.db then
+            return false, "Timer database not available"
+        end
+        ns.db.char = ns.db.char or {}
+        ns.db.char.timerBarConfigs = ns.db.char.timerBarConfigs or {}
+        ns.db.char.timerBars = ns.db.char.timerBars or {}
+        ns.db.char.timerBars.activeTimers = ns.db.char.timerBars.activeTimers or {}
+        
+        if mode == "replace" then
+            -- Remove all existing timer bars first
+            if ns.TimerBars and ns.TimerBars.activeTimers then
+                local timersToRemove = {}
+                for timerID in pairs(ns.TimerBars.activeTimers) do
+                    table.insert(timersToRemove, timerID)
+                end
+                for _, timerID in ipairs(timersToRemove) do
+                    ns.TimerBars.RemoveTimer(timerID)
+                end
+            end
+            
+            -- Clear configs
+            ns.db.char.timerBarConfigs = {}
+            ns.db.char.timerBars.activeTimers = {}
+        end
+        
+        -- Track which timers to create
+        local timersToCreate = {}
+        
+        for _, importedBar in ipairs(data.timerBars) do
+            -- Generate new timerID
+            local newTimerID = ns.TimerBars and ns.TimerBars.GenerateTimerID and ns.TimerBars.GenerateTimerID() or 1
+            
+            -- Save the config
+            local barCopy = DeepCopy(importedBar)
+            barCopy._category = nil
+            barCopy._timerID = nil
+            
+            ns.db.char.timerBarConfigs[newTimerID] = barCopy
+            
+            table.insert(timersToCreate, newTimerID)
+            imported = imported + 1
+        end
+        
+        -- Create the timer bar frames
+        if ns.TimerBars and #timersToCreate > 0 then
+            for _, timerID in ipairs(timersToCreate) do
+                ns.TimerBars.AddTimer(timerID)
+            end
+            
+            -- Save
+            if ns.TimerBars.SaveConfig then
+                ns.TimerBars.SaveConfig()
+            end
+        end
+    end
+    
     -- Trigger validation for imported aura bars
     if ns.API.ValidateAllBarTracking then
         C_Timer.After(0.1, function()
@@ -497,6 +898,24 @@ local function ImportBars(data, mode)
     if ns.CooldownBars and ns.CooldownBars.RefreshAllBars then
         C_Timer.After(0.3, function()
             ns.CooldownBars.RefreshAllBars()
+        end)
+    end
+    
+    -- Refresh resource bars
+    if ns.Resources and ns.Resources.RefreshAllBars then
+        C_Timer.After(0.4, function()
+            ns.Resources.RefreshAllBars()
+        end)
+    end
+    
+    -- Refresh timer bars
+    if ns.TimerBars and ns.TimerBars.activeTimers then
+        C_Timer.After(0.5, function()
+            for timerID in pairs(ns.TimerBars.activeTimers) do
+                if ns.TimerBars.ApplyAppearance then
+                    ns.TimerBars.ApplyAppearance(timerID)
+                end
+            end
         end)
     end
     
@@ -519,6 +938,8 @@ end
 function ns.BarsImportExport.GetOptionsTable()
     local enabledBars = GetEnabledBars()
     local enabledCooldownBars = GetEnabledCooldownBars()
+    local enabledResourceBars = GetEnabledResourceBars()
+    local enabledTimerBars = GetEnabledTimerBars()
     
     -- Initialize selection state for aura bars
     for _, bar in ipairs(enabledBars) do
@@ -531,6 +952,20 @@ function ns.BarsImportExport.GetOptionsTable()
     for _, bar in ipairs(enabledCooldownBars) do
         if selectedCooldownBarsForExport[bar.key] == nil then
             selectedCooldownBarsForExport[bar.key] = true  -- Default to selected
+        end
+    end
+    
+    -- Initialize selection state for resource bars
+    for _, bar in ipairs(enabledResourceBars) do
+        if selectedResourceBarsForExport[bar.slot] == nil then
+            selectedResourceBarsForExport[bar.slot] = true  -- Default to selected
+        end
+    end
+    
+    -- Initialize selection state for timer bars
+    for _, bar in ipairs(enabledTimerBars) do
+        if selectedTimerBarsForExport[bar.timerID] == nil then
+            selectedTimerBarsForExport[bar.timerID] = true  -- Default to selected
         end
     end
     
@@ -550,7 +985,7 @@ function ns.BarsImportExport.GetOptionsTable()
             
             exportDesc = {
                 type = "description",
-                name = "Select bars to export. The export string includes all settings including alternate cooldownIDs for cross-spec support.",
+                name = "Select bars to export. The export string includes all settings including alternate cooldownIDs for cross-spec support and resource bar configurations.",
                 order = 2,
             },
             
@@ -566,6 +1001,9 @@ function ns.BarsImportExport.GetOptionsTable()
                     for _, bar in ipairs(GetEnabledCooldownBars()) do
                         selectedCooldownBarsForExport[bar.key] = true
                     end
+                    for _, bar in ipairs(GetEnabledResourceBars()) do
+                        selectedResourceBarsForExport[bar.slot] = true
+                    end
                 end,
             },
             
@@ -580,6 +1018,9 @@ function ns.BarsImportExport.GetOptionsTable()
                     end
                     for k in pairs(selectedCooldownBarsForExport) do
                         selectedCooldownBarsForExport[k] = false
+                    end
+                    for k in pairs(selectedResourceBarsForExport) do
+                        selectedResourceBarsForExport[k] = false
                     end
                 end,
             },
@@ -608,15 +1049,23 @@ function ns.BarsImportExport.GetOptionsTable()
                         }
                     else
                         for i, bar in ipairs(bars) do
+                            local cdText = ""
+                            if bar.cooldownID and bar.cooldownID > 0 then
+                                cdText = string.format(" |cffAADDFF[cd:%d]|r", bar.cooldownID)
+                            end
                             local altText = ""
                             if bar.alternateCooldownIDs and #bar.alternateCooldownIDs > 0 then
-                                altText = " |cff00FF00(+" .. #bar.alternateCooldownIDs .. " alt)|r"
+                                local altIDs = {}
+                                for _, altCdID in ipairs(bar.alternateCooldownIDs) do
+                                    altIDs[#altIDs+1] = tostring(altCdID)
+                                end
+                                altText = string.format(" |cff00FF00(+%d alt: %s)|r", #bar.alternateCooldownIDs, table.concat(altIDs, ","))
                             end
                             
                             args["bar" .. bar.slot] = {
                                 type = "toggle",
-                                name = string.format("Bar %d: %s%s", bar.slot, bar.name, altText),
-                                desc = string.format("Type: %s, CooldownID: %d", bar.trackType, bar.cooldownID),
+                                name = string.format("Bar %d: %s%s%s", bar.slot, bar.name, cdText, altText),
+                                desc = string.format("Type: %s, Primary CooldownID: %d, Alternates: %d", bar.trackType, bar.cooldownID, bar.alternateCooldownIDs and #bar.alternateCooldownIDs or 0),
                                 order = i,
                                 width = "full",
                                 get = function() return selectedBarsForExport[bar.slot] end,
@@ -665,6 +1114,80 @@ function ns.BarsImportExport.GetOptionsTable()
                 end)(),
             },
             
+            -- Resource bar selection checkboxes
+            resourceBarSelectionGroup = {
+                type = "group",
+                name = "Resource Bars",
+                order = 7.5,
+                inline = true,
+                args = (function()
+                    local args = {}
+                    local bars = GetEnabledResourceBars()
+                    
+                    if #bars == 0 then
+                        args.noResourceBars = {
+                            type = "description",
+                            name = "|cff888888No enabled resource bars.|r",
+                            order = 1,
+                        }
+                    else
+                        for i, bar in ipairs(bars) do
+                            local categoryColor = bar.resourceCategory == "secondary" and "|cffFF00FF" or "|cff00FF88"
+                            local categoryLabel = bar.resourceCategory == "secondary" and "Secondary" or "Primary"
+                            
+                            args["resbar_" .. bar.slot] = {
+                                type = "toggle",
+                                name = string.format("%s%s|r: %s", categoryColor, categoryLabel, bar.name),
+                                desc = string.format("Slot: %d, Type: %s", bar.slot, bar.secondaryType or "Power"),
+                                order = i,
+                                width = "full",
+                                get = function() return selectedResourceBarsForExport[bar.slot] end,
+                                set = function(_, val) selectedResourceBarsForExport[bar.slot] = val end,
+                            }
+                        end
+                    end
+                    
+                    return args
+                end)(),
+            },
+            
+            -- Timer bar selection checkboxes
+            timerBarSelectionGroup = {
+                type = "group",
+                name = "Timer Bars",
+                order = 7.6,
+                inline = true,
+                args = (function()
+                    local args = {}
+                    local bars = GetEnabledTimerBars()
+                    
+                    if #bars == 0 then
+                        args.noTimerBars = {
+                            type = "description",
+                            name = "|cff888888No enabled timer bars.|r",
+                            order = 1,
+                        }
+                    else
+                        for i, bar in ipairs(bars) do
+                            local triggerLabel = bar.triggerType == "spellcast" and "Spell Cast" or 
+                                                 bar.triggerType == "aura_gained" and "Aura Gained" or "Aura Lost"
+                            
+                            args["timerbar_" .. bar.timerID] = {
+                                type = "toggle",
+                                name = string.format("|cffCC66FFTimer|r: %s (%ds, %s)", bar.name, bar.duration, triggerLabel),
+                                desc = string.format("Timer ID: %d, Duration: %ds", bar.timerID, bar.duration),
+                                order = i,
+                                width = "full",
+                                get = function() return selectedTimerBarsForExport[bar.timerID] end,
+                                set = function(_, val) selectedTimerBarsForExport[bar.timerID] = val end,
+                            }
+                        end
+                    end
+                    
+                    return args
+                end)(),
+            },
+            
             exportBtn = {
                 type = "execute",
                 name = "Export Selected",
@@ -701,7 +1224,7 @@ function ns.BarsImportExport.GetOptionsTable()
             
             importDesc = {
                 type = "description",
-                name = "Paste an export string below to import bar configurations. Supports both aura bars and cooldown bars.",
+                name = "Paste an export string below to import bar configurations. Supports aura bars, cooldown bars, resource bars, and timer bars.",
                 order = 21,
             },
             
@@ -770,11 +1293,12 @@ function ns.BarsImportExport.GetOptionsTable()
             importModeDesc = {
                 type = "description",
                 name = function()
-                    local emptySlots = CountEmptySlots()
+                    local emptyAuraSlots = CountEmptySlots()
+                    local emptyResourceSlots = CountEmptyResourceSlots()
                     if importMode == "add" then
-                        return string.format("|cff888888Aura bars will be added to empty slots (%d available). Cooldown bars will be added if not already present.|r", emptySlots)
+                        return string.format("|cff888888Aura bars: %d empty slots. Resource bars: %d empty slots. Cooldown bars added if not present.|r", emptyAuraSlots, emptyResourceSlots)
                     else
-                        return "|cffFF6600WARNING: This will disable ALL existing aura bars and clear ALL cooldown bar configs!|r"
+                        return "|cffFF6600WARNING: This will disable ALL existing aura bars, resource bars, and clear ALL cooldown bar configs!|r"
                     end
                 end,
                 order = 26,

@@ -82,6 +82,8 @@ local baseLocale = {
     ["HIDE_BLIZZARD_UI"] = "블리자드 기본 UI 숨기기",
     ["HIDE_BLIZZARD_UI_HEALTH_BAR_TOOLTIP"] = "블리자드 기본 플레이어 프레임을 숨깁니다",
     ["HIDE_BLIZZARD_UI_SECONDARY_POWER_BAR_TOOLTIP"] = "블리자드 기본 보조 자원 UI를 숨깁니다 (예: 죽음의 기사 룬 프레임)",
+    ["ENABLE_HP_BAR_MOUSE_INTERACTION"] = "생명력 바 마우스 상호작용",
+    ["ENABLE_HP_BAR_MOUSE_INTERACTION_TOOLTIP"] = "생명력 바에서 기본 플레이어 프레임 클릭 동작을 활성화합니다.",
 
     -- Position & Size category - Edit Mode
     ["CATEGORY_POSITION_AND_SIZE"] = "위치 및 크기",
@@ -113,9 +115,9 @@ local baseLocale = {
     ["USE_CLASS_COLOR"] = "직업 색상 사용",
     ["USE_RESOURCE_TEXTURE_AND_COLOR"] = "자원 텍스처 및 색상 사용",
     ["BAR_TEXTURE"] = "바 텍스처",
-    ["BACKGROUND"] = "배경",
+    ["BAR_BACKGROUND"] = "배경",
     ["USE_BAR_COLOR_FOR_BACKGROUND_COLOR"] = "바 색상을 배경 색상으로 사용",
-    ["BORDER"] = "테두리",
+    ["BAR_BORDER"] = "테두리",
 
     -- Text settings category - Edit Mode
     ["CATEGORY_TEXT_SETTINGS"] = "텍스트 설정",

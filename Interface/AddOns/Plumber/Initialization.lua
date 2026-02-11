@@ -1,5 +1,5 @@
-local VERSION_TEXT = "1.8.6";
-local VERSION_DATE = 1769870000;
+local VERSION_TEXT = "1.8.6 b";
+local VERSION_DATE = 1770130000;
 
 
 local addonName, addon = ...
@@ -256,18 +256,19 @@ local DefaultValues = {
         LootUI_NewTransmogIcon = true,
         LootUI_UseCustomColor = false,
         LootUI_GrowUpwards = false,
+        LootUI_WindowHide = false,
+        LootUI_CombineItems = false,
+        LootUI_LowFrameStrata = false,
+        LootUI_HideTitle = false,
+        LootUI_ShowReputation = false,
+        LootUI_ShowAllMoneyChange = false,
+        LootUI_ShowAllCurrencyChange = false,
+        LootUI_ReplaceDefaultAlert = false,
         LootUI_ForceAutoLoot = true,
         LootUI_LootUnderMouse = false,
         LootUI_UseHotkey = true,
         LootUI_HotkeyName = "E",
-        LootUI_ReplaceDefaultAlert = false,
         LootUI_UseStockUI = false,
-        LootUI_WindowHide = false,
-        LootUI_CombineItems = false,
-        LootUI_LowFrameStrata = false,
-        LootUI_ShowReputation = false,
-        LootUI_ShowAllMoneyChange = false,
-        LootUI_HideTitle = false,
 
 
     --Unified Map Pin System
@@ -346,6 +347,8 @@ local DefaultValues = {
             NameplateQuest_TextOutline = true,
         NameplateQuest_WidgetOffsetX = 0,
         NameplateQuest_WidgetOffsetY = 0,
+        NameplateQuest_ProgressFormat = 1,
+        NameplateQuest_ProgressShowIcon = false,
         --NameplateQuest_Side = "RIGHT",    --Initial value dedfined by detecting addon
 
 

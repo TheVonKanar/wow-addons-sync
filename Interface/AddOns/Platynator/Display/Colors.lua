@@ -144,8 +144,6 @@ local kindToEvent = {
     "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_STOP",
-    "ACTIONBAR_UPDATE_USABLE",
-    "SPELL_UPDATE_USABLE",
   },
   uninterruptableCast = {
     "UNIT_SPELLCAST_START",
@@ -198,6 +196,9 @@ function addonTable.Display.UnregisterForColorEvents(frame)
         end
       end
     end
+    if frame.colorState.timer then
+      frame.colorState.timer:Cancel()
+    end
   end
 
   frame.ColorEventHandler = nil
@@ -205,10 +206,11 @@ function addonTable.Display.UnregisterForColorEvents(frame)
   frame.colorSettings = nil
 end
 
-function addonTable.Display.RegisterForColorEvents(frame, settings)
-  local events = {}
-  frame.colorState = {}
+function addonTable.Display.RegisterForColorEvents(frame, settings, defaultColor)
+  local events = { FORCED = true }
+  frame.colorState = { frequentUpdater = {} }
   frame.colorSettings = settings
+  frame.colorState.defaultColor = defaultColor or transparency
   for _, s in ipairs(settings) do
     local es = kindToEvent[s.kind]
     if es then
@@ -240,9 +242,19 @@ function addonTable.Display.RegisterForColorEvents(frame, settings)
     if events[eventName] then
       local calculator = eventToCalulator[eventName]
       if calculator then
-        calculator(frame.colorState, self.unit)
+        calculator(self.colorState, self.unit)
       end
-      self:SetColor(addonTable.Display.GetColor(settings, frame.colorState, self.unit))
+      self:SetColor(addonTable.Display.GetColor(settings, self.colorState, self.unit))
+      if next(self.colorState.frequentUpdater) then
+        if not self.colorState.timer then
+          self.colorState.timer = C_Timer.NewTicker(0.1, function()
+            self:ColorEventHandler("FORCED")
+          end)
+        end
+      elseif self.colorState.timer then
+        self.colorState.timer:Cancel()
+        self.colorState.timer = nil
+      end
     end
   end
 end
@@ -309,7 +321,7 @@ function addonTable.Display.GetColor(settings, state, unit)
         if classification == "elite" then
           local level = UnitEffectiveLevel(unit)
           local playerLevel = PLATYNATOR_LAST_INSTANCE.level
-          if level >= playerLevel + 2 then
+          if level >= playerLevel + 2 or level == -1 then
             table.insert(colorQueue, {color = s.colors.boss})
             break
           elseif level == playerLevel + 1 then
@@ -378,9 +390,11 @@ function addonTable.Display.GetColor(settings, state, unit)
       if notInterruptible == nil then
         notInterruptible = channelInfo[7]
       end
+      state.frequentUpdater.interruptReady = nil
       if notInterruptible ~= nil then
         local spellID = GetInterruptSpell()
         if spellID then
+          state.frequentUpdater.interruptReady = true
           if C_Spell.GetSpellCooldownDuration then
             local duration = C_Spell.GetSpellCooldownDuration(spellID)
             table.insert(colorQueue, {state = {{value = duration:IsZero()}, {value = notInterruptible, invert = true}}, color = s.colors.ready})
@@ -476,8 +490,9 @@ function addonTable.Display.GetColor(settings, state, unit)
     return nil
   end
 
+  local defaultColor = state.defaultColor
   if C_CurveUtil then
-    local r, g, b, a = 0, 0, 0, 0
+    local r, g, b, a = defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a or 1
     for index = #colorQueue, 1, -1 do
       local details = colorQueue[index]
       local c = details.color
@@ -497,7 +512,7 @@ function addonTable.Display.GetColor(settings, state, unit)
     end
     return r, g, b, a
   else
-    local color = transparency
+    local color = defaultColor
     for index = #colorQueue, 1, -1 do
       local details = colorQueue[index]
       if details.state == nil then
