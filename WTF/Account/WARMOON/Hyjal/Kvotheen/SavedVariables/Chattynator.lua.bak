@@ -27,4 +27,5 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g mon micro marche pas wtf",
 "/g npnp",
 "/g mon micro snob discord jpp jvoulais trash talk grodar",
+"/s /bht",
 }

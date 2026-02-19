@@ -1,11 +1,11 @@
-## Interface: 11508, 20505, 30405, 38000, 40402, 50502, 50503, 110207, 120000
+## Interface: 11508, 20505, 30405, 38000, 40402, 50503, 120001 
 ## Title: LoggerHead Lite
 ## Notes: Automatically turns on the combat log for selected raid and mythic+ instances.
 ## Notes-deDE: Schaltet die Kampfaufzeichnung automatisch für ausgewählte Schlachtzugsinstanzen und Mythisch+-Dungeons ein.
 ## Notes-zhCN: 自动为选定的副本和大秘境打开战斗日志
 ## Notes-zhTW: 自動為選定的副本和大祕境打開戰鬥日誌
 ## Author: Neb
-## Version: 1.7.1
+## Version: 1.7.2
 ## SavedVariables: LoggerHeadNDB
 ## OptionalDeps: Ace3, LibDBIcon-1.0
 ## X-Category: Raid

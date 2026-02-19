@@ -2606,10 +2606,13 @@ UpdateBarBuffInfo = function(barNumber)
   elseif trackType == "pet" or trackType == "totem" or trackType == "ground" then
     local cdmFrame = sourceType == "bar" and barFrame or frame or barFrame
     
-    -- PRIMARY: Use preferredTotemUpdateSlot (Beta) or totemData.slot (Live)
-    -- Beta: preferredTotemUpdateSlot is non-secret, totemData is secret table
-    -- Live: preferredTotemUpdateSlot may not exist, totemData.slot is accessible
-    local slot = cdmFrame and (cdmFrame.preferredTotemUpdateSlot or (cdmFrame.totemData and cdmFrame.totemData.slot))
+    -- PRIMARY: Use preferredTotemUpdateSlot (non-secret on Beta)
+    -- FALLBACK: pcall totemData.slot (may be secret table when tainted)
+    local slot = cdmFrame and cdmFrame.preferredTotemUpdateSlot
+    if not slot and cdmFrame and cdmFrame.totemData then
+      local ok, val = pcall(function() return cdmFrame.totemData.slot end)
+      if ok then slot = val end
+    end
     if slot and type(slot) == "number" and slot > 0 then
       -- Verify totem is active using game API
       -- WoW 12.0: GetTotemInfo returns SECRET values when totem exists
@@ -3049,6 +3052,28 @@ UpdateBarBuffInfo = function(barNumber)
     iconTexture = state.cachedIcon
   end
   
+  -- ═══════════════════════════════════════════════════════════════════
+  -- DYNAMIC AURA NAME - mirrors how icon reads frame.Icon:GetTexture()
+  -- Active: auraSpellID exists (secret) → C_Spell.GetSpellName passthrough
+  -- Inactive: no auraSpellID → read base spell from cooldownInfo
+  -- Uses sourceType-resolved frame (same pattern as cdmFrame elsewhere)
+  -- ═══════════════════════════════════════════════════════════════════
+  local auraName = nil
+  local nameFrame_cdm = sourceType == "bar" and barFrame or frame or barFrame
+  if nameFrame_cdm then
+    if nameFrame_cdm.auraSpellID then
+      -- Active aura: secret-safe passthrough (SetText accepts secret strings)
+      auraName = C_Spell.GetSpellName(nameFrame_cdm.auraSpellID)
+    elseif nameFrame_cdm.cooldownInfo then
+      -- Inactive: derive base spell name from cooldownInfo
+      -- Priority: overrideSpellID > spellID (matches how icon texture resolves)
+      local baseID = nameFrame_cdm.cooldownInfo.overrideSpellID or nameFrame_cdm.cooldownInfo.spellID
+      if baseID and baseID > 0 then
+        auraName = C_Spell.GetSpellName(baseID)
+      end
+    end
+  end
+  
   -- Duration bar tracking - create wrapper for stacks/duration from auraInstanceID
   local durationBarRef = nil
   local durationStacksRef = nil
@@ -3307,8 +3332,12 @@ UpdateBarBuffInfo = function(barNumber)
             end
             if not frameActive then return 0 end
             
-            -- Query slot FRESH from frame each time (Beta: preferredTotemUpdateSlot, Live: totemData.slot)
-            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot or (totemCdmFrame.totemData and totemCdmFrame.totemData.slot)
+            -- Query slot FRESH from frame each time (preferredTotemUpdateSlot, pcall fallback for totemData.slot)
+            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot
+            if not currentSlot and totemCdmFrame.totemData then
+              local ok, val = pcall(function() return totemCdmFrame.totemData.slot end)
+              if ok then currentSlot = val end
+            end
             if not currentSlot or currentSlot <= 0 then return 0 end
             
             -- Use GetTotemTimeLeft - returns secret in combat but SetValue accepts it
@@ -3322,7 +3351,11 @@ UpdateBarBuffInfo = function(barNumber)
           end,
           GetMinMaxValues = function()
             -- WoW 12.0: Get duration from GetTotemInfo - it's SECRET but SetMinMaxValues accepts secrets!
-            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot or (totemCdmFrame.totemData and totemCdmFrame.totemData.slot)
+            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot
+            if not currentSlot and totemCdmFrame.totemData then
+              local ok, val = pcall(function() return totemCdmFrame.totemData.slot end)
+              if ok then currentSlot = val end
+            end
             if currentSlot and currentSlot > 0 then
               local haveTotem, name, startTime, duration = GetTotemInfo(currentSlot)
               if duration then
@@ -3346,7 +3379,11 @@ UpdateBarBuffInfo = function(barNumber)
             end
             if not frameActive then return nil, nil end
             
-            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot or (totemCdmFrame.totemData and totemCdmFrame.totemData.slot)
+            local currentSlot = totemCdmFrame.preferredTotemUpdateSlot
+            if not currentSlot and totemCdmFrame.totemData then
+              local ok, val = pcall(function() return totemCdmFrame.totemData.slot end)
+              if ok then currentSlot = val end
+            end
             return currentSlot, nil
           end,
           -- No DurationObject - use polling
@@ -3367,6 +3404,11 @@ UpdateBarBuffInfo = function(barNumber)
     -- Don't fall back to CDM duration if we're tracking a specific spell
     local preventCDMFallback = (trackedSpellID and trackedSpellID > 0) or useBaseSpell
     
+    -- Store dynamic aura name on state so Display.lua can read it directly
+    -- (bypasses profiler wrapper P:Def that may drop extra function parameters)
+    -- Only store when active - auraSpellID persists as stale secret on CDM frame after aura fades
+    state.dynamicAuraName = active and auraName or nil
+    
     if useDurationBar then
       -- Duration bar mode - ALWAYS use UpdateDurationBar
       local durationSource = effectiveDurationRef
@@ -3379,27 +3421,27 @@ UpdateBarBuffInfo = function(barNumber)
           barNumber, tostring(active), tostring(stacks), tostring(barConfig.behavior and barConfig.behavior.hideWhenInactive)))
       end
       ns.Display.UpdateDurationBar(barNumber, stacks, barConfig.tracking.maxStacks, active, 
-                                    durationSource, durationStacksRef, iconTexture)
+                                    durationSource, durationStacksRef, iconTexture, auraName)
     elseif trackType == "cooldownCharge" and cooldownDurationRef then
       -- Cooldown charge bar - pass cooldown duration wrapper for duration TEXT display
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, cooldownDurationRef, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, cooldownDurationRef, iconTexture, auraName)
     elseif trackType == "cooldownCharge" then
       -- Cooldown charge bar WITHOUT CDM frame (using spell API fallback)
       -- No duration text available, but stacks are from C_Spell.GetSpellCharges
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture, auraName)
     elseif effectiveDurationRef then
       -- We have an auraInstanceID wrapper - use it for duration display
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, effectiveDurationRef, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, effectiveDurationRef, iconTexture, auraName)
     elseif preventCDMFallback then
       -- Tracking specific spell but don't have effectiveDurationRef - DON'T use CDM's duration
       -- (CDM might be showing a different spell's duration)
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture, auraName)
     elseif durationBarRef then
       -- Fallback to CDM bar reference
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationBarRef, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationBarRef, iconTexture, auraName)
     else
       -- Stack bar from icon source - pass fontstring for duration text
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationFontString, iconTexture)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationFontString, iconTexture, auraName)
     end
   end
   

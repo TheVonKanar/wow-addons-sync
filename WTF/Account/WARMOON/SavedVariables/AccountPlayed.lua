@@ -1,13 +1,14 @@
 
 AccountPlayedDB = {
 ["Hyjal-Kvotheen"] = {
-["time"] = 6802940,
+["time"] = 6805131,
 ["class"] = "SHAMAN",
 },
 }
 AccountPlayedMinimapDB = {
 ["y"] = -74.24621202458748,
 ["x"] = -74.2462120245875,
+["locked"] = false,
 }
 AccountPlayedPopupDB = {
 ["y"] = 0,

@@ -765,52 +765,11 @@ initFrame:SetScript("OnEvent", function(self, event)
     end
     
     -- ═══════════════════════════════════════════════════════════════════
-    -- FIX SPARSE ARRAYS: Fill holes in resourceBars/cooldownBars after DB load
-    -- Prevents ipairs() from stopping early due to nil at index 1
+    -- CLEANUP: Remove empty/unconfigured bar configs to reduce memory
+    -- Replaces old sparse array hole-filling which was adding bloat
     -- ═══════════════════════════════════════════════════════════════════
-    if ns.db and ns.db.char then
-      -- Fix resourceBars
-      if ns.db.char.resourceBars then
-        local resourceBars = ns.db.char.resourceBars
-        local maxIndex = 0
-        for k, v in pairs(resourceBars) do
-          if type(k) == "number" and k >= 1 and math.floor(k) == k then
-            if k > maxIndex then maxIndex = k end
-          end
-        end
-        for i = 1, maxIndex do
-          if resourceBars[i] == nil then
-            resourceBars[i] = CopyTable(ns.DB_DEFAULTS.char.resourceBars[1])
-            resourceBars[i].tracking.enabled = false
-            resourceBars[i].display.enabled = false
-            local yOffset = -100 - ((i - 1) * 35)
-            resourceBars[i].display.barPosition.y = yOffset
-            resourceBars[i].display.textPosition.y = yOffset + 30
-          end
-        end
-      end
-      
-      -- Fix cooldownBars
-      if ns.db.char.cooldownBars then
-        local cooldownBars = ns.db.char.cooldownBars
-        local maxIndex = 0
-        for k, v in pairs(cooldownBars) do
-          if type(k) == "number" and k >= 1 and math.floor(k) == k then
-            if k > maxIndex then maxIndex = k end
-          end
-        end
-        for i = 1, maxIndex do
-          if cooldownBars[i] == nil then
-            cooldownBars[i] = CopyTable(ns.DB_DEFAULTS.char.cooldownBars[1])
-            cooldownBars[i].tracking.enabled = false
-            cooldownBars[i].display.enabled = false
-            local yOffset = -200 - ((i - 1) * 30)
-            cooldownBars[i].display.barPosition.y = yOffset
-            cooldownBars[i].display.textPosition.y = yOffset + 30
-            cooldownBars[i].display.iconPosition.y = yOffset
-          end
-        end
-      end
+    if ns.DataRepair and ns.DataRepair.RunAutoCleanup then
+      ns.DataRepair.RunAutoCleanup()
     end
     
     C_Timer.After(0.1, function()

@@ -85,18 +85,26 @@ local function CreateTimerEntry(timerID, orderBase)
           local duration = cfg and cfg.tracking.customDuration or 10
           
           local iconTexture = 134400
-          if cfg and cfg.tracking.triggerSpellID and cfg.tracking.triggerSpellID > 0 then
+          if cfg and cfg.tracking.iconOverride and cfg.tracking.iconOverride > 0 then
+            iconTexture = C_Spell.GetSpellTexture(cfg.tracking.iconOverride) or cfg.tracking.iconOverride
+          elseif cfg and cfg.tracking.triggerSpellID and cfg.tracking.triggerSpellID > 0 then
             iconTexture = C_Spell.GetSpellTexture(cfg.tracking.triggerSpellID) or 134400
           elseif cfg and cfg.tracking.triggerCooldownID and cfg.tracking.triggerCooldownID > 0 then
-            -- Get icon from catalog entry
             if ns.Catalog and ns.Catalog.GetEntry then
               local entry = ns.Catalog.GetEntry(cfg.tracking.triggerCooldownID)
               if entry then iconTexture = entry.icon or 134400 end
             end
           end
           
-          return string.format("|T%d:16:16:0:0|t |cffcc66ff%s|r - %s (%ds)",
-            iconTexture, name, triggerLabel, duration)
+          local durationLabel
+          if cfg and cfg.tracking.unlimitedDuration then
+            durationLabel = "\226\136\158"
+          else
+            durationLabel = duration .. "s"
+          end
+          
+          return string.format("|T%d:16:16:0:0|t |cffcc66ff%s|r - %s (%s)",
+            iconTexture, name, triggerLabel, durationLabel)
         end,
         desc = "Click to expand/collapse settings",
         dialogControl = "CollapsibleHeader",
@@ -126,6 +134,7 @@ local function CreateTimerEntry(timerID, orderBase)
         type = "input",
         name = "Name",
         desc = "Display name for this timer bar",
+        dialogControl = "ArcUI_EditBox",
         get = function()
           local cfg = ns.CooldownBars.GetTimerConfig(timerID)
           return cfg and cfg.tracking.barName or ""
@@ -145,7 +154,8 @@ local function CreateTimerEntry(timerID, orderBase)
       duration = {
         type = "input",
         name = "Duration (sec)",
-        desc = "How long the timer runs when triggered",
+        desc = "How long the timer runs when triggered (max 86400 = 24h)",
+        dialogControl = "ArcUI_EditBox",
         get = function()
           local cfg = ns.CooldownBars.GetTimerConfig(timerID)
           return cfg and tostring(cfg.tracking.customDuration) or "10"
@@ -153,11 +163,64 @@ local function CreateTimerEntry(timerID, orderBase)
         set = function(info, value)
           local cfg = ns.CooldownBars.GetTimerConfig(timerID)
           if cfg then
-            cfg.tracking.customDuration = tonumber(value) or 10
+            local num = tonumber(value) or 10
+            cfg.tracking.customDuration = math.min(math.max(num, 0.1), 86400)
           end
         end,
         order = 3,
         width = 0.6,
+        hidden = function()
+          if not expandedTimers[timerKey] then return true end
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          return cfg and cfg.tracking.unlimitedDuration
+        end,
+      },
+      
+      unlimitedDuration = {
+        type = "toggle",
+        name = "|cff00ccffUnlimited|r",
+        desc = "Bar stays permanently full until re-triggered (toggle) or you die.\n\nFor aura triggers, the bar also cancels when the aura reverses (gained to lost, or lost to gained).\n\nUse this for permanent effects like Absolute Corruption.",
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          return cfg and cfg.tracking.unlimitedDuration
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            cfg.tracking.unlimitedDuration = value or nil
+          end
+          LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+        order = 3.5,
+        width = 0.6,
+        hidden = function() return not expandedTimers[timerKey] end,
+      },
+      
+      iconOverride = {
+        type = "input",
+        name = "Icon ID",
+        desc = "Override the bar icon with a spell ID or texture ID. Leave empty to use the trigger spell icon.",
+        dialogControl = "ArcUI_EditBox",
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          local id = cfg and cfg.tracking.iconOverride
+          return id and id > 0 and tostring(id) or ""
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            local num = tonumber(value)
+            if num and num > 0 then
+              cfg.tracking.iconOverride = num
+            else
+              cfg.tracking.iconOverride = nil
+            end
+            ns.CooldownBars.ApplyAppearance(timerID, "timer")
+          end
+          LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+        order = 3.7,
+        width = 0.5,
         hidden = function() return not expandedTimers[timerKey] end,
       },
       
@@ -222,6 +285,7 @@ local function CreateTimerEntry(timerID, orderBase)
         type = "input",
         name = "Spell ID",
         desc = "Or enter spell ID manually",
+        dialogControl = "ArcUI_EditBox",
         get = function()
           local cfg = ns.CooldownBars.GetTimerConfig(timerID)
           local id = cfg and cfg.tracking.triggerSpellID
@@ -284,6 +348,7 @@ local function CreateTimerEntry(timerID, orderBase)
         type = "input",
         name = "Cooldown ID",
         desc = "Or enter CDM cooldown ID manually",
+        dialogControl = "ArcUI_EditBox",
         get = function()
           local cfg = ns.CooldownBars.GetTimerConfig(timerID)
           local id = cfg and cfg.tracking.triggerCooldownID
@@ -353,7 +418,7 @@ local function CreateTimerEntry(timerID, orderBase)
           end
         end,
         order = 9,
-        width = 0.9,
+        width = 0.75,
         hidden = function() return not expandedTimers[timerKey] end,
       },
       
@@ -373,8 +438,220 @@ local function CreateTimerEntry(timerID, orderBase)
           end
         end,
         order = 10,
-        width = 0.9,
+        width = 0.75,
         hidden = function() return not expandedTimers[timerKey] end,
+      },
+      
+      -- Spec 1 toggle
+      spec1 = {
+        type = "toggle",
+        name = function()
+          local _, specName, _, specIcon = GetSpecializationInfo(1)
+          if specIcon and specName then
+            return string.format("|T%s:14:14:0:0|t %s", specIcon, specName)
+          end
+          return specName or "Spec 1"
+        end,
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or not cfg.behavior or not cfg.behavior.showOnSpecs then return true end
+          if #cfg.behavior.showOnSpecs == 0 then return true end
+          for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+            if spec == 1 then return true end
+          end
+          return false
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            if not cfg.behavior.showOnSpecs then cfg.behavior.showOnSpecs = {} end
+            if not value and #cfg.behavior.showOnSpecs == 0 then
+              local numSpecs = GetNumSpecializations() or 4
+              for i = 1, numSpecs do
+                if i ~= 1 then table.insert(cfg.behavior.showOnSpecs, i) end
+              end
+            elseif value then
+              local found = false
+              for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+                if spec == 1 then found = true break end
+              end
+              if not found then table.insert(cfg.behavior.showOnSpecs, 1) end
+            else
+              for i = #cfg.behavior.showOnSpecs, 1, -1 do
+                if cfg.behavior.showOnSpecs[i] == 1 then table.remove(cfg.behavior.showOnSpecs, i) end
+              end
+            end
+            if ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 10.1,
+        width = 0.75,
+        hidden = function() return not expandedTimers[timerKey] end,
+      },
+      
+      -- Spec 2 toggle
+      spec2 = {
+        type = "toggle",
+        name = function()
+          local _, specName, _, specIcon = GetSpecializationInfo(2)
+          if specIcon and specName then
+            return string.format("|T%s:14:14:0:0|t %s", specIcon, specName)
+          end
+          return specName or "Spec 2"
+        end,
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or not cfg.behavior or not cfg.behavior.showOnSpecs then return true end
+          if #cfg.behavior.showOnSpecs == 0 then return true end
+          for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+            if spec == 2 then return true end
+          end
+          return false
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            if not cfg.behavior.showOnSpecs then cfg.behavior.showOnSpecs = {} end
+            if not value and #cfg.behavior.showOnSpecs == 0 then
+              local numSpecs = GetNumSpecializations() or 4
+              for i = 1, numSpecs do
+                if i ~= 2 then table.insert(cfg.behavior.showOnSpecs, i) end
+              end
+            elseif value then
+              local found = false
+              for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+                if spec == 2 then found = true break end
+              end
+              if not found then table.insert(cfg.behavior.showOnSpecs, 2) end
+            else
+              for i = #cfg.behavior.showOnSpecs, 1, -1 do
+                if cfg.behavior.showOnSpecs[i] == 2 then table.remove(cfg.behavior.showOnSpecs, i) end
+              end
+            end
+            if ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 10.2,
+        width = 0.75,
+        hidden = function() return not expandedTimers[timerKey] end,
+      },
+      
+      -- Spec 3 toggle
+      spec3 = {
+        type = "toggle",
+        name = function()
+          local _, specName, _, specIcon = GetSpecializationInfo(3)
+          if specIcon and specName then
+            return string.format("|T%s:14:14:0:0|t %s", specIcon, specName)
+          end
+          return specName or "Spec 3"
+        end,
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or not cfg.behavior or not cfg.behavior.showOnSpecs then return true end
+          if #cfg.behavior.showOnSpecs == 0 then return true end
+          for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+            if spec == 3 then return true end
+          end
+          return false
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            if not cfg.behavior.showOnSpecs then cfg.behavior.showOnSpecs = {} end
+            if not value and #cfg.behavior.showOnSpecs == 0 then
+              local numSpecs = GetNumSpecializations() or 4
+              for i = 1, numSpecs do
+                if i ~= 3 then table.insert(cfg.behavior.showOnSpecs, i) end
+              end
+            elseif value then
+              local found = false
+              for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+                if spec == 3 then found = true break end
+              end
+              if not found then table.insert(cfg.behavior.showOnSpecs, 3) end
+            else
+              for i = #cfg.behavior.showOnSpecs, 1, -1 do
+                if cfg.behavior.showOnSpecs[i] == 3 then table.remove(cfg.behavior.showOnSpecs, i) end
+              end
+            end
+            if ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 10.3,
+        width = 0.75,
+        hidden = function()
+          if not expandedTimers[timerKey] then return true end
+          local numSpecs = GetNumSpecializations()
+          return numSpecs < 3
+        end,
+      },
+      
+      -- Spec 4 toggle
+      spec4 = {
+        type = "toggle",
+        name = function()
+          local _, specName, _, specIcon = GetSpecializationInfo(4)
+          if specIcon and specName then
+            return string.format("|T%s:14:14:0:0|t %s", specIcon, specName)
+          end
+          return specName or "Spec 4"
+        end,
+        get = function()
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or not cfg.behavior or not cfg.behavior.showOnSpecs then return true end
+          if #cfg.behavior.showOnSpecs == 0 then return true end
+          for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+            if spec == 4 then return true end
+          end
+          return false
+        end,
+        set = function(info, value)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            if not cfg.behavior.showOnSpecs then cfg.behavior.showOnSpecs = {} end
+            if not value and #cfg.behavior.showOnSpecs == 0 then
+              local numSpecs = GetNumSpecializations() or 4
+              for i = 1, numSpecs do
+                if i ~= 4 then table.insert(cfg.behavior.showOnSpecs, i) end
+              end
+            elseif value then
+              local found = false
+              for _, spec in ipairs(cfg.behavior.showOnSpecs) do
+                if spec == 4 then found = true break end
+              end
+              if not found then table.insert(cfg.behavior.showOnSpecs, 4) end
+            else
+              for i = #cfg.behavior.showOnSpecs, 1, -1 do
+                if cfg.behavior.showOnSpecs[i] == 4 then table.remove(cfg.behavior.showOnSpecs, i) end
+              end
+            end
+            if ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 10.4,
+        width = 0.75,
+        hidden = function()
+          if not expandedTimers[timerKey] then return true end
+          local numSpecs = GetNumSpecializations()
+          return numSpecs < 4
+        end,
       },
       
       -- Talent conditions

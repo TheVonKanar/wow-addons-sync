@@ -159,15 +159,9 @@ CONDITIONS["canexitvehicle"] = {
 CONDITIONS["channeling"] = {
     -- name = CHANNELING,
     handler =
-        function (cond, context, v)
+        function (cond, context)
             local unit = context.rule.unit or "player"
-            if not v then
-                return UnitChannelInfo(unit) ~= nil
-            elseif tonumber(v) then
-                return select(8, UnitChannelInfo(unit)) == tonumber(v)
-            else
-                return UnitChannelInfo(unit) == v
-            end
+            return UnitChannelInfo(unit) ~= nil
         end
 }
 
@@ -402,6 +396,7 @@ CONDITIONS["drivable"] = {
 }
 
 CONDITIONS["driving"] = {
+    disabled = ( IsDrivableArea == nil ),
     handler =
         function (cond, context)
             -- Only one D.R.I.V.E. mount so far. Maybe in the future Blizzard will
@@ -611,6 +606,10 @@ CONDITIONS["friend"] = {
             if not v then
                 return ANY_TEXT
             end
+            local me = C_BattleNet.GetAccountInfoByGUID(UnitGUID('player'))
+            if me and me.battleTag == v then
+                return ACCOUNT_QUEST_LABEL
+            end
             for i = 1, BNGetNumFriends() do
                 local info = C_BattleNet.GetFriendAccountInfo(i)
                 if info and info.battleTag == v then
@@ -622,14 +621,15 @@ CONDITIONS["friend"] = {
     menu =
         function ()
             local out = { nosort=true, { val="friend", text=ANY_TEXT } }
+            local me = C_BattleNet.GetAccountInfoByGUID(UnitGUID('player'))
+            if me then
+                table.insert(out, { val = 'friend:'..me.battleTag })
+            end
             for i = 1, BNGetNumFriends() do
                 local info = C_BattleNet.GetFriendAccountInfo(i)
-                local name = BATTLENET_FONT_COLOR:WrapTextInColorCode(info.accountName)
-                local text = string.format('%s (%s)', name, info.battleTag)
                 table.insert(out,
                     {
                         val = 'friend:'..info.battleTag,
-                        text = text,
                         tooltip = info.note ~= "" and ( NOTE_COLON .. ' ' .. info.note)
                     })
             end
@@ -637,11 +637,15 @@ CONDITIONS["friend"] = {
         end,
     handler =
         function (cond, context, v)
+            local myInfo = C_BattleNet.GetAccountInfoByGUID(UnitGUID('player'))
             for unit in IterateGroupUnits() do
                 local guid = UnitGUID(unit)
                 local info = C_BattleNet.GetAccountInfoByGUID(guid)
-                if info and info.isFriend and ( not v or v == info.battleTag ) then
-                    return true
+                if info then
+                    local isMe = myInfo and info.battleTag == myInfo.battleTag
+                    if ( info.isFriend or isMe ) and ( not v or v == info.battleTag ) then
+                        return true
+                    end
                 end
             end
         end

@@ -1016,6 +1016,8 @@ local DEFAULT_ICON_SETTINGS = {
   zoom = 0.075,  -- Default slight zoom to crop icon borders
   padding = 0,
   alpha = 1.0,
+  keepBright = false,  -- Prevent all dimming/desaturation (icon stays full brightness always)
+  keepBrightAllowDesat = false,  -- When keepBright is on, still allow desaturation (grayscale on cooldown)
   hideShadow = false,  -- Hide CDM's shadow/border texture (IconOverlay)
   
   -- Cooldown State Visual Options (two-state system)
@@ -1072,6 +1074,7 @@ local DEFAULT_ICON_SETTINGS = {
     showSwipe = true,       -- The clock/darken animation
     noGCDSwipe = false,     -- Hide GCD swipes (1.5s or less)
     swipeWaitForNoCharges = false, -- For charge spells: only show swipe when ALL charges consumed
+    edgeWaitForNoCharges = false,  -- For charge spells: only show edge when ALL charges consumed
     hideTextWithSwipe = false,     -- When swipeWaitForNoCharges hides swipe, also hide duration text
     showEdge = true,        -- The spinning bright line
     showBling = true,       -- Flash when cooldown finishes
@@ -2912,9 +2915,9 @@ ApplyIconStyle = function(frame, cdID)
     if swipeCfg then
       frame._arcNoGCDSwipeEnabled = swipeCfg.noGCDSwipe
       frame._arcSwipeWaitForNoCharges = swipeCfg.swipeWaitForNoCharges
+      frame._arcEdgeWaitForNoCharges = swipeCfg.edgeWaitForNoCharges
       frame._arcNoGCDShowSwipe = swipeCfg.showSwipe ~= false
       frame._arcNoGCDShowEdge = swipeCfg.showEdge ~= false
-      
       -- Store user's show swipe/edge preference for Masque mode
       frame._arcUserShowSwipe = swipeCfg.showSwipe ~= false
       frame._arcUserShowEdge = swipeCfg.showEdge ~= false
@@ -3264,6 +3267,7 @@ ApplyIconStyle = function(frame, cdID)
     if swipeCfg then
       frame._arcNoGCDSwipeEnabled = swipeCfg.noGCDSwipe
       frame._arcSwipeWaitForNoCharges = swipeCfg.swipeWaitForNoCharges
+      frame._arcEdgeWaitForNoCharges = swipeCfg.edgeWaitForNoCharges
       -- Store swipe/edge settings for noGCDSwipe mode to use
       frame._arcNoGCDShowSwipe = swipeCfg.showSwipe ~= false
       frame._arcNoGCDShowEdge = swipeCfg.showEdge ~= false
@@ -3478,17 +3482,21 @@ ApplyIconStyle = function(frame, cdID)
               pcall(function() chargeInfo = C_Spell.GetSpellCharges(spellID) end)
               
               if chargeInfo then
-                -- CHARGE SPELL: Check swipeWaitForNoCharges
-                if pf._arcSwipeWaitForNoCharges then
-                  -- swipeWaitForNoCharges ON: Alpha controls visibility, always enable swipe
-                  if userWantsSwipe and not drawSwipe then
-                    ApplyAllStoredSwipeSettings()
-                  end
-                else
-                  -- swipeWaitForNoCharges OFF: Always enforce swipe ON - alpha controls visibility
-                  if userWantsSwipe and not drawSwipe then
-                    ApplyAllStoredSwipeSettings()
-                  end
+                -- CHARGE SPELL: CDM sets drawSwipe=false during recharge, true when depleted
+                local isRecharging = not drawSwipe
+                local wantSwipe = userWantsSwipe
+                local wantEdge = userWantsEdge
+                
+                if isRecharging then
+                  if pf._arcSwipeWaitForNoCharges then wantSwipe = false end
+                  if pf._arcEdgeWaitForNoCharges then wantEdge = false end
+                end
+                
+                if wantSwipe ~= drawSwipe or wantEdge then
+                  pf._arcBypassSwipeHook = true
+                  self:SetDrawSwipe(wantSwipe)
+                  self:SetDrawEdge(wantEdge)
+                  pf._arcBypassSwipeHook = false
                 end
               else
                 -- NORMAL SPELL: Apply GCD filtering
@@ -3547,13 +3555,23 @@ ApplyIconStyle = function(frame, cdID)
             pcall(function() chargeInfo = C_Spell.GetSpellCharges(spellID) end)
             
             if chargeInfo then
-              -- CHARGE SPELL: ALWAYS enforce swipe!
-              -- chargeDurObj handles visibility via alpha - it only has duration when recharging
-              -- We control visibility via Cooldown:SetAlpha(), so always keep swipe enabled
-              if userWantsSwipe and not drawSwipe then
+              -- CHARGE SPELL: CDM sets drawSwipe=false during recharge, true when depleted
+              -- Respect per-component wait-for-no-charges settings
+              local isRecharging = not drawSwipe
+              local wantSwipe = userWantsSwipe
+              local wantEdge = userWantsEdge
+              
+              if isRecharging then
+                -- During recharge: hide components that have waitForNoCharges enabled
+                if pf._arcSwipeWaitForNoCharges then wantSwipe = false end
+                if pf._arcEdgeWaitForNoCharges then wantEdge = false end
+              end
+              
+              -- Apply if anything differs from what CDM set
+              if wantSwipe ~= drawSwipe or wantEdge then
                 pf._arcBypassSwipeHook = true
-                self:SetDrawSwipe(true)
-                self:SetDrawEdge(userWantsEdge)
+                self:SetDrawSwipe(wantSwipe)
+                self:SetDrawEdge(wantEdge)
                 pf._arcBypassSwipeHook = false
               end
             else
@@ -3969,6 +3987,19 @@ ApplyIconStyle = function(frame, cdID)
         if not pf then return end
         if pf._arcBypassDesatHook then return end
         
+        -- Keep Bright: Force colored unless desaturation is allowed
+        local kbCfg = GetEffectiveIconSettingsForFrame(pf)
+        if kbCfg and kbCfg.keepBright and not kbCfg.keepBrightAllowDesat then
+          pf._arcBypassDesatHook = true
+          if self.SetDesaturation then
+            self:SetDesaturation(0)
+          else
+            self:SetDesaturated(false)
+          end
+          pf._arcBypassDesatHook = false
+          return
+        end
+        
         -- When ignoreAuraOverride is active, compute fresh curve result and apply it
         if ApplyIgnoreAuraDesaturation(self, pf) then
           return
@@ -3992,6 +4023,15 @@ ApplyIconStyle = function(frame, cdID)
           if not pf then return end
           if pf._arcBypassDesatHook then return end
           
+          -- Keep Bright: Force colored unless desaturation is allowed
+          local kbCfg = GetEffectiveIconSettingsForFrame(pf)
+          if kbCfg and kbCfg.keepBright and not kbCfg.keepBrightAllowDesat then
+            pf._arcBypassDesatHook = true
+            self:SetDesaturation(0)
+            pf._arcBypassDesatHook = false
+            return
+          end
+          
           -- When ignoreAuraOverride is active, compute fresh curve result and apply it
           if ApplyIgnoreAuraDesaturation(self, pf) then
             return
@@ -4007,6 +4047,24 @@ ApplyIconStyle = function(frame, cdID)
           -- Don't sync border here - value param may be secret
         end)
       end
+      
+      -- Hook SetVertexColor to prevent CDM from dimming the icon
+      -- Only intercepts when keepBright is enabled for this icon
+      hooksecurefunc(frame.Icon, "SetVertexColor", function(self, r, g, b, a)
+        local pf = self._arcParentFrame
+        if not pf then return end
+        if pf._arcBypassVertexHook then return end
+        
+        local kbCfg = GetEffectiveIconSettingsForFrame(pf)
+        if kbCfg and kbCfg.keepBright then
+          -- Only intercept if CDM is trying to dim (not already white)
+          if not (r == 1 and g == 1 and b == 1) then
+            pf._arcBypassVertexHook = true
+            self:SetVertexColor(1, 1, 1)
+            pf._arcBypassVertexHook = false
+          end
+        end
+      end)
     end
     
     -- Hook SetCooldown to reapply our settings after CDM updates
@@ -4591,6 +4649,15 @@ ApplyIconStyle = function(frame, cdID)
         end
       end
     end
+  end
+  
+  -- ═══════════════════════════════════════════════════════════════════
+  -- SPELL USABILITY HOOK - Install RefreshIconColor hook for custom
+  -- usability tinting (blue=no mana, gray=not usable) and glow overlay.
+  -- Module installs its own hooksecurefunc, separate from range indicator.
+  -- ═══════════════════════════════════════════════════════════════════
+  if frame.Icon and ns.CDMSpellUsability and ns.CDMSpellUsability.HookFrame then
+    ns.CDMSpellUsability.HookFrame(frame)
   end
   
   -- ═══════════════════════════════════════════════════════════════════
@@ -6257,6 +6324,44 @@ ApplyCooldownStateVisuals = function(frame, cfg, normalAlpha, stateVisuals)
   -- Use actualTex for all desaturation calls
   iconTex = actualTex
   
+  -- ═══════════════════════════════════════════════════════════════════
+  -- KEEP BRIGHT: Force icon to full brightness regardless of state
+  -- Overrides all dimming, desaturation, and alpha changes from CDM
+  -- ═══════════════════════════════════════════════════════════════════
+  if cfg.keepBright then
+    frame._arcBypassFrameAlphaHook = true
+    frame:SetAlpha(1.0)
+    frame._arcBypassFrameAlphaHook = false
+    frame._arcTargetAlpha = 1.0
+    frame._arcEnforceReadyAlpha = false
+    frame._arcBypassVertexHook = true
+    iconTex:SetVertexColor(1, 1, 1)
+    frame._arcBypassVertexHook = false
+    -- Only force colored if desaturation is NOT allowed
+    if not cfg.keepBrightAllowDesat then
+      frame._arcForceDesatValue = 0
+      frame._arcBypassDesatHook = true
+      if iconTex.SetDesaturation then
+        iconTex:SetDesaturation(0)
+      elseif iconTex.SetDesaturated then
+        iconTex:SetDesaturated(false)
+      end
+      frame._arcBypassDesatHook = false
+      ApplyBorderDesaturation(frame, 0)
+    else
+      -- Allow desat: clear any forced value so CDM/curves can set it naturally
+      frame._arcForceDesatValue = nil
+    end
+    frame:Show()
+    -- Still handle glow (keepBright doesn't disable glow effects)
+    if ShouldShowReadyGlow(stateVisuals or GetEffectiveStateVisuals(cfg), frame) then
+      ShowReadyGlow(frame, stateVisuals or GetEffectiveStateVisuals(cfg))
+    else
+      HideReadyGlow(frame)
+    end
+    return
+  end
+  
   -- Get effective state visuals (handles legacy migration)
   -- Skip if already passed from caller (performance optimization for 20Hz hot path)
   if not stateVisuals then
@@ -6277,17 +6382,26 @@ ApplyCooldownStateVisuals = function(frame, cfg, normalAlpha, stateVisuals)
     frame._arcReadyForGlow = false  -- Track for glow handler
     HideReadyGlow(frame)
     
-    -- CRITICAL FIX: Explicitly reset desaturation to colored when disabling desat setting
-    -- CDM doesn't always push a desat=0 value, so icons can stay grayscale
-    if iconTex then
+    -- CRITICAL FIX: Let CDM restore its own dimming/desaturation state
+    -- Call CDM's mixin methods if available - they check IsSpellUsable, cooldownDesaturated, etc.
+    frame._arcBypassDesatHook = true
+    frame._arcBypassVertexHook = true
+    if frame.RefreshIconDesaturation then
+      frame:RefreshIconDesaturation()
+    elseif iconTex then
       if iconTex.SetDesaturation then
         iconTex:SetDesaturation(0)
       elseif iconTex.SetDesaturated then
         iconTex:SetDesaturated(false)
       end
-      -- Also reset vertex color (tint)
+    end
+    if frame.RefreshIconColor then
+      frame:RefreshIconColor()
+    elseif iconTex then
       iconTex:SetVertexColor(1, 1, 1)
     end
+    frame._arcBypassDesatHook = false
+    frame._arcBypassVertexHook = false
     -- Reset border desaturation
     ApplyBorderDesaturation(frame, 0)
     
@@ -7314,6 +7428,10 @@ ApplyCooldownStateVisuals = function(frame, cfg, normalAlpha, stateVisuals)
   if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
     ns.CustomLabel.UpdateVisibility(frame)
   end
+  -- Update usable glow overlay for CDM frames
+  if ns.CDMSpellUsability and ns.CDMSpellUsability.UpdateGlow then
+    ns.CDMSpellUsability.UpdateGlow(frame, cfg)
+  end
   return result
 end
 
@@ -7787,6 +7905,9 @@ end
 function ns.CDMEnhance.ApplyIconVisuals(frame)
   if not frame then return end
   
+  -- Arc Aura spell frames own their visuals via ApplySpellStateVisuals
+  if frame._arcIsSpellCooldown then return end
+  
   -- MASTER TOGGLE: Skip if disabled (fast cached check)
   if not cachedCDMGroupsEnabled then
     return  -- Silent - this is called frequently
@@ -7836,6 +7957,10 @@ function ns.CDMEnhance.ApplyIconVisuals(frame)
     frame._arcForceDesatValue = nil
     -- IMPORTANT: Hide any leftover glow from preview mode
     HideReadyGlow(frame)
+    -- Still update usable glow (works independently of state visuals)
+    if ns.CDMSpellUsability and ns.CDMSpellUsability.UpdateGlow then
+      ns.CDMSpellUsability.UpdateGlow(frame, cfg)
+    end
     return
   end
   
@@ -8649,18 +8774,23 @@ function ns.CDMEnhance.ForceShowAllCDMIcons()
   -- BUT only if they're ACTUALLY tracked as free icons in CDMGroups!
   for cdID, data in pairs(enhancedFrames) do
     if data.frame and IsFrameValid(data.frame) then
-      local parent = data.frame:GetParent()
-      if parent == UIParent then
-        -- Only show UIParent frames if CDMGroups is tracking them as free icons
-        if ns.CDMGroups and ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[cdID] then
+      -- Skip frames hidden because spell is not in current spec
+      if data.frame._arcHiddenNotInSpec then
+        -- Do nothing - wrong spec frame stays hidden
+      else
+        local parent = data.frame:GetParent()
+        if parent == UIParent then
+          -- Only show UIParent frames if CDMGroups is tracking them as free icons
+          if ns.CDMGroups and ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[cdID] then
+            data.frame:SetAlpha(1)
+            data.frame:Show()
+          end
+          -- Otherwise skip - it's an orphaned frame from spec change
+        else
+          -- Frame is in a CDM viewer or group container, safe to show
           data.frame:SetAlpha(1)
           data.frame:Show()
         end
-        -- Otherwise skip - it's an orphaned frame from spec change
-      else
-        -- Frame is in a CDM viewer or group container, safe to show
-        data.frame:SetAlpha(1)
-        data.frame:Show()
       end
     end
   end
@@ -8891,6 +9021,22 @@ local function ApplyCooldownPreview(frame, cdID, enable)
     -- will re-apply the real cooldown (the optimization check compares these)
     frame._lastStartTime = nil
     frame._lastDuration = nil
+    
+    -- Arc Aura spell cooldown frames need an explicit re-feed since their
+    -- cooldown engine is event-driven (no CDM to re-push the cooldown)
+    if frame._arcIsSpellCooldown and frame._arcAuraID then
+      local arcID = frame._arcAuraID
+      if ns.ArcAurasCooldown and ns.ArcAurasCooldown.spellData then
+        local fd = ns.ArcAurasCooldown.spellData[arcID]
+        if fd and ns.ArcAurasCooldown.FeedCooldown then
+          C_Timer.After(0.05, function()
+            if fd and fd.frame and fd.frame:IsShown() then
+              ns.ArcAurasCooldown.FeedCooldown(fd)
+            end
+          end)
+        end
+      end
+    end
   end
 end
 
@@ -9538,8 +9684,20 @@ function ns.CDMEnhance.UpdateIcon(cdID)
     
     ApplyIconStyle(data.frame, cdID)
     
-    -- Re-evaluate glow state (for preview toggle, etc.)
-    ns.CDMEnhance.ApplyIconVisuals(data.frame)
+    -- Arc Aura spell frames: trigger FeedCooldown to re-evaluate glow preview
+    -- ApplyIconVisuals returns early for these, so we drive it through their engine
+    if data.frame._arcIsSpellCooldown and data.frame._arcAuraID then
+      local arcID = data.frame._arcAuraID
+      if ns.ArcAurasCooldown and ns.ArcAurasCooldown.spellData then
+        local fd = ns.ArcAurasCooldown.spellData[arcID]
+        if fd and ns.ArcAurasCooldown.FeedCooldown then
+          ns.ArcAurasCooldown.FeedCooldown(fd)
+        end
+      end
+    else
+      -- Re-evaluate glow state (for preview toggle, etc.)
+      ns.CDMEnhance.ApplyIconVisuals(data.frame)
+    end
     
     -- Trigger immediate CDMGroups layout refresh if icon is in a group
     if ns.CDMGroups and ns.CDMGroups.RefreshIconLayout then

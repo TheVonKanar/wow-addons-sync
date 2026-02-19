@@ -1,7 +1,6 @@
 # Platynator
 
-## [312](https://github.com/TheMouseNest/Platynator/tree/312) (2026-02-10)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/311...312) 
+## [323](https://github.com/TheMouseNest/Platynator/tree/323) (2026-02-18)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/322...323) [Previous Releases](https://github.com/TheMouseNest/Platynator/releases)
 
-- Increase default simplified scale  
-- Revert "Automatically rescale simplified nameplates based on design scale"  
+- Fix bar edge highlight for channeled cast bars  

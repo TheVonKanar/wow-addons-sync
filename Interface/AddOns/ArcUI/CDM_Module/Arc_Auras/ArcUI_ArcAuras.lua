@@ -212,6 +212,7 @@ GetDB = function()
     
     -- Ensure sub-tables exist (defensive - for existing data that may be missing keys)
     if not db.trackedItems then db.trackedItems = {} end
+    if not db.trackedSpells then db.trackedSpells = {} end
     if not db.positions then db.positions = {} end
     if not db.globalSettings then db.globalSettings = {} end
     if not db.autoTrackSlots then
@@ -772,8 +773,127 @@ local function CreateArcAuraFrame(arcID, config)
     
     frame.Cooldown = cooldown
     
-    -- Duration object for cooldown updates
-    if C_DurationUtil and C_DurationUtil.CreateDuration then
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- SPELL-SPECIFIC: Hidden Desaturation Cooldown + Hooks
+    -- Only created for spell frames (type == "spell")
+    -- Drives icon desaturation entirely through hooks — zero secret comparisons.
+    --   SetCooldown(0,0) → frame not shown → hooks read IsShown()=false → desat OFF
+    --   SetCooldownFromDurationObject(durObj) → frame shown → IsShown()=true → desat ON
+    --   OnCooldownDone fires → CD expired → desat OFF instantly
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if config.type == "spell" then
+        frame._arcIsSpellCooldown = true  -- Flag: OnUpdate loop skips this frame
+        frame._arcSpellID = config.spellID
+        
+        local desatCooldown = CreateFrame("Cooldown", frameName .. "_DesatCD", frame, "CooldownFrameTemplate")
+        desatCooldown:SetAllPoints(icon)
+        desatCooldown:SetDrawSwipe(false)
+        desatCooldown:SetDrawEdge(false)
+        desatCooldown:SetDrawBling(false)
+        desatCooldown:SetHideCountdownNumbers(true)
+        desatCooldown:SetAlpha(0) -- INVISIBLE! But IsShown() still reflects CD state.
+        frame._arcDesatCooldown = desatCooldown
+        
+        -- Hook: SetCooldown → drive desaturation from IsShown()
+        hooksecurefunc(desatCooldown, "SetCooldown", function(self)
+            local fd = self._arcFrameData
+            if not fd or not fd.icon then return end
+            local isOnCD = self:IsShown()
+            -- Apply state visuals through the spell engine's applier
+            if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ApplySpellStateVisuals then
+                ns.ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
+            elseif fd.desaturate then
+                fd.icon:SetDesaturated(isOnCD)
+            else
+                fd.icon:SetDesaturated(false)
+            end
+        end)
+        
+        -- Hook: SetCooldownFromDurationObject → same logic
+        hooksecurefunc(desatCooldown, "SetCooldownFromDurationObject", function(self)
+            local fd = self._arcFrameData
+            if not fd or not fd.icon then return end
+            local isOnCD = self:IsShown()
+            if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ApplySpellStateVisuals then
+                ns.ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
+            elseif fd.desaturate then
+                fd.icon:SetDesaturated(isOnCD)
+            else
+                fd.icon:SetDesaturated(false)
+            end
+        end)
+        
+        -- Hook: OnCooldownDone → CD expired, apply ready visuals
+        desatCooldown:HookScript("OnCooldownDone", function(self)
+            local fd = self._arcFrameData
+            if not fd or not fd.icon then return end
+            if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ApplySpellStateVisuals then
+                ns.ArcAurasCooldown.ApplySpellStateVisuals(fd, false)
+            else
+                fd.icon:SetDesaturated(false)
+            end
+        end)
+        
+        -- Visible cooldown: OnCooldownDone → re-feed for instant visual update
+        cooldown:HookScript("OnCooldownDone", function(self)
+            local fd = self._arcFrameData
+            if not fd then return end
+            if fd.icon then fd.icon:SetDesaturated(false) end
+            if ns.ArcAurasCooldown and ns.ArcAurasCooldown.FeedCooldown then
+                ns.ArcAurasCooldown.FeedCooldown(fd)
+            end
+        end)
+        
+        -- CooldownFlash (matches CDM structure for CDMEnhance bling control)
+        local cooldownFlash = CreateFrame("Frame", nil, frame)
+        cooldownFlash:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 1)
+        cooldownFlash:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 1)
+        cooldownFlash:Hide()
+        
+        local flipbook = cooldownFlash:CreateTexture(nil, "ARTWORK")
+        flipbook:SetAllPoints()
+        flipbook:SetAlpha(0)
+        pcall(function() flipbook:SetAtlas("UI-HUD-ActionBar-GCD-Flipbook") end)
+        cooldownFlash.Flipbook = flipbook
+        
+        local flashAnim = cooldownFlash:CreateAnimationGroup()
+        cooldownFlash.FlashAnim = flashAnim
+        
+        local hideAnim = flashAnim:CreateAnimation("Alpha")
+        hideAnim:SetDuration(0)
+        hideAnim:SetOrder(1)
+        hideAnim:SetFromAlpha(0)
+        hideAnim:SetToAlpha(0)
+        flashAnim.HideAnim = hideAnim
+        
+        local showAnim = flashAnim:CreateAnimation("Alpha")
+        showAnim:SetDuration(0)
+        showAnim:SetOrder(1)
+        showAnim:SetFromAlpha(1)
+        showAnim:SetToAlpha(1)
+        flashAnim.ShowAnim = showAnim
+        
+        local playAnimOk, playAnim = pcall(function()
+            local anim = flashAnim:CreateAnimation("FlipBook")
+            anim:SetDuration(0.75)
+            anim:SetOrder(1)
+            anim:SetFlipBookRows(11)
+            anim:SetFlipBookColumns(2)
+            anim:SetFlipBookFrames(22)
+            return anim
+        end)
+        if not playAnimOk or not playAnim then
+            playAnim = flashAnim:CreateAnimation("Alpha")
+            playAnim:SetDuration(0.75)
+            playAnim:SetOrder(1)
+        end
+        flashAnim.PlayAnim = playAnim
+        
+        frame.CooldownFlash = cooldownFlash
+    end
+    
+    -- Duration object for cooldown updates (items only - spells use C_Spell DurationObjects)
+    if config.type ~= "spell" and C_DurationUtil and C_DurationUtil.CreateDuration then
         frame._durationObj = C_DurationUtil.CreateDuration()
     end
     
@@ -927,7 +1047,7 @@ function ArcAuras.CreateFrame(arcID, config)
         C_Item.RequestLoadItemDataByID(config.itemID)
     end
     
-    -- Check if trinket slot is empty
+    -- Check if trinket slot is empty (items and trinkets only)
     local skipCDMGroups = false
     if config.type == "trinket" and config.slotID then
         local itemID = GetInventoryItemID("player", config.slotID)
@@ -980,6 +1100,40 @@ function ArcAuras.DestroyFrame(arcID)
     
     -- Unregister from Masque (if registered)
     UnregisterFromMasque(frame)
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- SPELL CLEANUP: Clear ArcAurasCooldown state tables
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if frame._arcIsSpellCooldown and ns.ArcAurasCooldown then
+        local fd = ns.ArcAurasCooldown.spellData and ns.ArcAurasCooldown.spellData[arcID]
+        if fd then
+            -- Stop proc glows
+            local LCGRef = GetLCG()
+            if LCGRef then
+                pcall(LCGRef.PixelGlow_Stop, frame, "proc")
+                pcall(LCGRef.AutoCastGlow_Stop, frame, "proc")
+                pcall(LCGRef.ButtonGlow_Stop, frame)
+            end
+            if ActionButtonSpellAlertManager then
+                pcall(function() ActionButtonSpellAlertManager:HideAlert(frame) end)
+            end
+        end
+        
+        -- Clear reverse lookup
+        if fd and fd.spellID and ns.ArcAurasCooldown.spellsByID then
+            if ns.ArcAurasCooldown.spellsByID[fd.spellID] == arcID then
+                ns.ArcAurasCooldown.spellsByID[fd.spellID] = nil
+            end
+        end
+        
+        -- Clear spell state tables
+        if ns.ArcAurasCooldown.spellFrames then
+            ns.ArcAurasCooldown.spellFrames[arcID] = nil
+        end
+        if ns.ArcAurasCooldown.spellData then
+            ns.ArcAurasCooldown.spellData[arcID] = nil
+        end
+    end
     
     -- ═══════════════════════════════════════════════════════════════════════════
     -- STEP 1: Unregister from CDMGroups (removes from groups/freeIcons)
@@ -1112,11 +1266,18 @@ function ArcAuras.UpdateFrameIcon(frame, config)
         icon = itemIcon
         frame._currentItemID = config.itemID
         frame._currentItemName = itemName
+    elseif config.type == "spell" and config.spellID then
+        local spellInfo = C_Spell.GetSpellInfo(config.spellID)
+        if spellInfo then
+            icon = spellInfo.iconID or spellInfo.originalIconID
+            frame._currentItemName = spellInfo.name
+        end
+        frame._currentItemID = nil
     end
     
     if icon then
         frame.Icon:SetTexture(icon)
-        -- NOTE: Don't set desaturation here - the update loop handles cooldown state
+        -- NOTE: Don't set desaturation here - the update loop / spell engine handles cooldown state
     else
         frame.Icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
         frame._currentItemID = nil
@@ -1486,6 +1647,11 @@ local function OnArcAurasUpdate()
     
     for arcID, frame in pairs(ArcAuras.frames) do
         if frame and frame:IsShown() then
+            -- SKIP spell frames - they are fully event-driven (no polling needed)
+            -- ArcAurasCooldown handles: FeedCooldown, desat hooks, proc glows, state visuals
+            if frame._arcIsSpellCooldown then
+                -- Do nothing - spell engine owns this frame's state
+            else
             local config = frame._arcConfig
             if config then
                 -- Step 1: Update the cooldown frame (sets the swipe animation)
@@ -1841,6 +2007,7 @@ local function OnArcAurasUpdate()
                     ArcAuras.NotifyStateChanged(arcID, isOnCooldown, remaining, frame._duration or 0)
                 end
             end
+            end -- close spell skip else
         end
     end
 end
@@ -2090,6 +2257,8 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
         frame._arcShowEdge = swipe.showEdge ~= false
         frame._arcReverse = swipe.reverse == true
         frame._arcSwipeColor = swipe.swipeColor
+        frame._arcSwipeWaitForNoCharges = swipe.swipeWaitForNoCharges
+        frame._arcEdgeWaitForNoCharges = swipe.edgeWaitForNoCharges
     end
     
     -- Apply border if CDMEnhance has border functions
@@ -2154,6 +2323,12 @@ function ArcAuras.ShowTooltip(frame)
         end
     elseif config.type == "item" then
         GameTooltip:SetItemByID(config.itemID)
+    elseif config.type == "spell" then
+        if config.spellID then
+            GameTooltip:SetSpellByID(config.spellID)
+        else
+            GameTooltip:AddLine(config.name or "Unknown Spell", 1, 1, 1)
+        end
     end
     
     GameTooltip:AddLine(" ")
@@ -2172,6 +2347,12 @@ function ArcAuras.ShowTooltip(frame)
 end
 
 function ArcAuras.ShowContextMenu(frame)
+    -- Dispatch spell frames to ArcAurasCooldown context menu
+    if frame._arcIsSpellCooldown and ns.ArcAurasCooldown and ns.ArcAurasCooldown.ShowContextMenu then
+        ns.ArcAurasCooldown.ShowContextMenu(frame)
+        return
+    end
+    
     local menu = {
         { text = "Arc Auras: " .. (frame._currentItemName or frame._arcAuraID), isTitle = true },
         { text = "Configure Icon", func = function()
@@ -3107,6 +3288,40 @@ function ArcAuras.Enable()
     end
     
     ArcAuras.StartUpdateLoop()
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- SPELL COOLDOWN FRAMES: Create frames for tracked spells the player knows
+    -- ArcAurasCooldown is initialized after ArcAuras, so we defer briefly
+    -- ═══════════════════════════════════════════════════════════════════════════
+    C_Timer.After(0.3, function()
+        if not ArcAuras.isEnabled then return end
+        local db2 = GetDB()
+        if not db2 or not db2.trackedSpells then return end
+        
+        for arcID, config in pairs(db2.trackedSpells) do
+            if not ArcAuras.frames[arcID] then
+                local spellID = config.spellID
+                local knows = (IsPlayerSpell and IsPlayerSpell(spellID)) or (IsSpellKnown and IsSpellKnown(spellID))
+                if knows then
+                    local spellConfig = {
+                        type = "spell",
+                        spellID = spellID,
+                        name = config.name,
+                        icon = config.icon,
+                        enabled = true,
+                    }
+                    local frame = ArcAuras.CreateFrame(arcID, spellConfig)
+                    if frame then
+                        frame:Show()
+                        -- Let ArcAurasCooldown engine take over
+                        if ns.ArcAurasCooldown and ns.ArcAurasCooldown.InitializeSpellFrame then
+                            ns.ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
+                        end
+                    end
+                end
+            end
+        end
+    end)
 end
 
 function ArcAuras.Disable()
@@ -3161,6 +3376,13 @@ function ArcAuras.Reload()
     end
     wipe(ArcAuras.frames)
     
+    -- Clear spell engine state tables
+    if ns.ArcAurasCooldown then
+        if ns.ArcAurasCooldown.spellFrames then wipe(ns.ArcAurasCooldown.spellFrames) end
+        if ns.ArcAurasCooldown.spellData then wipe(ns.ArcAurasCooldown.spellData) end
+        if ns.ArcAurasCooldown.spellsByID then wipe(ns.ArcAurasCooldown.spellsByID) end
+    end
+    
     -- Re-enable if it was enabled or DB says enabled
     if wasEnabled or db.enabled then
         ArcAuras.Enable()
@@ -3198,6 +3420,13 @@ function ArcAuras.RefreshAllFrames()
         frame:SetParent(nil)
     end
     wipe(ArcAuras.frames)
+    
+    -- Clear spell engine state tables
+    if ns.ArcAurasCooldown then
+        if ns.ArcAurasCooldown.spellFrames then wipe(ns.ArcAurasCooldown.spellFrames) end
+        if ns.ArcAurasCooldown.spellData then wipe(ns.ArcAurasCooldown.spellData) end
+        if ns.ArcAurasCooldown.spellsByID then wipe(ns.ArcAurasCooldown.spellsByID) end
+    end
     
     -- Get on-use filter setting
     local onlyOnUse = db.onlyOnUseTrinkets
@@ -3238,6 +3467,30 @@ function ArcAuras.RefreshAllFrames()
                     frame:Show()
                     -- Apply proper state visuals (respects saved alpha settings)
                     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+                end
+            end
+        end
+    end
+    
+    -- Recreate tracked spell frames
+    if db.trackedSpells then
+        for arcID, config in pairs(db.trackedSpells) do
+            local spellID = config.spellID
+            local knows = (IsPlayerSpell and IsPlayerSpell(spellID)) or (IsSpellKnown and IsSpellKnown(spellID))
+            if knows then
+                local spellConfig = {
+                    type = "spell",
+                    spellID = spellID,
+                    name = config.name,
+                    icon = config.icon,
+                    enabled = true,
+                }
+                local frame = ArcAuras.CreateFrame(arcID, spellConfig)
+                if frame then
+                    frame:Show()
+                    if ns.ArcAurasCooldown and ns.ArcAurasCooldown.InitializeSpellFrame then
+                        ns.ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
+                    end
                 end
             end
         end
@@ -3352,6 +3605,35 @@ function ArcAuras.GetIcons()
         end
     end
     
+    -- Also include tracked spells
+    if db.trackedSpells then
+        for arcID, config in pairs(db.trackedSpells) do
+            local frame = ArcAuras.frames[arcID]
+            local name, icon = nil, nil
+            if config.spellID then
+                local spellInfo = C_Spell.GetSpellInfo(config.spellID)
+                if spellInfo then
+                    name = spellInfo.name
+                    icon = spellInfo.iconID or spellInfo.originalIconID
+                end
+            end
+            
+            result[arcID] = {
+                cooldownID = arcID,
+                arcID = arcID,
+                arcType = "spell",
+                spellID = config.spellID,
+                name = name or config.name or "Unknown",
+                icon = icon or config.icon or 134400,
+                isArcAura = true,
+                isSpellCooldown = true,
+                viewerName = "ArcAurasViewer",
+                hasCustomPos = true,
+                frame = frame,
+            }
+        end
+    end
+    
     return result
 end
 
@@ -3363,6 +3645,16 @@ function ArcAuras.RegisterWithCDMEnhance(arcID, frame)
     frame._arcEnhanced = true
     frame._arcIsArcAura = true
     
+    -- For spell cooldown frames, ensure noGCDSwipe defaults to true
+    -- (CDM defaults to false, but Arc Aura cooldown frames should filter GCD by default)
+    -- Only set if cooldownSwipe section doesn't exist yet (truly new config)
+    if frame._arcIsSpellCooldown and ns.CDMEnhance.GetOrCreateIconSettings then
+        local cfg = ns.CDMEnhance.GetOrCreateIconSettings(arcID)
+        if cfg and not cfg.cooldownSwipe then
+            cfg.cooldownSwipe = { noGCDSwipe = true }
+        end
+    end
+    
     -- Apply icon style if CDMEnhance supports it
     if ns.CDMEnhance.ApplyIconStyle then
         C_Timer.After(0.1, function()
@@ -3370,6 +3662,14 @@ function ArcAuras.RegisterWithCDMEnhance(arcID, frame)
                 ns.CDMEnhance.ApplyIconStyle(frame, arcID)
                 -- Also apply our cooldown settings after CDMEnhance styling
                 ArcAuras.ApplySettingsToFrame(arcID, frame)
+                
+                -- Apply charge/stack text styling from cascaded settings
+                -- Without this, first creation uses hardcoded NumberFontNormal (yellow)
+                -- instead of the user's globalCooldownSettings chargeText config
+                if frame._arcStackText then
+                    ApplyStackTextStyle(frame, frame._arcStackText)
+                    frame._arcStackStyleApplied = true
+                end
                 
                 -- CRITICAL: Apply initial state visuals (alpha, desat, glow)
                 -- Without this, frames show at default alpha until OnArcAurasUpdate runs
@@ -3381,6 +3681,12 @@ function ArcAuras.RegisterWithCDMEnhance(arcID, frame)
         C_Timer.After(0.1, function()
             if ArcAuras.frames[arcID] then
                 ArcAuras.ApplySettingsToFrame(arcID, frame)
+                
+                -- Apply charge/stack text styling from cascaded settings
+                if frame._arcStackText then
+                    ApplyStackTextStyle(frame, frame._arcStackText)
+                    frame._arcStackStyleApplied = true
+                end
                 
                 -- CRITICAL: Apply initial state visuals (alpha, desat, glow)
                 ArcAuras.ApplyInitialStateVisuals(arcID, frame)
@@ -3396,6 +3702,24 @@ function ArcAuras.ApplyInitialStateVisuals(arcID, frame)
         frame = ArcAuras.frames[arcID]
     end
     if not frame then return end
+    
+    -- SKIP spell cooldown frames - their state is managed by ArcAurasCooldown engine
+    -- via DesatCooldown hooks and FeedCooldown. CDMEnhance settings are applied there.
+    if frame._arcIsSpellCooldown then
+        -- Trigger a re-feed if the spell engine is available
+        if ns.ArcAurasCooldown and ns.ArcAurasCooldown.spellData then
+            local fd = ns.ArcAurasCooldown.spellData[arcID]
+            if fd then
+                if ns.ArcAurasCooldown.FeedCooldown then
+                    ns.ArcAurasCooldown.FeedCooldown(fd)
+                end
+                if ns.ArcAurasCooldown.UpdateProcGlow then
+                    ns.ArcAurasCooldown.UpdateProcGlow(fd)
+                end
+            end
+        end
+        return
+    end
     
     local config = frame._arcConfig
     if not config then return end
@@ -3523,6 +3847,7 @@ function ArcAuras.RefreshFrameSettings(arcID)
     -- CRITICAL: Update cooldown state BEFORE applying visuals
     -- After zone change, frame._isOnCooldown may be stale - query the real state first
     -- so ApplyInitialStateVisuals uses the correct cooldown state for alpha
+    -- NOTE: Spell frames skip this - their engine handles cooldown state via events
     local config = frame._arcConfig
     if config then
         if config.type == "trinket" and config.slotID then
@@ -3530,6 +3855,7 @@ function ArcAuras.RefreshFrameSettings(arcID)
         elseif config.type == "item" and config.itemID then
             UpdateItemCooldown(frame, config.itemID)
         end
+        -- Spell frames: ApplyInitialStateVisuals will trigger FeedCooldown
     end
     
     -- Now apply state visuals with the CURRENT cooldown state
@@ -3868,8 +4194,23 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                     
                     local registeredCount = 0
                     for arcID, frame in pairs(ArcAuras.frames) do
-                        -- Skip frames hidden by filters
-                        if not hiddenByFilter[arcID] and frame and frame:IsShown() then
+                        -- Skip frames hidden by filters or hidden due to wrong spec
+                        if not hiddenByFilter[arcID] and frame and frame:IsShown() and not frame._arcHiddenNotInSpec then
+                            -- Check if already in a group (restored by CDMGroups.RestoreArcAurasPositions)
+                            local alreadyInGroup = false
+                            if ns.CDMGroups.groups then
+                                for _, group in pairs(ns.CDMGroups.groups) do
+                                    if group.members and group.members[arcID] then
+                                        alreadyInGroup = true
+                                        break
+                                    end
+                                end
+                            end
+                            
+                            if alreadyInGroup then
+                                -- Already correctly positioned by RestoreArcAurasPositions, skip
+                                registeredCount = registeredCount + 1
+                            else
                             -- Check if CDMGroups has a saved position for this arc aura
                             local hasSavedPosition = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
                             
@@ -3908,6 +4249,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                                     registeredCount = registeredCount + 1
                                 end
                             end
+                            end -- alreadyInGroup
                         end
                     end
                     

@@ -88,7 +88,7 @@ ArkInventory: disabled
 ArkInventoryRules_Example: disabled
 BetterVendorPrice: enabled
 OribosExchange: enabled
-idTip: enabled
+idTip: disabled
 Hekili: disabled
 OPie: disabled
 Bagnon_ItemInfo: disabled
@@ -200,8 +200,8 @@ KeyMaster: enabled
 AngryKeystones: enabled
 LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
-KongConfig: enabled
-Kong: enabled
+KongConfig: disabled
+Kong: disabled
 PremadeGroupsFilter: enabled
 TipTacItemRef: disabled
 TipTacOptions: disabled
@@ -248,3 +248,4 @@ MacroManagerData: disabled
 UnhaltedUnitFrames: enabled
 Cell: disabled
 TrueStatValues: enabled
+MouseoverActionSettings: disabled

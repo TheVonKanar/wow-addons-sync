@@ -1,4 +1,4 @@
 ## Bugfixes
 
-- *Another secret variable fix.*
+- *More secret variable fixes.*
 

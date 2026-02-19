@@ -1,4 +1,7 @@
-﻿12.0.04 - 11th February 2026
+﻿12.0.05 - 18th February 2026
+- For 'Enhance tooltip' ('Interface'), fixed an issue which caused the game settings tooltips to be scaled incorrectly.
+
+12.0.04 - 11th February 2026
 - Updated for game patch 12.0.1.
 - For 'Enhance minimap' ('Interface'), the 'Minimap button bag' can be toggled by right-clicking the minimap once again.  It's simpler and people preferred it to the header button.  The 'Show who pinged' setting has been removed.
 

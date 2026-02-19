@@ -38,7 +38,8 @@ function BarMixin:Init(config, parent, frameLevel)
     self.StatusBar = CreateFrame("StatusBar", nil, Frame)
     self.StatusBar:SetAllPoints()
     self.StatusBar:SetStatusBarTexture(LSM:Fetch(LSM.MediaType.STATUSBAR, "SCRB FG Fade Left"))
-    self.StatusBar:SetFrameLevel(Frame:GetFrameLevel())
+    self.StatusBar:SetFrameLevel(Frame:GetFrameLevel() + 1)
+    self.StatusBar:SetClipsChildren(true)
 
     -- MASK
     self.Mask = self.StatusBar:CreateMaskTexture()
@@ -49,7 +50,10 @@ function BarMixin:Init(config, parent, frameLevel)
     self.Background:AddMaskTexture(self.Mask)
 
     -- BORDER
-    self.Border = Frame:CreateTexture(nil, "OVERLAY")
+    self.BorderFrame = CreateFrame("Frame", nil, Frame)
+    self.BorderFrame:SetAllPoints()
+    self.BorderFrame:SetFrameLevel(self.StatusBar:GetFrameLevel())
+    self.Border = self.BorderFrame:CreateTexture(nil, "OVERLAY")
     self.Border:SetAllPoints()
     self.Border:SetBlendMode("BLEND")
     self.Border:SetVertexColor(0, 0, 0)
@@ -57,7 +61,7 @@ function BarMixin:Init(config, parent, frameLevel)
 
     -- TEXT FRAME
     self.TextFrame = CreateFrame("Frame", nil, Frame)
-    self.TextFrame:SetAllPoints(Frame)
+    self.TextFrame:SetAllPoints()
     self.TextFrame:SetFrameLevel(self.StatusBar:GetFrameLevel())
 
     self.TextValue = self.TextFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -317,6 +321,23 @@ end
 -- DISPLAY related methods
 ------------------------------------------------------------
 
+function BarMixin:GetTextFormat(data, resource)
+    if not data then return "" end
+
+    local textFormat = ""
+    if (data.showManaAsPercent and resource == Enum.PowerType.Mana) or data.textFormat == "Percent" or data.textFormat == "Percent%" then
+        textFormat = "[percent]" .. (data.textFormat == "Percent%" and "%" or "")
+    elseif data.textFormat == nil or data.textFormat == "Current" then
+        textFormat = "[current]"
+    elseif data.textFormat == "Current / Maximum" then
+        textFormat = "[current] / [max]"
+    elseif data.textFormat == "Current - Percent" or data.textFormat == "Current - Percent%" then
+        textFormat = "[current] - [percent]" .. (data.textFormat == "Current - Percent%" and "%" or "")
+    end
+
+    return textFormat
+end
+
 function BarMixin:UpdateDisplay(layoutName, force)
     if not self:IsShown() and not force then return end
 
@@ -353,16 +374,7 @@ function BarMixin:UpdateDisplay(layoutName, force)
         local precision = data.textPrecision and math.max(0, string.len(data.textPrecision) - 3) or 0
         local tagValues = self:GetTagValues(resource, max, current, precision)
 
-        local textFormat = ""
-        if (data.showManaAsPercent and resource == Enum.PowerType.Mana) or data.textFormat == "Percent" or data.textFormat == "Percent%" then
-            textFormat = "[percent]" .. (data.textFormat == "Percent%" and "%" or "")
-        elseif data.textFormat == nil or data.textFormat == "Current" then
-            textFormat = "[current]"
-        elseif data.textFormat == "Current / Maximum" then
-            textFormat = "[current] / [max]"
-        elseif data.textFormat == "Current - Percent" or data.textFormat == "Current - Percent%" then
-            textFormat = "[current] - [percent]" .. (data.textFormat == "Current - Percent%" and "%" or "")
-        end
+        local textFormat = self:GetTextFormat(data, resource)
 
         -- Cache compiled format to avoid repeated pattern matching
         if self._cachedTextFormat ~= textFormat then
@@ -580,7 +592,7 @@ function BarMixin:GetSize(layoutName, data)
 
     local scale = addonTable.rounded(data.scale or defaults.scale or 1, 2)
 
-    return addonTable.getNearestPixel(width * scale, scale), addonTable.getNearestPixel(height * scale, scale)
+    return addonTable.rounded(addonTable.getNearestPixel(width * scale, scale)), addonTable.rounded(addonTable.getNearestPixel(height * scale, scale))
 end
 
 function BarMixin:ApplyLayout(layoutName, force)
@@ -751,7 +763,7 @@ function BarMixin:ApplyMaskAndBorderSettings(layoutName, data)
     self.Background:AddMaskTexture(self.Mask)
 
     if style.type == "fixed" then
-        local bordersInfo = {
+        self._bordersInfo = self._bordersInfo or {
             top    = { "TOPLEFT", "TOPRIGHT" },
             bottom = { "BOTTOMLEFT", "BOTTOMRIGHT" },
             left   = { "TOPLEFT", "BOTTOMLEFT" },
@@ -760,8 +772,8 @@ function BarMixin:ApplyMaskAndBorderSettings(layoutName, data)
 
         if not self.FixedThicknessBorders then
             self.FixedThicknessBorders = {}
-            for edge, _ in pairs(bordersInfo) do
-                local t = self.Frame:CreateTexture(nil, "OVERLAY")
+            for edge, _ in pairs(self._bordersInfo) do
+                local t = self.BorderFrame:CreateTexture(nil, "OVERLAY")
                 t:SetColorTexture(0, 0, 0, 1)
                 t:SetDrawLayer("OVERLAY")
                 self.FixedThicknessBorders[edge] = t
@@ -777,10 +789,10 @@ function BarMixin:ApplyMaskAndBorderSettings(layoutName, data)
         local borderColor = data.borderColor or defaults.borderColor
 
         for edge, t in pairs(self.FixedThicknessBorders) do
-            local points = bordersInfo[edge]
+            local points = self._bordersInfo[edge]
             t:ClearAllPoints()
-            t:SetPoint(points[1], self.Frame, points[1])
-            t:SetPoint(points[2], self.Frame, points[2])
+            t:SetPoint(points[1], self.BorderFrame, points[1])
+            t:SetPoint(points[2], self.BorderFrame, points[2])
             t:SetColorTexture(borderColor.r or 0, borderColor.g or 0, borderColor.b or 0, borderColor.a or 1)
             if edge == "top" or edge == "bottom" then
                 t:SetHeight(pThickness)
@@ -793,7 +805,7 @@ function BarMixin:ApplyMaskAndBorderSettings(layoutName, data)
         self.Border:Show()
         self.Border:SetTexture(style.border)
         self.Border:ClearAllPoints()
-        self.Border:SetPoint("CENTER", self.StatusBar, "CENTER")
+        self.Border:SetPoint("CENTER", self.BorderFrame, "CENTER")
         self.Border:SetSize(verticalOrientation and height or width, verticalOrientation and width or height)
         self.Border:SetRotation(verticalOrientation and math.rad(90) or 0)
 
@@ -969,7 +981,7 @@ function BarMixin:UpdateTicksLayout(layoutName, data)
     for i = 1, needed do
         local t = self.Ticks[i]
         if not t then
-            t = self.Frame:CreateTexture(nil, "OVERLAY")
+            t = self.BorderFrame:CreateTexture(nil, "OVERLAY")
             self.Ticks[i] = t
         end
         t:SetColorTexture(tickColor.r or 0, tickColor.g or 0, tickColor.b or 0, tickColor.a or 1)

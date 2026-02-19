@@ -1,23 +1,21 @@
 # Account Played
 
-## [v1.0.3](https://github.com/Jeremy-Gstein/AccountPlayed/tree/v1.0.3) (2026-02-08)
-[Full Changelog](https://github.com/Jeremy-Gstein/AccountPlayed/compare/v1.0.2...v1.0.3) [Previous Releases](https://github.com/Jeremy-Gstein/AccountPlayed/releases)
+## [v1.1.4](https://github.com/Jeremy-Gstein/AccountPlayed/tree/v1.1.4) (2026-02-17)
+[Full Changelog](https://github.com/Jeremy-Gstein/AccountPlayed/compare/v1.0.3...v1.1.4) [Previous Releases](https://github.com/Jeremy-Gstein/AccountPlayed/releases)
 
-- Release: v1.0.3 - Patch: Improved minimap button (drag or snap to minimap), press escape to close, and hover on classes to see the characters that makeup the data... TY everyone for checking out the addon and sharing your screenshots online <3  
-- New: support installs on wago.io  
-- Feature: tested classic client (11508) and it works! added tbh, and mop tocs for now but have NOT tested those version  
-- Revise README with additional features and credits  
-    Updated the README to include new features and acknowledgments.  
-- Refactor: merge community PRs with new features: on hover character stats, move the minimap icon as you please OR snap it to the minimap (#3)  
-- Fix: merge issues with #3 and update README  
-- Show total played time in days when >= 24 hours  
-    FormatTimeSmart now displays "#d #h #m" instead of "#h #m" when the total account time is 24 hours or more (e.g., "241d 1h 52m" instead of "5785h 52m").  
-- Feature: hover over classes to see a popup of characters that make up the data  
-- Feature: hover over classes to see a popup of characters that make up the data  
-- Widen class name column to fit DEATHKNIGHT and DEMONHUNTER without truncation  
-- Replace angle-based minimap icon positioning with hybrid snap/free-form drag system  
-- THANK YOU FOR ALL THE FEEDBACK/SUPPORT ON REDDIT/WOWHEAD/DISCORD/TWITCH I love seeing all the screenshots!! <3  
-- Patch: fix size from resetting on reload or exit by saving window size state to AccountPlayedPopupDB  
-- Patch: Attempt to fix missing minimap bug by changing name of frame from generic 'f' to 'AP'  
-- Feature: new functions for other addons to safley read from AccountPlayedDB. list, query, and return total time played see githup README or AccountPlayed.lua for more detailed descriptions.  
-- Update CurseForge Downloads badge  
+- Release: v1.1.4 - Minor: Localization support for enUS, zhCN, zhTW (Huge thanks to SGSwdzgr!!). Improved performance while idle (rework minimap logic)  
+- Patch: FIXED - bug with minimap preventing player from clicking (pinging) minimap.  
+- remove changelog from repo  
+- Minor: Localization support for enUS, zhCN, zhTW. Rework logic in MinimapButton to fix cpu usage while idle.  
+- Patch: add SGSwdzgr to readme for extensive contributions localizing the addon to other languages  
+- feat: Add localization support (zhCN/zhTW) & UI adjustments  
+    - Added `Localization.lua` to handle multi-language support.  
+    - Refactored `AccountPlayed.lua` and `MinimapButton.lua` to use a shared `L` table.  
+    - Implemented `LOCALIZED_CLASS_NAMES_MALE` for automatic class name translation.  
+    - Adjusted UI layout (widened rows/window) to accommodate longer text in non-English locales.  
+    - Updated Minimap button tooltips and messages to support localization.  
+- Update: a few Minimap Button Quality-of-Life adjustments. right click to lock button and hide button when mouse is not near minimap. `/apresetmap` - reset minimap location to default (bottom left of minimap).  
+- Support Windows PATHs in justfile  
+- Bug: fix memory leak, use timer instead of on frame events when checking snap state  
+- New: Slash Command `/apresetmap` - Reset minimap icon (button) to default location (bottom left of minimap)  
+- New: Minimap Button will only show when mouse is near or on minimap (always show when not snapped to map)  

@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 12.0.04 (11th February 2026)
+-- 	Leatrix Plus 12.0.05 (18th February 2026)
 ----------------------------------------------------------------------
 
 --	01:Functions 02:Locks,  03:Restart 40:Player
@@ -18,7 +18,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "12.0.04"
+	LeaPlusLC["AddonVer"] = "12.0.05"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -9143,7 +9143,7 @@
 
 				-- Set tooltip scale when tooltip is shown
 				SettingsTooltip:HookScript("OnShow", function()
-					SettingsTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"])
+					SettingsTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"] * UIParent:GetScale())
 				end)
 
 			end)
@@ -12379,15 +12379,17 @@
 				return
 			elseif str == "tooltip" then
 				-- Print tooltip frame name
-				local enumf = EnumerateFrames()
-				while enumf do
-					if (enumf:GetObjectType() == "GameTooltip" or strfind((enumf:GetName() or ""):lower(),"tip")) and enumf:IsVisible() and enumf:GetPoint() then
-						print(enumf:GetName())
+				pcall(function()
+					local enumf = EnumerateFrames()
+					while enumf do
+						if (enumf:GetObjectType() == "GameTooltip" or strfind((enumf:GetName() or ""):lower(),"tip")) and enumf:IsVisible() and enumf:GetPoint() then
+							print(enumf:GetName())
+						end
+						enumf = EnumerateFrames(enumf)
 					end
-					enumf = EnumerateFrames(enumf)
-				end
-				collectgarbage()
-				return
+					collectgarbage()
+					return
+				end)
 			elseif str == "soil" then
 				-- Enable dark soil and jelly deposit scanning
 				if not LeaPlusLC["DarkScriptlEnabled"] then

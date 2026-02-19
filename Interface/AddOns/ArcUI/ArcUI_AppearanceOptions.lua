@@ -5510,10 +5510,10 @@ function ns.AppearanceOptions.GetOptionsTable()
         hidden = function() return GetSelectedConfig() == nil or IsIconMode() end
       },
       
-      -- FRAME BORDER
+      -- FRAME BORDER (4-texture pixel-perfect border for all bar types)
       showBorder = {
         type = "toggle",
-        name = "Show Frame Border",
+        name = "Show Border",
         get = function()
           local cfg = GetSelectedConfig()
           return cfg and cfg.display.showBorder
@@ -5529,8 +5529,6 @@ function ns.AppearanceOptions.GetOptionsTable()
         width = "full",
         hidden = function()
           if IsIconMode() or collapsedSections.border then return true end
-          -- Hide for cooldown duration bars (they use bar border instead)
-          if IsCooldownDurationBar() then return true end
           return GetSelectedConfig() == nil
         end
       },
@@ -5553,7 +5551,6 @@ function ns.AppearanceOptions.GetOptionsTable()
         width = 0.7,
         hidden = function()
           if IsIconMode() or collapsedSections.border then return true end
-          if IsCooldownDurationBar() then return true end
           local cfg = GetSelectedConfig()
           return not (cfg and cfg.display.showBorder)
         end
@@ -5581,9 +5578,7 @@ function ns.AppearanceOptions.GetOptionsTable()
         width = 0.45,
         hidden = function()
           if IsIconMode() or collapsedSections.border then return true end
-          if IsCooldownDurationBar() then return true end
           local cfg = GetSelectedConfig()
-          -- Hide if border not shown OR if class color is enabled
           return not (cfg and cfg.display.showBorder) or (cfg and cfg.display.useClassColorBorder)
         end
       },
@@ -5606,87 +5601,65 @@ function ns.AppearanceOptions.GetOptionsTable()
         width = 0.7,
         hidden = function()
           if IsIconMode() or collapsedSections.border then return true end
-          if IsCooldownDurationBar() then return true end
+          local cfg = GetSelectedConfig()
+          return not (cfg and cfg.display.showBorder)
+        end
+      },
+      barPadding = {
+        type = "range",
+        name = "Bar Inset",
+        desc = "Padding between the border and the bar fill texture. 0 = fill touches border edge.",
+        min = 0, max = 10, step = 1,
+        get = function()
+          local cfg = GetSelectedConfig()
+          return cfg and cfg.display.barPadding or 0
+        end,
+        set = function(info, value)
+          local cfg = GetSelectedConfig()
+          if cfg then
+            cfg.display.barPadding = value
+            RefreshBar()
+          end
+        end,
+        order = 51.4,
+        width = 0.7,
+        hidden = function()
+          if IsIconMode() or collapsedSections.border then return true end
+          if IsChargeBar() then return true end
           local cfg = GetSelectedConfig()
           return not (cfg and cfg.display.showBorder)
         end
       },
       
-      -- BAR BORDER (border around the actual bar fill, not the frame)
+      -- BAR BORDER (deprecated - showBorder now handles all bar types via 4-texture system)
       showBarBorder = {
         type = "toggle",
         name = "Show Bar Border",
-        desc = "Draw a border around the actual bar (not the frame)",
-        get = function()
-          local cfg = GetSelectedConfig()
-          return cfg and cfg.display.showBarBorder
-        end,
-        set = function(info, value)
-          local cfg = GetSelectedConfig()
-          if cfg then
-            cfg.display.showBarBorder = value
-            RefreshBar()
-          end
-        end,
         order = 52,
         width = "full",
-        hidden = function()
-          if IsIconMode() or collapsedSections.border then return true end
-          -- Only show for cooldown duration bars
-          return not IsCooldownDurationBar()
-        end
+        hidden = function() return true end,
+        get = function() local cfg = GetSelectedConfig(); return cfg and cfg.display.showBarBorder end,
+        set = function(info, value) local cfg = GetSelectedConfig(); if cfg then cfg.display.showBarBorder = value; RefreshBar() end end,
       },
       barBorderColor = {
         type = "color",
         name = "Color",
         hasAlpha = true,
-        get = function()
-          local cfg = GetSelectedConfig()
-          if cfg and cfg.display.barBorderColor then
-            local c = cfg.display.barBorderColor
-            return c.r, c.g, c.b, c.a or 1
-          end
-          return 0, 0, 0, 1  -- Default black
-        end,
-        set = function(info, r, g, b, a)
-          local cfg = GetSelectedConfig()
-          if cfg then
-            cfg.display.barBorderColor = {r=r, g=g, b=b, a=a}
-            RefreshBar()
-          end
-        end,
         order = 52.1,
         width = 0.5,
-        hidden = function()
-          if IsIconMode() or collapsedSections.border then return true end
-          if not IsCooldownDurationBar() then return true end
-          local cfg = GetSelectedConfig()
-          return not (cfg and cfg.display.showBarBorder)
-        end
+        hidden = function() return true end,
+        get = function() return 0, 0, 0, 1 end,
+        set = function() end,
       },
       barBorderThickness = {
         type = "range",
         name = "Thickness",
         min = 1, max = 10, step = 1,
-        get = function()
-          local cfg = GetSelectedConfig()
-          return cfg and cfg.display.barBorderThickness or 1
-        end,
-        set = function(info, value)
-          local cfg = GetSelectedConfig()
-          if cfg then
-            cfg.display.barBorderThickness = value
-            RefreshBar()
-          end
-        end,
         order = 52.2,
         width = 0.5,
-        hidden = function()
-          if IsIconMode() or collapsedSections.border then return true end
-          if not IsCooldownDurationBar() then return true end
-          local cfg = GetSelectedConfig()
-          return not (cfg and cfg.display.showBarBorder)
-        end
+        hidden = function() return true end,
+        get = function() return 1 end,
+        set = function() end,
       },
       
       -- SLOT BORDER (Charge bars only)

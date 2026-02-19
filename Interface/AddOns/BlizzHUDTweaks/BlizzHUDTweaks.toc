@@ -1,0 +1,53 @@
+## Interface: 110207, 120000, 120001
+## Title: BlizzHUDTweaks
+## Version: 2.12.0
+## Author: Kevin
+## Notes: Add some tweaks to the new default blizz HUD.
+## OptionalDeps: Ace3
+## SavedVariables: BlizzHUDTweaksDB
+## X-Category: HUDs
+## X-Wago-ID: rkGrWlNy
+## X-Curse-Project-ID: 698104
+## OptionalDeps: EditModeExpanded, WorldQuestTracker
+## Category: User Interface
+## Category-deDE: Benutzerinterface
+## Category-esES: Interfaz de usuario
+## Category-esMX: Interfaz de usuario
+## Category-frFR: Interface utilisateur
+## Category-itIT: Interfaccia utente
+## Category-koKR: 사용자 인터페이스
+## Category-ptBR: Interface do usuário
+## Category-ruRU: Интерфейс пользователя
+## Category-zhCN: 用户界面
+## Category-zhTW: 使用者介面
+## IconTexture: Interface/Addons/BlizzHUDTweaks/Media/Icons/BlizzHUDTweaks.blp
+
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\LibDataBroker\LibDataBroker-1.1.lua
+Libs\LibDBIcon\lib.xml
+Libs\LibDeflate\LibDeflate.lua
+
+BlizzHUDTweaks.lua
+
+# Modules
+MouseoverFrameFading.lua
+Miscellaneous.lua
+Tooltip.lua
+
+Util.lua
+EventHandler.lua
+Options.lua
+Options/MouseoverFrameFading.lua
+Options/Miscellaneous.lua
+Options/Tooltip.lua
+Options/Profiles.lua

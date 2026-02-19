@@ -1,6 +1,7 @@
 # UnhaltedUnitFrames
 
-## [V12.0.16](https://github.com/DaleHuntGB/UnhaltedUnitFrames/tree/V12.0.16) (2026-02-10)
-[Full Changelog](https://github.com/DaleHuntGB/UnhaltedUnitFrames/commits/V12.0.16) 
+## [V12.0.17](https://github.com/DaleHuntGB/UnhaltedUnitFrames/tree/V12.0.17) (2026-02-15)
+[Full Changelog](https://github.com/DaleHuntGB/UnhaltedUnitFrames/commits/V12.0.17) 
 
-- p3lim is faster than me  
+- Merge pull request #234 from DaleHuntGB/aura-filters  
+    Aura filters  

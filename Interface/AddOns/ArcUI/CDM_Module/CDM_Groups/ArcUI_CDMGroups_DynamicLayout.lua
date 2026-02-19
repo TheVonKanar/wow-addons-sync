@@ -1643,12 +1643,31 @@ function DL.OnOptionsPanelOpened()
     state.cachedPanelOpenThisTick = true
     state.optionsPanelWasOpen = true
     
+    -- Invalidate CDMGroups panel cache so Layout() sees fresh state
+    if ns.CDMGroups.InvalidateOptionsPanelCache then
+        ns.CDMGroups.InvalidateOptionsPanelCache()
+    end
+    
     -- Reset ALL groups to grid positions
     -- Pixel positioning is cleared so users can freely edit icon positions
     if ns.CDMGroups.groups then
         local savedPositions = ns.CDMGroups.savedPositions or {}
         for groupName, group in pairs(ns.CDMGroups.groups) do
-            -- Clear pixel positioning flags
+            -- FIRST: Restore container to base position if dynamic layout offset it.
+            -- Must happen BEFORE clearing _appliedOffset, because Layout()'s restore
+            -- path checks _appliedOffsetX — if nil, it skips restore → container stays
+            -- at base+offset while icons go to grid → visible position jump.
+            if (group._appliedOffsetX and group._appliedOffsetX ~= 0)
+                or (group._appliedOffsetY and group._appliedOffsetY ~= 0) then
+                if not InCombatLockdown() and group.container then
+                    local baseX = group.position and group.position.x or 0
+                    local baseY = group.position and group.position.y or 0
+                    group.container:ClearAllPoints()
+                    group.container:SetPoint("CENTER", UIParent, "CENTER", baseX, baseY)
+                end
+            end
+            
+            -- NOW clear pixel positioning flags (after container is restored)
             group._usePixelPositioning = nil
             group._pixelOffsets = nil
             group._activeOrder = nil
@@ -1682,6 +1701,14 @@ function DL.OnOptionsPanelClosed()
     -- Update cache immediately
     state.cachedPanelOpenThisTick = false
     state.optionsPanelWasOpen = false
+    
+    -- Invalidate CDMGroups panel cache so Layout() sees panel as CLOSED.
+    -- Without this, the 100ms cache returns stale "true" → usePixelLayout = false
+    -- → CalculateDynamicSlots skipped → no compact container size → no sync to
+    -- CDMContainerSync → Sensei width bars never update.
+    if ns.CDMGroups.InvalidateOptionsPanelCache then
+        ns.CDMGroups.InvalidateOptionsPanelCache()
+    end
     
     -- Clear any applied container offsets so positions reset properly
     if ns.CDMGroups.groups then

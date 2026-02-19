@@ -1405,7 +1405,7 @@ local function GetOptionsTable()
             },
             containerSyncHeader = {
                 type = "description",
-                name = "\n|cff88ffffContainer Sync|r - Sync CDM viewers to ArcUI group positions",
+                name = "\n|cff88ffffContainer Sync|r - Anchor CDM viewers to ArcUI group positions",
                 order = 16.4,
                 width = "full",
                 fontSize = "medium",
@@ -1413,7 +1413,9 @@ local function GetOptionsTable()
             },
             containerSyncDesc = {
                 type = "description",
-                name = "|cffaaaaaaContainer sync is currently disabled. This feature will return in a future update.|r",
+                name = "|cffaaaaaaAnchors the base CDM viewer to the matching ArcUI group proxy. "
+                    .. "The viewer auto-tracks position and size. Blizzard's Layout resize is suppressed while synced. "
+                    .. "Detaches automatically in Edit Mode so you can still drag viewers.|r",
                 order = 16.41,
                 width = "full",
                 fontSize = "small",
@@ -1422,46 +1424,49 @@ local function GetOptionsTable()
             syncBuffs = {
                 type = "toggle",
                 name = "Sync Buffs",
-                desc = "Sync the BuffIcon CDM viewer to the Buffs group position. (Currently disabled)",
+                desc = "Anchor the BuffIcon CDM viewer to the Buffs group proxy.",
                 order = 16.5,
                 width = 0.6,
-                disabled = true,
                 hidden = function() return collapsedSections.globalOptions end,
                 get = function()
-                    return false
+                    return ns.CDMContainerSync and ns.CDMContainerSync.IsEnabled("Buffs") or false
                 end,
                 set = function(_, val)
-                    -- Disabled for now
+                    if ns.CDMContainerSync then
+                        ns.CDMContainerSync.SetEnabled("Buffs", val)
+                    end
                 end,
             },
             syncEssential = {
                 type = "toggle",
                 name = "Sync Essential",
-                desc = "Sync the Essential CDM viewer to the Essential group position. (Currently disabled)",
+                desc = "Anchor the Essential CDM viewer to the Essential group proxy.",
                 order = 16.6,
                 width = 0.7,
-                disabled = true,
                 hidden = function() return collapsedSections.globalOptions end,
                 get = function()
-                    return false
+                    return ns.CDMContainerSync and ns.CDMContainerSync.IsEnabled("Essential") or false
                 end,
                 set = function(_, val)
-                    -- Disabled for now
+                    if ns.CDMContainerSync then
+                        ns.CDMContainerSync.SetEnabled("Essential", val)
+                    end
                 end,
             },
             syncUtility = {
                 type = "toggle",
                 name = "Sync Utility",
-                desc = "Sync the Utility CDM viewer to the Utility group position. (Currently disabled)",
+                desc = "Anchor the Utility CDM viewer to the Utility group proxy.",
                 order = 16.7,
                 width = 0.6,
-                disabled = true,
                 hidden = function() return collapsedSections.globalOptions end,
                 get = function()
-                    return false
+                    return ns.CDMContainerSync and ns.CDMContainerSync.IsEnabled("Utility") or false
                 end,
                 set = function(_, val)
-                    -- Disabled for now
+                    if ns.CDMContainerSync then
+                        ns.CDMContainerSync.SetEnabled("Utility", val)
+                    end
                 end,
             },
             globalOptionsSpacer = {

@@ -484,9 +484,10 @@ local function AssignFrameToGroup(cdID, frame, groupName, row, col, viewerType, 
         
         -- PUSH LOGIC: Push any real frame at this position to make room
         -- This prevents position conflicts when placeholder becomes real
+        -- Pass cdID so slot-sharing (mutually exclusive talents) is detected
         if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.PushFramesFromSlot then
             Debug("AssignFrameToGroup: Placeholder->real, pushing frames from [%d,%d]", targetRow, targetCol)
-            ns.CDMGroups.Placeholders.PushFramesFromSlot(group, targetRow, targetCol)
+            ns.CDMGroups.Placeholders.PushFramesFromSlot(group, targetRow, targetCol, cdID)
         end
         
         if group.autoReflow and group.RestoreToSavedPositions then
@@ -2029,7 +2030,7 @@ local function Reconcile()
             if freeData.frame and freeData.x and freeData.y then
                 -- Skip frames hidden due to hideWhenUnequipped setting
                 -- Skip frames hidden due to hideWhenUnequipped or bar tracking settings
-                if not freeData.frame._arcHiddenUnequipped and not IsFrameHiddenByBar(freeData.frame) then
+                if not freeData.frame._arcHiddenUnequipped and not freeData.frame._arcHiddenNotInSpec and not IsFrameHiddenByBar(freeData.frame) then
                     freeData.frame:ClearAllPoints()
                     freeData.frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x, freeData.y)
                     freeData.frame:SetParent(UIParent)

@@ -1,70 +1,35 @@
 
 Kong_Profiles = {
 ["pandamagee_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
 },
+["version"] = "1.6a",
 },
 ["pandakv_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
 },
+["version"] = "1.6a",
 },
 ["trialmagekvo_of_hyjal"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
 },
+["version"] = "1.6a",
 },
 ["pandamo_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
+},
+["Frames"] = {
 },
 },
 ["kvotheen_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
-{
-{
-["alphaIn"] = 1,
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Frame has Mouse Focus",
-["Parameters"] = {
-},
-},
-},
-},
-["secondsIn"] = 0.2,
-["secondsOut"] = 0.5,
-},
-{
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Unit in Combat",
-["Parameters"] = {
-},
-},
-},
-},
-},
-["TriggerDefaults"] = {
-},
-["version"] = "1.6a",
-["index"] = "[\"MultiBar6\"]",
-},
 {
 {
 ["Condition"] = {
@@ -104,9 +69,42 @@ Kong_Profiles = {
 },
 ["TriggerDefaults"] = {
 },
+["hideAtZeroAlpha"] = true,
 ["index"] = "[\"AceConfigDialogScrollFrame1ScrollBar\"]:GetParent():GetParent():GetParent():GetParent()",
 ["version"] = "1.6a",
-["hideAtZeroAlpha"] = true,
+},
+{
+{
+["secondsOut"] = 0.5,
+["alphaIn"] = 1,
+["secondsIn"] = 0.2,
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["version"] = "1.6a",
+["index"] = "[\"MultiBarLeft\"]",
 },
 {
 {
@@ -139,12 +137,21 @@ Kong_Profiles = {
 ["TriggerDefaults"] = {
 },
 ["version"] = "1.6a",
-["index"] = "[\"MultiBarLeft\"]",
+["index"] = "[\"MultiBar6\"]",
 },
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 ["killeen_of_archimonde"] = {
+["version"] = "1.6a",
+["Groups"] = {
+},
+["Frames"] = {
+},
+},
+["pandamages_of_hyjal"] = {
 ["Frames"] = {
 },
 ["version"] = "1.6a",
@@ -152,13 +159,6 @@ Kong_Profiles = {
 },
 },
 ["raptorbuyer_of_hyjal"] = {
-["version"] = "1.6a",
-["Groups"] = {
-},
-["Frames"] = {
-},
-},
-["testkvotheen_of_hyjal"] = {
 ["Groups"] = {
 },
 ["Frames"] = {
@@ -166,35 +166,34 @@ Kong_Profiles = {
 ["version"] = "1.6a",
 },
 ["pandamoun_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 ["pandkvé_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
-},
-["pandamages_of_hyjal"] = {
 ["Groups"] = {
 },
+},
+["testkvotheen_of_hyjal"] = {
 ["Frames"] = {
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 ["pandakvo_of_hyjal"] = {
-["Groups"] = {
-},
 ["Frames"] = {
 },
 ["version"] = "1.6a",
+["Groups"] = {
+},
 },
 ["quiproquo_of_uldaman"] = {
-["version"] = "1.6a",
 ["Groups"] = {
 },
 ["Frames"] = {
@@ -219,12 +218,13 @@ Kong_Profiles = {
 ["index"] = "[\"StatusTrackingBarManager\"]",
 },
 },
+["version"] = "1.6a",
 },
 ["kvothyr_of_hyjal"] = {
-["Frames"] = {
-},
 ["version"] = "1.6a",
 ["Groups"] = {
+},
+["Frames"] = {
 },
 },
 }
