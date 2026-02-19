@@ -5,13 +5,13 @@ BlizzHUDTweaksDB = {
 },
 ["profiles"] = {
 ["Default"] = {
+["GlobalOptionsMiscellaneousEnabled"] = false,
 ["MicroButtonAndBagsBarMovable"] = {
 ["Enabled"] = true,
-["Hidden"] = false,
 ["description"] = "This frame is added because you have `EditModeExpanded` loaded",
+["Hidden"] = false,
 ["displayName"] = "MicroButtonAndBagsBarMovable (EditModeExpanded)",
 },
-["GlobalOptionsTooltipEnabled"] = true,
 ["ActionBar7"] = {
 ["OutOfCombatAlpha"] = 0,
 ["FadeInCombat"] = false,
@@ -21,18 +21,19 @@ BlizzHUDTweaksDB = {
 ["Hidden"] = false,
 ["displayName"] = "Vehicle Seat Frame",
 },
-["TooltipShowSpellID"] = true,
 ["DurabilityFrame"] = {
 ["Hidden"] = false,
 },
+["TooltipShowSpellID"] = true,
 ["*Global*"] = {
 ["OutOfCombatAlpha"] = 1,
 ["FadeInCombat"] = false,
 },
+["GlobalOptionsTooltipEnabled"] = false,
 ["EditModeExpandedBackpackBar"] = {
 ["Enabled"] = true,
-["Hidden"] = false,
 ["description"] = "This frame is added because you have `EditModeExpanded` loaded",
+["Hidden"] = false,
 ["displayName"] = "EditModeExpandedBackpackBar (EditModeExpanded)",
 },
 ["ActionBar5"] = {

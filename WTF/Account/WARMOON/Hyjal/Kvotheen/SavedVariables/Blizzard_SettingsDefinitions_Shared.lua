@@ -15,9 +15,9 @@ NewSettingsSeen = {
 ["CAA_COMBAT_AUDIO_ALERTS_LABEL"] = true,
 ["DAMAGE_METER_LABEL"] = true,
 ["cooldownViewerEnabled"] = true,
-["NAMEPLATES_LABEL"] = true,
+["raidFramesDispelIndicatorType"] = true,
 ["raidFramesDispelIndicatorOverlay"] = true,
 ["COMBAT_WARNINGS_LABEL"] = true,
-["raidFramesDispelIndicatorType"] = true,
+["NAMEPLATES_LABEL"] = true,
 ["PROXY_ACCESSIBILITY_FONT_SIZE"] = true,
 }

@@ -1,5 +1,10 @@
 
 BlizzHUDTweaksDB = {
+["global"] = {
+["minimap"] = {
+["hide"] = true,
+},
+},
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
 },
@@ -8,9 +13,15 @@ BlizzHUDTweaksDB = {
 ["GlobalOptionsMiscellaneousEnabled"] = false,
 ["MicroButtonAndBagsBarMovable"] = {
 ["Enabled"] = true,
-["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["Hidden"] = false,
+["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["displayName"] = "MicroButtonAndBagsBarMovable (EditModeExpanded)",
+},
+["TotemFrameOriginalPoint"] = {
+["Anchor"] = "BOTTOMLEFT",
+["XOffset"] = 810.0003662109375,
+["RelativeAnchor"] = "BOTTOMLEFT",
+["YOffset"] = 360.9991760253906,
 },
 ["ActionBar7"] = {
 ["OutOfCombatAlpha"] = 0,
@@ -32,8 +43,8 @@ BlizzHUDTweaksDB = {
 ["GlobalOptionsTooltipEnabled"] = false,
 ["EditModeExpandedBackpackBar"] = {
 ["Enabled"] = true,
-["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["Hidden"] = false,
+["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["displayName"] = "EditModeExpandedBackpackBar (EditModeExpanded)",
 },
 ["ActionBar5"] = {
