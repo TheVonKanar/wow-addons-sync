@@ -3,6 +3,11 @@ BlizzHUDTweaksDB = {
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
 },
+["global"] = {
+["minimap"] = {
+["hide"] = true,
+},
+},
 ["profiles"] = {
 ["Default"] = {
 ["GlobalOptionsMiscellaneousEnabled"] = false,
@@ -12,6 +17,9 @@ BlizzHUDTweaksDB = {
 ["Hidden"] = false,
 ["displayName"] = "MicroButtonAndBagsBarMovable (EditModeExpanded)",
 },
+["DurabilityFrame"] = {
+["Hidden"] = false,
+},
 ["ActionBar7"] = {
 ["OutOfCombatAlpha"] = 0,
 ["FadeInCombat"] = false,
@@ -20,9 +28,6 @@ BlizzHUDTweaksDB = {
 ["VehicleSeatIndicator"] = {
 ["Hidden"] = false,
 ["displayName"] = "Vehicle Seat Frame",
-},
-["DurabilityFrame"] = {
-["Hidden"] = false,
 },
 ["TooltipShowSpellID"] = true,
 ["*Global*"] = {
@@ -35,6 +40,12 @@ BlizzHUDTweaksDB = {
 ["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["Hidden"] = false,
 ["displayName"] = "EditModeExpandedBackpackBar (EditModeExpanded)",
+},
+["TotemFrameOriginalPoint"] = {
+["Anchor"] = "BOTTOMLEFT",
+["XOffset"] = 810.0003662109375,
+["RelativeAnchor"] = "BOTTOMLEFT",
+["YOffset"] = 360.9991760253906,
 },
 ["ActionBar5"] = {
 ["OutOfCombatAlpha"] = 0,

@@ -1,6 +1,6 @@
 
 BugGrabberDB = {
-["session"] = 1382,
+["session"] = 1392,
 ["lastSanitation"] = 3,
 ["errors"] = {
 {
@@ -1070,6 +1070,14 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:693: in function 'CompactUnitFrame_UpdateHealthColor'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:733: in function 'CompactUnitFrame_UpdateHealth'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:449: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:322: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1949: in function 'RefreshPartyFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:17: in function 'EditModeFrameSetup'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1840: in function 'OnEditModeEnter'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:88: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:82>\n[C]: ?\n[C]: ?\n[C]: ?\n...[Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua]:284: in function 'SendText'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/MacroExecutionManager.lua]:27: in function <...zzard_ChatFrameBase/Shared/MacroExecutionManager.lua:20>\n[C]: in function 'UseAction'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:349: in function 'handler'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:732: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:710>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:746: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:739>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:798: in function 'SecureActionButton_OnClick'\n[Interface/AddOns/Blizzard_ActionBar/Shared/ActionButton.lua]:112: in function 'TryUseActionButton'\n[Interface/AddOns/Blizzard_ActionBar/Shared/MultiActionBars.lua]:41: in function 'MultiActionButtonDown'\n[MULTIACTIONBAR6BUTTON2]:2: in function <[string \"MULTIACTIONBAR6BUTTON2\"]:1>",
 ["session"] = 1374,
 ["counter"] = 2,
+},
+{
+["message"] = "Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:491: attempt to compare a secret number value (tainted by 'Plumber')",
+["time"] = "2026/02/19 20:03:49",
+["locals"] = "",
+["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:212: in function <...zzard_SharedMapDataProviders/AreaPOIDataProvider.lua:194>\n",
+["session"] = 1383,
+["counter"] = 7,
 },
 },
 }

@@ -48,11 +48,11 @@ function retailTinyTab:ExtraButtons(tab3_contents)
         end
         if self:GetChecked() then
             Angleur_TinyOptions.turnOffSoftInteract = true
-            Angleur_UltraFocusInteractOff(false)
+            Angleur_TempCVarHandler:Release("SoftTargetInteract")
             print(T[colorBlu:WrapTextInColorCode("Angleur ") .. "will now turn off " .. colorYello:WrapTextInColorCode("Soft Interact ") .. "when you aren't fishing."])
         elseif self:GetChecked() == false then
             Angleur_TinyOptions.turnOffSoftInteract = false
-            Angleur_UltraFocusInteractOff(true)
+            Angleur_TempCVarHandler:Set("SoftTargetInteract")
         end
     end)
     if Angleur_TinyOptions.turnOffSoftInteract == true then
@@ -73,12 +73,12 @@ function retailTinyTab:ExtraButtons(tab3_contents)
             if C_CVar.GetCVar("SoftTargetIconGameObject") == "1" then
                 C_CVar.SetCVar("SoftTargetIconGameObject", "0")
             end
-            self.disabledTexture:Show()
+            self:GetParent().disabledTexture:Show()
             print(T["Soft target icon for game objects disabled."])
         elseif self:GetChecked() == false then
             Angleur_TinyOptions.softIconOff = false
             C_CVar.SetCVar("SoftTargetIconGameObject", "1")
-            self.disabledTexture:Hide()
+            self:GetParent().disabledTexture:Hide()
             print(T["Soft target icon for game objects re-enabled."])
         end
     end)
@@ -97,8 +97,11 @@ function retailTinyTab:SetDefaultsButtonScript(tab3_contents)
         Angleur_TinyOptions.doubleClickWindow = 0.4
         Angleur_TinyOptions.visualScale = 1
         Angleur_TinyOptions.ultraFocusMaster = 1
+        Angleur_TempCVars["Sound_MasterVolume"].setTo = Angleur_TinyOptions.ultraFocusMaster
         Angleur_TinyOptions.loginDisabled = false
         Angleur_TinyOptions.errorsDisabled = true
+        Angleur_TinyOptions.debugLevel = 0
+        ang.debugLevel = 0
         tab3_contents.offInteract.checkbox:SetChecked(false)
         tab3_contents.dismount.checkbox:SetChecked(false)
         tab3_contents.swimRelease.checkbox:SetChecked(true)
@@ -108,6 +111,7 @@ function retailTinyTab:SetDefaultsButtonScript(tab3_contents)
         tab3_contents.ultraFocusMaster:SetValue(100)
         tab3_contents.loginMessages.checkbox:SetChecked(true)
         tab3_contents.debugMode.checkbox:SetChecked(false)
+        tab3_contents.debugMode.dropdown:Hide()
         print(T["Default tiny settings restored"])
     end)
 end

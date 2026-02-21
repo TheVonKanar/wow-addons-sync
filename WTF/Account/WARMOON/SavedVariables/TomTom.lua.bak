@@ -38,6 +38,12 @@ nil,
 278.3328857421875,
 },
 },
+["paste"] = {
+["button"] = {
+["showInCompartment"] = true,
+},
+["minimapPos"] = 123.3407263000468,
+},
 },
 },
 }

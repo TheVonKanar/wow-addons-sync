@@ -17,11 +17,8 @@ BlizzHUDTweaksDB = {
 ["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["displayName"] = "MicroButtonAndBagsBarMovable (EditModeExpanded)",
 },
-["TotemFrameOriginalPoint"] = {
-["Anchor"] = "BOTTOMLEFT",
-["XOffset"] = 810.0003662109375,
-["RelativeAnchor"] = "BOTTOMLEFT",
-["YOffset"] = 360.9991760253906,
+["DurabilityFrame"] = {
+["Hidden"] = false,
 },
 ["ActionBar7"] = {
 ["OutOfCombatAlpha"] = 0,
@@ -32,21 +29,24 @@ BlizzHUDTweaksDB = {
 ["Hidden"] = false,
 ["displayName"] = "Vehicle Seat Frame",
 },
-["DurabilityFrame"] = {
-["Hidden"] = false,
-},
 ["TooltipShowSpellID"] = true,
 ["*Global*"] = {
 ["OutOfCombatAlpha"] = 1,
 ["FadeInCombat"] = false,
 },
-["GlobalOptionsTooltipEnabled"] = false,
+["TotemFrameOriginalPoint"] = {
+["Anchor"] = "BOTTOMLEFT",
+["XOffset"] = 810.0003662109375,
+["RelativeAnchor"] = "BOTTOMLEFT",
+["YOffset"] = 360.9991760253906,
+},
 ["EditModeExpandedBackpackBar"] = {
 ["Enabled"] = true,
 ["Hidden"] = false,
 ["description"] = "This frame is added because you have `EditModeExpanded` loaded",
 ["displayName"] = "EditModeExpandedBackpackBar (EditModeExpanded)",
 },
+["GlobalOptionsTooltipEnabled"] = false,
 ["ActionBar5"] = {
 ["OutOfCombatAlpha"] = 0,
 ["FadeInCombat"] = false,

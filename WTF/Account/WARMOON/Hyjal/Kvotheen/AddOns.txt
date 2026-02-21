@@ -88,9 +88,9 @@ ArkInventory: disabled
 ArkInventoryRules_Example: disabled
 BetterVendorPrice: enabled
 OribosExchange: enabled
-idTip: disabled
+idTip: enabled
 Hekili: disabled
-OPie: disabled
+OPie: enabled
 Bagnon_ItemInfo: disabled
 WindfuryUI: enabled
 BigWigs_Core: enabled
@@ -174,7 +174,7 @@ SharedMediaAdditionalFonts: disabled
 SharedMedia: disabled
 Dejunk: enabled
 DialogueUI: enabled
-ExtraQuestButton: disabled
+ExtraQuestButton: enabled
 Leatrix_Plus: enabled
 HandyNotes_DragonGlyphs: disabled
 Masque_Diablo_III: disabled

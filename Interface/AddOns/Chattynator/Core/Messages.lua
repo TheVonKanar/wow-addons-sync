@@ -385,7 +385,8 @@ function addonTable.MessagesMonitorMixin:ShowGMOTD()
     return
   end
   local motd = C_Club.GetClubInfo(guildID).broadcast
-  if motd and (((not issecretvalue or not issecretvalue(motd)) and motd ~= "" and motd ~= self.seenMOTD) or issecretvalue(motd)) then
+  if motd and (issecretvalue and (not issecretvalue(motd) and motd ~= "" and motd ~= self.seenMOTD or issecretvalue(motd)) or
+      not issecretvalue and motd ~= "" and motd ~= self.seenMOTD) then
     self.seenMOTD = (not issecretvalue or not issecretvalue(motd)) and motd or nil
     local info = addonTable.Config.Get(addonTable.Config.Options.CHAT_COLORS)["GUILD"] or ChatTypeInfo["GUILD"]
     local formatted = string.format(GUILD_MOTD_TEMPLATE, motd)
@@ -973,8 +974,46 @@ local function GetOutMessageFormatKey(chatEventSubtype, isSecret)
   return formatKey or "";
 end
 
+local function GetCommunityAndStreamFromChannel(communityChannel)
+	local clubId, streamId = communityChannel:match("(%d+)%:(%d+)");
+	return tonumber(clubId), tonumber(streamId);
+end
+
+local function GetCommunityAndStreamName(clubId, streamId)
+	local streamInfo = C_Club.GetStreamInfo(clubId, streamId);
+
+	if streamInfo and (streamInfo.streamType == Enum.ClubStreamType.Guild or streamInfo.streamType == Enum.ClubStreamType.Officer) then
+		return streamInfo.name;
+	end
+
+	local streamName = streamInfo and streamInfo.name or "";
+
+	local clubInfo = C_Club.GetClubInfo(clubId);
+	if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
+		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
+		return communityName;
+	else
+		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
+		return communityName.." - "..streamName;
+	end
+end
+
+local function ResolveChannelName(communityChannel)
+	local clubId, streamId = GetCommunityAndStreamFromChannel(communityChannel);
+	if not clubId or not streamId then
+		return communityChannel;
+	end
+
+	return GetCommunityAndStreamName(clubId, streamId);
+end
+
+function ResolvePrefixedChannelName(communityChannelArg)
+	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
+	return prefix..ResolveChannelName(communityChannel);
+end
+
 local function GetChannelDecorated(zoneID, channelID, channelName, isSecret)
-  local decorated = "|Hchannel:channel:"..channelID.."|h[" .. (ChatFrame_ResolvePrefixedChannelName or ChatFrameUtil.ResolvePrefixedChannelName)(channelName) .. "]|h "
+  local decorated = "|Hchannel:channel:"..channelID.."|h[" .. ResolvePrefixedChannelName(channelName) .. "]|h "
 
   if isSecret and addonTable.Modifiers.ShortenPatterns then
     return decorated:gsub(addonTable.Modifiers.ShortenPatterns.channel.p, addonTable.Modifiers.ShortenPatterns.channel.r({typeInfo = {channel = {index = channelID, zoneID = zoneID}}}), 1)
@@ -1347,6 +1386,8 @@ function addonTable.MessagesMonitorMixin:MessageEventHandler(event, ...)
         if not showLink or (not isSecret) and arg2 == "" then
           if ( type == "TEXT_EMOTE" ) then
             outMsg = message;
+          elseif addonTable.Constants.IsClassic and not isSecret then -- Correct badly formatted message with %o instead of %s
+            outMsg = string.format(GetOutMessageFormatKey(type, isSecret)..message:gsub("%%o", "%%s"), pflag .. arg2, arg2);
           else
             outMsg = string.format(GetOutMessageFormatKey(type, isSecret)..message, pflag .. arg2, arg2);
           end

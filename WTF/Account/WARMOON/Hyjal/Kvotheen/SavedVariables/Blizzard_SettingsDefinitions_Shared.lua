@@ -13,6 +13,7 @@ NewSettingsSeen = {
 ["raidFramesDisplayLargerRoleSpecificDebuffs"] = true,
 ["assistedCombatHighlight"] = true,
 ["CAA_COMBAT_AUDIO_ALERTS_LABEL"] = true,
+["enableConnectToPhotoSharing"] = true,
 ["DAMAGE_METER_LABEL"] = true,
 ["cooldownViewerEnabled"] = true,
 ["raidFramesDispelIndicatorType"] = true,

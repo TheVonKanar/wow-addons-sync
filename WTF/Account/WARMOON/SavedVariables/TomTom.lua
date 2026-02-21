@@ -28,6 +28,12 @@ nil,
 ["cursorenable"] = false,
 ["playerenable"] = false,
 },
+["paste"] = {
+["minimapPos"] = 123.3407263000468,
+["button"] = {
+["showInCompartment"] = true,
+},
+},
 ["block"] = {
 ["enable"] = false,
 ["position"] = {

@@ -20,3 +20,10 @@ X: -420
 Y: -136
 W: 128
 H: 64
+Frame: LariasWeeklyMidnightChecklistFrame
+FrameLevel: 1
+Anchor: LEFT
+X: 77
+Y: -1
+W: 520
+H: 650

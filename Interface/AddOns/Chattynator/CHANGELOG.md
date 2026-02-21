@@ -1,8 +1,10 @@
 # Chattynator
 
-## [193](https://github.com/TheMouseNest/Chattynator/tree/193) (2026-02-14)
-[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/192...193) 
+## [194](https://github.com/TheMouseNest/Chattynator/tree/194) (2026-02-20)
+[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/193...194) 
 
-- Update LibSharedMedia  
-- Cleanup  
-- [Fixes #170] Prevent communities chat error during active M+  
+- Classic: Fix bad emote from event breaking chat processing  
+- Fix Communities channel abbreviations breaking in combat  
+- Forgot to commit fix for GMOTD on classic  
+- Skins: GW2: Fix new gw2 enum (#178)  
+- Remove Wago from build script  

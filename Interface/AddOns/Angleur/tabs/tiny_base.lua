@@ -62,9 +62,10 @@ function Angleur_SetTab3(self)
     end)
 
     self.ultraFocusMaster.ValueBox:SetNumericFullRange()
-    self.ultraFocusMaster:SetupSlider(1, 100, 100, 1, colorYello:WrapTextInColorCode(T["Master Volume(Ultra Focus)"]))
+    self.ultraFocusMaster:SetupSlider(1, 100, Angleur_TinyOptions.ultraFocusMaster * 100, 1, colorYello:WrapTextInColorCode(T["Master Volume(Ultra Focus)"]))
     self.ultraFocusMaster:SetCallback(function(value, isUserInput)
         Angleur_TinyOptions.ultraFocusMaster = value/100
+        Angleur_TempCVars["Sound_MasterVolume"].setTo = Angleur_TinyOptions.ultraFocusMaster
     end)
 
 
@@ -89,7 +90,7 @@ function Angleur_SetTab3(self)
         self.loginMessages.checkbox:SetChecked(true)
     end
 
-
+    Angleur_SetupDebugUI(self.debugMode)
     self.debugMode.text:SetText(T["Debug Mode"])
     --self.debugMode.text:SetFontObject(SpellFont_Small)
     self.debugMode.text.tooltip = T["If checked, Angleur will show developer debug messages. Useful to display when submitting bug reports through discord!\n\n" 
@@ -103,15 +104,19 @@ function Angleur_SetTab3(self)
         if self:GetChecked() then
             Angleur_TinyOptions.errorsDisabled = false
             print(T["debug mode active"])
+            self:GetParent().dropdown:Show()
         elseif self:GetChecked() == false then
             Angleur_TinyOptions.errorsDisabled = true
+            Angleur_TinyOptions.debugLevel = 0
+            ang.debugLevel = 0
             print(T["debug mode deactivated"])
+            self:GetParent().dropdown:Hide()
         end
     end)
     if Angleur_TinyOptions.errorsDisabled == false then
         self.debugMode.checkbox:SetChecked(true)
+        self.debugMode.dropdown:Show()
     end
-
 
     self.defaults.text = self.defaults:CreateFontString("Angleur_AdvancedButton_Text", "ARTWORK", "Game12Font_o1")
     self.defaults.text:SetPoint("CENTER", self.defaults, "CENTER", 2, -2)
