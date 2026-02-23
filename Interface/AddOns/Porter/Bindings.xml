@@ -1,0 +1,10 @@
+<Bindings>
+    <!--
+        This registers "Toggle Porter" in WoW's Key Bindings settings UI
+        under the "Porter" header. Players can assign any key they want.
+        The runOnUp="false" means it fires on key press, not key release.
+    -->
+    <Binding name="PORTER_TOGGLE" header="PORTER" runOnUp="false">
+        Porter:Toggle()
+    </Binding>
+</Bindings>

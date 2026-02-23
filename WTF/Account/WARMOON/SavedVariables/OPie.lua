@@ -9,37 +9,33 @@ OPie_SavedData = {
 },
 ["_OPieVersion"] = "8.1.4 (4.138)",
 ["_StoreVersion"] = 122,
-["_GameLocale"] = "frFR",
+["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
 ["_GameVersion"] = "12.0.1",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
+["MotionAction"] = true,
 ["Bindings"] = {
+["rofessions"] = "F4",
 ["Usables"] = false,
 ["arthstones"] = "SHIFT-B",
-["rofessions"] = "F4",
-["onsumables"] = "F2",
 },
-["MotionAction"] = true,
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["RingScale"] = 1.200000047683716,
-["ShowCooldowns"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
-["rofessions"] = "F4",
-["Talents"] = "F3",
-["onsumables"] = "F2",
-["arthstones"] = "F5",
+["Talents"] = "F2",
 ["Usables"] = false,
-["rldMarkers"] = "F7",
-["getMarkers"] = "F6",
+["arthstones"] = "F6",
+["rofessions"] = "F3",
 },
+["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
 ["RingOptions"] = {
 ["arthstones#InteractionMode"] = 2,
 ["arthstones#CenterAction"] = false,
@@ -47,20 +43,11 @@ OPie_SavedData = {
 ["arthstones#MotionAction"] = true,
 ["arthstones#RingAtMouse"] = false,
 },
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
 ["RingKeeper"] = {
-["OPieDeletedRings"] = {
-["RaidSymbols"] = true,
-["SpecMenu"] = true,
-["OPieAutoQuest"] = true,
-["CommonTrades"] = true,
-["WorldMarkers"] = true,
-["CommonHearth"] = true,
-["PaladinTools"] = true,
-},
 ["rofessions"] = {
 {
 ["sliceToken"] = "ABueQYX/O3w",
@@ -88,75 +75,14 @@ OPie_SavedData = {
 ["name"] = "Professions (Kvotheen)",
 ["save"] = true,
 },
-["OPieFlagStore"] = {
-["StoreVersion"] = 3,
-},
-["onsumables"] = {
-{
-["id"] = 315584,
-["sliceToken"] = "ABueEEQlG4r",
-},
-{
-["id"] = 381637,
-["sliceToken"] = "ABueEEQlG4e",
-},
-{
-"macro",
-"Main",
-["show"] = "[spec:264/263/262] hide;",
-["sliceToken"] = "ABueEE8Ynrw",
-},
-{
-"macro",
-"Off",
-["show"] = "[spec:264/263/262] hide;",
-["sliceToken"] = "ABueEE8Ynre",
-},
-{
-["sliceToken"] = "ABueQKobzGw",
-["id"] = 462854,
-},
-{
-"item",
-212274,
-["sliceToken"] = "ABueWkhCVUw",
-},
-{
-"item",
-212277,
-["sliceToken"] = "ABueEEQlG4w",
-},
-{
-"item",
-212741,
-["sliceToken"] = "ABueQObc40e",
-},
-{
-"item",
-212283,
-["sliceToken"] = "ABueQNOxa/e",
-},
-{
-"item",
-224572,
-["sliceToken"] = "ABueEks7m0w",
-},
-{
-"item",
-222776,
-["sliceToken"] = "ABueQSOFXVw",
-},
-{
-["sliceToken"] = "ABue7REPSJw",
-["id"] = 546,
-},
-{
-"item",
-243191,
-["sliceToken"] = "ABue7ARMMJw",
-},
-["name"] = "Buffs",
-["save"] = true,
+["OPieDeletedRings"] = {
+["RaidSymbols"] = true,
+["CommonHearth"] = true,
+["SpecMenu"] = true,
+["CommonTrades"] = true,
+["OPieAutoQuest"] = true,
+["WorldMarkers"] = true,
+["PaladinTools"] = true,
 },
 ["arthstones"] = {
 {
@@ -191,55 +117,6 @@ OPie_SavedData = {
 ["name"] = "Hearthstones",
 ["save"] = true,
 },
-["rldMarkers"] = {
-{
-"worldmark",
-0,
-["sliceToken"] = "ABueQD0WJEh",
-},
-{
-"worldmark",
-1,
-["sliceToken"] = "ABueQD0WJEo",
-},
-{
-"worldmark",
-2,
-["sliceToken"] = "ABueQD0WJEp",
-},
-{
-"worldmark",
-3,
-["sliceToken"] = "ABueQD0WJEa",
-},
-{
-"worldmark",
-4,
-["sliceToken"] = "ABueQD0WJEs",
-},
-{
-"worldmark",
-5,
-["sliceToken"] = "ABueQD0WJE3",
-},
-{
-"worldmark",
-6,
-["sliceToken"] = "ABueQD0WJEd",
-},
-{
-"worldmark",
-7,
-["sliceToken"] = "ABueQD0WJEf",
-},
-{
-"worldmark",
-8,
-["sliceToken"] = "ABueQD0WJEg",
-},
-["name"] = "World Markers",
-["save"] = true,
-},
 ["Talents"] = {
 {
 "toy",
@@ -267,54 +144,8 @@ OPie_SavedData = {
 ["name"] = "Toys",
 ["save"] = true,
 },
-["getMarkers"] = {
-{
-"raidmark",
-0,
-["sliceToken"] = "ABueQD0WJE4",
-},
-{
-"raidmark",
-6,
-["sliceToken"] = "ABueQD0WJEj",
-},
-{
-"raidmark",
-4,
-["sliceToken"] = "ABueQD0WJEk",
-},
-{
-"raidmark",
-3,
-["sliceToken"] = "ABueQD0WJEl",
-},
-{
-"raidmark",
-7,
-["sliceToken"] = "ABueQD0WJEz",
-},
-{
-"raidmark",
-1,
-["sliceToken"] = "ABueQD0WJE5",
-},
-{
-"raidmark",
-2,
-["sliceToken"] = "ABueQD0WJEx",
-},
-{
-"raidmark",
-5,
-["sliceToken"] = "ABueQD0WJEv",
-},
-{
-"raidmark",
-8,
-["sliceToken"] = "ABueQD0WJEb",
-},
-["name"] = "Target Markers",
-["save"] = true,
+["OPieFlagStore"] = {
+["StoreVersion"] = 3,
 },
 },
 },

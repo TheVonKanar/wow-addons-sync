@@ -1,13 +1,13 @@
 
 LariasWeeklyMidnightChecklistDBPC = {
-["_dismissedRemoteVersion"] = "",
+["_migratedFromAccountDB"] = true,
 ["hideCompletedSections"] = false,
 ["checked"] = {
 },
 ["collapsedSections"] = {
 },
-["_migratedFromAccountDB"] = true,
-["showGreatVault"] = true,
+["_dismissedRemoteVersion"] = "",
 ["showCurrency"] = true,
+["showGreatVault"] = true,
 ["_newestSeenRemoteVersion"] = "",
 }

@@ -1,0 +1,17 @@
+## Interface: 11504, 40400, 120000
+## Title: Kong
+## Author: Xentaros
+## Notes: Fades UI regions in and out based on user-specified conditions.
+## SavedVariablesPerCharacter: Kong_Settings
+## SavedVariables: Kong_Profiles
+## OptionalDeps: Tukui, SexyMap
+
+libs\LibStub\LibStub.lua
+libs\LibUserSpecifiedConditions\LibUserSpecifiedConditions.xml
+
+classes\EventDispatcher.lua
+classes\Fader.lua
+classes\ObjectPool.lua
+
+Kong.lua
+CommandLine.lua

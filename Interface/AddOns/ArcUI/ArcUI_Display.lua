@@ -1631,6 +1631,44 @@ end
 -- ===================================================================
 local customTrackingState = {}  -- [barNumber] = { active, expirationTime, maxDuration, stacks, maxStacks, iconTexture, isCustom }
 
+-- ═══════════════════════════════════════════════════════════════════════════
+-- DEACTIVATION: Zero-CPU bars hidden by spec/talent conditions
+-- When deactivated, the smooth OnUpdate loop skips the bar entirely
+-- and all per-frame OnUpdate scripts are cleared.
+-- ═══════════════════════════════════════════════════════════════════════════
+local function DeactivateBar(barNumber)
+  local state = customTrackingState[barNumber]
+  if state then
+    state.deactivated = true
+  end
+  local frames = barFrames[barNumber]
+  if frames then
+    if frames.barFrame and frames.barFrame.bar then
+      frames.barFrame.bar:SetScript("OnUpdate", nil)
+    end
+    if frames.iconFrame then
+      frames.iconFrame:SetScript("OnUpdate", nil)
+    end
+    if frames.durationFrame then
+      frames.durationFrame:SetScript("OnUpdate", nil)
+    end
+    SafeHide(frames.barFrame)
+    SafeHide(frames.textFrame)
+    SafeHide(frames.durationFrame)
+    SafeHide(frames.iconFrame)
+    SafeHide(frames.nameFrame)
+    SafeHide(frames.barIconFrame)
+    HideMultiIconFrames(barNumber)
+  end
+end
+
+local function ReactivateBar(barNumber)
+  local state = customTrackingState[barNumber]
+  if state then
+    state.deactivated = nil
+  end
+end
+
 -- Set up smooth custom tracking for a bar
 function ns.Display.SetCustomTrackingState(barNumber, state)
   if not state then
@@ -1682,7 +1720,7 @@ smoothUpdateFrame:SetScript("OnUpdate", function(self, elapsed)
   local currentTime = GetTime()
   
   for barNumber, state in pairs(customTrackingState) do
-    if state and state.isCustom then
+    if state and state.isCustom and not state.deactivated then
       local barConfig = ns.API and ns.API.GetBarConfig(barNumber)
       if barConfig and barConfig.tracking.enabled then
         local frames = barFrames[barNumber]
@@ -2087,6 +2125,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
   -- EARLY VISIBILITY CHECK: Skip all work if bar shouldn't be visible
   -- ═══════════════════════════════════════════════════════════════════════════
   local shouldShow = true
+  local deactivate = false  -- Track if hidden by semi-permanent condition (spec/talent)
   
   -- Spec check
   if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
@@ -2097,11 +2136,23 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
         break
       end
     end
+    if not shouldShow then deactivate = true end
   end
   
-  -- Combat check
-  if shouldShow and not optionsOpen and barConfig.behavior and barConfig.behavior.hideOutOfCombat and not InCombatLockdown() then
-    shouldShow = false
+  -- Talent conditions check
+  if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
+    if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
+      shouldShow = false
+      deactivate = true
+    end
+  end
+  
+  -- Hide When conditions check (uses CDMGroups state via shared evaluator)
+  if shouldShow and not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+    local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      shouldShow = false
+    end
   end
   
   -- Inactive check
@@ -2109,26 +2160,26 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     shouldShow = false
   end
   
-  -- Talent conditions check
-  if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
-    if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
-      shouldShow = false
-    end
-  end
-  
   -- Early exit if bar shouldn't show and options not open
   if not shouldShow and not optionsOpen then
-    if barFrames[barNumber] then
-      SafeHide(barFrames[barNumber].barFrame)
-      SafeHide(barFrames[barNumber].textFrame)
-      SafeHide(barFrames[barNumber].durationFrame)
-      SafeHide(barFrames[barNumber].iconFrame)
-      SafeHide(barFrames[barNumber].nameFrame)
-      SafeHide(barFrames[barNumber].barIconFrame)
-      HideMultiIconFrames(barNumber)
+    if deactivate then
+      DeactivateBar(barNumber)
+    else
+      if barFrames[barNumber] then
+        SafeHide(barFrames[barNumber].barFrame)
+        SafeHide(barFrames[barNumber].textFrame)
+        SafeHide(barFrames[barNumber].durationFrame)
+        SafeHide(barFrames[barNumber].iconFrame)
+        SafeHide(barFrames[barNumber].nameFrame)
+        SafeHide(barFrames[barNumber].barIconFrame)
+        HideMultiIconFrames(barNumber)
+      end
     end
     return
   end
+  
+  -- Bar is active — ensure it's not flagged as deactivated
+  ReactivateBar(barNumber)
   
   -- Get values from config if not provided
   maxStacks = tonumber(maxStacks) or tonumber(barConfig.tracking.maxStacks) or 10
@@ -2806,9 +2857,12 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     -- Visibility logic
     local shouldShow = true
     
-    -- Hide out of combat (but not if options panel is open)
-    if not InCombatLockdown() and barConfig.behavior.hideOutOfCombat and not optionsOpen then
-      shouldShow = false
+    -- Hide When conditions (but not if options panel is open)
+    if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+      local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
+      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+        shouldShow = false
+      end
     end
     
     -- Hide when inactive (but not if options panel is open for preview)
@@ -3966,6 +4020,34 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
   local optionsOpen = IsOptionsOpen()
   local currentSpec = GetCachedSpec()
   
+  -- ═══════════════════════════════════════════════════════════════════════════
+  -- EARLY SPEC/TALENT CHECK: Deactivate bar to save CPU (zero processing)
+  -- ═══════════════════════════════════════════════════════════════════════════
+  if not optionsOpen then
+    local specBlocked = false
+    if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
+      specBlocked = true
+      for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
+        if spec == currentSpec then
+          specBlocked = false
+          break
+        end
+      end
+    end
+    if not specBlocked and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
+      if barConfig.behavior and barConfig.behavior.talentConditions and #barConfig.behavior.talentConditions > 0 then
+        if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
+          specBlocked = true
+        end
+      end
+    end
+    if specBlocked then
+      DeactivateBar(barNumber)
+      return
+    end
+  end
+  ReactivateBar(barNumber)
+  
   -- Get values from config if not provided
   maxStacks = tonumber(maxStacks) or tonumber(barConfig.tracking.customMaxStacks) or 10
   if maxStacks < 1 then maxStacks = 10 end
@@ -4069,9 +4151,33 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
     
     -- Visibility
     local shouldShow = true
+    local deactivate = false
     
-    if not InCombatLockdown() and barConfig.behavior.hideOutOfCombat and not optionsOpen then
+    -- Spec check
+    if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
       shouldShow = false
+      for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
+        if spec == currentSpec then
+          shouldShow = true
+          break
+        end
+      end
+      if not shouldShow then deactivate = true end
+    end
+    
+    -- Talent conditions check
+    if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
+      if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
+        shouldShow = false
+        deactivate = true
+      end
+    end
+    
+    if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+      local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
+      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+        shouldShow = false
+      end
     end
     
     if not active and barConfig.behavior.hideWhenInactive and not optionsOpen then
@@ -4083,7 +4189,11 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
     end
     
     if shouldShow and cfg.enabled then
+      ReactivateBar(barNumber)
       iconFrame:Show()
+    elseif deactivate and not optionsOpen then
+      DeactivateBar(barNumber)
+      return
     else
       iconFrame:Hide()
     end
@@ -4149,9 +4259,12 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
     shouldShow = false
   end
   
-  -- Hide if out of combat and configured to do so
-  if not InCombatLockdown() and barConfig.behavior.hideOutOfCombat then
-    shouldShow = false
+  -- Hide When conditions
+  if ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+    local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      shouldShow = false
+    end
   end
   
   -- Hide if at zero and configured to do so
@@ -4258,6 +4371,7 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
   local shouldShow = true
   
   -- Spec check (most common reason to hide)
+  local deactivate = false
   if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
     shouldShow = false
     for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
@@ -4266,11 +4380,23 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
         break
       end
     end
+    if not shouldShow then deactivate = true end
   end
   
-  -- Combat check (only if not in options - we want to show bars for editing)
-  if shouldShow and not optionsOpen and barConfig.behavior and barConfig.behavior.hideOutOfCombat and not InCombatLockdown() then
-    shouldShow = false
+  -- Talent conditions check
+  if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
+    if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
+      shouldShow = false
+      deactivate = true
+    end
+  end
+  
+  -- Hide When conditions (only if not in options - we want to show bars for editing)
+  if shouldShow and not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+    local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      shouldShow = false
+    end
   end
   
   -- Inactive check (if hideWhenInactive and not active, but show in options for editing)
@@ -4278,33 +4404,33 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
     shouldShow = false
   end
   
-  -- Talent conditions check
-  if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
-    if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
-      shouldShow = false
-    end
-  end
-  
   -- Early exit if bar shouldn't show and options not open
   if not shouldShow and not optionsOpen then
-    if barFrames[barNumber] then
-      barFrames[barNumber].barFrame:Hide()
-      barFrames[barNumber].textFrame:Hide()
-      if barFrames[barNumber].durationFrame then
-        barFrames[barNumber].durationFrame:Hide()
-      end
-      if barFrames[barNumber].iconFrame then
-        barFrames[barNumber].iconFrame:Hide()
-      end
-      if barFrames[barNumber].nameFrame then
-        barFrames[barNumber].nameFrame:Hide()
-      end
-      if barFrames[barNumber].barIconFrame then
-        barFrames[barNumber].barIconFrame:Hide()
+    if deactivate then
+      DeactivateBar(barNumber)
+    else
+      if barFrames[barNumber] then
+        barFrames[barNumber].barFrame:Hide()
+        barFrames[barNumber].textFrame:Hide()
+        if barFrames[barNumber].durationFrame then
+          barFrames[barNumber].durationFrame:Hide()
+        end
+        if barFrames[barNumber].iconFrame then
+          barFrames[barNumber].iconFrame:Hide()
+        end
+        if barFrames[barNumber].nameFrame then
+          barFrames[barNumber].nameFrame:Hide()
+        end
+        if barFrames[barNumber].barIconFrame then
+          barFrames[barNumber].barIconFrame:Hide()
+        end
       end
     end
     return
   end
+  
+  -- Bar is active — ensure it's not flagged as deactivated
+  ReactivateBar(barNumber)
   
   if PM then PM("GetBarFrames") end
   
@@ -6291,7 +6417,20 @@ end
 -- ===================================================================
 -- REFRESH ALL BARS (for spec changes, etc.)
 -- ===================================================================
+-- Clear all deactivated flags so bars get re-evaluated on next update
+-- Called on spec change, talent change, or when options panel opens
+function ns.Display.ReactivateAllBars()
+  for barNumber, state in pairs(customTrackingState) do
+    if state then
+      state.deactivated = nil
+    end
+  end
+end
+
 function ns.Display.RefreshAllBars()
+  -- Clear deactivated flags so bars get properly re-evaluated
+  ns.Display.ReactivateAllBars()
+  
   local currentSpec = GetSpecialization() or 0
   local db = ns.API.GetDB and ns.API.GetDB()
   

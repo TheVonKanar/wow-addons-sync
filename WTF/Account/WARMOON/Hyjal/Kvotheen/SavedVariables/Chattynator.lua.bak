@@ -29,4 +29,7 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g mon micro snob discord jpp jvoulais trash talk grodar",
 "/s /bht",
 "/s /larias",
+"/s /choretracker",
+"/s /choretracker toggle",
+"/s /crb",
 }

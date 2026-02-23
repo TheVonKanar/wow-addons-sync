@@ -4088,6 +4088,24 @@ ApplyIconStyle = function(frame, cdID)
           return
         end
         
+        -- noDesaturate: Block all desaturation unconditionally.
+        -- Defensive guard — catches any timing gap where _arcForceDesatValue
+        -- was cleared (READY state, no-spell fallback, early-exit paths) but
+        -- CDM still fires SetDesaturated before CooldownState re-confirms.
+        if kbCfg then
+          local sv = GetEffectiveStateVisuals(kbCfg)
+          if sv and sv.noDesaturate then
+            pf._arcBypassDesatHook = true
+            if self.SetDesaturation then
+              self:SetDesaturation(0)
+            else
+              self:SetDesaturated(false)
+            end
+            pf._arcBypassDesatHook = false
+            return
+          end
+        end
+        
         -- When ignoreAuraOverride is active, compute fresh curve result and apply it
         if ApplyIgnoreAuraDesaturation(self, pf) then
           return
@@ -4126,6 +4144,20 @@ ApplyIconStyle = function(frame, cdID)
             self:SetDesaturation(0)
             pf._arcBypassDesatHook = false
             return
+          end
+          
+          -- noDesaturate: Block all desaturation unconditionally.
+          -- Defensive guard — catches any timing gap where _arcForceDesatValue
+          -- was cleared (READY state, no-spell fallback, early-exit paths) but
+          -- CDM still fires SetDesaturation before CooldownState re-confirms.
+          if kbCfg then
+            local sv = GetEffectiveStateVisuals(kbCfg)
+            if sv and sv.noDesaturate then
+              pf._arcBypassDesatHook = true
+              self:SetDesaturation(0)
+              pf._arcBypassDesatHook = false
+              return
+            end
           end
           
           -- When ignoreAuraOverride is active, compute fresh curve result and apply it

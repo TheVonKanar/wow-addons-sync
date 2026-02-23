@@ -831,6 +831,11 @@ ns.CDMGroups.isResting = false     -- Track resting (city/inn) state for visibil
 ns.CDMGroups.inEncounter = false   -- Track boss encounter state for visibility
 ns.CDMGroups.isPvP = false         -- Track PvP flag state for visibility
 ns.CDMGroups.isDragonriding = false -- Track skyriding state for visibility
+ns.CDMGroups.hasTarget = false     -- Track target existence for visibility
+ns.CDMGroups.isCasting = false     -- Track casting/channeling state for visibility
+ns.CDMGroups.isStealthed = false   -- Track stealth state for visibility
+ns.CDMGroups.isFlying = false      -- Track flying state for visibility
+ns.CDMGroups.isSwimming = false    -- Track swimming state for visibility
 ns.CDMGroups.fightStats = { parent = 0, strata = 0, scale = 0, size = 0, show = 0, alpha = 0, position = 0, lastReport = 0 }
 
 -- NOTE: Hook functions moved to ArcUI_CDMGroups_Maintain.lua
@@ -6244,9 +6249,17 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
             end
             DebugPrint("|cffff00ff[OnSpecChange]|r Post-restoration reflow complete")
             
+            -- Clean out any placeholders from the previous spec before resolving
+            if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.ClearWrongSpecPlaceholders then
+                local cleaned = ns.CDMGroups.Placeholders.ClearWrongSpecPlaceholders()
+                if cleaned > 0 then
+                    DebugPrint("|cffff00ff[OnSpecChange]|r Cleaned", cleaned, "wrong-spec placeholders")
+                end
+            end
+            
             -- Try to resolve any placeholders that now have real frames
-            if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.ResolvePlaceholders then
-                local resolved = ns.CDMGroups.Placeholders.ResolvePlaceholders()
+            if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.ResolveAllPlaceholders then
+                local resolved = ns.CDMGroups.Placeholders.ResolveAllPlaceholders()
                 if resolved > 0 then
                     DebugPrint("|cffff00ff[OnSpecChange]|r Resolved", resolved, "placeholders")
                 end
@@ -9229,9 +9242,26 @@ function ns.CDMGroups.CreateGroup(name)
                             
                             -- Update saved position with new row/col but preserve sortIndex
                             -- This ensures next reflow puts it in the right order
-                            if not IsRestoring() then
-                                SaveGroupPosition(cdID, self.name, targetRow, targetCol, false, savedSortIndex)
+                            -- CRITICAL FIX: If this icon was displaced from its saved slot
+                            -- (saved [0,3] but placed at [1,0] because slot was occupied),
+                            -- NEVER overwrite savedPositions. The user's dragged position is
+                            -- authoritative. The pending reflow (line 9261) will sort it out
+                            -- using the correct savedPositions.
+                            -- 
+                            -- Previous bug: The slot-partner check only caught SOME displacements
+                            -- (when another cdID shared the saved slot). But displacement can also
+                            -- happen when a REAL icon compacted into the saved slot during reflow.
+                            -- In that case, no slot-partner exists but the displacement still
+                            -- corrupts the saved position.
+                            if targetRow == row and targetCol == col then
+                                -- Icon placed at its saved position — safe to save (confirms position)
+                                if not IsRestoring() then
+                                    SaveGroupPosition(cdID, self.name, targetRow, targetCol, false, savedSortIndex)
+                                end
                             end
+                            -- If displaced (targetRow != row or targetCol != col), intentionally
+                            -- DO NOT save. The pending reflow below will compact properly using
+                            -- the preserved savedPositions as the authoritative source.
                             
                             -- If we had to move to a different slot and autoReflow is on, 
                             -- schedule a reflow to put things in proper sortIndex order
@@ -12146,6 +12176,27 @@ function ns.CDMGroups.UpdateGroupVisibility()
                     if vis.hideDragonriding and ns.CDMGroups.isDragonriding then
                         shouldShow = false  -- Hide when skyriding
                     end
+                    if vis.hideNoTarget and not ns.CDMGroups.hasTarget then
+                        shouldShow = false  -- Hide when no target
+                    end
+                    if vis.hideHasTarget and ns.CDMGroups.hasTarget then
+                        shouldShow = false  -- Hide when has target
+                    end
+                    if vis.hideNotCasting and not ns.CDMGroups.isCasting then
+                        shouldShow = false  -- Hide when not casting
+                    end
+                    if vis.hideCasting and ns.CDMGroups.isCasting then
+                        shouldShow = false  -- Hide when casting
+                    end
+                    if vis.hideStealthed and ns.CDMGroups.isStealthed then
+                        shouldShow = false  -- Hide when stealthed
+                    end
+                    if vis.hideFlying and ns.CDMGroups.isFlying then
+                        shouldShow = false  -- Hide when flying
+                    end
+                    if vis.hideSwimming and ns.CDMGroups.isSwimming then
+                        shouldShow = false  -- Hide when swimming
+                    end
                 end
             else
                 -- OLD: String format (backwards compatibility)
@@ -12306,6 +12357,11 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
             ns.CDMGroups.inInstance = IsInInstance() or false
             ns.CDMGroups.isResting = IsResting()
             ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
+            ns.CDMGroups.hasTarget = UnitExists("target") or false
+            ns.CDMGroups.isCasting = false
+            ns.CDMGroups.isStealthed = IsStealthed() or false
+            ns.CDMGroups.isFlying = IsFlying() or false
+            ns.CDMGroups.isSwimming = IsSwimming() or false
             
             return  -- Don't do regular zone change handling
         end
@@ -12327,6 +12383,11 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         ns.CDMGroups.isResting = IsResting()
         ns.CDMGroups.isPvP = UnitIsPVP("player") or UnitIsPVPFreeForAll("player") or false
         ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
+        ns.CDMGroups.hasTarget = UnitExists("target") or false
+        ns.CDMGroups.isCasting = false
+        ns.CDMGroups.isStealthed = IsStealthed() or false
+        ns.CDMGroups.isFlying = IsFlying() or false
+        ns.CDMGroups.isSwimming = IsSwimming() or false
         
         -- Update group visibility with fresh state
         if ns.CDMGroups.UpdateGroupVisibility then
@@ -12347,6 +12408,10 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
             ns.CDMGroups.isResting = IsResting()
             ns.CDMGroups.isPvP = UnitIsPVP("player") or UnitIsPVPFreeForAll("player") or false
             ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
+            ns.CDMGroups.hasTarget = UnitExists("target") or false
+            ns.CDMGroups.isStealthed = IsStealthed() or false
+            ns.CDMGroups.isFlying = IsFlying() or false
+            ns.CDMGroups.isSwimming = IsSwimming() or false
             if wasMounted ~= ns.CDMGroups.isMounted then
                 DebugPrint("|cff00ccff[ZoneChange]|r Mounted state corrected:", tostring(wasMounted), "->", tostring(ns.CDMGroups.isMounted))
             end
@@ -12738,6 +12803,11 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
                 ns.CDMGroups.inEncounter = false  -- No active encounter on fresh init
                 ns.CDMGroups.isPvP = UnitIsPVP("player") or UnitIsPVPFreeForAll("player") or false
                 ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
+                ns.CDMGroups.hasTarget = UnitExists("target") or false
+                ns.CDMGroups.isCasting = false
+                ns.CDMGroups.isStealthed = IsStealthed() or false
+                ns.CDMGroups.isFlying = IsFlying() or false
+                ns.CDMGroups.isSwimming = IsSwimming() or false
                 ns.CDMGroups.UpdateGroupVisibility()
                 
                 -- CRITICAL: Ensure container click-through state is correct on initial load
@@ -13131,6 +13201,14 @@ CDMGroupsInitFrame:RegisterEvent("UNIT_FLAGS")                    -- PvP flag ch
 CDMGroupsInitFrame:RegisterEvent("UNIT_POWER_BAR_SHOW")           -- Skyriding detection
 CDMGroupsInitFrame:RegisterEvent("UNIT_POWER_BAR_HIDE")           -- Skyriding detection
 CDMGroupsInitFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")         -- Instance detection
+CDMGroupsInitFrame:RegisterEvent("PLAYER_TARGET_CHANGED")         -- Target gained/lost
+CDMGroupsInitFrame:RegisterEvent("UPDATE_STEALTH")                -- Stealth state changed
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")       -- Cast start
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")        -- Cast stop
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")      -- Cast failed
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player") -- Cast interrupted
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")  -- Channel start
+CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")   -- Channel stop
 
 CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
@@ -13181,6 +13259,7 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
         -- Mounting or dismounting
         ns.CDMGroups.isMounted = IsMounted()
+        ns.CDMGroups.isFlying = IsFlying() or false
         ns.CDMGroups.UpdateGroupVisibility()
     elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
         local unit = ...
@@ -13230,6 +13309,21 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
         end
     elseif event == "ZONE_CHANGED_NEW_AREA" then
         ns.CDMGroups.inInstance = IsInInstance() or false
+        ns.CDMGroups.isFlying = IsFlying() or false
+        ns.CDMGroups.isSwimming = IsSwimming() or false
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        ns.CDMGroups.hasTarget = UnitExists("target") or false
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "UPDATE_STEALTH" then
+        ns.CDMGroups.isStealthed = IsStealthed() or false
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
+        ns.CDMGroups.isCasting = true
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_STOP"
+        or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED" then
+        ns.CDMGroups.isCasting = false
         ns.CDMGroups.UpdateGroupVisibility()
     end
 end)
@@ -13674,6 +13768,11 @@ function ns.CDMGroups.Initialize()
                         ns.CDMGroups.SetDragMode(true)
                     end
                     
+                    -- Restore placeholder editing mode from DB preference
+                    if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.RestoreEditingMode then
+                        ns.CDMGroups.Placeholders.RestoreEditingMode()
+                    end
+                    
                     -- Update visibility (show combat-only groups when options open)
                     ns.CDMGroups.UpdateGroupVisibility()
                     
@@ -13684,9 +13783,9 @@ function ns.CDMGroups.Initialize()
                             if ns.CDMGroups.dragModeEnabled then
                                 ns.CDMGroups.SetDragMode(false)
                             end
-                            -- Disable placeholder mode when panel closes
-                            if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.SetEditingMode then
-                                ns.CDMGroups.Placeholders.SetEditingMode(false)
+                            -- Suspend placeholder mode (hides visuals without changing DB preference)
+                            if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.SuspendEditingMode then
+                                ns.CDMGroups.Placeholders.SuspendEditingMode()
                             end
                             -- Reset user disabled flag when panel closes
                             ns.CDMGroups._userDisabledEditMode = false

@@ -361,10 +361,10 @@ local function GetOptionsTable()
           timerBars = (function()
             local tbl = ns.TimerBarOptions and ns.TimerBarOptions.GetOptionsTable() or {
               type = "group",
-              name = "Timer Bars",
+              name = "Custom Bars",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "Timer Bars"
+            tbl.name = "Custom Bars"
             tbl.order = 2.5
             return tbl
           end)(),

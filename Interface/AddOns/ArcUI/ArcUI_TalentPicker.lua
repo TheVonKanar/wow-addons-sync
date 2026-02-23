@@ -91,7 +91,7 @@ local function GetTalentTreeData()
         activeRank = ni.activeRank or 0,
         isVisible = ni.isVisible ~= false,
         isAvailable = ni.isAvailable,
-        isTalented = (ni.activeRank or 0) > 0,
+        isTalented = (ni.activeRank or 0) > 0 and (not ni.subTreeID or ni.subTreeActive == true),
         entryIDs = ni.entryIDs or {},
         activeEntry = ni.activeEntry,
         subTreeID = ni.subTreeID,
@@ -106,6 +106,10 @@ local function GetTalentTreeData()
           local resolved = ResolveEntryInfo(configID, eid)
           if resolved then
             local isActive = node.activeEntry and node.activeEntry.entryID == eid
+            -- Hero tree entries: only active if in the player's chosen subtree
+            if isActive and node.subTreeID then
+              isActive = node.subTreeActive == true
+            end
             table.insert(node.entries, {
               entryID = eid, entryIndex = idx,
               spellID = resolved.spellID, name = resolved.name, icon = resolved.icon,
@@ -186,7 +190,10 @@ local function IsTalentNodeSelected(nodeID)
   local configID = C_ClassTalents.GetActiveConfigID()
   if not configID then return false end
   local ni = C_Traits.GetNodeInfo(configID, nodeID)
-  return ni and (ni.activeRank or 0) > 0
+  if not ni or (ni.activeRank or 0) == 0 then return false end
+  -- Hero tree nodes: must also be in the active subtree
+  if ni.subTreeID then return ni.subTreeActive == true end
+  return true
 end
 
 local function GetTalentNodeInfo(nodeID, entryID)
@@ -196,6 +203,10 @@ local function GetTalentNodeInfo(nodeID, entryID)
   if not ni or ni.ID == 0 then return nil end
   local info = { nodeID = nodeID, currentRank = ni.activeRank or 0,
     isSelected = (ni.activeRank or 0) > 0 }
+  -- Hero tree nodes: must also be in the active subtree
+  if ni.subTreeID and info.isSelected then
+    info.isSelected = ni.subTreeActive == true
+  end
   local resolveID = entryID or (ni.activeEntry and ni.activeEntry.entryID) or (ni.entryIDs and ni.entryIDs[1])
   if entryID then
     info.entryID = entryID
@@ -229,7 +240,12 @@ function ns.TalentPicker.CheckTalentConditions(talentConditions, matchMode)
     local isSel = false
     if ni then
       local hasRank = (ni.activeRank or 0) > 0
-      isSel = ni.subTreeID and (hasRank and ni.subTreeActive == true) or hasRank
+      if ni.subTreeID then
+        -- Hero tree node: must have rank AND be in the player's active subtree
+        isSel = hasRank and ni.subTreeActive == true
+      else
+        isSel = hasRank
+      end
       if isSel and entryID then
         isSel = ni.activeEntry and ni.activeEntry.entryID == entryID
       end
@@ -262,6 +278,14 @@ local function CreateTalentNodeButton(parent, node, entry, choiceOffset)
   local dName = (entry and entry.name) or node.name or "Unknown"
   local dEntryID = entry and entry.entryID or nil
   local isTalented = (node.activeRank or 0) > 0
+  -- Hero tree nodes: only count as talented if in the player's active subtree
+  if node.subTreeID and isTalented then
+    isTalented = node.subTreeActive == true
+  end
+  -- Choice entries: only the active entry is talented, not both
+  if entry and isTalented then
+    isTalented = entry.isActive == true
+  end
 
   -- Background - slightly visible behind icon
   button.bg = button:CreateTexture(nil, "BACKGROUND")

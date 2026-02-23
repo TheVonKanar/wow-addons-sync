@@ -833,15 +833,38 @@ function DL.DeduplicateGroupPositions(group)
     -- SKIP placeholders — they're temporary reservations, not real position conflicts.
     -- Including them would (a) create false duplicates with the real icon they reserve for,
     -- and (b) overwrite their isPlaceholder flag when "fixing", corrupting placeholder state.
+    -- SKIP non-members — cdIDs that are in savedPositions but NOT in group.members are
+    -- slot reservations for removed/unlearned talents (e.g. Halo/Void Torrent pairs).
+    -- Without _slotPartnerMap (only available during Reconcile), we can't detect slot partners,
+    -- so including non-members causes false duplicate detection and position corruption.
+    -- NOTE: Must check BOTH saved.isPlaceholder AND member.isPlaceholder because:
+    --   saved.isPlaceholder may be nil (SaveGroupPosition no longer persists it)
+    --   member.isPlaceholder is the authoritative runtime state
     local groupEntries = {}  -- { cdID, row, col, sortIndex }
     for cdID, saved in pairs(savedPositions) do
-        if saved.type == "group" and saved.target == groupName and not saved.isPlaceholder then
-            table.insert(groupEntries, {
-                cdID = cdID,
-                row = saved.row or 0,
-                col = saved.col or 0,
-                sortIndex = saved.sortIndex,
-            })
+        if saved.type == "group" and saved.target == groupName then
+            -- Check runtime placeholder state from member (authoritative)
+            local member = group.members and group.members[cdID]
+            
+            -- CRITICAL FIX: Skip non-members entirely. They are saved slot reservations
+            -- for talents not currently learned. Including them causes false duplicate
+            -- detection when _slotPartnerMap is nil (outside Reconcile), which corrupts
+            -- the position of the remaining slot partner (the VT/Halo position bug).
+            if not member then
+                -- Not a current member — skip (preserved reservation for returning talent)
+            else
+                local isPlaceholder = saved.isPlaceholder 
+                    or (member and member.isPlaceholder)
+                
+                if not isPlaceholder then
+                    table.insert(groupEntries, {
+                        cdID = cdID,
+                        row = saved.row or 0,
+                        col = saved.col or 0,
+                        sortIndex = saved.sortIndex,
+                    })
+                end
+            end
         end
     end
     
@@ -861,11 +884,30 @@ function DL.DeduplicateGroupPositions(group)
     local occupiedSlots = {}  -- linearIdx -> cdID (first occupant wins)
     local duplicates = {}     -- list of entries that need new positions
     
+    -- Get slot partner map for mutually exclusive talent detection
+    local partnerMap = ns.CDMGroups._slotPartnerMap
+    
     for _, entry in ipairs(groupEntries) do
         local linearIdx = entry.row * maxCols + entry.col
         if occupiedSlots[linearIdx] then
-            -- DUPLICATE - this entry shares a slot with another cdID
-            table.insert(duplicates, entry)
+            -- SLOT-PARTNER CHECK: If these two are slot partners (mutually exclusive talents),
+            -- this is NOT a real duplicate - they intentionally share a position.
+            -- Skip deduplication for this pair.
+            local existingCdID = occupiedSlots[linearIdx]
+            local isSlotPartner = false
+            if partnerMap and partnerMap[entry.cdID] then
+                for _, partner in ipairs(partnerMap[entry.cdID]) do
+                    if partner.partnerCdID == existingCdID then
+                        isSlotPartner = true
+                        break
+                    end
+                end
+            end
+            
+            if not isSlotPartner then
+                -- REAL DUPLICATE - this entry shares a slot with a non-partner cdID
+                table.insert(duplicates, entry)
+            end
         else
             occupiedSlots[linearIdx] = entry.cdID
         end
@@ -1629,6 +1671,16 @@ local function CheckGroupForChanges(group, shouldCheckMismatch)
     local changedIcons = {}
     
     for cdID, member in pairs(group.members) do
+        -- STALE FLAG CHECK: Detect members that have a frame but are still marked placeholder.
+        -- This happens when CDM reassigns a frame directly (talent swap back) without going
+        -- through AssignFrameToGroup. When detected, mark as changed to trigger reflow,
+        -- which will auto-heal the flag in CollectMembersForReflow.
+        if member.isPlaceholder and member.frame and member.frame.cooldownID == cdID then
+            anyChanged = true
+            LogEvent("STALE_DETECT", groupName, 
+                string.format("cdID %s has frame but isPlaceholder=true, queuing reflow", tostring(cdID)))
+        end
+        
         if not member.isPlaceholder and member.frame then
             -- PERFORMANCE: Only check aura frames for visibility changes
             -- Cooldowns and utilities don't change visibility based on aura state
@@ -2114,7 +2166,30 @@ function DL.CollectMembersForReflow(group)
         -- Store cdID on member for type detection
         member.cdID = cdID
         
-        -- Skip placeholders entirely
+        -- STALE FLAG FIX: When CDM reassigns a frame to a member (e.g. talent swap back),
+        -- it may set member.frame directly without going through AssignFrameToGroup,
+        -- leaving isPlaceholder=true despite having a real frame. Auto-heal here
+        -- BEFORE the main categorization so the healed member participates in reflow.
+        if member.isPlaceholder and HasValidFrame(member, cdID) then
+            member.isPlaceholder = nil
+            member.placeholderInfo = nil
+            
+            -- Also clear saved isPlaceholder flag if present
+            local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[cdID]
+            if saved then
+                saved.isPlaceholder = nil
+            end
+            
+            -- Notify visibility tracking
+            if DL.OnPlaceholderResolved then
+                DL.OnPlaceholderResolved(cdID, group.name)
+            end
+            
+            LogEvent("STALE_FIX", group.name or "?", 
+                string.format("cdID %s had frame but isPlaceholder=true, auto-healed", tostring(cdID)))
+        end
+        
+        -- Skip genuine placeholders (no frame)
         if member.isPlaceholder then
             -- Placeholders don't participate in reflow
         elseif not HasValidFrame(member, cdID) then
@@ -2154,6 +2229,20 @@ function DL.CollectMembersForReflow(group)
                 sortIndex = member.row * maxCols + member.col
             else
                 sortIndex = 9999
+            end
+            
+            -- SLOT-PARTNER FIX: If this cdID has a slot partner and its saved position
+            -- looks different from the partner's shared position (CDM corrupted it),
+            -- use the partner's position for consistent sort ordering
+            local partnerMap = ns.CDMGroups._slotPartnerMap
+            if partnerMap and partnerMap[cdID] then
+                local partnerInfo = partnerMap[cdID][1]
+                if partnerInfo and partnerInfo.group == group.name then
+                    local partnerSortIndex = partnerInfo.row * maxCols + partnerInfo.col
+                    if sortIndex ~= partnerSortIndex then
+                        sortIndex = partnerSortIndex
+                    end
+                end
             end
             
             -- PERFORMANCE: Use pooled iconData instead of creating new table

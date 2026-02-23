@@ -1,0 +1,21 @@
+
+PortyDB = {
+["useShortNames"] = true,
+["anchorMode"] = "mythicplus",
+["font"] = "Interface\\AddOns\\ClickableRaidBuffs\\Media\\Fonts\\Fira_Sans\\FiraSans-Medium.ttf",
+["iconSize"] = 30,
+["position"] = {
+["y"] = 0,
+["x"] = 0,
+["point"] = "CENTER",
+},
+["locked"] = false,
+["visible"] = true,
+["textSize"] = 12,
+["textColor"] = {
+["a"] = 1,
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
+}

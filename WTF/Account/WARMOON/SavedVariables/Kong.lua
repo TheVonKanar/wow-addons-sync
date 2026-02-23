@@ -32,6 +32,72 @@ Kong_Profiles = {
 ["Frames"] = {
 {
 {
+["secondsOut"] = 0.5,
+["alphaIn"] = 1,
+["secondsIn"] = 0.2,
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["index"] = "[\"MultiBarLeft\"]",
+["version"] = "1.6a",
+},
+{
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Frame has Mouse Focus",
+["Parameters"] = {
+},
+},
+},
+},
+["secondsOut"] = 0.5,
+["secondsIn"] = 0.2,
+["alphaIn"] = 1,
+},
+{
+["Condition"] = {
+["name"] = "Condition",
+["Parameters"] = {
+{
+["name"] = "Unit in Combat",
+["Parameters"] = {
+},
+},
+},
+},
+},
+["TriggerDefaults"] = {
+},
+["index"] = "[\"MultiBar6\"]",
+["version"] = "1.6a",
+},
+{
+{
 ["Condition"] = {
 ["name"] = "Condition",
 ["Parameters"] = {
@@ -72,72 +138,6 @@ Kong_Profiles = {
 ["hideAtZeroAlpha"] = true,
 ["index"] = "[\"AceConfigDialogScrollFrame1ScrollBar\"]:GetParent():GetParent():GetParent():GetParent()",
 ["version"] = "1.6a",
-},
-{
-{
-["secondsOut"] = 0.5,
-["alphaIn"] = 1,
-["secondsIn"] = 0.2,
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Frame has Mouse Focus",
-["Parameters"] = {
-},
-},
-},
-},
-},
-{
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Unit in Combat",
-["Parameters"] = {
-},
-},
-},
-},
-},
-["TriggerDefaults"] = {
-},
-["version"] = "1.6a",
-["index"] = "[\"MultiBarLeft\"]",
-},
-{
-{
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Frame has Mouse Focus",
-["Parameters"] = {
-},
-},
-},
-},
-["secondsOut"] = 0.5,
-["secondsIn"] = 0.2,
-["alphaIn"] = 1,
-},
-{
-["Condition"] = {
-["name"] = "Condition",
-["Parameters"] = {
-{
-["name"] = "Unit in Combat",
-["Parameters"] = {
-},
-},
-},
-},
-},
-["TriggerDefaults"] = {
-},
-["version"] = "1.6a",
-["index"] = "[\"MultiBar6\"]",
 },
 },
 ["version"] = "1.6a",

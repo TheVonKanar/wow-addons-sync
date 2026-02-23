@@ -50,9 +50,9 @@ Scrap: disabled
 Scrap_Merchant: disabled
 Scrap_Config: disabled
 WeakAuras: enabled
-WeakAurasModelPaths: enabled
+WeakAurasModelPaths: disabled
 WeakAurasOptions: enabled
-WeakAurasTemplates: enabled
+WeakAurasTemplates: disabled
 ACP: disabled
 ShadowedUnitFrames: disabled
 ShadowedUF_Options: disabled
@@ -200,8 +200,8 @@ KeyMaster: enabled
 AngryKeystones: enabled
 LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
-KongConfig: disabled
-Kong: disabled
+KongConfig: enabled
+Kong: enabled
 PremadeGroupsFilter: enabled
 TipTacItemRef: disabled
 TipTacOptions: disabled

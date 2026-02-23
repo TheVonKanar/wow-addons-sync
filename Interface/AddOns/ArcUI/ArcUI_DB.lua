@@ -300,7 +300,7 @@ ns.DB_DEFAULTS = {
           enabled = false,
           resourceCategory = "primary",  -- "primary" or "secondary"
           powerType = 0,                 -- For primary resources (Enum.PowerType)
-          secondaryType = nil,           -- For secondary: "comboPoints", "holyPower", "chi", "runes", "soulShards", "essence", "arcaneCharges", "stagger", "soulFragments"
+          secondaryType = nil,           -- "comboPoints", "holyPower", "chi", "runes", "soulShards", "essence", "arcaneCharges", "stagger", "soulFragments", "soulFragmentsDevourer", "maelstromWeapon", "mana"
           powerName = "",
           maxValue = 100,
           overrideMax = false,
@@ -369,8 +369,11 @@ ns.DB_DEFAULTS = {
           hideOutOfCombat = false,
           hideWhenFull = false,
           hideWhenEmpty = false,
+          hideBlizzardFrame = false,  -- Hide corresponding Blizzard resource frame
           showOnSpec = 0,
-          showOnSpecs = {}
+          showOnSpecs = {},
+          talentConditions = nil,
+          talentMatchMode = nil,
         }
       }
     },
@@ -726,8 +729,10 @@ function ns.API.GetResourceBarConfig(barNumber)
   end
   
   -- Migration: ensure new fields exist
-  -- FORCE resourceCategory to primary (secondary resources not ready yet)
-  db.resourceBars[barNumber].tracking.resourceCategory = "primary"
+  local tracking = db.resourceBars[barNumber].tracking
+  if not tracking.resourceCategory then
+    tracking.resourceCategory = "primary"
+  end
   
   return db.resourceBars[barNumber]
 end
@@ -957,7 +962,8 @@ function ns.API.InitializeNewResourceBar(powerType, powerName, resourceCategory,
       if resourceCategory == "secondary" then
         local discreteTypes = {
           comboPoints = true, holyPower = true, chi = true,
-          runes = true, soulShards = true, essence = true, arcaneCharges = true
+          runes = true, soulShards = true, essence = true, arcaneCharges = true,
+          soulFragments = true, maelstromWeapon = true,
         }
         if discreteTypes[secondaryType] then
           cfg.display.showTickMarks = true
@@ -998,6 +1004,23 @@ function ns.API.InitializeNewResourceBar(powerType, powerName, resourceCategory,
           
           return i
         end
+      end
+      
+      -- Set bar color to match resource type color
+      if secondaryType and ns.Resources and ns.Resources.SecondaryTypesLookup then
+        local typeInfo = ns.Resources.SecondaryTypesLookup[secondaryType]
+        if typeInfo and typeInfo.color then
+          cfg.display.barColor = {r=typeInfo.color.r, g=typeInfo.color.g, b=typeInfo.color.b, a=1}
+          -- Also update threshold[1] color for simple mode
+          if cfg.thresholds and cfg.thresholds[1] then
+            cfg.thresholds[1].color = {r=typeInfo.color.r, g=typeInfo.color.g, b=typeInfo.color.b, a=1}
+          end
+        end
+      end
+      
+      -- Auto-enable hideBlizzardFrame for secondary resources
+      if cfg.behavior then
+        cfg.behavior.hideBlizzardFrame = true
       end
       
       ns.API.ApplyThresholdPreset(i, "threeTone", cfg.tracking.maxValue)

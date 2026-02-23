@@ -1,0 +1,423 @@
+                                                                                                                      
+                                                                                                                      
+   ffffffffffffff                                 kkkkkkk             iii                                             
+  f::::::::::::::f                                k:::::k            i:::i                                            
+ f::::::::::::::::f                               k:::::k             iii                                             
+ f:::::ffffff:::::f                               k:::::k                                                             
+ f::::f      ffffff uuuuu    uuuuu nnnn  nnnnnn    k::::k    kkkkkk iiiiii           ggggggg  ggggg     ggggggg  ggggg
+ f::::f             u:::u    u:::u n:::nn::::::n   k::::k   k:::::k i::::i          g:::::::gg::::g    g:::::::gg::::g
+f::::::ffffff       u:::u    u:::u n:::::::::::nn  k::::k  k:::::k   i:::i         g::::::::::::::g   g::::::::::::::g
+f:::::::::::f       u:::u    u:::u nn::::::::::::n k::::k k:::::k    i:::i        g:::::gggg:::::gg  g:::::gggg:::::gg
+f:::::::::::f       u:::u    u:::u   n::::nnn::::n k:::::k:::::k     i:::i        g::::g    g::::g   g::::g    g::::g 
+f::::::ffffff       u:::u    u:::u   n:::n   n:::n k::::::::::k      i:::i        g::::g    g::::g   g::::g    g::::g 
+ f::::f             u:::u    u:::u   n:::n   n:::n k::::::::::k      i:::i        g::::g    g::::g   g::::g    g::::g 
+ f::::f             u::::uuuu::::u   n:::n   n:::n k:::::k:::::k     i:::i        g:::::g   g::::g   g:::::g   g::::g 
+f::::::f            u:::::::::::::u  n:::n   n:::n k:::::k k:::::k   i::::i       g::::::gggg::::g   g::::::gggg::::g 
+f::::::f            u:::::::::::::u  n:::n   n:::n k:::::k  k:::::k  i:::::i  :::  g::::::::::::g     g::::::::::::g 
+f::::::f             u:::::::uu:::u  n:::n   n:::n k:::::k   k:::::k i:::::i :::::   gg:::::::::g       gg:::::::::g  
+ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  :::     ggggg:::::g        ggggg:::::g  
+                                                                                          g:::::g            g:::::g   
+                                                                                ggggg     g:::::g  ggggg     g:::::g   
+                                                                                g::::gg  gg:::::g  g::::gg  gg:::::g   
+                                                                                 g:::::gg::::::g   g:::::gg:::::::g   
+                                                                                  gg::::::::::g      gg::::::::::g    
+                                                                                   ggg:::::ggg        ggg:::::ggg      
+                                                                                      ggggg              ggggg        
+
+
+
+                                                Clickable Raid Buffs
+                                                      by funki
+
+                                      © 2022-2026 funki.gg. All rights reserved.
+                                                  https://funki.gg
+
+
+📥 DOWNLOAD THE LATEST VERSION  
+- CurseForge: https://funki.gg/crb  
+- Wago Addons: https://funki.gg/wagocrb  
+
+
+🐞 REPORT BUGS & GET SUPPORT  
+- Discord: https://funki.gg/discord  
+
+
+💖 DONATE  
+- Buy Me a Coffee: https://funki.gg/bmac  
+
+=======================================================================================================================
+                                                 CURRENT PATCH NOTES
+=======================================================================================================================
+
+**v7.3.5**
+- Changed the order of expansions in the Customize menu so they are in reverse chronological order
+- Reverted an inadvertant change to the default display font in a previous update
+- Added a reminder icon for pet classes when your pet is on passive, and clicking it it puts your pet on Assist
+
+
+=======================================================================================================================
+                                                HISTORICAL PATCH NOTES
+=======================================================================================================================
+
+**v7.3.4**
+- Did a better job of fixing an error that would happen when changing targets when values are secret.
+
+
+**v7.3.3**
+- Fixed a Lua error that fired when changing targets in combat
+
+
+**v7.3.2**
+- Targeting a training dummy now bypasses the instance, group, and rested gates
+- Source of Magic (Evoker) will now only display if there is a healer in your group (excluding yourself)
+- Fixed group member counting while in raid group
+
+
+**v7.3.1**
+- Source of Magic will now only display if you have at least one healer in your group
+
+
+**v7.3.0**
+- Renamed some elements in the menu for clarity
+- Added new options for showing Earth Shield in more useful ways
+
+
+**v7.2.5**
+- Moved the Version tag in the options menu from the Info tab to the title banner
+- Re-anchored some elements in the options menu to improve menu scaling behavior
+- Fixed an issue that caused the Commands block on the Info tab to clip text
+- Fixed an erroneous label on Mark of the Wild
+
+
+**v7.2.3**
+- Added options for different icon glow styles
+- Reworked portions of the menu for to improve readability and clarity
+- Added Noto Sans fonts to improve localization support for non-latin characters
+- Localized all Clickable Raid Buffs menus for each language client
+- Please open a ticket on Discord for any bad translations
+
+
+**v7.2.1**
+- Localized the Ignore list items
+- Localized the expansion list in the Customize tab
+- Localized various portions of the menu system
+- Localized the main tabs of the manu
+- Rephrased portions of the menu for better localization support
+
+
+**v7.1.30**
+- Continued revising the release pipeline for this addon
+
+
+**v7.1.18**
+- Added Darkmoon Top Hat (item 171364) to Cosmetics support with buff detection for spell IDs 136583, 46668, and 423942.
+
+
+**v7.1.17**
+- Fixed an error in Augment Rune aura updates that could trigger `table index is secret`.
+
+
+**v7.1.16**
+- Reverted change to name of Ignore tab in menu
+- Removed extraneous items from consumables lists
+- Fixed an issue with spacing on the Info tab to avoid text clipping
+
+
+**v7.1.15**
+- Hardened aura handling against secret values to prevent repeated `table index is secret` errors
+- Applied secret-safe guards across Food Status, Raid Buff scanning, Trinkets, Fixed Target, and core buff expiry lookups
+- Added explicit `expansionId` metadata to all consumable entries so expansion filters apply consistently
+
+
+**v7.1.14**
+- Added additional consumable tracking entries for food, flask, weapon buffs, and legacy augment rune support
+
+
+**v7.1.13**
+- Added expansion filters for consumables and augment runes, with toggles for The War Within and Midnight
+- Added a new Expansions section under Customize to enable or disable expansion-specific reminder entries
+- Updated food, flask, weapon enchant, and augment rune data with expansion metadata
+- Ignore list now respects expansion filters and groups expansion entries more clearly
+- Improved expansion naming normalization so legacy `[TWW]` and `[MIDNIGHT]` prefixes are cleaned up in UI labels
+
+
+**v7.1.12**
+- Rollback release: restored addon code to the stable `v7.1.6` baseline
+- Reverted post-`v7.1.6` changes that introduced Mythic+ buff/consumable icon refresh regressions
+- Released as a stability checkpoint while the M+ icon falloff/reappear fix is reworked
+
+
+**v7.1.6**
+- Removed an extraneous line in `Options/Panel.lua` that could trigger a startup error
+- Profile tab import box focus fix so pasted import strings work reliably
+- Improved bag scan helper for consumables to be lighter weight and more reliable
+- Updated docs
+
+
+**v7.1.5**
+- Fixed an issue that caused certain libraries not to load
+- Fixed an Removed an extraneous line of code that was triggering an error
+
+
+**v7.1.4**
+- Fixed Profile tab import box focus so pasted import strings work reliably
+
+
+**v7.1.3**
+- Blizzard options panel styling
+- Updated Profile tab import flow
+- Fixed Paladin beacon tracking so Beacon of Light and Beacon of Faith are tracked independently
+
+
+**v7.1.1**
+- Fixed an options panel startup error on clients where SetMinResize is unavailable
+- Restored options access from both the minimap button and Blizzard AddOns/Settings entry after options panel init failures
+- Added a compatibility fallback for Blizzard Interface Options category registration
+- Improved Info tab layout by moving control checkboxes to a dedicated footer below the text area
+- Reduced oversized Info tab text to fit cleanly in the panel without overlap
+- General stability and UI maintenance updates
+
+
+**v7.1.0**
+- Added profile import/export so you can share and apply full addon configurations between players and characters
+- Added a new Profiles options tab with export, copy, import preview, and two import modes (replace all or merge)
+- Added validation and safety for imports (schema/version checks, sanitization, checksum verification, and automatic pre-import backup)
+- Added new slash command support for profile flows: /crb export and /crb import
+- Fixed raid trinket reminders (including So'leah's Secret Technique) not showing or refreshing correctly in some apply/falloff scenarios
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
+- General stability and maintenance updates
+
+
+**v7.0.10**
+- Fixed raid/party rebuff icons sometimes not returning out of combat (self and group cases)
+- Hardened gate handling so gate errors/secret values no longer suppress rebuff visibility updates
+- General stability and maintenance updates
+
+
+**v7.0.9**
+- Fixed an issue where raid/party rebuff icons could stay hidden out of combat when targets moved into range
+- General stability and maintenance updates
+
+
+**v7.0.8**
+- Fixed an intermittent issue where raid buff icons could fail to reappear after combat when a party or raid member lost a buff
+- General stability and maintenance updates
+
+
+**v7.0.7**
+- Added Holy Paladin beacon support (Beacon of Light / Beacon of Faith)
+- Beacon icons now suppress correctly when either beacon is active
+- General stability and maintenance updates
+
+
+**v7.0.6**
+- Fixed icons not restoring after resurrection (no reload needed)
+- Added eating aura ID 452319 for correct food timer/icon updates
+- Added deployment workflow automation
+- General stability and maintenance updates
+
+
+**v7.0.5**
+- Added Frost Mage Water Elemental support in the Pets module
+- General stability and maintenance updates
+- Fixed icons not restoring after resurrection (no reload needed)
+
+
+**v7.0.3**
+- Fixed (most) errors that could occur during active Mythic Keystone runs  
+- Fixed delayed callbacks executing during restricted states in Mythic Keystone dungeons  
+- Fixed icons not reliably refreshing after entering or exiting instanced content  
+- Improved handling of deferred updates suppressed during Challenge Mode  
+
+
+**v7.0.6**
+- Fixed icons not restoring after resurrection (no reload needed)  
+- Added eating aura ID 452319 for correct food timer/icon updates  
+- General stability and maintenance updates  
+
+
+**v7.0.5**
+- Added Frost Mage Water Elemental support in the Pets module  
+- General stability and maintenance updates  
+
+
+**v7.0.4**
+- Updated for Retail 12.0.1: removed legacy spell APIs and standardized C_Spell usage  
+- Added guards for secret aura/cooldown values to prevent errors in restricted contexts  
+- General stability and maintenance updates  
+
+
+**v7.0.2**
+- Added food, flask, and weapon enchant consumables introduced in Midnight
+- Added support for ranged weapon ammunition
+- Added a [TWW] menu flag for consumables introduced during The War Within
+- Added Ignore Menu sorting for consumables to allow disabling obsolete items
+- Added support for new consumable quality-tier textures
+- Removed menu references to features that relied on the pre-12.0 API
+
+
+**v7.0.1**  
+- Removed the Trinkets module
+- Fixed a Lua error in the Repair Mount selection menu
+
+
+**v7.0.0**  
+- Updated for compatibility with Midnight
+- Removed the Raid Announcer feature, which relied on pre-12.0 API
+- Removed Recuperate, which relied on pre-12.0 API
+- General updates and maintenance to ensure continued stability
+- Consumables for Midnight will be added in a future release
+
+
+**v6.2.5**  
+- Fixed spells incorrectly being registered as cast by the player  
+- Fixed bladed vs. blunt category distinction for Fist Weapon enchants  
+- Reworked the Weapon Enchant module for a more modular design  
+- Added "Hide All" and "Show All" buttons to each header in the Ignore List to toggle checkboxes in bulk  
+- Inky Black Potion and Stinky Bright Potion now detect when you are in Hallowfall and do not appear  
+- Raid Buff X / Y overlay now caps the Y value at the maximum number of players in the instance  
+
+
+**v6.2.4**  
+- Fixed unintended Raid Bot Alert spam  
+- Fixed Range gate not functioning for many applicable spells  
+
+
+**v6.2.3**  
+- Fixed timers and bottom labels being slightly misaligned  
+- Fixed the Alliance version of the Traveler's Tundra Mammoth not summoning from the Durability icon  
+- Fixed Reaves Engineering repair mode not triggering the Repair Bot alert  
+- Fixed successive Alerts overlapping instead of stacking correctly  
+- Fixed occasional duplication of Alerts  
+- Added a sub-tab to the Customize menu for selecting a preferred repair mount  
+- Added Grizzly Hills Packmaster as a summonable repair mount for the Durability icon  
+- Added Stinky Bright Potion to the Cosmetics category  
+- Added new Alert tab options for duration, animation height, and animation speed  
+
+
+**v6.2.2**  
+- Fixed Hunter pets not respecting the Ignore option  
+- Fixed Revive Pet not respecting the Ignore option  
+- Fixed Hunter pets incorrectly displaying as Marksmanship without Unbreakable Bond talented  
+- Fixed Grimoire of Sacrifice not displaying at all appropriate times  
+
+
+**v6.2.1**  
+- Fixed an issue that suppressed all Raid Buffs
+  
+  
+**v6.2.0**  
+**NOTE**:  Because of some significant under-the-hood changes, all options **must** be reset when installing this version.
+           You will be prompted to do so when you first log in.  Click Yes, and then you can re-configure things.
+
+- **Performance & Efficiency**  
+  - Added throttling for high-frequency events to reduce CPU load  
+  - Centralized event handling into a single system for efficiency  
+  - Reworked Alerts module to significantly reduce overhead, especially in combat  
+  - Fixed unintended resource usage while in combat, dead, or a ghost  
+  - General code formatting and cleanup  
+
+- **New Features**  
+  - Added all Mage portals to the Alerts module (localized spell names supported)  
+  - Added missing food items: Authentic Undermine Clam Chowder, Hearty Authentic Undermine Clam Chowder  
+  - Added Algari Repair Bot 11O to the repair bot Alert  
+  - Added a slash command to fully reset settings and SavedVariables: /crb reset, /buff reset, /funki reset  
+  - Added in-group requirement for single-target raid buffs (e.g., Source of Magic, Symbiotic Relationship)  
+  - Added range checks for group-wide raid buffs, hiding the icon if no eligible targets are in range  
+  - Added Recuperate, which displays out of combat if below 100% health and not in a rested area  
+
+- **Options Menu Improvements**  
+  - Introduced a new Customization tab for various addon options  
+  - Renamed the Raid Announcer module and tab to “Alerts”  
+  - Added an option to disable the Alerts module while in combat  
+  - Moved Mythic+ options into a dedicated sub-tab under Customization  
+  - Added an option to reverse the display order of Hunter pets  
+  - Added an option to disable the Hunter pet specialization icon  
+  - Added an option to swap the Hunter pet’s icon with its special ability icon  
+  - Added an option to show the Hunter pet’s special ability icon, instead of the pet's icon, on mouseover 
+  - Added an option to disable tooltips on icons  
+
+- **System Updates**  
+  - Restructured glow color handling for consistency and easier expansion  
+  - Runeforge Reminder (Death Gate) now uses the Special glow color  
+  - Reworked gating logic for a more modular and flexible design  
+  - Renamed some tabs in the Options menu
+  - Rebuilt the Trinkets module for improved reliability;  
+
+- **Bug Fixes**  
+  - Cosmetic items are now properly ignored by default on new installs  
+  - Hearty Feast of the Midnight Masquerade now correctly triggers feast announcements  
+  - Eating icon now properly detects all localized buff names and hides food icons while eating
+  - Eating icon now clears when Well Fed or Hearty Well Fed is gained
+  - Fixed Blessing of the Bronze not detecting all raid copies of the spell  
+  - Fixed Shaman Shields entries on the Ignore List not functioning  
+  - Fixed timers hanging at 0:01 instead of clearing at 0:00  
+  - Fixed icons not refreshing properly when reaching the configured threshold  
+  - Fixed weapon oils not showing with bows, guns, or wands equipped  
+  - Fixed castable weapon enchants (e.g., Flametongue Weapon) not displaying properly
+  - Fixed cosmetic items not being ignored on fresh installs  
+  - Fixed Enable Glow checkbox desync on reload (appeared checked but inactive until re-toggled)  
+  - Fixed an issue that caused So’Leah’s Secret Technique to not display reliably
+    - This item does not yet create a macro to re-cast on the previous target (planned for a future update)
+  - Fixed an issue that could cause an error if reloading the UI while in combat
+  - Fixed an issue that could cause the buttons on the Mover frame to load improperly
+
+- **UI & Quality of Life**  
+  - Class Abilities on the Ignore tab now prioritize the player’s class first  
+  - Added addon version number to the Info tab of the Options menu  
+
+
+**v6.1.0**
+- Fixed an issue where some settings could reset to default unintentionally
+- Fixed Warrior Stances not displaying as expected
+- Fixed certain spells being incorrectly linked together on the Ignore List
+- Fixed duplicate entries appearing for some spells on the Ignore List
+- Fixed weapon enchants displaying when they shouldn’t
+- Fixed some checks continuing while in combat
+- Fixed performance slowdowns during high event activity
+- Reorganized addon files for clarity
+- Removed the charge count text from the Healthstone delete icon when swapping Warlock Healthstone talents
+- Pet-related icons no longer display while mounted
+- Added a separate time threshold for Soulstone
+- Added a new Mythic+ tab with Keystone-specific settings:
+  - Added a separate threshold for current-season Mythic dungeons (before the timer starts)
+  - Added an option to hide consumables during active Mythic Keystone runs (after the timer starts)
+- Added tooltips to reset buttons on number selectors, consistent with other elements
+- General performance improvements
+
+
+**v6.0.5**
+- Fixed an issue that caused Arcane Familiar and Paladin Auras to behave incorrectly
+
+
+**v6.0.4**
+- Added patch notes to the README file
+- Renamed the “Exclusions” tab to “Ignore List” for clarity
+- Improved wording of the Info tab note about cities, rested areas, and instances
+- Fixed Arcane Intellect showing the wrong icon
+- Fixed Arcane Familiar appearing without the talent learned
+- Fixed Thunderstrike Ward incorrectly suppressing weapon enchant items
+- Fixed categorization logic for weapon enchant items
+
+
+**v6.0.3**  
+- Excluded the Well Fed buff from campfires in Delves  
+- Prioritized *Devotion Aura* in instanced content (shows even if another aura is active)  
+
+
+**v6.0.2**  
+- Fixed right-click sometimes triggering buffs instead of left-click  
+- Fixed certain spells not auto-casting on the player  
+- Fixed *Hearty Well Fed* being ignored by item time thresholds  
+
+
+**v6.0.1**  
+- Fixed flasks ignoring item time thresholds  
+- Fixed food not reappearing after Well Fed dropped below threshold  
+- Disabled Pets module for Marksmanship Hunters without *Unbreakable Bond* talent  
+
+
+**v6.0.0**  
+- Complete rewrite from WeakAura pack to standalone addon  
+- Vastly improved performance and efficiency  

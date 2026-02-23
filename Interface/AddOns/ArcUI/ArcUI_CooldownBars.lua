@@ -117,6 +117,130 @@ end
 -- Preview opacity for bars that would be hidden but options panel is open
 local PREVIEW_OPACITY = 0.4
 
+-- ===================================================================
+-- HIDE CONDITION EVALUATOR
+-- Reads CDMGroups state variables (already event-driven via CDMGroupsInitFrame)
+-- to evaluate "Hide When..." conditions. Same table format as CDMGroups visibility.
+-- Zero cost: CDMGroups already tracks all state, we just read the booleans.
+-- ===================================================================
+
+ns.CooldownBars = ns.CooldownBars or {}
+
+-- Shared condition labels (used by all options panels)
+ns.CooldownBars.HIDE_CONDITIONS = {
+  hideOOC          = "Out of Combat",
+  hideInCombat     = "In Combat",
+  hideMounted      = "Mounted",
+  hideInVehicle    = "In Vehicle / Taxi",
+  hideDead         = "Dead / Ghost",
+  hideResting      = "Resting (City/Inn)",
+  hideSolo         = "Solo (Not in Group)",
+  hideInGroup      = "In Group",
+  hideInRaid       = "In Raid",
+  hideInInstance   = "In Instance",
+  hideInEncounter  = "Boss Encounter",
+  hideInPetBattle  = "In Pet Battle",
+  hidePvP          = "PvP Flagged",
+  hideDragonriding = "Skyriding",
+  hideNoTarget     = "No Target",
+  hideHasTarget    = "Has Target",
+  hideNotCasting   = "Not Casting",
+  hideCasting      = "While Casting",
+  hideStealthed    = "Stealthed",
+  hideFlying       = "Flying",
+  hideSwimming     = "Swimming",
+}
+ns.CooldownBars.HIDE_CONDITION_ORDER = {
+  "hideOOC", "hideInCombat", "hideMounted", "hideInVehicle",
+  "hideDead", "hideResting", "hideSolo", "hideInGroup",
+  "hideInRaid", "hideInInstance", "hideInEncounter",
+  "hideInPetBattle", "hidePvP", "hideDragonriding",
+  "hideNoTarget", "hideHasTarget", "hideNotCasting", "hideCasting",
+  "hideStealthed", "hideFlying", "hideSwimming",
+}
+
+-- Evaluate hide conditions against CDMGroups state (or direct API fallback)
+-- Returns true if bar should be HIDDEN
+local function EvaluateHideConditions(hideWhen)
+  if not hideWhen or type(hideWhen) ~= "table" then return false end
+  if not next(hideWhen) then return false end  -- Empty table = no conditions
+  
+  -- Read from CDMGroups state (already event-driven, zero-cost reads)
+  local G = ns.CDMGroups
+  if G then
+    if hideWhen.hideOOC and not G.inCombat then return true end
+    if hideWhen.hideInCombat and G.inCombat then return true end
+    if hideWhen.hideMounted and G.isMounted then return true end
+    if hideWhen.hideInVehicle and G.inVehicle then return true end
+    if hideWhen.hideDead and G.isDead then return true end
+    if hideWhen.hideResting and G.isResting then return true end
+    if hideWhen.hideSolo and not G.inGroup then return true end
+    if hideWhen.hideInGroup and G.inGroup then return true end
+    if hideWhen.hideInRaid and G.inRaid then return true end
+    if hideWhen.hideInInstance and G.inInstance then return true end
+    if hideWhen.hideInEncounter and G.inEncounter then return true end
+    if hideWhen.hideInPetBattle and G.inPetBattle then return true end
+    if hideWhen.hidePvP and G.isPvP then return true end
+    if hideWhen.hideDragonriding and G.isDragonriding then return true end
+    if hideWhen.hideNoTarget and not G.hasTarget then return true end
+    if hideWhen.hideHasTarget and G.hasTarget then return true end
+    if hideWhen.hideNotCasting and not G.isCasting then return true end
+    if hideWhen.hideCasting and G.isCasting then return true end
+    if hideWhen.hideStealthed and G.isStealthed then return true end
+    if hideWhen.hideFlying and G.isFlying then return true end
+    if hideWhen.hideSwimming and G.isSwimming then return true end
+  else
+    -- Fallback: direct API calls (CDMGroups not loaded)
+    if hideWhen.hideOOC and not UnitAffectingCombat("player") then return true end
+    if hideWhen.hideInCombat and InCombatLockdown() then return true end
+    if hideWhen.hideMounted and IsMounted() then return true end
+    if hideWhen.hideInVehicle and (UnitInVehicle("player") or UnitOnTaxi("player")) then return true end
+    if hideWhen.hideDead and UnitIsDeadOrGhost("player") then return true end
+    if hideWhen.hideResting and IsResting() then return true end
+    if hideWhen.hideSolo and not IsInGroup() then return true end
+    if hideWhen.hideInGroup and IsInGroup() then return true end
+    if hideWhen.hideInRaid and IsInRaid() then return true end
+    if hideWhen.hideInInstance and IsInInstance() then return true end
+    if hideWhen.hideInEncounter then --[[ Can't detect without CDMGroups ]] end
+    if hideWhen.hideInPetBattle and C_PetBattles and C_PetBattles.IsInBattle() then return true end
+    if hideWhen.hidePvP and (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) then return true end
+    if hideWhen.hideDragonriding and UnitPowerBarID("player") == 631 then return true end
+    if hideWhen.hideNoTarget and not UnitExists("target") then return true end
+    if hideWhen.hideHasTarget and UnitExists("target") then return true end
+    -- Casting: no reliable non-secret API fallback, skip in fallback
+    -- (events won't be tracked without CDMGroups, so these won't fire)
+    if hideWhen.hideStealthed and IsStealthed() then return true end
+    if hideWhen.hideFlying and IsFlying() then return true end
+    if hideWhen.hideSwimming and IsSwimming() then return true end
+  end
+  return false
+end
+
+-- Get hideWhen table from cfg, with backward compat migration from old hideOutOfCombat
+local function GetHideWhen(cfg)
+  if not cfg or not cfg.behavior then return nil end
+  -- New format
+  if cfg.behavior.hideWhen and type(cfg.behavior.hideWhen) == "table" then
+    -- Migrate old hideOutOfCombat if it's still set alongside new table
+    if cfg.behavior.hideOutOfCombat then
+      cfg.behavior.hideWhen.hideOOC = true
+      cfg.behavior.hideOutOfCombat = nil
+    end
+    return cfg.behavior.hideWhen
+  end
+  -- Migrate old hideOutOfCombat → hideWhen table
+  if cfg.behavior.hideOutOfCombat then
+    cfg.behavior.hideWhen = { hideOOC = true }
+    cfg.behavior.hideOutOfCombat = nil
+    return cfg.behavior.hideWhen
+  end
+  return nil
+end
+
+-- Expose for Display bars, Resources, and other modules
+ns.CooldownBars.EvaluateHideConditions = EvaluateHideConditions
+ns.CooldownBars.GetHideWhen = GetHideWhen
+
 -- Check if ArcUI options panel is currently open
 local function IsOptionsPanelOpen()
   local AceConfigDialog = LibStub and LibStub("AceConfigDialog-3.0", true)
@@ -2024,7 +2148,7 @@ local function UpdateCooldownBar(barData)
   -- Get config
   local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, "cooldown")
   local hideWhenReady = cfg and cfg.behavior and cfg.behavior.hideWhenReady
-  local hideOutOfCombat = cfg and cfg.behavior and cfg.behavior.hideOutOfCombat
+  local hideWhen = cfg and GetHideWhen(cfg)
   
   -- Get duration objects
   local chargeDurObj = C_Spell.GetSpellChargeDuration(spellID)
@@ -2060,7 +2184,7 @@ local function UpdateCooldownBar(barData)
   local shouldShow = true
   local isPreviewMode = false
   if hideWhenReady and isReady then shouldShow = false end
-  if hideOutOfCombat and not UnitAffectingCombat("player") then shouldShow = false end
+  if EvaluateHideConditions(hideWhen) then shouldShow = false end
   
   -- Check if hidden by spec/talent
   if barData.hiddenBySpec then shouldShow = false end
@@ -2154,8 +2278,9 @@ local function UpdateCooldownBar(barData)
   local useColorCurve = colorCurve ~= nil and cfg and cfg.display and cfg.display.durationColorCurveEnabled
   
   if durObj then
-    -- (EXACT COPY FROM CDT.UpdateBar)
-    local interpolation = Enum.StatusBarInterpolation.ExponentialEaseOut
+    -- (EXACT COPY FROM CDT.UpdateBar) - with enableSmoothing toggle support
+    local smoothing = (cfg.display.enableSmoothing ~= false)  -- Default true
+    local interpolation = smoothing and Enum.StatusBarInterpolation.ExponentialEaseOut or Enum.StatusBarInterpolation.None
     
     -- Get fill direction setting (default Drain = RemainingTime)
     local direction = Enum.StatusBarTimerDirection.RemainingTime
@@ -2361,7 +2486,7 @@ UpdateChargeBar = function(barData)
   -- Check hide when full charges behavior
   local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, "charge")
   local hideWhenFull = cfg and cfg.behavior and cfg.behavior.hideWhenFullCharges
-  local hideOutOfCombat = cfg and cfg.behavior and cfg.behavior.hideOutOfCombat
+  local hideWhen = cfg and GetHideWhen(cfg)
   
   -- Determine visibility
   local shouldShow = true
@@ -2369,7 +2494,7 @@ UpdateChargeBar = function(barData)
   if hideWhenFull and detectedCharges >= maxCharges then
     shouldShow = false
   end
-  if hideOutOfCombat and not UnitAffectingCombat("player") then
+  if EvaluateHideConditions(hideWhen) then
     shouldShow = false
   end
   
@@ -2427,7 +2552,8 @@ UpdateChargeBar = function(barData)
     -- Set timer on all recharge bars - auto-animates until next refresh
     -- No comparison needed - just pass the duration object to SetTimerDuration
     if barData.cachedChargeDurObj then
-      local interpolation = Enum.StatusBarInterpolation.ExponentialEaseOut
+      local smoothing = (cfg and cfg.display and cfg.display.enableSmoothing ~= false)  -- Default true
+      local interpolation = smoothing and Enum.StatusBarInterpolation.ExponentialEaseOut or Enum.StatusBarInterpolation.None
       
       -- Get fill direction setting (default Fill = ElapsedTime for charge bars)
       -- Charge bars default to "fill" behavior (bar fills up as charge regenerates)
@@ -2762,6 +2888,13 @@ local function UpdateResourceBar(barData)
     shouldShow = false
   end
   
+  -- Check hide conditions
+  local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(barData.spellID, "resource")
+  local hideWhen = cfg and GetHideWhen(cfg)
+  if EvaluateHideConditions(hideWhen) then
+    shouldShow = false
+  end
+  
   -- If would be hidden but options panel is open, show at preview opacity
   if not shouldShow and IsOptionsPanelOpen() then
     isPreviewMode = true
@@ -2774,7 +2907,7 @@ local function UpdateResourceBar(barData)
   end
   
   barData.frame:Show()
-  local frameOpacity = isPreviewMode and PREVIEW_OPACITY or 1.0
+  local frameOpacity = isPreviewMode and PREVIEW_OPACITY or (cfg and cfg.display and cfg.display.opacity or 1.0)
   barData.frame:SetAlpha(frameOpacity)
   
   local currentPower = UnitPower("player", barData.powerType)
@@ -3153,6 +3286,7 @@ local DISPLAY_DEFAULTS = {
   barOrientation = "horizontal",    -- "horizontal" or "vertical"
   barReverseFill = false,           -- Reverse fill direction
   durationBarFillMode = "drain",    -- "drain" (shrinks) or "fill" (grows) - for duration bars only
+  enableSmoothing = true,           -- Smooth interpolation on bar fill (ExponentialEaseOut)
   useGradient = false,
   
   -- Colors
@@ -3524,7 +3658,7 @@ function ns.CooldownBars.GetBarConfig(spellID, barType)
       },
       display = DeepCopy(DISPLAY_DEFAULTS),
       behavior = {
-        hideOutOfCombat = false,
+        hideWhen = {},
         hideWhenReady = false,
         showOnSpecs = { GetSpecialization() or 1 },  -- Default to current spec only
       },
@@ -5752,7 +5886,17 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         -- Build list of tick positions (as fraction 0-1)
         local tickPositions = {}
         
-        if tickMode == "custom" then
+        -- STACK BAR AUTO-TICKS: divides bar evenly at each stack boundary
+        local isStackBar = cfg.tracking and cfg.tracking.barMode == "stack"
+        local useAutoStackTicks = isStackBar and (display.autoStackTicks ~= false)  -- default true for stack bars
+        
+        if useAutoStackTicks and isStackBar then
+          -- Stack mode: one tick per stack boundary
+          local maxStacks = cfg.tracking.maxStacks or 4
+          for i = 1, maxStacks - 1 do
+            table.insert(tickPositions, i / maxStacks)
+          end
+        elseif tickMode == "custom" then
           -- Custom mode: use specific values from abilityThresholds or customTickValues
           local customAsPercent = display.customTicksAsPercent
           if cfg.abilityThresholds then
@@ -5850,7 +5994,7 @@ end
 
 -- ===================================================================
 -- FORCE UPDATE (re-evaluates visibility and state)
--- Called when behavior settings change (hideWhenReady, hideOutOfCombat, etc.)
+-- Called when behavior settings change (hideWhenReady, hideWhen conditions, etc.)
 -- ===================================================================
 function ns.CooldownBars.ForceUpdate(spellID, barType)
   if not spellID or not barType then return end
@@ -6271,6 +6415,7 @@ function ns.CooldownBars.GetTimerConfig(timerID)
         enabled = true,
         timerID = timerID,
         barType = "timer",
+        barMode = "timer",            -- "timer" or "stack"
         triggerType = "spellcast",    -- "spellcast", "Aura Gained", "Aura Lost"
         triggerSpellID = 0,           -- For spellcast triggers
         triggerCooldownID = 0,        -- CDM cooldownID for aura triggers
@@ -6279,11 +6424,18 @@ function ns.CooldownBars.GetTimerConfig(timerID)
         barName = "Timer",
         iconTextureID = 134400,
         preset = "arcui",
+        -- Stack bar settings (only used when barMode = "stack")
+        maxStacks = 4,
+        stackDuration = 20,
+        stackExpireByDuration = true,
+        stackResetOnDeath = true,
+        generators = {},
+        spenders = {},
       },
       display = DeepCopy(DISPLAY_DEFAULTS),
       behavior = {
         hideWhenInactive = true,
-        hideOutOfCombat = false,
+        hideWhen = {},
         showOnSpecs = {},
       },
     }
@@ -6297,6 +6449,28 @@ function ns.CooldownBars.GetTimerConfig(timerID)
     local cfg = ns.db.char.timerBarConfigs[timerID]
     if cfg.display and cfg.display.showReadyText == nil then
       cfg.display.showReadyText = false
+    end
+    -- Migration: add barMode if missing
+    if cfg.tracking and not cfg.tracking.barMode then
+      cfg.tracking.barMode = "timer"
+    end
+    -- Migration: add stack fields if missing
+    if cfg.tracking then
+      if not cfg.tracking.maxStacks then cfg.tracking.maxStacks = 4 end
+      if not cfg.tracking.stackDuration then cfg.tracking.stackDuration = 20 end
+      -- Migrate from old stackExpiryMode to toggle-based fields
+      if cfg.tracking.stackExpiryMode then
+        local mode = cfg.tracking.stackExpiryMode
+        cfg.tracking.stackExpireByDuration = (mode == "duration")
+        cfg.tracking.stackResetOnDeath = (mode ~= "never")
+        cfg.tracking.stackExpiryMode = nil  -- Remove old field
+      end
+      if cfg.tracking.stackExpireByDuration == nil then
+        cfg.tracking.stackExpireByDuration = (cfg.tracking.stackDuration or 0) > 0
+      end
+      if cfg.tracking.stackResetOnDeath == nil then cfg.tracking.stackResetOnDeath = true end
+      if not cfg.tracking.generators then cfg.tracking.generators = {} end
+      if not cfg.tracking.spenders then cfg.tracking.spenders = {} end
     end
   end
   
@@ -6529,6 +6703,11 @@ local function CreateTimerBar(index)
     customColor = nil,
     fillMode = "drain",
     isVertical = false,
+    -- Stack bar state
+    currentStacks = 0,
+    stackMaxStacks = 0,
+    stackExpiresAt = nil,
+    isStackMode = false,
   }
   
   frame.barData = barData
@@ -6558,6 +6737,16 @@ UpdateTimerBar = function(barData)
   local cfg = ns.CooldownBars.GetTimerConfig(timerID)
   if not cfg then return end
   
+  -- ZERO CPU when disabled: hide bar, kill scripts, bail out
+  if not cfg.tracking.enabled then
+    barData.frame:Hide()
+    barData.bar:SetScript("OnUpdate", nil)
+    if barData.nameTextFrame then barData.nameTextFrame:Hide() end
+    if barData.durationTextFrame then barData.durationTextFrame:Hide() end
+    barData.isActive = false
+    return
+  end
+  
   -- Check talent conditions
   local talentAllowed = ns.CooldownBars.ShouldShowForTimer(timerID)
   barData.hiddenByTalent = not talentAllowed
@@ -6566,13 +6755,31 @@ UpdateTimerBar = function(barData)
   
   -- Get behavior settings
   local hideWhenInactive = cfg.behavior and cfg.behavior.hideWhenInactive
-  local hideOutOfCombat = cfg.behavior and cfg.behavior.hideOutOfCombat
+  local hideWhen = GetHideWhen(cfg)
+  local isStackMode = (cfg.tracking.barMode == "stack")
+  barData.isStackMode = isStackMode
   
+  -- For stack bars, check stack expiry (only when expire-by-duration is enabled)
+  if isStackMode and barData.stackExpiresAt then
+    if cfg.tracking.stackExpireByDuration ~= false then
+      local stackDur = cfg.tracking.stackDuration or 0
+      if stackDur > 0 and GetTime() >= barData.stackExpiresAt then
+        barData.currentStacks = 0
+        barData.stackExpiresAt = nil
+      end
+    end
+  end
+
   -- Determine visibility
   local shouldShow = true
   if not talentAllowed then shouldShow = false end
-  if hideWhenInactive and not barData.isActive then shouldShow = false end
-  if hideOutOfCombat and not UnitAffectingCombat("player") then shouldShow = false end
+  if isStackMode then
+    -- Stack bars: "inactive" means 0 stacks
+    if hideWhenInactive and barData.currentStacks <= 0 then shouldShow = false end
+  else
+    if hideWhenInactive and not barData.isActive then shouldShow = false end
+  end
+  if EvaluateHideConditions(hideWhen) then shouldShow = false end
   
   -- Preview mode when options panel is open - only preview if bar wouldn't normally show
   local isPreviewMode = false
@@ -6604,7 +6811,7 @@ UpdateTimerBar = function(barData)
     barData.durationTextFrame:SetAlpha(frameOpacity)
   end
   
-  -- Set icon texture (user override takes priority)
+  -- Set icon texture (user override > trigger spell > first generator)
   local iconTexture = cfg.tracking.iconTextureID or 134400
   if cfg.tracking.iconOverride and cfg.tracking.iconOverride > 0 then
     iconTexture = C_Spell.GetSpellTexture(cfg.tracking.iconOverride) or cfg.tracking.iconOverride
@@ -6612,6 +6819,9 @@ UpdateTimerBar = function(barData)
     iconTexture = C_Spell.GetSpellTexture(cfg.tracking.triggerSpellID) or iconTexture
   elseif cfg.tracking.triggerAuraID and cfg.tracking.triggerAuraID > 0 then
     iconTexture = C_Spell.GetSpellTexture(cfg.tracking.triggerAuraID) or iconTexture
+  elseif isStackMode and cfg.tracking.generators and cfg.tracking.generators[1] then
+    local genID = cfg.tracking.generators[1].spellID
+    if genID then iconTexture = C_Spell.GetSpellTexture(genID) or iconTexture end
   end
   barData.icon:SetTexture(iconTexture)
   
@@ -6631,6 +6841,67 @@ UpdateTimerBar = function(barData)
     if barData.useFreeDurationText and barData.freeDurationText then
       barData.freeDurationText:SetText(txt)
     end
+  end
+  
+  -- ===================================================================
+  -- STACK BAR MODE: Direct value-based fill, no DurationObject
+  -- ===================================================================
+  if isStackMode then
+    local maxStacks = cfg.tracking.maxStacks or 4
+    local curStacks = barData.currentStacks or 0
+    barData.stackMaxStacks = maxStacks
+    
+    -- No OnUpdate needed for stack bars (event-driven)
+    barData.bar:SetScript("OnUpdate", nil)
+    
+    -- Set bar fill directly
+    barData.bar:SetMinMaxValues(0, maxStacks)
+    barData.bar:SetValue(curStacks)
+    
+    -- Set color
+    local barTexture = barData.bar:GetStatusBarTexture()
+    if barTexture then
+      barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+    end
+    
+    -- Update text: show "N/M" stacks
+    if barData.showDuration ~= false then
+      if curStacks > 0 or isPreviewMode then
+        SetDurationText(curStacks .. "/" .. maxStacks)
+        barData.text:SetAlpha(1)
+        if barData.freeDurationText then barData.freeDurationText:SetAlpha(1) end
+        barData.readyText:SetAlpha(0)
+      elseif barData.showZeroWhenReady then
+        SetDurationText("0/" .. maxStacks)
+        barData.text:SetAlpha(1)
+        if barData.freeDurationText then barData.freeDurationText:SetAlpha(1) end
+        barData.readyText:SetAlpha(0)
+      else
+        barData.text:SetAlpha(0)
+        if barData.freeDurationText then barData.freeDurationText:SetAlpha(0) end
+        if showReadyText then
+          barData.readyText:SetAlpha(1)
+        else
+          barData.readyText:SetAlpha(0)
+        end
+      end
+    else
+      barData.text:SetAlpha(0)
+      if barData.freeDurationText then barData.freeDurationText:SetAlpha(0) end
+      barData.readyText:SetAlpha(0)
+    end
+    
+    -- Ready fill: show when 0 stacks and readyText enabled
+    if barData.readyFill then
+      if curStacks <= 0 and showReadyText and not isPreviewMode then
+        barData.readyFill:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, 1)
+        barData.readyFill:SetAlpha(1)
+      else
+        barData.readyFill:SetAlpha(0)
+      end
+    end
+    
+    return  -- Stack bars handled completely, don't fall through to timer logic
   end
   
   -- If timer is not active, show as ready (full bar) or empty (unlimited toggle-off)
@@ -6913,7 +7184,8 @@ function ns.CooldownBars.StartTimer(timerID)
   barData.maxDuration = duration  -- Store for tick marks
   
   -- Apply to StatusBar
-  local interpolation = Enum.StatusBarInterpolation.ExponentialEaseOut
+  local smoothing = (cfg.display.enableSmoothing ~= false)  -- Default true
+  local interpolation = smoothing and Enum.StatusBarInterpolation.ExponentialEaseOut or Enum.StatusBarInterpolation.None
   local direction = Enum.StatusBarTimerDirection.RemainingTime
   if barData.fillMode == "fill" then
     direction = Enum.StatusBarTimerDirection.ElapsedTime
@@ -7314,13 +7586,205 @@ local function IsAuraActive(cooldownID, auraType)
 end
 
 -- ===================================================================
+-- STACK ENTRY AURA STATE TRACKING
+-- Tracks CDM frame presence per aura-based generator/spender entry
+-- ===================================================================
+local stackEntryAuraStates = {}  -- [timerID] = { gen = { [cooldownID] = wasActive }, sp = { [cooldownID] = wasActive } }
+
+-- Helper: apply stack change from a matching entry
+local function ApplyStackChange(timerID, barData, cfg, entry, isGenerator)
+  local maxStacks = cfg.tracking.maxStacks or 4
+  local count = entry.stacks or 1
+  if isGenerator then
+    barData.currentStacks = math.min(maxStacks, (barData.currentStacks or 0) + count)
+    -- Set expiry timer only when expire-by-duration is enabled
+    if cfg.tracking.stackExpireByDuration ~= false then
+      local stackDur = cfg.tracking.stackDuration or 0
+      if stackDur > 0 then
+        barData.stackExpiresAt = GetTime() + stackDur
+      else
+        barData.stackExpiresAt = nil
+      end
+    else
+      barData.stackExpiresAt = nil
+    end
+    UpdateTimerBar(barData)
+    Log("Stack generated (" .. (entry.triggerType or "spellcast") .. "): " .. timerID .. " +" .. count .. " = " .. barData.currentStacks)
+  else
+    if (barData.currentStacks or 0) > 0 then
+      barData.currentStacks = math.max(0, barData.currentStacks - count)
+      if barData.currentStacks <= 0 then
+        barData.stackExpiresAt = nil
+      end
+      UpdateTimerBar(barData)
+      Log("Stack consumed (" .. (entry.triggerType or "spellcast") .. "): " .. timerID .. " -" .. count .. " = " .. barData.currentStacks)
+    end
+  end
+end
+
+-- Process event-based stack triggers (spellcast, glowShow, glowHide)
+-- Called from event handlers with the matching spellID
+local function ProcessEventStackTrigger(triggerType, spellID)
+  for timerID in pairs(ns.CooldownBars.activeTimers) do repeat
+    local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+    if not cfg or not cfg.tracking.enabled or cfg.tracking.barMode ~= "stack" then break end
+    
+    local barIndex = ns.CooldownBars.activeTimers[timerID]
+    local barData = barIndex and ns.CooldownBars.timerBars[barIndex]
+    if not barData then break end
+    
+    -- Check generators
+    for _, gen in ipairs(cfg.tracking.generators or {}) do
+      if (gen.triggerType or "spellcast") == triggerType and tonumber(gen.spellID) == spellID then
+        ApplyStackChange(timerID, barData, cfg, gen, true)
+        break
+      end
+    end
+    
+    -- Check spenders
+    for _, sp in ipairs(cfg.tracking.spenders or {}) do
+      if (sp.triggerType or "spellcast") == triggerType and tonumber(sp.spellID) == spellID then
+        ApplyStackChange(timerID, barData, cfg, sp, false)
+        break
+      end
+    end
+  until true end
+end
+
+-- ===================================================================
+-- HOOK-BASED AURA STACK TRIGGERS
+-- Hooks CDM frame SetAuraInstanceInfo/ClearAuraInstanceInfo instead of polling.
+-- Zero CPU when idle — hooks only fire when CDM updates frame aura state.
+-- ===================================================================
+
+-- Lookup: cooldownID → { {timerID, entry, isGenerator}, ... }
+local stackAuraLookup = {}
+-- Track which CDM frames we've hooked (frame ref → true)
+local stackAuraHookedFrames = {}
+
+-- Rebuild lookup table from all active stack bar configs
+local function RebuildStackAuraLookup()
+  wipe(stackAuraLookup)
+  
+  for timerID in pairs(ns.CooldownBars.activeTimers) do
+    local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+    if not cfg or not cfg.tracking.enabled or cfg.tracking.barMode ~= "stack" then
+      -- skip
+    else
+      -- Generators
+      for _, gen in ipairs(cfg.tracking.generators or {}) do
+        local tt = gen.triggerType
+        if tt == "auraGained" or tt == "auraLost" then
+          local cdID = tonumber(gen.cooldownID)
+          if cdID and cdID > 0 then
+            stackAuraLookup[cdID] = stackAuraLookup[cdID] or {}
+            table.insert(stackAuraLookup[cdID], { timerID = timerID, entry = gen, isGenerator = true })
+          end
+        end
+      end
+      -- Spenders
+      for _, sp in ipairs(cfg.tracking.spenders or {}) do
+        local tt = sp.triggerType
+        if tt == "auraGained" or tt == "auraLost" then
+          local cdID = tonumber(sp.cooldownID)
+          if cdID and cdID > 0 then
+            stackAuraLookup[cdID] = stackAuraLookup[cdID] or {}
+            table.insert(stackAuraLookup[cdID], { timerID = timerID, entry = sp, isGenerator = false })
+          end
+        end
+      end
+    end
+  end
+end
+
+-- Dispatch aura state change to matching stack entries
+local function OnCDMFrameAuraChanged(frame, gained)
+  local cooldownID = frame.cooldownID
+  if not cooldownID then
+    if frame.cooldownInfo then cooldownID = frame.cooldownInfo.cooldownID end
+  end
+  if not cooldownID then return end
+  
+  local entries = stackAuraLookup[cooldownID]
+  if not entries then return end
+  
+  for _, info in ipairs(entries) do
+    local cfg = ns.CooldownBars.GetTimerConfig(info.timerID)
+    if not cfg or not cfg.tracking.enabled then
+      -- skip disabled
+    else
+      local barIndex = ns.CooldownBars.activeTimers[info.timerID]
+      local barData = barIndex and ns.CooldownBars.timerBars[barIndex]
+      if barData then
+        local tt = info.entry.triggerType
+        if (tt == "auraGained" and gained) or (tt == "auraLost" and not gained) then
+          ApplyStackChange(info.timerID, barData, cfg, info.entry, info.isGenerator)
+        end
+      end
+    end
+  end
+end
+
+-- Hook a CDM frame for aura state changes (safe to call multiple times)
+local function HookCDMFrameForStackAura(frame)
+  if not frame or stackAuraHookedFrames[frame] then return end
+  stackAuraHookedFrames[frame] = true
+  
+  -- SetAuraInstanceInfo = aura gained (CDM shows buff/debuff on this frame)
+  if frame.SetAuraInstanceInfo then
+    hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
+      OnCDMFrameAuraChanged(self, true)
+    end)
+  end
+  
+  -- ClearAuraInstanceInfo = aura lost (CDM removes buff/debuff from this frame)
+  if frame.ClearAuraInstanceInfo then
+    hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
+      OnCDMFrameAuraChanged(self, false)
+    end)
+  end
+end
+
+-- Scan CDM frames and hook any that match our aura lookup
+local function HookStackAuraCDMFrames()
+  RebuildStackAuraLookup()
+  
+  -- Nothing to hook if no aura-based stack entries
+  if not next(stackAuraLookup) then return end
+  
+  -- Hook all CDM frames matching our cooldownIDs
+  for cooldownID in pairs(stackAuraLookup) do
+    local cdmFrame = FindCDMFrameByCooldownID(cooldownID)
+    if cdmFrame then
+      HookCDMFrameForStackAura(cdmFrame)
+    end
+  end
+end
+
+-- Re-hook when CDM scan completes (frames may be recycled)
+local origOnCDMScanComplete = ns.CooldownBars.OnCDMScanComplete
+ns.CooldownBars.OnCDMScanComplete = function()
+  if origOnCDMScanComplete then origOnCDMScanComplete() end
+  HookStackAuraCDMFrames()
+end
+
+-- Also hook when a stack bar config changes (called from AddStack* functions)
+local function OnStackConfigChanged(timerID)
+  stackEntryAuraStates[timerID] = nil
+  HookStackAuraCDMFrames()
+end
+
+-- ===================================================================
 -- TIMER EVENT HANDLING
 -- ===================================================================
 local timerEventFrame = CreateFrame("Frame")
 timerEventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 timerEventFrame:RegisterEvent("PLAYER_DEAD")
 timerEventFrame:RegisterEvent("UNIT_AURA")
+timerEventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 timerEventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+timerEventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+timerEventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 -- Aura detection uses polling since we need to check CDM frames
 local AURA_CHECK_INTERVAL = 0.1  -- 10fps for aura checks
@@ -7331,21 +7795,63 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
     local unit, _, spellID = ...
     if unit ~= "player" then return end
     
-    for timerID in pairs(ns.CooldownBars.activeTimers) do
+    for timerID in pairs(ns.CooldownBars.activeTimers) do repeat
       local cfg = ns.CooldownBars.GetTimerConfig(timerID)
-      if cfg and cfg.tracking.enabled and cfg.tracking.triggerType == "spellcast" then
+      if not cfg or not cfg.tracking.enabled then break end
+      
+      -- ===== STACK BAR MODE =====
+      if cfg.tracking.barMode == "stack" then
+        -- Spellcast triggers handled by ProcessEventStackTrigger (called below)
+        break  -- stack mode handled, skip timer logic
+      end
+      
+      -- ===== TIMER BAR MODE =====
+      if cfg.tracking.triggerType == "spellcast" then
         if cfg.tracking.triggerSpellID == spellID then
           ns.CooldownBars.StartTimer(timerID)
         end
       end
       
       -- Check for differentSpell cancel method
-      if cfg and cfg.tracking.enabled and cfg.tracking.unlimitedDuration then
+      if cfg.tracking.unlimitedDuration then
         local cancelMethod = cfg.tracking.cancelMethod
         if cancelMethod == "differentSpell" then
           local cancelSpellID = cfg.tracking.cancelSpellID
           if cancelSpellID and cancelSpellID > 0 and cancelSpellID == spellID then
             CancelUnlimitedTimer(timerID, "different spell")
+          end
+        end
+      end
+      
+    until true end
+    
+    -- Process spellcast stack triggers for all stack bars
+    ProcessEventStackTrigger("spellcast", spellID)
+    
+  elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
+    local spellID = ...
+    if not spellID then return end
+    -- Process glow show stack triggers for all stack bars
+    ProcessEventStackTrigger("glowShow", spellID)
+    
+  elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
+    local spellID = ...
+    if not spellID then return end
+    -- Process glow hide stack triggers for all stack bars
+    ProcessEventStackTrigger("glowHide", spellID)
+    
+    -- Also check unlimited timer cancel-on-glow-hide (existing logic)
+    for timerID in pairs(ns.CooldownBars.activeTimers) do
+      local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+      if cfg and cfg.tracking.enabled and cfg.tracking.unlimitedDuration then
+        local cancelMethod = cfg.tracking.cancelMethod
+        if cancelMethod == "overlayHide" then
+          local cancelSpellID = cfg.tracking.cancelSpellID
+          if not cancelSpellID or cancelSpellID <= 0 then
+            cancelSpellID = cfg.tracking.triggerSpellID
+          end
+          if spellID == cancelSpellID then
+            CancelUnlimitedTimer(timerID, "overlay glow hide")
           end
         end
       end
@@ -7379,35 +7885,49 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
       end
     end
     
-  elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-    local spellID = ...
-    for timerID in pairs(ns.CooldownBars.activeTimers) do
-      local cfg = ns.CooldownBars.GetTimerConfig(timerID)
-      if cfg and cfg.tracking.enabled and cfg.tracking.unlimitedDuration then
-        local cancelMethod = cfg.tracking.cancelMethod
-        if cancelMethod == "overlayHide" then
-          local cancelSpellID = cfg.tracking.cancelSpellID
-          if not cancelSpellID or cancelSpellID <= 0 then
-            cancelSpellID = cfg.tracking.triggerSpellID
+  elseif event == "PLAYER_DEAD" then
+    -- Cancel all unlimited timers and reset stack bars on death
+    for timerID, barIndex in pairs(ns.CooldownBars.activeTimers) do
+      local barData = ns.CooldownBars.timerBars[barIndex]
+      if barData then
+        -- Reset stack bars (respects stackResetOnDeath toggle)
+        if barData.isStackMode then
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or cfg.tracking.stackResetOnDeath ~= false then
+            barData.currentStacks = 0
+            barData.stackExpiresAt = nil
+            -- Clear aura states so they re-init cleanly
+            stackEntryAuraStates[timerID] = nil
+            UpdateTimerBar(barData)
+            Log("Stack bar reset on death: " .. timerID)
           end
-          if spellID == cancelSpellID then
-            CancelUnlimitedTimer(timerID, "overlay glow hide")
-          end
+        -- Cancel unlimited timers
+        elseif barData.isActive and barData.isUnlimited then
+          barData.isActive = false
+          barData.isUnlimited = false
+          barData.durObj = nil
+          barData.bar:SetScript("OnUpdate", nil)
+          UpdateTimerBar(barData)
+          Log("Timer cancelled on death (unlimited): " .. timerID)
         end
       end
     end
-    
-  elseif event == "PLAYER_DEAD" then
-    -- Cancel all unlimited timers on death
+  end
+  
+  -- Combat state change: refresh all bars for hide conditions
+  -- NOTE: When CDMGroups is loaded, the hooksecurefunc on UpdateGroupVisibility
+  -- handles this for ALL state changes. This is a fallback for combat-only
+  -- in case CDMGroups isn't loaded, plus it handles timer bars immediately.
+  if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
     for timerID, barIndex in pairs(ns.CooldownBars.activeTimers) do
       local barData = ns.CooldownBars.timerBars[barIndex]
-      if barData and barData.isActive and barData.isUnlimited then
-        barData.isActive = false
-        barData.isUnlimited = false
-        barData.durObj = nil
-        barData.bar:SetScript("OnUpdate", nil)
-        UpdateTimerBar(barData)
-        Log("Timer cancelled on death (unlimited): " .. timerID)
+      if barData then UpdateTimerBar(barData) end
+    end
+    -- Also refresh cooldown/charge/resource bars on combat change
+    if not ns.CooldownBars._visHookInstalled then
+      -- CDMGroups hook not installed, refresh manually
+      if ns.CooldownBars.RefreshAllBarVisibility then
+        ns.CooldownBars.RefreshAllBarVisibility()
       end
     end
   end
@@ -7428,10 +7948,34 @@ timerEventFrame:SetScript("OnUpdate", function(self, elapsed)
   
   for timerID in pairs(ns.CooldownBars.activeTimers) do
     local cfg = ns.CooldownBars.GetTimerConfig(timerID)
-    if cfg and cfg.tracking.enabled then
+    if cfg and cfg.tracking.enabled then repeat
       local triggerType = cfg.tracking.triggerType
       
-      -- Aura trigger detection
+      -- Stack bar expiry check (only when expire-by-duration is enabled)
+      if cfg.tracking.barMode == "stack" then
+        local barIndex = ns.CooldownBars.activeTimers[timerID]
+        local barData = barIndex and ns.CooldownBars.timerBars[barIndex]
+        if barData and barData.currentStacks > 0 and barData.stackExpiresAt then
+          if cfg.tracking.stackExpireByDuration ~= false then
+            local stackDur = cfg.tracking.stackDuration or 0
+            if stackDur > 0 and GetTime() >= barData.stackExpiresAt then
+              barData.currentStacks = 0
+              barData.stackExpiresAt = nil
+              UpdateTimerBar(barData)
+              Log("Stack bar expired: " .. timerID)
+            end
+          end
+        end
+        -- Stack bars: still check visibility for panel changes
+        if barData then
+          if optionsPanelChanged or (optionsPanelOpen and not barData.frame:IsShown()) then
+            UpdateTimerBar(barData)
+          end
+        end
+        break  -- stack mode handled, skip timer logic
+      end
+      
+      -- Aura trigger detection (timer mode only)
       if triggerType == "Aura Gained" or triggerType == "Aura Lost" then
         local cooldownID = cfg.tracking.triggerCooldownID
         local auraType = cfg.tracking.auraType or "normal"
@@ -7493,7 +8037,8 @@ timerEventFrame:SetScript("OnUpdate", function(self, elapsed)
           UpdateTimerBar(barData)
         end
       end
-    end
+      
+    until true end
   end
 end)
 
@@ -7511,6 +8056,66 @@ timerRestoreFrame:SetScript("OnEvent", function(self, event)
     end)
     self:UnregisterAllEvents()
   end
+end)
+
+-- ===================================================================
+-- HIDE CONDITION REFRESH - Hooks CDMGroups visibility updates
+-- CDMGroups already tracks all world state (combat, mounted, dead, etc.)
+-- via event-driven handlers. We hook UpdateGroupVisibility so when any
+-- state changes, all bars re-evaluate their hide conditions instantly.
+-- ===================================================================
+
+function ns.CooldownBars.RefreshAllBarVisibility()
+  -- Cooldown (duration) bars
+  for spellID, barIndex in pairs(ns.CooldownBars.activeCooldowns or {}) do
+    local barData = ns.CooldownBars.bars and ns.CooldownBars.bars[barIndex]
+    if barData then
+      UpdateCooldownBar(barData)
+    end
+  end
+  -- Charge bars
+  for spellID, barIndex in pairs(ns.CooldownBars.activeCharges or {}) do
+    local barData = ns.CooldownBars.chargeBars and ns.CooldownBars.chargeBars[barIndex]
+    if barData then
+      UpdateChargeBar(barData)
+    end
+  end
+  -- Resource bars
+  for spellID, barIndex in pairs(ns.CooldownBars.activeResources or {}) do
+    local barData = ns.CooldownBars.resourceBars and ns.CooldownBars.resourceBars[barIndex]
+    if barData then
+      UpdateResourceBar(barData)
+    end
+  end
+  -- Timer bars
+  for timerID, barIndex in pairs(ns.CooldownBars.activeTimers or {}) do
+    local barData = ns.CooldownBars.timerBars and ns.CooldownBars.timerBars[barIndex]
+    if barData then
+      UpdateTimerBar(barData)
+    end
+  end
+end
+
+-- Install hook on CDMGroups.UpdateGroupVisibility so our bars update
+-- in sync with group visibility (same events: combat, mount, death, etc.)
+local function InstallVisibilityHook()
+  if not ns.CDMGroups or not ns.CDMGroups.UpdateGroupVisibility then return end
+  if ns.CooldownBars._visHookInstalled then return end
+  ns.CooldownBars._visHookInstalled = true
+  
+  hooksecurefunc(ns.CDMGroups, "UpdateGroupVisibility", function()
+    ns.CooldownBars.RefreshAllBarVisibility()
+  end)
+end
+
+-- Install after a delay to ensure CDMGroups is initialized
+local visHookFrame = CreateFrame("Frame")
+visHookFrame:RegisterEvent("PLAYER_LOGIN")
+visHookFrame:SetScript("OnEvent", function(self, event)
+  C_Timer.After(4, function()
+    InstallVisibilityHook()
+  end)
+  self:UnregisterAllEvents()
 end)
 
 -- ===================================================================
@@ -7588,6 +8193,71 @@ SlashCmdList["ARCUITIMER"] = function(msg)
     print("  /timer test - Start a test timer")
     print("  /timer list - List active timers")
     print("  /timer debug <cooldownID> - Debug CDM frame lookup")
+  end
+end
+
+-- ===================================================================
+-- STACK BAR SLASH COMMAND
+-- ===================================================================
+SLASH_ARCUISTACKBAR1 = "/stackbar"
+SlashCmdList["ARCUISTACKBAR"] = function(msg)
+  msg = msg and msg:trim() or ""
+  
+  if msg == "list" then
+    print("|cff00ccff[StackBars]|r Active stack bars:")
+    local count = 0
+    for timerID, barIndex in pairs(ns.CooldownBars.activeTimers) do
+      local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+      if cfg and cfg.tracking.barMode == "stack" then
+        local name = cfg.tracking.barName or "Stack Bar"
+        local barData = ns.CooldownBars.timerBars[barIndex]
+        local stacks = barData and barData.currentStacks or 0
+        local maxS = cfg.tracking.maxStacks or 4
+        local numGens = cfg.tracking.generators and #cfg.tracking.generators or 0
+        local numSpenders = cfg.tracking.spenders and #cfg.tracking.spenders or 0
+        print(string.format("  #%d: %s (%d/%d stacks) %dG/%dS", timerID, name, stacks, maxS, numGens, numSpenders))
+        count = count + 1
+      end
+    end
+    if count == 0 then print("  (none)") end
+    
+  elseif msg:match("^addgen%s+(%d+)%s+(%d+)%s*(%d*)") then
+    local timerID, spellID, stacks = msg:match("^addgen%s+(%d+)%s+(%d+)%s*(%d*)")
+    timerID = tonumber(timerID)
+    spellID = tonumber(spellID)
+    stacks = tonumber(stacks) or 1
+    if timerID and spellID then
+      ns.CooldownBars.AddStackGenerator(timerID, spellID, stacks)
+      local name = C_Spell.GetSpellName(spellID) or "ID:" .. spellID
+      print(string.format("|cff00ccff[StackBars]|r Added generator: %s (+%d) to bar #%d", name, stacks, timerID))
+    end
+    
+  elseif msg:match("^addsp%s+(%d+)%s+(%d+)%s*(%d*)") then
+    local timerID, spellID, stacks = msg:match("^addsp%s+(%d+)%s+(%d+)%s*(%d*)")
+    timerID = tonumber(timerID)
+    spellID = tonumber(spellID)
+    stacks = tonumber(stacks) or 1
+    if timerID and spellID then
+      ns.CooldownBars.AddStackSpender(timerID, spellID, stacks)
+      local name = C_Spell.GetSpellName(spellID) or "ID:" .. spellID
+      print(string.format("|cff00ccff[StackBars]|r Added spender: %s (-%d) to bar #%d", name, stacks, timerID))
+    end
+    
+  elseif msg:match("^set%s+(%d+)%s+(%d+)") then
+    local timerID, count = msg:match("^set%s+(%d+)%s+(%d+)")
+    timerID = tonumber(timerID)
+    count = tonumber(count)
+    if timerID and count then
+      ns.CooldownBars.SetStacks(timerID, count)
+      print(string.format("|cff00ccff[StackBars]|r Set bar #%d to %d stacks", timerID, count))
+    end
+    
+  else
+    print("|cff00ccff[StackBars]|r Commands:")
+    print("  /stackbar list - List active stack bars")
+    print("  /stackbar addgen <timerID> <spellID> [stacks] - Add generator")
+    print("  /stackbar addsp <timerID> <spellID> [stacks] - Add spender")
+    print("  /stackbar set <timerID> <count> - Set stacks manually")
   end
 end
 
@@ -7701,6 +8371,143 @@ function ns.CooldownBars.HookContainerForAnchoredBars(groupName)
   
   hookedContainersForCooldownBars[container] = true
   container:HookScript("OnSizeChanged", OnContainerSizeChangedForCooldownBars)
+end
+
+-- ===================================================================
+-- STACK BAR PUBLIC API
+-- ===================================================================
+
+-- Add a generator spell to a stack bar config
+function ns.CooldownBars.AddStackGenerator(timerID, spellID, stacks, triggerType, cooldownID)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or cfg.tracking.barMode ~= "stack" then return false end
+  cfg.tracking.generators = cfg.tracking.generators or {}
+  
+  triggerType = triggerType or "spellcast"
+  local isAuraType = (triggerType == "auraGained" or triggerType == "auraLost")
+  
+  -- For aura types, cooldownID is the key; for others, spellID
+  if isAuraType then
+    cooldownID = tonumber(cooldownID)
+    if not cooldownID or cooldownID <= 0 then return false end
+    -- Check for duplicate
+    for _, gen in ipairs(cfg.tracking.generators) do
+      if gen.triggerType == triggerType and tonumber(gen.cooldownID) == cooldownID then
+        gen.stacks = stacks or 1
+        return true
+      end
+    end
+    table.insert(cfg.tracking.generators, {
+      triggerType = triggerType,
+      cooldownID = cooldownID,
+      stacks = stacks or 1,
+    })
+  else
+    spellID = tonumber(spellID)
+    if not spellID or spellID <= 0 then return false end
+    -- Check for duplicate
+    for _, gen in ipairs(cfg.tracking.generators) do
+      if (gen.triggerType or "spellcast") == triggerType and tonumber(gen.spellID) == spellID then
+        gen.stacks = stacks or 1
+        return true
+      end
+    end
+    table.insert(cfg.tracking.generators, {
+      triggerType = triggerType ~= "spellcast" and triggerType or nil, -- nil = spellcast (backward compat)
+      spellID = spellID,
+      stacks = stacks or 1,
+    })
+  end
+  -- Clear aura states so they re-init
+  OnStackConfigChanged(timerID)
+  return true
+end
+
+-- Remove a generator spell from a stack bar config
+function ns.CooldownBars.RemoveStackGenerator(timerID, index)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or not cfg.tracking.generators then return false end
+  if index > 0 and index <= #cfg.tracking.generators then
+    table.remove(cfg.tracking.generators, index)
+    return true
+  end
+  return false
+end
+
+-- Add a spender spell to a stack bar config
+function ns.CooldownBars.AddStackSpender(timerID, spellID, stacks, triggerType, cooldownID)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or cfg.tracking.barMode ~= "stack" then return false end
+  cfg.tracking.spenders = cfg.tracking.spenders or {}
+  
+  triggerType = triggerType or "spellcast"
+  local isAuraType = (triggerType == "auraGained" or triggerType == "auraLost")
+  
+  if isAuraType then
+    cooldownID = tonumber(cooldownID)
+    if not cooldownID or cooldownID <= 0 then return false end
+    for _, sp in ipairs(cfg.tracking.spenders) do
+      if sp.triggerType == triggerType and tonumber(sp.cooldownID) == cooldownID then
+        sp.stacks = stacks or 1
+        return true
+      end
+    end
+    table.insert(cfg.tracking.spenders, {
+      triggerType = triggerType,
+      cooldownID = cooldownID,
+      stacks = stacks or 1,
+    })
+  else
+    spellID = tonumber(spellID)
+    if not spellID or spellID <= 0 then return false end
+    for _, sp in ipairs(cfg.tracking.spenders) do
+      if (sp.triggerType or "spellcast") == triggerType and tonumber(sp.spellID) == spellID then
+        sp.stacks = stacks or 1
+        return true
+      end
+    end
+    table.insert(cfg.tracking.spenders, {
+      triggerType = triggerType ~= "spellcast" and triggerType or nil,
+      spellID = spellID,
+      stacks = stacks or 1,
+    })
+  end
+  OnStackConfigChanged(timerID)
+  return true
+end
+
+-- Remove a spender spell from a stack bar config
+function ns.CooldownBars.RemoveStackSpender(timerID, index)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or not cfg.tracking.spenders then return false end
+  if index > 0 and index <= #cfg.tracking.spenders then
+    table.remove(cfg.tracking.spenders, index)
+    return true
+  end
+  return false
+end
+
+-- Manually set stacks (for testing/debugging)
+function ns.CooldownBars.SetStacks(timerID, count)
+  local barIndex = ns.CooldownBars.activeTimers[timerID]
+  if not barIndex then return false end
+  local barData = ns.CooldownBars.timerBars[barIndex]
+  if not barData then return false end
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or cfg.tracking.barMode ~= "stack" then return false end
+  
+  local maxStacks = cfg.tracking.maxStacks or 4
+  barData.currentStacks = math.min(math.max(count or 0, 0), maxStacks)
+  if barData.currentStacks > 0 then
+    local stackDur = cfg.tracking.stackDuration or 0
+    if stackDur > 0 then
+      barData.stackExpiresAt = GetTime() + stackDur
+    end
+  else
+    barData.stackExpiresAt = nil
+  end
+  UpdateTimerBar(barData)
+  return true
 end
 
 -- ===================================================================

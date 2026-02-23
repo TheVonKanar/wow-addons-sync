@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1410,
 ["lastSanitation"] = 3,
-["session"] = 1393,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -805,8 +805,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
 },
 {
@@ -835,8 +835,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["time"] = "2025/12/05 18:53:28",
 ["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
 ["counter"] = 2,
 },
 {
@@ -849,20 +849,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
@@ -875,8 +875,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1272,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 2,
 },
 {
@@ -977,8 +977,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
+["time"] = "2026/01/26 20:42:33",
 ["counter"] = 1,
 },
 {
@@ -1007,8 +1007,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["session"] = 1350,
 ["time"] = "2026/01/28 18:15:55",
+["session"] = 1350,
 ["counter"] = 1,
 },
 {
@@ -1021,14 +1021,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["time"] = "2026/01/30 00:15:27",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:27",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["time"] = "2026/01/30 00:15:28",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:28",
 ["counter"] = 1,
 },
 {
@@ -1078,6 +1078,30 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:212: in function <...zzard_SharedMapDataProviders/AreaPOIDataProvider.lua:194>\n",
 ["session"] = 1383,
 ["counter"] = 7,
+},
+{
+["message"] = "...ddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua:1073: attempt to perform boolean test on field 'outOfRange' (a secret boolean value tainted by 'LargerMacroIconSelection')",
+["time"] = "2026/02/22 12:37:59",
+["locals"] = "frame = CompactPartyFrameMember1 {\n dispelDebuffFrames = <table> {\n }\n debuffFrames = <table> {\n }\n DispelOverlayAuraOffset = 2\n Debuff2 = CompactPartyFrameMember1Debuff2 {\n }\n maxDispelDebuffs = 3\n healthDirty = true\n powerBar = CompactPartyFrameMember1PowerBar {\n }\n privateAuraBorderScale = 1\n updateAllEvent = \"GROUP_ROSTER_UPDATE\"\n myHealPrediction = CompactPartyFrameMember1MyHealPrediction {\n }\n CenterDefensiveBuff = Button {\n }\n needsUpdate = true\n groupType = 4\n overHealAbsorbGlow = CompactPartyFrameMember1OverHealAbsorbGlow {\n }\n newUnit = true\n myHealAbsorbOverlay = CompactPartyFrameMember1MyHealAbsorbOverlay {\n }\n maxDebuffs = 3\n unit = \"player\"\n aurasDirty = true\n dispels = <table> {\n }\n maxBuffs = 6\n maxPrivateAuras = 5\n editModeStatus = \"IncomingResurrection\"\n displayedUnit = \"player\"\n debuffs = <table> {\n }\n PrivateAuraAnchor4 = Frame {\n }\n privateAuraSize = 11\n background = CompactPartyFrameMember1Background {\n }\n IsPingable = true\n healthBar = CompactPartyFrameMember1HealthBar {\n }\n overAbsorbGlow = CompactPartyFrameMember1OverAbsorbGlow {\n }\n PrivateAuraAnchor5 = Frame {\n }\n PrivateAuraAnchors = <table> {\n }\n totalAbsorb = CompactPartyFrameMember1TotalAbsorb {\n }\n name = CompactPartyFrameMember1Name {\n }\n aggroHighlight = CompactPartyFrameMember1AggroHighlight {\n }\n hideCastbar = false\n myHealAbsorbRightShadow = CompactPartyFrameMember1MyHealAbsorbRightShadow {\n }\n healPredictionDirty = true\n selectionHighlight = CompactPartyFrameMember1SelectionHighlight {\n }\n dispelsChanged = false\n Debuff3 = CompactPartyFrameMember1Debuff3 {\n }\n myHealAbsorbLeftShadow = CompactPartyFrameMember1MyHealAbsorbLeftShadow {\n }\n totalAbsorbOverlay = CompactPartyFrameMember1TotalAbsorbOverlay {\n }\n PrivateAuraAnchor2 = Frame {\n }\n debuffsChanged = false\n inDistance = true\n DispelOverlay = Frame {\n }\n PrivateAuraAnchor3 = Frame {\n }\n statusText = CompactPartyFrameMember1StatusText {\n }\n optionTable = <table> {\n }\n PrivateAuraAnchor1 = Frame {\n }\n roleIcon = CompactPartyFrameMember1RoleIcon {\n }\n otherHealPrediction = CompactPartyFrameMember1OtherHealPrediction {\n }\n unitExists = true\n inVehicle = false\n Debuff1 = CompactPartyFrameMember1Debuff1 {\n }\n buffFrames = <table> {\n }\n buffs = <table> {\n }\n powerBarUsedHeight = 0\n outOfRange = <no value>\n myHealAbsorb = CompactPartyFrameMember1MyHealAbsorb {\n }\n buffsChanged = false\n bigDefensives = <table> {\n }\n centerStatusIcon = CompactPartyFrameMember1CenterStatusIcon {\n }\n TempMaxHealthLoss = CompactPartyFrameMember1TempMaxHealthLoss {\n }\n isLootObject = false\n readyCheckIcon = CompactPartyFrameMember1ReadyCheckIcon {\n }\n}\n(*temporary) = <no value>\n(*temporary) = nil\n(*temporary) = \"attempt to perform boolean test on field 'outOfRange' (a secret boolean value tainted by 'LargerMacroIconSelection')\"\n",
+["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:1073: in function 'CompactUnitFrame_GetRangeAlpha'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:1577: in function 'CompactUnitFrame_UpdateCenterStatusIcon'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:478: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:336: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1949: in function 'RefreshPartyFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:17: in function 'EditModeFrameSetup'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1840: in function 'OnEditModeEnter'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:88: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:82>\n[C]: ?\n[C]: ?\n[C]: ?\n...[Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua]:284: in function 'SendText'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/MacroExecutionManager.lua]:27: in function <...zzard_ChatFrameBase/Shared/MacroExecutionManager.lua:20>\n[C]: in function 'UseAction'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:349: in function 'handler'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:732: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:710>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:746: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:739>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:798: in function 'SecureActionButton_OnClick'\n[Interface/AddOns/Blizzard_ActionBar/Shared/ActionButton.lua]:112: in function 'TryUseActionButton'\n[Interface/AddOns/Blizzard_ActionBar/Shared/MultiActionBars.lua]:41: in function 'MultiActionButtonDown'\n[MULTIACTIONBAR6BUTTON2]:2: in function <[string \"MULTIACTIONBAR6BUTTON2\"]:1>\n",
+["session"] = 1395,
+["counter"] = 1,
+},
+{
+["message"] = "...Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua:425: attempt to index local 'tab' (a nil value)",
+["time"] = "2026/02/22 13:33:44",
+["locals"] = "(*temporary) = \"LeftButton\"\n(*temporary) = false\n",
+["stack"] = "[tail call]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua]:425: in function 'BuildTabs'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua]:461: in function 'OnWidthSet'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:311: in function '?'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:670: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:668>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:762: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:675>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:426: in function 'PerformLayout'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:431: in function 'DoLayout'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2316: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2293>\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2855: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2832>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:300: in function 'Fire'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua]:342: in function 'SelectTab'\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua]:200: in function <...Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua:197>\n",
+["session"] = 1397,
+["counter"] = 1,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'Porty' tried to call the protected function 'Button:ClearAllPoints()'.",
+["time"] = "2026/02/23 00:11:10",
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"Porty\"\naddonFunc = \"Button:ClearAllPoints()\"\nname = \"Porty\"\nbadAddons = <table> {\n Porty = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:490: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:414: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:414>\n[C]: in function 'ClearAllPoints'\n[Interface/AddOns/Porty/Core.lua]:117: in function <Interface/AddOns/Porty/Core.lua:108>\n[Interface/AddOns/Porty/Core.lua]:357: in function 'ApplyAnchor'\n[Interface/AddOns/Porty/Config.lua]:93: in function 'func'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/UIDropDownMenu.lua]:1034: in function 'UIDropDownMenuButton_OnClick'\n[*UIDropDownMenuTemplates.xml:93_OnClick]:1: in function <[string \"*UIDropDownMenuTemplates.xml:93_OnClick\"]:1>\n",
+["session"] = 1406,
+["counter"] = 1,
 },
 },
 }
