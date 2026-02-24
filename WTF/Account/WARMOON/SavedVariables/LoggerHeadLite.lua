@@ -10,10 +10,10 @@ LoggerHeadNDB = {
 ["Pandakvo - Hyjal"] = "Default",
 ["Raptorbuyer - Hyjal"] = "Default",
 ["Trialmagekvo - Hyjal"] = "Default",
-["Pandamo - Hyjal"] = "Default",
+["Pandkvé - Hyjal"] = "Default",
 ["Kvothyr - Hyjal"] = "Default",
 ["Pandamages - Hyjal"] = "Default",
-["Pandkvé - Hyjal"] = "Default",
+["Pandamo - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -36,7 +36,7 @@ LoggerHeadNDB = {
 [2662] = {
 [8] = true,
 },
-[2649] = {
+[2441] = {
 [8] = true,
 },
 [670] = {
@@ -45,7 +45,7 @@ LoggerHeadNDB = {
 [2070] = {
 [16] = false,
 },
-[2773] = {
+[2649] = {
 [8] = true,
 },
 [2651] = {
@@ -67,11 +67,8 @@ LoggerHeadNDB = {
 [2661] = {
 [8] = true,
 },
-[2810] = {
-[14] = true,
-[220] = false,
-[15] = true,
-[17] = true,
+[2287] = {
+[8] = true,
 },
 [2293] = {
 [8] = true,
@@ -85,8 +82,11 @@ LoggerHeadNDB = {
 [2669] = {
 [8] = true,
 },
-[2287] = {
-[8] = true,
+[2810] = {
+[14] = true,
+[220] = false,
+[15] = true,
+[17] = true,
 },
 [2549] = {
 [16] = true,
@@ -94,7 +94,7 @@ LoggerHeadNDB = {
 [2830] = {
 [8] = true,
 },
-[2441] = {
+[2773] = {
 [8] = true,
 },
 },

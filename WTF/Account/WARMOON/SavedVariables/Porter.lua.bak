@@ -1,0 +1,31 @@
+
+PorterDB = {
+["lastSeenVersion"] = "1.0.8",
+["minimap"] = {
+["hide"] = true,
+},
+["profiles"] = {
+["Kvotheen-Hyjal"] = {
+["showCosmeticHearthstones"] = false,
+["categoryVisibility"] = {
+["Items"] = true,
+["Raids"] = true,
+["Hearthstones"] = true,
+["Class & Racial"] = true,
+["Delves"] = true,
+["Toys"] = true,
+["House"] = true,
+["Dungeons"] = true,
+},
+["zoneOrder"] = "recent",
+["viewMode"] = "category",
+["defaultView"] = "category",
+["hearthstoneMode"] = "Random",
+},
+},
+["position"] = {
+["y"] = 0,
+["x"] = 0,
+["point"] = "CENTER",
+},
+}

@@ -1,6 +1,0 @@
-
-Kong_Settings = {
-["enabled"] = true,
-["error"] = "Interface/AddOns/Kong/Kong.lua:481: bad argument #1 to 'pairs' (table expected, got nil)\n[Interface/AddOns/Kong/Kong.lua]:567: in function <Interface/AddOns/Kong/Kong.lua:567>\n[C]: ?\n[Interface/AddOns/Kong/Kong.lua]:481: in function <Interface/AddOns/Kong/Kong.lua:455>\n[C]: ?\n[Interface/AddOns/Kong/Kong.lua]:567: in function <Interface/AddOns/Kong/Kong.lua:554>\n",
-["profile"] = "kvotheen_of_hyjal",
-}

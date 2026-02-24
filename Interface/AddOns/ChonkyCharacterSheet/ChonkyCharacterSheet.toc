@@ -1,0 +1,49 @@
+## Interface: 120001, 20505, 50503
+## Title: Chonky Character Sheet
+## Author: Cerdia @Area-52
+## Version: 2.2.05
+## Notes: Chonky Character Sheet
+## Notes: Enhanced character sheet with options and profiles. Track stats, gear, and progress. 
+## Notes: Discord: https://discord.gg/bSyqqa7RC4
+## SavedVariables: ChonkyCharacterSheetDB
+## OptionalDeps: none
+## IconTexture: Interface\AddOns\ChonkyCharacterSheet\Media\Textures\chonky.tga
+## X-License: MIT
+## X-Curse-Project-ID: 1393904
+## X-Wago-ID: 5NReOEG3
+
+
+# -----------------------------
+# Load Libraries
+# -----------------------------
+Libs\LibStub\LibStub.lua
+Libs\LibDeflate\lib.xml
+Libs\LibDeflate\LibDeflate.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibSharedMedia-3.0\lib.xml
+#Libs\LibTalentTree-1.0\LibTalentTree-1.0.xml (This is future)
+
+# -----------------------------
+# Core Addon Files
+# -----------------------------
+core\localization.lua
+core\tables.lua
+core\wrappers.lua
+core\utils.lua
+
+# -----------------------------
+# Modules for each WoW version
+# -----------------------------
+Retail\characterSheet.lua
+Retail\characterStats.lua
+Retail\mythicPlusStats.lua
+Retail\raidStats.lua
+Retail\inspectSheet.lua
+
+Modules\Classic.lua
+Modules\TBC.lua
+Modules\MOP.lua
+
+core\core.lua
+core\events.lua
+core\options.lua

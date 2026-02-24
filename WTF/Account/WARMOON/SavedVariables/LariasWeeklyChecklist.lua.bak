@@ -1,0 +1,14 @@
+
+LariasWeeklyChecklistDB = {
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
+["profiles"] = {
+["Default"] = {
+["minimap"] = {
+["minimapPos"] = 240.7613731420514,
+["hide"] = false,
+},
+},
+},
+}

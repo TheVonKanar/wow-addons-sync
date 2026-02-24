@@ -15,137 +15,67 @@ OPie_SavedData = {
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["Bindings"] = {
-["rofessions"] = "F4",
-["Usables"] = false,
-["arthstones"] = "SHIFT-B",
-},
-["MotionAction"] = true,
 ["InteractionMode"] = 2,
+["MotionAction"] = true,
+["Bindings"] = {
+["Usables"] = false,
+},
+["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["RingScale"] = 1.200000047683716,
-["ShowCooldowns"] = true,
-["Bindings"] = {
-["rofessions"] = "F3",
-["Talents"] = "F2",
-["arthstones"] = "F6",
-["Usables"] = false,
-},
-["RingOptions"] = {
-["arthstones#InteractionMode"] = 2,
-["arthstones#CenterAction"] = false,
-["arthstones#QuickActionOnRelease"] = true,
-["arthstones#MotionAction"] = true,
-["arthstones#RingAtMouse"] = false,
-},
 ["InteractionMode"] = 2,
+["Bindings"] = {
+["Usables"] = false,
+["Utility"] = "8",
+},
+["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
 ["RingKeeper"] = {
-["Talents"] = {
+["OPieDeletedRings"] = {
+["RaidSymbols"] = true,
+["CommonHearth"] = true,
+["WorldMarkers"] = true,
+["CommonTrades"] = true,
+["SpecMenu"] = true,
+["OPieAutoQuest"] = true,
+["PaladinTools"] = true,
+},
+["OPieFlagStore"] = {
+["StoreVersion"] = 3,
+},
+["Utility"] = {
 {
-"toy",
-206268,
-["sliceToken"] = "ABueQbdzcVe",
+"mount",
+2265,
+["sliceToken"] = "ABueTwA1bvw",
 },
 {
-"toy",
-199830,
-["sliceToken"] = "ABueQbdzcVt",
+"mount",
+460,
+["sliceToken"] = "ABueTwA1bve",
+},
+{
+["sliceToken"] = "ABueTwA1bvr",
+["id"] = 460905,
 },
 {
 "toy",
 225556,
-["sliceToken"] = "ABueWdsapkw",
+["sliceToken"] = "ABueTwA1bv1",
 },
 {
-["sliceToken"] = "ABueEEQp4gw",
-["id"] = 460905,
+"item",
+132514,
+["sliceToken"] = "ABueTwA1bvt",
 },
-{
-["sliceToken"] = "ABueEEQp4ge",
-["id"] = 83958,
-},
-["name"] = "Toys",
+["name"] = "Utility",
 ["save"] = true,
-},
-["OPieDeletedRings"] = {
-["RaidSymbols"] = true,
-["SpecMenu"] = true,
-["WorldMarkers"] = true,
-["CommonTrades"] = true,
-["OPieAutoQuest"] = true,
-["CommonHearth"] = true,
-["PaladinTools"] = true,
-},
-["rofessions"] = {
-{
-["sliceToken"] = "ABueQYX/O3w",
-["id"] = 423395,
-},
-{
-"item",
-214561,
-["sliceToken"] = "ABueQGw1gZw",
-},
-{
-"item",
-212308,
-["sliceToken"] = "ABueQGw1gZe",
-},
-{
-["sliceToken"] = "ABuenAlJMLe",
-["id"] = 818,
-},
-{
-"item",
-136377,
-["sliceToken"] = "ABueEw2Z3Qw",
-},
-["name"] = "Professions (Kvotheen)",
-["save"] = true,
-},
-["arthstones"] = {
-{
-["sliceToken"] = "ABuenZkzsve",
-["id"] = 556,
-},
-{
-"toy",
-140192,
-["sliceToken"] = "ABuenZkzsv1",
-},
-{
-"toy",
-110560,
-["sliceToken"] = "ABueQle13H1",
-},
-{
-"toy",
-236687,
-["sliceToken"] = "ABueElEKFiw",
-},
-{
-"item",
-141605,
-["sliceToken"] = "ABueQlwN=Kw",
-},
-{
-"item",
-234389,
-["sliceToken"] = "ABueEgU/BDw",
-},
-["name"] = "Hearthstones",
-["save"] = true,
-},
-["OPieFlagStore"] = {
-["StoreVersion"] = 3,
 },
 },
 },

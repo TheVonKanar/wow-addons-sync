@@ -21,6 +21,9 @@ local MIN_CONTENT_HEIGHT = HEADER_BAR_HEIGHT + 4 + CATEGORY_PADDING + HEADER_HEI
 Porter.buttons = {}
 Porter.activeTab = {}
 Porter.activeExpansion = {}
+Porter.searchText = ""
+-- Porter.expandedRegions removed — regions are always expanded in zone view
+Porter.activeViewMode = nil  -- tracks current view during search auto-switching
 
 -- Reusable UI element pools
 Porter.headers = {}
@@ -37,6 +40,7 @@ function Porter:CreateMainFrame()
     local totalWidth = FRAME_PADDING * 2 + 3 * COLUMN_WIDTH + 2 * COLUMN_SPACING
     local f = CreateFrame("Frame", "PorterFrame", UIParent, "BackdropTemplate")
     f:SetSize(totalWidth, 400)
+    f:SetFrameStrata("HIGH")
     f:SetPoint(
         self.db.position.point,
         UIParent,
@@ -59,8 +63,16 @@ function Porter:CreateMainFrame()
         Porter:SavePosition(frame)
     end)
 
-    f:SetScript("OnShow", function() PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN) end)
-    f:SetScript("OnHide", function() PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE) end)
+    f:SetScript("OnShow", function()
+        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
+        Porter.searchText = ""
+        if Porter.searchBox then Porter.searchBox:SetText("") end
+    end)
+    f:SetScript("OnHide", function()
+        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
+        Porter.searchText = ""
+        if Porter.searchBox then Porter.searchBox:SetText("") end
+    end)
     tinsert(UISpecialFrames, "PorterFrame")
 
     -- Header bar background
@@ -99,6 +111,133 @@ function Porter:CreateMainFrame()
     closeBtn:SetScript("OnLeave", function() closeTxt:SetTextColor(1, 1, 1, 1) end)
     closeBtn:SetScript("OnClick", function() f:Hide() end)
 
+    -- View mode toggle tabs (Type / Zone) — order based on defaultView setting
+    local TAB_W, TAB_H = 42, 22
+    local viewToggle = CreateFrame("Frame", nil, headerBar, "BackdropTemplate")
+    viewToggle:SetSize(TAB_W * 2, TAB_H)
+    viewToggle:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    viewToggle:SetBackdropColor(0.08, 0.08, 0.08, 1)
+    viewToggle:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.6)
+
+    -- Create two tab buttons inside the toggle frame
+    local tabButtons = {}
+    for i = 1, 2 do
+        local tab = CreateFrame("Button", nil, viewToggle, "BackdropTemplate")
+        tab:SetSize(TAB_W, TAB_H)
+        tab:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8x8",
+        })
+        local tabText = tab:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        tabText:SetAllPoints()
+        tabText:SetJustifyH("CENTER")
+        tabText:SetJustifyV("MIDDLE")
+        tab.text = tabText
+        tab.mode = nil  -- set dynamically
+        tabButtons[i] = tab
+    end
+    tabButtons[1]:SetPoint("LEFT", 1, 0)
+    tabButtons[2]:SetPoint("RIGHT", -1, 0)
+
+    local function UpdateViewToggleTabs()
+        local defaultView = (Porter.db and Porter.db.settings.defaultView) or "category"
+        local currentMode = Porter.activeViewMode or (Porter.db and Porter.db.settings.viewMode) or "category"
+        -- Tab order: default view first
+        if defaultView == "zone" then
+            tabButtons[1].mode = "zone"
+            tabButtons[1].text:SetText("Zone")
+            tabButtons[2].mode = "category"
+            tabButtons[2].text:SetText("Type")
+        else
+            tabButtons[1].mode = "category"
+            tabButtons[1].text:SetText("Type")
+            tabButtons[2].mode = "zone"
+            tabButtons[2].text:SetText("Zone")
+        end
+        -- Highlight the active tab: purple background, white text
+        for _, tab in ipairs(tabButtons) do
+            if tab.mode == currentMode then
+                tab:SetBackdropColor(0.6, 0.3, 0.9, 1)
+                tab.text:SetTextColor(1, 1, 1, 1)
+            else
+                tab:SetBackdropColor(0.08, 0.08, 0.08, 0)
+                tab.text:SetTextColor(0.5, 0.5, 0.5, 1)
+            end
+        end
+    end
+    UpdateViewToggleTabs()
+
+    for _, tab in ipairs(tabButtons) do
+        tab:SetScript("OnEnter", function(self)
+            local currentMode = Porter.activeViewMode or (Porter.db and Porter.db.settings.viewMode) or "category"
+            if self.mode ~= currentMode then
+                self.text:SetTextColor(0.8, 0.8, 0.8, 1)
+            end
+        end)
+        tab:SetScript("OnLeave", function()
+            UpdateViewToggleTabs()
+        end)
+        tab:SetScript("OnClick", function(self)
+            if InCombatLockdown() then return end
+            local settings = Porter.db.settings
+            if settings.viewMode ~= self.mode then
+                settings.viewMode = self.mode
+                Porter.activeViewMode = nil
+                Porter._userPickedView = true
+                UpdateViewToggleTabs()
+                Porter:RefreshMainFrame()
+            end
+        end)
+    end
+
+    self.viewToggle = viewToggle
+    self.updateViewToggleText = UpdateViewToggleTabs
+
+    -- Search box
+    local searchBox = CreateFrame("EditBox", nil, headerBar, "BackdropTemplate")
+    searchBox:SetSize(120, 22)
+    searchBox:SetPoint("RIGHT", closeBtn, "LEFT", -8, 0)
+    viewToggle:SetPoint("CENTER", headerBar, "CENTER", 0, 0)
+    searchBox:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    searchBox:SetBackdropColor(0.08, 0.08, 0.08, 1)
+    searchBox:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.6)
+    searchBox:SetFontObject(GameFontNormalSmall)
+    searchBox:SetTextColor(1, 1, 1, 1)
+    searchBox:SetTextInsets(6, 6, 0, 0)
+    searchBox:SetAutoFocus(false)
+    searchBox:SetMaxLetters(30)
+
+    local placeholder = searchBox:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    placeholder:SetPoint("LEFT", 6, 0)
+    placeholder:SetText("Search...")
+    placeholder:SetTextColor(0.4, 0.4, 0.4, 1)
+
+    searchBox:SetScript("OnTextChanged", function(self)
+        local text = self:GetText()
+        placeholder:SetShown(text == "")
+        Porter.searchText = text
+        Porter:ApplySearch()
+    end)
+    searchBox:SetScript("OnEscapePressed", function(self)
+        self:SetText("")
+        self:ClearFocus()
+    end)
+    searchBox:SetScript("OnEnterPressed", function(self)
+        self:ClearFocus()
+    end)
+    self.searchBox = searchBox
+
     f:Hide()
     self.frame = f
     return f
@@ -121,7 +260,6 @@ function Porter:IsAvailable(entry)
         local _, raceFile = UnitRace("player")
         if raceFile ~= entry.raceReq then return false end
     end
-
     if entry.type == "spell" then
         if IsPlayerSpell(entry.id) then return true end
         if IsSpellKnown(entry.id) then return true end
@@ -488,6 +626,7 @@ function Porter:CreateFlyoutTrigger(entry, xOffset, yOffset, buttonIndex, flyout
     local btn = self:CreateButton(self.frame, entry, buttonIndex)
     btn:SetPoint("TOPLEFT", self.frame, "TOPLEFT", xOffset, yOffset)
     btn:Show()
+    btn.flyoutEntries = flyoutEntries
     tinsert(self.buttons, btn)
 
     -- Override the default OnEnter/OnLeave to show/hide flyout
@@ -589,6 +728,7 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
             GameTooltip:Hide()
         end)
 
+        labelBtn.entry = entry
         tinsert(self.nameLabels, labelBtn)
         btn.nameLabel = label
 
@@ -607,14 +747,31 @@ function Porter:GetAvailable(category)
     if not entries then return {} end
     local available = {}
     local showCosmetic = self.db.settings.showCosmeticHearthstones
+    local specificChoice = self.db.settings.hearthstoneMode == "Specific" and self.db.settings.hearthstoneChoice
     for _, entry in ipairs(entries) do
         if entry.cosmetic and not showCosmetic then
             -- skip cosmetic hearthstones when setting is off
+        elseif entry.cosmetic and specificChoice and entry.id == specificChoice then
+            -- skip the chosen cosmetic hearthstone (already shown as the main Hearthstone button)
         elseif self:IsAvailable(entry) then
             tinsert(available, entry)
         end
     end
     return available
+end
+
+-----------------------------------------------------------------------
+-- HELPER: Check if an entry matches the current search text
+-----------------------------------------------------------------------
+function Porter:IsSearchMatch(entry)
+    if self.searchText == "" then return true end
+    local query = self.searchText:lower()
+    if entry.name and entry.name:lower():find(query, 1, true) then return true end
+    local displayName = self:GetDisplayName(entry)
+    if displayName and displayName:lower():find(query, 1, true) then return true end
+    if entry.zone and entry.zone:lower():find(query, 1, true) then return true end
+    if entry.region and entry.region:lower():find(query, 1, true) then return true end
+    return false
 end
 
 -----------------------------------------------------------------------
@@ -831,6 +988,12 @@ function Porter:BuildLayout()
     self.flyouts = {}
     self:CancelFlyoutHide()
 
+    -- Dispatch to zone view if active
+    local currentViewMode = self.activeViewMode or (self.db and self.db.settings.viewMode) or "category"
+    if currentViewMode == "zone" then
+        return self:BuildZoneLayout()
+    end
+
     local buttonIndex = 0
     local contentTop = -(HEADER_BAR_HEIGHT + 4)
     local vis = self.db.settings.categoryVisibility
@@ -1009,6 +1172,175 @@ function Porter:BuildLayout()
 end
 
 -----------------------------------------------------------------------
+-- ZONE VIEW LAYOUT
+-- Groups all available teleports by region → zone, rendered as list rows
+-- across multiple columns with collapsible region headers.
+-----------------------------------------------------------------------
+function Porter:BuildZoneLayout()
+    if not self.frame then return end
+
+    local contentTop = -(HEADER_BAR_HEIGHT + 4)
+    local ZONE_HEADER_HEIGHT = 16
+    local ZONE_INDENT = 8
+
+    -- Gather all available entries across all categories
+    -- Skip cosmetic hearthstones and deduplicate by spell ID (e.g. Tazavesh wings share one teleport)
+    local allEntries = {}
+    local seenSpellIDs = {}
+    for _, category in ipairs(self.Categories) do
+        local available = self:GetAvailable(category)
+        for _, entry in ipairs(available) do
+            if entry.region and not entry.cosmetic then
+                local key = (entry.type == "spell") and entry.id or nil
+                if not key or not seenSpellIDs[key] then
+                    tinsert(allEntries, entry)
+                    if key then seenSpellIDs[key] = true end
+                end
+            end
+        end
+    end
+
+    -- Group by region → zone
+    local regionData = {}  -- regionName → { zones = { zoneName → {entries} }, zoneOrder = {} }
+    for _, entry in ipairs(allEntries) do
+        local r = entry.region
+        local z = entry.zone or "Unknown"
+        if not regionData[r] then
+            regionData[r] = { zones = {}, zoneOrder = {} }
+        end
+        if not regionData[r].zones[z] then
+            regionData[r].zones[z] = {}
+            tinsert(regionData[r].zoneOrder, z)
+        end
+        tinsert(regionData[r].zones[z], entry)
+    end
+
+    -- Sort zones alphabetically within each region
+    for _, rData in pairs(regionData) do
+        table.sort(rData.zoneOrder)
+    end
+
+    -- Determine region display order
+    local orderedRegions = {}
+    local regionOrder = self.RegionOrder
+    if self.db.settings.zoneOrder == "alpha" then
+        -- Keep Hearthstone first and Other last, alphabetise the rest
+        local middle = {}
+        for rName in pairs(regionData) do
+            if rName ~= "Hearthstone" and rName ~= "Other" then
+                tinsert(middle, rName)
+            end
+        end
+        table.sort(middle)
+        if regionData["Hearthstone"] then tinsert(orderedRegions, "Hearthstone") end
+        for _, r in ipairs(middle) do tinsert(orderedRegions, r) end
+        if regionData["Other"] then tinsert(orderedRegions, "Other") end
+    else
+        for _, r in ipairs(regionOrder) do
+            if regionData[r] then
+                tinsert(orderedRegions, r)
+            end
+        end
+    end
+
+    -- Estimate height per region for column balancing
+    local regionHeights = {}
+    for _, rName in ipairs(orderedRegions) do
+        local rData = regionData[rName]
+        local h = EXPAC_BTN_HEIGHT  -- region header
+        for _, zName in ipairs(rData.zoneOrder) do
+            h = h + ZONE_HEADER_HEIGHT
+            h = h + #rData.zones[zName] * (LIST_ROW_HEIGHT + 4)
+            h = h + 6  -- zone group margin
+        end
+        regionHeights[rName] = h
+    end
+
+    -- Distribute regions across 3 columns sequentially (vertical reading order)
+    local NUM_ZONE_COLS = 3
+    local totalHeight = 0
+    for _, rName in ipairs(orderedRegions) do
+        totalHeight = totalHeight + regionHeights[rName] + CATEGORY_PADDING
+    end
+    local targetColHeight = totalHeight / NUM_ZONE_COLS
+
+    local colRegions = {}
+    local colHeights = {}
+    for i = 1, NUM_ZONE_COLS do
+        colRegions[i] = {}
+        colHeights[i] = 0
+    end
+    local curCol = 1
+    for _, rName in ipairs(orderedRegions) do
+        tinsert(colRegions[curCol], rName)
+        colHeights[curCol] = colHeights[curCol] + regionHeights[rName] + CATEGORY_PADDING
+        -- Move to next column if we've exceeded the target and there are more columns
+        if colHeights[curCol] >= targetColHeight and curCol < NUM_ZONE_COLS then
+            curCol = curCol + 1
+        end
+    end
+
+    -- Remove empty trailing columns
+    local numColumns = NUM_ZONE_COLS
+    while numColumns > 1 and #colRegions[numColumns] == 0 do
+        numColumns = numColumns - 1
+    end
+
+    local buttonIndex = 0
+    local columnBottoms = {}
+
+    for col = 1, numColumns do
+        local colX = FRAME_PADDING + (col - 1) * (COLUMN_WIDTH + COLUMN_SPACING)
+        local colY = contentTop
+
+        for _, rName in ipairs(colRegions[col]) do
+            local rData = regionData[rName]
+
+            colY = colY - CATEGORY_PADDING
+
+            -- Region header (static, not collapsible)
+            local regionHeader = self.frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            regionHeader:SetPoint("TOPLEFT", self.frame, "TOPLEFT", colX, colY)
+            regionHeader:SetText(rName)
+            regionHeader:SetTextColor(0.4, 0.55, 0.85, 1)
+            regionHeader.regionName = rName
+            tinsert(self.headers, regionHeader)
+            colY = colY - EXPAC_BTN_HEIGHT
+
+            -- Render zone contents
+            for _, zName in ipairs(rData.zoneOrder) do
+                local zEntries = rData.zones[zName]
+
+                -- Zone subheader
+                local zoneHeader = self.frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                zoneHeader:SetPoint("TOPLEFT", self.frame, "TOPLEFT", colX + ZONE_INDENT, colY)
+                zoneHeader:SetText(zName)
+                zoneHeader:SetTextColor(0.6, 0.3, 0.9, 1)
+                zoneHeader.regionName = rName
+                zoneHeader.zoneName = zName
+                tinsert(self.headers, zoneHeader)
+                colY = colY - ZONE_HEADER_HEIGHT
+
+                -- Entries as list rows (icon + name)
+                colY, buttonIndex = self:LayoutList(zEntries, colX + ZONE_INDENT, colY, buttonIndex)
+                colY = colY - 6  -- margin under each zone group
+            end
+        end
+
+        tinsert(columnBottoms, colY)
+    end
+
+    -- Resize frame
+    local totalWidth = FRAME_PADDING * 2 + numColumns * COLUMN_WIDTH + (numColumns - 1) * COLUMN_SPACING
+    local maxDepth = 0
+    for _, bottom in ipairs(columnBottoms) do
+        maxDepth = math.max(maxDepth, math.abs(bottom))
+    end
+    local totalHeight = math.max(maxDepth + FRAME_PADDING, MIN_CONTENT_HEIGHT)
+    self.frame:SetSize(totalWidth, totalHeight)
+end
+
+-----------------------------------------------------------------------
 -- UPDATE COOLDOWNS
 -----------------------------------------------------------------------
 function Porter:UpdateAllCooldowns()
@@ -1071,10 +1403,300 @@ end
 -----------------------------------------------------------------------
 function Porter:RefreshMainFrame()
     if self.frame and self.frame:IsShown() and not InCombatLockdown() then
-        self:BuildLayout()
-        self:UpdateAllCooldowns()
-        self:UpdateEquipStatus()
-        self:HighlightKeystone()
+        if self.searchText and self.searchText ~= "" then
+            self:ApplySearch()
+        else
+            self:BuildLayout()
+            self:UpdateAllCooldowns()
+            self:UpdateEquipStatus()
+            self:HighlightKeystone()
+        end
+    end
+end
+
+function Porter:ApplySearch()
+    if InCombatLockdown() then return end
+    if not self.frame or not self.frame:IsShown() then return end
+
+    local hasSearch = self.searchText ~= ""
+
+    if hasSearch then
+        -- Determine whether search matches are better served by zone or category view
+        local query = self.searchText:lower()
+        local nameMatches = 0
+        local zoneRegionMatches = 0
+
+        -- Count matches by type across all available entries
+        for _, category in ipairs(self.Categories) do
+            local entries = self.TeleportData[category]
+            if entries then
+                for _, entry in ipairs(entries) do
+                    if self:IsAvailable(entry) then
+                        local nameHit = false
+                        if entry.name and entry.name:lower():find(query, 1, true) then nameHit = true end
+                        if not nameHit then
+                            local displayName = self:GetDisplayName(entry)
+                            if displayName and displayName:lower():find(query, 1, true) then nameHit = true end
+                        end
+                        local geoHit = false
+                        if entry.zone and entry.zone:lower():find(query, 1, true) then geoHit = true end
+                        if entry.region and entry.region:lower():find(query, 1, true) then geoHit = true end
+
+                        if nameHit then nameMatches = nameMatches + 1 end
+                        if geoHit and not nameHit then zoneRegionMatches = zoneRegionMatches + 1 end
+                    end
+                end
+            end
+        end
+
+        -- Also check if query matches a category name (favours category view)
+        local categoryNameMatch = false
+        for _, cat in ipairs(self.Categories) do
+            if cat:lower():find(query, 1, true) then
+                categoryNameMatch = true
+                break
+            end
+        end
+
+        -- Auto-switch view mode based on match distribution (skip if user manually picked a tab)
+        if not self._userPickedView then
+            local settingsMode = self.db.settings.viewMode
+            if zoneRegionMatches > 0 and nameMatches == 0 and not categoryNameMatch then
+                self.activeViewMode = "zone"
+            elseif categoryNameMatch and zoneRegionMatches == 0 then
+                self.activeViewMode = "category"
+            else
+                self.activeViewMode = nil  -- use settings default
+            end
+        end
+
+        -- In category view, auto-switch dungeon/raid tabs
+        local activeView = self.activeViewMode or self.db.settings.viewMode
+        if activeView == "category" then
+            for _, category in ipairs({"Dungeons", "Raids"}) do
+                local entries = self.TeleportData[category]
+                if entries then
+                    local currentMatches, legacyMatches = false, false
+                    local legacyExpansion = nil
+                    for _, entry in ipairs(entries) do
+                        if self:IsAvailable(entry) and self:IsSearchMatch(entry) then
+                            if entry.current then
+                                currentMatches = true
+                            elseif entry.expansion then
+                                legacyMatches = true
+                                legacyExpansion = legacyExpansion or entry.expansion
+                            end
+                        end
+                    end
+
+                    local activeTab = self.activeTab[category] or "Current"
+                    if activeTab == "Current" and not currentMatches and legacyMatches then
+                        self.activeTab[category] = "Legacy"
+                        self.activeExpansion[category] = legacyExpansion
+                    elseif activeTab == "Legacy" and not legacyMatches and currentMatches then
+                        self.activeTab[category] = "Current"
+                        self.activeExpansion[category] = nil
+                    elseif activeTab == "Legacy" and legacyMatches and legacyExpansion then
+                        self.activeExpansion[category] = legacyExpansion
+                    end
+                end
+            end
+        end
+    else
+        -- Search cleared: revert to settings default
+        self.activeViewMode = nil
+        self._userPickedView = nil
+    end
+
+    -- Update toggle button text to reflect active view
+    if self.updateViewToggleText then self.updateViewToggleText() end
+
+    -- Rebuild layout (picks up tab/view changes)
+    self:BuildLayout()
+    self:UpdateAllCooldowns()
+    self:UpdateEquipStatus()
+    self:HighlightKeystone()
+
+    -- Apply visual dimming to non-matching entries
+    if hasSearch then
+        for _, btn in ipairs(self.buttons) do
+            if btn.entry then
+                local matches = self:IsSearchMatch(btn.entry)
+                -- For flyout triggers, match if ANY flyout entry matches
+                if not matches and btn.flyoutEntries then
+                    for _, fEntry in ipairs(btn.flyoutEntries) do
+                        if self:IsSearchMatch(fEntry) then
+                            matches = true
+                            break
+                        end
+                    end
+                end
+                if matches then
+                    btn:SetAlpha(1)
+                    if btn.nameLabel then
+                        btn.nameLabel:SetTextColor(1, 1, 1, 1)
+                    end
+                else
+                    btn:SetAlpha(0.15)
+                    if btn.nameLabel then
+                        btn.nameLabel:SetTextColor(0.35, 0.35, 0.35, 0.5)
+                    end
+                end
+            end
+        end
+
+        -- Dim name label buttons (list view clickable area) for non-matches
+        for _, labelBtn in ipairs(self.nameLabels) do
+            if labelBtn.entry then
+                labelBtn:SetAlpha(self:IsSearchMatch(labelBtn.entry) and 1 or 0.15)
+            end
+        end
+
+        -- Build set of matching regions and zones for header dimming
+        local matchingRegions = {}
+        local matchingZones = {}  -- key = "region|zone"
+        for _, category in ipairs(self.Categories) do
+            local entries = self.TeleportData[category]
+            if entries then
+                for _, entry in ipairs(entries) do
+                    if entry.region and self:IsAvailable(entry) and self:IsSearchMatch(entry) then
+                        matchingRegions[entry.region] = true
+                        if entry.zone then
+                            matchingZones[entry.region .. "|" .. entry.zone] = true
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Dim zone/region headers (font strings) — grey out non-matching ones
+        local currentViewMode = self.activeViewMode or self.db.settings.viewMode
+        if currentViewMode == "zone" then
+            for _, header in ipairs(self.headers) do
+                if header.regionName then
+                    if header.zoneName then
+                        -- Zone subheader: check if this specific zone has matches
+                        local key = header.regionName .. "|" .. header.zoneName
+                        if matchingZones[key] then
+                            header:SetTextColor(0.6, 0.3, 0.9, 1)
+                        else
+                            header:SetTextColor(0.3, 0.3, 0.3, 0.5)
+                        end
+                    else
+                        -- Region header: check if region has any matches
+                        if matchingRegions[header.regionName] then
+                            header:SetTextColor(0.4, 0.55, 0.85, 1)
+                        else
+                            header:SetTextColor(0.2, 0.25, 0.35, 0.5)
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Dim expansion/region buttons that have no matches
+        for _, expBtn in ipairs(self.expacButtons) do
+            expBtn:SetAlpha(0.15)
+        end
+        -- Re-brighten those that contain matches
+        if currentViewMode == "zone" then
+            for _, expBtn in ipairs(self.expacButtons) do
+                local children = { expBtn:GetRegions() }
+                for _, rgn in ipairs(children) do
+                    if rgn.GetText then
+                        local text = rgn:GetText() or ""
+                        for rName in pairs(matchingRegions) do
+                            if text:find(rName, 1, true) then
+                                expBtn:SetAlpha(1)
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        else
+            -- In category view, brighten expansion buttons containing matches
+            for _, category in ipairs({"Dungeons", "Raids"}) do
+                local entries = self.TeleportData[category]
+                if entries then
+                    local matchesByExpac = {}
+                    for _, entry in ipairs(entries) do
+                        if entry.expansion and self:IsAvailable(entry) and self:IsSearchMatch(entry) then
+                            matchesByExpac[entry.expansion] = true
+                        end
+                    end
+                    for _, expBtn in ipairs(self.expacButtons) do
+                        local children = { expBtn:GetRegions() }
+                        for _, rgn in ipairs(children) do
+                            if rgn.GetText then
+                                local text = rgn:GetText() or ""
+                                for expac in pairs(matchesByExpac) do
+                                    if text:find(expac, 1, true) then
+                                        expBtn:SetAlpha(1)
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function Porter:RefreshSettingsPanel()
+    local w = self.settingsWidgets
+    if not w then return end
+
+    -- Cosmetic hearthstones checkbox
+    if w.cosmeticCB then
+        w.cosmeticCB:SetChecked(self.db.settings.showCosmeticHearthstones)
+    end
+
+    -- Mode radio buttons
+    if w.modeButtons and w.modes then
+        for i, rb in ipairs(w.modeButtons) do
+            rb:SetChecked(self.db.settings.hearthstoneMode == w.modes[i])
+        end
+    end
+
+    -- Specific choice button visibility and display
+    if w.choiceBtn then
+        if self.db.settings.hearthstoneMode == "Specific" then
+            w.choiceBtn:Show()
+        else
+            w.choiceBtn:Hide()
+        end
+    end
+    if w.updateChoiceDisplay then
+        w.updateChoiceDisplay()
+    end
+
+    -- Category checkboxes
+    if w.categoryCBs then
+        for category, catCB in pairs(w.categoryCBs) do
+            catCB:SetChecked(self.db.settings.categoryVisibility[category] ~= false)
+        end
+    end
+
+    -- Minimap checkbox
+    if w.minimapCB then
+        w.minimapCB:SetChecked(self.db.minimap.hide)
+    end
+
+    -- Default view radio buttons
+    if w.defaultViewButtons and w.defaultViewModes then
+        for i, rb in ipairs(w.defaultViewButtons) do
+            rb:SetChecked(self.db.settings.defaultView == w.defaultViewModes[i])
+        end
+    end
+
+    -- Zone order radio buttons
+    if w.zoneOrderButtons and w.zoneOrderModes then
+        for i, rb in ipairs(w.zoneOrderButtons) do
+            rb:SetChecked(self.db.settings.zoneOrder == w.zoneOrderModes[i])
+        end
     end
 end
 
@@ -1082,19 +1704,43 @@ function Porter:CreateSettingsPanel()
     if self.settingsCategory then return end
 
     local f = CreateFrame("Frame", "PorterSettingsFrame")
+    self.settingsWidgets = {}  -- store references for RefreshSettingsPanel
+
+    -- Scrollable content area (settings panel can be taller than the WoW options canvas)
+    local scrollFrame = CreateFrame("ScrollFrame", nil, f)
+    scrollFrame:SetPoint("TOPLEFT", 0, 0)
+    scrollFrame:SetPoint("BOTTOMRIGHT", 0, 0)
+    scrollFrame:EnableMouseWheel(true)
+    scrollFrame:SetScript("OnMouseWheel", function(self, delta)
+        local current = self:GetVerticalScroll()
+        local range = self:GetVerticalScrollRange()
+        local newScroll = math.max(0, math.min(range, current - delta * 40))
+        self:SetVerticalScroll(newScroll)
+    end)
+
+    local content = CreateFrame("Frame", nil, scrollFrame)
+    content:SetWidth(f:GetWidth() or 600)
+    scrollFrame:SetScrollChild(content)
+
+    -- Update content width when the settings canvas resizes
+    f:SetScript("OnSizeChanged", function(self, w, h)
+        content:SetWidth(w)
+        scrollFrame:SetWidth(w)
+        scrollFrame:SetHeight(h)
+    end)
 
     local yPos = -16
 
     -----------------------------------------------------------------
     -- SECTION: Hearthstone
     -----------------------------------------------------------------
-    local hsHeader = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    local hsHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     hsHeader:SetPoint("TOPLEFT", 12, yPos)
     hsHeader:SetText("Hearthstone")
     yPos = yPos - 24
 
     -- Cosmetic hearthstones checkbox
-    local cb = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+    local cb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
     cb:SetSize(26, 26)
     cb:SetPoint("TOPLEFT", 10, yPos)
     cb:SetChecked(self.db.settings.showCosmeticHearthstones)
@@ -1106,11 +1752,12 @@ function Porter:CreateSettingsPanel()
         Porter.db.settings.showCosmeticHearthstones = self:GetChecked()
         Porter:RefreshMainFrame()
     end)
+    self.settingsWidgets.cosmeticCB = cb
 
     yPos = yPos - 32
 
     -- Hearthstone Mode label
-    local modeLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local modeLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     modeLabel:SetPoint("TOPLEFT", 14, yPos)
     modeLabel:SetText("Hearthstone used:")
     modeLabel:SetTextColor(0.4, 0.55, 0.85, 1)
@@ -1122,7 +1769,7 @@ function Porter:CreateSettingsPanel()
     local choiceBtn -- forward ref for the specific choice button
 
     for i, mode in ipairs(modes) do
-        local rb = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
         rb:SetSize(26, 26)
         rb:SetPoint("TOPLEFT", 10, yPos)
         local rbLabel = rb:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -1149,10 +1796,12 @@ function Porter:CreateSettingsPanel()
 
         yPos = yPos - 26
     end
+    self.settingsWidgets.modeButtons = modeButtons
+    self.settingsWidgets.modes = modes
 
     -- Specific hearthstone chooser button
     yPos = yPos - 4
-    choiceBtn = CreateFrame("Button", nil, f, "BackdropTemplate")
+    choiceBtn = CreateFrame("Button", nil, content, "BackdropTemplate")
     choiceBtn:SetSize(248, 28)
     choiceBtn:SetPoint("TOPLEFT", 14, yPos)
     choiceBtn:SetBackdrop({
@@ -1187,12 +1836,15 @@ function Porter:CreateSettingsPanel()
     end
     UpdateChoiceDisplay()
 
+    self.settingsWidgets.choiceBtn = choiceBtn
+    self.settingsWidgets.updateChoiceDisplay = UpdateChoiceDisplay
+
     if self.db.settings.hearthstoneMode ~= "Specific" then
         choiceBtn:Hide()
     end
 
     -- Dropdown list for picking a specific cosmetic hearthstone
-    local dropdown = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    local dropdown = CreateFrame("Frame", nil, content, "BackdropTemplate")
     dropdown:SetBackdrop({
         bgFile   = "Interface\\Buttons\\WHITE8x8",
         edgeFile = "Interface\\Buttons\\WHITE8x8",
@@ -1222,7 +1874,20 @@ function Porter:CreateSettingsPanel()
         if #owned == 0 then return end
 
         local rowHeight = 24
-        local ddWidth = 248
+        local iconSize = 18
+        local padding = 4 + iconSize + 6 + 8  -- left + icon + gap + right padding
+
+        -- Measure the widest name to size the dropdown
+        local maxTextWidth = 0
+        for _, entry in ipairs(owned) do
+            local tempFS = dropdown:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            tempFS:SetText(entry.name)
+            local w = tempFS:GetStringWidth()
+            if w > maxTextWidth then maxTextWidth = w end
+            tempFS:Hide()
+        end
+        local ddWidth = math.max(248, maxTextWidth + padding + 4)
+
         dropdown:SetSize(ddWidth, #owned * rowHeight + 4)
         dropdown:SetPoint("TOPLEFT", choiceBtn, "BOTTOMLEFT", 0, -2)
 
@@ -1232,12 +1897,14 @@ function Porter:CreateSettingsPanel()
             row:SetPoint("TOPLEFT", 2, -(2 + (i - 1) * rowHeight))
 
             local rIcon = row:CreateTexture(nil, "ARTWORK")
-            rIcon:SetSize(18, 18)
+            rIcon:SetSize(iconSize, iconSize)
             rIcon:SetPoint("LEFT", 4, 0)
             rIcon:SetTexture(Porter:GetIcon(entry))
 
             local rName = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
             rName:SetPoint("LEFT", rIcon, "RIGHT", 6, 0)
+            rName:SetPoint("RIGHT", row, "RIGHT", -4, 0)
+            rName:SetJustifyH("LEFT")
             rName:SetText(entry.name)
             rName:SetTextColor(1, 1, 1, 1)
 
@@ -1268,13 +1935,14 @@ function Porter:CreateSettingsPanel()
     -----------------------------------------------------------------
     yPos = yPos - 40
 
-    local catHeader = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    local catHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     catHeader:SetPoint("TOPLEFT", 12, yPos)
     catHeader:SetText("Categories")
     yPos = yPos - 24
 
+    self.settingsWidgets.categoryCBs = {}
     for _, category in ipairs(self.Categories) do
-        local catCB = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        local catCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
         catCB:SetSize(26, 26)
         catCB:SetPoint("TOPLEFT", 10, yPos)
         catCB:SetChecked(self.db.settings.categoryVisibility[category] ~= false)
@@ -1289,6 +1957,7 @@ function Porter:CreateSettingsPanel()
             Porter:RefreshMainFrame()
         end)
 
+        self.settingsWidgets.categoryCBs[category] = catCB
         yPos = yPos - 26
     end
 
@@ -1297,12 +1966,12 @@ function Porter:CreateSettingsPanel()
     -----------------------------------------------------------------
     yPos = yPos - 40
 
-    local mmHeader = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    local mmHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     mmHeader:SetPoint("TOPLEFT", 12, yPos)
     mmHeader:SetText("Minimap")
     yPos = yPos - 24
 
-    local mmCB = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+    local mmCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
     mmCB:SetSize(26, 26)
     mmCB:SetPoint("TOPLEFT", 10, yPos)
     mmCB:SetChecked(self.db.minimap.hide)
@@ -1321,6 +1990,219 @@ function Porter:CreateSettingsPanel()
             LDBIcon:Show("Porter")
         end
     end)
+    self.settingsWidgets.minimapCB = mmCB
+    yPos = yPos - 26
+
+    -----------------------------------------------------------------
+    -- SECTION: Zone View
+    -----------------------------------------------------------------
+    yPos = yPos - 40
+
+    local zoneHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    zoneHeader:SetPoint("TOPLEFT", 12, yPos)
+    zoneHeader:SetText("Zone View")
+    yPos = yPos - 24
+
+    local defaultViewDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    defaultViewDesc:SetPoint("TOPLEFT", 14, yPos)
+    defaultViewDesc:SetText("Default view:")
+    defaultViewDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - 20
+
+    local defaultViewModes = { "category", "zone" }
+    local defaultViewLabels = { "Category", "Zone" }
+    local defaultViewButtons = {}
+    for i, mode in ipairs(defaultViewModes) do
+        local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+        rb:SetSize(24, 24)
+        rb:SetPoint("TOPLEFT", 14, yPos)
+        rb:SetChecked(self.db.settings.defaultView == mode)
+
+        local rbLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        rbLabel:SetPoint("LEFT", rb, "RIGHT", 4, 0)
+        rbLabel:SetText(defaultViewLabels[i])
+        rbLabel:SetTextColor(1, 1, 1, 1)
+
+        rb:SetScript("OnClick", function()
+            Porter.db.settings.defaultView = mode
+            Porter.db.settings.viewMode = mode
+            for _, otherRb in ipairs(defaultViewButtons) do
+                otherRb:SetChecked(false)
+            end
+            rb:SetChecked(true)
+            if Porter.updateViewToggleText then
+                Porter.updateViewToggleText()
+            end
+            Porter:RefreshMainFrame()
+        end)
+
+        tinsert(defaultViewButtons, rb)
+        yPos = yPos - 24
+    end
+    self.settingsWidgets.defaultViewButtons = defaultViewButtons
+    self.settingsWidgets.defaultViewModes = defaultViewModes
+
+    yPos = yPos - 10
+
+    local zoneDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    zoneDesc:SetPoint("TOPLEFT", 14, yPos)
+    zoneDesc:SetText("Region ordering:")
+    zoneDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - 20
+
+    local zoneOrderModes = { "recent", "alpha" }
+    local zoneOrderLabels = { "Most Recent First", "Alphabetical" }
+    local zoneOrderButtons = {}
+    for i, mode in ipairs(zoneOrderModes) do
+        local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+        rb:SetSize(24, 24)
+        rb:SetPoint("TOPLEFT", 14, yPos)
+        rb:SetChecked(self.db.settings.zoneOrder == mode)
+
+        local rbLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        rbLabel:SetPoint("LEFT", rb, "RIGHT", 4, 0)
+        rbLabel:SetText(zoneOrderLabels[i])
+        rbLabel:SetTextColor(1, 1, 1, 1)
+
+        rb:SetScript("OnClick", function()
+            Porter.db.settings.zoneOrder = mode
+            for _, otherRb in ipairs(zoneOrderButtons) do
+                otherRb:SetChecked(false)
+            end
+            rb:SetChecked(true)
+            Porter:RefreshMainFrame()
+        end)
+
+        tinsert(zoneOrderButtons, rb)
+        yPos = yPos - 24
+    end
+    self.settingsWidgets.zoneOrderButtons = zoneOrderButtons
+    self.settingsWidgets.zoneOrderModes = zoneOrderModes
+
+    -----------------------------------------------------------------
+    -- SECTION: Character Profile
+    -----------------------------------------------------------------
+    yPos = yPos - 40
+
+    local profHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    profHeader:SetPoint("TOPLEFT", 12, yPos)
+    profHeader:SetText("Character Profile")
+    yPos = yPos - 24
+
+    local profDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    profDesc:SetPoint("TOPLEFT", 14, yPos)
+    profDesc:SetText("Current: |cff9966ff" .. self:GetProfileKey() .. "|r")
+    profDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - 22
+
+    -- "Copy from" label
+    local copyLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    copyLabel:SetPoint("TOPLEFT", 14, yPos)
+    copyLabel:SetText("Copy settings from another character:")
+    copyLabel:SetTextColor(1, 1, 1, 1)
+    yPos = yPos - 22
+
+    -- Copy-from dropdown button
+    local copyBtn = CreateFrame("Button", nil, content, "BackdropTemplate")
+    copyBtn:SetSize(248, 28)
+    copyBtn:SetPoint("TOPLEFT", 14, yPos)
+    copyBtn:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    copyBtn:SetBackdropColor(0.15, 0.15, 0.15, 1)
+    copyBtn:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
+
+    local copyBtnText = copyBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    copyBtnText:SetPoint("LEFT", 8, 0)
+    copyBtnText:SetText("Select character...")
+    copyBtnText:SetTextColor(1, 1, 1, 1)
+
+    -- Dropdown for profile list
+    local copyDropdown = CreateFrame("Frame", nil, content, "BackdropTemplate")
+    copyDropdown:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    copyDropdown:SetBackdropColor(0.12, 0.12, 0.12, 1)
+    copyDropdown:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
+    copyDropdown:SetFrameStrata("TOOLTIP")
+    copyDropdown:Hide()
+
+    copyBtn:SetScript("OnClick", function()
+        if copyDropdown:IsShown() then
+            copyDropdown:Hide()
+            return
+        end
+
+        -- Clear old rows
+        for _, child in ipairs({ copyDropdown:GetChildren() }) do
+            child:Hide()
+            child:SetParent(nil)
+        end
+
+        local profiles = Porter:GetProfileList()
+        local myKey = Porter:GetProfileKey()
+        local rowHeight = 24
+
+        -- Filter out current character
+        local others = {}
+        for _, key in ipairs(profiles) do
+            if key ~= myKey then
+                tinsert(others, key)
+            end
+        end
+
+        if #others == 0 then
+            copyBtnText:SetText("No other characters found")
+            return
+        end
+
+        copyDropdown:SetSize(248, #others * rowHeight + 4)
+        copyDropdown:SetPoint("TOPLEFT", copyBtn, "BOTTOMLEFT", 0, -2)
+
+        for i, key in ipairs(others) do
+            local row = CreateFrame("Button", nil, copyDropdown)
+            row:SetSize(244, rowHeight)
+            row:SetPoint("TOPLEFT", 2, -(2 + (i - 1) * rowHeight))
+
+            local rName = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            rName:SetPoint("LEFT", 8, 0)
+            rName:SetText(key)
+            rName:SetTextColor(1, 1, 1, 1)
+
+            local hl = row:CreateTexture(nil, "HIGHLIGHT")
+            hl:SetAllPoints()
+            hl:SetColorTexture(1, 1, 1, 0.05)
+
+            row:SetScript("OnClick", function()
+                Porter:CopyProfileFrom(key)
+                Porter:RefreshSettingsPanel()
+                Porter:RefreshMainFrame()
+                copyDropdown:Hide()
+                copyBtnText:SetText("Copied from " .. key)
+            end)
+        end
+
+        copyDropdown:Show()
+    end)
+
+    -- Hide copy dropdown when settings panel hides
+    f:HookScript("OnHide", function()
+        copyDropdown:Hide()
+    end)
+
+    -- Padding below Character Profile section
+    yPos = yPos - 30
+
+    -- Set content height so scroll frame knows total size
+    content:SetHeight(math.abs(yPos) + 20)
 
     -- Register with WoW's built-in Settings panel (ESC → Options → AddOns)
     local category = Settings.RegisterCanvasLayoutCategory(f, "Porter")
@@ -1544,9 +2426,9 @@ function Porter:CheckChangelog()
     local currentVersion = C_AddOns.GetAddOnMetadata("Porter", "Version")
     if not currentVersion then return end
 
-    local lastSeen = self.db.settings.lastSeenVersion
+    local lastSeen = PorterDB.lastSeenVersion
     if lastSeen ~= currentVersion then
-        self.db.settings.lastSeenVersion = currentVersion
+        PorterDB.lastSeenVersion = currentVersion
         self:ShowChangelog(lastSeen)
     end
 end

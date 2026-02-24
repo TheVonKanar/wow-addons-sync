@@ -1,7 +1,0 @@
-
-MacroManagerSaved = {
-["MacroManagerWindow"] = {
-["statusTable"] = {
-},
-},
-}

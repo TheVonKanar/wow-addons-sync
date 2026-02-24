@@ -1,7 +1,7 @@
 Blizzard_ObjectiveTracker: enabled
 Blizzard_CompactRaidFrames: enabled
 WeakAurasCompanion: enabled
-WeakAurasArchive: enabled
+WeakAurasArchive: disabled
 RaiderIO_DB_US_R: disabled
 RaiderIO_DB_US_M: disabled
 RaiderIO_DB_US_F: disabled
@@ -49,9 +49,9 @@ RaiderIO_DB_EU_F: enabled
 Scrap: disabled
 Scrap_Merchant: disabled
 Scrap_Config: disabled
-WeakAuras: enabled
+WeakAuras: disabled
 WeakAurasModelPaths: disabled
-WeakAurasOptions: enabled
+WeakAurasOptions: disabled
 WeakAurasTemplates: disabled
 ACP: disabled
 ShadowedUnitFrames: disabled
@@ -249,3 +249,8 @@ UnhaltedUnitFrames: enabled
 Cell: disabled
 TrueStatValues: enabled
 MouseoverActionSettings: disabled
+BlizzHUDTweaks: disabled
+Blizzard_CharacterFrame: enabled
+Blizzard_ChallengesUI: enabled
+Blizzard_EncounterJournal: enabled
+Blizzard_Transmog: enabled

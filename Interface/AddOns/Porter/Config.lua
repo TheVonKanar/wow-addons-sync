@@ -1,11 +1,12 @@
 -- Config.lua
--- Handles saved variables (window position, minimap icon settings).
+-- Handles saved variables (window position, minimap icon settings, per-character profiles).
 -- PorterDB is declared as a SavedVariable in the TOC, so WoW persists it
--- across sessions automatically. We just provide defaults here.
+-- across sessions automatically. We provide defaults and profile management here.
 
 local _, Porter = ...
 
--- Default settings applied on first load or if a key is missing
+-- Global defaults (shared across all characters)
+-- Note: lastSeenVersion is stored at PorterDB.lastSeenVersion (global, not per-character)
 Porter.defaults = {
     minimap = {
         hide = false,  -- whether the minimap icon is hidden
@@ -15,25 +16,79 @@ Porter.defaults = {
         x = 0,             -- x offset from anchor
         y = 0,             -- y offset from anchor
     },
-    settings = {
-        showCosmeticHearthstones = true,
-        hearthstoneMode = "Random",     -- "Normal", "Random", or "Specific"
-        hearthstoneChoice = nil,        -- toy ID for Specific mode
-        lastSeenVersion = nil,          -- tracks which version's changelog was shown
-        categoryVisibility = {
-            ["Hearthstones"] = true,
-            ["Class & Racial"] = true,
-            ["Items"] = true,
-            ["Toys"] = true,
-            ["Dungeons"] = true,
-            ["Raids"] = true,
-            ["Delves"] = true,
-            ["House"] = true,
-        },
+}
+
+-- Per-character profile defaults
+Porter.profileDefaults = {
+    showCosmeticHearthstones = true,
+    hearthstoneMode = "Random",     -- "Normal", "Random", or "Specific"
+    hearthstoneChoice = nil,        -- toy ID for Specific mode
+    defaultView = "category",       -- "category" or "zone" — startup view & tab order
+    viewMode = "category",          -- "category" or "zone"
+    zoneOrder = "recent",           -- "recent" (most recent first) or "alpha" (alphabetical)
+    categoryVisibility = {
+        ["Hearthstones"] = true,
+        ["Class & Racial"] = true,
+        ["Items"] = true,
+        ["Toys"] = true,
+        ["Dungeons"] = true,
+        ["Raids"] = true,
+        ["Delves"] = true,
+        ["House"] = true,
     },
 }
 
--- Called once during ADDON_LOADED to merge defaults into saved data
+-- Deep copy a table (used for profile copying and default merging)
+local function DeepCopy(src)
+    if type(src) ~= "table" then return src end
+    local copy = {}
+    for k, v in pairs(src) do
+        copy[k] = DeepCopy(v)
+    end
+    return copy
+end
+
+-- Merge defaults into a target table without overwriting existing values
+local function MergeDefaults(target, defaults)
+    for k, v in pairs(defaults) do
+        if target[k] == nil then
+            target[k] = DeepCopy(v)
+        elseif type(v) == "table" and type(target[k]) == "table" then
+            MergeDefaults(target[k], v)
+        end
+    end
+end
+
+-- Get the profile key for the current character ("Name-Realm")
+function Porter:GetProfileKey()
+    local name = UnitName("player")
+    local realm = GetRealmName()
+    return name .. "-" .. realm
+end
+
+-- Get a sorted list of all profile keys
+function Porter:GetProfileList()
+    local profiles = {}
+    if PorterDB and PorterDB.profiles then
+        for key in pairs(PorterDB.profiles) do
+            tinsert(profiles, key)
+        end
+    end
+    table.sort(profiles)
+    return profiles
+end
+
+-- Copy settings from another character's profile into the current profile
+function Porter:CopyProfileFrom(sourceKey)
+    if not PorterDB.profiles[sourceKey] then return end
+    local copy = DeepCopy(PorterDB.profiles[sourceKey])
+    local myKey = self:GetProfileKey()
+    PorterDB.profiles[myKey] = copy
+    -- Re-alias self.db.settings to the new profile table
+    self.db.settings = PorterDB.profiles[myKey]
+end
+
+-- Called once during ADDON_LOADED to set up saved data and profiles
 function Porter:InitDB()
     -- PorterDB is the global SavedVariable table loaded from disk by WoW.
     -- If the player has never used the addon before, it will be nil.
@@ -41,42 +96,61 @@ function Porter:InitDB()
         PorterDB = {}
     end
 
-    -- Fill in any missing keys from defaults (preserves existing user values)
+    -- Migrate from old format (pre-profiles): PorterDB.settings → first profile
+    if PorterDB.settings and not PorterDB.profiles then
+        local oldSettings = PorterDB.settings
+        PorterDB.profiles = {}
+        local key = self:GetProfileKey()
+        PorterDB.profiles[key] = oldSettings
+        -- Move lastSeenVersion to global if it was in the old settings
+        if oldSettings.lastSeenVersion then
+            PorterDB.lastSeenVersion = oldSettings.lastSeenVersion
+            oldSettings.lastSeenVersion = nil
+        end
+        PorterDB.settings = nil
+    end
+
+    -- Ensure profiles table exists
+    if not PorterDB.profiles then
+        PorterDB.profiles = {}
+    end
+
+    -- Ensure current character has a profile
+    local key = self:GetProfileKey()
+    if not PorterDB.profiles[key] then
+        PorterDB.profiles[key] = DeepCopy(self.profileDefaults)
+    end
+
+    -- Merge profile defaults into the current profile (adds new settings from updates)
+    MergeDefaults(PorterDB.profiles[key], self.profileDefaults)
+
+    -- Merge global defaults into PorterDB
     for section, sectionDefaults in pairs(self.defaults) do
         if type(sectionDefaults) ~= "table" then
-            -- Top-level non-table defaults (shouldn't exist, but guard against it)
             if PorterDB[section] == nil then
                 PorterDB[section] = sectionDefaults
             end
         else
-        if not PorterDB[section] then
-            PorterDB[section] = {}
-        end
-        for key, value in pairs(sectionDefaults) do
-            if PorterDB[section][key] == nil then
-                PorterDB[section][key] = value
-            elseif type(value) == "table" and type(PorterDB[section][key]) == "table" then
-                -- Deep merge for nested tables (e.g. categoryVisibility)
-                for k, v in pairs(value) do
-                    if PorterDB[section][key][k] == nil then
-                        PorterDB[section][key][k] = v
-                    end
-                end
+            if not PorterDB[section] then
+                PorterDB[section] = {}
             end
+            MergeDefaults(PorterDB[section], sectionDefaults)
         end
-        end -- else (table section)
     end
 
-    -- Migrate lastSeenVersion from top-level to settings (v1.0.7 fix)
-    if PorterDB.lastSeenVersion and type(PorterDB.lastSeenVersion) ~= "table" then
-        PorterDB.settings.lastSeenVersion = PorterDB.lastSeenVersion
-        PorterDB.lastSeenVersion = nil
-    elseif PorterDB.lastSeenVersion then
-        -- Clean up the empty table left by the old broken InitDB
+    -- Legacy migration: lastSeenVersion was moved from settings to global in v1.0.7,
+    -- then from global non-table cleanup. Handle any leftover states.
+    if PorterDB.lastSeenVersion and type(PorterDB.lastSeenVersion) == "table" then
         PorterDB.lastSeenVersion = nil
     end
 
-    self.db = PorterDB
+    -- Build self.db as a wrapper so all existing self.db.settings.* references keep working
+    -- Note: lastSeenVersion is accessed via PorterDB.lastSeenVersion directly (global, not per-profile)
+    self.db = {
+        minimap = PorterDB.minimap,
+        position = PorterDB.position,
+        settings = PorterDB.profiles[key],
+    }
 end
 
 -- Save the current window position so it restores on next login

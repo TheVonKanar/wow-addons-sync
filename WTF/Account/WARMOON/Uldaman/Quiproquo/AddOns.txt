@@ -50,3 +50,7 @@ OPie_Classic: disabled
 WeakAurasCompanion: enabled
 WeakAurasArchive: enabled
 !TweaksUI: disabled
+Blizzard_CharacterFrame: enabled
+Blizzard_ChallengesUI: enabled
+Blizzard_EncounterJournal: enabled
+Blizzard_Transmog: enabled

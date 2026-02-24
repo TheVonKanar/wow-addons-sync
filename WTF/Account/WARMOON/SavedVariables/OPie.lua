@@ -15,137 +15,67 @@ OPie_SavedData = {
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
-["MotionAction"] = true,
-["Bindings"] = {
-["rofessions"] = "F4",
-["Usables"] = false,
-["arthstones"] = "SHIFT-B",
-},
 ["SliceBinding"] = true,
+["Bindings"] = {
+["Usables"] = false,
+},
+["MotionAction"] = true,
+["InteractionMode"] = 2,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
-["Bindings"] = {
-["Talents"] = "F2",
-["Usables"] = false,
-["arthstones"] = "F6",
-["rofessions"] = "F3",
-},
-["ShowCooldowns"] = true,
-["RingScale"] = 1.200000047683716,
-["RingOptions"] = {
-["arthstones#InteractionMode"] = 2,
-["arthstones#CenterAction"] = false,
-["arthstones#QuickActionOnRelease"] = true,
-["arthstones#MotionAction"] = true,
-["arthstones#RingAtMouse"] = false,
-},
 ["SliceBinding"] = true,
+["RingScale"] = 1.200000047683716,
+["ShowCooldowns"] = true,
+["Bindings"] = {
+["Usables"] = false,
+["Utility"] = "8",
+},
+["InteractionMode"] = 2,
 },
 },
 ["PersistentStorage"] = {
 ["RingKeeper"] = {
-["rofessions"] = {
-{
-["sliceToken"] = "ABueQYX/O3w",
-["id"] = 423395,
-},
-{
-"item",
-214561,
-["sliceToken"] = "ABueQGw1gZw",
-},
-{
-"item",
-212308,
-["sliceToken"] = "ABueQGw1gZe",
-},
-{
-["sliceToken"] = "ABuenAlJMLe",
-["id"] = 818,
-},
-{
-"item",
-136377,
-["sliceToken"] = "ABueEw2Z3Qw",
-},
-["name"] = "Professions (Kvotheen)",
-["save"] = true,
-},
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["SpecMenu"] = true,
-["CommonTrades"] = true,
-["OPieAutoQuest"] = true,
 ["WorldMarkers"] = true,
+["CommonTrades"] = true,
+["SpecMenu"] = true,
+["OPieAutoQuest"] = true,
 ["PaladinTools"] = true,
 },
-["arthstones"] = {
+["OPieFlagStore"] = {
+["StoreVersion"] = 3,
+},
+["Utility"] = {
 {
-["sliceToken"] = "ABuenZkzsve",
-["id"] = 556,
+"mount",
+2265,
+["sliceToken"] = "ABueTwA1bvw",
 },
 {
-"toy",
-140192,
-["sliceToken"] = "ABuenZkzsv1",
+"mount",
+460,
+["sliceToken"] = "ABueTwA1bve",
 },
 {
-"toy",
-110560,
-["sliceToken"] = "ABueQle13H1",
-},
-{
-"toy",
-236687,
-["sliceToken"] = "ABueElEKFiw",
-},
-{
-"item",
-141605,
-["sliceToken"] = "ABueQlwN=Kw",
-},
-{
-"item",
-234389,
-["sliceToken"] = "ABueEgU/BDw",
-},
-["name"] = "Hearthstones",
-["save"] = true,
-},
-["Talents"] = {
-{
-"toy",
-206268,
-["sliceToken"] = "ABueQbdzcVe",
-},
-{
-"toy",
-199830,
-["sliceToken"] = "ABueQbdzcVt",
+["sliceToken"] = "ABueTwA1bvr",
+["id"] = 460905,
 },
 {
 "toy",
 225556,
-["sliceToken"] = "ABueWdsapkw",
+["sliceToken"] = "ABueTwA1bv1",
 },
 {
-["sliceToken"] = "ABueEEQp4gw",
-["id"] = 460905,
+"item",
+132514,
+["sliceToken"] = "ABueTwA1bvt",
 },
-{
-["sliceToken"] = "ABueEEQp4ge",
-["id"] = 83958,
-},
-["name"] = "Toys",
+["name"] = "Utility",
 ["save"] = true,
-},
-["OPieFlagStore"] = {
-["StoreVersion"] = 3,
 },
 },
 },

@@ -1,0 +1,8 @@
+## Interface: 100207,110207,120000,120001
+## Title: TalentLoadoutDisplay
+## Notes: Displays your currently selected talent loadout name on screen
+## Author: Buffyflewbs-EU-Azuremyst
+## Version: 1.001
+## SavedVariables: TalentLoadoutDisplayDB
+
+TalentLoadoutDisplay.lua

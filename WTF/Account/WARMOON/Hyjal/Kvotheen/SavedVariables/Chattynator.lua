@@ -32,4 +32,7 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /choretracker",
 "/s /choretracker toggle",
 "/s /crb",
+"/s /autohide",
+"/s /fstack",
+"/s /larias",
 }
