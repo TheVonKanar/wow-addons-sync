@@ -1,6 +1,7 @@
 --[[
 Portuguese-Brazil (ptBR) strings for Larias's Weekly Checklist
 ]]
+if GetLocale() ~= "ptBR" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "ptBR"
 local LOCALE_REGISTRY_KEY = "LARIASWEEKLYCHECKLIST_LOCALE_REGISTRY"
@@ -61,7 +62,7 @@ local STRINGS = {
         [3341] = "Veterano",
         [3343] = "Campeão",
         [3345] = "Herói",
-        [3347] = "Dourado",
+        [3347] = "Mítico",
     },
     TRACKING_NO_ID = "Sem ID",
     TRACKING_TRADE_UP_SUFFIX = " Melhorar)",
@@ -108,7 +109,7 @@ local STRINGS = {
     ILVLREF_CREST_VET          = "Vet",
     ILVLREF_CREST_CHAMP        = "Camp",
     ILVLREF_CREST_HERO         = "Herói",
-    ILVLREF_CREST_MYTH         = "Dour",
+    ILVLREF_CREST_MYTH         = "Mít",
     ILVLREF_DO_NOT_USE_CRESTS_FMT = "NÃO USAR BRASÕES %s",
 
     ILVLREF_DUNGEON_PRE_HEROIC = "Heróico pré-temp.",

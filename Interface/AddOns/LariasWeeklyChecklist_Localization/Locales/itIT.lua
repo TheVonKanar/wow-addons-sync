@@ -1,6 +1,7 @@
 --[[
 Italian (itIT) strings for Larias's Weekly Checklist
 ]]
+if GetLocale() ~= "itIT" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "itIT"
 local LOCALE_REGISTRY_KEY = "LARIASWEEKLYCHECKLIST_LOCALE_REGISTRY"
@@ -62,7 +63,7 @@ local STRINGS = {
         [3341] = "Veterano",
         [3343] = "Campione",
         [3345] = "Eroe",
-        [3347] = "Dorato",
+        [3347] = "Mito",
     },
     TRACKING_NO_ID = "Nessun ID",
     TRACKING_TRADE_UP_SUFFIX = " Potenzia)",
@@ -109,7 +110,7 @@ local STRINGS = {
     ILVLREF_CREST_VET          = "Vet",
     ILVLREF_CREST_CHAMP        = "Camp",
     ILVLREF_CREST_HERO         = "Eroe",
-    ILVLREF_CREST_MYTH         = "Dor",
+    ILVLREF_CREST_MYTH         = "Mito",
     ILVLREF_DO_NOT_USE_CRESTS_FMT = "NON USARE EMBLEMI %s",
 
     ILVLREF_DUNGEON_PRE_HEROIC = "Eroico pre-stagione",

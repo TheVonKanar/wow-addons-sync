@@ -1,6 +1,7 @@
 --[[
 Russian (ruRU) strings for Larias's Weekly Checklist
 ]]
+if GetLocale() ~= "ruRU" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "ruRU"
 local LOCALE_REGISTRY_KEY = "LARIASWEEKLYCHECKLIST_LOCALE_REGISTRY"
@@ -32,7 +33,7 @@ local STRINGS = {
 
     HIDE_COMPLETED_WEEKS = "Скрыть завершённые недели",
     OPTIONS_HIDE_CHANGE_WEEK_BTN = "Скрыть кнопку «Сменить неделю»",
-    OPTIONS_HIDE_ILVL_REF_BTN = "Скрыть кнопку «Реф. ilvl»",
+    OPTIONS_HIDE_ILVL_REF_BTN = "Скрыть кнопку «Уровни предметов»",
 
     RESET_BUTTON = "Сбросить",
 
@@ -53,23 +54,23 @@ local STRINGS = {
     TRACKING_QUEST_DELVERS_BOUNTY = "Награда исследователя:",
     TRACKING_QUEST_WEEKLY_PREY = "Еженедельная добыча:",
 
-    TRACKING_CREST_LABEL = "Гребень:",
-    TRACKING_CREST_ID_LABEL_FMT = "Гребень %s:",
+    TRACKING_CREST_LABEL = "Гербы:",
+    TRACKING_CREST_ID_LABEL_FMT = "Герб %s:",
     -- Optional: if present, crest labels are taken from this table instead of the game currency name.
     -- Keys are currency IDs; values should be display names (with or without a trailing ':').
     TRACKING_CREST_NAMES_BY_ID = {
-        [3383] = "Путешественник",
+        [3383] = "Искатель приключений",
         [3341] = "Ветеран",
-        [3343] = "Чемпион",
+        [3343] = "Защитник",
         [3345] = "Герой",
-        [3347] = "Позолоченный",
+        [3347] = "Эпохи",
     },
     TRACKING_NO_ID = "Нет ID",
     TRACKING_TRADE_UP_SUFFIX = " Улучшить)",
 
     TRACKING_CATALYST_LABEL = "Катализатор:",
 
-    TRACKING_INF = "INF",
+    TRACKING_INF = "беск.",
 
     -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Левая кнопка: Показать/скрыть список",
@@ -79,23 +80,23 @@ local STRINGS = {
     TAB_LIST = "Список",
     TAB_OPTIONS = "Настройки",
     CHANGE_WEEK_BUTTON = "Сменить неделю",
-    ILVLREF_BUTTON = "Реф. ilvl",
+    ILVLREF_BUTTON = "Уровни предметов",
 
     -- Item level reference popup
     ILVLREF_WINDOW_TITLE  = "Midnight, сезон 1 — справочник уровней предметов",
 
-    ILVLREF_SEC_TRACKS    = "Пути улучшения  (20 гребней за шаг)",
-    ILVLREF_SEC_CRAFTED   = "Уровни созданных предметов",
+    ILVLREF_SEC_TRACKS    = "Уровни улучшения  (20 гербов за уровень)",
+    ILVLREF_SEC_CRAFTED   = "Уровни крафтовых предметов",
     ILVLREF_SEC_DUNGEONS  = "Уровни предметов в подземельях",
     ILVLREF_SEC_RAID      = "Прибл. уровни предметов рейда Midnight",
-    ILVLREF_SEC_DELVES    = "Уровни предметов из щедрых вылазок",
+    ILVLREF_SEC_DELVES    = "Уровни предметов из многообещающих вылазок",
 
     ILVLREF_COL_ILVL         = "ур. пред.",
-    ILVLREF_COL_TRACK        = "Пути улучшения",
-    ILVLREF_COL_CREST_NEEDED = "Гребни",
+    ILVLREF_COL_TRACK        = "Уровень улучшения",
+    ILVLREF_COL_CREST_NEEDED = "Гербы",
     ILVLREF_COL_QUALITY      = "Качество",
     ILVLREF_COL_SOURCE       = "Источник",
-    ILVLREF_COL_END_LOOT     = "Конечные предметы",
+    ILVLREF_COL_END_LOOT     = "Максимальный уровень",
     ILVLREF_COL_GREAT_VAULT  = "Великий тайник",
     ILVLREF_COL_DIFFICULTY   = "Сложность",
     ILVLREF_COL_BOSS1        = "Начало",
@@ -103,24 +104,24 @@ local STRINGS = {
     ILVLREF_COL_BOSS3        = "Конец",
     ILVLREF_COL_BOSS4        = "Финал",
     ILVLREF_COL_TIER         = "Уровень",
-    ILVLREF_COL_MAP_DROP     = "Карта-дроп",
+    ILVLREF_COL_MAP_DROP     = "Добыча с картой",
 
-    ILVLREF_CREST_ADV          = "Путеш",
-    ILVLREF_CREST_VET          = "Вет",
-    ILVLREF_CREST_CHAMP        = "Чемп",
+    ILVLREF_CREST_ADV          = "Иск. прикл.",
+    ILVLREF_CREST_VET          = "Ветеран",
+    ILVLREF_CREST_CHAMP        = "Защитник",
     ILVLREF_CREST_HERO         = "Герой",
-    ILVLREF_CREST_MYTH         = "Позол",
-    ILVLREF_DO_NOT_USE_CRESTS_FMT = "НЕ ИСПОЛЬЗОВАТЬ ГРЕБНИ %s",
+    ILVLREF_CREST_MYTH         = "Легенда",
+    ILVLREF_DO_NOT_USE_CRESTS_FMT = "НЕ ИСПОЛЬЗОВАТЬ ГЕРБЫ %s",
 
-    ILVLREF_DUNGEON_PRE_HEROIC = "Досезонный Героич.",
+    ILVLREF_DUNGEON_PRE_HEROIC = "До открытия Гер. рейда",
     ILVLREF_DUNGEON_HEROIC     = "Героический",
-    ILVLREF_DUNGEON_PRE_MYTHIC = "Досезонный Эпич.",
-    ILVLREF_DUNGEON_MYTHIC     = "Эпический",
+    ILVLREF_DUNGEON_PRE_MYTHIC = "До открытия Эпох. рейда",
+    ILVLREF_DUNGEON_MYTHIC     = "Эпохальный",
 
-    ILVLREF_RAID_LFR           = "LFR",
+    ILVLREF_RAID_LFR           = "Поиск рейда",
     ILVLREF_RAID_NORMAL        = "Обычный",
     ILVLREF_RAID_HEROIC        = "Героический",
-    ILVLREF_RAID_MYTHIC        = "Эпический",
+    ILVLREF_RAID_MYTHIC        = "Эпохальный",
 
     ILVLREF_DELVE_TIER_FMT     = "У%d",
 

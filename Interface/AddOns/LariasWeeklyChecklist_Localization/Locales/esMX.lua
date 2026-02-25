@@ -1,6 +1,7 @@
 --[[
 Spanish (esMX) strings for Larias's Weekly Checklist
 ]]
+if GetLocale() ~= "esMX" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "esMX"
 local LOCALE_REGISTRY_KEY = "LARIASWEEKLYCHECKLIST_LOCALE_REGISTRY"
@@ -52,8 +53,8 @@ local STRINGS = {
     TRACKING_QUEST_DELVERS_BOUNTY = "Botín del explorador:",
     TRACKING_QUEST_WEEKLY_PREY = "Presa semanal:",
 
-    TRACKING_CREST_LABEL = "Blasón:",
-    TRACKING_CREST_ID_LABEL_FMT = "Blasón %s:",
+    TRACKING_CREST_LABEL = "Crestalborada:",
+    TRACKING_CREST_ID_LABEL_FMT = "Crestalborada %s:",
     -- Optional: if present, crest labels are taken from this table instead of the game currency name.
     -- Keys are currency IDs; values should be display names (with or without a trailing ':').
     TRACKING_CREST_NAMES_BY_ID = {
@@ -61,7 +62,7 @@ local STRINGS = {
         [3341] = "Veterano",
         [3343] = "Campeón",
         [3345] = "Héroe",
-        [3347] = "Dorado",
+        [3347] = "Mítica",
     },
     TRACKING_NO_ID = "Sin ID",
     TRACKING_TRADE_UP_SUFFIX = " Mejorar)",
@@ -83,7 +84,7 @@ local STRINGS = {
     -- Item level reference popup
     ILVLREF_WINDOW_TITLE  = "Referencia de nivel de objeto – Temporada 1 de Midnight",
 
-    ILVLREF_SEC_TRACKS    = "Rangos de mejora  (20 blasones por paso)",
+    ILVLREF_SEC_TRACKS    = "Rangos de mejora  (20 crestalboradas por paso)",
     ILVLREF_SEC_CRAFTED   = "Niveles de objeto fabricado",
     ILVLREF_SEC_DUNGEONS  = "Niveles de objeto en mazmorra",
     ILVLREF_SEC_RAID      = "Aprox. niveles de objeto en banda de Midnight",
@@ -91,7 +92,7 @@ local STRINGS = {
 
     ILVLREF_COL_ILVL         = "n. obj.",
     ILVLREF_COL_TRACK        = "Rangos de mejora",
-    ILVLREF_COL_CREST_NEEDED = "Blasones",
+    ILVLREF_COL_CREST_NEEDED = "Crestalboradas",
     ILVLREF_COL_QUALITY      = "Calidad",
     ILVLREF_COL_SOURCE       = "Fuente",
     ILVLREF_COL_END_LOOT     = "Botín final",
@@ -108,8 +109,8 @@ local STRINGS = {
     ILVLREF_CREST_VET          = "Vet",
     ILVLREF_CREST_CHAMP        = "Cam",
     ILVLREF_CREST_HERO         = "Héroe",
-    ILVLREF_CREST_MYTH         = "Dor",
-    ILVLREF_DO_NOT_USE_CRESTS_FMT = "NO USAR BLASONES %s",
+    ILVLREF_CREST_MYTH         = "Mít",
+    ILVLREF_DO_NOT_USE_CRESTS_FMT = "NO USAR CRESTALBORADAS %s",
 
     ILVLREF_DUNGEON_PRE_HEROIC = "Heroico de pretemp.",
     ILVLREF_DUNGEON_HEROIC     = "Heroico",

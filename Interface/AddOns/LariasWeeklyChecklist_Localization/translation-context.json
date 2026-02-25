@@ -6,7 +6,9 @@
         "Bountiful Delves": "Bountiful Delves",
         "Crests": "Crests",
         "Prey": "Prey",
-        "Great Vault": "Great Vault"
+        "Great Vault": "Great Vault",
+        "Dungeon": "Dungeon",
+        "Raid": "Raid"
     },
 
     "enGB": {
@@ -14,62 +16,173 @@
         "Bountiful Delves": "Bountiful Delves",
         "Crests": "Crests",
         "Prey": "Prey",
-        "Great Vault": "Great Vault"
+        "Great Vault": "Great Vault",
+        "Dungeon": "Dungeon",
+        "Raid": "Raid"
     },
 
     "frFR": {
         "Delves": "Gouffres",
         "Bountiful Delves": "Gouffres abondants",
         "Crests": "Écus",
+        "Sparks": "Flux de mana d'aubastre",
         "Prey": "Traque",
-        "Great Vault": "Grand Coffre"
+        "Great Vault": "Grand Coffre",
+        "Dungeon": "Donjon",
+        "Raid": "Raid",
+        "Crest tiers": {
+            "3383": "aventure",
+            "3341": "vétéran",
+            "3343": "champion",
+            "3345": "héroïque",
+            "3347": "mythique"
+        },
+        "_notes": {
+            "Crests": "Singular: Écu. Plural: Écus. Tracker label: 'Écu:'. Full crest names: 'Écu de l'aube [tier]'. Note hero tier uses adjective form 'héroïque' (not 'de héros'), mythic uses 'mythique'.",
+            "Delves": "Singular and plural both 'Gouffres' in common usage (plural noun)."
+        }
     },
 
     "deDE": {
         "Delves": "Tiefen",
         "Bountiful Delves": "Üppige Tiefen",
         "Crests": "Wappen",
+        "Sparks": "Morgenlichtmanaflux",
         "Prey": "Beute",
-        "Great Vault": "Große Schatzkammer"
+        "Great Vault": "Große Schatzkammer",
+        "Dungeon": "Dungeon",
+        "Raid": "Schlachtzug",
+        "Crest tiers": {
+            "3383": "Abenteurers",
+            "3341": "Veteranen",
+            "3343": "Champions",
+            "3345": "Helden",
+            "3347": "Mythen"
+        },
+        "_notes": {
+            "Crests": "Wappen (coat of arms) is the WoW DE term. Do NOT use 'Zinnen' (battlements) — common mistranslation. Full names: 'Morgenlichtwappen des [tier]' (genitive). Hero = 'des Helden', Mythic = 'der Mythen' (note: plural genitive for Mythen).",
+            "Great Vault": "Full name is 'Große Schatzkammer'. Do NOT abbreviate to 'Gewölbe' in written text.",
+            "Raid": "Schlachtzug in formal UI text. 'Raid' is also widely understood but 'Schlachtzug' is Blizzard's official DE term."
+        }
     },
 
     "esES": {
         "Delves": "Profundidades",
         "Bountiful Delves": "Profundidades abundantes",
         "Crests": "Blasones",
+        "Sparks": "Manafluzo Albaluz",
         "Prey": "Presa",
-        "Great Vault": "Gran cámara"
+        "Great Vault": "Gran Cámara",
+        "Dungeon": "Mazmorra",
+        "Raid": "Banda",
+        "Crest tiers": {
+            "3383": "aventurero",
+            "3341": "veterano",
+            "3343": "campeón",
+            "3345": "héroe",
+            "3347": "mito"
+        },
+        "_notes": {
+            "Crests": "Blasones (heraldic term). Do NOT use 'Crestas'. Full names: 'Blasón del alba de [tier]'. Note: esMX uses a completely different word 'Crestalborada' — these are separate localizations.",
+            "Delves": "Profundidades. Do NOT use 'Excavaciones'.",
+            "Raid": "'Banda' is the WoW ES term for Raid (instance). The verb is 'raidear'. Raid leader = 'líder de banda'."
+        }
     },
 
     "esMX": {
         "Delves": "Profundidades",
         "Bountiful Delves": "Profundidades abundantes",
-        "Crests": "Blasones",
+        "Crests": "Crestalboradas",
+        "Sparks": "Flujo de maná albaluz",
         "Prey": "Presa",
-        "Great Vault": "Gran cámara"
+        "Great Vault": "Gran Cámara",
+        "Dungeon": "Mazmorra",
+        "Raid": "Banda",
+        "Crest tiers": {
+            "3383": "aventurero",
+            "3341": "veterano",
+            "3343": "campeón",
+            "3345": "héroe",
+            "3347": "mítica"
+        },
+        "_notes": {
+            "Crests": "CRITICAL: esMX uses 'Crestalborada' (singular) / 'Crestalboradas' (plural) — Wowhead confirmed. This is completely different from esES 'Blasones'. Do NOT use 'Blasones' for esMX. Full names: 'Crestalborada de [tier]'. Note: Mythic tier uses adjective form 'mítica' (not 'de mito' like esES).",
+            "Delves": "Profundidades. Do NOT use 'Excavaciones'."
+        }
     },
 
     "itIT": {
-        "Delves": "Profondità",
-        "Bountiful Delves": "Profondità rigogliose",
+        "Delves": "Scorribande",
+        "Bountiful Delves": "Scorribande generose",
         "Crests": "Emblemi",
+        "Sparks": "Manaflusso di Albaluce",
         "Prey": "Preda",
-        "Great Vault": "Grande Forziere"
+        "Great Vault": "Grande Forziere",
+        "Dungeon": "Dungeon",
+        "Raid": "Raid",
+        "Crest tiers": {
+            "3383": "Avventuriero",
+            "3341": "Veterano",
+            "3343": "Campione",
+            "3345": "Eroe",
+            "3347": "Mito"
+        },
+        "_notes": {
+            "Crests": "Emblema (m.) singular, Emblemi plural. Do NOT use 'Cresta/creste'. Full names: 'Emblema dell'Alba dell'[tier]' / 'del [tier]'. Tier names are masculine nouns/titles (Avventuriero, Veterano, Campione, Eroe, Mito).",
+            "Delves": "Scorribande (feminine). Do NOT use 'Profond\u00e0' or 'Spedizioni'. Bountiful Delves = Scorribande generose.",
+            "Great Vault": "Grande Forziere. Do NOT use 'Grande Volta'."
+        }
     },
 
     "ptBR": {
-        "Delves": "Profundezas",
-        "Bountiful Delves": "Profundezas abundantes",
-        "Crests": "Brasões",
+        "Delves": "Imers\u00f5es",
+        "Bountiful Delves": "Imers\u00f5es abundantes",
+        "Crests": "Bras\u00f5es",
+        "Sparks": "Fluxo de Mana do Alvorecer",
         "Prey": "Presa",
-        "Great Vault": "Grande Cofre"
+        "Great Vault": "Grande Cofre",
+        "Dungeon": "Masmorra",
+        "Raid": "Raid",
+        "Crest tiers": {
+            "3383": "Aventureiro",
+            "3341": "Veterano",
+            "3343": "Campe\u00e3o",
+            "3345": "Her\u00f3i",
+            "3347": "M\u00edtico"
+        },
+        "_notes": {
+            "Crests": "Bras\u00e3o (m.) singular, Bras\u00f5es plural. Do NOT use 'Crista/cristas'. Full names: 'Bras\u00e3o Auroral do [tier]'. Mythic tier = 'M\u00edtico' (adjective, not noun like other tiers).",
+            "Delves": "Imers\u00f5es (feminine). Do NOT use 'Profundezas' or 'Expedi\u00e7\u00f5es'. Bountiful Delves = Imers\u00f5es abundantes."
+        }
     },
 
     "ruRU": {
         "Delves": "Вылазки",
-        "Bountiful Delves": "Щедрые вылазки",
-        "Crests": "Гребни",
-        "Prey": "Добыча",
-        "Great Vault": "Великий тайник"
+        "Bountiful Delves": "Многообещающие вылазки",
+        "Crests": "Гербы",
+        "Prey (weekly event)": "Охота",
+        "Great Vault": "Великий тайник",
+        "Dark Moon Fair": "Ярмарка Новолуния",
+        "Silvermoon faction": "Двор Луносвета",
+        "Dungeon": "Подземелье",
+        "Raid": "Рейд",
+        "Mythic difficulty": "Эпохальный",
+        "LFR": "Поиск рейда",
+        "Mythic gear track": "Легенды",
+        "Crest tiers": {
+            "3383": "Искатель приключений",
+            "3341": "Ветеран",
+            "3343": "Защитник",
+            "3345": "Герой",
+            "3347": "Эпохи"
+        },
+        "_notes": {
+            "Great Vault": "Великий тайник (masculine). Genitive: 'Великого тайника'. Do NOT use 'Великое хранилище' — that is an old Shadowlands-era term.",
+            "Delves": "Вылазки. Do NOT use 'Экспедиции'.",
+            "Crests": "Герб singular, Гербы plural, Гербов genitive plural. Do NOT use 'Гребень/Гребни'. Crest tiers confirmed by human translator: [3343] Защитник (Champion), [3347] Эпохи (Gilded). Mythic/Gilded gear track label = 'Легенды'; gilded crest short label = 'Эпохи' (of the Epoch).",
+            "Mythic_mode": "Official WoW RU for Mythic difficulty = 'Эпохальный'. NOT 'Эпический'.",
+            "Prey": "'Охота' is the RU event name (Hunt). The label TRACKING_QUEST_WEEKLY_PREY stays 'Еженедельная добыча' (generic 'weekly loot'), but item text uses 'событие Охота'.",
+            "Silvermoon": "Faction name in WoW RU is 'Двор Луносвета' (Court of Lunosvет/Silvermoon). NOT literal 'Серебряный Город'."
+        }
     }
 }

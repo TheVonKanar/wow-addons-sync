@@ -1,6 +1,7 @@
 --[[
 German (deDE) strings for Larias's Weekly Checklist
 ]]
+if GetLocale() ~= "deDE" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "deDE"
 local LOCALE_REGISTRY_KEY = "LARIASWEEKLYCHECKLIST_LOCALE_REGISTRY"
@@ -61,7 +62,7 @@ local STRINGS = {
         [3341] = "Veteran",
         [3343] = "Champion",
         [3345] = "Held",
-        [3347] = "Vergoldet",
+        [3347] = "Mythen",
     },
     TRACKING_NO_ID = "Keine ID",
     TRACKING_TRADE_UP_SUFFIX = " Aufwerten)",
@@ -108,7 +109,7 @@ local STRINGS = {
     ILVLREF_CREST_VET          = "Vet",
     ILVLREF_CREST_CHAMP        = "Champ",
     ILVLREF_CREST_HERO         = "Held",
-    ILVLREF_CREST_MYTH         = "Verg",
+    ILVLREF_CREST_MYTH         = "Myth",
     ILVLREF_DO_NOT_USE_CRESTS_FMT = "KEINE %s-WAPPEN VERWENDEN",
 
     ILVLREF_DUNGEON_PRE_HEROIC = "Vorjahres-Heroisch",

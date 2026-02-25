@@ -4,6 +4,7 @@ French (frFR) checklist data for Larias's Weekly Checklist
 NOTE: IDs are kept identical to the enUS dataset so completion tracking stays consistent
 across locales.
 ]]
+if GetLocale() ~= "frFR" and not _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] then return end
 
 local LOCALE = "frFR"
 
