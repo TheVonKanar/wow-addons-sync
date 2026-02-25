@@ -13,13 +13,6 @@ X: -2
 Y: 174
 W: 351
 H: 161
-Frame: ColorPickerFrame
-FrameLevel: 129
-Anchor: CENTER
-X: 0
-Y: 0
-W: 388
-H: 210
 Frame: ItemRefTooltip
 FrameLevel: 1
 Anchor: CENTER
@@ -34,3 +27,10 @@ X: 110
 Y: 172
 W: 940
 H: 720
+Frame: ColorPickerFrame
+FrameLevel: 121
+Anchor: CENTER
+X: 0
+Y: 0
+W: 388
+H: 210

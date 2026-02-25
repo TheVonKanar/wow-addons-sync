@@ -323,9 +323,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "UIParent",
-["offY"] = 55.50028991699219,
+["offY"] = 54.50027465820313,
 ["relativePoint"] = "LEFT",
-["offX"] = 156.6667633056641,
+["offX"] = 158.6667633056641,
 },
 },
 },
@@ -767,9 +767,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "UIParent",
-["offY"] = 40.66690063476563,
+["offY"] = 155.666748046875,
 ["relativePoint"] = "CENTER",
-["offX"] = -434.3324890136719,
+["offX"] = -350.3325500488281,
 },
 },
 },
@@ -1035,7 +1035,7 @@ BlizzMoveDB = {
 },
 ["GarrisonCapacitiveDisplayFrame"] = {
 },
-["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
+["TabardFrame"] = {
 },
 ["BlackMarketFrame"] = {
 },
@@ -1142,9 +1142,9 @@ BlizzMoveDB = {
 },
 ["TokenFrame"] = {
 },
-["Baganator_SingleViewBankViewFrameblizzard"] = {
+["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
 },
-["TabardFrame"] = {
+["Baganator_SingleViewBankViewFrameblizzard"] = {
 },
 ["ChallengesKeystoneFrame"] = {
 ["startPoints"] = {

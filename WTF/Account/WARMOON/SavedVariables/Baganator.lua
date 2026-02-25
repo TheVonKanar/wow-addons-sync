@@ -220,13 +220,8 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["saved_searches"] = {
-},
-["category_section_toggled"] = {
-["1"] = false,
-["2"] = false,
-["Crafting"] = true,
-},
+["category_migration"] = 5,
+["sort_ignore_slots_at_end"] = false,
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -379,7 +374,11 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 10,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = false,
+["2"] = false,
+["Crafting"] = true,
+},
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
@@ -395,24 +394,12 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["disabled_skins"] = {
+["view_alpha"] = 1,
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
-["bag_view_width"] = 14,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -428,6 +415,7 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
+["debug_keywords"] = false,
 ["guild_current_tab"] = 1,
 ["auto_sort_on_open"] = false,
 ["setting_anchors"] = false,
@@ -489,7 +477,19 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["debug_keywords"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -499,13 +499,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["bag_view_width"] = 14,
+["disabled_skins"] = {
 },
-["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["category_migration"] = 5,
+["saved_searches"] = {
+},
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

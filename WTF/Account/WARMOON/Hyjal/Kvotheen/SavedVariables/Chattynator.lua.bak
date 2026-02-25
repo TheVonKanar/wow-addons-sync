@@ -35,4 +35,5 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /autohide",
 "/s /fstack",
 "/s /larias",
+"/s /fstack",
 }

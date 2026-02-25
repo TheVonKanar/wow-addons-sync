@@ -3,31 +3,31 @@ ExtraQuestButtonDB3 = {
 ["profiles"] = {
 ["Default"] = {
 ["artworkAlpha"] = 1,
-["noCooldownText"] = false,
+["artworkStyle"] = "Default",
 ["trackingOnly"] = false,
 ["position"] = {
 ["y"] = 154.6674194335938,
 ["x"] = 360.666748046875,
 ["point"] = "BOTTOM",
 },
-["artworkStyle"] = "Default",
+["scale"] = 1,
 ["zoneOnly"] = false,
 ["distanceYd"] = 1000,
-["scale"] = 1,
+["noCooldownText"] = false,
 },
 ["Modern"] = {
 ["artworkAlpha"] = 1,
-["noCooldownText"] = false,
+["artworkStyle"] = "Default",
 ["trackingOnly"] = false,
 ["position"] = {
 ["y"] = 0,
 ["x"] = 0,
 ["point"] = "CENTER",
 },
-["artworkStyle"] = "Default",
+["scale"] = 1,
 ["distanceYd"] = 1000,
 ["zoneOnly"] = false,
-["scale"] = 1,
+["noCooldownText"] = false,
 },
 },
 }

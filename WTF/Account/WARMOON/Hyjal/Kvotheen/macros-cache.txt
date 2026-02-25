@@ -30,12 +30,6 @@ VER 3 0100000000000060 " " "134400"
 #showtooltip
 /cast [@cursor] Earthbind Totem
 END
-VER 3 010000000000006A " " "134400"
-#showtooltip Doom Winds
-/cast Doom Winds
-/cast Crash Lightning
-/cast Stormstrike
-END
 VER 3 010000000000006D " " "7252953"
 #plumber:home
 /click PLMR_HOME1

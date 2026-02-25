@@ -1,21 +1,3 @@
-VER 3 0100000000000042 " " "134400"
-#showtooltip
-/cast Astral Shift
-/cast Spiritwalker's Grace
-/use Healthstone
-END
-VER 3 010000000000003A " " "134400"
-#showtooltip
-/cast [known:383013] Poison Cleansing Totem; [known:108287] Totemic Projection; Earth Shield
-END
-VER 3 010000000000005B " " "134400"
-#showtooltip
-/cast [known:192058,@cursor] Capacitor Totem; Earthbind Totem
-END
-VER 3 0100000000000040 " " "134400"
-#showtooltip
-/cast [known:51485,@cursor] Earthgrab Totem; [@cursor] Earthbind Totem
-END
 VER 3 010000000000003F " " "538576"
 #showtooltip
 /cast [@cursor] Wind Rush Totem
@@ -34,15 +16,6 @@ VER 3 0100000000000036 " " "136018"
 /stopcasting
 /cast [@focus,exists] Wind Shear; Wind Shear
 END
-VER 3 0100000000000069 " " "134400"
-#showtooltip
-/cast Spirit Walk
-/cast Spiritwalker's Grace
-END
-VER 3 0100000000000054 " " "134400"
-#showtooltip
-/cast [known:51490] Thunderstorm; [known:108285] Totemic Recall; Wind Shear
-END
 VER 3 0100000000000059 " " "134400"
 #showtooltip
 /use Invigorating Healing Potion
@@ -56,10 +29,6 @@ END
 VER 3 0100000000000060 " " "134400"
 #showtooltip
 /cast [@cursor] Earthbind Totem
-END
-VER 3 0100000000000064 " " "134400"
-#showtooltip
-/cast [known:375982] Primordial Wave; Feral Spirit
 END
 VER 3 010000000000006A " " "134400"
 #showtooltip Doom Winds
@@ -75,30 +44,15 @@ VER 3 010000000000006F " " "5927655"
 #showtooltip
 /cast [@cursor] Surging Totem
 END
-VER 3 0100000000000068 "+pot" "134400"
-#showtooltip Bloodlust
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Bloodlust
-END
-VER 3 010000000000005F "+pot" "134400"
-#showtooltip Ascendance
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Spiritwalker's Grace
-/cast Ascendance
-END
-VER 3 010000000000004E "+pot" "1035054"
-#showtooltip Doom Winds
-/use 13
-/use Fleeting Tempered Potion
-/use Tempered Potion
-/cast Doom Winds
-END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
+END
+VER 3 0100000000000070 "Hover" "134400"
+#showtooltip
+/stopcasting
+/cast [target=mouseover,exists] Wind Shear; Wind Shear
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit
