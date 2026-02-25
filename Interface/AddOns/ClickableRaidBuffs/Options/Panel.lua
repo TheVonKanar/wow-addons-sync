@@ -259,12 +259,16 @@ elseif InterfaceOptions_AddCategory then
 end
 
 ns.OpenOptions = function()
-  if InCombatLockdown and InCombatLockdown() then
-    UIErrorsFrame:AddMessage(L["Cannot open Clickable Raid Buffs options in combat."], 1, 0.2, 0.2, 1)
+  if (InCombatLockdown and InCombatLockdown()) 
+     or (C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret()) then
+
+    print("|cFF00ccffCRB:|r Menu is not available in combat, encounters, Mythic+, or PvP.")
     return
   end
+
   panel:Show()
   panel:Raise()
+
   if ns.SyncOptions then
     ns.SyncOptions()
   end
@@ -283,6 +287,7 @@ ns.ToggleOptions = function()
     ns.OpenOptions()
   end
 end
+
 O.OpenOptions = ns.OpenOptions
 
 local combatHider = CreateFrame("Frame")

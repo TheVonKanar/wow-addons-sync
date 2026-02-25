@@ -30,7 +30,7 @@ OPie_SavedData = {
 ["ShowCooldowns"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
-["Utility"] = "8",
+["Utility"] = "6",
 },
 ["InteractionMode"] = 2,
 },

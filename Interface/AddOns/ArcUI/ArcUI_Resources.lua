@@ -15,6 +15,165 @@ local deleteButtonsVisible = false
 local ShowResourceDeleteConfirmation
 
 -- ===================================================================
+-- SPELL PREDICTION SYSTEM
+-- Tracks pending spell costs/gains for resource bar overlays
+-- Non-secret: C_Spell.GetSpellPowerCost + UNIT_SPELLCAST events
+-- ===================================================================
+local Prediction = {
+  active = false,
+  spellID = nil,
+  cost = 0,        -- Normalized cost (e.g. 2.0 shards)
+  gain = 0,        -- Predicted gain amount
+  powerType = nil,  -- Which power type this prediction is for
+}
+ns.Resources._prediction = Prediction
+
+-- Warlock generative spells: spells that CREATE soul shards
+-- GetSpellPowerCost only reports costs, not gains — these must be hardcoded
+-- Format: [spellID] = { gain = N } or [spellID] = { gain = N, talent = spellID }
+-- talent = required talent spellID (checked via IsPlayerSpell)
+local WARLOCK_SHARD_GENERATORS = {
+  -- Destruction generators
+  [434506] = { gain = 2, gainNoChaosBolt = 3 },  -- Incinerate: 2 shards (3 if no Chaos Bolt known)
+  [6353]   = { gain = 1 },                        -- Soul Fire: 1 shard
+  -- Demonology generators
+  [264178] = { gain = 2 },                        -- Demonbolt: 2 shards
+  [686]    = { gain = 1, talent = 426115 },        -- Shadow Bolt: 1 shard (requires Fel Invocation)
+  -- Cross-spec generators (talent-gated)
+  [386997] = { gain = 3, talent = 449638 },        -- Soul Rot: 3 shards (requires Shared Suffering hero talent)
+  [265187] = { gain = 3, talent = 449638 },        -- Summon Demonic Tyrant: 3 shards (requires Shared Suffering)
+}
+
+-- Cache: rebuild on spec/talent change
+local cachedGenerators = nil
+
+local function RebuildGeneratorCache()
+  cachedGenerators = {}
+  local _, playerClass = UnitClass("player")
+  if playerClass ~= "WARLOCK" then return end
+  
+  local hasChaos = IsSpellKnown(116858)  -- Chaos Bolt (Destruction)
+  
+  for spellID, info in pairs(WARLOCK_SHARD_GENERATORS) do
+    -- Check talent requirement
+    if info.talent then
+      if not IsPlayerSpell(info.talent) then
+        -- Talent not learned, skip this generator
+      else
+        cachedGenerators[spellID] = info.gain
+      end
+    else
+      -- No talent requirement
+      if info.gainNoChaosBolt and not hasChaos then
+        cachedGenerators[spellID] = info.gainNoChaosBolt
+      else
+        cachedGenerators[spellID] = info.gain
+      end
+    end
+  end
+end
+
+function Prediction:StartCast(spellID)
+  if not spellID then return end
+  
+  -- Rebuild generator cache if needed
+  if not cachedGenerators then
+    RebuildGeneratorCache()
+  end
+  
+  local SOUL_SHARD_TYPE = Enum and Enum.PowerType and Enum.PowerType.SoulShards or 7
+  
+  -- Check for shard GENERATION first (not in cost API)
+  local generatedShards = cachedGenerators[spellID]
+  if generatedShards and generatedShards > 0 then
+    self.active = true
+    self.spellID = spellID
+    self.cost = 0
+    self.gain = generatedShards
+    self.powerType = SOUL_SHARD_TYPE
+    return
+  end
+  
+  -- Check soul shard cost via API
+  local costInfo = C_Spell.GetSpellPowerCost(spellID)
+  if not costInfo then
+    self:Clear()
+    return
+  end
+  
+  local shardCost = 0
+  for _, entry in ipairs(costInfo) do
+    if entry.type == SOUL_SHARD_TYPE then
+      shardCost = entry.cost or 0
+      break
+    end
+  end
+  
+  if shardCost <= 0 then
+    self:Clear()
+    return
+  end
+  
+  -- Safety: if cost > 5 (soul shards max), API might return tenths — normalize
+  if shardCost > 5 then
+    shardCost = shardCost / 10
+  end
+  
+  self.active = true
+  self.spellID = spellID
+  self.cost = shardCost
+  self.gain = 0
+  self.powerType = SOUL_SHARD_TYPE
+end
+
+function Prediction:Clear()
+  self.active = false
+  self.spellID = nil
+  self.cost = 0
+  self.gain = 0
+  self.powerType = nil
+end
+
+-- Invalidate generator cache on spec/talent change
+function Prediction:InvalidateCache()
+  cachedGenerators = nil
+end
+
+-- Get prediction info for a specific segment index given current value
+-- Returns: "cost", "gain", or nil (no prediction for this segment)
+function Prediction:GetSegmentState(segIndex, currentValue)
+  if not self.active then return nil end
+  
+  if self.cost > 0 then
+    -- Cost prediction: segments that will be consumed
+    local afterCost = currentValue - self.cost
+    -- Segment is currently filled but will be empty/partial after cast
+    if currentValue >= segIndex and afterCost < segIndex then
+      return "cost"
+    end
+    -- Partially filled segment that will be further consumed
+    if currentValue > (segIndex - 1) and currentValue < segIndex and afterCost < (segIndex - 1) then
+      return "cost"
+    end
+  end
+  
+  if self.gain > 0 then
+    -- Gain prediction: segments that will be filled
+    local afterGain = math.min(currentValue + self.gain, 5)  -- Cap at 5 shards
+    -- Currently empty segment that will have value after gain
+    if currentValue < segIndex and afterGain >= segIndex then
+      return "gain"
+    end
+    -- Partial fill: segment currently empty but will get partial fill
+    if currentValue < segIndex and afterGain > (segIndex - 1) and afterGain < segIndex then
+      return "gain"
+    end
+  end
+  
+  return nil
+end
+
+-- ===================================================================
 -- HELPER: CHECK IF OPTIONS PANEL IS OPEN
 -- Used to show bars hidden by talent conditions when editing
 -- ===================================================================
@@ -208,33 +367,29 @@ function ns.Resources.GetSecondaryMaxValue(secondaryType)
   local typeInfo = ns.Resources.SecondaryTypesLookup[secondaryType]
   if not typeInfo then return 5 end
   
-  -- Special cases
+  local maxDefault = typeInfo.maxDefault or 5
+  
+  -- Special cases with known fixed max values
   if secondaryType == "stagger" then
-    -- Stagger max is player's max health
     return UnitHealthMax("player") or 100
   elseif secondaryType == "soulFragments" then
-    -- Vengeance DH: Soul Cleave cast count, max 6
     return 6
   elseif secondaryType == "soulFragmentsDevourer" then
-    -- Devourer hero spec: max depends on Soul Glutton talent (1247534)
     local hasSoulGlutton = C_SpellBook and C_SpellBook.IsSpellKnown and C_SpellBook.IsSpellKnown(1247534)
     return hasSoulGlutton and 35 or 50
   elseif secondaryType == "maelstromWeapon" then
     return 10
   elseif secondaryType == "soulShards" then
-    -- Soul shards can be fractional for Destruction
-    local spec = GetSpecialization()
-    local specID = spec and GetSpecializationInfo(spec)
-    if specID == 267 then  -- Destruction
-      -- Return 50 for fractional display (5 shards * 10)
-      return UnitPowerMax("player", Enum.PowerType.SoulShards, true) or 50
-    end
-    return UnitPowerMax("player", Enum.PowerType.SoulShards) or 5
+    -- All Warlock specs: 5 shards visually
+    -- Destruction uses fractional fill per shard, but segment count is still 5
+    return 5
   elseif typeInfo.powerType then
-    return UnitPowerMax("player", typeInfo.powerType) or typeInfo.maxDefault
+    -- Use maxDefault as floor: UnitPowerMax can return partial values at login
+    local max = UnitPowerMax("player", typeInfo.powerType) or maxDefault
+    return math.max(max, maxDefault)
   end
   
-  return typeInfo.maxDefault or 5
+  return maxDefault
 end
 
 -- ===================================================================
@@ -298,7 +453,7 @@ function ns.Resources.GetSecondaryResourceValue(secondaryType)
   -- ═══════════════════════════════════════════════════════════════
   if secondaryType == "runes" then
     local max = UnitPowerMax("player", Enum.PowerType.Runes) or 6
-    if max <= 0 then return nil, nil, nil, nil end
+    if max < 6 then max = 6 end  -- Floor: always at least 6 runes
     
     local readyRunes = 0
     for i = 1, max do
@@ -313,26 +468,23 @@ function ns.Resources.GetSecondaryResourceValue(secondaryType)
   
   -- ═══════════════════════════════════════════════════════════════
   -- SOUL SHARDS (Warlock)
-  -- Destruction spec uses fractional shards (10ths)
+  -- All specs: max=5, segments=5
+  -- Destruction: fractional current (e.g. 3.5 shards), decimal display
+  -- Affliction/Demonology: whole shards only
   -- ═══════════════════════════════════════════════════════════════
   if secondaryType == "soulShards" then
-    local currentDisplay = UnitPower("player", Enum.PowerType.SoulShards)
-    local current = UnitPower("player", Enum.PowerType.SoulShards, true)  -- True for fractional
-    local max = UnitPowerMax("player", Enum.PowerType.SoulShards, true)
-    
-    if not max or max <= 0 then return nil, nil, nil, nil end
-    
-    -- Check if Destruction spec (uses fractional shards)
     local spec = GetSpecialization()
     local specID = spec and GetSpecializationInfo(spec)
     
     if specID == 267 then  -- Destruction
-      -- Display as decimal (e.g., 3.5 shards)
-      return max, current, current / 10, "decimal"
+      local currentFractional = UnitPower("player", Enum.PowerType.SoulShards, true)  -- e.g. 35 for 3.5 shards
+      local shardValue = (currentFractional or 0) / 10  -- Normalize: 35 → 3.5
+      return 5, shardValue, shardValue, "decimal"
     end
     
-    -- Affliction/Demonology use whole shards
-    return UnitPowerMax("player", Enum.PowerType.SoulShards) or 5, currentDisplay, currentDisplay, "number"
+    -- Affliction/Demonology: whole shards
+    local current = UnitPower("player", Enum.PowerType.SoulShards)
+    return 5, current, current, "number"
   end
   
   -- ═══════════════════════════════════════════════════════════════
@@ -342,8 +494,10 @@ function ns.Resources.GetSecondaryResourceValue(secondaryType)
   if typeInfo.powerType then
     local current = UnitPower("player", typeInfo.powerType)
     local max = UnitPowerMax("player", typeInfo.powerType)
+    local maxDefault = typeInfo.maxDefault or 5
     
-    if not max or max <= 0 then return nil, nil, nil, nil end
+    -- Floor: UnitPowerMax can return partial values at login
+    if not max or max < maxDefault then max = maxDefault end
     
     return max, current, current, "number"
   end
@@ -583,6 +737,8 @@ function ns.Resources.GetSecondaryResourceDefaultColor()
     elseif specID == 252 then  -- Unholy
       return {r=0.33, g=0.80, b=0.25, a=1}  -- Green
     end
+    -- Spec not loaded yet: neutral rune gray (will update on next render when spec loads)
+    return {r=0.5, g=0.5, b=0.5, a=1}
   end
   
   -- Evoker: light emerald for Essence
@@ -590,8 +746,8 @@ function ns.Resources.GetSecondaryResourceDefaultColor()
     return {r=0.40, g=0.85, b=0.55, a=1}  -- Light emerald
   end
   
-  -- Generic fallback for other classes
-  return {r=0.77, g=0.12, b=0.23, a=1}
+  -- Generic fallback
+  return {r=0.5, g=0.5, b=0.5, a=1}
 end
 
 -- ===================================================================
@@ -902,6 +1058,7 @@ local function EvaluateThresholdsDirectly(barConfig, currentValue, maxValue)
   local cfg = barConfig.display
   if not cfg.colorCurveEnabled then return nil end
   if type(currentValue) ~= "number" then return nil end
+  if issecretvalue and issecretvalue(currentValue) then return nil end  -- Can't compare secrets
   if not maxValue or maxValue <= 0 then return nil end
   
   local enableMaxColor = cfg.enableMaxColor
@@ -1072,6 +1229,25 @@ local function CreateResourceBarFrame(barNumber)
   frame.tickOverlay = CreateFrame("Frame", nil, frame)
   frame.tickOverlay:SetAllPoints(frame)
   frame.tickOverlay:SetFrameLevel(frame:GetFrameLevel() + 150)
+  
+  -- Prediction overlays for simple/continuous bar mode
+  -- Gain bar: sits BEHIND main fill (+5), extends past fill to show incoming shards
+  frame.predGainBar = CreateFrame("StatusBar", nil, frame)
+  frame.predGainBar:SetAllPoints(frame)
+  frame.predGainBar:SetMinMaxValues(0, 5)
+  frame.predGainBar:SetValue(0)
+  frame.predGainBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  frame.predGainBar:SetFrameLevel(frame:GetFrameLevel() + 5)
+  ConfigureStatusBar(frame.predGainBar)
+  frame.predGainBar:Hide()
+  
+  -- Cost overlay: sits ABOVE main fill (+7), covers the "to be consumed" zone
+  frame.predCostFrame = CreateFrame("Frame", nil, frame)
+  frame.predCostFrame:SetFrameLevel(frame:GetFrameLevel() + 7)
+  frame.predCostFrame:Hide()
+  frame.predCostTex = frame.predCostFrame:CreateTexture(nil, "OVERLAY")
+  frame.predCostTex:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  frame.predCostTex:SetVertexColor(0, 0, 0, 0.5)
   
   frame.tickMarks = {}
   for i = 1, 100 do
@@ -1248,6 +1424,8 @@ local function GetActiveCountColor(cfg, activeCount)
   if not (cfg.display and cfg.display.enableActiveCountColors) then return nil end
   local conditions = cfg.display.activeCountColors
   if not conditions or type(activeCount) ~= "number" then return nil end
+  -- Secret values can't be compared — skip active count coloring for primary resources in combat
+  if issecretvalue and issecretvalue(activeCount) then return nil end
   
   -- Evaluate conditions in order (highest index = highest priority when overlapping)
   local matchColor = nil
@@ -1295,7 +1473,7 @@ local function GetFragmentedReadyColor(config, segmentIndex)
   end
   return config.display.barColor
       or (ns.Resources.GetSecondaryResourceDefaultColor and ns.Resources.GetSecondaryResourceDefaultColor())
-      or {r=0.77, g=0.12, b=0.23, a=1}
+      or {r=0.5, g=0.5, b=0.5, a=1}
 end
 
 -- ===================================================================
@@ -1495,7 +1673,7 @@ local function ApplyChargedOverlays(mainFrame, cfg, maxValue, currentVal, textur
       overlay:SetStatusBarTexture(texturePath)
       overlay:SetOrientation(orientation)
       overlay:SetReverseFill(false)  -- Fill always forward within the segment slice
-      overlay:SetRotatesTexture(isVertical)
+      overlay:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
       overlay:SetFrameLevel(mainFrame:GetFrameLevel() + 10)
       overlay:SetMinMaxValues(0, 1)
       overlay:SetStatusBarColor(chargedColor.r, chargedColor.g, chargedColor.b, chargedColor.a or 1)
@@ -1566,6 +1744,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
   local maxValue = passedMaxValue or cfg.tracking.maxValue or 100
   local displayMode = cfg.display.thresholdMode or "simple"
   
+  -- SAFETY: Primary resources must never be in fragmented or icons mode.
+  -- These modes compare secretValue per-segment which crashes on SECRET primary resources.
+  -- If a slot was reused from a previous secondary bar, force back to simple.
+  local isSecondaryResource = cfg.tracking.resourceCategory == "secondary"
+  if not isSecondaryResource and (displayMode == "fragmented" or displayMode == "icons") then
+    cfg.display.thresholdMode = "simple"
+    displayMode = "simple"
+  end
+  
   -- MIGRATION: Convert old granular/threshold modes to colorCurve
   -- Granular mode (1 StatusBar per unit) caused "script ran too long" on high-value resources
   -- and threshold mode (stacked bars) is redundant with colorCurve. Both are now removed.
@@ -1610,6 +1797,10 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
   end
   
+  -- Hide prediction overlays (only shown in simple mode when active)
+  if mainFrame.predGainBar then mainFrame.predGainBar:Hide() end
+  if mainFrame.predCostFrame then mainFrame.predCostFrame:Hide() end
+  
   -- Hide fragmented bars if they exist
   if mainFrame.fragmentedBars then
     for i = 1, #mainFrame.fragmentedBars do
@@ -1634,11 +1825,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
   
   -- Helper: Check if this bar is tracking a secondary resource (non-secret in Beta 3+)
   local isSecondaryResource = (cfg.tracking.resourceCategory == "secondary")
-  
-  -- Seed barColor with spec-aware default for secondary resources (one-time)
-  if isSecondaryResource and not cfg.display.barColor then
-    cfg.display.barColor = ns.Resources.GetSecondaryResourceDefaultColor()
-  end
   
   -- Helper: Resolve the powerType for secondary resources (for ColorCurve paths that need it)
   local function GetSecondaryPowerType()
@@ -1709,7 +1895,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar:SetStatusBarTexture(texturePath)
       bar:SetOrientation(orientation)
       bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
+      bar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -1723,7 +1909,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar1:SetStatusBarColor(color1.r, color1.g, color1.b, color1.a or 1)
     bar1:SetOrientation(orientation)
     bar1:SetReverseFill(reverseFill)
-    bar1:SetRotatesTexture(isVertical)
+    bar1:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
     bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
     ApplyBarSmoothing(bar1, enableSmooth)
     bar1:SetValue(secretValue, bar1._arcInterpolation)  -- Will cap at midpoint naturally
@@ -1739,7 +1925,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar2:SetStatusBarColor(color2.r, color2.g, color2.b, color2.a or 1)
     bar2:SetOrientation(orientation)
     bar2:SetReverseFill(reverseFill)
-    bar2:SetRotatesTexture(isVertical)
+    bar2:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
     bar2:SetFrameLevel(mainFrame:GetFrameLevel() + 7)
     ApplyBarSmoothing(bar2, enableSmooth)
     bar2:SetValue(secretValue, bar2._arcInterpolation)  -- Only fills when value > midpoint
@@ -1748,7 +1934,14 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     -- MAX COLOR via ColorCurve on bar2's texture (replaces old maxColorBar overlay)
     local enableMaxColor = cfg.display.enableMaxColor
     local powerType = cfg.tracking.powerType
-    if enableMaxColor and powerType and powerType >= 0 then
+    if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
+      -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
+      if secretValue >= maxValue and maxValue > 0 then
+        local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
+        bar2:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
+      end
+    elseif enableMaxColor and powerType and powerType >= 0 then
+      -- Primary resource: UnitPowerPercent curve (secret-safe)
       local maxCurve = GetMaxColorOnlyCurve(barNumber, cfg, color2, powerType)
       if maxCurve then
         local barTexture = bar2:GetStatusBarTexture()
@@ -1762,10 +1955,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           bar2:SetStatusBarColor(color2.r, color2.g, color2.b, color2.a or 1)
         end
       end
-    elseif enableMaxColor and isSecondaryResource and type(secretValue) == "number" and secretValue >= maxValue and maxValue > 0 then
-      -- Secondary resource at-max: direct comparison (non-secret in Beta 3+)
-      local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
-      bar2:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
     end
     -- Hide legacy maxColorBar if it exists from previous code
     if mainFrame.maxColorBar then
@@ -1820,11 +2009,14 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local numSegments = maxValue
     local segmentData = nil
     
-    -- Get per-segment cooldown data
-    if secondaryType == "runes" then
-      segmentData, numSegments = ns.Resources.GetRuneCooldownDetails()
-    elseif secondaryType == "essence" then
-      segmentData, numSegments = ns.Resources.GetEssenceCooldownDetails()
+    -- Get per-segment cooldown data (skip during preview — use secretValue for animation)
+    local isPreview = IsOptionsOpen()
+    if not isPreview then
+      if secondaryType == "runes" then
+        segmentData, numSegments = ns.Resources.GetRuneCooldownDetails()
+      elseif secondaryType == "essence" then
+        segmentData, numSegments = ns.Resources.GetEssenceCooldownDetails()
+      end
     end
     
     if not segmentData or numSegments <= 0 then
@@ -1848,7 +2040,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
     
     -- Active count color conditioning (all segments same color based on active count)
-    local activeCount = secretValue
+    -- Floor for fractional resources (Destruction soul shards: 3.5 → 3 whole shards active)
+    local activeCount = type(secretValue) == "number" and math.floor(secretValue) or secretValue
     if segmentData then
       -- For runes/essence, count ready segments
       activeCount = 0
@@ -1861,14 +2054,41 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     -- Get smoothing setting
     local enableSmooth = cfg.display.enableSmoothing
     
-    -- Text settings
-    local showSegmentText = cfg.display.fragmentedShowSegmentText
-    local textSize = cfg.display.fragmentedTextSize or 10
-    local textOffsetX = cfg.display.fragmentedTextOffsetX or 0
-    local textOffsetY = cfg.display.fragmentedTextOffsetY or 0
+    -- Text settings (new unified cdText* keys, fallback to old fragmented* keys only if new key is nil)
+    local showSegmentText = cfg.display.cdTextShow
+    if showSegmentText == nil then showSegmentText = cfg.display.fragmentedShowSegmentText end
+    local textSize = cfg.display.cdTextSize or cfg.display.fragmentedTextSize or 10
+    local textOffsetX = cfg.display.cdTextOffsetX or cfg.display.fragmentedTextOffsetX or 0
+    local textOffsetY = cfg.display.cdTextOffsetY or cfg.display.fragmentedTextOffsetY or 0
+    local cdTextOutline = cfg.display.cdTextOutline or "OUTLINE"
+    local cdTextPrecision = cfg.display.cdTextDecimalPrecision or 0
+    local cdTextColor = cfg.display.cdTextColor or {r=1, g=1, b=1, a=1}
+    local cdTextFontPath = STANDARD_TEXT_FONT
+    if LSM and cfg.display.cdTextFont then
+      cdTextFontPath = LSM:Fetch("font", cfg.display.cdTextFont) or STANDARD_TEXT_FONT
+    end
+    
+    -- Prediction settings
+    local showPrediction = cfg.display.showPrediction
+    local predCostColor = cfg.display.predCostColor or {r=0, g=0, b=0, a=0.5}
+    local predGainColor = cfg.display.predGainColor or {r=1, g=1, b=1, a=0.3}
+    local predActive = showPrediction and Prediction.active and secondaryType == "soulShards"
     
     -- Spacing between segments (actual gap between separate frames)
     local spacing = cfg.display.fragmentedSpacing or 2
+    
+    -- When spacing=0 with borders, use unified border:
+    -- ONE outer border + dividers. No per-segment border duplication.
+    local useUnifiedBorder = (showBorder and spacing == 0)
+    
+    -- Snap border thickness to exact physical pixel count.
+    -- borderThickness=1 at 0.8 UI scale = 0.8 screen pixels = anti-aliased blur.
+    -- PixelUtil snaps it to exactly 1 (or 2) physical pixels.
+    local pixelBT = borderThickness
+    if showBorder and mainFrame.GetEffectiveScale then
+      pixelBT = PixelUtil.GetNearestPixelSize(borderThickness, mainFrame:GetEffectiveScale(), 1)
+    end
+    
     local totalGaps = spacing * math.max(0, numSegments - 1)
     
     -- Layout direction
@@ -1906,6 +2126,106 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         segmentWidth = baseW / numSegments
         segmentHeight = baseH
         mainFrame:SetSize(baseW + totalGaps, baseH)
+      end
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════════
+    -- UNIFIED BORDER (spacing=0): outer border + dividers on borderOverlay
+    -- Uses pixel-snapped thickness + SetSnapToPixelGrid for positions
+    -- ═══════════════════════════════════════════════════════════════════
+    if useUnifiedBorder and mainFrame.borderOverlay then
+      local bt = pixelBT
+      local bc = borderColor
+      
+      -- Enable GPU pixel snapping on outer border textures
+      mainFrame.borderOverlay.top:SetSnapToPixelGrid(true)
+      mainFrame.borderOverlay.top:SetTexelSnappingBias(1)
+      mainFrame.borderOverlay.bottom:SetSnapToPixelGrid(true)
+      mainFrame.borderOverlay.bottom:SetTexelSnappingBias(1)
+      mainFrame.borderOverlay.left:SetSnapToPixelGrid(true)
+      mainFrame.borderOverlay.left:SetTexelSnappingBias(1)
+      mainFrame.borderOverlay.right:SetSnapToPixelGrid(true)
+      mainFrame.borderOverlay.right:SetTexelSnappingBias(1)
+      
+      mainFrame.borderOverlay:Show()
+      mainFrame.borderOverlay.top:ClearAllPoints()
+      mainFrame.borderOverlay.top:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, 0)
+      mainFrame.borderOverlay.top:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", 0, 0)
+      mainFrame.borderOverlay.top:SetHeight(bt)
+      mainFrame.borderOverlay.top:SetColorTexture(bc.r, bc.g, bc.b, bc.a or 1)
+      mainFrame.borderOverlay.top:Show()
+      
+      mainFrame.borderOverlay.bottom:ClearAllPoints()
+      mainFrame.borderOverlay.bottom:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, 0)
+      mainFrame.borderOverlay.bottom:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", 0, 0)
+      mainFrame.borderOverlay.bottom:SetHeight(bt)
+      mainFrame.borderOverlay.bottom:SetColorTexture(bc.r, bc.g, bc.b, bc.a or 1)
+      mainFrame.borderOverlay.bottom:Show()
+      
+      mainFrame.borderOverlay.left:ClearAllPoints()
+      mainFrame.borderOverlay.left:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 0, -bt)
+      mainFrame.borderOverlay.left:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", 0, bt)
+      mainFrame.borderOverlay.left:SetWidth(bt)
+      mainFrame.borderOverlay.left:SetColorTexture(bc.r, bc.g, bc.b, bc.a or 1)
+      mainFrame.borderOverlay.left:Show()
+      
+      mainFrame.borderOverlay.right:ClearAllPoints()
+      mainFrame.borderOverlay.right:SetPoint("TOPRIGHT", mainFrame, "TOPRIGHT", 0, -bt)
+      mainFrame.borderOverlay.right:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", 0, bt)
+      mainFrame.borderOverlay.right:SetWidth(bt)
+      mainFrame.borderOverlay.right:SetColorTexture(bc.r, bc.g, bc.b, bc.a or 1)
+      mainFrame.borderOverlay.right:Show()
+      
+      -- Create/update divider lines between segments
+      if not mainFrame.fragmentDividers then
+        mainFrame.fragmentDividers = {}
+      end
+      for d = 1, numSegments - 1 do
+        if not mainFrame.fragmentDividers[d] then
+          local div = mainFrame.borderOverlay:CreateTexture(nil, "OVERLAY")
+          div:SetSnapToPixelGrid(true)
+          div:SetTexelSnappingBias(1)
+          mainFrame.fragmentDividers[d] = div
+        end
+        local div = mainFrame.fragmentDividers[d]
+        div:SetSnapToPixelGrid(true)
+        div:SetTexelSnappingBias(1)
+        div:ClearAllPoints()
+        div:SetColorTexture(bc.r, bc.g, bc.b, bc.a or 1)
+        
+        if isLayoutVertical then
+          local yPos = d * segmentHeight
+          div:SetPoint("LEFT", mainFrame, "BOTTOMLEFT", bt, yPos)
+          div:SetPoint("RIGHT", mainFrame, "BOTTOMRIGHT", -bt, yPos)
+          div:SetHeight(bt)
+        else
+          local xPos = d * segmentWidth
+          div:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", xPos, -bt)
+          div:SetPoint("BOTTOMLEFT", mainFrame, "BOTTOMLEFT", xPos, bt)
+          div:SetWidth(bt)
+        end
+        div:Show()
+      end
+      -- Hide excess dividers
+      for d = numSegments, #(mainFrame.fragmentDividers) do
+        if mainFrame.fragmentDividers[d] then
+          mainFrame.fragmentDividers[d]:Hide()
+        end
+      end
+    else
+      -- Not unified: restore snapping defaults, hide dividers
+      if mainFrame.borderOverlay then
+        mainFrame.borderOverlay.top:SetSnapToPixelGrid(false)
+        mainFrame.borderOverlay.top:SetTexelSnappingBias(0)
+        mainFrame.borderOverlay.bottom:SetSnapToPixelGrid(false)
+        mainFrame.borderOverlay.bottom:SetTexelSnappingBias(0)
+        mainFrame.borderOverlay.left:SetSnapToPixelGrid(false)
+        mainFrame.borderOverlay.left:SetTexelSnappingBias(0)
+        mainFrame.borderOverlay.right:SetSnapToPixelGrid(false)
+        mainFrame.borderOverlay.right:SetTexelSnappingBias(0)
+      end
+      if mainFrame.fragmentDividers then
+        for _, div in ipairs(mainFrame.fragmentDividers) do div:Hide() end
       end
     end
     
@@ -1955,6 +2275,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       segFrame.cdText:SetPoint("CENTER", segFrame.fill, "CENTER", 0, 0)
       segFrame.cdText:SetTextColor(1, 1, 1, 1)
       
+      -- Prediction overlay (cost/gain indicator) - anchored to fill area, not full segment
+      segFrame.predictFrame = CreateFrame("Frame", nil, segFrame)
+      segFrame.predictFrame:SetFrameLevel(segFrame.fill:GetFrameLevel() + 1)
+      segFrame.predictFrame:SetAllPoints(segFrame.fill)
+      segFrame.predictOverlay = segFrame.predictFrame:CreateTexture(nil, "OVERLAY")
+      segFrame.predictOverlay:SetAllPoints()
+      segFrame.predictOverlay:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
+      segFrame.predictOverlay:SetVertexColor(0, 0, 0, 0.5)
+      segFrame.predictFrame:Hide()
+      
       table.insert(mainFrame.fragmentFrames, segFrame)
     end
     
@@ -1977,24 +2307,56 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       end
       
       -- Update background
-      segFrame.bg:SetTexture(texturePath)
-      segFrame.bg:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
+      if cfg.display.showBackground ~= false then
+        segFrame.bg:SetTexture(texturePath)
+        segFrame.bg:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
+        segFrame.bg:Show()
+      else
+        segFrame.bg:Hide()
+      end
       
-      -- Update fill bar - inset by border thickness so fill doesn't overflow
-      local inset = showBorder and borderThickness or 0
+      -- Update fill bar positioning
       segFrame.fill:ClearAllPoints()
-      segFrame.fill:SetPoint("TOPLEFT", segFrame, "TOPLEFT", inset, -inset)
-      segFrame.fill:SetPoint("BOTTOMRIGHT", segFrame, "BOTTOMRIGHT", -inset, inset)
+      if useUnifiedBorder then
+        -- Unified: outer border on borderOverlay, dividers on top.
+        -- Inset fill only on edges touching mainFrame outer border.
+        local bt = pixelBT
+        local inL, inR, inT, inB = 0, 0, 0, 0
+        if isLayoutVertical then
+          inL = bt; inR = bt
+          inT = (i == numSegments) and bt or 0
+          inB = (i == 1) and bt or 0
+        else
+          inT = bt; inB = bt
+          inL = (i == 1) and bt or 0
+          inR = (i == numSegments) and bt or 0
+        end
+        segFrame.fill:SetPoint("TOPLEFT", segFrame, "TOPLEFT", inL, -inT)
+        segFrame.fill:SetPoint("BOTTOMRIGHT", segFrame, "BOTTOMRIGHT", -inR, inB)
+      else
+        local inset = showBorder and pixelBT or 0
+        segFrame.fill:SetPoint("TOPLEFT", segFrame, "TOPLEFT", inset, -inset)
+        segFrame.fill:SetPoint("BOTTOMRIGHT", segFrame, "BOTTOMRIGHT", -inset, inset)
+      end
       segFrame.fill:SetStatusBarTexture(texturePath)
       segFrame.fill:SetOrientation(barOrientation)
       segFrame.fill:SetReverseFill(false)
-      segFrame.fill:SetRotatesTexture(isFillVertical)
+      segFrame.fill:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isFillVertical))
       ApplyBarSmoothing(segFrame.fill, enableSmooth)
       
-      -- Update border
-      if showBorder then
-        local bt = borderThickness
-        -- Top border
+      -- Per-segment borders (only for spaced mode — unified uses borderOverlay + dividers)
+      if showBorder and not useUnifiedBorder then
+        local bt = pixelBT
+        -- Enable GPU pixel snapping on per-segment borders
+        segFrame.borderTop:SetSnapToPixelGrid(true)
+        segFrame.borderTop:SetTexelSnappingBias(1)
+        segFrame.borderBottom:SetSnapToPixelGrid(true)
+        segFrame.borderBottom:SetTexelSnappingBias(1)
+        segFrame.borderLeft:SetSnapToPixelGrid(true)
+        segFrame.borderLeft:SetTexelSnappingBias(1)
+        segFrame.borderRight:SetSnapToPixelGrid(true)
+        segFrame.borderRight:SetTexelSnappingBias(1)
+        
         segFrame.borderTop:ClearAllPoints()
         segFrame.borderTop:SetPoint("TOPLEFT", segFrame, "TOPLEFT", 0, 0)
         segFrame.borderTop:SetPoint("TOPRIGHT", segFrame, "TOPRIGHT", 0, 0)
@@ -2002,7 +2364,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         segFrame.borderTop:SetColorTexture(borderColor.r, borderColor.g, borderColor.b, borderColor.a or 1)
         segFrame.borderTop:Show()
         
-        -- Bottom border
         segFrame.borderBottom:ClearAllPoints()
         segFrame.borderBottom:SetPoint("BOTTOMLEFT", segFrame, "BOTTOMLEFT", 0, 0)
         segFrame.borderBottom:SetPoint("BOTTOMRIGHT", segFrame, "BOTTOMRIGHT", 0, 0)
@@ -2010,7 +2371,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         segFrame.borderBottom:SetColorTexture(borderColor.r, borderColor.g, borderColor.b, borderColor.a or 1)
         segFrame.borderBottom:Show()
         
-        -- Left border
         segFrame.borderLeft:ClearAllPoints()
         segFrame.borderLeft:SetPoint("TOPLEFT", segFrame, "TOPLEFT", 0, -bt)
         segFrame.borderLeft:SetPoint("BOTTOMLEFT", segFrame, "BOTTOMLEFT", 0, bt)
@@ -2018,7 +2378,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         segFrame.borderLeft:SetColorTexture(borderColor.r, borderColor.g, borderColor.b, borderColor.a or 1)
         segFrame.borderLeft:Show()
         
-        -- Right border
         segFrame.borderRight:ClearAllPoints()
         segFrame.borderRight:SetPoint("TOPRIGHT", segFrame, "TOPRIGHT", 0, -bt)
         segFrame.borderRight:SetPoint("BOTTOMRIGHT", segFrame, "BOTTOMRIGHT", 0, bt)
@@ -2045,10 +2404,17 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           local elapsed = GetTime() - segmentData[i].start
           cooldownRemaining = math.max(0, segmentData[i].duration - elapsed)
         end
+      elseif secretValue >= i then
+        -- Full segment
+        fillPercent = 1
+        isReady = true
+      elseif secretValue > (i - 1) then
+        -- Partial segment (Destruction soul shards: e.g. 3.5 → segment 4 = 50%)
+        fillPercent = secretValue - (i - 1)
+        isReady = false
       else
-        -- Fallback: check if we have this many resources
-        fillPercent = (secretValue >= i) and 1 or 0
-        isReady = (secretValue >= i)
+        fillPercent = 0
+        isReady = false
       end
       
       -- Get color for this segment
@@ -2070,16 +2436,41 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       segFrame.fill:SetStatusBarColor(segmentColor.r, segmentColor.g, segmentColor.b, segmentColor.a or 1)
       segFrame.fill:SetValue(fillPercent, segFrame.fill._arcInterpolation)
       
+      -- Prediction overlay
+      if segFrame.predictFrame then
+        if predActive then
+          local predState = Prediction:GetSegmentState(i, secretValue)
+          if predState == "cost" then
+            segFrame.predictOverlay:SetTexture(texturePath)
+            segFrame.predictOverlay:SetVertexColor(predCostColor.r, predCostColor.g, predCostColor.b, predCostColor.a or 0.5)
+            segFrame.predictFrame:Show()
+          elseif predState == "gain" then
+            local gainCol = activeCountColor or GetFragmentedReadyColor(cfg, i)
+            segFrame.predictOverlay:SetTexture(texturePath)
+            segFrame.predictOverlay:SetVertexColor(gainCol.r, gainCol.g, gainCol.b, predGainColor.a or 0.3)
+            segFrame.predictFrame:Show()
+          else
+            segFrame.predictFrame:Hide()
+          end
+        else
+          segFrame.predictFrame:Hide()
+        end
+      end
+      
       -- Update cooldown text
-      segFrame.cdText:SetFont(STANDARD_TEXT_FONT, textSize, "OUTLINE")
+      segFrame.cdText:SetFont(cdTextFontPath, textSize, cdTextOutline)
+      segFrame.cdText:SetTextColor(cdTextColor.r, cdTextColor.g, cdTextColor.b, cdTextColor.a or 1)
       segFrame.cdText:ClearAllPoints()
       segFrame.cdText:SetPoint("CENTER", segFrame, "CENTER", textOffsetX, textOffsetY)
       if showSegmentText and not isReady and cooldownRemaining > 0 then
-        if cooldownRemaining >= 1 then
-          segFrame.cdText:SetText(string.format("%.0f", cooldownRemaining))
-        else
-          segFrame.cdText:SetText(string.format("%.1f", cooldownRemaining))
-        end
+        local fmt = "%." .. cdTextPrecision .. "f"
+        segFrame.cdText:SetText(string.format(fmt, cooldownRemaining))
+        segFrame.cdText:Show()
+      elseif showSegmentText and IsOptionsOpen() then
+        -- Preview: show fake countdown so user can see font/size/color/precision live
+        local previewVal = 3.5 + (numSegments - i) * 1.7
+        local fmt = "%." .. cdTextPrecision .. "f"
+        segFrame.cdText:SetText(string.format(fmt, previewVal))
         segFrame.cdText:Show()
       else
         segFrame.cdText:Hide()
@@ -2112,6 +2503,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       if not mainFrame.fragmentedOnUpdate then
         mainFrame.fragmentedOnUpdate = function(self, elapsed)
           if not self.fragmentFrames or not self:IsShown() then return end
+          -- Skip during preview — SetPreviewValue drives animation via UpdateThresholdLayers
+          if IsOptionsOpen() then return end
           
           local secType = self.fragmentedSecondaryType
           local config = self.fragmentedConfig
@@ -2126,8 +2519,10 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           
           if not data then return end
           
-          local showText = config.display.fragmentedShowSegmentText
-          local txtSize = config.display.fragmentedTextSize or 10
+          local showText = config.display.cdTextShow
+          if showText == nil then showText = config.display.fragmentedShowSegmentText end
+          local precision = config.display.cdTextDecimalPrecision or 0
+          local fmt = "%." .. precision .. "f"
           
           local readyCount = 0
           for _, seg in ipairs(data) do
@@ -2156,15 +2551,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
               if showText and not ready and data[i].start and data[i].duration and data[i].duration > 0 then
                 local remaining = math.max(0, data[i].duration - (GetTime() - data[i].start))
                 if remaining > 0 then
-                  if remaining >= 1 then
-                    segFrame.cdText:SetText(string.format("%.0f", remaining))
-                  else
-                    segFrame.cdText:SetText(string.format("%.1f", remaining))
-                  end
+                  segFrame.cdText:SetText(string.format(fmt, remaining))
                   segFrame.cdText:Show()
                 else
                   segFrame.cdText:Hide()
                 end
+              elseif showText and IsOptionsOpen() then
+                local previewVal = 3.5 + (num - i) * 1.7
+                segFrame.cdText:SetText(string.format(fmt, previewVal))
+                segFrame.cdText:Show()
               else
                 segFrame.cdText:Hide()
               end
@@ -2225,12 +2620,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local secondaryType = cfg.tracking.secondaryType
     local numIcons = maxValue
     local segmentData = nil
+    local isPreview = IsOptionsOpen()
     
-    -- Get per-segment cooldown data
-    if secondaryType == "runes" then
-      segmentData, numIcons = ns.Resources.GetRuneCooldownDetails()
-    elseif secondaryType == "essence" then
-      segmentData, numIcons = ns.Resources.GetEssenceCooldownDetails()
+    -- Get per-segment cooldown data (skip during preview — use secretValue for animation)
+    if not isPreview then
+      if secondaryType == "runes" then
+        segmentData, numIcons = ns.Resources.GetRuneCooldownDetails()
+      elseif secondaryType == "essence" then
+        segmentData, numIcons = ns.Resources.GetEssenceCooldownDetails()
+      end
     end
     
     if not segmentData or numIcons <= 0 then
@@ -2249,14 +2647,28 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     local iconsMode = cfg.display.iconsMode or "row"
     local iconSize = cfg.display.iconsSize or 32
     local iconSpacing = cfg.display.iconsSpacing or 4
-    local showCDText = cfg.display.iconsShowCooldownText
-    local cdTextSize = cfg.display.iconsCooldownTextSize or 12
-    local cdTextOffsetX = cfg.display.iconsCDTextOffsetX or 0
-    local cdTextOffsetY = cfg.display.iconsCDTextOffsetY or 0
+    local showCDText = cfg.display.cdTextShow
+    if showCDText == nil then showCDText = cfg.display.iconsShowCooldownText end
+    local iconCDTextSize = cfg.display.cdTextSize or cfg.display.iconsCooldownTextSize or 12
+    local iconCDTextOffsetX = cfg.display.cdTextOffsetX or cfg.display.iconsCDTextOffsetX or 0
+    local iconCDTextOffsetY = cfg.display.cdTextOffsetY or cfg.display.iconsCDTextOffsetY or 0
+    local iconCDTextOutline = cfg.display.cdTextOutline or "OUTLINE"
+    local iconCDTextPrecision = cfg.display.cdTextDecimalPrecision or 0
+    local iconCDTextColor = cfg.display.cdTextColor or {r=1, g=1, b=1, a=1}
+    local iconCDTextFontPath = STANDARD_TEXT_FONT
+    if LSM and cfg.display.cdTextFont then
+      iconCDTextFontPath = LSM:Fetch("font", cfg.display.cdTextFont) or STANDARD_TEXT_FONT
+    end
     local savedPositions = cfg.display.iconsPositions or {}
     local iconShape = cfg.display.iconsShape or "square"
     local isTextureShape = TEXTURE_SHAPES[iconShape]
     local isFreeform = (iconsMode == "freeform")
+    
+    -- Prediction settings
+    local iconShowPrediction = cfg.display.showPrediction
+    local iconPredCostColor = cfg.display.predCostColor or {r=0, g=0, b=0, a=0.5}
+    local iconPredGainColor = cfg.display.predGainColor or {r=1, g=1, b=1, a=0.3}
+    local iconPredActive = iconShowPrediction and Prediction.active and secondaryType == "soulShards"
     
     -- Animacharged combo point support
     local chargedLookup = {}
@@ -2267,7 +2679,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
     
     -- Active count color conditioning (all icons same color based on active count)
-    local activeCount = secretValue
+    local activeCount = type(secretValue) == "number" and math.floor(secretValue) or secretValue
     if segmentData then
       activeCount = 0
       for _, seg in ipairs(segmentData) do
@@ -2309,6 +2721,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       iconFrame.cdText = iconFrame:CreateFontString(nil, "OVERLAY")
       iconFrame.cdText:SetPoint("CENTER", iconFrame, "CENTER", 0, 0)
       iconFrame.cdText:SetTextColor(1, 1, 1, 1)
+      
+      -- Prediction overlay (cost/gain indicator) - inset by border at render time
+      iconFrame.predictFrame = CreateFrame("Frame", nil, iconFrame)
+      iconFrame.predictFrame:SetFrameLevel(iconFrame:GetFrameLevel() + 3)
+      iconFrame.predictFrame:SetAllPoints(iconFrame)
+      iconFrame.predictOverlay = iconFrame.predictFrame:CreateTexture(nil, "OVERLAY")
+      iconFrame.predictOverlay:SetAllPoints()
+      iconFrame.predictOverlay:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
+      iconFrame.predictOverlay:SetVertexColor(0, 0, 0, 0.5)
+      iconFrame.predictFrame:Hide()
       
       -- Index label (shown only in freeform mode when options panel is open)
       iconFrame.indexLabel = iconFrame:CreateFontString(nil, "OVERLAY", nil, 7)
@@ -2394,9 +2816,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           local elapsed = GetTime() - segmentData[i].start
           cooldownRemaining = math.max(0, segmentData[i].duration - elapsed)
         end
+      elseif secretValue >= i then
+        fillPercent = 1
+        isReady = true
+      elseif secretValue > (i - 1) then
+        fillPercent = secretValue - (i - 1)
+        isReady = false
       else
-        fillPercent = (secretValue >= i) and 1 or 0
-        isReady = (secretValue >= i)
+        fillPercent = 0
+        isReady = false
       end
       
       -- Get color for this icon
@@ -2437,11 +2865,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         local fillTex = ICON_SHAPE_FILLS[iconShape]
         
         -- Background: shape texture in configured bg color (empty state)
-        iconFrame.bg:SetTexture(fillTex)
-        iconFrame.bg:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
-        iconFrame.bg:ClearAllPoints()
-        iconFrame.bg:SetAllPoints(iconFrame)
-        iconFrame.bg:SetTexCoord(0, 1, 0, 1)
+        if cfg.display.showBackground ~= false then
+          iconFrame.bg:SetTexture(fillTex)
+          iconFrame.bg:SetVertexColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
+          iconFrame.bg:ClearAllPoints()
+          iconFrame.bg:SetAllPoints(iconFrame)
+          iconFrame.bg:SetTexCoord(0, 1, 0, 1)
+          iconFrame.bg:Show()
+        else
+          iconFrame.bg:Hide()
+        end
         
         -- Fill: same shape texture, anchored bottom-to-top with TexCoord cropping
         -- This gives visual progress (filling up) like the square mode
@@ -2486,8 +2919,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           if iconFrame.drawnBorder then iconFrame.drawnBorder:Hide() end
           if iconFrame.shapeBorder then iconFrame.shapeBorder:Hide() end
           if showBorder then
-            local bt = borderThickness
+            local bt = PixelUtil.GetNearestPixelSize(borderThickness, iconFrame:GetEffectiveScale(), 1)
             local br, bg2, bb, ba = borderColor.r, borderColor.g, borderColor.b, borderColor.a or 1
+            iconFrame.borderTop:SetSnapToPixelGrid(true)
+            iconFrame.borderTop:SetTexelSnappingBias(1)
+            iconFrame.borderBottom:SetSnapToPixelGrid(true)
+            iconFrame.borderBottom:SetTexelSnappingBias(1)
+            iconFrame.borderLeft:SetSnapToPixelGrid(true)
+            iconFrame.borderLeft:SetTexelSnappingBias(1)
+            iconFrame.borderRight:SetSnapToPixelGrid(true)
+            iconFrame.borderRight:SetTexelSnappingBias(1)
             iconFrame.borderTop:ClearAllPoints()
             iconFrame.borderTop:SetPoint("TOPLEFT", iconFrame, "TOPLEFT", 0, 0)
             iconFrame.borderTop:SetPoint("TOPRIGHT", iconFrame, "TOPRIGHT", 0, 0)
@@ -2561,11 +3002,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       else
         -- ── SQUARE (drawn borders, fill bar bottom-to-top) ──
         -- Reset vertex color to white (texture shapes set it, which multiplies with SetColorTexture)
-        iconFrame.bg:SetVertexColor(1, 1, 1, 1)
+        if cfg.display.showBackground ~= false then
+          iconFrame.bg:SetVertexColor(1, 1, 1, 1)
+          iconFrame.bg:SetColorTexture(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
+          iconFrame.bg:ClearAllPoints()
+          iconFrame.bg:SetAllPoints(iconFrame)
+          iconFrame.bg:Show()
+        else
+          iconFrame.bg:Hide()
+        end
         iconFrame.fill:SetVertexColor(1, 1, 1, 1)
-        iconFrame.bg:SetColorTexture(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 0.8)
-        iconFrame.bg:ClearAllPoints()
-        iconFrame.bg:SetAllPoints(iconFrame)
         
         local fillHeight = iconSize * fillPercent
         iconFrame.fill:ClearAllPoints()
@@ -2587,7 +3033,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         
         -- Square drawn borders
         if showBorder then
-          local bt = borderThickness
+          local bt = PixelUtil.GetNearestPixelSize(borderThickness, iconFrame:GetEffectiveScale(), 1)
+          iconFrame.borderTop:SetSnapToPixelGrid(true)
+          iconFrame.borderTop:SetTexelSnappingBias(1)
+          iconFrame.borderBottom:SetSnapToPixelGrid(true)
+          iconFrame.borderBottom:SetTexelSnappingBias(1)
+          iconFrame.borderLeft:SetSnapToPixelGrid(true)
+          iconFrame.borderLeft:SetTexelSnappingBias(1)
+          iconFrame.borderRight:SetSnapToPixelGrid(true)
+          iconFrame.borderRight:SetTexelSnappingBias(1)
           iconFrame.borderTop:ClearAllPoints()
           iconFrame.borderTop:SetPoint("TOPLEFT", iconFrame, "TOPLEFT", 0, 0)
           iconFrame.borderTop:SetPoint("TOPRIGHT", iconFrame, "TOPRIGHT", 0, 0)
@@ -2623,16 +3077,46 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         end
       end
       
-      -- Update cooldown text
-      iconFrame.cdText:SetFont(STANDARD_TEXT_FONT, cdTextSize, "OUTLINE")
-      iconFrame.cdText:ClearAllPoints()
-      iconFrame.cdText:SetPoint("CENTER", iconFrame, "CENTER", cdTextOffsetX, cdTextOffsetY)
-      if showCDText and not isReady and cooldownRemaining > 0 then
-        if cooldownRemaining >= 1 then
-          iconFrame.cdText:SetText(string.format("%.0f", cooldownRemaining))
+      -- Prediction overlay
+      if iconFrame.predictFrame then
+        if iconPredActive then
+          local predState = Prediction:GetSegmentState(i, secretValue)
+          if predState == "cost" or predState == "gain" then
+            -- Inset prediction frame to fit inside borders
+            local bt = showBorder and PixelUtil.GetNearestPixelSize(borderThickness, iconFrame:GetEffectiveScale(), 1) or 0
+            iconFrame.predictFrame:ClearAllPoints()
+            iconFrame.predictFrame:SetPoint("TOPLEFT", iconFrame, "TOPLEFT", bt, -bt)
+            iconFrame.predictFrame:SetPoint("BOTTOMRIGHT", iconFrame, "BOTTOMRIGHT", -bt, bt)
+            iconFrame.predictOverlay:SetTexture(texturePath)
+            if predState == "cost" then
+              iconFrame.predictOverlay:SetVertexColor(iconPredCostColor.r, iconPredCostColor.g, iconPredCostColor.b, iconPredCostColor.a or 0.5)
+            else
+              local gainCol = activeCountColor or GetFragmentedReadyColor(cfg, i)
+              iconFrame.predictOverlay:SetVertexColor(gainCol.r, gainCol.g, gainCol.b, iconPredGainColor.a or 0.3)
+            end
+            iconFrame.predictFrame:Show()
+          else
+            iconFrame.predictFrame:Hide()
+          end
         else
-          iconFrame.cdText:SetText(string.format("%.1f", cooldownRemaining))
+          iconFrame.predictFrame:Hide()
         end
+      end
+      
+      -- Update cooldown text
+      iconFrame.cdText:SetFont(iconCDTextFontPath, iconCDTextSize, iconCDTextOutline)
+      iconFrame.cdText:SetTextColor(iconCDTextColor.r, iconCDTextColor.g, iconCDTextColor.b, iconCDTextColor.a or 1)
+      iconFrame.cdText:ClearAllPoints()
+      iconFrame.cdText:SetPoint("CENTER", iconFrame, "CENTER", iconCDTextOffsetX, iconCDTextOffsetY)
+      if showCDText and not isReady and cooldownRemaining > 0 then
+        local fmt = "%." .. iconCDTextPrecision .. "f"
+        iconFrame.cdText:SetText(string.format(fmt, cooldownRemaining))
+        iconFrame.cdText:Show()
+      elseif showCDText and IsOptionsOpen() then
+        -- Preview: show fake countdown so user can see font/size/color/precision live
+        local previewVal = 3.5 + (numIcons - i) * 1.7
+        local fmt = "%." .. iconCDTextPrecision .. "f"
+        iconFrame.cdText:SetText(string.format(fmt, previewVal))
         iconFrame.cdText:Show()
       else
         iconFrame.cdText:Hide()
@@ -2662,6 +3146,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       if not mainFrame.iconsOnUpdate then
         mainFrame.iconsOnUpdate = function(self, elapsed)
           if not self.iconFrames or not self:IsShown() then return end
+          -- Skip during preview — SetPreviewValue drives animation via UpdateThresholdLayers
+          if IsOptionsOpen() then return end
           
           local secType = self.iconsSecondaryType
           local config = self.iconsConfig
@@ -2676,7 +3162,10 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
           
           if not data then return end
           
-          local showText = config.display.iconsShowCooldownText
+          local showText = config.display.cdTextShow
+          if showText == nil then showText = config.display.iconsShowCooldownText end
+          local precision = config.display.cdTextDecimalPrecision or 0
+          local fmt = "%." .. precision .. "f"
           local iSize = config.display.iconsSize or 32
           local iShape = config.display.iconsShape or "square"
           local isTextureShape = TEXTURE_SHAPES[iShape]
@@ -2734,15 +3223,15 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
               if showText and not ready and data[i].start and data[i].duration and data[i].duration > 0 then
                 local remaining = math.max(0, data[i].duration - (GetTime() - data[i].start))
                 if remaining > 0 then
-                  if remaining >= 1 then
-                    iconFrame.cdText:SetText(string.format("%.0f", remaining))
-                  else
-                    iconFrame.cdText:SetText(string.format("%.1f", remaining))
-                  end
+                  iconFrame.cdText:SetText(string.format(fmt, remaining))
                   iconFrame.cdText:Show()
                 else
                   iconFrame.cdText:Hide()
                 end
+              elseif showText and IsOptionsOpen() then
+                local previewVal = 3.5 + (num - i) * 1.7
+                iconFrame.cdText:SetText(string.format(fmt, previewVal))
+                iconFrame.cdText:Show()
               else
                 iconFrame.cdText:Hide()
               end
@@ -2808,7 +3297,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar:SetStatusBarTexture(texturePath)
       bar:SetOrientation(orientation)
       bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
+      bar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -2825,7 +3314,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar:SetStatusBarTexture(texturePath)
     bar:SetOrientation(orientation)
     bar:SetReverseFill(reverseFill)
-    bar:SetRotatesTexture(isVertical)
+    bar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
     bar:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
     ApplyBarSmoothing(bar, enableSmooth)
     bar:SetValue(secretValue, bar._arcInterpolation)
@@ -2915,7 +3404,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
     
     -- Active count color conditioning
-    local activeCountColor = GetActiveCountColor(cfg, type(secretValue) == "number" and secretValue or 0)
+    local activeCountColor = GetActiveCountColor(cfg, type(secretValue) == "number" and math.floor(secretValue) or 0)
     
     -- Get orientation settings
     local orientation = GetBarOrientation(cfg)
@@ -2943,7 +3432,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         bar:SetStatusBarTexture(texturePath)
         bar:SetOrientation(orientation)
         bar:SetReverseFill(reverseFill)
-        bar:SetRotatesTexture(isVertical)
+        bar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
         table.insert(mainFrame.stackedBars, bar)
       end
       local bar1 = mainFrame.stackedBars[1]
@@ -2953,7 +3442,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar1:SetStatusBarTexture(texturePath)
       bar1:SetOrientation(orientation)
       bar1:SetReverseFill(reverseFill)
-      bar1:SetRotatesTexture(isVertical)
+      bar1:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
       bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
       local enableSmooth = cfg.display.enableSmoothing
       ApplyBarSmoothing(bar1, enableSmooth)
@@ -3003,12 +3492,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       local segmentSize = totalSize / segmentCount
       
       -- Current value for comparison
-      local currentVal = 0
-      if isSecondaryResource and type(secretValue) == "number" then
-        currentVal = math.floor(secretValue)
-      elseif type(secretValue) == "number" then
-        currentVal = secretValue
-      end
+      -- Use raw secretValue for fractional resources (Destruction soul shards: 3.5 fills segment 4 to 50%)
+      local currentVal = type(secretValue) == "number" and secretValue or 0
       
       -- At-max check
       local isAtMax = enableMaxColor and isSecondaryResource and type(secretValue) == "number" and secretValue >= maxValue and maxValue > 0
@@ -3026,7 +3511,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
         -- Setup orientation/texture
         segBar:SetOrientation(orientation)
         segBar:SetReverseFill(reverseFill)
-        segBar:SetRotatesTexture(isVertical)
+        segBar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
         segBar:SetStatusBarTexture(texturePath)
         segBar:SetFrameLevel(mainFrame:GetFrameLevel() + i)
         ApplyBarSmoothing(segBar, enableSmooth)
@@ -3130,7 +3615,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       bar:SetStatusBarTexture(texturePath)
       bar:SetOrientation(orientation)
       bar:SetReverseFill(reverseFill)
-      bar:SetRotatesTexture(isVertical)
+      bar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
       table.insert(mainFrame.stackedBars, bar)
     end
     
@@ -3142,7 +3627,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     bar1:SetStatusBarTexture(texturePath)
     bar1:SetOrientation(orientation)
     bar1:SetReverseFill(reverseFill)
-    bar1:SetRotatesTexture(isVertical)
+    bar1:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
     bar1:SetFrameLevel(mainFrame:GetFrameLevel() + 6)
     ApplyBarSmoothing(bar1, enableSmooth)
     bar1:SetValue(secretValue, bar1._arcInterpolation)
@@ -3150,7 +3635,16 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     
     -- Apply color: max color curve via UnitPowerPercent, or static base color
     local powerType = cfg.tracking.powerType
-    if enableMaxColor and powerType and powerType >= 0 then
+    if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
+      -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
+      if secretValue >= maxValue and maxValue > 0 then
+        local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
+        bar1:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
+      else
+        bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
+      end
+    elseif enableMaxColor and powerType and powerType >= 0 then
+      -- Primary resource: UnitPowerPercent curve (secret-safe)
       local maxCurve = GetMaxColorOnlyCurve(barNumber, cfg, baseColor, powerType)
       if maxCurve then
         local barTexture = bar1:GetStatusBarTexture()
@@ -3168,10 +3662,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       else
         bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
       end
-    elseif enableMaxColor and isSecondaryResource and type(secretValue) == "number" and secretValue >= maxValue and maxValue > 0 then
-      -- Secondary resource at-max: direct comparison (non-secret in Beta 3+)
-      local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
-      bar1:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
     else
       bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
     end
@@ -3179,6 +3669,79 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     -- Hide any extra stacked bars from other modes
     for i = 2, #mainFrame.stackedBars do
       mainFrame.stackedBars[i]:Hide()
+    end
+    
+    -- ═══════════════════════════════════════════════════════════════
+    -- PREDICTION OVERLAYS (simple/continuous mode)
+    -- Gain: StatusBar behind main bar shows where it'll fill to
+    -- Cost: Texture overlay on top shows portion being consumed
+    -- ═══════════════════════════════════════════════════════════════
+    local showPred = cfg.display.showPrediction
+    local predCostCol = cfg.display.predCostColor or {r=0, g=0, b=0, a=0.5}
+    local predGainCol = cfg.display.predGainColor or {r=1, g=1, b=1, a=0.3}
+    local predActive = showPred and Prediction.active and cfg.tracking.secondaryType == "soulShards"
+    local currentVal = type(secretValue) == "number" and secretValue or 0
+    
+    if predActive and mainFrame.predGainBar and Prediction.gain > 0 then
+      -- Gain bar: extends past main fill to show incoming shards
+      local gainTarget = math.min(currentVal + Prediction.gain, maxValue)
+      local gainColor = baseColor
+      mainFrame.predGainBar:ClearAllPoints()
+      mainFrame.predGainBar:SetAllPoints(mainFrame)
+      mainFrame.predGainBar:SetMinMaxValues(0, maxValue)
+      mainFrame.predGainBar:SetStatusBarTexture(texturePath)
+      mainFrame.predGainBar:SetOrientation(orientation)
+      mainFrame.predGainBar:SetReverseFill(reverseFill)
+      mainFrame.predGainBar:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
+      mainFrame.predGainBar:SetStatusBarColor(gainColor.r, gainColor.g, gainColor.b, predGainCol.a or 0.3)
+      mainFrame.predGainBar:SetValue(gainTarget)
+      mainFrame.predGainBar:Show()
+    elseif mainFrame.predGainBar then
+      mainFrame.predGainBar:Hide()
+    end
+    
+    if predActive and mainFrame.predCostFrame and Prediction.cost > 0 then
+      -- Cost overlay: positioned texture covering the "will be consumed" zone
+      local afterCost = math.max(0, currentVal - Prediction.cost)
+      local barWidth = mainFrame:GetWidth()
+      local barHeight = mainFrame:GetHeight()
+      
+      mainFrame.predCostFrame:ClearAllPoints()
+      mainFrame.predCostFrame:SetAllPoints(mainFrame)
+      mainFrame.predCostTex:ClearAllPoints()
+      mainFrame.predCostTex:SetTexture(texturePath)
+      mainFrame.predCostTex:SetVertexColor(predCostCol.r, predCostCol.g, predCostCol.b, predCostCol.a or 0.5)
+      
+      if isVertical then
+        local startPx, endPx
+        if reverseFill then
+          startPx = (afterCost / maxValue) * barHeight
+          endPx = (currentVal / maxValue) * barHeight
+          mainFrame.predCostTex:SetPoint("TOPLEFT", mainFrame.predCostFrame, "TOPLEFT", 0, -startPx)
+          mainFrame.predCostTex:SetPoint("BOTTOMRIGHT", mainFrame.predCostFrame, "TOPRIGHT", 0, -endPx)
+        else
+          startPx = (afterCost / maxValue) * barHeight
+          endPx = (currentVal / maxValue) * barHeight
+          mainFrame.predCostTex:SetPoint("BOTTOMLEFT", mainFrame.predCostFrame, "BOTTOMLEFT", 0, startPx)
+          mainFrame.predCostTex:SetPoint("TOPRIGHT", mainFrame.predCostFrame, "BOTTOMRIGHT", 0, endPx)
+        end
+      else
+        local startPx, endPx
+        if reverseFill then
+          startPx = (1 - currentVal / maxValue) * barWidth
+          endPx = (1 - afterCost / maxValue) * barWidth
+          mainFrame.predCostTex:SetPoint("TOPLEFT", mainFrame.predCostFrame, "TOPLEFT", startPx, 0)
+          mainFrame.predCostTex:SetPoint("BOTTOMRIGHT", mainFrame.predCostFrame, "TOPLEFT", endPx, -barHeight)
+        else
+          startPx = (afterCost / maxValue) * barWidth
+          endPx = (currentVal / maxValue) * barWidth
+          mainFrame.predCostTex:SetPoint("TOPLEFT", mainFrame.predCostFrame, "TOPLEFT", startPx, 0)
+          mainFrame.predCostTex:SetPoint("BOTTOMRIGHT", mainFrame.predCostFrame, "TOPLEFT", endPx, -barHeight)
+        end
+      end
+      mainFrame.predCostFrame:Show()
+    elseif mainFrame.predCostFrame then
+      mainFrame.predCostFrame:Hide()
     end
     
     -- Animacharged combo point overlays (painted on top at charged positions)
@@ -3313,6 +3876,19 @@ function ns.Resources.UpdateBar(barNumber)
   local mainFrame, textFrame = GetResourceFrames(barNumber)
   
   -- ═══════════════════════════════════════════════════════════════════
+  -- HIDEWHEN CONDITIONS (early return — skip all work when bar should be hidden)
+  -- Bypass when options panel is open for editing.
+  -- ═══════════════════════════════════════════════════════════════════
+  if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+    local hideWhen = ns.CooldownBars.GetHideWhen(cfg)
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      mainFrame:Hide()
+      textFrame:Hide()
+      return
+    end
+  end
+  
+  -- ═══════════════════════════════════════════════════════════════════
   -- DETERMINE RESOURCE TYPE (Primary vs Secondary)
   -- ═══════════════════════════════════════════════════════════════════
   local resourceCategory = cfg.tracking.resourceCategory or "primary"
@@ -3381,10 +3957,16 @@ function ns.Resources.UpdateBar(barNumber)
       if powerType and powerType >= 0 then
         -- CurveConstants.ScaleTo100 scales 0-1 to 0-100 internally (handles secrets!)
         local pct = UnitPowerPercent("player", powerType, false, CurveConstants.ScaleTo100)
-        textFrame.text:SetFormattedText("%.0f%%", pct)
+        local pctFmt = (cfg.display.textShowPercentSymbol ~= false) and "%.0f%%" or "%.0f"
+        textFrame.text:SetFormattedText(pctFmt, pct)
       else
         textFrame.text:SetText(secretValue)
       end
+    elseif textFormat == "percent" and cfg.tracking.secondaryType == "stagger" then
+      -- Stagger percentage: stagger / maxHealth * 100
+      local pct = (maxValue and maxValue > 0) and (secretValue / maxValue * 100) or 0
+      local pctFmt = (cfg.display.textShowPercentSymbol ~= false) and "%.0f%%" or "%.0f"
+      textFrame.text:SetFormattedText(pctFmt, pct)
     elseif displayFormat == "decimal" then
       -- Format as decimal (e.g., Soul Shards for Destruction)
       textFrame.text:SetFormattedText("%.1f", displayValue)
@@ -3394,6 +3976,41 @@ function ns.Resources.UpdateBar(barNumber)
     end
     local tc = cfg.display.textColor
     textFrame.text:SetTextColor(tc.r, tc.g, tc.b, tc.a)
+    
+    -- Prediction text override (soul shards only, non-secret so we can format freely)
+    local predTextFmt = cfg.display.predTextFormat or "none"
+    if Prediction.active and predTextFmt ~= "none" and cfg.tracking.secondaryType == "soulShards" then
+      local currentVal = type(secretValue) == "number" and math.floor(secretValue) or 0
+      local predColor, predText
+      
+      if Prediction.cost > 0 then
+        local afterCost = math.max(0, currentVal - Prediction.cost)
+        predColor = cfg.display.predTextCostColor or {r=1, g=0.3, b=0.3}
+        if predTextFmt == "arrow" then
+          predText = currentVal .. " -> " .. afterCost
+        elseif predTextFmt == "delta" then
+          predText = currentVal .. " (-" .. Prediction.cost .. ")"
+        elseif predTextFmt == "predicted" then
+          predText = tostring(afterCost)
+        end
+      elseif Prediction.gain > 0 then
+        local afterGain = math.min(currentVal + Prediction.gain, maxValue)
+        predColor = cfg.display.predTextGainColor or {r=0.3, g=1, b=0.3}
+        if predTextFmt == "arrow" then
+          predText = currentVal .. " -> " .. afterGain
+        elseif predTextFmt == "delta" then
+          predText = currentVal .. " (+" .. Prediction.gain .. ")"
+        elseif predTextFmt == "predicted" then
+          predText = tostring(afterGain)
+        end
+      end
+      
+      if predText and predColor then
+        textFrame.text:SetText(predText)
+        textFrame.text:SetTextColor(predColor.r, predColor.g, predColor.b, 1)
+      end
+    end
+    
     textFrame:Show()
   else
     textFrame:Hide()
@@ -3415,6 +4032,9 @@ function ns.Resources.UpdateBar(barNumber)
     local isVertical = (GetBarOrientation(cfg) == "VERTICAL")
     local isReverseFill = GetBarReverseFill(cfg)
     local tickIndex = 1
+    
+    -- Tick positions use full frame dimensions — bar1:SetAllPoints(mainFrame)
+    -- means the fill occupies the same space, border is overlaid at higher level
     
     -- For folded mode, ticks are based on midpoint
     local tickMaxValue = maxValue
@@ -3466,7 +4086,8 @@ function ns.Resources.UpdateBar(barNumber)
       end
     end
     
-    -- Render tick marks (matching Display.lua Texture-based pattern)
+    -- Render tick marks anchored to the fill bar (same space as fill, no border offset needed)
+    -- Matches Sensei's approach: anchor LEFT/BOTTOM edge at division point, use SetSize for span
     local thickness = cfg.display.tickThickness or 2
     local tc = cfg.display.tickColor or {r=1, g=1, b=1, a=0.8}
     
@@ -3479,31 +4100,21 @@ function ns.Resources.UpdateBar(barNumber)
         tick:SetColorTexture(tc.r, tc.g, tc.b, tc.a or 1)
         
         if isVertical then
-          -- VERTICAL BAR - Horizontal tick marks (matching Display.lua)
-          local yPos
+          local rawY = (tickValue / tickMaxValue) * height
+          tick:SetSize(width, pixelThickness)
           if isReverseFill then
-            -- Reverse fill: fills top-to-bottom, measure from top
-            yPos = -(height * tickValue / tickMaxValue)
+            tick:SetPoint("TOP", mainFrame.tickOverlay, "TOP", 0, -rawY)
           else
-            -- Normal fill: fills bottom-to-top, measure from bottom
-            yPos = -height + (height * tickValue / tickMaxValue)
+            tick:SetPoint("BOTTOM", mainFrame.tickOverlay, "BOTTOM", 0, rawY)
           end
-          tick:SetPoint("TOPLEFT", mainFrame.tickOverlay, "TOPLEFT", 0, yPos - pixelThickness / 2)
-          tick:SetPoint("TOPRIGHT", mainFrame.tickOverlay, "TOPRIGHT", 0, yPos - pixelThickness / 2)
-          tick:SetHeight(pixelThickness)
         else
-          -- HORIZONTAL BAR - Vertical tick marks (matching Display.lua)
-          local xPos
+          local rawX = (tickValue / tickMaxValue) * width
+          tick:SetSize(pixelThickness, height)
           if isReverseFill then
-            -- Reverse fill: fills right-to-left, measure from right
-            xPos = width - (width * tickValue / tickMaxValue)
+            tick:SetPoint("RIGHT", mainFrame.tickOverlay, "RIGHT", -rawX, 0)
           else
-            -- Normal fill: fills left-to-right, measure from left
-            xPos = width * tickValue / tickMaxValue
+            tick:SetPoint("LEFT", mainFrame.tickOverlay, "LEFT", rawX, 0)
           end
-          tick:SetPoint("TOPLEFT", mainFrame.tickOverlay, "TOPLEFT", xPos - pixelThickness / 2, 0)
-          tick:SetPoint("BOTTOMLEFT", mainFrame.tickOverlay, "BOTTOMLEFT", xPos - pixelThickness / 2, 0)
-          tick:SetWidth(pixelThickness)
         end
         
         tick:Show()
@@ -3526,19 +4137,8 @@ function ns.Resources.UpdateBar(barNumber)
     end
   end
   
-  -- Show bar
-  -- Note: Spec and talent checks were already done at the top of this function
-  local shouldShow = cfg.display.enabled
-  
-  -- Hide When conditions (bypass when options panel is open for editing)
-  if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
-    local hideWhen = ns.CooldownBars.GetHideWhen(cfg)
-    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
-      shouldShow = false
-    end
-  end
-  
-  if shouldShow then
+  -- Show bar (hideWhen already checked at top of function)
+  if cfg.display.enabled then
     mainFrame:Show()
   else
     mainFrame:Hide()
@@ -3552,6 +4152,17 @@ end
 function ns.Resources.ApplyAppearance(barNumber)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg then return end
+  
+  -- CRITICAL: Don't create frames or show bars that aren't tracking anything.
+  -- This prevents ghost bars from appearing on characters with no resource bars.
+  if not cfg.tracking.enabled then
+    -- Only hide if frames already exist (don't create them just to hide them)
+    if resourceFrames[barNumber] then
+      resourceFrames[barNumber].mainFrame:Hide()
+      resourceFrames[barNumber].textFrame:Hide()
+    end
+    return
+  end
   
   -- Check if options panel is open - bypass spec/talent checks to allow editing
   local optionsOpen = IsOptionsOpen()
@@ -3720,27 +4331,27 @@ function ns.Resources.ApplyAppearance(barNumber)
   end
   
   -- Text font and sizing (MUST happen before anchor positioning)
-  if LSM and display.font then
-    local font = LSM:Fetch("font", display.font)
-    if font then
-      -- Use textOutline setting (default to THICKOUTLINE for backwards compatibility)
-      local outline = display.textOutline or "THICKOUTLINE"
-      textFrame.text:SetFont(font, display.fontSize, outline)
-      
-      -- Apply text shadow setting
-      if display.textShadow then
-        textFrame.text:SetShadowOffset(2, -2)
-        textFrame.text:SetShadowColor(0, 0, 0, 1)
-      else
-        textFrame.text:SetShadowOffset(0, 0)
-      end
-      
-      -- Size frame based on fontSize (avoid secret value issues with GetStringWidth)
-      local estimatedWidth = display.fontSize * 3  -- Enough for 2-3 digit numbers
-      local estimatedHeight = display.fontSize + 4
-      textFrame:SetSize(estimatedWidth, estimatedHeight)
-    end
+  local fontName = display.font or "2002 Bold"
+  local fontSize = display.fontSize or 20
+  local outline = display.textOutline or "THICKOUTLINE"
+  local font = (LSM and LSM:Fetch("font", fontName)) or "Fonts\\FRIZQT__.TTF"
+  textFrame.text:SetFont(font, fontSize, outline)
+  
+  -- Apply text shadow setting
+  if display.textShadow then
+    textFrame.text:SetShadowOffset(2, -2)
+    textFrame.text:SetShadowColor(0, 0, 0, 1)
+  else
+    textFrame.text:SetShadowOffset(0, 0)
   end
+  
+  -- Size frame based on fontSize (avoid secret value issues with GetStringWidth)
+  -- Wider estimate if prediction text is enabled (e.g. "3 -> 1" needs more room)
+  local predFmt = display.predTextFormat or "none"
+  local widthMultiplier = (predFmt ~= "none") and 6 or 3
+  local estimatedWidth = fontSize * widthMultiplier
+  local estimatedHeight = fontSize + 4
+  textFrame:SetSize(estimatedWidth, estimatedHeight)
   
   -- Text positioning - either anchored to bar or free-floating
   local textAnchor = display.textAnchor or "FREE"
@@ -3834,10 +4445,21 @@ function ns.Resources.ApplyAppearance(barNumber)
   end
   
   -- Border - draw around entire frame using 4 manual textures for pixel-perfect borders
-  -- Skip if in fragmented/icons mode (each segment has its own border)
+  -- For fragmented/icons with spacing>0, each segment has its own border (drawn in UpdateThresholdLayers)
+  -- For fragmented with spacing=0, unified border is drawn in UpdateThresholdLayers
   if display.showBorder and not isFragmented and not isIconsMode then
-    local bt = display.drawnBorderThickness or 2
+    local bt = PixelUtil.GetNearestPixelSize(display.drawnBorderThickness or 2, mainFrame:GetEffectiveScale(), 1)
     local bc = display.borderColor
+    
+    -- Enable pixel grid snapping on border textures
+    mainFrame.borderOverlay.top:SetSnapToPixelGrid(true)
+    mainFrame.borderOverlay.top:SetTexelSnappingBias(1)
+    mainFrame.borderOverlay.bottom:SetSnapToPixelGrid(true)
+    mainFrame.borderOverlay.bottom:SetTexelSnappingBias(1)
+    mainFrame.borderOverlay.left:SetSnapToPixelGrid(true)
+    mainFrame.borderOverlay.left:SetTexelSnappingBias(1)
+    mainFrame.borderOverlay.right:SetSnapToPixelGrid(true)
+    mainFrame.borderOverlay.right:SetTexelSnappingBias(1)
     
     -- Top border (spans full width at top)
     mainFrame.borderOverlay.top:ClearAllPoints()
@@ -3900,12 +4522,13 @@ function ns.Resources.ApplyAppearance(barNumber)
     layer:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
     layer:SetReverseFill(display.barReverseFill or false)
     -- Rotate texture to match fill direction
-    layer:SetRotatesTexture(isVertical)
+    layer:SetRotatesTexture((cfg.display.rotateTexture == true) or (cfg.display.rotateTexture ~= false and isVertical))
   end
   
   -- Movability
   mainFrame:EnableMouse(display.barMovable)
-  textFrame:EnableMouse(display.textMovable)
+  -- textLocked: true=locked, false=draggable, nil(existing users)=locked
+  textFrame:EnableMouse(display.textLocked == false)
   
   -- Refresh display
   ns.Resources.UpdateBar(barNumber)
@@ -3932,13 +4555,31 @@ function ns.Resources.UpdateAllBars()
 end
 
 -- ===================================================================
+-- REFRESH VISIBILITY (for hideWhen state changes: mount, target, etc.)
+-- Called via CDMGroups.UpdateGroupVisibility hook.
+-- ===================================================================
+function ns.Resources.RefreshVisibility()
+  if not ns.API or not ns.API.GetActiveResourceBars then return end
+  ns.Resources.UpdateAllBars()
+end
+
+-- ===================================================================
 -- APPLY ALL BARS
 -- ===================================================================
-function ns.Resources.ApplyAllBars()
+function ns.Resources.ApplyAllBars(nudgeLayout)
   if not ns.API.GetActiveResourceBars then return end
   
   local activeBars = ns.API.GetActiveResourceBars()
   for _, barNumber in ipairs(activeBars) do
+    -- Nudge frame size to force layout engine recalc (fixes pixel-snapped border alignment)
+    if nudgeLayout and resourceFrames[barNumber] and resourceFrames[barNumber].mainFrame then
+      local f = resourceFrames[barNumber].mainFrame
+      local w, h = f:GetSize()
+      if w and h and w > 0 and h > 0 then
+        f:SetSize(w + 0.01, h + 0.01)
+        f:SetSize(w, h)
+      end
+    end
     ns.Resources.ApplyAppearance(barNumber)
   end
 end
@@ -4116,6 +4757,11 @@ eventFrame:RegisterEvent("UNIT_HEALTH")                 -- For Stagger (based on
 eventFrame:RegisterEvent("UNIT_MAXHEALTH")              -- For Stagger max
 eventFrame:RegisterEvent("UNIT_AURA")                   -- For Maelstrom Weapon (Enhancement Shaman)
 
+-- Spell prediction events (non-secret: player spellcast info)
+eventFrame:RegisterEvent("UNIT_SPELLCAST_START")        -- Spell begins casting
+eventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")         -- Cast cancelled/interrupted
+eventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")    -- Cast completed
+
 -- Safe initialization - waits for DB to be ready
 local function TryInitialize()
   -- Check if DB functions exist and DB is loaded
@@ -4172,7 +4818,23 @@ local function UpdateBarsForSecondaryType(secondaryType)
   end
 end
 
-eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
+-- Refresh soul shard bars with full re-render (ApplyAppearance + UpdateBar)
+-- ApplyAppearance: segment/icon overlays. UpdateBar: text prediction.
+local function RefreshSoulShardBars()
+  if not isInitialized then return end
+  if not ns.API.GetActiveResourceBars then return end
+  if not ns.Resources.ApplyAppearance then return end
+  
+  local activeBars = ns.API.GetActiveResourceBars()
+  for _, barNumber in ipairs(activeBars) do
+    if BarTracksSecondaryType(barNumber, "soulShards") then
+      ns.Resources.ApplyAppearance(barNumber)
+      ns.Resources.UpdateBar(barNumber)
+    end
+  end
+end
+
+eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
   if event == "ADDON_LOADED" and arg1 == ADDON then
     -- Addon loaded, but DB might not be ready yet
     -- Start retry loop
@@ -4299,6 +4961,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
       if isInitialized then
         ns.Resources.UpdateMaxValues()
         ns.Resources.ApplyAllBars()
+        ns.Resources.UpdateAllBars()  -- Also update values (max may have changed)
       else
         InitWithRetry()
       end
@@ -4310,6 +4973,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
     
   elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
     -- Spec changed - refresh all bar visibility and update max values
+    Prediction:InvalidateCache()
     if not isInitialized then return end
     C_Timer.After(0.1, function()
       ns.Resources.UpdateMaxValues()
@@ -4317,12 +4981,50 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
     end)
     
   elseif event == "TRAIT_CONFIG_UPDATED" then
-    -- Talent changed - may affect max resource values
+    -- Talent changed - may affect max resource values and prediction generators
+    Prediction:InvalidateCache()
     if not isInitialized then return end
     C_Timer.After(0.2, function()
       ns.Resources.UpdateMaxValues()
       ns.Resources.UpdateAllBars()
     end)
+    
+  elseif event == "UNIT_SPELLCAST_START" and arg1 == "player" then
+    -- Spell started casting — check for soul shard cost
+    -- UNIT_SPELLCAST_START payload: unit, castGUID, spellID
+    if not isInitialized then return end
+    local _, playerClass = UnitClass("player")
+    if playerClass ~= "WARLOCK" then return end
+    -- spellID is 3rd payload arg; arg2=castGUID, ...=spellID
+    local spellID = ...
+    -- Safety: if spellID didn't come via varargs, try arg2 (some API versions)
+    if not spellID and type(arg2) == "number" then
+      spellID = arg2
+    end
+    Prediction:StartCast(spellID)
+    if Prediction.active then
+      -- Must use ApplyAppearance (not UpdateBar) — fragmented segments are only
+      -- rendered during ApplyAppearance; UpdateBar doesn't touch individual segments
+      RefreshSoulShardBars()
+    end
+    
+  elseif event == "UNIT_SPELLCAST_STOP" and arg1 == "player" then
+    -- Cast cancelled/interrupted
+    if Prediction.active then
+      Prediction:Clear()
+      if isInitialized then
+        RefreshSoulShardBars()
+      end
+    end
+    
+  elseif event == "UNIT_SPELLCAST_SUCCEEDED" and arg1 == "player" then
+    -- Cast completed — clear prediction (actual power change follows via UNIT_POWER_FREQUENT)
+    if Prediction.active then
+      Prediction:Clear()
+      if isInitialized then
+        RefreshSoulShardBars()
+      end
+    end
   end
 end)
 
@@ -4477,18 +5179,68 @@ ns.Resources.ShowDeleteConfirmation = ShowResourceDeleteConfirmation
 function ns.Resources.DeleteBar(barNumber)
   local cfg = ns.API and ns.API.GetResourceBarConfig and ns.API.GetResourceBarConfig(barNumber)
   if cfg then
-    -- Clear tracking config
+    -- ═══════════════════════════════════════════════════════════
+    -- FULLY RESET tracking config
+    -- ═══════════════════════════════════════════════════════════
     cfg.tracking.enabled = false
     cfg.tracking.resourceCategory = "primary"
     cfg.tracking.powerType = 0
     cfg.tracking.secondaryType = nil
     cfg.tracking.powerName = ""
-    cfg.display.enabled = false
+    cfg.tracking.maxValue = 100
+    cfg.tracking.overrideMax = false
+    cfg.tracking.showRuneTimer = false
     
-    -- Hide the bar
-    local mainFrame, textFrame = GetResourceFrames(barNumber)
-    if mainFrame then mainFrame:Hide() end
-    if textFrame then textFrame:Hide() end
+    -- ═══════════════════════════════════════════════════════════
+    -- FULLY RESET display state — prevents slot contamination
+    -- when a new bar reuses this slot
+    -- ═══════════════════════════════════════════════════════════
+    cfg.display.enabled = false
+    cfg.display.thresholdMode = "simple"
+    cfg.display.showTickMarks = false
+    cfg.display.enableActiveCountColors = nil
+    cfg.display.activeCountColors = nil
+    cfg.display.fragmentedColors = nil
+    cfg.display.fragmentedChargingColor = nil
+    cfg.display.fragmentedSpecColors = nil
+    cfg.display.smartChargingColor = nil
+    cfg.display.colorCurveEnabled = false
+    cfg.display.enableMaxColor = false
+    cfg.display.chargedComboColor = nil
+    cfg.display.fragmentedShowSegmentText = nil
+    cfg.display.fragmentedTextSize = nil
+    cfg.display.fragmentedTextOffsetX = nil
+    cfg.display.fragmentedTextOffsetY = nil
+    cfg.display.fragmentedLayoutDirection = nil
+    cfg.display.iconsShowCooldownText = nil
+    cfg.display.iconsCDTextSize = nil
+    cfg.display.iconsCDTextOffsetX = nil
+    cfg.display.iconsCDTextOffsetY = nil
+    cfg.display.iconsLayout = nil
+    cfg.display.iconSize = nil
+    cfg.display.iconSpacing = nil
+    cfg.display.iconShape = nil
+    cfg.display.iconsBorderStyle = nil
+    cfg.display.showInForms = nil
+    
+    -- Clear color ranges and stack colors
+    cfg.stackColors = nil
+    cfg.colorRanges = nil
+    
+    -- Clear behavior
+    if cfg.behavior then
+      cfg.behavior.showOnSpecs = nil
+      cfg.behavior.showOnSpec = nil
+      cfg.behavior.talentConditions = nil
+      cfg.behavior.talentMatchMode = nil
+      cfg.behavior.hideBlizzardFrame = nil
+    end
+    
+    -- Hide the bar (only if frames exist — don't create them)
+    if resourceFrames[barNumber] then
+      resourceFrames[barNumber].mainFrame:Hide()
+      resourceFrames[barNumber].textFrame:Hide()
+    end
     
     -- Refresh options panel
     if LibStub and LibStub("AceConfigRegistry-3.0", true) then
@@ -4630,6 +5382,13 @@ function ns.Resources.HookContainerForAnchoredBars(groupName)
   
   hookedContainers[container] = true
   container:HookScript("OnSizeChanged", OnContainerSizeChanged)
+  
+  -- Fire immediately in case the container was already sized before we hooked
+  -- (common at login — container gets laid out before resource bars initialize)
+  local w, h = container:GetWidth(), container:GetHeight()
+  if w and h and w > 0 and h > 0 then
+    OnContainerSizeChanged(container, w, h)
+  end
 end
 
 -- ===================================================================
@@ -4640,6 +5399,29 @@ C_Timer.After(3.0, function()
   if not isInitialized then
     InitWithRetry()
   end
+end)
+
+-- ===================================================================
+-- HIDEWHEN VISIBILITY HOOK
+-- Hook CDMGroups.UpdateGroupVisibility so resource bars refresh
+-- in sync with group visibility (mount, combat, death, target, etc.)
+-- Same pattern as CooldownBars.lua — one hook instead of 16+ events.
+-- ===================================================================
+local function InstallResourceVisibilityHook()
+  if not ns.CDMGroups or not ns.CDMGroups.UpdateGroupVisibility then return end
+  if ns.Resources._visHookInstalled then return end
+  ns.Resources._visHookInstalled = true
+  
+  hooksecurefunc(ns.CDMGroups, "UpdateGroupVisibility", function()
+    ns.Resources.RefreshVisibility()
+  end)
+end
+
+local resVisHookFrame = CreateFrame("Frame")
+resVisHookFrame:RegisterEvent("PLAYER_LOGIN")
+resVisHookFrame:SetScript("OnEvent", function(self, event)
+  InstallResourceVisibilityHook()
+  self:UnregisterAllEvents()
 end)
 
 -- ===================================================================

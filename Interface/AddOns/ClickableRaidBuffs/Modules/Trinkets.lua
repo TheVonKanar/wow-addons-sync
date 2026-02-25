@@ -241,8 +241,8 @@ function ns.Trinkets_Scan()
         if not a then
           break
         end
-        if a.name == name then
-          have = have + 1
+        local an = a.name
+        if IsNonSecretString(an) and an == name then          have = have + 1
           break
         end
         i = i + 1
@@ -311,12 +311,14 @@ function ns.Trinkets_Scan()
           break
         end
         if targetName then
-          if a.name == targetName then
+          local an = a.name
+          if IsNonSecretString(an) and an == targetName then
             found = true
             break
           end
         else
-          if a.spellId and wantById[a.spellId] then
+          local sid = a.spellId
+          if IsNonSecretNumber(sid) and wantById[sid] then
             found = true
             break
           end
@@ -442,7 +444,8 @@ function ns.Trinkets_Scan()
               if not a then
                 break
               end
-              if a.name == name then
+              local an = a.name
+              if IsNonSecretString(an) and an == name then
                 matched = true
                 break
               end

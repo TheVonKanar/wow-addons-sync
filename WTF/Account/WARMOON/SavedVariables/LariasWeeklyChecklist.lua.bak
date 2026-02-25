@@ -6,7 +6,7 @@ LariasWeeklyChecklistDB = {
 ["profiles"] = {
 ["Default"] = {
 ["minimap"] = {
-["minimapPos"] = 240.7613731420514,
+["minimapPos"] = 236.7104271731571,
 ["hide"] = false,
 },
 },

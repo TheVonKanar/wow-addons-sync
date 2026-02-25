@@ -64,25 +64,32 @@ local function GetSpellName(spellID)
   return nil
 end
 
-local function WrapScanIfNeeded()
-  if type(ns.scanRaidBuffs) == "function" then
-    ns.scanRaidBuffs()
+local function RequestRaidRefresh()
+  if ns.MarkRosterDirty then
+    ns.MarkRosterDirty()
+  end
+  if ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
   end
 end
 
 local function OnRosterChanged()
-  WrapScanIfNeeded()
+  RequestRaidRefresh()
   if InCombatLockdown() or UnitIsDeadOrGhost("player") then
     return
   end
-  if ns.RenderAll then
+  if ns.PushRender then
+    ns.PushRender()
+  elseif ns.RenderAll then
     ns.RenderAll()
   end
 end
 
 local function OnPEW()
-  WrapScanIfNeeded()
-  if ns.RenderAll then
+  RequestRaidRefresh()
+  if ns.PushRender then
+    ns.PushRender()
+  elseif ns.RenderAll then
     ns.RenderAll()
   end
 end
@@ -121,7 +128,9 @@ local function OnUnitAura(unit, updateInfo)
     end
   end
 
-  if ns.RenderAll then
+  if ns.PushRender then
+    ns.PushRender()
+  elseif ns.RenderAll then
     ns.RenderAll()
   end
 end

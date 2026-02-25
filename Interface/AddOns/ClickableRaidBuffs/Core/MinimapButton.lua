@@ -3,10 +3,9 @@
 -- ====================================
 
 local addonName, ns = ...
-
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 local ClickableRaidBuffs = LibStub("AceAddon-3.0"):NewAddon("ClickableRaidBuffs", "AceConsole-3.0")
 
--- Libs
 local LDB = LibStub("LibDataBroker-1.1")
 local LDI = LibStub("LibDBIcon-1.0", true)
 local AceDB = LibStub("AceDB-3.0")
@@ -17,8 +16,11 @@ local miniButton = LDB:NewDataObject("ClickableRaidBuffs", {
   icon = "Interface\\AddOns\\ClickableRaidBuffs\\Media\\funkiggMinimapIcon",
 
   OnClick = function(_, btn)
-    if InCombatLockdown() then
-      print("|cFF00ccffCRB:|r Minimap menu is disabled during combat.")
+
+    if (InCombatLockdown and InCombatLockdown())
+       or (C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret()) then
+
+        print("|cFF00ccffCRB:|r " .. L["Menu is not available during this activity."])      
       return
     end
 
@@ -30,6 +32,7 @@ local miniButton = LDB:NewDataObject("ClickableRaidBuffs", {
       elseif SlashCmdList and SlashCmdList["CLICKABLERAIDBUFFS"] then
         SlashCmdList["CLICKABLERAIDBUFFS"]("")
       end
+
     elseif btn == "RightButton" then
       if ns and ns._mover and ns._mover:IsShown() then
         if ns.ToggleMover then

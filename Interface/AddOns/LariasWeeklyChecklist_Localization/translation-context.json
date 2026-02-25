@@ -1,0 +1,75 @@
+﻿{
+    "_readme": "Verified WoW in-game terminology per locale, confirmed by native speakers or in-game inspection. Read this before editing any locale file. Do NOT assume dictionary translations are correct for WoW-specific terms.",
+
+    "enUS": {
+        "Delves": "Delves",
+        "Bountiful Delves": "Bountiful Delves",
+        "Crests": "Crests",
+        "Prey": "Prey",
+        "Great Vault": "Great Vault"
+    },
+
+    "enGB": {
+        "Delves": "Delves",
+        "Bountiful Delves": "Bountiful Delves",
+        "Crests": "Crests",
+        "Prey": "Prey",
+        "Great Vault": "Great Vault"
+    },
+
+    "frFR": {
+        "Delves": "Gouffres",
+        "Bountiful Delves": "Gouffres abondants",
+        "Crests": "Écus",
+        "Prey": "Traque",
+        "Great Vault": "Grand Coffre"
+    },
+
+    "deDE": {
+        "Delves": "Tiefen",
+        "Bountiful Delves": "Üppige Tiefen",
+        "Crests": "Wappen",
+        "Prey": "Beute",
+        "Great Vault": "Große Schatzkammer"
+    },
+
+    "esES": {
+        "Delves": "Profundidades",
+        "Bountiful Delves": "Profundidades abundantes",
+        "Crests": "Blasones",
+        "Prey": "Presa",
+        "Great Vault": "Gran cámara"
+    },
+
+    "esMX": {
+        "Delves": "Profundidades",
+        "Bountiful Delves": "Profundidades abundantes",
+        "Crests": "Blasones",
+        "Prey": "Presa",
+        "Great Vault": "Gran cámara"
+    },
+
+    "itIT": {
+        "Delves": "Profondità",
+        "Bountiful Delves": "Profondità rigogliose",
+        "Crests": "Emblemi",
+        "Prey": "Preda",
+        "Great Vault": "Grande Forziere"
+    },
+
+    "ptBR": {
+        "Delves": "Profundezas",
+        "Bountiful Delves": "Profundezas abundantes",
+        "Crests": "Brasões",
+        "Prey": "Presa",
+        "Great Vault": "Grande Cofre"
+    },
+
+    "ruRU": {
+        "Delves": "Вылазки",
+        "Bountiful Delves": "Щедрые вылазки",
+        "Crests": "Гребни",
+        "Prey": "Добыча",
+        "Great Vault": "Великий тайник"
+    }
+}

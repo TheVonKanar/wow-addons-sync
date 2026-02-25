@@ -188,7 +188,7 @@ BetterBags: disabled
 Sorted: disabled
 WorldQuestTracker: disabled
 WorldQuestsList: disabled
-Glider: disabled
+Glider: enabled
 AdvancedInterfaceOptions: enabled
 SimpleItemLevel: disabled
 elWigo: enabled

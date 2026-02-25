@@ -45,7 +45,8 @@ local function HasSacBuff()
     if not a then
       break
     end
-    if a.spellId == SACRIFICE_BUFF then
+    local sid = ns.SafeAuraSpellID and ns.SafeAuraSpellID(a)
+    if sid == SACRIFICE_BUFF then
       return true
     end
     i = i + 1

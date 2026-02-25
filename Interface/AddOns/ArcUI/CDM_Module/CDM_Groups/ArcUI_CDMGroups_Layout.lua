@@ -245,7 +245,7 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     frame._cdmgFreeTargetSize = nil
     
     frame:SetParent(container)
-    frame:SetFrameStrata("MEDIUM")
+    frame:SetFrameStrata(container._cdmgFrameStrata or "MEDIUM")
     frame:SetScale(1)
     
     -- CRITICAL: Clear old position immediately (especially important for free icons joining groups)

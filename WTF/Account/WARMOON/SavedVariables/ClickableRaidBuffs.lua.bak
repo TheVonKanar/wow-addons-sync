@@ -29,7 +29,7 @@ ClickableRaidBuffsDB = {
 ["tooltips"] = {
 },
 ["topSize"] = 14,
-["AUTHOR_LABEL_X"] = 335,
+["bottomSize"] = 14,
 ["TAB_HEIGHT"] = 24,
 ["cornerTextColor"] = {
 ["a"] = 1,
@@ -38,18 +38,18 @@ ClickableRaidBuffsDB = {
 ["r"] = 1,
 },
 ["AUTHOR_LABEL_Y"] = -55,
-["bottomSize"] = 14,
+["AUTHOR_LABEL_X"] = 335,
 ["growV"] = "UP",
 ["versionID"] = "7.3.5",
-["hunterPets"] = {
-},
-["useMaxPerRow"] = false,
-["alignment"] = "CENTER",
 ["glowColor"] = {
 ["a"] = 1,
 ["b"] = 0.2,
 ["g"] = 0.9,
 ["r"] = 1,
+},
+["useMaxPerRow"] = false,
+["alignment"] = "CENTER",
+["hunterPets"] = {
 },
 ["exclusions"] = {
 [197767] = true,
@@ -60,17 +60,6 @@ ClickableRaidBuffsDB = {
 [6657] = true,
 [171364] = true,
 },
-["position"] = {
-["y"] = -526,
-["x"] = 0,
-},
-["fontName"] = "FiraSans-Medium",
-["layoutMode"] = "ROW",
-["mounts"] = {
-["selectedMount"] = 460,
-},
-["timerOutline"] = true,
-["bottomOutline"] = true,
 ["categoryOrder"] = {
 "EATING",
 "FOOD",
@@ -89,6 +78,17 @@ ClickableRaidBuffsDB = {
 "PETS",
 "COSMETIC",
 },
+["fontName"] = "FiraSans-Medium",
+["layoutMode"] = "ROW",
+["mounts"] = {
+["selectedMount"] = 460,
+},
+["timerOutline"] = true,
+["style"] = "HORIZONTAL",
+["position"] = {
+["y"] = -526,
+["x"] = 0,
+},
 ["hSpace"] = 10,
 ["growH"] = "RIGHT",
 ["AUTHOR_LABEL_SIZE"] = 17,
@@ -105,12 +105,12 @@ ClickableRaidBuffsDB = {
 ["topOutline"] = true,
 ["cosmetics"] = {
 },
-["LABEL_ITALIC_FONT_NAME"] = "FiraSans-Italic",
+["mplusThresholdEnabled"] = true,
 ["SIZE_TITLE"] = 50,
 ["centerOutline"] = true,
-["glowEnabled"] = true,
+["RESET_H"] = 30,
 ["SIZE_SECTION_HEAD"] = 20,
-["timerSize"] = 22,
+["LABEL_ITALIC_FONT_NAME"] = "FiraSans-Italic",
 ["centerSize"] = 22,
 ["iconSize"] = 50,
 ["earthShieldOverride"] = {
@@ -133,9 +133,9 @@ ClickableRaidBuffsDB = {
 ["g"] = 0.8,
 ["r"] = 0.35,
 },
-["mplusThresholdEnabled"] = true,
+["timerSize"] = 22,
 ["mplusDisableConsumables"] = true,
-["RESET_H"] = 30,
+["glowEnabled"] = true,
 ["raidBuffExclusions"] = {
 },
 ["AUTHOR_LABEL_FONT_NAME"] = "FiraSans-Medium",
@@ -143,13 +143,13 @@ ClickableRaidBuffsDB = {
 [10] = true,
 [11] = true,
 },
-["gridDown"] = false,
+["bottomOutline"] = true,
 ["maxPerRow"] = 7,
 ["fixedTargets"] = {
 },
-["SIZE_LABEL"] = 14,
+["gridDown"] = false,
 ["TITLE_FONT_NAME"] = "FiraSans-ExtraBoldItalic",
-["style"] = "HORIZONTAL",
+["SIZE_LABEL"] = 14,
 ["TAB_COUNT"] = 6,
 ["RESET_W"] = 60,
 }

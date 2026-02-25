@@ -54,18 +54,31 @@ local function spellThresholdSecs()
 end
 
 local function auraRemOnPlayer(buffId)
-  if not buffId then
+  if type(buffId) ~= "number" then
     return nil
   end
+  local IsSecret = ns.Compat and ns.Compat.IsSecret
+  local function IsNonSecretNumber(v)
+    return type(v) == "number" and not (IsSecret and IsSecret(v))
+  end
+  local now = GetTime()
   local i = 1
   while true do
     local a = C_UnitAuras.GetAuraDataByIndex("player", i, "HELPFUL")
     if not a then
       break
     end
-    if a.spellId == buffId and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
-      if a.expirationTime and a.expirationTime > 0 then
-        return a.expirationTime - GetTime()
+    local sid = a.spellId
+    local src = a.sourceUnit
+    local exp = a.expirationTime
+    if IsNonSecretNumber(sid)
+      and sid == buffId
+      and src
+      and not (IsSecret and IsSecret(src))
+      and UnitIsUnit(src, "player")
+    then
+      if IsNonSecretNumber(exp) and exp > 0 then
+        return exp - now
       else
         return math.huge
       end

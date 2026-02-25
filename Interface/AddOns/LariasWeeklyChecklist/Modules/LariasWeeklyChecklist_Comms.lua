@@ -213,7 +213,7 @@ function Addon:ShowUpdatePopupIfNeeded()
     if type(L.UPDATE_AVAILABLE_FMT) == "string" and L.UPDATE_AVAILABLE_FMT ~= "" then
         popupText = string.format(L.UPDATE_AVAILABLE_FMT, tostring(displayName))
     else
-        popupText = (L.UPDATE_AVAILABLE_TEXT or L.UPDATE_AVAILABLE_TITLE or "")
+        popupText = (L.UPDATE_AVAILABLE_TEXT or "")
     end
 
     StaticPopup_Show("LARIASWEEKLYCHECKLIST_UPDATE", popupText)
@@ -347,6 +347,14 @@ end
 function Addon:CommsOnEnable()
     -- Called from Addon:OnEnable.
     self._myVersion = GetAddonVersion(addonName)
+
+    -- Embed AceComm-3.0 now if it is available.  We defer this from NewAddon
+    -- so a missing or overridden library does not crash the main chunk and
+    -- break slash commands for everyone.
+    local aceComm = LibStub and LibStub("AceComm-3.0", true)
+    if aceComm and not self.RegisterComm then
+        aceComm:Embed(self)
+    end
 
     if self.RegisterComm then
         self:RegisterComm(self.COMM_PREFIX)

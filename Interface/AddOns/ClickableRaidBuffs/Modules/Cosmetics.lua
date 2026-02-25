@@ -265,8 +265,11 @@ function ns.Cosmetics_RefreshNow()
     ns.Cosmetics_RebuildActive()
     wipe(ensureCategory())
     pruneRenderedDisabled()
-    if type(_G.scanAllBags) == "function" then
-      _G.scanAllBags()
+    if type(ns.MarkBagsDirty) == "function" then
+      ns.MarkBagsDirty()
+    end
+    if type(ns.PokeUpdateBus) == "function" then
+      ns.PokeUpdateBus()
     end
     if ns.RenderAll then
       ns.RenderAll()

@@ -24,14 +24,17 @@ local function _auraMatchesMineOnly(a, idSet, nameSet, nameMode)
   if not a then
     return false
   end
-  local byPlayer = a.sourceUnit and UnitIsUnit(a.sourceUnit, "player")
+  local source = ns.SafeAuraSourceUnit and ns.SafeAuraSourceUnit(a)
+  local byPlayer = source and UnitIsUnit(source, "player")
   if not byPlayer then
     return false
   end
-  if idSet and a.spellId and idSet[a.spellId] then
+  local sid = ns.SafeAuraSpellID and ns.SafeAuraSpellID(a)
+  if idSet and sid and idSet[sid] then
     return true
   end
-  if nameMode and nameSet and a.name and nameSet[a.name] then
+  local nm = ns.SafeAuraName and ns.SafeAuraName(a)
+  if nameMode and nameSet and nm and nameSet[nm] then
     return true
   end
   return false
@@ -46,8 +49,8 @@ function ns.MineOnly_UnitHasBuff(unit, idSet, nameSet, nameMode)
     AuraUtil.ForEachAura(unit, "HELPFUL", nil, function(a)
       if _auraMatchesMineOnly(a, idSet, nameSet, nameMode) then
         found = true
-        local exp = a.expirationTime
-        if exp and (not IsSecret or not IsSecret(exp)) and exp > 0 then
+        local exp = ns.SafeAuraExpiration and ns.SafeAuraExpiration(a, false)
+        if exp and exp ~= math.huge and exp > 0 then
           expire = exp
         end
         return true
@@ -63,8 +66,9 @@ function ns.MineOnly_UnitHasBuff(unit, idSet, nameSet, nameMode)
       local a = { name = name, spellId = spellId, expirationTime = expTime, sourceUnit = source }
       if _auraMatchesMineOnly(a, idSet, nameSet, nameMode) then
         found = true
-        if expTime and (not IsSecret or not IsSecret(expTime)) and expTime > 0 then
-          expire = expTime
+        local exp = ns.SafeAuraExpiration and ns.SafeAuraExpiration(a, false)
+        if exp and exp ~= math.huge and exp > 0 then
+          expire = exp
         end
         break
       end

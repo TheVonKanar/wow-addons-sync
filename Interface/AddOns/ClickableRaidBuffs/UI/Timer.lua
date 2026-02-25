@@ -34,13 +34,13 @@ local function updateBottomTimer(btn, entry, tNow)
     if hasBottom then
       if tt._crb_anchor_mode ~= "under_bottom" then
         tt:ClearAllPoints()
-        tt:SetPoint("TOP", bt, "BOTTOM", 0, -2) -- small gap when both are present
+        tt:SetPoint("TOP", bt, "BOTTOM", 0, -2)
         tt._crb_anchor_mode = "under_bottom"
       end
     else
       if tt._crb_anchor_mode ~= "under_button" then
         tt:ClearAllPoints()
-        tt:SetPoint("TOP", btn, "BOTTOM", 0, -5) -- aligned with label position when no bottom label
+        tt:SetPoint("TOP", btn, "BOTTOM", 0, -5)
         tt._crb_anchor_mode = "under_button"
       end
     end
@@ -129,7 +129,6 @@ local function anyActive(tNow)
       local e = btn._crb_entry
       if e and e.category ~= "EATING" and e.expireTime and e.expireTime ~= math.huge then
         if IsSecret and IsSecret(e.expireTime) then
-          -- If the value is secret, treat it as unknown to avoid errors.
         else
           local rem = e.expireTime - tNow
           if e.category == "AUGMENT_RUNE" then

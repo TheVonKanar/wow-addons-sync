@@ -76,11 +76,12 @@ local function GetExpireForIDs(ids)
     if not a then
       break
     end
-    if a.spellId and ids then
+    local sid = ns.SafeAuraSpellID and ns.SafeAuraSpellID(a)
+    if sid and ids then
       for j = 1, #ids do
-        if a.spellId == ids[j] then
-          local ex = a.expirationTime
-          if ex and ex > 0 and (not best or ex > best) then
+        if sid == ids[j] then
+          local ex = ns.SafeAuraExpiration and ns.SafeAuraExpiration(a, false)
+          if ex and ex ~= math.huge and ex > 0 and (not best or ex > best) then
             best = ex
           end
         end
@@ -215,7 +216,7 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
   if added then
     for i = 1, #added do
       local a = added[i]
-      local id = a and a.spellId
+      local id = a and ns.SafeAuraSpellID and ns.SafeAuraSpellID(a)
       if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()
@@ -230,7 +231,7 @@ local function AugmentRune_OnPlayerAura(unit, updateInfo)
     for i = 1, #updated do
       local instanceID = updated[i]
       local info = IsNonSecretNumber(instanceID) and AuraByInstance("player", instanceID) or nil
-      local id = info and info.spellId
+      local id = info and ns.SafeAuraSpellID and ns.SafeAuraSpellID(info)
       if IsNonSecretNumber(id) and set[id] then
         if ns.UpdateAugmentRunes then
           ns.UpdateAugmentRunes()

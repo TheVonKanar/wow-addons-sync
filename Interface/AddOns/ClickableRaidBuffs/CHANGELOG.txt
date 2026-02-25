@@ -49,15 +49,25 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.3.5**
-- Changed the order of expansions in the Customize menu so they are in reverse chronological order
-- Reverted an inadvertant change to the default display font in a previous update
-- Added a reminder icon for pet classes when your pet is on passive, and clicking it it puts your pet on Assist
+**v7.3.7**
+- Added additional throttles to buff and bag scans to reduce CPU usage
+- General efficiency improvements
 
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
+
+**v7.3.6**
+- Addon is now disabled during M+ and PvP because of restrictions in the 12.0 API
+- Hardened against errors from evaluating against secret values
+
+
+**v7.3.5**
+- Changed the order of expansions in the Customize menu so they are in reverse chronological order
+- Reverted an inadvertant change to the default display font in a previous update
+- Added a reminder icon for pet classes when your pet is on passive, and clicking it it puts your pet on Assist
+
 
 **v7.3.4**
 - Did a better job of fixing an error that would happen when changing targets when values are secret.

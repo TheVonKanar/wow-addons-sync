@@ -648,11 +648,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOP",
+["anchorPoint"] = "TOPLEFT",
 ["relativeFrame"] = "UIParent",
-["offY"] = -59.31298828125,
-["offX"] = -54.12582397460938,
-["relativePoint"] = "TOP",
+["offY"] = -107.3128662109375,
+["relativePoint"] = "TOPLEFT",
+["offX"] = 92.87438201904297,
 },
 },
 },
@@ -1035,7 +1035,7 @@ BlizzMoveDB = {
 },
 ["GarrisonCapacitiveDisplayFrame"] = {
 },
-["Baganator_SingleViewBankViewFrameblizzard"] = {
+["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
 },
 ["BlackMarketFrame"] = {
 },
@@ -1142,9 +1142,9 @@ BlizzMoveDB = {
 },
 ["TokenFrame"] = {
 },
-["TabardFrame"] = {
+["Baganator_SingleViewBankViewFrameblizzard"] = {
 },
-["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
+["TabardFrame"] = {
 },
 ["ChallengesKeystoneFrame"] = {
 ["startPoints"] = {

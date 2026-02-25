@@ -115,6 +115,7 @@ local collapsedSections = {
     globalOptions = true,
     grid = false,
     layout = false,
+    frameStrata = true,    -- Frame Strata section - start collapsed
     position = true,
     appearance = true,
     tools = true,
@@ -1987,6 +1988,65 @@ local function GetOptionsTable()
                     local g = GetSelectedGroup()
                     local num = tonumber(val)
                     if g and num then g:SetSpacingY(num) end
+                end,
+            },
+            
+            -- FRAME STRATA SECTION
+            frameStrataHeader = {
+                type = "toggle",
+                name = "Frame Strata",
+                desc = "Click to expand/collapse",
+                dialogControl = "CollapsibleHeader",
+                order = 45,
+                width = "full",
+                get = function() return not collapsedSections.frameStrata end,
+                set = function(_, v) collapsedSections.frameStrata = not v end,
+            },
+            frameStrata = {
+                type = "select",
+                name = "Strata",
+                desc = "Rendering layer. Higher strata = on top.",
+                order = 45.1,
+                width = 0.8,
+                hidden = function() return HideIfNoGroup() or collapsedSections.frameStrata end,
+                values = {
+                    BACKGROUND = "Background",
+                    LOW = "Low",
+                    MEDIUM = "Medium (Default)",
+                    HIGH = "High",
+                    DIALOG = "Dialog",
+                },
+                sorting = { "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG" },
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and (g.frameStrata or "MEDIUM") or "MEDIUM"
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if g and g.SetGroupFrameStrata then
+                        g:SetGroupFrameStrata(val)
+                    end
+                end,
+            },
+            frameLevel = {
+                type = "input",
+                name = "Level",
+                desc = "Z-order within the same strata. Higher = on top.",
+                dialogControl = "ArcUI_EditBox",
+                order = 45.2,
+                width = 0.5,
+                hidden = function() return HideIfNoGroup() or collapsedSections.frameStrata end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and (g.frameLevel or 1) or 1)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    local num = tonumber(val)
+                    if g and num and g.SetGroupFrameLevel then
+                        num = math.max(1, math.floor(num))
+                        g:SetGroupFrameLevel(num)
+                    end
                 end,
             },
             

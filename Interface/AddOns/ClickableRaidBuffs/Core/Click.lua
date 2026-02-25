@@ -39,11 +39,64 @@ local function InjectPlayerIntoMacroText(macrotext)
   return table.concat(out, "\n")
 end
 
+local function BuildRescanOptionsForEntry(entry)
+  if not entry or not entry.category then
+    return nil
+  end
+  local cat = entry.category
+  if cat == "FOOD" or cat == "FLASK" or cat == "MAIN_HAND" or cat == "OFF_HAND" then
+    return { bags = true, raid = false }
+  end
+  if cat == "RAID_BUFFS" then
+    return { bags = false, raid = true }
+  end
+  return nil
+end
+
+local function AttachRescanPostClick(btn)
+  if not btn or btn._crb_rescan_hooked then
+    return
+  end
+
+  local prev = btn:GetScript("PostClick")
+  btn:SetScript("PostClick", function(self, ...)
+    if type(prev) == "function" then
+      prev(self, ...)
+    end
+
+    if type(ns.RequestImmediateRescan) ~= "function" then
+      return
+    end
+
+    local opts = BuildRescanOptionsForEntry(self and self._crb_entry)
+    ns.RequestImmediateRescan(opts)
+
+    -- Trigger a near-immediate follow-up after secure clicks so spell casts
+    -- refresh as soon as the aura/inventory state lands.
+    C_Timer.After(0.08, function()
+      if type(ns.RequestImmediateRescan) == "function" then
+        ns.RequestImmediateRescan(opts)
+      end
+    end)
+
+    C_Timer.After(0.20, function()
+      if type(ns.RequestImmediateRescan) == "function" then
+        ns.RequestImmediateRescan(opts)
+      end
+    end)
+  end)
+
+  btn._crb_rescan_hooked = true
+end
+
 local function ForceSelfCastOnButtons()
   if InCombatLockdown() then
     return
   end
   for _, b in ipairs(ns.RenderFrames) do
+    if b then
+      AttachRescanPostClick(b)
+    end
     if b and b:IsShown() then
       local e = b._crb_entry
       local atype = (b.GetAttribute and b:GetAttribute("type")) or nil

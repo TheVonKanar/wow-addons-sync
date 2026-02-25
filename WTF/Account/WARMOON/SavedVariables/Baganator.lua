@@ -101,6 +101,7 @@ BAGANATOR_CONFIG = {
 ["2"] = false,
 ["default_armor"] = false,
 ["4"] = false,
+["default_auto_inventory_slots"] = false,
 ["default_junk"] = false,
 },
 ["icon_mark_unusable"] = false,
@@ -134,13 +135,15 @@ BAGANATOR_CONFIG = {
 "default_food",
 "default_potion",
 "default_miscellaneous",
+"default_housing",
 "default_special_empty",
+"default_auto_inventory_slots",
 "default_junk",
 "----",
 "_1",
 "default_auto_equipment_sets",
+"3",
 "4",
-"2",
 "default_gem",
 "default_itemenhancement",
 "__end",
@@ -197,9 +200,9 @@ BAGANATOR_CONFIG = {
 ["name"] = "Gear",
 ["search"] = "#gear|#armor|#weapon",
 },
-["2"] = {
-["name"] = "Legendary",
-["search"] = "#legendary|#artifact",
+["3"] = {
+["name"] = "Gear (Low)",
+["search"] = "#gear&<140",
 },
 },
 ["category_default_import"] = 3,
@@ -217,8 +220,13 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["category_migration"] = 5,
-["sort_ignore_slots_at_end"] = false,
+["saved_searches"] = {
+},
+["category_section_toggled"] = {
+["1"] = false,
+["2"] = false,
+["Crafting"] = true,
+},
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -302,7 +310,7 @@ BAGANATOR_CONFIG = {
 },
 ["3"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 1,
+["priority"] = 0,
 },
 ["2"] = {
 ["showGroupPrefix"] = true,
@@ -322,6 +330,10 @@ BAGANATOR_CONFIG = {
 },
 },
 ["default_tradegoods"] = {
+},
+["default_auto_inventory_slots"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_hearthstone"] = {
 ["addedItems"] = {
@@ -367,14 +379,10 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 10,
-["category_section_toggled"] = {
-["1"] = false,
-["2"] = false,
-["Crafting"] = true,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
-["bank_current_tab"] = 2,
+["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
@@ -387,13 +395,11 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["view_alpha"] = 1,
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["disabled_skins"] = {
 },
+["bag_view_width"] = 14,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
-["debug_keywords"] = false,
 ["skins"] = {
 ["blizzard"] = {
 ["no_frame_borders"] = false,
@@ -406,6 +412,21 @@ BAGANATOR_CONFIG = {
 ["view_transparency"] = 0.3,
 ["empty_slot_background"] = false,
 },
+},
+["recent_characters_main_view"] = {
+"Kvotheen-Hyjal",
+"Quiproquo-Uldaman",
+"Killeen-Archimonde",
+"Pandamages-Hyjal",
+"Pandamagee-Hyjal",
+"Pandamo-Hyjal",
+"Pandamoun-Hyjal",
+"Raptorbuyer-Hyjal",
+"Pandkvé-Hyjal",
+"Pandakv-Hyjal",
+"Pandakvo-Hyjal",
+"Kvothyr-Hyjal",
+"Trialmagekvo-Hyjal",
 },
 ["guild_current_tab"] = 1,
 ["auto_sort_on_open"] = false,
@@ -468,21 +489,7 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["recent_characters_main_view"] = {
-"Kvotheen-Hyjal",
-"Quiproquo-Uldaman",
-"Killeen-Archimonde",
-"Pandamages-Hyjal",
-"Pandamagee-Hyjal",
-"Pandamo-Hyjal",
-"Pandamoun-Hyjal",
-"Raptorbuyer-Hyjal",
-"Pandkvé-Hyjal",
-"Pandakv-Hyjal",
-"Pandakvo-Hyjal",
-"Kvothyr-Hyjal",
-"Trialmagekvo-Hyjal",
-},
+["debug_keywords"] = false,
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -492,13 +499,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["bag_view_width"] = 14,
-["disabled_skins"] = {
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
+["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["saved_searches"] = {
-},
+["category_migration"] = 5,
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

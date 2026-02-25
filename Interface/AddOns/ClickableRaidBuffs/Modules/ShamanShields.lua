@@ -15,6 +15,11 @@ DB().fixedTargets = DB().fixedTargets or {}
 local CAT = "SHAMAN_SHIELDS"
 local ORBIT_TALENT = 383010
 local TRUNC_N = 6
+local IsSecret = ns.Compat and ns.Compat.IsSecret
+
+local function IsNonSecretNumber(v)
+  return type(v) == "number" and not (IsSecret and IsSecret(v))
+end
 
 local function InCombat()
   return InCombatLockdown()
@@ -79,19 +84,23 @@ local function IterateGroupUnits()
 end
 
 local function auraRem(unit, buffId, mineOnly)
-  if not buffId then
+  if not IsNonSecretNumber(buffId) then
     return nil
   end
+  local now = GetTime()
   local i = 1
   while true do
     local a = C_UnitAuras.GetAuraDataByIndex(unit, i, "HELPFUL")
     if not a then
       break
     end
-    if a.spellId == buffId then
-      if not mineOnly or (a.sourceUnit and UnitIsUnit(a.sourceUnit, "player")) then
-        if a.expirationTime and a.expirationTime > 0 then
-          return a.expirationTime - GetTime()
+    local sid = a.spellId
+    local src = a.sourceUnit
+    local exp = a.expirationTime
+    if IsNonSecretNumber(sid) and sid == buffId then
+      if not mineOnly or (src and not (IsSecret and IsSecret(src)) and UnitIsUnit(src, "player")) then
+        if IsNonSecretNumber(exp) and exp > 0 then
+          return exp - now
         else
           return math.huge
         end
@@ -222,7 +231,9 @@ local function learnEarthFixedFrom(unit, ES)
     if not a then
       break
     end
-    if a.spellId == want and a.sourceUnit and UnitIsUnit(a.sourceUnit, "player") then
+    local sid = a.spellId
+    local src = a.sourceUnit
+    if IsNonSecretNumber(sid) and sid == want and src and not (IsSecret and IsSecret(src)) and UnitIsUnit(src, "player") then
       local who = shortName(unit)
       local me = shortName("player")
       if who and who ~= me and DB().fixedTargets[974] ~= who then

@@ -125,8 +125,7 @@ local state = {
     -- PERFORMANCE: Throttle HasGridMismatch checks (expensive)
     lastMismatchCheckTime = 0,  -- GetTime() of last mismatch check
     
-    -- PERFORMANCE: Module-level cached panel state (updated once per tick)
-    -- All functions should use this instead of calling IsOptionsPanelOpen()
+    -- PERFORMANCE: Module-level cached panel state (kept for backward compat, no longer polled)
     cachedPanelOpenThisTick = false,
 }
 
@@ -226,36 +225,15 @@ end
 local dynamicLayoutHookedFrames = {}
 
 -- Check if options panel is open
--- PERFORMANCE: Returns cached value from current tick if available
--- The maintainer updates state.cachedPanelOpenThisTick once per tick
+-- ZERO-COST: Reads hook-driven flags directly (no polling, no LibStub, no GetTime)
 local function IsOptionsPanelOpen()
-    -- Use tick-cached value (set by maintainer OnUpdate)
-    return state.cachedPanelOpenThisTick
-end
-
--- Cache for AceConfigDialog reference (avoid LibStub calls)
-local _cachedACD = nil
-
--- Force-update the panel cache (called by maintainer and when fresh value needed)
--- PERFORMANCE: Inlined logic to avoid calling profiled ns.CDMGroups.IsOptionsPanelOpen
-local function UpdatePanelCache()
-    -- Check ArcUI AceConfig panel (cached ACD reference)
-    if not _cachedACD then
-        _cachedACD = LibStub("AceConfigDialog-3.0", true)
-    end
-    local arcUIOpen = _cachedACD and _cachedACD.OpenFrames and _cachedACD.OpenFrames["ArcUI"] and true or false
-    
-    -- Check CDM options panel (cached flag from CDMGroups)
-    local cdmOpen = ns.CDMGroups and ns.CDMGroups.cdmOptionsPanelOpen or false
-    
-    -- Check Blizzard Edit Mode (skip if already open)
-    local blizzEditMode = false
-    if not arcUIOpen and not cdmOpen then
-        blizzEditMode = EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() or false
-    end
-    
-    state.cachedPanelOpenThisTick = arcUIOpen or cdmOpen or blizzEditMode
-    return state.cachedPanelOpenThisTick
+    -- ArcUI panel (set by Shared hooks)
+    if ns.optionsPanelOpen then return true end
+    -- CDM options panel (set by OnShow/OnHide hooks)
+    if ns.CDMGroups and ns.CDMGroups.cdmOptionsPanelOpen then return true end
+    -- Blizzard Edit Mode
+    if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then return true end
+    return false
 end
 
 -- Trigger immediate layout for a center-aligned group
@@ -1832,21 +1810,10 @@ end
 local DynamicMaintainer = CreateFrame("Frame")
 local elapsed = 0
 
--- PERFORMANCE: Separate throttle for options panel check
--- ArcUI and CDM panels use direct hooks - polling only needed for Blizzard Edit Mode
-local panelCheckElapsed = 0
-local PANEL_CHECK_INTERVAL = 0.1  -- 100ms = 10 checks/second
-
--- Called directly by ArcUI_Options.lua when panel opens
+-- Called by Shared panel hooks when panel opens
 function DL.OnOptionsPanelOpened()
-    -- Update cache immediately
-    state.cachedPanelOpenThisTick = true
+    state.cachedPanelOpenThisTick = true  -- backward compat
     state.optionsPanelWasOpen = true
-    
-    -- Invalidate CDMGroups panel cache so Layout() sees fresh state
-    if ns.CDMGroups.InvalidateOptionsPanelCache then
-        ns.CDMGroups.InvalidateOptionsPanelCache()
-    end
     
     -- Reset ALL groups to grid positions
     -- Pixel positioning is cleared so users can freely edit icon positions
@@ -1897,18 +1864,10 @@ end
 
 -- Called directly by ArcUI_Options.lua when panel closes
 -- No polling needed - immediate response
+-- Called by Shared panel hooks when panel closes
 function DL.OnOptionsPanelClosed()
-    -- Update cache immediately
-    state.cachedPanelOpenThisTick = false
+    state.cachedPanelOpenThisTick = false  -- backward compat
     state.optionsPanelWasOpen = false
-    
-    -- Invalidate CDMGroups panel cache so Layout() sees panel as CLOSED.
-    -- Without this, the 100ms cache returns stale "true" → usePixelLayout = false
-    -- → CalculateDynamicSlots skipped → no compact container size → no sync to
-    -- CDMContainerSync → Sensei width bars never update.
-    if ns.CDMGroups.InvalidateOptionsPanelCache then
-        ns.CDMGroups.InvalidateOptionsPanelCache()
-    end
     
     -- Clear any applied container offsets so positions reset properly
     if ns.CDMGroups.groups then
@@ -1938,24 +1897,17 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
         return
     end
     
-    -- PERFORMANCE: Throttle the options panel check
-    -- ArcUI and CDM panels use direct hooks - this only catches Blizzard Edit Mode
-    panelCheckElapsed = panelCheckElapsed + dt
-    local optionsPanelOpen = state.cachedPanelOpenThisTick  -- Use cached value by default
+    -- Panel state: zero-cost flag read (set by hooks in Shared, no polling)
+    local optionsPanelOpen = IsOptionsPanelOpen()
     
-    if panelCheckElapsed >= PANEL_CHECK_INTERVAL then
-        panelCheckElapsed = 0
-        optionsPanelOpen = UpdatePanelCache()  -- Updates state.cachedPanelOpenThisTick
-        
-        -- FALLBACK: If polling detects panel just closed but direct hook didn't fire
-        local wasOpen = state.optionsPanelWasOpen
-        if wasOpen and not optionsPanelOpen then
-            DL.OnOptionsPanelClosed()
-        elseif not wasOpen and optionsPanelOpen then
-            DL.OnOptionsPanelOpened()
-        end
-        state.optionsPanelWasOpen = optionsPanelOpen
+    -- Detect state transitions for open/close callbacks
+    local wasOpen = state.optionsPanelWasOpen
+    if wasOpen and not optionsPanelOpen then
+        DL.OnOptionsPanelClosed()
+    elseif not wasOpen and optionsPanelOpen then
+        DL.OnOptionsPanelOpened()
     end
+    state.optionsPanelWasOpen = optionsPanelOpen
     
     -- Skip all processing when options panel is open
     if optionsPanelOpen then return end
@@ -2601,6 +2553,22 @@ function DL.OnPlaceholderCreated(cdID, groupName)
     state.iconVisibility[cdID] = nil
     
     LogEvent("PLACEHOLDER_CREATED", groupName or "unknown", string.format("cdID %s became placeholder", tostring(cdID)))
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- REGISTER PANEL STATE CALLBACK
+-- Shared fires these when ArcUI AceConfig panel opens/closes
+-- ═══════════════════════════════════════════════════════════════════════════
+
+if Shared and Shared.RegisterPanelCallback then
+    Shared.RegisterPanelCallback("DynamicLayout", {
+        onOpen = function()
+            DL.OnOptionsPanelOpened()
+        end,
+        onClose = function()
+            DL.OnOptionsPanelClosed()
+        end,
+    })
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════

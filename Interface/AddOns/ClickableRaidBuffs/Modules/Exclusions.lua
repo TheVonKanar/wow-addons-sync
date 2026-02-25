@@ -157,8 +157,11 @@ function ns.Exclusions_RefreshNow()
   _pendingRefresh = true
   C_Timer.After(0.05, function()
     _pendingRefresh = false
-    if type(_G.scanAllBags) == "function" then
-      _G.scanAllBags()
+    if type(ns.MarkBagsDirty) == "function" then
+      ns.MarkBagsDirty()
+    end
+    if type(ns.PokeUpdateBus) == "function" then
+      ns.PokeUpdateBus()
     end
     _pruneRenderCollections()
     if ns.RenderAll then

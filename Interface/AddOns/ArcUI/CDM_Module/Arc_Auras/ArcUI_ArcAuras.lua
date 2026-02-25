@@ -74,6 +74,22 @@ end
 local settingsCache = {}  -- arcID -> { settings = {}, timestamp = time }
 local SETTINGS_CACHE_TTL = 5  -- Re-validate cache every 5 seconds max
 
+-- Apply swipe/edge colors from settings, skipping when Masque controls cooldowns
+-- Masque's skin owns swipe/edge colors when useMasqueCooldowns is enabled.
+local function ApplySwipeColors(frame, settings)
+    if ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
+       and ns.Masque.ShouldMasqueControlCooldowns() then return end
+    if not frame.Cooldown or not settings or not settings.cooldownSwipe then return end
+    local sc = settings.cooldownSwipe.swipeColor
+    if sc then
+        frame.Cooldown:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
+    end
+    local ec = settings.cooldownSwipe.edgeColor
+    if ec and frame.Cooldown.SetEdgeColor then
+        frame.Cooldown:SetEdgeColor(ec.r or 1, ec.g or 1, ec.b or 1, ec.a or 1)
+    end
+end
+
 local function InvalidateSettingsCache(arcID)
     if arcID then
         settingsCache[arcID] = nil
@@ -1366,18 +1382,8 @@ local function UpdateTrinketCooldown(frame, slotID)
             frame.Cooldown:SetCooldown(startTime or 0, duration or 0)
         end
         
-        -- Apply swipe/edge colors from settings (only when cooldown changes)
-        if settings and settings.cooldownSwipe then
-            local sc = settings.cooldownSwipe.swipeColor
-            if sc then
-                frame.Cooldown:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
-            end
-            
-            local ec = settings.cooldownSwipe.edgeColor
-            if ec then
-                frame.Cooldown:SetEdgeColor(ec.r or 1, ec.g or 1, ec.b or 1, ec.a or 1)
-            end
-        end
+        -- Apply swipe/edge colors (skips when Masque controls cooldowns)
+        ApplySwipeColors(frame, settings)
         
         -- Update cached values
         frame._lastStartTime = startTime
@@ -1512,18 +1518,8 @@ local function UpdateItemCooldown(frame, itemID)
             frame.Cooldown:SetCooldown(startTime or 0, duration or 0)
         end
         
-        -- Apply swipe/edge colors from settings (only when cooldown changes)
-        if settings and settings.cooldownSwipe then
-            local sc = settings.cooldownSwipe.swipeColor
-            if sc then
-                frame.Cooldown:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
-            end
-            
-            local ec = settings.cooldownSwipe.edgeColor
-            if ec then
-                frame.Cooldown:SetEdgeColor(ec.r or 1, ec.g or 1, ec.b or 1, ec.a or 1)
-            end
-        end
+        -- Apply swipe/edge colors (skips when Masque controls cooldowns)
+        ApplySwipeColors(frame, settings)
         
         -- Update cached values
         frame._lastStartTime = startTime
@@ -1698,18 +1694,23 @@ local function OnArcAurasUpdate()
                     -- Desaturation - DEFAULT ON unless user disabled via noDesaturate
                     local noDesaturate = (stateVisuals and stateVisuals.noDesaturate) or (cs.noDesaturate == true)
                     local shouldDesaturate = not noDesaturate
-                    if iconTex then
-                        if shouldDesaturate then
-                            if iconTex.SetDesaturation then
-                                iconTex:SetDesaturation(1)
-                            elseif iconTex.SetDesaturated then
-                                iconTex:SetDesaturated(true)
-                            end
-                        else
-                            if iconTex.SetDesaturation then
-                                iconTex:SetDesaturation(0)
-                            elseif iconTex.SetDesaturated then
-                                iconTex:SetDesaturated(false)
+                    -- OPTIMIZED: Only call SetDesaturation when value changes
+                    local desatKey = shouldDesaturate and "desat" or "normal"
+                    if frame._lastDesatState ~= desatKey then
+                        frame._lastDesatState = desatKey
+                        if iconTex then
+                            if shouldDesaturate then
+                                if iconTex.SetDesaturation then
+                                    iconTex:SetDesaturation(1)
+                                elseif iconTex.SetDesaturated then
+                                    iconTex:SetDesaturated(true)
+                                end
+                            else
+                                if iconTex.SetDesaturation then
+                                    iconTex:SetDesaturation(0)
+                                elseif iconTex.SetDesaturated then
+                                    iconTex:SetDesaturated(false)
+                                end
                             end
                         end
                     end
@@ -1717,12 +1718,17 @@ local function OnArcAurasUpdate()
                     -- Tint
                     local cooldownTint = (stateVisuals and stateVisuals.cooldownTint) or (cs.tint == true)
                     local tintColor = (stateVisuals and stateVisuals.cooldownTintColor) or cs.tintColor
-                    if iconTex then
-                        if cooldownTint and tintColor then
-                            local c = tintColor
-                            iconTex:SetVertexColor(c.r or 0.5, c.g or 0.5, c.b or 0.5, 1)
-                        else
-                            iconTex:SetVertexColor(1, 1, 1, 1)
+                    -- OPTIMIZED: Only call SetVertexColor when tint state changes
+                    local tintRef = cooldownTint and tintColor or false
+                    if frame._lastTintRef ~= tintRef then
+                        frame._lastTintRef = tintRef
+                        if iconTex then
+                            if cooldownTint and tintColor then
+                                local c = tintColor
+                                iconTex:SetVertexColor(c.r or 0.5, c.g or 0.5, c.b or 0.5, 1)
+                            else
+                                iconTex:SetVertexColor(1, 1, 1, 1)
+                            end
                         end
                     end
                     
@@ -1804,10 +1810,12 @@ local function OnArcAurasUpdate()
                     
                     -- Check if item is usable - use cached result from cooldown update
                     local isUnusable = false
-                    local isPassive = config.isPassive
                     local isLockedOut = frame._arcLockedOut
                     
-                    if not isPassive and config.type == "item" and config.itemID then
+                    -- Check usability for ALL item-type frames (including passive consumables)
+                    -- _lastUsableResult is only explicitly false when IsUsableItem returns false
+                    -- (nil for items never checked, true for usable items - neither triggers desat)
+                    if config.type == "item" and config.itemID then
                         -- Use cached usability from UpdateItemCooldown
                         isUnusable = (frame._lastUsableResult == false) or isLockedOut
                     elseif isLockedOut then
@@ -1815,25 +1823,29 @@ local function OnArcAurasUpdate()
                     end
                     
                     -- Desaturation: normally off when ready, but ON if item is unusable/locked out
-                    -- Passive items always show normal (full color) - they have no usable state
-                    if iconTex then
-                        if isUnusable and not isPassive then
-                            -- Item not usable (not in bags, wrong class, locked out for combat) - desaturate
-                            if iconTex.SetDesaturation then
-                                iconTex:SetDesaturation(1)
-                            elseif iconTex.SetDesaturated then
-                                iconTex:SetDesaturated(true)
+                    -- OPTIMIZED: Only call SetDesaturation/SetVertexColor when state changes
+                    local desatKey = isUnusable and "desat_unusable" or "normal"
+                    if frame._lastDesatState ~= desatKey then
+                        frame._lastDesatState = desatKey
+                        if iconTex then
+                            if isUnusable then
+                                -- Item not usable (no stacks, wrong class, locked out) - desaturate
+                                if iconTex.SetDesaturation then
+                                    iconTex:SetDesaturation(1)
+                                elseif iconTex.SetDesaturated then
+                                    iconTex:SetDesaturated(true)
+                                end
+                                -- Dim vertex color to indicate unavailable
+                                iconTex:SetVertexColor(0.6, 0.6, 0.6, 1)
+                            else
+                                -- Normal ready state - no desaturation
+                                if iconTex.SetDesaturation then
+                                    iconTex:SetDesaturation(0)
+                                elseif iconTex.SetDesaturated then
+                                    iconTex:SetDesaturated(false)
+                                end
+                                iconTex:SetVertexColor(1, 1, 1, 1)
                             end
-                            -- Dim vertex color to indicate unavailable
-                            iconTex:SetVertexColor(0.6, 0.6, 0.6, 1)
-                        else
-                            -- Normal ready state (or passive item) - no desaturation
-                            if iconTex.SetDesaturation then
-                                iconTex:SetDesaturation(0)
-                            elseif iconTex.SetDesaturated then
-                                iconTex:SetDesaturated(false)
-                            end
-                            iconTex:SetVertexColor(1, 1, 1, 1)
                         end
                     end
                     
@@ -2185,13 +2197,17 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
         frame.Cooldown:SetDrawBling(swipe.showBling ~= false)
         frame.Cooldown:SetReverse(swipe.reverse == true)
         
-        -- Swipe color
-        if swipe.swipeColor then
-            local sc = swipe.swipeColor
-            frame.Cooldown:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
-        else
-            -- Default black swipe
-            frame.Cooldown:SetSwipeColor(0, 0, 0, 0.7)
+        -- Swipe color (skip when Masque controls cooldowns — skin owns colors)
+        local masqueControlsCooldowns = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
+            and ns.Masque.ShouldMasqueControlCooldowns()
+        if not masqueControlsCooldowns then
+            if swipe.swipeColor then
+                local sc = swipe.swipeColor
+                frame.Cooldown:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
+            else
+                -- Default black swipe
+                frame.Cooldown:SetSwipeColor(0, 0, 0, 0.7)
+            end
         end
         
         -- Edge scale
@@ -2199,10 +2215,12 @@ function ArcAuras.ApplySettingsToFrame(arcID, frame)
             frame.Cooldown:SetEdgeScale(swipe.edgeScale)
         end
         
-        -- Edge color
-        if swipe.edgeColor and frame.Cooldown.SetEdgeColor then
-            local ec = swipe.edgeColor
-            frame.Cooldown:SetEdgeColor(ec.r or 1, ec.g or 1, ec.b or 1, ec.a or 1)
+        -- Edge color (skip when Masque controls cooldowns)
+        if not masqueControlsCooldowns then
+            if swipe.edgeColor and frame.Cooldown.SetEdgeColor then
+                local ec = swipe.edgeColor
+                frame.Cooldown:SetEdgeColor(ec.r or 1, ec.g or 1, ec.b or 1, ec.a or 1)
+            end
         end
         
         -- Swipe insets (adjust cooldown frame positioning)
@@ -2260,6 +2278,10 @@ end
 function ArcAuras.RefreshSwipeColors(arcID)
     local frame = ArcAuras.frames[arcID]
     if not frame or not frame.Cooldown then return end
+    
+    -- Skip when Masque controls cooldowns — skin owns swipe/edge colors
+    if ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
+       and ns.Masque.ShouldMasqueControlCooldowns() then return end
     
     -- Invalidate cache to get fresh settings
     InvalidateSettingsCache(arcID)
@@ -3877,6 +3899,8 @@ function ArcAuras.ApplyInitialStateVisuals(arcID, frame)
     frame._lastAppliedAlpha = nil
     frame._lastVisualState = nil
     frame._cachedStateVisuals = nil
+    frame._lastDesatState = nil
+    frame._lastTintRef = nil
     
     -- Get settings
     local settings = ArcAuras.GetCachedSettings(arcID)
@@ -3972,6 +3996,8 @@ function ArcAuras.RefreshFrameSettings(arcID)
     -- Without this, the optimization checks in OnArcAurasUpdate may skip applying new values
     frame._lastAppliedAlpha = nil  -- Force alpha re-application
     frame._lastVisualState = nil   -- Force visual state re-evaluation
+    frame._lastDesatState = nil    -- Force desat re-application
+    frame._lastTintRef = nil       -- Force tint re-application
     
     -- CRITICAL: Reset cached cooldown values so next OnArcAurasUpdate reapplies the cooldown swipe
     -- This fixes the issue where zone changes or Masque refresh clears the cooldown display

@@ -10,14 +10,15 @@ local function DoRefresh()
   if ns._inCombat then
     return
   end
+
   if ns.RebuildRaidBuffWatch then
     ns.RebuildRaidBuffWatch()
   end
-  if scanRaidBuffs then
-    scanRaidBuffs()
+  if ns.MarkRosterDirty then
+    ns.MarkRosterDirty()
   end
-  if ns.RenderAll then
-    ns.RenderAll()
+  if ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
   end
 end
 

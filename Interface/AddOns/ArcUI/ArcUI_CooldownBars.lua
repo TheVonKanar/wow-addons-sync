@@ -1849,7 +1849,8 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   -- Set fill orientation based on bar orientation
   slot.rechargeBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
   -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
-  slot.rechargeBar:SetRotatesTexture(isVertical)
+  local rotTex = displayCfg and displayCfg.rotateTexture
+  slot.rechargeBar:SetRotatesTexture((rotTex == true) or (rotTex ~= false and isVertical))
   -- Prevent pixel snapping
   local rechargeTex = slot.rechargeBar:GetStatusBarTexture()
   if rechargeTex then
@@ -1870,7 +1871,7 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   -- Set fill orientation based on bar orientation
   slot.fullBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
   -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
-  slot.fullBar:SetRotatesTexture(isVertical)
+  slot.fullBar:SetRotatesTexture((rotTex == true) or (rotTex ~= false and isVertical))
   -- Prevent pixel snapping
   local fullTex = slot.fullBar:GetStatusBarTexture()
   if fullTex then
@@ -1902,9 +1903,19 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   slot.borderFrame.right:SetTexelSnappingBias(0)
   
   if showSlotBorder then
-    local bt = slotBorderThickness
+    local bt = PixelUtil.GetNearestPixelSize(slotBorderThickness, slot.borderFrame:GetEffectiveScale(), 1)
     local bc = slotBorderColor
     local alpha = (bc.a or 1) * opacity
+    
+    -- Enable pixel grid snapping on border textures
+    slot.borderFrame.top:SetSnapToPixelGrid(true)
+    slot.borderFrame.top:SetTexelSnappingBias(1)
+    slot.borderFrame.bottom:SetSnapToPixelGrid(true)
+    slot.borderFrame.bottom:SetTexelSnappingBias(1)
+    slot.borderFrame.left:SetSnapToPixelGrid(true)
+    slot.borderFrame.left:SetTexelSnappingBias(1)
+    slot.borderFrame.right:SetSnapToPixelGrid(true)
+    slot.borderFrame.right:SetTexelSnappingBias(1)
     
     -- Top border
     slot.borderFrame.top:SetPoint("TOPLEFT", slot.borderFrame, "TOPLEFT", 0, 0)
@@ -3444,6 +3455,9 @@ local DISPLAY_DEFAULTS = {
   durationThreshold5Color = {r = 1, g = 0, b = 0, a = 1},      -- Red
 }
 
+-- Expose for DataRepair compaction (strips/restores defaults on logout/login)
+ns.CooldownBars.DISPLAY_DEFAULTS = DISPLAY_DEFAULTS
+
 -- Preset variations
 local PRESETS = {
   simple = {
@@ -4709,7 +4723,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     local barOrientation = isVertical and "VERTICAL" or "HORIZONTAL"
     barData.bar:SetOrientation(barOrientation)
     -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
-    barData.bar:SetRotatesTexture(isVertical)
+    barData.bar:SetRotatesTexture((display.rotateTexture == true) or (display.rotateTexture ~= false and isVertical))
     
     -- Set reverse fill
     barData.bar:SetReverseFill(display.barReverseFill or false)
@@ -4733,7 +4747,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     -- Driven by showBorder / useClassColorBorder / borderColor / drawnBorderThickness
     if barData.barBorderFrame then
       if display.showBorder then
-        local bt = display.drawnBorderThickness or 2
+        local bt = PixelUtil.GetNearestPixelSize(display.drawnBorderThickness or 2, frame:GetEffectiveScale(), 1)
         local br, bg, bb, ba
         
         -- Resolve border color (class color or custom)
@@ -4752,6 +4766,16 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
           bb = bc.b or 0.3
           ba = bc.a or 1
         end
+        
+        -- Enable pixel grid snapping on border textures
+        barData.barBorderFrame.top:SetSnapToPixelGrid(true)
+        barData.barBorderFrame.top:SetTexelSnappingBias(1)
+        barData.barBorderFrame.bottom:SetSnapToPixelGrid(true)
+        barData.barBorderFrame.bottom:SetTexelSnappingBias(1)
+        barData.barBorderFrame.left:SetSnapToPixelGrid(true)
+        barData.barBorderFrame.left:SetTexelSnappingBias(1)
+        barData.barBorderFrame.right:SetSnapToPixelGrid(true)
+        barData.barBorderFrame.right:SetTexelSnappingBias(1)
         
         barData.barBorderFrame.top:ClearAllPoints()
         barData.barBorderFrame.top:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
@@ -5162,7 +5186,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         -- Update orientation when settings change
         slot.fullBar:SetOrientation(barData.isVertical and "VERTICAL" or "HORIZONTAL")
         -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
-        slot.fullBar:SetRotatesTexture(barData.isVertical)
+        slot.fullBar:SetRotatesTexture((display.rotateTexture == true) or (display.rotateTexture ~= false and barData.isVertical))
       end
       if slot.rechargeBar then
         slot.rechargeBar:SetStatusBarTexture(texturePath)
@@ -5171,7 +5195,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         -- Update orientation when settings change
         slot.rechargeBar:SetOrientation(barData.isVertical and "VERTICAL" or "HORIZONTAL")
         -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
-        slot.rechargeBar:SetRotatesTexture(barData.isVertical)
+        slot.rechargeBar:SetRotatesTexture((display.rotateTexture == true) or (display.rotateTexture ~= false and barData.isVertical))
       end
       if slot.background then
         if showSlotBackground then
@@ -5191,9 +5215,19 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       -- Slot border styling (4 manual textures)
       if slot.borderFrame then
         if showSlotBorder then
-          local bt = slotBorderThickness
+          local bt = PixelUtil.GetNearestPixelSize(slotBorderThickness, slot.borderFrame:GetEffectiveScale(), 1)
           local bc = slotBorderColor
           local alpha = (bc.a or 1) * opacity
+          
+          -- Enable pixel grid snapping on border textures
+          slot.borderFrame.top:SetSnapToPixelGrid(true)
+          slot.borderFrame.top:SetTexelSnappingBias(1)
+          slot.borderFrame.bottom:SetSnapToPixelGrid(true)
+          slot.borderFrame.bottom:SetTexelSnappingBias(1)
+          slot.borderFrame.left:SetSnapToPixelGrid(true)
+          slot.borderFrame.left:SetTexelSnappingBias(1)
+          slot.borderFrame.right:SetSnapToPixelGrid(true)
+          slot.borderFrame.right:SetTexelSnappingBias(1)
           
           -- Top border
           slot.borderFrame.top:ClearAllPoints()
@@ -5854,7 +5888,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       barData.readyFill:SetStatusBarColor(barColor.r or 1, barColor.g or 0.5, barColor.b or 0.2, barColor.a or 1)
       -- Set orientation to match main bar (for proper vertical texture rotation)
       barData.readyFill:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
-      barData.readyFill:SetRotatesTexture(isVertical)
+      barData.readyFill:SetRotatesTexture((display.rotateTexture == true) or (display.rotateTexture ~= false and isVertical))
       
       -- For timer bars, hide readyFill unless showReadyText is explicitly true
       if barType == "timer" and display.showReadyText ~= true then
@@ -8096,6 +8130,39 @@ function ns.CooldownBars.RefreshAllBarVisibility()
   end
 end
 
+-- ===================================================================
+-- REAPPLY ALL APPEARANCE
+-- Forces a full appearance redraw on all active bars.
+-- Called on login after layout settles so pixel-snapped borders align.
+-- ===================================================================
+function ns.CooldownBars.ReapplyAllAppearance()
+  -- Helper: nudge frame size to force layout engine recalculation,
+  -- then reapply appearance so pixel-snapped borders align with fills.
+  local function NudgeAndReapply(barData, id, barType)
+    if barData and barData.frame then
+      local w, h = barData.frame:GetSize()
+      if w and h and w > 0 and h > 0 then
+        barData.frame:SetSize(w + 0.01, h + 0.01)
+        barData.frame:SetSize(w, h)
+      end
+    end
+    ns.CooldownBars.ApplyAppearance(id, barType)
+  end
+
+  for spellID, barIndex in pairs(ns.CooldownBars.activeCooldowns or {}) do
+    NudgeAndReapply(ns.CooldownBars.bars and ns.CooldownBars.bars[barIndex], spellID, "cooldown")
+  end
+  for spellID, barIndex in pairs(ns.CooldownBars.activeCharges or {}) do
+    NudgeAndReapply(ns.CooldownBars.chargeBars and ns.CooldownBars.chargeBars[barIndex], spellID, "charge")
+  end
+  for spellID, barIndex in pairs(ns.CooldownBars.activeResources or {}) do
+    NudgeAndReapply(ns.CooldownBars.resourceBars and ns.CooldownBars.resourceBars[barIndex], spellID, "resource")
+  end
+  for timerID, barIndex in pairs(ns.CooldownBars.activeTimers or {}) do
+    NudgeAndReapply(ns.CooldownBars.timerBars and ns.CooldownBars.timerBars[barIndex], timerID, "timer")
+  end
+end
+
 -- Install hook on CDMGroups.UpdateGroupVisibility so our bars update
 -- in sync with group visibility (same events: combat, mount, death, etc.)
 local function InstallVisibilityHook()
@@ -8371,6 +8438,12 @@ function ns.CooldownBars.HookContainerForAnchoredBars(groupName)
   
   hookedContainersForCooldownBars[container] = true
   container:HookScript("OnSizeChanged", OnContainerSizeChangedForCooldownBars)
+  
+  -- Fire immediately in case the container was already sized before we hooked
+  local w, h = container:GetWidth(), container:GetHeight()
+  if w and h and w > 0 and h > 0 then
+    OnContainerSizeChangedForCooldownBars(container, w, h)
+  end
 end
 
 -- ===================================================================

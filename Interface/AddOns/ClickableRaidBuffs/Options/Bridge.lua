@@ -109,12 +109,17 @@ function ns.RequestRebuild()
     ns.UpdateAugmentRunes()
   end
 
-  if type(_G.scanRaidBuffs) == "function" then
-    _G.scanRaidBuffs()
+  if type(ns.MarkRosterDirty) == "function" then
+    ns.MarkRosterDirty()
   end
-
-  if type(_G.scanAllBags) == "function" then
-    _G.scanAllBags()
+  if type(ns.MarkAurasDirty) == "function" then
+    ns.MarkAurasDirty("player")
+  end
+  if type(ns.MarkBagsDirty) == "function" then
+    ns.MarkBagsDirty()
+  end
+  if type(ns.PokeUpdateBus) == "function" then
+    ns.PokeUpdateBus()
   end
 
   if type(ns.RenderAll) == "function" then

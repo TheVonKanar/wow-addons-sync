@@ -138,8 +138,11 @@ local function PingMythicPlus()
     end
     return
   end
-  if type(_G.scanAllBags) == "function" then
-    _G.scanAllBags()
+  if ns and ns.MarkBagsDirty then
+    ns.MarkBagsDirty()
+  end
+  if ns and ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
   end
   if ns and ns.UpdateAugmentRunes then
     ns.UpdateAugmentRunes()
@@ -285,8 +288,11 @@ local function RefreshExpansionFilters()
   if ns and ns.ApplyExpansionMetadata then
     ns.ApplyExpansionMetadata()
   end
-  if type(_G.scanAllBags) == "function" then
-    _G.scanAllBags()
+  if ns and ns.MarkBagsDirty then
+    ns.MarkBagsDirty()
+  end
+  if ns and ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
   end
   if ns and ns.UpdateAugmentRunes then
     ns.UpdateAugmentRunes()

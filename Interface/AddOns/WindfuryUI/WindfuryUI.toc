@@ -1,4 +1,4 @@
-## Interface: 120000
+## Interface: 120001
 ## Version: 12.0.1
 ## Title: |c000080FFWindfury UI|r
 ## Notes: Adds fonts, Masque skins and other assets for use in other addons.

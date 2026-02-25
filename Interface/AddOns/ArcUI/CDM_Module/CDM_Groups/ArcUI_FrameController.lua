@@ -610,7 +610,7 @@ local function AssignFrameToGroup(cdID, frame, groupName, row, col, viewerType, 
     else
         -- Fallback: basic setup
         frame:SetParent(group.container)
-        frame:SetFrameStrata("MEDIUM")
+        frame:SetFrameStrata(group.container._cdmgFrameStrata or "MEDIUM")
         frame:SetScale(1)
         frame:SetAlpha(1)
     end
@@ -2524,20 +2524,25 @@ InstallFrameHooks = function(frame)
         frame._fcSizeHooked = true
     end
     
-    -- Hook SetFrameStrata - force strata to MEDIUM
+    -- Hook SetFrameStrata - force strata to group's configured strata
     -- Skip if CDMGroups already hooked this (avoid duplicate hooks)
     if not frame._fcStrataHooked and not frame._cdmgStrataHooked then
         hooksecurefunc(frame, "SetFrameStrata", function(self, strata)
             if self._cdmgSettingStrata then return end
             
             local parent = self:GetParent()
-            local isManaged = (parent and parent._isCDMGContainer) or self._cdmgIsFreeIcon
+            local isInContainer = parent and parent._isCDMGContainer
+            local isFreeIcon = self._cdmgIsFreeIcon
+            local isManaged = isInContainer or isFreeIcon
             
-            if isManaged and strata ~= "MEDIUM" then
-                self._cdmgSettingStrata = true
-                self:SetFrameStrata("MEDIUM")
-                self._cdmgSettingStrata = false
-                state.stats.hookFights.strata = state.stats.hookFights.strata + 1
+            if isManaged then
+                local expectedStrata = (isInContainer and parent._cdmgFrameStrata) or "MEDIUM"
+                if strata ~= expectedStrata then
+                    self._cdmgSettingStrata = true
+                    self:SetFrameStrata(expectedStrata)
+                    self._cdmgSettingStrata = false
+                    state.stats.hookFights.strata = state.stats.hookFights.strata + 1
+                end
             end
         end)
         frame._fcStrataHooked = true

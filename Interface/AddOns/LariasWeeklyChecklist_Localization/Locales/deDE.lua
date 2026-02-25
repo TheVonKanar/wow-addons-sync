@@ -18,22 +18,28 @@ local L = reg.strings[LOCALE]
 local STRINGS = {
     DISPLAY_NAME = "Larias's Weekly Checklist",
 
-    UPDATE_AVAILABLE_TITLE = "Neue Version verfügbar",
+    -- Update popup
     UPDATE_AVAILABLE_TEXT = "Neue Version verfügbar",
     UPDATE_AVAILABLE_FMT = "%s hat ein Update verfügbar.\n\nBitte aktualisiere das Addon auf die neueste Version.",
 
+    -- Shared buttons
     BUTTON_OK = "OK",
     BUTTON_CANCEL = "Abbrechen",
 
-    OPTIONS_SHOW_GREAT_VAULT = "Großes Gewölbe anzeigen",
-    OPTIONS_SHOW_CURRENCY = "Währung anzeigen",
+    -- Options tab
+    OPTIONS_HIDE_GREAT_VAULT = "Große Schatzkammer ausblenden",
+    OPTIONS_HIDE_CURRENCY = "Währung ausblenden",
 
     HIDE_COMPLETED_WEEKS = "Abgeschlossene Wochen ausblenden",
-    OPTIONS_BUTTON = "Optionen",
+    OPTIONS_HIDE_CHANGE_WEEK_BTN = "Schaltfläche 'Woche wechseln' ausblenden",
+    OPTIONS_HIDE_ILVL_REF_BTN = "Schaltfläche 'Ilvl Refs' ausblenden",
     RESET_BUTTON = "Zurücksetzen",
+
+    -- List tab
     DONE_PREFIX = "[Fertig] ",
 
-    TRACKING_GREAT_VAULT_TITLE = "Großes Gewölbe",
+    -- Tracking panel
+    TRACKING_GREAT_VAULT_TITLE = "Große Schatzkammer",
     TRACKING_CURRENCY_TITLE = "Währung",
     TRACKING_GV_RAID = "Schlachtzug",
     TRACKING_GV_DUNGEONS = "Dungeons",
@@ -46,8 +52,8 @@ local STRINGS = {
     TRACKING_QUEST_DELVERS_BOUNTY = "Erkundsuchprämie:",
     TRACKING_QUEST_WEEKLY_PREY = "Wöchentliche Beute:",
 
-    TRACKING_CREST_LABEL = "Zinne:",
-    TRACKING_CREST_ID_LABEL_FMT = "Zinne %s:",
+    TRACKING_CREST_LABEL = "Wappen:",
+    TRACKING_CREST_ID_LABEL_FMT = "Wappen %s:",
     -- Optional: if present, crest labels are taken from this table instead of the game currency name.
     -- Keys are currency IDs; values should be display names (with or without a trailing ':').
     TRACKING_CREST_NAMES_BY_ID = {
@@ -62,18 +68,62 @@ local STRINGS = {
 
     TRACKING_CATALYST_LABEL = "Katalysator:",
 
-    TRACKING_CURRENCY_FALLBACK_PREFIX = "Währung ",
-    -- NOTE: should match the lowercase substring found in German WoW crest currency names ("Zinne").
-    TRACKING_CREST_MATCH_SUBSTRING = "zinne",
     TRACKING_INF = "INF",
 
-    MINIMAP_TOOLTIP_TEXT = "Linksklick zum Ein-/Ausblenden der Checkliste",
+    -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Linksklick: Checkliste ein-/ausblenden",
     MINIMAP_TOOLTIP_RIGHT_CLICK_OPTIONS = "Rechtsklick: Optionen",
 
+    -- Main window
     TAB_LIST = "Liste",
     TAB_OPTIONS = "Optionen",
+    CHANGE_WEEK_BUTTON = "Woche wechseln",
+    ILVLREF_BUTTON = "Ilvl Refs",
 
+    -- Item level reference popup
+    ILVLREF_WINDOW_TITLE  = "Midnight Saison 1 Gegenstandsstufen-Referenz",
+
+    ILVLREF_SEC_TRACKS    = "Aufwertungspfade  (20 Wappen pro Schritt)",
+    ILVLREF_SEC_CRAFTED   = "Hergestellte Gegenstandsstufen",
+    ILVLREF_SEC_DUNGEONS  = "Dungeon-Gegenstandsstufen",
+    ILVLREF_SEC_RAID      = "Ca. Midnight-Schlachtzug-Gegenstandsstufen",
+    ILVLREF_SEC_DELVES    = "Üppige Tiefen-Gegenstandsstufen",
+
+    ILVLREF_COL_ILVL         = "ilvl",
+    ILVLREF_COL_TRACK        = "Aufwertungspfade",
+    ILVLREF_COL_CREST_NEEDED = "Wappen",
+    ILVLREF_COL_QUALITY      = "Qualität",
+    ILVLREF_COL_SOURCE       = "Quelle",
+    ILVLREF_COL_END_LOOT     = "Endbelohnung",
+    ILVLREF_COL_GREAT_VAULT  = "Große Schatzkammer",
+    ILVLREF_COL_DIFFICULTY   = "Schwierigkeit",
+    ILVLREF_COL_BOSS1        = "Früh",
+    ILVLREF_COL_BOSS2        = "Mitte",
+    ILVLREF_COL_BOSS3        = "Spät",
+    ILVLREF_COL_BOSS4        = "Ende",
+    ILVLREF_COL_TIER         = "Stufe",
+    ILVLREF_COL_MAP_DROP     = "Karten-Drop",
+
+    ILVLREF_CREST_ADV          = "Abent",
+    ILVLREF_CREST_VET          = "Vet",
+    ILVLREF_CREST_CHAMP        = "Champ",
+    ILVLREF_CREST_HERO         = "Held",
+    ILVLREF_CREST_MYTH         = "Verg",
+    ILVLREF_DO_NOT_USE_CRESTS_FMT = "KEINE %s-WAPPEN VERWENDEN",
+
+    ILVLREF_DUNGEON_PRE_HEROIC = "Vorjahres-Heroisch",
+    ILVLREF_DUNGEON_HEROIC     = "Heroisch",
+    ILVLREF_DUNGEON_PRE_MYTHIC = "Vorjahres-Mythisch",
+    ILVLREF_DUNGEON_MYTHIC     = "Mythisch",
+
+    ILVLREF_RAID_LFR           = "LFR",
+    ILVLREF_RAID_NORMAL        = "Normal",
+    ILVLREF_RAID_HEROIC        = "Heroisch",
+    ILVLREF_RAID_MYTHIC        = "Mythisch",
+
+    ILVLREF_DELVE_TIER_FMT     = "T%d",
+
+    -- Slash commands
     SLASH_USAGE_TOGGLE = "Verwendung: /larias oder /lcl zum Ein-/Ausblenden",
     SLASH_USAGE_LOCALE = "Verwendung: /larias locale auto|enUS|deDE|esES|esMX|frFR|itIT|ptBR|ruRU",
     SLASH_LOCALE_SET_FMT = "Sprache gesetzt auf %s (aktiv: %s)",

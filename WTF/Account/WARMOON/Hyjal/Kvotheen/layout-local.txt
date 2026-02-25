@@ -34,10 +34,3 @@ X: 110
 Y: 172
 W: 940
 H: 720
-Frame: LariasWeeklyChecklistFrame
-FrameLevel: 1
-Anchor: LEFT
-X: 2
-Y: 64
-W: 520
-H: 650

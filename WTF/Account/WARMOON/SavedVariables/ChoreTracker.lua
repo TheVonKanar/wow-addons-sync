@@ -4,13 +4,13 @@ ChoreTrackerDB = {
 ["Kvotheen - Hyjal"] = {
 ["skillLines"] = {
 [182] = true,
-[2871] = 100,
-[2877] = 100,
 [356] = true,
+[2877] = 100,
+[2871] = 100,
 [2823] = 75,
 [794] = true,
-[185] = true,
 [171] = true,
+[185] = true,
 },
 },
 ["Killeen - Archimonde"] = {
@@ -53,10 +53,10 @@ ChoreTrackerDB = {
 ["questId"] = 86775,
 ["objectives"] = {
 {
-["text"] = "0/1 Participated in Surge Pricing",
 ["type"] = "monster",
-["need"] = 1,
+["text"] = "0/1 Participated in Surge Pricing",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -65,10 +65,10 @@ ChoreTrackerDB = {
 ["questId"] = 91193,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete World Quests in K'aresh",
 ["type"] = "object",
-["need"] = 3,
+["text"] = "0/3 Complete World Quests in K'aresh",
 ["have"] = 0,
+["need"] = 3,
 },
 },
 },
@@ -77,10 +77,10 @@ ChoreTrackerDB = {
 ["questId"] = 87480,
 ["objectives"] = {
 {
-["text"] = "Sureki invasion disrupted (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki invasion disrupted (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -89,10 +89,10 @@ ChoreTrackerDB = {
 ["questId"] = 87303,
 ["objectives"] = {
 {
-["text"] = "",
 ["type"] = "log",
-["need"] = 1,
+["text"] = "",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -101,10 +101,10 @@ ChoreTrackerDB = {
 ["questId"] = 88945,
 ["objectives"] = {
 {
-["text"] = "Sureki Sympathizers disrupted (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki Sympathizers disrupted (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -113,10 +113,10 @@ ChoreTrackerDB = {
 ["questId"] = 82157,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete World Quests in Hallowfall",
 ["type"] = "object",
-["need"] = 3,
+["text"] = "0/3 Complete World Quests in Hallowfall",
 ["have"] = 0,
+["need"] = 3,
 },
 },
 },
@@ -131,10 +131,10 @@ ChoreTrackerDB = {
 ["questId"] = 87477,
 ["objectives"] = {
 {
-["text"] = "Sureki swarm thwarted (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki swarm thwarted (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -143,10 +143,10 @@ ChoreTrackerDB = {
 ["questId"] = 76586,
 ["objectives"] = {
 {
-["text"] = "0/4 Lesser Keyflames Activated",
 ["type"] = "monster",
-["need"] = 4,
+["text"] = "0/4 Lesser Keyflames Activated",
 ["have"] = 0,
+["need"] = 4,
 },
 },
 },
@@ -155,10 +155,10 @@ ChoreTrackerDB = {
 ["questId"] = 87304,
 ["objectives"] = {
 {
-["text"] = "",
 ["type"] = "log",
-["need"] = 1,
+["text"] = "",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -173,10 +173,10 @@ ChoreTrackerDB = {
 ["questId"] = 85879,
 ["objectives"] = {
 {
-["text"] = "0/3 S.C.R.A.P. jobs completed",
 ["type"] = "monster",
-["need"] = 3,
+["text"] = "0/3 S.C.R.A.P. jobs completed",
 ["have"] = 0,
+["need"] = 3,
 },
 },
 },
@@ -185,10 +185,10 @@ ChoreTrackerDB = {
 ["questId"] = 86915,
 ["objectives"] = {
 {
-["text"] = "",
 ["type"] = "log",
-["need"] = 1,
+["text"] = "",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -209,10 +209,10 @@ ChoreTrackerDB = {
 ["questId"] = 84852,
 ["objectives"] = {
 {
-["text"] = "Complete activities and secure the Siren Isle (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Complete activities and secure the Siren Isle (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -227,10 +227,10 @@ ChoreTrackerDB = {
 ["questId"] = 88711,
 ["objectives"] = {
 {
-["text"] = "Sureki forces disrupted (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki forces disrupted (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -263,10 +263,10 @@ ChoreTrackerDB = {
 ["questId"] = 87475,
 ["objectives"] = {
 {
-["text"] = "Sureki forces repelled (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki forces repelled (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -275,28 +275,28 @@ ChoreTrackerDB = {
 ["questId"] = 74501,
 ["objectives"] = {
 {
+["type"] = "object",
 ["text"] = "0/1 Suffusion Crucible looted",
-["type"] = "object",
-["need"] = 1,
 ["have"] = 0,
+["need"] = 1,
 },
 {
+["type"] = "monster",
 ["text"] = "0/1 Crucible guardian slain",
-["type"] = "monster",
-["need"] = 1,
 ["have"] = 0,
+["need"] = 1,
 },
 {
-["text"] = "0/1 Suffusion Mold looted",
 ["type"] = "object",
-["need"] = 1,
+["text"] = "0/1 Suffusion Mold looted",
 ["have"] = 0,
+["need"] = 1,
 },
 {
-["text"] = "0/1 Forgemaster slain",
 ["type"] = "monster",
-["need"] = 1,
+["text"] = "0/1 Forgemaster slain",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -305,10 +305,10 @@ ChoreTrackerDB = {
 ["questId"] = 81624,
 ["objectives"] = {
 {
-["text"] = "0/1 Orta slain",
 ["type"] = "monster",
-["need"] = 1,
+["text"] = "0/1 Orta slain",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -323,10 +323,10 @@ ChoreTrackerDB = {
 ["questId"] = 85869,
 ["objectives"] = {
 {
-["text"] = "0/10 Shipping & Handling jobs completed",
 ["type"] = "monster",
-["need"] = 10,
+["text"] = "0/10 Shipping & Handling jobs completed",
 ["have"] = 0,
+["need"] = 10,
 },
 },
 },
@@ -335,10 +335,10 @@ ChoreTrackerDB = {
 ["questId"] = 74378,
 ["objectives"] = {
 {
-["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
 ["type"] = "object",
-["need"] = 1,
+["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
 ["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -353,10 +353,10 @@ ChoreTrackerDB = {
 ["questId"] = 83070,
 ["objectives"] = {
 {
-["have"] = 0,
-["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
 ["need"] = 3,
 ["type"] = "object",
+["have"] = 0,
+["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
 },
 },
 },
@@ -371,10 +371,10 @@ ChoreTrackerDB = {
 ["questId"] = 88916,
 ["objectives"] = {
 {
-["text"] = "Sureki Forces disrupted (0%)",
 ["type"] = "progressbar",
-["need"] = 100,
+["text"] = "Sureki Forces disrupted (0%)",
 ["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -386,220 +386,10 @@ ChoreTrackerDB = {
 },
 },
 [1771991999] = {
-[86775] = {
-["status"] = 1,
-["questId"] = 86775,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Participated in Surge Pricing",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[87480] = {
-["status"] = 1,
-["questId"] = 87480,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki invasion disrupted (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[87303] = {
-["status"] = 1,
-["questId"] = 87303,
-["objectives"] = {
-{
-["type"] = "log",
-["text"] = "",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[90764] = {
+[92630] = {
 ["status"] = 2,
-["questId"] = 90764,
+["questId"] = 92630,
 ["objectives"] = {
-},
-},
-[90768] = {
-["status"] = 1,
-["questId"] = 90768,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/12 Twilight's Blade cultists slain",
-["have"] = 0,
-["need"] = 12,
-},
-{
-["type"] = "monster",
-["text"] = "0/1 Gehl Harrowtongue slain",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[84850] = {
-["status"] = 1,
-["questId"] = 84850,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Complete activities and secure the Siren Isle (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[87307] = {
-["status"] = 1,
-["questId"] = 87307,
-["objectives"] = {
-},
-},
-[81862] = {
-["status"] = 1,
-["questId"] = 81862,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Ride the Imperial Lynx",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[85933] = {
-["status"] = 2,
-["questId"] = 85933,
-["objectives"] = {
-},
-},
-[90761] = {
-["status"] = 1,
-["questId"] = 90761,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/6 Suspicious Citizens dispersed",
-["have"] = 0,
-["need"] = 6,
-},
-},
-},
-[81630] = {
-["status"] = 1,
-["questId"] = 81630,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Kordac slain",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[91795] = {
-["status"] = 1,
-["questId"] = 91795,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/3 Twilight Ascension rares slain",
-["have"] = 0,
-["need"] = 3,
-},
-},
-},
-[85869] = {
-["status"] = 1,
-["questId"] = 85869,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/10 Shipping & Handling jobs completed",
-["have"] = 0,
-["need"] = 10,
-},
-},
-},
-[84252] = {
-["status"] = 2,
-["questId"] = 84252,
-["objectives"] = {
-},
-},
-[92572] = {
-["status"] = 1,
-["questId"] = 92572,
-["objectives"] = {
-{
-["type"] = "object",
-["text"] = "Purchase Earthen Storage Crate decor",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[90779] = {
-["status"] = 1,
-["questId"] = 90779,
-["objectives"] = {
-{
-["type"] = "object",
-["text"] = "Complete a seasonal dungeon on Mythic Keystone 2+ difficulty",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[87477] = {
-["status"] = 1,
-["questId"] = 87477,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki swarm thwarted (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[92332] = {
-["status"] = 1,
-["questId"] = 92332,
-["objectives"] = {
-{
-["need"] = 4,
-["type"] = "object",
-["have"] = 0,
-["text"] = "0/4 Manaforge raid bosses defeated or Mythic Dungeons completed",
-},
-},
-},
-[86918] = {
-["status"] = 1,
-["questId"] = 86918,
-["objectives"] = {
-},
-},
-[90765] = {
-["status"] = 1,
-["questId"] = 90765,
-["objectives"] = {
-{
-["type"] = "item",
-["text"] = "0/1 Cultist Robes collected",
-["have"] = 0,
-["need"] = 1,
-},
 },
 },
 [87304] = {
@@ -607,23 +397,83 @@ ChoreTrackerDB = {
 ["questId"] = 87304,
 ["objectives"] = {
 {
-["type"] = "log",
 ["text"] = "",
-["have"] = 0,
+["type"] = "log",
 ["need"] = 1,
+["have"] = 0,
 },
 },
 },
-[87308] = {
+[90765] = {
 ["status"] = 1,
-["questId"] = 87308,
+["questId"] = 90765,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/8 World Quests completed or Rares slain in Twilight Highlands",
+["text"] = "0/1 Cultist Robes collected",
+["type"] = "item",
+["need"] = 1,
 ["have"] = 0,
-["need"] = 8,
 },
+},
+},
+[89392] = {
+["status"] = 2,
+["questId"] = 89392,
+["objectives"] = {
+},
+},
+[88916] = {
+["status"] = 1,
+["questId"] = 88916,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Sureki Forces disrupted (100%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
+[92631] = {
+["status"] = 1,
+["questId"] = 92631,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/24  ",
+["need"] = 24,
+["type"] = "item",
+},
+},
+},
+[87305] = {
+["status"] = 1,
+["questId"] = 87305,
+["objectives"] = {
+},
+},
+[89345] = {
+["status"] = 2,
+["questId"] = 89345,
+["objectives"] = {
+},
+},
+[90766] = {
+["status"] = 1,
+["questId"] = 90766,
+["objectives"] = {
+{
+["text"] = "Cultist activities completed (0%)",
+["type"] = "progressbar",
+["need"] = 100,
+["have"] = 0,
+},
+},
+},
+[87345] = {
+["status"] = 2,
+["questId"] = 87345,
+["objectives"] = {
 },
 },
 [82146] = {
@@ -638,117 +488,21 @@ ChoreTrackerDB = {
 },
 },
 },
-[92631] = {
-["status"] = 1,
-["questId"] = 92631,
-["objectives"] = {
-{
-["need"] = 24,
-["type"] = "item",
-["have"] = 0,
-["text"] = "0/24  ",
-},
-},
-},
-[92331] = {
+[89393] = {
 ["status"] = 2,
-["questId"] = 92331,
+["questId"] = 89393,
 ["objectives"] = {
 },
 },
-[84489] = {
-["status"] = 2,
-["questId"] = 84489,
-["objectives"] = {
-},
-},
-[85879] = {
+[86869] = {
 ["status"] = 1,
-["questId"] = 85879,
+["questId"] = 86869,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/3 S.C.R.A.P. jobs completed",
 ["have"] = 0,
-["need"] = 3,
-},
-},
-},
-[90767] = {
-["status"] = 1,
-["questId"] = 90767,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Basement found",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[90763] = {
-["status"] = 1,
-["questId"] = 90763,
-["objectives"] = {
-},
-},
-[92632] = {
-["status"] = 1,
-["questId"] = 92632,
-["objectives"] = {
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1   slain",
-},
-},
-},
-[84962] = {
-["status"] = 1,
-["questId"] = 84962,
-["objectives"] = {
-{
-["need"] = 12,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/12 Devourers culled",
-},
-{
-["need"] = 8,
-["type"] = "item",
-["have"] = 0,
-["text"] = "0/8 Entropic Egg",
-},
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Engorged Siltfeaster slain",
-},
-},
-},
-[92715] = {
-["status"] = 1,
-["questId"] = 92715,
-["objectives"] = {
-},
-},
-[89494] = {
-["status"] = 2,
-["questId"] = 89494,
-["objectives"] = {
-},
-},
-[74378] = {
-["status"] = 1,
-["questId"] = 74378,
-["objectives"] = {
-{
-["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
-["type"] = "object",
-["need"] = 1,
-["have"] = 0,
+["text"] = "Sabotage thwarted (0%)",
+["need"] = 100,
+["type"] = "progressbar",
 },
 },
 },
@@ -764,51 +518,15 @@ ChoreTrackerDB = {
 },
 },
 },
-[90766] = {
+[92632] = {
 ["status"] = 1,
-["questId"] = 90766,
+["questId"] = 92632,
 ["objectives"] = {
 {
-["type"] = "progressbar",
-["text"] = "Cultist activities completed (0%)",
 ["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[87305] = {
-["status"] = 1,
-["questId"] = 87305,
-["objectives"] = {
-},
-},
-[75721] = {
-["status"] = 2,
-["questId"] = 75721,
-["objectives"] = {
-},
-},
-[89392] = {
-["status"] = 2,
-["questId"] = 89392,
-["objectives"] = {
-},
-},
-[86919] = {
-["status"] = 1,
-["questId"] = 86919,
-["objectives"] = {
-},
-},
-[88916] = {
-["status"] = 1,
-["questId"] = 88916,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki Forces disrupted (0%)",
-["have"] = 0,
-["need"] = 100,
+["text"] = "0/1   slain",
+["need"] = 1,
+["type"] = "monster",
 },
 },
 },
@@ -824,10 +542,484 @@ ChoreTrackerDB = {
 },
 },
 },
-[89345] = {
+[85933] = {
 ["status"] = 2,
-["questId"] = 89345,
+["questId"] = 85933,
 ["objectives"] = {
+},
+},
+[82258] = {
+["status"] = 1,
+["questId"] = 82258,
+["objectives"] = {
+{
+["text"] = "0/4 Keg of Black Powder",
+["type"] = "item",
+["need"] = 4,
+["have"] = 0,
+},
+},
+},
+[89394] = {
+["status"] = 2,
+["questId"] = 89394,
+["objectives"] = {
+},
+},
+[92331] = {
+["status"] = 2,
+["questId"] = 92331,
+["objectives"] = {
+},
+},
+[84735] = {
+["status"] = 2,
+["questId"] = 84735,
+["objectives"] = {
+},
+},
+[84489] = {
+["status"] = 2,
+["questId"] = 84489,
+["objectives"] = {
+},
+},
+[86918] = {
+["status"] = 1,
+["questId"] = 86918,
+["objectives"] = {
+},
+},
+[87307] = {
+["status"] = 1,
+["questId"] = 87307,
+["objectives"] = {
+},
+},
+[81862] = {
+["status"] = 1,
+["questId"] = 81862,
+["objectives"] = {
+{
+["text"] = "0/1 Ride the Imperial Lynx",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[90768] = {
+["status"] = 1,
+["questId"] = 90768,
+["objectives"] = {
+{
+["text"] = "0/12 Twilight's Blade cultists slain",
+["type"] = "monster",
+["need"] = 12,
+["have"] = 0,
+},
+{
+["text"] = "0/1 Gehl Harrowtongue slain",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[91173] = {
+["status"] = 1,
+["questId"] = 91173,
+["objectives"] = {
+{
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
+["text"] = "Complete the scenario \"Nightfall\"",
+},
+},
+},
+[92332] = {
+["status"] = 1,
+["questId"] = 92332,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/4 Manaforge raid bosses defeated or Mythic Dungeons completed",
+["need"] = 4,
+["type"] = "object",
+},
+},
+},
+[85879] = {
+["status"] = 1,
+["questId"] = 85879,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/3 S.C.R.A.P. jobs completed",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
+[86919] = {
+["status"] = 1,
+["questId"] = 86919,
+["objectives"] = {
+},
+},
+[87308] = {
+["status"] = 1,
+["questId"] = 87308,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/8 World Quests completed or Rares slain in Twilight Highlands",
+["have"] = 0,
+["need"] = 8,
+},
+},
+},
+[74378] = {
+["status"] = 1,
+["questId"] = 74378,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
+["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[87475] = {
+["status"] = 1,
+["questId"] = 87475,
+["objectives"] = {
+{
+["need"] = 100,
+["type"] = "progressbar",
+["have"] = 0,
+["text"] = "Sureki forces repelled (100%)",
+},
+},
+},
+[82586] = {
+["status"] = 1,
+["questId"] = 82586,
+["objectives"] = {
+{
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 Darkcap Tain slain",
+},
+{
+["need"] = 30,
+["type"] = "item",
+["have"] = 0,
+["text"] = "0/30 Fragrant Mirespores",
+},
+},
+},
+[82158] = {
+["status"] = 1,
+["questId"] = 82158,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/3 Complete World Quests in Hallowfall",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
+[76586] = {
+["status"] = 1,
+["questId"] = 76586,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/4 Lesser Keyflames Activated",
+["have"] = 0,
+["need"] = 4,
+},
+},
+},
+[75721] = {
+["status"] = 2,
+["questId"] = 75721,
+["objectives"] = {
+},
+},
+[88945] = {
+["status"] = 1,
+["questId"] = 88945,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Sureki Sympathizers disrupted (0%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
+[87302] = {
+["status"] = 1,
+["questId"] = 87302,
+["objectives"] = {
+},
+},
+[90763] = {
+["status"] = 1,
+["questId"] = 90763,
+["objectives"] = {
+},
+},
+[92715] = {
+["status"] = 1,
+["questId"] = 92715,
+["objectives"] = {
+},
+},
+[87477] = {
+["status"] = 1,
+["questId"] = 87477,
+["objectives"] = {
+{
+["need"] = 100,
+["type"] = "progressbar",
+["have"] = 0,
+["text"] = "Sureki swarm thwarted (100%)",
+},
+},
+},
+[86775] = {
+["status"] = 1,
+["questId"] = 86775,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/1 Participated in Surge Pricing",
+["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[89398] = {
+["status"] = 2,
+["questId"] = 89398,
+["objectives"] = {
+},
+},
+[92572] = {
+["status"] = 1,
+["questId"] = 92572,
+["objectives"] = {
+{
+["text"] = "Purchase Earthen Storage Crate decor",
+["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[87480] = {
+["status"] = 1,
+["questId"] = 87480,
+["objectives"] = {
+{
+["need"] = 100,
+["type"] = "progressbar",
+["have"] = 0,
+["text"] = "Sureki invasion disrupted (100%)",
+},
+},
+},
+[84850] = {
+["status"] = 1,
+["questId"] = 84850,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Complete activities and secure the Siren Isle (0%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
+[90764] = {
+["status"] = 2,
+["questId"] = 90764,
+["objectives"] = {
+},
+},
+[91795] = {
+["status"] = 1,
+["questId"] = 91795,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/3 Twilight Ascension rares slain",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
+[90761] = {
+["status"] = 1,
+["questId"] = 90761,
+["objectives"] = {
+{
+["text"] = "0/6 Suspicious Citizens dispersed",
+["type"] = "monster",
+["need"] = 6,
+["have"] = 0,
+},
+},
+},
+[82088] = {
+["status"] = 1,
+["questId"] = 82088,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Assist the Arathi in driving back the kobyss (0%)",
+["have"] = 0,
+["need"] = 100,
+},
+},
+},
+[87303] = {
+["status"] = 1,
+["questId"] = 87303,
+["objectives"] = {
+{
+["text"] = "",
+["type"] = "log",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[85869] = {
+["status"] = 1,
+["questId"] = 85869,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/10 Shipping & Handling jobs completed",
+["have"] = 0,
+["need"] = 10,
+},
+},
+},
+[90779] = {
+["status"] = 1,
+["questId"] = 90779,
+["objectives"] = {
+{
+["text"] = "Complete a seasonal dungeon on Mythic Keystone 2+ difficulty",
+["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[84252] = {
+["status"] = 2,
+["questId"] = 84252,
+["objectives"] = {
+},
+},
+[81620] = {
+["status"] = 1,
+["questId"] = 81620,
+["objectives"] = {
+{
+["text"] = "0/8 Shipyard Tools",
+["type"] = "item",
+["need"] = 8,
+["have"] = 0,
+},
+},
+},
+[81630] = {
+["status"] = 1,
+["questId"] = 81630,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/1 Kordac slain",
+["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[90767] = {
+["status"] = 1,
+["questId"] = 90767,
+["objectives"] = {
+{
+["text"] = "0/1 Basement found",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[89391] = {
+["status"] = 2,
+["questId"] = 89391,
+["objectives"] = {
+},
+},
+[89399] = {
+["status"] = 2,
+["questId"] = 89399,
+["objectives"] = {
+},
+},
+[84962] = {
+["status"] = 1,
+["questId"] = 84962,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/12 Devourers culled",
+["need"] = 12,
+["type"] = "monster",
+},
+{
+["have"] = 0,
+["text"] = "0/8 Entropic Egg",
+["need"] = 8,
+["type"] = "item",
+},
+{
+["have"] = 0,
+["text"] = "0/1 Engorged Siltfeaster slain",
+["need"] = 1,
+["type"] = "monster",
+},
+},
+},
+[89494] = {
+["status"] = 2,
+["questId"] = 89494,
+["objectives"] = {
+},
+},
+[86915] = {
+["status"] = 1,
+["questId"] = 86915,
+["objectives"] = {
+{
+["text"] = "",
+["type"] = "log",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [75280] = {
@@ -860,117 +1052,9 @@ ChoreTrackerDB = {
 },
 },
 },
-[76586] = {
-["status"] = 1,
-["questId"] = 76586,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/4 Lesser Keyflames Activated",
-["have"] = 0,
-["need"] = 4,
-},
-},
-},
 [84254] = {
 ["status"] = 2,
 ["questId"] = 84254,
-["objectives"] = {
-},
-},
-[87345] = {
-["status"] = 2,
-["questId"] = 87345,
-["objectives"] = {
-},
-},
-[87475] = {
-["status"] = 1,
-["questId"] = 87475,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki forces repelled (0%)",
-["have"] = 0,
-["need"] = 100,
-},
-},
-},
-[81620] = {
-["status"] = 1,
-["questId"] = 81620,
-["objectives"] = {
-{
-["type"] = "item",
-["text"] = "0/8 Shipyard Tools",
-["have"] = 0,
-["need"] = 8,
-},
-},
-},
-[86915] = {
-["status"] = 1,
-["questId"] = 86915,
-["objectives"] = {
-{
-["type"] = "log",
-["text"] = "",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[82258] = {
-["status"] = 1,
-["questId"] = 82258,
-["objectives"] = {
-{
-["type"] = "item",
-["text"] = "0/4 Keg of Black Powder",
-["have"] = 0,
-["need"] = 4,
-},
-},
-},
-[87302] = {
-["status"] = 1,
-["questId"] = 87302,
-["objectives"] = {
-},
-},
-[82158] = {
-["status"] = 1,
-["questId"] = 82158,
-["objectives"] = {
-{
-["type"] = "object",
-["text"] = "0/3 Complete World Quests in Hallowfall",
-["have"] = 0,
-["need"] = 3,
-},
-},
-},
-[86869] = {
-["status"] = 1,
-["questId"] = 86869,
-["objectives"] = {
-{
-["need"] = 100,
-["type"] = "progressbar",
-["have"] = 0,
-["text"] = "Sabotage thwarted (0%)",
-},
-},
-},
-[89393] = {
-["status"] = 2,
-["questId"] = 89393,
-["objectives"] = {
-},
-},
-[84735] = {
-["status"] = 2,
-["questId"] = 84735,
 ["objectives"] = {
 },
 },
@@ -979,52 +1063,10 @@ ChoreTrackerDB = {
 ["questId"] = 82156,
 ["objectives"] = {
 {
+["type"] = "object",
 ["text"] = "0/3 Accomplir 3 expéditions dans les abîmes Retentissants",
-["type"] = "object",
+["have"] = 0,
 ["need"] = 3,
-["have"] = 0,
-},
-},
-},
-[89391] = {
-["status"] = 2,
-["questId"] = 89391,
-["objectives"] = {
-},
-},
-[91173] = {
-["status"] = 1,
-["questId"] = 91173,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "Complete the scenario \"Nightfall\"",
-["need"] = 1,
-["type"] = "object",
-},
-},
-},
-[89398] = {
-["status"] = 2,
-["questId"] = 89398,
-["objectives"] = {
-},
-},
-[92630] = {
-["status"] = 2,
-["questId"] = 92630,
-["objectives"] = {
-},
-},
-[88945] = {
-["status"] = 1,
-["questId"] = 88945,
-["objectives"] = {
-{
-["type"] = "progressbar",
-["text"] = "Sureki Sympathizers disrupted (0%)",
-["have"] = 0,
-["need"] = 100,
 },
 },
 },
@@ -1180,7 +1222,7 @@ ChoreTrackerDB = {
 ["chromieCodex"] = false,
 ["truth"] = false,
 ["azuregosKill"] = false,
-["shaOfAngerKill"] = false,
+["shopping"] = false,
 ["meetGreet"] = false,
 ["doomwalkerKill"] = false,
 ["lordKazzakKill"] = false,
@@ -1189,7 +1231,7 @@ ChoreTrackerDB = {
 ["soldier"] = false,
 ["celebrate"] = false,
 ["reflect"] = false,
-["shopping"] = false,
+["shaOfAngerKill"] = false,
 },
 },
 },

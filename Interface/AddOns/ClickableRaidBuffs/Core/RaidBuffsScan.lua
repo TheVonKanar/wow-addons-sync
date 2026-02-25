@@ -5,6 +5,7 @@
 local addonName, ns = ...
 local IsSecret = ns.Compat and ns.Compat.IsSecret
 
+
 clickableRaidBuffCache = clickableRaidBuffCache or {}
 clickableRaidBuffCache.playerInfo = clickableRaidBuffCache.playerInfo or {}
 clickableRaidBuffCache.displayable = clickableRaidBuffCache.displayable or {}
@@ -266,6 +267,9 @@ function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
   if InCombatLockdown() then
     return
   end
+if ns.AurasAreSecret and ns.AurasAreSecret() then
+  return
+end
 
   if not unit or (unit ~= "player" and not unit:match("^party%d") and not unit:match("^raid%d")) then
     return
@@ -282,11 +286,11 @@ function ns.HandleRaidBuff_UNIT_AURA(unit, updateInfo)
     if not aura then
       return false
     end
-    local sid = aura.spellId
+    local sid = ns.SafeAuraSpellID and ns.SafeAuraSpellID(aura)
     if IsNonSecretNumber(sid) and watchSpell[sid] then
       return true
     end
-    local name = aura.name
+    local name = ns.SafeAuraName and ns.SafeAuraName(aura)
     if IsNonSecretString(name) and watchName[name] then
       return true
     end
@@ -350,6 +354,10 @@ end
 
 function scanRaidBuffs()
   clickableRaidBuffCache.displayable.RAID_BUFFS = {}
+  
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return
+  end
 
   local classID = clickableRaidBuffCache.playerInfo.playerClassId or getPlayerClass()
   if not classID then
@@ -365,14 +373,12 @@ function scanRaidBuffs()
   local inInstance = clickableRaidBuffCache.playerInfo.inInstance
   local rested = clickableRaidBuffCache.playerInfo.restedXPArea
   local db = ns.GetDB and ns.GetDB() or {}
+  local raidUnits = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
+  local playerUnitOnly = { "player" }
 
   local threshold = (
     ns.MPlus_GetEffectiveThresholdSecs and ns.MPlus_GetEffectiveThresholdSecs("spell", db.spellThreshold or 15)
   ) or ((db.spellThreshold or 15) * 60)
-
-  local function passesGates(data, playerLevelX, inInstanceX, restedX)
-    return ns.PassesGates(data, playerLevelX, inInstanceX, restedX)
-  end
 
   local function normalizeExpire(v)
     if v == nil then
@@ -395,7 +401,7 @@ function scanRaidBuffs()
     if not name then
       return nil
     end
-    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
+    local units = raidUnits
     local have, total = 0, #units
     for _, u in ipairs(units) do
       local i = 1
@@ -404,7 +410,8 @@ function scanRaidBuffs()
         if not a then
           break
         end
-        if a.name == name then
+        local an = ns.SafeAuraName and ns.SafeAuraName(a)
+        if IsNonSecretString(an) and an == name then
           have = have + 1
           break
         end
@@ -418,76 +425,18 @@ function scanRaidBuffs()
     end
   end
 
-  local function CountCoverageForData(data)
-    local buffIDs = data and data.buffID
-    if not buffIDs then
-      return 0, 0
-    end
-
-    local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
-
-    local wantById
-    local targetName
-    if data.nameMode then
-      local first = (type(buffIDs) == "table") and buffIDs[1] or buffIDs
-      targetName = ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(first)
-        or (C_Spell.GetSpellInfo(first) or {}).name
-    else
-      wantById = {}
-      if type(buffIDs) == "table" then
-        for i = 1, #buffIDs do
-          local id = buffIDs[i]
-          if id then
-            wantById[id] = true
-          end
-        end
-      elseif type(buffIDs) == "number" then
-        wantById[buffIDs] = true
-      end
-    end
-
-    local have, total = 0, #units
-    for _, u in ipairs(units) do
-      local i = 1
-      local found = false
-      while true do
-        local a = C_UnitAuras.GetAuraDataByIndex(u, i, "HELPFUL")
-        if not a then
-          break
-        end
-        if targetName then
-          if a.name == targetName then
-            found = true
-            break
-          end
-        else
-          if a.spellId and wantById[a.spellId] then
-            found = true
-            break
-          end
-        end
-        i = i + 1
-      end
-      if found then
-        have = have + 1
-      end
-    end
-    return have, total
-  end
-
   local function addEntry(rowKey, data, catName)
     local entry = (ns.copyItemData and ns.copyItemData(data)) or {}
     entry.category = catName
     entry.spellID = data.spellID or rowKey
 
-    local function buildUnits()
-      if data.check == "player" then
-        return { "player" }
-      end
-      return (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
-    end
+    local units = (data.check == "player") and playerUnitOnly or raidUnits
 
+    local builtIdSet, builtNameSet, builtNameMode
     local function buildSets()
+      if builtNameMode ~= nil then
+        return builtIdSet, builtNameSet, builtNameMode
+      end
       local idSet, nameSet, nameMode
       nameMode = (data.nameMode and true) or false
       local ids = data.buffID
@@ -523,24 +472,8 @@ function scanRaidBuffs()
           idSet[ids] = true
         end
       end
-      return idSet, nameSet, nameMode
-    end
-
-    local function normalizeExpire(v)
-      if v == nil then
-        return nil
-      end
-      if v == math.huge then
-        return math.huge
-      end
-      if type(v) ~= "number" then
-        return nil
-      end
-      local now = GetTime()
-      if v > (now + 1) then
-        return v
-      end
-      return now + math.max(0, v)
+      builtIdSet, builtNameSet, builtNameMode = idSet, nameSet, nameMode
+      return builtIdSet, builtNameSet, builtNameMode
     end
 
     local db = (ns.GetDB and ns.GetDB()) or {}
@@ -552,7 +485,6 @@ function scanRaidBuffs()
 
     local ex
     if mineOnlyActive then
-      local units = buildUnits()
       local idSet, nameSet, nameMode = buildSets()
       local foundExpire
       for i = 1, #units do
@@ -576,35 +508,7 @@ function scanRaidBuffs()
         local first = (type(data.buffID) == "table") and data.buffID[1] or data.buffID
         local spellName = (ns.GetLocalizedBuffName and ns.GetLocalizedBuffName(first))
           or (C_Spell.GetSpellInfo(first) or {}).name
-        local function CountByName(name, countRequired)
-          if not name then
-            return nil
-          end
-          local units = buildUnits()
-          local have, total = 0, #units
-          for _, u in ipairs(units) do
-            local idx, matched = 1, false
-            while true do
-              local a = C_UnitAuras.GetAuraDataByIndex(u, idx, "HELPFUL")
-              if not a then
-                break
-              end
-              if a.name == name then
-                matched = true
-                break
-              end
-              idx = idx + 1
-            end
-            if matched then
-              have = have + 1
-            end
-          end
-          if countRequired then
-            return (have >= countRequired) and math.huge or nil
-          else
-            return (have == total) and math.huge or nil
-          end
-        end
+          
         ex = CountByName(spellName, data.count)
       elseif data.check == "player" then
         ex = ns.GetPlayerBuffExpire and ns.GetPlayerBuffExpire(data.buffID, data.nameMode, data.infinite) or nil
@@ -633,7 +537,6 @@ function scanRaidBuffs()
       and (data.check ~= "player")
       and (not entry.centerText or entry.centerText == "")
     then
-      local units = buildUnits()
       local total, have = #units, 0
       if mineOnlyActive then
         local idSet, nameSet, nameMode = buildSets()
@@ -709,7 +612,7 @@ function scanRaidBuffs()
               if not a then
                 break
               end
-              local sid = a.spellId
+              local sid = ns.SafeAuraSpellID and ns.SafeAuraSpellID(a)
               if IsNonSecretNumber(sid) and idSet[sid] then
                 matched = true
                 break
@@ -722,9 +625,8 @@ function scanRaidBuffs()
           end
         end
       end
-      local _, _, _, _, _, _, _, _, _, _, numPlayers = GetInstanceInfo()
-      if numPlayers and numPlayers > 0 then
-        total = math.min(total, numPlayers)
+      if numPlayersInInstance and numPlayersInInstance > 0 then
+        total = math.min(total, numPlayersInInstance)
       end
 
       entry.centerText = tostring(have) .. " / " .. tostring(total)
@@ -764,7 +666,7 @@ function scanRaidBuffs()
       else
         include = PlayerKnowsSpell(checkID)
       end
-      if include and passesGates(data, playerLevel, inInstance, rested) then
+      if include and ns.PassesGates(data, playerLevel, inInstance, rested) then
         addEntry(rowKey, data, "RAID_BUFFS")
       end
     end
@@ -788,6 +690,9 @@ function scanRaidBuffs()
     for k, e in pairs(disp) do
       if type(e) == "table" then
         local nm = e.name
+        if not IsNonSecretString(nm) then
+          nm = nil
+        end
         if not nm and e.spellID then
           local si = C_Spell.GetSpellInfo(e.spellID)
           nm = si and si.name or tostring(e.spellID)

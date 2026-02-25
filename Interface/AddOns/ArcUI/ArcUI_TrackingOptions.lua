@@ -632,22 +632,17 @@ local function ShowDeleteConfirmation(barNum, barType, barName)
     elseif barType == "resource" then
       local cfg = ns.API.GetResourceBarConfig(barNum)
       if cfg then
-        -- Fully clear tracking data
-        cfg.tracking.enabled = false
-        cfg.tracking.powerType = nil
-        cfg.tracking.powerName = nil
-        
-        -- Clear behavior data including talent conditions
-        if cfg.behavior then
-          cfg.behavior.talentConditions = nil
-          cfg.behavior.talentMatchMode = nil
-          cfg.behavior.showOnSpecs = nil
+        -- Use the comprehensive DeleteBar function to fully reset the slot
+        if ns.Resources and ns.Resources.DeleteBar then
+          ns.Resources.DeleteBar(barNum)
+        else
+          -- Fallback: minimal reset
+          cfg.tracking.enabled = false
+          cfg.tracking.powerType = nil
+          cfg.tracking.powerName = nil
+          cfg.display.enabled = false
+          if ns.Resources and ns.Resources.HideBar then ns.Resources.HideBar(barNum) end
         end
-        
-        -- Reset display
-        cfg.display.enabled = false
-        
-        if ns.Resources and ns.Resources.HideBar then ns.Resources.HideBar(barNum) end
       end
     end
     deleteConfirmFrame:Hide()
@@ -672,7 +667,12 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
     inline = true,
     order = orderBase,
     hidden = function()
-      local cfg = ns.API.GetBarConfig(barNum)
+      -- IMPORTANT: Check db.bars directly to avoid auto-creating entries
+      -- via GetBarConfig. Creating entries bloats SavedVariables with empty configs.
+      local db = ns.API and ns.API.GetDB and ns.API.GetDB()
+      if not db or not db.bars then return true end
+      local cfg = db.bars[barNum]
+      if not cfg or not cfg.tracking then return true end
       return not ShouldShowBarWithType(cfg, filterDisplayType)
     end,
     args = {
@@ -2456,8 +2456,13 @@ function ns.TrackingOptions.GetResourceSetupTable()
       inline = true,
       order = orderBase,
       hidden = function()
-        local cfg = ns.API.GetResourceBarConfig(barNum)
-        if not cfg or not cfg.tracking.enabled then return true end
+        -- IMPORTANT: Check db.resourceBars directly to avoid auto-creating entries
+        -- via GetResourceBarConfig. Creating entries causes ghost bars on characters
+        -- that have no resource bars configured.
+        local db = ns.API and ns.API.GetDB and ns.API.GetDB()
+        if not db or not db.resourceBars then return true end
+        local cfg = db.resourceBars[barNum]
+        if not cfg or not cfg.tracking or not cfg.tracking.enabled then return true end
         return false
       end,
       args = {

@@ -50,7 +50,7 @@ local reopenAfterCombat = false
 
 function ns.RequestUnlock()
   if InCombatLockdown() then
-    print("|cFF00ccffCRB:|r " .. L["Cannot unlock during combat. Will unlock after combat ends."])
+    print("|cFF00ccffCRB:|r " .. L["Menu is not available during this activity."])
 
     reopenAfterCombat = true
     if ns.ToggleMover then
@@ -124,7 +124,7 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
 
   if msg == "unlock" or msg == "move" or msg == "lock" then
     if InCombatLockdown() then
-      print("|cFF00ccffCRB:|r " .. L["Cannot unlock during combat. Will unlock after combat ends."])
+      print("|cFF00ccffCRB:|r " .. L["Menu is not available during this activity."])
 
       reopenAfterCombat = true
       if ns.ToggleMover then
@@ -145,20 +145,23 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
 
       end
     end
-  elseif msg == "minimap" then
-    local addon = LibStub("AceAddon-3.0"):GetAddon("ClickableRaidBuffs", true)
-    if addon and addon.ToggleMinimapButton then
-      local hidden = addon.db and addon.db.profile and addon.db.profile.minimap and addon.db.profile.minimap.hide
-      local newState = not hidden
-      addon:ToggleMinimapButton(newState)
-      if newState then
-        print("|cFF00ccffCRB:|r " .. L["Minimap button hidden. Type /crb minimap to show again."])
+elseif msg == "minimap" then
+  local addon = LibStub("AceAddon-3.0"):GetAddon("ClickableRaidBuffs", true)
+  if addon and addon.minimapDB and addon.minimapDB.profile then
 
-      else
-        print("|cFF00ccffCRB:|r " .. L["Minimap button shown. Type /crb minimap to hide again."])
+    local prof = addon.minimapDB.profile
+    prof.minimap = prof.minimap or {}
 
-      end
+    local newHide = not (prof.minimap.hide and true or false)
+
+    addon:ToggleMinimapButton(newHide)
+
+    if newHide then
+      print("|cFF00ccffCRB:|r " .. L["Minimap button hidden. Type /crb minimap to show again."])
+    else
+      print("|cFF00ccffCRB:|r " .. L["Minimap button shown. Type /crb minimap to hide again."])
     end
+  end
   elseif msg == "reset" then
     ns.ResetToDefaults()
   elseif msg == "debug" then
@@ -168,12 +171,19 @@ SlashCmdList["CLICKABLERAIDBUFFS"] = function(msg)
       print("|cFF00ccffCRB:|r " .. L["Debug diagnostics are not available."])
 
     end
-  elseif msg == "" then
-    if ns.ToggleOptions then
-      ns.ToggleOptions()
-    elseif ns.OpenOptions then
-      ns.OpenOptions()
-    end
+elseif msg == "" then
+  if (InCombatLockdown and InCombatLockdown())
+     or (C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret()) then
+
+    print("|cFF00ccffCRB:|r " .. L["Menu is not available during this activity."])
+    return
+  end
+
+  if ns.ToggleOptions then
+    ns.ToggleOptions()
+  elseif ns.OpenOptions then
+    ns.OpenOptions()
+  end
   else
     print("|cFF00ccffCRB:|r " .. L["Commands:"])
     print(L["  /crb unlock    - Toggle lock/unlock the icon frame"])

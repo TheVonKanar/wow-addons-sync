@@ -64,6 +64,7 @@ local function ConsumablesSuppressed()
 end
 
 local pools = { FOOD = {}, FLASK = {}, MAIN_HAND = {}, OFF_HAND = {} }
+local _sourceByCat = { FOOD = false, FLASK = false, MAIN_HAND = false, OFF_HAND = false }
 
 local function Acquire(cat, data)
   local p = pools[cat]
@@ -87,6 +88,14 @@ local function Release(cat, entry)
   local p = pools[cat]
   if p then
     p[#p + 1] = entry
+  end
+end
+
+local function RemoveDisplayable(cat, itemID)
+  local map = clickableRaidBuffCache.displayable[cat]
+  if map and map[itemID] then
+    Release(cat, map[itemID])
+    map[itemID] = nil
   end
 end
 
@@ -124,25 +133,13 @@ local function applyThreshold(entry, expireAbs, thresholdSecs)
   return true
 end
 
-local function passesGates(data, playerLevel, inInstance, rested)
-  return ns.PassesGates(data, playerLevel, inInstance, rested)
-end
-
 local function UpsertFoodOrFlask(cat, itemID, data, qty, wellFedExpire, flaskExpire, playerLevel, inInstance, rested)
   if ns.IsExcluded and ns.IsExcluded(itemID) then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+    RemoveDisplayable(cat, itemID)
     return
   end
-  if qty <= 0 or not passesGates(data, playerLevel, inInstance, rested) then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+  if qty <= 0 or not ns.PassesGates(data, playerLevel, inInstance, rested) then
+    RemoveDisplayable(cat, itemID)
     return
   end
 
@@ -170,47 +167,27 @@ end
 local function UpsertWeaponEnchant(cat, itemID, data, hand, qty, playerLevel, inInstance, rested)
   local handType, enchantable = ns.WeaponEnchants_EquippedHandTypeAndEnchantable(hand)
   if not enchantable then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+    RemoveDisplayable(cat, itemID)
     return
   end
   local reqSlot = ns.WeaponEnchants_NormalizeSlotType(data and data.slotType)
   if reqSlot and handType and reqSlot ~= handType then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+    RemoveDisplayable(cat, itemID)
     return
   end
 
   local reqCat = data and data.weaponType
   if reqCat and not ns.WeaponEnchants_MatchesCategory(hand, reqCat) then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+    RemoveDisplayable(cat, itemID)
     return
   end
 
   if ns.IsExcluded and ns.IsExcluded(itemID) then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+    RemoveDisplayable(cat, itemID)
     return
   end
-  if qty <= 0 or not passesGates(data, playerLevel, inInstance, rested) then
-    local map = clickableRaidBuffCache.displayable[cat]
-    if map and map[itemID] then
-      Release(cat, map[itemID])
-      map[itemID] = nil
-    end
+  if qty <= 0 or not ns.PassesGates(data, playerLevel, inInstance, rested) then
+    RemoveDisplayable(cat, itemID)
     return
   end
 
@@ -294,9 +271,11 @@ function ScheduleEnchantThresholdCheck()
       end
 
       _enchantNextAt = nil
-      scanAllBags()
-      if ns.PushRender then
-        ns.PushRender()
+      if ns.MarkBagsDirty then
+        ns.MarkBagsDirty()
+      end
+      if ns.PokeUpdateBus then
+        ns.PokeUpdateBus()
       end
       ScheduleEnchantThresholdCheck()
     end)
@@ -351,6 +330,9 @@ function ns.ReapplyBagThresholds()
 end
 
 function scanAllBags()
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return
+  end
   if ConsumablesSuppressed() then
     local d = clickableRaidBuffCache.displayable
     d.FOOD, d.FLASK, d.MAIN_HAND, d.OFF_HAND = {}, {}, {}, {}
@@ -442,7 +424,8 @@ function scanAllBags()
   end
 
   local disp = clickableRaidBuffCache.displayable
-  local sourceByCat = { FOOD = FOOD, FLASK = FLASK, MAIN_HAND = MH, OFF_HAND = OH }
+  _sourceByCat.FOOD, _sourceByCat.FLASK, _sourceByCat.MAIN_HAND, _sourceByCat.OFF_HAND = FOOD, FLASK, MH, OH
+  local sourceByCat = _sourceByCat
   for cat, mark in pairs(touched) do
     local map = disp[cat]
     if map then
@@ -481,5 +464,10 @@ function markBagsForScan(bagID)
 end
 
 function processPendingBags()
-  scanAllBags()
+  if ns.MarkBagsDirty then
+    ns.MarkBagsDirty()
+  end
+  if ns.PokeUpdateBus then
+    ns.PokeUpdateBus()
+  end
 end

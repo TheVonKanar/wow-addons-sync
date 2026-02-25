@@ -46,6 +46,8 @@ f:RegisterEvent("UNIT_PET")
 f:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED")
 f:RegisterEvent("PET_BAR_UPDATE")
 
+f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
 local function poke()
   if type(ns.PokeUpdateBus) == "function" then
     ns.PokeUpdateBus()
@@ -191,6 +193,7 @@ local function maybeUpdateWeaponEnchants()
 end
 
 local THROTTLE = 1.0
+local PLAYER_THROTTLE = 0.10
 
 local auraBuf = { units = {}, pendingPlayer = nil, timer = nil, lastRun = 0 }
 local function process_UNIT_AURA(unit, updateInfo)
@@ -224,7 +227,11 @@ local function process_UNIT_AURA(unit, updateInfo)
     if type(ns.Trinkets_OnUnitAura) == "function" then
       ns.Trinkets_OnUnitAura(unit, updateInfo)
     end
-    armPoke(0)
+    if type(ns.RequestImmediatePlayerAuraRefresh) == "function" then
+      ns.RequestImmediatePlayerAuraRefresh({ immediate = true, raid = true, bags = false })
+    else
+      armPoke(0)
+    end
   else
     if type(ns.RaidBuffTargeting_OnUnitAura) == "function" then
       ns.RaidBuffTargeting_OnUnitAura(unit, updateInfo)
@@ -262,17 +269,26 @@ local function flushAuras()
 end
 
 local function on_UNIT_AURA(unit, updateInfo)
-  if unit == "player" then
+  local isPlayer = (unit == "player")
+  if isPlayer then
     auraBuf.pendingPlayer = updateInfo or true
   else
     auraBuf.units[unit] = updateInfo or true
   end
+
   local now = GetTime()
   local dt = now - (auraBuf.lastRun or 0)
-  if dt >= THROTTLE then
+  local throttle = isPlayer and PLAYER_THROTTLE or THROTTLE
+
+  if isPlayer and auraBuf.timer then
+    auraBuf.timer:Cancel()
+    auraBuf.timer = nil
+  end
+
+  if dt >= throttle then
     flushAuras()
   elseif not auraBuf.timer then
-    local delay = THROTTLE - dt
+    local delay = throttle - dt
     auraBuf.timer = C_Timer.NewTimer(delay, function()
       if not locked() then
         flushAuras()
@@ -499,15 +515,17 @@ f:SetScript("OnEvent", function(_, event, ...)
   end
 
   if event == "PLAYER_UPDATE_RESTING" then
-    if type(ns.MarkGatesDirty) == "function" then
+    if type(ns.RequestImmediateGateRefresh) == "function" then
+      ns.RequestImmediateGateRefresh({ immediate = true })
+    elseif type(ns.MarkGatesDirty) == "function" then
       ns.MarkGatesDirty()
+      armPoke(debounce)
     end
 if type(ns.PetAssist_OnPetBarUpdate) == "function" then
     if ns.PetAssist_OnPetBarUpdate() then
         armPoke(debounce)
     end
 end
-    armPoke(debounce)
     return
   end
 
@@ -559,11 +577,6 @@ end
     end
     if type(ns.MarkAurasDirty) == "function" then
       ns.MarkAurasDirty("player")
-    end
-    if type(ns.FixedTarget_Init) == "function" then
-      if ns.FixedTarget_Init() then
-        armPoke(debounce)
-      end
     end
     if type(ns.FixedTarget_Init) == "function" then
       if ns.FixedTarget_Init() then
@@ -629,8 +642,11 @@ end
     if type(ns.Recuperate_Recompute) == "function" then
       ns.Recuperate_Recompute()
     end
-    if type(ns.MarkGatesDirty) == "function" then
+    if type(ns.RequestImmediateGateRefresh) == "function" then
+      ns.RequestImmediateGateRefresh({ immediate = true })
+    elseif type(ns.MarkGatesDirty) == "function" then
       ns.MarkGatesDirty()
+      armPoke(debounce)
     end
 
     if type(ns.MythicPlus_Recompute) == "function" then

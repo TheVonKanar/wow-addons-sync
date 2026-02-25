@@ -374,7 +374,16 @@ function ns.RenderAll()
   if ns._combat_suspended or ns.InCombatSuppressed then
     return
   end
+
   if InCombatLockdown() then
+    return
+  end
+
+  if C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret() then
+    ns.HideAllRenderedIcons()
+    if ns.RenderParent then
+      ns.RenderParent:Hide()
+    end
     return
   end
 
@@ -479,87 +488,6 @@ function ns.RenderAll()
     end
     wipe(ns.RenderIndexByKey)
     return
-  end
-
-  local function GetRaidBuffOrderIndex(spellID)
-    if not _raidBuffOrderMap then
-      _raidBuffOrderMap = {}
-      if ns.GetRaidBuffOrderMap then
-        _raidBuffOrderMap = ns.GetRaidBuffOrderMap() or _raidBuffOrderMap
-      end
-      if not next(_raidBuffOrderMap) and _G.clickableRaidBuffCache and _G.ClickableRaidData then
-        local classID = _G.clickableRaidBuffCache.playerInfo and _G.clickableRaidBuffCache.playerInfo.playerClassId
-        local tbl = classID and _G.ClickableRaidData[classID]
-        if tbl then
-          local keys = {}
-          for k in pairs(tbl) do
-            if type(k) == "number" then
-              keys[#keys + 1] = k
-            end
-          end
-          table.sort(keys)
-          for i, k in ipairs(keys) do
-            _raidBuffOrderMap[k] = i
-          end
-        end
-      end
-    end
-    return _raidBuffOrderMap[spellID] or 9999
-  end
-
-  local function SortItems(list, prio)
-    table.sort(list, function(a, b)
-      local ai = prio[a.category] or 999
-      local bi = prio[b.category] or 999
-      if ai ~= bi then
-        return ai < bi
-      end
-            if (a.category == "PETS" or a.category == "PET_ASSIST") and (b.category == "PETS" or b.category == "PET_ASSIST") then
-        local ah = tonumber(a.orderHint) or 1e9
-        local bh = tonumber(b.orderHint) or 1e9
-        if ah ~= bh then
-          return ah < bh
-        end
-        local as = a.spellID or a.itemID or 0
-        local bs = b.spellID or b.itemID or 0
-        if as ~= bs then
-          return as < bs
-        end
-        local af = (a.isFixed and 1 or 0)
-        local bf = (b.isFixed and 1 or 0)
-        if af ~= bf then
-          return af < bf
-        end
-        return false
-      end
-      if a.category == "RAID_BUFFS" and b.category == "RAID_BUFFS" then
-        local oa = GetRaidBuffOrderIndex(a.spellID or 0)
-        local ob = GetRaidBuffOrderIndex(b.spellID or 0)
-        if oa ~= ob then
-          return oa < ob
-        end
-        local as = a.spellID or 0
-        local bs = b.spellID or 0
-        if as == bs then
-          local sa = a.orderHint or 0
-          local sb = b.orderHint or 0
-          if sa ~= sb then
-            return sa < sb
-          end
-          if a.isFixed and not b.isFixed then
-            return false
-          end
-          if b.isFixed and not a.isFixed then
-            return true
-          end
-          return false
-        end
-        return as < bs
-      end
-      local ka = a.itemID or a.spellID or 0
-      local kb = b.itemID or b.spellID or 0
-      return ka < kb
-    end)
   end
 
   SortItems(items, catPriority)
@@ -701,16 +629,6 @@ function ns.RenderAll()
   ns.Hover:SetPoint("CENTER", ns.RenderParent, "CENTER")
   ns.Hover:SetSize(parentW + pad, parentH + pad)
 
-  local function ResolveFontPath(name)
-    if ns.Options and ns.Options.GetFontPathByName then
-      local p = ns.Options.GetFontPathByName(name)
-      if p then
-        return p
-      end
-    end
-    local fallback = GameFontNormal and select(1, GameFontNormal:GetFont())
-    return fallback or "Fonts\\FRIZQT__.TTF"
-  end
   local centerFontPath = ResolveFontPath(db.fontName)
   local centerSize = math.max(1, math.floor(((db.timerSize or 28) / 50) * (db.iconSize or 50) + 0.5))
   local centerOutline = (db.centerOutline ~= false) and "OUTLINE" or ""
@@ -719,104 +637,7 @@ function ns.RenderAll()
   local general = db.glowColor or { r = 0.95, g = 0.95, b = 0.32, a = 1 }
   local special = db.specialGlowColor or { r = 0.00, g = 0.913725, b = 1.00, a = 1 }
 
-  local function sameRGBA(a, b)
-    if not a or not b then
-      return false
-    end
-    return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and (a[4] or 1) == (b[4] or 1)
-  end
-
-
-
-
-  local function setIconTextureIfChanged(btn, tex)
-    if btn.icon._crb_tex ~= tex then
-      btn.icon:SetTexture(tex or 134400)
-      btn.icon._crb_tex = tex
-    end
-  end
-
-  local function setButtonActionIfChanged(btn, actionType, value1)
-    if btn._crb_action_type ~= actionType or btn._crb_action_v1 ~= value1 then
-      if actionType == "macro" then
-        btn:SetAttribute("type", "macro")
-        btn:SetAttribute("macrotext", value1)
-      elseif actionType == "item" then
-        btn:SetAttribute("type", "item")
-        btn:SetAttribute("item", "item:" .. tostring(value1))
-      elseif actionType == "spell" then
-        btn:SetAttribute("type", "spell")
-        btn:SetAttribute("spell", value1)
-      else
-        btn:SetAttribute("type", nil)
-      end
-      btn._crb_action_type = actionType
-      btn._crb_action_v1 = value1
-    end
-  end
-
-  local function knobOffsets(ks, size, defX, defY)
-    if not ks then
-      return defX, defY
-    end
-    local x = ks.x
-    local y = ks.y
-    if x == nil and ks.xMul then
-      x = ks.xMul * size
-    end
-    if y == nil and ks.yMul then
-      y = ks.yMul * size
-    end
-    if x == nil and ks.offsetX ~= nil then
-      x = ks.offsetX
-    end
-    if y == nil and ks.offsetY ~= nil then
-      y = ks.offsetY
-    end
-    if x == nil then
-      x = defX
-    end
-    if y == nil then
-      y = defY
-    end
-    return x, y
-  end
-
   local ctc = db.centerTextColor or { r = 1, g = 1, b = 1, a = 1 }
-
-  local function entryKey(cat, entry)
-    if cat == "MAIN_HAND" then
-      return "MH:" .. tostring(entry.itemID or entry.name or "")
-    elseif cat == "OFF_HAND" then
-      return "OH:" .. tostring(entry.itemID or entry.name or "")
-    end
-    if entry.isFixed and entry.spellID then
-      local suf = ""
-      local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-      if b1 then
-        suf = ":b" .. tostring(b1)
-      end
-      return cat .. ":spell:" .. tostring(entry.spellID) .. ":fixed" .. suf
-    end
-    if entry.itemID then
-      return cat .. ":item:" .. tostring(entry.itemID)
-    end
-if entry.spellID then
-  local suf = ""
-  local b1 = (type(entry.buffID) == "table") and entry.buffID[1] or entry.buffID
-  if b1 then
-    suf = ":b" .. tostring(b1)
-  end
-
-  if entry.macro then
-    return cat .. ":spell:" .. tostring(entry.spellID) .. suf .. ":m:" .. tostring(entry.macro)
-  end
-
-  return cat .. ":spell:" .. tostring(entry.spellID) .. suf
-end
-
-return cat .. ":name:" .. tostring(entry.name or "")
-end
 
   for idx, entry in ipairs(items) do
     local key = entryKey(entry.category, entry)
@@ -835,6 +656,24 @@ end
         btn = CreateFrame("Button", addonName .. "Icon" .. index, ns.RenderParent, "SecureActionButtonTemplate")
         btn:SetSize(1, 1)
         btn:RegisterForClicks(GetCVarBool("ActionButtonUseKeyDown") and "LeftButtonDown" or "LeftButtonUp")
+        btn:SetScript("PostClick", function(self)
+          if type(ns.RequestImmediateRescan) ~= "function" then
+            return
+          end
+          local entryX = self and self._crb_entry
+          if not entryX or not entryX.category then
+            ns.RequestImmediateRescan()
+            return
+          end
+          local cat = entryX.category
+          if cat == "FOOD" or cat == "FLASK" or cat == "MAIN_HAND" or cat == "OFF_HAND" then
+            ns.RequestImmediateRescan({ bags = true, raid = false })
+          elseif cat == "RAID_BUFFS" then
+            ns.RequestImmediateRescan({ bags = false, raid = true })
+          else
+            ns.RequestImmediateRescan()
+          end
+        end)
 
         local icon = btn:CreateTexture(nil, "ARTWORK")
         icon:SetAllPoints()

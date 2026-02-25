@@ -120,6 +120,11 @@ local D = {
     [10] = true,
     [11] = true,
   },
+
+  bagRefreshSeconds = 5,
+  raidRefreshSeconds = 5,
+  userRefreshSeconds = 1,
+  scanIntervalSeconds = 5,
 }
 
 O.DEFAULTS = D

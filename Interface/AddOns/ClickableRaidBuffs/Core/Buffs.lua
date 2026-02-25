@@ -3,22 +3,13 @@
 -- ====================================
 
 local addonName, ns = ...
-local IsSecret = ns.Compat and ns.Compat.IsSecret
-
-local function IsNonSecretNumber(v)
-  return type(v) == "number" and not (IsSecret and IsSecret(v))
-end
-
-local function IsNonSecretString(v)
-  return type(v) == "string" and not (IsSecret and IsSecret(v))
-end
 
 local function HasStringKey(t, k)
-  return type(t) == "table" and IsNonSecretString(k) and t[k] == true
+  return type(t) == "table" and type(k) == "string" and t[k] == true
 end
 
 local function HasNumberKey(t, k)
-  return type(t) == "table" and IsNonSecretNumber(k) and t[k] == true
+  return type(t) == "table" and type(k) == "number" and t[k] == true
 end
 
 function ns.GetLocalizedBuffName(spellID)
@@ -32,7 +23,7 @@ local function BuildNameLookup(spellIDs)
   local t = {}
   for _, id in ipairs(spellIDs or {}) do
     local name = ns.GetLocalizedBuffName(id)
-    if IsNonSecretString(name) then
+    if type(name) == "string" then
       t[name] = true
     end
   end
@@ -45,7 +36,7 @@ function ns.BuildSpellIDSet(spellIDs)
     return t
   end
   for _, id in ipairs(spellIDs) do
-    if IsNonSecretNumber(id) then
+    if type(id) == "number" then
       t[id] = true
     end
   end
@@ -59,7 +50,7 @@ function ns.BuildBuffNameSet(spellIDs)
   end
   for _, id in ipairs(spellIDs) do
     local name = ns.GetLocalizedBuffName(id)
-    if IsNonSecretString(name) then
+    if type(name) == "string" then
       t[name] = true
     end
   end
@@ -103,6 +94,9 @@ function ns.GetGroupUnits(opts)
 end
 
 function ns.UnitHasAnyBuffByIDs(unit, ids)
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return false
+  end
   if not unit or type(ids) ~= "table" then
     return false
   end
@@ -112,7 +106,7 @@ function ns.UnitHasAnyBuffByIDs(unit, ids)
     if not aura then
       break
     end
-    local sid = aura.spellId
+    local sid = ns.SafeAuraSpellID(aura)
     if HasNumberKey(ids, sid) then
       return true
     end
@@ -122,6 +116,9 @@ function ns.UnitHasAnyBuffByIDs(unit, ids)
 end
 
 function ns.UnitHasAnyBuffByNames(unit, names)
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return false
+  end
   if not unit or type(names) ~= "table" then
     return false
   end
@@ -131,9 +128,9 @@ function ns.UnitHasAnyBuffByNames(unit, names)
     if not aura then
       break
     end
-    local name = aura.name
+    local name = ns.SafeAuraName(aura)
     if HasStringKey(names, name) then
-      local sid = aura.spellId
+      local sid = ns.SafeAuraSpellID(aura)
       if not HasNumberKey(NAME_MODE_EXCLUDE, sid) then
         return true
       end
@@ -144,18 +141,11 @@ function ns.UnitHasAnyBuffByNames(unit, names)
 end
 
 function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return nil
+  end
   local function safeExpiration(aura)
-    if not aura then
-      return nil
-    end
-    local exp = aura.expirationTime
-    if IsSecret and IsSecret(exp) then
-      return nil
-    end
-    if infinite or exp == 0 then
-      return math.huge
-    end
-    return exp
+    return ns.SafeAuraExpiration(aura, infinite)
   end
 
   if nameMode then
@@ -171,9 +161,9 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
       end
 
       if
-        HasStringKey(nameLookup, aura.name)
-        and IsNonSecretNumber(aura.spellId)
-        and not HasNumberKey(NAME_MODE_EXCLUDE, aura.spellId)
+        HasStringKey(nameLookup, ns.SafeAuraName(aura))
+        and ns.SafeAuraSpellID(aura)
+        and not HasNumberKey(NAME_MODE_EXCLUDE, ns.SafeAuraSpellID(aura))
       then
         return safeExpiration(aura)
       end
@@ -193,7 +183,7 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
         break
       end
 
-      local sid = aura.spellId
+      local sid = ns.SafeAuraSpellID(aura)
       if HasNumberKey(spellLookup, sid) then
         return safeExpiration(aura)
       end
@@ -206,6 +196,9 @@ function ns.GetPlayerBuffExpire(spellIDs, nameMode, infinite)
 end
 
 function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return nil
+  end
   local spellLookup, nameLookup
   if nameMode then
     nameLookup = BuildNameLookup(spellIDs)
@@ -226,16 +219,15 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
         break
       end
 
-      local sid = aura.spellId
-      if IsNonSecretNumber(sid) then
+      local sid = ns.SafeAuraSpellID(aura)
+      if sid then
         if nameMode then
-          if HasStringKey(nameLookup, aura.name) and not HasNumberKey(NAME_MODE_EXCLUDE, sid) then
+          if HasStringKey(nameLookup, ns.SafeAuraName(aura)) and not HasNumberKey(NAME_MODE_EXCLUDE, sid) then
             found = true
-            local exp = aura.expirationTime
-            if IsSecret and IsSecret(exp) then
-              return nil
-            end
-            exp = (infinite or exp == 0) and math.huge or exp
+              local exp = ns.SafeAuraExpiration(aura, infinite)
+              if not exp then
+                return nil
+              end
             if not earliest or exp < earliest then
               earliest = exp
             end
@@ -244,11 +236,10 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
         else
           if HasNumberKey(spellLookup, sid) then
             found = true
-            local exp = aura.expirationTime
-            if IsSecret and IsSecret(exp) then
+            local exp = ns.SafeAuraExpiration(aura, infinite)
+            if not exp then
               return nil
             end
-            exp = (infinite or exp == 0) and math.huge or exp
             if not earliest or exp < earliest then
               earliest = exp
             end
@@ -269,6 +260,9 @@ function ns.GetRaidBuffExpire(spellIDs, nameMode, infinite)
 end
 
 function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
+  if ns.AurasAreSecret and ns.AurasAreSecret() then
+    return nil
+  end
   local playerGUID = UnitGUID("player")
   local units = ns.GetGroupUnits({ includePlayer = true })
 
@@ -290,27 +284,27 @@ function ns.GetRaidBuffExpireMine(spellIDs, nameMode, infinite)
         break
       end
 
-      local sid = aura.spellId
-      local sourceUnit = aura.sourceUnit
-      if IsNonSecretNumber(sid) and not (IsSecret and IsSecret(sourceUnit)) and UnitGUID(sourceUnit) == playerGUID then
-        if nameMode then
-          if HasStringKey(nameLookup, aura.name) and not HasNumberKey(NAME_MODE_EXCLUDE, sid) then
-            local exp = aura.expirationTime
-            if IsSecret and IsSecret(exp) then
-              return nil
+      local sid = ns.SafeAuraSpellID(aura)
+      local sourceUnit = ns.SafeAuraSourceUnit(aura)
+        if sid and sourceUnit and UnitGUID(sourceUnit) == playerGUID then
+          if nameMode then
+            if HasStringKey(nameLookup, ns.SafeAuraName(aura)) and not HasNumberKey(NAME_MODE_EXCLUDE, sid) then
+              local exp = ns.SafeAuraExpiration(aura, infinite)
+              if not exp then
+                return nil
+              end
+              return exp
             end
-            return (infinite or exp == 0) and math.huge or exp
-          end
-        else
-          if HasNumberKey(spellLookup, sid) then
-            local exp = aura.expirationTime
-            if IsSecret and IsSecret(exp) then
-              return nil
+          else
+            if HasNumberKey(spellLookup, sid) then
+              local exp = ns.SafeAuraExpiration(aura, infinite)
+              if not exp then
+                return nil
+              end
+              return exp
             end
-            return (infinite or exp == 0) and math.huge or exp
           end
         end
-      end
 
       idx = idx + 1
     end

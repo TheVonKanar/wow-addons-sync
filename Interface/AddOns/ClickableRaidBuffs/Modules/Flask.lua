@@ -58,7 +58,8 @@ local function IsActiveFlaskFleeting()
     if not a then
       break
     end
-    if FLEETING_BY_BUFFID[a.spellId] then
+    local sid = a.spellId
+    if IsNonSecretNumber(sid) and FLEETING_BY_BUFFID[sid] then
       return true
     end
     i = i + 1
@@ -71,11 +72,11 @@ local function UpdateFlaskState()
   local newExpire = GetFlaskExpire()
   if pi.flaskExpireTime ~= newExpire then
     pi.flaskExpireTime = newExpire
-    if type(_G.scanAllBags) == "function" then
-      _G.scanAllBags()
+    if type(ns.MarkBagsDirty) == "function" then
+      ns.MarkBagsDirty()
     end
-    if ns.RenderAll then
-      ns.RenderAll()
+    if type(ns.PokeUpdateBus) == "function" then
+      ns.PokeUpdateBus()
     end
   end
 
