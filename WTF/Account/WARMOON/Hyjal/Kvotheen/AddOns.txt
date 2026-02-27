@@ -174,7 +174,7 @@ SharedMediaAdditionalFonts: disabled
 SharedMedia: disabled
 Dejunk: enabled
 DialogueUI: enabled
-ExtraQuestButton: enabled
+ExtraQuestButton: disabled
 Leatrix_Plus: enabled
 HandyNotes_DragonGlyphs: disabled
 Masque_Diablo_III: disabled

@@ -28,6 +28,9 @@
 
 local ADDON, ns = ...
 
+-- Profiler handler tracking (nil-safe if profiler not loaded)
+local Track = _G.ArcUIProfiler_Track
+
 ns.CDMGroups = ns.CDMGroups or {}
 ns.CDMGroups.DynamicLayout = ns.CDMGroups.DynamicLayout or {}
 
@@ -1891,7 +1894,7 @@ function DL.OnOptionsPanelClosed()
     end
 end
 
-DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
+local function DynamicMaintainerOnUpdate(self, dt)
     -- Skip if CDMGroups not enabled (direct boolean check - no function call)
     if not _cdmGroupsEnabled then
         return
@@ -1960,7 +1963,9 @@ DynamicMaintainer:SetScript("OnUpdate", function(self, dt)
     if next(state.pendingReflows) then
         ProcessPendingReflows()
     end
-end)
+end
+
+DynamicMaintainer:SetScript("OnUpdate", Track and Track("DynLayout.MaintainerTick", DynamicMaintainerOnUpdate) or DynamicMaintainerOnUpdate)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- GROUP MANAGEMENT

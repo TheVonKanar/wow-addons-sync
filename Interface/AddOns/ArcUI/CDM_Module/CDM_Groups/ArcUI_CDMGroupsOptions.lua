@@ -1021,31 +1021,46 @@ local function GetOptionsTable()
                 fontSize = "small",
                 hidden = function() return collapsedSections.globalOptions end,
             },
+            showTooltips = {
+                type = "toggle",
+                name = "Show Tooltips",
+                desc = "When enabled, hovering over icons shows spell tooltips.\n\nWhen disabled, tooltips are hidden on all icons managed by ArcUI.\n\n|cffaaaaaaSeparate from Click-Through: you can have tooltips off but still click icons, or vice versa.|r",
+                order = 16.15,
+                width = 0.9,
+                hidden = function() return collapsedSections.globalOptions end,
+                get = function()
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if not db then return true end  -- Default: show tooltips
+                    return db.disableTooltips ~= true
+                end,
+                set = function(_, val)
+                    local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
+                    if not db then return end
+                    db.disableTooltips = not val
+                    if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
+                        ns.CDMGroups.RefreshIconSettings()
+                    end
+                end,
+            },
             clickThrough = {
                 type = "toggle",
                 name = "Click-Through",
-                desc = "When enabled, icons cannot be clicked - mouse clicks pass through to whatever is behind them.\n\nThis also disables tooltips since mouse events don't register.\n\nUseful if icons overlap clickable UI elements.",
+                desc = "When enabled, icons cannot be clicked - mouse clicks pass through to whatever is behind them.\n\n|cffaaaaaaNOTE: This also blocks tooltips since no mouse events reach the icon. Use 'Show Tooltips' above if you only want to hide tooltips while keeping icons clickable.|r",
                 order = 16.2,
                 width = 0.9,
                 hidden = function() return collapsedSections.globalOptions end,
                 get = function()
-                    -- Use shared DB accessor (reads from char.cdmGroups)
                     local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
                     if not db then return false end  -- Default: clickable
                     return db.clickThrough == true
                 end,
                 set = function(_, val)
-                    -- Use shared DB accessor (writes to char.cdmGroups)
                     local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
                     if not db then return end
                     db.clickThrough = val
-                    -- Refresh cache
-                    if ns.CDMGroups and ns.CDMGroups.RefreshCachedLayoutSettings then
-                        ns.CDMGroups.RefreshCachedLayoutSettings()
-                    end
-                    -- FORCE apply click-through immediately to all frames
-                    if ns.CDMGroups and ns.CDMGroups.ForceApplyClickThrough then
-                        ns.CDMGroups.ForceApplyClickThrough(val)
+                    -- Refresh cache and apply to all frames via RefreshIconSettings
+                    if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
+                        ns.CDMGroups.RefreshIconSettings()
                     end
                 end,
             },
@@ -2222,10 +2237,50 @@ local function GetOptionsTable()
                     if grp then grp:SetBgColor(r, g, b, a) end
                 end,
             },
+            visibilityLogic = {
+                type = "select",
+                name = "Condition Match Mode",
+                desc = "Controls how multiple hide conditions combine:\n\n"
+                    .. "|cff00ff00Match Any|r (default): Group hides if ANY checked condition is true.\n"
+                    .. "Example: 'Out of Combat' + 'Not Casting' = show ONLY when in combat AND casting.\n\n"
+                    .. "|cff00ff00Match All|r: Group hides only when ALL checked conditions are true simultaneously.\n"
+                    .. "Example: 'Out of Combat' + 'Not Casting' = show when in combat OR casting.",
+                order = 64,
+                width = 1.5,
+                hidden = function() return HideIfNoGroup() or collapsedSections.appearance end,
+                values = {
+                    ["any"] = "Match Any (hide if any condition met)",
+                    ["all"] = "Match All (hide only if all conditions met)",
+                },
+                sorting = { "any", "all" },
+                get = function()
+                    local g = GetSelectedGroup()
+                    if not g then return "any" end
+                    return g.visibilityLogic or "any"
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if g then
+                        g.visibilityLogic = val
+                        -- Save to profile
+                        if ns.CDMGroups.SaveGroupLayoutToProfile then
+                            ns.CDMGroups.SaveGroupLayoutToProfile(g.name, g)
+                        end
+                        -- Update visibility immediately
+                        if ns.CDMGroups.UpdateGroupVisibility then
+                            ns.CDMGroups.UpdateGroupVisibility()
+                        end
+                        -- Trigger auto-save to linked template
+                        if ns.CDMGroups.TriggerTemplateAutoSave then
+                            ns.CDMGroups.TriggerTemplateAutoSave()
+                        end
+                    end
+                end,
+            },
             visibility = {
                 type = "multiselect",
                 name = "Hide When...",
-                desc = "Select conditions that will HIDE this group.\nIf none selected, group is always visible.\nNote: Groups are always shown when editing or options panel is open.",
+                desc = "Select conditions that will HIDE this group.\nIf none selected, group is always visible.\nBehavior depends on Condition Match Mode above.\nNote: Groups are always shown when editing or options panel is open.",
                 order = 65,
                 width = 1.5,
                 hidden = function() return HideIfNoGroup() or collapsedSections.appearance end,

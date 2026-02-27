@@ -337,20 +337,20 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["CHANNEL_DéfenseLocale"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
-},
 ["ACHIEVEMENT"] = {
 ["b"] = 0,
 ["g"] = 1,
 ["r"] = 1,
 },
-["BN_WHISPER_INFORM"] = {
-["b"] = 0.9647059440612793,
-["g"] = 1,
-["r"] = 0,
+["CHANNEL_DéfenseLocale"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
+},
+["INSTANCE_CHAT"] = {
+["b"] = 0,
+["g"] = 0.4980392456054688,
+["r"] = 1,
 },
 ["ARENA_POINTS"] = {
 ["b"] = 1,
@@ -427,10 +427,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
-["INSTANCE_CHAT"] = {
-["b"] = 0,
-["g"] = 0.4980392456054688,
-["r"] = 1,
+["BN_WHISPER_INFORM"] = {
+["b"] = 0.9647059440612793,
+["g"] = 1,
+["r"] = 0,
 },
 ["CHANNEL_NOTICE_USER"] = {
 ["b"] = 0.7529412508010864,
@@ -604,9 +604,9 @@ CHATTYNATOR_CONFIG = {
 ["enable_combat_messages"] = false,
 ["timestamp_format"] = "%H:%M",
 ["current_skin"] = "dark",
-["message_font_size"] = 15,
-["button_position"] = "outside_left",
 ["link_urls"] = true,
+["button_position"] = "outside_left",
+["message_font_size"] = 15,
 ["new_whisper_new_tab"] = 0,
 ["message_font_outline"] = "none",
 ["line_spacing_2"] = 0,
@@ -617,7 +617,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 2239,
+["cleanIndex"] = 2611,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -44356,8 +44356,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Tiana Sunfeather",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44374,8 +44374,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Tiana Sunfeather",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44392,8 +44392,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44410,8 +44410,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44428,8 +44428,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44449,8 +44449,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskytankul-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44470,8 +44470,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44488,8 +44488,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Lor'themar Theron",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44506,8 +44506,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44527,8 +44527,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Yapludruhm-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44548,8 +44548,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Yapludruhm-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44569,8 +44569,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vilidøns-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44590,8 +44590,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskytankul-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44611,8 +44611,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Yapludruhm-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44629,8 +44629,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Mehlar Dawnblade",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44647,8 +44647,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Aponi Brightmane",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44665,8 +44665,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Nisa Cindersteel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44686,8 +44686,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskytankul-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44707,8 +44707,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Matrox-Eitrigg",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -44725,8 +44725,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "High Exarch Turalyon",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44743,8 +44743,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "High Exarch Turalyon",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44761,8 +44761,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44779,8 +44779,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44800,8 +44800,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -44818,8 +44818,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44836,8 +44836,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Vindicator Xayann",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44854,8 +44854,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44872,8 +44872,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44890,8 +44890,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44908,8 +44908,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44926,8 +44926,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44944,8 +44944,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44962,8 +44962,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -44980,8 +44980,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45001,8 +45001,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Dordok-Ysondre",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -45022,8 +45022,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Justhunt-Ysondre",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -45040,8 +45040,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45058,8 +45058,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45076,8 +45076,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45094,8 +45094,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45112,8 +45112,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45130,8 +45130,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Arator",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45151,8 +45151,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45172,8 +45172,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45190,8 +45190,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45208,8 +45208,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Quel'Danas Sentinel",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45229,8 +45229,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vilidøns-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -45250,8 +45250,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45268,8 +45268,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Latrunculon",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45289,8 +45289,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45310,8 +45310,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45331,8 +45331,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45346,8 +45346,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45364,8 +45364,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "High Exarch Turalyon",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -45385,8 +45385,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen-Hyjal",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -45396,6 +45396,6243 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["text"] = "You receive item: |cnIQ2:|Hitem:251242::::::::80:263::11:3:13573:6652:13668:2:9:80:28:3592:::::|h[Voidbound Lieutenant's Band]|h|r",
 ["id"] = "s0_2294",
 ["timestamp"] = 1772149561,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: We cannot allow these ethereals to pillage our sacred artifacts!",
+["timestamp"] = 1772149720,
+["id"] = "s0_2295",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: On that we agree. Arator, hold the line. Kvotheen, seize those weapons!",
+["timestamp"] = 1772149726,
+["id"] = "s0_2296",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 49 Silver, 41 Copper (+2 Silver, 98 Copper)",
+["timestamp"] = 1772149746,
+["id"] = "s0_2297",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238845::::::::80:263:::::::::|h[Staff of Disintegration]|h|r",
+["timestamp"] = 1772149750,
+["id"] = "s0_2298",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 2 Gold, 5 Silver, 96 Copper (+4 Silver, 11 Copper)",
+["timestamp"] = 1772149763,
+["id"] = "s0_2299",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238842::::::::80:263:::::::::|h[Cosmic Infuser]|h|r",
+["timestamp"] = 1772149763,
+["id"] = "s0_2300",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 2 Gold, 11 Silver, 55 Copper (+4 Silver, 23 Copper)",
+["timestamp"] = 1772149787,
+["id"] = "s0_2301",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238844::::::::80:263:::::::::|h[Infinity Blades]|h|r",
+["timestamp"] = 1772149792,
+["id"] = "s0_2302",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238890::::::::80:263:::::::::|h[Scourgebane]|h|r",
+["timestamp"] = 1772149809,
+["id"] = "s0_2303",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238843::::::::80:263:::::::::|h[Devastation]|h|r",
+["timestamp"] = 1772149822,
+["id"] = "s0_2304",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238846::::::::80:263:::::::::|h[Netherstrand Longbow]|h|r",
+["timestamp"] = 1772149827,
+["id"] = "s0_2305",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 5 Gold, 57 Silver, 18 Copper (+11 Silver, 13 Copper)",
+["timestamp"] = 1772149866,
+["id"] = "s0_2306",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 2 Gold, 51 Silver, 82 Copper (+5 Silver, 2 Copper)",
+["timestamp"] = 1772149880,
+["id"] = "s0_2307",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Norkonahl the Looter",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Norkonahl the Looter says: Your precious artifacts now belong to Xal'atath!",
+["timestamp"] = 1772149886,
+["id"] = "s0_2308",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Norkonahl the Looter",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Norkonahl the Looter says: I failed... my people...",
+["timestamp"] = 1772149913,
+["id"] = "s0_2309",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 2 Silver, 45 Copper (+2 Silver, 4 Copper)",
+["timestamp"] = 1772149915,
+["id"] = "s0_2310",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 59 Silver, 53 Copper (+1 Silver, 19 Copper)",
+["timestamp"] = 1772149930,
+["id"] = "s0_2311",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ5:|Hitem:238807::::::::80:263:::::::::|h[Warp Slicer]|h|r",
+["timestamp"] = 1772149939,
+["id"] = "s0_2312",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 73 Silver, 34 Copper (+1 Silver, 46 Copper)",
+["timestamp"] = 1772149951,
+["id"] = "s0_2313",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 7 Gold, 6 Silver, 72 Copper (+14 Silver, 12 Copper)",
+["timestamp"] = 1772149974,
+["id"] = "s0_2314",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: Thank the Light! You've recovered the artifacts.",
+["timestamp"] = 1772149987,
+["id"] = "s0_2315",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 65 Silver, 94 Copper (+1 Silver, 31 Copper)",
+["timestamp"] = 1772149997,
+["id"] = "s0_2316",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Voltarynn-Dalaran|h[|cff33937fVoltarynn-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1621-0B3D5570:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772150008,
+["id"] = "s0_2317",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:251257::::::::80:263::11:2:13573:6652:2:9:80:28:3592:::::|h[Recovered Sanctum Stave]|h|r",
+["timestamp"] = 1772150015,
+["id"] = "s0_2318",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: Vanguard of the Light! With me! Push these invaders back to the Void that spawned them!",
+["timestamp"] = 1772150025,
+["id"] = "s0_2319",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lothraxion",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lothraxion says: For the Light!",
+["timestamp"] = 1772150032,
+["id"] = "s0_2320",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "VoidElf",
+["name"] = "Myrn-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Myrn-Archimonde|h[|cffaad372Myrn-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1302-0CDAA8BD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772150033,
+["id"] = "s0_2321",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Commander Koruth Mountainfist",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Commander Koruth Mountainfist says: The Light offers respite! But ye must press on!",
+["timestamp"] = 1772150049,
+["id"] = "s0_2322",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Commander Venel Lightblood",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Commander Venel Lightblood says: Keep going! Do not succumb to the darkness!",
+["timestamp"] = 1772150060,
+["id"] = "s0_2323",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "General Amias Bellamy",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "General Amias Bellamy says: Forward! We will push back the shadows!",
+["timestamp"] = 1772150067,
+["id"] = "s0_2324",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Alonsus Faol",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Alonsus Faol says: Hurry, Kvotheen! We need your help against that behemoth!",
+["timestamp"] = 1772150075,
+["id"] = "s0_2325",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: Channel the Light from the weapons you recovered! Drive this monster back to the Void!",
+["timestamp"] = 1772150082,
+["id"] = "s0_2326",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: Turalyon! We must regroup at the Sunwell before it's too late!",
+["timestamp"] = 1772150201,
+["id"] = "s0_2327",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: Damn it all! Vanguard, fall back!",
+["timestamp"] = 1772150206,
+["id"] = "s0_2328",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Arator",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Arator says: Kvotheen! Mount up! Retreat to the Sunwell!",
+["timestamp"] = 1772150221,
+["id"] = "s0_2329",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Orc",
+["name"] = "Justhunt-Ysondre",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Justhunt-Ysondre|h[|cffaad372Justhunt-Ysondre|r]|h a accompli le haut fait |cffffff00|Hachievement:62273:Player-1335-06F2340A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r !",
+["timestamp"] = 1772150223,
+["id"] = "s0_2330",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Arator",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Arator says: We made it! Light preserve us.",
+["timestamp"] = 1772150229,
+["id"] = "s0_2331",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: Turalyon is rallying the survivors to the Sunwell chamber.",
+["timestamp"] = 1772150236,
+["id"] = "s0_2332",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Orc",
+["name"] = "Dordok-Ysondre",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Dordok-Ysondre|h[|cffaad372Dordok-Ysondre|r]|h a accompli le haut fait |cffffff00|Hachievement:62273:Player-1335-06882EAF:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r !",
+["timestamp"] = 1772150241,
+["id"] = "s0_2333",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: We will beseech the Light once more to help us push back the Devouring Host.",
+["timestamp"] = 1772150242,
+["id"] = "s0_2334",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: The Sunwell brought us salvation before. We must have faith that it will happen again.",
+["timestamp"] = 1772150249,
+["id"] = "s0_2335",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: You are the last of the Vanguard to make it.",
+["timestamp"] = 1772150330,
+["id"] = "s0_2336",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260659::::::::80:263:::::::::|h[Stellar Vortex Residue]|h|r",
+["timestamp"] = 1772150386,
+["id"] = "s0_2337",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260677::::::::80:263:::::::::|h[Void Flakes]|h|r",
+["timestamp"] = 1772150386,
+["id"] = "s0_2338",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260659::::::::80:263:::::::::|h[Stellar Vortex Residue]|h|r",
+["timestamp"] = 1772150411,
+["id"] = "s0_2339",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 85 Silver, 72 Copper (+3 Silver, 71 Copper)",
+["timestamp"] = 1772150421,
+["id"] = "s0_2340",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Voltarynn-Dalaran|h[|cff33937fVoltarynn-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:62273:Player-1621-0B3D5570:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r !",
+["timestamp"] = 1772150442,
+["id"] = "s0_2341",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260659::::::::80:263:::::::::|h[Stellar Vortex Residue]|h|r",
+["timestamp"] = 1772150448,
+["id"] = "s0_2342",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Imperatus says: We will extinguish the Sunwell's radiance!",
+["timestamp"] = 1772150462,
+["id"] = "s0_2343",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 2 Gold, 38 Silver, 29 Copper (+4 Silver, 76 Copper)",
+["timestamp"] = 1772150473,
+["id"] = "s0_2344",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260638::::::::80:263:::::::::|h[Fine Void Residue]|h|rx2",
+["timestamp"] = 1772150481,
+["id"] = "s0_2345",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "ROGUE",
+["race"] = "Human",
+["name"] = "Mangousto-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Mangousto-Hyjal|h[|cfffff468Mangousto|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1390-06DC4442:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772150504,
+["id"] = "s0_2346",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260659::::::::80:263:::::::::|h[Stellar Vortex Residue]|h|rx2",
+["timestamp"] = 1772150518,
+["id"] = "s0_2347",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Imperatus says: Pray to your petty well. It will not save you from Xal'atath!",
+["timestamp"] = 1772150541,
+["id"] = "s0_2348",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Imperatus says: We will extinguish the Sunwell's radiance!",
+["timestamp"] = 1772150546,
+["id"] = "s0_2349",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Vilidøns-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Vilidøns-Dalaran|h[|cffa330c9Vilidøns-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:61312:Player-1621-0AE26419:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Center Stager]|h|r !",
+["timestamp"] = 1772150577,
+["id"] = "s0_2350",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Imperatus yells: Pray to your petty well. It will not save you from Xal'atath!",
+["timestamp"] = 1772150611,
+["id"] = "s0_2351",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Imperatus says: Pray to your petty well. It will not save you from Xal'atath!",
+["timestamp"] = 1772150612,
+["id"] = "s0_2352",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Imperatus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Imperatus says: We will extinguish the Sunwell's radiance!",
+["timestamp"] = 1772150620,
+["id"] = "s0_2353",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Evinléa-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Evinléa-Hyjal|h[|cff0070ddEvinléa|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-06DB125D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150645,
+["id"] = "s0_2354",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "HighmountainTauren",
+["name"] = "Youkibeer-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Youkibeer-Hyjal|h[|cffff7c0aYoukibeer|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-06DC7EA5:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150646,
+["id"] = "s0_2355",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Orc",
+["name"] = "Mortiflettes-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Mortiflettes-Hyjal|h[|cffc41e3aMortiflettes|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-07D2641A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150647,
+["id"] = "s0_2356",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "BloodElf",
+["name"] = "Zênnê-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Zênnê-Hyjal|h[|cff8788eeZênnê|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5B4178:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150648,
+["id"] = "s0_2357",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Nightborne",
+["name"] = "Pooja-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Pooja-Hyjal|h[|cff3fc7ebPooja|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5A2951:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150650,
+["id"] = "s0_2358",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Guliok-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Guliok-Hyjal|h[|cffa330c9Guliok|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0B14C6C8:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150650,
+["id"] = "s0_2359",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "VoidElf",
+["name"] = "Yüina-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Yüina-Hyjal|h[|cffaad372Yüina|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C349DAC:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150651,
+["id"] = "s0_2360",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Ênvÿ-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ênvÿ-Hyjal|h[|cffa330c9Ênvÿ|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C348C5A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150652,
+["id"] = "s0_2361",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Seyarz-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Seyarz-Dalaran|h[|cffff7c0aSeyarz-Dalaran|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1621-0B0884FD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150653,
+["id"] = "s0_2362",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Troll",
+["name"] = "Vanvan-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Vanvan-Hyjal|h[|cff3fc7ebVanvan|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-08E3CA37:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150654,
+["id"] = "s0_2363",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "ZandalariTroll",
+["name"] = "Zahtar-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Zahtar-Hyjal|h[|cffff7c0aZahtar|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0A440C41:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150655,
+["id"] = "s0_2364",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "MagharOrc",
+["name"] = "Estîas-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Estîas-Hyjal|h[|cff00ff98Estîas|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0BF0CE7F:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150658,
+["id"] = "s0_2365",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Vulpera",
+["name"] = "Toutiflex-KhazModan",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Toutiflex-KhazModan|h[|cff0070ddToutiflex-KhazModan|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-3690-0B951F23:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150658,
+["id"] = "s0_2366",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Plàtøn-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Plàtøn-Hyjal|h[|cffa330c9Plàtøn|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C61E376:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150661,
+["id"] = "s0_2367",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Æurum-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Æurum-Hyjal|h[|cfff48cbaÆurum|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5DB873:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150662,
+["id"] = "s0_2368",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Lussious-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Lussious-Hyjal|h[|cffa330c9Lussious|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0B3EAA8E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150662,
+["id"] = "s0_2369",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "NightElf",
+["name"] = "Inualpe-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Inualpe-Dalaran|h[|cffaad372Inualpe-Dalaran|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1621-09E528C7:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150662,
+["id"] = "s0_2370",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "VoidElf",
+["name"] = "Sawyza-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sawyza-Hyjal|h[|cffffffffSawyza|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CD427D8:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150663,
+["id"] = "s0_2371",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Birbibop-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Birbibop-Hyjal|h[|cfff48cbaBirbibop|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CCF1384:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150663,
+["id"] = "s0_2372",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Orc",
+["name"] = "Wetfingers-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Wetfingers-Hyjal|h[|cff0070ddWetfingers|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C575751:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150664,
+["id"] = "s0_2373",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "KulTiran",
+["name"] = "Patatedure-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Patatedure-Hyjal|h[|cff00ff98Patatedure|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5F762F:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150664,
+["id"] = "s0_2374",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-09230B89:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150664,
+["id"] = "s0_2375",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-09230B89:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150664,
+["id"] = "s0_2376",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Scourge",
+["name"] = "Youarelegend-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Youarelegend-Hyjal|h[|cffc69b6dYouarelegend|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C257918:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150665,
+["id"] = "s0_2377",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Tripadvisør-KirinTor",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Tripadvisør-KirinTor|h[|cffc69b6dTripadvisør-KirinTor|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1127-0908264E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772150665,
+["id"] = "s0_2378",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "BloodElf",
+["name"] = "Sâîyu-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sâîyu-Hyjal|h[|cffffffffSâîyu|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5B85A3:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150665,
+["id"] = "s0_2379",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Tauren",
+["name"] = "Istérias-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Istérias-Hyjal|h[|cffaad372Istérias|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-06CF29AD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150666,
+["id"] = "s0_2380",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "BloodElf",
+["name"] = "Shivz-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Shivz-Hyjal|h[|cffc69b6dShivz|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-08DE00E8:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150666,
+["id"] = "s0_2381",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Orc",
+["name"] = "Ðerhú-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ðerhú-Hyjal|h[|cffc41e3aÐerhú|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5994A8:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150667,
+["id"] = "s0_2382",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Human",
+["name"] = "Kàós-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kàós-Hyjal|h[|cffc41e3aKàós|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D495971:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150668,
+["id"] = "s0_2383",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Jackydrake-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Jackydrake-Hyjal|h[|cff33937fJackydrake|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C53A204:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150669,
+["id"] = "s0_2384",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Human",
+["name"] = "Nochtra-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Nochtra-Hyjal|h[|cffc41e3aNochtra|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5B0CD4:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150670,
+["id"] = "s0_2385",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Tauren",
+["name"] = "Mcbaguette-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Mcbaguette-Hyjal|h[|cfff48cbaMcbaguette|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0BC255E7:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150670,
+["id"] = "s0_2386",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Nightborne",
+["name"] = "Gurthwulf-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Gurthwulf-Hyjal|h[|cffc69b6dGurthwulf|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D263A0E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150670,
+["id"] = "s0_2387",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Tedobeârz-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Tedobeârz-Hyjal|h[|cffa330c9Tedobeârz|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C93C81E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150671,
+["id"] = "s0_2388",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Sooken-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sooken-Hyjal|h[|cffc69b6dSooken|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5310FF:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150674,
+["id"] = "s0_2389",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Xhunterone-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Xhunterone-Hyjal|h[|cffa330c9Xhunterone|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-087CA964:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150674,
+["id"] = "s0_2390",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Hellkatrix-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Hellkatrix-Hyjal|h[|cffa330c9Hellkatrix|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-08BBDA8E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150674,
+["id"] = "s0_2391",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "MagharOrc",
+["name"] = "Gottferdum-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Gottferdum-Hyjal|h[|cffc41e3aGottferdum|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-078321CD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150676,
+["id"] = "s0_2392",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Worgen",
+["name"] = "Taellys-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Taellys-Hyjal|h[|cffff7c0aTaellys|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C8E3B0B:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150676,
+["id"] = "s0_2393",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Linkiz-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Linkiz-Hyjal|h[|cffa330c9Linkiz|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0A0F84CF:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150678,
+["id"] = "s0_2394",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Tokitø-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Tokitø-Hyjal|h[|cffa330c9Tokitø|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D417864:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150679,
+["id"] = "s0_2395",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "BloodElf",
+["name"] = "Kãlie-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kãlie-Hyjal|h[|cff8788eeKãlie|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0A2D321D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150679,
+["id"] = "s0_2396",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "BloodElf",
+["name"] = "Aéoliah-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Aéoliah-Hyjal|h[|cffaad372Aéoliah|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-06D21FB8:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150679,
+["id"] = "s0_2397",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Darktessia-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Darktessia-Hyjal|h[|cffa330c9Darktessia|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-087E3C12:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150681,
+["id"] = "s0_2398",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "Human",
+["name"] = "Darkphel-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Darkphel-Hyjal|h[|cffffffffDarkphel|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C8DF283:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150683,
+["id"] = "s0_2399",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Elfani-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Elfani-Hyjal|h[|cfff48cbaElfani|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5B66D0:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150685,
+["id"] = "s0_2400",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "VoidElf",
+["name"] = "Kifeur-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kifeur-Hyjal|h[|cffa330c9Kifeur|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5F8691:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150685,
+["id"] = "s0_2401",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "DarkIronDwarf",
+["name"] = "Eldkwin-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Eldkwin-Hyjal|h[|cffc41e3aEldkwin|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C0E4F49:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150687,
+["id"] = "s0_2402",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Nightborne",
+["name"] = "Årkozorxx-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Årkozorxx-Hyjal|h[|cff3fc7ebÅrkozorxx|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5E4DFF:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150690,
+["id"] = "s0_2403",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "LightforgedDraenei",
+["name"] = "Henty-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Henty-Hyjal|h[|cffffffffHenty|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0AF1A78B:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150691,
+["id"] = "s0_2404",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Lumenor-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Lumenor-Hyjal|h[|cfff48cbaLumenor|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CA0ADB6:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150692,
+["id"] = "s0_2405",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Dracthyr",
+["name"] = "Ewila-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ewila-Hyjal|h[|cffaad372Ewila|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D281125:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150692,
+["id"] = "s0_2406",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "VoidElf",
+["name"] = "Rolandcorbis-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Rolandcorbis-Hyjal|h[|cffa330c9Rolandcorbis|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5A4BF7:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150692,
+["id"] = "s0_2407",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "BloodElf",
+["name"] = "Vioma-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Vioma-Hyjal|h[|cff3fc7ebVioma|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CEE2E31:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150693,
+["id"] = "s0_2408",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Pandaren",
+["name"] = "Kwang-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kwang-Hyjal|h[|cff00ff98Kwang|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D565BF6:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150693,
+["id"] = "s0_2409",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Dwarf",
+["name"] = "Tharic-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Tharic-Hyjal|h[|cfff48cbaTharic|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D4F97AC:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150694,
+["id"] = "s0_2410",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Araquiël-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Araquiël-Hyjal|h[|cfff48cbaAraquiël|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CA798B2:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150694,
+["id"] = "s0_2411",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Vehlion-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Vehlion-Hyjal|h[|cfff48cbaVehlion|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D41EFEA:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150698,
+["id"] = "s0_2412",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Orc",
+["name"] = "Tregorth-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Tregorth-Hyjal|h[|cffc41e3aTregorth|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5F7E44:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150698,
+["id"] = "s0_2413",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Goblin",
+["name"] = "Gohtmog-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Gohtmog-Hyjal|h[|cff8788eeGohtmog|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-07D84970:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150699,
+["id"] = "s0_2414",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "HighmountainTauren",
+["name"] = "Akazaluna-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Akazaluna-Hyjal|h[|cff00ff98Akazaluna|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5D4F0D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150699,
+["id"] = "s0_2415",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Troll",
+["name"] = "Zulzaman-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Zulzaman-Hyjal|h[|cff0070ddZulzaman|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CF712A2:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150700,
+["id"] = "s0_2416",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Erean-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Erean-Hyjal|h[|cfff48cbaErean|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-070A5BDA:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150701,
+["id"] = "s0_2417",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "VoidElf",
+["name"] = "Chezäh-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Chezäh-Hyjal|h[|cffa330c9Chezäh|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D598C2C:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150701,
+["id"] = "s0_2418",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Buntah-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Buntah-Hyjal|h[|cfff48cbaBuntah|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5CCEEF:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150702,
+["id"] = "s0_2419",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Orc",
+["name"] = "Carbenbolass-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Carbenbolass-Hyjal|h[|cff8788eeCarbenbolass|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0B0BA87D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150702,
+["id"] = "s0_2420",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Salvadrake-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Salvadrake-Hyjal|h[|cff33937fSalvadrake|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C543071:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150703,
+["id"] = "s0_2421",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "MagharOrc",
+["name"] = "ßargäm-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:ßargäm-Hyjal|h[|cff0070ddßargäm|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C2048A2:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150705,
+["id"] = "s0_2422",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Troll",
+["name"] = "Snuk-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Snuk-Hyjal|h[|cffff7c0aSnuk|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-08BEB00D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150708,
+["id"] = "s0_2423",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Troll",
+["name"] = "Torkmo-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Torkmo-Hyjal|h[|cff8788eeTorkmo|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C1856EE:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150708,
+["id"] = "s0_2424",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Scourge",
+["name"] = "Sylthius-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sylthius-Hyjal|h[|cffc41e3aSylthius|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0BC109F5:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150709,
+["id"] = "s0_2425",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Boomda-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Boomda-Hyjal|h[|cffff7c0aBoomda|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CACE874:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150710,
+["id"] = "s0_2426",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Pandaren",
+["name"] = "Yoshïne-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Yoshïne-Hyjal|h[|cff0070ddYoshïne|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5EB18C:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150711,
+["id"] = "s0_2427",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Mönonoké-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Mönonoké-Hyjal|h[|cffff7c0aMönonoké|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CC2DD2E:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150711,
+["id"] = "s0_2428",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "ZandalariTroll",
+["name"] = "Noøß-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Noøß-Hyjal|h[|cffaad372Noøß|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0C2611A5:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150713,
+["id"] = "s0_2429",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Vulpera",
+["name"] = "Toraksham-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Toraksham-Hyjal|h[|cff0070ddToraksham|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D566B3A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150714,
+["id"] = "s0_2430",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Troll",
+["name"] = "Fenxiahm-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Fenxiahm-Hyjal|h[|cff3fc7ebFenxiahm|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D556836:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150714,
+["id"] = "s0_2431",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Gnome",
+["name"] = "Mld-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Mld-Hyjal|h[|cff8788eeMld|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CB6DA04:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150715,
+["id"] = "s0_2432",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Ladriell-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ladriell-Hyjal|h[|cffa330c9Ladriell|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0B3F5358:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150716,
+["id"] = "s0_2433",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Tauren",
+["name"] = "Beefmaster-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Beefmaster-Hyjal|h[|cffff7c0aBeefmaster|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0B22ED3F:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150719,
+["id"] = "s0_2434",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "LightforgedDraenei",
+["name"] = "Leytor-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Leytor-Hyjal|h[|cffc69b6dLeytor|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0A628C32:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150720,
+["id"] = "s0_2435",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: The Vanguard of the Light will need quarters and supplies.",
+["timestamp"] = 1772150723,
+["id"] = "s0_2436",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "BloodElf",
+["name"] = "Azåliå-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Azåliå-Hyjal|h[|cffffffffAzåliå|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5A489D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150724,
+["id"] = "s0_2437",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "BloodElf",
+["name"] = "Lirasä-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Lirasä-Hyjal|h[|cff8788eeLirasä|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0D5F666B:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150724,
+["id"] = "s0_2438",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Ratariar-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ratariar-Hyjal|h[|cfff48cbaRatariar|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-0CF650D0:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150724,
+["id"] = "s0_2439",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lor'themar Theron says: I will consider it, after I have consulted with the others.",
+["timestamp"] = 1772150727,
+["id"] = "s0_2440",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "Dwarf",
+["name"] = "Aracknes-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Aracknes-Hyjal|h[|cffc41e3aAracknes|r]|h has earned the achievement |cffffff00|Hachievement:62191:Player-1390-08179BF1:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r!",
+["timestamp"] = 1772150730,
+["id"] = "s0_2441",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:348:GUILD:|h[|cff0070ddKvotheen|r]|h: PAS ENVEI D'ALLER ME COUCHER",
+["timestamp"] = 1772150911,
+["id"] = "s0_2442",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:349:GUILD:|h[|cff0070ddKvotheen|r]|h: PAS ENVIE DE BOSSER DEMAIN",
+["timestamp"] = 1772150921,
+["id"] = "s0_2443",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "ROGUE",
+["race"] = "Human",
+["name"] = "Mangousto-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Mangousto-Hyjal|h[|cfffff468Mangousto|r]|h a accompli le haut fait |cffffff00|Hachievement:62273:Player-1390-06DC4442:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r !",
+["timestamp"] = 1772150982,
+["id"] = "s0_2444",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Orc",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:354:GUILD:|h[|cff00ff98Øskytankul|r]|h: 81 !!",
+["timestamp"] = 1772150990,
+["id"] = "s0_2445",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:251324::::::::80:263::11::1:28:3615:::::|h[Basket of Eversong Herbs]|h|r",
+["timestamp"] = 1772151007,
+["id"] = "s0_2446",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "You have gained the Midnight Alchemy skill.",
+["timestamp"] = 1772151037,
+["id"] = "s0_2447",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:236778::::::::80:263::::1:38:13:::::|h[Mana Lily |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx20",
+["timestamp"] = 1772151048,
+["id"] = "s0_2448",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236761::::::::80:263::::1:38:13:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx40",
+["timestamp"] = 1772151048,
+["id"] = "s0_2449",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:236776::::::::80:263::::1:38:13:::::|h[Argentleaf |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx10",
+["timestamp"] = 1772151048,
+["id"] = "s0_2450",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "VoidElf",
+["name"] = "Myrn-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Myrn-Archimonde|h[|cffaad372Myrn-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:62273:Player-1302-0CDAA8BD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r !",
+["timestamp"] = 1772151051,
+["id"] = "s0_2451",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ1:|Hitem:240991::::::::80:263::::1:38:13:::::|h[Sunglass Vial |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx100",
+["timestamp"] = 1772151128,
+["id"] = "s0_2452",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:241305::::::::80:263::::2:38:13:40:3252:::::|h[Silvermoon Health Potion |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151151,
+["id"] = "s0_2453",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 2.",
+["timestamp"] = 1772151151,
+["id"] = "s0_2454",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3150:0|h[Midnight Alchemy Knowledge]|h|rx1",
+["timestamp"] = 1772151152,
+["id"] = "s0_2455",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3256:0|h[Artisan Alchemist's Moxie]|h|rx10",
+["timestamp"] = 1772151152,
+["id"] = "s0_2456",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:241305::::::::80:263::::2:38:13:40:3252:::::|h[Silvermoon Health Potion |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151155,
+["id"] = "s0_2457",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 3.",
+["timestamp"] = 1772151155,
+["id"] = "s0_2458",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:241305::::::::80:263::::2:38:13:40:3252:::::|h[Silvermoon Health Potion |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151162,
+["id"] = "s0_2459",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 4.",
+["timestamp"] = 1772151163,
+["id"] = "s0_2460",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:241305::::::::80:263::::2:38:13:40:3252:::::|h[Silvermoon Health Potion |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151164,
+["id"] = "s0_2461",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 5.",
+["timestamp"] = 1772151165,
+["id"] = "s0_2462",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Hitni-Archimonde|h[|cff3fc7ebHitni-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1302-0C3B1C87:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772151182,
+["id"] = "s0_2463",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:268954::::::::80:263::::2:38:13:40:3239:::::|h[Entropic Extract |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151192,
+["id"] = "s0_2464",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 6.",
+["timestamp"] = 1772151192,
+["id"] = "s0_2465",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3256:0|h[Artisan Alchemist's Moxie]|h|rx10",
+["timestamp"] = 1772151193,
+["id"] = "s0_2466",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3150:0|h[Midnight Alchemy Knowledge]|h|rx1",
+["timestamp"] = 1772151193,
+["id"] = "s0_2467",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You create: |cnIQ1:|Hitem:241339::::::::80:263::::2:38:13:40:3256:::::|h[Enlightenment Tonic |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx5.",
+["timestamp"] = 1772151198,
+["id"] = "s0_2468",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["r"] = 0.3333333432674408,
+["g"] = 0.3333333432674408,
+["b"] = 1,
+},
+["text"] = "Your skill in Midnight Alchemy has increased to 7.",
+["timestamp"] = 1772151198,
+["id"] = "s0_2469",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3256:0|h[Artisan Alchemist's Moxie]|h|rx10",
+["timestamp"] = 1772151199,
+["id"] = "s0_2470",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3150:0|h[Midnight Alchemy Knowledge]|h|rx1",
+["timestamp"] = 1772151199,
+["id"] = "s0_2471",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Camberon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Camberon says: I'm far too busy to keep up with your training, but you're welcome to use my cauldron over there.",
+["timestamp"] = 1772151289,
+["id"] = "s0_2472",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Dwarf",
+["name"] = "Dwalgo-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Dwalgo-Hyjal|h[|cffaad372Dwalgo|r]|h a accompli le haut fait |cffffff00|Hachievement:62191:Player-1390-088F9757:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Call of the Light]|h|r !",
+["timestamp"] = 1772151303,
+["id"] = "s0_2473",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: 5...",
+["timestamp"] = 1772151335,
+["id"] = "s0_2474",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: 4...",
+["timestamp"] = 1772151336,
+["id"] = "s0_2475",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: 3...",
+["timestamp"] = 1772151337,
+["id"] = "s0_2476",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: 2...",
+["timestamp"] = 1772151338,
+["id"] = "s0_2477",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: 1...",
+["timestamp"] = 1772151339,
+["id"] = "s0_2478",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Icarus",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Icarus says: Show... me... what... you've... got.",
+["timestamp"] = 1772151340,
+["id"] = "s0_2479",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Grand Magister Rommath",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Grand Magister Rommath says: You are not needed!",
+["id"] = "s0_2480",
+["timestamp"] = 1772179633,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magister Umbric",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Magister Umbric says: That isn't your decision to make!",
+["id"] = "s0_2481",
+["timestamp"] = 1772179636,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "HUNTER",
+["name"] = "Gorûrz-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Gorûrz-Hyjal|h[|cffaad372Gorûrz|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-094A4F10:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2482",
+["timestamp"] = 1772179642,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Troll",
+["class"] = "DRUID",
+["name"] = "Jähväh-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Jähväh-Hyjal|h[|cffff7c0aJähväh|r]|h has earned the achievement |cffffff00|Hachievement:41806:Player-1390-09E9F492:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Breaching the Voidstorm]|h|r!",
+["id"] = "s0_2483",
+["timestamp"] = 1772179645,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Troll",
+["class"] = "DRUID",
+["name"] = "Jähväh-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Jähväh-Hyjal|h[|cffff7c0aJähväh|r]|h has earned the achievement |cffffff00|Hachievement:42045:Player-1390-09E9F492:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Midnight]|h|r!",
+["id"] = "s0_2484",
+["timestamp"] = 1772179645,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Troll",
+["class"] = "DRUID",
+["name"] = "Jähväh-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Jähväh-Hyjal|h[|cffff7c0aJähväh|r]|h has earned the achievement |cffffff00|Hachievement:61734:Player-1390-09E9F492:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Delves: Endgame]|h|r!",
+["id"] = "s0_2485",
+["timestamp"] = 1772179645,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "SHAMAN",
+["name"] = "Yûrïko-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Yûrïko-Hyjal|h[|cff0070ddYûrïko|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0CA51EFB:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2486",
+["timestamp"] = 1772179670,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dwarf",
+["class"] = "MAGE",
+["name"] = "Luwnärya-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Luwnärya-Hyjal|h[|cff3fc7ebLuwnärya|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0C93B2EC:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2487",
+["timestamp"] = 1772179673,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "KulTiran",
+["class"] = "MONK",
+["name"] = "Wearz-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Wearz-Hyjal|h[|cff00ff98Wearz|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0CE192E0:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2488",
+["timestamp"] = 1772179677,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dracthyr",
+["class"] = "PRIEST",
+["name"] = "Hibounty-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Hibounty-Hyjal|h[|cffffffffHibounty|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0C33DFF1:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2489",
+["timestamp"] = 1772179709,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "NightElf",
+["name"] = "Ðeforz-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ðeforz-Hyjal|h[|cffc41e3aÐeforz|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D2BDFA2:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179733,
+["id"] = "s0_2490",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Sagitarius-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sagitarius-Hyjal|h[|cfff48cbaSagitarius|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0711A6A5:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["timestamp"] = 1772179735,
+["id"] = "s0_2491",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "BloodElf",
+["name"] = "Skyyo-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Skyyo-Hyjal|h[|cfff48cbaSkyyo|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0C54872A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["timestamp"] = 1772179765,
+["id"] = "s0_2492",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Orc",
+["name"] = "Gogopower-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Gogopower-Hyjal|h[|cffc69b6dGogopower|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0C52E086:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["timestamp"] = 1772179790,
+["id"] = "s0_2493",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Orc",
+["name"] = "Ozaerys-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ozaerys-Hyjal|h[|cffaad372Ozaerys|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D186FB5:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179794,
+["id"] = "s0_2494",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Rafist-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Rafist-Hyjal|h[|cff3fc7ebRafist|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0C40ACFD:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179804,
+["id"] = "s0_2495",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:248075::::::::80:263::11:2:13573:6652:2:9:80:28:3085:::::|h[Golden City Staff]|h|r",
+["timestamp"] = 1772179805,
+["id"] = "s0_2496",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Arthénace-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Arthénace-Hyjal|h[|cfff48cbaArthénace|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0C1A3F7B:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179811,
+["id"] = "s0_2497",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lor'themar Theron says: The Sunwell holds the Voidstorm at bay for now. But its current state cannot be sustained forever.",
+["timestamp"] = 1772179812,
+["id"] = "s0_2498",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "ROGUE",
+["race"] = "BloodElf",
+["name"] = "Azuurea-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Azuurea-Hyjal|h[|cfffff468Azuurea|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-09EC8D99:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179815,
+["id"] = "s0_2499",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Halduron Brightwing",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Halduron Brightwing says: And there's no telling how it could be affecting the rest of Eversong, especially the Lightbloom. We need an alternative course of action.",
+["timestamp"] = 1772179818,
+["id"] = "s0_2500",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Dwarf",
+["name"] = "Ascha-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Ascha-Hyjal|h[|cff0070ddAscha|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0CAEB334:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179824,
+["id"] = "s0_2501",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magister Umbric",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Magister Umbric says: We ren'dorei can aid you in finding one. Grant us entry into Silvermoon--",
+["timestamp"] = 1772179826,
+["id"] = "s0_2502",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Grand Magister Rommath",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Grand Magister Rommath says: Absolutely not! Your mere presence would risk defiling the Sunwell with Void magic.",
+["timestamp"] = 1772179831,
+["id"] = "s0_2503",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "Goblin",
+["name"] = "Trizzik-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Trizzik-Hyjal|h[|cffc69b6dTrizzik|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-06DC6FD9:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179834,
+["id"] = "s0_2504",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magister Umbric",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Magister Umbric says: Then it seems we have nothing more to discuss. I'll continue my research in Tranquillien, should you choose to see reason.",
+["timestamp"] = 1772179838,
+["id"] = "s0_2505",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Tacoum-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Tacoum-Hyjal|h[|cffff7c0aTacoum|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0CC7846B:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179847,
+["id"] = "s0_2506",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: The Grand Magister is right about one thing--protecting the Sunwell is our top priority. The Vanguard of the Light will see to its defense.",
+["timestamp"] = 1772179848,
+["id"] = "s0_2507",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PRIEST",
+["race"] = "Dwarf",
+["name"] = "Démenos-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Démenos-Hyjal|h[|cffffffffDémenos|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0CAEB63C:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179853,
+["id"] = "s0_2508",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lor'themar Theron says: Your aid was timely and welcome, Turalyon. But remember that Silvermoon and the Sunwell belong to the sin'dorei. You are guests in our fair city.",
+["timestamp"] = 1772179858,
+["id"] = "s0_2509",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "High Exarch Turalyon says: Guests, allies, and saviors, Lor'themar. Rest assured that we will guard your city and your people with the full strength of the Light.",
+["timestamp"] = 1772179868,
+["id"] = "s0_2510",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "DarkIronDwarf",
+["name"] = "Choysard-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Choysard-Hyjal|h[|cff0070ddChoysard|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0C0B74E4:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179886,
+["id"] = "s0_2511",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "VoidElf",
+["name"] = "Sùntzù-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Sùntzù-Hyjal|h[|cffa330c9Sùntzù|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D5E4D03:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["timestamp"] = 1772179897,
+["id"] = "s0_2512",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lor'themar Theron says: I'll speak to the Vanguard while you get the other matters settled.",
+["timestamp"] = 1772179907,
+["id"] = "s0_2513",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltarynn-Dalaran:70:GUILD:|h[|cff33937fVoltarynn|r]|h: re ",
+["timestamp"] = 1772180012,
+["id"] = "s0_2514",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "EarthenDwarf",
+["name"] = "Yapludruhm-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Yapludruhm-Hyjal:71:GUILD:|h[|cfff48cbaYapludruhm|r]|h: bonjour",
+["timestamp"] = 1772180015,
+["id"] = "s0_2515",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "EarthenDwarf",
+["name"] = "Yapludruhm-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Yapludruhm-Hyjal:72:GUILD:|h[|cfff48cbaYapludruhm|r]|h: re",
+["timestamp"] = 1772180019,
+["id"] = "s0_2516",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:73:GUILD:|h[|cff0070ddKvotheen|r]|h: yooo",
+["timestamp"] = 1772180026,
+["id"] = "s0_2517",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Orc",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:80:GUILD:|h[|cff00ff98Øskytankul|r]|h: Yop !",
+["timestamp"] = 1772180115,
+["id"] = "s0_2518",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Orc",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:82:GUILD:|h[|cff00ff98Øskytankul|r]|h: re ! alors la nuit fut bonne Yapudrhum ?",
+["timestamp"] = 1772180127,
+["id"] = "s0_2519",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Dwarf",
+["name"] = "Dwalgo-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Dwalgo-Hyjal:85:GUILD:|h[|cffaad372Dwalgo|r]|h: coucou",
+["timestamp"] = 1772180227,
+["id"] = "s0_2520",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Orc",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:86:GUILD:|h[|cff00ff98Øskytankul|r]|h: cocou",
+["timestamp"] = 1772180231,
+["id"] = "s0_2521",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Dwarf",
+["name"] = "Dwalgo-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Dwalgo-Hyjal:87:GUILD:|h[|cffaad372Dwalgo|r]|h: ooui ,j'ai juste fais les quetes de départ jusque la capitale perso",
+["timestamp"] = 1772180247,
+["id"] = "s0_2522",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "EVOKER",
+["race"] = "Dracthyr",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltarynn-Dalaran:88:GUILD:|h[|cff33937fVoltarynn|r]|h: pareil puis du farme compo",
+["timestamp"] = 1772180321,
+["id"] = "s0_2523",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: You have already taken so many of my Blood Knights to empower the Sunwell! Quel'Thalas is largely undefended!",
+["id"] = "s0_2524",
+["timestamp"] = 1772180469,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "General Amias Bellamy",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "General Amias Bellamy says: And I am telling you that it is still not enough. Only by the faith of our forces is the Sunwell holding back the Void.",
+["id"] = "s0_2525",
+["timestamp"] = 1772180477,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: The Sunwell must not fall.",
+["id"] = "s0_2526",
+["timestamp"] = 1772180485,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "General Amias Bellamy",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "General Amias Bellamy says: Then make sure we have everything we need and keep enemies off our backs.",
+["id"] = "s0_2527",
+["timestamp"] = 1772180487,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: General, perhaps you could see to our forces at the Sunwell. I will discuss matters with the Regent Lord.",
+["id"] = "s0_2528",
+["timestamp"] = 1772180493,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "General Amias Bellamy",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "General Amias Bellamy says: As you will it, High Exarch.",
+["id"] = "s0_2529",
+["timestamp"] = 1772180500,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "General Amias Bellamy",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "General Amias Bellamy says: Vanguard, collect every weapon not nailed to a wall and let's move out!",
+["id"] = "s0_2530",
+["timestamp"] = 1772180501,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ceera",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Ceera says: The last I saw shadows descend on Quel'Danas, Arthas marched on our kingdom with his army of Scourge. Now another army marches in our streets, saying they're here for our protection... are you certain of that?",
+["id"] = "s0_2531",
+["timestamp"] = 1772180518,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magistrix Narinth",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Magistrix Narinth says: That burst of energy from the Sunwell--it was more powerful than any magic I've ever encountered, and I am well practiced. They say that army protects us, but I heard the surge was their doing! Do they even understand what they meddle with?",
+["id"] = "s0_2532",
+["timestamp"] = 1772180555,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Innkeeper Jovia",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Innkeeper Jovia says: With all that has happened, that... utterly mad vortex of shadow in the sky, guests are leaving in droves. If I weren't overseeing this place, I'm not so certain I'd still be here myself. If you wish a room, it is yours.",
+["id"] = "s0_2533",
+["timestamp"] = 1772180595,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_SKILL",
+["type"] = "SKILL",
+},
+["color"] = {
+["b"] = 1,
+["g"] = 0.3333333432674408,
+["r"] = 0.3333333432674408,
+},
+["text"] = "You have gained the Midnight Cooking skill.",
+["id"] = "s0_2534",
+["timestamp"] = 1772180619,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Skymaster Skyles",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Skymaster Skyles says: That surge from the Sunwell set off the dragonhawks--they know when there's danger. I've never seen them this unnerved. If the animals are this affected, what about the rest of Eversong?",
+["id"] = "s0_2535",
+["timestamp"] = 1772180653,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Valeera Sanguinar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Valeera Sanguinar says: Of course--the Reliquary will lend aid wherever it's needed. Let me know if you're interested as well.",
+["id"] = "s0_2536",
+["timestamp"] = 1772180685,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magistrix Nizara",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Magistrix Nizara says: Ah. Well, if you ever need a reprieve from the bustle of our visiting... friends, seek the red banners around the city. We'll keep the Alliance out of those areas.",
+["id"] = "s0_2537",
+["timestamp"] = 1772180741,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: You're needed in Fairbreeze, champion. A problem with the Lightbloom.",
+["id"] = "s0_2538",
+["timestamp"] = 1772180772,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Gnome",
+["class"] = "MAGE",
+["name"] = "Tendô-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Tendô-Hyjal|h[|cff3fc7ebTendô|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0755020C:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2539",
+["timestamp"] = 1772180779,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Pandaren",
+["class"] = "MONK",
+["name"] = "Skilzorr-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Skilzorr-Hyjal|h[|cff00ff98Skilzorr|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0CC2FB5F:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2540",
+["timestamp"] = 1772180783,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Jeeves",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Jeeves says: If you'll excuse me, I'm afraid I have other business I must attend to.  Please call on me again in the future.",
+["id"] = "s0_2541",
+["timestamp"] = 1772180812,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "PALADIN",
+["name"] = "Khazir-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Khazir-Hyjal|h[|cfff48cbaKhazir|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0B36AE36:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2542",
+["timestamp"] = 1772180818,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Pandaren",
+["class"] = "SHAMAN",
+["name"] = "Hopë-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Hopë-Hyjal|h[|cff0070ddHopë|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D2BA85D:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2543",
+["timestamp"] = 1772180824,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:248044::::::::80:263::11:2:13573:6652:2:9:80:28:3085:::::|h[Reluctant Diplomat's Vambraces]|h|r",
+["id"] = "s0_2544",
+["timestamp"] = 1772180840,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:250352::::::::80:263:::::::::|h[Worn Supply Bag]|h|r",
+["id"] = "s0_2545",
+["timestamp"] = 1772180840,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:263231::::::::80:263::11::1:28:3085:::::|h[Silvermoon Curio Shelves]|h|r",
+["id"] = "s0_2546",
+["timestamp"] = 1772180840,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-09230B89:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2547",
+["timestamp"] = 1772180840,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-09230B89:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2548",
+["timestamp"] = 1772180840,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "DEATHKNIGHT",
+["name"] = "Mörkëv-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Mörkëv-Hyjal|h[|cffc41e3aMörkëv|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0CE031FA:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2549",
+["timestamp"] = 1772180849,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Grand Magister Rommath",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Grand Magister Rommath says: Use this arcane projector to keep us informed.",
+["id"] = "s0_2550",
+["timestamp"] = 1772180863,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: Arator, you may be needed at the Sunwell.",
+["id"] = "s0_2551",
+["timestamp"] = 1772180871,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Arator",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Arator says: This Lightbloom might actually be of use to the Vanguard. At the very least, I need to find out.",
+["id"] = "s0_2552",
+["timestamp"] = 1772180876,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "LightforgedDraenei",
+["class"] = "PALADIN",
+["name"] = "Lyiâ-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Lyiâ-Hyjal|h[|cfff48cbaLyiâ|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0D59293A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2553",
+["timestamp"] = 1772180877,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "ROGUE",
+["name"] = "Nélyax-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Nélyax-Hyjal|h[|cfffff468Nélyax|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D5E59BB:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2554",
+["timestamp"] = 1772180879,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Draenei",
+["class"] = "PALADIN",
+["name"] = "Erêbe-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Erêbe-Hyjal|h[|cfff48cbaErêbe|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0D5F7DEE:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2555",
+["timestamp"] = 1772180884,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: Is everything all right, Lady Liadrin? You've said little since we arrived.",
+["id"] = "s0_2556",
+["timestamp"] = 1772180886,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: My apologies--my thoughts are with the Sunwell. I did not expect it to react with such... force.",
+["id"] = "s0_2557",
+["timestamp"] = 1772180891,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: You ask, and the Light provides. Need it be more complicated than that?",
+["id"] = "s0_2558",
+["timestamp"] = 1772180900,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: She speaks of the Sunwell, not the Light.",
+["id"] = "s0_2559",
+["timestamp"] = 1772180907,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: Your fount was blessed by the heart of a naaru. It is one and the same.",
+["id"] = "s0_2560",
+["timestamp"] = 1772180911,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: I suggest you hold your tongue, High Exarch. That \"fount\" you so blithely pretend to understand predates the existence of human civilization.",
+["id"] = "s0_2561",
+["timestamp"] = 1772180916,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Pandaren",
+["class"] = "MONK",
+["name"] = "Wínstons-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Wínstons-Hyjal|h[|cff00ff98Wínstons|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0CAE2F95:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2562",
+["timestamp"] = 1772180920,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "PALADIN",
+["name"] = "Erzanà-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Erzanà-Hyjal|h[|cfff48cbaErzanà|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-08673B08:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2563",
+["timestamp"] = 1772180926,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: And in all that time, I have never heard of the Sunwell reacting with that kind of... aggression. Liadrin, what was that beam of light?",
+["id"] = "s0_2564",
+["timestamp"] = 1772180927,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "DEMONHUNTER",
+["name"] = "Nectalol-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Nectalol-Hyjal|h[|cffa330c9Nectalol|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0B1D3046:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2565",
+["timestamp"] = 1772180933,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: I wish I knew. It holds back the Void, yet I still wonder... if the Sunwell is capable of such power, what else will it do?",
+["id"] = "s0_2566",
+["timestamp"] = 1772180936,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "VoidElf",
+["class"] = "HUNTER",
+["name"] = "Nelhelel-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Nelhelel-Hyjal|h[|cffaad372Nelhelel|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0D4F2CEC:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2567",
+["timestamp"] = 1772180946,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: That question worries me, Liadrin. Is it wrong for it to do so?",
+["id"] = "s0_2568",
+["timestamp"] = 1772180947,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DRUID",
+["name"] = "Garadrood-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Garadrood-Hyjal|h[|cffff7c0aGaradrood|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D13D139:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2569",
+["timestamp"] = 1772180952,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Jiilipal-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Jiilipal-Hyjal|h[|cfff48cbaJiilipal|r]|h has earned the achievement |cffffff00|Hachievement:41802:Player-1390-0CFAAF8A:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Eversong In Reprise]|h|r!",
+["id"] = "s0_2570",
+["timestamp"] = 1772180953,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: The effects of the Sunwell have never been malicious. It has blessed Eversong's forests with small groves of Lightbloom for years.",
+["id"] = "s0_2571",
+["timestamp"] = 1772180953,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: Small at first, but Fairbreeze now reports a problem. If the Sunwell is aggressive, what of the Lightbloom?",
+["id"] = "s0_2572",
+["timestamp"] = 1772180963,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "DEMONHUNTER",
+["name"] = "Diannase-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Diannase-Hyjal|h[|cffa330c9Diannase|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0BB98B75:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2573",
+["timestamp"] = 1772180963,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: These worries will lead you nowhere, Regent Lord. As long as the Vanguard maintains the connection to the Sunwell, the Light will see us through.",
+["id"] = "s0_2574",
+["timestamp"] = 1772180971,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "HUNTER",
+["name"] = "Fèlésh-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Fèlésh-Hyjal|h[|cffaad372Fèlésh|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D5EAB77:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2575",
+["timestamp"] = 1772180973,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "High Exarch Turalyon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "High Exarch Turalyon says: Have faith. That is all that is needed from you.",
+["id"] = "s0_2576",
+["timestamp"] = 1772180981,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lor'themar Theron",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lor'themar Theron says: Perhaps you should save your words for when they are asked for, High Exarch. I suspect they would be better received.",
+["id"] = "s0_2577",
+["timestamp"] = 1772180986,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Shayt-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Shayt-Hyjal|h[|cfff48cbaShayt|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D35AA50:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2578",
+["timestamp"] = 1772181011,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DEMONHUNTER",
+["name"] = "Hygurashi-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Hygurashi-Hyjal|h[|cffa330c9Hygurashi|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-0D0CD72F:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2579",
+["timestamp"] = 1772181012,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Ultheras-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "|Hplayer:Ultheras-Hyjal|h[|cfff48cbaUltheras|r]|h has earned the achievement |cffffff00|Hachievement:62273:Player-1390-09702DB3:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Echoes of Midnight]|h|r!",
+["id"] = "s0_2580",
+["timestamp"] = 1772181027,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:196:GUILD:|h[|cff00ff98Øskytankul|r]|h: 86 +D",
+["id"] = "s0_2581",
+["timestamp"] = 1772181046,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:198:GUILD:|h[|cff0070ddKvotheen|r]|h: mdr le mec va tout finir en 1 jour puis se faire chier le reste de la semaine",
+["id"] = "s0_2582",
+["timestamp"] = 1772181110,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:199:GUILD:|h[|cff00ff98Øskytankul|r]|h: j'ai un autre perso a monté tqt ",
+["id"] = "s0_2583",
+["timestamp"] = 1772181119,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:200:GUILD:|h[|cff00ff98Øskytankul|r]|h: demain je joue pas ",
+["id"] = "s0_2584",
+["timestamp"] = 1772181122,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:201:GUILD:|h[|cff00ff98Øskytankul|r]|h: et apres je monte les metiers ",
+["id"] = "s0_2585",
+["timestamp"] = 1772181148,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dracthyr",
+["class"] = "EVOKER",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltarynn-Dalaran:204:GUILD:|h[|cff33937fVoltarynn|r]|h: haha gg Øsky",
+["id"] = "s0_2586",
+["timestamp"] = 1772181173,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:205:GUILD:|h[|cff00ff98Øskytankul|r]|h: et j'ai dormi =D",
+["id"] = "s0_2587",
+["timestamp"] = 1772181186,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Arator",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Arator says: You're Orweyna, aren't you? My mother Alleria told me about you.",
+["id"] = "s0_2588",
+["timestamp"] = 1772181205,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dracthyr",
+["class"] = "EVOKER",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Voltarynn-Dalaran|h[|cff33937fVoltarynn-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:1796:Player-1621-0B3D5570:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Short Order Cook]|h|r !",
+["id"] = "s0_2589",
+["timestamp"] = 1772181211,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2590",
+["timestamp"] = 1772181213,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2591",
+["timestamp"] = 1772181219,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2592",
+["timestamp"] = 1772181248,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2593",
+["timestamp"] = 1772181299,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskytankul-Archimonde|h[|cff00ff98Øskytankul-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:153:Player-1302-0D33F4E1:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[The Old Gnome and the Sea]|h|r !",
+["id"] = "s0_2594",
+["timestamp"] = 1772181352,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "ROGUE",
+["name"] = "Mangousto-Hyjal",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Mangousto-Hyjal:224:GUILD:|h[|cfffff468Mangousto|r]|h: hello",
+["id"] = "s0_2595",
+["timestamp"] = 1772181393,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dracthyr",
+["class"] = "EVOKER",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Voltarynn-Dalaran|h[|cff33937fVoltarynn-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:153:Player-1621-0B3D5570:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[The Old Gnome and the Sea]|h|r !",
+["id"] = "s0_2596",
+["timestamp"] = 1772181402,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dracthyr",
+["class"] = "EVOKER",
+["name"] = "Voltarynn-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltarynn-Dalaran:226:GUILD:|h[|cff33937fVoltarynn|r]|h: coucou",
+["id"] = "s0_2597",
+["timestamp"] = 1772181412,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Orc",
+["class"] = "MONK",
+["name"] = "Øskytankul-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskytankul-Archimonde:233:GUILD:|h[|cff00ff98Øskytankul|r]|h: hello",
+["id"] = "s0_2598",
+["timestamp"] = 1772181435,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2599",
+["timestamp"] = 1772181495,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2600",
+["timestamp"] = 1772181496,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2601",
+["timestamp"] = 1772181497,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2602",
+["timestamp"] = 1772181499,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: Magistrix, when did you first begin seeing these disturbances with this Lightbloom?",
+["id"] = "s0_2603",
+["timestamp"] = 1772181513,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Magistrix Landra Dawnstrider",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Magistrix Landra Dawnstrider says: Hmm, perhaps when the Sunwell blew sky high into that swirling vortex? ...sorry. I'm a bit overwhelmed.",
+["id"] = "s0_2604",
+["timestamp"] = 1772181519,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2605",
+["timestamp"] = 1772181582,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2606",
+["timestamp"] = 1772181598,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2607",
+["timestamp"] = 1772181667,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "MONK",
+["name"] = "Sânghr-Hyjal",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Sânghr-Hyjal|h[|cff00ff98Sânghr|r]|h a accompli le haut fait |cffffff00|Hachievement:41805:Player-1390-0CD41AF9:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Arator's Journey]|h|r !",
+["id"] = "s0_2608",
+["timestamp"] = 1772181718,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2609",
+["timestamp"] = 1772181785,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2610",
+["timestamp"] = 1772181787,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Assisting Paladin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Assisting Paladin says: Light soothe those wounds, little friend.",
+["id"] = "s0_2611",
+["timestamp"] = 1772181788,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Dwarf",
+["class"] = "HUNTER",
+["name"] = "Dwalgo-Hyjal",
+["sex"] = 2,
+},
+["type"] = "GUILD_ACHIEVEMENT",
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Dwalgo-Hyjal|h[|cffaad372Dwalgo|r]|h a accompli le haut fait |cffffff00|Hachievement:61856:Player-1390-088F9757:1:2:27:26:4294967295:4294967295:4294967295:4294967295|h[Explore Zul'Aman]|h|r !",
+["id"] = "s0_2612",
+["timestamp"] = 1772190275,
 },
 },
 ["version"] = 1,

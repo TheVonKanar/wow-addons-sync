@@ -275,6 +275,9 @@ local function BuildExportData(options)
             globalApplyHideShadow = cdmEnhance.globalApplyHideShadow,
             disableRightClickSelect = cdmEnhance.disableRightClickSelect,
             lockGridSize = cdmEnhance.lockGridSize,
+            -- Master customization toggles
+            enableAuraCustomization = cdmEnhance.enableAuraCustomization,
+            enableCooldownCustomization = cdmEnhance.enableCooldownCustomization,
         }
     end
     
@@ -652,6 +655,9 @@ function IE.Import(importString, options)
     end
     
     local importedCounts = {
+        groups = 0,
+        savedPositions = 0,
+        iconSettings = 0,
         layoutProfiles = 0,
         arcAuras = 0,
     }
@@ -730,6 +736,23 @@ function IE.Import(importString, options)
                 specData.layoutProfiles[finalName] = DeepCopy(profileData)
                 importedCounts.layoutProfiles = importedCounts.layoutProfiles + 1
                 importedProfileName = importedProfileName or finalName
+                
+                -- Count groups and positions in imported profile
+                if profileData.groupLayouts then
+                    for _ in pairs(profileData.groupLayouts) do
+                        importedCounts.groups = importedCounts.groups + 1
+                    end
+                end
+                if profileData.savedPositions then
+                    for _ in pairs(profileData.savedPositions) do
+                        importedCounts.savedPositions = importedCounts.savedPositions + 1
+                    end
+                end
+                if profileData.iconSettings then
+                    for _ in pairs(profileData.iconSettings) do
+                        importedCounts.iconSettings = importedCounts.iconSettings + 1
+                    end
+                end
             end
         end
         
@@ -890,6 +913,13 @@ function IE.Import(importString, options)
         if data.cdmEnhance.lockGridSize ~= nil then
             cdmEnhance.lockGridSize = data.cdmEnhance.lockGridSize
         end
+        -- Master customization toggles
+        if data.cdmEnhance.enableAuraCustomization ~= nil then
+            cdmEnhance.enableAuraCustomization = data.cdmEnhance.enableAuraCustomization
+        end
+        if data.cdmEnhance.enableCooldownCustomization ~= nil then
+            cdmEnhance.enableCooldownCustomization = data.cdmEnhance.enableCooldownCustomization
+        end
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -910,11 +940,11 @@ function IE.Import(importString, options)
         
         -- Add tracked items (REPLACE existing - wipe first to prevent duplicates from old items surviving)
         if data.arcAuras.trackedItems then
-        wipe(arcAuras.trackedItems)
-        for arcID, config in pairs(data.arcAuras.trackedItems) do
-            arcAuras.trackedItems[arcID] = DeepCopy(config)
-            importedCounts.arcAuras = importedCounts.arcAuras + 1
-        end
+            wipe(arcAuras.trackedItems)
+            for arcID, config in pairs(data.arcAuras.trackedItems) do
+                arcAuras.trackedItems[arcID] = DeepCopy(config)
+                importedCounts.arcAuras = importedCounts.arcAuras + 1
+            end
         end
         
         -- Add tracked spell cooldowns (REPLACE existing)
@@ -938,9 +968,18 @@ function IE.Import(importString, options)
             end
         end
         
-        -- Set enabled
-        if data.arcAuras.enabled then
+        -- Set enabled (use ~= nil to handle false correctly)
+        if data.arcAuras.enabled ~= nil then
             arcAuras.enabled = data.arcAuras.enabled
+        end
+        
+        -- Restore global visual settings for Arc Aura frames
+        if data.arcAuras.globalSettings then
+            if not arcAuras.globalSettings then arcAuras.globalSettings = {} end
+            wipe(arcAuras.globalSettings)
+            for k, v in pairs(data.arcAuras.globalSettings) do
+                arcAuras.globalSettings[k] = DeepCopy(v)
+            end
         end
         
         -- Restore auto-track settings
@@ -964,6 +1003,7 @@ function IE.Import(importString, options)
                     trackedItems = DeepCopy(arcAuras.trackedItems),
                     trackedSpells = arcAuras.trackedSpells and DeepCopy(arcAuras.trackedSpells) or nil,
                     positions = DeepCopy(arcAuras.positions),
+                    globalSettings = arcAuras.globalSettings and next(arcAuras.globalSettings) and DeepCopy(arcAuras.globalSettings) or nil,
                     enabled = arcAuras.enabled,
                     autoTrackEquippedTrinkets = arcAuras.autoTrackEquippedTrinkets,
                     autoTrackSlots = arcAuras.autoTrackSlots and DeepCopy(arcAuras.autoTrackSlots) or nil,
@@ -2916,6 +2956,17 @@ local function GetOptionsTable()
                         "|cff888888Global CD Defaults:|r   " .. (stats.hasGlobalCooldown and "|cff00ff00Yes|r" or "|cff666666No|r"),
                         "|cff888888Group Settings:|r       " .. (stats.hasGroupSettings and "|cff00ff00Yes|r" or "|cff666666No|r"),
                     }
+                    -- Add Arc Auras info if present
+                    if (stats.arcAuras or 0) > 0 or (stats.arcAurasSpells or 0) > 0 then
+                        table.insert(lines, "")
+                        table.insert(lines, "|cff888888Arc Auras:|r")
+                        if (stats.arcAuras or 0) > 0 then
+                            table.insert(lines, "  Tracked Items:  |cffffffff" .. stats.arcAuras .. "|r")
+                        end
+                        if (stats.arcAurasSpells or 0) > 0 then
+                            table.insert(lines, "  Tracked Spells: |cffffffff" .. stats.arcAurasSpells .. "|r")
+                        end
+                    end
                     return table.concat(lines, "\n")
                 end,
                 fontSize = "medium",
@@ -3119,6 +3170,17 @@ local function GetOptionsTable()
                         "  Global Defaults: " .. (p.hasGlobalAuraSettings and "|cff00ff00Aura|r " or "") .. (p.hasGlobalCooldownSettings and "|cff00ff00Cooldown|r" or ""),
                         "  Group Settings: " .. (p.hasGroupSettings and "|cff00ff00Yes|r" or "|cff666666No|r"),
                     }
+                    -- Add Arc Auras info if present
+                    if (p.arcAuras or 0) > 0 or (p.arcAurasSpells or 0) > 0 then
+                        table.insert(lines, "")
+                        table.insert(lines, "|cff00ccffArc Auras:|r")
+                        if (p.arcAuras or 0) > 0 then
+                            table.insert(lines, "  Tracked Items: |cffffffff" .. p.arcAuras .. "|r")
+                        end
+                        if (p.arcAurasSpells or 0) > 0 then
+                            table.insert(lines, "  Tracked Spells: |cffffffff" .. p.arcAurasSpells .. "|r")
+                        end
+                    end
                     return table.concat(lines, "\n")
                 end,
                 fontSize = "medium",
@@ -3229,8 +3291,11 @@ local function GetOptionsTable()
                     if success then
                         PrintMsg("|cff00ff00Import successful!|r")
                         if type(result) == "table" then
-                            PrintMsg(string.format("Imported: %d groups, %d positions, %d icon settings",
-                                result.groups or 0, result.savedPositions or 0, result.iconSettings or 0))
+                            PrintMsg(string.format("Imported: %d profiles, %d groups, %d positions, %d icon settings",
+                                result.layoutProfiles or 0, result.groups or 0, result.savedPositions or 0, result.iconSettings or 0))
+                            if (result.arcAuras or 0) > 0 then
+                                PrintMsg(string.format("Arc Auras: %d tracked items/spells", result.arcAuras))
+                            end
                         end
                         -- Clear import state
                         uiState.importString = ""

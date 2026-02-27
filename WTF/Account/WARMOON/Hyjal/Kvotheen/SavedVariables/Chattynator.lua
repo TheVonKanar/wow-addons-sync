@@ -40,4 +40,6 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /glider",
 "/g PAS ENVEI D'ALLER ME COUCHER",
 "/g PAS ENVIE DE BOSSER DEMAIN",
+"/g yooo",
+"/g mdr le mec va tout finir en 1 jour puis se faire chier le reste de la semaine",
 }

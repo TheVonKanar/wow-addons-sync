@@ -1,8 +1,12 @@
 # Larias's Weekly Checklist
 
-## [v2.0.4](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.0.4) (2026-02-26)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.0.4) 
+## [v2.0.6](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.0.6) (2026-02-27)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.0.6) 
 
+- Release v2.0.6  
+- Post-release: bump version to 2.0.6  
+- Release v2.0.5  
+- Post-release: bump version to 2.0.5  
 - Feature/text and prompt fixes (#10)  
     * Grey out checked options  
     * Fix incorrect update prompts  

@@ -39,6 +39,8 @@ ns.DB_DEFAULTS = {
     cdmStylingEnabled = true,
     -- Pending CDM profiles from master import (for classes not yet logged)
     masterCDMPending = nil,
+    -- Skin preset library (shared across all characters)
+    skinLibrary = {},
   },
   
   -- Profile storage (shared across characters using same profile)
@@ -195,6 +197,9 @@ ns.DB_DEFAULTS = {
           showTickMarks = true,
           tickMode = "all",
           tickThickness = 1,
+          tickHeightPercent = 100,
+          tickHeightAnchor = "center",
+          tickThicknessAnchor = "center",
           tickColor = {r=0, g=0, b=0, a=1},
           showText = true,
           font = "2002 Bold",
@@ -356,6 +361,9 @@ ns.DB_DEFAULTS = {
           showTickMarks = false,
           tickMode = "all",
           tickThickness = 2,
+          tickHeightPercent = 100,
+          tickHeightAnchor = "center",
+          tickThicknessAnchor = "center",
           tickColor = {r=1, g=1, b=1, a=0.8},
           showText = true,
           textFormat = "value",  -- "value" or "percent"
@@ -393,7 +401,10 @@ ns.DB_DEFAULTS = {
           showOnSpecs = {},
           talentConditions = nil,
           talentMatchMode = nil,
-        }
+        },
+        prediction = {
+          spells = {},
+        },
       }
     },
     
@@ -465,6 +476,9 @@ ns.DB_DEFAULTS = {
           showTickMarks = true,
           tickMode = "all",
           tickThickness = 1,
+          tickHeightPercent = 100,
+          tickHeightAnchor = "center",
+          tickThicknessAnchor = "center",
           tickColor = {r=0, g=0, b=0, a=1},
           
           -- Stack/Charge Text

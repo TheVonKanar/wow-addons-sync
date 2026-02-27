@@ -16031,6 +16031,11 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Caith",
 },
+["WeakAuras_k3L1dG94Vtm"] = {
+["Upgraded"] = true,
+["Inherit"] = false,
+["SkinID"] = "Windfury",
+},
 ["WeakAuras_C90(meCPTYd"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
@@ -16043,11 +16048,6 @@ MasqueDB = {
 },
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
-},
-["WeakAuras_k3L1dG94Vtm"] = {
-["Upgraded"] = true,
-["Inherit"] = false,
-["SkinID"] = "Windfury",
 },
 ["WeakAuras_HW885)QVheo"] = {
 ["Upgraded"] = true,
@@ -16176,7 +16176,7 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_y2krObLJtDq"] = {
+["WeakAuras_nyuGlOl0WPd"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -16248,10 +16248,18 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_HsPIjYdxFBT"] = {
+["WeakAuras_Isj1e9S5nzc"] = {
 ["Upgraded"] = true,
+["Colors"] = {
+["Cooldown"] = {
+0,
+0,
+0,
+0.6600000262260437,
+},
+},
 ["Inherit"] = false,
-["SkinID"] = "Caith",
+["SkinID"] = "Zoomed",
 },
 ["WeakAuras_npKBMdf97ys"] = {
 ["Upgraded"] = true,
@@ -16573,19 +16581,6 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_SohqVGUvKnx"] = {
-["Upgraded"] = true,
-["Colors"] = {
-["Cooldown"] = {
-0,
-0,
-0,
-0.6600000262260437,
-},
-},
-["Inherit"] = false,
-["SkinID"] = "Zoomed",
-},
 ["WeakAuras_c8uItTFKtfr"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
@@ -16599,7 +16594,7 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
-["WeakAuras_fmhvZ3TnbSm"] = {
+["WeakAuras_SohqVGUvKnx"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -16616,6 +16611,19 @@ MasqueDB = {
 ["Upgraded"] = true,
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
+},
+["WeakAuras_fmhvZ3TnbSm"] = {
+["Upgraded"] = true,
+["Colors"] = {
+["Cooldown"] = {
+0,
+0,
+0,
+0.6600000262260437,
+},
+},
+["Inherit"] = false,
+["SkinID"] = "Zoomed",
 },
 ["WeakAuras_Gh35LXYYq7O"] = {
 ["Upgraded"] = true,
@@ -16818,11 +16826,6 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_2PwXbEtMp(G"] = {
-["Upgraded"] = true,
-["SkinID"] = "Zoomed",
-["Inherit"] = false,
-},
 ["WeakAuras_I9hhDLjzgWh"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
@@ -16833,6 +16836,11 @@ MasqueDB = {
 0.6600000262260437,
 },
 },
+["SkinID"] = "Zoomed",
+["Inherit"] = false,
+},
+["WeakAuras_2PwXbEtMp(G"] = {
+["Upgraded"] = true,
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
@@ -16921,19 +16929,6 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_emwEcJIr3dR"] = {
-["Upgraded"] = true,
-["Colors"] = {
-["Cooldown"] = {
-0,
-0,
-0,
-0.6600000262260437,
-},
-},
-["SkinID"] = "Zoomed",
-["Inherit"] = false,
-},
 ["WeakAuras_17BIP0Vrk36"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
@@ -16946,6 +16941,19 @@ MasqueDB = {
 },
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
+},
+["WeakAuras_emwEcJIr3dR"] = {
+["Upgraded"] = true,
+["Colors"] = {
+["Cooldown"] = {
+0,
+0,
+0,
+0.6600000262260437,
+},
+},
+["SkinID"] = "Zoomed",
+["Inherit"] = false,
 },
 ["WeakAuras_A42BvC)n3JJ"] = {
 ["Upgraded"] = true,
@@ -17181,7 +17189,7 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_M06)Vsgd5g)"] = {
+["WeakAuras_LfPaWgoIXnr"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -17194,7 +17202,7 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_LfPaWgoIXnr"] = {
+["WeakAuras_M06)Vsgd5g)"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -19805,18 +19813,10 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_Isj1e9S5nzc"] = {
+["WeakAuras_HsPIjYdxFBT"] = {
 ["Upgraded"] = true,
-["Colors"] = {
-["Cooldown"] = {
-0,
-0,
-0,
-0.6600000262260437,
-},
-},
 ["Inherit"] = false,
-["SkinID"] = "Zoomed",
+["SkinID"] = "Caith",
 },
 ["WeakAuras_KNzJ8kIf5)N"] = {
 ["Upgraded"] = true,
@@ -19883,7 +19883,7 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
-["WeakAuras_nyuGlOl0WPd"] = {
+["WeakAuras_y2krObLJtDq"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {

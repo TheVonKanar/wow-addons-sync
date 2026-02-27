@@ -625,8 +625,8 @@ BlizzMoveDB = {
 ["dragPoints"] = {
 {
 ["anchorPoint"] = "LEFT",
-["relativeFrame"] = "UIParent",
-["offY"] = 65.16679382324219,
+["relativeFrame"] = "BlizzMove_FakeUIParent",
+["offY"] = 65.16670227050781,
 ["relativePoint"] = "LEFT",
 ["offX"] = 39,
 },

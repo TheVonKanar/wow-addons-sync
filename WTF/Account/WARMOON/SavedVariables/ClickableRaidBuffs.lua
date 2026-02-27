@@ -2,9 +2,9 @@
 ClickableRaidBuffsDB = {
 ["centerTextColor"] = {
 ["a"] = 1,
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 ["topTextColor"] = {
 ["a"] = 1,
@@ -14,9 +14,9 @@ ClickableRaidBuffsDB = {
 },
 ["timerTextColor"] = {
 ["a"] = 1,
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 ["vSpace"] = 45,
 ["bottomTextColor"] = {
@@ -52,7 +52,7 @@ ClickableRaidBuffsDB = {
 ["raidRefreshSeconds"] = 5,
 ["TAB_HEIGHT"] = 24,
 ["anchor"] = {
-["y"] = -499,
+["y"] = -504.0000305175781,
 ["x"] = 0,
 ["point"] = "CENTER",
 ["relativePoint"] = "CENTER",
@@ -137,7 +137,7 @@ ClickableRaidBuffsDB = {
 ["hSpace"] = 10,
 ["layoutMode"] = "ROW",
 ["position"] = {
-["y"] = -499,
+["y"] = -504,
 ["x"] = 0,
 },
 ["glowColor"] = {

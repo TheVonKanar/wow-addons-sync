@@ -2192,7 +2192,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
   -- Hide When conditions check (uses CDMGroups state via shared evaluator)
   if shouldShow and not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
     local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
       shouldShow = false
     end
   end
@@ -2884,7 +2884,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     -- Hide When conditions (but not if options panel is open)
     if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
       local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
         shouldShow = false
       end
     end
@@ -4163,7 +4163,7 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
     
     if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
       local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
         shouldShow = false
       end
     end
@@ -4250,7 +4250,7 @@ function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remain
   -- Hide When conditions
   if ns.CooldownBars and ns.CooldownBars.GetHideWhen then
     local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
       shouldShow = false
     end
   end
@@ -4382,7 +4382,7 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
   -- Hide When conditions (only if not in options - we want to show bars for editing)
   if shouldShow and not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
     local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen) then
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
       shouldShow = false
     end
   end
@@ -6166,7 +6166,9 @@ function ns.Display.ApplyAppearance(barNumber)
   -- Border - uses 4 manual textures for pixel-perfect borders
   if barFrame.barBorderFrame then
     if cfg.showBorder then
-      local bt = cfg.drawnBorderThickness or 2
+      local btRaw = cfg.drawnBorderThickness or 2
+      -- Snap to nearest physical pixel so every edge is uniform and crisp
+      local bt = PixelUtil.GetNearestPixelSize(btRaw, barFrame:GetEffectiveScale(), btRaw)
       local bc = cfg.borderColor or {r = 0, g = 0, b = 0, a = 1}
       
       -- Top border (spans full width at top)

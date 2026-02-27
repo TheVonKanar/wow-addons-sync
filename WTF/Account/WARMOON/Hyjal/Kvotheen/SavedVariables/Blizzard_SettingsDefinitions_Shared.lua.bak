@@ -15,10 +15,10 @@ NewSettingsSeen = {
 ["CAA_COMBAT_AUDIO_ALERTS_LABEL"] = true,
 ["NAMEPLATES_LABEL"] = true,
 ["DAMAGE_METER_LABEL"] = true,
-["cooldownViewerEnabled"] = true,
+["enableConnectToPhotoSharing"] = true,
 ["raidFramesDispelIndicatorType"] = true,
 ["raidFramesDispelIndicatorOverlay"] = true,
 ["COMBAT_WARNINGS_LABEL"] = true,
-["enableConnectToPhotoSharing"] = true,
+["cooldownViewerEnabled"] = true,
 ["PROXY_ACCESSIBILITY_FONT_SIZE"] = true,
 }

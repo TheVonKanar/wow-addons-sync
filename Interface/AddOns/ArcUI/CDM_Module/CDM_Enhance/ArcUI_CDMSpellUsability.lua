@@ -128,6 +128,25 @@ function ns.CDMSpellUsability.OnRefreshIconColor(frame)
     end
     if not cfg then return end
 
+    -- KEEP BRIGHT: When enabled, SpellUsability must not tint or desaturate.
+    -- SetVertexColorBypassed skips the keepBright vertex hook (by design),
+    -- so we must respect keepBright HERE before applying any usability visuals.
+    if cfg.keepBright then
+        local iconTex = frame.Icon or frame.icon
+        if iconTex and not iconTex.SetVertexColor and iconTex.Icon then
+            iconTex = iconTex.Icon
+        end
+        if iconTex and iconTex.SetVertexColor then
+            -- Force white (undo any CDM native tinting)
+            SetVertexColorBypassed(frame, iconTex, 1, 1, 1, 1)
+            -- Clear usability desat unless user explicitly allows desaturation with keepBright
+            if not cfg.keepBrightAllowDesat then
+                ApplyUsabilityDesat(frame, iconTex, false)
+            end
+        end
+        return
+    end
+
     local su = cfg.spellUsability
 
     -- Resolve icon texture early (shared by both disabled-override and enabled paths)
@@ -142,7 +161,7 @@ function ns.CDMSpellUsability.OnRefreshIconColor(frame)
     -- When usability tinting is DISABLED, undo CDM's native tinting
     -- (same pattern as range indicator disabled: hook fires after CDM
     --  sets its usability colors, so we override back to white)
-    if not su or su.enabled == false then
+    if not su or not su.enabled then
         -- Don't override if spell is out of range AND range indicator is enabled
         -- (let CDM/range handle the vertex color in that case)
         if frame.spellOutOfRange then

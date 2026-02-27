@@ -113,7 +113,8 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
         .. "|cffaaaaaa(Ready and On Cooldown tint/desat options are in the Icon State Visuals sections above.)|r",
     get = function()
       local c = GetCfg(mode)
-      return not c or not c.spellUsability or c.spellUsability.enabled ~= false
+      if not c or not c.spellUsability then return false end
+      return c.spellUsability.enabled == true
     end,
     set = function(_, v)
       ApplySetting(mode, function(c)
@@ -579,7 +580,8 @@ function ns.SpellUsabilityOptions._BuildGlobalArgs(collapsedSections, GetGlobalC
         .. "|cff999999Gray|r = Not usable",
     get = function()
       local g = GetGlobalCfg()
-      return not g.spellUsability or g.spellUsability.enabled ~= false
+      if not g.spellUsability then return false end
+      return g.spellUsability.enabled == true
     end,
     set = function(_, v) ApplyGlobalSetting("spellUsability.enabled", v); RefreshGlobal() end,
     order = 55.1, width = 1.0,

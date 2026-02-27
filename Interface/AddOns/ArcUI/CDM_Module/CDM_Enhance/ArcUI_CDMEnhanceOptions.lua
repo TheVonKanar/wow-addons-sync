@@ -52,7 +52,7 @@ local collapsedSections = {
   keybindText = true,      -- Per-icon keybind display settings
   customLabel = true,      -- Per-icon custom label text
   spellUsability = true,   -- Per-icon spell usability tinting/glow
-  assistedCombatHighlight = false, -- Assisted Combat next-cast highlight (opt-in)
+  assistedCombatHighlight = true, -- Assisted Combat next-cast highlight (opt-in)
 }
 
 -- Cache for unified icon list
@@ -73,11 +73,14 @@ local RebuildUnifiedIconCache
 -- Define which fields belong to each section for per-icon indicator
 -- ===================================================================
 local SECTION_FIELDS = {
-  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "hideShadow", "keepBright", "keepBrightAllowDesat", "debuffBorder.enabled", "pandemicBorder.enabled" },
+  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "hideShadow", "keepBright", "keepBrightAllowDesat", "customIconID", "debuffBorder.enabled", "pandemicBorder.enabled" },
   position = { "position" },
   -- Ready State / Aura Active - all actual stored fields
   activeState = { 
     "cooldownStateVisuals.readyState.alpha",
+    "cooldownStateVisuals.readyState.desaturate",
+    "cooldownStateVisuals.readyState.tint",
+    "cooldownStateVisuals.readyState.tintColor",
     "cooldownStateVisuals.readyState.glow",
     "cooldownStateVisuals.readyState.glowCombatOnly",
     "cooldownStateVisuals.readyState.glowType",
@@ -102,8 +105,20 @@ local SECTION_FIELDS = {
     "cooldownStateVisuals.cooldownState.tintColor",
     "cooldownStateVisuals.cooldownState.preserveDurationText",
     "cooldownStateVisuals.cooldownState.waitForNoCharges",
+    "auraActiveState.glowWhenMissing",
+    "auraActiveState.glowCombatOnly",
+    "auraActiveState.glowType",
+    "auraActiveState.glowColor",
+    "auraActiveState.glowIntensity",
+    "auraActiveState.glowScale",
+    "auraActiveState.glowSpeed",
+    "auraActiveState.glowLines",
+    "auraActiveState.glowThickness",
+    "auraActiveState.glowParticles",
+    "auraActiveState.glowFrameStrata",
+    "auraActiveState.glowFrameLevel",
   },
-  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly" },  -- Aura Active State settings
+  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowWhenMissing", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly", "auraActiveState.glowFrameStrata", "auraActiveState.glowFrameLevel" },  -- Aura Active State settings
   rangeIndicator = { "rangeIndicator.rangeAlpha", "rangeIndicator.showRangeOverlay", "rangeIndicator.enabled" },
   procGlow = { "procGlow.showProcGlow", "procGlow.procGlowType", "procGlow.procGlowColor", "procGlow.color", "procGlow.enabled" },
   border = { "border.enabled", "border.texture", "border.color", "border.thickness", "border.inset", "border.useClassColor", "border.followDesaturation" },
@@ -943,43 +958,66 @@ end
 -- Clears glow signature to force restart with new settings
 -- NOTE: This is for aura active state glow - NOT shared with cooldowns (they have their own ready state glow)
 local function ApplyAuraReadyStateGlowSetting(setter)
-  ApplyAuraOnlySetting(setter)
-  if ns.CDMEnhance then
-    local icons = GetAuraIconsToUpdate()
-    for _, cdID in ipairs(icons) do
-      local data = ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
-      if data and data.frame then
-        data.frame._arcCurrentGlowSig = nil
-        -- If preview is active, force immediate glow refresh
-        if ns.CDMEnhanceOptions.IsGlowPreviewActive and ns.CDMEnhanceOptions.IsGlowPreviewActive(cdID) then
-          ns.CDMEnhanceOptions.SetGlowPreview(cdID, true)
-        end
-      end
-    end
-    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
-    for _, cdID in ipairs(icons) do
-      if ns.CDMEnhance.UpdateIcon then ns.CDMEnhance.UpdateIcon(cdID) end
-    end
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.StopAllReadyGlows then
+    ns.ArcAurasCooldown.StopAllReadyGlows()
   end
+  ApplyAuraOnlySetting(setter)
 end
 
 -- Apply aura active state glow SLIDER settings (TYPE-SPECIFIC to auras)
 -- Lighter version that doesn't clear glow signature - just updates preview if active
 -- Use this for continuous slider changes to avoid FPS drops
 local function ApplyAuraReadyStateGlowSliderSetting(setter)
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.StopAllReadyGlows then
+    ns.ArcAurasCooldown.StopAllReadyGlows()
+  end
+  ApplyAuraOnlySetting(setter)
+end
+
+-- Helper: Re-evaluate glow-when-missing on all affected aura frames
+local function RefreshAuraMissingGlow()
+  if not ns.CDMEnhance then return end
+  local icons = GetAuraIconsToUpdate()
+  for _, cdID in ipairs(icons) do
+    local data = ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
+    if data and data.frame then
+      local cfg = ns.CDMEnhance.GetEffectiveIconSettings and ns.CDMEnhance.GetEffectiveIconSettings(cdID)
+      local aaCfg = cfg and cfg.auraActiveState
+      if aaCfg then
+        local hasAura = ns.API and ns.API.HasAuraInstanceID and ns.API.HasAuraInstanceID(data.frame.auraInstanceID)
+        if ns.CDMEnhance.ShouldShowAuraActiveGlow(aaCfg, data.frame, hasAura) then
+          ns.CDMEnhance.ShowAuraActiveGlow(data.frame, aaCfg)
+        else
+          ns.CDMEnhance.HideAuraActiveGlow(data.frame)
+        end
+      end
+    end
+  end
+end
+
+-- Apply aura missing glow TOGGLE settings with immediate refresh
+-- Clears glow signature to force restart with new settings
+local function ApplyAuraMissingGlowSetting(setter)
   ApplyAuraOnlySetting(setter)
   if ns.CDMEnhance then
     local icons = GetAuraIconsToUpdate()
-    -- Invalidate cache so next FeedCooldown picks up new values
-    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
     for _, cdID in ipairs(icons) do
-      -- If preview is active, refresh preview
-      if ns.CDMEnhanceOptions.IsGlowPreviewActive and ns.CDMEnhanceOptions.IsGlowPreviewActive(cdID) then
-        ns.CDMEnhanceOptions.SetGlowPreview(cdID, true)
+      local data = ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
+      if data and data.frame then
+        data.frame._arcAuraActiveGlowSig = nil  -- Force glow restart
       end
-      -- Always update icon for immediate slider feedback
-      if ns.CDMEnhance.UpdateIcon then ns.CDMEnhance.UpdateIcon(cdID) end
     end
+    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
+    RefreshAuraMissingGlow()
+  end
+end
+
+-- Apply aura missing glow SLIDER settings (lighter version for continuous changes)
+local function ApplyAuraMissingGlowSliderSetting(setter)
+  ApplyAuraOnlySetting(setter)
+  if ns.CDMEnhance then
+    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
+    RefreshAuraMissingGlow()
   end
 end
 
@@ -1575,6 +1613,26 @@ function ns.CDMEnhanceOptions.GetAuraGlowPreviewState()
   return false
 end
 
+-- Aura-frame versions for Aura Missing glow preview (uses aura icon list)
+function ns.CDMEnhanceOptions.ToggleAuraMissingGlowPreviewForSelection()
+  local icons = GetAuraIconsToUpdate()
+  local anyActive = false
+  for _, cdID in ipairs(icons) do
+    if auraGlowPreviewIcons[cdID] then anyActive = true; break end
+  end
+  for _, cdID in ipairs(icons) do
+    ns.CDMEnhanceOptions.SetAuraGlowPreview(cdID, not anyActive)
+  end
+end
+
+function ns.CDMEnhanceOptions.GetAuraMissingGlowPreviewState()
+  local icons = GetAuraIconsToUpdate()
+  for _, cdID in ipairs(icons) do
+    if auraGlowPreviewIcons[cdID] then return true end
+  end
+  return false
+end
+
 function ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
   for cdID in pairs(auraGlowPreviewIcons) do
     ns.CDMEnhanceOptions.SetAuraGlowPreview(cdID, false)
@@ -1643,40 +1701,21 @@ end
 -- Clears glow signature to force restart with new settings
 -- NOTE: This is for cooldown ready state glow - NOT shared with auras
 local function ApplyReadyStateGlowSetting(setter)
-  ApplyCooldownSetting(setter)
-  if ns.CDMEnhance then
-    local icons = GetCooldownIconsToUpdate()
-    for _, cdID in ipairs(icons) do
-      local data = ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
-      if data and data.frame then
-        data.frame._arcCurrentGlowSig = nil
-        -- If preview is active, force immediate glow refresh
-        if ns.CDMEnhanceOptions.IsGlowPreviewActive and ns.CDMEnhanceOptions.IsGlowPreviewActive(cdID) then
-          ns.CDMEnhanceOptions.SetGlowPreview(cdID, true)
-        end
-      end
-    end
-    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
-    for _, cdID in ipairs(icons) do
-      if ns.CDMEnhance.UpdateIcon then ns.CDMEnhance.UpdateIcon(cdID) end
-    end
+  -- Stop first so ApplyCooldownSetting→UpdateIcon→FeedCooldown starts fresh with new settings
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.StopAllReadyGlows then
+    ns.ArcAurasCooldown.StopAllReadyGlows()
   end
+  ApplyCooldownSetting(setter)
 end
 
 -- Apply cooldown ready state glow SLIDER settings (TYPE-SPECIFIC to cooldowns)
 -- Lighter version that doesn't clear glow signature - just updates preview if active
 -- Use this for continuous slider changes to avoid FPS drops
 local function ApplyReadyStateGlowSliderSetting(setter)
-  ApplyCooldownSetting(setter)
-  if ns.CDMEnhance then
-    local icons = GetCooldownIconsToUpdate()
-    -- Only refresh preview if active - no signature clearing, no full UpdateIcon
-    for _, cdID in ipairs(icons) do
-      if ns.CDMEnhanceOptions.IsGlowPreviewActive and ns.CDMEnhanceOptions.IsGlowPreviewActive(cdID) then
-        ns.CDMEnhanceOptions.SetGlowPreview(cdID, true)
-      end
-    end
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.StopAllReadyGlows then
+    ns.ArcAurasCooldown.StopAllReadyGlows()
   end
+  ApplyCooldownSetting(setter)
 end
 
 -- Count selected icons for display
@@ -2892,6 +2931,26 @@ function ns.GetCDMAuraIconsOptionsTable()
         return not (c and c.keepBright)
       end,
     },
+    customIconID = {
+      type = "input",
+      dialogControl = "ArcUI_EditBox",
+      name = "Custom Icon",
+      desc = "Override the icon texture with a spell ID or texture file ID.\n\nEnter a spell ID (e.g. 403) or texture file ID (e.g. 136116).\nLeave empty to use the default CDM icon.",
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.customIconID then return tostring(c.customIconID) end
+        return ""
+      end,
+      set = function(_, v)
+        local id = tonumber(v)
+        ApplyAuraSetting(function(c) c.customIconID = id end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("aura")
+        end
+      end,
+      order = 107.537, width = 0.85,
+      hidden = HideAuraIconAppearance,
+    },
     showDebuffBorder = {
       type = "toggle", name = "Debuff Border",
       desc = "Shows the debuff type colored border (magic=blue, curse=purple, etc.)",
@@ -3027,7 +3086,7 @@ function ns.GetCDMAuraIconsOptionsTable()
           LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
         end
       end,
-      order = 107.9,
+      order = 107.802,
       width = 0.7,
       hidden = function()
         if HideAuraPosition() then return true end
@@ -3036,10 +3095,54 @@ function ns.GetCDMAuraIconsOptionsTable()
         return ns.CDMEnhance.GetIconPositionMode(cdID) == "group"
       end,
     },
-    
-    -- ═══════════════════════════════════════════════════════════════════
-    -- INACTIVE STATE SECTION (When aura is not active)
-    -- ═══════════════════════════════════════════════════════════════════
+    iconMoveToGroup = {
+      type = "select",
+      name = "Move to Group",
+      desc = "Move this icon to a different group, or make it free positioned.",
+      values = function()
+        local vals = {}
+        if ns.CDMGroups and ns.CDMGroups.groups then
+          for groupName, _ in pairs(ns.CDMGroups.groups) do
+            vals[groupName] = groupName
+          end
+        end
+        vals["free"] = "|cffff00ffFree Position|r"
+        return vals
+      end,
+      sorting = function()
+        local order = {}
+        if ns.CDMGroups and ns.CDMGroups.groups then
+          for groupName, _ in pairs(ns.CDMGroups.groups) do
+            order[#order + 1] = groupName
+          end
+          table.sort(order)
+        end
+        order[#order + 1] = "free"
+        return order
+      end,
+      get = function()
+        if not ns.CDMGroups or not ns.CDMGroups.GetGroupNameForIcon then return nil end
+        local cdID = selectedAuraIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("aura"))
+        if not cdID then return nil end
+        return ns.CDMGroups.GetGroupNameForIcon(cdID)
+      end,
+      set = function(_, v)
+        if not ns.CDMGroups or not ns.CDMGroups.MoveIconToGroup then return end
+        local cdID = selectedAuraIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("aura"))
+        if not cdID then return end
+        ns.CDMGroups.MoveIconToGroup(cdID, v)
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+      end,
+      order = 107.805,
+      width = 1.2,
+      hidden = function()
+        if HideAuraPosition() then return true end
+        if not ns.CDMGroups or not ns.CDMGroups.IsCDMGroupsEnabled or not ns.CDMGroups.IsCDMGroupsEnabled() then return true end
+        local cdID = selectedAuraIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("aura"))
+        if not cdID then return true end
+        return false
+      end,
+    },
     -- ACTIVE STATE SECTION (when buff/debuff is applied)
     -- ═══════════════════════════════════════════════════════════════════
     activeStateHeader = {
@@ -3080,6 +3183,85 @@ function ns.GetCDMAuraIconsOptionsTable()
       end,
       order = 107.83, width = 0.8,
       hidden = function() return HideIfNoAuraSelection() or collapsedSections.activeState end,
+    },
+    activeStateDesaturate = {
+      type = "toggle",
+      name = "Desaturate",
+      desc = "Make icon grayscale when active (e.g. for visual emphasis on other elements)",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.desaturate end,
+          function()
+            local c = GetAuraCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.desaturate or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraOnlySetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.desaturate = v
+        end)
+      end,
+      order = 107.831, width = 0.55,
+      hidden = function() return HideIfNoAuraSelection() or collapsedSections.activeState end,
+    },
+    activeStateTint = {
+      type = "toggle",
+      name = "Color Tint",
+      desc = "Apply a custom color tint to the icon when active",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.tint end,
+          function()
+            local c = GetAuraCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.tint or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraOnlySetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.tint = v
+        end)
+      end,
+      order = 107.832, width = 0.55,
+      hidden = function() return HideIfNoAuraSelection() or collapsedSections.activeState end,
+    },
+    activeStateTintColor = {
+      type = "color",
+      name = "Tint",
+      desc = "Color to tint the icon when active",
+      hasAlpha = false,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+          local col = c.cooldownStateVisuals.readyState.tintColor
+          if col then return col.r or 0.5, col.g or 0.5, col.b or 0.5 end
+        end
+        return 0.5, 0.5, 0.5
+      end,
+      set = function(_, r, g, b)
+        ApplyAuraOnlySetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.tintColor = {r = r, g = g, b = b}
+        end)
+      end,
+      order = 107.833, width = 0.35,
+      hidden = function()
+        if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
+        local c = GetAuraCfg()
+        return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.tint)
+      end,
     },
     activeStateGlow = {
       type = "toggle",
@@ -3279,7 +3461,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
         local c = GetAuraCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button" and gt ~= "ants" and gt ~= "ach_proc"
+        return false  -- Scale works for all glow types
       end,
     },
     activeStateGlowSpeed = {
@@ -3708,6 +3890,334 @@ function ns.GetCDMAuraIconsOptionsTable()
         return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState and c.cooldownStateVisuals.cooldownState.tint)
       end,
     },
+    -- ── Glow When Missing ──────────────────────────────────────────
+    inactiveGlowEnable = {
+      type = "toggle",
+      name = "Glow When Missing",
+      desc = "Show a glow effect on this aura icon when the buff/debuff is NOT active. Works for buffs, debuffs, and totems. Useful as a reminder to reapply.",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.auraActiveState and c.auraActiveState.glowWhenMissing end,
+          function()
+            local c = GetAuraCfg()
+            return c and c.auraActiveState and c.auraActiveState.glowWhenMissing or false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowWhenMissing = v
+        end)
+        if not v then
+          ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
+        end
+      end,
+      order = 107.961, width = 1.0,
+      hidden = HideAuraInactiveState,
+    },
+    inactiveGlowPreview = {
+      type = "toggle",
+      name = "Preview",
+      desc = "Toggle glow preview for selected icon(s). Preview will automatically stop when you close the options panel.",
+      get = function()
+        return ns.CDMEnhanceOptions.GetAuraMissingGlowPreviewState()
+      end,
+      set = function(_, v)
+        ns.CDMEnhanceOptions.ToggleAuraMissingGlowPreviewForSelection()
+      end,
+      order = 107.9611, width = 0.5,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowCombatOnly = {
+      type = "toggle",
+      name = "In Combat Only",
+      desc = "Only show the missing glow while in combat",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.auraActiveState and c.auraActiveState.glowCombatOnly end,
+          function()
+            local c = GetAuraCfg()
+            return c and c.auraActiveState and c.auraActiveState.glowCombatOnly or false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowCombatOnly = v
+        end)
+      end,
+      order = 107.962, width = 0.8,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowType = {
+      type = "select",
+      name = "Glow Style",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Proc|r - Flashy proc effect\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      values = {
+        ["pixel"] = "Pixel Glow",
+        ["autocast"] = "AutoCast Sparkles",
+        ["button"] = "Button Glow (Default)",
+        ["proc"] = "Proc Effect",
+        ["ants"] = "Ants (Marching)",
+        ["ach_proc"] = "Proc Burst (ACH)",
+      },
+      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowType or "button" end
+        return "button"
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowType = v
+        end)
+      end,
+      order = 107.963, width = 0.9,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowColor = {
+      type = "color",
+      name = "Color",
+      desc = "Glow color",
+      hasAlpha = false,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then
+          local col = c.auraActiveState.glowColor
+          if col then return col.r or 1, col.g or 0.85, col.b or 0.1 end
+        end
+        return 1, 0.85, 0.1
+      end,
+      set = function(_, r, g, b)
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowColor = {r = r, g = g, b = b}
+        end)
+      end,
+      order = 107.964, width = 0.5,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowIntensity = {
+      type = "range",
+      name = "Intensity",
+      desc = "How bright the glow appears",
+      min = 0, max = 1.0, step = 0.05,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowIntensity or 1.0 end
+        return 1.0
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowIntensity = v
+        end)
+      end,
+      order = 107.965, width = 0.6,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowScale = {
+      type = "range",
+      name = "Scale",
+      desc = "Size of the glow effect",
+      min = 0.5, max = 4.0, step = 0.05,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowScale or 1.0 end
+        return 1.0
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowScale = v
+        end)
+      end,
+      order = 107.966, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        if not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing) then return true end
+        return false  -- Scale works for all glow types
+      end,
+    },
+    inactiveGlowSpeed = {
+      type = "range",
+      name = "Speed",
+      desc = "How fast the glow animates",
+      min = 0.05, max = 1.0, step = 0.05,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowSpeed or 0.25 end
+        return 0.25
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowSpeed = v
+        end)
+      end,
+      order = 107.967, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        if not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing) then return true end
+        local gt = c.auraActiveState.glowType
+        return gt == "proc" or gt == "ants" or gt == "ach_proc"
+      end,
+    },
+    inactiveGlowLines = {
+      type = "range",
+      name = "Lines",
+      desc = "Number of glow lines",
+      min = 1, max = 16, step = 1,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowLines or 8 end
+        return 8
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowLines = v
+        end)
+      end,
+      order = 107.968, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        if not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing) then return true end
+        return c.auraActiveState.glowType ~= "pixel"
+      end,
+    },
+    inactiveGlowThickness = {
+      type = "range",
+      name = "Thickness",
+      desc = "Thickness of glow lines",
+      min = 1, max = 10, step = 1,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowThickness or 2 end
+        return 2
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowThickness = v
+        end)
+      end,
+      order = 107.969, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        if not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing) then return true end
+        return c.auraActiveState.glowType ~= "pixel"
+      end,
+    },
+    inactiveGlowParticles = {
+      type = "range",
+      name = "Particles",
+      desc = "Number of particle groups",
+      min = 1, max = 8, step = 1,
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then return c.auraActiveState.glowParticles or 4 end
+        return 4
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSliderSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowParticles = v
+        end)
+      end,
+      order = 107.9695, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        if not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing) then return true end
+        return c.auraActiveState.glowType ~= "autocast"
+      end,
+    },
+    inactiveGlowFrameStrata = {
+      type = "select",
+      name = "Glow Strata",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      values = {
+        ["inherit"] = "Inherit (Default)",
+        ["MEDIUM"] = "MEDIUM",
+        ["HIGH"] = "HIGH",
+        ["DIALOG"] = "DIALOG",
+      },
+      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState then
+          return c.auraActiveState.glowFrameStrata or "inherit"
+        end
+        return "inherit"
+      end,
+      set = function(_, v)
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowFrameStrata = (v ~= "inherit") and v or nil
+        end)
+      end,
+      order = 107.9696, width = 0.85,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
+    inactiveGlowFrameLevel = {
+      type = "input",
+      name = "Glow Frame Level",
+      desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata. Works with both inherited and custom strata.\n\nAccepts a number from 1 to 10000.",
+      get = function()
+        local c = GetAuraCfg()
+        if c and c.auraActiveState and c.auraActiveState.glowFrameLevel then
+          return tostring(c.auraActiveState.glowFrameLevel)
+        end
+        return ""
+      end,
+      set = function(_, v)
+        local num = tonumber(v)
+        if not num then return end
+        num = math.floor(math.max(1, math.min(10000, num)))
+        ApplyAuraMissingGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowFrameLevel = num
+        end)
+      end,
+      order = 107.9697, width = 0.55,
+      hidden = function()
+        if HideAuraInactiveState() then return true end
+        local c = GetAuraCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.glowWhenMissing)
+      end,
+    },
     resetInactiveState = {
       type = "execute",
       name = "Reset Section",
@@ -3851,7 +4361,7 @@ function ns.GetCDMAuraIconsOptionsTable()
         local c = GetAuraCfg()
         local glowType = c and c.procGlow and c.procGlow.glowType or "default"
         -- Show for autocast and button types (scale works via SetScale)
-        return glowType ~= "autocast" and glowType ~= "button" and glowType ~= "ants" and glowType ~= "ach_proc"
+        return false  -- Scale works for all glow types including Default
       end,
     },
     procGlowSpeed = {
@@ -5090,6 +5600,26 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return not (c and c.keepBright)
       end,
     },
+    customIconID = {
+      type = "input",
+      dialogControl = "ArcUI_EditBox",
+      name = "Custom Icon",
+      desc = "Override the icon texture with a spell ID or texture file ID.\n\nEnter a spell ID (e.g. 403) or texture file ID (e.g. 136116).\nLeave empty to use the default CDM icon.",
+      get = function()
+        local c = GetCooldownCfg()
+        if c and c.customIconID then return tostring(c.customIconID) end
+        return ""
+      end,
+      set = function(_, v)
+        local id = tonumber(v)
+        ApplySharedCooldownSetting(function(c) c.customIconID = id end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.537, width = 0.85,
+      hidden = HideCooldownIconAppearance,
+    },
     showPandemicBorder = {
       type = "toggle", name = "Pandemic Glow",
       desc = "Shows the red pandemic glow when cooldown is at 30% remaining.\n\n|cff888888Note:|r If glow persists after disabling, /reload fixes it.",
@@ -5220,7 +5750,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
           LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
         end
       end,
-      order = 107.9,
+      order = 107.802,
       width = 0.7,
       hidden = function()
         if HideCooldownPosition() then return true end
@@ -5229,10 +5759,54 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return ns.CDMEnhance.GetIconPositionMode(cdID) == "group"
       end,
     },
-    
-    -- ═══════════════════════════════════════════════════════════════════
-    -- INACTIVE STATE SECTION (when NOT on cooldown)
-    -- ═══════════════════════════════════════════════════════════════════
+    iconMoveToGroup = {
+      type = "select",
+      name = "Move to Group",
+      desc = "Move this icon to a different group, or make it free positioned.",
+      values = function()
+        local vals = {}
+        if ns.CDMGroups and ns.CDMGroups.groups then
+          for groupName, _ in pairs(ns.CDMGroups.groups) do
+            vals[groupName] = groupName
+          end
+        end
+        vals["free"] = "|cffff00ffFree Position|r"
+        return vals
+      end,
+      sorting = function()
+        local order = {}
+        if ns.CDMGroups and ns.CDMGroups.groups then
+          for groupName, _ in pairs(ns.CDMGroups.groups) do
+            order[#order + 1] = groupName
+          end
+          table.sort(order)
+        end
+        order[#order + 1] = "free"
+        return order
+      end,
+      get = function()
+        if not ns.CDMGroups or not ns.CDMGroups.GetGroupNameForIcon then return nil end
+        local cdID = selectedCooldownIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("cooldown"))
+        if not cdID then return nil end
+        return ns.CDMGroups.GetGroupNameForIcon(cdID)
+      end,
+      set = function(_, v)
+        if not ns.CDMGroups or not ns.CDMGroups.MoveIconToGroup then return end
+        local cdID = selectedCooldownIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("cooldown"))
+        if not cdID then return end
+        ns.CDMGroups.MoveIconToGroup(cdID, v)
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+      end,
+      order = 107.805,
+      width = 1.2,
+      hidden = function()
+        if HideCooldownPosition() then return true end
+        if not ns.CDMGroups or not ns.CDMGroups.IsCDMGroupsEnabled or not ns.CDMGroups.IsCDMGroupsEnabled() then return true end
+        local cdID = selectedCooldownIcon or (ns.CDMEnhance and ns.CDMEnhance.GetFirstIconOfType("cooldown"))
+        if not cdID then return true end
+        return false
+      end,
+    },
     -- ═══════════════════════════════════════════════════════════════════
     -- READY STATE SECTION (when ability is available)
     -- ═══════════════════════════════════════════════════════════════════
@@ -5571,7 +6145,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
         local c = GetCooldownCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button" and gt ~= "ants" and gt ~= "ach_proc"
+        return false  -- Scale works for all glow types
       end,
     },
     readyStateGlowSpeed = {
@@ -6094,6 +6668,31 @@ function ns.GetCDMCooldownIconsOptionsTable()
       order = 107.971, width = 1.1,
       hidden = HideCooldownAuraActiveState,
     },
+    auraActiveStateGlowWhenMissing = {
+      type = "toggle",
+      name = "Glow When Aura Missing",
+      desc = "Show glow when the associated buff/aura is NOT active instead of when it is active. Useful as a reminder to reapply buffs. Can be used independently or together with Glow When Aura Active.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.auraActiveState and c.auraActiveState.glowWhenMissing end,
+          function()
+            local c = GetCooldownCfg()
+            return c and c.auraActiveState and c.auraActiveState.glowWhenMissing or false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownAuraActiveGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowWhenMissing = v
+        end)
+        if not v then
+          ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
+        end
+      end,
+      order = 107.9705, width = 1.1,
+      hidden = HideCooldownAuraActiveState,
+    },
     auraActiveStateGlowPreview = {
       type = "toggle",
       name = "Preview",
@@ -6108,7 +6707,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        return not (c and c.auraActiveState and c.auraActiveState.glow)
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     auraActiveStateGlowCombatOnly = {
@@ -6143,7 +6742,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        return not (c and c.auraActiveState and c.auraActiveState.glow)
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     auraActiveStateGlowType = {
@@ -6176,7 +6775,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        return not (c and c.auraActiveState and c.auraActiveState.glow)
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     auraActiveStateGlowColor = {
@@ -6202,7 +6801,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        return not (c and c.auraActiveState and c.auraActiveState.glow)
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     auraActiveStateGlowIntensity = {
@@ -6227,7 +6826,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        return not (c and c.auraActiveState and c.auraActiveState.glow)
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     auraActiveStateGlowScale = {
@@ -6252,8 +6851,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        if not (c and c.auraActiveState and c.auraActiveState.glow) then return true end
-        local gt = c.auraActiveState.glowType; return gt ~= "autocast" and gt ~= "button" and gt ~= "ants" and gt ~= "ach_proc"
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+        return false  -- Scale works for all glow types
       end,
     },
     auraActiveStateGlowSpeed = {
@@ -6278,7 +6877,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        if not (c and c.auraActiveState and c.auraActiveState.glow) then return true end
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
         local gt = c.auraActiveState.glowType
         return gt == "proc" or gt == "ants" or gt == "ach_proc"
       end,
@@ -6305,7 +6904,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        if not (c and c.auraActiveState and c.auraActiveState.glow) then return true end
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
         return c.auraActiveState.glowType ~= "pixel"
       end,
     },
@@ -6331,7 +6930,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        if not (c and c.auraActiveState and c.auraActiveState.glow) then return true end
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
         return c.auraActiveState.glowType ~= "pixel"
       end,
     },
@@ -6357,8 +6956,66 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
-        if not (c and c.auraActiveState and c.auraActiveState.glow) then return true end
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
         return c.auraActiveState.glowType ~= "autocast"
+      end,
+    },
+    auraActiveStateGlowFrameStrata = {
+      type = "select",
+      name = "Glow Strata",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      values = {
+        ["inherit"] = "Inherit (Default)",
+        ["MEDIUM"] = "MEDIUM",
+        ["HIGH"] = "HIGH",
+        ["DIALOG"] = "DIALOG",
+      },
+      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      get = function()
+        local c = GetCooldownCfg()
+        if c and c.auraActiveState then
+          return c.auraActiveState.glowFrameStrata or "inherit"
+        end
+        return "inherit"
+      end,
+      set = function(_, v)
+        ApplyCooldownAuraActiveGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowFrameStrata = (v ~= "inherit") and v or nil
+        end)
+      end,
+      order = 107.9795, width = 0.85,
+      hidden = function()
+        if HideCooldownAuraActiveState() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+      end,
+    },
+    auraActiveStateGlowFrameLevel = {
+      type = "input",
+      name = "Glow Frame Level",
+      desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata. Works with both inherited and custom strata.\n\nAccepts a number from 1 to 10000.",
+      get = function()
+        local c = GetCooldownCfg()
+        if c and c.auraActiveState and c.auraActiveState.glowFrameLevel then
+          return tostring(c.auraActiveState.glowFrameLevel)
+        end
+        return ""
+      end,
+      set = function(_, v)
+        local num = tonumber(v)
+        if not num then return end
+        num = math.floor(math.max(1, math.min(10000, num)))
+        ApplyCooldownAuraActiveGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowFrameLevel = num
+        end)
+      end,
+      order = 107.9796, width = 0.55,
+      hidden = function()
+        if HideCooldownAuraActiveState() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
       end,
     },
     resetAuraActiveState = {
@@ -6512,7 +7169,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
         local c = GetCooldownCfg()
         local glowType = c and c.procGlow and c.procGlow.glowType or "default"
         -- Show for autocast and button types (scale works via SetScale)
-        return glowType ~= "autocast" and glowType ~= "button" and glowType ~= "ants" and glowType ~= "ach_proc"
+        return false  -- Scale works for all glow types including Default
       end,
     },
     procGlowSpeed = {
@@ -7954,7 +8611,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.activeState then return true end
           local g = GetAuraGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button" and gt ~= "ants" and gt ~= "ach_proc"
+          return false  -- Scale works for all glow types
         end,
       },
       activeStateGlowSpeed = {
@@ -8743,7 +9400,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.procGlow then return true end
           local g = GetAuraGlobalCfg()
           local glowType = g.procGlow and g.procGlow.glowType or "default"
-          return glowType ~= "autocast" and glowType ~= "button" and glowType ~= "ants" and glowType ~= "ach_proc"
+          return false  -- Scale works for all glow types including Default
         end,
       },
       glowSpeed = {
@@ -9304,7 +9961,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.readyState then return true end
           local g = GetCooldownGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt ~= "autocast" and gt ~= "button" and gt ~= "ants" and gt ~= "ach_proc"
+          return false  -- Scale works for all glow types
         end,
       },
       readyStateGlowSpeed = {
@@ -10066,7 +10723,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.procGlow then return true end
           local g = GetCooldownGlobalCfg()
           local glowType = g.procGlow and g.procGlow.glowType or "default"
-          return glowType ~= "autocast" and glowType ~= "button" and glowType ~= "ants" and glowType ~= "ach_proc"
+          return false  -- Scale works for all glow types including Default
         end,
       },
       glowSpeed = {
@@ -11165,10 +11822,19 @@ local glowPreviewActive = {}  -- cdID -> true/false
 -- Set glow preview state for an icon
 function ns.CDMEnhanceOptions.SetGlowPreview(cdID, enabled)
   glowPreviewActive[cdID] = enabled or nil
-  -- Trigger update to show/hide glow
-  if ns.CDMEnhance then
-    if ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
-    if ns.CDMEnhance.UpdateIcon then ns.CDMEnhance.UpdateIcon(cdID) end
+  if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
+    ns.CDMEnhance.InvalidateCache()
+  end
+  -- Arc Aura spell frames: RefreshSpellVisuals does stop+cache-clear+re-eval in one pass
+  if type(cdID) == "string" and cdID:match("^arc_") then
+    if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshSpellVisuals then
+      ns.ArcAurasCooldown.RefreshSpellVisuals(cdID)
+    end
+  else
+    -- CDM frames: use UpdateIcon path
+    if ns.CDMEnhance and ns.CDMEnhance.UpdateIcon then
+      ns.CDMEnhance.UpdateIcon(cdID)
+    end
   end
 end
 
@@ -11193,6 +11859,15 @@ function ns.CDMEnhanceOptions.ClearAllGlowPreviews()
   if ns.CDMEnhance and ns.CDMEnhance.UpdateIcon then
     for _, cdID in ipairs(cdIDs) do
       ns.CDMEnhance.UpdateIcon(cdID)
+    end
+  end
+  -- Arc Aura spell frames: force-stop ready glows + re-evaluate
+  if ns.ArcAurasCooldown then
+    if ns.ArcAurasCooldown.StopAllReadyGlows then
+      ns.ArcAurasCooldown.StopAllReadyGlows()
+    end
+    if ns.ArcAurasCooldown.RefreshAllSpellVisuals then
+      ns.ArcAurasCooldown.RefreshAllSpellVisuals()
     end
   end
 end

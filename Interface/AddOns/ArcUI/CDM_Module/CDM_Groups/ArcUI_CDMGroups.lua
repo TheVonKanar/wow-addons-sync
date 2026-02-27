@@ -164,26 +164,23 @@ ns.CDMGroups.SyncAllAnchorProxies = SyncAllAnchorProxies
 local pendingVisibility = {}  -- [container] = true/false (show/hide)
 
 -- Combat-safe Show/Hide for group containers.
--- If not in combat lockdown, calls Show()/Hide() directly.
--- If in combat lockdown, uses SetAlpha(0/1) for immediate visual effect
--- and queues proper Show()/Hide() for PLAYER_REGEN_ENABLED.
+-- Uses ALPHA-ONLY visibility: containers stay :Show()n at all times,
+-- and we toggle SetAlpha(0/1) to show/hide them visually.
+-- This avoids the problem where :Hide() is called out of combat, then
+-- SetAlpha(1) in combat has no effect because the frame is still hidden.
+-- NOTE: Click-through handling is done separately by ApplyClickThrough.
 local function SafeShowContainer(container, shouldShow)
     if not container then return end
-    if InCombatLockdown() then
-        -- Visual stand-in: alpha-based visibility
-        container:SetAlpha(shouldShow and 1 or 0)
-        -- Queue proper Show/Hide for after combat
-        pendingVisibility[container] = shouldShow
-    else
-        -- Not in combat - direct call is safe
-        if shouldShow then
-            container:SetAlpha(1)
-            container:Show()
-        else
-            container:Hide()
+    -- Always ensure the container is :Show()n so alpha has visual effect.
+    -- Use pcall in case of edge cases with protected frames during combat.
+    if not container:IsShown() then
+        local ok = pcall(container.Show, container)
+        if not ok and shouldShow then
+            -- Show() failed (likely combat lockdown on protected parent) — queue for later
+            pendingVisibility[container] = true
         end
-        pendingVisibility[container] = nil
     end
+    container:SetAlpha(shouldShow and 1 or 0)
 end
 ns.CDMGroups.SafeShowContainer = SafeShowContainer
 
@@ -191,15 +188,11 @@ ns.CDMGroups.SafeShowContainer = SafeShowContainer
 local combatFlushFrame = CreateFrame("Frame")
 combatFlushFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 combatFlushFrame:SetScript("OnEvent", function()
-    -- ═══ FLUSH PENDING VISIBILITY (Show/Hide deferred from combat) ═══
+    -- ═══ FLUSH PENDING VISIBILITY (ensure Show() for alpha-visible containers) ═══
     for container, shouldShow in pairs(pendingVisibility) do
-        if container then
-            if shouldShow then
-                container:SetAlpha(1)
-                pcall(container.Show, container)
-            else
-                pcall(container.Hide, container)
-            end
+        if container and shouldShow then
+            container:SetAlpha(1)
+            pcall(container.Show, container)
         end
     end
     wipe(pendingVisibility)
@@ -876,6 +869,22 @@ ns.CDMGroups.isStealthed = false   -- Track stealth state for visibility
 ns.CDMGroups.isFlying = false      -- Track flying state for visibility
 ns.CDMGroups.isSwimming = false    -- Track swimming state for visibility
 
+-- Refresh ALL visibility state variables.
+-- Called on PLAYER_REGEN_ENABLED (leaving combat) and zone changes
+-- as a safety net to ensure no stale values persist.
+local function RefreshAllVisibilityState()
+    ns.CDMGroups.isMounted = IsMounted() and true or false
+    ns.CDMGroups.inVehicle = (UnitInVehicle("player") or UnitOnTaxi("player")) and true or false
+    ns.CDMGroups.isFlying = IsFlying() and true or false
+    ns.CDMGroups.isSwimming = IsSwimming() and true or false
+    ns.CDMGroups.isDead = UnitIsDeadOrGhost("player") and true or false
+    ns.CDMGroups.isPvP = (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) and true or false
+    ns.CDMGroups.isResting = IsResting() and true or false
+    ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
+    ns.CDMGroups.isStealthed = IsStealthed() and true or false
+end
+ns.CDMGroups.RefreshAllVisibilityState = RefreshAllVisibilityState
+
 -- Flying/swimming state poller: WoW has NO event for takeoff/landing transitions.
 -- IsFlying() changes silently while mounted. We poll at 0.5s when mounted to catch it.
 local flyingPollTicker = nil
@@ -884,8 +893,8 @@ local function StartFlyingPoll()
   flyingPollTicker = C_Timer.NewTicker(0.5, function()
     local wasFlying = ns.CDMGroups.isFlying
     local wasSwimming = ns.CDMGroups.isSwimming
-    ns.CDMGroups.isFlying = IsFlying() or false
-    ns.CDMGroups.isSwimming = IsSwimming() or false
+    ns.CDMGroups.isFlying = IsFlying() and true or false
+    ns.CDMGroups.isSwimming = IsSwimming() and true or false
     if wasFlying ~= ns.CDMGroups.isFlying or wasSwimming ~= ns.CDMGroups.isSwimming then
       ns.CDMGroups.UpdateGroupVisibility()
     end
@@ -898,7 +907,7 @@ local function StopFlyingPoll()
   end
   -- Clear states on dismount
   ns.CDMGroups.isFlying = false
-  ns.CDMGroups.isSwimming = IsSwimming() or false
+  ns.CDMGroups.isSwimming = IsSwimming() and true or false
 end
 ns.CDMGroups.fightStats = { parent = 0, strata = 0, scale = 0, size = 0, show = 0, alpha = 0, position = 0, lastReport = 0 }
 
@@ -1010,6 +1019,7 @@ local function SerializeDefaultGroupToLayoutData(groupData)
         bgColor = groupData.bgColor and DeepCopy(groupData.bgColor),
         -- Visibility
         visibility = groupData.visibility or "always",
+        visibilityLogic = groupData.visibilityLogic,
         -- Frame strata
         frameStrata = groupData.frameStrata,
         frameLevel = groupData.frameLevel,
@@ -1204,20 +1214,19 @@ function ns.CDMGroups.TrackFreeIcon(cooldownID, x, y, iconSize, optionalFrame)
         ns.CDMGroups.Placeholders.HidePlaceholder(cooldownID)
     end
     
-    -- Always set up handlers (for click-to-select functionality)
-    ns.CDMGroups.SetupFreeIconDrag(cooldownID)
-    
-    -- Apply tooltip settings to free icon
-    if ShouldDisableTooltips() then
-        if not frame._arcOrigOnEnter then
-            frame._arcOrigOnEnter = frame:GetScript("OnEnter")
-        end
-        if not frame._arcOrigOnLeave then
-            frame._arcOrigOnLeave = frame:GetScript("OnLeave")
-        end
-        frame:SetScript("OnEnter", nil)
-        frame:SetScript("OnLeave", nil)
+    -- Apply tooltip settings to free icon (uses canonical ApplyTooltipSettings
+    -- which backs up OnEnter/OnLeave before disabling, and restores when re-enabled)
+    -- CRITICAL: Must run BEFORE SetupFreeIconDrag because SetScript("OnEnter", fn)
+    -- implicitly re-enables mouse in WoW, undoing click-through's EnableMouse(false).
+    -- When click-through is active, force tooltips off (can't fire without mouse anyway).
+    if ns.CDMGroups.ApplyTooltipSettings then
+        local forceOff = ShouldMakeClickThrough() and not ns.CDMGroups.ShouldAllowDrag()
+        ns.CDMGroups.ApplyTooltipSettings(frame, forceOff or ShouldDisableTooltips())
     end
+    
+    -- Always set up handlers (for click-to-select functionality)
+    -- This applies click-through LAST so EnableMouse(false) isn't undone by tooltip restore
+    ns.CDMGroups.SetupFreeIconDrag(cooldownID)
 end
 
 function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
@@ -1261,15 +1270,19 @@ function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
     end
     
     frame:SetMovable(true)
-    frame:RegisterForDrag("LeftButton")
     
     -- CLICK-THROUGH: Enable mouse if dragging is allowed (drag mode OR options panel open)
     if ns.CDMGroups.ShouldAllowDrag() then
+        frame:RegisterForDrag("LeftButton")
         frame:EnableMouse(true)
         if frame.SetMouseClickThrough then
             frame:SetMouseClickThrough(false)
         end
     else
+        -- CRITICAL: Clear drag registration BEFORE ApplyClickThrough
+        -- RegisterForDrag("LeftButton") implicitly re-enables mouse in WoW,
+        -- so ApplyClickThrough must run on a frame with no drag registration
+        frame:RegisterForDrag()
         ApplyClickThrough(frame, ShouldMakeClickThrough())
     end
     
@@ -2693,6 +2706,7 @@ local function SerializeGroupToData(group, overrideLayout)
         lockGridSize = group.lockGridSize,
         containerPadding = group.containerPadding,
         visibility = type(group.visibility) == "table" and DeepCopy(group.visibility) or (group.visibility or "always"),
+        visibilityLogic = group.visibilityLogic,
         borderColor = DeepCopy(group.borderColor),
         bgColor = DeepCopy(group.bgColor),
         frameStrata = group.frameStrata,
@@ -2748,6 +2762,7 @@ local function SerializeGroupToLayoutData(group)
         borderColor = group.borderColor and DeepCopy(group.borderColor),
         bgColor = group.bgColor and DeepCopy(group.bgColor),
         visibility = type(group.visibility) == "table" and DeepCopy(group.visibility) or (group.visibility or "always"),
+        visibilityLogic = group.visibilityLogic,
         -- Frame strata
         frameStrata = group.frameStrata,
         frameLevel = group.frameLevel,
@@ -2988,6 +3003,7 @@ GetDefaultSpecData = function()
                             lockGridSize = layoutData.lockGridSize,
                             containerPadding = layoutData.containerPadding,
                             visibility = layoutData.visibility or "always",
+                            visibilityLogic = layoutData.visibilityLogic,
                             frameStrata = layoutData.frameStrata,
                             frameLevel = layoutData.frameLevel,
                             borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -3240,6 +3256,7 @@ local function EnsureLayoutProfiles(specData)
                         borderColor = group.borderColor and DeepCopy(group.borderColor),
                         bgColor = group.bgColor and DeepCopy(group.bgColor),
                         visibility = group.visibility,
+                        visibilityLogic = group.visibilityLogic,
                         frameStrata = group.frameStrata,
                         frameLevel = group.frameLevel,
                     }
@@ -3274,6 +3291,7 @@ local function EnsureLayoutProfiles(specData)
                         borderColor = groupData.borderColor and DeepCopy(groupData.borderColor),
                         bgColor = groupData.bgColor and DeepCopy(groupData.bgColor),
                         visibility = groupData.visibility,
+                        visibilityLogic = groupData.visibilityLogic,
                     }
                 end
             end
@@ -3412,6 +3430,7 @@ local function EnsureLayoutProfiles(specData)
                         borderColor = groupData.borderColor and DeepCopy(groupData.borderColor),
                         bgColor = groupData.bgColor and DeepCopy(groupData.bgColor),
                         visibility = groupData.visibility,
+                        visibilityLogic = groupData.visibilityLogic,
                     }
                 end
             end
@@ -3590,6 +3609,7 @@ function ns.CDMGroups.CreateProfile(profileName)
                 bgColor = group.bgColor and DeepCopy(group.bgColor),
                 -- Visibility
                 visibility = group.visibility,
+                visibilityLogic = group.visibilityLogic,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
@@ -3899,6 +3919,7 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
                 bgColor = group.bgColor and DeepCopy(group.bgColor),
                 -- Visibility
                 visibility = group.visibility,
+                visibilityLogic = group.visibilityLogic,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
@@ -4629,6 +4650,9 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 -- Visibility
                 if layoutData.visibility ~= nil then
                     group.visibility = layoutData.visibility
+                end
+                if layoutData.visibilityLogic ~= nil then
+                    group.visibilityLogic = layoutData.visibilityLogic
                 end
                 -- Position
                 if layoutData.position then
@@ -5963,6 +5987,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                         lockGridSize = layoutData.lockGridSize,
                         containerPadding = layoutData.containerPadding,
                         visibility = layoutData.visibility or "always",
+                        visibilityLogic = layoutData.visibilityLogic,
                         frameStrata = layoutData.frameStrata,
                         frameLevel = layoutData.frameLevel,
                         borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -6450,6 +6475,7 @@ function ns.CDMGroups.CreateGroup(name)
             lockGridSize = defaultTemplate.lockGridSize or false,
             containerPadding = defaultTemplate.containerPadding or -4,
             visibility = defaultTemplate.visibility or "always",
+            visibilityLogic = defaultTemplate.visibilityLogic,
             borderColor = defaultTemplate.borderColor and DeepCopy(defaultTemplate.borderColor),
             bgColor = defaultTemplate.bgColor and DeepCopy(defaultTemplate.bgColor),
             gridRows = defaultTemplate.layout and defaultTemplate.layout.gridRows or 2,
@@ -6499,6 +6525,7 @@ function ns.CDMGroups.CreateGroup(name)
         showBorder = layoutData.showBorder or false,
         showBackground = layoutData.showBackground or false,
         visibility = layoutData.visibility or "always",
+        visibilityLogic = layoutData.visibilityLogic,
         borderColor = layoutData.borderColor,
         bgColor = layoutData.bgColor,
         frameStrata = layoutData.frameStrata,
@@ -6525,6 +6552,7 @@ function ns.CDMGroups.CreateGroup(name)
         frameStrata = db.frameStrata or "MEDIUM",
         frameLevel = db.frameLevel or 1,
         visibility = db.visibility,  -- "always", "combat", or "ooc"
+        visibilityLogic = db.visibilityLogic,
         showBorder = db.showBorder,
         showBackground = db.showBackground,
         borderColor = DeepCopy(borderColor),
@@ -6999,11 +7027,13 @@ function ns.CDMGroups.CreateGroup(name)
     group.showBorder = db.showBorder
     group.showBackground = db.showBackground
     group.visibility = db.visibility
+    group.visibilityLogic = db.visibilityLogic
     group.borderColor = db.borderColor
     group.bgColor = db.bgColor
     
     local function UpdateAppearance()
-        if ns.CDMGroups.dragModeEnabled then
+        local editModeActive = ns.CDMGroups.dragModeEnabled or ns.optionsPanelOpen
+        if editModeActive then
             -- Edit mode: showBorderInEditMode is a GLOBAL override
             -- When ON: show all borders/backgrounds so you can see groups while editing
             -- When OFF: hide all borders/backgrounds so you see true layout
@@ -11073,18 +11103,21 @@ function ns.CDMGroups.CreateGroup(name)
         end
         
         frame:SetMovable(true)
-        frame:RegisterForDrag("LeftButton")
         
         -- CLICK-THROUGH: Check dragModeEnabled and panel state
         local panelOpen = ns.optionsPanelOpen
         local allowDrag = ns.CDMGroups.dragModeEnabled or panelOpen
         
         if allowDrag then
+            frame:RegisterForDrag("LeftButton")
             frame:EnableMouse(true)
             if frame.SetMouseClickThrough then
                 frame:SetMouseClickThrough(false)
             end
         else
+            -- CRITICAL: Clear drag registration BEFORE ApplyClickThrough
+            -- RegisterForDrag("LeftButton") implicitly re-enables mouse in WoW
+            frame:RegisterForDrag()
             -- Read click-through directly from DB
             local clickThroughEnabled = false
             local db = ns.CDMShared and ns.CDMShared.GetCDMGroupsDB and ns.CDMShared.GetCDMGroupsDB()
@@ -11673,6 +11706,7 @@ function ns.CDMGroups.CreateGroup(name)
                     borderColor = group.borderColor and DeepCopy(group.borderColor),
                     bgColor = group.bgColor and DeepCopy(group.bgColor),
                     visibility = group.visibility,
+                    visibilityLogic = group.visibilityLogic,
                     frameStrata = group.frameStrata,
                     frameLevel = group.frameLevel,
                 }
@@ -12164,9 +12198,11 @@ function ns.CDMGroups.UpdateGroupSelectionVisuals()
     
     -- PANEL CLOSE DETECTION: When panel transitions from open → closed, 
     -- re-apply tooltip/click-through settings based on saved DB values
+    -- PANEL OPEN DETECTION: When panel transitions from closed → open,
+    -- re-enable mouse on group members (undo click-through) so they can be dragged
     local panelWasOpen = ns.CDMGroups._optionsPanelWasOpen
     if panelWasOpen and not optionsPanelOpen then
-        -- Panel just closed - apply saved settings
+        -- Panel just closed - apply saved settings (re-enables click-through if configured)
         if ns.CDMGroups.RefreshIconSettings then
             ns.CDMGroups.RefreshIconSettings()
         end
@@ -12177,6 +12213,13 @@ function ns.CDMGroups.UpdateGroupSelectionVisuals()
                 ns.CDMEnhance.ForceRefreshAllVisualStates()
             end
         end)
+    elseif not panelWasOpen and optionsPanelOpen then
+        -- Panel just opened - re-enable mouse on all icons (undo click-through)
+        -- RefreshIconSettings sees panelActuallyOpen=true → clickThrough=false
+        -- → ApplyClickThrough(frame, false) → EnableMouse(true) on all members
+        if ns.CDMGroups.RefreshIconSettings then
+            ns.CDMGroups.RefreshIconSettings()
+        end
     end
     ns.CDMGroups._optionsPanelWasOpen = optionsPanelOpen or false
     
@@ -12270,6 +12313,11 @@ function ns.CDMGroups.UpdateGroupSelectionVisuals()
                 group.HideControlButtons()
             end
         end
+        
+        -- Update container border/background based on edit mode state
+        if group.UpdateAppearance then
+            group.UpdateAppearance()
+        end
     end
 end
 
@@ -12298,72 +12346,127 @@ function ns.CDMGroups.UpdateGroupVisibility()
             if type(vis) == "table" then
                 -- NEW: Multi-select table format
                 -- Each flag means "hide when this condition is true"
+                -- visibilityLogic controls how conditions combine:
+                --   "any" (default): Hide if ANY condition is met (OR logic)
+                --   "all": Hide only when ALL checked conditions are met (AND logic)
                 if vis.hideAlways then
                     shouldShow = false
                 else
-                    -- Check each hide condition
-                    if vis.hideOOC and not ns.CDMGroups.inCombat then
-                        shouldShow = false  -- Hide when out of combat
+                    local logic = group.visibilityLogic or "any"
+                    
+                    -- Build list of condition results for checked flags only
+                    -- Each entry: true = condition is currently met (would hide)
+                    local conditionResults = {}
+                    local hasAnyCondition = false
+                    
+                    if vis.hideOOC then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.inCombat
                     end
-                    if vis.hideInCombat and ns.CDMGroups.inCombat then
-                        shouldShow = false  -- Hide when in combat
+                    if vis.hideInCombat then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inCombat
                     end
-                    if vis.hideMounted and ns.CDMGroups.isMounted then
-                        shouldShow = false  -- Hide when mounted
+                    if vis.hideMounted then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isMounted
                     end
-                    if vis.hideInVehicle and ns.CDMGroups.inVehicle then
-                        shouldShow = false  -- Hide when in vehicle/taxi
+                    if vis.hideInVehicle then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inVehicle
                     end
-                    if vis.hideInPetBattle and ns.CDMGroups.inPetBattle then
-                        shouldShow = false  -- Hide when in pet battle
+                    if vis.hideInPetBattle then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inPetBattle
                     end
-                    if vis.hideDead and ns.CDMGroups.isDead then
-                        shouldShow = false  -- Hide when dead/ghost
+                    if vis.hideDead then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isDead
                     end
-                    if vis.hideSolo and not ns.CDMGroups.inGroup then
-                        shouldShow = false  -- Hide when not in a group (solo)
+                    if vis.hideSolo then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.inGroup
                     end
-                    if vis.hideInGroup and ns.CDMGroups.inGroup then
-                        shouldShow = false  -- Hide when in any group
+                    if vis.hideInGroup then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inGroup
                     end
-                    if vis.hideInRaid and ns.CDMGroups.inRaid then
-                        shouldShow = false  -- Hide when in a raid
+                    if vis.hideInRaid then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inRaid
                     end
-                    if vis.hideInInstance and ns.CDMGroups.inInstance then
-                        shouldShow = false  -- Hide when in an instance
+                    if vis.hideInInstance then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inInstance
                     end
-                    if vis.hideResting and ns.CDMGroups.isResting then
-                        shouldShow = false  -- Hide when resting (city/inn)
+                    if vis.hideResting then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isResting
                     end
-                    if vis.hideInEncounter and ns.CDMGroups.inEncounter then
-                        shouldShow = false  -- Hide during boss encounters
+                    if vis.hideInEncounter then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inEncounter
                     end
-                    if vis.hidePvP and ns.CDMGroups.isPvP then
-                        shouldShow = false  -- Hide when PvP flagged
+                    if vis.hidePvP then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isPvP
                     end
-                    if vis.hideDragonriding and ns.CDMGroups.isDragonriding then
-                        shouldShow = false  -- Hide when skyriding
+                    if vis.hideDragonriding then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isDragonriding
                     end
-                    if vis.hideNoTarget and not ns.CDMGroups.hasTarget then
-                        shouldShow = false  -- Hide when no target
+                    if vis.hideNoTarget then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.hasTarget
                     end
-                    if vis.hideHasTarget and ns.CDMGroups.hasTarget then
-                        shouldShow = false  -- Hide when has target
+                    if vis.hideHasTarget then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.hasTarget
                     end
-                    if vis.hideNotCasting and not ns.CDMGroups.isCasting then
-                        shouldShow = false  -- Hide when not casting
+                    if vis.hideNotCasting then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.isCasting
                     end
-                    if vis.hideCasting and ns.CDMGroups.isCasting then
-                        shouldShow = false  -- Hide when casting
+                    if vis.hideCasting then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isCasting
                     end
-                    if vis.hideStealthed and ns.CDMGroups.isStealthed then
-                        shouldShow = false  -- Hide when stealthed
+                    if vis.hideStealthed then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isStealthed
                     end
-                    if vis.hideFlying and ns.CDMGroups.isFlying then
-                        shouldShow = false  -- Hide when flying
+                    if vis.hideFlying then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isFlying
                     end
-                    if vis.hideSwimming and ns.CDMGroups.isSwimming then
-                        shouldShow = false  -- Hide when swimming
+                    if vis.hideSwimming then
+                        hasAnyCondition = true
+                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isSwimming
+                    end
+                    
+                    -- Evaluate conditions based on logic mode
+                    if hasAnyCondition then
+                        if logic == "all" then
+                            -- AND mode: Hide only when ALL checked conditions are met
+                            local allMet = true
+                            for i = 1, #conditionResults do
+                                if not conditionResults[i] then
+                                    allMet = false
+                                    break
+                                end
+                            end
+                            if allMet then
+                                shouldShow = false
+                            end
+                        else
+                            -- "any" mode (default): Hide if ANY condition is met
+                            for i = 1, #conditionResults do
+                                if conditionResults[i] then
+                                    shouldShow = false
+                                    break
+                                end
+                            end
+                        end
                     end
                 end
             else
@@ -12519,17 +12622,17 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
             end
             
             -- Refresh mounted/combat state (may have changed during loading screen)
-            ns.CDMGroups.inCombat = InCombatLockdown()
-            ns.CDMGroups.isMounted = IsMounted()
-            ns.CDMGroups.inVehicle = UnitInVehicle("player") or UnitOnTaxi("player") or false
+            ns.CDMGroups.inCombat = InCombatLockdown() and true or false
+            ns.CDMGroups.isMounted = IsMounted() and true or false
+            ns.CDMGroups.inVehicle = (UnitInVehicle("player") or UnitOnTaxi("player")) and true or false
             ns.CDMGroups.inInstance = IsInInstance() or false
             ns.CDMGroups.isResting = IsResting()
             ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
             ns.CDMGroups.hasTarget = UnitExists("target") or false
             ns.CDMGroups.isCasting = false
-            ns.CDMGroups.isStealthed = IsStealthed() or false
-            ns.CDMGroups.isFlying = IsFlying() or false
-            ns.CDMGroups.isSwimming = IsSwimming() or false
+            ns.CDMGroups.isStealthed = IsStealthed() and true or false
+            ns.CDMGroups.isFlying = IsFlying() and true or false
+            ns.CDMGroups.isSwimming = IsSwimming() and true or false
             
             return  -- Don't do regular zone change handling
         end
@@ -12541,21 +12644,21 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         -- PLAYER_MOUNT_DISPLAY_CHANGED does NOT fire during loading screens, so
         -- if you were mounted when you zoned (e.g. queued for dungeon while mounted),
         -- isMounted stays true even though you're now dismounted in the instance.
-        ns.CDMGroups.inCombat = InCombatLockdown()
-        ns.CDMGroups.isMounted = IsMounted()
-        ns.CDMGroups.inVehicle = UnitInVehicle("player") or UnitOnTaxi("player") or false
+        ns.CDMGroups.inCombat = InCombatLockdown() and true or false
+        ns.CDMGroups.isMounted = IsMounted() and true or false
+        ns.CDMGroups.inVehicle = (UnitInVehicle("player") or UnitOnTaxi("player")) and true or false
         ns.CDMGroups.isDead = UnitIsDeadOrGhost("player")
         ns.CDMGroups.inGroup = IsInGroup()
         ns.CDMGroups.inRaid = IsInRaid()
         ns.CDMGroups.inInstance = IsInInstance() or false
         ns.CDMGroups.isResting = IsResting()
-        ns.CDMGroups.isPvP = UnitIsPVP("player") or UnitIsPVPFreeForAll("player") or false
+        ns.CDMGroups.isPvP = (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) and true or false
         ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
         ns.CDMGroups.hasTarget = UnitExists("target") or false
         ns.CDMGroups.isCasting = false
-        ns.CDMGroups.isStealthed = IsStealthed() or false
-        ns.CDMGroups.isFlying = IsFlying() or false
-        ns.CDMGroups.isSwimming = IsSwimming() or false
+        ns.CDMGroups.isStealthed = IsStealthed() and true or false
+        ns.CDMGroups.isFlying = IsFlying() and true or false
+        ns.CDMGroups.isSwimming = IsSwimming() and true or false
         
         -- Update group visibility with fresh state
         if ns.CDMGroups.UpdateGroupVisibility then
@@ -12566,20 +12669,20 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         -- when PLAYER_ENTERING_WORLD fires (e.g. dismount animation still resolving)
         C_Timer.After(0.5, function()
             local wasMounted = ns.CDMGroups.isMounted
-            ns.CDMGroups.isMounted = IsMounted()
-            ns.CDMGroups.inCombat = InCombatLockdown()
-            ns.CDMGroups.inVehicle = UnitInVehicle("player") or UnitOnTaxi("player") or false
+            ns.CDMGroups.isMounted = IsMounted() and true or false
+            ns.CDMGroups.inCombat = InCombatLockdown() and true or false
+            ns.CDMGroups.inVehicle = (UnitInVehicle("player") or UnitOnTaxi("player")) and true or false
             ns.CDMGroups.isDead = UnitIsDeadOrGhost("player")
             ns.CDMGroups.inGroup = IsInGroup()
             ns.CDMGroups.inRaid = IsInRaid()
             ns.CDMGroups.inInstance = IsInInstance() or false
             ns.CDMGroups.isResting = IsResting()
-            ns.CDMGroups.isPvP = UnitIsPVP("player") or UnitIsPVPFreeForAll("player") or false
+            ns.CDMGroups.isPvP = (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) and true or false
             ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
             ns.CDMGroups.hasTarget = UnitExists("target") or false
-            ns.CDMGroups.isStealthed = IsStealthed() or false
-            ns.CDMGroups.isFlying = IsFlying() or false
-            ns.CDMGroups.isSwimming = IsSwimming() or false
+            ns.CDMGroups.isStealthed = IsStealthed() and true or false
+            ns.CDMGroups.isFlying = IsFlying() and true or false
+            ns.CDMGroups.isSwimming = IsSwimming() and true or false
             if ns.CDMGroups.isMounted then StartFlyingPoll() else StopFlyingPoll() end
             if wasMounted ~= ns.CDMGroups.isMounted then
                 DebugPrint("|cff00ccff[ZoneChange]|r Mounted state corrected:", tostring(wasMounted), "->", tostring(ns.CDMGroups.isMounted))
@@ -13238,6 +13341,143 @@ function ns.CDMGroups.IsManaged(cooldownID)
     return false, nil
 end
 
+-- Get the group name an icon belongs to
+-- Returns: groupName (string), or "free" if free positioned, or nil if unmanaged
+function ns.CDMGroups.GetGroupNameForIcon(cooldownID)
+    if not cooldownID then return nil end
+    
+    -- Check groups
+    for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+        if group.members and group.members[cooldownID] then
+            return groupName
+        end
+    end
+    
+    -- Check free icons
+    if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[cooldownID] then
+        return "free"
+    end
+    
+    return nil
+end
+
+-- Move an icon to a target group (or to free position)
+-- Handles all cases: group→group, group→free, free→group, unmanaged→group
+-- targetGroupName: group name string, or "free" for free position
+-- Returns: true on success, false on failure
+function ns.CDMGroups.MoveIconToGroup(cooldownID, targetGroupName)
+    if not cooldownID or not targetGroupName then return false end
+    if not _cdmGroupsEnabled then return false end
+    
+    local currentGroup = ns.CDMGroups.GetGroupNameForIcon(cooldownID)
+    
+    -- Already where we want it
+    if currentGroup == targetGroupName then return true end
+    
+    -- ─── MOVE TO FREE POSITION ───
+    if targetGroupName == "free" then
+        if currentGroup and currentGroup ~= "free" then
+            -- GROUP → FREE: Extract frame cleanly, then set up as free icon
+            local sourceGroup = ns.CDMGroups.groups[currentGroup]
+            if not sourceGroup then return false end
+            
+            local member = sourceGroup.members[cooldownID]
+            local frame = member and member.frame
+            local x, y = 0, 0
+            local iconSize = 36
+            
+            if frame then
+                local cx, cy = frame:GetCenter()
+                local ux, uy = UIParent:GetCenter()
+                if cx and ux then x = cx - ux end
+                if cy and uy then y = cy - uy end
+                iconSize = frame:GetWidth() or 36
+            end
+            
+            -- CRITICAL: Use RemoveMemberKeepFrame to avoid ReturnFrameToCDM
+            -- ReturnFrameToCDM reparents to CDM and strips hooks, which bricks free positioning
+            local extractedFrame, entry = sourceGroup:RemoveMemberKeepFrame(cooldownID)
+            
+            -- Reflow source group to fill the gap
+            if sourceGroup.autoReflow and sourceGroup.ReflowIcons then
+                sourceGroup:ReflowIcons()
+            else
+                sourceGroup:CleanupEmptyRowsCols()
+                sourceGroup:Layout()
+            end
+            
+            -- Now call TrackFreeIcon - the member is already removed from the group,
+            -- so TrackFreeIcon's internal group-removal loop won't find it and won't
+            -- call ReturnFrameToCDM. Registry still has the frame so it will be found.
+            ns.CDMGroups.TrackFreeIcon(cooldownID, x, y, iconSize, extractedFrame)
+        else
+            -- Already free or unmanaged - just track at center
+            ns.CDMGroups.TrackFreeIcon(cooldownID, 0, 0, 36)
+        end
+        return true
+    end
+    
+    -- ─── MOVE TO A GROUP ───
+    local targetGroup = ns.CDMGroups.groups[targetGroupName]
+    if not targetGroup then return false end
+    
+    if currentGroup == "free" then
+        -- FREE → GROUP: Extract frame from freeIcons, then add to group
+        local freeData = ns.CDMGroups.freeIcons[cooldownID]
+        local frame = freeData and freeData.frame
+        local entry = freeData and freeData.entry
+        
+        if frame then
+            -- Release free icon (clears drag handlers, reparents to CDM, clears saved)
+            ns.CDMGroups.ReleaseFreeIcon(cooldownID, true)
+            
+            -- Find next free slot in target group
+            local row, col = targetGroup:FindNextFreeSlot()
+            if row == nil then return false end  -- Grid full
+            
+            -- AddMemberAtWithFrame immediately reparents into group container
+            targetGroup:AddMemberAtWithFrame(cooldownID, row, col, frame, entry)
+        else
+            -- No frame - just add by ID
+            targetGroup:AddMember(cooldownID)
+        end
+        
+        return true
+        
+    elseif currentGroup then
+        -- GROUP → GROUP: Transfer between groups
+        local sourceGroup = ns.CDMGroups.groups[currentGroup]
+        if not sourceGroup then return false end
+        
+        -- RemoveMemberKeepFrame preserves the frame for transfer
+        local frame, entry = sourceGroup:RemoveMemberKeepFrame(cooldownID)
+        
+        if frame then
+            local row, col = targetGroup:FindNextFreeSlot()
+            if row == nil then return false end
+            
+            targetGroup:AddMemberAtWithFrame(cooldownID, row, col, frame, entry)
+        else
+            targetGroup:AddMember(cooldownID)
+        end
+        
+        -- Reflow source group to fill the gap
+        if sourceGroup.autoReflow and sourceGroup.ReflowIcons then
+            sourceGroup:ReflowIcons()
+        else
+            sourceGroup:CleanupEmptyRowsCols()
+            sourceGroup:Layout()
+        end
+        
+        return true
+        
+    else
+        -- UNMANAGED → GROUP: Icon not yet tracked, just add by ID
+        targetGroup:AddMember(cooldownID)
+        return true
+    end
+end
+
 -- Get all grouped frames (for scanner integration)
 function ns.CDMGroups.GetAllGroupedFrames()
     local result = {}
@@ -13421,13 +13661,20 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
         ns.CDMGroups.inCombat = true
         ns.CDMGroups.UpdateGroupVisibility()
     elseif event == "PLAYER_REGEN_ENABLED" then
-        -- Leaving combat
+        -- Leaving combat - refresh all visibility state as a safety net
         ns.CDMGroups.inCombat = false
+        RefreshAllVisibilityState()
+        -- Restart/stop flying poll based on fresh mounted state
+        if ns.CDMGroups.isMounted then
+            StartFlyingPoll()
+        else
+            StopFlyingPoll()
+        end
         ns.CDMGroups.UpdateGroupVisibility()
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
-        -- Mounting or dismounting
-        ns.CDMGroups.isMounted = IsMounted()
-        ns.CDMGroups.isFlying = IsFlying() or false
+        -- Mounting or dismounting — IsMounted() is confirmed non-secret in combat
+        ns.CDMGroups.isMounted = IsMounted() and true or false
+        ns.CDMGroups.isFlying = IsFlying() and true or false
         -- Start/stop flying poll: no event exists for takeoff/landing transitions
         if ns.CDMGroups.isMounted then
             StartFlyingPoll()
@@ -13438,7 +13685,7 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
         local unit = ...
         if unit == "player" then
-            ns.CDMGroups.inVehicle = UnitInVehicle("player") or UnitOnTaxi("player") or false
+            ns.CDMGroups.inVehicle = (UnitInVehicle("player") or UnitOnTaxi("player")) and true or false
             ns.CDMGroups.UpdateGroupVisibility()
         end
     elseif event == "PET_BATTLE_OPENING_START" then
@@ -14073,6 +14320,7 @@ local function SaveGroupLayoutsToActiveProfile()
                 bgColor = group.bgColor and DeepCopy(group.bgColor),
                 -- Visibility
                 visibility = group.visibility,
+                visibilityLogic = group.visibilityLogic,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
