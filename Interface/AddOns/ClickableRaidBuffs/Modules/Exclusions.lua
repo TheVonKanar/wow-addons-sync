@@ -39,7 +39,9 @@ function ns.IsDisplayableExcluded(cat, entry)
   d.raidBuffExclusions = d.raidBuffExclusions or {}
 
   local id
-  if cat == "SHAMAN_SHIELDS" then
+  if cat == "CUSTOM_AURAS" then
+    id = entry and (entry.customEntryID or entry.id)
+  elseif cat == "SHAMAN_SHIELDS" then
     id = entry and (entry.spellID or entry.id)
   else
     id = entry and (entry.id or entry.spellID or entry.itemID)
@@ -64,6 +66,9 @@ end
 local function _maybeIDFromFrame(f)
   if not f then
     return nil
+  end
+  if f._crb_entry and f._crb_entry.category == "CUSTOM_AURAS" then
+    return f._crb_entry.customEntryID or f._crb_entry.id
   end
   if f.itemID then
     return f.itemID

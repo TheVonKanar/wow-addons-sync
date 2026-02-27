@@ -1,8 +1,34 @@
 
 PorterDB = {
-["lastSeenVersion"] = "1.0.8",
+["lastSeenVersion"] = "1.0.9",
+["position"] = {
+["y"] = 0,
+["x"] = 0,
+["point"] = "CENTER",
+},
+["useGlobalProfile"] = {
+["Kvotheen-Hyjal"] = false,
+},
 ["minimap"] = {
 ["hide"] = true,
+},
+["globalProfile"] = {
+["zoneOrder"] = "recent",
+["categoryVisibility"] = {
+["House"] = true,
+["Raids"] = true,
+["Hearthstones"] = true,
+["Class & Racial"] = true,
+["Delves"] = true,
+["Toys"] = true,
+["Items"] = true,
+["Dungeons"] = true,
+},
+["hearthstoneMode"] = "Random",
+["currentSeason"] = "tww",
+["viewMode"] = "category",
+["defaultView"] = "category",
+["showCosmeticHearthstones"] = false,
 },
 ["profiles"] = {
 ["Kvotheen-Hyjal"] = {
@@ -18,14 +44,10 @@ PorterDB = {
 ["Dungeons"] = true,
 },
 ["zoneOrder"] = "recent",
+["currentSeason"] = "tww",
 ["viewMode"] = "category",
 ["defaultView"] = "category",
 ["hearthstoneMode"] = "Random",
 },
-},
-["position"] = {
-["y"] = 0,
-["x"] = 0,
-["point"] = "CENTER",
 },
 }

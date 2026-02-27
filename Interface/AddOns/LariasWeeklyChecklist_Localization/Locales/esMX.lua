@@ -33,8 +33,15 @@ local STRINGS = {
 
     HIDE_COMPLETED_WEEKS = "Ocultar semanas completadas",
     OPTIONS_HIDE_CHANGE_WEEK_BTN = "Ocultar botón Cambiar semana",
-    OPTIONS_HIDE_ILVL_REF_BTN = "Ocultar botón Refs. ilvl",
+    OPTIONS_HIDE_ILVL_REF_BTN = "Ocultar botón Niveles de objeto",
+    OPTIONS_HIDE_CHAR_SELECT = "Ocultar selección de personaje",
+    OPTIONS_HIDDEN_CHARS_TITLE = "Personajes ocultos:",
+    OPTIONS_HIDDEN_CHARS_NONE = "Ninguno",
     RESET_BUTTON = "Reiniciar",
+    UI_SCALE_LABEL = "Escala de UI",
+    UI_SCALE_MIN_LABEL = "50%",
+    UI_SCALE_MAX_LABEL = "150%",
+    OPTIONS_HIDE_SCALE_SLIDER = "Ocultar control de escala",
 
     -- List tab
     DONE_PREFIX = "[Hecho] ",
@@ -44,6 +51,7 @@ local STRINGS = {
     TRACKING_CURRENCY_TITLE = "Moneda",
     TRACKING_GV_RAID = "Banda",
     TRACKING_GV_DUNGEONS = "Mazmorras",
+    TRACKING_GV_WORLD    = "Mundo",
     TRACKING_NA = "N/D",
 
     TRACKING_SPARKS_LABEL = "Chispas:",
@@ -74,12 +82,12 @@ local STRINGS = {
     -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Clic izquierdo: mostrar/ocultar la lista",
     MINIMAP_TOOLTIP_RIGHT_CLICK_OPTIONS = "Clic derecho: opciones",
+    MINIMAP_TOOLTIP_MIDDLE_CLICK_ILVL = "Clic central: Niveles de objeto",
 
     -- Main window
-    TAB_LIST = "Lista",
     TAB_OPTIONS = "Opciones",
     CHANGE_WEEK_BUTTON = "Cambiar semana",
-    ILVLREF_BUTTON = "Refs. ilvl",
+    ILVLREF_BUTTON = "Ver niveles de objeto",
 
     -- Item level reference popup
     ILVLREF_WINDOW_TITLE  = "Referencia de nivel de objeto – Temporada 1 de Midnight",
@@ -123,6 +131,9 @@ local STRINGS = {
     ILVLREF_RAID_MYTHIC        = "Mítico",
 
     ILVLREF_DELVE_TIER_FMT     = "T%d",
+
+    ILVLREF_TOGGLE_EXPAND = "Mostrar todas las tablas",
+    ILVLREF_TOGGLE_SHRINK = "Minimizar",
 
     -- Slash commands
     SLASH_USAGE_TOGGLE = "Uso: /larias o /lcl para mostrar/ocultar la lista",

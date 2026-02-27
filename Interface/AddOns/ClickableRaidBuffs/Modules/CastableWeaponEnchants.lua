@@ -63,17 +63,34 @@ local function clearCat()
 end
 
 local function knowSpell(id)
-  if not id or not C_SpellBook or not Enum or not Enum.SpellBookSpellBank then
-    Log("knowSpell(%s) -> false (APIs/ID missing)", tostring(id))
+  if not id then
+    Log("knowSpell(%s) -> false (ID missing)", tostring(id))
     return false
   end
-  local bank = Enum.SpellBookSpellBank.Player
-  local ok = C_SpellBook.IsSpellKnown and C_SpellBook.IsSpellKnown(id, bank)
-  Log("knowSpell(%s) -> %s", tostring(id), tostring(ok and true or false))
-  return ok and true or false
+
+  local ok = false
+  if C_SpellBook and C_SpellBook.IsSpellKnown and Enum and Enum.SpellBookSpellBank then
+    local bank = Enum.SpellBookSpellBank.Player
+    ok = C_SpellBook.IsSpellKnown(id, bank) and true or false
+  end
+  if not ok and IsPlayerSpell then
+    ok = IsPlayerSpell(id) and true or false
+  end
+  if not ok and IsSpellKnown then
+    ok = IsSpellKnown(id) and true or false
+  end
+  if not ok and IsSpellKnownOrOverridesKnown then
+    ok = IsSpellKnownOrOverridesKnown(id) and true or false
+  end
+
+  Log("knowSpell(%s) -> %s", tostring(id), tostring(ok))
+  return ok
 end
 
 local function passesGates(row)
+  if ns.TrainingDummyBypassActive and ns.TrainingDummyBypassActive() then
+    return true
+  end
   local g = row and row.gates
   if not g then
     return true
@@ -236,7 +253,8 @@ local function Build(fromRender)
         or e.icon
 
       local info = C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(row.spellID) or nil
-      e.macro = "/use " .. ((info and info.name) or row.name or "")
+      local spellName = ((info and info.name) or row.name or "")
+      e.macro = "/use " .. spellName .. "\n/use " .. tostring(slotid)
 
       if rem and rem > 0 and rem <= tSec then
         e.expireTime = GetTime() + rem

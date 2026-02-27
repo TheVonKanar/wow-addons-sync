@@ -1,3 +1,2 @@
-**v7.3.7**
-- Added additional throttles to buff and bag scans to reduce CPU usage
-- General efficiency improvements
+**v7.4.1**
+- The count of party or raid members on icons is now only those within cast range for that spell

@@ -59,7 +59,7 @@ ClickableRaidBuffsDB = {
 ["relative"] = "UIParent",
 },
 ["bottomSize"] = 14,
-["versionID"] = "7.3.7",
+["versionID"] = "7.4.1",
 ["useMaxPerRow"] = false,
 ["exclusions"] = {
 [197767] = true,
@@ -107,20 +107,22 @@ ClickableRaidBuffsDB = {
 ["SIZE_EDITBOX"] = 14,
 ["bagRefreshSeconds"] = 5,
 ["style"] = "HORIZONTAL",
+["mplusThresholdEnabled"] = true,
 ["centerOutline"] = true,
 ["RESET_H"] = 30,
 ["SIZE_SECTION_HEAD"] = 20,
+["TITLE_FONT_NAME"] = "FiraSans-ExtraBoldItalic",
+["centerSize"] = 22,
+["glowEnabled"] = true,
+["fixedTargets"] = {
+},
+["customSpells"] = {
+},
 ["earthShieldOverride"] = {
 ["disableTargetWhenSolo"] = true,
 ["showPlayerIcon"] = true,
 ["showTargetIcon"] = false,
 },
-["centerSize"] = 22,
-["TITLE_FONT_NAME"] = "FiraSans-ExtraBoldItalic",
-["mplusThresholdEnabled"] = true,
-["fixedTargets"] = {
-},
-["glowEnabled"] = true,
 ["timerSize"] = 22,
 ["expansions"] = {
 [10] = true,

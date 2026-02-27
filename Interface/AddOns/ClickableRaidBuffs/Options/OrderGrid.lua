@@ -35,7 +35,9 @@ local CATEGORY_LABELS = {
   ROGUE_POISONS = L["Poisons"],
   AUGMENT_RUNE = L["Runes"],
   RAID_BUFFS = L["Raid Buffs"],
+  CUSTOM_AURAS = (L["Custom Buffs"] or L["Custom Spells"]),
   SHAMAN_SHIELDS = L["Shaman Shields"],
+  PET_ASSIST = L["Pets"],
   PETS = L["Pets"],
   DURABILITY = L["Durability"],
   HEALTHSTONE = L["Healthstone"],
@@ -46,7 +48,7 @@ local CATEGORY_LABELS = {
 local ORDER_GROUPS = {
   RAIDBUFFS_GROUP = {
     label = L["Raid Buffs"],
-    cats = { "RAID_BUFFS", "ROGUE_POISONS", "CASTABLE_WEAPON_ENCHANTS", "SHAMAN_SHIELDS" },
+    cats = { "RAID_BUFFS", "CUSTOM_AURAS", "ROGUE_POISONS", "CASTABLE_WEAPON_ENCHANTS", "SHAMAN_SHIELDS" },
   },
   FOOD_GROUP = {
     label = L["Food"],
@@ -70,7 +72,7 @@ local ORDER_GROUPS = {
   },
   PETS_GROUP = {
     label = L["Pets"],
-    cats = { "PETS" },
+    cats = { "PETS", "PET_ASSIST" },
   },
   COSMETIC_GROUP = {
     label = L["Cosmetic"],
@@ -79,6 +81,10 @@ local ORDER_GROUPS = {
   TRINKETS_GROUP = {
     label = L["Trinkets"],
     cats = { "TRINKETS" },
+  },
+  CUSTOM_GROUP = {
+    label = (L["Custom Buffs"] or L["Custom Spells"]),
+    cats = { "CUSTOM_AURAS" },
   },
 }
 
@@ -147,6 +153,27 @@ local function _order_ToGroupedOrder(catOrder)
   return gout
 end
 
+
+local function _order_moveGroupToEnd(order, gid)
+  if type(order) ~= "table" then
+    return order
+  end
+  local out, found = {}, false
+  for i = 1, #order do
+    local v = order[i]
+    if v == gid then
+      found = true
+    else
+      out[#out + 1] = v
+    end
+  end
+  if found then
+    out[#out + 1] = gid
+    return out
+  end
+  return order
+end
+
 local function _order_SaveGroupedOrder(gorder)
   local out = {}
   for _, gid in ipairs(gorder) do
@@ -211,6 +238,7 @@ function ns.Options.OrderGrid.Build(content, Row)
       "PETS_GROUP",
       "COSMETIC_GROUP",
       "TRINKETS_GROUP",
+      "CUSTOM_GROUP",
     }
     for _, gid in ipairs(orderedGroups) do
       _order_expandGroup(gid, def)
@@ -236,6 +264,7 @@ function ns.Options.OrderGrid.Build(content, Row)
 
   local atomicOrder = _order_NormalizeOrder(DB().categoryOrder, defaults)
   local gorder = _order_ToGroupedOrder(atomicOrder)
+  gorder = _order_moveGroupToEnd(gorder, "CUSTOM_GROUP")
 
   for i = #gorder, 1, -1 do
     if gorder[i] == "TRINKETS_GROUP" then
@@ -606,7 +635,8 @@ function ns.Options.OrderGrid.Build(content, Row)
         newOrder[i] = preview[i]
       end
 
-      gorder = newOrder
+      gorder = _order_moveGroupToEnd(newOrder, "CUSTOM_GROUP")
+    newOrder = gorder
       _order_SaveGroupedOrder(newOrder)
 
       draggingGid, draggingTile, hoverIdx = nil, nil, nil
@@ -689,6 +719,7 @@ function ns.Options.OrderGrid.Build(content, Row)
     end
 
     local gorderNew = _order_ToGroupedOrder(defR)
+    gorderNew = _order_moveGroupToEnd(gorderNew, "CUSTOM_GROUP")
 
     for i = #gorderNew, 1, -1 do
       if gorderNew[i] == "TRINKETS_GROUP" then

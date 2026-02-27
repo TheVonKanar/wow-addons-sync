@@ -220,8 +220,13 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["category_migration"] = 5,
-["sort_ignore_slots_at_end"] = false,
+["saved_searches"] = {
+},
+["category_section_toggled"] = {
+["1"] = false,
+["2"] = false,
+["Crafting"] = true,
+},
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -374,11 +379,7 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 10,
-["category_section_toggled"] = {
-["1"] = false,
-["2"] = false,
-["Crafting"] = true,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
@@ -394,10 +395,9 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["view_alpha"] = 1,
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["disabled_skins"] = {
 },
+["bag_view_width"] = 14,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
 ["recent_characters_main_view"] = {
@@ -499,13 +499,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["bag_view_width"] = 14,
-["disabled_skins"] = {
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
+["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["saved_searches"] = {
-},
+["category_migration"] = 5,
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

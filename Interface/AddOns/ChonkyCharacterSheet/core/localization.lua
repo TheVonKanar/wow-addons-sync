@@ -29,6 +29,9 @@ local defaultStrings = {
     ------------------------------------------------------------
     -- General / Common
     ------------------------------------------------------------
+	["Full Text"] = "Full Text", -- enUS / enGB
+	["Truncate"] = "Truncate", -- enUS / enGB
+	["Wrap Text"] = "Wrap Text", -- enUS / enGB
 	["Attributes"] = STAT_CATEGORY_ATTRIBUTES,
 	["Attack"] = ATTACK,
 	["Defense"] = STAT_CATEGORY_DEFENSE,
@@ -380,6 +383,10 @@ if locale == "enGB" then
     }
 elseif locale == "deDE" then
     localizedStrings = {
+		["Long Text Handling"] = "Lange Texte behandeln", -- deDE
+		["Full Text"] = "Vollständiger Text", -- deDE
+		["Truncate"] = "Abschneiden", -- deDE
+		["Wrap Text"] = "Textumbruch", -- deDE
 		["SHOW_MYTHIC_SP"] = "Mythic+ Seitenleisten‑Modul aktivieren", -- deDE
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Mythic+ Seitenleiste beim Öffnen des Charakterfensters anzeigen", -- deDE
 		["Versatility Display"] = "Vielseitigkeitsanzeige", -- deDE
@@ -704,6 +711,10 @@ elseif locale == "deDE" then
     }	
 elseif locale == "frFR" then
     localizedStrings = {
+		["Long Text Handling"] = "Gestion du texte long", -- frFR
+		["Full Text"] = "Texte complet", -- frFR
+		["Truncate"] = "Tronquer", -- frFR
+		["Wrap Text"] = "Retour à la ligne", -- frFR
 		["SHOW_MYTHIC_SP"] = "Activer le module du panneau Mythique+", -- frFR
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Afficher le panneau Mythique+ à l’ouverture de la fiche de personnage", -- frFR
 		["Versatility Display"] = "Affichage de la Polyvalence", -- frFR
@@ -1028,6 +1039,10 @@ elseif locale == "frFR" then
     }
 elseif locale == "esES" then
     localizedStrings = {
+		["Long Text Handling"] = "Manejo de texto largo", -- esES
+		["Full Text"] = "Texto completo", -- esES
+		["Truncate"] = "Truncar", -- esES
+		["Wrap Text"] = "Ajuste de texto", -- esES
 		["SHOW_MYTHIC_SP"] = "Activar el módulo del panel lateral de Míticas+", -- esES
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Mostrar el panel lateral de Míticas+ al abrir la hoja de personaje", -- esES
 		["Versatility Display"] = "Versatilidad: Modo de Visualización", -- esES
@@ -1352,6 +1367,10 @@ elseif locale == "esES" then
     }
 elseif locale == "esMX" then
     localizedStrings = {
+		["Long Text Handling"] = "Manejo de texto largo", -- esMX
+		["Full Text"] = "Texto completo", -- esMX
+		["Truncate"] = "Truncar", -- esMX
+		["Wrap Text"] = "Ajuste de texto", -- esMX
 		["SHOW_MYTHIC_SP"] = "Activar el módulo del panel lateral de Míticas+", -- esMX
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Mostrar el panel lateral de Míticas+ al abrir la hoja de personaje", -- esMX
 		["Versatility Display"] = "Versatilidad: Modo de Visualización", -- esMX
@@ -1676,6 +1695,10 @@ elseif locale == "esMX" then
     }
 elseif locale == "ruRU" then
     localizedStrings = {
+		["Long Text Handling"] = "Обработка длинного текста", -- ruRU
+		["Full Text"] = "Полный текст", -- ruRU
+		["Truncate"] = "Обрезать", -- ruRU
+		["Wrap Text"] = "Перенос текста", -- ruRU
 		["SHOW_MYTHIC_SP"] = "Включить модуль боковой панели Mythic+", -- ruRU
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Показывать боковую панель Mythic+ при открытии окна персонажа", -- ruRU
 		["Versatility Display"] = "Отображение универсальности", -- ruRU
@@ -2000,6 +2023,10 @@ elseif locale == "ruRU" then
     }
 elseif locale == "koKR" then
     localizedStrings = {
+		["Long Text Handling"] = "긴 텍스트 처리", -- koKR
+		["Full Text"] = "전체 텍스트", -- koKR
+		["Truncate"] = "잘라내기", -- koKR
+		["Wrap Text"] = "텍스트 줄바꿈", -- koKR
 		["SHOW_MYTHIC_SP"] = "신화+ 사이드 패널 모듈 활성화", -- koKR
 		["SHOW_MYTHIC_SP_ONOPEN"] = "캐릭터 창을 열 때 신화+ 사이드 패널 표시", -- koKR
 		["Versatility Display"] = "유연성 표시", -- koKR
@@ -2324,6 +2351,10 @@ elseif locale == "koKR" then
     }
 elseif locale == "zhCN" then
     localizedStrings = {
+		["Long Text Handling"] = "长文本处理", -- zhCN
+		["Full Text"] = "完整文本", -- zhCN
+		["Truncate"] = "截断", -- zhCN
+		["Wrap Text"] = "自动换行", -- zhCN
 		["SHOW_MYTHIC_SP"] = "启用史诗钥石地下城侧边面板模块", -- zhCN
 		["SHOW_MYTHIC_SP_ONOPEN"] = "打开角色信息时显示史诗钥石侧边面板", -- zhCN
 		["Versatility Display"] = "多样性显示方式", -- zhCN
@@ -2648,6 +2679,10 @@ elseif locale == "zhCN" then
     }
 elseif locale == "zhTW" then
     localizedStrings = {
+		["Long Text Handling"] = "長文字處理", -- zhTW
+		["Full Text"] = "完整文字", -- zhTW
+		["Truncate"] = "截斷", -- zhTW
+		["Wrap Text"] = "自動換行", -- zhTW
 		["SHOW_MYTHIC_SP"] = "啟用傳奇+側邊面板模組", -- zhTW
 		["SHOW_MYTHIC_SP_ONOPEN"] = "開啟角色資訊時顯示傳奇+側邊面板", -- zhTW
 		["Versatility Display"] = "多樣性顯示方式", -- zhTW
@@ -2971,6 +3006,10 @@ elseif locale == "zhTW" then
     }
 elseif locale == "ptBR" then
     localizedStrings = {
+		["Long Text Handling"] = "Manipulação de texto longo", -- ptBR
+		["Full Text"] = "Texto completo", -- ptBR
+		["Truncate"] = "Truncar", -- ptBR
+		["Wrap Text"] = "Quebrar texto", -- ptBR
 		["SHOW_MYTHIC_SP"] = "Ativar módulo do painel lateral de Míticas+", -- ptBR
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Mostrar o painel lateral de Míticas+ ao abrir a ficha do personagem", -- ptBR
 		["Versatility Display"] = "Exibição de Versatilidade", -- ptBR	
@@ -3295,6 +3334,10 @@ elseif locale == "ptBR" then
     }
 elseif locale == "itIT" then
     localizedStrings = {
+		["Long Text Handling"] = "Gestione testo lungo", -- itIT
+		["Full Text"] = "Testo completo", -- itIT
+		["Truncate"] = "Tronca", -- itIT
+		["Wrap Text"] = "A capo automatico", -- itIT
 		["SHOW_MYTHIC_SP"] = "Abilita il modulo del pannello laterale Mitiche+", -- itIT
 		["SHOW_MYTHIC_SP_ONOPEN"] = "Mostra il pannello Mitiche+ all’apertura della scheda del personaggio", -- itIT
 		["Versatility Display"] = "Visualizzazione Versatilità", -- itIT	

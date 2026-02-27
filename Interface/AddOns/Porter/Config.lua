@@ -20,12 +20,13 @@ Porter.defaults = {
 
 -- Per-character profile defaults
 Porter.profileDefaults = {
-    showCosmeticHearthstones = true,
+    showCosmeticHearthstones = false,
     hearthstoneMode = "Random",     -- "Normal", "Random", or "Specific"
     hearthstoneChoice = nil,        -- toy ID for Specific mode
     defaultView = "category",       -- "category" or "zone" — startup view & tab order
     viewMode = "category",          -- "category" or "zone"
     zoneOrder = "recent",           -- "recent" (most recent first) or "alpha" (alphabetical)
+    currentSeason = "tww",          -- "tww" or "midnight" — which season's dungeons/raids show as Current
     categoryVisibility = {
         ["Hearthstones"] = true,
         ["Class & Racial"] = true,
@@ -88,8 +89,30 @@ function Porter:CopyProfileFrom(sourceKey)
     self.db.settings = PorterDB.profiles[myKey]
 end
 
+-- Check if the current character is using the global profile
+function Porter:IsUsingGlobalProfile()
+    return PorterDB.useGlobalProfile[self:GetProfileKey()] == true
+end
+
+-- Toggle between global and per-character profile
+function Porter:SetUseGlobalProfile(enabled)
+    local key = self:GetProfileKey()
+    if enabled then
+        PorterDB.useGlobalProfile[key] = true
+        self.db.settings = PorterDB.globalProfile
+    else
+        -- Copy global settings into per-character profile so nothing is lost
+        PorterDB.profiles[key] = DeepCopy(PorterDB.globalProfile)
+        PorterDB.useGlobalProfile[key] = false
+        self.db.settings = PorterDB.profiles[key]
+    end
+end
+
 -- Called once during ADDON_LOADED to set up saved data and profiles
 function Porter:InitDB()
+    -- Detect brand new install before we create anything
+    local isNewInstall = (PorterDB == nil)
+
     -- PorterDB is the global SavedVariable table loaded from disk by WoW.
     -- If the player has never used the addon before, it will be nil.
     if not PorterDB then
@@ -115,13 +138,30 @@ function Porter:InitDB()
         PorterDB.profiles = {}
     end
 
-    -- Ensure current character has a profile
+    -- Ensure global profile exists (seeded from defaults)
+    if not PorterDB.globalProfile then
+        PorterDB.globalProfile = DeepCopy(self.profileDefaults)
+    end
+    MergeDefaults(PorterDB.globalProfile, self.profileDefaults)
+
+    -- Ensure useGlobalProfile table exists
+    if not PorterDB.useGlobalProfile then
+        PorterDB.useGlobalProfile = {}
+    end
+
+    -- Determine global profile usage for this character
     local key = self:GetProfileKey()
+    if PorterDB.useGlobalProfile[key] == nil then
+        -- New character: use global if this is a fresh install, per-character if existing
+        PorterDB.useGlobalProfile[key] = isNewInstall
+    end
+
+    -- Ensure current character has a per-character profile (needed if they toggle off global)
     if not PorterDB.profiles[key] then
         PorterDB.profiles[key] = DeepCopy(self.profileDefaults)
     end
 
-    -- Merge profile defaults into the current profile (adds new settings from updates)
+    -- Merge profile defaults into the per-character profile (adds new settings from updates)
     MergeDefaults(PorterDB.profiles[key], self.profileDefaults)
 
     -- Merge global defaults into PorterDB
@@ -144,12 +184,20 @@ function Porter:InitDB()
         PorterDB.lastSeenVersion = nil
     end
 
+    -- Point self.db.settings at global or per-character profile based on the flag
+    local activeProfile
+    if PorterDB.useGlobalProfile[key] then
+        activeProfile = PorterDB.globalProfile
+    else
+        activeProfile = PorterDB.profiles[key]
+    end
+
     -- Build self.db as a wrapper so all existing self.db.settings.* references keep working
     -- Note: lastSeenVersion is accessed via PorterDB.lastSeenVersion directly (global, not per-profile)
     self.db = {
         minimap = PorterDB.minimap,
         position = PorterDB.position,
-        settings = PorterDB.profiles[key],
+        settings = activeProfile,
     }
 end
 

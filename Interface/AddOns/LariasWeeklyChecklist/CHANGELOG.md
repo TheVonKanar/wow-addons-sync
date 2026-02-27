@@ -1,9 +1,25 @@
 # Larias's Weekly Checklist
 
-## [v1.0.22](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v1.0.22) (2026-02-25)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v1.0.21...v1.0.22) 
+## [v2.0.4](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.0.4) (2026-02-26)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.0.4) 
 
-- Auto-update addon (v1.0.22)  
-- Feature/add week dropdown (#7)  
-    * Add new change week dropdown  
-    * Add new Ilvl Refs popup  
+- Feature/text and prompt fixes (#10)  
+    * Grey out checked options  
+    * Fix incorrect update prompts  
+- Post-release: bump version to 2.0.4  
+- Release v2.0.3  
+- Post-release: bump version to 2.0.3  
+- Merge branch 'main' of github.com:Devbezos/Larias-Weekly-Checklist  
+- updates  
+- Post-release: bump version to 2.0.2  
+- Post-release: bump version to 2.0.1  
+- Update LariasWeeklyChecklist.toc  
+- Merge branch 'main' of github.com:Devbezos/Larias-Weekly-Checklist  
+- Update LariasWeeklyChecklist\_Options.lua  
+- Bundle all libs in repo; remove pkgmeta externals; fix LibWindow-1.1 nil MINOR  
+- Post-release: bump version to 2.0.2  
+- Fix events  
+- Post-release: bump version to 2.0.1  
+- Release v2.0.0  
+- Update version number to 2.0.0  
+- Update workflows  

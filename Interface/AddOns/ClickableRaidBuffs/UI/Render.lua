@@ -32,6 +32,10 @@ C.rankOverlayKnobs = C.rankOverlayKnobs
   }
 
 local function entryKey(cat, entry)
+  if cat == "CUSTOM_AURAS" and entry and entry.customEntryID then
+    return cat .. ":custom:" .. tostring(entry.customEntryID)
+  end
+
   if cat == "MAIN_HAND" then
     return "MH:" .. tostring(entry.itemID or entry.name or "")
   elseif cat == "OFF_HAND" then
@@ -162,15 +166,24 @@ end
 local function setButtonActionIfChanged(btn, actionType, value1)
   if btn._crb_action_type ~= actionType or btn._crb_action_v1 ~= value1 then
     if actionType == "macro" then
+      btn:SetAttribute("spell", nil)
+      btn:SetAttribute("item", nil)
       btn:SetAttribute("type", "macro")
       btn:SetAttribute("macrotext", value1)
     elseif actionType == "item" then
+      btn:SetAttribute("macrotext", nil)
+      btn:SetAttribute("spell", nil)
       btn:SetAttribute("type", "item")
       btn:SetAttribute("item", "item:" .. tostring(value1))
     elseif actionType == "spell" then
+      btn:SetAttribute("macrotext", nil)
+      btn:SetAttribute("item", nil)
       btn:SetAttribute("type", "spell")
       btn:SetAttribute("spell", value1)
     else
+      btn:SetAttribute("macrotext", nil)
+      btn:SetAttribute("spell", nil)
+      btn:SetAttribute("item", nil)
       btn:SetAttribute("type", nil)
     end
     btn._crb_action_type = actionType
@@ -414,6 +427,7 @@ function ns.RenderAll()
   end
 
   local items = {}
+  local playerDead = UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") or false
 
   for _, cat in ipairs(orderedCats) do
     if not (eatingActive and cat == "FOOD") then
@@ -423,6 +437,21 @@ function ns.RenderAll()
           local visible = true
           if entry.showAt then
             visible = (GetTime() >= entry.showAt)
+          end
+          if visible and playerDead and cat == "CUSTOM_AURAS" then
+            local allowWhileDead = false
+            local gates = entry.gates
+            if type(gates) == "table" then
+              for i = 1, #gates do
+                if gates[i] == "evenDead" then
+                  allowWhileDead = true
+                  break
+                end
+              end
+            end
+            if not allowWhileDead then
+              visible = false
+            end
           end
           if entry.expireTime and entry.expireTime == math.huge then
             visible = false
@@ -670,6 +699,8 @@ function ns.RenderAll()
             ns.RequestImmediateRescan({ bags = true, raid = false })
           elseif cat == "RAID_BUFFS" then
             ns.RequestImmediateRescan({ bags = false, raid = true })
+          elseif cat == "CUSTOM_AURAS" then
+            ns.RequestImmediateRescan({ bags = true, raid = true })
           else
             ns.RequestImmediateRescan()
           end
@@ -1103,6 +1134,8 @@ function ns.RenderAll()
         cornerVal = "MH"
       elseif entry.category == "OFF_HAND" then
         cornerVal = "OH"
+      elseif entry.cornerText and entry.cornerText ~= "" then
+        cornerVal = tostring(entry.cornerText)
       end
       if btn2._crb_cornerText ~= cornerVal then
         btn2.cornerText:SetText(cornerVal, "OUTLINE")
@@ -1140,6 +1173,18 @@ function ns.RenderAll()
       setButtonActionIfChanged(btn2, "spell", castKey)
     else
       setButtonActionIfChanged(btn2, nil, nil)
+    end
+
+    do
+      local wantsSelf = entry and (entry.target == "player" or entry.castOn == "player" or entry.selfCast or entry.forceSelf)
+      local actionType = btn2._crb_action_type
+      if wantsSelf and (actionType == "spell" or actionType == "item") then
+        if btn2:GetAttribute("unit") ~= "player" then
+          btn2:SetAttribute("unit", "player")
+        end
+      elseif btn2:GetAttribute("unit") ~= nil then
+        btn2:SetAttribute("unit", nil)
+      end
     end
 
     if btn2.timerText then

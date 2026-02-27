@@ -247,6 +247,9 @@ local function learnEarthFixedFrom(unit, ES)
 end
 
 local function InRestedArea()
+  if ns.TrainingDummyBypassActive and ns.TrainingDummyBypassActive() then
+    return false
+  end
   return IsResting() or false
 end
 

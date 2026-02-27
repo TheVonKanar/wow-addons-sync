@@ -76,47 +76,82 @@ local function SafeEvaluate()
   return TRAINING_DUMMY_IDS[npcID] == true
 end
 
-local function ApplyState(bypass)
-  if ns._trainingDummyBypass ~= bypass then
-    ns._trainingDummyBypass = bypass
+local function ForceRefresh()
+  if type(ns.MarkGatesDirty) == "function" then
+    ns.MarkGatesDirty()
+  end
+  if type(ns.MarkBagsDirty) == "function" then
+    ns.MarkBagsDirty()
+  end
+  if type(ns.MarkRosterDirty) == "function" then
+    ns.MarkRosterDirty()
+  end
+  if type(ns.MarkAurasDirty) == "function" then
+    ns.MarkAurasDirty("player")
+  end
+  if type(ns.BypassEventThrottle) == "function" then
+    ns.BypassEventThrottle()
+  end
+  if type(ns.ShamanShields_Rebuild) == "function" then
+    ns.ShamanShields_Rebuild()
+  end
+  if type(ns.Healthstone_Rebuild) == "function" then
+    ns.Healthstone_Rebuild()
+  end
+  if type(ns.UpdateAugmentRunes) == "function" then
+    ns.UpdateAugmentRunes()
+  end
+  if type(ns.CastableWeaponEnchants_Rebuild) == "function" then
+    ns.CastableWeaponEnchants_Rebuild()
+  end
+  if type(ns.DKWeaponEnchantCheck_Rebuild) == "function" then
+    ns.DKWeaponEnchantCheck_Rebuild()
+  end
+  if type(ns.PokeUpdateBusImmediate) == "function" then
+    ns.PokeUpdateBusImmediate()
+  elseif type(ns.PokeUpdateBus) == "function" then
+    ns.PokeUpdateBus()
+  end
+  if type(ns.RequestImmediateRescan) == "function" then
+    ns.RequestImmediateRescan({ bags = true, raid = true, immediate = true })
+  end
+  if type(ns.PushRender) == "function" then
+    ns.PushRender()
+  end
+end
 
-    if type(ns.MarkGatesDirty) == "function" then
-      ns.MarkGatesDirty()
-    end
-    if type(ns.MarkBagsDirty) == "function" then
-      ns.MarkBagsDirty()
-    end
-    if type(ns.MarkRosterDirty) == "function" then
-      ns.MarkRosterDirty()
-    end
-    if type(ns.MarkAurasDirty) == "function" then
-      ns.MarkAurasDirty("player")
-    end
-    if type(ns.BypassEventThrottle) == "function" then
-      ns.BypassEventThrottle()
-    end
-    if type(ns.PokeUpdateBus) == "function" then
-      ns.PokeUpdateBus()
-    end
+local function ApplyState(bypass)
+  local changed = (ns._trainingDummyBypass ~= bypass)
+  ns._trainingDummyBypass = bypass and true or false
+  ForceRefresh()
+  if changed then
+    C_Timer.After(0.03, ForceRefresh)
+    C_Timer.After(0.10, ForceRefresh)
   end
 end
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("UNIT_TARGET")
+f:RegisterEvent("PLAYER_TARGET_CHANGED")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 f:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_TARGET" and unit ~= "player" then
     return
   end
-  C_Timer.After(0.1, function()
+  C_Timer.After(0, function()
     ApplyState(SafeEvaluate())
   end)
 end)
 
-C_Timer.After(0.1, function()
+C_Timer.After(0, function()
   ApplyState(SafeEvaluate())
 end)
+
+
+function ns.TrainingDummyBypassActive()
+  return ns._trainingDummyBypass == true
+end
 
 local origPassesGates = ns.PassesGates
 

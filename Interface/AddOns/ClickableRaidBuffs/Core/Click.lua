@@ -50,6 +50,9 @@ local function BuildRescanOptionsForEntry(entry)
   if cat == "RAID_BUFFS" then
     return { bags = false, raid = true }
   end
+  if cat == "CUSTOM_AURAS" then
+    return { bags = true, raid = true }
+  end
   return nil
 end
 

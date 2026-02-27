@@ -146,13 +146,13 @@ Angleur_SwapoutItemsSaved = {
 }
 Angleur_CVars = {
 ["ultraFocus"] = {
-["masterOn"] = "1",
+["masterVolume"] = "0.20000000298023",
 ["backgroundOn"] = "0",
 ["effectsOn"] = "1",
 ["ambienceOn"] = "1",
-["musicOn"] = "0",
-["masterVolume"] = "0.20000000298023",
-["effectsVolume"] = "0.40000000596046",
 ["dialogOn"] = "1",
+["masterOn"] = "1",
+["effectsVolume"] = "0.40000000596046",
+["musicOn"] = "0",
 },
 }

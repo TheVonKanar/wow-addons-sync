@@ -37,6 +37,9 @@ local function PlayerIsWarlock()
   return c == "WARLOCK"
 end
 local function IsRested()
+  if ns.TrainingDummyBypassActive and ns.TrainingDummyBypassActive() then
+    return false
+  end
   return (clickableRaidBuffCache.playerInfo and clickableRaidBuffCache.playerInfo.restedXPArea) or IsResting()
 end
 local function InInstance()

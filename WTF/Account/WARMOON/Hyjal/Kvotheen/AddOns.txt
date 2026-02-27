@@ -247,10 +247,12 @@ MacroManager: disabled
 MacroManagerData: disabled
 UnhaltedUnitFrames: enabled
 Cell: disabled
-TrueStatValues: enabled
+TrueStatValues: disabled
 MouseoverActionSettings: disabled
 BlizzHUDTweaks: disabled
 Blizzard_CharacterFrame: enabled
 Blizzard_ChallengesUI: enabled
 Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
+LariasWeeklyChecklist_Localization: disabled
+DejaCharacterStats: disabled

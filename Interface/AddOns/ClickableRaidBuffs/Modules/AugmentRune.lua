@@ -36,6 +36,9 @@ local function RuneData()
 end
 
 local function passesGates(gates)
+  if ns.TrainingDummyBypassActive and ns.TrainingDummyBypassActive() then
+    return true
+  end
   if not gates or #gates == 0 then
     return true
   end

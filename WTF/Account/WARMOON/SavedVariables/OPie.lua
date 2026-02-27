@@ -40,10 +40,10 @@ OPie_SavedData = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["WorldMarkers"] = true,
-["CommonTrades"] = true,
 ["SpecMenu"] = true,
+["CommonTrades"] = true,
 ["OPieAutoQuest"] = true,
+["WorldMarkers"] = true,
 ["PaladinTools"] = true,
 },
 ["OPieFlagStore"] = {

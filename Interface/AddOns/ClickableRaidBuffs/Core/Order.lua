@@ -19,6 +19,7 @@ local DEFAULT_ORDER = {
   "ROGUE_POISONS",
   "AUGMENT_RUNE",
   "RAID_BUFFS",
+  "CUSTOM_AURAS",
   "TRINKETS",
   "SHAMAN_SHIELDS",
   "PET_ASSIST",
@@ -26,6 +27,7 @@ local DEFAULT_ORDER = {
   "DURABILITY",
   "HEALTHSTONE",
   "COSMETIC",
+  "CUSTOM_AURAS",
 }
 
 local allowed = {}

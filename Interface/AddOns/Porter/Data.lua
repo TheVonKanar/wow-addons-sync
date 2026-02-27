@@ -4,6 +4,10 @@
 -- The addon will query WoW for actual localized names and icons at runtime.
 
 local _, Porter = ...
+_G.Porter = Porter  -- expose globally so Bindings.xml can call Porter:Toggle()
+
+-- Keybinding label — WoW looks up this global when rendering the Key Bindings UI.
+BINDING_NAME_PORTER_TOGGLE = "Open Porter"
 
 Porter.Categories = {
     "Hearthstones",
@@ -25,6 +29,7 @@ Porter.TabbedCategories = {
 
 -- Expansion display order for legacy tabs (most recent first)
 Porter.ExpansionOrder = {
+    "Midnight",
     "The War Within",
     "Dragonflight",
     "Shadowlands",
@@ -32,12 +37,14 @@ Porter.ExpansionOrder = {
     "Legion",
     "Warlords of Draenor",
     "Mists of Pandaria",
+    "Wrath of the Lich King",
     "Cataclysm",
 }
 
 -- Region display order for zone view (most recent first)
 Porter.RegionOrder = {
     "Hearthstone",
+    "Quel'Thalas",
     "K'aresh",
     "Khaz Algar",
     "Dragon Isles",
@@ -95,8 +102,11 @@ Porter.TeleportData = {
         { type = "toy", id = 246565, name = "Cosmic Hearthstone",                     cosmetic = true, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 265100, name = "Corewarden's Hearthstone",               cosmetic = true, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 263933, name = "Preyseeker's Hearthstone",               cosmetic = true, region = "Hearthstone", zone = "Inn" },
+        { type = "toy", id = 257736, name = "Lightcalled Hearthstone",                cosmetic = true, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 235016, name = "Redeployment Module",                    cosmetic = true, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 236687, name = "Explosive Hearthstone",                  cosmetic = true, region = "Hearthstone", zone = "Inn" },
+        { type = "toy", id = 210455, name = "Draenic Hologem",                       cosmetic = true, raceReq = {"Draenei", "LightforgedDraenei"}, region = "Hearthstone", zone = "Inn" },
+        { type = "toy", id = 263489, name = "Naaru's Enfold",                        cosmetic = true, region = "Hearthstone", zone = "Inn" },
     },
 
     ---------------------------------------------------------------------------
@@ -132,6 +142,7 @@ Porter.TeleportData = {
         { type = "spell", id = 88344,  name = "Teleport: Tol Barad (Horde)",    classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Tol Barad" },
         { type = "spell", id = 395277, name = "Teleport: Valdrakken",           classReq = "MAGE", mageType = "teleport", region = "Dragon Isles", zone = "Valdrakken" },
         { type = "spell", id = 446540, name = "Teleport: Dornogal",             classReq = "MAGE", mageType = "teleport", region = "Khaz Algar", zone = "Dornogal" },
+        { type = "spell", id = 1259190, name = "Teleport: Silvermoon City",   classReq = "MAGE", mageType = "teleport", region = "Quel'Thalas", zone = "Silvermoon City" },
         { type = "spell", id = 344587, name = "Teleport: Oribos",               classReq = "MAGE", mageType = "teleport", region = "Shadowlands", zone = "Oribos" },
         { type = "spell", id = 120145, name = "Ancient Teleport: Dalaran",      classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Dalaran Crater" },
         { type = "spell", id = 193759, name = "Teleport: Hall of the Guardian", classReq = "MAGE", mageType = "teleport", region = "Broken Isles", zone = "Dalaran" },
@@ -165,6 +176,7 @@ Porter.TeleportData = {
         { type = "spell", id = 88346,  name = "Portal: Tol Barad (Horde)",      classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Tol Barad" },
         { type = "spell", id = 395289, name = "Portal: Valdrakken",             classReq = "MAGE", mageType = "portal", region = "Dragon Isles", zone = "Valdrakken" },
         { type = "spell", id = 446534, name = "Portal: Dornogal",               classReq = "MAGE", mageType = "portal", region = "Khaz Algar", zone = "Dornogal" },
+        { type = "spell", id = 1259194, name = "Portal: Silvermoon City",     classReq = "MAGE", mageType = "portal", region = "Quel'Thalas", zone = "Silvermoon City" },
         { type = "spell", id = 344597, name = "Portal: Oribos",                 classReq = "MAGE", mageType = "portal", region = "Shadowlands", zone = "Oribos" },
         { type = "spell", id = 120146, name = "Ancient Portal: Dalaran",        classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Dalaran Crater" },
 
@@ -179,6 +191,9 @@ Porter.TeleportData = {
 
         -- Shaman
         { type = "spell", id = 556,    name = "Astral Recall",                  classReq = "SHAMAN", region = "Hearthstone", zone = "Inn" },
+
+        -- Haranir
+        { type = "spell", id = 1238686, name = "Rootwalking",                  raceReq = "Haranir", region = "Quel'Thalas", zone = "Harandar" },
 
         -- Dark Iron Dwarf
         { type = "spell", id = 265225, name = "Mole Machine",                   raceReq = "DarkIronDwarf", region = "Other", zone = "Various" },
@@ -214,11 +229,12 @@ Porter.TeleportData = {
         { type = "item", id = 95050,  name = "The Brassiest Knuckle",           equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
         { type = "item", id = 118907, name = "Pit Fighter's Punching Ring",     equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
         { type = "item", id = 144391, name = "Pugilist's Powerful Punching Ring",equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
-        { type = "item", id = 128353, name = "Admiral's Compass",               region = "Kul Tiras / Zandalar", zone = "Boralus" },
-        { type = "item", id = 219222, name = "Time-Lost Artifact",              region = "Other", zone = "Random" },
-        { type = "item", id = 202046, name = "Lucky Tortollan Charm",           region = "Kul Tiras / Zandalar", zone = "Random" },
-        { type = "item", id = 132523, name = "Reaves Battery",                  profReq = true, region = "Other", zone = "Random" },
-        { type = "item", id = 144341, name = "Rechargeable Reaves Battery",    profReq = true, region = "Other", zone = "Random" },
+        { type = "item", id = 128353, name = "Admiral's Compass",               region = "Draenor", zone = "Garrison Shipyard" },
+        { type = "item", id = 219222, name = "Time-Lost Artifact",              region = "Pandaria", zone = "Timeless Isle" },
+        { type = "item", id = 103678, name = "Time-Lost Artifact",              equippable = true, region = "Pandaria", zone = "Timeless Isle" },
+        { type = "item", id = 202046, name = "Lucky Tortollan Charm",           region = "Kul Tiras / Zandalar", zone = "Stormsong Valley" },
+        { type = "item", id = 132523, name = "Reaves Battery",                  profReq = true, region = "Broken Isles", zone = "Random" },
+        { type = "item", id = 144341, name = "Rechargeable Reaves Battery",    profReq = true, region = "Broken Isles", zone = "Random" },
         { type = "item", id = 50287,  name = "Boots of the Bay",              equippable = true, region = "Eastern Kingdoms", zone = "Booty Bay" },
         { type = "item", id = 166560, name = "Captain's Signet of Command",   equippable = true, region = "Kul Tiras / Zandalar", zone = "Boralus" },
         { type = "item", id = 166559, name = "Commander's Signet of Battle",  equippable = true, region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
@@ -242,7 +258,7 @@ Porter.TeleportData = {
         { type = "toy", id = 64457,  name = "The Last Relic of Argus",        region = "Other", zone = "Random" },
 
         -- Travel Toys
-        { type = "toy", id = 243056, name = "Delver's Mana-Bound Ethergate",  region = "Khaz Algar", zone = "Random" },
+        { type = "toy", id = 243056, name = "Delver's Mana-Bound Ethergate",  region = "Khaz Algar", zone = "Dornogal" },
         { type = "toy", id = 48933,  name = "Wormhole Generator: Northrend", profReq = true, region = "Northrend", zone = "Random" },
         { type = "toy", id = 87215,  name = "Wormhole Generator: Pandaria", profReq = true, region = "Pandaria", zone = "Random" },
         { type = "toy", id = 112059, name = "Wormhole Centrifuge", profReq = true, region = "Draenor", zone = "Random" },
@@ -251,19 +267,20 @@ Porter.TeleportData = {
         { type = "toy", id = 172924, name = "Wormhole Generator: Shadowlands", profReq = true, region = "Shadowlands", zone = "Random" },
         { type = "toy", id = 198156, name = "Wyrmhole Generator: Dragon Isles", profReq = true, region = "Dragon Isles", zone = "Random" },
         { type = "toy", id = 221966, name = "Wormhole Generator: Khaz Algar", profReq = true, region = "Khaz Algar", zone = "Random" },
+        { type = "toy", id = 248485, name = "Wormhole Generator: Quel'Thalas", profReq = true, region = "Quel'Thalas", zone = "Random" },
         { type = "toy", id = 18984,  name = "Dimensional Ripper - Everlook", profReq = true, region = "Kalimdor", zone = "Everlook" },
         { type = "toy", id = 18986,  name = "Ultrasafe Transporter: Gadgetzan", profReq = true, region = "Kalimdor", zone = "Gadgetzan" },
         { type = "toy", id = 30542,  name = "Dimensional Ripper - Area 52", profReq = true, region = "Outland", zone = "Netherstorm" },
         { type = "toy", id = 30544,  name = "Ultrasafe Transporter: Toshley's Station", profReq = true, region = "Outland", zone = "Blade's Edge Mountains" },
         { type = "toy", id = 151652, name = "Wormhole Generator: Argus", profReq = true, region = "Outland", zone = "Argus" },
-        { type = "toy", id = 153004, name = "Unstable Portal Emitter",        region = "Other", zone = "Random" },
+        { type = "toy", id = 153004, name = "Unstable Portal Emitter",        region = "Other", zone = "Twisting Nether" },
         { type = "toy", id = 192443, name = "Element-Infused Rocket Helmet",   profReq = true, region = "Dragon Isles", zone = "Random" },
         { type = "toy", id = 184504, name = "Attendant's Pocket Portal: Oribos", region = "Shadowlands", zone = "Oribos" },
         { type = "toy", id = 184500, name = "Attendant's Pocket Portal: Bastion", region = "Shadowlands", zone = "Bastion" },
         { type = "toy", id = 184502, name = "Attendant's Pocket Portal: Maldraxxus", region = "Shadowlands", zone = "Maldraxxus" },
         { type = "toy", id = 184503, name = "Attendant's Pocket Portal: Ardenweald", region = "Shadowlands", zone = "Ardenweald" },
         { type = "toy", id = 184501, name = "Attendant's Pocket Portal: Revendreth", region = "Shadowlands", zone = "Revendreth" },
-        { type = "toy", id = 136849, name = "Nature's Beacon",                region = "Broken Isles", zone = "Dreamgrove" },
+        { type = "toy", id = 136849, name = "Nature's Beacon",                classReq = "DRUID", region = "Broken Isles", zone = "Dreamgrove" },
     },
 
     ---------------------------------------------------------------------------
@@ -274,18 +291,27 @@ Porter.TeleportData = {
     ---------------------------------------------------------------------------
     -- mapID links dungeon teleports to M+ Challenge Mode Map IDs so we can
     -- detect the player's keystone and highlight the matching button.
-    -- current = true marks dungeons in the current M+ season.
+    -- season = "tww"|"midnight" marks dungeons in the selectable current season.
     ["Dungeons"] = {
-        -- TWW Season 3 M+ Pool (current)
+        -- TWW Season 3 M+ Pool
         -- mapID = Challenge Mode Map ID from C_ChallengeMode.GetMapTable()
-        { type = "spell", id = 1216786, name = "Operation: Floodgate",       current = true, mapID = 525, region = "Khaz Algar", zone = "Ringing Deeps" },
-        { type = "spell", id = 1237215, name = "Eco-Dome Al'dani",           current = true, mapID = 542, region = "K'aresh", zone = "K'aresh" },
-        { type = "spell", id = 445417, name = "Ara-Kara, City of Echoes",    current = true, mapID = 503, region = "Khaz Algar", zone = "Azj-Kahet" },
-        { type = "spell", id = 445414, name = "The Dawnbreaker",             current = true, mapID = 505, region = "Khaz Algar", zone = "Hallowfall" },
-        { type = "spell", id = 445444, name = "Priory of the Sacred Flame",  current = true, mapID = 499, region = "Khaz Algar", zone = "Hallowfall" },
-        { type = "spell", id = 367416, name = "Tazavesh: Streets of Wonder", current = true, mapID = 391, region = "Shadowlands", zone = "Tazavesh" },
-        { type = "spell", id = 367416, name = "Tazavesh: So'leah's Gambit",  current = true, mapID = 392, region = "Shadowlands", zone = "Tazavesh" },
-        { type = "spell", id = 354465, name = "Halls of Atonement",          current = true, mapID = 378, region = "Shadowlands", zone = "Revendreth" },
+        -- expansion = legacy fallback group when this season is not active
+        { type = "spell", id = 1216786, name = "Operation: Floodgate",       season = "tww", expansion = "The War Within", mapID = 525, region = "Khaz Algar", zone = "Ringing Deeps" },
+        { type = "spell", id = 1237215, name = "Eco-Dome Al'dani",           season = "tww", expansion = "The War Within", mapID = 542, region = "K'aresh", zone = "K'aresh" },
+        { type = "spell", id = 445417, name = "Ara-Kara, City of Echoes",    season = "tww", expansion = "The War Within", mapID = 503, region = "Khaz Algar", zone = "Azj-Kahet" },
+        { type = "spell", id = 445414, name = "The Dawnbreaker",             season = "tww", expansion = "The War Within", mapID = 505, region = "Khaz Algar", zone = "Hallowfall" },
+        { type = "spell", id = 445444, name = "Priory of the Sacred Flame",  season = "tww", expansion = "The War Within", mapID = 499, region = "Khaz Algar", zone = "Hallowfall" },
+        { type = "spell", id = 367416, name = "Tazavesh: Streets of Wonder", season = "tww", expansion = "Shadowlands", mapID = 391, region = "Shadowlands", zone = "Tazavesh" },
+        { type = "spell", id = 367416, name = "Tazavesh: So'leah's Gambit",  season = "tww", expansion = "Shadowlands", mapID = 392, region = "Shadowlands", zone = "Tazavesh" },
+        { type = "spell", id = 354465, name = "Halls of Atonement",          season = "tww", expansion = "Shadowlands", mapID = 378, region = "Shadowlands", zone = "Revendreth" },
+
+        -- Midnight Season 1 M+ Pool
+        { type = "spell", id = 1254572, name = "Magisters' Terrace",         season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Isle of Quel'Danas" },
+        { type = "spell", id = 1254400, name = "Windrunner Spire",           season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Eversong Woods" },
+        { type = "spell", id = 1254563, name = "Nexus-Point Xenas",          season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Voidstorm" },
+        { type = "spell", id = 1254559, name = "Maisara Caverns",            season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Zul'Aman" },
+        { type = "spell", id = 1254555, name = "Pit of Saron",               season = "midnight", expansion = "Wrath of the Lich King", region = "Northrend", zone = "Icecrown" },
+        { type = "spell", id = 252631,  name = "Seat of the Triumvirate",    season = "midnight", expansion = "Legion", region = "Broken Isles", zone = "Mac'Aree" },
 
         -- The War Within (legacy - S1/S2 dungeons)
         { type = "spell", id = 445416, name = "City of Threads",             expansion = "The War Within", region = "Khaz Algar", zone = "Azj-Kahet" },
@@ -350,6 +376,8 @@ Porter.TeleportData = {
         { type = "spell", id = 131222, name = "Mogu'shan Palace",              mapID = 6,   expansion = "Mists of Pandaria", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
         { type = "spell", id = 131228, name = "Siege of Niuzao Temple",        expansion = "Mists of Pandaria", region = "Pandaria", zone = "Townlong Steppes" },
         { type = "spell", id = 131232, name = "Scholomance",                   expansion = "Mists of Pandaria", region = "Eastern Kingdoms", zone = "Western Plaguelands" },
+        { type = "spell", id = 131231, name = "Scarlet Halls",                 expansion = "Mists of Pandaria", region = "Eastern Kingdoms", zone = "Tirisfal Glades" },
+        { type = "spell", id = 131229, name = "Scarlet Monastery",             expansion = "Mists of Pandaria", region = "Eastern Kingdoms", zone = "Tirisfal Glades" },
 
         -- Cataclysm
         { type = "spell", id = 410080, name = "The Vortex Pinnacle",           mapID = 438, expansion = "Cataclysm", region = "Kalimdor", zone = "Uldum" },
@@ -359,12 +387,12 @@ Porter.TeleportData = {
 
     ---------------------------------------------------------------------------
     -- RAID TELEPORTS (Hero's Path)
-    -- current = true marks raids in the current tier.
+    -- season = "tww"|"midnight" marks raids in the selectable current tier.
     ---------------------------------------------------------------------------
     ["Raids"] = {
-        -- The War Within (current)
-        { type = "spell", id = 1239155, name = "Manaforge Omega",              current = true, region = "K'aresh", zone = "K'aresh" },
-        { type = "spell", id = 1226482, name = "Liberation of Undermine",      current = true, region = "Kul Tiras / Zandalar", zone = "Kezan" },
+        -- The War Within
+        { type = "spell", id = 1239155, name = "Manaforge Omega",              season = "tww", expansion = "The War Within", region = "K'aresh", zone = "K'aresh" },
+        { type = "spell", id = 1226482, name = "Liberation of Undermine",      season = "tww", expansion = "The War Within", region = "Kul Tiras / Zandalar", zone = "Kezan" },
 
         -- Legacy Raids (grouped by expansion, newest first)
         -- Dragonflight
@@ -398,6 +426,33 @@ Porter.TeleportData = {
 -- CHANGELOG (shown once per version, newest first)
 ---------------------------------------------------------------------------
 Porter.ChangelogEntries = {
+    {
+        version = "1.0.9",
+        notes = {
+            -- Midnight
+            "|cff00ccffMidnight support|r — Midnight Season 1 dungeon teleports added. Porter defaults to The War Within: Season 3 for now. Switch to Midnight: Season 1 in Settings \226\134\146 Sorting and Categorisation \226\134\146 Current dungeons/raids. This will automatically switch to Midnight at global launch.",
+            -- New features
+            "New installs now default to a global profile — all characters share the same settings out of the box. Existing users keep their per-character profiles. Switch via the checkbox in Settings",
+            "Items stored in the bank are now visually indicated — desaturated icon with \"Bank\" label and greyed out name",
+            "Keybinding now appears under its own \"Porter\" category in Key Bindings",
+            "Cosmetic hearthstones now default to hidden for new profiles",
+            -- Added items/toys/spells
+            "Added mage spells: Teleport/Portal: Silvermoon City (Midnight)",
+            "Added racial: Rootwalking (Haranir teleport to Harandar)",
+            "Added engineering toy: Wormhole Generator: Quel'Thalas",
+            "Added cosmetic hearthstones: Draenic Hologem, Naaru's Enfold, Lightcalled Hearthstone",
+            "Added dungeon teleports: Scarlet Halls, Scarlet Monastery (Mists of Pandaria Challenge Mode)",
+            "Added item: Time-Lost Artifact (original MoP trinket)",
+            -- Bug fixes
+            "Nature's Beacon now correctly restricted to Druid only",
+            "Fixed Admiral's Compass zone (was Boralus, should be Garrison Shipyard)",
+            "Fixed Time-Lost Artifact zone (was Random, should be Timeless Isle)",
+            "Fixed Lucky Tortollan Charm zone (was Random, should be Stormsong Valley)",
+            "Fixed Reaves Battery / Rechargeable Reaves Battery region (was Other, should be Broken Isles)",
+            "Fixed Unstable Portal Emitter zone (was Random, should be Twisting Nether)",
+            "Fixed Delver's Mana-Bound Ethergate zone (was Random, should be Dornogal)",
+        },
+    },
     {
         version = "1.0.8",
         notes = {

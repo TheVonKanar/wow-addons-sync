@@ -466,14 +466,7 @@ local function Build()
 
   local function CreateTab(parent, text, index, totalTabs)
     local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
-
-    local total = tabsBar:GetWidth() or 480
-    local count = math.max(1, tonumber(totalTabs) or O.TAB_COUNT or 1)
-    local gaps = TAB_CFG.gap * (count - 1)
-    local each = (total - gaps) / count
-    local w = math.max(80, math.floor(each + 0.5))
-
-    b:SetSize(w, TAB_CFG.h)
+    b:SetSize(80, TAB_CFG.h)
     b:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
     b:SetBackdropColor(0, 0, 0, 0)
     b:SetBackdropBorderColor(unpack(TAB_CFG.border))
@@ -564,13 +557,46 @@ local function Build()
     local total = tabsBar:GetWidth() or 480
     local count = math.max(1, totalTabsForLayout or #tabs)
     local gaps = TAB_CFG.gap * (count - 1)
-    local each = (total - gaps) / count
-    local w = math.max(80, math.floor(each + 0.5))
+    local avail = math.max(80 * count, total - gaps)
+
+    local baseWeights, sumW = {}, 0
+    for i = 1, count do
+      local tab = tabs[i]
+      local txtW = 80
+      if tab and tab.txt and tab.txt.GetUnboundedStringWidth then
+        txtW = math.max(80, math.ceil((tab.txt:GetUnboundedStringWidth() or 0) + 24))
+      elseif tab and tab.txt and tab.txt.GetStringWidth then
+        txtW = math.max(80, math.ceil((tab.txt:GetStringWidth() or 0) + 24))
+      end
+      baseWeights[i] = txtW
+      sumW = sumW + txtW
+    end
+
+    local widths, used = {}, 0
+    if sumW <= 0 then
+      local each = math.floor(avail / count)
+      for i = 1, count do
+        widths[i] = each
+        used = used + each
+      end
+    else
+      for i = 1, count do
+        local w = math.max(80, math.floor((baseWeights[i] / sumW) * avail + 0.5))
+        widths[i] = w
+        used = used + w
+      end
+    end
+
+    local delta = avail - used
+    if delta ~= 0 and count > 0 then
+      widths[count] = math.max(80, (widths[count] or 80) + delta)
+    end
+
     for i = 1, #tabs do
       local tab = tabs[i]
       if tab then
         tab:SetHeight(TAB_CFG.h)
-        tab:SetWidth(w)
+        tab:SetWidth(widths[i] or 80)
         tab:ClearAllPoints()
         if i == 1 then
           tab:SetPoint("LEFT", tabsBar, "LEFT", 0, 0)
@@ -578,11 +604,6 @@ local function Build()
           tab:SetPoint("LEFT", tabs[i - 1], "RIGHT", TAB_CFG.gap, 0)
         end
       end
-    end
-    if tabs[count] then
-      local used = (w + TAB_CFG.gap) * (count - 1)
-      local lastW = math.max(80, total - used)
-      tabs[count]:SetWidth(lastW)
     end
   end
 

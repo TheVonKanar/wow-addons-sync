@@ -13,4 +13,5 @@ O.TAB_ORDER = {
   L["Thresholds"],
   IGNORE,
   OPTIONS,
+  (L["Custom Buffs"] or L["Custom Spells"]),
 }

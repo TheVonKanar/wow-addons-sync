@@ -258,7 +258,15 @@ function Porter:IsAvailable(entry)
     end
     if entry.raceReq then
         local _, raceFile = UnitRace("player")
-        if raceFile ~= entry.raceReq then return false end
+        if type(entry.raceReq) == "table" then
+            local found = false
+            for _, r in ipairs(entry.raceReq) do
+                if raceFile == r then found = true; break end
+            end
+            if not found then return false end
+        elseif raceFile ~= entry.raceReq then
+            return false
+        end
     end
     if entry.type == "spell" then
         if IsPlayerSpell(entry.id) then return true end
@@ -374,6 +382,17 @@ function Porter:IsEquipped(itemID)
 end
 
 -----------------------------------------------------------------------
+-- CHECK IF ITEM IS IN BANK ONLY (not in bags or equipped)
+-- Called after IsAvailable, so we know the player owns the item.
+-----------------------------------------------------------------------
+function Porter:IsInBankOnly(entry)
+    if entry.type ~= "item" then return false end
+    if C_Item.GetItemCount(entry.id, false) > 0 then return false end
+    if self:IsEquipped(entry.id) then return false end
+    return true
+end
+
+-----------------------------------------------------------------------
 -- EQUIP SLOT MAPPING
 -----------------------------------------------------------------------
 local EQUIP_SLOT_MAP = {
@@ -448,6 +467,20 @@ function Porter:CreateButton(parent, entry, index)
     end
     btn.icon = icon
 
+    -- Bank-only items: desaturate icon and add "Bank" label
+    local inBank = self:IsInBankOnly(entry)
+    if inBank then
+        icon:SetDesaturated(true)
+        icon:SetAlpha(0.5)
+        local bankText = btn:CreateFontString(nil, "OVERLAY")
+        bankText:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
+        bankText:SetPoint("BOTTOM", 0, 2)
+        bankText:SetText("Bank")
+        bankText:SetTextColor(1, 0.4, 0.4, 1)
+        btn.bankText = bankText
+    end
+    btn.inBank = inBank
+
     -- Hover highlight
     local highlight = btn:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints()
@@ -470,6 +503,9 @@ function Porter:CreateButton(parent, entry, index)
             GameTooltip:SetItemByID(entry.id)
         elseif entry.type == "toy" then
             GameTooltip:SetToyByItemID(entry.id)
+        end
+        if inBank then
+            GameTooltip:AddLine("Item is in your bank", 1, 0.4, 0.4)
         end
         GameTooltip:Show()
     end)
@@ -706,7 +742,11 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
         label:SetJustifyH("LEFT")
         label:SetJustifyV("MIDDLE")
         label:SetText(entry.name)
-        label:SetTextColor(1, 1, 1, 1)
+        if btn.inBank then
+            label:SetTextColor(0.5, 0.5, 0.5, 1)
+        else
+            label:SetTextColor(1, 1, 1, 1)
+        end
 
         labelBtn:SetScript("OnEnter", function()
             label:SetTextColor(0.6, 0.3, 0.9, 1)
@@ -721,10 +761,17 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
             elseif entry.type == "toy" then
                 GameTooltip:SetToyByItemID(entry.id)
             end
+            if btn.inBank then
+                GameTooltip:AddLine("Item is in your bank", 1, 0.4, 0.4)
+            end
             GameTooltip:Show()
         end)
         labelBtn:SetScript("OnLeave", function()
-            label:SetTextColor(1, 1, 1, 1)
+            if btn.inBank then
+                label:SetTextColor(0.5, 0.5, 0.5, 1)
+            else
+                label:SetTextColor(1, 1, 1, 1)
+            end
             GameTooltip:Hide()
         end)
 
@@ -828,9 +875,10 @@ end
 function Porter:GetAvailableCurrent(category)
     local entries = self.TeleportData[category]
     if not entries then return {} end
+    local activeSeason = self.db and self.db.settings.currentSeason or "tww"
     local available = {}
     for _, entry in ipairs(entries) do
-        if entry.current and self:IsAvailable(entry) then
+        if entry.season == activeSeason and self:IsAvailable(entry) then
             tinsert(available, entry)
         end
     end
@@ -904,8 +952,11 @@ function Porter:BuildTabbedColumn(category, xOffset, yStart, buttonIndex)
 
         for _, expacName in ipairs(self.ExpansionOrder) do
             local expacEntries = {}
+            local activeSeason = self.db and self.db.settings.currentSeason or "tww"
             for _, entry in ipairs(entries) do
-                if entry.expansion == expacName and self:IsAvailable(entry) then
+                -- Skip entries that belong to the active season (they show in Current tab)
+                local isActiveSeason = entry.season and entry.season == activeSeason
+                if entry.expansion == expacName and not isActiveSeason and self:IsAvailable(entry) then
                     tinsert(expacEntries, entry)
                 end
             end
@@ -1256,14 +1307,16 @@ function Porter:BuildZoneLayout()
         regionHeights[rName] = h
     end
 
-    -- Distribute regions across 3 columns sequentially (vertical reading order)
-    local NUM_ZONE_COLS = 3
+    -- Determine column count (3-7) so no column exceeds ~10 entries worth of height
+    local MAX_COL_HEIGHT = 10 * (LIST_ROW_HEIGHT + 4) + 4 * EXPAC_BTN_HEIGHT + 4 * CATEGORY_PADDING
     local totalHeight = 0
     for _, rName in ipairs(orderedRegions) do
         totalHeight = totalHeight + regionHeights[rName] + CATEGORY_PADDING
     end
+    local NUM_ZONE_COLS = math.max(3, math.min(7, math.ceil(totalHeight / MAX_COL_HEIGHT)))
     local targetColHeight = totalHeight / NUM_ZONE_COLS
 
+    -- Distribute regions across columns sequentially (vertical reading order)
     local colRegions = {}
     local colHeights = {}
     for i = 1, NUM_ZONE_COLS do
@@ -1357,15 +1410,19 @@ end
 function Porter:UpdateEquipStatus()
     for _, btn in ipairs(self.buttons) do
         if btn.equipStatus and btn.entry then
-            local start = C_Item.GetItemCooldown(btn.entry.id)
-            if start and start > 0 then
+            if btn.inBank then
                 btn.equipStatus:SetText("")
-            elseif self:IsEquipped(btn.entry.id) then
-                btn.equipStatus:SetText("Ready")
-                btn.equipStatus:SetTextColor(0, 1, 0, 1)
             else
-                btn.equipStatus:SetText("Equip")
-                btn.equipStatus:SetTextColor(1, 0.5, 0, 1)
+                local start = C_Item.GetItemCooldown(btn.entry.id)
+                if start and start > 0 then
+                    btn.equipStatus:SetText("")
+                elseif self:IsEquipped(btn.entry.id) then
+                    btn.equipStatus:SetText("Ready")
+                    btn.equipStatus:SetTextColor(0, 1, 0, 1)
+                else
+                    btn.equipStatus:SetText("Equip")
+                    btn.equipStatus:SetTextColor(1, 0.5, 0, 1)
+                end
             end
         end
     end
@@ -1478,9 +1535,10 @@ function Porter:ApplySearch()
                 if entries then
                     local currentMatches, legacyMatches = false, false
                     local legacyExpansion = nil
+                    local activeSeason = self.db and self.db.settings.currentSeason or "tww"
                     for _, entry in ipairs(entries) do
                         if self:IsAvailable(entry) and self:IsSearchMatch(entry) then
-                            if entry.current then
+                            if entry.season == activeSeason then
                                 currentMatches = true
                             elseif entry.expansion then
                                 legacyMatches = true
@@ -1698,6 +1756,35 @@ function Porter:RefreshSettingsPanel()
             rb:SetChecked(self.db.settings.zoneOrder == w.zoneOrderModes[i])
         end
     end
+
+    -- Current season radio buttons
+    if w.seasonButtons and w.seasonModes then
+        for i, rb in ipairs(w.seasonButtons) do
+            rb:SetChecked(self.db.settings.currentSeason == w.seasonModes[i])
+        end
+    end
+
+    -- Global profile checkbox and copy-from visibility
+    if w.globalCB then
+        w.globalCB:SetChecked(self:IsUsingGlobalProfile())
+    end
+    if w.profDesc then
+        if self:IsUsingGlobalProfile() then
+            w.profDesc:SetText("Current: |cff9966ffGlobal|r")
+        else
+            w.profDesc:SetText("Current: |cff9966ff" .. self:GetProfileKey() .. "|r")
+        end
+    end
+    if w.copyLabel and w.copyBtn then
+        if self:IsUsingGlobalProfile() then
+            w.copyLabel:Hide()
+            w.copyBtn:Hide()
+            if w.copyDropdown then w.copyDropdown:Hide() end
+        else
+            w.copyLabel:Show()
+            w.copyBtn:Show()
+        end
+    end
 end
 
 function Porter:CreateSettingsPanel()
@@ -1731,13 +1818,172 @@ function Porter:CreateSettingsPanel()
 
     local yPos = -16
 
+    -- Settings layout constants
+    local SECTION_GAP = 40      -- space between sections
+    local HEADER_GAP = 24       -- section header to first item
+    local ITEM_GAP = 26         -- between checkboxes / radio buttons
+    local LABEL_GAP = 20        -- descriptor label to its content
+    local SUBGROUP_GAP = 10     -- between sub-groups within a section
+
+    -----------------------------------------------------------------
+    -- SECTION: Character Profile
+    -----------------------------------------------------------------
+    local profHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    profHeader:SetPoint("TOPLEFT", 12, yPos)
+    profHeader:SetText("Character Profile")
+    yPos = yPos - HEADER_GAP
+
+    local profDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    profDesc:SetPoint("TOPLEFT", 14, yPos)
+    if self:IsUsingGlobalProfile() then
+        profDesc:SetText("Current: |cff9966ffGlobal|r")
+    else
+        profDesc:SetText("Current: |cff9966ff" .. self:GetProfileKey() .. "|r")
+    end
+    profDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    self.settingsWidgets.profDesc = profDesc
+    yPos = yPos - LABEL_GAP
+
+    -- Global profile checkbox
+    local globalCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+    globalCB:SetPoint("TOPLEFT", 10, yPos)
+    globalCB:SetChecked(self:IsUsingGlobalProfile())
+    local globalLabel = globalCB:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    globalLabel:SetPoint("LEFT", globalCB, "RIGHT", 4, 0)
+    globalLabel:SetText("Use global profile (shared across all characters)")
+    globalLabel:SetTextColor(1, 1, 1, 1)
+    globalCB:SetScript("OnClick", function(cb)
+        Porter:SetUseGlobalProfile(cb:GetChecked())
+        Porter:RefreshSettingsPanel()
+        Porter:RefreshMainFrame()
+    end)
+    self.settingsWidgets.globalCB = globalCB
+    yPos = yPos - SECTION_GAP
+
+    -- "Copy from" label (hidden when using global profile)
+    local copyLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    copyLabel:SetPoint("TOPLEFT", 14, yPos)
+    copyLabel:SetText("Copy settings from another character:")
+    copyLabel:SetTextColor(1, 1, 1, 1)
+    yPos = yPos - LABEL_GAP
+
+    -- Copy-from dropdown button
+    local copyBtn = CreateFrame("Button", nil, content, "BackdropTemplate")
+    copyBtn:SetSize(248, 28)
+    copyBtn:SetPoint("TOPLEFT", 14, yPos)
+    copyBtn:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    copyBtn:SetBackdropColor(0.15, 0.15, 0.15, 1)
+    copyBtn:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
+
+    local copyBtnText = copyBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    copyBtnText:SetPoint("LEFT", 8, 0)
+    copyBtnText:SetText("Select character...")
+    copyBtnText:SetTextColor(1, 1, 1, 1)
+
+    -- Dropdown for profile list
+    local copyDropdown = CreateFrame("Frame", nil, content, "BackdropTemplate")
+    copyDropdown:SetBackdrop({
+        bgFile   = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        edgeSize = 1,
+        tile     = false,
+        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+    })
+    copyDropdown:SetBackdropColor(0.12, 0.12, 0.12, 1)
+    copyDropdown:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
+    copyDropdown:SetFrameStrata("TOOLTIP")
+    copyDropdown:Hide()
+
+    copyBtn:SetScript("OnClick", function()
+        if copyDropdown:IsShown() then
+            copyDropdown:Hide()
+            return
+        end
+
+        -- Clear old rows
+        for _, child in ipairs({ copyDropdown:GetChildren() }) do
+            child:Hide()
+            child:SetParent(nil)
+        end
+
+        local profiles = Porter:GetProfileList()
+        local myKey = Porter:GetProfileKey()
+        local rowHeight = 24
+
+        -- Filter out current character
+        local others = {}
+        for _, key in ipairs(profiles) do
+            if key ~= myKey then
+                tinsert(others, key)
+            end
+        end
+
+        if #others == 0 then
+            copyBtnText:SetText("No other characters found")
+            return
+        end
+
+        copyDropdown:SetSize(248, #others * rowHeight + 4)
+        copyDropdown:SetPoint("TOPLEFT", copyBtn, "BOTTOMLEFT", 0, -2)
+
+        for i, key in ipairs(others) do
+            local row = CreateFrame("Button", nil, copyDropdown)
+            row:SetSize(244, rowHeight)
+            row:SetPoint("TOPLEFT", 2, -(2 + (i - 1) * rowHeight))
+
+            local rName = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            rName:SetPoint("LEFT", 8, 0)
+            rName:SetText(key)
+            rName:SetTextColor(1, 1, 1, 1)
+
+            local hl = row:CreateTexture(nil, "HIGHLIGHT")
+            hl:SetAllPoints()
+            hl:SetColorTexture(1, 1, 1, 0.05)
+
+            row:SetScript("OnClick", function()
+                Porter:CopyProfileFrom(key)
+                Porter:RefreshSettingsPanel()
+                Porter:RefreshMainFrame()
+                copyDropdown:Hide()
+                copyBtnText:SetText("Copied from " .. key)
+            end)
+        end
+
+        copyDropdown:Show()
+    end)
+
+    -- Store copy-from widgets for visibility toggling
+    self.settingsWidgets.copyLabel = copyLabel
+    self.settingsWidgets.copyBtn = copyBtn
+    self.settingsWidgets.copyDropdown = copyDropdown
+
+    -- Hide copy-from controls when using global profile
+    if self:IsUsingGlobalProfile() then
+        copyLabel:Hide()
+        copyBtn:Hide()
+        copyDropdown:Hide()
+    end
+
+    -- Hide copy dropdown when settings panel hides
+    f:HookScript("OnHide", function()
+        copyDropdown:Hide()
+    end)
+
     -----------------------------------------------------------------
     -- SECTION: Hearthstone
     -----------------------------------------------------------------
+    yPos = yPos - SECTION_GAP
+
     local hsHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     hsHeader:SetPoint("TOPLEFT", 12, yPos)
     hsHeader:SetText("Hearthstone")
-    yPos = yPos - 24
+    yPos = yPos - HEADER_GAP
 
     -- Cosmetic hearthstones checkbox
     local cb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
@@ -1753,15 +1999,14 @@ function Porter:CreateSettingsPanel()
         Porter:RefreshMainFrame()
     end)
     self.settingsWidgets.cosmeticCB = cb
-
-    yPos = yPos - 32
+    yPos = yPos - ITEM_GAP - SUBGROUP_GAP
 
     -- Hearthstone Mode label
     local modeLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     modeLabel:SetPoint("TOPLEFT", 14, yPos)
-    modeLabel:SetText("Hearthstone used:")
-    modeLabel:SetTextColor(0.4, 0.55, 0.85, 1)
-    yPos = yPos - 20
+    modeLabel:SetText("Hearthstone mode:")
+    modeLabel:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - LABEL_GAP
 
     -- Mode radio buttons
     local modes = { "Normal", "Random", "Specific" }
@@ -1794,13 +2039,12 @@ function Porter:CreateSettingsPanel()
             Porter:RefreshMainFrame()
         end)
 
-        yPos = yPos - 26
+        yPos = yPos - ITEM_GAP
     end
     self.settingsWidgets.modeButtons = modeButtons
     self.settingsWidgets.modes = modes
 
     -- Specific hearthstone chooser button
-    yPos = yPos - 4
     choiceBtn = CreateFrame("Button", nil, content, "BackdropTemplate")
     choiceBtn:SetSize(248, 28)
     choiceBtn:SetPoint("TOPLEFT", 14, yPos)
@@ -1825,10 +2069,24 @@ function Porter:CreateSettingsPanel()
     -- Update the choice button display
     local function UpdateChoiceDisplay()
         local choiceID = Porter.db.settings.hearthstoneChoice
-        if choiceID and PlayerHasToy(choiceID) then
+        if choiceID then
             local _, name, toyIcon = C_ToyBox.GetToyInfo(choiceID)
-            choiceIcon:SetTexture(toyIcon or C_Item.GetItemIconByID(choiceID) or 134400)
-            choiceText:SetText(name or "Unknown")
+            -- Toy info may not be cached yet at login; fall back to item API
+            local icon = toyIcon or C_Item.GetItemIconByID(choiceID) or 134400
+            if not name or name == "" then
+                name = C_Item.GetItemNameByID(choiceID)
+            end
+            choiceIcon:SetTexture(icon)
+            choiceText:SetText(name or "Loading...")
+            -- If name wasn't available yet, retry once item data arrives
+            if not name or name == "" then
+                C_Item.RequestLoadItemDataByID(choiceID)
+                C_Timer.After(1, function()
+                    if Porter.settingsWidgets and Porter.settingsWidgets.updateChoiceDisplay then
+                        Porter.settingsWidgets.updateChoiceDisplay()
+                    end
+                end)
+            end
         else
             choiceIcon:SetTexture(134400)
             choiceText:SetText("Click to choose...")
@@ -1923,6 +2181,11 @@ function Porter:CreateSettingsPanel()
         dropdown:Show()
     end)
 
+    -- Account for choice button height (28px) only when visible
+    if self.db.settings.hearthstoneMode == "Specific" then
+        yPos = yPos - 28
+    end
+
     -- Hide dropdown when settings panel hides
     f:SetScript("OnHide", function()
         if Porter.hearthstoneDropdown then
@@ -1931,14 +2194,20 @@ function Porter:CreateSettingsPanel()
     end)
 
     -----------------------------------------------------------------
-    -- SECTION: Categories
+    -- SECTION: Portal Types
     -----------------------------------------------------------------
-    yPos = yPos - 40
+    yPos = yPos - SECTION_GAP
 
     local catHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     catHeader:SetPoint("TOPLEFT", 12, yPos)
-    catHeader:SetText("Categories")
-    yPos = yPos - 24
+    catHeader:SetText("Portal Types")
+    yPos = yPos - LABEL_GAP
+
+    local catDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    catDesc:SetPoint("TOPLEFT", 14, yPos)
+    catDesc:SetText("Use the below to control what types of portals you want to see in Porter")
+    catDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - HEADER_GAP
 
     self.settingsWidgets.categoryCBs = {}
     for _, category in ipairs(self.Categories) do
@@ -1958,18 +2227,18 @@ function Porter:CreateSettingsPanel()
         end)
 
         self.settingsWidgets.categoryCBs[category] = catCB
-        yPos = yPos - 26
+        yPos = yPos - ITEM_GAP
     end
 
     -----------------------------------------------------------------
     -- SECTION: Minimap
     -----------------------------------------------------------------
-    yPos = yPos - 40
+    yPos = yPos - SECTION_GAP
 
     local mmHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     mmHeader:SetPoint("TOPLEFT", 12, yPos)
     mmHeader:SetText("Minimap")
-    yPos = yPos - 24
+    yPos = yPos - HEADER_GAP
 
     local mmCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
     mmCB:SetSize(26, 26)
@@ -1991,26 +2260,26 @@ function Porter:CreateSettingsPanel()
         end
     end)
     self.settingsWidgets.minimapCB = mmCB
-    yPos = yPos - 26
+    yPos = yPos - ITEM_GAP
 
     -----------------------------------------------------------------
     -- SECTION: Zone View
     -----------------------------------------------------------------
-    yPos = yPos - 40
+    yPos = yPos - SECTION_GAP
 
     local zoneHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     zoneHeader:SetPoint("TOPLEFT", 12, yPos)
-    zoneHeader:SetText("Zone View")
-    yPos = yPos - 24
+    zoneHeader:SetText("Sorting and Categorisation")
+    yPos = yPos - HEADER_GAP
 
     local defaultViewDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     defaultViewDesc:SetPoint("TOPLEFT", 14, yPos)
-    defaultViewDesc:SetText("Default view:")
+    defaultViewDesc:SetText("Default categorisation:")
     defaultViewDesc:SetTextColor(0.7, 0.7, 0.7, 1)
-    yPos = yPos - 20
+    yPos = yPos - LABEL_GAP
 
     local defaultViewModes = { "category", "zone" }
-    local defaultViewLabels = { "Category", "Zone" }
+    local defaultViewLabels = { "By Type", "By Zone" }
     local defaultViewButtons = {}
     for i, mode in ipairs(defaultViewModes) do
         local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
@@ -2037,18 +2306,18 @@ function Porter:CreateSettingsPanel()
         end)
 
         tinsert(defaultViewButtons, rb)
-        yPos = yPos - 24
+        yPos = yPos - ITEM_GAP
     end
     self.settingsWidgets.defaultViewButtons = defaultViewButtons
     self.settingsWidgets.defaultViewModes = defaultViewModes
 
-    yPos = yPos - 10
+    yPos = yPos - SUBGROUP_GAP
 
     local zoneDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     zoneDesc:SetPoint("TOPLEFT", 14, yPos)
-    zoneDesc:SetText("Region ordering:")
+    zoneDesc:SetText("Region ordering (in zone view):")
     zoneDesc:SetTextColor(0.7, 0.7, 0.7, 1)
-    yPos = yPos - 20
+    yPos = yPos - LABEL_GAP
 
     local zoneOrderModes = { "recent", "alpha" }
     local zoneOrderLabels = { "Most Recent First", "Alphabetical" }
@@ -2074,132 +2343,57 @@ function Porter:CreateSettingsPanel()
         end)
 
         tinsert(zoneOrderButtons, rb)
-        yPos = yPos - 24
+        yPos = yPos - ITEM_GAP
     end
     self.settingsWidgets.zoneOrderButtons = zoneOrderButtons
     self.settingsWidgets.zoneOrderModes = zoneOrderModes
 
-    -----------------------------------------------------------------
-    -- SECTION: Character Profile
-    -----------------------------------------------------------------
-    yPos = yPos - 40
+    yPos = yPos - SUBGROUP_GAP
 
-    local profHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    profHeader:SetPoint("TOPLEFT", 12, yPos)
-    profHeader:SetText("Character Profile")
-    yPos = yPos - 24
+    local seasonDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    seasonDesc:SetPoint("TOPLEFT", 14, yPos)
+    seasonDesc:SetText("Current dungeons/raids:")
+    seasonDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    yPos = yPos - LABEL_GAP
 
-    local profDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    profDesc:SetPoint("TOPLEFT", 14, yPos)
-    profDesc:SetText("Current: |cff9966ff" .. self:GetProfileKey() .. "|r")
-    profDesc:SetTextColor(0.7, 0.7, 0.7, 1)
-    yPos = yPos - 22
+    local seasonModes = { "tww", "midnight" }
+    local seasonLabels = { "The War Within: Season 3", "Midnight: Season 1" }
+    local seasonButtons = {}
+    for i, mode in ipairs(seasonModes) do
+        local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+        rb:SetSize(24, 24)
+        rb:SetPoint("TOPLEFT", 14, yPos)
+        rb:SetChecked(self.db.settings.currentSeason == mode)
 
-    -- "Copy from" label
-    local copyLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    copyLabel:SetPoint("TOPLEFT", 14, yPos)
-    copyLabel:SetText("Copy settings from another character:")
-    copyLabel:SetTextColor(1, 1, 1, 1)
-    yPos = yPos - 22
+        local rbLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        rbLabel:SetPoint("LEFT", rb, "RIGHT", 4, 0)
+        rbLabel:SetText(seasonLabels[i])
+        rbLabel:SetTextColor(1, 1, 1, 1)
 
-    -- Copy-from dropdown button
-    local copyBtn = CreateFrame("Button", nil, content, "BackdropTemplate")
-    copyBtn:SetSize(248, 28)
-    copyBtn:SetPoint("TOPLEFT", 14, yPos)
-    copyBtn:SetBackdrop({
-        bgFile   = "Interface\\Buttons\\WHITE8x8",
-        edgeFile = "Interface\\Buttons\\WHITE8x8",
-        edgeSize = 1,
-        tile     = false,
-        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
-    })
-    copyBtn:SetBackdropColor(0.15, 0.15, 0.15, 1)
-    copyBtn:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
-
-    local copyBtnText = copyBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    copyBtnText:SetPoint("LEFT", 8, 0)
-    copyBtnText:SetText("Select character...")
-    copyBtnText:SetTextColor(1, 1, 1, 1)
-
-    -- Dropdown for profile list
-    local copyDropdown = CreateFrame("Frame", nil, content, "BackdropTemplate")
-    copyDropdown:SetBackdrop({
-        bgFile   = "Interface\\Buttons\\WHITE8x8",
-        edgeFile = "Interface\\Buttons\\WHITE8x8",
-        edgeSize = 1,
-        tile     = false,
-        insets   = { left = 1, right = 1, top = 1, bottom = 1 },
-    })
-    copyDropdown:SetBackdropColor(0.12, 0.12, 0.12, 1)
-    copyDropdown:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.6)
-    copyDropdown:SetFrameStrata("TOOLTIP")
-    copyDropdown:Hide()
-
-    copyBtn:SetScript("OnClick", function()
-        if copyDropdown:IsShown() then
-            copyDropdown:Hide()
-            return
-        end
-
-        -- Clear old rows
-        for _, child in ipairs({ copyDropdown:GetChildren() }) do
-            child:Hide()
-            child:SetParent(nil)
-        end
-
-        local profiles = Porter:GetProfileList()
-        local myKey = Porter:GetProfileKey()
-        local rowHeight = 24
-
-        -- Filter out current character
-        local others = {}
-        for _, key in ipairs(profiles) do
-            if key ~= myKey then
-                tinsert(others, key)
+        rb:SetScript("OnClick", function()
+            Porter.db.settings.currentSeason = mode
+            for _, otherRb in ipairs(seasonButtons) do
+                otherRb:SetChecked(false)
             end
+            rb:SetChecked(true)
+            Porter:RefreshMainFrame()
+        end)
+
+        tinsert(seasonButtons, rb)
+        yPos = yPos - ITEM_GAP
+    end
+    self.settingsWidgets.seasonButtons = seasonButtons
+    self.settingsWidgets.seasonModes = seasonModes
+
+    -- Refresh choice display when settings panel is shown (toy data may not be cached at login)
+    f:HookScript("OnShow", function()
+        if Porter.settingsWidgets and Porter.settingsWidgets.updateChoiceDisplay then
+            Porter.settingsWidgets.updateChoiceDisplay()
         end
-
-        if #others == 0 then
-            copyBtnText:SetText("No other characters found")
-            return
-        end
-
-        copyDropdown:SetSize(248, #others * rowHeight + 4)
-        copyDropdown:SetPoint("TOPLEFT", copyBtn, "BOTTOMLEFT", 0, -2)
-
-        for i, key in ipairs(others) do
-            local row = CreateFrame("Button", nil, copyDropdown)
-            row:SetSize(244, rowHeight)
-            row:SetPoint("TOPLEFT", 2, -(2 + (i - 1) * rowHeight))
-
-            local rName = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            rName:SetPoint("LEFT", 8, 0)
-            rName:SetText(key)
-            rName:SetTextColor(1, 1, 1, 1)
-
-            local hl = row:CreateTexture(nil, "HIGHLIGHT")
-            hl:SetAllPoints()
-            hl:SetColorTexture(1, 1, 1, 0.05)
-
-            row:SetScript("OnClick", function()
-                Porter:CopyProfileFrom(key)
-                Porter:RefreshSettingsPanel()
-                Porter:RefreshMainFrame()
-                copyDropdown:Hide()
-                copyBtnText:SetText("Copied from " .. key)
-            end)
-        end
-
-        copyDropdown:Show()
     end)
 
-    -- Hide copy dropdown when settings panel hides
-    f:HookScript("OnHide", function()
-        copyDropdown:Hide()
-    end)
-
-    -- Padding below Character Profile section
-    yPos = yPos - 30
+    -- Padding below last section
+    yPos = yPos - SECTION_GAP
 
     -- Set content height so scroll frame knows total size
     content:SetHeight(math.abs(yPos) + 20)

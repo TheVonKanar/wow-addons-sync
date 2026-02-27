@@ -28,23 +28,30 @@ local STRINGS = {
     BUTTON_CANCEL = "Отмена",
 
     -- Options tab
-    OPTIONS_HIDE_GREAT_VAULT = "Скрыть Великий тайник",
+    OPTIONS_HIDE_GREAT_VAULT = "Скрыть Великий сейф",
     OPTIONS_HIDE_CURRENCY = "Скрыть валюту",
 
     HIDE_COMPLETED_WEEKS = "Скрыть завершённые недели",
     OPTIONS_HIDE_CHANGE_WEEK_BTN = "Скрыть кнопку «Сменить неделю»",
     OPTIONS_HIDE_ILVL_REF_BTN = "Скрыть кнопку «Уровни предметов»",
-
+    OPTIONS_HIDE_CHAR_SELECT = "Скрыть выбор персонажа",
+    OPTIONS_HIDDEN_CHARS_TITLE = "Скрытые персонажи:",
+    OPTIONS_HIDDEN_CHARS_NONE = "Нет",
     RESET_BUTTON = "Сбросить",
+    UI_SCALE_LABEL = "Масштаб UI",
+    UI_SCALE_MIN_LABEL = "50%",
+    UI_SCALE_MAX_LABEL = "150%",
+    OPTIONS_HIDE_SCALE_SLIDER = "Скрыть ползунок масштаба",
 
     -- List tab
     DONE_PREFIX = "[Готово] ",
 
     -- Tracking panel
-    TRACKING_GREAT_VAULT_TITLE = "Великий тайник",
+    TRACKING_GREAT_VAULT_TITLE = "Великий сейф",
     TRACKING_CURRENCY_TITLE = "Валюта",
     TRACKING_GV_RAID = "Рейд",
     TRACKING_GV_DUNGEONS = "Подземелья",
+    TRACKING_GV_WORLD    = "Мир",
     TRACKING_NA = "Н/Д",
 
     TRACKING_SPARKS_LABEL = "Искры:",
@@ -75,9 +82,9 @@ local STRINGS = {
     -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Левая кнопка: Показать/скрыть список",
     MINIMAP_TOOLTIP_RIGHT_CLICK_OPTIONS = "Правая кнопка: Настройки",
+    MINIMAP_TOOLTIP_MIDDLE_CLICK_ILVL = "Средняя кнопка: Уровни предметов",
 
     -- Main window
-    TAB_LIST = "Список",
     TAB_OPTIONS = "Настройки",
     CHANGE_WEEK_BUTTON = "Сменить неделю",
     ILVLREF_BUTTON = "Уровни предметов",
@@ -97,7 +104,7 @@ local STRINGS = {
     ILVLREF_COL_QUALITY      = "Качество",
     ILVLREF_COL_SOURCE       = "Источник",
     ILVLREF_COL_END_LOOT     = "Максимальный уровень",
-    ILVLREF_COL_GREAT_VAULT  = "Великий тайник",
+    ILVLREF_COL_GREAT_VAULT  = "Великий сейф",
     ILVLREF_COL_DIFFICULTY   = "Сложность",
     ILVLREF_COL_BOSS1        = "Начало",
     ILVLREF_COL_BOSS2        = "Середина",
@@ -124,7 +131,8 @@ local STRINGS = {
     ILVLREF_RAID_MYTHIC        = "Эпохальный",
 
     ILVLREF_DELVE_TIER_FMT     = "У%d",
-
+    ILVLREF_TOGGLE_EXPAND = "Показать все таблицы",
+    ILVLREF_TOGGLE_SHRINK = "Свернуть",
     -- Slash commands
     SLASH_USAGE_TOGGLE = "Использование: /larias или /lcl для показа/скрытия списка",
     SLASH_USAGE_LOCALE = "Использование: /larias locale auto|enUS|deDE|esES|esMX|frFR|itIT|ptBR|ruRU",

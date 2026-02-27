@@ -266,6 +266,7 @@ ns.optionDefs = {
     { type="checkbox", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), key="show_diminishing_returns", label=L["show_diminishing_returns"], value=true, default=true, slots=1 },
     { type="checkbox", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), key="show_hide_zero_stats", label=L["hide_zero_stats"], value=false, default=false, slots=1 },
     { type="checkbox", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), key="show_secondarypriority", label=L["Show wowhead recommended secondary stat priority"], value=false, default=false, slots=2 },
+    { type="dropdown", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), key="long_text_handling", label=L["Long Text Handling"], value="Truncate", default="Truncate", values={"Full Text", "Truncate", "Wrap Text"}, slots=2 },
 
     { type="divider", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), slots=4 },
     { type="header", cat="CHAR-STATS", ver=bit.bor(CCS.RETAIL), key=nil, label=L["Attributes"], slots=4, color={1,1,1}, fontSize=20, fontOutline="THICKOUTLINE" },

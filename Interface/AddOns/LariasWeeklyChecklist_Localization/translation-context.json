@@ -1,6 +1,12 @@
 ﻿{
     "_readme": "Verified WoW in-game terminology per locale, confirmed by native speakers or in-game inspection. Read this before editing any locale file. Do NOT assume dictionary translations are correct for WoW-specific terms.",
 
+    "_format_rules": {
+        "CRITICAL_lua_encoding": "Lua does NOT support \\uXXXX unicode escape sequences. Always write literal UTF-8 characters in all .lua string values. NEVER output \\u0420 style escapes — write the actual character (e.g. Р, not \\u0420). This applies to every title, text, and string field in every *_Data.lua file.",
+        "encoding": "All .lua files must be saved as UTF-8. Accented Latin characters (e.g. ã, ö, é), Cyrillic, and all other non-ASCII characters must be written literally, not escaped.",
+        "json_vs_lua": "\\uXXXX escapes are valid in this .json context file, but are INVALID in Lua. Never copy JSON-escaped strings directly into .lua files without decoding them first."
+    },
+
     "enUS": {
         "Delves": "Delves",
         "Bountiful Delves": "Bountiful Delves",
@@ -25,9 +31,9 @@
         "Delves": "Gouffres",
         "Bountiful Delves": "Gouffres abondants",
         "Crests": "Écus",
-        "Sparks": "Flux de mana d'aubastre",
+        "Sparks": "Étincelle de radiance",
         "Prey": "Traque",
-        "Great Vault": "Grand Coffre",
+        "Great Vault": "Grande Chambre Forte",
         "Dungeon": "Donjon",
         "Raid": "Raid",
         "Crest tiers": {
@@ -39,7 +45,9 @@
         },
         "_notes": {
             "Crests": "Singular: Écu. Plural: Écus. Tracker label: 'Écu:'. Full crest names: 'Écu de l'aube [tier]'. Note hero tier uses adjective form 'héroïque' (not 'de héros'), mythic uses 'mythique'.",
-            "Delves": "Singular and plural both 'Gouffres' in common usage (plural noun)."
+            "Delves": "Singular and plural both 'Gouffres' in common usage (plural noun).",
+            "Sparks": "Singular: Étincelle de radiance. Plural: Étincelles de radiance.",
+            "Great Vault": "Use 'Grande Chambre Forte'. Do NOT use 'Grand Coffre'."
         }
     },
 

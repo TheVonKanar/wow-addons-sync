@@ -26,10 +26,6 @@ local function hookfix()
     if not CCS.AreSecretsDisabled() and _G["ccsm_sf"] and (option("showm_sp_onopen") == true) then
             _G["ccsm_sf"]:Show()
             _G["ccs_sf"]:Hide()             
-    else 
-        if _G["ccsm_sf"] then 
-            _G["ccsm_sf"]:Hide() 
-        end
     end
     
     if C_AddOns.IsAddOnLoaded("QuaziiUI") and QUI_CharacterFrameBg_Skin ~= nil then

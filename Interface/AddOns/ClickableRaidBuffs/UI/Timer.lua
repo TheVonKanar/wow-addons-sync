@@ -112,6 +112,29 @@ local function stopTicker()
   _ticker = nil
 end
 
+local function processPendingShowAt(catTable, tNow, markFired)
+  if type(catTable) ~= "table" then
+    return false
+  end
+
+  local hasPending = false
+  for _, e in pairs(catTable) do
+    if e and e.showAt then
+      if e.showAt > tNow then
+        e._crb_showAt_fired = nil
+        hasPending = true
+      elseif not e._crb_showAt_fired then
+        hasPending = true
+        if markFired then
+          e._crb_showAt_fired = true
+        end
+      end
+    end
+  end
+
+  return hasPending
+end
+
 local function anyActive(tNow)
   local frames = ns.RenderFrames
   if not (frames and #frames > 0) then
@@ -145,16 +168,11 @@ local function anyActive(tNow)
     end
   end
   local disp = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable
-  local aug = disp and disp.AUGMENT_RUNE
-  if type(aug) == "table" then
-    for _, e in pairs(aug) do
-      if e and e.showAt and (e.showAt - tNow) > 0 then
-        return true
-      end
-      if e and e.showAt and (e.showAt - tNow) <= 0 then
-        return true
-      end
-    end
+  if processPendingShowAt(disp and disp.AUGMENT_RUNE, tNow, false) then
+    return true
+  end
+  if processPendingShowAt(disp and disp.CUSTOM_AURAS, tNow, false) then
+    return true
   end
   return false
 end
@@ -173,18 +191,12 @@ local function tick()
   local t2 = now()
 
   local disp = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable
-  local aug = disp and disp.AUGMENT_RUNE
-  if type(aug) == "table" then
-    local due
-    for _, e in pairs(aug) do
-      if e and e.showAt and (e.showAt - t2) <= 0 then
-        due = true
-        break
-      end
-    end
-    if due and type(ns.UpdateAugmentRunes) == "function" then
-      ns.UpdateAugmentRunes()
-    end
+  if processPendingShowAt(disp and disp.AUGMENT_RUNE, t2, true) and type(ns.UpdateAugmentRunes) == "function" then
+    ns.UpdateAugmentRunes()
+  end
+
+  if processPendingShowAt(disp and disp.CUSTOM_AURAS, t2, true) and type(ns.RenderAll) == "function" then
+    ns.RenderAll()
   end
 
   local frames = ns.RenderFrames

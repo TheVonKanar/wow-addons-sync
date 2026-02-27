@@ -28,22 +28,30 @@ local STRINGS = {
     BUTTON_CANCEL = "Annuler",
 
     -- Options tab
-    OPTIONS_HIDE_GREAT_VAULT = "Masquer le Grand Coffre",
+    OPTIONS_HIDE_GREAT_VAULT = "Masquer la Grande Chambre Forte",
     OPTIONS_HIDE_CURRENCY = "Masquer la monnaie",
 
     HIDE_COMPLETED_WEEKS = "Masquer les semaines complétées",
     OPTIONS_HIDE_CHANGE_WEEK_BTN = "Masquer le bouton Changer de semaine",
-    OPTIONS_HIDE_ILVL_REF_BTN = "Masquer le bouton Réf. ilvl",
+    OPTIONS_HIDE_ILVL_REF_BTN = "Masquer le bouton Niveaux d'objet",
+    OPTIONS_HIDE_CHAR_SELECT = "Masquer la sélection de personnage",
+    OPTIONS_HIDDEN_CHARS_TITLE = "Personnages masqués :",
+    OPTIONS_HIDDEN_CHARS_NONE = "Aucun",
     RESET_BUTTON = "Réinitialiser",
+    UI_SCALE_LABEL = "Échelle UI",
+    UI_SCALE_MIN_LABEL = "50%",
+    UI_SCALE_MAX_LABEL = "150%",
+    OPTIONS_HIDE_SCALE_SLIDER = "Masquer le curseur de mise à l'échelle",
 
     -- List tab
     DONE_PREFIX = "[Fait] ",
 
     -- Tracking panel
-    TRACKING_GREAT_VAULT_TITLE = "Grand Coffre",
+    TRACKING_GREAT_VAULT_TITLE = "Grande Chambre Forte",
     TRACKING_CURRENCY_TITLE = "Monnaie",
     TRACKING_GV_RAID = "Raid",
     TRACKING_GV_DUNGEONS = "Donjons",
+    TRACKING_GV_WORLD    = "Monde",
     TRACKING_NA = "N/D",
 
     TRACKING_SPARKS_LABEL = "Étincelles :",
@@ -74,13 +82,13 @@ local STRINGS = {
     -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Clic gauche : Afficher/masquer la liste",
     MINIMAP_TOOLTIP_RIGHT_CLICK_OPTIONS = "Clic droit : Options",
+    MINIMAP_TOOLTIP_MIDDLE_CLICK_ILVL = "Clic milieu : Niveaux d'objet",
 
     -- Main window
-    TAB_LIST = "Liste",
     TAB_OPTIONS = "Options",
 
     CHANGE_WEEK_BUTTON = "Changer de semaine",
-    ILVLREF_BUTTON = "Réf. ilvl",
+    ILVLREF_BUTTON = "Voir les niveaux d'objet",
 
     -- Item level reference popup
     ILVLREF_WINDOW_TITLE  = "Référence des niveaux d'objet – Midnight Saison 1",
@@ -97,7 +105,7 @@ local STRINGS = {
     ILVLREF_COL_QUALITY      = "Qualité",
     ILVLREF_COL_SOURCE       = "Source",
     ILVLREF_COL_END_LOOT     = "Butin final",
-    ILVLREF_COL_GREAT_VAULT  = "Grand Coffre",
+    ILVLREF_COL_GREAT_VAULT  = "Grande Chambre Forte",
     ILVLREF_COL_DIFFICULTY   = "Difficulté",
     ILVLREF_COL_BOSS1        = "Début",
     ILVLREF_COL_BOSS2        = "Milieu",
@@ -124,6 +132,9 @@ local STRINGS = {
     ILVLREF_RAID_MYTHIC        = "Mythique",
 
     ILVLREF_DELVE_TIER_FMT     = "T%d",
+
+    ILVLREF_TOGGLE_EXPAND = "Afficher tout",
+    ILVLREF_TOGGLE_SHRINK = "Réduire",
 
     -- Slash commands
     SLASH_USAGE_TOGGLE = "Utilisation : /larias ou /lcl pour afficher/masquer la liste",

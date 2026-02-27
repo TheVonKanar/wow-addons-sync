@@ -375,6 +375,7 @@ function scanRaidBuffs()
   local db = ns.GetDB and ns.GetDB() or {}
   local raidUnits = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or { "player" }
   local playerUnitOnly = { "player" }
+  local rangeTotalBySpell = {}
 
   local threshold = (
     ns.MPlus_GetEffectiveThresholdSecs and ns.MPlus_GetEffectiveThresholdSecs("spell", db.spellThreshold or 15)
@@ -423,6 +424,51 @@ function scanRaidBuffs()
     else
       return (have == total) and math.huge or nil
     end
+  end
+
+  local function GetRangedTotal(units, spellID)
+    local baseTotal = #units
+    if baseTotal == 0 then
+      return 0
+    end
+    if not IsSpellInRange or not spellID then
+      return baseTotal
+    end
+
+    local cached = rangeTotalBySpell[spellID]
+    if cached ~= nil then
+      return cached
+    end
+
+    local spellName = (C_Spell.GetSpellInfo(spellID) or {}).name
+    if not IsNonSecretString(spellName) then
+      rangeTotalBySpell[spellID] = baseTotal
+      return baseTotal
+    end
+
+    local inRange = 0
+    local checked = 0
+    for i = 1, baseTotal do
+      local u = units[i]
+      if u == "player" then
+        inRange = inRange + 1
+      else
+        local ok = IsSpellInRange(spellName, u)
+        if ok ~= nil then
+          checked = checked + 1
+          if ok == 1 or ok == true then
+            inRange = inRange + 1
+          end
+        end
+      end
+    end
+
+    if checked == 0 then
+      inRange = baseTotal
+    end
+
+    rangeTotalBySpell[spellID] = inRange
+    return inRange
   end
 
   local function addEntry(rowKey, data, catName)
@@ -625,10 +671,13 @@ function scanRaidBuffs()
           end
         end
       end
+      total = GetRangedTotal(units, entry.spellID)
+
       if numPlayersInInstance and numPlayersInInstance > 0 then
         total = math.min(total, numPlayersInInstance)
       end
 
+      have = math.min(have, total)
       entry.centerText = tostring(have) .. " / " .. tostring(total)
     elseif catName == "RAID_BUFFS" and (data.count ~= nil) then
       entry.centerText = ""

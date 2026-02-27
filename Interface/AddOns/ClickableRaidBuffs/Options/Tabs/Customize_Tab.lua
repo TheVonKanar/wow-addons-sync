@@ -197,18 +197,6 @@ local function BuildMythicPlusPanel(parent)
   nsHolder:SetEnabled(enabled)
   col._nsHolder = nsHolder
 
-  local cb, lab = NewCheckbox(
-    col,
-    L["Disable Consumables after Key Starts"],
-    d.mplusDisableConsumables == true,
-    function(_, v)
-      d.mplusDisableConsumables = v and true or false
-      PingMythicPlus()
-    end
-  )
-  cb:SetPoint("TOPLEFT", nsHolder, "BOTTOMLEFT", 0, -14)
-  lab:SetPoint("LEFT", cb, "RIGHT", 8, 0)
-
   return holder
 end
 

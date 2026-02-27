@@ -1527,6 +1527,32 @@ local function CreateHeaderRow(parent, frameName, section)
     return row
 end
 
+local function TruncateWithEllipsis(fontString, text, maxWidth)
+    fontString:SetText(text)
+
+    if fontString:GetStringWidth() <= maxWidth then
+        return text
+    end
+
+    local ellipsis = "..."
+    local low, high = 1, #text
+
+    -- Binary search for the longest substring that fits
+    while low < high do
+        local mid = math.floor((low + high) / 2)
+        local candidate = text:sub(1, mid) .. ellipsis
+        fontString:SetText(candidate)
+
+        if fontString:GetStringWidth() > maxWidth then
+            high = mid - 1
+        else
+            low = mid + 1
+        end
+    end
+
+    return text:sub(1, high) .. ellipsis
+end
+
 local function CreateContentRow(parent, frameName, rowName, iconPath, color)
     -- Reuse if it already exists
     local row = _G[frameName] or CreateFrame("Frame", frameName, parent, "BackdropTemplate")
@@ -1552,6 +1578,13 @@ local function CreateContentRow(parent, frameName, rowName, iconPath, color)
     row.icon:SetTexture(iconPath)
 
     -------------------------------------------------
+    -- Compute MAX_LABEL_WIDTH
+    -------------------------------------------------
+    local RESERVED_RIGHT_WIDTH = 60 -- safe space for rightText
+    local MAX_LABEL_WIDTH = rowWidth - rowH - 2 - 6 - RESERVED_RIGHT_WIDTH - 6
+    row.MAX_LABEL_WIDTH = MAX_LABEL_WIDTH  -- store for update logic
+
+    -------------------------------------------------
     -- Left text (label)
     -------------------------------------------------
     if not row.leftText then
@@ -1564,6 +1597,11 @@ local function CreateContentRow(parent, frameName, rowName, iconPath, color)
 	option("fontcolor_statname")[2] or 1,
 	option("fontcolor_statname")[3] or 1,
 	option("fontcolor_statname")[4] or 1)
+    row.leftText:SetWidth(MAX_LABEL_WIDTH)
+	row.leftText:SetJustifyH("LEFT")
+	row.leftText:SetJustifyV("MIDDLE")
+    row.leftText:SetWordWrap(false)
+    row.leftText:SetMaxLines(1)
     row.leftText:SetText(rowName or "")
 
     -------------------------------------------------
@@ -1674,9 +1712,32 @@ local function CreateAndUpdateiLvlframe(parent)
 	end)
 end
 
+local function TruncateToWidth(fs, text, maxWidth)
+    fs:SetText(text)
+    if fs:GetStringWidth() <= maxWidth then
+        return text
+    end
+
+    local ellipsis = "…"
+    local len = #text
+
+    while len > 1 do
+        len = len - 1
+        local candidate = text:sub(1, len) .. ellipsis
+        fs:SetText(candidate)
+        if fs:GetStringWidth() <= maxWidth then
+            return candidate
+        end
+    end
+
+    return ellipsis
+end
+
 local function UpdateAllStats(parent)
 
-	CreateAndUpdateiLvlframe(parent)
+    CreateAndUpdateiLvlframe(parent)
+
+    local mode = option("long_text_handling")  -- "Full Text", "Truncate", "Wrap Text"
 
     for _, sectionData in ipairs(STAT_SECTIONS) do
         local sectionFrame = _G["CCS_Section_" .. sectionData.key]
@@ -1687,55 +1748,106 @@ local function UpdateAllStats(parent)
                 if rowFrame then
 
                     -------------------------------------------------
-                    -- Call the stat function to get values.
+                    -- Get stat values
                     -------------------------------------------------
                     local leftText, rightText, tt_name, tt_desc, link, isZero =
                         rowData.statFunc(rowData)
 
-					rowFrame.isZero = isZero
+                    rowFrame.isZero = isZero
+
                     -------------------------------------------------
-                    -- Update left/right text
+                    -- Update icon for currencies
                     -------------------------------------------------
-                    if rowFrame.leftText then
-                        rowFrame.leftText:SetText(leftText or "")
+                    if rowData.statFunc == GetStatCurrency then
+                        local currencyData
+                        if C_CurrencyInfo then
+                            currencyData = C_CurrencyInfo.GetCurrencyInfo(rowData.id)
+                            link = C_CurrencyInfo.GetCurrencyLink(rowData.id)
+                        else
+                            currencyData = GetCurrencyInfo(rowData.id)
+                            link = GetCurrencyLink(rowData.id)
+                        end
+                        if currencyData and currencyData.iconFileID then
+                            rowFrame.icon:SetTexture(currencyData.iconFileID)
+                        end
                     end
+
+                    -------------------------------------------------
+                    -- Update power color for attributes
+                    -------------------------------------------------
+                    if rowData.key == "attribute_power" then
+                        local _, powerToken = UnitPowerType("player")
+                        local info = PowerBarColor[powerToken]
+                        local r, g, b = 1, 1, 1
+                        if info then r, g, b = info.r, info.g, info.b end
+                        rowFrame.icon:SetVertexColor(r, g, b)
+                    end
+
+                    -------------------------------------------------
+                    -- Update right text
+                    -------------------------------------------------
                     if rowFrame.rightText then
                         rowFrame.rightText:SetText(rightText or "")
                     end
-					
-					if rowData.statFunc == GetStatCurrency then
-						local currencyData = nil
-						if C_CurrencyInfo then 
-							currencyData = C_CurrencyInfo.GetCurrencyInfo(rowData.id) 
-							link = C_CurrencyInfo.GetCurrencyLink(rowData.id)		
-						else
-							currencyData = GetCurrencyInfo(rowData.id) 
-							link = GetCurrencyLink(rowData.id)				
-						end
-						if currencyData and currencyData.iconFileID then
-							rowFrame.icon:SetTexture(currencyData.iconFileID)
-						end
-					end
-					if rowData.key == "attribute_power" then
-						local powerType, powerToken, altR, altG, altB = UnitPowerType("player")
-						local info = PowerBarColor[powerToken];
-						local altR, altG, altB = 1, 1, 1
-						if info then altR, altG, altB = info.r, info.g, info.b end
-						rowFrame.icon:SetVertexColor(altR, altG, altB)
-					end
-					
+
                     -------------------------------------------------
-                    -- Tooltip handler
+                    -- LEFT TEXT HANDLING (the important part)
+                    -------------------------------------------------
+                    if rowFrame.leftText then
+                        local fs = rowFrame.leftText
+                        local text = leftText or ""
+						
+						-- Compute max label width
+						local reservedRightWidth = rowFrame.rightText:GetStringWidth()+4
+						local MAX_LABEL_WIDTH =
+							rowFrame:GetWidth()
+							- rowFrame.icon:GetWidth()
+							- 2 - 6 - reservedRightWidth - 6
+						fs:SetText(text)
+						local naturalWidth = fs:GetStringWidth()
+						-- ALWAYS set width + justification first
+						fs:SetWidth(MAX_LABEL_WIDTH)
+						fs:SetJustifyH("LEFT")
+						fs:SetJustifyV("MIDDLE")
+						fs:SetNonSpaceWrap(true) 
+						
+                        if mode == "Full Text" then
+                            fs:SetWidth(0)
+                            fs:SetWordWrap(false)
+                            fs:SetMaxLines(1)
+                            fs:SetText(text)
+                        elseif mode == "Truncate" then
+							fs:SetWidth(MAX_LABEL_WIDTH)
+                            fs:SetWordWrap(false)
+                            fs:SetMaxLines(1)
+							if naturalWidth > MAX_LABEL_WIDTH then
+								fs:SetText(TruncateToWidth(fs, text, MAX_LABEL_WIDTH))
+							end
+                        elseif mode == "Wrap Text" then
+                            fs:SetWidth(MAX_LABEL_WIDTH)
+                            fs:SetWordWrap(true)
+                            fs:SetMaxLines(2)
+                            fs:SetText(text)
+                            -- Increase row height for wrapped text
+                            local baseH = rowFrame:GetHeight()
+                            local neededH = fs:GetStringHeight() + 4
+                            rowFrame:SetHeight(math.max(baseH, neededH))
+                        end
+							fs:SetJustifyH("LEFT")
+							fs:SetJustifyV("MIDDLE")
+							fs:SetNonSpaceWrap(true) 						
+						
+                    end
+
+                    -------------------------------------------------
+                    -- Tooltip
                     -------------------------------------------------
                     rowFrame:SetScript("OnEnter", function(self)
                         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
                         if link then
-                            -- Item/currency link tooltip
                             GameTooltip:SetHyperlink(link)
-
                         else
-                            -- Normal stat tooltip
                             if tt_name and tt_name ~= "" then
                                 GameTooltip:AddLine(tt_name, 1, 1, 1, true)
                             end
@@ -1743,12 +1855,13 @@ local function UpdateAllStats(parent)
                                 GameTooltip:AddLine(tt_desc, nil, nil, nil, true)
                             end
                         end
-						self.highlight:Show()
+
+                        self.highlight:Show()
                         GameTooltip:Show()
                     end)
 
                     rowFrame:SetScript("OnLeave", function(self)
-						self.highlight:Hide()
+                        self.highlight:Hide()
                         GameTooltip:Hide()
                     end)
                 end

@@ -33,8 +33,15 @@ local STRINGS = {
 
     HIDE_COMPLETED_WEEKS = "Abgeschlossene Wochen ausblenden",
     OPTIONS_HIDE_CHANGE_WEEK_BTN = "Schaltfläche 'Woche wechseln' ausblenden",
-    OPTIONS_HIDE_ILVL_REF_BTN = "Schaltfläche 'Ilvl Refs' ausblenden",
+    OPTIONS_HIDE_ILVL_REF_BTN = "Schaltfläche 'Gegenstandsstufen' ausblenden",
+    OPTIONS_HIDE_CHAR_SELECT = "Charakterauswahl ausblenden",
+    OPTIONS_HIDDEN_CHARS_TITLE = "Versteckte Charaktere:",
+    OPTIONS_HIDDEN_CHARS_NONE = "Keine",
     RESET_BUTTON = "Zurücksetzen",
+    UI_SCALE_LABEL = "UI-Skalierung",
+    UI_SCALE_MIN_LABEL = "50%",
+    UI_SCALE_MAX_LABEL = "150%",
+    OPTIONS_HIDE_SCALE_SLIDER = "Skalierungsregler ausblenden",
 
     -- List tab
     DONE_PREFIX = "[Fertig] ",
@@ -44,6 +51,7 @@ local STRINGS = {
     TRACKING_CURRENCY_TITLE = "Währung",
     TRACKING_GV_RAID = "Schlachtzug",
     TRACKING_GV_DUNGEONS = "Dungeons",
+    TRACKING_GV_WORLD    = "Welt",
     TRACKING_NA = "N/A",
 
     TRACKING_SPARKS_LABEL = "Funken:",
@@ -74,12 +82,12 @@ local STRINGS = {
     -- Minimap tooltip
     MINIMAP_TOOLTIP_LEFT_CLICK_TOGGLE = "Linksklick: Checkliste ein-/ausblenden",
     MINIMAP_TOOLTIP_RIGHT_CLICK_OPTIONS = "Rechtsklick: Optionen",
+    MINIMAP_TOOLTIP_MIDDLE_CLICK_ILVL = "Mittelklick: Gegenstandsstufen",
 
     -- Main window
-    TAB_LIST = "Liste",
     TAB_OPTIONS = "Optionen",
     CHANGE_WEEK_BUTTON = "Woche wechseln",
-    ILVLREF_BUTTON = "Ilvl Refs",
+    ILVLREF_BUTTON = "Gegenstandsstufen anzeigen",
 
     -- Item level reference popup
     ILVLREF_WINDOW_TITLE  = "Midnight Saison 1 Gegenstandsstufen-Referenz",
@@ -123,6 +131,9 @@ local STRINGS = {
     ILVLREF_RAID_MYTHIC        = "Mythisch",
 
     ILVLREF_DELVE_TIER_FMT     = "T%d",
+
+    ILVLREF_TOGGLE_EXPAND = "Alle Tabellen anzeigen",
+    ILVLREF_TOGGLE_SHRINK = "Minimieren",
 
     -- Slash commands
     SLASH_USAGE_TOGGLE = "Verwendung: /larias oder /lcl zum Ein-/Ausblenden",

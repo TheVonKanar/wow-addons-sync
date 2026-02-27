@@ -200,9 +200,9 @@ BAGANATOR_CONFIG = {
 ["new_items_flashing"] = true,
 ["icon_equipment_set_border"] = true,
 ["sort_start_at_bottom"] = false,
-["category_migration"] = 5,
 ["saved_searches"] = {
 },
+["category_migration"] = 5,
 ["bag_icon_size"] = 44,
 ["category_modifications"] = {
 ["default_questitem"] = {
@@ -356,11 +356,7 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 10,
-["category_section_toggled"] = {
-["1"] = false,
-["Crafting"] = true,
-["2"] = false,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
@@ -371,13 +367,13 @@ BAGANATOR_CONFIG = {
 450.1661682128906,
 },
 ["icon_text_font_size"] = 14,
+["disabled_skins"] = {
+},
+["bag_view_width"] = 14,
 ["view_alpha"] = 1,
 ["sort_ignore_slots_count_2"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["disabled_skins"] = {
-},
-["bag_view_width"] = 14,
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
@@ -485,7 +481,11 @@ BAGANATOR_CONFIG = {
 ["currencies_tracked_imported"] = {
 },
 ["show_sort_button_2"] = true,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = false,
+["Crafting"] = true,
+["2"] = false,
+},
 ["icon_context_fading"] = true,
 ["currency_panel_position"] = {
 "RIGHT",

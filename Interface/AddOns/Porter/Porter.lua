@@ -140,6 +140,8 @@ function Porter:PopulateHousingData(houseInfos)
             neighborhoodGUID = house.neighborhoodGUID,
             houseGUID = house.houseGUID,
             plotID = house.plotID,
+            region = "Other",
+            zone = "House",
         })
     end
 

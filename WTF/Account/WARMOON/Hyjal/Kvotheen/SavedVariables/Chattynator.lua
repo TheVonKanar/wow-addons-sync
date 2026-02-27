@@ -36,4 +36,8 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /fstack",
 "/s /larias",
 "/s /fstack",
+"/g NON JE REFUSE",
+"/s /glider",
+"/g PAS ENVEI D'ALLER ME COUCHER",
+"/g PAS ENVIE DE BOSSER DEMAIN",
 }

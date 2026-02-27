@@ -49,14 +49,26 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
                                                  CURRENT PATCH NOTES
 =======================================================================================================================
 
-**v7.3.7**
-- Added additional throttles to buff and bag scans to reduce CPU usage
-- General efficiency improvements
+**v7.4.1**
+- The count of party or raid members on icons is now only those within cast range for that spell
 
 
 =======================================================================================================================
                                                 HISTORICAL PATCH NOTES
 =======================================================================================================================
+
+
+**v7.4.0**
+- Added a comprehensive new system allowing users to add and manage custom buff spells and items
+- Fixed an issue where some castable weapon enchants did not appear
+- Castable weapon enchants (i.e., Paladin Rites) now apply to the correct equipped weapon with one click
+- Removed the option to enable consumables during Mythic+ due to 12.0 API limitations
+
+
+**v7.3.7**
+- Added additional throttles to buff and bag scans to reduce CPU usage
+- Significant overall efficiency improvements
+
 
 **v7.3.6**
 - Addon is now disabled during M+ and PvP because of restrictions in the 12.0 API
@@ -431,3 +443,10 @@ ffffffff              uuuuuuu  uuuu  nnnnn   nnnnn kkkkkkk    kkkkkk iiiiiii  ::
 **v6.0.0**  
 - Complete rewrite from WeakAura pack to standalone addon  
 - Vastly improved performance and efficiency  
+
+
+
+
+
+
+./Tools/release.sh

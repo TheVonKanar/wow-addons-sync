@@ -114,14 +114,23 @@ function M.IsExcluded(cat, entry)
   if key then
     candidates[#candidates + 1] = key
   end
-  if entry.spellID then
-    candidates[#candidates + 1] = entry.spellID
-  end
-  if entry.itemID then
-    candidates[#candidates + 1] = entry.itemID
-  end
-  if entry.id then
-    candidates[#candidates + 1] = entry.id
+
+  if cat == "CUSTOM_AURAS" then
+    if entry.customEntryID then
+      candidates[#candidates + 1] = entry.customEntryID
+    elseif entry.id then
+      candidates[#candidates + 1] = entry.id
+    end
+  else
+    if entry.spellID then
+      candidates[#candidates + 1] = entry.spellID
+    end
+    if entry.itemID then
+      candidates[#candidates + 1] = entry.itemID
+    end
+    if entry.id then
+      candidates[#candidates + 1] = entry.id
+    end
   end
 
   if cat == "CASTABLE_WEAPON_ENCHANTS" and key and type(key) == "string" and key:sub(1, 4) == "cwe:" then

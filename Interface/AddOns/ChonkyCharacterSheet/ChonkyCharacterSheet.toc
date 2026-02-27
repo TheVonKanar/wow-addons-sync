@@ -1,17 +1,24 @@
 ## Interface: 120001, 20505, 50503
 ## Title: Chonky Character Sheet
 ## Author: Cerdia @Area-52
-## Version: 2.2.05
-## Notes: Chonky Character Sheet
-## Notes: Enhanced character sheet with options and profiles. Track stats, gear, and progress. 
-## Notes: Discord: https://discord.gg/bSyqqa7RC4
+## Version: 2.2.07
+## Notes: Chonky Character Sheet. Enhanced character sheet with options and profiles. Track stats, gear, and progress. Discord: https://discord.gg/bSyqqa7RC4
 ## SavedVariables: ChonkyCharacterSheetDB
-## OptionalDeps: none
 ## IconTexture: Interface\AddOns\ChonkyCharacterSheet\Media\Textures\chonky.tga
 ## X-License: MIT
 ## X-Curse-Project-ID: 1393904
 ## X-Wago-ID: 5NReOEG3
-
+## Category: Unit Frames
+## Category-deDE: Einheitenfenster
+## Category-frFR: Fenêtres d’unités
+## Category-esES: Marcos de unidad
+## Category-esMX: Marcos de unidad
+## Category-ptBR: Quadros de Unidade
+## Category-itIT: Riquadri delle unità
+## Category-ruRU: Рамки юнитов
+## Category-koKR: 유닛 프레임
+## Category-zhCN: 单位框体
+## Category-zhTW: 單位框架
 
 # -----------------------------
 # Load Libraries
