@@ -222,7 +222,7 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
+["TagOne"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -252,7 +252,7 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
+["TagFour"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -267,7 +267,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -668,13 +668,13 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
-"CENTER",
-"CENTER",
-0,
+"LEFT",
+"LEFT",
+3,
 0,
 },
 ["Colour"] = {
@@ -698,13 +698,13 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
 ["Colour"] = {
@@ -713,7 +713,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1022,8 +1022,8 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1052,8 +1052,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1067,7 +1067,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1379,13 +1379,13 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
-"CENTER",
-"CENTER",
-0,
+"LEFT",
+"LEFT",
+3,
 0,
 },
 ["Colour"] = {
@@ -1409,13 +1409,13 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
 ["Colour"] = {
@@ -1424,7 +1424,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -1762,8 +1762,8 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1792,8 +1792,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -1807,7 +1807,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -2048,8 +2048,8 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2078,8 +2078,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2093,7 +2093,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -2401,8 +2401,8 @@ UUFDB = {
 1,
 },
 },
-["TagFive"] = {
-["Tag"] = "",
+["TagOne"] = {
+["Tag"] = "[name]",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2431,8 +2431,8 @@ UUFDB = {
 1,
 },
 },
-["TagOne"] = {
-["Tag"] = "[name]",
+["TagFour"] = {
+["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
 "CENTER",
@@ -2446,7 +2446,7 @@ UUFDB = {
 1,
 },
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Tag"] = "",
 ["FontSize"] = 12,
 ["Layout"] = {
@@ -2867,10 +2867,8 @@ nil,
 },
 ["Debuffs"] = {
 ["Layout"] = {
-"TOPRIGHT",
 "BOTTOMRIGHT",
-nil,
--1,
+"TOPRIGHT",
 },
 ["GrowthDirection"] = "LEFT",
 },
@@ -2881,12 +2879,6 @@ nil,
 ["SpellName"] = {
 ["MaxChars"] = 24,
 },
-},
-["Layout"] = {
-nil,
-nil,
-nil,
--2,
 },
 },
 ["AlternativePowerBar"] = {
@@ -2908,6 +2900,14 @@ nil,
 },
 },
 ["Indicators"] = {
+["LeaderAssistantIndicator"] = {
+["Layout"] = {
+nil,
+nil,
+nil,
+2,
+},
+},
 ["Mouseover"] = {
 ["HighlightOpacity"] = 0.2,
 ["Style"] = "BORDER",

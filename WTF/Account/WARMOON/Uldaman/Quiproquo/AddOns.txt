@@ -54,3 +54,4 @@ Blizzard_CharacterFrame: enabled
 Blizzard_ChallengesUI: enabled
 Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
+Blizzard_CombatText: enabled

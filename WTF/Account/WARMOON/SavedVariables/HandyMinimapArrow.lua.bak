@@ -1,0 +1,3 @@
+
+HandyMinimapArrowDB = {
+}

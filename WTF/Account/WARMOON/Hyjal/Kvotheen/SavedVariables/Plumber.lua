@@ -3,34 +3,10 @@ PlumberDB_PC = {
 ["CurrencyCap:3284"] = 630,
 ["DelvesRecords"] = {
 {
-["instanceID"] = 2664,
-["uiMapID"] = 2249,
-["time"] = 1759302829,
-["tier"] = 11,
-},
-{
-["instanceID"] = 2803,
-["uiMapID"] = 2454,
-["time"] = 1758722283,
-["tier"] = 11,
-},
-{
-["instanceID"] = 2681,
-["uiMapID"] = 2250,
-["time"] = 1758721651,
-["tier"] = 11,
-},
-{
-["instanceID"] = 2681,
-["tier"] = 11,
-["time"] = 1758720979,
-["overrideName"] = "Kriegval's Rest",
-},
-{
-["instanceID"] = 2687,
-["uiMapID"] = 2301,
-["time"] = 1758720761,
-["tier"] = 11,
+["instanceID"] = 2952,
+["uiMapID"] = 2502,
+["time"] = 1772225162,
+["tier"] = 1,
 },
 },
 ["CurrencyCap:3286"] = 630,

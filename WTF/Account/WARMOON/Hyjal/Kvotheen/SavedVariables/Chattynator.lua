@@ -42,4 +42,7 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g PAS ENVIE DE BOSSER DEMAIN",
 "/g yooo",
 "/g mdr le mec va tout finir en 1 jour puis se faire chier le reste de la semaine",
+"/s /framescale",
+"/s /framescale toggle",
+"/s /ltm",
 }

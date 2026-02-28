@@ -456,7 +456,7 @@ AutoHideUIDB = {
 ["enabled"] = true,
 ["forceAlpha"] = true,
 ["idleAlpha"] = 1,
-["fadeOutDelay"] = 2,
+["fadeOutDelay"] = 0,
 ["customFrames"] = "",
 ["timeToFade"] = 0.15,
 ["fadeInDelay"] = 0,
@@ -473,15 +473,15 @@ AutoHideUIDB = {
 ["combat"] = {
 ["enabled"] = false,
 ["priority"] = false,
-["alpha"] = 1,
+["alpha"] = 0.4905666708946228,
 },
 ["instance"] = {
 ["enabled"] = true,
 ["priority"] = false,
-["alpha"] = 0,
+["alpha"] = 0.5,
 },
 ["mouseover"] = {
-["enabled"] = false,
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
 },

@@ -139,7 +139,7 @@ LittleWigs_Classic: disabled
 LittleWigs_MistsOfPandaria: disabled
 LittleWigs_Shadowlands: disabled
 LittleWigs_WrathOfTheLichKing: disabled
-LoggerHead: disabled
+LoggerHead: enabled
 MacroToolkit: disabled
 MacroToolkitIcons: disabled
 MapCoords: disabled
@@ -256,3 +256,4 @@ Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 LariasWeeklyChecklist_Localization: disabled
 DejaCharacterStats: disabled
+LiteMount: disabled

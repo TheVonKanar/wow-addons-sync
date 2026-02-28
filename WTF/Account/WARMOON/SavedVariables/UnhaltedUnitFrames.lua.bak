@@ -222,7 +222,7 @@ UUFDB = {
 },
 ["Tag"] = "[powercolor][curpp]",
 },
-["TagOne"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -252,7 +252,7 @@ UUFDB = {
 },
 ["Tag"] = "[curhp:abbr]",
 },
-["TagFour"] = {
+["TagFive"] = {
 ["Colour"] = {
 1,
 1,
@@ -267,7 +267,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagFive"] = {
+["TagOne"] = {
 ["Colour"] = {
 1,
 1,
@@ -668,22 +668,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagOne"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "[name]",
-},
-["TagTwo"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -698,7 +683,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagFour"] = {
+["TagTwo"] = {
 ["Colour"] = {
 1,
 1,
@@ -727,6 +712,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"CENTER",
+"CENTER",
+0,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -1021,22 +1021,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagOne"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "[name]",
-},
-["TagTwo"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -1051,7 +1036,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagFour"] = {
+["TagTwo"] = {
 ["Colour"] = {
 1,
 1,
@@ -1080,6 +1065,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"CENTER",
+"CENTER",
+0,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -1378,7 +1378,7 @@ UUFDB = {
 },
 ["Tag"] = "[powercolor][curpp]",
 },
-["TagOne"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -1386,12 +1386,12 @@ UUFDB = {
 },
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
-["Tag"] = "[name]",
+["Tag"] = "",
 },
 ["TagTwo"] = {
 ["Colour"] = {
@@ -1408,21 +1408,6 @@ UUFDB = {
 },
 ["Tag"] = "[curhp:abbr]",
 },
-["TagFour"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "",
-},
 ["TagFive"] = {
 ["Colour"] = {
 1,
@@ -1437,6 +1422,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"LEFT",
+"LEFT",
+3,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -1761,22 +1761,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagOne"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "[name]",
-},
-["TagTwo"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -1791,7 +1776,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagFour"] = {
+["TagTwo"] = {
 ["Colour"] = {
 1,
 1,
@@ -1820,6 +1805,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"CENTER",
+"CENTER",
+0,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -2047,22 +2047,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagOne"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "[name]",
-},
-["TagTwo"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -2077,7 +2062,7 @@ UUFDB = {
 },
 ["Tag"] = "",
 },
-["TagFour"] = {
+["TagTwo"] = {
 ["Colour"] = {
 1,
 1,
@@ -2106,6 +2091,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"CENTER",
+"CENTER",
+0,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -2333,7 +2333,7 @@ UUFDB = {
 },
 ["Tag"] = "[powercolor][curpp]",
 },
-["TagOne"] = {
+["TagFour"] = {
 ["Colour"] = {
 1,
 1,
@@ -2341,12 +2341,12 @@ UUFDB = {
 },
 ["FontSize"] = 12,
 ["Layout"] = {
-"LEFT",
-"LEFT",
-3,
+"CENTER",
+"CENTER",
+0,
 0,
 },
-["Tag"] = "[name]",
+["Tag"] = "",
 },
 ["TagTwo"] = {
 ["Colour"] = {
@@ -2363,21 +2363,6 @@ UUFDB = {
 },
 ["Tag"] = "[curhp:abbr]",
 },
-["TagFour"] = {
-["Colour"] = {
-1,
-1,
-1,
-},
-["FontSize"] = 12,
-["Layout"] = {
-"CENTER",
-"CENTER",
-0,
-0,
-},
-["Tag"] = "",
-},
 ["TagFive"] = {
 ["Colour"] = {
 1,
@@ -2392,6 +2377,21 @@ UUFDB = {
 0,
 },
 ["Tag"] = "",
+},
+["TagOne"] = {
+["Colour"] = {
+1,
+1,
+1,
+},
+["FontSize"] = 12,
+["Layout"] = {
+"LEFT",
+"LEFT",
+3,
+0,
+},
+["Tag"] = "[name]",
 },
 },
 ["HealPrediction"] = {
@@ -2799,6 +2799,14 @@ nil,
 },
 },
 ["Indicators"] = {
+["LeaderAssistantIndicator"] = {
+["Layout"] = {
+nil,
+nil,
+nil,
+2,
+},
+},
 ["Mouseover"] = {
 ["HighlightOpacity"] = 0.2,
 ["Style"] = "BORDER",

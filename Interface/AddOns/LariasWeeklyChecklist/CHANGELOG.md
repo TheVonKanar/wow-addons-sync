@@ -1,8 +1,10 @@
 # Larias's Weekly Checklist
 
-## [v2.0.6](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.0.6) (2026-02-27)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.0.6) 
+## [v2.0.7](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.0.7) (2026-02-27)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.0.7) 
 
+- Release v2.0.7  
+- Post-release: bump version to 2.0.7  
 - Release v2.0.6  
 - Post-release: bump version to 2.0.6  
 - Release v2.0.5  

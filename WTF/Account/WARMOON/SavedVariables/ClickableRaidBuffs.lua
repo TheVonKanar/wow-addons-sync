@@ -52,7 +52,7 @@ ClickableRaidBuffsDB = {
 ["raidRefreshSeconds"] = 5,
 ["TAB_HEIGHT"] = 24,
 ["anchor"] = {
-["y"] = -504.0000305175781,
+["y"] = -501.0000305175781,
 ["x"] = 0,
 ["point"] = "CENTER",
 ["relativePoint"] = "CENTER",
@@ -72,9 +72,9 @@ ClickableRaidBuffsDB = {
 },
 ["fontName"] = "FiraSans-Medium",
 ["optionsWindow"] = {
-["y"] = 172,
+["y"] = -68,
 ["x"] = 110.0000076293945,
-["point"] = "LEFT",
+["point"] = "TOPLEFT",
 ["height"] = 720,
 ["width"] = 940,
 },
@@ -118,17 +118,17 @@ ClickableRaidBuffsDB = {
 },
 ["customSpells"] = {
 },
+["timerSize"] = 22,
+["gridLTR"] = true,
+["expansions"] = {
+[10] = true,
+[11] = true,
+},
 ["earthShieldOverride"] = {
 ["disableTargetWhenSolo"] = true,
 ["showPlayerIcon"] = true,
 ["showTargetIcon"] = false,
 },
-["timerSize"] = 22,
-["expansions"] = {
-[10] = true,
-[11] = true,
-},
-["gridLTR"] = true,
 ["mplusDisableConsumables"] = true,
 ["mounts"] = {
 ["selectedMount"] = 460,
@@ -137,7 +137,7 @@ ClickableRaidBuffsDB = {
 ["hSpace"] = 10,
 ["layoutMode"] = "ROW",
 ["position"] = {
-["y"] = -504,
+["y"] = -501,
 ["x"] = 0,
 },
 ["glowColor"] = {

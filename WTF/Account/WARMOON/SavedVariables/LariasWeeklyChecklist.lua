@@ -8,8 +8,8 @@ LariasWeeklyChecklistDB = {
 ["minimapPos"] = 239.9696145010967,
 },
 ["mainFrameWin"] = {
-["y"] = -85.0008544921875,
-["x"] = 1.999563813209534,
+["y"] = -85.0009765625,
+["x"] = 1.999577045440674,
 ["point"] = "TOPLEFT",
 ["scale"] = 1,
 },
@@ -143,6 +143,7 @@ LariasWeeklyChecklistDB = {
 ["showScaleSlider"] = true,
 ["showIlvlRefBtn"] = true,
 ["checked"] = {
+["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
 },
 ["showChangeWeekBtn"] = true,
 },

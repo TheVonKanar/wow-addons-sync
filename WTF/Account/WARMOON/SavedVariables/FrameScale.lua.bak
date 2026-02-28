@@ -1,0 +1,9 @@
+
+FrameScaleDB = {
+["scales"] = {
+},
+["scaleMode"] = false,
+["minimap"] = {
+["hide"] = false,
+},
+}
