@@ -1,8 +1,10 @@
 # Larias's Weekly Checklist
 
-## [v2.1.0](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.0) (2026-02-28)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.1.0) 
+## [v2.1.1](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.1) (2026-03-01)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v0.0.1...v2.1.1) 
 
+- Release v2.1.1  
+- Post-release: bump version to 2.1.1  
 - Feature/early access changes (#11)  
     🚀 Major Features  
     Theme & UI upgrades  

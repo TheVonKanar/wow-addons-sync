@@ -118,17 +118,17 @@ ClickableRaidBuffsDB = {
 },
 ["customSpells"] = {
 },
+["gridLTR"] = true,
 ["earthShieldOverride"] = {
 ["disableTargetWhenSolo"] = true,
 ["showPlayerIcon"] = true,
 ["showTargetIcon"] = false,
 },
-["timerSize"] = 22,
 ["expansions"] = {
 [10] = true,
 [11] = true,
 },
-["gridLTR"] = true,
+["timerSize"] = 22,
 ["mplusDisableConsumables"] = true,
 ["mounts"] = {
 ["selectedMount"] = 460,

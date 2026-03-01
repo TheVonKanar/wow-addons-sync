@@ -51,4 +51,6 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g ceci dit Bwonsamdi me manque",
 "/g /kiss",
 "/s /kiss",
+"/g yooo",
+"/s /kiss",
 }

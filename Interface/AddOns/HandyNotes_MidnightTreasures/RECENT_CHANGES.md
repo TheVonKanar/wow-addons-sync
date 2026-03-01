@@ -1,9 +1,6 @@
-## Changed in v24
+## Changed in v25
 
-* Added quest IDs to the currency dropped by (most) rares to track the weekly cycle
-* Eversong Woods:
-	* add the Runestone Rush achievement
-	* add the Ever Painting achievement
-	* hide the triple keys after you pick them up
-* Highest Peaks: note the amount of rep
+* Glyph Hunter: the Hanaar Outpost glyph had to be moved into Slayer's Rise, and a note was added to the Shining Span glyph about it not appearing until the Midnight intro quests are done
+* Herbalism: Harvester's Sickle is currently in two places, replacing the Sweeping Harvester's Scythe
+* Changed the tooltip quest status to complete/incomplete for consistency
 

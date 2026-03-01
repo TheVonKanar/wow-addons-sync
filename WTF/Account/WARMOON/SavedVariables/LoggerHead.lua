@@ -7,6 +7,9 @@ LoggerHeadDB = {
 ["Default"] = {
 ["log"] = {
 ["scenario"] = {
+["The Gulf of Memory"] = {
+[208] = false,
+},
 ["The Shadow Enclave"] = {
 [208] = false,
 },

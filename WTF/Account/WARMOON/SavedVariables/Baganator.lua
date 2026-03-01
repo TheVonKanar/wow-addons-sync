@@ -245,16 +245,14 @@ BAGANATOR_CONFIG = {
 ["i:237268"] = true,
 },
 },
+["default_key"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
 ["default_gem"] = {
 ["addedItems"] = {
 ["i:228643"] = true,
 ["i:228646"] = true,
-},
-},
-["default_reagent"] = {
-["addedItems"] = {
-["i:222738"] = true,
-["i:230905"] = true,
 },
 },
 ["1"] = {
@@ -286,9 +284,11 @@ BAGANATOR_CONFIG = {
 ["i:236757"] = true,
 },
 },
-["default_key"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
+["default_reagent"] = {
+["addedItems"] = {
+["i:222738"] = true,
+["i:230905"] = true,
+},
 },
 ["3"] = {
 ["showGroupPrefix"] = true,
@@ -417,6 +417,7 @@ BAGANATOR_CONFIG = {
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
+["debug_keywords"] = false,
 ["skins"] = {
 ["blizzard"] = {
 ["no_frame_borders"] = false,
@@ -429,21 +430,6 @@ BAGANATOR_CONFIG = {
 ["view_transparency"] = 0.3,
 ["empty_slot_background"] = false,
 },
-},
-["recent_characters_main_view"] = {
-"Kvotheen-Hyjal",
-"Quiproquo-Uldaman",
-"Killeen-Archimonde",
-"Pandamages-Hyjal",
-"Pandamagee-Hyjal",
-"Pandamo-Hyjal",
-"Pandamoun-Hyjal",
-"Raptorbuyer-Hyjal",
-"Pandkvé-Hyjal",
-"Pandakv-Hyjal",
-"Pandakvo-Hyjal",
-"Kvothyr-Hyjal",
-"Trialmagekvo-Hyjal",
 },
 ["currencies_tracked"] = {
 ["Pandakv-Hyjal"] = {
@@ -506,7 +492,21 @@ BAGANATOR_CONFIG = {
 },
 ["setting_anchors"] = false,
 ["guild_current_tab"] = 1,
-["debug_keywords"] = false,
+["recent_characters_main_view"] = {
+"Kvotheen-Hyjal",
+"Quiproquo-Uldaman",
+"Killeen-Archimonde",
+"Pandamages-Hyjal",
+"Pandamagee-Hyjal",
+"Pandamo-Hyjal",
+"Pandamoun-Hyjal",
+"Raptorbuyer-Hyjal",
+"Pandkvé-Hyjal",
+"Pandakv-Hyjal",
+"Pandakvo-Hyjal",
+"Kvothyr-Hyjal",
+"Trialmagekvo-Hyjal",
+},
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",

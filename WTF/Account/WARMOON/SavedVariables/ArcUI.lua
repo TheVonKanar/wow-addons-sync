@@ -31,70 +31,6 @@ ArcUIDB = {
 },
 },
 },
-["importRestore"] = {
-},
-["cooldownBarSetup"] = {
-["hiddenSpells"] = {
-},
-["manualSpells"] = {
-},
-["activeCooldowns"] = {
-},
-["activeResources"] = {
-},
-["activeCharges"] = {
-},
-},
-["arcAuras"] = {
-["autoTrackEquippedTrinkets"] = false,
-["autoTrackSlots"] = {
-[13] = true,
-[14] = true,
-},
-["trackedSpells"] = {
-["arc_spell_8004"] = {
-["name"] = "Healing Surge",
-["icon"] = 136044,
-["spellID"] = 8004,
-},
-},
-["_migratedFromProfile"] = false,
-["updateRate"] = 0.1,
-["globalSettings"] = {
-},
-["onlyOnUseTrinkets"] = false,
-["trackedItems"] = {
-["arc_item_212264"] = {
-["enabled"] = true,
-["type"] = "item",
-["itemID"] = 212264,
-["isAutoTrackSlot"] = false,
-["hideWhenUnequipped"] = false,
-["isPassive"] = false,
-},
-},
-["positions"] = {
-},
-["enabled"] = true,
-},
-["achSettings"] = {
-["achOnArcAuras"] = false,
-["achStrata"] = "INHERIT",
-["achCombatOnly"] = false,
-["assistedCombatHighlight"] = false,
-["achAlwaysAnimate"] = false,
-["achScale"] = 1,
-["_migrated"] = true,
-["achColor"] = {
-["a"] = 1,
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
-["achStyle"] = "ants",
-["achShowBurst"] = true,
-["achLevel"] = 5,
-},
 ["timerBarConfigs"] = {
 {
 ["display"] = {
@@ -274,6 +210,68 @@ ArcUIDB = {
 },
 },
 },
+["arcAuras"] = {
+["autoTrackEquippedTrinkets"] = false,
+["autoTrackSlots"] = {
+[13] = true,
+[14] = true,
+},
+["trackedSpells"] = {
+["arc_spell_8004"] = {
+["name"] = "Healing Surge",
+["icon"] = 136044,
+["spellID"] = 8004,
+},
+},
+["_migratedFromProfile"] = false,
+["updateRate"] = 0.1,
+["globalSettings"] = {
+},
+["onlyOnUseTrinkets"] = false,
+["trackedItems"] = {
+["arc_item_212264"] = {
+["enabled"] = true,
+["type"] = "item",
+["itemID"] = 212264,
+["isAutoTrackSlot"] = false,
+["hideWhenUnequipped"] = false,
+["isPassive"] = false,
+},
+},
+["positions"] = {
+},
+["enabled"] = true,
+},
+["achSettings"] = {
+["achOnArcAuras"] = false,
+["achStrata"] = "INHERIT",
+["achCombatOnly"] = false,
+["assistedCombatHighlight"] = false,
+["achAlwaysAnimate"] = false,
+["achScale"] = 1,
+["_migrated"] = true,
+["achColor"] = {
+["a"] = 1,
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
+["achStyle"] = "ants",
+["achShowBurst"] = true,
+["achLevel"] = 5,
+},
+["cooldownBarSetup"] = {
+["hiddenSpells"] = {
+},
+["manualSpells"] = {
+},
+["activeCooldowns"] = {
+},
+["activeResources"] = {
+},
+["activeCharges"] = {
+},
+},
 ["bars"] = {
 {
 ["_configVersion"] = 74,
@@ -328,7 +326,7 @@ ArcUIDB = {
 ["tracking"] = {
 ["buffName"] = "Doom Winds",
 ["displaySpellID"] = 384352,
-["iconTextureID"] = 960689,
+["iconTextureID"] = 1035054,
 ["maxStacks"] = 0,
 ["enabled"] = true,
 ["dynamicMaxDuration"] = true,
@@ -1351,7 +1349,7 @@ ArcUIDB = {
 ["customRefreshMode"] = "add",
 ["displaySpellID"] = 384352,
 ["slotNumber"] = 0,
-["iconTextureID"] = 960689,
+["iconTextureID"] = 1035054,
 ["maxStacks"] = 0,
 ["enabled"] = true,
 ["useBaseSpell"] = false,
@@ -1707,9 +1705,13 @@ ArcUIDB = {
 ["showControlButtons"] = false,
 ["specData"] = {
 ["class_7_spec_2"] = {
-["initialized"] = true,
+["characterName"] = "Kvotheen",
 ["createdAt"] = 1769188961,
-["migratedFromCDMEnhance"] = true,
+["groupSettings"] = {
+["keybinds"] = {
+["enabled"] = false,
+},
+},
 ["layoutProfiles"] = {
 ["Backup"] = {
 ["iconSettings"] = {
@@ -2554,27 +2556,27 @@ ArcUIDB = {
 ["gridCols"] = 4,
 ["iconSize"] = 36,
 ["lockGridSize"] = false,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
-["r"] = 0.3,
-},
-["dynamicContainerSize"] = false,
+["showBorder"] = false,
 ["frameStrata"] = "MEDIUM",
+["dynamicContainerSize"] = false,
 ["autoReflow"] = false,
 ["spacing"] = 2,
 ["position"] = {
 ["y"] = 200,
 ["x"] = 0,
 },
+["iconHeight"] = 36,
 ["dynamicLayout"] = false,
 ["showBackground"] = false,
 ["visibility"] = "always",
-["iconHeight"] = 36,
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.3,
+["g"] = 0.8,
+["r"] = 0.3,
+},
 },
 ["Essential"] = {
 ["containerPadding"] = -4,
@@ -2588,28 +2590,28 @@ ArcUIDB = {
 ["gridCols"] = 5,
 ["iconSize"] = 36,
 ["lockGridSize"] = true,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 54,
+["showBorder"] = false,
+["dynamicContainerSize"] = false,
+["frameStrata"] = "MEDIUM",
+["autoReflow"] = false,
+["spacing"] = 4,
+["position"] = {
+["y"] = -260,
+["x"] = 0,
+},
+["alignment"] = "left",
+["iconHeight"] = 36,
+["dynamicLayout"] = false,
+["showBackground"] = false,
+["visibility"] = "always",
 ["borderColor"] = {
 ["a"] = 1,
 ["b"] = 0.2,
 ["g"] = 0.6,
 ["r"] = 0.8,
 },
-["dynamicContainerSize"] = false,
-["frameStrata"] = "MEDIUM",
-["autoReflow"] = false,
-["spacing"] = 4,
-["alignment"] = "left",
-["position"] = {
-["y"] = -260,
-["x"] = 0,
-},
-["dynamicLayout"] = false,
-["showBackground"] = false,
-["visibility"] = "always",
-["iconHeight"] = 36,
 },
 ["Utility"] = {
 ["containerPadding"] = -4,
@@ -2623,27 +2625,27 @@ ArcUIDB = {
 ["gridCols"] = 4,
 ["iconSize"] = 36,
 ["lockGridSize"] = false,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.9,
-["g"] = 0.6,
-["r"] = 0.3,
-},
-["dynamicContainerSize"] = false,
+["showBorder"] = false,
 ["frameStrata"] = "MEDIUM",
+["dynamicContainerSize"] = false,
 ["autoReflow"] = true,
 ["spacing"] = 2,
 ["position"] = {
 ["y"] = 0,
 ["x"] = 0,
 },
+["iconHeight"] = 36,
 ["dynamicLayout"] = false,
 ["showBackground"] = false,
 ["visibility"] = "always",
-["iconHeight"] = 36,
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.9,
+["g"] = 0.6,
+["r"] = 0.3,
+},
 },
 },
 ["matchMode"] = "all",
@@ -2832,16 +2834,18 @@ ArcUIDB = {
 ["groupLayouts"] = {
 ["Group1"] = {
 ["horizontalGrowth"] = "RIGHT",
-["position"] = {
-["y"] = 0,
-["x"] = 0,
+["borderColor"] = {
+["a"] = 1,
+["r"] = 0.3,
+["g"] = 0.8,
+["b"] = 0.3,
 },
-["gridCols"] = 4,
+["spacing"] = 2,
 ["iconWidth"] = 36,
 ["showBackground"] = false,
 ["containerPadding"] = 0,
 ["showBorder"] = false,
-["iconHeight"] = 36,
+["gridCols"] = 4,
 ["bgColor"] = {
 ["a"] = 0.6,
 ["r"] = 0,
@@ -2850,34 +2854,20 @@ ArcUIDB = {
 },
 ["verticalGrowth"] = "DOWN",
 ["gridRows"] = 2,
-["borderColor"] = {
-["a"] = 1,
-["r"] = 0.3,
-["g"] = 0.8,
-["b"] = 0.3,
-},
+["iconHeight"] = 36,
 ["iconSize"] = 36,
 ["autoReflow"] = false,
 ["lockGridSize"] = false,
-["spacing"] = 2,
+["position"] = {
+["y"] = 0,
+["x"] = 0,
+},
 },
 },
 ["matchMode"] = "all",
 },
 },
-["characterName"] = "Kvotheen",
 ["activeProfile"] = "Default",
-["groupSettings"] = {
-["keybinds"] = {
-["enabled"] = false,
-},
-["aura"] = {
-},
-["cooldown"] = {
-},
-["utility"] = {
-},
-},
 },
 },
 ["masqueSettings"] = {
@@ -2886,18 +2876,15 @@ ArcUIDB = {
 ["controlCooldown"] = false,
 ["controlIcon"] = true,
 },
-["migratedOldKeys"] = {
-},
 ["lastActiveSpec"] = "class_7_spec_2",
 ["firstInitialized"] = 1769188960,
-["migratedFromProfile"] = true,
-["showPlaceholders"] = true,
-["migratedProfileIconSettings"] = true,
-["clickThrough"] = true,
-["cleanedProfileStorageV2"] = true,
 ["showBorderInEditMode"] = false,
+["showPlaceholders"] = true,
 ["specInheritedFrom"] = {
 },
+["migratedProfileIconSettings"] = true,
+["cleanedProfileStorageV2"] = true,
+["clickThrough"] = true,
 ["disableTooltips"] = true,
 },
 ["timerBars"] = {

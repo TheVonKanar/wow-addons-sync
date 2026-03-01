@@ -134,11 +134,7 @@ ClickableRaidBuffsDB = {
 ["x"] = 0,
 },
 ["layoutMode"] = "ROW",
-["earthShieldOverride"] = {
-["disableTargetWhenSolo"] = true,
-["showPlayerIcon"] = true,
-["showTargetIcon"] = false,
-},
+["gridLTR"] = true,
 ["mplusDisableConsumables"] = true,
 ["mounts"] = {
 ["selectedMount"] = 460,
@@ -149,8 +145,12 @@ ClickableRaidBuffsDB = {
 [10] = true,
 [11] = true,
 },
-["gridLTR"] = true,
 ["timerSize"] = 22,
+["earthShieldOverride"] = {
+["disableTargetWhenSolo"] = true,
+["showPlayerIcon"] = true,
+["showTargetIcon"] = false,
+},
 ["fixedTargets"] = {
 },
 ["glowEnabled"] = true,

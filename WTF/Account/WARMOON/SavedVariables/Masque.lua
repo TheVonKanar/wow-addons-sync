@@ -14715,7 +14715,7 @@ MasqueDB = {
 ["SkinID"] = "Zoomed",
 ["Inherit"] = false,
 },
-["WeakAuras_5T6x(Tmhvg8"] = {
+["WeakAuras_rXrmG1X64a8"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -14728,8 +14728,16 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
-["WeakAuras_QMvzzMziLwV"] = {
+["WeakAuras_5T6x(Tmhvg8"] = {
 ["Upgraded"] = true,
+["Colors"] = {
+["Cooldown"] = {
+0,
+0,
+0,
+0.6600000262260437,
+},
+},
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
@@ -16372,12 +16380,7 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Raeli - Ring Edge",
 },
-["WeakAuras_Ph7CceCRAkH"] = {
-["Upgraded"] = true,
-["Inherit"] = false,
-["SkinID"] = "Zoomed",
-},
-["WeakAuras_3QR3tG38Ma9"] = {
+["WeakAuras_EpPwbs6vLWH"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -16387,6 +16390,11 @@ MasqueDB = {
 0.6600000262260437,
 },
 },
+["Inherit"] = false,
+["SkinID"] = "Zoomed",
+},
+["WeakAuras_Ph7CceCRAkH"] = {
+["Upgraded"] = true,
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
@@ -19604,7 +19612,7 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
-["WeakAuras_EpPwbs6vLWH"] = {
+["WeakAuras_3QR3tG38Ma9"] = {
 ["Upgraded"] = true,
 ["Colors"] = {
 ["Cooldown"] = {
@@ -20726,16 +20734,8 @@ MasqueDB = {
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },
-["WeakAuras_rXrmG1X64a8"] = {
+["WeakAuras_QMvzzMziLwV"] = {
 ["Upgraded"] = true,
-["Colors"] = {
-["Cooldown"] = {
-0,
-0,
-0,
-0.6600000262260437,
-},
-},
 ["Inherit"] = false,
 ["SkinID"] = "Zoomed",
 },

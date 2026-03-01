@@ -261,10 +261,6 @@ BAGANATOR_CONFIG = {
 },
 ["default_weapon"] = {
 },
-["3"] = {
-["showGroupPrefix"] = true,
-["priority"] = 0,
-},
 ["default_junk"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 2,
@@ -296,6 +292,10 @@ BAGANATOR_CONFIG = {
 ["i:233205"] = true,
 },
 },
+["3"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
+},
 ["1"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
@@ -325,9 +325,11 @@ BAGANATOR_CONFIG = {
 ["i:225245"] = true,
 },
 },
-["default_key"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
+["default_reagent"] = {
+["addedItems"] = {
+["i:222738"] = true,
+["i:230905"] = true,
+},
 },
 ["default_auto_inventory_slots"] = {
 ["showGroupPrefix"] = true,
@@ -396,17 +398,15 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_reagent"] = {
-["addedItems"] = {
-["i:222738"] = true,
-["i:230905"] = true,
-},
-},
 ["default_gem"] = {
 ["addedItems"] = {
 ["i:228643"] = true,
 ["i:228646"] = true,
 },
+},
+["default_key"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_miscellaneous"] = {
 ["addedItems"] = {
@@ -442,6 +442,19 @@ BAGANATOR_CONFIG = {
 },
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -457,7 +470,6 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
-["debug_keywords"] = false,
 ["guild_current_tab"] = 1,
 ["auto_sort_on_open"] = false,
 ["setting_anchors"] = false,
@@ -519,19 +531,7 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
+["debug_keywords"] = false,
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",

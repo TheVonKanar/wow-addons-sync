@@ -31,8 +31,6 @@ ArcUIDB = {
 },
 },
 },
-["importRestore"] = {
-},
 ["cooldownBarSetup"] = {
 ["hiddenSpells"] = {
 },
@@ -103,6 +101,7 @@ ArcUIDB = {
 ["texture"] = "SCRB FG Fade Left",
 ["anchorGroupName"] = "Essential",
 ["showName"] = false,
+["useClassColorBorder"] = false,
 ["anchorOffsetY"] = -8,
 ["anchorOffsetX"] = 116,
 ["barFrameStrata"] = "MEDIUM",
@@ -114,8 +113,8 @@ ArcUIDB = {
 },
 ["enabled"] = true,
 ["showDuration"] = false,
-["height"] = 7,
 ["anchorToGroup"] = true,
+["height"] = 7,
 ["borderColor"] = {
 ["a"] = 1,
 ["b"] = 0,
@@ -136,10 +135,9 @@ ArcUIDB = {
 ["r"] = 1,
 },
 ["showBarIcon"] = false,
-["useClassColorBorder"] = false,
-["width"] = 56,
-["showBarBackground"] = false,
 ["barFrameLevel"] = 300,
+["showBarBackground"] = false,
+["width"] = 56,
 },
 ["thresholds"] = {
 {
@@ -187,7 +185,7 @@ ArcUIDB = {
 },
 {
 ["display"] = {
-["height"] = 7,
+["width"] = 56,
 ["borderColor"] = {
 ["a"] = 1,
 ["b"] = 0,
@@ -219,15 +217,15 @@ ArcUIDB = {
 ["anchorOffsetX"] = 58,
 ["showBarIcon"] = false,
 ["barFrameStrata"] = "MEDIUM",
-["barFrameLevel"] = 300,
 ["barPosition"] = {
 ["y"] = 100,
 ["relPoint"] = "CENTER",
 ["point"] = "CENTER",
 ["x"] = 0,
 },
-["width"] = 56,
 ["anchorPoint"] = "TOP",
+["height"] = 7,
+["barFrameLevel"] = 300,
 },
 ["thresholds"] = {
 {
@@ -1434,7 +1432,6 @@ ArcUIDB = {
 ["barPadding"] = 2,
 ["texture"] = "SCRB FG Fade Left",
 ["anchorGroupName"] = "Essential",
-["barFrameLevel"] = 300,
 ["barPosition"] = {
 ["y"] = -204.9998168945313,
 ["relPoint"] = "CENTER",
@@ -1455,6 +1452,7 @@ ArcUIDB = {
 },
 ["showText"] = false,
 ["height"] = 7,
+["barFrameLevel"] = 300,
 ["width"] = 56,
 ["anchorOffsetY"] = -8,
 ["showTickMarks"] = false,
@@ -1604,9 +1602,9 @@ ArcUIDB = {
 ["g"] = 0.1647058874368668,
 ["r"] = 0.01568627543747425,
 },
+["enableSmoothing"] = true,
 ["texture"] = "SCRB FG Fade Left",
 ["anchorGroupName"] = "Essential",
-["barFrameLevel"] = 300,
 ["barPosition"] = {
 ["y"] = -70,
 ["relPoint"] = "CENTER",
@@ -1614,16 +1612,13 @@ ArcUIDB = {
 ["x"] = 0,
 },
 ["enabled"] = true,
-["anchorOffsetY"] = -48,
 ["anchorOffsetX"] = -116,
+["anchorOffsetY"] = -48,
 ["anchorToGroup"] = true,
-["width"] = 56,
+["drawnBorderThickness"] = 1,
 ["iconMultiPositions"] = {
 },
-["enableSmoothing"] = true,
-["drawnBorderThickness"] = 1,
 ["showText"] = false,
-["showTickMarks"] = false,
 ["height"] = 7,
 ["barColor"] = {
 ["a"] = 1,
@@ -1632,6 +1627,9 @@ ArcUIDB = {
 ["r"] = 0,
 },
 ["barMovable"] = false,
+["width"] = 56,
+["barFrameLevel"] = 300,
+["showTickMarks"] = false,
 },
 ["colorRanges"] = {
 {
@@ -1678,9 +1676,9 @@ ArcUIDB = {
 ["maxStacks"] = 10,
 ["enabled"] = true,
 ["useBaseSpell"] = false,
-["maxDuration"] = 0,
-["customStacksPerCast"] = 1,
 ["cooldownID"] = 82615,
+["customStacksPerCast"] = 1,
+["maxDuration"] = 0,
 ["dynamicMaxDuration"] = false,
 ["customDuration"] = 10,
 ["alternateCooldownIDs"] = {
@@ -1693,8 +1691,8 @@ ArcUIDB = {
 ["spellID"] = 384143,
 },
 ["behavior"] = {
-["hideWhenInactive"] = true,
 ["hideBuffIcon"] = true,
+["hideWhenInactive"] = true,
 ["showOnSpec"] = 0,
 ["showOnSpecs"] = {
 2,
@@ -1707,9 +1705,13 @@ ArcUIDB = {
 ["showControlButtons"] = false,
 ["specData"] = {
 ["class_7_spec_2"] = {
-["initialized"] = true,
+["characterName"] = "Kvotheen",
 ["createdAt"] = 1769188961,
-["migratedFromCDMEnhance"] = true,
+["groupSettings"] = {
+["keybinds"] = {
+["enabled"] = false,
+},
+},
 ["layoutProfiles"] = {
 ["Backup"] = {
 ["iconSettings"] = {
@@ -2304,6 +2306,9 @@ ArcUIDB = {
 ["cooldownText"] = {
 ["enabled"] = false,
 },
+["cooldownSwipe"] = {
+["noGCDSwipe"] = true,
+},
 ["chargeText"] = {
 ["enabled"] = false,
 },
@@ -2383,6 +2388,7 @@ ArcUIDB = {
 [82615] = {
 ["y"] = -459.9996948242188,
 ["type"] = "free",
+["viewerType"] = "aura",
 ["iconSize"] = 36,
 ["x"] = 448.999755859375,
 },
@@ -2496,19 +2502,14 @@ ArcUIDB = {
 ["x"] = 438.999755859375,
 ["iconSize"] = 36,
 },
-[82369] = {
-["y"] = -459.0003051757813,
-["x"] = 439.9993896484375,
-["iconSize"] = 36,
-},
-["arc_item_5512"] = {
-["y"] = -579.0008392333984,
-["x"] = -606.000244140625,
-["iconSize"] = 36,
-},
 [789] = {
 ["y"] = 0,
 ["x"] = -140,
+["iconSize"] = 36,
+},
+[82369] = {
+["y"] = -459.0003051757813,
+["x"] = 439.9993896484375,
 ["iconSize"] = 36,
 },
 ["arc_item_241305"] = {
@@ -2519,6 +2520,11 @@ ArcUIDB = {
 [82628] = {
 ["y"] = -449.9996948242188,
 ["x"] = 426.999755859375,
+["iconSize"] = 36,
+},
+["arc_item_5512"] = {
+["y"] = -579.0008392333984,
+["x"] = -606.000244140625,
 ["iconSize"] = 36,
 },
 [82615] = {
@@ -2542,104 +2548,104 @@ ArcUIDB = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 2,
 ["gridCols"] = 4,
 ["iconSize"] = 36,
 ["lockGridSize"] = false,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
 ["r"] = 0.3,
+["g"] = 0.8,
+["b"] = 0.3,
 },
-["dynamicContainerSize"] = false,
 ["frameStrata"] = "MEDIUM",
-["autoReflow"] = false,
+["dynamicContainerSize"] = false,
+["showBackground"] = false,
 ["spacing"] = 2,
+["iconHeight"] = 36,
 ["position"] = {
 ["y"] = 200,
 ["x"] = 0,
 },
 ["dynamicLayout"] = false,
-["showBackground"] = false,
+["autoReflow"] = false,
 ["visibility"] = "always",
-["iconHeight"] = 36,
+["showBorder"] = false,
 },
 ["Essential"] = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 3,
 ["gridCols"] = 5,
 ["iconSize"] = 36,
 ["lockGridSize"] = true,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 54,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.2,
-["g"] = 0.6,
 ["r"] = 0.8,
+["g"] = 0.6,
+["b"] = 0.2,
 },
 ["dynamicContainerSize"] = false,
 ["frameStrata"] = "MEDIUM",
-["autoReflow"] = false,
+["showBackground"] = false,
 ["spacing"] = 4,
+["iconHeight"] = 36,
 ["alignment"] = "left",
 ["position"] = {
 ["y"] = -260,
 ["x"] = 0,
 },
 ["dynamicLayout"] = false,
-["showBackground"] = false,
+["autoReflow"] = false,
 ["visibility"] = "always",
-["iconHeight"] = 36,
+["showBorder"] = false,
 },
 ["Utility"] = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 2,
 ["gridCols"] = 4,
 ["iconSize"] = 36,
 ["lockGridSize"] = false,
-["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.9,
-["g"] = 0.6,
 ["r"] = 0.3,
+["g"] = 0.6,
+["b"] = 0.9,
 },
-["dynamicContainerSize"] = false,
 ["frameStrata"] = "MEDIUM",
-["autoReflow"] = true,
+["dynamicContainerSize"] = false,
+["showBackground"] = false,
 ["spacing"] = 2,
+["iconHeight"] = 36,
 ["position"] = {
 ["y"] = 0,
 ["x"] = 0,
 },
 ["dynamicLayout"] = false,
-["showBackground"] = false,
+["autoReflow"] = true,
 ["visibility"] = "always",
-["iconHeight"] = 36,
+["showBorder"] = false,
 },
 },
 ["matchMode"] = "all",
@@ -2828,18 +2834,16 @@ ArcUIDB = {
 ["groupLayouts"] = {
 ["Group1"] = {
 ["horizontalGrowth"] = "RIGHT",
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
-["r"] = 0.3,
+["iconHeight"] = 36,
+["position"] = {
+["y"] = 0,
+["x"] = 0,
 },
-["spacing"] = 2,
 ["iconWidth"] = 36,
 ["autoReflow"] = false,
 ["containerPadding"] = 0,
 ["iconSize"] = 36,
-["gridCols"] = 4,
+["spacing"] = 2,
 ["bgColor"] = {
 ["a"] = 0.6,
 ["b"] = 0,
@@ -2848,32 +2852,22 @@ ArcUIDB = {
 },
 ["verticalGrowth"] = "DOWN",
 ["gridRows"] = 2,
-["iconHeight"] = 36,
+["gridCols"] = 4,
 ["showBorder"] = false,
 ["showBackground"] = false,
 ["lockGridSize"] = false,
-["position"] = {
-["y"] = 0,
-["x"] = 0,
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.3,
+["g"] = 0.8,
+["r"] = 0.3,
 },
 },
 },
 ["matchMode"] = "all",
 },
 },
-["groupSettings"] = {
-["utility"] = {
-},
-["aura"] = {
-},
-["cooldown"] = {
-},
-["keybinds"] = {
-["enabled"] = false,
-},
-},
 ["activeProfile"] = "Default",
-["characterName"] = "Kvotheen",
 },
 },
 ["masqueSettings"] = {
@@ -2882,19 +2876,16 @@ ArcUIDB = {
 ["controlIcon"] = true,
 ["enabled"] = false,
 },
-["disableTooltips"] = true,
 ["lastActiveSpec"] = "class_7_spec_2",
 ["firstInitialized"] = 1769188960,
-["migratedFromProfile"] = true,
+["showBorderInEditMode"] = false,
 ["showPlaceholders"] = true,
-["clickThrough"] = true,
 ["specInheritedFrom"] = {
 },
-["cleanedProfileStorageV2"] = true,
-["showBorderInEditMode"] = false,
 ["migratedProfileIconSettings"] = true,
-["migratedOldKeys"] = {
-},
+["cleanedProfileStorageV2"] = true,
+["clickThrough"] = true,
+["disableTooltips"] = true,
 },
 ["timerBars"] = {
 ["activeTimers"] = {
