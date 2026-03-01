@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1448,
 ["lastSanitation"] = 3,
-["session"] = 1443,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -447,8 +447,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -805,8 +805,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
 },
 {
@@ -835,8 +835,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["time"] = "2025/12/05 18:53:28",
 ["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
 ["counter"] = 2,
 },
 {
@@ -849,20 +849,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
@@ -875,8 +875,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1272,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 2,
 },
 {
@@ -977,8 +977,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
+["time"] = "2026/01/26 20:42:33",
 ["counter"] = 1,
 },
 {
@@ -1007,8 +1007,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["session"] = 1350,
 ["time"] = "2026/01/28 18:15:55",
+["session"] = 1350,
 ["counter"] = 1,
 },
 {
@@ -1021,14 +1021,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["time"] = "2026/01/30 00:15:27",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:27",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["time"] = "2026/01/30 00:15:28",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:28",
 ["counter"] = 1,
 },
 {
@@ -1166,6 +1166,14 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_SharedXML/ScriptAnimationUtil.lua]:83: in function <...ce/AddOns/Blizzard_SharedXML/ScriptAnimationUtil.lua:81>\n",
 ["session"] = 1443,
 ["counter"] = 9,
+},
+{
+["message"] = "...ce/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua:877: attempted to index a forbidden table",
+["time"] = "2026/02/28 11:57:52",
+["locals"] = "cdItem = Frame {\n IconOverlay = Texture {\n }\n includeAsLayoutChildWhenHidden = true\n _arcAlertCdID = 16864\n _MasqueBlizzBarsSkinned = true\n _arcTextOverlay = Frame {\n }\n cooldownUseAuraDisplayTime = false\n _cdmgTargetY = -2\n _arcRefreshIconColorHooked = true\n _arcPreserveDurationText = false\n _arcLastShadowShown = false\n _cdmgTargetPoint = \"TOPLEFT\"\n isActive = false\n _cdmgSettingPosition = false\n _arcRangeCfg = <table> {\n }\n _arcIgnoreAuraOverride = false\n _arcPadding = 0\n Cooldown = Cooldown {\n }\n wasSetFromCooldown = true\n _arcEdgeWaitForNoCharges = false\n cooldownModRate = 1\n _arcSwipeMode = \"normal\"\n needsRangeCheck = false\n _arcShadowFedSpellID = 2825\n _arcChargeText = FontString {\n }\n _arcLastChargeShown = false\n wasSetFromCharges = false\n cooldownFont = \"GameFontHighlightHugeOutline\"\n _arcFrameAlphaHooked = true\n cooldownInfo = <table> {\n }\n _arcCfgCdID = 16864\n _arcIconOverlayScanned = true\n _arcBypassSwipeHook = false\n _arcUsabilityTintHooked = true\n _arcCFSizeHooked = true\n cooldownEnabled = true\n Icon = Texture {\n }\n cooldownSwipeColor = <table> {\n }\n cooldownShowSwipe = false\n _cdmgScaleHooked = true\n cooldownShowDrawEdge = false\n _arcLastAuraActive = false\n _arcHideCooldownFlash = false\n _arcIconOverlay = Texture {\n }\n _cdmgSizeHooked = true\n _arcSwipeWaitForNoCharges = false\n _arcStyled = true\n _arcOriginalY = 441.999908\n _arcCooldownText = FontString {\n }\n cooldownDuration = 0\n cooldownChargesCount = 0\n _arcNoGCDSwipeEnabled = false\n _lastAppliedAlpha = 1\n _arcRecoveryProtection = 3171.359000\n _cdmgTargetRelPoint = \"TOPLEFT\"\n hideWhenInactive = true\n _arcAlertHooked = true\n cooldownIsActive = false\n _arcLastDesatHookAction = \"PASSTHROUGH\"\n _arcCLHasText = false\n _cdmgSettingSize = false\n _arcOrigH = 36.000004\n _arcLastEnhancedCdID = 16864\n _arcInitialized = true\n _arcHideByBarShowHooked = true\n _arcIsChargeSpellCached = false\n _arcEnhanced = true\n _cdmgSlotH = 36\n _arcLastOptimizedCall = 3177.653000\n ChargeCount = Frame {\n }\n isOnActualCooldown = false\n wasSetFromAura = false\n _arcAuraStateHooked = true\n CooldownFlash = Frame {\n }\n _arcBorderEdges = <table> {\n }\n _arcDesatBranch = \"C_BIN_READY\"\n cooldownChargesShown = false\n IconMask = MaskTexture {\n }\n _MSQ_CFG = <table> {\n }\n _arcTexCoords = <table> {\n }\n cooldownStartTime = 0\n _cdmgClearPointsHooked = true\n OutOfRange = Texture {\n }\n previousCooldownChargesCount = 0\n viewerFrame = EssentialCooldownViewer {\n }\n _arcShowDebuffBorder = false\n _arcOverlay = Button {\n }\n _cdmgStrataHooked = true\n _arcBorderWatcher = true\n _arcCachedSpellID = 2825\n cooldownPaused = false\n _cdmgTargetSize = 54\n _arcOrigW = 53.999966\n layoutIndex = 10\n _arcShowPandemic = false\n _arcOriginalX = 1369\n cooldownDesaturated = false\n _cdmgTargetX = 234\n _arcZoom = 0.050000\n Count = FontString {\n }\n cooldownPlayFlash = false\n _arcCfg = <table> {\n }\n alertsByEvent = <table> {\n }\n _arcPrevUsable = true\n _arcEnforceReadyAlpha = false\n _arcBypassFrameAlphaHook = false\n wasSetFromEditMode = false\n _arcSpellID = 2825\n _arcCDMShadowCooldown = Cooldown {\n }\n cooldownID = 16864\n _cdmgSlotW = 54\n allowAvailableAlert = <no value>\n allowOnCooldownAlert = false\n _arcFrameSizeHooked = true\n _arcViewerType = \"utility\"\n _arcCfgVersion = 15\n}\nspellID = 2825\nspellCooldownInfo = <table> {\n modRate = 1\n isEnabled = true\n startTime = 0\n duration = 0\n}\n(*temporary) = <forbidden table>\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempted to index a forbidden table\"\nwasOnGCDLookup = <forbidden table>\nMIN_GLOBAL_RECOVERY_TIME = 0.750000\n",
+["stack"] = "[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:877: in function <...ce/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua:872>\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:897: in function 'CheckCacheCooldownValuesFromSpellCooldown'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:939: in function 'CacheCooldownValues'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1004: in function 'RefreshSpellCooldownInfo'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1108: in function 'RefreshData'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewerItemData.lua]:37: in function 'OnCooldownIDSet'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:441: in function 'OnCooldownIDSet'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:680: in function 'OnCooldownIDSet'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewerItemData.lua]:6: in function 'SetCooldownID'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1820: in function 'RefreshData'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1799: in function <...ce/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua:1766>\n[C]: ?\n[C]: in function 'RefreshLayout'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1517: in function 'OnShow'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1887: in function 'OnShow'\n[Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua]:1949: in function <...ce/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua:1946>\n[C]: in function 'Hide'\n[Interface/AddOns/DialogueUI/Code/Dialogue/DialogueUI.lua]:2361: in function 'HideUI'\n[Interface/AddOns/DialogueUI/Code/Core.lua]:237: in function <Interface/AddOns/DialogueUI/Code/Core.lua:227>\n",
+["session"] = 1444,
+["counter"] = 3,
 },
 },
 }

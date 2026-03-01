@@ -2266,6 +2266,9 @@ local function GetOptionsTable()
                         if ns.CDMGroups.SaveGroupLayoutToProfile then
                             ns.CDMGroups.SaveGroupLayoutToProfile(g.name, g)
                         end
+                        -- Invalidate cached state so update re-applies
+                        g._arcLastVisState = nil
+                        g._arcHasVisConditions = nil
                         -- Update visibility immediately
                         if ns.CDMGroups.UpdateGroupVisibility then
                             ns.CDMGroups.UpdateGroupVisibility()
@@ -2284,30 +2287,54 @@ local function GetOptionsTable()
                 order = 65,
                 width = 1.5,
                 hidden = function() return HideIfNoGroup() or collapsedSections.appearance end,
-                values = {
-                    ["hideOOC"] = "Out of Combat",
-                    ["hideInCombat"] = "In Combat",
-                    ["hideMounted"] = "Mounted",
-                    ["hideInVehicle"] = "In Vehicle / Taxi",
-                    ["hideDead"] = "Dead / Ghost",
-                    ["hideResting"] = "Resting (City/Inn)",
-                    ["hideSolo"] = "Solo (Not in Group)",
-                    ["hideInGroup"] = "In Group",
-                    ["hideInRaid"] = "In Raid",
-                    ["hideInInstance"] = "In Instance",
-                    ["hideInEncounter"] = "Boss Encounter",
-                    ["hideInPetBattle"] = "In Pet Battle",
-                    ["hidePvP"] = "PvP Flagged",
-                    ["hideDragonriding"] = "Skyriding",
-                    ["hideNoTarget"] = "No Target",
-                    ["hideHasTarget"] = "Has Target",
-                    ["hideNotCasting"] = "Not Casting",
-                    ["hideCasting"] = "While Casting",
-                    ["hideStealthed"] = "Stealthed",
-                    ["hideFlying"] = "Flying",
-                    ["hideSwimming"] = "Swimming",
-                    ["hideAlways"] = "Always (Disabled)",
-                },
+                values = function()
+                    local v = {
+                        ["hideOOC"] = "Out of Combat",
+                        ["hideInCombat"] = "In Combat",
+                        ["hideMounted"] = "Mounted",
+                        ["hideInVehicle"] = "In Vehicle / Taxi",
+                        ["hideDead"] = "Dead / Ghost",
+                        ["hideResting"] = "Resting (City/Inn)",
+                        ["hideSolo"] = "Solo (Not in Group)",
+                        ["hideInGroup"] = "In Group",
+                        ["hideInRaid"] = "In Raid",
+                        ["hideInInstance"] = "In Instance",
+                        ["hideInEncounter"] = "Boss Encounter",
+                        ["hideInPetBattle"] = "In Pet Battle",
+                        ["hidePvP"] = "PvP Flagged",
+                        ["hideDragonriding"] = "Skyriding",
+                        ["hideNoTarget"] = "No Target",
+                        ["hideHasTarget"] = "Has Target",
+                        ["hideNotCasting"] = "Not Casting",
+                        ["hideCasting"] = "While Casting",
+                        ["hideStealthed"] = "Stealthed",
+                        ["hideFlying"] = "Flying",
+                        ["hideSwimming"] = "Swimming",
+                        ["hideAlways"] = "Always (Disabled)",
+                    }
+                    -- Druid form entries (only show for Druid players)
+                    local _, playerClass = UnitClass("player")
+                    if playerClass == "DRUID" then
+                        v["hideInCasterForm"]  = "|cff69CCF0Form:|r Caster / No Form"
+                        v["hideInCatForm"]     = "|cff69CCF0Form:|r Cat"
+                        v["hideInBearForm"]    = "|cff69CCF0Form:|r Bear"
+                        v["hideInMoonkinForm"] = "|cff69CCF0Form:|r Moonkin"
+                        v["hideInTravelForm"]  = "|cff69CCF0Form:|r Travel / Flight"
+                        v["hideInTreeForm"]    = "|cff69CCF0Form:|r Tree of Life"
+                    end
+                    -- Warrior stance entries
+                    if playerClass == "WARRIOR" then
+                        v["hideInBattleStance"]    = "|cffC79C6EStance:|r Battle Stance"
+                        v["hideInDefensiveStance"] = "|cffC79C6EStance:|r Defensive Stance"
+                        v["hideInNoStance"]        = "|cffC79C6EStance:|r No Stance"
+                    end
+                    -- Priest form entries
+                    if playerClass == "PRIEST" then
+                        v["hideInShadowform"] = "|cff69CCF0Form:|r Shadowform"
+                        v["hideInNoStance"]   = "|cff69CCF0Form:|r No Shadowform"
+                    end
+                    return v
+                end,
                 get = function(_, key)
                     local g = GetSelectedGroup()
                     if not g then return false end
@@ -2373,6 +2400,16 @@ local function GetOptionsTable()
                             g.visibility.hideStealthed = nil
                             g.visibility.hideFlying = nil
                             g.visibility.hideSwimming = nil
+                            g.visibility.hideInCatForm = nil
+                            g.visibility.hideInBearForm = nil
+                            g.visibility.hideInMoonkinForm = nil
+                            g.visibility.hideInTravelForm = nil
+                            g.visibility.hideInTreeForm = nil
+                            g.visibility.hideInCasterForm = nil
+                            g.visibility.hideInBattleStance = nil
+                            g.visibility.hideInDefensiveStance = nil
+                            g.visibility.hideInShadowform = nil
+                            g.visibility.hideInNoStance = nil
                         elseif val and g.visibility.hideAlways then
                             -- If setting another option, clear hideAlways
                             g.visibility.hideAlways = nil
@@ -2382,6 +2419,60 @@ local function GetOptionsTable()
                         if ns.CDMGroups.SaveGroupLayoutToProfile then
                             ns.CDMGroups.SaveGroupLayoutToProfile(g.name, g)
                         end
+                        -- Invalidate cached state so update re-applies
+                        g._arcLastVisState = nil
+                        g._arcHasVisConditions = nil
+                        -- Update visibility immediately
+                        if ns.CDMGroups.UpdateGroupVisibility then
+                            ns.CDMGroups.UpdateGroupVisibility()
+                        end
+                        -- Trigger auto-save to linked template
+                        if ns.CDMGroups.TriggerTemplateAutoSave then
+                            ns.CDMGroups.TriggerTemplateAutoSave()
+                        end
+                    end
+                end,
+            },
+            
+            hiddenAlpha = {
+                type = "range",
+                name = "Hidden Opacity",
+                desc = "Opacity level when visibility conditions hide this group.\n0 = fully invisible, 1 = fully visible (no hiding effect).\nDefault: 0",
+                order = 66,
+                width = 1.5,
+                min = 0,
+                max = 1,
+                step = 0.05,
+                isPercent = true,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.appearance then return true end
+                    -- Only show when at least one visibility condition is configured
+                    local g = GetSelectedGroup()
+                    if not g then return true end
+                    local vis = g.visibility
+                    if type(vis) == "table" then
+                        for k, v in pairs(vis) do
+                            if v then return false end
+                        end
+                        return true
+                    end
+                    -- Old string format: show for combat/ooc/never
+                    return vis == "always" or vis == nil
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.hiddenAlpha or 0
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if g then
+                        g.hiddenAlpha = val
+                        -- Save to profile
+                        if ns.CDMGroups.SaveGroupLayoutToProfile then
+                            ns.CDMGroups.SaveGroupLayoutToProfile(g.name, g)
+                        end
+                        -- Invalidate cached state so update re-applies
+                        g._arcLastVisState = nil
                         -- Update visibility immediately
                         if ns.CDMGroups.UpdateGroupVisibility then
                             ns.CDMGroups.UpdateGroupVisibility()

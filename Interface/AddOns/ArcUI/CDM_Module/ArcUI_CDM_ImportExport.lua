@@ -196,10 +196,58 @@ local function BuildExportData(options)
             local specData = cdmGroupsDB.specData[currentSpec]
             
             -- ═══════════════════════════════════════════════════════════════════════════
-            -- PHASE 1: Export from PROFILE (single source of truth)
+            -- PRE-EXPORT: Flush runtime Arc Aura positions to profile's savedPositions
+            -- Arc Aura frames in CDMGroups may have runtime group membership that hasn't
+            -- been persisted to the profile's savedPositions (e.g., after RegisterExternalFrame
+            -- or after the user assigns icons to groups). Sync them now so export is complete.
             -- ═══════════════════════════════════════════════════════════════════════════
             local activeProfileName = specData.activeProfile or "Default"
             local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
+            
+            if profile and ns.CDMGroups and ns.CDMGroups.groups then
+                if not profile.savedPositions then profile.savedPositions = {} end
+                
+                local flushedCount = 0
+                for groupName, group in pairs(ns.CDMGroups.groups) do
+                    if group.members then
+                        for cdID, member in pairs(group.members) do
+                            -- Flush any arc_ IDs that are in runtime groups but missing from profile savedPositions
+                            if type(cdID) == "string" and cdID:find("^arc_") then
+                                local existing = profile.savedPositions[cdID]
+                                -- Always update to current runtime state (group may have changed)
+                                profile.savedPositions[cdID] = {
+                                    type = "group",
+                                    target = groupName,
+                                    row = member.row or 0,
+                                    col = member.col or 0,
+                                    gridSlot = member.gridSlot,
+                                }
+                                flushedCount = flushedCount + 1
+                            end
+                        end
+                    end
+                end
+                
+                -- Also flush free arc_ icons
+                if ns.CDMGroups.freeIcons then
+                    for cdID, freeData in pairs(ns.CDMGroups.freeIcons) do
+                        if type(cdID) == "string" and cdID:find("^arc_") then
+                            profile.savedPositions[cdID] = {
+                                type = "free",
+                                x = freeData.x or 0,
+                                y = freeData.y or 0,
+                                iconSize = freeData.iconSize or 36,
+                            }
+                            flushedCount = flushedCount + 1
+                        end
+                    end
+                end
+                
+                if flushedCount > 0 then
+                    -- Debug: uncomment to see flush count
+                    -- print(MSG_PREFIX .. "Flushed " .. flushedCount .. " Arc Aura positions to profile")
+                end
+            end
             
             -- Build layoutProfiles with ONLY the active profile
             local exportedLayoutProfiles = nil
@@ -705,9 +753,9 @@ function IE.Import(importString, options)
         end
         
         -- ═══════════════════════════════════════════════════════════════════════════
-        -- ADD IMPORTED PROFILES
-        -- Naming strategy: If profile name exists, use "ProfileName (ExportedBy)"
-        -- If that also exists, append number: "ProfileName (ExportedBy) 2", etc.
+        -- IMPORT PROFILES (REPLACE mode - wipe existing profile if same name)
+        -- Full replacement ensures the importer gets an exact copy of the export.
+        -- Old profiles with different names are preserved for safety.
         -- ═══════════════════════════════════════════════════════════════════════════
         local importedProfileName = nil
         local exportedBy = data.exportedBy or "Imported"
@@ -716,23 +764,16 @@ function IE.Import(importString, options)
             for profileName, profileData in pairs(data.cdmGroups.layoutProfiles) do
                 local finalName = profileName
                 
-                -- Check if profile name already exists
+                -- If profile name already exists, REPLACE it entirely
+                -- This gives the importer an exact copy of the exporter's setup
                 if specData.layoutProfiles[profileName] then
-                    -- Profile exists - create new name with exportedBy
-                    local baseName = profileName .. " (" .. exportedBy .. ")"
-                    finalName = baseName
-                    
-                    -- If that also exists, append numbers
-                    local counter = 2
-                    while specData.layoutProfiles[finalName] do
-                        finalName = baseName .. " " .. counter
-                        counter = counter + 1
-                    end
-                    
-                    print(MSG_PREFIX .. "|cffFFFF00Profile '" .. profileName .. "' already exists|r - importing as '" .. finalName .. "'")
+                    print(MSG_PREFIX .. "|cffFFFF00Replacing existing profile '|r" .. profileName .. "|cffFFFF00' with imported data|r")
+                    -- Wipe the old profile before deep-copying new data
+                    wipe(specData.layoutProfiles[profileName])
+                    specData.layoutProfiles[profileName] = nil
                 end
                 
-                -- Import the profile with the final (possibly renamed) name
+                -- Import the profile
                 specData.layoutProfiles[finalName] = DeepCopy(profileData)
                 importedCounts.layoutProfiles = importedCounts.layoutProfiles + 1
                 importedProfileName = importedProfileName or finalName

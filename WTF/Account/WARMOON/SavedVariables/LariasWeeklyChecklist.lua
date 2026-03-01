@@ -1,36 +1,26 @@
 
 LariasWeeklyChecklistDB = {
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-},
 ["global"] = {
-["minimap"] = {
-["minimapPos"] = 239.9696145010967,
-},
 ["mainFrameWin"] = {
 ["y"] = -85.0009765625,
 ["x"] = 1.999577045440674,
 ["point"] = "TOPLEFT",
 ["scale"] = 1,
 },
-["charClasses"] = {
-["Kvotheen - Hyjal"] = "SHAMAN",
-},
 ["chars"] = {
 ["Kvotheen - Hyjal"] = {
 ["showGreatVault"] = true,
+["showChangeWeekBtn"] = true,
 ["showCurrency"] = true,
-["startAtSectionId"] = "early_access_feb_26_through_mar_2_pay_to_win",
-["debug"] = false,
-["showCharPickerBtn"] = true,
-["collapsedSections"] = {
+["checked"] = {
+["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
 },
-["hideCompletedSections"] = true,
-["_migrated"] = true,
+["showCharPickerBtn"] = true,
+["_lariasDefaultsApplied"] = true,
 ["trackingSnapshot"] = {
 ["leftGrid"] = {
 {
-["available"] = true,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -46,10 +36,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = true,
 },
 {
-["available"] = true,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -65,10 +55,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = true,
 },
 {
-["available"] = false,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -84,7 +74,7 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = false,
 },
 },
 ["leftLines"] = {
@@ -140,14 +130,25 @@ LariasWeeklyChecklistDB = {
 },
 },
 },
+["hideCompletedSections"] = true,
+["_migrated"] = true,
+["collapsedSections"] = {
+},
 ["showScaleSlider"] = true,
 ["showIlvlRefBtn"] = true,
-["checked"] = {
-["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
-},
-["showChangeWeekBtn"] = true,
+["debug"] = false,
+["startAtSectionId"] = "early_access_feb_26_through_mar_2_pay_to_win",
 },
 },
+["minimap"] = {
+["minimapPos"] = 239.9696145010967,
+},
+["charClasses"] = {
+["Kvotheen - Hyjal"] = "SHAMAN",
+},
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

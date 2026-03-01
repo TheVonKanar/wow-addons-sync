@@ -45,4 +45,10 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /framescale",
 "/s /framescale toggle",
 "/s /ltm",
+"/s /dance",
+"/g jsuis en plein dans la campagne de zulaman et j'adore aussi",
+"/g surtout que j'avais adoré Zandalar a BFA",
+"/g ceci dit Bwonsamdi me manque",
+"/g /kiss",
+"/s /kiss",
 }

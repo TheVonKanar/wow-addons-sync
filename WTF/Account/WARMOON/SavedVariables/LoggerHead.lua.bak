@@ -7,6 +7,12 @@ LoggerHeadDB = {
 ["Default"] = {
 ["log"] = {
 ["scenario"] = {
+["Atal'Aman"] = {
+[208] = false,
+},
+["Collegiate Calamity"] = {
+[208] = false,
+},
 ["The Shadow Enclave"] = {
 [208] = false,
 },

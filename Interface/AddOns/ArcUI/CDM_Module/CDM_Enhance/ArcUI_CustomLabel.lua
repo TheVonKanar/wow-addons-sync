@@ -84,6 +84,16 @@ local function ApplyCurveAlpha(widget, durObj, curve)
   end
 end
 
+-- Check if the icon's CDM group container is hidden.
+-- SafeShowContainer sets _arcGroupHidden on the container AND existing children,
+-- but icons added after the visibility pass don't have the flag on themselves.
+-- Always check the parent container as the authoritative source.
+local function IsGroupHidden(frame)
+  if frame._arcGroupHidden then return true end
+  local parent = frame:GetParent()
+  return parent and parent._arcGroupHidden or false
+end
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- APPLY CUSTOM LABEL(S)
 -- Creates/updates up to 3 container+FontString overlays per icon
@@ -116,7 +126,7 @@ function CL.Apply(frame, cfg)
       -- ── Create container if needed ──
       if not frame[fk] then
         local container = CreateFrame("Frame", nil, frame)
-        container:SetIgnoreParentAlpha(true)
+        container:SetIgnoreParentAlpha(not IsGroupHidden(frame))
         container._text = container:CreateFontString(nil, "OVERLAY")
         container._text:SetDrawLayer("OVERLAY", 7)
         frame[fk] = container
@@ -124,6 +134,9 @@ function CL.Apply(frame, cfg)
 
       local container = frame[fk]
       local label = container._text
+
+      -- Respect group hidden state (SafeShowContainer sets container alpha=0)
+      container:SetIgnoreParentAlpha(not IsGroupHidden(frame))
 
       -- ── Per-label settings ──
       local fontSize = labelCfg["size" .. s] or 12
@@ -205,6 +218,19 @@ end
 function CL.UpdateVisibility(frame)
   if not frame then return end
   if not frame._arcCLHasText then return end
+
+  -- PARENT ALPHA: Labels use SetIgnoreParentAlpha(true) so they can drive
+  -- their own alpha via cooldown curves. This means they DON'T inherit
+  -- the icon frame's alpha automatically. When the icon is effectively
+  -- hidden (alpha ≈ 0, e.g. OOC / inactive state), hide all labels.
+  local frameAlpha = frame:GetAlpha()
+  if frameAlpha < 0.01 or IsGroupHidden(frame) then
+    for i = 1, 3 do
+      local container = frame[FRAME_KEYS[i]]
+      if container then container:SetAlpha(0) end
+    end
+    return
+  end
 
   local cfg = frame._arcCfg
   local labelCfg = cfg and cfg.customLabel

@@ -210,8 +210,8 @@ local PREVIEW_OPACITY = 0.4
 
 ns.CooldownBars = ns.CooldownBars or {}
 
--- Shared condition labels (used by all options panels)
-ns.CooldownBars.HIDE_CONDITIONS = {
+-- Base condition labels (shared by all classes)
+local HIDE_CONDITIONS_BASE = {
   hideOOC          = "Out of Combat",
   hideInCombat     = "In Combat",
   hideMounted      = "Mounted",
@@ -234,7 +234,7 @@ ns.CooldownBars.HIDE_CONDITIONS = {
   hideFlying       = "Flying",
   hideSwimming     = "Swimming",
 }
-ns.CooldownBars.HIDE_CONDITION_ORDER = {
+local HIDE_CONDITION_ORDER_BASE = {
   "hideOOC", "hideInCombat", "hideMounted", "hideInVehicle",
   "hideDead", "hideResting", "hideSolo", "hideInGroup",
   "hideInRaid", "hideInInstance", "hideInEncounter",
@@ -242,6 +242,83 @@ ns.CooldownBars.HIDE_CONDITION_ORDER = {
   "hideNoTarget", "hideHasTarget", "hideNotCasting", "hideCasting",
   "hideStealthed", "hideFlying", "hideSwimming",
 }
+
+-- Class-specific form/stance labels and order
+local FORM_STANCE_CONDITIONS = {
+  DRUID = {
+    labels = {
+      hideInCasterForm  = "|cff00cc66Form:|r Caster / No Form",
+      hideInCatForm     = "|cff00cc66Form:|r Cat",
+      hideInBearForm    = "|cff00cc66Form:|r Bear",
+      hideInMoonkinForm = "|cff00cc66Form:|r Moonkin",
+      hideInTravelForm  = "|cff00cc66Form:|r Travel / Flight",
+      hideInTreeForm    = "|cff00cc66Form:|r Tree of Life",
+    },
+    order = {
+      "hideInCasterForm", "hideInCatForm", "hideInBearForm",
+      "hideInMoonkinForm", "hideInTravelForm", "hideInTreeForm",
+    },
+  },
+  WARRIOR = {
+    labels = {
+      hideInNoStance        = "|cffC79C6EStance:|r No Stance",
+      hideInBattleStance    = "|cffC79C6EStance:|r Battle Stance",
+      hideInDefensiveStance = "|cffC79C6EStance:|r Defensive Stance",
+    },
+    order = { "hideInNoStance", "hideInBattleStance", "hideInDefensiveStance" },
+  },
+  PRIEST = {
+    labels = {
+      hideInNoStance   = "|cff69CCF0Form:|r No Shadowform",
+      hideInShadowform = "|cff69CCF0Form:|r Shadowform",
+    },
+    order = { "hideInNoStance", "hideInShadowform" },
+  },
+  ROGUE = {
+    labels = {
+      hideInNoStance = "|cffFFF468State:|r Not Stealthed",
+      hideInStealth  = "|cffFFF468State:|r Stealthed",
+    },
+    order = { "hideInNoStance", "hideInStealth" },
+  },
+}
+
+-- Build class-appropriate conditions table (cached per class)
+local cachedConditions = nil
+local cachedConditionsClass = nil
+
+function ns.CooldownBars.GetHideConditions()
+  local _, playerClass = UnitClass("player")
+  if cachedConditions and cachedConditionsClass == playerClass then
+    return cachedConditions
+  end
+  -- Start with base conditions
+  local merged = {}
+  for k, v in pairs(HIDE_CONDITIONS_BASE) do merged[k] = v end
+  -- Add class-specific form/stance conditions
+  local classData = FORM_STANCE_CONDITIONS[playerClass]
+  if classData then
+    for k, v in pairs(classData.labels) do merged[k] = v end
+  end
+  cachedConditions = merged
+  cachedConditionsClass = playerClass
+  return merged
+end
+
+function ns.CooldownBars.GetHideConditionOrder()
+  local _, playerClass = UnitClass("player")
+  local order = {}
+  for _, v in ipairs(HIDE_CONDITION_ORDER_BASE) do order[#order + 1] = v end
+  local classData = FORM_STANCE_CONDITIONS[playerClass]
+  if classData then
+    for _, v in ipairs(classData.order) do order[#order + 1] = v end
+  end
+  return order
+end
+
+-- Keep legacy HIDE_CONDITIONS as the base table for backward compat
+ns.CooldownBars.HIDE_CONDITIONS = HIDE_CONDITIONS_BASE
+ns.CooldownBars.HIDE_CONDITION_ORDER = HIDE_CONDITION_ORDER_BASE
 
 -- Evaluate hide conditions against CDMGroups state (or direct API fallback)
 -- Returns true if bar should be HIDDEN
@@ -281,6 +358,21 @@ local function EvaluateHideConditions(hideWhen, hideLogic)
       if hideWhen.hideStealthed then hasAnyCondition = true; if not G.isStealthed then allConditionsMet = false end end
       if hideWhen.hideFlying then hasAnyCondition = true; if not G.isFlying then allConditionsMet = false end end
       if hideWhen.hideSwimming then hasAnyCondition = true; if not G.isSwimming then allConditionsMet = false end end
+      -- Form/stance conditions (Druid)
+      local df = G.druidForm
+      if hideWhen.hideInCasterForm then hasAnyCondition = true; if df ~= "caster" then allConditionsMet = false end end
+      if hideWhen.hideInCatForm then hasAnyCondition = true; if df ~= "cat" then allConditionsMet = false end end
+      if hideWhen.hideInBearForm then hasAnyCondition = true; if df ~= "bear" then allConditionsMet = false end end
+      if hideWhen.hideInMoonkinForm then hasAnyCondition = true; if df ~= "moonkin" then allConditionsMet = false end end
+      if hideWhen.hideInTravelForm then hasAnyCondition = true; if df ~= "travel" then allConditionsMet = false end end
+      if hideWhen.hideInTreeForm then hasAnyCondition = true; if df ~= "tree" then allConditionsMet = false end end
+      -- Stance conditions (Warrior/Priest/Rogue)
+      local cs = G.currentStance
+      if hideWhen.hideInBattleStance then hasAnyCondition = true; if cs ~= "battleStance" then allConditionsMet = false end end
+      if hideWhen.hideInDefensiveStance then hasAnyCondition = true; if cs ~= "defensiveStance" then allConditionsMet = false end end
+      if hideWhen.hideInShadowform then hasAnyCondition = true; if cs ~= "shadowform" then allConditionsMet = false end end
+      if hideWhen.hideInStealth then hasAnyCondition = true; if cs ~= "stealth" then allConditionsMet = false end end
+      if hideWhen.hideInNoStance then hasAnyCondition = true; if not (cs == "none" and df == "caster") then allConditionsMet = false end end
       
       return hasAnyCondition and allConditionsMet
     else
@@ -306,6 +398,21 @@ local function EvaluateHideConditions(hideWhen, hideLogic)
     if hideWhen.hideStealthed and G.isStealthed then return true end
     if hideWhen.hideFlying and G.isFlying then return true end
     if hideWhen.hideSwimming and G.isSwimming then return true end
+    -- Form/stance conditions (Druid)
+    local df = G.druidForm
+    if hideWhen.hideInCasterForm and df == "caster" then return true end
+    if hideWhen.hideInCatForm and df == "cat" then return true end
+    if hideWhen.hideInBearForm and df == "bear" then return true end
+    if hideWhen.hideInMoonkinForm and df == "moonkin" then return true end
+    if hideWhen.hideInTravelForm and df == "travel" then return true end
+    if hideWhen.hideInTreeForm and df == "tree" then return true end
+    -- Stance conditions (Warrior/Priest/Rogue)
+    local cs = G.currentStance
+    if hideWhen.hideInBattleStance and cs == "battleStance" then return true end
+    if hideWhen.hideInDefensiveStance and cs == "defensiveStance" then return true end
+    if hideWhen.hideInShadowform and cs == "shadowform" then return true end
+    if hideWhen.hideInStealth and cs == "stealth" then return true end
+    if hideWhen.hideInNoStance and cs == "none" and df == "caster" then return true end
     end
   else
     -- Fallback: direct API calls (CDMGroups not loaded) - always uses "match any"
@@ -358,6 +465,12 @@ end
 -- Expose for Display bars, Resources, and other modules
 ns.CooldownBars.EvaluateHideConditions = EvaluateHideConditions
 ns.CooldownBars.GetHideWhen = GetHideWhen
+
+-- Returns the alpha to use when hideWhen conditions trigger (0 = fully hidden, >0 = faded)
+function ns.CooldownBars.GetHideWhenAlpha(cfg)
+  if not cfg or not cfg.behavior then return 0 end
+  return cfg.behavior.hideWhenAlpha or 0
+end
 
 -- Check if ArcUI options panel is currently open
 local function IsOptionsPanelOpen()
@@ -2361,8 +2474,16 @@ local function UpdateCooldownBar(barData)
   local isReady = IsCooldownReadyForBar(barData, durObj)
   local shouldShow = true
   local isPreviewMode = false
+  local hideWhenFadeAlpha = 1.0
   if hideWhenReady and isReady then shouldShow = false end
-  if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then shouldShow = false end
+  if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
+    local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+    if hAlpha <= 0 then
+      shouldShow = false
+    else
+      hideWhenFadeAlpha = hAlpha
+    end
+  end
   
   -- Check if hidden by spec/talent
   if barData.hiddenBySpec then shouldShow = false end
@@ -2390,9 +2511,9 @@ local function UpdateCooldownBar(barData)
   end
   
   barData.frame:Show()
-  -- Apply preview opacity or restore full opacity
+  -- Apply preview opacity or restore full opacity, with hideWhen alpha multiplier
   local frameOpacity = isPreviewMode and PREVIEW_OPACITY or (cfg and cfg.display and cfg.display.opacity or 1.0)
-  barData.frame:SetAlpha(frameOpacity)
+  barData.frame:SetAlpha(frameOpacity * hideWhenFadeAlpha)
   
   -- Show FREE text frames if they exist and are in use
   if barData.durationTextFrame and barData.useFreeDurationText then
@@ -2669,11 +2790,17 @@ UpdateChargeBar = function(barData)
   -- Determine visibility
   local shouldShow = true
   local isPreviewMode = false
+  local hideWhenFadeAlpha = 1.0
   if hideWhenFull and detectedCharges >= maxCharges then
     shouldShow = false
   end
   if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
-    shouldShow = false
+    local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+    if hAlpha <= 0 then
+      shouldShow = false
+    else
+      hideWhenFadeAlpha = hAlpha
+    end
   end
   
   -- Check if hidden by spec/talent
@@ -2687,9 +2814,9 @@ UpdateChargeBar = function(barData)
   
   if shouldShow then
     barData.frame:Show()
-    -- Apply preview opacity or restore full opacity
+    -- Apply preview opacity or restore full opacity, with hideWhen alpha multiplier
     local frameOpacity = isPreviewMode and PREVIEW_OPACITY or (cfg and cfg.display and cfg.display.opacity or 1.0)
-    barData.frame:SetAlpha(frameOpacity)
+    barData.frame:SetAlpha(frameOpacity * hideWhenFadeAlpha)
     
     -- Show FREE text frames if they exist and are in use
     if barData.stackTextFrame and barData.useStackTextFrame then
@@ -3076,8 +3203,14 @@ local function UpdateResourceBar(barData)
   -- Check hide conditions
   local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(barData.spellID, "resource")
   local hideWhen = cfg and GetHideWhen(cfg)
+  local hideWhenFadeAlpha = 1.0
   if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
-    shouldShow = false
+    local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+    if hAlpha <= 0 then
+      shouldShow = false
+    else
+      hideWhenFadeAlpha = hAlpha
+    end
   end
   
   -- If would be hidden but options panel is open, show at preview opacity
@@ -3093,7 +3226,7 @@ local function UpdateResourceBar(barData)
   
   barData.frame:Show()
   local frameOpacity = isPreviewMode and PREVIEW_OPACITY or (cfg and cfg.display and cfg.display.opacity or 1.0)
-  barData.frame:SetAlpha(frameOpacity)
+  barData.frame:SetAlpha(frameOpacity * hideWhenFadeAlpha)
   
   local currentPower = UnitPower("player", barData.powerType)
   
@@ -7055,7 +7188,15 @@ UpdateTimerBar = function(barData)
   else
     if hideWhenInactive and not barData.isActive then shouldShow = false end
   end
-  if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then shouldShow = false end
+  local hideWhenFadeAlpha = 1.0
+  if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
+    local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+    if hAlpha <= 0 then
+      shouldShow = false
+    else
+      hideWhenFadeAlpha = hAlpha
+    end
+  end
   
   -- Preview mode when options panel is open - only preview if bar wouldn't normally show
   local isPreviewMode = false
@@ -7075,7 +7216,7 @@ UpdateTimerBar = function(barData)
   
   barData.frame:Show()
   local frameOpacity = isPreviewMode and PREVIEW_OPACITY or (cfg.display.opacity or 1.0)
-  barData.frame:SetAlpha(frameOpacity)
+  barData.frame:SetAlpha(frameOpacity * hideWhenFadeAlpha)
   
   -- Show FREE mode frames if in use
   if barData.useFreeNameText and barData.nameTextFrame then

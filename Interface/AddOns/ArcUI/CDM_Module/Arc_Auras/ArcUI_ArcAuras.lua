@@ -2893,6 +2893,17 @@ function ArcAuras.ShowTrinketSlotFrame(arcID)
     local frame = ArcAuras.frames[arcID]
     if not frame then return end
     
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- GUARD: If this is an auto-track slot and the per-slot toggle is OFF,
+    -- refuse to show. The user's toggle takes absolute priority.
+    -- ═══════════════════════════════════════════════════════════════════════════
+    local config = frame._arcConfig
+    if config and config.isAutoTrackSlot and config.slotID then
+        if not ArcAuras.IsAutoTrackSlotEnabled(config.slotID) then
+            return  -- Slot toggle is OFF - do not show
+        end
+    end
+    
     -- Clear empty slot flag
     frame._arcSlotEmpty = nil
     
@@ -3154,16 +3165,24 @@ function ArcAuras.SetOnlyOnUseTrinkets(enabled)
                 local frame = ArcAuras.frames[arcID]
                 
                 if config and config.isAutoTrackSlot then
-                    local itemID = GetInventoryItemID("player", slot.slotID)
-                    if frame and frame._arcSlotEmpty and itemID then
-                        -- Frame was hidden due to filter - restore it
-                        ArcAuras.ShowTrinketSlotFrame(arcID)
-                    elseif not frame and itemID and ArcAuras.IsAutoTrackSlotEnabled(slot.slotID) then
-                        -- Frame doesn't exist (maybe was removed) - recreate it
-                        local newFrame = ArcAuras.CreateFrame(arcID, config)
-                        if newFrame then
-                            ArcAuras.LoadFramePosition(arcID, newFrame)
-                            newFrame:Show()
+                    -- GUARD: Skip if per-slot toggle is OFF
+                    if not ArcAuras.IsAutoTrackSlotEnabled(slot.slotID) then
+                        -- Slot toggle is OFF - don't restore, keep hidden
+                    elseif frame and frame._arcSlotEmpty then
+                        local itemID = GetInventoryItemID("player", slot.slotID)
+                        if itemID then
+                            -- Frame was hidden due to filter - restore it
+                            ArcAuras.ShowTrinketSlotFrame(arcID)
+                        end
+                    elseif not frame then
+                        local itemID = GetInventoryItemID("player", slot.slotID)
+                        if itemID then
+                            -- Frame doesn't exist (maybe was removed) - recreate it
+                            local newFrame = ArcAuras.CreateFrame(arcID, config)
+                            if newFrame then
+                                ArcAuras.LoadFramePosition(arcID, newFrame)
+                                newFrame:Show()
+                            end
                         end
                     end
                 end
@@ -3630,6 +3649,114 @@ function ArcAuras.Enable()
                     if ns.ArcAurasCooldown and ns.ArcAurasCooldown.InitializeSpellFrame then
                         ns.ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
                     end
+                end
+            end
+        end
+    end)
+    
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- POST-ENABLE VERIFICATION SWEEP
+    -- After all frames (items + spells) are created and RegisterExternalFrame has
+    -- run, verify each frame is in the correct group according to savedPositions.
+    -- This catches cases where RegisterExternalFrame didn't check savedPositions
+    -- (e.g., after import/reload when profile data has arc_ IDs in specific groups
+    -- but RegisterExternalFrame defaulted them to "Essential" or left them free).
+    -- Runs at +1.5s to ensure both item frames (immediate) and spell frames (+0.3s)
+    -- have been created and CDMGroups has fully loaded the active profile.
+    -- ═══════════════════════════════════════════════════════════════════════════
+    C_Timer.After(1.5, function()
+        if not ArcAuras.isEnabled then return end
+        if not ns.CDMGroups then return end
+        
+        -- Ensure savedPositions reference is current
+        if ns.CDMGroups.GetProfileSavedPositions then
+            ns.CDMGroups.GetProfileSavedPositions()
+        end
+        
+        if not ns.CDMGroups.savedPositions then return end
+        
+        local correctedCount = 0
+        for arcID, frame in pairs(ArcAuras.frames) do
+            if frame and frame:IsShown() then
+                local saved = ns.CDMGroups.savedPositions[arcID]
+                if saved then
+                    if saved.type == "group" and saved.target then
+                        -- Check if frame is already in the CORRECT group
+                        local currentGroup = nil
+                        if ns.CDMGroups.groups then
+                            for gName, group in pairs(ns.CDMGroups.groups) do
+                                if group.members and group.members[arcID] then
+                                    currentGroup = gName
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if currentGroup ~= saved.target then
+                            -- Frame is in wrong group (or no group) - fix it
+                            local targetGroup = ns.CDMGroups.groups and ns.CDMGroups.groups[saved.target]
+                            if targetGroup then
+                                -- Remove from current group if any
+                                if currentGroup and ns.CDMGroups.groups[currentGroup] then
+                                    local oldGroup = ns.CDMGroups.groups[currentGroup]
+                                    if oldGroup.members then
+                                        oldGroup.members[arcID] = nil
+                                    end
+                                end
+                                
+                                -- Also remove from freeIcons if tracked there
+                                if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
+                                    ns.CDMGroups.freeIcons[arcID] = nil
+                                end
+                                
+                                -- Register into correct group
+                                if targetGroup.AddMemberAtWithFrame then
+                                    targetGroup:AddMemberAtWithFrame(arcID, saved.row or 0, saved.col or 0, frame, nil)
+                                elseif ns.CDMGroups.RegisterExternalFrame then
+                                    ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", saved.target)
+                                end
+                                correctedCount = correctedCount + 1
+                            end
+                        end
+                    elseif saved.type == "free" then
+                        -- Check if frame is tracked as free icon
+                        local inGroup = false
+                        if ns.CDMGroups.groups then
+                            for _, group in pairs(ns.CDMGroups.groups) do
+                                if group.members and group.members[arcID] then
+                                    inGroup = true
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if inGroup then
+                            -- Frame is in a group but should be free - remove and make free
+                            for _, group in pairs(ns.CDMGroups.groups) do
+                                if group.members and group.members[arcID] then
+                                    group.members[arcID] = nil
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if not (ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID]) then
+                            -- Track as free icon at saved position
+                            if ns.CDMGroups.TrackFreeIcon then
+                                ns.CDMGroups.TrackFreeIcon(arcID, saved.x or 0, saved.y or 0, saved.iconSize or 36, frame)
+                                correctedCount = correctedCount + 1
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        -- If any frames were corrected, re-layout all groups
+        if correctedCount > 0 then
+            if ns.CDMGroups.groups then
+                for _, group in pairs(ns.CDMGroups.groups) do
+                    if group.Layout then group:Layout() end
                 end
             end
         end
@@ -4357,6 +4484,14 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                 if itemID then
                     -- Trinket equipped - check on-use filter for auto-track slots
                     if savedConfig and savedConfig.isAutoTrackSlot then
+                        -- GUARD: If the per-slot toggle is OFF, don't show or update
+                        if not ArcAuras.IsAutoTrackSlotEnabled(slot) then
+                            -- Slot toggle is OFF - keep hidden, just update icon for when re-enabled
+                            ArcAuras.UpdateFrameIcon(frame, config)
+                            ArcAuras.UpdateItemFrameVisibility()
+                            return
+                        end
+                        
                         local onlyOnUse = db and db.onlyOnUseTrinkets
                         if onlyOnUse and IsItemPassive(itemID) then
                             -- Passive trinket with on-use filter - hide it (keep position)

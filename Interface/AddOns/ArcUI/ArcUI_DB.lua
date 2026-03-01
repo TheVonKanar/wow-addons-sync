@@ -737,6 +737,66 @@ function ns.API.GetBarConfig(barNumber)
     end
   end
   
+  -- Migration: convert old showInForms (positive) or hideInForms (negative) → hideWhen keys
+  -- Old positive: showInForms = {cat=true, bear=true} → "show ONLY in cat and bear"
+  -- Old negative: hideInForms = {cat=true} → "hide in cat"
+  -- New unified: hideWhen = {hideInCatForm=true, ...}
+  local FORM_KEY_TO_HIDEWHEN = {
+    caster  = "hideInCasterForm",
+    cat     = "hideInCatForm",
+    bear    = "hideInBearForm",
+    moonkin = "hideInMoonkinForm",
+    travel  = "hideInTravelForm",
+    tree    = "hideInTreeForm",
+    none            = "hideInNoStance",
+    battleStance    = "hideInBattleStance",
+    defensiveStance = "hideInDefensiveStance",
+    shadowform      = "hideInShadowform",
+    stealth         = "hideInStealth",
+  }
+  if barConfig.behavior then
+    -- First: convert old positive showInForms → negative hideInForms
+    if barConfig.behavior.showInForms and type(barConfig.behavior.showInForms) == "table" then
+      local showForms = barConfig.behavior.showInForms
+      local anySelected = false
+      for _, v in pairs(showForms) do
+        if v then anySelected = true; break end
+      end
+      if anySelected then
+        -- Druid form set (the only class that had the old positive system)
+        local allDruidForms = { "caster", "cat", "bear", "moonkin", "travel", "tree" }
+        if not barConfig.behavior.hideInForms then barConfig.behavior.hideInForms = {} end
+        for _, form in ipairs(allDruidForms) do
+          if not showForms[form] then
+            barConfig.behavior.hideInForms[form] = true
+          end
+        end
+        barConfig.behavior.hideInFormsAlpha = barConfig.behavior.hideInFormsAlpha or 0
+      end
+      barConfig.behavior.showInForms = nil
+    end
+    -- Second: convert hideInForms → hideWhen keys
+    if barConfig.behavior.hideInForms and type(barConfig.behavior.hideInForms) == "table" then
+      if not barConfig.behavior.hideWhen or type(barConfig.behavior.hideWhen) ~= "table" then
+        barConfig.behavior.hideWhen = {}
+      end
+      for formKey, enabled in pairs(barConfig.behavior.hideInForms) do
+        if enabled then
+          local hwKey = FORM_KEY_TO_HIDEWHEN[formKey]
+          if hwKey then
+            barConfig.behavior.hideWhen[hwKey] = true
+          end
+        end
+      end
+      -- Migrate alpha
+      if barConfig.behavior.hideInFormsAlpha and barConfig.behavior.hideInFormsAlpha > 0 then
+        barConfig.behavior.hideWhenAlpha = barConfig.behavior.hideInFormsAlpha
+      end
+      barConfig.behavior.hideInForms = nil
+      barConfig.behavior.hideInFormsAlpha = nil
+    end
+  end
+  
   -- Mark as migrated with version number
   barConfig._migrated = CURRENT_MIGRATION_VERSION
   
@@ -1000,6 +1060,11 @@ function ns.API.InitializeNewResourceBar(powerType, powerName, resourceCategory,
       -- Get max value based on resource type
       if resourceCategory == "secondary" and secondaryType then
         cfg.tracking.maxValue = ns.Resources and ns.Resources.GetSecondaryMaxValue(secondaryType) or 5
+      elseif resourceCategory == "autoPrimary" then
+        -- Auto-switching: resolve current power type dynamically
+        local autoPower = UnitPowerType("player")
+        local max = UnitPowerMax("player", autoPower)
+        cfg.tracking.maxValue = (max and max > 0) and max or 100
       else
         local max = UnitPowerMax("player", powerType)
         -- Use queried value if valid, otherwise default to 100 (will be updated at runtime)
@@ -1009,8 +1074,13 @@ function ns.API.InitializeNewResourceBar(powerType, powerName, resourceCategory,
       if cfg.behavior then
         cfg.behavior.talentConditions = nil
         cfg.behavior.talentMatchMode = nil
-        -- Set current spec so resource bar only shows on the spec it was created for
-        cfg.behavior.showOnSpecs = { GetSpecialization() or 1 }
+        if resourceCategory == "autoPrimary" then
+          -- Auto-switching bar: show on ALL specs (it resolves powerType dynamically)
+          cfg.behavior.showOnSpecs = {}
+        else
+          -- Manual bar: lock to current spec
+          cfg.behavior.showOnSpecs = { GetSpecialization() or 1 }
+        end
       end
       
       cfg.display.enabled = true

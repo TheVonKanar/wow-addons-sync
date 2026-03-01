@@ -10,6 +10,12 @@ LoggerHeadDB = {
 ["The Shadow Enclave"] = {
 [208] = false,
 },
+["Collegiate Calamity"] = {
+[208] = false,
+},
+["Atal'Aman"] = {
+[208] = false,
+},
 },
 },
 ["version"] = 3,

@@ -5,6 +5,7 @@ HandyNotes_MidnightTreasuresDB = {
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
+["show_on_minimap"] = true,
 },
 },
 }

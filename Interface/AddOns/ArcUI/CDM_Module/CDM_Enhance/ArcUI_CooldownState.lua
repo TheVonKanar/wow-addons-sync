@@ -59,6 +59,7 @@ local HideReadyGlow
 local SetGlowAlpha
 local ShouldShowReadyGlow
 local ApplyBorderDesaturation
+local HideAuraActiveGlow
 
 local resolved = false
 
@@ -75,6 +76,7 @@ local function ResolveDependencies()
   SetGlowAlpha                = CDM.SetGlowAlpha
   ShouldShowReadyGlow         = CDM.ShouldShowReadyGlow
   ApplyBorderDesaturation     = CDM.ApplyBorderDesaturation
+  HideAuraActiveGlow          = CDM.HideAuraActiveGlow or function() end
 
   resolved = true
   return true
@@ -133,17 +135,100 @@ local function ResetDurationText(frame)
 end
 
 local function PreserveDurationText(frame)
-  if frame._arcCooldownText and frame._arcCooldownText.SetIgnoreParentAlpha then
-    frame._arcCooldownText:SetIgnoreParentAlpha(true)
-    frame._arcCooldownText:SetAlpha(1)
+  -- Don't enable IgnoreParentAlpha if the group container is hidden
+  -- Check both frame and parent: icons added after SafeShowContainer don't have the flag
+  if frame._arcGroupHidden then return end
+  local parent = frame:GetParent()
+  if parent and parent._arcGroupHidden then return end
+  
+  -- Skip cooldown text if charge-conditional hide is active
+  if not frame._arcHideCDTextForCharges then
+    if frame._arcCooldownText and frame._arcCooldownText.SetIgnoreParentAlpha then
+      frame._arcCooldownText:SetIgnoreParentAlpha(true)
+      frame._arcCooldownText:SetAlpha(1)
+    end
+    if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
+      frame.Cooldown.Text:SetIgnoreParentAlpha(true)
+      frame.Cooldown.Text:SetAlpha(1)
+    end
   end
-  if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
-    frame._arcChargeText:SetIgnoreParentAlpha(true)
-    frame._arcChargeText:SetAlpha(1)
+  -- Skip charge text if hideAtZero is active
+  if not frame._arcHideChargeAtZero then
+    if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
+      frame._arcChargeText:SetIgnoreParentAlpha(true)
+      frame._arcChargeText:SetAlpha(1)
+    end
   end
-  if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
-    frame.Cooldown.Text:SetIgnoreParentAlpha(true)
-    frame.Cooldown.Text:SetAlpha(1)
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- CHARGE-CONDITIONAL TEXT VISIBILITY
+--
+-- Uses shadow state (non-secret) to conditionally show/hide text:
+--   chargeText.hideAtZero: hide charge count when charges = 0
+--   cooldownText.hideWhenHasCharges: hide CD text when charges > 0
+-- ═══════════════════════════════════════════════════════════════════
+local function ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
+  if not isChargeSpell then
+    -- Not a charge spell — clear any override flags
+    frame._arcHideChargeAtZero = nil
+    frame._arcHideCDTextForCharges = nil
+    return
+  end
+
+  -- Derive charge state from shadows (non-secret):
+  --   isRecharging = charges > 0 (charge shadow shown)
+  --   isOnCooldown && !isRecharging = charges = 0 (all spent)
+  --   !isOnCooldown && !isRecharging = all charges ready
+  local chargesSpent = isOnCooldown and not isRecharging  -- charges = 0
+  local hasCharges = isRecharging or not isOnCooldown      -- charges > 0
+
+  -- ── CHARGE TEXT: hideAtZero ──
+  local chargeCfg = cfg.chargeText
+  local wantHideAtZero = chargeCfg and chargeCfg.hideAtZero and chargeCfg.enabled ~= false
+  if wantHideAtZero and chargesSpent then
+    frame._arcHideChargeAtZero = true
+    if frame._arcChargeText then
+      frame._arcChargeText:SetAlpha(0)
+    end
+  else
+    frame._arcHideChargeAtZero = nil
+    -- Only restore if charge text is enabled (don't fight chargeText.enabled=false)
+    if chargeCfg and chargeCfg.enabled ~= false and frame._arcChargeText then
+      -- Don't override if parent frame is hidden
+      if (frame._lastAppliedAlpha or 1) > 0.01 then
+        frame._arcChargeText:SetAlpha(1)
+      end
+    end
+  end
+
+  -- ── COOLDOWN TEXT: hideWhenHasCharges ──
+  local cdTextCfg = cfg.cooldownText
+  local wantHideCDWithCharges = cdTextCfg and cdTextCfg.hideWhenHasCharges and cdTextCfg.enabled ~= false
+  if wantHideCDWithCharges and hasCharges then
+    frame._arcHideCDTextForCharges = true
+    -- Use SetHideCountdownNumbers to properly suppress the Cooldown widget's
+    -- built-in countdown — SetAlpha alone gets overwritten by CDM updates.
+    if frame.Cooldown then
+      frame.Cooldown:SetHideCountdownNumbers(true)
+    end
+    if frame._arcCooldownText then
+      frame._arcCooldownText:SetAlpha(0)
+    end
+  else
+    local wasHidden = frame._arcHideCDTextForCharges
+    frame._arcHideCDTextForCharges = nil
+    -- Only restore if cooldown text is enabled and was previously hidden by us
+    if wasHidden and cdTextCfg and cdTextCfg.enabled ~= false then
+      if frame.Cooldown then
+        frame.Cooldown:SetHideCountdownNumbers(false)
+      end
+      if (frame._lastAppliedAlpha or 1) > 0.01 then
+        if frame._arcCooldownText then
+          frame._arcCooldownText:SetAlpha(1)
+        end
+      end
+    end
   end
 end
 
@@ -401,24 +486,35 @@ local function ApplyCooldownAlpha(frame, stateVisuals)
   frame._arcEnforceReadyAlpha = false
   frame._arcReadyAlphaValue = nil
   frame._arcTargetAlpha = cdAlpha
-  frame._arcPreserveDurationText = stateVisuals.preserveDurationText == true
   if frame._lastAppliedAlpha ~= cdAlpha then
     frame._arcBypassFrameAlphaHook = true
     frame:SetAlpha(cdAlpha)
     frame._arcBypassFrameAlphaHook = false
     frame._lastAppliedAlpha = cdAlpha
   end
-  if frame.Cooldown then
-    if not stateVisuals.preserveDurationText then
-      if frame.Cooldown.SetIgnoreParentAlpha then
-        frame.Cooldown:SetIgnoreParentAlpha(false)
+  -- When frame is effectively hidden (alpha ≈ 0), NEVER preserve text.
+  -- PreserveDurationText sets SetIgnoreParentAlpha(true) which makes
+  -- charge/cooldown text float visibly over a hidden frame. Clear the
+  -- flag so SetCooldown hooks don't re-enable IgnoreParentAlpha either.
+  -- NOTE: We use our own cdAlpha (non-secret) instead of frame:GetAlpha()
+  -- which could be secret in combat.
+  if cdAlpha < 0.01 then
+    frame._arcPreserveDurationText = false
+    ResetDurationText(frame)
+  else
+    frame._arcPreserveDurationText = stateVisuals.preserveDurationText == true
+    if frame.Cooldown then
+      if not stateVisuals.preserveDurationText then
+        if frame.Cooldown.SetIgnoreParentAlpha then
+          frame.Cooldown:SetIgnoreParentAlpha(false)
+        end
       end
     end
-  end
-  if stateVisuals.preserveDurationText then
-    PreserveDurationText(frame)
-  else
-    ResetDurationText(frame)
+    if stateVisuals.preserveDurationText then
+      PreserveDurationText(frame)
+    else
+      ResetDurationText(frame)
+    end
   end
 end
 
@@ -531,6 +627,9 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
     frame._arcDesiredVertexColor = nil
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   end
+
+  -- CHARGE-CONDITIONAL TEXT (hideAtZero / hideWhenHasCharges)
+  ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
 
   -- SWIPE/EDGE
   local masqueControlsCD = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
@@ -800,11 +899,15 @@ local function HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   else
     frame._arcDesatBranch = "C_BIN_READY"
+    frame._arcPreserveCooldownPath = nil  -- Cooldown ended, allow normal dispatch
     local usabilityAlpha = GetUsabilityAlpha(frame, spellID, cfg)
     ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha)
     frame._arcDesiredVertexColor = nil
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   end
+
+  -- CHARGE-CONDITIONAL TEXT (hideAtZero / hideWhenHasCharges)
+  ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
 
   -- SWIPE/EDGE
   local masqueControlsCD = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
@@ -894,6 +997,10 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
     frame._arcDesiredEdge = nil
     frame._arcDesiredVertexColor = nil
     HideReadyGlow(frame)
+    -- Clean up leftover aura active glow (e.g. glowWhenMissing was just disabled)
+    if frame._arcAuraActiveGlowActive then
+      HideAuraActiveGlow(frame)
+    end
     if wasManagedDesat then
       SetDesat(iconTex, 0)
       frame._arcBypassVertexHook = true
@@ -934,15 +1041,29 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
     elseif frame.wasSetFromAura == true then useAuraLogic = true end
   end
 
+  -- OVERRIDE TRANSITION PROTECTION: spell override swaps (e.g. Surging Totem
+  -- → Retract → back) can flip wasSetFromAura/totemData, diverting from
+  -- cooldown-binary to aura-logic. Aura logic sees totemData as "active aura"
+  -- → AURA_READY, hiding the remaining cooldown. If CDMEnhance flagged this
+  -- frame during override detection, force cooldown path until CD ends.
+  if useAuraLogic and frame._arcPreserveCooldownPath then
+    useAuraLogic = false
+  end
+
   -- DISPATCH
   if ignoreAuraOverride then
     local cooldownInfo = frame.cooldownInfo
-    local cdmExplicitlyTrackingCooldown = (frame.wasSetFromCooldown == true and frame.wasSetFromAura ~= true)
+    -- IAO gate: does this spell EVER show as an aura?
+    -- Old check used cdmExplicitlyTrackingCooldown to gate selfAura/hasAura,
+    -- but at cast-time wasSetFromAura is still false (CDM hasn't flipped yet),
+    -- so cdmExplicitlyTrackingCooldown=true gated out the selfAura check.
+    -- Result: dispatched to HandleCooldownLogic → _arcForceDesatValue=nil →
+    -- CDM's later SetDesat(false) passed through uncontested for entire CD.
+    -- Fix: if cooldownInfo says the spell CAN show as aura, always route to IAO.
     local cdmWouldShowAura = cfg._isAura
                              or (frame.totemData ~= nil)
                              or (frame.wasSetFromAura == true)
-                             or (not cdmExplicitlyTrackingCooldown
-                                 and cooldownInfo
+                             or (cooldownInfo
                                  and (cooldownInfo.hasAura == true or cooldownInfo.selfAura == true))
     if cdmWouldShowAura then
       frame._arcDesatBranch = "DISPATCH_IAO"

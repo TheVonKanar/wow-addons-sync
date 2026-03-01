@@ -330,6 +330,18 @@ ns.Resources.PowerTypes = {
 }
 
 -- ===================================================================
+-- RESOLVE POWER TYPE (auto-switching for autoPrimary bars)
+-- For "autoPrimary" bars, returns UnitPowerType("player") which
+-- auto-switches per spec and Druid form. For regular bars, returns stored value.
+-- ===================================================================
+local function ResolvePowerType(cfg)
+  if cfg.tracking.resourceCategory == "autoPrimary" then
+    return (UnitPowerType("player"))
+  end
+  return cfg.tracking.powerType
+end
+
+-- ===================================================================
 -- SECONDARY RESOURCE TYPE DEFINITIONS
 -- These are discrete/segmented resources separate from primary power
 -- ===================================================================
@@ -1524,9 +1536,477 @@ local function IsSpecColorsActive(config)
   return false
 end
 
--- Unified spec-aware color lookup for ANY display mode
+-- Default colors keyed by power type ID
+-- Uses Blizzard's PowerBarColor as the source of truth, falls back to our definitions
+local POWER_TYPE_DEFAULT_COLORS = {}
+for _, pt in ipairs(ns.Resources.PowerTypes) do
+  local blizzColor = PowerBarColor and (PowerBarColor[pt.token] or PowerBarColor[pt.id])
+  if blizzColor and blizzColor.r then
+    POWER_TYPE_DEFAULT_COLORS[pt.id] = {r = blizzColor.r, g = blizzColor.g, b = blizzColor.b, a = 1}
+  else
+    POWER_TYPE_DEFAULT_COLORS[pt.id] = {r = pt.color.r, g = pt.color.g, b = pt.color.b, a = 1}
+  end
+end
+ns.Resources.POWER_TYPE_DEFAULT_COLORS = POWER_TYPE_DEFAULT_COLORS
+
+-- ===================================================================
+-- AUTO PRIMARY: Per-Power-Type Display Profiles
+-- Stores full display+threshold snapshots keyed by powerType.
+-- On power type change, we SWAP profile data into cfg.display so
+-- all existing rendering code works unchanged.
+-- ===================================================================
+
+-- Keys NOT to copy when snapshotting/restoring display profiles.
+-- Profiles only store APPEARANCE (colors, textures, tick config, color curves).
+-- Everything else is shared since it's physically one bar.
+-- Aligned with ArcUI_Presets.lua EXCLUDED_DISPLAY_KEYS + size keys.
+local PROFILE_EXCLUDE = {
+  -- Per-power shared state
+  autoPowerColors = true,
+  -- Size (one physical bar)
+  width = true,
+  height = true,
+  iconSize = true,
+  barScale = true,
+  -- Fill (shared across all power types on the same bar)
+  barOrientation = true,
+  rotateTexture = true,
+  barReverseFill = true,
+  texture = true,
+  enableSmoothing = true,
+  useGradient = true,
+  gradientDirection = true,
+  gradientSecondColor = true,
+  gradientIntensity = true,
+  -- Position / anchor
+  barPosition = true,
+  barMovable = true,
+  anchorToGroup = true,
+  anchorGroupName = true,
+  anchorPoint = true,
+  matchGroupWidth = true,
+  matchWidthAdjust = true,
+  anchorOffsetX = true,
+  anchorOffsetY = true,
+  -- Frame layering
+  frameStrata = true,
+  frameLevelOffset = true,
+  barFrameLevel = true,
+  barFrameStrata = true,
+  -- State toggles
+  enabled = true,
+  -- Text position / strata (layout, not skin)
+  textPosition = true,
+  textMovable = true,
+  textLocked = true,
+  readyTextLocked = true,
+  iconStackLocked = true,
+  textLevel = true,
+  textStrata = true,
+  nameTextLevel = true,
+  nameTextStrata = true,
+  stackTextLevel = true,
+  stackTextStrata = true,
+  durationTextLevel = true,
+  durationTextStrata = true,
+  readyTextLevel = true,
+  readyTextStrata = true,
+  -- Icon positions (layout)
+  iconsPositions = true,
+}
+
+-- Track which power type's profile is currently loaded into cfg.display per bar
+local activeProfilePower = {}  -- barNumber -> powerType or nil (nil = base loaded)
+
+-- Deep copy utility (handles nested tables, no functions/cycles expected)
+local function DeepCopyTable(src)
+  if type(src) ~= "table" then return src end
+  local copy = {}
+  for k, v in pairs(src) do
+    copy[k] = DeepCopyTable(v)
+  end
+  return copy
+end
+
+-- Snapshot cfg.display into a profile table (excludes shared keys)
+local function SnapshotDisplay(display)
+  local snap = {}
+  for k, v in pairs(display) do
+    if not PROFILE_EXCLUDE[k] then
+      snap[k] = DeepCopyTable(v)
+    end
+  end
+  return snap
+end
+
+-- Restore a profile snapshot into cfg.display (preserves excluded keys)
+local function RestoreDisplayFromSnapshot(snap, display)
+  -- Clear non-excluded keys from display
+  local keysToRemove = {}
+  for k in pairs(display) do
+    if not PROFILE_EXCLUDE[k] then
+      keysToRemove[#keysToRemove + 1] = k
+    end
+  end
+  for _, k in ipairs(keysToRemove) do
+    display[k] = nil
+  end
+  -- Load snapshot values in (skip excluded keys from stale snapshots)
+  for k, v in pairs(snap) do
+    if not PROFILE_EXCLUDE[k] then
+      display[k] = DeepCopyTable(v)
+    end
+  end
+end
+
+-- Swap autoPrimary display profile for a bar.
+-- Saves current display to old power's slot, loads new power's slot.
+-- "_base" key stores the base (non-profiled) display state.
+local function SwapAutoPowerProfile(barNumber, cfg, newPowerType)
+  if not cfg or cfg.tracking.resourceCategory ~= "autoPrimary" then return end
+  if not cfg.autoPowerProfiles then return end  -- No profiles configured
+  
+  local profiles = cfg.autoPowerProfiles
+  local oldPower = activeProfilePower[barNumber]
+  if oldPower == newPowerType then return end  -- Already loaded
+  
+  -- Save current display state back to old power's slot
+  if oldPower ~= nil then
+    if not profiles[oldPower] then profiles[oldPower] = {} end
+    profiles[oldPower].display = SnapshotDisplay(cfg.display)
+    profiles[oldPower].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  else
+    -- First swap ever or base was loaded — save as _base
+    if not profiles._base then profiles._base = {} end
+    profiles._base.display = SnapshotDisplay(cfg.display)
+    profiles._base.thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  end
+  
+  -- Load new power's profile, or create from _base if it doesn't exist
+  if profiles[newPowerType] and profiles[newPowerType].display then
+    RestoreDisplayFromSnapshot(profiles[newPowerType].display, cfg.display)
+    if profiles[newPowerType].thresholds then
+      cfg.thresholds = DeepCopyTable(profiles[newPowerType].thresholds)
+    end
+    -- Always sync cfg.thresholds[1].color with display.barColor
+    if cfg.display.barColor then
+      if not cfg.thresholds then cfg.thresholds = {} end
+      if not cfg.thresholds[1] then
+        cfg.thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+      end
+      cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
+    end
+  elseif profiles._base and profiles._base.display then
+    -- Auto-create: copy base into this power type, then stamp with correct default color
+    profiles[newPowerType] = {
+      display = DeepCopyTable(profiles._base.display),
+      thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
+    }
+    -- Stamp the power type's default color (Rage=red, Energy=yellow, etc.)
+    local defaultColor = POWER_TYPE_DEFAULT_COLORS[newPowerType]
+    if defaultColor then
+      local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
+      profiles[newPowerType].display.barColor = dc
+      -- Always create thresholds[1] with the stamped color
+      if not profiles[newPowerType].thresholds then profiles[newPowerType].thresholds = {} end
+      if not profiles[newPowerType].thresholds[1] then
+        profiles[newPowerType].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+      end
+      profiles[newPowerType].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+    end
+    RestoreDisplayFromSnapshot(profiles[newPowerType].display, cfg.display)
+    cfg.thresholds = DeepCopyTable(profiles[newPowerType].thresholds)
+  end
+  
+  activeProfilePower[barNumber] = newPowerType
+  
+  -- Invalidate color curve cache for this bar
+  if resourceColorCurves then
+    resourceColorCurves[barNumber] = nil
+  end
+end
+
+-- Ensure profile is synced at render time (safety net)
+local function SyncAutoPowerProfile(barNumber, cfg)
+  if cfg.tracking.resourceCategory ~= "autoPrimary" then return end
+  if not cfg.autoPowerProfiles then return end
+  local currentPower = UnitPowerType("player")
+  if activeProfilePower[barNumber] == nil then
+    -- Init path: force-load correct profile without saving stale data
+    local profiles = cfg.autoPowerProfiles
+    if profiles[currentPower] and profiles[currentPower].display then
+      -- Per-power entry exists: load it
+      RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
+      if profiles[currentPower].thresholds then
+        cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+      end
+    elseif profiles._base and profiles._base.display then
+      -- Per-power entry missing (first login after enabling profiles): auto-create from _base
+      profiles[currentPower] = {
+        display = DeepCopyTable(profiles._base.display),
+        thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
+      }
+      -- Stamp default power type color (Rage=red, Energy=yellow, etc.)
+      local defaultColor = POWER_TYPE_DEFAULT_COLORS[currentPower]
+      if defaultColor then
+        local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
+        profiles[currentPower].display.barColor = dc
+        if not profiles[currentPower].thresholds then profiles[currentPower].thresholds = {} end
+        if not profiles[currentPower].thresholds[1] then
+          profiles[currentPower].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+        end
+        profiles[currentPower].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+      end
+      RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
+      if profiles[currentPower].thresholds then
+        cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+      end
+    end
+    -- Sync thresholds[1].color with the loaded barColor
+    if cfg.display.barColor then
+      if not cfg.thresholds then cfg.thresholds = {} end
+      if not cfg.thresholds[1] then
+        cfg.thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+      end
+      cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
+    end
+    activeProfilePower[barNumber] = currentPower
+    if resourceColorCurves then resourceColorCurves[barNumber] = nil end
+  elseif activeProfilePower[barNumber] ~= currentPower then
+    SwapAutoPowerProfile(barNumber, cfg, currentPower)
+  end
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- AUTO POWER PROFILE PUBLIC API
+-- Used by AppearanceOptions and TrackingOptions
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Initialize autoPowerProfiles on a bar (called first time user opens profiles)
+local function EnsureAutoPowerProfiles(cfg)
+  if cfg.autoPowerProfiles then return end
+  cfg.autoPowerProfiles = {
+    _base = {
+      display = SnapshotDisplay(cfg.display),
+      thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil,
+    }
+  }
+end
+
+-- Check if a bar has profiles enabled
+function ns.Resources.HasAutoPowerProfiles(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  return cfg and cfg.autoPowerProfiles ~= nil
+end
+
+-- Get which power type is currently loaded
+function ns.Resources.GetActiveProfilePower(barNumber)
+  return activeProfilePower[barNumber]
+end
+
+-- Switch to editing a specific power type's profile (for options panel)
+-- Auto-creates autoPowerProfiles + this power type's slot if needed
+function ns.Resources.SetEditingAutoPower(barNumber, powerType)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg then return end
+  
+  EnsureAutoPowerProfiles(cfg)
+  SwapAutoPowerProfile(barNumber, cfg, powerType)
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Restore to the actual current power type (call when leaving options)
+function ns.Resources.RestoreActiveAutoPower(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  local realPower = UnitPowerType("player")
+  SwapAutoPowerProfile(barNumber, cfg, realPower)
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Switch to editing base display (for options panel)
+function ns.Resources.SetEditingBase(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  
+  local profiles = cfg.autoPowerProfiles
+  local oldPower = activeProfilePower[barNumber]
+  
+  -- Save current display back to old power's slot
+  if oldPower ~= nil then
+    if not profiles[oldPower] then profiles[oldPower] = {} end
+    profiles[oldPower].display = SnapshotDisplay(cfg.display)
+    profiles[oldPower].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  end
+  
+  -- Load base
+  local base = profiles._base
+  if base and base.display then
+    RestoreDisplayFromSnapshot(base.display, cfg.display)
+    if base.thresholds then
+      cfg.thresholds = DeepCopyTable(base.thresholds)
+    end
+  end
+  
+  activeProfilePower[barNumber] = nil
+  if resourceColorCurves then resourceColorCurves[barNumber] = nil end
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Remove all profiles from a bar (revert to single-display mode)
+function ns.Resources.ClearAutoPowerProfiles(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  
+  -- Restore base display first
+  local base = cfg.autoPowerProfiles._base
+  if base and base.display then
+    RestoreDisplayFromSnapshot(base.display, cfg.display)
+    if base.thresholds then
+      cfg.thresholds = DeepCopyTable(base.thresholds)
+    end
+  end
+  
+  cfg.autoPowerProfiles = nil
+  activeProfilePower[barNumber] = nil
+  if resourceColorCurves then resourceColorCurves[barNumber] = nil end
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Reset a specific power type's profile back to base settings
+function ns.Resources.ResetAutoPowerProfile(barNumber, powerType)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  
+  local base = cfg.autoPowerProfiles._base
+  if not base then return end
+  
+  -- Overwrite this power type's slot with a copy of base
+  cfg.autoPowerProfiles[powerType] = {
+    display = base.display and DeepCopyTable(base.display) or nil,
+    thresholds = base.thresholds and DeepCopyTable(base.thresholds) or nil,
+  }
+  
+  -- Re-stamp with this power type's default color
+  local defaultColor = POWER_TYPE_DEFAULT_COLORS[powerType]
+  if defaultColor and cfg.autoPowerProfiles[powerType].display then
+    local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
+    cfg.autoPowerProfiles[powerType].display.barColor = dc
+    if not cfg.autoPowerProfiles[powerType].thresholds then cfg.autoPowerProfiles[powerType].thresholds = {} end
+    if not cfg.autoPowerProfiles[powerType].thresholds[1] then
+      cfg.autoPowerProfiles[powerType].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+    end
+    cfg.autoPowerProfiles[powerType].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+  end
+  
+  -- If this power type is currently loaded, reload from the reset profile
+  if activeProfilePower[barNumber] == powerType then
+    RestoreDisplayFromSnapshot(cfg.autoPowerProfiles[powerType].display, cfg.display)
+    if cfg.autoPowerProfiles[powerType].thresholds then
+      cfg.thresholds = DeepCopyTable(cfg.autoPowerProfiles[powerType].thresholds)
+    end
+    if resourceColorCurves then resourceColorCurves[barNumber] = nil end
+    ns.Resources.ApplyAppearance(barNumber)
+    ns.Resources.UpdateBar(barNumber)
+  end
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SHARED COLOR API (profile-aware, used by both panels)
+-- When profiles active: reads/writes profile's barColor
+-- When no profiles: reads/writes autoPowerColors
+-- ═══════════════════════════════════════════════════════════════════
+
+function ns.Resources.GetAutoPowerColor(barNumber, powerType)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg then return 0.5, 0.5, 0.5, 1 end
+  
+  -- Profiles active: read from profile's barColor
+  if cfg.autoPowerProfiles then
+    local prof = cfg.autoPowerProfiles[powerType]
+    if prof and prof.display and prof.display.barColor then
+      local c = prof.display.barColor
+      return c.r or 0.5, c.g or 0.5, c.b or 0.5, c.a or 1
+    end
+    -- Profile exists but no barColor yet — check base profile
+    local base = cfg.autoPowerProfiles._base
+    if base and base.display and base.display.barColor then
+      local c = base.display.barColor
+      return c.r or 0.5, c.g or 0.5, c.b or 0.5, c.a or 1
+    end
+  end
+  
+  -- No profiles: use autoPowerColors override
+  local apc = cfg.display.autoPowerColors
+  if apc and apc[powerType] then
+    local c = apc[powerType]
+    return c.r, c.g, c.b, c.a or 1
+  end
+  
+  -- Fallback: default power type color
+  if POWER_TYPE_DEFAULT_COLORS[powerType] then
+    local c = POWER_TYPE_DEFAULT_COLORS[powerType]
+    return c.r, c.g, c.b, c.a or 1
+  end
+  
+  return 0.5, 0.5, 0.5, 1
+end
+
+function ns.Resources.SetAutoPowerColor(barNumber, powerType, r, g, b)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg then return end
+  
+  -- Profiles active: write to profile's barColor
+  if cfg.autoPowerProfiles then
+    local prof = cfg.autoPowerProfiles[powerType]
+    if prof then
+      if not prof.display then prof.display = {} end
+      prof.display.barColor = {r=r, g=g, b=b, a=1}
+      -- Also sync thresholds[1] in the stored profile
+      if not prof.thresholds then prof.thresholds = {} end
+      if not prof.thresholds[1] then
+        prof.thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+      end
+      prof.thresholds[1].color = {r=r, g=g, b=b, a=1}
+    end
+    -- If this profile is currently loaded, also update live cfg
+    if activeProfilePower[barNumber] == powerType then
+      cfg.display.barColor = {r=r, g=g, b=b, a=1}
+      if cfg.thresholds and cfg.thresholds[1] then
+        cfg.thresholds[1].color = {r=r, g=g, b=b, a=1}
+      end
+    end
+  else
+    -- No profiles: write to autoPowerColors
+    if not cfg.display.autoPowerColors then cfg.display.autoPowerColors = {} end
+    cfg.display.autoPowerColors[powerType] = {r=r, g=g, b=b, a=1}
+  end
+  
+  -- Invalidate color curve and refresh
+  if resourceColorCurves then resourceColorCurves[barNumber] = nil end
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
 -- Returns the per-spec color if active, otherwise barColor/default
 GetSpecAwareBarColor = function(config)
+  -- AUTO PRIMARY: per-power-type colors (before spec colors check)
+  if config.tracking and config.tracking.resourceCategory == "autoPrimary" then
+    local currentPower = UnitPowerType("player")
+    -- If profiles active: fall through to config.display.barColor below
+    -- (profile swap already loaded the right barColor)
+    if not config.autoPowerProfiles then
+      -- No profiles: use default power type color (Mana=blue, Rage=red, etc.)
+      if POWER_TYPE_DEFAULT_COLORS[currentPower] then
+        return POWER_TYPE_DEFAULT_COLORS[currentPower]
+      end
+    end
+    -- With profiles: fall through to config.display.barColor below
+  end
+  
   if IsSpecColorsActive(config) then
     local sc = config.display.fragmentedSpecColors or {}
     local spec = GetSpecialization and GetSpecialization()
@@ -2050,7 +2530,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     
     -- MAX COLOR via ColorCurve on bar2's texture (replaces old maxColorBar overlay)
     local enableMaxColor = cfg.display.enableMaxColor
-    local powerType = cfg.tracking.powerType
+    local powerType = ResolvePowerType(cfg)
     if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
       -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
       if secretValue >= maxValue and maxValue > 0 then
@@ -3404,7 +3884,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
     
     -- Get power type for ColorCurve
-    local powerType = cfg.tracking.powerType
+    local powerType = ResolvePowerType(cfg)
     -- For secondary resources, resolve powerType from the type definition
     if not powerType and isSecondaryResource then
       powerType = GetSecondaryPowerType()
@@ -3869,7 +4349,7 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     end
     
     -- Apply color: max color curve via UnitPowerPercent, or static base color
-    local powerType = cfg.tracking.powerType
+    local powerType = ResolvePowerType(cfg)
     if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
       -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
       if secretValue >= maxValue and maxValue > 0 then
@@ -4199,45 +4679,6 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
   end
 end
 
--- ===================================================================
--- DRUID FORM VISIBILITY CHECK
--- Maps showInForms keys to GetShapeshiftFormID() results
--- Returns true if form is allowed (or no form restrictions set)
--- ===================================================================
-local function IsDruidFormAllowed(cfg)
-  if not cfg or not cfg.behavior then return true end
-  local forms = cfg.behavior.showInForms
-  if type(forms) ~= "table" then return true end
-  
-  -- If no forms selected, show in all forms
-  local anySelected = false
-  for _, v in pairs(forms) do
-    if v then anySelected = true; break end
-  end
-  if not anySelected then return true end
-  
-  -- Check current form
-  local formID = GetShapeshiftFormID()
-  
-  if not formID or formID == 0 then
-    -- No form / caster form
-    return forms.caster or false
-  elseif formID == DRUID_CAT_FORM then
-    return forms.cat or false
-  elseif formID == DRUID_BEAR_FORM then
-    return forms.bear or false
-  elseif formID == DRUID_MOONKIN_FORM_1 or formID == DRUID_MOONKIN_FORM_2 then
-    return forms.moonkin or false
-  elseif formID == DRUID_TRAVEL_FORM or formID == DRUID_ACQUATIC_FORM or formID == DRUID_FLIGHT_FORM then
-    return forms.travel or false
-  elseif formID == DRUID_TREE_FORM or formID == 36 then
-    -- Tree of Life (Treant Form uses formID 36)
-    return forms.tree or false
-  end
-  
-  -- Unknown form: show by default
-  return true
-end
 
 -- ===================================================================
 -- UPDATE RESOURCE BAR (Called on power events)
@@ -4254,6 +4695,12 @@ function ns.Resources.UpdateBar(barNumber)
   
   -- Check if options panel is open - bypass spec/talent checks to allow editing
   local optionsOpen = IsOptionsOpen()
+  
+  -- AUTO PRIMARY: Sync display profile with current power type
+  -- (Safety net — events handle the main swap, this catches edge cases)
+  if not optionsOpen then
+    SyncAutoPowerProfile(barNumber, cfg)
+  end
   
   -- ═══════════════════════════════════════════════════════════════════
   -- EARLY SPEC CHECK - Don't create/update frames for wrong spec
@@ -4309,34 +4756,30 @@ function ns.Resources.UpdateBar(barNumber)
   end
   
   -- ═══════════════════════════════════════════════════════════════════
-  -- DRUID FORM CHECK
-  -- Hide bar if not in the selected shapeshift form (unless options open)
-  -- ═══════════════════════════════════════════════════════════════════
-  local _, playerClass = UnitClass("player")
-  if playerClass == "DRUID" and not optionsOpen then
-    if not IsDruidFormAllowed(cfg) then
-      if resourceFrames[barNumber] then
-        resourceFrames[barNumber].mainFrame:Hide()
-        resourceFrames[barNumber].textFrame:Hide()
-      end
-      return
-    end
-  end
-  
-  local mainFrame, textFrame = GetResourceFrames(barNumber)
-  
-  -- ═══════════════════════════════════════════════════════════════════
-  -- HIDEWHEN CONDITIONS (early return — skip all work when bar should be hidden)
+  -- HIDEWHEN CONDITIONS (includes form/stance — early return or fade)
   -- Bypass when options panel is open for editing.
   -- ═══════════════════════════════════════════════════════════════════
+  local hideWhenFadeAlpha = 1.0
   if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
     local hideWhen = ns.CooldownBars.GetHideWhen(cfg)
     if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, cfg.behavior and cfg.behavior.hideLogic) then
-      mainFrame:Hide()
-      textFrame:Hide()
-      return
+      local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+      if hAlpha <= 0 then
+        if resourceFrames[barNumber] then
+          resourceFrames[barNumber].mainFrame:Hide()
+          resourceFrames[barNumber].textFrame:Hide()
+        end
+        return
+      end
+      hideWhenFadeAlpha = hAlpha
     end
   end
+  -- Store multiplier for opacity line below
+  if resourceFrames[barNumber] then
+    resourceFrames[barNumber]._arcHideWhenAlpha = hideWhenFadeAlpha
+  end
+  
+  local mainFrame, textFrame = GetResourceFrames(barNumber)
   
   -- ═══════════════════════════════════════════════════════════════════
   -- DETERMINE RESOURCE TYPE (Primary vs Secondary)
@@ -4372,14 +4815,24 @@ function ns.Resources.UpdateBar(barNumber)
       maxValue = cfg.tracking.maxValue or max
     end
   else
-    -- PRIMARY RESOURCE (Mana, Rage, Energy, etc.)
-    local powerType = cfg.tracking.powerType
+    -- PRIMARY RESOURCE (Mana, Rage, Energy, etc.) or AUTO PRIMARY
+    local powerType = ResolvePowerType(cfg)
     
     -- Guard: powerType must be valid (>= 0)
     if not powerType or powerType < 0 then
       mainFrame:Hide()
       textFrame:Hide()
       return
+    end
+    
+    -- AUTO PRIMARY: hide bar if current power type is excluded by user
+    if cfg.tracking.resourceCategory == "autoPrimary" and not optionsOpen then
+      local excl = cfg.tracking.autoPowerExclude
+      if excl and excl[powerType] then
+        mainFrame:Hide()
+        textFrame:Hide()
+        return
+      end
     end
     
     -- PRIMARY: Always use UnitPowerMax directly
@@ -4403,7 +4856,7 @@ function ns.Resources.UpdateBar(barNumber)
     
     if textFormat == "percent" and cfg.tracking.resourceCategory ~= "secondary" then
       -- Percentage format using CurveConstants.ScaleTo100 for secret-safe 0-100 scaling
-      local powerType = cfg.tracking.powerType
+      local powerType = ResolvePowerType(cfg)
       if powerType and powerType >= 0 then
         -- CurveConstants.ScaleTo100 scales 0-1 to 0-100 internally (handles secrets!)
         local pct = UnitPowerPercent("player", powerType, false, CurveConstants.ScaleTo100)
@@ -4686,6 +5139,11 @@ function ns.Resources.ApplyAppearance(barNumber)
   -- Check if options panel is open - bypass spec/talent checks to allow editing
   local optionsOpen = IsOptionsOpen()
   
+  -- AUTO PRIMARY: Sync display profile before applying appearance
+  if not optionsOpen then
+    SyncAutoPowerProfile(barNumber, cfg)
+  end
+  
   -- Early spec check - don't apply appearance for wrong spec bars (unless options open)
   local currentSpec = GetSpecialization() or 0
   local showOnSpecs = cfg.behavior and cfg.behavior.showOnSpecs
@@ -4712,16 +5170,24 @@ function ns.Resources.ApplyAppearance(barNumber)
     return
   end
   
-  -- Druid form check
-  local _, playerClass = UnitClass("player")
-  if playerClass == "DRUID" and not optionsOpen then
-    if not IsDruidFormAllowed(cfg) then
-      if resourceFrames[barNumber] then
-        resourceFrames[barNumber].mainFrame:Hide()
-        resourceFrames[barNumber].textFrame:Hide()
+  -- HideWhen check (includes form/stance) — fade or hide
+  local hideWhenFadeAlpha = 1.0
+  if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
+    local hideWhen = ns.CooldownBars.GetHideWhen(cfg)
+    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, cfg.behavior and cfg.behavior.hideLogic) then
+      local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
+      if hAlpha <= 0 then
+        if resourceFrames[barNumber] then
+          resourceFrames[barNumber].mainFrame:Hide()
+          resourceFrames[barNumber].textFrame:Hide()
+        end
+        return
       end
-      return
+      hideWhenFadeAlpha = hAlpha
     end
+  end
+  if resourceFrames[barNumber] then
+    resourceFrames[barNumber]._arcHideWhenAlpha = hideWhenFadeAlpha
   end
   
   local mainFrame, textFrame = GetResourceFrames(barNumber)
@@ -4744,8 +5210,10 @@ function ns.Resources.ApplyAppearance(barNumber)
   end
   
   -- NOTE: We apply scale to SIZE instead of SetScale() to avoid anchor drift
-  -- mainFrame:SetScale(display.barScale or 1.0)  -- REMOVED - scale applied to size above
-  mainFrame:SetAlpha(display.opacity or 1.0)
+  -- Apply opacity with hideWhen alpha multiplier
+  local baseOpacity = display.opacity or 1.0
+  local hideAlphaMul = (resourceFrames[barNumber] and resourceFrames[barNumber]._arcHideWhenAlpha) or 1.0
+  mainFrame:SetAlpha(baseOpacity * hideAlphaMul)
   
   -- Frame strata and level
   local strata = display.barFrameStrata or "HIGH"
@@ -5064,6 +5532,69 @@ function ns.Resources.HideBar(barNumber)
 end
 
 -- ===================================================================
+-- SYNC ALL AUTO POWER PROFILES
+-- Called before updates on power type change events and at init.
+-- On first call (init), activeProfilePower is nil for all bars.
+-- cfg.display may contain stale data from last session, so we
+-- force-load the correct profile without saving back to _base.
+-- ===================================================================
+local function SyncAllAutoPowerProfiles()
+  local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
+  local currentPower = UnitPowerType("player")
+  for _, barNum in ipairs(activeBars) do
+    local cfg = ns.API.GetResourceBarConfig(barNum)
+    if cfg and cfg.tracking.resourceCategory == "autoPrimary" and cfg.autoPowerProfiles then
+      local profiles = cfg.autoPowerProfiles
+      if activeProfilePower[barNum] == nil then
+        -- INIT PATH: activeProfilePower is nil (fresh login/reload).
+        -- cfg.display has stale data — don't save it anywhere.
+        -- Just force-load the correct profile.
+        if profiles[currentPower] and profiles[currentPower].display then
+          -- Per-power entry exists: load it
+          RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
+          if profiles[currentPower].thresholds then
+            cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+          end
+        elseif profiles._base and profiles._base.display then
+          -- Per-power entry missing (first login after enabling profiles): auto-create from _base
+          profiles[currentPower] = {
+            display = DeepCopyTable(profiles._base.display),
+            thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
+          }
+          local defaultColor = POWER_TYPE_DEFAULT_COLORS[currentPower]
+          if defaultColor then
+            local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
+            profiles[currentPower].display.barColor = dc
+            if not profiles[currentPower].thresholds then profiles[currentPower].thresholds = {} end
+            if not profiles[currentPower].thresholds[1] then
+              profiles[currentPower].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+            end
+            profiles[currentPower].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+          end
+          RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
+          if profiles[currentPower].thresholds then
+            cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+          end
+        end
+        -- Sync thresholds[1].color with the loaded barColor
+        if cfg.display.barColor then
+          if not cfg.thresholds then cfg.thresholds = {} end
+          if not cfg.thresholds[1] then
+            cfg.thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+          end
+          cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
+        end
+        activeProfilePower[barNum] = currentPower
+        if resourceColorCurves then resourceColorCurves[barNum] = nil end
+      elseif activeProfilePower[barNum] ~= currentPower then
+        -- RUNTIME PATH: power type changed, do normal save+swap
+        SwapAutoPowerProfile(barNum, cfg, currentPower)
+      end
+    end
+  end
+end
+
+-- ===================================================================
 -- UPDATE ALL RESOURCE BARS
 -- ===================================================================
 function ns.Resources.UpdateAllBars()
@@ -5103,10 +5634,137 @@ function ns.Resources.ApplyAllBars(nudgeLayout)
   end
 end
 
+-- ═══════════════════════════════════════════════════════════════════
+-- RESOURCE EVENT CACHE (v3.0.1)
+-- Reverse lookup maps built once at init/config-change.
+-- Eliminates per-event iteration of all 500 DB entries.
+-- ═══════════════════════════════════════════════════════════════════
+local secondaryTypeCache = {}   -- [secondaryType] = { barNum1, barNum2, ... }
+local powerTokenCache = {}      -- [powerToken] = { barNum1, barNum2, ... }
+local autoPrimaryBars = {}      -- { barNum1, barNum2, ... } for autoPrimary bars
+local hasAuraBasedBars = false  -- Quick early-out for UNIT_AURA handler
+local isInitialized = false     -- MUST be here: UpdateBarsForSecondaryType + RefreshSoulShardBars reference it
+
+local function RebuildResourceEventCache()
+  wipe(secondaryTypeCache)
+  wipe(powerTokenCache)
+  wipe(autoPrimaryBars)
+  hasAuraBasedBars = false
+  
+  local db = ns.API.GetDB()
+  if not db or not db.resourceBars then return end
+  
+  -- Aura-based secondary types (updated via UNIT_AURA, not UNIT_POWER_FREQUENT)
+  local auraBasedTypes = {
+    maelstromWeapon = true,
+    soulFragmentsDevourer = true,
+    soulFragments = true,  -- partially aura-based (GetSpellCastCount updates on aura changes)
+  }
+  
+  -- Token mapping for secondary types that fire via UNIT_POWER_FREQUENT
+  local secondaryTokenMap = {
+    comboPoints = "COMBO_POINTS",
+    holyPower = "HOLY_POWER",
+    chi = "CHI",
+    soulShards = "SOUL_SHARDS",
+    essence = "ESSENCE",
+    arcaneCharges = "ARCANE_CHARGES",
+    runes = "RUNES",
+  }
+  
+  for barNum = 1, 500 do
+    local cfg = db.resourceBars[barNum]
+    if cfg and cfg.tracking and cfg.tracking.enabled then
+      local category = cfg.tracking.resourceCategory or "primary"
+      
+      if category == "autoPrimary" then
+        table.insert(autoPrimaryBars, barNum)
+        
+      elseif category == "secondary" then
+        local secType = cfg.tracking.secondaryType
+        if secType then
+          -- Build secondaryType → barNums cache
+          if not secondaryTypeCache[secType] then
+            secondaryTypeCache[secType] = {}
+          end
+          table.insert(secondaryTypeCache[secType], barNum)
+          
+          -- Track if any aura-based bars exist (UNIT_AURA early-out)
+          if auraBasedTypes[secType] then
+            hasAuraBasedBars = true
+          end
+          
+          -- Build powerToken → barNums cache for token-based secondaries
+          local token = secondaryTokenMap[secType]
+          if token then
+            if not powerTokenCache[token] then
+              powerTokenCache[token] = {}
+            end
+            table.insert(powerTokenCache[token], barNum)
+          end
+        end
+        
+      elseif category == "primary" then
+        -- Resolve power type to token for UNIT_POWER_FREQUENT cache
+        local powerType = cfg.tracking.powerType
+        if powerType then
+          for _, pt in ipairs(ns.Resources.PowerTypes) do
+            if pt.id == powerType then
+              if not powerTokenCache[pt.token] then
+                powerTokenCache[pt.token] = {}
+              end
+              table.insert(powerTokenCache[pt.token], barNum)
+              break
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+-- Expose for config changes from options panels
+ns.Resources.RebuildEventCache = RebuildResourceEventCache
+
+-- Check if a bar tracks a specific secondary type (still used by RefreshSoulShardBars)
+local function BarTracksSecondaryType(barNumber, secondaryType)
+  local bars = secondaryTypeCache[secondaryType]
+  if not bars then return false end
+  for _, bn in ipairs(bars) do
+    if bn == barNumber then return true end
+  end
+  return false
+end
+
+-- Update all bars that track a specific secondary type (O(1) lookup)
+local function UpdateBarsForSecondaryType(secondaryType)
+  if not isInitialized then return end
+  local bars = secondaryTypeCache[secondaryType]
+  if not bars then return end
+  for _, barNumber in ipairs(bars) do
+    ns.Resources.UpdateBar(barNumber)
+  end
+end
+
+-- Refresh soul shard bars with full re-render (ApplyAppearance + UpdateBar)
+-- ApplyAppearance: segment/icon overlays. UpdateBar: text prediction.
+local function RefreshSoulShardBars()
+  if not isInitialized then return end
+  if not ns.Resources.ApplyAppearance then return end
+  
+  local bars = secondaryTypeCache["soulShards"]
+  if not bars then return end
+  for _, barNumber in ipairs(bars) do
+    ns.Resources.ApplyAppearance(barNumber)
+    ns.Resources.UpdateBar(barNumber)
+  end
+end
+
 -- ===================================================================
 -- REFRESH ALL BARS (for spec changes, etc.)
 -- ===================================================================
 function ns.Resources.RefreshAllBars()
+  RebuildResourceEventCache()  -- Rebuild event routing cache on any config refresh
   local currentSpec = GetSpecialization() or 0
   local optionsOpen = IsOptionsOpen()
   
@@ -5229,7 +5887,7 @@ function ns.Resources.SetPreviewValue(barNumber, previewValue)
     maxValue = cfg.tracking.maxValue or 100
   else
     -- PRIMARY: Use UnitPowerMax
-    local powerType = cfg.tracking.powerType or 0
+    local powerType = ResolvePowerType(cfg) or 0
     maxValue = UnitPowerMax("player", powerType)
     if not maxValue or maxValue <= 0 then
       maxValue = cfg.tracking.maxValue or 100
@@ -5255,7 +5913,7 @@ end
 -- EVENT HANDLING
 -- ===================================================================
 local eventFrame = CreateFrame("Frame")
-local isInitialized = false
+-- NOTE: isInitialized declared earlier (line ~5646) so UpdateBarsForSecondaryType can see it
 
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
@@ -5271,7 +5929,8 @@ eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")  -- Talent changes can affect m
 -- Secondary resource specific events
 eventFrame:RegisterEvent("RUNE_POWER_UPDATE")           -- Death Knight runes
 eventFrame:RegisterEvent("UNIT_POWER_POINT_CHARGE")     -- Evoker essence charging + Animacharged combo points
-eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")      -- Druid form changes
+eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")      -- Form/stance changes (all classes)
+eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")     -- Available forms changed (talents/spec swap)
 eventFrame:RegisterEvent("UNIT_HEALTH")                 -- For Stagger (based on health)
 eventFrame:RegisterEvent("UNIT_MAXHEALTH")              -- For Stagger max
 eventFrame:RegisterEvent("UNIT_AURA")                   -- For Maelstrom Weapon (Enhancement Shaman)
@@ -5295,7 +5954,10 @@ local function TryInitialize()
   
   -- DB is ready - initialize!
   isInitialized = true
+  RebuildResourceEventCache()  -- Build event routing cache before first update
+  SyncAllAutoPowerProfiles()
   ns.Resources.ApplyAllBars()
+  ns.Resources.UpdateAllBars()  -- Apply colors immediately (ApplyAllBars only sets layout)
   
   return true
 end
@@ -5313,43 +5975,6 @@ local function InitWithRetry(attempts)
     C_Timer.After(0.5, function()
       InitWithRetry(attempts + 1)
     end)
-  end
-end
-
--- Check if a bar tracks a specific secondary type
-local function BarTracksSecondaryType(barNumber, secondaryType)
-  local cfg = ns.API.GetResourceBarConfig(barNumber)
-  if not cfg or not cfg.tracking.enabled then return false end
-  if cfg.tracking.resourceCategory ~= "secondary" then return false end
-  return cfg.tracking.secondaryType == secondaryType
-end
-
--- Update all bars that track a specific secondary type
-local function UpdateBarsForSecondaryType(secondaryType)
-  if not isInitialized then return end
-  if not ns.API.GetActiveResourceBars then return end
-  
-  local activeBars = ns.API.GetActiveResourceBars()
-  for _, barNumber in ipairs(activeBars) do
-    if BarTracksSecondaryType(barNumber, secondaryType) then
-      ns.Resources.UpdateBar(barNumber)
-    end
-  end
-end
-
--- Refresh soul shard bars with full re-render (ApplyAppearance + UpdateBar)
--- ApplyAppearance: segment/icon overlays. UpdateBar: text prediction.
-local function RefreshSoulShardBars()
-  if not isInitialized then return end
-  if not ns.API.GetActiveResourceBars then return end
-  if not ns.Resources.ApplyAppearance then return end
-  
-  local activeBars = ns.API.GetActiveResourceBars()
-  for _, barNumber in ipairs(activeBars) do
-    if BarTracksSecondaryType(barNumber, "soulShards") then
-      ns.Resources.ApplyAppearance(barNumber)
-      ns.Resources.UpdateBar(barNumber)
-    end
   end
 end
 
@@ -5377,53 +6002,19 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
   elseif event == "UNIT_POWER_FREQUENT" and arg1 == "player" then
     if not isInitialized then return end
     
-    -- Update all resource bars that track this power type
-    if not ns.API.GetActiveResourceBars then return end
-    
     local powerToken = arg2
-    local activeBars = ns.API.GetActiveResourceBars()
-    for _, barNumber in ipairs(activeBars) do
-      local cfg = ns.API.GetResourceBarConfig(barNumber)
-      if cfg and cfg.tracking.enabled then
-        local resourceCategory = cfg.tracking.resourceCategory or "primary"
-        
-        if resourceCategory == "primary" then
-          -- Primary resource: check power type token
-          local powerType = cfg.tracking.powerType
-          local expectedToken = nil
-          for _, pt in ipairs(ns.Resources.PowerTypes) do
-            if pt.id == powerType then
-              expectedToken = pt.token
-              break
-            end
-          end
-          
-          if powerToken == expectedToken then
-            ns.Resources.UpdateBar(barNumber)
-          end
-        else
-          -- Secondary resource: check if token matches
-          local secondaryType = cfg.tracking.secondaryType
-          local typeInfo = ns.Resources.SecondaryTypesLookup[secondaryType]
-          if typeInfo and typeInfo.powerType then
-            local powerTypeEnum = typeInfo.powerType
-            -- Match token to Enum
-            local tokenMatches = false
-            if powerToken == "COMBO_POINTS" and secondaryType == "comboPoints" then tokenMatches = true
-            elseif powerToken == "HOLY_POWER" and secondaryType == "holyPower" then tokenMatches = true
-            elseif powerToken == "CHI" and secondaryType == "chi" then tokenMatches = true
-            elseif powerToken == "SOUL_SHARDS" and secondaryType == "soulShards" then tokenMatches = true
-            elseif powerToken == "ESSENCE" and secondaryType == "essence" then tokenMatches = true
-            elseif powerToken == "ARCANE_CHARGES" and secondaryType == "arcaneCharges" then tokenMatches = true
-            elseif powerToken == "RUNES" and secondaryType == "runes" then tokenMatches = true
-            end
-            
-            if tokenMatches then
-              ns.Resources.UpdateBar(barNumber)
-            end
-          end
-        end
+    
+    -- O(1) lookup: update bars that track this power token directly
+    local tokenBars = powerTokenCache[powerToken]
+    if tokenBars then
+      for _, barNumber in ipairs(tokenBars) do
+        ns.Resources.UpdateBar(barNumber)
       end
+    end
+    
+    -- AutoPrimary bars always update regardless of token
+    for _, barNumber in ipairs(autoPrimaryBars) do
+      ns.Resources.UpdateBar(barNumber)
     end
     
   elseif event == "RUNE_POWER_UPDATE" then
@@ -5436,11 +6027,25 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     UpdateBarsForSecondaryType("comboPoints")
     
   elseif event == "UPDATE_SHAPESHIFT_FORM" then
-    -- Druid form change - affects resource type AND form-based visibility
+    -- Form/stance change - affects resource type AND hideWhen form/stance visibility
     if not isInitialized then return end
     C_Timer.After(0.1, function()
+      -- Swap autoPrimary profiles before refreshing visuals
+      SyncAllAutoPowerProfiles()
       -- Full refresh: ApplyAppearance for layout + UpdateBar for values
-      -- Both have Druid form checks to show/hide based on showInForms
+      -- Both check hideWhen conditions (including form/stance) via CDMGroups state
+      local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
+      for _, barNum in ipairs(activeBars) do
+        ns.Resources.ApplyAppearance(barNum)
+        ns.Resources.UpdateBar(barNum)
+      end
+    end)
+    
+  elseif event == "UPDATE_SHAPESHIFT_FORMS" then
+    -- Available forms changed (talent swap etc) — CDMGroups rebuilds its cache, we just refresh
+    if not isInitialized then return end
+    C_Timer.After(0.1, function()
+      SyncAllAutoPowerProfiles()
       local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
       for _, barNum in ipairs(activeBars) do
         ns.Resources.ApplyAppearance(barNum)
@@ -5457,6 +6062,9 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     UpdateBarsForSecondaryType("stagger")
     
   elseif event == "UNIT_AURA" and arg1 == "player" then
+    -- Early-out: skip entirely if no aura-based resource bars are active
+    -- (e.g. not a Shaman or DH, or no MSW/soul fragment bars configured)
+    if not hasAuraBasedBars then return end
     -- Maelstrom Weapon stacks (Enhancement Shaman)
     UpdateBarsForSecondaryType("maelstromWeapon")
     -- Soul Fragments - Devourer (aura-based)
@@ -5472,12 +6080,14 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     
   elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player" then
     if not isInitialized then return end
+    SyncAllAutoPowerProfiles()
     ns.Resources.UpdateAllBars()
     
   elseif event == "PLAYER_ENTERING_WORLD" then
     -- Entering world (login, reload, zone change)
     C_Timer.After(1.5, function()
       if isInitialized then
+        SyncAllAutoPowerProfiles()
         ns.Resources.UpdateMaxValues()
         ns.Resources.ApplyAllBars()
         ns.Resources.UpdateAllBars()  -- Also update values (max may have changed)
@@ -5495,6 +6105,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     Prediction:InvalidateCache()
     if not isInitialized then return end
     C_Timer.After(0.1, function()
+      SyncAllAutoPowerProfiles()
       ns.Resources.UpdateMaxValues()
       ns.Resources.RefreshAllBars()
     end)
@@ -5599,7 +6210,7 @@ function ns.Resources.UpdateMaxValues()
         end
       else
         -- Primary resource max
-        local powerType = cfg.tracking.powerType
+        local powerType = ResolvePowerType(cfg)
         
         -- Guard: powerType must be valid (>= 0)
         if not powerType or powerType < 0 then
@@ -5709,6 +6320,7 @@ function ns.Resources.DeleteBar(barNumber)
     cfg.tracking.maxValue = 100
     cfg.tracking.overrideMax = false
     cfg.tracking.showRuneTimer = false
+    cfg.tracking.autoPowerExclude = nil
     
     -- ═══════════════════════════════════════════════════════════
     -- FULLY RESET display state — prevents slot contamination
@@ -5741,6 +6353,7 @@ function ns.Resources.DeleteBar(barNumber)
     cfg.display.iconShape = nil
     cfg.display.iconsBorderStyle = nil
     cfg.display.showInForms = nil
+    cfg.display.autoPowerColors = nil
     
     -- Clear color ranges and stack colors
     cfg.stackColors = nil
@@ -5758,6 +6371,10 @@ function ns.Resources.DeleteBar(barNumber)
     -- Clear prediction config
     if cfg.prediction then cfg.prediction.spells = nil end
     cfg.prediction = nil
+    
+    -- Clear autoPrimary profiles
+    cfg.autoPowerProfiles = nil
+    activeProfilePower[barNumber] = nil
     
     -- Hide the bar (only if frames exist — don't create them)
     if resourceFrames[barNumber] then

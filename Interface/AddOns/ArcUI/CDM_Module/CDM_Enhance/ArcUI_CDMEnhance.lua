@@ -173,7 +173,7 @@ ns.CDMEnhance._BorderFuncs = BorderFuncs  -- So we can populate it later
 -- Created once at addon load, reused for all cooldown state checks
 -- These transform remaining% into usable values for secret-safe APIs
 -- ===================================================================
--- COOLDOWN CURVES (legacy — only InitCooldownCurves needed for threshold glow)
+-- COOLDOWN CURVES — Binary/BinaryInv used by CustomLabel for state visibility
 -- ===================================================================
 local CooldownCurves = {
   initialized = false,
@@ -184,6 +184,21 @@ local function InitCooldownCurves()
   if not C_CurveUtil or not C_CurveUtil.CreateCurve then
     return false
   end
+
+  -- Binary: alpha=1 when on cooldown (remaining > 0%), alpha=0 when ready
+  local binary = C_CurveUtil.CreateCurve()
+  binary:AddPoint(0.0, 0)       -- 0% remaining (ready) = hide
+  binary:AddPoint(0.001, 1)     -- any remaining (on CD) = show
+  binary:AddPoint(1.0, 1)       -- full duration = show
+  CooldownCurves.Binary = binary
+
+  -- BinaryInv: alpha=1 when ready (remaining = 0%), alpha=0 when on cooldown
+  local binaryInv = C_CurveUtil.CreateCurve()
+  binaryInv:AddPoint(0.0, 1)    -- 0% remaining (ready) = show
+  binaryInv:AddPoint(0.001, 0)  -- any remaining (on CD) = hide
+  binaryInv:AddPoint(1.0, 0)    -- full duration = hide
+  CooldownCurves.BinaryInv = binaryInv
+
   CooldownCurves.initialized = true
   return true
 end
@@ -1187,6 +1202,7 @@ local DEFAULT_ICON_SETTINGS = {
   chargeText = {
     enabled = true,
     autoHide = true,        -- Hide when stack count is 0 or 1
+    hideAtZero = false,     -- Hide charge count text when all charges are spent (charges = 0)
     size = 16,
     color = {r = 1, g = 1, b = 0, a = 1},
     font = "Friz Quadrata TT",
@@ -1207,6 +1223,7 @@ local DEFAULT_ICON_SETTINGS = {
   -- Cooldown Text (timer)
   cooldownText = {
     enabled = true,
+    hideWhenHasCharges = false, -- Hide cooldown text when charges > 0 (useful for overlaying charge + CD text)
     size = 14,
     color = {r = 1, g = 1, b = 1, a = 1},
     font = "Friz Quadrata TT",
@@ -1214,6 +1231,17 @@ local DEFAULT_ICON_SETTINGS = {
     shadow = false,
     shadowOffsetX = 1,
     shadowOffsetY = -1,
+    -- Duration-based text coloring
+    durationColor = false,              -- Enable color-by-remaining-duration
+    durationColorPreset = "custom",    -- "custom", "classic", "warm", "cool", "nature", "urgent"
+    durationColorCustom = {             -- Custom color stops (used when preset = "custom")
+      { enabled = true,  threshold = 5,    color = {r=1, g=0.39, b=0.28, a=1} },  -- Red
+      { enabled = true,  threshold = 60,   color = {r=1, g=1, b=0, a=1} },        -- Yellow
+      { enabled = true,  threshold = 3600, color = {r=1, g=1, b=1, a=1} },        -- White
+      { enabled = false, threshold = 120,  color = {r=0, g=1, b=0, a=1} },        -- Green
+      { enabled = false, threshold = 300,  color = {r=0.5, g=0.5, b=1, a=1} },    -- Blue
+    },
+    durationColorCustomDefault = {r=0.67, g=0.67, b=0.67, a=1},  -- Above highest threshold
     -- Positioning
     mode = "anchor",  -- "anchor" or "free"
     anchor = "CENTER",
@@ -3408,11 +3436,10 @@ ApplyIconStyle = function(frame, cdID)
         end
       end
       
-      -- Handle No GCD Swipe toggle
-      if noGCDSwipe then
-        -- Store the user's desired swipe/edge settings for the SetCooldown hook to use
-        
-        -- Cache whether this is a charge spell (for alpha hook optimization)
+      -- Cache whether this is a charge spell (needed by CooldownState binary detection).
+      -- Required for: noGCDSwipe GCD intercept, ignoreAuraOverride recharge detection,
+      -- swipeWaitForNoCharges, and any path reading GetBinaryCooldownState.
+      do
         local cooldownInfo = frame.cooldownInfo
         local spellID = cooldownInfo and (cooldownInfo.overrideSpellID or cooldownInfo.spellID)
         if spellID then
@@ -3422,8 +3449,6 @@ ApplyIconStyle = function(frame, cdID)
         else
           frame._arcIsChargeSpellCached = false
         end
-      else
-        frame._arcIsChargeSpellCached = false
       end
       
       -- ═══════════════════════════════════════════════════════════════════
@@ -3446,7 +3471,7 @@ ApplyIconStyle = function(frame, cdID)
           if chargeInfo and not hideTextWithSwipe then
             -- Only ignore parent alpha if preserveDurationText is enabled.
             -- Without it, cooldownAlpha=0 should keep EVERYTHING invisible.
-            if frame._arcPreserveDurationText then
+            if frame._arcPreserveDurationText and (frame._lastAppliedAlpha or 1) > 0.01 and not frame._arcGroupHidden and not (frame:GetParent() and frame:GetParent()._arcGroupHidden) then
               if frame.Cooldown then
                 for _, region in ipairs({frame.Cooldown:GetRegions()}) do
                   if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha then
@@ -3454,11 +3479,17 @@ ApplyIconStyle = function(frame, cdID)
                   end
                 end
               end
-              if frame._arcCooldownText and frame._arcCooldownText.SetIgnoreParentAlpha then
-                frame._arcCooldownText:SetIgnoreParentAlpha(true)
+              -- Skip cooldown text if hidden by hideWhenHasCharges
+              if not frame._arcHideCDTextForCharges then
+                if frame._arcCooldownText and frame._arcCooldownText.SetIgnoreParentAlpha then
+                  frame._arcCooldownText:SetIgnoreParentAlpha(true)
+                end
               end
-              if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
-                frame._arcChargeText:SetIgnoreParentAlpha(true)
+              -- Skip charge text if hidden by hideAtZero
+              if not frame._arcHideChargeAtZero then
+                if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
+                  frame._arcChargeText:SetIgnoreParentAlpha(true)
+                end
               end
             end
           end
@@ -3968,8 +3999,6 @@ ApplyIconStyle = function(frame, cdID)
         local parentFrame = self._arcParentFrame
         local currentCdID = self._arcCdID
         if not parentFrame or not currentCdID then return end
-        
-        -- ALWAYS reapply padding after SetCooldown (CDM resets positioning)
         local padX = self._arcPaddingX or 0
         local padY = self._arcPaddingY or 0
         if padX > 0 or padY > 0 then
@@ -4084,18 +4113,22 @@ ApplyIconStyle = function(frame, cdID)
               
               -- Text preservation (hideTextWithSwipe)
               local hideTextWithSwipe = swipe.hideTextWithSwipe
-              local shouldPreserveText = not hideTextWithSwipe and parentFrame._arcPreserveDurationText
+              local shouldPreserveText = not hideTextWithSwipe and parentFrame._arcPreserveDurationText and (parentFrame._lastAppliedAlpha or 1) > 0.01 and not parentFrame._arcGroupHidden and not (parentFrame:GetParent() and parentFrame:GetParent()._arcGroupHidden)
               if shouldPreserveText then
                 for _, region in ipairs({self:GetRegions()}) do
                   if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha then
                     region:SetIgnoreParentAlpha(true)
                   end
                 end
-                if parentFrame._arcCooldownText and parentFrame._arcCooldownText.SetIgnoreParentAlpha then
-                  parentFrame._arcCooldownText:SetIgnoreParentAlpha(true)
+                if not parentFrame._arcHideCDTextForCharges then
+                  if parentFrame._arcCooldownText and parentFrame._arcCooldownText.SetIgnoreParentAlpha then
+                    parentFrame._arcCooldownText:SetIgnoreParentAlpha(true)
+                  end
                 end
-                if parentFrame._arcChargeText and parentFrame._arcChargeText.SetIgnoreParentAlpha then
-                  parentFrame._arcChargeText:SetIgnoreParentAlpha(true)
+                if not parentFrame._arcHideChargeAtZero then
+                  if parentFrame._arcChargeText and parentFrame._arcChargeText.SetIgnoreParentAlpha then
+                    parentFrame._arcChargeText:SetIgnoreParentAlpha(true)
+                  end
                 end
               end
             elseif durationObj then
@@ -4108,17 +4141,21 @@ ApplyIconStyle = function(frame, cdID)
               parentFrame._arcBypassCDHook = false
               
               -- Text preservation
-              if parentFrame._arcPreserveDurationText then
+              if parentFrame._arcPreserveDurationText and (parentFrame._lastAppliedAlpha or 1) > 0.01 and not parentFrame._arcGroupHidden and not (parentFrame:GetParent() and parentFrame:GetParent()._arcGroupHidden) then
                 for _, region in ipairs({self:GetRegions()}) do
                   if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha then
                     region:SetIgnoreParentAlpha(true)
                   end
                 end
-                if parentFrame._arcCooldownText and parentFrame._arcCooldownText.SetIgnoreParentAlpha then
-                  parentFrame._arcCooldownText:SetIgnoreParentAlpha(true)
+                if not parentFrame._arcHideCDTextForCharges then
+                  if parentFrame._arcCooldownText and parentFrame._arcCooldownText.SetIgnoreParentAlpha then
+                    parentFrame._arcCooldownText:SetIgnoreParentAlpha(true)
+                  end
                 end
-                if parentFrame._arcChargeText and parentFrame._arcChargeText.SetIgnoreParentAlpha then
-                  parentFrame._arcChargeText:SetIgnoreParentAlpha(true)
+                if not parentFrame._arcHideChargeAtZero then
+                  if parentFrame._arcChargeText and parentFrame._arcChargeText.SetIgnoreParentAlpha then
+                    parentFrame._arcChargeText:SetIgnoreParentAlpha(true)
+                  end
                 end
               end
             end
@@ -4738,6 +4775,12 @@ function SetupChargeText(frame, cdID, cfg)
               if alpha and alpha > 0 then
                 EnforceChargeHidden(self)
               end
+            -- hideAtZero: CooldownState set this flag when charges = 0
+            elseif self._arcParentIconFrame and self._arcParentIconFrame._arcHideChargeAtZero then
+              if alpha and alpha > 0 then
+                local cText = self._arcChargeText
+                if cText then cText:SetAlpha(0) end
+              end
             end
           end)
         end
@@ -4970,12 +5013,15 @@ function SetupCooldownText(frame, cdID, cfg)
   -- ═══════════════════════════════════════════════════════════════════
   -- HELPER: Style a cooldown text fontstring
   -- ═══════════════════════════════════════════════════════════════════
-  local function StyleCooldownText(cdText, textCfg)
+  local function StyleCooldownText(cdText, textCfg, parentIconFrame)
     if not cdText then return end
     if cdText._arcIsChargeText then return end
     
-    -- Re-show if we previously hid it
-    cdText:SetAlpha(1)
+    -- Skip alpha reset if duration-based coloring is driving alpha via SetAlpha
+    local iconFrame = parentIconFrame or cdText._arcParentIconFrame
+    if not (iconFrame and iconFrame._arcDurationColorActive) then
+      cdText:SetAlpha(1)
+    end
     cdText:Show()  -- CRITICAL: Also call Show() since we call Hide() when disabling
     
     local fontPath = GetFontPath(textCfg.font)
@@ -4985,8 +5031,11 @@ function SetupCooldownText(frame, cdID, cfg)
     
     cdText:SetDrawLayer("OVERLAY", 7)
     
-    local c = textCfg.color or {r=1, g=1, b=1, a=1}
-    cdText:SetTextColor(c.r or 1, c.g or 1, c.b or 1, c.a or 1)
+    -- Skip static color if duration-based coloring is active (CDMTextColor module)
+    if not (iconFrame and iconFrame._arcDurationColorActive) then
+      local c = textCfg.color or {r=1, g=1, b=1, a=1}
+      cdText:SetTextColor(c.r or 1, c.g or 1, c.b or 1, c.a or 1)
+    end
     
     if textCfg.shadow then
       cdText:SetShadowOffset(textCfg.shadowOffsetX or 1, textCfg.shadowOffsetY or -1)
@@ -5049,11 +5098,11 @@ function SetupCooldownText(frame, cdID, cfg)
     
     -- Style existing texts
     if frame._arcCooldownText and frame._arcCooldownText:GetParent() then
-      StyleCooldownText(frame._arcCooldownText, cdTextCfg)
+      StyleCooldownText(frame._arcCooldownText, cdTextCfg, frame)
     end
     
     for _, cdText in ipairs(FindCooldownTexts()) do
-      StyleCooldownText(cdText, cdTextCfg)
+      StyleCooldownText(cdText, cdTextCfg, frame)
       SetupHideHooks(cdText)  -- Setup hooks even when enabled (for dynamic toggling)
     end
   end
@@ -5096,18 +5145,24 @@ function SetupCooldownText(frame, cdID, cfg)
             end
           end
         end
+      elseif parentFrame._arcHideCDTextForCharges then
+        -- CHARGE-CONDITIONAL HIDE: hideWhenHasCharges active, suppress countdown
+        self:SetHideCountdownNumbers(true)
+        if parentFrame._arcCooldownText then
+          parentFrame._arcCooldownText:SetAlpha(0)
+        end
       else
         -- ENABLED: Style text
         for _, region in ipairs({self:GetRegions()}) do
           if region:IsObjectType("FontString") and not region._arcIsChargeText then
-            StyleCooldownText(region, currentCfg.cooldownText)
+            StyleCooldownText(region, currentCfg.cooldownText, parentFrame)
             SetupHideHooks(region)
           end
         end
         for _, child in ipairs({self:GetChildren()}) do
           for _, region in ipairs({child:GetRegions()}) do
             if region:IsObjectType("FontString") and not region._arcIsChargeText then
-              StyleCooldownText(region, currentCfg.cooldownText)
+              StyleCooldownText(region, currentCfg.cooldownText, parentFrame)
               SetupHideHooks(region)
             end
           end
@@ -6584,7 +6639,7 @@ end
 --
 -- Feeds shadow then explicitly calls ApplyCooldownStateVisuals.
 -- ═══════════════════════════════════════════════════════════════════
-function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle)
+function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle, forceVisuals)
   if not frame then return end
   if frame._arcConfig or frame._arcAuraID then return end
   if not cachedCDMGroupsEnabled then return end
@@ -6604,13 +6659,32 @@ function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle)
     if cfg then
       local needVisuals = true
 
-      if fromTicker or skipIdle then
+      -- SPELL OVERRIDE DETECTION: CDM can swap overrideSpellID on a frame
+      -- (e.g. Surging Totem 444995 → Retract 1221348 → back to 444995).
+      -- overrideSpellID is always non-secret (confirmed via frame dumps).
+      -- If it changed from what we last fed, force full feed+visuals.
+      local currentOverride = frame.cooldownInfo
+                              and (frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID)
+      local fedSpell = frame._arcShadowFedSpellID
+      if currentOverride and fedSpell and currentOverride ~= fedSpell then
+        -- Override changed — invalidate cache and force full feed
+        frame._arcLastShadowShown = nil
+        frame._arcLastChargeShown = nil
+        frame._arcShadowFedSpellID = nil
+        ns.CooldownState.FeedShadow(frame, cfg)
+        -- IMPORTANT: Do NOT cache shadow state here. During override transitions
+        -- the spell briefly appears "not on cooldown" before CDM re-applies the
+        -- remaining cooldown. If we cache false, idle-skip blocks all future
+        -- re-evaluation and the frame gets stuck. Leaving nil forces the next
+        -- ticker/event pass to re-evaluate (nil != false in idle-skip check).
+        -- needVisuals stays true — visuals will be applied below
+      elseif fromTicker or skipIdle then
         -- IDLE SKIP: If frame was idle (both shadows not shown) last check,
         -- skip entirely. New cooldowns are caught by full-sweep after spellcast.
         -- Ticker catches out-of-combat edge cases. Active frames always get fed.
         local lastMain = frame._arcLastShadowShown
         local lastCharge = frame._arcLastChargeShown
-        if lastMain == false and (lastCharge == nil or lastCharge == false) then
+        if lastMain == false and (lastCharge == nil or lastCharge == false) and not forceVisuals then
           needVisuals = false  -- Frame idle, skip FeedShadow + visuals
         else
           -- Frame was on cooldown or never cached — feed to check state
@@ -6619,7 +6693,7 @@ function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle)
           local chargeShadow = frame._arcCDMChargeShadow
           local nowMain = shadowCD and shadowCD:IsShown() or false
           local nowCharge = chargeShadow and chargeShadow:IsShown() or false
-          if lastMain ~= nil and nowMain == lastMain and nowCharge == (lastCharge or false) then
+          if lastMain ~= nil and nowMain == lastMain and nowCharge == (lastCharge or false) and not forceVisuals then
             needVisuals = false  -- State unchanged
           end
           frame._arcLastShadowShown = nowMain
@@ -6639,7 +6713,7 @@ function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle)
         frame._arcLastShadowShown = nowMain
         frame._arcLastChargeShown = nowCharge
         -- Skip if state unchanged (nil prevMain = never cached, always proceed)
-        if prevMain ~= nil and nowMain == prevMain and nowCharge == (prevCharge or false) then
+        if prevMain ~= nil and nowMain == prevMain and nowCharge == (prevCharge or false) and not forceVisuals then
           needVisuals = false
         end
       end
@@ -6959,7 +7033,18 @@ function ns.CDMEnhance.OptimizedApplyIconVisuals(frame)
   
   local stateVisuals = GetEffectiveStateVisuals(cfg)
   local hasAuraActiveGlow = cfg.auraActiveState and (cfg.auraActiveState.glow == true or cfg.auraActiveState.glowWhenMissing == true)
-  if not stateVisuals and not hasAuraActiveGlow then return end  -- No custom state settings and no aura glow
+  if not stateVisuals and not hasAuraActiveGlow then
+    -- Clean up any leftover glow from before the setting was disabled
+    if frame._arcAuraActiveGlowActive then
+      HideAuraActiveGlow(frame)
+    end
+    -- CRITICAL: Still update custom label visibility — labels have their own
+    -- aura active/inactive toggles that are independent of stateVisuals.
+    if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+      ns.CustomLabel.UpdateVisibility(frame)
+    end
+    return
+  end
   
   -- Get cdID for glow tracking
   local cdID = frame.cooldownID
@@ -7009,6 +7094,10 @@ function ns.CDMEnhance.OptimizedApplyIconVisuals(frame)
         HideAuraActiveGlow(frame)
       end
     end
+    -- Still update custom label (cooldown-path aura filter may apply)
+    if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+      ns.CustomLabel.UpdateVisibility(frame)
+    end
     return
   end
   
@@ -7023,6 +7112,11 @@ function ns.CDMEnhance.OptimizedApplyIconVisuals(frame)
       else
         HideAuraActiveGlow(frame)
       end
+    end
+    -- CRITICAL: Still update custom label visibility — labels have their own
+    -- aura active/inactive toggles that are independent of stateVisuals.
+    if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+      ns.CustomLabel.UpdateVisibility(frame)
     end
     return
   end
@@ -7276,6 +7370,11 @@ function ns.CDMEnhance.ApplyIconVisuals(frame)
     if ns.CDMSpellUsability and ns.CDMSpellUsability.UpdateGlow then
       ns.CDMSpellUsability.UpdateGlow(frame, cfg)
     end
+    -- CRITICAL: Still update custom label visibility — labels have their own
+    -- aura active/inactive and cooldown state toggles independent of stateVisuals.
+    if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+      ns.CustomLabel.UpdateVisibility(frame)
+    end
     return
   end
   
@@ -7524,6 +7623,10 @@ EnhanceFrame = function(frame, cdID, viewerType, viewerName)
           if ns.CDMEnhance.OptimizedApplyIconVisuals then
             ns.CDMEnhance.OptimizedApplyIconVisuals(self)
           end
+          -- Always update custom label on aura state change (OAIV may early-return)
+          if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+            ns.CustomLabel.UpdateVisibility(self)
+          end
         end)
       end
       
@@ -7542,6 +7645,10 @@ EnhanceFrame = function(frame, cdID, viewerType, viewerName)
           end
           if ns.CDMEnhance.OptimizedApplyIconVisuals then
             ns.CDMEnhance.OptimizedApplyIconVisuals(self)
+          end
+          -- Always update custom label on aura state change (OAIV may early-return)
+          if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+            ns.CustomLabel.UpdateVisibility(self)
           end
         end)
       end
@@ -11561,10 +11668,9 @@ local function RefreshCombatOnlyGlows()
         if stateVisuals and stateVisuals.readyGlow and stateVisuals.readyGlowCombatOnly then
           -- This icon has combat-only glow enabled
           if inCombat then
-            -- Entering combat - show glow if ability is ready
-            -- The normal state update will handle this via ApplyCooldownStateVisuals
-            -- Just trigger a refresh
-            ApplyIconStyle(frame, cdID)
+            -- Entering combat - evaluate glow state directly
+            -- ApplyCooldownStateVisuals handles ready/cooldown detection and glow
+            ApplyCooldownStateVisuals(frame, cfg, nil, stateVisuals)
           else
             -- Leaving combat - hide the glow
             HideReadyGlow(frame)

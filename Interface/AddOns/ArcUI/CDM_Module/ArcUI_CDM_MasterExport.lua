@@ -164,25 +164,25 @@ function ME.ScanAllProfiles()
                             if profileData.iconSettings then
                                 for _ in pairs(profileData.iconSettings) do iconSettingsCount = iconSettingsCount + 1 end
                             end
-                        
-                        table.insert(results, {
-                            charKey = charKey,
-                            specKey = specKey,
-                            classID = classID or 0,
-                            specIndex = specIndex or 0,
-                            specName = specName,
-                            profileName = profileName,
-                            profileData = profileData,
-                            uniqueKey = uniqueKey,
-                            posCount = posCount,
-                            iconSettingsCount = iconSettingsCount,
-                            groupSettings = specData.groupSettings,
-                            globalIconSettings = {
-                                disableTooltips = charData.cdmGroups.disableTooltips,
-                                clickThrough = charData.cdmGroups.clickThrough,
-                            },
-                        })
-                        end -- if type(profileData) == "table"
+                            
+                            table.insert(results, {
+                                charKey = charKey,
+                                specKey = specKey,
+                                classID = classID or 0,
+                                specIndex = specIndex or 0,
+                                specName = specName,
+                                profileName = profileName,
+                                profileData = profileData,
+                                uniqueKey = uniqueKey,
+                                posCount = posCount,
+                                iconSettingsCount = iconSettingsCount,
+                                groupSettings = specData.groupSettings,
+                                globalIconSettings = {
+                                    disableTooltips = charData.cdmGroups.disableTooltips,
+                                    clickThrough = charData.cdmGroups.clickThrough,
+                                },
+                            })
+                        end
                     end
                 end
             end
@@ -237,7 +237,20 @@ function ME.Export(selectedKeys)
                 }
             end
             
-            exportPayload.specs[specKey].profiles[entry.profileName] = DeepCopy(entry.profileData)
+            -- Deduplicate: if same profile name already exists for this spec
+            -- (e.g. two chars both have "Default" for Enhancement), rename the duplicate
+            local finalName = entry.profileName
+            if exportPayload.specs[specKey].profiles[finalName] then
+                local charName = GetCharName(entry.charKey)
+                finalName = entry.profileName .. " (" .. charName .. ")"
+                local counter = 2
+                while exportPayload.specs[specKey].profiles[finalName] do
+                    finalName = entry.profileName .. " (" .. charName .. " " .. counter .. ")"
+                    counter = counter + 1
+                end
+            end
+            
+            exportPayload.specs[specKey].profiles[finalName] = DeepCopy(entry.profileData)
             totalProfiles = totalProfiles + 1
         end
     end
@@ -422,6 +435,9 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
     
     if specEntry.profiles then
         for profileName, profileData in pairs(specEntry.profiles) do
+            if type(profileData) ~= "table" then
+                -- Skip corrupted/non-table entries
+            else
             local finalName = profileName
             
             if targetSpec.layoutProfiles[profileName] then
@@ -439,6 +455,7 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
             mergedCount = mergedCount + 1
             firstImportedName = firstImportedName or finalName
             print(MSG_PREFIX .. "Added profile: " .. finalName)
+            end
         end
     end
     
@@ -558,10 +575,13 @@ function ME.Import(data, importMode)
     local currentSpecProfileName = nil  -- Track which profile to load for current spec
     
     -- Replace mode: wipe specData for matching class specs first
+    -- Backup wiped data in case merge fails
+    local replaceBackup = {}
     if importMode == "replace" then
         for specKey, specEntry in pairs(data.specs) do
             local classID = ParseSpecKey(specKey)
-            if classID == myClassID then
+            if classID == myClassID and cdmGroupsDB.specData[specKey] then
+                replaceBackup[specKey] = cdmGroupsDB.specData[specKey]
                 cdmGroupsDB.specData[specKey] = nil
             end
         end
@@ -614,6 +634,15 @@ function ME.Import(data, importMode)
             enhance.globalApplyHideShadow = data.cdmEnhance.globalApplyHideShadow
         end
     end
+    
+    -- Replace mode: if nothing was imported, restore the backup
+    if importMode == "replace" and importedProfiles == 0 and next(replaceBackup) then
+        for specKey, backup in pairs(replaceBackup) do
+            cdmGroupsDB.specData[specKey] = backup
+        end
+        print(MSG_PREFIX .. "|cffff8800No profiles imported — restored original data.|r")
+    end
+    replaceBackup = nil  -- Release reference
     
     if Shared.ClearDBCache then Shared.ClearDBCache() end
     

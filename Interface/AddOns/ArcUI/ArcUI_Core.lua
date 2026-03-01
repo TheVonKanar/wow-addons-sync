@@ -1,27 +1,21 @@
 -- ===================================================================
 -- ArcUI_Core.lua
 -- Core tracking system supporting multiple bar slots
+-- v3.0.0: Event-driven aura map architecture (replaces RefreshData hooks)
+--   - Hooks CDM frame SetAuraInstanceInfo/ClearAuraInstanceInfo for
+--     lightweight aura-to-bar map building (O(1) lookup).
+--   - UNIT_AURA("player") handler for instant buff stack updates
+--     (mirrors v2.13.0 debuff pattern).
+--   - UNIT_AURA("target") handler unchanged for debuff stack updates.
+--   - PLAYER_TOTEM_UPDATE handler for totem/pet/ground bars.
+--   - Removes per-call FindBarFrameByCooldownID/FindBuffFrameByCooldownID
+--     scanning from UpdateBarBuffInfo — uses cached frame refs from
+--     ValidateAllBarTracking with O(1) cooldownID validation.
+--   - Removes RefreshData hook system entirely (was causing redundant
+--     full CDM viewer scans on every aura tick).
 -- v2.13.0: Fix debuff stack tracking lag ("one behind" on target)
---   - Root cause: CDM's GetTargetAurasCached() caches per-GetTime() tick.
---     If SPELL_UPDATE_COOLDOWN fires before UNIT_AURA in the same tick,
---     any RefreshData call poisons the cache with pre-update stacks.
---     Our RefreshData hook then reads stale data.
---   - Fix: Register UNIT_AURA for "target" only, use unitAuraUpdateInfo
---     to match ONLY our tracked auraInstanceIDs (zero-waste O(1) lookup).
---     Read stacks directly from C_UnitAuras API, bypassing CDM's cache.
---   - Player buff hooks (v2.10.0) unchanged — CDM dispatches per-frame
---     for player auras so the cache issue doesn't apply.
 -- v2.12.0: Fix empty CDM bar frames after spec change
---   - AllowCDMFrameVisible now validates frame has data before Show()
---   - Spec change clears hiddenCDMFrames/barStates to prevent stale refs
---   - ClearAllHiddenCDMFramesForSpecChange releases tracking without Show
 -- v2.11.0: Secret-safe auraInstanceID protection
---   - Uses issecretvalue() to detect aura presence without comparison
---   - Protects against potential future Blizzard secret value change
--- v2.10.0: Hook-based stack updates (replaces polling)
---   - Hooks CDM frame RefreshData for instant stack updates
---   - No more polling delays for high-haste builds
---   - Arcane Salvo, Maelstrom Weapon, etc. now update immediately
 -- v2.7.0: Added sound utilities for conditional events system
 -- 
 -- DEBUFF DURATION FIX (v2.2.1):
@@ -284,85 +278,129 @@ local UpdateBarBuffInfo
 local StartDurationBarTicker
 
 -- ===================================================================
--- EVENT-DRIVEN CDM FRAME HOOKS (v2.11.0)
--- Instead of listening to UNIT_AURA and scanning all bars, we hook
--- CDM's per-frame RefreshData method. CDM already dispatches UNIT_AURA
--- events to individual frames via its auraInstanceID map, so each bar
--- only updates when its own CDM frame's data actually changes.
--- This eliminates: UNIT_AURA handler, auraToBarMap, legacy polling,
--- ThrottledUpdateAllBars, and 2-3x duplicate UpdateBarBuffInfo calls
--- from sub-hooks (RefreshApplications, SetAuraInstanceInfo).
+-- BUFF AURA REVERSE LOOKUP (v3.0.0)
+-- Maps auraInstanceID → {barNum = true, ...} for player buff bars.
+-- Populated by SetAuraInstanceInfo hooks on CDM frames.
+-- Used by UNIT_AURA("player") handler for O(1) stack updates.
 -- ===================================================================
-local hookedCDMFrames = {}  -- [frame] = { barNumbers = {barNum = true, ...} }
-local frameToBarMapping = {}  -- [frame] = {barNum1, barNum2, ...}
+local buffAuraToBarMap = {}    -- [auraInstanceID] = { [barNum] = true }
+local hookedAuraFrames = {}    -- [frame] = { barNumbers = {barNum = true} }
+local totemBarNumbers = {}     -- [barNum] = true, for PLAYER_TOTEM_UPDATE
 
--- Called when a hooked CDM frame's RefreshData fires
-local function OnCDMFrameRefreshData(frame)
-  -- Find which bars use this frame and update them immediately
-  local bars = frameToBarMapping[frame]
-  if bars then
-    for _, barNumber in ipairs(bars) do
-      UpdateBarBuffInfo(barNumber)
-    end
-    -- Ensure duration ticker is running for any duration-based bars
-    if StartDurationBarTicker then
-      StartDurationBarTicker()
+-- Register a buff bar's auraInstanceID for direct UNIT_AURA("player") updates
+local function RegisterBuffAuraForBar(auraInstanceID, barNumber)
+  if not auraInstanceID or not barNumber then return end
+  if not buffAuraToBarMap[auraInstanceID] then
+    buffAuraToBarMap[auraInstanceID] = {}
+  end
+  buffAuraToBarMap[auraInstanceID][barNumber] = true
+end
+
+-- Unregister a bar from all buff aura mappings
+local function UnregisterBuffAuraForBar(barNumber)
+  for auraID, bars in pairs(buffAuraToBarMap) do
+    bars[barNumber] = nil
+    if not next(bars) then
+      buffAuraToBarMap[auraID] = nil
     end
   end
 end
 
--- Hook a CDM frame for event-driven updates
--- RefreshData is the single definitive hook point: CDM calls it for ALL
--- aura lifecycle events (added, updated, removed, target change).
--- Previous sub-hooks on RefreshApplications and SetAuraInstanceInfo caused
--- 2-3x UpdateBarBuffInfo calls per event since they fire within RefreshData.
-local function HookCDMFrameForStackUpdates(frame, barNumber)
+-- Clear all buff aura mappings (spec change, etc.)
+local function ClearAllBuffAuraMappings()
+  wipe(buffAuraToBarMap)
+end
+
+-- Hook CDM frame's SetAuraInstanceInfo / ClearAuraInstanceInfo
+-- for lightweight aura map building. Only hooks once per frame.
+-- When auraInstanceID appears/changes → register into buffAuraToBarMap
+-- When auraInstanceID cleared → unregister + update bar to hide
+local function HookCDMFrameForAuraMap(frame, barNumber)
   if not frame then return end
   
-  -- Initialize tracking for this frame
-  if not hookedCDMFrames[frame] then
-    hookedCDMFrames[frame] = { barNumbers = {} }
-    frameToBarMapping[frame] = {}
+  if not hookedAuraFrames[frame] then
+    hookedAuraFrames[frame] = { barNumbers = {} }
     
-    -- Hook RefreshData - fires for ALL aura changes:
-    --   OnUnitAuraRemovedEvent → ClearAuraInstanceInfo + RefreshData
-    --   OnUnitAuraUpdatedEvent → RefreshData
-    --   OnUnitAuraAddedEvent   → RefreshData (if matching)
-    --   RefreshActiveFramesForTargetChange → RefreshData (target switch)
-    --   OnSpellUpdateCooldownEvent → RefreshData (cooldown frames)
-    if frame.RefreshData then
-      hooksecurefunc(frame, "RefreshData", function(self)
-        OnCDMFrameRefreshData(self)
+    -- Hook SetAuraInstanceInfo: fires when auraInstanceID appears or changes
+    -- CDM dirty-checks internally so this only fires on actual changes
+    if frame.SetAuraInstanceInfo then
+      hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        local newAuraID = self.auraInstanceID
+        if not newAuraID then return end
+        
+        -- Update buff map for all bars using this frame
+        for barNum in pairs(hookData.barNumbers) do
+          UnregisterBuffAuraForBar(barNum)
+          RegisterBuffAuraForBar(newAuraID, barNum)
+          -- Initial update to display the new aura state
+          UpdateBarBuffInfo(barNum)
+        end
+        if StartDurationBarTicker then
+          StartDurationBarTicker()
+        end
+      end)
+    end
+    
+    -- Hook ClearAuraInstanceInfo: fires when aura expires/is removed
+    if frame.ClearAuraInstanceInfo then
+      hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        
+        for barNum in pairs(hookData.barNumbers) do
+          UnregisterBuffAuraForBar(barNum)
+          UpdateBarBuffInfo(barNum)
+        end
       end)
     end
   end
   
   -- Register this bar as using this frame
-  if not hookedCDMFrames[frame].barNumbers[barNumber] then
-    hookedCDMFrames[frame].barNumbers[barNumber] = true
-    table.insert(frameToBarMapping[frame], barNumber)
+  hookedAuraFrames[frame].barNumbers[barNumber] = true
+  
+  -- Read current auraInstanceID and populate map immediately
+  if HasAuraInstanceID(frame.auraInstanceID) then
+    RegisterBuffAuraForBar(frame.auraInstanceID, barNumber)
   end
 end
 
--- Unregister a bar from a frame's hooks
-local function UnhookBarFromFrame(frame, barNumber)
-  if not frame or not hookedCDMFrames[frame] then return end
-  
-  hookedCDMFrames[frame].barNumbers[barNumber] = nil
-  
-  -- Rebuild the bar list for this frame
-  local newList = {}
-  for bn in pairs(hookedCDMFrames[frame].barNumbers) do
-    table.insert(newList, bn)
-  end
-  frameToBarMapping[frame] = newList
+-- Unregister a bar from a frame's aura hooks
+local function UnhookBarFromAuraFrame(frame, barNumber)
+  if not frame or not hookedAuraFrames[frame] then return end
+  hookedAuraFrames[frame].barNumbers[barNumber] = nil
 end
 
--- Clear all bar registrations (call on spec change, reload, etc.)
-local function ClearAllFrameHookRegistrations()
-  for frame in pairs(hookedCDMFrames) do
-    hookedCDMFrames[frame].barNumbers = {}
-    frameToBarMapping[frame] = {}
+-- Clear all bar registrations on spec change
+-- (hooksecurefunc hooks persist but become no-ops with empty barNumbers)
+local function ClearAllAuraHookRegistrations()
+  for frame, data in pairs(hookedAuraFrames) do
+    wipe(data.barNumbers)
+  end
+  wipe(totemBarNumbers)
+end
+
+-- Register frame hooks appropriate for the bar's track type
+local function RegisterBarFrameHooks(frame, barNumber, trackType)
+  if not frame then return end
+  if trackType == "pet" or trackType == "totem" or trackType == "ground" then
+    -- Totem/pet/ground: tracked via PLAYER_TOTEM_UPDATE event
+    totemBarNumbers[barNumber] = true
+    -- Also hook SetAuraInstanceInfo in case CDM sets aura data on totem frames
+    HookCDMFrameForAuraMap(frame, barNumber)
+  elseif trackType == "customAura" or trackType == "customCooldown" then
+    -- Custom: handled entirely by their own systems, no hooks needed
+  else
+    -- Buff (default) AND Debuff: hook for aura map building.
+    -- Buff bars use buffAuraToBarMap + UNIT_AURA("player").
+    -- Debuff bars use debuffAuraToBarMap + UNIT_AURA("target"), but ALSO
+    -- need the SetAuraInstanceInfo hook as a recovery path — without it,
+    -- if the initial UpdateAllBars call at combat start fails (CDM frame
+    -- timing race), there's no event-driven way to retry.
+    -- The hook fires UpdateBarBuffInfo which populates debuffAuraToBarMap,
+    -- enabling subsequent UNIT_AURA("target") O(1) lookups.
+    HookCDMFrameForAuraMap(frame, barNumber)
   end
 end
 
@@ -1848,9 +1886,9 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       barCdID = state.cachedBarFrame.cooldownInfo.cooldownID
                     end
                     barValid = (barCdID == activeCooldownID)
-                    -- v2.10.0: Hook frame for instant stack updates
+                    -- v3.0.0: Register frame hooks for event-driven updates
                     if barValid then
-                      HookCDMFrameForStackUpdates(state.cachedBarFrame, barNum)
+                      RegisterBarFrameHooks(state.cachedBarFrame, barNum, trackType)
                     end
                   end
                   local iconValid = false
@@ -1860,9 +1898,9 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       iconCdID = state.cachedFrame.cooldownInfo.cooldownID
                     end
                     iconValid = (iconCdID == activeCooldownID)
-                    -- v2.10.0: Hook frame for instant stack updates
+                    -- v3.0.0: Register frame hooks for event-driven updates
                     if iconValid then
-                      HookCDMFrameForStackUpdates(state.cachedFrame, barNum)
+                      RegisterBarFrameHooks(state.cachedFrame, barNum, trackType)
                     end
                   end
                   state.trackingOK = barValid or iconValid
@@ -1889,8 +1927,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       tostring(frameCdID), tostring(frameCdID == activeCooldownID)))
                     if frameCdID == activeCooldownID then
                       state.trackingOK = true
-                      -- v2.10.0: Hook frame for instant stack updates
-                      HookCDMFrameForStackUpdates(state.cachedFrame, barNum)
+                      -- v3.0.0: Register frame hooks for event-driven updates
+                      RegisterBarFrameHooks(state.cachedFrame, barNum, trackType)
                     else
                       state.trackingOK = false
                       state.cachedFrame = nil
@@ -1915,8 +1953,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                   state.trackingOK = true
                   state.cachedFrame = frame
                   validCooldownIDs[activeCooldownID] = "icon"
-                  -- v2.10.0: Hook frame for instant stack updates
-                  HookCDMFrameForStackUpdates(frame, barNum)
+                  -- v3.0.0: Register frame hooks for event-driven updates
+                  RegisterBarFrameHooks(frame, barNum, trackType)
                 else
                   -- Try bar frame
                   local barFrame = FindBarFrameByCooldownID(activeCooldownID)
@@ -1929,8 +1967,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                       state.trackingOK = true
                       state.cachedBarFrame = barFrame
                       validCooldownIDs[activeCooldownID] = "bar"
-                      -- v2.10.0: Hook frame for instant stack updates
-                      HookCDMFrameForStackUpdates(barFrame, barNum)
+                      -- v3.0.0: Register frame hooks for event-driven updates
+                      RegisterBarFrameHooks(barFrame, barNum, trackType)
                     else
                       state.trackingOK = false
                     end
@@ -1949,8 +1987,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                     state.trackingOK = true
                     state.cachedBarFrame = barFrame
                     validCooldownIDs[activeCooldownID] = "bar"
-                    -- v2.10.0: Hook frame for instant stack updates
-                    HookCDMFrameForStackUpdates(barFrame, barNum)
+                    -- v3.0.0: Register frame hooks for event-driven updates
+                    RegisterBarFrameHooks(barFrame, barNum, trackType)
                   else
                     state.trackingOK = false
                   end
@@ -1975,8 +2013,8 @@ function ns.API.ValidateAllBarTracking(validCooldownIDs, debugMode)
                   state.cachedFrame = recoveredFrame
                   validCooldownIDs[originalCdID] = "icon"
                   debugPrint(string.format("    RECOVERED via CDMEnhance, trackingOK=true"))
-                  -- v2.10.0: Hook frame for instant stack updates
-                  HookCDMFrameForStackUpdates(recoveredFrame, barNum)
+                  -- v3.0.0: Register frame hooks for event-driven updates
+                  RegisterBarFrameHooks(recoveredFrame, barNum, trackType)
                 end
               end
             end
@@ -2342,24 +2380,69 @@ UpdateBarBuffInfo = function(barNumber)
     state.cachedBarFrame = nil
   end
   
-  -- For buff/debuff tracking, find both bar and icon frames
-  local freshBarFrame = FindBarFrameByCooldownID(state.cooldownID)
-  local freshFrame = FindBuffFrameByCooldownID(state.cooldownID)
-    
-  if ns.debugMode and state.cooldownID and state.cooldownID > 0 and not freshFrame and not freshBarFrame then
-    print(string.format("|cffFF6600[ArcUI Debug]|r Bar %d: No frame for cdID %d", barNumber, state.cooldownID))
+  -- For buff/debuff tracking, validate cached frames (O(1) check)
+  -- Frames are discovered by ValidateAllBarTracking; we just verify
+  -- they haven't been recycled by checking cooldownID still matches.
+  -- cooldownID is non-secret, direct comparison is safe.
+  local frame = state.cachedFrame
+  local barFrame = state.cachedBarFrame
+  
+  -- Validate cached icon frame still matches our cooldownID
+  if frame then
+    local frameCdID = frame.cooldownID
+    if not frameCdID and frame.cooldownInfo then
+      frameCdID = frame.cooldownInfo.cooldownID
+    end
+    if frameCdID ~= state.cooldownID then
+      state.cachedFrame = nil
+      frame = nil
+    end
+  end
+  
+  -- Validate cached bar frame still matches our cooldownID
+  if barFrame then
+    local barCdID = barFrame.cooldownID
+    if not barCdID and barFrame.Icon and barFrame.Icon.cooldownID then
+      barCdID = barFrame.Icon.cooldownID
+    end
+    if not barCdID and barFrame.cooldownInfo then
+      barCdID = barFrame.cooldownInfo.cooldownID
+    end
+    if barCdID ~= state.cooldownID then
+      state.cachedBarFrame = nil
+      barFrame = nil
+    end
+  end
+  
+  -- FALLBACK: If both cached frames are invalid, try re-scanning to recover.
+  -- CDM can recycle frames, making our cached refs stale. Also handles the
+  -- case where ValidateAllBarTracking hasn't run yet for this bar.
+  -- This scan only runs on cache miss, not every call (O(1) when cache valid).
+  if not frame and not barFrame and state.cooldownID then
+    local freshBarFrame = FindBarFrameByCooldownID(state.cooldownID)
+    local freshFrame = FindBuffFrameByCooldownID(state.cooldownID)
+    if freshBarFrame then
+      state.cachedBarFrame = freshBarFrame
+      barFrame = freshBarFrame
+      -- Re-register hooks for the new frame
+      RegisterBarFrameHooks(freshBarFrame, barNumber, trackType)
+    end
+    if freshFrame then
+      state.cachedFrame = freshFrame
+      frame = freshFrame
+      RegisterBarFrameHooks(freshFrame, barNumber, trackType)
+    end
   end
     
-    -- We can get stacks/duration from ANY CDM frame using auraInstanceID
-    -- and C_UnitAuras APIs, so accept either bar OR icon source
-    if freshBarFrame or freshFrame then
+  if ns.debugMode and state.cooldownID and state.cooldownID > 0 and not frame and not barFrame then
+    print(string.format("|cffFF6600[ArcUI Debug]|r Bar %d: No cached frame for cdID %d", barNumber, state.cooldownID))
+  end
+    
+    -- Accept either bar OR icon source
+    if frame or barFrame then
       state.trackingOK = true
-      state.cachedBarFrame = freshBarFrame
-      state.cachedFrame = freshFrame
     else
       state.trackingOK = false
-      state.cachedBarFrame = nil
-      state.cachedFrame = nil
     end
   
   -- Check if we're in the spec change grace period
@@ -2557,6 +2640,7 @@ UpdateBarBuffInfo = function(barNumber)
   -- ═══════════════════════════════════════════════════════════════════
   -- BUFF TRACKING (default) - Auto-detect unit (player or target)
   -- Uses linkedSpellID (non-secret!) to handle CDM override situations
+  -- v3.0.0: Tracks effective auraInstanceID for direct UNIT_AURA("player") updates
   -- ═══════════════════════════════════════════════════════════════════
   else
     local detectedUnit = nil
@@ -2564,6 +2648,7 @@ UpdateBarBuffInfo = function(barNumber)
     local useBaseSpell = barConfig.tracking.useBaseSpell  -- Legacy support
     -- Respect sourceType preference: use icon frame for icon source, bar frame for bar source
     local cdmFrame = sourceType == "bar" and barFrame or frame or barFrame
+    local buffAuraID = nil  -- v3.0.0: Track which auraInstanceID we resolved
     
     -- NEW: trackedSpellID approach for buffs
     -- When user selects a specific spell, we track it using CDM's auraInstanceID
@@ -2596,6 +2681,7 @@ UpdateBarBuffInfo = function(barNumber)
           -- Cache this auraInstanceID for when CDM switches to different spell
           state.trackedAuraInstanceID = auraInstanceID
           state.trackedAuraUnit = auraDataUnit
+          buffAuraID = auraInstanceID
         else
           active = false
           stacks = 0
@@ -2608,6 +2694,7 @@ UpdateBarBuffInfo = function(barNumber)
           active = true
           stacks = auraData.applications or 0
           detectedUnit = unit
+          buffAuraID = state.trackedAuraInstanceID
         else
           -- Cached aura expired - clear it
           state.trackedAuraInstanceID = nil
@@ -2633,6 +2720,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          buffAuraID = auraInstanceID
         else
           active = false
           stacks = 0
@@ -2643,6 +2731,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          buffAuraID = state.buffAuraInstanceID
         else
           state.buffAuraInstanceID = nil
           active = false
@@ -2671,6 +2760,7 @@ UpdateBarBuffInfo = function(barNumber)
         
         if auraData then
           stacks = auraData.applications or 0
+          buffAuraID = auraInstanceID
           if ns.debugMode then
             print(string.format("|cff00ff00[ArcUI Debug]|r Bar %d BUFF: auraInstID=%s, unit=%s, stacks=%s", 
               barNumber, tostring(auraInstanceID), tostring(detectedUnit), tostring(auraData.applications)))
@@ -2683,6 +2773,12 @@ UpdateBarBuffInfo = function(barNumber)
         active = false
         stacks = 0
       end
+    end
+    
+    -- v3.0.0: Register this buff aura for direct UNIT_AURA("player") updates
+    UnregisterBuffAuraForBar(barNumber)  -- Clear old mapping first
+    if buffAuraID then
+      RegisterBuffAuraForBar(buffAuraID, barNumber)
     end
     
     -- Store detected unit for durationStacksRef creation later
@@ -3264,92 +3360,131 @@ end
 -- EVENT HANDLING
 -- ===================================================================
 local eventFrame = CreateFrame("Frame")
--- v2.13.0: UNIT_AURA registered for "target" only with auraInstanceID matching.
--- CDM handles player UNIT_AURA via per-frame RefreshData hooks (v2.10.0).
--- For target debuffs, CDM's GetTargetAurasCached() can serve stale data
--- if SPELL_UPDATE_COOLDOWN poisons the cache in the same GetTime() tick.
--- This direct handler uses unitAuraUpdateInfo to match ONLY our tracked
--- auraInstanceIDs and reads from C_UnitAuras API (bypasses CDM cache).
--- Cost: O(updated_auras × registered_debuff_bars), typically O(1×1) = O(1).
+-- v3.0.0: UNIT_AURA registered for BOTH "player" AND "target".
+-- "player" → buffAuraToBarMap for O(1) buff stack updates (replaces RefreshData hooks)
+-- "target" → debuffAuraToBarMap for O(1) debuff stack updates (v2.13.0)
+-- Both read from C_UnitAuras API directly, bypassing CDM's cache.
+-- PLAYER_TOTEM_UPDATE → totemBarNumbers for totem/pet/ground bar updates.
+-- Cost: O(updated_auras × registered_bars), typically O(1×1) = O(1).
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 eventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-eventFrame:RegisterUnitEvent("UNIT_AURA", "target")
+eventFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
+eventFrame:RegisterUnitEvent("UNIT_AURA", "player", "target")
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
   if event == "UNIT_AURA" then
-    -- v2.13.0: Targeted debuff stack update via auraInstanceID matching.
-    -- Only fires for "target" (RegisterUnitEvent filters).
-    -- Matches unitAuraUpdateInfo against our debuffAuraToBarMap for O(1) lookup.
     local unit, unitAuraUpdateInfo = ...
-    if unit == "target" and unitAuraUpdateInfo then
-      local barsToUpdate = nil  -- Lazy-init: only allocate if we find matches
-      
-      -- Check updated auras (stack changes, duration refreshes)
-      if unitAuraUpdateInfo.updatedAuraInstanceIDs then
-        for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-          local bars = debuffAuraToBarMap[auraInstanceID]
-          if bars then
-            if not barsToUpdate then barsToUpdate = {} end
-            for barNum in pairs(bars) do
-              barsToUpdate[barNum] = true
-            end
+    if not unitAuraUpdateInfo then return end
+    
+    -- Select the correct aura map based on unit
+    local auraMap, trackTypeFilter, isPlayer
+    if unit == "player" then
+      auraMap = buffAuraToBarMap
+      trackTypeFilter = nil  -- buff is default, check "not debuff/pet/totem/ground/custom"
+      isPlayer = true
+    elseif unit == "target" then
+      auraMap = debuffAuraToBarMap
+      trackTypeFilter = "debuff"
+      isPlayer = false
+    else
+      return
+    end
+    
+    local barsToUpdate = nil  -- Lazy-init: only allocate if we find matches
+    
+    -- Check updated auras (stack changes, duration refreshes)
+    if unitAuraUpdateInfo.updatedAuraInstanceIDs then
+      for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
+        local bars = auraMap[auraInstanceID]
+        if bars then
+          if not barsToUpdate then barsToUpdate = {} end
+          for barNum in pairs(bars) do
+            barsToUpdate[barNum] = true
           end
         end
       end
-      
-      -- Check removed auras (debuff expired/dispelled)
-      if unitAuraUpdateInfo.removedAuraInstanceIDs then
-        for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-          local bars = debuffAuraToBarMap[auraInstanceID]
-          if bars then
-            if not barsToUpdate then barsToUpdate = {} end
-            for barNum in pairs(bars) do
-              barsToUpdate[barNum] = true
-            end
-            -- Clean up mapping for removed aura
-            debuffAuraToBarMap[auraInstanceID] = nil
+    end
+    
+    -- Check removed auras (buff/debuff expired/dispelled/consumed)
+    if unitAuraUpdateInfo.removedAuraInstanceIDs then
+      for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
+        local bars = auraMap[auraInstanceID]
+        if bars then
+          if not barsToUpdate then barsToUpdate = {} end
+          for barNum in pairs(bars) do
+            barsToUpdate[barNum] = true
           end
+          -- Clean up mapping for removed aura
+          auraMap[auraInstanceID] = nil
         end
       end
-      
-      -- Check added auras (new debuff applied — might match a bar that
-      -- hasn't discovered its auraInstanceID yet)
-      if unitAuraUpdateInfo.addedAuras then
-        -- Only scan if we have debuff bars without a mapped aura
-        local db = ns.API.GetDB()
-        if db and db.bars then
-          for barNum = 1, 30 do
-            local barConfig = db.bars[barNum]
-            if barConfig and barConfig.tracking and barConfig.tracking.enabled then
-              local trackType = barConfig.tracking.trackType or "buff"
-              if trackType == "debuff" then
-                -- Check if this bar already has a mapped aura
-                local hasMappedAura = false
-                for _, bars in pairs(debuffAuraToBarMap) do
-                  if bars[barNum] then hasMappedAura = true; break end
-                end
-                if not hasMappedAura then
-                  -- Bar needs to discover its aura — update it
-                  if not barsToUpdate then barsToUpdate = {} end
-                  barsToUpdate[barNum] = true
-                end
+    end
+    
+    -- Check added auras (new buff/debuff applied — might match a bar
+    -- that hasn't discovered its auraInstanceID yet)
+    if unitAuraUpdateInfo.addedAuras then
+      local db = ns.API.GetDB()
+      if db and db.bars then
+        for barNum = 1, 30 do
+          local barConfig = db.bars[barNum]
+          if barConfig and barConfig.tracking and barConfig.tracking.enabled then
+            local barTrackType = barConfig.tracking.trackType or "buff"
+            local matchesUnit = false
+            
+            if isPlayer then
+              -- Player auras: match buff bars (default) — exclude debuff/pet/totem/ground/custom
+              matchesUnit = (barTrackType == "buff" or barTrackType == nil or barTrackType == "")
+                and barTrackType ~= "debuff"
+                and barTrackType ~= "pet"
+                and barTrackType ~= "totem"
+                and barTrackType ~= "ground"
+                and barTrackType ~= "customAura"
+                and barTrackType ~= "customCooldown"
+            else
+              -- Target auras: match debuff bars only
+              matchesUnit = (barTrackType == "debuff")
+            end
+            
+            if matchesUnit then
+              -- Check if this bar already has a mapped aura
+              local hasMappedAura = false
+              for _, bars in pairs(auraMap) do
+                if bars[barNum] then hasMappedAura = true; break end
+              end
+              if not hasMappedAura then
+                -- Bar needs to discover its aura — update it
+                if not barsToUpdate then barsToUpdate = {} end
+                barsToUpdate[barNum] = true
               end
             end
           end
         end
       end
-      
-      -- Update only matched bars (bypasses CDM cache entirely)
-      if barsToUpdate then
-        for barNum in pairs(barsToUpdate) do
-          UpdateBarBuffInfo(barNum)
-        end
-        if StartDurationBarTicker then
-          StartDurationBarTicker()
-        end
+    end
+    
+    -- Update only matched bars (reads from C_UnitAuras, bypasses CDM cache)
+    if barsToUpdate then
+      for barNum in pairs(barsToUpdate) do
+        UpdateBarBuffInfo(barNum)
+      end
+      if StartDurationBarTicker then
+        StartDurationBarTicker()
+      end
+    end
+  elseif event == "PLAYER_TOTEM_UPDATE" then
+    -- v3.0.0: Direct event handler for totem/pet/ground bars.
+    -- CDM processes PLAYER_TOTEM_UPDATE → SetTotemData/ClearTotemData → RefreshData
+    -- on its own frames first (viewer event registration fires before ours).
+    -- By the time our handler runs, frame.totemData is already updated.
+    if next(totemBarNumbers) then
+      for barNum in pairs(totemBarNumbers) do
+        UpdateBarBuffInfo(barNum)
+      end
+      if StartDurationBarTicker then
+        StartDurationBarTicker()
       end
     end
   elseif event == "PLAYER_TARGET_CHANGED" then
@@ -3423,8 +3558,9 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     -- Invalidate cross-spec cooldownID cache first
     InvalidateSpellToCooldownIDCache()
     
-    -- v2.10.0: Clear frame hook registrations (frames may change on spec change)
-    ClearAllFrameHookRegistrations()
+    -- v3.0.0: Clear aura hook registrations and buff aura map (frames may change on spec change)
+    ClearAllAuraHookRegistrations()
+    ClearAllBuffAuraMappings()
     
     -- v2.13.0: Clear debuff aura reverse lookup
     ClearAllDebuffAuraMappings()

@@ -15,24 +15,24 @@ OPie_SavedData = {
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
-["MotionAction"] = true,
+["SliceBinding"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 },
-["SliceBinding"] = true,
+["MotionAction"] = true,
+["InteractionMode"] = 2,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
+["RingScale"] = 1.200000047683716,
+["ShowCooldowns"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 ["Utility"] = "6",
 },
-["ShowCooldowns"] = true,
-["RingScale"] = 1.200000047683716,
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 },
 },
 ["PersistentStorage"] = {

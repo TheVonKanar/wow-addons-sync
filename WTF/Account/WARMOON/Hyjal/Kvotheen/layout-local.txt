@@ -29,9 +29,9 @@ W: 128
 H: 64
 Frame: CCS_Options
 FrameLevel: 0
-Anchor: RIGHT
-X: -45
-Y: -36
+Anchor: TOP
+X: 340
+Y: -160
 W: 900
 H: 660
 Frame: ClickableRaidBuffsOptionsPanel

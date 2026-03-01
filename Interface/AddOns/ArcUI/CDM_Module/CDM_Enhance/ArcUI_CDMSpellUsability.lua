@@ -287,7 +287,7 @@ function ns.CDMSpellUsability.HookFrame(frame)
             if prev ~= isUsable then
                 -- State flipped (or first fire: nil ~= bool) — update alpha
                 if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
-                    ns.CDMEnhance.OnCooldownEvent(self)
+                    ns.CDMEnhance.OnCooldownEvent(self, nil, nil, true)  -- forceVisuals: shadow state unchanged but usability flipped
                 end
                 self._arcPrevUsable = isUsable
             end
@@ -533,7 +533,7 @@ function ns.CDMSpellUsability.RefreshAll()
             -- Route through OnCooldownEvent for proper guards (hidden-by-bar,
             -- spec-change protection) instead of direct ApplyCooldownStateVisuals
             if ns.CDMEnhance.OnCooldownEvent then
-                ns.CDMEnhance.OnCooldownEvent(frame)
+                ns.CDMEnhance.OnCooldownEvent(frame, nil, nil, true)
             end
         end
     end
@@ -559,7 +559,7 @@ function ns.CDMSpellUsability.RefreshFrame(cdID)
         -- Re-run CooldownState so usability alpha gets applied
         -- Route through OnCooldownEvent for proper guards
         if ns.CDMEnhance.OnCooldownEvent then
-            ns.CDMEnhance.OnCooldownEvent(frame)
+            ns.CDMEnhance.OnCooldownEvent(frame, nil, nil, true)
         end
     end
 end

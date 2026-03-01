@@ -165,22 +165,83 @@ local pendingVisibility = {}  -- [container] = true/false (show/hide)
 
 -- Combat-safe Show/Hide for group containers.
 -- Uses ALPHA-ONLY visibility: containers stay :Show()n at all times,
--- and we toggle SetAlpha(0/1) to show/hide them visually.
+-- and we toggle SetAlpha to show/hide them visually.
+-- targetAlpha: number 0–1 (0 = fully hidden, 1 = fully visible)
 -- This avoids the problem where :Hide() is called out of combat, then
 -- SetAlpha(1) in combat has no effect because the frame is still hidden.
 -- NOTE: Click-through handling is done separately by ApplyClickThrough.
-local function SafeShowContainer(container, shouldShow)
+local function SafeShowContainer(container, targetAlpha)
     if not container then return end
     -- Always ensure the container is :Show()n so alpha has visual effect.
     -- Use pcall in case of edge cases with protected frames during combat.
     if not container:IsShown() then
         local ok = pcall(container.Show, container)
-        if not ok and shouldShow then
+        if not ok and targetAlpha > 0 then
             -- Show() failed (likely combat lockdown on protected parent) — queue for later
             pendingVisibility[container] = true
         end
     end
-    container:SetAlpha(shouldShow and 1 or 0)
+    container:SetAlpha(targetAlpha)
+    
+    -- ═══════════════════════════════════════════════════════════════════
+    -- PROPAGATE GROUP HIDDEN STATE TO CHILD ICON FRAMES
+    --
+    -- When a group is hidden/faded via visibility conditions, text
+    -- elements with SetIgnoreParentAlpha(true) (cooldown text, charge
+    -- text, custom labels) would still render at full brightness.
+    -- We must force IgnoreParentAlpha off on all such elements so they
+    -- fade with the container. When the group returns to full alpha,
+    -- the normal CooldownState update cycle will naturally re-enable
+    -- IgnoreParentAlpha where needed.
+    -- ═══════════════════════════════════════════════════════════════════
+    local isHidden = targetAlpha < 1
+    container._arcGroupHidden = isHidden
+    
+    if isHidden then
+        -- Walk all direct children (icon frames) and kill IgnoreParentAlpha
+        local children = {container:GetChildren()}
+        for _, child in ipairs(children) do
+            -- Mark frame so CooldownState/CDMEnhance hooks know not to re-enable
+            child._arcGroupHidden = true
+            
+            -- Force cooldown text to respect parent alpha
+            if child._arcCooldownText and child._arcCooldownText.SetIgnoreParentAlpha then
+                child._arcCooldownText:SetIgnoreParentAlpha(false)
+            end
+            -- Force charge text to respect parent alpha
+            if child._arcChargeText and child._arcChargeText.SetIgnoreParentAlpha then
+                child._arcChargeText:SetIgnoreParentAlpha(false)
+            end
+            -- Force native Cooldown widget text
+            if child.Cooldown then
+                if child.Cooldown.Text and child.Cooldown.Text.SetIgnoreParentAlpha then
+                    child.Cooldown.Text:SetIgnoreParentAlpha(false)
+                end
+                if child.Cooldown.SetIgnoreParentAlpha then
+                    child.Cooldown:SetIgnoreParentAlpha(false)
+                end
+                -- Walk Cooldown fontstrings
+                for _, region in ipairs({child.Cooldown:GetRegions()}) do
+                    if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha then
+                        region:SetIgnoreParentAlpha(false)
+                    end
+                end
+            end
+            -- Force custom label containers (3 slots)
+            for _, clKey in ipairs({"_arcCL1", "_arcCL2", "_arcCL3"}) do
+                local cl = child[clKey]
+                if cl and cl.SetIgnoreParentAlpha then
+                    cl:SetIgnoreParentAlpha(false)
+                end
+            end
+        end
+    else
+        -- Clear hidden flag so CooldownState can re-enable IgnoreParentAlpha
+        local children = {container:GetChildren()}
+        for _, child in ipairs(children) do
+            child._arcGroupHidden = nil
+        end
+    end
 end
 ns.CDMGroups.SafeShowContainer = SafeShowContainer
 
@@ -868,6 +929,86 @@ ns.CDMGroups.isCasting = false     -- Track casting/channeling state for visibil
 ns.CDMGroups.isStealthed = false   -- Track stealth state for visibility
 ns.CDMGroups.isFlying = false      -- Track flying state for visibility
 ns.CDMGroups.isSwimming = false    -- Track swimming state for visibility
+ns.CDMGroups.druidForm = "caster"  -- Track current druid form for visibility
+ns.CDMGroups.currentStance = "none" -- Track current stance/form for all classes
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- SHAPESHIFT / STANCE CATEGORY HELPER
+-- Returns a category string for the current form/stance.
+-- Works across all classes that use the stance bar.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Druid: GetShapeshiftFormID() returns global IDs (reliable, spec-independent)
+local DRUID_FORM_ID_TO_CATEGORY = {
+    [1]  = "cat",      -- Cat Form
+    [5]  = "bear",     -- Bear Form (Dire Bear is same ID)
+    [31] = "moonkin",  -- Moonkin Form
+    [35] = "moonkin",  -- Moonkin Form (alternate appearance)
+    [3]  = "travel",   -- Travel Form (land)
+    [4]  = "travel",   -- Aquatic Form (water travel)
+    [27] = "travel",   -- Swift Flight Form
+    [29] = "travel",   -- Flight Form
+    [2]  = "tree",     -- Tree of Life
+    [36] = "tree",     -- Treant Form (alternate tree)
+}
+
+-- Warrior/Priest/Rogue: GetShapeshiftFormID() is nil or unreliable,
+-- so we identify forms by scanning GetShapeshiftFormInfo(i) spellIDs.
+local STANCE_SPELL_TO_CATEGORY = {
+    -- Warrior stances
+    [386164] = "battleStance",      -- Battle Stance
+    [386208] = "battleStance",      -- Battle Stance (alternate spellID)
+    [386196] = "defensiveStance",   -- Defensive Stance
+    -- Priest
+    [232698] = "shadowform",        -- Shadowform
+    -- Rogue stealth is handled by hideStealthed already, but map it for completeness
+    [1784]   = "stealth",           -- Stealth
+    [115191] = "stealth",           -- Stealth (Subtlety)
+}
+
+-- Cache: maps stance bar index → category for current class.
+-- Rebuilt on UPDATE_SHAPESHIFT_FORMS or first call.
+local stanceIndexCache = nil
+local stanceCacheDirty = true
+
+local function RebuildStanceIndexCache()
+    stanceIndexCache = {}
+    local numForms = GetNumShapeshiftForms and GetNumShapeshiftForms() or 0
+    if type(numForms) ~= "number" then return end -- secret guard
+    for i = 1, numForms do
+        if GetShapeshiftFormInfo then
+            local icon, active, castable, spellID = GetShapeshiftFormInfo(i)
+            if spellID and type(spellID) == "number" then
+                stanceIndexCache[i] = STANCE_SPELL_TO_CATEGORY[spellID] or ("stance_" .. spellID)
+            end
+        end
+    end
+    stanceCacheDirty = false
+end
+
+local function GetDruidFormCategory()
+    local formID = GetShapeshiftFormID and GetShapeshiftFormID()
+    if not formID or formID == 0 then return "caster" end
+    if issecretvalue and issecretvalue(formID) then return "unknown" end
+    return DRUID_FORM_ID_TO_CATEGORY[formID] or "other"
+end
+
+local function GetCurrentFormCategory()
+    local _, playerClass = UnitClass("player")
+    
+    -- Druid: use GetShapeshiftFormID (global, reliable)
+    if playerClass == "DRUID" then
+        return GetDruidFormCategory()
+    end
+    
+    -- All other classes: use stance bar index → spellID mapping
+    local formIdx = GetShapeshiftForm and GetShapeshiftForm()
+    if not formIdx or formIdx == 0 then return "none" end
+    if issecretvalue and issecretvalue(formIdx) then return "unknown" end
+    
+    if stanceCacheDirty then RebuildStanceIndexCache() end
+    return stanceIndexCache[formIdx] or "none"
+end
 
 -- Refresh ALL visibility state variables.
 -- Called on PLAYER_REGEN_ENABLED (leaving combat) and zone changes
@@ -882,6 +1023,8 @@ local function RefreshAllVisibilityState()
     ns.CDMGroups.isResting = IsResting() and true or false
     ns.CDMGroups.isDragonriding = (UnitPowerBarID("player") == 631)
     ns.CDMGroups.isStealthed = IsStealthed() and true or false
+    ns.CDMGroups.druidForm = GetDruidFormCategory()
+    ns.CDMGroups.currentStance = GetCurrentFormCategory()
 end
 ns.CDMGroups.RefreshAllVisibilityState = RefreshAllVisibilityState
 
@@ -957,6 +1100,7 @@ local function MakeDefaultGroup(x, y, borderR, borderG, borderB)
         lockGridSize = false,
         containerPadding = -4,  -- Padding around icons in container (-4 = tight/internal, 0 = compact, 4 = classic)
         visibility = "always",  -- "always", "combat" (In Combat Only), or "ooc" (Out of Combat Only)
+        hiddenAlpha = 0,  -- Alpha when visibility conditions hide the group (0 = fully hidden)
         borderColor = { r = borderR, g = borderG, b = borderB, a = 1 },
         bgColor = { r = 0, g = 0, b = 0, a = 0.6 },
         layout = { 
@@ -1020,6 +1164,7 @@ local function SerializeDefaultGroupToLayoutData(groupData)
         -- Visibility
         visibility = groupData.visibility or "always",
         visibilityLogic = groupData.visibilityLogic,
+        hiddenAlpha = groupData.hiddenAlpha,
         -- Frame strata
         frameStrata = groupData.frameStrata,
         frameLevel = groupData.frameLevel,
@@ -2707,6 +2852,7 @@ local function SerializeGroupToData(group, overrideLayout)
         containerPadding = group.containerPadding,
         visibility = type(group.visibility) == "table" and DeepCopy(group.visibility) or (group.visibility or "always"),
         visibilityLogic = group.visibilityLogic,
+        hiddenAlpha = group.hiddenAlpha,
         borderColor = DeepCopy(group.borderColor),
         bgColor = DeepCopy(group.bgColor),
         frameStrata = group.frameStrata,
@@ -2763,6 +2909,7 @@ local function SerializeGroupToLayoutData(group)
         bgColor = group.bgColor and DeepCopy(group.bgColor),
         visibility = type(group.visibility) == "table" and DeepCopy(group.visibility) or (group.visibility or "always"),
         visibilityLogic = group.visibilityLogic,
+        hiddenAlpha = group.hiddenAlpha,
         -- Frame strata
         frameStrata = group.frameStrata,
         frameLevel = group.frameLevel,
@@ -3004,6 +3151,7 @@ GetDefaultSpecData = function()
                             containerPadding = layoutData.containerPadding,
                             visibility = layoutData.visibility or "always",
                             visibilityLogic = layoutData.visibilityLogic,
+                            hiddenAlpha = layoutData.hiddenAlpha,
                             frameStrata = layoutData.frameStrata,
                             frameLevel = layoutData.frameLevel,
                             borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -3257,6 +3405,7 @@ local function EnsureLayoutProfiles(specData)
                         bgColor = group.bgColor and DeepCopy(group.bgColor),
                         visibility = group.visibility,
                         visibilityLogic = group.visibilityLogic,
+                        hiddenAlpha = group.hiddenAlpha,
                         frameStrata = group.frameStrata,
                         frameLevel = group.frameLevel,
                     }
@@ -3292,6 +3441,7 @@ local function EnsureLayoutProfiles(specData)
                         bgColor = groupData.bgColor and DeepCopy(groupData.bgColor),
                         visibility = groupData.visibility,
                         visibilityLogic = groupData.visibilityLogic,
+                        hiddenAlpha = groupData.hiddenAlpha,
                     }
                 end
             end
@@ -3431,6 +3581,7 @@ local function EnsureLayoutProfiles(specData)
                         bgColor = groupData.bgColor and DeepCopy(groupData.bgColor),
                         visibility = groupData.visibility,
                         visibilityLogic = groupData.visibilityLogic,
+                        hiddenAlpha = groupData.hiddenAlpha,
                     }
                 end
             end
@@ -3610,6 +3761,7 @@ function ns.CDMGroups.CreateProfile(profileName)
                 -- Visibility
                 visibility = group.visibility,
                 visibilityLogic = group.visibilityLogic,
+                hiddenAlpha = group.hiddenAlpha,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
@@ -3920,6 +4072,7 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
                 -- Visibility
                 visibility = group.visibility,
                 visibilityLogic = group.visibilityLogic,
+                hiddenAlpha = group.hiddenAlpha,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
@@ -4653,6 +4806,7 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 end
                 if layoutData.visibilityLogic ~= nil then
                     group.visibilityLogic = layoutData.visibilityLogic
+                    group.hiddenAlpha = layoutData.hiddenAlpha
                 end
                 -- Position
                 if layoutData.position then
@@ -5927,7 +6081,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     -- This catches containers from previous visits to this spec
     for groupName, group in pairs(ns.CDMGroups.specGroups[newSpec] or {}) do
         if group.container then
-            SafeShowContainer(group.container, false)
+            SafeShowContainer(group.container, 0)
             -- Also explicitly clear backdrop to prevent flash of old settings
             group.container:SetBackdropBorderColor(0, 0, 0, 0)
             group.container:SetBackdropColor(0, 0, 0, 0)
@@ -5937,7 +6091,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     -- Also hide current groups (in case specGroups reference is different)
     for groupName, group in pairs(ns.CDMGroups.groups or {}) do
         if group.container then
-            SafeShowContainer(group.container, false)
+            SafeShowContainer(group.container, 0)
             group.container:SetBackdropBorderColor(0, 0, 0, 0)
             group.container:SetBackdropColor(0, 0, 0, 0)
         end
@@ -5988,6 +6142,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                         containerPadding = layoutData.containerPadding,
                         visibility = layoutData.visibility or "always",
                         visibilityLogic = layoutData.visibilityLogic,
+                        hiddenAlpha = layoutData.hiddenAlpha,
                         frameStrata = layoutData.frameStrata,
                         frameLevel = layoutData.frameLevel,
                         borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -6053,7 +6208,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     -- Step 6: Groups are now fresh from DB, just show containers
     -- DON'T call Layout() here - specChangeInProgress is still true and groups are empty anyway
     for groupName, group in pairs(ns.CDMGroups.groups) do
-        if group.container then SafeShowContainer(group.container, true) end
+        if group.container then SafeShowContainer(group.container, 1) end
         if group.UpdateAppearance then group.UpdateAppearance() end
         if group.UpdateDragBarPosition then group.UpdateDragBarPosition() end
         if ns.CDMGroups.dragModeEnabled then
@@ -6476,6 +6631,7 @@ function ns.CDMGroups.CreateGroup(name)
             containerPadding = defaultTemplate.containerPadding or -4,
             visibility = defaultTemplate.visibility or "always",
             visibilityLogic = defaultTemplate.visibilityLogic,
+            hiddenAlpha = defaultTemplate.hiddenAlpha,
             borderColor = defaultTemplate.borderColor and DeepCopy(defaultTemplate.borderColor),
             bgColor = defaultTemplate.bgColor and DeepCopy(defaultTemplate.bgColor),
             gridRows = defaultTemplate.layout and defaultTemplate.layout.gridRows or 2,
@@ -6526,6 +6682,7 @@ function ns.CDMGroups.CreateGroup(name)
         showBackground = layoutData.showBackground or false,
         visibility = layoutData.visibility or "always",
         visibilityLogic = layoutData.visibilityLogic,
+        hiddenAlpha = layoutData.hiddenAlpha,
         borderColor = layoutData.borderColor,
         bgColor = layoutData.bgColor,
         frameStrata = layoutData.frameStrata,
@@ -6553,6 +6710,7 @@ function ns.CDMGroups.CreateGroup(name)
         frameLevel = db.frameLevel or 1,
         visibility = db.visibility,  -- "always", "combat", or "ooc"
         visibilityLogic = db.visibilityLogic,
+        hiddenAlpha = db.hiddenAlpha,
         showBorder = db.showBorder,
         showBackground = db.showBackground,
         borderColor = DeepCopy(borderColor),
@@ -7028,6 +7186,7 @@ function ns.CDMGroups.CreateGroup(name)
     group.showBackground = db.showBackground
     group.visibility = db.visibility
     group.visibilityLogic = db.visibilityLogic
+    group.hiddenAlpha = db.hiddenAlpha
     group.borderColor = db.borderColor
     group.bgColor = db.bgColor
     
@@ -11707,6 +11866,7 @@ function ns.CDMGroups.CreateGroup(name)
                     bgColor = group.bgColor and DeepCopy(group.bgColor),
                     visibility = group.visibility,
                     visibilityLogic = group.visibilityLogic,
+                    hiddenAlpha = group.hiddenAlpha,
                     frameStrata = group.frameStrata,
                     frameLevel = group.frameLevel,
                 }
@@ -12322,6 +12482,55 @@ function ns.CDMGroups.UpdateGroupSelectionVisuals()
 end
 
 -- Update visibility for all groups based on combat/mounted state and options panel
+-- Invalidate cached visibility state so the next UpdateGroupVisibility
+-- re-evaluates and re-applies SafeShowContainer for every group.
+-- Call on: profile change, visibility settings edit, group rebuild.
+function ns.CDMGroups.InvalidateVisibilityCache()
+    for _, group in pairs(ns.CDMGroups.groups) do
+        group._arcLastVisState = nil
+        group._arcHasVisConditions = nil  -- Force recompute
+    end
+end
+
+-- Pre-compute whether a group has ANY visibility conditions configured.
+-- When false, the group always shows and we skip all condition evaluation.
+-- Called once per group on first tick or after settings change.
+local function ComputeHasVisConditions(group)
+    local vis = group.visibility
+    if not vis then
+        group._arcHasVisConditions = false
+        return false
+    end
+    if type(vis) == "table" then
+        -- Check if ANY flag is set in the table
+        if vis.hideAlways or vis.hideOOC or vis.hideInCombat
+            or vis.hideMounted or vis.hideInVehicle or vis.hideInPetBattle
+            or vis.hideDead or vis.hideSolo or vis.hideInGroup
+            or vis.hideInRaid or vis.hideInInstance or vis.hideResting
+            or vis.hideInEncounter or vis.hidePvP or vis.hideDragonriding
+            or vis.hideNoTarget or vis.hideHasTarget
+            or vis.hideNotCasting or vis.hideCasting
+            or vis.hideStealthed or vis.hideFlying or vis.hideSwimming
+            or vis.hideInCatForm or vis.hideInBearForm or vis.hideInMoonkinForm
+            or vis.hideInTravelForm or vis.hideInTreeForm or vis.hideInCasterForm
+            or vis.hideInBattleStance or vis.hideInDefensiveStance
+            or vis.hideInShadowform or vis.hideInNoStance then
+            group._arcHasVisConditions = true
+            return true
+        end
+        group._arcHasVisConditions = false
+        return false
+    end
+    -- Old string format
+    if vis == "always" then
+        group._arcHasVisConditions = false
+        return false
+    end
+    -- "combat", "ooc", "never" all have conditions
+    group._arcHasVisConditions = true
+    return true
+end
+
 function ns.CDMGroups.UpdateGroupVisibility()
     -- MASTER TOGGLE: Do nothing if CDMGroups is disabled
     if not _cdmGroupsEnabled then return end
@@ -12338,168 +12547,227 @@ function ns.CDMGroups.UpdateGroupVisibility()
     
     for groupName, group in pairs(ns.CDMGroups.groups) do
         if group.container then
-            local shouldShow = true
+            -- Lazy-compute conditions flag (once per group until invalidated)
+            if group._arcHasVisConditions == nil then
+                ComputeHasVisConditions(group)
+            end
             
-            -- Handle visibility setting (supports both old string and new table format)
-            local vis = group.visibility
-            
-            if type(vis) == "table" then
-                -- NEW: Multi-select table format
-                -- Each flag means "hide when this condition is true"
-                -- visibilityLogic controls how conditions combine:
-                --   "any" (default): Hide if ANY condition is met (OR logic)
-                --   "all": Hide only when ALL checked conditions are met (AND logic)
-                if vis.hideAlways then
-                    shouldShow = false
-                else
-                    local logic = group.visibilityLogic or "any"
-                    
-                    -- Build list of condition results for checked flags only
-                    -- Each entry: true = condition is currently met (would hide)
-                    local conditionResults = {}
-                    local hasAnyCondition = false
-                    
-                    if vis.hideOOC then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.inCombat
-                    end
-                    if vis.hideInCombat then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inCombat
-                    end
-                    if vis.hideMounted then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isMounted
-                    end
-                    if vis.hideInVehicle then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inVehicle
-                    end
-                    if vis.hideInPetBattle then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inPetBattle
-                    end
-                    if vis.hideDead then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isDead
-                    end
-                    if vis.hideSolo then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.inGroup
-                    end
-                    if vis.hideInGroup then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inGroup
-                    end
-                    if vis.hideInRaid then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inRaid
-                    end
-                    if vis.hideInInstance then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inInstance
-                    end
-                    if vis.hideResting then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isResting
-                    end
-                    if vis.hideInEncounter then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.inEncounter
-                    end
-                    if vis.hidePvP then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isPvP
-                    end
-                    if vis.hideDragonriding then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isDragonriding
-                    end
-                    if vis.hideNoTarget then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.hasTarget
-                    end
-                    if vis.hideHasTarget then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.hasTarget
-                    end
-                    if vis.hideNotCasting then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = not ns.CDMGroups.isCasting
-                    end
-                    if vis.hideCasting then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isCasting
-                    end
-                    if vis.hideStealthed then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isStealthed
-                    end
-                    if vis.hideFlying then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isFlying
-                    end
-                    if vis.hideSwimming then
-                        hasAnyCondition = true
-                        conditionResults[#conditionResults + 1] = ns.CDMGroups.isSwimming
-                    end
-                    
-                    -- Evaluate conditions based on logic mode
-                    if hasAnyCondition then
-                        if logic == "all" then
-                            -- AND mode: Hide only when ALL checked conditions are met
-                            local allMet = true
-                            for i = 1, #conditionResults do
-                                if not conditionResults[i] then
-                                    allMet = false
-                                    break
+            -- ═══════════════════════════════════════════════════════════════
+            -- FAST PATH: No conditions configured → always visible.
+            -- Set alpha=1 on first pass, then never touch the container
+            -- again. This allows external addons (e.g. MouseoverActionSettings)
+            -- to control the container's alpha without us stomping it.
+            -- ═══════════════════════════════════════════════════════════════
+            if not group._arcHasVisConditions then
+                if group._arcLastVisState == nil then
+                    -- First evaluation: ensure container is shown, then hands off
+                    group._arcLastVisState = 1
+                    SafeShowContainer(group.container, 1)
+                end
+                -- Nothing else to do — skip all condition evaluation
+            else
+                -- ═══════════════════════════════════════════════════════════
+                -- CONDITION PATH: Evaluate visibility rules
+                -- ═══════════════════════════════════════════════════════════
+                local shouldShow = true
+                local vis = group.visibility
+                
+                if type(vis) == "table" then
+                    if vis.hideAlways then
+                        shouldShow = false
+                    else
+                        local logic = group.visibilityLogic or "any"
+                        
+                        -- Build list of condition results for checked flags only
+                        local conditionResults = {}
+                        local hasAnyCondition = false
+                        
+                        if vis.hideOOC then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = not ns.CDMGroups.inCombat
+                        end
+                        if vis.hideInCombat then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inCombat
+                        end
+                        if vis.hideMounted then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isMounted
+                        end
+                        if vis.hideInVehicle then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inVehicle
+                        end
+                        if vis.hideInPetBattle then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inPetBattle
+                        end
+                        if vis.hideDead then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isDead
+                        end
+                        if vis.hideSolo then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = not ns.CDMGroups.inGroup
+                        end
+                        if vis.hideInGroup then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inGroup
+                        end
+                        if vis.hideInRaid then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inRaid
+                        end
+                        if vis.hideInInstance then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inInstance
+                        end
+                        if vis.hideResting then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isResting
+                        end
+                        if vis.hideInEncounter then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.inEncounter
+                        end
+                        if vis.hidePvP then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isPvP
+                        end
+                        if vis.hideDragonriding then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isDragonriding
+                        end
+                        if vis.hideNoTarget then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = not ns.CDMGroups.hasTarget
+                        end
+                        if vis.hideHasTarget then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.hasTarget
+                        end
+                        if vis.hideNotCasting then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = not ns.CDMGroups.isCasting
+                        end
+                        if vis.hideCasting then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isCasting
+                        end
+                        if vis.hideStealthed then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isStealthed
+                        end
+                        if vis.hideFlying then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isFlying
+                        end
+                        if vis.hideSwimming then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = ns.CDMGroups.isSwimming
+                        end
+                        -- Druid form conditions (only meaningful for Druids)
+                        local df = ns.CDMGroups.druidForm
+                        if vis.hideInCatForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "cat")
+                        end
+                        if vis.hideInBearForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "bear")
+                        end
+                        if vis.hideInMoonkinForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "moonkin")
+                        end
+                        if vis.hideInTravelForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "travel")
+                        end
+                        if vis.hideInTreeForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "tree")
+                        end
+                        if vis.hideInCasterForm then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (df == "caster")
+                        end
+                        -- Warrior stance conditions
+                        local cs = ns.CDMGroups.currentStance
+                        if vis.hideInBattleStance then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (cs == "battleStance")
+                        end
+                        if vis.hideInDefensiveStance then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (cs == "defensiveStance")
+                        end
+                        -- Priest conditions
+                        if vis.hideInShadowform then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (cs == "shadowform")
+                        end
+                        -- Generic: no stance/form active
+                        if vis.hideInNoStance then
+                            hasAnyCondition = true
+                            conditionResults[#conditionResults + 1] = (cs == "none" and df == "caster")
+                        end
+                        
+                        -- Evaluate conditions based on logic mode
+                        if hasAnyCondition then
+                            if logic == "all" then
+                                local allMet = true
+                                for i = 1, #conditionResults do
+                                    if not conditionResults[i] then
+                                        allMet = false
+                                        break
+                                    end
                                 end
-                            end
-                            if allMet then
-                                shouldShow = false
-                            end
-                        else
-                            -- "any" mode (default): Hide if ANY condition is met
-                            for i = 1, #conditionResults do
-                                if conditionResults[i] then
+                                if allMet then
                                     shouldShow = false
-                                    break
+                                end
+                            else
+                                for i = 1, #conditionResults do
+                                    if conditionResults[i] then
+                                        shouldShow = false
+                                        break
+                                    end
                                 end
                             end
                         end
                     end
+                else
+                    -- OLD: String format (backwards compatibility)
+                    if vis == "combat" then
+                        shouldShow = ns.CDMGroups.inCombat
+                    elseif vis == "ooc" then
+                        shouldShow = not ns.CDMGroups.inCombat
+                    elseif vis == "never" then
+                        shouldShow = false
+                    end
                 end
-            else
-                -- OLD: String format (backwards compatibility)
-                if vis == "combat" then
-                    -- "In Combat Only" - hide when NOT in combat
-                    shouldShow = ns.CDMGroups.inCombat
-                elseif vis == "ooc" then
-                    -- "Out of Combat Only" - hide when in combat
-                    shouldShow = not ns.CDMGroups.inCombat
-                elseif vis == "never" then
-                    -- "Always Hidden"
-                    shouldShow = false
+                
+                -- Override: always show when editing/configuring
+                if forceShow then
+                    shouldShow = true
                 end
-                -- "always" or nil - always show (shouldShow stays true)
-            end
-            
-            -- Override: always show when editing/configuring
-            if forceShow then
-                shouldShow = true
-            end
-            
-            if shouldShow then
-                SafeShowContainer(group.container, true)
-                -- Also show drag bar if in edit mode
-                if ns.CDMGroups.dragModeEnabled and group.dragBar then
-                    group.dragBar:Show()
-                end
-            else
-                SafeShowContainer(group.container, false)
-                -- Also hide drag bar
-                if group.dragBar then
-                    group.dragBar:Hide()
+                
+                -- Compute actual target alpha for this group
+                local targetAlpha = shouldShow and 1 or (group.hiddenAlpha or 0)
+                
+                -- Skip if target alpha hasn't changed since last evaluation
+                if group._arcLastVisState ~= targetAlpha then
+                    group._arcLastVisState = targetAlpha
+                    SafeShowContainer(group.container, targetAlpha)
+                    if shouldShow then
+                        if ns.CDMGroups.dragModeEnabled and group.dragBar then
+                            group.dragBar:Show()
+                        end
+                    else
+                        if group.dragBar then
+                            group.dragBar:Hide()
+                        end
+                    end
                 end
             end
         end
@@ -13578,6 +13846,17 @@ local function TryInitialize()
         -- Database is ready - initialize immediately!
         ns.CDMGroups.Initialize()
         cdmGroupsInitialized = true
+        -- Set correct form/stance state immediately so hideWhen conditions work on first bar draw
+        RefreshAllVisibilityState()
+        -- Safety: re-check after bars have had time to initialize (hooks install at 4s)
+        C_Timer.After(5, function()
+            RefreshAllVisibilityState()
+            ns.CDMGroups.UpdateGroupVisibility()
+            -- Refresh custom labels so they pick up _arcGroupHidden set by UpdateGroupVisibility
+            if ns.CustomLabel and ns.CustomLabel.RefreshAll then
+                ns.CustomLabel.RefreshAll()
+            end
+        end)
     else
         -- Database not ready yet - retry quickly
         C_Timer.After(0.1, TryInitialize)
@@ -13611,6 +13890,8 @@ CDMGroupsInitFrame:RegisterEvent("UNIT_POWER_BAR_HIDE")           -- Skyriding d
 CDMGroupsInitFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")         -- Instance detection
 CDMGroupsInitFrame:RegisterEvent("PLAYER_TARGET_CHANGED")         -- Target gained/lost
 CDMGroupsInitFrame:RegisterEvent("UPDATE_STEALTH")                -- Stealth state changed
+CDMGroupsInitFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")         -- Druid form / shapeshift change
+CDMGroupsInitFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")        -- Available forms changed (talents)
 CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")       -- Cast start
 CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")        -- Cast stop
 CDMGroupsInitFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")      -- Cast failed
@@ -13638,7 +13919,22 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
         end
     elseif event == "PLAYER_ENTERING_WORLD" then
         local isInitialLogin, isReloadingUI = ...
-        -- Only handle if already initialized (or wait for Initialize to call it)
+        -- Refresh all visibility state (form/stance/mounted/etc.) on every world enter
+        -- Critical: Without this, druidForm/currentStance stay at defaults ("caster"/"none")
+        -- until a form change or combat leave, causing hideWhen form conditions to fail on login
+        RefreshAllVisibilityState()
+        ns.CDMGroups.UpdateGroupVisibility()  -- Propagates to cooldown/aura bars via hooksecurefunc
+        -- Delayed label refresh: icons may not exist yet when UpdateGroupVisibility runs,
+        -- so _arcGroupHidden isn't set on them. Re-apply labels after icons have settled.
+        if isInitialLogin or isReloadingUI then
+            C_Timer.After(3, function()
+                ns.CDMGroups.UpdateGroupVisibility()
+                if ns.CustomLabel and ns.CustomLabel.RefreshAll then
+                    ns.CustomLabel.RefreshAll()
+                end
+            end)
+        end
+        -- Only handle full restoration if already initialized
         if cdmGroupsInitialized and ns.CDMGroups.PLAYER_ENTERING_WORLD then
             ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI)
         end
@@ -13738,6 +14034,16 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
         ns.CDMGroups.UpdateGroupVisibility()
     elseif event == "UPDATE_STEALTH" then
         ns.CDMGroups.isStealthed = IsStealthed() or false
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "UPDATE_SHAPESHIFT_FORM" then
+        ns.CDMGroups.druidForm = GetDruidFormCategory()
+        ns.CDMGroups.currentStance = GetCurrentFormCategory()
+        ns.CDMGroups.UpdateGroupVisibility()
+    elseif event == "UPDATE_SHAPESHIFT_FORMS" then
+        -- Available forms changed (talent swap etc) — rebuild spellID cache
+        stanceCacheDirty = true
+        ns.CDMGroups.druidForm = GetDruidFormCategory()
+        ns.CDMGroups.currentStance = GetCurrentFormCategory()
         ns.CDMGroups.UpdateGroupVisibility()
     elseif event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
         ns.CDMGroups.isCasting = true
@@ -14321,6 +14627,7 @@ local function SaveGroupLayoutsToActiveProfile()
                 -- Visibility
                 visibility = group.visibility,
                 visibilityLogic = group.visibilityLogic,
+                hiddenAlpha = group.hiddenAlpha,
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
