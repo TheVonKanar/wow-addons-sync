@@ -9,6 +9,27 @@ Addon.data.chores.professionInscription = {
     texture = C_Spell.GetSpellTexture(45357),
     categories = {
         {
+            key = 'midnight',
+            name = EXPANSION_NAME11,
+            skillLineId = 2913,
+            drops = {
+            },
+            quests = {
+                {
+                    key = 'treatise',
+                    entries = {
+                        { quest=95131, item=245757 }, -- Thalassian Treatise on Inscription
+                    },
+                },
+                {
+                    key = 'orders',
+                    entries = {
+                        { quest=93693, item=263457 }, -- Thalassian Scribe's Journal
+                    },
+                },
+            }
+        },
+        {
             key = 'warWithin',
             name = EXPANSION_NAME10,
             skillLineId = 2878,

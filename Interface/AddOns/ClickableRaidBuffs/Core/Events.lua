@@ -44,6 +44,12 @@ f:RegisterEvent("ENCOUNTER_END")
 f:RegisterEvent("PET_STABLE_UPDATE")
 f:RegisterEvent("UNIT_PET")
 f:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED")
+f:RegisterEvent("UNIT_ENTERED_VEHICLE")
+f:RegisterEvent("UNIT_EXITED_VEHICLE")
+f:RegisterEvent("VEHICLE_UPDATE")
+f:RegisterEvent("PLAYER_CONTROL_LOST")
+f:RegisterEvent("PLAYER_CONTROL_GAINED")
+f:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 f:RegisterEvent("PET_BAR_UPDATE")
 
 f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -338,19 +344,27 @@ local function on_CLEU()
   end
 end
 
-local uscsBuf = { events = {}, timer = nil, lastRun = 0 }
+local uscsBuf = { units = {}, castGUIDs = {}, spellIDs = {}, count = 0, timer = nil, lastRun = 0 }
 local function flushUSCS()
   uscsBuf.timer = nil
   local any = false
   if type(ns.Healthstone_OnUnitSpellcastSucceeded) == "function" then
-    for i = 1, #uscsBuf.events do
-      local e = uscsBuf.events[i]
-      if ns.Healthstone_OnUnitSpellcastSucceeded(e.unit, e.castGUID, e.spellID) then
+    for i = 1, uscsBuf.count do
+      if ns.Healthstone_OnUnitSpellcastSucceeded(uscsBuf.units[i], uscsBuf.castGUIDs[i], uscsBuf.spellIDs[i]) then
         any = true
       end
+      uscsBuf.units[i] = nil
+      uscsBuf.castGUIDs[i] = nil
+      uscsBuf.spellIDs[i] = nil
+    end
+  else
+    for i = 1, uscsBuf.count do
+      uscsBuf.units[i] = nil
+      uscsBuf.castGUIDs[i] = nil
+      uscsBuf.spellIDs[i] = nil
     end
   end
-  wipe(uscsBuf.events)
+  uscsBuf.count = 0
   uscsBuf.lastRun = GetTime()
   if any then
     armPoke(0)
@@ -358,7 +372,11 @@ local function flushUSCS()
 end
 
 local function on_USCS(unit, castGUID, spellID)
-  uscsBuf.events[#uscsBuf.events + 1] = { unit = unit, castGUID = castGUID, spellID = spellID }
+  local i = uscsBuf.count + 1
+  uscsBuf.count = i
+  uscsBuf.units[i] = unit
+  uscsBuf.castGUIDs[i] = castGUID
+  uscsBuf.spellIDs[i] = spellID
   local dt = GetTime() - (uscsBuf.lastRun or 0)
   if dt >= THROTTLE then
     flushUSCS()
@@ -393,7 +411,7 @@ function ns.BypassEventThrottle()
     if cleuBuf.pending then
       flushCLEU()
     end
-    if #uscsBuf.events > 0 then
+    if uscsBuf.count > 0 then
       flushUSCS()
     end
   else
@@ -509,6 +527,39 @@ f:SetScript("OnEvent", function(_, event, ...)
     end
     return
   end
+
+  if event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" or event == "VEHICLE_UPDATE" or event == "PLAYER_CONTROL_LOST" or event == "PLAYER_CONTROL_GAINED" or event == "UPDATE_BONUS_ACTIONBAR" then
+    local unit = ...
+    local shouldRefresh = true
+    if event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
+      shouldRefresh = (unit == "player")
+    end
+    if shouldRefresh then
+      if type(ns.RequestImmediateGateRefresh) == "function" then
+        ns.RequestImmediateGateRefresh({ bags = true, raid = true, immediate = true })
+      else
+        if type(ns.MarkGatesDirty) == "function" then
+          ns.MarkGatesDirty()
+        end
+        if type(ns.MarkBagsDirty) == "function" then
+          ns.MarkBagsDirty()
+        end
+        if type(ns.MarkRosterDirty) == "function" then
+          ns.MarkRosterDirty()
+        end
+        if type(ns.MarkAurasDirty) == "function" then
+          ns.MarkAurasDirty("player")
+        end
+        if type(ns.PokeUpdateBusImmediate) == "function" then
+          ns.PokeUpdateBusImmediate()
+        else
+          armPoke(0)
+        end
+      end
+    end
+    return
+  end
+
 
   if locked() then
     return

@@ -460,7 +460,10 @@ local function _runOnce()
   _flags.optionsDirty = false
   _flags.gatesDirty = false
 
-  if doGates or doRoster or doOptions or hadAuras then
+  -- Gates are driven by explicit gate/roster/options signals. Recomputing on
+  -- every aura burst (especially in raids) is wasted work and drives CPU up
+  -- without changing visible behavior.
+  if doGates or doRoster or doOptions then
     _recomputeGates()
   end
 

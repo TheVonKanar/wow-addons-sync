@@ -27,6 +27,7 @@ local DEFAULT_SECTION_ORDER = {
     'events',
     'hallowfallFishingDerby',
     'delves',
+    'midnight',
     'warWithin',
     'professions',
     'pvp',
@@ -264,6 +265,10 @@ function Addon:SlashCommand(command, editbox)
     elseif command == 'toggle' then
         local displayModule = self:GetModule('Display')
         displayModule:ToggleShown(true)
+    
+    elseif command == 'accept' then
+        local autoAcceptModule = self:GetModule('AutoAccept')
+        autoAcceptModule:ScanJournal()
 
     elseif command == '' or command == nil then
         Addon:OpenSettings()

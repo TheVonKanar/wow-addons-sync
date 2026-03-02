@@ -218,3 +218,6 @@ L["Visibility"] = "Visibility"
 L["Weapon Enchant"] = "Weapon Enchant"
 L["While Grouped"] = "While Grouped"
 L["While in a Group"] = "While in a Group"
+
+L["Vehicles"] = "Vehicles"
+L["Disable icons while in a vehicle"] = "Disable icons while in a vehicle"

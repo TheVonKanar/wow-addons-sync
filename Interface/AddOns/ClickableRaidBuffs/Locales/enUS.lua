@@ -217,3 +217,6 @@ L["Custom Buffs"] = "Custom Buffs"
 -- Auto-added missing localization keys
 L[" to default?"] = " to default?"
 L["Reset "] = "Reset "
+
+L["Vehicles"] = "Vehicles"
+L["Disable icons while in a vehicle"] = "Disable icons while in a vehicle"

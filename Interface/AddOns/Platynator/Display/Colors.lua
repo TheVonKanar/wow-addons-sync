@@ -12,6 +12,18 @@ local roleType = {
   Tank = 3,
 }
 
+local twwDungeon = {
+  [2648] = true,
+  [2649] = true,
+  [2651] = true,
+  [2652] = true,
+  [2660] = true,
+  [2661] = true,
+  [2662] = true,
+  [2669] = true,
+  [2773] = true,
+}
+
 local roleMap = {
   ["DAMAGER"] = roleType.Damage,
   ["TANK"] = roleType.Tank,
@@ -82,6 +94,7 @@ instanceTracker:SetScript("OnEvent", function()
       level = UnitEffectiveLevel("player"),
       lastLFGInstanceID = select(10, GetInstanceInfo()),
       inInstance = inRelevantThreatInstance or inRelevantEliteInstance,
+      isTWW = twwDungeon[(select(7, GetInstanceInfo()))],
     }
   end
 end)
@@ -330,19 +343,20 @@ function addonTable.Display.GetColor(settings, state, unit)
         if classification == "elite" then
           local level = UnitEffectiveLevel(unit)
           local playerLevel = PLATYNATOR_LAST_INSTANCE.level
-          if level == playerLevel or addonTable.Constants.IsClassic then
+          local isTWW = PLATYNATOR_LAST_INSTANCE.isTWW
+          if UnitIsLieutenant and UnitIsLieutenant(unit) or (not isTWW and level == playerLevel + 1 and not addonTable.Constants.IsClassic) then
+            table.insert(colorQueue, {color = s.colors.miniboss})
+            break
+          elseif ((isTWW and level > playerLevel) or (not isTWW and level == playerLevel + 2)) and not addonTable.Constants.IsClassic or level == -1 then
+            table.insert(colorQueue, {color = s.colors.boss})
+            break
+          else
             local class = UnitClassBase(unit)
             if class == "PALADIN" then
               table.insert(colorQueue, {color = s.colors.caster})
             else
               table.insert(colorQueue, {color = s.colors.melee})
             end
-            break
-          elseif level >= playerLevel + 2 or level == -1 then
-            table.insert(colorQueue, {color = s.colors.boss})
-            break
-          elseif level == playerLevel + 1 then
-            table.insert(colorQueue, {color = s.colors.miniboss})
             break
           end
         elseif classification == "normal" or classification == "trivial" then

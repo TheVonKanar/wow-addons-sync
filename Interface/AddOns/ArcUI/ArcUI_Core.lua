@@ -284,6 +284,7 @@ local StartDurationBarTicker
 -- Used by UNIT_AURA("player") handler for O(1) stack updates.
 -- ===================================================================
 local buffAuraToBarMap = {}    -- [auraInstanceID] = { [barNum] = true }
+local buffMappedBars = {}      -- [barNum] = true (reverse: bars that have a mapped aura)
 local hookedAuraFrames = {}    -- [frame] = { barNumbers = {barNum = true} }
 local totemBarNumbers = {}     -- [barNum] = true, for PLAYER_TOTEM_UPDATE
 
@@ -294,6 +295,7 @@ local function RegisterBuffAuraForBar(auraInstanceID, barNumber)
     buffAuraToBarMap[auraInstanceID] = {}
   end
   buffAuraToBarMap[auraInstanceID][barNumber] = true
+  buffMappedBars[barNumber] = true
 end
 
 -- Unregister a bar from all buff aura mappings
@@ -304,11 +306,13 @@ local function UnregisterBuffAuraForBar(barNumber)
       buffAuraToBarMap[auraID] = nil
     end
   end
+  buffMappedBars[barNumber] = nil
 end
 
 -- Clear all buff aura mappings (spec change, etc.)
 local function ClearAllBuffAuraMappings()
   wipe(buffAuraToBarMap)
+  wipe(buffMappedBars)
 end
 
 -- Hook CDM frame's SetAuraInstanceInfo / ClearAuraInstanceInfo
@@ -412,6 +416,7 @@ end
 -- bypassing CDM's stale GetTargetAurasCached() entirely.
 -- ===================================================================
 local debuffAuraToBarMap = {}  -- [auraInstanceID] = { [barNum] = true }
+local debuffMappedBars = {}    -- [barNum] = true (reverse: bars that have a mapped aura)
 
 -- Register a debuff bar's auraInstanceID for direct UNIT_AURA updates
 local function RegisterDebuffAuraForBar(auraInstanceID, barNumber)
@@ -420,6 +425,7 @@ local function RegisterDebuffAuraForBar(auraInstanceID, barNumber)
     debuffAuraToBarMap[auraInstanceID] = {}
   end
   debuffAuraToBarMap[auraInstanceID][barNumber] = true
+  debuffMappedBars[barNumber] = true
 end
 
 -- Unregister a bar from all debuff aura mappings
@@ -430,11 +436,13 @@ local function UnregisterDebuffAuraForBar(barNumber)
       debuffAuraToBarMap[auraID] = nil
     end
   end
+  debuffMappedBars[barNumber] = nil
 end
 
 -- Clear all debuff aura mappings (spec change, etc.)
 local function ClearAllDebuffAuraMappings()
   wipe(debuffAuraToBarMap)
+  wipe(debuffMappedBars)
 end
 
 -- ===================================================================
@@ -752,7 +760,11 @@ ns.API.InvalidateSpellToCooldownIDCache = InvalidateSpellToCooldownIDCache
 -- CDM ICON HIDING SYSTEM
 -- ===================================================================
 local hiddenCDMFrames = {}  -- [frame] = expectedCooldownID
+local hiddenCDMFramesByCD = {}  -- [cooldownID] = frame (reverse lookup for O(1) dedup)
 local hiddenByBarOverlays = {}  -- [frame] = overlayFrame
+
+-- Forward declaration for ForceHideCDMFrame (needed by RefreshHiddenCDMFrames)
+local ForceHideCDMFrame
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- CDM HIDE REQUEST REGISTRY
@@ -814,6 +826,11 @@ end
 -- Helper to clean up hiding state from a frame (overlay, flags, tracking table)
 local function CleanupFrameHidingState(frame)
   if not frame then return end
+  -- Clean reverse map before removing from primary
+  local cdID = hiddenCDMFrames[frame]
+  if cdID and hiddenCDMFramesByCD[cdID] == frame then
+    hiddenCDMFramesByCD[cdID] = nil
+  end
   hiddenCDMFrames[frame] = nil
   frame._arcHiddenByBar = nil
   frame._arcHiddenByBarCdID = nil
@@ -821,6 +838,36 @@ local function CleanupFrameHidingState(frame)
     hiddenByBarOverlays[frame]:Hide()
     hiddenByBarOverlays[frame] = nil
   end
+end
+
+-- Create or retrieve the red "Hidden" overlay for a CDM frame.
+-- CDM bar frames have children at very high frame levels (e.g. .Bar at 511)
+-- while the parent frame sits low (e.g. 2). We scan children to ensure the
+-- overlay renders above everything.
+local function GetOrCreateHiddenOverlay(frame)
+  if hiddenByBarOverlays[frame] then return hiddenByBarOverlays[frame] end
+  
+  local overlay = CreateFrame("Frame", nil, frame)
+  overlay:SetAllPoints(frame)
+  
+  local maxChildLevel = frame:GetFrameLevel()
+  for _, child in ipairs({frame:GetChildren()}) do
+    local cl = child:GetFrameLevel()
+    if cl > maxChildLevel then maxChildLevel = cl end
+  end
+  overlay:SetFrameLevel(maxChildLevel + 10)
+  
+  overlay.tint = overlay:CreateTexture(nil, "OVERLAY")
+  overlay.tint:SetAllPoints()
+  overlay.tint:SetColorTexture(0.9, 0.1, 0.1, 0.6)
+  
+  overlay.text = overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  overlay.text:SetPoint("CENTER", 0, 0)
+  overlay.text:SetText("Hidden")
+  overlay.text:SetTextColor(1, 1, 1, 1)
+  
+  hiddenByBarOverlays[frame] = overlay
+  return overlay
 end
 
 -- Helper to find a CDM frame by cooldownID across all viewers,
@@ -895,41 +942,16 @@ local function RefreshHiddenCDMFrames()
     CleanupFrameHidingState(entry.frame)
     entry.frame:Show()  -- Let CDM show it again
     
-    -- Find the new frame for that cooldownID
+    -- Find the new frame for that cooldownID and hide it properly
+    -- using ForceHideCDMFrame which installs Show + SetCooldownID hooks
     local newFrame = FindCDMFrameForCooldownID(entry.expectedCdID)
     if newFrame and not hiddenCDMFrames[newFrame] then
-      -- Apply hide to the correct frame
-      hiddenCDMFrames[newFrame] = entry.expectedCdID
-      if ns._arcUIOptionsOpen then
-        -- Options open: show with overlay
-        newFrame._arcHiddenByBar = nil
-        newFrame._arcHiddenByBarCdID = nil
-        newFrame:Show()
-        if not hiddenByBarOverlays[newFrame] then
-          local overlay = CreateFrame("Frame", nil, newFrame)
-          overlay:SetAllPoints(newFrame)
-          overlay:SetFrameLevel(newFrame:GetFrameLevel() + 10)
-          overlay.tint = overlay:CreateTexture(nil, "OVERLAY")
-          overlay.tint:SetAllPoints()
-          overlay.tint:SetColorTexture(0.9, 0.1, 0.1, 0.6)
-          overlay.text = overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-          overlay.text:SetPoint("CENTER", 0, 0)
-          overlay.text:SetText("Hidden")
-          overlay.text:SetTextColor(1, 1, 1, 1)
-          hiddenByBarOverlays[newFrame] = overlay
-        end
-        hiddenByBarOverlays[newFrame]:Show()
-      else
-        -- Options closed: hide with flags
-        newFrame._arcHiddenByBar = true
-        newFrame._arcHiddenByBarCdID = entry.expectedCdID
-        newFrame:Hide()
-      end
+      ForceHideCDMFrame(newFrame, entry.expectedCdID)
     end
   end
 end
 
-local function ForceHideCDMFrame(frame, expectedCooldownID)
+ForceHideCDMFrame = function(frame, expectedCooldownID)
   if not frame then return end
   
   -- Require expectedCooldownID - without it we can't verify the frame is correct
@@ -947,17 +969,76 @@ local function ForceHideCDMFrame(frame, expectedCooldownID)
   end
   
   -- DEDUP: If a DIFFERENT frame is already tracked for this same cooldownID,
-  -- clean it up. CDM options panel drags can reassign cooldownIDs without
-  -- firing SetCooldownID/ClearCooldownID, leaving stale entries behind.
-  for existingFrame, existingCdID in pairs(hiddenCDMFrames) do
-    if existingCdID == expectedCooldownID and existingFrame ~= frame then
-      CleanupFrameHidingState(existingFrame)
-      existingFrame:Show()  -- Let CDM show the now-unrelated frame
-      break  -- Only one duplicate possible per cooldownID
-    end
+  -- clean it up. O(1) via reverse lookup instead of iterating hiddenCDMFrames.
+  local existingFrame = hiddenCDMFramesByCD[expectedCooldownID]
+  if existingFrame and existingFrame ~= frame then
+    CleanupFrameHidingState(existingFrame)
+    existingFrame:Show()  -- Let CDM show the now-unrelated frame
   end
   
   hiddenCDMFrames[frame] = expectedCooldownID
+  hiddenCDMFramesByCD[expectedCooldownID] = frame
+  
+  -- ═══════════════════════════════════════════════════════════════════
+  -- PROTECTION HOOKS: Prevent CDM from re-showing hidden frames.
+  -- Three hooks work together:
+  --   Show hook: catches CDM calling Show() directly
+  --   SetShown hook: catches CDM calling SetShown(true) which is a
+  --     C-level call that does NOT trigger the Show() hook
+  --   SetCooldownID hook: catches CDM assigning a hidden cooldownID to
+  --     a different frame during layout reshuffle/recycling
+  -- Only hook once per frame (flag guards).
+  -- ═══════════════════════════════════════════════════════════════════
+  if not frame._arcHideByBarShowHooked then
+    frame._arcHideByBarShowHooked = true
+    hooksecurefunc(frame, "Show", function(self)
+      if self._arcHiddenByBar then
+        -- Verify cooldownID still matches (frame may have been recycled)
+        if self._arcHiddenByBarCdID then
+          local currentCdID = GetFrameCooldownID(self)
+          if currentCdID and currentCdID ~= self._arcHiddenByBarCdID then
+            -- Frame was recycled for a different cooldown — clear stale flag
+            self._arcHiddenByBar = nil
+            self._arcHiddenByBarCdID = nil
+            return  -- Let it show
+          end
+        end
+        self:Hide()
+      end
+    end)
+    
+    -- SetShown(true) is a C-level visibility call that bypasses Show().
+    -- CDM's UpdateShownState (CooldownViewer.lua:319) uses SetShown(true),
+    -- which our Show hook never sees. This closes that gap.
+    hooksecurefunc(frame, "SetShown", function(self, shown)
+      if shown and self._arcHiddenByBar then
+        if self._arcHiddenByBarCdID then
+          local currentCdID = GetFrameCooldownID(self)
+          if currentCdID and currentCdID ~= self._arcHiddenByBarCdID then
+            self._arcHiddenByBar = nil
+            self._arcHiddenByBarCdID = nil
+            return
+          end
+        end
+        self:Hide()
+      end
+    end)
+  end
+  
+  if not frame._arcSetCdIDHooked and frame.SetCooldownID then
+    frame._arcSetCdIDHooked = true
+    hooksecurefunc(frame, "SetCooldownID", function(self, newCdID)
+      -- When CDM assigns a cooldownID to this frame, check if any bar
+      -- wants that cooldownID hidden. If so, immediately ForceHide.
+      -- This catches layout reshuffles that move cooldownIDs between frames.
+      if newCdID and cdmHideRequestsByCD[newCdID] then
+        -- Defer slightly: CDM hasn't finished OnCooldownIDSet yet.
+        -- Our ForceHideCDMFrame needs cooldownID set on the frame,
+        -- which it already is at this point (posthook).
+        ForceHideCDMFrame(self, newCdID)
+      end
+    end)
+  end
   
   -- If options panel is open, Show with overlay so user can see what's hidden
   -- Don't set _arcHiddenByBar here - the Show hook would re-hide it
@@ -968,25 +1049,7 @@ local function ForceHideCDMFrame(frame, expectedCooldownID)
     frame:Show()
     
     -- Create/show overlay
-    if not hiddenByBarOverlays[frame] then
-      local overlay = CreateFrame("Frame", nil, frame)
-      overlay:SetAllPoints(frame)
-      overlay:SetFrameLevel(frame:GetFrameLevel() + 10)
-      
-      -- Red tint texture
-      overlay.tint = overlay:CreateTexture(nil, "OVERLAY")
-      overlay.tint:SetAllPoints()
-      overlay.tint:SetColorTexture(0.9, 0.1, 0.1, 0.6)
-      
-      -- "Hidden" text
-      overlay.text = overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-      overlay.text:SetPoint("CENTER", 0, 0)
-      overlay.text:SetText("Hidden")
-      overlay.text:SetTextColor(1, 1, 1, 1)
-      
-      hiddenByBarOverlays[frame] = overlay
-    end
-    hiddenByBarOverlays[frame]:Show()
+    GetOrCreateHiddenOverlay(frame):Show()
   else
     -- Set shared flags BEFORE Hide - CDMEnhance Show hook verifies these
     frame._arcHiddenByBar = true
@@ -1038,24 +1101,7 @@ local function ShowAllHiddenByBarOverlays()
     frame._arcHiddenByBarCdID = nil
     frame:Show()
     -- Create overlay if needed
-    if not hiddenByBarOverlays[frame] then
-      local overlay = CreateFrame("Frame", nil, frame)
-      overlay:SetAllPoints(frame)
-      overlay:SetFrameLevel(frame:GetFrameLevel() + 10)
-      
-      overlay.tint = overlay:CreateTexture(nil, "OVERLAY")
-      overlay.tint:SetAllPoints()
-      overlay.tint:SetColorTexture(0.9, 0.1, 0.1, 0.6)
-      
-      -- "Hidden" text - fully opaque
-      overlay.text = overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-      overlay.text:SetPoint("CENTER", 0, 0)
-      overlay.text:SetText("Hidden")
-      overlay.text:SetTextColor(1, 1, 1, 1)
-      
-      hiddenByBarOverlays[frame] = overlay
-    end
-    hiddenByBarOverlays[frame]:Show()
+    GetOrCreateHiddenOverlay(frame):Show()
   end
 end
 
@@ -1080,6 +1126,7 @@ local function ClearAllHiddenCDMFramesForSpecChange()
     end
   end
   wipe(hiddenCDMFrames)
+  wipe(hiddenCDMFramesByCD)
   wipe(cdmHideRequestsByCD)
 end
 -- Expose internal tables for ArcUI_Debugger OverlayInspector (accessed via ArcUI_NS)
@@ -3295,18 +3342,28 @@ UpdateBarBuffInfo = function(barNumber)
     -- Fallback: If cached frames were nil or rejected by verification,
     -- do a direct viewer scan to find and hide the correct CDM frame.
     -- This handles stale cache after profile import/spec change.
+    -- Also installs SetCooldownID hooks on ALL siblings so if CDM later
+    -- shuffles a hidden cooldownID to a different frame, we catch it.
     if expectedCdID and (not frame or not hiddenCDMFrames[frame]) then
       local viewer = _G["BuffIconCooldownViewer"]
       if viewer then
         local children = {viewer:GetChildren()}
         for _, child in ipairs(children) do
+          -- Install SetCooldownID hook on every sibling (lightweight, one-time)
+          if not child._arcSetCdIDHooked and child.SetCooldownID then
+            child._arcSetCdIDHooked = true
+            hooksecurefunc(child, "SetCooldownID", function(self, newCdID)
+              if newCdID and cdmHideRequestsByCD[newCdID] then
+                ForceHideCDMFrame(self, newCdID)
+              end
+            end)
+          end
           local cdID = child.cooldownID
           if not cdID and child.cooldownInfo then
             cdID = child.cooldownInfo.cooldownID
           end
           if cdID == expectedCdID then
             ForceHideCDMFrame(child, expectedCdID)
-            break
           end
         end
       end
@@ -3316,6 +3373,15 @@ UpdateBarBuffInfo = function(barNumber)
       if viewer then
         local children = {viewer:GetChildren()}
         for _, child in ipairs(children) do
+          -- Install SetCooldownID hook on every sibling (lightweight, one-time)
+          if not child._arcSetCdIDHooked and child.SetCooldownID then
+            child._arcSetCdIDHooked = true
+            hooksecurefunc(child, "SetCooldownID", function(self, newCdID)
+              if newCdID and cdmHideRequestsByCD[newCdID] then
+                ForceHideCDMFrame(self, newCdID)
+              end
+            end)
+          end
           local cdID = child.cooldownID
           if not cdID and child.cooldownInfo then
             cdID = child.cooldownInfo.cooldownID
@@ -3325,7 +3391,6 @@ UpdateBarBuffInfo = function(barNumber)
           end
           if cdID == expectedCdID then
             ForceHideCDMFrame(child, expectedCdID)
-            break
           end
         end
       end
@@ -3410,12 +3475,15 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     
     -- Check removed auras (buff/debuff expired/dispelled/consumed)
     if unitAuraUpdateInfo.removedAuraInstanceIDs then
+      local mappedBars = isPlayer and buffMappedBars or debuffMappedBars
       for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
         local bars = auraMap[auraInstanceID]
         if bars then
           if not barsToUpdate then barsToUpdate = {} end
           for barNum in pairs(bars) do
             barsToUpdate[barNum] = true
+            -- Clear reverse lookup so addedAuras can re-discover
+            mappedBars[barNum] = nil
           end
           -- Clean up mapping for removed aura
           auraMap[auraInstanceID] = nil
@@ -3427,6 +3495,8 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     -- that hasn't discovered its auraInstanceID yet)
     if unitAuraUpdateInfo.addedAuras then
       local db = ns.API.GetDB()
+      -- Select the correct reverse map for O(1) "has mapped aura" check
+      local mappedBars = isPlayer and buffMappedBars or debuffMappedBars
       if db and db.bars then
         for barNum = 1, 30 do
           local barConfig = db.bars[barNum]
@@ -3449,12 +3519,8 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             end
             
             if matchesUnit then
-              -- Check if this bar already has a mapped aura
-              local hasMappedAura = false
-              for _, bars in pairs(auraMap) do
-                if bars[barNum] then hasMappedAura = true; break end
-              end
-              if not hasMappedAura then
+              -- O(1) check: does this bar already have a mapped aura?
+              if not mappedBars[barNum] then
                 -- Bar needs to discover its aura — update it
                 if not barsToUpdate then barsToUpdate = {} end
                 barsToUpdate[barNum] = true

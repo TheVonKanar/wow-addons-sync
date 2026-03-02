@@ -1551,16 +1551,44 @@ ns.Resources.POWER_TYPE_DEFAULT_COLORS = POWER_TYPE_DEFAULT_COLORS
 
 -- ===================================================================
 -- AUTO PRIMARY: Per-Power-Type Display Profiles
--- Stores full display+threshold snapshots keyed by powerType.
--- On power type change, we SWAP profile data into cfg.display so
--- all existing rendering code works unchanged.
+-- Stores full display+threshold snapshots keyed by powerType (default)
+-- or by specIndex when usePerSpecProfiles is enabled.
+-- On power type or spec change, we SWAP profile data into cfg.display
+-- so all existing rendering code works unchanged.
 -- ===================================================================
 
 -- Keys NOT to copy when snapshotting/restoring display profiles.
 -- Profiles only store APPEARANCE (colors, textures, tick config, color curves).
 -- Everything else is shared since it's physically one bar.
 -- Aligned with ArcUI_Presets.lua EXCLUDED_DISPLAY_KEYS + size keys.
-local PROFILE_EXCLUDE = {
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PROFILE KEY COMPUTATION
+-- Determines which key to use for profile storage/lookup.
+-- Default: power type (integer) — different look per power type.
+-- Per-spec: "spec" .. specIndex (string) — different look per spec.
+-- ═══════════════════════════════════════════════════════════════════
+local function GetCurrentProfileKey(cfg)
+  if cfg.tracking and cfg.tracking.usePerSpecProfiles then
+    return "spec" .. (GetSpecialization() or 1)
+  end
+  return UnitPowerType("player")
+end
+
+-- Get the default color to stamp when auto-creating a profile for a key.
+-- Power type keys → power color (Rage=red, Energy=yellow).
+-- Spec keys → current power type color (all specs share the same power type).
+local function GetProfileKeyDefaultColor(key)
+  if type(key) == "number" then
+    return POWER_TYPE_DEFAULT_COLORS[key]
+  end
+  -- Spec key: use current power type's default color
+  local currentPower = UnitPowerType("player")
+  return POWER_TYPE_DEFAULT_COLORS[currentPower]
+end
+-- Keys ALWAYS excluded from profile snapshots regardless of settings.
+-- Physical layout properties that can't meaningfully differ per spec.
+local PROFILE_EXCLUDE_ALWAYS = {
   -- Per-power shared state
   autoPowerColors = true,
   -- Size (one physical bar)
@@ -1568,16 +1596,6 @@ local PROFILE_EXCLUDE = {
   height = true,
   iconSize = true,
   barScale = true,
-  -- Fill (shared across all power types on the same bar)
-  barOrientation = true,
-  rotateTexture = true,
-  barReverseFill = true,
-  texture = true,
-  enableSmoothing = true,
-  useGradient = true,
-  gradientDirection = true,
-  gradientSecondColor = true,
-  gradientIntensity = true,
   -- Position / anchor
   barPosition = true,
   barMovable = true,
@@ -1615,8 +1633,70 @@ local PROFILE_EXCLUDE = {
   iconsPositions = true,
 }
 
+-- Legacy fill keys: excluded for OLD per-power-type profiles (Druid) that don't
+-- have autoShareCategories. Once autoShareCategories exists (per-spec bars),
+-- the fill toggle in autoShareCategories controls these instead.
+local PROFILE_EXCLUDE_LEGACY_FILL = {
+  barOrientation = true,
+  rotateTexture = true,
+  barReverseFill = true,
+  texture = true,
+  enableSmoothing = true,
+  useGradient = true,
+  gradientDirection = true,
+  gradientSecondColor = true,
+  gradientIntensity = true,
+}
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PROFILE EXCLUSION (auto share aware)
+-- ALWAYS_EXCLUDE takes precedence, then autoShareCategories if
+-- configured, then legacy fill exclusion for old per-power bars.
+-- ═══════════════════════════════════════════════════════════════════
+local function ShouldExcludeFromProfile(key, cfg)
+  -- Layout/position/size: always excluded
+  if PROFILE_EXCLUDE_ALWAYS[key] then return true end
+  
+  -- If auto share categories are configured, they control fill/colors/text/etc.
+  local shared = cfg and cfg.tracking and cfg.tracking.autoShareCategories
+  if shared then
+    local category
+    if ns.Presets and ns.Presets.GetKeyCategory then
+      category = ns.Presets.GetKeyCategory(key)
+    end
+    if category then
+      return shared[category] == true
+    end
+    return false  -- Uncategorized with autoShareCategories = always profiled
+  end
+  
+  -- No autoShareCategories (legacy per-power-type profiles like Druid):
+  -- Fill keys shared across power types on the same physical bar
+  if PROFILE_EXCLUDE_LEGACY_FILL[key] then return true end
+  
+  return false
+end
+
+-- Check if a top-level key (thresholds, colorRanges, abilityThresholds)
+-- should be excluded from profiling based on its category's share status.
+local function ShouldExcludeTopLevel(topKey, cfg)
+  local shared = cfg and cfg.tracking and cfg.tracking.autoShareCategories
+  if not shared then return false end  -- nil = profile everything
+  
+  -- Use Presets.TOP_LEVEL_KEY_CATEGORIES mapping if available
+  local categoryMap = {
+    thresholds = "colors",
+    colorRanges = "colors",
+    abilityThresholds = "tickMarks",
+  }
+  local category = categoryMap[topKey]
+  if not category then return false end
+  
+  return shared[category] == true
+end
+
 -- Track which power type's profile is currently loaded into cfg.display per bar
-local activeProfilePower = {}  -- barNumber -> powerType or nil (nil = base loaded)
+local activeProfilePower = {}  -- barNumber -> profileKey or nil (nil = base loaded)
 
 -- Deep copy utility (handles nested tables, no functions/cycles expected)
 local function DeepCopyTable(src)
@@ -1628,11 +1708,11 @@ local function DeepCopyTable(src)
   return copy
 end
 
--- Snapshot cfg.display into a profile table (excludes shared keys)
-local function SnapshotDisplay(display)
+-- Snapshot cfg.display into a profile table (excludes shared + layout keys)
+local function SnapshotDisplay(display, cfg)
   local snap = {}
   for k, v in pairs(display) do
-    if not PROFILE_EXCLUDE[k] then
+    if not ShouldExcludeFromProfile(k, cfg) then
       snap[k] = DeepCopyTable(v)
     end
   end
@@ -1640,11 +1720,11 @@ local function SnapshotDisplay(display)
 end
 
 -- Restore a profile snapshot into cfg.display (preserves excluded keys)
-local function RestoreDisplayFromSnapshot(snap, display)
+local function RestoreDisplayFromSnapshot(snap, display, cfg)
   -- Clear non-excluded keys from display
   local keysToRemove = {}
   for k in pairs(display) do
-    if not PROFILE_EXCLUDE[k] then
+    if not ShouldExcludeFromProfile(k, cfg) then
       keysToRemove[#keysToRemove + 1] = k
     end
   end
@@ -1653,40 +1733,47 @@ local function RestoreDisplayFromSnapshot(snap, display)
   end
   -- Load snapshot values in (skip excluded keys from stale snapshots)
   for k, v in pairs(snap) do
-    if not PROFILE_EXCLUDE[k] then
+    if not ShouldExcludeFromProfile(k, cfg) then
       display[k] = DeepCopyTable(v)
     end
   end
 end
 
 -- Swap autoPrimary display profile for a bar.
--- Saves current display to old power's slot, loads new power's slot.
+-- Saves current display to old key's slot, loads new key's slot.
+-- Key can be a power type (integer) or "specN" (string) depending on mode.
 -- "_base" key stores the base (non-profiled) display state.
-local function SwapAutoPowerProfile(barNumber, cfg, newPowerType)
+local function SwapAutoPowerProfile(barNumber, cfg, newKey)
   if not cfg or cfg.tracking.resourceCategory ~= "autoPrimary" then return end
   if not cfg.autoPowerProfiles then return end  -- No profiles configured
   
   local profiles = cfg.autoPowerProfiles
-  local oldPower = activeProfilePower[barNumber]
-  if oldPower == newPowerType then return end  -- Already loaded
+  local oldKey = activeProfilePower[barNumber]
+  if oldKey == newKey then return end  -- Already loaded
   
-  -- Save current display state back to old power's slot
-  if oldPower ~= nil then
-    if not profiles[oldPower] then profiles[oldPower] = {} end
-    profiles[oldPower].display = SnapshotDisplay(cfg.display)
-    profiles[oldPower].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  local profileThresholds = not ShouldExcludeTopLevel("thresholds", cfg)
+  
+  -- Save current display state back to old key's slot
+  if oldKey ~= nil then
+    if not profiles[oldKey] then profiles[oldKey] = {} end
+    profiles[oldKey].display = SnapshotDisplay(cfg.display, cfg)
+    if profileThresholds then
+      profiles[oldKey].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+    end
   else
     -- First swap ever or base was loaded — save as _base
     if not profiles._base then profiles._base = {} end
-    profiles._base.display = SnapshotDisplay(cfg.display)
-    profiles._base.thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+    profiles._base.display = SnapshotDisplay(cfg.display, cfg)
+    if profileThresholds then
+      profiles._base.thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+    end
   end
   
-  -- Load new power's profile, or create from _base if it doesn't exist
-  if profiles[newPowerType] and profiles[newPowerType].display then
-    RestoreDisplayFromSnapshot(profiles[newPowerType].display, cfg.display)
-    if profiles[newPowerType].thresholds then
-      cfg.thresholds = DeepCopyTable(profiles[newPowerType].thresholds)
+  -- Load new key's profile, or create from _base if it doesn't exist
+  if profiles[newKey] and profiles[newKey].display then
+    RestoreDisplayFromSnapshot(profiles[newKey].display, cfg.display, cfg)
+    if profileThresholds and profiles[newKey].thresholds then
+      cfg.thresholds = DeepCopyTable(profiles[newKey].thresholds)
     end
     -- Always sync cfg.thresholds[1].color with display.barColor
     if cfg.display.barColor then
@@ -1697,28 +1784,31 @@ local function SwapAutoPowerProfile(barNumber, cfg, newPowerType)
       cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
     end
   elseif profiles._base and profiles._base.display then
-    -- Auto-create: copy base into this power type, then stamp with correct default color
-    profiles[newPowerType] = {
+    -- Auto-create: copy base into this key, then stamp with correct default color
+    profiles[newKey] = {
       display = DeepCopyTable(profiles._base.display),
       thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
     }
-    -- Stamp the power type's default color (Rage=red, Energy=yellow, etc.)
-    local defaultColor = POWER_TYPE_DEFAULT_COLORS[newPowerType]
+    -- Stamp the default color (power type color for power keys, current power color for spec keys)
+    local defaultColor = GetProfileKeyDefaultColor(newKey)
     if defaultColor then
       local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
-      profiles[newPowerType].display.barColor = dc
+      profiles[newKey].display.barColor = dc
       -- Always create thresholds[1] with the stamped color
-      if not profiles[newPowerType].thresholds then profiles[newPowerType].thresholds = {} end
-      if not profiles[newPowerType].thresholds[1] then
-        profiles[newPowerType].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+      if not profiles[newKey].thresholds then profiles[newKey].thresholds = {} end
+      if not profiles[newKey].thresholds[1] then
+        profiles[newKey].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
       end
-      profiles[newPowerType].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+      profiles[newKey].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
     end
-    RestoreDisplayFromSnapshot(profiles[newPowerType].display, cfg.display)
-    cfg.thresholds = DeepCopyTable(profiles[newPowerType].thresholds)
+    RestoreDisplayFromSnapshot(profiles[newKey].display, cfg.display, cfg)
+    if profileThresholds then
+      cfg.thresholds = DeepCopyTable(profiles[newKey].thresholds)
+    end
   end
   
-  activeProfilePower[barNumber] = newPowerType
+  activeProfilePower[barNumber] = newKey
+  profiles._lastActive = newKey  -- Persist across reloads so init can save back
   
   -- Invalidate color curve cache for this bar
   if resourceColorCurves then
@@ -1730,36 +1820,42 @@ end
 local function SyncAutoPowerProfile(barNumber, cfg)
   if cfg.tracking.resourceCategory ~= "autoPrimary" then return end
   if not cfg.autoPowerProfiles then return end
-  local currentPower = UnitPowerType("player")
+  local currentKey = GetCurrentProfileKey(cfg)
   if activeProfilePower[barNumber] == nil then
-    -- Init path: force-load correct profile without saving stale data
+    -- INIT PATH: activeProfilePower is nil (fresh login/reload).
     local profiles = cfg.autoPowerProfiles
-    if profiles[currentPower] and profiles[currentPower].display then
-      -- Per-power entry exists: load it
-      RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
-      if profiles[currentPower].thresholds then
-        cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+    local profileThresholds = not ShouldExcludeTopLevel("thresholds", cfg)
+    local lastActive = profiles._lastActive
+    if lastActive ~= nil and profiles[lastActive] then
+      profiles[lastActive].display = SnapshotDisplay(cfg.display, cfg)
+      if profileThresholds then
+        profiles[lastActive].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+      end
+    end
+    
+    if profiles[currentKey] and profiles[currentKey].display then
+      RestoreDisplayFromSnapshot(profiles[currentKey].display, cfg.display, cfg)
+      if profileThresholds and profiles[currentKey].thresholds then
+        cfg.thresholds = DeepCopyTable(profiles[currentKey].thresholds)
       end
     elseif profiles._base and profiles._base.display then
-      -- Per-power entry missing (first login after enabling profiles): auto-create from _base
-      profiles[currentPower] = {
+      profiles[currentKey] = {
         display = DeepCopyTable(profiles._base.display),
         thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
       }
-      -- Stamp default power type color (Rage=red, Energy=yellow, etc.)
-      local defaultColor = POWER_TYPE_DEFAULT_COLORS[currentPower]
+      local defaultColor = GetProfileKeyDefaultColor(currentKey)
       if defaultColor then
         local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
-        profiles[currentPower].display.barColor = dc
-        if not profiles[currentPower].thresholds then profiles[currentPower].thresholds = {} end
-        if not profiles[currentPower].thresholds[1] then
-          profiles[currentPower].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+        profiles[currentKey].display.barColor = dc
+        if not profiles[currentKey].thresholds then profiles[currentKey].thresholds = {} end
+        if not profiles[currentKey].thresholds[1] then
+          profiles[currentKey].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
         end
-        profiles[currentPower].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+        profiles[currentKey].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
       end
-      RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
-      if profiles[currentPower].thresholds then
-        cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+      RestoreDisplayFromSnapshot(profiles[currentKey].display, cfg.display, cfg)
+      if profileThresholds and profiles[currentKey].thresholds then
+        cfg.thresholds = DeepCopyTable(profiles[currentKey].thresholds)
       end
     end
     -- Sync thresholds[1].color with the loaded barColor
@@ -1770,10 +1866,11 @@ local function SyncAutoPowerProfile(barNumber, cfg)
       end
       cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
     end
-    activeProfilePower[barNumber] = currentPower
+    activeProfilePower[barNumber] = currentKey
+    profiles._lastActive = currentKey
     if resourceColorCurves then resourceColorCurves[barNumber] = nil end
-  elseif activeProfilePower[barNumber] ~= currentPower then
-    SwapAutoPowerProfile(barNumber, cfg, currentPower)
+  elseif activeProfilePower[barNumber] ~= currentKey then
+    SwapAutoPowerProfile(barNumber, cfg, currentKey)
   end
 end
 
@@ -1787,7 +1884,7 @@ local function EnsureAutoPowerProfiles(cfg)
   if cfg.autoPowerProfiles then return end
   cfg.autoPowerProfiles = {
     _base = {
-      display = SnapshotDisplay(cfg.display),
+      display = SnapshotDisplay(cfg.display, cfg),
       thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil,
     }
   }
@@ -1804,24 +1901,25 @@ function ns.Resources.GetActiveProfilePower(barNumber)
   return activeProfilePower[barNumber]
 end
 
--- Switch to editing a specific power type's profile (for options panel)
--- Auto-creates autoPowerProfiles + this power type's slot if needed
-function ns.Resources.SetEditingAutoPower(barNumber, powerType)
+-- Switch to editing a specific profile key (for options panel)
+-- Key can be a power type (integer) or spec key (string like "spec1")
+-- Auto-creates autoPowerProfiles + this key's slot if needed
+function ns.Resources.SetEditingAutoPower(barNumber, profileKey)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg then return end
   
   EnsureAutoPowerProfiles(cfg)
-  SwapAutoPowerProfile(barNumber, cfg, powerType)
+  SwapAutoPowerProfile(barNumber, cfg, profileKey)
   ns.Resources.ApplyAppearance(barNumber)
   ns.Resources.UpdateBar(barNumber)
 end
 
--- Restore to the actual current power type (call when leaving options)
+-- Restore to the actual current profile key (call when leaving options)
 function ns.Resources.RestoreActiveAutoPower(barNumber)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg or not cfg.autoPowerProfiles then return end
-  local realPower = UnitPowerType("player")
-  SwapAutoPowerProfile(barNumber, cfg, realPower)
+  local realKey = GetCurrentProfileKey(cfg)
+  SwapAutoPowerProfile(barNumber, cfg, realKey)
   ns.Resources.ApplyAppearance(barNumber)
   ns.Resources.UpdateBar(barNumber)
 end
@@ -1832,19 +1930,19 @@ function ns.Resources.SetEditingBase(barNumber)
   if not cfg or not cfg.autoPowerProfiles then return end
   
   local profiles = cfg.autoPowerProfiles
-  local oldPower = activeProfilePower[barNumber]
+  local oldKey = activeProfilePower[barNumber]
   
-  -- Save current display back to old power's slot
-  if oldPower ~= nil then
-    if not profiles[oldPower] then profiles[oldPower] = {} end
-    profiles[oldPower].display = SnapshotDisplay(cfg.display)
-    profiles[oldPower].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  -- Save current display back to old key's slot
+  if oldKey ~= nil then
+    if not profiles[oldKey] then profiles[oldKey] = {} end
+    profiles[oldKey].display = SnapshotDisplay(cfg.display, cfg)
+    profiles[oldKey].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
   end
   
   -- Load base
   local base = profiles._base
   if base and base.display then
-    RestoreDisplayFromSnapshot(base.display, cfg.display)
+    RestoreDisplayFromSnapshot(base.display, cfg.display, cfg)
     if base.thresholds then
       cfg.thresholds = DeepCopyTable(base.thresholds)
     end
@@ -1864,55 +1962,293 @@ function ns.Resources.ClearAutoPowerProfiles(barNumber)
   -- Restore base display first
   local base = cfg.autoPowerProfiles._base
   if base and base.display then
-    RestoreDisplayFromSnapshot(base.display, cfg.display)
+    RestoreDisplayFromSnapshot(base.display, cfg.display, cfg)
     if base.thresholds then
       cfg.thresholds = DeepCopyTable(base.thresholds)
     end
   end
   
   cfg.autoPowerProfiles = nil
+  -- Also clear per-spec flag and auto share settings so they don't linger
+  if cfg.tracking then
+    cfg.tracking.usePerSpecProfiles = nil
+    cfg.tracking.autoShareCategories = nil
+  end
   activeProfilePower[barNumber] = nil
   if resourceColorCurves then resourceColorCurves[barNumber] = nil end
   ns.Resources.ApplyAppearance(barNumber)
   ns.Resources.UpdateBar(barNumber)
 end
 
--- Reset a specific power type's profile back to base settings
-function ns.Resources.ResetAutoPowerProfile(barNumber, powerType)
+-- Reset a specific profile key back to base settings
+-- Key can be power type (integer) or spec key (string)
+function ns.Resources.ResetAutoPowerProfile(barNumber, profileKey)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg or not cfg.autoPowerProfiles then return end
   
   local base = cfg.autoPowerProfiles._base
   if not base then return end
   
-  -- Overwrite this power type's slot with a copy of base
-  cfg.autoPowerProfiles[powerType] = {
+  -- Overwrite this key's slot with a copy of base
+  cfg.autoPowerProfiles[profileKey] = {
     display = base.display and DeepCopyTable(base.display) or nil,
     thresholds = base.thresholds and DeepCopyTable(base.thresholds) or nil,
   }
   
-  -- Re-stamp with this power type's default color
-  local defaultColor = POWER_TYPE_DEFAULT_COLORS[powerType]
-  if defaultColor and cfg.autoPowerProfiles[powerType].display then
+  -- Re-stamp with the appropriate default color
+  local defaultColor = GetProfileKeyDefaultColor(profileKey)
+  if defaultColor and cfg.autoPowerProfiles[profileKey].display then
     local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
-    cfg.autoPowerProfiles[powerType].display.barColor = dc
-    if not cfg.autoPowerProfiles[powerType].thresholds then cfg.autoPowerProfiles[powerType].thresholds = {} end
-    if not cfg.autoPowerProfiles[powerType].thresholds[1] then
-      cfg.autoPowerProfiles[powerType].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+    cfg.autoPowerProfiles[profileKey].display.barColor = dc
+    if not cfg.autoPowerProfiles[profileKey].thresholds then cfg.autoPowerProfiles[profileKey].thresholds = {} end
+    if not cfg.autoPowerProfiles[profileKey].thresholds[1] then
+      cfg.autoPowerProfiles[profileKey].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
     end
-    cfg.autoPowerProfiles[powerType].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+    cfg.autoPowerProfiles[profileKey].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
   end
   
-  -- If this power type is currently loaded, reload from the reset profile
-  if activeProfilePower[barNumber] == powerType then
-    RestoreDisplayFromSnapshot(cfg.autoPowerProfiles[powerType].display, cfg.display)
-    if cfg.autoPowerProfiles[powerType].thresholds then
-      cfg.thresholds = DeepCopyTable(cfg.autoPowerProfiles[powerType].thresholds)
+  -- If this key is currently loaded, reload from the reset profile
+  if activeProfilePower[barNumber] == profileKey then
+    RestoreDisplayFromSnapshot(cfg.autoPowerProfiles[profileKey].display, cfg.display, cfg)
+    if cfg.autoPowerProfiles[profileKey].thresholds then
+      cfg.thresholds = DeepCopyTable(cfg.autoPowerProfiles[profileKey].thresholds)
     end
     if resourceColorCurves then resourceColorCurves[barNumber] = nil end
     ns.Resources.ApplyAppearance(barNumber)
     ns.Resources.UpdateBar(barNumber)
   end
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PER-SPEC PROFILE API
+-- Allows auto-primary bars to have different appearance per spec
+-- even when all specs share the same power type (e.g. Warrior Rage).
+-- Uses "spec1", "spec2", etc. as profile keys instead of power types.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Check if a bar uses per-spec profiles
+function ns.Resources.HasPerSpecProfiles(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  return cfg and cfg.tracking and cfg.tracking.usePerSpecProfiles == true
+end
+
+-- Enable per-spec profiles on a bar.
+-- Seeds each spec's profile from the current display state (or the
+-- currently-loaded power type profile if profiles already exist).
+function ns.Resources.EnablePerSpecProfiles(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or cfg.tracking.resourceCategory ~= "autoPrimary" then return end
+  
+  -- Flush current state to the old (power-type) profile first
+  ns.Resources.FlushActiveProfileToStorage(barNumber)
+  
+  -- Initialize base profiles if not already present
+  EnsureAutoPowerProfiles(cfg)
+  
+  -- Set default auto share categories (all shared) if not already configured
+  if not cfg.tracking.autoShareCategories then
+    cfg.tracking.autoShareCategories = {
+      colors = true, fill = true, text = true,
+      background = true, border = true, tickMarks = true,
+    }
+  end
+  
+  -- Snapshot the current display as the seed for all spec profiles
+  local currentSnap = SnapshotDisplay(cfg.display, cfg)
+  local currentThresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+  
+  -- Create a spec entry for each spec (up to 4) seeded from current display
+  local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
+  for i = 1, numSpecs do
+    local specKey = "spec" .. i
+    if not cfg.autoPowerProfiles[specKey] then
+      cfg.autoPowerProfiles[specKey] = {
+        display = DeepCopyTable(currentSnap),
+        thresholds = currentThresholds and DeepCopyTable(currentThresholds) or nil,
+      }
+    end
+  end
+  
+  -- Set the flag BEFORE swapping so GetCurrentProfileKey returns the spec key
+  cfg.tracking.usePerSpecProfiles = true
+  
+  -- Swap to the current spec's profile
+  local currentSpecKey = "spec" .. (GetSpecialization() or 1)
+  activeProfilePower[barNumber] = nil  -- Force re-sync
+  SwapAutoPowerProfile(barNumber, cfg, currentSpecKey)
+  
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Disable per-spec profiles on a bar.
+-- Restores power-type keying. Current spec's display is kept as-is.
+function ns.Resources.DisablePerSpecProfiles(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or cfg.tracking.resourceCategory ~= "autoPrimary" then return end
+  if not cfg.autoPowerProfiles then return end
+  
+  -- Flush current display to the spec profile before disabling
+  ns.Resources.FlushActiveProfileToStorage(barNumber)
+  
+  -- Clear the per-spec flag and auto share settings
+  cfg.tracking.usePerSpecProfiles = nil
+  cfg.tracking.autoShareCategories = nil
+  
+  -- Remove spec-keyed profiles (keep power-type and _base profiles)
+  local keysToRemove = {}
+  for k in pairs(cfg.autoPowerProfiles) do
+    if type(k) == "string" and k:sub(1, 4) == "spec" then
+      keysToRemove[#keysToRemove + 1] = k
+    end
+  end
+  for _, k in ipairs(keysToRemove) do
+    cfg.autoPowerProfiles[k] = nil
+  end
+  
+  -- Re-sync with power-type keying
+  activeProfilePower[barNumber] = nil  -- Force re-sync
+  local currentPower = UnitPowerType("player")
+  SwapAutoPowerProfile(barNumber, cfg, currentPower)
+  
+  ns.Resources.ApplyAppearance(barNumber)
+  ns.Resources.UpdateBar(barNumber)
+end
+
+-- Get the current profile key for a bar (used by options panel)
+function ns.Resources.GetCurrentProfileKey(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg then return UnitPowerType("player") end
+  return GetCurrentProfileKey(cfg)
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- FLUSH ACTIVE PROFILE TO STORAGE
+-- Saves the current cfg.display/cfg.thresholds back to the active
+-- profile slot. Called on PLAYER_LOGOUT to ensure edits made since
+-- the last profile swap are persisted in autoPowerProfiles before
+-- AceDB serializes to SavedVariables.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Flush a single bar's active profile back to storage
+function ns.Resources.FlushActiveProfileToStorage(barNumber)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  local activePower = activeProfilePower[barNumber]
+  local profiles = cfg.autoPowerProfiles
+  local profileThresholds = not ShouldExcludeTopLevel("thresholds", cfg)
+  
+  if activePower ~= nil then
+    -- Normal case: a per-power profile is loaded — save display+thresholds back
+    if not profiles[activePower] then profiles[activePower] = {} end
+    profiles[activePower].display = SnapshotDisplay(cfg.display, cfg)
+    if profileThresholds then
+      profiles[activePower].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+    end
+    profiles._lastActive = activePower
+  else
+    -- Base is loaded (options panel editing base, or pre-first-sync)
+    -- Save back to _base so edits are preserved
+    if not profiles._base then profiles._base = {} end
+    profiles._base.display = SnapshotDisplay(cfg.display, cfg)
+    if profileThresholds then
+      profiles._base.thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+    end
+  end
+end
+
+-- Flush ALL auto-primary bars with profiles back to storage
+function ns.Resources.FlushAllProfilesToStorage()
+  local db = ns.API and ns.API.GetDB and ns.API.GetDB()
+  if not db or not db.resourceBars then return end
+  
+  for barNum = 1, 500 do
+    local cfg = db.resourceBars[barNum]
+    if cfg and cfg.tracking and cfg.tracking.enabled
+       and cfg.tracking.resourceCategory == "autoPrimary"
+       and cfg.autoPowerProfiles then
+      ns.Resources.FlushActiveProfileToStorage(barNum)
+    end
+  end
+end
+
+-- Seed a newly-per-spec category into all existing profile snapshots.
+-- When a category changes from shared→per-spec, existing snapshots don't
+-- contain those keys (they were excluded). This copies the current shared
+-- values from cfg.display into every profile so RestoreDisplayFromSnapshot
+-- finds them on the next spec change.
+-- Uses the Presets KEY_TO_CATEGORY map to find ALL keys for the category,
+-- including ones that only exist in the AceDB metatable (not visible to pairs()).
+function ns.Resources.SeedCategoryIntoProfiles(barNumber, categoryName)
+  local cfg = ns.API.GetResourceBarConfig(barNumber)
+  if not cfg or not cfg.autoPowerProfiles then return end
+  
+  -- First flush active profile so it's up to date with new exclusion rules
+  ns.Resources.FlushActiveProfileToStorage(barNumber)
+  
+  -- Collect ALL display keys belonging to this category using the Presets mapping
+  -- (not pairs!) so we catch AceDB metatable defaults that pairs() misses
+  local categoryKeys = {}
+  if ns.Presets and ns.Presets.GetCategoryKeys then
+    -- Use the authoritative key list from Presets
+    local knownKeys = ns.Presets.GetCategoryKeys(categoryName, cfg.display)
+    if knownKeys then
+      for _, key in ipairs(knownKeys) do
+        local val = cfg.display[key]  -- Reads through metatable
+        if val ~= nil then
+          categoryKeys[key] = DeepCopyTable(val)
+        end
+      end
+    end
+  else
+    -- Fallback: scan pairs() (may miss metatable-only keys)
+    for k, v in pairs(cfg.display) do
+      local cat
+      if ns.Presets and ns.Presets.GetKeyCategory then
+        cat = ns.Presets.GetKeyCategory(k)
+      end
+      if cat == categoryName then
+        categoryKeys[k] = DeepCopyTable(v)
+      end
+    end
+  end
+  
+  -- Also check top-level keys (thresholds→colors, abilityThresholds→tickMarks)
+  local topLevelMap = {
+    colors = {"thresholds", "colorRanges"},
+    tickMarks = {"abilityThresholds"},
+  }
+  local topKeysToSeed = topLevelMap[categoryName]
+  
+  -- Write into EVERY profile snapshot unconditionally (including _base).
+  -- At the moment of uncheck, the value was shared so all specs are identical.
+  -- Overwrite ensures stale snapshot data doesn't persist.
+  for profileKey, profileData in pairs(cfg.autoPowerProfiles) do
+    if type(profileData) == "table" and profileData.display then
+      for k, v in pairs(categoryKeys) do
+        profileData.display[k] = DeepCopyTable(v)
+      end
+      -- Seed top-level keys
+      if topKeysToSeed then
+        for _, topKey in ipairs(topKeysToSeed) do
+          if cfg[topKey] then
+            profileData[topKey] = DeepCopyTable(cfg[topKey])
+          end
+        end
+      end
+    end
+  end
+  
+  -- Also promote metatable-only keys into cfg.display's raw table.
+  -- Without this, the next SnapshotDisplay(cfg.display) via pairs() would
+  -- miss them and overwrite the seeded profile snapshot with incomplete data.
+  for k, v in pairs(categoryKeys) do
+    if rawget(cfg.display, k) == nil then
+      rawset(cfg.display, k, DeepCopyTable(v))
+    end
+  end
+  
+  if resourceColorCurves then resourceColorCurves[barNumber] = nil end
 end
 
 -- ═══════════════════════════════════════════════════════════════════
@@ -1996,10 +2332,11 @@ GetSpecAwareBarColor = function(config)
   -- AUTO PRIMARY: per-power-type colors (before spec colors check)
   if config.tracking and config.tracking.resourceCategory == "autoPrimary" then
     local currentPower = UnitPowerType("player")
-    -- If profiles active: fall through to config.display.barColor below
-    -- (profile swap already loaded the right barColor)
     if not config.autoPowerProfiles then
-      -- No profiles: use default power type color (Mana=blue, Rage=red, etc.)
+      -- No profiles: prefer user's barColor if set, fallback to power type default
+      if config.display.barColor then
+        return config.display.barColor
+      end
       if POWER_TYPE_DEFAULT_COLORS[currentPower] then
         return POWER_TYPE_DEFAULT_COLORS[currentPower]
       end
@@ -4877,8 +5214,8 @@ function ns.Resources.UpdateBar(barNumber)
       -- Default: raw value
       textFrame.text:SetText(secretValue)
     end
-    local tc = cfg.display.textColor
-    textFrame.text:SetTextColor(tc.r, tc.g, tc.b, tc.a)
+    local tc = cfg.display.textColor or {r=1, g=1, b=1, a=1}
+    textFrame.text:SetTextColor(tc.r or 1, tc.g or 1, tc.b or 1, tc.a or 1)
     
     -- Prediction text override (soul shards only, non-secret so we can format freely)
     local predTextFmt = cfg.display.predTextFormat or "none"
@@ -5111,6 +5448,10 @@ function ns.Resources.UpdateBar(barNumber)
   
   -- Show bar (hideWhen already checked at top of function)
   if cfg.display.enabled then
+    -- Apply opacity with current hideWhen multiplier (handles transitions)
+    local baseOpacity = cfg.display.opacity or 1.0
+    local hideAlphaMul = (resourceFrames[barNumber] and resourceFrames[barNumber]._arcHideWhenAlpha) or 1.0
+    mainFrame:SetAlpha(baseOpacity * hideAlphaMul)
     mainFrame:Show()
   else
     mainFrame:Hide()
@@ -5171,17 +5512,18 @@ function ns.Resources.ApplyAppearance(barNumber)
   end
   
   -- HideWhen check (includes form/stance) — fade or hide
+  -- CRITICAL: Never early-return here. ApplyAppearance MUST always run the
+  -- full frame setup (size, position, textures, anchors) at least once.
+  -- Otherwise on reload with hideWhen active, frames are never configured
+  -- and show with wrong anchors/appearance when the condition later clears.
   local hideWhenFadeAlpha = 1.0
+  local hideWhenFullHide = false
   if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
     local hideWhen = ns.CooldownBars.GetHideWhen(cfg)
     if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, cfg.behavior and cfg.behavior.hideLogic) then
       local hAlpha = ns.CooldownBars.GetHideWhenAlpha(cfg)
       if hAlpha <= 0 then
-        if resourceFrames[barNumber] then
-          resourceFrames[barNumber].mainFrame:Hide()
-          resourceFrames[barNumber].textFrame:Hide()
-        end
-        return
+        hideWhenFullHide = true
       end
       hideWhenFadeAlpha = hAlpha
     end
@@ -5211,9 +5553,16 @@ function ns.Resources.ApplyAppearance(barNumber)
   
   -- NOTE: We apply scale to SIZE instead of SetScale() to avoid anchor drift
   -- Apply opacity with hideWhen alpha multiplier
+  -- CRITICAL: When hideWhenFullHide is true, use base opacity only.
+  -- The frame will be Hide()'d at the end — if we bake alpha=0 here,
+  -- UpdateResourceBar's Show() later won't reset it and the bar stays invisible.
   local baseOpacity = display.opacity or 1.0
-  local hideAlphaMul = (resourceFrames[barNumber] and resourceFrames[barNumber]._arcHideWhenAlpha) or 1.0
-  mainFrame:SetAlpha(baseOpacity * hideAlphaMul)
+  if not hideWhenFullHide then
+    local hideAlphaMul = (resourceFrames[barNumber] and resourceFrames[barNumber]._arcHideWhenAlpha) or 1.0
+    mainFrame:SetAlpha(baseOpacity * hideAlphaMul)
+  else
+    mainFrame:SetAlpha(baseOpacity)
+  end
   
   -- Frame strata and level
   local strata = display.barFrameStrata or "HIGH"
@@ -5517,6 +5866,13 @@ function ns.Resources.ApplyAppearance(barNumber)
   -- textLocked: true=locked, false=draggable, nil(existing users)=locked
   textFrame:EnableMouse(display.textLocked == false)
   
+  -- If hideWhen is fully hiding this bar, hide frames now that appearance is configured
+  if hideWhenFullHide then
+    mainFrame:Hide()
+    textFrame:Hide()
+    return
+  end
+  
   -- Refresh display
   ns.Resources.UpdateBar(barNumber)
 end
@@ -5533,47 +5889,53 @@ end
 
 -- ===================================================================
 -- SYNC ALL AUTO POWER PROFILES
--- Called before updates on power type change events and at init.
+-- Called before updates on power type/spec change events and at init.
 -- On first call (init), activeProfilePower is nil for all bars.
--- cfg.display may contain stale data from last session, so we
--- force-load the correct profile without saving back to _base.
+-- cfg.display/cfg.thresholds contain the SAVED state from last session
+-- (including user edits). We save them back to _lastActive's profile
+-- slot before loading the correct profile for current key.
 -- ===================================================================
 local function SyncAllAutoPowerProfiles()
   local activeBars = ns.API.GetActiveResourceBars and ns.API.GetActiveResourceBars() or {}
-  local currentPower = UnitPowerType("player")
   for _, barNum in ipairs(activeBars) do
     local cfg = ns.API.GetResourceBarConfig(barNum)
     if cfg and cfg.tracking.resourceCategory == "autoPrimary" and cfg.autoPowerProfiles then
       local profiles = cfg.autoPowerProfiles
+      local currentKey = GetCurrentProfileKey(cfg)
+      local profileThresholds = not ShouldExcludeTopLevel("thresholds", cfg)
       if activeProfilePower[barNum] == nil then
-        -- INIT PATH: activeProfilePower is nil (fresh login/reload).
-        -- cfg.display has stale data — don't save it anywhere.
-        -- Just force-load the correct profile.
-        if profiles[currentPower] and profiles[currentPower].display then
-          -- Per-power entry exists: load it
-          RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
-          if profiles[currentPower].thresholds then
-            cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+        -- INIT PATH: save last session's state back to _lastActive
+        local lastActive = profiles._lastActive
+        if lastActive ~= nil and profiles[lastActive] then
+          profiles[lastActive].display = SnapshotDisplay(cfg.display, cfg)
+          if profileThresholds then
+            profiles[lastActive].thresholds = cfg.thresholds and DeepCopyTable(cfg.thresholds) or nil
+          end
+        end
+        
+        if profiles[currentKey] and profiles[currentKey].display then
+          RestoreDisplayFromSnapshot(profiles[currentKey].display, cfg.display, cfg)
+          if profileThresholds and profiles[currentKey].thresholds then
+            cfg.thresholds = DeepCopyTable(profiles[currentKey].thresholds)
           end
         elseif profiles._base and profiles._base.display then
-          -- Per-power entry missing (first login after enabling profiles): auto-create from _base
-          profiles[currentPower] = {
+          profiles[currentKey] = {
             display = DeepCopyTable(profiles._base.display),
             thresholds = profiles._base.thresholds and DeepCopyTable(profiles._base.thresholds) or nil,
           }
-          local defaultColor = POWER_TYPE_DEFAULT_COLORS[currentPower]
+          local defaultColor = GetProfileKeyDefaultColor(currentKey)
           if defaultColor then
             local dc = {r=defaultColor.r, g=defaultColor.g, b=defaultColor.b, a=1}
-            profiles[currentPower].display.barColor = dc
-            if not profiles[currentPower].thresholds then profiles[currentPower].thresholds = {} end
-            if not profiles[currentPower].thresholds[1] then
-              profiles[currentPower].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
+            profiles[currentKey].display.barColor = dc
+            if not profiles[currentKey].thresholds then profiles[currentKey].thresholds = {} end
+            if not profiles[currentKey].thresholds[1] then
+              profiles[currentKey].thresholds[1] = { enabled = true, minValue = 0, maxValue = 100 }
             end
-            profiles[currentPower].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
+            profiles[currentKey].thresholds[1].color = {r=dc.r, g=dc.g, b=dc.b, a=1}
           end
-          RestoreDisplayFromSnapshot(profiles[currentPower].display, cfg.display)
-          if profiles[currentPower].thresholds then
-            cfg.thresholds = DeepCopyTable(profiles[currentPower].thresholds)
+          RestoreDisplayFromSnapshot(profiles[currentKey].display, cfg.display, cfg)
+          if profileThresholds and profiles[currentKey].thresholds then
+            cfg.thresholds = DeepCopyTable(profiles[currentKey].thresholds)
           end
         end
         -- Sync thresholds[1].color with the loaded barColor
@@ -5584,11 +5946,11 @@ local function SyncAllAutoPowerProfiles()
           end
           cfg.thresholds[1].color = {r=cfg.display.barColor.r, g=cfg.display.barColor.g, b=cfg.display.barColor.b, a=cfg.display.barColor.a or 1}
         end
-        activeProfilePower[barNum] = currentPower
+        activeProfilePower[barNum] = currentKey
+        profiles._lastActive = currentKey
         if resourceColorCurves then resourceColorCurves[barNum] = nil end
-      elseif activeProfilePower[barNum] ~= currentPower then
-        -- RUNTIME PATH: power type changed, do normal save+swap
-        SwapAutoPowerProfile(barNum, cfg, currentPower)
+      elseif activeProfilePower[barNum] ~= currentKey then
+        SwapAutoPowerProfile(barNum, cfg, currentKey)
       end
     end
   end
@@ -5917,6 +6279,7 @@ local eventFrame = CreateFrame("Frame")
 
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("PLAYER_LOGOUT")  -- Flush auto power profiles before AceDB saves
 eventFrame:RegisterEvent("UNIT_POWER_FREQUENT")
 eventFrame:RegisterEvent("UNIT_MAXPOWER")
 eventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
@@ -5998,6 +6361,12 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
         ns.Resources.UpdateAllBars()
       end
     end)
+    
+  elseif event == "PLAYER_LOGOUT" then
+    -- Flush all active auto power profiles back to storage before AceDB saves.
+    -- This ensures edits to thresholds, thresholdMode, tick marks, etc. made
+    -- since the last profile swap are written to autoPowerProfiles[powerType].
+    ns.Resources.FlushAllProfilesToStorage()
     
   elseif event == "UNIT_POWER_FREQUENT" and arg1 == "player" then
     if not isInitialized then return end
@@ -6374,6 +6743,10 @@ function ns.Resources.DeleteBar(barNumber)
     
     -- Clear autoPrimary profiles
     cfg.autoPowerProfiles = nil
+    if cfg.tracking then
+      cfg.tracking.usePerSpecProfiles = nil
+      cfg.tracking.autoShareCategories = nil
+    end
     activeProfilePower[barNumber] = nil
     
     -- Hide the bar (only if frames exist — don't create them)

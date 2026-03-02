@@ -44,6 +44,11 @@ function ns.PassesGates(data, playerLevel, inInstance, rested)
     return false
   end
 
+  local db = (ns.GetDB and ns.GetDB()) or _G.ClickableRaidBuffsDB or {}
+  if db.disableIconsInVehicle ~= false and ns.Gate_NotInVehicle and not ns.Gate_NotInVehicle() then
+    return false
+  end
+
   if data.minLevel and not (ns.Gate_Level and ns.Gate_Level(data.minLevel, playerLevel)) then
     return false
   end

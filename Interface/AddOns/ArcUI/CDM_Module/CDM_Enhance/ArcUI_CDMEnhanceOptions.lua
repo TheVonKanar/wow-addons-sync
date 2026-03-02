@@ -865,6 +865,9 @@ local function ApplyAuraSetting(setter)
   if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
     ns.CDMEnhance.InvalidateCache()
   end
+  if ns.ArcAuras and ns.ArcAuras.InvalidateSettingsCache then
+    ns.ArcAuras.InvalidateSettingsCache()
+  end
   UpdateAura()
   
   -- Also update cooldowns if we applied to them
@@ -901,6 +904,9 @@ local function ApplyAuraOnlySetting(setter)
   
   if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
     ns.CDMEnhance.InvalidateCache()
+  end
+  if ns.ArcAuras and ns.ArcAuras.InvalidateSettingsCache then
+    ns.ArcAuras.InvalidateSettingsCache()
   end
   UpdateAura()
   
@@ -2541,6 +2547,42 @@ function ns.GetCDMAuraIconsOptionsTable()
         LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
       end,
     },
+    masqueGlowShapes = {
+      type = "toggle",
+      name = "Use Masque Glow Shapes",
+      desc = "When enabled, glow effects (proc, ants, etc.) use shape-matched textures from Masque (circle, hexagon, etc.).\n\n|cffFFAA00When disabled:|r Glows always use the default square shape regardless of Masque skin.\n\n|cff888888Useful if Masque shape textures look bad or oversized on certain glow types.|r",
+      order = 8.26,
+      width = 1.2,
+      hidden = function()
+        return not IsMasqueActive()
+      end,
+      disabled = function()
+        return not IsMasqueActive()
+      end,
+      get = function()
+        if ns.db and ns.db.profile and ns.db.profile.cdmEnhance then
+          -- Default to true (use shapes)
+          if ns.db.profile.cdmEnhance.glowUseMasqueShapes == nil then return true end
+          return ns.db.profile.cdmEnhance.glowUseMasqueShapes
+        end
+        return true
+      end,
+      set = function(_, val)
+        if ns.db and ns.db.profile then
+          ns.db.profile.cdmEnhance = ns.db.profile.cdmEnhance or {}
+          ns.db.profile.cdmEnhance.glowUseMasqueShapes = val
+        end
+        -- Notify Glows module
+        if ns.Glows and ns.Glows.RefreshMasqueShapes then
+          ns.Glows.RefreshMasqueShapes()
+        end
+        -- Notify ACH module
+        if ns.AssistedCombatHighlight and ns.AssistedCombatHighlight.DestroyAllHighlights then
+          ns.AssistedCombatHighlight.DestroyAllHighlights()
+        end
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+      end,
+    },
     masqueZoomNote = {
       type = "description",
       name = "|cffFFAA00When Masque is enabled:|r Zoom, Aspect Ratio, and Padding controls are disabled. Use Masque's settings to adjust icon appearance.",
@@ -3353,14 +3395,14 @@ function ns.GetCDMAuraIconsOptionsTable()
     activeStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Proc|r - Flashy proc effect\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow (Default)",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
       get = function()
@@ -3598,8 +3640,8 @@ function ns.GetCDMAuraIconsOptionsTable()
         if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
         local c = GetAuraCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        -- Button glow doesn't support offset
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+        -- Only button and default types don't support offset
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
       end,
     },
     activeStateGlowYOffset = {
@@ -3626,8 +3668,8 @@ function ns.GetCDMAuraIconsOptionsTable()
         if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
         local c = GetAuraCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        -- Button glow doesn't support offset
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+        -- Only button and default types don't support offset
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
       end,
     },
     activeStateGlowFrameStrata = {
@@ -3962,14 +4004,14 @@ function ns.GetCDMAuraIconsOptionsTable()
     inactiveGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Proc|r - Flashy proc effect\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow (Default)",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
       get = function()
@@ -4293,15 +4335,15 @@ function ns.GetCDMAuraIconsOptionsTable()
     },
     procGlowType = {
       type = "select", name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Default|r - Blizzard's proc glow with proper sizing\n|cffffd700Proc|r - LibCustomGlow flashy proc effect\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
-        ["default"] = "Default (Blizzard)",
+        ["default"] = "Default (Golden)",
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
@@ -6408,14 +6450,14 @@ function ns.GetCDMCooldownIconsOptionsTable()
     readyStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Proc|r - Flashy proc effect\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow (Default)",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
       get = function()
@@ -6653,8 +6695,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
         local c = GetCooldownCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        -- Button glow doesn't support offset
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+        -- Only button and default types don't support offset
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
       end,
     },
     readyStateGlowYOffset = {
@@ -6681,8 +6723,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
         local c = GetCooldownCfg()
         if not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow) then return true end
-        -- Button glow doesn't support offset
-        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+        -- Only button and default types don't support offset
+        local gt = c.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
       end,
     },
     readyStateGlowFrameStrata = {
@@ -7119,14 +7161,14 @@ function ns.GetCDMCooldownIconsOptionsTable()
     auraActiveStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Proc|r - Flashy proc effect\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow (Default)",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
       get = function()
@@ -7472,15 +7514,15 @@ function ns.GetCDMCooldownIconsOptionsTable()
     },
     procGlowType = {
       type = "select", name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Default|r - Blizzard's proc glow with proper sizing\n|cffffd700Proc|r - LibCustomGlow flashy proc effect\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Burst|r - Template proc burst glow",
+      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
       values = {
-        ["default"] = "Default (Blizzard)",
+        ["default"] = "Default (Golden)",
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
         ["button"] = "Button Glow",
-        ["proc"] = "Proc Effect",
+        ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Burst (ACH)",
+        ["ach_proc"] = "Proc Loop",
       },
       sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
@@ -9264,9 +9306,9 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           ["pixel"] = "Pixel Glow",
           ["autocast"] = "AutoCast Sparkles",
           ["button"] = "Button Glow (Default)",
-          ["proc"] = "Proc Effect",
+          ["proc"] = "Blizzard Proc",
           ["ants"] = "Ants (Marching)",
-          ["ach_proc"] = "Proc Burst (ACH)",
+          ["ach_proc"] = "Proc Loop",
         },
         sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
         get = function()
@@ -9489,8 +9531,8 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.activeState then return true end
           local g = GetAuraGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          -- Button glow doesn't support offset
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+          -- Only button and default types don't support offset
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
         end,
       },
       activeStateGlowYOffset = {
@@ -9515,8 +9557,8 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           if collapsedGlobalAuraSections.activeState then return true end
           local g = GetAuraGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          -- Button glow doesn't support offset
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+          -- Only button and default types don't support offset
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
         end,
       },
       activeStateGlowThreshold = {
@@ -10385,7 +10427,7 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
       },
       glowType = {
         type = "select", name = "Type",
-        values = { default = "Default (Blizzard)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Burst (ACH)" },
+        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop" },
         sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
         get = function() local g = GetAuraGlobalCfg(); return g.procGlow and g.procGlow.glowType or "default" end,
         set = function(_, v) ApplyAuraGlobalSetting("procGlow.glowType", v); RefreshGlobalAuras() end,
@@ -10901,9 +10943,9 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           ["pixel"] = "Pixel Glow",
           ["autocast"] = "AutoCast Sparkles",
           ["button"] = "Button Glow (Default)",
-          ["proc"] = "Proc Effect",
+          ["proc"] = "Blizzard Proc",
           ["ants"] = "Ants (Marching)",
-          ["ach_proc"] = "Proc Burst (ACH)",
+          ["ach_proc"] = "Proc Loop",
         },
         sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
         get = function()
@@ -11126,8 +11168,8 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.readyState then return true end
           local g = GetCooldownGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          -- Button glow doesn't support offset
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+          -- Only button and default types don't support offset
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
         end,
       },
       readyStateGlowYOffset = {
@@ -11152,8 +11194,8 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           if collapsedGlobalCooldownSections.readyState then return true end
           local g = GetCooldownGlobalCfg()
           if not (g.cooldownStateVisuals and g.cooldownStateVisuals.readyState and g.cooldownStateVisuals.readyState.glow) then return true end
-          -- Button glow doesn't support offset
-          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "ants" or gt == "ach_proc"
+          -- Only button and default types don't support offset
+          local gt = g.cooldownStateVisuals.readyState.glowType; return gt == "button" or gt == "default"
         end,
       },
       
@@ -12010,7 +12052,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
       },
       glowType = {
         type = "select", name = "Type",
-        values = { default = "Default (Blizzard)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Burst (ACH)" },
+        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop" },
         sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
         get = function() local g = GetCooldownGlobalCfg(); return g.procGlow and g.procGlow.glowType or "default" end,
         set = function(_, v) ApplyCooldownGlobalSetting("procGlow.glowType", v); RefreshGlobalCooldowns() end,

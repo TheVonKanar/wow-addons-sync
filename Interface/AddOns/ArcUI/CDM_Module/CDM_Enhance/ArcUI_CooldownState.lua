@@ -132,6 +132,19 @@ local function ResetDurationText(frame)
   if frame.Cooldown and frame.Cooldown.SetIgnoreParentAlpha then
     frame.Cooldown:SetIgnoreParentAlpha(false)
   end
+  -- Walk native Cooldown regions
+  if frame.Cooldown and not skip then
+    local countdownFS = frame.Cooldown.GetCountdownFontString and frame.Cooldown:GetCountdownFontString()
+    if countdownFS and countdownFS.SetIgnoreParentAlpha then
+      countdownFS:SetIgnoreParentAlpha(false)
+    end
+    for _, region in ipairs({frame.Cooldown:GetRegions()}) do
+      if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha
+         and not region._arcIsChargeText then
+        region:SetIgnoreParentAlpha(false)
+      end
+    end
+  end
 end
 
 local function PreserveDurationText(frame)
@@ -157,6 +170,23 @@ local function PreserveDurationText(frame)
     if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
       frame._arcChargeText:SetIgnoreParentAlpha(true)
       frame._arcChargeText:SetAlpha(1)
+    end
+  end
+  -- Native Cooldown FontStrings: The Cooldown widget can recreate/reset
+  -- its internal text when CDM pushes new DurationObjects. Walk regions
+  -- every call to catch any new or reset FontStrings.
+  if frame.Cooldown then
+    local countdownFS = frame.Cooldown.GetCountdownFontString and frame.Cooldown:GetCountdownFontString()
+    if countdownFS and countdownFS.SetIgnoreParentAlpha then
+      countdownFS:SetIgnoreParentAlpha(true)
+      countdownFS:SetAlpha(1)
+    end
+    for _, region in ipairs({frame.Cooldown:GetRegions()}) do
+      if region:IsObjectType("FontString") and region.SetIgnoreParentAlpha
+         and not region._arcIsChargeText then
+        region:SetIgnoreParentAlpha(true)
+        region:SetAlpha(1)
+      end
     end
   end
 end
@@ -492,29 +522,27 @@ local function ApplyCooldownAlpha(frame, stateVisuals)
     frame._arcBypassFrameAlphaHook = false
     frame._lastAppliedAlpha = cdAlpha
   end
-  -- When frame is effectively hidden (alpha ≈ 0), NEVER preserve text.
-  -- PreserveDurationText sets SetIgnoreParentAlpha(true) which makes
-  -- charge/cooldown text float visibly over a hidden frame. Clear the
-  -- flag so SetCooldown hooks don't re-enable IgnoreParentAlpha either.
-  -- NOTE: We use our own cdAlpha (non-secret) instead of frame:GetAlpha()
-  -- which could be secret in combat.
-  if cdAlpha < 0.01 then
-    frame._arcPreserveDurationText = false
-    ResetDurationText(frame)
-  else
-    frame._arcPreserveDurationText = stateVisuals.preserveDurationText == true
+
+  -- Preserve duration text: keep countdown + charge text visible even when
+  -- frame is dimmed/hidden. This is the WHOLE POINT of the feature — text
+  -- stays readable at full opacity while the icon fades to cooldownAlpha.
+  -- Arc Auras applies preserve unconditionally regardless of alpha.
+  frame._arcPreserveDurationText = stateVisuals.preserveDurationText == true
+  if stateVisuals.preserveDurationText then
+    -- Cooldown widget must be at alpha 1 so its child text can be visible.
+    -- The frame itself is at cdAlpha (possibly 0), but IgnoreParentAlpha
+    -- on the FontStrings makes them ignore the entire parent alpha chain.
     if frame.Cooldown then
-      if not stateVisuals.preserveDurationText then
-        if frame.Cooldown.SetIgnoreParentAlpha then
-          frame.Cooldown:SetIgnoreParentAlpha(false)
-        end
+      frame.Cooldown:SetAlpha(1)
+    end
+    PreserveDurationText(frame)
+  else
+    if frame.Cooldown then
+      if frame.Cooldown.SetIgnoreParentAlpha then
+        frame.Cooldown:SetIgnoreParentAlpha(false)
       end
     end
-    if stateVisuals.preserveDurationText then
-      PreserveDurationText(frame)
-    else
-      ResetDurationText(frame)
-    end
+    ResetDurationText(frame)
   end
 end
 
@@ -632,9 +660,10 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
   ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
 
   -- SWIPE/EDGE
-  local masqueControlsCD = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
-    and ns.Masque.ShouldMasqueControlCooldowns()
-  if frame.Cooldown and not masqueControlsCD then
+  -- IAO frames MUST control swipe regardless of Masque — IAO is about showing
+  -- spell cooldown instead of aura duration, so we need explicit swipe control
+  -- to prevent GCD swipes from showing through.
+  if frame.Cooldown then
     local swipeCfg = cfg.cooldownSwipe
     local userWantsSwipe = not swipeCfg or swipeCfg.showSwipe ~= false
     local userWantsEdge  = not swipeCfg or swipeCfg.showEdge  ~= false
@@ -663,9 +692,6 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
     frame.Cooldown:SetDrawSwipe(wantSwipe)
     frame.Cooldown:SetDrawEdge(wantEdge)
     frame._arcBypassSwipeHook = false
-  elseif masqueControlsCD then
-    frame._arcDesiredSwipe = nil
-    frame._arcDesiredEdge  = nil
   end
 end
 
@@ -1052,35 +1078,15 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
 
   -- DISPATCH
   if ignoreAuraOverride then
-    local cooldownInfo = frame.cooldownInfo
-    -- IAO gate: does this spell EVER show as an aura?
-    -- Old check used cdmExplicitlyTrackingCooldown to gate selfAura/hasAura,
-    -- but at cast-time wasSetFromAura is still false (CDM hasn't flipped yet),
-    -- so cdmExplicitlyTrackingCooldown=true gated out the selfAura check.
-    -- Result: dispatched to HandleCooldownLogic → _arcForceDesatValue=nil →
-    -- CDM's later SetDesat(false) passed through uncontested for entire CD.
-    -- Fix: if cooldownInfo says the spell CAN show as aura, always route to IAO.
-    local cdmWouldShowAura = cfg._isAura
-                             or (frame.totemData ~= nil)
-                             or (frame.wasSetFromAura == true)
-                             or (cooldownInfo
-                                 and (cooldownInfo.hasAura == true or cooldownInfo.selfAura == true))
-    if cdmWouldShowAura then
-      frame._arcDesatBranch = "DISPATCH_IAO"
-      frame._arcIgnoreAuraOverride = true
-      HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
-    elseif useAuraLogic then
-      if frame._arcAuraEventDriven and (cfg._isAura or frame.totemData ~= nil) then
-        return  -- OptimizedApply owns true aura frames
-      end
-      frame._arcDesatBranch = "DISPATCH_AURA"
-      frame._arcIgnoreAuraOverride = false
-      HandleAuraLogic(frame, iconTex, cfg, stateVisuals)
-    else
-      frame._arcDesatBranch = "DISPATCH_CD"
-      frame._arcIgnoreAuraOverride = false
-      HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
-    end
+    -- Always route to IAO handler when user enabled ignoreAuraOverride.
+    -- Previously gated behind cdmWouldShowAura (hasAura/selfAura/wasSetFromAura),
+    -- but on reload those flags may not be populated yet (buff not active,
+    -- cooldownInfo metadata not set). This caused fallthrough to HandleCooldownLogic
+    -- which set _arcIgnoreAuraOverride=false, breaking GCD intercept.
+    -- HandleIgnoreAuraOverride handles both CD and ready states correctly.
+    frame._arcDesatBranch = "DISPATCH_IAO"
+    frame._arcIgnoreAuraOverride = true
+    HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
   elseif useAuraLogic then
     -- EVENT-DRIVEN AURA FRAMES: OptimizedApplyIconVisuals is the authority
     -- on alpha/desat/tint for true aura frames (cfg._isAura or totem).
@@ -1163,6 +1169,7 @@ ns.CooldownState.ApplyReadyGlow     = ApplyReadyGlow
 ns.CooldownState.ResolveIconTexture = ResolveIconTexture
 ns.CooldownState.GetUsabilityAlpha  = GetUsabilityAlpha
 ns.CooldownState.EnforceReadyGlow   = EnforceCooldownReadyGlow
+ns.CooldownState.PreserveDurationText = PreserveDurationText
 
 function ns.CooldownState.FeedShadow(frame, cfg)
   if not frame then return end

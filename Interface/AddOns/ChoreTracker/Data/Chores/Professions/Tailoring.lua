@@ -9,6 +9,27 @@ Addon.data.chores.professionTailoring = {
     texture = C_Spell.GetSpellTexture(3908),
     categories = {
         {
+            key = 'midnight',
+            name = EXPANSION_NAME11,
+            skillLineId = 2918,
+            drops = {
+            },
+            quests = {
+                {
+                    key = 'treatise',
+                    entries = {
+                        { quest=95137, item=245756 }, -- Thalassian Treatise on Tailoring
+                    },
+                },
+                {
+                    key = 'orders',
+                    entries = {
+                        { quest=93696, item=263460 }, -- Thalassian Tailor's Notebook
+                    },
+                },
+            }
+        },
+        {
             key = 'warWithin',
             name = EXPANSION_NAME10,
             skillLineId = 2883,

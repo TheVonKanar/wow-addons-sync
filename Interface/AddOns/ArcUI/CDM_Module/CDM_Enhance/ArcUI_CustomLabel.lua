@@ -233,6 +233,13 @@ function CL.UpdateVisibility(frame)
   end
 
   local cfg = frame._arcCfg
+  -- ArcAuras frames don't have _arcCfg (CDMEnhance cache). Fetch via arcID.
+  if not cfg then
+    local arcID = frame._arcAuraID or frame.cooldownID
+    if arcID and ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettings then
+      cfg = ns.CDMEnhance.GetEffectiveIconSettings(arcID)
+    end
+  end
   local labelCfg = cfg and cfg.customLabel
   -- Use ONLY cfg._isAura to determine path, NOT frame.wasSetFromAura.
   local isAura = (cfg and cfg._isAura == true)
@@ -257,6 +264,7 @@ function CL.UpdateVisibility(frame)
   -- ── COOLDOWN PATH: per-label, duration is SECRET → curve system ──
   local spellID = (cfg and cfg._spellID)
     or (frame.cooldownInfo and (frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID))
+    or frame._arcSpellID
 
   -- Pre-compute cooldown state once for all labels
   local isOnGCD, durationObj, isChargeSpell, chargeDurObj
@@ -381,8 +389,16 @@ function CL.UpdateVisibility(frame)
             -- All toggles same state - not filtering, show the label
             container:SetAlpha(1)
           elseif not spellID or isOnGCD or not durationObj or not CooldownCurves then
-            -- Fallback: use boolean result
-            container:SetAlpha(showReady and 1 or 0)
+            -- Fallback: use boolean frame state (covers ArcAuras items/trinkets
+            -- which have _isOnCooldown but no spellID/curves)
+            local isOnCD = frame._isOnCooldown
+              or frame._lastCooldownState
+              or (frame._lastVisualState == "cooldown")
+            if isOnCD then
+              container:SetAlpha(showCooldown and 1 or 0)
+            else
+              container:SetAlpha(showReady and 1 or 0)
+            end
           else
             -- Use curve for smooth transition
             local curve = showReady and CooldownCurves.BinaryInv or CooldownCurves.Binary

@@ -77,6 +77,7 @@ end
 -- Settings cache per frame - invalidated only when settings change
 local settingsCache = {}  -- arcID -> { settings = {}, timestamp = time }
 local SETTINGS_CACHE_TTL = 5  -- Re-validate cache every 5 seconds max
+local settingsCacheGeneration = 0  -- Bumped on explicit invalidation (not TTL expiry)
 
 -- Apply swipe/edge colors from settings, skipping when Masque controls cooldowns
 -- Masque's skin owns swipe/edge colors when useMasqueCooldowns is enabled.
@@ -100,6 +101,7 @@ local function InvalidateSettingsCache(arcID)
     else
         wipe(settingsCache)
     end
+    settingsCacheGeneration = settingsCacheGeneration + 1
 end
 
 -- Stack/charge cache per frame - updated on events, not polling
@@ -116,6 +118,10 @@ end
 -- Export cache invalidation for external use
 ArcAuras.InvalidateSettingsCache = InvalidateSettingsCache
 ArcAuras.InvalidateStackCache = InvalidateStackCache
+ArcAuras.GetSettingsCacheGeneration = function() return settingsCacheGeneration end
+
+-- Global bridge for GlowDebugger (debug only)
+_G.ArcUI_ArcAuras = ArcAuras
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DATABASE
@@ -808,10 +814,11 @@ local function CreateArcAuraFrame(arcID, config)
         end)
         
         -- Visible cooldown: OnCooldownDone → re-feed for instant visual update
+        -- NOTE: Do NOT set desat here — desat is driven by the shadow frame (desatCooldown).
+        -- Unconditionally clearing desat causes a visible flash when recasting instantly.
         cooldown:HookScript("OnCooldownDone", function(self)
             local fd = self._arcFrameData
             if not fd then return end
-            if fd.icon then fd.icon:SetDesaturated(false) end
             if ns.ArcAurasCooldown and ns.ArcAurasCooldown.FeedCooldown then
                 ns.ArcAurasCooldown.FeedCooldown(fd)
             end
@@ -1088,11 +1095,8 @@ function ArcAuras.DestroyFrame(arcID)
         local fd = ns.ArcAurasCooldown.spellData and ns.ArcAurasCooldown.spellData[arcID]
         if fd then
             -- Stop proc glows
-            local LCGRef = GetLCG()
-            if LCGRef then
-                pcall(LCGRef.PixelGlow_Stop, frame, "proc")
-                pcall(LCGRef.AutoCastGlow_Stop, frame, "proc")
-                pcall(LCGRef.ButtonGlow_Stop, frame)
+            if ns.Glows then
+                ns.Glows.StopAll(frame)
             end
             if ActionButtonSpellAlertManager then
                 pcall(function() ActionButtonSpellAlertManager:HideAlert(frame) end)
@@ -1126,25 +1130,11 @@ function ArcAuras.DestroyFrame(arcID)
     -- ═══════════════════════════════════════════════════════════════════════════
     -- STEP 2: Stop any visual effects (glows, animations)
     -- ═══════════════════════════════════════════════════════════════════════════
-    if ns.CDMEnhance and ns.CDMEnhance.StopAllGlows then
-        pcall(ns.CDMEnhance.StopAllGlows, frame, "ArcUI_Glow")
-        pcall(ns.CDMEnhance.StopAllGlows, frame, "ArcUI_ReadyGlow")
-        pcall(ns.CDMEnhance.StopAllGlows, frame, "ArcAura_ReadyGlow")
-        pcall(ns.CDMEnhance.StopAllGlows, frame, "ArcAura_ThresholdGlow")
-        if frame._arcGlowAnchor then
-            pcall(ns.CDMEnhance.StopAllGlows, frame._arcGlowAnchor, "ArcUI_Glow")
+    if ns.Glows then
+        ns.Glows.StopAll(frame)
+        if frame._arcGlowAnchor and frame._arcGlowAnchor ~= frame then
+            ns.Glows.StopAll(frame._arcGlowAnchor)
         end
-    end
-    
-    -- Stop glows via LibCustomGlow directly as backup
-    local LCG = GetLCG()
-    if LCG then
-        pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ReadyGlow")
-        pcall(LCG.PixelGlow_Stop, frame, "ArcUI_ReadyGlow")
-        pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ThresholdGlow")
-        pcall(LCG.AutoCastGlow_Stop, frame, "ArcAura_ReadyGlow")
-        pcall(LCG.AutoCastGlow_Stop, frame, "ArcUI_ReadyGlow")
-        pcall(LCG.ButtonGlow_Stop, frame)
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -1654,8 +1644,6 @@ end
 -- Main update function - Updates cooldown display AND visual state
 -- OPTIMIZED: Uses cached settings, cached LCG reference, state-change detection
 local function OnArcAurasUpdate()
-    local LCG = GetLCG()  -- Cached reference
-    
     for arcID, frame in pairs(ArcAuras.frames) do
         if frame and frame:IsShown() then
             -- SKIP spell frames - they are fully event-driven (no polling needed)
@@ -1683,15 +1671,26 @@ local function OnArcAurasUpdate()
                 local settings = ArcAuras.GetCachedSettings(arcID)
                 
                 -- Get properly formatted state visuals from CDMEnhance if available
-                -- OPTIMIZED: Only fetch once per state change, not every tick
+                -- OPTIMIZED: Refresh stateVisuals on state change OR when settings invalidated
                 local stateVisuals = frame._cachedStateVisuals
                 local stateChanged = (frame._lastVisualState == "ready") ~= (not isOnCooldown)
+                local settingsChanged = (frame._settingsGeneration ~= settingsCacheGeneration)
                 
-                if stateChanged or not stateVisuals then
+                if stateChanged or settingsChanged or not stateVisuals then
                     if ns.CDMEnhance and ns.CDMEnhance.GetEffectiveStateVisuals then
                         stateVisuals = ns.CDMEnhance.GetEffectiveStateVisuals(settings)
                     end
                     frame._cachedStateVisuals = stateVisuals
+                    frame._settingsGeneration = settingsCacheGeneration
+                    -- Settings explicitly changed — kill any active glow, let this tick re-evaluate
+                    if settingsChanged then
+                        local hasActiveGlow = ns.Glows and ns.Glows.IsActive(frame, "ArcUI_ReadyGlow")
+                        if hasActiveGlow then
+                            ns.Glows.Stop(frame, "ArcUI_ReadyGlow")
+                        end
+                        frame._arcReadyGlowActive = false
+                        frame._arcCurrentGlowSig = nil
+                    end
                 end
                 
                 -- Check if glow preview is active for this icon
@@ -1795,34 +1794,31 @@ local function OnArcAurasUpdate()
                     if frame._lastVisualState ~= "cooldown" then
                         frame._lastVisualState = "cooldown"
                         frame._arcReadyConfirmTicks = 0  -- Reset debounce counter
-                        -- CRITICAL: Call HideReadyGlow BEFORE clearing _arcReadyGlowActive
-                        -- HideReadyGlow has an early-exit guard: if not _arcReadyGlowActive then return
-                        -- Clearing the flag first causes HideReadyGlow to skip the actual glow stop!
-                        if ns.CDMEnhance and ns.CDMEnhance.HideReadyGlow then
-                            ns.CDMEnhance.HideReadyGlow(frame)
-                        elseif LCG then
-                            pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ReadyGlow")
-                            pcall(LCG.PixelGlow_Stop, frame, "ArcUI_ReadyGlow")
-                            pcall(LCG.AutoCastGlow_Stop, frame, "ArcAura_ReadyGlow")
-                            pcall(LCG.AutoCastGlow_Stop, frame, "ArcUI_ReadyGlow")
-                            pcall(LCG.ButtonGlow_Stop, frame)
+                        if ns.Glows and (frame._arcReadyGlowActive or ns.Glows.IsActive(frame, "ArcUI_ReadyGlow")) then
+                            ns.Glows.Stop(frame, "ArcUI_ReadyGlow")
                         end
-                        -- Now safe to clear flags (HideReadyGlow also clears _arcReadyGlowActive)
                         frame._arcReadyGlowActive = false
                         frame._arcPreviewGlowActive = false
+                        frame._arcCurrentGlowSig = nil
+                        -- Update custom label visibility on state change
+                        if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+                            ns.CustomLabel.UpdateVisibility(frame)
+                        end
                     end
                     
                     -- Threshold glow (when almost ready)
                     local tg = settings and settings.thresholdGlow
-                    if tg and tg.enabled and remaining > 0 and LCG then
+                    if tg and tg.enabled and remaining > 0 and ns.Glows then
                         if remaining <= (tg.seconds or 5) then
                             if not frame._thresholdGlowActive then
-                                local color = tg.color or {1, 0.5, 0, 1}
-                                pcall(LCG.PixelGlow_Start, frame, color, 8, 0.25, nil, 2, 0, 0, true, "ArcAura_ThresholdGlow")
+                                ns.Glows.Start(frame, "ArcAura_ThresholdGlow", "pixel", {
+                                    color = tg.color or {1, 0.5, 0, 1},
+                                    lines = 8, frequency = 0.25, thickness = 2,
+                                })
                                 frame._thresholdGlowActive = true
                             end
                         elseif frame._thresholdGlowActive then
-                            pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ThresholdGlow")
+                            ns.Glows.Stop(frame, "ArcAura_ThresholdGlow")
                             frame._thresholdGlowActive = false
                         end
                     end
@@ -1904,8 +1900,8 @@ local function OnArcAurasUpdate()
                     end
                     
                     -- Stop threshold glow when ready
-                    if LCG and frame._thresholdGlowActive then
-                        pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ThresholdGlow")
+                    if ns.Glows and frame._thresholdGlowActive then
+                        ns.Glows.Stop(frame, "ArcAura_ThresholdGlow")
                         frame._thresholdGlowActive = false
                     end
                     
@@ -1913,13 +1909,19 @@ local function OnArcAurasUpdate()
                     local stateJustChanged = (frame._lastVisualState ~= "ready")
                     frame._lastVisualState = "ready"
                     
+                    -- Update custom label visibility on state change
+                    if stateJustChanged and ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+                        ns.CustomLabel.UpdateVisibility(frame)
+                    end
+                    
                     -- READY GLOW DEBOUNCE: For item frames, require several consecutive
                     -- "ready" ticks before showing glow. Prevents sporadic glow flashes
                     -- from momentary API data gaps.
                     local readyConfirmed = true
                     if config.type == "item" and not isGlowPreview then
-                        frame._arcReadyConfirmTicks = (frame._arcReadyConfirmTicks or 0) + 1
-                        if frame._arcReadyConfirmTicks < 3 then
+                        local ticks = frame._arcReadyConfirmTicks or 0
+                        if ticks < 3 then
+                            frame._arcReadyConfirmTicks = ticks + 1
                             readyConfirmed = false
                         end
                     end
@@ -1952,8 +1954,12 @@ local function OnArcAurasUpdate()
                         shouldShowGlow = false
                     end
                     
-                    -- Track current glow state
-                    local glowCurrentlyShowing = frame._arcReadyGlowActive or false
+                    -- Track current glow state (ns.Glows is the authority, not the flag)
+                    local glowCurrentlyShowing = ns.Glows and ns.Glows.IsActive(frame, "ArcUI_ReadyGlow") and true or false
+                    -- Sync flag if it drifted
+                    if frame._arcReadyGlowActive ~= glowCurrentlyShowing then
+                        frame._arcReadyGlowActive = glowCurrentlyShowing
+                    end
                     -- Detect if glow needs restart (sig cleared by resize in ApplySettingsToFrame)
                     local glowNeedsRestart = glowCurrentlyShowing and not frame._arcCurrentGlowSig
                     
@@ -1982,55 +1988,39 @@ local function OnArcAurasUpdate()
                             }
                         end
                         
-                        -- Use CDMEnhance's ShowReadyGlow (has signature check for efficient updates)
-                        if ns.CDMEnhance and ns.CDMEnhance.ShowReadyGlow then
-                            ns.CDMEnhance.ShowReadyGlow(frame, glowSettings)
-                        elseif LCG then
-                            -- Fallback: manual glow
-                            local glowType = glowSettings.readyGlowType or "button"
-                            local glowColor = glowSettings.readyGlowColor
-                            local intensity = glowSettings.readyGlowIntensity or 1.0
-                            local speed = glowSettings.readyGlowSpeed or 0.25
-                            local lines = glowSettings.readyGlowLines or 8
-                            local thickness = glowSettings.readyGlowThickness or 2
-                            local particles = glowSettings.readyGlowParticles or 4
-                            local xOffset = glowSettings.readyGlowXOffset or 0
-                            local yOffset = glowSettings.readyGlowYOffset or 0
-                            
-                            -- Build color table
+                        -- Start glow via unified Glows module
+                        if ns.Glows then
+                            local gc = glowSettings.readyGlowColor
                             local r, g, b = 1, 0.85, 0
-                            if glowColor then
-                                r = glowColor.r or glowColor[1] or 1
-                                g = glowColor.g or glowColor[2] or 0.85
-                                b = glowColor.b or glowColor[3] or 0
+                            if gc then
+                                r = gc.r or gc[1] or 1
+                                g = gc.g or gc[2] or 0.85
+                                b = gc.b or gc[3] or 0
                             end
-                            local color = {r, g, b, intensity}
-                            
-                            if glowType == "pixel" then
-                                pcall(LCG.PixelGlow_Start, frame, color, lines, speed, nil, thickness, xOffset, yOffset, true, "ArcAura_ReadyGlow")
-                            elseif glowType == "autocast" then
-                                pcall(LCG.AutoCastGlow_Start, frame, color, particles, speed, 1, xOffset, yOffset, "ArcAura_ReadyGlow")
-                            else
-                                pcall(LCG.ButtonGlow_Start, frame, color, speed)
-                            end
+                            local intensity = glowSettings.readyGlowIntensity or 1.0
+                            ns.Glows.Start(frame, "ArcUI_ReadyGlow", glowSettings.readyGlowType or "button", {
+                                color = {r, g, b, intensity},
+                                intensity = intensity,
+                                scale = glowSettings.readyGlowScale or 1.0,
+                                frequency = glowSettings.readyGlowSpeed or 0.25,
+                                lines = glowSettings.readyGlowLines or 8,
+                                thickness = glowSettings.readyGlowThickness or 2,
+                                particles = glowSettings.readyGlowParticles or 4,
+                                xOffset = glowSettings.readyGlowXOffset or 0,
+                                yOffset = glowSettings.readyGlowYOffset or 0,
+                            })
+                            -- Set signature to prevent restart-every-tick
+                            frame._arcCurrentGlowSig = glowSettings.readyGlowType or "button"
                         end
                         
                     elseif not shouldShowGlow and glowCurrentlyShowing then
                         -- STOP glow
-                        -- CRITICAL: Call HideReadyGlow BEFORE clearing _arcReadyGlowActive
-                        -- HideReadyGlow has an early-exit guard that checks this flag
-                        if ns.CDMEnhance and ns.CDMEnhance.HideReadyGlow then
-                            ns.CDMEnhance.HideReadyGlow(frame)
-                        elseif LCG then
-                            pcall(LCG.PixelGlow_Stop, frame, "ArcAura_ReadyGlow")
-                            pcall(LCG.PixelGlow_Stop, frame, "ArcUI_ReadyGlow")
-                            pcall(LCG.AutoCastGlow_Stop, frame, "ArcAura_ReadyGlow")
-                            pcall(LCG.AutoCastGlow_Stop, frame, "ArcUI_ReadyGlow")
-                            pcall(LCG.ButtonGlow_Stop, frame)
+                        if ns.Glows then
+                            ns.Glows.Stop(frame, "ArcUI_ReadyGlow")
                         end
-                        -- Now safe to clear flags
                         frame._arcReadyGlowActive = false
                         frame._arcPreviewGlowActive = false
+                        frame._arcCurrentGlowSig = nil
                     end
                 end
                 
@@ -3846,13 +3836,11 @@ function ArcAuras.RefreshAllFrames()
         end
         
         -- Stop glows
-        local LCG = GetLCG()
-        if LCG then
-            pcall(LCG.PixelGlow_Stop, frame._arcGlowAnchor or frame)
-            pcall(LCG.PixelGlow_Stop, frame)
-            pcall(LCG.AutoCastGlow_Stop, frame._arcGlowAnchor or frame)
-            pcall(LCG.ButtonGlow_Stop, frame._arcGlowAnchor or frame)
-            pcall(LCG.ProcGlow_Stop, frame._arcGlowAnchor or frame)
+        if ns.Glows then
+            ns.Glows.StopAll(frame)
+            if frame._arcGlowAnchor and frame._arcGlowAnchor ~= frame then
+                ns.Glows.StopAll(frame._arcGlowAnchor)
+            end
         end
         
         frame:Hide()

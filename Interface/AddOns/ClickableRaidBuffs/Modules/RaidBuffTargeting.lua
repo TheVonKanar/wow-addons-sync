@@ -95,8 +95,23 @@ local function OnPEW()
 end
 
 local WatchedSpell = {}
+
+local function IsRaidAuraUnit(unit)
+  if unit == "player" then
+    return true
+  end
+  if type(unit) ~= "string" then
+    return false
+  end
+  return unit:match("^party%d+$") or unit:match("^raid%d+$")
+end
+
 local function OnUnitAura(unit, updateInfo)
-  if not unit or not updateInfo then
+  if not unit or not updateInfo or not IsRaidAuraUnit(unit) then
+    return
+  end
+  -- Fast path: no watched spells means there is nothing to rebuild from aura churn.
+  if not next(WatchedSpell) then
     return
   end
   if not updateInfo.addedAuras and not updateInfo.removedAuraInstanceIDs and not updateInfo.updatedAuraInstanceIDs then
@@ -108,26 +123,30 @@ local function OnUnitAura(unit, updateInfo)
     return
   end
 
-  local base = {}
-  for k, v in pairs(raid) do
-    if type(k) == "number" and v and v.spellID then
-      base[k] = v
-    end
-  end
-
-  for castSpellID, baseEntry in pairs(base) do
-    if baseEntry and baseEntry.count and WatchedSpell[castSpellID] then
+  local changed = false
+  for castSpellID in pairs(WatchedSpell) do
+    local baseEntry = raid[castSpellID]
+    if baseEntry and baseEntry.count then
+      local key = "fixed:" .. tostring(castSpellID)
       local who = clickableRaidBuffCache.targetedRaid[castSpellID]
       if who and InMyGroup(who) then
         local sName = GetSpellName(castSpellID)
         if sName then
           local macroP = "/use [@" .. who .. ",help,nodead] " .. sName
-          raid["fixed:" .. tostring(castSpellID)] = CloneOverlay(baseEntry, macroP, ShortNameNoRealm(who))
+          local prev = raid[key]
+          local nextEntry = CloneOverlay(baseEntry, macroP, ShortNameNoRealm(who))
+          if not prev or prev.macro ~= nextEntry.macro or prev.bottomText ~= nextEntry.bottomText then
+            raid[key] = nextEntry
+            changed = true
+          end
         end
       end
     end
   end
 
+  if not changed then
+    return
+  end
   if ns.PushRender then
     ns.PushRender()
   elseif ns.RenderAll then

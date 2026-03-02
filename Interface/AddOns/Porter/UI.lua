@@ -294,7 +294,8 @@ end
 -----------------------------------------------------------------------
 function Porter:GetIcon(entry)
     if entry.type == "housing" then
-        return 4549198  -- Housing icon (inv_misc_key_15)
+        local faction = UnitFactionGroup("player")
+        return faction == "Horde" and 1600314 or 1600313
     elseif entry.type == "spell" then
         local info = C_Spell.GetSpellInfo(entry.id)
         return info and info.iconID or 134400

@@ -1876,6 +1876,7 @@ end
 -- When either panel is open, we should show gaps (no reflow)
 -- This is the SINGLE SOURCE OF TRUTH for all reflow decisions
 -- ZERO-COST: Reads ns.optionsPanelOpen (set by hooks in Shared) + CDM panel + EditMode
+-- FALLBACK: Direct AceConfig check prevents race when Shared callback fires before flag is set
 function ns.CDMGroups.IsOptionsPanelOpen()
     -- ArcUI panel (hook-driven via Shared)
     if ns.optionsPanelOpen then return true end
@@ -1885,6 +1886,12 @@ function ns.CDMGroups.IsOptionsPanelOpen()
     
     -- Blizzard Edit Mode (only check if nothing else is open)
     if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then return true end
+    
+    -- FALLBACK: Direct AceConfig dialog check
+    -- Handles race condition where Shared callback fires OnOptionsPanelOpened
+    -- BEFORE FrameController sets ns.optionsPanelOpen = true
+    local ACD = LibStub and LibStub("AceConfigDialog-3.0", true)
+    if ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] then return true end
     
     return false
 end

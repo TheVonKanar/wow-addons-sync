@@ -329,17 +329,20 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
 
   entries["spellUsabilityGlowType"] = {
     type = "select", name = "Glow Type",
-    desc = "Glow animation style for the usable indicator",
+    desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
     values = {
+      default  = "Default (Golden)",
       button   = "Button Glow",
       pixel    = "Pixel Glow",
       autocast = "Autocast Shine",
-      glow     = "Blizzard Default",
+      proc     = "Blizzard Proc",
+      ants     = "Ants (Marching)",
+      ach_proc = "Proc Loop",
     },
     get = function()
       local c = GetCfg(mode)
       local t = c and c.spellUsability and c.spellUsability.usableGlowType or "button"
-      if t == "blizzard" then t = "glow" end  -- migrate removed option
+      if t == "blizzard" or t == "glow" then t = "proc" end  -- migrate old names
       return t
     end,
     set = function(_, v)
@@ -419,7 +422,9 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
     hidden = function()
       if hideSection() then return true end
       local c = GetCfg(mode)
-      return not (c and c.spellUsability and c.spellUsability.usableGlow)
+      if not (c and c.spellUsability and c.spellUsability.usableGlow) then return true end
+      local t = c.spellUsability.usableGlowType or "button"
+      return t == "proc" or t == "default" or t == "ants" or t == "ach_proc"
     end,
   }
 

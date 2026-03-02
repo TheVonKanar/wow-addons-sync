@@ -227,8 +227,11 @@ Porter.TeleportData = {
         { type = "item", id = 142469, name = "Violet Seal of the Grand Magus",  equippable = true, region = "Broken Isles", zone = "Dalaran" },
         { type = "item", id = 40585,  name = "Signet of the Kirin Tor",         equippable = true, region = "Northrend", zone = "Dalaran" },
         { type = "item", id = 95050,  name = "The Brassiest Knuckle",           equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
+        { type = "item", id = 95051,  name = "The Brassiest Knuckle",           equippable = true, region = "Kalimdor", zone = "Orgrimmar" },
         { type = "item", id = 118907, name = "Pit Fighter's Punching Ring",     equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
+        { type = "item", id = 118908, name = "Pit Fighter's Punching Ring",     equippable = true, region = "Kalimdor", zone = "Orgrimmar" },
         { type = "item", id = 144391, name = "Pugilist's Powerful Punching Ring",equippable = true, region = "Eastern Kingdoms", zone = "Stormwind" },
+        { type = "item", id = 144392, name = "Pugilist's Powerful Punching Ring",equippable = true, region = "Kalimdor", zone = "Orgrimmar" },
         { type = "item", id = 128353, name = "Admiral's Compass",               region = "Draenor", zone = "Garrison Shipyard" },
         { type = "item", id = 219222, name = "Time-Lost Artifact",              region = "Pandaria", zone = "Timeless Isle" },
         { type = "item", id = 103678, name = "Time-Lost Artifact",              equippable = true, region = "Pandaria", zone = "Timeless Isle" },
@@ -245,6 +248,8 @@ Porter.TeleportData = {
         { type = "item", id = 95568,  name = "Sunreaver Beacon",                region = "Pandaria", zone = "Isle of Thunder" },
         { type = "item", id = 249699, name = "Shadowguard Translocator",        region = "K'aresh", zone = "K'aresh" },
         { type = "item", id = 204481, name = "Morqut Hearth Totem",             region = "Dragon Isles", zone = "Morqut Islet" },
+        { type = "item", id = 252607, name = "Abundant Beacon",                 region = "Quel'Thalas", zone = "Zul'Aman" },
+        { type = "item", id = 168862, name = "G.E.A.R. Tracking Beacon",        raceReq = "Gnome", region = "Other", zone = "Nearest Flight Path" },
     },
 
     ---------------------------------------------------------------------------
@@ -252,10 +257,13 @@ Porter.TeleportData = {
     ---------------------------------------------------------------------------
     ["Toys"] = {
         -- Unique-destination toys
+        { type = "toy", id = 253629, name = "Personal Key to the Arcantina",  region = "Quel'Thalas", zone = "Silvermoon City" },
+        { type = "toy", id = 266370, name = "Dundun's Abundant Travel Method", region = "Quel'Thalas", zone = "Abundance Event" },
         { type = "toy", id = 151016, name = "Fractured Necrolyte Skull",       region = "Outland", zone = "Shadowmoon Valley" },
         { type = "toy", id = 37863,  name = "Direbrew's Remote",              region = "Eastern Kingdoms", zone = "Blackrock Depths" },
         { type = "toy", id = 211788, name = "Tess's Peacebloom",               raceReq = "Worgen", region = "Eastern Kingdoms", zone = "Gilneas" },
         { type = "toy", id = 64457,  name = "The Last Relic of Argus",        region = "Other", zone = "Random" },
+        { type = "toy", id = 141605, name = "Flight Master's Whistle",        region = "Other", zone = "Nearest Flight Path" },
 
         -- Travel Toys
         { type = "toy", id = 243056, name = "Delver's Mana-Bound Ethergate",  region = "Khaz Algar", zone = "Dornogal" },
@@ -427,14 +435,28 @@ Porter.TeleportData = {
 ---------------------------------------------------------------------------
 Porter.ChangelogEntries = {
     {
+        version = "1.0.10",
+        notes = {
+            -- New features
+            "Housing teleport now shows faction-specific icons (Alliance/Horde)",
+            -- Added items/toys/spells
+            "Added toy: Personal Key to the Arcantina (teleport to Silvermoon City)",
+            "Added toy: Dundun's Abundant Travel Method (teleport to Abundance event)",
+            "Added toy: Flight Master's Whistle (nearest flight path)",
+            "Added item: Abundant Beacon (consumable teleport to Abundance event)",
+            "Added item: G.E.A.R. Tracking Beacon (Gnome variant of Flight Master's Whistle)",
+            "Added Horde versions of Brawler's Guild rings (The Brassiest Knuckle, Pit Fighter's Punching Ring, Pugilist's Powerful Punching Ring)",
+        },
+    },
+    {
         version = "1.0.9",
         notes = {
             -- Midnight
             "|cff00ccffMidnight support|r — Midnight Season 1 dungeon teleports added. Porter defaults to The War Within: Season 3 for now. Switch to Midnight: Season 1 in Settings \226\134\146 Sorting and Categorisation \226\134\146 Current dungeons/raids. This will automatically switch to Midnight at global launch.",
             -- New features
-            "New installs now default to a global profile — all characters share the same settings out of the box. Existing users keep their per-character profiles. Switch via the checkbox in Settings",
             "Items stored in the bank are now visually indicated — desaturated icon with \"Bank\" label and greyed out name",
             "Keybinding now appears under its own \"Porter\" category in Key Bindings",
+            "New installs now default to a global profile — all characters share the same settings out of the box. Existing users keep their per-character profiles. Switch via the checkbox in Settings",
             "Cosmetic hearthstones now default to hidden for new profiles",
             -- Added items/toys/spells
             "Added mage spells: Teleport/Portal: Silvermoon City (Midnight)",

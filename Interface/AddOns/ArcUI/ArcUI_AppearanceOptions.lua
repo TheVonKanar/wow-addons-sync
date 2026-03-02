@@ -43,6 +43,7 @@ local collapsedSections = {
   behavior = true,
   presets = true,
   autoSwitch = true,
+  autoShare = true,
 }
 
 local AceConfig = LibStub("AceConfig-3.0")
@@ -445,17 +446,33 @@ local function IsAutoPrimaryBar()
 end
 
 -- Auto-initialize editingAutoPowerProfile when landing on an autoPrimary bar.
--- Ensures the power profile dropdown, color picker, and "Editing X" label are correct
--- the moment the bar is selected — not just after a manual power profile switch.
+-- Auto-enables per-spec profiles if not already enabled.
 local function SyncEditingAutoPower()
   if not IsAutoPrimaryBar() then return end
   local _, barNum = GetSelectedBarType()
   barNum = tonumber(barNum)
   if not barNum then return end
-  local currentPower = UnitPowerType("player")
-  editingAutoPowerProfile = currentPower
+  
+  local cfg = GetSelectedConfig()
+  if not cfg or not cfg.tracking then return end
+  
+  -- Auto-enable per-spec profiles on first visit to an autoPrimary bar
+  if not cfg.tracking.usePerSpecProfiles then
+    if ns.Resources and ns.Resources.EnablePerSpecProfiles then
+      ns.Resources.EnablePerSpecProfiles(barNum)
+    end
+  end
+  
+  -- Use the current profile key (spec keying)
+  local currentKey
+  if ns.Resources and ns.Resources.GetCurrentProfileKey then
+    currentKey = ns.Resources.GetCurrentProfileKey(barNum)
+  else
+    currentKey = "spec" .. (GetSpecialization() or 1)
+  end
+  editingAutoPowerProfile = currentKey
   if ns.Resources and ns.Resources.SetEditingAutoPower then
-    ns.Resources.SetEditingAutoPower(barNum, currentPower)
+    ns.Resources.SetEditingAutoPower(barNum, currentKey)
   end
 end
 
@@ -1212,17 +1229,30 @@ function ns.AppearanceOptions.GetOptionsTable()
             end
             -- Auto-init power profile editing for autoPrimary bars (once per bar selection)
             if not editingAutoPowerProfile and IsAutoPrimaryBar() then
-              local currentPower = UnitPowerType("player")
-              editingAutoPowerProfile = currentPower
               local _, bn = GetSelectedBarType()
               bn = tonumber(bn)
-              if bn and ns.Resources and ns.Resources.SetEditingAutoPower then
-                C_Timer.After(0.05, function()
-                  ns.Resources.SetEditingAutoPower(bn, currentPower)
-                  -- Refresh options panel to pick up new barColor from loaded profile
-                  local r = LibStub and LibStub("AceConfigRegistry-3.0", true)
-                  if r then r:NotifyChange("ArcUI") end
-                end)
+              if bn then
+                -- Auto-enable per-spec profiles on first visit
+                local cfg2 = GetSelectedConfig()
+                if cfg2 and cfg2.tracking and not cfg2.tracking.usePerSpecProfiles then
+                  if ns.Resources and ns.Resources.EnablePerSpecProfiles then
+                    ns.Resources.EnablePerSpecProfiles(bn)
+                  end
+                end
+                local currentKey
+                if ns.Resources and ns.Resources.GetCurrentProfileKey then
+                  currentKey = ns.Resources.GetCurrentProfileKey(bn)
+                else
+                  currentKey = "spec" .. (GetSpecialization() or 1)
+                end
+                editingAutoPowerProfile = currentKey
+                if ns.Resources and ns.Resources.SetEditingAutoPower then
+                  C_Timer.After(0.05, function()
+                    ns.Resources.SetEditingAutoPower(bn, currentKey)
+                    local r = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                    if r then r:NotifyChange("ArcUI") end
+                  end)
+                end
               end
             end
             return selectedAppearanceBar
@@ -1332,35 +1362,75 @@ function ns.AppearanceOptions.GetOptionsTable()
       -- Multi-icon mode removed in v2.7.0 - was causing issues
       
       -- ============================================================
-      -- AUTO PRIMARY: Power Type Profile Selector
-      -- Selecting a power type immediately swaps the bar display
-      -- and all settings below to edit that power type's profile.
+      -- AUTO PRIMARY: Profile Note (always visible above Auto Share)
       -- ============================================================
+      profileNote = {
+        type = "description",
+        name = function()
+          if editingAutoPowerProfile then
+            local keyName = tostring(editingAutoPowerProfile)
+            local specNum = tonumber(tostring(editingAutoPowerProfile):match("spec(%d+)"))
+            if specNum then
+              local _, specName = GetSpecializationInfo(specNum)
+              keyName = specName or keyName
+            end
+            return "|cff00ff00Editing " .. keyName .. ".|r All settings below apply when this spec is active."
+          end
+          return ""
+        end,
+        fontSize = "small",
+        order = 2.55,
+        width = "full",
+        hidden = function()
+          if not IsAutoPrimaryBar() then return true end
+          return not editingAutoPowerProfile
+        end
+      },
+      -- ============================================================
+      -- AUTO SHARE: Collapsible section (like Skins)
+      -- Controls which appearance categories are shared across specs
+      -- vs independent per spec.
+      -- ============================================================
+      autoShareHeader = {
+        type = "toggle",
+        name = "Auto Share",
+        desc = "Click to expand/collapse",
+        dialogControl = "CollapsibleHeader",
+        get = function() return not collapsedSections.autoShare end,
+        set = function(info, value) collapsedSections.autoShare = not value end,
+        order = 2.56,
+        width = "full",
+        hidden = function()
+          return not IsAutoPrimaryBar()
+        end
+      },
+      autoShareDesc = {
+        type = "description",
+        name = "Control which appearance categories are shared across all specs vs customized per spec.",
+        fontSize = "small",
+        order = 2.561,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
       profileSelector = {
         type = "select",
-        name = "Power Profile",
-        desc = "Select which power type to edit. The bar will display that power type's settings while this panel is open.\n\nWhen the panel closes, the bar auto-detects your current form/spec.",
+        name = "Spec Profile",
+        desc = "Select which specialization to edit. Each spec can have independent settings for unchecked categories below.\n\nWhen the panel closes, the bar auto-detects your current spec.",
         values = function()
-          local cfg = GetSelectedConfig()
-          if not cfg then return {} end
           local vals = {}
-          local _, playerClass = UnitClass("player")
-          local classPowers = CLASS_PRIMARY_POWERS[playerClass] or {}
-          for _, pt in ipairs(classPowers) do
-            local ptName = "Power " .. pt
-            for _, info in ipairs(ns.Resources.PowerTypes) do
-              if info.id == pt then ptName = info.name; break end
-            end
-            vals[tostring(pt)] = ptName
+          local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
+          for i = 1, numSpecs do
+            local _, specName = GetSpecializationInfo(i)
+            vals["spec" .. i] = specName or ("Spec " .. i)
           end
           return vals
         end,
         sorting = function()
           local sorted = {}
-          local _, playerClass = UnitClass("player")
-          local classPowers = CLASS_PRIMARY_POWERS[playerClass] or {}
-          for _, pt in ipairs(classPowers) do
-            sorted[#sorted + 1] = tostring(pt)
+          local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
+          for i = 1, numSpecs do
+            sorted[#sorted + 1] = "spec" .. i
           end
           return sorted
         end,
@@ -1368,9 +1438,12 @@ function ns.AppearanceOptions.GetOptionsTable()
           if editingAutoPowerProfile then
             return tostring(editingAutoPowerProfile)
           end
-          -- Default to current power type
-          local currentPower = UnitPowerType("player")
-          return tostring(currentPower)
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources and ns.Resources.GetCurrentProfileKey then
+            return tostring(ns.Resources.GetCurrentProfileKey(barNum))
+          end
+          return "spec" .. (GetSpecialization() or 1)
         end,
         set = function(info, value)
           local cfg = GetSelectedConfig()
@@ -1379,30 +1452,265 @@ function ns.AppearanceOptions.GetOptionsTable()
           barNum = tonumber(barNum)
           if not barNum then return end
           
-          local powerType = tonumber(value)
-          if not powerType then return end
-          
-          editingAutoPowerProfile = powerType
-          -- SetEditingAutoPower auto-creates profiles on first use
+          editingAutoPowerProfile = value
           if ns.Resources and ns.Resources.SetEditingAutoPower then
-            ns.Resources.SetEditingAutoPower(barNum, powerType)
+            ns.Resources.SetEditingAutoPower(barNum, value)
           end
           if LibStub and LibStub("AceConfigRegistry-3.0", true) then
             LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
           end
         end,
-        order = 2.6,
+        order = 2.562,
         width = 1.2,
         hidden = function()
-          return not IsAutoPrimaryBar()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareBreak = {
+        type = "description",
+        name = " ",
+        order = 2.563,
+        width = "full",
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareLabel = {
+        type = "description",
+        name = "|cffffd700Shared:|r",
+        fontSize = "small",
+        order = 2.564,
+        width = 0.4,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareColors = {
+        type = "toggle", name = "Colors",
+        desc = "When checked, colors (bar color, thresholds, color curves, spec colors) are SHARED across all specs.\nWhen unchecked, each spec gets its own colors.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.colors ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.colors = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "colors")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5650, width = 0.5,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareFill = {
+        type = "toggle", name = "Fill",
+        desc = "When checked, fill settings (texture, orientation, gradient) are SHARED across all specs.\nWhen unchecked, each spec gets its own fill settings.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.fill ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.fill = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "fill")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5651, width = 0.4,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareText = {
+        type = "toggle", name = "Text",
+        desc = "When checked, text settings (fonts, sizes, formats, anchors) are SHARED across all specs.\nWhen unchecked, each spec gets its own text settings.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.text ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.text = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "text")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5652, width = 0.4,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareBG = {
+        type = "toggle", name = "Background",
+        desc = "When checked, background settings are SHARED across all specs.\nWhen unchecked, each spec gets its own background.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.background ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.background = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "background")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5653, width = 0.6,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareBorder = {
+        type = "toggle", name = "Border",
+        desc = "When checked, border settings are SHARED across all specs.\nWhen unchecked, each spec gets its own border.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.border ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.border = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "border")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5654, width = 0.5,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareTicks = {
+        type = "toggle", name = "Tick Marks",
+        desc = "When checked, tick marks and ability cost markers are SHARED across all specs.\nWhen unchecked, each spec gets its own tick mark configuration.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return true end
+          local shared = cfg.tracking.autoShareCategories
+          if not shared then return true end
+          return shared.tickMarks ~= false
+        end,
+        set = function(_, v)
+          local cfg = GetSelectedConfig()
+          if not cfg or not cfg.tracking then return end
+          if not cfg.tracking.autoShareCategories then
+            cfg.tracking.autoShareCategories = {
+              colors = true, fill = true, text = true,
+              background = true, border = true, tickMarks = true,
+            }
+          end
+          cfg.tracking.autoShareCategories.tickMarks = v and true or false
+          local _, barNum = GetSelectedBarType()
+          barNum = tonumber(barNum)
+          if barNum and ns.Resources then
+            if not v and ns.Resources.SeedCategoryIntoProfiles then
+              ns.Resources.SeedCategoryIntoProfiles(barNum, "tickMarks")
+            elseif ns.Resources.FlushActiveProfileToStorage then
+              ns.Resources.FlushActiveProfileToStorage(barNum)
+            end
+          end
+        end,
+        order = 2.5655, width = 0.55,
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
+        end
+      },
+      autoShareNote = {
+        type = "description",
+        name = "|cff888888Checked = shared across all specs. Unchecked = independent per spec.|r",
+        fontSize = "small",
+        order = 2.566,
+        width = "full",
+        hidden = function()
+          return not IsAutoPrimaryBar() or collapsedSections.autoShare
         end
       },
       profileResetCurrent = {
         type = "execute",
         name = "Reset to Base",
-        desc = "Reset this power type's profile back to the base settings.",
+        desc = "Reset this spec's profile back to the base settings.",
         confirm = true,
-        confirmText = "Reset this power type's visual settings to match the base?",
+        confirmText = "Reset this spec's visual settings to match the base?",
         func = function()
           if not editingAutoPowerProfile then return end
           local _, barNum = GetSelectedBarType()
@@ -1417,19 +1725,19 @@ function ns.AppearanceOptions.GetOptionsTable()
             LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
           end
         end,
-        order = 2.65,
+        order = 2.567,
         width = 0.8,
         hidden = function()
-          if not IsAutoPrimaryBar() then return true end
+          if not IsAutoPrimaryBar() or collapsedSections.autoShare then return true end
           return not editingAutoPowerProfile
         end
       },
       profileClearAll = {
         type = "execute",
         name = "Clear All Profiles",
-        desc = "Remove all per-power-type profiles. The bar will use the same settings for all power types.",
+        desc = "Remove all profiles. The bar will use the same settings regardless of spec.",
         confirm = true,
-        confirmText = "Remove all per-power-type profiles? The bar will use a single set of settings for all power types.",
+        confirmText = "Remove all profiles? The bar will use a single set of settings for all specs.",
         func = function()
           local _, barNum = GetSelectedBarType()
           barNum = tonumber(barNum)
@@ -1443,31 +1751,12 @@ function ns.AppearanceOptions.GetOptionsTable()
             LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
           end
         end,
-        order = 2.66,
+        order = 2.568,
         width = 0.8,
         hidden = function()
-          if not IsAutoPrimaryBar() then return true end
+          if not IsAutoPrimaryBar() or collapsedSections.autoShare then return true end
           local cfg = GetSelectedConfig()
           return not cfg or not cfg.autoPowerProfiles
-        end
-      },
-      profileNote = {
-        type = "description",
-        name = function()
-          if editingAutoPowerProfile then
-            local ptName = "this power type"
-            for _, info in ipairs(ns.Resources.PowerTypes) do
-              if info.id == editingAutoPowerProfile then ptName = info.name; break end
-            end
-            return "|cff00ff00Editing " .. ptName .. ".|r All settings below apply when " .. ptName .. " is active."
-          end
-          return "|cff888888Select a power type above to customize its appearance independently.|r"
-        end,
-        fontSize = "small",
-        order = 2.69,
-        width = "full",
-        hidden = function()
-          return not IsAutoPrimaryBar()
         end
       },
       

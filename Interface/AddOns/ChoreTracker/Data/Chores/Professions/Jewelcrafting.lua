@@ -9,6 +9,27 @@ Addon.data.chores.professionJewelcrafting = {
     texture = C_Spell.GetSpellTexture(25229),
     categories = {
         {
+            key = 'midnight',
+            name = EXPANSION_NAME11,
+            skillLineId = 2914,
+            drops = {
+            },
+            quests = {
+                {
+                    key = 'treatise',
+                    entries = {
+                        { quest=95133, item=245760 }, -- Thalassian Treatise on Jewelcrafting
+                    },
+                },
+                {
+                    key = 'orders',
+                    entries = {
+                        { quest=93694, item=263458 }, -- Thalassian Jewelcrafter's Notebook
+                    },
+                },
+            }
+        },
+        {
             key = 'warWithin',
             name = EXPANSION_NAME10,
             skillLineId = 2879,

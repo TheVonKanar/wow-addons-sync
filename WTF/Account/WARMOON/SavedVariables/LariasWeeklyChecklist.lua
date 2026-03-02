@@ -1,5 +1,8 @@
 
 LariasWeeklyChecklistDB = {
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["mainFrameWin"] = {
 ["y"] = -85.0009765625,
@@ -10,17 +13,19 @@ LariasWeeklyChecklistDB = {
 ["chars"] = {
 ["Kvotheen - Hyjal"] = {
 ["showGreatVault"] = true,
-["showChangeWeekBtn"] = true,
+["startAtSectionId"] = "early_access_feb_26_through_mar_2_pay_to_win",
 ["showCurrency"] = true,
-["checked"] = {
-["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
-},
+["debug"] = false,
 ["showCharPickerBtn"] = true,
-["_lariasDefaultsApplied"] = true,
+["showScaleSlider"] = true,
+["collapsedSections"] = {
+},
+["hideCompletedSections"] = true,
+["_migrated"] = true,
 ["trackingSnapshot"] = {
 ["leftGrid"] = {
 {
-["complete"] = 0,
+["available"] = true,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -36,10 +41,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = true,
+["complete"] = 0,
 },
 {
-["complete"] = 0,
+["available"] = true,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -55,10 +60,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = true,
+["complete"] = 0,
 },
 {
-["complete"] = 0,
+["available"] = false,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -74,7 +79,7 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = false,
+["complete"] = 0,
 },
 },
 ["leftLines"] = {
@@ -130,14 +135,12 @@ LariasWeeklyChecklistDB = {
 },
 },
 },
-["hideCompletedSections"] = true,
-["_migrated"] = true,
-["collapsedSections"] = {
-},
-["showScaleSlider"] = true,
+["_lariasDefaultsApplied"] = true,
 ["showIlvlRefBtn"] = true,
-["debug"] = false,
-["startAtSectionId"] = "early_access_feb_26_through_mar_2_pay_to_win",
+["checked"] = {
+["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
+},
+["showChangeWeekBtn"] = true,
 },
 },
 ["minimap"] = {
@@ -146,9 +149,6 @@ LariasWeeklyChecklistDB = {
 ["charClasses"] = {
 ["Kvotheen - Hyjal"] = "SHAMAN",
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

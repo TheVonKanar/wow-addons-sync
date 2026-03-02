@@ -1,2 +1,4 @@
-**v7.4.1**
-- The count of party or raid members on icons is now only those within cast range for that spell
+**v7.4.3**
+- Added a gate to disable icons while in a vehicle
+- Added a menu option related to behavior in vehicles within the Customize tab
+- Performance improvements

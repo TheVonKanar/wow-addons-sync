@@ -77,8 +77,8 @@ local KEY_TO_CATEGORY = {
   predCostColor = "colors",
   predGainColor = "colors",
   -- Text colors (categorized under colors, not text)
-  textColor = "colors",
-  textColorByState = "colors",
+  textColor = "text",
+  textColorByState = "text",
   textUsableColor = "colors",
   textUnusableColor = "colors",
   durationColor = "colors",
@@ -243,6 +243,46 @@ local function GetKeyCategory(key)
   return nil  -- misc: always included
 end
 Presets.GetKeyCategory = GetKeyCategory
+
+-- Build reverse mapping: category → list of known explicit keys
+-- Used by Auto Share seeding to find ALL keys for a category
+-- (including ones that pairs() on AceDB-backed tables might miss)
+local categoryKeysCache = {}
+for key, cat in pairs(KEY_TO_CATEGORY) do
+  if not categoryKeysCache[cat] then categoryKeysCache[cat] = {} end
+  categoryKeysCache[cat][#categoryKeysCache[cat] + 1] = key
+end
+
+-- Returns a list of all known display keys for a category, plus any
+-- prefix-matched keys found in the provided display table.
+-- categoryName: "colors", "fill", "text", "background", "border", "tickMarks"
+-- displayTable: optional cfg.display to also scan for prefix-matched keys
+function Presets.GetCategoryKeys(categoryName, displayTable)
+  local result = {}
+  local seen = {}
+  -- Add all explicit keys from the mapping
+  if categoryKeysCache[categoryName] then
+    for _, key in ipairs(categoryKeysCache[categoryName]) do
+      result[#result + 1] = key
+      seen[key] = true
+    end
+  end
+  -- Scan display table for prefix-matched keys (colorCurve*, gradient*, etc.)
+  if displayTable then
+    for key in pairs(displayTable) do
+      if not seen[key] then
+        for _, entry in ipairs(KEY_CATEGORY_PREFIXES) do
+          if entry.category == categoryName and key:sub(1, #entry.prefix) == entry.prefix then
+            result[#result + 1] = key
+            seen[key] = true
+            break
+          end
+        end
+      end
+    end
+  end
+  return result
+end
 
 -- =====================================================================
 -- EXCLUDED DISPLAY KEYS (never part of any skin)

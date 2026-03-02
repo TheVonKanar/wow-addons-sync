@@ -228,7 +228,8 @@ end
 local dynamicLayoutHookedFrames = {}
 
 -- Check if options panel is open
--- ZERO-COST: Reads hook-driven flags directly (no polling, no LibStub, no GetTime)
+-- ZERO-COST: Reads hook-driven flags directly (no polling, no GetTime)
+-- FALLBACK: Direct AceConfig check prevents race when Shared callback fires before flag is set
 local function IsOptionsPanelOpen()
     -- ArcUI panel (set by Shared hooks)
     if ns.optionsPanelOpen then return true end
@@ -236,6 +237,9 @@ local function IsOptionsPanelOpen()
     if ns.CDMGroups and ns.CDMGroups.cdmOptionsPanelOpen then return true end
     -- Blizzard Edit Mode
     if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then return true end
+    -- FALLBACK: Direct AceConfig dialog check (race condition guard)
+    local ACD = LibStub and LibStub("AceConfigDialog-3.0", true)
+    if ACD and ACD.OpenFrames and ACD.OpenFrames["ArcUI"] then return true end
     return false
 end
 

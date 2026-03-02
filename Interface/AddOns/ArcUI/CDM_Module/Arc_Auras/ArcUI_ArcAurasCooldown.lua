@@ -1,12 +1,12 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ArcUI Arc Auras Cooldown - Spell Cooldown Event Engine
+-- v4.2 - Refactor: Replaced ~500 lines of local glow functions with unified
+--         ns.Glows module (ArcUI_Glows.lua). No more overlays — LCG keys
+--         handle simultaneous glows natively. Resize handled by module.
 -- v4.1 - Fix: CDMEnhance enforcement hooks (SetDesaturated, SetVertexColor)
 --         were overriding ArcAurasCooldown's visual writes after CooldownState
 --         rework added _arcDesiredVertexColor/_arcForceDesatValue checks.
 --         Added bypass flags matching the existing SetAlpha bypass pattern.
---         Added "ants" and "ach_proc" (ACH template) glow types to StartGlow/
---         StopGlow — these were missing, causing those glow options to silently
---         do nothing on Arc Aura spell frames.
 -- v4.0 - Merged architecture: ArcAuras.CreateFrame owns frame creation,
 --         this module is the event-driven spell cooldown engine only.
 --
@@ -42,10 +42,6 @@ ns.ArcAurasCooldown = ArcAurasCooldown
 -- ═══════════════════════════════════════════════════════════════════════════
 -- LIBRARIES
 -- ═══════════════════════════════════════════════════════════════════════════
-
-local function GetLCG()
-    return LibStub and LibStub("LibCustomGlow-1.0", true)
-end
 
 local function GetLSM()
     return LibStub and LibStub("LibSharedMedia-3.0", true)
@@ -107,474 +103,6 @@ ArcAurasCooldown.GetSpellNameAndIcon = GetSpellNameAndIcon
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- GLOW HELPERS
--- ═══════════════════════════════════════════════════════════════════════════
-
--- ═══════════════════════════════════════════════════════════════════════════
--- BLIZZARD PROC GLOW (OWN FRAME)
--- Creates our own ActionButtonSpellAlertTemplate frame per icon, sized BEFORE
--- showing. This avoids the tiny-circle bug caused by ShowAlert starting
--- animations at default 150×150 before resize can run.
--- Pattern matches AssistedCombatHighlight's proven proc glow implementation.
--- ═══════════════════════════════════════════════════════════════════════════
-
--- Sizing ratios from Blizzard's ActionButtonSpellAlertTemplate XML:
---   Default icon = 45×45, ProcStartFlipbook = 150×150, container ~66×66
-local CONTAINER_RATIO  = 66 / 45   -- ~1.467 – alert container vs icon (ProcLoop fills via setAllPoints)
-local PROC_START_RATIO = 150 / 45  -- ~3.333 – burst texture vs icon
-
--- Get or create our own proc glow frame for an icon (cached on frame)
-local function GetOrCreateBlizzardProcGlow(frame)
-    if not frame then return nil end
-    if frame._arcBlizzProcGlow then return frame._arcBlizzProcGlow end
-
-    local glow = CreateFrame("Frame", nil, frame, "ActionButtonSpellAlertTemplate")
-    if not glow then return nil end
-
-    glow:SetPoint("CENTER")
-    frame._arcBlizzProcGlow = glow
-
-    -- Wire ProcStartAnim → ProcLoop chain (burst finishes → loop begins)
-    if glow.ProcStartAnim then
-        glow.ProcStartAnim:SetScript("OnFinished", function()
-            if glow.ProcLoopFlipbook then
-                glow.ProcLoopFlipbook:Show()
-                glow.ProcLoopFlipbook:SetAlpha(1)
-            end
-            if glow.ProcLoop and not glow.ProcLoop:IsPlaying() then
-                glow.ProcLoop:Play()
-            end
-        end)
-    end
-
-    -- Initialize loop flipbook to first frame (Play→Stop = Blizzard pattern)
-    if glow.ProcLoopFlipbook then
-        glow.ProcLoopFlipbook:SetAlpha(1)
-        glow.ProcLoopFlipbook:Show()
-    end
-    if glow.ProcLoop then
-        glow.ProcLoop:Play()
-        glow.ProcLoop:Stop()
-    end
-
-    -- Start hidden — caller will Show after sizing
-    glow:Hide()
-    return glow
-end
-
--- Resize our proc glow to match icon dimensions
-local function ResizeBlizzardProcGlow(glow, frame)
-    if not glow or not frame then return end
-
-    local frameW, frameH = frame:GetWidth(), frame:GetHeight()
-    if frameW <= 0 or frameH <= 0 then return end
-
-    -- Container: ProcLoopFlipbook fills this via setAllPoints
-    local containerW = frameW * CONTAINER_RATIO
-    local containerH = frameH * CONTAINER_RATIO
-    glow:SetSize(containerW, containerH)
-
-    -- Burst: larger than loop
-    if glow.ProcStartFlipbook then
-        glow.ProcStartFlipbook:SetSize(frameW * PROC_START_RATIO, frameH * PROC_START_RATIO)
-    end
-
-    -- Frame level above Cooldown swipe so glow isn't hidden behind it
-    glow:SetFrameLevel(frame:GetFrameLevel() + 15)
-end
-
--- Apply color to our proc glow (vertex color only — no SetDesaturated)
-local function ColorBlizzardProcGlow(glow, color)
-    if not glow or not color then return end
-    local r, g, b, a = color.r or 1, color.g or 1, color.b or 1, color.a or 1
-    for _, texName in ipairs({"ProcStartFlipbook", "ProcLoopFlipbook", "ProcAltGlow"}) do
-        local tex = glow[texName]
-        if tex then
-            tex:SetVertexColor(r, g, b, a)
-        end
-    end
-end
-
--- Show our blizzard proc glow with burst → loop animation
-local function ShowBlizzardProcGlow(frame, color)
-    local glow = GetOrCreateBlizzardProcGlow(frame)
-    if not glow then return end
-
-    -- Size BEFORE showing (prevents tiny-circle bug)
-    ResizeBlizzardProcGlow(glow, frame)
-
-    -- Apply Masque shape if available
-    if ns.CDMEnhance and ns.CDMEnhance.ApplyMasqueProcShapeToAlert then
-        -- ApplyMasqueProcShapeToAlert expects frame.SpellActivationAlert —
-        -- temporarily point it at our glow frame
-        local origAlert = frame.SpellActivationAlert
-        frame.SpellActivationAlert = glow
-        ns.CDMEnhance.ApplyMasqueProcShapeToAlert(frame)
-        frame.SpellActivationAlert = origAlert
-    end
-
-    -- Apply color
-    if color then
-        ColorBlizzardProcGlow(glow, color)
-    end
-
-    -- Ensure loop flipbook is visible
-    if glow.ProcLoopFlipbook then
-        glow.ProcLoopFlipbook:SetAlpha(1)
-        glow.ProcLoopFlipbook:Show()
-    end
-
-    -- Show and play burst intro → chains to loop via OnFinished
-    glow:Show()
-    if glow.ProcStartFlipbook then
-        glow.ProcStartFlipbook:SetAlpha(1)
-        glow.ProcStartFlipbook:Show()
-    end
-    if glow.ProcStartAnim and not glow.ProcStartAnim:IsPlaying() then
-        glow.ProcStartAnim:Play()
-    end
-end
-
--- Hide our blizzard proc glow
-local function HideBlizzardProcGlow(frame)
-    if not frame then return end
-    local glow = frame._arcBlizzProcGlow
-    if not glow then return end
-
-    -- Stop animations first (prevents them from resetting alpha/visibility)
-    if glow.ProcStartAnim and glow.ProcStartAnim:IsPlaying() then
-        glow.ProcStartAnim:Stop()
-    end
-    if glow.ProcLoop and glow.ProcLoop:IsPlaying() then
-        glow.ProcLoop:Stop()
-    end
-
-    -- Hide textures
-    if glow.ProcStartFlipbook then glow.ProcStartFlipbook:Hide() end
-    if glow.ProcLoopFlipbook then glow.ProcLoopFlipbook:Hide() end
-    if glow.ProcAltGlow then glow.ProcAltGlow:Hide() end
-
-    glow:Hide()
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
--- ACH TEMPLATE GLOWS (ants + proc burst from Blizzard templates)
--- "ants"     = ActionBarButtonAssistedCombatHighlightTemplate (marching ants)
--- "ach_proc" = ActionButtonSpellAlertTemplate (proc burst, loop-only, no intro)
--- Same approach as CDMEnhance's ShowACHTemplateGlow — standalone template
--- frames on a parent overlay, not LCG-managed.
--- ═══════════════════════════════════════════════════════════════════════════
-
--- Ants flipbook texture ratio (same as CDMEnhance: 66/45 ≈ 1.467)
-local ACH_ANTS_FLIPBOOK_RATIO = CONTAINER_RATIO
-
--- Get or create an ACH template glow on the given target frame
--- @param target: Parent frame (overlay) to attach glow to
--- @param style: "ants" or "ach_proc"
--- @param key: Storage key suffix (e.g. "proc")
-local function GetOrCreateACHGlow(target, style, key)
-    if not target then return nil end
-    local storageKey = (style == "ants") and ("_AchAnts" .. key) or ("_AchProc" .. key)
-    local glow = target[storageKey]
-    if glow then return glow end
-
-    if style == "ants" then
-        glow = CreateFrame("FRAME", nil, target, "ActionBarButtonAssistedCombatHighlightTemplate")
-        if not glow then return nil end
-        glow:SetPoint("CENTER")
-        glow._achStyle = "ants"
-        -- Initialize flipbook to first frame
-        if glow.Flipbook and glow.Flipbook.Anim then
-            glow.Flipbook.Anim:Play()
-            glow.Flipbook.Anim:Stop()
-        end
-    elseif style == "ach_proc" then
-        glow = CreateFrame("FRAME", nil, target, "ActionButtonSpellAlertTemplate")
-        if not glow then return nil end
-        glow:SetPoint("CENTER")
-        glow._achStyle = "ach_proc"
-    else
-        return nil
-    end
-
-    glow:Hide()
-    target[storageKey] = glow
-    return glow
-end
-
--- Show ACH glow: sizes to iconFrame, applies color, plays animations
--- @param target: Overlay frame the glow is parented to
--- @param iconFrame: Icon frame to size from (fd.frame)
--- @param style: "ants" or "ach_proc"
--- @param key: Storage key suffix
--- @param color: {r, g, b, intensity} or nil for default gold
--- @param opts: Optional table with .iconFrame for sizing reference
-local function ShowACHGlow(target, iconFrame, style, key, color, opts)
-    local glow = GetOrCreateACHGlow(target, style, key)
-    if not glow then return end
-
-    -- Size from icon frame
-    local w = iconFrame and iconFrame:GetWidth() or 45
-    local h = iconFrame and iconFrame:GetHeight() or 45
-
-    if style == "ants" then
-        -- Ants: container = icon size, flipbook = container * ratio
-        glow:SetSize(w, h)
-        if glow.Flipbook then
-            glow.Flipbook:SetSize(w * ACH_ANTS_FLIPBOOK_RATIO, h * ACH_ANTS_FLIPBOOK_RATIO)
-        end
-        -- Apply color via desaturate-first pattern (true hue)
-        local r, g, b = 1, 0.85, 0.1
-        if color then r, g, b = color[1] or color.r or 1, color[2] or color.g or 0.85, color[3] or color.b or 0.1 end
-        if glow.Flipbook then
-            glow.Flipbook:SetDesaturated(true)
-            glow.Flipbook:SetVertexColor(r, g, b, 1)
-        end
-        -- Play
-        glow:Show()
-        if glow.Flipbook and glow.Flipbook.Anim and not glow.Flipbook.Anim:IsPlaying() then
-            glow.Flipbook.Anim:Play()
-        end
-        -- Masque shape matching (graceful nil check)
-        if ns.CDMEnhance and ns.CDMEnhance.ApplyMasqueAntsShapeToGlow then
-            ns.CDMEnhance.ApplyMasqueAntsShapeToGlow(iconFrame, glow)
-        end
-    elseif style == "ach_proc" then
-        -- Proc: loop container = icon * ACH_ANTS_FLIPBOOK_RATIO, start burst = icon * PROC_START_RATIO
-        glow:SetSize(w * ACH_ANTS_FLIPBOOK_RATIO, h * ACH_ANTS_FLIPBOOK_RATIO)
-        if glow.ProcStartFlipbook then
-            glow.ProcStartFlipbook:SetSize(w * PROC_START_RATIO, h * PROC_START_RATIO)
-        end
-        if glow.ProcLoopFlipbook then
-            glow.ProcLoopFlipbook:SetSize(w * ACH_ANTS_FLIPBOOK_RATIO, h * ACH_ANTS_FLIPBOOK_RATIO)
-        end
-        -- Apply color
-        local r, g, b = 1, 0.85, 0.1
-        if color then r, g, b = color[1] or color.r or 1, color[2] or color.g or 0.85, color[3] or color.b or 0.1 end
-        for _, tex in ipairs({glow.ProcStartFlipbook, glow.ProcLoopFlipbook, glow.ProcAltGlow}) do
-            if tex then
-                tex:SetDesaturated(true)
-                tex:SetVertexColor(r, g, b, 1)
-            end
-        end
-        -- Show loop only (skip intro burst for cleaner proc overlay)
-        glow:Show()
-        if glow.ProcStartFlipbook then glow.ProcStartFlipbook:Hide() end
-        if glow.ProcLoopFlipbook then glow.ProcLoopFlipbook:Show() end
-        if glow.ProcLoop and not glow.ProcLoop:IsPlaying() then
-            glow.ProcLoop:Play()
-        end
-        -- Masque shape matching (graceful nil check)
-        if ns.CDMEnhance and ns.CDMEnhance.ApplyMasqueProcShapeToACHGlow then
-            ns.CDMEnhance.ApplyMasqueProcShapeToACHGlow(iconFrame, glow)
-        end
-    end
-end
-
--- Hide ACH glow: stops animations and hides
--- @param target: Overlay frame the glow is parented to
--- @param style: "ants" or "ach_proc"
--- @param key: Storage key suffix
-local function HideACHGlow(target, style, key)
-    if not target then return end
-    local storageKey = (style == "ants") and ("_AchAnts" .. key) or ("_AchProc" .. key)
-    local glow = target[storageKey]
-    if not glow then return end
-
-    if style == "ants" then
-        if glow.Flipbook and glow.Flipbook.Anim and glow.Flipbook.Anim:IsPlaying() then
-            glow.Flipbook.Anim:Stop()
-        end
-    elseif style == "ach_proc" then
-        if glow.ProcStartAnim and glow.ProcStartAnim:IsPlaying() then glow.ProcStartAnim:Stop() end
-        if glow.ProcLoop and glow.ProcLoop:IsPlaying() then glow.ProcLoop:Stop() end
-        if glow.ProcStartFlipbook then glow.ProcStartFlipbook:Hide() end
-        if glow.ProcLoopFlipbook then glow.ProcLoopFlipbook:Hide() end
-        if glow.ProcAltGlow then glow.ProcAltGlow:Hide() end
-    end
-    glow:Hide()
-end
-
-local function StartGlow(frame, glowType, color, opts)
-    if not frame then return end
-    if glowType == "blizzard" or glowType == "default" then
-        ShowBlizzardProcGlow(frame, color)
-        return
-    end
-    -- Normalize config name → internal name: "proc" → "glow" (LCG ProcGlow)
-    if glowType == "proc" then glowType = "glow" end
-    local LCG = GetLCG()
-    if not LCG then return end
-    opts = opts or {}
-    local ca = color and {color.r or 1, color.g or 1, color.b or 1, color.a or 1} or nil
-    local key = opts.key or ""
-    if glowType == "button" then
-        LCG.ButtonGlow_Start(frame, ca, opts.frequency)
-        -- ButtonGlow stores as frame._ButtonGlow (no key support)
-        if frame._ButtonGlow and opts.scale and opts.scale ~= 1.0 and frame._ButtonGlow.SetScale then
-            pcall(frame._ButtonGlow.SetScale, frame._ButtonGlow, opts.scale)
-        end
-        -- Masque shape matching: ButtonGlow has .spark/.ants/.innerGlow/.outerGlow
-        if frame._ButtonGlow and ns.CDMEnhance and ns.CDMEnhance.IsMasqueSkinned
-           and ns.CDMEnhance.IsMasqueSkinned(frame)
-           and ns.CDMEnhance.TriggerMasqueSpellAlertUpdate then
-            ns.CDMEnhance.TriggerMasqueSpellAlertUpdate(frame, frame._ButtonGlow)
-        end
-    elseif glowType == "pixel" then
-        LCG.PixelGlow_Start(frame, ca, opts.lines or 8, opts.frequency or 0.25, opts.length, opts.thickness or 2, opts.xOffset or 0, opts.yOffset or 0, true, key)
-        -- Apply scale manually (LCG doesn't have scale param for pixel glow)
-        local gf = frame["_PixelGlow" .. key]
-        if gf and opts.scale and opts.scale ~= 1.0 and gf.SetScale then
-            pcall(gf.SetScale, gf, opts.scale)
-        end
-    elseif glowType == "autocast" then
-        LCG.AutoCastGlow_Start(frame, ca, opts.particles or 4, opts.frequency or 0.25, opts.scale or 1, opts.xOffset or 0, opts.yOffset or 0, key)
-    elseif glowType == "glow" then
-        LCG.ProcGlow_Start(frame, {color = ca, startAnim = false, xOffset = opts.xOffset or 0, yOffset = opts.yOffset or 0, key = key})
-        -- Apply scale manually for proc glow
-        local gf = frame["_ProcGlow" .. key]
-        if gf then
-            if opts.scale and opts.scale ~= 1.0 and gf.SetScale then
-                pcall(gf.SetScale, gf, opts.scale)
-            end
-            -- Fix initial state: suppress start animation, show loop at correct intensity
-            if gf.ProcStart then gf.ProcStart:Hide() end
-            if gf.ProcLoop then
-                gf.ProcLoop:Show()
-                gf.ProcLoop:SetAlpha(opts.intensity or 1.0)
-            end
-            -- Masque shape matching for LCG ProcGlow
-            if ns.CDMEnhance and ns.CDMEnhance.ApplyMasqueProcShapeToLCG then
-                ns.CDMEnhance.ApplyMasqueProcShapeToLCG(frame, gf)
-            end
-        end
-    elseif glowType == "ants" or glowType == "ach_proc" then
-        -- ACH template glows — use dedicated helper
-        local iconFrame = opts.iconFrame or frame
-        ShowACHGlow(frame, iconFrame, glowType, key, ca, opts)
-        return  -- ACH glows handle their own sizing/levels
-    end
-    -- Elevate glow frames above swipe but below border (+5) and count text (+10/+50)
-    local baseLevel = frame:GetFrameLevel()
-    local gf
-    if glowType == "button" then gf = frame._ButtonGlow  -- ButtonGlow has no key
-    elseif glowType == "pixel" then gf = frame["_PixelGlow" .. key]
-    elseif glowType == "autocast" then gf = frame["_AutoCastGlow" .. key]
-    elseif glowType == "glow" then gf = frame["_ProcGlow" .. key]
-    end
-    if gf and gf.SetFrameLevel then gf:SetFrameLevel(baseLevel + 3) end
-end
-
-local function StopGlow(frame, glowType, key)
-    if not frame then return end
-    key = key or ""
-    if glowType == "blizzard" or glowType == "default" then
-        HideBlizzardProcGlow(frame)
-        return
-    end
-    if glowType == "proc" then glowType = "glow" end
-    local LCG = GetLCG()
-    if not LCG then return end
-    if glowType == "button" then LCG.ButtonGlow_Stop(frame, key)
-    elseif glowType == "pixel" then LCG.PixelGlow_Stop(frame, key)
-    elseif glowType == "autocast" then LCG.AutoCastGlow_Stop(frame, key)
-    elseif glowType == "glow" and LCG.ProcGlow_Stop then LCG.ProcGlow_Stop(frame, key)
-    elseif glowType == "ants" then HideACHGlow(frame, "ants", key)
-    elseif glowType == "ach_proc" then HideACHGlow(frame, "ach_proc", key)
-    end
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
--- IMMEDIATE READY GLOW STOP
--- Stops ALL glow types on the frame AND force-hides glow frames instantly.
--- ButtonGlow_Stop plays a slow fade animation — this bypasses that.
--- Matches CDMEnhance's HideReadyGlow approach for instant visual feedback.
--- ═══════════════════════════════════════════════════════════════════════════
-
-local function StopAllGlows(frame, key)
-    if not frame then return end
-    key = key or ""
-    HideBlizzardProcGlow(frame)
-    local LCG = GetLCG()
-    if not LCG then return end
-    LCG.ButtonGlow_Stop(frame, key)
-    LCG.PixelGlow_Stop(frame, key)
-    LCG.AutoCastGlow_Stop(frame, key)
-    if LCG.ProcGlow_Stop then LCG.ProcGlow_Stop(frame, key) end
-    -- ACH template glows (not LCG-managed)
-    HideACHGlow(frame, "ants", key)
-    HideACHGlow(frame, "ach_proc", key)
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
--- USABLE GLOW OVERLAY
--- Creates a dedicated child frame per icon for usable glow.
--- This gives usable glow its own _ButtonGlow (LCG stores one per frame),
--- eliminating all conflicts with ready glow on the parent CDM icon frame.
--- Same technique used by EllesmereBarGlows.
--- ═══════════════════════════════════════════════════════════════════════════
-
-local function GetUsableGlowOverlay(frame)
-    if frame._arcUsableGlowOverlay then return frame._arcUsableGlowOverlay end
-    local overlay = CreateFrame("Frame", nil, frame)
-    overlay:SetAllPoints(frame)
-    overlay:SetFrameLevel(frame:GetFrameLevel() + 10)
-    overlay:Show()
-    frame._arcUsableGlowOverlay = overlay
-    return overlay
-end
-
-local function StopUsableGlow(frame)
-    local overlay = frame._arcUsableGlowOverlay
-    if not overlay then return end
-    -- Hide overlay FIRST — LCG's ButtonGlow_Stop checks r:IsVisible().
-    -- When hidden it skips the fade animation, releases to pool immediately,
-    -- and ButtonGlowResetter properly clears all _ButtonGlow references.
-    -- This means next ButtonGlow_Start creates a fresh frame from the pool.
-    overlay:Hide()
-    overlay:SetAlpha(0)
-    -- StopAllGlows handles keyed types (pixel, autocast, proc) with "usable" key.
-    StopAllGlows(overlay, "usable")
-    -- ButtonGlow_Start is called WITHOUT a key (defaults to ""), but StopAllGlows
-    -- passes "usable" to ButtonGlow_Stop which looks for _ButtonGlow"usable" — miss!
-    -- Explicitly stop with empty key to match how it was started.
-    local LCG = GetLCG()
-    if LCG then LCG.ButtonGlow_Stop(overlay) end
-    -- Also clean up blizzard SpellActivationAlert if it exists
-    if overlay.SpellActivationAlert then
-        overlay.SpellActivationAlert:Hide()
-    end
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
--- READY GLOW OVERLAY
--- Self-contained ready state glow — same pattern as usable glow.
--- Own overlay, own state tracking on fd, own stop function.
--- Does NOT delegate to CDMEnhance ShowReadyGlow/HideReadyGlow.
--- ═══════════════════════════════════════════════════════════════════════════
-
-local function GetReadyGlowOverlay(frame)
-    if frame._arcReadyGlowOverlay then return frame._arcReadyGlowOverlay end
-    local overlay = CreateFrame("Frame", nil, frame)
-    overlay:SetAllPoints(frame)
-    overlay:SetFrameLevel(frame:GetFrameLevel() + 1)
-    overlay:Show()
-    frame._arcReadyGlowOverlay = overlay
-    return overlay
-end
-
-local function StopReadyGlow(frame)
-    local overlay = frame._arcReadyGlowOverlay
-    if not overlay then return end
-    overlay:Hide()
-    overlay:SetAlpha(0)
-    StopAllGlows(overlay, "ready")
-    local LCG = GetLCG()
-    if LCG then LCG.ButtonGlow_Stop(overlay) end
-    if overlay.SpellActivationAlert then
-        overlay.SpellActivationAlert:Hide()
-    end
-end
-
 -- ═══════════════════════════════════════════════════════════════════════════
 -- FORWARD DECLARATIONS
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -648,7 +176,7 @@ end
 -- Called from DesatCooldown hooks and FeedCooldown.
 -- ═══════════════════════════════════════════════════════════════════════════
 
-function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
+function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
     if not fd or not fd.frame or not fd.icon then return end
 
     local frame = fd.frame
@@ -656,8 +184,9 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
     local iconTex = fd.icon
 
     -- Get CDMEnhance settings (READ ONLY — we decide when to apply)
-    local settings = nil
-    if ArcAuras.GetCachedSettings then
+    -- Accept passed settings from FeedCooldown to avoid double lookup
+    local settings = passedSettings
+    if not settings and ArcAuras.GetCachedSettings then
         settings = ArcAuras.GetCachedSettings(arcID)
     end
 
@@ -679,28 +208,32 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
                           and ns.CDMEnhanceOptions.IsGlowPreviewActive(arcID)
 
     -- Composite state key: all inputs that affect visual output
+    -- InCombatLockdown included because combatOnly glows depend on it
     local stateKey = isOnCD
     local stateKey2 = isRecharging
     local stateKey3 = usabilityState
     local stateKey4 = isGlowPreview
+    local stateKey5 = InCombatLockdown()
 
     local prev = frame._arcLastSpellState
     if prev
         and prev[1] == stateKey
         and prev[2] == stateKey2
         and prev[3] == stateKey3
-        and prev[4] == stateKey4 then
+        and prev[4] == stateKey4
+        and prev[5] == stateKey5 then
         return  -- Nothing changed, skip all visual work
     end
 
     -- Cache current state for next comparison
     if not prev then
-        frame._arcLastSpellState = { stateKey, stateKey2, stateKey3, stateKey4 }
+        frame._arcLastSpellState = { stateKey, stateKey2, stateKey3, stateKey4, stateKey5 }
     else
         prev[1] = stateKey
         prev[2] = stateKey2
         prev[3] = stateKey3
         prev[4] = stateKey4
+        prev[5] = stateKey5
     end
 
     -- Get state visuals from settings
@@ -748,7 +281,6 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
         isGlowEligible = true   -- ready (or has charges with glowWhileCharges)
     end
 
-    local LCG = GetLCG()
 
     if useCooldownVisuals and not isGlowPreview then
         -- ═══════════════════════════════════════════════════════════════
@@ -909,9 +441,8 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
     end
 
     -- ═══════════════════════════════════════════════════════════════
-    -- READY GLOW — self-contained, same pattern as usable glow.
-    -- Own overlay, own fd state tracking, own StartGlow/StopGlow.
-    -- No CDMEnhance delegation (ShowReadyGlow/HideReadyGlow).
+    -- READY GLOW — uses ns.Glows unified module.
+    -- No overlays needed — LCG keys handle simultaneous glows.
     -- ═══════════════════════════════════════════════════════════════
     local shouldShowGlow = false
 
@@ -929,17 +460,14 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
         -- Read glow params from stateVisuals (CDMEnhance cascade) or raw settings
         local glowType = (stateVisuals and stateVisuals.readyGlowType) or rs.glowType or "button"
         local gc = (stateVisuals and stateVisuals.readyGlowColor) or rs.glowColor
-        -- Only restart glow if type changed or not active (same as usable glow)
+        -- Only restart glow if type changed or not active
         if not fd.readyGlowActive or fd.readyGlowType ~= glowType then
             -- Stop old glow if type changed
             if fd.readyGlowActive and fd.readyGlowType then
-                StopReadyGlow(frame)
+                ns.Glows.ForceHide(frame, "ready")
             end
-            local overlay = GetReadyGlowOverlay(frame)
-            overlay:Show()
-            overlay:SetAlpha(1)
-            StartGlow(overlay, glowType, gc, {
-                key = "ready",
+            ns.Glows.Start(frame, "ready", glowType, {
+                color = gc,
                 lines = (stateVisuals and stateVisuals.readyGlowLines) or rs.glowLines or 8,
                 frequency = (stateVisuals and stateVisuals.readyGlowSpeed) or rs.glowSpeed or 0.25,
                 thickness = (stateVisuals and stateVisuals.readyGlowThickness) or rs.glowThickness or 2,
@@ -948,13 +476,12 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
                 intensity = (stateVisuals and stateVisuals.readyGlowIntensity) or rs.glowIntensity or 1.0,
                 xOffset = (stateVisuals and stateVisuals.readyGlowXOffset) or rs.glowXOffset or 0,
                 yOffset = (stateVisuals and stateVisuals.readyGlowYOffset) or rs.glowYOffset or 0,
-                iconFrame = frame,
             })
             fd.readyGlowActive = true
             fd.readyGlowType = glowType
         end
     elseif fd.readyGlowActive then
-        StopReadyGlow(frame)
+        ns.Glows.ForceHide(frame, "ready")
         fd.readyGlowActive = false
         fd.readyGlowType = nil
     end
@@ -985,19 +512,16 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
     if shouldShowUsableGlow then
         local glowSu = su or {}
         local glowType = glowSu.usableGlowType or "button"
-        if glowType == "blizzard" then glowType = "glow" end  -- migrate removed option
+        if glowType == "blizzard" then glowType = "proc" end  -- migrate removed option
         -- Only restart glow if type changed or not active
         if not fd.usableGlowActive or fd.usableGlowType ~= glowType then
             -- Stop old glow if type changed
             if fd.usableGlowActive and fd.usableGlowType then
-                StopUsableGlow(frame)
+                ns.Glows.ForceHide(frame, "usable")
             end
             local gc = glowSu.usableGlowColor
-            local overlay = GetUsableGlowOverlay(frame)
-            overlay:Show()
-            overlay:SetAlpha(1)
-            StartGlow(overlay, glowType, gc, {
-                key = "usable",
+            ns.Glows.Start(frame, "usable", glowType, {
+                color = gc,
                 lines = glowSu.usableGlowLines or 8,
                 frequency = glowSu.usableGlowSpeed or 0.25,
                 thickness = glowSu.usableGlowThickness or 2,
@@ -1008,7 +532,7 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
             fd.usableGlowType = glowType
         end
     elseif fd.usableGlowActive then
-        StopUsableGlow(frame)
+        ns.Glows.ForceHide(frame, "usable")
         fd.usableGlowActive = false
         fd.usableGlowType = nil
     end
@@ -1026,6 +550,11 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
     if frame._lastCooldownState ~= isOnCD then
         local wasOnCD = frame._lastCooldownState
         frame._lastCooldownState = isOnCD
+        
+        -- Update custom label visibility on state change
+        if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
+            ns.CustomLabel.UpdateVisibility(frame)
+        end
         
         -- Play end-of-cooldown flash on CD→ready transition
         -- CDMEnhance hooks FlashAnim:Play to suppress if showBling == false
@@ -1077,11 +606,8 @@ FeedCooldown = function(fd)
     local spellID = fd.spellID
     local isChargeSpell = fd.isChargeSpell
 
-    -- Get CDMEnhance settings for charge text / cooldown text decisions
-    local settings = nil
-    if ArcAuras.GetCachedSettings then
-        settings = ArcAuras.GetCachedSettings(fd.arcID)
-    end
+    -- Get CDMEnhance settings ONCE — passed to both UpdateChargeText and ApplySpellStateVisuals
+    local settings = ArcAuras.GetCachedSettings and ArcAuras.GetCachedSettings(fd.arcID) or nil
 
     -- ───────────────────────────────────────────────────────────────────
     -- 1. GCD STATE (already cached by event handler before calling us)
@@ -1101,18 +627,14 @@ FeedCooldown = function(fd)
     -- ───────────────────────────────────────────────────────────────────
     if fd.desatCooldown then
         if isOnGCD then
-            -- GCD only → force desat off (shadow frame always filters GCD)
             fd.desatCooldown:SetCooldown(0, 0)
         else
-            local durObj = nil
-            pcall(function() durObj = C_Spell.GetSpellCooldownDuration(spellID) end)
-            if durObj then
+            -- Direct pcall: avoids closure allocation per call
+            local ok, durObj = pcall(C_Spell.GetSpellCooldownDuration, spellID)
+            if ok and durObj then
                 fd.desatCooldown:Clear()
-                pcall(function()
-                    fd.desatCooldown:SetCooldownFromDurationObject(durObj, true)
-                end)
+                pcall(fd.desatCooldown.SetCooldownFromDurationObject, fd.desatCooldown, durObj, true)
             else
-                -- No duration = spell ready
                 fd.desatCooldown:SetCooldown(0, 0)
             end
         end
@@ -1127,13 +649,10 @@ FeedCooldown = function(fd)
     local cooldown = fd.cooldown
 
     if isChargeSpell then
-        local chargeDurObj = nil
-        pcall(function() chargeDurObj = C_Spell.GetSpellChargeDuration(spellID) end)
-        if chargeDurObj then
+        local ok, chargeDurObj = pcall(C_Spell.GetSpellChargeDuration, spellID)
+        if ok and chargeDurObj then
             cooldown:Clear()
-            pcall(function()
-                cooldown:SetCooldownFromDurationObject(chargeDurObj, true)
-            end)
+            pcall(cooldown.SetCooldownFromDurationObject, cooldown, chargeDurObj, true)
         else
             cooldown:Clear()
         end
@@ -1148,11 +667,9 @@ FeedCooldown = function(fd)
             local edgeWait = fd.frame._arcEdgeWaitForNoCharges
             fd.frame._arcBypassSwipeHook = true
             if fullyDepleted then
-                -- All charges consumed: always show both swipe and edge
                 cooldown:SetDrawSwipe(true)
                 cooldown:SetDrawEdge(true)
             else
-                -- Recharging: respect per-component wait settings
                 cooldown:SetDrawSwipe(not swipeWait)
                 cooldown:SetDrawEdge(not edgeWait)
             end
@@ -1162,12 +679,9 @@ FeedCooldown = function(fd)
         if noGCD and isOnGCD then
             cooldown:Clear()
         else
-            local cooldownDurObj = nil
-            pcall(function() cooldownDurObj = C_Spell.GetSpellCooldownDuration(spellID) end)
-            if cooldownDurObj then
-                pcall(function()
-                    cooldown:SetCooldownFromDurationObject(cooldownDurObj, true)
-                end)
+            local ok, cooldownDurObj = pcall(C_Spell.GetSpellCooldownDuration, spellID)
+            if ok and cooldownDurObj then
+                pcall(cooldown.SetCooldownFromDurationObject, cooldown, cooldownDurObj, true)
             else
                 cooldown:Clear()
             end
@@ -1187,11 +701,11 @@ FeedCooldown = function(fd)
     --    - Preview toggle: spell already ready, desatCD stays hidden
     --    - Combat state changes affecting combatOnly glows
     --    - Settings changes via UpdateIcon
-    --    The glow signature check prevents redundant glow restarts,
+    --    The state-change guard prevents redundant visual restarts,
     --    so calling this every FeedCooldown is effectively free.
     -- ───────────────────────────────────────────────────────────────────
     local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
-    ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
+    ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, settings)
 end
 
 -- Expose FeedCooldown for ArcAuras hooks to call
@@ -1217,9 +731,8 @@ UpdateChargeText = function(fd, settings)
         return
     end
 
-    local chargeInfo = nil
-    pcall(function() chargeInfo = C_Spell.GetSpellCharges(fd.spellID) end)
-    if chargeInfo then
+    local ok, chargeInfo = pcall(C_Spell.GetSpellCharges, fd.spellID)
+    if ok and chargeInfo then
         -- currentCharges is SECRET in combat — SetText accepts secrets, no comparisons!
         fd.chargeText:SetText(chargeInfo.currentCharges or "")
         fd.chargeText:Show()
@@ -1238,13 +751,10 @@ UpdateProcGlow = function(fd, forceShow)
     local isOverlayed = forceShow
 
     if isOverlayed == nil then
-        local ok = pcall(function()
-            isOverlayed = C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed(spellID)
-        end)
-        -- If pcall failed (secret value / API unavailable in combat),
-        -- DON'T change state — keep glow running if already active
-        if not ok then
-            return
+        if C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed then
+            local ok, result = pcall(C_SpellActivationOverlay.IsSpellOverlayed, spellID)
+            if not ok then return end  -- pcall failed, don't change state
+            isOverlayed = result
         end
     end
 
@@ -1258,7 +768,7 @@ UpdateProcGlow = function(fd, forceShow)
     -- Check if proc glow is disabled via per-icon settings
     if procCfg and procCfg.enabled == false then
         if fd.procGlowActive then
-            StopGlow(fd.frame, fd.procGlowType or "blizzard", "proc")
+            ns.Glows.Stop(fd.frame, "proc")
             fd.procGlowActive = false
             fd.procGlowType = nil
         end
@@ -1267,18 +777,16 @@ UpdateProcGlow = function(fd, forceShow)
 
     if isOverlayed then
         if not fd.procGlowActive then
-            -- Map CDMEnhance glowType names to our StartGlow names:
-            --   CDMEnhance "default" → our "blizzard" (ActionButtonSpellAlertManager)
-            --   CDMEnhance "proc"    → our "glow"     (LCG ProcGlow)
+            -- Map CDMEnhance glowType names to ns.Glows names:
+            --   CDMEnhance "default" → "blizzard" (ActionButtonSpellAlertTemplate)
+            --   CDMEnhance "proc"    → "proc"     (LCG ProcGlow)
             --   pixel/autocast/button/ants/ach_proc pass through unchanged
             local cfgType = procCfg and procCfg.glowType or "default"
             local glowType
             if cfgType == "default" then
                 glowType = "blizzard"
-            elseif cfgType == "proc" then
-                glowType = "glow"
             else
-                glowType = cfgType  -- "pixel", "autocast", "button"
+                glowType = cfgType  -- "pixel", "autocast", "button", "proc", "ants", "ach_proc"
             end
 
             -- Color: nil = Blizzard default gold for blizzard type
@@ -1287,17 +795,13 @@ UpdateProcGlow = function(fd, forceShow)
                 gc = procCfg.color
             end
 
-            if glowType == "button" then
-            end
-
-            StartGlow(fd.frame, glowType, gc, {
-                key = "proc",
+            ns.Glows.Start(fd.frame, "proc", glowType, {
+                color = gc,
                 lines = procCfg and procCfg.lines or 8,
                 frequency = procCfg and procCfg.speed or 0.25,
                 thickness = procCfg and procCfg.thickness or 2,
                 particles = procCfg and procCfg.particles or 4,
                 scale = procCfg and procCfg.scale or 1,
-                iconFrame = fd.frame,  -- ACH glows use this for sizing
             })
             fd.procGlowActive = true
             fd.procGlowType = glowType
@@ -1306,7 +810,7 @@ UpdateProcGlow = function(fd, forceShow)
             fd.frame._arcProcGlowType = glowType
         end
     elseif fd.procGlowActive then
-        StopGlow(fd.frame, fd.procGlowType or "blizzard", "proc")
+        ns.Glows.Stop(fd.frame, "proc")
         fd.procGlowActive = false
         fd.procGlowType = nil
         fd.frame._arcProcGlowActive = false
@@ -1368,9 +872,8 @@ function ArcAurasCooldown.InitializeSpellFrame(arcID, frame, config)
     end
 
     -- Detect charge spell (cached once, prevents flicker)
-    local chargeInfo = nil
-    pcall(function() chargeInfo = C_Spell.GetSpellCharges(spellID) end)
-    fd.isChargeSpell = (chargeInfo ~= nil)
+    local cOk, chargeInfo = pcall(C_Spell.GetSpellCharges, spellID)
+    fd.isChargeSpell = (cOk and chargeInfo ~= nil)
 
     -- Range check setup — EnableSpellRangeCheck opts in to SPELL_RANGE_CHECK_UPDATE
     if C_Spell.SpellHasRange and C_Spell.EnableSpellRangeCheck then
@@ -1615,20 +1118,14 @@ function ArcAurasCooldown.HideFrame(arcID)
     if fd.needsRangeCheck and fd.rangeCheckSpellID and C_Spell.EnableSpellRangeCheck then
         C_Spell.EnableSpellRangeCheck(fd.rangeCheckSpellID, false)
     end
-    if fd.procGlowActive then
-        StopGlow(fd.frame, fd.procGlowType or "blizzard", "proc")
+    if fd.procGlowActive or fd.usableGlowActive or fd.readyGlowActive then
+        ns.Glows.ForceHideAll(fd.frame)
         fd.procGlowActive = false
         fd.procGlowType = nil
         fd.frame._arcProcGlowActive = false
         fd.frame._arcProcGlowType = nil
-    end
-    if fd.usableGlowActive then
-        StopUsableGlow(fd.frame)
         fd.usableGlowActive = false
         fd.usableGlowType = nil
-    end
-    if fd.readyGlowActive then
-        StopReadyGlow(fd.frame)
         fd.readyGlowActive = false
         fd.readyGlowType = nil
     end
@@ -1761,9 +1258,8 @@ function ArcAurasCooldown.ShowFrame(arcID)
     end
 
     -- Re-check charge spell status (may change between specs)
-    local chargeInfo = nil
-    pcall(function() chargeInfo = C_Spell.GetSpellCharges(fd.spellID) end)
-    fd.isChargeSpell = (chargeInfo ~= nil)
+    local cOk, chargeInfo = pcall(C_Spell.GetSpellCharges, fd.spellID)
+    fd.isChargeSpell = (cOk and chargeInfo ~= nil)
     -- Feed fresh cooldown state
     FeedCooldown(fd)
     UpdateProcGlow(fd)
@@ -1968,9 +1464,8 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "SPELL_UPDATE_COOLDOWN" then
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
             if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                local cooldownInfo = nil
-                pcall(function() cooldownInfo = C_Spell.GetSpellCooldown(fd.spellID) end)
-                if cooldownInfo then
+                local ok, cooldownInfo = pcall(C_Spell.GetSpellCooldown, fd.spellID)
+                if ok and cooldownInfo then
                     fd.lastIsOnGCD = cooldownInfo.isOnGCD
                 end
                 FeedCooldown(fd)
@@ -2035,9 +1530,10 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
     elseif event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
         -- Combat state changed: re-evaluate combatOnly glows for all visible spell frames
+        -- InCombatLockdown() is stateKey5 in the state-change guard, so the guard
+        -- naturally detects combat transitions — no need to clear the cache.
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
             if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                fd.frame._arcLastSpellState = nil  -- Force re-eval (combatOnly glows)
                 local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
                 ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
             end
@@ -2128,9 +1624,8 @@ function ArcAurasCooldown.Initialize()
     C_Timer.After(1.5, function()
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
             if fd.frame and fd.frame:IsShown() then
-                local chargeInfo = nil
-                pcall(function() chargeInfo = C_Spell.GetSpellCharges(fd.spellID) end)
-                fd.isChargeSpell = (chargeInfo ~= nil)
+                local cOk, chargeInfo = pcall(C_Spell.GetSpellCharges, fd.spellID)
+                fd.isChargeSpell = (cOk and chargeInfo ~= nil)
                 FeedCooldown(fd)
                 UpdateProcGlow(fd)
             end
@@ -2154,18 +1649,12 @@ function ArcAurasCooldown.RefreshAllSettings()
     for arcID, fd in pairs(ArcAurasCooldown.spellData) do
         if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
             if ArcAuras.InvalidateSettingsCache then ArcAuras.InvalidateSettingsCache(arcID) end
-            if fd.procGlowActive then
-                StopGlow(fd.frame, fd.procGlowType or "blizzard", "proc")
+            if fd.procGlowActive or fd.usableGlowActive or fd.readyGlowActive then
+                ns.Glows.ForceHideAll(fd.frame)
                 fd.procGlowActive = false
                 fd.procGlowType = nil
-            end
-            if fd.usableGlowActive then
-                StopUsableGlow(fd.frame)
                 fd.usableGlowActive = false
                 fd.usableGlowType = nil
-            end
-            if fd.readyGlowActive then
-                StopReadyGlow(fd.frame)
                 fd.readyGlowActive = false
                 fd.readyGlowType = nil
             end
@@ -2183,9 +1672,9 @@ function ArcAurasCooldown.RefreshSpellVisuals(arcID)
     if not fd or not fd.frame or not fd.frame:IsShown() or fd.frame._arcHiddenNotInSpec then return end
     if ArcAuras.InvalidateSettingsCache then ArcAuras.InvalidateSettingsCache(arcID) end
     fd.frame._arcLastSpellState = nil  -- Force re-eval after settings change
-    -- Stop ready glow so it restarts with fresh settings (matches usable glow pattern)
+    -- Stop ready glow so it restarts with fresh settings
     if fd.readyGlowActive then
-        StopReadyGlow(fd.frame)
+        ns.Glows.ForceHide(fd.frame, "ready")
         fd.readyGlowActive = false
         fd.readyGlowType = nil
     end
@@ -2201,7 +1690,7 @@ function ArcAurasCooldown.RefreshAllSpellVisuals()
             if ArcAuras.InvalidateSettingsCache then ArcAuras.InvalidateSettingsCache(arcID) end
             -- Stop ready glow so it restarts with fresh settings
             if fd.readyGlowActive then
-                StopReadyGlow(fd.frame)
+                ns.Glows.ForceHide(fd.frame, "ready")
                 fd.readyGlowActive = false
                 fd.readyGlowType = nil
             end
@@ -2216,7 +1705,7 @@ end
 function ArcAurasCooldown.StopAllUsableGlows()
     for _, fd in pairs(ArcAurasCooldown.spellData) do
         if fd.usableGlowActive and fd.frame then
-            StopUsableGlow(fd.frame)
+            ns.Glows.ForceHide(fd.frame, "usable")
             fd.usableGlowActive = false
             fd.usableGlowType = nil
         end
@@ -2227,7 +1716,7 @@ end
 function ArcAurasCooldown.StopAllReadyGlows()
     for _, fd in pairs(ArcAurasCooldown.spellData) do
         if fd.readyGlowActive and fd.frame then
-            StopReadyGlow(fd.frame)
+            ns.Glows.ForceHide(fd.frame, "ready")
             fd.readyGlowActive = false
             fd.readyGlowType = nil
         end
@@ -2303,3 +1792,5 @@ function ArcAurasCooldown.GetSpellInfoForArcID(arcID)
         inCurrentSpec = PlayerKnowsSpell(config.spellID),
     }
 end
+-- Debug bridge: expose spellData for standalone debugger addons
+_G.ArcUI_ArcAurasCooldown = ArcAurasCooldown

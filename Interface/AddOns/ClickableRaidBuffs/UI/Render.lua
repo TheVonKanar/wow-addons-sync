@@ -401,7 +401,19 @@ function ns.RenderAll()
   end
 
   local db = ns.GetDB() or {}
+  if db.disableIconsInVehicle ~= false and ns.Gate_NotInVehicle and not ns.Gate_NotInVehicle() then
+    ns.HideAllRenderedIcons()
+    if ns.RenderParent then
+      ns.RenderParent:Hide()
+    end
+    return
+  end
+
   local displayable = _G.clickableRaidBuffCache and _G.clickableRaidBuffCache.displayable or {}
+  if ns.RenderParent and not ns.RenderParent:IsShown() then
+    ns.RenderParent:Show()
+  end
+
 
   local eatingActive = false
   do

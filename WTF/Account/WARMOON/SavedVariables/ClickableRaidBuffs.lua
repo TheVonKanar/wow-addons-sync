@@ -2,28 +2,28 @@
 ClickableRaidBuffsDB = {
 ["centerTextColor"] = {
 ["a"] = 1,
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 ["topTextColor"] = {
 ["a"] = 1,
-["b"] = 1,
-["g"] = 1,
 ["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
 ["timerTextColor"] = {
 ["a"] = 1,
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 ["vSpace"] = 45,
 ["bottomTextColor"] = {
 ["a"] = 1,
-["b"] = 1,
-["g"] = 1,
 ["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
 ["tooltips"] = {
 },
@@ -31,6 +31,7 @@ ClickableRaidBuffsDB = {
 },
 ["AUTHOR_LABEL_X"] = 335,
 ["growV"] = "UP",
+["disableIconsInVehicle"] = true,
 ["cosmetics"] = {
 },
 ["timerOutline"] = true,
@@ -59,7 +60,7 @@ ClickableRaidBuffsDB = {
 ["relative"] = "UIParent",
 },
 ["bottomSize"] = 14,
-["versionID"] = "7.4.1",
+["versionID"] = "7.4.3",
 ["useMaxPerRow"] = false,
 ["exclusions"] = {
 [197767] = true,
@@ -100,40 +101,34 @@ ClickableRaidBuffsDB = {
 ["AUTHOR_LABEL_SIZE"] = 17,
 ["specialGlowColor"] = {
 ["a"] = 1,
-["b"] = 1,
-["g"] = 0.8,
 ["r"] = 0.35,
+["g"] = 0.8,
+["b"] = 1,
 },
 ["SIZE_EDITBOX"] = 14,
 ["bagRefreshSeconds"] = 5,
-["PANEL_FONT_NAME"] = "FiraSans-Regular",
-["AUTHOR_LABEL_Y"] = -55,
+["style"] = "HORIZONTAL",
+["mplusThresholdEnabled"] = true,
 ["centerOutline"] = true,
 ["RESET_H"] = 30,
 ["SIZE_SECTION_HEAD"] = 20,
-["cornerTextColor"] = {
-["a"] = 1,
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
+["TITLE_FONT_NAME"] = "FiraSans-ExtraBoldItalic",
 ["centerSize"] = 22,
-["hunterPets"] = {
+["glowEnabled"] = true,
+["fixedTargets"] = {
 },
-["alignment"] = "CENTER",
 ["customSpells"] = {
 },
-["glowColor"] = {
-["a"] = 1,
-["b"] = 0.2,
-["g"] = 0.9,
-["r"] = 1,
+["earthShieldOverride"] = {
+["disableTargetWhenSolo"] = true,
+["showPlayerIcon"] = true,
+["showTargetIcon"] = false,
 },
-["position"] = {
-["y"] = -501,
-["x"] = 0,
+["timerSize"] = 22,
+["expansions"] = {
+[10] = true,
+[11] = true,
 },
-["layoutMode"] = "ROW",
 ["gridLTR"] = true,
 ["mplusDisableConsumables"] = true,
 ["mounts"] = {
@@ -141,22 +136,28 @@ ClickableRaidBuffsDB = {
 },
 ["SIZE_LABEL"] = 14,
 ["hSpace"] = 10,
-["expansions"] = {
-[10] = true,
-[11] = true,
+["layoutMode"] = "ROW",
+["position"] = {
+["y"] = -501,
+["x"] = 0,
 },
-["timerSize"] = 22,
-["earthShieldOverride"] = {
-["disableTargetWhenSolo"] = true,
-["showPlayerIcon"] = true,
-["showTargetIcon"] = false,
+["glowColor"] = {
+["a"] = 1,
+["r"] = 1,
+["g"] = 0.9,
+["b"] = 0.2,
 },
-["fixedTargets"] = {
+["alignment"] = "CENTER",
+["hunterPets"] = {
 },
-["glowEnabled"] = true,
-["TITLE_FONT_NAME"] = "FiraSans-ExtraBoldItalic",
-["mplusThresholdEnabled"] = true,
-["style"] = "HORIZONTAL",
+["cornerTextColor"] = {
+["a"] = 1,
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["AUTHOR_LABEL_Y"] = -55,
+["PANEL_FONT_NAME"] = "FiraSans-Regular",
 ["RESET_W"] = 60,
 }
 ClickableRaidBuffsMinimapDB = {

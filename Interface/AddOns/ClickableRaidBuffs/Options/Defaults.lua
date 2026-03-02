@@ -125,6 +125,7 @@ local D = {
   raidRefreshSeconds = 5,
   userRefreshSeconds = 1,
   scanIntervalSeconds = 5,
+  disableIconsInVehicle = true,
 }
 
 O.DEFAULTS = D

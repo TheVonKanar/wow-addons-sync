@@ -415,6 +415,54 @@ local function BuildMountsPanel(parent)
   return holder
 end
 
+
+local function BuildVehiclesPanel(parent)
+  local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+  holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
+  holder:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -10, 10)
+
+  local d = DB()
+  local cb, lab = NewCheckbox(
+    holder,
+    L["Disable icons while in a vehicle"],
+    d.disableIconsInVehicle ~= false,
+    function(_, v)
+      d.disableIconsInVehicle = v and true or false
+      if ns.RequestImmediateGateRefresh then
+        ns.RequestImmediateGateRefresh({ bags = true, raid = true, immediate = true })
+      else
+        if ns.MarkGatesDirty then
+          ns.MarkGatesDirty()
+        end
+        if ns.MarkBagsDirty then
+          ns.MarkBagsDirty()
+        end
+        if ns.MarkRosterDirty then
+          ns.MarkRosterDirty()
+        end
+        if ns.MarkAurasDirty then
+          ns.MarkAurasDirty("player")
+        end
+        if ns.PokeUpdateBusImmediate then
+          ns.PokeUpdateBusImmediate()
+        elseif ns.PokeUpdateBus then
+          ns.PokeUpdateBus()
+        end
+      end
+      if ns.RequestRebuild then
+        ns.RequestRebuild()
+      end
+      if ns.RenderAll then
+        ns.RenderAll()
+      end
+    end
+  )
+  cb:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, -4)
+  lab:SetPoint("LEFT", cb, "RIGHT", 8, 0)
+
+  return holder
+end
+
 local function BuildShamanPanel(parent)
   local holder = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   holder:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
@@ -516,9 +564,12 @@ O.RegisterSection(function(AddSection)
     local expansionsBtn = MakeMiniTab(tabRow, EXPANSION_FILTER_TEXT)
     expansionsBtn:SetPoint("LEFT", mountsBtn, "RIGHT", THEME.tabGap, 0)
     
+    local vehiclesBtn = MakeMiniTab(tabRow, L["Vehicles"])
+    vehiclesBtn:SetPoint("LEFT", expansionsBtn, "RIGHT", THEME.tabGap, 0)
+
     local shamanClassName = (C_CreatureInfo.GetClassInfo(7) or {}).className or L["Shaman"]
     local shamanBtn = MakeMiniTab(tabRow, shamanClassName)
-    shamanBtn:SetPoint("LEFT", expansionsBtn, "RIGHT", THEME.tabGap, 0)
+    shamanBtn:SetPoint("LEFT", vehiclesBtn, "RIGHT", THEME.tabGap, 0)
     
     local tabButtons = {
   mythicBtn,
@@ -526,6 +577,7 @@ O.RegisterSection(function(AddSection)
   delvesBtn,
   mountsBtn,
   expansionsBtn,
+  vehiclesBtn,
   hunterBtn,
   shamanBtn,
 }
@@ -634,6 +686,10 @@ end
         panels.EXPANSIONS = panels.EXPANSIONS or BuildExpansionsPanel(inner)
         panels.EXPANSIONS:Show()
       end
+      if key == "VEHICLES" then
+        panels.VEHICLES = panels.VEHICLES or BuildVehiclesPanel(inner)
+        panels.VEHICLES:Show()
+      end
       if key == "SHAMAN" then
         panels.SHAMAN = panels.SHAMAN or BuildShamanPanel(inner)
         panels.SHAMAN:Show()
@@ -649,6 +705,7 @@ end
       StyleTabNormal(delvesBtn)
       StyleTabNormal(mountsBtn)
       StyleTabNormal(expansionsBtn)
+      StyleTabNormal(vehiclesBtn)
       StyleTabNormal(shamanBtn)
       if which == "MYTHIC" then
         StyleTabSelected(mythicBtn)
@@ -667,6 +724,9 @@ end
       end
       if which == "EXPANSIONS" then
         StyleTabSelected(expansionsBtn)
+      end
+      if which == "VEHICLES" then
+        StyleTabSelected(vehiclesBtn)
       end
       if which == "SHAMAN" then
         StyleTabSelected(shamanBtn)
@@ -691,6 +751,9 @@ end
     end)
     expansionsBtn:SetScript("OnClick", function()
       selectTab("EXPANSIONS")
+    end)
+    vehiclesBtn:SetScript("OnClick", function()
+      selectTab("VEHICLES")
     end)
     shamanBtn:SetScript("OnClick", function()
       selectTab("SHAMAN")

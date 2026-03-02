@@ -56,6 +56,8 @@ local function TruncatedShort(name)
   return name
 end
 
+local _trackedByClassID, _trackedTableRef, _trackedSpellList
+
 local function BuildTrackedSpellList()
   local classID = _G.clickableRaidBuffCache
     and _G.clickableRaidBuffCache.playerInfo
@@ -63,17 +65,49 @@ local function BuildTrackedSpellList()
   if not classID and type(ns.getPlayerClass) == "function" then
     classID = ns.getPlayerClass()
   end
+
   local tbl = classID and _G.ClickableRaidData and _G.ClickableRaidData[classID]
-  local out = {}
   if not tbl then
-    return out
+    _trackedByClassID, _trackedTableRef, _trackedSpellList = nil, nil, nil
+    return {}
   end
+
+  if _trackedSpellList and _trackedByClassID == classID and _trackedTableRef == tbl then
+    return _trackedSpellList
+  end
+
+  local out = {}
   for spellID, data in pairs(tbl) do
     if type(spellID) == "number" and type(data) == "table" and data.count and data.type ~= "trinket" then
+      if not data.nameMode then
+        local lookup = data._crbFixedTargetIdLookup
+        if type(lookup) ~= "table" then
+          lookup = {}
+          if data.buffID then
+            for _, id in ipairs(data.buffID) do
+              lookup[id] = true
+            end
+          end
+          data._crbFixedTargetIdLookup = lookup
+        end
+      else
+        local name = data._crbFixedTargetName
+        if not name then
+          local info = C_Spell.GetSpellInfo(data.buffID and data.buffID[1])
+          name = info and info.name or false
+          data._crbFixedTargetName = name
+        end
+      end
       out[spellID] = data
     end
   end
+
+  _trackedByClassID, _trackedTableRef, _trackedSpellList = classID, tbl, out
   return out
+end
+
+local function InvalidateTrackedSpellListCache()
+  _trackedByClassID, _trackedTableRef, _trackedSpellList = nil, nil, nil
 end
 
 local function UnitHasMyAuraForRow(unit, row)
@@ -82,17 +116,28 @@ local function UnitHasMyAuraForRow(unit, row)
   end
   local wantByName, idLookup
   if row.nameMode then
-    local info = C_Spell.GetSpellInfo(row.buffID and row.buffID[1])
-    wantByName = info and info.name
-    if not wantByName then
+    wantByName = row._crbFixedTargetName
+    if wantByName == false then
       return false
     end
-  else
-    idLookup = {}
-    if row.buffID then
-      for _, id in ipairs(row.buffID) do
-        idLookup[id] = true
+    if not wantByName then
+      local info = C_Spell.GetSpellInfo(row.buffID and row.buffID[1])
+      wantByName = info and info.name or false
+      row._crbFixedTargetName = wantByName
+      if wantByName == false then
+        return false
       end
+    end
+  else
+    idLookup = row._crbFixedTargetIdLookup
+    if type(idLookup) ~= "table" then
+      idLookup = {}
+      if row.buffID then
+        for _, id in ipairs(row.buffID) do
+          idLookup[id] = true
+        end
+      end
+      row._crbFixedTargetIdLookup = idLookup
     end
   end
   local i = 1
@@ -233,6 +278,7 @@ local function EnsureRenderHook()
 end
 
 function ns.FixedTarget_Init()
+  InvalidateTrackedSpellListCache()
   MigrateLegacyCache()
   EnsureRenderHook()
   local c1 = RebuildFixedTargetCacheFromAuras()
@@ -242,6 +288,7 @@ function ns.FixedTarget_Init()
 end
 
 function ns.FixedTarget_OnRosterChanged()
+  InvalidateTrackedSpellListCache()
   EnsureRenderHook()
   local c1 = CleanCacheForRoster()
   local c2 = RebuildFixedTargetCacheFromAuras()
