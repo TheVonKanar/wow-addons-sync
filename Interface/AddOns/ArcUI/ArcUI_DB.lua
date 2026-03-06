@@ -96,12 +96,7 @@ ns.DB_DEFAULTS = {
           maxStacks = 10,
           auraInstanceID = 0,
           useBaseSpell = false,  -- Ignore CDM override spell, use base spell for icon
-          customEnabled = false,
-          customSpellID = 0,
-          customDuration = 10,
-          customStacksPerCast = 1,
-          customMaxStacks = 10,
-          customRefreshMode = "add",
+
           sourceType = "icon",
           useDurationBar = false,
           dynamicMaxDuration = false,
@@ -145,7 +140,7 @@ ns.DB_DEFAULTS = {
           iconMultiDurationAnchor = "BOTTOM",
           
           -- ═══════════════════════════════════════════════════════════════
-          -- CUSTOM TRACKING DISPLAY OPTIONS (for customAura/customCooldown)
+          -- COOLDOWN DISPLAY OPTIONS
           -- ═══════════════════════════════════════════════════════════════
           -- Cooldown Swipe (COOLDOWNS ONLY)
           iconShowCooldownSwipe = true,
@@ -307,7 +302,7 @@ ns.DB_DEFAULTS = {
         },
         
         -- ═══════════════════════════════════════════════════════════════
-        -- CONDITIONAL EVENTS (for customAura/customCooldown)
+        -- CONDITIONAL EVENTS
         -- ═══════════════════════════════════════════════════════════════
         events = {},
       },
@@ -555,11 +550,6 @@ ns.DB_DEFAULTS = {
     -- DO NOT add new fields here - use profile.cdmEnhance instead
     cdmEnhance = nil,
     
-    -- Custom aura and cooldown definitions
-    customDefinitions = {
-      auras = {},     -- Custom aura definitions keyed by unique ID
-      cooldowns = {}, -- Custom cooldown definitions keyed by unique ID
-    },
     
     -- ═══════════════════════════════════════════════════════════════════════════
     -- COOLDOWN BAR SETUP (ArcUI_CooldownBars.lua active bar tracking)

@@ -2,7 +2,7 @@ local myname, ns = ...
 
 local KNOWLEDGE = {
     note = "This can only be looted once per character.",
-    currency=2789,
+    currency=3150,
     requires = ns.conditions.Profession(ns.PROF_MIDNIGHT_ALCHEMY),
     -- active = ns.conditions.Profession(ns.PROF_MIDNIGHT_ALCHEMY, 25),
     group = "professionknowledge",
@@ -19,10 +19,10 @@ ns.RegisterPoints(ns.SILVERMOONCITY, {
 --     [] = {quest=nil, loot={238532}, vignette=nil}, -- Vial of Eversong Oddities
 -- }, KNOWLEDGE)
 ns.RegisterPoints(ns.ZULAMAN, {
-    [41704050] = {quest=89114, loot={238535}, vignette=6845}, -- Vial of Zul'Aman Oddities
+    [40385108] = {quest=89114, loot={238535}, vignette=6845}, -- Vial of Zul'Aman Oddities
 }, KNOWLEDGE)
 ns.RegisterPoints(ns.ATALAMAN, {
-    [49102310] = {quest=89116, loot={238537}, vignette=6843}, -- Measured Ladle
+    [49102310] = {quest=89116, loot={238537}, vignette=6843, parent=true}, -- Measured Ladle
 }, KNOWLEDGE)
 ns.RegisterPoints(ns.HARANDAR, {
     [34702470] = {quest=89113, loot={238534}, vignette=6846}, -- Vial of Rootlands Oddities
@@ -32,5 +32,5 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 }, KNOWLEDGE)
 ns.RegisterPoints(ns.SLAYERSRISE, {
     -- 40494422?
-    [41804050] = {quest=89112, loot={238533}, vignette=6847}, -- Vial of Voidstorm Oddities
+    [41804050] = {quest=89112, loot={238533}, vignette=6847, parent=true}, -- Vial of Voidstorm Oddities
 }, KNOWLEDGE)

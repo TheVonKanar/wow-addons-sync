@@ -340,6 +340,7 @@ local ADDON_FRAME_MAPPING = {
             TargetFrame = {"ElvUF_Target", "ElvUF_TargetTarget"},
             FocusFrame = {"ElvUF_Focus", "ElvUF_FocusTarget"},
             PetFrame = {"ElvUF_Pet", "ElvUF_PetTarget"},
+            PartyFrame = {"ElvUF_Party"},
             PlayerCastingBarFrame = {"ElvUF_Player_CastBar"},
         },
         args = {forceAlpha = true},
@@ -1200,6 +1201,7 @@ local function ApplyFade(group, targetAlpha)
     states.fadeEndTime = GetTime() + group.config.timeToFade
 
     for _, frame in pairs(group.frames) do
+        tDeleteItem(FADE_QUEUE, frame) -- for safety if timeToFade is set to 0 and fades trigger within one frame
         frame.fadeInfo = {
             mode = group.states.fadeMode,
             timeToFade = group.config.timeToFade,
@@ -1297,12 +1299,22 @@ local function OnTargetChanged()
     FadeAllGroups()
 end
 
-local function OnCombatChange()
+local function OnCombatChange(combatStatus)
+    inCombat = combatStatus
+
+    -- we are running this here as well, because it's not guaranteed that both frames fire events in the order we want.
+    if inCombat then
+        wipe(runAfterCombat)
+    else
+        RunAfterCombatQueue()
+    end
+
     ConditionCombat()
     FadeAllGroups()
 end
 
 local function OnCombatStart()
+    wipe(runAfterCombat)
     local setVisibilityToValue = true
     internal.UpdateAllFrameVisibility(setVisibilityToValue)
     inCombat = true
@@ -1396,8 +1408,8 @@ end
 
 local EVENT_HANDLER = {
     PLAYER_TARGET_CHANGED = OnTargetChanged,
-    PLAYER_REGEN_DISABLED = OnCombatChange,
-    PLAYER_REGEN_ENABLED = OnCombatChange,
+    PLAYER_REGEN_DISABLED = function() OnCombatChange(true) end,
+    PLAYER_REGEN_ENABLED = function() OnCombatChange(false) end,
     PLAYER_ENTERING_WORLD = OnInstanceChange,
     LOADING_SCREEN_DISABLED = OnInstanceChange,
     ZONE_CHANGED_NEW_AREA = OnInstanceChange,

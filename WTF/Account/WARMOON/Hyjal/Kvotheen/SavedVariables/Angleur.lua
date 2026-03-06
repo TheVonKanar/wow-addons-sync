@@ -1,7 +1,7 @@
 
 AngleurCharacter = {
-["sleeping"] = false,
 ["angleurSet"] = false,
+["sleeping"] = false,
 }
 Angleur_SlottedExtraToys = {
 ["first"] = {
@@ -12,7 +12,7 @@ Angleur_SlottedExtraToys = {
 ["icon"] = 0,
 ["spellID"] = 0,
 },
-["second"] = {
+["third"] = {
 ["name"] = 0,
 ["toyID"] = 0,
 ["auraActive"] = false,
@@ -20,7 +20,7 @@ Angleur_SlottedExtraToys = {
 ["icon"] = 0,
 ["spellID"] = 0,
 },
-["third"] = {
+["second"] = {
 ["name"] = 0,
 ["toyID"] = 0,
 ["auraActive"] = false,
@@ -33,9 +33,9 @@ Angleur_SlottedExtraItems = {
 {
 ["equipLoc"] = 0,
 ["macroName"] = 0,
-["loaded"] = false,
-["macroIcon"] = 0,
 ["auraActive"] = false,
+["icon"] = 0,
+["loaded"] = false,
 ["delay"] = 0,
 ["lastUpdateTime"] = 0,
 ["macroBody"] = 0,
@@ -45,15 +45,15 @@ Angleur_SlottedExtraItems = {
 ["forceEquip"] = false,
 ["itemID"] = 0,
 ["remainingTime"] = 0,
-["icon"] = 0,
+["macroIcon"] = 0,
 ["spellID"] = 0,
 },
 {
 ["equipLoc"] = 0,
 ["macroName"] = 0,
-["loaded"] = false,
-["macroIcon"] = 0,
 ["auraActive"] = false,
+["icon"] = 0,
+["loaded"] = false,
 ["delay"] = 0,
 ["lastUpdateTime"] = 0,
 ["macroBody"] = 0,
@@ -63,15 +63,15 @@ Angleur_SlottedExtraItems = {
 ["forceEquip"] = false,
 ["itemID"] = 0,
 ["remainingTime"] = 0,
-["icon"] = 0,
+["macroIcon"] = 0,
 ["spellID"] = 0,
 },
 {
 ["equipLoc"] = 0,
 ["macroName"] = 0,
-["loaded"] = false,
-["macroIcon"] = 0,
 ["auraActive"] = false,
+["icon"] = 0,
+["loaded"] = false,
 ["delay"] = 0,
 ["lastUpdateTime"] = 0,
 ["macroBody"] = 0,
@@ -81,7 +81,7 @@ Angleur_SlottedExtraItems = {
 ["forceEquip"] = false,
 ["itemID"] = 0,
 ["remainingTime"] = 0,
-["icon"] = 0,
+["macroIcon"] = 0,
 ["spellID"] = 0,
 },
 ["first"] = {
@@ -103,7 +103,7 @@ Angleur_SlottedExtraItems = {
 ["macroIcon"] = 0,
 ["spellID"] = 0,
 },
-["second"] = {
+["third"] = {
 ["equipLoc"] = 0,
 ["macroName"] = 0,
 ["loaded"] = false,
@@ -122,7 +122,7 @@ Angleur_SlottedExtraItems = {
 ["macroIcon"] = 0,
 ["spellID"] = 0,
 },
-["third"] = {
+["second"] = {
 ["equipLoc"] = 0,
 ["macroName"] = 0,
 ["loaded"] = false,
@@ -146,13 +146,13 @@ Angleur_SwapoutItemsSaved = {
 }
 Angleur_CVars = {
 ["ultraFocus"] = {
-["masterVolume"] = "0.20000000298023",
+["dialogOn"] = "1",
 ["backgroundOn"] = "0",
 ["effectsOn"] = "1",
 ["ambienceOn"] = "1",
-["dialogOn"] = "1",
+["musicOn"] = "0",
 ["masterOn"] = "1",
 ["effectsVolume"] = "0.40000000596046",
-["musicOn"] = "0",
+["masterVolume"] = "0.20000000298023",
 },
 }

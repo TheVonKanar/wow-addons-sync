@@ -30,7 +30,7 @@ local tracking = {
     sparkCurrencyID = 3212,
     catalystCurrencyID = 3378,
     cofferKeysCurrencyID = 3310,
-    crestTradeBatch = { 45, 15 },
+    crestTradeBatch = { 30, 10 },
     questIDs = {
         delversBounty = 0,
         weeklyPrey = 0,
@@ -58,11 +58,16 @@ local tracking = {
         "Professions-Icon-Quality-Tier4",
         "Professions-Icon-Quality-Tier5",
     },
+    -- Support / social links shown in the gear popup and settings panel.
+    supportLinks = {
+        doc       = "https://docs.google.com/document/d/e/2PACX-1vTGkZ2Cjr0jlv90XqW9vy9VXsVucd-yMCgHdyCvX_kQfOrexNDAC7Lf3LifuhqxrcWqJ0W3zIhvK3ii/pub",
+        checklist = "https://docs.google.com/spreadsheets/d/1iK2SZUcz_ljnkdTG7KW6pqfzaUDuSgnlh1HupcLrkus",
+        discord   = "https://discord.gg/postnerfclarity",
+    },
     -- ── Feature flags ──────────────────────────────────────────────────────
     -- Master switches for optional UI features.  Set a flag to false to
     -- completely disable that feature (no button, no gear-popup checkbox).
     featureFlags = {
-        ENABLE_CHAR_SELECTOR = false,   -- character-switcher button + dropdown
     },
 }
 

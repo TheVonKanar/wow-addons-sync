@@ -377,6 +377,25 @@ function scanRaidBuffs()
   local playerUnitOnly = { "player" }
   local rangeTotalBySpell = {}
 
+  local function IsUnitEligibleForCoverage(unit)
+    if not unit then
+      return false
+    end
+    if UnitExists and not UnitExists(unit) then
+      return false
+    end
+    if UnitIsConnected and not UnitIsConnected(unit) then
+      return false
+    end
+    if UnitIsDeadOrGhost and UnitIsDeadOrGhost(unit) then
+      return false
+    end
+    if UnitInPhase and not UnitInPhase(unit) then
+      return false
+    end
+    return true
+  end
+
   local threshold = (
     ns.MPlus_GetEffectiveThresholdSecs and ns.MPlus_GetEffectiveThresholdSecs("spell", db.spellThreshold or 15)
   ) or ((db.spellThreshold or 15) * 60)
@@ -426,13 +445,48 @@ function scanRaidBuffs()
     end
   end
 
+  local function IsUnitInBuffRange(spellID, unit)
+    local function normalizeRangeFlag(v)
+      if IsSecret and IsSecret(v) then
+        return nil
+      end
+      if v == true or v == 1 then
+        return true
+      end
+      if v == false or v == 0 then
+        return false
+      end
+      return nil
+    end
+
+    local spellFlag
+    if C_Spell and C_Spell.IsSpellInRange then
+      spellFlag = normalizeRangeFlag(C_Spell.IsSpellInRange(spellID, unit))
+      if spellFlag == true then
+        return true, true
+      end
+      if spellFlag == false then
+        return false, true
+      end
+    end
+
+    if UnitInRange then
+      local unitFlag = normalizeRangeFlag(UnitInRange(unit))
+      if unitFlag == true then
+        return true, true
+      end
+      if unitFlag == false then
+        return false, true
+      end
+    end
+
+    return false, false
+  end
+
   local function GetRangedTotal(units, spellID)
     local baseTotal = #units
     if baseTotal == 0 then
       return 0
-    end
-    if not IsSpellInRange or not spellID then
-      return baseTotal
     end
 
     local cached = rangeTotalBySpell[spellID]
@@ -440,31 +494,27 @@ function scanRaidBuffs()
       return cached
     end
 
-    local spellName = (C_Spell.GetSpellInfo(spellID) or {}).name
-    if not IsNonSecretString(spellName) then
-      rangeTotalBySpell[spellID] = baseTotal
-      return baseTotal
-    end
-
     local inRange = 0
     local checked = 0
     for i = 1, baseTotal do
       local u = units[i]
-      if u == "player" then
-        inRange = inRange + 1
-      else
-        local ok = IsSpellInRange(spellName, u)
-        if ok ~= nil then
-          checked = checked + 1
-          if ok == 1 or ok == true then
-            inRange = inRange + 1
+      if IsUnitEligibleForCoverage(u) then
+        if u == "player" then
+          inRange = inRange + 1
+        else
+          local ok, didCheck = IsUnitInBuffRange(spellID, u)
+          if didCheck then
+            checked = checked + 1
+            if ok then
+              inRange = inRange + 1
+            end
           end
         end
       end
     end
 
     if checked == 0 then
-      inRange = baseTotal
+      inRange = IsUnitEligibleForCoverage("player") and 1 or 0
     end
 
     rangeTotalBySpell[spellID] = inRange
@@ -584,10 +634,19 @@ function scanRaidBuffs()
       and (not entry.centerText or entry.centerText == "")
     then
       local total, have = #units, 0
+      local eligibleUnits = {}
+      for i = 1, #units do
+        local u = units[i]
+        if IsUnitEligibleForCoverage(u) then
+          eligibleUnits[#eligibleUnits + 1] = u
+        end
+      end
+
+      total = #eligibleUnits
       if mineOnlyActive then
         local idSet, nameSet, nameMode = buildSets()
-        for i = 1, total do
-          local u = units[i]
+        for i = 1, #eligibleUnits do
+          local u = eligibleUnits[i]
           local ok = false
           if ns.MineOnly_UnitHasBuff then
             ok = (ns.MineOnly_UnitHasBuff(u, idSet, nameSet, nameMode))
@@ -618,8 +677,8 @@ function scanRaidBuffs()
               nameSet[n] = true
             end
           end
-          for i = 1, total do
-            local u = units[i]
+          for i = 1, #eligibleUnits do
+            local u = eligibleUnits[i]
             local idx, matched = 1, false
             while true do
               local a = C_UnitAuras.GetAuraDataByIndex(u, idx, "HELPFUL")
@@ -650,8 +709,8 @@ function scanRaidBuffs()
           elseif type(ids) == "number" then
             idSet[ids] = true
           end
-          for i = 1, total do
-            local u = units[i]
+          for i = 1, #eligibleUnits do
+            local u = eligibleUnits[i]
             local idx, matched = 1, false
             while true do
               local a = C_UnitAuras.GetAuraDataByIndex(u, idx, "HELPFUL")
@@ -671,7 +730,7 @@ function scanRaidBuffs()
           end
         end
       end
-      total = GetRangedTotal(units, entry.spellID)
+      total = GetRangedTotal(eligibleUnits, entry.spellID)
 
       if numPlayersInInstance and numPlayersInInstance > 0 then
         total = math.min(total, numPlayersInInstance)

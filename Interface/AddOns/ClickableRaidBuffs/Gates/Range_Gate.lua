@@ -6,16 +6,35 @@ local addonName, ns = ...
 ns = ns or {}
 local IsSecret = ns.Compat and ns.Compat.IsSecret
 
-local function DB()
-  return (ns.GetDB and ns.GetDB()) or ClickableRaidBuffsDB or {}
-end
-
 local function GetSpellRange(spellID)
   local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(spellID)
   if info and info.maxRange and info.maxRange > 0 then
     return info.maxRange, info.name
   end
   return 0, info and info.name or nil
+end
+
+local function UnitRangeKey(unit)
+  return (UnitGUID and UnitGUID(unit)) or unit
+end
+
+local function IsUnitEligibleForRange(unit)
+  if not unit then
+    return false
+  end
+  if UnitExists and not UnitExists(unit) then
+    return false
+  end
+  if UnitIsConnected and not UnitIsConnected(unit) then
+    return false
+  end
+  if UnitIsDeadOrGhost and UnitIsDeadOrGhost(unit) then
+    return false
+  end
+  if UnitInPhase and not UnitInPhase(unit) then
+    return false
+  end
+  return true
 end
 
 local function IsUnitInSpellRange(spellID, unit)
@@ -42,19 +61,16 @@ local function IsUnitInSpellRange(spellID, unit)
     unitFlag = normalizeRangeFlag(UnitInRange(unit))
   end
 
-  -- Treat either positive signal as in range. This avoids false suppressions
-  -- from spell-specific range quirks when group proximity still says "in range".
   if spellFlag == true or unitFlag == true then
     return true
   end
 
-  -- Suppress only when we have explicit false from both checks.
   if spellFlag == false and unitFlag == false then
     return false
   end
 
-  -- Fail open on unknown range to avoid suppressing valid rebuff prompts.
-  return true
+  -- Unknown range is treated as out of range.
+  return false
 end
 
 local function UnitHasAnyBuffFromIDs(unit, ids)
@@ -99,6 +115,9 @@ local RangeState = {
   ticker = nil,
   lastSummary = nil,
   inactivityTicks = 0,
+  spellCursor = 1,
+  maxUnitsPerTick = 5,
+  minRescanSecs = 5,
 }
 
 function ns.IsRangeTickerRunning()
@@ -141,54 +160,120 @@ local function TickRangeGate()
 
   if ns._rangeTracked and next(ns._rangeTracked) then
     local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
-    for spellID, entry in pairs(ns._rangeTracked) do
-      local maxRange, spellName = GetSpellRange(spellID)
-      local ids = entry.ids or {}
-      local miss = {}
-      local anyMissingOutOfRange = false
-      local foundInRange = false
-      local playerHas = UnitHasAnyBuffFromIDs("player", ids)
+    local spellIDs = {}
+    for spellID in pairs(ns._rangeTracked) do
+      spellIDs[#spellIDs + 1] = spellID
+    end
 
-      if not playerHas then
-        if entry.lastSuppressed ~= false then
-          entry.lastSuppressed = false
-          anySuppressionChanged = true
-        end
-        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
-      else
-        for i = 1, #units do
-          local u = units[i]
-          if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
-            local inRange = IsUnitInSpellRange(spellID, u)
+    local budget = RangeState.maxUnitsPerTick
+    if #spellIDs > 0 and RangeState.spellCursor > #spellIDs then
+      RangeState.spellCursor = 1
+    end
+
+    local startIdx = RangeState.spellCursor
+    for pass = 1, #spellIDs do
+      local idx = ((startIdx + pass - 2) % #spellIDs) + 1
+      local spellID = spellIDs[idx]
+      local entry = ns._rangeTracked[spellID]
+
+      if entry then
+        local maxRange, spellName = GetSpellRange(spellID)
+        local ids = entry.ids or {}
+        local miss = {}
+        local anyMissingOutOfRange = false
+        local foundInRange = false
+        local playerHas = UnitHasAnyBuffFromIDs("player", ids)
+
+        if not playerHas then
+          if entry.lastSuppressed ~= false then
+            entry.lastSuppressed = false
+            anySuppressionChanged = true
+          end
+          spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
+        else
+          entry._rangeByUnit = entry._rangeByUnit or {}
+          entry._unitNextScanAt = entry._unitNextScanAt or {}
+          entry._scanCursor = entry._scanCursor or 1
+
+          local missingUnits = {}
+          for i = 1, #units do
+            local u = units[i]
+            if u ~= "player" and IsUnitEligibleForRange(u) and not UnitHasAnyBuffFromIDs(u, ids) then
+              missingUnits[#missingUnits + 1] = u
+            end
+          end
+
+          if #missingUnits > 0 and budget > 0 then
+            if entry._scanCursor > #missingUnits then
+              entry._scanCursor = 1
+            end
+            local startUnitIdx = entry._scanCursor
+            local now = GetTime and GetTime() or 0
+            for unitPass = 1, #missingUnits do
+              if budget <= 0 then
+                break
+              end
+              local uIdx = ((startUnitIdx + unitPass - 2) % #missingUnits) + 1
+              local u = missingUnits[uIdx]
+              local key = UnitRangeKey(u)
+              local nextAllowed = entry._unitNextScanAt[key] or 0
+              if now >= nextAllowed then
+                entry._rangeByUnit[key] = IsUnitInSpellRange(spellID, u)
+                entry._unitNextScanAt[key] = now + RangeState.minRescanSecs
+                budget = budget - 1
+              end
+            end
+            entry._scanCursor = (startUnitIdx % #missingUnits) + 1
+          end
+
+          for i = 1, #missingUnits do
+            local u = missingUnits[i]
+            local key = UnitRangeKey(u)
+            local inRange = entry._rangeByUnit[key] == true
             miss[#miss + 1] = { unit = u, name = UnitName(u), inRange = inRange }
             if inRange then
               foundInRange = true
-              break
             else
               anyMissingOutOfRange = true
             end
           end
+
+          local keep = {}
+          for i = 1, #missingUnits do
+            keep[UnitRangeKey(missingUnits[i])] = true
+          end
+          for key in pairs(entry._rangeByUnit) do
+            if not keep[key] then
+              entry._rangeByUnit[key] = nil
+              entry._unitNextScanAt[key] = nil
+            end
+          end
+
+          if #miss > 0 then
+            anyMissing = true
+          end
+
+          local nowSuppressed = (#miss > 0) and not foundInRange
+          if entry.lastSuppressed ~= nowSuppressed then
+            entry.lastSuppressed = nowSuppressed
+            anySuppressionChanged = true
+          end
+
+          local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
+          local desiredGlow = nowAllIn and "special" or nil
+
+          if entry.desiredGlow ~= desiredGlow then
+            entry.desiredGlow = desiredGlow
+            anyGlowChanged = true
+          end
+
+          spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
         end
+      end
 
-        if #miss > 0 then
-          anyMissing = true
-        end
-
-        local nowSuppressed = (#miss > 0) and not foundInRange
-        if entry.lastSuppressed ~= nowSuppressed then
-          entry.lastSuppressed = nowSuppressed
-          anySuppressionChanged = true
-        end
-
-        local nowAllIn = (#miss > 0) and (foundInRange and not anyMissingOutOfRange) or false
-        local desiredGlow = nowAllIn and "special" or nil
-
-        if entry.desiredGlow ~= desiredGlow then
-          entry.desiredGlow = desiredGlow
-          anyGlowChanged = true
-        end
-
-        spells[#spells + 1] = { spellID = spellID, name = spellName, maxRange = maxRange, missing = miss }
+      RangeState.spellCursor = (idx % #spellIDs) + 1
+      if budget <= 0 then
+        break
       end
     end
   end
@@ -223,7 +308,7 @@ local function StartTicker()
     return
   end
   RangeState.inactivityTicks = 0
-  RangeState.ticker = C_Timer.NewTicker(2.0, TickRangeGate)
+  RangeState.ticker = C_Timer.NewTicker(1.0, TickRangeGate)
 end
 
 function ns.InitRangeGate()
@@ -239,12 +324,12 @@ function ns.RangeGate_OnRosterOrSpellsChanged()
   local shouldRun = false
   if next(ns._rangeTracked) then
     local units = (ns.GetGroupUnits and ns.GetGroupUnits({ includePlayer = true, onlyExisting = true })) or {}
-    for spellID, entry in pairs(ns._rangeTracked) do
+    for _, entry in pairs(ns._rangeTracked) do
       local ids = entry.ids or {}
       if UnitHasAnyBuffFromIDs("player", ids) then
         for i = 1, #units do
           local u = units[i]
-          if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
+          if u ~= "player" and IsUnitEligibleForRange(u) and not UnitHasAnyBuffFromIDs(u, ids) then
             shouldRun = true
             break
           end
@@ -296,7 +381,7 @@ function ns.Gate_Range(ctx, data)
 
   for i = 1, #units do
     local u = units[i]
-    if u ~= "player" and not UnitHasAnyBuffFromIDs(u, ids) then
+    if u ~= "player" and IsUnitEligibleForRange(u) and not UnitHasAnyBuffFromIDs(u, ids) then
       anyMissing = true
       local inRange = IsUnitInSpellRange(spellID, u)
       if inRange then

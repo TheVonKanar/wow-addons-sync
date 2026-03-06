@@ -142,6 +142,12 @@ local function SyncAnchorProxy(group)
     if ns.CDMContainerSync and ns.CDMContainerSync.OnProxySynced and group.name then
         ns.CDMContainerSync.OnProxySynced(group.name)
     end
+    
+    -- Re-apply anchors for any group that targets THIS group (safe anchor tracking).
+    -- Without this, safe-anchored groups/frames don't follow when the target moves.
+    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ReapplyDependents then
+        ns.CDMGroupsAnchors.ReapplyDependents(group.name)
+    end
 end
 ns.CDMGroups.SyncAnchorProxy = SyncAnchorProxy
 
@@ -150,6 +156,11 @@ local function SyncAllAnchorProxies()
     if not ns.CDMGroups.groups then return end
     for _, group in pairs(ns.CDMGroups.groups) do
         SyncAnchorProxy(group)
+    end
+    -- After all proxies are synced, reapply group anchors
+    -- (anchored groups depend on target proxy positions being current)
+    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ReapplyAll then
+        C_Timer.After(0.03, function() ns.CDMGroupsAnchors.ReapplyAll() end)
     end
 end
 ns.CDMGroups.SyncAllAnchorProxies = SyncAllAnchorProxies
@@ -474,6 +485,8 @@ local function SetSpecShortcuts(specIndex)
                 end
                 ns.CDMGroups.specSavedPositions[specIndex] = profile.savedPositions
                 ns.CDMGroups.savedPositions = profile.savedPositions
+                -- Load frame ownership map for this profile
+                ns._activeFrameOwnership = profile.frameOwnership and DeepCopy(profile.frameOwnership) or {}
                 -- CLEANUP: Strip stale isPlaceholder flags (runtime-only state)
                 for cdID, saved in pairs(profile.savedPositions) do
                     if saved.isPlaceholder then saved.isPlaceholder = nil end
@@ -1117,6 +1130,12 @@ local function MakeDefaultGroup(x, y, borderR, borderG, borderB)
         },
         members = {},
         grid = {},
+        -- Anchoring (all default disabled per ArcUI convention)
+        anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.GetDefaults() or {
+            enabled = false, mode = "none", targetGroup = "", targetFrame = "",
+            sourcePoint = "TOP", destPoint = "BOTTOM", offsetX = 0, offsetY = 0,
+            useSafeAnchor = true, snapBack = false,
+        },
     }
 end
 
@@ -1168,6 +1187,8 @@ local function SerializeDefaultGroupToLayoutData(groupData)
         -- Frame strata
         frameStrata = groupData.frameStrata,
         frameLevel = groupData.frameLevel,
+        -- Anchoring
+        anchor = groupData.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(groupData.anchor) or nil,
     }
 end
 
@@ -2117,11 +2138,15 @@ function ns.CDMGroups.ReleaseAllIcons()
         end
         
         -- ═══════════════════════════════════════════════════════════════════
+        -- ANCHOR CLEANUP: Restore external frames before destruction
+        -- ═══════════════════════════════════════════════════════════════════
+        if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+            ns.CDMGroupsAnchors.DetachAllExternalFrames(group)
+        end
+        
+        -- ═══════════════════════════════════════════════════════════════════
         -- COMPREHENSIVE GROUP UI CLEANUP
         -- Must fully destroy all UI elements to prevent ghost artifacts
-        -- ═══════════════════════════════════════════════════════════════════
-        
-        -- Hide and orphan edge arrows (parented to UIParent, not container!)
         if group.edgeArrows then
             for _, arrow in pairs(group.edgeArrows) do
                 if arrow then
@@ -2865,6 +2890,7 @@ local function SerializeGroupToData(group, overrideLayout)
         frameStrata = group.frameStrata,
         frameLevel = group.frameLevel,
         layout = overrideLayout or DeepCopy(group.layout),
+        anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
         grid = {},
     }
     -- Save grid (only entries with valid members)
@@ -2920,6 +2946,8 @@ local function SerializeGroupToLayoutData(group)
         -- Frame strata
         frameStrata = group.frameStrata,
         frameLevel = group.frameLevel,
+        -- Anchoring
+        anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
     }
     -- NOTE: Does NOT include grid, members, container - those are runtime only
 end
@@ -2978,6 +3006,44 @@ GetCurrentSpec = function()
     local _, _, classID = UnitClass("player")
     classID = classID or 0
     return "class_" .. classID .. "_spec_" .. specIndex
+end
+
+-- Generate a nice profile name from the current spec + character name
+-- e.g. "Affliction (Testsharedp)" or "Enhancement (Arc)"
+local function GenerateProfileName(specKey)
+    specKey = specKey or (ns.CDMGroups and ns.CDMGroups.currentSpec) or GetCurrentSpec()
+    local specName = "Default"
+    if specKey then
+        local classID, specIndex = specKey:match("class_(%d+)_spec_(%d+)")
+        classID = tonumber(classID)
+        specIndex = tonumber(specIndex)
+        if GetSpecializationInfoForClassID and classID and specIndex then
+            local _, apiName = GetSpecializationInfoForClassID(classID, specIndex)
+            if apiName then specName = apiName end
+        end
+    end
+    -- When shared sync is on, use spec name only (no character name)
+    -- so all alts see the same profile name in master export
+    local SP = ns.CDMSharedProfiles
+    if SP and SP.IsEnabled and SP.IsEnabled(specKey) then
+        return specName
+    end
+    local charName = UnitName("player") or "Unknown"
+    return specName .. " (" .. charName .. ")"
+end
+
+-- Get the first available profile name from specData (for fallbacks)
+local function GetFirstProfileName(specData)
+    if not specData or not specData.layoutProfiles then return "Default" end
+    -- Prefer activeProfile if valid
+    if specData.activeProfile and specData.layoutProfiles[specData.activeProfile] then
+        return specData.activeProfile
+    end
+    -- Otherwise return first found
+    for name in pairs(specData.layoutProfiles) do
+        return name
+    end
+    return "Default"
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -3161,6 +3227,7 @@ GetDefaultSpecData = function()
                             hiddenAlpha = layoutData.hiddenAlpha,
                             frameStrata = layoutData.frameStrata,
                             frameLevel = layoutData.frameLevel,
+                            anchor = layoutData.anchor,
                             borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
                             bgColor = layoutData.bgColor and DeepCopy(layoutData.bgColor) or { r = 0, g = 0, b = 0, a = 0.6 },
                             layout = {
@@ -3184,7 +3251,7 @@ GetDefaultSpecData = function()
         end
     end
     
-    return {
+    local result = {
         -- NOTE: groups is NOT stored at spec level anymore
         -- Group layouts now live in profile.groupLayouts (inside layoutProfiles)
         -- Legacy specData.groups is only read during migration, never written to
@@ -3198,19 +3265,24 @@ GetDefaultSpecData = function()
         createdAt = time(),
         
         -- Layout profiles system (Arc Manager Profiles)
-        layoutProfiles = {
-            ["Default"] = {
-                savedPositions = {},
-                freeIcons = {},
-                groupLayouts = DeepCopy(groups),  -- Store groups IN the profile
-                iconSettings = {},  -- Per-icon visual settings
-                talentConditions = nil,  -- No conditions = always available as fallback
-                matchMode = "all",
-                createdAt = time(),  -- Also timestamp the profile itself
-            },
-        },
-        activeProfile = "Default",
+        layoutProfiles = {},
+        activeProfile = nil,  -- Set below with generated name
     }
+    
+    -- Generate a nice profile name from spec + character (e.g. "Affliction (Arc)")
+    local initialName = GenerateProfileName()
+    result.layoutProfiles[initialName] = {
+        savedPositions = {},
+        freeIcons = {},
+        groupLayouts = DeepCopy(groups),  -- Store groups IN the profile
+        iconSettings = {},  -- Per-icon visual settings
+        talentConditions = nil,  -- No conditions = always available as fallback
+        matchMode = "all",
+        createdAt = time(),  -- Also timestamp the profile itself
+    }
+    result.activeProfile = initialName
+    
+    return result
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -3415,6 +3487,7 @@ local function EnsureLayoutProfiles(specData)
                         hiddenAlpha = group.hiddenAlpha,
                         frameStrata = group.frameStrata,
                         frameLevel = group.frameLevel,
+                        anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
                     }
                 end
             end
@@ -3449,6 +3522,7 @@ local function EnsureLayoutProfiles(specData)
                         visibility = groupData.visibility,
                         visibilityLogic = groupData.visibilityLogic,
                         hiddenAlpha = groupData.hiddenAlpha,
+                        anchor = groupData.anchor,
                     }
                 end
             end
@@ -3462,17 +3536,45 @@ local function EnsureLayoutProfiles(specData)
             end
         end
         
-        -- CRITICAL: If no group layouts were found, use DEFAULT_GROUPS
-        -- This ensures new profiles always have the standard groups
+        -- CRITICAL: If no group layouts were found, check for default group template first
+        -- This ensures new characters get the user's custom layout instead of the hardcoded defaults
         if next(existingGroupLayouts) == nil then
-            PrintMsg("|cff00ff00[EnsureLayoutProfiles]|r No existing groups - creating default groups (Essential, Utility, Buffs)")
-            for groupName, groupData in pairs(DEFAULT_GROUPS) do
-                existingGroupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
+            local usedTemplate = false
+            if ns.CDMSharedProfiles and ns.CDMSharedProfiles.GetDefaultTemplateInfo then
+                local tmplInfo = ns.CDMSharedProfiles.GetDefaultTemplateInfo()
+                if tmplInfo and tmplInfo.valid then
+                    -- Read template source directly
+                    local svChar = (ns.db and ns.db.sv and ns.db.sv.char) or (ArcUIDB and ArcUIDB.char)
+                    if svChar then
+                        local tmpl = ns.db.global.defaultGroupTemplate
+                        local charData = svChar[tmpl.sourceChar]
+                        if charData and charData.cdmGroups and charData.cdmGroups.specData then
+                            local srcSpec = charData.cdmGroups.specData[tmpl.specKey]
+                            if srcSpec and srcSpec.layoutProfiles and srcSpec.layoutProfiles[tmpl.profileName] then
+                                local srcProfile = srcSpec.layoutProfiles[tmpl.profileName]
+                                if srcProfile.groupLayouts and next(srcProfile.groupLayouts) then
+                                    for gName, gData in pairs(srcProfile.groupLayouts) do
+                                        existingGroupLayouts[gName] = DeepCopy(gData)
+                                    end
+                                    usedTemplate = true
+                                    PrintMsg("|cff00ff00[EnsureLayoutProfiles]|r Applied default group template from '" .. tmpl.profileName .. "'")
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            if not usedTemplate then
+                PrintMsg("|cff00ff00[EnsureLayoutProfiles]|r No existing groups - creating default groups (Essential, Utility, Buffs)")
+                for groupName, groupData in pairs(DEFAULT_GROUPS) do
+                    existingGroupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
+                end
             end
         end
         
+        local initialName = GenerateProfileName()
         specData.layoutProfiles = {
-            ["Default"] = {
+            [initialName] = {
                 savedPositions = existingPositions,
                 freeIcons = existingFreeIcons,
                 groupLayouts = existingGroupLayouts,
@@ -3492,14 +3594,21 @@ local function EnsureLayoutProfiles(specData)
         -- NOTE: ns.CDMGroups.savedPositions and specSavedPositions are runtime shortcuts
         -- They need to point to the profile's savedPositions table
         if ns.CDMGroups and ns.CDMGroups.currentSpec then
-            ns.CDMGroups.savedPositions = specData.layoutProfiles["Default"].savedPositions
+            ns.CDMGroups.savedPositions = specData.layoutProfiles[initialName].savedPositions
             if ns.CDMGroups.specSavedPositions then
-                ns.CDMGroups.specSavedPositions[ns.CDMGroups.currentSpec] = specData.layoutProfiles["Default"].savedPositions
+                ns.CDMGroups.specSavedPositions[ns.CDMGroups.currentSpec] = specData.layoutProfiles[initialName].savedPositions
             end
         end
     end
     if not specData.activeProfile then
-        specData.activeProfile = "Default"
+        specData.activeProfile = GenerateProfileName()
+        -- If the generated name doesn't exist yet, create it (edge case: name changed since creation)
+        if not specData.layoutProfiles[specData.activeProfile] then
+            local first = next(specData.layoutProfiles)
+            if first then
+                specData.activeProfile = first
+            end
+        end
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -3513,8 +3622,8 @@ local function EnsureLayoutProfiles(specData)
     local hasLegacyGroups = specData.groups and next(specData.groups)
     local hasLegacyFreeIcons = specData.freeIcons and next(specData.freeIcons)
     
-    -- Check if Default profile is missing critical data
-    local defaultProfile = specData.layoutProfiles["Default"]
+    -- Check if active profile is missing critical data
+    local defaultProfile = specData.layoutProfiles[specData.activeProfile or ""] or specData.layoutProfiles["Default"]
     local defaultMissingGroupLayouts = not defaultProfile or not defaultProfile.groupLayouts or not next(defaultProfile.groupLayouts)
     local defaultMissingSavedPositions = not defaultProfile or not defaultProfile.savedPositions or not next(defaultProfile.savedPositions)
     
@@ -3772,6 +3881,8 @@ function ns.CDMGroups.CreateProfile(profileName)
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
+                -- Anchoring
+                anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
             }
         end
     end
@@ -3816,14 +3927,18 @@ end
 -- Delete a profile
 function ns.CDMGroups.DeleteProfile(profileName)
     if not profileName or profileName == "" then return false end
-    if profileName == "Default" then
-        PrintMsg("Cannot delete the Default profile")
-        return false
-    end
     
     local specData = GetSpecData()
     if not specData then return false end
     EnsureLayoutProfiles(specData)
+    
+    -- Prevent deleting the last profile
+    local profileCount = 0
+    for _ in pairs(specData.layoutProfiles) do profileCount = profileCount + 1 end
+    if profileCount <= 1 then
+        PrintMsg("Cannot delete the last remaining profile")
+        return false
+    end
     
     if not specData.layoutProfiles[profileName] then
         return false
@@ -3831,11 +3946,12 @@ function ns.CDMGroups.DeleteProfile(profileName)
     
     specData.layoutProfiles[profileName] = nil
     
-    -- If deleted profile was active, switch to Default
+    -- If deleted profile was active, switch to first available
     if specData.activeProfile == profileName then
-        specData.activeProfile = "Default"
-        ns.CDMGroups.activeProfile = "Default"
-        ns.CDMGroups.LoadProfile("Default")
+        local fallback = GetFirstProfileName(specData)
+        specData.activeProfile = fallback
+        ns.CDMGroups.activeProfile = fallback
+        ns.CDMGroups.LoadProfile(fallback)
     end
     
     PrintMsg("Deleted profile '" .. profileName .. "'")
@@ -3887,7 +4003,8 @@ function ns.CDMGroups.ResetDefaultProfile()
     if not specData then return false, "No spec data" end
     EnsureLayoutProfiles(specData)
     
-    PrintMsg("|cff00ff00[ResetDefault]|r Resetting Default profile to factory settings...")
+    local resetName = specData.activeProfile or GetFirstProfileName(specData)
+    PrintMsg("|cff00ff00[ResetProfile]|r Resetting '" .. resetName .. "' to factory settings...")
     
     -- Build fresh default profile with ALL default group settings
     local freshDefault = {
@@ -3905,12 +4022,12 @@ function ns.CDMGroups.ResetDefaultProfile()
         freshDefault.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
     end
     
-    -- Replace Default profile
-    specData.layoutProfiles["Default"] = freshDefault
+    -- Replace the active profile
+    specData.layoutProfiles[resetName] = freshDefault
     
-    -- Switch to Default profile
-    specData.activeProfile = "Default"
-    ns.CDMGroups.activeProfile = "Default"
+    -- Ensure active points to it
+    specData.activeProfile = resetName
+    ns.CDMGroups.activeProfile = resetName
     
     -- Update savedPositions reference to the new empty table
     ns.CDMGroups.savedPositions = freshDefault.savedPositions
@@ -3928,10 +4045,10 @@ function ns.CDMGroups.ResetDefaultProfile()
     
     -- Now load the profile to apply changes immediately
     -- This will destroy old groups and create new ones from freshDefault.groupLayouts
-    PrintMsg("|cff00ff00[ResetDefault]|r Loading fresh Default profile...")
-    ns.CDMGroups.LoadProfile("Default")
+    PrintMsg("|cff00ff00[ResetProfile]|r Loading fresh profile...")
+    ns.CDMGroups.LoadProfile(resetName)
     
-    PrintMsg("|cff00ff00[ResetDefault]|r Factory reset complete! Icons will auto-assign to groups.")
+    PrintMsg("|cff00ff00[ResetProfile]|r Factory reset complete! Icons will auto-assign to groups.")
     return true
 end
 
@@ -4083,6 +4200,8 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
+                -- Anchoring
+                anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
             }
         end
     end
@@ -4091,6 +4210,10 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
     -- NOTE: iconSettings keys are STRINGS (e.g., "14948", "arc_trinket_14")
     -- DO NOT validate with IsCooldownIDValid - that expects numeric cooldownIDs
     -- These are just visual settings and should always be preserved
+    
+    -- Save frame ownership map (which group owns which external frame like PlayerFrame)
+    -- This resolves conflicts when the same frame appears in multiple groups' anchoredFrames
+    profile.frameOwnership = ns._activeFrameOwnership and next(ns._activeFrameOwnership) and ns._activeFrameOwnership or nil
     
     -- ═══════════════════════════════════════════════════════════════════════════
     -- MIGRATION: If legacy specData.iconSettings exists, migrate to profile
@@ -4208,6 +4331,7 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     -- Block profile saves for 2 seconds after profile load to prevent overwrites
     ns.CDMGroups._profileSaveBlockedUntil = GetTime() + 2.0
     
+    
     -- ═══════════════════════════════════════════════════════════════════════════
     -- SWITCH to new profile's savedPositions (DIRECT REFERENCE)
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -4321,6 +4445,9 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
         specData.activeProfile = profileName
         ns.CDMGroups.activeProfile = profileName
         DebugPrint("|cffff9900[LoadProfile]|r Set activeProfile to:", profileName)
+        
+        -- Load frame ownership map (resolves conflicts when same frame is in multiple groups)
+        ns._activeFrameOwnership = profile.frameOwnership and DeepCopy(profile.frameOwnership) or {}
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -4382,6 +4509,14 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
         local group = ns.CDMGroups.groups[groupName]
         if group then
             DebugPrint("|cffff9900[LoadProfile]|r Destroying group not in profile:", groupName)
+            
+            -- ═══════════════════════════════════════════════════════════════════
+            -- ANCHOR CLEANUP: Restore external frames to original positions
+            -- Must happen BEFORE container destruction so frames aren't stranded
+            -- ═══════════════════════════════════════════════════════════════════
+            if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+                ns.CDMGroupsAnchors.DetachAllExternalFrames(group)
+            end
             
             -- ═══════════════════════════════════════════════════════════════════
             -- COMPREHENSIVE GROUP UI CLEANUP
@@ -4823,6 +4958,17 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                         group.container:SetPoint("CENTER", UIParent, "CENTER", layoutData.position.x, layoutData.position.y)
                     end
                 end
+                -- Anchoring: detach external frames from OLD config before overwriting
+                if group.anchor and group.anchor.anchoredFrames and #group.anchor.anchoredFrames > 0 then
+                    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+                        ns.CDMGroupsAnchors.DetachAllExternalFrames(group)
+                    end
+                end
+                if layoutData.anchor then
+                    group.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Deserialize(layoutData.anchor) or layoutData.anchor
+                elseif not group.anchor then
+                    group.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.GetDefaults() or { enabled = false, mode = "none" }
+                end
                 
                 -- NOTE: We no longer sync to specData.groups (legacy location)
                 -- profile.groupLayouts is now the single source of truth
@@ -4851,10 +4997,17 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
-    -- Restore Arc Auras tracking data (DON'T destroy frames - Step 3 already positioned them)
+    -- ARC AURAS: Visibility refresh + import sync
     -- ═══════════════════════════════════════════════════════════════════════════
-    if profile.arcAuras and profile.arcAuras.trackedItems then
-        -- Ensure char.arcAuras exists
+    -- Positions are already handled by Step 3 (frames collected + repositioned).
+    -- trackedItems/trackedSpells are CHARACTER-WIDE — they don't change between
+    -- profiles on the same character. Only sync if profile carries arcAuras data
+    -- (cross-character import via Master Export).
+    -- ═══════════════════════════════════════════════════════════════════════════
+
+    if profile.arcAuras and profile.arcAuras.trackedItems
+       and next(profile.arcAuras.trackedItems) then
+        -- IMPORT scenario: profile carries tracking data from another character
         if not ns.db.char then ns.db.char = {} end
         if not ns.db.char.arcAuras then
             ns.db.char.arcAuras = {
@@ -4864,32 +5017,29 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 globalSettings = {},
             }
         end
-        
         local arcAuras = ns.db.char.arcAuras
-        
-        -- DON'T destroy frames - Step 3 already moved them to correct positions!
-        -- Just sync the tracking data from profile
-        
-        -- Sync tracked items
-        wipe(arcAuras.trackedItems)
+
+        -- Merge items (don't wipe — keep char's existing items, add new ones)
         for arcID, config in pairs(profile.arcAuras.trackedItems) do
-            arcAuras.trackedItems[arcID] = DeepCopy(config)
-        end
-        
-        -- Sync positions to char DB (for backwards compat)
-        if profile.arcAuras.positions then
-            wipe(arcAuras.positions)
-            for arcID, pos in pairs(profile.arcAuras.positions) do
-                arcAuras.positions[arcID] = DeepCopy(pos)
+            if not arcAuras.trackedItems[arcID] then
+                arcAuras.trackedItems[arcID] = DeepCopy(config)
             end
         end
-        
-        -- Sync enabled state
+
+        -- Merge spells
+        if profile.arcAuras.trackedSpells then
+            if not arcAuras.trackedSpells then arcAuras.trackedSpells = {} end
+            for arcID, config in pairs(profile.arcAuras.trackedSpells) do
+                if not arcAuras.trackedSpells[arcID] then
+                    arcAuras.trackedSpells[arcID] = DeepCopy(config)
+                end
+            end
+        end
+
+        -- Sync settings from imported profile
         if profile.arcAuras.enabled ~= nil then
             arcAuras.enabled = profile.arcAuras.enabled
         end
-        
-        -- Sync auto-track settings (exported since v3.4.8)
         if profile.arcAuras.autoTrackEquippedTrinkets ~= nil then
             arcAuras.autoTrackEquippedTrinkets = profile.arcAuras.autoTrackEquippedTrinkets
         end
@@ -4899,17 +5049,90 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
         if profile.arcAuras.onlyOnUseTrinkets ~= nil then
             arcAuras.onlyOnUseTrinkets = profile.arcAuras.onlyOnUseTrinkets
         end
-        
-        local arcAurasCount = 0
-        for _ in pairs(profile.arcAuras.trackedItems) do arcAurasCount = arcAurasCount + 1 end
-        DebugPrint("|cffff9900[LoadProfile]|r Synced", arcAurasCount, "Arc Auras tracking data")
-        
-        -- Reload ArcAuras frames from the newly synced DB data
-        -- This ensures frames are created for imported trackedItems
-        if ns.ArcAuras and ns.ArcAuras.Reload then
-            ns.ArcAuras.Reload()
-            DebugPrint("|cffff9900[LoadProfile]|r Reloaded Arc Auras frames from DB")
+
+        -- Create frames for newly imported items, destroy any that were removed
+        if ns.ArcAuras and ns.ArcAuras.SyncToProfile then
+            ns.ArcAuras.SyncToProfile()
         end
+
+        -- Clear import data so it doesn't re-trigger on next switch
+        profile.arcAuras = nil
+
+        DebugPrint("|cffff9900[LoadProfile]|r Synced Arc Auras from imported profile")
+    else
+        -- Normal same-character profile switch.
+        -- Step 3 already repositioned frames. Just refresh visibility
+        -- (talent/equip/auto-track checks may differ contextually).
+        if ns.ArcAuras and ns.ArcAuras.RefreshVisibility then
+            ns.ArcAuras.RefreshVisibility()
+        end
+    end
+
+    -- Refresh per-icon visual settings (size, scale, alpha, glows) from new profile's iconSettings.
+    -- Must run after RefreshVisibility so frames are shown/hidden correctly first.
+    if ns.ArcAuras and ns.ArcAuras.RefreshAllSettings then
+        ns.ArcAuras.RefreshAllSettings()
+    end
+
+    -- Clean ghost arc_item_ entries from savedPositions that have no matching
+    -- trackedItem. These appear when importing profiles from other characters.
+    -- Only arc_item_ is checked because:
+    --   arc_spell_ = dynamically discovered, NEVER in trackedItems
+    --   arc_trinket_ = slot-based, NEVER in trackedItems
+    local trackedItems = ns.db.char and ns.db.char.arcAuras
+                         and ns.db.char.arcAuras.trackedItems or {}
+    local ghostKeys = {}
+    for cdID, _ in pairs(ns.CDMGroups.savedPositions) do
+        if type(cdID) == "string" and cdID:match("^arc_item_") then
+            if not trackedItems[cdID] then
+                table.insert(ghostKeys, cdID)
+            end
+        end
+    end
+    for _, cdID in ipairs(ghostKeys) do
+        ns.CDMGroups.savedPositions[cdID] = nil
+    end
+
+    -- Clean ghost arc_item_ entries from group members and freeIcons
+    local membersCleaned = 0
+    for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+        if group.members then
+            local toRemove = {}
+            for cdID, member in pairs(group.members) do
+                if type(cdID) == "string" and cdID:match("^arc_item_")
+                   and not trackedItems[cdID] then
+                    table.insert(toRemove, cdID)
+                end
+            end
+            for _, cdID in ipairs(toRemove) do
+                if group.grid and group.members[cdID] then
+                    local m = group.members[cdID]
+                    if m.row and m.col and group.grid[m.row]
+                       and group.grid[m.row][m.col] == cdID then
+                        group.grid[m.row][m.col] = nil
+                    end
+                end
+                group.members[cdID] = nil
+                membersCleaned = membersCleaned + 1
+            end
+        end
+    end
+    if ns.CDMGroups.freeIcons then
+        local toRemoveFree = {}
+        for cdID, _ in pairs(ns.CDMGroups.freeIcons) do
+            if type(cdID) == "string" and cdID:match("^arc_item_")
+               and not trackedItems[cdID] then
+                table.insert(toRemoveFree, cdID)
+            end
+        end
+        for _, cdID in ipairs(toRemoveFree) do
+            ns.CDMGroups.freeIcons[cdID] = nil
+            membersCleaned = membersCleaned + 1
+        end
+    end
+    if #ghostKeys > 0 or membersCleaned > 0 then
+        DebugPrint("|cffff9900[LoadProfile]|r Ghost cleanup:",
+            #ghostKeys, "savedPos,", membersCleaned, "members/free")
     end
     
     -- NOTE: activeProfile already set in STEP 2 (before group sync)
@@ -5026,6 +5249,17 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             
             -- Ensure container click-through state is correct after profile load
             ns.CDMGroups.UpdateGroupSelectionVisuals()
+            
+            -- Reapply group anchors now that all groups are created and positioned
+            -- Must sync proxies first so SafeAnchor has valid positions to calculate from
+            if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ReapplyAll then
+                C_Timer.After(0.2, function()
+                    if ns.CDMGroups.SyncAllAnchorProxies then
+                        ns.CDMGroups.SyncAllAnchorProxies()
+                    end
+                    ns.CDMGroupsAnchors.ReapplyAll()
+                end)
+            end
         end)
     end)
     
@@ -5553,8 +5787,6 @@ function ns.CDMGroups.RestoreArcAurasPositions(debugPrefix)
                 DebugPrint(debugPrefix, "Skipping Arc Aura (hideWhenUnequipped):", arcID)
             elseif frame._arcSlotEmpty then
                 DebugPrint(debugPrefix, "Skipping Arc Aura (slot empty/passive):", arcID)
-            elseif frame._arcHiddenNotInSpec then
-                DebugPrint(debugPrefix, "Skipping Arc Aura (not in current spec):", arcID)
             else
                 -- Check current tracking state
                 local isTrackedGroup = false
@@ -5749,10 +5981,15 @@ function ns.CDMGroups.ForceShowAllArcAuras()
     local count = 0
     for arcID, frame in pairs(ns.ArcAuras.frames) do
         if frame then
-            -- Skip frames that are hidden due to hideWhenUnequipped, empty/passive slot, or wrong spec
-            if not frame._arcHiddenUnequipped and not frame._arcSlotEmpty and not frame._arcHiddenNotInSpec and not IsFrameHiddenByBar(frame) then
-                frame:SetAlpha(1)
+            -- Skip frames that are hidden due to hideWhenUnequipped or empty/passive slot
+            if not frame._arcHiddenUnequipped and not frame._arcSlotEmpty and not IsFrameHiddenByBar(frame) then
                 frame:Show()
+                -- Apply proper state visuals which include the options-panel preview alpha check
+                if ns.ArcAuras.ApplyInitialStateVisuals then
+                    ns.ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+                else
+                    frame:SetAlpha(1)
+                end
                 count = count + 1
             end
         end
@@ -6152,6 +6389,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                         hiddenAlpha = layoutData.hiddenAlpha,
                         frameStrata = layoutData.frameStrata,
                         frameLevel = layoutData.frameLevel,
+                        anchor = layoutData.anchor,
                         borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
                         bgColor = layoutData.bgColor and DeepCopy(layoutData.bgColor) or { r = 0, g = 0, b = 0, a = 0.6 },
                         -- Grid settings
@@ -6194,6 +6432,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     -- Create groups from PROFILE.groupLayouts (single source of truth)
     -- CRITICAL: Check if groupLayouts has actual content, not just exists
     -- An empty {} is truthy but should fall back to DEFAULT_GROUPS
+    -- NOTE: Default group template is applied inside EnsureLayoutProfiles if profile has no groups
     local profile = GetActiveProfile(specData)
     local hasGroupLayouts = profile and profile.groupLayouts and next(profile.groupLayouts)
     local groupsToCreate = hasGroupLayouts and profile.groupLayouts or DEFAULT_GROUPS
@@ -6694,6 +6933,7 @@ function ns.CDMGroups.CreateGroup(name)
         bgColor = layoutData.bgColor,
         frameStrata = layoutData.frameStrata,
         frameLevel = layoutData.frameLevel,
+        anchor = layoutData.anchor,
     }
     
     local color = GROUP_COLORS[name] or { r = 0.5, g = 0.5, b = 0.5 }
@@ -6724,6 +6964,8 @@ function ns.CDMGroups.CreateGroup(name)
         bgColor = DeepCopy(bgColor),
         container = nil,
         color = color,
+        -- Anchoring
+        anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Deserialize(db.anchor) or { enabled = false, mode = "none" },
     }
     
     -- Ensure alignment has a default value when dynamicLayout is enabled
@@ -8873,7 +9115,11 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- CRITICAL: Skip while CDM options panel is open
         -- CDM silently reassigns frames - don't reflow until panel closes
+        -- But STILL call Layout() so frames get positioned (pts > 0)
         if IsCDMOptionsPanelOpen() then
+            self._reflowing = true
+            self:Layout()
+            self._reflowing = false
             return
         end
         
@@ -11073,6 +11319,10 @@ function ns.CDMGroups.CreateGroup(name)
         end
         -- Sync anchor proxy to track new position (decoupled, no taint chain)
         SyncAnchorProxy(self)
+        -- Re-apply group anchor if this group is anchored to something
+        if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self) then
+            ns.CDMGroupsAnchors.ApplyGroupAnchor(self)
+        end
         -- Trigger auto-save to linked template (position changes)
         if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
         -- Notify AceConfig so options panel updates in real-time
@@ -11804,6 +12054,11 @@ function ns.CDMGroups.CreateGroup(name)
     end
     
     function group:Destroy()
+        -- Detach external frames anchored to this group before destruction
+        if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+            ns.CDMGroupsAnchors.DetachAllExternalFrames(self)
+        end
+        
         local toRemove = {}
         for cdID in pairs(self.members) do
             table.insert(toRemove, cdID)
@@ -11876,6 +12131,7 @@ function ns.CDMGroups.CreateGroup(name)
                     hiddenAlpha = group.hiddenAlpha,
                     frameStrata = group.frameStrata,
                     frameLevel = group.frameLevel,
+                    anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
                 }
                 DebugPrint("|cff00ff00[CreateGroup]|r Added group '" .. name .. "' to profile '" .. activeProfileName .. "' groupLayouts")
             end
@@ -13471,6 +13727,10 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
             if name then specName = name end
         end
         print("|cff00ff00CDMGroups|r loaded for " .. specName .. ". /cdmg for options.")
+        -- Apply group anchors (deferred so all groups/proxies are fully positioned)
+        if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ReapplyAll then
+            C_Timer.After(0.2, function() ns.CDMGroupsAnchors.ReapplyAll() end)
+        end
     end)
 end
 
@@ -13531,6 +13791,9 @@ function ns.CDMGroups.PLAYER_SPECIALIZATION_CHANGED()
             -- NOTE: savedPositions IS the profile.savedPositions (direct reference)
             -- Already correct from user drag operations - no rebuild needed
             
+            -- Save frame ownership map
+            profile.frameOwnership = ns._activeFrameOwnership and next(ns._activeFrameOwnership) and ns._activeFrameOwnership or nil
+            
             DebugPrint("|cffff00ff[SpecChange]|r Saved spec", oldSpec, "state to profile immediately")
         end
     end
@@ -13539,6 +13802,14 @@ function ns.CDMGroups.PLAYER_SPECIALIZATION_CHANGED()
     -- CDM cannot properly reassign/destroy frames that we've reparented
     -- We must give them back so CDM can do its lifecycle management
     DebugPrint("|cffff00ff[SpecChange]|r Releasing all frames back to CDM...")
+    
+    -- Detach external frames (PlayerFrame etc.) anchored to groups FIRST
+    -- before groups are modified or destroyed
+    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+        for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+            ns.CDMGroupsAnchors.DetachAllExternalFrames(group)
+        end
+    end
     
     local framesReleased = 0
     
@@ -14443,6 +14714,7 @@ function ns.CDMGroups.Initialize()
     
     -- PRE-CREATE groups from PROFILE.groupLayouts (single source of truth)
     -- This must happen BEFORE icons arrive so they have groups to go into
+    -- NOTE: Default group template is applied inside EnsureLayoutProfiles if profile has no groups
     local groupCount = 0
     local brokenGroups = {}
     local groupsToCreate = (profile and profile.groupLayouts) or DEFAULT_GROUPS
@@ -14638,6 +14910,8 @@ local function SaveGroupLayoutsToActiveProfile()
                 -- Frame strata
                 frameStrata = group.frameStrata,
                 frameLevel = group.frameLevel,
+                -- Anchoring
+                anchor = group.anchor and ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(group.anchor) or nil,
             }
         end
     end

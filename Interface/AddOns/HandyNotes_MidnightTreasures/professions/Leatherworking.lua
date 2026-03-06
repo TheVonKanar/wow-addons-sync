@@ -2,7 +2,7 @@ local myname, ns = ...
 
 local KNOWLEDGE = {
     note = "This can only be looted once per character.",
-    currency=2789,
+    currency=3157,
     requires = ns.conditions.Profession(ns.PROF_MIDNIGHT_LEATHERWORKING),
     -- active = ns.conditions.Profession(ns.PROF_MIDNIGHT_LEATHERWORKING, 25),
     group = "professionknowledge",
@@ -21,13 +21,15 @@ ns.RegisterPoints(ns.ZULAMAN, {
     [33107890] = {quest=89089, loot={238588}, vignette=6808}, -- Amani Leatherworker's Tool
 }, KNOWLEDGE)
 ns.RegisterPoints(ns.ATALAMAN, {
-    [45204530] = {quest=89092, loot={238591}, vignette=6805}, -- Bundle of Tanner's Trinkets
+    [45204530] = {quest=89092, loot={238591}, vignette=6805, parent=true}, -- Bundle of Tanner's Trinkets
 }, KNOWLEDGE)
 ns.RegisterPoints(ns.HARANDAR, {
     [36102520] = {quest=89095, loot={238594}, vignette=6862}, -- Haranir Leatherworking Knife
     [51805130] = {quest=89094, loot={238593}, vignette=6863}, -- Haranir Leatherworking Mallet
 }, KNOWLEDGE)
-ns.RegisterPoints(ns.SLAYERSRISE, {
+ns.RegisterPoints(ns.VOIDSTORM, {
     [34805690] = {quest=89090, loot={238589}, vignette=6807}, -- Ethereal Leatherworking Knife
-    [53805160] = {quest=89093, loot={238592}, vignette=6864}, -- Pattern: Beyond The Void
+}, KNOWLEDGE)
+ns.RegisterPoints(ns.SLAYERSRISE, {
+    [53805160] = {quest=89093, loot={238592}, vignette=6864, parent=true}, -- Pattern: Beyond The Void
 }, KNOWLEDGE)

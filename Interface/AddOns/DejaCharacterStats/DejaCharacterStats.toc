@@ -1,0 +1,26 @@
+## Interface: 120001
+## Version: R120001r4
+## Title: |cff00c0ffDejaCharacterStats|r
+## Author: Dejablue, Kakjens, loudsoul
+## Notes: Dejablue's improved character stats panel.
+## SavedVariables: DejaCharacterStatsDB, DCS_ClassSpecDB
+## SavedVariablesPerCharacter: DejaCharacterStatsDBPC
+## IconTexture: Interface\AddOns\DejaCharacterStats\DCSArt\DejoLogo.blp
+
+## X-Category: Class
+## X-License: All Rights Reserved 2016-2026
+## X-Curse-Project-ID: 99861
+## X-WoWI-ID: 24060
+## X-Wago-ID: ME6gdDK1
+
+Localization\core.lua
+Localization\[TextLocale].lua
+
+DejaCharacterStats.lua
+DCSTables.lua
+DCSLayouts.lua
+DCSExpand.lua
+DCSDecimals.lua
+DCSDuraRepair.lua
+DCSAbout.lua
+DCSProfiles.lua

@@ -286,6 +286,7 @@ local function BuildExportData(options)
                 -- (Also in profile.iconSettings within layoutProfiles above)
                 iconSettings = exportedIconSettings,
                 groupSettings = (options.includeGroupSettings ~= false) and specData.groupSettings and DeepCopy(specData.groupSettings) or nil,
+                keepCDMStyle = specData.keepCDMStyle or nil,
                 -- Global icon settings (tooltips, click-through) - stored at root, not per-spec
                 globalIconSettings = exportedGlobalIconSettings,
             }
@@ -727,11 +728,10 @@ function IE.Import(importString, options)
         local cdmGroupsDB = ns.db.char.cdmGroups
         if not cdmGroupsDB.specData then cdmGroupsDB.specData = {} end
         
-        -- Ensure specData for current spec exists
+        -- Ensure specData for current spec exists (no activeProfile yet — set after import)
         if not cdmGroupsDB.specData[currentSpec] then
             cdmGroupsDB.specData[currentSpec] = {
                 layoutProfiles = {},
-                activeProfile = "Default",
             }
         end
         
@@ -742,15 +742,10 @@ function IE.Import(importString, options)
             specData.layoutProfiles = {}
         end
         
-        -- Ensure Default profile exists
-        if not specData.layoutProfiles["Default"] then
-            specData.layoutProfiles["Default"] = {
-                savedPositions = {},
-                freeIcons = {},
-                groupLayouts = {},
-                iconSettings = {},
-            }
-        end
+        -- NOTE: Do NOT pre-create a "Default" profile here.
+        -- The import data arrives below and creates the real profiles.
+        -- Pre-creating an empty Default causes EnsureLayoutProfiles to
+        -- fill it with wrong default groups on next load.
         
         -- ═══════════════════════════════════════════════════════════════════════════
         -- IMPORT PROFILES (REPLACE mode - wipe existing profile if same name)
@@ -897,6 +892,11 @@ function IE.Import(importString, options)
         -- ═══════════════════════════════════════════════════════════════════════════
         if data.cdmGroups.groupSettings then
             specData.groupSettings = DeepCopy(data.cdmGroups.groupSettings)
+        end
+
+        -- keepCDMStyle is stored at specData level (per character, per spec)
+        if data.cdmGroups.keepCDMStyle ~= nil then
+            specData.keepCDMStyle = data.cdmGroups.keepCDMStyle or nil
         end
         
         -- ═══════════════════════════════════════════════════════════════════════════
@@ -1749,6 +1749,9 @@ function IE.GetAvailableProfiles()
     local currentProfile = (ns.CDMGroups and ns.CDMGroups.GetActiveProfileName) and ns.CDMGroups.GetActiveProfileName() or "Default"
     local currentCharKey = ns.db and ns.db.keys and ns.db.keys.char  -- e.g., "Arcgem - Anasterian"
     
+    -- Track which shared specs we've already collected (deduplicate)
+    local sharedSpecCollected = {}
+    
     -- Helper to add profiles from a specData table
     local function AddProfilesFromSpecData(specData, charKey, isCurrentChar)
         if not specData then return end
@@ -1759,7 +1762,19 @@ function IE.GetAvailableProfiles()
             classID = tonumber(classID)
             specIndex = tonumber(specIndex)
             
-            if classID and specIndex and data.layoutProfiles then
+            -- When shared sync exists for this spec (global ref), only include ONE
+            -- character's profiles. All synced characters have identical data.
+            local skipShared = false
+            local sharedRef = ns.db and ns.db.global and ns.db.global.sharedProfiles and ns.db.global.sharedProfiles[specKey]
+            if sharedRef then
+                if sharedSpecCollected[specKey] then
+                    skipShared = true
+                else
+                    sharedSpecCollected[specKey] = charKey
+                end
+            end
+            
+            if not skipShared and classID and specIndex and data.layoutProfiles then
                 -- Get spec name using API
                 local specName = "Spec " .. specIndex
                 if GetSpecializationInfoForClassID then
@@ -3432,7 +3447,7 @@ SlashCmdList["ARCUICDMEXPORT"] = function()
         C_Timer.After(0.1, function()
             local ACD = LibStub("AceConfigDialog-3.0", true)
             if ACD then
-                ACD:SelectGroup("ArcUI", "icons", "importExport")
+                ACD:SelectGroup("ArcUI", "icons", "profileManager")
             end
         end)
     else
@@ -3449,7 +3464,7 @@ SlashCmdList["ARCUICDMIMPORT"] = function()
         C_Timer.After(0.1, function()
             local ACD = LibStub("AceConfigDialog-3.0", true)
             if ACD then
-                ACD:SelectGroup("ArcUI", "icons", "importExport")
+                ACD:SelectGroup("ArcUI", "icons", "profileManager")
             end
         end)
     else

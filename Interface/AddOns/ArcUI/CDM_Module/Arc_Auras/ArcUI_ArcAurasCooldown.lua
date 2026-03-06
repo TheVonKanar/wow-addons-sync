@@ -300,6 +300,11 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         -- Alpha
         local cdAlpha = (stateVisuals and stateVisuals.cooldownAlpha)
                      or cs.alpha or 1.0
+        -- Proc override: if a proc glow is active and the setting is enabled, show at full alpha
+        if frame._arcProcGlowActive then
+            local procOverride = (stateVisuals and stateVisuals.cooldownProcOverride) or cs.procOverride
+            if procOverride then cdAlpha = 1.0 end
+        end
         -- OPTIONS PANEL PREVIEW: If alpha is 0, show at 0.35 so user can see the icon while editing
         if cdAlpha <= 0 then
             if ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen and ns.CDMEnhance.IsOptionsPanelOpen() then
@@ -399,6 +404,12 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         if usabilityAlpha and usabilityState ~= "usable" and usabilityState ~= "outOfRange" then
             readyAlpha = usabilityAlpha
         end
+        -- Proc override: if a proc glow is active and the setting is enabled, show at full alpha
+        -- This beats usability alpha too — proc takes full precedence
+        if frame._arcProcGlowActive then
+            local procOverride = (stateVisuals and stateVisuals.readyProcOverride) or rs.procOverride
+            if procOverride then readyAlpha = 1.0 end
+        end
         -- OPTIONS PANEL PREVIEW: If alpha is 0, show at 0.35 so user can see the icon while editing
         if readyAlpha <= 0 then
             if ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen and ns.CDMEnhance.IsOptionsPanelOpen() then
@@ -476,6 +487,8 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
                 intensity = (stateVisuals and stateVisuals.readyGlowIntensity) or rs.glowIntensity or 1.0,
                 xOffset = (stateVisuals and stateVisuals.readyGlowXOffset) or rs.glowXOffset or 0,
                 yOffset = (stateVisuals and stateVisuals.readyGlowYOffset) or rs.glowYOffset or 0,
+                strata = (stateVisuals and stateVisuals.readyGlowFrameStrata) or rs.glowFrameStrata,
+                frameLevel = (stateVisuals and stateVisuals.readyGlowFrameLevel) or rs.glowFrameLevel,
             })
             fd.readyGlowActive = true
             fd.readyGlowType = glowType
@@ -1113,156 +1126,44 @@ end
 function ArcAurasCooldown.HideFrame(arcID)
     local fd = ArcAurasCooldown.spellData[arcID]
     if not fd or not fd.frame then return end
-    fd.frame._arcHiddenNotInSpec = true
-    -- Disable range check to stop unnecessary events while hidden
+    -- Disable range check before destruction
     if fd.needsRangeCheck and fd.rangeCheckSpellID and C_Spell.EnableSpellRangeCheck then
         C_Spell.EnableSpellRangeCheck(fd.rangeCheckSpellID, false)
     end
-    if fd.procGlowActive or fd.usableGlowActive or fd.readyGlowActive then
-        ns.Glows.ForceHideAll(fd.frame)
-        fd.procGlowActive = false
-        fd.procGlowType = nil
-        fd.frame._arcProcGlowActive = false
-        fd.frame._arcProcGlowType = nil
-        fd.usableGlowActive = false
-        fd.usableGlowType = nil
-        fd.readyGlowActive = false
-        fd.readyGlowType = nil
+    -- Save position BEFORE destroy (UnregisterExternalFrame wipes savedPositions)
+    local savedPos = ns.CDMGroups and ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
+    -- Destroy the frame entirely
+    ArcAuras.DestroyFrame(arcID)
+    -- Restore savedPosition so re-creation on spec switch reads correct placement
+    if savedPos and ns.CDMGroups and ns.CDMGroups.savedPositions then
+        ns.CDMGroups.savedPositions[arcID] = savedPos
     end
-    -- Cache current position on frame BEFORE unregistering
-    if ns.CDMGroups then
-        if ns.CDMGroups.groups then
-            for groupName, group in pairs(ns.CDMGroups.groups) do
-                if group.members and group.members[arcID] then
-                    local member = group.members[arcID]
-                    fd.frame._arcSavedGroupName = groupName
-                    fd.frame._arcSavedRow = member.row
-                    fd.frame._arcSavedCol = member.col
-                    break
-                end
-            end
-        end
-        if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-            local freeData = ns.CDMGroups.freeIcons[arcID]
-            fd.frame._arcSavedFreeX = freeData.x
-            fd.frame._arcSavedFreeY = freeData.y
-            fd.frame._arcSavedFreeSize = freeData.iconSize
-            fd.frame._arcWasFreeIcon = true
-        end
-        if ns.CDMGroups.UnregisterExternalFrame then
-            ns.CDMGroups.UnregisterExternalFrame(arcID)
-        end
-    end
-    fd.frame:Hide()
 end
 
 function ArcAurasCooldown.ShowFrame(arcID)
-    local fd = ArcAurasCooldown.spellData[arcID]
-    if not fd or not fd.frame then return end
-    fd.frame._arcHiddenNotInSpec = nil
-    -- Re-enable range check
-    if fd.needsRangeCheck and fd.rangeCheckSpellID and C_Spell.EnableSpellRangeCheck then
-        C_Spell.EnableSpellRangeCheck(fd.rangeCheckSpellID, true)
-        local inRange = C_Spell.IsSpellInRange(fd.rangeCheckSpellID)
-        fd.spellOutOfRange = (inRange == false)
+    -- If frame already exists, nothing to do
+    if ArcAurasCooldown.spellData[arcID] then return end
+    
+    local db = GetDB()
+    if not db or not db.trackedSpells then return end
+    local config = db.trackedSpells[arcID]
+    if not config then return end
+    
+    -- Create the frame fresh. RegisterExternalFrame (called by CreateFrame)
+    -- reads savedPositions and places it at the correct group/free position.
+    -- If no savedPosition exists, it becomes a free icon at default position.
+    local spellConfig = {
+        type = "spell",
+        spellID = config.spellID,
+        name = config.name,
+        icon = config.iconOverride or config.icon,
+        enabled = true,
+    }
+    local frame = ArcAuras.CreateFrame(arcID, spellConfig)
+    if frame then
+        frame:Show()
+        ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
     end
-    fd.frame:Show()
-
-    -- ── SKIP position restore during spec changes ──
-    -- ShowFrame fires at 0.5s but CDMGroups hasn't loaded the new spec's
-    -- savedPositions yet (happens at 0.8s). If we read savedPositions now,
-    -- we get the OLD spec's data and TrackFreeIcon corrupts the DB by
-    -- writing type=free over the correct type=group entry.
-    -- CDMGroups.RestoreArcAurasPositions handles position restore at 0.8s+.
-    local specChangeActive = ns.CDMGroups and (
-        ns.CDMGroups.specChangeInProgress
-        or ns.CDMGroups._pendingSpecChange
-        or (ns.CDMGroups.lastSpecChangeTime and (GetTime() - ns.CDMGroups.lastSpecChangeTime) < 5)
-    )
-
-    if not specChangeActive and ns.CDMGroups then
-        -- Refresh savedPositions for current spec/profile
-        if ns.CDMGroups.GetProfileSavedPositions then
-            ns.CDMGroups.GetProfileSavedPositions()
-        end
-
-        local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
-        local restored = false
-
-        if saved then
-            if saved.type == "group" and saved.target then
-                local group = ns.CDMGroups.groups and ns.CDMGroups.groups[saved.target]
-                if group then
-                    if group.members and group.members[arcID] then
-                        group.members[arcID] = nil
-                    end
-                    local row = saved.row or 0
-                    local col = saved.col or 0
-                    if group.AddMemberAtWithFrame then
-                        group:AddMemberAtWithFrame(arcID, row, col, fd.frame, nil)
-                    elseif ns.CDMGroups.RegisterExternalFrame then
-                        ns.CDMGroups.RegisterExternalFrame(arcID, fd.frame, "cooldown", saved.target)
-                    end
-                    if group.Layout then group:Layout() end
-                    restored = true
-                end
-            elseif saved.type == "free" then
-                if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-                    ns.CDMGroups.freeIcons[arcID] = nil
-                end
-                if ns.CDMGroups.TrackFreeIcon then
-                    ns.CDMGroups.TrackFreeIcon(arcID, saved.x or 0, saved.y or 0, saved.iconSize or 36, fd.frame)
-                end
-                restored = true
-            end
-        end
-
-        -- Fallback: frame-cached position from HideFrame
-        if not restored and fd.frame._arcWasFreeIcon then
-            if ns.CDMGroups.TrackFreeIcon then
-                ns.CDMGroups.TrackFreeIcon(arcID, fd.frame._arcSavedFreeX or 0, fd.frame._arcSavedFreeY or 0, fd.frame._arcSavedFreeSize or 36, fd.frame)
-            end
-            fd.frame._arcWasFreeIcon = nil
-            fd.frame._arcSavedFreeX = nil
-            fd.frame._arcSavedFreeY = nil
-            fd.frame._arcSavedFreeSize = nil
-            restored = true
-        end
-
-        if not restored and fd.frame._arcSavedGroupName then
-            local group = ns.CDMGroups.groups and ns.CDMGroups.groups[fd.frame._arcSavedGroupName]
-            if group then
-                if group.AddMemberAtWithFrame then
-                    group:AddMemberAtWithFrame(arcID, fd.frame._arcSavedRow or 0, fd.frame._arcSavedCol or 0, fd.frame, nil)
-                elseif ns.CDMGroups.RegisterExternalFrame then
-                    ns.CDMGroups.RegisterExternalFrame(arcID, fd.frame, "cooldown", fd.frame._arcSavedGroupName)
-                end
-                if group.Layout then group:Layout() end
-            else
-                if ns.CDMGroups.RegisterExternalFrame then
-                    ns.CDMGroups.RegisterExternalFrame(arcID, fd.frame, "cooldown", "Essential")
-                end
-            end
-            fd.frame._arcSavedGroupName = nil
-            fd.frame._arcSavedRow = nil
-            fd.frame._arcSavedCol = nil
-            restored = true
-        end
-
-        -- Last resort: register as new
-        if not restored then
-            if ns.CDMGroups.RegisterExternalFrame then
-                ns.CDMGroups.RegisterExternalFrame(arcID, fd.frame, "cooldown", "Essential")
-            end
-        end
-    end
-
-    -- Re-check charge spell status (may change between specs)
-    local cOk, chargeInfo = pcall(C_Spell.GetSpellCharges, fd.spellID)
-    fd.isChargeSpell = (cOk and chargeInfo ~= nil)
-    -- Feed fresh cooldown state
-    FeedCooldown(fd)
-    UpdateProcGlow(fd)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -1397,32 +1298,17 @@ function ArcAurasCooldown.RefreshSpecVisibility()
         local fd = ArcAurasCooldown.spellData[arcID]
         local visible = ArcAurasCooldown.ShouldFrameBeVisible(config, spellID)
 
-        if visible then
-            if not fd then
-                -- New spell available in this spec — create frame + init engine
-                local spellConfig = {
-                    type = "spell",
-                    spellID = spellID,
-                    name = config.name,
-                    icon = config.iconOverride or config.icon,
-                    enabled = true,
-                }
-                local frame = ArcAuras.CreateFrame(arcID, spellConfig)
-                if frame then
-                    ArcAuras.LoadFramePosition(arcID, frame)
-                    frame:Show()
-                    ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
-                    changed = true
-                end
-            elseif fd.frame._arcHiddenNotInSpec then
-                ArcAurasCooldown.ShowFrame(arcID)
-                changed = true
-            end
-        else
-            if fd and not fd.frame._arcHiddenNotInSpec then
-                ArcAurasCooldown.HideFrame(arcID)
-                changed = true
-            end
+        if visible and not fd then
+            -- Spell should be visible but no frame exists — create it
+            -- RegisterExternalFrame reads savedPositions for correct placement.
+            -- If no savedPosition exists, it becomes a free icon at default position.
+            ArcAurasCooldown.ShowFrame(arcID)
+            changed = true
+        elseif not visible and fd then
+            -- Spell should NOT be visible but frame exists — destroy it
+            -- savedPositions persists so position is preserved for next show.
+            ArcAurasCooldown.HideFrame(arcID)
+            changed = true
         end
     end
 
@@ -1543,6 +1429,11 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if ArcAurasCooldown.initialized and not specChangePending then
             C_Timer.After(0.5, function()
                 ArcAurasCooldown.RefreshSpecVisibility()
+                -- Also refresh item visibility (items with showOnSpecs/talentConditions)
+                -- Safe here because savedPositions are already correct (same spec)
+                if ArcAuras and ArcAuras.RefreshVisibility then
+                    ArcAuras.RefreshVisibility()
+                end
             end)
         end
 
@@ -1550,10 +1441,8 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if not specChangePending then
             specChangePending = true
             -- CRITICAL: Must run BEFORE CDMGroups.RestoreArcAurasPositions (at 0.8s)
-            -- so that _arcHiddenNotInSpec flags are correct when the restore pass
-            -- decides which frames to position. Old 3.5s delay meant RestoreArcAurasPositions
-            -- skipped all hidden frames, and ShowFrame at 3.5s skipped position restore
-            -- because specChangeActive was still true → frames lost positions/groups.
+            -- so that not-in-spec spells are destroyed before the restore pass
+            -- decides which frames to position.
             C_Timer.After(0.3, function()
                 ArcAurasCooldown.RefreshSpecVisibility()
             end)
@@ -1577,27 +1466,26 @@ end)
 -- Spell frames are event-driven (no polling). When the options panel opens,
 -- frames at readyAlpha=0 or cooldownAlpha=0 need to show at 0.35 preview.
 -- When it closes, they need to return to their actual alpha.
--- This lightweight ticker checks for panel state changes every 0.5s.
+-- Uses Shared.RegisterPanelCallback (hook-based, zero polling).
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local lastPanelOpenState = false
-C_Timer.NewTicker(0.5, function()
-    local isOpen = ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen
-                   and ns.CDMEnhance.IsOptionsPanelOpen() or false
-    if isOpen ~= lastPanelOpenState then
-        lastPanelOpenState = isOpen
-        -- Panel state changed — re-evaluate all spell frame visuals
-        for arcID, fd in pairs(ArcAurasCooldown.spellData) do
-            if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                -- Clear cached state so it re-applies with new panel state
-                fd.frame._lastAppliedAlpha = nil
-                fd.frame._arcLastSpellState = nil
-                local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
-                ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
-            end
+local function RefreshAllSpellVisuals()
+    for arcID, fd in pairs(ArcAurasCooldown.spellData) do
+        if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
+            fd.frame._lastAppliedAlpha = nil
+            fd.frame._arcLastSpellState = nil
+            local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
+            ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
         end
     end
-end)
+end
+
+if ns.CDMShared and ns.CDMShared.RegisterPanelCallback then
+    ns.CDMShared.RegisterPanelCallback("ArcAurasCooldown", {
+        onOpen = RefreshAllSpellVisuals,
+        onClose = RefreshAllSpellVisuals,
+    })
+end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- INITIALIZATION
@@ -1694,6 +1582,7 @@ function ArcAurasCooldown.RefreshAllSpellVisuals()
                 fd.readyGlowActive = false
                 fd.readyGlowType = nil
             end
+            fd.frame._arcLastSpellState = nil  -- Force re-eval (bypass state-change early return)
             local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
             ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
         end
@@ -1708,6 +1597,7 @@ function ArcAurasCooldown.StopAllUsableGlows()
             ns.Glows.ForceHide(fd.frame, "usable")
             fd.usableGlowActive = false
             fd.usableGlowType = nil
+            fd.frame._arcLastSpellState = nil  -- Force re-eval
         end
     end
 end
@@ -1719,6 +1609,7 @@ function ArcAurasCooldown.StopAllReadyGlows()
             ns.Glows.ForceHide(fd.frame, "ready")
             fd.readyGlowActive = false
             fd.readyGlowType = nil
+            fd.frame._arcLastSpellState = nil  -- Force re-eval (bypass state-change early return)
         end
     end
 end

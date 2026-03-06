@@ -1,5 +1,42 @@
 # Changelog
 
+## Changed in v31
+
+* Zul'Aman: the Abandoned Ritual Skull has been hotfixed out of being part of the Treasures achievement
+* Harandar: show the Dust'em Off moths on your minimap until you've reached the renown level where the Blizzard vignettes appear for them
+* Profession knowledge: minor position tweaks for a few Harandar treasures
+
+## Changed in v30
+
+* Harandar: add the rest of the Dust'em Off moths (so many moths)
+* Eversong Woods: Dame Bloodshed moved to her spawn point (thanks Vlad!)
+* Silvermoon City: show the clothing ensembles on Andra
+* Zul'Aman: Ruz'avalt's Prized Tackle isn't there at all post-beta
+
+## Changed in v29
+
+* Zul'Aman:
+	* Reputation quests on Ash'an and Diamondback
+	* Add the Gnome Alone achievement
+* Lore Hunter: A Frayed Scroll has been hotfixed out of the achievement
+* Highest Peaks: note the decor reward for each zone achievement
+
+## Changed in v28
+
+* New loot has been added to all zones
+* A new section has been added to the tooltips for shared loot, which is being used for the rare-exclusive drops each zone's rares share
+
+## Changed in v27
+
+* Zul'Aman:
+	* Add the Put a Pin in It achievement
+	* Better distinguish Shadowpine Scattered and Frog and the Princesses (they were both using off-green circles)
+* Profession knowledge (again):
+	* Made all the Slayer's Rise / Atal'Aman items show on their parent maps, so they're not hidden away
+	* The associated currency was showing as Khaz Algar, not Midnight
+	* Fix location of Vial of Zul'Aman Oddities
+	* Ethereal Leatherworking Knife is in Voidstorm not Slayers Rise
+
 ## Changed in v26
 
 * Eversong Woods: finally add currency quest to Harried Hawkstrider

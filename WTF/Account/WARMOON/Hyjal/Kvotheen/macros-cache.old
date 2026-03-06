@@ -46,7 +46,7 @@ END
 VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
 /stopcasting
-/cast [target=mouseover,exists] Wind Shear; Wind Shear
+/cast [@focus,exists] Wind Shear; [target=mouseover,exists] Wind Shear; Wind Shear
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit

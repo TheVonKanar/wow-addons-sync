@@ -779,9 +779,16 @@ function Shared.RegisterPanelCallback(name, callbacks)
     Shared._panelCallbacks[name] = callbacks
 end
 
+-- Private dedup guard. Cannot use ns.optionsPanelOpen because FrameController's
+-- OnArcUIPanelChanged (called from Options.lua posthook) sets that flag before
+-- CDM_Shared's posthook fires. Using a private variable ensures callbacks always
+-- fire exactly once per state transition regardless of hook ordering.
+local _lastPanelState = false
+
 -- Internal: Set panel state and fire all callbacks
 local function SetPanelState(open)
-    if ns.optionsPanelOpen == open then return end
+    if _lastPanelState == open then return end
+    _lastPanelState = open
     ns.optionsPanelOpen = open
 
     -- Fire legacy callback (if any module set it directly)
@@ -807,6 +814,35 @@ end
 -- Public: Get options panel state (instant - just reads the flag)
 function Shared.IsOptionsPanelOpen()
     return ns.optionsPanelOpen
+end
+
+-- Public: Fire all registered panel callbacks. Called directly by Options.lua
+-- hooks which are the reliable, always-firing path. This is the same pattern
+-- used for DynamicLayout.OnOptionsPanelOpened/Closed — direct call, no hooks.
+function Shared.FirePanelCallbacks(open)
+    -- Dedup: Close hook + OnHide can both fire on same close
+    if _lastPanelState == open then return end
+    _lastPanelState = open
+    ns.optionsPanelOpen = open
+
+    -- Fire legacy callback
+    if Shared.OnOptionsPanelStateChanged then
+        local ok, err = pcall(Shared.OnOptionsPanelStateChanged, open)
+        if not ok then
+            print("|cffFF0000[ArcUI PanelHook]|r Legacy callback error: " .. tostring(err))
+        end
+    end
+
+    -- Fire registered callbacks
+    local key = open and "onOpen" or "onClose"
+    for name, cbs in pairs(Shared._panelCallbacks) do
+        if cbs[key] then
+            local ok, err = pcall(cbs[key])
+            if not ok then
+                print("|cffFF0000[ArcUI PanelHook]|r Callback error (" .. name .. "): " .. tostring(err))
+            end
+        end
+    end
 end
 
 -- Force-set panel state (for external callers that need to override, e.g. combat close)

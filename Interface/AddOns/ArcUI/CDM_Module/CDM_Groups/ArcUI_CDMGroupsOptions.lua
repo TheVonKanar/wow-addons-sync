@@ -116,6 +116,7 @@ local collapsedSections = {
     grid = false,
     layout = false,
     frameStrata = true,    -- Frame Strata section - start collapsed
+    anchoring = true,      -- Anchoring section - start collapsed
     position = true,
     appearance = true,
     tools = true,
@@ -463,8 +464,8 @@ local function GetOptionsTable()
             -- MASTER ENABLE TOGGLE (uses Shared.IsCDMStylingEnabled)
             masterEnable = {
                 type = "toggle",
-                name = "|cff00ff00Enable CDM Styling|r",
-                desc = "Master toggle to enable/disable all CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
+                name = "|cff00ff00Enable CDM Module|r",
+                desc = "Master toggle to enable/disable all ArcUI CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
                 order = 0.1,
                 width = 1.3,
                 get = function() 
@@ -480,6 +481,30 @@ local function GetOptionsTable()
                     local S = ns.CDMShared
                     if S and S.SetCDMStylingEnabled then
                         S.SetCDMStylingEnabled(val)
+                    end
+                end,
+            },
+            keepCDMStyle = {
+                type = "toggle",
+                name = "Keep CDM Styling",
+                desc = "Preserve CDM's native icon look: rounded mask, shadow overlay, and proportional glow borders.\n\nWhen enabled, ArcUI will reposition the CDM shadow overlay proportionally as icons are resized, keeping it correctly fitted at all sizes.\n\n|cffffaa00Enabled by default for new specs. Existing users can enable this manually.|r",
+                order = 0.2,
+                width = 1.3,
+                get = function()
+                    local specData = GetSpecData()
+                    if specData then return specData.keepCDMStyle == true end
+                    return false
+                end,
+                set = function(_, val)
+                    local specData = GetSpecData()
+                    if specData then
+                        specData.keepCDMStyle = val or nil
+                        if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
+                            ns.CDMEnhance.InvalidateCache()
+                        end
+                        if ns.CDMEnhance and ns.CDMEnhance.RefreshAllFrames then
+                            ns.CDMEnhance.RefreshAllFrames()
+                        end
                     end
                 end,
             },
@@ -2065,6 +2090,541 @@ local function GetOptionsTable()
                 end,
             },
             
+            -- ═══════════════════════════════════════════════════════════════
+            -- ANCHORING SETTINGS SECTION
+            -- ═══════════════════════════════════════════════════════════════
+            anchoringHeader = {
+                type = "toggle",
+                name = "Anchoring",
+                desc = "Click to expand/collapse. Anchor this group to other groups or frames.",
+                dialogControl = "CollapsibleHeader",
+                order = 47,
+                width = "full",
+                get = function() return not collapsedSections.anchoring end,
+                set = function(_, v) collapsedSections.anchoring = not v end,
+            },
+            anchorEnabled = {
+                type = "toggle",
+                name = "Enable Anchoring",
+                desc = "When enabled, this group's position is controlled by the anchor target instead of manual X/Y.",
+                order = 47.1,
+                width = 1.0,
+                hidden = function() return HideIfNoGroup() or collapsedSections.anchoring end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.enabled or false
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g then return end
+                    if not g.anchor then
+                        g.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.GetDefaults() or { enabled = false, mode = "none" }
+                    end
+                    g.anchor.enabled = val
+                    -- Save to profile
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    -- Apply or revert
+                    if val and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    else
+                        -- Detach any external frames anchored to this group (e.g. PlayerFrame)
+                        if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.DetachAllExternalFrames then
+                            ns.CDMGroupsAnchors.DetachAllExternalFrames(g)
+                        end
+                        -- Revert group to stored position
+                        if g.container and g.position then
+                            g.container:ClearAllPoints()
+                            g.container:SetPoint("CENTER", UIParent, "CENTER", g.position.x, g.position.y)
+                            if ns.CDMGroups.SyncAnchorProxy then ns.CDMGroups.SyncAnchorProxy(g) end
+                        end
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorMode = {
+                type = "select",
+                name = "Group Position",
+                desc = "Where this group is positioned:\n" ..
+                       "|cff88ffffNone|r: Group stays where you drag it.\n" ..
+                       "|cff88ffffGroup > Group|r: Attach this group to another ArcUI group.\n" ..
+                       "|cff88ffffGroup > Frame|r: Attach this group to any named UI frame.\n\n" ..
+                       "External frames can be attached to this group separately below.",
+                order = 47.2,
+                width = 1.1,
+                hidden = function() return HideIfNoGroup() or collapsedSections.anchoring end,
+                values = {
+                    ["none"]         = "None",
+                    ["toGroup"]      = "Group > Group",
+                    ["toFrame"]      = "Group > Frame",
+                },
+                sorting = { "none", "toGroup", "toFrame" },
+                get = function()
+                    local g = GetSelectedGroup()
+                    local mode = g and g.anchor and g.anchor.mode or "none"
+                    -- Backward compat: old frameToGroup is now just "none" (anchoredFrames are independent)
+                    if mode == "frameToGroup" then mode = "none" end
+                    return mode
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    local oldMode = g.anchor.mode
+                    g.anchor.mode = val
+                    -- Clear fields from previous mode to avoid cross-contamination
+                    if val ~= oldMode then
+                        if val == "toGroup" then
+                            g.anchor.targetFrame = ""
+                        elseif val == "toFrame" then
+                            g.anchor.targetGroup = ""
+                        elseif val == "none" then
+                            g.anchor.targetGroup = ""
+                            g.anchor.targetFrame = ""
+                        end
+                    end
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if val == "none" then
+                        -- Revert group to stored drag position
+                        if g.container and g.position then
+                            g.container:ClearAllPoints()
+                            g.container:SetPoint("CENTER", UIParent, "CENTER", g.position.x, g.position.y)
+                            if ns.CDMGroups.SyncAnchorProxy then ns.CDMGroups.SyncAnchorProxy(g) end
+                        end
+                    end
+                    -- Only apply if enabled (ApplyGroupAnchor already checks for valid targets)
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorTargetGroup = {
+                type = "select",
+                name = "Target Group",
+                desc = "Which ArcUI group to anchor to.",
+                order = 47.3,
+                width = 1.0,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode ~= "toGroup"
+                end,
+                values = function()
+                    local g = GetSelectedGroup()
+                    local exclude = g and g.name or ""
+                    return ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.GetAvailableGroups(exclude) or {}
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.targetGroup or ""
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.targetGroup = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorTargetFrame = {
+                type = "input",
+                name = "Target Frame Name",
+                desc = "The global name of the UI frame. Type a name or use the preset/picker below.",
+                dialogControl = "ArcUI_EditBox",
+                order = 47.4,
+                width = 1.0,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode ~= "toFrame"
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.targetFrame or ""
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.targetFrame = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorTargetPreset = {
+                type = "select",
+                name = "Common Frames",
+                desc = "Quick-select a well-known UI frame.",
+                order = 47.41,
+                width = 1.1,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode ~= "toFrame"
+                end,
+                values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.COMMON_FRAMES or {},
+                sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.COMMON_FRAMES_SORTED or {},
+                get = function() return "" end,
+                set = function(_, val)
+                    if val == "" then return end
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.targetFrame = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                    local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                    if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                end,
+            },
+            anchorTargetPick = {
+                type = "execute",
+                name = "Pick Frame",
+                desc = "Mouse over any frame on screen and click to select it.",
+                order = 47.42,
+                width = 0.6,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode ~= "toFrame"
+                end,
+                func = function()
+                    if not ns.CDMGroupsAnchors or not ns.CDMGroupsAnchors.StartPicker then return end
+                    ns.CDMGroupsAnchors.StartPicker(function(name)
+                        local g = GetSelectedGroup()
+                        if not g or not g.anchor then return end
+                        g.anchor.targetFrame = name
+                        local db = g.getDB and g.getDB()
+                        if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                        if g.anchor.enabled and ns.CDMGroupsAnchors then
+                            ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                        end
+                        if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                        local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                        if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                    end)
+                end,
+            },
+            anchorPosition = {
+                type = "select",
+                name = "Position",
+                desc = "Where to position relative to the target. Pick 'Advanced' for full control over anchor points.",
+                order = 47.45,
+                width = 0.8,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode == "none"
+                end,
+                values = {
+                    below  = "Below",
+                    above  = "Above",
+                    left   = "Left",
+                    right  = "Right",
+                    center = "Center",
+                    advanced = "|cffaaaaaa Advanced|r",
+                },
+                sorting = { "below", "above", "left", "right", "center", "advanced" },
+                get = function()
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return "below" end
+                    local src = g.anchor.sourcePoint or "TOP"
+                    local dst = g.anchor.destPoint or "BOTTOM"
+                    if src == "TOP" and dst == "BOTTOM" then return "below"
+                    elseif src == "BOTTOM" and dst == "TOP" then return "above"
+                    elseif src == "RIGHT" and dst == "LEFT" then return "left"
+                    elseif src == "LEFT" and dst == "RIGHT" then return "right"
+                    elseif src == "CENTER" and dst == "CENTER" then return "center"
+                    else return "advanced" end
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    local presets = {
+                        below  = { "TOP", "BOTTOM" },
+                        above  = { "BOTTOM", "TOP" },
+                        left   = { "RIGHT", "LEFT" },
+                        right  = { "LEFT", "RIGHT" },
+                        center = { "CENTER", "CENTER" },
+                    }
+                    if presets[val] then
+                        g.anchor.sourcePoint = presets[val][1]
+                        g.anchor.destPoint = presets[val][2]
+                        local db = g.getDB and g.getDB()
+                        if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                        if g.anchor.enabled and ns.CDMGroupsAnchors then
+                            ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                        end
+                        if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                    end
+                    -- "advanced" reveals the raw dropdowns via _advancedMode flag
+                    if val == "advanced" then
+                        g.anchor._advancedMode = true
+                    else
+                        g.anchor._advancedMode = nil
+                    end
+                end,
+            },
+            anchorSourcePoint = {
+                type = "select",
+                name = "Source Point",
+                desc = "The point on the source (the thing being moved) that attaches.",
+                order = 47.5,
+                width = 0.7,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor or g.anchor.mode == "none" then return true end
+                    if g.anchor._advancedMode then return false end
+                    -- Only show in advanced mode
+                    local src = g.anchor.sourcePoint or "TOP"
+                    local dst = g.anchor.destPoint or "BOTTOM"
+                    if (src == "TOP" and dst == "BOTTOM") or (src == "BOTTOM" and dst == "TOP")
+                        or (src == "RIGHT" and dst == "LEFT") or (src == "LEFT" and dst == "RIGHT")
+                        or (src == "CENTER" and dst == "CENTER") then return true end
+                    return false
+                end,
+                values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS or {},
+                sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS_SORTED or {},
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.sourcePoint or "TOP"
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.sourcePoint = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorDestPoint = {
+                type = "select",
+                name = "Dest Point",
+                desc = "The point on the target (the thing being anchored to) that we attach to.",
+                order = 47.6,
+                width = 0.7,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor or g.anchor.mode == "none" then return true end
+                    if g.anchor._advancedMode then return false end
+                    -- Only show in advanced mode
+                    local src = g.anchor.sourcePoint or "TOP"
+                    local dst = g.anchor.destPoint or "BOTTOM"
+                    if (src == "TOP" and dst == "BOTTOM") or (src == "BOTTOM" and dst == "TOP")
+                        or (src == "RIGHT" and dst == "LEFT") or (src == "LEFT" and dst == "RIGHT")
+                        or (src == "CENTER" and dst == "CENTER") then return true end
+                    return false
+                end,
+                values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS or {},
+                sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS_SORTED or {},
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.destPoint or "BOTTOM"
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.destPoint = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorOffsetX = {
+                type = "input",
+                name = "X Offset",
+                desc = "Horizontal offset from the anchor point.",
+                dialogControl = "ArcUI_EditBox",
+                order = 47.7,
+                width = 0.5,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode == "none"
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.anchor and g.anchor.offsetX or 0)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    local num = tonumber(val) or 0
+                    g.anchor.offsetX = num
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorOffsetY = {
+                type = "input",
+                name = "Y Offset",
+                desc = "Vertical offset from the anchor point.",
+                dialogControl = "ArcUI_EditBox",
+                order = 47.8,
+                width = 0.5,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode == "none"
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return tostring(g and g.anchor and g.anchor.offsetY or 0)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    local num = tonumber(val) or 0
+                    g.anchor.offsetY = num
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorSafeMode = {
+                type = "toggle",
+                name = "Safe Anchoring",
+                desc = "Use screen-coordinate positioning to break the taint chain. " ..
+                       "Required for anchoring to/from Blizzard protected frames. " ..
+                       "Disable only if anchoring between addon frames that don't taint.",
+                order = 47.85,
+                width = 1.0,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return true end
+                    return g.anchor.mode ~= "toFrame" and g.anchor.mode ~= "toGroup"
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.useSafeAnchor ~= false
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.useSafeAnchor = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            anchorTrackTarget = {
+                type = "toggle",
+                name = "Track Target",
+                desc = "When the target frame moves (e.g. ElvUI repositions it), " ..
+                       "automatically re-anchor this group to follow it. " ..
+                       "Without this, the group only anchors once on login/apply.",
+                order = 47.86,
+                width = 1.0,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor or g.anchor.mode ~= "toFrame"
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return g and g.anchor and g.anchor.trackTarget or false
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    g.anchor.trackTarget = val
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if g.anchor.enabled and ns.CDMGroupsAnchors then
+                        ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+                    end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            -- ═══════════════════════════════════════════════════════════════
+            -- FRAME > GROUP: Multi-frame anchored list
+            -- ═══════════════════════════════════════════════════════════════
+            anchoredFramesDesc = {
+                type = "description",
+                name = "|cffffd100Anchored Frames|r — External frames positioned relative to this group.",
+                fontSize = "medium",
+                order = 48.0,
+                width = "full",
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor
+                end,
+            },
+            anchoredFramesHelp = {
+                type = "description",
+                name = "|cffaaaaaa" ..
+                    "Attach UI frames (like your player frame) to this group so they move together.\n\n" ..
+                    "|cffffd100Safe|r — Positions the frame without creating a direct link that can cause UI errors. Recommended.\n" ..
+                    "|cffffd100Snap|r — Forces the frame back if something else tries to move it (e.g. Blizzard resets, edit mode).\n\n" ..
+                    "|cffff4444Note:|r Snap may fight with other addons that also position the same frame.",
+                order = 48.005,
+                width = "full",
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor
+                end,
+            },
+            anchoredFramesAdd = {
+                type = "execute",
+                name = "+ Add Frame",
+                desc = "Add a new external frame entry.",
+                order = 48.01,
+                width = 0.6,
+                hidden = function()
+                    if HideIfNoGroup() or collapsedSections.anchoring then return true end
+                    local g = GetSelectedGroup()
+                    return not g or not g.anchor
+                end,
+                func = function()
+                    local g = GetSelectedGroup()
+                    if not g or not g.anchor then return end
+                    if not g.anchor.anchoredFrames then g.anchor.anchoredFrames = {} end
+                    local entry = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.GetFrameEntryDefaults() or {
+                        frameName = "", sourcePoint = "BOTTOM", destPoint = "TOP",
+                        offsetX = 0, offsetY = 0, useSafeAnchor = true, snapBack = false,
+                    }
+                    table.insert(g.anchor.anchoredFrames, entry)
+                    local db = g.getDB and g.getDB()
+                    if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                    local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                    if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                end,
+            },
+            
             -- POSITION SETTINGS SECTION
             positionHeader = {
                 type = "toggle",
@@ -2525,6 +3085,353 @@ local function GetOptionsTable()
             },
         },
     }
+    
+    -- ═══════════════════════════════════════════════════════════════
+    -- INJECT DYNAMIC ANCHORED FRAME ENTRIES
+    -- ═══════════════════════════════════════════════════════════════
+    local MAX_ANCHORED_FRAMES = 8
+    local args = options.args
+    
+    local function GetEntry(idx)
+        local g = GetSelectedGroup()
+        if not g or not g.anchor or not g.anchor.anchoredFrames then return nil end
+        return g.anchor.anchoredFrames[idx]
+    end
+    
+    local function HideEntry(idx)
+        if HideIfNoGroup() or collapsedSections.anchoring then return true end
+        local g = GetSelectedGroup()
+        if not g or not g.anchor then return true end
+        return not g.anchor.anchoredFrames or not g.anchor.anchoredFrames[idx]
+    end
+    
+    local function SaveAndApply()
+        local g = GetSelectedGroup()
+        if not g or not g.anchor then return end
+        local db = g.getDB and g.getDB()
+        if db then db.anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Serialize(g.anchor) or g.anchor end
+        if g.anchor.enabled and ns.CDMGroupsAnchors then
+            ns.CDMGroupsAnchors.ApplyGroupAnchor(g)
+        end
+        if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+    end
+    
+    -- Auto-configure when a frame is assigned.
+    -- Default Safe=true for all frames (avoids taint chain issues).
+    -- User can toggle off if they want direct anchoring.
+    local function AutoConfigureEntry(entry)
+        if not entry or not entry.frameName or entry.frameName == "" then return end
+        entry.useSafeAnchor = true
+        entry.snapBack = false
+    end
+    
+    -- Helper: check if source/dest pair matches a simple preset
+    local simplePresets = {
+        below  = { "TOP", "BOTTOM" },
+        above  = { "BOTTOM", "TOP" },
+        left   = { "RIGHT", "LEFT" },
+        right  = { "LEFT", "RIGHT" },
+        center = { "CENTER", "CENTER" },
+    }
+    local function GetSimplePosition(src, dst)
+        for key, pair in pairs(simplePresets) do
+            if src == pair[1] and dst == pair[2] then return key end
+        end
+        return "advanced"
+    end
+    local simpleValues = {
+        below  = "Below",
+        above  = "Above",
+        left   = "Left",
+        right  = "Right",
+        center = "Center",
+        advanced = "|cffaaaaaa Advanced|r",
+    }
+    local simpleSorting = { "below", "above", "left", "right", "center", "advanced" }
+    
+    for i = 1, MAX_ANCHORED_FRAMES do
+        local baseOrder = 48.1 + (i - 1) * 0.1
+        local prefix = "af" .. i .. "_"
+        
+        args[prefix .. "header"] = {
+            type = "description",
+            name = function()
+                local entry = GetEntry(i)
+                local fname = entry and entry.frameName or ""
+                if fname ~= "" then
+                    return "|cff88ccff— Frame " .. i .. ": " .. fname .. " —|r"
+                end
+                return "|cff888888— Frame " .. i .. " (not set) —|r"
+            end,
+            fontSize = "medium",
+            order = baseOrder,
+            width = "full",
+            hidden = function() return HideEntry(i) end,
+        }
+        
+        args[prefix .. "name"] = {
+            type = "input",
+            name = "Frame Name",
+            desc = "Global frame name. Type a name, use the preset dropdown, or use Pick Frame.",
+            dialogControl = "ArcUI_EditBox",
+            order = baseOrder + 0.01,
+            width = 0.8,
+            hidden = function() return HideEntry(i) end,
+            get = function()
+                local e = GetEntry(i)
+                return e and e.frameName or ""
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then
+                    e.frameName = val
+                    AutoConfigureEntry(e)
+                end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "preset"] = {
+            type = "select",
+            name = "Preset",
+            desc = "Quick-select a well-known UI frame.",
+            order = baseOrder + 0.011,
+            width = 0.9,
+            hidden = function() return HideEntry(i) end,
+            values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.COMMON_FRAMES or {},
+            sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.COMMON_FRAMES_SORTED or {},
+            get = function() return "" end,
+            set = function(_, val)
+                if val == "" then return end
+                local e = GetEntry(i)
+                if e then
+                    e.frameName = val
+                    AutoConfigureEntry(e)
+                end
+                SaveAndApply()
+                local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+            end,
+        }
+        
+        args[prefix .. "pick"] = {
+            type = "execute",
+            name = "Pick",
+            desc = "Mouse over any frame and click to select it.",
+            order = baseOrder + 0.012,
+            width = 0.4,
+            hidden = function() return HideEntry(i) end,
+            func = function()
+                if not ns.CDMGroupsAnchors or not ns.CDMGroupsAnchors.StartPicker then return end
+                ns.CDMGroupsAnchors.StartPicker(function(name)
+                    local e = GetEntry(i)
+                    if e then
+                        e.frameName = name
+                        AutoConfigureEntry(e)
+                    end
+                    SaveAndApply()
+                    local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                    if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+                end)
+            end,
+        }
+        
+        args[prefix .. "position"] = {
+            type = "select",
+            name = "Position",
+            desc = "Where to position relative to the group. Pick 'Advanced' for full control.",
+            order = baseOrder + 0.015,
+            width = 0.55,
+            hidden = function() return HideEntry(i) end,
+            values = simpleValues,
+            sorting = simpleSorting,
+            get = function()
+                local e = GetEntry(i)
+                if not e then return "below" end
+                return GetSimplePosition(e.sourcePoint or "BOTTOM", e.destPoint or "TOP")
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if not e then return end
+                if simplePresets[val] then
+                    e.sourcePoint = simplePresets[val][1]
+                    e.destPoint = simplePresets[val][2]
+                    e._advancedMode = nil
+                    SaveAndApply()
+                elseif val == "advanced" then
+                    e._advancedMode = true
+                end
+            end,
+        }
+        
+        args[prefix .. "source"] = {
+            type = "select",
+            name = "Src",
+            desc = "Point on the external frame that attaches.",
+            order = baseOrder + 0.02,
+            width = 0.45,
+            hidden = function()
+                if HideEntry(i) then return true end
+                local e = GetEntry(i)
+                if not e then return true end
+                if e._advancedMode then return false end
+                return GetSimplePosition(e.sourcePoint or "BOTTOM", e.destPoint or "TOP") ~= "advanced"
+            end,
+            values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS or {},
+            sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS_SORTED or {},
+            get = function()
+                local e = GetEntry(i)
+                return e and e.sourcePoint or "BOTTOM"
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.sourcePoint = val end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "dest"] = {
+            type = "select",
+            name = "Dst",
+            desc = "Point on this group's container that we attach to.",
+            order = baseOrder + 0.03,
+            width = 0.45,
+            hidden = function()
+                if HideEntry(i) then return true end
+                local e = GetEntry(i)
+                if not e then return true end
+                if e._advancedMode then return false end
+                return GetSimplePosition(e.sourcePoint or "BOTTOM", e.destPoint or "TOP") ~= "advanced"
+            end,
+            values = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS or {},
+            sorting = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ANCHOR_POINTS_SORTED or {},
+            get = function()
+                local e = GetEntry(i)
+                return e and e.destPoint or "TOP"
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.destPoint = val end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "offx"] = {
+            type = "input",
+            name = "X",
+            desc = "Horizontal offset",
+            dialogControl = "ArcUI_EditBox",
+            order = baseOrder + 0.04,
+            width = 0.35,
+            hidden = function() return HideEntry(i) end,
+            get = function()
+                local e = GetEntry(i)
+                return tostring(e and e.offsetX or 0)
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.offsetX = tonumber(val) or 0 end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "offy"] = {
+            type = "input",
+            name = "Y",
+            desc = "Vertical offset",
+            dialogControl = "ArcUI_EditBox",
+            order = baseOrder + 0.05,
+            width = 0.35,
+            hidden = function() return HideEntry(i) end,
+            get = function()
+                local e = GetEntry(i)
+                return tostring(e and e.offsetY or 0)
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.offsetY = tonumber(val) or 0 end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "safe"] = {
+            type = "toggle",
+            name = "Safe",
+            desc = "Position without creating a direct link. Avoids UI errors. Recommended.",
+            order = baseOrder + 0.06,
+            width = 0.4,
+            hidden = function() return HideEntry(i) end,
+            get = function()
+                local e = GetEntry(i)
+                return e and e.useSafeAnchor or false
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.useSafeAnchor = val end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "snap"] = {
+            type = "toggle",
+            name = "Snap",
+            desc = "Force the frame back if something else moves it. May conflict with other addons.",
+            order = baseOrder + 0.07,
+            width = 0.4,
+            hidden = function() return HideEntry(i) end,
+            get = function()
+                local e = GetEntry(i)
+                return e and e.snapBack or false
+            end,
+            set = function(_, val)
+                local e = GetEntry(i)
+                if e then e.snapBack = val end
+                SaveAndApply()
+            end,
+        }
+        
+        args[prefix .. "remove"] = {
+            type = "execute",
+            name = "|cffff4444X|r",
+            desc = "Remove this frame entry.",
+            order = baseOrder + 0.08,
+            width = 0.3,
+            hidden = function() return HideEntry(i) end,
+            func = function()
+                local g = GetSelectedGroup()
+                if not g or not g.anchor or not g.anchor.anchoredFrames then return end
+                -- Detach this specific frame before removing from config
+                local entry = g.anchor.anchoredFrames[i]
+                if entry and entry.frameName and entry.frameName ~= "" then
+                    local extFrame = _G[entry.frameName]
+                    if extFrame then
+                        -- Clear snap-back data FIRST (prevents hook from re-anchoring)
+                        extFrame._arcAnchorData = nil
+                        extFrame._arcAnchorMoving = nil
+                        extFrame._arcAnchoredByGroup = nil
+                        -- Restore original position if saved
+                        if extFrame._arcOriginalAnchors then
+                            if not InCombatLockdown() or not (extFrame.IsProtected and extFrame:IsProtected()) then
+                                extFrame:ClearAllPoints()
+                                for _, a in ipairs(extFrame._arcOriginalAnchors) do
+                                    extFrame:SetPoint(a.point, a.relTo or UIParent, a.relPoint, a.x or 0, a.y or 0)
+                                end
+                            end
+                            extFrame._arcOriginalAnchors = nil
+                        end
+                        -- Clear ownership
+                        if ns._activeFrameOwnership then
+                            ns._activeFrameOwnership[entry.frameName] = nil
+                        end
+                    end
+                end
+                table.remove(g.anchor.anchoredFrames, i)
+                SaveAndApply()
+                local AceConfigRegistry = LibStub and LibStub("AceConfigRegistry-3.0", true)
+                if AceConfigRegistry then AceConfigRegistry:NotifyChange("ArcUI") end
+            end,
+        }
+    end
     
     return options
 end

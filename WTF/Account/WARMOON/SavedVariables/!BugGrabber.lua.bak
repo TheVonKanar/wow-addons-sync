@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 1452,
 ["lastSanitation"] = 3,
+["session"] = 1491,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["session"] = 379,
 ["time"] = "2024/09/20 09:27:39",
+["session"] = 379,
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["session"] = 475,
 ["time"] = "2024/10/07 08:13:04",
+["session"] = 475,
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["time"] = "2024/11/12 06:05:20",
 ["session"] = 560,
+["time"] = "2024/11/12 06:05:20",
 ["counter"] = 2,
 },
 {
@@ -366,14 +366,6 @@ BugGrabberDB = {
 ["counter"] = 9,
 },
 {
-["message"] = "bad argument #1 to '?' (Usage: local drops = C_LootHistory.GetSortedDropsForEncounter(encounterID))",
-["time"] = "2025/02/08 22:46:29",
-["locals"] = "(*temporary) = \"bad argument #1 to '?' (Usage: local drops = C_LootHistory.GetSortedDropsForEncounter(encounterID))\"\n",
-["stack"] = "[string \"=[C]\"]: in function `GetSortedDropsForEncounter'\n[string \"@Interface/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua\"]:466: in function `UpdateTimer'\n[string \"@Interface/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua\"]:461: in function <...ce/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua:460>",
-["session"] = 794,
-["counter"] = 2,
-},
-{
 ["message"] = "...ns/Blizzard_ItemButton/Shared/ItemButtonTemplate.lua:256: attempt to call global 'GetItemButtonIconTexture' (a nil value)",
 ["time"] = "2025/02/26 08:27:35",
 ["locals"] = "self = Button {\n IconOverlay = Texture {\n }\n __MSQ_bType = \"Item\"\n showMatchHighlight = true\n masqueApplied = true\n icon = Baganator_SingleViewBackpackViewFrameblizzardIconTexture {\n }\n __MSQ_Scale = 1\n HighlightTexture = Texture {\n }\n __MSQ_Enabled = true\n __Regions = <table> {\n }\n PushedTexture = Texture {\n }\n Count = Baganator_SingleViewBackpackViewFrameblizzardCount {\n }\n searchOverlay = Baganator_SingleViewBackpackViewFrameblizzardSearchOverlay {\n }\n __MSQ_Icon = Baganator_SingleViewBackpackViewFrameblizzardIconTexture {\n }\n NormalTexture = Baganator_SingleViewBackpackViewFrameblizzardNormalTexture {\n }\n IconOverlay2 = Texture {\n }\n __MSQ_Addon = \"Baganator\"\n __MSQ_Normal_Skin = <table> {\n }\n __MSQ_Normal = Texture {\n }\n __MSQ_New_Normal = Texture {\n }\n __MSQ_Empty_Type = true\n __MSQ_Shape = \"Square\"\n ItemContextOverlay = Texture {\n }\n __MSQ_Skin = <table> {\n }\n IconBorder = Texture {\n }\n __MSQ_oType = \"Button\"\n __MSQ_IsItem = true\n Stock = Baganator_SingleViewBackpackViewFrameblizzardStock {\n }\n SlotBackground = Texture {\n }\n}\n(*temporary) = nil\n(*temporary) = Button {\n IconOverlay = Texture {\n }\n __MSQ_bType = \"Item\"\n showMatchHighlight = true\n masqueApplied = true\n icon = Baganator_SingleViewBackpackViewFrameblizzardIconTexture {\n }\n __MSQ_Scale = 1\n HighlightTexture = Texture {\n }\n __MSQ_Enabled = true\n __Regions = <table> {\n }\n PushedTexture = Texture {\n }\n Count = Baganator_SingleViewBackpackViewFrameblizzardCount {\n }\n searchOverlay = Baganator_SingleViewBackpackViewFrameblizzardSearchOverlay {\n }\n __MSQ_Icon = Baganator_SingleViewBackpackViewFrameblizzardIconTexture {\n }\n NormalTexture = Baganator_SingleViewBackpackViewFrameblizzardNormalTexture {\n }\n IconOverlay2 = Texture {\n }\n __MSQ_Addon = \"Baganator\"\n __MSQ_Normal_Skin = <table> {\n }\n __MSQ_Normal = Texture {\n }\n __MSQ_New_Normal = Texture {\n }\n __MSQ_Empty_Type = true\n __MSQ_Shape = \"Square\"\n ItemContextOverlay = Texture {\n }\n __MSQ_Skin = <table> {\n }\n IconBorder = Texture {\n }\n __MSQ_oType = \"Button\"\n __MSQ_IsItem = true\n Stock = Baganator_SingleViewBackpackViewFrameblizzardStock {\n }\n SlotBackground = Texture {\n }\n}\n(*temporary) = \"attempt to call global 'GetItemButtonIconTexture' (a nil value)\"\n",
@@ -447,8 +439,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["session"] = 897,
 ["time"] = "2025/03/25 19:16:23",
+["session"] = 897,
 ["counter"] = 2,
 },
 {
@@ -805,8 +797,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["session"] = 1253,
 ["time"] = "2025/10/08 09:26:56",
+["session"] = 1253,
 ["counter"] = 1,
 },
 {
@@ -835,8 +827,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["session"] = 1270,
 ["time"] = "2025/12/05 18:53:28",
+["session"] = 1270,
 ["counter"] = 2,
 },
 {
@@ -849,20 +841,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
@@ -875,8 +867,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["session"] = 1272,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1272,
 ["counter"] = 2,
 },
 {
@@ -977,8 +969,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["session"] = 1339,
 ["time"] = "2026/01/26 20:42:33",
+["session"] = 1339,
 ["counter"] = 1,
 },
 {
@@ -1007,8 +999,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["time"] = "2026/01/28 18:15:55",
 ["session"] = 1350,
+["time"] = "2026/01/28 18:15:55",
 ["counter"] = 1,
 },
 {
@@ -1021,14 +1013,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["session"] = 1357,
 ["time"] = "2026/01/30 00:15:27",
+["session"] = 1357,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["session"] = 1357,
 ["time"] = "2026/01/30 00:15:28",
+["session"] = 1357,
 ["counter"] = 1,
 },
 {
@@ -1070,14 +1062,6 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:693: in function 'CompactUnitFrame_UpdateHealthColor'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:733: in function 'CompactUnitFrame_UpdateHealth'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:449: in function 'CompactUnitFrame_UpdateAll'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactUnitFrame.lua]:322: in function 'CompactUnitFrame_SetUpFrame'\n[Interface/AddOns/Blizzard_UnitFrame/Shared/CompactPartyFrame.lua]:167: in function 'RefreshMembers'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1949: in function 'RefreshPartyFrames'\n[Interface/AddOns/Blizzard_EditMode/Mainline/EditModeManagerOverrides.lua]:17: in function 'EditModeFrameSetup'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:1840: in function 'OnEditModeEnter'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:88: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:82>\n[C]: ?\n[C]: ?\n[C]: ?\n...[Interface/AddOns/Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua]:284: in function 'SendText'\n[Interface/AddOns/Blizzard_ChatFrameBase/Shared/MacroExecutionManager.lua]:27: in function <...zzard_ChatFrameBase/Shared/MacroExecutionManager.lua:20>\n[C]: in function 'UseAction'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:349: in function 'handler'\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:732: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:710>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:746: in function <...terface/AddOns/Blizzard_FrameXML/SecureTemplates.lua:739>\n[Interface/AddOns/Blizzard_FrameXML/SecureTemplates.lua]:798: in function 'SecureActionButton_OnClick'\n[Interface/AddOns/Blizzard_ActionBar/Shared/ActionButton.lua]:112: in function 'TryUseActionButton'\n[Interface/AddOns/Blizzard_ActionBar/Shared/MultiActionBars.lua]:41: in function 'MultiActionButtonDown'\n[MULTIACTIONBAR6BUTTON2]:2: in function <[string \"MULTIACTIONBAR6BUTTON2\"]:1>",
 ["session"] = 1374,
 ["counter"] = 2,
-},
-{
-["message"] = "Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:491: attempt to compare a secret number value (tainted by 'Plumber')",
-["time"] = "2026/02/19 20:03:49",
-["locals"] = "",
-["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:212: in function <...zzard_SharedMapDataProviders/AreaPOIDataProvider.lua:194>\n",
-["session"] = 1383,
-["counter"] = 7,
 },
 {
 ["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'Porty' tried to call the protected function 'Button:ClearAllPoints()'.",
@@ -1176,12 +1160,60 @@ BugGrabberDB = {
 ["counter"] = 3,
 },
 {
-["message"] = "...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:242: attempt to compare number with nil",
-["time"] = "2026/03/01 10:46:51",
-["locals"] = "fromRender = true\ntbl = <table> {\n 382021 = <table> {\n }\n 318038 = <table> {\n }\n 433568 = <table> {\n }\n 433583 = <table> {\n }\n 462757 = <table> {\n }\n 33757 = <table> {\n }\n}\nout = <table> {\n}\ntSec = nil\n(for state) = <table> {\n 382021 = <table> {\n }\n 318038 = <table> {\n }\n 433568 = <table> {\n }\n 433583 = <table> {\n }\n 462757 = <table> {\n }\n 33757 = <table> {\n }\n}\n(for control) = 318038\n_ = 318038\nrow = <table> {\n topLbl = \"\"\n gates = <table> {\n }\n btmLbl = \"\"\n name = \"Flametongue Weapon\"\n check = \"player\"\n wepEnchID = <table> {\n }\n icon = 135814\n spellID = 318038\n}\nslotid = 17\nrem = 1927.413000\n(*temporary) = 17\n(*temporary) = true\n(*temporary) = 1928413\n(*temporary) = 0\n(*temporary) = 5401\n(*temporary) = true\n(*temporary) = 1927413\n(*temporary) = 1927.413000\n(*temporary) = \"attempt to compare number with nil\"\nns = <table> {\n OptionElements = <table> {\n }\n _optionSyncers = <table> {\n }\n MIDNIGHT_WRAP_CTIMER = false\n Options = <table> {\n }\n RenderFrames = <table> {\n }\n _delves_disable = false\n MIDNIGHT_LIMP_MODE = true\n EXPANSION_MIDNIGHT = 11\n _mp_setThresholdsHooked = false\n _runeLastAnyExpire = true\n CORNER_TEXT_FIELD = \"qty\"\n Exclusions = <table> {\n }\n _delves_renderHooked = true\n ScrollBar = <table> {\n }\n _rangeTracked = <table> {\n }\n NumberSelect = <table> {\n }\n EXPANSION_TWW = 10\n _mp_disable = false\n _cwe_order_wrapped = true\n _mp_lastKey = \"0:0\"\n RenderParent = ClickableRaidBuffsRenderParent {\n }\n LayoutTabName = \"Layout\"\n _scanWrappersInstalled = true\n _inCombat = false\n _fixedTargetWrapped = true\n _crb_rf_wrapped = true\n Overlay = ClickableRaidBuffsOverlay {\n }\n Hover = ClickableRaidBuffsOverlayHover {\n }\n BASE_ICON_SIZE = 50\n _cosmetics_wrapped = true\n _delves_lastKey = \"0\"\n _isDead = false\n _combat_suspended = false\n _trainingDummyBypass = false\n _midnightEvents = <table> {\n }\n _inEncounter = true\n _raidBuffWatch = <table> {\n }\n _healthstone_wrapped = true\n _durability_wrapped = true\n _cwe_render_wrapped = true\n _customSpellsWrapped = true\n _mergedScan = true\n _crb_cd_refresh_wrapped = true\n _ex_wrap_pr1 = true\n _GateHandlers = <table> {\n }\n _midnightDeferredOpen = false\n _midnightNotified = false\n VERSION = \"7.4.1\"\n MIDNIGHT_ERROR_REPORTING = false\n _mp_overridden = false\n OptionsFrame = ClickableRaidBuffsOptionsPanel {\n }\n Compat = <table> {\n }\n HealthstoneSoulwellVisible = true\n RenderIndexByKey = <table> {\n }\n _textstyles_renderWrapped = true\n FontObjects = <table> {\n }\n}\nCAT = \"CASTABLE_WEAPON_ENCHANTS\"\n",
-["stack"] = "[Interface/AddOns/ClickableRaidBuffs/Modules/CastableWeaponEnchants.lua]:242: in function <...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:176>\n[Interface/AddOns/ClickableRaidBuffs/Modules/CastableWeaponEnchants.lua]:324: in function <...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:322>\n[Interface/AddOns/ClickableRaidBuffs/Modules/Durability.lua]:158: in function <...ace/AddOns/ClickableRaidBuffs/Modules/Durability.lua:156>\n[Interface/AddOns/ClickableRaidBuffs/Modules/Healthstone.lua]:346: in function <...ce/AddOns/ClickableRaidBuffs/Modules/Healthstone.lua:344>\n[tail call]: ?\n[Interface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua]:321: in function <...terface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua:315>\n[Interface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua]:332: in function <...terface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua:330>\n",
-["session"] = 1449,
+["message"] = "Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:491: attempt to compare a secret number value (tainted by 'Plumber')",
+["time"] = "2026/03/03 22:36:58",
+["locals"] = "self = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n dirtyLayout = false\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n shownWidgetCount = 7\n dirty = true\n widgetSetLayoutDirection = 0\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1900\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n(*temporary) = <no value>\n(*temporary) = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n dirtyLayout = false\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n shownWidgetCount = 7\n dirty = true\n widgetSetLayoutDirection = 0\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1900\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n(*temporary) = <no value>\n(*temporary) = 1\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare a secret number value (tainted by 'Plumber')\"\n",
+["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_POIButton/POIButton.lua]:538: in function 'OnLeave'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIEventDataProvider.lua]:80: in function <..._SharedMapDataProviders/AreaPOIEventDataProvider.lua:79>\n",
+["session"] = 1456,
+["counter"] = 16,
+},
+{
+["message"] = ".../Mainline/Blizzard_UIWidgetTemplateTextWithState.lua:31: bad argument #1 to 'SetWidth' (Usage: self:SetWidth(width). Secret values are only allowed during untainted execution for this argument.)",
+["time"] = "2026/03/04 00:18:33",
+["locals"] = "self = Frame {\n tooltipLoc = 0\n tooltipYOffset = 0\n widgetType = 8\n tooltipContainsHyperLink = false\n tooltip = \"\"\n widgetID = 7676\n widgetContainer = Frame {\n }\n tooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n FadeInAnim = AnimationGroup {\n }\n disableTooltip = true\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n layoutDirection = 0\n outAnimType = 0\n inAnimType = 0\n widgetTag = \"\"\n orderIndex = 200\n widgetSetID = 1795\n defaultTooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n hasTimer = false\n FadeOutAnim = AnimationGroup {\n }\n Text = FontString {\n }\n tooltipXOffset = 0\n}\nwidgetInfo = <table> {\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n widgetScale = 0\n tooltipLoc = 0\n fontType = 0\n shownState = 1\n widgetSizeSetting = 0\n bottomPadding = 0\n enabledState = 3\n textSizeType = 0\n text = \"Next Assault: 12 |4Min:Min; 57 |4Sec:Sec;\"\n orderIndex = 200\n layoutDirection = 0\n inAnimType = 0\n widgetTag = \"\"\n hasTimer = false\n outAnimType = 0\n tooltip = \"\"\n hAlign = 1\n}\nwidgetContainer = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n shownWidgetCount = 0\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n dirty = false\n widgetSetLayoutDirection = 1\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1795\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetTemplateTextWithState.lua]:31: in function 'Setup'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:526: in function 'ProcessWidget'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:562: in function 'ProcessAllWidgets'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:275: in function 'RegisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:588: in function 'GameTooltip_AddWidgetSet'\n[Interface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua]:44: in function <...terface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua:3>\n[tail call]: ?\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:166: in function 'OnMouseEnter'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIEventDataProvider.lua]:76: in function <..._SharedMapDataProviders/AreaPOIEventDataProvider.lua:74>\n",
+["session"] = 1457,
 ["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:491: attempt to compare a secret number value (tainted by 'Angleur')",
+["time"] = "2026/03/04 00:19:05",
+["locals"] = "self = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n shownWidgetCount = 0\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n dirty = true\n widgetSetLayoutDirection = 1\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1795\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n(*temporary) = <no value>\n(*temporary) = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n shownWidgetCount = 0\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n dirty = true\n widgetSetLayoutDirection = 1\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1795\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n(*temporary) = <no value>\n(*temporary) = 1\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare a secret number value (tainted by 'Angleur')\"\n",
+["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:276: in function <...lizzard_SharedMapDataProviders/QuestDataProvider.lua:273>\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_SharedXMLBase/Pools.lua]:520: in function 'Pool_HideAndClearAnchors'\n...[Interface/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua]:330: in function 'RemoveAllPinsByTemplate'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:105: in function 'RemoveAllData'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:115: in function 'RefreshAllData'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:39: in function <...lizzard_SharedMapDataProviders/QuestDataProvider.lua:39>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:210: in function <...e/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua:209>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:213: in function 'TriggerEvent'\n[Interface/AddOns/Blizzard_FrameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua]:59: in function 'CacheCurrentSuperTrackInfo'\n[Interface/AddOns/Blizzard_FrameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua]:17: in function <...rameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua:15>\n",
+["session"] = 1457,
+["counter"] = 9,
+},
+{
+["message"] = "Cannot perform measurement in QuestFrameModelScene. nil, 2560",
+["time"] = "2026/03/04 13:26:08",
+["locals"] = "self = QuestModelScene {\n actorPool = <table> {\n }\n ShadowOverlay = Texture {\n }\n Border = Texture {\n }\n activeCamera = <table> {\n }\n forceEvenIfSame = true\n normalIntensity = 0.750000\n cameraModificationType = 1\n cameraTransitionType = 1\n ModelNameDivider = Texture {\n }\n ModelBackground = Texture {\n }\n tagToActor = <table> {\n }\n modelSceneID = 992\n cameras = <table> {\n }\n TopBarBg = Texture {\n }\n ModelNameBackground = Texture {\n }\n actorTemplate = \"ModelSceneActorTemplate\"\n ModelTextFrame = Frame {\n }\n tagToCamera = <table> {\n }\n highlightIntensity = 1.200000\n}\nr1 = nil\nr2 = 2560\nvalidRect = nil\n",
+["stack"] = "[Interface/AddOns/Blizzard_UIPanels_Game/Mainline/QuestFrame.lua]:471: in function <...ddOns/Blizzard_UIPanels_Game/Mainline/QuestFrame.lua:466>\n[C]: in function 'SetParent'\n[Interface/AddOns/Blizzard_UIPanels_Game/Mainline/QuestFrame.lua]:480: in function 'QuestFrame_ShowQuestPortrait'\n[Interface/AddOns/Blizzard_UIPanels_Game/Mainline/QuestMapFrame.lua]:1010: in function <...ns/Blizzard_UIPanels_Game/Mainline/QuestMapFrame.lua:993>\n[C]: in function 'QuestMapFrame_ShowQuestDetails'\n[Interface/AddOns/Blizzard_UIPanels_Game/Mainline/QuestMapFrame.lua]:1119: in function 'QuestMapFrame_OpenToQuestDetails'\n[Interface/AddOns/Blizzard_ObjectiveTracker/Blizzard_QuestObjectiveTracker.lua]:68: in function 'OnBlockHeaderClick'\n[Interface/AddOns/Blizzard_ObjectiveTracker/Blizzard_ObjectiveTrackerBlock.lua]:285: in function 'OnHeaderClick'\n[Interface/AddOns/Blizzard_ObjectiveTracker/Blizzard_ObjectiveTrackerBlock.lua]:382: in function <..._ObjectiveTracker/Blizzard_ObjectiveTrackerBlock.lua:380>\n",
+["session"] = 1464,
+["counter"] = 1,
+},
+{
+["message"] = "...e/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua:131: attempt to perform arithmetic on local 'currentValue' (a secret number value tainted by 'UnhaltedUnitFrames')",
+["time"] = "2026/03/04 20:05:50",
+["locals"] = "currentValue = <no value>\n(*temporary) = UUF_Boss_CastBar {\n holdTime = 0\n Time = UUF_Boss_CastBarDurationText {\n }\n Background = Texture {\n }\n Icon = UUF_Boss_CastBarIcon {\n }\n __owner = UUF_Boss1 {\n }\n Text = UUF_Boss_CastBarSpellNameText {\n }\n smoothing = 0\n NotInterruptibleOverlay = Texture {\n }\n Pips = <table> {\n }\n delay = 0\n}\n(*temporary) = <no value>\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to perform arithmetic on local 'currentValue' (a secret number value tainted by 'UnhaltedUnitFrames')\"\nBossFrame = UUF_Boss1 {\n HealthPrediction = <table> {\n }\n __tags = <table> {\n }\n Range = <table> {\n }\n unitEvents = <table> {\n }\n UNIT_MAXHEALTH = <table> {\n }\n __elements = <table> {\n }\n IsPingable = true\n Tags = <table> {\n }\n TargetIndicator = UUF_Boss_TargetIndicator {\n }\n UNIT_HEALTH = <table> {\n }\n Health = UUF_Boss_HealthBar {\n }\n style = \"UUF_Boss\"\n Portrait = UUF_Boss_Portrait2D {\n }\n RaidTargetIndicator = UUF_Boss_RaidTargetMarkerIndicator {\n }\n unit = \"boss1\"\n DebuffContainer = UUF_Boss_DebuffsContainer {\n }\n id = \"1\"\n BuffContainer = UUF_Boss_BuffsContainer {\n }\n HealthBackground = UUF_Boss_HealthBackground {\n }\n Container = UUF_Boss_Container {\n }\n HighLevelContainer = UUF_Boss_HighLevelContainer {\n }\n Buffs = UUF_Boss_BuffsContainer {\n }\n Castbar = UUF_Boss_CastBar {\n }\n}\n",
+["stack"] = "[Interface/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua]:131: in function <...e/AddOns/UnhaltedUnitFrames/Core/TestEnvironment.lua:131>\n",
+["session"] = 1468,
+["counter"] = 44,
+},
+{
+["message"] = "...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:242: attempt to compare number with nil",
+["time"] = "2026/03/05 21:47:44",
+["locals"] = "fromRender = true\ntbl = <table> {\n 382021 = <table> {\n }\n 318038 = <table> {\n }\n 433568 = <table> {\n }\n 433583 = <table> {\n }\n 462757 = <table> {\n }\n 33757 = <table> {\n }\n}\nout = <table> {\n}\ntSec = nil\n(for state) = <table> {\n 382021 = <table> {\n }\n 318038 = <table> {\n }\n 433568 = <table> {\n }\n 433583 = <table> {\n }\n 462757 = <table> {\n }\n 33757 = <table> {\n }\n}\n(for control) = 318038\n_ = 318038\nrow = <table> {\n topLbl = \"\"\n gates = <table> {\n }\n btmLbl = \"\"\n name = \"Flametongue Weapon\"\n check = \"player\"\n wepEnchID = <table> {\n }\n icon = 135814\n spellID = 318038\n}\nslotid = 17\nrem = 3382.059000\n(*temporary) = 17\n(*temporary) = true\n(*temporary) = 3382872\n(*temporary) = 0\n(*temporary) = 5401\n(*temporary) = true\n(*temporary) = 3382059\n(*temporary) = 3382.059000\n(*temporary) = \"attempt to compare number with nil\"\nns = <table> {\n OptionElements = <table> {\n }\n _optionSyncers = <table> {\n }\n MIDNIGHT_WRAP_CTIMER = false\n Options = <table> {\n }\n RenderFrames = <table> {\n }\n _delves_disable = false\n MIDNIGHT_LIMP_MODE = true\n EXPANSION_MIDNIGHT = 11\n _mp_setThresholdsHooked = false\n _runeLastAnyExpire = true\n CORNER_TEXT_FIELD = \"qty\"\n Exclusions = <table> {\n }\n _delves_renderHooked = true\n ScrollBar = <table> {\n }\n _rangeTracked = <table> {\n }\n _customSpellsWrapped = true\n NumberSelect = <table> {\n }\n EXPANSION_TWW = 10\n _mp_disable = false\n _cwe_order_wrapped = true\n _mp_lastKey = \"0:0\"\n RenderParent = ClickableRaidBuffsRenderParent {\n }\n LayoutTabName = \"Layout\"\n _scanWrappersInstalled = true\n _inCombat = false\n _fixedTargetWrapped = true\n _crb_rf_wrapped = true\n Overlay = ClickableRaidBuffsOverlay {\n }\n VERSION = \"7.4.4\"\n Hover = ClickableRaidBuffsOverlayHover {\n }\n BASE_ICON_SIZE = 50\n _cosmetics_wrapped = true\n _delves_lastKey = \"0\"\n _isDead = false\n _combat_suspended = false\n _trainingDummyBypass = false\n _inEncounter = true\n _raidBuffWatch = <table> {\n }\n _healthstone_wrapped = true\n _cwe_render_wrapped = true\n _durability_wrapped = true\n _mergedScan = true\n _crb_cd_refresh_wrapped = true\n _ex_wrap_pr1 = true\n _midnightDeferredOpen = false\n _GateHandlers = <table> {\n }\n _midnightNotified = false\n _midnightEvents = <table> {\n }\n MIDNIGHT_ERROR_REPORTING = false\n _mp_overridden = false\n Compat = <table> {\n }\n OptionsFrame = ClickableRaidBuffsOptionsPanel {\n }\n HealthstoneSoulwellVisible = true\n RenderIndexByKey = <table> {\n }\n _textstyles_renderWrapped = true\n FontObjects = <table> {\n }\n}\nCAT = \"CASTABLE_WEAPON_ENCHANTS\"\n",
+["stack"] = "[Interface/AddOns/ClickableRaidBuffs/Modules/CastableWeaponEnchants.lua]:242: in function <...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:176>\n[Interface/AddOns/ClickableRaidBuffs/Modules/CastableWeaponEnchants.lua]:324: in function <...lickableRaidBuffs/Modules/CastableWeaponEnchants.lua:322>\n[Interface/AddOns/ClickableRaidBuffs/Modules/Healthstone.lua]:346: in function <...ce/AddOns/ClickableRaidBuffs/Modules/Healthstone.lua:344>\n[tail call]: ?\n[Interface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua]:321: in function <...terface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua:315>\n[Interface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua]:332: in function <...terface/AddOns/ClickableRaidBuffs/Core/UpdateBus.lua:330>\n",
+["session"] = 1473,
+["counter"] = 14,
+},
+{
+["message"] = "bad argument #1 to '?' (Usage: local drops = C_LootHistory.GetSortedDropsForEncounter(encounterID))",
+["time"] = "2026/03/05 21:50:59",
+["locals"] = "self = GroupLootHistoryFrame {\n ClosePanelButton = Button {\n }\n EncounterDropdown = Button {\n }\n PerfectAnimFrame = Frame {\n }\n encounterInfo = <table> {\n }\n TitleContainer = Frame {\n }\n ScrollBar = Frame {\n }\n NoInfoString = FontString {\n }\n panelWidth = 261\n perfectRollItemQueue = <table> {\n }\n ResizeButton = Button {\n }\n Bg = GroupLootHistoryFrameBg {\n }\n uncommittedRegions = <table> {\n }\n NineSlice = Frame {\n }\n layoutType = \"ButtonFrameTemplateNoPortrait\"\n panelMaxHeight = 590\n Timer = Frame {\n }\n ScrollBox = Frame {\n }\n}\nallRollsFinished = true\n",
+["stack"] = "[Interface/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua]:476: in function 'UpdateTimer'\n[Interface/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua]:471: in function <...ce/AddOns/Blizzard_FrameXML/Mainline/LootHistory.lua:470>\n",
+["session"] = 1473,
+["counter"] = 3,
 },
 },
 }

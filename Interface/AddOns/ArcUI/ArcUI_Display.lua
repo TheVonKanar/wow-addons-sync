@@ -1284,7 +1284,7 @@ local function CreateIconFrame(barNumber)
   frame.icon:SetTexelSnappingBias(0)
   
   -- ═══════════════════════════════════════════════════════════════════
-  -- COOLDOWN SWIPE FRAME (for custom cooldowns)
+  -- COOLDOWN SWIPE FRAME
   -- Frame level = icon level + 1 (above icon, below text overlays)
   -- ═══════════════════════════════════════════════════════════════════
   frame.cooldown = CreateFrame("Cooldown", "ArcUIIconCooldown" .. barNumber, frame, "CooldownFrameTemplate")
@@ -1295,7 +1295,7 @@ local function CreateIconFrame(barNumber)
   frame.cooldown:SetDrawSwipe(true)
   frame.cooldown:SetHideCountdownNumbers(true)  -- We handle our own duration text
   frame.cooldown:SetSwipeColor(0, 0, 0, 0.7)
-  frame.cooldown:Hide()  -- Hidden by default, shown only for custom cooldowns
+  frame.cooldown:Hide()  -- Hidden by default
   
   -- TRACKING FAIL OVERLAY - red background with "Tracking Failed" text
   -- Frame level +10 to appear above cooldown swipe
@@ -1679,10 +1679,9 @@ end
 
 -- ===================================================================
 -- CUSTOM TRACKING SMOOTH UPDATE SYSTEM
--- For custom auras/cooldowns, we can smoothly animate because we have
+-- Smooth animation support:
 -- full control over the duration values (not secret values from CDM)
 -- ===================================================================
-local customTrackingState = {}  -- [barNumber] = { active, expirationTime, maxDuration, stacks, maxStacks, iconTexture, isCustom }
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DEACTIVATION: Zero-CPU bars hidden by spec/talent conditions
@@ -1690,10 +1689,6 @@ local customTrackingState = {}  -- [barNumber] = { active, expirationTime, maxDu
 -- and all per-frame OnUpdate scripts are cleared.
 -- ═══════════════════════════════════════════════════════════════════════════
 local function DeactivateBar(barNumber)
-  local state = customTrackingState[barNumber]
-  if state then
-    state.deactivated = true
-  end
   local frames = barFrames[barNumber]
   if frames then
     if frames.barFrame and frames.barFrame.bar then
@@ -1716,48 +1711,10 @@ local function DeactivateBar(barNumber)
 end
 
 local function ReactivateBar(barNumber)
-  local state = customTrackingState[barNumber]
-  if state then
-    state.deactivated = nil
-  end
+  -- No-op: deactivation is handled by frame visibility
 end
 
--- Set up smooth custom tracking for a bar
-function ns.Display.SetCustomTrackingState(barNumber, state)
-  if not state then
-    -- Clear custom tracking
-    customTrackingState[barNumber] = nil
-    return
-  end
-  
-  customTrackingState[barNumber] = {
-    active = state.active or false,
-    expirationTime = state.expirationTime or 0,
-    maxDuration = state.maxDuration or 10,
-    stacks = state.stacks or 0,
-    maxStacks = state.maxStacks or 10,
-    iconTexture = state.iconTexture,
-    isCustom = true,
-    useDurationBar = state.useDurationBar or false,
-    -- For cooldowns
-    charges = state.charges,
-    maxCharges = state.maxCharges,
-    rechargeEnd = state.rechargeEnd,
-    rechargeDuration = state.rechargeDuration,  -- For cooldown swipe calculation
-  }
-end
 
--- Get custom tracking state for a bar
-function ns.Display.GetCustomTrackingState(barNumber)
-  return customTrackingState[barNumber]
-end
-
--- Clear custom tracking for a bar
-function ns.Display.ClearCustomTrackingState(barNumber)
-  customTrackingState[barNumber] = nil
-end
-
--- Smooth update frame - handles all custom tracking bars
 local smoothUpdateFrame = CreateFrame("Frame")
 local SMOOTH_UPDATE_INTERVAL = 0.03  -- ~30fps for smooth animation
 local smoothUpdateElapsed = 0
@@ -1772,215 +1729,7 @@ smoothUpdateFrame:SetScript("OnUpdate", function(self, elapsed)
   
   local currentTime = GetTime()
   
-  for barNumber, state in pairs(customTrackingState) do
-    if state and state.isCustom and not state.deactivated then
-      local barConfig = ns.API and ns.API.GetBarConfig(barNumber)
-      if barConfig and barConfig.tracking.enabled then
-        local frames = barFrames[barNumber]
-        if frames then
-          local barFrame = frames.barFrame
-          local textFrame = frames.textFrame
-          local durationFrame = frames.durationFrame
-          local iconFrame = frames.iconFrame
-          
-          -- Calculate current duration
-          local duration = 0
-          local isActive = state.active
-          
-          if state.expirationTime and state.expirationTime > 0 then
-            duration = state.expirationTime - currentTime
-            if duration < 0 then
-              duration = 0
-              isActive = false
-            end
-          end
-          
-          -- For cooldowns, calculate recharge remaining
-          local cooldownRemaining = 0
-          if state.rechargeEnd and state.rechargeEnd > 0 then
-            cooldownRemaining = state.rechargeEnd - currentTime
-            if cooldownRemaining < 0 then cooldownRemaining = 0 end
-          end
-          
-          local displayType = barConfig.display.displayType or "bar"
-          local cfg = barConfig.display
-          local trackType = barConfig.tracking.trackType
-          
-          if displayType == "icon" then
-            -- ═══════════════════════════════════════════════════════════════════
-            -- ICON MODE - Update icon stacks, duration text, cooldown swipe
-            -- v2.7.0: Added cooldown swipe, desaturation, text caching
-            -- ═══════════════════════════════════════════════════════════════════
-            if iconFrame then
-              -- ─────────────────────────────────────────────────────────────────
-              -- COOLDOWN SWIPE (for custom cooldowns only)
-              -- ─────────────────────────────────────────────────────────────────
-              if trackType == "customCooldown" and iconFrame.cooldown then
-                if cfg.iconShowCooldownSwipe and cooldownRemaining > 0 and state.rechargeEnd then
-                  -- Calculate start time from recharge end
-                  local rechargeDuration = state.rechargeDuration or 10  -- fallback
-                  local startTime = state.rechargeEnd - rechargeDuration
-                  
-                  iconFrame.cooldown:SetReverse(cfg.iconCooldownReverse or false)
-                  iconFrame.cooldown:SetDrawEdge(cfg.iconCooldownDrawEdge ~= false)
-                  iconFrame.cooldown:SetDrawBling(cfg.iconCooldownDrawBling ~= false)
-                  iconFrame.cooldown:SetCooldown(startTime, rechargeDuration)
-                  iconFrame.cooldown:Show()
-                else
-                  iconFrame.cooldown:Hide()
-                end
-                
-                -- Desaturate when on cooldown
-                if cfg.iconDesaturateOnCooldown and iconFrame.icon then
-                  iconFrame.icon:SetDesaturated(cooldownRemaining > 0)
-                end
-              elseif trackType == "customAura" then
-                -- Hide cooldown swipe for auras
-                if iconFrame.cooldown then
-                  iconFrame.cooldown:Hide()
-                end
-                
-                -- Optional desaturation when aura inactive
-                if cfg.iconDesaturateWhenInactive and iconFrame.icon then
-                  iconFrame.icon:SetDesaturated(not isActive)
-                end
-              end
-              
-              -- ─────────────────────────────────────────────────────────────────
-              -- UPDATE STACKS TEXT (with caching to prevent flickering)
-              -- ─────────────────────────────────────────────────────────────────
-              if cfg.iconShowStacks then
-                local stacks = state.stacks or 0
-                if state.charges ~= nil then
-                  stacks = state.charges
-                end
-                
-                local stackText = iconFrame.stacks
-                local cacheRef = iconFrame
-                if cfg.iconStackAnchor == "FREE" and iconFrame.stacksFrame then
-                  stackText = iconFrame.stacksFrame.text
-                  cacheRef = iconFrame.stacksFrame
-                end
-                
-                -- Calculate new text
-                local newText = ""
-                if isActive and stacks > 0 then
-                  newText = tostring(stacks)
-                end
-                
-                -- Only update if changed (prevents flickering)
-                local lastKey = (cacheRef == iconFrame) and "lastStacksText" or "lastText"
-                if cacheRef[lastKey] ~= newText then
-                  stackText:SetText(newText)
-                  cacheRef[lastKey] = newText
-                end
-              end
-              
-              -- ─────────────────────────────────────────────────────────────────
-              -- UPDATE DURATION TEXT (with caching to prevent flickering)
-              -- ─────────────────────────────────────────────────────────────────
-              if cfg.iconShowDuration then
-                local timeRemaining = duration > 0 and duration or cooldownRemaining
-                
-                -- Calculate new text
-                local newText = ""
-                if isActive and timeRemaining > 0 then
-                  local decimals = cfg.durationDecimals or 1
-                  newText = string_format(DURATION_FMT[decimals] or "%.1f", timeRemaining)
-                elseif cfg.durationShowWhenReady and trackType == "customCooldown" and cooldownRemaining == 0 then
-                  newText = "Ready"
-                end
-                
-                -- Only update if changed (prevents flickering)
-                if iconFrame.lastDurationText ~= newText then
-                  iconFrame.duration:SetText(newText)
-                  iconFrame.lastDurationText = newText
-                end
-              end
-            end
-            
-          elseif displayType == "bar" then
-            -- ═══════════════════════════════════════════════════════════════════
-            -- BAR MODE - Update bar value and text
-            -- ═══════════════════════════════════════════════════════════════════
-            if state.useDurationBar then
-              -- Duration bar mode - bar represents time remaining
-              local maxDuration = state.maxDuration or barConfig.tracking.maxDuration or 10
-              
-              if barFrame.bar then
-                local interp = GetBarInterpolation(barConfig.display.enableSmoothing)
-                barFrame.bar:SetMinMaxValues(0, maxDuration, interp)
-                barFrame.bar:SetValue(duration, interp)
-              end
-              
-              -- Update duration text
-              if barConfig.display.showDuration and durationFrame then
-                if isActive and duration > 0 then
-                  local decimals = barConfig.display.durationDecimals or 1
-                  durationFrame.text:SetText(string_format(DURATION_FMT[decimals] or "%.1f", duration))
-                  durationFrame:Show()
-                else
-                  if barConfig.display.durationShowWhenReady then
-                    durationFrame.text:SetText("0")
-                    durationFrame:Show()
-                  else
-                    durationFrame:Hide()
-                  end
-                end
-              end
-              
-              -- Update stacks text
-              if barConfig.display.showText and textFrame then
-                if isActive and state.stacks and state.stacks > 0 then
-                  textFrame.text:SetText(state.stacks)
-                else
-                  textFrame.text:SetText("")
-                end
-              end
-            else
-              -- Stack bar mode - bar represents stacks
-              local maxStacks = state.maxStacks or barConfig.tracking.maxStacks or 10
-              local stacks = state.stacks or 0
-              
-              -- For cooldowns, show charges
-              if state.charges ~= nil then
-                stacks = state.charges
-                maxStacks = state.maxCharges or 1
-              end
-              
-              if barFrame.bar then
-                local interp = GetBarInterpolation(barConfig.display.enableSmoothing)
-                barFrame.bar:SetMinMaxValues(0, maxStacks, interp)
-                barFrame.bar:SetValue(stacks, interp)
-              end
-              
-              -- Update stacks text
-              if barConfig.display.showText and textFrame then
-                textFrame.text:SetText(stacks)
-              end
-              
-              -- Update duration text (shows remaining duration or cooldown)
-              if barConfig.display.showDuration and durationFrame then
-                local timeRemaining = duration > 0 and duration or cooldownRemaining
-                if isActive and timeRemaining > 0 then
-                  local decimals = barConfig.display.durationDecimals or 1
-                  durationFrame.text:SetText(string_format(DURATION_FMT[decimals] or "%.1f", timeRemaining))
-                  durationFrame:Show()
-                else
-                  if barConfig.display.durationShowWhenReady then
-                    durationFrame.text:SetText("0")
-                    durationFrame:Show()
-                  else
-                    durationFrame:Hide()
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
+
 end)
 
 -- ===================================================================
@@ -2307,8 +2056,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
                                     (tracking.cooldownID and tracking.cooldownID > 0) or 
                                     (tracking.buffName and tracking.buffName ~= "")
     local hasTrackType = tracking.trackType and tracking.trackType ~= "" and tracking.trackType ~= "none"
-    local isCustomTracking = tracking.trackType == "customAura" or tracking.trackType == "customCooldown"
-    local isProperlyConfigured = isCustomTracking or (hasSpellIdentification and hasTrackType)
+    local isProperlyConfigured = hasSpellIdentification and hasTrackType
     
     if not isProperlyConfigured then
       if displayType == "icon" then
@@ -2723,7 +2471,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       end
     end
     
-    -- Apply icon zoom (for custom tracking icons)
+    -- Apply icon zoom
     local zoom = cfg.iconZoom or 0
     local minCoord = 0.08 + (zoom * 0.42)  -- 0.08 to 0.50
     local maxCoord = 0.92 - (zoom * 0.42)  -- 0.92 to 0.50
@@ -3713,8 +3461,7 @@ function ns.Display.HideBar(barNumber)
   -- Early exit if frames don't exist or are already hidden
   -- This prevents redundant work when called repeatedly by the ticker
   if not barFrames[barNumber] then
-    customTrackingState[barNumber] = nil
-    return
+      return
   end
   
   -- Check if ALL frames are already hidden (icon, bar, text, duration)
@@ -3737,8 +3484,7 @@ function ns.Display.HideBar(barNumber)
     return  -- Already hidden, no work needed
   end
   
-  -- Clear custom tracking state
-  customTrackingState[barNumber] = nil
+
   
   if barFrames[barNumber] then
     barFrames[barNumber].barFrame:Hide()
@@ -3930,7 +3676,6 @@ function ns.Display.DeleteBar(barNumber)
       cfg.tracking.spellName = ""
       cfg.tracking.buffName = ""
       cfg.tracking.maxStacks = 10
-      cfg.tracking.customEnabled = false
       cfg.tracking.iconTextureID = 0
       cfg.tracking.auraInstanceID = 0
       cfg.tracking.slotNumber = 0
@@ -3940,9 +3685,8 @@ function ns.Display.DeleteBar(barNumber)
     -- Hide the bar (this will hide ALL frames including icons)
     ns.Display.HideBar(barNumber)
     
-    -- Clear any custom tracking state
-    customTrackingState[barNumber] = nil
-    
+
+      
     -- Refresh options panel
     if LibStub and LibStub("AceConfigRegistry-3.0", true) then
       LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
@@ -3995,352 +3739,6 @@ end
 
 -- ===================================================================
 -- UPDATE CUSTOM BAR (Cast-based tracking with duration countdown)
--- ===================================================================
-function ns.Display.UpdateCustomBar(barNumber, stacks, maxStacks, active, remainingDuration, iconTexture)
-  local barConfig = ns.API.GetBarConfig(barNumber)
-  if not barConfig or not barConfig.tracking.customEnabled then
-    -- Custom bar not configured - hide it
-    if barFrames[barNumber] then
-      barFrames[barNumber].barFrame:Hide()
-      barFrames[barNumber].textFrame:Hide()
-      if barFrames[barNumber].durationFrame then
-        barFrames[barNumber].durationFrame:Hide()
-      end
-      if barFrames[barNumber].iconFrame then
-        barFrames[barNumber].iconFrame:Hide()
-      end
-      if barFrames[barNumber].nameFrame then
-        barFrames[barNumber].nameFrame:Hide()
-      end
-      if barFrames[barNumber].barIconFrame then
-        barFrames[barNumber].barIconFrame:Hide()
-      end
-    end
-    return
-  end
-  
-  -- PERFORMANCE: Cache expensive lookups
-  local optionsOpen = IsOptionsOpen()
-  local currentSpec = GetCachedSpec()
-  
-  -- ═══════════════════════════════════════════════════════════════════════════
-  -- EARLY SPEC/TALENT CHECK: Deactivate bar to save CPU (zero processing)
-  -- ═══════════════════════════════════════════════════════════════════════════
-  if not optionsOpen then
-    local specBlocked = false
-    if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
-      specBlocked = true
-      for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
-        if spec == currentSpec then
-          specBlocked = false
-          break
-        end
-      end
-    end
-    if not specBlocked and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
-      if barConfig.behavior and barConfig.behavior.talentConditions and #barConfig.behavior.talentConditions > 0 then
-        if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
-          specBlocked = true
-        end
-      end
-    end
-    if specBlocked then
-      DeactivateBar(barNumber)
-      return
-    end
-  end
-  ReactivateBar(barNumber)
-  
-  -- Get values from config if not provided
-  maxStacks = tonumber(maxStacks) or tonumber(barConfig.tracking.customMaxStacks) or 10
-  if maxStacks < 1 then maxStacks = 10 end
-  stacks = stacks or 0
-  remainingDuration = remainingDuration or 0
-  
-  local barFrame, textFrame, durationFrame, iconFrame, nameFrame, barIconFrame = GetBarFrames(barNumber)
-  local displayType = barConfig.display.displayType or "bar"
-  
-  -- Format duration text
-  local durationText = ""
-  if remainingDuration > 0 then
-    if remainingDuration >= 10 then
-      durationText = string_format("%.0f", remainingDuration)
-    else
-      durationText = string_format("%.1f", remainingDuration)
-    end
-  end
-  
-  -- ═══════════════════════════════════════════════════════════════════
-  -- ICON MODE (Custom)
-  -- ═══════════════════════════════════════════════════════════════════
-  if displayType == "icon" then
-    -- Hide bar elements
-    barFrame:Hide()
-    textFrame:Hide()
-    durationFrame:Hide()
-    
-    local cfg = barConfig.display
-    
-    -- Set icon texture
-    if iconTexture then
-      iconFrame.icon:SetTexture(iconTexture)
-    elseif barConfig.tracking.customSpellID and barConfig.tracking.customSpellID > 0 then
-      local texture = C_Spell.GetSpellTexture(barConfig.tracking.customSpellID)
-      if texture then
-        iconFrame.icon:SetTexture(texture)
-      end
-    end
-    
-    -- Apply icon zoom (for custom tracking icons)
-    local zoom = cfg.iconZoom or 0
-    local minCoord = 0.08 + (zoom * 0.42)
-    local maxCoord = 0.92 - (zoom * 0.42)
-    iconFrame.icon:SetTexCoord(minCoord, maxCoord, minCoord, maxCoord)
-    
-    -- Show/hide icon texture based on iconShowTexture
-    -- SAFETY: Also verify custom tracking is enabled
-    if cfg.iconShowTexture == false or not barConfig.tracking.customEnabled then
-      iconFrame.icon:Hide()
-      iconFrame.background:Hide()
-    else
-      iconFrame.icon:Show()
-    end
-    
-    -- Update stacks text
-    if cfg.iconShowStacks then
-      local stackAnchor = cfg.iconStackAnchor or "TOPRIGHT"
-      local stackText
-      local sc = cfg.iconStackColor or {r=1, g=1, b=1, a=1}
-      
-      if stackAnchor == "FREE" then
-        stackText = iconFrame.stacksFrame.text
-        iconFrame.stacks:Hide()
-        iconFrame.stacksFrame:Show()
-      else
-        stackText = iconFrame.stacks
-        iconFrame.stacksFrame:Hide()
-        iconFrame.stacks:Show()
-      end
-      
-      if active and stacks then
-        stackText:SetText(stacks)
-      else
-        stackText:SetText("0")
-      end
-      stackText:SetTextColor(sc.r, sc.g, sc.b, sc.a)
-    else
-      iconFrame.stacks:Hide()
-      iconFrame.stacksFrame:Hide()
-    end
-    
-    -- Update duration text (custom countdown)
-    if cfg.iconShowDuration then
-      iconFrame.duration:SetText(durationText)
-      local dc = cfg.iconDurationColor or {r=1, g=1, b=1, a=1}
-      iconFrame.duration:SetTextColor(dc.r, dc.g, dc.b, dc.a)
-      iconFrame.duration:Show()
-    else
-      iconFrame.duration:Hide()
-    end
-    
-    -- Border
-    if cfg.iconShowBorder then
-      local bc = cfg.iconBorderColor or {r=0, g=0, b=0, a=1}
-      iconFrame.background:SetColorTexture(bc.r, bc.g, bc.b, bc.a)
-      iconFrame.background:Show()
-    else
-      iconFrame.background:Hide()
-    end
-    
-    -- Visibility
-    local shouldShow = true
-    local deactivate = false
-    
-    -- Spec check
-    if barConfig.behavior and barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
-      shouldShow = false
-      for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
-        if spec == currentSpec then
-          shouldShow = true
-          break
-        end
-      end
-      if not shouldShow then deactivate = true end
-    end
-    
-    -- Talent conditions check
-    if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
-      if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
-        shouldShow = false
-        deactivate = true
-      end
-    end
-    
-    local hideWhenFadeAlpha = 1.0
-    if not optionsOpen and ns.CooldownBars and ns.CooldownBars.GetHideWhen then
-      local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-      if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
-        local hAlpha = ns.CooldownBars.GetHideWhenAlpha(barConfig)
-        if hAlpha <= 0 then
-          shouldShow = false
-        else
-          hideWhenFadeAlpha = hAlpha
-        end
-      end
-    end
-    if barFrames[barNumber] then barFrames[barNumber]._arcHideWhenAlpha = hideWhenFadeAlpha end
-    
-    if not active and barConfig.behavior.hideWhenInactive and not optionsOpen then
-      shouldShow = false
-    end
-    
-    if not active then
-      iconFrame.duration:SetText("")
-    end
-    
-    if shouldShow and cfg.enabled then
-      ReactivateBar(barNumber)
-      iconFrame:Show()
-      if hideWhenFadeAlpha < 1.0 then iconFrame:SetAlpha(hideWhenFadeAlpha) end
-    elseif deactivate and not optionsOpen then
-      DeactivateBar(barNumber)
-      return
-    else
-      iconFrame:Hide()
-    end
-    
-    return  -- Exit early for icon mode
-  end
-  
-  -- ═══════════════════════════════════════════════════════════════════
-  -- BAR MODE (Custom)
-  -- ═══════════════════════════════════════════════════════════════════
-  if iconFrame then
-    iconFrame:Hide()
-  end
-  
-  local displayMode = barConfig.display.thresholdMode or "simple"
-  local thresholds = barConfig.thresholds or {}
-  
-  -- Determine color based on stacks
-  local fillColor = barConfig.display.barColor or {r=0, g=0.5, b=1, a=1}
-  
-  -- Check for max color
-  if barConfig.display.enableMaxColor and stacks >= maxStacks then
-    fillColor = barConfig.display.maxColor or {r=0, g=1, b=0, a=1}
-  end
-  
-  -- Simple bar display for custom bars
-  -- Hide any stacked bars
-  if barFrame.stackedBars then
-    for i = 1, #barFrame.stackedBars do
-      SafeHide(barFrame.stackedBars[i])
-    end
-  end
-  
-  -- Use main status bar
-  local percent = (stacks / maxStacks)
-  if percent > 1 then percent = 1 end
-  if percent < 0 then percent = 0 end
-  
-  barFrame.bar:SetMinMaxValues(0, 1)
-  barFrame.bar:SetValue(percent)
-  barFrame.bar:SetStatusBarColor(fillColor.r, fillColor.g, fillColor.b, fillColor.a)
-  barFrame.bar:Show()
-  
-  -- Update stacks text
-  if barConfig.display.showText then
-    textFrame.text:SetText(stacks)
-    local tc = barConfig.display.textColor
-    textFrame.text:SetTextColor(tc.r, tc.g, tc.b, tc.a)
-  end
-  
-  -- Update duration text (use our countdown value)
-  if barConfig.display.showDuration and durationFrame then
-    durationFrame.text:SetText(durationText)
-    local dc = barConfig.display.durationColor or {r=1, g=1, b=1, a=1}
-    durationFrame.text:SetTextColor(dc.r, dc.g, dc.b, dc.a)
-  end
-  
-  -- Visibility logic
-  local shouldShow = active
-  
-  -- Hide when inactive if option enabled (but not if options panel is open)
-  if not active and barConfig.behavior.hideWhenInactive and not optionsOpen then
-    shouldShow = false
-  end
-  
-  -- Hide When conditions
-  local hideWhenFadeAlpha = 1.0
-  if ns.CooldownBars and ns.CooldownBars.GetHideWhen then
-    local hideWhen = ns.CooldownBars.GetHideWhen(barConfig)
-    if hideWhen and ns.CooldownBars.EvaluateHideConditions(hideWhen, barConfig.behavior and barConfig.behavior.hideLogic) then
-      local hAlpha = ns.CooldownBars.GetHideWhenAlpha(barConfig)
-      if hAlpha <= 0 then
-        shouldShow = false
-      else
-        hideWhenFadeAlpha = hAlpha
-      end
-    end
-  end
-  if barFrames[barNumber] then barFrames[barNumber]._arcHideWhenAlpha = hideWhenFadeAlpha end
-  
-  -- Hide if at zero and configured to do so
-  if barConfig.behavior.hideWhenEmpty and stacks == 0 then
-    shouldShow = false
-  end
-  
-  -- Hide if at max and configured to do so
-  if barConfig.behavior.hideAtMax and stacks >= maxStacks then
-    shouldShow = false
-  end
-  
-  -- Check spec visibility (use cached spec)
-  if barConfig.behavior.showOnSpecs and #barConfig.behavior.showOnSpecs > 0 then
-    local specAllowed = false
-    for _, spec in ipairs(barConfig.behavior.showOnSpecs) do
-      if spec == currentSpec then
-        specAllowed = true
-        break
-      end
-    end
-    if not specAllowed then
-      shouldShow = false
-    end
-  end
-  
-  -- Check talent conditions
-  if shouldShow and ns.TrackingOptions and ns.TrackingOptions.AreTalentConditionsMet then
-    if not ns.TrackingOptions.AreTalentConditionsMet(barConfig) then
-      shouldShow = false
-    end
-  end
-  
-  -- Apply visibility
-  if shouldShow and barConfig.display.enabled then
-    barFrame:Show()
-    if barConfig.display.showText then
-      textFrame:Show()
-    else
-      textFrame:Hide()
-    end
-    if barConfig.display.showDuration and durationFrame then
-      durationFrame:Show()
-    elseif durationFrame then
-      durationFrame:Hide()
-    end
-  else
-    barFrame:Hide()
-    textFrame:Hide()
-    if durationFrame then durationFrame:Hide() end
-    if nameFrame then nameFrame:Hide() end
-    if barIconFrame then barIconFrame:Hide() end
-  end
-end
-
--- ===================================================================
--- UPDATE DURATION BAR (Bar-based duration tracking from BuffBarCooldownViewer)
--- This uses secret value passthrough from source bar to our bar
 -- ===================================================================
 function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sourceBar, stacksFontString, iconTexture)
   -- PROFILER: Track where time is spent
@@ -4471,8 +3869,7 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
                                     (tracking.cooldownID and tracking.cooldownID > 0) or 
                                     (tracking.buffName and tracking.buffName ~= "")
     local hasTrackType = tracking.trackType and tracking.trackType ~= "" and tracking.trackType ~= "none"
-    local isCustomTracking = tracking.trackType == "customAura" or tracking.trackType == "customCooldown"
-    local isProperlyConfigured = isCustomTracking or (hasSpellIdentification and hasTrackType)
+    local isProperlyConfigured = hasSpellIdentification and hasTrackType
     
     if not isProperlyConfigured then
       if displayType == "icon" then
@@ -4581,7 +3978,7 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
       end
     end
     
-    -- Apply icon zoom (for custom tracking icons)
+    -- Apply icon zoom
     local zoom = cfg.iconZoom or 0
     local minCoord = 0.08 + (zoom * 0.42)
     local maxCoord = 0.92 - (zoom * 0.42)
@@ -5641,7 +5038,7 @@ function ns.Display.ApplyAppearance(barNumber)
       end
     end
     
-    -- Apply icon zoom (for custom tracking icons)
+    -- Apply icon zoom
     local zoom = cfg.iconZoom or 0
     local minCoord = 0.08 + (zoom * 0.42)
     local maxCoord = 0.92 - (zoom * 0.42)
@@ -6456,11 +5853,7 @@ end
 -- Clear all deactivated flags so bars get re-evaluated on next update
 -- Called on spec change, talent change, or when options panel opens
 function ns.Display.ReactivateAllBars()
-  for barNumber, state in pairs(customTrackingState) do
-    if state then
-      state.deactivated = nil
-    end
-  end
+
 end
 
 function ns.Display.RefreshAllBars()
@@ -6785,7 +6178,7 @@ local function InstallDisplayVisibilityHook()
     local db = ns.API and ns.API.GetDB and ns.API.GetDB()
     if not db or not db.bars then return end
     for barNumber, barConfig in pairs(db.bars) do
-      if barConfig and barConfig.tracking and (barConfig.tracking.enabled or barConfig.tracking.customEnabled) then
+      if barConfig and barConfig.tracking and barConfig.tracking.enabled then
         if ns.API and ns.API.RefreshDisplay then
           ns.API.RefreshDisplay(barNumber)
         end

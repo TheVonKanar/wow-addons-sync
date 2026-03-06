@@ -14,6 +14,7 @@
 --   Blizzard Templates (ArcUI-owned frames):
 --     "ants"      — ActionBarButtonAssistedCombatHighlightTemplate
 --     "ach_proc"  — ActionButtonSpellAlertTemplate (loop only, no burst)
+--     "cdm_flash" — CDM VisualAlert-Glow (pulsing alpha bounce overlay)
 --
 --   CDM Native (passthrough):
 --     "default"   — CDM's own SpellActivationAlert (managed by CDM, not us)
@@ -62,7 +63,7 @@ ns.Glows = {}
 local LCG
 local function GetLCG()
     if not LCG then
-        LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
+        LCG = LibStub and LibStub("ArcGlow-1.0", true)
     end
     return LCG
 end
@@ -82,6 +83,10 @@ local BLIZZ_CONTAINER_RATIO = 66 / 45   -- ~1.467
 
 -- Default glow frame level offset above parent
 local GLOW_LEVEL_OFFSET = 8
+
+-- CDM Flash renders BEHIND the icon by default (looks better as a background pulse).
+-- Users can override via the Glow Frame Level option.
+local CDM_FLASH_LEVEL_OFFSET = -2
 
 -- Shallow copy for opts caching (prevents stale data if caller reuses table)
 local function ShallowCopy(t)
@@ -279,6 +284,53 @@ local function ApplyMasqueShapeToButton(frame, key)
     pcall(lib.UpdateSpellAlert, lib, frame, glowFrame)
 end
 
+-- Apply Masque shape mask to CDM flash glow texture.
+-- Without this, the soft radial glow renders as a square on circle icons.
+local function ApplyMasqueShapeToCDMFlash(frame, glow)
+    if not glow or not glow.Glow then return end
+    local shape = GetMasqueShape(frame)
+
+    if not shape or shape == "Square" then
+        -- Remove mask if previously applied (user switched skin to square)
+        if glow._arcFlashMask then
+            glow.Glow:RemoveMaskTexture(glow._arcFlashMask)
+            glow._arcFlashMask:Hide()
+        end
+        return
+    end
+
+    -- Create mask texture once, reuse across reshapes
+    if not glow._arcFlashMask then
+        glow._arcFlashMask = glow:CreateMaskTexture()
+    end
+
+    local mask = glow._arcFlashMask
+    mask:SetAllPoints(glow)  -- match glow frame size (expanded beyond icon)
+
+    if shape == "Circle" then
+        mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask")
+    else
+        -- Non-circle non-square: try to clone Masque's button mask texture
+        local mcfg = frame._MSQ_CFG
+        local bMask = mcfg and mcfg.ButtonMask
+        if bMask then
+            local atlas = bMask:GetAtlas()
+            if atlas then
+                mask:SetAtlas(atlas)
+            else
+                local tex = bMask:GetTexture()
+                if tex then mask:SetTexture(tex) end
+            end
+        else
+            -- Fallback: use circle mask for unknown shapes
+            mask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask")
+        end
+    end
+
+    mask:Show()
+    glow.Glow:AddMaskTexture(mask)
+end
+
 -- ── Master dispatcher: call after Start() creates/shows a glow ───────────
 local function ApplyMasqueShape(frame, glowType, key)
     if not GetMasqueShape(frame) then return end
@@ -299,6 +351,11 @@ local function ApplyMasqueShape(frame, glowType, key)
 
     elseif glowType == "button" then
         ApplyMasqueShapeToButton(frame, key)
+
+    elseif glowType == "cdm_flash" then
+        local storageKey = BlizzKey("cdm_flash", key)
+        local glow = frame[storageKey]
+        if glow then ApplyMasqueShapeToCDMFlash(frame, glow) end
     end
 end
 
@@ -315,7 +372,7 @@ local function GetLCGFrame(frame, glowType, key)
     elseif glowType == "autocast" then
         return frame["_AutoCastGlow" .. key]
     elseif glowType == "button" then
-        return frame._ButtonGlow
+        return frame["_ButtonGlow" .. (key or "")]
     elseif glowType == "proc" then
         return frame["_ProcGlow" .. key]
     end
@@ -525,6 +582,126 @@ local function HideACHGlow(frame, style, key)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- CDM VISUAL ALERT GLOW HELPERS
+-- CDM ships a pulsing glow overlay we can reuse:
+--   cdm_flash — atlas UI-CooldownManager-VisualAlert-Glow
+--               Alpha bounces 0.25→1.0, tintable via SetVertexColor.
+--               For Masque circle skins, a circular mask is applied so the glow
+--               matches the icon shape rather than rendering as a square.
+-- Created programmatically (no XML template dependency).
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local function GetOrCreateCDMFlash(frame, key)
+    local storageKey = BlizzKey("cdm_flash", key)
+    if frame[storageKey] then return frame[storageKey] end
+
+    local glow = CreateFrame("Frame", nil, frame)
+    if not glow then return nil end
+    glow._cdmStyle = "cdm_flash"
+
+    -- Pulsing glow overlay (CDM's UI-CooldownManager-VisualAlert-Glow)
+    local tex = glow:CreateTexture(nil, "ARTWORK")
+    tex:SetAtlas("UI-CooldownManager-VisualAlert-Glow")
+    tex:SetAllPoints()
+    glow.Glow = tex
+
+    -- Alpha bounce animation: 0.25→1.0, 0.5s default, IN_OUT smoothing
+    local ag = glow:CreateAnimationGroup()
+    ag:SetLooping("BOUNCE")
+    local alpha = ag:CreateAnimation("Alpha")
+    alpha:SetChildKey("Glow")
+    alpha:SetDuration(0.5)
+    alpha:SetOrder(1)
+    alpha:SetSmoothing("IN_OUT")
+    alpha:SetFromAlpha(0.25)
+    alpha:SetToAlpha(1)
+    glow.Glow.AlphaAnim = alpha
+    glow.FlashAG = ag
+
+    glow:SetPoint("CENTER")
+    glow:Hide()
+    frame[storageKey] = glow
+
+    -- Apply Masque shape mask BEFORE first show
+    ApplyMasqueShapeToCDMFlash(frame, glow)
+
+    return glow
+end
+
+local function ShowCDMFlash(frame, key, opts)
+    local glow = GetOrCreateCDMFlash(frame, key)
+    if not glow then return end
+
+    local w, h = frame:GetWidth(), frame:GetHeight()
+    if w <= 0 or h <= 0 then return end
+
+    local scale = opts.scale or 1.0
+    local xOff = opts.xOffset or 0
+    local yOff = opts.yOffset or 0
+
+    -- Expand slightly beyond icon edge like CDM's -8,+8 / +9,-9 anchoring
+    local expandW = w * BLIZZ_CONTAINER_RATIO * scale
+    local expandH = h * BLIZZ_CONTAINER_RATIO * scale
+    glow:SetSize(expandW, expandH)
+
+    -- Position
+    glow:ClearAllPoints()
+    glow:SetPoint("CENTER", frame, "CENTER", xOff, yOff)
+
+    glow:SetFrameLevel(math.max(0, frame:GetFrameLevel() + (opts.frameLevel or CDM_FLASH_LEVEL_OFFSET)))
+
+    -- Color — white-base atlas, easy to tint
+    local color = opts.color
+    if color and glow.Glow then
+        local r = color[1] or color.r or 1
+        local g = color[2] or color.g or 1
+        local b = color[3] or color.b or 1
+        local a = color[4] or color.a or 1
+        local hasCustomColor = not (r >= 0.99 and g >= 0.99 and b >= 0.99)
+        glow.Glow:SetDesaturated(hasCustomColor)
+        glow.Glow:SetVertexColor(r, g, b, a)
+    end
+
+    -- Intensity
+    glow:SetAlpha(opts.intensity or 1.0)
+
+    -- Speed — controls pulse rate
+    if glow.Glow and glow.Glow.AlphaAnim then
+        local speed = opts.frequency or 0.5
+        -- frequency is smaller = faster for consistency with other glow types
+        -- map: 0.125 → 0.25s pulse, 0.25 → 0.5s, 0.5 → 1.0s
+        glow.Glow.AlphaAnim:SetDuration(speed * 2)
+    end
+
+    -- Strata override
+    if opts.strata and opts.strata ~= "inherit" then
+        pcall(glow.SetFrameStrata, glow, opts.strata)
+        glow._arcGlowStrataOverride = opts.strata
+    elseif glow._arcGlowStrataOverride then
+        local parentStrata = frame:GetFrameStrata() or "MEDIUM"
+        pcall(glow.SetFrameStrata, glow, parentStrata)
+        glow._arcGlowStrataOverride = nil
+    end
+
+    -- Show + play
+    glow:Show()
+    if glow.FlashAG and not glow.FlashAG:IsPlaying() then
+        glow.FlashAG:Play()
+    end
+end
+
+local function HideCDMFlash(frame, key)
+    local storageKey = BlizzKey("cdm_flash", key)
+    local glow = frame[storageKey]
+    if not glow then return end
+
+    if glow.FlashAG and glow.FlashAG:IsPlaying() then
+        glow.FlashAG:Stop()
+    end
+    glow:Hide()
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- PUBLIC API
 -- ═══════════════════════════════════════════════════════════════════════════
 
@@ -532,7 +709,8 @@ end
 -- @param frame     The icon frame to glow
 -- @param key       Glow slot: "ready", "usable", "proc", "aura", etc.
 -- @param glowType  One of: "pixel", "autocast", "button", "proc",
---                  "blizzard" (alias for proc), "ants", "ach_proc", "default"
+--                  "blizzard" (alias for proc), "ants", "ach_proc",
+--                  "cdm_flash", "default"
 -- @param opts      Table of glow parameters (all optional):
 --   color       {r, g, b, a} or {[1]=r, [2]=g, [3]=b, [4]=a}
 --   intensity   alpha override 0-1, default 1 (not button — has own fade)
@@ -644,6 +822,10 @@ function ns.Glows.Start(frame, key, glowType, opts)
     elseif glowType == "ach_proc" then
         ShowACHGlow(frame, "ach_proc", key, opts)
 
+    -- ── CDM visual alert types ───────────────────────────────────────
+    elseif glowType == "cdm_flash" then
+        ShowCDMFlash(frame, key, opts)
+
     elseif glowType == "default" then
         -- "default" = CDM's own SpellActivationAlert, not managed by us.
         -- Caller is responsible for CDM interaction. This is a no-op marker
@@ -704,13 +886,15 @@ function ns.Glows.Stop(frame, key)
         HideACHGlow(frame, "ants", key)
     elseif glowType == "ach_proc" then
         HideACHGlow(frame, "ach_proc", key)
+    elseif glowType == "cdm_flash" then
+        HideCDMFlash(frame, key)
     end
 
     frameGlows[key] = nil
     -- Clear forced alpha state if it was set for this key
-    if frame._arcForcedGlowAlpha ~= nil then
-        frame._arcForcedGlowAlpha = nil
-    end
+    frame._arcForcedGlowAlpha = nil
+    local gf = GetLCGFrame(frame, glowType, key)
+    if gf then gf._arcAlphaForced = nil end
     if not next(frameGlows) then
         activeGlows[frame] = nil
     end
@@ -765,20 +949,22 @@ function ns.Glows.GetGlowFrame(frame, key)
     elseif t == "autocast" then
         return frame["_AutoCastGlow" .. key]
     elseif t == "button" then
-        return frame._ButtonGlow
+        return frame["_ButtonGlow" .. (key or "")]
     elseif t == "proc" then
         return frame["_ProcGlow" .. key]
     elseif t == "ants" then
-        return frame["_AchAnts" .. key]
+        return frame[BlizzKey("ants", key)]
     elseif t == "ach_proc" then
-        return frame["_AchProc" .. key]
+        return frame[BlizzKey("ach_proc", key)]
+    elseif t == "cdm_flash" then
+        return frame[BlizzKey("cdm_flash", key)]
     end
     return nil
 end
 
---- Set a forced alpha on a glow frame (secret-safe).
---- Hooks the glow frame's SetAlpha so LCG animations can't override the forced value.
---- Used by CooldownState's threshold curve to drive glow visibility with secret values.
+--- Set forced alpha on a glow frame (secret-safe).
+--- Hooks the glow frame's SetAlpha to block LCG's bgUpdate/animation overrides,
+--- then calls the ORIGINAL SetAlpha directly with the secret value.
 --- @param frame Frame The icon frame that owns the glow
 --- @param key string The glow key (e.g. "ArcUI_ReadyGlow")
 --- @param alpha number|secret The forced alpha value (0 = hidden, 1 = visible)
@@ -786,22 +972,20 @@ function ns.Glows.SetForcedAlpha(frame, key, alpha)
     if not frame or not key then return end
     local gf = ns.Glows.GetGlowFrame(frame, key)
     if not gf then return end
-    -- Hook SetAlpha once to enforce forced value over LCG animation callbacks
-    if not gf._arcForcedAlphaHooked then
-        gf._arcForcedAlphaHooked = true
-        local origSetAlpha = gf.SetAlpha
+    -- Hook SetAlpha once — when forced, block ALL external SetAlpha calls
+    -- (bgUpdate, animIn/Out callbacks, etc.)
+    if not gf._arcAlphaHooked then
+        gf._arcAlphaHooked = true
+        gf._arcOrigSetAlpha = gf.SetAlpha
         gf.SetAlpha = function(self, a)
-            local owner = self._arcForcedAlphaOwner
-            if owner and owner._arcForcedGlowAlpha ~= nil then
-                origSetAlpha(self, owner._arcForcedGlowAlpha)
-            else
-                origSetAlpha(self, a)
-            end
+            if self._arcAlphaForced then return end
+            self._arcOrigSetAlpha(self, a)
         end
     end
-    gf._arcForcedAlphaOwner = frame
-    frame._arcForcedGlowAlpha = alpha
-    gf:SetAlpha(alpha)
+    gf._arcAlphaForced = true
+    frame._arcForcedGlowAlpha = true
+    -- Call ORIGINAL SetAlpha directly (bypasses our hook) with secret value
+    gf._arcOrigSetAlpha(gf, alpha)
 end
 
 --- Clear forced alpha on a glow, restoring normal LCG alpha control.
@@ -810,7 +994,13 @@ function ns.Glows.ClearForcedAlpha(frame, key)
     frame._arcForcedGlowAlpha = nil
     local gf = ns.Glows.GetGlowFrame(frame, key)
     if gf then
-        gf._arcForcedAlphaOwner = nil
+        gf._arcAlphaForced = nil
+        -- Restore to full alpha so LCG can take over
+        if gf._arcOrigSetAlpha then
+            gf._arcOrigSetAlpha(gf, 1.0)
+        elseif gf.SetAlpha then
+            gf:SetAlpha(1.0)
+        end
     end
 end
 
@@ -883,7 +1073,7 @@ function ns.Glows.RefreshMasqueShapes()
     -- Destroy cached template glows so they recreate with fresh textures
     for _, info in ipairs(toRestart) do
         local gt = info.type
-        if gt == "ants" or gt == "ach_proc" then
+        if gt == "ants" or gt == "ach_proc" or gt == "cdm_flash" then
             local storageKey = "_arcGlow_" .. gt .. "_" .. (info.key or "")
             local cached = info.frame[storageKey]
             if cached then
@@ -910,13 +1100,14 @@ end
 function ns.Glows.GetSupportedOpts(glowType)
     if glowType == "blizzard" then glowType = "proc" end
     local SUPPORT = {
-        pixel    = { color=true, intensity=true, scale=true, speed=true, lines=true, thickness=true, length=true, border=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        autocast = { color=true, intensity=true, scale=true, speed=true, particles=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        button   = { color=true, scale=true, speed=true, frameLevel=true, strata=true },
-        proc     = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        ants     = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        ach_proc = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        default  = {},
+        pixel     = { color=true, intensity=true, scale=true, speed=true, lines=true, thickness=true, length=true, border=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        autocast  = { color=true, intensity=true, scale=true, speed=true, particles=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        button    = { color=true, scale=true, speed=true, frameLevel=true, strata=true },
+        proc      = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        ants      = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        ach_proc  = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        cdm_flash = { color=true, intensity=true, scale=true, speed=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
+        default   = {},
     }
     return SUPPORT[glowType] or {}
 end

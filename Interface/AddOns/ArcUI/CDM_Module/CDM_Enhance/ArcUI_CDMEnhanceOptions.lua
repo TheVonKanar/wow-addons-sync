@@ -53,6 +53,7 @@ local collapsedSections = {
   customLabel = true,      -- Per-icon custom label text
   spellUsability = true,   -- Per-icon spell usability tinting/glow
   assistedCombatHighlight = true, -- Assisted Combat next-cast highlight (opt-in)
+  buttonPressHighlight = true,    -- Button Press keybind overlay (opt-in)
 }
 
 -- Cache for unified icon list
@@ -73,11 +74,13 @@ local RebuildUnifiedIconCache
 -- Define which fields belong to each section for per-icon indicator
 -- ===================================================================
 local SECTION_FIELDS = {
-  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "hideShadow", "keepBright", "keepBrightAllowDesat", "customIconID", "debuffBorder.enabled", "pandemicBorder.enabled" },
+  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "hideShadow", "shadowSize", "hideMask", "keepBright", "keepBrightAllowDesat", "customIconID", "debuffBorder.enabled", "pandemicBorder.enabled" },
   position = { "position" },
   -- Ready State / Aura Active - all actual stored fields
   activeState = { 
     "cooldownStateVisuals.readyState.alpha",
+    "cooldownStateVisuals.readyState.preserveDurationText",
+    "cooldownStateVisuals.readyState.procOverride",
     "cooldownStateVisuals.readyState.desaturate",
     "cooldownStateVisuals.readyState.tint",
     "cooldownStateVisuals.readyState.tintColor",
@@ -105,6 +108,7 @@ local SECTION_FIELDS = {
     "cooldownStateVisuals.cooldownState.tintColor",
     "cooldownStateVisuals.cooldownState.preserveDurationText",
     "cooldownStateVisuals.cooldownState.waitForNoCharges",
+    "cooldownStateVisuals.cooldownState.procOverride",
     "auraActiveState.glowWhenMissing",
     "auraActiveState.glowCombatOnly",
     "auraActiveState.glowType",
@@ -118,11 +122,11 @@ local SECTION_FIELDS = {
     "auraActiveState.glowFrameStrata",
     "auraActiveState.glowFrameLevel",
   },
-  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowWhenMissing", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly", "auraActiveState.glowFrameStrata", "auraActiveState.glowFrameLevel" },  -- Aura Active State settings
+  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowWhenMissing", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly", "auraActiveState.glowFrameStrata", "auraActiveState.glowFrameLevel", "auraActiveState.glowXOffset", "auraActiveState.glowYOffset", "cooldownSwipe.auraSwipeColor" },  -- Aura Active State settings
   rangeIndicator = { "rangeIndicator.rangeAlpha", "rangeIndicator.showRangeOverlay", "rangeIndicator.enabled" },
-  procGlow = { "procGlow.showProcGlow", "procGlow.procGlowType", "procGlow.procGlowColor", "procGlow.color", "procGlow.enabled" },
+  procGlow = { "procGlow.showProcGlow", "procGlow.procGlowType", "procGlow.procGlowColor", "procGlow.color", "procGlow.enabled", "procGlow.xOffset", "procGlow.yOffset", "procGlow.strata", "procGlow.frameLevel" },
   border = { "border.enabled", "border.texture", "border.color", "border.thickness", "border.inset", "border.useClassColor", "border.followDesaturation" },
-  cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.edgeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride" },
+  cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.edgeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.auraSwipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride" },
   chargeText = { "chargeText.enabled", "chargeText.hideAtZero", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY", "chargeText.mode", "chargeText.position", "chargeText.freeX", "chargeText.freeY" },
   cooldownText = { "cooldownText.enabled", "cooldownText.hideWhenHasCharges", "cooldownText.durationColor", "cooldownText.durationColorPreset", "cooldownText.durationColorCustom", "cooldownText.font", "cooldownText.size", "cooldownText.color", "cooldownText.outline", "cooldownText.anchor", "cooldownText.offsetX", "cooldownText.offsetY", "cooldownText.shadow", "cooldownText.shadowColor", "cooldownText.shadowOffsetX", "cooldownText.shadowOffsetY", "cooldownText.mmss", "cooldownText.decimals", "cooldownText.mode", "cooldownText.position", "cooldownText.freeX", "cooldownText.freeY" },
   keybindText = { "keybindText.enabled", "keybindText.font", "keybindText.size", "keybindText.color", "keybindText.outline", "keybindText.anchor", "keybindText.offsetX", "keybindText.offsetY", "hideKeybind" },
@@ -968,6 +972,10 @@ local function ApplyAuraReadyStateGlowSetting(setter)
     ns.ArcAurasCooldown.StopAllReadyGlows()
   end
   ApplyAuraOnlySetting(setter)
+  -- Re-evaluate ArcAuras frames immediately (StopAll killed glows, this restarts them)
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshAllSpellVisuals then
+    ns.ArcAurasCooldown.RefreshAllSpellVisuals()
+  end
 end
 
 -- Apply aura active state glow SLIDER settings (TYPE-SPECIFIC to auras)
@@ -978,6 +986,9 @@ local function ApplyAuraReadyStateGlowSliderSetting(setter)
     ns.ArcAurasCooldown.StopAllReadyGlows()
   end
   ApplyAuraOnlySetting(setter)
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshAllSpellVisuals then
+    ns.ArcAurasCooldown.RefreshAllSpellVisuals()
+  end
 end
 
 -- Helper: Re-evaluate glow-when-missing on all affected aura frames
@@ -1264,7 +1275,9 @@ end
 -- Check if cooldown swipe options should be disabled (when Masque controls cooldowns)
 -- Show Swipe and Show Edge are NOT disabled - user can still toggle visibility
 local function DisableCooldownCooldownSwipe()
-  return false  -- Always enabled - user can toggle swipe/edge visibility even with Masque
+  -- Gray out swipe/edge visibility toggles when Masque controls cooldowns —
+  -- Masque owns that entirely and we no longer enforce it.
+  return IsMasqueCooldownsActive()
 end
 
 -- Disable function for options that ARE controlled by Masque (insets, colors, etc)
@@ -1712,6 +1725,9 @@ local function ApplyReadyStateGlowSetting(setter)
     ns.ArcAurasCooldown.StopAllReadyGlows()
   end
   ApplyCooldownSetting(setter)
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshAllSpellVisuals then
+    ns.ArcAurasCooldown.RefreshAllSpellVisuals()
+  end
 end
 
 -- Apply cooldown ready state glow SLIDER settings (TYPE-SPECIFIC to cooldowns)
@@ -1722,6 +1738,9 @@ local function ApplyReadyStateGlowSliderSetting(setter)
     ns.ArcAurasCooldown.StopAllReadyGlows()
   end
   ApplyCooldownSetting(setter)
+  if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshAllSpellVisuals then
+    ns.ArcAurasCooldown.RefreshAllSpellVisuals()
+  end
 end
 
 -- Count selected icons for display
@@ -2938,7 +2957,26 @@ function ns.GetCDMAuraIconsOptionsTable()
         return GetAuraBoolSetting(function(c) return c.hideShadow end, function() local c = GetAuraCfg(); return c and c.hideShadow end)
       end,
       set = function(_, v) ApplyAuraSetting(function(c) c.hideShadow = v end) end,
-      order = 107.5, width = 0.85, hidden = HideAuraIconAppearance,
+      order = 107.5, width = 0.75, hidden = HideAuraIconAppearance,
+    },
+    hideMask = {
+      type = "toggle", name = "Hide CDM Mask",
+      desc = "Removes the rounded-corner mask on the icon texture",
+      get = function()
+        return GetAuraBoolSetting(function(c) return c.hideMask end, function() local c = GetAuraCfg(); return c and c.hideMask end)
+      end,
+      set = function(_, v) ApplyAuraSetting(function(c) c.hideMask = v end) end,
+      order = 107.51, width = 0.75, hidden = HideAuraIconAppearance,
+    },
+    shadowSize = {
+      type = "range", name = "Shadow Size",
+      desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
+      min = 0.1, max = 3.0, step = 0.05,
+      get = function()
+        return GetAuraBoolSetting(function(c) return c.shadowSize end, function() local c = GetAuraCfg(); return c and c.shadowSize end) or 1.0
+      end,
+      set = function(_, v) ApplyAuraSetting(function(c) c.shadowSize = v end) end,
+      order = 107.52, width = 1.2, hidden = HideAuraIconAppearance,
     },
     keepBright = {
       type = "toggle", name = "Keep Bright",
@@ -3252,6 +3290,75 @@ function ns.GetCDMAuraIconsOptionsTable()
       order = 107.831, width = 0.55,
       hidden = function() return HideIfNoAuraSelection() or collapsedSections.activeState end,
     },
+    activeStatePreserveDurationText = {
+      type = "toggle",
+      name = "Preserve Duration Text",
+      desc = "Keep the cooldown duration text at full opacity even when the icon alpha is reduced during the active state. Useful for tracking remaining buff duration on dimmed icons.",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.preserveDurationText end,
+          function()
+            local c = GetAuraCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.preserveDurationText or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraOnlySetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.preserveDurationText = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("aura")
+        end
+      end,
+      order = 107.8315, width = 1.2,
+      hidden = function()
+        if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
+        local c = GetAuraCfg()
+        -- Only show when active alpha is reduced below 1 (otherwise there's nothing to preserve)
+        return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState
+               and (c.cooldownStateVisuals.readyState.alpha or 1.0) < 1.0)
+      end,
+    },
+    activeStateProcOverride = {
+      type = "toggle",
+      name = "Show on Proc",
+      desc = "If a proc glow is active on this icon, ignore the active state opacity and show the icon at full alpha instead.",
+      get = function()
+        return GetAuraOnlyBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.procOverride end,
+          function()
+            local c = GetAuraCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.procOverride or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyAuraOnlySetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.procOverride = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("aura")
+        end
+      end,
+      order = 107.8316, width = 1.2,
+      hidden = function()
+        if HideIfNoAuraSelection() or collapsedSections.activeState then return true end
+        local c = GetAuraCfg()
+        return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState
+               and (c.cooldownStateVisuals.readyState.alpha or 1.0) < 1.0)
+      end,
+    },
     activeStateTint = {
       type = "toggle",
       name = "Color Tint",
@@ -3395,16 +3502,17 @@ function ns.GetCDMAuraIconsOptionsTable()
     activeStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
+        ["button"] = "Button Glow (Default)",
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
-        ["button"] = "Button Glow (Default)",
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
       get = function()
         local c = GetAuraCfg()
         if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
@@ -3675,14 +3783,15 @@ function ns.GetCDMAuraIconsOptionsTable()
     activeStateGlowFrameStrata = {
       type = "select",
       name = "Glow Strata",
-      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
       values = {
         ["inherit"] = "Inherit (Default)",
+        ["LOW"] = "LOW",
         ["MEDIUM"] = "MEDIUM",
         ["HIGH"] = "HIGH",
         ["DIALOG"] = "DIALOG",
       },
-      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
       get = function()
         local c = GetAuraCfg()
         if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
@@ -4004,7 +4113,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     inactiveGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
@@ -4012,8 +4121,9 @@ function ns.GetCDMAuraIconsOptionsTable()
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
       get = function()
         local c = GetAuraCfg()
         if c and c.auraActiveState then return c.auraActiveState.glowType or "button" end
@@ -4205,14 +4315,15 @@ function ns.GetCDMAuraIconsOptionsTable()
     inactiveGlowFrameStrata = {
       type = "select",
       name = "Glow Strata",
-      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
       values = {
         ["inherit"] = "Inherit (Default)",
+        ["LOW"] = "LOW",
         ["MEDIUM"] = "MEDIUM",
         ["HIGH"] = "HIGH",
         ["DIALOG"] = "DIALOG",
       },
-      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
       get = function()
         local c = GetAuraCfg()
         if c and c.auraActiveState then
@@ -4335,7 +4446,7 @@ function ns.GetCDMAuraIconsOptionsTable()
     },
     procGlowType = {
       type = "select", name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
         ["default"] = "Default (Golden)",
         ["pixel"] = "Pixel Glow",
@@ -4344,8 +4455,9 @@ function ns.GetCDMAuraIconsOptionsTable()
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
+      sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc", "cdm_flash"},
       get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
       set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.glowType = v end) end,
       order = 109.15, width = 0.8, hidden = HideAuraProcGlow,
@@ -4462,6 +4574,54 @@ function ns.GetCDMAuraIconsOptionsTable()
         return glowType ~= "autocast"
       end,
     },
+    procGlowXOffset = {
+      type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.xOffset or 0 end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.xOffset = v end) end,
+      order = 109.51, width = 0.55,
+      hidden = function()
+        if HideAuraProcGlow() then return true end
+        local c = GetAuraCfg()
+        local gt = c and c.procGlow and c.procGlow.glowType or "default"
+        return gt == "button" or gt == "default"
+      end,
+    },
+    procGlowYOffset = {
+      type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.yOffset or 0 end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.yOffset = v end) end,
+      order = 109.515, width = 0.55,
+      hidden = function()
+        if HideAuraProcGlow() then return true end
+        local c = GetAuraCfg()
+        local gt = c and c.procGlow and c.procGlow.glowType or "default"
+        return gt == "button" or gt == "default"
+      end,
+    },
+    procGlowFrameStrata = {
+      type = "select", name = "Glow Strata",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      values = { ["inherit"] = "Inherit (Default)", ["LOW"] = "LOW", ["MEDIUM"] = "MEDIUM", ["HIGH"] = "HIGH", ["DIALOG"] = "DIALOG" },
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
+      get = function() local c = GetAuraCfg(); return c and c.procGlow and c.procGlow.strata or "inherit" end,
+      set = function(_, v) ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.strata = (v ~= "inherit") and v or nil end) end,
+      order = 109.52, width = 0.85,
+      hidden = function() if HideAuraProcGlow() then return true end; local c = GetAuraCfg(); return not (c and c.procGlow and c.procGlow.enabled ~= false) end,
+    },
+    procGlowFrameLevel = {
+      type = "input", name = "Glow Frame Level",
+      desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata.\n\nAccepts a number from 1 to 10000.",
+      get = function() local c = GetAuraCfg(); local v = c and c.procGlow and c.procGlow.frameLevel; return v and tostring(v) or "" end,
+      set = function(_, v)
+        local num = tonumber(v); if not num then return end
+        num = math.floor(math.max(1, math.min(10000, num)))
+        ApplyAuraGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.frameLevel = num end)
+      end,
+      order = 109.525, width = 0.55,
+      hidden = function() if HideAuraProcGlow() then return true end; local c = GetAuraCfg(); return not (c and c.procGlow and c.procGlow.enabled ~= false) end,
+    },
     resetProcGlow = {
       type = "execute",
       name = "Reset Section",
@@ -4471,7 +4631,7 @@ function ns.GetCDMAuraIconsOptionsTable()
       hidden = HideAuraProcGlow,
       func = function() ResetAuraSectionSettings("procGlow") end,
     },
-    
+
     -- ═══════════════════════════════════════════════════════════════════
     -- ALERT EVENTS SECTION (Auras) - Coming Soon
     -- ═══════════════════════════════════════════════════════════════════
@@ -5975,7 +6135,26 @@ function ns.GetCDMCooldownIconsOptionsTable()
         return GetCooldownBoolSetting(function(c) return c.hideShadow end, function() local c = GetCooldownCfg(); return c and c.hideShadow end)
       end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) c.hideShadow = v end) end,
-      order = 107.5, width = 0.85, hidden = HideCooldownIconAppearance,
+      order = 107.5, width = 0.75, hidden = HideCooldownIconAppearance,
+    },
+    hideMask = {
+      type = "toggle", name = "Hide CDM Mask",
+      desc = "Removes the rounded-corner mask on the icon texture",
+      get = function()
+        return GetCooldownBoolSetting(function(c) return c.hideMask end, function() local c = GetCooldownCfg(); return c and c.hideMask end)
+      end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) c.hideMask = v end) end,
+      order = 107.51, width = 0.75, hidden = HideCooldownIconAppearance,
+    },
+    shadowSize = {
+      type = "range", name = "Shadow Size",
+      desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
+      min = 0.1, max = 3.0, step = 0.05,
+      get = function()
+        return GetCooldownBoolSetting(function(c) return c.shadowSize end, function() local c = GetCooldownCfg(); return c and c.shadowSize end) or 1.0
+      end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) c.shadowSize = v end) end,
+      order = 107.52, width = 1.2, hidden = HideCooldownIconAppearance,
     },
     keepBright = {
       type = "toggle", name = "Keep Bright",
@@ -6225,7 +6404,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     -- ═══════════════════════════════════════════════════════════════════
     readyStateHeader = {
       type = "toggle",
-      name = function() return GetCooldownHeaderName("activeState", "Ready State") end,
+      name = function() return GetCooldownHeaderName("activeState", "Cooldown Ready State") end,
       desc = "Click to expand/collapse. Configure how the icon appears when the ability IS READY (not on cooldown). Purple dot indicates per-icon customizations.",
       dialogControl = "CollapsibleHeader",
       get = function() return not collapsedSections.readyState end,
@@ -6261,6 +6440,40 @@ function ns.GetCDMCooldownIconsOptionsTable()
       end,
       order = 107.83, width = 0.8,
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.readyState end,
+    },
+    readyStateProcOverride = {
+      type = "toggle",
+      name = "Show on Proc",
+      desc = "If a proc glow is active on this icon, ignore the ready state opacity and show the icon at full alpha instead.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.procOverride end,
+          function()
+            local c = GetCooldownCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.procOverride or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.procOverride = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.831, width = 0.8,
+      hidden = function()
+        if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState
+               and (c.cooldownStateVisuals.readyState.alpha or 1.0) < 1.0)
+      end,
     },
     readyStateTint = {
       type = "toggle",
@@ -6450,7 +6663,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     readyStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
@@ -6458,8 +6671,9 @@ function ns.GetCDMCooldownIconsOptionsTable()
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
       get = function()
         local c = GetCooldownCfg()
         if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
@@ -6730,14 +6944,15 @@ function ns.GetCDMCooldownIconsOptionsTable()
     readyStateGlowFrameStrata = {
       type = "select",
       name = "Glow Strata",
-      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
       values = {
         ["inherit"] = "Inherit (Default)",
+        ["LOW"] = "LOW",
         ["MEDIUM"] = "MEDIUM",
         ["HIGH"] = "HIGH",
         ["DIALOG"] = "DIALOG",
       },
-      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
       get = function()
         local c = GetCooldownCfg()
         if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
@@ -6790,7 +7005,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     resetReadyState = {
       type = "execute",
       name = "Reset Section",
-      desc = "Reset Ready State settings to defaults for selected icon(s)",
+      desc = "Reset Cooldown Ready State settings to defaults for selected icon(s)",
       order = 107.89,
       width = 0.7,
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.readyState end,
@@ -6979,6 +7194,40 @@ function ns.GetCDMCooldownIconsOptionsTable()
       order = 107.946, width = 1.2,
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.cooldownState end,
     },
+    cooldownStateProcOverride = {
+      type = "toggle",
+      name = "Show on Proc",
+      desc = "If a proc glow is active on this icon, ignore the on-cooldown opacity and show the icon at full alpha instead.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState and c.cooldownStateVisuals.cooldownState.procOverride end,
+          function()
+            local c = GetCooldownCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState then
+              return c.cooldownStateVisuals.cooldownState.procOverride or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.cooldownState then c.cooldownStateVisuals.cooldownState = {} end
+          c.cooldownStateVisuals.cooldownState.procOverride = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.947, width = 1.2,
+      hidden = function()
+        if HideIfNoCooldownSelection() or collapsedSections.cooldownState then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState
+               and (c.cooldownStateVisuals.cooldownState.alpha or 1.0) < 1.0)
+      end,
+    },
     resetCooldownState = {
       type = "execute",
       name = "Reset Section",
@@ -7161,7 +7410,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     auraActiveStateGlowType = {
       type = "select",
       name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
         ["pixel"] = "Pixel Glow",
         ["autocast"] = "AutoCast Sparkles",
@@ -7169,8 +7418,9 @@ function ns.GetCDMCooldownIconsOptionsTable()
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
       get = function()
         local c = GetCooldownCfg()
         if c and c.auraActiveState then
@@ -7376,14 +7626,15 @@ function ns.GetCDMCooldownIconsOptionsTable()
     auraActiveStateGlowFrameStrata = {
       type = "select",
       name = "Glow Strata",
-      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
       values = {
         ["inherit"] = "Inherit (Default)",
+        ["LOW"] = "LOW",
         ["MEDIUM"] = "MEDIUM",
         ["HIGH"] = "HIGH",
         ["DIALOG"] = "DIALOG",
       },
-      sorting = {"inherit", "MEDIUM", "HIGH", "DIALOG"},
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
       get = function()
         local c = GetCooldownCfg()
         if c and c.auraActiveState then
@@ -7429,6 +7680,116 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideCooldownAuraActiveState() then return true end
         local c = GetCooldownCfg()
         return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+      end,
+    },
+    auraActiveStateGlowXOffset = {
+      type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetCooldownCfg(); return c and c.auraActiveState and c.auraActiveState.glowXOffset or 0 end,
+      set = function(_, v)
+        ApplyCooldownAuraActiveGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowXOffset = v
+        end)
+      end,
+      order = 107.9797, width = 0.55,
+      hidden = function()
+        if HideCooldownAuraActiveState() then return true end
+        local c = GetCooldownCfg()
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+        local gt = c.auraActiveState.glowType or "button"
+        return gt == "button"
+      end,
+    },
+    auraActiveStateGlowYOffset = {
+      type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetCooldownCfg(); return c and c.auraActiveState and c.auraActiveState.glowYOffset or 0 end,
+      set = function(_, v)
+        ApplyCooldownAuraActiveGlowSetting(function(c)
+          if not c.auraActiveState then c.auraActiveState = {} end
+          c.auraActiveState.glowYOffset = v
+        end)
+      end,
+      order = 107.9798, width = 0.55,
+      hidden = function()
+        if HideCooldownAuraActiveState() then return true end
+        local c = GetCooldownCfg()
+        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+        local gt = c.auraActiveState.glowType or "button"
+        return gt == "button"
+      end,
+    },
+    auraActiveStateHideAuraSwipe = {
+      type = "toggle", name = "Use Normal Swipe Color",
+      desc = "Replace the yellow aura swipe with the normal black cooldown swipe color.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c)
+            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+            return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0
+          end,
+          function()
+            local c = GetCooldownCfg()
+            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+            return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0 or false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplySharedCooldownSetting(function(c)
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          c.cooldownSwipe.auraSwipeColor = v and {r=0, g=0, b=0, a=0.7} or nil
+        end)
+      end,
+      order = 107.9796, width = 1.1,
+      hidden = HideCooldownAuraActiveState,
+    },
+    auraActiveStateAuraSwipeColorEnabled = {
+      type = "toggle", name = "Custom Aura Swipe Color",
+      desc = "Set a custom color for the swipe CDM shows when the aura/buff is active. Overrides the default yellow.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c)
+            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+            return sc ~= nil and sc.a ~= 0
+          end,
+          function()
+            local c = GetCooldownCfg()
+            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+            return sc ~= nil and sc.a ~= 0 or false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplySharedCooldownSetting(function(c)
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          c.cooldownSwipe.auraSwipeColor = v and {r=1, g=0.95, b=0.57, a=0.7} or nil
+        end)
+      end,
+      order = 107.9797, width = 1.1,
+      hidden = HideCooldownAuraActiveState,
+    },
+    auraActiveStateAuraSwipeColor = {
+      type = "color", name = "", hasAlpha = true,
+      desc = "Swipe color when the aura/buff is active",
+      get = function()
+        local c = GetCooldownCfg()
+        local col = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor or {r=1,g=0.95,b=0.57,a=0.7}
+        return col.r or 1, col.g or 0.95, col.b or 0.57, col.a or 0.7
+      end,
+      set = function(_, r, g, b, a)
+        ApplySharedCooldownSetting(function(c)
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          c.cooldownSwipe.auraSwipeColor = {r=r, g=g, b=b, a=a}
+        end)
+      end,
+      order = 107.9798, width = 0.3,
+      hidden = function()
+        if HideCooldownAuraActiveState() then return true end
+        local c = GetCooldownCfg()
+        local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+        return not (sc and sc.a ~= 0)
       end,
     },
     resetAuraActiveState = {
@@ -7514,7 +7875,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
     },
     procGlowType = {
       type = "select", name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)",
+      desc = "Select the glow animation style\n\n|cffffd700Default|r - Golden proc glow (matches CDM's native look)\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Button|r - Classic button glow\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
       values = {
         ["default"] = "Default (Golden)",
         ["pixel"] = "Pixel Glow",
@@ -7523,8 +7884,9 @@ function ns.GetCDMCooldownIconsOptionsTable()
         ["proc"] = "Blizzard Proc",
         ["ants"] = "Ants (Marching)",
         ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
       },
-      sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
+      sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc", "cdm_flash"},
       get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.glowType or "default" end,
       set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.glowType = v end) end,
       order = 109.15, width = 0.8, hidden = HideCooldownProcGlow,
@@ -7640,6 +8002,54 @@ function ns.GetCDMCooldownIconsOptionsTable()
         -- Only show for autocast type
         return glowType ~= "autocast"
       end,
+    },
+    procGlowXOffset = {
+      type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.xOffset or 0 end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.xOffset = v end) end,
+      order = 109.51, width = 0.55,
+      hidden = function()
+        if HideCooldownProcGlow() then return true end
+        local c = GetCooldownCfg()
+        local gt = c and c.procGlow and c.procGlow.glowType or "default"
+        return gt == "button" or gt == "default"
+      end,
+    },
+    procGlowYOffset = {
+      type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+      min = -50, max = 50, step = 1,
+      get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.yOffset or 0 end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.yOffset = v end) end,
+      order = 109.515, width = 0.55,
+      hidden = function()
+        if HideCooldownProcGlow() then return true end
+        local c = GetCooldownCfg()
+        local gt = c and c.procGlow and c.procGlow.glowType or "default"
+        return gt == "button" or gt == "default"
+      end,
+    },
+    procGlowFrameStrata = {
+      type = "select", name = "Glow Strata",
+      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+      values = { ["inherit"] = "Inherit (Default)", ["LOW"] = "LOW", ["MEDIUM"] = "MEDIUM", ["HIGH"] = "HIGH", ["DIALOG"] = "DIALOG" },
+      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
+      get = function() local c = GetCooldownCfg(); return c and c.procGlow and c.procGlow.strata or "inherit" end,
+      set = function(_, v) ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.strata = (v ~= "inherit") and v or nil end) end,
+      order = 109.52, width = 0.85,
+      hidden = function() if HideCooldownProcGlow() then return true end; local c = GetCooldownCfg(); return not (c and c.procGlow and c.procGlow.enabled ~= false) end,
+    },
+    procGlowFrameLevel = {
+      type = "input", name = "Glow Frame Level",
+      desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata.\n\nAccepts a number from 1 to 10000.",
+      get = function() local c = GetCooldownCfg(); local v = c and c.procGlow and c.procGlow.frameLevel; return v and tostring(v) or "" end,
+      set = function(_, v)
+        local num = tonumber(v); if not num then return end
+        num = math.floor(math.max(1, math.min(10000, num)))
+        ApplyCooldownGlowSetting(function(c) if not c.procGlow then c.procGlow = {} end; c.procGlow.frameLevel = num end)
+      end,
+      order = 109.525, width = 0.55,
+      hidden = function() if HideCooldownProcGlow() then return true end; local c = GetCooldownCfg(); return not (c and c.procGlow and c.procGlow.enabled ~= false) end,
     },
     resetProcGlow = {
       type = "execute",
@@ -7854,6 +8264,42 @@ function ns.GetCDMCooldownIconsOptionsTable()
         if HideCooldownCooldownSwipe() then return true end
         local c = GetCooldownCfg()
         return not (c and c.cooldownSwipe and c.cooldownSwipe.swipeColor)
+      end,
+    },
+    auraSwipeColorEnabled = {
+      type = "toggle", name = "Aura Swipe Color",
+      desc = "Set a separate swipe color for when the aura/buff is active. Only applies when Ignore Aura Override is enabled.",
+      get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor ~= nil end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor ~= nil end) end,
+      set = function(_, v)
+        ApplySharedCooldownSetting(function(c)
+          if not c.cooldownSwipe then c.cooldownSwipe = {} end
+          c.cooldownSwipe.auraSwipeColor = v and {r=1, g=0.95, b=0.57, a=0.7} or nil
+        end)
+      end,
+      order = 121.45, width = 0.8,
+      hidden = function()
+        if HideCooldownCooldownSwipe() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.auraActiveState and c.auraActiveState.ignoreAuraOverride)
+      end,
+      disabled = DisableCooldownCooldownSwipe,
+    },
+    auraSwipeColor = {
+      type = "color", name = "", hasAlpha = true,
+      desc = "Swipe color when the aura/totem/pet is active",
+      get = function()
+        local c = GetCooldownCfg()
+        local col = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor or {r=1,g=0.95,b=0.57,a=0.7}
+        return col.r or 1, col.g or 0.95, col.b or 0.57, col.a or 0.7
+      end,
+      set = function(_, r, g, b, a)
+        ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.auraSwipeColor = {r=r, g=g, b=b, a=a} end)
+      end,
+      order = 121.46, width = 0.3,
+      hidden = function()
+        if HideCooldownCooldownSwipe() then return true end
+        local c = GetCooldownCfg()
+        return not (c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor)
       end,
     },
     -- Swipe Inset (same row as swipe)
@@ -8989,13 +9435,6 @@ function ns.GetCDMCooldownIconsOptionsTable()
     end
   end
   
-  -- Merge Assisted Combat Highlight options from external module
-  if ns.AssistedCombatHighlightOptions and ns.AssistedCombatHighlightOptions.GetCooldownArgs then
-    for k, v in pairs(ns.AssistedCombatHighlightOptions.GetCooldownArgs()) do
-      args[k] = v
-    end
-  end
-  
   return {
     type = "group",
     name = "CDM Cooldown Icons",
@@ -9182,7 +9621,22 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
         desc = "Hide CDM's default shadow/border texture",
         get = function() return GetAuraGlobalCfg().hideShadow end,
         set = function(_, v) ApplyAuraGlobalSetting("hideShadow", v); RefreshGlobalAuras() end,
-        order = 13, width = 0.7, hidden = function() return collapsedGlobalAuraSections.iconAppearance end,
+        order = 13, width = 0.65, hidden = function() return collapsedGlobalAuraSections.iconAppearance end,
+      },
+      hideMask = {
+        type = "toggle", name = "Hide CDM Mask",
+        desc = "Hide CDM's rounded-corner mask on the icon texture",
+        get = function() return GetAuraGlobalCfg().hideMask end,
+        set = function(_, v) ApplyAuraGlobalSetting("hideMask", v); RefreshGlobalAuras() end,
+        order = 13.1, width = 0.65, hidden = function() return collapsedGlobalAuraSections.iconAppearance end,
+      },
+      shadowSize = {
+        type = "range", name = "Shadow Size",
+        desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
+        min = 0.1, max = 3.0, step = 0.05,
+        get = function() return GetAuraGlobalCfg().shadowSize or 1.0 end,
+        set = function(_, v) ApplyAuraGlobalSetting("shadowSize", v); RefreshGlobalAuras() end,
+        order = 13.2, width = 1.2, hidden = function() return collapsedGlobalAuraSections.iconAppearance end,
       },
       showDebuffBorder = {
         type = "toggle", name = "Debuff Border",
@@ -9303,14 +9757,15 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
         type = "select", name = "Glow Style",
         desc = "Select the glow animation style",
         values = {
+          ["button"] = "Button Glow (Default)",
           ["pixel"] = "Pixel Glow",
           ["autocast"] = "AutoCast Sparkles",
-          ["button"] = "Button Glow (Default)",
           ["proc"] = "Blizzard Proc",
           ["ants"] = "Ants (Marching)",
           ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
         },
-        sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+        sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
         get = function()
           local g = GetAuraGlobalCfg()
           if g.cooldownStateVisuals and g.cooldownStateVisuals.readyState then
@@ -10427,8 +10882,8 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
       },
       glowType = {
         type = "select", name = "Type",
-        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop" },
-        sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
+        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop", cdm_flash = "CDM Flash Pulse" },
+        sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc", "cdm_flash"},
         get = function() local g = GetAuraGlobalCfg(); return g.procGlow and g.procGlow.glowType or "default" end,
         set = function(_, v) ApplyAuraGlobalSetting("procGlow.glowType", v); RefreshGlobalAuras() end,
         order = 52, width = 0.7, hidden = function() return collapsedGlobalAuraSections.procGlow end,
@@ -10535,7 +10990,58 @@ function ns.GetCDMGlobalAuraDefaultsOptionsTable()
           return glowType ~= "autocast"
         end,
       },
-      
+      glowXOffset = {
+        type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local g = GetAuraGlobalCfg(); return g.procGlow and g.procGlow.xOffset or 0 end,
+        set = function(_, v) ApplyAuraGlobalSetting("procGlow.xOffset", v); RefreshGlobalAuras() end,
+        order = 55.1, width = 0.55,
+        hidden = function()
+          if collapsedGlobalAuraSections.procGlow then return true end
+          local g = GetAuraGlobalCfg()
+          local gt = g.procGlow and g.procGlow.glowType or "default"
+          return gt == "button" or gt == "default"
+        end,
+      },
+      glowYOffset = {
+        type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local g = GetAuraGlobalCfg(); return g.procGlow and g.procGlow.yOffset or 0 end,
+        set = function(_, v) ApplyAuraGlobalSetting("procGlow.yOffset", v); RefreshGlobalAuras() end,
+        order = 55.15, width = 0.55,
+        hidden = function()
+          if collapsedGlobalAuraSections.procGlow then return true end
+          local g = GetAuraGlobalCfg()
+          local gt = g.procGlow and g.procGlow.glowType or "default"
+          return gt == "button" or gt == "default"
+        end,
+      },
+      glowFrameStrata = {
+        type = "select", name = "Glow Strata",
+        desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+        values = { ["inherit"] = "Inherit (Default)", ["LOW"] = "LOW", ["MEDIUM"] = "MEDIUM", ["HIGH"] = "HIGH", ["DIALOG"] = "DIALOG" },
+        sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
+        get = function() local g = GetAuraGlobalCfg(); return g.procGlow and g.procGlow.strata or "inherit" end,
+        set = function(_, v)
+          ApplyAuraGlobalSetting("procGlow.strata", (v ~= "inherit") and v or nil)
+          RefreshGlobalAuras()
+        end,
+        order = 55.2, width = 0.85,
+        hidden = function() if collapsedGlobalAuraSections.procGlow then return true end; local g = GetAuraGlobalCfg(); return not (g.procGlow and g.procGlow.enabled ~= false) end,
+      },
+      glowFrameLevel = {
+        type = "input", name = "Glow Frame Level",
+        desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata.\n\nAccepts a number from 1 to 10000.",
+        get = function() local g = GetAuraGlobalCfg(); local v = g.procGlow and g.procGlow.frameLevel; return v and tostring(v) or "" end,
+        set = function(_, v)
+          local num = tonumber(v); if not num then return end
+          num = math.floor(math.max(1, math.min(10000, num)))
+          ApplyAuraGlobalSetting("procGlow.frameLevel", num); RefreshGlobalAuras()
+        end,
+        order = 55.25, width = 0.55,
+        hidden = function() if collapsedGlobalAuraSections.procGlow then return true end; local g = GetAuraGlobalCfg(); return not (g.procGlow and g.procGlow.enabled ~= false) end,
+      },
+
       -- ═══════════════════════════════════════════════════════════════════
       -- BORDER
       -- ═══════════════════════════════════════════════════════════════════
@@ -10802,7 +11308,22 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         desc = "Hide CDM's default shadow/border texture",
         get = function() return GetCooldownGlobalCfg().hideShadow end,
         set = function(_, v) ApplyCooldownGlobalSetting("hideShadow", v); RefreshGlobalCooldowns() end,
-        order = 13, width = 0.75, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
+        order = 13, width = 0.65, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
+      },
+      hideMask = {
+        type = "toggle", name = "Hide CDM Mask",
+        desc = "Hide CDM's rounded-corner mask on the icon texture",
+        get = function() return GetCooldownGlobalCfg().hideMask end,
+        set = function(_, v) ApplyCooldownGlobalSetting("hideMask", v); RefreshGlobalCooldowns() end,
+        order = 13.1, width = 0.65, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
+      },
+      shadowSize = {
+        type = "range", name = "Shadow Size",
+        desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
+        min = 0.1, max = 3.0, step = 0.05,
+        get = function() return GetCooldownGlobalCfg().shadowSize or 1.0 end,
+        set = function(_, v) ApplyCooldownGlobalSetting("shadowSize", v); RefreshGlobalCooldowns() end,
+        order = 13.2, width = 1.2, hidden = function() return collapsedGlobalCooldownSections.iconAppearance end,
       },
       showPandemicBorder = {
         type = "toggle", name = "Pandemic Glow",
@@ -10816,7 +11337,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
       -- READY STATE
       -- ═══════════════════════════════════════════════════════════════════
       readyStateHeader = {
-        type = "toggle", name = "Ready State", dialogControl = "CollapsibleHeader",
+        type = "toggle", name = "Cooldown Ready State", dialogControl = "CollapsibleHeader",
         desc = "How icons appear when the ability IS READY (not on cooldown)",
         get = function() return not collapsedGlobalCooldownSections.readyState end,
         set = function(_, v) collapsedGlobalCooldownSections.readyState = not v end,
@@ -10946,8 +11467,9 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           ["proc"] = "Blizzard Proc",
           ["ants"] = "Ants (Marching)",
           ["ach_proc"] = "Proc Loop",
+        ["cdm_flash"] = "CDM Flash Pulse",
         },
-        sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc"},
+        sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
         get = function()
           local g = GetCooldownGlobalCfg()
           if g.cooldownStateVisuals and g.cooldownStateVisuals.readyState then
@@ -11327,7 +11849,57 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         order = 18.1, width = 1.2,
         hidden = function() return collapsedGlobalCooldownSections.auraActiveState end,
       },
-      
+      globalUseNormalAuraSwipe = {
+        type = "toggle", name = "Use Normal Swipe Color",
+        desc = "Replace the yellow aura swipe with the normal black cooldown swipe color.",
+        get = function()
+          local g = GetCooldownGlobalCfg()
+          local sc = g.cooldownSwipe and g.cooldownSwipe.auraSwipeColor
+          return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0 or false
+        end,
+        set = function(_, v)
+          ApplyCooldownGlobalSetting("cooldownSwipe.auraSwipeColor", v and {r=0, g=0, b=0, a=0.7} or nil)
+          RefreshGlobalCooldowns()
+        end,
+        order = 18.2, width = 1.1,
+        hidden = function() return collapsedGlobalCooldownSections.auraActiveState end,
+      },
+      globalCustomAuraSwipeColorEnabled = {
+        type = "toggle", name = "Custom Aura Swipe Color",
+        desc = "Set a custom color for the swipe CDM shows when the aura/buff is active. Overrides the default yellow.",
+        get = function()
+          local g = GetCooldownGlobalCfg()
+          local sc = g.cooldownSwipe and g.cooldownSwipe.auraSwipeColor
+          return sc ~= nil and sc.a ~= 0 and not (sc.r == 0 and sc.g == 0 and sc.b == 0) or false
+        end,
+        set = function(_, v)
+          ApplyCooldownGlobalSetting("cooldownSwipe.auraSwipeColor", v and {r=1, g=0.95, b=0.57, a=0.7} or nil)
+          RefreshGlobalCooldowns()
+        end,
+        order = 18.3, width = 1.1,
+        hidden = function() return collapsedGlobalCooldownSections.auraActiveState end,
+      },
+      globalCustomAuraSwipeColor = {
+        type = "color", name = "", hasAlpha = true,
+        desc = "Swipe color when the aura/buff is active",
+        get = function()
+          local g = GetCooldownGlobalCfg()
+          local c = g.cooldownSwipe and g.cooldownSwipe.auraSwipeColor or {r=1,g=0.95,b=0.57,a=0.7}
+          return c.r or 1, c.g or 0.95, c.b or 0.57, c.a or 0.7
+        end,
+        set = function(_, r, gc, b, a)
+          ApplyCooldownGlobalSetting("cooldownSwipe.auraSwipeColor", {r=r, g=gc, b=b, a=a})
+          RefreshGlobalCooldowns()
+        end,
+        order = 18.4, width = 0.3,
+        hidden = function()
+          if collapsedGlobalCooldownSections.auraActiveState then return true end
+          local g = GetCooldownGlobalCfg()
+          local sc = g.cooldownSwipe and g.cooldownSwipe.auraSwipeColor
+          return not (sc and sc.a ~= 0 and not (sc.r == 0 and sc.g == 0 and sc.b == 0))
+        end,
+      },
+
       -- ═══════════════════════════════════════════════════════════════════
       -- COOLDOWN SWIPE
       -- ═══════════════════════════════════════════════════════════════════
@@ -11355,7 +11927,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         get = function() local g = GetCooldownGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showSwipe ~= false end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.showSwipe", v); RefreshGlobalCooldowns() end,
         order = 21, width = 0.6, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
-        -- NOT disabled when Masque controls cooldowns - user can still toggle swipe visibility
+        disabled = function() return IsMasqueCooldownsActive() end,
       },
       noGCDSwipe = {
         type = "toggle", name = "No GCD Swipe",
@@ -11396,7 +11968,7 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
         get = function() local g = GetCooldownGlobalCfg(); return not g.cooldownSwipe or g.cooldownSwipe.showEdge ~= false end,
         set = function(_, v) ApplyCooldownGlobalSetting("cooldownSwipe.showEdge", v); RefreshGlobalCooldowns() end,
         order = 23, width = 0.4, hidden = function() return collapsedGlobalCooldownSections.cooldownSwipe end,
-        -- NOT disabled when Masque controls cooldowns - user can still toggle edge visibility
+        disabled = function() return IsMasqueCooldownsActive() end,
       },
       showBling = {
         type = "toggle", name = "Bling",
@@ -12052,8 +12624,8 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
       },
       glowType = {
         type = "select", name = "Type",
-        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop" },
-        sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc"},
+        values = { default = "Default (Golden)", pixel = "Pixel", autocast = "Autocast", button = "Button", proc = "Proc", ants = "Ants (Marching)", ach_proc = "Proc Loop", cdm_flash = "CDM Flash Pulse" },
+        sorting = {"default", "proc", "pixel", "autocast", "button", "ants", "ach_proc", "cdm_flash"},
         get = function() local g = GetCooldownGlobalCfg(); return g.procGlow and g.procGlow.glowType or "default" end,
         set = function(_, v) ApplyCooldownGlobalSetting("procGlow.glowType", v); RefreshGlobalCooldowns() end,
         order = 52, width = 0.7, hidden = function() return collapsedGlobalCooldownSections.procGlow end,
@@ -12160,7 +12732,58 @@ function ns.GetCDMGlobalCooldownDefaultsOptionsTable()
           return glowType ~= "autocast"
         end,
       },
-      
+      glowXOffset = {
+        type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local g = GetCooldownGlobalCfg(); return g.procGlow and g.procGlow.xOffset or 0 end,
+        set = function(_, v) ApplyCooldownGlobalSetting("procGlow.xOffset", v); RefreshGlobalCooldowns() end,
+        order = 55.1, width = 0.55,
+        hidden = function()
+          if collapsedGlobalCooldownSections.procGlow then return true end
+          local g = GetCooldownGlobalCfg()
+          local gt = g.procGlow and g.procGlow.glowType or "default"
+          return gt == "button" or gt == "default"
+        end,
+      },
+      glowYOffset = {
+        type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local g = GetCooldownGlobalCfg(); return g.procGlow and g.procGlow.yOffset or 0 end,
+        set = function(_, v) ApplyCooldownGlobalSetting("procGlow.yOffset", v); RefreshGlobalCooldowns() end,
+        order = 55.15, width = 0.55,
+        hidden = function()
+          if collapsedGlobalCooldownSections.procGlow then return true end
+          local g = GetCooldownGlobalCfg()
+          local gt = g.procGlow and g.procGlow.glowType or "default"
+          return gt == "button" or gt == "default"
+        end,
+      },
+      glowFrameStrata = {
+        type = "select", name = "Glow Strata",
+        desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+        values = { ["inherit"] = "Inherit (Default)", ["LOW"] = "LOW", ["MEDIUM"] = "MEDIUM", ["HIGH"] = "HIGH", ["DIALOG"] = "DIALOG" },
+        sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
+        get = function() local g = GetCooldownGlobalCfg(); return g.procGlow and g.procGlow.strata or "inherit" end,
+        set = function(_, v)
+          ApplyCooldownGlobalSetting("procGlow.strata", (v ~= "inherit") and v or nil)
+          RefreshGlobalCooldowns()
+        end,
+        order = 55.2, width = 0.85,
+        hidden = function() if collapsedGlobalCooldownSections.procGlow then return true end; local g = GetCooldownGlobalCfg(); return not (g.procGlow and g.procGlow.enabled ~= false) end,
+      },
+      glowFrameLevel = {
+        type = "input", name = "Glow Frame Level",
+        desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata.\n\nAccepts a number from 1 to 10000.",
+        get = function() local g = GetCooldownGlobalCfg(); local v = g.procGlow and g.procGlow.frameLevel; return v and tostring(v) or "" end,
+        set = function(_, v)
+          local num = tonumber(v); if not num then return end
+          num = math.floor(math.max(1, math.min(10000, num)))
+          ApplyCooldownGlobalSetting("procGlow.frameLevel", num); RefreshGlobalCooldowns()
+        end,
+        order = 55.25, width = 0.55,
+        hidden = function() if collapsedGlobalCooldownSections.procGlow then return true end; local g = GetCooldownGlobalCfg(); return not (g.procGlow and g.procGlow.enabled ~= false) end,
+      },
+
       -- ═══════════════════════════════════════════════════════════════════
       -- BORDER
       -- ═══════════════════════════════════════════════════════════════════
@@ -12320,11 +12943,6 @@ function ns.GetCDMIconsOptionsTable()
     -- Skip global options (they're defined in the unified panel already)
     globalOptionsHeader = true, globalOptionsDesc = true,
     showTooltips = true, clickThrough = true,
-    -- Skip ACH options (merged directly into unified panel at correct order)
-    achHeader = true, achDesc = true, achEnabled = true, achStyle = true, achArcAuras = true,
-    achColor = true, achResetColor = true, achStatus = true, achCombatOnly = true,
-    achStrata = true, achLevel = true, achScale = true,
-    achAlwaysAnimate = true, achShowBurst = true,
   }
   -- Also skip catalogIcon entries
   for i = 1, 50 do
@@ -12343,8 +12961,8 @@ function ns.GetCDMIconsOptionsTable()
     -- ═══════════════════════════════════════════════════════════════════
     masterEnable = {
       type = "toggle",
-      name = "|cff00ff00Enable CDM Styling|r",
-      desc = "Master toggle to enable/disable all CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
+      name = "|cff00ff00Enable CDM Module|r",
+      desc = "Master toggle to enable/disable all ArcUI CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
       order = 2,
       width = 1.0,
       get = function() 
@@ -12358,6 +12976,40 @@ function ns.GetCDMIconsOptionsTable()
         -- Use centralized function from CDM_Shared
         if Shared and Shared.SetCDMStylingEnabled then
           Shared.SetCDMStylingEnabled(val)
+        end
+      end,
+    },
+    keepCDMStyle = {
+      type = "toggle",
+      name = "Keep CDM Styling",
+      desc = "Preserve CDM's native icon look: rounded corner mask and proportionally scaled shadow overlay.\n\nWhen enabled: the CDM mask is kept on icons, the shadow overlay is shown and resized correctly as you change icon size, and |cffffaa00Hide CDM Shadow|r in global settings is ignored.\n\n|cffffaa00Enabled by default for new specs. Existing users enable manually.|r",
+      order = 2.1,
+      width = 1.2,
+      get = function()
+        local specData = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
+        if specData then return specData.keepCDMStyle == true end
+        return false
+      end,
+      set = function(_, val)
+        local specData = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
+        if specData then
+          specData.keepCDMStyle = val or nil
+          -- When enabling, clear hideShadow/hideMask from globals so overlay and mask show
+          if val then
+            local db = ns.CDMEnhance and ns.CDMEnhance.GetDB and ns.CDMEnhance.GetDB()
+            if db then
+              if db.globalAuraSettings then
+                db.globalAuraSettings.hideShadow = nil
+                db.globalAuraSettings.hideMask = nil
+              end
+              if db.globalCooldownSettings then
+                db.globalCooldownSettings.hideShadow = nil
+                db.globalCooldownSettings.hideMask = nil
+              end
+            end
+          end
+          if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
+          if ns.CDMEnhance and ns.CDMEnhance.RefreshAllStyles then ns.CDMEnhance.RefreshAllStyles() end
         end
       end,
     },
@@ -12482,327 +13134,6 @@ function ns.GetCDMIconsOptionsTable()
         db.clickThrough = val
         if ns.CDMGroups and ns.CDMGroups.RefreshIconSettings then
           ns.CDMGroups.RefreshIconSettings()
-        end
-      end,
-    },
-    
-    -- ═══════════════════════════════════════════════════════════════════
-    -- KEYBINDS SECTION
-    -- ═══════════════════════════════════════════════════════════════════
-    keybindsToggle = {
-      type = "toggle",
-      name = "Keybind Display",
-      desc = "Click to expand/collapse",
-      dialogControl = "CollapsibleHeader",
-      order = 6,
-      width = "full",
-      get = function() return not collapsedSections.keybinds end,
-      set = function(_, v)
-        collapsedSections.keybinds = not v
-        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
-      end,
-    },
-    showKeybinds = {
-      type = "toggle",
-      name = "Enable",
-      desc = "When enabled, action bar keybinds are displayed on cooldown icons.\n\nShows the key you press to activate each ability.",
-      order = 6.02,
-      width = 0.5,
-      hidden = function() return collapsedSections.keybinds end,
-      get = function()
-        return ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled() or false
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetEnabled then
-          ns.Keybinds.SetEnabled(val)
-        end
-      end,
-    },
-    keybindFont = {
-      type = "select",
-      name = "Font",
-      dialogControl = "LSM30_Font",
-      values = LSM and LSM:HashTable("font") or {},
-      order = 6.03,
-      width = 0.9,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.font or "Friz Quadrata TT"
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("font", val)
-        end
-      end,
-    },
-    keybindFontSize = {
-      type = "range",
-      name = "Size",
-      desc = "Font size for keybind text",
-      order = 6.04,
-      width = 0.7,
-      min = 6, max = 32, step = 1,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.fontSize or 12
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("fontSize", val)
-        end
-      end,
-    },
-    keybindOutline = {
-      type = "select",
-      name = "Outline",
-      values = {
-        [""] = "None",
-        ["OUTLINE"] = "Outline",
-        ["THICKOUTLINE"] = "Thick",
-        ["MONOCHROME"] = "Mono",
-      },
-      order = 6.05,
-      width = 0.55,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.fontOutline or "OUTLINE"
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("fontOutline", val)
-        end
-      end,
-    },
-    keybindColor = {
-      type = "color",
-      name = "Color",
-      hasAlpha = true,
-      order = 6.06,
-      width = 0.45,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        local c = settings and settings.color or { 1, 1, 1, 1 }
-        return c[1] or 1, c[2] or 1, c[3] or 1, c[4] or 1
-      end,
-      set = function(_, r, g, b, a)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("color", { r, g, b, a })
-        end
-      end,
-    },
-    keybindAnchor = {
-      type = "select",
-      name = "Anchor",
-      desc = "Position to display keybind text on the icon",
-      order = 6.07,
-      width = 0.65,
-      values = {
-        TOPLEFT = "Top Left",
-        TOP = "Top",
-        TOPRIGHT = "Top Right",
-        LEFT = "Left",
-        CENTER = "Center",
-        RIGHT = "Right",
-        BOTTOMLEFT = "Bottom Left",
-        BOTTOM = "Bottom",
-        BOTTOMRIGHT = "Bottom Right",
-      },
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.anchor or "TOPRIGHT"
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("anchor", val)
-        end
-      end,
-    },
-    keybindOffsetX = {
-      type = "range",
-      name = "X Offset",
-      desc = "Horizontal offset for keybind text",
-      order = 6.08,
-      width = 0.6,
-      min = -50, max = 50, step = 1,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.offsetX or -1
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("offsetX", val)
-        end
-      end,
-    },
-    keybindOffsetXInput = {
-      type = "input",
-      name = "X",
-      desc = "Type an exact X offset value (any integer)",
-      dialogControl = "ArcUI_EditBox",
-      order = 6.081,
-      width = 0.35,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return tostring(settings and settings.offsetX or -1)
-      end,
-      set = function(_, val)
-        local num = tonumber(val)
-        if num and ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("offsetX", math.floor(num))
-        end
-      end,
-    },
-    keybindOffsetY = {
-      type = "range",
-      name = "Y Offset",
-      desc = "Vertical offset for keybind text",
-      order = 6.09,
-      width = 0.6,
-      min = -50, max = 50, step = 1,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.offsetY or -1
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("offsetY", val)
-        end
-      end,
-    },
-    keybindOffsetYInput = {
-      type = "input",
-      name = "Y",
-      desc = "Type an exact Y offset value (any integer)",
-      dialogControl = "ArcUI_EditBox",
-      order = 6.091,
-      width = 0.35,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return tostring(settings and settings.offsetY or -1)
-      end,
-      set = function(_, val)
-        local num = tonumber(val)
-        if num and ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("offsetY", math.floor(num))
-        end
-      end,
-    },
-    keybindStrata = {
-      type = "select",
-      name = "Strata",
-      desc = "Frame strata for keybind text. 'Inherit' uses the icon's strata.",
-      order = 6.10,
-      width = 0.55,
-      values = {
-        [""] = "Inherit",
-        ["BACKGROUND"] = "Background",
-        ["LOW"] = "Low",
-        ["MEDIUM"] = "Medium",
-        ["HIGH"] = "High",
-        ["DIALOG"] = "Dialog",
-        ["TOOLTIP"] = "Tooltip",
-      },
-      sorting = { "", "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" },
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.frameStrata or ""
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("frameStrata", val)
-        end
-      end,
-    },
-    keybindLevel = {
-      type = "input",
-      name = "Level",
-      desc = "Frame level for keybind text (higher = on top). 0 = inherit from icon.",
-      dialogControl = "ArcUI_EditBox",
-      order = 6.11,
-      width = 0.4,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return tostring(settings and settings.frameLevel or 0)
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          local num = tonumber(val)
-          if num then
-            ns.Keybinds.SetSetting("frameLevel", math.max(0, math.floor(num)))
-          end
-        end
-      end,
-    },
-    keybindCustomReplacementsLabel = {
-      type = "description",
-      name = "\n|cff888888Custom Text Replacements|r",
-      order = 6.12,
-      width = "full",
-      hidden = function() return collapsedSections.keybinds end,
-    },
-    keybindReplaceFindText = {
-      type = "input",
-      name = "Find",
-      desc = "Text to find in keybinds (comma-separated).\n\nExample: META,CTRL,ALT\n\nMatched by position with 'Replace With' field.",
-      dialogControl = "ArcUI_EditBox",
-      order = 6.13,
-      width = 0.75,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.replaceFindText or ""
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("replaceFindText", val or "")
-          if ns.Keybinds.RefreshAll then
-            ns.Keybinds.RefreshAll()
-          end
-        end
-      end,
-    },
-    keybindReplaceWithText = {
-      type = "input",
-      name = "Replace",
-      desc = "Replacement text (comma-separated).\n\nExample: M,C,A\n\nMatched by position with 'Find' field.\nLeave a position empty to remove text.",
-      dialogControl = "ArcUI_EditBox",
-      order = 6.14,
-      width = 0.75,
-      hidden = function() return collapsedSections.keybinds end,
-      disabled = function() return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled()) end,
-      get = function()
-        local settings = ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
-        return settings and settings.replaceWithText or ""
-      end,
-      set = function(_, val)
-        if ns.Keybinds and ns.Keybinds.SetSetting then
-          ns.Keybinds.SetSetting("replaceWithText", val or "")
-          if ns.Keybinds.RefreshAll then
-            ns.Keybinds.RefreshAll()
-          end
         end
       end,
     },
@@ -12949,27 +13280,6 @@ function ns.GetCDMIconsOptionsTable()
   -- Add catalog icons
   for i = 1, 50 do
     args["catalogIcon" .. i] = CreateUnifiedCatalogIconEntry(i)
-  end
-  
-  -- Merge Assisted Combat Highlight options directly into unified panel
-  -- Override orders to 7.xx (between keybinds at 6 and catalog at 9)
-  if ns.AssistedCombatHighlightOptions and ns.AssistedCombatHighlightOptions.GetCooldownArgs then
-    local orderMap = {
-      achHeader = 7, achDesc = 7.01, achEnabled = 7.02, achStyle = 7.025, achArcAuras = 7.03,
-      achCombatOnly = 7.035, achStrata = 7.036, achLevel = 7.037, achScale = 7.038,
-      achAlwaysAnimate = 7.039, achShowBurst = 7.0395,
-      achColor = 7.04, achResetColor = 7.05, achStatus = 7.06,
-    }
-    for k, v in pairs(ns.AssistedCombatHighlightOptions.GetCooldownArgs()) do
-      if orderMap[k] then
-        local copy = {}
-        for vk, vv in pairs(v) do copy[vk] = vv end
-        copy.order = orderMap[k]
-        args[k] = copy
-      else
-        args[k] = v
-      end
-    end
   end
   
   -- Copy AURA per-icon options (order 100-199) - they use HideIfNoAuraSelection
@@ -13653,5 +13963,222 @@ function ns.CDMEnhanceOptions.GetEditModeState()
   }
 end
 
--- Start a ticker to monitor options panel state
-C_Timer.NewTicker(0.5, CheckOptionsStateChange)
+-- ===================================================================
+-- UTILITIES TAB
+-- Keybind Display globals, Assisted Combat Highlight, Button Press Highlight
+-- ===================================================================
+function ns.GetCDMUtilitiesOptionsTable()
+  local cs = collapsedSections
+
+  local function keybindDisabled()
+    return not (ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled())
+  end
+  local function keybindHidden()
+    return cs.keybinds
+  end
+  local function getKBSettings()
+    return ns.Keybinds and ns.Keybinds.GetSettings and ns.Keybinds.GetSettings()
+  end
+  local function setKBSetting(key, val)
+    if ns.Keybinds and ns.Keybinds.SetSetting then
+      ns.Keybinds.SetSetting(key, val)
+    end
+  end
+
+  local args = {
+    -- ═══════════════════════════════════════════════════════════════════
+    -- KEYBIND DISPLAY (global settings)
+    -- ═══════════════════════════════════════════════════════════════════
+    keybindsToggle = {
+      type = "toggle",
+      name = "Keybind Display",
+      desc = "Click to expand/collapse",
+      dialogControl = "CollapsibleHeader",
+      order = 1, width = "full",
+      get = function() return not cs.keybinds end,
+      set = function(_, v) cs.keybinds = not v; LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI") end,
+    },
+    showKeybinds = {
+      type = "toggle", name = "Enable",
+      desc = "When enabled, action bar keybinds are displayed on cooldown icons.\n\nShows the key you press to activate each ability.",
+      order = 1.02, width = 0.5, hidden = keybindHidden,
+      get = function() return ns.Keybinds and ns.Keybinds.IsEnabled and ns.Keybinds.IsEnabled() or false end,
+      set = function(_, val) if ns.Keybinds and ns.Keybinds.SetEnabled then ns.Keybinds.SetEnabled(val) end end,
+    },
+    keybindFont = {
+      type = "select", name = "Font", dialogControl = "LSM30_Font",
+      values = LSM and LSM:HashTable("font") or {},
+      order = 1.03, width = 0.9, hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.font or "Friz Quadrata TT" end,
+      set = function(_, val) setKBSetting("font", val) end,
+    },
+    keybindFontSize = {
+      type = "range", name = "Size", desc = "Font size for keybind text",
+      order = 1.04, width = 0.7, min = 6, max = 32, step = 1,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.fontSize or 12 end,
+      set = function(_, val) setKBSetting("fontSize", val) end,
+    },
+    keybindOutline = {
+      type = "select", name = "Outline",
+      values = { [""] = "None", ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick", ["MONOCHROME"] = "Mono" },
+      order = 1.05, width = 0.55, hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.fontOutline or "OUTLINE" end,
+      set = function(_, val) setKBSetting("fontOutline", val) end,
+    },
+    keybindColor = {
+      type = "color", name = "Color", hasAlpha = true,
+      order = 1.06, width = 0.45, hidden = keybindHidden, disabled = keybindDisabled,
+      get = function()
+        local s = getKBSettings(); local c = s and s.color or { 1, 1, 1, 1 }
+        return c[1] or 1, c[2] or 1, c[3] or 1, c[4] or 1
+      end,
+      set = function(_, r, g, b, a) setKBSetting("color", { r, g, b, a }) end,
+    },
+    keybindAnchor = {
+      type = "select", name = "Anchor", desc = "Position to display keybind text on the icon",
+      order = 1.07, width = 0.65,
+      values = {
+        TOPLEFT = "Top Left", TOP = "Top", TOPRIGHT = "Top Right",
+        LEFT = "Left", CENTER = "Center", RIGHT = "Right",
+        BOTTOMLEFT = "Bottom Left", BOTTOM = "Bottom", BOTTOMRIGHT = "Bottom Right",
+      },
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.anchor or "TOPRIGHT" end,
+      set = function(_, val) setKBSetting("anchor", val) end,
+    },
+    keybindOffsetX = {
+      type = "range", name = "X Offset", desc = "Horizontal offset for keybind text",
+      order = 1.08, width = 0.6, min = -50, max = 50, step = 1,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.offsetX or -1 end,
+      set = function(_, val) setKBSetting("offsetX", val) end,
+    },
+    keybindOffsetXInput = {
+      type = "input", name = "X", desc = "Type an exact X offset value (any integer)",
+      dialogControl = "ArcUI_EditBox", order = 1.081, width = 0.35,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return tostring(s and s.offsetX or -1) end,
+      set = function(_, val) local n = tonumber(val); if n then setKBSetting("offsetX", math.floor(n)) end end,
+    },
+    keybindOffsetY = {
+      type = "range", name = "Y Offset", desc = "Vertical offset for keybind text",
+      order = 1.09, width = 0.6, min = -50, max = 50, step = 1,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.offsetY or -1 end,
+      set = function(_, val) setKBSetting("offsetY", val) end,
+    },
+    keybindOffsetYInput = {
+      type = "input", name = "Y", desc = "Type an exact Y offset value (any integer)",
+      dialogControl = "ArcUI_EditBox", order = 1.091, width = 0.35,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return tostring(s and s.offsetY or -1) end,
+      set = function(_, val) local n = tonumber(val); if n then setKBSetting("offsetY", math.floor(n)) end end,
+    },
+    keybindStrata = {
+      type = "select", name = "Strata",
+      desc = "Frame strata for keybind text. 'Inherit' uses the icon's strata.",
+      order = 1.10, width = 0.55,
+      values = { [""] = "Inherit", ["BACKGROUND"] = "Background", ["LOW"] = "Low", ["MEDIUM"] = "Medium", ["HIGH"] = "High", ["DIALOG"] = "Dialog", ["TOOLTIP"] = "Tooltip" },
+      sorting = { "", "BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "TOOLTIP" },
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.frameStrata or "" end,
+      set = function(_, val) setKBSetting("frameStrata", val) end,
+    },
+    keybindLevel = {
+      type = "input", name = "Level",
+      desc = "Frame level for keybind text (higher = on top). 0 = inherit from icon.",
+      dialogControl = "ArcUI_EditBox", order = 1.11, width = 0.4,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return tostring(s and s.frameLevel or 0) end,
+      set = function(_, val) local n = tonumber(val); if n then setKBSetting("frameLevel", math.max(0, math.floor(n))) end end,
+    },
+    keybindCustomReplacementsLabel = {
+      type = "description", name = "\n|cff888888Custom Text Replacements|r",
+      order = 1.12, width = "full", hidden = keybindHidden,
+    },
+    keybindReplaceFindText = {
+      type = "input", name = "Find",
+      desc = "Text to find in keybinds (comma-separated).\n\nExample: META,CTRL,ALT\n\nMatched by position with 'Replace With' field.",
+      dialogControl = "ArcUI_EditBox", order = 1.13, width = 0.75,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.replaceFindText or "" end,
+      set = function(_, val)
+        setKBSetting("replaceFindText", val or "")
+        if ns.Keybinds and ns.Keybinds.RefreshAll then ns.Keybinds.RefreshAll() end
+      end,
+    },
+    keybindReplaceWithText = {
+      type = "input", name = "Replace",
+      desc = "Replacement text (comma-separated).\n\nExample: M,C,A\n\nMatched by position with 'Find' field.\nLeave a position empty to remove text.",
+      dialogControl = "ArcUI_EditBox", order = 1.14, width = 0.75,
+      hidden = keybindHidden, disabled = keybindDisabled,
+      get = function() local s = getKBSettings(); return s and s.replaceWithText or "" end,
+      set = function(_, val)
+        setKBSetting("replaceWithText", val or "")
+        if ns.Keybinds and ns.Keybinds.RefreshAll then ns.Keybinds.RefreshAll() end
+      end,
+    },
+  }
+
+  -- ═══════════════════════════════════════════════════════════════════
+  -- ASSISTED COMBAT HIGHLIGHT (merged from external module)
+  -- ═══════════════════════════════════════════════════════════════════
+  if ns.AssistedCombatHighlightOptions and ns.AssistedCombatHighlightOptions.GetCooldownArgs then
+    local orderMap = {
+      achHeader = 2, achDesc = 2.01, achEnabled = 2.02, achStyle = 2.025, achArcAuras = 2.03,
+      achCombatOnly = 2.035, achStrata = 2.036, achLevel = 2.037, achScale = 2.038,
+      achAlwaysAnimate = 2.039, achShowBurst = 2.0395,
+      achColor = 2.04, achResetColor = 2.05, achStatus = 2.06,
+    }
+    for k, v in pairs(ns.AssistedCombatHighlightOptions.GetCooldownArgs()) do
+      if orderMap[k] then
+        local copy = {}
+        for vk, vv in pairs(v) do copy[vk] = vv end
+        copy.order = orderMap[k]
+        args[k] = copy
+      else
+        args[k] = v
+      end
+    end
+  end
+
+  -- ═══════════════════════════════════════════════════════════════════
+  -- BUTTON PRESS HIGHLIGHT (merged from external module)
+  -- ═══════════════════════════════════════════════════════════════════
+  if ns.ButtonPressHighlightOptions and ns.ButtonPressHighlightOptions.GetCooldownArgs then
+    local bphOrderMap = {
+      bphHeader = 3, bphDesc = 3.01, bphEnabled = 3.02, bphMode = 3.03,
+      bphFlashDuration = 3.04, bphTextureType = 3.05, bphUseCustomColor = 3.06,
+      bphColor = 3.07, bphCustomTexture = 3.08,
+      bphTxLeft = 3.081, bphTxRight = 3.082, bphTxTop = 3.083, bphTxBottom = 3.084,
+      bphUseMasqueShapes = 3.085,
+      bphArcAuras = 3.09, bphRefresh = 3.10, bphStatus = 3.11,
+    }
+    for k, v in pairs(ns.ButtonPressHighlightOptions.GetCooldownArgs()) do
+      if bphOrderMap[k] then
+        local copy = {}
+        for vk, vv in pairs(v) do copy[vk] = vv end
+        copy.order = bphOrderMap[k]
+        args[k] = copy
+      else
+        args[k] = v
+      end
+    end
+  end
+
+  return {
+    type = "group",
+    name = "Utilities",
+    order = 3,
+    args = args,
+  }
+end
+
+-- Options panel state monitoring via callback (zero polling)
+if ns.CDMShared and ns.CDMShared.RegisterPanelCallback then
+    ns.CDMShared.RegisterPanelCallback("CDMEnhanceOptions", {
+        onOpen = function() CheckOptionsStateChange() end,
+        onClose = function() CheckOptionsStateChange() end,
+    })
+end

@@ -57,6 +57,7 @@ config.DEFAULT_FRAMES = {
     { frame = "TargetFrame", label = L["Target Frame"], enabled = true },
     { frame = "FocusFrame", label = L["Focus Frame"], enabled = false },
     { frame = "PetFrame", label = L["Pet Frame"], enabled = true },
+    { frame = "PartyFrame", label = L["Party Frame"], enabled = false },
     { frame = "PlayerCastingBarFrame", label = L["Player Castbar"], enabled = false },
     -- actionbars
     { frame = "MainActionBar", label = L["ActionBar 1"], enabled = true },
@@ -944,6 +945,7 @@ local function SetHooksForAce()
         end
 
         local frame = f.frame
+        f:SetStatusText(L["chatCommands"].." /autohide /autohideui")
 
         if not Private.isAceHooked then
             frame:SetResizeBounds(MENU_WIDTH, MENU_HEIGHT_MIN, MENU_WIDTH, MENU_HEIGHT_MAX)

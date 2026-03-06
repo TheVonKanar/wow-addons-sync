@@ -7773,28 +7773,37 @@ end
 
 function ns.CooldownBars.RemoveTimerBar(timerID)
   local barIndex = ns.CooldownBars.activeTimers[timerID]
-  if not barIndex then return false end
   
-  local barData = ns.CooldownBars.timerBars[barIndex]
-  if barData then
-    barData.frame:Hide()
-    barData.bar:SetScript("OnUpdate", nil)
-    barData.timerID = nil
-    barData.isActive = false
-    barData.durObj = nil
+  -- Clean up runtime bar if it exists
+  if barIndex then
+    local barData = ns.CooldownBars.timerBars[barIndex]
+    if barData then
+      barData.frame:Hide()
+      barData.bar:SetScript("OnUpdate", nil)
+      barData.timerID = nil
+      barData.isActive = false
+      barData.durObj = nil
+    end
+    ns.CooldownBars.activeTimers[timerID] = nil
   end
   
-  ns.CooldownBars.activeTimers[timerID] = nil
-  
-  -- Remove config
+  -- ALWAYS remove config (even if activeTimers entry was missing)
+  local hadConfig = false
   if ns.db and ns.db.char and ns.db.char.timerBarConfigs then
+    if ns.db.char.timerBarConfigs[timerID] then
+      hadConfig = true
+    end
     ns.db.char.timerBarConfigs[timerID] = nil
   end
   
-  ns.CooldownBars.SaveTimerConfig()
+  -- Only save if we actually removed something
+  if barIndex or hadConfig then
+    ns.CooldownBars.SaveTimerConfig()
+    Log("Removed timer: " .. timerID)
+    return true
+  end
   
-  Log("Removed timer: " .. timerID)
-  return true
+  return false
 end
 
 -- ===================================================================

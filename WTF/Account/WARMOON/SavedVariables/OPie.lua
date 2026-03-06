@@ -15,24 +15,27 @@ OPie_SavedData = {
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
+["MotionAction"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 },
-["MotionAction"] = true,
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["RingScale"] = 1.200000047683716,
-["ShowCooldowns"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
 ["Usables"] = false,
 ["Utility"] = "6",
 },
-["InteractionMode"] = 2,
+["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
+["RingOptions"] = {
+["Utility#SliceBindingString"] = "6 7 8 9 0",
+},
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
@@ -40,10 +43,10 @@ OPie_SavedData = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["SpecMenu"] = true,
-["CommonTrades"] = true,
-["OPieAutoQuest"] = true,
 ["WorldMarkers"] = true,
+["CommonTrades"] = true,
+["SpecMenu"] = true,
+["OPieAutoQuest"] = true,
 ["PaladinTools"] = true,
 },
 ["OPieFlagStore"] = {
@@ -73,6 +76,11 @@ OPie_SavedData = {
 "item",
 132514,
 ["sliceToken"] = "ABueTwA1bvt",
+},
+{
+"toy",
+206268,
+["sliceToken"] = "ABueTyH5XCw",
 },
 ["name"] = "Utility",
 ["save"] = true,

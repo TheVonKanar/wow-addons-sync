@@ -484,9 +484,13 @@ function ns.Resources.GetSecondaryResourceValue(secondaryType)
   -- Uses C_Spell.GetSpellCastCount on Soul Cleave (228477)
   -- ═══════════════════════════════════════════════════════════════
   if secondaryType == "soulFragments" then
+    -- SECRET: GetSpellCastCount(228477) is secret — use as SetValue only, never compare
+    -- NON-SECRET: aura 203981 applications = fragment count for color evaluation
     local current = C_Spell and C_Spell.GetSpellCastCount and C_Spell.GetSpellCastCount(228477) or 0
+    local auraData = C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID and C_UnitAuras.GetPlayerAuraBySpellID(203981)
+    local displayCount = auraData and auraData.applications or 0  -- non-secret, safe to compare
     local max = 6
-    return max, current, current, "number"
+    return max, current, displayCount, "number"
   end
   
   -- ═══════════════════════════════════════════════════════════════
@@ -1746,6 +1750,7 @@ end
 local function SwapAutoPowerProfile(barNumber, cfg, newKey)
   if not cfg or cfg.tracking.resourceCategory ~= "autoPrimary" then return end
   if not cfg.autoPowerProfiles then return end  -- No profiles configured
+  if newKey == nil then return end  -- Safety: nil key would corrupt profile table
   
   local profiles = cfg.autoPowerProfiles
   local oldKey = activeProfilePower[barNumber]
@@ -1905,6 +1910,7 @@ end
 -- Key can be a power type (integer) or spec key (string like "spec1")
 -- Auto-creates autoPowerProfiles + this key's slot if needed
 function ns.Resources.SetEditingAutoPower(barNumber, profileKey)
+  if profileKey == nil then return end  -- Safety: nil key would corrupt profiles
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg then return end
   
@@ -2653,7 +2659,7 @@ end
 -- SIMPLE MODE: Single bar with proportional fill (1 color)
 -- GRANULAR MODE: TRUE color change at ANY threshold using ~100 bars
 --
-local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
+local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue, displayValue)
   local cfg = ns.API.GetResourceBarConfig(barNumber)
   if not cfg or not cfg.tracking.enabled then return end
   
@@ -2868,9 +2874,10 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     -- MAX COLOR via ColorCurve on bar2's texture (replaces old maxColorBar overlay)
     local enableMaxColor = cfg.display.enableMaxColor
     local powerType = ResolvePowerType(cfg)
-    if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
-      -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
-      if secretValue >= maxValue and maxValue > 0 then
+    local colorValue = displayValue ~= nil and displayValue or secretValue
+    if enableMaxColor and isSecondaryResource and type(colorValue) == "number" then
+      -- Secondary resource at-max: use colorValue (non-secret for secret secondary bars)
+      if colorValue >= maxValue and maxValue > 0 then
         local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
         bar2:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
       end
@@ -3050,8 +3057,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
       end
     else
       local scale = cfg.display.barScale or 1.0
-      local baseW = cfg.display.width * scale
-      local baseH = cfg.display.height * scale
+      local baseW = (cfg.display.width or 246) * scale
+      local baseH = (cfg.display.height or 25) * scale
       if isLayoutVertical then
         segmentWidth = baseH
         segmentHeight = baseW / numSegments
@@ -4283,11 +4290,11 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     -- Get the bar texture for color application
     local barTexture = bar:GetStatusBarTexture()
     
-    -- Apply color: secondary resources use direct threshold evaluation (UnitPowerPercent
-    -- is designed for primary resources and unreliable for discrete secondary ones)
-    if isSecondaryResource and type(secretValue) == "number" then
-      -- Direct evaluation: compare secretValue against threshold settings numerically
-      local directColor = EvaluateThresholdsDirectly(cfg, secretValue, maxValue)
+    -- Apply color: secondary resources use direct threshold evaluation.
+    -- For secret secondary values, use displayValue (non-secret) for comparison.
+    local colorValue = displayValue ~= nil and displayValue or secretValue
+    if isSecondaryResource and type(colorValue) == "number" then
+      local directColor = EvaluateThresholdsDirectly(cfg, colorValue, maxValue)
       if directColor then
         local dR, dG, dB, dA = SafeColorRGBA(directColor)
         barTexture:SetVertexColor(dR, dG, dB, dA)
@@ -4687,9 +4694,10 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue)
     
     -- Apply color: max color curve via UnitPowerPercent, or static base color
     local powerType = ResolvePowerType(cfg)
-    if enableMaxColor and isSecondaryResource and type(secretValue) == "number" then
-      -- Secondary resource at-max: direct comparison (non-secret, avoids UnitPowerPercent login bugs)
-      if secretValue >= maxValue and maxValue > 0 then
+    local colorValue = displayValue ~= nil and displayValue or secretValue
+    if enableMaxColor and isSecondaryResource and type(colorValue) == "number" then
+      -- Secondary resource at-max: use colorValue (non-secret for secret secondary bars)
+      if colorValue >= maxValue and maxValue > 0 then
         local maxColor = cfg.display.maxColor or {r=0, g=1, b=0, a=1}
         bar1:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
       else
@@ -5185,7 +5193,7 @@ function ns.Resources.UpdateBar(barNumber)
   end
   
   -- Update all threshold layers with the secret value AND maxValue
-  UpdateThresholdLayers(barNumber, secretValue, maxValue)
+  UpdateThresholdLayers(barNumber, secretValue, maxValue, displayValue)
   
   -- Update text (SetText handles secret values!)
   if cfg.display.showText then
@@ -5542,8 +5550,8 @@ function ns.Resources.ApplyAppearance(barNumber)
   -- Fragmented mode uses its own layout direction exclusively (ignore barOrientation)
   local needsSwap = isFragmented and isFragmentedVertical or (not isFragmented and isVertical)
   local scale = display.barScale or 1.0
-  local scaledWidth = display.width * scale
-  local scaledHeight = display.height * scale
+  local scaledWidth = (display.width or 246) * scale
+  local scaledHeight = (display.height or 25) * scale
   
   if needsSwap then
     mainFrame:SetSize(scaledHeight, scaledWidth)  -- Swap dimensions for vertical!
@@ -5629,7 +5637,7 @@ function ns.Resources.ApplyAppearance(barNumber)
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = display.matchWidthAdjust or 0
           local barWidth = matchDimension + sizeAdjust
-          local barHeight = display.height * scale
+          local barHeight = (display.height or 25) * scale
           
           -- Swap for vertical orientation or fragmented vertical layout
           if needsSwap then
@@ -6814,7 +6822,7 @@ function ns.Resources.OnGroupContainerSizeChanged(groupName, newWidth, newHeight
           local matchDimension = isSideAnchor and newHeight or newWidth
           local sizeAdjust = cfg.display.matchWidthAdjust or 0
           local barWidth = matchDimension + sizeAdjust
-          local barHeight = cfg.display.height * scale
+          local barHeight = (cfg.display.height or 25) * scale
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then
@@ -6869,7 +6877,7 @@ local function OnContainerSizeChanged(container, width, height)
           local matchDimension = isSideAnchor and height or width
           local sizeAdjust = cfg.display.matchWidthAdjust or 0
           local barWidth = matchDimension + sizeAdjust
-          local barHeight = cfg.display.height * scale
+          local barHeight = (cfg.display.height or 25) * scale
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then

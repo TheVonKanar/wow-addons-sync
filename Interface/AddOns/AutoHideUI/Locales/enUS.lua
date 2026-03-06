@@ -31,6 +31,7 @@ L["Player Frame"] = true
 L["Target Frame"] = true
 L["Focus Frame"] = true
 L["Pet Frame"] = true
+L["Party Frame"] = true
 L["Objectives Frame"] = true
 L["ActionBar 1"] = true
 L["ActionBar 2"] = true
@@ -102,7 +103,7 @@ L["dropdownOption_druid1"] = "Land/Air/Water"
 L["dropdownOption_druid2"] = "Land/Air"
 L["dropdownOption_druid3"] = "None"
 
-
+L["chatCommands"] = "Chat Commands:"
 
 
 

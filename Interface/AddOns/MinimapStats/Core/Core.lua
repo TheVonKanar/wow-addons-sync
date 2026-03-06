@@ -1,0 +1,119 @@
+local _, MS = ...
+local MinimapStats = LibStub("AceAddon-3.0"):NewAddon("MinimapStats") -- Register AddOn
+
+local Defaults = {
+    global = {
+        General = {
+            ClassColour = false,
+            AccentColour = {128, 128, 255},
+            Font = "Friz Quadrata TT",
+            FontFlag = "OUTLINE",
+            FrameStrata = "MEDIUM",
+            FontShadow = {
+                Colour = {0, 0, 0, 1},
+                OffsetX = 0,
+                OffsetY = 0,
+            }
+        },
+        Time = {
+            Enable = true,
+            TimeZone = "Local",
+            Format = "24H",
+            UpdateInterval = 60.0,
+            Colour = {255, 255, 255},
+            Layout = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 17, 18},
+        },
+        SystemStats = {
+            Enable = true,
+            Layout = {"BOTTOMLEFT", "BOTTOMLEFT", 3, 3, 12},
+            UpdateInterval = 3.0,
+            String = "%fps | %home",
+            Colour = {255, 255, 255},
+        },
+        Location = {
+            Enable = true,
+            Layout = {"TOPLEFT", "TOPLEFT", 3, -3, 12},
+            ColourBy = "REACTION",
+            Colour = {255, 255, 255},
+            SubZone = false,
+        },
+        InstanceDifficulty = {
+            Enable = true,
+            Layout = {"TOPLEFT", "TOPLEFT", 3, -17, 12},
+            Colour = {255, 255, 255},
+            Abbreviate = true,
+            HideBlizzardInstanceBanner = true,
+        },
+        Coordinates = {
+            Enable = true,
+            Layout = {"TOPRIGHT", "TOPRIGHT", -3, -3, 12},
+            ColourBy = "CUSTOM",
+            Colour = {255, 255, 255},
+            UpdateInterval = 1.0,
+            Format = "SINGLE",
+        },
+        Durability = {
+            Enable = false,
+            Layout = {"BOTTOMRIGHT", "BOTTOMRIGHT", -3, 3, 12},
+            ColourBy = "VALUE",
+            Colour = {255, 255, 255},
+            Text = "%s%",
+            Thresholds = {
+                [1] = {Percent = 75, Colour = {64, 255, 64}},
+                [2] = {Percent = 50, Colour = {255, 204, 64}},
+                [3] = {Percent = 25, Colour = {255, 128, 64}},
+                [4] = {Percent = 0, Colour = {255, 64, 64}},
+            }
+        },
+        Tooltip = {
+            Position = {
+                AnchorFrom = "TOPRIGHT",
+                AnchorTo = "BOTTOMRIGHT",
+                OffsetX = 0,
+                OffsetY = -1,
+            },
+            Time = {
+                Date = true,
+                DateString = "%A, %B %d, %Y",
+                AlternateTime = true,
+                Lockouts = true,
+            },
+            SystemStats = {
+                Vault = {
+                    Enable = true,
+                    Options = {
+                        Raid = true,
+                        MythicPlus = true,
+                        World = true,
+                    }
+                }
+            },
+            Durability = { Enable = true, }
+        }
+    },
+}
+
+MS.Defaults = Defaults
+
+function MinimapStats:OnInitialize()
+    MS.db = LibStub("AceDB-3.0"):New("MinimapStatsDB", Defaults, true)
+    for key, value in pairs(Defaults) do
+        if MS.db.profile[key] == nil then
+            MS.db.profile[key] = value
+        end
+    end
+end
+
+function MinimapStats:OnEnable()
+    -- heistm: https://github.com/DaleHuntGB/MinimapStats/pull/3 - for the idea
+    C_Timer.After(0.1, function()
+        MS:SetupSlashCommands()
+        MS:CreateTime()
+        MS:CreateSystemStats()
+        MS:CreateLocation()
+        MS:CreateCoordinates()
+        MS:CreateInstanceDifficulty()
+        MS:CreateDurability()
+        MS:AssignTooltipScripts()
+    end)
+end

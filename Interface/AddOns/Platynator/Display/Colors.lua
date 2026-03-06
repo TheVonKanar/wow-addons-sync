@@ -12,17 +12,12 @@ local roleType = {
   Tank = 3,
 }
 
-local twwDungeon = {
-  [2648] = true,
-  [2649] = true,
-  [2651] = true,
-  [2652] = true,
-  [2660] = true,
-  [2661] = true,
-  [2662] = true,
-  [2669] = true,
-  [2773] = true,
-}
+local legacyDungeonNoLieutenant = {}
+local mythicKeystoneDifficulty = 8
+
+for _, dungeonID in ipairs(addonTable.Constants.LegacyDungeons) do
+  legacyDungeonNoLieutenant[dungeonID] = true
+end
 
 local roleMap = {
   ["DAMAGER"] = roleType.Damage,
@@ -73,7 +68,7 @@ end
 local executeCurve = addonTable.Display.Utilities.GetExecuteCurve()
 local executeConverter = UIParent:CreateTexture()
 
-local GetInterruptSpell = addonTable.Display.Utilities.GetInterruptSpell
+local GetInterruptSpells = addonTable.Display.Utilities.GetInterruptSpells
 
 local transparency = {r = 1, g = 1, b = 1, a = 0}
 
@@ -88,13 +83,14 @@ local instanceTracker = CreateFrame("Frame")
 instanceTracker:RegisterEvent("PLAYER_ENTERING_WORLD")
 instanceTracker:SetScript("OnEvent", function()
   inRelevantThreatInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, delve = true, pvp = true})
-  inRelevantEliteInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, pvp = true})
-  if PLATYNATOR_LAST_INSTANCE == nil or (inRelevantThreatInstance or inRelevantEliteInstance) ~= PLATYNATOR_LAST_INSTANCE.inInstance or PLATYNATOR_LAST_INSTANCE.lastLFGInstanceID ~= select(10, GetInstanceInfo()) then
+  inRelevantEliteInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true})
+  local _, _, difficultyID, _, _, _, _, instanceID, _, lfgDungeonID = GetInstanceInfo()
+  if PLATYNATOR_LAST_INSTANCE == nil or (inRelevantThreatInstance or inRelevantEliteInstance) ~= PLATYNATOR_LAST_INSTANCE.inInstance or PLATYNATOR_LAST_INSTANCE.lastLFGInstanceID ~= lfgDungeonID then
     PLATYNATOR_LAST_INSTANCE = {
       level = UnitEffectiveLevel("player"),
-      lastLFGInstanceID = select(10, GetInstanceInfo()),
+      lastLFGInstanceID = lfgDungeonID,
       inInstance = inRelevantThreatInstance or inRelevantEliteInstance,
-      isTWW = twwDungeon[(select(7, GetInstanceInfo()))],
+      isLegacy = legacyDungeonNoLieutenant[instanceID] and difficultyID ~= mythicKeystoneDifficulty,
     }
   end
 end)
@@ -203,6 +199,7 @@ local kindToEvent = {
 }
 local kindToCallback = {
   quest = {"QuestInfoUpdate"},
+  threat = {"CombatStatusChange"},
 }
 
 function addonTable.Display.UnregisterForColorEvents(frame)
@@ -343,11 +340,12 @@ function addonTable.Display.GetColor(settings, state, unit)
         if classification == "elite" then
           local level = UnitEffectiveLevel(unit)
           local playerLevel = PLATYNATOR_LAST_INSTANCE.level
-          local isTWW = PLATYNATOR_LAST_INSTANCE.isTWW
-          if UnitIsLieutenant and UnitIsLieutenant(unit) or (not isTWW and level == playerLevel + 1 and not addonTable.Constants.IsClassic) then
+          local isLegacy = PLATYNATOR_LAST_INSTANCE.isLegacy
+          local isRetail = addonTable.Constants.IsRetail
+          if isRetail and ((isLegacy and level == playerLevel + 1) or UnitIsLieutenant(unit)) then
             table.insert(colorQueue, {color = s.colors.miniboss})
             break
-          elseif ((isTWW and level > playerLevel) or (not isTWW and level == playerLevel + 2)) and not addonTable.Constants.IsClassic or level == -1 then
+          elseif isRetail and ((isLegacy and level == playerLevel + 2) or (not isLegacy and level > playerLevel)) or level == -1 then
             table.insert(colorQueue, {color = s.colors.boss})
             break
           else
@@ -415,18 +413,24 @@ function addonTable.Display.GetColor(settings, state, unit)
       end
       state.frequentUpdater.interruptReady = nil
       if notInterruptible ~= nil then
-        local spellID = GetInterruptSpell()
-        if spellID then
-          state.frequentUpdater.interruptReady = true
-          if C_Spell.GetSpellCooldownDuration then
+        state.frequentUpdater.interruptReady = true
+        if C_Spell.GetSpellCooldownDuration then
+          for _, spellID in ipairs(GetInterruptSpells()) do
             local duration = C_Spell.GetSpellCooldownDuration(spellID)
             table.insert(colorQueue, {state = {{value = duration:IsZero()}, {value = notInterruptible, invert = true}}, color = s.colors.ready})
-          else
+          end
+        else
+          local any = false
+          for _, spellID in ipairs(GetInterruptSpells()) do
             local cooldownInfo = C_Spell.GetSpellCooldown(spellID)
             if notInterruptible == false and cooldownInfo.startTime == 0 then
+              any = true
               table.insert(colorQueue, {color = s.colors.ready})
               break
             end
+          end
+          if any then
+            break
           end
         end
       end
@@ -439,15 +443,26 @@ function addonTable.Display.GetColor(settings, state, unit)
       end
       state.frequentUpdater.interruptReady = nil
       if notInterruptible ~= nil then
-        local spellID = GetInterruptSpell()
-        if spellID then
+        local spells = GetInterruptSpells()
+        if #spells > 0 then
           state.frequentUpdater.interruptReady = true
           if C_Spell.GetSpellCooldownDuration then
-            local duration = C_Spell.GetSpellCooldownDuration(spellID)
-            table.insert(colorQueue, {state = {{value = duration:IsZero(), invert = true}, {value = notInterruptible, invert = true}}, color = s.colors.notReady})
-          else
-            local cooldownInfo = C_Spell.GetSpellCooldown(spellID)
-            if notInterruptible == false and cooldownInfo.startTime ~= 0 then
+            local conditions = {{value = notInterruptible, invert = true}}
+            for _, spellID in ipairs(spells) do
+              local duration = C_Spell.GetSpellCooldownDuration(spellID)
+              table.insert(conditions, {value = duration:IsZero(), invert = true})
+            end
+            table.insert(colorQueue, {state = conditions, color = s.colors.notReady})
+          elseif notInterruptible == false then
+            local any = false
+            for _, spellID in ipairs(spells) do
+              local cooldownInfo = C_Spell.GetSpellCooldown(spellID)
+              if cooldownInfo.startTime == 0 then
+                any = true
+                break
+              end
+            end
+            if not any then
               table.insert(colorQueue, {color = s.colors.notReady})
               break
             end

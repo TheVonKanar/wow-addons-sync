@@ -23,18 +23,23 @@ local MSG_PREFIX = "|cff00ccffArcUI|r: "
 -- DEPENDENCIES (lazy-loaded)
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local AceSerializer
+local LibSerialize
 local LibDeflate
+local uiState  -- forward declaration (populated below GetOptionsTable)
 
 local function GetLibs()
-    if not AceSerializer then
-        AceSerializer = LibStub and LibStub("AceSerializer-3.0", true)
+    if not LibSerialize then
+        LibSerialize = LibStub and LibStub("LibSerialize", true)
     end
     if not LibDeflate then
         LibDeflate = LibStub and LibStub("LibDeflate", true)
     end
-    return AceSerializer, LibDeflate
+    return LibSerialize, LibDeflate
 end
+
+-- Compression config: level 9 = max compression, smaller strings (same as WeakAuras)
+local configForDeflate = { level = 9 }
+local configForLS = { errorOnUnserializableType = false }
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- CLASS / SPEC DISPLAY HELPERS
@@ -107,6 +112,67 @@ local function GetCharName(charKey)
     return charKey:match("^(.-)%s*%-") or charKey
 end
 
+-- Get bar data for any character. Current char uses AceDB (has defaults).
+-- Other chars read raw SV (missing defaults OK — import writes through AceDB).
+local function GetBarDataForChar(charKey)
+    if not charKey or charKey == "" then return nil end
+    
+    local myCharKey = nil
+    if ns.db and ns.db.keys and ns.db.keys.char then
+        myCharKey = ns.db.keys.char
+    end
+    
+    -- Current character: read through AceDB
+    if charKey == myCharKey and ns.db and ns.db.char then
+        local charDB = ns.db.char
+        local data = {}
+        if charDB.bars then data.bars = charDB.bars end
+        if charDB.activeCooldowns then data.activeCooldowns = charDB.activeCooldowns end
+        if charDB.activeCharges then data.activeCharges = charDB.activeCharges end
+        if charDB.cooldownBarConfigs then data.cooldownBarConfigs = charDB.cooldownBarConfigs end
+        if charDB.resourceBars then data.resourceBars = charDB.resourceBars end
+        if charDB.timerBars then data.timerBars = charDB.timerBars end
+        return next(data) and data or nil
+    end
+    
+    -- Other character: read raw SV
+    local svChar = ns.db and ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+    if not svChar or not svChar[charKey] then return nil end
+    local cd = svChar[charKey]
+    local data = {}
+    if cd.bars then data.bars = cd.bars end
+    if cd.activeCooldowns then data.activeCooldowns = cd.activeCooldowns end
+    if cd.activeCharges then data.activeCharges = cd.activeCharges end
+    if cd.cooldownBarConfigs then data.cooldownBarConfigs = cd.cooldownBarConfigs end
+    if cd.resourceBars then data.resourceBars = cd.resourceBars end
+    if cd.timerBars then data.timerBars = cd.timerBars end
+    return next(data) and data or nil
+end
+
+local function CountBarsLabel(barData)
+    if not barData then return "" end
+    local parts = {}
+    if barData.bars then
+        local c = 0
+        for _, bar in pairs(barData.bars) do
+            if type(bar) == "table" and bar.tracking and bar.tracking.enabled then c = c + 1 end
+        end
+        if c > 0 then table.insert(parts, c .. " aura") end
+    end
+    local cd = barData.activeCooldowns and #barData.activeCooldowns or 0
+    local ch = barData.activeCharges and #barData.activeCharges or 0
+    if cd > 0 then table.insert(parts, cd .. " cooldown") end
+    if ch > 0 then table.insert(parts, ch .. " charge") end
+    if barData.resourceBars then
+        local c = 0
+        for _, bar in pairs(barData.resourceBars) do
+            if type(bar) == "table" and bar.tracking and bar.tracking.enabled then c = c + 1 end
+        end
+        if c > 0 then table.insert(parts, c .. " resource") end
+    end
+    return #parts > 0 and table.concat(parts, ", ") or "no active bars"
+end
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- UTILITY
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -122,6 +188,89 @@ end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- SCAN ALL CHARACTERS' PROFILES
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Scan all characters' bars from SavedVariables
+function ME.ScanAllBars()
+    local svChar = ns.db and ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+    if not svChar then return {} end
+    
+    local results = {}  -- { charKey, charName, aura={}, cooldown={}, resource={} }
+    
+    for charKey, charData in pairs(svChar) do
+      if type(charData) == "table" then
+        local entry = { charKey = charKey, charName = GetCharName(charKey), aura = {}, cooldown = {}, resource = {} }
+        local hasAny = false
+        
+        -- Aura bars
+        if charData.bars then
+            for i, bar in pairs(charData.bars) do
+                if type(bar) == "table" and bar.tracking and bar.tracking.enabled then
+                    hasAny = true
+                    table.insert(entry.aura, {
+                        slot = i,
+                        name = bar.tracking.buffName or "Unknown",
+                        trackType = bar.tracking.trackType or "buff",
+                        key = charKey .. "|aura|" .. i,
+                    })
+                end
+            end
+        end
+        
+        -- Cooldown bars (from char-level active lists)
+        if charData.activeCooldowns then
+            for _, e in ipairs(charData.activeCooldowns) do
+                local spellID = type(e) == "table" and e.spellID or e
+                if spellID and spellID > 0 then
+                    hasAny = true
+                    local spellName = C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(spellID) or ("Spell " .. spellID)
+                    table.insert(entry.cooldown, {
+                        spellID = spellID, barType = "duration",
+                        name = spellName, key = charKey .. "|cd|" .. spellID .. "_duration",
+                    })
+                end
+            end
+        end
+        if charData.activeCharges then
+            for _, e in ipairs(charData.activeCharges) do
+                local spellID = type(e) == "table" and e.spellID or e
+                if spellID and spellID > 0 then
+                    hasAny = true
+                    local spellName = C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(spellID) or ("Spell " .. spellID)
+                    table.insert(entry.cooldown, {
+                        spellID = spellID, barType = "charge",
+                        name = spellName, key = charKey .. "|cd|" .. spellID .. "_charge",
+                    })
+                end
+            end
+        end
+        
+        -- Resource bars
+        if charData.resourceBars then
+            for i, bar in pairs(charData.resourceBars) do
+                if type(bar) == "table" and bar.tracking and bar.tracking.enabled then
+                    hasAny = true
+                    local rname = bar.tracking.powerName or bar.tracking.secondaryType or "Resource"
+                    table.insert(entry.resource, {
+                        slot = i, name = rname,
+                        key = charKey .. "|res|" .. i,
+                    })
+                end
+            end
+        end
+        
+        if hasAny then
+            table.insert(results, entry)
+        end
+      end
+    end
+    
+    table.sort(results, function(a, b) return a.charName < b.charName end)
+    return results
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- SCAN ALL CHARACTERS' CDM PROFILES
 -- Reads ArcUIDB.char directly to find every Arc Manager profile
 -- across all characters and specs on this account
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -138,10 +287,26 @@ function ME.ScanAllProfiles()
     
     local results = {}
     
+    -- Track which shared specs we've already collected (deduplicate)
+    local sharedSpecCollected = {}
+    
     for charKey, charData in pairs(svChar) do
         if type(charData) == "table" and charData.cdmGroups and charData.cdmGroups.specData then
             for specKey, specData in pairs(charData.cdmGroups.specData) do
                 if type(specData) == "table" and specData.layoutProfiles then
+                    -- When shared sync exists for this spec (global ref), only include ONE
+                    -- character's profiles. All synced characters have identical data.
+                    local skipShared = false
+                    local sharedRef = ns.db and ns.db.global and ns.db.global.sharedProfiles and ns.db.global.sharedProfiles[specKey]
+                    if sharedRef then
+                        if sharedSpecCollected[specKey] then
+                            skipShared = true
+                        else
+                            sharedSpecCollected[specKey] = charKey
+                        end
+                    end
+                    
+                    if not skipShared then
                     local classID, specIndex = ParseSpecKey(specKey)
                     
                     -- Get spec name: prefer WoW API (works for all classes), fallback to hardcoded
@@ -177,13 +342,17 @@ function ME.ScanAllProfiles()
                                 posCount = posCount,
                                 iconSettingsCount = iconSettingsCount,
                                 groupSettings = specData.groupSettings,
+                                keepCDMStyle = specData.keepCDMStyle or nil,
                                 globalIconSettings = {
                                     disableTooltips = charData.cdmGroups.disableTooltips,
                                     clickThrough = charData.cdmGroups.clickThrough,
                                 },
+                                charArcAuras = charData.arcAuras or nil,
+                                sourceActiveProfile = specData.activeProfile,
                             })
                         end
                     end
+                    end -- not skipShared
                 end
             end
         end
@@ -204,8 +373,8 @@ end
 -- ═══════════════════════════════════════════════════════════════════════════
 
 function ME.Export(selectedKeys)
-    local Serializer, Deflate = GetLibs()
-    if not Serializer then return nil, "AceSerializer-3.0 not available" end
+    local Serialize, Deflate = GetLibs()
+    if not Serialize then return nil, "LibSerialize not available" end
     if not Deflate then return nil, "LibDeflate not available" end
     
     local allProfiles = ME.ScanAllProfiles()
@@ -233,8 +402,66 @@ function ME.Export(selectedKeys)
                     sourceChar = entry.charKey,
                     profiles = {},
                     groupSettings = entry.groupSettings and DeepCopy(entry.groupSettings) or nil,
+                    keepCDMStyle = entry.keepCDMStyle or nil,
                     globalIconSettings = entry.globalIconSettings and DeepCopy(entry.globalIconSettings) or nil,
+                    activeProfile = entry.sourceActiveProfile,
+                    arcAuras = nil,  -- Built below by merging unique spells across characters
                 }
+            end
+            
+            -- Merge unique tracked spells from each character into the spec's arcAuras.
+            -- Multiple characters may track different spells for the same spec.
+            -- We collect all unique spell IDs so the importer gets the full set.
+            -- Trinkets/auto-track slots are skipped — those are equipment-slot based
+            -- and discovered at runtime from equipped gear.
+            if entry.charArcAuras and entry.charArcAuras.trackedSpells then
+                for arcID, config in pairs(entry.charArcAuras.trackedSpells) do
+                    if not exportPayload.specs[specKey].arcAuras then
+                        exportPayload.specs[specKey].arcAuras = { trackedSpells = {}, trackedItems = {} }
+                    end
+                    if not exportPayload.specs[specKey].arcAuras.trackedSpells then
+                        exportPayload.specs[specKey].arcAuras.trackedSpells = {}
+                    end
+                    -- Only add if this spell ID isn't already collected
+                    if not exportPayload.specs[specKey].arcAuras.trackedSpells[arcID] then
+                        exportPayload.specs[specKey].arcAuras.trackedSpells[arcID] = DeepCopy(config)
+                    end
+                end
+            end
+            
+            -- Merge unique tracked items (potions, consumables, gear with arc_item_*)
+            -- Skip auto-track trinket slots (arc_trinket_*) — those are slot-based
+            if entry.charArcAuras and entry.charArcAuras.trackedItems then
+                for arcID, config in pairs(entry.charArcAuras.trackedItems) do
+                    if not config.isAutoTrackSlot then
+                        if not exportPayload.specs[specKey].arcAuras then
+                            exportPayload.specs[specKey].arcAuras = { trackedSpells = {}, trackedItems = {} }
+                        end
+                        if not exportPayload.specs[specKey].arcAuras.trackedItems then
+                            exportPayload.specs[specKey].arcAuras.trackedItems = {}
+                        end
+                        if not exportPayload.specs[specKey].arcAuras.trackedItems[arcID] then
+                            exportPayload.specs[specKey].arcAuras.trackedItems[arcID] = DeepCopy(config)
+                        end
+                    end
+                end
+            end
+            
+            -- Capture arcAuras settings (first character's settings win)
+            if entry.charArcAuras and exportPayload.specs[specKey].arcAuras then
+                local aa = exportPayload.specs[specKey].arcAuras
+                if aa.enabled == nil and entry.charArcAuras.enabled ~= nil then
+                    aa.enabled = entry.charArcAuras.enabled
+                end
+                if aa.autoTrackEquippedTrinkets == nil and entry.charArcAuras.autoTrackEquippedTrinkets ~= nil then
+                    aa.autoTrackEquippedTrinkets = entry.charArcAuras.autoTrackEquippedTrinkets
+                end
+                if not aa.autoTrackSlots and entry.charArcAuras.autoTrackSlots then
+                    aa.autoTrackSlots = DeepCopy(entry.charArcAuras.autoTrackSlots)
+                end
+                if aa.onlyOnUseTrinkets == nil and entry.charArcAuras.onlyOnUseTrinkets ~= nil then
+                    aa.onlyOnUseTrinkets = entry.charArcAuras.onlyOnUseTrinkets
+                end
             end
             
             -- Deduplicate: if same profile name already exists for this spec
@@ -267,6 +494,10 @@ function ME.Export(selectedKeys)
             globalCooldownSettings = enhance.globalCooldownSettings and DeepCopy(enhance.globalCooldownSettings) or nil,
             globalApplyScale = enhance.globalApplyScale,
             globalApplyHideShadow = enhance.globalApplyHideShadow,
+            disableRightClickSelect = enhance.disableRightClickSelect,
+            lockGridSize = enhance.lockGridSize,
+            enableAuraCustomization = enhance.enableAuraCustomization,
+            enableCooldownCustomization = enhance.enableCooldownCustomization,
         }
     end
     
@@ -275,11 +506,13 @@ function ME.Export(selectedKeys)
     for _ in pairs(exportPayload.specs) do specCount = specCount + 1 end
     exportPayload.specCount = specCount
     
-    -- Serialize → Compress → Encode
-    local serialized = Serializer:Serialize(exportPayload)
+    -- Bar export: Coming Soon (disabled for this release)
+    
+    -- Serialize → Compress (level 9) → Encode
+    local serialized = Serialize:SerializeEx(configForLS, exportPayload)
     if not serialized then return nil, "Serialization failed" end
     
-    local compressed = Deflate:CompressDeflate(serialized)
+    local compressed = Deflate:CompressDeflate(serialized, configForDeflate)
     if not compressed then return nil, "Compression failed" end
     
     local encoded = Deflate:EncodeForPrint(compressed)
@@ -297,8 +530,8 @@ function ME.ParseImportString(importString)
         return nil, "Empty import string"
     end
     
-    local Serializer, Deflate = GetLibs()
-    if not Serializer then return nil, "AceSerializer-3.0 not available" end
+    local Serialize, Deflate = GetLibs()
+    if not Serialize then return nil, "LibSerialize not available" end
     if not Deflate then return nil, "LibDeflate not available" end
     
     importString = importString:gsub("%s+", "")
@@ -309,7 +542,7 @@ function ME.ParseImportString(importString)
     local decompressed = Deflate:DecompressDeflate(decoded)
     if not decompressed then return nil, "Invalid string (decompress failed)" end
     
-    local success, data = Serializer:Deserialize(decompressed)
+    local success, data = Serialize:Deserialize(decompressed)
     if not success or type(data) ~= "table" then
         return nil, "Invalid string (deserialize failed)"
     end
@@ -322,7 +555,7 @@ function ME.ParseImportString(importString)
         return nil, "Export version " .. data.version .. " is newer than supported (" .. EXPORT_VERSION .. ")"
     end
     if not data.specs or not next(data.specs) then
-        return nil, "No spec data found in import"
+        return nil, "No spec data or bars found in import"
     end
     
     return data, nil
@@ -344,7 +577,7 @@ function ME.GenerateImportPreview(data)
     table.insert(lines, "")
     
     local sorted = {}
-    for specKey, specEntry in pairs(data.specs) do
+    for specKey, specEntry in pairs(data.specs or {}) do
         table.insert(sorted, { key = specKey, entry = specEntry })
     end
     table.sort(sorted, function(a, b)
@@ -390,6 +623,23 @@ function ME.GenerateImportPreview(data)
         if specEntry.sourceChar then
             table.insert(lines, "    |cff666666from " .. specEntry.sourceChar .. "|r")
         end
+        if specEntry.activeProfile then
+            table.insert(lines, "    |cffffd100Active: '" .. specEntry.activeProfile .. "'|r")
+        end
+        if specEntry.arcAuras and specEntry.arcAuras.trackedSpells then
+            local spellCount = 0
+            for _ in pairs(specEntry.arcAuras.trackedSpells) do spellCount = spellCount + 1 end
+            if spellCount > 0 then
+                table.insert(lines, "    |cff00ccff+ " .. spellCount .. " Arc Aura spell(s)|r")
+            end
+        end
+        if specEntry.arcAuras and specEntry.arcAuras.trackedItems then
+            local itemCount = 0
+            for _ in pairs(specEntry.arcAuras.trackedItems) do itemCount = itemCount + 1 end
+            if itemCount > 0 then
+                table.insert(lines, "    |cff00ccff+ " .. itemCount .. " Arc Aura item(s)|r")
+            end
+        end
     end
     
     table.insert(lines, "")
@@ -404,6 +654,37 @@ function ME.GenerateImportPreview(data)
         if data.cdmEnhance.globalCooldownSettings then table.insert(extras, "Cooldown Defaults") end
         if #extras > 0 then
             table.insert(lines, "|cffffd100Includes:|r " .. table.concat(extras, ", "))
+        end
+    end
+    
+    if data.barData then
+        local barParts = {}
+        if data.barData.bars then
+            local count = 0
+            for _, bar in pairs(data.barData.bars) do
+                if type(bar) == "table" and bar.tracking and bar.tracking.enabled then
+                    count = count + 1
+                end
+            end
+            if count > 0 then table.insert(barParts, count .. " aura") end
+        end
+        if data.barData.activeCooldowns or data.barData.activeCharges then
+            local cdCount = data.barData.activeCooldowns and #data.barData.activeCooldowns or 0
+            local chgCount = data.barData.activeCharges and #data.barData.activeCharges or 0
+            if cdCount > 0 then table.insert(barParts, cdCount .. " cooldown") end
+            if chgCount > 0 then table.insert(barParts, chgCount .. " charge") end
+        end
+        if data.barData.resourceBars then
+            local count = 0
+            for _, bar in pairs(data.barData.resourceBars) do
+                if type(bar) == "table" and bar.tracking and bar.tracking.enabled then
+                    count = count + 1
+                end
+            end
+            if count > 0 then table.insert(barParts, count .. " resource") end
+        end
+        if #barParts > 0 then
+            table.insert(lines, "|cffffd100Bars:|r " .. table.concat(barParts, ", "))
         end
     end
     
@@ -496,6 +777,7 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
                         showBackground = groupData.showBackground or false,
                         autoReflow = groupData.autoReflow or false,
                         dynamicLayout = groupData.dynamicLayout or false,
+                        dynamicContainerSize = groupData.dynamicContainerSize,
                         lockGridSize = groupData.lockGridSize or false,
                         containerPadding = groupData.containerPadding or 0,
                         borderColor = groupData.borderColor and DeepCopy(groupData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
@@ -521,9 +803,14 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
-    -- SET ACTIVE PROFILE to the first imported one (same as normal import)
+    -- SET ACTIVE PROFILE: prefer source's active, fall back to first imported
+    -- Mirrors normal CDM import behavior (uses source's activeProfile)
     -- ═══════════════════════════════════════════════════════════════════════════
-    if firstImportedName then
+    local preferredActive = specEntry.activeProfile
+    if preferredActive and targetSpec.layoutProfiles[preferredActive] then
+        targetSpec.activeProfile = preferredActive
+        print(MSG_PREFIX .. "Set active profile to: " .. preferredActive)
+    elseif firstImportedName then
         targetSpec.activeProfile = firstImportedName
         print(MSG_PREFIX .. "Set active profile to: " .. firstImportedName)
     end
@@ -540,6 +827,11 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
             end
         end
     end
+
+    -- keepCDMStyle: only set if not already configured locally
+    if specEntry.keepCDMStyle ~= nil and targetSpec.keepCDMStyle == nil then
+        targetSpec.keepCDMStyle = specEntry.keepCDMStyle
+    end
     
     -- Apply global icon settings
     if specEntry.globalIconSettings then
@@ -554,12 +846,13 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
     return mergedCount, firstImportedName
 end
 
-function ME.Import(data, importMode)
+function ME.Import(data, importMode, activeOverrides)
     if not data or not data.specs then
-        return false, "No spec data to import"
+        return false, "No data to import"
     end
     
     importMode = importMode or "merge"
+    activeOverrides = activeOverrides or {}
     
     local Shared = ns.CDMShared
     if not Shared then return false, "CDMShared not available" end
@@ -578,7 +871,7 @@ function ME.Import(data, importMode)
     -- Backup wiped data in case merge fails
     local replaceBackup = {}
     if importMode == "replace" then
-        for specKey, specEntry in pairs(data.specs) do
+        for specKey, specEntry in pairs(data.specs or {}) do
             local classID = ParseSpecKey(specKey)
             if classID == myClassID and cdmGroupsDB.specData[specKey] then
                 replaceBackup[specKey] = cdmGroupsDB.specData[specKey]
@@ -587,19 +880,87 @@ function ME.Import(data, importMode)
         end
     end
     
-    for specKey, specEntry in pairs(data.specs) do
+    for specKey, specEntry in pairs(data.specs or {}) do
         local classID = ParseSpecKey(specKey)
         
         if not classID then
             -- Skip malformed keys
         elseif classID == myClassID then
             local sourceLabel = specEntry.sourceChar or data.exportedBy or "Imported"
+            -- Apply user's active profile override if they picked one
+            if activeOverrides[specKey] then
+                specEntry.activeProfile = activeOverrides[specKey]
+            end
             local merged, firstProfileName = MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabel)
             importedProfiles = importedProfiles + merged
             
-            -- If this is the current spec, remember which profile to load
-            if specKey == currentSpec and firstProfileName then
-                currentSpecProfileName = firstProfileName
+            -- If this is the current spec, load the user's chosen active profile
+            if specKey == currentSpec and merged > 0 then
+                local targetSpec = cdmGroupsDB.specData[specKey]
+                if targetSpec then
+                    currentSpecProfileName = targetSpec.activeProfile or firstProfileName
+                end
+            end
+            
+            -- Apply character-level Arc Auras (merge — add missing, don't wipe existing)
+            if specEntry.arcAuras then
+                -- Ensure char arcAuras DB exists
+                if not ArcUIDB then ArcUIDB = {} end
+                if not ArcUIDB.char then ArcUIDB.char = {} end
+                local charKey = UnitName("player") .. " - " .. GetRealmName()
+                if not ArcUIDB.char[charKey] then ArcUIDB.char[charKey] = {} end
+                if not ArcUIDB.char[charKey].arcAuras then
+                    ArcUIDB.char[charKey].arcAuras = {
+                        enabled = true,
+                        trackedItems = {},
+                        trackedSpells = {},
+                        positions = {},
+                        globalSettings = {},
+                    }
+                end
+                local arcAuras = ArcUIDB.char[charKey].arcAuras
+                
+                -- Merge tracked spells (add missing only)
+                local spellCount = 0
+                if specEntry.arcAuras.trackedSpells then
+                    if not arcAuras.trackedSpells then arcAuras.trackedSpells = {} end
+                    for arcID, config in pairs(specEntry.arcAuras.trackedSpells) do
+                        if not arcAuras.trackedSpells[arcID] then
+                            arcAuras.trackedSpells[arcID] = DeepCopy(config)
+                            spellCount = spellCount + 1
+                        end
+                    end
+                end
+                
+                -- Merge tracked items (add missing only, skip auto-track trinkets)
+                local itemCount = 0
+                if specEntry.arcAuras.trackedItems then
+                    if not arcAuras.trackedItems then arcAuras.trackedItems = {} end
+                    for arcID, config in pairs(specEntry.arcAuras.trackedItems) do
+                        if not arcAuras.trackedItems[arcID] then
+                            arcAuras.trackedItems[arcID] = DeepCopy(config)
+                            itemCount = itemCount + 1
+                        end
+                    end
+                end
+                
+                -- Apply settings (source wins for unset values)
+                if specEntry.arcAuras.enabled ~= nil and not arcAuras.enabled then
+                    arcAuras.enabled = specEntry.arcAuras.enabled
+                end
+                if specEntry.arcAuras.autoTrackEquippedTrinkets ~= nil then
+                    arcAuras.autoTrackEquippedTrinkets = specEntry.arcAuras.autoTrackEquippedTrinkets
+                end
+                if specEntry.arcAuras.autoTrackSlots and not arcAuras.autoTrackSlots then
+                    arcAuras.autoTrackSlots = DeepCopy(specEntry.arcAuras.autoTrackSlots)
+                end
+                if specEntry.arcAuras.onlyOnUseTrinkets ~= nil then
+                    arcAuras.onlyOnUseTrinkets = specEntry.arcAuras.onlyOnUseTrinkets
+                end
+                
+                if spellCount + itemCount > 0 then
+                    print(MSG_PREFIX .. "|cff00ccffImported " .. spellCount .. " spell(s), " .. itemCount .. " item(s) for Arc Auras|r")
+                end
             end
             
             print(MSG_PREFIX .. "|cff00ff00Merged " .. merged .. " profile(s) into " ..
@@ -633,7 +994,22 @@ function ME.Import(data, importMode)
         if data.cdmEnhance.globalApplyHideShadow ~= nil then
             enhance.globalApplyHideShadow = data.cdmEnhance.globalApplyHideShadow
         end
+        if data.cdmEnhance.disableRightClickSelect ~= nil then
+            enhance.disableRightClickSelect = data.cdmEnhance.disableRightClickSelect
+        end
+        if data.cdmEnhance.lockGridSize ~= nil then
+            enhance.lockGridSize = data.cdmEnhance.lockGridSize
+        end
+        if data.cdmEnhance.enableAuraCustomization ~= nil then
+            enhance.enableAuraCustomization = data.cdmEnhance.enableAuraCustomization
+        end
+        if data.cdmEnhance.enableCooldownCustomization ~= nil then
+            enhance.enableCooldownCustomization = data.cdmEnhance.enableCooldownCustomization
+        end
     end
+    
+    -- Bar import: Coming Soon (disabled for this release)
+    local barImportCount = 0
     
     -- Replace mode: if nothing was imported, restore the backup
     if importMode == "replace" and importedProfiles == 0 and next(replaceBackup) then
@@ -672,6 +1048,9 @@ function ME.Import(data, importMode)
     end
     
     local result = string.format("Imported %d profile(s) to this character", importedProfiles)
+    if barImportCount > 0 then
+        result = result .. string.format(", %d bar(s)", barImportCount)
+    end
     if storedForLater > 0 then
         result = result .. string.format(", %d spec(s) stored for other classes", storedForLater)
     end
@@ -714,8 +1093,56 @@ function ME.AutoApplyPendingProfiles()
                     GetSpecDisplayName(specKey, specEntry.specName) .. "|r")
                 
                 -- Track which profile to load for current spec
-                if specKey == currentSpec and firstProfileName then
-                    currentSpecProfileName = firstProfileName
+                if specKey == currentSpec and merged > 0 then
+                    local targetSpec = cdmGroupsDB.specData[specKey]
+                    if targetSpec then
+                        currentSpecProfileName = targetSpec.activeProfile or firstProfileName
+                    end
+                end
+            end
+            
+            -- Apply character-level Arc Auras (merge — add missing, don't wipe existing)
+            if specEntry.arcAuras then
+                local charKey = UnitName("player") .. " - " .. GetRealmName()
+                if ArcUIDB and ArcUIDB.char and ArcUIDB.char[charKey] then
+                    local charDB = ArcUIDB.char[charKey]
+                    if not charDB.arcAuras then
+                        charDB.arcAuras = { enabled = true, trackedItems = {}, trackedSpells = {}, positions = {}, globalSettings = {} }
+                    end
+                    local spellCount, itemCount = 0, 0
+                    if specEntry.arcAuras.trackedSpells then
+                        if not charDB.arcAuras.trackedSpells then charDB.arcAuras.trackedSpells = {} end
+                        for arcID, config in pairs(specEntry.arcAuras.trackedSpells) do
+                            if not charDB.arcAuras.trackedSpells[arcID] then
+                                charDB.arcAuras.trackedSpells[arcID] = DeepCopy(config)
+                                spellCount = spellCount + 1
+                            end
+                        end
+                    end
+                    if specEntry.arcAuras.trackedItems then
+                        if not charDB.arcAuras.trackedItems then charDB.arcAuras.trackedItems = {} end
+                        for arcID, config in pairs(specEntry.arcAuras.trackedItems) do
+                            if not charDB.arcAuras.trackedItems[arcID] then
+                                charDB.arcAuras.trackedItems[arcID] = DeepCopy(config)
+                                itemCount = itemCount + 1
+                            end
+                        end
+                    end
+                    if specEntry.arcAuras.enabled ~= nil and not charDB.arcAuras.enabled then
+                        charDB.arcAuras.enabled = specEntry.arcAuras.enabled
+                    end
+                    if specEntry.arcAuras.autoTrackEquippedTrinkets ~= nil then
+                        charDB.arcAuras.autoTrackEquippedTrinkets = specEntry.arcAuras.autoTrackEquippedTrinkets
+                    end
+                    if specEntry.arcAuras.autoTrackSlots and not charDB.arcAuras.autoTrackSlots then
+                        charDB.arcAuras.autoTrackSlots = DeepCopy(specEntry.arcAuras.autoTrackSlots)
+                    end
+                    if specEntry.arcAuras.onlyOnUseTrinkets ~= nil then
+                        charDB.arcAuras.onlyOnUseTrinkets = specEntry.arcAuras.onlyOnUseTrinkets
+                    end
+                    if spellCount + itemCount > 0 then
+                        print(MSG_PREFIX .. "|cff00ccffAuto-imported " .. spellCount .. " spell(s), " .. itemCount .. " item(s) for Arc Auras|r")
+                    end
                 end
             end
             
@@ -763,47 +1190,135 @@ end
 -- OPTIONS TABLE (AceConfig)
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local uiState = {
+uiState = {
     selectedForExport = {},
     exportString = "",
     importString = "",
     importPreview = nil,
     importError = nil,
     importMode = "merge",
-    collapsedChars = {},  -- charKey → true if collapsed (default: all collapsed)
+    importActiveOverrides = {},
+    collapsedChars = {},
+    cdmProfilesCollapsed = true,
+    barsCollapsed = true,
+    collapsedBarChars = {},
+    selectedBarsForExport = {},
 }
+
+-- Shared args table for per-spec active profile dropdowns (rebuilt on preview)
+local activeProfileSelectorArgs = {}
+
+-- Rebuild per-spec active profile dropdowns from preview data
+local function RebuildActiveProfileSelectors()
+    wipe(activeProfileSelectorArgs)
+    if not uiState.importPreview then return end
+    
+    local _, _, myClassID = UnitClass("player")
+    local data = uiState.importPreview
+    
+    -- Sort specs for consistent display order
+    local sorted = {}
+    for specKey, specEntry in pairs(data.specs or {}) do
+        table.insert(sorted, { key = specKey, entry = specEntry })
+    end
+    table.sort(sorted, function(a, b)
+        local ac = a.entry.classID or 99
+        local bc = b.entry.classID or 99
+        if ac ~= bc then return ac < bc end
+        return (a.entry.specIndex or 99) < (b.entry.specIndex or 99)
+    end)
+    
+    local order = 1
+    for _, s in ipairs(sorted) do
+        local specKey = s.key
+        local specEntry = s.entry
+        local isMyClass = specEntry.classID == myClassID
+        
+        -- Only show selectors for specs that will merge into this character
+        if isMyClass then
+            -- Build profile name list for dropdown
+            local profileValues = {}
+            if specEntry.profiles then
+                for pName in pairs(specEntry.profiles) do
+                    profileValues[pName] = pName
+                end
+            end
+            
+            -- Count profiles — skip dropdown if only 1 profile
+            local count = 0
+            for _ in pairs(profileValues) do count = count + 1 end
+            
+            if count > 1 then
+                local displayName = GetSpecDisplayName(specKey, specEntry.specName)
+                local sKey = specKey  -- capture for closure
+                
+                activeProfileSelectorArgs["active_" .. order] = {
+                    type = "select",
+                    name = displayName .. "  |cff888888Active Profile|r",
+                    order = order,
+                    width = 1.5,
+                    values = profileValues,
+                    get = function()
+                        return uiState.importActiveOverrides[sKey]
+                    end,
+                    set = function(_, val)
+                        uiState.importActiveOverrides[sKey] = val
+                    end,
+                }
+                order = order + 1
+            end
+        end
+    end
+end
 
 local function GetOptionsTable()
     local options = {
         type = "group",
-        name = "Master Export",
+        name = "Export",
         order = 6,
         args = {
             description = {
                 type = "description",
-                name = "|cffffd100Master Export|r lets you pick individual Arc Manager profiles from any character and spec, then bundle them into a single export string.\n\n" ..
-                       "|cff00ccffHow it works:|r\n" ..
-                       "1. Select which profiles to include from the list below\n" ..
-                       "2. Export generates one string containing all selected profiles\n" ..
-                       "3. Import on any character — profiles for your class merge into the matching spec (renamed on conflict), profiles for other classes are stored and auto-merged when you log that class\n",
+                name = "Bundle profiles from any character into a single export string. "
+                    .. "Import on any alt — matching specs merge automatically, other classes queue for next login.\n\n"
+                    .. "|cffff9900First Pass — this feature is new and may have rough edges. "
+                    .. "If you run into any issues please report them in the Discord.|r\n",
                 fontSize = "medium",
                 order = 1,
             },
             
             -- ═══════════════════════════════════════════════════════════════
-            -- EXPORT SECTION
+            -- CDM PROFILES SECTION (collapsible)
             -- ═══════════════════════════════════════════════════════════════
-            exportHeader = {
-                type = "header",
-                name = "Export Profiles",
+            cdmProfilesToggle = {
+                type = "toggle",
+                name = function()
+                    local count = 0
+                    for _ in pairs(uiState.selectedForExport) do count = count + 1 end
+                    local label = "|cffffd100CDM Profiles|r"
+                    if count > 0 then
+                        label = label .. "  |cff00ff00[" .. count .. " selected]|r"
+                    end
+                    if uiState.cdmProfilesCollapsed then
+                        local allProfiles = ME.ScanAllProfiles()
+                        label = label .. "  |cff666666(" .. #allProfiles .. " available)|r"
+                    end
+                    return label
+                end,
+                desc = "Click to expand/collapse the CDM profile list",
+                dialogControl = "CollapsibleHeader",
                 order = 10,
+                width = "full",
+                get = function() return not uiState.cdmProfilesCollapsed end,
+                set = function(_, v) uiState.cdmProfilesCollapsed = not v end,
             },
             
-            selectAllBtn = {
+            cdmSelectAll = {
                 type = "execute",
                 name = "Select All",
                 order = 11,
                 width = 0.6,
+                hidden = function() return uiState.cdmProfilesCollapsed end,
                 func = function()
                     local allProfiles = ME.ScanAllProfiles()
                     for _, entry in ipairs(allProfiles) do
@@ -813,21 +1328,45 @@ local function GetOptionsTable()
                 end,
             },
             
-            selectNoneBtn = {
+            cdmSelectNone = {
                 type = "execute",
                 name = "Select None",
                 order = 12,
                 width = 0.6,
+                hidden = function() return uiState.cdmProfilesCollapsed end,
                 func = function()
                     wipe(uiState.selectedForExport)
                     LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
                 end,
             },
             
+            -- Character profile sections injected below (order 13+)
+            
+            -- ═══════════════════════════════════════════════════════════════
+            -- BARS SECTION (collapsible, per-character with per-bar toggles)
+            -- ═══════════════════════════════════════════════════════════════
+            barsComingSoon = {
+                type = "description",
+                name = "|cffffd100Bars|r  |cff888888(Coming Soon)|r",
+                order = 100,
+                fontSize = "medium",
+            },
+            
+            -- Per-character bar sections injected below (order 103+)
+            
+            -- ═══════════════════════════════════════════════════════════════
+            -- EXPORT ACTIONS
+            -- ═══════════════════════════════════════════════════════════════
+            exportHeader = {
+                type = "header",
+                name = "",
+                order = 200,
+            },
+            
             exportBtn = {
                 type = "execute",
                 name = "Export Selected",
-                order = 40,
+                order = 201,
                 width = 1,
                 func = function()
                     local result, err = ME.Export(uiState.selectedForExport)
@@ -845,7 +1384,7 @@ local function GetOptionsTable()
             exportString = {
                 type = "input",
                 name = "Export String",
-                order = 41,
+                order = 202,
                 multiline = 6,
                 width = "full",
                 get = function() return uiState.exportString end,
@@ -858,20 +1397,13 @@ local function GetOptionsTable()
             importHeader = {
                 type = "header",
                 name = "Import",
-                order = 50,
-            },
-            
-            importDesc = {
-                type = "description",
-                name = "Paste a Master Export string below. Profiles for your class merge into the matching spec's Arc Manager (renamed on conflict). Profiles for other classes are stored and auto-merged when you log that class.",
-                order = 51,
-                fontSize = "medium",
+                order = 210,
             },
             
             importString = {
                 type = "input",
-                name = "Paste Master Export String",
-                order = 52,
+                name = "Paste Export String",
+                order = 212,
                 multiline = 6,
                 width = "full",
                 get = function() return uiState.importString end,
@@ -881,9 +1413,16 @@ local function GetOptionsTable()
                     if data then
                         uiState.importPreview = data
                         uiState.importError = nil
+                        wipe(uiState.importActiveOverrides)
+                        for specKey, specEntry in pairs(data.specs or {}) do
+                            uiState.importActiveOverrides[specKey] = specEntry.activeProfile or nil
+                        end
+                        RebuildActiveProfileSelectors()
                     else
                         uiState.importPreview = nil
                         uiState.importError = err
+                        wipe(uiState.importActiveOverrides)
+                        RebuildActiveProfileSelectors()
                     end
                 end,
             },
@@ -891,17 +1430,24 @@ local function GetOptionsTable()
             previewBtn = {
                 type = "execute",
                 name = "Preview",
-                order = 53,
+                order = 213,
                 width = 0.5,
                 func = function()
                     local data, err = ME.ParseImportString(uiState.importString)
                     if err then
                         uiState.importPreview = nil
                         uiState.importError = err
+                        wipe(uiState.importActiveOverrides)
+                        RebuildActiveProfileSelectors()
                         print(MSG_PREFIX .. "|cffff0000" .. err .. "|r")
                     else
                         uiState.importPreview = data
                         uiState.importError = nil
+                        wipe(uiState.importActiveOverrides)
+                        for specKey, specEntry in pairs(data.specs or {}) do
+                            uiState.importActiveOverrides[specKey] = specEntry.activeProfile or nil
+                        end
+                        RebuildActiveProfileSelectors()
                     end
                     LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
                 end,
@@ -918,17 +1464,41 @@ local function GetOptionsTable()
                         return "|cff888888Paste a string and click Preview to see contents.|r"
                     end
                 end,
-                order = 54,
+                order = 214,
                 fontSize = "medium",
+            },
+            
+            activeProfileHeader = {
+                type = "header",
+                name = "Active Profile Per Spec",
+                order = 214.1,
+                hidden = function() return not uiState.importPreview end,
+            },
+            
+            activeProfileDesc = {
+                type = "description",
+                name = "|cff888888Choose which profile becomes active for each spec after import.|r",
+                order = 214.2,
+                fontSize = "medium",
+                hidden = function() return not uiState.importPreview end,
+            },
+            
+            activeProfileSelectors = {
+                type = "group",
+                name = "",
+                order = 214.3,
+                inline = true,
+                hidden = function() return not uiState.importPreview or not next(activeProfileSelectorArgs) end,
+                args = activeProfileSelectorArgs,
             },
             
             importModeSelect = {
                 type = "select",
                 name = "Import Mode",
-                order = 55,
+                order = 215,
                 width = 1.2,
                 values = {
-                    merge = "Merge (add profiles alongside existing)",
+                    merge = "Merge (add alongside existing)",
                     replace = "Replace (wipe matching specs first)",
                 },
                 get = function() return uiState.importMode end,
@@ -939,31 +1509,33 @@ local function GetOptionsTable()
                 type = "description",
                 name = function()
                     if uiState.importMode == "merge" then
-                        return "|cff888888Profiles are added alongside existing ones. Conflicting names are renamed (e.g. 'Default (Arc - Illidan)').|r"
+                        return "|cff888888Conflicting names are auto-renamed.|r"
                     else
-                        return "|cffff6600WARNING: All existing Arc Manager profiles for matching specs will be wiped before importing!|r"
+                        return "|cffff6600WARNING: Existing profiles for matching specs will be wiped!|r"
                     end
                 end,
-                order = 56,
+                order = 216,
             },
             
             importBtn = {
                 type = "execute",
                 name = "Import",
-                order = 57,
-                width = 1.0,
+                order = 217,
+                width = 0.5,
                 disabled = function() return uiState.importPreview == nil end,
                 func = function()
                     if not uiState.importPreview then
                         print(MSG_PREFIX .. "|cffff0000No valid import data.|r Paste a string and Preview first.")
                         return
                     end
-                    local success, result = ME.Import(uiState.importPreview, uiState.importMode)
+                    local success, result = ME.Import(uiState.importPreview, uiState.importMode, uiState.importActiveOverrides)
                     if success then
                         print(MSG_PREFIX .. "|cff00ff00" .. result .. "|r")
                         uiState.importString = ""
                         uiState.importPreview = nil
                         uiState.importError = nil
+                        wipe(uiState.importActiveOverrides)
+                        wipe(activeProfileSelectorArgs)
                         StaticPopup_Show("ARCUI_MASTER_IMPORT_RELOAD")
                     else
                         print(MSG_PREFIX .. "|cffff0000Import failed:|r " .. (result or "Unknown error"))
@@ -975,23 +1547,25 @@ local function GetOptionsTable()
             clearImportBtn = {
                 type = "execute",
                 name = "Clear",
-                order = 58,
+                order = 218,
                 width = 0.5,
                 func = function()
                     uiState.importString = ""
                     uiState.importPreview = nil
                     uiState.importError = nil
+                    wipe(uiState.importActiveOverrides)
+                    wipe(activeProfileSelectorArgs)
                     LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
                 end,
             },
             
             -- ═══════════════════════════════════════════════════════════════
-            -- PENDING INFO
+            -- PENDING PROFILES
             -- ═══════════════════════════════════════════════════════════════
             pendingHeader = {
                 type = "header",
                 name = "Pending Profiles (Other Classes)",
-                order = 70,
+                order = 230,
                 hidden = function()
                     return not ns.db or not ns.db.global or not ns.db.global.masterCDMPending
                         or not next(ns.db.global.masterCDMPending or {})
@@ -1005,18 +1579,18 @@ local function GetOptionsTable()
                     local pending = ns.db.global.masterCDMPending
                     if not next(pending) then return "" end
                     
-                    local lines = { "These profiles will auto-merge when you log the matching class:\n" }
+                    local lines = { "Auto-merge when you log the matching class:\n" }
                     for specKey, specEntry in pairs(pending) do
                         local displayName = GetSpecDisplayName(specKey, specEntry.specName)
                         local profileCount = 0
                         if specEntry.profiles then
                             for _ in pairs(specEntry.profiles) do profileCount = profileCount + 1 end
                         end
-                        table.insert(lines, "  • " .. displayName .. " |cff888888(" .. profileCount .. " profile(s))|r")
+                        table.insert(lines, "  " .. displayName .. " |cff888888(" .. profileCount .. " profiles)|r")
                     end
                     return table.concat(lines, "\n")
                 end,
-                order = 71,
+                order = 231,
                 fontSize = "medium",
                 hidden = function()
                     return not ns.db or not ns.db.global or not ns.db.global.masterCDMPending
@@ -1027,10 +1601,10 @@ local function GetOptionsTable()
             clearPendingBtn = {
                 type = "execute",
                 name = "Clear Pending",
-                order = 72,
-                width = 0.8,
+                order = 232,
+                width = 0.7,
                 confirm = true,
-                confirmText = "This will delete all pending profiles for other classes. Are you sure?",
+                confirmText = "Delete all pending profiles for other classes?",
                 hidden = function()
                     return not ns.db or not ns.db.global or not ns.db.global.masterCDMPending
                         or not next(ns.db.global.masterCDMPending or {})
@@ -1058,6 +1632,7 @@ local function GetOptionsTable()
             type = "description",
             name = "|cff888888No Arc Manager profiles found across any character.|r",
             order = 13,
+            hidden = function() return uiState.cdmProfilesCollapsed end,
         }
     else
         -- Group profiles by charKey
@@ -1076,6 +1651,27 @@ local function GetOptionsTable()
         for _, charKey in ipairs(charOrder) do
             if uiState.collapsedChars[charKey] == nil then
                 uiState.collapsedChars[charKey] = true
+            end
+        end
+        
+        -- Build a lookup: for shared specs, which characters are part of the sync?
+        -- This lets us show "Shared: Arc, Testlov, Yeatest" in the header.
+        local sharedCharsForSpec = {}  -- [specKey] = { "Arc", "Testlov", ... }
+        if ns.db and ns.db.global and ns.db.global.sharedProfiles then
+            local svChar = ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+            if svChar then
+                for sk in pairs(ns.db.global.sharedProfiles) do
+                    local names = {}
+                    for ck, cd in pairs(svChar) do
+                        if type(cd) == "table" and cd.cdmGroups and cd.cdmGroups.specData and cd.cdmGroups.specData[sk] then
+                            table.insert(names, GetCharName(ck))
+                        end
+                    end
+                    table.sort(names)
+                    if #names > 0 then
+                        sharedCharsForSpec[sk] = names
+                    end
+                end
             end
         end
         
@@ -1109,6 +1705,17 @@ local function GetOptionsTable()
                         if uiState.selectedForExport[e.uniqueKey] then selCount = selCount + 1 end
                     end
                     local label = "|cffffd100" .. charName .. "|r  |c" .. classColor .. className .. "|r"
+                    -- Check if any of this character's specs are shared
+                    local sharedNames = nil
+                    for _, e in ipairs(entries) do
+                        if sharedCharsForSpec[e.specKey] then
+                            sharedNames = sharedCharsForSpec[e.specKey]
+                            break
+                        end
+                    end
+                    if sharedNames and #sharedNames > 1 then
+                        label = "|cffffd100" .. className .. "|r  |c" .. classColor .. "Shared|r |cff888888(" .. table.concat(sharedNames, ", ") .. ")|r"
+                    end
                     if uiState.collapsedChars[cKey] then
                         label = label .. "  |cff666666(" .. profileCount .. " profiles, " .. specCount .. " specs)|r"
                     end
@@ -1126,6 +1733,34 @@ local function GetOptionsTable()
             }
             
             -- ── Spec headers and profile toggles (hidden when collapsed) ──
+            local capturedEntries = entries  -- capture for closure
+            charArgs["_selectAll"] = {
+                type = "execute",
+                name = "Select All",
+                order = 0.1,
+                width = 0.6,
+                hidden = function() return uiState.collapsedChars[cKey] end,
+                func = function()
+                    for _, e in ipairs(capturedEntries) do
+                        uiState.selectedForExport[e.uniqueKey] = true
+                    end
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            }
+            charArgs["_selectNone"] = {
+                type = "execute",
+                name = "Select None",
+                order = 0.2,
+                width = 0.6,
+                hidden = function() return uiState.collapsedChars[cKey] end,
+                func = function()
+                    for _, e in ipairs(capturedEntries) do
+                        uiState.selectedForExport[e.uniqueKey] = false
+                    end
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            }
+            
             local innerOrder = 1
             local lastSpecKey = nil
             
@@ -1152,10 +1787,16 @@ local function GetOptionsTable()
                     detailStr = " |cff666666[" .. table.concat(parts, ", ") .. "]|r"
                 end
                 
+                -- Mark active profile for this spec/character
+                local activeTag = ""
+                if entry.sourceActiveProfile and entry.profileName == entry.sourceActiveProfile then
+                    activeTag = " |cffffd100(Active)|r"
+                end
+                
                 local uKey = entry.uniqueKey
                 charArgs["profile_" .. innerOrder] = {
                     type = "toggle",
-                    name = "    " .. entry.profileName .. detailStr,
+                    name = "    " .. entry.profileName .. activeTag .. detailStr,
                     order = innerOrder,
                     width = "full",
                     hidden = function() return uiState.collapsedChars[cKey] end,
@@ -1170,10 +1811,14 @@ local function GetOptionsTable()
                 name = "",
                 order = baseOrder + charIdx,
                 inline = true,
+                hidden = function() return uiState.cdmProfilesCollapsed end,
                 args = charArgs,
             }
         end
     end
+
+    -- Bar sections: Coming Soon (disabled for this release)
+
     
     return options
 end
@@ -1222,7 +1867,7 @@ SlashCmdList["ARCUIMASTEREXPORT"] = function()
         C_Timer.After(0.1, function()
             local ACD = LibStub("AceConfigDialog-3.0", true)
             if ACD then
-                ACD:SelectGroup("ArcUI", "masterExport")
+                ACD:SelectGroup("ArcUI", "importExport", "masterExport")
             end
         end)
     else

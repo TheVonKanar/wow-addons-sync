@@ -1,0 +1,25 @@
+
+EllesmereUIDB = {
+["disabledAddons"] = {
+},
+["blizzUIScale"] = 100,
+["dismissedConflicts"] = {
+},
+["customColors"] = {
+},
+["fonts"] = {
+["globalEnabled"] = true,
+["global"] = "Expressway",
+["actionBars"] = "Expressway",
+["unitFrames"] = "Expressway",
+["cdm"] = "Expressway",
+["auraBuff"] = "Expressway",
+["raidFrames"] = "Expressway",
+["nameplates"] = "Expressway",
+["minimapChat"] = "Expressway",
+["extras"] = "Expressway",
+["resourceBars"] = "Expressway",
+},
+["sidebarUnlockTipSeen"] = true,
+["activeTheme"] = "EllesmereUI",
+}

@@ -120,6 +120,37 @@ ArcAuras.InvalidateSettingsCache = InvalidateSettingsCache
 ArcAuras.InvalidateStackCache = InvalidateStackCache
 ArcAuras.GetSettingsCacheGeneration = function() return settingsCacheGeneration end
 
+-- Helper: return 0.35 preview alpha when options panel is open, 0 otherwise.
+-- Used by all item hide paths so hidden items are visible during editing.
+local PREVIEW_ALPHA = 0.35
+local function GetHiddenAlpha()
+    if ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen and ns.CDMEnhance.IsOptionsPanelOpen() then
+        return PREVIEW_ALPHA
+    end
+    return 0
+end
+
+-- Helper: return true if frame should remain visible for options preview
+local function IsOptionsPreviewActive()
+    return ns.CDMEnhance and ns.CDMEnhance.IsOptionsPanelOpen and ns.CDMEnhance.IsOptionsPanelOpen()
+end
+
+-- Helper: hide frame or show at preview alpha when options panel is open
+local function HideOrPreview(frame)
+    if IsOptionsPreviewActive() then
+        -- Bypass any Show hooks by using original if available
+        if frame._arcOriginalShow then
+            frame._arcOriginalShow(frame)
+        else
+            frame:Show()
+        end
+        frame:SetAlpha(PREVIEW_ALPHA)
+    else
+        frame:Hide()
+        frame:SetAlpha(0)
+    end
+end
+
 -- Global bridge for GlowDebugger (debug only)
 _G.ArcUI_ArcAuras = ArcAuras
 
@@ -340,22 +371,30 @@ local function GetItemOnUseSpell(itemID)
 end
 
 local function IsItemOnUse(itemID)
+    if not itemID then return false end
     local spellName = GetItemSpell(itemID)
-    return spellName ~= nil
+    -- Secret-safe: use truthiness check, not ~= nil comparison
+    -- In WoW 12.0, GetItemSpell may return a secret for the spell name
+    if spellName then return true end
+    return false
 end
 
 -- Check if an item is passive (no on-use spell)
 local function IsItemPassive(itemID)
     if not itemID then return true end  -- No item = treat as passive
     local spellName = GetItemSpell(itemID)
-    return spellName == nil
+    -- Secret-safe: a secret value is truthy even if "empty"
+    -- For passive items, GetItemSpell returns nil (non-secret)
+    if spellName then return false end
+    return true
 end
 
 -- Check if a specific item is currently equipped in any trinket slot
 local function IsItemEquipped(itemID)
     if not itemID then return false end
-    for _, slot in ipairs(TRINKET_SLOTS) do
-        local equippedID = GetInventoryItemID("player", slot.slotID)
+    -- Check all equipment slots (1-19: head through ranged)
+    for slot = 1, 19 do
+        local equippedID = GetInventoryItemID("player", slot)
         if equippedID == itemID then
             return true
         end
@@ -2008,6 +2047,8 @@ local function OnArcAurasUpdate()
                                 particles = glowSettings.readyGlowParticles or 4,
                                 xOffset = glowSettings.readyGlowXOffset or 0,
                                 yOffset = glowSettings.readyGlowYOffset or 0,
+                                strata = glowSettings.readyGlowFrameStrata,
+                                frameLevel = glowSettings.readyGlowFrameLevel,
                             })
                             -- Set signature to prevent restart-every-tick
                             frame._arcCurrentGlowSig = glowSettings.readyGlowType or "button"
@@ -2744,26 +2785,19 @@ function ArcAuras.AddTrackedItem(config)
     InvalidateStackCache(arcID)
     
     if ArcAuras.isEnabled then
+        -- Skip frame creation for items with hideWhenUnequipped that aren't equipped
+        if config.type == "item" and config.hideWhenUnequipped and config.itemID then
+            if not ArcAuras.IsItemEquipped(config.itemID) then
+                -- Don't create frame — UpdateItemFrameVisibility will create when equipped
+                return true
+            end
+        end
+        
         local frame = ArcAuras.CreateFrame(arcID, db.trackedItems[arcID])
         if frame then
             ArcAuras.LoadFramePosition(arcID, frame)
-            
-            -- Check if item-based frame should be hidden
-            local shouldShow = true
-            if config.type == "item" and config.hideWhenUnequipped then
-                if not ArcAuras.IsItemEquipped(config.itemID) then
-                    shouldShow = false
-                    frame._arcHiddenUnequipped = true
-                    frame:Hide()
-                    frame:SetAlpha(0)
-                end
-            end
-            
-            if shouldShow then
-                frame:Show()
-                -- Apply proper state visuals (respects saved alpha settings)
-                ArcAuras.ApplyInitialStateVisuals(arcID, frame)
-            end
+            frame:Show()
+            ArcAuras.ApplyInitialStateVisuals(arcID, frame)
             
             -- For items with on-use spells, schedule a delayed stack refresh
             -- This handles the case where tooltip data isn't ready immediately
@@ -2815,16 +2849,67 @@ function ArcAuras.SetTrackedItemEnabled(arcID, enabled)
     db.trackedItems[arcID].enabled = enabled
     
     if enabled and ArcAuras.isEnabled then
-        local frame = ArcAuras.frames[arcID] or ArcAuras.CreateFrame(arcID, db.trackedItems[arcID])
-        if frame then
-            ArcAuras.LoadFramePosition(arcID, frame)
-            frame:Show()
-            -- Apply proper state visuals (respects saved alpha settings)
-            ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+        -- Check hideWhenUnequipped — don't create if not equipped
+        local config = db.trackedItems[arcID]
+        if config.type == "item" and config.itemID and config.hideWhenUnequipped then
+            if not IsItemEquipped(config.itemID) then
+                return  -- stay destroyed, UpdateItemFrameVisibility will create when equipped
+            end
         end
+        
+        ArcAuras.RecreateItemFrame(arcID)
     elseif not enabled and ArcAuras.frames[arcID] then
-        ArcAuras.frames[arcID]:Hide()
+        ArcAuras.DestroyItemFramePreservePosition(arcID)
     end
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- DESTROY / RECREATE HELPERS (shared by enable/disable + hideWhenUnequipped)
+-- Destroy saves position, recreate restores it. No hiding — fully remove/add.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Destroy frame but preserve its savedPosition for later recreation
+function ArcAuras.DestroyItemFramePreservePosition(arcID)
+    local frame = ArcAuras.frames[arcID]
+    if not frame then return end
+    
+    -- Save position BEFORE destroy (UnregisterExternalFrame wipes savedPositions)
+    local savedPos = ns.CDMGroups and ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
+    local savedPosCopy = nil
+    if savedPos then
+        savedPosCopy = {}
+        for k, v in pairs(savedPos) do savedPosCopy[k] = v end
+    end
+    
+    ArcAuras.DestroyFrame(arcID)
+    
+    -- Restore savedPosition so recreate reads the correct placement
+    if savedPosCopy and ns.CDMGroups and ns.CDMGroups.savedPositions then
+        ns.CDMGroups.savedPositions[arcID] = savedPosCopy
+    end
+end
+
+-- Recreate a previously destroyed item frame, restoring its position
+function ArcAuras.RecreateItemFrame(arcID)
+    if ArcAuras.frames[arcID] then return end  -- already exists
+    
+    local db = GetDB()
+    if not db or not db.trackedItems then return end
+    local config = db.trackedItems[arcID]
+    if not config then return end
+    
+    local frame = ArcAuras.CreateFrame(arcID, config)
+    if not frame then return end
+    
+    frame:Show()
+    ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+    
+    -- Force position restore after a tick (CDMGroups registration is async sometimes)
+    C_Timer.After(0.1, function()
+        if ArcAuras.frames[arcID] and ns.CDMGroups and ns.CDMGroups.RestoreArcAurasPositions then
+            ns.CDMGroups.RestoreArcAurasPositions("[ItemRecreate]")
+        end
+    end)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -2836,127 +2921,27 @@ end
 -- Removes from group so it doesn't occupy space, preserves position for restoration
 function ArcAuras.HideTrinketSlotFrame(arcID)
     local frame = ArcAuras.frames[arcID]
-    if not frame then 
-        return 
-    end
+    if not frame then return end
     
-    -- Mark as hidden due to empty slot or passive filter
-    frame._arcSlotEmpty = true
-    
-    -- ═══════════════════════════════════════════════════════════════════════════
-    -- CRITICAL: Hook the frame's Show method to PREVENT re-showing
-    -- CDMGroups and other systems may try to Show() the frame after we hide it
-    -- ═══════════════════════════════════════════════════════════════════════════
-    if not frame._arcOriginalShow then
-        frame._arcOriginalShow = frame.Show
-        frame.Show = function(self)
-            if self._arcSlotEmpty then
-                return  -- Block the show
-            end
-            return self._arcOriginalShow(self)
-        end
-    end
-    
-    -- Hide the frame (but keep it in its group - dynamic layout treats _arcSlotEmpty as a gap)
-    frame:Hide()
-    frame:SetAlpha(0)
-    
-    -- Trigger group reflow so dynamic layout compacts around the hidden frame
-    -- Must call ReflowIcons (not just Layout) to update grid positions AND pixel offsets
-    if ns.CDMGroups and ns.CDMGroups.groups then
-        for groupName, group in pairs(ns.CDMGroups.groups) do
-            if group.members and group.members[arcID] then
-                if group.autoReflow and group.ReflowIcons then
-                    group:ReflowIcons()
-                elseif group.Layout then
-                    group:Layout()
-                end
-                break
-            end
-        end
-    end
+    -- Destroy the frame (preserves savedPositions for later recreation)
+    ArcAuras.DestroyItemFramePreservePosition(arcID)
 end
 
 -- Restore a trinket slot frame (when trinket is equipped or filter changed)
--- Frame stays in its group - just clears the hidden flag and triggers re-layout
 function ArcAuras.ShowTrinketSlotFrame(arcID)
-    local frame = ArcAuras.frames[arcID]
-    if not frame then return end
-    
-    -- ═══════════════════════════════════════════════════════════════════════════
-    -- GUARD: If this is an auto-track slot and the per-slot toggle is OFF,
-    -- refuse to show. The user's toggle takes absolute priority.
-    -- ═══════════════════════════════════════════════════════════════════════════
-    local config = frame._arcConfig
-    if config and config.isAutoTrackSlot and config.slotID then
-        if not ArcAuras.IsAutoTrackSlotEnabled(config.slotID) then
-            return  -- Slot toggle is OFF - do not show
-        end
-    end
-    
-    -- Clear empty slot flag
-    frame._arcSlotEmpty = nil
-    
-    -- Update the icon for the new trinket
-    local config = frame._arcConfig
-    if config then
-        ArcAuras.UpdateFrameIcon(frame, config)
-        frame._arcStackStyleApplied = false
-        InvalidateStackCache(arcID)
-    end
-    
-    -- Show the frame
-    frame:Show()
-    -- Apply proper state visuals (respects saved alpha settings)
-    ArcAuras.ApplyInitialStateVisuals(arcID, frame)
-    
-    -- Check if frame is already in a group - if so, reflow to include it
-    local inGroup = false
-    if ns.CDMGroups and ns.CDMGroups.groups then
-        for groupName, group in pairs(ns.CDMGroups.groups) do
-            if group.members and group.members[arcID] then
-                inGroup = true
-                -- Trigger reflow so dynamic layout includes this frame again
-                if group.autoReflow and group.ReflowIcons then
-                    group:ReflowIcons()
-                elseif group.Layout then
-                    group:Layout()
-                end
-                break
+    -- Guard: don't show if slot toggle is off
+    local db = GetDB()
+    if db and db.trackedItems and db.trackedItems[arcID] then
+        local config = db.trackedItems[arcID]
+        if config.isAutoTrackSlot and config.slotID then
+            if not ArcAuras.IsAutoTrackSlotEnabled(config.slotID) then
+                return
             end
         end
     end
     
-    -- Also check free icons
-    if not inGroup and ns.CDMGroups and ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-        inGroup = true
-        -- Free icon - just ensure it's visible at its saved position
-        local freeData = ns.CDMGroups.freeIcons[arcID]
-        if freeData then
-            frame:SetParent(UIParent)
-            frame:ClearAllPoints()
-            frame:SetPoint("CENTER", UIParent, "CENTER", freeData.x or 0, freeData.y or 0)
-            frame:SetFrameStrata("MEDIUM")
-            frame:SetAlpha(1)
-        end
-    end
-    
-    -- Not in any group yet (first time showing) - register with CDMGroups
-    if not inGroup and ns.CDMGroups then
-        -- Ensure savedPositions reference is correct for current spec
-        if ns.CDMGroups.GetProfileSavedPositions then
-            ns.CDMGroups.GetProfileSavedPositions()
-        end
-        
-        if ns.CDMGroups.RegisterExternalFrame then
-            ns.CDMGroups.RegisterExternalFrame(arcID, frame, "cooldown", "Essential")
-        end
-    end
-    
-    -- Trigger Masque refresh for proper sizing
-    if ns.Masque and ns.Masque.QueueRefresh then
-        ns.Masque.QueueRefresh()
-    end
+    -- Recreate the frame (reads savedPositions for correct placement)
+    ArcAuras.RecreateItemFrame(arcID)
 end
 
 function ArcAuras.ScanEquippedTrinkets()
@@ -3158,21 +3143,11 @@ function ArcAuras.SetOnlyOnUseTrinkets(enabled)
                     -- GUARD: Skip if per-slot toggle is OFF
                     if not ArcAuras.IsAutoTrackSlotEnabled(slot.slotID) then
                         -- Slot toggle is OFF - don't restore, keep hidden
-                    elseif frame and frame._arcSlotEmpty then
-                        local itemID = GetInventoryItemID("player", slot.slotID)
-                        if itemID then
-                            -- Frame was hidden due to filter - restore it
-                            ArcAuras.ShowTrinketSlotFrame(arcID)
-                        end
                     elseif not frame then
+                        -- Frame was destroyed (empty slot or filter) - recreate if trinket equipped
                         local itemID = GetInventoryItemID("player", slot.slotID)
                         if itemID then
-                            -- Frame doesn't exist (maybe was removed) - recreate it
-                            local newFrame = ArcAuras.CreateFrame(arcID, config)
-                            if newFrame then
-                                ArcAuras.LoadFramePosition(arcID, newFrame)
-                                newFrame:Show()
-                            end
+                            ArcAuras.ShowTrinketSlotFrame(arcID)
                         end
                     end
                 end
@@ -3203,7 +3178,7 @@ function ArcAuras.IsHideWhenUnequippedEnabled(arcID)
     return db.trackedItems[arcID].hideWhenUnequipped or false
 end
 
--- Set hideWhenUnequipped for an item
+-- Set hideWhenUnequipped for an item (uses destroy/recreate)
 function ArcAuras.SetHideWhenUnequipped(arcID, enabled)
     local db = GetDB()
     if not db or not db.trackedItems or not db.trackedItems[arcID] then
@@ -3213,208 +3188,37 @@ function ArcAuras.SetHideWhenUnequipped(arcID, enabled)
     local config = db.trackedItems[arcID]
     config.hideWhenUnequipped = enabled
     
-    -- Apply immediately
-    local frame = ArcAuras.frames[arcID]
-    if frame and config.type == "item" and config.itemID then
-        if enabled then
-            -- Check if currently equipped
-            if not IsItemEquipped(config.itemID) then
-                ArcAuras.HideItemFrame(arcID)
+    if config.type == "item" and config.itemID then
+        if enabled and not IsItemEquipped(config.itemID) then
+            -- Not equipped — destroy frame
+            if ArcAuras.frames[arcID] then
+                ArcAuras.DestroyItemFramePreservePosition(arcID)
             end
-        else
-            -- Setting disabled - show the frame if it was hidden
-            if frame._arcHiddenUnequipped then
-                ArcAuras.ShowItemFrame(arcID)
+        elseif not enabled and not ArcAuras.frames[arcID] then
+            -- Setting disabled, frame was destroyed — recreate
+            if config.enabled and ArcAuras.isEnabled then
+                ArcAuras.RecreateItemFrame(arcID)
             end
         end
     end
 end
 
--- Hide an item-based frame (when unequipped)
-function ArcAuras.HideItemFrame(arcID)
-    local frame = ArcAuras.frames[arcID]
-    if not frame then return end
-    
-    -- Mark as hidden due to unequipped
-    frame._arcHiddenUnequipped = true
-    
-    -- Save current group position before removing (same as HideTrinketSlotFrame)
-    -- CRITICAL: Do NOT clear savedPositions - we need it to restore when item is re-equipped
-    if ns.CDMGroups and ns.CDMGroups.groups then
-        for groupName, group in pairs(ns.CDMGroups.groups) do
-            if group.members and group.members[arcID] then
-                local member = group.members[arcID]
-                frame._arcSavedGroupName = groupName
-                frame._arcSavedRow = member.row
-                frame._arcSavedCol = member.col
-                
-                -- Remove from group tracking but PRESERVE savedPositions
-                -- Pass skipSavePosition=true to prevent clearing savedPositions
-                if group.RemoveMemberKeepFrame then
-                    group:RemoveMemberKeepFrame(arcID)
-                elseif group.RemoveMember then
-                    group:RemoveMember(arcID, true)  -- true = skipSavePosition
-                end
-                
-                if group.Layout then group:Layout() end
-                break
-            end
-        end
-        
-        if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-            local freeData = ns.CDMGroups.freeIcons[arcID]
-            frame._arcSavedFreeX = freeData.x
-            frame._arcSavedFreeY = freeData.y
-            frame._arcSavedFreeSize = freeData.iconSize
-            frame._arcWasFreeIcon = true
-            
-            -- Remove from freeIcons tracking but PRESERVE savedPositions
-            -- CRITICAL: ReleaseFreeIcon parameter is clearSaved - pass FALSE to keep savedPositions!
-            if ns.CDMGroups.ReleaseFreeIcon then
-                ns.CDMGroups.ReleaseFreeIcon(arcID, false)  -- false = DON'T clear saved position
-            else
-                -- Manual removal if ReleaseFreeIcon doesn't exist
-                ns.CDMGroups.freeIcons[arcID] = nil
-            end
-        end
-    end
-    
-    frame:Hide()
-    frame:SetAlpha(0)
-end
-
--- Show an item-based frame (when equipped)
-function ArcAuras.ShowItemFrame(arcID)
-    local frame = ArcAuras.frames[arcID]
-    if not frame then return end
-    
-    frame._arcHiddenUnequipped = nil
-    
-    -- Update the icon
-    local config = frame._arcConfig
-    if config then
-        ArcAuras.UpdateFrameIcon(frame, config)
-        frame._arcStackStyleApplied = false
-        InvalidateStackCache(arcID)
-    end
-    
-    frame:Show()
-    -- Apply proper state visuals (respects saved alpha settings)
-    ArcAuras.ApplyInitialStateVisuals(arcID, frame)
-    
-    -- Restore to group or free position
-    -- CRITICAL: Check CDMGroups.savedPositions FIRST - this is the authoritative source
-    -- for the CURRENT spec's position. The frame._arcSaved* variables can be stale after spec change.
-    if ns.CDMGroups then
-        -- CRITICAL: Ensure savedPositions reference is correct for current spec
-        -- The ns.CDMGroups.savedPositions reference may be stale after spec change
-        if ns.CDMGroups.GetProfileSavedPositions then
-            ns.CDMGroups.GetProfileSavedPositions()
-        end
-        
-        local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
-        
-        if saved then
-            -- Use savedPositions (authoritative for current spec)
-            if saved.type == "group" and saved.target then
-                local group = ns.CDMGroups.groups and ns.CDMGroups.groups[saved.target]
-                if group then
-                    local row = saved.row or 0
-                    local col = saved.col or 0
-                    
-                    if group.AddMemberAtWithFrame then
-                        group:AddMemberAtWithFrame(arcID, row, col, frame, nil)
-                    elseif group.AddMemberAt then
-                        group:AddMemberAt(arcID, row, col)
-                    end
-                    
-                    if group.Layout then group:Layout() end
-                    
-                    if ns.Masque and ns.Masque.QueueRefresh then
-                        ns.Masque.QueueRefresh()
-                    end
-                else
-                    -- Group doesn't exist in current spec - use LoadFramePosition as fallback
-                    ArcAuras.LoadFramePosition(arcID, frame)
-                end
-            elseif saved.type == "free" then
-                local x = saved.x or 0
-                local y = saved.y or 0
-                local size = saved.iconSize or 36
-                ns.CDMGroups.TrackFreeIcon(arcID, x, y, size, frame)
-            else
-                -- Unknown saved type - use LoadFramePosition
-                ArcAuras.LoadFramePosition(arcID, frame)
-            end
-        elseif frame._arcWasFreeIcon then
-            -- Fallback: use frame's temporary saved position (same spec hide/show)
-            local x = frame._arcSavedFreeX or 0
-            local y = frame._arcSavedFreeY or 0
-            local size = frame._arcSavedFreeSize or 36
-            ns.CDMGroups.TrackFreeIcon(arcID, x, y, size, frame)
-            
-            frame._arcWasFreeIcon = nil
-            frame._arcSavedFreeX = nil
-            frame._arcSavedFreeY = nil
-            frame._arcSavedFreeSize = nil
-        elseif frame._arcSavedGroupName then
-            -- Fallback: use frame's temporary saved group (same spec hide/show)
-            local groupName = frame._arcSavedGroupName
-            local row = frame._arcSavedRow or 0
-            local col = frame._arcSavedCol or 0
-            local group = ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
-            
-            if group then
-                if group.AddMemberAtWithFrame then
-                    group:AddMemberAtWithFrame(arcID, row, col, frame, nil)
-                elseif group.AddMemberAt then
-                    group:AddMemberAt(arcID, row, col)
-                end
-                
-                if group.Layout then group:Layout() end
-                
-                if ns.Masque and ns.Masque.QueueRefresh then
-                    ns.Masque.QueueRefresh()
-                end
-            end
-            
-            frame._arcSavedGroupName = nil
-            frame._arcSavedRow = nil
-            frame._arcSavedCol = nil
-        else
-            -- No saved position - use default
-            ArcAuras.LoadFramePosition(arcID, frame)
-        end
-    end
-    
-    -- Clear temporary saved position flags (already used or not needed)
-    frame._arcWasFreeIcon = nil
-    frame._arcSavedFreeX = nil
-    frame._arcSavedFreeY = nil
-    frame._arcSavedFreeSize = nil
-    frame._arcSavedGroupName = nil
-    frame._arcSavedRow = nil
-    frame._arcSavedCol = nil
-end
-
--- Check all item-based frames for equipped state and hide/show accordingly
+-- Check all item-based frames for equipped state and destroy/recreate accordingly
 function ArcAuras.UpdateItemFrameVisibility()
     local db = GetDB()
     if not db or not db.trackedItems then return end
     
     for arcID, config in pairs(db.trackedItems) do
-        if config.type == "item" and config.itemID and config.hideWhenUnequipped then
+        if config.type == "item" and config.itemID and config.hideWhenUnequipped and config.enabled then
             local frame = ArcAuras.frames[arcID]
-            if frame then
-                local isEquipped = IsItemEquipped(config.itemID)
-                
-                if isEquipped and frame._arcHiddenUnequipped then
-                    -- Item is now equipped - show the frame
-                    ArcAuras.ShowItemFrame(arcID)
-                elseif not isEquipped and not frame._arcHiddenUnequipped then
-                    -- Item is no longer equipped - hide the frame
-                    ArcAuras.HideItemFrame(arcID)
-                end
+            local isEquipped = IsItemEquipped(config.itemID)
+            
+            if isEquipped and not frame and ArcAuras.isEnabled then
+                -- Item equipped, no frame — recreate
+                ArcAuras.RecreateItemFrame(arcID)
+            elseif not isEquipped and frame then
+                -- Item unequipped, frame exists — destroy
+                ArcAuras.DestroyItemFramePreservePosition(arcID)
             end
         end
     end
@@ -3532,6 +3336,14 @@ function ArcAuras.Enable()
     
     for arcID, config in pairs(db.trackedItems or {}) do
         if config.enabled then
+            -- Skip items filtered by spec/talent conditions
+            -- (trinkets skip this — they don't have spec filters)
+            if config.type == "item" and not ArcAuras.ShouldItemBeVisible(arcID, config) then
+                -- Don't create frame — spec/talent filter excludes it
+            elseif config.type == "item" and config.itemID and config.hideWhenUnequipped and not IsItemEquipped(config.itemID) then
+                -- Don't create frame — hideWhenUnequipped and not equipped
+                -- UpdateItemFrameVisibility will create when equipped
+            else
             local frame = ArcAuras.CreateFrame(arcID, config)
             if frame then
                 local shouldHide = false
@@ -3555,27 +3367,18 @@ function ArcAuras.Enable()
                             shouldHide = true
                         end
                     end
-                    
-                -- For item-based frames, check hideWhenUnequipped
-                elseif config.type == "item" and config.itemID and config.hideWhenUnequipped then
-                    if not IsItemEquipped(config.itemID) then
-                        shouldHide = true
-                        frame._arcHiddenUnequipped = true
-                    end
                 end
                 
-                if shouldHide and not frame._arcHiddenUnequipped then
+                if shouldHide then
                     -- Use HideTrinketSlotFrame for trinkets - properly hooks Show() to block re-showing
                     ArcAuras.HideTrinketSlotFrame(arcID)
-                elseif shouldHide then
-                    frame:Hide()
-                    frame:SetAlpha(0)
                 else
                     frame:Show()
                     -- Apply proper state visuals (respects saved alpha settings)
                     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
                 end
             end
+            end -- else (not spec/talent filtered)
         end
     end
     
@@ -3815,6 +3618,279 @@ function ArcAuras.Reload()
     -- Re-enable if it was enabled or DB says enabled
     if wasEnabled or db.enabled then
         ArcAuras.Enable()
+        
+        -- Auto-add equipped trinkets if auto-track is enabled.
+        -- Enable() only creates frames from trackedItems. During profile switch,
+        -- the incoming profile may not have trinket entries in trackedItems even
+        -- though auto-track is a character-wide setting. This mirrors the login
+        -- path (line ~4401) but without delay since items are already loaded.
+        if ArcAuras.IsAutoTrackEquippedTrinketsEnabled() then
+            ArcAuras.AutoAddTrinkets(nil, true)
+        end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- SYNC TO PROFILE (import-only)
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Called when a cross-character imported profile has arcAuras data.
+-- Diffs existing frames vs current char DB: creates missing, destroys removed.
+-- Does NOT destroy-all/recreate-all. Frames that already exist survive.
+-- ═══════════════════════════════════════════════════════════════════════════
+function ArcAuras.SyncToProfile()
+    if not ArcAuras.isEnabled then return end
+    local db = GetDB()
+    if not db then return end
+
+    -- Build what SHOULD exist (items + auto-tracked trinkets)
+    local shouldExist = {}
+    for arcID, config in pairs(db.trackedItems or {}) do
+        if config.enabled then shouldExist[arcID] = config end
+    end
+    -- NOTE: spells are discovered by ArcAurasCooldown timer, not synced here
+
+    -- Destroy frames no longer tracked
+    local toDestroy = {}
+    for arcID, frame in pairs(ArcAuras.frames) do
+        -- Only check item/trinket frames (spells managed by ArcAurasCooldown)
+        if not frame._arcIsSpellCooldown and not shouldExist[arcID] then
+            table.insert(toDestroy, arcID)
+        end
+    end
+    for _, arcID in ipairs(toDestroy) do
+        ArcAuras.DestroyFrame(arcID)
+    end
+
+    -- Create frames for newly tracked items (not yet existing)
+    for arcID, config in pairs(shouldExist) do
+        if not ArcAuras.frames[arcID] then
+            local frame = ArcAuras.CreateFrame(arcID, config)
+            if frame then
+                ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+            end
+        end
+    end
+
+    -- Refresh visibility on all surviving frames
+    ArcAuras.RefreshVisibility()
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- SYNC SPELL FRAMES (lightweight — no position wipe)
+-- Creates frames for newly tracked spells, destroys removed ones,
+-- and refreshes existing frames' configs (forceShow, etc.)
+-- ═══════════════════════════════════════════════════════════════════════════
+function ArcAuras.SyncSpellFrames()
+    if not ArcAuras.isEnabled then return end
+    local db = GetDB()
+    if not db or not db.trackedSpells then return end
+    
+    -- Build what SHOULD exist
+    local shouldExist = {}
+    for arcID, config in pairs(db.trackedSpells) do
+        local spellID = config.spellID
+        local shouldShow = false
+        if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ShouldFrameBeVisible then
+            shouldShow = ns.ArcAurasCooldown.ShouldFrameBeVisible(config, spellID)
+        else
+            shouldShow = config.forceShow or (IsPlayerSpell and IsPlayerSpell(spellID)) or (IsSpellKnown and IsSpellKnown(spellID))
+        end
+        if shouldShow then
+            shouldExist[arcID] = config
+        end
+    end
+    
+    -- Destroy spell frames no longer tracked
+    local toDestroy = {}
+    for arcID, frame in pairs(ArcAuras.frames) do
+        if frame._arcIsSpellCooldown and not shouldExist[arcID] then
+            toDestroy[#toDestroy + 1] = arcID
+        end
+    end
+    for _, arcID in ipairs(toDestroy) do
+        ArcAuras.DestroyFrame(arcID)
+    end
+    
+    -- Create frames for newly tracked spells
+    for arcID, config in pairs(shouldExist) do
+        if not ArcAuras.frames[arcID] then
+            local spellConfig = {
+                type = "spell",
+                spellID = config.spellID,
+                name = config.name,
+                icon = config.iconOverride or config.icon,
+                enabled = true,
+            }
+            local frame = ArcAuras.CreateFrame(arcID, spellConfig)
+            if frame then
+                frame:Show()
+                if ns.ArcAurasCooldown and ns.ArcAurasCooldown.InitializeSpellFrame then
+                    ns.ArcAurasCooldown.InitializeSpellFrame(arcID, frame, spellConfig)
+                end
+            end
+        end
+    end
+end
+
+-- Combined sync for SharedProfiles Pull — updates both items and spells
+-- without destroying positions
+function ArcAuras.SyncAfterSharedPull()
+    if not ArcAuras.isEnabled then return end
+    ArcAuras.SyncToProfile()    -- items
+    ArcAuras.SyncSpellFrames()  -- spells
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- ITEM VISIBILITY CHECK
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Checks whether an item/trinket frame should be visible based on:
+-- 1. Spec filter (showOnSpecs) — only show on selected specs
+-- 2. Talent conditions (talentConditions) — require specific talents
+-- 3. Equipment state (hideWhenUnequipped, slot empty, passive filter)
+-- ═══════════════════════════════════════════════════════════════════════════
+function ArcAuras.ShouldItemBeVisible(arcID, config)
+    if not config or not config.enabled then return false end
+
+    -- 1) Per-item spec filter (showOnSpecs = { 1, 3 } etc.)
+    if config.showOnSpecs and #config.showOnSpecs > 0 then
+        local currentSpec = GetSpecialization and GetSpecialization() or 1
+        local specAllowed = false
+        for _, spec in ipairs(config.showOnSpecs) do
+            if spec == currentSpec then specAllowed = true break end
+        end
+        if not specAllowed then return false end
+    end
+
+    -- 2) Talent conditions ({nodeID, required} objects)
+    if config.talentConditions and #config.talentConditions > 0 then
+        if ns.TalentPicker and ns.TalentPicker.CheckTalentConditions then
+            local pass = ns.TalentPicker.CheckTalentConditions(
+                config.talentConditions, config.talentConditionMode or "all")
+            if not pass then return false end
+        end
+    end
+
+    -- 3) Equipment-based checks (not spec/talent — these are runtime state)
+    -- NOTE: These return true to let the frame exist but be hidden,
+    -- handled by the caller (RefreshVisibility sets _arcHiddenUnequipped)
+
+    return true
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- REFRESH VISIBILITY
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Re-evaluates show/hide for ALL frames based on current runtime conditions:
+-- talent checks, equip checks, auto-track settings, on-use filters.
+-- Also creates item frames that should be visible but don't exist yet
+-- (e.g., after spec change makes an item's spec filter pass).
+-- Called on every profile switch, spec change, and after SyncToProfile.
+-- ═══════════════════════════════════════════════════════════════════════════
+function ArcAuras.RefreshVisibility()
+    if not ArcAuras.isEnabled then return end
+    local db = GetDB()
+    if not db then return end
+    local onlyOnUse = db.onlyOnUseTrinkets
+
+    -- Collect frames to destroy (can't destroy during pairs() iteration)
+    local toDestroy = {}
+
+    for arcID, frame in pairs(ArcAuras.frames) do
+        local config = nil
+
+        -- Get config from appropriate source
+        if frame._arcIsSpellCooldown then
+            config = db.trackedSpells and db.trackedSpells[arcID]
+        else
+            config = db.trackedItems and db.trackedItems[arcID]
+        end
+
+        if not config then
+            -- Frame exists but config missing — hide but don't destroy
+            -- (SyncToProfile handles destruction, this is visibility-only)
+            frame:Hide()
+        else
+            local shouldDestroy = false
+            local shouldHide = false
+
+            if frame._arcIsSpellCooldown then
+                -- Spell visibility: talent + spec check → destroy if not visible
+                local spellID = config.spellID
+                if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ShouldFrameBeVisible then
+                    shouldDestroy = not ns.ArcAurasCooldown.ShouldFrameBeVisible(config, spellID)
+                else
+                    shouldDestroy = not (IsPlayerSpell and IsPlayerSpell(spellID))
+                end
+            elseif config.type == "trinket" and config.slotID then
+                -- Trinket visibility: auto-track toggles + slot empty + passive filter
+                -- Trinkets don't support spec/talent filters (they're slot-based)
+                if config.isAutoTrackSlot and not ArcAuras.IsAutoTrackEquippedTrinketsEnabled() then
+                    shouldHide = true
+                elseif config.isAutoTrackSlot and not ArcAuras.IsAutoTrackSlotEnabled(config.slotID) then
+                    shouldHide = true
+                else
+                    local itemID = GetInventoryItemID("player", config.slotID)
+                    if not itemID then
+                        shouldHide = true
+                    elseif config.isAutoTrackSlot and onlyOnUse and IsItemPassive(itemID) then
+                        shouldHide = true
+                    end
+                end
+            elseif config.type == "item" then
+                -- Item visibility: spec filter + talent conditions → destroy if filtered
+                if not ArcAuras.ShouldItemBeVisible(arcID, config) then
+                    shouldDestroy = true
+                elseif config.hideWhenUnequipped and config.itemID and not IsItemEquipped(config.itemID) then
+                    shouldDestroy = true  -- destroy/recreate pattern for hideWhenUnequipped
+                end
+            end
+
+            if shouldDestroy then
+                table.insert(toDestroy, arcID)
+            elseif shouldHide then
+                if config.type == "trinket" then
+                    ArcAuras.HideTrinketSlotFrame(arcID)
+                else
+                    HideOrPreview(frame)
+                end
+            else
+                frame:Show()
+                ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+            end
+        end
+    end
+
+    -- Destroy collected frames (safe — outside iteration)
+    -- Preserve savedPositions across destroy (UnregisterExternalFrame wipes them)
+    -- so re-creation on spec switch reads correct placement
+    for _, arcID in ipairs(toDestroy) do
+        local savedPos = ns.CDMGroups and ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[arcID]
+        ArcAuras.DestroyFrame(arcID)
+        if savedPos and ns.CDMGroups and ns.CDMGroups.savedPositions then
+            ns.CDMGroups.savedPositions[arcID] = savedPos
+        end
+    end
+
+    -- CREATE missing item frames that should now be visible
+    -- (e.g., after spec change makes an item's spec filter pass)
+    for arcID, config in pairs(db.trackedItems or {}) do
+        if config.enabled and not ArcAuras.frames[arcID] then
+            -- Skip auto-track trinkets (handled by AutoAddTrinkets)
+            if not config.isAutoTrackSlot then
+                if ArcAuras.ShouldItemBeVisible(arcID, config) then
+                    -- Skip creation for hideWhenUnequipped items that aren't equipped
+                    if config.hideWhenUnequipped and config.itemID and not IsItemEquipped(config.itemID) then
+                        -- Don't create — UpdateItemFrameVisibility handles equip events
+                    else
+                        local frame = ArcAuras.CreateFrame(arcID, config)
+                        if frame then
+                            frame:Show()
+                            ArcAuras.ApplyInitialStateVisuals(arcID, frame)
+                        end
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -3861,6 +3937,12 @@ function ArcAuras.RefreshAllFrames()
     -- Recreate all enabled tracked items
     for arcID, config in pairs(db.trackedItems or {}) do
         if config.enabled then
+            -- Skip items filtered by spec/talent conditions
+            if config.type == "item" and not ArcAuras.ShouldItemBeVisible(arcID, config) then
+                -- Don't create frame — spec/talent filter excludes it
+            elseif config.type == "item" and config.itemID and config.hideWhenUnequipped and not IsItemEquipped(config.itemID) then
+                -- Don't create frame — hideWhenUnequipped and not equipped
+            else
             local frame = ArcAuras.CreateFrame(arcID, config)
             if frame then
                 local shouldHide = false
@@ -3878,24 +3960,17 @@ function ArcAuras.RefreshAllFrames()
                         shouldHide = true
                         frame._arcSlotEmpty = true
                     end
-                    
-                -- For item-based frames, check hideWhenUnequipped
-                elseif config.type == "item" and config.itemID and config.hideWhenUnequipped then
-                    if not IsItemEquipped(config.itemID) then
-                        shouldHide = true
-                        frame._arcHiddenUnequipped = true
-                    end
                 end
                 
                 if shouldHide then
-                    frame:Hide()
-                    frame:SetAlpha(0)
+                    HideOrPreview(frame)
                 else
                     frame:Show()
                     -- Apply proper state visuals (respects saved alpha settings)
                     ArcAuras.ApplyInitialStateVisuals(arcID, frame)
                 end
             end
+            end -- else (not spec/talent filtered)
         end
     end
     
@@ -3903,8 +3978,14 @@ function ArcAuras.RefreshAllFrames()
     if db.trackedSpells then
         for arcID, config in pairs(db.trackedSpells) do
             local spellID = config.spellID
-            local knows = config.forceShow or (IsPlayerSpell and IsPlayerSpell(spellID)) or (IsSpellKnown and IsSpellKnown(spellID))
-            if knows then
+            -- Use full visibility check (spec filter + talent conditions)
+            local shouldShow = false
+            if ns.ArcAurasCooldown and ns.ArcAurasCooldown.ShouldFrameBeVisible then
+                shouldShow = ns.ArcAurasCooldown.ShouldFrameBeVisible(config, spellID)
+            else
+                shouldShow = config.forceShow or (IsPlayerSpell and IsPlayerSpell(spellID)) or (IsSpellKnown and IsSpellKnown(spellID))
+            end
+            if shouldShow then
                 local spellConfig = {
                     type = "spell",
                     spellID = spellID,
@@ -4403,17 +4484,17 @@ function ArcAuras.Initialize()
                     if ArcAuras.IsAutoTrackSlotEnabled(slot.slotID) then
                         local arcID = ArcAuras.MakeTrinketID(slot.slotID)
                         local frame = ArcAuras.frames[arcID]
-                        if frame then
-                            -- Re-check actual slot state (items should be loaded by now)
-                            local itemID = GetInventoryItemID("player", slot.slotID)
-                            if itemID then
-                                local isPassive = onlyOnUse2 and IsItemPassive(itemID)
-                                if not isPassive then
-                                    -- Clear the stale flag so ShowTrinketSlotFrame works
-                                    frame._arcSlotEmpty = nil
-                                    ArcAuras.ShowTrinketSlotFrame(arcID)
-                                end
+                        local itemID = GetInventoryItemID("player", slot.slotID)
+                        
+                        if itemID and not frame then
+                            -- Frame was destroyed but trinket is equipped — recreate
+                            local isPassive = onlyOnUse2 and IsItemPassive(itemID)
+                            if not isPassive then
+                                ArcAuras.ShowTrinketSlotFrame(arcID)
                             end
+                        elseif not itemID and frame then
+                            -- Slot empty but frame exists — destroy
+                            ArcAuras.HideTrinketSlotFrame(arcID)
                         end
                     end
                 end
@@ -4459,6 +4540,10 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         end)
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
         local slot = arg1
+        
+        -- Always check hideWhenUnequipped items on any equipment change
+        ArcAuras.UpdateItemFrameVisibility()
+        
         if slot == 13 or slot == 14 then
             local arcID = ArcAuras.MakeTrinketID(slot)
             local frame = ArcAuras.frames[arcID]
@@ -4474,40 +4559,29 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                     if savedConfig and savedConfig.isAutoTrackSlot then
                         -- GUARD: If the per-slot toggle is OFF, don't show or update
                         if not ArcAuras.IsAutoTrackSlotEnabled(slot) then
-                            -- Slot toggle is OFF - keep hidden, just update icon for when re-enabled
-                            ArcAuras.UpdateFrameIcon(frame, config)
                             ArcAuras.UpdateItemFrameVisibility()
                             return
                         end
                         
                         local onlyOnUse = db and db.onlyOnUseTrinkets
                         if onlyOnUse and IsItemPassive(itemID) then
-                            -- Passive trinket with on-use filter - hide it (keep position)
+                            -- Passive trinket with on-use filter - destroy it
                             ArcAuras.HideTrinketSlotFrame(arcID)
-                            -- Update icon even though hidden (for when filter is disabled)
-                            ArcAuras.UpdateFrameIcon(frame, config)
-                            -- Also check item-based frames that depend on equipped state
                             ArcAuras.UpdateItemFrameVisibility()
                             return
                         end
                     end
                     
-                    -- Show frame and update icon
-                    if frame._arcSlotEmpty then
-                        -- Frame was hidden due to empty slot or filter - restore it
-                        ArcAuras.ShowTrinketSlotFrame(arcID)
-                    else
-                        -- Just update the icon
-                        ArcAuras.UpdateFrameIcon(frame, config)
-                        frame._arcStackStyleApplied = false
-                        InvalidateStackCache(arcID)
-                    end
+                    -- Trinket equipped and passes filters - just update icon
+                    ArcAuras.UpdateFrameIcon(frame, config)
+                    frame._arcStackStyleApplied = false
+                    InvalidateStackCache(arcID)
                 else
-                    -- Slot is empty - hide the frame and remove from group
+                    -- Slot is empty - destroy the frame
                     ArcAuras.HideTrinketSlotFrame(arcID)
                 end
-            elseif ArcAuras.IsAutoTrackEquippedTrinketsEnabled() and ArcAuras.isEnabled then
-                -- Auto-track enabled but no frame exists - check if we should create it
+            elseif not frame and ArcAuras.IsAutoTrackEquippedTrinketsEnabled() and ArcAuras.isEnabled then
+                -- No frame exists (destroyed or never created) - recreate if trinket equipped
                 if itemID then
                     -- Check if slot is enabled for auto-tracking
                     if ArcAuras.IsAutoTrackSlotEnabled(slot) then
@@ -4603,52 +4677,10 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                     if db and db.trackedItems then
                         for arcID, config in pairs(db.trackedItems) do
                             if config.type == "item" and config.itemID and config.hideWhenUnequipped then
-                                local frame = ArcAuras.frames[arcID]
-                                if frame then
-                                    local isEquipped = IsItemEquipped(config.itemID)
-                                    
-                                    if isEquipped then
-                                        -- Item is equipped - ensure frame is shown
-                                        frame._arcHiddenUnequipped = nil
-                                        frame:Show()
-                                        frame:SetAlpha(1)
-                                        ArcAuras.ApplyInitialStateVisuals(arcID, frame)
-                                    else
-                                        -- Item is not equipped - hide the frame AND remove from group
-                                        -- Must remove from group so Layout() doesn't re-show it
-                                        frame._arcHiddenUnequipped = true
-                                        hiddenByFilter[arcID] = true
-                                        
-                                        -- Remove from any group it might be in
-                                        if ns.CDMGroups and ns.CDMGroups.groups then
-                                            for groupName, group in pairs(ns.CDMGroups.groups) do
-                                                if group.members and group.members[arcID] then
-                                                    -- Save position before removing
-                                                    local member = group.members[arcID]
-                                                    frame._arcSavedGroupName = groupName
-                                                    frame._arcSavedRow = member.row
-                                                    frame._arcSavedCol = member.col
-                                                    
-                                                    -- Remove from group (but keep frame reference for later restore)
-                                                    group.members[arcID] = nil
-                                                    break
-                                                end
-                                            end
-                                            
-                                            -- Also check/clear from freeIcons
-                                            if ns.CDMGroups.freeIcons and ns.CDMGroups.freeIcons[arcID] then
-                                                local freeData = ns.CDMGroups.freeIcons[arcID]
-                                                frame._arcSavedFreeX = freeData.x
-                                                frame._arcSavedFreeY = freeData.y
-                                                frame._arcSavedFreeSize = freeData.iconSize
-                                                frame._arcWasFreeIcon = true
-                                                ns.CDMGroups.freeIcons[arcID] = nil
-                                            end
-                                        end
-                                        
-                                        frame:Hide()
-                                        frame:SetAlpha(0)
-                                    end
+                                if not IsItemEquipped(config.itemID) and ArcAuras.frames[arcID] then
+                                    -- Destroy frame — UpdateItemFrameVisibility handles equip events
+                                    ArcAuras.DestroyItemFramePreservePosition(arcID)
+                                    hiddenByFilter[arcID] = true
                                 end
                             end
                         end
@@ -4670,8 +4702,8 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
                     
                     local registeredCount = 0
                     for arcID, frame in pairs(ArcAuras.frames) do
-                        -- Skip frames hidden by filters or hidden due to wrong spec
-                        if not hiddenByFilter[arcID] and frame and frame:IsShown() and not frame._arcHiddenNotInSpec then
+                        -- Skip frames hidden by filters (destroyed spell frames won't be in this table)
+                        if not hiddenByFilter[arcID] and frame and frame:IsShown() then
                             -- Check if already in a group (restored by CDMGroups.RestoreArcAurasPositions)
                             local alreadyInGroup = false
                             if ns.CDMGroups.groups then

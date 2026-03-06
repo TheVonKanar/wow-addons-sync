@@ -7,9 +7,9 @@ VER 3 0100000000000023 " " "134400"
 /castsequence reset=600 Astral Recall, Cosmic Hearthstone
 END
 VER 3 0100000000000032 " " "136044"
-#showtooltip
-/cast [@player] Healing Surge
+#showtooltip Healing Surge
 /use Healthstone
+/cast [@player] Healing Surge
 END
 VER 3 0100000000000036 " " "136018"
 #showtooltip

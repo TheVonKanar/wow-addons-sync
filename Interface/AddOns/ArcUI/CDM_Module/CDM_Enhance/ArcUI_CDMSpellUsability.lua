@@ -26,17 +26,6 @@ local addonName, ns = ...
 ns.CDMSpellUsability = {}
 
 -- ═══════════════════════════════════════════════════════════════════════════
--- LCG ACCESS
--- ═══════════════════════════════════════════════════════════════════════════
-
-local cachedLCG
-local function GetLCG()
-    if cachedLCG then return cachedLCG end
-    cachedLCG = LibStub and LibStub("LibCustomGlow-1.0", true)
-    return cachedLCG
-end
-
--- ═══════════════════════════════════════════════════════════════════════════
 -- DEFAULT COLORS (match CDM constants and ArcAurasCooldown defaults)
 -- ═══════════════════════════════════════════════════════════════════════════
 
@@ -537,17 +526,15 @@ function ns.CDMSpellUsability.RefreshFrame(cdID)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
--- OPTIONS PANEL STATE TICKER + USABILITY RECOVERY POLLING
+-- OPTIONS PANEL STATE — CALLBACK (zero polling)
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local lastPanelOpenState = false
-C_Timer.NewTicker(0.5, function()
-    local isOpen = IsOptionsPanelOpen()
-    if isOpen ~= lastPanelOpenState then
-        lastPanelOpenState = isOpen
-        ns.CDMSpellUsability.RefreshAll()
-    end
-end)
+if ns.CDMShared and ns.CDMShared.RegisterPanelCallback then
+    ns.CDMShared.RegisterPanelCallback("CDMSpellUsability", {
+        onOpen = function() ns.CDMSpellUsability.RefreshAll() end,
+        onClose = function() ns.CDMSpellUsability.RefreshAll() end,
+    })
+end
 
 -- SPELL_UPDATE_USABLE: No longer needs its own event handler.
 -- Blizzard's CDM calls RefreshIconColor on each affected button when this

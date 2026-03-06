@@ -964,6 +964,29 @@ function ns.GetArcAurasOptionsTable()
         return db and db.trackedSpells and db.trackedSpells[selectedArcAura]
     end
 
+    -- Helper: manual item selected (arc_item_*, NOT trinket slots)
+    local function IsManualItemSelected()
+        local item = GetSelectedItem()
+        return item and item.arcType == "item"
+    end
+
+    local function GetItemConfig()
+        if not selectedArcAura then return nil end
+        local db = ns.db and ns.db.char and ns.db.char.arcAuras
+        return db and db.trackedItems and db.trackedItems[selectedArcAura]
+    end
+
+    -- Shared helpers: spec/talent options apply to BOTH spells and manual items
+    local function IsSpellOrItemSelected()
+        return IsSpellSelected() or IsManualItemSelected()
+    end
+
+    local function GetSpellOrItemConfig()
+        if IsSpellSelected() then return GetSpellConfig() end
+        if IsManualItemSelected() then return GetItemConfig() end
+        return nil
+    end
+
     -- ═══════════════════════════════════════════════════════════════
     -- ALWAYS SHOW (spell entries only — bypasses spec check)
     -- ═══════════════════════════════════════════════════════════════
@@ -1138,7 +1161,7 @@ function ns.GetArcAurasOptionsTable()
     }
 
     -- ═══════════════════════════════════════════════════════════════
-    -- SHOW ON SPECS (spell entries only)
+    -- SHOW ON SPECS (spell and item entries)
     -- ═══════════════════════════════════════════════════════════════
 
     local function ToggleSpecInList(showOnSpecs, specNum, value)
@@ -1164,7 +1187,7 @@ function ns.GetArcAurasOptionsTable()
     end
 
     local function IsSpecEnabled(specNum)
-        local cfg = GetSpellConfig()
+        local cfg = GetSpellOrItemConfig()
         if not cfg or not cfg.showOnSpecs or #cfg.showOnSpecs == 0 then return true end
         for _, spec in ipairs(cfg.showOnSpecs) do
             if spec == specNum then return true end
@@ -1173,7 +1196,7 @@ function ns.GetArcAurasOptionsTable()
     end
 
     local function SetSpecEnabled(specNum, value)
-        local cfg = GetSpellConfig()
+        local cfg = GetSpellOrItemConfig()
         if not cfg then return end
         if not cfg.showOnSpecs then cfg.showOnSpecs = {} end
         ToggleSpecInList(cfg.showOnSpecs, specNum, value)
@@ -1191,9 +1214,11 @@ function ns.GetArcAurasOptionsTable()
             end
             if allChecked then cfg.showOnSpecs = nil end
         end
-        -- Apply immediately
+        -- Apply immediately (handles both spells and items)
         if ns.ArcAurasCooldown and ns.ArcAurasCooldown.RefreshSpecVisibility then
             ns.ArcAurasCooldown.RefreshSpecVisibility()
+        elseif ArcAuras and ArcAuras.RefreshVisibility then
+            ArcAuras.RefreshVisibility()
         end
         LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
     end
@@ -1206,18 +1231,18 @@ function ns.GetArcAurasOptionsTable()
         fontSize = "medium",
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
     args.showOnSpecsDesc = {
         type = "description",
-        name = "|cff888888Choose which specs this spell frame appears on. Unchecked specs will hide the frame even if the spell is known. All checked (or none set) = show on every spec.|r",
+        name = "|cff888888Choose which specs this frame appears on. Unchecked specs will hide the frame. All checked (or none set) = show on every spec.|r",
         order = 111,
         width = "full",
         fontSize = "small",
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
 
@@ -1241,7 +1266,7 @@ function ns.GetArcAurasOptionsTable()
             set = function(_, val) SetSpecEnabled(specNum, val) end,
             hidden = function()
                 if collapsedSections.trackedItems or HideIfNoSelection()
-                    or GetSelectedCount() > 1 or not IsSpellSelected() then
+                    or GetSelectedCount() > 1 or not IsSpellOrItemSelected() then
                     return true
                 end
                 return (GetNumSpecializations() or 4) < specNum
@@ -1260,24 +1285,24 @@ function ns.GetArcAurasOptionsTable()
         fontSize = "medium",
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
     args.talentCondDesc = {
         type = "description",
-        name = "|cff888888Only show this frame when specific talents are active. If no conditions are set, the frame shows whenever the spell is known.|r",
+        name = "|cff888888Only show this frame when specific talents are active. If no conditions are set, the frame shows whenever it would normally be visible.|r",
         order = 121,
         width = "full",
         fontSize = "small",
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
     args.talentCondSummary = {
         type = "description",
         name = function()
-            local cfg = GetSpellConfig()
+            local cfg = GetSpellOrItemConfig()
             if not cfg then return "" end
             if ns.TalentPicker and ns.TalentPicker.GetConditionSummary then
                 return ns.TalentPicker.GetConditionSummary(cfg.talentConditions, cfg.talentConditionMode)
@@ -1289,7 +1314,7 @@ function ns.GetArcAurasOptionsTable()
         fontSize = "small",
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
     args.talentCondEdit = {
@@ -1299,7 +1324,7 @@ function ns.GetArcAurasOptionsTable()
         order = 123,
         width = 1.0,
         func = function()
-            local cfg = GetSpellConfig()
+            local cfg = GetSpellOrItemConfig()
             if not cfg or not ns.TalentPicker then return end
             ns.TalentPicker.OpenPicker(cfg.talentConditions, cfg.talentConditionMode, function(conditions, matchMode)
                 cfg.talentConditions = conditions
@@ -1313,17 +1338,17 @@ function ns.GetArcAurasOptionsTable()
         end,
         hidden = function()
             return collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected()
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected()
         end,
     }
     args.talentCondClear = {
         type = "execute",
         name = "Clear",
-        desc = "Remove all talent conditions. The frame will show whenever the spell is known.",
+        desc = "Remove all talent conditions. The frame will show whenever it would normally be visible.",
         order = 124,
         width = 0.5,
         func = function()
-            local cfg = GetSpellConfig()
+            local cfg = GetSpellOrItemConfig()
             if not cfg then return end
             cfg.talentConditions = nil
             cfg.talentConditionMode = nil
@@ -1335,10 +1360,10 @@ function ns.GetArcAurasOptionsTable()
         end,
         hidden = function()
             if collapsedSections.trackedItems or HideIfNoSelection()
-                or GetSelectedCount() > 1 or not IsSpellSelected() then
+                or GetSelectedCount() > 1 or not IsSpellOrItemSelected() then
                 return true
             end
-            local cfg = GetSpellConfig()
+            local cfg = GetSpellOrItemConfig()
             return not cfg or not cfg.talentConditions or #cfg.talentConditions == 0
         end,
     }

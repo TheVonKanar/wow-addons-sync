@@ -7,16 +7,6 @@
 -- Design goal: keep runtime behavior event-driven and avoid per-frame work.
 local addonName = ...
 
--- On dev/pre-release builds (version contains "-", e.g. "2.1.0-alpha", "2.0.6-1"),
--- automatically enable all locales for this session so every translation can be
--- tested without changing the WoW client language.
-do
-    local ver = (GetAddOnMetadata and GetAddOnMetadata(addonName, "Version")) or ""
-    if ver:find("%-") then
-        _G["LARIASWEEKLYCHECKLIST_LOAD_ALL_LOCALES"] = true
-    end
-end
-
 -- NOTE: AceComm-3.0 and AceBucket-3.0 are intentionally NOT listed here.
 -- Embedding them at NewAddon time causes a hard Lua error if the library is
 -- missing or overshadowed by another addon's Ace3 build that omits them,
@@ -276,9 +266,7 @@ function Addon:ShouldShowLocalizationCompanionHint()
     return true
 end
 
--- Session-only locale override set by slash command.
--- This intentionally does NOT persist across /reload or relog.
--- Addon._sessionLocaleOverride is set by the /larias locale command.
+-- Addon._sessionLocaleOverride is set by SetLocaleOverride.
 
 -- Default values applied to each character's data block on first access.
 -- Display-preference defaults (hideCompletedSections, showGreatVault, etc.) live
@@ -310,17 +298,16 @@ local function SetupAddonDB()
             themeColors   = {},  -- { bgR, bgG, bgB, textR, textG, textB } nil values use compiled defaults
             minimap       = {},  -- LibDBIcon position/hide state (account-wide)
             charClasses   = {},  -- [profileKey] = classToken (e.g. "WARRIOR")
-            hiddenChars   = {},  -- [profileKey] = true (hidden from char picker dropdown)
             -- Account-wide display preferences (shared across all characters).
             hideCompletedSections = true,
             showGreatVault        = true,
             showCurrency          = true,
             showChangeWeekBtn     = true,
             showIlvlRefBtn        = true,
-            showCharPickerBtn     = true,
             showScaleSlider       = true,
             showOpacitySlider     = true,
             hideUpdateNotice      = false,
+            localeOverride        = "",  -- persisted locale override ("" = auto)
             -- Per-character data, each keyed by "CharName - Realm".
             -- Holds checked items, collapsed sections, preferences, snapshot, etc.
             chars = {},
@@ -378,7 +365,7 @@ local function MigrateProfileDataToGlobalChars()
     end
     -- Preferences
     for _, k in ipairs({ "hideCompletedSections", "showGreatVault", "showCurrency",
-                         "showChangeWeekBtn", "showIlvlRefBtn", "showCharPickerBtn", "debug" }) do
+                         "showChangeWeekBtn", "showIlvlRefBtn", "debug" }) do
         if oldProf[k] ~= nil then cdb[k] = oldProf[k] end
     end
 
@@ -393,7 +380,6 @@ local function MigrateProfileDataToGlobalChars()
     oldProf.showCurrency      = nil
     oldProf.showChangeWeekBtn = nil
     oldProf.showIlvlRefBtn    = nil
-    oldProf.showCharPickerBtn = nil
     oldProf.debug             = nil
 end
 
@@ -452,6 +438,14 @@ end
 -- Initialize AceDB and minimap icon on addon load
 function Addon:OnInitialize()
     SetupAddonDB()
+    -- Restore persisted locale override only if the localization companion is
+    -- already loaded at this point. If it loads later, OnAddonLoaded handles it.
+    if self.IsLocalizationCompanionLoaded and self:IsLocalizationCompanionLoaded() then
+        local savedLocale = Addon.db and Addon.db.global and Addon.db.global.localeOverride
+        if type(savedLocale) == "string" and savedLocale ~= "" and savedLocale ~= "auto" then
+            self._sessionLocaleOverride = savedLocale
+        end
+    end
     if self.ApplyLocaleOverride then
         self:ApplyLocaleOverride()
     end
@@ -521,6 +515,14 @@ end
 function Addon:OnAddonLoaded(_, loadedName)
     if loadedName ~= LOCALIZATION_ADDON_NAME then return end
 
+    -- Companion just loaded: restore any saved locale override now that it is available.
+    do
+        local savedLocale = self.db and self.db.global and self.db.global.localeOverride
+        if type(savedLocale) == "string" and savedLocale ~= "" and savedLocale ~= "auto" then
+            self._sessionLocaleOverride = savedLocale
+        end
+    end
+
     -- Refresh strings/data now that locale addon is in memory.
     if self.ApplyLocaleOverride then
         self._dataSig = ""
@@ -539,15 +541,10 @@ function Addon:OnAddonLoaded(_, loadedName)
     end
 end
 
+-- Resolve wipe once: use WoW's built-in C wipe when available, otherwise fall back.
+local _wipe = wipe or function(t) for k in pairs(t) do t[k] = nil end end
 local function Wipe(tableToWipe)
-    if not tableToWipe then return end
-    if wipe then
-        wipe(tableToWipe)
-        return
-    end
-    for key in pairs(tableToWipe) do
-        tableToWipe[key] = nil
-    end
+    if tableToWipe then _wipe(tableToWipe) end
 end
 
 Addon._sectionPool = Addon._sectionPool or {}
@@ -561,22 +558,25 @@ Addon._sectionsIndexById = Addon._sectionsIndexById or {}
 
 -- Returns a stable per-character key: always "CharName - RealmName".
 -- Lives in the main file so it is available before any module loads.
+-- Cached after first successful resolution (UnitName/RealmName never change post-login).
+local _cachedProfileKey
 function Addon:GetCurrentProfileKey()
-    local name  = (UnitName    and UnitName("player"))   or ""
-    local realm = (GetRealmName and GetRealmName())      or ""
-    if name ~= "" and realm ~= "" then return name .. " - " .. realm end
-    if name ~= "" then return name end
-    return ""
+    if _cachedProfileKey then return _cachedProfileKey end
+    local name  = UnitName("player") or ""
+    local realm = GetRealmName()      or ""
+    local key = (name ~= "" and realm ~= "") and (name .. " - " .. realm)
+             or (name ~= "" and name)
+             or ""
+    if key ~= "" then _cachedProfileKey = key end
+    return key
 end
 
 function Addon:EnsureDB()
     if not self.db then
         SetupAddonDB()
     end
-    -- All per-character data lives in db.global.chars[key].  When viewing
-    -- another character (_viewingChar is set) return their data; otherwise
-    -- return the logged-in character's data.
-    local key   = self._viewingChar or self:GetCurrentProfileKey()
+    -- All per-character data lives in db.global.chars[key].
+    local key   = self:GetCurrentProfileKey()
     local chars = self.db.global.chars
     if not chars[key] then chars[key] = {} end
     local cdb = chars[key]
@@ -586,11 +586,13 @@ function Addon:EnsureDB()
         for k, v in pairs(CHAR_DEFAULTS) do
             if cdb[k] == nil then cdb[k] = v end
         end
+        -- Ensure required sub-tables exist; done here so these checks only run once.
+        if cdb.checked           == nil then cdb.checked           = {} end
+        if cdb.collapsedSections == nil then cdb.collapsedSections = {} end
+        if cdb.trackingSnapshot  == nil then cdb.trackingSnapshot  = {} end
+        if cdb.sectionCompleted  == nil then cdb.sectionCompleted  = {} end
         cdb._lariasDefaultsApplied = true
     end
-    if cdb.checked           == nil then cdb.checked           = {} end
-    if cdb.collapsedSections == nil then cdb.collapsedSections = {} end
-    if cdb.trackingSnapshot  == nil then cdb.trackingSnapshot  = {} end
     return cdb
 end
 
@@ -602,8 +604,9 @@ end
 -- player's customised settings are preserved.
 local _PREF_KEYS = {
     "hideCompletedSections", "showGreatVault", "showCurrency",
-    "showChangeWeekBtn", "showIlvlRefBtn", "showCharPickerBtn",
+    "showChangeWeekBtn", "showIlvlRefBtn",
     "showScaleSlider", "showOpacitySlider", "hideUpdateNotice",
+    "hideCompletedTasks",
 }
 function Addon:EnsurePrefs()
     if not self.db then SetupAddonDB() end
@@ -630,15 +633,20 @@ end
 -- This keeps SavedVariables from accumulating garbage across data/ID refactors.
 -- PruneObsoleteSavedState → features/body/LariasWeeklyChecklist_ListData.lua
 
--- Pick the best locale code to use (session override first, else client locale).
--- If the requested locale has no registered strings/data, fall back to enUS.
+-- Pick the best locale code to use.
+-- If the localization companion is loaded, check for a saved override first.
+-- Without the companion, always use the WoW client language.
 function Addon:GetEffectiveLocaleCode()
-    local override = tostring(self._sessionLocaleOverride or "auto")
+    local companionLoaded = self.IsLocalizationCompanionLoaded and self:IsLocalizationCompanionLoaded()
 
     local code
-    if override ~= "auto" and override ~= "" then
-        code = override
-    else
+    if companionLoaded then
+        local override = tostring(self._sessionLocaleOverride or "auto")
+        if override ~= "auto" and override ~= "" then
+            code = override
+        end
+    end
+    if not code then
         code = (GetLocale and GetLocale()) or "enUS"
     end
 
@@ -700,12 +708,17 @@ function Addon:ApplyLocaleOverride()
     end
 end
 
--- Set a session-only locale override (does not persist to SavedVariables).
+-- Set a locale override and persist it to SavedVariables so it survives /reload.
 function Addon:SetLocaleOverride(value)
     value = tostring(value or "auto")
     if value == "" then value = "auto" end
 
-    -- Session-only: do not persist to SavedVariables.
+    -- Persist to SavedVariables.
+    local gdb = self.db and self.db.global
+    if gdb then
+        gdb.localeOverride = (value == "auto") and "" or value
+    end
+
     if value == "auto" then
         self._sessionLocaleOverride = nil
     else
@@ -826,6 +839,16 @@ function Addon:UpdateLocalizedUI()
     if self.UpdateStatusBanner then self:UpdateStatusBanner() end
 end
 
+-- Hoisted once: SetBackdrop is called per frame creation and per pool reuse,
+-- so avoiding repeated table allocation here is worthwhile.
+local BACKDROP_DEF = {
+    bgFile   = "Interface\\Buttons\\WHITE8x8",
+    edgeFile = "Interface\\Buttons\\WHITE8x8",
+    tile     = false,
+    edgeSize = 1,
+    insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+}
+
 -- Apply the shared theme backdrop to a frame.
 -- Also mixes in BackdropTemplateMixin when the frame lacks SetBackdrop, so
 -- callers don't need a separate Mixin guard before calling this.
@@ -835,13 +858,7 @@ function Addon:ApplyTheme(frameObj)
         Mixin(frameObj, BackdropTemplateMixin)
     end
     if not frameObj.SetBackdrop then return end
-    frameObj:SetBackdrop({
-        bgFile = "Interface\\Buttons\\WHITE8x8",
-        edgeFile = "Interface\\Buttons\\WHITE8x8",
-        tile = false,
-        edgeSize = 1,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 },
-    })
+    frameObj:SetBackdrop(BACKDROP_DEF)
     frameObj:SetBackdropColor(Addon.THEME.bg.r, Addon.THEME.bg.g, Addon.THEME.bg.b, Addon.THEME.bg.a)
     frameObj:SetBackdropBorderColor(Addon.THEME.border.r, Addon.THEME.border.g, Addon.THEME.border.b, Addon.THEME.border.a)
 end
@@ -880,13 +897,7 @@ function Addon:ApplyThemeColors()
     loadColor(self.THEME.text,   "textR",   "textG",   "textB",   1.00, 1.00, 1.00)
     loadColor(self.THEME.header, "headerR", "headerG", "headerB", 1.00, 0.82, 0.00)
 
-    -- Refresh the close-button × glyph on the main frame; it is painted at
-    -- creation time from the then-current header color and needs a nudge here.
-    local _closeBtn = self._mainFrame and self._mainFrame._lariasCloseBtn
-    if _closeBtn and _closeBtn._lariasCloseGlyph then
-        local h = self.THEME.header
-        _closeBtn._lariasCloseGlyph:SetTextColor(h.r, h.g, h.b, 1)
-    end
+    -- (Close button × glyph uses fixed colors — not refreshed here.)
 
     -- Re-apply backdrop to any already-open themed frames.
     if self._mainFrame then
@@ -939,9 +950,6 @@ function Addon:ApplyThemeColors()
             if cb._box  then self:ApplyTheme(cb._box) end
         end
     end
-
-    -- Refresh char picker button label color if it exists.
-    if self._cpUpdateLabel then self._cpUpdateLabel() end
 
     -- Refresh Settings panel color swatches if the panel is open.
     if self.RefreshSettingsSwatches then self:RefreshSettingsSwatches() end
@@ -1082,6 +1090,8 @@ function Addon:ApplyUIScaleLive()
     PinTopLeftScale(self._mainFrame, scale)
     local iw = self._ilvlRefWindow
     if iw and iw.SetScale then iw:SetScale(scale) end
+    local gp = self._gearPopup
+    if gp and gp.SetScale then gp:SetScale(scale) end
 end
 
 function Addon:ApplyUIScale()
@@ -1101,6 +1111,9 @@ function Addon:ApplyUIScale()
     local iw = self._ilvlRefWindow
     if iw and iw.SetScale then iw:SetScale(scale) end
     if iw and iw._ilvlReflow then iw._ilvlReflow() end
+    -- The gear popup is also parented to UIParent; scale it to match.
+    local gp = self._gearPopup
+    if gp and gp.SetScale then gp:SetScale(scale) end
     -- Do NOT call ApplyScrollLayout here.  SetScale only changes the visual
     -- size of the root frame; the logical frame dimensions are unchanged, so
     -- there is nothing to reflow.  ClearAllPoints+SetPoint inside
@@ -1142,11 +1155,15 @@ local function SetSectionCollapsed(sectionId, collapsed, db)
 end
 
 local function IsSectionCompleteById(sectionId, db)
-    -- A section is complete if every item is checked.
+    -- A section is complete if every item is checked, OR if the sticky-complete
+    -- flag is set (written on first completion; survives addon updates that edit
+    -- item text, regenerating IDs via sheet_to_lua, without un-hiding done weeks).
     local section = Addon._sectionsById[sectionId]
     if not section then return false end
 
     db = db or Addon:EnsureDB()
+    -- Fast-path: sticky flag from a previous completion.
+    if db.sectionCompleted and db.sectionCompleted[sectionId] then return true end
     local checked = db.checked
     local items = section.items or {}
     -- Pre-build the constant prefix once instead of Key(sectionId, id) per item.
@@ -1255,13 +1272,12 @@ local function AcquireCheckbox(parentSectionFrame)
         checkbox = Addon.Controls.NewCheckBox(parentSectionFrame, nil, 32)
     end
 
-    local textLabel = checkbox.text or checkbox.Text
+    -- checkbox.text is always set by NewCheckBox; .Text fallback is dead code.
+    local textLabel = checkbox.text
     if textLabel then
         textLabel:SetJustifyH("LEFT")
-        if textLabel.SetWordWrap then textLabel:SetWordWrap(true) end
-        if textLabel.SetTextColor then
-            textLabel:SetTextColor(Addon.THEME.text.r, Addon.THEME.text.g, Addon.THEME.text.b, Addon.THEME.text.a)
-        end
+        textLabel:SetWordWrap(true)
+        textLabel:SetTextColor(Addon.THEME.text.r, Addon.THEME.text.g, Addon.THEME.text.b, Addon.THEME.text.a)
     end
 
     return checkbox
@@ -1271,28 +1287,35 @@ local UpdateSectionVisuals
 local function ComputeHeaderHeight(sectionFrame, headerTextWidth)
     -- Header height is dynamic based on text wrapping.
     sectionFrame._title:SetWidth(headerTextWidth)
-    local textHeight = 0
-    if sectionFrame._title.GetStringHeight then
-        textHeight = sectionFrame._title:GetStringHeight() or 0
-    end
+    local textHeight = sectionFrame._title:GetStringHeight() or 0
     local headerHeight = max(Addon.UI.headerMinH, textHeight + 6)
     sectionFrame._header:SetHeight(headerHeight)
     sectionFrame._headerBlockHeight = headerHeight + Addon.UI.headerBottomPad
 end
 
-local function LayoutItems(sectionFrame, collapsed)
+local function LayoutItems(sectionFrame, collapsed, hideCompletedTasks)
     -- Stack item rows under the header; hide when collapsed.
-    local posY = -(sectionFrame._headerBlockHeight or (Addon.UI.headerMinH + Addon.UI.headerBottomPad))
+    -- When the "hide completed tasks" pref is active, skip checked items from
+    -- the layout entirely so the section shrinks to fit only visible rows.
+    -- hideCompletedTasks is passed as a parameter (rather than read from prefs
+    -- here) so callers can hoist the single EnsurePrefs() call and avoid
+    -- repeating it for every section on each layout pass.
+    local posY        = -(sectionFrame._headerBlockHeight or (Addon.UI.headerMinH + Addon.UI.headerBottomPad))
     local totalHeight = 0
-    local checkboxes = sectionFrame._checkboxes
+    local hideChecked = not collapsed and hideCompletedTasks
+    local checkboxes  = sectionFrame._checkboxes
     for i = 1, #checkboxes do
         local checkbox = checkboxes[i]
         checkbox:ClearAllPoints()
         checkbox:SetPoint("TOPLEFT", sectionFrame, "TOPLEFT", 0, posY)
+        checkbox:SetWidth(32) -- constrain the tick-box click-target; the text label inside is sized separately by UpdateItems
         local rowHeight = checkbox:GetHeight() or Addon.UI.itemMinH
-        posY = posY - rowHeight
-        totalHeight = totalHeight + rowHeight
-        checkbox:SetShown(not collapsed)
+        local show = not collapsed and not (hideChecked and checkbox:GetChecked())
+        checkbox:SetShown(show)
+        if show then
+            posY        = posY        - rowHeight
+            totalHeight = totalHeight + rowHeight
+        end
     end
     sectionFrame._itemsHeight = totalHeight
 end
@@ -1493,8 +1516,19 @@ local function OnCheckboxClick(selfBtn)
     RefreshItemTextColor(selfBtn)
 
     local sectionId = selfBtn._sectionId
+    -- When the user explicitly unchecks an item, clear the sticky-complete flag
+    -- first so IsSectionCompleteById re-evaluates item states honestly.
+    if not checked then
+        if type(database.sectionCompleted) == "table" then
+            database.sectionCompleted[sectionId] = nil
+        end
+    end
     local secCompleteNow = IsSectionCompleteById(sectionId, database)
     if secCompleteNow then
+        -- Persist completion so it survives future item-ID changes caused by
+        -- developer text edits regenerating IDs via sheet_to_lua.
+        if type(database.sectionCompleted) ~= "table" then database.sectionCompleted = {} end
+        database.sectionCompleted[sectionId] = true
         SetSectionCollapsed(sectionId, true, database)
     end
 
@@ -1519,7 +1553,7 @@ local function OnCheckboxClick(selfBtn)
     local collapsed = IsSectionCollapsed(sectionId, database) or false
     if secCompleteNow then collapsed = true end
 
-    LayoutItems(sectionFrame, collapsed)
+    LayoutItems(sectionFrame, collapsed, prefs.hideCompletedTasks)
     UpdateSectionHeight(sectionFrame, collapsed)
 
     if hideDone and secCompleteNow then
@@ -1530,9 +1564,52 @@ local function OnCheckboxClick(selfBtn)
 
     LayoutFrom(sectionFrame._index or 1)
 
+    -- After a section completes, recompute the change-week button label from
+    -- scratch (LayoutHeaderButtons re-derives currentId from the DB so it
+    -- correctly reflects whichever week is now first-incomplete).
+    -- For non-completing clicks, a scroll-position refresh is sufficient.
+    if secCompleteNow then
+        if Addon.LayoutHeaderButtons then Addon:LayoutHeaderButtons() end
+    elseif Addon._refreshChangeWeekLabel then
+        Addon._refreshChangeWeekLabel()
+    end
+
     if Addon.UpdateCompletionEasterEgg then
         Addon:UpdateCompletionEasterEgg(database)
     end
+end
+
+-- ── Guide-link helpers ──────────────────────────────────────────────────────
+-- GUIDE_URL: read from constants (same source as the Settings/GearPopup support buttons).
+local GUIDE_URL  = (Addon.TRACKING and Addon.TRACKING.supportLinks and Addon.TRACKING.supportLinks.doc)
+                   or "https://docs.google.com/document/d/e/2PACX-1vTGkZ2Cjr0jlv90XqW9vy9VXsVucd-yMCgHdyCvX_kQfOrexNDAC7Lf3LifuhqxrcWqJ0W3zIhvK3ii/pub"
+local GUIDE_LINK = "|cffffd700|Hlarias:guide|h[CHECK GUIDE]|h|r"
+
+-- FormatGuideText replaces "see guide" / "check guide" (any capitalisation)
+-- with a gold inline hyperlink and returns the formatted string plus a boolean
+-- indicating whether any replacement was made.  Combining detection and
+-- formatting avoids a separate TextHasGuide pass with its own string allocation.
+local function FormatGuideText(text)
+    local n1, n2, result
+    result, n1 = text:gsub("[Ss]ee [Gg]uide",   GUIDE_LINK)
+    result, n2 = result:gsub("[Cc]heck [Gg]uide", GUIDE_LINK)
+    return result, (n1 + n2) > 0
+end
+
+-- Shared hyperlink handlers — defined once at module level so no new closure
+-- is allocated per row per sync call.
+local function OnGuideHyperlinkClick(_, linkData)
+    if linkData == "larias:guide" then
+        Addon.OpenSupportLink(GUIDE_URL)
+    end
+end
+local function OnGuideHyperlinkEnter(self_)
+    GameTooltip:SetOwner(self_, "ANCHOR_CURSOR")
+    GameTooltip:SetText(L.GUIDE_LINK_HOVER_TOOLTIP or "Click to copy guide link", 1, 1, 1, 1, true)
+    GameTooltip:Show()
+end
+local function OnGuideHyperlinkLeave()
+    GameTooltip:Hide()
 end
 
 local function OnHeaderClick(header)
@@ -1563,7 +1640,14 @@ local function SyncCheckboxesForSection(sectionFrame, sectionId, db)
             checkbox:ClearAllPoints()
             checkbox._sectionId = nil
             checkbox._itemId = nil
-            checkbox:SetScript("OnClick", nil)
+            checkbox._isGuideRow = false  -- explicitly reset so a recycled checkbox doesn't carry stale guide-row state
+            checkbox:SetScript("OnClick",          nil)
+            checkbox:SetScript("OnEnter",          nil)
+            checkbox:SetScript("OnLeave",          nil)
+            checkbox:SetScript("OnHyperlinkClick",  nil)
+            checkbox:SetScript("OnHyperlinkEnter", nil)
+            checkbox:SetScript("OnHyperlinkLeave", nil)
+            if checkbox.SetHyperlinksEnabled then checkbox:SetHyperlinksEnabled(false) end
             tinsert(Addon._checkboxPool, checkbox)
             sectionFrame._checkboxes[i] = nil
         end
@@ -1590,15 +1674,16 @@ local function SyncCheckboxesForSection(sectionFrame, sectionId, db)
         local dbKey = Key(sectionId, item.id)
         checkbox._dbKey = dbKey
 
-        local textLabel = checkbox.text or checkbox.Text
+        local itemText = tostring(item.text or item.id)
+        local formattedText, isGuide = FormatGuideText(itemText)
+        checkbox._isGuideRow = isGuide
+
+        local textLabel = checkbox.text  -- always set by NewCheckBox
         if textLabel then
             textLabel:SetWidth(itemTextWidth)
-            textLabel:SetText(tostring(item.text or item.id))
+            textLabel:SetText(formattedText)
 
-            local textHeight = 0
-            if textLabel.GetStringHeight then
-                textHeight = textLabel:GetStringHeight() or 0
-            end
+            local textHeight = textLabel:GetStringHeight() or 0
             checkbox:SetHeight(max(minRowHeight, textHeight + itemTextPad))
         else
             checkbox:SetHeight(minRowHeight)
@@ -1607,7 +1692,26 @@ local function SyncCheckboxesForSection(sectionFrame, sectionId, db)
         checkbox:SetChecked(checkedMap[dbKey] and true or false)
         RefreshItemTextColor(checkbox)
 
-        checkbox:SetScript("OnClick", OnCheckboxClick)
+        -- Restore cb to normal checkbox behaviour for every row.
+        checkbox:SetScript("OnClick",  OnCheckboxClick)
+        checkbox:SetScript("OnEnter", nil)
+        checkbox:SetScript("OnLeave", nil)
+
+        if isGuide then
+            if checkbox.SetHyperlinksEnabled then
+                checkbox:SetHyperlinksEnabled(true)
+            end
+            checkbox:SetScript("OnHyperlinkClick",  OnGuideHyperlinkClick)
+            checkbox:SetScript("OnHyperlinkEnter", OnGuideHyperlinkEnter)
+            checkbox:SetScript("OnHyperlinkLeave", OnGuideHyperlinkLeave)
+        else
+            if checkbox.SetHyperlinksEnabled then
+                checkbox:SetHyperlinksEnabled(false)
+            end
+            checkbox:SetScript("OnHyperlinkClick",  nil)
+            checkbox:SetScript("OnHyperlinkEnter", nil)
+            checkbox:SetScript("OnHyperlinkLeave", nil)
+        end
     end
 end
 
@@ -1656,7 +1760,7 @@ UpdateSectionVisuals = function(sectionFrame, sectionId)
         end
     end
 
-    LayoutItems(sectionFrame, collapsed)
+    LayoutItems(sectionFrame, collapsed, prefs.hideCompletedTasks)
     UpdateSectionHeight(sectionFrame, collapsed)
 end
 
@@ -1779,14 +1883,12 @@ function Addon:Refresh()
         self:ApplyScrollLayout()
     end
 
-    if self.LayoutHeaderButtons then self:LayoutHeaderButtons() end
-
     SyncAllDataAndFrames()
 
     -- Size the change-week button to fit the widest week label in the dataset.
     if self._calcChangeWeekBtnWidth then self._calcChangeWeekBtnWidth() end
 
-    -- Re-run after SyncAllDataAndFrames so _sectionsById is fully populated and
+    -- Run after SyncAllDataAndFrames so _sectionsById is fully populated and
     -- the change-week button shows the real current week from the very first load.
     if self.LayoutHeaderButtons then self:LayoutHeaderButtons() end
 
@@ -1860,10 +1962,6 @@ function Addon:CreateFrame()
         if Addon._gearPopup and Addon._gearPopup.IsShown and Addon._gearPopup:IsShown() then
             Addon._gearPopup:Hide()
         end
-        if Addon._hiddenCharsPicker and Addon._hiddenCharsPicker.IsShown and Addon._hiddenCharsPicker:IsShown() then
-            Addon._hiddenCharsPicker:Hide()
-        end
-        if Addon._cpClose then Addon._cpClose() end
     end)
     -- Record this character's class the first time the list is opened so the
     -- character picker can colour-code entries. Intentionally deferred from
@@ -2060,102 +2158,6 @@ function Addon:ToggleCommand(input)
         return
     end
 
-    if cmd == "locale" or cmd == "lang" then
-        if not self.SetLocaleOverride then
-            self:Print("Locale override is not available in this build.")
-            return
-        end
-
-        -- Locale overrides are intended to work with the optional localization companion addon.
-        -- If it's not installed, the command would appear to do nothing, so explain why.
-        if self.IsLocalizationCompanionLoaded and self.HasNonEnUSLocaleTables
-            and (not self:IsLocalizationCompanionLoaded())
-            and (not self:HasNonEnUSLocaleTables()) then
-            self:Print("Locale overrides require the optional companion addon 'LariasWeeklyChecklist_Localization' to be installed.")
-            return
-        end
-
-        if arg:lower() == "status" or arg == "?" then
-            local client = (GetLocale and GetLocale()) or ""
-            local reg = GetLocaleRegistry()
-            local strings = reg and reg.strings
-            local data = reg and reg.data
-            local function HasTable(t, key)
-                return type(t) == "table" and type(t[key]) == "table"
-            end
-            local override = tostring(self._sessionLocaleOverride or "auto")
-            local effective = (self.GetEffectiveLocaleCode and self:GetEffectiveLocaleCode()) or ""
-
-            self:Print(("Locale status: client=%s override=%s effective=%s"):format(tostring(client), tostring(override), tostring(effective)))
-            self:Print(("Locale status: strings.esMX=%s data.esMX=%s strings.enUS=%s data.enUS=%s"):format(
-                tostring(HasTable(strings, "esMX")),
-                tostring(HasTable(data, "esMX")),
-                tostring(HasTable(strings, "enUS")),
-                tostring(HasTable(data, "enUS"))
-            ))
-            return
-        end
-
-        if arg == "" then
-            -- List available locales dynamically from the registry.
-            local reg2     = GetLocaleRegistry()
-            local strings2 = reg2 and reg2.strings or {}
-            local data2    = reg2 and reg2.data    or {}
-            local seen2, list2 = {}, {}
-            for k in pairs(strings2) do if not seen2[k] then seen2[k]=true; tinsert(list2,k) end end
-            for k in pairs(data2)   do if not seen2[k] then seen2[k]=true; tinsert(list2,k) end end
-            table.sort(list2)
-            local available = (#list2 > 0) and table.concat(list2, "|") or "enUS"
-            self:Print("Available locales: auto|" .. available)
-            return
-        end
-
-        -- Normalize casing: do a case-insensitive match against all registered locales
-        -- plus the special "auto" token.
-        local raw   = arg
-        local lower = raw:lower()
-        local value
-
-        if lower == "auto" then
-            value = "auto"
-        else
-            -- Scan registry for a case-insensitive match.
-            local reg2    = GetLocaleRegistry()
-            local strings2 = reg2 and reg2.strings or {}
-            local data2    = reg2 and reg2.data    or {}
-            for k in pairs(strings2) do
-                if k:lower() == lower then value = k; break end
-            end
-            if not value then
-                for k in pairs(data2) do
-                    if k:lower() == lower then value = k; break end
-                end
-            end
-        end
-
-        if not value then
-            -- Build a sorted list of available locale codes from the registry.
-            local reg2    = GetLocaleRegistry()
-            local strings2 = reg2 and reg2.strings or {}
-            local data2    = reg2 and reg2.data    or {}
-            local seen2, list2 = {}, {}
-            for k in pairs(strings2) do if not seen2[k] then seen2[k]=true; tinsert(list2,k) end end
-            for k in pairs(data2)   do if not seen2[k] then seen2[k]=true; tinsert(list2,k) end end
-            table.sort(list2)
-            local available = (#list2 > 0) and table.concat(list2, "|")
-                              or "enUS"
-            self:Print((L.SLASH_LOCALE_NOT_FOUND
-                or "Unknown locale '%s'. Available: auto|%s"):format(tostring(raw), available))
-            return
-        end
-
-        self:SetLocaleOverride(value)
-        local effective = (self.GetEffectiveLocaleCode and self:GetEffectiveLocaleCode()) or ""
-        self:Print((L.SLASH_LOCALE_SET_FMT or "Locale override set to %s (effective: %s)"):format(tostring(value), tostring(effective)))
-        return
-    end
-
     -- Unknown args: show help.
     self:Print(L.SLASH_USAGE_TOGGLE or "Usage: /larias or /lcl to toggle the checklist")
-    self:Print(L.SLASH_USAGE_LOCALE or "Usage: /larias locale auto|enUS|esMX")
 end

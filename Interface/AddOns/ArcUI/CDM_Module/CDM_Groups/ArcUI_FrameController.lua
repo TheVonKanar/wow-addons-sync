@@ -1224,7 +1224,12 @@ local function Reconcile()
     local savedPositions = ns.CDMGroups.savedPositions or {}
     
     for cdID, saved in pairs(savedPositions) do
-        if saved.type == "group" and saved.target then
+        -- GUARD: Skip string IDs (Arc Auras) - they register via RegisterExternalFrame
+        -- Creating nil-frame members here causes Layout to search for old dead frames
+        -- and re-parent them as ghosts on top of the new frames ArcAuras creates
+        if type(cdID) == "string" then
+            -- Arc Auras managed externally - skip prepass
+        elseif saved.type == "group" and saved.target then
             -- For placeholders, skip the IsCooldownIDValid check - they're meant for unlearned spells
             local isPlaceholderEntry = saved.isPlaceholder
             local isValidForSpec = ns.CDMGroups.IsCooldownIDValid and ns.CDMGroups.IsCooldownIDValid(cdID) or true
@@ -2376,6 +2381,65 @@ local function Reconcile()
                 ns.CDMEnhance.ForceRefreshAllVisualStates()
             end
             
+            -- ═══════════════════════════════════════════════════════════════════════════
+            -- ORPHAN CLEANUP: Hide CDM viewer children that have no cooldownID.
+            -- When switching to a spec with fewer icons, CDM repools frames but the
+            -- old frames stay visible inside the viewer with cooldownID=nil/0.
+            -- Masque skin regions (Backdrop, Shadow, Normal) are children of these
+            -- frames, so hiding the parent kills the ghost skin artifacts.
+            -- ═══════════════════════════════════════════════════════════════════════════
+            if wasSpecChange then
+                local viewerNames = {"BuffIconCooldownViewer", "EssentialCooldownViewer", "UtilityCooldownViewer"}
+                local hiddenOrphans = 0
+                
+                for _, viewerName in ipairs(viewerNames) do
+                    local viewer = _G[viewerName]
+                    if viewer then
+                        local children = {viewer:GetChildren()}
+                        for _, child in ipairs(children) do
+                            -- Frame has no cooldownID = CDM didn't assign a spell to it
+                            if (not child.cooldownID or child.cooldownID == 0) and child:IsShown() then
+                                child:Hide()
+                                hiddenOrphans = hiddenOrphans + 1
+                            end
+                        end
+                    end
+                end
+                
+                if hiddenOrphans > 0 then
+                    TimelineAdd("ACTION", "ORPHAN_CLEANUP", string.format("Hidden %d orphaned viewer frames (no cooldownID)", hiddenOrphans))
+                    Debug("Orphan cleanup: hidden", hiddenOrphans, "frames with no cooldownID")
+                end
+            end
+            
+            -- ═══════════════════════════════════════════════════════════════════════════
+            -- BAR RE-ANCHOR: Re-apply appearance for all bar systems.
+            -- Bars tried to anchor to CDMGroups containers during spec change but
+            -- containers didn't exist yet (Resources@0.1s, Display@0.2s, CooldownBars@0.5s
+            -- vs CDMGroups rebuild@0.8s). Now that groups are settled, re-anchor them.
+            -- ═══════════════════════════════════════════════════════════════════════════
+            if wasSpecChange then
+                -- Aura bars (Display) - calls ApplyAppearance per bar
+                if ns.Display and ns.Display.RefreshAllBars then
+                    ns.Display.RefreshAllBars()
+                    TimelineAdd("ACTION", "BAR_REANCHOR", "Display.RefreshAllBars (aura bars re-anchored)")
+                end
+                
+                -- Cooldown/Charge/Resource/Timer bars - calls ApplyAppearance per bar
+                if ns.CooldownBars and ns.CooldownBars.ReapplyAllAppearance then
+                    ns.CooldownBars.ReapplyAllAppearance()
+                    TimelineAdd("ACTION", "BAR_REANCHOR", "CooldownBars.ReapplyAllAppearance (cooldown bars re-anchored)")
+                end
+                
+                -- Resource bars - calls ApplyAppearance per bar
+                if ns.Resources and ns.Resources.RefreshAllBars then
+                    ns.Resources.RefreshAllBars()
+                    TimelineAdd("ACTION", "BAR_REANCHOR", "Resources.RefreshAllBars (resource bars re-anchored)")
+                end
+                
+                Debug("Bar re-anchor: all bar systems refreshed after spec change")
+            end
+            
             -- Notify DynamicLayout that frames are now stable
             -- This triggers fill gaps logic to re-sync after talent changes
             local DL = ns.CDMGroups.DynamicLayout
@@ -2550,6 +2614,16 @@ InstallFrameHooks = function(frame)
     if not frame._fcStrataHooked and not frame._cdmgStrataHooked then
         hooksecurefunc(frame, "SetFrameStrata", state._trackedFcSetFrameStrata)
         frame._fcStrataHooked = true
+    end
+    
+    -- Hook SetShown/Hide - fight CDM hiding managed frames during reshuffles
+    -- Delegate to Maintain's hooks (they handle all guard checks)
+    -- Skip if CDMGroups already hooked this (avoid duplicate hooks)
+    if ns.CDMGroups.HookFrameSetShown and not frame._cdmgSetShownHooked then
+        ns.CDMGroups.HookFrameSetShown(frame)
+    end
+    if ns.CDMGroups.HookFrameHide and not frame._cdmgHideHooked then
+        ns.CDMGroups.HookFrameHide(frame)
     end
     
     state.frameHooksInstalled[addr] = true

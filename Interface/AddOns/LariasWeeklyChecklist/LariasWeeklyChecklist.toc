@@ -4,7 +4,7 @@
 ## Author: Dev
 ## X-Credits: Larias (checklist content and data)
 ## Author: Larias
-## Version: 2.1.1
+## Version: 2.1.12
 ## SavedVariables: LariasWeeklyChecklistDB
 ## OptionalDeps: LariasWeeklyChecklist_Localization
 ## IconTexture: Interface\AddOns\LariasWeeklyChecklist\assets\icon
@@ -24,8 +24,8 @@ lib\Ace3\AceComm-3.0\ChatThrottleLib.lua
 lib\Ace3\AceComm-3.0\AceComm-3.0.lua
 lib\Ace3\AceBucket-3.0\AceBucket-3.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
-lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
-lib\LibWindow-1.1\LibWindow-1.1\LibWindow-1.1.lua
+lib\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
+lib\LibWindow-1.1\LibWindow-1.1\LibWindow-1.1\LibWindow-1.1.lua
 
 # Locale strings and dataset
 locales\enUS.lua
@@ -49,6 +49,8 @@ features\header\LariasWeeklyChecklist_GearPopup.lua
 features\header\LariasWeeklyChecklist_IlvlRef.lua
 features\header\LariasWeeklyChecklist_Header.lua
 features\body\LariasWeeklyChecklist_ListData.lua
+features\body\LariasWeeklyChecklist_GreatVault.lua
 features\body\LariasWeeklyChecklist_Currency.lua
-features\footer\LariasWeeklyChecklist_CharPicker.lua
+features\body\LariasWeeklyChecklist_Overlay.lua
+features\LariasWeeklyChecklist_UpgradeWarning.lua
 features\footer\LariasWeeklyChecklist_Footer.lua

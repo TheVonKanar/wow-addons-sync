@@ -18,12 +18,12 @@ HandyNotes_TheWarWithin: enabled
 idTip: enabled
 Kong: enabled
 KongConfig: enabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
 LargerMacroIconSelection: enabled
 LargerMacroIconSelectionData: enabled
 Leatrix_Plus: enabled
 LibSharedMedia-3.0: disabled
-LiteMount: enabled
+LiteMount: disabled
 LoggerHeadLite: enabled
 ls_Glass: enabled
 MapCoords: enabled
@@ -33,8 +33,8 @@ Masque_Caith: enabled
 Masque_Raeli: enabled
 Masque_CleanUI: enabled
 MRT: enabled
-OPie: disabled
-Platynator: disabled
+OPie: enabled
+Platynator: enabled
 RCLootCouncil: enabled
 SharedMedia: disabled
 SharedMedia_Causese: enabled
@@ -55,3 +55,9 @@ Blizzard_ChallengesUI: enabled
 Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 Blizzard_CombatText: enabled
+ChonkyCharacterSheet: disabled
+ArcUI: enabled
+SenseiClassResourceBar: disabled
+UnhaltedUnitFrames: enabled
+MinimapStats: enabled
+ClickableRaidBuffs: enabled

@@ -5,11 +5,12 @@ local CallbackRegistry = addon.CallbackRegistry;
 local PixelUtil = addon.PixelUtil;
 local TooltipFrame = addon.SharedTooltip;
 local GossipDataProvider = addon.GossipDataProvider;
-local PlaySound = addon.PlaySound;
+--local PlaySound = addon.PlaySound;
 local ThemeUtil = addon.ThemeUtil;
 local RewardTooltipCode = addon.RewardTooltipCode;
 local SwipeEmulator = addon.SwipeEmulator;
 local BindingUtil = addon.BindingUtil;
+local IsCtrlDown = addon.DeviceUtil.IsCtrlDown;
 
 -- User Settings
 local SHOW_QUEST_TYPE_TEXT = true;
@@ -57,7 +58,6 @@ local DeclineQuest = DeclineQuest;
 local GetQuestItemInfo = GetQuestItemInfo;
 local GetQuestCurrency = API.GetQuestCurrency;
 local GetNumQuestChoices = GetNumQuestChoices;
-local GetQuestReward = GetQuestReward;
 local SelectActiveQuest = SelectActiveQuest;        --QUEST_GREETING
 local SelectAvailableQuest = SelectAvailableQuest;  --QUEST_GREETING
 local BreakUpLargeNumbers = BreakUpLargeNumbers;
@@ -1138,11 +1138,11 @@ function DUIDialogHotkeyFrameMixin:SetKey(key)
 end
 
 function DUIDialogHotkeyFrameMixin:SetKeyByFunction(keyFunction)
-    if HotkeyIcons[keyFunction] then
-        self:SetKey(keyFunction);
-    else
-        local key = addon.DeviceUtil:GetKeyByFunction(keyFunction);
+    local key = addon.DeviceUtil:GetKeyByFunction(keyFunction);
+    if key then
         self:SetKey(key);
+    elseif HotkeyIcons[keyFunction] then
+        self:SetKey(keyFunction);
     end
 end
 
@@ -1335,11 +1335,11 @@ function ItemButtonSharedMixin:GetClipboardOutput()
     elseif self.objectType == "reputation" then
         idFormat = "[FactionID: %s]";
         id = self.factionID;
-        name = self.factionName.." "..self.rewardAmount;
+        name = self.factionName.." "..(self.rewardAmount or "");
     elseif self.objectType == "currency" then
         idFormat = "[CurrencyID: %s]";
         id = self.currencyID;
-        name = self.Name:GetText().." "..self.rewardAmount;
+        name = self.Name:GetText().." "..(self.rewardAmount or "");
     elseif self.objectType == "skill" then
         local skillName, skillIcon, skillPoints = GetRewardSkillPoints();
         name = skillName .. " "..skillPoints;
@@ -1462,6 +1462,10 @@ function DUIDialogItemButtonMixin:OnClick(button)
                 if API.IsDressableItem(link) then
                     CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
                     DressUpVisual(link);
+                    return
+                elseif C_Item.IsDecorItem and C_Item.IsDecorItem(link) then
+                    CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
+                    DressUpLink(link);
                     return
                 end
             end
@@ -1883,6 +1887,52 @@ function DUIDialogItemButtonMixin:SetRewardFollower(followerID)
     self:SetItemName(name);
     self:SetItemCount(nil);
     self:SetItemOverlay(quality);
+end
+
+function DUIDialogItemButtonMixin:OnEnter()
+    ItemButtonSharedMixin.OnEnter(self);
+
+    local canPreviewLink;
+    local link = self.objectType == "item" and GetQuestItemLink(self.type, self.index);
+
+    if link then
+        if API.IsDressableItem(link) then
+            canPreviewLink = true;
+        elseif C_Item.IsDecorItem and C_Item.IsDecorItem(link) then
+            canPreviewLink = true;
+        end
+    end
+
+    if canPreviewLink then
+        self:RegisterEvent("MODIFIER_STATE_CHANGED");
+        self:SetScript("OnEvent", self.OnEvent);
+        if IsControlKeyDown() then
+            SetCursor("INSPECT_CURSOR");
+        end
+    end
+end
+
+function DUIDialogItemButtonMixin:OnLeave()
+    ItemButtonSharedMixin.OnLeave(self);
+    self:UnregisterEvent("MODIFIER_STATE_CHANGED");
+    self:SetScript("OnEvent", nil);
+    ResetCursor();
+end
+
+function DUIDialogItemButtonMixin:OnEvent(event, ...)
+    if event == "MODIFIER_STATE_CHANGED" then
+        if not self:IsMouseMotionFocus() then
+           self:UnregisterEvent(event);
+           self:SetScript("OnEvent", nil);
+           return
+        end
+
+        if IsCtrlDown(...) and (not InCombatLockdown()) then
+            SetCursor("INSPECT_CURSOR");
+        else
+            ResetCursor();
+        end
+    end
 end
 
 

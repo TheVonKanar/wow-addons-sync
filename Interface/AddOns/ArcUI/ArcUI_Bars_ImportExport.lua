@@ -936,6 +936,9 @@ local function ImportBars(data, mode)
     return true, result
 end
 
+-- Expose for master import
+ns.BarsImportExport.ImportBars = ImportBars
+
 -- ===================================================================
 -- OPTIONS TABLE
 -- ===================================================================

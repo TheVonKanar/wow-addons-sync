@@ -1,31 +1,55 @@
 
 LariasWeeklyChecklistDB = {
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-},
 ["global"] = {
+["minimap"] = {
+["minimapPos"] = 238.8106288973517,
+},
 ["mainFrameWin"] = {
-["y"] = -85.0009765625,
-["x"] = 1.999577045440674,
-["point"] = "TOPLEFT",
+["y"] = 11.49911499023438,
+["x"] = 8.999567031860352,
+["point"] = "LEFT",
 ["scale"] = 1,
 },
 ["chars"] = {
 ["Kvotheen - Hyjal"] = {
-["showGreatVault"] = true,
-["startAtSectionId"] = "early_access_feb_26_through_mar_2_pay_to_win",
-["showCurrency"] = true,
-["debug"] = false,
-["showCharPickerBtn"] = true,
-["showScaleSlider"] = true,
-["collapsedSections"] = {
+["_sectionCompletedSeedVer2"] = "17",
+["checked"] = {
+["50281d6f:c06ee1a3"] = true,
+["50281d6f:e326ed96"] = true,
+["bd6b2f68:4aa4b47d"] = true,
+["50281d6f:879d3833"] = true,
+["50281d6f:6762e305"] = true,
+["bd6b2f68:90db618c"] = true,
+["bd6b2f68:91e7ee6c"] = true,
+["50281d6f:dbc8384b"] = true,
+["50281d6f:da2fa0ef"] = true,
+["50281d6f:5a2e9ede"] = true,
+["50281d6f:0c3b8835"] = true,
+["50281d6f:efb035ba"] = true,
+["bd6b2f68:f9b8eb01"] = true,
+["bd6b2f68:f4b92a82"] = true,
+["50281d6f:101e78a9"] = true,
+["bd6b2f68:6af1d802"] = true,
+["bd6b2f68:ba1890e4"] = true,
+["50281d6f:9ad64245"] = true,
 },
+["showCurrency"] = true,
+["sectionCompleted"] = {
+["bd6b2f68"] = true,
+},
+["_newestSeenRemoteVersion"] = "",
 ["hideCompletedSections"] = true,
-["_migrated"] = true,
+["collapsedSections"] = {
+["bd6b2f68"] = true,
+},
+["showScaleSlider"] = true,
+["startAtSectionId"] = "50281d6f",
+["debug"] = false,
+["showGreatVault"] = true,
 ["trackingSnapshot"] = {
 ["leftGrid"] = {
 {
-["available"] = true,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -41,10 +65,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = true,
 },
 {
-["available"] = true,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -60,10 +84,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = true,
 },
 {
-["available"] = false,
+["complete"] = 0,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -79,7 +103,7 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["complete"] = 0,
+["available"] = false,
 },
 },
 ["leftLines"] = {
@@ -97,12 +121,12 @@ LariasWeeklyChecklistDB = {
 {
 ["id"] = 3383,
 ["type"] = "crest",
-["qty"] = 0,
+["qty"] = 180,
 },
 {
 ["id"] = 3341,
 ["type"] = "crest",
-["qty"] = 0,
+["qty"] = 110,
 },
 {
 ["id"] = 3343,
@@ -126,7 +150,7 @@ LariasWeeklyChecklistDB = {
 {
 ["id"] = 3212,
 ["type"] = "sparks",
-["qty"] = 0,
+["qty"] = 1,
 },
 {
 ["id"] = 3310,
@@ -136,19 +160,21 @@ LariasWeeklyChecklistDB = {
 },
 },
 ["_lariasDefaultsApplied"] = true,
+["_migrated"] = true,
+["_newestSeenRemoteSheetVersion"] = "15",
+["_newestSeenRemoteSender"] = "",
 ["showIlvlRefBtn"] = true,
-["checked"] = {
-["early_access_feb_26_through_mar_2_pay_to_win:log_on_to_each_character_you_plan_on_leveling_so_they_start_accumulating_rested_xp"] = true,
-},
+["showCharPickerBtn"] = true,
 ["showChangeWeekBtn"] = true,
 },
-},
-["minimap"] = {
-["minimapPos"] = 239.9696145010967,
 },
 ["charClasses"] = {
 ["Kvotheen - Hyjal"] = "SHAMAN",
 },
+["_prefsMigrated"] = true,
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

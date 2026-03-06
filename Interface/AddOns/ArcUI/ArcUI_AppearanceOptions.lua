@@ -155,6 +155,25 @@ local function IsPowerTypeValidForSpec(powerType)
   return false
 end
 
+-- Check if the player's class uses multiple primary power types
+-- (e.g., Druid: Mana/Rage/Energy/Astral Power across forms).
+-- These classes use per-power-type profiles instead of per-spec profiles.
+local function IsMultiPowerClass()
+  local _, playerClass = UnitClass("player")
+  local powers = CLASS_PRIMARY_POWERS[playerClass]
+  return powers and #powers > 1
+end
+
+-- Get the friendly name for a power type ID
+local function GetPowerTypeName(powerTypeId)
+  if ns.Resources and ns.Resources.PowerTypes then
+    for _, pt in ipairs(ns.Resources.PowerTypes) do
+      if pt.id == powerTypeId then return pt.name end
+    end
+  end
+  return "Power " .. tostring(powerTypeId)
+end
+
 local function GetAllBarsDropdown()
   local values = {}
   local currentSpec = GetSpecialization() or 0
@@ -446,7 +465,8 @@ local function IsAutoPrimaryBar()
 end
 
 -- Auto-initialize editingAutoPowerProfile when landing on an autoPrimary bar.
--- Auto-enables per-spec profiles if not already enabled.
+-- Single-power classes: auto-enable per-spec profiles.
+-- Multi-power classes (Druid): always use per-power-type profiles.
 local function SyncEditingAutoPower()
   if not IsAutoPrimaryBar() then return end
   local _, barNum = GetSelectedBarType()
@@ -456,23 +476,47 @@ local function SyncEditingAutoPower()
   local cfg = GetSelectedConfig()
   if not cfg or not cfg.tracking then return end
   
-  -- Auto-enable per-spec profiles on first visit to an autoPrimary bar
-  if not cfg.tracking.usePerSpecProfiles then
-    if ns.Resources and ns.Resources.EnablePerSpecProfiles then
-      ns.Resources.EnablePerSpecProfiles(barNum)
+  if IsMultiPowerClass() then
+    -- Multi-power classes (Druid, Monk, etc.) use per-POWER-TYPE profiles.
+    -- If per-spec was erroneously enabled (from older version), revert it now.
+    if cfg.tracking.usePerSpecProfiles then
+      if ns.Resources and ns.Resources.DisablePerSpecProfiles then
+        ns.Resources.DisablePerSpecProfiles(barNum)
+      else
+        cfg.tracking.usePerSpecProfiles = nil
+      end
     end
-  end
-  
-  -- Use the current profile key (spec keying)
-  local currentKey
-  if ns.Resources and ns.Resources.GetCurrentProfileKey then
-    currentKey = ns.Resources.GetCurrentProfileKey(barNum)
+    -- Ensure autoShareCategories exists with all-independent defaults
+    -- (each power type gets its own look by default, user can opt-in to sharing)
+    if not cfg.tracking.autoShareCategories then
+      cfg.tracking.autoShareCategories = {
+        colors = false, fill = false, text = false,
+        background = false, border = false, tickMarks = false,
+      }
+    end
+    -- Sync to current power type
+    local currentPower = UnitPowerType("player")
+    editingAutoPowerProfile = currentPower
+    if ns.Resources and ns.Resources.SetEditingAutoPower then
+      ns.Resources.SetEditingAutoPower(barNum, currentPower)
+    end
   else
-    currentKey = "spec" .. (GetSpecialization() or 1)
-  end
-  editingAutoPowerProfile = currentKey
-  if ns.Resources and ns.Resources.SetEditingAutoPower then
-    ns.Resources.SetEditingAutoPower(barNum, currentKey)
+    -- Single-power classes: use per-SPEC profiles.
+    if not cfg.tracking.usePerSpecProfiles then
+      if ns.Resources and ns.Resources.EnablePerSpecProfiles then
+        ns.Resources.EnablePerSpecProfiles(barNum)
+      end
+    end
+    local currentKey
+    if ns.Resources and ns.Resources.GetCurrentProfileKey then
+      currentKey = ns.Resources.GetCurrentProfileKey(barNum)
+    else
+      currentKey = "spec" .. (GetSpecialization() or 1)
+    end
+    editingAutoPowerProfile = currentKey
+    if ns.Resources and ns.Resources.SetEditingAutoPower then
+      ns.Resources.SetEditingAutoPower(barNum, currentKey)
+    end
   end
 end
 
@@ -594,11 +638,14 @@ local function IsNonContinuousMode()
   if not cfg then return false end
   local mode = cfg.display and cfg.display.thresholdMode
   if not mode then return false end
-  -- Primary/autoPrimary resource bars can NEVER be fragmented/icons (SECRET crash).
+  -- Primary/autoPrimary and secret secondary resource bars can NEVER be perStack/fragmented/icons.
   -- If a skin left an invalid mode, fix it now so the UI stays correct.
-  if (mode == "fragmented" or mode == "icons") and IsResourceBar() then
+  if (mode == "fragmented" or mode == "icons" or mode == "perStack") and IsResourceBar() then
     local resCat = cfg.tracking and cfg.tracking.resourceCategory
-    if resCat ~= "secondary" then
+    local secType = cfg.tracking and cfg.tracking.secondaryType
+    local isSecretSecondary = resCat == "secondary" and secType
+      and ns.Resources and ns.Resources.SecretSecondaryTypes and ns.Resources.SecretSecondaryTypes[secType]
+    if resCat ~= "secondary" or isSecretSecondary then
       cfg.display.thresholdMode = "simple"
       return false
     end
@@ -1229,31 +1276,7 @@ function ns.AppearanceOptions.GetOptionsTable()
             end
             -- Auto-init power profile editing for autoPrimary bars (once per bar selection)
             if not editingAutoPowerProfile and IsAutoPrimaryBar() then
-              local _, bn = GetSelectedBarType()
-              bn = tonumber(bn)
-              if bn then
-                -- Auto-enable per-spec profiles on first visit
-                local cfg2 = GetSelectedConfig()
-                if cfg2 and cfg2.tracking and not cfg2.tracking.usePerSpecProfiles then
-                  if ns.Resources and ns.Resources.EnablePerSpecProfiles then
-                    ns.Resources.EnablePerSpecProfiles(bn)
-                  end
-                end
-                local currentKey
-                if ns.Resources and ns.Resources.GetCurrentProfileKey then
-                  currentKey = ns.Resources.GetCurrentProfileKey(bn)
-                else
-                  currentKey = "spec" .. (GetSpecialization() or 1)
-                end
-                editingAutoPowerProfile = currentKey
-                if ns.Resources and ns.Resources.SetEditingAutoPower then
-                  C_Timer.After(0.05, function()
-                    ns.Resources.SetEditingAutoPower(bn, currentKey)
-                    local r = LibStub and LibStub("AceConfigRegistry-3.0", true)
-                    if r then r:NotifyChange("ArcUI") end
-                  end)
-                end
-              end
+              C_Timer.After(0.05, SyncEditingAutoPower)
             end
             return selectedAppearanceBar
           end
@@ -1369,12 +1392,20 @@ function ns.AppearanceOptions.GetOptionsTable()
         name = function()
           if editingAutoPowerProfile then
             local keyName = tostring(editingAutoPowerProfile)
-            local specNum = tonumber(tostring(editingAutoPowerProfile):match("spec(%d+)"))
-            if specNum then
-              local _, specName = GetSpecializationInfo(specNum)
-              keyName = specName or keyName
+            local isPowerKey = type(editingAutoPowerProfile) == "number"
+            if isPowerKey then
+              -- Power-type mode: show power name
+              keyName = GetPowerTypeName(editingAutoPowerProfile)
+            else
+              -- Spec mode: show spec name
+              local specNum = tonumber(tostring(editingAutoPowerProfile):match("spec(%d+)"))
+              if specNum then
+                local _, specName = GetSpecializationInfo(specNum)
+                keyName = specName or keyName
+              end
             end
-            return "|cff00ff00Editing " .. keyName .. ".|r All settings below apply when this spec is active."
+            local contextWord = isPowerKey and "power type" or "spec"
+            return "|cff00ff00Editing " .. keyName .. ".|r All settings below apply when this " .. contextWord .. " is active."
           end
           return ""
         end,
@@ -1406,7 +1437,13 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareDesc = {
         type = "description",
-        name = "Control which appearance categories are shared across all specs vs customized per spec.",
+        name = function()
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return "Control which appearance categories are shared across all power types vs customized per power type."
+          end
+          return "Control which appearance categories are shared across all specs vs customized per spec."
+        end,
         fontSize = "small",
         order = 2.561,
         hidden = function()
@@ -1415,22 +1452,54 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       profileSelector = {
         type = "select",
-        name = "Spec Profile",
-        desc = "Select which specialization to edit. Each spec can have independent settings for unchecked categories below.\n\nWhen the panel closes, the bar auto-detects your current spec.",
+        name = function()
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return "Power Type Profile"
+          end
+          return "Spec Profile"
+        end,
+        desc = function()
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return "Select which power type to edit. Each power type can have its own appearance when that form/power is active.\n\nWhen the panel closes, the bar auto-detects your current power type."
+          end
+          return "Select which specialization to edit. Each spec can have independent settings for unchecked categories below.\n\nWhen the panel closes, the bar auto-detects your current spec."
+        end,
         values = function()
           local vals = {}
-          local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
-          for i = 1, numSpecs do
-            local _, specName = GetSpecializationInfo(i)
-            vals["spec" .. i] = specName or ("Spec " .. i)
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            -- Power-type mode (Druid/multi-power classes)
+            local _, playerClass = UnitClass("player")
+            local powers = CLASS_PRIMARY_POWERS[playerClass] or {}
+            for _, ptId in ipairs(powers) do
+              vals[tostring(ptId)] = GetPowerTypeName(ptId)
+            end
+          else
+            -- Per-spec mode
+            local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
+            for i = 1, numSpecs do
+              local _, specName = GetSpecializationInfo(i)
+              vals["spec" .. i] = specName or ("Spec " .. i)
+            end
           end
           return vals
         end,
         sorting = function()
           local sorted = {}
-          local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
-          for i = 1, numSpecs do
-            sorted[#sorted + 1] = "spec" .. i
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            local _, playerClass = UnitClass("player")
+            local powers = CLASS_PRIMARY_POWERS[playerClass] or {}
+            for _, ptId in ipairs(powers) do
+              sorted[#sorted + 1] = tostring(ptId)
+            end
+          else
+            local numSpecs = GetNumSpecializations and GetNumSpecializations() or 4
+            for i = 1, numSpecs do
+              sorted[#sorted + 1] = "spec" .. i
+            end
           end
           return sorted
         end,
@@ -1443,6 +1512,10 @@ function ns.AppearanceOptions.GetOptionsTable()
           if barNum and ns.Resources and ns.Resources.GetCurrentProfileKey then
             return tostring(ns.Resources.GetCurrentProfileKey(barNum))
           end
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return tostring(UnitPowerType("player"))
+          end
           return "spec" .. (GetSpecialization() or 1)
         end,
         set = function(info, value)
@@ -1452,9 +1525,15 @@ function ns.AppearanceOptions.GetOptionsTable()
           barNum = tonumber(barNum)
           if not barNum then return end
           
-          editingAutoPowerProfile = value
+          -- Convert string key back to integer for power-type mode
+          local profileKey = value
+          if cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            profileKey = tonumber(value) or value
+          end
+          
+          editingAutoPowerProfile = profileKey
           if ns.Resources and ns.Resources.SetEditingAutoPower then
-            ns.Resources.SetEditingAutoPower(barNum, value)
+            ns.Resources.SetEditingAutoPower(barNum, profileKey)
           end
           if LibStub and LibStub("AceConfigRegistry-3.0", true) then
             LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
@@ -1487,7 +1566,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareColors = {
         type = "toggle", name = "Colors",
-        desc = "When checked, colors (bar color, thresholds, color curves, spec colors) are SHARED across all specs.\nWhen unchecked, each spec gets its own colors.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, colors are SHARED across all power types.\nWhen unchecked, each power type gets its own colors."
+          end
+          return "When checked, colors (bar color, thresholds, color curves, spec colors) are SHARED across all specs.\nWhen unchecked, each spec gets its own colors."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1522,7 +1606,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareFill = {
         type = "toggle", name = "Fill",
-        desc = "When checked, fill settings (texture, orientation, gradient) are SHARED across all specs.\nWhen unchecked, each spec gets its own fill settings.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, fill settings are SHARED across all power types.\nWhen unchecked, each power type gets its own fill settings."
+          end
+          return "When checked, fill settings (texture, orientation, gradient) are SHARED across all specs.\nWhen unchecked, each spec gets its own fill settings."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1557,7 +1646,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareText = {
         type = "toggle", name = "Text",
-        desc = "When checked, text settings (fonts, sizes, formats, anchors) are SHARED across all specs.\nWhen unchecked, each spec gets its own text settings.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, text settings are SHARED across all power types.\nWhen unchecked, each power type gets its own text settings."
+          end
+          return "When checked, text settings (fonts, sizes, formats, anchors) are SHARED across all specs.\nWhen unchecked, each spec gets its own text settings."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1592,7 +1686,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareBG = {
         type = "toggle", name = "Background",
-        desc = "When checked, background settings are SHARED across all specs.\nWhen unchecked, each spec gets its own background.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, background settings are SHARED across all power types.\nWhen unchecked, each power type gets its own background."
+          end
+          return "When checked, background settings are SHARED across all specs.\nWhen unchecked, each spec gets its own background."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1627,7 +1726,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareBorder = {
         type = "toggle", name = "Border",
-        desc = "When checked, border settings are SHARED across all specs.\nWhen unchecked, each spec gets its own border.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, border settings are SHARED across all power types.\nWhen unchecked, each power type gets its own border."
+          end
+          return "When checked, border settings are SHARED across all specs.\nWhen unchecked, each spec gets its own border."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1662,7 +1766,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareTicks = {
         type = "toggle", name = "Tick Marks",
-        desc = "When checked, tick marks and ability cost markers are SHARED across all specs.\nWhen unchecked, each spec gets its own tick mark configuration.",
+        desc = function()
+          if IsMultiPowerClass() then
+            return "When checked, tick marks are SHARED across all power types.\nWhen unchecked, each power type gets its own tick mark configuration."
+          end
+          return "When checked, tick marks and ability cost markers are SHARED across all specs.\nWhen unchecked, each spec gets its own tick mark configuration."
+        end,
         get = function()
           local cfg = GetSelectedConfig()
           if not cfg or not cfg.tracking then return true end
@@ -1697,7 +1806,12 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       autoShareNote = {
         type = "description",
-        name = "|cff888888Checked = shared across all specs. Unchecked = independent per spec.|r",
+        name = function()
+          if IsMultiPowerClass() then
+            return "|cff888888Checked = shared across all power types. Unchecked = independent per power type.|r"
+          end
+          return "|cff888888Checked = shared across all specs. Unchecked = independent per spec.|r"
+        end,
         fontSize = "small",
         order = 2.566,
         width = "full",
@@ -1708,9 +1822,15 @@ function ns.AppearanceOptions.GetOptionsTable()
       profileResetCurrent = {
         type = "execute",
         name = "Reset to Base",
-        desc = "Reset this spec's profile back to the base settings.",
+        desc = function()
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return "Reset this power type's profile back to the base settings."
+          end
+          return "Reset this spec's profile back to the base settings."
+        end,
         confirm = true,
-        confirmText = "Reset this spec's visual settings to match the base?",
+        confirmText = "Reset this profile's visual settings to match the base?",
         func = function()
           if not editingAutoPowerProfile then return end
           local _, barNum = GetSelectedBarType()
@@ -1735,9 +1855,15 @@ function ns.AppearanceOptions.GetOptionsTable()
       profileClearAll = {
         type = "execute",
         name = "Clear All Profiles",
-        desc = "Remove all profiles. The bar will use the same settings regardless of spec.",
+        desc = function()
+          local cfg = GetSelectedConfig()
+          if cfg and cfg.tracking and not cfg.tracking.usePerSpecProfiles then
+            return "Remove all profiles. The bar will use the same settings regardless of power type."
+          end
+          return "Remove all profiles. The bar will use the same settings regardless of spec."
+        end,
         confirm = true,
-        confirmText = "Remove all profiles? The bar will use a single set of settings for all specs.",
+        confirmText = "Remove all profiles? The bar will use a single set of settings.",
         func = function()
           local _, barNum = GetSelectedBarType()
           barNum = tonumber(barNum)
@@ -3376,10 +3502,11 @@ function ns.AppearanceOptions.GetOptionsTable()
             ["continuous"] = "Continuous",
             ["segmented"] = "Segmented"
           }
-          -- Add Fragmented and Icons options for all discrete secondary resources
+          -- Add Fragmented and Icons options for all discrete secondary resources (non-secret only)
           if barType == "resource" and cfg and cfg.tracking then
             local secType = cfg.tracking.secondaryType
-            if secType and ns.Resources and ns.Resources.TickedSecondaryTypes and ns.Resources.TickedSecondaryTypes[secType] then
+            local isSecret = secType and ns.Resources and ns.Resources.SecretSecondaryTypes and ns.Resources.SecretSecondaryTypes[secType]
+            if not isSecret and secType and ns.Resources and ns.Resources.TickedSecondaryTypes and ns.Resources.TickedSecondaryTypes[secType] then
               vals["fragmented"] = "Fragmented"
               vals["icons"] = "Icons"
             end
@@ -3388,10 +3515,11 @@ function ns.AppearanceOptions.GetOptionsTable()
         end,
         sorting = function()
           local cfg, barType = GetSelectedConfig()
-          -- Only include fragmented/icons in sorting for discrete secondary resource bars
+          -- Only include fragmented/icons in sorting for discrete secondary resource bars (non-secret only)
           if barType == "resource" and cfg and cfg.tracking then
             local secType = cfg.tracking.secondaryType
-            if secType and ns.Resources and ns.Resources.TickedSecondaryTypes and ns.Resources.TickedSecondaryTypes[secType] then
+            local isSecret = secType and ns.Resources and ns.Resources.SecretSecondaryTypes and ns.Resources.SecretSecondaryTypes[secType]
+            if not isSecret and secType and ns.Resources and ns.Resources.TickedSecondaryTypes and ns.Resources.TickedSecondaryTypes[secType] then
               return {"continuous", "segmented", "fragmented", "icons"}
             end
           end

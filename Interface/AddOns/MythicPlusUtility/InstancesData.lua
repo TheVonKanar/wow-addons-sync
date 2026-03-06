@@ -1,0 +1,284 @@
+local L = LibStub("AceLocale-3.0"):GetLocale("MythicPlusUtility")
+
+MythicPlusUtility.instancesData = {
+    [2526] = { -- Algeth'ar Academy
+        -- Boss
+        { -- Branch Out
+            text = format(
+              L["{spell:%d} debuff is inflicted on the first boss {npc:%d}. Also, this debuff can be avoided."], 388623,
+              196482),
+            tags = "[bleed]",
+        }, { -- Lasher Toxin
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d} on the first boss {npc:%d}."], 389033, 197398,
+                          196482),
+            tags = "[poison]",
+        }, { -- Power Vacuum
+            text = format(L["Mitigates effects of {spell:%d} on the last boss {npc:%d}."], 388822, 190609),
+            tags = "[important][player_jump][player_movement_immune]",
+        }, -- Trash
+        { -- Raging Screech
+            text = format(
+              L["{spell:%d} buff is cast by {npc:%d} (trash before {npc:%d}). Also, this cast can be interrupted."],
+              377389, 192333, 191736),
+            tags = "[important][enrage]",
+        }, { -- Monotonous Lecture
+            text = format(
+              L["{spell:%d} debuff is inflicted by {npc:%d} (trash before {npc:%d}). Also, this cast can be interrupted."],
+              388392, 196044, 194181),
+            tags = "[important][sleep]",
+        }, { -- Monotonous Lecture
+            text = format(
+              L["{spell:%d} is cast by {npc:%d} (trash before {npc:%d}). Also, this cast can be interrupted."], 388392,
+              196044, 194181),
+            tags = "[important][creature_stun][creature_incapacitate][creature_grip]",
+        }, { -- Agitation
+            text = format(L["{spell:%d} buff on {npc:%d} (trash before {npc:%d})."], 390938, 197406, 191736),
+            tags = "[enrage]",
+        }, { -- Peck
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d} (trash before {npc:%d})."], 377344, 192329,
+                          191736),
+            tags = "[bleed]",
+        }, { -- Vile Bite
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d} (trash before {npc:%d})."], 1282244, 197219,
+                          196482),
+            tags = "[bleed]",
+        },
+    },
+    [2811] = { -- Magisters' Terrace
+        -- Boss
+        { -- Ethereal Shackles
+            text = format(L["{spell:%d} debuff is inflicted by the first boss {npc:%d}."], 1214038, 231861),
+            tags = "[important][slow][root]",
+        }, { -- Hastening Ward
+            text = format(L["{spell:%d} buff on the second boss {npc:%d}."], 1248689, 231863),
+            tags = "[important][purge]",
+        }, { -- Entropy Orb
+            text = format(L["{spell:%d} debuff is inflicted by contact with orbs on the last boss {npc:%d}."], 1269631,
+                          231865),
+            tags = "[important][slow][root]",
+        }, -- Trash
+        { -- Arcane Blade
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1252909, 234124),
+            tags = "[important][purge]",
+        }, { -- Power Word: Shield
+            text = format(L["{spell:%d} buff is cast by {npc:%d}."], 1254306, 234486),
+            tags = "[important][purge]",
+        }, { -- Terror Wave
+            text = format(
+              L["{spell:%d} debuff is inflicted by {npc:%d} (trash before {npc:%d}). Also, this cast can be interrupted and LoS."],
+              1264693, 231552, 231864), -- First NpcId is wrong but has the same name 
+            tags = "[important][fear]",
+        },
+    },
+    [2874] = { -- Maisara Caverns
+        -- Boss
+        { -- Open Wound
+            text = format(L["{spell:%d} debuff is inflicted by the first boss {npc:%d}."], 1266488, 247572),
+            tags = "[important][bleed]",
+        }, { -- Infected Pinions
+            text = format(L["{spell:%d} debuff is inflicted by the first boss {npc:%d}."], 1246666, 247572),
+            tags = "[disease]",
+        }, { -- Unstable Phantom NPC
+            text = format(L["Prevent {npc:%d} from reaching players or other {npc:%d} on the second boss {npc:%d}."],
+                          250443, 250443, 248595),
+            tags = "[important][creature_root][creature_slow][cc_undead]",
+        }, { -- Cries of the Fallen
+            text = format(L["{spell:%d} debuff is inflicted by contact with {npc:%d} on the last boss {npc:%d}."],
+                          1254175, 1531, 248605),
+            tags = "[important][slow][root]",
+        }, -- Trash
+        { -- Ritual Sacrifice
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1259794, 253683),
+            tags = "[super_important][slow][root]",
+        }, { -- Grim Ward
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1270079, 248690),
+            tags = "[important][purge]",
+        }, { -- Bloody Frenzy
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1255765, 248684),
+            tags = "[enrage]",
+        }, { -- Frost Nova
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1271623, 249024),
+            tags = "[slow][root]",
+        }, { -- Hooked Snare
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}. Also, this cast can be interrupted."], 1266381,
+                          242964),
+            tags = "[slow][root]",
+        }, { -- Reanimation
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1257716, 248692),
+            tags = "[creature_stun][creature_incapacitate][creature_grip]",
+        }, { -- Regeneratin'
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1255966, 242964),
+            tags = "[creature_mortal_strike]",
+        }, { -- Regeneratin'
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1255966, 248684),
+            tags = "[creature_mortal_strike]",
+        }, { -- Rending Gore
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1256059, 248678),
+            tags = "[bleed]",
+        },
+    },
+    [123] = { -- Nexus-Point Xenas
+        -- Boss
+        -- Trash
+        { -- Holy Echo
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1263785, 254928),
+            tags = "[important][purge]",
+        }, { -- Supression Field
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 249081, 241647),
+            tags = "[important][slow][snare]",
+        }, { -- Arcane Explosion
+            text = format(L["{spell:%d} is channeled by {npc:%d}."], 1285445, 241644),
+            tags = "[creature_stun][creature_fear][creature_incapacitate][creature_grip]",
+        }, { -- Creeping Void
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1281636, 248706),
+            tags = "[curse]",
+        }, { -- Dusk Frights
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}. Also, this debuff can be avoided."], 1282724,
+                          251853),
+            tags = "[fear]",
+        }, { -- Fixate
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1263775, 254932),
+            tags = "[creature_stun][creature_fear][creature_incapacitate]",
+        }, { -- Leech Veil
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1252204, 241645),
+            tags = "[creature_stun][creature_fear][creature_incapacitate][creature_grip]",
+        }, { -- Smudge NPC
+            text = format(L["Prevent {npc:%d} from reaching {npc:%d}."], 248769, 252903),
+            tags = "[creature_root][creature_slow][creature_grip]",
+        },
+    },
+    [658] = { -- Pit of Saron
+        -- Boss
+        { -- Cryoshards
+            text = format(L["{spell:%d} debuff is inflicted by the first boss {npc:%d}."], 1261921, 36494),
+            tags = "[important][slow][snare]",
+        }, { -- Shadowbind
+            text = format(L["{spell:%d} debuff is inflicted by the second boss {npc:%d}."], 1264186, 36477),
+            tags = "[super_important][slow][snare][curse]",
+        }, { -- Rotting Strikes
+            text = format(L["{spell:%d} debuff is inflicted on the last boss {npc:%d}."], 1262930, 36658),
+            tags = "[disease]",
+        }, -- Trash
+        { -- Curse of Torment
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1258434, 252561),
+            tags = "[important][curse]",
+        }, { -- Permeating Cold
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1258437, 252566),
+            tags = "[important][slow][snare]",
+        }, { -- Plungegrip
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1258997, 252707),
+            tags = "[important][slow][root]",
+        }, { -- Plungegrip
+            text = format(L["{spell:%d} is channeled by {npc:%d}. The caster is immune to CC while it has {spell:%d}"],
+                          1258997, 252707),
+            tags = "[important][creature_stun][creature_incapacitate][creature_grip]",
+        }, { -- Necromantic Infusion
+            text = format(L["{spell:%d} buff is cast by {npc:%d}."], 1258448, 252551),
+            tags = "[purge]",
+        }, { -- Plague Frenzy
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1259132, 252555),
+            tags = "[enrage]",
+        }, { -- Rotting Strikes
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1258459, 252558),
+            tags = "[disease]",
+        },
+    },
+    [1753] = { -- Seat of the Triumvirate
+        -- Boss
+        { -- Coalesced Void NPC
+            text = format(L["Prevent {npc:%d} from reaching the first boss {npc:%d}."], 122716, 122313),
+            tags = "[important][creature_root][creature_slow][creature_grip]",
+        }, { -- Shadow Pounce
+            text = format(L["{spell:%d} debuff is inflicted on the second boss {npc:%d}."], 245742, 122316),
+            tags = "[bleed]",
+        }, { -- Mind Flay
+            text = format(L["{spell:%d} is channeled by {npc:%d} on the third boss {npc:%d}."], 1268733, 122827, 124309),
+            tags = "[creature_stun][creature_fear][creature_incapacitate]",
+        }, -- Trash
+        { -- Abyssal Enhancement
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1252909, 122404),
+            tags = "[super_important][purge]",
+        }, { -- Chains of Subjugation
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1262509, 124171),
+            tags = "[important][slow][snare]",
+        }, { -- Devouring Frenzy
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1264678, 255320),
+            tags = "[important][creature_mortal_strike]",
+        }, { -- Battle Rage
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1264036, 122403),
+            tags = "[enrage]",
+        }, { -- Shadowmend
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1277339, 122413),
+            tags = "[creature_stun][creature_fear][creature_incapacitate][creature_grip]",
+        },
+    },
+    [1209] = { -- Skyreach
+        -- Boss
+        { -- Fan of Blades
+            text = format(L["{spell:%d} debuff is inflicted on the first boss {npc:%d}."], 153757, 75964),
+            tags = "[bleed]",
+        }, { -- Sunwings npc
+            text = format(L["Slow {npc:%d} on the third boss {npc:%d}."], 76227, 76379),
+            tags = "[creature_slow][creature_root][creature_grip]",
+        }, { -- Solar Zealot NPC
+            text = format(L["Stun {npc:%d} on the last boss {npc:%d}."], 76267, 76266),
+            tags = "[creature_stun][creature_fear][creature_incapacitate]",
+        }, -- Trash
+        { -- Blade Rush
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1254475, 79303),
+            tags = "[important][bleed]",
+        }, { -- Mark of Death
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1254686, 76154),
+            tags = "[important][creature_stun][creature_fear][creature_incapacitate]",
+        }, { -- Solar Barrier
+            text = format(L["{spell:%d} buff is cast by {npc:%d}."], 1273356, 79462),
+            tags = "[important][purge]",
+        }, { -- Bloodcrazed
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1254690, 79093),
+            tags = "[creature_slow][creature_root]",
+        }, { -- Rushing Winds
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1254670, 78096),
+            tags = "[purge]",
+        }, { -- Wrathful Wind
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1254678, 250992),
+            tags = "[enrage]",
+        },
+    },
+    [2805] = { -- Windrunner Spire
+        -- Boss
+        { -- Curse of Darkness
+            text = format(L["{spell:%d} debuff is inflicted by the second boss {npc:%d}."], 1215803, 231626),
+            tags = "[super_important][curse]",
+        }, { -- Intimidating Shout
+            text = format(
+              L["{spell:%d} debuff is inflicted by the third boss {npc:%d}. Also, this debuff can be avoided."],
+              1253030, 231631),
+            tags = "[fear]",
+        }, -- Trash
+        { -- Emphemeral Bloodlust
+            text = format(L["{spell:%d} buff is cast by {npc:%d}."], 1216459, 232146),
+            tags = "[important][enrage]",
+        }, { -- Arrow Rain
+            text = format(L["{spell:%d} is channeled by {npc:%d}."], 1216449, 238035),
+            tags = "[creature_stun][creature_incapacitate][creature_grip]",
+        }, { -- Bolstering Flames
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1216860, 236891),
+            tags = "[important][purge]",
+        }, { -- Ferocious Pounce
+            text = format(L["{spell:%d} is cast by {npc:%d}."], 1217010, 232063),
+            tags = "[creature_stun][creature_fear][creature_incapacitate][creature_grip]",
+        }, { -- Gore Whirl
+            text = format(L["{spell:%d} is channeled by {npc:%d}."], 1216637, 232147),
+            tags = "[creature_stun][creature_incapacitate][creature_grip]",
+        }, { -- Poison Spray
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1216822, 232067),
+            tags = "[poison]",
+        }, { -- Puncturing Bite
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1216985, 232063),
+            tags = "[bleed]",
+        }, { -- Shred Flesh
+            text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1253739, 232283),
+            tags = "[bleed]",
+        },
+    },
+}

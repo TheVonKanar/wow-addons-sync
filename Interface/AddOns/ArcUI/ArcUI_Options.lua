@@ -23,8 +23,10 @@ if not AceConfigDialog._arcUIHooked then
     hooksecurefunc(AceConfigDialog, "Close", function(self, appName)
         if appName == "ArcUI" then
             ns._arcUIOptionsOpen = false
-            -- NOTE: ns.optionsPanelOpen is set by CDM_Shared.SetPanelState()
-            -- Do NOT set it here or CDM_Shared's guard blocks all callbacks
+            -- Fire registered panel callbacks (ArcAurasCooldown, SpellUsability, etc.)
+            if ns.CDMShared and ns.CDMShared.FirePanelCallbacks then
+                ns.CDMShared.FirePanelCallbacks(false)
+            end
             if ns.CDMGroups and ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.OnOptionsPanelClosed then
                 ns.CDMGroups.DynamicLayout.OnOptionsPanelClosed()
             end
@@ -38,14 +40,23 @@ if not AceConfigDialog._arcUIHooked then
     -- Hook Open (backup - we also call directly in OpenOptions)
     hooksecurefunc(AceConfigDialog, "Open", function(self, appName)
         if appName == "ArcUI" then
+            local wasOpen = ns._arcUIOptionsOpen
             ns._arcUIOptionsOpen = true
-            -- NOTE: ns.optionsPanelOpen is set by CDM_Shared.SetPanelState()
-            if ns.CDMGroups and ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened then
-                ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened()
-            end
-            -- IMMEDIATE: All panel-open logic (borders, scan, drag, visuals)
-            if ns.CDMGroups and ns.CDMGroups.OnArcUIPanelChanged then
-                ns.CDMGroups.OnArcUIPanelChanged(true)
+            -- Only fire layout/restore callbacks on actual open (closed → open).
+            -- NotifyChange causes AceConfig to call Open again while already open,
+            -- which would re-run Layout+RestoreIconsToSavedPositions on every UI rebuild.
+            if not wasOpen then
+                -- Fire registered panel callbacks (ArcAurasCooldown, SpellUsability, etc.)
+                if ns.CDMShared and ns.CDMShared.FirePanelCallbacks then
+                    ns.CDMShared.FirePanelCallbacks(true)
+                end
+                if ns.CDMGroups and ns.CDMGroups.DynamicLayout and ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened then
+                    ns.CDMGroups.DynamicLayout.OnOptionsPanelOpened()
+                end
+                -- IMMEDIATE: All panel-open logic (borders, scan, drag, visuals)
+                if ns.CDMGroups and ns.CDMGroups.OnArcUIPanelChanged then
+                    ns.CDMGroups.OnArcUIPanelChanged(true)
+                end
             end
         end
     end)
@@ -203,7 +214,10 @@ ns.API.OpenOptions = function()
           
           -- Clear options open flag (backup - Close hook also does this)
           ns._arcUIOptionsOpen = false
-          -- NOTE: ns.optionsPanelOpen is set by CDM_Shared.SetPanelState()
+          -- Fire registered panel callbacks (backup path)
+          if ns.CDMShared and ns.CDMShared.FirePanelCallbacks then
+              ns.CDMShared.FirePanelCallbacks(false)
+          end
           
           -- BACKUP: Run panel-close logic if Close hook didn't fire
           -- (e.g. Escape key, other addons closing the frame)
@@ -326,14 +340,14 @@ local function GetOptionsTable()
             },
           },
           
-          -- Profile Manager tab
-          importExport = (function()
-            local tbl = ns.GetCDMImportExportOptionsTable and ns.GetCDMImportExportOptionsTable() or {
+          -- Extras tab (Keybind Display, Assisted Combat Highlight, Button Press Highlight)
+          extras = (function()
+            local tbl = ns.GetCDMUtilitiesOptionsTable and ns.GetCDMUtilitiesOptionsTable() or {
               type = "group",
-              name = "Profile Manager",
+              name = "Extras",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "Profile Manager"
+            tbl.name = "Extras"
             tbl.order = 4
             return tbl
           end)(),
@@ -348,6 +362,31 @@ local function GetOptionsTable()
             tbl.name = "Arc Auras"
             tbl.order = 5
             return tbl
+          end)(),
+          
+          profileManager = (function()
+            local tbl = ns.GetCDMImportExportOptionsTable and ns.GetCDMImportExportOptionsTable() or {
+              type = "group",
+              name = "Profile Manager",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Profile Manager"
+            tbl.order = 6
+            return tbl
+          end)(),
+          
+          sharing = (function()
+            if ns.CDMSharedProfiles and ns.CDMSharedProfiles.GetOptionsTable then
+              local tbl = ns.CDMSharedProfiles.GetOptionsTable()
+              tbl.order = 7
+              return tbl
+            end
+            return {
+              type = "group",
+              name = "Sharing",
+              order = 7,
+              args = { loading = { type = "description", name = "Loading...", order = 1 } },
+            }
           end)(),
         },
       },
@@ -397,17 +436,6 @@ local function GetOptionsTable()
             tbl.order = 3
             return tbl
           end)(),
-          
-          importExport = (function()
-            local tbl = ns.GetBarsImportExportOptionsTable and ns.GetBarsImportExportOptionsTable() or {
-              type = "group",
-              name = "Import/Export",
-              args = { loading = { type = "description", name = "Loading...", order = 1 } }
-            }
-            tbl.name = "Import/Export"
-            tbl.order = 4
-            return tbl
-          end)(),
         },
       },
       
@@ -438,46 +466,38 @@ local function GetOptionsTable()
             tbl.order = 2
             return tbl
           end)(),
-          
-          importExport = (function()
-            local tbl = ns.GetBarsImportExportOptionsTable and ns.GetBarsImportExportOptionsTable() or {
-              type = "group",
-              name = "Import/Export",
-              args = { loading = { type = "description", name = "Loading...", order = 1 } }
-            }
-            tbl.name = "Import/Export"
-            tbl.order = 3
-            return tbl
-          end)(),
         },
       },
       
       -- ═══════════════════════════════════════════════════════════════
-      -- MASTER EXPORT (top-level tab)
+      -- IMPORT / EXPORT (Master Export, CDM Import/Export, Bars Import/Export)
       -- ═══════════════════════════════════════════════════════════════
-      masterExport = {
+      importExport = {
         type = "group",
-        name = "Master Export",
+        name = "Import/Export",
         order = 4,
+        childGroups = "tab",
         args = {
-          comingSoonHeader = {
-            type = "header",
-            name = "Master Export",
-            order = 1,
-          },
-          comingSoonDesc = {
-            type = "description",
-            name = "|cffffd100Master Export|r lets you pick individual Arc Manager profiles from any character and spec, then bundle them into a single export string.\n\n" ..
-                   "|cff00ccffFeatures:|r\n" ..
-                   "1. Browse all your characters and specs in one place\n" ..
-                   "2. Cherry-pick individual profiles to export\n" ..
-                   "3. Export Icons (CDM) and Bars together in a single string\n" ..
-                   "4. Import on any character — profiles for your class merge directly, other classes are stored and auto-applied when you log that class\n" ..
-                   "5. Same-account profile loader — easily copy your main's setup to alts of the same class/spec without needing an export string\n\n" ..
-                   "|cffff8800Coming in the next update!|r",
-            order = 2,
-            fontSize = "medium",
-          },
+          masterExport = (function()
+            local tbl = ns.GetCDMMasterExportOptionsTable and ns.GetCDMMasterExportOptionsTable() or {
+              type = "group",
+              name = "Master Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Master Export"
+            tbl.order = 1
+            return tbl
+          end)(),
+          barsImportExport = (function()
+            local tbl = ns.GetBarsImportExportOptionsTable and ns.GetBarsImportExportOptionsTable() or {
+              type = "group",
+              name = "Bars Import/Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Bars Import/Export"
+            tbl.order = 2
+            return tbl
+          end)(),
         },
       },
       
@@ -691,7 +711,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
-        AceConfigDialog:SelectGroup("ArcUI", "icons", "importExport")
+        AceConfigDialog:SelectGroup("ArcUI", "icons", "profileManager")
       end)
     else
       print("|cff00ccffArc UI|r Options not ready yet.")
@@ -701,7 +721,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
-        AceConfigDialog:SelectGroup("ArcUI", "icons", "importExport")
+        AceConfigDialog:SelectGroup("ArcUI", "icons", "profileManager")
       end)
     else
       print("|cff00ccffArc UI|r Options not ready yet.")

@@ -5,8 +5,8 @@ https://www.wowace.com/projects/libbuttonglow-1-0
 
 -- luacheck: globals CreateFromMixins ObjectPoolMixin CreateTexturePool CreateFramePool
 
-local MAJOR_VERSION = "LibCustomGlow-1.0"
-local MINOR_VERSION = 25
+local MAJOR_VERSION = "ArcGlow-1.0"
+local MINOR_VERSION = 26
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -556,12 +556,17 @@ end
 local function bgHide(self)
     if self.animOut:IsPlaying() then
         self.animOut:Stop()
-        ButtonGlowPool:Release(self)
+        if not self._arcReleased then
+            self._arcReleased = true
+            ButtonGlowPool:Release(self)
+        end
     end
 end
 
 local function bgUpdate(self, elapsed)
     AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);
+    -- ArcUI: skip alpha override when external forced alpha is active (secret-safe threshold curves)
+    if self._arcForceAlpha then return end
     local cooldown = self:GetParent().cooldown;
     local duration = cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration()
     if((not issecretvalue or not issecretvalue(duration)) and duration and duration > 3000) then
@@ -640,7 +645,13 @@ local function configureButtonGlow(f,alpha)
     CreateAlphaAnim(f.animOut, "ants",          1, 0.2, alpha, 0, nil, false)
     CreateAlphaAnim(f.animOut, "outerGlowOver", 2, 0.2, alpha, 0, nil, false)
     CreateAlphaAnim(f.animOut, "outerGlow",     2, 0.2, alpha, 0, nil, false)
-    f.animOut:SetScript("OnFinished", function(self) ButtonGlowPool:Release(self:GetParent())  end)
+    f.animOut:SetScript("OnFinished", function(self)
+        local glow = self:GetParent()
+        if not glow._arcReleased then
+            glow._arcReleased = true
+            ButtonGlowPool:Release(glow)
+        end
+    end)
 
     f:SetScript("OnHide", bgHide)
 end
@@ -685,6 +696,7 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
     local glowRef = r["_ButtonGlow"..key]
     if glowRef then
         local f = glowRef
+        f._arcReleased = nil  -- Clear release guard (frame is active)
         local width,height = r:GetSize()
         f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
         f:SetSize(width*1.4 , height*1.4)
@@ -701,8 +713,10 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
             for texture in pairs(ButtonGlowTextures) do
                 f[texture]:SetDesaturated(nil)
                 f[texture]:SetVertexColor(1,1,1)
-                local alpha = math.min(f[texture]:GetAlpha()/noZero(f.color and f.color[4] or 1), 1)
-                f[texture]:SetAlpha(alpha)
+                local ok, alpha = pcall(function()
+                    return math.min(f[texture]:GetAlpha()/noZero(f.color and f.color[4] or 1), 1)
+                end)
+                if ok then f[texture]:SetAlpha(alpha) end
                 updateAlphaAnim(f, 1)
             end
             f.color = false
@@ -715,8 +729,10 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
                 else
                     f[texture]:SetVertexColor(color[1],color[2],color[3])
                 end
-                local alpha = math.min(f[texture]:GetAlpha()/noZero(f.color and f.color[4] or 1)*color[4], 1)
-                f[texture]:SetAlpha(alpha)
+                local ok, alpha = pcall(function()
+                    return math.min(f[texture]:GetAlpha()/noZero(f.color and f.color[4] or 1)*color[4], 1)
+                end)
+                if ok then f[texture]:SetAlpha(alpha) end
                 updateAlphaAnim(f,color and color[4] or 1)
             end
             f.color = color
@@ -724,6 +740,7 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
         f.throttle = throttle
     else
         local f, new = ButtonGlowPool:Acquire()
+        f._arcReleased = nil  -- Clear release guard (frame is active)
         if new then
             configureButtonGlow(f,color and color[4] or 1)
         else
@@ -781,11 +798,17 @@ function lib.ButtonGlow_Stop(r,key)
             -- Do nothing the animOut finishing will release
         elseif f.animIn:IsPlaying() then
             f.animIn:Stop()
-            ButtonGlowPool:Release(f)
+            if not f._arcReleased then
+                f._arcReleased = true
+                ButtonGlowPool:Release(f)
+            end
         elseif r:IsVisible() then
             f.animOut:Play()
         else
-            ButtonGlowPool:Release(f)
+            if not f._arcReleased then
+                f._arcReleased = true
+                ButtonGlowPool:Release(f)
+            end
         end
     end
 end

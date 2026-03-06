@@ -2361,7 +2361,43 @@ function DUIDialogBaseMixin:HideUI(cancelPopupFirst, fromPressingKey)
     self:Hide();
 end
 
+
+local GhostCatcher = CreateFrame("Frame");
+do  --GhostCatcher
+    --How does one catch a ghost?
+    --C Stack Overflow reported by https://legacy.curseforge.com/members/kaanumay
+
+    function GhostCatcher:MainFrameStartHiding()
+        if self.isHiding then
+            return true
+        end
+
+        MainFrame:SetScript("OnHide", nil);
+        self.isHiding = true;
+        self.t = 0;
+        self:SetScript("OnUpdate", self.OnUpdate);
+
+        return false
+    end
+
+    function GhostCatcher:MainFrameOnShow()
+        self.isHiding = nil;
+        self.t = 0;
+        self:SetScript("OnUpdate", nil);
+        MainFrame:SetScript("OnHide", DUIDialogBaseMixin.OnHide);
+    end
+
+    function GhostCatcher:OnUpdate(elapsed)
+        self.isHiding = nil;
+        self.t = 0;
+        self:SetScript("OnUpdate", nil);
+    end
+end
+
+
 function DUIDialogBaseMixin:OnShow()
+    GhostCatcher:MainFrameOnShow();
+
     KeyboardControl:SetParentFrame(self);
 
     self:RegisterEvent("GOSSIP_SHOW");
@@ -2398,6 +2434,9 @@ function DUIDialogBaseMixin:CloseDialogInteraction()
 end
 
 function DUIDialogBaseMixin:OnHide()
+    if GhostCatcher:MainFrameStartHiding() then return end;
+
+    self:Hide();
     CameraUtil:Restore();
 
     self:CloseDialogInteraction();
@@ -2452,7 +2491,6 @@ end
 function DUIDialogBaseMixin:OnMouseUp(button)
     if button == "RightButton" and GetDBBool("RightClickToCloseUI") and self:IsMouseMotionFocus() then
         self:Hide();
-        --self:CloseDialogInteraction();
     end
 end
 
@@ -2508,7 +2546,7 @@ function DUIDialogBaseMixin:UpdateRewards()
             if f.t > 0.5 then
                 f.t = nil;
                 f:SetScript("OnUpdate", nil);
-                if self.questLayout and self.handler then
+                if self.questLayout and self.handler and self:IsShown() then
                     self[self.handler](self);
                 end
             end
@@ -2562,7 +2600,7 @@ function DUIDialogBaseMixin:OnEvent(event, ...)
         CallbackRegistry:Trigger("PlayerInteraction.ShowUI", true);
     elseif event == "LOADING_SCREEN_DISABLED" then  --not reliable on the intial login
         self:UnregisterEvent(event);
-        C_Timer.After(4, function()
+        After(4, function()
             self.isGameLoading = nil;
             self:HandleInitialLoadingComplete();
         end);
@@ -3045,10 +3083,11 @@ do  --Quest Rewards
                 offsetY = fromOffsetY + (itemButtonHeight + ITEM_BUTTON_SPACING) * numRows - ITEM_BUTTON_SPACING;
                 offsetY = offsetY + PARAGRAPH_SPACING;
 
-                if #rewardList > 1 then
-                    offsetY = self:InsertText(offsetY, REWARD_ITEMS);	--You will also receive
-                    offsetY = offsetY + ITEM_BUTTON_SPACING;
-                end
+                --Title is already added to the rewardList
+                --if #rewardList > 1 then
+                    --offsetY = self:InsertText(offsetY, REWARD_ITEMS);	--You will also receive
+                    --offsetY = offsetY + ITEM_BUTTON_SPACING;
+                --end
 
                 if isChoosingReward then
                     self:RequestSellPrice();

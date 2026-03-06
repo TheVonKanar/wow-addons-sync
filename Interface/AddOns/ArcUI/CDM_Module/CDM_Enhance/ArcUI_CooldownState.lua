@@ -60,6 +60,9 @@ local SetGlowAlpha
 local ShouldShowReadyGlow
 local ApplyBorderDesaturation
 local HideAuraActiveGlow
+local ShowAuraActiveGlow
+local ShouldShowAuraActiveGlow
+local EvaluateAuraActiveGlow
 
 local resolved = false
 
@@ -72,11 +75,13 @@ local function ResolveDependencies()
   GetEffectiveReadyAlpha      = CDM.GetEffectiveReadyAlpha
   GetGlowThresholdCurve       = CDM.GetGlowThresholdCurve
   ShowReadyGlow               = CDM.ShowReadyGlow
-  HideReadyGlow               = CDM.HideReadyGlow or function() end
+  HideReadyGlow               = CDM.HideReadyGlow       or function() end
   SetGlowAlpha                = CDM.SetGlowAlpha
   ShouldShowReadyGlow         = CDM.ShouldShowReadyGlow
   ApplyBorderDesaturation     = CDM.ApplyBorderDesaturation
-  HideAuraActiveGlow          = CDM.HideAuraActiveGlow or function() end
+  HideAuraActiveGlow          = CDM.HideAuraActiveGlow       or function() end
+  ShowAuraActiveGlow          = CDM.ShowAuraActiveGlow       or function() end
+  ShouldShowAuraActiveGlow    = CDM.ShouldShowAuraActiveGlow or function() return false end
 
   resolved = true
   return true
@@ -309,6 +314,11 @@ end
 local function EnsureShadowCooldown(frame)
   if not frame._arcCDMShadowCooldown then
     frame._arcCDMShadowCooldown = CreateInvisibleCooldown(frame)
+    -- Initialize as idle so GlobalCooldownSweep auto-stop works on first pass.
+    -- nil means "never evaluated" which the sweep treats as active (keeps ticker running).
+    frame._arcLastShadowShown  = false
+    frame._arcLastChargeShown  = false
+    frame._arcLastIsOnGCD      = false
 
     -- OnCooldownDone: natural timer expiry
     -- DEFERRED: WoW fires OnCooldownDone before IsShown() updates to false.
@@ -361,8 +371,8 @@ FeedShadowCooldown = function(frame, spellID)
   -- visuals, and kill any stale ready glow from the previous spell immediately.
   local prevSpellID = frame._arcShadowFedSpellID
   if prevSpellID and prevSpellID ~= spellID then
-    frame._arcLastShadowShown = nil
-    frame._arcLastChargeShown = nil
+    frame._arcLastShadowShown = false
+    frame._arcLastChargeShown = false
     if frame._arcReadyGlowActive and ns.CDMEnhance and ns.CDMEnhance.HideReadyGlow then
       ns.CDMEnhance.HideReadyGlow(frame)
     end
@@ -372,10 +382,18 @@ FeedShadowCooldown = function(frame, spellID)
   local shadowCD, chargeShadow = EnsureShadowCooldown(frame)
 
   local isOnGCD = nil
+  local isChargeSpell = false
   pcall(function()
     local cdInfo = C_Spell.GetSpellCooldown(spellID)
     if cdInfo and cdInfo.isOnGCD == true then isOnGCD = true end
   end)
+  pcall(function() isChargeSpell = C_Spell.GetSpellCharges(spellID) ~= nil end)
+
+  -- Cache both values so all handlers in this dispatch cycle read consistent state.
+  -- _arcIsChargeSpellCached updated here (not just at EnhanceFrame time) so linked-spell
+  -- frames that swap spells without a new cdID always reflect the current spell's charge type.
+  frame._arcLastIsOnGCD       = (isOnGCD == true)
+  frame._arcIsChargeSpellCached = isChargeSpell
 
   if isOnGCD then
     shadowCD:SetCooldown(0, 0)
@@ -421,22 +439,14 @@ local function GetBinaryCooldownState(frame, isChargeSpell)
   return isOnCooldown, isRecharging
 end
 
-local function GetCooldownFlags(spellID)
-  if not spellID then return nil, false end
-  local isOnGCD = nil
-  pcall(function()
-    local cdInfo = C_Spell.GetSpellCooldown(spellID)
-    if cdInfo and cdInfo.isOnGCD == true then isOnGCD = true end
-  end)
-  local isChargeSpell = false
-  pcall(function()
-    isChargeSpell = C_Spell.GetSpellCharges(spellID) ~= nil
-  end)
-  return isOnGCD, isChargeSpell
-end
-
+-- ReadCooldownState: reads only cached values — no live API calls.
+-- isOnGCD:       written by FeedShadowCooldown (runs first every dispatch cycle).
+-- isChargeSpell: written by FeedShadowCooldown (updated every feed, so linked-spell
+--                frames that swap spells always reflect the current spell's charge type).
+-- GetBinaryCooldownState: reads shadow IsShown() — always non-secret, zero API cost.
 local function ReadCooldownState(frame, spellID)
-  local isOnGCD, isChargeSpell = GetCooldownFlags(spellID)
+  local isOnGCD       = frame._arcLastIsOnGCD         -- bool, cached by FeedShadow
+  local isChargeSpell = frame._arcIsChargeSpellCached or false  -- cached at enhance time
   local isOnCooldown, isRecharging = GetBinaryCooldownState(frame, isChargeSpell)
   return isOnCooldown, isRecharging, isChargeSpell, isOnGCD
 end
@@ -448,6 +458,8 @@ local function GetUsabilityAlpha(frame, spellID, cfg)
   if not spellID then return nil end
   local su = cfg and cfg.spellUsability
   if not su or not su.enabled then return nil end
+  -- Proc override: if a proc glow is active and the setting is enabled, skip usability dimming
+  if frame._arcProcGlowActive and su.procOverride then return nil end
   if frame.spellOutOfRange then
     local ri = cfg and cfg.rangeIndicator
     local rangeEnabled = not ri or ri.enabled ~= false
@@ -484,6 +496,10 @@ local function ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlphaOverr
   if usabilityAlphaOverride then
     effectiveReadyAlpha = usabilityAlphaOverride
   end
+  -- Proc override: if a proc glow is active and the setting is enabled, show at full alpha
+  if frame._arcProcGlowActive and stateVisuals and stateVisuals.readyProcOverride then
+    effectiveReadyAlpha = 1.0
+  end
   effectiveReadyAlpha = PreviewClampAlpha(effectiveReadyAlpha)
   frame._arcTargetAlpha = nil
   if effectiveReadyAlpha < 1.0 then
@@ -512,6 +528,10 @@ end
 -- ═══════════════════════════════════════════════════════════════════
 local function ApplyCooldownAlpha(frame, stateVisuals)
   local cdAlpha = stateVisuals.cooldownAlpha or 1.0
+  -- Proc override: if a proc glow is active and the setting is enabled, show at full alpha
+  if frame._arcProcGlowActive and stateVisuals.cooldownProcOverride then
+    cdAlpha = 1.0
+  end
   cdAlpha = PreviewClampAlpha(cdAlpha)
   frame._arcEnforceReadyAlpha = false
   frame._arcReadyAlphaValue = nil
@@ -577,6 +597,71 @@ local function ApplyReadyGlow(frame, stateVisuals)
     HideReadyGlow(frame)
   end
 end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SINGLE SOURCE OF TRUTH: Swipe/Edge decision + apply
+--
+-- All paths (IAO, CooldownLogic, and the OnCooldownEvent enforcer)
+-- call this one function. No decision logic lives anywhere else.
+--
+-- ownWhenReady = true  → IAO frames: suppress swipe at ready/GCD-show
+--                        (prevents aura-duration swipe bleeding through)
+-- ownWhenReady = false → Normal CD frames: release to CDM when ready
+-- ═══════════════════════════════════════════════════════════════════
+local function DecideAndApplySwipeEdge(frame, cfg, isOnCooldown, isRecharging, isChargeSpell, isOnGCD, ownWhenReady)
+  if not frame.Cooldown then return end
+  local swipeCfg       = cfg.cooldownSwipe
+  local userWantsSwipe = not swipeCfg or swipeCfg.showSwipe ~= false
+  local userWantsEdge  = not swipeCfg or swipeCfg.showEdge  ~= false
+  local noGCDSwipe     = swipeCfg and swipeCfg.noGCDSwipe
+  local wantSwipe, wantEdge
+
+  if isChargeSpell then
+    local swipeWait    = swipeCfg and swipeCfg.swipeWaitForNoCharges
+    local edgeWait     = swipeCfg and swipeCfg.edgeWaitForNoCharges
+    local hasWaitFlags = swipeWait or edgeWait
+    if isOnCooldown then
+      wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
+    elseif isRecharging then
+      wantSwipe = not swipeWait and userWantsSwipe
+      wantEdge  = not edgeWait  and userWantsEdge
+    elseif isOnGCD then
+      if noGCDSwipe then
+        wantSwipe = false; wantEdge = false       -- hide GCD swipe
+      else
+        wantSwipe = nil; wantEdge = nil           -- release to CDM for GCD swipe
+      end
+    elseif noGCDSwipe or hasWaitFlags or ownWhenReady then
+      wantSwipe = false; wantEdge = false
+    else
+      wantSwipe = nil; wantEdge = nil
+    end
+  else
+    if isOnCooldown then
+      wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
+    elseif isOnGCD then
+      if noGCDSwipe then
+        wantSwipe = false; wantEdge = false       -- hide GCD swipe
+      else
+        wantSwipe = nil; wantEdge = nil           -- release to CDM for GCD swipe
+      end
+    elseif ownWhenReady then
+      wantSwipe = false; wantEdge = false
+    else
+      wantSwipe = nil; wantEdge = nil
+    end
+  end
+
+  frame._arcDesiredSwipe = wantSwipe
+  frame._arcDesiredEdge  = wantEdge
+  if wantSwipe ~= nil then
+    frame._arcBypassSwipeHook = true
+    frame.Cooldown:SetDrawSwipe(wantSwipe)
+    frame.Cooldown:SetDrawEdge(wantEdge)
+    frame._arcBypassSwipeHook = false
+  end
+end
+
 
 -- ═══════════════════════════════════════════════════════════════════
 -- PATH A: Ignore Aura Override (binary)
@@ -659,40 +744,11 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
   -- CHARGE-CONDITIONAL TEXT (hideAtZero / hideWhenHasCharges)
   ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
 
-  -- SWIPE/EDGE
-  -- IAO frames MUST control swipe regardless of Masque — IAO is about showing
-  -- spell cooldown instead of aura duration, so we need explicit swipe control
-  -- to prevent GCD swipes from showing through.
-  if frame.Cooldown then
-    local swipeCfg = cfg.cooldownSwipe
-    local userWantsSwipe = not swipeCfg or swipeCfg.showSwipe ~= false
-    local userWantsEdge  = not swipeCfg or swipeCfg.showEdge  ~= false
-    local wantSwipe, wantEdge
-    if isChargeSpell then
-      local swipeWait = swipeCfg and swipeCfg.swipeWaitForNoCharges
-      local edgeWait  = swipeCfg and swipeCfg.edgeWaitForNoCharges
-      if isOnCooldown then
-        wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
-      elseif isRecharging then
-        wantSwipe = userWantsSwipe and not swipeWait
-        wantEdge  = userWantsEdge and not edgeWait
-      else
-        wantSwipe = false; wantEdge = false
-      end
-    else
-      if isOnCooldown then
-        wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
-      else
-        wantSwipe = false; wantEdge = false
-      end
-    end
-    frame._arcDesiredSwipe = wantSwipe
-    frame._arcDesiredEdge  = wantEdge
-    frame._arcBypassSwipeHook = true
-    frame.Cooldown:SetDrawSwipe(wantSwipe)
-    frame.Cooldown:SetDrawEdge(wantEdge)
-    frame._arcBypassSwipeHook = false
-  end
+  -- SWIPE/EDGE — single source of truth
+  DecideAndApplySwipeEdge(frame, cfg, isOnCooldown, isRecharging, isChargeSpell, isOnGCD, true)
+
+  -- AURA ACTIVE GLOW
+  EvaluateAuraActiveGlow(frame, cfg)
 end
 
 
@@ -873,6 +929,27 @@ end
 
 
 -- ═══════════════════════════════════════════════════════════════════
+-- SHARED: Aura active glow evaluation for cooldown frames
+-- Used by both HandleCooldownLogic and HandleIgnoreAuraOverride.
+-- CDM sets frame.auraInstanceID when the aura is active — use that
+-- directly rather than any spell-readiness proxy.
+-- ═══════════════════════════════════════════════════════════════════
+EvaluateAuraActiveGlow = function(frame, cfg)
+  local aaCfg = cfg.auraActiveState
+  if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+    local isActive = HasAuraInstanceID(frame.auraInstanceID) or (frame.totemData ~= nil)
+    if ShouldShowAuraActiveGlow(aaCfg, frame, isActive) then
+      ShowAuraActiveGlow(frame, aaCfg)
+    else
+      HideAuraActiveGlow(frame)
+    end
+  elseif frame._arcAuraActiveGlowActive then
+    HideAuraActiveGlow(frame)
+  end
+end
+
+
+-- ═══════════════════════════════════════════════════════════════════
 -- PATH C: Cooldown Logic — BINARY (matches ArcAuras pattern)
 -- ═══════════════════════════════════════════════════════════════════
 local function HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
@@ -935,52 +1012,11 @@ local function HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
   -- CHARGE-CONDITIONAL TEXT (hideAtZero / hideWhenHasCharges)
   ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRecharging, isOnCooldown)
 
-  -- SWIPE/EDGE
-  local masqueControlsCD = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns
-    and ns.Masque.ShouldMasqueControlCooldowns()
-  if masqueControlsCD then
-    frame._arcDesiredSwipe = nil
-    frame._arcDesiredEdge  = nil
-  elseif frame.Cooldown then
-    local swipeCfg = cfg.cooldownSwipe
-    local userWantsSwipe = not swipeCfg or swipeCfg.showSwipe ~= false
-    local userWantsEdge  = not swipeCfg or swipeCfg.showEdge  ~= false
-    local noGCDSwipe = swipeCfg and swipeCfg.noGCDSwipe
-    local wantSwipe, wantEdge
+  -- SWIPE/EDGE — single source of truth
+  DecideAndApplySwipeEdge(frame, cfg, isOnCooldown, isRecharging, isChargeSpell, isOnGCD, false)
 
-    if isChargeSpell then
-      local swipeWait = swipeCfg and swipeCfg.swipeWaitForNoCharges
-      local edgeWait  = swipeCfg and swipeCfg.edgeWaitForNoCharges
-      local hasWaitFlags = swipeWait or edgeWait
-      if isOnCooldown then
-        wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
-      elseif isRecharging then
-        wantSwipe = not swipeWait and userWantsSwipe
-        wantEdge  = not edgeWait and userWantsEdge
-      elseif noGCDSwipe or hasWaitFlags then
-        wantSwipe = false; wantEdge = false
-      else
-        wantSwipe = nil; wantEdge = nil
-      end
-    else
-      if isOnCooldown then
-        wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
-      elseif noGCDSwipe and isOnGCD then
-        wantSwipe = false; wantEdge = false
-      else
-        wantSwipe = nil; wantEdge = nil
-      end
-    end
-
-    frame._arcDesiredSwipe = wantSwipe
-    frame._arcDesiredEdge  = wantEdge
-    if wantSwipe ~= nil then
-      frame._arcBypassSwipeHook = true
-      frame.Cooldown:SetDrawSwipe(wantSwipe)
-      frame.Cooldown:SetDrawEdge(wantEdge)
-      frame._arcBypassSwipeHook = false
-    end
-  end
+  -- AURA ACTIVE GLOW
+  EvaluateAuraActiveGlow(frame, cfg)
 end
 
 

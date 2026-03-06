@@ -216,6 +216,39 @@ local function OnClearAllPoints_Free(self)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- VISIBILITY HOOKS: Fight CDM's SetShown(false) / Hide() on managed frames
+-- CDM calls these during rearrangement while its settings panel is open.
+-- Post-hooks immediately re-Show the frame if it should be visible.
+-- ═══════════════════════════════════════════════════════════════════════════
+local function OnSetShown_Managed(self, shown)
+    if shown then return end  -- Only fight SetShown(false)
+    if self._arcAllowHide then return end  -- ArcUI cleanup
+    if self._arcHiddenByBar or self._arcHiddenUnequipped or self._arcSlotEmpty then return end
+    if self._groupDragging or self._freeDragging then return end
+    
+    -- Check: is this frame still managed by us?
+    local parent = self:GetParent()
+    local isGrouped = parent and parent._isCDMGContainer
+    local isFree = self._cdmgIsFreeIcon
+    if not isGrouped and not isFree then return end
+    
+    self:Show()
+end
+
+local function OnHide_Managed(self)
+    if self._arcAllowHide then return end
+    if self._arcHiddenByBar or self._arcHiddenUnequipped or self._arcSlotEmpty then return end
+    if self._groupDragging or self._freeDragging then return end
+    
+    local parent = self:GetParent()
+    local isGrouped = parent and parent._isCDMGContainer
+    local isFree = self._cdmgIsFreeIcon
+    if not isGrouped and not isFree then return end
+    
+    self:Show()
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- Wrap callbacks for profiler tracking (nil-safe if profiler not loaded)
 -- ═══════════════════════════════════════════════════════════════════════════
 local TrackedClearAllPoints  = Track and Track("Maintain.ClearAllPoints",  OnClearAllPoints_Grouped) or OnClearAllPoints_Grouped
@@ -224,6 +257,8 @@ local TrackedSetSize         = Track and Track("Maintain.SetSize",         OnSet
 local TrackedSetFrameStrata  = Track and Track("Maintain.SetFrameStrata",  OnSetFrameStrata) or OnSetFrameStrata
 local TrackedSetParent       = Track and Track("Maintain.SetParent",       OnSetParent) or OnSetParent
 local TrackedClearAllPointsF = Track and Track("Maintain.ClearAllPointsF", OnClearAllPoints_Free) or OnClearAllPoints_Free
+local TrackedSetShown        = Track and Track("Maintain.SetShown",        OnSetShown_Managed) or OnSetShown_Managed
+local TrackedHide            = Track and Track("Maintain.Hide",            OnHide_Managed) or OnHide_Managed
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- HOOK INSTALLERS - use tracked callbacks
@@ -271,12 +306,28 @@ local function HookFrameClearAllPointsFree(frame)
     frame._cdmgClearPointsFreeHooked = true
 end
 
+-- Hook SetShown - fight CDM's SetShown(false) on managed frames
+local function HookFrameSetShown(frame)
+    if frame._cdmgSetShownHooked then return end
+    hooksecurefunc(frame, "SetShown", TrackedSetShown)
+    frame._cdmgSetShownHooked = true
+end
+
+-- Hook Hide - fight CDM's Hide() on managed frames
+local function HookFrameHide(frame)
+    if frame._cdmgHideHooked then return end
+    hooksecurefunc(frame, "Hide", TrackedHide)
+    frame._cdmgHideHooked = true
+end
+
 -- Apply all hooks to a grouped frame
 local function HookFrame(frame, targetSize)
     HookFrameClearAllPoints(frame)
     HookFrameScale(frame)
     HookFrameSize(frame, targetSize)
     HookFrameStrata(frame)
+    HookFrameSetShown(frame)
+    HookFrameHide(frame)
     frame._cdmgTargetSize = targetSize
 end
 
@@ -286,6 +337,8 @@ local function HookFreeIcon(frame, iconSize)
     HookFrameSize(frame, iconSize)
     HookFrameParent(frame)
     HookFrameClearAllPointsFree(frame)
+    HookFrameSetShown(frame)
+    HookFrameHide(frame)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -299,6 +352,8 @@ ns.CDMGroups.HookFrameStrata = HookFrameStrata
 ns.CDMGroups.HookFrame = HookFrame
 ns.CDMGroups.HookFrameParent = HookFrameParent
 ns.CDMGroups.HookFrameClearAllPointsFree = HookFrameClearAllPointsFree
+ns.CDMGroups.HookFrameSetShown = HookFrameSetShown
+ns.CDMGroups.HookFrameHide = HookFrameHide
 ns.CDMGroups.HookFreeIcon = HookFreeIcon
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -363,11 +418,14 @@ local function SetupFreeIconFrame(cdID, frame, x, y, iconSize, viewerType, viewe
     -- Install hooks
     frame._cdmgIsFreeIcon = true
     frame._cdmgFreeTargetSize = iconSize
+    frame._arcAllowHide = nil  -- Re-enable visibility guard
     HookFrameScale(frame)
     HookFrameSize(frame, iconSize)
     HookFrameParent(frame)
     HookFrameStrata(frame)
     HookFrameClearAllPointsFree(frame)
+    HookFrameSetShown(frame)
+    HookFrameHide(frame)
     
     -- Update registry
     local entry = Registry.byAddress[tostring(frame)]

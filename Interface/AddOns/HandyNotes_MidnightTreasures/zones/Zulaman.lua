@@ -2,14 +2,11 @@ local myname, ns = ...
 
 --[[ TODO:
 A Most Violent Loa: 62267
-Put a Pin in It: 62199
-Gnome Alone: 62200
 ]]
 
 local AMANI = ns.rewards.Currency(ns.CURRENCY_AMANI, 50)
 
 ns.RegisterPoints(ns.ZULAMAN, {
-	[44724410] = {criteria=111854, quest=90794, loot={{257444, mount=true}}, vignette=6938, note="In cave on the lower level; gather 1000x{item:259361:Vile Essence} nearby"}, -- Abandoned Ritual Skull, Hexed Vilefeather Eagle
 	[46838186] = { -- Honored Warrior's Cache
 		criteria=111855, quest=90793, -- 93560 for interacting with the cache
 		loot={{257223, mount=true}}, -- Ancestral War Bear
@@ -55,16 +52,28 @@ ns.RegisterPoints(ns.ZULAMAN, {
 	achievement=62125,
 })
 
--- ns.RegisterPoints(ns.ATALAMAN, {})
-
 ns.RegisterPoints(ns.ZULAMAN, {
-	-- TODO: this wasn't interactable when I went by on 12/24, so need to check what's in it
-	[44325620] = { -- Ruz'avalt's Prized Tackle
-		label="Ruz'avalt's Prized Tackle",
-		quest=90790,
-		vignette=6934,
+	-- This was removed from the treasures achievement around 20260305:
+	[44724410] = { -- Abandoned Ritual Skull, Hexed Vilefeather Eagle
+		-- criteria=111854,
+		label="Abandoned Ritual Skull",
+		quest=90794,
+		loot={{257444, mount=true}},
+		vignette=6938,
+		note="In cave on the lower level; gather 1000x{item:259361:Vile Essence} nearby"
 	},
 })
+
+-- ns.RegisterPoints(ns.ATALAMAN, {})
+
+-- ns.RegisterPoints(ns.ZULAMAN, {
+-- 	-- TODO: this wasn't interactable when I went by on 12/24, so need to check what's in it
+-- 	[44325620] = { -- Ruz'avalt's Prized Tackle
+-- 		label="Ruz'avalt's Prized Tackle",
+-- 		quest=90790,
+-- 		vignette=6934,
+-- 	},
+-- })
 
 -- Spiritpaw Marathon
 ns.RegisterPoints(ns.ZULAMAN, {
@@ -93,7 +102,7 @@ ns.RegisterPoints(ns.ZULAMAN, {
 	[55031798] = {criteria=109753, label="{npc:254841:Songseeker Ikaja}"},
 }, {
 	achievement=61455,
-	texture=ns.atlas_texture("AncientMana", {r=0, g=1, b=0.5}),
+	texture=ns.atlas_texture("AncientMana", {r=0, g=0, b=1}),
 	minimap=true,
 })
 
@@ -114,7 +123,56 @@ ns.RegisterPoints(ns.ATALAMAN, {
 	[27514003] = {criteria=112446, label="{npc:259682:Princess Jakobu}", parent=true},
 }, FROG)
 
+-- Put a Pin in It
+ns.RegisterPoints(ns.ZULAMAN, {
+	[59247107] = {
+		quest=95005,
+		label="{npc:258933:Chu'ke}",
+		note="Talk, then go to {npc:258884:Kalika} in {area:16186:Temple of Halazzi}",
+	},
+	[38662378] = {
+		quest=95045,
+		label="{npc:258884:Kalika}",
+		hide_before=ns.conditions.QuestComplete(95005),
+		note="Talk, pick up the Forgotten Button she points out, then go to {npc:258933:Chu'ke} in {area:16196:Funerary Coast}",
+	},
+	[37809011] = {
+		quest=95046,
+		label="{npc:258933:Chu'ke}",
+		hide_before=ns.conditions.QuestComplete(95045),
+		note="Give him the button. It'll be fine.",
+	},
+}, {
+	achievement=62199,
+	atlas="BuildanAbomination-32x32",
+})
+
+-- Gnome Alone
+ns.RegisterPoints(ns.ZULAMAN, {
+	[54873240] = {criteria=112039, --[[object=258936,]]}, -- Message in a Bottle
+	[46364135] = {criteria=112845, --[[object=260878,]] note="Behind the hut"}, -- Hastily-Scribbled Note
+	[54312061] = {criteria=112846, --[[object=260879,]] note="Behind the pillar"}, -- Scrap of Singed Paper
+	[35682520] = {criteria=112844, --[[object=260880,]] note="Under the hammock"}, -- Moldy Diary Found
+	[45906599] = {criteria=112847, --[[object=260881,]] note="Under the building"}, -- Discarded Scroll
+	[34791716] = {criteria=112848, --[[object=260882,]]}, -- Parting Note
+}, {
+	achievement=62200,
+	atlas="poi-workorders",
+	minimap=true,
+})
+
 -- Rares
+
+local loot_shared = {
+	251783, -- Lost Idol of the Hash'ey
+	251784, -- Sylvan Wakrapuku
+	265543, -- Tempered Amani Spearhead
+	265554, -- Reinforced Amani Haft
+	265560, -- Toughened Amani Leather Wrap
+	-- Combine into: 265562, -- Amani Warrior's Spear
+	{257152, mount=true}, -- Amani Sharptalon
+	{257200, mount=true}, -- Escaped Witherbark Pango
+}
 
 -- Tallest Tree in the Forest
 ns.RegisterPoints(ns.ZULAMAN, {
@@ -122,10 +180,8 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111839, quest=89569,
 		npc=242023,
 		loot={
-			251783, -- Lost Idol of the Hash'ey
 			264527, -- Vile Hexxer's Mantle
 			264611, -- Pendant of Siphoned Vitality
-			265543, -- Tempered Amani Spearhead
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94683}),
 		},
 		vignette=6895,
@@ -144,11 +200,8 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111841, quest=89571,
 		npc=242025,
 		loot={
-			251783, -- Lost Idol of the Hash'ey
-			251784, -- Sylvan Wakrapuku
 			264542, -- Skullcrusher's Mantle
 			264631, -- Harak's Skullcutter
-			265560, -- Toughened Amani Leather Wrap
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94698}),
 		},
 		vignette=6897,
@@ -157,7 +210,7 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111842, quest=89575,
 		npc=242028,
 		loot={
-			251784, -- Sylvan Wakrapuku
+			264557, -- Borerplate Pauldrons
 			264640, -- Sharpened Borer Claw
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94699}),
 		},
@@ -167,10 +220,8 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111843, quest=91174,
 		npc=245975,
 		loot={
-			251783, -- Lost Idol of the Hash'ey
 			264570, -- Reinforced Chainmrrl
 			264580, -- Mrrlokk's Mrgl Grrdle
-			265543, -- Tempered Amani Spearhead
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94700}),
 		},
 		vignette=6977,
@@ -199,7 +250,6 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111847, quest=89580,
 		npc=242033,
 		loot={
-			251784, -- Sylvan Wakrapuku
 			264648, -- Verminscale Gavel
 			264597, -- Leechtooth Band
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94704}),
@@ -210,6 +260,7 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111848, quest=89581,
 		npc=242034,
 		loot={
+			264564, -- Crab Wrangling Harness
 			264586, -- Crustacean Carapace Chestguard
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94705}),
 		},
@@ -240,7 +291,7 @@ ns.RegisterPoints(ns.ZULAMAN, {
 		criteria=111851, quest=89573,
 		npc=242027,
 		loot={
-			251784, -- Sylvan Wakrapuku
+			264598, -- Eelectrum Signet
 			264618, -- Strangely Eelastic Blade
 			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94708}),
 		},
@@ -249,15 +300,26 @@ ns.RegisterPoints(ns.ZULAMAN, {
 	[46394339] = { -- The Decaying Diamondback
 		criteria=111852, quest=91072,
 		npc=245691,
+		loot={
+			264525, -- Wrapped Antenna Cuffs
+			264582, -- Diamondback-Scale Legguards
+			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94709}),
+		},
 		vignette=6971,
 	},
-	[45284171] = { -- Ash'an the Empowered / Asha the Empowered
+	[45284171] = { -- Ash'an the Empowered
 		criteria=111853, quest=91073,
 		npc=245692,
+		loot={
+			264593, -- Warcloak of the Butcher
+			264643, -- Ash'an's Spare Cleaver
+			ns.rewards.Currency(ns.CURRENCY_AMANI, 50, {quest=94710}),
+		},
 		vignette=6972,
 	},
 }, {
 	achievement=62122,
+	loot_shared=loot_shared,
 })
 
 ns.RegisterPoints(ns.ATALAMAN, {
@@ -274,4 +336,5 @@ ns.RegisterPoints(ns.ATALAMAN, {
 }, {
 	achievement=62122,
 	parent=true,
+	loot_shared=loot_shared,
 })
