@@ -2,7 +2,7 @@
 ## Title: Arc UI
 ## Notes: Buff/Debuff stack tracking bars, icons, resource bars, cooldown bars, and timer bars with CD Manager integration
 ## Author: Arc
-## Version: 3.5.7.a
+## Version: 3.6.0
 ## X-Wago-ID:mNw7Q2No
 ## SavedVariables: ArcUIDB, ArcUI_CDMEnhance_Debug
 
@@ -112,6 +112,7 @@ CDM_Module\ArcUI_CDMSetup.lua
 CDM_Module\ArcUI_CDM_ImportExport.lua
 CDM_Module\ArcUI_CDM_MasterExport.lua
 CDM_Module\ArcUI_CDM_SharedProfiles.lua
+ArcUI_UnifiedImportExport.lua
 # CDM Options Panels
 CDM_Module\CDM_Groups\ArcUI_CDMGroupsOptions.lua
 CDM_Module\CDM_Enhance\ArcUI_CDMEnhanceOptions.lua

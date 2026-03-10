@@ -1,0 +1,840 @@
+local _, BR = ...
+
+-- Lua stdlib locals
+local min = math.min
+
+-- ============================================================================
+-- BUFF DATA TABLES
+-- ============================================================================
+-- This file contains all buff definition tables.
+-- Loaded after Core.lua so BR namespace is available.
+
+-- ============================================================================
+-- TYPE DEFINITIONS
+-- ============================================================================
+
+---@class RaidBuff
+---@field spellID SpellID
+---@field castSpellID? number Spell ID used for click-to-cast when different from the buff aura IDs
+---@field key string
+---@field name string
+---@field class ClassName
+---@field levelRequired? number
+
+---@class PresenceBuff
+---@field spellID SpellID
+---@field key string
+---@field name string
+---@field class ClassName
+---@field levelRequired? number
+---@field overlayText string
+---@field groupId? string
+---@field excludeSpellID? number
+---@field displayIcon? number
+---@field infoTooltip? string
+---@field noExpirationGlow? boolean
+---@field readyCheckOnly? boolean Only show during ready checks
+---@field showOnInstanceEntry? boolean Also show when entering an instance (not M+)
+---@field castOnOthers? boolean Buff exists on the target, not the caster (e.g., Soulstone)
+---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
+
+---@class TargetedBuff
+---@field spellID SpellID
+---@field key string
+---@field name string
+---@field class ClassName
+---@field overlayText string
+---@field groupId? string
+---@field beneficiaryRole? RoleType
+---@field excludeSpellID? number
+---@field displayIcon? number
+---@field requireSpecId? number
+---@field infoTooltip? string
+---@field clickMacro? fun(spellID: number?): string
+---@field casterBuffId? number Check this buff on the caster instead of scanning group
+---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
+
+---@class SelfBuff
+---@field spellID? SpellID
+---@field key string
+---@field name string
+---@field class? ClassName
+---@field overlayText string
+---@field groupId? string
+---@field enchantID? number
+---@field requiresBuffWithEnchant? boolean -- When true, require both enchant AND buff to be present (for Paladin Rites)
+---@field castSpellID? number           -- Spell ID used for click-to-cast when different from spellID
+---@field clickMacro? fun(spellID: number?): string -- Macro text override for click-to-cast, receives castable spell ID
+---@field buffIdOverride? number|number[]
+---@field requireSpecId? number        -- Only show if player's current spec matches (WoW spec ID)
+---@field requiresSpellID? number
+---@field excludeSpellID? number
+---@field displayIcon? number
+---@field displaySpells? SpellID Spell IDs to show icons for in Options checkbox (subset of spellID)
+---@field iconByRole? table<RoleType, number>
+---@field infoTooltip? string
+---@field customCheck? fun(): boolean?
+---@field getPetActions? fun(): PetAction[]?  -- Override pet actions (e.g., wrong pet → Felguard only)
+---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
+---@field showOnInstanceEntry? boolean Only show when entering an instance (not M+), skip normal buff checks
+
+---@class ConsumableBuff
+---@field spellID? SpellID
+---@field key string
+---@field name string
+---@field overlayText string
+---@field groupId? string
+---@field checkWeaponEnchant? boolean Check if any weapon enchant exists (oils, stones, imbues)
+---@field checkWeaponEnchantOH? boolean Check if off-hand weapon enchant exists
+---@field excludeIfSpellKnown? number[] Don't show if player knows any of these spells
+---@field buffIconID? number Check for any buff with this icon ID (e.g., 136000 for food)
+---@field displaySpells? SpellID Spell IDs to show icons for in UI (subset of spellID)
+---@field displayIcon? number|number[] Icon texture ID(s) to use instead of spell icon
+---@field itemID? number|number[] Check if player has this item in inventory
+---@field readyCheckOnly? boolean Only show during ready checks
+---@field casterClass? ClassName Require this class in group, but show reminder to everyone
+---@field infoTooltip? string Tooltip text shown on hover (pipe-separated: title|description)
+---@field visibilityCondition? fun(): boolean Custom function that gates visibility (return false to hide)
+---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
+---@field consumableCategory? string Category key in BR.CONSUMABLE_ITEMS for bag scanning (only set when items exist)
+
+---@class BuffGroup
+---@field displayName string
+
+---@class CustomBuff
+---@field spellID SpellID
+---@field key string
+---@field name string
+---@field overlayText? string
+---@field class? ClassName
+---@field requireSpecId? number
+---@field requireSpellKnown? boolean -- Only show if player knows at least one of the tracked spells
+---@field showWhenPresent? boolean  -- Show icon when buff IS on player (default: show when missing)
+---@field glowMode? "whenGlowing"|"whenNotGlowing"|"disabled"  -- Action bar glow fallback mode: nil/"whenGlowing" = detect when glowing (default), "whenNotGlowing" = detect when NOT glowing, "disabled" = don't track glow
+---@field castSpellID? number       -- Spell to cast on click (separate from tracked aura)
+---@field castItemID? number        -- Item to use on click
+---@field castMacro? string         -- Raw macro text for click action
+---@field requireItemID? number    -- Only show if this item is equipped or in bags
+---@field loadConditions? LoadConditions  -- Per-buff content visibility (nil = show everywhere)
+
+---Check if the player is inside a delve (difficultyID 208)
+---@return boolean
+local function IsInDelve()
+    local difficultyID = select(3, GetInstanceInfo())
+    return difficultyID == 208
+end
+BR.IsInDelve = IsInDelve
+
+---Check if the player's pet is on passive stance
+---@return boolean? true if pet exists and is on passive, nil otherwise
+local function IsPetOnPassive()
+    if not UnitExists("pet") then
+        return nil
+    end
+    for i = 1, NUM_PET_ACTION_SLOTS do
+        local name, _, _, isActive = GetPetActionInfo(i)
+        if name == "PET_MODE_PASSIVE" and isActive then
+            return true
+        end
+    end
+    return nil
+end
+
+---Build a clickMacro function for targeted buffs that remembers the last target (last target re-casting).
+---Macro priority: last target > mouseover > current target > no target (self-cast or error).
+---@param buffKey string The buff's key, used to look up the last target
+---@return fun(spellID: number): string
+local function TargetedClickMacro(buffKey)
+    return function(spellID)
+        local name = BR.GetSpellName(spellID) or ""
+        local lastTarget = BR.StateHelpers and BR.StateHelpers.GetLastTarget(buffKey)
+        if lastTarget then
+            return "/cast [@" .. lastTarget .. ",help,nodead][@mouseover,help,nodead][@target,help,nodead][] " .. name
+        end
+        return "/cast [@mouseover,help,nodead][@target,help,nodead][] " .. name
+    end
+end
+
+---@type table<string, RaidBuff[]|PresenceBuff[]|TargetedBuff[]|SelfBuff[]|ConsumableBuff[]|CustomBuff[]>
+BR.BUFF_TABLES = {
+    ---@type RaidBuff[]
+    raid = {
+        { spellID = { 1459, 432778 }, key = "intellect", name = "Arcane Intellect", class = "MAGE", levelRequired = 8 }, -- 432778 = NPC version
+        { spellID = 6673, key = "attackPower", name = "Battle Shout", class = "WARRIOR", levelRequired = 10 },
+        {
+            spellID = {
+                381732,
+                381741,
+                381746,
+                381748,
+                381749,
+                381750,
+                381751,
+                381752,
+                381753,
+                381754,
+                381756,
+                381757,
+                381758,
+            },
+            castSpellID = 364342,
+            key = "bronze",
+            name = "Blessing of the Bronze",
+            class = "EVOKER",
+            levelRequired = 30,
+        },
+        {
+            spellID = { 1126, 432661 },
+            key = "versatility",
+            name = "Mark of the Wild",
+            class = "DRUID",
+            levelRequired = 10,
+        }, -- 432661 = NPC version
+        { spellID = 21562, key = "stamina", name = "Power Word: Fortitude", class = "PRIEST", levelRequired = 10 },
+        { spellID = 462854, key = "skyfury", name = "Skyfury", class = "SHAMAN", levelRequired = 16 },
+    },
+    ---@type PresenceBuff[]
+    presence = {
+        {
+            spellID = { 381637, 5761 },
+            key = "atrophicNumbingPoison",
+            name = "Atrophic/Numbing Poison",
+            class = "ROGUE",
+            levelRequired = 80,
+            overlayText = "NO\nPOISON",
+        },
+        {
+            spellID = 465,
+            key = "devotionAura",
+            name = "Devotion Aura",
+            class = "PALADIN",
+            levelRequired = 10,
+            overlayText = "NO\nAURA",
+        },
+        {
+            spellID = 20707,
+            key = "soulstone",
+            name = "Soulstone",
+            class = "WARLOCK",
+            levelRequired = 13,
+            overlayText = "NO\nSTONE",
+            readyCheckOnly = true,
+            castOnOthers = true,
+            noExpirationGlow = true,
+            clickMacro = function(spellID)
+                local name = BR.GetSpellName(spellID) or ""
+                -- Priority: sticky last target > first living healer > mouseover > target > self
+                local lastTarget = BR.StateHelpers and BR.StateHelpers.GetLastTarget("soulstone")
+                if lastTarget then
+                    return "/cast [@"
+                        .. lastTarget
+                        .. ",help,nodead][@mouseover,help,nodead][@target,help,nodead][@player] "
+                        .. name
+                end
+                local numMembers = GetNumGroupMembers()
+                if numMembers > 0 then
+                    local prefix = IsInRaid() and "raid" or "party"
+                    for i = 1, numMembers do
+                        local unitId = prefix .. i
+                        if UnitExists(unitId) and not UnitIsDeadOrGhost(unitId) then
+                            if UnitGroupRolesAssigned(unitId) == "HEALER" then
+                                local healerName = GetUnitName(unitId, true)
+                                if healerName then
+                                    return "/cast [@"
+                                        .. healerName
+                                        .. ",help,nodead][@mouseover,help,nodead][@target,help,nodead][@player] "
+                                        .. name
+                                end
+                            end
+                        end
+                    end
+                end
+                return "/cast [@mouseover,help,nodead][@target,help,nodead][@player] " .. name
+            end,
+        },
+    },
+    ---@type TargetedBuff[]
+    targeted = {
+        -- Beacons (alphabetical: Faith, Light)
+        {
+            spellID = 156910,
+            key = "beaconOfFaith",
+            name = "Beacon of Faith",
+            class = "PALADIN",
+            overlayText = "NO\nFAITH",
+            groupId = "beacons",
+            requireSpecId = 65, -- Holy only
+            glowDetectable = true,
+            clickMacro = TargetedClickMacro("beaconOfFaith"),
+        },
+        {
+            spellID = 53563,
+            key = "beaconOfLight",
+            name = "Beacon of Light",
+            class = "PALADIN",
+            overlayText = "NO\nLIGHT",
+            groupId = "beacons",
+            requireSpecId = 65, -- Holy only
+            glowDetectable = true,
+            excludeSpellID = 200025, -- Hide when Beacon of Virtue is known
+            displayIcon = 236247, -- Force original icon (talents replace the texture)
+            clickMacro = TargetedClickMacro("beaconOfLight"),
+        },
+        {
+            spellID = 974,
+            key = "earthShieldOthers",
+            name = "Earth Shield",
+            class = "SHAMAN",
+            overlayText = "NO\nES",
+            infoTooltip = "May Show Extra Icon|Until you cast this, you might see both this and the Water/Lightning Shield reminder. I can't tell if you want Earth Shield on yourself, or Earth Shield on an ally + Water/Lightning Shield on yourself.",
+            clickMacro = TargetedClickMacro("earthShieldOthers"),
+        },
+        {
+            spellID = 369459,
+            key = "sourceOfMagic",
+            name = "Source of Magic",
+            class = "EVOKER",
+            beneficiaryRole = "HEALER",
+            overlayText = "NO\nSOURCE",
+            clickMacro = TargetedClickMacro("sourceOfMagic"),
+        },
+        {
+            spellID = 360827,
+            key = "blisteringScales",
+            name = "Blistering Scales",
+            class = "EVOKER",
+            beneficiaryRole = "TANK",
+            overlayText = "NO\nSCALES",
+            requireSpecId = 1473, -- Augmentation
+            requiresSpellID = 360827,
+            clickMacro = TargetedClickMacro("blisteringScales"),
+        },
+        {
+            spellID = 474750,
+            casterBuffId = 474754, -- Check this combat-whitelisted buff on the caster instead of scanning group
+            key = "symbioticRelationship",
+            name = "Symbiotic Relationship",
+            class = "DRUID",
+            overlayText = "NO\nLINK",
+            clickMacro = TargetedClickMacro("symbioticRelationship"),
+        },
+    },
+    ---@type SelfBuff[]
+    self = {
+        -- Mage Arcane Familiar
+        {
+            spellID = 205022,
+            buffIdOverride = 210126,
+            castSpellID = 1459,
+            key = "arcaneFamiliar",
+            name = "Arcane Familiar",
+            class = "MAGE",
+            overlayText = "NO\nFAMILIAR",
+        },
+        -- Soulwell reminder (warlock only, instance entry only)
+        {
+            spellID = 29893, -- Create Soulwell (used for icon resolution)
+            castSpellID = 29893, -- Click-to-cast: Create Soulwell
+            key = "soulwell",
+            name = "Create Soulwell",
+            class = "WARLOCK",
+            overlayText = "DROP\nWELL",
+            showOnInstanceEntry = true, -- Only shows on instance entry
+            infoTooltip = "Instance Entry Reminder|Briefly shown when entering a dungeon as a reminder to drop a Soulwell. Dismissed after casting or after 30 seconds.",
+            customCheck = function()
+                local info = C_Spell.GetSpellCooldown(29893)
+                return not info or info.duration == 0
+            end,
+        },
+        -- Warlock Grimoire of Sacrifice
+        {
+            spellID = 108503,
+            buffIdOverride = 196099,
+            key = "grimoireOfSacrifice",
+            name = "Grimoire of Sacrifice",
+            class = "WARLOCK",
+            overlayText = "NO\nGRIM",
+        },
+        -- Paladin weapon rites (alphabetical: Adjuration, Sanctification)
+        -- NOTE: Due to a Blizzard bug, when changing talents the buff drops but enchant remains.
+        -- The effect doesn't work without the buff, so we check for BOTH enchant AND buff.
+        {
+            spellID = 433583,
+            key = "riteOfAdjuration",
+            name = "Rite of Adjuration",
+            class = "PALADIN",
+            overlayText = "NO\nRITE",
+            enchantID = 7144,
+            buffIdOverride = 433584, -- Actual buff ID on player
+            requiresBuffWithEnchant = true,
+            clickMacro = function(spellID)
+                return "/cast " .. (BR.GetSpellName(spellID) or "") .. "\n/use 16"
+            end,
+            groupId = "paladinRites",
+        },
+        {
+            spellID = 433568,
+            key = "riteOfSanctification",
+            name = "Rite of Sanctification",
+            class = "PALADIN",
+            overlayText = "NO\nRITE",
+            enchantID = 7143,
+            buffIdOverride = 433550, -- Actual buff ID on player
+            requiresBuffWithEnchant = true,
+            clickMacro = function(spellID)
+                return "/cast " .. (BR.GetSpellName(spellID) or "") .. "\n/use 16"
+            end,
+            groupId = "paladinRites",
+        },
+        -- Rogue poisons: lethal (Instant, Wound, Deadly, Amplifying) and non-lethal (Numbing, Atrophic, Crippling)
+        -- With Dragon-Tempered Blades (381801): need 2 lethal + 2 non-lethal
+        -- Without talent: need 1 lethal + 1 non-lethal
+        {
+            displayIcon = 136242, -- Deadly Poison
+            castSpellID = 315584, -- Instant Poison (baseline, ensures click-to-cast overlay is created)
+            key = "roguePoisons",
+            name = "Rogue Poisons",
+            class = "ROGUE",
+            overlayText = "NO\nSELF\nPOISON",
+            customCheck = function()
+                local lethalPoisons = { 315584, 8679, 2823, 381664 } -- Instant, Wound, Deadly, Amplifying
+                local nonLethalPoisons = { 5761, 381637, 3408 } -- Numbing, Atrophic, Crippling
+
+                -- Count known and active poisons in each category
+                local knownLethal, knownNonLethal = 0, 0
+                local activeLethal, activeNonLethal = 0, 0
+
+                for _, id in ipairs(lethalPoisons) do
+                    if IsPlayerSpell(id) then
+                        knownLethal = knownLethal + 1
+                    end
+                    local auraData
+                    pcall(function()
+                        auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
+                    end)
+                    if auraData then
+                        activeLethal = activeLethal + 1
+                    end
+                end
+
+                for _, id in ipairs(nonLethalPoisons) do
+                    if IsPlayerSpell(id) then
+                        knownNonLethal = knownNonLethal + 1
+                    end
+                    local auraData
+                    pcall(function()
+                        auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
+                    end)
+                    if auraData then
+                        activeNonLethal = activeNonLethal + 1
+                    end
+                end
+
+                -- Don't show if the player hasn't learned any poisons yet (e.g. low-level rogue)
+                if knownLethal == 0 and knownNonLethal == 0 then
+                    return nil
+                end
+
+                -- Dragon-Tempered Blades (381801): can have 2 of each
+                local hasDragonTemperedBlades = IsPlayerSpell(381801)
+
+                -- Only require as many as the player actually knows
+                local requiredLethal = min(knownLethal, hasDragonTemperedBlades and 2 or 1)
+                local requiredNonLethal = min(knownNonLethal, hasDragonTemperedBlades and 2 or 1)
+
+                return activeLethal < requiredLethal or activeNonLethal < requiredNonLethal
+            end,
+            clickMacro = function()
+                -- Priority: non-lethal (Atrophic > Numbing > Crippling), then lethal (Amplifying > Deadly > Instant > Wound)
+                -- Balance: apply to whichever category has fewer active, prefer non-lethal when tied
+                local nonLethalPriority = { 381637, 5761, 3408 } -- Atrophic, Numbing, Crippling
+                local lethalPriority = { 381664, 2823, 315584, 8679 } -- Amplifying, Deadly, Instant, Wound
+
+                local function countActiveAndFindMissing(poisons)
+                    local active, missing = 0, nil
+                    for _, id in ipairs(poisons) do
+                        if IsPlayerSpell(id) then
+                            local auraData
+                            pcall(function()
+                                auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
+                            end)
+                            if auraData then
+                                active = active + 1
+                            elseif not missing then
+                                missing = id
+                            end
+                        end
+                    end
+                    return active, missing
+                end
+
+                local activeNL, missingNL = countActiveAndFindMissing(nonLethalPriority)
+                local activeL, missingL = countActiveAndFindMissing(lethalPriority)
+
+                local castID = nil
+                if missingNL and activeNL <= activeL then
+                    castID = missingNL
+                elseif missingL then
+                    castID = missingL
+                elseif missingNL then
+                    castID = missingNL
+                end
+
+                if castID then
+                    return "/cast " .. (BR.GetSpellName(castID) or "")
+                end
+                return ""
+            end,
+        },
+        -- Voidform (194249) replaces Shadowform temporarily
+        {
+            spellID = 232698,
+            key = "shadowform",
+            name = "Shadowform",
+            class = "PRIEST",
+            overlayText = "NO\nFORM",
+            buffIdOverride = { 232698, 194249 },
+            noExpirationGlow = true, -- Voidform (short duration) replaces Shadowform; don't warn
+        },
+        -- Shaman weapon imbues (alphabetical: Earthliving, Flametongue, Windfury)
+        {
+            spellID = 382021,
+            key = "earthlivingWeapon",
+            name = "Earthliving Weapon",
+            class = "SHAMAN",
+            overlayText = "NO\nEL",
+            enchantID = 6498,
+            groupId = "shamanImbues",
+        },
+        {
+            spellID = 318038,
+            key = "flametongueWeapon",
+            name = "Flametongue Weapon",
+            class = "SHAMAN",
+            overlayText = "NO\nFT",
+            enchantID = 5400,
+            groupId = "shamanImbues",
+        },
+        {
+            spellID = 33757,
+            key = "windfuryWeapon",
+            name = "Windfury Weapon",
+            class = "SHAMAN",
+            overlayText = "NO\nWF",
+            enchantID = 5401,
+            groupId = "shamanImbues",
+        },
+        -- Icon fields:
+        --   displayIcon     = Texture ID(s). Primary icon for Display frame + Options checkbox.
+        --   displaySpells   = Spell ID(s). Icons for Options checkbox only (subset of spellID).
+        --   iconByRole      = Role→SpellID. Dynamic Display frame icon based on player role.
+        -- Priority: displayIcon > displaySpells > spellID[1]
+        --
+        -- Shaman shields (alphabetical: Earth, Lightning, Water)
+        -- With Elemental Orbit: need Earth Shield (passive self-buff)
+        {
+            spellID = 974, -- Earth Shield spell (for icon and spell check)
+            buffIdOverride = 383648, -- The passive buff to check for
+            key = "earthShieldSelfEO",
+            name = "Earth Shield (Self)",
+            class = "SHAMAN",
+            overlayText = "NO\nSELF ES",
+            requiresSpellID = 383010,
+            groupId = "shamanShields",
+            displaySpells = 974, -- Earth Shield icon for group checkbox
+        },
+        -- With Elemental Orbit: need Lightning Shield or Water Shield
+        {
+            spellID = { 192106, 52127 },
+            key = "waterLightningShieldEO",
+            name = "Water/Lightning Shield",
+            class = "SHAMAN",
+            overlayText = "NO\nSHIELD",
+            requiresSpellID = 383010,
+            groupId = "shamanShields",
+            displaySpells = 192106, -- Lightning Shield icon for group checkbox
+            iconByRole = { HEALER = 52127, DAMAGER = 192106, TANK = 192106 },
+        },
+        -- Without Elemental Orbit: need either Earth Shield, Lightning Shield, or Water Shield on self
+        {
+            spellID = { 974, 192106, 52127 },
+            key = "shamanShieldBasic",
+            name = "Shield (No Talent)",
+            class = "SHAMAN",
+            overlayText = "NO\nSHIELD",
+            excludeSpellID = 383010,
+            groupId = "shamanShields",
+            displaySpells = 52127, -- Water Shield icon for group checkbox
+            iconByRole = { HEALER = 52127, DAMAGER = 192106, TANK = 192106 },
+        },
+    },
+    ---@type SelfBuff[]
+    pet = {
+        -- Pet reminders (alphabetical: Frost Mage, Hunter, Passive, Unholy DK, Warlock)
+        {
+            displayIcon = 135862, -- Summon Water Elemental
+            key = "frostMagePet",
+            name = "Water Elemental",
+            class = "MAGE",
+            overlayText = "NO\nPET",
+            requireSpecId = 64, -- Frost
+            requiresSpellID = 31687,
+            groupId = "pets",
+            customCheck = function()
+                return not UnitExists("pet")
+            end,
+        },
+        {
+            key = "hunterPet",
+            name = "Hunter Pet",
+            class = "HUNTER",
+            overlayText = "NO\nPET",
+            displayIcon = 132161,
+            groupId = "pets",
+            customCheck = function()
+                -- MM Hunters don't use pets unless they have Unbreakable Bond
+                if BR.StateHelpers.GetPlayerSpecId() == 254 and not IsPlayerSpell(1223323) then
+                    return nil
+                end
+                return not UnitExists("pet") or UnitIsDead("pet") or nil
+            end,
+        },
+        {
+            key = "petPassive",
+            name = "Pet Passive",
+            -- No class: applies to any class with a pet
+            overlayText = "PASSIVE\nPET",
+            displayIcon = 132311,
+            customCheck = IsPetOnPassive,
+        },
+        {
+            displayIcon = 1100170, -- Raise Dead
+            key = "unholyPet",
+            name = "Unholy Ghoul",
+            class = "DEATHKNIGHT",
+            overlayText = "NO\nPET",
+            requireSpecId = 252, -- Unholy
+            groupId = "pets",
+            customCheck = function()
+                return not UnitExists("pet")
+            end,
+        },
+        {
+            key = "warlockWrongPet",
+            name = "Wrong Demon",
+            class = "WARLOCK",
+            overlayText = "WRONG\nPET",
+            displayIcon = 136216, -- Felguard icon
+            excludeSpellID = 108503, -- Grimoire of Sacrifice: pet intentionally sacrificed
+            requireSpecId = 266, -- Demonology only
+            groupId = "pets",
+            customCheck = function()
+                if not UnitExists("pet") then
+                    return false
+                end
+                local name, familyID = UnitCreatureFamily("pet")
+                return familyID ~= 29 and name ~= "Felguard"
+            end,
+            getPetActions = function()
+                return BR.PetHelpers.GetFelguardAction()
+            end,
+        },
+        {
+            key = "warlockPet",
+            name = "Warlock Demon",
+            class = "WARLOCK",
+            overlayText = "NO\nPET",
+            displayIcon = 136082, -- Summon Demon flyout icon
+            excludeSpellID = 108503, -- Grimoire of Sacrifice: pet intentionally sacrificed
+            groupId = "pets",
+            customCheck = function()
+                return not UnitExists("pet")
+            end,
+        },
+    },
+    ---@type CustomBuff[]
+    custom = {},
+    ---@type ConsumableBuff[]
+    consumable = {
+        -- Augment Rune (The War Within + Midnight)
+        {
+            spellID = {
+                1234969, -- Ethereal Augment Rune (TWW permanent) - highest priority
+                1242347, -- Soulgorged Augment Rune (TWW raid drop) - persists through death
+                453250, -- Crystallized Augment Rune (TWW) - single use
+                393438, -- Draconic Augment Rune (Dragonflight) - legacy
+                1264426, -- Void-Touched Augment Rune (Midnight)
+                347901, -- Veiled Augment Rune (Shadowlands) - legacy
+            },
+            displaySpells = { 1264426, 1234969 }, -- Void-Touched (Midnight), Ethereal (TWW permanent)
+            key = "rune",
+            name = "Rune",
+            overlayText = "NO\nRUNE",
+            groupId = "rune",
+            consumableCategory = "rune",
+        },
+        -- Flasks (The War Within + Midnight)
+        {
+            spellID = {
+                -- The War Within
+                432021, -- Flask of Alchemical Chaos
+                431971, -- Flask of Tempered Aggression
+                431972, -- Flask of Tempered Swiftness
+                431973, -- Flask of Tempered Versatility
+                431974, -- Flask of Tempered Mastery
+                432473, -- Flask of Saving Graces
+                -- Midnight
+                1235057, -- Flask of Thalassian Resistance (Versatility)
+                1235108, -- Flask of the Magisters (Mastery)
+                1235110, -- Flask of the Blood Knights (Haste)
+                1235111, -- Flask of the Shattered Sun (Critical Strike)
+                1239355, -- Vicious Thalassian Flask of Honor
+            },
+            displaySpells = {
+                -- Show Midnight flask icons in UI
+                1235111, -- Flask of the Shattered Sun (Critical Strike)
+                1235110, -- Flask of the Blood Knights (Haste)
+                1235108, -- Flask of the Magisters (Mastery)
+                1235057, -- Flask of Thalassian Resistance (Versatility)
+                1239355, -- Vicious Thalassian Flask of Honor
+            },
+            key = "flask",
+            name = "Flask",
+            overlayText = "NO\nFLASK",
+            groupId = "flask",
+            consumableCategory = "flask",
+        },
+        -- Food (all expansions - detected by icon ID)
+        {
+            buffIconID = 136000, -- All food buffs use this icon
+            key = "food",
+            name = "Food",
+            overlayText = "NO\nFOOD",
+            groupId = "food",
+            consumableCategory = "food",
+            displayIcon = 136000,
+        },
+        -- Delve Food (only when inside a delve with Brann or Valeera)
+        {
+            spellID = 442522,
+            key = "delveFood",
+            name = "Delve Food",
+            overlayText = "NO\nFOOD",
+            groupId = "delveFood",
+            noExpirationGlow = true, -- 10-min duration makes standard thresholds meaningless
+            infoTooltip = "Delves Only|Only shown inside delves when Brann or Valeera are in your party.\n\nExpiration glow is disabled for this buff because its short 10-minute duration would cause it to always glow.",
+            visibilityCondition = BR.IsInDelve,
+        },
+        -- Weapon Buffs (oils, stones - but not for classes with imbues)
+        {
+            checkWeaponEnchant = true, -- Check if any weapon enchant exists
+            key = "weaponBuff",
+            name = "Weapon",
+            overlayText = "NO\nWEAPON\nBUFF",
+            groupId = "weaponBuff",
+            displayIcon = { 7548987, 7548941, 7548938 }, -- Thalassian Phoenix Oil, Refulgent Whetstone, Refulgent Weightstone
+            consumableCategory = "weapon",
+            excludeIfSpellKnown = {
+                -- Shaman imbues
+                382021, -- Earthliving Weapon
+                318038, -- Flametongue Weapon
+                33757, -- Windfury Weapon
+                -- Paladin rites
+                433583, -- Rite of Adjuration
+                433568, -- Rite of Sanctification
+            },
+        },
+        -- Weapon Buff (Off-Hand) - only shown when off-hand slot has a weapon
+        {
+            checkWeaponEnchantOH = true,
+            key = "weaponBuffOH",
+            name = "Weapon (OH)",
+            overlayText = "NO\nWEAPON\nBUFF",
+            groupId = "weaponBuff",
+            displayIcon = { 7548987, 7548941, 7548938 }, -- Thalassian Phoenix Oil, Refulgent Whetstone, Refulgent Weightstone
+            consumableCategory = "weapon",
+            excludeIfSpellKnown = {
+                -- Shaman imbues
+                382021, -- Earthliving Weapon
+                318038, -- Flametongue Weapon
+                33757, -- Windfury Weapon
+                -- Paladin rites
+                433583, -- Rite of Adjuration
+                433568, -- Rite of Sanctification
+            },
+            visibilityCondition = function()
+                return BR.BuffState.HasOffHandWeapon()
+            end,
+        },
+        -- Healthstone (shows on ready check - checks inventory)
+        {
+            itemID = { 5512, 224464 }, -- Healthstone, Demonic Healthstone
+            castSpellID = 29893, -- Create Soulwell
+            key = "healthstone",
+            name = "Healthstone",
+            casterClass = "WARLOCK",
+            overlayText = "NO\nSTONE",
+            groupId = "healthstone",
+            displayIcon = 538745, -- Healthstone icon
+            readyCheckOnly = true,
+            clickMacro = function()
+                local spellID = (GetNumGroupMembers() > 0 and IsInInstance()) and 29893 or 6201
+                local name = BR.GetSpellName(spellID)
+                return "/cast " .. (name or "")
+            end,
+        },
+    },
+}
+
+-- Derive buff key → consumable category mapping from data
+local buffKeyToCategory = {}
+for _, buff in ipairs(BR.BUFF_TABLES.consumable) do
+    if buff.consumableCategory then
+        buffKeyToCategory[buff.key] = buff.consumableCategory
+    end
+end
+BR.BUFF_KEY_TO_CATEGORY = buffKeyToCategory
+
+---@type table<string, BuffGroup>
+BR.BuffGroups = {
+    beacons = { displayName = "Beacons" },
+    shamanImbues = { displayName = "Shaman Imbues" },
+    paladinRites = { displayName = "Paladin Rites" },
+    pets = { displayName = "Pets" },
+    shamanShields = { displayName = "Shaman Shields" },
+    -- Consumable groups
+    flask = { displayName = "Flask" },
+    food = { displayName = "Food" },
+    delveFood = { displayName = "Delve Food" },
+    rune = { displayName = "Augment Rune" },
+    weaponBuff = { displayName = "Weapon Buff" },
+    healthstone = { displayName = "Healthstone!" },
+}
+
+-- Classes that benefit from each buff
+-- nil = everyone benefits, otherwise only listed classes are counted
+BR.BuffBeneficiaries = {
+    intellect = {
+        MAGE = true,
+        WARLOCK = true,
+        PRIEST = true,
+        DRUID = true,
+        SHAMAN = true,
+        MONK = true,
+        EVOKER = true,
+        PALADIN = true,
+        DEMONHUNTER = true,
+    },
+    attackPower = {
+        WARRIOR = true,
+        ROGUE = true,
+        HUNTER = true,
+        DEATHKNIGHT = true,
+        PALADIN = true,
+        MONK = true,
+        DRUID = true,
+        DEMONHUNTER = true,
+        SHAMAN = true,
+    },
+    -- stamina, versatility, skyfury, bronze = everyone benefits (nil)
+}

@@ -23,6 +23,11 @@ local GetInventoryItemQuality = (C_Item and C_Item.GetInventoryItemQuality) and 
 local NUM_SOCKET_TEXTURES = 4;
 
 local expansionRequiredSockets = {
+	[11] = {
+		[INVSLOT_NECK] = 1,
+		[INVSLOT_FINGER1] = 1,
+		[INVSLOT_FINGER2] = 1,
+	},
 	[10] = {
 		[INVSLOT_NECK] = 2,
 		[INVSLOT_FINGER1] = 2,
@@ -34,6 +39,16 @@ local expansionRequiredSockets = {
 }
 
 local expansionEnchantableSlots = {
+	[11] = {
+		[INVSLOT_MAINHAND] = true,
+		[INVSLOT_HEAD] = true,
+		[INVSLOT_SHOULDER] = true,
+		[INVSLOT_CHEST] = true,
+		[INVSLOT_LEGS] = true,
+		[INVSLOT_FEET] = true,
+		[INVSLOT_FINGER1] = true,
+		[INVSLOT_FINGER2] = true,
+	},
 	[10] = {
 		[INVSLOT_BACK] = true,
 		[INVSLOT_CHEST] = true,
@@ -83,6 +98,31 @@ local buttonLayout =
 
 local scanningTooltip, enchantReplacementTable;
 local GetItemEnchantAsText, GetSocketTextures, ProcessEnchantText, CanEnchantSlot;
+
+local stripEnchantPrefixs = {
+	["Enchant "] = "",
+	["Weapon %- "] = "",
+	["Shoulders %- "] = "",
+	["Chest %- "] = "",
+	["Ring %- "] = "",
+	["Boots %- "] = "",
+	["Helm %- "] = "",
+	["%+"] = "",
+};
+
+local alwaysReplaceNames = {
+	["Stamina"] = "Stam",
+	["Intellect"] = "Int",
+	["Agility"] = "Agi",
+	["Strength"] = "Str",
+
+	["Mastery"] = "Mast",
+	["Versatility"] = "Vers",
+	["Critical Strike"] = "Crit",
+	["Haste"] = "Haste",
+	["Avoidance"] = "Avoid",
+};
+
 if (isMop) then
 	buttonLayout[INVSLOT_RANGED] = "center";
 	scanningTooltip = CreateFrame("GameTooltip", "BCPScanningTooltip", nil, "GameTooltipTemplate");
@@ -199,21 +239,10 @@ if (isMop) then
 else
 	enchantReplacementTable =
 	{
-		["Stamina"] = "Stam",
-		["Intellect"] = "Int",
-		["Agility"] = "Agi",
-		["Strength"] = "Str",
-
-		["Mastery"] = "Mast",
-		["Versatility"] = "Vers",
-		["Critical Strike"] = "Crit",
-		["Haste"] = "Haste",
-		["Avoidance"] = "Avoid",
-
 		["Minor Speed Increase"] = "Speed",
 		["Homebound Speed"] = "Speed & HS Red.",
 		["Plainsrunner's Breeze"] = "Speed",
-		["Graceful Avoid"] = "Avoid",
+		["Graceful Avoidance"] = "Avoid",
 		["Regenerative Leech"] = "Leech",
 		["Watcher's Loam"] = "Stam",
 		["Rider's Reassurance"] = "Mount Speed",
@@ -231,7 +260,7 @@ else
 		["Crystalline Radiance"] = "Primary Stat",
 		["Oathsworn's Strength"] = "Str & Stam",
 
-		["Chant of Armored Avoid"] = "Avoid",
+		["Chant of Armored Avoidance"] = "Avoid",
 		["Chant of Armored Leech"] = "Leech",
 		["Chant of Armored Speed"] = "Speed",
 		["Chant of Winged Grace"] = "Avoid & FallDmg",
@@ -246,8 +275,54 @@ else
 		["Shadowed Belt Clasp"] = "Stamina",
 
 		["Incandescent Essence"] = "Essence",
-		-- strip all +, we are starved for space
-		["+"] = "",
+
+		--11
+		["Acuity of the Ren'dorei"] = "Proc Prim",
+		["Arcane Mastery"] = "Proc Mast",
+		["Berserker's Rage"] = "Proc Haste",
+		["Flames of the Sin'dorei"] = "Dot->AoE",
+		["Jan'alai's Precision"] = "Proc Crit",
+		["Strength of Halazzi"] = "Bleed",
+		["Worldsoul Aegis"] = "Shield->AoE",
+		["Worldsoul Tenacity"] = "Proc Vers",
+
+		["Empowered Blessing of Speed"] = "Speed+Vigor",
+		["Blessing of Speed"] = "Speed",
+		["Empowered Rune of Avoidance"] = "Avoid+MS",
+		["Rune of Avoidance"] = "Avoid",
+		["Empowered Hex of Leeching"] = "Leech",
+		["Hex of Leeching"] = "Leech",
+
+		["Akil'zon's Swiftness"] = "Speed",
+		["Flight of the Eagle"] = "Speed",
+		["Amirdrassil's Grace"] = "Avoid",
+		["Nature's Grace"] = "Avoid",
+		["Thalassian Recovery"] = "Leech",
+
+		["Mark of Nalorakk"] = "Str & Stam",
+		["Mark of Magister"] = "Int & Mana",
+		["Mark of Rootwarden"] = "Agi & Speed",
+		["Mark of Worldsoul"] = "Primary Stat",
+
+		["Arcanoweave Spellthread"] = "Int & Mana",
+		["Blood Knight's Armor Kit"] = "Agi/Str & Armor",
+		["Forest Hunter's Armor Kit"] = "Ag/Str & Stam",
+		["Thalassian Scout Armor Kit"] = "Agi/Str",
+		["Bright Linen Spellthread"] = "Int",
+
+		["Shaladrassil's Roots"] = "Leech & Stam",
+		["Farstrider's Hunt"] = "Speed & Stam",
+		["Lynx's Dexterity"] = "Avoid & Stam",
+
+		["Eyes of the Eagle"] = "Crit%+",
+		["Nature's Fury"] = "Crit",
+		["Nature's Wrath"] = "Crit",
+		["Silvermoon's Alacrity"] = "Haste%",
+		["Thalassian Haste"] = "Haste",
+		["Zul'jin's Mastery"] = "Mast",
+		["Amani Mastery"] = "Mast",
+		["Silvermoon's Tenacity"] = "Vers",
+		["Thalassian Versatility"] = "Vers",
 	};
 
 
@@ -317,26 +392,19 @@ else
 	end
 end
 
-local function pairsByKeys(t, f)
-	local a = {}
-	for n in pairs(t) do table.insert(a, n) end
-	table.sort(a, f)
-	local i = 0            -- iterator variable
-	local iter = function() -- iterator function
-		i = i + 1
-		if a[i] == nil then
-			return nil
-		else
-			return a[i], t[a[i]]
-		end
-	end
-	return iter
-end
-
 function ProcessEnchantText(enchantText)
-	for seek, replacement in pairsByKeys(enchantReplacementTable) do
+	for seek, replacement in pairs(enchantReplacementTable) do
 		enchantText = enchantText:gsub(seek, replacement);
 	end
+
+	for index, value in pairs(stripEnchantPrefixs) do
+		enchantText = enchantText:gsub(index, value);
+	end
+
+	for index in pairs(alwaysReplaceNames) do
+		enchantText = enchantText:gsub(index, alwaysReplaceNames[index]);
+	end
+
 	return enchantText;
 end
 

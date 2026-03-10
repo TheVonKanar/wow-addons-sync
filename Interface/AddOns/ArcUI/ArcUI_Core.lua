@@ -607,54 +607,7 @@ function ns.API.GetActiveCooldownIDForBar(barNum, validCooldownIDs)
     end
   end
   
-  -- 3. Auto-discover via spellID (only if bar is meant to show on this spec)
-  local currentSpec = GetSpecialization() or 0
-  local showOnSpecs = barConfig.behavior and barConfig.behavior.showOnSpecs
-  local shouldShowOnThisSpec = false
-  
-  if showOnSpecs and #showOnSpecs > 0 then
-    for _, spec in ipairs(showOnSpecs) do
-      if spec == currentSpec then
-        shouldShowOnThisSpec = true
-        break
-      end
-    end
-  else
-    -- If no spec restriction, show on all specs
-    shouldShowOnThisSpec = true
-  end
-  
-  if shouldShowOnThisSpec and tracking.spellID and tracking.spellID > 0 then
-    local discoveredCdID = FindCooldownIDForSpellID(tracking.spellID)
-    if discoveredCdID and hasValidFrame(discoveredCdID) then
-      -- Auto-add to alternateCooldownIDs for future use
-      if not tracking.alternateCooldownIDs then
-        tracking.alternateCooldownIDs = {}
-      end
-      
-      -- Check if already in the list
-      local alreadyExists = false
-      for _, existingCdID in ipairs(tracking.alternateCooldownIDs) do
-        if existingCdID == discoveredCdID then
-          alreadyExists = true
-          break
-        end
-      end
-      
-      -- Also check if it's the primary
-      if discoveredCdID == tracking.cooldownID then
-        alreadyExists = true
-      end
-      
-      if not alreadyExists then
-        table.insert(tracking.alternateCooldownIDs, discoveredCdID)
-        print(string.format("|cff00ccffArc UI|r: Auto-discovered cooldownID %d for '%s' (spellID %d)", 
-          discoveredCdID, tracking.buffName or "bar " .. barNum, tracking.spellID))
-      end
-      
-      return discoveredCdID, "discovered"
-    end
-  end
+  -- 3. Auto-discover removed — use ns.API.DiscoverAlternateCooldownID(barNum) explicitly
   
   -- No valid cooldownID found
   return nil, nil
@@ -696,7 +649,7 @@ function ns.API.AddAlternateCooldownID(barNum, cooldownID)
   return true, string.format("Added cooldownID %d to bar %d", cooldownID, barNum)
 end
 
--- Remove a cooldownID from a bar's alternate list
+-- Remove a cooldownID from a bar's alternate list and add to excluded list
 function ns.API.RemoveAlternateCooldownID(barNum, cooldownID)
   local barConfig = ns.API.GetBarConfig(barNum)
   if not barConfig or not barConfig.tracking then return false, "Invalid bar" end
@@ -705,20 +658,37 @@ function ns.API.RemoveAlternateCooldownID(barNum, cooldownID)
     return false, "No alternate cooldownIDs"
   end
   
+  local removed = false
   for i, existingCdID in ipairs(barConfig.tracking.alternateCooldownIDs) do
     if existingCdID == cooldownID then
       table.remove(barConfig.tracking.alternateCooldownIDs, i)
-      
-      -- Re-validate tracking
-      if ns.API.ValidateAllBarTracking then
-        ns.API.ValidateAllBarTracking()
-      end
-      
-      return true, string.format("Removed cooldownID %d from bar %d", cooldownID, barNum)
+      removed = true
+      break
     end
   end
   
-  return false, "CooldownID not found in alternate list"
+  if not removed then
+    return false, string.format("CooldownID %d not found in alternate list", cooldownID)
+  end
+  
+  -- Add to excluded list so auto-discover never re-adds it
+  if not barConfig.tracking.excludedCooldownIDs then
+    barConfig.tracking.excludedCooldownIDs = {}
+  end
+  local alreadyExcluded = false
+  for _, exID in ipairs(barConfig.tracking.excludedCooldownIDs) do
+    if exID == cooldownID then alreadyExcluded = true; break end
+  end
+  if not alreadyExcluded then
+    table.insert(barConfig.tracking.excludedCooldownIDs, cooldownID)
+  end
+  
+  -- Re-validate tracking
+  if ns.API.ValidateAllBarTracking then
+    ns.API.ValidateAllBarTracking()
+  end
+  
+  return true, string.format("Removed cooldownID %d from bar %d (excluded from future discovery)", cooldownID, barNum)
 end
 
 -- Get all cooldownIDs for a bar (primary + alternates)
@@ -749,6 +719,81 @@ function ns.API.GetAllCooldownIDsForBar(barNum)
   end
   
   return result
+end
+
+-- Manually trigger alt cooldown ID discovery for a bar (button-driven, never automatic)
+-- Skips excluded IDs. Returns discovered cooldownID or nil, plus a status message.
+function ns.API.DiscoverAlternateCooldownID(barNum)
+  local barConfig = ns.API.GetBarConfig(barNum)
+  if not barConfig or not barConfig.tracking then return nil, "Invalid bar" end
+  
+  local tracking = barConfig.tracking
+  if not tracking.spellID or tracking.spellID <= 0 then
+    return nil, "No spellID set for this bar"
+  end
+  
+  -- Build valid cooldown ID set (requires a current CDM scan)
+  local validCooldownIDs = {}
+  if ns.API.ScanAllCDMIcons then
+    ns.API.ScanAllCDMIcons(function(cdID)
+      validCooldownIDs[cdID] = true
+    end)
+  elseif ns.cdmIconCache then
+    for cdID in pairs(ns.cdmIconCache) do
+      validCooldownIDs[cdID] = true
+    end
+  end
+  
+  local discoveredCdID = FindCooldownIDForSpellID(tracking.spellID)
+  if not discoveredCdID or not validCooldownIDs[discoveredCdID] then
+    return nil, string.format("No CDM frame found for spellID %d", tracking.spellID)
+  end
+  
+  -- Skip if it's the primary
+  if discoveredCdID == tracking.cooldownID then
+    return nil, string.format("CooldownID %d is already the primary", discoveredCdID)
+  end
+  
+  -- Skip if excluded
+  if tracking.excludedCooldownIDs then
+    for _, exID in ipairs(tracking.excludedCooldownIDs) do
+      if exID == discoveredCdID then
+        return nil, string.format("CooldownID %d is excluded — un-exclude it first to re-add", discoveredCdID)
+      end
+    end
+  end
+  
+  -- Skip if already in alternates
+  if tracking.alternateCooldownIDs then
+    for _, altID in ipairs(tracking.alternateCooldownIDs) do
+      if altID == discoveredCdID then
+        return nil, string.format("CooldownID %d is already in the alternate list", discoveredCdID)
+      end
+    end
+  end
+  
+  -- Add it
+  if not tracking.alternateCooldownIDs then tracking.alternateCooldownIDs = {} end
+  table.insert(tracking.alternateCooldownIDs, discoveredCdID)
+  
+  if ns.API.ValidateAllBarTracking then ns.API.ValidateAllBarTracking() end
+  
+  return discoveredCdID, string.format("Found and added cooldownID %d for bar %d", discoveredCdID, barNum)
+end
+
+-- Remove a cooldownID from the excluded list so discovery can find it again
+function ns.API.UnexcludeCooldownID(barNum, cooldownID)
+  local barConfig = ns.API.GetBarConfig(barNum)
+  if not barConfig or not barConfig.tracking then return false, "Invalid bar" end
+  if not barConfig.tracking.excludedCooldownIDs then return false, "No excluded IDs" end
+  
+  for i, exID in ipairs(barConfig.tracking.excludedCooldownIDs) do
+    if exID == cooldownID then
+      table.remove(barConfig.tracking.excludedCooldownIDs, i)
+      return true, string.format("CooldownID %d removed from excluded list", cooldownID)
+    end
+  end
+  return false, string.format("CooldownID %d not in excluded list", cooldownID)
 end
 
 -- Expose cache invalidation for spec change handlers
@@ -2649,6 +2694,12 @@ UpdateBarBuffInfo = function(barNumber)
   end
   if not iconTexture and barConfig.tracking.spellID then
     iconTexture = C_Spell.GetSpellTexture(barConfig.tracking.spellID)
+  end
+
+  -- Icon override: user-specified spell ID or texture ID replaces resolved texture
+  local iconOverride = barConfig.display and barConfig.display.iconOverride
+  if iconOverride and iconOverride > 0 then
+    iconTexture = C_Spell.GetSpellTexture(iconOverride) or iconOverride
   end
   
   -- ═══════════════════════════════════════════════════════════════════

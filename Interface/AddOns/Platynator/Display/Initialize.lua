@@ -443,7 +443,7 @@ function addonTable.Display.ManagerMixin:UpdateInstanceShowState()
     return
   end
 
-  local relevantInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, delve = true})
+  local relevantInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, raid = true, delve = true})
 
   if state == "name_only" and C_CVar.GetCVarInfo("nameplateShowOnlyNameForFriendlyPlayerUnits") then
     C_CVar.SetCVar("nameplateShowOnlyNameForFriendlyPlayerUnits", relevantInstance and "1" or "0")
@@ -485,9 +485,6 @@ function addonTable.Display.ManagerMixin:ListenToBuffs(display, unit)
     local UF = self.ModifiedUFs[unit]
     if display.DebuffDisplay.details and display.DebuffDisplay.details.filters.important or display.BuffDisplay.details and display.BuffDisplay.details.filters.important then
       UF:RegisterUnitEvent("UNIT_AURA", unit)
-
-      local DebuffListFrame = UF.AurasFrame.DebuffListFrame
-      local BuffListFrame = UF.AurasFrame.BuffListFrame
 
       display.AurasManager:SetGetImportantAuras(function()
         local important = {}
@@ -538,7 +535,7 @@ function addonTable.Display.ManagerMixin:Install(unit, nameplate)
       local simplifiedSettings = addonTable.Config.Get(addonTable.Config.Options.SIMPLIFIED_NAMEPLATES)
       local classification = UnitClassification(unit)
       shouldSimplify = C_NamePlateManager and C_NamePlateManager.SetNamePlateSimplified and (
-        simplifiedSettings.instancesNormal and classification == "normal" and addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true}) or
+        simplifiedSettings.instancesNormal and classification == "normal" and addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, raid = true}) or
         simplifiedSettings.minor and classification == "minus" or
         simplifiedSettings.minion and UnitIsMinion and UnitIsMinion(unit)
       )
@@ -672,7 +669,7 @@ function addonTable.Display.ManagerMixin:UpdateNamePlateSize()
       C_NamePlate.SetNamePlateFriendlySize(1, 1)
     end
     if IsInInstance() then
-      if addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true}) then
+      if addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, raid = true}) then
         if addonTable.Constants.IsClassic then
           C_NamePlate.SetNamePlateFriendlySize(128, 16)
         else
@@ -824,7 +821,7 @@ function addonTable.Display.ManagerMixin:UpdateFriendlyFont()
         break
       end
     end
-    C_CVar.SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, delve = true}) and self.friendlyNameOnlyClassColors and "1" or "0")
+    C_CVar.SetCVar("nameplateUseClassColorForFriendlyPlayerUnitNames", addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, raid = true, delve = true}) and self.friendlyNameOnlyClassColors and "1" or "0")
     if scale then
       ChangeFont(SystemFont_NamePlate_Outlined, _G[addonTable.CurrentFont])
       ChangeFont(SystemFont_NamePlate, _G[addonTable.CurrentFont])

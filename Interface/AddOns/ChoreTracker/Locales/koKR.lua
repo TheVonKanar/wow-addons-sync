@@ -83,8 +83,15 @@ L['category:patch_12_0_0'] = 'Patch 12.0.0'
 L['category:weekly'] = '주간'
 L['category:worldBosses'] = '월드 보스'
 
+L['chore:midnight:patch_12_0_0:quests:abundance'] = 'Abundance'
 L['chore:midnight:patch_12_0_0:quests:dungeon'] = '던전'
+L['chore:midnight:patch_12_0_0:quests:hope'] = 'Hope'
+L['chore:midnight:patch_12_0_0:quests:soiree'] = 'Soiree'
 L['chore:midnight:patch_12_0_0:quests:specialAssignment'] = '특별 과제'
+L['chore:midnight:patch_12_0_0:quests:stormarion'] = 'Stormarion'
+L['chore:midnight:patch_12_0_0:quests:unity'] = 'Unity'
+
+L['chore:midnight:leveling:quests:delves'] = 'Delves'
 
 L['chore:warWithin:patch_11_2_0:quests:ecologicalSuccession'] = '[S3] 생태 천이'
 L['chore:warWithin:patch_11_2_0:quests:makingDeposit'] = '[S3] 포식자의 공격'

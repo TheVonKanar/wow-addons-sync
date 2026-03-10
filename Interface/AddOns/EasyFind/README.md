@@ -1,0 +1,105 @@
+# EasyFind
+
+EasyFind lets you search for any panel, tab, or setting in WoW's interface and any point of interest on the map. Type what you're looking for, and EasyFind walks you to it step by step, or if you prefer, opens it directly.
+
+## Features
+
+### UI Search
+Find and navigate to any interface element:
+- Character panels (titles, currency, reputation)
+- Talents and spellbook
+- Group Finder (dungeons, raids, PvP queues)
+- Collections (mounts, pets, toys, transmog)
+- Achievements and statistics (including nested categories)
+- Guild and social features
+- Professions
+- All currencies from your character's Currency tab, including seasonal and legacy currencies (shows current amounts inline)
+- Faction reputations with visual progress bars showing renown level, friendship rank, or traditional standing
+- Player portrait menu options (Set Focus, Loot Specialization, Dungeon/Raid Difficulty, Edit Mode, PvP Flag, etc.)
+- Coverage is always expanding. If a panel exists in the default UI, the goal is for EasyFind to reach it
+
+**Pinned Paths**: Right-click any search result to pin it as a bookmark. Pinned items always appear at the top of your results and persist across sessions.
+
+### Map Search
+Locate important places across Azeroth:
+- Portals and transport
+- Banks and auction houses
+- Flight masters
+- Dungeon and raid entrances (search globally or within current map)
+- Profession trainers
+
+**Two search bars**: The local bar searches your current zone. The global bar searches zones, dungeons, raids, and delves across all of Azeroth. Both support category filters to narrow results by type.
+
+**Click-to-Navigate**: Click any local search pin on the map to place a native WoW waypoint with minimap supertrack arrow. The waypoint auto-clears when you arrive. Navigate buttons are grayed out when you are viewing a zone your character is not in.
+
+**Zone Abbreviations**: Type common shortcuts like `sw` (Stormwind), `dal` (Dalaran), `org` (Orgrimmar), `if` (Ironforge), `orib` (Oribos), and more.
+
+### Two Navigation Modes
+- **Guide Mode** (default): Walks you through each step to reach your destination. Highlights the correct button or tab with a yellow pulsing border and an animated arrow so you learn where things live.
+- **Direct Open Mode**: For when you already know the UI and just want to get there. Opens panels and tabs directly with no extra steps.
+
+## How to Use
+
+Type at least 2 characters and results appear as you type. Click a result or press Enter to select the first match.
+
+**Examples:**
+- `talents` → opens the Talents panel
+- `currency` → opens the Currency tab
+- `3v3` → navigates to the 3v3 Arena queue in Group Finder
+- `duel` → finds duel statistics in Achievements
+
+Results show their full path so you always know where you're going:
+- Character Info > Currency
+- Group Finder > Player vs. Player > Rated
+
+## First-Time Setup
+
+When you install EasyFind for the first time, you'll see an interactive setup overlay that helps you position and resize the search bar. Simply drag the bar where you want it and use the corner handle to adjust the size, then click **Done** when ready. You can always reposition it later by holding **Shift** and dragging.
+
+## Slash Commands
+
+| Command | Description |
+| --- | --- |
+| `/ef o` | Open the options panel |
+| `/ef hide` | Hide the search bar |
+| `/ef show` | Show the search bar |
+| `/ef clear` | Dismiss all active highlights and guides (UI search, map POI, zone, breadcrumb) |
+| `/ef setup` | Re-run the first-time setup overlay |
+
+Options are also available via ESC > Interface > AddOns > EasyFind.
+
+## Keybinds
+
+EasyFind provides customizable keybinds:
+
+- **Toggle UI Search Bar**:  Show/hide the search bar
+- **Focus Search Bar**: Jump to the search bar and start typing (or unfocus if already active)
+
+**No keybinds are set by default.** Configure them in the Options panel or via ESC > Keybinds > EasyFind.
+
+## Options
+- **Arrow Style**: Choose from 4 arrow textures (EasyFind Arrow, Classic Quest Arrow, Minimap Player Arrow, Cursor Point). All arrows update in real-time.
+- **Arrow Color**: Pick from 8 color presets (Yellow, Gold, Orange, Red, Green, Blue, Purple, White).
+- **Icon Size**: Unified slider controls all search indicators (map pins, UI arrows, zone highlights) at once.
+- **Max Results**: How many results to show before scrolling (3-24).
+- **Arrival Distance**: How close you need to be before a waypoint auto-clears (3-50 yards).
+- **Open Panels Directly** (UI Search): When enabled, selecting a UI result opens the target panel immediately instead of guiding you through each step. Off by default.
+- **Navigate to Zones Directly** (Map Search): When enabled, selecting a map result jumps straight to the zone on the map instead of stepping through parent zones. Off by default.
+- **Smart Show**: Hide the search bar until you hover over it. Keeps your screen clean while staying accessible.
+- **Results Theme**: Choose between Classic (colorful tree lines) or Retail (quest log style) for the search results dropdown.
+- **Search Bar Opacity**: Adjust transparency to see through the search bar.
+- **Static Opacity**: Keep the search bar at constant opacity while moving (off by default; bar fades while moving).
+- **Blinking Map Pins**: Enable pulse animations on map search pins (off by default).
+- **Minimap Button**: Show or hide the minimap icon.
+- **Show Login Message**: Show or hide the "EasyFind loaded!" chat message on login.
+- **UI/Map Search Bar Scales**: Resize each search bar independently.
+- **Reset All Settings / Reset Positions**: Return settings or search bar positions to defaults.
+
+## Moving the Search Bars
+
+Both search bars can be repositioned by holding **Shift** and dragging. The map search bar stays constrained to the bottom of the map frame.
+
+## Links
+
+- [GitHub](https://github.com/wowaddonmaker/EasyFind)
+- [Changelog](https://github.com/wowaddonmaker/EasyFind/blob/main/CHANGELOG.md)

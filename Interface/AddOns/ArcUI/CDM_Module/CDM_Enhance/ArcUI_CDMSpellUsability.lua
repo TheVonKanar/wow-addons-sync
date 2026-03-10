@@ -443,8 +443,8 @@ function ns.CDMSpellUsability.UpdateGlow(frame, cfg, spellID, isUsable, allDeple
                 thickness = glowSu.usableGlowThickness or 2,
                 particles = glowSu.usableGlowParticles or 4,
                 scale = glowSu.usableGlowScale or 1,
-                xOffset = glowOffset,
-                yOffset = glowOffset,
+                xOffset = glowOffset + (glowSu.usableGlowXOffset or 0),
+                yOffset = glowOffset + (glowSu.usableGlowYOffset or 0),
             })
         end
         frame._arcCDMUsableGlowActive = true

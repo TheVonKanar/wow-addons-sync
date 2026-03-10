@@ -84,8 +84,15 @@ L['category:patch_12_0_0'] = 'Патч 12.0.0'
 L['category:weekly'] = 'Еженедельные'
 L['category:worldBosses'] = 'Мировые боссы'
 
+L['chore:midnight:patch_12_0_0:quests:abundance'] = 'Abundance'
 L['chore:midnight:patch_12_0_0:quests:dungeon'] = 'Подземелье'
+L['chore:midnight:patch_12_0_0:quests:hope'] = 'Hope'
+L['chore:midnight:patch_12_0_0:quests:soiree'] = 'Soiree'
 L['chore:midnight:patch_12_0_0:quests:specialAssignment'] = 'Особое поручение'
+L['chore:midnight:patch_12_0_0:quests:stormarion'] = 'Stormarion'
+L['chore:midnight:patch_12_0_0:quests:unity'] = 'Unity'
+
+L['chore:midnight:leveling:quests:delves'] = 'Delves'
 
 L['chore:warWithin:patch_11_2_0:quests:ecologicalSuccession'] = '[КАР] Экологическая'
 L['chore:warWithin:patch_11_2_0:quests:makingDeposit'] = '[КАР] Пожиратели'

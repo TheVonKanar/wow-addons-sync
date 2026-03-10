@@ -6,7 +6,37 @@ LoggerHeadDB = {
 ["profiles"] = {
 ["Default"] = {
 ["log"] = {
+["party"] = {
+["Murder Row"] = {
+[23] = true,
+},
+["The Blinding Vale"] = {
+[23] = true,
+},
+["Windrunner Spire"] = {
+[23] = true,
+},
+["Den of Nalorakk"] = {
+[23] = true,
+},
+["Nexus-Point Xenas"] = {
+[23] = true,
+},
+["Maisara Caverns"] = {
+[23] = true,
+},
+["Voidscar Arena"] = {
+[23] = true,
+},
+["Magisters' Terrace"] = {
+[2] = true,
+[23] = true,
+},
+},
 ["scenario"] = {
+["Twilight Crypts"] = {
+[208] = false,
+},
 ["Sunkiller Sanctum"] = {
 [208] = false,
 },
@@ -29,25 +59,12 @@ LoggerHeadDB = {
 [208] = false,
 },
 },
-["party"] = {
-["The Blinding Vale"] = {
-[23] = true,
+["raid"] = {
+["Vault of the Incarnates"] = {
+[16] = false,
 },
-["Windrunner Spire"] = {
-[23] = true,
-},
-["Nexus-Point Xenas"] = {
-[23] = true,
-},
-["Maisara Caverns"] = {
-[23] = true,
-},
-["Magisters' Terrace"] = {
-[2] = true,
-[23] = true,
-},
-["Murder Row"] = {
-[23] = true,
+["Icecrown Citadel"] = {
+[3] = false,
 },
 },
 },

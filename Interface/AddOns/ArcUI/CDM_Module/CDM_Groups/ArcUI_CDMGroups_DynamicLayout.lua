@@ -76,9 +76,9 @@ DL.RefreshCachedEnabledState = RefreshCachedEnabledState
 
 local CONFIG = {
     -- How often to check for visibility changes (seconds)
-    -- How often to check for visibility changes (controls responsiveness vs CPU)
-    -- PERFORMANCE: Increased from 0.5 to 1.0 - user won't notice 1 second delay
-    CHECK_INTERVAL = 1.0,  -- 1Hz (was 2Hz)
+    -- PERFORMANCE: Hooks (OnActiveStateChanged/SetAuraInstanceInfo) handle instant response.
+    -- This poll is a safety net for edge cases hooks miss (spec change, CDM recycling, etc.)
+    CHECK_INTERVAL = 0.2,  -- 5Hz safety net only - hooks are the primary response path
     
     -- How often to check for grid mismatches (more expensive, do less often)
     MISMATCH_CHECK_INTERVAL = 2.0,  -- 0.5Hz (was 1Hz) - cut in half
@@ -131,6 +131,29 @@ local state = {
     -- PERFORMANCE: Module-level cached panel state (kept for backward compat, no longer polled)
     cachedPanelOpenThisTick = false,
 }
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- DIRTY FLAG SYSTEM
+-- Replaces per-group polling with event-driven change detection.
+-- When a hook fires on a frame (aura added/removed/changed), the group is
+-- marked dirty. The maintainer tick only calls CheckGroupForChanges for dirty
+-- groups. At the 2s mismatch interval, all groups are checked regardless.
+-- RESULT: Idle CPU = loop over groups + bool check per group (near zero).
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local _dlDirtyGroups = {}  -- [groupName] = true when a hook fired for this group
+
+-- Mark a group dirty — called from hook callbacks and CDMEnhance aura events
+function DL.MarkGroupDirty(groupName)
+    if groupName then
+        _dlDirtyGroups[groupName] = true
+    end
+end
+
+-- Clear dirty flag after the tick processes the group
+local function ClearGroupDirty(groupName)
+    _dlDirtyGroups[groupName] = nil
+end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- TABLE POOLING - Reuse tables to avoid garbage collection pressure
@@ -349,6 +372,11 @@ local function TriggerDynamicLayout(group, reason, triggerFrame)
     local layoutEnd = GetTime()
     Trace("LAYOUT_END", cdID, string.format("took=%.1fms", (layoutEnd - layoutStart) * 1000), groupName)
     
+    -- Mark group dirty so the reflow tick (CheckGroupForChanges → ReflowIcons)
+    -- also runs for this group on the next maintainer pass.
+    -- Layout() handles positioning; ReflowIcons() handles gap compaction.
+    DL.MarkGroupDirty(groupName)
+    
     -- Total time for this trigger
     local totalTime = GetTime() - now
     Trace("TRIGGER_COMPLETE", cdID, string.format("total=%.1fms", totalTime * 1000), groupName)
@@ -449,6 +477,7 @@ local function HookFrameForDynamicLayout(frame, group)
         hooksecurefunc(frame, "OnActiveStateChanged", function(self)
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
+                DL.MarkGroupDirty(currentGroup.name)
                 TriggerDynamicLayout(currentGroup, "OnActiveStateChanged", self)
             end
         end)
@@ -457,6 +486,7 @@ local function HookFrameForDynamicLayout(frame, group)
         hooksecurefunc(frame, "OnUnitAuraAddedEvent", function(self)
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
+                DL.MarkGroupDirty(currentGroup.name)
                 TriggerDynamicLayout(currentGroup, "OnUnitAuraAddedEvent", self)
             end
         end)
@@ -465,6 +495,7 @@ local function HookFrameForDynamicLayout(frame, group)
         hooksecurefunc(frame, "OnUnitAuraRemovedEvent", function(self)
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
+                DL.MarkGroupDirty(currentGroup.name)
                 TriggerDynamicLayout(currentGroup, "OnUnitAuraRemovedEvent", self)
             end
         end)
@@ -476,6 +507,7 @@ local function HookFrameForDynamicLayout(frame, group)
         hooksecurefunc(frame, "SetAuraInstanceInfo", function(self, auraData)
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
+                DL.MarkGroupDirty(currentGroup.name)
                 TriggerDynamicLayout(currentGroup, "SetAuraInstanceInfo", self)
             end
         end)
@@ -695,12 +727,22 @@ function DL.IsAuraFrame(member)
         end
     end
     
-    -- THIRD: Try CDM category lookup only if cache is missing
+    -- THIRD: frame._arcViewerType - set by CDMEnhance.EnhanceFrame() on every enhanced frame.
+    -- This is authoritative and available as soon as the frame is enhanced,
+    -- before GetViewerTypeFromCooldownID is populated in CDMShared.
+    local frame = member.frame
+    if frame and frame._arcViewerType then
+        local result = frame._arcViewerType == "aura"
+        member.viewerType = frame._arcViewerType  -- promote to member cache
+        if cdID then state.tickAuraFrameCache[cdID] = result end
+        return result
+    end
+    
+    -- FOURTH: Try CDM category lookup only if frame hasn't been enhanced yet
     local Shared = ns.CDMShared
     if cdID and Shared and Shared.GetViewerTypeFromCooldownID then
         local viewerType = Shared.GetViewerTypeFromCooldownID(cdID)
         if viewerType then
-            -- Cache for future calls
             member.viewerType = viewerType
             local result = viewerType == "aura"
             state.tickAuraFrameCache[cdID] = result
@@ -1136,6 +1178,16 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
     local contentW = cols * slotW + (cols - 1) * spacingX
     local contentH = rows * slotH + (rows - 1) * spacingY
     
+    -- Screen-pixel snapping (mirrors getSlotPosition's snappedBaseX logic in CDMGroups.lua)
+    -- Without snapping, starting positions like -contentW/2 can land on fractional screen pixels
+    -- at common UI scales (e.g. 1440p scale 1.5: contentW/2=151 → 151*1.5=226.5, fractional).
+    -- This causes visible icon misalignment for even icon counts while odd counts are fine.
+    local contScale = (group.container and group.container:GetEffectiveScale()) or 1
+    local function snapPixel(v)
+        if contScale <= 0 then return v end
+        return math.floor(v * contScale + 0.5) / contScale
+    end
+    
     -- Initialize pixel offset storage
     group._pixelOffsets = {}
     group._activeOrder = {}
@@ -1162,13 +1214,14 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         end
         
         -- Start X based on alignment (relative to container CENTER)
+        -- Snap to screen pixels so icon edges land on whole pixels at all UI scales
         local currentX
         if alignment == "center" then
-            currentX = -totalWidth / 2
+            currentX = snapPixel(-totalWidth / 2)
         elseif alignment == "right" then
-            currentX = contentW / 2 - totalWidth
+            currentX = snapPixel(contentW / 2 - totalWidth)
         else -- left (default)
-            currentX = -contentW / 2
+            currentX = snapPixel(-contentW / 2)
         end
         
         -- Assign pixel positions
@@ -1202,13 +1255,14 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         end
         
         -- Start Y based on alignment (Y is positive upward from center)
+        -- Snap to screen pixels for same reason as currentX in horizontal section
         local currentY
         if alignment == "center" then
-            currentY = totalHeight / 2
+            currentY = snapPixel(totalHeight / 2)
         elseif alignment == "bottom" then
-            currentY = -(contentH / 2) + totalHeight
+            currentY = snapPixel(-(contentH / 2) + totalHeight)
         else -- top (default)
-            currentY = contentH / 2
+            currentY = snapPixel(contentH / 2)
         end
         
         -- Assign pixel positions
@@ -1325,14 +1379,14 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                 end
                 
                 if #colItems > 0 then
-                    -- X position: fixed column position
-                    local colCenterX = -contentW / 2 + c * (slotW + spacingX) + slotW / 2
+                    -- X position: fixed column position — snapped to screen pixels
+                    local colCenterX = snapPixel(-contentW / 2 + c * (slotW + spacingX) + slotW / 2)
                     
                     -- Calculate total height of items in this column
                     local colTotalH = #colItems * slotH + math.max(0, #colItems - 1) * spacingY
                     
-                    -- Start from top of centered block (Y+ is up in WoW)
-                    local currentY = colTotalH / 2
+                    -- Start from top of centered block (Y+ is up in WoW) — snapped to screen pixels
+                    local currentY = snapPixel(colTotalH / 2)
                     
                     for i, item in ipairs(colItems) do
                         local centerY = currentY - slotH / 2
@@ -1350,8 +1404,8 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         else
         -- All other alignments: row-major iteration
         for r = 0, rows - 1 do
-            -- Y position for this row (from container center, Y+ is up)
-            local rowCenterY = contentH / 2 - r * (slotH + spacingY) - slotH / 2
+            -- Y position for this row (from container center, Y+ is up) — snapped to screen pixels
+            local rowCenterY = snapPixel(contentH / 2 - r * (slotH + spacingY) - slotH / 2)
             
             -- Collect items in this row (left-to-right order)
             local rowItems = {}
@@ -1364,9 +1418,9 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
             if #rowItems > 0 then
                 if alignment == "top" or alignment == "bottom" then
                     -- Column gravity: icons keep their column position
-                    -- X = grid-slot center based on column index
+                    -- X = grid-slot center based on column index — snapped to screen pixels
                     for _, item in ipairs(rowItems) do
-                        local colCenterX = -contentW / 2 + item.col * (slotW + spacingX) + slotW / 2
+                        local colCenterX = snapPixel(-contentW / 2 + item.col * (slotW + spacingX) + slotW / 2)
                         
                         group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = rowCenterY }
                         group._activeOrder[orderIdx] = item.data.cdID
@@ -1388,7 +1442,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         rowTotalW = rowTotalW + (#rowItems - 1) * spacingX
                     end
                     
-                    local currentX = -rowTotalW / 2
+                    local currentX = snapPixel(-rowTotalW / 2)
                     for i, item in ipairs(rowItems) do
                         local iconW = widths[i]
                         local centerX = currentX + iconW / 2
@@ -1404,7 +1458,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                     
                 elseif alignment == "left" then
                     -- Row gravity: pixel-pack from left edge
-                    local currentX = -contentW / 2
+                    local currentX = snapPixel(-contentW / 2)
                     for i, item in ipairs(rowItems) do
                         local iconW = item.data.member._effectiveIconW or slotW
                         local centerX = currentX + iconW / 2
@@ -1420,7 +1474,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                     
                 else -- right
                     -- Row gravity: pixel-pack from right edge
-                    local currentX = contentW / 2
+                    local currentX = snapPixel(contentW / 2)
                     for i = #rowItems, 1, -1 do
                         local item = rowItems[i]
                         local iconW = item.data.member._effectiveIconW or slotW
@@ -1759,6 +1813,15 @@ function DL.OnTalentChangeStart()
     wipe(state.iconVisibility)
     wipe(state.pendingReflows)
     
+    -- Mark all groups dirty so the tick re-evaluates everyone after reconcile
+    if ns.CDMGroups and ns.CDMGroups.groups then
+        for groupName, group in pairs(ns.CDMGroups.groups) do
+            if group.autoReflow and group.dynamicLayout then
+                _dlDirtyGroups[groupName] = true
+            end
+        end
+    end
+    
     -- Record when this happened
     state.talentChangeTime = GetTime()
     state.pendingPostTalentRefresh = true
@@ -1814,12 +1877,84 @@ end
 -- MAINTAINER
 -- ═══════════════════════════════════════════════════════════════════════════
 
-local DynamicMaintainer = CreateFrame("Frame")
-local elapsed = 0
+-- ═══════════════════════════════════════════════════════════════════════════
+-- MAINTAINER — EVENT-DRIVEN via C_Timer tickers (zero per-frame cost)
+--
+-- No OnUpdate frame. Two tickers:
+--   0.2s — processes dirty groups only (groups where a hook fired)
+--   2.0s — full sweep for mismatch safety net (catches spec change, CDM recycling)
+--
+-- Panel open/close is handled by Shared.RegisterPanelCallback below.
+-- Talent/spec changes call DL.MarkGroupDirty via DL.OnTalentChangeStart.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local function RunDirtyTick()
+    if not _cdmGroupsEnabled then return end
+    if IsOptionsPanelOpen() then return end
+    if ns.CDMGroups.specChangeInProgress then return end
+    if ns.CDMGroups._pendingSpecChange then return end
+    if ns.CDMGroups._restorationProtectionEnd and GetTime() < ns.CDMGroups._restorationProtectionEnd then return end
+    if state.pendingPostTalentRefresh then return end
+    if not ns.CDMGroups.groups then return end
+    if not next(_dlDirtyGroups) then return end  -- nothing dirty, bail immediately
+
+    wipe(state.tickInvisibleCache)
+    wipe(state.tickAuraFrameCache)
+
+    for groupName, group in pairs(ns.CDMGroups.groups) do
+        if group.autoReflow and group.dynamicLayout and _dlDirtyGroups[groupName] then
+            local changed = CheckGroupForChanges(group, false)
+            ClearGroupDirty(groupName)
+            if changed then
+                state.pendingReflows[groupName] = group
+            end
+        end
+    end
+
+    if next(state.pendingReflows) then
+        ProcessPendingReflows()
+    end
+end
+
+local function RunMismatchTick()
+    if not _cdmGroupsEnabled then return end
+    if IsOptionsPanelOpen() then return end
+    if ns.CDMGroups.specChangeInProgress then return end
+    if ns.CDMGroups._pendingSpecChange then return end
+    if state.pendingPostTalentRefresh then return end
+    if not ns.CDMGroups.groups then return end
+
+    wipe(state.tickInvisibleCache)
+    wipe(state.tickAuraFrameCache)
+    state.lastMismatchCheckTime = GetTime()
+
+    for groupName, group in pairs(ns.CDMGroups.groups) do
+        if group.autoReflow and group.dynamicLayout then
+            local changed = CheckGroupForChanges(group, true)
+            ClearGroupDirty(groupName)
+            if changed then
+                state.pendingReflows[groupName] = group
+            end
+        end
+    end
+
+    if next(state.pendingReflows) then
+        ProcessPendingReflows()
+    end
+end
+
+-- Start tickers (created once, run forever — same lifetime as the addon)
+local _dirtyTicker   = C_Timer.NewTicker(CONFIG.CHECK_INTERVAL,    function() RunDirtyTick() end)
+local _mismatchTicker = C_Timer.NewTicker(CONFIG.MISMATCH_CHECK_INTERVAL, function() RunMismatchTick() end)
+
+-- Expose for external stop if needed (e.g. full disable of CDMGroups)
+function DL.StopMaintainerTickers()
+    if _dirtyTicker   then _dirtyTicker:Cancel()   end
+    if _mismatchTicker then _mismatchTicker:Cancel() end
+end
 
 -- Called by Shared panel hooks when panel opens
 function DL.OnOptionsPanelOpened()
-    state.cachedPanelOpenThisTick = true  -- backward compat
     state.optionsPanelWasOpen = true
     
     -- Reset ALL groups to grid positions
@@ -1873,7 +2008,6 @@ end
 -- No polling needed - immediate response
 -- Called by Shared panel hooks when panel closes
 function DL.OnOptionsPanelClosed()
-    state.cachedPanelOpenThisTick = false  -- backward compat
     state.optionsPanelWasOpen = false
     
     -- Clear any applied container offsets so positions reset properly
@@ -1897,79 +2031,6 @@ function DL.OnOptionsPanelClosed()
         end
     end
 end
-
-local function DynamicMaintainerOnUpdate(self, dt)
-    -- Skip if CDMGroups not enabled (direct boolean check - no function call)
-    if not _cdmGroupsEnabled then
-        return
-    end
-    
-    -- Panel state: zero-cost flag read (set by hooks in Shared, no polling)
-    local optionsPanelOpen = IsOptionsPanelOpen()
-    
-    -- Detect state transitions for open/close callbacks
-    local wasOpen = state.optionsPanelWasOpen
-    if wasOpen and not optionsPanelOpen then
-        DL.OnOptionsPanelClosed()
-    elseif not wasOpen and optionsPanelOpen then
-        DL.OnOptionsPanelOpened()
-    end
-    state.optionsPanelWasOpen = optionsPanelOpen
-    
-    -- Skip all processing when options panel is open
-    if optionsPanelOpen then return end
-    
-    -- Throttle
-    elapsed = elapsed + dt
-    if elapsed < CONFIG.CHECK_INTERVAL then return end
-    elapsed = 0
-    
-    -- PERFORMANCE: Clear per-tick caches at start of each check cycle (not every frame!)
-    wipe(state.tickInvisibleCache)
-    wipe(state.tickAuraFrameCache)
-    
-    -- Skip during spec changes
-    if ns.CDMGroups.specChangeInProgress then return end
-    if ns.CDMGroups._pendingSpecChange then return end
-    
-    -- Skip during restoration
-    if ns.CDMGroups._restorationProtectionEnd and GetTime() < ns.CDMGroups._restorationProtectionEnd then
-        return
-    end
-    
-    -- Skip if waiting for post-talent refresh (handled by OnReconcileComplete)
-    if state.pendingPostTalentRefresh then return end
-    
-    -- Check all groups with dynamic layout enabled
-    if not ns.CDMGroups.groups then return end
-    
-    -- PERFORMANCE: Only run expensive HasGridMismatch check periodically
-    local now = GetTime()
-    local shouldCheckMismatch = (now - state.lastMismatchCheckTime) >= CONFIG.MISMATCH_CHECK_INTERVAL
-    
-    for groupName, group in pairs(ns.CDMGroups.groups) do
-        -- CRITICAL: Check BOTH autoReflow (master toggle) AND dynamicLayout (aura behavior)
-        -- dynamicLayout is meaningless without autoReflow - it's a sub-feature
-        if group.autoReflow and group.dynamicLayout then
-            local changed = CheckGroupForChanges(group, shouldCheckMismatch)
-            if changed then
-                state.pendingReflows[groupName] = group
-            end
-        end
-    end
-    
-    -- Update mismatch check timestamp if we did check
-    if shouldCheckMismatch then
-        state.lastMismatchCheckTime = now
-    end
-    
-    -- Process reflows
-    if next(state.pendingReflows) then
-        ProcessPendingReflows()
-    end
-end
-
-DynamicMaintainer:SetScript("OnUpdate", Track and Track("DynLayout.MaintainerTick", DynamicMaintainerOnUpdate) or DynamicMaintainerOnUpdate)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- GROUP MANAGEMENT

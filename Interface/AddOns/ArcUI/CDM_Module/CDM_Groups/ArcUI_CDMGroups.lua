@@ -151,6 +151,18 @@ local function SyncAnchorProxy(group)
 end
 ns.CDMGroups.SyncAnchorProxy = SyncAnchorProxy
 
+-- Snap the container's position to the nearest physical pixel using Blizzard's
+-- PixelUtil. This ensures the container TOPLEFT lands on a whole physical pixel,
+-- so all icon positions (relative to TOPLEFT) are also pixel-aligned in screen space.
+local function SnapContainerPositionToPixel(group)
+    local container = group and group.container
+    if not container or not group.position then return end
+    if not PixelUtil then return end
+    container:ClearAllPoints()
+    PixelUtil.SetPoint(container, "CENTER", UIParent, "CENTER", group.position.x, group.position.y)
+end
+ns.CDMGroups.SnapContainerPositionToPixel = SnapContainerPositionToPixel
+
 -- Sync ALL anchor proxies (call after Layout, combat end, etc.)
 local function SyncAllAnchorProxies()
     if not ns.CDMGroups.groups then return end
@@ -2985,17 +2997,30 @@ local function SaveGroupLayoutToProfile(groupName, group, specData)
     end
     
     local profile = specData.layoutProfiles[profileName]
-    if not profile.groupLayouts then
-        profile.groupLayouts = {}
+    -- Write to global layout if linked, else own groupLayouts
+    local _saveTarget
+    if profile.groupLayoutName then
+        local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        _saveTarget = _ldb and _ldb[profile.groupLayoutName]
     end
-    
-    profile.groupLayouts[groupName] = SerializeGroupToLayoutData(group)
+    if not _saveTarget then
+        if not profile.groupLayouts then profile.groupLayouts = {} end
+        _saveTarget = profile.groupLayouts
+    end
+    _saveTarget[groupName] = SerializeGroupToLayoutData(group)
 end
 
 -- Get group layout from active profile (or nil if not exists)
 local function GetGroupLayoutFromProfile(groupName, specData)
     local profile = GetActiveProfile(specData)
-    if not profile or not profile.groupLayouts then return nil end
+    if not profile then return nil end
+    -- If linked to a Group Layout, always read from global
+    if profile.groupLayoutName then
+        local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        local _global = _ldb and _ldb[profile.groupLayoutName]
+        if _global then return _global[groupName] end
+    end
+    if not profile.groupLayouts then return nil end
     return profile.groupLayouts[groupName]
 end
 
@@ -3732,8 +3757,8 @@ local function EnsureLayoutProfiles(specData)
             profile.freeIcons = {}
         end
         
-        -- REPAIR: If "Default" profile has empty groupLayouts, populate from DEFAULT_GROUPS
-        if profileName == "Default" and (not profile.groupLayouts or not next(profile.groupLayouts)) then
+        -- REPAIR: If "Default" profile has empty groupLayouts and is not linked, populate from DEFAULT_GROUPS
+        if profileName == "Default" and not profile.groupLayoutName and (not profile.groupLayouts or not next(profile.groupLayouts)) then
             PrintMsg("|cff00ff00[Repair]|r Populating Default profile groupLayouts from DEFAULT_GROUPS")
             for groupName, groupData in pairs(DEFAULT_GROUPS) do
                 profile.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
@@ -3748,7 +3773,7 @@ local function EnsureLayoutProfiles(specData)
     local activeProfileName = specData.activeProfile or "Default"
     local activeProfile = specData.layoutProfiles[activeProfileName]
     
-    if activeProfile and (not activeProfile.groupLayouts or not next(activeProfile.groupLayouts)) then
+    if activeProfile and not activeProfile.groupLayoutName and (not activeProfile.groupLayouts or not next(activeProfile.groupLayouts)) then
         -- Check if we have runtime groups to save
         if ns.CDMGroups and ns.CDMGroups.groups and next(ns.CDMGroups.groups) then
             PrintMsg("|cff00ff00[Repair]|r Populating empty groupLayouts for profile '" .. activeProfileName .. "' from runtime groups")
@@ -3825,16 +3850,26 @@ function ns.CDMGroups.CreateProfile(profileName)
     
     -- Create profile with current layout
     -- CRITICAL: Include createdAt timestamp to ensure it differs from AceDB defaults
+    -- Inherit Group Layout link from the active profile if it has one
+    local _activeProfileName = specData.activeProfile or "Default"
+    local _activeProfile = specData.layoutProfiles and specData.layoutProfiles[_activeProfileName]
+    local _inheritedLayoutName = _activeProfile and _activeProfile.groupLayoutName or nil
+
     specData.layoutProfiles[profileName] = {
         savedPositions = DeepCopy(ns.CDMGroups.savedPositions),
         freeIcons = {},
         groupLayouts = {},
+        groupLayoutName = _inheritedLayoutName,  -- inherit link if active profile was linked
         iconSettings = {},  -- Include iconSettings from the start!
         talentConditions = nil,
         matchMode = "all",
         createdAt = time(),  -- Timestamp ensures this differs from defaults
     }
-    
+
+    if _inheritedLayoutName then
+        PrintMsg("Profile '" .. profileName .. "' linked to Group Layout '" .. _inheritedLayoutName .. "' (inherited from active profile)")
+    end
+
     -- Save free icons
     for cdID, data in pairs(ns.CDMGroups.freeIcons) do
         specData.layoutProfiles[profileName].freeIcons[cdID] = {
@@ -3843,11 +3878,21 @@ function ns.CDMGroups.CreateProfile(profileName)
             iconSize = data.iconSize,
         }
     end
-    
-    -- Save group layouts (including all layout and appearance settings)
+
+    -- Save group layouts - skip if inherited link (data lives in global already)
+    local _scpProfile = specData.layoutProfiles[profileName]
+    local _scpTarget
+    if _inheritedLayoutName then
+        -- New profile shares the global layout — nothing to copy locally
+        _scpTarget = nil
+    else
+        if not _scpProfile.groupLayouts then _scpProfile.groupLayouts = {} end
+        _scpTarget = _scpProfile.groupLayouts
+    end
+    if _scpTarget then
     for groupName, group in pairs(ns.CDMGroups.groups) do
         if group.layout then
-            specData.layoutProfiles[profileName].groupLayouts[groupName] = {
+            _scpTarget[groupName] = {
                 -- Grid settings
                 gridRows = group.layout.gridRows,
                 gridCols = group.layout.gridCols,
@@ -3886,7 +3931,8 @@ function ns.CDMGroups.CreateProfile(profileName)
             }
         end
     end
-    
+    end -- if _scpTarget
+
     -- ═══════════════════════════════════════════════════════════════════════════
     -- Save Arc Auras state (which items are tracked and their positions)
     -- ═══════════════════════════════════════════════════════════════════════════
@@ -4479,20 +4525,29 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     
     -- Build set of groups that should exist in this profile
     -- CRITICAL: Fall back to DEFAULT_GROUPS if profile has no saved groups
-    local hasGroupLayouts = profile.groupLayouts and next(profile.groupLayouts)
-    local sourceGroupLayouts = hasGroupLayouts and profile.groupLayouts or DEFAULT_GROUPS
-    
+    -- If profile is linked to a Group Layout, read from global instead
+    -- If linked, ALWAYS read from global regardless of profile.groupLayouts content
+    local layoutSource
+    if profile.groupLayoutName then
+        local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        layoutSource = _ldb and _ldb[profile.groupLayoutName]
+    end
+    if not layoutSource then layoutSource = profile.groupLayouts end
+    local linkedGroupLayouts = profile.groupLayoutName and layoutSource or nil
+    local hasGroupLayouts = layoutSource and next(layoutSource)
+    local sourceGroupLayouts = (hasGroupLayouts and layoutSource) or DEFAULT_GROUPS
+
     local profileGroups = {}
     for groupName in pairs(sourceGroupLayouts) do
         profileGroups[groupName] = true
     end
-    
+
     -- If we're using DEFAULT_GROUPS, also save them to the profile so future loads work
-    if not hasGroupLayouts then
+    -- (only when NOT linked to a Group Layout)
+    if not hasGroupLayouts and not profile.groupLayoutName then
         PrintMsg("|cff00ff00[LoadProfile]|r Profile has no groups - creating default groups (Essential, Utility, Buffs)")
         profile.groupLayouts = {}
         for groupName, groupData in pairs(DEFAULT_GROUPS) do
-            -- Use helper to ensure consistent serialization (excludes runtime fields like members/grid)
             profile.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
         end
     end
@@ -4602,8 +4657,10 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             local newGroup = ns.CDMGroups.CreateGroup(groupName)
             if newGroup then
                 createdCount = createdCount + 1
-                -- Pre-apply layout settings from profile so container has correct size
-                local layoutData = profile.groupLayouts[groupName]
+                -- Pre-apply layout settings from layout source (global if linked)
+                local _preApplyDB = profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                local _preApplySrc = (_preApplyDB and _preApplyDB[profile.groupLayoutName]) or profile.groupLayouts
+                local layoutData = _preApplySrc and _preApplySrc[groupName]
                 if layoutData and newGroup.layout then
                     if layoutData.gridRows then newGroup.layout.gridRows = layoutData.gridRows end
                     if layoutData.gridCols then newGroup.layout.gridCols = layoutData.gridCols end
@@ -4836,9 +4893,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     
     DebugPrint("|cffff9900[LoadProfile]|r Reassigned:", assignedToGroup, "to groups,", assignedToFree, "to free,", orphaned, "orphaned")
     
-    -- Apply group layouts (all layout and appearance settings)
-    if profile.groupLayouts then
-        for groupName, layoutData in pairs(profile.groupLayouts) do
+    -- Apply group layouts (all layout and appearance settings) - use global if linked
+    local _applyLDB = profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+    local _applySrc = (_applyLDB and _applyLDB[profile.groupLayoutName]) or profile.groupLayouts
+    if _applySrc then
+        for groupName, layoutData in pairs(_applySrc) do
             local group = ns.CDMGroups.groups[groupName]
             if group and group.layout then
                 -- Grid settings
@@ -4914,6 +4973,12 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 if layoutData.containerPadding ~= nil then
                     group.containerPadding = layoutData.containerPadding
                 end
+                if layoutData.borderColor ~= nil then
+                    group.borderColor = DeepCopy(layoutData.borderColor)
+                end
+                if layoutData.bgColor ~= nil then
+                    group.bgColor = DeepCopy(layoutData.bgColor)
+                end
                 -- Frame strata
                 if layoutData.frameStrata ~= nil then
                     group.frameStrata = layoutData.frameStrata
@@ -4976,6 +5041,10 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             end
         end
     end
+    
+    -- Invalidate visibility condition cache so UpdateGroupVisibility re-evaluates
+    -- new visibility settings from the loaded profile (e.g. hide out of combat)
+    ns.CDMGroups.InvalidateVisibilityCache()
     
     -- ═══════════════════════════════════════════════════════════════════════════
     -- CRITICAL: Invalidate CDMEnhance settings cache after profile switch
@@ -5997,6 +6066,39 @@ function ns.CDMGroups.ForceShowAllArcAuras()
     return count
 end
 
+-- ═══════════════════════════════════════════════════════════════════════════
+-- LAYOUT SOURCE / TARGET HELPERS
+-- Single authoritative helpers for reading and writing group layout data.
+-- Use these everywhere instead of touching profile.groupLayouts directly.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Returns the table to READ group layouts from.
+-- Linked profile → global layout table. Independent → profile.groupLayouts.
+local function GetLayoutSource(profile)
+    if not profile then return nil end
+    if profile.groupLayoutName then
+        local layoutsDB = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        local t = layoutsDB and layoutsDB[profile.groupLayoutName]
+        if t then return t end
+    end
+    return profile.groupLayouts
+end
+
+-- Returns the table to WRITE group layouts to, creating entries as needed.
+-- Linked profile → global layout table. Independent → profile.groupLayouts.
+local function GetLayoutTarget(profile)
+    if not profile then return nil end
+    if profile.groupLayoutName then
+        local layoutsDB = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        if layoutsDB then
+            if not layoutsDB[profile.groupLayoutName] then layoutsDB[profile.groupLayoutName] = {} end
+            return layoutsDB[profile.groupLayoutName]
+        end
+    end
+    if not profile.groupLayouts then profile.groupLayouts = {} end
+    return profile.groupLayouts
+end
+
 -- Handle spec change - show/hide groups per spec
 -- skipSave: if true, skip saving old spec (already done in PLAYER_SPECIALIZATION_CHANGED)
 local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
@@ -6057,13 +6159,11 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
             local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
             
             if profile then
-                if not profile.groupLayouts then
-                    profile.groupLayouts = {}
-                end
+                local _saveTarget = GetLayoutTarget(profile)
                 
                 -- Save each group's layout settings (NO runtime data like grid/members)
                 for groupName, group in pairs(ns.CDMGroups.specGroups[oldSpec]) do
-                    profile.groupLayouts[groupName] = SerializeGroupToLayoutData(group)
+                    _saveTarget[groupName] = SerializeGroupToLayoutData(group)
                 end
                 
                 -- Save free icons to profile
@@ -6434,8 +6534,9 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     -- An empty {} is truthy but should fall back to DEFAULT_GROUPS
     -- NOTE: Default group template is applied inside EnsureLayoutProfiles if profile has no groups
     local profile = GetActiveProfile(specData)
-    local hasGroupLayouts = profile and profile.groupLayouts and next(profile.groupLayouts)
-    local groupsToCreate = hasGroupLayouts and profile.groupLayouts or DEFAULT_GROUPS
+    local _layoutSrc = profile and GetLayoutSource(profile)
+    local hasGroupLayouts = _layoutSrc and next(_layoutSrc)
+    local groupsToCreate = hasGroupLayouts and _layoutSrc or DEFAULT_GROUPS
     local brokenGroups = {}
     for groupName, _ in pairs(groupsToCreate) do
         local group = ns.CDMGroups.CreateGroup(groupName)
@@ -6891,10 +6992,8 @@ function ns.CDMGroups.CreateGroup(name)
         -- Save new group to profile immediately
         local profile = GetActiveProfile(specData)
         if profile then
-            if not profile.groupLayouts then
-                profile.groupLayouts = {}
-            end
-            profile.groupLayouts[name] = DeepCopy(layoutData)
+            local _t = GetLayoutTarget(profile)
+            if _t then _t[name] = DeepCopy(layoutData) end
         end
         
         DebugPrint("|cff00ff00[CreateGroup]|r Created new group '" .. name .. "' with defaults (saved to profile)")
@@ -7021,9 +7120,18 @@ function ns.CDMGroups.CreateGroup(name)
         container:SetBackdropColor(0, 0, 0, 0.6)
         container:SetBackdropBorderColor(color.r, color.g, color.b, 1)
         
+        -- CRITICAL: Re-apply strata to pooled container (pool preserves old strata)
+        -- Without this, pooled containers keep their previous strata and _cdmgFrameStrata
+        -- is stale, causing FcOnSetFrameStrata hook to enforce the wrong strata on icons.
+        local targetStrata = group.frameStrata or "MEDIUM"
+        container:SetFrameStrata(targetStrata)
+        container._cdmgFrameStrata = targetStrata
+        container:SetFrameLevel(group.frameLevel or 1)
+        
         -- Reuse anchor proxy
         anchorProxy = pooled.anchorProxy
         anchorProxy._sourceContainer = container
+        anchorProxy:SetFrameStrata(targetStrata)
         group.anchorProxy = anchorProxy
         
         -- Reuse selection highlight if pooled
@@ -7038,6 +7146,7 @@ function ns.CDMGroups.CreateGroup(name)
             titleFrame._groupName = name
             titleFrame._container = container
             titleFrame._titleColor = color
+            titleFrame:SetFrameStrata(targetStrata)
             if titleFrame.text then
                 titleFrame.text:SetText(name)
                 titleFrame.text:SetTextColor(color.r, color.g, color.b)
@@ -9244,7 +9353,6 @@ function ns.CDMGroups.CreateGroup(name)
             -- Get cascade offset for this column/row (cumulative overflow from previous icons)
             local cascadeOffsetX = self._colCumulativeOffset and self._colCumulativeOffset[col] or 0
             local cascadeOffsetY = self._rowCumulativeOffset and self._rowCumulativeOffset[row] or 0
-            
             local slotX = borderOffset + padding + (leftOverflow or 0) + col * (slotW + spacingX) + cascadeOffsetX
             local slotY = -borderOffset - padding - (topOverflow or 0) - row * (slotH + spacingY) - cascadeOffsetY
             return slotX, slotY
@@ -9978,6 +10086,13 @@ function ns.CDMGroups.CreateGroup(name)
         local height = baseHeight + effectiveTopOverflow + effectiveBottomOverflow
         local targetW = math.max(slotW, width)  -- Minimum size is one slot
         local targetH = math.max(slotH, height)
+        -- Snap container size UP to physical pixel boundary so the backdrop border
+        -- always covers whole pixels — prevents the "missing border on one side" issue.
+        local contScale = self.container and self.container:GetEffectiveScale() or 1
+        if contScale > 0 then
+            targetW = math.ceil(targetW * contScale) / contScale
+            targetH = math.ceil(targetH * contScale) / contScale
+        end
         local currentW, currentH = self.container:GetSize()
         
         
@@ -9992,6 +10107,7 @@ function ns.CDMGroups.CreateGroup(name)
                 SafeContainerSetSize(self.container, targetW, targetH)
                 -- Sync anchor proxy to match new container size (decoupled, no taint chain)
                 SyncAnchorProxy(self)
+                SnapContainerPositionToPixel(self)
             end
         end
         
@@ -10053,8 +10169,18 @@ function ns.CDMGroups.CreateGroup(name)
             
             if centerChanged then
                 if not InCombatLockdown() then
-                    local baseX = self.position.x or 0
-                    local baseY = self.position.y or 0
+                    local baseX, baseY
+                    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self) then
+                        -- Anchored group: base is the anchor result, not saved position
+                        local cx, cy = self.container:GetCenter()
+                        local ux, uy = UIParent:GetCenter()
+                        -- Back out the old dynamic offset to get the true anchor base
+                        baseX = (cx and ux) and ((cx - ux) - (self._appliedOffsetX or 0)) or (self.position.x or 0)
+                        baseY = (cy and uy) and ((cy - uy) - (self._appliedOffsetY or 0)) or (self.position.y or 0)
+                    else
+                        baseX = self.position.x or 0
+                        baseY = self.position.y or 0
+                    end
                     self.container:ClearAllPoints()
                     self.container:SetPoint("CENTER", UIParent, "CENTER",
                         baseX + newCenterX, baseY + newCenterY)
@@ -10435,6 +10561,7 @@ function ns.CDMGroups.CreateGroup(name)
                 pendingContainerSizes[self.container] = { w = compactW, h = compactH }
                 if sizeChanged then
                     SyncAnchorProxy(self)
+                    SnapContainerPositionToPixel(self)
                     if ns.Resources and ns.Resources.OnGroupContainerSizeChanged then
                         ns.Resources.OnGroupContainerSizeChanged(self.name, compactW, compactH)
                     end
@@ -10464,10 +10591,14 @@ function ns.CDMGroups.CreateGroup(name)
                     local baseY = self.position.y or 0
                     self.container:ClearAllPoints()
                     self.container:SetPoint("CENTER", UIParent, "CENTER", baseX, baseY)
+                    -- Only clear applied offset after we actually moved the container.
+                    -- In combat we cannot move it, so keep _appliedOffset in sync with
+                    -- the container's actual position — clearing it here would cause icons
+                    -- to drift by the residual offset on the next Layout() call.
+                    self._appliedOffsetX = nil
+                    self._appliedOffsetY = nil
+                    SyncAnchorProxy(self)
                 end
-                self._appliedOffsetX = nil
-                self._appliedOffsetY = nil
-                SyncAnchorProxy(self)
             end
         end
         -- NOTE: When options panel is open (usePixelLayout = false), we let the normal
@@ -10711,7 +10842,8 @@ function ns.CDMGroups.CreateGroup(name)
         end
         
         -- Apply position offset if needed
-        if posOffsetX ~= 0 or posOffsetY ~= 0 then
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored and (posOffsetX ~= 0 or posOffsetY ~= 0) then
             self.position.x = self.position.x + posOffsetX
             self.position.y = self.position.y + posOffsetY
             if db then
@@ -10731,6 +10863,7 @@ function ns.CDMGroups.CreateGroup(name)
         --   2. Alignment change (user explicitly wants repositioning)
         --   3. Drag operations that create gaps
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
         
         if self.UpdateControlButtonPositions then
             self.UpdateControlButtonPositions()
@@ -10766,13 +10899,16 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetX = widthChange / 2   -- Shift RIGHT so LEFT edge stays fixed
         end
         
-        self.position.x = self.position.x + posOffsetX
-        if db then
-            db.position = db.position or {}
-            db.position.x = self.position.x
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.x = self.position.x + posOffsetX
+            if db then
+                db.position = db.position or {}
+                db.position.x = self.position.x
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         -- Shift all icons at or after insertCol one column to the right
         for row = 0, maxRows - 1 do
@@ -10795,6 +10931,7 @@ function ns.CDMGroups.CreateGroup(name)
         
         self:MarkGridDirty()
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Add a column at the end of the grid
@@ -10816,15 +10953,19 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetX = widthChange / 2   -- Shift RIGHT so LEFT edge stays fixed
         end
         
-        self.position.x = self.position.x + posOffsetX
-        if db then
-            db.position = db.position or {}
-            db.position.x = self.position.x
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.x = self.position.x + posOffsetX
+            if db then
+                db.position = db.position or {}
+                db.position.x = self.position.x
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Insert a row at the specified position, shifting rows at/below down
@@ -10851,13 +10992,16 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetY = -heightChange / 2  -- Shift DOWN so TOP edge stays fixed
         end
         
-        self.position.y = self.position.y + posOffsetY
-        if db then
-            db.position = db.position or {}
-            db.position.y = self.position.y
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.y = self.position.y + posOffsetY
+            if db then
+                db.position = db.position or {}
+                db.position.y = self.position.y
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         -- Shift all rows at or after insertRow one row down
         -- Work from bottom to top to avoid overwrites
@@ -10885,6 +11029,7 @@ function ns.CDMGroups.CreateGroup(name)
         
         self:MarkGridDirty()
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Add a row at the bottom of the grid
@@ -10906,15 +11051,19 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetY = -heightChange / 2  -- Shift DOWN so TOP edge stays fixed
         end
         
-        self.position.y = self.position.y + posOffsetY
-        if db then
-            db.position = db.position or {}
-            db.position.y = self.position.y
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.y = self.position.y + posOffsetY
+            if db then
+                db.position = db.position or {}
+                db.position.y = self.position.y
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Remove a row at the specified position, shifting rows below up
@@ -11012,16 +11161,20 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetY = heightChange / 2   -- Shift UP (reverse of adding)
         end
         
-        self.position.y = self.position.y + posOffsetY
-        if db then
-            db.position = db.position or {}
-            db.position.y = self.position.y
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.y = self.position.y + posOffsetY
+            if db then
+                db.position = db.position or {}
+                db.position.y = self.position.y
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         self:MarkGridDirty()
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Remove a column at the specified position, shifting columns to the right left
@@ -11125,16 +11278,20 @@ function ns.CDMGroups.CreateGroup(name)
             posOffsetX = -widthChange / 2  -- Shift LEFT (reverse of adding)
         end
         
-        self.position.x = self.position.x + posOffsetX
-        if db then
-            db.position = db.position or {}
-            db.position.x = self.position.x
+        local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
+        if not _isAnchored then
+            self.position.x = self.position.x + posOffsetX
+            if db then
+                db.position = db.position or {}
+                db.position.x = self.position.x
+            end
+            self.container:ClearAllPoints()
+            self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         end
-        self.container:ClearAllPoints()
-        self.container:SetPoint("CENTER", UIParent, "CENTER", self.position.x, self.position.y)
         
         self:MarkGridDirty()
         self:Layout()
+        if _isAnchored then ns.CDMGroupsAnchors.ApplyGroupAnchor(self) end
     end
     
     -- Remove member from grid only (not from CDM), for same-group moves
@@ -11319,6 +11476,7 @@ function ns.CDMGroups.CreateGroup(name)
         end
         -- Sync anchor proxy to track new position (decoupled, no taint chain)
         SyncAnchorProxy(self)
+        SnapContainerPositionToPixel(self)
         -- Re-apply group anchor if this group is anchored to something
         if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self) then
             ns.CDMGroupsAnchors.ApplyGroupAnchor(self)
@@ -12098,12 +12256,10 @@ function ns.CDMGroups.CreateGroup(name)
         local activeProfileName = specData.activeProfile or "Default"
         local activeProfile = specData.layoutProfiles[activeProfileName]
         if activeProfile then
-            if not activeProfile.groupLayouts then
-                activeProfile.groupLayouts = {}
-            end
+            local _syncTarget = GetLayoutTarget(activeProfile)
             -- Only add if not already there (avoid overwriting loaded settings)
-            if not activeProfile.groupLayouts[name] then
-                activeProfile.groupLayouts[name] = {
+            if _syncTarget and not _syncTarget[name] then
+                _syncTarget[name] = {
                     gridRows = group.layout.gridRows,
                     gridCols = group.layout.gridCols,
                     position = group.position and { x = group.position.x, y = group.position.y },
@@ -12137,7 +12293,7 @@ function ns.CDMGroups.CreateGroup(name)
             end
         end
     end
-    
+
     -- Notify Masque about the new custom group
     if ns.Masque and ns.Masque.OnGroupCreated then
         ns.Masque.OnGroupCreated(name)
@@ -12286,9 +12442,12 @@ function ns.CDMGroups.DeleteGroup(groupName)
     if specData and specData.layoutProfiles then
         local activeProfileName = specData.activeProfile or "Default"
         local activeProfile = specData.layoutProfiles[activeProfileName]
-        if activeProfile and activeProfile.groupLayouts then
-            activeProfile.groupLayouts[groupName] = nil
-            DebugPrint("|cffff0000[DeleteGroup]|r Removed '" .. groupName .. "' from profile '" .. activeProfileName .. "'")
+        if activeProfile then
+            local _delTarget = GetLayoutTarget(activeProfile)
+            if _delTarget then
+                _delTarget[groupName] = nil
+                DebugPrint("|cffff0000[DeleteGroup]|r Removed '" .. groupName .. "' from profile '" .. activeProfileName .. "'")
+            end
         end
     end
     
@@ -13093,10 +13252,11 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         if not needsReload then
             local specData = GetSpecData()
             local profile = specData and GetActiveProfile(specData)
-            if profile and profile.groupLayouts then
-                for groupName, layoutData in pairs(profile.groupLayouts) do
+            if profile then
+                local _verifyLDB = profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                local _verifySrc = (_verifyLDB and _verifyLDB[profile.groupLayoutName]) or profile.groupLayouts
+                for groupName, layoutData in pairs(_verifySrc or {}) do
                     local group = ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
-                    -- Group missing entirely OR missing its container
                     if not group then
                         needsReload = true
                         reloadReason = "broken group: " .. groupName .. " (missing from runtime)"
@@ -13408,7 +13568,8 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         if not next(ns.CDMGroups.groups) then
             -- Create groups from PROFILE.groupLayouts (single source of truth)
             local profile = GetActiveProfile(specData)
-            local groupsToCreate = (profile and profile.groupLayouts) or DEFAULT_GROUPS
+            local _emergSrc = profile and GetLayoutSource(profile)
+            local groupsToCreate = (_emergSrc and next(_emergSrc) and _emergSrc) or DEFAULT_GROUPS
             for groupName, _ in pairs(groupsToCreate) do
                 ns.CDMGroups.CreateGroup(groupName)
             end
@@ -13770,13 +13931,19 @@ function ns.CDMGroups.PLAYER_SPECIALIZATION_CHANGED()
             local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
             
             if profile then
-                if not profile.groupLayouts then
-                    profile.groupLayouts = {}
+                local _emergTarget
+                if profile.groupLayoutName then
+                    local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    _emergTarget = _ldb and _ldb[profile.groupLayoutName]
+                end
+                if not _emergTarget then
+                    if not profile.groupLayouts then profile.groupLayouts = {} end
+                    _emergTarget = profile.groupLayouts
                 end
                 
                 -- Save each group's layout (NO runtime data like grid/members)
                 for groupName, group in pairs(ns.CDMGroups.specGroups[oldSpec]) do
-                    profile.groupLayouts[groupName] = SerializeGroupToLayoutData(group)
+                    _emergTarget[groupName] = SerializeGroupToLayoutData(group)
                 end
                 
                 -- Save free icons to profile (NOT to specData.freeIcons)
@@ -14717,11 +14884,12 @@ function ns.CDMGroups.Initialize()
     -- NOTE: Default group template is applied inside EnsureLayoutProfiles if profile has no groups
     local groupCount = 0
     local brokenGroups = {}
-    local groupsToCreate = (profile and profile.groupLayouts) or DEFAULT_GROUPS
+    local _initSrc = profile and GetLayoutSource(profile)
+    local groupsToCreate = (_initSrc and next(_initSrc) and _initSrc) or DEFAULT_GROUPS
     
     -- Debug: What are we creating groups from?
-    if profile and profile.groupLayouts and next(profile.groupLayouts) then
-        PrintMsg("|cff88ccff[Init]|r Creating groups from profile.groupLayouts")
+    if _initSrc and next(_initSrc) then
+        PrintMsg("|cff88ccff[Init]|r Creating groups from " .. (profile and profile.groupLayoutName and ("Group Layout '" .. profile.groupLayoutName .. "'") or "profile.groupLayouts"))
     else
         PrintMsg("|cff88ccff[Init]|r Creating groups from DEFAULT_GROUPS (profile=" .. tostring(profile ~= nil) .. ")")
     end
@@ -14869,14 +15037,14 @@ local function SaveGroupLayoutsToActiveProfile()
     end
     
     local profile = specData.layoutProfiles[activeProfileName]
-    if not profile.groupLayouts then
-        profile.groupLayouts = {}
-    end
-    
-    -- Save current group layouts to profile
+
+    local groupLayoutsTarget = GetLayoutTarget(profile)
+    if not groupLayoutsTarget then return end
+
+    -- Save current group layouts to target
     for groupName, group in pairs(ns.CDMGroups.groups) do
         if group.layout then
-            profile.groupLayouts[groupName] = {
+            groupLayoutsTarget[groupName] = {
                 -- Grid settings
                 gridRows = group.layout.gridRows,
                 gridCols = group.layout.gridCols,
@@ -14920,6 +15088,72 @@ end
 -- Export for external access (e.g., Options toggle setters that need immediate save)
 ns.CDMGroups.SaveGroupLayoutsToActiveProfile = SaveGroupLayoutsToActiveProfile
 
+-- ═══════════════════════════════════════════════════════════════════════════
+-- GROUP LAYOUT LINK / UNLINK
+-- profile.groupLayoutName = name → live read/write to global.groupLayouts[name]
+-- profile.groupLayoutName = nil  → independent, uses own profile.groupLayouts
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Link the active profile to a named Group Layout.
+-- After linking, all saves go to global and all loads read from global.
+function ns.CDMGroups.LinkProfileToGroupLayout(layoutName)
+    if not layoutName or layoutName == "" then return false end
+    local specData = GetSpecData()
+    if not specData then return false end
+    local activeProfileName = specData.activeProfile or "Default"
+    local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
+    if not profile then return false end
+
+    -- Ensure the Group Layout entry exists in global
+    local layoutsDB = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+    if not layoutsDB then return false end
+    if not layoutsDB[layoutName] then
+        -- Seed with current profile.groupLayouts so existing layout is preserved
+        layoutsDB[layoutName] = profile.groupLayouts and DeepCopy(profile.groupLayouts) or {}
+    end
+
+    profile.groupLayoutName = layoutName
+    PrintMsg("Profile '" .. activeProfileName .. "' linked to Group Layout '" .. layoutName .. "'")
+
+    -- Immediately apply the linked layout
+    if ns.CDMGroups.LoadProfile then
+        ns.CDMGroups.LoadProfile(activeProfileName)
+    end
+
+    return true
+end
+
+-- Unlink the active profile from its Group Layout.
+-- Takes a snapshot of the global layout into profile.groupLayouts so it goes independent.
+function ns.CDMGroups.UnlinkProfileFromGroupLayout()
+    local specData = GetSpecData()
+    if not specData then return false end
+    local activeProfileName = specData.activeProfile or "Default"
+    local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
+    if not profile or not profile.groupLayoutName then return false end
+
+    -- Snapshot current global layout into profile own storage
+    local layoutsDB = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+    local globalLayout = layoutsDB and layoutsDB[profile.groupLayoutName]
+    if globalLayout then
+        profile.groupLayouts = DeepCopy(globalLayout)
+    end
+
+    local oldName = profile.groupLayoutName
+    profile.groupLayoutName = nil
+    PrintMsg("Profile '" .. activeProfileName .. "' unlinked from Group Layout '" .. oldName .. "' (snapshot taken)")
+    return true
+end
+
+-- Get the Group Layout name the active profile is linked to (or nil)
+function ns.CDMGroups.GetActiveProfileGroupLayoutName()
+    local specData = GetSpecData()
+    if not specData then return nil end
+    local activeProfileName = specData.activeProfile or "Default"
+    local profile = specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
+    return profile and profile.groupLayoutName or nil
+end
+
 -- Trigger auto-save to profile (with debouncing)
 local function TriggerProfileAutoSave()
     -- Cancel existing timer if any
@@ -14953,6 +15187,12 @@ ns.CDMGroups.SerializeGroupToLayoutData = SerializeGroupToLayoutData
 ns.CDMGroups.GetActiveProfile = GetActiveProfile
 ns.CDMGroups.SaveGroupLayoutToProfile = SaveGroupLayoutToProfile
 ns.CDMGroups.GetGroupLayoutFromProfile = GetGroupLayoutFromProfile
+ns.CDMGroups.GetLayoutSource = GetLayoutSource
+ns.CDMGroups.GetLayoutTarget = GetLayoutTarget
+ns.CDMGroups.GetDefaultSpecData = GetDefaultSpecData      -- Exposed for debugger
+ns.CDMGroups.GenerateProfileName = GenerateProfileName    -- Exposed for debugger
+ns.CDMGroups.EnsureSpecData = EnsureSpecData              -- Exposed for debugger
+ns.CDMGroups.EnsureLayoutProfiles = EnsureLayoutProfiles  -- Exposed for debugger
 
 -- ===================================================================
 -- LIBPLEEBUG FUNCTION WRAPPING

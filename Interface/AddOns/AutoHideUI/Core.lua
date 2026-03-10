@@ -29,9 +29,20 @@ local mouseoverFrames = {} -- {frameObject = groupTable, ...}
 local mouseoverGroups = {} -- {groupTable = true, ...}
 local MOUSE_TICKER_INTERVAL = 0.125
 
+-- health-check stuff
+local TIME_TO_FLAG_FULL_HEALTH = 3
+local isMissingHealth = false
+local maxHealthChangeTime = 0
+local healthTimer
+
 local FADE_QUEUE = {}
 local inCombat = InCombatLockdown()
-local lastLowHealth = LowHealthFrame:IsVisible()
+local isMounted = IsMounted()
+local isFlying = IsFlying()
+local isGliding = C_PlayerInfo.GetGlidingInfo()
+local isFlyingTicker
+local lastLowHealthVis = LowHealthFrame:IsVisible()
+local fadeDelayOffset = 0
 local lastInstanceCheck = 0
 local INSTANCE_THROTTLE = 1
 local pendingFades = {}
@@ -59,8 +70,8 @@ local GetTime, pairs, ipairs, max, min, C_Timer
     = GetTime, pairs, ipairs, max, min, C_Timer
 local IsInInstance, InCombatLockdown, IsOnNeighborhoodMap, IsInsideHouse, IsMounted
     = IsInInstance, InCombatLockdown, C_Housing.IsOnNeighborhoodMap, C_Housing.IsInsideHouse, IsMounted
-local GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting
-    = GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting
+local GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying
+    = GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying
 
 ------------------
 -- Setup
@@ -72,14 +83,12 @@ function Private:OnProfileChanged()
 end
 
 local function InitDB()
-    local defaultProfile = {
-        profile = {
-            config.GetDefaultGroup(L["name_defaultGroup"])
-        }
-    }
+    local defaultGroup = config.GetDefaultGroup(L["name_defaultGroup"])
+    local defaultProfile = { profile = {defaultGroup} }
 
     Private.db = LibStub("AceDB-3.0"):New("AutoHideUIDB", defaultProfile, true)
     db = Private.db.profile
+    config.CheckGroupsForMissingEntries(defaultGroup)
 
     Private.db.RegisterCallback(Private, "OnProfileChanged", "OnProfileChanged")
     Private.db.RegisterCallback(Private, "OnProfileCopied", "OnProfileChanged")
@@ -167,10 +176,15 @@ local function ResetStates()
     ResetPendingFades()
 end
 
-local function CancelMouseoverTicker()
+local function CancelTickers()
     if mouseoverTicker then
         mouseoverTicker:Cancel()
         mouseoverTicker = nil
+    end
+
+    if isFlyingTicker then
+        isFlyingTicker:Cancel()
+        isFlyingTicker = nil
     end
 end
 
@@ -199,7 +213,7 @@ end
 
 function main.SuspendAddon()
     UnregisterAllEvents()
-    CancelMouseoverTicker()
+    CancelTickers()
     ClearQueues()
     internal.SetAllAlpha(1)
 end
@@ -254,11 +268,12 @@ local function MINIMAPCLUSTER_CUSTOMGETTER(frameString)
     tinsert(frameList, minimapFrame)
 
     if not minimapHelperFrame then
-        minimapHelperFrame = CreateFrame("Frame", "minimapHelperFrame", minimapFrame)
-        minimapHelperFrame:SetPoint("CENTER")
-        minimapHelperFrame:SetAllPoints()
-        minimapHelperFrame:SetParent(UIParent)
-        main.helperFrames[minimapHelperFrame] = {dependancy = frameString}
+        minimapHelperFrame = CreateFrame("Frame", "minimapHelperFrame", UIParent)
+        minimapHelperFrame:SetAllPoints(minimapFrame)
+        -- local t = minimapHelperFrame:CreateTexture()
+        -- t:SetAllPoints()
+        -- t:SetColorTexture(0,1,0,0.25)
+        main.helperFrames[minimapHelperFrame] = {dependency = frameString}
     end
     tinsert(frameList, minimapHelperFrame)
 
@@ -431,11 +446,15 @@ local SPECIAL_FRAMES = {
 
 function internal.ToggleHelperFrames()
     for frame, info in pairs(main.helperFrames) do
-        local frameString = info.dependancy
-        if not activeStrings[frameString].args.isInUse then
-            frame:Hide()
+        local frameString = info.dependency
+        if activeStrings[frameString] then
+            if not activeStrings[frameString].args.isInUse then
+                frame:Hide()
+            else
+                frame:Show()
+            end
         else
-            frame:Show()
+            frame:Hide()
         end
     end
 end
@@ -778,8 +797,10 @@ end
 
 local function FinishVisibilityFrames()
     for frame, frameInfo in pairs(framesThatToggleVisibility) do
-        frameInfo.group = activeFrames[frame].group
-        frameInfo.isInUse = activeFrames[frame].isInUse
+        if activeFrames[frame] then
+            frameInfo.group = activeFrames[frame].group
+            frameInfo.isInUse = activeFrames[frame].isInUse
+        end
     end
 end
 
@@ -954,12 +975,57 @@ local function ConditionMouseover()
     return false
 end
 
+local function ConditionFlying()
+    for _, group in ipairs(activeGroups) do
+        local steady = isFlying and group.conditions.flying.style ~= 1
+        local skyriding = isGliding and group.conditions.flying.style ~= 2
+        UpdateActiveConditions(group, "flying", steady or skyriding)
+    end
+end
+
+local function StartIsFlyingTicker()
+    if isFlyingTicker then
+        return
+    end
+
+    isFlyingTicker = C_Timer.NewTicker(0.25, function()
+        if isFlying ~= IsFlying() then
+            isFlying = not isFlying
+            ConditionFlying()
+            internal.FadeAllGroups()
+        end
+    end)
+end
+
+local function HandleIsFlyingTicker()
+    if not isMounted then
+        if isFlyingTicker then
+            isFlyingTicker:Cancel()
+            isFlyingTicker = nil
+        end
+        return
+    end
+
+    local _, canGlide = C_PlayerInfo.GetGlidingInfo()
+    for i, group in ipairs(activeGroups) do
+        if group.conditions.flying.enabled and group.conditions.flying.style ~= 1 and not canGlide then
+            StartIsFlyingTicker()
+            return
+        end
+    end
+end
+
 local function ConditionMounted()
-    UpdateConditionForAllGroups("mounted", IsMounted())
+    isMounted = IsMounted()
+    UpdateConditionForAllGroups("mounted", isMounted)
+    RunNextFrame(HandleIsFlyingTicker)
 end
 
 local function ConditionShapeshift()
     local shapeId = GetShapeshiftFormID()
+    isMounted = DRUID_FORMS[2][shapeId]
+    RunNextFrame(HandleIsFlyingTicker)
+
     for _, group in ipairs(activeGroups) do
         local formsKey = group.conditions.mounted.druidForms
         local validShapes = DRUID_FORMS[formsKey]
@@ -970,8 +1036,47 @@ end
 
 local function ConditionHealth()
     for _, group in ipairs(activeGroups) do
-        UpdateActiveConditions(group, "health", lastLowHealth)
+        local healthState 
+        if group.conditions.health.style == 1 then
+            healthState = lastLowHealthVis
+        else 
+            healthState = isMissingHealth
+        end
+        UpdateActiveConditions(group, "health", healthState)
     end
+end
+
+local function CheckLowHealthChange()
+    local currentLowHealthVis = LowHealthFrame:IsVisible()
+    if lastLowHealthVis ~= currentLowHealthVis then
+        lastLowHealthVis = currentLowHealthVis
+        return true
+    else
+        return false
+    end
+end
+
+local function CheckMissingHealthChange()
+    local currentTime = GetTime()
+    if currentTime == maxHealthChangeTime then
+        return false
+    end
+
+    if healthTimer then
+        healthTimer:Cancel()
+    end
+
+    isMissingHealth = true
+
+    healthTimer = C_Timer.NewTimer(TIME_TO_FLAG_FULL_HEALTH, function()
+        isMissingHealth = false
+        ConditionHealth()
+        fadeDelayOffset = TIME_TO_FLAG_FULL_HEALTH * -1
+        internal.FadeAllGroups()
+        fadeDelayOffset = 0
+    end)
+
+    return true
 end
 
 local function ConditionVehicle()
@@ -1247,9 +1352,11 @@ local function ScheduleFade(group, targetAlpha, delay, fadeMode)
 end
 
 local function ShouldDelayFade(group)
-    if group.states.fadeMode == "IN" and group.config.fadeInDelay > 0 then
+    local fadeInDelay = group.config.fadeInDelay + fadeDelayOffset
+    local fadeOutDelay = group.config.fadeOutDelay + fadeDelayOffset
+    if group.states.fadeMode == "IN" and fadeInDelay > 0 then
         return true, group.config.fadeInDelay
-    elseif group.states.fadeMode == "OUT" and group.config.fadeOutDelay > 0 then
+    elseif group.states.fadeMode == "OUT" and fadeOutDelay > 0 then
         return true, group.config.fadeOutDelay
     else
         return false, 0
@@ -1275,7 +1382,7 @@ local function FadeGroup(group)
     end
 end
 
-local function FadeAllGroups()
+function internal.FadeAllGroups()
     for _, group in ipairs(activeGroups) do
         FadeGroup(group)
     end
@@ -1296,7 +1403,7 @@ end
 
 local function OnTargetChanged()
     ConditionTarget()
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnCombatChange(combatStatus)
@@ -1310,7 +1417,7 @@ local function OnCombatChange(combatStatus)
     end
 
     ConditionCombat()
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnCombatStart()
@@ -1353,17 +1460,23 @@ end
 
 local function OnMountChange()
     ConditionMounted()
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnShapeshift()
     ConditionShapeshift()
-    FadeAllGroups()
+    internal.FadeAllGroups()
+end
+
+local function OnGlideChange(val)
+    isGliding = val
+    ConditionFlying()
+    internal.FadeAllGroups()
 end
 
 local function OnVehicleChange()
     ConditionVehicle()
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnHealthChange(unit)
@@ -1371,12 +1484,27 @@ local function OnHealthChange(unit)
         return
     end
 
-    local currentLowHealth = LowHealthFrame:IsVisible()
-    if lastLowHealth ~= currentLowHealth then
-        lastLowHealth = currentLowHealth
+    local lowHealthChanged = CheckLowHealthChange()
+    local missingHealthChanged = CheckMissingHealthChange()
+
+    if lowHealthChanged or missingHealthChanged then
         ConditionHealth()
-        FadeAllGroups()
+        internal.FadeAllGroups()
     end
+end
+
+local function OnMaxHealthChange(unit)
+    if unit ~= "player" then
+        return
+    end
+    maxHealthChangeTime = GetTime()
+end
+
+local function OnMaxHealthModifierChange(unit)
+    if unit ~= "player" then
+        return
+    end
+    maxHealthChangeTime = GetTime()
 end
 
 local function OnCastStart(unit)
@@ -1385,7 +1513,7 @@ local function OnCastStart(unit)
     end
 
     ConditionCasting(true)
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnCastEnd(unit)
@@ -1394,12 +1522,12 @@ local function OnCastEnd(unit)
     end
 
     ConditionCasting(false)
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 local function OnRestingChange()
     ConditionResting()
-    FadeAllGroups()
+    internal.FadeAllGroups()
 end
 
 ------------------
@@ -1417,9 +1545,12 @@ local EVENT_HANDLER = {
     UPDATE_MOUSEOVER_UNIT = OnMouseover,
     PLAYER_MOUNT_DISPLAY_CHANGED = OnMountChange,
     UPDATE_SHAPESHIFT_FORM = OnShapeshift,
+    PLAYER_IS_GLIDING_CHANGED = OnGlideChange,
     UNIT_ENTERED_VEHICLE = OnVehicleChange,
     UNIT_EXITED_VEHICLE = OnVehicleChange,
     UNIT_HEALTH = OnHealthChange,
+    UNIT_MAXHEALTH = OnMaxHealthChange,
+    UNIT_MAX_HEALTH_MODIFIERS_CHANGED = OnMaxHealthModifierChange,
     UNIT_SPELLCAST_START = OnCastStart,
     UNIT_SPELLCAST_CHANNEL_START = OnCastStart,
     UNIT_SPELLCAST_STOP = OnCastEnd,

@@ -142,7 +142,9 @@ local function GetOptionsTable()
             local profileName = specData.activeProfile or "Default"
             profile = specData.layoutProfiles[profileName]
         end
-        local existsInProfile = profile and profile.groupLayouts and profile.groupLayouts[ns.CDMGroups.selectedGroup]
+        local _eiLDB = profile and profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        local _eiSrc = (_eiLDB and _eiLDB[profile.groupLayoutName]) or (profile and profile.groupLayouts)
+        local existsInProfile = _eiSrc and _eiSrc[ns.CDMGroups.selectedGroup]
         local existsAtRuntime = ns.CDMGroups.groups[ns.CDMGroups.selectedGroup]
         return existsInProfile and not existsAtRuntime
     end
@@ -175,8 +177,10 @@ local function GetOptionsTable()
             profile = specData.layoutProfiles[profileName]
         end
         
-        if profile and profile.groupLayouts then
-            for groupName, _ in pairs(profile.groupLayouts) do
+        local _ggvLDB = profile and profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        local _ggvSrc = (_ggvLDB and _ggvLDB[profile.groupLayoutName]) or (profile and profile.groupLayouts)
+        if _ggvSrc then
+            for groupName, _ in pairs(_ggvSrc) do
                 if not values[groupName] then
                     -- Group exists in profile but not at runtime
                     if ns.CDMGroups.initialLoadInProgress then
@@ -236,9 +240,11 @@ local function GetOptionsTable()
         end
         
         -- Update profile.groupLayouts (single source of truth)
-        if profile and profile.groupLayouts and profile.groupLayouts[oldName] then
-            profile.groupLayouts[newName] = profile.groupLayouts[oldName]
-            profile.groupLayouts[oldName] = nil
+        local _rnLDB = profile and profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        local _rnTarget = (_rnLDB and _rnLDB[profile.groupLayoutName]) or (profile and profile.groupLayouts)
+        if _rnTarget and _rnTarget[oldName] then
+            _rnTarget[newName] = _rnTarget[oldName]
+            _rnTarget[oldName] = nil
         end
         
         -- Update savedPositions references (ns.CDMGroups.savedPositions IS profile.savedPositions)
@@ -387,8 +393,9 @@ local function GetOptionsTable()
         if specData and specData.layoutProfiles then
             local profileName = specData.activeProfile or "Default"
             local profile = specData.layoutProfiles[profileName]
-            if profile and profile.groupLayouts then
-                profile.groupLayouts[groupName] = nil
+            local _delTarget = profile and ns.CDMGroups.GetLayoutTarget and ns.CDMGroups.GetLayoutTarget(profile)
+            if _delTarget then
+                _delTarget[groupName] = nil
             end
         end
         
@@ -502,8 +509,8 @@ local function GetOptionsTable()
                         if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then
                             ns.CDMEnhance.InvalidateCache()
                         end
-                        if ns.CDMEnhance and ns.CDMEnhance.RefreshAllFrames then
-                            ns.CDMEnhance.RefreshAllFrames()
+                        if ns.CDMEnhance and ns.CDMEnhance.RefreshAllStyles then
+                            ns.CDMEnhance.RefreshAllStyles()
                         end
                     end
                 end,
@@ -899,7 +906,7 @@ local function GetOptionsTable()
             -- ════════════════════════════════════════════════════════════════
             groupLayoutsToggle = {
                 type = "toggle",
-                name = "Load Group Layout",
+                name = "Group Layout",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
                 order = 5,
@@ -1025,6 +1032,236 @@ local function GetOptionsTable()
                 end,
             },
             
+            -- ════════════════════════════════════════════════════════════════
+            -- LINK TO GROUP LAYOUT (inside Load Group Layout section)
+            -- ════════════════════════════════════════════════════════════════
+            glLinkSpacer = {
+                type = "description",
+                name = " ",
+                order = 5.4,
+                width = "full",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glLinkHeader = {
+                type = "description",
+                name = "|cffd4af37Link to Group Layout|r",
+                order = 5.41,
+                width = "full",
+                fontSize = "medium",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glLinkDesc = {
+                type = "description",
+                name = "|cffaaaaaaLive-link this profile to a shared Group Layout. All group positions and sizes are stored account-wide and shared by any linked profile.|r",
+                order = 5.42,
+                width = "full",
+                fontSize = "small",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glLinkStatus = {
+                type = "description",
+                name = function()
+                    local linked = ns.CDMGroups and ns.CDMGroups.GetActiveProfileGroupLayoutName and ns.CDMGroups.GetActiveProfileGroupLayoutName()
+                    if linked then
+                        return "|cff00ccffLinked to: " .. linked .. "|r"
+                    end
+                    return "|cff888888Independent — not linked to any layout.|r"
+                end,
+                order = 5.43,
+                width = "full",
+                fontSize = "medium",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glLinkSelect = {
+                type = "select",
+                name = "Group Layout",
+                desc = "Select a Group Layout to link this profile to.",
+                order = 5.5,
+                width = 1.4,
+                hidden = function()
+                    if collapsedSections.groupLayouts then return true end
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    return not db or not next(db)
+                end,
+                values = function()
+                    local vals = { [""] = "|cff666666Select a layout...|r" }
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    if db then
+                        for name in pairs(db) do
+                            vals[name] = name
+                        end
+                    end
+                    return vals
+                end,
+                sorting = function()
+                    local order = { "" }
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    if db then
+                        for name in pairs(db) do
+                            order[#order + 1] = name
+                        end
+                    end
+                    return order
+                end,
+                get = function()
+                    -- Pre-populate with currently linked layout if nothing explicitly selected
+                    if ns._glLinkSelected then return ns._glLinkSelected end
+                    local linked = ns.CDMGroups and ns.CDMGroups.GetActiveProfileGroupLayoutName and ns.CDMGroups.GetActiveProfileGroupLayoutName()
+                    return linked or ""
+                end,
+                set = function(_, val) ns._glLinkSelected = val ~= "" and val or nil end,
+            },
+            glLinkBtn = {
+                type = "execute",
+                name = "Link",
+                desc = "Link this profile to the selected layout.",
+                order = 5.51,
+                width = 0.4,
+                hidden = function()
+                    if collapsedSections.groupLayouts then return true end
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    return not db or not next(db)
+                end,
+                disabled = function() return not ns._glLinkSelected or ns._glLinkSelected == "" end,
+                func = function()
+                    local sel = ns._glLinkSelected
+                    if not sel or sel == "" then return end
+                    if ns.CDMGroups and ns.CDMGroups.LinkProfileToGroupLayout then
+                        ns.CDMGroups.LinkProfileToGroupLayout(sel)
+                    end
+                    ns._glLinkSelected = nil
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            },
+            glUnlinkBtn = {
+                type = "execute",
+                name = "Unlink",
+                desc = "Detach from the layout and take an independent snapshot.",
+                order = 5.52,
+                width = 0.5,
+                hidden = function()
+                    if collapsedSections.groupLayouts then return true end
+                    local linked = ns.CDMGroups and ns.CDMGroups.GetActiveProfileGroupLayoutName and ns.CDMGroups.GetActiveProfileGroupLayoutName()
+                    return not linked
+                end,
+                func = function()
+                    if ns.CDMGroups and ns.CDMGroups.UnlinkProfileFromGroupLayout then
+                        ns.CDMGroups.UnlinkProfileFromGroupLayout()
+                    end
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+                confirm = true,
+                confirmText = "Unlink from Group Layout? A snapshot will be taken — your layout won't change, but future changes won't be shared.",
+            },
+            glNoLayoutsNote = {
+                type = "description",
+                name = "|cff888888No Group Layouts exist yet.|r",
+                order = 5.6,
+                width = "full",
+                fontSize = "small",
+                hidden = function()
+                    if collapsedSections.groupLayouts then return true end
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    return db and next(db) ~= nil
+                end,
+            },
+            glCreateSpacer = {
+                type = "description",
+                name = " ",
+                order = 5.7,
+                width = "full",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glCreateHeader = {
+                type = "description",
+                name = "|cffd4af37Create New Layout|r",
+                order = 5.71,
+                width = "full",
+                fontSize = "medium",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glCreateDesc = {
+                type = "description",
+                name = "|cff888888Save your current group positions as a new named layout, then link this profile to it.|r",
+                order = 5.72,
+                width = "full",
+                fontSize = "small",
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glCreateName = {
+                type = "input",
+                name = "Layout Name",
+                order = 5.73,
+                width = 1.2,
+                get = function() return ns._glCreateName or "" end,
+                set = function(_, val) ns._glCreateName = val ~= "" and val or nil end,
+                hidden = function() return collapsedSections.groupLayouts end,
+            },
+            glCreateBtn = {
+                type = "execute",
+                name = "Create & Link",
+                desc = "Create a new layout from your current groups and link this profile to it.",
+                order = 5.74,
+                width = 0.75,
+                hidden = function() return collapsedSections.groupLayouts end,
+                disabled = function()
+                    local name = ns._glCreateName
+                    if not name or name == "" then return true end
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    return db and db[name] ~= nil
+                end,
+                func = function()
+                    local name = ns._glCreateName
+                    if not name or name == "" then return end
+                    -- Save current groups first
+                    if ns.CDMGroups and ns.CDMGroups.SaveGroupLayoutsToActiveProfile then
+                        ns.CDMGroups.SaveGroupLayoutsToActiveProfile()
+                    end
+                    local specData = ns.CDMGroups and ns.CDMGroups.GetSpecData and ns.CDMGroups.GetSpecData()
+                    local activeProfileName = (specData and specData.activeProfile) or "Default"
+                    local profile = specData and specData.layoutProfiles and specData.layoutProfiles[activeProfileName]
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    if db then
+                        local seedSrc = (profile and profile.groupLayoutName and db[profile.groupLayoutName])
+                            or (profile and profile.groupLayouts and next(profile.groupLayouts) and profile.groupLayouts)
+                        if seedSrc then
+                            local copy = {}
+                            for k, v in pairs(seedSrc) do copy[k] = v end
+                            db[name] = copy
+                        else
+                            db[name] = {}
+                        end
+                    end
+                    -- Auto-link this profile to the new layout
+                    if ns.CDMGroups and ns.CDMGroups.LinkProfileToGroupLayout then
+                        ns.CDMGroups.LinkProfileToGroupLayout(name)
+                    end
+                    ns._glCreateName = nil
+                    ns._glLinkSelected = nil
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                    print("|cff00ccffArcUI|r: Group Layout '" .. name .. "' created and linked.")
+                end,
+                confirm = function()
+                    local name = ns._glCreateName
+                    if not name or name == "" then return false end
+                    return "Create Group Layout '" .. name .. "' from your current groups and link this profile to it?"
+                end,
+            },
+            glCreateDupeNote = {
+                type = "description",
+                name = "|cffff8800A layout with that name already exists.|r",
+                order = 5.75,
+                width = "full",
+                fontSize = "small",
+                hidden = function()
+                    if collapsedSections.groupLayouts then return true end
+                    local name = ns._glCreateName
+                    if not name or name == "" then return true end
+                    local db = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    return not (db and db[name])
+                end,
+            },
+
             -- ════════════════════════════════════════════════════════════════
             -- GLOBAL OPTIONS SECTION (collapsible)
             -- ════════════════════════════════════════════════════════════════
@@ -2157,8 +2394,9 @@ local function GetOptionsTable()
                     ["none"]         = "None",
                     ["toGroup"]      = "Group > Group",
                     ["toFrame"]      = "Group > Frame",
+                    ["toMouse"]      = "Follow Cursor",
                 },
-                sorting = { "none", "toGroup", "toFrame" },
+                sorting = { "none", "toGroup", "toFrame", "toMouse" },
                 get = function()
                     local g = GetSelectedGroup()
                     local mode = g and g.anchor and g.anchor.mode or "none"
@@ -2178,6 +2416,9 @@ local function GetOptionsTable()
                         elseif val == "toFrame" then
                             g.anchor.targetGroup = ""
                         elseif val == "none" then
+                            g.anchor.targetGroup = ""
+                            g.anchor.targetFrame = ""
+                        elseif val == "toMouse" then
                             g.anchor.targetGroup = ""
                             g.anchor.targetFrame = ""
                         end

@@ -13,8 +13,31 @@ Addon.data.chores.professionSkinning = {
             name = EXPANSION_NAME11,
             skillLineId = 2917,
             drops = {
+                {
+                    key = 'gather',
+                    groupSameItem = true,
+                    entries = {
+                        { quest=88534, item=238625 }, -- Fine Void-Tempered Hide
+                        { quest=88549, item=238625 }, -- Fine Void-Tempered Hide
+                        { quest=88537, item=238625 }, -- Fine Void-Tempered Hide
+                        { quest=88536, item=238625 }, -- Fine Void-Tempered Hide
+                        { quest=88530, item=238625 }, -- Fine Void-Tempered Hide
+                        { quest=88529, item=238626 }, -- Mana-Infused Bone
+                    },
+                },
             },
             quests = {
+                {
+                    key = 'task',
+                    skill = 25,
+                    entries = {
+                        { quest=93710 }, -- Tempered in Darkness
+                        { quest=93711 }, -- The Chill of the Void
+                        { quest=93712 }, -- ??
+                        { quest=93713 }, -- ??
+                        { quest=93714 }, -- Minor Scales
+                    },
+                },
                 {
                     key = 'treatise',
                     entries = {

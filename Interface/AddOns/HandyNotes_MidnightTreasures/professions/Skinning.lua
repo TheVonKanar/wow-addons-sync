@@ -31,7 +31,7 @@ ns.RegisterPoints(ns.HARANDAR, {
 -- ns.RegisterPoints(ns.VOIDSTORM, {
 -- }, KNOWLEDGE)
 ns.RegisterPoints(ns.SLAYERSRISE, {
-    [44204595] = {quest=89169, loot={238631}, vignette=6789, parent=true}, -- Voidstorm Leather Sample
+    [45494246] = {quest=89169, loot={238631}, vignette=6789, parent=true}, -- Voidstorm Leather Sample
 }, KNOWLEDGE)
 
 -- Lures
@@ -39,35 +39,44 @@ ns.RegisterPoints(ns.SLAYERSRISE, {
 local LURE = {
     requires=ns.conditions.Profession(ns.PROF_MIDNIGHT_SKINNING),
     atlas="Vehicle-Trap-Gold",
-    loot={238530}, -- Majestic Fin
+    loot={
+        238528, -- Majestic Claw
+        238529, -- Majestic Hide
+        238530, -- Majestic Fin
+    },
     note="Place the lure once you have {spell:1239151:Sixth Sense}",
 }
 
 ns.RegisterPoints(ns.EVERSONGWOODS, {
     [42007994] = {
-        quest=245688, -- Gloomclaw
-        npc=nil,
+        quest=88545,
+        npc=245688, -- Gloomclaw
         active=ns.conditions.Item(238652), -- Majestic Eversong Lure
     },
 }, LURE)
 ns.RegisterPoints(ns.ZULAMAN, {
     [47825332] = {
-        quest=nil,
+        quest=88526,
         npc=245699, -- Silverscale
         active=ns.conditions.Item(238653), -- Majestic Zul'Aman Lure
     },
 }, LURE)
 ns.RegisterPoints(ns.HARANDAR, {
     [66854771] = {
-        quest=nil,
+        quest=88531,
         npc=245690, -- Lumenfin
         active=ns.conditions.Item(238654), -- Majestic Harandar Lure
     },
 }, LURE)
 ns.RegisterPoints(ns.VOIDSTORM, {
-    [54006500] = {
-        quest=nil,
+    [54606580] = {
+        quest=88532,
         npc=247096, -- Umbrafang
-        active=ns.conditions.Item(238655), -- Majestic  Voidstorm Lure
+        active=ns.conditions.Item(238655), -- Majestic Voidstorm Lure
+    },
+    [43258275] = {
+        quest=88524,
+        npc=247101, -- Netherscythe
+        active=ns.conditions.Item(238656), -- Grand Beast Lure
     },
 }, LURE)

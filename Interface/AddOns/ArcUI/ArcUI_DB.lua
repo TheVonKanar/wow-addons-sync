@@ -35,6 +35,9 @@ ns.DB_DEFAULTS = {
       radius = 80
     },
     menuBackgroundAlpha = 1.0,
+    -- Options panel saved position/size
+    optionsPanelPos = nil,   -- { point, x, y }
+    optionsPanelSize = nil,  -- { width, height }
     -- CDM Master Kill Switch - stored in global so it's checked before CDM modules init
     cdmStylingEnabled = true,
     -- Pending CDM profiles from master import (for classes not yet logged)
@@ -92,6 +95,7 @@ ns.DB_DEFAULTS = {
           iconTextureID = 0,
           cooldownID = 0,
           alternateCooldownIDs = {},  -- Additional cooldownIDs for cross-spec support
+          excludedCooldownIDs = {},   -- CooldownIDs manually removed; never auto-discovered
           slotNumber = 0,
           maxStacks = 10,
           auraInstanceID = 0,
@@ -156,6 +160,7 @@ ns.DB_DEFAULTS = {
           iconZoom = 0,
           
           texture = "Blizzard",
+          rotateTexture = false,
           fillTextureScale = 1.0,
           barOrientation = "horizontal",  -- "horizontal" or "vertical"
           barReverseFill = false,         -- Reverse fill direction (right-to-left / top-to-bottom)
@@ -257,6 +262,7 @@ ns.DB_DEFAULTS = {
           nameAnchorOffsetY = 0,
           showBarIcon = false,
           barIconSize = 32,
+          iconOverride = nil,    -- Spell ID or texture ID to override the bar icon
           barIconAnchor = "LEFT",
           barIconAnchorOffsetX = 0,
           barIconAnchorOffsetY = 0,
@@ -345,6 +351,7 @@ ns.DB_DEFAULTS = {
           opacity = 1.0,
           
           texture = "Blizzard",
+          rotateTexture = false,
           fillTextureScale = 1.0,
           barOrientation = "horizontal",  -- "horizontal" or "vertical"
           barReverseFill = false,         -- Reverse fill direction
@@ -446,6 +453,7 @@ ns.DB_DEFAULTS = {
           
           -- Texture and fill
           texture = "Blizzard",
+          rotateTexture = false,
           fillTextureScale = 1.0,
           barOrientation = "horizontal",  -- "horizontal" or "vertical"
           barReverseFill = false,         -- Reverse fill direction
@@ -645,6 +653,8 @@ function ns.API.GetBarConfig(barNumber)
   end
   if display.barOrientation == nil then display.barOrientation = "horizontal" end
   if display.barReverseFill == nil then display.barReverseFill = false end
+  if display.rotateTexture == nil then display.rotateTexture = false end
+  if display.showBackground == nil then display.showBackground = true end
   -- Migration: ensure text anchor defaults exist (prevents free-drag mode for old bars)
   if display.textAnchor == nil then display.textAnchor = "OUTERTOP" end
   if display.durationAnchor == nil then display.durationAnchor = "CENTER" end

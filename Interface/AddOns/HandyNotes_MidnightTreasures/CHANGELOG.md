@@ -1,5 +1,19 @@
 # Changelog
 
+## Changed in v34
+
+* Dust 'Em Off: Show Mothkeeper Wew'tam, and the rewards available from them
+* Harandar: add a marker for the From the Cradle to the Grave achievement
+
+## Changed in v33
+
+* Skinning lure rares: add Netherscythe in Voidstorm, add quests for tracking the dailies, and show the other Majestic drops
+* Dust 'Em Off: Blizzard hotfixed in a dedicated vignette atlas, so use that for the map icon
+
+## Changed in v32
+
+* Profession knowledge: various treasures missing on initial launch have started showing up; they seem inconsistent, so there's a note saying that they won't always be there
+
 ## Changed in v31
 
 * Zul'Aman: the Abandoned Ritual Skull has been hotfixed out of being part of the Treasures achievement

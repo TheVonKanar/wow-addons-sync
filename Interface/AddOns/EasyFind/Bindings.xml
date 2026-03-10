@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="EASYFIND_TOGGLE" category="EasyFind">
+		EasyFind:ToggleSearchUI()
+	</Binding>
+	<Binding name="EASYFIND_FOCUS" category="EasyFind">
+		EasyFind:FocusSearchUI()
+	</Binding>
+</Bindings>

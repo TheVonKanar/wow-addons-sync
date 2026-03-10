@@ -219,8 +219,8 @@ TalentTreeTweaks: disabled
 DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
-Krowi_AchievementFilter: enabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
+Krowi_AchievementFilter: disabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
@@ -269,3 +269,5 @@ EllesmereUINameplates: disabled
 EllesmereUICursor: disabled
 EllesmereUICooldownManager: disabled
 EllesmereUIActionBars: disabled
+TellMeWhen: disabled
+TellMeWhen_Options: disabled

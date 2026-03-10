@@ -12,8 +12,18 @@ Addon.data.chores.choresMidnight = {
             key = 'patch_12_0_0',
             quests = {
                 {
-                    key = 'unity',
+                    key = 'hope',
                     minimumLevel = 80,
+                    filter = function()
+                        return UnitLevel('player') < 90
+                    end,
+                    entries = {
+                        { quest = 95468 }, -- Hope in the Darkest Corners
+                    },
+                },
+                {
+                    key = 'unity',
+                    minimumLevel = 90,
                     entries = {
                         { quest = 93890 }, -- Midnight: Abundance
                         { quest = 93767 }, -- Midnight: Arcantina
@@ -28,6 +38,30 @@ Addon.data.chores.choresMidnight = {
                         { quest = 93892 }, -- Midnight: Stormarion Assault
                         { quest = 93913 }, -- Midnight: World Boss
                         { quest = 93766 }, -- Midnight: World Quests
+                    },
+                },
+                {
+                    key = 'abundance',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest = 89507 }, -- Abundant Offerings
+                    },
+                },
+                {
+                    key = 'soiree',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest = 90573 }, -- Fortify the Runestones: Magisters
+                        { quest = 90574 }, -- Fortify the Runestones: Blood Knights
+                        { quest = 90575 }, -- Fortify the Runestones: Farstriders
+                        { quest = 90576 }, -- Fortify the Runestones: Shades of the Row                        { quest = 89507 }, -- Abundant Offerings
+                    },
+                },
+                {
+                    key = 'stormarion',
+                    minimumLevel = 80,
+                    entries = {
+                        { quest = 90962 }, -- Stormarion Assault
                     },
                 },
                 {
@@ -64,6 +98,34 @@ Addon.data.chores.choresMidnight = {
                     },
                 },
             },
+        },
+        {
+            key = 'leveling',
+            minimumLevel = 80,
+            quests = {
+                {
+                    key = 'delves',
+                    minimumLevel = 80,
+                    pick = 8,
+                    filter = function()
+                        return UnitLevel('player') < 90
+                    end,
+                    entries = {
+                        -- Eversong Woods
+                        { quest = 93384 }, -- Delver's Call: Collegiate Calamity
+                        { quest = 93372 }, -- Delver's Call: Shadow Enclave
+                        -- Zul'Aman
+                        { quest = 93409 }, -- Delver's Call: Atal'Aman
+                        { quest = 93410 }, -- Delver's Call: Twilight Crypts
+                        -- Harandar
+                        { quest = 93421 }, -- Delver's Call: The Grudge Pit
+                        { quest = 93416 }, -- Delver's Call: The Gulf of Memory
+                        -- Voidstorm
+                        { quest = 93428 }, -- Delver's Call: Shadowguard Point
+                        { quest = 93427 }, -- Delver's Call: Sunkiller Sanctum
+                    },
+                },
+            }
         },
     },
 }

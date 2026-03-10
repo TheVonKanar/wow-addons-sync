@@ -5,10 +5,11 @@ MKPT_Config = {
 },
 ["global"] = {
 ["position"] = {
-["y"] = -90.86181640625,
-["x"] = 7.99994707107544,
+["y"] = -5.8619384765625,
+["x"] = 261.9999084472656,
 },
 ["state"] = {
+["show"] = false,
 ["firstTimeLoaded"] = false,
 },
 ["minimap"] = {

@@ -2,7 +2,7 @@
 ## Title: Angleur
 ## Notes: The Ultimate One Button Fishing AddOn - Now with an Auto-Equip Feature!
 ## Notes-ruRU: Лучший однокнопочный рыболовный аддон — теперь с функцией автоматического оснащения!
-## Version: Angleur 2.7.85
+## Version: Angleur 2.8.26
 ## Author: LegolandoBloom
 ## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial
 ## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars
@@ -55,6 +55,7 @@ slashcommands.lua
 minimap.lua
 animations.xml
 platerClash.lua
+midnight.lua
 
 Angleur.xml
 

@@ -1,40 +1,53 @@
 
 LariasWeeklyChecklistDB = {
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["minimapPos"] = 238.8106288973517,
 },
 ["mainFrameWin"] = {
-["y"] = 11.49911499023438,
-["x"] = 8.999567031860352,
+["y"] = -32.50090026855469,
+["x"] = 6.999574184417725,
 ["point"] = "LEFT",
 ["scale"] = 1,
 },
 ["chars"] = {
 ["Kvotheen - Hyjal"] = {
-["_sectionCompletedSeedVer2"] = "17",
+["_sectionCompletedSeedVer2"] = "19",
 ["checked"] = {
+["50281d6f:804b15e3"] = true,
 ["50281d6f:c06ee1a3"] = true,
+["50281d6f:755d27e7"] = true,
 ["50281d6f:e326ed96"] = true,
 ["bd6b2f68:4aa4b47d"] = true,
 ["50281d6f:879d3833"] = true,
+["50281d6f:9ad64245"] = true,
 ["50281d6f:6762e305"] = true,
 ["bd6b2f68:90db618c"] = true,
+["50281d6f:77405dc2"] = true,
+["50281d6f:d54f7430"] = true,
 ["bd6b2f68:91e7ee6c"] = true,
 ["50281d6f:dbc8384b"] = true,
-["50281d6f:da2fa0ef"] = true,
-["50281d6f:5a2e9ede"] = true,
-["50281d6f:0c3b8835"] = true,
-["50281d6f:efb035ba"] = true,
-["bd6b2f68:f9b8eb01"] = true,
-["bd6b2f68:f4b92a82"] = true,
 ["50281d6f:101e78a9"] = true,
-["bd6b2f68:6af1d802"] = true,
+["50281d6f:81fd810d"] = true,
+["50281d6f:a892ac44"] = true,
+["50281d6f:da2fa0ef"] = true,
+["50281d6f:0c3b8835"] = true,
+["50281d6f:f213fee8"] = true,
+["bd6b2f68:f9b8eb01"] = true,
+["50281d6f:efb035ba"] = true,
 ["bd6b2f68:ba1890e4"] = true,
-["50281d6f:9ad64245"] = true,
+["bd6b2f68:f4b92a82"] = true,
+["50281d6f:666a0192"] = true,
+["bd6b2f68:6af1d802"] = true,
+["50281d6f:a7ee4829"] = true,
+["50281d6f:c60d586a"] = true,
 },
 ["showCurrency"] = true,
 ["sectionCompleted"] = {
+["50281d6f"] = true,
 ["bd6b2f68"] = true,
 },
 ["_newestSeenRemoteVersion"] = "",
@@ -46,10 +59,16 @@ LariasWeeklyChecklistDB = {
 ["startAtSectionId"] = "50281d6f",
 ["debug"] = false,
 ["showGreatVault"] = true,
+["showCharPickerBtn"] = true,
+["_lariasDefaultsApplied"] = true,
+["_migrated"] = true,
+["_newestSeenRemoteSheetVersion"] = "15",
+["_newestSeenRemoteSender"] = "",
+["showIlvlRefBtn"] = true,
 ["trackingSnapshot"] = {
 ["leftGrid"] = {
 {
-["complete"] = 0,
+["available"] = true,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -65,10 +84,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = true,
+["complete"] = 0,
 },
 {
-["complete"] = 0,
+["available"] = true,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -84,10 +103,10 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = true,
+["complete"] = 0,
 },
 {
-["complete"] = 0,
+["available"] = false,
 ["maxIlvl"] = 0,
 ["slots"] = {
 {
@@ -103,7 +122,7 @@ LariasWeeklyChecklistDB = {
 ["ilvl"] = 0,
 },
 },
-["available"] = false,
+["complete"] = 0,
 },
 },
 ["leftLines"] = {
@@ -121,12 +140,12 @@ LariasWeeklyChecklistDB = {
 {
 ["id"] = 3383,
 ["type"] = "crest",
-["qty"] = 180,
+["qty"] = 20,
 },
 {
 ["id"] = 3341,
 ["type"] = "crest",
-["qty"] = 110,
+["qty"] = 190,
 },
 {
 ["id"] = 3343,
@@ -159,12 +178,6 @@ LariasWeeklyChecklistDB = {
 },
 },
 },
-["_lariasDefaultsApplied"] = true,
-["_migrated"] = true,
-["_newestSeenRemoteSheetVersion"] = "15",
-["_newestSeenRemoteSender"] = "",
-["showIlvlRefBtn"] = true,
-["showCharPickerBtn"] = true,
 ["showChangeWeekBtn"] = true,
 },
 },
@@ -172,9 +185,6 @@ LariasWeeklyChecklistDB = {
 ["Kvotheen - Hyjal"] = "SHAMAN",
 },
 ["_prefsMigrated"] = true,
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

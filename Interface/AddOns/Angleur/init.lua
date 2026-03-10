@@ -39,6 +39,10 @@ AngleurConfig = {
     ultraFocusAudioEnabled = nil,
     ultraFocusAutoLootEnabled = nil,
     ultraFocusTurnOffInteract = nil,
+    -- midnight.lua
+    patientEnabled = nil,
+    voidFinderEnabled = nil,
+    voidFinderKey = nil,
 }
 
 AngleurClassicConfig = {
@@ -91,7 +95,6 @@ function Init_AngleurSavedVariables()
     if AngleurConfig.recastEnabled == nil then
         AngleurConfig.recastEnabled = false
     end
-
     local gameVersion = Angleur_CheckVersion()
     if gameVersion == 2 or gameVersion == 3 then
         if AngleurClassicConfig == nil then
@@ -280,6 +283,8 @@ AngleurRetail_FishingSpellTable = {
     1252746,
     -- Hot-Spring Gulper Fishing
     301092,
+    -- Void Hole Fishing
+    1224771,
 }
 
 -- 1 : Retail | 2 : MoP(Or Cata) | 3 : Vanilla | (0: None, fail)
@@ -527,6 +532,8 @@ local function load_retail()
 
     -- Order: After LoadToys()
     Angleur_Auras()
+
+    Angleur_LoadMidnight()
 end
 local function load_mists()
     if ang.gameVersion ~= 2 then return end  
@@ -592,6 +599,7 @@ local function cvars_load()
     end
 end
 
+local firstMove = true
 local helpTipCloseText = "|cnHIGHLIGHT_FONT_COLOR:The |r|cnNORMAL_FONT_COLOR:Interact Key|r|cnHIGHLIGHT_FONT_COLOR: allows you to interact with NPCs and objects using a keypress|n|n|r|cnRED_FONT_COLOR:Assign an Interact Key binding under Control options|r"
 function Angleur_EventLoader(self, event, unit, ...)
     local arg4, arg5 = ...
@@ -664,6 +672,14 @@ function Angleur_EventLoader(self, event, unit, ...)
             Angleur_ToyBoxOverlay_Deactivate()
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
+    elseif event == "PLAYER_STARTED_MOVING" then
+        if ang.gameVersion ~= 1 then return end
+        if firstMove == true and AngleurCharacter.sleeping == false then
+            firstMove = false
+            if Angleur_TinyOptions.turnOffSoftInteract == false then
+                Angleur_TempCVarHandler:Set("SoftTargetInteract")
+            end
+        end
     end
 end
 

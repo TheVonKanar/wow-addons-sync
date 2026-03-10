@@ -214,6 +214,7 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
     local stateKey3 = usabilityState
     local stateKey4 = isGlowPreview
     local stateKey5 = InCombatLockdown()
+    local stateKey6 = frame._arcProcGlowActive or false
 
     local prev = frame._arcLastSpellState
     if prev
@@ -221,19 +222,21 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         and prev[2] == stateKey2
         and prev[3] == stateKey3
         and prev[4] == stateKey4
-        and prev[5] == stateKey5 then
+        and prev[5] == stateKey5
+        and prev[6] == stateKey6 then
         return  -- Nothing changed, skip all visual work
     end
 
     -- Cache current state for next comparison
     if not prev then
-        frame._arcLastSpellState = { stateKey, stateKey2, stateKey3, stateKey4, stateKey5 }
+        frame._arcLastSpellState = { stateKey, stateKey2, stateKey3, stateKey4, stateKey5, stateKey6 }
     else
         prev[1] = stateKey
         prev[2] = stateKey2
         prev[3] = stateKey3
         prev[4] = stateKey4
         prev[5] = stateKey5
+        prev[6] = stateKey6
     end
 
     -- Get state visuals from settings
@@ -298,8 +301,8 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         frame._arcBypassDesatHook = false
 
         -- Alpha
-        local cdAlpha = (stateVisuals and stateVisuals.cooldownAlpha)
-                     or cs.alpha or 1.0
+        local cdAlpha = (stateVisuals and stateVisuals.cooldownAlpha ~= nil) and stateVisuals.cooldownAlpha
+                     or (cs.alpha ~= nil and cs.alpha or 1.0)
         -- Proc override: if a proc glow is active and the setting is enabled, show at full alpha
         if frame._arcProcGlowActive then
             local procOverride = (stateVisuals and stateVisuals.cooldownProcOverride) or cs.procOverride
@@ -325,7 +328,9 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         -- Preserve duration text: keep countdown + charge text at full opacity when frame is dimmed
         local preserve = (stateVisuals and stateVisuals.preserveDurationText)
                       or cs.preserveDurationText
-        if preserve then
+        local parentContainer = frame:GetParent()
+        local groupHidden = frame._arcGroupHidden or (parentContainer and parentContainer._arcGroupHidden)
+        if preserve and not groupHidden then
             if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
                 frame.Cooldown.Text:SetIgnoreParentAlpha(true)
                 frame.Cooldown.Text:SetAlpha(1)
@@ -398,8 +403,8 @@ function ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD, passedSettings)
         end
 
         -- Alpha
-        local readyAlpha = (stateVisuals and stateVisuals.readyAlpha)
-                        or rs.alpha or 1.0
+        local readyAlpha = (stateVisuals and stateVisuals.readyAlpha ~= nil) and stateVisuals.readyAlpha
+                        or (rs.alpha ~= nil and rs.alpha or 1.0)
         -- Usability alpha override: when spell is NOT usable, override readyAlpha
         if usabilityAlpha and usabilityState ~= "usable" and usabilityState ~= "outOfRange" then
             readyAlpha = usabilityAlpha
@@ -678,13 +683,15 @@ FeedCooldown = function(fd)
             local fullyDepleted = fd.desatCooldown:IsShown()
             local swipeWait = fd.frame._arcSwipeWaitForNoCharges
             local edgeWait = fd.frame._arcEdgeWaitForNoCharges
+            local showEdge = not settings or not settings.cooldownSwipe or settings.cooldownSwipe.showEdge ~= false
+            local showSwipe = not settings or not settings.cooldownSwipe or settings.cooldownSwipe.showSwipe ~= false
             fd.frame._arcBypassSwipeHook = true
             if fullyDepleted then
-                cooldown:SetDrawSwipe(true)
-                cooldown:SetDrawEdge(true)
+                cooldown:SetDrawSwipe(showSwipe)
+                cooldown:SetDrawEdge(showEdge)
             else
-                cooldown:SetDrawSwipe(not swipeWait)
-                cooldown:SetDrawEdge(not edgeWait)
+                cooldown:SetDrawSwipe(showSwipe and not swipeWait)
+                cooldown:SetDrawEdge(showEdge and not edgeWait)
             end
             fd.frame._arcBypassSwipeHook = false
         end
@@ -699,6 +706,11 @@ FeedCooldown = function(fd)
                 cooldown:Clear()
             end
         end
+        -- Apply showEdge for non-charge spells (was never enforced before)
+        local showEdge = not settings or not settings.cooldownSwipe or settings.cooldownSwipe.showEdge ~= false
+        fd.frame._arcBypassSwipeHook = true
+        cooldown:SetDrawEdge(showEdge)
+        fd.frame._arcBypassSwipeHook = false
     end
 
     -- ───────────────────────────────────────────────────────────────────

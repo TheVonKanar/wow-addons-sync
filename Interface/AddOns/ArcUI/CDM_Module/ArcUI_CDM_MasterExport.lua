@@ -112,6 +112,10 @@ local function GetCharName(charKey)
     return charKey:match("^(.-)%s*%-") or charKey
 end
 
+local function GetRealmFromKey(charKey)
+    return charKey:match("%-+%s*(.+)$") or ""
+end
+
 -- Get bar data for any character. Current char uses AceDB (has defaults).
 -- Other chars read raw SV (missing defaults OK — import writes through AceDB).
 local function GetBarDataForChar(charKey)
@@ -275,7 +279,7 @@ end
 -- across all characters and specs on this account
 -- ═══════════════════════════════════════════════════════════════════════════
 
-function ME.ScanAllProfiles()
+function ME.ScanAllProfiles(opts)
     -- Use ns.db.sv.char (AceDB's internal reference to raw SavedVariables)
     -- This is the same data source the working Arc Manager Profiles dropdown uses
     local svChar = ns.db and ns.db.sv and ns.db.sv.char
@@ -287,6 +291,9 @@ function ME.ScanAllProfiles()
     
     local results = {}
     
+    -- opts.allChars = true: skip shared-sync dedup so every character is listed
+    local allChars = opts and opts.allChars
+    
     -- Track which shared specs we've already collected (deduplicate)
     local sharedSpecCollected = {}
     
@@ -295,14 +302,16 @@ function ME.ScanAllProfiles()
             for specKey, specData in pairs(charData.cdmGroups.specData) do
                 if type(specData) == "table" and specData.layoutProfiles then
                     -- When shared sync exists for this spec (global ref), only include ONE
-                    -- character's profiles. All synced characters have identical data.
+                    -- character's profiles (unless allChars is set).
                     local skipShared = false
-                    local sharedRef = ns.db and ns.db.global and ns.db.global.sharedProfiles and ns.db.global.sharedProfiles[specKey]
-                    if sharedRef then
-                        if sharedSpecCollected[specKey] then
-                            skipShared = true
-                        else
-                            sharedSpecCollected[specKey] = charKey
+                    if not allChars then
+                        local sharedRef = ns.db and ns.db.global and ns.db.global.sharedProfiles and ns.db.global.sharedProfiles[specKey]
+                        if sharedRef then
+                            if sharedSpecCollected[specKey] then
+                                skipShared = true
+                            else
+                                sharedSpecCollected[specKey] = charKey
+                            end
                         end
                     end
                     
@@ -507,7 +516,25 @@ function ME.Export(selectedKeys)
     exportPayload.specCount = specCount
     
     -- Bar export: Coming Soon (disabled for this release)
-    
+
+    -- CDM native layout — export active layout for current character
+    do
+        local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+        local mgr = dp and dp:GetLayoutManager()
+        if mgr then
+            local activeID = mgr:GetActiveLayoutID()
+            if activeID then
+                local str = mgr:GetSerializer():SerializeLayouts(activeID)
+                if str then
+                    local activeLayout = mgr:GetLayout(activeID)
+                    local layoutName = activeLayout and CooldownManagerLayout_GetName and CooldownManagerLayout_GetName(activeLayout) or nil
+                    exportPayload.cdmNativeLayout = str
+                    exportPayload.cdmNativeLayoutName = layoutName
+                end
+            end
+        end
+    end
+
     -- Serialize → Compress (level 9) → Encode
     local serialized = Serialize:SerializeEx(configForLS, exportPayload)
     if not serialized then return nil, "Serialization failed" end
@@ -752,8 +779,8 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
         if not profileData.freeIcons then profileData.freeIcons = {} end
         if not profileData.iconSettings then profileData.iconSettings = {} end
         
-        -- If groupLayouts is empty, populate from DEFAULT_GROUPS
-        if not profileData.groupLayouts or not next(profileData.groupLayouts) then
+        -- If groupLayouts is empty AND not linked, populate from DEFAULT_GROUPS
+        if (not profileData.groupLayouts or not next(profileData.groupLayouts)) and not profileData.groupLayoutName then
             print(MSG_PREFIX .. "|cffff8800[Repair]|r Profile '" .. profileName .. "' has no groups — adding defaults")
             profileData.groupLayouts = {}
             if DEFAULT_GROUPS then
@@ -846,7 +873,7 @@ local function MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabe
     return mergedCount, firstImportedName
 end
 
-function ME.Import(data, importMode, activeOverrides)
+function ME.Import(data, importMode, activeOverrides, selectedProfiles)
     if not data or not data.specs then
         return false, "No data to import"
     end
@@ -890,6 +917,18 @@ function ME.Import(data, importMode, activeOverrides)
             -- Apply user's active profile override if they picked one
             if activeOverrides[specKey] then
                 specEntry.activeProfile = activeOverrides[specKey]
+            end
+            -- Filter profiles by user selection (if provided)
+            if selectedProfiles and next(selectedProfiles) then
+                local filteredEntry = DeepCopy(specEntry)
+                filteredEntry.profiles = {}
+                for profileName, profileData in pairs(specEntry.profiles or {}) do
+                    local fKey = specKey .. "|" .. profileName
+                    if selectedProfiles[fKey] ~= false then
+                        filteredEntry.profiles[profileName] = profileData
+                    end
+                end
+                specEntry = filteredEntry
             end
             local merged, firstProfileName = MergeProfilesIntoSpec(cdmGroupsDB, specKey, specEntry, sourceLabel)
             importedProfiles = importedProfiles + merged
@@ -1032,13 +1071,71 @@ function ME.Import(data, importMode, activeOverrides)
         ns.CDMGroups.RefreshCachedLayoutSettings()
     end
     
+    -- CDM native layout
+    local importedCDMLayoutID = nil
+    if data.cdmNativeLayout and data.cdmNativeLayout ~= "" then
+        local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+        local mgr = dp and dp:GetLayoutManager()
+        if mgr then
+            local ok, err = pcall(function()
+                local newLayoutIDs = mgr:CreateLayoutsFromSerializedData(data.cdmNativeLayout)
+                local sourceName = data.cdmNativeLayoutName
+                if sourceName and newLayoutIDs then
+                    for _, layoutID in ipairs(newLayoutIDs) do
+                        local layout = mgr:GetLayout(layoutID)
+                        if layout then
+                            local nameOk = pcall(function() mgr:RenameLayout(layoutID, sourceName) end)
+                            if not nameOk then
+                                mgr:RenameLayout(layoutID, sourceName .. " (imported)")
+                            end
+                        end
+                    end
+                end
+                if newLayoutIDs and newLayoutIDs[1] then
+                    importedCDMLayoutID = newLayoutIDs[1]
+                    dp:SetActiveLayoutByID(newLayoutIDs[1])
+                end
+            end)
+            if not ok then
+                print(MSG_PREFIX .. "|cffff8800CDM layout could not be applied: " .. tostring(err) .. "|r")
+            end
+        end
+    end
+
     -- If the current spec received profiles, switch to and load the imported profile
     if currentSpecProfileName then
         if ns.CDMGroups and ns.CDMGroups.LoadProfile then
+            local capturedCDMLayoutID = importedCDMLayoutID
             C_Timer.After(0.2, function()
                 print(MSG_PREFIX .. "Loading imported profile '" .. currentSpecProfileName .. "'...")
                 ns.CDMGroups.LoadProfile(currentSpecProfileName)
+                -- Deferred SV write: ensure new CDM layout ID survives the post-import chain
+                if capturedCDMLayoutID then
+                    C_Timer.After(0.1, function()
+                        local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+                        local mgr = dp and dp:GetLayoutManager()
+                        if mgr then
+                            local newLayout = mgr:GetLayout(capturedCDMLayoutID)
+                            if newLayout then
+                                mgr:SetPreviouslyActiveLayout(newLayout)
+                                mgr:SetHasPendingChanges(true, false)
+                                mgr:GetSerializer():WriteData()
+                                mgr:SetHasPendingChanges(false)
+                            end
+                        end
+                    end)
+                end
             end)
+        end
+    end
+    
+    -- Push imported profiles to shared so all synced alts receive them
+    local SP = ns.CDMSharedProfiles
+    if SP and SP.IsEnabled and SP.Push then
+        for specKey in pairs(data.specs or {}) do
+            if ParseSpecKey(specKey) == myClassID and SP.IsEnabled(specKey) then
+                SP.Push(specKey)
+            end
         end
     end
     
@@ -1203,13 +1300,46 @@ uiState = {
     barsCollapsed = true,
     collapsedBarChars = {},
     selectedBarsForExport = {},
+    -- Import profile filter: keyed by specKey.."|"..profileName → bool (true=include)
+    importSelectedProfiles = {},
+    -- Profile browser
+    browserCollapsedChars = {},
+    browserRenameValues = {},
 }
 
 -- Shared args table for per-spec active profile dropdowns (rebuilt on preview)
 local activeProfileSelectorArgs = {}
+local importProfileFilterArgs = {}
+
+-- Rebuild import profile filter checkboxes from preview data
+local function RebuildImportProfileFilter()
+    wipe(importProfileFilterArgs)
+    wipe(uiState.importSelectedProfiles)
+    if not uiState.importPreview then return end
+    local data = uiState.importPreview
+    local order = 1
+    for specKey, specEntry in pairs(data.specs or {}) do
+        local specDisplayName = GetSpecDisplayName(specKey, specEntry.specName)
+        for profileName, _ in pairs(specEntry.profiles or {}) do
+            local fKey = specKey .. "|" .. profileName
+            uiState.importSelectedProfiles[fKey] = true  -- default all selected
+            local argKey = "impf_" .. fKey:gsub("[^%w]", "_")
+            importProfileFilterArgs[argKey] = {
+                type = "toggle",
+                name = specDisplayName .. "  |cff888888" .. profileName .. "|r",
+                order = order,
+                width = "full",
+                get = function() return uiState.importSelectedProfiles[fKey] ~= false end,
+                set = function(_, v) uiState.importSelectedProfiles[fKey] = v end,
+            }
+            order = order + 1
+        end
+    end
+end
 
 -- Rebuild per-spec active profile dropdowns from preview data
 local function RebuildActiveProfileSelectors()
+    RebuildImportProfileFilter()
     wipe(activeProfileSelectorArgs)
     if not uiState.importPreview then return end
     
@@ -1492,6 +1622,22 @@ local function GetOptionsTable()
                 args = activeProfileSelectorArgs,
             },
             
+            importFilterHeader = {
+                type = "description",
+                name = "\n|cffffd700Choose which profiles to import:|r",
+                order = 214.5,
+                fontSize = "medium",
+                hidden = function() return not uiState.importPreview or not next(importProfileFilterArgs) end,
+            },
+            importProfileFilter = {
+                type = "group",
+                name = "",
+                order = 214.6,
+                inline = true,
+                hidden = function() return not uiState.importPreview or not next(importProfileFilterArgs) end,
+                args = importProfileFilterArgs,
+            },
+            
             importModeSelect = {
                 type = "select",
                 name = "Import Mode",
@@ -1528,7 +1674,7 @@ local function GetOptionsTable()
                         print(MSG_PREFIX .. "|cffff0000No valid import data.|r Paste a string and Preview first.")
                         return
                     end
-                    local success, result = ME.Import(uiState.importPreview, uiState.importMode, uiState.importActiveOverrides)
+                    local success, result = ME.Import(uiState.importPreview, uiState.importMode, uiState.importActiveOverrides, uiState.importSelectedProfiles)
                     if success then
                         print(MSG_PREFIX .. "|cff00ff00" .. result .. "|r")
                         uiState.importString = ""
@@ -1704,7 +1850,9 @@ local function GetOptionsTable()
                     for _, e in ipairs(entries) do
                         if uiState.selectedForExport[e.uniqueKey] then selCount = selCount + 1 end
                     end
-                    local label = "|cffffd100" .. charName .. "|r  |c" .. classColor .. className .. "|r"
+                    local realm = GetRealmFromKey(cKey)
+                    local realmSuffix = realm ~= "" and " |cff666666" .. realm .. "|r" or ""
+                    local label = "|cffffd100" .. charName .. "|r" .. realmSuffix .. "  |c" .. classColor .. className .. "|r"
                     -- Check if any of this character's specs are shared
                     local sharedNames = nil
                     for _, e in ipairs(entries) do
@@ -1819,12 +1967,342 @@ local function GetOptionsTable()
 
     -- Bar sections: Coming Soon (disabled for this release)
 
-    
     return options
 end
 
+-- ═══════════════════════════════════════════════════════════════════
+-- PROFILE BROWSER OPTIONS TABLE (own tab)
+-- ═══════════════════════════════════════════════════════════════════
+local function GetProfileBrowserOptionsTable()
+    local args = {}
+
+    args.browserDesc = {
+        type = "description",
+        name = "Browse, rename, or delete profiles across all characters and specs on this account.\n",
+        order = 1,
+        fontSize = "medium",
+    }
+    args.browserRefresh = {
+        type = "execute",
+        name = "Refresh",
+        order = 2,
+        width = 0.6,
+        func = function()
+            wipe(uiState.browserCollapsedChars)
+            wipe(uiState.browserRenameValues)
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+    }
+    args.browserExpandAll = {
+        type = "execute",
+        name = "Expand All",
+        order = 3,
+        width = 0.7,
+        func = function()
+            wipe(uiState.browserCollapsedChars)
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+    }
+    args.browserCollapseAll = {
+        type = "execute",
+        name = "Collapse All",
+        order = 4,
+        width = 0.8,
+        func = function()
+            local allProfiles = ME.ScanAllProfiles()
+            for _, e in ipairs(allProfiles) do
+                uiState.browserCollapsedChars[e.charKey] = true
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+    }
+
+    -- Group by character — use allChars so synced duplicates all show up
+    local allProfiles = ME.ScanAllProfiles({ allChars = true })
+    local charOrder = {}
+    local charProfiles = {}
+    for _, entry in ipairs(allProfiles) do
+        if not charProfiles[entry.charKey] then
+            charProfiles[entry.charKey] = {}
+            table.insert(charOrder, entry.charKey)
+        end
+        table.insert(charProfiles[entry.charKey], entry)
+    end
+
+    -- Default collapsed
+    for _, charKey in ipairs(charOrder) do
+        if uiState.browserCollapsedChars[charKey] == nil then
+            uiState.browserCollapsedChars[charKey] = true
+        end
+    end
+
+    local baseOrder = 10
+    for charIdx, charKey in ipairs(charOrder) do
+        local entries = charProfiles[charKey]
+        local firstEntry = entries[1]
+        local classInfo = CLASS_INFO[firstEntry.classID]
+        local className = classInfo and classInfo.name or ("Class " .. firstEntry.classID)
+        local classColor = classInfo and classInfo.color or "ffffffff"
+        local charName = GetCharName(charKey)
+        local cKey = charKey
+
+        local profileCount = #entries
+        local specSet = {}
+        for _, e in ipairs(entries) do specSet[e.specKey] = true end
+        local specCount = 0
+        for _ in pairs(specSet) do specCount = specCount + 1 end
+
+        local charArgs = {}
+        local cCharKey = charKey  -- capture for closures
+
+        -- Purge character data button (for deleted/retired chars)
+        charArgs["_purge"] = {
+            type = "execute",
+            name = "|cffff4444Delete Character|r",
+            desc = "Delete ALL ArcUI data for this character. Use for deleted or retired characters.",
+            order = -1,
+            width = 0.9,
+            hidden = function()
+                -- Hide for the currently logged-in character
+                local myKey = (UnitName("player") or "Unknown") .. " - " .. (GetRealmName() or "Unknown")
+                return cCharKey == myKey or uiState.browserCollapsedChars[cCharKey] ~= false
+            end,
+            confirm = true,
+            confirmText = "|cffff4444Delete ALL ArcUI data for " .. charName .. "?|r This cannot be undone.",
+            func = function()
+                local svChar = ns.db and ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+                if svChar and svChar[cCharKey] then svChar[cCharKey].cdmGroups = nil; svChar[cCharKey].arcAuras = nil end
+                -- Clear from global sharedProfiles if they were source
+                if ns.db and ns.db.global and ns.db.global.sharedProfiles then
+                    for sk, ref in pairs(ns.db.global.sharedProfiles) do
+                        if ref.sourceChar == cCharKey then ns.db.global.sharedProfiles[sk] = nil end
+                    end
+                end
+                local db = ns.db and ns.db.char and ns.db.char.cdmGroups
+                if db and db.initializedCharacters then db.initializedCharacters[cCharKey] = nil end
+                print(MSG_PREFIX .. "|cffff4444Deleted|r all data for " .. charName)
+                LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+            end,
+        }
+
+        -- Collapsible header (same style as Master Export)
+        charArgs["_header"] = {
+            type = "toggle",
+            name = function()
+                local realm = GetRealmFromKey(cKey)
+                local realmSuffix = realm ~= "" and " |cff666666" .. realm .. "|r" or ""
+                local label = "|cffffd100" .. charName .. "|r" .. realmSuffix .. "  |c" .. classColor .. className .. "|r"
+                if uiState.browserCollapsedChars[cKey] then
+                    label = label .. "  |cff666666(" .. profileCount .. " profiles, " .. specCount .. " specs)|r"
+                end
+                return label
+            end,
+            desc = "Click to expand/collapse",
+            dialogControl = "CollapsibleHeader",
+            order = 0,
+            width = "full",
+            get = function() return not uiState.browserCollapsedChars[cKey] end,
+            set = function(_, v) uiState.browserCollapsedChars[cKey] = not v end,
+        }
+
+        local innerOrder = 1
+        local lastSpecKey = nil
+
+        for _, entry in ipairs(entries) do
+            local eSpecKey = entry.specKey
+            local eCharKey = entry.charKey
+            local eProfileName = entry.profileName
+            local renameStateKey = eCharKey .. "|" .. eSpecKey .. "|" .. eProfileName
+            local argBase = "bp_" .. renameStateKey:gsub("[^%w]", "_")
+
+            -- Spec sub-header (same style as Master Export)
+            if eSpecKey ~= lastSpecKey then
+                lastSpecKey = eSpecKey
+                local specDisplayName = GetSpecDisplayName(eSpecKey, entry.specName)
+                charArgs[argBase .. "_specHeader"] = {
+                    type = "description",
+                    name = "|cffaaaaaa" .. specDisplayName .. "|r",
+                    order = innerOrder,
+                    width = "full",
+                    hidden = function() return uiState.browserCollapsedChars[cKey] end,
+                }
+                innerOrder = innerOrder + 1
+            end
+
+            -- Profile name inline with input + buttons (single row)
+            charArgs[argBase .. "_label"] = {
+                type = "description",
+                name = "|cffffffff" .. eProfileName .. "|r  |cff555555(" .. entry.posCount .. " icons)|r",
+                order = innerOrder,
+                width = 1.4,
+                hidden = function() return uiState.browserCollapsedChars[cKey] end,
+            }
+            charArgs[argBase .. "_rename"] = {
+                type = "input",
+                name = "",
+                order = innerOrder + 0.1,
+                width = 1.0,
+                hidden = function() return uiState.browserCollapsedChars[cKey] end,
+                get = function() return uiState.browserRenameValues[renameStateKey] or "" end,
+                set = function(_, v) uiState.browserRenameValues[renameStateKey] = v end,
+            }
+            charArgs[argBase .. "_renameBtn"] = {
+                type = "execute",
+                name = "Rename",
+                order = innerOrder + 0.2,
+                width = 0.55,
+                hidden = function() return uiState.browserCollapsedChars[cKey] end,
+                func = function()
+                    local newName = uiState.browserRenameValues[renameStateKey]
+                    if not newName or newName == "" or newName == eProfileName then return end
+                    local svChar = ns.db and ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+                    if not svChar then return end
+                    local charData = svChar[eCharKey]
+                    if not charData then return end
+                    local specData = charData.cdmGroups and charData.cdmGroups.specData and charData.cdmGroups.specData[eSpecKey]
+                    if not specData or not specData.layoutProfiles then return end
+                    if specData.layoutProfiles[newName] then
+                        print(MSG_PREFIX .. "|cffff6600'" .. newName .. "' already exists.|r")
+                        return
+                    end
+                    specData.layoutProfiles[newName] = specData.layoutProfiles[eProfileName]
+                    specData.layoutProfiles[eProfileName] = nil
+                    if specData.activeProfile == eProfileName then specData.activeProfile = newName end
+                    uiState.browserRenameValues[renameStateKey] = nil
+                    print(MSG_PREFIX .. "Renamed '" .. eProfileName .. "' → '" .. newName .. "'")
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            }
+            charArgs[argBase .. "_delete"] = {
+                type = "execute",
+                name = "|cffff4444Delete|r",
+                order = innerOrder + 0.3,
+                width = 0.45,
+                hidden = function() return uiState.browserCollapsedChars[cKey] end,
+                confirm = true,
+                confirmText = "Delete '" .. eProfileName .. "'? This cannot be undone.",
+                func = function()
+                    local svChar = ns.db and ns.db.sv and ns.db.sv.char or (ArcUIDB and ArcUIDB.char)
+                    if not svChar then return end
+                    local charData = svChar[eCharKey]
+                    if not charData then return end
+                    local specData = charData.cdmGroups and charData.cdmGroups.specData and charData.cdmGroups.specData[eSpecKey]
+                    if not specData or not specData.layoutProfiles then return end
+                    specData.layoutProfiles[eProfileName] = nil
+                    if specData.activeProfile == eProfileName then
+                        specData.activeProfile = nil
+                        for name in pairs(specData.layoutProfiles) do specData.activeProfile = name; break end
+                    end
+                    print(MSG_PREFIX .. "|cffff4444Deleted|r '" .. eProfileName .. "'")
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            }
+            innerOrder = innerOrder + 1
+            innerOrder = innerOrder + 1
+        end
+
+        args["char_" .. charIdx] = {
+            type = "group",
+            name = "",
+            order = baseOrder + charIdx,
+            inline = true,
+            args = charArgs,
+        }
+    end
+
+    return { type = "group", name = "Profile Browser", args = args }
+end
+
+
 function ns.GetCDMMasterExportOptionsTable()
     return GetOptionsTable()
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- UNIFIED IMPORT HELPER
+-- Populates caller-owned args tables so the unified import window can show
+-- the same per-spec active profile dropdowns and profile filter checkboxes
+-- without sharing Master's module-level state tables.
+--
+-- outSelectorArgs   : table to wipe+fill with active-profile select widgets
+-- outFilterArgs     : table to wipe+fill with profile filter toggle widgets
+-- activeOverrides   : caller's table { [specKey] = chosenProfileName }
+-- selectedProfiles  : caller's table { [specKey.."|"..profileName] = bool }
+-- ═══════════════════════════════════════════════════════════════════════════
+function ME.BuildImportSelectorArgs(data, activeOverrides, selectedProfiles, outSelectorArgs, outFilterArgs)
+    wipe(outSelectorArgs)
+    wipe(outFilterArgs)
+    wipe(selectedProfiles)
+    if not data or not data.specs then return end
+
+    local _, _, myClassID = UnitClass("player")
+
+    -- Sort specs
+    local sorted = {}
+    for specKey, specEntry in pairs(data.specs) do
+        table.insert(sorted, { key = specKey, entry = specEntry })
+    end
+    table.sort(sorted, function(a, b)
+        local ac = a.entry.classID or 99
+        local bc = b.entry.classID or 99
+        if ac ~= bc then return ac < bc end
+        return (a.entry.specIndex or 99) < (b.entry.specIndex or 99)
+    end)
+
+    local filterOrder = 1
+    local selectorOrder = 1
+
+    for _, s in ipairs(sorted) do
+        local specKey   = s.key
+        local specEntry = s.entry
+        local isMyClass = specEntry.classID == myClassID
+        local specDisplayName = GetSpecDisplayName(specKey, specEntry.specName)
+
+        -- Profile filter toggles (all specs)
+        for profileName in pairs(specEntry.profiles or {}) do
+            local fKey   = specKey .. "|" .. profileName
+            selectedProfiles[fKey] = true
+            local argKey = "impf_" .. fKey:gsub("[^%w]", "_")
+            local cap_fKey = fKey
+            outFilterArgs[argKey] = {
+                type  = "toggle",
+                name  = specDisplayName .. "  |cff888888" .. profileName .. "|r",
+                order = filterOrder,
+                width = "full",
+                get = function() return selectedProfiles[cap_fKey] ~= false end,
+                set = function(_, v) selectedProfiles[cap_fKey] = v end,
+            }
+            filterOrder = filterOrder + 1
+        end
+
+        -- Active profile dropdowns (my class only, only if >1 profile)
+        if isMyClass then
+            local profileValues = {}
+            for pName in pairs(specEntry.profiles or {}) do
+                profileValues[pName] = pName
+            end
+            local count = 0
+            for _ in pairs(profileValues) do count = count + 1 end
+
+            if count > 1 then
+                local cap_specKey = specKey
+                outSelectorArgs["active_" .. selectorOrder] = {
+                    type   = "select",
+                    name   = specDisplayName .. "  |cff888888Active Profile|r",
+                    order  = selectorOrder,
+                    width  = 1.5,
+                    values = profileValues,
+                    get = function() return activeOverrides[cap_specKey] end,
+                    set = function(_, val) activeOverrides[cap_specKey] = val end,
+                }
+                selectorOrder = selectorOrder + 1
+            end
+        end
+    end
+end
+
+function ns.GetCDMProfileBrowserOptionsTable()
+    return GetProfileBrowserOptionsTable()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════

@@ -936,8 +936,9 @@ local function ImportBars(data, mode)
     return true, result
 end
 
--- Expose for master import
+-- Expose for master import and unified import window
 ns.BarsImportExport.ImportBars = ImportBars
+ns.BarsImportExport.ParseImportString = ParseImportString
 
 -- ===================================================================
 -- OPTIONS TABLE
@@ -1344,4 +1345,17 @@ end
 -- Export the function for Options.lua to use
 ns.GetBarsImportExportOptionsTable = function()
     return ns.BarsImportExport.GetOptionsTable()
+end
+
+-- Export-only table (strips import section) for unified Import/Export panel
+ns.GetBarsExportOnlyOptionsTable = function()
+    local tbl = ns.BarsImportExport.GetOptionsTable()
+    local IMPORT_KEYS = {
+        "importHeader", "importDesc", "importString", "previewBtn",
+        "importPreview", "importModeSelect", "importModeDesc", "importBtn",
+    }
+    for _, k in ipairs(IMPORT_KEYS) do
+        tbl.args[k] = nil
+    end
+    return tbl
 end

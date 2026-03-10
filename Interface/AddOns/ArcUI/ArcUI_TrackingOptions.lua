@@ -1396,7 +1396,7 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
               table.insert(lines, string.format("|cff888888Alt %d:|r %d%s%s", i, altCdID, spellName, activeMarker))
             end
           else
-            table.insert(lines, "|cff666666No alternates - verify to auto-discover|r")
+            table.insert(lines, "|cff666666No alternates — use Find Alt ID to search|r")
           end
           
           return table.concat(lines, "\n")
@@ -1446,6 +1446,26 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           return false
         end
       },
+      findAltIDBtn = {
+        type = "execute",
+        name = "Find Alt ID",
+        desc = "Search CDM for an alternate cooldown ID matching this bar's spell. Only runs when you click — nothing is added automatically.",
+        func = function()
+          if ns.API.DiscoverAlternateCooldownID then
+            local cdID, msg = ns.API.DiscoverAlternateCooldownID(barNum)
+            print("|cff00ccffArc UI|r: " .. msg)
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 7.35,
+        width = 0.7,
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0 then return true end
+          return false
+        end
+      },
       removeCdIDDropdown = {
         type = "select",
         name = "Remove",
@@ -1487,6 +1507,62 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
             return true
           end
           return false
+        end
+      },
+      excludedCdIDsInfo = {
+        type = "description",
+        name = function()
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking.excludedCooldownIDs or #cfg.tracking.excludedCooldownIDs == 0 then
+            return ""
+          end
+          local lines = { "|cffff6600Excluded (won't be re-discovered):|r" }
+          for _, exID in ipairs(cfg.tracking.excludedCooldownIDs) do
+            table.insert(lines, string.format("|cff888888  %d|r", exID))
+          end
+          return table.concat(lines, "\n")
+        end,
+        order = 7.5,
+        width = "full",
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0 then return true end
+          return not cfg.tracking.excludedCooldownIDs or #cfg.tracking.excludedCooldownIDs == 0
+        end
+      },
+      unexcludeCdIDDropdown = {
+        type = "select",
+        name = "Un-exclude",
+        desc = "Remove a cooldown ID from the excluded list so it can be found by 'Find Alt ID' again",
+        values = function()
+          local cfg = ns.API.GetBarConfig(barNum)
+          local vals = { [""] = "-- Select --" }
+          if cfg and cfg.tracking.excludedCooldownIDs then
+            for _, exID in ipairs(cfg.tracking.excludedCooldownIDs) do
+              vals[tostring(exID)] = tostring(exID)
+            end
+          end
+          return vals
+        end,
+        get = function() return "" end,
+        set = function(info, value)
+          if value ~= "" then
+            local cdID = tonumber(value)
+            if cdID and ns.API.UnexcludeCooldownID then
+              local success, msg = ns.API.UnexcludeCooldownID(barNum, cdID)
+              print("|cff00ccffArc UI|r: " .. msg)
+              LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+            end
+          end
+        end,
+        order = 7.6,
+        width = 0.7,
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0 then return true end
+          return not cfg.tracking.excludedCooldownIDs or #cfg.tracking.excludedCooldownIDs == 0
         end
       },
       linkedCdIDsBreak = {
@@ -1862,7 +1938,7 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
       verifyTrackingBtn = {
         type = "execute",
         name = "Verify Tracking",
-        desc = "Check if all bars can find their auras. Also auto-discovers alternate cooldown IDs for cross-spec tracking.",
+        desc = "Check if all bars can find their auras.",
         func = function()
           if ns.API.ValidateAllBarTracking then ns.API.ValidateAllBarTracking() end
           LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")

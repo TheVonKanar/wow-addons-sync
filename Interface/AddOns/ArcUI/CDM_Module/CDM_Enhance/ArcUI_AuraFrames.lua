@@ -170,6 +170,8 @@ function AF.ShowAuraActiveGlow(frame, auraActiveCfg)
     particles = particles,
     xOffset   = glowOffset + (auraActiveCfg.glowXOffset or 0),
     yOffset   = glowOffset + (auraActiveCfg.glowYOffset or 0),
+    translateX = auraActiveCfg.glowTranslateX or 0,
+    translateY = auraActiveCfg.glowTranslateY or 0,
     strata    = (strata ~= "inherit") and strata or nil,
     frameLevel = frameLevel,
   })
@@ -185,6 +187,13 @@ function AF.HideAuraActiveGlow(frame)
   frame._arcAuraActiveGlowActive = false
   frame._arcAuraActiveGlowType   = nil
   frame._arcAuraActiveGlowSig    = nil
+  -- Restore alpha if it was forced visible for preview
+  if frame._arcAuraGlowPreviewAlpha then
+    frame._arcBypassAlphaHook = true
+    frame:SetAlpha(frame._arcAuraGlowPreviewAlpha)
+    frame._arcBypassAlphaHook = false
+    frame._arcAuraGlowPreviewAlpha = nil
+  end
 end
 
 -- ===================================================================
@@ -242,8 +251,10 @@ function AF.UpdateAuraFrame(frame)
   local stateVisuals    = GetEffectiveStateVisuals(cfg)
   local hasAuraActiveGlow = cfg.auraActiveState
     and (cfg.auraActiveState.glow == true or cfg.auraActiveState.glowWhenMissing == true)
+  local isAuraGlowPreview = ns.CDMEnhanceOptions and ns.CDMEnhanceOptions.IsAuraGlowPreviewActive
+    and ns.CDMEnhanceOptions.IsAuraGlowPreviewActive(frame.cooldownID)
 
-  if not stateVisuals and not hasAuraActiveGlow then
+  if not stateVisuals and not hasAuraActiveGlow and not isAuraGlowPreview then
     if frame._arcAuraActiveGlowActive then AF.HideAuraActiveGlow(frame) end
     if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
       ns.CustomLabel.UpdateVisibility(frame)
@@ -274,8 +285,8 @@ function AF.UpdateAuraFrame(frame)
     isReady = hasAuraOrTotem
   else
     -- Cooldown frame with no tracked aura — handle aura active glow only
-    if hasAuraActiveGlow or frame._arcAuraActiveGlowActive then
-      local aaCfg = cfg.auraActiveState
+    if hasAuraActiveGlow or frame._arcAuraActiveGlowActive or isAuraGlowPreview then
+      local aaCfg = cfg.auraActiveState or (isAuraGlowPreview and {} or nil)
       if AF.ShouldShowAuraActiveGlow(aaCfg, frame, false) then
         AF.ShowAuraActiveGlow(frame, aaCfg)
       else
@@ -290,8 +301,8 @@ function AF.UpdateAuraFrame(frame)
 
   -- No state visuals configured: glow-only path
   if not stateVisuals then
-    local aaCfg = cfg.auraActiveState
-    if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+    local aaCfg = cfg.auraActiveState or (isAuraGlowPreview and {} or nil)
+    if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing or isAuraGlowPreview) then
       if AF.ShouldShowAuraActiveGlow(aaCfg, frame, isReady) then
         AF.ShowAuraActiveGlow(frame, aaCfg)
       else
@@ -400,18 +411,25 @@ function AF.UpdateAuraFrame(frame)
 
   -- Ready glow: only pure aura frames (not wasSetFromAura cooldown frames)
   -- Cooldown frames use the curve-driven glow path in ApplyCooldownStateVisuals
-  local isCooldownFrame = not cfg._isAura and frame.totemData == nil
+  -- If _arcCooldownEventDriven=true the cooldown path fully owns the ready glow.
+  -- Defer a forced OnCooldownEvent so CDM's totem sweep finishes before we
+  -- re-read the shadow. forceVisuals=true bypasses the idle-skip cache so the
+  -- glow is correctly hidden out of combat after totem placement.
+  local isCooldownFrame = not cfg._isAura and (frame.totemData == nil or frame._arcCooldownEventDriven)
   if not isCooldownFrame then
+    local isReadyGlowPreview = ns.CDMEnhanceOptions and ns.CDMEnhanceOptions.IsGlowPreviewActive
+      and ns.CDMEnhanceOptions.IsGlowPreviewActive(frame.cooldownID)
     local threshold = stateVisuals.glowThreshold or 1.0
+    local isReadyOrPreview = isReady or isReadyGlowPreview
     if threshold >= 1.0 then
-      if ShouldShowReadyGlow(stateVisuals, frame) and isReady then
+      if ShouldShowReadyGlow(stateVisuals, frame) and isReadyOrPreview then
         ShowReadyGlow(frame, stateVisuals)
       else
         HideReadyGlow(frame)
       end
       frame._arcTargetGlow = true
     else
-      if ShouldShowReadyGlow(stateVisuals, frame) and isReady then
+      if ShouldShowReadyGlow(stateVisuals, frame) and isReadyOrPreview then
         if cdID then StartThresholdGlowTracking(cdID) end
       else
         if cdID then StopThresholdGlowTracking(cdID) end
@@ -419,12 +437,28 @@ function AF.UpdateAuraFrame(frame)
       end
       frame._arcTargetGlow = true
     end
+  elseif frame._arcCooldownEventDriven and not frame._arcTotemCooldownPending then
+    -- Schedule a deferred forced re-evaluation so CDM's totem sweep has time
+    -- to finish updating the shadow before we read it.
+    frame._arcTotemCooldownPending = true
+    C_Timer.After(0.1, function()
+      frame._arcTotemCooldownPending = nil
+      if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
+        ns.CDMEnhance.OnCooldownEvent(frame, false, false, true) -- forceVisuals=true
+      end
+    end)
   end
 
   -- Aura active glow (both aura frames and cooldown frames with auraActiveState.glow)
-  if hasAuraActiveGlow or frame._arcAuraActiveGlowActive then
-    local aaCfg = cfg.auraActiveState
+  if hasAuraActiveGlow or frame._arcAuraActiveGlowActive or isAuraGlowPreview then
+    local aaCfg = cfg.auraActiveState or (isAuraGlowPreview and {} or nil)
     if AF.ShouldShowAuraActiveGlow(aaCfg, frame, isReady) then
+      -- Preview: force frame visible if alpha=0 (icon invisible when buff inactive)
+      if isAuraGlowPreview and frame:GetAlpha() <= 0 then
+        frame._arcBypassAlphaHook = true
+        frame:SetAlpha(0.35)
+        frame._arcBypassAlphaHook = false
+      end
       AF.ShowAuraActiveGlow(frame, aaCfg)
     else
       AF.HideAuraActiveGlow(frame)
@@ -449,19 +483,36 @@ function AF.InstallHooks(frame, cdID)
 
   if frame.SetAuraInstanceInfo then
     hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
-      -- IAO frames: aura state changed but HandleIgnoreAuraOverride owns all visuals.
-      -- Trigger a cooldown state dispatch so EvaluateAuraActiveGlow fires with the new aura state.
+      -- IAO frames: cooldown state owns all visuals
       if self._arcIgnoreAuraOverride then
         if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
           ns.CDMEnhance.OnCooldownEvent(self, false, false, true)
         end
       else
+        -- DIRECT glow call: aura gained = show glow. No routing, no throttle, no stateVisuals check.
+        local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+          and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(self)
+        local aaCfg = cfg and cfg.auraActiveState
+        if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+          if AF.ShouldShowAuraActiveGlow(aaCfg, self, true) then
+            AF.ShowAuraActiveGlow(self, aaCfg)
+          else
+            AF.HideAuraActiveGlow(self)
+          end
+        end
+        -- UpdateAuraFrame handles alpha/desat/label (may throttle - that is fine for those)
         if ns.AuraFrames and ns.AuraFrames.UpdateAuraFrame then
           ns.AuraFrames.UpdateAuraFrame(self)
         end
       end
       if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
         ns.CustomLabel.UpdateVisibility(self)
+      end
+      -- SINGLE STACK
+      if self._arcSingleStackText then
+        local unit = self.auraDataUnit or "player"
+        local count = C_UnitAuras.GetAuraApplicationDisplayCount(unit, self.auraInstanceID, 1)
+        self._arcSingleStackText:SetText(count)
       end
     end)
   end
@@ -473,6 +524,17 @@ function AF.InstallHooks(frame, cdID)
           ns.CDMEnhance.OnCooldownEvent(self, false, false, true)
         end
       else
+        -- DIRECT glow call: aura lost = hide glow (or show glowWhenMissing).
+        local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+          and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(self)
+        local aaCfg = cfg and cfg.auraActiveState
+        if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+          if AF.ShouldShowAuraActiveGlow(aaCfg, self, false) then
+            AF.ShowAuraActiveGlow(self, aaCfg)
+          else
+            AF.HideAuraActiveGlow(self)
+          end
+        end
         if ns.AuraFrames and ns.AuraFrames.UpdateAuraFrame then
           ns.AuraFrames.UpdateAuraFrame(self)
         end
@@ -480,10 +542,12 @@ function AF.InstallHooks(frame, cdID)
       if ns.CustomLabel and ns.CustomLabel.UpdateVisibility then
         ns.CustomLabel.UpdateVisibility(self)
       end
+      -- Clear mirror fontstring when aura drops
+      if self._arcSingleStackText then
+        self._arcSingleStackText:SetText("")
+      end
     end)
   end
-
-  -- Mark frame as event-driven so 20Hz ApplyIconVisuals skips it
   frame._arcAuraEventDriven = true
 end
 
@@ -495,6 +559,12 @@ end
 
 function AF.EnhanceAuraFrame(frame, cdID)
   if not frame or not cdID then return end
+
+  -- Always restore _arcAuraEventDriven here, not just inside InstallHooks.
+  -- CDMEnhance clears it on spec change then calls EnhanceAuraFrame again,
+  -- but InstallHooks bails early on _arcAuraStateHooked=true so flag never restores.
+  -- Without it CooldownState leaks ready glow onto aura frames.
+  frame._arcAuraEventDriven = true
 
   -- Install aura state hooks (idempotent)
   AF.InstallHooks(frame, cdID)

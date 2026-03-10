@@ -264,6 +264,22 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     if not frame._arcHiddenUnequipped and not frame._arcHiddenByBar then
         frame:Show()
     end
+    -- Always strip IconOverlay shadow on re-layout — CDM may have re-shown it.
+    -- If keepCDMStyle is on, the deferred RefreshAllStyles below re-adds it
+    -- at the correct position after layout settles.
+    if frame._arcIconOverlay then
+        frame._arcIconOverlay:SetAlpha(0)
+        frame._arcIconOverlay:Hide()
+    end
+    for _, region in ipairs({frame:GetRegions()}) do
+        if region:IsObjectType("Texture") then
+            local ok, atlas = pcall(function() return region:GetAtlas() end)
+            if ok and atlas and atlas:find("IconOverlay") then
+                region:SetAlpha(0)
+                region:Hide()
+            end
+        end
+    end
     frame._arcRecoveryProtection = GetTime() + 0.5
     
     -- Default to slot dimensions
@@ -439,6 +455,19 @@ function ns.CDMGroups.RefreshIconSettings()
     for groupName, group in pairs(ns.CDMGroups.groups or {}) do
         if group and group.Layout then
             group:Layout()
+        end
+    end
+
+    -- If keepCDMStyle is on, SetupFrameInContainer stripped the shadow overlay.
+    -- Defer a CDMEnhance refresh so it gets re-applied at the correct position.
+    do
+        local specData = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
+        if specData and specData.keepCDMStyle == true then
+            C_Timer.After(0, function()
+                if ns.CDMEnhance and ns.CDMEnhance.RefreshAllStyles then
+                    ns.CDMEnhance.RefreshAllStyles()
+                end
+            end)
         end
     end
 end
@@ -694,6 +723,19 @@ function ns.CDMGroups.RefreshIconLayout(cooldownID)
             if group.Layout then
                 group:Layout()
             end
+        end
+    end
+
+    -- If keepCDMStyle is on, shadow overlay offsets depend on frame dimensions.
+    -- Defer a CDMEnhance refresh so it recalculates after layout settles.
+    do
+        local specData = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
+        if specData and specData.keepCDMStyle == true then
+            C_Timer.After(0, function()
+                if ns.CDMEnhance and ns.CDMEnhance.RefreshAllStyles then
+                    ns.CDMEnhance.RefreshAllStyles()
+                end
+            end)
         end
     end
 end

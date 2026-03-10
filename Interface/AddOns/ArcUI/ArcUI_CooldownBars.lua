@@ -4898,15 +4898,19 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       local offsetX = display.anchorOffsetX or 0
       local offsetY = display.anchorOffsetY or 0
       
+      -- Container has a 6px borderOffset inset on all sides (backdrop border + visual padding).
+      -- Adjust SetPoint so the bar aligns to the slot area edge, not the backdrop edge.
+      local borderOffset = 6
+      
       frame:ClearAllPoints()
       if anchorPoint == "TOP" then
-        frame:SetPoint("BOTTOM", container, "TOP", offsetX, offsetY)
+        frame:SetPoint("BOTTOM", container, "TOP", offsetX, offsetY - borderOffset)
       elseif anchorPoint == "BOTTOM" then
-        frame:SetPoint("TOP", container, "BOTTOM", offsetX, offsetY)
+        frame:SetPoint("TOP", container, "BOTTOM", offsetX, offsetY + borderOffset)
       elseif anchorPoint == "LEFT" then
-        frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+        frame:SetPoint("RIGHT", container, "LEFT", offsetX + borderOffset, offsetY)
       elseif anchorPoint == "RIGHT" then
-        frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+        frame:SetPoint("LEFT", container, "RIGHT", offsetX - borderOffset, offsetY)
       end
       
       -- Match size to container if enabled
@@ -4917,8 +4921,12 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         local containerHeight = container:GetHeight()
         local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
         
+        -- Strip border (12px) and padding from container dimension to get slot-area size.
+        -- Container size = slots + borderCompensation(12) + containerPadding*2
+        local slotInset = 12 + (group.containerPadding or 0) * 2
+        
         -- Use container height for side anchors, container width for top/bottom
-        local matchDimension = isSideAnchor and containerHeight or containerWidth
+        local matchDimension = (isSideAnchor and containerHeight or containerWidth) - slotInset
         
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = display.matchWidthAdjust or 0
@@ -4956,7 +4964,13 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
             
             -- Recreate slots with new width
             if barData.maxCharges and barData.maxCharges > 0 then
+              barData._lastMatchedBarWidth = barWidth  -- Cache so OnSizeChanged skips redundant recreate
               CreateChargeSlots(barData, barData.maxCharges, barWidth, slotHeight, slotSpacing, isVertical, display)
+              local texturePath = GetTexturePath(display.texture or "Blizzard")
+              for _, slot in ipairs(barData.chargeSlots) do
+                if slot.fullBar then slot.fullBar:SetStatusBarTexture(texturePath) end
+                if slot.rechargeBar then slot.rechargeBar:SetStatusBarTexture(texturePath) end
+              end
             end
           end
         end
@@ -6838,8 +6852,11 @@ function ns.CooldownBars.GetTimerConfig(timerID)
         stackDuration = 20,
         stackExpireByDuration = true,
         stackResetOnDeath = true,
+        resetOnDeath = true,          -- Timer/toggle: reset bar when player dies
+        resetOnRetrigger = true,      -- Timer: restart timer if trigger fires while active
         generators = {},
         spenders = {},
+        suppressors = {},
       },
       display = DeepCopy(DISPLAY_DEFAULTS),
       behavior = {
@@ -6878,8 +6895,11 @@ function ns.CooldownBars.GetTimerConfig(timerID)
         cfg.tracking.stackExpireByDuration = (cfg.tracking.stackDuration or 0) > 0
       end
       if cfg.tracking.stackResetOnDeath == nil then cfg.tracking.stackResetOnDeath = true end
+      if cfg.tracking.resetOnDeath == nil then cfg.tracking.resetOnDeath = true end
+      if cfg.tracking.resetOnRetrigger == nil then cfg.tracking.resetOnRetrigger = true end
       if not cfg.tracking.generators then cfg.tracking.generators = {} end
       if not cfg.tracking.spenders then cfg.tracking.spenders = {} end
+      if not cfg.tracking.suppressors then cfg.tracking.suppressors = {} end
     end
   end
   
@@ -7494,6 +7514,7 @@ end
 
 -- Forward declarations for cancel method tracking (defined fully in aura scan section)
 local timerAuraStates = {}    -- timerID -> { wasActive = bool, cdmFrame = frame }
+local stackChangedAuraCache = {}  -- timerID -> last known auraInstanceID (for removedAuraInstanceIDs matching)
 
 -- ===================================================================
 -- START TIMER
@@ -8059,19 +8080,37 @@ local function ProcessEventStackTrigger(triggerType, spellID)
     local barData = barIndex and ns.CooldownBars.timerBars[barIndex]
     if not barData then break end
     
+    -- Check suppressors: spellcast type sets a timed suppression window
+    for _, sup in ipairs(cfg.tracking.suppressors or {}) do
+      local tt = sup.triggerType or "spellcast"
+      if (tt == "spellcast" or tt == "spellcastSent") and tonumber(sup.spellID) == spellID then
+        barData.spenderSuppressedUntil = GetTime() + (sup.duration or 2)
+        Log("Suppressor triggered (" .. timerID .. "): spellID=" .. spellID .. " suppress for " .. (sup.duration or 2) .. "s")
+      end
+    end
+    
     -- Check generators
     for _, gen in ipairs(cfg.tracking.generators or {}) do
       if (gen.triggerType or "spellcast") == triggerType and tonumber(gen.spellID) == spellID then
+        if gen.requireHostileTarget then
+          if not (UnitExists("target") and UnitCanAttack("player", "target") and not UnitIsDead("target")) then
+            break
+          end
+        end
         ApplyStackChange(timerID, barData, cfg, gen, true)
         break
       end
     end
     
-    -- Check spenders
-    for _, sp in ipairs(cfg.tracking.spenders or {}) do
-      if (sp.triggerType or "spellcast") == triggerType and tonumber(sp.spellID) == spellID then
-        ApplyStackChange(timerID, barData, cfg, sp, false)
-        break
+    -- Check spenders — skip if suppressed (timer or aura)
+    local suppressed = (barData.spenderSuppressedUntil and GetTime() < barData.spenderSuppressedUntil)
+                    or (barData.spenderSuppressedByAura)
+    if not suppressed then
+      for _, sp in ipairs(cfg.tracking.spenders or {}) do
+        if (sp.triggerType or "spellcast") == triggerType and tonumber(sp.spellID) == spellID then
+          ApplyStackChange(timerID, barData, cfg, sp, false)
+          break
+        end
       end
     end
   until true end
@@ -8088,9 +8127,14 @@ local stackAuraLookup = {}
 -- Track which CDM frames we've hooked (frame ref → true)
 local stackAuraHookedFrames = {}
 
+-- Suppressor aura lookup: cooldownID → { {timerID, triggerType}, ... }
+-- "auraActive": suppress while aura present. "auraMissing": suppress while aura absent.
+local suppressorAuraLookup = {}
+
 -- Rebuild lookup table from all active stack bar configs
 local function RebuildStackAuraLookup()
   wipe(stackAuraLookup)
+  wipe(suppressorAuraLookup)
   
   for timerID in pairs(ns.CooldownBars.activeTimers) do
     local cfg = ns.CooldownBars.GetTimerConfig(timerID)
@@ -8119,6 +8163,17 @@ local function RebuildStackAuraLookup()
           end
         end
       end
+      -- Suppressors (auraActive / auraMissing types)
+      for _, sup in ipairs(cfg.tracking.suppressors or {}) do
+        local tt = sup.triggerType or "spellcast"
+        if tt == "auraActive" or tt == "auraMissing" then
+          local cdID = tonumber(sup.cooldownID)
+          if cdID and cdID > 0 then
+            suppressorAuraLookup[cdID] = suppressorAuraLookup[cdID] or {}
+            table.insert(suppressorAuraLookup[cdID], { timerID = timerID, triggerType = tt })
+          end
+        end
+      end
     end
   end
 end
@@ -8130,6 +8185,21 @@ local function OnCDMFrameAuraChanged(frame, gained)
     if frame.cooldownInfo then cooldownID = frame.cooldownInfo.cooldownID end
   end
   if not cooldownID then return end
+  
+  -- Handle suppressor aura state (auraActive / auraMissing types)
+  local supEntries = suppressorAuraLookup[cooldownID]
+  if supEntries then
+    for _, info in ipairs(supEntries) do
+      local barIndex = ns.CooldownBars.activeTimers[info.timerID]
+      local barData = barIndex and ns.CooldownBars.timerBars[barIndex]
+      if barData then
+        -- auraActive: suppress while gained. auraMissing: suppress while NOT gained (inverted)
+        local suppress = (info.triggerType == "auraActive") == gained
+        barData.spenderSuppressedByAura = suppress or nil
+        Log("Suppressor aura " .. (gained and "gained" or "lost") .. " (" .. info.timerID .. "/" .. info.triggerType .. "): cdID=" .. cooldownID .. " suppress=" .. tostring(suppress))
+      end
+    end
+  end
   
   local entries = stackAuraLookup[cooldownID]
   if not entries then return end
@@ -8175,11 +8245,17 @@ end
 local function HookStackAuraCDMFrames()
   RebuildStackAuraLookup()
   
-  -- Nothing to hook if no aura-based stack entries
-  if not next(stackAuraLookup) then return end
+  -- Nothing to hook if no aura-based stack or suppressor entries
+  if not next(stackAuraLookup) and not next(suppressorAuraLookup) then return end
   
   -- Hook all CDM frames matching our cooldownIDs
   for cooldownID in pairs(stackAuraLookup) do
+    local cdmFrame = FindCDMFrameByCooldownID(cooldownID)
+    if cdmFrame then
+      HookCDMFrameForStackAura(cdmFrame)
+    end
+  end
+  for cooldownID in pairs(suppressorAuraLookup) do
     local cdmFrame = FindCDMFrameByCooldownID(cooldownID)
     if cdmFrame then
       HookCDMFrameForStackAura(cdmFrame)
@@ -8197,14 +8273,34 @@ end
 -- Also hook when a stack bar config changes (called from AddStack* functions)
 local function OnStackConfigChanged(timerID)
   stackEntryAuraStates[timerID] = nil
+  stackChangedAuraCache[timerID] = nil
   HookStackAuraCDMFrames()
 end
 
 -- ===================================================================
 -- TIMER EVENT HANDLING
 -- ===================================================================
+
+-- Cast GUID deduplication: prevents double-counting AoE/multi-hit casts
+local seenCastGUIDs = {}
+local seenCastGUIDCount = 0
+local MAX_GUID_CACHE = 20
+
+local function IsDuplicateCastGUID(guid)
+  if not guid or guid == "" then return false end
+  if seenCastGUIDs[guid] then return true end
+  seenCastGUIDs[guid] = true
+  seenCastGUIDCount = seenCastGUIDCount + 1
+  if seenCastGUIDCount > MAX_GUID_CACHE then
+    wipe(seenCastGUIDs)
+    seenCastGUIDCount = 0
+  end
+  return false
+end
+
 local timerEventFrame = CreateFrame("Frame")
 timerEventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+timerEventFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
 timerEventFrame:RegisterEvent("PLAYER_DEAD")
 timerEventFrame:RegisterEvent("UNIT_AURA")
 timerEventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
@@ -8218,8 +8314,9 @@ local auraCheckElapsed = 0
 
 timerEventFrame:SetScript("OnEvent", function(self, event, ...)
   if event == "UNIT_SPELLCAST_SUCCEEDED" then
-    local unit, _, spellID = ...
+    local unit, castGUID, spellID = ...
     if unit ~= "player" then return end
+    if IsDuplicateCastGUID(castGUID) then return end
     
     for timerID in pairs(ns.CooldownBars.activeTimers) do repeat
       local cfg = ns.CooldownBars.GetTimerConfig(timerID)
@@ -8234,7 +8331,14 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
       -- ===== TIMER BAR MODE =====
       if cfg.tracking.triggerType == "spellcast" then
         if cfg.tracking.triggerSpellID == spellID then
-          ns.CooldownBars.StartTimer(timerID)
+          -- Check resetOnRetrigger: if false and timer already running, skip restart
+          local barIdxRT = ns.CooldownBars.activeTimers[timerID]
+          local barDataRT = barIdxRT and ns.CooldownBars.timerBars[barIdxRT]
+          if barDataRT and barDataRT.isActive and not barDataRT.isUnlimited and cfg.tracking.resetOnRetrigger == false then
+            -- Timer already running and retrigger disabled - let it finish
+          else
+            ns.CooldownBars.StartTimer(timerID)
+          end
         end
       end
       
@@ -8253,6 +8357,49 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
     
     -- Process spellcast stack triggers for all stack bars
     ProcessEventStackTrigger("spellcast", spellID)
+    
+  elseif event == "UNIT_SPELLCAST_SENT" then
+    -- SENT fires once for the player's cast initiation (args: unit, spellName, castGUID, spellID)
+    local unit, spellName, castGUID, spellID = ...
+    if unit ~= "player" then return end
+    
+    for timerID in pairs(ns.CooldownBars.activeTimers) do repeat
+      local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+      if not cfg or not cfg.tracking.enabled then break end
+      
+      -- ===== STACK BAR MODE =====
+      if cfg.tracking.barMode == "stack" then
+        break  -- stack mode handled by ProcessEventStackTrigger below
+      end
+      
+      -- ===== TIMER BAR MODE =====
+      if cfg.tracking.triggerType == "spellcastSent" then
+        if cfg.tracking.triggerSpellID == spellID then
+          local barIdxRT = ns.CooldownBars.activeTimers[timerID]
+          local barDataRT = barIdxRT and ns.CooldownBars.timerBars[barIdxRT]
+          if barDataRT and barDataRT.isActive and not barDataRT.isUnlimited and cfg.tracking.resetOnRetrigger == false then
+            -- Timer already running and retrigger disabled - let it finish
+          else
+            ns.CooldownBars.StartTimer(timerID)
+          end
+        end
+      end
+      
+      -- Check for differentSpell cancel method
+      if cfg.tracking.unlimitedDuration then
+        local cancelMethod = cfg.tracking.cancelMethod
+        if cancelMethod == "differentSpell" then
+          local cancelSpellID = cfg.tracking.cancelSpellID
+          if cancelSpellID and cancelSpellID > 0 and cancelSpellID == spellID then
+            CancelUnlimitedTimer(timerID, "different spell")
+          end
+        end
+      end
+      
+    until true end
+    
+    -- Process spellcastSent stack triggers for all stack bars
+    ProcessEventStackTrigger("spellcastSent", spellID)
     
   elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
     local spellID = ...
@@ -8286,6 +8433,66 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
   elseif event == "UNIT_AURA" then
     local unit, updateInfo = ...
     if unit ~= "player" or not updateInfo then return end
+
+    -- ── STACK CHANGED TRIGGER ─────────────────────────────────────────
+    -- updatedAuraInstanceIDs = stack gained/lost mid-aura
+    -- removedAuraInstanceIDs = last stack consumed (aura fully gone)
+    -- CDM clears auraInstanceID before our handler runs on removal,
+    -- so we cache the last known ID per timerID to match removals.
+    do
+      local hasUpdated = updateInfo.updatedAuraInstanceIDs and #updateInfo.updatedAuraInstanceIDs > 0
+      local hasRemoved = updateInfo.removedAuraInstanceIDs and #updateInfo.removedAuraInstanceIDs > 0
+
+      if hasUpdated or hasRemoved then
+        -- Build lookup sets (only if we have Stack Changed timers)
+        local updatedSet, removedSet
+        for timerID in pairs(ns.CooldownBars.activeTimers) do
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if cfg and cfg.tracking.enabled and cfg.tracking.triggerType == "Stack Changed" then
+            local cooldownID = cfg.tracking.triggerCooldownID
+            if cooldownID and cooldownID > 0 then
+              local cdmFrame = FindCDMFrameByCooldownID(cooldownID)
+              local fired = false
+
+              -- Update cache while aura is still active
+              if cdmFrame and cdmFrame.auraInstanceID then
+                stackChangedAuraCache[timerID] = cdmFrame.auraInstanceID
+              end
+
+              -- Check mid-aura stack change
+              if hasUpdated and cdmFrame and cdmFrame.auraInstanceID then
+                if not updatedSet then
+                  updatedSet = {}
+                  for _, id in ipairs(updateInfo.updatedAuraInstanceIDs) do updatedSet[id] = true end
+                end
+                if updatedSet[cdmFrame.auraInstanceID] then fired = true end
+              end
+
+              -- Check last-stack removal (use cache since CDM already cleared the frame)
+              if not fired and hasRemoved and stackChangedAuraCache[timerID] then
+                if not removedSet then
+                  removedSet = {}
+                  for _, id in ipairs(updateInfo.removedAuraInstanceIDs) do removedSet[id] = true end
+                end
+                if removedSet[stackChangedAuraCache[timerID]] then
+                  fired = true
+                  stackChangedAuraCache[timerID] = nil  -- clear cache, aura is gone
+                end
+              end
+
+              if fired then
+                local barIdx = ns.CooldownBars.activeTimers[timerID]
+                local barData = barIdx and ns.CooldownBars.timerBars[barIdx]
+                if not (barData and barData.isActive and not barData.isUnlimited and cfg.tracking.resetOnRetrigger == false) then
+                  ns.CooldownBars.StartTimer(timerID)
+                  Log("Stack Changed trigger fired: " .. timerID)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
     
     -- Check for auraLost and auraGained cancels using CDM frame state.
     -- The CDM frame's auraInstanceID tells us if the aura is active or not —
@@ -8327,14 +8534,27 @@ timerEventFrame:SetScript("OnEvent", function(self, event, ...)
             UpdateTimerBar(barData)
             Log("Stack bar reset on death: " .. timerID)
           end
-        -- Cancel unlimited timers
+        -- Cancel unlimited (toggle) timers - respects resetOnDeath
         elseif barData.isActive and barData.isUnlimited then
-          barData.isActive = false
-          barData.isUnlimited = false
-          barData.durObj = nil
-          barData.bar:SetScript("OnUpdate", nil)
-          UpdateTimerBar(barData)
-          Log("Timer cancelled on death (unlimited): " .. timerID)
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or cfg.tracking.resetOnDeath ~= false then
+            barData.isActive = false
+            barData.isUnlimited = false
+            barData.durObj = nil
+            barData.bar:SetScript("OnUpdate", nil)
+            UpdateTimerBar(barData)
+            Log("Timer cancelled on death (unlimited): " .. timerID)
+          end
+        -- Cancel regular countdown timers - respects resetOnDeath
+        elseif barData.isActive and not barData.isUnlimited and not barData.isStackMode then
+          local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+          if not cfg or cfg.tracking.resetOnDeath ~= false then
+            barData.isActive = false
+            barData.durObj = nil
+            barData.bar:SetScript("OnUpdate", nil)
+            UpdateTimerBar(barData)
+            Log("Timer cancelled on death (countdown): " .. timerID)
+          end
         end
       end
     end
@@ -8419,10 +8639,18 @@ timerEventFrame:SetScript("OnUpdate", function(self, elapsed)
           -- Detect transitions
           if triggerType == "Aura Gained" and isActive and not wasActive then
             -- Aura just appeared
-            ns.CooldownBars.StartTimer(timerID)
+            local barIdxRT = ns.CooldownBars.activeTimers[timerID]
+            local barDataRT = barIdxRT and ns.CooldownBars.timerBars[barIdxRT]
+            if not (barDataRT and barDataRT.isActive and not barDataRT.isUnlimited and cfg.tracking.resetOnRetrigger == false) then
+              ns.CooldownBars.StartTimer(timerID)
+            end
           elseif triggerType == "Aura Lost" and not isActive and wasActive then
             -- Aura just disappeared
-            ns.CooldownBars.StartTimer(timerID)
+            local barIdxRT = ns.CooldownBars.activeTimers[timerID]
+            local barDataRT = barIdxRT and ns.CooldownBars.timerBars[barIdxRT]
+            if not (barDataRT and barDataRT.isActive and not barDataRT.isUnlimited and cfg.tracking.resetOnRetrigger == false) then
+              ns.CooldownBars.StartTimer(timerID)
+            end
           end
           
           -- AUTO-CANCEL unlimited timers on reverse transition
@@ -8731,6 +8959,9 @@ local hookedContainersForCooldownBars = {}  -- [container] = true
 
 local function OnContainerSizeChangedForCooldownBars(container, width, height)
   if not width or not height or width <= 0 or height <= 0 then return end
+  -- Round to avoid sub-pixel noise triggering recreates
+  width = math.floor(width + 0.5)
+  height = math.floor(height + 0.5)
   
   -- Find which group this container belongs to
   local groupName
@@ -8775,8 +9006,12 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
               local anchorPoint = cfg.display.anchorPoint or "BOTTOM"
               local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
               
+              -- Strip border (12px) and padding to get slot-area size
+              local group = ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
+              local slotInset = 12 + ((group and group.containerPadding or 0) * 2)
+              
               -- Use container height for side anchors, container width for top/bottom
-              local matchDimension = isSideAnchor and height or width
+              local matchDimension = (isSideAnchor and height or width) - slotInset
               local sizeAdjust = cfg.display.matchWidthAdjust or 0
               local barWidth = matchDimension + sizeAdjust
               local barHeight
@@ -8810,9 +9045,17 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
                   barData.slotsContainer:SetSize(barWidth, slotHeight)
                 end
                 
-                -- Recreate slots with new width
+                -- Recreate slots with new width only if width changed
                 if barData.maxCharges and barData.maxCharges > 0 then
-                  CreateChargeSlots(barData, barData.maxCharges, barWidth, slotHeight, slotSpacing, isVertical, cfg.display)
+                  if barData._lastMatchedBarWidth ~= barWidth then
+                    barData._lastMatchedBarWidth = barWidth
+                    CreateChargeSlots(barData, barData.maxCharges, barWidth, slotHeight, slotSpacing, isVertical, cfg.display)
+                    local texturePath = GetTexturePath(cfg.display.texture or "Blizzard")
+                    for _, slot in ipairs(barData.chargeSlots) do
+                      if slot.fullBar then slot.fullBar:SetStatusBarTexture(texturePath) end
+                      if slot.rechargeBar then slot.rechargeBar:SetStatusBarTexture(texturePath) end
+                    end
+                  end
                 end
               end
             end
@@ -8952,6 +9195,52 @@ function ns.CooldownBars.RemoveStackSpender(timerID, index)
   if not cfg or not cfg.tracking.spenders then return false end
   if index > 0 and index <= #cfg.tracking.spenders then
     table.remove(cfg.tracking.spenders, index)
+    return true
+  end
+  return false
+end
+
+-- Add a suppressor to a stack bar config
+-- triggerType "spellcast": sets a timed suppression window when spell is cast
+-- triggerType "auraActive": suppresses spenders while a CDM-tracked aura is present
+-- triggerType "auraMissing": suppresses spenders while a CDM-tracked aura is absent
+function ns.CooldownBars.AddStackSuppressor(timerID, triggerType, spellID, cooldownID, duration)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or cfg.tracking.barMode ~= "stack" then return false end
+  cfg.tracking.suppressors = cfg.tracking.suppressors or {}
+  triggerType = triggerType or "spellcast"
+  
+  if triggerType == "auraActive" or triggerType == "auraMissing" then
+    cooldownID = tonumber(cooldownID)
+    if not cooldownID or cooldownID <= 0 then return false end
+    for _, sup in ipairs(cfg.tracking.suppressors) do
+      if sup.triggerType == triggerType and tonumber(sup.cooldownID) == cooldownID then
+        return true  -- already exists
+      end
+    end
+    table.insert(cfg.tracking.suppressors, { triggerType = triggerType, cooldownID = cooldownID })
+  else
+    spellID = tonumber(spellID)
+    if not spellID or spellID <= 0 then return false end
+    for _, sup in ipairs(cfg.tracking.suppressors) do
+      local tt = sup.triggerType or "spellcast"
+      if (tt == "spellcast" or tt == "spellcastSent") and tonumber(sup.spellID) == spellID then
+        sup.duration = duration or 2
+        return true
+      end
+    end
+    table.insert(cfg.tracking.suppressors, { spellID = spellID, duration = duration or 2 })
+  end
+  OnStackConfigChanged(timerID)
+  return true
+end
+
+function ns.CooldownBars.RemoveStackSuppressor(timerID, index)
+  local cfg = ns.CooldownBars.GetTimerConfig(timerID)
+  if not cfg or not cfg.tracking.suppressors then return false end
+  if index > 0 and index <= #cfg.tracking.suppressors then
+    table.remove(cfg.tracking.suppressors, index)
+    OnStackConfigChanged(timerID)
     return true
   end
   return false

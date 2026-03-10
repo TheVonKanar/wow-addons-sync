@@ -83,8 +83,15 @@ L['category:patch_12_0_0'] = '12.0.0版本'
 L['category:weekly'] = '周常'
 L['category:worldBosses'] = '世界首领'
 
+L['chore:midnight:patch_12_0_0:quests:abundance'] = 'Abundance'
 L['chore:midnight:patch_12_0_0:quests:dungeon'] = '地下城'
+L['chore:midnight:patch_12_0_0:quests:hope'] = 'Hope'
+L['chore:midnight:patch_12_0_0:quests:soiree'] = 'Soiree'
 L['chore:midnight:patch_12_0_0:quests:specialAssignment'] = '特别任务'
+L['chore:midnight:patch_12_0_0:quests:stormarion'] = 'Stormarion'
+L['chore:midnight:patch_12_0_0:quests:unity'] = 'Unity'
+
+L['chore:midnight:leveling:quests:delves'] = 'Delves'
 
 L['chore:warWithin:patch_11_2_0:quests:ecologicalSuccession'] = '[卡雷什] 生态演替'
 L['chore:warWithin:patch_11_2_0:quests:makingDeposit'] = '[卡雷什] 吞噬者的入侵'

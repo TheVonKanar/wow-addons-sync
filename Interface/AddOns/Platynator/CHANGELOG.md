@@ -1,9 +1,8 @@
 # Platynator
 
-## [336](https://github.com/TheMouseNest/Platynator/tree/336) (2026-03-04)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/335...336) [Previous Releases](https://github.com/TheMouseNest/Platynator/releases)
+## [342](https://github.com/TheMouseNest/Platynator/tree/342) (2026-03-08)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/341...342) [Previous Releases](https://github.com/TheMouseNest/Platynator/releases)
 
-- Use UnitShouldDisplaySpellTargetName to prevent odd names showing as cast target  
-- Improve in-combat detection  
-- Cleanup  
-- Add "Brackets" highlight option  
+- Retail: Rework colors based on levels for mobs in dungeons, again  
+    Uses level checks and caches lieutenant levels to try and get a  
+    consistent colour while leveling  

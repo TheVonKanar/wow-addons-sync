@@ -26,6 +26,25 @@ local EXPORT_VERSION = 1  -- Increment when export format changes
 local EXPORT_PREFIX = "ARCCDM"  -- Identifier for validation
 local MSG_PREFIX = "|cff00ccffArcUI|r: "
 
+-- CDM native layout field IDs (matches Blizzard's serialization format)
+local CDM_SAVE_FIELD_LAYOUT_ID_DATA = 4  -- layoutID -> name mapping
+local CDM_ENCODING_DELIMITER = "|"
+
+-- Decode a CDM native layout string and return the table
+-- Uses Blizzard's own C_EncodingUtil (same as CooldownViewerDataStoreSerializationMixin)
+local function DecodeCDMLayoutString(str)
+    if type(str) ~= "string" or str == "" then return nil end
+    local delimIdx = str:find(CDM_ENCODING_DELIMITER, 1, true)
+    if not delimIdx then return nil end
+    local payload = str:sub(delimIdx + 1)
+    local ok, result = pcall(function()
+        local decoded = C_EncodingUtil.DecodeBase64(payload)
+        local inflated = decoded and C_EncodingUtil.DecompressString(decoded, Enum.CompressionMethod.Deflate)
+        return inflated and C_EncodingUtil.DeserializeCBOR(inflated) or nil
+    end)
+    return ok and type(result) == "table" and result or nil
+end
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DEPENDENCIES
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -51,8 +70,70 @@ local function DeepCopy(t)
     return copy
 end
 
+-- Canonical copy of a raw layoutData table (DB or imported).
+-- Single source of truth for all group layout fields — add new fields here only.
+-- This is intentionally a flat copy (not tied to a runtime group object) so it works
+-- in import/export contexts where only raw DB data is available.
+local function CopyLayoutData(src)
+    if not src then return {} end
+    return {
+        -- Position
+        position             = src.position and DeepCopy(src.position) or { x = 0, y = 0 },
+        -- Grid
+        gridRows             = src.gridRows or 2,
+        gridCols             = src.gridCols or 4,
+        iconSize             = src.iconSize or 36,
+        iconWidth            = src.iconWidth or 36,
+        iconHeight           = src.iconHeight or 36,
+        spacing              = src.spacing or 2,
+        spacingX             = src.spacingX,
+        spacingY             = src.spacingY,
+        separateSpacing      = src.separateSpacing,
+        alignment            = src.alignment,
+        horizontalGrowth     = src.horizontalGrowth,
+        verticalGrowth       = src.verticalGrowth,
+        -- Appearance
+        showBorder           = src.showBorder,
+        showBackground       = src.showBackground,
+        autoReflow           = src.autoReflow,
+        dynamicLayout        = src.dynamicLayout,
+        dynamicContainerSize = src.dynamicContainerSize,
+        lockGridSize         = src.lockGridSize,
+        containerPadding     = src.containerPadding,
+        borderColor          = src.borderColor and DeepCopy(src.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
+        bgColor              = src.bgColor and DeepCopy(src.bgColor) or { r = 0, g = 0, b = 0, a = 0.6 },
+        -- Visibility
+        visibility           = src.visibility or "always",
+        visibilityLogic      = src.visibilityLogic,
+        hiddenAlpha          = src.hiddenAlpha,
+        -- Frame strata
+        frameStrata          = src.frameStrata,
+        frameLevel           = src.frameLevel,
+        -- Anchoring
+        anchor               = src.anchor,
+    }
+end
+
 local function PrintMsg(msg)
     print(MSG_PREFIX .. msg)
+end
+
+-- Convert specKey (e.g. "class_7_spec_2") to human-readable display name
+local function SpecKeyToDisplayName(specKey)
+    if not specKey then return "Unknown Spec" end
+    local classID, specIdx = specKey:match("^class_(%d+)_spec_(%d+)$")
+    classID = tonumber(classID)
+    specIdx = tonumber(specIdx)
+    if not classID or not specIdx then return specKey end
+    local className = select(1, GetClassInfo(classID)) or ("Class " .. classID)
+    -- Try to get spec name for this class+specIdx
+    local specName
+    local numSpecs = GetNumSpecializationsForClassID and GetNumSpecializationsForClassID(classID) or 0
+    if numSpecs >= specIdx then
+        specName = select(2, GetSpecializationInfoForClassID(classID, specIdx))
+    end
+    specName = specName or ("Spec " .. specIdx)
+    return className .. " - " .. specName
 end
 
 -- Serialize table to string (simple Lua serialization)
@@ -365,6 +446,40 @@ local function BuildExportData(options)
         end
     end
     
+    -- ─────────────────────────────────────────────────────────────────────────
+    -- CDM Active Layout (single layout export string - same format as Blizzard
+    -- "Copy to Clipboard". Only the current spec's active layout, not all layouts.
+    -- ─────────────────────────────────────────────────────────────────────────
+    if options.includeCDMLayout ~= false then
+        local ok, layoutStr, layoutName = pcall(function()
+            local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+            local mgr = dp and dp:GetLayoutManager()
+            local activeLayoutID = mgr and mgr:GetActiveLayoutID()
+            if not activeLayoutID then return nil, nil end
+            local serializer = CooldownViewerSettings:GetSerializer()
+            local str = serializer and serializer:SerializeLayouts(activeLayoutID) or nil
+            if not str then return nil, nil end
+            -- Decode the single-layout string to extract the name from LAYOUT_NAMES
+            -- Avoids any secret comparison — the name is just a plain string in the decoded table
+            local name = nil
+            local decoded = DecodeCDMLayoutString(str)
+            if decoded then
+                local names = decoded[CDM_SAVE_FIELD_LAYOUT_ID_DATA]
+                if names then
+                    for _, n in pairs(names) do
+                        name = n  -- only one entry in a single-layout export
+                        break
+                    end
+                end
+            end
+            return str, name
+        end)
+        if ok and layoutStr and layoutStr ~= "" then
+            exportData.cdmNativeLayout = layoutStr
+            exportData.cdmNativeLayoutName = layoutName
+        end
+    end
+
     return exportData
 end
 
@@ -493,7 +608,31 @@ function IE.GetExportStats()
             stats.arcAurasSpells = stats.arcAurasSpells + 1
         end
     end
-    
+
+    -- CDM native layout - fetch actual active layout name same as BuildExportData
+    local cdmAvail = CooldownViewerSettings and CooldownViewerSettings.GetDataProvider ~= nil
+    if cdmAvail then
+        local ok, name = pcall(function()
+            local dp = CooldownViewerSettings:GetDataProvider()
+            local mgr = dp and dp:GetLayoutManager()
+            local activeLayoutID = mgr and mgr:GetActiveLayoutID()
+            if not activeLayoutID then return nil end
+            local serializer = CooldownViewerSettings:GetSerializer()
+            local str = serializer and serializer:SerializeLayouts(activeLayoutID) or nil
+            if not str then return nil end
+            local decoded = DecodeCDMLayoutString(str)
+            local names = decoded and decoded[CDM_SAVE_FIELD_LAYOUT_ID_DATA]
+            if names then
+                for _, n in pairs(names) do return n end
+            end
+            return nil
+        end)
+        stats.hasCDMNativeLayout = true
+        stats.cdmNativeLayoutName = (ok and name) or nil
+    else
+        stats.hasCDMNativeLayout = false
+    end
+
     return stats
 end
 
@@ -672,7 +811,11 @@ function IE.GetImportStats(data)
             stats.arcAurasSpells = stats.arcAurasSpells + 1
         end
     end
-    
+
+    -- CDM native layout
+    stats.hasCDMNativeLayout = data.cdmNativeLayout ~= nil and data.cdmNativeLayout ~= ""
+    stats.cdmNativeLayoutName = data.cdmNativeLayoutName
+
     return stats
 end
 
@@ -703,6 +846,19 @@ function IE.Import(importString, options)
         end
     end
     
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- SPEC GUARD: Block imports from a different spec to prevent profile corruption
+    -- ═══════════════════════════════════════════════════════════════════════════
+    if data.sourceSpec and data.sourceSpec ~= currentSpec then
+        local sourceDisplay = SpecKeyToDisplayName(data.sourceSpec)
+        local currentDisplay = SpecKeyToDisplayName(currentSpec)
+        return false, string.format(
+            "|cffff4444Wrong Spec!|r This export is for |cffffd100%s|r but you are currently playing |cffffd100%s|r. " ..
+            "Switch to the correct spec before importing.",
+            sourceDisplay, currentDisplay
+        )
+    end
+
     local importedCounts = {
         groups = 0,
         savedPositions = 0,
@@ -811,8 +967,8 @@ function IE.Import(importString, options)
             if not profileData.freeIcons then profileData.freeIcons = {} end
             if not profileData.iconSettings then profileData.iconSettings = {} end
             
-            -- If groupLayouts is empty, populate from DEFAULT_GROUPS
-            if not profileData.groupLayouts or not next(profileData.groupLayouts) then
+            -- If groupLayouts is empty AND not linked to a Group Layout, populate from DEFAULT_GROUPS
+            if (not profileData.groupLayouts or not next(profileData.groupLayouts)) and not profileData.groupLayoutName then
                 print(MSG_PREFIX .. "|cffff8800[Repair]|r Profile '" .. profileName .. "' has no groups - adding defaults")
                 profileData.groupLayouts = {}
                 if DEFAULT_GROUPS then
@@ -1055,6 +1211,46 @@ function IE.Import(importString, options)
     end
     
     -- ═══════════════════════════════════════════════════════════════════════════
+    -- CDM Native Layout
+    -- ═══════════════════════════════════════════════════════════════════════════
+    local importedCDMLayoutID = nil
+    if data.cdmNativeLayout and data.cdmNativeLayout ~= "" then
+        if options.includeCDMLayout ~= false and options.cdmAction ~= "ignore" then
+            local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+            local mgr = dp and dp:GetLayoutManager()
+            if mgr then
+                local ok, err = pcall(function()
+                    local newLayoutIDs = mgr:CreateLayoutsFromSerializedData(data.cdmNativeLayout)
+                    -- Restore layout name (Blizzard's import strips it)
+                    local sourceName = data.cdmNativeLayoutName
+                    if sourceName and newLayoutIDs then
+                        for _, layoutID in ipairs(newLayoutIDs) do
+                            local layout = mgr:GetLayout(layoutID)
+                            if layout then
+                                local nameOk = pcall(function() mgr:RenameLayout(layoutID, sourceName) end)
+                                if not nameOk then
+                                    mgr:RenameLayout(layoutID, sourceName .. " (imported)")
+                                end
+                            end
+                        end
+                    end
+                    -- Live switch so ArcUI imports into the correct CDM layout.
+                    -- SV persistence is handled by the deferred write after LoadProfile.
+                    if newLayoutIDs and newLayoutIDs[1] then
+                        importedCDMLayoutID = newLayoutIDs[1]
+                        dp:SetActiveLayoutByID(newLayoutIDs[1])
+                    end
+                end)
+                if ok then
+                    importedCounts.cdmNativeLayout = true
+                else
+                    PrintMsg("|cffff8800CDM layout could not be applied: " .. tostring(err) .. "|r")
+                end
+            end
+        end
+    end
+
+    -- ═══════════════════════════════════════════════════════════════════════════
     -- POST-IMPORT: Clear cache and load the profile
     -- ═══════════════════════════════════════════════════════════════════════════
     
@@ -1077,10 +1273,42 @@ function IE.Import(importString, options)
     
     -- Load the imported profile
     if ns.CDMGroups and ns.CDMGroups.LoadProfile then
+        local capturedCDMLayoutID = importedCDMLayoutID
         C_Timer.After(0.2, function()
             PrintMsg("Loading profile '" .. profileToLoad .. "'...")
             ns.CDMGroups.LoadProfile(profileToLoad)
+            -- Deferred SV write: something in the post-import chain overwrites the CDM active layout
+            -- in SV. Writing 0.1s after LoadProfile ensures our new layout ID persists to reload.
+            if capturedCDMLayoutID then
+                C_Timer.After(0.1, function()
+                    local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+                    local mgr = dp and dp:GetLayoutManager()
+                    if mgr then
+                        local newLayout = mgr:GetLayout(capturedCDMLayoutID)
+                        if newLayout then
+                            mgr:SetPreviouslyActiveLayout(newLayout)
+                            mgr:SetHasPendingChanges(true, false)
+                            mgr:GetSerializer():WriteData()
+                            mgr:SetHasPendingChanges(false)
+                        end
+                    end
+                end)
+            end
         end)
+    end
+    
+    -- Push imported profiles to shared so all synced alts receive them
+    local SP = ns.CDMSharedProfiles
+    if SP and SP.IsEnabled and SP.Push then
+        local _, _, myClassID = UnitClass("player")
+        if ns.db.char.cdmGroups and ns.db.char.cdmGroups.specData then
+            for specKey in pairs(ns.db.char.cdmGroups.specData) do
+                local classID = tonumber(specKey:match("^class_(%d+)_spec_"))
+                if classID == myClassID and SP.IsEnabled(specKey) then
+                    SP.Push(specKey)
+                end
+            end
+        end
     end
     
     -- Notify FrameController that layout changed
@@ -1149,7 +1377,9 @@ function IE.GetAvailableLayoutsForImport()
             classID = tonumber(classID)
             specIndex = tonumber(specIndex)
             
-            if classID and specIndex and data.groups and next(data.groups) then
+            local hasLegacyGroups = data.groups and next(data.groups)
+            local hasProfiles = data.layoutProfiles and next(data.layoutProfiles)
+            if classID and specIndex and (hasLegacyGroups or hasProfiles) then
                 -- Get spec name using API
                 local specName = "Spec " .. specIndex
                 if GetSpecializationInfoForClassID then
@@ -1169,73 +1399,55 @@ function IE.GetAvailableLayoutsForImport()
                 local classColor = RAID_CLASS_COLORS and classFile and RAID_CLASS_COLORS[classFile]
                 local colorHex = classColor and classColor:GenerateHexColor() or "ffffffff"
                 
-                -- Create unique key using || delimiter
-                local layoutKey = (charKey or "current") .. "||" .. specKey .. "||Default"
-                
-                -- Add the Default/base layout (skip if it's our current spec+profile from current char)
-                local isCurrentDefault = (isCurrentChar and specKey == currentSpec and currentProfile == "Default")
-                if not isCurrentDefault then
-                    -- Check if we already added this
-                    local alreadyAdded = false
-                    for _, existing in ipairs(layouts) do
-                        if existing.key == layoutKey then
-                            alreadyAdded = true
-                            break
+                -- Add the Default/base layout (legacy only — requires specData.groups)
+                if hasLegacyGroups then
+                    local layoutKey = (charKey or "current") .. "||" .. specKey .. "||Default"
+                    local isCurrentDefault = (isCurrentChar and specKey == currentSpec and currentProfile == "Default")
+                    if not isCurrentDefault then
+                        local alreadyAdded = false
+                        for _, existing in ipairs(layouts) do
+                            if existing.key == layoutKey then alreadyAdded = true; break end
                         end
-                    end
-                    
-                    if not alreadyAdded then
-                        table.insert(layouts, {
-                            key = layoutKey,
-                            specKey = specKey,
-                            profileName = "Default",
-                            charKey = charKey,
-                            isCurrentChar = isCurrentChar,
-                            displayName = "|c" .. colorHex .. charName .. "|r - " .. specName,
-                            charName = charName,
-                            specName = specName,
-                            classID = classID,
-                            colorHex = colorHex,
-                            isDefault = true,
-                            isArcProfile = false,
-                        })
+                        if not alreadyAdded then
+                            table.insert(layouts, {
+                                key = layoutKey,
+                                specKey = specKey,
+                                profileName = "Default",
+                                charKey = charKey,
+                                isCurrentChar = isCurrentChar,
+                                displayName = "|c" .. colorHex .. charName .. "|r - " .. specName,
+                                charName = charName,
+                                specName = specName,
+                                classID = classID,
+                                colorHex = colorHex,
+                                isDefault = true,
+                                isArcProfile = false,
+                            })
+                        end
                     end
                 end
                 
-                -- Add Arc Manager Profiles (all profiles including Default)
+                -- Add Arc Manager Profiles (new format — groupLayouts inside each profile)
                 if data.layoutProfiles then
                     for profileName, profileData in pairs(data.layoutProfiles) do
-                        -- Skip if it's our current spec+profile (can't load what's already loaded)
                         local isCurrentProfile = (isCurrentChar and specKey == currentSpec and profileName == currentProfile)
                         if not isCurrentProfile then
-                            -- Include profile if it has group layouts to load
-                            -- Fall back to specData.groups for legacy profiles with empty groupLayouts
-                            local hasGroupLayouts = profileData.groupLayouts and next(profileData.groupLayouts)
-                            local hasSpecGroups = data.groups and next(data.groups)
-                            
-                            if hasGroupLayouts or hasSpecGroups then
+                            local _hglLDB = profileData.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                            local _hglSrc = (_hglLDB and _hglLDB[profileData.groupLayoutName]) or profileData.groupLayouts
+                            local hasGroupLayouts = _hglSrc and next(_hglSrc)
+                            -- Legacy fallback: accept profiles whose spec has old specData.groups
+                            if hasGroupLayouts or hasLegacyGroups then
                                 local profileKey = (charKey or "current") .. "||" .. specKey .. "||" .. profileName
-                                
-                                -- Check if we already added this
                                 local alreadyAdded = false
                                 for _, existing in ipairs(layouts) do
-                                    if existing.key == profileKey then
-                                        alreadyAdded = true
-                                        break
-                                    end
+                                    if existing.key == profileKey then alreadyAdded = true; break end
                                 end
-                                
                                 if not alreadyAdded then
-                                    -- Count groups from profile or fall back to specData.groups
                                     local groupCount = 0
-                                    local groupSource = hasGroupLayouts and profileData.groupLayouts or data.groups
+                                    local groupSource = hasGroupLayouts and _hglSrc or data.groups
                                     if groupSource then
-                                        for _ in pairs(groupSource) do
-                                            groupCount = groupCount + 1
-                                        end
+                                        for _ in pairs(groupSource) do groupCount = groupCount + 1 end
                                     end
-                                    
-                                    -- Format: "ProfileName (3 groups) (CharName - SpecName) [Profile]"
                                     local groupInfo = " |cff888888(" .. groupCount .. " groups)|r"
                                     table.insert(layouts, {
                                         key = profileKey,
@@ -1353,39 +1565,9 @@ function IE.ImportLayoutFromAccount(importKey)
     
     -- Check if profile has groupLayouts
     if profileData.groupLayouts and next(profileData.groupLayouts) then
-        -- Build groups from groupLayouts (new format)
         sourceGroups = {}
         for groupName, layoutData in pairs(profileData.groupLayouts) do
-            sourceGroups[groupName] = {
-                enabled = true,
-                position = DeepCopy(layoutData.position or { x = 0, y = 0 }),
-                showBorder = layoutData.showBorder,
-                showBackground = layoutData.showBackground,
-                autoReflow = layoutData.autoReflow,
-                dynamicLayout = layoutData.dynamicLayout,
-                dynamicContainerSize = layoutData.dynamicContainerSize,
-                lockGridSize = layoutData.lockGridSize,
-                containerPadding = layoutData.containerPadding,
-                visibility = layoutData.visibility or "always",
-                borderColor = DeepCopy(layoutData.borderColor or { r = 0.5, g = 0.5, b = 0.5, a = 1 }),
-                bgColor = DeepCopy(layoutData.bgColor or { r = 0, g = 0, b = 0, a = 0.6 }),
-                layout = {
-                    gridRows = layoutData.gridRows or 2,
-                    gridCols = layoutData.gridCols or 4,
-                    iconSize = layoutData.iconSize or 36,
-                    iconWidth = layoutData.iconWidth or 36,
-                    iconHeight = layoutData.iconHeight or 36,
-                    spacing = layoutData.spacing or 2,
-                    spacingX = layoutData.spacingX,
-                    spacingY = layoutData.spacingY,
-                    separateSpacing = layoutData.separateSpacing,
-                    alignment = layoutData.alignment,
-                    horizontalGrowth = layoutData.horizontalGrowth,
-                    verticalGrowth = layoutData.verticalGrowth,
-                },
-                grid = {},
-                members = {},
-            }
+            sourceGroups[groupName] = CopyLayoutData(layoutData)
         end
     elseif sourceSpecData.groups and next(sourceSpecData.groups) then
         -- LEGACY FALLBACK: Use specData.groups for old profiles that didn't save groupLayouts
@@ -1490,41 +1672,36 @@ function IE.ImportLayoutFromAccount(importKey)
             ns.CDMGroups.specSavedPositions[currentSpec] = profile.savedPositions
         end
         
-        -- CRITICAL: Update profile.groupLayouts (single source of truth)
-        profile.groupLayouts = {}
+        -- CRITICAL: Update groupLayouts - global if linked, else own
+        local _importTarget
+        if profile.groupLayoutName then
+            local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+            if _ldb then
+                if not _ldb[profile.groupLayoutName] then _ldb[profile.groupLayoutName] = {} end
+                _importTarget = _ldb[profile.groupLayoutName]
+                for k in pairs(_importTarget) do _importTarget[k] = nil end
+            end
+        end
+        if not _importTarget then
+            profile.groupLayouts = {}
+            _importTarget = profile.groupLayouts
+        end
         for groupName, groupData in pairs(sourceGroups) do
-            profile.groupLayouts[groupName] = {
-                gridRows = groupData.layout and groupData.layout.gridRows or 2,
-                gridCols = groupData.layout and groupData.layout.gridCols or 4,
-                position = DeepCopy(groupData.position or { x = 0, y = 0 }),
-                iconSize = groupData.layout and groupData.layout.iconSize or 36,
-                iconWidth = groupData.layout and groupData.layout.iconWidth or 36,
-                iconHeight = groupData.layout and groupData.layout.iconHeight or 36,
-                spacing = groupData.layout and groupData.layout.spacing or 2,
-                spacingX = groupData.layout and groupData.layout.spacingX,
-                spacingY = groupData.layout and groupData.layout.spacingY,
-                separateSpacing = groupData.layout and groupData.layout.separateSpacing,
-                alignment = groupData.layout and groupData.layout.alignment,
-                horizontalGrowth = groupData.layout and groupData.layout.horizontalGrowth,
-                verticalGrowth = groupData.layout and groupData.layout.verticalGrowth,
-                showBorder = groupData.showBorder,
-                showBackground = groupData.showBackground,
-                autoReflow = groupData.autoReflow,
-                dynamicLayout = groupData.dynamicLayout,
-                dynamicContainerSize = groupData.dynamicContainerSize,
-                lockGridSize = groupData.lockGridSize,
-                containerPadding = groupData.containerPadding,
-                visibility = groupData.visibility or "always",
-                borderColor = DeepCopy(groupData.borderColor or { r = 0.5, g = 0.5, b = 0.5, a = 1 }),
-                bgColor = DeepCopy(groupData.bgColor or { r = 0, g = 0, b = 0, a = 0.6 }),
-            }
+            _importTarget[groupName] = CopyLayoutData(groupData)
         end
     end
     -- Also clear runtime tables
     currentSpecData.freeIcons = {}
     
-    -- Step 4: Recreate groups from profile.groupLayouts
-    for groupName, _ in pairs(profile and profile.groupLayouts or {}) do
+    -- Step 4: Recreate groups from active layout source
+    local _step4Profile = profile
+    local _step4Src
+    if _step4Profile and _step4Profile.groupLayoutName then
+        local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+        _step4Src = _ldb and _ldb[_step4Profile.groupLayoutName]
+    end
+    _step4Src = _step4Src or (_step4Profile and _step4Profile.groupLayouts) or {}
+    for groupName, _ in pairs(_step4Src) do
         if ns.CDMGroups.CreateGroup then
             ns.CDMGroups.CreateGroup(groupName)
         end
@@ -1749,9 +1926,6 @@ function IE.GetAvailableProfiles()
     local currentProfile = (ns.CDMGroups and ns.CDMGroups.GetActiveProfileName) and ns.CDMGroups.GetActiveProfileName() or "Default"
     local currentCharKey = ns.db and ns.db.keys and ns.db.keys.char  -- e.g., "Arcgem - Anasterian"
     
-    -- Track which shared specs we've already collected (deduplicate)
-    local sharedSpecCollected = {}
-    
     -- Helper to add profiles from a specData table
     local function AddProfilesFromSpecData(specData, charKey, isCurrentChar)
         if not specData then return end
@@ -1762,19 +1936,11 @@ function IE.GetAvailableProfiles()
             classID = tonumber(classID)
             specIndex = tonumber(specIndex)
             
-            -- When shared sync exists for this spec (global ref), only include ONE
-            -- character's profiles. All synced characters have identical data.
-            local skipShared = false
-            local sharedRef = ns.db and ns.db.global and ns.db.global.sharedProfiles and ns.db.global.sharedProfiles[specKey]
-            if sharedRef then
-                if sharedSpecCollected[specKey] then
-                    skipShared = true
-                else
-                    sharedSpecCollected[specKey] = charKey
-                end
-            end
-            
-            if not skipShared and classID and specIndex and data.layoutProfiles then
+            -- NOTE: Do NOT deduplicate by shared spec here — users must be able to
+            -- see all characters' profiles in the load dropdown regardless of
+            -- whether shared sync is enabled. The alreadyAdded key check below
+            -- prevents true duplicates (same charKey+specKey+profileName).
+            if classID and specIndex and data.layoutProfiles then
                 -- Get spec name using API
                 local specName = "Spec " .. specIndex
                 if GetSpecializationInfoForClassID then
@@ -1799,8 +1965,10 @@ function IE.GetAvailableProfiles()
                     -- Skip if it's our current spec+profile on current character (can't load what's already loaded)
                     local isCurrentProfile = (isCurrentChar and specKey == currentSpec and profileName == currentProfile)
                     if not isCurrentProfile then
-                        -- Check for groupLayouts in profile
-                        local hasGroupLayouts = profileData.groupLayouts and next(profileData.groupLayouts)
+                        -- Check for groupLayouts in profile (or global if linked)
+                        local _hgpLDB = profileData.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                        local _hgpSrc = (_hgpLDB and _hgpLDB[profileData.groupLayoutName]) or profileData.groupLayouts
+                        local hasGroupLayouts = _hgpSrc and next(_hgpSrc)
                         
                         -- LEGACY FALLBACK: Also check specData.groups for old profiles that didn't save groupLayouts
                         -- This allows us to still show these profiles in the dropdown
@@ -1822,7 +1990,7 @@ function IE.GetAvailableProfiles()
                             if not alreadyAdded then
                                 -- Count groups - prefer profile.groupLayouts, fall back to specData.groups
                                 local groupCount = 0
-                                local groupSource = hasGroupLayouts and profileData.groupLayouts or data.groups
+                                local groupSource = hasGroupLayouts and _hgpSrc or data.groups
                                 if groupSource then
                                     for _ in pairs(groupSource) do
                                         groupCount = groupCount + 1
@@ -2106,34 +2274,22 @@ function IE.LoadGroupTemplate(name)
                 ns.CDMGroups.specSavedPositions[specKey] = profile.savedPositions
             end
             
-            -- CRITICAL: Update profile.groupLayouts (single source of truth)
-            profile.groupLayouts = {}
+            -- CRITICAL: Update groupLayouts - global if linked, else own
+            local _import2Target
+            if profile.groupLayoutName then
+                local _ldb2 = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                if _ldb2 then
+                    if not _ldb2[profile.groupLayoutName] then _ldb2[profile.groupLayoutName] = {} end
+                    _import2Target = _ldb2[profile.groupLayoutName]
+                    for k in pairs(_import2Target) do _import2Target[k] = nil end
+                end
+            end
+            if not _import2Target then
+                profile.groupLayouts = {}
+                _import2Target = profile.groupLayouts
+            end
             for groupName, layoutData in pairs(template.groups) do
-                profile.groupLayouts[groupName] = {
-                    gridRows = layoutData.gridRows or 2,
-                    gridCols = layoutData.gridCols or 4,
-                    position = layoutData.position and DeepCopy(layoutData.position) or { x = 0, y = 0 },
-                    iconSize = layoutData.iconSize or 36,
-                    iconWidth = layoutData.iconWidth or 36,
-                    iconHeight = layoutData.iconHeight or 36,
-                    spacing = layoutData.spacing or 2,
-                    spacingX = layoutData.spacingX,
-                    spacingY = layoutData.spacingY,
-                    separateSpacing = layoutData.separateSpacing,
-                    alignment = layoutData.alignment,
-                    horizontalGrowth = layoutData.horizontalGrowth,
-                    verticalGrowth = layoutData.verticalGrowth,
-                    showBorder = layoutData.showBorder,
-                    showBackground = layoutData.showBackground,
-                    autoReflow = layoutData.autoReflow,
-                    dynamicLayout = layoutData.dynamicLayout,
-                    dynamicContainerSize = layoutData.dynamicContainerSize,
-                    lockGridSize = layoutData.lockGridSize,
-                    containerPadding = layoutData.containerPadding,
-                    visibility = layoutData.visibility or "always",
-                    borderColor = layoutData.borderColor and DeepCopy(layoutData.borderColor) or { r = 0.5, g = 0.5, b = 0.5, a = 1 },
-                    bgColor = layoutData.bgColor and DeepCopy(layoutData.bgColor) or { r = 0, g = 0, b = 0, a = 0.6 },
-                }
+                _import2Target[groupName] = CopyLayoutData(layoutData)
             end
         end
         -- Clear runtime freeIcons table
@@ -2554,9 +2710,14 @@ function IE.SaveSpecAsTemplate(layoutKey, templateName)
         -- Use the spec's base groups
         sourceGroups = sourceSpecData.groups
     else
-        -- Use a specific profile's groupLayouts
+        -- Use a specific profile's groupLayouts (or global if linked)
         if sourceSpecData.layoutProfiles and sourceSpecData.layoutProfiles[profileName] then
-            sourceGroups = sourceSpecData.layoutProfiles[profileName].groupLayouts
+            local _sp = sourceSpecData.layoutProfiles[profileName]
+            if _sp.groupLayoutName then
+                local _ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                sourceGroups = _ldb and _ldb[_sp.groupLayoutName]
+            end
+            if not sourceGroups then sourceGroups = _sp.groupLayouts end
         end
     end
     
@@ -2704,6 +2865,10 @@ local function GetOptionsTable()
                 end,
                 set = function(_, val)
                     if ns.CDMGroups and ns.CDMGroups.LoadProfile then
+                        -- Flush any pending auto-save so no changes are lost on switch
+                        if ns.CDMGroups.SaveGroupLayoutsToActiveProfile then
+                            ns.CDMGroups.SaveGroupLayoutsToActiveProfile()
+                        end
                         ns.CDMGroups.LoadProfile(val)
                     end
                 end,
@@ -2950,6 +3115,28 @@ local function GetOptionsTable()
             },
             
             -- ═══════════════════════════════════════════════════════════════════
+            -- GROUP LAYOUT LINK STATUS (inline under profile row)
+            -- ═══════════════════════════════════════════════════════════════════
+            arcProfileGroupLayoutLinked = {
+                type = "description",
+                name = function()
+                    local linked = ns.CDMGroups and ns.CDMGroups.GetActiveProfileGroupLayoutName and ns.CDMGroups.GetActiveProfileGroupLayoutName()
+                    if linked then
+                        return "|cff00ccffGroup Layout: " .. linked .. "|r"
+                    end
+                    return ""
+                end,
+                order = 15.95,
+                width = "full",
+                fontSize = "small",
+                hidden = function()
+                    if collapsedSections.arcManagerProfiles then return true end
+                    local linked = ns.CDMGroups and ns.CDMGroups.GetActiveProfileGroupLayoutName and ns.CDMGroups.GetActiveProfileGroupLayoutName()
+                    return not linked
+                end,
+            },
+
+            -- ═══════════════════════════════════════════════════════════════════
             -- EXTERNAL EXPORT/IMPORT (Collapsible)
             -- ═══════════════════════════════════════════════════════════════════
             externalExportToggle = {
@@ -2989,7 +3176,6 @@ local function GetOptionsTable()
                     local stats = IE.GetExportStats()
                     local specName = "Unknown"
                     if ns.CDMGroups and ns.CDMGroups.currentSpec then
-                        -- Try to get readable spec name
                         local specIndex = GetSpecialization()
                         if specIndex and GetSpecializationInfo then
                             local _, name = GetSpecializationInfo(specIndex)
@@ -2998,9 +3184,11 @@ local function GetOptionsTable()
                             specName = ns.CDMGroups.currentSpec
                         end
                     end
-                    
+                    local activeProfile = ns.CDMGroups and ns.CDMGroups.GetActiveProfileName and ns.CDMGroups.GetActiveProfileName() or "Default"
+
                     local lines = {
-                        "|cff888888Current Spec:|r |cffffffff" .. specName .. "|r",
+                        "|cff888888Spec:|r           |cffffffff" .. specName .. "|r",
+                        "|cff888888Active Profile:|r |cffffffff" .. activeProfile .. "|r",
                         "",
                         "|cff00ccffGroups:|r          |cffffffff" .. stats.groups .. "|r",
                         "|cff00ccffIcon Positions:|r  |cffffffff" .. stats.savedPositions .. "|r",
@@ -3022,6 +3210,14 @@ local function GetOptionsTable()
                         if (stats.arcAurasSpells or 0) > 0 then
                             table.insert(lines, "  Tracked Spells: |cffffffff" .. stats.arcAurasSpells .. "|r")
                         end
+                    end
+                    -- CDM native layout
+                    table.insert(lines, "")
+                    if stats.hasCDMNativeLayout then
+                        local name = stats.cdmNativeLayoutName or "Unknown"
+                        table.insert(lines, "|cff888888CDM Layout:|r           |cff00ff00" .. name .. "|r")
+                    else
+                        table.insert(lines, "|cff888888CDM Layout:|r           |cff666666Not included|r")
                     end
                     return table.concat(lines, "\n")
                 end,
@@ -3133,28 +3329,48 @@ local function GetOptionsTable()
                     if exportStr then
                         uiState.exportString = exportStr
                         PrintMsg("|cff00ff00Export generated!|r Copy the string below.")
+                        -- Apply WA-style hooks: re-assert text on any edit, highlight on click
+                        C_Timer.After(0.05, function()
+                            local acd = LibStub and LibStub("AceConfigDialog-3.0", true)
+                            local dlg = acd and acd.OpenFrames and acd.OpenFrames["ArcUI"]
+                            if not dlg then return end
+                            local snap = exportStr
+                            local function FindEB(frame, depth)
+                                if (depth or 0) > 12 then return nil end
+                                if frame.GetObjectType and frame:GetObjectType() == "EditBox" and frame:IsVisible() then
+                                    local t = frame:GetText()
+                                    if t and #t > 20 and snap:sub(1,20) == t:sub(1,20) then return frame end
+                                end
+                                if frame.GetChildren then
+                                    for _, child in ipairs({frame:GetChildren()}) do
+                                        local found = FindEB(child, (depth or 0) + 1)
+                                        if found then return found end
+                                    end
+                                end
+                            end
+                            local eb = FindEB(dlg.frame or dlg)
+                            if eb then
+                                -- WA pattern: re-assert string on any edit attempt, re-highlight on click
+                                eb:SetScript("OnTextChanged", function()
+                                    eb:SetText(snap)
+                                    eb:HighlightText()
+                                end)
+                                eb:SetScript("OnMouseUp", function()
+                                    eb:HighlightText()
+                                end)
+                                eb:HighlightText()
+                                eb:SetFocus()
+                            end
+                        end)
                     else
                         uiState.exportString = "ERROR: " .. (err or "Unknown error")
                         PrintMsg("|cffff0000Export failed:|r " .. (err or "Unknown error"))
                     end
                 end,
             },
-            exportCopyBtn = {
-                type = "execute",
-                name = "|TInterface\\BUTTONS\\UI-GuildButton-MOTD-Up:16|t Copy to Clipboard",
-                desc = "Select the export string for easy copying",
-                order = 51,
-                width = 1.0,
-                hidden = function() return collapsedSections.externalExport end,
-                disabled = function() return uiState.exportString == "" end,
-                func = function()
-                    -- This will focus the editbox, user can then Ctrl+C
-                    PrintMsg("Click in the export box below and press |cffffd100Ctrl+A|r then |cffffd100Ctrl+C|r to copy.")
-                end,
-            },
             exportString = {
                 type = "input",
-                name = "Export String",
+                name = "Export String  (Ctrl+C to copy)",
                 desc = "Copy this string to share your settings",
                 order = 52,
                 multiline = 6,
@@ -3209,6 +3425,21 @@ local function GetOptionsTable()
                         return "|cff888888Paste an export string above to see preview|r"
                     end
                     local p = uiState.importPreview
+                    -- Spec mismatch check
+                    local currentSpec = ns.CDMGroups and ns.CDMGroups.currentSpec
+                    if not currentSpec then
+                        local specIdx = GetSpecialization() or 1
+                        local _, _, classID = UnitClass("player")
+                        currentSpec = "class_" .. (classID or 0) .. "_spec_" .. specIdx
+                    end
+                    if p.sourceSpec and p.sourceSpec ~= currentSpec then
+                        local sourceDisplay = SpecKeyToDisplayName(p.sourceSpec)
+                        local currentDisplay = SpecKeyToDisplayName(currentSpec)
+                        return "|cffff4444Wrong Spec!|r\n\n" ..
+                            "This export is for: |cffffd100" .. sourceDisplay .. "|r\n" ..
+                            "You are playing:     |cffffd100" .. currentDisplay .. "|r\n\n" ..
+                            "|cff888888Switch to the correct spec before importing.|r"
+                    end
                     local timeStr = p.timestamp and date("%Y-%m-%d %H:%M", p.timestamp) or "Unknown"
                     local lines = {
                         "|cff00ff00Valid export detected!|r",
@@ -3236,6 +3467,14 @@ local function GetOptionsTable()
                         if (p.arcAurasSpells or 0) > 0 then
                             table.insert(lines, "  Tracked Spells: |cffffffff" .. p.arcAurasSpells .. "|r")
                         end
+                    end
+                    -- CDM native layout
+                    table.insert(lines, "")
+                    if p.hasCDMNativeLayout then
+                        local name = p.cdmNativeLayoutName or "Unknown"
+                        table.insert(lines, "|cff00ccffCDM Layout:|r      |cff00ff00" .. name .. "|r")
+                    else
+                        table.insert(lines, "|cff00ccffCDM Layout:|r      |cff666666Not included|r")
                     end
                     return table.concat(lines, "\n")
                 end,
@@ -3329,38 +3568,91 @@ local function GetOptionsTable()
                 order = 72,
                 width = 1.0,
                 hidden = function() return collapsedSections.externalExport end,
-                disabled = function() return uiState.importPreview == nil end,
+                disabled = function()
+                    if uiState.importPreview == nil then return true end
+                    local p = uiState.importPreview
+                    local currentSpec = ns.CDMGroups and ns.CDMGroups.currentSpec
+                    if not currentSpec then
+                        local specIdx = GetSpecialization() or 1
+                        local _, _, classID = UnitClass("player")
+                        currentSpec = "class_" .. (classID or 0) .. "_spec_" .. specIdx
+                    end
+                    if p.sourceSpec and p.sourceSpec ~= currentSpec then return true end
+                    return false
+                end,
                 confirm = function()
                     return "This will REPLACE your current CDM settings with the imported ones.\n\nAre you sure?"
                 end,
                 func = function()
-                    local success, result = IE.Import(uiState.importString, {
-                        mergeMode = "replace",  -- Always replace
-                        importGroupLayouts = uiState.importGroupLayouts,
-                        importPositions = uiState.importPositions,
-                        importIconSettings = uiState.importIconSettings,
-                        importGlobalSettings = uiState.importGlobalSettings,
-                        importGroupSettings = uiState.importGroupSettings,
-                        importProfiles = uiState.importProfiles,
-                    })
-                    
-                    if success then
-                        PrintMsg("|cff00ff00Import successful!|r")
-                        if type(result) == "table" then
-                            PrintMsg(string.format("Imported: %d profiles, %d groups, %d positions, %d icon settings",
-                                result.layoutProfiles or 0, result.groups or 0, result.savedPositions or 0, result.iconSettings or 0))
-                            if (result.arcAuras or 0) > 0 then
-                                PrintMsg(string.format("Arc Auras: %d tracked items/spells", result.arcAuras))
+                    -- Pre-check: does this import include a CDM layout and are we at the cap?
+                    local preview = uiState.importPreview
+                    local hasCDMLayout = preview and preview.hasCDMNativeLayout
+                    local cdmMaxed = false
+                    if hasCDMLayout then
+                        local dp = CooldownViewerSettings and CooldownViewerSettings:GetDataProvider()
+                        local mgr = dp and dp:GetLayoutManager()
+                        cdmMaxed = mgr and mgr:AreLayoutsFullyMaxed()
+                    end
+
+                    local function DoImport(cdmAction)
+                        local success, result = IE.Import(uiState.importString, {
+                            mergeMode = "replace",
+                            importGroupLayouts = uiState.importGroupLayouts,
+                            importPositions = uiState.importPositions,
+                            importIconSettings = uiState.importIconSettings,
+                            importGlobalSettings = uiState.importGlobalSettings,
+                            importGroupSettings = uiState.importGroupSettings,
+                            importProfiles = uiState.importProfiles,
+                            cdmAction = cdmAction, -- "replace", "ignore", or nil (normal add)
+                        })
+                        if success then
+                            PrintMsg("|cff00ff00Import successful!|r")
+                            if type(result) == "table" then
+                                PrintMsg(string.format("Imported: %d profiles, %d groups, %d positions, %d icon settings",
+                                    result.layoutProfiles or 0, result.groups or 0, result.savedPositions or 0, result.iconSettings or 0))
+                                if (result.arcAuras or 0) > 0 then
+                                    PrintMsg(string.format("Arc Auras: %d tracked items/spells", result.arcAuras))
+                                end
+                                if result.cdmNativeLayout then
+                                    PrintMsg("|cff00ff00CDM layout imported.|r")
+                                end
                             end
+                            uiState.importString = ""
+                            uiState.importPreview = nil
+                            uiState.importError = nil
+                            StaticPopup_Show("ARCUI_RELOAD_AFTER_IMPORT")
+                        else
+                            PrintMsg("|cffff0000Import failed:|r " .. (result or "Unknown error"))
                         end
-                        -- Clear import state
-                        uiState.importString = ""
-                        uiState.importPreview = nil
-                        uiState.importError = nil
-                        -- Show reload dialog
-                        StaticPopup_Show("ARCUI_RELOAD_AFTER_IMPORT")
+                    end
+
+                    if cdmMaxed then
+                        -- Block import until user decides: ignore CDM or cancel and delete a slot first
+                        local layoutName = (preview and preview.cdmNativeLayoutName) or "Unknown"
+                        StaticPopupDialogs["ARCUI_CDM_LAYOUT_MAXED"] = {
+                            text = "|cff00ccffArcUI Import|r\n\nCDM layout limit reached (5/5).\n\n\"" .. layoutName .. "\" cannot be added.\n\nDelete a CDM layout in CDM settings first, then re-import — or ignore the CDM layout and import everything else now.",
+                            button1 = "Ignore CDM Layout",
+                            button2 = "I'll Delete One First",
+                            OnAccept = function()
+                                DoImport("ignore")
+                            end,
+                            OnCancel = function()
+                                PrintMsg("|cffff8800Import cancelled. Delete a CDM layout in CDM settings, then re-import.|r")
+                            end,
+                            timeout = 0,
+                            whileDead = true,
+                            hideOnEscape = false,
+                            preferredIndex = 3,
+                        }
+                        local popup = StaticPopup_Show("ARCUI_CDM_LAYOUT_MAXED")
+                        if popup then
+                            popup:ClearAllPoints()
+                            popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+                            popup:SetFrameStrata("FULLSCREEN_DIALOG")
+                            popup:SetFrameLevel(100)
+                        end
                     else
-                        PrintMsg("|cffff0000Import failed:|r " .. (result or "Unknown error"))
+                        DoImport(nil)
                     end
                 end,
             },
@@ -3414,6 +3706,78 @@ end
 -- This is called by ArcUI_Options.lua to get the options table
 function ns.GetCDMImportExportOptionsTable()
     return GetOptionsTable()
+end
+
+-- Expose for unified import window
+IE.SpecKeyToDisplayName = SpecKeyToDisplayName
+
+-- Profile Manager only (Arc Manager Profiles section) — for Icons > Profiles tab
+function ns.GetCDMProfileManagerOnlyOptionsTable()
+    local PROFILE_KEYS = {
+        "arcProfilesToggle", "arcProfilesDesc", "arcProfileSelect",
+        "arcProfileNewBtn", "arcProfileDeleteBtn", "arcProfileSaveBtn",
+        "arcProfileTalentConditionsBtn", "arcProfileTalentConditionsSummary",
+        "arcProfileRenameBtn", "arcProfileResetDefaultBtn", "arcProfileGroupLayoutLinked",
+    }
+    local full = GetOptionsTable()
+    local args = {}
+    for _, k in ipairs(PROFILE_KEYS) do
+        if full.args[k] then
+            args[k] = full.args[k]
+        end
+    end
+    return {
+        type = "group",
+        name = "Arc Manager Profiles",
+        args = args,
+    }
+end
+
+-- Export only (no import section, no collapsible wrapper) — for Import/Export > CDM Export tab
+function ns.GetCDMExportOnlyOptionsTable()
+    local EXPORT_KEYS = {
+        "externalExportToggle", "externalExportDesc",
+        "statsToggle", "statsInfo",
+        "exportHeader", "exportOptionsToggle",
+        "exportGroupLayouts", "exportPositions", "exportIconSettings",
+        "exportGlobalSettings", "exportGroupSettings", "exportProfiles",
+        "exportSpacer", "exportButton", "exportString",
+    }
+    local full = GetOptionsTable()
+    local args = {}
+    for _, k in ipairs(EXPORT_KEYS) do
+        if full.args[k] then
+            args[k] = full.args[k]
+        end
+    end
+
+    -- Drop the collapsible toggles — it's its own tab now
+    args["externalExportToggle"] = nil
+    args["externalExportDesc"] = nil
+    args["statsToggle"] = nil
+
+    -- Patch hidden functions: remove externalExport + statsOverview guards, keep exportOptions guard
+    for _, entry in pairs(args) do
+        local orig = entry.hidden
+        if orig then
+            entry.hidden = function()
+                local savedExt = collapsedSections.externalExport
+                local savedStats = collapsedSections.statsOverview
+                collapsedSections.externalExport = false
+                collapsedSections.statsOverview = false
+                local result = orig()
+                collapsedSections.externalExport = savedExt
+                collapsedSections.statsOverview = savedStats
+                return result
+            end
+        end
+    end
+
+    return {
+        type = "group",
+        name = "Icon Manager Export",
+        args = args,
+    }
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════

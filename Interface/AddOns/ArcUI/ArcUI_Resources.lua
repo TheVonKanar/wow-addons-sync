@@ -6,6 +6,8 @@
 -- ===================================================================
 
 local ADDON, ns = ...
+-- Round to nearest integer for pixel-perfect SetSize calls.
+local function PixelSize(n) return math.floor(n + 0.5) end
 ns.Resources = ns.Resources or {}
 
 -- Track if delete buttons should be visible (set when options panel opens)
@@ -3057,8 +3059,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue, dis
       end
     else
       local scale = cfg.display.barScale or 1.0
-      local baseW = (cfg.display.width or 246) * scale
-      local baseH = (cfg.display.height or 25) * scale
+      local baseW = PixelSize((cfg.display.width or 246) * scale)
+      local baseH = PixelSize((cfg.display.height or 25) * scale)
       if isLayoutVertical then
         segmentWidth = baseH
         segmentHeight = baseW / numSegments
@@ -3609,8 +3611,20 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue, dis
     
     -- Icons settings
     local iconsMode = cfg.display.iconsMode or "row"
-    local iconSize = cfg.display.iconsSize or 32
     local iconSpacing = cfg.display.iconsSpacing or 4
+    local iconSize = cfg.display.iconsSize or 32
+    
+    -- When matchGroupWidth is active, ApplyAppearance already set the correct bar width.
+    -- Derive iconSize from that width so all maxValue slots fill it evenly.
+    local isMatchingGroup = cfg.display.anchorToGroup and cfg.display.matchGroupWidth
+    if isMatchingGroup and not (iconsMode == "freeform") then
+      local barWidth = mainFrame:GetWidth()
+      local slotCount = maxValue and maxValue > 0 and maxValue or numIcons
+      if barWidth > 0 and slotCount and slotCount > 0 then
+        local derived = (barWidth - math.max(0, slotCount - 1) * iconSpacing) / slotCount
+        if derived > 0 then iconSize = derived end
+      end
+    end
     local showCDText = cfg.display.cdTextShow
     if showCDText == nil then showCDText = cfg.display.iconsShowCooldownText end
     local iconCDTextSize = cfg.display.cdTextSize or cfg.display.iconsCooldownTextSize or 12
@@ -4097,7 +4111,8 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue, dis
     end
     
     -- Resize mainFrame to encompass all icons in row mode (enables drag)
-    if not isFreeform and numIcons > 0 then
+    -- Skip when matchGroupWidth is active — ApplyAppearance already set the correct size
+    if not isFreeform and numIcons > 0 and not isMatchingGroup then
       local totalIconsWidth = (numIcons * iconSize) + ((numIcons - 1) * iconSpacing)
       mainFrame:SetSize(totalIconsWidth, iconSize)
     end
@@ -4207,6 +4222,108 @@ local function UpdateThresholdLayers(barNumber, secretValue, passedMaxValue, dis
     else
       mainFrame:SetScript("OnUpdate", nil)
       mainFrame.iconsOnUpdate = nil
+    end
+    
+    -- ── AURA DURATION TIMER (maelstromWeapon) ───────────────────────────
+    -- Uses a native Cooldown frame (zero polling after UNIT_AURA feeds it).
+    -- Styled entirely via the shared Duration Text section settings.
+    if secondaryType == "maelstromWeapon" and cfg.display.showDuration then
+      -- Lazy-create separate preview FontString (Cooldown frame owns its FS and fights us)
+      if not mainFrame.auraDurationPreviewText then
+        mainFrame.auraDurationPreviewText = mainFrame:CreateFontString(nil, "OVERLAY")
+      end
+      local pfs = mainFrame.auraDurationPreviewText
+      if not mainFrame.auraDurationCooldown then
+        local cd = CreateFrame("Cooldown", nil, mainFrame, "CooldownFrameTemplate")
+        cd:SetSize(1, 1)
+        cd:SetPoint("CENTER", mainFrame, "CENTER", 0, 0)
+        cd:SetDrawSwipe(false)
+        cd:SetDrawEdge(false)
+        cd:SetDrawBling(false)
+        cd:SetHideCountdownNumbers(false)
+        cd:SetFrameLevel(mainFrame:GetFrameLevel() + 10)
+        mainFrame.auraDurationCooldown = cd
+      end
+      local cd = mainFrame.auraDurationCooldown
+      local fs = cd:GetCountdownFontString()
+      local fontPath = STANDARD_TEXT_FONT
+      if LSM and cfg.display.durationFont then
+        fontPath = LSM:Fetch("font", cfg.display.durationFont) or STANDARD_TEXT_FONT
+      end
+      local fontSize = cfg.display.durationFontSize or 18
+      local outline = cfg.display.durationOutline or "THICKOUTLINE"
+      fs:SetFont(fontPath, fontSize, outline)
+      local dc = cfg.display.durationColor or {r=1, g=1, b=1, a=1}
+      fs:SetTextColor(dc.r, dc.g, dc.b, dc.a or 1)
+      if cfg.display.durationShadow then
+        fs:SetShadowOffset(1, -1)
+        fs:SetShadowColor(0, 0, 0, 1)
+      else
+        fs:SetShadowOffset(0, 0)
+      end
+      local anchorMap = {
+        CENTERLEFT="LEFT", CENTERRIGHT="RIGHT",
+        OUTERTOP="TOP", OUTERBOTTOM="BOTTOM",
+        OUTERLEFT="LEFT", OUTERRIGHT="RIGHT",
+        OUTERCENTERLEFT="LEFT", OUTERCENTERRIGHT="RIGHT",
+        OUTERTOPLEFT="TOPLEFT", OUTERTOPRIGHT="TOPRIGHT",
+        OUTERBOTTOMLEFT="BOTTOMLEFT", OUTERBOTTOMRIGHT="BOTTOMRIGHT",
+      }
+      local rawAnchor = cfg.display.durationAnchor or "CENTER"
+      local anchor = anchorMap[rawAnchor] or rawAnchor
+      local ox = cfg.display.durationAnchorOffsetX or 0
+      local oy = cfg.display.durationAnchorOffsetY or 0
+      -- Apply same styling to preview FontString
+      local durationStrata = cfg.display.durationTextStrata or cfg.display.barFrameStrata or "HIGH"
+      local barLevel = cfg.display.barFrameLevel or 10
+      local durationLevel = cfg.display.durationTextLevel or (barLevel + 3)
+      pfs:SetFont(fontPath, fontSize, outline)
+      pfs:SetTextColor(dc.r, dc.g, dc.b, dc.a or 1)
+      if cfg.display.durationShadow then
+        pfs:SetShadowOffset(1, -1) ; pfs:SetShadowColor(0, 0, 0, 1)
+      else
+        pfs:SetShadowOffset(0, 0)
+      end
+      -- Match strata/level by re-parenting to a tiny helper frame at the right strata
+      if not mainFrame.auraDurationPreviewContainer then
+        mainFrame.auraDurationPreviewContainer = CreateFrame("Frame", nil, mainFrame)
+        mainFrame.auraDurationPreviewContainer:SetSize(1, 1)
+        mainFrame.auraDurationPreviewContainer:SetPoint("CENTER", mainFrame, "CENTER", 0, 0)
+      end
+      local pc = mainFrame.auraDurationPreviewContainer
+      pc:SetFrameStrata(durationStrata)
+      pc:SetFrameLevel(durationLevel)
+      pfs:SetParent(pc)
+      pfs:ClearAllPoints()
+      pfs:SetPoint(anchor, mainFrame, anchor, ox, oy)
+      fs:ClearAllPoints()
+      fs:SetPoint(anchor, mainFrame, anchor, ox, oy)
+      cd:Show()
+      local auraData = C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID(344179)
+      if auraData and auraData.expirationTime and auraData.expirationTime > 0 then
+        -- Real aura: let Cooldown frame handle it, hide preview text
+        pfs:Hide()
+        CooldownFrame_Set(cd, auraData.expirationTime - (auraData.duration or 0), auraData.duration or 0, 1, false, auraData.timeMod or 1)
+      elseif IsOptionsOpen() then
+        -- Preview: Cooldown frame won't show without a live cooldown, use plain FontString
+        CooldownFrame_Clear(cd)
+        pfs:SetText("0")
+        pfs:Show()
+      else
+        pfs:Hide()
+        CooldownFrame_Clear(cd)
+      end
+    else
+      if mainFrame.auraDurationCooldown then
+        mainFrame.auraDurationCooldown:Hide()
+        CooldownFrame_Clear(mainFrame.auraDurationCooldown)
+      end
+      if mainFrame.auraDurationPreviewText then
+        mainFrame.auraDurationPreviewText:Hide()
+      end
+      if mainFrame.auraDurationPreviewContainer then
+        mainFrame.auraDurationPreviewContainer:Hide()
+      end
     end
     
   elseif displayMode == "colorCurve" then
@@ -5550,8 +5667,8 @@ function ns.Resources.ApplyAppearance(barNumber)
   -- Fragmented mode uses its own layout direction exclusively (ignore barOrientation)
   local needsSwap = isFragmented and isFragmentedVertical or (not isFragmented and isVertical)
   local scale = display.barScale or 1.0
-  local scaledWidth = (display.width or 246) * scale
-  local scaledHeight = (display.height or 25) * scale
+  local scaledWidth = PixelSize((display.width or 246) * scale)
+  local scaledHeight = PixelSize((display.height or 25) * scale)
   
   if needsSwap then
     mainFrame:SetSize(scaledHeight, scaledWidth)  -- Swap dimensions for vertical!
@@ -5634,10 +5751,17 @@ function ns.Resources.ApplyAppearance(barNumber)
         -- Use container height for side anchors, container width for top/bottom
         local matchDimension = isSideAnchor and containerHeight or containerWidth
         
+        -- matchSlotsOnly: subtract the border/padding overhead so the bar matches
+        -- the pure icon slot area. Formula: 12 (borderCompensation) + containerPadding*2
+        if display.matchSlotsOnly then
+          local cp = group.containerPadding or 0
+          matchDimension = matchDimension - (12 + cp * 2)
+        end
+        
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = display.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = (display.height or 25) * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize((display.height or 25) * scale)
           
           -- Swap for vertical orientation or fragmented vertical layout
           if needsSwap then
@@ -6821,8 +6945,8 @@ function ns.Resources.OnGroupContainerSizeChanged(groupName, newWidth, newHeight
           -- Use container height for side anchors, container width for top/bottom
           local matchDimension = isSideAnchor and newHeight or newWidth
           local sizeAdjust = cfg.display.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = (cfg.display.height or 25) * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize((cfg.display.height or 25) * scale)
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then
@@ -6875,9 +6999,17 @@ local function OnContainerSizeChanged(container, width, height)
           
           -- Use container height for side anchors, container width for top/bottom
           local matchDimension = isSideAnchor and height or width
+          
+          -- matchSlotsOnly: subtract border/padding overhead to match pure icon slot area
+          if cfg.display.matchSlotsOnly then
+            local group = ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
+            local cp = group and group.containerPadding or 0
+            matchDimension = matchDimension - (12 + cp * 2)
+          end
+          
           local sizeAdjust = cfg.display.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = (cfg.display.height or 25) * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize((cfg.display.height or 25) * scale)
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then

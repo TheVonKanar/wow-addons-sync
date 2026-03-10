@@ -74,4 +74,7 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /crb reset",
 "/s /mkpt",
 "/s /mkpt minimap",
+"/s /ef o",
+"/g bijoule",
+"/p |cnIQ4:|Hitem:251173::::::::90:263::23:5:12779:13439:6652:13668:12699:1:28:3022:::::|h[Yoke of the Charging Bear]|h|r tu veux leri?",
 }

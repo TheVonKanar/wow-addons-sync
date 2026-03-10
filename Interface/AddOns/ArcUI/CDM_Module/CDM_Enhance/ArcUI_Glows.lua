@@ -75,6 +75,34 @@ end
 
 local activeGlows = setmetatable({}, { __mode = "k" })
 
+-- ── Cached frame sizes ────────────────────────────────────────────────────
+-- frameSizeCache[frame] = { w, h }
+-- When GetWidth/GetHeight returns a non-secret value, we store it here.
+-- If the value is ever secret (CDM layout tainted), we fall back to the
+-- last known good size so glow frames are still sized correctly.
+-- Weak keys: auto-cleaned when frame is GC'd.
+local frameSizeCache = setmetatable({}, { __mode = "k" })
+
+local function GetFrameSize(frame)
+    local w, h = frame:GetWidth(), frame:GetHeight()
+    local wSecret = issecretvalue and issecretvalue(w)
+    local hSecret = issecretvalue and issecretvalue(h)
+    if not wSecret and not hSecret then
+        -- Good values - cache and return
+        if w and h and w > 1 and h > 1 then
+            frameSizeCache[frame] = { w, h }
+        end
+        return w, h
+    end
+    -- Secret - use last cached size if available
+    local cached = frameSizeCache[frame]
+    if cached then
+        return cached[1], cached[2]
+    end
+    -- No cache yet - return as-is (caller guards against bad values)
+    return w, h
+end
+
 -- ── Constants ────────────────────────────────────────────────────────────
 
 -- Sizing ratios from Blizzard's ActionButtonSpellAlertTemplate XML:
@@ -387,9 +415,15 @@ local function ApplyPostStartOpts(frame, glowType, key, opts)
     -- The old CDMEnhance overlay called SetSize(frameW, frameH) before every
     -- LCG call. Without this, Masque-skinned frames can report stale layout
     -- dimensions to LCG at creation time, causing undersized glows.
-    local pw, ph = frame:GetWidth(), frame:GetHeight()
+    local pw, ph = GetFrameSize(frame)
     if pw and ph and pw > 1 and ph > 1 and glowType ~= "button" then
         -- Button glow manages its own internal texture sizing
+        -- Snap to integer screen pixels to prevent 1px glow misalignment at fractional UI scales
+        local effScale = frame:GetEffectiveScale()
+        if effScale and effScale > 0 then
+            pw = math.floor(pw * effScale + 0.5) / effScale
+            ph = math.floor(ph * effScale + 0.5) / effScale
+        end
         glowFrame:SetSize(pw, ph)
     end
 
@@ -417,6 +451,19 @@ local function ApplyPostStartOpts(frame, glowType, key, opts)
         local parentStrata = frame:GetFrameStrata() or "MEDIUM"
         pcall(glowFrame.SetFrameStrata, glowFrame, parentStrata)
         glowFrame._arcGlowStrataOverride = nil
+    end
+
+    -- Translate: move entire glow frame by shifting both LCG anchors equally.
+    -- GetSize() returns 0 before layout pass, so we can't use SetSize+CENTER.
+    -- Re-apply LCG's TOPLEFT+BOTTOMRIGHT offsets shifted by tx/ty to preserve size.
+    local tx = opts.translateX or 0
+    local ty = opts.translateY or 0
+    if tx ~= 0 or ty ~= 0 then
+        local xOff = opts.xOffset or 0
+        local yOff = opts.yOffset or 0
+        glowFrame:ClearAllPoints()
+        glowFrame:SetPoint("TOPLEFT",     frame, "TOPLEFT",     -xOff + 0.05 + tx,  yOff + 0.05 + ty)
+        glowFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT",  xOff         + tx, -yOff + 0.05 + ty)
     end
 end
 
@@ -451,6 +498,18 @@ local function GetOrCreateACHGlow(frame, style, key)
             glow.ProcLoop:Play()
             glow.ProcLoop:Stop()
         end
+        -- When the parent CDM frame is hidden/shown (e.g. totem update sweep),
+        -- WoW stops all animations on hidden frames. Restart ProcLoop on re-show.
+        glow:SetScript("OnShow", function(self)
+            if self.ProcStartFlipbook then self.ProcStartFlipbook:Hide() end
+            if self.ProcLoop and not self.ProcLoop:IsPlaying() then
+                if self.ProcLoopFlipbook then
+                    self.ProcLoopFlipbook:Show()
+                    self.ProcLoopFlipbook:SetAlpha(1)
+                end
+                self.ProcLoop:Play()
+            end
+        end)
     else
         return nil
     end
@@ -473,8 +532,8 @@ local function ShowACHGlow(frame, style, key, opts)
     local glow = GetOrCreateACHGlow(frame, style, key)
     if not glow then return end
 
-    local w, h = frame:GetWidth(), frame:GetHeight()
-    if w <= 0 or h <= 0 then return end
+    local w, h = GetFrameSize(frame)
+    if not w or not h or w <= 0 or h <= 0 then return end
 
     local scale = opts.scale or 1.0
     -- Square Masque skins make ach_proc oversized — default to 0.8 if user hasn't set scale
@@ -483,6 +542,8 @@ local function ShowACHGlow(frame, style, key, opts)
     end
     local xOff = opts.xOffset or 0
     local yOff = opts.yOffset or 0
+    local tx = opts.translateX or 0
+    local ty = opts.translateY or 0
     local containerW = w * BLIZZ_CONTAINER_RATIO * scale
     local containerH = h * BLIZZ_CONTAINER_RATIO * scale
 
@@ -499,10 +560,10 @@ local function ShowACHGlow(frame, style, key, opts)
         if glow.ProcStartFlipbook then glow.ProcStartFlipbook:Hide() end
     end
 
-    -- Position with offset (only re-anchor if offset is non-zero)
-    if xOff ~= 0 or yOff ~= 0 then
+    -- Position with offset + translate
+    if xOff ~= 0 or yOff ~= 0 or tx ~= 0 or ty ~= 0 then
         glow:ClearAllPoints()
-        glow:SetPoint("CENTER", frame, "CENTER", xOff, yOff)
+        glow:SetPoint("CENTER", frame, "CENTER", xOff + tx, yOff + ty)
     end
 
     glow:SetFrameLevel(frame:GetFrameLevel() + (opts.frameLevel or GLOW_LEVEL_OFFSET))
@@ -632,12 +693,14 @@ local function ShowCDMFlash(frame, key, opts)
     local glow = GetOrCreateCDMFlash(frame, key)
     if not glow then return end
 
-    local w, h = frame:GetWidth(), frame:GetHeight()
-    if w <= 0 or h <= 0 then return end
+    local w, h = GetFrameSize(frame)
+    if not w or not h or w <= 0 or h <= 0 then return end
 
     local scale = opts.scale or 1.0
     local xOff = opts.xOffset or 0
     local yOff = opts.yOffset or 0
+    local tx = opts.translateX or 0
+    local ty = opts.translateY or 0
 
     -- Expand slightly beyond icon edge like CDM's -8,+8 / +9,-9 anchoring
     local expandW = w * BLIZZ_CONTAINER_RATIO * scale
@@ -646,7 +709,7 @@ local function ShowCDMFlash(frame, key, opts)
 
     -- Position
     glow:ClearAllPoints()
-    glow:SetPoint("CENTER", frame, "CENTER", xOff, yOff)
+    glow:SetPoint("CENTER", frame, "CENTER", xOff + tx, yOff + ty)
 
     glow:SetFrameLevel(math.max(0, frame:GetFrameLevel() + (opts.frameLevel or CDM_FLASH_LEVEL_OFFSET)))
 
@@ -797,7 +860,9 @@ function ns.Glows.Start(frame, key, glowType, opts)
             frame, colorArray,
             opts.frequency or 0.125,
             lvl,
-            key
+            key,
+            opts.xOffset or 0,
+            opts.yOffset or 0
         )
         ApplyPostStartOpts(frame, glowType, key, opts)
 
@@ -853,7 +918,8 @@ function ns.Glows.Start(frame, key, glowType, opts)
             local now = GetTime()
             if now == throttle then return end
             throttle = now
-            if self:GetWidth() < 1 or self:GetHeight() < 1 then return end
+            local _sw, _sh = GetFrameSize(self)
+            if not _sw or not _sh or _sw < 1 or _sh < 1 then return end
             ns.Glows.ResizeAll(self)
         end)
     end
@@ -1102,7 +1168,7 @@ function ns.Glows.GetSupportedOpts(glowType)
     local SUPPORT = {
         pixel     = { color=true, intensity=true, scale=true, speed=true, lines=true, thickness=true, length=true, border=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
         autocast  = { color=true, intensity=true, scale=true, speed=true, particles=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
-        button    = { color=true, scale=true, speed=true, frameLevel=true, strata=true },
+        button    = { color=true, scale=true, speed=true, frameLevel=true, strata=true, xOffset=true, yOffset=true },
         proc      = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
         ants      = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
         ach_proc  = { color=true, intensity=true, scale=true, xOffset=true, yOffset=true, frameLevel=true, strata=true },
@@ -1110,6 +1176,69 @@ function ns.Glows.GetSupportedOpts(glowType)
         default   = {},
     }
     return SUPPORT[glowType] or {}
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- CDM NATIVE VISUAL ALERT SIZING
+-- CDMVISFlashBaseMixin / CDMVISMarchingAntsBaseMixin use hardcoded ±8/9 px
+-- offsets in GetAnchors designed for the default 30px CDM icon.
+-- When ArcUI groups resize icons these stay fixed and look too small.
+--
+-- WHY we hook AcquireAlert on the global instance (not the mixin):
+--   CreateFromMixins copies functions by value onto pool frame instances.
+--   Hooking the mixin table with hooksecurefunc only intercepts calls that
+--   go through that table — not calls on already-copied instances.
+--   AcquireAlert fires after SetAlertTarget → AnchorAlert has already run,
+--   so we re-anchor the latest alert from the target's container.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Default CDM icon size the ±8/9 offsets were designed for
+local CDM_VIS_DEFAULT_SIZE = 30
+local CDM_VIS_TL_OFF = -8  -- TOPLEFT  offset (negative = expand outward)
+local CDM_VIS_BR_OFF =  9  -- BOTTOMRIGHT offset (positive = expand outward)
+
+local function RescaleCDMVisAlert(target, alert)
+    local targetFrame = target:GetAlertTargetFrame()
+    if not targetFrame then return end
+
+    local w, h = GetFrameSize(targetFrame)
+    if not w or not h or w <= 1 or h <= 1 then return end
+
+    -- Match our cdm_flash approach: expand by BLIZZ_CONTAINER_RATIO and center.
+    -- Blizzard's fixed ±8/9px anchors only look right at the default 30px icon.
+    alert:SetSize(w * BLIZZ_CONTAINER_RATIO, h * BLIZZ_CONTAINER_RATIO)
+    alert:ClearAllPoints()
+    alert:SetPoint("CENTER", targetFrame, "CENTER", 0, 0)
+end
+
+local cdmVisAlertsPatchApplied = false
+
+function ns.Glows.PatchCDMVisualAlerts()
+    if cdmVisAlertsPatchApplied then return end
+    if not CooldownViewerVisualAlertsManager then return end
+    cdmVisAlertsPatchApplied = true
+
+    -- AcquireAlert fires after SetAlertTarget (and thus after AnchorAlert).
+    -- We can't get the return value via hooksecurefunc, so we grab the most
+    -- recently added alert from the target's container instead.
+    hooksecurefunc(CooldownViewerVisualAlertsManager, "AcquireAlert", function(_, _, target)
+        if not target then return end
+        local container = target:GetAlertContainer()
+        if not container then return end
+        local alert = container[#container]
+        if not alert then return end
+        RescaleCDMVisAlert(target, alert)
+    end)
+end
+
+-- Self-patch once CDM globals are available
+do
+    local f = CreateFrame("Frame")
+    f:RegisterEvent("PLAYER_LOGIN")
+    f:SetScript("OnEvent", function()
+        ns.Glows.PatchCDMVisualAlerts()
+        f:UnregisterAllEvents()
+    end)
 end
 
 -- Debug bridge: expose Glows API for standalone debugger addons

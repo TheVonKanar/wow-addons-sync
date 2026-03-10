@@ -681,12 +681,14 @@ local function noZero(num)
     end
 end
 
-function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
+function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key,xOffset,yOffset)
     if not r then
         return
     end
 	frameLevel = frameLevel or 8;
     key = key or ""
+    xOffset = xOffset or 0
+    yOffset = yOffset or 0
     local throttle
     if frequency and frequency > 0 then
         throttle = 0.25/frequency*0.01
@@ -698,11 +700,15 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
         local f = glowRef
         f._arcReleased = nil  -- Clear release guard (frame is active)
         local width,height = r:GetSize()
+        local gw = width  * 1.4 + xOffset * 2
+        local gh = height * 1.4 + yOffset * 2
+        local ox = width  * 0.2 + xOffset
+        local oy = height * 0.2 + yOffset
         f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
-        f:SetSize(width*1.4 , height*1.4)
-        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.2, height * 0.2)
-        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.2, -height * 0.2)
-        f.ants:SetSize(width*1.4*0.85, height*1.4*0.85)
+        f:SetSize(gw, gh)
+        f:SetPoint("TOPLEFT",     r, "TOPLEFT",     -ox,  oy)
+        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT",  ox, -oy)
+        f.ants:SetSize(gw * 0.85, gh * 0.85)
 		AnimIn_OnFinished(f.animIn)
 		if f.animOut:IsPlaying() then
             f.animOut:Stop()
@@ -753,11 +759,15 @@ function lib.ButtonGlow_Start(r,color,frequency,frameLevel,key)
             r._ButtonGlow = f
         end
         local width,height = r:GetSize()
+        local gw = width  * 1.4 + xOffset * 2
+        local gh = height * 1.4 + yOffset * 2
+        local ox = width  * 0.2 + xOffset
+        local oy = height * 0.2 + yOffset
         f:SetParent(r)
         f:SetFrameLevel(r:GetFrameLevel()+frameLevel)
-        f:SetSize(width * 1.4, height * 1.4)
-        f:SetPoint("TOPLEFT", r, "TOPLEFT", -width * 0.2, height * 0.2)
-        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", width * 0.2, -height * 0.2)
+        f:SetSize(gw, gh)
+        f:SetPoint("TOPLEFT",     r, "TOPLEFT",     -ox,  oy)
+        f:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT",  ox, -oy)
         if not(color) then
             f.color = false
             for texture in pairs(ButtonGlowTextures) do

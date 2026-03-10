@@ -683,6 +683,18 @@ function Shared.GetGroupTemplatesDB()
     return ns.db.profile.groupTemplates
 end
 
+-- Get the Group Layouts database (truly account-wide via global)
+-- Group Layouts are live-linked: profiles that opt in read/write directly here
+-- instead of storing their own copy in profile.groupLayouts
+function Shared.GetGroupLayoutsDB()
+    if not ns.db then return nil end
+    if not ns.db.global then ns.db.global = {} end
+    if not ns.db.global.groupLayouts then
+        ns.db.global.groupLayouts = {}
+    end
+    return ns.db.global.groupLayouts
+end
+
 -- Get Group Template settings (default template, etc.)
 function Shared.GetGroupTemplateSettings()
     if not ns.db then return nil end
@@ -698,19 +710,7 @@ function Shared.GetGroupTemplateSettings()
     return ns.db.profile.groupTemplateSettings
 end
 
--- Get the default template name (or nil if using hardcoded defaults)
-function Shared.GetDefaultTemplateName()
-    local settings = Shared.GetGroupTemplateSettings()
-    if not settings then return nil end
-    return settings.defaultTemplate
-end
 
--- Set the default template name
-function Shared.SetDefaultTemplateName(templateName)
-    local settings = Shared.GetGroupTemplateSettings()
-    if not settings then return end
-    settings.defaultTemplate = templateName
-end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DEBUG HELPERS

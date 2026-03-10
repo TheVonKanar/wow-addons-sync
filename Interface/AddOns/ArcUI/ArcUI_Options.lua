@@ -11,6 +11,9 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceDB = LibStub("AceDB-3.0")
 
+-- Profile browser collapsed state (defaults closed)
+local profileBrowserCollapsed = true
+
 -- ===================================================================
 -- RELIABLE PANEL OPEN/CLOSE DETECTION
 -- Hook AceConfigDialog:Open and :Close directly - much more reliable
@@ -161,6 +164,22 @@ ns.API.OpenOptions = function()
   
   ns._arcPendingOptionsOpen = nil
   ns._arcUIOptionsOpen = true  -- Flag for Resources module to detect options are open
+
+  -- Restore saved position/size into AceConfig's own status table BEFORE Open
+  -- AceConfig reads status.top/left/width/height inside Open via SetStatusTable
+  do
+    local globalDB = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+    local pos  = globalDB and globalDB.optionsPanelPos
+    local size = globalDB and globalDB.optionsPanelSize
+    if pos or size then
+      local status = AceConfigDialog:GetStatusTable("ArcUI")
+      if status then
+        if pos  then status.top  = pos.top;  status.left   = pos.left   end
+        if size then status.width = size.width; status.height = size.height end
+      end
+    end
+  end
+
   AceConfigDialog:Open("ArcUI")
   -- CDM_Shared's ACD:Open posthook sets ns.optionsPanelOpen and fires all callbacks
   
@@ -197,6 +216,8 @@ ns.API.OpenOptions = function()
       
       actualFrame._arcUISolidBgFrame:SetAlpha(alpha)
       actualFrame._arcUISolidBgFrame:Show()
+
+      -- Position/size restored via AceConfig status table before Open — nothing to do here
       
       -- Create Discord link at top right (or show existing one)
       CreateDiscordLink(actualFrame)
@@ -230,6 +251,18 @@ ns.API.OpenOptions = function()
             ns.API.HideHiddenByBarOverlays()
           end
           
+          -- Save panel position and size via AceConfig status table (kept up to date by AceGUI on drag/resize)
+          do
+            local globalDB = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+            if globalDB then
+              local status = AceConfigDialog:GetStatusTable("ArcUI")
+              if status then
+                globalDB.optionsPanelPos  = { top = status.top, left = status.left }
+                globalDB.optionsPanelSize = { width = status.width, height = status.height }
+              end
+            end
+          end
+
           -- CRITICAL: Hide Discord link when panel closes
           -- AceConfigDialog reuses frame objects, so our Discord link would
           -- appear on other addons' config panels if we don't hide it
@@ -364,26 +397,74 @@ local function GetOptionsTable()
             return tbl
           end)(),
           
-          profileManager = (function()
-            local tbl = ns.GetCDMImportExportOptionsTable and ns.GetCDMImportExportOptionsTable() or {
-              type = "group",
-              name = "Profile Manager",
-              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+          -- Profiles tab: Arc Manager profile selector + Profile Browser combined
+          profiles = (function()
+            local profileMgr = ns.GetCDMProfileManagerOnlyOptionsTable and ns.GetCDMProfileManagerOnlyOptionsTable() or { args = {} }
+            local profileBrowser = ns.GetCDMProfileBrowserOptionsTable and ns.GetCDMProfileBrowserOptionsTable() or { args = {} }
+
+            -- Merge browser args under a collapsible header, re-keyed to avoid conflicts
+            local mergedArgs = {}
+            for k, v in pairs(profileMgr.args or {}) do
+              mergedArgs[k] = v
+            end
+
+            -- Browser section header with collapsible toggle
+            mergedArgs["browserSectionHeader"] = {
+              type = "toggle",
+              name = "|cffffd100Profile Browser|r",
+              desc = "Browse, rename, or delete profiles across all characters and specs",
+              dialogControl = "CollapsibleHeader",
+              order = 50,
+              width = "full",
+              get = function() return not profileBrowserCollapsed end,
+              set = function(_, v) profileBrowserCollapsed = not v end,
             }
-            tbl.name = "Profile Manager"
-            tbl.order = 6
-            return tbl
+            mergedArgs["browserSectionDesc"] = {
+              type = "description",
+              name = "|cffaaaaaaBrowse, rename, or delete profiles across all characters and specs on this account.|r",
+              order = 51,
+              fontSize = "small",
+              hidden = function() return profileBrowserCollapsed end,
+            }
+            -- Inline the browser args at order 52+ sorted by original order
+            local browserOrder = 52
+            local sortedBrowser = {}
+            for k, v in pairs(profileBrowser.args or {}) do
+              table.insert(sortedBrowser, { key = k, val = v, ord = v.order or 999 })
+            end
+            table.sort(sortedBrowser, function(a, b) return a.ord < b.ord end)
+            for _, item in ipairs(sortedBrowser) do
+              local entry = {}
+              for ek, ev in pairs(item.val) do entry[ek] = ev end
+              entry.order = browserOrder
+              browserOrder = browserOrder + 1
+              local origHidden = entry.hidden
+              entry.hidden = function()
+                if profileBrowserCollapsed then return true end
+                if origHidden then return origHidden() end
+                return false
+              end
+              mergedArgs["browser_" .. item.key] = entry
+            end
+
+            return {
+              type = "group",
+              name = "Profiles",
+              order = 6,
+              args = mergedArgs,
+            }
           end)(),
-          
+
           sharing = (function()
             if ns.CDMSharedProfiles and ns.CDMSharedProfiles.GetOptionsTable then
               local tbl = ns.CDMSharedProfiles.GetOptionsTable()
+              tbl.name = "Account Sharing"
               tbl.order = 7
               return tbl
             end
             return {
               type = "group",
-              name = "Sharing",
+              name = "Account Sharing",
               order = 7,
               args = { loading = { type = "description", name = "Loading...", order = 1 } },
             }
@@ -470,7 +551,8 @@ local function GetOptionsTable()
       },
       
       -- ═══════════════════════════════════════════════════════════════
-      -- IMPORT / EXPORT (Master Export, CDM Import/Export, Bars Import/Export)
+      -- IMPORT / EXPORT
+      -- Tabs: CDM Export | Bars Export | Master Export | Import (unified)
       -- ═══════════════════════════════════════════════════════════════
       importExport = {
         type = "group",
@@ -478,6 +560,28 @@ local function GetOptionsTable()
         order = 4,
         childGroups = "tab",
         args = {
+          cdmExport = (function()
+            local tbl = ns.GetCDMExportOnlyOptionsTable and ns.GetCDMExportOnlyOptionsTable() or {
+              type = "group",
+              name = "Icon Manager Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Icon Manager Export"
+            tbl.order = 1
+            return tbl
+          end)(),
+
+          barsExport = (function()
+            local tbl = ns.GetBarsExportOnlyOptionsTable and ns.GetBarsExportOnlyOptionsTable() or {
+              type = "group",
+              name = "Bars Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Bars Export"
+            tbl.order = 2
+            return tbl
+          end)(),
+
           masterExport = (function()
             local tbl = ns.GetCDMMasterExportOptionsTable and ns.GetCDMMasterExportOptionsTable() or {
               type = "group",
@@ -485,26 +589,38 @@ local function GetOptionsTable()
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
             tbl.name = "Master Export"
-            tbl.order = 1
+            tbl.order = 3
             return tbl
           end)(),
-          barsImportExport = (function()
-            local tbl = ns.GetBarsImportExportOptionsTable and ns.GetBarsImportExportOptionsTable() or {
+
+          unifiedImport = (function()
+            local tbl = ns.GetUnifiedImportExportOptionsTable and ns.GetUnifiedImportExportOptionsTable() or {
               type = "group",
-              name = "Bars Import/Export",
+              name = "Import",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "Bars Import/Export"
-            tbl.order = 2
+            tbl.name = "Import"
+            tbl.order = 4
             return tbl
           end)(),
         },
       },
-      
+
+      migration = (function()
+        local tbl = ns.GetMigrationOptionsTable and ns.GetMigrationOptionsTable() or {
+          type = "group",
+          name = "Migration",
+          args = { loading = { type = "description", name = "Loading...", order = 1 } }
+        }
+        tbl.name  = "Migration"
+        tbl.order = 5
+        return tbl
+      end)(),
+
       settings = {
         type = "group",
         name = "Settings",
-        order = 5,
+        order = 6,
         args = {
           menuHeader = {
             type = "header",
@@ -624,6 +740,15 @@ SLASH_ARCBARS1 = "/arcbars"
 SLASH_ARCBARS2 = "/ab"
 SLASH_ARCBARS3 = "/arcui"
 SLASH_ARCBARS4 = "/aui"
+
+SLASH_ARCCDM1 = "/cdm"
+SlashCmdList["ARCCDM"] = function()
+  local frame = _G["CooldownViewerSettings"]
+  if frame and frame.Show then
+    frame:Show()
+    frame:Raise()
+  end
+end
 SlashCmdList["ARCBARS"] = function(msg)
   msg = msg:lower():trim()
   
@@ -711,7 +836,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
-        AceConfigDialog:SelectGroup("ArcUI", "icons", "profileManager")
+        AceConfigDialog:SelectGroup("ArcUI", "icons", "profiles")
       end)
     else
       print("|cff00ccffArc UI|r Options not ready yet.")
@@ -721,7 +846,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     if optionsRegistered then
       ns.API.OpenOptions()
       C_Timer.After(0.1, function()
-        AceConfigDialog:SelectGroup("ArcUI", "icons", "profileManager")
+        AceConfigDialog:SelectGroup("ArcUI", "icons", "profiles")
       end)
     else
       print("|cff00ccffArc UI|r Options not ready yet.")
@@ -829,7 +954,7 @@ initFrame:SetScript("OnEvent", function(self, event)
         ns.CustomTracking.Init()
       end
       
-      print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded. Type /arcui for options.")
+      print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded. Type /arcui for options, /cdm for CDM settings.")
     end)
   end
 end)

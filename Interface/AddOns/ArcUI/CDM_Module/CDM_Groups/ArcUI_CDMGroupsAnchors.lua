@@ -23,6 +23,56 @@ local isAnchoring = false
 -- Track hooked external frames to avoid double-hooking
 local hookedExternalFrames = {}
 
+-- ═══════════════════════════════════════════════════════════════════════════
+-- MOUSE PROXY FRAME
+-- One shared 1x1 invisible frame that tracks the cursor via a single OnUpdate.
+-- Groups with mode="toMouse" anchor directly to this frame — zero taint since
+-- it's our own frame. OnUpdate only runs while at least one toMouse group is
+-- active; completely idle otherwise.
+-- Architecture mirrors WeakAuras' mouseFrame pattern.
+-- ═══════════════════════════════════════════════════════════════════════════
+local mouseProxyFrame = nil
+local mouseProxyConsumers = 0  -- count of active toMouse groups
+
+local function EnsureMouseProxy()
+    if mouseProxyFrame then return mouseProxyFrame end
+    mouseProxyFrame = CreateFrame("Frame", "ArcUI_CDMGroupMouseProxy", UIParent)
+    mouseProxyFrame:SetSize(1, 1)
+    mouseProxyFrame:SetPoint("CENTER", UIParent, "CENTER")
+    mouseProxyFrame:SetFrameStrata("BACKGROUND")
+    return mouseProxyFrame
+end
+
+local function MouseProxyOnUpdate()
+    local scale = UIParent:GetEffectiveScale()
+    if scale and scale > 0 then
+        local x, y = GetCursorPosition()
+        mouseProxyFrame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x / scale, y / scale)
+    end
+end
+
+local function RegisterMouseConsumer()
+    mouseProxyConsumers = mouseProxyConsumers + 1
+    if mouseProxyConsumers == 1 then
+        EnsureMouseProxy()
+        mouseProxyFrame:SetScript("OnUpdate", MouseProxyOnUpdate)
+    end
+end
+
+local function UnregisterMouseConsumer()
+    mouseProxyConsumers = math.max(0, mouseProxyConsumers - 1)
+    if mouseProxyConsumers == 0 and mouseProxyFrame then
+        mouseProxyFrame:SetScript("OnUpdate", nil)
+    end
+end
+
+function Anchors.ResetMouseConsumers()
+    mouseProxyConsumers = 0
+    if mouseProxyFrame then
+        mouseProxyFrame:SetScript("OnUpdate", nil)
+    end
+end
+
 -- Track hooked target frames (toFrame mode) to re-anchor group when target moves
 local hookedTargetFrames = {}
 
@@ -347,6 +397,23 @@ function Anchors.ApplyGroupAnchor(group)
                 end
                 DebugPrint("CDMGroupsAnchors: " .. group.name .. " > frame " .. cfg.targetFrame)
             end
+        end
+    elseif mode == "toMouse" then
+        EnsureMouseProxy()
+        local sourcePoint = cfg.sourcePoint or "CENTER"
+        local ok, err = pcall(function()
+            group.container:ClearAllPoints()
+            group.container:SetPoint(sourcePoint, mouseProxyFrame, "BOTTOMLEFT", cfg.offsetX or 0, cfg.offsetY or 0)
+        end)
+        if ok then
+            applied = true
+            RegisterMouseConsumer()
+            C_Timer.After(0.02, function()
+                if ns.CDMGroups.SyncAnchorProxy then
+                    ns.CDMGroups.SyncAnchorProxy(group)
+                end
+            end)
+            DebugPrint("CDMGroupsAnchors: " .. group.name .. " > mouse cursor")
         end
     end
     -- mode == "none": group stays where the user dragged it

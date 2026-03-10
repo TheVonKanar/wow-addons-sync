@@ -251,13 +251,23 @@ local function GetCurveForConfig(cfg)
   if not tc.durationColor then return nil end
 
   local usePercent = tc.durationColorUsePercent
-  local baseColor = tc.color  -- {r,g,b} from user's static color setting
-  return GetCurveForCustom(tc.durationColorCustom, baseColor, usePercent)
+  local baseColor = tc.color
+
+  -- If custom entries exist, use them
+  if tc.durationColorCustom and #tc.durationColorCustom > 0 then
+    return GetCurveForCustom(tc.durationColorCustom, baseColor, usePercent)
+  end
+
+  -- No custom entries yet (user enabled toggle but hasn't picked a preset) — fall back to classic
+  return GetCurveForPreset("classic")
 end
 
 --- Wipe curve cache (call when settings change)
+local _checkedNoConfig = false  -- true when we scanned all frames and found no durationColor config
+
 function ns.CDMTextColor.InvalidateCurves()
   wipe(curveCache)
+  _checkedNoConfig = false  -- settings changed — re-scan on next event in case durationColor was just enabled
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -302,12 +312,15 @@ end
 local function GetDurationForFrame(frame)
   if not frame then return nil end
 
-  -- HOOKED DUROBJ: CDMEnhance pushed a DurationObject via SetCooldownFromDurationObject
-  -- Only trust it when ignoreAuraOverride is active — that's the mode where CDMEnhance
-  -- replaces the aura timer with the spell cooldown DurationObject
-  if frame._arcIgnoreAuraOverride then
-    local hookedDur = frame._arcTextColorDurObj
-    if hookedDur then return hookedDur end
+  -- HOOKED DUROBJ: CDMEnhance pushed a DurationObject via SetCooldownFromDurationObject.
+  -- Use it for any non-aura frame — this covers both ignoreAuraOverride mode AND charge
+  -- spells, where CDM passes the per-charge recharge DurationObject directly.
+  local hookedDur = frame._arcTextColorDurObj
+  if hookedDur then
+    local hasAura = frame.auraInstanceID and type(frame.auraInstanceID) == "number"
+    if not hasAura or frame._arcIgnoreAuraOverride then
+      return hookedDur
+    end
   end
 
   -- AURA: buff/debuff with active auraInstanceID (normal mode — display shows aura timer)
@@ -502,6 +515,10 @@ end
 -- ═══════════════════════════════════════════════════════════════════════════
 
 function ns.CDMTextColor.CheckAndStart()
+  -- Fast-exit: already scanned and found no durationColor config anywhere.
+  -- Flag is cleared by PLAYER_ENTERING_WORLD so spec/profile changes re-check.
+  if _checkedNoConfig then return end
+
   if not GetIconSettings then
     if ns.CDMEnhance and ns.CDMEnhance.GetIconSettings then
       GetIconSettings = ns.CDMEnhance.GetIconSettings
@@ -516,6 +533,11 @@ function ns.CDMTextColor.CheckAndStart()
   local frames = GetEnhancedFrames()
   if not frames then return end
 
+  -- If no frames enhanced yet, CDMEnhance hasn't scanned — don't conclude "nothing to do"
+  local frameCount = 0
+  for _ in pairs(frames) do frameCount = frameCount + 1 break end
+  if frameCount == 0 then return end
+
   for cdID in pairs(frames) do
     local cfg = GetIconSettings(cdID)
     if cfg and cfg.cooldownText and cfg.cooldownText.durationColor then
@@ -523,6 +545,8 @@ function ns.CDMTextColor.CheckAndStart()
       return
     end
   end
+  -- Scanned everything — no durationColor config found. Stop scanning until world reload.
+  _checkedNoConfig = true
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -539,6 +563,8 @@ eventFrame:SetScript("OnEvent", function(self, event, unit)
   if event == "UNIT_AURA" and unit ~= "player" then return end
   -- If ticker already running, nothing to do
   if ticker then return end
+  -- Reset "found no config" flag on zone entry so new specs/profiles re-check
+  if event == "PLAYER_ENTERING_WORLD" then _checkedNoConfig = false end
   C_Timer.After(0.3, function()
     if not GetIconSettings and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings then
       GetIconSettings = ns.CDMEnhance.GetIconSettings

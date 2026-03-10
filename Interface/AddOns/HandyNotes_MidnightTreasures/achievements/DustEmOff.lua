@@ -5,9 +5,32 @@ local myname, ns = ...
 local MOTH = ns.nodeMaker{
 	achievement=61052,
 	label="{spell:360937:Glowing Moth}",
-	texture=ns.atlas_texture("playerpartyblip", {r=0.6, g=0, b=1}),
+	atlas="ancientmana",
+	loot={ns.rewards.Currency(3385)},
 	achievementNotFound=true,
 }
+
+ns.RegisterPoints(ns.HARANDAR, {
+	[49265433] = {
+		label="{npc:251259:Mothkeeper Wew'tam}",
+		loot={
+			{257155, note="10 {spell:360937:Glowing Moth}"}, -- Grovewarden's Kris
+			{263283, note="20 {spell:360937:Glowing Moth}"}, -- Grovewarden's Dagger
+			{265943, note="30 {spell:360937:Glowing Moth}"}, -- Firm Haranir Pillow
+			{257158, note="40 {spell:360937:Glowing Moth}"}, -- Grovewarden's Rapier
+			{263580, note="50 {spell:360937:Glowing Moth}"}, -- Vivid Chloroceros
+			{265945, note="60 {spell:360937:Glowing Moth}"}, -- Warm Haranir Blanket
+			{257159, note="70 {spell:360937:Glowing Moth}"}, -- Grovewarden's Buckler
+			{263284, note="80 {spell:360937:Glowing Moth}"}, -- Grovewarden's Staff
+			{265946, note="90 {spell:360937:Glowing Moth}"}, -- Haranir Reclined Bed
+			{257161, note="100 {spell:360937:Glowing Moth}"}, -- Grovewarden's Halberd
+			{263285, note="110 {spell:360937:Glowing Moth}"}, -- Grovewarden's Greatsword
+			{222988, note="120 {spell:360937:Glowing Moth}"}, -- Elder Glowmite
+		},
+		atlas="banker",
+		note="Trade 10x{currency:3385:Luminous Dust} for each item, but you need to catch enough {spell:360937:Glowing Moth} to unlock them",
+	},
+})
 
 -- Dust 'Em Off
 -- quest=93559 for the initial loot the intro-quest object

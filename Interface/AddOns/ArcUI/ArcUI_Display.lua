@@ -47,6 +47,10 @@ ns.Display = ns.Display or {}
 -- Performance: local aliases for hot-path globals
 local string_format = string.format
 local math_floor = math.floor
+-- Round to nearest integer for pixel-perfect SetSize/SetPoint calls.
+-- Prevents float drift (e.g. 166 * 1.0 stored via AceDB returning 165.9999...)
+-- from causing WoW to round the wrong direction at different UI scales.
+local function PixelSize(n) return math_floor(n + 0.5) end
 local math_ceil = math.ceil
 local math_max = math.max
 local math_min = math.min
@@ -5226,8 +5230,8 @@ function ns.Display.ApplyAppearance(barNumber)
   -- SetScale causes anchor-based drift when scale changes
   -- Multiplying size by scale keeps the bar anchored in place
   local scale = cfg.barScale or 1.0
-  local scaledWidth = cfg.width * scale
-  local scaledHeight = cfg.height * scale
+  local scaledWidth = PixelSize(cfg.width * scale)
+  local scaledHeight = PixelSize(cfg.height * scale)
   
   -- Size - SWAP width and height for vertical bars
   if isVertical then
@@ -5280,8 +5284,8 @@ function ns.Display.ApplyAppearance(barNumber)
         
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = cfg.height * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize(cfg.height * scale)
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then
@@ -6069,8 +6073,8 @@ function ns.Display.OnGroupContainerSizeChanged(groupName, newWidth, newHeight)
           -- Use container height for side anchors, container width for top/bottom
           local matchDimension = isSideAnchor and newHeight or newWidth
           local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = cfg.height * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize(cfg.height * scale)
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then
@@ -6126,8 +6130,8 @@ local function OnContainerSizeChangedForAuraBars(container, width, height)
           -- Use container height for side anchors, container width for top/bottom
           local matchDimension = isSideAnchor and height or width
           local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight = cfg.height * scale
+          local barWidth = PixelSize(matchDimension + sizeAdjust)
+          local barHeight = PixelSize(cfg.height * scale)
           
           -- Swap for vertical orientation (rotates the bar)
           if isVertical then

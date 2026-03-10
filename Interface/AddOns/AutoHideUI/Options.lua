@@ -186,11 +186,13 @@ config.CONDITION_DEFINITIONS = {
         db = {
             enabled = true,
             alpha = 1,
-            threshold = 0.75,
+            style = 2,
             priority = false,
         },
         events = {
             "UNIT_HEALTH",
+            "UNIT_MAXHEALTH",
+            "UNIT_MAX_HEALTH_MODIFIERS_CHANGED",
         },
         description = L["descr_health"]
     },
@@ -205,6 +207,20 @@ config.CONDITION_DEFINITIONS = {
         events = {
             "PLAYER_MOUNT_DISPLAY_CHANGED",
             "UPDATE_SHAPESHIFT_FORM",
+        },
+    },
+    {
+        name = "flying",
+        db = {
+            enabled = false,
+            alpha = 1,
+            style = 3,
+            priority = false,
+        },
+        events = {
+            "PLAYER_MOUNT_DISPLAY_CHANGED",
+            "UPDATE_SHAPESHIFT_FORM",
+            "PLAYER_IS_GLIDING_CHANGED",
         },
     },
     {
@@ -695,6 +711,31 @@ local EXTRA_CONDITION_ELEMENTS = {
             order = 10,
         },
     },
+    flying = {
+        style = {
+            name = L["dropdown_flightStyle"],
+            type = "select",
+            width = 0.8,
+            values = function() return {L["dropdownOption_flight1"], L["dropdownOption_flight2"], L["dropdownOption_flight3"]} end,
+            get = function() return Private.db.profile[selectedGroup].conditions.flying.style end,
+            set = function(_, value) Private.db.profile[selectedGroup].conditions.flying.style = value end,
+            order = 10,
+        },
+    },
+    health = {
+        dropdown_health = {
+            name = L["dropdown_health"],
+            desc = L["descr_health"],
+            type = "select",
+            width = 0.8,
+            values = function() return {L["dropdownOption_health1"], L["dropdownOption_health2"]} end,
+            get = function() return Private.db.profile[selectedGroup].conditions.health.style end,
+            set = function(_, value) Private.db.profile[selectedGroup].conditions.health.style = value end,
+            order = 10,
+        },
+    },
+
+
 }
 
 local OPTIONS_MENU = {
@@ -897,6 +938,16 @@ function internal.GetNewGroup(name, useDefaultFrameSelection)
     end
 
     return newGroup
+end
+
+function config.CheckGroupsForMissingEntries(defaultGroup)
+    for _, group in ipairs(Private.db.profile) do
+        for name, entry in pairs(defaultGroup.conditions) do
+            if not group.conditions[name] then
+                group.conditions[name] = CopyTable(entry)
+            end
+        end
+    end
 end
 
 function config.GetDefaultGroup(name)

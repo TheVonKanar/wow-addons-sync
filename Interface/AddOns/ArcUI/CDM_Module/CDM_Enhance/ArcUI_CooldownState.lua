@@ -396,7 +396,12 @@ FeedShadowCooldown = function(frame, spellID)
   frame._arcIsChargeSpellCached = isChargeSpell
 
   if isOnGCD then
-    shadowCD:SetCooldown(0, 0)
+    -- Guard: if shadow is already shown a real CD was fed and is still ticking
+    -- underneath the GCD (sub-GCD edge case). Leave it alone.
+    -- Only zero when there is genuinely nothing underneath.
+    if not shadowCD:IsShown() then
+      shadowCD:SetCooldown(0, 0)
+    end
   else
     local durObj = nil
     pcall(function() durObj = C_Spell.GetSpellCooldownDuration(spellID) end)
@@ -935,11 +940,14 @@ end
 -- directly rather than any spell-readiness proxy.
 -- ═══════════════════════════════════════════════════════════════════
 EvaluateAuraActiveGlow = function(frame, cfg)
+  local isAuraGlowPreview = ns.CDMEnhanceOptions and ns.CDMEnhanceOptions.IsAuraGlowPreviewActive
+    and ns.CDMEnhanceOptions.IsAuraGlowPreviewActive(frame.cooldownID)
   local aaCfg = cfg.auraActiveState
-  if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+  if isAuraGlowPreview or (aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing)) then
+    local resolvedCfg = aaCfg or {}
     local isActive = HasAuraInstanceID(frame.auraInstanceID) or (frame.totemData ~= nil)
-    if ShouldShowAuraActiveGlow(aaCfg, frame, isActive) then
-      ShowAuraActiveGlow(frame, aaCfg)
+    if ShouldShowAuraActiveGlow(resolvedCfg, frame, isActive) then
+      ShowAuraActiveGlow(frame, resolvedCfg)
     else
       HideAuraActiveGlow(frame)
     end
@@ -1131,8 +1139,8 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
     -- late (via rescans/tickers), overwriting the correct values.
     -- Exception: cooldown frames with wasSetFromAura need HandleAuraLogic
     -- because their sub-path uses ReadCooldownState (spell cooldown, not aura).
-    if frame._arcAuraEventDriven and (cfg._isAura or frame.totemData ~= nil) then
-      -- True aura/totem frame with event hooks — skip, OptimizedApply owns this
+    if cfg._isAura or frame.totemData ~= nil then
+      -- True aura/totem frame — CooldownState never touches these, AuraFrames owns them
       return
     end
     frame._arcDesatBranch = "DISPATCH_AURA"

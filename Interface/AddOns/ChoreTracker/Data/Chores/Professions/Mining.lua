@@ -13,8 +13,31 @@ Addon.data.chores.professionMining = {
             name = EXPANSION_NAME11,
             skillLineId = 2916,
             drops = {
+                {
+                    key = 'gather',
+                    groupSameItem = true,
+                    entries = {
+                        { quest=88673, item=237496 }, -- Igneous Rock Specimen
+                        { quest=88674, item=237496 }, -- Igneous Rock Specimen
+                        { quest=88675, item=237496 }, -- Igneous Rock Specimen
+                        { quest=88676, item=237496 }, -- Igneous Rock Specimen
+                        { quest=88677, item=237496 }, -- Igneous Rock Specimen
+                        { quest=88678, item=237506 }, -- Septarian Nodule
+                    },
+                },
             },
             quests = {
+                {
+                    key = 'task',
+                    skill = 25,
+                    entries = {
+                        { quest=93705 }, -- Copper for Your Thoughts?
+                        { quest=93706 }, -- Aggressive Tin-dencies
+                        { quest=93707 }, -- ??
+                        { quest=93708 }, -- Conductive Metals
+                        { quest=93709 }, -- Stocking the Staples
+                    },
+                },
                 {
                     key = 'treatise',
                     entries = {

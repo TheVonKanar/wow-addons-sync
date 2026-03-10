@@ -1,8 +1,6 @@
 local myname, ns = ...
 
 --[[ TODO:
-From the Cradle to the Grave: 61860
-Oh, No You Don't!: 61861
 More Than Just Their Roots: 62188
 ]]
 
@@ -13,6 +11,15 @@ ns.RegisterPoints(ns.HARANDARDEN, {
 	atlas="TaxiNode_Continent_Neutral",
 	minimap=true, scale=1.5,
 	group=TUTORIAL_TITLE35, -- Travel
+})
+
+ns.RegisterPoints(ns.HARANDAR, {
+	[50225197] = {
+		achievement=61860,
+		-- quest=94046,
+		atlas="MiniMap-QuestArrow", scale=1.5,
+		note="Fly as high as you can",
+	},
 })
 
 local HARATI = ns.rewards.Currency(ns.CURRENCY_HARATI, 50)
@@ -115,7 +122,7 @@ ns.RegisterPoints(ns.HARANDAR, {
 		},
 		vignette=7158,
 	},
-	[60104701] = { -- Queen Lashtongue
+	[59934684] = { -- Queen Lashtongue
 		criteria=109043, quest=92154,
 		npc=249962,
 		loot={

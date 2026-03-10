@@ -18,7 +18,15 @@ local minimapButton = LDB:NewDataObject("ArcUI", {
   icon = "Interface\\AddOns\\ArcUI\\Textures\\ArcUI_Icon_400x400",
   
   OnClick = function(self, button)
-    -- Any click opens options
+    if button == "RightButton" then
+      local frame = _G["CooldownViewerSettings"]
+      if frame and frame.Show then
+        frame:Show()
+        frame:Raise()
+      end
+      return
+    end
+    -- Any other click opens ArcUI options
     if ns.API and ns.API.OpenOptions then
       ns.API.OpenOptions()
     end
@@ -28,6 +36,7 @@ local minimapButton = LDB:NewDataObject("ArcUI", {
     if not tooltip or not tooltip.AddLine then return end
     tooltip:SetText("|cff00ccffArc UI|r")
     tooltip:AddLine("Click to open options", 0.7, 0.7, 0.7)
+    tooltip:AddLine("Right-click to open CDM settings", 0.7, 0.7, 0.7)
   end
 })
 

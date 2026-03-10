@@ -494,6 +494,48 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
     end,
   }
 
+  entries["spellUsabilityGlowXOffset"] = {
+    type = "range", name = "X Offset", min = -50, max = 50, step = 1,
+    get = function()
+      local c = GetCfg(mode)
+      return c and c.spellUsability and c.spellUsability.usableGlowXOffset or 0
+    end,
+    set = function(_, v)
+      ApplySetting(mode, function(c)
+        if not c.spellUsability then c.spellUsability = {} end
+        c.spellUsability.usableGlowXOffset = v
+      end)
+      RefreshGlow()
+    end,
+    order = orderBase + 0.040, width = 0.55,
+    hidden = function()
+      if hideSection() then return true end
+      local c = GetCfg(mode)
+      return not (c and c.spellUsability and c.spellUsability.usableGlow)
+    end,
+  }
+
+  entries["spellUsabilityGlowYOffset"] = {
+    type = "range", name = "Y Offset", min = -50, max = 50, step = 1,
+    get = function()
+      local c = GetCfg(mode)
+      return c and c.spellUsability and c.spellUsability.usableGlowYOffset or 0
+    end,
+    set = function(_, v)
+      ApplySetting(mode, function(c)
+        if not c.spellUsability then c.spellUsability = {} end
+        c.spellUsability.usableGlowYOffset = v
+      end)
+      RefreshGlow()
+    end,
+    order = orderBase + 0.041, width = 0.55,
+    hidden = function()
+      if hideSection() then return true end
+      local c = GetCfg(mode)
+      return not (c and c.spellUsability and c.spellUsability.usableGlow)
+    end,
+  }
+
   return entries
 end
 

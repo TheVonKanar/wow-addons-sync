@@ -915,8 +915,13 @@ local function AssignFrameToFree(cdID, frame, x, y, iconSize, viewerType, viewer
     }
     
     -- Get verified profile table and write to it
+    -- CRITICAL: Only write to profile when it's fully loaded.
+    -- If profile isn't loaded yet, savedPositions is empty and writing here would
+    -- overwrite the correct saved group/free position with a spurious free-icon entry.
+    local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                               not ns.CDMGroups._profileNotLoaded
     local profileSavedPositions = ns.CDMGroups.GetProfileSavedPositions and ns.CDMGroups.GetProfileSavedPositions()
-    if profileSavedPositions then
+    if profileFullyLoaded and profileSavedPositions then
         profileSavedPositions[cdID] = positionData
     end
     
@@ -2389,15 +2394,15 @@ local function Reconcile()
             -- frames, so hiding the parent kills the ghost skin artifacts.
             -- ═══════════════════════════════════════════════════════════════════════════
             if wasSpecChange then
-                local viewerNames = {"BuffIconCooldownViewer", "EssentialCooldownViewer", "UtilityCooldownViewer"}
                 local hiddenOrphans = 0
                 
+                -- Scan CDM viewer children (frames CDM hasn't reassigned to a new spell)
+                local viewerNames = {"BuffIconCooldownViewer", "EssentialCooldownViewer", "UtilityCooldownViewer"}
                 for _, viewerName in ipairs(viewerNames) do
                     local viewer = _G[viewerName]
                     if viewer then
                         local children = {viewer:GetChildren()}
                         for _, child in ipairs(children) do
-                            -- Frame has no cooldownID = CDM didn't assign a spell to it
                             if (not child.cooldownID or child.cooldownID == 0) and child:IsShown() then
                                 child:Hide()
                                 hiddenOrphans = hiddenOrphans + 1
@@ -2406,9 +2411,36 @@ local function Reconcile()
                     end
                 end
                 
+                -- Also scan CDMGroups container children for ghost frames that CDM
+                -- repooled but CDMGroups moved into a group container before cleanup ran.
+                -- These won't be in the viewer children list above.
+                for groupName, group in pairs(ns.CDMGroups.groups or {}) do
+                    if group.container then
+                        local children = {group.container:GetChildren()}
+                        for _, child in ipairs(children) do
+                            if (not child.cooldownID or child.cooldownID == 0) and child:IsShown() then
+                                -- Verify it's not a legitimate CDMGroups UI element
+                                if not child._cdmgIsContainer and not child._arcEditButton then
+                                    child:Hide()
+                                    hiddenOrphans = hiddenOrphans + 1
+                                end
+                            end
+                        end
+                    end
+                end
+                
                 if hiddenOrphans > 0 then
-                    TimelineAdd("ACTION", "ORPHAN_CLEANUP", string.format("Hidden %d orphaned viewer frames (no cooldownID)", hiddenOrphans))
+                    TimelineAdd("ACTION", "ORPHAN_CLEANUP", string.format("Hidden %d orphaned frames (no cooldownID)", hiddenOrphans))
                     Debug("Orphan cleanup: hidden", hiddenOrphans, "frames with no cooldownID")
+                end
+            end
+            
+            -- Invalidate group visibility cache so UpdateGroupVisibility re-evaluates
+            -- conditions (e.g. hide OOC) from scratch after spec change
+            if wasSpecChange and ns.CDMGroups.InvalidateVisibilityCache then
+                ns.CDMGroups.InvalidateVisibilityCache()
+                if ns.CDMGroups.UpdateGroupVisibility then
+                    ns.CDMGroups.UpdateGroupVisibility()
                 end
             end
             
