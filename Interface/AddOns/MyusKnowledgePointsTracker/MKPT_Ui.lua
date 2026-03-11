@@ -16,24 +16,15 @@ function MKPT_env.CreateUI()
   local insets = db.ui.insets
   local firstTimeLoaded = db.state.firstTimeLoaded
   local scale = db.ui.scale
+  local locked = db.ui.lockWindow
+  MKPT_env.SetLockUi(locked)
 
   f:SetPoint("TOPLEFT", position.x, position.y)
   f:SetWidth(340)
   f:SetScale(scale)
-
-  f:SetMovable(true)
+  f:RegisterForDrag("LeftButton")
   f:EnableMouse(true)
   f:SetClampedToScreen(true)
-  f:RegisterForDrag("LeftButton")
-  f:SetScript("OnDragStart", f.StartMoving)
-  f:SetScript("OnDragStop", function()
-    f:StopMovingOrSizing()
-    local x, y = f:GetLeft(), f:GetTop() - (GetScreenHeight() / f:GetScale())
-    db.position = { x = x, y = y }
-    f:ClearAllPoints()
-    f:SetPoint("TOPLEFT", x, y)
-    f:SetUserPlaced(true)
-  end)
   f:SetScript("OnMouseDown", function(self, button)
     if button == "RightButton" then
       MKPT_env.ShowRightClickMenu()
@@ -78,10 +69,10 @@ function MKPT_env.CreateUI()
 
   if firstTimeLoaded then
     f:UpdateDetail(
-      "Click on an item to track\n"..
-      Utils.WeeklyTextColor("Weekly").." - "..
-      Utils.CatchUpTextColor("Catch-Up").." - "..
-      Utils.UniqueTextColor("Unique").." - "..
+      "Click on an item to track\n" ..
+      Utils.WeeklyTextColor("Weekly") .. " - " ..
+      Utils.CatchUpTextColor("Catch-Up") .. " - " ..
+      Utils.UniqueTextColor("Unique") .. " - " ..
       Utils.MissingTextColor("Missing")
     )
     db.state.firstTimeLoaded = false
@@ -107,6 +98,10 @@ local framePool = CreateFramePool(
     b.icon:SetTexture()
     b.middleText:SetText()
     b.glow:Hide()
+
+    local backgroundColor = MKPT_env.db.ui.rowBackgroundColor
+    b.background:SetVertexColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
+
     b:UnregisterAllEvents()
   end,
   false,
@@ -183,15 +178,16 @@ local function AddProfessionButton(profession)
   b.profession = profession
 
   local remaining = profession:CalculateRemainingKps()
-  b.leftText:SetText(Utils.WeeklyTextColor("W:"..remaining.weekly)..Utils.CatchUpTextColor(" +"..remaining.catchUp))
+  b.leftText:SetText(Utils.WeeklyTextColor("W:" .. remaining.weekly) .. Utils.CatchUpTextColor(" +" .. remaining.catchUp))
 
   local missing = profession:CalculateSpendableKps()
-  b.rightText:SetText(Utils.UniqueTextColor("U:"..remaining.unique).." "..Utils.MissingTextColor(missing))
+  b.rightText:SetText(Utils.UniqueTextColor("U:" .. remaining.unique) .. " " .. Utils.MissingTextColor(missing))
 
   local middleText = profession.name
   local skillLevel = profession:GetSkillLevel()
   if skillLevel then
-    middleText = middleText.." "..skillLevel.skillLevel.."/"..skillLevel.maxSkillLevel.." +"..skillLevel.bonusSkill
+    middleText = middleText .. " " .. skillLevel.skillLevel .. "/" ..
+        skillLevel.maxSkillLevel .. " +" .. skillLevel.bonusSkill
   end
 
   b.icon:SetTexture(profession.icon)
@@ -226,7 +222,8 @@ local function AddProfessionTrainerButton(profession)
   local middleText = profession.name
   local skillLevel = profession:GetSkillLevel()
   if skillLevel then
-    middleText = middleText.." "..skillLevel.skillLevel.."/"..skillLevel.maxSkillLevel.." +"..skillLevel.bonusSkill
+    middleText = middleText .. " " .. skillLevel.skillLevel .. "/" ..
+        skillLevel.maxSkillLevel .. " +" .. skillLevel.bonusSkill
   end
 
   b.icon:SetTexture(profession.icon)
@@ -289,7 +286,7 @@ local function AddItemButton(item)
 
   b.middleText:SetText(name)
   b.middleText:SetJustifyH("LEFT")
-  b.rightText:SetText("+"..item:GetRemainingKnowledgePoints())
+  b.rightText:SetText("+" .. item:GetRemainingKnowledgePoints())
 
   b:SetScript("OnClick", function(self)
     self.item:ToggleTrack()
@@ -395,4 +392,26 @@ function MKPT_env.SetUiScale(scale)
   scale = math.max(0.5, math.min(1.5, scale))
   MKPT_env.db.ui.scale = scale
   f:SetScale(scale)
+end
+
+function MKPT_env.SetLockUi(lock)
+  local db = MKPT_env.db
+  db.ui.lockWindow = lock
+
+  if lock then
+    f:SetMovable(false)
+    f:SetScript("OnDragStart", nil)
+    f:SetScript("OnDragStop", nil)
+  else
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", function()
+      f:StopMovingOrSizing()
+      local x, y = f:GetLeft(), f:GetTop() - (GetScreenHeight() / f:GetScale())
+      db.position = { x = x, y = y }
+      f:ClearAllPoints()
+      f:SetPoint("TOPLEFT", x, y)
+      f:SetUserPlaced(true)
+    end)
+    f:SetMovable(true)
+  end
 end

@@ -1041,9 +1041,9 @@ MKPT_env.InitProfessions = function()
           -- Thalassian Jewelcrafter's Notebook
           :AddEntry(MKPT_WeeklyQuestItem:New { questId = { 93694 }, itemId = 263458, waypoint = { map = 2393, x = 0.4503, y = 0.5515 }, kp = 3, text = "Quest: Jewelcrafting Services Requested" })
           -- Harandar Stone Sample
-          :AddEntry(MKPT_WeeklyTreasure:New { questId = { 93538 }, itemId = 259199, kp = 2 })
+          :AddEntry(MKPT_WeeklyTreasure:New { questId = { 93539 }, itemId = 259199, kp = 2 })
           -- Void-Touched Eversong Diamond Fragments
-          :AddEntry(MKPT_WeeklyTreasure:New { questId = { 93539 }, itemId = 259198, kp = 2 })
+          :AddEntry(MKPT_WeeklyTreasure:New { questId = { 93538 }, itemId = 259198, kp = 2 })
           -- DMF Keeping the Faire Sparkling
           :AddEntry(MKPT_DarkmoonQuest:New { questId = { 29516 }, waypoint = { map = 407, x = 0.5500, y = 0.7079 }, kp = 3 })
           -- Flicker of Midnight Jewelcrafting Knowledge Catch up mechanic

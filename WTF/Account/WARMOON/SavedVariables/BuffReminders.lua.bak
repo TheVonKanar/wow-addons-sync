@@ -2,13 +2,13 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -21,18 +21,34 @@ BuffRemindersDB = {
 ["useCustomGlowColor"] = true,
 ["consumableDisplayMode"] = "expanded",
 },
-["hideAllInVehicle"] = true,
+["enabledBuffs"] = {
+["symbioticRelationship"] = true,
+["blisteringScales"] = true,
+["soulstone"] = true,
+["atrophicNumbingPoison"] = true,
+["shamanShields"] = true,
+["bronze"] = true,
+["intellect"] = true,
+["versatility"] = true,
+["attackPower"] = true,
+["devotionAura"] = true,
+["earthShieldOthers"] = false,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["beacons"] = true,
+["burningRush"] = false,
+},
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["spacing"] = 0.2,
-["iconZoom"] = 0,
-["textAlpha"] = 1,
-["borderSize"] = 2,
-["showText"] = false,
 ["growDirection"] = "CENTER",
-["iconSize"] = 48,
+["showText"] = false,
 ["textSize"] = 20,
+["borderSize"] = 2,
+["iconZoom"] = 0,
+["spacing"] = 0.2,
+["iconSize"] = 48,
+["textAlpha"] = 1,
 ["textColor"] = {
 1,
 1,
@@ -63,23 +79,9 @@ BuffRemindersDB = {
 ["readyCheckOnlyOverrides"] = {
 },
 ["showLoginMessages"] = false,
-["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["soulstone"] = true,
-["blisteringScales"] = true,
-["atrophicNumbingPoison"] = true,
-["beacons"] = true,
-["bronze"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["earthShieldOthers"] = false,
-["devotionAura"] = true,
-["attackPower"] = true,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
-["burningRush"] = false,
-},
+["hideAllInVehicle"] = true,
+["buffTrackingMode"] = "my_buffs",
+["dbVersion"] = 26,
 ["customBuffs"] = {
 ["burningRush"] = {
 ["overlayText"] = "",
@@ -93,8 +95,6 @@ BuffRemindersDB = {
 ["spellID"] = 111400,
 },
 },
-["dbVersion"] = 26,
-["buffTrackingMode"] = "my_buffs",
 ["categoryVisibility"] = {
 ["custom"] = {
 },

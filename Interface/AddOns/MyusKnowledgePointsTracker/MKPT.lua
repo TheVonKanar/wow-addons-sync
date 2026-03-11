@@ -19,6 +19,7 @@ function EventHandler.ADDON_LOADED(loadedAddonName, _)
   MKPT_env.InitializeSlashCommand()
   MKPT_env.InitializeMinimapIcon()
   MKPT_env.InitializeCompartmentIcon()
+  MKPT_env.InitializeOptionsMenu()
 
   events:UnregisterEvent("ADDON_LOADED")
 end
@@ -41,6 +42,8 @@ function EventHandler.PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, _)
   events:RegisterEvent("ACTIVE_DELVE_DATA_UPDATE")
   events:RegisterEvent("VIGNETTES_UPDATED")
   events:RegisterEvent("NAVIGATION_DESTINATION_REACHED")
+  events:RegisterEvent("PLAYER_REGEN_DISABLED")
+  events:RegisterEvent("PLAYER_REGEN_ENABLED")
 
   events:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
@@ -122,4 +125,23 @@ end
 
 function EventHandler.NAVIGATION_DESTINATION_REACHED()
   EventHandler.VIGNETTES_UPDATED()
+end
+
+local isVisibleBeforeCombat = false
+
+function EventHandler.PLAYER_REGEN_DISABLED()
+  if not MKPT_env.db.ui.hideInCombat then
+    return
+  end
+  isVisibleBeforeCombat = MKPT_env.ui:IsShown()
+  MKPT_env.ui:Hide()
+end
+
+function EventHandler.PLAYER_REGEN_ENABLED()
+  if not MKPT_env.db.ui.hideInCombat then
+    return
+  end
+  if isVisibleBeforeCombat then
+    MKPT_env.ui:Show()
+  end
 end

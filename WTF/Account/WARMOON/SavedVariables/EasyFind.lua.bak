@@ -21,11 +21,11 @@ EasyFindDB = {
 ["navigateToZonesDirectly"] = true,
 ["indicatorColor"] = "Yellow",
 ["localSearchFilters"] = {
-["services"] = true,
-["travel"] = true,
 ["instances"] = true,
+["travel"] = true,
+["services"] = true,
 },
-["blinkingPins"] = false,
+["directOpen"] = true,
 ["pinnedUIItems"] = {
 },
 ["globalSearchFilters"] = {
@@ -36,7 +36,7 @@ EasyFindDB = {
 },
 ["mapResultsAbove"] = false,
 ["showMinimapButton"] = false,
-["directOpen"] = true,
+["blinkingPins"] = false,
 ["searchBarOpacity"] = 1,
 ["showLoginMessage"] = true,
 ["firstInstall"] = true,

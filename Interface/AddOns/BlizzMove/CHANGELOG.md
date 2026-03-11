@@ -1,6 +1,7 @@
 # BlizzMove
 
-## [v3.7.28](https://github.com/Kiatra/BlizzMove/tree/v3.7.28) (2026-03-01)
-[Full Changelog](https://github.com/Kiatra/BlizzMove/compare/v3.7.27...v3.7.28) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
+## [v3.7.30](https://github.com/Kiatra/BlizzMove/tree/v3.7.30) (2026-03-11)
+[Full Changelog](https://github.com/Kiatra/BlizzMove/compare/v3.7.29...v3.7.30) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
 
-- Add a workaround for MoneyFrame secret errors (see #172)  
+- Replace AceEvent with a fork, to fix some issues with CPU blame being incorrect  
+- Update build status urls to current project path  

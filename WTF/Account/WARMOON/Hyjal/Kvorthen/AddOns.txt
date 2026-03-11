@@ -9,7 +9,7 @@ Cell: disabled
 ChoreTracker: enabled
 DejaCharacterStats: enabled
 DialogueUI: enabled
-EditModeExpanded: enabled
+EditModeExpanded: disabled
 ExtraQuestButton: disabled
 GTFO: enabled
 HandyNotes: enabled

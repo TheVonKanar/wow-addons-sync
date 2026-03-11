@@ -115,7 +115,7 @@ function CityGuide_CreateTextLabel(parent, x, y, text, scale, textDirection, col
 end
 
 -- Function to create icon only
-function CityGuide_CreateIconOnly(parent, x, y, iconPath, minimapIcon, scale, sizeMultiplier, tooltipText)
+function CityGuide_CreateIconOnly(parent, x, y, iconPath, minimapIcon, scale, sizeMultiplier, tooltipText, npcName)
     scale = scale or 1.0
     sizeMultiplier = sizeMultiplier or 1.0
     
@@ -159,9 +159,32 @@ function CityGuide_CreateIconOnly(parent, x, y, iconPath, minimapIcon, scale, si
         icon:SetTexture(iconPath)
     end
 
-    -- Add tooltip if tooltipText is provided
+    -- Always enable mouse for waypoint clicking on icon modes
+    container:EnableMouse(true)
+    container:SetScript("OnMouseUp", function(self, button)
+        if button == "LeftButton" and CityGuideConfig.enableWaypoints then
+            local mapID = WorldMapFrame:GetMapID()
+            if mapID and C_Map.CanSetUserWaypointOnMap(mapID) then
+                local existing = C_Map.GetUserWaypoint()
+                if existing and existing.uiMapID == mapID
+                    and math.abs(existing.position.x - x) < 0.0001
+                    and math.abs(existing.position.y - y) < 0.0001 then
+                    -- Same icon clicked again — remove the waypoint
+                    C_Map.ClearUserWaypoint()
+                    C_SuperTrack.SetSuperTrackedUserWaypoint(false)
+                    PlaySound(SOUNDKIT.UI_MAP_WAYPOINT_SUPER_TRACK_OFF)
+                else
+                    -- New icon — set the waypoint
+                    C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(mapID, x, y))
+                    C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+                    PlaySound(SOUNDKIT.UI_MAP_WAYPOINT_SUPER_TRACK_ON)
+                end
+            end
+        end
+    end)
+
+    -- Add tooltip if tooltipText is provided (tooltip mode)
     if tooltipText and CityGuideConfig.useTooltips then
-        container:EnableMouse(true)
         container:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             
@@ -440,6 +463,12 @@ function CityGuide_CreateOrUpdateMapButton()
                 
                 GameTooltip:AddLine(" ", 1, 1, 1)
                 GameTooltip:AddLine("|cffFFD700Middle-click:|r Disable this city", 1, 1, 0.5)
+                
+                -- Waypoint hint: only shown when icons are visible to click
+                if CityGuideConfig.displayMode ~= "labels" then
+                    GameTooltip:AddLine(" ", 1, 1, 1)
+                    GameTooltip:AddLine("|cff444444Left-click an icon to set a waypoint|r")
+                end
             end
             
             GameTooltip:Show()

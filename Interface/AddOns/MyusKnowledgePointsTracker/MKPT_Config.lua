@@ -11,7 +11,8 @@ function MKPT_env.InitializeSavedVariables()
         hide = false,
       },
       state = {
-        expansion = GetExpansionLevel() == Enum.ExpansionLevel.WarWithin and Enum.ExpansionLevel.WarWithin or Enum.ExpansionLevel.Midnight,
+        expansion = GetExpansionLevel() == Enum.ExpansionLevel.WarWithin and Enum.ExpansionLevel.WarWithin or
+        Enum.ExpansionLevel.Midnight,
         show = true,
         firstTimeLoaded = true,
       },
@@ -35,7 +36,9 @@ function MKPT_env.InitializeSavedVariables()
         insets = { left = -3, right = -3, top = -1, bottom = -2 },
         backgroundColor = { r = 0, g = 0, b = 0, a = 0.6 },
         rowBackgroundColor = { r = 0, g = 0, b = 0, a = 0.5 },
-        scale = 1.0
+        scale = 1.0,
+        lockWindow = false,
+        hideInCombat = false,
       }
     }
   }

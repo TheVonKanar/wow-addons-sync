@@ -378,7 +378,7 @@ function MKPT_WeeklyTreasure:GetDescription()
   if MKPT_env.db.state.expansion == Enum.ExpansionLevel.WarWithin then
     zoneName = C_Map.GetMapInfo(2274).name -- Khaz Algar
   else
-    zoneName = C_Map.GetMapInfo(2405).name -- Voidstorm
+    zoneName = C_Map.GetMapInfo(2537).name -- Quel'Thalas
   end
   return Utils.WEEKLY_TREASURE_ICON.." Found on treasures around "..zoneName
 end

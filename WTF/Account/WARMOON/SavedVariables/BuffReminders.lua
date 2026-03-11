@@ -2,13 +2,13 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -21,32 +21,27 @@ BuffRemindersDB = {
 ["useCustomGlowColor"] = true,
 ["consumableDisplayMode"] = "expanded",
 },
-["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["blisteringScales"] = true,
-["soulstone"] = true,
-["atrophicNumbingPoison"] = true,
-["shamanShields"] = true,
-["bronze"] = true,
-["intellect"] = true,
-["versatility"] = true,
-["attackPower"] = true,
-["earthShieldOthers"] = false,
-["devotionAura"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["beacons"] = true,
-["burningRush"] = false,
-},
+["hideAllInVehicle"] = true,
 ["dbVersion"] = 26,
 ["readyCheckOnlyOverrides"] = {
 },
 ["showLoginMessages"] = false,
-["hideAllInVehicle"] = true,
-["buffTrackingMode"] = "my_buffs",
-["categoryVisibility"] = {
-["custom"] = {
-},
+["enabledBuffs"] = {
+["symbioticRelationship"] = true,
+["soulstone"] = true,
+["blisteringScales"] = true,
+["atrophicNumbingPoison"] = true,
+["beacons"] = true,
+["bronze"] = true,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["attackPower"] = true,
+["versatility"] = true,
+["intellect"] = true,
+["shamanShields"] = true,
+["burningRush"] = false,
 },
 ["customBuffs"] = {
 ["burningRush"] = {
@@ -61,17 +56,22 @@ BuffRemindersDB = {
 ["spellID"] = 111400,
 },
 },
+["categoryVisibility"] = {
+["custom"] = {
+},
+},
+["buffTrackingMode"] = "my_buffs",
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["growDirection"] = "CENTER",
-["showText"] = false,
-["textSize"] = 20,
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["spacing"] = 0.2,
-["iconSize"] = 48,
+["iconZoom"] = 0,
 ["textAlpha"] = 1,
+["borderSize"] = 2,
+["showText"] = false,
+["growDirection"] = "CENTER",
+["iconSize"] = 48,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,

@@ -6,8 +6,8 @@ ExtraQuestButtonDB3 = {
 ["scale"] = 1,
 ["trackingOnly"] = false,
 ["position"] = {
-["y"] = 202.6678009033203,
-["x"] = -0.33319091796875,
+["y"] = 196.6684417724609,
+["x"] = -371.3329162597656,
 ["point"] = "BOTTOM",
 },
 ["noCooldownText"] = false,
