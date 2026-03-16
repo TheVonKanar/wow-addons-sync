@@ -104,6 +104,7 @@ local function ExtractAuraBarConfig(bar)
     
     -- THRESHOLDS, STACK COLORS, COLOR RANGES, EVENTS
     out.thresholds = bar.thresholds and DeepCopy(bar.thresholds) or {}
+    out.abilityThresholds = bar.abilityThresholds and DeepCopy(bar.abilityThresholds) or {}
     out.stackColors = bar.stackColors and DeepCopy(bar.stackColors) or {}
     out.colorRanges = bar.colorRanges and DeepCopy(bar.colorRanges) or {}
     out.events = bar.events and DeepCopy(bar.events) or {}
@@ -718,13 +719,20 @@ local function ImportBars(data, mode)
             local barType = importedBar._barType or (importedBar.tracking and importedBar.tracking.barType) or "cooldown"
             
             if spellID > 0 then
+                -- Parse instance from barType (e.g. "cooldown_2" -> 2, "charge_3" -> 3)
+                local baseBarKind = barType:match("^(%a+)") or barType
+                local instStr = barType:match("^%a+_(%d+)$")
+                local instance = instStr and tonumber(instStr) or 1
+                -- Build the barID the same way CooldownBars does
+                local barID = instance <= 1 and spellID or (tostring(spellID) .. "_" .. instance)
+
                 -- Check if bar already exists in add mode
                 local alreadyExists = false
                 if mode == "add" then
-                    if barType == "charge" then
-                        alreadyExists = ns.CooldownBars and ns.CooldownBars.activeCharges and ns.CooldownBars.activeCharges[spellID]
+                    if baseBarKind == "charge" then
+                        alreadyExists = ns.CooldownBars and ns.CooldownBars.activeCharges and ns.CooldownBars.activeCharges[barID]
                     else
-                        alreadyExists = ns.CooldownBars and ns.CooldownBars.activeCooldowns and ns.CooldownBars.activeCooldowns[spellID]
+                        alreadyExists = ns.CooldownBars and ns.CooldownBars.activeCooldowns and ns.CooldownBars.activeCooldowns[barID]
                     end
                 end
                 
@@ -750,8 +758,8 @@ local function ImportBars(data, mode)
                     
                     ns.db.char.cooldownBarConfigs[spellID][barType] = barCopy
                     
-                    -- Queue bar for creation
-                    table.insert(barsToCreate, {spellID = spellID, barType = barType})
+                    -- Queue bar for creation (include instance so AddCooldownBar targets the right slot)
+                    table.insert(barsToCreate, {spellID = spellID, barType = barType, instance = instance, baseBarKind = baseBarKind})
                     imported = imported + 1
                 end
             else
@@ -763,10 +771,10 @@ local function ImportBars(data, mode)
         -- Now create the actual bar frames
         if ns.CooldownBars and #barsToCreate > 0 then
             for _, barInfo in ipairs(barsToCreate) do
-                if barInfo.barType == "charge" then
-                    ns.CooldownBars.AddChargeBar(barInfo.spellID)
+                if barInfo.baseBarKind == "charge" then
+                    ns.CooldownBars.AddChargeBar(barInfo.spellID, barInfo.instance)
                 else
-                    ns.CooldownBars.AddCooldownBar(barInfo.spellID)
+                    ns.CooldownBars.AddCooldownBar(barInfo.spellID, barInfo.instance)
                 end
             end
             

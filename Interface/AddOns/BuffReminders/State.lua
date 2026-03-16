@@ -25,6 +25,7 @@ local _, BR = ...
 ---@field isEating boolean?                 -- Food entry: player is currently eating
 ---@field eatingExpirationTime number?      -- GetTime()-based expiration of eating aura
 ---@field petActions PetActionList?           -- Expanded pet summon actions
+---@field dynamicIcon number|string|nil      -- Dynamic icon texture override (e.g. next poison to cast)
 
 -- Lua stdlib locals (avoid repeated global lookups in hot paths)
 local floor = math.floor
@@ -89,9 +90,11 @@ local inCombat = false
 
 -- Content type cache (invalidated on PLAYER_ENTERING_WORLD)
 local cachedContentType = nil
+local cachedInstanceType = nil -- raw WoW instanceType, stashed alongside content type
 
--- PvP instance flag (set alongside content type cache)
-local isPvPInstance = false
+-- Whether we are in the PvP prep phase (before gates open). Aura API is unrestricted during prep.
+-- Defaults to false (restricted) so reloads during active matches stay safe.
+local inPvPPrepPhase = false
 
 -- Difficulty cache (invalidated alongside content type)
 local cachedDifficultyKey = nil
@@ -123,6 +126,7 @@ local CONTENT_DIFF_DB_KEYS = {
     scenario = "scenarioDifficulty",
     dungeon = "dungeonDifficulty",
     raid = "raidDifficulty",
+    pvp = "pvpType",
 }
 
 -- Talent/spell knowledge cache (invalidated on PLAYER_SPECIALIZATION_CHANGED)
@@ -493,7 +497,7 @@ local function IsBuffEnabled(key)
 end
 
 ---Get the current content type based on instance/zone (cached)
----@return "openWorld"|"dungeon"|"scenario"|"raid"|"housing"
+---@return string contentType One of "openWorld", "dungeon", "scenario", "raid", "housing", "pvp"
 local function GetCurrentContentType()
     if cachedContentType then
         return cachedContentType
@@ -520,6 +524,7 @@ local function GetCurrentContentType()
     end
 
     local inInstance, instanceType = IsInInstance()
+    cachedInstanceType = instanceType
     if not inInstance then
         cachedContentType = "openWorld"
     elseif instanceType == "raid" then
@@ -527,10 +532,10 @@ local function GetCurrentContentType()
     elseif instanceType == "scenario" then
         cachedContentType = "scenario"
     else
-        -- pvp and arena instance types map to "dungeon" for content visibility
-        cachedContentType = "dungeon"
-        if instanceType == "pvp" or instanceType == "arena" then
-            isPvPInstance = true
+        if instanceType == "arena" or instanceType == "pvp" then
+            cachedContentType = "pvp"
+        else
+            cachedContentType = "dungeon"
         end
     end
 
@@ -558,6 +563,10 @@ local function GetCurrentDifficultyKey()
         local key = difficultyID == 208 and "delves" or "others"
         cachedDifficultyKey = key
         return key
+    elseif contentType == "pvp" then
+        local key = cachedInstanceType == "arena" and "arena" or "bg"
+        cachedDifficultyKey = key
+        return key
     end
     return nil
 end
@@ -565,7 +574,7 @@ end
 ---Check if a category should be visible for the current content type
 ---@param category CategoryName
 ---@return boolean
-local function IsCategoryVisibleForContent(category)
+local function IsCategoryVisibleForContent(category, skipReadyCheck)
     if inVehicle and category ~= "raid" and category ~= "presence" then
         return false
     end
@@ -590,10 +599,16 @@ local function IsCategoryVisibleForContent(category)
             return false
         end
     end
-    -- Per-category ready check filter
-    local catSettings = db.categorySettings and db.categorySettings[category]
-    if catSettings and catSettings.showOnlyOnReadyCheck and not inReadyCheck then
+    -- Hide category when PvP match is active (past prep phase)
+    if contentType == "pvp" and not inPvPPrepPhase and visibility.hideInPvPMatch then
         return false
+    end
+    -- Per-category ready check filter (skipped when caller handles ready check independently)
+    if not skipReadyCheck then
+        local catSettings = db.categorySettings and db.categorySettings[category]
+        if catSettings and catSettings.showOnlyOnReadyCheck and not inReadyCheck then
+            return false
+        end
     end
     return true
 end
@@ -1079,6 +1094,57 @@ local function GetEatingExpirationTime()
     return auraData.expirationTime
 end
 
+---Check if a consumable buff is free/reusable (freeConsumable flag or permanent rune in bags)
+---@param buff ConsumableBuff
+---@return boolean
+local function IsFreeConsumable(buff)
+    if buff.freeConsumable then
+        return true
+    end
+    if buff.permanentRuneItemIDs then
+        for _, itemID in ipairs(buff.permanentRuneItemIDs) do
+            if HasItemInBagsOrEquipped(itemID) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+---Check if a free consumable should be visible based on its override visibility settings
+---@param db table Database settings
+---@return boolean
+local function IsFreeConsumableVisible(db)
+    if inVehicle then
+        return false
+    end
+    local vis = db.defaults and db.defaults.freeConsumableVisibility
+    if not vis then
+        return true
+    end
+    local contentType = GetCurrentContentType()
+    if vis[contentType] == false then
+        return false
+    end
+    -- Check difficulty sub-filter
+    local diffKey = GetCurrentDifficultyKey()
+    if diffKey then
+        local diffDbKey = CONTENT_DIFF_DB_KEYS[contentType]
+        local diffTable = diffDbKey and vis[diffDbKey]
+        if diffTable and diffTable[diffKey] == false then
+            return false
+        end
+    end
+    -- PvP match hiding follows the consumable category's setting
+    if contentType == "pvp" and not inPvPPrepPhase then
+        local catVis = db.categoryVisibility and db.categoryVisibility.consumable
+        if catVis and catVis.hideInPvPMatch then
+            return false
+        end
+    end
+    return true
+end
+
 ---Check if player is missing a consumable buff, weapon enchant, or inventory item (returns true if missing)
 ---@param buff table Consumable buff definition
 ---@return boolean shouldShow
@@ -1171,7 +1237,7 @@ local function PassesPreChecks(buff, presentClasses, db)
         return false
     end
 
-    -- Ready check gate
+    -- Ready check gate (for readyCheckOnly buffs like presence buffs)
     if buff.readyCheckOnly and not inReadyCheck then
         local overrides = db.readyCheckOnlyOverrides
         local settingKey = buff.groupId or buff.key
@@ -1328,6 +1394,7 @@ function BuffState.Refresh()
         entry.isEating = nil
         entry.eatingExpirationTime = nil
         entry.petActions = nil
+        entry.dynamicIcon = nil
     end
 
     -- Build valid unit cache once per refresh cycle
@@ -1344,8 +1411,11 @@ function BuffState.Refresh()
 
     local trackingMode = db.buffTrackingMode
     -- Aura API is restricted in combat/encounters (inCombat set by Display layer),
-    -- during M+ keystones, and in PvP instances (always restricted regardless of combat state).
-    local isAuraRestricted = inCombat or GetCurrentDifficultyKey() == "mythicPlus" or isPvPInstance
+    -- during M+ keystones, and in PvP instances (except during prep phase before gates open).
+    -- Ensure content type cache is populated before checking (avoids one-frame flicker after invalidation).
+    local contentType = GetCurrentContentType()
+    local isPvPRestricted = contentType == "pvp" and not inPvPPrepPhase
+    local isAuraRestricted = inCombat or GetCurrentDifficultyKey() == "mythicPlus" or isPvPRestricted
     local hideExpiring = isAuraRestricted and db.hideExpiringInCombat ~= false
 
     -- Process raid buffs (coverage - need everyone to have them)
@@ -1395,7 +1465,10 @@ function BuffState.Refresh()
             local overrideKey = buff.groupId or buff.key
             readyCheckOk = overrides and overrides[overrideKey] == false
         end
-        local showBuff = presenceVisible and (readyCheckOk or instanceEntryOk) and scope.show
+        local showBuff = presenceVisible
+            and (readyCheckOk or instanceEntryOk)
+            and scope.show
+            and (not buff.groupOnly or #currentValidUnits > 1) -- solo = 1 entry (player only)
         local useGlowDet = isAuraRestricted and not IsAuraTrackable(buff) and buff.glowDetectable
         if (not isAuraRestricted or IsAuraTrackable(buff) or useGlowDet) and IsBuffEnabled(buff.key) and showBuff then
             if useGlowDet then
@@ -1480,7 +1553,7 @@ function BuffState.Refresh()
                 and selfVisible
                 and (not buff.class or buff.class == playerClass)
                 and IsBuffEnabled(settingKey)
-                and (not buff.customCheck or buff.customCheck())
+                and (not buff.customCheck or buff.customCheck(isAuraRestricted))
             then
                 SetEntryText(entry, buff.overlayText, selfGlow)
             end
@@ -1512,16 +1585,28 @@ function BuffState.Refresh()
                     if shouldShow then
                         SetEntryText(entry, buff.overlayText, selfGlow)
                         entry.iconByRole = buff.iconByRole
+                        if buff.getNextCastID then
+                            local castID = buff.getNextCastID()
+                            entry.dynamicIcon = castID and C_Spell.GetSpellTexture(castID)
+                        end
                     elseif
                         shouldShow == false
                         and not buff.enchantID
                         and not buff.noExpirationGlow
                         and not hideExpiring
-                        and (buff.buffIdOverride or buff.spellID)
                     then
-                        -- Buff present but maybe expiring (enchants/customCheck-only buffs don't track expiration here)
-                        local _, remaining = UnitHasBuff("player", buff.buffIdOverride or buff.spellID)
-                        TrySetEntryExpiring(entry, remaining, selfThreshold, selfGlow)
+                        -- Buff present but maybe expiring
+                        local remaining, expiringCastID
+                        if buff.getExpirationInfo then
+                            remaining, expiringCastID = buff.getExpirationInfo()
+                        elseif buff.buffIdOverride or buff.spellID then
+                            _, remaining = UnitHasBuff("player", buff.buffIdOverride or buff.spellID)
+                        end
+                        if TrySetEntryExpiring(entry, remaining, selfThreshold, selfGlow) then
+                            if expiringCastID then
+                                entry.dynamicIcon = C_Spell.GetSpellTexture(expiringCastID)
+                            end
+                        end
                     end
                 end
             end
@@ -1575,6 +1660,11 @@ function BuffState.Refresh()
     local consumableVisible = IsCategoryVisibleForContent("consumable")
     local consGlow, consThreshold = GetCategoryGlowSettings("consumable")
     local delveFoodOnly = db.defaults and db.defaults.delveFoodOnly and BR.IsInDelve()
+    local freeMode = db.defaults and db.defaults.freeConsumableMode or "override"
+    local freeVisible = freeMode == "override" and IsFreeConsumableVisible(db) or false
+    -- In follow mode, healthstones use consumable category content gates (without ready check)
+    local consumableContentVisible = freeMode == "follow" and IsCategoryVisibleForContent("consumable", true) or false
+    local freeRcMode = db.defaults and db.defaults.healthstoneVisibility or "readyCheck"
     for i, buff in ipairs(Consumables) do
         local entry = GetOrCreateEntry(buff.key, "consumable", i)
         local settingKey = buff.groupId or buff.key
@@ -1582,10 +1672,21 @@ function BuffState.Refresh()
         local requiredClass = buff.class or buff.casterClass
         local hasCaster = not requiredClass or HasCasterForBuff(requiredClass, buff.levelRequired)
         local useGlowDet = isAuraRestricted and not IsAuraTrackable(buff) and buff.glowDetectable
+        local isFreeConsumable = freeVisible and IsFreeConsumable(buff)
+        -- Healthstone ready check mode (independent of follow/override content gates)
+        local freeReadyCheckOk = true
+        if buff.freeConsumable and not inReadyCheck then
+            if freeRcMode == "readyCheck" then
+                freeReadyCheckOk = false
+            elseif freeRcMode == "casterOnly" then
+                freeReadyCheckOk = not buff.casterClass or buff.casterClass == playerClass
+            end
+        end
         if
             (not isAuraRestricted or IsAuraTrackable(buff) or useGlowDet)
             and IsBuffEnabled(settingKey)
-            and consumableVisible
+            and (consumableVisible or isFreeConsumable or (buff.freeConsumable and consumableContentVisible))
+            and freeReadyCheckOk
             and hasCaster
             and PassesPreChecks(buff, nil, db)
             and not (buff.key ~= "delveFood" and delveFoodOnly)
@@ -1776,6 +1877,12 @@ function BuffState.SetInCombat(state)
     inCombat = state
 end
 
+---Set whether we are in the PvP prep phase (before gates open).
+---@param state boolean
+function BuffState.SetPvPPrepPhase(state)
+    inPvPPrepPhase = state
+end
+
 -- ============================================================================
 -- CACHE INVALIDATION
 -- ============================================================================
@@ -1783,8 +1890,12 @@ end
 ---Invalidate content type cache (call on PLAYER_ENTERING_WORLD)
 function BuffState.InvalidateContentTypeCache()
     cachedContentType = nil
+    cachedInstanceType = nil
     cachedDifficultyKey = nil
-    isPvPInstance = false
+    -- Note: inPvPPrepPhase is NOT reset here — it's managed explicitly by
+    -- SetPvPPrepPhase() calls from PLAYER_ENTERING_WORLD and PVP_MATCH_STATE_CHANGED.
+    -- Resetting it here would clobber the prep state when ZONE_CHANGED_NEW_AREA's
+    -- deferred invalidation fires 0.5s after entering a PvP instance.
 end
 
 ---Invalidate spec ID cache (call on PLAYER_ENTERING_WORLD, PLAYER_SPECIALIZATION_CHANGED)

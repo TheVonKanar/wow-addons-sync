@@ -38,6 +38,10 @@ VER 3 010000000000006F " " "5927655"
 #showtooltip
 /cast [@cursor] Surging Totem
 END
+VER 3 0100000000000071 " " "134400"
+#showtooltip Cleanse Spirit
+/cast [@player] Cleanse Spirit
+END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle

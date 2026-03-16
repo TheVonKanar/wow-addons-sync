@@ -31,12 +31,13 @@ local min = math.min
 ---@field groupId? string
 ---@field excludeSpellID? number
 ---@field displayIcon? number
----@field infoTooltip? string
+---@field infoTooltip? TooltipText
 ---@field noExpirationGlow? boolean
 ---@field readyCheckOnly? boolean Only show during ready checks
 ---@field showOnInstanceEntry? boolean Also show when entering an instance (not M+)
 ---@field castOnOthers? boolean Buff exists on the target, not the caster (e.g., Soulstone)
 ---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
+---@field groupOnly? boolean Only show when in a group (hide when solo)
 
 ---@class TargetedBuff
 ---@field spellID SpellID
@@ -49,7 +50,7 @@ local min = math.min
 ---@field excludeSpellID? number
 ---@field displayIcon? number
 ---@field requireSpecId? number
----@field infoTooltip? string
+---@field infoTooltip? TooltipText
 ---@field clickMacro? fun(spellID: number?): string
 ---@field casterBuffId? number Check this buff on the caster instead of scanning group
 ---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
@@ -72,8 +73,9 @@ local min = math.min
 ---@field displayIcon? number
 ---@field displaySpells? SpellID Spell IDs to show icons for in Options checkbox (subset of spellID)
 ---@field iconByRole? table<RoleType, number>
----@field infoTooltip? string
----@field customCheck? fun(): boolean?
+---@field infoTooltip? TooltipText
+---@field customCheck? fun(isRestricted?: boolean): boolean?
+---@field getNextCastID? fun(): number|nil -- Returns spell ID of next spell to cast (used for dynamic icon)
 ---@field getPetActions? fun(): PetAction[]?  -- Override pet actions (e.g., wrong pet → Felguard only)
 ---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
 ---@field showOnInstanceEntry? boolean Only show when entering an instance (not M+), skip normal buff checks
@@ -93,10 +95,12 @@ local min = math.min
 ---@field itemID? number|number[] Check if player has this item in inventory
 ---@field readyCheckOnly? boolean Only show during ready checks
 ---@field casterClass? ClassName Require this class in group, but show reminder to everyone
----@field infoTooltip? string Tooltip text shown on hover (pipe-separated: title|description)
+---@field infoTooltip? TooltipText
 ---@field visibilityCondition? fun(): boolean Custom function that gates visibility (return false to hide)
 ---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
 ---@field consumableCategory? string Category key in BR.CONSUMABLE_ITEMS for bag scanning (only set when items exist)
+---@field freeConsumable? boolean Bypass content gates (always show when enabled)
+---@field permanentRuneItemIDs? number[] Item IDs that, if in bags, make this a free consumable (bypass content gates)
 
 ---@class BuffGroup
 ---@field displayName string
@@ -155,6 +159,131 @@ local function TargetedClickMacro(buffKey)
     end
 end
 
+-- Rogue poison state: unified cache for customCheck, icon, clickMacro, and expiration.
+-- Scans all poisons once per frame and stores active/missing/expiration/required counts.
+-- Priority: lethal (Amplifying > Deadly > Instant > Wound), then non-lethal (Atrophic > Numbing > Crippling).
+local poisonLethal = { 381664, 2823, 315584, 8679 } -- Amplifying, Deadly, Instant, Wound
+local poisonNonLethal = { 381637, 5761, 3408 } -- Atrophic, Numbing, Crippling
+
+-- Cached poison state (refreshed once per frame via GetTime)
+local poisonCache = {
+    time = -1,
+    activeL = 0,
+    activeNL = 0,
+    requiredL = 0,
+    requiredNL = 0,
+    knownL = 0,
+    knownNL = 0,
+    missingL = nil, ---@type number|nil First missing lethal spell ID (by priority)
+    missingNL = nil, ---@type number|nil First missing non-lethal spell ID (by priority)
+    minRemaining = nil, ---@type number|nil Seconds until soonest-expiring poison
+    expiringID = nil, ---@type number|nil Spell ID of the soonest-expiring poison
+    nextCastID = nil, ---@type number|nil Spell ID of the next poison to apply
+}
+
+---Single pass over a poison category: counts known/active, finds first missing, tracks min remaining.
+---@param poisons number[] Spell ID list in priority order
+---@param now number Current GetTime() value
+---@return number active, number known, number|nil missing, number|nil minRemaining, number|nil expiringID
+local function ScanPoisonCategory(poisons, now)
+    local active, known, missing = 0, 0, nil
+    local minRem, expID = nil, nil
+    for _, id in ipairs(poisons) do
+        local isKnown = IsPlayerSpell(id)
+        if isKnown then
+            known = known + 1
+        end
+        local auraData
+        pcall(function()
+            auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
+        end)
+        if auraData then
+            active = active + 1
+            if auraData.expirationTime and auraData.expirationTime > 0 then
+                local rem = auraData.expirationTime - now
+                if not minRem or rem < minRem then
+                    minRem = rem
+                    expID = id
+                end
+            end
+        elseif isKnown and not missing then
+            missing = id
+        end
+    end
+    return active, known, missing, minRem, expID
+end
+
+---Refresh the poison cache if stale (once per frame).
+local function RefreshPoisonCache()
+    local now = GetTime()
+    if poisonCache.time == now then
+        return
+    end
+    poisonCache.time = now
+
+    local activeL, knownL, missingL, minRemL, expIDL = ScanPoisonCategory(poisonLethal, now)
+    local activeNL, knownNL, missingNL, minRemNL, expIDNL = ScanPoisonCategory(poisonNonLethal, now)
+
+    poisonCache.activeL = activeL
+    poisonCache.activeNL = activeNL
+    poisonCache.knownL = knownL
+    poisonCache.knownNL = knownNL
+    poisonCache.missingL = missingL
+    poisonCache.missingNL = missingNL
+
+    -- Dragon-Tempered Blades (381801): can have 2 of each, otherwise 1
+    local hasDTB = IsPlayerSpell(381801)
+    poisonCache.requiredL = min(knownL, hasDTB and 2 or 1)
+    poisonCache.requiredNL = min(knownNL, hasDTB and 2 or 1)
+
+    -- Min remaining across both categories
+    if minRemL and minRemNL then
+        if minRemL <= minRemNL then
+            poisonCache.minRemaining = minRemL
+            poisonCache.expiringID = expIDL
+        else
+            poisonCache.minRemaining = minRemNL
+            poisonCache.expiringID = expIDNL
+        end
+    elseif minRemL then
+        poisonCache.minRemaining = minRemL
+        poisonCache.expiringID = expIDL
+    elseif minRemNL then
+        poisonCache.minRemaining = minRemNL
+        poisonCache.expiringID = expIDNL
+    else
+        poisonCache.minRemaining = nil
+        poisonCache.expiringID = nil
+    end
+
+    -- Next poison to cast: only when active count is genuinely below required
+    local needL = missingL and activeL < poisonCache.requiredL
+    local needNL = missingNL and activeNL < poisonCache.requiredNL
+
+    if needL and activeL <= activeNL then
+        poisonCache.nextCastID = missingL
+    elseif needNL then
+        poisonCache.nextCastID = missingNL
+    elseif needL then
+        poisonCache.nextCastID = missingL
+    else
+        poisonCache.nextCastID = nil
+    end
+end
+
+---@return number|nil castID Spell ID of the next poison to apply, or nil if none needed
+local function GetNextPoisonCastID()
+    RefreshPoisonCache()
+    return poisonCache.nextCastID
+end
+
+---@return number|nil remaining Seconds until the soonest-expiring poison expires
+---@return number|nil expiringID Spell ID of the soonest-expiring poison
+local function GetPoisonExpirationInfo()
+    RefreshPoisonCache()
+    return poisonCache.minRemaining, poisonCache.expiringID
+end
+
 ---@type table<string, RaidBuff[]|PresenceBuff[]|TargetedBuff[]|SelfBuff[]|ConsumableBuff[]|CustomBuff[]>
 BR.BUFF_TABLES = {
     ---@type RaidBuff[]
@@ -201,7 +330,8 @@ BR.BUFF_TABLES = {
             name = "Atrophic/Numbing Poison",
             class = "ROGUE",
             levelRequired = 80,
-            overlayText = "NO\nPOISON",
+            overlayText = "NO\nDR\nPOISON",
+            groupOnly = true, -- self-buff "roguePoisons" already covers solo
         },
         {
             spellID = 465,
@@ -286,7 +416,10 @@ BR.BUFF_TABLES = {
             name = "Earth Shield",
             class = "SHAMAN",
             overlayText = "NO\nES",
-            infoTooltip = "May Show Extra Icon|Until you cast this, you might see both this and the Water/Lightning Shield reminder. I can't tell if you want Earth Shield on yourself, or Earth Shield on an ally + Water/Lightning Shield on yourself.",
+            infoTooltip = {
+                title = "May Show Extra Icon",
+                desc = "Until you cast this, you might see both this and the Water/Lightning Shield reminder. I can't tell if you want Earth Shield on yourself, or Earth Shield on an ally + Water/Lightning Shield on yourself.",
+            },
             clickMacro = TargetedClickMacro("earthShieldOthers"),
         },
         {
@@ -321,6 +454,16 @@ BR.BUFF_TABLES = {
     },
     ---@type SelfBuff[]
     self = {
+        -- Evoker Augmentation attunement (Black 403264 / Bronze 403265, player picks one)
+        {
+            spellID = { 403264, 403265 },
+            key = "evokerAttunement",
+            name = "Attunement",
+            class = "EVOKER",
+            overlayText = "NO\nATTUNE",
+            requireSpecId = 1473, -- Augmentation
+            requiresSpellID = 403208, -- Attunements talent
+        },
         -- Mage Arcane Familiar
         {
             spellID = 205022,
@@ -340,10 +483,20 @@ BR.BUFF_TABLES = {
             class = "WARLOCK",
             overlayText = "DROP\nWELL",
             showOnInstanceEntry = true, -- Only shows on instance entry
-            infoTooltip = "Instance Entry Reminder|Briefly shown when entering a dungeon as a reminder to drop a Soulwell. Dismissed after casting or after 30 seconds.",
-            customCheck = function()
-                local info = C_Spell.GetSpellCooldown(29893)
-                return not info or info.duration == 0
+            infoTooltip = {
+                title = "Instance Entry Reminder",
+                desc = "Briefly shown when entering a dungeon as a reminder to drop a Soulwell. Dismissed after casting or after 30 seconds.",
+            },
+            customCheck = function(isRestricted)
+                -- Cooldown API returns tainted values during combat/encounters/M+
+                if isRestricted then
+                    return true
+                end
+                local ok, result = pcall(function()
+                    local info = C_Spell.GetSpellCooldown(29893)
+                    return not info or info.duration == 0
+                end)
+                return not ok or result
             end,
         },
         -- Warlock Grimoire of Sacrifice
@@ -395,91 +548,24 @@ BR.BUFF_TABLES = {
             key = "roguePoisons",
             name = "Rogue Poisons",
             class = "ROGUE",
-            overlayText = "NO\nSELF\nPOISON",
+            overlayText = "APPLY\nPOISON",
             customCheck = function()
-                local lethalPoisons = { 315584, 8679, 2823, 381664 } -- Instant, Wound, Deadly, Amplifying
-                local nonLethalPoisons = { 5761, 381637, 3408 } -- Numbing, Atrophic, Crippling
-
-                -- Count known and active poisons in each category
-                local knownLethal, knownNonLethal = 0, 0
-                local activeLethal, activeNonLethal = 0, 0
-
-                for _, id in ipairs(lethalPoisons) do
-                    if IsPlayerSpell(id) then
-                        knownLethal = knownLethal + 1
-                    end
-                    local auraData
-                    pcall(function()
-                        auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
-                    end)
-                    if auraData then
-                        activeLethal = activeLethal + 1
-                    end
-                end
-
-                for _, id in ipairs(nonLethalPoisons) do
-                    if IsPlayerSpell(id) then
-                        knownNonLethal = knownNonLethal + 1
-                    end
-                    local auraData
-                    pcall(function()
-                        auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
-                    end)
-                    if auraData then
-                        activeNonLethal = activeNonLethal + 1
-                    end
-                end
-
+                RefreshPoisonCache()
                 -- Don't show if the player hasn't learned any poisons yet (e.g. low-level rogue)
-                if knownLethal == 0 and knownNonLethal == 0 then
+                if poisonCache.knownL == 0 and poisonCache.knownNL == 0 then
                     return nil
                 end
-
-                -- Dragon-Tempered Blades (381801): can have 2 of each
-                local hasDragonTemperedBlades = IsPlayerSpell(381801)
-
-                -- Only require as many as the player actually knows
-                local requiredLethal = min(knownLethal, hasDragonTemperedBlades and 2 or 1)
-                local requiredNonLethal = min(knownNonLethal, hasDragonTemperedBlades and 2 or 1)
-
-                return activeLethal < requiredLethal or activeNonLethal < requiredNonLethal
+                return poisonCache.activeL < poisonCache.requiredL or poisonCache.activeNL < poisonCache.requiredNL
             end,
+            getNextCastID = GetNextPoisonCastID,
+            getExpirationInfo = GetPoisonExpirationInfo,
             clickMacro = function()
-                -- Priority: non-lethal (Atrophic > Numbing > Crippling), then lethal (Amplifying > Deadly > Instant > Wound)
-                -- Balance: apply to whichever category has fewer active, prefer non-lethal when tied
-                local nonLethalPriority = { 381637, 5761, 3408 } -- Atrophic, Numbing, Crippling
-                local lethalPriority = { 381664, 2823, 315584, 8679 } -- Amplifying, Deadly, Instant, Wound
-
-                local function countActiveAndFindMissing(poisons)
-                    local active, missing = 0, nil
-                    for _, id in ipairs(poisons) do
-                        if IsPlayerSpell(id) then
-                            local auraData
-                            pcall(function()
-                                auraData = C_UnitAuras.GetUnitAuraBySpellID("player", id)
-                            end)
-                            if auraData then
-                                active = active + 1
-                            elseif not missing then
-                                missing = id
-                            end
-                        end
-                    end
-                    return active, missing
+                local castID = GetNextPoisonCastID()
+                if not castID then
+                    -- Nothing missing — fall back to soonest-expiring poison for re-application
+                    local _, expiringID = GetPoisonExpirationInfo()
+                    castID = expiringID
                 end
-
-                local activeNL, missingNL = countActiveAndFindMissing(nonLethalPriority)
-                local activeL, missingL = countActiveAndFindMissing(lethalPriority)
-
-                local castID = nil
-                if missingNL and activeNL <= activeL then
-                    castID = missingNL
-                elseif missingL then
-                    castID = missingL
-                elseif missingNL then
-                    castID = missingNL
-                end
-
                 if castID then
                     return "/cast " .. (BR.GetSpellName(castID) or "")
                 end
@@ -670,6 +756,7 @@ BR.BUFF_TABLES = {
             key = "rune",
             name = "Rune",
             overlayText = "NO\nRUNE",
+            permanentRuneItemIDs = { 243191, 259085 }, -- Ethereal (TWW), Void-Touched (Midnight)
             groupId = "rune",
             consumableCategory = "rune",
         },
@@ -722,8 +809,28 @@ BR.BUFF_TABLES = {
             overlayText = "NO\nFOOD",
             groupId = "delveFood",
             noExpirationGlow = true, -- 10-min duration makes standard thresholds meaningless
-            infoTooltip = "Delves Only|Only shown inside delves when Brann or Valeera are in your party.\n\nExpiration glow is disabled for this buff because its short 10-minute duration would cause it to always glow.",
+            infoTooltip = {
+                title = "Delves Only",
+                desc = "Only shown inside delves when Brann or Valeera are in your party.\n\nExpiration glow is disabled for this buff because its short 10-minute duration would cause it to always glow.",
+            },
             visibilityCondition = BR.IsInDelve,
+        },
+        -- Healthstone (checks inventory, free consumable for warlocks)
+        {
+            itemID = { 5512, 224464 }, -- Healthstone, Demonic Healthstone
+            castSpellID = 29893, -- Create Soulwell
+            key = "healthstone",
+            name = "Healthstone",
+            casterClass = "WARLOCK",
+            overlayText = "NO\nSTONE",
+            groupId = "healthstone",
+            displayIcon = 538745, -- Healthstone icon
+            freeConsumable = true,
+            clickMacro = function()
+                local spellID = (GetNumGroupMembers() > 0 and IsInInstance()) and 29893 or 6201
+                local name = BR.GetSpellName(spellID)
+                return "/cast " .. (name or "")
+            end,
         },
         -- Weapon Buffs (oils, stones - but not for classes with imbues)
         {
@@ -766,23 +873,6 @@ BR.BUFF_TABLES = {
                 return BR.BuffState.HasOffHandWeapon()
             end,
         },
-        -- Healthstone (shows on ready check - checks inventory)
-        {
-            itemID = { 5512, 224464 }, -- Healthstone, Demonic Healthstone
-            castSpellID = 29893, -- Create Soulwell
-            key = "healthstone",
-            name = "Healthstone",
-            casterClass = "WARLOCK",
-            overlayText = "NO\nSTONE",
-            groupId = "healthstone",
-            displayIcon = 538745, -- Healthstone icon
-            readyCheckOnly = true,
-            clickMacro = function()
-                local spellID = (GetNumGroupMembers() > 0 and IsInInstance()) and 29893 or 6201
-                local name = BR.GetSpellName(spellID)
-                return "/cast " .. (name or "")
-            end,
-        },
     },
 }
 
@@ -806,9 +896,9 @@ BR.BuffGroups = {
     flask = { displayName = "Flask" },
     food = { displayName = "Food" },
     delveFood = { displayName = "Delve Food" },
+    healthstone = { displayName = "Healthstone" },
     rune = { displayName = "Augment Rune" },
     weaponBuff = { displayName = "Weapon Buff" },
-    healthstone = { displayName = "Healthstone!" },
 }
 
 -- Classes that benefit from each buff

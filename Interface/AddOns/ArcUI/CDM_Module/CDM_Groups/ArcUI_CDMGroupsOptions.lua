@@ -423,6 +423,12 @@ local function GetOptionsTable()
         return true
     end
     
+    local function IsCDMEnabled()
+        local S = ns.CDMShared
+        if S and S.IsCDMStylingEnabled then return S.IsCDMStylingEnabled() end
+        return true
+    end
+
     local options = {
         type = "group",
         name = function()
@@ -434,6 +440,14 @@ local function GetOptionsTable()
             return "CDM Groups |cff888888(" .. specName .. ")|r"
         end,
         args = {
+            cdmDisabledMsg = {
+                type = "description",
+                name = "\n|cffff4444CDM Module is Disabled\n\nUse the 'Enable CDM Module' toggle above to re-enable icon styling and group management.|r\n",
+                order = 3,
+                width = "full",
+                fontSize = "large",
+                hidden = function() return IsCDMEnabled() end,
+            },
             -- EDIT MODE (enables icon dragging - auto-enables when panel opens)
             editModeToggle = {
                 type = "toggle",
@@ -475,6 +489,7 @@ local function GetOptionsTable()
                 desc = "Master toggle to enable/disable all ArcUI CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
                 order = 0.1,
                 width = 1.3,
+                disabled = function() return false end,  -- Always enabled so user can re-enable CDM
                 get = function() 
                     -- Use centralized function from CDM_Shared
                     local S = ns.CDMShared
@@ -744,6 +759,7 @@ local function GetOptionsTable()
                 name = "Placeholders",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 4,
                 width = "full",
                 get = function() return not collapsedSections.placeholders end,
@@ -909,6 +925,7 @@ local function GetOptionsTable()
                 name = "Group Layout",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 5,
                 width = "full",
                 get = function() return not collapsedSections.groupLayouts end,
@@ -1270,6 +1287,7 @@ local function GetOptionsTable()
                 name = "Global Options",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 16,
                 width = "full",
                 get = function() return not collapsedSections.globalOptions end,
@@ -1528,7 +1546,7 @@ local function GetOptionsTable()
             -- WARNING: Broken group message
             brokenGroupWarning = {
                 type = "description",
-                name = "|cffff6666⚠ This group is broken!|r\n\n" ..
+                name = "|cffff6666This group is broken!|r\n\n" ..
                        "|cffaaaaaaThe group exists in saved data but failed to load properly.\n" ..
                        "This can happen after a Lua error or addon update.\n\n" ..
                        "Try |cffffaa00Repair|r to recreate it, or |cffff6666X|r to delete it.|r",
@@ -1546,6 +1564,7 @@ local function GetOptionsTable()
                 name = "Grid Settings",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 30,
                 width = "full",
                 get = function() return not collapsedSections.grid end,
@@ -1972,6 +1991,7 @@ local function GetOptionsTable()
                 name = "Layout Settings",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 40,
                 width = "full",
                 get = function() return not collapsedSections.layout end,
@@ -2274,6 +2294,7 @@ local function GetOptionsTable()
                 name = "Frame Strata",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 45,
                 width = "full",
                 get = function() return not collapsedSections.frameStrata end,
@@ -2335,6 +2356,7 @@ local function GetOptionsTable()
                 name = "Anchoring",
                 desc = "Click to expand/collapse. Anchor this group to other groups or frames.",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 47,
                 width = "full",
                 get = function() return not collapsedSections.anchoring end,
@@ -2872,6 +2894,7 @@ local function GetOptionsTable()
                 name = "Position",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 50,
                 width = "full",
                 get = function() return not collapsedSections.position end,
@@ -2887,7 +2910,15 @@ local function GetOptionsTable()
                 hidden = function() return HideIfNoGroup() or collapsedSections.position end,
                 get = function()
                     local g = GetSelectedGroup()
-                    return g and tostring(g.position.x) or "0"
+                    if not g then return "0" end
+                    -- If anchored, show the actual current position (not stale saved pos)
+                    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(g) and g.container then
+                        local uW = UIParent:GetSize()
+                        local l = g.container:GetLeft()
+                        local w = g.container:GetWidth()
+                        if l then return tostring(math.floor((l + w * 0.5 - uW * 0.5) + 0.5)) end
+                    end
+                    return tostring(g.position.x)
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
@@ -2909,7 +2940,14 @@ local function GetOptionsTable()
                 hidden = function() return HideIfNoGroup() or collapsedSections.position end,
                 get = function()
                     local g = GetSelectedGroup()
-                    return g and tostring(g.position.y) or "0"
+                    if not g then return "0" end
+                    if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(g) and g.container then
+                        local _, uH = UIParent:GetSize()
+                        local b = g.container:GetBottom()
+                        local h = g.container:GetHeight()
+                        if b then return tostring(math.floor((b + h * 0.5 - uH * 0.5) + 0.5)) end
+                    end
+                    return tostring(g.position.y)
                 end,
                 set = function(_, val)
                     local g = GetSelectedGroup()
@@ -2961,6 +2999,7 @@ local function GetOptionsTable()
                 name = "Appearance",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 60,
                 width = "full",
                 get = function() return not collapsedSections.appearance end,
@@ -3292,6 +3331,7 @@ local function GetOptionsTable()
                 name = "Tools",
                 desc = "Click to expand/collapse",
                 dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
                 order = 70,
                 width = "full",
                 get = function() return not collapsedSections.tools end,

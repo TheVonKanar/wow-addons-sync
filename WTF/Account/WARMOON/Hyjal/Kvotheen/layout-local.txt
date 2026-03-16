@@ -13,13 +13,6 @@ X: 0
 Y: 213
 W: 345
 H: 164
-Frame: ColorPickerFrame
-FrameLevel: 121
-Anchor: CENTER
-X: 0
-Y: 0
-W: 388
-H: 210
 Frame: GroupLootHistoryFrame
 FrameLevel: 1
 Anchor: CENTER
@@ -48,3 +41,10 @@ X: -234
 Y: 4
 W: 664
 H: 400
+Frame: ColorPickerFrame
+FrameLevel: 129
+Anchor: CENTER
+X: 0
+Y: 0
+W: 331
+H: 210

@@ -73,11 +73,10 @@ local UpdateCustomBuffFrame = BR.CustomBuffs.UpdateFrame
 
 -- Module-level variables
 local optionsPanel = nil
-local glowDemoPanel = nil
 local customBuffModal = nil
 
 -- Forward declarations
-local ShowGlowDemo, ShowCustomBuffModal
+local ShowGlowAdvanced, ShowCustomBuffModal
 
 -- ============================================================================
 -- CONSTANTS
@@ -404,7 +403,8 @@ local function CreateOptionsPanel()
         displayName,
         infoTooltip,
         displayIcon,
-        readyCheckOnly
+        readyCheckOnly,
+        freeConsumable
     )
         local holder = Components.Checkbox(parent, {
             label = displayName,
@@ -425,7 +425,8 @@ local function CreateOptionsPanel()
         panel.buffCheckboxes[key] = holder
 
         -- Inline toggle: "Ready check only" / "Always show" (replaces info tooltip icon)
-        if readyCheckOnly then
+        -- Skip for free consumables — controlled by the "Free consumables" dropdown instead
+        if readyCheckOnly and not freeConsumable then
             local function GetReadyCheckOnlyState()
                 local overrides = BR.profile.readyCheckOnlyOverrides
                 return not overrides or overrides[key] ~= false
@@ -474,6 +475,7 @@ local function CreateOptionsPanel()
         local groupDisplaySpells = {}
         local groupIconOverrides = {}
         local groupReadyCheckOnly = {}
+        local groupFreeConsumable = {}
 
         for _, buff in ipairs(buffArray) do
             if buff.groupId then
@@ -530,6 +532,9 @@ local function CreateOptionsPanel()
                 if buff.readyCheckOnly then
                     groupReadyCheckOnly[buff.groupId] = true
                 end
+                if buff.freeConsumable then
+                    groupFreeConsumable[buff.groupId] = true
+                end
             end
         end
 
@@ -557,7 +562,8 @@ local function CreateOptionsPanel()
                         groupInfo.displayName,
                         buff.infoTooltip,
                         displayIcon,
-                        groupReadyCheckOnly[buff.groupId]
+                        groupReadyCheckOnly[buff.groupId],
+                        groupFreeConsumable[buff.groupId]
                     )
                 end
             else
@@ -571,7 +577,8 @@ local function CreateOptionsPanel()
                     buff.name,
                     buff.infoTooltip,
                     buff.displayIcon,
-                    buff.readyCheckOnly
+                    buff.readyCheckOnly,
+                    buff.freeConsumable
                 )
             end
         end
@@ -731,7 +738,7 @@ local function CreateOptionsPanel()
 
     local defNote = displayBehaviorContent:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     displayBehaviorLayout:AddText(defNote, 12, COMPONENT_GAP)
-    defNote:SetText("(All categories inherit these unless overridden)")
+    defNote:SetText("(All categories inherit these unless overridden with a custom appearance)")
 
     local function isDefDimensionsLinked()
         local db = BR.profile.defaults
@@ -778,7 +785,7 @@ local function CreateOptionsPanel()
     end
 
     local defFontHolder = Components.Dropdown(displayBehaviorContent, {
-        label = "Font:",
+        label = "Font",
         labelWidth = 50,
         options = BuildFontOptions(),
         width = 200,
@@ -811,14 +818,38 @@ local function CreateOptionsPanel()
     })
     displayBehaviorLayout:Add(defDirHolder, nil, COMPONENT_GAP + DROPDOWN_EXTRA)
 
+    local defGlowHolder = Components.Checkbox(displayBehaviorContent, {
+        label = "Glow reminder icons",
+        tooltip = {
+            title = "Glow Reminder Icons",
+            desc = "Add a glow effect to all visible reminder icons, including missing and expiring buffs.",
+        },
+        get = function()
+            return BR.profile.defaults and BR.profile.defaults.showExpirationGlow ~= false
+        end,
+        onChange = function(checked)
+            BR.Config.Set("defaults.showExpirationGlow", checked)
+            Components.RefreshAll()
+        end,
+    })
+
+    local glowSettingsBtn = CreateButton(displayBehaviorContent, "Customize", function()
+        ShowGlowAdvanced()
+    end)
+    glowSettingsBtn:SetPoint("LEFT", defGlowHolder.label, "RIGHT", 8, 0)
+    glowSettingsBtn:SetFrameLevel(defGlowHolder:GetFrameLevel() + 5)
+
+    displayBehaviorLayout:Add(defGlowHolder, nil, COMPONENT_GAP)
+
     -- Expiration Reminder section
+    displayBehaviorLayout:Space(8)
     LayoutSectionHeader(displayBehaviorLayout, displayBehaviorContent, "Expiration Reminder")
     displayBehaviorLayout:Space(COMPONENT_GAP)
 
     local defThresholdHolder = Components.Slider(displayBehaviorContent, {
         label = "Threshold",
         min = 0,
-        max = 45,
+        max = 60,
         step = 5,
         get = function()
             return BR.profile.defaults and BR.profile.defaults.expirationThreshold or 15
@@ -832,98 +863,8 @@ local function CreateOptionsPanel()
     })
     displayBehaviorLayout:Add(defThresholdHolder, nil, COMPONENT_GAP)
 
-    -- Glow section
-    LayoutSectionHeader(displayBehaviorLayout, displayBehaviorContent, "Glow")
-    displayBehaviorLayout:Space(COMPONENT_GAP)
-
-    local previewBtn = CreateButton(displayBehaviorContent, "Preview", function()
-        ShowGlowDemo()
-    end)
-    displayBehaviorLayout:Add(previewBtn, nil, SECTION_GAP)
-
-    local defGlowHolder = Components.Checkbox(displayBehaviorContent, {
-        label = "Glow",
-        get = function()
-            return BR.profile.defaults and BR.profile.defaults.showExpirationGlow ~= false
-        end,
-        onChange = function(checked)
-            BR.Config.Set("defaults.showExpirationGlow", checked)
-            Components.RefreshAll()
-        end,
-    })
-
-    local function isExpirationGlowEnabled()
-        return BR.profile.defaults and BR.profile.defaults.showExpirationGlow ~= false
-    end
-
-    local typeOptions = {}
-    for i, gt in ipairs(GlowTypes) do
-        typeOptions[i] = { label = gt.name, value = i }
-    end
-
-    local defTypeHolder = Components.Dropdown(displayBehaviorContent, {
-        label = "Type:",
-        labelWidth = 34,
-        options = typeOptions,
-        get = function()
-            return BR.profile.defaults and BR.profile.defaults.glowType or 1
-        end,
-        enabled = isExpirationGlowEnabled,
-        width = 130,
-        onChange = function(val)
-            BR.Config.Set("defaults.glowType", val)
-        end,
-    }, "BuffRemindersDefGlowTypeDropdown")
-    defTypeHolder:SetPoint("LEFT", defGlowHolder.checkbox, "RIGHT", 40, 0)
-
-    local defUseCustomColorHolder = Components.Checkbox(displayBehaviorContent, {
-        label = "Color",
-        tooltip = "Use a custom glow color instead of the default.\nWhen off, glows use the native library color which looks more vibrant.",
-        get = function()
-            return BR.profile.defaults and BR.profile.defaults.useCustomGlowColor or false
-        end,
-        enabled = isExpirationGlowEnabled,
-        onChange = function(checked)
-            BR.Config.Set("defaults.useCustomGlowColor", checked)
-            Components.RefreshAll()
-        end,
-    })
-
-    local defGlowColorHolder = Components.ColorSwatch(displayBehaviorContent, {
-        hasOpacity = true,
-        get = function()
-            local c = BR.Config.Get("defaults.glowColor", Glow.DEFAULT_COLOR)
-            return c[1], c[2], c[3], c[4] or 1
-        end,
-        enabled = function()
-            return isExpirationGlowEnabled()
-                and (BR.profile.defaults and BR.profile.defaults.useCustomGlowColor or false)
-        end,
-        onChange = function(r, g, b, a)
-            BR.Config.Set("defaults.glowColor", { r, g, b, a or 1 })
-        end,
-    })
-
-    local defGlowSizeHolder = Components.NumericStepper(displayBehaviorContent, {
-        label = "Size:",
-        labelWidth = 34,
-        min = 1,
-        max = 5,
-        step = 1,
-        get = function()
-            return BR.profile.defaults and BR.profile.defaults.glowSize or 2
-        end,
-        enabled = isExpirationGlowEnabled,
-        onChange = function(val)
-            BR.Config.Set("defaults.glowSize", val)
-        end,
-    })
-    defGlowSizeHolder:SetPoint("LEFT", defTypeHolder, "RIGHT", 8, 0)
-    defUseCustomColorHolder:SetPoint("LEFT", defGlowSizeHolder, "RIGHT", 6, 0)
-    defGlowColorHolder:SetPoint("LEFT", defUseCustomColorHolder.label, "RIGHT", 4, 0)
-    displayBehaviorLayout:Add(defGlowHolder, nil, COMPONENT_GAP + DROPDOWN_EXTRA)
-
     -- Per-Category Customization section
+    displayBehaviorLayout:Space(8)
     LayoutSectionHeader(displayBehaviorLayout, displayBehaviorContent, "Per-Category Customization")
     displayBehaviorLayout:Space(COMPONENT_GAP)
 
@@ -971,9 +912,57 @@ local function CreateOptionsPanel()
 
             local visToggles = Components.VisibilityToggles(catContent, {
                 category = category,
-                onChange = OnCategoryVisibilityChange,
+                onChange = function()
+                    OnCategoryVisibilityChange()
+                    Components.RefreshAll()
+                end,
+                disabledSubToggles = category == "consumable" and {
+                    pvpType = {
+                        arena = {
+                            tooltip = {
+                                title = "Arena",
+                                desc = "Consumables cannot be used in arena",
+                            },
+                        },
+                    },
+                } or nil,
             })
             catLayout:Add(visToggles, nil, SECTION_GAP)
+
+            local hideInPvPMatchHolder = Components.Checkbox(catContent, {
+                label = "Hide when PvP match starts",
+                get = function()
+                    local vis = db.categoryVisibility and db.categoryVisibility[category]
+                    return vis and vis.hideInPvPMatch or false
+                end,
+                enabled = function()
+                    local vis = db.categoryVisibility and db.categoryVisibility[category]
+                    return not vis or vis.pvp ~= false
+                end,
+                tooltip = {
+                    title = "Hide When PvP Match Starts",
+                    desc = "Hide this category once a PvP match begins (after prep phase ends).",
+                },
+                onChange = function(checked)
+                    if not db.categoryVisibility then
+                        db.categoryVisibility = {}
+                    end
+                    if not db.categoryVisibility[category] then
+                        db.categoryVisibility[category] = {
+                            openWorld = true,
+                            scenario = true,
+                            dungeon = true,
+                            raid = true,
+                            housing = false,
+                            pvp = true,
+                            hideInPvPMatch = true,
+                        }
+                    end
+                    db.categoryVisibility[category].hideInPvPMatch = checked
+                    OnCategoryVisibilityChange()
+                end,
+            })
+            catLayout:Add(hideInPvPMatchHolder, nil, COMPONENT_GAP)
 
             local readyCheckHolder = Components.Checkbox(catContent, {
                 label = "Show only on ready check",
@@ -990,6 +979,147 @@ local function CreateOptionsPanel()
                 end,
             })
             catLayout:Add(readyCheckHolder, nil, COMPONENT_GAP)
+
+            -- Free consumables sub-section (consumable category only)
+            if category == "consumable" then
+                local function EnsureFreeVisibility()
+                    if not db.defaults then
+                        db.defaults = {}
+                    end
+                    if not db.defaults.freeConsumableVisibility then
+                        db.defaults.freeConsumableVisibility = {
+                            openWorld = false,
+                            scenario = true,
+                            dungeon = true,
+                            raid = true,
+                            housing = false,
+                            pvp = true,
+                        }
+                    end
+                    return db.defaults.freeConsumableVisibility
+                end
+                catLayout:Space(SECTION_GAP)
+                local hsHeader = catContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                hsHeader:SetText("|cffffcc00Healthstone|r")
+                catLayout:AddText(hsHeader, 12, COMPONENT_GAP)
+
+                local hsReadyCheckHolder = Components.Dropdown(catContent, {
+                    label = "Visibility",
+                    width = 180,
+                    get = function()
+                        return BR.Config.Get("defaults.healthstoneVisibility", "readyCheck")
+                    end,
+                    options = {
+                        {
+                            value = "readyCheck",
+                            label = "Ready check only",
+                            desc = "Show for 15 seconds after a ready check starts",
+                        },
+                        {
+                            value = "casterOnly",
+                            label = "Ready check + warlock always",
+                            desc = "Warlocks always see the reminder; other classes only on ready check",
+                        },
+                        {
+                            value = "always",
+                            label = "Always show",
+                            desc = "Show whenever the content type matches",
+                        },
+                    },
+                    tooltip = {
+                        title = "Healthstone visibility",
+                        desc = "Controls when the healthstone reminder appears.\n\n|cffffcc00Ready check only:|r Only during ready checks (15s window).\n|cffffcc00Ready check + warlock always:|r Warlocks always see it; others only on ready check.\n|cffffcc00Always show:|r Visible whenever you're in matching content.",
+                    },
+                    onChange = function(val)
+                        BR.Config.Set("defaults.healthstoneVisibility", val)
+                    end,
+                })
+                catLayout:Add(hsReadyCheckHolder, nil, COMPONENT_GAP)
+
+                catLayout:Space(SECTION_GAP)
+                local freeHeader = catContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                freeHeader:SetText("|cffffcc00Free Consumables|r")
+                catLayout:AddText(freeHeader, 12, COMPONENT_GAP)
+                local freeNote = catContent:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+                freeNote:SetText("(healthstones, permanent augment runes)")
+                catLayout:AddText(freeNote, 10, COMPONENT_GAP)
+
+                local function IsFreeOverride()
+                    return BR.Config.Get("defaults.freeConsumableMode", "override") == "override"
+                end
+
+                local freeOverrideHolder = Components.Checkbox(catContent, {
+                    label = "Override content filters",
+                    get = function()
+                        return IsFreeOverride()
+                    end,
+                    tooltip = {
+                        title = "Override content filters",
+                        desc = "When checked, free consumables use their own content type visibility settings below.\n\nWhen unchecked, they follow the same content filters as other consumables.",
+                    },
+                    onChange = function(checked)
+                        BR.Config.Set("defaults.freeConsumableMode", checked and "override" or "follow")
+                        Components.RefreshAll()
+                    end,
+                })
+                catLayout:Add(freeOverrideHolder, nil, COMPONENT_GAP)
+
+                -- Override controls (indented under checkbox)
+                local INDENT = 12
+                catLayout:SetX(catLayout:GetX() + INDENT)
+
+                local freeVisToggles = Components.VisibilityToggles(catContent, {
+                    store = {
+                        getContent = function(key)
+                            local vis = db.defaults and db.defaults.freeConsumableVisibility
+                            return not vis or vis[key] ~= false
+                        end,
+                        setContent = function(key)
+                            local vis = EnsureFreeVisibility()
+                            vis[key] = not vis[key]
+                        end,
+                        getDiffTable = function(dbKey)
+                            local vis = db.defaults and db.defaults.freeConsumableVisibility
+                            return vis and vis[dbKey]
+                        end,
+                        ensureDiffTable = function(dbKey)
+                            local vis = EnsureFreeVisibility()
+                            if not vis[dbKey] then
+                                vis[dbKey] = {} ---@diagnostic disable-line: assign-type-mismatch
+                            end
+                            return vis[dbKey]
+                        end,
+                    },
+                    noAutoRefresh = true,
+                    onChange = function()
+                        UpdateDisplay()
+                    end,
+                    disabledSubToggles = {
+                        pvpType = {
+                            arena = {
+                                tooltip = {
+                                    title = "Arena",
+                                    desc = "Consumables cannot be used in arena",
+                                },
+                            },
+                        },
+                    },
+                })
+                local origVisRefresh = freeVisToggles.Refresh
+                function freeVisToggles:Refresh()
+                    origVisRefresh(self)
+                    local enabled = IsFreeOverride()
+                    self:SetAlpha(enabled and 1 or 0.4)
+                    for _, btn in ipairs(self.allToggleButtons) do
+                        btn:EnableMouse(enabled)
+                    end
+                end
+                tinsert(BR.RefreshableComponents, freeVisToggles)
+                catLayout:Add(freeVisToggles, nil, COMPONENT_GAP)
+
+                catLayout:SetX(catLayout:GetX() - INDENT)
+                catLayout:Space(SECTION_GAP)
+            end
         else
             local banner = Components.Banner(catContent, {
                 text = "Visibility and ready check settings moved to each buff's edit menu.",
@@ -1373,10 +1503,15 @@ local function CreateOptionsPanel()
 
             local petClassBar, petClassButtons = Components.CreateSegmentedBar(petLabelsHolder, {
                 toggleDefs = {
-                    { key = "HUNTER", label = "H", tooltip = "Hunter", color = classColor("HUNTER") },
-                    { key = "WARLOCK", label = "W", tooltip = "Warlock", color = classColor("WARLOCK") },
-                    { key = "DEATHKNIGHT", label = "D", tooltip = "Death Knight", color = classColor("DEATHKNIGHT") },
-                    { key = "MAGE", label = "M", tooltip = "Mage", color = classColor("MAGE") },
+                    { key = "HUNTER", label = "H", tooltip = { title = "Hunter" }, color = classColor("HUNTER") },
+                    { key = "WARLOCK", label = "W", tooltip = { title = "Warlock" }, color = classColor("WARLOCK") },
+                    {
+                        key = "DEATHKNIGHT",
+                        label = "D",
+                        tooltip = { title = "Death Knight" },
+                        color = classColor("DEATHKNIGHT"),
+                    },
+                    { key = "MAGE", label = "M", tooltip = { title = "Mage" }, color = classColor("MAGE") },
                 },
                 getState = function(key)
                     local vis = BR.profile.defaults.petLabelClasses
@@ -1721,6 +1856,42 @@ local function CreateOptionsPanel()
                 and db.categorySettings[category].useCustomAppearance == true
         end
 
+        local function isCustomGlowEnabled()
+            return isCustomAppearanceEnabled() and db.categorySettings[category].useCustomGlow == true
+        end
+
+        -- Snapshot current effective glow values from defaults into a category
+        local function SnapshotGlowDefaults()
+            local cs = db.categorySettings[category]
+            local glowDefaults = db.defaults or {}
+            local glowSnapshotKeys = {
+                "glowType",
+                "glowSize",
+                "glowPixelLines",
+                "glowPixelFrequency",
+                "glowPixelLength",
+                "glowAutocastParticles",
+                "glowAutocastFrequency",
+                "glowAutocastScale",
+                "glowBorderFrequency",
+                "glowProcDuration",
+                "glowProcStartAnim",
+                "glowProcUseCustomColor",
+                "glowXOffset",
+                "glowYOffset",
+            }
+            for _, key in ipairs(glowSnapshotKeys) do
+                if cs[key] == nil and glowDefaults[key] ~= nil then
+                    cs[key] = glowDefaults[key]
+                end
+            end
+            -- glowColor: deep copy (table value)
+            if cs.glowColor == nil and glowDefaults.glowColor then
+                local gc = glowDefaults.glowColor
+                cs.glowColor = { gc[1], gc[2], gc[3], gc[4] }
+            end
+        end
+
         -- Use custom appearance checkbox
         catLayout:SetX(0)
         local useCustomAppHolder = Components.Checkbox(catContent, {
@@ -1811,8 +1982,6 @@ local function CreateOptionsPanel()
             return db.defaults and db.defaults[key] or default
         end
 
-        local CAT_LW = 50 -- Shared label width for glow rows
-
         local function isCatDimensionsLinked()
             local cs = db.categorySettings and db.categorySettings[category]
             return not cs or cs.iconWidth == nil
@@ -1854,9 +2023,9 @@ local function CreateOptionsPanel()
         local glowRowY = -catGrid.height
         local gridHeight
         if category == "pet" then
-            -- Pets don't expire — single "Glow" checkbox
+            -- Pets don't expire — single glow on/off checkbox
             local catPetGlowHolder = Components.Checkbox(appFrame, {
-                label = "Glow",
+                label = "Glow missing pets",
                 get = function()
                     return getCatOwnValue("showExpirationGlow", true) ~= false
                 end,
@@ -1868,83 +2037,49 @@ local function CreateOptionsPanel()
             })
             catPetGlowHolder:SetPoint("TOPLEFT", 0, glowRowY)
 
-            local catGlowTypeOptions = {}
-            for gi, gt in ipairs(GlowTypes) do
-                catGlowTypeOptions[gi] = { label = gt.name, value = gi }
-            end
-
-            local function isPetGlowEnabled()
-                return isCustomAppearanceEnabled() and getCatOwnValue("showExpirationGlow", true) ~= false
-            end
-
-            local catGlowTypeHolder = Components.Dropdown(appFrame, {
-                label = "Type:",
-                labelWidth = CAT_LW,
-                options = catGlowTypeOptions,
+            -- Per-category custom glow style (pet)
+            local catPetCustomGlowHolder = Components.Checkbox(appFrame, {
+                label = "Custom glow style",
                 get = function()
-                    return getCatOwnValue("glowType", 1)
+                    return isCustomGlowEnabled()
                 end,
-                enabled = isPetGlowEnabled,
-                width = 130,
-                onChange = function(val)
-                    BR.Config.Set("categorySettings." .. category .. ".glowType", val)
-                end,
-            }, "BuffReminders_" .. category .. "_GlowTypeDropdown")
-            catGlowTypeHolder:SetPoint("LEFT", catPetGlowHolder.checkbox, "RIGHT", 40, 0)
-
-            local catUseCustomColorHolder = Components.Checkbox(appFrame, {
-                label = "Color",
-                labelFont = "GameFontNormalTiny",
-                tooltip = "Use a custom glow color instead of the default.\nWhen off, glows use the native library color which looks more vibrant.",
-                get = function()
-                    return getCatOwnValue("useCustomGlowColor", false)
-                end,
-                enabled = isPetGlowEnabled,
+                enabled = isCustomAppearanceEnabled,
                 onChange = function(checked)
-                    BR.Config.Set("categorySettings." .. category .. ".useCustomGlowColor", checked)
+                    if checked then
+                        SnapshotGlowDefaults()
+                    end
+                    BR.Config.Set("categorySettings." .. category .. ".useCustomGlow", checked)
                     Components.RefreshAll()
                 end,
             })
-            local catGlowColorHolder = Components.ColorSwatch(appFrame, {
-                hasOpacity = true,
-                get = function()
-                    local c = getCatOwnValue("glowColor", Glow.DEFAULT_COLOR)
-                    return c[1], c[2], c[3], c[4] or 1
-                end,
-                enabled = function()
-                    return isPetGlowEnabled() and (getCatOwnValue("useCustomGlowColor", false) or false)
-                end,
-                onChange = function(r, g, b, a)
-                    BR.Config.Set("categorySettings." .. category .. ".glowColor", { r, g, b, a or 1 })
-                end,
-            })
-            local catGlowSizeHolder = Components.NumericStepper(appFrame, {
-                label = "Size:",
-                labelWidth = CAT_LW,
-                min = 1,
-                max = 5,
-                step = 1,
-                get = function()
-                    return getCatOwnValue("glowSize", 2)
-                end,
-                enabled = isPetGlowEnabled,
-                onChange = function(val)
-                    BR.Config.Set("categorySettings." .. category .. ".glowSize", val)
-                end,
-            })
-            catGlowSizeHolder:SetPoint("LEFT", catGlowTypeHolder, "RIGHT", 8, 0)
-            catUseCustomColorHolder:SetPoint("LEFT", catGlowSizeHolder, "RIGHT", 3, 0)
-            catGlowColorHolder:SetPoint("LEFT", catUseCustomColorHolder.label, "RIGHT", 2, 0)
+            catPetCustomGlowHolder:SetPoint("TOPLEFT", 0, glowRowY - 24)
 
-            gridHeight = catGrid.height + 24
-        else
-            local function isGlowEnabled()
-                return isCustomAppearanceEnabled() and getCatOwnValue("showExpirationGlow", true) ~= false
+            local catPetGlowSettingsBtn = CreateButton(appFrame, "Customize", function()
+                ShowGlowAdvanced(category)
+            end)
+            catPetGlowSettingsBtn:SetPoint("LEFT", catPetCustomGlowHolder.label, "RIGHT", 8, 0)
+            catPetGlowSettingsBtn:SetFrameLevel(catPetCustomGlowHolder:GetFrameLevel() + 5)
+
+            local function updatePetGlowBtnEnabled()
+                local enabled = isCustomGlowEnabled()
+                if enabled then
+                    catPetGlowSettingsBtn:Enable()
+                    catPetGlowSettingsBtn:SetAlpha(1)
+                else
+                    catPetGlowSettingsBtn:Disable()
+                    catPetGlowSettingsBtn:SetAlpha(0.4)
+                end
             end
+            updatePetGlowBtnEnabled()
+            tinsert(BR.RefreshableComponents, { Refresh = updatePetGlowBtnEnabled })
 
-            local catGlowThresholdHolder = Components.Slider(appFrame, {
+            gridHeight = catGrid.height + 48
+        else
+            local catThresholdHolder = Components.Slider(appFrame, {
+                label = "Expiration",
+                labelWidth = 56,
                 min = 0,
-                max = 45,
+                max = 60,
                 step = 5,
                 formatValue = function(val)
                     return val == 0 and "Off" or (val .. " min")
@@ -1957,7 +2092,7 @@ local function CreateOptionsPanel()
                     BR.Config.Set("categorySettings." .. category .. ".expirationThreshold", val)
                 end,
             })
-            catGlowThresholdHolder:SetPoint("TOPLEFT", 0, glowRowY)
+            catThresholdHolder:SetPoint("TOPLEFT", 0, glowRowY)
 
             local catGlowCheckHolder = Components.Checkbox(appFrame, {
                 label = "Glow",
@@ -1972,72 +2107,44 @@ local function CreateOptionsPanel()
             })
             catGlowCheckHolder:SetPoint("TOPLEFT", 0, glowRowY - 24)
 
-            local catGlowTypeOptions = {}
-            for gi, gt in ipairs(GlowTypes) do
-                catGlowTypeOptions[gi] = { label = gt.name, value = gi }
-            end
-
-            local catGlowTypeHolder = Components.Dropdown(appFrame, {
-                label = "Type:",
-                labelWidth = CAT_LW,
-                options = catGlowTypeOptions,
+            -- Per-category custom glow style
+            local catCustomGlowHolder = Components.Checkbox(appFrame, {
+                label = "Custom glow style",
                 get = function()
-                    return getCatOwnValue("glowType", 1)
+                    return isCustomGlowEnabled()
                 end,
-                enabled = isGlowEnabled,
-                width = 130,
-                onChange = function(val)
-                    BR.Config.Set("categorySettings." .. category .. ".glowType", val)
-                end,
-            }, "BuffReminders_" .. category .. "_GlowTypeDropdown")
-            catGlowTypeHolder:SetPoint("LEFT", catGlowCheckHolder.checkbox, "RIGHT", 40, 0)
-
-            local catUseCustomColorHolder = Components.Checkbox(appFrame, {
-                label = "Color",
-                labelFont = "GameFontNormalTiny",
-                tooltip = "Use a custom glow color instead of the default.\nWhen off, glows use the native library color which looks more vibrant.",
-                get = function()
-                    return getCatOwnValue("useCustomGlowColor", false)
-                end,
-                enabled = isGlowEnabled,
+                enabled = isCustomAppearanceEnabled,
                 onChange = function(checked)
-                    BR.Config.Set("categorySettings." .. category .. ".useCustomGlowColor", checked)
+                    if checked then
+                        SnapshotGlowDefaults()
+                    end
+                    BR.Config.Set("categorySettings." .. category .. ".useCustomGlow", checked)
                     Components.RefreshAll()
                 end,
             })
-            local catGlowColorHolder = Components.ColorSwatch(appFrame, {
-                hasOpacity = true,
-                get = function()
-                    local c = getCatOwnValue("glowColor", Glow.DEFAULT_COLOR)
-                    return c[1], c[2], c[3], c[4] or 1
-                end,
-                enabled = function()
-                    return isGlowEnabled() and (getCatOwnValue("useCustomGlowColor", false) or false)
-                end,
-                onChange = function(r, g, b, a)
-                    BR.Config.Set("categorySettings." .. category .. ".glowColor", { r, g, b, a or 1 })
-                end,
-            })
+            catCustomGlowHolder:SetPoint("TOPLEFT", 0, glowRowY - 48)
 
-            local catGlowSizeHolder = Components.NumericStepper(appFrame, {
-                label = "Size:",
-                labelWidth = CAT_LW,
-                min = 1,
-                max = 5,
-                step = 1,
-                get = function()
-                    return getCatOwnValue("glowSize", 2)
-                end,
-                enabled = isGlowEnabled,
-                onChange = function(val)
-                    BR.Config.Set("categorySettings." .. category .. ".glowSize", val)
-                end,
-            })
-            catGlowSizeHolder:SetPoint("LEFT", catGlowTypeHolder, "RIGHT", 8, 0)
-            catUseCustomColorHolder:SetPoint("LEFT", catGlowSizeHolder, "RIGHT", 3, 0)
-            catGlowColorHolder:SetPoint("LEFT", catUseCustomColorHolder.label, "RIGHT", 2, 0)
+            local catGlowSettingsBtn = CreateButton(appFrame, "Customize", function()
+                ShowGlowAdvanced(category)
+            end)
+            catGlowSettingsBtn:SetPoint("LEFT", catCustomGlowHolder.label, "RIGHT", 8, 0)
+            catGlowSettingsBtn:SetFrameLevel(catCustomGlowHolder:GetFrameLevel() + 5)
 
-            gridHeight = catGrid.height + 48
+            -- Register enabled state for the customize button
+            local function updateGlowBtnEnabled()
+                local enabled = isCustomGlowEnabled()
+                if enabled then
+                    catGlowSettingsBtn:Enable()
+                    catGlowSettingsBtn:SetAlpha(1)
+                else
+                    catGlowSettingsBtn:Disable()
+                    catGlowSettingsBtn:SetAlpha(0.4)
+                end
+            end
+            updateGlowBtnEnabled()
+            tinsert(BR.RefreshableComponents, { Refresh = updateGlowBtnEnabled })
+
+            gridHeight = catGrid.height + 72
         end
 
         -- Advance past the appFrame grid and finalize section height
@@ -2082,7 +2189,7 @@ local function CreateOptionsPanel()
     -- Simple frame (not scrollable) - content fits without scrolling
     local settingsContent = CreateFrame("Frame", nil, panel)
     settingsContent:SetPoint("TOPLEFT", 0, CONTENT_TOP)
-    settingsContent:SetSize(PANEL_WIDTH, 300)
+    settingsContent:SetSize(PANEL_WIDTH, 500)
     settingsContent:Hide()
     contentContainers.settings = settingsContent
 
@@ -2168,9 +2275,9 @@ local function CreateOptionsPanel()
     setLayout:Add(combatHolder, nil, COMPONENT_GAP)
 
     local combatExpiringHolder = Components.Checkbox(settingsContent, {
-        label = "Only expiring buffs in combat",
+        label = "Expiring in combat",
         tooltip = {
-            title = "Hide only expiring buffs in combat",
+            title = "Hide expiring buffs in combat",
             desc = "During combat, hide buffs that are expiring soon and only show completely missing ones",
         },
         get = function()
@@ -2259,6 +2366,114 @@ local function CreateOptionsPanel()
     })
     setLayout:Add(trackingModeHolder, nil, COMPONENT_GAP)
 
+    -- Custom Anchor Frames section
+    LayoutSectionHeader(setLayout, settingsContent, "Custom Anchor Frames")
+
+    local customAnchorDesc = settingsContent:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    customAnchorDesc:SetWidth(PANEL_WIDTH - COL_PADDING * 2)
+    customAnchorDesc:SetJustifyH("LEFT")
+    customAnchorDesc:SetText(
+        "Add global frame names to the anchor dropdown (e.g. MyAddon_PlayerFrame). \nFrames that don't exist in-game are silently skipped."
+    )
+    setLayout:AddText(customAnchorDesc, 22, COMPONENT_GAP)
+
+    -- Input row: text input + add button (at top)
+    local addAnchorRow = CreateFrame("Frame", nil, settingsContent)
+    addAnchorRow:SetSize(PANEL_WIDTH - COL_PADDING * 2, 22)
+
+    local addAnchorInput = Components.TextInput(addAnchorRow, {
+        label = "",
+        value = "",
+        width = 180,
+        labelWidth = 0,
+    })
+    addAnchorInput:SetPoint("LEFT", 0, 0)
+    local addAnchorBox = addAnchorInput.editBox
+
+    local addAnchorBtn -- forward declare for editbox callback
+
+    local customAnchorList = CreateFrame("Frame", nil, settingsContent)
+    customAnchorList:SetSize(PANEL_WIDTH - COL_PADDING * 2, 1)
+
+    local customAnchorEntries = {} -- holder frames for removal
+
+    local function RebuildCustomAnchorList()
+        for _, entry in ipairs(customAnchorEntries) do
+            entry:Hide()
+            entry:SetParent(nil)
+        end
+        wipe(customAnchorEntries)
+
+        local db = BR.profile
+        local list = db.customAnchorFrames or {}
+        local entryY = 0
+
+        for i, name in ipairs(list) do
+            local row = CreateFrame("Frame", nil, customAnchorList)
+            row:SetSize(PANEL_WIDTH - COL_PADDING * 2, 20)
+            row:SetPoint("TOPLEFT", 0, -entryY)
+
+            local bullet = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+            bullet:SetPoint("LEFT", 4, 0)
+            bullet:SetText("-")
+
+            local text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+            text:SetPoint("LEFT", bullet, "RIGHT", 4, 0)
+            text:SetText(name)
+
+            local removeBtn = CreateFrame("Button", nil, row)
+            removeBtn:SetSize(16, 16)
+            removeBtn:SetPoint("LEFT", text, "RIGHT", 6, 0)
+            removeBtn:SetNormalFontObject("GameFontRedSmall")
+            removeBtn:SetText("x")
+            removeBtn:SetScript("OnClick", function()
+                tremove(list, i)
+                if #list == 0 then
+                    db.customAnchorFrames = nil
+                end
+                RebuildCustomAnchorList()
+            end)
+
+            tinsert(customAnchorEntries, row)
+            entryY = entryY + 22
+        end
+
+        customAnchorList:SetHeight(math.max(1, entryY))
+    end
+
+    addAnchorBtn = CreateButton(addAnchorRow, "Add", function()
+        local name = strtrim(addAnchorBox:GetText())
+        if name == "" then
+            return
+        end
+        local db = BR.profile
+        if not db.customAnchorFrames then
+            db.customAnchorFrames = {}
+        end
+        -- Avoid duplicates
+        for _, existing in ipairs(db.customAnchorFrames) do
+            if existing == name then
+                addAnchorBox:SetText("")
+                return
+            end
+        end
+        tinsert(db.customAnchorFrames, name)
+        addAnchorBox:SetText("")
+        RebuildCustomAnchorList()
+    end)
+    addAnchorBtn:SetSize(50, 22)
+    addAnchorBtn:SetPoint("LEFT", addAnchorInput, "RIGHT", 6, 0)
+
+    addAnchorBox:SetScript("OnEnterPressed", function(self)
+        self:ClearFocus()
+        addAnchorBtn:Click()
+    end)
+
+    setLayout:Add(addAnchorRow, nil, COMPONENT_GAP)
+
+    RebuildCustomAnchorList()
+    setLayout:Add(customAnchorList, nil, COMPONENT_GAP)
+
     -- ========== PROFILES TAB ==========
     -- Use simple frame (not scrollable) to avoid nested scroll frame issues with edit boxes
     local profilesContent = CreateFrame("Frame", nil, panel)
@@ -2316,6 +2531,7 @@ local function CreateOptionsPanel()
         end,
         onChange = function(value)
             BR.Profiles.SwitchProfile(value)
+            RefreshProfileDropdown()
             Components.RefreshAll()
         end,
     })
@@ -2537,6 +2753,18 @@ local function CreateOptionsPanel()
     lockBtn:Refresh()
     tinsert(BR.RefreshableComponents, lockBtn)
 
+    local unlockBanner = Components.Banner(panel, {
+        text = "Click an anchor to update its anchor point or coordinates",
+        color = "orange",
+        icon = "services-icon-warning",
+        bgAlpha = 0.95,
+        visible = function()
+            return not BR.profile.locked
+        end,
+    })
+    unlockBanner:SetPoint("TOPLEFT", panel, "BOTTOMLEFT", 0, 0)
+    unlockBanner:SetPoint("TOPRIGHT", panel, "BOTTOMRIGHT", 0, 0)
+
     local testBtn = CreateButton(btnHolder, "Stop Test", function(self)
         local isOn = ToggleTestMode()
         self.text:SetText(isOn and "Stop Test" or "Test")
@@ -2586,72 +2814,459 @@ local function ToggleOptions()
     end
 end
 
--- Glow demo panel
-ShowGlowDemo = function()
-    -- Clean up old panel (recreate to reflect current color)
-    if glowDemoPanel then
-        glowDemoPanel:Hide()
-        glowDemoPanel = nil
+-- Advanced glow settings panel
+local glowAdvancedPanel = nil
+
+---@param targetCategory? string nil = global defaults, string = per-category override
+ShowGlowAdvanced = function(targetCategory)
+    local GlowType = Glow.Type
+
+    if glowAdvancedPanel then
+        glowAdvancedPanel:Hide()
+        glowAdvancedPanel = nil
     end
 
-    local ICON_SIZE = 64
-    local SPACING = 20
-    local numTypes = #GlowTypes
+    local configPrefix = targetCategory and ("categorySettings." .. targetCategory .. ".") or "defaults."
+    local function getSource()
+        if targetCategory then
+            return (BR.profile.categorySettings and BR.profile.categorySettings[targetCategory]) or {}
+        else
+            return BR.profile.defaults or {}
+        end
+    end
 
-    local demoPanel = CreatePanel("BuffRemindersGlowDemo", numTypes * (ICON_SIZE + SPACING) + SPACING, ICON_SIZE + 70, {
-        strata = "TOOLTIP",
+    local PANEL_W = 440
+    local PANEL_H = 460
+    local PREVIEW_SIZE = 64
+    local MARGIN = 20
+
+    local panel = CreatePanel("BuffRemindersGlowAdvanced", PANEL_W, PANEL_H, {
+        strata = "FULLSCREEN",
         modal = true,
     })
 
-    local demoTitle = demoPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    demoTitle:SetPoint("TOP", 0, -8)
-    demoTitle:SetText("|cffffcc00Glow Types Preview|r")
+    local titleText = targetCategory
+            and ("Glow Settings — " .. targetCategory:sub(1, 1):upper() .. targetCategory:sub(2))
+        or "Glow Settings"
+    local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", 0, -10)
+    title:SetText("|cffffcc00" .. titleText .. "|r")
 
-    local demoCloseBtn = CreateButton(demoPanel, "x", function()
-        demoPanel:Hide()
+    local closeBtn = CreateButton(panel, "x", function()
+        panel:Hide()
     end)
-    demoCloseBtn:SetSize(22, 22)
-    demoCloseBtn:SetPoint("TOPRIGHT", -5, -5)
+    closeBtn:SetSize(24, 24)
+    closeBtn:SetPoint("TOPRIGHT", -6, -6)
 
-    local useCustomColor = BR.Config.Get("defaults.useCustomGlowColor", false)
-    local color = useCustomColor and BR.Config.Get("defaults.glowColor", Glow.DEFAULT_COLOR) or nil
-    local demoFrames = {}
+    local previewKey = "BR_adv_preview"
 
+    -- Content area
+    local dynamicHolders = {}
+    local staticLayout = Components.VerticalLayout(panel, { x = MARGIN, y = -36 })
+
+    -- Type dropdown (always visible, top-left beside preview)
+    local typeOptions = {}
     for i, gt in ipairs(GlowTypes) do
-        local iconFrame = CreateFrame("Frame", nil, demoPanel)
-        iconFrame:SetSize(ICON_SIZE, ICON_SIZE)
-        iconFrame:SetPoint("TOPLEFT", SPACING + (i - 1) * (ICON_SIZE + SPACING), -30)
-
-        local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-        icon:SetAllPoints()
-        icon:SetTexCoord(TEXCOORD_INSET, 1 - TEXCOORD_INSET, TEXCOORD_INSET, 1 - TEXCOORD_INSET)
-        icon:SetTexture(GetBuffTexture(1459))
-
-        local border = iconFrame:CreateTexture(nil, "BACKGROUND")
-        border:SetPoint("TOPLEFT", -DEFAULT_BORDER_SIZE, DEFAULT_BORDER_SIZE)
-        border:SetPoint("BOTTOMRIGHT", DEFAULT_BORDER_SIZE, -DEFAULT_BORDER_SIZE)
-        border:SetColorTexture(0, 0, 0, 1)
-
-        local demoSize = BR.Config.Get("defaults.glowSize", 2)
-        Glow.Start(iconFrame, i, color, "BR_demo_" .. i, demoSize, DEFAULT_BORDER_SIZE, DEFAULT_BORDER_SIZE)
-        demoFrames[i] = iconFrame
-
-        local typeLabel = demoPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        typeLabel:SetPoint("TOP", iconFrame, "BOTTOM", 0, -4)
-        typeLabel:SetText(gt.name)
-        typeLabel:SetWidth(ICON_SIZE + 10)
+        typeOptions[i] = { label = gt.name, value = i }
     end
 
-    -- Clean up glows when panel hides
-    demoPanel:SetScript("OnHide", function()
-        for i in ipairs(GlowTypes) do
-            if demoFrames[i] then
-                Glow.StopAll(demoFrames[i], "BR_demo_" .. i)
+    local typeHolder = Components.Dropdown(panel, {
+        label = "Type:",
+        labelWidth = 40,
+        options = typeOptions,
+        get = function()
+            return getSource().glowType or GlowType.Pixel
+        end,
+        width = 140,
+        onChange = function(val)
+            BR.Config.Set(configPrefix .. "glowType", val)
+        end,
+    }, "BuffRemindersGlowAdvTypeDropdown")
+    staticLayout:Add(typeHolder, 30, 4)
+
+    -- Separator
+    local sep = panel:CreateTexture(nil, "ARTWORK")
+    sep:SetHeight(1)
+    sep:SetPoint("TOPLEFT", MARGIN, staticLayout:GetY())
+    sep:SetPoint("RIGHT", panel, "RIGHT", -MARGIN, 0)
+    sep:SetColorTexture(0.3, 0.3, 0.3, 0.8)
+    staticLayout:Space(10)
+
+    local DYNAMIC_START_Y = staticLayout:GetY()
+
+    -- Preview icon (below separator, top-right)
+    local previewFrame = CreateFrame("Frame", nil, panel)
+    previewFrame:SetSize(PREVIEW_SIZE, PREVIEW_SIZE)
+    previewFrame:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -(MARGIN + 20), DYNAMIC_START_Y)
+
+    local previewIcon = previewFrame:CreateTexture(nil, "ARTWORK")
+    previewIcon:SetAllPoints()
+    previewIcon:SetTexCoord(TEXCOORD_INSET, 1 - TEXCOORD_INSET, TEXCOORD_INSET, 1 - TEXCOORD_INSET)
+    previewIcon:SetTexture(GetBuffTexture(1459))
+
+    local previewBorder = previewFrame:CreateTexture(nil, "BACKGROUND")
+    previewBorder:SetPoint("TOPLEFT", -DEFAULT_BORDER_SIZE, DEFAULT_BORDER_SIZE)
+    previewBorder:SetPoint("BOTTOMRIGHT", DEFAULT_BORDER_SIZE, -DEFAULT_BORDER_SIZE)
+    previewBorder:SetColorTexture(0, 0, 0, 1)
+
+    local function RefreshPreview()
+        Glow.StopAll(previewFrame, previewKey)
+        local d = getSource()
+        local typeIdx = d.glowType or GlowType.Pixel
+        local color = d.glowColor
+        if typeIdx == GlowType.Proc and not d.glowProcUseCustomColor then
+            color = nil
+        end
+        local size = d.glowSize or 2
+        local params = Glow.BuildAdvancedParams(d, typeIdx)
+        local xOff = DEFAULT_BORDER_SIZE + (d.glowXOffset or 0)
+        local yOff = DEFAULT_BORDER_SIZE + (d.glowYOffset or 0)
+        Glow.Start(previewFrame, typeIdx, color, previewKey, size, xOff, yOff, params)
+    end
+
+    local SLIDER_SPACING = 24
+    local dynamicLayout
+
+    local function AddSlider(config)
+        local holder = Components.Slider(panel, config)
+        holder:SetPoint("RIGHT", panel, "RIGHT", -MARGIN, 0)
+        dynamicLayout:Add(holder, SLIDER_SPACING)
+        table.insert(dynamicHolders, holder)
+        return holder
+    end
+
+    local function AddCheckbox(config)
+        local holder = Components.Checkbox(panel, config)
+        dynamicLayout:Add(holder, SLIDER_SPACING)
+        table.insert(dynamicHolders, holder)
+        return holder
+    end
+
+    -- Reset keys per glow type (type-specific only)
+    local typeResetKeys = {
+        [GlowType.Pixel] = { "glowPixelLines", "glowPixelFrequency", "glowPixelLength" },
+        [GlowType.AutoCast] = { "glowAutocastScale", "glowAutocastParticles", "glowAutocastFrequency" },
+        [GlowType.Border] = { "glowBorderFrequency" },
+        [GlowType.Proc] = { "glowProcDuration", "glowProcStartAnim", "glowProcUseCustomColor" },
+    }
+
+    local function UnregisterDynamicHolders()
+        for _, h in ipairs(dynamicHolders) do
+            h:Hide()
+            for ri = #BR.RefreshableComponents, 1, -1 do
+                if BR.RefreshableComponents[ri] == h then
+                    table.remove(BR.RefreshableComponents, ri)
+                end
             end
         end
+    end
+
+    local function BuildTypeContent()
+        -- Hide and unregister old dynamic components
+        UnregisterDynamicHolders()
+        wipe(dynamicHolders)
+        dynamicLayout = Components.VerticalLayout(panel, { x = MARGIN, y = DYNAMIC_START_Y })
+
+        local d = getSource()
+        local typeIdx = d.glowType or GlowType.Pixel
+
+        -- Size + Color row
+        local sizeHolder
+        if typeIdx == GlowType.Pixel or typeIdx == GlowType.Border then
+            sizeHolder = Components.NumericStepper(panel, {
+                label = "Size:",
+                labelWidth = 34,
+                min = 1,
+                max = 10,
+                step = 1,
+                get = function()
+                    return getSource().glowSize or 2
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowSize", val)
+                    RefreshPreview()
+                end,
+            })
+            table.insert(dynamicHolders, sizeHolder)
+        end
+
+        local colorSwatchHolder
+        local procColorCheckbox
+        if typeIdx == GlowType.Proc then
+            -- Proc: optional custom color (desaturated + vertex color, less vibrant than default)
+            procColorCheckbox = Components.Checkbox(panel, {
+                label = "Use Custom Color",
+                tooltip = {
+                    title = "Use Custom Color",
+                    desc = "When enabled, the proc glow is desaturated and recolored.\nThis looks less vibrant than the default proc glow.",
+                },
+                get = function()
+                    return getSource().glowProcUseCustomColor or false
+                end,
+                onChange = function(checked)
+                    BR.Config.Set(configPrefix .. "glowProcUseCustomColor", checked)
+                    Components.RefreshAll()
+                    RefreshPreview()
+                end,
+            })
+            table.insert(dynamicHolders, procColorCheckbox)
+
+            colorSwatchHolder = Components.ColorSwatch(panel, {
+                hasOpacity = true,
+                enabled = function()
+                    return getSource().glowProcUseCustomColor or false
+                end,
+                get = function()
+                    local c = getSource().glowColor or Glow.DEFAULT_COLOR
+                    return c[1], c[2], c[3], c[4] or 1
+                end,
+                onChange = function(r, g, b, a)
+                    BR.Config.Set(configPrefix .. "glowColor", { r, g, b, a or 1 })
+                    RefreshPreview()
+                end,
+            })
+            table.insert(dynamicHolders, colorSwatchHolder)
+        else
+            colorSwatchHolder = Components.ColorSwatch(panel, {
+                hasOpacity = true,
+                get = function()
+                    local c = getSource().glowColor or Glow.DEFAULT_COLOR
+                    return c[1], c[2], c[3], c[4] or 1
+                end,
+                onChange = function(r, g, b, a)
+                    BR.Config.Set(configPrefix .. "glowColor", { r, g, b, a or 1 })
+                    RefreshPreview()
+                end,
+            })
+            table.insert(dynamicHolders, colorSwatchHolder)
+        end
+
+        if sizeHolder and colorSwatchHolder and not procColorCheckbox then
+            dynamicLayout:Add(sizeHolder, 26)
+            colorSwatchHolder:SetPoint("LEFT", sizeHolder, "RIGHT", 8, 0)
+        elseif sizeHolder then
+            dynamicLayout:Add(sizeHolder, 26)
+        elseif colorSwatchHolder and not procColorCheckbox then
+            dynamicLayout:Add(colorSwatchHolder, 26)
+        end
+
+        if procColorCheckbox then
+            dynamicLayout:Add(procColorCheckbox, SLIDER_SPACING)
+            colorSwatchHolder:SetPoint("LEFT", procColorCheckbox, "RIGHT", 8, 0)
+        end
+
+        -- Type-specific parameters
+        if typeIdx == GlowType.Pixel then
+            -- Pixel
+            AddSlider({
+                label = "Lines",
+                min = 1,
+                max = 20,
+                step = 1,
+                get = function()
+                    return getSource().glowPixelLines or 8
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowPixelLines", val)
+                    RefreshPreview()
+                end,
+            })
+            AddSlider({
+                label = "Frequency",
+                min = 0.01,
+                max = 1,
+                step = 0.01,
+                get = function()
+                    return getSource().glowPixelFrequency or 0.25
+                end,
+                formatValue = function(val)
+                    return string.format("%.2f", val)
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowPixelFrequency", val)
+                    RefreshPreview()
+                end,
+            })
+            AddSlider({
+                label = "Length",
+                min = 1,
+                max = 20,
+                step = 1,
+                get = function()
+                    return getSource().glowPixelLength or 10
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowPixelLength", val)
+                    RefreshPreview()
+                end,
+            })
+        elseif typeIdx == GlowType.AutoCast then
+            -- AutoCast
+            AddSlider({
+                label = "Scale",
+                min = 1,
+                max = 3,
+                step = 0.1,
+                get = function()
+                    return getSource().glowAutocastScale or 1
+                end,
+                formatValue = function(val)
+                    return string.format("%.1f", val)
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowAutocastScale", val)
+                    RefreshPreview()
+                end,
+            })
+            AddSlider({
+                label = "Particles",
+                min = 1,
+                max = 8,
+                step = 1,
+                get = function()
+                    return getSource().glowAutocastParticles or 4
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowAutocastParticles", val)
+                    RefreshPreview()
+                end,
+            })
+            AddSlider({
+                label = "Frequency",
+                min = 0.01,
+                max = 1,
+                step = 0.01,
+                get = function()
+                    return getSource().glowAutocastFrequency or 0.125
+                end,
+                formatValue = function(val)
+                    return string.format("%.2f", val)
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowAutocastFrequency", val)
+                    RefreshPreview()
+                end,
+            })
+        elseif typeIdx == GlowType.Border then
+            -- Border
+            AddSlider({
+                label = "Speed",
+                min = 0.1,
+                max = 2,
+                step = 0.1,
+                get = function()
+                    return getSource().glowBorderFrequency or 0.6
+                end,
+                formatValue = function(val)
+                    return string.format("%.1f", val)
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowBorderFrequency", val)
+                    RefreshPreview()
+                end,
+            })
+        elseif typeIdx == GlowType.Proc then
+            -- Proc
+            AddSlider({
+                label = "Duration",
+                min = 0.1,
+                max = 3,
+                step = 0.1,
+                get = function()
+                    return getSource().glowProcDuration or 1
+                end,
+                formatValue = function(val)
+                    return string.format("%.1f", val)
+                end,
+                onChange = function(val)
+                    BR.Config.Set(configPrefix .. "glowProcDuration", val)
+                    RefreshPreview()
+                end,
+            })
+            AddCheckbox({
+                label = "Start Animation",
+                get = function()
+                    return getSource().glowProcStartAnim or false
+                end,
+                onChange = function(checked)
+                    BR.Config.Set(configPrefix .. "glowProcStartAnim", checked)
+                    RefreshPreview()
+                end,
+            })
+        end
+
+        -- Offsets
+        AddSlider({
+            label = "X Offset",
+            min = -10,
+            max = 10,
+            step = 1,
+            get = function()
+                return getSource().glowXOffset or 0
+            end,
+            onChange = function(val)
+                BR.Config.Set(configPrefix .. "glowXOffset", val)
+                RefreshPreview()
+            end,
+        })
+        AddSlider({
+            label = "Y Offset",
+            min = -10,
+            max = 10,
+            step = 1,
+            get = function()
+                return getSource().glowYOffset or 0
+            end,
+            onChange = function(val)
+                BR.Config.Set(configPrefix .. "glowYOffset", val)
+                RefreshPreview()
+            end,
+        })
+
+        -- Reset button (resets current type's params + shared keys)
+        dynamicLayout:Space(8)
+        local resetBtn = CreateButton(panel, "Reset to Defaults", function()
+            local keys = { "glowColor", "glowSize", "glowXOffset", "glowYOffset" }
+            local typeKeys = typeResetKeys[typeIdx]
+            if typeKeys then
+                for _, k in ipairs(typeKeys) do
+                    keys[#keys + 1] = k
+                end
+            end
+            for _, key in ipairs(keys) do
+                BR.Config.Set(configPrefix .. key, nil)
+            end
+            BuildTypeContent()
+            RefreshPreview()
+            Components.RefreshAll()
+        end)
+        resetBtn:SetSize(140, 24)
+        dynamicLayout:Add(resetBtn, 24)
+        table.insert(dynamicHolders, resetBtn)
+
+        -- Adjust panel height
+        panel:SetHeight(math.abs(dynamicLayout:GetY()) + 46)
+
+        RefreshPreview()
+    end
+
+    BuildTypeContent()
+
+    -- Subscribe to glow type changes to rebuild type-specific content
+    local function OnSettingChanged(_, path)
+        if path == configPrefix .. "glowType" then
+            BuildTypeContent()
+        end
+    end
+    BR.CallbackRegistry:RegisterCallback("SettingChanged", OnSettingChanged, panel)
+
+    panel:SetScript("OnHide", function()
+        Glow.StopAll(previewFrame, previewKey)
+        BR.CallbackRegistry:UnregisterCallback("SettingChanged", panel)
+        UnregisterDynamicHolders()
     end)
 
-    glowDemoPanel = demoPanel
+    glowAdvancedPanel = panel
 end
 
 -- Delete confirmation dialog for custom buffs
@@ -2967,21 +3582,21 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     sectionsFrame = CreateFrame("Frame", nil, modal)
     sectionsFrame:SetSize(MODAL_WIDTH - 40, 456)
 
-    local function CreateSeparator(parent, yOff, width)
-        local line = parent:CreateTexture(nil, "ARTWORK")
+    local secLayout = Components.VerticalLayout(sectionsFrame, { x = 0, y = 0 })
+
+    local function LayoutSeparator()
+        local line = sectionsFrame:CreateTexture(nil, "ARTWORK")
         line:SetHeight(1)
-        line:SetPoint("TOPLEFT", 0, yOff)
-        if width then
-            line:SetWidth(width)
-        else
-            line:SetPoint("RIGHT", 0, 0)
-        end
+        line:SetPoint("TOPLEFT", 0, secLayout:GetY())
+        line:SetPoint("RIGHT", 0, 0)
         line:SetColorTexture(0.25, 0.25, 0.25, 0.8)
+        secLayout:Space(1)
     end
 
     -- Appearance section
-    CreateSeparator(sectionsFrame, 0)
-    CreateSectionHeader(sectionsFrame, "APPEARANCE", 0, -9)
+    LayoutSeparator()
+    secLayout:Space(8)
+    LayoutSectionHeader(secLayout, sectionsFrame, "APPEARANCE")
 
     local nameHolder = Components.TextInput(sectionsFrame, {
         label = "Name:",
@@ -2989,7 +3604,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         width = 250,
         labelWidth = 50,
     })
-    nameHolder:SetPoint("TOPLEFT", 0, -30)
+    secLayout:Add(nameHolder, 20, COMPONENT_GAP)
     nameBox = nameHolder.editBox
 
     local overlayHolder = Components.TextInput(sectionsFrame, {
@@ -2998,7 +3613,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         width = 250,
         labelWidth = 50,
     })
-    overlayHolder:SetPoint("TOPLEFT", 0, -54)
+    secLayout:Add(overlayHolder, 20, SECTION_GAP)
     overlayBox = overlayHolder.editBox
 
     local overlayHint = sectionsFrame:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
@@ -3006,8 +3621,9 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     overlayHint:SetText("(use \\n for line break)")
 
     -- Conditions section (merges restrictions, visibility, advanced)
-    CreateSeparator(sectionsFrame, -76)
-    CreateSectionHeader(sectionsFrame, "CONDITIONS", 0, -85)
+    LayoutSeparator()
+    secLayout:Space(8)
+    LayoutSectionHeader(secLayout, sectionsFrame, "CONDITIONS")
 
     local classOptions = {
         { value = nil, label = "Any" },
@@ -3026,6 +3642,27 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         { value = "WARRIOR", label = "Warrior" },
     }
 
+    showIconToggle = Components.Toggle(sectionsFrame, {
+        label = editingBuff and editingBuff.showWhenPresent and "When active" or "When missing",
+        checked = editingBuff and editingBuff.showWhenPresent or false,
+        onChange = function(isChecked)
+            if isChecked then
+                showIconToggle.label:SetText("When active")
+            else
+                showIconToggle.label:SetText("When missing")
+            end
+        end,
+    })
+
+    requireSpellKnownToggle = Components.Toggle(sectionsFrame, {
+        label = "Only if spell known",
+        checked = editingBuff and editingBuff.requireSpellKnown or false,
+        onChange = function() end,
+    })
+    secLayout:AddRow({ { showIconToggle, 0 }, { requireSpellKnownToggle, 210 } }, COMPONENT_GAP)
+
+    local classRowY = secLayout:GetY()
+
     local function CreateSpecDropdown(classToken, selectedSpecId)
         if specDropdownHolder then
             specDropdownHolder:Hide()
@@ -3042,55 +3679,37 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             label = "Spec:",
             options = specOptions,
             selected = selectedSpecId,
-            width = 140,
-            labelWidth = 45,
+            width = 130,
+            labelWidth = 70,
             onChange = function() end,
         })
-        specDropdownHolder:SetPoint("TOPLEFT", 210, -132)
+        specDropdownHolder:SetPoint("TOPLEFT", sectionsFrame, "TOPLEFT", 210, classRowY)
     end
 
     classDropdownHolder = Components.Dropdown(sectionsFrame, {
         label = "Class:",
         options = classOptions,
         selected = editingBuff and editingBuff.class or nil,
-        width = 140,
-        labelWidth = 45,
+        width = 130,
+        labelWidth = 70,
         maxItems = 10,
         onChange = function(value)
             CreateSpecDropdown(value, nil)
         end,
     }, "BuffRemindersCustomClassDropdown")
-    classDropdownHolder:SetPoint("TOPLEFT", 0, -132)
+    secLayout:Add(classDropdownHolder, nil, COMPONENT_GAP)
 
     -- Initialize spec dropdown for editing existing buff
     if editingBuff and editingBuff.class then
         CreateSpecDropdown(editingBuff.class, editingBuff.requireSpecId)
     end
 
-    showIconToggle = Components.Toggle(sectionsFrame, {
-        label = editingBuff and editingBuff.showWhenPresent and "When active" or "When missing",
-        checked = editingBuff and editingBuff.showWhenPresent or false,
-        onChange = function(isChecked)
-            if isChecked then
-                showIconToggle.label:SetText("When active")
-            else
-                showIconToggle.label:SetText("When missing")
-            end
-        end,
-    })
-    showIconToggle:SetPoint("TOPLEFT", 0, -106)
-
-    requireSpellKnownToggle = Components.Toggle(sectionsFrame, {
-        label = "Only if spell known",
-        checked = editingBuff and editingBuff.requireSpellKnown or false,
-        onChange = function() end,
-    })
-    requireSpellKnownToggle:SetPoint("TOPLEFT", 210, -106)
-
     -- Require item (item gate)
     local requireItemLabel = sectionsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    requireItemLabel:SetPoint("TOPLEFT", 0, -166)
     requireItemLabel:SetText("Require item:")
+    requireItemLabel:SetWidth(70)
+    requireItemLabel:SetJustifyH("LEFT")
+    secLayout:AddText(requireItemLabel, 14, COMPONENT_GAP)
 
     requireItemEditBox = CreateFrame("EditBox", nil, sectionsFrame)
     requireItemEditBox:SetFontObject("GameFontHighlightSmall")
@@ -3123,11 +3742,13 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         },
         onChange = function() end,
     })
-    glowModeDropdown:SetPoint("TOPLEFT", 0, -192)
+    secLayout:Add(glowModeDropdown, nil, COMPONENT_GAP)
 
     -- Load conditions section (per-buff content visibility)
-    CreateSeparator(sectionsFrame, -222)
-    CreateSectionHeader(sectionsFrame, "SHOW IN", 0, -231)
+    secLayout:Space(SECTION_GAP)
+    LayoutSeparator()
+    secLayout:Space(8)
+    LayoutSectionHeader(secLayout, sectionsFrame, "SHOW IN")
 
     -- Local state for load conditions (read on save)
     local loadConditions = {}
@@ -3173,7 +3794,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         noAutoRefresh = true,
         onChange = function() end,
     })
-    visToggles:SetPoint("TOPLEFT", 0, -248)
+    secLayout:Add(visToggles, nil, COMPONENT_GAP)
 
     -- Ready check toggle
     local lcReadyCheckToggle = Components.Toggle(sectionsFrame, {
@@ -3183,12 +3804,12 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             loadConditions.readyCheckOnly = isChecked or nil
         end,
     })
-    lcReadyCheckToggle:SetPoint("TOPLEFT", 0, -276)
+    secLayout:Add(lcReadyCheckToggle, nil, COMPONENT_GAP)
 
     -- Level filter dropdown
     local levelFilterHolder = Components.Dropdown(sectionsFrame, {
         label = "Level:",
-        labelWidth = 38,
+        labelWidth = 70,
         width = 150,
         options = {
             { value = "any", label = "Any level" },
@@ -3203,11 +3824,13 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             loadConditions.levelFilter = (val ~= "any") and val or nil
         end,
     })
-    levelFilterHolder:SetPoint("TOPLEFT", 0, -298)
+    secLayout:Add(levelFilterHolder, nil, COMPONENT_GAP)
 
     -- Click action section
-    CreateSeparator(sectionsFrame, -330)
-    CreateSectionHeader(sectionsFrame, "CLICK ACTION", 0, -339)
+    secLayout:Space(SECTION_GAP)
+    LayoutSeparator()
+    secLayout:Space(8)
+    LayoutSectionHeader(secLayout, sectionsFrame, "CLICK ACTION")
 
     -- Determine existing action type
     local existingActionType = "none"
@@ -3224,7 +3847,6 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     -- Container for the conditional input (spell/item Lookup or macro text)
     actionInputHolder = CreateFrame("Frame", nil, sectionsFrame)
     actionInputHolder:SetSize(MODAL_WIDTH - 40, 26)
-    actionInputHolder:SetPoint("TOPLEFT", 0, -390)
 
     -- Spell ID input with Lookup
     castSpellEditBox = CreateFrame("EditBox", nil, actionInputHolder)
@@ -3393,7 +4015,8 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             UpdateActionInputVisibility(value)
         end,
     })
-    actionTypeDropdown:SetPoint("TOPLEFT", 0, -360)
+    secLayout:Add(actionTypeDropdown, nil, COMPONENT_GAP)
+    secLayout:Add(actionInputHolder, 26)
 
     -- Initialize visibility for the current action type
     UpdateActionInputVisibility(existingActionType)

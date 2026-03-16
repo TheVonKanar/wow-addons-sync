@@ -606,7 +606,7 @@ local function render_string(s, context)
                 -- there's also info.parentProfessionName for the general case ("Dragon Isles Inscription" vs "Inscription")
                 return info.professionName
             end
-        elseif variant == "zone" then
+        elseif variant == "zone" or variant == "map" then
             local info = C_Map.GetMapInfo(id)
             if info and info.name then
                 return info.name
@@ -625,6 +625,11 @@ local function render_string(s, context)
             if _G[strupper(id).."_FONT_COLOR"] then
                 return "|cn" .. strupper(id).."_FONT_COLOR:" .. fallback .. "|r"
             end
+        elseif variant == "a" then
+            if id == "*" then
+                id = "PlayerPartyBlip"
+            end
+            return CreateAtlasMarkup(id)
         end
         return fallback ~= "" and fallback or (variant .. ':' .. id)
     end)

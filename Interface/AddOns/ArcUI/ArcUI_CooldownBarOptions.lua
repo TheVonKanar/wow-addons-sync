@@ -547,6 +547,31 @@ local function CreateActiveBarEntry(spellID, barType, orderBase, instance)
         end,
       },
       
+      -- Force show override
+      forceShowAllSpecs = {
+        type = "toggle",
+        name = "|cff00ff88Show on All Specs|r",
+        desc = "When enabled, this bar is always visible regardless of the spec checkboxes or talent conditions above. Useful for bars imported from another spec that you want to see on this character.",
+        get = function()
+          local cfg = GetBarConfig(spellID, barTypeKey)
+          return cfg and cfg.behavior and cfg.behavior.forceShow or false
+        end,
+        set = function(info, value)
+          local cfg = GetBarConfig(spellID, barTypeKey)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            cfg.behavior.forceShow = value or nil
+            if ns.CooldownBars and ns.CooldownBars.UpdateBarVisibilityForSpec then
+              ns.CooldownBars.UpdateBarVisibilityForSpec()
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+          end
+        end,
+        order = 3.5,
+        width = "full",
+        hidden = function() return not expandedBars[barKey] end,
+      },
+
       -- Talent conditions (Arc Auras style - full row layout)
       talentCondHeader = {
         type = "description",

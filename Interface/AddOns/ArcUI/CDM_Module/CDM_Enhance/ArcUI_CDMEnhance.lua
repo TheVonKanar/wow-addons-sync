@@ -1255,6 +1255,30 @@ local function GetEffectiveIconSettingsForFrame(frame)
   frame._arcCfgVersion = effectiveSettingsCacheVersion
   frame._arcCfgCdID = cdID
   
+  -- Cache derived booleans used by hot hooks (SetDesaturated, SetDesaturation,
+  -- SetVertexColor, UpdateGlow) so they can fast-exit without calling
+  -- GetEffectiveIconSettingsForFrame or GetEffectiveStateVisuals.
+  -- These are recomputed only on cache miss (settings change).
+  if cfg then
+    local sv = GetEffectiveStateVisuals(cfg)
+    frame._arcCachedStateVisuals      = sv
+    -- Any cfg-level reason to intercept desaturation?
+    -- IAO frames always own desat — must never fast-path to PASSTHROUGH.
+    frame._arcCachedNeedDesatIntercept = (cfg.keepBright == true) or (sv ~= nil and sv.noDesaturate == true)
+        or (((cfg.auraActiveState and cfg.auraActiveState.ignoreAuraOverride)
+            or (cfg.cooldownSwipe and cfg.cooldownSwipe.ignoreAuraOverride)) == true)
+    -- Any cfg-level reason to intercept vertex color?
+    frame._arcCachedNeedVertexIntercept = (cfg.keepBright == true)
+    -- Is usable glow enabled for this icon? (opt-in default = false)
+    local su = cfg.spellUsability
+    frame._arcCachedUsableGlowEnabled  = su ~= nil and su.usableGlow == true
+  else
+    frame._arcCachedStateVisuals        = nil
+    frame._arcCachedNeedDesatIntercept  = false
+    frame._arcCachedNeedVertexIntercept = false
+    frame._arcCachedUsableGlowEnabled   = false
+  end
+  
   return cfg
 end
 
@@ -3300,22 +3324,8 @@ ApplyIconStyle = function(frame, cdID)
         -- Restore original cooldown frame state
         frame.Cooldown:SetAlpha(1)
         frame.Cooldown:Show()
-        
-        -- Handle desaturation based on new mode
-        if ignoreAuraOverride then
-          -- Entering ignoreAuraOverride mode - apply desaturation immediately if aura is active
-          local auraActive = HasAuraInstanceID(frame.auraInstanceID)
-          if auraActive and frame.Icon then
-            frame._arcForceDesatValue = 1
-            frame._arcBypassDesatHook = true
-            if frame.Icon.SetDesaturation then
-              frame.Icon:SetDesaturation(1)
-            else
-              frame.Icon:SetDesaturated(true)
-            end
-            frame._arcBypassDesatHook = false
-          end
-        else
+
+        if not ignoreAuraOverride then
           -- NOT in special mode - clear ALL our forced state and let CDM handle everything
           frame._arcForceDesatValue = nil
           
@@ -3430,6 +3440,24 @@ ApplyIconStyle = function(frame, cdID)
             if cfg and cfg.cooldownSwipe then
               local userWantsSwipe = cfg.cooldownSwipe.showSwipe ~= false
               local userWantsEdge  = cfg.cooldownSwipe.showEdge  ~= false
+              -- swipeWaitForNoCharges: suppress swipe when recharging (charge shadow shown,
+              -- main shadow not shown). Covers the race where CDM fires SetDrawSwipe(true)
+              -- before CooldownState has set _arcDesiredSwipe for the new charge state.
+              if userWantsSwipe and cfg.cooldownSwipe.swipeWaitForNoCharges and pf._arcIsChargeSpellCached then
+                local mainShadow = pf._arcCDMShadowCooldown
+                local chargeShadow = pf._arcCDMChargeShadow
+                local mainShown = mainShadow and mainShadow:IsShown() or false
+                local chargeShown = chargeShadow and chargeShadow:IsShown() or false
+                if chargeShown and not mainShown then
+                  -- Recharging: suppress swipe regardless of CDM's request
+                  if drawSwipe then
+                    pf._arcBypassSwipeHook = true
+                    self:SetDrawSwipe(false)
+                    pf._arcBypassSwipeHook = false
+                  end
+                  return
+                end
+              end
               if drawSwipe ~= userWantsSwipe then
                 pf._arcBypassSwipeHook = true
                 self:SetDrawSwipe(userWantsSwipe)
@@ -3492,7 +3520,7 @@ ApplyIconStyle = function(frame, cdID)
           local cfg = self._arcCdID and GetIconSettings(self._arcCdID)
           local sc = cfg and cfg.cooldownSwipe and cfg.cooldownSwipe.auraSwipeColor
           if not sc then return end
-          local isActive = HasAuraInstanceID(pf.auraInstanceID) or (pf.totemData ~= nil)
+          local isActive = (pf._arcAuraActive == true) or (pf.totemData ~= nil)
           if not isActive then return end
           -- Only re-apply if CDM set a different color
           if r == sc.r and g == sc.g and b == sc.b then return end
@@ -3572,7 +3600,7 @@ ApplyIconStyle = function(frame, cdID)
           
           -- Only enforce when ignoreAuraOverride is active AND aura is up
           if pf._arcIgnoreAuraOverride then
-            local auraActive = HasAuraInstanceID(pf.auraInstanceID)
+            local auraActive = pf._arcAuraActive == true
             if auraActive then
               -- Get current override spell from cooldownInfo (updates dynamically based on talents)
               local cooldownInfo = pf.cooldownInfo
@@ -3647,6 +3675,17 @@ ApplyIconStyle = function(frame, cdID)
         if not pf then return end
         if pf._arcBypassDesatHook then pf._arcLastDesatHookAction = "BYPASS" return end
         
+        -- FAST PATH: Skip all work when no dynamic overrides are active AND
+        -- cfg says no intercept is needed. Avoids GetEffectiveIconSettingsForFrame
+        -- and GetEffectiveStateVisuals (which allocates a table) on PASSTHROUGH calls.
+        if not pf._arcUsabilityDesatRequest and pf._arcForceDesatValue == nil then
+          if pf._arcCfgCdID == pf.cooldownID and pf._arcCfgVersion == effectiveSettingsCacheVersion
+             and not pf._arcCachedNeedDesatIntercept then
+            pf._arcLastDesatHookAction = "PASSTHROUGH"
+            return
+          end
+        end
+        
         -- Keep Bright: Force colored unless desaturation is allowed
         local kbCfg = GetEffectiveIconSettingsForFrame(pf)
         if kbCfg and kbCfg.keepBright and not kbCfg.keepBrightAllowDesat then
@@ -3666,7 +3705,7 @@ ApplyIconStyle = function(frame, cdID)
         -- was cleared (READY state, no-spell fallback, early-exit paths) but
         -- CDM still fires SetDesaturated before CooldownState re-confirms.
         if kbCfg then
-          local sv = GetEffectiveStateVisuals(kbCfg)
+          local sv = pf._arcCachedStateVisuals
           if sv and sv.noDesaturate then
             pf._arcLastDesatHookAction = "NO_DESAT_SV→0"
             pf._arcBypassDesatHook = true
@@ -3700,7 +3739,11 @@ ApplyIconStyle = function(frame, cdID)
           -- Staleness check: if we're forcing colored (0) from recharge phase but
           -- the shadow cooldown now says ALL charges depleted, our force value is
           -- stale (shadow hasn't been re-fed yet). Clear it and let CDM through.
-          if forceValue == 0 and pf._arcCDMShadowCooldown and pf._arcCDMShadowCooldown:IsShown() then
+          -- EXCEPTION: IAO frames always own desat entirely — HandleIgnoreAuraOverride
+          -- intentionally sets forceDesat=0 for DEPLETED (isRecharging=true in depleted),
+          -- so the staleness check incorrectly clears it.
+          if forceValue == 0 and not pf._arcIgnoreAuraOverride
+             and pf._arcCDMShadowCooldown and pf._arcCDMShadowCooldown:IsShown() then
             pf._arcForceDesatValue = nil
             pf._arcLastDesatHookAction = "FORCE_STALE_CLEAR"
             -- Let CDM's native desat go through unmodified
@@ -3725,6 +3768,15 @@ ApplyIconStyle = function(frame, cdID)
           if not pf then return end
           if pf._arcBypassDesatHook then pf._arcLastDesatHookAction = "BYPASS" return end
           
+          -- FAST PATH: same as SetDesaturated hook
+          if not pf._arcUsabilityDesatRequest and pf._arcForceDesatValue == nil then
+            if pf._arcCfgCdID == pf.cooldownID and pf._arcCfgVersion == effectiveSettingsCacheVersion
+               and not pf._arcCachedNeedDesatIntercept then
+              pf._arcLastDesatHookAction = "PASSTHROUGH"
+              return
+            end
+          end
+          
           -- Keep Bright: Force colored unless desaturation is allowed
           local kbCfg = GetEffectiveIconSettingsForFrame(pf)
           if kbCfg and kbCfg.keepBright and not kbCfg.keepBrightAllowDesat then
@@ -3740,7 +3792,7 @@ ApplyIconStyle = function(frame, cdID)
           -- was cleared (READY state, no-spell fallback, early-exit paths) but
           -- CDM still fires SetDesaturation before CooldownState re-confirms.
           if kbCfg then
-            local sv = GetEffectiveStateVisuals(kbCfg)
+            local sv = pf._arcCachedStateVisuals
             if sv and sv.noDesaturate then
               pf._arcLastDesatHookAction = "NO_DESAT_SV→0"
               pf._arcBypassDesatHook = true
@@ -3763,10 +3815,9 @@ ApplyIconStyle = function(frame, cdID)
           -- Fallback: If we have a forced desaturation value, enforce it
           local forceValue = pf._arcForceDesatValue
           if forceValue ~= nil then
-            -- Staleness check: if we're forcing colored (0) from recharge phase but
-            -- the shadow cooldown now says ALL charges depleted, our force value is
-            -- stale (shadow hasn't been re-fed yet). Clear it and let CDM through.
-            if forceValue == 0 and pf._arcCDMShadowCooldown and pf._arcCDMShadowCooldown:IsShown() then
+            -- Staleness check: skip for IAO frames — they own desat entirely.
+            if forceValue == 0 and not pf._arcIgnoreAuraOverride
+               and pf._arcCDMShadowCooldown and pf._arcCDMShadowCooldown:IsShown() then
               pf._arcForceDesatValue = nil
               pf._arcLastDesatHookAction = "FORCE_STALE_CLEAR"
               -- Let CDM's native desat go through unmodified
@@ -3790,6 +3841,15 @@ ApplyIconStyle = function(frame, cdID)
         local pf = self._arcParentFrame
         if not pf then return end
         if pf._arcBypassVertexHook then return end
+        
+        -- FAST PATH: no CooldownState tint AND cfg says no keepBright intercept needed.
+        -- This skips GetEffectiveIconSettingsForFrame on the 71/s common case.
+        if not pf._arcDesiredVertexColor then
+          if pf._arcCfgCdID == pf.cooldownID and pf._arcCfgVersion == effectiveSettingsCacheVersion
+             and not pf._arcCachedNeedVertexIntercept then
+            return
+          end
+        end
         
         -- COOLDOWN STATE VERTEX COLOR ENFORCEMENT (same pattern as alpha)
         -- CooldownState stores desired color; enforce it against CDM/SpellUsability overwrites
@@ -3831,10 +3891,23 @@ ApplyIconStyle = function(frame, cdID)
           self:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", padX, -padY)
           self:SetPoint("BOTTOMRIGHT", parentFrame, "BOTTOMRIGHT", -padX, padY)
         end
-        
+
+        -- CACHED BOOLEANS: keepCDMStyle and masqueControlsCooldowns are stable
+        -- between settings changes. Recompute only when effectiveSettingsCacheVersion
+        -- changes (spec swap, user changes settings). Cuts ~64/s live API lookups to ~0.
+        if self._arcCooldownCacheVersion ~= effectiveSettingsCacheVersion then
+          local sd2 = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
+          self._arcCachedKeepCDMStyle             = sd2 and sd2.keepCDMStyle == true
+          self._arcCachedMasqueControlsCooldowns  = ns.Masque
+              and ns.Masque.ShouldMasqueControlCooldowns
+              and ns.Masque.ShouldMasqueControlCooldowns() == true
+          self._arcCooldownCacheVersion = effectiveSettingsCacheVersion
+        end
+        local keepCDMStyle_hook        = self._arcCachedKeepCDMStyle
+        local masqueControlsCooldowns  = self._arcCachedMasqueControlsCooldowns
+
         -- Reapply texcoord range to match icon crop — skip when keepCDMStyle on
-        local sd2 = Shared and Shared.GetCurrentSpecData and Shared.GetCurrentSpecData()
-        if not (sd2 and sd2.keepCDMStyle == true) then
+        if not keepCDMStyle_hook then
           if parentFrame._arcTexCoords and self.SetTexCoordRange then
             local tc = parentFrame._arcTexCoords
             local lowVec = CreateVector2D(tc.left, tc.top)
@@ -3845,7 +3918,6 @@ ApplyIconStyle = function(frame, cdID)
         -- Masque's Hook_SetSwipeColor has issues with secret values in combat,
         -- so we apply Masque's desired color using our method
         -- We set _Swipe_Hook to bypass Masque's hook entirely (prevents visual glitches)
-        local masqueControlsCooldowns = ns.Masque and ns.Masque.ShouldMasqueControlCooldowns and ns.Masque.ShouldMasqueControlCooldowns()
         
         if masqueControlsCooldowns then
           local masqueColor = self._MSQ_Color
@@ -4007,7 +4079,7 @@ ApplyIconStyle = function(frame, cdID)
             -- Set swipe color: auraSwipeColor when aura is active, swipeColor otherwise, else black
             -- auraSwipeColor lets users customize the swipe during aura display separately
             -- from the cooldown swipe color (CDM's default aura yellow is always overridden here)
-            local isAuraNowActive = HasAuraInstanceID(parentFrame.auraInstanceID) or (parentFrame.totemData ~= nil)
+            local isAuraNowActive = (parentFrame._arcAuraActive == true) or (parentFrame.totemData ~= nil)
             local colorToUse = swipe.swipeColor
             if isAuraNowActive and swipe.auraSwipeColor then
               colorToUse = swipe.auraSwipeColor
@@ -4035,7 +4107,7 @@ ApplyIconStyle = function(frame, cdID)
           
           if spellID then
             -- Check if aura is active - if so, CDM handles display
-            local auraActive = HasAuraInstanceID(parentFrame.auraInstanceID)
+            local auraActive = parentFrame._arcAuraActive == true
             
             -- Check if charge spell
             local chargeInfo = nil
@@ -4071,19 +4143,13 @@ ApplyIconStyle = function(frame, cdID)
           self:SetReverse(swipe.reverse == true)
 
           -- Apply swipe color: auraSwipeColor when aura is active, else swipeColor
-          local isAuraNowActive = HasAuraInstanceID(parentFrame.auraInstanceID) or (parentFrame.totemData ~= nil)
+          local isAuraNowActive = (parentFrame._arcAuraActive == true) or (parentFrame.totemData ~= nil)
           if isAuraNowActive and swipe.auraSwipeColor then
             local sc = swipe.auraSwipeColor
             self:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.7)
           elseif swipe.swipeColor then
             local sc = swipe.swipeColor
             self:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
-          end
-          
-          -- Clear any forced state from ignoreAuraOverride mode
-          -- But preserve noDesaturate's forced 0 value
-          if parentFrame._arcForceDesatValue ~= nil and parentFrame._arcForceDesatValue ~= 0 then
-            parentFrame._arcForceDesatValue = nil
           end
         end
       end)
@@ -6210,85 +6276,41 @@ function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle, forceVisuals
     if ns.CDMGroups._restorationProtectionEnd and GetTime() < ns.CDMGroups._restorationProtectionEnd then return end
   end
 
-  -- ── Feed shadows + apply visuals with STATE-CHANGE DETECTION ────
-  -- Optimization: skip expensive ApplyCooldownStateVisuals when shadow
-  -- state (on-cooldown / recharging) hasn't changed since last check.
-  -- For ticker calls and idle-skip events, skip FeedShadow entirely (saves 3 pcalls).
+  -- SPELL OVERRIDE DETECTION: CDM can swap overrideSpellID on a frame mid-session
+  -- (e.g. Surging Totem 444995 → Retract 1221348 → back). The per-frame event listener
+  -- uses _arcCachedSpellID which can be stale. Detect the swap here and invalidate
+  -- so the next event feed picks up the correct spell.
   if ns.CooldownState then
-    ns.CooldownState.EnsureShadow(frame)
     local cfg = GetEffectiveIconSettingsForFrame(frame)
     if cfg then
-      local needVisuals = true
-
-      -- SPELL OVERRIDE DETECTION: CDM can swap overrideSpellID on a frame
-      -- (e.g. Surging Totem 444995 → Retract 1221348 → back to 444995).
-      -- overrideSpellID is always non-secret (confirmed via frame dumps).
-      -- If it changed from what we last fed, force full feed+visuals.
       local currentOverride = frame.cooldownInfo
                               and (frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID)
       local fedSpell = frame._arcShadowFedSpellID
       if currentOverride and fedSpell and currentOverride ~= fedSpell then
-        -- Override changed — invalidate cache and force full feed
-        frame._arcLastShadowShown = nil
-        frame._arcLastChargeShown = nil
+        frame._arcLastShadowShown  = nil
+        frame._arcLastChargeShown  = nil
         frame._arcShadowFedSpellID = nil
+        -- Feed immediately so the new spell's state is applied now, not on next event
         ns.CooldownState.FeedShadow(frame, cfg)
-        -- IMPORTANT: Do NOT cache shadow state here. During override transitions
-        -- the spell briefly appears "not on cooldown" before CDM re-applies the
-        -- remaining cooldown. If we cache false, idle-skip blocks all future
-        -- re-evaluation and the frame gets stuck. Leaving nil forces the next
-        -- ticker/event pass to re-evaluate (nil != false in idle-skip check).
-        -- needVisuals stays true — visuals will be applied below
-      elseif fromTicker or skipIdle then
-        -- IDLE SKIP: If frame was idle (both shadows not shown) last check,
-        -- skip entirely. New cooldowns are caught by full-sweep after spellcast.
-        -- Ticker catches out-of-combat edge cases. Active frames always get fed.
-        local lastMain = frame._arcLastShadowShown
-        local lastCharge = frame._arcLastChargeShown
-        if lastMain == false and (lastCharge == nil or lastCharge == false) and not forceVisuals then
-          needVisuals = false  -- Frame idle, skip FeedShadow + visuals
-        else
-          -- Frame was on cooldown or never cached — feed to check state
-          ns.CooldownState.FeedShadow(frame, cfg)
-          local shadowCD = frame._arcCDMShadowCooldown
-          local chargeShadow = frame._arcCDMChargeShadow
-          local nowMain = shadowCD and shadowCD:IsShown() or false
-          local nowCharge = chargeShadow and chargeShadow:IsShown() or false
-          if lastMain ~= nil and nowMain == lastMain and nowCharge == (lastCharge or false) and not forceVisuals then
-            needVisuals = false  -- State unchanged
-          end
-          frame._arcLastShadowShown = nowMain
-          frame._arcLastChargeShown = nowCharge
-        end
-      else
-        -- FULL SWEEP (after spellcast, force-refresh, direct calls):
-        -- Always feed shadow, skip visuals only if state unchanged.
-        ns.CooldownState.FeedShadow(frame, cfg)
-        local shadowCD = frame._arcCDMShadowCooldown
-        local chargeShadow = frame._arcCDMChargeShadow
-        local nowMain = shadowCD and shadowCD:IsShown() or false
-        local nowCharge = chargeShadow and chargeShadow:IsShown() or false
-        local prevMain = frame._arcLastShadowShown
-        local prevCharge = frame._arcLastChargeShown
-        -- Update cache
-        frame._arcLastShadowShown = nowMain
-        frame._arcLastChargeShown = nowCharge
-        -- Skip if state unchanged (nil prevMain = never cached, always proceed)
-        if prevMain ~= nil and nowMain == prevMain and nowCharge == (prevCharge or false) and not forceVisuals then
-          needVisuals = false
-        end
+        ApplyCooldownStateVisuals(frame, cfg)
       end
 
-      if needVisuals then
-        ApplyCooldownStateVisuals(frame, cfg)
+      -- Update shadow state cache for GlobalCooldownSweep auto-stop decision.
+      -- Per-frame event listener and shadow hooks own feeding and dispatch —
+      -- we just need the cache to reflect current state so the ticker knows
+      -- when all frames are idle and can stop.
+      if fromTicker then
+        local shadowCD    = frame._arcCDMShadowCooldown
+        local chargeShadow = frame._arcCDMChargeShadow
+        frame._arcLastShadowShown = shadowCD    and shadowCD:IsShown() or false
+        frame._arcLastChargeShown = chargeShadow and chargeShadow:IsShown() or false
       end
     end
   end
 
-  -- Enforce swipe/edge: re-apply what DecideAndApplySwipeEdge decided.
-  -- IAO stale-state fix: if state-change detection skipped ApplyCooldownStateVisuals
-  -- (shadow IsShown() same as last cycle), _arcDesiredSwipe may be from the ready state.
-  -- FeedShadow always runs first so _arcLastIsOnGCD is fresh — use it to clear stale desired.
+  -- SWIPE ENFORCEMENT: re-apply what DecideAndApplySwipeEdge last decided.
+  -- CDM writes SetDrawSwipe/SetDrawEdge on its own update cycle which can
+  -- clobber our value. This is the single place that re-enforces it.
   local cd = frame.Cooldown
   if cd then
     if frame._arcIgnoreAuraOverride and not frame._arcNoGCDSwipeEnabled and frame._arcLastIsOnGCD then
@@ -6542,9 +6564,14 @@ function ns.CDMEnhance.ApplyIconVisuals(frame)
     if ns.CooldownState and ns.CooldownState.FeedShadow then
       ns.CooldownState.FeedShadow(frame, cfg)
     end
-    -- Still update usable glow (works independently of state visuals)
-    if ns.CDMSpellUsability and ns.CDMSpellUsability.UpdateGlow then
-      ns.CDMSpellUsability.UpdateGlow(frame, cfg)
+    -- Still update usability tinting + glow (work independently of state visuals)
+    if ns.CDMSpellUsability then
+      if ns.CDMSpellUsability.OnRefreshIconColor then
+        ns.CDMSpellUsability.OnRefreshIconColor(frame, cfg)
+      end
+      if ns.CDMSpellUsability.UpdateGlow then
+        ns.CDMSpellUsability.UpdateGlow(frame, cfg)
+      end
     end
     -- CRITICAL: Still update custom label visibility — labels have their own
     -- aura active/inactive and cooldown state toggles independent of stateVisuals.
@@ -6799,6 +6826,8 @@ EnhanceFrame = function(frame, cdID, viewerType, viewerName)
     -- Cache aura active glow flag so event-driven early return can check cheaply
     local iconCfg = GetIconSettings(cdID)
     frame._arcHasAuraActiveGlow = iconCfg and iconCfg.auraActiveState and (iconCfg.auraActiveState.glow == true or iconCfg.auraActiveState.glowWhenMissing == true) or false
+
+    -- Per-frame event listener installed by CooldownState.EnsureShadow
   end
 
   -- Store viewerType on frame (updated every enhance call in case of spec switch)
@@ -6878,13 +6907,30 @@ EnhanceFrame = function(frame, cdID, viewerType, viewerName)
   -- ═══════════════════════════════════════════════════════════════════
   if (viewerType == "cooldown" or viewerType == "utility") and not InCombatLockdown() then
     C_Timer.After(0, function()
-      if frame and frame._arcEnhanced and ns.CDMEnhance.OnCooldownEvent then
-        -- Clear state-change cache so initial dispatch always applies visuals
-        frame._arcLastShadowShown = nil
-        frame._arcLastChargeShown = nil
-        ns.CDMEnhance.OnCooldownEvent(frame)
+      if frame and frame._arcEnhanced then
+        -- Apply initial visuals. CooldownState's per-frame event listener owns feeding.
+        local cfg = GetEffectiveIconSettingsForFrame(frame)
+        if cfg and ns.CooldownState and ns.CooldownState.Apply then
+          ns.CooldownState.Apply(frame, cfg)
+        end
       end
     end)
+    -- Second pass deferred longer: CDM may not have called SetAuraInstanceInfo/
+    -- SetTotemData yet on the first frame after login. Re-evaluate aura active
+    -- glow once CDM has had time to push initial aura/totem state to frames.
+    local hasAuraGlowCfg = GetIconSettings(cdID)
+    hasAuraGlowCfg = hasAuraGlowCfg and hasAuraGlowCfg.auraActiveState
+      and (hasAuraGlowCfg.auraActiveState.glow == true or hasAuraGlowCfg.auraActiveState.glowWhenMissing == true)
+    if hasAuraGlowCfg then
+      C_Timer.After(1.5, function()
+        if frame and frame._arcEnhanced then
+          local cfg = GetEffectiveIconSettingsForFrame(frame)
+          if cfg and ns.CooldownState and ns.CooldownState.Apply then
+            ns.CooldownState.Apply(frame, cfg)
+          end
+        end
+      end)
+    end
   end
 end
 
@@ -7620,6 +7666,21 @@ local function ApplyCooldownPreview(frame, cdID, enable)
               ns.ArcAurasCooldown.FeedCooldown(fd)
             end
           end)
+        end
+      end
+    else
+      -- CDM cooldown frame: re-push real cooldown directly so active timers
+      -- don't flash empty after preview cleared. One-shot, no polling.
+      local spellID = frame.cooldownInfo
+        and (frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID)
+      if spellID and frame.Cooldown then
+        local cdOK, cdInfo = pcall(C_Spell.GetSpellCooldown, spellID)
+        if cdOK and cdInfo and cdInfo.startTime and cdInfo.startTime > 0 then
+          frame._arcBypassCDHook = true
+          pcall(function()
+            frame.Cooldown:SetCooldown(cdInfo.startTime, cdInfo.duration, cdInfo.modRate or 1)
+          end)
+          frame._arcBypassCDHook = false
         end
       end
     end
@@ -8971,17 +9032,10 @@ eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")  -- Entering combat
 -- Proc glow events (spellID in event is non-secret)
 eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 eventFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-eventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+-- Spell override changes (e.g. Hero Talent swaps, Surging Totem <-> Retract)
+-- baseSpellID and overrideSpellID are non-secret in this event
+eventFrame:RegisterEvent("COOLDOWN_VIEWER_SPELL_OVERRIDE_UPDATED")
 
--- ═══════════════════════════════════════════════════════════════════════════
--- SPELLCAST DIRTY FLAG for state-change optimization
--- When a spell is cast, new cooldowns may start (including shared CDs).
--- The next SPELL_UPDATE_COOLDOWN must do a full sweep to detect them.
--- Subsequent events (GCD expiry, natural CD ticks) can skip idle frames.
--- ═══════════════════════════════════════════════════════════════════════════
-local spellcastDirtyFlag = false
 
 -- Track active threshold glow icons and manage ticker
 local activeThresholdGlows = {}  -- cdID -> true
@@ -9008,7 +9062,7 @@ local function EvaluateThresholdGlows()
               -- Preview: show glow even if buff is inactive, stay in tracking
               hasActive = true
               ShowReadyGlow(frame, stateVisuals)
-            elseif HasAuraInstanceID(auraID) then
+            elseif (frame._arcAuraActive ~= nil and frame._arcAuraActive) or (frame._arcAuraActive == nil and HasAuraInstanceID(auraID)) then
               hasActive = true
               
               -- Determine which unit this aura tracks
@@ -9619,8 +9673,19 @@ function ns.CDMEnhance.ShowProcGlow(frame, glowCfg)
         frame._arcProcGlowPreWarmed = nil
       end
     else
-      HideCDMProcGlow(frame)
-      return  -- Other types: keep existing guard
+      -- pixel / button / autocast: verify the LCG glow frame is still alive.
+      -- If it's gone or hidden we must clear the active flag so the restart
+      -- below proceeds. Without this check ShowProcGlow returns here forever
+      -- and the glow never shows after a frame recycle / spec change / re-open.
+      local gf = ns.Glows and ns.Glows.GetGlowFrame(frame, "ArcUI_ProcGlow")
+      if gf and gf:IsShown() and gf:IsVisible() then
+        HideCDMProcGlow(frame)
+        return  -- Genuinely still active — nothing to do
+      else
+        -- Frame gone or hidden — allow full restart below
+        frame._arcProcGlowActive = false
+        frame._arcProcGlowPreWarmed = nil
+      end
     end
   end
   
@@ -9655,6 +9720,13 @@ function ns.CDMEnhance.ShowProcGlow(frame, glowCfg)
   if frame.SpellActivationAlert then
     HideCDMProcGlow(frame)
   end
+
+  -- Proc is now active — immediately re-apply visuals so readyProcOverride / cooldownProcOverride
+  -- pushes the alpha to 1. Without this the frame stays at alpha=0 until the next unrelated event.
+  local cfg = GetEffectiveIconSettingsForFrame(frame)
+  if cfg then
+    ApplyCooldownStateVisuals(frame, cfg, cfg.alpha or 1.0)
+  end
 end
 
 -- Called when SPELL_ACTIVATION_OVERLAY_GLOW_HIDE fires
@@ -9670,6 +9742,13 @@ function ns.CDMEnhance.HideProcGlow(frame)
   frame._arcProcGlowActive = false
   frame._arcProcGlowType = nil
   frame._arcProcGlowSpellID = nil
+
+  -- Proc ended — immediately re-apply visuals so readyState alpha (e.g. 0) is restored.
+  -- Without this the frame stays at alpha=1 until the next unrelated event fires.
+  local cfg = GetEffectiveIconSettingsForFrame(frame)
+  if cfg then
+    ApplyCooldownStateVisuals(frame, cfg, cfg.alpha or 1.0)
+  end
   
   if C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed then
     -- Also capture the base spellID NOW before state clears further.
@@ -10139,29 +10218,10 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
     end)
     
   elseif event == "SPELL_UPDATE_COOLDOWN" then
-    -- ═══════════════════════════════════════════════════════════════════
-    -- STATE-CHANGE OPTIMIZED COOLDOWN UPDATE
-    -- After a spellcast: full sweep (feed all frames to catch shared CDs).
-    -- Otherwise (GCD expiry, natural ticks): skip idle frames entirely.
-    -- ═══════════════════════════════════════════════════════════════════
-    local fullSweep = spellcastDirtyFlag
-    spellcastDirtyFlag = false
-    for cdID, data in pairs(enhancedFrames) do
-      if data.frame and (data.viewerType == "cooldown" or data.viewerType == "utility") then
-        ns.CDMEnhance.OnCooldownEvent(data.frame, false, not fullSweep)
-      end
-    end
-    -- Kick the ticker if out of combat — active cooldowns may need monitoring
-    -- for expiry transitions. The ticker auto-stops when all frames go idle.
+    -- Per-frame event listeners handle all CD feeding — no global sweep needed.
+    -- Just kick the out-of-combat ticker for expiry edge cases on non-CD frames.
     if not InCombatLockdown() and ns.CDMEnhance.EnsureTickerState then
       ns.CDMEnhance.EnsureTickerState()
-    end
-
-  elseif event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_CHANNEL_START" then
-    -- Player cast/channeled a spell — new cooldowns may start (including shared CDs).
-    -- Flag next SPELL_UPDATE_COOLDOWN for full sweep so it feeds ALL frames.
-    if arg1 == "player" then
-      spellcastDirtyFlag = true
     end
 
   elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
@@ -10281,6 +10341,59 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
     
     if ns.devMode and not foundFrame then
       print("|cffFF0000[ArcUI Proc]|r Could not find frame for spellID:", spellID)
+    end
+
+  elseif event == "COOLDOWN_VIEWER_SPELL_OVERRIDE_UPDATED" then
+    -- baseSpellID / overrideSpellID are non-secret in this event.
+    -- CDM has already updated frame.cooldownInfo.overrideSpellID before this fires,
+    -- but ArcUI's per-frame caches (_arcCachedSpellID, _arcShadowFedSpellID) still
+    -- hold the old spell — causing the ready glow to track the wrong spellID.
+    -- Fix: find every enhanced frame whose base spell matches, invalidate caches,
+    -- kill any stale ready glow, and re-evaluate state immediately.
+    local baseSpellID    = arg1
+    local overrideSpellID = arg2  -- nil means override was removed
+    if not baseSpellID then return end
+
+    if ns.devMode then
+      print(string.format("|cffFFAA00[ArcUI]|r SPELL_OVERRIDE_UPDATED base=%d override=%s",
+            baseSpellID, tostring(overrideSpellID)))
+    end
+
+    for cdID, data in pairs(enhancedFrames) do
+      local frame = data.frame
+      if frame and frame._arcStyled then
+        local ci = frame.cooldownInfo
+        if ci and ci.spellID == baseSpellID then
+          local newSpellID = overrideSpellID or baseSpellID
+          -- Update cache immediately — per-frame listener uses this for event matching
+          frame._arcCachedSpellID    = newSpellID
+          frame._arcShadowFedSpellID = nil
+          -- Kill ready glow keyed to old spell
+          if frame._arcReadyGlowActive then
+            HideReadyGlow(frame)
+            frame._arcReadyGlowActive = false
+          end
+          frame._arcLastShadowShown  = nil
+          frame._arcLastChargeShown  = nil
+          -- Feed shadow SYNCHRONOUSLY with the new spell while cooldownInfo still
+          -- reflects the override. The override window can be as short as ~110ms —
+          -- a deferred C_Timer.After(0) fires after CDM has already cleared the
+          -- override, causing FeedShadow to see the base spell (not on CD) and
+          -- produce a ready state instead of the correct cooldown state.
+          if ns.CooldownState and ns.CooldownState.FeedShadow then
+            local cfg = GetEffectiveIconSettingsForFrame(frame)
+            if cfg then
+              ns.CooldownState.FeedShadow(frame, cfg)
+              -- Apply visuals synchronously so the swipe/alpha update within this frame
+              ApplyCooldownStateVisuals(frame, cfg)
+            end
+          end
+          if ns.devMode then
+            print(string.format("|cffFFAA00[ArcUI]|r  -> fed shadow cdID=%d spellID=%s",
+                  cdID, tostring(newSpellID)))
+          end
+        end
+      end
     end
   end
 end)

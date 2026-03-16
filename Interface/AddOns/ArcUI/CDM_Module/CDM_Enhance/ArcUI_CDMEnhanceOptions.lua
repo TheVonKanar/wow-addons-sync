@@ -13077,13 +13077,25 @@ function ns.GetCDMIconsOptionsTable()
       name = "Customize CDM icons. Use the filter dropdown to switch between Cooldowns, Auras, or view icons in specific groups.",
       order = 1,
     },
-    
+    cdmDisabledMsg = {
+      type = "description",
+      name = "\n\n|cffff4444CDM Module is Disabled\n\nUse the 'Enable CDM Module' toggle below to re-enable icon styling and group management.|r\n\n",
+      order = -999,
+      width = "full",
+      fontSize = "large",
+      hidden = function()
+        if Shared and Shared.IsCDMStylingEnabled then return Shared.IsCDMStylingEnabled() end
+        return true
+      end,
+    },
+
     -- ═══════════════════════════════════════════════════════════════════
     -- CONTROLS
     -- ═══════════════════════════════════════════════════════════════════
     masterEnable = {
       type = "toggle",
       name = "|cff00ff00Enable CDM Module|r",
+      disabled = function() return false end,  -- Always enabled so user can re-enable CDM
       desc = "Master toggle to enable/disable all ArcUI CDM icon styling and group management.\n\n|cffffaa00Reload recommended after changing.|r\n\nWhen disabled, icons stay under default CDM control.",
       order = 2,
       width = 1.0,

@@ -1,5 +1,25 @@
 # Changelog
 
+## Changed in v39
+
+* Dust 'Em Off: changed the decor items in the tooltip to use their secondary-sale versions so they actually show completion (this is a weird case because Blizzard made a second version of the item so it wouldn't have the "you need to buy X moths" text on it)
+* Harandar: Add missing decor to Reliquary's Lost Paintbrush
+* Tooltips: if an item is still loading, use an empty space as the label so spacing works better
+
+## Changed in v38
+
+* Harandar: show Kuri on the map, and mention the Skyshards mount on rares
+* Dust 'Em Off: show completion for some items on Mothkeeper Wew'tam
+
+## Changed in v37
+
+* Arcantina: put all the respawning treasure in a group so it's easy to hide
+* More Than Just Their Roots: show on parent maps, and hide before you've gotten the One Does Not Simply Walk Into Harandar achievement
+
+## Changed in v36
+
+* Add achievement: More Than Just Their Roots (mostly outside of Harandar, but there's status icons on the map there to point you to where to go)
+
 ## Changed in v35
 
 * Eversong Woods: Dame Bloodshed drops Princess Bloodshed (thanks zeenk!)

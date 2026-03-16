@@ -7,8 +7,7 @@ LoggerHeadDB = {
 ["Default"] = {
 ["log"] = {
 ["party"] = {
-["Magisters' Terrace"] = {
-[2] = true,
+["Murder Row"] = {
 [23] = true,
 },
 ["The Blinding Vale"] = {
@@ -29,12 +28,13 @@ LoggerHeadDB = {
 ["Voidscar Arena"] = {
 [23] = true,
 },
-["Murder Row"] = {
+["Magisters' Terrace"] = {
+[2] = true,
 [23] = true,
 },
 },
 ["scenario"] = {
-["Atal'Aman"] = {
+["Twilight Crypts"] = {
 [208] = false,
 },
 ["Sunkiller Sanctum"] = {
@@ -55,7 +55,7 @@ LoggerHeadDB = {
 ["Shadowguard Point"] = {
 [208] = false,
 },
-["Twilight Crypts"] = {
+["Atal'Aman"] = {
 [208] = false,
 },
 },

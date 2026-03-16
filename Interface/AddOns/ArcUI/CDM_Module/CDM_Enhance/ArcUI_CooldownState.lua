@@ -11,7 +11,8 @@
 --   IsShown()=false → ready or has charges available
 --
 -- _arcCDMChargeShadow (charge recharge):
---   Fed with GetSpellChargeDuration. No GCD contamination.
+--   SetCooldown(0,0) then SetCooldownFromDurationObject(GetSpellChargeDuration).
+--   Clear-first ensures proc resets and CDR clear immediately.
 --   IsShown()=true  → recharge timer active
 --   IsShown()=false → all charges full
 --
@@ -131,6 +132,13 @@ local function ResetDurationText(frame)
   if frame._arcChargeText and frame._arcChargeText.SetIgnoreParentAlpha then
     if not skip then frame._arcChargeText:SetIgnoreParentAlpha(false) end
   end
+  -- Restore chargeFrame container
+  if not skip then
+    local chargeFrame = frame.ChargeCount or frame.Applications
+    if chargeFrame and chargeFrame.SetIgnoreParentAlpha then
+      chargeFrame:SetIgnoreParentAlpha(false)
+    end
+  end
   if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
     if not skip then frame.Cooldown.Text:SetIgnoreParentAlpha(false) end
   end
@@ -176,6 +184,15 @@ local function PreserveDurationText(frame)
       frame._arcChargeText:SetIgnoreParentAlpha(true)
       frame._arcChargeText:SetAlpha(1)
     end
+    -- Also protect the chargeFrame container (ChargeCount/Applications).
+    -- SetIgnoreParentAlpha on the FontString only ignores inherited alpha —
+    -- CDM calls chargeFrame:SetAlpha(0) directly which still affects the text.
+    -- SetIgnoreParentAlpha on the container makes it ignore the icon frame's alpha.
+    local chargeFrame = frame.ChargeCount or frame.Applications
+    if chargeFrame and chargeFrame.SetIgnoreParentAlpha then
+      chargeFrame:SetIgnoreParentAlpha(true)
+      chargeFrame:SetAlpha(1)
+    end
   end
   -- Native Cooldown FontStrings: The Cooldown widget can recreate/reset
   -- its internal text when CDM pushes new DurationObjects. Walk regions
@@ -215,8 +232,15 @@ local function ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRechargin
   --   isRecharging = charges > 0 (charge shadow shown)
   --   isOnCooldown && !isRecharging = charges = 0 (all spent)
   --   !isOnCooldown && !isRecharging = all charges ready
-  local chargesSpent = isOnCooldown and not isRecharging  -- charges = 0
-  local hasCharges = isRecharging or not isOnCooldown      -- charges > 0
+  -- With both shadows read independently (matches shadow tester):
+  -- DEPLETED   = isOnCooldown and isRecharging     (0 charges, one recharging)
+  -- RECHARGING = not isOnCooldown and isRecharging (1+ charges, one recharging)
+  -- FULL       = not isOnCooldown and not isRecharging
+  -- DEPLETED   (isOnCooldown=true,  isRecharging=true):  0 charges
+  -- RECHARGING (isOnCooldown=false, isRecharging=true):  1+ charges, recharging
+  -- FULL       (isOnCooldown=false, isRecharging=false): all charges ready
+  local chargesSpent = isOnCooldown and isRecharging   -- DEPLETED only: 0 charges
+  local hasCharges   = not isOnCooldown                -- RECHARGING + FULL: 1+ charges
 
   -- ── CHARGE TEXT: hideAtZero ──
   local chargeCfg = cfg.chargeText
@@ -224,16 +248,23 @@ local function ApplyChargeConditionalText(frame, cfg, isChargeSpell, isRechargin
   if wantHideAtZero and chargesSpent then
     frame._arcHideChargeAtZero = true
     if frame._arcChargeText then
+      -- SetIgnoreParentAlpha: decouple from chargeFrame container so CDM
+      -- showing/alpha-ing the container can't drag the fontstring back visible.
+      if frame._arcChargeText.SetIgnoreParentAlpha then
+        frame._arcChargeText:SetIgnoreParentAlpha(true)
+      end
       frame._arcChargeText:SetAlpha(0)
     end
   else
     frame._arcHideChargeAtZero = nil
-    -- Only restore if charge text is enabled (don't fight chargeText.enabled=false)
+    -- Restore charge text unconditionally — RECHARGING means 1+ charges available,
+    -- text must show regardless of frame alpha (cdAlpha dim does not mean text hidden).
+    -- SetIgnoreParentAlpha(false) lets CDM's container alpha manage it naturally.
     if chargeCfg and chargeCfg.enabled ~= false and frame._arcChargeText then
-      -- Don't override if parent frame is hidden
-      if (frame._lastAppliedAlpha or 1) > 0.01 then
-        frame._arcChargeText:SetAlpha(1)
+      if frame._arcChargeText.SetIgnoreParentAlpha then
+        frame._arcChargeText:SetIgnoreParentAlpha(false)
       end
+      frame._arcChargeText:SetAlpha(1)
     end
   end
 
@@ -302,6 +333,13 @@ local EnforceCooldownReadyGlow
 local function DispatchAfterShadowUpdate(frame)
   local cachedCfg = frame._arcCfg
   if not cachedCfg then return end
+  -- Update CDMEnhance cache flags BEFORE calling ApplyCooldownStateVisuals.
+  -- Without this, CDMEnhance's ticker sees stale _arcLastShadowShown/_arcLastChargeShown
+  -- and skips the next visual update (state-change detection false-negative).
+  local shadowCD    = frame._arcCDMShadowCooldown
+  local chargeShadow = frame._arcCDMChargeShadow
+  frame._arcLastShadowShown = shadowCD    and shadowCD:IsShown()    or false
+  frame._arcLastChargeShown = chargeShadow and chargeShadow:IsShown() or false
   ns.CDMEnhance.ApplyCooldownStateVisuals(frame, cachedCfg)
   if ns.CDMSpellUsability and ns.CDMSpellUsability.UpdateGlow then
     ns.CDMSpellUsability.UpdateGlow(frame, cachedCfg)
@@ -320,50 +358,127 @@ local function EnsureShadowCooldown(frame)
     frame._arcLastChargeShown  = false
     frame._arcLastIsOnGCD      = false
 
-    -- OnCooldownDone: natural timer expiry
-    -- DEFERRED: WoW fires OnCooldownDone before IsShown() updates to false.
-    -- If we dispatch immediately, ApplyCooldownStateVisuals re-feeds the shadow
-    -- and reads stale IsShown()=true, concluding the spell is still on cooldown.
-    -- Deferring by one frame ensures IsShown() returns the correct value.
-    frame._arcCDMShadowCooldown:HookScript("OnCooldownDone", function()
-      if frame._arcFeedingShadow then return end
-      C_Timer.After(0, function()
-        if frame._arcFeedingShadow then return end
-        local shadowCD = frame._arcCDMShadowCooldown
-        if shadowCD then
-          frame._arcLastShadowShown = shadowCD:IsShown() or false
+    -- OnShow/OnHide: skip during feed — _arcFeedingShadow guard prevents cascade.
+    -- GCD gate on OnShow only: shadow cleared by GCD, not a real state change.
+    -- OnHide: NO GCD gate — natural expiry (DEPLETED→RECHARGING) fires OnHide at
+    -- same instant as SPELL_UPDATE_CD [nil] which sets isOnGCD=true. Gating blocks it.
+    -- OnCooldownDone: always dispatch, deferred 0.1s (IsShown() not updated yet at fire time).
+    local _Track = _G.ArcUIProfiler_Track
+    local function shadowOnShow()
+      if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+      if frame._arcLastIsOnGCD then return end
+      DispatchAfterShadowUpdate(frame)
+    end
+    local function shadowOnHide()
+      if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+      DispatchAfterShadowUpdate(frame)
+    end
+    local function shadowOnDone()
+      C_Timer.After(0.1, function() DispatchAfterShadowUpdate(frame) end)
+    end
+    frame._arcCDMShadowCooldown:HookScript("OnShow",        _Track and _Track("CooldownState.ShadowOnShow",        shadowOnShow)        or shadowOnShow)
+    frame._arcCDMShadowCooldown:HookScript("OnHide",        _Track and _Track("CooldownState.ShadowOnHide",        shadowOnHide)        or shadowOnHide)
+    frame._arcCDMShadowCooldown:HookScript("OnCooldownDone",_Track and _Track("CooldownState.ShadowOnCooldownDone",shadowOnDone)        or shadowOnDone)
+
+    -- ═══════════════════════════════════════════════════════════════════
+    -- PER-FRAME EVENT LISTENER
+    -- Installed here so it lives entirely within CooldownState alongside
+    -- the shadow frames it feeds. Each frame gets one event frame.
+    -- SPELL_UPDATE_COOLDOWN: feed on exact spellID match, base match, or
+    --   nil (global = GCD expiry / server sync).
+    -- UNIT_SPELLCAST_SUCCEEDED: feed on spellID match — catches the cast
+    --   moment before SPELL_UPDATE_COOLDOWN fires.
+    -- GCD filter: frame.isOnGCD==true means only GCD swipe is active — skip.
+    -- Shadow OnCooldownDone above handles expiry — no polling needed.
+    -- ═══════════════════════════════════════════════════════════════════
+    local ef = CreateFrame("Frame")
+    frame._arcPerFrameEvFrame = ef
+    ef:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+    ef:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+    local _TrackEv = _G.ArcUIProfiler_Track
+    local function perFrameEventHandler(_, ev, a1, a2, a3)
+      if not frame._arcEnhanced then
+        ef:UnregisterAllEvents()
+        frame._arcPerFrameEvFrame = nil
+        return
+      end
+      -- Build the full set of spellIDs this frame can respond to:
+      --   _arcCachedSpellID   — set at enhancement time and updated by override handler
+      --   overrideSpellID     — live from CDM (changes during override windows)
+      --   spellID (base)      — always the base spell
+      -- Matching any of these means an event for this frame should trigger a feed.
+      -- This covers short-lived override spells whose SPELL_UPDATE_COOLDOWN fires
+      -- before _arcCachedSpellID has been updated by the override event handler.
+      local ci = frame.cooldownInfo
+      local baseSpell     = ci and ci.spellID
+      local overrideSpell = ci and ci.overrideSpellID
+      local cachedSpell   = frame._arcCachedSpellID
+      -- Primary spellID for FeedShadow (prefer live override, then cached, then base)
+      local spellID = overrideSpell or cachedSpell or baseSpell
+      if not spellID then return end
+
+      if ev == "SPELL_UPDATE_COOLDOWN" then
+        local matches = (a1 == nil)
+                     or (a1 == cachedSpell)
+                     or (a1 == overrideSpell)
+                     or (a1 == baseSpell)
+                     or (a2 == cachedSpell)
+                     or (a2 == overrideSpell)
+                     or (a2 == baseSpell)
+        if not matches then return end
+      elseif ev == "UNIT_SPELLCAST_SUCCEEDED" then
+        if a3 ~= cachedSpell and a3 ~= overrideSpell and a3 ~= baseSpell then return end
+      end
+
+      local cfg = frame._arcCfg
+      if cfg then
+        ns.CooldownState.FeedShadow(frame, cfg)
+        local chargeShadow = frame._arcCDMChargeShadow
+        local chargeShown  = chargeShadow and chargeShadow:IsShown() or false
+        if not frame._arcLastIsOnGCD or chargeShown then
+          DispatchAfterShadowUpdate(frame)
         end
-        DispatchAfterShadowUpdate(frame)
-      end)
-    end)
+      end
+    end
+    ef:SetScript("OnEvent", _TrackEv and _TrackEv("CooldownState.PerFrameEvent", perFrameEventHandler) or perFrameEventHandler)
   end
 
   -- Only create charge shadow for charge spells (saves frame creation + feed cost)
   if frame._arcIsChargeSpellCached and not frame._arcCDMChargeShadow then
     frame._arcCDMChargeShadow = CreateInvisibleCooldown(frame)
 
-    -- OnCooldownDone for charge shadow: recharge timer expired
-    -- DEFERRED: Same IsShown() timing issue as main shadow (see above).
-    frame._arcCDMChargeShadow:HookScript("OnCooldownDone", function()
-      if frame._arcFeedingShadow then return end
-      C_Timer.After(0, function()
-        if frame._arcFeedingShadow then return end
-        local chargeShadow = frame._arcCDMChargeShadow
-        if chargeShadow then
-          frame._arcLastChargeShown = chargeShadow:IsShown() or false
-        end
-        DispatchAfterShadowUpdate(frame)
-      end)
-    end)
+    -- Same pattern as main shadow: skip during feed to avoid clear-first cascade.
+    -- No GCD gate — charge state changes are always real.
+    local _Track2 = _G.ArcUIProfiler_Track
+    local function chargeOnShow()
+      if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+      DispatchAfterShadowUpdate(frame)
+    end
+    local function chargeOnHide()
+      if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+      DispatchAfterShadowUpdate(frame)
+    end
+    local function chargeOnDone()
+      C_Timer.After(0.1, function() DispatchAfterShadowUpdate(frame) end)
+    end
+    frame._arcCDMChargeShadow:HookScript("OnShow",        _Track2 and _Track2("CooldownState.ChargeOnShow",        chargeOnShow) or chargeOnShow)
+    frame._arcCDMChargeShadow:HookScript("OnHide",        _Track2 and _Track2("CooldownState.ChargeOnHide",        chargeOnHide) or chargeOnHide)
+    frame._arcCDMChargeShadow:HookScript("OnCooldownDone",_Track2 and _Track2("CooldownState.ChargeOnCooldownDone",chargeOnDone) or chargeOnDone)
+
+    -- SPELL_UPDATE_CHARGES removed — simple 2-event approach (SPELL_UPDATE_COOLDOWN
+    -- + UNIT_SPELLCAST_SUCCEEDED) with SetCooldown(0,0) before DurationObject feed
+    -- handles all cases including proc CDR and charge resets cleanly.
   end
 
   return frame._arcCDMShadowCooldown, frame._arcCDMChargeShadow
 end
 
--- Feed shadow frames. _arcFeedingShadow guards Clear() only.
+-- Feed shadow frames. Matches standalone shadow tester: no Clear(), no guards.
 -- Charge shadow only fed if it exists (charge spells only).
 FeedShadowCooldown = function(frame, spellID)
   if not spellID then return end
+  if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+  frame._arcFeedingShadow = (frame._arcFeedingShadow or 0) + 1
 
   -- SPELL CHANGE DETECTION: When CDM reassigns a frame to a different spell
   -- (via layout manager / Pools recycle), the shadow still has the OLD spell's
@@ -379,8 +494,6 @@ FeedShadowCooldown = function(frame, spellID)
   end
   frame._arcShadowFedSpellID = spellID
 
-  local shadowCD, chargeShadow = EnsureShadowCooldown(frame)
-
   local isOnGCD = nil
   local isChargeSpell = false
   pcall(function()
@@ -388,59 +501,64 @@ FeedShadowCooldown = function(frame, spellID)
     if cdInfo and cdInfo.isOnGCD == true then isOnGCD = true end
   end)
   pcall(function() isChargeSpell = C_Spell.GetSpellCharges(spellID) ~= nil end)
+  -- Fallback: some spells (e.g. override spellIDs) return nil from GetSpellCharges
+  -- even though CDM tracks them as charge spells. Trust CDM's own flag.
+  if not isChargeSpell and frame.cooldownInfo and frame.cooldownInfo.charges == true then
+    isChargeSpell = true
+  end
 
-  -- Cache both values so all handlers in this dispatch cycle read consistent state.
-  -- _arcIsChargeSpellCached updated here (not just at EnhanceFrame time) so linked-spell
-  -- frames that swap spells without a new cdID always reflect the current spell's charge type.
-  frame._arcLastIsOnGCD       = (isOnGCD == true)
+  -- Cache BEFORE EnsureShadowCooldown — charge shadow is only created when
+  -- _arcIsChargeSpellCached is true, so it must be set before EnsureShadow runs.
+  -- Previously set after — charge shadow was never created on the first feed.
+  frame._arcLastIsOnGCD         = (isOnGCD == true)
   frame._arcIsChargeSpellCached = isChargeSpell
 
+  local shadowCD, chargeShadow = EnsureShadowCooldown(frame)
+
   if isOnGCD then
-    -- Guard: if shadow is already shown a real CD was fed and is still ticking
-    -- underneath the GCD (sub-GCD edge case). Leave it alone.
-    -- Only zero when there is genuinely nothing underneath.
-    if not shadowCD:IsShown() then
-      shadowCD:SetCooldown(0, 0)
-    end
+    shadowCD:SetCooldown(0, 0)
   else
-    local durObj = nil
-    pcall(function() durObj = C_Spell.GetSpellCooldownDuration(spellID) end)
-    if durObj then
-      frame._arcFeedingShadow = true
-      shadowCD:Clear()
-      frame._arcFeedingShadow = nil
-      pcall(function() shadowCD:SetCooldownFromDurationObject(durObj, true) end)
+    -- Snapshot (matches standalone tester): SetCooldown takes values at call time.
+    -- GetSpellCooldownDuration DurationObject was causing GCD contamination —
+    -- the live binding could reflect GCD timing after feed. Snapshot is immune.
+    local info = nil
+    pcall(function() info = C_Spell.GetSpellCooldown(spellID) end)
+    if info and info.startTime and info.duration then
+      shadowCD:SetCooldown(info.startTime, info.duration)
     else
       shadowCD:SetCooldown(0, 0)
     end
   end
 
-  -- Only feed charge shadow if it exists (charge spells only)
   if chargeShadow then
-    local chargeDurObj = nil
-    pcall(function() chargeDurObj = C_Spell.GetSpellChargeDuration(spellID) end)
-    if chargeDurObj then
-      frame._arcFeedingShadow = true
-      chargeShadow:Clear()
-      frame._arcFeedingShadow = nil
-      pcall(function() chargeShadow:SetCooldownFromDurationObject(chargeDurObj, true) end)
-    else
-      chargeShadow:SetCooldown(0, 0)
-    end
+    -- Always clear first — SetCooldownFromDurationObject won't clear a running frame.
+    -- SetCooldown(0,0) resets to idle so the engine can then correctly show or hide
+    -- based on the new durObj. If durObj has remaining time it shows; if zero, stays hidden.
+    chargeShadow:SetCooldown(0, 0)
+    pcall(function()
+      local durObj = C_Spell.GetSpellChargeDuration(spellID)
+      if durObj then
+        chargeShadow:SetCooldownFromDurationObject(durObj, true)
+      end
+    end)
   end
+
+  frame._arcFeedingShadow = frame._arcFeedingShadow - 1
 end
 
 -- ═══════════════════════════════════════════════════════════════════
 -- BINARY STATE DETECTION via dual shadow cooldown frames
 -- ═══════════════════════════════════════════════════════════════════
-local function GetBinaryCooldownState(frame, isChargeSpell)
-  local shadowCD = frame._arcCDMShadowCooldown
-  local isOnCooldown = shadowCD and shadowCD:IsShown() or false
-  local isRecharging = false
-  if isChargeSpell and not isOnCooldown then
-    local chargeShadow = frame._arcCDMChargeShadow
-    isRecharging = chargeShadow and chargeShadow:IsShown() or false
-  end
+local function GetBinaryCooldownState(frame)
+  -- Read both shadows independently — never gate one on the other.
+  -- DEPLETED:   mainShown=true,  chargeShown=true  (0 charges, recharging)
+  -- RECHARGING: mainShown=false, chargeShown=true  (1+ charges, recharging)
+  -- ON_CD:      mainShown=true,  chargeShown=false (non-charge spell on cooldown)
+  -- FULL/READY: mainShown=false, chargeShown=false
+  local shadowCD    = frame._arcCDMShadowCooldown
+  local chargeShadow = frame._arcCDMChargeShadow
+  local isOnCooldown = shadowCD    and shadowCD:IsShown()    or false
+  local isRecharging = chargeShadow and chargeShadow:IsShown() or false
   return isOnCooldown, isRecharging
 end
 
@@ -450,9 +568,9 @@ end
 --                frames that swap spells always reflect the current spell's charge type).
 -- GetBinaryCooldownState: reads shadow IsShown() — always non-secret, zero API cost.
 local function ReadCooldownState(frame, spellID)
-  local isOnGCD       = frame._arcLastIsOnGCD         -- bool, cached by FeedShadow
-  local isChargeSpell = frame._arcIsChargeSpellCached or false  -- cached at enhance time
-  local isOnCooldown, isRecharging = GetBinaryCooldownState(frame, isChargeSpell)
+  local isOnGCD       = frame._arcLastIsOnGCD         or false
+  local isChargeSpell = frame._arcIsChargeSpellCached or false
+  local isOnCooldown, isRecharging = GetBinaryCooldownState(frame)
   return isOnCooldown, isRecharging, isChargeSpell, isOnGCD
 end
 
@@ -460,22 +578,22 @@ end
 -- USABILITY HELPERS
 -- ═══════════════════════════════════════════════════════════════════
 local function GetUsabilityAlpha(frame, spellID, cfg)
-  if not spellID then return nil end
+  if not spellID then return nil, false end
   local su = cfg and cfg.spellUsability
-  if not su or not su.enabled then return nil end
+  if not su or not su.enabled then return nil, false end
   -- Proc override: if a proc glow is active and the setting is enabled, skip usability dimming
-  if frame._arcProcGlowActive and su.procOverride then return nil end
+  if frame._arcProcGlowActive and su.procOverride then return nil, false end
   if frame.spellOutOfRange then
     local ri = cfg and cfg.rangeIndicator
     local rangeEnabled = not ri or ri.enabled ~= false
-    if rangeEnabled then return nil end
+    if rangeEnabled then return nil, false end
   end
   local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellID)
-  if isUsable then return nil end
+  if isUsable then return nil, false end
   if notEnoughMana then
-    return su.notEnoughResourceAlpha
+    return su.notEnoughResourceAlpha, su.notEnoughResourcePreserveDurationText == true
   else
-    return su.notUsableAlpha
+    return su.notUsableAlpha, su.notUsablePreserveDurationText == true
   end
 end
 
@@ -496,7 +614,7 @@ end
 -- ═══════════════════════════════════════════════════════════════════
 -- APPLY READY STATE
 -- ═══════════════════════════════════════════════════════════════════
-local function ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlphaOverride)
+local function ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlphaOverride, usabilityPreserveText)
   local effectiveReadyAlpha = GetEffectiveReadyAlpha(stateVisuals)
   if usabilityAlphaOverride then
     effectiveReadyAlpha = usabilityAlphaOverride
@@ -524,8 +642,19 @@ local function ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlphaOverr
   frame._arcForceDesatValue = nil
   ApplyBorderDesaturation(frame, 0)
   frame:Show()
-  frame._arcPreserveDurationText = false
-  ResetDurationText(frame)
+  -- When a usability state (not enough resource / not usable) requests preserve
+  -- duration text, honour it the same way cooldown state does: keep countdown
+  -- and charge text visible at full alpha even though the icon is dimmed/hidden.
+  if usabilityPreserveText and usabilityAlphaOverride and usabilityAlphaOverride < 1.0 then
+    frame._arcPreserveDurationText = true
+    if frame.Cooldown then
+      frame.Cooldown:SetAlpha(1)
+    end
+    PreserveDurationText(frame)
+  else
+    frame._arcPreserveDurationText = false
+    ResetDurationText(frame)
+  end
 end
 
 -- ═══════════════════════════════════════════════════════════════════
@@ -691,36 +820,38 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
   local waitForNoCharges = isChargeSpell and stateVisuals.waitForNoCharges
   local glowWhileCharges = stateVisuals.glowWhileChargesAvailable
 
+  -- Match HandleCooldownLogic exactly — isOnGCD is not a cooldown state.
   local useCooldownVisuals
-  if isOnCooldown then
-    useCooldownVisuals = true
-  elseif isChargeSpell and isRecharging then
-    useCooldownVisuals = not waitForNoCharges
-  else
-    useCooldownVisuals = false
-  end
+  if isOnCooldown then useCooldownVisuals = true
+  elseif isChargeSpell and isRecharging then useCooldownVisuals = not waitForNoCharges
+  else useCooldownVisuals = false end
 
   local isGlowEligible
-  if isOnCooldown then
-    isGlowEligible = false
-  elseif isChargeSpell and isRecharging and not glowWhileCharges then
-    isGlowEligible = false
-  else
-    isGlowEligible = true
-  end
+  if isOnCooldown then isGlowEligible = false
+  elseif isChargeSpell and isRecharging and not glowWhileCharges then isGlowEligible = false
+  else isGlowEligible = true end
+
+  -- Aura presence via CDM's native auraInstanceID — non-secret, always current.
+  -- Only fight CDM desat when aura is actually showing on this frame.
+  local isAuraActive = HasAuraInstanceID(frame.auraInstanceID) or (frame.totemData ~= nil)
 
   frame:Show()
 
   if useCooldownVisuals then
     frame._arcDesatBranch = "IAO_BIN_CD"
     ApplyCooldownAlpha(frame, stateVisuals)
-    if stateVisuals.noDesaturate or isRecharging then
+    if not isAuraActive then
+      -- No aura — CDM runs normal cooldown, release desat to it
+      frame._arcForceDesatValue = nil
+    elseif stateVisuals.noDesaturate or (isRecharging and not isOnCooldown) then
+      -- RECHARGING (has charges) or noDesaturate: force colored
       frame._arcForceDesatValue = 0
       frame._arcBypassDesatHook = true
       SetDesat(iconTex, 0)
       frame._arcBypassDesatHook = false
       ApplyBorderDesaturation(frame, 0)
     else
+      -- ON_CD / DEPLETED with aura: force desaturated
       frame._arcForceDesatValue = 1
       frame._arcBypassDesatHook = true
       SetDesat(iconTex, 1)
@@ -736,12 +867,16 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   else
     frame._arcDesatBranch = "IAO_BIN_READY"
-    local usabilityAlpha = GetUsabilityAlpha(frame, spellID, cfg)
-    ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha)
-    frame._arcForceDesatValue = 0
-    frame._arcBypassDesatHook = true
-    SetDesat(iconTex, 0)
-    frame._arcBypassDesatHook = false
+    local usabilityAlpha, usabilityPreserveText = GetUsabilityAlpha(frame, spellID, cfg)
+    ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha, usabilityPreserveText)
+    if isAuraActive then
+      frame._arcForceDesatValue = 0
+      frame._arcBypassDesatHook = true
+      SetDesat(iconTex, 0)
+      frame._arcBypassDesatHook = false
+    else
+      frame._arcForceDesatValue = nil
+    end
     frame._arcDesiredVertexColor = nil
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   end
@@ -788,14 +923,14 @@ local function HandleAuraLogic(frame, iconTex, cfg, stateVisuals)
         elseif isChargeSpell and isRecharging then useCooldownVisuals = not waitForNoCharges
         else useCooldownVisuals = false end
         if not isChargeSpell and isOnGCD then
-          local usabilityAlpha = GetUsabilityAlpha(frame, cdSpellID, cfg)
-          ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha)
+          local usabilityAlpha, usabilityPreserveText = GetUsabilityAlpha(frame, cdSpellID, cfg)
+          ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha, usabilityPreserveText)
         elseif useCooldownVisuals then
           frame:Show()
           ApplyCooldownAlpha(frame, stateVisuals)
         else
-          local usabilityAlpha = GetUsabilityAlpha(frame, cdSpellID, cfg)
-          ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha)
+          local usabilityAlpha, usabilityPreserveText = GetUsabilityAlpha(frame, cdSpellID, cfg)
+          ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha, usabilityPreserveText)
         end
       else
         ApplyReadyState(frame, iconTex, stateVisuals)
@@ -835,18 +970,27 @@ local function HandleAuraLogic(frame, iconTex, cfg, stateVisuals)
       frame._arcForceDesatValue = nil
       frame._arcTargetDesat = -1
     else
-      local targetDesat
       if isAuraActive then
-        frame._arcDesatBranch = "AURA_READY"; targetDesat = 0
-      else
+        -- Aura active = ready state — no desat needed. CDM agrees so no fight.
+        frame._arcDesatBranch = "AURA_READY"
+        frame._arcForceDesatValue = nil
+        frame._arcTargetDesat = 0
+        ApplyBorderDesaturation(frame, 0)
+      elseif stateVisuals.cooldownDesaturate then
+        -- User explicitly wants desat on cooldown — force it.
         frame._arcDesatBranch = "AURA_CD"
-        targetDesat = stateVisuals.cooldownDesaturate and 1 or 0
+        frame._arcForceDesatValue = 1
+        frame._arcBypassDesatHook = true
+        SetDesat(iconTex, 1)
+        frame._arcBypassDesatHook = false
+        frame._arcTargetDesat = 1
+        ApplyBorderDesaturation(frame, 1)
+      else
+        -- No user desat option — release to CDM entirely.
+        frame._arcDesatBranch = "AURA_CD_NATIVE"
+        frame._arcForceDesatValue = nil
+        frame._arcTargetDesat = -1
       end
-      frame._arcBypassDesatHook = true
-      SetDesat(iconTex, targetDesat)
-      frame._arcBypassDesatHook = false
-      frame._arcTargetDesat = targetDesat
-      ApplyBorderDesaturation(frame, targetDesat)
     end
   end
 
@@ -875,10 +1019,18 @@ local function HandleAuraLogic(frame, iconTex, cfg, stateVisuals)
     end
   end
 
-  -- SWIPE/EDGE release for cooldown frames showing auras
+  -- SWIPE/EDGE: cooldown frames need proper swipe control even inside HandleAuraLogic.
+  -- Previously just nulled desired values and let CDM control swipe — but that breaks
+  -- swipeWaitForNoCharges on charge spells that also track an aura (e.g. Shadow Dance,
+  -- Feint, Hover). When the aura activates after consuming a charge, the frame routes
+  -- here and CDM draws the full swipe, ignoring our waitForNoCharges setting.
   if isCooldownFrame then
-    frame._arcDesiredSwipe = nil
-    frame._arcDesiredEdge = nil
+    if cdSpellID then
+      DecideAndApplySwipeEdge(frame, cfg, cdOnCooldown, cdRecharging, cdIsCharge, cdIsOnGCD, false)
+    else
+      frame._arcDesiredSwipe = nil
+      frame._arcDesiredEdge = nil
+    end
   end
 
   -- GLOW
@@ -1011,8 +1163,8 @@ local function HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
   else
     frame._arcDesatBranch = "C_BIN_READY"
     frame._arcPreserveCooldownPath = nil  -- Cooldown ended, allow normal dispatch
-    local usabilityAlpha = GetUsabilityAlpha(frame, spellID, cfg)
-    ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha)
+    local usabilityAlpha, usabilityPreserveText = GetUsabilityAlpha(frame, spellID, cfg)
+    ApplyReadyState(frame, iconTex, stateVisuals, usabilityAlpha, usabilityPreserveText)
     frame._arcDesiredVertexColor = nil
     if isGlowEligible then ApplyReadyGlow(frame, stateVisuals) else HideReadyGlow(frame) end
   end
@@ -1056,8 +1208,10 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
   local hasSpellUsability = cfg.spellUsability and cfg.spellUsability.enabled == true
   local hasNoGCDSwipe = cfg.cooldownSwipe and cfg.cooldownSwipe.noGCDSwipe
   local hasWaitFlags = cfg.cooldownSwipe and (cfg.cooldownSwipe.swipeWaitForNoCharges or cfg.cooldownSwipe.edgeWaitForNoCharges)
+  local hasChargeTextFlags = (cfg.chargeText and cfg.chargeText.enabled ~= false and cfg.chargeText.hideAtZero)
+                          or (cfg.cooldownText and cfg.cooldownText.enabled ~= false and cfg.cooldownText.hideWhenHasCharges)
 
-  if not stateVisuals and not isGlowPreview and not ignoreAuraOverride and not hasSpellUsability and not hasNoGCDSwipe and not hasWaitFlags then
+  if not stateVisuals and not isGlowPreview and not ignoreAuraOverride and not hasSpellUsability and not hasNoGCDSwipe and not hasWaitFlags and not hasChargeTextFlags then
     local prevBranch = frame._arcDesatBranch
     local wasManagedDesat = prevBranch ~= nil and prevBranch ~= "NO_SV_EARLY"
     frame._arcForceDesatValue = nil
@@ -1107,8 +1261,7 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
 
   local useAuraLogic = cfg._isAura or false
   if not useAuraLogic then
-    if frame.totemData ~= nil then useAuraLogic = true
-    elseif frame.wasSetFromAura == true then useAuraLogic = true end
+    if frame.wasSetFromAura == true then useAuraLogic = true end
   end
 
   -- OVERRIDE TRANSITION PROTECTION: spell override swaps (e.g. Surging Totem
@@ -1122,15 +1275,25 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
 
   -- DISPATCH
   if ignoreAuraOverride then
-    -- Always route to IAO handler when user enabled ignoreAuraOverride.
-    -- Previously gated behind cdmWouldShowAura (hasAura/selfAura/wasSetFromAura),
-    -- but on reload those flags may not be populated yet (buff not active,
-    -- cooldownInfo metadata not set). This caused fallthrough to HandleCooldownLogic
-    -- which set _arcIgnoreAuraOverride=false, breaking GCD intercept.
-    -- HandleIgnoreAuraOverride handles both CD and ready states correctly.
-    frame._arcDesatBranch = "DISPATCH_IAO"
-    frame._arcIgnoreAuraOverride = true
-    HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
+    -- wasSetFromAura: CDM actively displaying aura duration on the swipe (authoritative).
+    -- _arcAuraActive: covers timing gap — OnAuraInstanceInfoSet fires and sets this true
+    --                 BEFORE CDM sets wasSetFromAura. Without it the first dispatch after
+    --                 aura gained routes wrong.
+    -- totemData: totem active on this frame.
+    -- NOTE: HasAuraInstanceID alone is wrong — Blizzard sets auraInstanceID internally
+    -- on some cooldown frames even when not displaying aura duration.
+    local isAuraPresent = (frame.wasSetFromAura == true)
+                       or (frame._arcAuraActive == true)
+                       or (frame.totemData ~= nil)
+    if isAuraPresent then
+      frame._arcDesatBranch = "DISPATCH_IAO"
+      frame._arcIgnoreAuraOverride = true
+      HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
+    else
+      frame._arcDesatBranch = "DISPATCH_IAO_NO_AURA"
+      frame._arcIgnoreAuraOverride = true
+      HandleCooldownLogic(frame, iconTex, cfg, stateVisuals)
+    end
   elseif useAuraLogic then
     -- EVENT-DRIVEN AURA FRAMES: OptimizedApplyIconVisuals is the authority
     -- on alpha/desat/tint for true aura frames (cfg._isAura or totem).
@@ -1139,8 +1302,8 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
     -- late (via rescans/tickers), overwriting the correct values.
     -- Exception: cooldown frames with wasSetFromAura need HandleAuraLogic
     -- because their sub-path uses ReadCooldownState (spell cooldown, not aura).
-    if cfg._isAura or frame.totemData ~= nil then
-      -- True aura/totem frame — CooldownState never touches these, AuraFrames owns them
+    if cfg._isAura then
+      -- True aura frame — CooldownState never touches these, AuraFrames owns them
       return
     end
     frame._arcDesatBranch = "DISPATCH_AURA"
@@ -1207,13 +1370,15 @@ end
 -- ═══════════════════════════════════════════════════════════════════
 ns.CDMEnhance.ApplyCooldownStateVisuals = NewApplyCooldownStateVisuals
 
-ns.CooldownState.Apply              = NewApplyCooldownStateVisuals
-ns.CooldownState.ApplyReadyState    = ApplyReadyState
-ns.CooldownState.ApplyReadyGlow     = ApplyReadyGlow
-ns.CooldownState.ResolveIconTexture = ResolveIconTexture
-ns.CooldownState.GetUsabilityAlpha  = GetUsabilityAlpha
-ns.CooldownState.EnforceReadyGlow   = EnforceCooldownReadyGlow
-ns.CooldownState.PreserveDurationText = PreserveDurationText
+ns.CooldownState.Apply                  = NewApplyCooldownStateVisuals
+ns.CooldownState.ApplyReadyState        = ApplyReadyState
+ns.CooldownState.ApplyReadyGlow         = ApplyReadyGlow
+ns.CooldownState.ResolveIconTexture     = ResolveIconTexture
+ns.CooldownState.GetUsabilityAlpha      = GetUsabilityAlpha
+ns.CooldownState.EnforceReadyGlow       = EnforceCooldownReadyGlow
+ns.CooldownState.PreserveDurationText   = PreserveDurationText
+-- Exported for profiler auto-wrapping (was local-only, showed as ? in caller analysis)
+ns.CooldownState.DispatchAfterShadowUpdate = DispatchAfterShadowUpdate
 
 function ns.CooldownState.FeedShadow(frame, cfg)
   if not frame then return end
@@ -1226,6 +1391,15 @@ function ns.CooldownState.FeedShadow(frame, cfg)
   if spellID then
     FeedShadowCooldown(frame, spellID)
   end
+end
+
+-- Exposed for debugger: read current binary state from shadow frames directly.
+function ns.CooldownState.ReadBinaryState(frame)
+  if not frame then return nil, nil, nil, nil end
+  local isChargeSpell = frame._arcIsChargeSpellCached or false
+  local isOnGCD       = frame._arcLastIsOnGCD or false
+  local isOnCooldown, isRecharging = GetBinaryCooldownState(frame)
+  return isOnCooldown, isRecharging, isChargeSpell, isOnGCD
 end
 
 function ns.CooldownState.EnsureShadow(frame)

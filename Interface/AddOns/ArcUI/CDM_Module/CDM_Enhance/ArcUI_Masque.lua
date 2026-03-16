@@ -103,24 +103,32 @@ local function GetMasqueSettings()
     }
 end
 
+-- Result cache for the two hot-path queries. Invalidated by InvalidateMasqueCache()
+-- which is called from SetSetting and from CDMEnhance.InvalidateCache notification.
+local _masqueIsEnabledCache         = nil  -- true/false/nil (nil = dirty)
+local _masqueControlsCooldownsCache = nil  -- true/false/nil (nil = dirty)
+
+local function InvalidateMasqueCache()
+    _masqueIsEnabledCache         = nil
+    _masqueControlsCooldownsCache = nil
+end
+ns.Masque.InvalidateCache = InvalidateMasqueCache
+
 --- Check if Masque skinning is enabled
 --- Returns true ONLY if:
 --- 1. Masque addon is installed (LibStub available)
 --- 2. Our masqueSettings.enabled toggle is ON
 function ns.Masque.IsEnabled()
-    -- First check if our toggle is enabled
+    if _masqueIsEnabledCache ~= nil then return _masqueIsEnabledCache end
+
     local settings = GetMasqueSettings()
     if not settings.enabled then
+        _masqueIsEnabledCache = false
         return false
     end
-    
-    -- Also verify Masque addon is actually installed
     local MasqueLib = LibStub and LibStub("Masque", true)
-    if not MasqueLib then
-        return false
-    end
-    
-    return true
+    _masqueIsEnabledCache = MasqueLib ~= nil
+    return _masqueIsEnabledCache
 end
 
 --- Check if Masque should control cooldown animations (swipe, edge, bling)
@@ -128,14 +136,15 @@ end
 --- 1. Masque skinning is enabled (IsEnabled() = true)
 --- 2. useMasqueCooldowns setting is ON
 function ns.Masque.ShouldMasqueControlCooldowns()
-    -- First check if Masque skinning is enabled at all
+    if _masqueControlsCooldownsCache ~= nil then return _masqueControlsCooldownsCache end
+
     if not ns.Masque.IsEnabled() then
+        _masqueControlsCooldownsCache = false
         return false
     end
-    
-    -- Then check if user wants Masque to handle cooldowns
     local settings = GetMasqueSettings()
-    return settings.useMasqueCooldowns == true
+    _masqueControlsCooldownsCache = settings.useMasqueCooldowns == true
+    return _masqueControlsCooldownsCache
 end
 
 --- Get a setting value
@@ -163,7 +172,10 @@ function ns.Masque.SetSetting(key, value)
     end
     
     db.masqueSettings[key] = value
-    
+
+    -- Invalidate our own result cache immediately
+    InvalidateMasqueCache()
+
     -- When toggling enabled or useMasqueCooldowns, invalidate CDMEnhance cache IMMEDIATELY
     -- This ensures any code that runs before RefreshAllStyles gets the correct values
     if key == "enabled" or key == "useMasqueCooldowns" then

@@ -197,6 +197,24 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
     hidden = hideSection,
   }
 
+  entries["spellUsabilityResourcePreserveText"] = {
+    type = "toggle", name = "Preserve Duration Text",
+    desc = "Keep the cooldown countdown and charge text visible even when the icon is hidden by opacity.\n\nUseful if you set Icon Opacity to 0 — the countdown still shows so you know when the spell will be castable.",
+    get = function()
+      local c = GetCfg(mode)
+      return c and c.spellUsability and c.spellUsability.notEnoughResourcePreserveDurationText or false
+    end,
+    set = function(_, v)
+      ApplySetting(mode, function(c)
+        if not c.spellUsability then c.spellUsability = {} end
+        c.spellUsability.notEnoughResourcePreserveDurationText = v
+      end)
+      Refresh()
+    end,
+    order = orderBase + 0.014, width = "full",
+    hidden = hideSection,
+  }
+
   -- ───────────────────────────────────────────────────────────────────
   -- NOT USABLE  (wrong stance, missing buff, etc.)
   -- Layout: [Description full] → [Tint Color] [Opacity Slider] on same row
@@ -261,6 +279,24 @@ local function BuildUsabilityEntries(orderBase, mode, hideSection)
       Refresh()
     end,
     order = orderBase + 0.023, width = 0.6,
+    hidden = hideSection,
+  }
+
+  entries["spellUsabilityNotUsablePreserveText"] = {
+    type = "toggle", name = "Preserve Duration Text",
+    desc = "Keep the cooldown countdown and charge text visible even when the icon is hidden by opacity.\n\nUseful if you set Icon Opacity to 0 — the countdown still shows so you know when the spell will be castable.",
+    get = function()
+      local c = GetCfg(mode)
+      return c and c.spellUsability and c.spellUsability.notUsablePreserveDurationText or false
+    end,
+    set = function(_, v)
+      ApplySetting(mode, function(c)
+        if not c.spellUsability then c.spellUsability = {} end
+        c.spellUsability.notUsablePreserveDurationText = v
+      end)
+      Refresh()
+    end,
+    order = orderBase + 0.024, width = "full",
     hidden = hideSection,
   }
 

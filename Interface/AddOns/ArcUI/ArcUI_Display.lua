@@ -51,6 +51,20 @@ local math_floor = math.floor
 -- Prevents float drift (e.g. 166 * 1.0 stored via AceDB returning 165.9999...)
 -- from causing WoW to round the wrong direction at different UI scales.
 local function PixelSize(n) return math_floor(n + 0.5) end
+
+-- Physical-pixel-aware snap: matches the rounding used by CDMGroups icon sizing
+-- (GetSlotDimensions) so bar widths align exactly with icon grid widths.
+-- Formula: floor(n / pmult + 0.5) * pmult  where pmult = (768/screenH) / UIScale
+local function PixelSnap(n, effectiveScale)
+    local _, h = GetPhysicalScreenSize()
+    local s = effectiveScale or UIParent:GetScale()
+    if h and h > 0 and s and s > 0 then
+        local pmult = (768 / h) / s
+        return math_floor(n / pmult + 0.5) * pmult
+    end
+    return math_floor(n + 0.5)
+end
+
 local math_ceil = math.ceil
 local math_max = math.max
 local math_min = math.min
@@ -798,6 +812,13 @@ local function GetCenterBasedPosition(frame)
   local x = (centerX - uiCenterX) * (effectiveScale / uiScale)
   local y = (centerY - uiCenterY) * (effectiveScale / uiScale)
   
+  -- Round to integer UI units first (same as CDMGroups SetPosition),
+  -- then snap to physical pixel boundary using the frame's own effective scale.
+  x = math.floor(x + 0.5)
+  y = math.floor(y + 0.5)
+  x = PixelSnap(x, effectiveScale)
+  y = PixelSnap(y, effectiveScale)
+  
   return {
     point = "CENTER",
     relPoint = "CENTER",
@@ -954,6 +975,9 @@ local function CreateBarFrame(barNumber)
         local centerPos = GetCenterBasedPosition(self)
         if centerPos then
           barConfig.display.barPosition = centerPos
+          -- Immediately re-anchor to snapped position so frame doesn't stay at drag-drop location
+          self:ClearAllPoints()
+          PixelUtil.SetPoint(self, centerPos.point, UIParent, centerPos.relPoint, centerPos.x, centerPos.y)
         else
           -- Fallback if center calculation fails
           local point, _, relPoint, x, y = self:GetPoint()
@@ -1014,12 +1038,26 @@ local function CreateBarFrame(barNumber)
     end
   end)
   
-  -- Reposition tick marks when bar resizes (e.g. dynamic container width matching)
-  -- Uses cached tick parameters stored by UpdateTickMarks on each call
-  -- Zero overhead: only fires on actual size changes, no polling
+  -- Reposition tick marks AND segment bars when bar resizes (e.g. dynamic container width matching)
+  -- UpdateTickMarks alone is not enough — granularBars positions also depend on barFrame width.
+  -- Both must recalculate together so ticks and segment edges stay in sync.
   frame:SetScript("OnSizeChanged", function(self, w, h)
-    if self._tickBarConfig and self._tickMaxValue and ns.Display._UpdateTickMarks then
-      ns.Display._UpdateTickMarks(self, self._tickBarConfig, self._tickMaxValue, self._tickDisplayMode)
+    if not w or w <= 0 then return end
+    local barNum = self._barNumber or self.barNumber
+    if barNum and ns.Display.UpdateBar then
+      -- Defer one frame: SetSize fires OnSizeChanged before layout commits,
+      -- so GetWidth() inside UpdateBar would still return the old value.
+      C_Timer.After(0, function()
+        if self and self:IsShown() then
+          ns.Display.UpdateBar(barNum)
+        end
+      end)
+    elseif self._tickBarConfig and self._tickMaxValue and ns.Display._UpdateTickMarks then
+      C_Timer.After(0, function()
+        if self and self:IsShown() then
+          ns.Display._UpdateTickMarks(self, self._tickBarConfig, self._tickMaxValue, self._tickDisplayMode)
+        end
+      end)
     end
   end)
   
@@ -1391,6 +1429,8 @@ local function CreateIconFrame(barNumber)
         local centerPos = GetCenterBasedPosition(self)
         if centerPos then
           barConfig.display.iconStackPosition = centerPos
+          self:ClearAllPoints()
+          PixelUtil.SetPoint(self, centerPos.point, UIParent, centerPos.relPoint, centerPos.x, centerPos.y)
         else
           local point, _, relPoint, x, y = self:GetPoint()
           barConfig.display.iconStackPosition = {
@@ -1472,6 +1512,8 @@ local function CreateIconFrame(barNumber)
         local centerPos = GetCenterBasedPosition(self)
         if centerPos then
           barConfig.display.iconPosition = centerPos
+          self:ClearAllPoints()
+          PixelUtil.SetPoint(self, centerPos.point, UIParent, centerPos.relPoint, centerPos.x, centerPos.y)
         else
           local point, _, relPoint, x, y = self:GetPoint()
           barConfig.display.iconPosition = {
@@ -1599,6 +1641,8 @@ local function CreateMultiIconFrame(barNumber, stackNum)
         end
         if centerPos then
           barConfig.display.iconMultiPositions[stackNum] = centerPos
+          self:ClearAllPoints()
+          PixelUtil.SetPoint(self, centerPos.point, UIParent, centerPos.relPoint, centerPos.x, centerPos.y)
         else
           local point, _, relPoint, x, y = self:GetPoint()
           barConfig.display.iconMultiPositions[stackNum] = {
@@ -1742,118 +1786,158 @@ end)
 -- ===================================================================
 local function UpdateTickMarks(barFrame, barConfig, maxValue, displayMode)
   if not barFrame or not barConfig then return end
-  
+
   -- Cache parameters on the frame so OnSizeChanged can re-call us
   barFrame._tickBarConfig = barConfig
   barFrame._tickMaxValue = maxValue
   barFrame._tickDisplayMode = displayMode
-  
-  local isVertical = (barConfig.display.barOrientation == "vertical")
+
+  local isVertical   = (barConfig.display.barOrientation == "vertical")
   local isReverseFill = barConfig.display.barReverseFill or false
-  
+
+  -- Hide legacy _arcGranularTicks (superseded by unified tickMarks)
+  if barFrame._arcGranularTicks then
+    for i = 1, 100 do
+      if barFrame._arcGranularTicks[i] then barFrame._arcGranularTicks[i]:Hide()
+      else break end
+    end
+  end
+
   if barConfig.display.showTickMarks and maxValue > 1 then
-    local width = barFrame:GetWidth()
-    local height = barFrame:GetHeight()
-    local tickMode = barConfig.display.tickMode or "percent"
+    local tickMode        = barConfig.display.tickMode or "percent"
     local abilityThresholds = barConfig.abilityThresholds
-    local tc = barConfig.display.tickColor or {r=0, g=0, b=0, a=1}
-    local thickness = barConfig.display.tickThickness or 2
-    
-    -- For duration mode, force percent mode if "all" was selected (too many ticks otherwise)
-    if displayMode == "duration" and tickMode == "all" then
+    local tc              = barConfig.display.tickColor or {r=0, g=0, b=0, a=1}
+    local thickness       = barConfig.display.tickThickness or 2
+
+    -- Duration mode: only force "all" → "percent" when maxValue exceeds the tick
+    -- pool (100 slots). For short bars (≤ 100s) "all" gives one tick per second
+    -- which aligns with integer values — forcing to percent causes misalignment.
+    if displayMode == "duration" and tickMode == "all" and maxValue > 100 then
       tickMode = "percent"
     end
-    
-    -- For folded mode, ticks are based on midpoint (half max)
+
+    -- Folded mode: ticks span only the first half (midpoint = max)
     local tickMaxValue = maxValue
-    if displayMode == "folded" then
-      tickMaxValue = math_ceil(maxValue / 2)
-    end
-    
-    -- Determine tick positions
+    if displayMode == "folded" then tickMaxValue = math_ceil(maxValue / 2) end
+
+    -- ── Build tick position list ─────────────────────────────────
     local tickPositions = {}
-    
     if tickMode == "all" then
-      -- All mode: one tick per division (maxValue - 1 ticks)
-      for i = 1, tickMaxValue - 1 do
-        table.insert(tickPositions, i)
-      end
+      for i = 1, tickMaxValue - 1 do table.insert(tickPositions, i) end
     elseif tickMode == "percent" then
-      -- Percent mode: ticks at percentage intervals
       local tickPercent = barConfig.display.tickPercent or 10
       local numTicks = math_floor(100 / tickPercent)
-      for i = 1, numTicks - 1 do  -- Don't include 100% tick
+      for i = 1, numTicks - 1 do
         local tickVal = tickMaxValue * (i * tickPercent / 100)
-        if tickVal > 0 and tickVal < tickMaxValue then
-          table.insert(tickPositions, tickVal)
-        end
+        if tickVal > 0 and tickVal < tickMaxValue then table.insert(tickPositions, tickVal) end
       end
     elseif tickMode == "custom" and abilityThresholds and #abilityThresholds > 0 then
-      -- Custom tick positions from abilityThresholds
       local usePercent = barConfig.display.customTicksAsPercent
       for _, tick in ipairs(abilityThresholds) do
         if tick.enabled and tick.cost and tick.cost > 0 then
           local tickVal = tick.cost
-          if usePercent then
-            -- Interpret cost as percentage
-            tickVal = tickMaxValue * tick.cost / 100
-          end
-          if tickVal > 0 and tickVal < tickMaxValue then
-            table.insert(tickPositions, tickVal)
-          end
+          if usePercent then tickVal = tickMaxValue * tick.cost / 100 end
+          if tickVal > 0 and tickVal < tickMaxValue then table.insert(tickPositions, tickVal) end
         end
       end
     end
-    
-    -- Render ticks
+
+    -- ── Shared sizing ────────────────────────────────────────────
+    local segInset = 0
+    if barConfig.display.showBorder and (displayMode == "granular" or displayMode == "perStack") then
+      local btRaw = barConfig.display.drawnBorderThickness or 2
+      segInset = PixelUtil.GetNearestPixelSize(btRaw, barFrame:GetEffectiveScale(), btRaw)
+    end
+    local tickTotalSize = isVertical and barFrame:GetHeight() or barFrame:GetWidth()
+    local tickInsetSize = tickTotalSize - 2 * segInset
+    local scale         = barFrame:GetEffectiveScale()
+
+    local tickHeightPct  = barConfig.display.tickHeightPercent or 100
+    local heightAnchor   = barConfig.display.tickHeightAnchor  or "center"
+    local thicknessAnchor = barConfig.display.tickThicknessAnchor or "center"
+    local barCrossSize   = isVertical and barFrame:GetWidth() or barFrame:GetHeight()
+    local borderInset    = 0
+    if barConfig.display.showBorder and (displayMode == "granular" or displayMode == "perStack") then
+      borderInset = barConfig.display.drawnBorderThickness or 0
+    end
+    local availCross     = math.max(1, barCrossSize - 2 * borderInset)
+
+    -- ── Draw ticks ───────────────────────────────────────────────
     local tickIndex = 1
     for _, tickValue in ipairs(tickPositions) do
       if barFrame.tickMarks and barFrame.tickMarks[tickIndex] then
         local tick = barFrame.tickMarks[tickIndex]
-        -- Use PixelUtil for crisp, uniform tick width
-        local pixelThickness = PixelUtil.GetNearestPixelSize(thickness, barFrame:GetEffectiveScale(), thickness)
-        
+        local pixelThickness = PixelUtil.GetNearestPixelSize(thickness, scale, thickness)
+        local halfThick  = pixelThickness / 2
+        local tickSpan   = availCross * (tickHeightPct / 100)
+
         tick:ClearAllPoints()
         tick:SetColorTexture(tc.r, tc.g, tc.b, tc.a or 1)
-        
+
+        -- ── Position along bar axis ──────────────────────────────
+        -- GRANULAR: bar[i] is stretched from 0 to i/max*total — its width IS the
+        -- cumulative right-edge position. Read it back to get the exact committed pixel.
+        -- PERSTACK: bar[i] is a fixed-width segment at offset (i-1)/max*total — its
+        -- width is just one segment. Use math instead (PixelSnap matches how segments
+        -- are positioned in the perStack loop).
+        -- SIMPLE/FOLDED/DURATION: raw float fill, match with raw float math.
+        local intVal     = math.floor(tickValue)
+        local granularBar = displayMode == "granular"
+          and barFrame.granularBars and barFrame.granularBars[intVal]
+
+        local rawPos
+        if granularBar then
+          rawPos = (isVertical and granularBar:GetHeight() or granularBar:GetWidth())
+        elseif displayMode == "perStack" then
+          rawPos = segInset + PixelSnap(tickValue / tickMaxValue * tickInsetSize, scale)
+        else
+          rawPos = segInset + tickValue / tickMaxValue * tickInsetSize
+        end
+
+        -- Thickness anchor: nudge tick so its centre/end aligns with rawPos
+        local posAlong = rawPos
+        if thicknessAnchor == "center" then
+          posAlong = rawPos - halfThick
+        elseif thicknessAnchor == "end" then
+          posAlong = rawPos - pixelThickness
+        end
+
         if isVertical then
-          local rawY = (tickValue / tickMaxValue) * height
-          tick:SetSize(width, pixelThickness)
-          if isReverseFill then
-            tick:SetPoint("TOP", barFrame.tickOverlay, "TOP", 0, -rawY)
+          tick:SetSize(tickSpan, pixelThickness)
+          if heightAnchor == "top" then
+            tick:SetPoint(isReverseFill and "TOPLEFT"    or "BOTTOMLEFT",  barFrame.tickOverlay, isReverseFill and "TOPLEFT"    or "BOTTOMLEFT",  0, isReverseFill and -posAlong or posAlong)
+          elseif heightAnchor == "bottom" then
+            tick:SetPoint(isReverseFill and "TOPRIGHT"   or "BOTTOMRIGHT", barFrame.tickOverlay, isReverseFill and "TOPRIGHT"   or "BOTTOMRIGHT", 0, isReverseFill and -posAlong or posAlong)
           else
-            tick:SetPoint("BOTTOM", barFrame.tickOverlay, "BOTTOM", 0, rawY)
+            tick:SetPoint(isReverseFill and "TOP"        or "BOTTOM",      barFrame.tickOverlay, isReverseFill and "TOP"        or "BOTTOM",      0, isReverseFill and -posAlong or posAlong)
           end
         else
-          local rawX = (tickValue / tickMaxValue) * width
-          tick:SetSize(pixelThickness, height)
-          if isReverseFill then
-            tick:SetPoint("RIGHT", barFrame.tickOverlay, "RIGHT", -rawX, 0)
+          tick:SetSize(pixelThickness, tickSpan)
+          if heightAnchor == "top" then
+            tick:SetPoint(isReverseFill and "TOPRIGHT"    or "TOPLEFT",    barFrame.tickOverlay, isReverseFill and "TOPRIGHT"    or "TOPLEFT",    isReverseFill and -posAlong or posAlong, 0)
+          elseif heightAnchor == "bottom" then
+            tick:SetPoint(isReverseFill and "BOTTOMRIGHT" or "BOTTOMLEFT", barFrame.tickOverlay, isReverseFill and "BOTTOMRIGHT" or "BOTTOMLEFT", isReverseFill and -posAlong or posAlong, 0)
           else
-            tick:SetPoint("LEFT", barFrame.tickOverlay, "LEFT", rawX, 0)
+            tick:SetPoint(isReverseFill and "RIGHT"       or "LEFT",       barFrame.tickOverlay, isReverseFill and "RIGHT"       or "LEFT",       isReverseFill and -posAlong or posAlong, 0)
           end
         end
-        
+
         tick:Show()
         tickIndex = tickIndex + 1
       end
     end
-    
-    -- Hide unused ticks
+
+    -- Hide unused tick slots
     if barFrame.tickMarks then
       for i = tickIndex, 100 do
-        if barFrame.tickMarks[i] then
-          barFrame.tickMarks[i]:Hide()
-        end
+        if barFrame.tickMarks[i] then barFrame.tickMarks[i]:Hide() end
       end
     end
   else
-    -- Hide all ticks
+    -- Ticks disabled or maxValue <= 1 — hide everything
     if barFrame.tickMarks then
       for i = 1, 100 do
-        if barFrame.tickMarks[i] then
-          barFrame.tickMarks[i]:Hide()
-        end
+        if barFrame.tickMarks[i] then barFrame.tickMarks[i]:Hide() end
       end
     end
   end
@@ -2710,7 +2794,13 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
   -- Hide granular bars if they exist
   if barFrame.granularBars then
     for i = 1, #barFrame.granularBars do
-      SafeHide(barFrame.granularBars[i])
+      local gb = barFrame.granularBars[i]
+      SafeHide(gb)
+      if gb then
+        if gb._arcTickBorderEnd then gb._arcTickBorderEnd:Hide() end
+        if gb._arcTickBorderStart then gb._arcTickBorderStart:Hide() end
+        if gb._arcTickBorder then gb._arcTickBorder:Hide() end
+      end
     end
   end
   
@@ -2821,7 +2911,10 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     if not barFrame.granularBars then
       barFrame.granularBars = {}
     end
-    
+
+    local granularScale = barFrame:GetEffectiveScale()
+    local segGap = PixelSnap(barConfig.display.segmentedSpacing or 1, granularScale)
+
     while #barFrame.granularBars < numBars do
       local bar = CreateFrame("StatusBar", nil, barFrame)
       bar:SetStatusBarTexture(texturePath)
@@ -2850,6 +2943,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       
       -- Position based on fill direction (must update if size changes, but that's rare)
       bar:ClearAllPoints()
+      local barScale = barFrame:GetEffectiveScale()
       if isBarVertical then
         local totalHeight = barFrame:GetHeight()
         local barHeight = widthPercent * totalHeight
@@ -2862,7 +2956,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
           bar:SetPoint("BOTTOMLEFT", barFrame, "BOTTOMLEFT", 0, 0)
           bar:SetPoint("RIGHT", barFrame, "RIGHT", 0, 0)
         end
-        bar:SetHeight(math_max(2, barHeight))
+        bar:SetHeight(math_max(2, PixelSnap(barHeight, barScale)))
       else
         local totalWidth = barFrame:GetWidth()
         local barWidth = widthPercent * totalWidth
@@ -2875,7 +2969,7 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
           bar:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
           bar:SetPoint("BOTTOM", barFrame, "BOTTOM", 0, 0)
         end
-        bar:SetWidth(math_max(2, barWidth))
+        bar:SetWidth(math_max(2, PixelSnap(barWidth, barScale)))
       end
       
       -- Skip interpolation at threshold boundary bars to prevent old color leaking through
@@ -2885,6 +2979,11 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       ApplyBarGradient(bar, barConfig, color)  -- Pass current color to avoid secrets
       bar:SetValue(effectiveStacks, interp)
       bar:Show()
+
+      -- Hide legacy border tick textures — UpdateTickMarks now handles all tick drawing
+      if bar._arcTickBorderEnd   then bar._arcTickBorderEnd:Hide() end
+      if bar._arcTickBorderStart then bar._arcTickBorderStart:Hide() end
+      if bar._arcTickBorder      then bar._arcTickBorder:Hide() end
     end
     
   elseif displayMode == "perStack" then
@@ -2895,14 +2994,22 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     
     local numBars = maxStacks
     local stackColors = barConfig.stackColors or {}
-    
+
     -- Get max color settings
     local enableMaxColor = barConfig.display.enableMaxColor
     local maxColor = barConfig.display.maxColor or {r=0, g=1, b=0, a=1}
     
     -- Get smoothing setting
     local enableSmooth = barConfig.display.enableSmoothing
-    
+
+    -- Border inset: when a border is drawn, inset segments so fill textures
+    -- can't bleed over the border edges at the leading and trailing ends.
+    local segInset = 0
+    if barConfig.display.showBorder then
+      local btRaw = barConfig.display.drawnBorderThickness or 2
+      segInset = PixelUtil.GetNearestPixelSize(btRaw, barFrame:GetEffectiveScale(), btRaw)
+    end
+
     -- Hide maxColorBar (we use segment color override instead)
     if barFrame.maxColorBar then
       barFrame.maxColorBar:Hide()
@@ -2931,19 +3038,25 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       for _, bar in ipairs(barFrame.thresholdOverlay2) do bar:Hide() end
     end
     
-    -- Calculate segment size based on orientation
-    local totalSize = isBarVertical and barFrame:GetHeight() or barFrame:GetWidth()
-    local segmentSize = totalSize / numBars
-    
+    -- Calculate segment size based on orientation — work in integer screen pixels
+    -- throughout so every boundary lands exactly on a physical pixel with zero drift.
+    local totalSize = (isBarVertical and barFrame:GetHeight() or barFrame:GetWidth()) - 2 * segInset
+    local scale = barFrame:GetEffectiveScale()
+    local _, _h = GetPhysicalScreenSize()
+    local pmult = (_h and _h > 0 and scale and scale > 0) and (768 / _h) / scale or 1
+    -- Convert totalSize and gap to integer screen pixels
+    local totalPixels = math_floor(totalSize / pmult + 0.5)
+    local segGapPx    = math_floor((barConfig.display.segmentedSpacing or 1) + 0.5)
+
     for i = 1, numBars do
       local bar = barFrame.granularBars[i]
       local color = stackColors[i] or baseColor
-      
+
       -- Override last segment with max color if enabled
       if enableMaxColor and i == numBars then
         color = maxColor
       end
-      
+
       -- PERFORMANCE: Only apply expensive setup when appearance changes
       if needsSetup or not bar._setupDone then
         bar:SetOrientation(barOrientation)
@@ -2954,30 +3067,58 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
         ApplyBarSmoothing(bar, enableSmooth)
         bar._setupDone = true
       end
-      
+
+      -- Integer pixel boundaries — divide total pixels, not rounded UI units.
+      -- floor() gives each boundary a whole-pixel position; remainder distributes
+      -- naturally across segments (last segment absorbs any leftover pixel).
+      local startPixel = math_floor((i - 1) * totalPixels / numBars)
+      local endPixel   = math_floor(i       * totalPixels / numBars)
+      local sizePixels = math_max(2, endPixel - startPixel - segGapPx)
+      -- Convert back to UI units for SetPoint/SetSize
+      local offset  = segInset + startPixel * pmult
+      local barSize = sizePixels * pmult
+
       bar:ClearAllPoints()
       if isBarVertical then
         if isBarReverseFill then
-          -- Reverse: position from TOP (fills top-to-bottom)
-          bar:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, -(i - 1) * segmentSize)
-          bar:SetPoint("TOPRIGHT", barFrame, "TOPRIGHT", 0, -(i - 1) * segmentSize)
+          bar:SetPoint("TOPLEFT",  barFrame, "TOPLEFT",  0, -offset)
+          bar:SetPoint("TOPRIGHT", barFrame, "TOPRIGHT", 0, -offset)
+          if i == numBars then
+            bar:SetPoint("BOTTOMLEFT",  barFrame, "BOTTOMLEFT",  0,  segInset)
+            bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0,  segInset)
+          else
+            bar:SetHeight(barSize)
+          end
         else
-          -- Normal: position from BOTTOM (fills bottom-to-top)
-          bar:SetPoint("BOTTOMLEFT", barFrame, "BOTTOMLEFT", 0, (i - 1) * segmentSize)
-          bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, (i - 1) * segmentSize)
+          bar:SetPoint("BOTTOMLEFT",  barFrame, "BOTTOMLEFT",  0, offset)
+          bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, offset)
+          if i == numBars then
+            bar:SetPoint("TOPLEFT",  barFrame, "TOPLEFT",  0, -segInset)
+            bar:SetPoint("TOPRIGHT", barFrame, "TOPRIGHT", 0, -segInset)
+          else
+            bar:SetHeight(barSize)
+          end
         end
-        bar:SetHeight(math_max(2, segmentSize - 1))
       else
         if isBarReverseFill then
-          -- Reverse: position from RIGHT (fills right-to-left)
-          bar:SetPoint("TOPRIGHT", barFrame, "TOPRIGHT", -(i - 1) * segmentSize, 0)
-          bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", -(i - 1) * segmentSize, 0)
+          bar:SetPoint("TOPRIGHT",    barFrame, "TOPRIGHT",    -offset, 0)
+          bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", -offset, 0)
+          if i == numBars then
+            bar:SetPoint("TOPLEFT",    barFrame, "TOPLEFT",     segInset, 0)
+            bar:SetPoint("BOTTOMLEFT", barFrame, "BOTTOMLEFT",  segInset, 0)
+          else
+            bar:SetWidth(barSize)
+          end
         else
-          -- Normal: position from LEFT (fills left-to-right)
-          bar:SetPoint("TOPLEFT", barFrame, "TOPLEFT", (i - 1) * segmentSize, 0)
-          bar:SetPoint("BOTTOMLEFT", barFrame, "BOTTOMLEFT", (i - 1) * segmentSize, 0)
+          bar:SetPoint("TOPLEFT",    barFrame, "TOPLEFT",    offset, 0)
+          bar:SetPoint("BOTTOMLEFT", barFrame, "BOTTOMLEFT", offset, 0)
+          if i == numBars then
+            bar:SetPoint("TOPRIGHT",    barFrame, "TOPRIGHT",    -segInset, 0)
+            bar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", -segInset, 0)
+          else
+            bar:SetWidth(barSize)
+          end
         end
-        bar:SetWidth(math_max(2, segmentSize - 1))
       end
       local interp = GetBarInterpolation(enableSmooth)
       bar:SetMinMaxValues(i - 1, i, interp)
@@ -2985,11 +3126,22 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       ApplyBarGradient(bar, barConfig, color)  -- Pass current color to avoid secrets
       bar:SetValue(effectiveStacks, interp)
       SafeShow(bar)
-    end
-    
+
+      -- Hide legacy border tick textures — UpdateTickMarks now handles all tick drawing
+      if bar._arcTickBorderEnd   then bar._arcTickBorderEnd:Hide() end
+      if bar._arcTickBorderStart then bar._arcTickBorderStart:Hide() end
+      if bar._arcTickBorder      then bar._arcTickBorder:Hide() end
+    end  -- end for i = 1, numBars
+
     -- Hide extra bars
     for i = numBars + 1, #barFrame.granularBars do
-      SafeHide(barFrame.granularBars[i])
+      local exBar = barFrame.granularBars[i]
+      SafeHide(exBar)
+      if exBar then
+        if exBar._arcTickBorderEnd   then exBar._arcTickBorderEnd:Hide() end
+        if exBar._arcTickBorderStart then exBar._arcTickBorderStart:Hide() end
+        if exBar._arcTickBorder      then exBar._arcTickBorder:Hide() end
+      end
     end
     
   elseif displayMode == "folded" then
@@ -3043,7 +3195,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     local interp = GetBarInterpolation(enableSmooth)
     
     bar1:ClearAllPoints()
-    bar1:SetAllPoints(barFrame)  -- Fill entire frame like MWRB
+    bar1:ClearAllPoints()
+    bar1:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+    bar1:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
     bar1:SetMinMaxValues(0, midpoint, interp)
     bar1:SetStatusBarColor(color1.r, color1.g, color1.b, color1.a or 1)
     ApplyBarGradient(bar1, barConfig, color1)  -- Pass current color to avoid secrets
@@ -3066,7 +3220,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
     end
     
     bar2:ClearAllPoints()
-    bar2:SetAllPoints(barFrame)  -- Fill entire frame like MWRB
+    bar2:ClearAllPoints()
+    bar2:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+    bar2:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
     bar2:SetMinMaxValues(midpoint, maxStacks, interp)
     bar2:SetStatusBarColor(color2.r, color2.g, color2.b, color2.a or 1)
     ApplyBarGradient(bar2, barConfig, color2)  -- Pass current color to avoid secrets
@@ -3096,7 +3252,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       local maxColor = barConfig.display.maxColor or {r=0, g=1, b=0, a=1}
       
       maxBar:ClearAllPoints()
-      maxBar:SetAllPoints(barFrame)
+      maxBar:ClearAllPoints()
+      maxBar:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+      maxBar:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
       maxBar:SetMinMaxValues(maxStacks - 1, maxStacks, interp)
       maxBar:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
       ApplyBarGradient(maxBar, barConfig, maxColor)  -- Pass current color to avoid secrets
@@ -3151,7 +3309,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       end
       
       bar1:ClearAllPoints()
-      bar1:SetAllPoints(barFrame)  -- Fill entire frame like MWRB
+      bar1:ClearAllPoints()
+    bar1:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+    bar1:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
       bar1:SetMinMaxValues(0, maxStacks, interp)
       bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
       ApplyBarGradient(bar1, barConfig, baseColor)  -- Pass current color to avoid secrets
@@ -3174,7 +3334,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       end
       
       bar2:ClearAllPoints()
-      bar2:SetAllPoints(barFrame)  -- Fill entire frame like MWRB
+      bar2:ClearAllPoints()
+    bar2:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+    bar2:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
       bar2:SetMinMaxValues(maxStacks - 1, maxStacks, interp)
       bar2:SetStatusBarColor(maxColor.r, maxColor.g, maxColor.b, maxColor.a or 1)
       ApplyBarGradient(bar2, barConfig, maxColor)  -- Pass current color to avoid secrets
@@ -3197,7 +3359,9 @@ function ns.Display.UpdateBar(barNumber, stacks, maxStacks, active, durationFont
       end
       
       bar1:ClearAllPoints()
-      bar1:SetAllPoints(barFrame)  -- Fill entire frame like MWRB
+      bar1:ClearAllPoints()
+    bar1:SetPoint("TOPLEFT", barFrame, "TOPLEFT", 0, 0)
+    bar1:SetPoint("BOTTOMRIGHT", barFrame, "BOTTOMRIGHT", 0, 0)
       bar1:SetMinMaxValues(0, maxStacks, interp)
       bar1:SetStatusBarColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
       ApplyBarGradient(bar1, barConfig, baseColor)  -- Pass current color to avoid secrets
@@ -4940,6 +5104,75 @@ function ns.Display.UpdateDurationBar(barNumber, stacks, maxStacks, active, sour
 end
 
 -- ===================================================================
+-- SHARED HELPER: Update a single bar's position AND size for a group.
+-- Must be defined before ApplyAppearance which calls it.
+-- ===================================================================
+local function UpdateBarForGroup(barNumber, cfg, barFrame, groupName)
+  local grp = ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
+  if not grp or not grp.container then return end
+  local container = grp.container
+
+  local scale       = cfg.barScale or 1.0
+  local isVertical  = (cfg.barOrientation == "vertical")
+  local anchorPoint = cfg.anchorPoint or "BOTTOM"
+  local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
+
+  local effScale = container:GetEffectiveScale()
+  local offsetX = PixelSnap(cfg.anchorOffsetX or 0, effScale)
+  local offsetY = PixelSnap(cfg.anchorOffsetY or 0, effScale)
+
+  -- Compute bar size first so we can use barWidth for centering
+  local barWidth, barHeight
+  if cfg.matchGroupWidth then
+    local sizeAdjust = cfg.matchWidthAdjust or 0
+    local matchDimension
+    if cfg.matchSlotsOnly and grp._slotAreaW then
+      -- Use active slot span (already snapped WoW units)
+      matchDimension = isSideAnchor
+        and (grp._slotAreaHRaw or grp._slotAreaH)
+        or  (grp._slotAreaWRaw or grp._slotAreaW)
+    else
+      local cW, cH = container:GetWidth(), container:GetHeight()
+      matchDimension = isSideAnchor and cH or cW
+    end
+    if matchDimension and matchDimension > 0 then
+      barWidth  = PixelSnap(matchDimension + sizeAdjust, effScale)
+      barHeight = PixelSnap((cfg.height or 20) * scale, effScale)
+      if isVertical then
+        barFrame:SetSize(barHeight, barWidth)
+      else
+        barFrame:SetSize(barWidth, barHeight)
+      end
+    end
+  end
+
+  -- Position
+  -- For matchSlotsOnly TOP/BOTTOM: anchor BOTTOMLEFT/TOPLEFT to container TOP/BOTTOM
+  -- with x offset = -barWidth/2. Container TOP/BOTTOM uses container.CENTER.x, which
+  -- is the same reference icons use → single-step rounding, no 1px drift from padding
+  -- or double-rounding. Side anchors are unaffected.
+  barFrame:ClearAllPoints()
+  local matchSlots = cfg.matchGroupWidth and cfg.matchSlotsOnly and barWidth
+  if anchorPoint == "TOP" then
+    if matchSlots then
+      barFrame:SetPoint("BOTTOMLEFT", container, "TOP", -barWidth/2 + offsetX, offsetY)
+    else
+      barFrame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", offsetX, offsetY)
+    end
+  elseif anchorPoint == "BOTTOM" then
+    if matchSlots then
+      barFrame:SetPoint("TOPLEFT", container, "BOTTOM", -barWidth/2 + offsetX, offsetY)
+    else
+      barFrame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", offsetX, offsetY)
+    end
+  elseif anchorPoint == "LEFT" then
+    barFrame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+  elseif anchorPoint == "RIGHT" then
+    barFrame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+  end
+end
+
+-- ===================================================================
 -- APPLY APPEARANCE TO SPECIFIC BAR
 -- ===================================================================
 function ns.Display.ApplyAppearance(barNumber)
@@ -5230,8 +5463,8 @@ function ns.Display.ApplyAppearance(barNumber)
   -- SetScale causes anchor-based drift when scale changes
   -- Multiplying size by scale keeps the bar anchored in place
   local scale = cfg.barScale or 1.0
-  local scaledWidth = PixelSize(cfg.width * scale)
-  local scaledHeight = PixelSize(cfg.height * scale)
+  local scaledWidth = PixelSnap(cfg.width * scale)
+  local scaledHeight = PixelSnap(cfg.height * scale)
   
   -- Size - SWAP width and height for vertical bars
   if isVertical then
@@ -5257,54 +5490,19 @@ function ns.Display.ApplyAppearance(barNumber)
     if group and group.container then
       local container = group.container
       local anchorPoint = cfg.anchorPoint or "BOTTOM"
-      local offsetX = cfg.anchorOffsetX or 0
-      local offsetY = cfg.anchorOffsetY or 0
-      
-      barFrame:ClearAllPoints()
-      if anchorPoint == "TOP" then
-        barFrame:SetPoint("BOTTOM", container, "TOP", offsetX, offsetY)
-      elseif anchorPoint == "BOTTOM" then
-        barFrame:SetPoint("TOP", container, "BOTTOM", offsetX, offsetY)
-      elseif anchorPoint == "LEFT" then
-        barFrame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
-      elseif anchorPoint == "RIGHT" then
-        barFrame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+      local offsetX = PixelSnap(cfg.anchorOffsetX or 0)
+      local offsetY = PixelSnap(cfg.anchorOffsetY or 0)
+
+      -- Use shared helper for position + size (same as resize callbacks)
+      UpdateBarForGroup(barNumber, cfg, barFrame, cfg.anchorGroupName)
+
+      -- Hook the container's OnSizeChanged event
+      barFrame._anchoredGroupName = cfg.anchorGroupName
+      barFrame._anchoredBarNumber = barNumber
+      if ns.Display.HookContainerForAnchoredBars then
+        ns.Display.HookContainerForAnchoredBars(cfg.anchorGroupName)
       end
-      
-      -- Match size to container if enabled
-      -- TOP/BOTTOM: bar width = container width
-      -- LEFT/RIGHT: bar width = container height
-      if cfg.matchGroupWidth then
-        local containerWidth = container:GetWidth()
-        local containerHeight = container:GetHeight()
-        local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
-        
-        -- Use container height for side anchors, container width for top/bottom
-        local matchDimension = isSideAnchor and containerHeight or containerWidth
-        
-        if matchDimension and matchDimension > 0 then
-          local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = PixelSize(matchDimension + sizeAdjust)
-          local barHeight = PixelSize(cfg.height * scale)
-          
-          -- Swap for vertical orientation (rotates the bar)
-          if isVertical then
-            barFrame:SetSize(barHeight, barWidth)
-          else
-            barFrame:SetSize(barWidth, barHeight)
-          end
-        end
-        
-        -- Hook the container's OnSizeChanged event
-        barFrame._anchoredGroupName = cfg.anchorGroupName
-        barFrame._anchoredBarNumber = barNumber
-        if ns.Display.HookContainerForAnchoredBars then
-          ns.Display.HookContainerForAnchoredBars(cfg.anchorGroupName)
-        end
-      else
-        barFrame._anchoredGroupName = nil
-      end
-      
+
       anchoredToGroup = true
     end
   end
@@ -5312,13 +5510,7 @@ function ns.Display.ApplyAppearance(barNumber)
   -- Position (fallback if not anchored to group)
   if not anchoredToGroup and cfg.barPosition then
     barFrame:ClearAllPoints()
-    barFrame:SetPoint(
-      cfg.barPosition.point,
-      UIParent,
-      cfg.barPosition.relPoint,
-      cfg.barPosition.x,
-      cfg.barPosition.y
-    )
+    PixelUtil.SetPoint(barFrame, cfg.barPosition.point, UIParent, cfg.barPosition.relPoint, cfg.barPosition.x, cfg.barPosition.y)
   end
   
   -- Frame strata and level
@@ -6049,6 +6241,11 @@ C_Timer.After(2.0, function()
 end)
 
 -- ===================================================================
+-- ===================================================================
+-- SHARED HELPER: Update a single bar's position AND size for a group.
+-- Called from initial setup and both resize callbacks so position
+-- always stays in sync when container padding/size changes.
+-- ===================================================================
 -- CDM GROUP CONTAINER SIZE DIRECT CALLBACK FOR AURA BARS
 -- Called directly from CDMGroups ReflowIcons when dynamic container resizes.
 -- This is more reliable than OnSizeChanged hooks alone because hooks
@@ -6056,7 +6253,6 @@ end)
 -- ===================================================================
 function ns.Display.OnGroupContainerSizeChanged(groupName, newWidth, newHeight)
   if not ns.API or not ns.API.GetActiveBars or not ns.API.GetBarConfig then return end
-  
   local activeBars = ns.API.GetActiveBars()
   for _, barNumber in ipairs(activeBars) do
     local barConfig = ns.API.GetBarConfig(barNumber)
@@ -6065,23 +6261,7 @@ function ns.Display.OnGroupContainerSizeChanged(groupName, newWidth, newHeight)
       if cfg.anchorToGroup and cfg.anchorGroupName == groupName and cfg.matchGroupWidth then
         local barFrame = ns.Display.GetBarFrame and ns.Display.GetBarFrame(barNumber)
         if barFrame then
-          local scale = cfg.barScale or 1.0
-          local isVertical = (cfg.barOrientation == "vertical")
-          local anchorPoint = cfg.anchorPoint or "BOTTOM"
-          local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
-          
-          -- Use container height for side anchors, container width for top/bottom
-          local matchDimension = isSideAnchor and newHeight or newWidth
-          local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = PixelSize(matchDimension + sizeAdjust)
-          local barHeight = PixelSize(cfg.height * scale)
-          
-          -- Swap for vertical orientation (rotates the bar)
-          if isVertical then
-            barFrame:SetSize(barHeight, barWidth)
-          else
-            barFrame:SetSize(barWidth, barHeight)
-          end
+          UpdateBarForGroup(barNumber, cfg, barFrame, groupName)
         end
       end
     end
@@ -6097,23 +6277,14 @@ local hookedContainersForAuraBars = {}  -- [container] = true
 
 local function OnContainerSizeChangedForAuraBars(container, width, height)
   if not width or not height or width <= 0 or height <= 0 then return end
-  
-  -- Find which group this container belongs to
   local groupName
   if ns.CDMGroups and ns.CDMGroups.groups then
     for name, group in pairs(ns.CDMGroups.groups) do
-      if group.container == container then
-        groupName = name
-        break
-      end
+      if group.container == container then groupName = name break end
     end
   end
-  
   if not groupName then return end
-  
-  -- Update all aura bars anchored to this group
   if not ns.API or not ns.API.GetActiveBars or not ns.API.GetBarConfig then return end
-  
   local activeBars = ns.API.GetActiveBars()
   for _, barNumber in ipairs(activeBars) do
     local barConfig = ns.API.GetBarConfig(barNumber)
@@ -6122,23 +6293,7 @@ local function OnContainerSizeChangedForAuraBars(container, width, height)
       if cfg.anchorToGroup and cfg.anchorGroupName == groupName and cfg.matchGroupWidth then
         local barFrame = ns.Display.GetBarFrame and ns.Display.GetBarFrame(barNumber)
         if barFrame then
-          local scale = cfg.barScale or 1.0
-          local isVertical = (cfg.barOrientation == "vertical")
-          local anchorPoint = cfg.anchorPoint or "BOTTOM"
-          local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
-          
-          -- Use container height for side anchors, container width for top/bottom
-          local matchDimension = isSideAnchor and height or width
-          local sizeAdjust = cfg.matchWidthAdjust or 0
-          local barWidth = PixelSize(matchDimension + sizeAdjust)
-          local barHeight = PixelSize(cfg.height * scale)
-          
-          -- Swap for vertical orientation (rotates the bar)
-          if isVertical then
-            barFrame:SetSize(barHeight, barWidth)
-          else
-            barFrame:SetSize(barWidth, barHeight)
-          end
+          UpdateBarForGroup(barNumber, cfg, barFrame, groupName)
         end
       end
     end

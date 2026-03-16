@@ -1094,6 +1094,12 @@ function addon:OptionsTable()
 										name = L.opt_autoGroupLoot_name,
 										desc = L.opt_autoGroupLoot_desc,
 										type = "toggle"
+									},
+									autoGroupLootDecor = {
+										order = 11,
+										name = L.opt_autoGroupLootDecor_name,
+										desc = L.opt_autoGroupLootDecor_desc,
+										type = "toggle"
 									}
 								},
 							},
@@ -1153,6 +1159,7 @@ function addon:OptionsTable()
 								name = L["Ignore Options"],
 								type = "group",
 								inline = true,
+								hidden = function() return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE end,
 								args = {
 									desc = {
 										order = 1,

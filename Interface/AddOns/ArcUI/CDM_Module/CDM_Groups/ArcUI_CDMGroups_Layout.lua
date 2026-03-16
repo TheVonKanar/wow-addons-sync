@@ -189,11 +189,11 @@ ns.CDMGroups.ApplyClickThrough = ApplyClickThrough
 
 local function GetSlotDimensions(layout)
     local baseScale = 36
-    local iconSize = layout.iconSize or 36
-    local iconWidth = layout.iconWidth or 36
-    local iconHeight = layout.iconHeight or 36
+    local iconSize = math.floor((layout.iconSize or 36) + 0.5)
+    local iconWidth = math.floor((layout.iconWidth or 36) + 0.5)
+    local iconHeight = math.floor((layout.iconHeight or 36) + 0.5)
     local scale = iconSize / baseScale
-    return iconWidth * scale, iconHeight * scale
+    return math.floor(iconWidth * scale + 0.5), math.floor(iconHeight * scale + 0.5)
 end
 ns.CDMGroups.GetSlotDimensions = GetSlotDimensions
 
@@ -244,8 +244,17 @@ ns.CDMGroups.ApplyTooltipSettings = ApplyTooltipSettings
 
 local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
     if not frame then return slotW, slotH end
-    
-    -- CRITICAL: Clear free icon flag so parent hooks don't fight us
+
+    -- Snap slot dimensions to whole physical pixels so all frames render at identical
+    -- pixel sizes. Raw integer slotW (e.g. 47) at non-ideal scales (ppu=1.8) gives
+    -- 84.6px — WoW alternates between 84 and 85px per frame → visible size inconsistency.
+    local _ppu = 1
+    local _, _sh = GetPhysicalScreenSize()
+    local _us = UIParent:GetScale()
+    if _sh and _sh > 0 and _us and _us > 0 then _ppu = (_sh / 768) * _us end
+    slotW = math.floor(slotW * _ppu + 0.5) / _ppu
+    slotH = math.floor(slotH * _ppu + 0.5) / _ppu
+    local effectiveW, effectiveH = slotW, slotH
     frame._cdmgIsFreeIcon = nil
     frame._cdmgFreeTargetSize = nil
     
@@ -281,10 +290,6 @@ local function SetupFrameInContainer(frame, container, slotW, slotH, cooldownID)
         end
     end
     frame._arcRecoveryProtection = GetTime() + 0.5
-    
-    -- Default to slot dimensions
-    local effectiveW = slotW
-    local effectiveH = slotH
     
     -- Check for per-icon size override from CDMEnhance
     -- ONLY apply custom size when useGroupScale is explicitly OFF

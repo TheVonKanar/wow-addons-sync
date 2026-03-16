@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 1528,
 ["lastSanitation"] = 3,
+["session"] = 1561,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["session"] = 379,
 ["time"] = "2024/09/20 09:27:39",
+["session"] = 379,
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["session"] = 475,
 ["time"] = "2024/10/07 08:13:04",
+["session"] = 475,
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["time"] = "2024/11/12 06:05:20",
 ["session"] = 560,
+["time"] = "2024/11/12 06:05:20",
 ["counter"] = 2,
 },
 {
@@ -439,8 +439,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["session"] = 897,
 ["time"] = "2025/03/25 19:16:23",
+["session"] = 897,
 ["counter"] = 2,
 },
 {
@@ -797,8 +797,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["session"] = 1253,
 ["time"] = "2025/10/08 09:26:56",
+["session"] = 1253,
 ["counter"] = 1,
 },
 {
@@ -827,8 +827,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["session"] = 1270,
 ["time"] = "2025/12/05 18:53:28",
+["session"] = 1270,
 ["counter"] = 2,
 },
 {
@@ -841,20 +841,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["session"] = 1271,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1271,
 ["counter"] = 1,
 },
 {
@@ -867,8 +867,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["session"] = 1272,
 ["time"] = "2025/12/07 00:14:59",
+["session"] = 1272,
 ["counter"] = 2,
 },
 {
@@ -969,8 +969,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["session"] = 1339,
 ["time"] = "2026/01/26 20:42:33",
+["session"] = 1339,
 ["counter"] = 1,
 },
 {
@@ -999,8 +999,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["time"] = "2026/01/28 18:15:55",
 ["session"] = 1350,
+["time"] = "2026/01/28 18:15:55",
 ["counter"] = 1,
 },
 {
@@ -1013,14 +1013,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["session"] = 1357,
 ["time"] = "2026/01/30 00:15:27",
+["session"] = 1357,
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["session"] = 1357,
 ["time"] = "2026/01/30 00:15:28",
+["session"] = 1357,
 ["counter"] = 1,
 },
 {
@@ -1216,28 +1216,12 @@ BugGrabberDB = {
 ["counter"] = 52,
 },
 {
-["message"] = ".../Mainline/Blizzard_UIWidgetTemplateTextWithState.lua:31: bad argument #1 to 'SetWidth' (Usage: self:SetWidth(width). Secret values are only allowed during untainted execution for this argument.)",
-["time"] = "2026/03/08 17:49:57",
-["locals"] = "self = Frame {\n tooltipLoc = 0\n tooltipYOffset = 0\n widgetType = 8\n tooltipContainsHyperLink = false\n tooltip = \"\"\n widgetID = 7022\n widgetContainer = Frame {\n }\n tooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n FadeInAnim = AnimationGroup {\n }\n disableTooltip = true\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n layoutDirection = 0\n outAnimType = 0\n inAnimType = 0\n widgetTag = \"\"\n orderIndex = 100\n widgetSetID = 1556\n defaultTooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n hasTimer = false\n FadeOutAnim = AnimationGroup {\n }\n Text = FontString {\n }\n tooltipXOffset = 0\n}\nwidgetInfo = <table> {\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n widgetScale = 0\n tooltipLoc = 0\n fontType = 0\n shownState = 1\n widgetSizeSetting = 0\n bottomPadding = 0\n enabledState = 3\n textSizeType = 0\n text = \"Runestone State:\"\n orderIndex = 100\n layoutDirection = 0\n inAnimType = 0\n widgetTag = \"\"\n hasTimer = false\n outAnimType = 0\n tooltip = \"\"\n hAlign = 0\n}\nwidgetContainer = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n shownWidgetCount = 0\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n dirty = false\n widgetSetLayoutDirection = 0\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1556\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n",
-["stack"] = "[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetTemplateTextWithState.lua]:31: in function 'Setup'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:526: in function 'ProcessWidget'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:562: in function 'ProcessAllWidgets'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:275: in function 'RegisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:588: in function 'GameTooltip_AddWidgetSet'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/VignetteDataProvider.lua]:472: in function <...zard_SharedMapDataProviders/VignetteDataProvider.lua:453>\n[C]: ?\n",
-["session"] = 1504,
-["counter"] = 2,
-},
-{
 ["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'BugSack' tried to call the protected function 'SaveBindings()'.",
 ["time"] = "2026/03/10 22:15:07",
 ["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"BugSack\"\naddonFunc = \"SaveBindings()\"\nname = \"BugSack\"\nbadAddons = <table> {\n BugSack = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
 ["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:477: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:401: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:401>\n[C]: in function 'SaveBindings'\n[Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingsPanel.lua]:301: in function 'CommitBindings'\n[Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingsPanel.lua]:218: in function 'Commit'\n[Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingsPanel.lua]:252: in function 'ExitWithCommit'\n[Interface/AddOns/Blizzard_Settings_Shared/Blizzard_SettingsPanel.lua]:226: in function 'Close'\n[Interface/AddOns/Blizzard_SettingsDefinitions_Frame/Mainline/KeybindingsOverrides.lua]:38: in function <...sDefinitions_Frame/Mainline/KeybindingsOverrides.lua:36>\n",
 ["session"] = 1512,
 ["counter"] = 1,
-},
-{
-["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'Angleur' tried to call the protected function 'SetCVar()'.",
-["time"] = "2026/03/11 17:42:53",
-["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"Angleur\"\naddonFunc = \"SetCVar()\"\nname = \"Angleur\"\nbadAddons = <table> {\n Angleur = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
-["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:477: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:401: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:401>\n[C]: in function 'SetCVar'\n[Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/Legolando_TempCVarHandlerTemplate/Legolando_TempCVarHandlerTemplate.lua]:49: in function <...andlerTemplate/Legolando_TempCVarHandlerTemplate.lua:45>\n[Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/Legolando_TempCVarHandlerTemplate/Legolando_TempCVarHandlerTemplate.lua]:74: in function 'Set'\n[Interface/AddOns/Angleur/init.lua]:680: in function <Interface/AddOns/Angleur/init.lua:604>\n[C]: in function 'StrafeRightStart'\n[STRAFERIGHT]:2: in function <[string \"STRAFERIGHT\"]:1>\n",
-["session"] = 1520,
-["counter"] = 2,
 },
 {
 ["message"] = ".../Mainline/Blizzard_UIWidgetTemplateTextWithState.lua:35: attempt to perform arithmetic on local 'textHeight' (a secret number value tainted by 'Angleur')",
@@ -1262,6 +1246,38 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:477: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:401: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:401>\n[C]: in function 'AcceptBattlefieldPort'\n[Interface/AddOns/Blizzard_QueueStatusFrame/Mainline/QueueStatusFrame.lua]:1306: in function <...zzard_QueueStatusFrame/Mainline/QueueStatusFrame.lua:1300>\n[Interface/AddOns/Blizzard_QueueStatusFrame/Mainline/QueueStatusFrame.lua]:1321: in function <...zzard_QueueStatusFrame/Mainline/QueueStatusFrame.lua:1320>\n[tail call]: ?\n[C]: in function 'securecallfunction'\n[Interface/AddOns/Blizzard_Menu/Menu.lua]:896: in function 'Pick'\n[Interface/AddOns/Blizzard_Menu/MenuTemplates.lua]:74: in function <Interface/AddOns/Blizzard_Menu/MenuTemplates.lua:68>\n",
 ["session"] = 1526,
 ["counter"] = 2,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'Angleur' tried to call the protected function 'SetCVar()'.",
+["time"] = 1773422970,
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"Angleur\"\naddonFunc = \"SetCVar()\"\nname = \"Angleur\"\nbadAddons = <table> {\n Angleur = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:509: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:433: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:433>\n[C]: in function 'SetCVar'\n[Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/Legolando_TempCVarHandlerTemplate/Legolando_TempCVarHandlerTemplate.lua]:49: in function <...andlerTemplate/Legolando_TempCVarHandlerTemplate.lua:45>\n[Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/Legolando_TempCVarHandlerTemplate/Legolando_TempCVarHandlerTemplate.lua]:74: in function 'Set'\n[Interface/AddOns/Angleur/init.lua]:687: in function <Interface/AddOns/Angleur/init.lua:608>\n[C]: in function 'MoveForwardStart'\n[MOVEFORWARD]:2: in function <[string \"MOVEFORWARD\"]:1>\n",
+["session"] = 1535,
+["counter"] = 3,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'Chattynator' tried to call the protected function 'Button:SetPassThroughButtons()'.",
+["time"] = 1773575610,
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"Chattynator\"\naddonFunc = \"Button:SetPassThroughButtons()\"\nname = \"Chattynator\"\nbadAddons = <table> {\n Chattynator = true\n}\nL = <table> {\n ADDON_CALL_PROTECTED_MATCH = \"^%[(.*)%] (AddOn '.*' tried to call the protected function '.*'.)$\"\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n ADDON_DISABLED = \"|cffffff00!BugGrabber and %s cannot coexist; %s has been forcefully disabled. If you want to, you may log out, disable !BugGrabber, and enable %s.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:509: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:433: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:433>\n[C]: in function 'SetPassThroughButtons'\n[Interface/AddOns/Blizzard_MapCanvas/MapCanvas_DataProviderBase.lua]:288: in function 'CheckMouseButtonPassthrough'\n[Interface/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua]:302: in function 'AcquirePin'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:194: in function 'AddQuest'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:134: in function 'CheckAddQuest'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:141: in function 'RefreshAllData'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestDataProvider.lua]:39: in function <...lizzard_SharedMapDataProviders/QuestDataProvider.lua:39>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:210: in function <...e/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua:209>\n[C]: ?\n[Interface/AddOns/Blizzard_SharedXMLBase/CallbackRegistry.lua]:213: in function 'TriggerEvent'\n[Interface/AddOns/Blizzard_FrameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua]:59: in function 'CacheCurrentSuperTrackInfo'\n[Interface/AddOns/Blizzard_FrameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua]:17: in function <...rameXMLUtil/Mainline/Blizzard_QuestSuperTracking.lua:15>\n",
+["session"] = 1549,
+["counter"] = 1,
+},
+{
+["message"] = ".../Mainline/Blizzard_UIWidgetTemplateTextWithState.lua:35: attempt to perform arithmetic on local 'textHeight' (a secret number value tainted by 'Chattynator')",
+["time"] = 1773577421,
+["locals"] = "self = Frame {\n tooltipLoc = 0\n tooltipYOffset = 0\n widgetType = 8\n tooltipContainsHyperLink = false\n tooltip = \"\"\n widgetID = 7433\n widgetContainer = Frame {\n }\n tooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n FadeInAnim = AnimationGroup {\n }\n disableTooltip = true\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n layoutDirection = 0\n outAnimType = 0\n inAnimType = 0\n widgetTag = \"\"\n orderIndex = 0\n widgetSetID = 1805\n defaultTooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n hasTimer = false\n FadeOutAnim = AnimationGroup {\n }\n Text = FontString {\n }\n tooltipXOffset = 0\n}\nwidgetInfo = <table> {\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n widgetScale = 0\n tooltipLoc = 0\n fontType = 0\n shownState = 1\n widgetSizeSetting = 250\n bottomPadding = 0\n enabledState = 1\n textSizeType = 0\n text = \"Story Variant: |cnWHITE_FONT_COLOR:Trapped!\"\n orderIndex = 0\n layoutDirection = 0\n inAnimType = 0\n widgetTag = \"\"\n hasTimer = false\n outAnimType = 0\n tooltip = \"\"\n hAlign = 0\n}\nwidgetContainer = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n shownWidgetCount = 0\n dirty = false\n widgetSetLayoutDirection = 0\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1805\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\ntextHeight = <no value>\n(*temporary) = 0\n(*temporary) = 0\n(*temporary) = 0\n(*temporary) = 1\n(*temporary) = 0\n(*temporary) = \"attempt to perform arithmetic on local 'textHeight' (a secret number value tainted by 'Chattynator')\"\n",
+["stack"] = "[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetTemplateTextWithState.lua]:35: in function 'Setup'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:526: in function 'ProcessWidget'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:562: in function 'ProcessAllWidgets'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:275: in function 'RegisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:588: in function 'GameTooltip_AddWidgetSet'\n[Interface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua]:44: in function <...terface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua:3>\n[tail call]: ?\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:166: in function <...zzard_SharedMapDataProviders/AreaPOIDataProvider.lua:159>\n",
+["session"] = 1549,
+["counter"] = 3,
+},
+{
+["message"] = ".../Mainline/Blizzard_UIWidgetTemplateTextWithState.lua:31: bad argument #1 to 'SetWidth' (Usage: self:SetWidth(width). Secret values are only allowed during untainted execution for this argument.)",
+["time"] = 1773580254,
+["locals"] = "self = Frame {\n tooltipLoc = 0\n tooltipYOffset = 0\n widgetType = 8\n tooltipContainsHyperLink = false\n tooltip = \"\"\n widgetID = 7657\n widgetContainer = Frame {\n }\n tooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n FadeInAnim = AnimationGroup {\n }\n disableTooltip = true\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n layoutDirection = 0\n outAnimType = 0\n inAnimType = 0\n widgetTag = \"\"\n orderIndex = 0\n widgetSetID = 1914\n defaultTooltipAnchor = \"ANCHOR_BOTTOMLEFT\"\n hasTimer = false\n FadeOutAnim = AnimationGroup {\n }\n Text = FontString {\n }\n tooltipXOffset = 0\n}\nwidgetInfo = <table> {\n scriptedAnimationEffectID = 0\n modelSceneLayer = 0\n widgetScale = 0\n tooltipLoc = 0\n fontType = 0\n shownState = 1\n widgetSizeSetting = 0\n bottomPadding = 0\n enabledState = 3\n textSizeType = 0\n text = \"|TInterface/Icons/UI_MajorFaction_ Vines:32|t The Hara'ti\"\n orderIndex = 0\n layoutDirection = 0\n inAnimType = 0\n widgetTag = \"\"\n hasTimer = false\n outAnimType = 0\n tooltip = \"\"\n hAlign = 1\n}\nwidgetContainer = Frame {\n horizontalAnchorXOffset = 2\n verticalAnchorPoint = \"TOPLEFT\"\n disableWidgetTooltips = true\n widgetFrames = <table> {\n }\n horizontalRelativePoint = \"RIGHT\"\n verticalAnchorYOffset = 0\n shownWidgetCount = 0\n dirty = false\n widgetSetLayoutDirection = 0\n numWidgetsShowing = 0\n numTimers = 0\n timerWidgets = <table> {\n }\n horizontalRowContainerPool = <table> {\n }\n widgetPools = <table> {\n }\n BackModelScene = ModelScene {\n }\n FrontModelScene = ModelScene {\n }\n verticalRelativePoint = \"BOTTOMLEFT\"\n widgetSetID = 1914\n horizontalAnchorPoint = \"LEFT\"\n showAndHideOnWidgetSetRegistration = false\n}\n",
+["stack"] = "[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetTemplateTextWithState.lua]:31: in function 'Setup'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:526: in function 'ProcessWidget'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:562: in function 'ProcessAllWidgets'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:275: in function 'RegisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:588: in function 'GameTooltip_AddWidgetSet'\n[Interface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua]:44: in function <...terface/AddOns/Blizzard_FrameXMLUtil/AreaPoiUtil.lua:3>\n[tail call]: ?\n[C]: ?\n[C]: in function 'TryShowTooltip'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIDataProvider.lua]:166: in function 'OnMouseEnter'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/QuestOfferDataProvider.lua]:835: in function <...rd_SharedMapDataProviders/QuestOfferDataProvider.lua:834>\n",
+["session"] = 1549,
+["counter"] = 4,
 },
 },
 }

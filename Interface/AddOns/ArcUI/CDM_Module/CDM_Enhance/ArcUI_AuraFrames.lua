@@ -472,7 +472,10 @@ end
 
 -- ===================================================================
 -- HOOK INSTALLATION
--- Installs SetAuraInstanceInfo / ClearAuraInstanceInfo hooks on a frame.
+-- Installs OnAuraInstanceInfoSet / OnAuraInstanceInfoCleared hooks on a frame.
+-- These fire exactly once per real aura gained/lost (confirmed via AuraHook debugger).
+-- Replaces SetAuraInstanceInfo/ClearAuraInstanceInfo which fired on every CDM general
+-- refresh (~2-3/s) even with no aura state change — those were noisy and wasteful.
 -- Called once per frame from EnhanceAuraFrame.
 -- The hooks call UpdateAuraFrame directly — no duplicate glow calls.
 -- ===================================================================
@@ -481,12 +484,16 @@ function AF.InstallHooks(frame, cdID)
   if frame._arcAuraStateHooked then return end
   frame._arcAuraStateHooked = true
 
-  if frame.SetAuraInstanceInfo then
-    hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
-      -- IAO frames: cooldown state owns all visuals
+  if frame.OnAuraInstanceInfoSet then
+    hooksecurefunc(frame, "OnAuraInstanceInfoSet", function(self)
+      -- Confirm aura is actually present before caching true
+      self._arcAuraActive = HasAuraInstanceID(self.auraInstanceID)
       if self._arcIgnoreAuraOverride then
-        if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
-          ns.CDMEnhance.OnCooldownEvent(self, false, false, true)
+        -- Trigger only — CooldownState.Apply reads HasAuraInstanceID(auraInstanceID) fresh.
+        if ns.CooldownState and ns.CooldownState.Apply then
+          local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+            and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(self)
+          if cfg then ns.CooldownState.Apply(self, cfg) end
         end
       else
         -- DIRECT glow call: aura gained = show glow. No routing, no throttle, no stateVisuals check.
@@ -517,11 +524,16 @@ function AF.InstallHooks(frame, cdID)
     end)
   end
 
-  if frame.ClearAuraInstanceInfo then
-    hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
+  if frame.OnAuraInstanceInfoCleared then
+    hooksecurefunc(frame, "OnAuraInstanceInfoCleared", function(self)
+      -- Confirm aura is actually gone before caching false
+      self._arcAuraActive = HasAuraInstanceID(self.auraInstanceID)
       if self._arcIgnoreAuraOverride then
-        if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
-          ns.CDMEnhance.OnCooldownEvent(self, false, false, true)
+        -- Trigger only — CooldownState.Apply reads HasAuraInstanceID(auraInstanceID) fresh.
+        if ns.CooldownState and ns.CooldownState.Apply then
+          local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+            and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(self)
+          if cfg then ns.CooldownState.Apply(self, cfg) end
         end
       else
         -- DIRECT glow call: aura lost = hide glow (or show glowWhenMissing).
@@ -549,6 +561,34 @@ function AF.InstallHooks(frame, cdID)
     end)
   end
   frame._arcAuraEventDriven = true
+
+  -- ── TOTEM HOOKS ────────────────────────────────────────────────────
+  -- SetTotemData/ClearTotemData fire when PLAYER_TOTEM_UPDATE causes CDM
+  -- to assign or remove totem data on the frame. Hooking these gives us
+  -- instant dispatch instead of waiting for the 0.5s ticker to notice
+  -- totemData changed — same pattern as OnAuraInstanceInfoSet/Cleared.
+  -- ── TOTEM HOOK ─────────────────────────────────────────────────────
+  -- OnPlayerTotemUpdateEvent fires only when CDM decides this frame actually
+  -- needs a totem update (NeedsTotemUpdate check passed) — much sparser than
+  -- hooking SetTotemData/ClearTotemData which fire on every CDM refresh cycle.
+  -- After this fires, frame.totemData reflects the new state (set or nil).
+  if frame.OnPlayerTotemUpdateEvent and not frame._arcTotemDataHooked then
+    frame._arcTotemDataHooked = true
+
+    hooksecurefunc(frame, "OnPlayerTotemUpdateEvent", function(self)
+      if self._arcCooldownEventDriven then
+        local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+          and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(self)
+        if cfg and ns.CooldownState and ns.CooldownState.Apply then
+          ns.CooldownState.Apply(self, cfg)
+        end
+      else
+        if ns.AuraFrames and ns.AuraFrames.UpdateAuraFrame then
+          ns.AuraFrames.UpdateAuraFrame(self)
+        end
+      end
+    end)
+  end
 end
 
 -- ===================================================================
@@ -575,6 +615,7 @@ function AF.EnhanceAuraFrame(frame, cdID)
     local aaCfg = initCfg.auraActiveState
     if aaCfg.glow or aaCfg.glowWhenMissing then
       local hasAura = HasAuraInstanceID(frame.auraInstanceID)
+      frame._arcAuraActive = hasAura  -- seed cache on first enhance (login/reload)
       if AF.ShouldShowAuraActiveGlow(aaCfg, frame, hasAura) then
         AF.ShowAuraActiveGlow(frame, aaCfg)
       else

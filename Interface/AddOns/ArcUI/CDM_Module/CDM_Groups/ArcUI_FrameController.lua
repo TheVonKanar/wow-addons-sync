@@ -2774,6 +2774,22 @@ local function OnArcUIPanelChanged(isOpen)
     if ns.CDMGroups.UpdateGroupVisibility then
         ns.CDMGroups.UpdateGroupVisibility()
     end
+
+    -- Re-anchor all bars after panel state change.
+    -- Container size may not change (e.g. all icons active → compact=full grid),
+    -- so OnSizeChanged never fires. We must explicitly re-apply bar appearance
+    -- so center-x anchor offsets (-barWidth/2) reflect the current container state.
+    C_Timer.After(0.05, function()
+        if ns.Display and ns.Display.RefreshAllBars then
+            ns.Display.RefreshAllBars()
+        end
+        if ns.CooldownBars and ns.CooldownBars.ReapplyAllAppearance then
+            ns.CooldownBars.ReapplyAllAppearance()
+        end
+        if ns.Resources and ns.Resources.RefreshAllBars then
+            ns.Resources.RefreshAllBars()
+        end
+    end)
 end
 ns.CDMGroups.OnArcUIPanelChanged = OnArcUIPanelChanged
 

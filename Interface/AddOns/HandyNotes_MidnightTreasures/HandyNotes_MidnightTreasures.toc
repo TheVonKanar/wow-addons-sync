@@ -1,8 +1,8 @@
-## Interface: 120001, 120000
+## Interface: 120001
 ## Title: HandyNotes: Midnight Treasures and Rares
 ## Notes: Where are the hidden treasures in Midnight?
 ## Author: Kemayo
-## Version: v35
+## Version: v39
 ## IconTexture: Interface\Icons\Ability_Spy
 ## DefaultState: enabled
 ## X-Category: Map
@@ -29,6 +29,7 @@ achievements\DustEmOff.lua
 achievements\GlyphHunter.lua
 achievements\HighestPeaks.lua
 achievements\LoreHunter.lua
+achievements\MoreThanJustTheirRoots.lua
 
 shared\Delves.lua
 shared\WorldBosses.lua

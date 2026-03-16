@@ -176,6 +176,15 @@ ns.API.OpenOptions = function()
       if status then
         if pos  then status.top  = pos.top;  status.left   = pos.left   end
         if size then status.width = size.width; status.height = size.height end
+        -- Clamp to screen so saved positions from different resolutions don't go offscreen
+        local sw, sh = GetScreenWidth(), GetScreenHeight()
+        local w = status.width  or 900
+        local h = status.height or 700
+        if status.top  then status.top  = math.max(h,       math.min(status.top,  sh)) end
+        if status.left then status.left = math.max(0,       math.min(status.left, sw - w)) end
+        -- Also clamp size to screen
+        if w > sw     then status.width  = sw      end
+        if h > sh - 50 then status.height = sh - 50 end
       end
     end
   end
@@ -218,6 +227,25 @@ ns.API.OpenOptions = function()
       actualFrame._arcUISolidBgFrame:Show()
 
       -- Position/size restored via AceConfig status table before Open — nothing to do here
+
+      -- Stretch the drag area across the full top of the frame.
+      -- AceGUIContainer-Frame: titletext is a child of the title Frame (the drag handle).
+      -- widget.titletext is exposed, so :GetParent() gives us the title frame directly.
+      -- We clear its points and anchor it across the full frame top so the whole
+      -- header bar is draggable, not just the narrow title texture.
+      if not actualFrame._arcUITitleStretched then
+        actualFrame._arcUITitleStretched = true
+        local widget = AceConfigDialog.OpenFrames["ArcUI"]
+        if widget and widget.titletext then
+          local titleFrame = widget.titletext:GetParent()
+          if titleFrame and titleFrame ~= actualFrame then
+            titleFrame:ClearAllPoints()
+            titleFrame:SetPoint("TOPLEFT",  actualFrame, "TOPLEFT",  0,  0)
+            titleFrame:SetPoint("TOPRIGHT", actualFrame, "TOPRIGHT", 0,  0)
+            titleFrame:SetHeight(28)
+          end
+        end
+      end
       
       -- Create Discord link at top right (or show existing one)
       CreateDiscordLink(actualFrame)
@@ -796,6 +824,29 @@ SlashCmdList["ARCBARS"] = function(msg)
     if ns.LayoutEditor and ns.LayoutEditor.Toggle then
       ns.LayoutEditor.Toggle()
     end
+  elseif msg == "recenter" then
+    -- Clear saved position so panel opens at default center next time
+    local globalDB = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+    if globalDB then
+      globalDB.optionsPanelPos  = nil
+      globalDB.optionsPanelSize = nil
+    end
+    local status = AceConfigDialog:GetStatusTable("ArcUI")
+    if status then
+      local sw, sh = GetScreenWidth(), GetScreenHeight()
+      local w, h = 900, 700
+      status.top  = sh / 2 + h / 2
+      status.left = sw / 2 - w / 2
+      status.width  = w
+      status.height = h
+    end
+    -- Reopen at new position if already open
+    local widget = AceConfigDialog.OpenFrames and AceConfigDialog.OpenFrames["ArcUI"]
+    if widget and widget.frame and widget.frame:IsShown() then
+      AceConfigDialog:Close("ArcUI")
+      ns.API.OpenOptions()
+    end
+    print("|cff00ccffArc UI|r Options panel recentered")
   elseif msg == "reset" then
     local db = ns.API.GetDB()
     if db then
@@ -856,6 +907,7 @@ SlashCmdList["ARCBARS"] = function(msg)
     print("  /arcui - Open options")
     print("  /arcui scan - Scan for buffs/debuffs")
     print("  /arcui drag - Toggle icon group editing")
+    print("  /arcui recenter - Move options panel back to center of screen")
     print("  /arcui reset - Reset bar positions")
     print("  /arcui minimap - Toggle minimap button")
     print("  /arcui export - Open import/export panel")
@@ -954,7 +1006,7 @@ initFrame:SetScript("OnEvent", function(self, event)
         ns.CustomTracking.Init()
       end
       
-      print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded. Type /arcui for options, /cdm for CDM settings.")
+      print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded. Type /arcui for options, /cdm for CDM settings, /arcui recenter to move panel back to screen.")
     end)
   end
 end)

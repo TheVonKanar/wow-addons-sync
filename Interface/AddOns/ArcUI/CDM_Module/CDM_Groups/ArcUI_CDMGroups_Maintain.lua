@@ -55,7 +55,6 @@ local function OnClearAllPoints_Grouped(self)
             self._cdmgTargetY or 0
         )
         self._cdmgSettingPosition = false
-        ns.CDMGroups.fightStats.position = ns.CDMGroups.fightStats.position + 1
     end
 end
 
@@ -77,7 +76,6 @@ local function OnSetScale(self, scale)
         self._cdmgSettingScale = true
         self:SetScale(1)
         self._cdmgSettingScale = false
-        ns.CDMGroups.fightStats.scale = ns.CDMGroups.fightStats.scale + 1
     end
 end
 
@@ -158,7 +156,6 @@ local function OnSetSize(self, w, h)
         self._cdmgSettingSize = true
         self:SetSize(targetW, targetH)
         self._cdmgSettingSize = false
-        ns.CDMGroups.fightStats.size = ns.CDMGroups.fightStats.size + 1
     end
 end
 
@@ -179,7 +176,6 @@ local function OnSetFrameStrata(self, strata)
         self._cdmgSettingStrata = true
         self:SetFrameStrata(expectedStrata)
         self._cdmgSettingStrata = false
-        ns.CDMGroups.fightStats.strata = ns.CDMGroups.fightStats.strata + 1
     end
 end
 

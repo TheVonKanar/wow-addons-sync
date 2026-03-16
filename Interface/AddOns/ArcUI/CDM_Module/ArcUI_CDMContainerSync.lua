@@ -248,8 +248,14 @@ local function SetupViewerHooks(viewerName)
 
     hooksecurefunc(viewer, "SetPoint", function(self)
         if pushing or editModeSettling then return end
+        if ns.CDMGroups and ns.CDMGroups.specChangeInProgress then return end
 
-        if IsInEditMode() then
+        -- PullFromViewer must ONLY run in Blizzard Edit Mode.
+        -- IsInEditMode() also returns true for ArcUI drag overlay mode — if we
+        -- called PullFromViewer there, dragging a group would read the viewer's
+        -- current position (often stale/bottom-of-screen) and snap the group to it.
+        local blizzEditMode = EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive()
+        if blizzEditMode then
             if IsMouseButtonDown("LeftButton") then return end
             local point = select(1, self:GetPoint(1))
             if point == "TOPLEFT" then return end

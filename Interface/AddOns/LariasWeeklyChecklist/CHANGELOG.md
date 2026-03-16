@@ -1,7 +1,7 @@
 # Larias's Weekly Checklist
 
-## [v2.1.15](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.15) (2026-03-10)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v2.1.14...v2.1.15) 
+## [v2.1.20](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.20) (2026-03-15)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v2.1.19...v2.1.20) 
 
-- Release v2.1.15  
-- Post-release: bump version to 2.1.15  
+- Release v2.1.20  
+- Post-release: bump version to 2.1.20  

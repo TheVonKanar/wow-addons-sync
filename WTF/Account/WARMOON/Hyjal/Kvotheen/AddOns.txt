@@ -219,8 +219,8 @@ TalentTreeTweaks: disabled
 DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
-Krowi_AchievementFilter: disabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
+Krowi_AchievementFilter: enabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
@@ -247,7 +247,7 @@ MacroManager: disabled
 MacroManagerData: disabled
 UnhaltedUnitFrames: enabled
 Cell: disabled
-TrueStatValues: disabled
+TrueStatValues: enabled
 MouseoverActionSettings: disabled
 BlizzHUDTweaks: disabled
 Blizzard_CharacterFrame: enabled
@@ -256,7 +256,7 @@ Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 LariasWeeklyChecklist_Localization: disabled
 DejaCharacterStats: enabled
-LiteMount: disabled
+LiteMount: enabled
 RareScanner: disabled
 ClickableRaidBuffs: enabled
 CityGuide: enabled
@@ -271,3 +271,8 @@ EllesmereUICooldownManager: disabled
 EllesmereUIActionBars: disabled
 TellMeWhen: disabled
 TellMeWhen_Options: disabled
+MythicPlusUtility: disabled
+MogMount: disabled
+!Swatter: disabled
+!ImprovedErrorFrame: disabled
+Baganator: enabled

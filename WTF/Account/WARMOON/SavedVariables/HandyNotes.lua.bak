@@ -11,11 +11,11 @@ HandyNotesDB = {
 ["Raptorbuyer - Hyjal"] = "Raptorbuyer - Hyjal",
 ["Trialmagekvo - Hyjal"] = "Trialmagekvo - Hyjal",
 ["Testkvotheen - Hyjal"] = "Testkvotheen - Hyjal",
-["Pandamo - Hyjal"] = "Pandamo - Hyjal",
-["Killeen - Archimonde"] = "Killeen - Archimonde",
-["Kvothyr - Hyjal"] = "Kvothyr - Hyjal",
-["Pandamages - Hyjal"] = "Pandamages - Hyjal",
 ["Pandkvé - Hyjal"] = "Pandkvé - Hyjal",
+["Pandamages - Hyjal"] = "Pandamages - Hyjal",
+["Kvothyr - Hyjal"] = "Kvothyr - Hyjal",
+["Killeen - Archimonde"] = "Killeen - Archimonde",
+["Pandamo - Hyjal"] = "Pandamo - Hyjal",
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
@@ -38,15 +38,15 @@ HandyNotesDB = {
 },
 ["Testkvotheen - Hyjal"] = {
 },
-["Pandamo - Hyjal"] = {
-},
-["Killeen - Archimonde"] = {
-},
-["Kvothyr - Hyjal"] = {
+["Pandkvé - Hyjal"] = {
 },
 ["Pandamages - Hyjal"] = {
 },
-["Pandkvé - Hyjal"] = {
+["Kvothyr - Hyjal"] = {
+},
+["Killeen - Archimonde"] = {
+},
+["Pandamo - Hyjal"] = {
 },
 },
 }
@@ -62,11 +62,11 @@ HandyNotes_HandyNotesDB = {
 ["Raptorbuyer - Hyjal"] = "Raptorbuyer - Hyjal",
 ["Trialmagekvo - Hyjal"] = "Trialmagekvo - Hyjal",
 ["Testkvotheen - Hyjal"] = "Testkvotheen - Hyjal",
-["Pandamo - Hyjal"] = "Pandamo - Hyjal",
-["Killeen - Archimonde"] = "Killeen - Archimonde",
-["Kvothyr - Hyjal"] = "Kvothyr - Hyjal",
-["Pandamages - Hyjal"] = "Pandamages - Hyjal",
 ["Pandkvé - Hyjal"] = "Pandkvé - Hyjal",
+["Pandamages - Hyjal"] = "Pandamages - Hyjal",
+["Kvothyr - Hyjal"] = "Kvothyr - Hyjal",
+["Killeen - Archimonde"] = "Killeen - Archimonde",
+["Pandamo - Hyjal"] = "Pandamo - Hyjal",
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
@@ -89,15 +89,15 @@ HandyNotes_HandyNotesDB = {
 },
 ["Testkvotheen - Hyjal"] = {
 },
-["Pandamo - Hyjal"] = {
-},
-["Killeen - Archimonde"] = {
-},
-["Kvothyr - Hyjal"] = {
+["Pandkvé - Hyjal"] = {
 },
 ["Pandamages - Hyjal"] = {
 },
-["Pandkvé - Hyjal"] = {
+["Kvothyr - Hyjal"] = {
+},
+["Killeen - Archimonde"] = {
+},
+["Pandamo - Hyjal"] = {
 },
 },
 }

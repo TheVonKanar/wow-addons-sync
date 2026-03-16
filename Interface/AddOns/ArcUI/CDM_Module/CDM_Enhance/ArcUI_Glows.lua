@@ -960,7 +960,20 @@ function ns.Glows.Stop(frame, key)
     -- Clear forced alpha state if it was set for this key
     frame._arcForcedGlowAlpha = nil
     local gf = GetLCGFrame(frame, glowType, key)
-    if gf then gf._arcAlphaForced = nil end
+    if gf then
+        gf._arcAlphaForced = nil
+        -- Restore original SetAlpha so the pooled frame isn't permanently hobbled
+        -- when reused for a different glow key. LCG's FramePoolResetter doesn't
+        -- clear these ArcUI flags, so without this a pixel glow frame that was
+        -- used for ReadyGlow (with SetForcedAlpha) will silently block SetAlpha
+        -- on its next use (e.g. AuraGlow), making pixel glows invisible.
+        if gf._arcAlphaHooked and gf._arcOrigSetAlpha then
+            gf.SetAlpha = gf._arcOrigSetAlpha
+            gf._arcOrigSetAlpha = nil
+            gf._arcAlphaHooked = nil
+            gf:SetAlpha(1.0)
+        end
+    end
     if not next(frameGlows) then
         activeGlows[frame] = nil
     end

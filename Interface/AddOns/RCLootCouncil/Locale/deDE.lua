@@ -386,6 +386,10 @@ L["opt_autoAddPets_name"] = "Begleiter hinzufügen"
 L["opt_autoAwardPrioList_desc"] = "Gegenstände werden an den dieser Prioritätsliste nach ersten Kandidaten aus deiner Gruppe  vergeben."
 L["opt_autoGroupLoot_desc"] = "Wenn aktiviert, wird RCLootCouncil automatisch auf die Knöpfe Passen und Gier klicken, sodass alle Gegenstände in deinem Inventar landen."
 L["opt_autoGroupLoot_name"] = "Automatisches Gruppenplündern"
+--[[Translation missing --]]
+L["opt_autoGroupLootDecor_desc"] = "Caution: Only enable this if you're certain decor items are tradeable."
+--[[Translation missing --]]
+L["opt_autoGroupLootDecor_name"] = "Loot Decor"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Wenn diese Option aktiviert ist, führt RCLootCouncil die automatische Gruppenbeute nur dann durch, wenn du in einer Gildengruppe bist."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Nur in Gildengruppen"
 --[[Translation missing --]]

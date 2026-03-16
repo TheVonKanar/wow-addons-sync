@@ -339,6 +339,10 @@ L["opt_autoAddPets_name"] = "Agregar mascotas"
 L["opt_autoAwardPrioList_desc"] = "Los objetos se otorgan al primer candidato que se encuentre en su grupo de acuerdo con esta lista de prioridades."
 L["opt_autoGroupLoot_desc"] = "Cuando está habilitado, RCLootCouncil hará clic automáticamente en los botones de pase y codicia para que todos los elementos lleguen a su inventario."
 L["opt_autoGroupLoot_name"] = "Botín de grupo automático"
+--[[Translation missing --]]
+L["opt_autoGroupLootDecor_desc"] = "Caution: Only enable this if you're certain decor items are tradeable."
+--[[Translation missing --]]
+L["opt_autoGroupLootDecor_name"] = "Loot Decor"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Cuando está habilitado, RCLootCouncil solo hará un pase automático de botín grupal cuando estés en un grupo de hermandad."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Solo grupos de hermandad"
 --[[Translation missing --]]

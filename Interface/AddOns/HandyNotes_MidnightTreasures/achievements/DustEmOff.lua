@@ -1,7 +1,5 @@
 local myname, ns = ...
 
--- TODO: it'd be sort of handy to have a way to say "show on minimap IF"
-
 local MOTH = ns.nodeMaker{
 	achievement=61052,
 	label="{spell:360937:Glowing Moth}",
@@ -16,18 +14,18 @@ ns.RegisterPoints(ns.HARANDAR, {
 		loot={
 			{257155, note="10 {spell:360937:Glowing Moth}"}, -- Grovewarden's Kris
 			{263283, note="20 {spell:360937:Glowing Moth}"}, -- Grovewarden's Dagger
-			{265943, note="30 {spell:360937:Glowing Moth}"}, -- Firm Haranir Pillow
+			{264243, decor=true, note="30 {spell:360937:Glowing Moth}"}, -- Firm Haranir Pillow (she first sells 265943, but after sells 264243 which actually has the knowable-status on it)
 			{257158, note="40 {spell:360937:Glowing Moth}"}, -- Grovewarden's Rapier
-			{263580, note="50 {spell:360937:Glowing Moth}"}, -- Vivid Chloroceros
-			{265945, note="60 {spell:360937:Glowing Moth}"}, -- Warm Haranir Blanket
+			{263580, mount=true, note="50 {spell:360937:Glowing Moth}"}, -- Vivid Chloroceros
+			{264245, decor=true, note="60 {spell:360937:Glowing Moth}"}, -- Warm Haranir Blanket (she first sells 265945, but after sells 264245 which actually has the knowable-status on it)
 			{257159, note="70 {spell:360937:Glowing Moth}"}, -- Grovewarden's Buckler
 			{263284, note="80 {spell:360937:Glowing Moth}"}, -- Grovewarden's Staff
-			{265946, note="90 {spell:360937:Glowing Moth}"}, -- Haranir Reclined Bed
+			{263038, decor=true, note="90 {spell:360937:Glowing Moth}"}, -- Haranir Reclined Bed (she first sells 265946, but after sells 263038 which actually has the knowable-status on it)
 			{257161, note="100 {spell:360937:Glowing Moth}"}, -- Grovewarden's Halberd
 			{263285, note="110 {spell:360937:Glowing Moth}"}, -- Grovewarden's Greatsword
-			{222988, note="120 {spell:360937:Glowing Moth}"}, -- Elder Glowmite
+			{222988, mount=true, note="120 {spell:360937:Glowing Moth}"}, -- Elder Glowmite
 		},
-		atlas="banker",
+		atlas="banker", minimap=true,
 		note="Trade 10x{currency:3385:Luminous Dust} for each item, but you need to catch enough {spell:360937:Glowing Moth} to unlock them",
 	},
 })
@@ -49,10 +47,10 @@ ns.RegisterPoints(ns.HARANDAR, {
 	[48545536] = {quest=92307, vignette=7184},
 	[56584765] = {quest=92299, vignette=7185},
 	[40443446] = {quest=92300, vignette=7186},
-	[41592743] = {quest=92301, vignette=7187}, -- c
+	[41592744] = {quest=92301, vignette=7187},
 	[50634062] = {quest=92302, vignette=7188},
 	[65432712] = {quest=92303, vignette=7189},
-	[69033120] = {quest=92304, vignette=7190},
+	[69033120] = {quest=92304, vignette=7190}, -- this one didn't have the vignette show as of 20260314
 	[59984305] = {quest=92305, vignette=7191},
 	[67736886] = {quest=92306, vignette=7192},
 	[59435432] = {quest=92206, vignette=7193, note="Under the mushroom cap"},
@@ -71,7 +69,7 @@ ns.RegisterPoints(ns.HARANDAR, {
 	[68693633] = {quest=92233, vignette=7206},
 	[50353360] = {quest=92232, vignette=7207},
 	[47634696] = {quest=92231, vignette=7208},
-	[41614011] = {quest=92230, vignette=7209}, -- c
+	[41614012] = {quest=92230, vignette=7209},
 	[53775910] = {quest=92229, vignette=7210},
 	[66965657] = {quest=92228, vignette=7211},
 	[55143288] = {quest=92227, vignette=7212},

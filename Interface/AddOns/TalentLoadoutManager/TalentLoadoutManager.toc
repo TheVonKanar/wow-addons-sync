@@ -1,0 +1,39 @@
+## Interface: 120001, 120001
+## Title: Talent Loadout Manager
+## Author: Numy
+## IconTexture: Interface\Addons\TalentLoadoutManager\media\icon
+## Notes: Talent Loadout Manager
+## Version: v1.6.26
+## X-Curse-Project-ID: 821821
+## X-Wago-ID: ZKbeD961
+## SavedVariables: TalentLoadoutManagerDB
+## SavedVariablesPerCharacter: TalentLoadoutManagerCharDB
+## OptionalDeps: TalentTreeTweaks,Simulationcraft,BlizzMove
+## Category-enUS: Combat
+## Category-deDE: Kampf
+## Category-esES: Combate
+## Category-esMX: Combate
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-koKR: 전투
+## Category-ptBR: Combate
+## Category-ruRU: Бой
+## Category-zhCN: 战斗
+## Category-zhTW: 戰鬥
+
+libs\embeds.xml
+
+core\ImportExportV2.lua
+core\IcyVeinsImport.lua
+core\TalentLoadoutManager.lua
+core\ReduceTaint.lua
+core\ManagerApi.lua
+core\BlizzardLoadoutChanger.lua
+core\Config.lua
+
+modules\SideBarMixin.lua
+modules\DefaultUISidebar.lua
+modules\TalentTreeViewerSidebar.lua
+
+modules\SimulationCraft.lua
+modules\Leveling.lua

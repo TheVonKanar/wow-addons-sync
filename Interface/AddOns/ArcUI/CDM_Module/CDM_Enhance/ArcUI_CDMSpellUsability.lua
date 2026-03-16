@@ -191,6 +191,14 @@ function ns.CDMSpellUsability.OnRefreshIconColor(frame, cfg, spellID, isUsable, 
         allDepleted = shadowCD and shadowCD:IsShown() or false
     end
 
+    -- RECHARGING: charge shadow shown but main shadow hidden (1+ charges, one recharging).
+    -- CooldownState owns desat in this state too — bail out same as depleted.
+    local isRecharging = false
+    if not allDepleted then
+        local chargeShadow = frame._arcCDMChargeShadow
+        isRecharging = chargeShadow and chargeShadow:IsShown() or false
+    end
+
     if allDepleted and su.useOnCooldownColor then
         -- CooldownState's cooldownTint takes priority (enforced via _arcDesiredVertexColor).
         -- Only set usability's on-CD color when CooldownState isn't enforcing.
@@ -207,6 +215,14 @@ function ns.CDMSpellUsability.OnRefreshIconColor(frame, cfg, spellID, isUsable, 
         -- returns true and the "normal/usable" path below would force desat=0,
         -- wiping CDM's native cooldown desaturation.
         ApplyUsabilityDesat(frame, iconTex, nil)  -- clear request, don't touch desat
+        return
+    elseif isRecharging then
+        -- Charge spell has 1+ charges available but is recharging.
+        -- CooldownState owns desat here too — same bail-out as depleted.
+        -- Without this, isUsable=true triggers normalDesaturate path every
+        -- RefreshIconColor (~3x/s), writing SetDesaturation(0) with bypass
+        -- and fighting CDM's charge timer desaturation continuously.
+        ApplyUsabilityDesat(frame, iconTex, nil)
         return
     end
 
@@ -303,13 +319,14 @@ function ns.CDMSpellUsability.HookFrame(frame)
         ns.CDMSpellUsability.UpdateGlow(self, cfg, spellID, isUsable, allDepleted)
 
         -- 3. Alpha — ONLY when usability state actually changed.
-        --    OnCooldownEvent is expensive (config lookup + state visuals + apply).
+        --    CooldownState.Apply re-dispatches visuals including usability alpha.
         --    Usability flips are rare (resource gain/spend, form swap).
         if spellID then
             local prev = self._arcPrevUsable
             if prev ~= isUsable then
-                if ns.CDMEnhance and ns.CDMEnhance.OnCooldownEvent then
-                    ns.CDMEnhance.OnCooldownEvent(self, nil, nil, true)
+                if ns.CooldownState and ns.CooldownState.Apply then
+                    local fCfg = cfg  -- already fetched above
+                    if fCfg then ns.CooldownState.Apply(self, fCfg) end
                 end
                 self._arcPrevUsable = isUsable
             end
@@ -491,10 +508,10 @@ function ns.CDMSpellUsability.RefreshAll()
             ns.CDMSpellUsability.OnRefreshIconColor(frame)
             ns.CDMSpellUsability.UpdateGlow(frame)
             -- Re-run CooldownState so usability alpha gets applied
-            -- Route through OnCooldownEvent for proper guards (hidden-by-bar,
-            -- spec-change protection) instead of direct ApplyCooldownStateVisuals
-            if ns.CDMEnhance.OnCooldownEvent then
-                ns.CDMEnhance.OnCooldownEvent(frame, nil, nil, true)
+            if ns.CooldownState and ns.CooldownState.Apply then
+                local cfg = ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+                    and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(frame)
+                if cfg then ns.CooldownState.Apply(frame, cfg) end
             end
         end
     end
@@ -518,9 +535,10 @@ function ns.CDMSpellUsability.RefreshFrame(cdID)
         ns.CDMSpellUsability.UpdateGlow(frame)
         ns.CDMSpellUsability.OnRefreshIconColor(frame)
         -- Re-run CooldownState so usability alpha gets applied
-        -- Route through OnCooldownEvent for proper guards
-        if ns.CDMEnhance.OnCooldownEvent then
-            ns.CDMEnhance.OnCooldownEvent(frame, nil, nil, true)
+        if ns.CooldownState and ns.CooldownState.Apply then
+            local cfg = ns.CDMEnhance and ns.CDMEnhance.GetEffectiveIconSettingsForFrame
+                and ns.CDMEnhance.GetEffectiveIconSettingsForFrame(frame)
+            if cfg then ns.CooldownState.Apply(frame, cfg) end
         end
     end
 end

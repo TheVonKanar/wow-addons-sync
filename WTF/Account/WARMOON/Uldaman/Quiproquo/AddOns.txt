@@ -61,3 +61,5 @@ SenseiClassResourceBar: disabled
 UnhaltedUnitFrames: enabled
 MinimapStats: enabled
 ClickableRaidBuffs: enabled
+!Swatter: disabled
+!ImprovedErrorFrame: disabled

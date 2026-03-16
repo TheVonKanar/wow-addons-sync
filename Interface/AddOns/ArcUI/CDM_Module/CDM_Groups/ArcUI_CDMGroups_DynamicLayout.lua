@@ -125,9 +125,6 @@ local state = {
     -- PERFORMANCE: Per-tick cache for IsAuraFrame results
     tickAuraFrameCache = {},  -- [cdID] = result (true/false)
     
-    -- PERFORMANCE: Throttle HasGridMismatch checks (expensive)
-    lastMismatchCheckTime = 0,  -- GetTime() of last mismatch check
-    
     -- PERFORMANCE: Module-level cached panel state (kept for backward compat, no longer polled)
     cachedPanelOpenThisTick = false,
 }
@@ -400,7 +397,12 @@ local function HookFrameForDynamicLayout(frame, group)
                 local entryGroup = entry.group
                 -- entry.group can be either a group object or a group name string
                 if type(entryGroup) == "table" then
-                    return entryGroup
+                    -- Verify frame still belongs to this group (may have been dragged away)
+                    local cdID = f.cooldownID
+                    if cdID and entryGroup.members and entryGroup.members[cdID] and entryGroup.members[cdID].frame == f then
+                        return entryGroup
+                    end
+                    -- Frame moved to a different group — fall through to search below
                 elseif type(entryGroup) == "string" then
                     local groups = ns.CDMGroups and ns.CDMGroups.groups
                     if groups and groups[entryGroup] then
@@ -472,43 +474,43 @@ local function HookFrameForDynamicLayout(frame, group)
         return true
     end
     
-    -- Only hook BuffIcon frames (they have these methods)
-    if frame.OnActiveStateChanged then
-        hooksecurefunc(frame, "OnActiveStateChanged", function(self)
+    -- Hook OnAuraInstanceInfoSet/Cleared — fires exactly once per real aura gained/lost.
+    -- Check HasAuraInstanceID right here in the hook (same pattern as AuraFrames).
+    -- Replaces OnActiveStateChanged/SetAuraInstanceInfo which fired ~40/s on every
+    -- CDM general refresh even with no real aura state change.
+    if frame.OnAuraInstanceInfoSet then
+        hooksecurefunc(frame, "OnAuraInstanceInfoSet", function(self)
+            if not HasAuraInstanceID(self.auraInstanceID) then return end
+            self._arcDLAuraActive = true  -- cache: no more HasAuraInstanceID polls needed
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
                 DL.MarkGroupDirty(currentGroup.name)
-                TriggerDynamicLayout(currentGroup, "OnActiveStateChanged", self)
+                TriggerDynamicLayout(currentGroup, "OnAuraInstanceInfoSet", self)
             end
         end)
     end
-    if frame.OnUnitAuraAddedEvent then
-        hooksecurefunc(frame, "OnUnitAuraAddedEvent", function(self)
+    if frame.OnAuraInstanceInfoCleared then
+        hooksecurefunc(frame, "OnAuraInstanceInfoCleared", function(self)
+            if HasAuraInstanceID(self.auraInstanceID) then return end
+            self._arcDLAuraActive = false  -- cache: no more HasAuraInstanceID polls needed
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
                 DL.MarkGroupDirty(currentGroup.name)
-                TriggerDynamicLayout(currentGroup, "OnUnitAuraAddedEvent", self)
+                TriggerDynamicLayout(currentGroup, "OnAuraInstanceInfoCleared", self)
             end
         end)
     end
-    if frame.OnUnitAuraRemovedEvent then
-        hooksecurefunc(frame, "OnUnitAuraRemovedEvent", function(self)
+
+    -- Totem frames use OnPlayerTotemUpdateEvent, not OnAuraInstanceInfoSet/Cleared.
+    -- Hook it here so totem appear/disappear triggers layout immediately instead of
+    -- waiting for the dirty ticker — same pattern as aura hooks above.
+    if frame.OnPlayerTotemUpdateEvent and not frame._arcDLTotemHooked then
+        frame._arcDLTotemHooked = true
+        hooksecurefunc(frame, "OnPlayerTotemUpdateEvent", function(self)
             local currentGroup = GetFrameCurrentGroup(self)
             if ShouldTriggerDynamicLayout(currentGroup, self) then
                 DL.MarkGroupDirty(currentGroup.name)
-                TriggerDynamicLayout(currentGroup, "OnUnitAuraRemovedEvent", self)
-            end
-        end)
-    end
-    
-    -- CRITICAL: Hook SetAuraInstanceInfo - this fires when CDM actually has the aura data
-    -- This is often delayed from OnUnitAuraAddedEvent due to secret value processing
-    if frame.SetAuraInstanceInfo then
-        hooksecurefunc(frame, "SetAuraInstanceInfo", function(self, auraData)
-            local currentGroup = GetFrameCurrentGroup(self)
-            if ShouldTriggerDynamicLayout(currentGroup, self) then
-                DL.MarkGroupDirty(currentGroup.name)
-                TriggerDynamicLayout(currentGroup, "SetAuraInstanceInfo", self)
+                TriggerDynamicLayout(currentGroup, "OnPlayerTotemUpdateEvent", self)
             end
         end)
     end
@@ -618,18 +620,22 @@ function DL.IsIconInvisible(member)
     -- preferredTotemUpdateSlot persists even after totem expires, so don't use it!
     if frame.totemData ~= nil then
         result = false  -- totemData exists = totem active = visible
-    elseif HasAuraInstanceID(frame.auraInstanceID) then
-        result = false  -- has aura = visible
     else
-        -- Aura is inactive — check if CDMEnhance would actually hide this frame
-        -- Read the cached effective settings directly from the frame (no API call)
-        -- cooldownStateVisuals.cooldownState.alpha controls "aura missing" opacity
-        -- Default is 1.0 (fully visible), only compact when user has set it to ~0
-        local missingAlpha = DL.GetFrameMissingAlpha(frame)
-        if missingAlpha <= CONFIG.INVISIBLE_THRESHOLD then
-            result = true   -- Alpha ≈ 0 → frame will be hidden → gap
+        -- Read _arcDLAuraActive set by OnAuraInstanceInfoSet/Cleared hooks.
+        -- Seed on first call if hooks haven't fired yet.
+        if frame._arcDLAuraActive == nil then
+            frame._arcDLAuraActive = HasAuraInstanceID(frame.auraInstanceID)
+        end
+        if frame._arcDLAuraActive then
+            result = false  -- active aura = visible
         else
-            result = false  -- Frame stays visible when inactive → NOT a gap
+            -- Inactive aura — only a gap if CDMEnhance hides it (alpha ≈ 0)
+            local missingAlpha = DL.GetFrameMissingAlpha(frame)
+            if missingAlpha <= CONFIG.INVISIBLE_THRESHOLD then
+                result = true   -- Alpha ≈ 0 → frame hidden → gap
+            else
+                result = false  -- Frame stays visible when inactive → NOT a gap
+            end
         end
     end
     
@@ -693,12 +699,15 @@ function DL.IsAuraActive(member)
         return true, "totem_active"
     end
     
-    -- Regular aura - check auraInstanceID (secret-safe)
-    if HasAuraInstanceID(frame.auraInstanceID) then
-        return true, "has_auraInstanceID"
+    -- Read from cache set by OnAuraInstanceInfoSet/Cleared hooks.
+    -- Seed cache on first call if hooks haven't fired yet.
+    if frame._arcDLAuraActive == nil then
+        frame._arcDLAuraActive = HasAuraInstanceID(frame.auraInstanceID)
     end
-    
-    return false, "no_auraInstanceID"
+    if frame._arcDLAuraActive then
+        return true, "cached_active"
+    end
+    return false, "cached_inactive"
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -1173,21 +1182,35 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
     local spacingX = group.layout and group.layout.spacingX or group.layout and group.layout.spacing or 2
     local spacingY = group.layout and group.layout.spacingY or group.layout and group.layout.spacing or 2
     local activeCount = #allActiveItems
-    
-    -- Content area dimensions (full grid capacity)
-    local contentW = cols * slotW + (cols - 1) * spacingX
-    local contentH = rows * slotH + (rows - 1) * spacingY
-    
-    -- Screen-pixel snapping (mirrors getSlotPosition's snappedBaseX logic in CDMGroups.lua)
-    -- Without snapping, starting positions like -contentW/2 can land on fractional screen pixels
-    -- at common UI scales (e.g. 1440p scale 1.5: contentW/2=151 → 151*1.5=226.5, fractional).
-    -- This causes visible icon misalignment for even icon counts while odd counts are fine.
-    local contScale = (group.container and group.container:GetEffectiveScale()) or 1
-    local function snapPixel(v)
-        if contScale <= 0 then return v end
-        return math.floor(v * contScale + 0.5) / contScale
+
+    -- Snap step (slotW+spacing) to nearest whole physical pixel so inter-icon gaps
+    -- are consistent. Without this, a step of e.g. 89.578px alternates between
+    -- rendering as 5px and 6px gaps depending on sub-pixel phase of each icon.
+    -- Snapping makes every gap identical (rounded to nearest whole pixel).
+    -- Only used in the CENTER-mode offset calculations below, not in edit mode.
+    local _ppu = 1  -- physical pixels per WoW unit
+    local _, _screenH = GetPhysicalScreenSize()
+    local _uiScale = UIParent:GetScale()
+    if _screenH and _screenH > 0 and _uiScale and _uiScale > 0 then
+        _ppu = (_screenH / 768) * _uiScale
     end
-    
+    local function snapPx(v) return math.floor(v * _ppu + 0.5) / _ppu end
+
+    -- Snapped step = nearest whole-pixel equivalent of slotW+spacing
+    local stepX = snapPx(slotW + spacingX)  -- use for horizontal stepping
+    local stepY = snapPx(slotH + spacingY)  -- use for vertical stepping
+    -- Snapped slot sizes (for computing half-widths consistently)
+    local snapSlotW = snapPx(slotW)
+    local snapSlotH = snapPx(slotH)
+    -- Derived snapped spacings (step - snapped slot size)
+    local snapSpacingX = stepX - snapSlotW
+    local snapSpacingY = stepY - snapSlotH
+
+    -- Content area dimensions — use snapSlotW (not raw slotW) to match the static
+    -- path exactly. Raw slotW gives a different contentW → container shifts on toggle.
+    local contentW = math.floor((cols * snapSlotW + (cols - 1) * snapSpacingX) * _ppu / 2 + 0.5) * 2 / _ppu
+    local contentH = math.floor((rows * snapSlotH + (rows - 1) * snapSpacingY) * _ppu / 2 + 0.5) * 2 / _ppu
+
     -- Initialize pixel offset storage
     group._pixelOffsets = {}
     group._activeOrder = {}
@@ -1205,26 +1228,31 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         local iconWidths = {}
         local totalWidth = 0
         for i, data in ipairs(allActiveItems) do
-            local effectiveW = data.member._effectiveIconW or slotW
+            -- Use snapSlotW so totalWidth matches static contentW exactly.
+            -- Raw slotW causes a fractional _contentCenterX → container shift on toggle.
+            local effectiveW = snapPx(data.member._effectiveIconW or slotW)
             iconWidths[i] = effectiveW
             totalWidth = totalWidth + effectiveW
         end
         if activeCount > 1 then
-            totalWidth = totalWidth + (activeCount - 1) * spacingX
+            totalWidth = totalWidth + (activeCount - 1) * snapSpacingX
         end
         
+        -- Snap totalWidth to even pixels so totalWidth/2 is a whole pixel,
+        -- matching the same even-snap applied to contentW in the static path.
+        totalWidth = math.floor(totalWidth * _ppu / 2 + 0.5) * 2 / _ppu
+
         -- Start X based on alignment (relative to container CENTER)
-        -- Snap to screen pixels so icon edges land on whole pixels at all UI scales
         local currentX
         if alignment == "center" then
-            currentX = snapPixel(-totalWidth / 2)
+            currentX = -totalWidth / 2
         elseif alignment == "right" then
-            currentX = snapPixel(contentW / 2 - totalWidth)
+            currentX = contentW / 2 - totalWidth
         else -- left (default)
-            currentX = snapPixel(-contentW / 2)
+            currentX = -contentW / 2
         end
         
-        -- Assign pixel positions
+        -- Assign pixel positions — step by snapped step so all gaps are identical pixels
         for i, data in ipairs(allActiveItems) do
             local iconW = iconWidths[i]
             local centerX = currentX + iconW / 2
@@ -1232,8 +1260,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
             group._pixelOffsets[data.cdID] = { x = centerX, y = 0 }
             group._activeOrder[i] = data.cdID
             
-            currentX = currentX + iconW + spacingX
-            
+            currentX = currentX + iconW + snapSpacingX
             dynamicPositions[data.cdID] = { row = 0, col = i - 1 }
             data.member._dynamicSlot = i - 1
         end
@@ -1246,26 +1273,28 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         local iconHeights = {}
         local totalHeight = 0
         for i, data in ipairs(allActiveItems) do
-            local effectiveH = data.member._effectiveIconH or slotH
+            local effectiveH = snapPx(data.member._effectiveIconH or slotH)
             iconHeights[i] = effectiveH
             totalHeight = totalHeight + effectiveH
         end
         if activeCount > 1 then
-            totalHeight = totalHeight + (activeCount - 1) * spacingY
+            totalHeight = totalHeight + (activeCount - 1) * snapSpacingY
         end
         
+        -- Snap totalHeight to even pixels so totalHeight/2 is a whole pixel.
+        totalHeight = math.floor(totalHeight * _ppu / 2 + 0.5) * 2 / _ppu
+
         -- Start Y based on alignment (Y is positive upward from center)
-        -- Snap to screen pixels for same reason as currentX in horizontal section
         local currentY
         if alignment == "center" then
-            currentY = snapPixel(totalHeight / 2)
+            currentY = totalHeight / 2
         elseif alignment == "bottom" then
-            currentY = snapPixel(-(contentH / 2) + totalHeight)
+            currentY = -(contentH / 2) + totalHeight
         else -- top (default)
-            currentY = snapPixel(contentH / 2)
+            currentY = contentH / 2
         end
         
-        -- Assign pixel positions
+        -- Assign pixel positions — step by snapped step so all gaps are identical pixels
         for i, data in ipairs(allActiveItems) do
             local iconH = iconHeights[i]
             local centerY = currentY - iconH / 2
@@ -1273,8 +1302,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
             group._pixelOffsets[data.cdID] = { x = 0, y = centerY }
             group._activeOrder[i] = data.cdID
             
-            currentY = currentY - iconH - spacingY
-            
+            currentY = currentY - iconH - snapSpacingY
             dynamicPositions[data.cdID] = { row = i - 1, col = 0 }
             data.member._dynamicSlot = i - 1
         end
@@ -1379,14 +1407,14 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                 end
                 
                 if #colItems > 0 then
-                    -- X position: fixed column position — snapped to screen pixels
-                    local colCenterX = snapPixel(-contentW / 2 + c * (slotW + spacingX) + slotW / 2)
+                    -- X position: fixed column position using snapped step
+                    local colCenterX = -contentW / 2 + c * stepX + snapSlotW / 2
                     
                     -- Calculate total height of items in this column
-                    local colTotalH = #colItems * slotH + math.max(0, #colItems - 1) * spacingY
+                    local colTotalH = #colItems * slotH + math.max(0, #colItems - 1) * snapSpacingY
                     
-                    -- Start from top of centered block (Y+ is up in WoW) — snapped to screen pixels
-                    local currentY = snapPixel(colTotalH / 2)
+                    -- Start from top of centered block (Y+ is up in WoW)
+                    local currentY = colTotalH / 2
                     
                     for i, item in ipairs(colItems) do
                         local centerY = currentY - slotH / 2
@@ -1397,15 +1425,15 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         dynamicPositions[item.data.cdID] = { row = i - 1, col = c }
                         item.data.member._dynamicSlot = (i - 1) * cols + c
                         
-                        currentY = currentY - slotH - spacingY
+                        currentY = currentY - slotH - snapSpacingY
                     end
                 end
             end
         else
         -- All other alignments: row-major iteration
         for r = 0, rows - 1 do
-            -- Y position for this row (from container center, Y+ is up) — snapped to screen pixels
-            local rowCenterY = snapPixel(contentH / 2 - r * (slotH + spacingY) - slotH / 2)
+            -- Y position for this row (from container center, Y+ is up) using snapped step
+            local rowCenterY = contentH / 2 - r * stepY - snapSlotH / 2
             
             -- Collect items in this row (left-to-right order)
             local rowItems = {}
@@ -1417,10 +1445,9 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
             
             if #rowItems > 0 then
                 if alignment == "top" or alignment == "bottom" then
-                    -- Column gravity: icons keep their column position
-                    -- X = grid-slot center based on column index — snapped to screen pixels
+                    -- Column gravity: icons keep their column position using snapped step
                     for _, item in ipairs(rowItems) do
-                        local colCenterX = snapPixel(-contentW / 2 + item.col * (slotW + spacingX) + slotW / 2)
+                        local colCenterX = -contentW / 2 + item.col * stepX + snapSlotW / 2
                         
                         group._pixelOffsets[item.data.cdID] = { x = colCenterX, y = rowCenterY }
                         group._activeOrder[orderIdx] = item.data.cdID
@@ -1429,20 +1456,25 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         item.data.member._dynamicSlot = r * cols + item.col
                     end
                     
-                elseif alignment == "center_h" then
-                    -- Row gravity + pixel-center: center this row's icons horizontally
+                elseif alignment == "center_h" or alignment == "center" then
+                    -- Row gravity + pixel-center: center this row's icons horizontally.
+                    -- "center" (default for 1-row horizontal) maps here when rows>1.
                     local rowTotalW = 0
                     local widths = {}
                     for i, item in ipairs(rowItems) do
-                        local w = item.data.member._effectiveIconW or slotW
+                        local w = snapPx(item.data.member._effectiveIconW or slotW)
                         widths[i] = w
                         rowTotalW = rowTotalW + w
                     end
                     if #rowItems > 1 then
-                        rowTotalW = rowTotalW + (#rowItems - 1) * spacingX
+                        rowTotalW = rowTotalW + (#rowItems - 1) * snapSpacingX
                     end
-                    
-                    local currentX = snapPixel(-rowTotalW / 2)
+                    -- Snap to even pixels so rowTotalW/2 is a whole pixel — same
+                    -- reason we even-snap contentW: odd pixel totals give fractional
+                    -- origins that cause per-row position drift.
+                    rowTotalW = math.floor(rowTotalW * _ppu / 2 + 0.5) * 2 / _ppu
+
+                    local currentX = -rowTotalW / 2
                     for i, item in ipairs(rowItems) do
                         local iconW = widths[i]
                         local centerX = currentX + iconW / 2
@@ -1453,14 +1485,14 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         dynamicPositions[item.data.cdID] = { row = r, col = i - 1 }
                         item.data.member._dynamicSlot = r * cols + (i - 1)
                         
-                        currentX = currentX + iconW + spacingX
+                        currentX = currentX + iconW + snapSpacingX
                     end
                     
                 elseif alignment == "left" then
                     -- Row gravity: pixel-pack from left edge
-                    local currentX = snapPixel(-contentW / 2)
+                    local currentX = -contentW / 2
                     for i, item in ipairs(rowItems) do
-                        local iconW = item.data.member._effectiveIconW or slotW
+                        local iconW = snapPx(item.data.member._effectiveIconW or slotW)
                         local centerX = currentX + iconW / 2
                         
                         group._pixelOffsets[item.data.cdID] = { x = centerX, y = rowCenterY }
@@ -1469,15 +1501,15 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         dynamicPositions[item.data.cdID] = { row = r, col = i - 1 }
                         item.data.member._dynamicSlot = r * cols + (i - 1)
                         
-                        currentX = currentX + iconW + spacingX
+                        currentX = currentX + iconW + snapSpacingX
                     end
-                    
+
                 else -- right
                     -- Row gravity: pixel-pack from right edge
-                    local currentX = snapPixel(contentW / 2)
+                    local currentX = contentW / 2
                     for i = #rowItems, 1, -1 do
                         local item = rowItems[i]
-                        local iconW = item.data.member._effectiveIconW or slotW
+                        local iconW = snapPx(item.data.member._effectiveIconW or slotW)
                         local centerX = currentX - iconW / 2
                         
                         group._pixelOffsets[item.data.cdID] = { x = centerX, y = rowCenterY }
@@ -1486,18 +1518,17 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
                         dynamicPositions[item.data.cdID] = { row = r, col = cols - (#rowItems - i + 1) }
                         item.data.member._dynamicSlot = r * cols + cols - (#rowItems - i + 1)
                         
-                        currentX = currentX - iconW - spacingX
+                        currentX = currentX - iconW - snapSpacingX
                     end
                 end
             end
         end
         end -- else (non center_v alignments)
     end
-    
-    -- Store content center for container position adjustment
-    -- Icons are positioned relative to container CENTER at their gravity positions.
-    -- CDMGroups.lua will use this to move container and adjust icon positions
-    -- so icons stay at their screen positions when container shrinks.
+
+    -- Calculate the center of the active icon bounding box (relative to container CENTER).
+    -- CDMGroups.lua uses this to shift the container so icons stay at their screen positions
+    -- when the container shrinks (dynamic container sizing).
     if group._pixelOffsets and next(group._pixelOffsets) then
         local minX, maxX, minY, maxY = math.huge, -math.huge, math.huge, -math.huge
         for cdID, offset in pairs(group._pixelOffsets) do
@@ -1517,7 +1548,7 @@ function DL.CalculateDynamicSlots(group, rows, cols, excludeInactiveAuras)
         group._contentCenterX = 0
         group._contentCenterY = 0
     end
-    
+
     return dynamicPositions, activeAuras
 end
 
@@ -1653,121 +1684,21 @@ end
 -- Returns true ONLY if:
 --   1. A hidden aura is still occupying a grid slot (needs removal)
 --   2. An active aura has no _dynamicSlot assigned (needs slot)
--- Does NOT check contiguity - with stable assignment, non-contiguous is OK
-local function HasGridMismatch(group)
-    if not group or not group.members or not group.grid then return false end
-    
-    -- Check 1: Hidden auras should not occupy grid slots
-    for cdID, member in pairs(group.members) do
-        if not member.isPlaceholder and member.frame then
-            local isHidden = DL.IsIconInvisible(member)
-            
-            -- nil means not an aura - skip
-            if isHidden == true and member.row ~= nil and member.col ~= nil then
-                -- Hidden aura - check if it's still in the grid
-                local gridEntry = group.grid[member.row] and group.grid[member.row][member.col]
-                if gridEntry == cdID then
-                    -- Hidden aura is in grid - this needs fixing
-                    return true
-                end
-            end
-        end
-    end
-    
-    -- Check 2: Active auras should have a _dynamicSlot
-    -- (This catches new auras that appeared and need slot assignment)
-    for cdID, member in pairs(group.members) do
-        if not member.isPlaceholder and member.frame then
-            if member.viewerType == "aura" then
-                local isHidden = DL.IsIconInvisible(member)
-                if isHidden == false and member._dynamicSlot == nil then
-                    -- Active aura without a dynamic slot - needs assignment
-                    return true
-                end
-            end
-        end
-    end
-    
-    -- NOTE: We do NOT check for contiguity anymore!
-    -- With stable slot assignment, slots can be non-contiguous and that's OK.
-    -- Layout() will compact when an aura becomes inactive (creating a gap),
-    -- but we don't force compaction just because slots aren't sequential.
-    
-    return false
-end
-
--- Check a group for visibility changes
--- Returns true if any change detected OR if grid state is mismatched
--- NOTE: Caller (OnUpdate) has already verified IsOptionsPanelOpen() == false
--- shouldCheckMismatch: Only check for grid mismatches when true (expensive, throttled by caller)
-local function CheckGroupForChanges(group, shouldCheckMismatch)
+-- Group is dirty because OnAuraInstanceInfoSet/Cleared fired.
+-- The hook already tells us something changed — just check for stale placeholders
+-- (talent swap edge case) and return true so the dirty tick reflows.
+-- No visibility polling needed.
+local function CheckGroupForChanges(group)
     if not group or not group.members then return false end
     if not group.dynamicLayout then return false end
-    -- REMOVED: IsOptionsPanelOpen() check - caller already verified this
-    
     local groupName = group.name or "unknown"
-    local anyChanged = false
-    local changedIcons = {}
-    
     for cdID, member in pairs(group.members) do
-        -- STALE FLAG CHECK: Detect members that have a frame but are still marked placeholder.
-        -- This happens when CDM reassigns a frame directly (talent swap back) without going
-        -- through AssignFrameToGroup. When detected, mark as changed to trigger reflow,
-        -- which will auto-heal the flag in CollectMembersForReflow.
         if member.isPlaceholder and member.frame and member.frame.cooldownID == cdID then
-            anyChanged = true
-            LogEvent("STALE_DETECT", groupName, 
+            LogEvent("STALE_DETECT", groupName,
                 string.format("cdID %s has frame but isPlaceholder=true, queuing reflow", tostring(cdID)))
         end
-        
-        if not member.isPlaceholder and member.frame then
-            -- PERFORMANCE: Only check aura frames for visibility changes
-            -- Cooldowns and utilities don't change visibility based on aura state
-            -- Use cached viewerType when available (fast path)
-            local isAura = member.viewerType == "aura"
-            if not isAura and not member.viewerType then
-                -- Cache miss - do the lookup once
-                isAura = DL.IsAuraFrame(member)
-            end
-            
-            -- Skip non-aura frames - they're always "visible" for dynamic layout purposes
-            if not isAura then
-                -- Just ensure they're tracked as visible
-                if state.iconVisibility[cdID] == nil then
-                    state.iconVisibility[cdID] = true
-                end
-            else
-                -- Aura frame - check visibility
-                local isVisible = not DL.IsIconInvisible(member)
-                local wasVisible = state.iconVisibility[cdID]
-                
-                -- First check - just record state
-                if wasVisible == nil then
-                    state.iconVisibility[cdID] = isVisible
-                    LogEvent("INIT", groupName, string.format("cdID %d initial state: %s", cdID, isVisible and "visible" or "hidden"))
-                elseif wasVisible ~= isVisible then
-                    -- Visibility changed!
-                    state.iconVisibility[cdID] = isVisible
-                    anyChanged = true
-                    table.insert(changedIcons, string.format("%d: %s->%s", cdID, wasVisible and "V" or "H", isVisible and "V" or "H"))
-                end
-            end
-        end
     end
-    
-    if #changedIcons > 0 then
-        LogEvent("VIS_CHANGE", groupName, table.concat(changedIcons, ", "))
-    end
-    
-    -- PERFORMANCE: Only check for grid mismatches when explicitly requested (throttled by caller)
-    -- This is expensive because it loops through all members again
-    if not anyChanged and shouldCheckMismatch and HasGridMismatch(group) then
-        state.lastMismatchDetected[groupName] = GetTime()
-        LogEvent("MISMATCH", groupName, "Grid mismatch detected, queuing reflow")
-        anyChanged = true
-    end
-    
-    return anyChanged
+    return true  -- group is dirty because a hook fired — always reflow
 end
 
 -- Process pending reflows
@@ -1903,7 +1834,7 @@ local function RunDirtyTick()
 
     for groupName, group in pairs(ns.CDMGroups.groups) do
         if group.autoReflow and group.dynamicLayout and _dlDirtyGroups[groupName] then
-            local changed = CheckGroupForChanges(group, false)
+            local changed = CheckGroupForChanges(group)
             ClearGroupDirty(groupName)
             if changed then
                 state.pendingReflows[groupName] = group
@@ -1916,41 +1847,13 @@ local function RunDirtyTick()
     end
 end
 
-local function RunMismatchTick()
-    if not _cdmGroupsEnabled then return end
-    if IsOptionsPanelOpen() then return end
-    if ns.CDMGroups.specChangeInProgress then return end
-    if ns.CDMGroups._pendingSpecChange then return end
-    if state.pendingPostTalentRefresh then return end
-    if not ns.CDMGroups.groups then return end
-
-    wipe(state.tickInvisibleCache)
-    wipe(state.tickAuraFrameCache)
-    state.lastMismatchCheckTime = GetTime()
-
-    for groupName, group in pairs(ns.CDMGroups.groups) do
-        if group.autoReflow and group.dynamicLayout then
-            local changed = CheckGroupForChanges(group, true)
-            ClearGroupDirty(groupName)
-            if changed then
-                state.pendingReflows[groupName] = group
-            end
-        end
-    end
-
-    if next(state.pendingReflows) then
-        ProcessPendingReflows()
-    end
-end
-
--- Start tickers (created once, run forever — same lifetime as the addon)
-local _dirtyTicker   = C_Timer.NewTicker(CONFIG.CHECK_INTERVAL,    function() RunDirtyTick() end)
-local _mismatchTicker = C_Timer.NewTicker(CONFIG.MISMATCH_CHECK_INTERVAL, function() RunMismatchTick() end)
+-- Start dirty ticker only. Mismatch tick removed — OnAuraInstanceInfoSet/Cleared hooks
+-- own aura state truth. RunDirtyTick only runs when a hook has marked a group dirty.
+local _dirtyTicker = C_Timer.NewTicker(CONFIG.CHECK_INTERVAL, function() RunDirtyTick() end)
 
 -- Expose for external stop if needed (e.g. full disable of CDMGroups)
 function DL.StopMaintainerTickers()
-    if _dirtyTicker   then _dirtyTicker:Cancel()   end
-    if _mismatchTicker then _mismatchTicker:Cancel() end
+    if _dirtyTicker then _dirtyTicker:Cancel() end
 end
 
 -- Called by Shared panel hooks when panel opens
@@ -1985,12 +1888,21 @@ function DL.OnOptionsPanelOpened()
             
             -- Restore member.row/col to saved positions for grid editing
             if group.members then
+                local maxRows = group.layout and group.layout.gridRows or 1
+                local maxCols = group.layout and group.layout.gridCols or 1
+                -- Rebuild grid clean from saved positions so GetDropTarget sees correct occupancy
+                group.grid = {}
+                for r = 0, maxRows - 1 do group.grid[r] = {} end
                 for cdID, member in pairs(group.members) do
                     local saved = savedPositions[cdID]
                     if saved and saved.type == "group" and saved.target == groupName then
                         if saved.row ~= nil and saved.col ~= nil then
                             member.row = saved.row
                             member.col = saved.col
+                            -- Write into grid so drop indicator reads correct occupancy
+                            if group.grid[saved.row] then
+                                group.grid[saved.row][saved.col] = cdID
+                            end
                         end
                     end
                 end
@@ -2002,12 +1914,30 @@ function DL.OnOptionsPanelOpened()
             end
         end
     end
+
+    -- Re-anchor bars after Layout() has run for all groups.
+    -- Layout() updates _slotAreaW (now full-grid when panel open).
+    -- Container may not resize (static mode or all icons active) so OnSizeChanged
+    -- won't fire — we must explicitly refresh bars so -barWidth/2 reflects full grid.
+    C_Timer.After(0.05, function()
+        local ns = ns  -- upvalue
+        if ns.Display and ns.Display.RefreshAllBars then
+            ns.Display.RefreshAllBars()
+        end
+        if ns.CooldownBars and ns.CooldownBars.ReapplyAllAppearance then
+            ns.CooldownBars.ReapplyAllAppearance()
+        end
+        if ns.Resources and ns.Resources.RefreshAllBars then
+            ns.Resources.RefreshAllBars()
+        end
+    end)
 end
 
 -- Called directly by ArcUI_Options.lua when panel closes
 -- No polling needed - immediate response
 -- Called by Shared panel hooks when panel closes
 function DL.OnOptionsPanelClosed()
+    state.cachedPanelOpenThisTick = false  -- backward compat
     state.optionsPanelWasOpen = false
     
     -- Clear any applied container offsets so positions reset properly

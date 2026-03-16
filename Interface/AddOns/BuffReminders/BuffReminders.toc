@@ -1,8 +1,8 @@
-## Interface: 120001, 120000
+## Interface: 120001
 ## Title: BuffReminders
 ## Notes: Track missing buffs at a glance
 ## Author: zerbi
-## Version: v4.3.9
+## Version: v4.5.5
 ## SavedVariables: BuffRemindersDB
 ## X-Curse-Project-ID: 1441094
 ## X-Wago-ID: qGYZZjNg

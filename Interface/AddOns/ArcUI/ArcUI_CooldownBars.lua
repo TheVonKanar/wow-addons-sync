@@ -11,6 +11,19 @@
 local ADDON, ns = ...
 ns.CooldownBars = ns.CooldownBars or {}
 
+-- Physical-pixel-aware snap: matches the rounding used by CDMGroups icon sizing
+-- (GetSlotDimensions) so bar widths align exactly with icon grid widths.
+-- Formula: floor(n / pmult + 0.5) * pmult  where pmult = (768/screenH) / UIScale
+local function PixelSnap(n, effectiveScale)
+  local _, h = GetPhysicalScreenSize()
+  local s = effectiveScale or UIParent:GetScale()
+  if h and h > 0 and s and s > 0 then
+    local pmult = (768 / h) / s
+    return math.floor(n / pmult + 0.5) * pmult
+  end
+  return math.floor(n + 0.5)
+end
+
 -- ===================================================================
 -- DEBUG LOGGING
 -- ===================================================================
@@ -1178,8 +1191,10 @@ function ns.CooldownBars.RestoreBarConfig()
   -- Mark that restore has completed (allows SaveBarConfig to work)
   hasRestoredBars = true
   
-  -- Now apply spec visibility (hides bars that shouldn't show for current spec)
-  ns.CooldownBars.UpdateBarVisibilityForSpec()
+  -- Defer spec visibility so all C_Timer.After(0.01) slot-creation blocks finish first
+  C_Timer.After(0.05, function()
+    ns.CooldownBars.UpdateBarVisibilityForSpec()
+  end)
   
   if restored.cd > 0 or restored.chg > 0 or restored.res > 0 then
     Log(string.format("Restored: %d Duration, %d Charge, %d Resource bars",
@@ -1493,64 +1508,7 @@ function ns.CooldownBars.ClearAllCooldownColorCurves()
   wipe(cooldownColorCurves)
 end
 
--- ===================================================================
--- CHARGE COUNT DETECTION SYSTEM
--- Per-bar detectors to prevent cross-bar contamination
--- ===================================================================
-local arcDetectorUID = 0  -- Unique ID for frame names
 
-local function CreateArcDetectorForBar(barData, threshold)
-  arcDetectorUID = arcDetectorUID + 1
-  local bar = CreateFrame("StatusBar", "ArcUIChargeDetector_" .. arcDetectorUID, UIParent)
-  bar:SetSize(100, 10)
-  bar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -500, 500)  -- Offscreen
-  bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-  bar:SetStatusBarColor(1, 1, 1, 1)
-  bar:SetAlpha(0)
-  bar:Show()
-  bar:SetMinMaxValues(threshold - 1, threshold)
-  bar.threshold = threshold
-  bar:SetValue(0)
-  return bar
-end
-
-local function GetArcDetectorForBar(barData, threshold)
-  if not barData.arcDetectors then
-    barData.arcDetectors = {}
-  end
-  if not barData.arcDetectors[threshold] then
-    barData.arcDetectors[threshold] = CreateArcDetectorForBar(barData, threshold)
-  end
-  return barData.arcDetectors[threshold]
-end
-
-local function FeedArcDetectorsForBar(barData, secretCharges, maxCharges)
-  for i = 1, maxCharges do
-    local bar = GetArcDetectorForBar(barData, i)
-    bar:SetValue(secretCharges)
-  end
-end
-
-local function IsChargeThresholdMetForBar(barData, threshold)
-  if not barData.arcDetectors then return false end
-  local bar = barData.arcDetectors[threshold]
-  if not bar then return false end
-  return bar:GetStatusBarTexture():IsShown()
-end
-
-local function GetExactChargeCountForBar(barData, maxCharges)
-  if not barData.arcDetectors then return 0 end
-  local count = 0
-  for i = 1, maxCharges do
-    local bar = barData.arcDetectors[i]
-    if bar and bar:GetStatusBarTexture():IsShown() then
-      count = i
-    else
-      break
-    end
-  end
-  return count
-end
 
 -- Check and update max charges for all charge bars using API
 -- Called after talent/spec changes to detect new max charge counts
@@ -1598,48 +1556,98 @@ end
 ns.CooldownBars.RefreshAllChargeBarMaxCharges = RefreshAllChargeBarMaxCharges
 
 -- ===================================================================
--- COOLDOWN READY DETECTOR (for duration bars)
+-- COOLDOWN READY SHADOW FRAME (replaces StatusBar ready detector)
+-- Invisible Cooldown frame fed with SetCooldown(startTime, duration).
+-- shadow:IsShown() = non-secret bool: true=on CD, false=ready.
+-- Same pattern as ArcUI_CooldownState shadow architecture.
 -- ===================================================================
-local readyDetectorUID = 0
 
-local function CreateReadyDetectorForBar(barData)
-  readyDetectorUID = readyDetectorUID + 1
-  local bar = CreateFrame("StatusBar", "ArcUICooldownReadyDetector_" .. readyDetectorUID, UIParent)
-  bar:SetSize(100, 10)
-  bar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -500, 600)  -- Offscreen
-  bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-  bar:SetStatusBarColor(1, 1, 1, 1)
-  bar:SetAlpha(0)
-  bar:Show()
-  bar:SetMinMaxValues(0, 0.5)
-  bar:SetValue(0)
-  return bar
+-- Forward declaration — UpdateCooldownBar/UpdateChargeBar defined later in this file
+local UpdateCooldownBar
+local UpdateChargeBar
+
+local function CreateReadyShadowForBar(barData)
+  local cd = CreateFrame("Cooldown", nil, barData.frame, "CooldownFrameTemplate")
+  cd:SetAllPoints(barData.frame)
+  cd:SetDrawSwipe(false)
+  cd:SetDrawEdge(false)
+  cd:SetDrawBling(false)
+  cd:SetHideCountdownNumbers(true)
+  cd:SetAlpha(0)
+  -- OnHide fires immediately when cooldown expires — use for instant hide response
+  -- OnCooldownDone is deferred 0.1s (IsShown not updated yet) so we skip it
+  cd:HookScript("OnHide", function()
+    if barData._arcFeedingReadyShadow and barData._arcFeedingReadyShadow > 0 then return end
+    if barData.chargeSlots then
+      -- Charge bar
+      if UpdateChargeBar then UpdateChargeBar(barData) end
+    else
+      -- Cooldown duration bar
+      if UpdateCooldownBar and barData.frame then UpdateCooldownBar(barData) end
+    end
+  end)
+  return cd
 end
 
-local function GetReadyDetectorForBar(barData)
-  if not barData.readyDetector then
-    barData.readyDetector = CreateReadyDetectorForBar(barData)
+local function GetReadyShadowForBar(barData)
+  if not barData.readyShadow then
+    barData.readyShadow = CreateReadyShadowForBar(barData)
   end
-  return barData.readyDetector
+  return barData.readyShadow
 end
 
--- Check if cooldown is ready
--- Returns true if cooldown is READY (off cooldown), false if on cooldown
-local function IsCooldownReadyForBar(barData, durObj)
-  local detector = GetReadyDetectorForBar(barData)
-  
-  if durObj then
-    local remaining = durObj:GetRemainingDuration()
-    detector:SetValue(remaining)
-    return not detector:GetStatusBarTexture():IsShown()
+-- Feed shadow from live spell cooldown data (GCD filtered).
+-- Returns true=READY, false=on CD (matches old IsCooldownReadyForBar signature).
+-- For charge spells: also checks charge shadow — if a charge is recharging, not ready.
+local function IsCooldownReadyForBar(barData, spellID)
+  local shadow = GetReadyShadowForBar(barData)
+  barData._arcFeedingReadyShadow = (barData._arcFeedingReadyShadow or 0) + 1
+  local info = spellID and C_Spell.GetSpellCooldown(spellID)
+  if info then
+    if info.isOnGCD == true then
+      shadow:SetCooldown(0, 0)
+    else
+      shadow:SetCooldown(info.startTime, info.duration)
+    end
   else
-    return true
+    shadow:SetCooldown(0, 0)
   end
+  barData._arcFeedingReadyShadow = barData._arcFeedingReadyShadow - 1
+  if not shadow:IsShown() and barData.chargeShadow and barData.chargeShadow:IsShown() then
+    return false
+  end
+  return not shadow:IsShown()
 end
 
--- ===================================================================
--- COOLDOWN DURATION BAR
--- ===================================================================
+-- Charge-specific shadow: fed from GetSpellChargeDuration.
+-- IsShown()=true  → recharge timer running = has depleted charges = show bar
+-- IsShown()=false → all charges full = ready = hide when hideWhenReady enabled
+local function CreateChargeShadowForBar(barData)
+  local cd = CreateFrame("Cooldown", nil, barData.frame, "CooldownFrameTemplate")
+  cd:SetAllPoints(barData.frame)
+  cd:SetDrawSwipe(false)
+  cd:SetDrawEdge(false)
+  cd:SetDrawBling(false)
+  cd:SetHideCountdownNumbers(true)
+  cd:SetAlpha(0)
+  cd:HookScript("OnShow", function()
+    if barData._arcFeedingChargeShadow and barData._arcFeedingChargeShadow > 0 then return end
+    if UpdateChargeBar then UpdateChargeBar(barData) end
+  end)
+  cd:HookScript("OnHide", function()
+    if barData._arcFeedingChargeShadow and barData._arcFeedingChargeShadow > 0 then return end
+    if UpdateChargeBar then UpdateChargeBar(barData) end
+  end)
+  return cd
+end
+
+local function GetChargeShadowForBar(barData)
+  if not barData.chargeShadow then
+    barData.chargeShadow = CreateChargeShadowForBar(barData)
+  end
+  return barData.chargeShadow
+end
+
 local function CreateCooldownBar(index)
   InitCurves()
   local config = BAR_CONFIG
@@ -2029,7 +2037,6 @@ local function CreateChargeBar(index)
     spellID = nil,
     maxCharges = 0,
     -- Optimization state
-    lastDetectedCharges = -1,
     cachedChargeDurObj = nil,
     lastUsableState = nil,
     cachedChargeInfo = nil,
@@ -2043,18 +2050,43 @@ local function CreateChargeBar(index)
   -- Register for charge and cooldown update events
   frame:RegisterEvent("SPELL_UPDATE_CHARGES")
   frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-  frame:SetScript("OnEvent", function(self, event)
+  frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+  frame:SetScript("OnEvent", function(self, event, a1, a2, a3)
     local bd = self.barData
     if not bd or not bd.spellID then return end
-    
+    local spellID = bd.spellID
+
     if event == "SPELL_UPDATE_CHARGES" then
       bd.needsChargeRefresh = true
       bd.needsDurationRefresh = true
-      -- Trigger immediate update for faster slot visibility response
+      -- Feed charge shadow (same guard pattern as UpdateCooldownBar)
+      local chargeShadow = GetChargeShadowForBar(bd)
+      bd._arcFeedingChargeShadow = (bd._arcFeedingChargeShadow or 0) + 1
+      chargeShadow:SetCooldown(0, 0)
+      pcall(function()
+        local durObj = C_Spell.GetSpellChargeDuration(spellID)
+        if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
+      end)
+      bd._arcFeedingChargeShadow = bd._arcFeedingChargeShadow - 1
       UpdateChargeBar(bd)
     elseif event == "SPELL_UPDATE_COOLDOWN" then
+      local matches = (a1 == nil) or (a1 == spellID) or (a2 == spellID)
+      if not matches then return end
+      bd.needsChargeRefresh = true
       bd.needsDurationRefresh = true
-      -- Also trigger immediate update for smoother bar updates
+      UpdateChargeBar(bd)
+    elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+      if a3 ~= spellID then return end
+      bd.needsChargeRefresh = true
+      bd.needsDurationRefresh = true
+      local chargeShadow = GetChargeShadowForBar(bd)
+      bd._arcFeedingChargeShadow = (bd._arcFeedingChargeShadow or 0) + 1
+      chargeShadow:SetCooldown(0, 0)
+      pcall(function()
+        local durObj = C_Spell.GetSpellChargeDuration(spellID)
+        if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
+      end)
+      bd._arcFeedingChargeShadow = bd._arcFeedingChargeShadow - 1
       UpdateChargeBar(bd)
     end
   end)
@@ -2145,18 +2177,28 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   slot.fullBar:SetStatusBarColor(fullColor.r, fullColor.g, fullColor.b, (fullColor.a or 1) * opacity)
   slot.fullBar:SetFrameLevel(parent:GetFrameLevel() + 2)
   -- Key trick: min/max range so it fills when charges >= slotIndex
-  slot.fullBar:SetMinMaxValues(slotIndex - 0.01, slotIndex)
+  slot.fullBar:SetMinMaxValues(slotIndex - 0.5, slotIndex)
   slot.fullBar:SetValue(0)
-  -- Set fill orientation based on bar orientation
   slot.fullBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
-  -- Rotate texture only when vertical (keeps texture pattern correct for horizontal)
   slot.fullBar:SetRotatesTexture((rotTex == true) or (rotTex ~= false and isVertical))
-  -- Prevent pixel snapping
   local fullTex = slot.fullBar:GetStatusBarTexture()
   if fullTex then
     fullTex:SetSnapToPixelGrid(false)
     fullTex:SetTexelSnappingBias(0)
   end
+
+  -- Offscreen 1px detector — same min/max as fullBar but no on-screen rendering artifacts
+  -- GetWidth() on offscreen bars drops to near-zero when empty (no minimum pixel rendering)
+  slot.detector = CreateFrame("StatusBar", nil, UIParent)
+  slot.detector:SetSize(1, 10)
+  slot.detector:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -500, 500)
+  slot.detector:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  slot.detector:SetStatusBarColor(1, 1, 1, 1)
+  slot.detector:SetAlpha(0)
+  slot.detector:SetMinMaxValues(slotIndex - 0.5, slotIndex)
+  slot.detector:SetValue(0)
+  slot.detector:Show()
+  slot.detectorTex = slot.detector:GetStatusBarTexture()
   
   -- Slot border (4 manual textures for pixel-perfect borders)
   -- Position relative to the slot's background texture
@@ -2230,6 +2272,14 @@ local function CreateChargeSlot(parent, slotIndex, slotWidth, slotHeight, offset
   end
   
   slot.slotIndex = slotIndex
+
+  -- Per-slot timer text parented to rechargeBar
+  -- Cascade hides the right slot so only the active recharging slot's text shows
+  slot.timerText = slot.rechargeBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  slot.timerText:SetPoint("CENTER", slot.rechargeBar, "CENTER", 0, 0)
+  slot.timerText:SetTextColor(1, 1, 1, 1)
+  slot.timerText:SetText("")
+
   return slot
 end
 
@@ -2245,6 +2295,7 @@ local function CreateChargeSlots(barData, maxCharges, slotsTotalWidth, slotHeigh
     if slot.rechargeBar then slot.rechargeBar:Hide() end
     if slot.fullBar then slot.fullBar:Hide() end
     if slot.borderFrame then slot.borderFrame:Hide() end
+    if slot.detector then slot.detector:Hide() end
   end
   barData.chargeSlots = {}
   if maxCharges < 1 then return end
@@ -2406,7 +2457,7 @@ end
 -- ===================================================================
 -- BAR UPDATE FUNCTIONS
 -- ===================================================================
-local function UpdateCooldownBar(barData)
+UpdateCooldownBar = function(barData)
   if not barData or not barData.spellID then
     barData.frame:Hide()
     return
@@ -2469,9 +2520,21 @@ local function UpdateCooldownBar(barData)
     end
   end
   
-  -- Visibility check - use ready detector for accurate secret-safe detection
-  -- IsCooldownReadyForBar returns true when remaining time is ~0 (handles both nil and zeroed durObj)
-  local isReady = IsCooldownReadyForBar(barData, durObj)
+  -- For charge spells: feed the charge shadow so IsCooldownReadyForBar can read it.
+  -- Charge shadow shows when a charge is actively recharging (not all full).
+  if chargeInfo then
+    local chargeShadow = GetChargeShadowForBar(barData)
+    barData._arcFeedingChargeShadow = (barData._arcFeedingChargeShadow or 0) + 1
+    chargeShadow:SetCooldown(0, 0)
+    pcall(function()
+      local durObj = C_Spell.GetSpellChargeDuration(spellID)
+      if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
+    end)
+    barData._arcFeedingChargeShadow = barData._arcFeedingChargeShadow - 1
+  end
+
+  -- Visibility check - shadow Cooldown frame IsShown() is non-secret
+  local isReady = IsCooldownReadyForBar(barData, spellID)
   local shouldShow = true
   local isPreviewMode = false
   local hideWhenFadeAlpha = 1.0
@@ -2777,21 +2840,22 @@ UpdateChargeBar = function(barData)
   local secretCurrentCharges = chargeInfo.currentCharges
   
   -- Update charge detectors
-  FeedArcDetectorsForBar(barData, secretCurrentCharges, maxCharges)
   
   -- Get exact charge count
-  local detectedCharges = GetExactChargeCountForBar(barData, maxCharges)
   
-  -- Check hide when full charges behavior
+  -- Check hide behavior config
   local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, GetBarTypeKey("charge", barData.instance or 1))
-  local hideWhenFull = cfg and cfg.behavior and cfg.behavior.hideWhenFullCharges
   local hideWhen = cfg and GetHideWhen(cfg)
   
   -- Determine visibility
   local shouldShow = true
   local isPreviewMode = false
   local hideWhenFadeAlpha = 1.0
-  if hideWhenFull and detectedCharges >= maxCharges then
+  -- Both hideWhenReady and hideWhenFull use the same shadow check:
+  -- all charges full = chargeShadow:IsShown()=false = IsCooldownReadyForBar returns true
+  local hideWhenReady = cfg and cfg.behavior and cfg.behavior.hideWhenReady
+  local hideWhenFull  = cfg and cfg.behavior and cfg.behavior.hideWhenFullCharges
+  if (hideWhenReady or hideWhenFull) and IsCooldownReadyForBar(barData, spellID) then
     shouldShow = false
   end
   if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
@@ -2848,7 +2912,6 @@ UpdateChargeBar = function(barData)
   
   -- Event-based: Update duration on SPELL_UPDATE_CHARGES or SPELL_UPDATE_COOLDOWN
   if barData.needsDurationRefresh then
-    barData.lastDetectedCharges = detectedCharges
     barData.needsDurationRefresh = false
     
     -- Re-fetch duration object (CDR may have changed it)
@@ -2879,9 +2942,9 @@ UpdateChargeBar = function(barData)
   end
   
   -- Update display text (both normal and FREE mode if exists)
-  barData.currentText:SetText(detectedCharges)
+  barData.currentText:SetText(secretCurrentCharges)
   if barData.stackCurrentText then
-    barData.stackCurrentText:SetText(detectedCharges)
+    barData.stackCurrentText:SetText(secretCurrentCharges)
   end
   
   -- Timer text uses cached duration object with decimals formatting
@@ -2889,98 +2952,85 @@ UpdateChargeBar = function(barData)
   local durationDecimals = cfg and cfg.display and cfg.display.durationDecimals or 1
   local dynamicTextOnSlot = barData.dynamicTextOnSlot
   
-  -- Determine the recharging slot index (1-based: slot after last full charge)
-  -- e.g., 0 charges = recharging slot 1, 1 charge = recharging slot 2
-  local rechargingSlotIndex = detectedCharges + 1
-  local isRecharging = rechargingSlotIndex <= maxCharges
+  -- rechargingSlotIndex: use charge shadow IsShown() (non-secret)
+  local isRecharging = barData.chargeShadow and barData.chargeShadow:IsShown() or false
+  local rechargingSlotIndex = isRecharging and 1 or (maxCharges + 1)
   
-  if barData.cachedChargeDurObj and isRecharging then
-    local remaining = barData.cachedChargeDurObj:GetRemainingDuration()
-    local ok, result = pcall(function()
-      local num = tonumber(remaining)
-      if num then
-        if durationDecimals == 0 then
-          return string.format("%.0f", num)
-        elseif durationDecimals == 1 then
-          return string.format("%.1f", num)
-        else
-          return string.format("%.2f", num)
+  if barData.showDuration ~= false then
+    if barData.cachedChargeDurObj and isRecharging then
+      local remaining = barData.cachedChargeDurObj:GetRemainingDuration()
+      local textVal
+      local ok, result = pcall(function()
+        local num = tonumber(remaining)
+        if num then
+          if durationDecimals == 0 then return string.format("%.0f", num)
+          elseif durationDecimals == 1 then return string.format("%.1f", num)
+          else return string.format("%.2f", num) end
         end
-      end
-      return remaining  -- Return as-is if can't convert
-    end)
-    
-    if ok then
-      barData.timerText:SetText(result)
-      if barData.freeTimerText then
-        barData.freeTimerText:SetText(result)
-      end
-    else
-      -- Secret value - pass through (SetText handles it)
-      barData.timerText:SetText(remaining)
-      if barData.freeTimerText then
-        barData.freeTimerText:SetText(remaining)
-      end
-    end
-    
-    -- Dynamic text positioning: center on recharging slot
-    if dynamicTextOnSlot and barData.chargeSlots and barData.chargeSlots[rechargingSlotIndex] then
-      local slot = barData.chargeSlots[rechargingSlotIndex]
-      -- Position timer text centered on the recharging slot
-      if barData.timerText then
-        barData.timerText:ClearAllPoints()
-        barData.timerText:SetPoint("CENTER", slot.rechargeBar, "CENTER", 0, 0)
-      end
-      if barData.freeTimerText then
-        barData.freeTimerText:ClearAllPoints()
-        barData.freeTimerText:SetPoint("CENTER", slot.rechargeBar, "CENTER", 0, 0)
-      end
-      -- Also show the timer text since we're recharging (only if showDuration is enabled)
-      if barData.showDuration ~= false then
-        if barData.timerText then barData.timerText:Show() end
-        if barData.timerTextContainer then barData.timerTextContainer:Show() end
-        if barData.timerTextFrame then barData.timerTextFrame:Show() end
-      end
-    end
-  else
-    -- Not recharging (all charges full)
-    if barData.showZeroWhenReady and barData.showDuration ~= false then
-      -- Show "0" when ready
-      barData.timerText:SetText("0")
-      if barData.freeTimerText then
-        barData.freeTimerText:SetText("0")
-      end
-      
-      -- Position "0" text - for dynamic mode, center on last slot (where final recharge would show)
-      if dynamicTextOnSlot and barData.chargeSlots and #barData.chargeSlots > 0 then
-        local lastSlot = barData.chargeSlots[#barData.chargeSlots]
-        if barData.timerText then
-          barData.timerText:ClearAllPoints()
-          barData.timerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
+        return remaining
+      end)
+      textVal = ok and result or remaining
+
+      -- Set text on all slots — cascade hides inactive slots so only the recharging one shows
+      if dynamicTextOnSlot and barData.chargeSlots then
+        for _, slot in ipairs(barData.chargeSlots) do
+          if slot.timerText then slot.timerText:SetText(textVal) end
         end
-        if barData.freeTimerText then
-          barData.freeTimerText:ClearAllPoints()
-          barData.freeTimerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
-        end
+        barData.timerText:SetText("")
+        if barData.freeTimerText then barData.freeTimerText:SetText("") end
+      else
+        barData.timerText:SetText(textVal)
+        if barData.freeTimerText then barData.freeTimerText:SetText(textVal) end
       end
-      -- (Non-dynamic mode uses position set by ApplyAppearance)
-      
-      -- Show timer text elements
       if barData.timerText then barData.timerText:Show() end
       if barData.timerTextContainer then barData.timerTextContainer:Show() end
-      if barData.timerTextFrame and barData.useFreeTimerText then barData.timerTextFrame:Show() end
+      if barData.timerTextFrame then barData.timerTextFrame:Show() end
     else
-      -- Original behavior: clear/hide timer
-      barData.timerText:SetText("")
-      if barData.freeTimerText then
-        barData.freeTimerText:SetText("")
+      -- Not recharging — clear per-slot timer texts
+      if barData.chargeSlots then
+        for _, slot in ipairs(barData.chargeSlots) do
+          if slot.timerText then slot.timerText:SetText("") end
+        end
       end
-      
-      -- Hide timer text when not recharging (if dynamic mode)
-      if dynamicTextOnSlot then
-        if barData.timerText then barData.timerText:Hide() end
-        if barData.timerTextContainer then barData.timerTextContainer:Hide() end
-        if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+      if barData.showZeroWhenReady then
+        -- Show "0" when ready
+        barData.timerText:SetText("0")
+        if barData.freeTimerText then
+          barData.freeTimerText:SetText("0")
+        end
+        if dynamicTextOnSlot and barData.chargeSlots and #barData.chargeSlots > 0 then
+          local lastSlot = barData.chargeSlots[#barData.chargeSlots]
+          if barData.timerText then
+            barData.timerText:ClearAllPoints()
+            barData.timerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
+          end
+          if barData.freeTimerText then
+            barData.freeTimerText:ClearAllPoints()
+            barData.freeTimerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
+          end
+        end
+        if barData.timerText then barData.timerText:Show() end
+        if barData.timerTextContainer then barData.timerTextContainer:Show() end
+        if barData.timerTextFrame and barData.useFreeTimerText then barData.timerTextFrame:Show() end
+      else
+        -- Clear/hide timer
+        barData.timerText:SetText("")
+        if barData.freeTimerText then barData.freeTimerText:SetText("") end
+        if dynamicTextOnSlot then
+          if barData.timerText then barData.timerText:Hide() end
+          if barData.timerTextContainer then barData.timerTextContainer:Hide() end
+          if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+        end
+      end
+    end  -- end if cachedChargeDurObj and isRecharging
+  else
+    -- showDuration disabled — hide all timer text including per-slot
+    if barData.timerText then barData.timerText:SetText("") barData.timerText:Hide() end
+    if barData.timerTextContainer then barData.timerTextContainer:Hide() end
+    if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+    if barData.chargeSlots then
+      for _, slot in ipairs(barData.chargeSlots) do
+        if slot.timerText then slot.timerText:SetText("") slot.timerText:SetAlpha(0) end
       end
     end
   end
@@ -3115,6 +3165,7 @@ UpdateChargeBar = function(barData)
     end
     
     slot.fullBar:SetValue(secretCurrentCharges)
+    if slot.detector then slot.detector:SetValue(secretCurrentCharges) end
     slot.fullBar:SetStatusBarColor(fullBarColor.r, fullBarColor.g, fullBarColor.b, fullBarColor.a or 1)
     
     -- Recharge bar (progress fill texture) - uses per-slot color if enabled
@@ -3124,20 +3175,21 @@ UpdateChargeBar = function(barData)
     end
     
     -- Slot visibility: slot 1 always visible, others only if previous slot is full
-    -- Use previous slot's fullBar texture visibility for instant response (no arc detector delay)
+    -- NEW: pipe prevSlot.fullBar tex:GetWidth() directly to SetAlpha — no IsShown() read
     slot.background:SetAlpha(1)
     
     if i == 1 then
       slot.rechargeBar:SetAlpha(1)
       slot.fullBar:SetAlpha(1)
+      if slot.timerText then slot.timerText:SetAlpha(1) end
     else
-      -- Check if previous slot's fullBar is showing (charges >= i-1)
-      -- This is faster than arc detector because fullBar was just updated with SetValue
       local prevSlot = barData.chargeSlots[i - 1]
-      local thresholdMet = prevSlot and prevSlot.fullBar:GetStatusBarTexture():IsShown() or false
-      local alpha = thresholdMet and 1 or 0
-      slot.rechargeBar:SetAlpha(alpha)
-      slot.fullBar:SetAlpha(alpha)
+      if prevSlot then
+        local w = prevSlot.detectorTex and prevSlot.detectorTex:GetWidth() or prevSlot.fullBar:GetStatusBarTexture():GetWidth()
+        slot.rechargeBar:SetAlpha(w)
+        slot.fullBar:SetAlpha(w)
+        if slot.timerText then slot.timerText:SetAlpha(w) end
+      end
     end
   end
   
@@ -3406,7 +3458,6 @@ function ns.CooldownBars.AddChargeBar(spellID, instance)
   -- Note: cooldownDuration is secret, stored in cachedChargeInfo instead
   
   -- Reset optimization state for new spell
-  barData.lastDetectedCharges = -1
   barData.cachedChargeDurObj = nil
   barData.lastUsableState = nil
   barData.cachedChargeInfo = nil
@@ -4089,7 +4140,10 @@ end
 function ns.CooldownBars.ShouldShowForCurrentSpec(spellID, barType)
   local cfg = ns.CooldownBars.GetBarConfig(spellID, barType)
   if not cfg then return true end  -- No config = show
-  
+
+  -- Force show override bypasses all spec/talent filtering
+  if cfg.behavior and cfg.behavior.forceShow then return true end
+
   -- Check spec conditions
   local showOnSpecs = cfg.behavior and cfg.behavior.showOnSpecs
   if showOnSpecs and #showOnSpecs > 0 then
@@ -4220,7 +4274,9 @@ function ns.CooldownBars.UpdateBarVisibilityForSpec()
       
       -- Trigger update which handles preview mode logic
       barData.needsChargeRefresh = true
-      UpdateChargeBar(barData)
+      if barData.chargeSlots and #barData.chargeSlots > 0 then
+        UpdateChargeBar(barData)
+      end
     end
   end
   
@@ -4898,67 +4954,77 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       local offsetX = display.anchorOffsetX or 0
       local offsetY = display.anchorOffsetY or 0
       
-      -- Container has a 6px borderOffset inset on all sides (backdrop border + visual padding).
-      -- Adjust SetPoint so the bar aligns to the slot area edge, not the backdrop edge.
-      local borderOffset = 6
-      
-      frame:ClearAllPoints()
-      if anchorPoint == "TOP" then
-        frame:SetPoint("BOTTOM", container, "TOP", offsetX, offsetY - borderOffset)
-      elseif anchorPoint == "BOTTOM" then
-        frame:SetPoint("TOP", container, "BOTTOM", offsetX, offsetY + borderOffset)
-      elseif anchorPoint == "LEFT" then
-        frame:SetPoint("RIGHT", container, "LEFT", offsetX + borderOffset, offsetY)
-      elseif anchorPoint == "RIGHT" then
-        frame:SetPoint("LEFT", container, "RIGHT", offsetX - borderOffset, offsetY)
-      end
-      
-      -- Match size to container if enabled
-      -- TOP/BOTTOM: bar width = container width
-      -- LEFT/RIGHT: bar width = container height
+      local effScale = container:GetEffectiveScale()
+      local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
+
+      -- Compute barWidth first so anchor can center over slot area.
+      -- _slotAreaW is plain WoW units — no _pmult conversion needed.
+      local barWidth, barHeight
       if display.matchGroupWidth then
-        local containerWidth = container:GetWidth()
-        local containerHeight = container:GetHeight()
-        local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
-        
-        -- Strip border (12px) and padding from container dimension to get slot-area size.
-        -- Container size = slots + borderCompensation(12) + containerPadding*2
-        local slotInset = 12 + (group.containerPadding or 0) * 2
-        
-        -- Use container height for side anchors, container width for top/bottom
-        local matchDimension = (isSideAnchor and containerHeight or containerWidth) - slotInset
-        
+        local matchDimension
+        if display.matchSlotsOnly and group._slotAreaW then
+          matchDimension = isSideAnchor and (group._slotAreaHRaw or group._slotAreaH) or (group._slotAreaWRaw or group._slotAreaW)
+        else
+          local cW, cH = container:GetWidth(), container:GetHeight()
+          matchDimension = isSideAnchor and cH or cW
+        end
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = display.matchWidthAdjust or 0
-          local barWidth = matchDimension + sizeAdjust
-          local barHeight
-          
+          barWidth = PixelSnap(matchDimension + sizeAdjust, effScale)
           if barType == "charge" then
             barHeight = (display.frameHeight or 38) * scale
           else
             barHeight = display.height * scale
           end
-          
-          -- Swap for vertical orientation (rotates the bar)
           if isVertical then
             frame:SetSize(barHeight, barWidth)
           else
             frame:SetSize(barWidth, barHeight)
           end
-          
+        end
+      end
+
+      -- Anchor: matchSlotsOnly TOP/BOTTOM uses container TOP/BOTTOM (center x)
+      -- so slots center aligns with icon row center via single-step rounding.
+      -- TOPLEFT chain causes up to 342/1001 position mismatches at default padding.
+      -- Charge bars: slotsContainer sits at frame CENTER (0,0), so frame must be
+      -- centered over the slot area — same -barWidth/2 offset applies correctly.
+      local matchSlots = display.matchGroupWidth and display.matchSlotsOnly and barWidth
+      frame:ClearAllPoints()
+      if anchorPoint == "TOP" then
+        if matchSlots then
+          frame:SetPoint("BOTTOMLEFT", container, "TOP", -barWidth/2 + offsetX, offsetY)
+        else
+          frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", offsetX, offsetY)
+        end
+      elseif anchorPoint == "BOTTOM" then
+        if matchSlots then
+          frame:SetPoint("TOPLEFT", container, "BOTTOM", -barWidth/2 + offsetX, offsetY)
+        else
+          frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", offsetX, offsetY)
+        end
+      elseif anchorPoint == "LEFT" then
+        frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+      elseif anchorPoint == "RIGHT" then
+        frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+      end
+
+      if display.matchGroupWidth then
+        if barWidth then
           -- For charge bars: also resize the slots container and recreate slots
           if barType == "charge" and barData.slotsContainer then
             local slotHeight = (display.slotHeight or 14) * scale
             local slotSpacing = (display.slotSpacing or 3) * scale
-            local slotOffsetX = display.slotOffsetX or 0
-            local slotOffsetY = display.slotOffsetY or 0
+            -- In matchGroupWidth mode, slots must span exactly the group's slot area.
+            -- Ignore slotOffsetX/Y — any offset shifts the slots off the group edge.
+            -- The icon (if shown) sits independently; users position it via iconOffsetX/Y.
             
             barData.slotsContainer:ClearAllPoints()
             if isVertical then
-              barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetY, slotOffsetX)
+              barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", 0, 0)
               barData.slotsContainer:SetSize(slotHeight, barWidth)
             else
-              barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetX, slotOffsetY)
+              barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", 0, 0)
               barData.slotsContainer:SetSize(barWidth, slotHeight)
             end
             
@@ -4973,14 +5039,14 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
               end
             end
           end
-        end
-        
-        -- Hook the container's OnSizeChanged event
-        frame._anchoredGroupName = display.anchorGroupName
-        frame._anchoredBarType = barType
-        frame._anchoredBarID = spellID
-        if ns.CooldownBars.HookContainerForAnchoredBars then
-          ns.CooldownBars.HookContainerForAnchoredBars(display.anchorGroupName)
+          
+          -- Hook the container's OnSizeChanged event
+          frame._anchoredGroupName = display.anchorGroupName
+          frame._anchoredBarType = barType
+          frame._anchoredBarID = spellID
+          if ns.CooldownBars.HookContainerForAnchoredBars then
+            ns.CooldownBars.HookContainerForAnchoredBars(display.anchorGroupName)
+          end
         end
       else
         frame._anchoredGroupName = nil
@@ -5648,6 +5714,19 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         end)
         barData.timerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
         ApplyTextShadow(barData.timerText, display.durationShadow)
+
+        -- Style per-slot timerText (dynamic text on slot mode)
+        if barData.chargeSlots then
+          for _, slot in ipairs(barData.chargeSlots) do
+            if slot.timerText then
+              pcall(function()
+                slot.timerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
+              end)
+              slot.timerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
+              ApplyTextShadow(slot.timerText, display.durationShadow)
+            end
+          end
+        end
         
         -- Style FREE mode timer text if it exists
         if barData.freeTimerText then
@@ -8179,13 +8258,17 @@ local function RebuildStackAuraLookup()
 end
 
 -- Dispatch aura state change to matching stack entries
-local function OnCDMFrameAuraChanged(frame, gained)
+local function OnCDMFrameAuraChanged(frame)
   local cooldownID = frame.cooldownID
   if not cooldownID then
     if frame.cooldownInfo then cooldownID = frame.cooldownInfo.cooldownID end
   end
   if not cooldownID then return end
-  
+
+  -- Read actual frame state — do NOT trust the event as "aura is up/down".
+  -- The hook is just a trigger; the frame's auraInstanceID is the truth.
+  local gained = (frame.auraInstanceID ~= nil)
+
   -- Handle suppressor aura state (auraActive / auraMissing types)
   local supEntries = suppressorAuraLookup[cooldownID]
   if supEntries then
@@ -8200,10 +8283,10 @@ local function OnCDMFrameAuraChanged(frame, gained)
       end
     end
   end
-  
+
   local entries = stackAuraLookup[cooldownID]
   if not entries then return end
-  
+
   for _, info in ipairs(entries) do
     local cfg = ns.CooldownBars.GetTimerConfig(info.timerID)
     if not cfg or not cfg.tracking.enabled then
@@ -8225,18 +8308,20 @@ end
 local function HookCDMFrameForStackAura(frame)
   if not frame or stackAuraHookedFrames[frame] then return end
   stackAuraHookedFrames[frame] = true
-  
-  -- SetAuraInstanceInfo = aura gained (CDM shows buff/debuff on this frame)
-  if frame.SetAuraInstanceInfo then
-    hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
-      OnCDMFrameAuraChanged(self, true)
+
+  -- OnAuraInstanceInfoSet fires exactly once per real aura gain.
+  -- OnAuraInstanceInfoCleared fires exactly once per real aura loss.
+  -- Do NOT use SetAuraInstanceInfo/ClearAuraInstanceInfo — they fire on every
+  -- CDM ~0.5s internal refresh cycle even when nothing changed (~30-60x per session).
+  if frame.OnAuraInstanceInfoSet then
+    hooksecurefunc(frame, "OnAuraInstanceInfoSet", function(self)
+      OnCDMFrameAuraChanged(self)
     end)
   end
-  
-  -- ClearAuraInstanceInfo = aura lost (CDM removes buff/debuff from this frame)
-  if frame.ClearAuraInstanceInfo then
-    hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
-      OnCDMFrameAuraChanged(self, false)
+
+  if frame.OnAuraInstanceInfoCleared then
+    hooksecurefunc(frame, "OnAuraInstanceInfoCleared", function(self)
+      OnCDMFrameAuraChanged(self)
     end)
   end
 end
@@ -8703,6 +8788,7 @@ timerRestoreFrame:SetScript("OnEvent", function(self, event)
   if event == "PLAYER_LOGIN" then
     C_Timer.After(3, function()
       ns.CooldownBars.RestoreTimerConfig()
+      HookStackAuraCDMFrames()  -- Find and hook CDM frames for all suppressor/generator auras
       -- Apply talent visibility after restoration
       C_Timer.After(0.1, function()
         ns.CooldownBars.UpdateBarVisibilityForSpec()
@@ -8731,6 +8817,7 @@ function ns.CooldownBars.RefreshAllBarVisibility()
   for barID, barIndex in pairs(ns.CooldownBars.activeCharges or {}) do
     local barData = ns.CooldownBars.chargeBars and ns.CooldownBars.chargeBars[barIndex]
     if barData then
+      barData.needsChargeRefresh = true
       UpdateChargeBar(barData)
     end
   end
@@ -9005,43 +9092,75 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
               local isVertical = (cfg.display.barOrientation == "vertical")
               local anchorPoint = cfg.display.anchorPoint or "BOTTOM"
               local isSideAnchor = (anchorPoint == "LEFT" or anchorPoint == "RIGHT")
-              
-              -- Strip border (12px) and padding to get slot-area size
+
               local group = ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
-              local slotInset = 12 + ((group and group.containerPadding or 0) * 2)
-              
-              -- Use container height for side anchors, container width for top/bottom
-              local matchDimension = (isSideAnchor and height or width) - slotInset
+
+              local effScale = container:GetEffectiveScale()
+
+              -- matchSlotsOnly: _slotAreaW is plain WoW units — no _pmult needed.
+              -- matchGroupWidth (full container): always use container dimensions.
+              local matchDimension
+              if cfg.display.matchSlotsOnly and group and group._slotAreaW then
+                matchDimension = isSideAnchor and (group._slotAreaHRaw or group._slotAreaH) or (group._slotAreaWRaw or group._slotAreaW)
+              else
+                local cW, cH = container:GetWidth(), container:GetHeight()
+                matchDimension = isSideAnchor and cH or cW
+              end
+
               local sizeAdjust = cfg.display.matchWidthAdjust or 0
-              local barWidth = matchDimension + sizeAdjust
+              local barWidth = PixelSnap(matchDimension + sizeAdjust, effScale)
               local barHeight
-              
+
               if barInfo.type == "charge" then
                 barHeight = (cfg.display.frameHeight or 38) * scale
               else
                 barHeight = cfg.display.height * scale
               end
-              
+
               -- Swap for vertical orientation (rotates the bar)
               if isVertical then
                 frame:SetSize(barHeight, barWidth)
               else
                 frame:SetSize(barWidth, barHeight)
               end
+
+              -- Re-anchor frame so center-x stays correct with new barWidth.
+              -- SetSize alone is not enough: the anchor offset (-barWidth/2) was
+              -- baked at ApplyAppearance time and must be refreshed here.
+              local offsetX = cfg.display.anchorOffsetX or 0
+              local offsetY = cfg.display.anchorOffsetY or 0
+              local matchSlots = cfg.display.matchSlotsOnly and barWidth and barInfo.type ~= "charge"
+              frame:ClearAllPoints()
+              if anchorPoint == "TOP" then
+                if matchSlots then
+                  frame:SetPoint("BOTTOMLEFT", container, "TOP", -barWidth/2 + offsetX, offsetY)
+                else
+                  frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", offsetX, offsetY)
+                end
+              elseif anchorPoint == "BOTTOM" then
+                if matchSlots then
+                  frame:SetPoint("TOPLEFT", container, "BOTTOM", -barWidth/2 + offsetX, offsetY)
+                else
+                  frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", offsetX, offsetY)
+                end
+              elseif anchorPoint == "LEFT" then
+                frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+              elseif anchorPoint == "RIGHT" then
+                frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+              end
               
               -- For charge bars: also resize the slots container and recreate slots
               if barInfo.type == "charge" and barData.slotsContainer then
                 local slotHeight = (cfg.display.slotHeight or 14) * scale
                 local slotSpacing = (cfg.display.slotSpacing or 3) * scale
-                local slotOffsetX = cfg.display.slotOffsetX or 0
-                local slotOffsetY = cfg.display.slotOffsetY or 0
+                -- In matchGroupWidth mode, slots span exactly the group's slot area — no offset.
                 
                 barData.slotsContainer:ClearAllPoints()
                 if isVertical then
-                  barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetY, slotOffsetX)
+                  barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", 0, 0)
                   barData.slotsContainer:SetSize(slotHeight, barWidth)
                 else
-                  barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", slotOffsetX, slotOffsetY)
+                  barData.slotsContainer:SetPoint("CENTER", frame, "CENTER", 0, 0)
                   barData.slotsContainer:SetSize(barWidth, slotHeight)
                 end
                 

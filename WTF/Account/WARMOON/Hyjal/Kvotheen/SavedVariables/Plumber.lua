@@ -1,8 +1,31 @@
 
 PlumberDB_PC = {
 ["CurrencyCap:3284"] = 630,
-["CurrencyCap:3286"] = 630,
 ["DelvesRecords"] = {
+{
+["instanceID"] = 2962,
+["uiMapID"] = 2535,
+["time"] = 1773685071,
+["tier"] = 4,
+},
+{
+["instanceID"] = 2962,
+["uiMapID"] = 2535,
+["time"] = 1773615580,
+["tier"] = 4,
+},
+{
+["instanceID"] = 2979,
+["uiMapID"] = 2506,
+["time"] = 1773531981,
+["tier"] = 4,
+},
+{
+["instanceID"] = 2964,
+["uiMapID"] = 2505,
+["time"] = 1773405840,
+["tier"] = 7,
+},
 {
 ["instanceID"] = 2961,
 ["uiMapID"] = 2503,
@@ -33,29 +56,6 @@ PlumberDB_PC = {
 ["time"] = 1772653144,
 ["tier"] = 4,
 },
-{
-["instanceID"] = 2964,
-["uiMapID"] = 2505,
-["time"] = 1772386488,
-["tier"] = 3,
 },
-{
-["instanceID"] = 2962,
-["uiMapID"] = 2535,
-["time"] = 1772316813,
-["tier"] = 3,
-},
-{
-["instanceID"] = 2933,
-["uiMapID"] = 2547,
-["time"] = 1772276030,
-["tier"] = 2,
-},
-{
-["instanceID"] = 2952,
-["uiMapID"] = 2502,
-["time"] = 1772225162,
-["tier"] = 1,
-},
-},
+["CurrencyCap:3286"] = 630,
 }

@@ -2,13 +2,13 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -18,30 +18,36 @@ BuffRemindersDB = {
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
 ["textSize"] = 20,
-["useCustomGlowColor"] = true,
 ["consumableDisplayMode"] = "expanded",
 },
-["hideAllInVehicle"] = true,
-["dbVersion"] = 26,
+["enabledBuffs"] = {
+["symbioticRelationship"] = true,
+["blisteringScales"] = true,
+["soulstone"] = true,
+["atrophicNumbingPoison"] = true,
+["shamanShields"] = true,
+["bronze"] = true,
+["intellect"] = true,
+["versatility"] = true,
+["attackPower"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["beacons"] = true,
+["burningRush"] = false,
+},
+["dbVersion"] = 30,
 ["readyCheckOnlyOverrides"] = {
 },
 ["showLoginMessages"] = false,
-["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["soulstone"] = true,
-["blisteringScales"] = true,
-["atrophicNumbingPoison"] = true,
-["beacons"] = true,
-["bronze"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["earthShieldOthers"] = false,
-["devotionAura"] = true,
-["attackPower"] = true,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
-["burningRush"] = false,
+["hideAllInVehicle"] = true,
+["buffTrackingMode"] = "my_buffs",
+["categoryVisibility"] = {
+["custom"] = {
+["pvp"] = true,
+["hideInPvPMatch"] = true,
+},
 },
 ["customBuffs"] = {
 ["burningRush"] = {
@@ -56,11 +62,6 @@ BuffRemindersDB = {
 ["spellID"] = 111400,
 },
 },
-["categoryVisibility"] = {
-["custom"] = {
-},
-},
-["buffTrackingMode"] = "my_buffs",
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,

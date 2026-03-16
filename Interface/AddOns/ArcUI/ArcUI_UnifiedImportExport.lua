@@ -628,14 +628,21 @@ function ns.GetMigrationOptionsTable()
             print("|cff00ccffArcUI Migration|r: Source character not found.")
             return
         end
-        if svChar[newKey] then
-            print("|cff00ccffArcUI Migration|r: |cffff8800Target already exists. Aborting.|r")
-            return
-        end
 
-        -- 1. Rename main char data
-        svChar[newKey] = svChar[oldKey]
-        svChar[oldKey] = nil
+        -- 1. Deep copy char data to new key, old key stays intact as a backup
+        local function DeepCopy(orig)
+            if type(orig) ~= "table" then return orig end
+            local copy = {}
+            for k, v in pairs(orig) do
+                copy[DeepCopy(k)] = DeepCopy(v)
+            end
+            return copy
+        end
+        svChar[newKey] = DeepCopy(svChar[oldKey])
+
+        -- Record old key as a backup so the UI can label it
+        if not ns.db.global.migrationBackups then ns.db.global.migrationBackups = {} end
+        ns.db.global.migrationBackups[oldKey] = true
 
         -- 2. Sweep global.sharedProfiles sourceChar references
         local gsp = ns.db.global and ns.db.global.sharedProfiles
@@ -662,7 +669,7 @@ function ns.GetMigrationOptionsTable()
         end
 
         local oldName = oldKey:match("^(.-)%s*%-") or oldKey
-        print("|cff00ccffArcUI Migration|r: '" .. oldKey .. "' → '" .. newKey .. "' complete. Reload to apply.")
+        print("|cff00ccffArcUI Migration|r: '" .. oldKey .. "' → '" .. newKey .. "' complete. Old data kept as backup. Reload to apply.")
         migState.fromKey = nil
         migState.toName  = nil
         migState.toRealm = nil
@@ -671,7 +678,14 @@ function ns.GetMigrationOptionsTable()
 
     local function GetCharValues()
         local vals = { [""] = "|cff666666Select character...|r" }
-        for _, k in ipairs(GetAllCharKeys()) do vals[k] = k end
+        local backups = ns.db.global and ns.db.global.migrationBackups or {}
+        for _, k in ipairs(GetAllCharKeys()) do
+            if backups[k] then
+                vals[k] = k .. " |cff888888(Backup)|r"
+            else
+                vals[k] = k
+            end
+        end
         return vals
     end
 
@@ -696,13 +710,37 @@ function ns.GetMigrationOptionsTable()
         return "|cff00ccffNew key: " .. newKey .. "|r"
     end
 
+    -- A char entry left behind by "Delete Character" has cdmGroups/arcAuras nilled
+    -- but the bare table still exists. Treat those as non-conflicting.
+    local function HasMeaningfulData(entry)
+        if type(entry) ~= "table" then return false end
+        -- cdmGroups must have actual spec data, not just be an empty shell
+        -- from a bad migration run
+        local hasCDM = false
+        if type(entry.cdmGroups) == "table" then
+            if entry.cdmGroups.migratedFromProfile
+            or (type(entry.cdmGroups.specData) == "table" and next(entry.cdmGroups.specData))
+            or (type(entry.cdmGroups.layoutProfiles) == "table" and next(entry.cdmGroups.layoutProfiles)) then
+                hasCDM = true
+            end
+        end
+        local hasAuras = type(entry.arcAuras) == "table" and next(entry.arcAuras) ~= nil
+        return hasCDM or hasAuras
+    end
+
     local function IsReady()
         local oldKey = migState.fromKey
         local newKey = BuildNewKey()
         if not oldKey or not newKey then return false end
         if newKey == oldKey then return false end
+        return true
+    end
+
+    local function TargetHasData()
+        local newKey = BuildNewKey()
+        if not newKey then return false end
         local svChar = ns.db and ns.db.sv and ns.db.sv.char
-        return not (svChar and svChar[newKey])
+        return svChar and HasMeaningfulData(svChar[newKey])
     end
 
     return {
@@ -814,22 +852,17 @@ function ns.GetMigrationOptionsTable()
             },
             conflictNote = {
                 type     = "description",
-                name     = "|cffff4444That key already exists in ArcUI data. Choose a different name or delete the existing data first.|r",
+                name     = "|cffff8800That key already has ArcUI data. Migrating will overwrite it. The source character's data will be kept as a backup.|r",
                 order    = 6.7,
                 width    = "full",
                 fontSize = "small",
-                hidden   = function()
-                    local newKey = BuildNewKey()
-                    if not newKey then return true end
-                    local svChar = ns.db and ns.db.sv and ns.db.sv.char
-                    return not (svChar and svChar[newKey])
-                end,
+                hidden   = function() return not TargetHasData() end,
             },
             spacer3 = { type = "description", name = " ", order = 7, width = "full" },
             migrateBtn = {
                 type     = "execute",
                 name     = "Migrate Character",
-                desc     = "Rename the character key and update all ArcUI references.",
+                desc     = "Copy all ArcUI data from the old character to the new character key.",
                 order    = 8,
                 width    = 1.0,
                 disabled = function() return not IsReady() end,
@@ -837,7 +870,10 @@ function ns.GetMigrationOptionsTable()
                     local oldKey = migState.fromKey
                     local newKey = BuildNewKey()
                     if not oldKey or not newKey then return false end
-                    return "Migrate all ArcUI data from '" .. oldKey .. "' to '" .. newKey .. "'?\n\nA /reload will be required after."
+                    if TargetHasData() then
+                        return "'" .. newKey .. "' already has ArcUI data.\n\nThis will overwrite it with data from '" .. oldKey .. "'.\n\nThe old character data is kept as a backup.\n\nA /reload will be required after."
+                    end
+                    return "Copy all ArcUI data from '" .. oldKey .. "' to '" .. newKey .. "'?\n\nThe old character data is kept as a backup.\n\nA /reload will be required after."
                 end,
                 func = DoMigrate,
             },

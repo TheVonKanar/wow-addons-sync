@@ -23,6 +23,7 @@ end
 local collapsedSections = {
   iconDisplay = true,
   iconDuration = true,
+  multiStackLayout = true,
   barSize = true,
   fill = true,
   colorOptions = true,
@@ -2389,7 +2390,135 @@ function ns.AppearanceOptions.GetOptionsTable()
           return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay or not cfg.display.iconShowStacks
         end
       },
-      
+
+      -- ============================================================
+      -- MULTI-STACK LAYOUT (direction, spacing, free mode)
+      -- ============================================================
+      multiStackLayoutHeader = {
+        type = "toggle",
+        name = "Multi-Stack Layout",
+        desc = "Click to expand/collapse layout options for multi-stack icons",
+        dialogControl = "CollapsibleHeader",
+        get = function() return not collapsedSections.multiStackLayout end,
+        set = function(info, value) collapsedSections.multiStackLayout = not value end,
+        order = 9.245,
+        width = "full",
+        hidden = function()
+          local cfg = GetSelectedConfig()
+          return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay
+        end
+      },
+
+      iconMultiDirection = {
+        type = "select",
+        name = "Direction",
+        desc = "Which direction subsequent stack icons are laid out from the first",
+        values = {
+          ["RIGHT"] = "Right",
+          ["LEFT"]  = "Left",
+          ["UP"]    = "Up",
+          ["DOWN"]  = "Down",
+        },
+        sorting = { "RIGHT", "LEFT", "UP", "DOWN" },
+        get = function()
+          local cfg = GetSelectedConfig()
+          return cfg and cfg.display.iconMultiDirection or "RIGHT"
+        end,
+        set = function(info, value)
+          local cfg = GetSelectedConfig()
+          if cfg then
+            cfg.display.iconMultiDirection = value
+            RefreshBar()
+          end
+        end,
+        order = 9.2451,
+        width = 0.8,
+        hidden = function()
+          local cfg = GetSelectedConfig()
+          return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay or collapsedSections.multiStackLayout
+        end
+      },
+
+      iconMultiSpacing = {
+        type = "range",
+        name = "Spacing",
+        desc = "Gap in pixels between each stack icon",
+        min = -50, max = 200, step = 1,
+        get = function()
+          local cfg = GetSelectedConfig()
+          return cfg and cfg.display.iconMultiSpacing or 4
+        end,
+        set = function(info, value)
+          local cfg = GetSelectedConfig()
+          if cfg then
+            cfg.display.iconMultiSpacing = value
+            RefreshBar()
+          end
+        end,
+        order = 9.2452,
+        width = 1.0,
+        hidden = function()
+          local cfg = GetSelectedConfig()
+          return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay or collapsedSections.multiStackLayout
+        end
+      },
+
+      iconMultiFreeMode = {
+        type = "toggle",
+        name = "Free Position Mode",
+        desc = "Allow each stack icon to be dragged to an independent screen position. When enabled, Direction and Spacing have no effect.",
+        get = function()
+          local cfg = GetSelectedConfig()
+          return cfg and cfg.display.iconMultiFreeMode or false
+        end,
+        set = function(info, value)
+          local cfg = GetSelectedConfig()
+          if cfg then
+            cfg.display.iconMultiFreeMode = value
+            RefreshBar()
+          end
+        end,
+        order = 9.2453,
+        width = 1.4,
+        hidden = function()
+          local cfg = GetSelectedConfig()
+          return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay or collapsedSections.multiStackLayout
+        end
+      },
+
+      iconMultiShowDurationOn = {
+        type = "select",
+        name = "Show Duration On",
+        desc = "Which stack icon(s) show the duration timer text",
+        values = {
+          [0]  = "None",
+          [1]  = "First Only",
+          [-1] = "Last Only",
+          [2]  = "First 2",
+          [3]  = "First 3",
+          [4]  = "First 4",
+          [5]  = "First 5",
+        },
+        sorting = { 0, 1, -1, 2, 3, 4, 5 },
+        get = function()
+          local cfg = GetSelectedConfig()
+          return cfg and cfg.display.iconMultiShowDurationOn or 1
+        end,
+        set = function(info, value)
+          local cfg = GetSelectedConfig()
+          if cfg then
+            cfg.display.iconMultiShowDurationOn = value
+            RefreshBar()
+          end
+        end,
+        order = 9.2454,
+        width = 1.0,
+        hidden = function()
+          local cfg = GetSelectedConfig()
+          return not cfg or cfg.display.displayType ~= "icon" or collapsedSections.iconDisplay or collapsedSections.multiStackLayout
+        end
+      },
+
       -- ============================================================
       -- CUSTOM ICON OPTIONS (for customAura and customCooldown only)
       -- ============================================================
@@ -2844,21 +2973,30 @@ function ns.AppearanceOptions.GetOptionsTable()
           if IsChargeBar() then
             return "Slots Width"
           end
-          return "Bar Width"
+          return "Bar Width (px)"
         end,
-        desc = "Type exact pixel value",
+        desc = "Type exact screen pixel width. Converted to UI units automatically for your resolution/scale.",
         order = 12,
         width = 0.4,
         hidden = function() return GetSelectedConfig() == nil or IsIconMode() or collapsedSections.barSize or not ns._fineTuningBarSize end,
         get = function()
           local cfg = GetSelectedConfig()
-          return tostring(cfg and cfg.display.width or 100)
+          local w = cfg and cfg.display.width or 100
+          local scale = cfg and cfg.display.barScale or 1.0
+          local _, h = GetPhysicalScreenSize()
+          local s = UIParent:GetScale()
+          local pmult = (h and h > 0 and s and s > 0) and (768 / h) / s or 1
+          return tostring(math.floor(w * scale / pmult + 0.5))
         end,
         set = function(_, val)
           local cfg = GetSelectedConfig()
-          local num = tonumber(val)
-          if cfg and num then
-            cfg.display.width = num
+          local px = tonumber(val)
+          if cfg and px then
+            local scale = cfg.display.barScale or 1.0
+            local _, h = GetPhysicalScreenSize()
+            local s = UIParent:GetScale()
+            local pmult = (h and h > 0 and s and s > 0) and (768 / h) / s or 1
+            cfg.display.width = (px * pmult) / scale
             RefreshBar()
           end
         end,
@@ -2884,20 +3022,29 @@ function ns.AppearanceOptions.GetOptionsTable()
       },
       barHeightInput = {
         type = "input",
-        name = "Bar Height",
-        desc = "Type exact pixel value",
+        name = "Bar Height (px)",
+        desc = "Type exact screen pixel height. Converted to UI units automatically for your resolution/scale.",
         order = 13,
         width = 0.4,
         hidden = function() return GetSelectedConfig() == nil or IsIconMode() or IsChargeBar() or collapsedSections.barSize or not ns._fineTuningBarSize end,
         get = function()
           local cfg = GetSelectedConfig()
-          return tostring(cfg and cfg.display.height or 20)
+          local h2 = cfg and cfg.display.height or 20
+          local scale = cfg and cfg.display.barScale or 1.0
+          local _, h = GetPhysicalScreenSize()
+          local s = UIParent:GetScale()
+          local pmult = (h and h > 0 and s and s > 0) and (768 / h) / s or 1
+          return tostring(math.floor(h2 * scale / pmult + 0.5))
         end,
         set = function(_, val)
           local cfg = GetSelectedConfig()
-          local num = tonumber(val)
-          if cfg and num then
-            cfg.display.height = num
+          local px = tonumber(val)
+          if cfg and px then
+            local scale = cfg.display.barScale or 1.0
+            local _, h = GetPhysicalScreenSize()
+            local s = UIParent:GetScale()
+            local pmult = (h and h > 0 and s and s > 0) and (768 / h) / s or 1
+            cfg.display.height = (px * pmult) / scale
             RefreshBar()
           end
         end,
@@ -3164,7 +3311,7 @@ function ns.AppearanceOptions.GetOptionsTable()
         type = "range",
         name = "Segment Gap",
         desc = "Space between each segment (pixels)",
-        min = 0, max = 10, step = 1,
+        min = -20, max = 20, step = 1,
         get = function()
           local cfg = GetSelectedConfig()
           return cfg and cfg.display.segmentedSpacing or 1
@@ -3180,9 +3327,8 @@ function ns.AppearanceOptions.GetOptionsTable()
         width = 1.1,
         hidden = function()
           if GetSelectedConfig() == nil or IsIconMode() or collapsedSections.fill then return true end
-          if not IsResourceBar() then return true end
           local cfg = GetSelectedConfig()
-          return not cfg or cfg.display.thresholdMode ~= "perStack"
+          return not cfg or (cfg.display.thresholdMode ~= "perStack" and cfg.display.thresholdMode ~= "granular")
         end
       },
       barFillMode = {

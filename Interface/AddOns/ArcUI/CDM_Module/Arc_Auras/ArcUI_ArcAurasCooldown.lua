@@ -1354,6 +1354,7 @@ eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
 eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local specChangePending = false
 
@@ -1427,15 +1428,28 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         end
 
     elseif event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
-        -- Combat state changed: re-evaluate combatOnly glows for all visible spell frames
-        -- InCombatLockdown() is stateKey5 in the state-change guard, so the guard
-        -- naturally detects combat transitions — no need to clear the cache.
+        -- Combat state changed: re-feed all spell frames so shadow state is fresh
+        -- and combatOnly glows evaluate correctly. FeedCooldown re-queries the
+        -- spell's cooldown API and re-drives the shadow, fixing any stale state
+        -- that accumulated while the old polling was no longer running.
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
             if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                local isOnCD = fd.desatCooldown and fd.desatCooldown:IsShown() or false
-                ArcAurasCooldown.ApplySpellStateVisuals(fd, isOnCD)
+                fd.frame._arcLastSpellState = nil  -- Force re-eval even if state appears unchanged
+                FeedCooldown(fd)
             end
         end
+
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        -- Zone change or reload: shadow frames may have been reset.
+        -- Deferred so CDM has time to rebuild its frames before we query spell state.
+        C_Timer.After(1.5, function()
+            for arcID, fd in pairs(ArcAurasCooldown.spellData) do
+                if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
+                    fd.frame._arcLastSpellState = nil
+                    FeedCooldown(fd)
+                end
+            end
+        end)
 
     elseif event == "SPELLS_CHANGED" or event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
         if ArcAurasCooldown.initialized and not specChangePending then
@@ -1445,6 +1459,15 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 -- Safe here because savedPositions are already correct (same spec)
                 if ArcAuras and ArcAuras.RefreshVisibility then
                     ArcAuras.RefreshVisibility()
+                end
+                -- Fresh cooldown state pass after talent swap: spells may have changed
+                -- cooldown duration, charges, or been replaced by talent variants.
+                -- FeedCooldown re-queries the API and re-applies ready/cooldown visuals.
+                for arcID, fd in pairs(ArcAurasCooldown.spellData) do
+                    if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
+                        fd.frame._arcLastSpellState = nil
+                        FeedCooldown(fd)
+                    end
                 end
             end)
         end

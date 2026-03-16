@@ -340,7 +340,20 @@ function Anchors.ApplyGroupAnchor(group)
                     )
                 end
                 if applied then
-                    C_Timer.After(0.02, function()
+                    -- Update group.position to reflect the new anchor position.
+                    -- This prevents stale dragged position from overriding if
+                    -- SnapContainerPositionToPixel fires before the next re-anchor.
+                    C_Timer.After(0.03, function()
+                        if group.container and group.position then
+                            local cx = group.container:GetCenter()
+                            local uScale = UIParent:GetEffectiveScale()
+                            local cScale = group.container:GetEffectiveScale()
+                            if cx and uScale and uScale > 0 then
+                                local uW, uH = UIParent:GetSize()
+                                group.position.x = (group.container:GetLeft() + group.container:GetWidth() * 0.5 - uW * 0.5) * (cScale / uScale)
+                                group.position.y = (group.container:GetBottom() + group.container:GetHeight() * 0.5 - uH * 0.5) * (cScale / uScale)
+                            end
+                        end
                         if ns.CDMGroups.SyncAnchorProxy then
                             ns.CDMGroups.SyncAnchorProxy(group)
                         end
@@ -386,7 +399,16 @@ function Anchors.ApplyGroupAnchor(group)
                 )
             end
             if applied then
-                C_Timer.After(0.02, function()
+                C_Timer.After(0.03, function()
+                    if group.container and group.position then
+                        local uScale = UIParent:GetEffectiveScale()
+                        local cScale = group.container:GetEffectiveScale()
+                        if uScale and uScale > 0 then
+                            local uW, uH = UIParent:GetSize()
+                            group.position.x = (group.container:GetLeft() + group.container:GetWidth() * 0.5 - uW * 0.5) * (cScale / uScale)
+                            group.position.y = (group.container:GetBottom() + group.container:GetHeight() * 0.5 - uH * 0.5) * (cScale / uScale)
+                        end
+                    end
                     if ns.CDMGroups.SyncAnchorProxy then
                         ns.CDMGroups.SyncAnchorProxy(group)
                     end
@@ -634,20 +656,31 @@ function Anchors.HookContainerForDragTracking(group)
         Anchors.ApplyAnchoredFrames(group)
     end
     
-    -- Hook StartMoving: begin temporary OnUpdate, flag drag active
+    -- Hook StartMoving: set drag flag, start self-terminating OnUpdate
+    -- NOTE: We do NOT save/restore the existing OnUpdate — that pattern breaks
+    -- when StartMoving fires twice (hooksecurefunc can stack), causing the drag
+    -- OnUpdate to be saved as _arcDragUpdate and restored permanently on stop.
+    -- Instead we use a flag that the OnUpdate checks to self-terminate.
     hooksecurefunc(container, "StartMoving", function()
         container._arcIsDragging = true
-        container._arcDragUpdate = container:GetScript("OnUpdate")  -- save existing
-        container:SetScript("OnUpdate", function()
-            ReapplyDuringDrag()
-        end)
+        if not container._arcDragOnUpdateActive then
+            container._arcDragOnUpdateActive = true
+            container:SetScript("OnUpdate", function()
+                if not container._arcIsDragging then
+                    -- Drag ended — self-terminate
+                    container:SetScript("OnUpdate", nil)
+                    container._arcDragOnUpdateActive = false
+                    return
+                end
+                ReapplyDuringDrag()
+            end)
+        end
     end)
     
-    -- Hook StopMovingOrSizing: end temporary OnUpdate, final reapply
+    -- Hook StopMovingOrSizing: clear drag flag, do final reapply
+    -- The OnUpdate will self-terminate on the next frame.
     hooksecurefunc(container, "StopMovingOrSizing", function()
         container._arcIsDragging = nil
-        container:SetScript("OnUpdate", container._arcDragUpdate or nil)
-        container._arcDragUpdate = nil
         ReapplyDuringDrag()  -- final snap
     end)
     
