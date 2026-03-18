@@ -380,8 +380,27 @@ local function EnsureShadowCooldown(frame)
     frame._arcCDMShadowCooldown:HookScript("OnHide",        _Track and _Track("CooldownState.ShadowOnHide",        shadowOnHide)        or shadowOnHide)
     frame._arcCDMShadowCooldown:HookScript("OnCooldownDone",_Track and _Track("CooldownState.ShadowOnCooldownDone",shadowOnDone)        or shadowOnDone)
 
-    -- ═══════════════════════════════════════════════════════════════════
-    -- PER-FRAME EVENT LISTENER
+    -- Hook CDM's visible Cooldown:Clear — fires at exact CD expiry moment, very low frequency.
+    -- From the log: Cooldown:Clear fires ~16x vs 693 SPELL_UPDATE_COOLDOWN events.
+    -- When CDM clears its frame the real CD is done — clear our shadow immediately
+    -- and dispatch. This gives us the same timing as CDM without any polling or
+    -- event spam. Guard with _arcFeedingShadow to avoid cascade from our own feeds.
+    if frame.Cooldown and not frame.Cooldown._arcCDSyncHooked then
+      frame.Cooldown._arcCDSyncHooked = true
+      -- When CDM feeds its visible cooldown, feed our shadow at the exact same moment.
+      -- Both get GetSpellCooldownDuration at the same time = same DurObj = same expiry.
+      -- No args needed — FeedShadow queries the API itself.
+      hooksecurefunc(frame.Cooldown, "SetCooldownFromDurationObject", function(self)
+        if frame._arcFeedingShadow and frame._arcFeedingShadow > 0 then return end
+        local cfg = frame._arcCfg
+        if not cfg then return end
+        local spellID = frame._arcCachedSpellID
+                     or (frame.cooldownInfo and (frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID))
+        if not spellID then return end
+        ns.CooldownState.FeedShadow(frame, cfg)
+        DispatchAfterShadowUpdate(frame)
+      end)
+    end
     -- Installed here so it lives entirely within CooldownState alongside
     -- the shadow frames it feeds. Each frame gets one event frame.
     -- SPELL_UPDATE_COOLDOWN: feed on exact spellID match, base match, or
@@ -425,6 +444,9 @@ local function EnsureShadowCooldown(frame)
                      or (a2 == cachedSpell)
                      or (a2 == overrideSpell)
                      or (a2 == baseSpell)
+        -- Expiry is now handled by the Cooldown:SetCooldown(0,0) hook above —
+        -- fires at exact CDM clear time with very low frequency (~16x vs 693 events).
+        -- Revert to strict spellID filter here: no throttle needed, no CPU waste.
         if not matches then return end
       elseif ev == "UNIT_SPELLCAST_SUCCEEDED" then
         if a3 ~= cachedSpell and a3 ~= overrideSpell and a3 ~= baseSpell then return end
@@ -433,11 +455,7 @@ local function EnsureShadowCooldown(frame)
       local cfg = frame._arcCfg
       if cfg then
         ns.CooldownState.FeedShadow(frame, cfg)
-        local chargeShadow = frame._arcCDMChargeShadow
-        local chargeShown  = chargeShadow and chargeShadow:IsShown() or false
-        if not frame._arcLastIsOnGCD or chargeShown then
-          DispatchAfterShadowUpdate(frame)
-        end
+        DispatchAfterShadowUpdate(frame)
       end
     end
     ef:SetScript("OnEvent", _TrackEv and _TrackEv("CooldownState.PerFrameEvent", perFrameEventHandler) or perFrameEventHandler)

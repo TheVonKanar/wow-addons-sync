@@ -7,16 +7,23 @@ LoggerHeadDB = {
 ["Default"] = {
 ["log"] = {
 ["party"] = {
-["Murder Row"] = {
+["The Blinding Vale"] = {
 [23] = true,
 },
-["The Blinding Vale"] = {
+["Den of Nalorakk"] = {
+[23] = true,
+},
+["Skyreach"] = {
+[23] = true,
+},
+["Magisters' Terrace"] = {
+[2] = true,
 [23] = true,
 },
 ["Windrunner Spire"] = {
 [23] = true,
 },
-["Den of Nalorakk"] = {
+["Voidscar Arena"] = {
 [23] = true,
 },
 ["Nexus-Point Xenas"] = {
@@ -25,28 +32,12 @@ LoggerHeadDB = {
 ["Maisara Caverns"] = {
 [23] = true,
 },
-["Voidscar Arena"] = {
-[23] = true,
-},
-["Magisters' Terrace"] = {
-[2] = true,
+["Murder Row"] = {
 [23] = true,
 },
 },
 ["scenario"] = {
-["Twilight Crypts"] = {
-[208] = false,
-},
 ["Sunkiller Sanctum"] = {
-[208] = false,
-},
-["Collegiate Calamity"] = {
-[208] = false,
-},
-["The Shadow Enclave"] = {
-[208] = false,
-},
-["The Gulf of Memory"] = {
 [208] = false,
 },
 ["The Grudge Pit"] = {
@@ -55,16 +46,37 @@ LoggerHeadDB = {
 ["Shadowguard Point"] = {
 [208] = false,
 },
+["Twilight Crypts"] = {
+[208] = false,
+},
+["Collegiate Calamity"] = {
+[208] = false,
+},
+["The Shadow Enclave"] = {
+[208] = false,
+},
+["Torment's Rise"] = {
+[208] = true,
+},
+["The Gulf of Memory"] = {
+[208] = false,
+},
 ["Atal'Aman"] = {
 [208] = false,
 },
 },
 ["raid"] = {
+["Icecrown Citadel"] = {
+[3] = false,
+},
 ["Vault of the Incarnates"] = {
 [16] = false,
 },
-["Icecrown Citadel"] = {
-[3] = false,
+["The Voidspire"] = {
+[17] = true,
+},
+["The Dreamrift"] = {
+[17] = true,
 },
 },
 },

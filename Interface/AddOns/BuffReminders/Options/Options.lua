@@ -117,7 +117,7 @@ end
 -- ============================================================================
 
 local function CreateOptionsPanel()
-    local panel = CreatePanel("BuffRemindersOptions", PANEL_WIDTH, 620, { escClose = true })
+    local panel = CreatePanel("BuffRemindersOptions", PANEL_WIDTH, 640, { escClose = true })
     panel:Hide()
 
     -- Forward declarations for banner system
@@ -559,7 +559,7 @@ local function CreateOptionsPanel()
                         y,
                         spells,
                         buff.groupId,
-                        groupInfo.displayName,
+                        groupInfo and groupInfo.displayName or buff.name,
                         buff.infoTooltip,
                         displayIcon,
                         groupReadyCheckOnly[buff.groupId],
@@ -849,7 +849,7 @@ local function CreateOptionsPanel()
     local defThresholdHolder = Components.Slider(displayBehaviorContent, {
         label = "Threshold",
         min = 0,
-        max = 60,
+        max = 45,
         step = 5,
         get = function()
             return BR.profile.defaults and BR.profile.defaults.expirationThreshold or 15
@@ -2079,7 +2079,7 @@ local function CreateOptionsPanel()
                 label = "Expiration",
                 labelWidth = 56,
                 min = 0,
-                max = 60,
+                max = 45,
                 step = 5,
                 formatValue = function(val)
                     return val == 0 and "Off" or (val .. " min")
@@ -2324,6 +2324,22 @@ local function CreateOptionsPanel()
         end,
     })
     setLayout:Add(mountedHolder, nil, COMPONENT_GAP)
+
+    local legacyHolder = Components.Checkbox(settingsContent, {
+        label = "In legacy instances",
+        tooltip = {
+            title = "Hide in legacy instances",
+            desc = "Hide all buff reminders in trivially old instances (where legacy loot is enabled)",
+        },
+        get = function()
+            return BR.profile.hideInLegacyInstances == true
+        end,
+        onChange = function(checked)
+            BR.profile.hideInLegacyInstances = checked
+            UpdateDisplay()
+        end,
+    })
+    setLayout:Add(legacyHolder, nil, COMPONENT_GAP)
 
     setLayout:SetX(setX)
 

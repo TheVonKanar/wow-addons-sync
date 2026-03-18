@@ -2,13 +2,13 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -18,61 +18,39 @@ BuffRemindersDB = {
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
 ["textSize"] = 20,
+["glowXOffset"] = -1,
+["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
+["buffTrackingMode"] = "my_buffs",
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["blisteringScales"] = true,
 ["soulstone"] = true,
+["blisteringScales"] = true,
 ["atrophicNumbingPoison"] = true,
-["shamanShields"] = true,
-["bronze"] = true,
-["intellect"] = true,
-["versatility"] = true,
-["attackPower"] = true,
-["earthShieldOthers"] = false,
-["devotionAura"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
 ["beacons"] = true,
+["bronze"] = true,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["devotionAura"] = true,
+["earthShieldOthers"] = false,
+["attackPower"] = true,
+["versatility"] = true,
+["intellect"] = true,
+["shamanShields"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 30,
-["readyCheckOnlyOverrides"] = {
-},
-["showLoginMessages"] = false,
-["hideAllInVehicle"] = true,
-["buffTrackingMode"] = "my_buffs",
-["categoryVisibility"] = {
-["custom"] = {
-["pvp"] = true,
-["hideInPvPMatch"] = true,
-},
-},
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
-},
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
 },
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["spacing"] = 0.2,
-["iconZoom"] = 0,
-["textAlpha"] = 1,
-["borderSize"] = 2,
-["showText"] = false,
 ["growDirection"] = "CENTER",
-["iconSize"] = 48,
+["showText"] = false,
 ["textSize"] = 20,
+["borderSize"] = 2,
+["iconZoom"] = 0,
+["spacing"] = 0.2,
+["iconSize"] = 48,
+["textAlpha"] = 1,
 ["textColor"] = {
 1,
 1,
@@ -88,6 +66,9 @@ BuffRemindersDB = {
 ["y"] = -526,
 },
 },
+["targeted"] = {
+["showText"] = true,
+},
 ["presence"] = {
 ["showText"] = true,
 },
@@ -96,8 +77,29 @@ BuffRemindersDB = {
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
-["targeted"] = {
-["showText"] = true,
+},
+["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
+["dbVersion"] = 30,
+["hideAllInVehicle"] = true,
+["customBuffs"] = {
+["burningRush"] = {
+["overlayText"] = "",
+["showWhenPresent"] = true,
+["name"] = "Burning Rush",
+["loadConditions"] = {
+["housing"] = false,
+},
+["class"] = "WARLOCK",
+["key"] = "burningRush",
+["spellID"] = 111400,
+},
+},
+["categoryVisibility"] = {
+["custom"] = {
+["hideInPvPMatch"] = true,
+["pvp"] = true,
 },
 },
 },

@@ -225,13 +225,8 @@ local kindToCallback = {
 
 function addonTable.Display.UnregisterForColorEvents(frame)
   if frame.colorState then
-    for _, s in ipairs(frame.colorSettings) do
-      local ec = kindToCallback[s.kind]
-      if ec then
-        for _, e in ipairs(ec) do
-          addonTable.CallbackRegistry:UnregisterCallback(e, frame.colorState)
-        end
-      end
+    for _, e in ipairs(frame.colorState.callbacks) do
+      addonTable.CallbackRegistry:UnregisterCallback(e, frame.colorState)
     end
     if frame.colorState.timer then
       frame.colorState.timer:Cancel()
@@ -240,16 +235,15 @@ function addonTable.Display.UnregisterForColorEvents(frame)
 
   frame.ColorEventHandler = nil
   frame.colorState = nil
-  frame.colorSettings = nil
 end
 
 function addonTable.Display.RegisterForColorEvents(frame, settings, defaultColor)
   local events = { FORCED = true }
   frame.colorState = {
     frequentUpdater = {},
-    isPlayer = UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay and UnitTreatAsPlayerForDisplay(frame.unit)
+    isPlayer = UnitIsPlayer(frame.unit) or UnitTreatAsPlayerForDisplay and UnitTreatAsPlayerForDisplay(frame.unit),
+    callbacks = {},
   }
-  frame.colorSettings = settings
   frame.colorState.defaultColor = defaultColor or transparency
   for _, s in ipairs(settings) do
     local es = kindToEvent[s.kind]
@@ -271,6 +265,7 @@ function addonTable.Display.RegisterForColorEvents(frame, settings, defaultColor
     local ec = kindToCallback[s.kind]
     if ec then
       for _, e in ipairs(ec) do
+        table.insert(frame.colorState.callbacks, e)
         addonTable.CallbackRegistry:RegisterCallback(e, function()
           frame:SetColor(addonTable.Display.GetColor(settings, frame.colorState, frame.unit))
         end, frame.colorState)
@@ -379,7 +374,7 @@ function addonTable.Display.GetColor(settings, state, unit)
             end
             break
           end
-        elseif classification == "normal" or classification == "trivial" then
+        elseif classification == "normal" or classification == "trivial" or classification == "minus" then
           table.insert(colorQueue, {color = s.colors.trivial})
           break
         end
@@ -443,7 +438,7 @@ function addonTable.Display.GetColor(settings, state, unit)
     elseif s.kind == "classColors" then
       if state.isPlayer then
         local _, class = UnitClass(unit)
-        table.insert(colorQueue, {color = RAID_CLASS_COLORS[class]})
+        table.insert(colorQueue, {color = s.colors[class] or RAID_CLASS_COLORS[class]})
         break
       end
     elseif s.kind == "reaction" then

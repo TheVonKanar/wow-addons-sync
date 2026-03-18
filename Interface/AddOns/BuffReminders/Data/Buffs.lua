@@ -38,6 +38,7 @@ local min = math.min
 ---@field castOnOthers? boolean Buff exists on the target, not the caster (e.g., Soulstone)
 ---@field glowDetectable? boolean Use action bar glow as fallback detection when aura API is restricted
 ---@field groupOnly? boolean Only show when in a group (hide when solo)
+---@field suppressedByEntry? string Hide when this entry key is already visible (e.g., self buff covers it)
 
 ---@class TargetedBuff
 ---@field spellID SpellID
@@ -120,6 +121,16 @@ local min = math.min
 ---@field castMacro? string         -- Raw macro text for click action
 ---@field requireItemID? number    -- Only show if this item is equipped or in bags
 ---@field loadConditions? LoadConditions  -- Per-buff content visibility (nil = show everywhere)
+
+---Check if the player is NOT an Earthen dwarf (they have permanent Well Fed from Ingest Minerals)
+---@return boolean
+local function IsNotEarthen()
+    if not BR.playerRace then
+        local _, raceToken = UnitRace("player")
+        BR.playerRace = raceToken
+    end
+    return BR.playerRace ~= "EarthenDwarf"
+end
 
 ---Check if the player is inside a delve (difficultyID 208)
 ---@return boolean
@@ -332,6 +343,7 @@ BR.BUFF_TABLES = {
             levelRequired = 80,
             overlayText = "NO\nDR\nPOISON",
             groupOnly = true, -- self-buff "roguePoisons" already covers solo
+            suppressedByEntry = "roguePoisons", -- hide when self poison icon is already showing
         },
         {
             spellID = 465,
@@ -800,6 +812,20 @@ BR.BUFF_TABLES = {
             groupId = "food",
             consumableCategory = "food",
             displayIcon = 136000,
+            visibilityCondition = IsNotEarthen,
+        },
+        -- Sanguithorn Tea (additional food, stacks with regular food)
+        {
+            spellID = 1269152,
+            key = "sanguithorn",
+            name = "Sanguithorn Tea",
+            overlayText = "NO\nTEA",
+            groupId = "sanguithorn",
+            consumableCategory = "sanguithorn",
+            displayIcon = 7548960,
+            eatingSpellID = 1277461,
+            eatingIconID = 7548956,
+            visibilityCondition = IsNotEarthen,
         },
         -- Delve Food (only when inside a delve with Brann or Valeera)
         {
@@ -899,6 +925,7 @@ BR.BuffGroups = {
     healthstone = { displayName = "Healthstone" },
     rune = { displayName = "Augment Rune" },
     weaponBuff = { displayName = "Weapon Buff" },
+    sanguithorn = { displayName = "Sanguithorn Tea" },
 }
 
 -- Classes that benefit from each buff

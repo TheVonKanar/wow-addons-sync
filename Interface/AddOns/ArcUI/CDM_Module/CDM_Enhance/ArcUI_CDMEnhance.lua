@@ -4532,7 +4532,133 @@ end
 -- ===================================================================
 function SetupChargeText(frame, cdID, cfg)
   local chargeCfg = cfg.chargeText
-  
+
+  -- AURA FRAMES:
+  -- showSingleStack OFF: reposition native Applications, CDM controls visibility (hides at <=1)
+  -- showSingleStack ON:  suppress native Applications, use our mirror (also shows "1")
+  if frame.Applications then
+    local appFrame = frame.Applications
+    if chargeCfg and chargeCfg.showSingleStack then
+      -- Suppress native Applications so only our mirror shows
+      appFrame:Hide()
+      appFrame:SetAlpha(0)
+      if not appFrame._arcSingleStackSuppressHooked then
+        appFrame._arcSingleStackSuppressHooked = true
+        appFrame._arcParentIconFrame = frame
+        hooksecurefunc(appFrame, "Show", function(self)
+          local pf = self._arcParentIconFrame
+          if not pf then return end
+          local cdID2 = pf.cooldownID
+          local cfg2 = cdID2 and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings and ns.CDMEnhance.GetIconSettings(cdID2)
+          if cfg2 and cfg2.chargeText and cfg2.chargeText.showSingleStack then
+            self:Hide()
+            self:SetAlpha(0)
+          end
+        end)
+      end
+      -- Mirror fontstring: show our own count instead
+      if not frame._arcSingleStackText then
+        local container = CreateFrame("Frame", nil, frame)
+        container:SetAllPoints(frame)
+        frame._arcSingleStackContainer = container
+        local fs = container:CreateFontString(nil, "OVERLAY", nil, 7)
+        fs:SetDrawLayer("OVERLAY", 7)
+        frame._arcSingleStackText = fs
+      end
+      frame._arcSingleStackContainer:SetFrameLevel(frame:GetFrameLevel() + 50)
+      local fs = frame._arcSingleStackText
+      local fontPath = GetFontPath(chargeCfg.font)
+      SafeSetFont(fs, fontPath, chargeCfg.size or 16, chargeCfg.outline or "OUTLINE")
+      local c = chargeCfg.color or {r=1, g=1, b=0, a=1}
+      fs:SetTextColor(c.r or 1, c.g or 1, c.b or 0, c.a or 1)
+      if chargeCfg.shadow then
+        fs:SetShadowOffset(chargeCfg.shadowOffsetX or 1, chargeCfg.shadowOffsetY or -1)
+        fs:SetShadowColor(0, 0, 0, 0.8)
+      else
+        fs:SetShadowOffset(0, 0)
+      end
+      fs:ClearAllPoints()
+      if chargeCfg.mode == "free" then
+        fs:SetPoint("CENTER", frame, "CENTER", chargeCfg.freeX or 0, chargeCfg.freeY or 0)
+      else
+        local anchor = chargeCfg.anchor or "BOTTOMRIGHT"
+        fs:SetPoint(anchor, frame, anchor, chargeCfg.offsetX or -2, chargeCfg.offsetY or 2)
+      end
+      local function UpdateSingleStackText(f)
+        if not f._arcSingleStackText then return end
+        local auraID = f.auraInstanceID
+        local HasAuraInstanceID2 = ns.API and ns.API.HasAuraInstanceID
+        if not (HasAuraInstanceID2 and HasAuraInstanceID2(auraID)) then
+          f._arcSingleStackShowing = false
+          f._arcSingleStackText:SetText("")
+          return
+        end
+        local unit = f.auraDataUnit or "player"
+        local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraID)
+        if auraData and auraData.applications then
+          f._arcSingleStackText:SetText(auraData.applications)
+        else
+          f._arcSingleStackText:SetText("1")
+        end
+        f._arcSingleStackShowing = true
+      end
+      if not frame._arcSingleStackAuraHooked then
+        frame._arcSingleStackAuraHooked = true
+        if frame.SetAuraInstanceInfo then
+          hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
+            local cdID2 = self.cooldownID
+            local cfg2 = cdID2 and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings and ns.CDMEnhance.GetIconSettings(cdID2)
+            if cfg2 and cfg2.chargeText and cfg2.chargeText.showSingleStack then
+              UpdateSingleStackText(self)
+            end
+          end)
+        end
+        if frame.ClearAuraInstanceInfo then
+          hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
+            if self._arcSingleStackText then
+              self._arcSingleStackShowing = false
+              self._arcSingleStackText:SetText("")
+            end
+          end)
+        end
+      end
+      UpdateSingleStackText(frame)
+      fs:Show()
+    else
+      -- showSingleStack OFF: hide mirror if it existed, restore Applications alpha,
+      -- then reposition the native Applications text using chargeText anchor settings
+      if frame._arcSingleStackContainer then
+        frame._arcSingleStackContainer:Hide()
+        frame._arcSingleStackText:SetText("")
+        frame._arcSingleStackShowing = false
+      end
+      appFrame:SetAlpha(1)
+      if chargeCfg and chargeCfg.enabled ~= false then
+        local appText = appFrame.Applications
+        if appText then
+          local fontPath = GetFontPath(chargeCfg.font)
+          SafeSetFont(appText, fontPath, chargeCfg.size or 16, chargeCfg.outline or "OUTLINE")
+          local c = chargeCfg.color or {r=1, g=1, b=1, a=1}
+          appText:SetTextColor(c.r or 1, c.g or 1, c.b or 1, c.a or 1)
+          if chargeCfg.shadow then
+            appText:SetShadowOffset(chargeCfg.shadowOffsetX or 1, chargeCfg.shadowOffsetY or -1)
+            appText:SetShadowColor(0, 0, 0, 0.8)
+          else
+            appText:SetShadowOffset(0, 0)
+          end
+          appText:ClearAllPoints()
+          if chargeCfg.mode == "free" then
+            appText:SetPoint("CENTER", frame, "CENTER", chargeCfg.freeX or 0, chargeCfg.freeY or 0)
+          else
+            local anchor = chargeCfg.anchor or "BOTTOMRIGHT"
+            appText:SetPoint(anchor, frame, anchor, chargeCfg.offsetX or -2, chargeCfg.offsetY or 2)
+          end
+        end
+      end
+    end
+    return
+  end
+
   -- Find the native charge/stack text
   -- Cooldowns use ChargeCount.Current, Auras use Applications.Applications
   local chargeFrame = frame.ChargeCount or frame.Applications
@@ -4571,7 +4697,7 @@ function SetupChargeText(frame, cdID, cfg)
     chargeText = frame._arcChargeText
   end
   
-  if not chargeCfg or chargeCfg.enabled == false or (chargeCfg.showSingleStack and frame.Applications) then
+  if not chargeCfg or chargeCfg.enabled == false then
     -- Hide charge/stack text entirely by hiding the parent frame AND the text directly
     if chargeFrame then
       chargeFrame:Hide()
@@ -4713,92 +4839,8 @@ function SetupChargeText(frame, cdID, cfg)
         end
       end
     end
-    -- SINGLE STACK MIRROR: CDM Applications hidden by hook above.
-    -- Hook appFS:SetText to intercept the value BEFORE it becomes secret on the fontstring.
-    -- GetApplicationsText() returns literal "" for <=1 stack (non-secret) or secret number for 2+.
-    -- Works for both buff stacks and debuff stacks (same Applications frame).
-    if chargeCfg and chargeCfg.showSingleStack and frame.Applications then
-      if not frame._arcSingleStackText then
-        local container = CreateFrame("Frame", nil, frame)
-        container:SetAllPoints(frame)
-        frame._arcSingleStackContainer = container
-        local fs = container:CreateFontString(nil, "OVERLAY", nil, 7)
-        fs:SetDrawLayer("OVERLAY", 7)
-        frame._arcSingleStackText = fs
-      end
-      -- Keep container level in sync with frame (may change on spec switch)
-      frame._arcSingleStackContainer:SetFrameLevel(frame:GetFrameLevel() + 50)
-      local fs = frame._arcSingleStackText
-      local fontPath = GetFontPath(chargeCfg.font)
-      SafeSetFont(fs, fontPath, chargeCfg.size or 16, chargeCfg.outline or "OUTLINE")
-      local c = chargeCfg.color or {r=1, g=1, b=0, a=1}
-      fs:SetTextColor(c.r or 1, c.g or 1, c.b or 0, c.a or 1)
-      if chargeCfg.shadow then
-        fs:SetShadowOffset(chargeCfg.shadowOffsetX or 1, chargeCfg.shadowOffsetY or -1)
-        fs:SetShadowColor(0, 0, 0, 0.8)
-      else
-        fs:SetShadowOffset(0, 0)
-      end
-      fs:ClearAllPoints()
-      if chargeCfg.mode == "free" then
-        fs:SetPoint("CENTER", frame, "CENTER", chargeCfg.freeX or 0, chargeCfg.freeY or 0)
-      else
-        local anchor = chargeCfg.anchor or "BOTTOMRIGHT"
-        fs:SetPoint(anchor, frame, anchor, chargeCfg.offsetX or -2, chargeCfg.offsetY or 2)
-      end
-      -- Hook SetAuraInstanceInfo/ClearAuraInstanceInfo to update mirror text.
-      -- auraInstanceID on frame is non-secret. Pass it to GetAuraDataByAuraInstanceID,
-      -- get applications (secret), pass straight to SetText (accepts secrets). No comparisons.
-      -- Works for buffs and debuffs - same Applications frame, same auraInstanceID pattern.
-      local function UpdateSingleStackText(f)
-        if not f._arcSingleStackText then return end
-        local auraID = f.auraInstanceID
-        local HasAuraInstanceID2 = ns.API and ns.API.HasAuraInstanceID
-        if not (HasAuraInstanceID2 and HasAuraInstanceID2(auraID)) then
-          f._arcSingleStackShowing = false
-          f._arcSingleStackText:SetText("")
-          return
-        end
-        local unit = f.auraDataUnit or "player"
-        local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraID)
-        if auraData and auraData.applications then
-          -- applications is secret but SetText accepts it directly
-          f._arcSingleStackText:SetText(auraData.applications)
-        else
-          -- 1 stack: applications is nil or 0 (CDM omits it)
-          f._arcSingleStackText:SetText("1")
-        end
-        f._arcSingleStackShowing = true
-      end
-      if not frame._arcSingleStackAuraHooked then
-        frame._arcSingleStackAuraHooked = true
-        if frame.SetAuraInstanceInfo then
-          hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
-            local cdID2 = self.cooldownID
-            local cfg2 = cdID2 and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings and ns.CDMEnhance.GetIconSettings(cdID2)
-            if cfg2 and cfg2.chargeText and cfg2.chargeText.showSingleStack then
-              UpdateSingleStackText(self)
-            end
-          end)
-        end
-        if frame.ClearAuraInstanceInfo then
-          hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
-            if self._arcSingleStackText then
-              self._arcSingleStackShowing = false
-              self._arcSingleStackText:SetText("")
-            end
-          end)
-        end
-      end
-      -- Initial state
-      UpdateSingleStackText(frame)
-      fs:Show()
-    elseif frame._arcSingleStackContainer then
-      -- showSingleStack toggled off - hide mirror
-      frame._arcSingleStackContainer:Hide()
-      frame._arcSingleStackText:SetText("")
-      frame._arcSingleStackShowing = false
-    end
+    -- NOTE: showSingleStack mirror for aura frames is handled above via early-return.
+    -- Aura frames never reach this point.
     return
   end
   
