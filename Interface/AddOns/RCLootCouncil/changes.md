@@ -1,12 +1,12 @@
 ## Changes
 
-### Decor/Housing items
+#### Decor/Housing items
 
-Decor items are now ignored until confirmed tradeable.
+Decor items have been confirmed tradeable personal loot, so removed the option for group loot to ignore them.
 
-Added an option to enable group looting them - disabled by default.
+By default decor items are now ignored, but added an option to revert that if you so desire.
 
-### Ignore options
+### Data sync
 
-Removed ignore options for retail version as it haven't served a real purpose since the introduction of group loot. Let me know if you really require a group loot ignore option.
+Added additional code that should help with data syncing after player reloads or joins after RCLootCouncil is enabled for the raid.
 

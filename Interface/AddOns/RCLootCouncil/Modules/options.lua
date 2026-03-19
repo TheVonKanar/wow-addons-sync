@@ -1059,17 +1059,24 @@ function addon:OptionsTable()
 										desc = L["opt_autoAddPets_desc"],
 										type = "toggle",
 										get = function()
-											return not
-												addon.blacklistedItemClasses[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.CompanionPet]
-
-
+											return not addon.blacklistedItemClasses[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.CompanionPet]
 										end,
 										set = function(_, val)
-											addon.blacklistedItemClasses[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.CompanionPet] = not
-
-												val
-
+											addon.blacklistedItemClasses[Enum.ItemClass.Miscellaneous][Enum.ItemMiscellaneousSubclass.CompanionPet] = not val
 										end
+									},
+									lootDecor = {
+										order = 6.6,
+										name = L.opt_lootDecor_name,
+										desc = L.opt_lootDecor_desc,
+										type = "toggle",
+										get = function()
+											return not addon.blacklistedItemClasses[Enum.ItemClass.Housing].all
+										end,
+										set = function(_, val)
+											addon.blacklistedItemClasses[Enum.ItemClass.Housing].all = not val
+										end,
+										hidden = function() return WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE end,
 									},
 									printCompletedTrades = {
 										order = 7,
@@ -1094,13 +1101,7 @@ function addon:OptionsTable()
 										name = L.opt_autoGroupLoot_name,
 										desc = L.opt_autoGroupLoot_desc,
 										type = "toggle"
-									},
-									autoGroupLootDecor = {
-										order = 11,
-										name = L.opt_autoGroupLootDecor_name,
-										desc = L.opt_autoGroupLootDecor_desc,
-										type = "toggle"
-									}
+									},									
 								},
 							},
 							voteOptions = {

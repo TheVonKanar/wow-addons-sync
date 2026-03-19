@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("AutoHideUI", "enUS", true)
 -- misc
 L["error_optionsOpen"] = "Options Window needs to be open to change options!"
 
--- main menu
+-- Main menu
 L["descr_groups"] = "Create Groups to assign different settings to different Frames"
 L["tab_setup"] = "Setup"
 L["dropdown_groupSelect"] = "Group Selection"
@@ -21,10 +21,10 @@ L["popup_createGroup"] = "Name of new Group:"
 
 -- tab: frame selection
 L["tab_frameSelect"] = "Frame Selection"
-L["descr_frames"] = "The same Frame can't be assigned to multiple Groups.|nElvUI, Details, UUF and Dominos will automatically be detected. Bartender won't work."
+L["descr_frames"] = "The same Frame can't be assigned to multiple Groups."
 L["group_defaultFrames"] = "Common Frames"
 L["group_customFrames"] = "Custom Frames"
-L["descr_customFrames"] = "Add the names of any other Frame here. Separate them with commas."
+L["descr_customFrames"] = "Use the Frame Finder or manually add the names of other Frames here. Separate them with commas."
 L["descr_Minimap"] = "The minimap is a special case!|n|nFor best results, set it to be at full Alpha when in combat and at 0 Alpha when faded out."
 
 L["Player Frame"] = true
@@ -86,9 +86,9 @@ L["enable"] = "Enable"
 L["alpha"] = "Alpha"
 L["priority"] = "Prio"
 
-L["label_combat"] = "In combat"
-L["label_instance"] = "In instance"
-L["label_mouseover"] = "On mouseover"
+L["label_combat"] = "In Combat"
+L["label_instance"] = "In Instance"
+L["label_mouseover"] = "On Mouseover"
 L["label_targetFriendly"] = "Friendly Target/Focus"
 L["label_targetHostile"] = "Hostile Target/Focus"
 L["label_casting"] = "Casting"
@@ -123,10 +123,28 @@ L["dropdownOption_flight3"] = "Both"
 
 L["checkbox_softTarget"] = "Incl. Soft Target"
 L["descr_softTarget"] = "For players that have the game's 'Action Targeting' option enabled."
-L["label_interactable"] = "Can interact"
+L["label_interactable"] = "Can Interact"
 L["descr_interactable"] = "When something interactable is in reach of the player character."
 L["checkbox_excludeNPCs"] = "Exclude NPCs"
 L["descr_excludeNPCs"] = "Will ignore interactable objects that can be targeted, like NPCs."
+L["button_disableAll"] = "Disable All"
+L["button_reset"] = "Reset Group to Default"
 
-
+L["frameFinder"] = "Frame Finder"
+L["descr_frameFinder"] = "Launches a Tool to help you find and add Frames that aren't listed above."
+L["ffButton_clear"] = "Clear Selection"
+L["ffDescr_howTo"] =    "Mouseover a Frame".."|n"..
+                        "Mousewheel to cycle through Frames".."|n"..
+                        "Cycle until correct Frame is fading".."|n"..
+                        "Click to select/deselect".."|n|n"..
+                        "or".."|n|n"..
+                        "Browse the list on the left".."|n"..
+                        "Click to select/deselect".."|n"
+L["ffButton_confirm"] = "Accept Selection"
+L["ffButton_cancel"] = "Cancel"
+L["ffTitle_available"] = "Available Custom Frames"
+L["ffTitle_howTo"] = "How to Use"
+L["descr_ActionBar1"] = "This bar includes all extra-bars an AddOn may include.".."|n|n"..
+                        "If unwanted, disable this bar and manually add the names of the bars you want in the Custom Frames section below.".."|n|n"..
+                        "Useful if you want some extra-bars to not fade or to assign them to a different group."
 

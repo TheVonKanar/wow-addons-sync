@@ -370,6 +370,10 @@ L["opt_deletePatch_confirm"] = "¿Estás seguro de que quieres eliminar todo lo 
 L["opt_deletePatch_desc"] = "Elimine todas las entradas agregadas antes del parche seleccionado."
 L["opt_deleteRaid_confirm"] = "¿Está seguro de que desea eliminar todas las entradas de la instancia seleccionada? Esto no se puede deshacer."
 L["opt_deleteRaid_desc"] = "Eliminar todas las entradas de una instancia específica."
+--[[Translation missing --]]
+L["opt_lootDecor_desc"] = "Automatically add tradeable decor items to a session."
+--[[Translation missing --]]
+L["opt_lootDecor_name"] = "Add Decor"
 L["opt_moreButtons_desc"] = "Agrega un nuevo conjunto de botones para una ranura de equipo específica. Se usa el tipo más específico, es decir, agregar botones para 'Cabeza' y 'Elementos catalizadores' hará que la armadura de tipo cabeza use los botones de cabeza en lugar del catalizador."
 L["opt_moreInfo_onlyShowRaids_desc"] = "Si se selecciona alguna banda, la ventana \"Más información\" solo mostrará las recompensas de esas bandas. Si no hay nada seleccionado, se mostrarán todas las bandas. Nota: Esto no se aplica a la sección \"Ganadores de [objeto]\"."
 L["opt_moreInfo_onlyShowRaids_name"] = [=[Solo bandas específicas

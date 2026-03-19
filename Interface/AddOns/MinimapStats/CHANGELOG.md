@@ -1,6 +1,6 @@
 # MinimapStats
 
-## [V12.0.5](https://github.com/DaleHuntGB/MinimapStats/tree/V12.0.5) (2026-03-11)
-[Full Changelog](https://github.com/DaleHuntGB/MinimapStats/commits/V12.0.5) 
+## [V12.0.6](https://github.com/DaleHuntGB/MinimapStats/tree/V12.0.6) (2026-03-19)
+[Full Changelog](https://github.com/DaleHuntGB/MinimapStats/commits/V12.0.6) 
 
-- Fix new error  
+- item level  

@@ -1,6 +1,7 @@
 
 PLATYNATOR_CURRENT_PROFILE = "Jundies"
 PLATYNATOR_LAST_INSTANCE = {
-["inInstance"] = false,
+["inInstance"] = true,
 ["level"] = 90,
+["instanceLieutenantLevel"] = 91,
 }

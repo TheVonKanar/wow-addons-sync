@@ -420,6 +420,10 @@ L["opt_deleteRaid_confirm"] = [=[Möchtest du wirklich alle Einträge aus der au
 
 ]=]
 L["opt_deleteRaid_desc"] = "Lösche alle Einträge einer bestimmten Instanz."
+--[[Translation missing --]]
+L["opt_lootDecor_desc"] = "Automatically add tradeable decor items to a session."
+--[[Translation missing --]]
+L["opt_lootDecor_name"] = "Add Decor"
 L["opt_moreButtons_desc"] = "Füge ein neues Set an Schaltflächen für einen bestimmten Ausrüstungsslot hinzu. Der spezifischste Typ wird verwendet, d. H. das Hinzufügen von Schaltflächen für \"Kopf\" und \"Azerit-Rüstung\" bewirkt, dass Kopf-Rüstungen die Kopfknöpfe anstelle von Azerit-Rüstungen verwenden."
 --[[Translation missing --]]
 L["opt_moreInfo_onlyShowRaids_desc"] = [=[If any raids are selected, the 'More Info' window will only show awards from those raids. If nothing's selected, all raids will be shown.

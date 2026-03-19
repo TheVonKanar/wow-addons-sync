@@ -35,13 +35,6 @@ GroupLoot.Predicates = {
 	qualityUpperBound = function (_, _, _, quality)
 		return not quality or quality < Enum.ItemQuality.Legendary
 	end,
-	--- Decor items are toggleable
-	decor = function(rollID, itemID, status)
-		local itemClass = select(6, C_Item.GetItemInfoInstant(itemID))
-		return itemClass ~= Enum.ItemClass.Housing or
-			itemClass == Enum.ItemClass.Housing and addon.mldb and
-			addon.mldb.lootDecor
-	end,
 }
 
 function GroupLoot:OnInitialize()
@@ -239,6 +232,11 @@ function GroupLoot:StatusToDescription(status, target)
 	end
 	return res
 end
+
+local targetStatusML = tonumber("110111111", 2)
+local targetStatus   = tonumber("110101111", 2)
+function GroupLoot:GetTargetedStatus() return targetStatus end
+function GroupLoot:GetTargetedMLStatus() return targetStatusML end
 
 local NUM_LOOT_FRAMES = 4
 --- Hides any visible default group loot frames

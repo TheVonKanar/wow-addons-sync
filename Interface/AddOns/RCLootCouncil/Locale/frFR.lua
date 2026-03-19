@@ -417,6 +417,10 @@ L["opt_deletePatch_confirm"] = "Êtes-vous sûr de vouloir supprimer tout ce qui
 L["opt_deletePatch_desc"] = "Supprimer toutes les entrées ajoutées avant le patch sélectionné."
 L["opt_deleteRaid_confirm"] = "Êtes-vous sûr de vouloir supprimer toutes les entrées de l'instance sélectionnée ? Annulation impossible."
 L["opt_deleteRaid_desc"] = "Supprimer toutes les entrées d'une instance spécifique."
+--[[Translation missing --]]
+L["opt_lootDecor_desc"] = "Automatically add tradeable decor items to a session."
+--[[Translation missing --]]
+L["opt_lootDecor_name"] = "Add Decor"
 L["opt_moreButtons_desc"] = "Ajouter un nouvel ensemble de boutons pour un emplacement spécifique d'équipement. Le type le plus spécifique est utilisé. Par exemple, ajouter des boutons pour 'Tête' et 'Armure d'Azérite' fera en sorte que les armures d'emplacement de tête utiliseront les boutons de tête plutôt que d'armure d'Azérite."
 --[[Translation missing --]]
 L["opt_moreInfo_onlyShowRaids_desc"] = [=[If any raids are selected, the 'More Info' window will only show awards from those raids. If nothing's selected, all raids will be shown.
