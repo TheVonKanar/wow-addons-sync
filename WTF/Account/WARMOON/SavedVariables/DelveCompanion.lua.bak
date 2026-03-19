@@ -1,10 +1,10 @@
 
 DelveCompanionAccountData = {
 ["minimapIconEnabled"] = false,
-["inDelveWidgetLayout"] = 1,
-["delvesListInfoWidgetsEnabled"] = true,
+["inDelveWidgetDisplayRule"] = 1,
 ["inDelveWidgetEnabled"] = true,
+["delvesListInfoWidgetsEnabled"] = true,
 ["logsEnabled"] = false,
 ["trackingType"] = 1,
-["inDelveWidgetDisplayRule"] = 1,
+["inDelveWidgetLayout"] = 1,
 }

@@ -2,13 +2,13 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -22,35 +22,51 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+["burningRush"] = {
+["overlayText"] = "",
+["showWhenPresent"] = true,
+["name"] = "Burning Rush",
+["loadConditions"] = {
+["housing"] = false,
+},
+["class"] = "WARLOCK",
+["key"] = "burningRush",
+["spellID"] = 111400,
+},
+},
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["soulstone"] = true,
 ["blisteringScales"] = true,
+["soulstone"] = true,
 ["atrophicNumbingPoison"] = true,
-["beacons"] = true,
-["bronze"] = true,
-["stamina"] = true,
-["sourceOfMagic"] = true,
-["devotionAura"] = true,
-["earthShieldOthers"] = false,
-["attackPower"] = true,
-["versatility"] = true,
-["intellect"] = true,
 ["shamanShields"] = true,
+["bronze"] = true,
+["intellect"] = true,
+["versatility"] = true,
+["attackPower"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
 },
+["dbVersion"] = 30,
+["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["growDirection"] = "CENTER",
-["showText"] = false,
-["textSize"] = 20,
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["spacing"] = 0.2,
-["iconSize"] = 48,
+["iconZoom"] = 0,
 ["textAlpha"] = 1,
+["borderSize"] = 2,
+["showText"] = false,
+["growDirection"] = "CENTER",
+["iconSize"] = 48,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,
@@ -78,28 +94,12 @@ BuffRemindersDB = {
 ["priority"] = 4,
 },
 },
-["readyCheckOnlyOverrides"] = {
-},
-["showLoginMessages"] = false,
-["dbVersion"] = 30,
+["buffTrackingMode"] = "my_buffs",
 ["hideAllInVehicle"] = true,
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
-},
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
-},
 ["categoryVisibility"] = {
 ["custom"] = {
-["hideInPvPMatch"] = true,
 ["pvp"] = true,
+["hideInPvPMatch"] = true,
 },
 },
 },

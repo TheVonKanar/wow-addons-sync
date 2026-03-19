@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 1576,
 ["lastSanitation"] = 3,
-["session"] = 1573,
 ["errors"] = {
 {
 ["message"] = "BigWigs: BigWigs is missing timers on \"LFR\" running 358-3dae8a1, tell the devs!\nNew timer for \"435136\" at stage 1 with placement 1 and value 167.53.\nNew timer for \"434697\" at stage 1 with placement 1 and value 167.56.",
@@ -37,8 +37,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:1 .../AddOns/Blizzard_APIDocumentationGenerated/PetConstantsDocumentation.lua:14: '}' expected near 'MAX_SUMMONABLE_HUNTER_PETS'",
-["time"] = "2024/09/20 09:27:39",
 ["session"] = 379,
+["time"] = "2024/09/20 09:27:39",
 ["counter"] = 2,
 },
 {
@@ -139,8 +139,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc:1 Couldn't open Interface/AddOns/TalentTreeTweaks/TalentTreeTweaks.toc",
-["time"] = "2024/10/07 08:13:04",
 ["session"] = 475,
+["time"] = "2024/10/07 08:13:04",
 ["counter"] = 2,
 },
 {
@@ -233,8 +233,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/RaiderIO/RaiderIO.toc:15 Error loading Interface/AddOns/RaiderIO/db/db_client_recent_characters.lua",
-["session"] = 560,
 ["time"] = "2024/11/12 06:05:20",
+["session"] = 560,
 ["counter"] = 2,
 },
 {
@@ -439,8 +439,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/OmniCD/OmniCD_Mainline.toc:1 Couldn't open Interface/AddOns/OmniCD/OmniCD_Mainline.toc",
-["time"] = "2025/03/25 19:16:23",
 ["session"] = 897,
+["time"] = "2025/03/25 19:16:23",
 ["counter"] = 2,
 },
 {
@@ -797,8 +797,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/LiteMount/LiteMount.toc:35 Couldn't open Interface/AddOns/LiteMount/MountDB/MountDB.xml",
-["time"] = "2025/10/08 09:26:56",
 ["session"] = 1253,
+["time"] = "2025/10/08 09:26:56",
 ["counter"] = 1,
 },
 {
@@ -827,8 +827,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/AstralKeys/Tables.lua:1 Interface/AddOns/AstralKeys/Tables.lua:161: 'end' expected (to close 'if' at line 157) near 'if'",
-["time"] = "2025/12/05 18:53:28",
 ["session"] = 1270,
+["time"] = "2025/12/05 18:53:28",
 ["counter"] = 2,
 },
 {
@@ -841,20 +841,20 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:6 Couldn't open Interface/AddOns/Angleur/Legolando_PictureTooltipTemplate/Legolando_PictureTooltipTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/angTemplates/LegolandoTemplates/embeds.xml:7 Couldn't open Interface/AddOns/Angleur/Legolando_SimplePromotionTemplate/Legolando_SimplePromotionTemplate.xml",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Angleur/thanks/thanks.xml:101 Couldn't find inherited node: Legolando_SimplePromotionTemplate_Angleur",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1271,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 1,
 },
 {
@@ -867,8 +867,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Krowi_AchievementFilter/Gui/WindowFrames/AchievementFrameTabButtonFactory/Files.xml:2 Error loading Interface/AddOns/Krowi_AchievementFilter/AchievementFrameTabButtonFactory.lua",
-["time"] = "2025/12/07 00:14:59",
 ["session"] = 1272,
+["time"] = "2025/12/07 00:14:59",
 ["counter"] = 2,
 },
 {
@@ -969,8 +969,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/WindfuryUI/WindfuryUI.lua:1 File Interface/AddOns/WindfuryUI/WindfuryUI.lua is empty.",
-["time"] = "2026/01/26 20:42:33",
 ["session"] = 1339,
+["time"] = "2026/01/26 20:42:33",
 ["counter"] = 1,
 },
 {
@@ -999,8 +999,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_SharedXML/SecureUtil.lua:78: attempt to perform arithmetic on a secret value\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:128: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:124>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:141: in function 'CheckHideAndLockEditMode'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeSystemTemplates.lua]:1190: in function 'onClickHandler'\n[Interface/AddOns/Blizzard_SharedXML/Shared/Button/UIButtonTemplate.lua]:25: in function <...lizzard_SharedXML/Shared/Button/UIButtonTemplate.lua:21>\n",
-["session"] = 1350,
 ["time"] = "2026/01/28 18:15:55",
+["session"] = 1350,
 ["counter"] = 1,
 },
 {
@@ -1013,14 +1013,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "attempted to index a forbidden table",
-["time"] = "2026/01/30 00:15:27",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:27",
 ["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/Blizzard_BuffFrame/BuffFrame.lua:1056: attempt to compare field 'expirationTime' (a secret value)\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:97: in function 'HideSystemSelections'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:104: in function <.../AddOns/Blizzard_EditMode/Shared/EditModeManager.lua:100>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n...[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua]:863: in function <...UIParentPanelManager/Shared/UIParentPanelManager.lua:853>\n[C]: in function 'HideUIPanel'\n[Interface/AddOns/Blizzard_EditMode/Shared/EditModeManager.lua]:42: in function 'onCloseCallback'\n[Interface/AddOns/Blizzard_SharedXML/Mainline/SharedUIPanelTemplates.lua]:143: in function <...izzard_SharedXML/Mainline/SharedUIPanelTemplates.lua:138>\n[C]: in function 'Click'\n[Interface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua]:2335: in function <...rface/AddOns/Blizzard_UIParent/Mainline/UIParent.lua:2300>\n[C]: in function 'ToggleGameMenu'\n[TOGGLEGAMEMENU]:1: in function <[string \"TOGGLEGAMEMENU\"]:1>\n",
-["time"] = "2026/01/30 00:15:28",
 ["session"] = 1357,
+["time"] = "2026/01/30 00:15:28",
 ["counter"] = 1,
 },
 {
@@ -1289,14 +1289,14 @@ BugGrabberDB = {
 },
 {
 ["message"] = "LUA_WARNING: ...Blizzard_AdventureMap/AM_QuestChoiceDataProvider.lua:52: 'for' limit must be a number\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua]:125: in function 'OnEvent'\n[Interface/AddOns/Blizzard_AdventureMap/Blizzard_AdventureMap.lua]:65: in function <...dOns/Blizzard_AdventureMap/Blizzard_AdventureMap.lua:60>\n",
-["session"] = 1572,
 ["time"] = 1773861138,
+["session"] = 1572,
 ["counter"] = 3,
 },
 {
 ["message"] = "LUA_WARNING: .../Blizzard_AdventureMap/AM_QuestOfferDataProvider.lua:46: 'for' limit must be a number\n|cffffd200Stack:|r\n[C]: in function 'secureexecuterange'\n[Interface/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua]:125: in function 'OnEvent'\n[Interface/AddOns/Blizzard_AdventureMap/Blizzard_AdventureMap.lua]:65: in function <...dOns/Blizzard_AdventureMap/Blizzard_AdventureMap.lua:60>\n",
-["session"] = 1572,
 ["time"] = 1773861138,
+["session"] = 1572,
 ["counter"] = 3,
 },
 {

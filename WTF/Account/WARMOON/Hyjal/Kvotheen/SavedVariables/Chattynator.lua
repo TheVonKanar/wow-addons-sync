@@ -153,4 +153,5 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/p o/",
 "/p cya",
 "/p hoy",
+"/s /simc",
 }

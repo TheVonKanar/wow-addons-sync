@@ -69,14 +69,14 @@ LoggerHeadDB = {
 ["Icecrown Citadel"] = {
 [3] = false,
 },
-["Vault of the Incarnates"] = {
-[16] = false,
+["The Dreamrift"] = {
+[17] = true,
 },
 ["The Voidspire"] = {
 [17] = true,
 },
-["The Dreamrift"] = {
-[17] = true,
+["Vault of the Incarnates"] = {
+[16] = false,
 },
 },
 },
