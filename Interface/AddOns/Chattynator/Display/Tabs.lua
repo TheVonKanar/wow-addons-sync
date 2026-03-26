@@ -47,23 +47,26 @@ end
 function addonTable.Display.TabsBarMixin:PositionTabs()
   self.dropdownTabs = {}
   local xOffset = 0
-  local finalOffset = 0
   for _, tab in ipairs(self.Tabs or {}) do
-    tab:SetPoint("BOTTOMLEFT", self, "TOPLEFT", xOffset, -22)
-    xOffset = xOffset + tab:GetWidth() + addonTable.Constants.TabSpacing
-
-    if xOffset + self.dropdownTabButton:GetWidth() > self.chatFrame:GetWidth() and tab ~= self.dropdownTabButton then
-      tab:Hide()
-      table.insert(self.dropdownTabs, tab)
-      if finalOffset == 0 then
-        finalOffset = xOffset - tab:GetWidth() - addonTable.Constants.TabSpacing
-      end
+    if tab ~= self.dropdownTabButton then
+      tab:SetPoint("BOTTOMLEFT", self, "TOPLEFT", xOffset, -22)
+      xOffset = xOffset + tab:GetWidth() + addonTable.Constants.TabSpacing
     end
   end
-
-  if finalOffset ~= 0 then
-    self.dropdownTabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", finalOffset, -22)
+  if xOffset - addonTable.Constants.TabSpacing > self.chatFrame:GetWidth() then
+    local index = #self.Tabs - 1
+    while xOffset + self.dropdownTabButton:GetWidth() > self.chatFrame:GetWidth() do
+      local tab = self.Tabs[index]
+      xOffset = xOffset - tab:GetWidth() - addonTable.Constants.TabSpacing
+      tab:Hide()
+      table.insert(self.dropdownTabs, 1, tab)
+      index = index - 1
+    end
+    self.tabsEnd = #self.Tabs
+    self.dropdownTabButton:SetPoint("BOTTOMLEFT", self, "TOPLEFT", xOffset, -22)
     self.dropdownTabButton:Show()
+  else
+    self.tabsEnd = #self.Tabs - 1
   end
 end
 
@@ -72,7 +75,7 @@ function addonTable.Display.TabsBarMixin:StartDragging(index)
   local prevLeft = self.Tabs[index]:GetLeft()
   self.dragIndex = index
   self:RegisterEvent("GLOBAL_MOUSE_UP")
-  local rightLimit = self.Tabs[#self.Tabs]:GetRight()
+  local rightLimit = self.Tabs[self.tabsEnd]:GetRight() + 1
   local leftLimit = self.Tabs[1]:GetLeft()
 
   self:SetScript("OnUpdate", function()
@@ -273,10 +276,6 @@ function addonTable.Display.GetTabNameFromName(name)
 end
 
 function addonTable.Display.TabsBarMixin:RefreshTabs()
-  local forceSelected = false
-  if not self.chatFrame.tabsPool then
-    forceSelected = true
-  end
   self.tabsPool:ReleaseAll()
   local allTabs = {}
   for index, tabData in ipairs(addonTable.Config.Get(addonTable.Config.Options.WINDOWS)[self.chatFrame:GetID()].tabs) do
@@ -453,7 +452,7 @@ function addonTable.Display.TabsBarMixin:RefreshTabs()
     self.dropdownTabButton.isDraggable = false
     self.dropdownTabButton:SetText(addonTable.Constants.TabDropdownMarkup)
     self.dropdownTabButton:SetScript("OnClick", function()
-      MenuUtil.CreateContextMenu(self, function(menu, rootDescription)
+      MenuUtil.CreateContextMenu(self, function(_, rootDescription)
         for _, tab in ipairs(self.dropdownTabs) do
           local button = rootDescription:CreateButton(CreateColor(tab:GetColor()):WrapTextInColorCode(tab:GetText()), function(_, details)
             tab:Click(details.buttonName)
@@ -462,12 +461,13 @@ function addonTable.Display.TabsBarMixin:RefreshTabs()
             b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp")
           end)
         end
+        rootDescription:SetScrollMode(20 * 20)
       end)
     end)
     self.dropdownTabButton:Show()
     self.dropdownTabButton:SetColor(0.3, 0.3, 0.3)
 
-    table.insert(self.Tabs, self.dropdownTabButton)
+    table.insert(allTabs, self.dropdownTabButton)
   end
 
   for _, tab in ipairs(allTabs) do

@@ -15,22 +15,39 @@ LoggerHeadDB = {
 },
 ["Skyreach"] = {
 [23] = true,
+[8] = true,
 },
 ["Magisters' Terrace"] = {
+[8] = true,
 [2] = true,
 [23] = true,
 },
+["Seat of the Triumvirate"] = {
+[23] = true,
+[8] = true,
+},
+["Nexus-Point Xenas"] = {
+[23] = true,
+[8] = true,
+},
 ["Windrunner Spire"] = {
 [23] = true,
+[8] = true,
 },
 ["Voidscar Arena"] = {
 [23] = true,
 },
-["Nexus-Point Xenas"] = {
+["Algeth'ar Academy"] = {
 [23] = true,
+[8] = true,
 },
 ["Maisara Caverns"] = {
 [23] = true,
+[8] = true,
+},
+["Pit of Saron"] = {
+[23] = true,
+[8] = true,
 },
 ["Murder Row"] = {
 [23] = true,
@@ -55,11 +72,14 @@ LoggerHeadDB = {
 ["The Shadow Enclave"] = {
 [208] = false,
 },
-["Torment's Rise"] = {
+["The Darkway"] = {
 [208] = true,
 },
 ["The Gulf of Memory"] = {
 [208] = false,
+},
+["Torment's Rise"] = {
+[208] = true,
 },
 ["Atal'Aman"] = {
 [208] = false,
@@ -78,6 +98,7 @@ LoggerHeadDB = {
 },
 ["The Dreamrift"] = {
 [17] = true,
+[14] = true,
 },
 },
 },

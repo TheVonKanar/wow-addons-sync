@@ -26,11 +26,13 @@ local DEFAULT_SECTION_ORDER = {
     'anniversary',
     'events',
     'hallowfallFishingDerby',
+    'leveling',
     'delves',
     'midnight',
-    'warWithin',
+    'prey',
     'professions',
     'pvp',
+    'warWithin',
     'dragonflight',
 }
 

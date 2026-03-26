@@ -102,6 +102,7 @@ local min = math.min
 ---@field consumableCategory? string Category key in BR.CONSUMABLE_ITEMS for bag scanning (only set when items exist)
 ---@field freeConsumable? boolean Bypass content gates (always show when enabled)
 ---@field permanentRuneItemIDs? number[] Item IDs that, if in bags, make this a free consumable (bypass content gates)
+---@field disabledInCompetitivePvP? boolean Unusable in arenas and rated BGs
 
 ---@class BuffGroup
 ---@field displayName string
@@ -119,7 +120,8 @@ local min = math.min
 ---@field castSpellID? number       -- Spell to cast on click (separate from tracked aura)
 ---@field castItemID? number        -- Item to use on click
 ---@field castMacro? string         -- Raw macro text for click action
----@field requireItemID? number    -- Only show if this item is equipped or in bags
+---@field requireItemID? number    -- Only show if this item is owned/equipped/in bags (see requireItemMode)
+---@field requireItemMode? "owned"|"equipped"|"bags" -- How to check requireItemID: "owned" (default) = bags or equipped, "equipped" = equipped only, "bags" = bags only
 ---@field loadConditions? LoadConditions  -- Per-buff content visibility (nil = show everywhere)
 
 ---Check if the player is NOT an Earthen dwarf (they have permanent Well Fed from Ingest Minerals)
@@ -594,7 +596,7 @@ BR.BUFF_TABLES = {
             buffIdOverride = { 232698, 194249 },
             noExpirationGlow = true, -- Voidform (short duration) replaces Shadowform; don't warn
         },
-        -- Shaman weapon imbues (alphabetical: Earthliving, Flametongue, Windfury)
+        -- Shaman weapon imbues (alphabetical: Earthliving, Flametongue, Tidecaller's Guard, Windfury)
         {
             spellID = 382021,
             key = "earthlivingWeapon",
@@ -612,6 +614,26 @@ BR.BUFF_TABLES = {
             overlayText = "NO\nFT",
             enchantID = 5400,
             groupId = "shamanImbues",
+        },
+        {
+            spellID = 457481,
+            key = "tidecallersGuard",
+            name = "Tidecaller's Guard",
+            class = "SHAMAN",
+            overlayText = "NO\nTG",
+            enchantID = 7528,
+            requireSpecId = 264, -- Restoration
+            groupId = "shamanImbues",
+            customCheck = function()
+                if not IsPlayerSpell(457481) then
+                    return nil
+                end
+                -- Only relevant when a shield is equipped
+                if not BR.BuffState.HasShield() then
+                    return nil
+                end
+                return BR.BuffState.GetOffHandEnchantID() ~= 7528
+            end,
         },
         {
             spellID = 33757,
@@ -752,6 +774,8 @@ BR.BUFF_TABLES = {
     },
     ---@type CustomBuff[]
     custom = {},
+    -- Consumables are disabled in arenas and rated BGs (disabledInCompetitivePvP = true)
+    -- unless explicitly allowed (e.g. healthstone). See IsInCompetitivePvP() in State.lua.
     ---@type ConsumableBuff[]
     consumable = {
         -- Augment Rune (The War Within + Midnight)
@@ -771,6 +795,7 @@ BR.BUFF_TABLES = {
             permanentRuneItemIDs = { 243191, 259085 }, -- Ethereal (TWW), Void-Touched (Midnight)
             groupId = "rune",
             consumableCategory = "rune",
+            disabledInCompetitivePvP = true,
         },
         -- Flasks (The War Within + Midnight)
         {
@@ -802,6 +827,7 @@ BR.BUFF_TABLES = {
             overlayText = "NO\nFLASK",
             groupId = "flask",
             consumableCategory = "flask",
+            disabledInCompetitivePvP = true,
         },
         -- Food (all expansions - detected by icon ID)
         {
@@ -813,19 +839,7 @@ BR.BUFF_TABLES = {
             consumableCategory = "food",
             displayIcon = 136000,
             visibilityCondition = IsNotEarthen,
-        },
-        -- Sanguithorn Tea (additional food, stacks with regular food)
-        {
-            spellID = 1269152,
-            key = "sanguithorn",
-            name = "Sanguithorn Tea",
-            overlayText = "NO\nTEA",
-            groupId = "sanguithorn",
-            consumableCategory = "sanguithorn",
-            displayIcon = 7548960,
-            eatingSpellID = 1277461,
-            eatingIconID = 7548956,
-            visibilityCondition = IsNotEarthen,
+            disabledInCompetitivePvP = true,
         },
         -- Delve Food (only when inside a delve with Brann or Valeera)
         {
@@ -840,6 +854,7 @@ BR.BUFF_TABLES = {
                 desc = "Only shown inside delves when Brann or Valeera are in your party.\n\nExpiration glow is disabled for this buff because its short 10-minute duration would cause it to always glow.",
             },
             visibilityCondition = BR.IsInDelve,
+            disabledInCompetitivePvP = true,
         },
         -- Healthstone (checks inventory, free consumable for warlocks)
         {
@@ -876,6 +891,7 @@ BR.BUFF_TABLES = {
                 433583, -- Rite of Adjuration
                 433568, -- Rite of Sanctification
             },
+            disabledInCompetitivePvP = true,
         },
         -- Weapon Buff (Off-Hand) - only shown when off-hand slot has a weapon
         {
@@ -898,6 +914,7 @@ BR.BUFF_TABLES = {
             visibilityCondition = function()
                 return BR.BuffState.HasOffHandWeapon()
             end,
+            disabledInCompetitivePvP = true,
         },
     },
 }
@@ -925,7 +942,6 @@ BR.BuffGroups = {
     healthstone = { displayName = "Healthstone" },
     rune = { displayName = "Augment Rune" },
     weaponBuff = { displayName = "Weapon Buff" },
-    sanguithorn = { displayName = "Sanguithorn Tea" },
 }
 
 -- Classes that benefit from each buff

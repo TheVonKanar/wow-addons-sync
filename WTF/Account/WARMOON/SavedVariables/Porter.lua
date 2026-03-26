@@ -1,10 +1,10 @@
 
 PorterDB = {
-["lastSeenVersion"] = "1.0.10",
+["lastSeenVersion"] = "1.1.2",
 ["position"] = {
-["y"] = 4.000029563903809,
-["x"] = -233.9997100830078,
-["point"] = "CENTER",
+["y"] = 196.9996795654297,
+["x"] = 37.00020599365234,
+["point"] = "LEFT",
 },
 ["useGlobalProfile"] = {
 ["Kvotheen-Hyjal"] = false,
@@ -13,7 +13,11 @@ PorterDB = {
 ["hide"] = true,
 },
 ["globalProfile"] = {
-["zoneOrder"] = "recent",
+["showCosmeticHearthstones"] = false,
+["hideBankItems"] = false,
+["hideAfterPort"] = true,
+["defaultView"] = "category",
+["viewMode"] = "category",
 ["categoryVisibility"] = {
 ["House"] = true,
 ["Raids"] = true,
@@ -24,15 +28,17 @@ PorterDB = {
 ["Items"] = true,
 ["Dungeons"] = true,
 },
+["currentSeason"] = "midnight",
+["zoneOrder"] = "recent",
 ["hearthstoneMode"] = "Random",
-["currentSeason"] = "tww",
-["viewMode"] = "category",
-["defaultView"] = "category",
-["showCosmeticHearthstones"] = false,
 },
 ["profiles"] = {
 ["Kvotheen-Hyjal"] = {
-["showCosmeticHearthstones"] = false,
+["zoneOrder"] = "recent",
+["hideBankItems"] = false,
+["hideAfterPort"] = true,
+["defaultView"] = "category",
+["hearthstoneMode"] = "Random",
 ["categoryVisibility"] = {
 ["Items"] = true,
 ["Raids"] = true,
@@ -43,11 +49,9 @@ PorterDB = {
 ["House"] = true,
 ["Dungeons"] = true,
 },
-["zoneOrder"] = "recent",
-["currentSeason"] = "tww",
+["currentSeason"] = "midnight",
+["showCosmeticHearthstones"] = false,
 ["viewMode"] = "category",
-["defaultView"] = "category",
-["hearthstoneMode"] = "Random",
 },
 },
 }

@@ -66,12 +66,12 @@ local DRUID_FORMS= {
     {}, -- user selected "None"
 }
 
-local GetTime, pairs, ipairs, max, min, C_Timer
-    = GetTime, pairs, ipairs, max, min, C_Timer
-local IsInInstance, InCombatLockdown, IsOnNeighborhoodMap, IsInsideHouse, IsMounted
-    = IsInInstance, InCombatLockdown, C_Housing.IsOnNeighborhoodMap, C_Housing.IsInsideHouse, IsMounted
-local GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
-    = GetShapeshiftFormID, UnitInVehicle, UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
+local GetTime, pairs, ipairs, C_Timer
+    = GetTime, pairs, ipairs, C_Timer
+local IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle
+    = IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle
+local UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
+    = UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
 
 ------------------
 -- Setup
@@ -145,19 +145,43 @@ local function ResetAllGroupStates()
     end
 end
 
+local function GetGroupsForMouseoverFrame(frameGroup, globalGroups)
+    -- returns which groups should be triggered when mousing over frames of this group
+    local groupList = {frameGroup}
+
+    for group in pairs(globalGroups) do
+        if group ~= frameGroup then
+            tinsert(groupList, group)
+        end
+    end
+
+    return groupList
+end
+
 local function CreateMouseoverLists()
     wipe(mouseoverFrames)
     wipe(mouseoverGroups)
+    local globalGroups = {}
+
     for _, group in ipairs(Main.activeGroups) do
         if group.conditions.mouseover.enabled then
             mouseoverGroups[group] = true
-            for _, frame in pairs(group.frames) do
-                if not frame:IsAnchoringRestricted() then
-                    mouseoverFrames[frame] = group
-                end
+        end
+
+        -- means this group responds to mouseovers events from any group
+        if group.conditions.mouseover.trigger == 2 then
+            globalGroups[group] = true
+        end
+    end
+
+    for group in pairs(mouseoverGroups) do
+        for _, frame in pairs(group.frames) do
+            if not frame:IsAnchoringRestricted(group) then
+                mouseoverFrames[frame] = GetGroupsForMouseoverFrame(group, globalGroups)
             end
         end
     end
+
 end
 
 local function ResetStates()
@@ -351,39 +375,48 @@ local function ConditionInteractable(canInteract)
 end
 
 local function ConditionInstance()
-    local isInInstance = IsInInstance()
-    local isHousing = IsOnNeighborhoodMap() or IsInsideHouse()
+    local isInInstance, instanceType = IsInInstance()
+    isInInstance = isInInstance or instanceType == "scenario"
+    local isHousing = instanceType == "neighborhood" or instanceType == "interior"
     UpdateConditionForAllGroups("instance", isInInstance and not isHousing)
+    UpdateConditionForAllGroups("housing", isHousing)
 end
 
 local function ConditionMouseover()
     -- checking if mouse is hovering over a relevant frame.
     local currentMouseover = false
-    local mouseoverGroup
-    for frame, group in pairs(mouseoverFrames) do
+    local mouseoverChanged, groupsToUpdate
+    for frame, groups in pairs(mouseoverFrames) do
         if frame:IsMouseOver() and frame:IsVisible() then
             currentMouseover = true
-            mouseoverGroup = group
+            groupsToUpdate = groups
             break
         end
     end
 
     -- only returning true when there was a change to mouseover, which then prompts an update. 
-    if mouseoverGroup and currentMouseover ~= mouseoverGroup.states.lastMouseover then
-        mouseoverGroup.states.lastMouseover = currentMouseover
-        UpdateActiveConditions(mouseoverGroup, "mouseover", currentMouseover)
-        return true, mouseoverGroup
-    elseif not mouseoverGroup then
+    if groupsToUpdate then
+        for _, group in ipairs(groupsToUpdate) do
+            if currentMouseover ~= group.states.lastMouseover then
+                group.states.lastMouseover = currentMouseover
+                UpdateActiveConditions(group, "mouseover", currentMouseover)
+                mouseoverChanged = true
+            end
+        end
+        return mouseoverChanged, groupsToUpdate
+    else
+        groupsToUpdate = {}
         for group, _ in pairs(mouseoverGroups) do
             if group.states.lastMouseover then
                 group.states.lastMouseover = false
                 UpdateActiveConditions(group, "mouseover", false)
-                return true, group
+                tinsert(groupsToUpdate, group)
+                mouseoverChanged = true
             end
         end
+        return mouseoverChanged, groupsToUpdate
     end
 
-    return false
 end
 
 local function ConditionFlying()
@@ -533,10 +566,15 @@ end
 
 local function OnLogin()
     -- deferred to ensure all AddOn frames have been created.
-    C_Timer.After(1, function()
+    C_Timer.After(3, function()
         InitDB()
         InitOptions()
         InitAddon()
+    end)
+
+    -- on very slow logins minimap pins don't remain hidden.
+    C_Timer.After(10, function()
+        Fading.UpdateAllFrameVisibility()
     end)
 end
 
@@ -587,9 +625,11 @@ local function OnCombatEnd()
 end
 
 local function OnMouseover()
-    local mouseoverChanged, group = ConditionMouseover()
+    local mouseoverChanged, groups = ConditionMouseover()
     if mouseoverChanged then
-        Fading.FadeGroup(group)
+        for _, group in ipairs(groups) do
+            Fading.FadeGroup(group)
+        end
     end
 end
 

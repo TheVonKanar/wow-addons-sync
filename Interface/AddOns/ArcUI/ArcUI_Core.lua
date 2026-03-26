@@ -1,18 +1,11 @@
 -- ===================================================================
 -- ArcUI_Core.lua
 -- Core tracking system supporting multiple bar slots
--- v3.0.0: Event-driven aura map architecture (replaces RefreshData hooks)
---   - Hooks CDM frame SetAuraInstanceInfo/ClearAuraInstanceInfo for
---     lightweight aura-to-bar map building (O(1) lookup).
---   - UNIT_AURA("player") handler for instant buff stack updates
---     (mirrors v2.13.0 debuff pattern).
---   - UNIT_AURA("target") handler unchanged for debuff stack updates.
+-- v3.0.0: Event-driven CDM hook architecture
+--   - Hooks CDM frame OnAuraInstanceInfoSet/OnAuraInstanceInfoCleared/
+--     OnUnitAuraUpdatedEvent for direct bar updates (no UNIT_AURA polling).
 --   - PLAYER_TOTEM_UPDATE handler for totem/pet/ground bars.
---   - Removes per-call FindBarFrameByCooldownID/FindBuffFrameByCooldownID
---     scanning from UpdateBarBuffInfo — uses cached frame refs from
---     ValidateAllBarTracking with O(1) cooldownID validation.
---   - Removes RefreshData hook system entirely (was causing redundant
---     full CDM viewer scans on every aura tick).
+--   - Cached frame refs from ValidateAllBarTracking with O(1) cooldownID validation.
 -- v2.13.0: Fix debuff stack tracking lag ("one behind" on target)
 -- v2.12.0: Fix empty CDM bar frames after spec change
 -- v2.11.0: Secret-safe auraInstanceID protection
@@ -275,99 +268,123 @@ end
 -- ===================================================================
 local UpdateAllBars
 local UpdateBarBuffInfo
-local StartDurationBarTicker
 
--- ===================================================================
--- BUFF AURA REVERSE LOOKUP (v3.0.0)
--- Maps auraInstanceID → {barNum = true, ...} for player buff bars.
--- Populated by SetAuraInstanceInfo hooks on CDM frames.
--- Used by UNIT_AURA("player") handler for O(1) stack updates.
--- ===================================================================
-local buffAuraToBarMap = {}    -- [auraInstanceID] = { [barNum] = true }
-local buffMappedBars = {}      -- [barNum] = true (reverse: bars that have a mapped aura)
 local hookedAuraFrames = {}    -- [frame] = { barNumbers = {barNum = true} }
+
+-- Per-bar set of bar numbers that have opted into high-frequency SetAuraInstanceInfo updates.
+-- Stored separately so the hook can check cheaply without reading barConfig on every fire.
+local highFreqBars = {}  -- [barNumber] = true
+
 local totemBarNumbers = {}     -- [barNum] = true, for PLAYER_TOTEM_UPDATE
 
--- Register a buff bar's auraInstanceID for direct UNIT_AURA("player") updates
-local function RegisterBuffAuraForBar(auraInstanceID, barNumber)
-  if not auraInstanceID or not barNumber then return end
-  if not buffAuraToBarMap[auraInstanceID] then
-    buffAuraToBarMap[auraInstanceID] = {}
-  end
-  buffAuraToBarMap[auraInstanceID][barNumber] = true
-  buffMappedBars[barNumber] = true
-end
-
--- Unregister a bar from all buff aura mappings
-local function UnregisterBuffAuraForBar(barNumber)
-  for auraID, bars in pairs(buffAuraToBarMap) do
-    bars[barNumber] = nil
-    if not next(bars) then
-      buffAuraToBarMap[auraID] = nil
-    end
-  end
-  buffMappedBars[barNumber] = nil
-end
-
--- Clear all buff aura mappings (spec change, etc.)
-local function ClearAllBuffAuraMappings()
-  wipe(buffAuraToBarMap)
-  wipe(buffMappedBars)
-end
-
--- Hook CDM frame's SetAuraInstanceInfo / ClearAuraInstanceInfo
--- for lightweight aura map building. Only hooks once per frame.
--- When auraInstanceID appears/changes → register into buffAuraToBarMap
--- When auraInstanceID cleared → unregister + update bar to hide
+-- Hook CDM frame's OnAuraInstanceInfoSet / OnAuraInstanceInfoCleared / OnUnitAuraUpdatedEvent
+-- for direct bar updates. Only hooks once per frame.
+-- When aura gained → update bar
+-- When aura stack/duration updated → update bar
+-- When aura lost → unregister + update bar to hide
+-- When totem updates → update bar (totemData already current at hook time)
 local function HookCDMFrameForAuraMap(frame, barNumber)
   if not frame then return end
-  
+
   if not hookedAuraFrames[frame] then
     hookedAuraFrames[frame] = { barNumbers = {} }
-    
-    -- Hook SetAuraInstanceInfo: fires when auraInstanceID appears or changes
-    -- CDM dirty-checks internally so this only fires on actual changes
+
+    -- OnAuraInstanceInfoSet: fires on real aura gained (player buffs).
+    -- Also sets _arcAuraActive so OnNewTarget knows there's a live aura.
+    if frame.OnAuraInstanceInfoSet then
+      hooksecurefunc(frame, "OnAuraInstanceInfoSet", function(self)
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        self._arcAuraActive = true
+        for barNum in pairs(hookData.barNumbers) do
+          UpdateBarBuffInfo(barNum)
+        end
+      end)
+    end
+
+    -- OnAuraInstanceInfoCleared: fires on real aura lost (player buffs).
+    -- Clears _arcAuraActive so OnNewTarget stops firing updates.
+    if frame.OnAuraInstanceInfoCleared then
+      hooksecurefunc(frame, "OnAuraInstanceInfoCleared", function(self)
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        self._arcAuraActive = false
+        local bars = {}
+        for barNum in pairs(hookData.barNumbers) do bars[barNum] = true end
+        C_Timer.After(0, function()
+          for barNum in pairs(bars) do
+            UpdateBarBuffInfo(barNum)
+          end
+        end)
+      end)
+    end
+
+    -- OnNewTarget: handles target debuff stack updates. CDM fires this on every
+    -- target UNIT_AURA — including every debuff stack change on the current target.
+    -- Only processes when _arcAuraActive is true AND auraDataUnit is "target" so
+    -- player buffs (covered by OnUnitAuraUpdatedEvent) don't pay this cost.
+    if frame.OnNewTarget then
+      hooksecurefunc(frame, "OnNewTarget", function(self)
+        if not self._arcAuraActive then return end
+        if self.auraDataUnit ~= "target" then return end
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        for barNum in pairs(hookData.barNumbers) do
+          UpdateBarBuffInfo(barNum)
+        end
+      end)
+    end
+
+    -- OnUnitAuraUpdatedEvent: player buff stack changes (updatedAuraInstanceIDs path).
+    -- PERF: CDM dispatches this multiple times per UNIT_AURA batch (one per stack in the
+    -- same tick). Coalesce with a pending flag — only the first fire schedules a deferred
+    -- UpdateBarBuffInfo; subsequent fires in the same tick are a single boolean check.
+    if frame.OnUnitAuraUpdatedEvent then
+      hooksecurefunc(frame, "OnUnitAuraUpdatedEvent", function(self)
+        local hookData = hookedAuraFrames[self]
+        if not hookData or not next(hookData.barNumbers) then return end
+        if self._arcUpdatePending then return end
+        self._arcUpdatePending = true
+        local bars = {}
+        for barNum in pairs(hookData.barNumbers) do bars[barNum] = true end
+        C_Timer.After(0, function()
+          self._arcUpdatePending = false
+          for barNum in pairs(bars) do
+            UpdateBarBuffInfo(barNum)
+          end
+        end)
+      end)
+    end
+
+    -- SetAuraInstanceInfo: HIGH FREQUENCY — fires on every CDM aura refresh (~50-70x/session).
+    -- Opt-in only via cfg.tracking.highFrequencyUpdates. Disabled by default.
+    -- Only calls UpdateBarBuffInfo for bars that have the flag enabled.
     if frame.SetAuraInstanceInfo then
       hooksecurefunc(frame, "SetAuraInstanceInfo", function(self)
         local hookData = hookedAuraFrames[self]
-        if not hookData or not next(hookData.barNumbers) then return end
-        local newAuraID = self.auraInstanceID
-        if not newAuraID then return end
-        
-        -- Update buff map for all bars using this frame
+        if not hookData then return end
         for barNum in pairs(hookData.barNumbers) do
-          UnregisterBuffAuraForBar(barNum)
-          RegisterBuffAuraForBar(newAuraID, barNum)
-          -- Initial update to display the new aura state
-          UpdateBarBuffInfo(barNum)
-        end
-        if StartDurationBarTicker then
-          StartDurationBarTicker()
+          if highFreqBars[barNum] then
+            UpdateBarBuffInfo(barNum)
+          end
         end
       end)
     end
-    
-    -- Hook ClearAuraInstanceInfo: fires when aura expires/is removed
-    if frame.ClearAuraInstanceInfo then
-      hooksecurefunc(frame, "ClearAuraInstanceInfo", function(self)
+
+    -- OnPlayerTotemUpdateEvent: totem gained/lost/refreshed.
+    if frame.OnPlayerTotemUpdateEvent then
+      hooksecurefunc(frame, "OnPlayerTotemUpdateEvent", function(self)
         local hookData = hookedAuraFrames[self]
         if not hookData or not next(hookData.barNumbers) then return end
-        
         for barNum in pairs(hookData.barNumbers) do
-          UnregisterBuffAuraForBar(barNum)
           UpdateBarBuffInfo(barNum)
         end
       end)
     end
   end
-  
+
   -- Register this bar as using this frame
   hookedAuraFrames[frame].barNumbers[barNumber] = true
-  
-  -- Read current auraInstanceID and populate map immediately
-  if HasAuraInstanceID(frame.auraInstanceID) then
-    RegisterBuffAuraForBar(frame.auraInstanceID, barNumber)
-  end
 end
 
 -- Unregister a bar from a frame's aura hooks
@@ -383,64 +400,28 @@ local function ClearAllAuraHookRegistrations()
     wipe(data.barNumbers)
   end
   wipe(totemBarNumbers)
+  wipe(highFreqBars)
 end
 
 -- Register frame hooks appropriate for the bar's track type
 local function RegisterBarFrameHooks(frame, barNumber, trackType)
   if not frame then return end
+  -- Sync highFreqBars for this bar based on its current config flag
+  local barCfg = ns.API.GetBarConfig and ns.API.GetBarConfig(barNumber)
+  if barCfg and barCfg.tracking and barCfg.tracking.highFrequencyUpdates then
+    highFreqBars[barNumber] = true
+  else
+    highFreqBars[barNumber] = nil
+  end
   if trackType == "pet" or trackType == "totem" or trackType == "ground" then
     -- Totem/pet/ground: tracked via PLAYER_TOTEM_UPDATE event
     totemBarNumbers[barNumber] = true
     -- Also hook SetAuraInstanceInfo in case CDM sets aura data on totem frames
     HookCDMFrameForAuraMap(frame, barNumber)
   else
-    -- Buff (default) AND Debuff: hook for aura map building.
-    -- Buff bars use buffAuraToBarMap + UNIT_AURA("player").
-    -- Debuff bars use debuffAuraToBarMap + UNIT_AURA("target"), but ALSO
-    -- need the SetAuraInstanceInfo hook as a recovery path — without it,
-    -- if the initial UpdateAllBars call at combat start fails (CDM frame
-    -- timing race), there's no event-driven way to retry.
-    -- The hook fires UpdateBarBuffInfo which populates debuffAuraToBarMap,
-    -- enabling subsequent UNIT_AURA("target") O(1) lookups.
+    -- Buff (default) AND Debuff: hook CDM frame directly for aura updates.
     HookCDMFrameForAuraMap(frame, barNumber)
   end
-end
-
--- ===================================================================
--- DEBUFF AURA REVERSE LOOKUP (v2.13.0)
--- Maps auraInstanceID → {barNum = true, ...} for target debuff bars.
--- Populated by UpdateBarBuffInfo when it discovers a valid aura.
--- Used by UNIT_AURA handler to instantly update only matching bars,
--- bypassing CDM's stale GetTargetAurasCached() entirely.
--- ===================================================================
-local debuffAuraToBarMap = {}  -- [auraInstanceID] = { [barNum] = true }
-local debuffMappedBars = {}    -- [barNum] = true (reverse: bars that have a mapped aura)
-
--- Register a debuff bar's auraInstanceID for direct UNIT_AURA updates
-local function RegisterDebuffAuraForBar(auraInstanceID, barNumber)
-  if not auraInstanceID or not barNumber then return end
-  if not debuffAuraToBarMap[auraInstanceID] then
-    debuffAuraToBarMap[auraInstanceID] = {}
-  end
-  debuffAuraToBarMap[auraInstanceID][barNumber] = true
-  debuffMappedBars[barNumber] = true
-end
-
--- Unregister a bar from all debuff aura mappings
-local function UnregisterDebuffAuraForBar(barNumber)
-  for auraID, bars in pairs(debuffAuraToBarMap) do
-    bars[barNumber] = nil
-    if not next(bars) then
-      debuffAuraToBarMap[auraID] = nil
-    end
-  end
-  debuffMappedBars[barNumber] = nil
-end
-
--- Clear all debuff aura mappings (spec change, etc.)
-local function ClearAllDebuffAuraMappings()
-  wipe(debuffAuraToBarMap)
-  wipe(debuffMappedBars)
 end
 
 -- ===================================================================
@@ -1185,9 +1166,6 @@ ClearBarState = function(barNumber)
     -- Unregister this bar's CDM hide request
     local wasHidingCD = UnregisterCDMHideRequest(barNumber)
     
-    -- v2.13.0: Unregister from debuff aura reverse lookup
-    UnregisterDebuffAuraForBar(barNumber)
-    
     -- Only restore CDM frame visibility if no other bar is still hiding that cooldownID
     if state.cachedFrame then
       local cdID = wasHidingCD or GetFrameCooldownID(state.cachedFrame)
@@ -1213,68 +1191,8 @@ end
 -- ===================================================================
 -- DURATION BAR TICKER
 -- ===================================================================
-local durationBarTicker = nil
-
-local function UpdateDurationBars()
-  local db = ns.API.GetDB()
-  if not db or not db.bars then return end
-  
-  local hasActiveDurationBars = false
-  for barNum = 1, 30 do
-    local barConfig = db.bars[barNum]
-    if barConfig and barConfig.tracking and barConfig.tracking.enabled then
-      -- Update if:
-      -- 1. Duration bar mode (useDurationBar = true), OR
-      -- 2. Stack bar with showDuration (any source type), OR
-      -- 3. Cooldown charge bar with showDuration (needs polling for cooldown countdown), OR
-      -- 4. Any bar with trackedSpellID set (needs polling for correct duration), OR
-      -- 5. Icon with iconShowDuration enabled (note: different from bar's showDuration!)
-      local trackedSpellID = barConfig.tracking.trackedSpellID
-      local hasTrackedSpell = trackedSpellID and trackedSpellID > 0
-      local isIconWithDuration = barConfig.display.displayType == "icon" and barConfig.display.iconShowDuration
-      local isBarWithDuration = barConfig.display.displayType == "bar" and barConfig.display.showDuration
-      
-      local needsPolling = barConfig.tracking.useDurationBar or 
-                           isBarWithDuration or
-                           hasTrackedSpell or
-                           isIconWithDuration
-      if needsPolling then
-        local state = GetBarState(barNum)
-        
-        if state.active or hasTrackedSpell then
-          -- Also keep polling if trackedSpellID is set (might need to re-cache)
-          hasActiveDurationBars = true
-          UpdateBarBuffInfo(barNum)
-        end
-      end
-    end
-  end
-  return hasActiveDurationBars
-end
-
-StartDurationBarTicker = function()
-  if durationBarTicker then return end
-  -- PERFORMANCE TEST: Changed from 0.12s to 0.5s (2/sec instead of 8/sec)
-  durationBarTicker = C_Timer.NewTicker(0.5, function()
-    local hasActive = UpdateDurationBars()
-    if not hasActive then
-      if durationBarTicker then
-        durationBarTicker:Cancel()
-        durationBarTicker = nil
-      end
-    end
-  end)
-end
-
-local function StopDurationBarTicker()
-  if durationBarTicker then
-    durationBarTicker:Cancel()
-    durationBarTicker = nil
-  end
-end
-
-ns.API.StartDurationBarTicker = StartDurationBarTicker
-ns.API.StopDurationBarTicker = StopDurationBarTicker
+ns.API.StartDurationBarTicker = function() end  -- no-op, kept for any external callers
+ns.API.StopDurationBarTicker = function() end
 
 
 -- ===================================================================
@@ -2132,14 +2050,15 @@ UpdateBarBuffInfo = function(barNumber)
   -- (Display.UpdateBar handles visibility; we just don't want to pollute state)
   local showOnSpecs = barConfig.behavior and barConfig.behavior.showOnSpecs
   if showOnSpecs and #showOnSpecs > 0 then
-    local currentSpec = GetSpecialization() or 0
+    local currentSpec = (ns.Display and ns.Display.GetCachedSpec and ns.Display.GetCachedSpec()) or GetSpecialization() or 0
     local specOK = false
     for _, spec in ipairs(showOnSpecs) do
       if spec == currentSpec then specOK = true; break end
     end
     if not specOK then return end
   elseif barConfig.behavior and barConfig.behavior.showOnSpec and barConfig.behavior.showOnSpec > 0 then
-    if (GetSpecialization() or 0) ~= barConfig.behavior.showOnSpec then return end
+    local currentSpec = (ns.Display and ns.Display.GetCachedSpec and ns.Display.GetCachedSpec()) or GetSpecialization() or 0
+    if currentSpec ~= barConfig.behavior.showOnSpec then return end
   end
   
   local trackType = barConfig.tracking.trackType or "buff"
@@ -2246,8 +2165,18 @@ UpdateBarBuffInfo = function(barNumber)
   
   -- Skip during spec change grace period to allow CDM frames time to load
   if not state.trackingOK and not IsOptionsOpen() and not inGracePeriod then
-    if ns.Display and ns.Display.HideBar then ns.Display.HideBar(barNumber) end
-    return
+    -- Don't hide if the aura is still active — CDM may have just reassigned its frame
+    -- (e.g. pressing a spell that changes what CDM shows). The aura is still up,
+    -- the cached frame just became stale. Let the next hook fire to re-discover it.
+    local auraStillActive = false
+    local checkID = state.trackedAuraInstanceID or state.buffAuraInstanceID or state.debuffAuraInstanceID
+    if HasAuraInstanceID(checkID) then
+      auraStillActive = true
+    end
+    if not auraStillActive then
+      if ns.Display and ns.Display.HideBar then ns.Display.HideBar(barNumber) end
+      return
+    end
   end
   
   local hasCooldownID = barConfig.tracking.cooldownID and barConfig.tracking.cooldownID > 0
@@ -2255,11 +2184,11 @@ UpdateBarBuffInfo = function(barNumber)
     local maxStacks = barConfig.tracking.maxStacks or 10
     if useDurationBar then
       if ns.Display and ns.Display.UpdateDurationBar then
-        ns.Display.UpdateDurationBar(barNumber, 0, maxStacks, false, nil, nil, nil)
+        ns.Display.UpdateDurationBar(barNumber, 0, maxStacks, false, nil, nil, nil, nil, barConfig)
       end
     else
       if ns.Display and ns.Display.UpdateBar then
-        ns.Display.UpdateBar(barNumber, 0, maxStacks, false, nil, nil)
+        ns.Display.UpdateBar(barNumber, 0, maxStacks, false, nil, nil, nil, barConfig)
       end
     end
     return
@@ -2276,6 +2205,7 @@ UpdateBarBuffInfo = function(barNumber)
   local barFrame = state.cachedBarFrame
   local active = false
   local stacks = 0
+  local auraIconFromData = nil  -- icon from GetAuraDataByAuraInstanceID, passed directly to SetTexture (secret-safe)
   
   -- ═══════════════════════════════════════════════════════════════════
   -- PET/TOTEM/GROUND EFFECT TRACKING - Use preferredTotemUpdateSlot from CDM frame
@@ -2306,7 +2236,6 @@ UpdateBarBuffInfo = function(barNumber)
   -- DEBUFF TRACKING - Check if CDM frame has auraInstanceID set
   -- Stacks/duration come from target unit (not player!)
   -- Uses linkedSpellID (non-secret!) to handle CDM override situations
-  -- v2.13.0: Tracks effective auraInstanceID for direct UNIT_AURA updates
   -- ═══════════════════════════════════════════════════════════════════
   elseif trackType == "debuff" then
     local trackedSpellID = barConfig.tracking.trackedSpellID
@@ -2323,16 +2252,16 @@ UpdateBarBuffInfo = function(barNumber)
       local auraDataUnit = cdmFrame.auraDataUnit or "target"
       local linkedSpellID = cdmFrame.cooldownInfo and cdmFrame.cooldownInfo.linkedSpellID
       
-      -- Check if CDM is currently showing OUR tracked spell
-      -- Use pcall because linkedSpellID can be secret when there's only 1 linked spell
+      -- Check if CDM is currently showing OUR tracked spell.
+      -- linkedSpellID is secret when there's only 1 linked spell — use issecretvalue
+      -- instead of pcall (much cheaper: single C call vs full pcall overhead).
       local isOurSpell = false
       if linkedSpellID then
-        local ok, result = pcall(function() return linkedSpellID == trackedSpellID end)
-        if ok then
-          isOurSpell = result
-        else
-          -- linkedSpellID is secret - means only 1 linked spell, so CDM always shows our spell
+        if issecretvalue and issecretvalue(linkedSpellID) then
+          -- Secret = only 1 linked spell, CDM always shows ours
           isOurSpell = true
+        else
+          isOurSpell = (linkedSpellID == trackedSpellID)
         end
       end
       
@@ -2342,6 +2271,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           -- Cache this auraInstanceID for when CDM switches to different spell
           state.trackedAuraInstanceID = auraInstanceID
           state.trackedAuraUnit = auraDataUnit
@@ -2357,6 +2287,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           debuffAuraID = state.trackedAuraInstanceID
         else
           -- Cached aura expired - clear it
@@ -2382,6 +2313,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           debuffAuraID = auraInstanceID
         else
           active = false
@@ -2392,6 +2324,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           debuffAuraID = state.debuffAuraInstanceID
         else
           state.debuffAuraInstanceID = nil
@@ -2412,6 +2345,8 @@ UpdateBarBuffInfo = function(barNumber)
           local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, barFrame.auraInstanceID)
           if auraData then 
             stacks = auraData.applications or 0
+            auraIconFromData = auraData.icon
+          auraIconFromData = auraData.icon
             debuffAuraID = barFrame.auraInstanceID
           end
         end
@@ -2422,21 +2357,17 @@ UpdateBarBuffInfo = function(barNumber)
           local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, frame.auraInstanceID)
           if auraData then
             stacks = auraData.applications or 0
+            auraIconFromData = auraData.icon
+          auraIconFromData = auraData.icon
             debuffAuraID = frame.auraInstanceID
           end
         end
       end
     end
     
-    -- v2.13.0: Register this debuff aura for direct UNIT_AURA updates
-    UnregisterDebuffAuraForBar(barNumber)  -- Clear old mapping first
-    if debuffAuraID then
-      RegisterDebuffAuraForBar(debuffAuraID, barNumber)
-    end
   -- ═══════════════════════════════════════════════════════════════════
   -- BUFF TRACKING (default) - Auto-detect unit (player or target)
   -- Uses linkedSpellID (non-secret!) to handle CDM override situations
-  -- v3.0.0: Tracks effective auraInstanceID for direct UNIT_AURA("player") updates
   -- ═══════════════════════════════════════════════════════════════════
   else
     local detectedUnit = nil
@@ -2454,16 +2385,16 @@ UpdateBarBuffInfo = function(barNumber)
       local auraDataUnit = cdmFrame.auraDataUnit or "player"
       local linkedSpellID = cdmFrame.cooldownInfo and cdmFrame.cooldownInfo.linkedSpellID
       
-      -- Check if CDM is currently showing OUR tracked spell
-      -- Use pcall because linkedSpellID can be secret when there's only 1 linked spell
+      -- Check if CDM is currently showing OUR tracked spell.
+      -- linkedSpellID is secret when there's only 1 linked spell — use issecretvalue
+      -- instead of pcall (much cheaper: single C call vs full pcall overhead).
       local isOurSpell = false
       if linkedSpellID then
-        local ok, result = pcall(function() return linkedSpellID == trackedSpellID end)
-        if ok then
-          isOurSpell = result
-        else
-          -- linkedSpellID is secret - means only 1 linked spell, so CDM always shows our spell
+        if issecretvalue and issecretvalue(linkedSpellID) then
+          -- Secret = only 1 linked spell, CDM always shows ours
           isOurSpell = true
+        else
+          isOurSpell = (linkedSpellID == trackedSpellID)
         end
       end
       
@@ -2473,6 +2404,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           detectedUnit = auraDataUnit
           -- Cache this auraInstanceID for when CDM switches to different spell
           state.trackedAuraInstanceID = auraInstanceID
@@ -2489,6 +2421,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           detectedUnit = unit
           buffAuraID = state.trackedAuraInstanceID
         else
@@ -2516,6 +2449,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           buffAuraID = auraInstanceID
         else
           active = false
@@ -2527,6 +2461,7 @@ UpdateBarBuffInfo = function(barNumber)
         if auraData then
           active = true
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           buffAuraID = state.buffAuraInstanceID
         else
           state.buffAuraInstanceID = nil
@@ -2556,6 +2491,7 @@ UpdateBarBuffInfo = function(barNumber)
         
         if auraData then
           stacks = auraData.applications or 0
+          auraIconFromData = auraData.icon
           buffAuraID = auraInstanceID
           if ns.debugMode then
             print(string.format("|cff00ff00[ArcUI Debug]|r Bar %d BUFF: auraInstID=%s, unit=%s, stacks=%s", 
@@ -2571,12 +2507,6 @@ UpdateBarBuffInfo = function(barNumber)
       end
     end
     
-    -- v3.0.0: Register this buff aura for direct UNIT_AURA("player") updates
-    UnregisterBuffAuraForBar(barNumber)  -- Clear old mapping first
-    if buffAuraID then
-      RegisterBuffAuraForBar(buffAuraID, barNumber)
-    end
-    
     -- Store detected unit for durationStacksRef creation later
     state.detectedUnit = detectedUnit
   end
@@ -2584,56 +2514,26 @@ UpdateBarBuffInfo = function(barNumber)
   state.stacks = stacks
   state.active = active
   
-  -- Get duration FontString from CDM frame (fallback for icon source)
-  local durationFontString = nil
-  if active and frame then
-    -- Cache: same frame object = same regions, skip GetRegions() table allocs
-    if state._cachedDurationFSFrame == frame then
-      durationFontString = state._cachedDurationFS
-    else
-      if frame.Cooldown then
-        local regions = {frame.Cooldown:GetRegions()}
-        for _, region in ipairs(regions) do
-          if region:GetObjectType() == "FontString" then
-            durationFontString = region
-            break
-          end
-        end
-      end
-      if not durationFontString then
-        local children = {frame:GetChildren()}
-        for _, child in ipairs(children) do
-          if child:GetObjectType() == "Cooldown" then
-            local regions = {child:GetRegions()}
-            for _, region in ipairs(regions) do
-              if region:GetObjectType() == "FontString" then
-                durationFontString = region
-                break
-              end
-            end
-            if durationFontString then break end
-          end
-        end
-      end
-      state._cachedDurationFS = durationFontString
-      state._cachedDurationFSFrame = frame
-    end
-  end
+
   
   -- Get icon texture from appropriate CDM frame
-  -- Respects sourceType preference, trackedSpellID, and useBaseSpell setting
-  local iconTexture = nil
+  -- auraIconFromData comes from GetAuraDataByAuraInstanceID above — it's already the correct
+  -- icon for the current aura and is secret-safe (SetTexture accepts secrets). Use it first
+  -- to avoid the stale frame.Icon:GetTexture() which reads CDM's painted texture that may
+  -- not have updated yet when our hook fired.
+  local iconTexture = auraIconFromData  -- nil if no active aura, set below from fallbacks
   local useBaseSpell = barConfig.tracking.useBaseSpell
   local trackedSpellID = barConfig.tracking.trackedSpellID
   
-  -- NEW: If trackedSpellID is set, use cached iconTextureID (set when selecting spell)
-  -- or fall back to GetSpellTexture (works out of combat)
+  if not iconTexture then
   if trackedSpellID and trackedSpellID > 0 then
-    -- First try cached texture (guaranteed to work during combat)
-    if barConfig.tracking.iconTextureID then
-      iconTexture = barConfig.tracking.iconTextureID
-    else
-      -- Fallback to GetSpellTexture (works out of combat)
+    if active then
+      local cdmFrame = sourceType == "bar" and barFrame or frame or barFrame
+      if cdmFrame and cdmFrame._arcLiveIcon then
+        iconTexture = cdmFrame._arcLiveIcon
+      end
+    end
+    if not iconTexture then
       iconTexture = C_Spell.GetSpellTexture(trackedSpellID)
     end
   elseif not useBaseSpell then
@@ -2695,6 +2595,7 @@ UpdateBarBuffInfo = function(barNumber)
   if not iconTexture and barConfig.tracking.spellID then
     iconTexture = C_Spell.GetSpellTexture(barConfig.tracking.spellID)
   end
+  end -- close: if not iconTexture (auraIconFromData fast path)
 
   -- Icon override: user-specified spell ID or texture ID replaces resolved texture
   local iconOverride = barConfig.display and barConfig.display.iconOverride
@@ -2888,28 +2789,33 @@ UpdateBarBuffInfo = function(barNumber)
       if HasAuraInstanceID(auraInstIDToUse) then
         local cachedAuraInstanceID = auraInstIDToUse
         local cachedUnit = unitToUse
+        -- liveFrame: read auraInstanceID live when CDM is the source (not useBaseSpell)
+        -- Aura refreshes change auraInstanceID on the CDM frame — cached copy goes stale
+        local liveFrame = (not useBaseSpell) and cdmFrame or nil
         effectiveDurationRef = {
           GetValue = function()
-            -- CRITICAL: Validate aura still exists before calling GetAuraDurationRemaining
-            -- Calling with stale auraInstanceID causes client crash in Beta 4
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(cachedUnit, cachedAuraInstanceID)
-            if not auraData then
-              return 0
-            end
+            local id = liveFrame and liveFrame.auraInstanceID or cachedAuraInstanceID
+            local unit = (liveFrame and liveFrame.auraDataUnit) or cachedUnit
+            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
+            if not auraData then return 0 end
             if C_UnitAuras.GetAuraDurationRemaining then
-              return C_UnitAuras.GetAuraDurationRemaining(cachedUnit, cachedAuraInstanceID)
+              return C_UnitAuras.GetAuraDurationRemaining(unit, id)
             end
             return 0
           end,
           GetMinMaxValues = function()
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(cachedUnit, cachedAuraInstanceID)
+            local id = liveFrame and liveFrame.auraInstanceID or cachedAuraInstanceID
+            local unit = (liveFrame and liveFrame.auraDataUnit) or cachedUnit
+            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
             if auraData and auraData.duration then
               return 0, auraData.duration
             end
             return 0, 30
           end,
-          -- v2.8.0: For ColorCurve support - expose aura info
           GetAuraInfo = function()
+            if liveFrame and HasAuraInstanceID(liveFrame.auraInstanceID) then
+              return liveFrame.auraInstanceID, (liveFrame.auraDataUnit or cachedUnit)
+            end
             return cachedAuraInstanceID, cachedUnit
           end
         }
@@ -2932,28 +2838,31 @@ UpdateBarBuffInfo = function(barNumber)
       if HasAuraInstanceID(auraInstIDToUse) then
         local cachedAuraInstanceID = auraInstIDToUse
         local cachedUnit = unitToUse
+        local liveFrame = (not useBaseSpell) and cdmFrame or nil
         effectiveDurationRef = {
           GetValue = function()
-            -- CRITICAL: Validate aura still exists before calling GetAuraDurationRemaining
-            -- Calling with stale auraInstanceID causes client crash in Beta 4
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(cachedUnit, cachedAuraInstanceID)
-            if not auraData then
-              return 0
-            end
+            local id = liveFrame and liveFrame.auraInstanceID or cachedAuraInstanceID
+            local unit = (liveFrame and liveFrame.auraDataUnit) or cachedUnit
+            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
+            if not auraData then return 0 end
             if C_UnitAuras.GetAuraDurationRemaining then
-              return C_UnitAuras.GetAuraDurationRemaining(cachedUnit, cachedAuraInstanceID)
+              return C_UnitAuras.GetAuraDurationRemaining(unit, id)
             end
             return 0
           end,
           GetMinMaxValues = function()
-            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(cachedUnit, cachedAuraInstanceID)
+            local id = liveFrame and liveFrame.auraInstanceID or cachedAuraInstanceID
+            local unit = (liveFrame and liveFrame.auraDataUnit) or cachedUnit
+            local auraData = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, id)
             if auraData and auraData.duration then
               return 0, auraData.duration
             end
             return 0, 30
           end,
-          -- v2.8.0: For ColorCurve support - expose aura info
           GetAuraInfo = function()
+            if liveFrame and HasAuraInstanceID(liveFrame.auraInstanceID) then
+              return liveFrame.auraInstanceID, (liveFrame.auraDataUnit or cachedUnit)
+            end
             return cachedAuraInstanceID, cachedUnit
           end
         }
@@ -3067,21 +2976,14 @@ UpdateBarBuffInfo = function(barNumber)
         print(string.format("|cffff9900[ArcUI Debug]|r Bar %d calling UpdateDurationBar: active=%s, stacks=%s, hideWhenInactive=%s",
           barNumber, tostring(active), tostring(stacks), tostring(barConfig.behavior and barConfig.behavior.hideWhenInactive)))
       end
-      ns.Display.UpdateDurationBar(barNumber, stacks, barConfig.tracking.maxStacks, active, 
-                                    durationSource, durationStacksRef, iconTexture, auraName)
+      ns.Display.UpdateDurationBar(barNumber, stacks, barConfig.tracking.maxStacks, active,
+                                    durationSource, durationStacksRef, iconTexture, auraName, barConfig)
     elseif effectiveDurationRef then
-      -- We have an auraInstanceID wrapper - use it for duration display
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, effectiveDurationRef, iconTexture, auraName)
-    elseif preventCDMFallback then
-      -- Tracking specific spell but don't have effectiveDurationRef - DON'T use CDM's duration
-      -- (CDM might be showing a different spell's duration)
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture, auraName)
-    elseif durationBarRef then
-      -- Fallback to CDM bar reference
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationBarRef, iconTexture, auraName)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, effectiveDurationRef, iconTexture, auraName, barConfig)
+    elseif durationBarRef and not preventCDMFallback then
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationBarRef, iconTexture, auraName, barConfig)
     else
-      -- Stack bar from icon source - pass fontstring for duration text
-      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, durationFontString, iconTexture, auraName)
+      ns.Display.UpdateBar(barNumber, stacks, barConfig.tracking.maxStacks, active, nil, iconTexture, auraName, barConfig)
     end
   end
   
@@ -3180,138 +3082,24 @@ end
 -- EVENT HANDLING
 -- ===================================================================
 local eventFrame = CreateFrame("Frame")
--- v3.0.0: UNIT_AURA registered for BOTH "player" AND "target".
--- "player" → buffAuraToBarMap for O(1) buff stack updates (replaces RefreshData hooks)
--- "target" → debuffAuraToBarMap for O(1) debuff stack updates (v2.13.0)
--- Both read from C_UnitAuras API directly, bypassing CDM's cache.
--- PLAYER_TOTEM_UPDATE → totemBarNumbers for totem/pet/ground bar updates.
--- Cost: O(updated_auras × registered_bars), typically O(1×1) = O(1).
+_G.ArcUICoreEventFrame = eventFrame  -- profiler
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 eventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 eventFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
-eventFrame:RegisterUnitEvent("UNIT_AURA", "player", "target")
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
-  if event == "UNIT_AURA" then
-    local unit, unitAuraUpdateInfo = ...
-    if not unitAuraUpdateInfo then return end
-    
-    -- Select the correct aura map based on unit
-    local auraMap, trackTypeFilter, isPlayer
-    if unit == "player" then
-      auraMap = buffAuraToBarMap
-      trackTypeFilter = nil  -- buff is default, check "not debuff/pet/totem/ground/custom"
-      isPlayer = true
-    elseif unit == "target" then
-      auraMap = debuffAuraToBarMap
-      trackTypeFilter = "debuff"
-      isPlayer = false
-    else
-      return
-    end
-    
-    local barsToUpdate = nil  -- Lazy-init: only allocate if we find matches
-    
-    -- Check updated auras (stack changes, duration refreshes)
-    if unitAuraUpdateInfo.updatedAuraInstanceIDs then
-      for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-        local bars = auraMap[auraInstanceID]
-        if bars then
-          if not barsToUpdate then barsToUpdate = {} end
-          for barNum in pairs(bars) do
-            barsToUpdate[barNum] = true
-          end
-        end
-      end
-    end
-    
-    -- Check removed auras (buff/debuff expired/dispelled/consumed)
-    if unitAuraUpdateInfo.removedAuraInstanceIDs then
-      local mappedBars = isPlayer and buffMappedBars or debuffMappedBars
-      for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-        local bars = auraMap[auraInstanceID]
-        if bars then
-          if not barsToUpdate then barsToUpdate = {} end
-          for barNum in pairs(bars) do
-            barsToUpdate[barNum] = true
-            -- Clear reverse lookup so addedAuras can re-discover
-            mappedBars[barNum] = nil
-          end
-          -- Clean up mapping for removed aura
-          auraMap[auraInstanceID] = nil
-        end
-      end
-    end
-    
-    -- Check added auras (new buff/debuff applied — might match a bar
-    -- that hasn't discovered its auraInstanceID yet)
-    if unitAuraUpdateInfo.addedAuras then
-      local db = ns.API.GetDB()
-      -- Select the correct reverse map for O(1) "has mapped aura" check
-      local mappedBars = isPlayer and buffMappedBars or debuffMappedBars
-      if db and db.bars then
-        for barNum = 1, 30 do
-          local barConfig = db.bars[barNum]
-          if barConfig and barConfig.tracking and barConfig.tracking.enabled then
-            local barTrackType = barConfig.tracking.trackType or "buff"
-            local matchesUnit = false
-            
-            if isPlayer then
-              -- Player auras: match buff bars (default) — exclude debuff/pet/totem/ground/custom
-              matchesUnit = (barTrackType == "buff" or barTrackType == nil or barTrackType == "")
-                and barTrackType ~= "debuff"
-                and barTrackType ~= "pet"
-                and barTrackType ~= "totem"
-                and barTrackType ~= "ground"
-
-            else
-              -- Target auras: match debuff bars only
-              matchesUnit = (barTrackType == "debuff")
-            end
-            
-            if matchesUnit then
-              -- O(1) check: does this bar already have a mapped aura?
-              if not mappedBars[barNum] then
-                -- Bar needs to discover its aura — update it
-                if not barsToUpdate then barsToUpdate = {} end
-                barsToUpdate[barNum] = true
-              end
-            end
-          end
-        end
-      end
-    end
-    
-    -- Update only matched bars (reads from C_UnitAuras, bypasses CDM cache)
-    if barsToUpdate then
-      for barNum in pairs(barsToUpdate) do
-        UpdateBarBuffInfo(barNum)
-      end
-      if StartDurationBarTicker then
-        StartDurationBarTicker()
-      end
-    end
-  elseif event == "PLAYER_TOTEM_UPDATE" then
-    -- v3.0.0: Direct event handler for totem/pet/ground bars.
-    -- CDM processes PLAYER_TOTEM_UPDATE → SetTotemData/ClearTotemData → RefreshData
-    -- on its own frames first (viewer event registration fires before ours).
-    -- By the time our handler runs, frame.totemData is already updated.
+  if event == "PLAYER_TOTEM_UPDATE" then
     if next(totemBarNumbers) then
       for barNum in pairs(totemBarNumbers) do
         UpdateBarBuffInfo(barNum)
-      end
-      if StartDurationBarTicker then
-        StartDurationBarTicker()
       end
     end
   elseif event == "PLAYER_TARGET_CHANGED" then
     -- CDM handles UNIT_TARGET → RefreshActiveFramesForTargetChange → RefreshData
     -- on all frames. UpdateAllBars refreshes all debuff bars for new target.
-    -- v2.13.0: Also clear debuff aura mappings (old target's auras gone)
-    ClearAllDebuffAuraMappings()
     UpdateAllBars()
   elseif event == "PLAYER_ENTERING_WORLD" then
     -- Bars stay hidden until initialization completes (prevents flash on reload)
@@ -3366,24 +3154,17 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
       end
     end)
     C_Timer.After(0.5, UpdateAllBars)
-    StartDurationBarTicker()
   elseif event == "PLAYER_REGEN_DISABLED" then
-    -- Entered combat - invalidate visibility cache
     if ns.Display and ns.Display.InvalidateVisibilityCache then
       ns.Display.InvalidateVisibilityCache()
     end
     UpdateAllBars()
-    StartDurationBarTicker()
   elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
     -- Invalidate cross-spec cooldownID cache first
     InvalidateSpellToCooldownIDCache()
     
-    -- v3.0.0: Clear aura hook registrations and buff aura map (frames may change on spec change)
+    -- v3.0.0: Clear aura hook registrations on spec change (frames may change)
     ClearAllAuraHookRegistrations()
-    ClearAllBuffAuraMappings()
-    
-    -- v2.13.0: Clear debuff aura reverse lookup
-    ClearAllDebuffAuraMappings()
     
     -- v2.12.0: Release all hidden CDM frame tracking.
     -- CDM will manage its own frame visibility during the transition.
@@ -3422,7 +3203,6 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
       end
       -- Also trigger a full update cycle to catch any stragglers
       UpdateAllBars()
-      StartDurationBarTicker()
     end)
     
     -- Schedule another refresh after grace period to clean up any bars
@@ -4427,3 +4207,10 @@ _G.ArcUI_Display = ns.Display
 -- ===================================================================
 -- END OF ArcUI_Core.lua
 -- ===================================================================
+-- Register local functions for profiler visibility
+if _G.ArcUIProfiler_RegisterLocals then
+    _G.ArcUIProfiler_RegisterLocals("Core", {
+        UpdateBarBuffInfo = UpdateBarBuffInfo,
+        UpdateAllBars     = UpdateAllBars,
+    })
+end

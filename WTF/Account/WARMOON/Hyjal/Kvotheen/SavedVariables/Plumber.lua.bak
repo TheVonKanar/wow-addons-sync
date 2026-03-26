@@ -1,6 +1,86 @@
 
 PlumberDB_PC = {
+["CurrencyCap:3284"] = 630,
+["CurrencyCap:3345"] = 200,
 ["DelvesRecords"] = {
+{
+["instanceID"] = 3003,
+["uiMapID"] = 2525,
+["time"] = 1774462651,
+["tier"] = 8,
+},
+{
+["instanceID"] = 3003,
+["uiMapID"] = 2525,
+["time"] = 1774434081,
+["tier"] = 8,
+},
+{
+["instanceID"] = 2963,
+["uiMapID"] = 2510,
+["time"] = 1774430818,
+["tier"] = 8,
+},
+{
+["instanceID"] = 2965,
+["uiMapID"] = 2571,
+["time"] = 1774430079,
+["tier"] = 8,
+},
+{
+["instanceID"] = 2962,
+["uiMapID"] = 2535,
+["time"] = 1774429458,
+["tier"] = 8,
+},
+{
+["instanceID"] = 2933,
+["uiMapID"] = 2547,
+["time"] = 1774428700,
+["tier"] = 11,
+},
+{
+["instanceID"] = 2964,
+["uiMapID"] = 2505,
+["time"] = 1774392079,
+["tier"] = 11,
+},
+{
+["instanceID"] = 2979,
+["uiMapID"] = 2506,
+["time"] = 1774375454,
+["tier"] = 11,
+},
+{
+["instanceID"] = 2933,
+["uiMapID"] = 2547,
+["time"] = 1774287127,
+["tier"] = 11,
+},
+{
+["instanceID"] = 2965,
+["uiMapID"] = 2571,
+["time"] = 1774090816,
+["tier"] = 11,
+},
+{
+["instanceID"] = 2963,
+["uiMapID"] = 2510,
+["time"] = 1774089893,
+["tier"] = 8,
+},
+{
+["instanceID"] = 2933,
+["uiMapID"] = 2547,
+["time"] = 1774088544,
+["tier"] = 10,
+},
+{
+["instanceID"] = 2979,
+["uiMapID"] = 2506,
+["time"] = 1774030774,
+["tier"] = 9,
+},
 {
 ["instanceID"] = 2965,
 ["uiMapID"] = 2571,
@@ -55,32 +135,7 @@ PlumberDB_PC = {
 ["time"] = 1773821591,
 ["tier"] = 8,
 },
-{
-["instanceID"] = 2962,
-["uiMapID"] = 2535,
-["time"] = 1773685071,
-["tier"] = 4,
 },
-{
-["instanceID"] = 2962,
-["uiMapID"] = 2535,
-["time"] = 1773615580,
-["tier"] = 4,
-},
-{
-["instanceID"] = 2979,
-["uiMapID"] = 2506,
-["time"] = 1773531981,
-["tier"] = 4,
-},
-{
-["instanceID"] = 2964,
-["uiMapID"] = 2505,
-["time"] = 1773405840,
-["tier"] = 7,
-},
-},
-["CurrencyCap:3284"] = 630,
 ["CurrencyCap:3341"] = 400,
 ["CurrencyCap:3286"] = 630,
 }

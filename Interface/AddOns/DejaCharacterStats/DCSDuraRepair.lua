@@ -742,7 +742,7 @@ end
 
 local function DCS_ItemSlotIsMouseOver(frame)
 	local itemLink  = GetInventoryItemLink("player", frame:GetID())
-	if ( itemLink ) and ( frame:IsMouseOver() ) then --{ Don't extend pixel range or DCS_CenterItemTooltip may hang and not close OnLeave; I.E. dont use: frame:IsMouseOver(2, -2, -2, 2)
+	if ( itemLink ) then --{ Don't extend pixel range or DCS_CenterItemTooltip may hang and not close OnLeave; I.E. dont use: frame:IsMouseOver(2, -2, -2, 2)
 		local userCVar = GetCVar("alwaysCompareItems")
 		if userCVar then
 			SetCVar("alwaysCompareItems", 0)

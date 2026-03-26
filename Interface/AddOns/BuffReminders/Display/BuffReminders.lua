@@ -8,6 +8,8 @@ local addonName, BR = ...
 ---@field iconSize number
 ---@field iconWidth? number
 ---@field textSize? number
+---@field textOffsetX? number
+---@field textOffsetY? number
 ---@field iconAlpha number
 ---@field textAlpha number
 ---@field textColor number[]
@@ -41,6 +43,7 @@ local addonName, BR = ...
 ---@field consumableRebuffThreshold? number
 ---@field consumableRebuffColor? number[]
 ---@field consumableDisplayMode? "icon_only"|"sub_icons"|"expanded"
+---@field consumableTextScale? number
 ---@field petDisplayMode? "generic"|"expanded"
 ---@field petLabels? boolean
 ---@field petLabelScale? number
@@ -62,6 +65,8 @@ local addonName, BR = ...
 ---@field expirationThreshold? number
 ---@field showBuffReminder? boolean
 ---@field buffTextSize? number
+---@field buffTextOffsetX? number
+---@field buffTextOffsetY? number
 ---@field showText? boolean
 ---@field useCustomAppearance? boolean
 ---@field split? boolean
@@ -100,8 +105,8 @@ local addonName, BR = ...
 ---@field count FontString
 ---@field stackCount FontString
 ---@field buffText? FontString
----@field foodLabel? FontString
----@field foodHeartyBadge? FontString
+---@field statLabel? FontString                  -- Consumable stat label (top-left)
+---@field badgeLabel? FontString                  -- Consumable badge (bottom-left): hearty "H" or quality R1/R2/R3
 ---@field isPlayerBuff? boolean
 ---@field buffCategory? CategoryName
 ---@field glowTexture? Texture
@@ -119,7 +124,6 @@ local addonName, BR = ...
 ---@field _br_pet_name_text? FontString    -- Pet name label below icon
 ---@field _br_pet_family_text? FontString  -- Pet spec label below name
 ---@field _br_pet_extra_text? FontString   -- Spirit Beast label below spec
----@field qualityOverlay? FontString         -- Quality rank text (R1/R2/R3) for consumable frames
 ---@field _cachedItems? table|false         -- Per-cycle cache for GetConsumableActionItems result
 
 -- Lua stdlib locals (avoid repeated global lookups in hot paths)
@@ -264,6 +268,7 @@ local defaults = {
     hideAllInVehicle = false,
     hideWhileMounted = false,
     hideInLegacyInstances = true,
+    showMissingCountOnly = false,
     petPassiveOnlyInCombat = false,
     optionsPanelScale = 1.2, -- base scale (displayed as 100%)
     showLoginMessages = true,
@@ -304,6 +309,7 @@ local defaults = {
         },
         healthstoneVisibility = "readyCheck",
         consumableDisplayMode = "sub_icons",
+        consumableTextScale = 25,
         showConsumableTooltips = false,
         petDisplayMode = "generic", -- "generic" or "expanded"
         petLabels = true,
@@ -327,6 +333,9 @@ local defaults = {
             housing = false,
             pvp = true,
             hideInPvPMatch = true,
+            raidDifficulty = {
+                lfr = false,
+            },
         },
         presence = {
             openWorld = true,
@@ -336,6 +345,9 @@ local defaults = {
             housing = false,
             pvp = true,
             hideInPvPMatch = true,
+            raidDifficulty = {
+                lfr = false,
+            },
         },
         targeted = {
             openWorld = false,
@@ -372,7 +384,7 @@ local defaults = {
             housing = false,
             pvp = true,
             hideInPvPMatch = true,
-            pvpType = { arena = false, bg = true },
+            pvpType = { arena = true, bg = true },
             scenarioDifficulty = {
                 delves = true,
                 others = false,
@@ -463,6 +475,7 @@ local defaults = {
 
 -- Constants
 local OVERLAY_TEXT_SCALE = 0.6 -- scale for "NO X" warning text
+local BUFF_TEXT_BASE_Y = -6 -- base Y gap between icon bottom and "BUFF!" text
 
 -- Locals
 local mainFrame
@@ -564,6 +577,8 @@ local function GetCategorySettings(category)
             iconSize = globalDefaults.iconSize or 64,
             iconWidth = globalDefaults.iconWidth,
             textSize = globalDefaults.textSize, -- nil = auto (derived from iconSize)
+            textOffsetX = globalDefaults.textOffsetX or 0,
+            textOffsetY = globalDefaults.textOffsetY or 0,
             iconAlpha = globalDefaults.iconAlpha or 1,
             textAlpha = globalDefaults.textAlpha or 1,
             textColor = globalDefaults.textColor or { 1, 1, 1 },
@@ -595,6 +610,8 @@ local function GetCategorySettings(category)
         result.iconSize = (catSettings and catSettings.iconSize) or 64
         result.iconWidth = catSettings and catSettings.iconWidth
         result.textSize = (catSettings and catSettings.textSize) -- nil = auto
+        result.textOffsetX = (catSettings and catSettings.textOffsetX) or 0
+        result.textOffsetY = (catSettings and catSettings.textOffsetY) or 0
         result.iconAlpha = (catSettings and catSettings.iconAlpha) or 1
         result.textAlpha = (catSettings and catSettings.textAlpha) or 1
         result.textColor = (catSettings and catSettings.textColor) or { 1, 1, 1 }
@@ -608,6 +625,8 @@ local function GetCategorySettings(category)
         result.iconSize = globalDefaults.iconSize or 64
         result.iconWidth = globalDefaults.iconWidth
         result.textSize = globalDefaults.textSize -- nil = auto
+        result.textOffsetX = globalDefaults.textOffsetX or 0
+        result.textOffsetY = globalDefaults.textOffsetY or 0
         result.iconAlpha = globalDefaults.iconAlpha or 1
         result.textAlpha = globalDefaults.textAlpha or 1
         result.textColor = globalDefaults.textColor or { 1, 1, 1 }
@@ -843,11 +862,14 @@ end
 ---@param cachedGlow? {typeIndex: number, color: number[], size: number}
 ---@return boolean true (for anyVisible chaining)
 local function ShowTextFrame(frame, overlayText, shouldGlow, category, cachedGlow)
-    -- Hide stackCount/qualityOverlay — ShowTextFrame can be called from fallback paths
+    -- Hide stackCount/overlays — ShowTextFrame can be called from fallback paths
     -- (UpdateFallbackDisplay) that don't go through RenderVisibleEntry's cleanup.
     frame.stackCount:Hide()
-    if frame.qualityOverlay then
-        frame.qualityOverlay:Hide()
+    if frame.statLabel then
+        frame.statLabel:Hide()
+    end
+    if frame.badgeLabel then
+        frame.badgeLabel:Hide()
     end
     if overlayText then
         frame.count:SetFont(fontPath, GetFrameFontSize(frame, OVERLAY_TEXT_SCALE), "OUTLINE")
@@ -1041,9 +1063,6 @@ local function CreateBuffFrame(buff, category)
     local texture = displayIcon or GetBuffTexture(buff.spellID, buff.iconByRole)
     CreateIconTextures(frame, texture)
 
-    frame.qualityOverlay = frame:CreateFontString(nil, "OVERLAY")
-    frame.qualityOverlay:Hide()
-
     -- Register with Masque — provide Normal texture so skins like Caith can style it
     if masqueGroup then
         masqueGroup:AddButton(frame, {
@@ -1059,13 +1078,13 @@ local function CreateBuffFrame(buff, category)
     local textColor = catSettings.textColor or { 1, 1, 1 }
     local textAlpha = catSettings.textAlpha or 1
     frame.count = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalLarge")
-    frame.count:SetPoint("CENTER", 0, 0)
+    frame.count:SetPoint("CENTER", catSettings.textOffsetX or 0, catSettings.textOffsetY or 0)
     frame.count:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
     frame.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize, catSettings.iconSize), "OUTLINE")
 
     -- Stack count (bottom-right, WoW-standard item count style) for consumables
     frame.stackCount = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    frame.stackCount:SetPoint("BOTTOMRIGHT", -5, 4)
+    frame.stackCount:SetPoint("BOTTOMRIGHT", -1, 2)
     frame.stackCount:Hide()
 
     -- Frame alpha
@@ -1075,16 +1094,21 @@ local function CreateBuffFrame(buff, category)
     frame.isPlayerBuff = (playerClass == buff.class)
     if frame.isPlayerBuff and category == "raid" then
         frame.buffText = frame:CreateFontString(nil, "OVERLAY")
-        frame.buffText:SetPoint("TOP", frame, "BOTTOM", 0, -6)
-        local raidBts = db.categorySettings and db.categorySettings.raid and db.categorySettings.raid.buffTextSize
+        local raidCs = db.categorySettings and db.categorySettings.raid
+        frame.buffText:SetPoint(
+            "TOP",
+            frame,
+            "BOTTOM",
+            (raidCs and raidCs.buffTextOffsetX) or 0,
+            ((raidCs and raidCs.buffTextOffsetY) or 0) + BUFF_TEXT_BASE_Y
+        )
         frame.buffText:SetFont(
             fontPath,
-            raidBts or GetFontSize(0.8, catSettings.textSize, catSettings.iconSize),
+            (raidCs and raidCs.buffTextSize) or GetFontSize(0.8, catSettings.textSize, catSettings.iconSize),
             "OUTLINE"
         )
         frame.buffText:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
         frame.buffText:SetText("BUFF!")
-        local raidCs = db.categorySettings and db.categorySettings.raid
         if raidCs and raidCs.showBuffReminder == false then
             frame.buffText:Hide()
         end
@@ -1126,9 +1150,6 @@ local function GetOrCreateExtraFrame(frame, index)
 
     CreateIconTextures(extra, nil)
 
-    extra.qualityOverlay = extra:CreateFontString(nil, "OVERLAY")
-    extra.qualityOverlay:Hide()
-
     if masqueGroup then
         masqueGroup:AddButton(extra, {
             Icon = extra.icon,
@@ -1140,7 +1161,7 @@ local function GetOrCreateExtraFrame(frame, index)
 
     -- Stack count (bottom-right, same as main frame)
     extra.stackCount = extra:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    extra.stackCount:SetPoint("BOTTOMRIGHT", -5, 4)
+    extra.stackCount:SetPoint("BOTTOMRIGHT", -1, 2)
     extra.stackCount:Hide()
 
     -- Count text (for consistency, though expanded frames mainly use stackCount)
@@ -1438,7 +1459,6 @@ local function GenerateTestEntries()
         entry.overlayText = nil
         entry.expiringTime = nil
         entry.isEating = nil
-        entry.eatingIconID = nil
         entry.petActions = nil
         entry.iconByRole = nil
         entry.dynamicIcon = nil
@@ -1722,46 +1742,54 @@ end
 -- Eating icon texture ID (from State.lua, matches the eating channel aura icon)
 local EATING_ICON = BR.EATING_AURA_ICON
 
----Apply food visual styling (stat label + hearty badge) to a frame.
+---Apply consumable overlays (stat label top-left, badge bottom-left) to a frame.
 ---@param frame table
----@param label string? Food stat label (e.g. "M/V", "Crit")
----@param hearty boolean? Whether the food is hearty
-local function ApplyFoodFrameStyle(frame, label, hearty)
-    if not label then
+---@param item table Bucket item with .statLabel and .badge fields
+---@param fontSize number? Explicit font size (computed from icon width if nil)
+local function ApplyConsumableOverlays(frame, item, fontSize)
+    if not item.statLabel and not item.badge then
         return
     end
-    local size = frame:GetWidth()
-    local fontSize = max(8, size * 0.22)
-    if not frame.foodLabel then
-        frame.foodLabel = frame:CreateFontString(nil, "OVERLAY")
-        frame.foodLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+    if not fontSize then
+        fontSize = BR.SecureButtons.ComputeConsumableFontSize(frame:GetWidth())
     end
-    frame.foodLabel:SetFont(fontPath, fontSize, "OUTLINE")
-    frame.foodLabel:SetTextColor(1, 1, 1, 1)
-    frame.foodLabel:SetText(label)
-    frame.foodLabel:Show()
-    if not frame.foodHeartyBadge then
-        frame.foodHeartyBadge = frame:CreateFontString(nil, "OVERLAY")
-        frame.foodHeartyBadge:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 2, 2)
+    if item.statLabel then
+        if not frame.statLabel then
+            frame.statLabel = frame:CreateFontString(nil, "OVERLAY")
+            frame.statLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+        end
+        frame.statLabel:SetFont(fontPath, fontSize, "OUTLINE")
+        frame.statLabel:SetTextColor(1, 1, 1, 1)
+        frame.statLabel:SetText(item.statLabel)
+        frame.statLabel:Show()
+    elseif frame.statLabel then
+        frame.statLabel:Hide()
     end
-    if hearty then
-        frame.foodHeartyBadge:SetFont(fontPath, fontSize, "OUTLINE")
-        frame.foodHeartyBadge:SetTextColor(0.4, 0.7, 1, 1)
-        frame.foodHeartyBadge:SetText("H")
-        frame.foodHeartyBadge:Show()
-    else
-        frame.foodHeartyBadge:Hide()
+    if item.badge then
+        local bc = BR.SecureButtons.BADGE_COLORS[item.badge]
+        if bc then
+            if not frame.badgeLabel then
+                frame.badgeLabel = frame:CreateFontString(nil, "OVERLAY")
+                frame.badgeLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 2, 2)
+            end
+            frame.badgeLabel:SetFont(fontPath, fontSize, "OUTLINE")
+            frame.badgeLabel:SetTextColor(bc.r, bc.g, bc.b, 1)
+            frame.badgeLabel:SetText(item.badge)
+            frame.badgeLabel:Show()
+        end
+    elseif frame.badgeLabel then
+        frame.badgeLabel:Hide()
     end
 end
 
----Clear food visual styling from a frame.
+---Clear consumable overlays from a frame.
 ---@param frame table
-local function ClearFoodFrameStyle(frame)
-    if frame.foodLabel then
-        frame.foodLabel:Hide()
+local function ClearConsumableOverlays(frame)
+    if frame.statLabel then
+        frame.statLabel:Hide()
     end
-    if frame.foodHeartyBadge then
-        frame.foodHeartyBadge:Hide()
+    if frame.badgeLabel then
+        frame.badgeLabel:Hide()
     end
 end
 
@@ -1795,20 +1823,17 @@ local function ResolveConsumableFrame(frame)
     if items and items[1] then
         frame.icon:SetTexture(items[1].icon)
         SetIconDesaturated(frame.icon, false)
-        if frame.qualityOverlay then
-            BR.SecureButtons.SetQualityOverlay(frame.qualityOverlay, items[1].craftedQuality, frame:GetWidth())
-        end
+        local mainSize = frame:GetWidth()
+        local cFontSize = BR.SecureButtons.ComputeConsumableFontSize(mainSize)
         frame.count:Hide()
+        frame.stackCount:SetFont(fontPath, cFontSize, "OUTLINE")
         frame.stackCount:SetText(items[1].count)
         frame.stackCount:Show()
-        -- Apply food stat label
-        if frame.key == "food" then
-            ApplyFoodFrameStyle(frame, items[1].foodLabel, items[1].foodHearty)
-        end
+        ApplyConsumableOverlays(frame, items[1], cFontSize)
         return "items"
     end
     -- No items: fall back icon to buff definition
-    ClearFoodFrameStyle(frame)
+    ClearConsumableOverlays(frame)
     local def = frame.buffDef
     local fallback = def and (def.displayIcon or def.buffIconID)
     if type(fallback) == "table" then
@@ -1816,9 +1841,6 @@ local function ResolveConsumableFrame(frame)
     end
     if fallback then
         frame.icon:SetTexture(fallback)
-    end
-    if frame.qualityOverlay then
-        frame.qualityOverlay:Hide()
     end
     if (BR.profile.defaults or {}).showConsumablesWithoutItems then
         SetIconDesaturated(frame.icon, true)
@@ -1831,20 +1853,17 @@ end
 -- Returns true if the frame was shown, false if it was skipped (e.g. consumable
 -- with no bag items and showConsumablesWithoutItems off).
 local function RenderVisibleEntry(frame, entry)
-    -- Clear food styling at the start of each render (re-applied by relevant paths below)
-    ClearFoodFrameStyle(frame)
+    -- Clear consumable overlays at the start of each render (re-applied by relevant paths below)
+    ClearConsumableOverlays(frame)
 
-    -- Hide stack count and quality overlay by default; only the consumable-with-items path shows them
+    -- Hide stack count by default; only the consumable-with-items path shows it
     frame.stackCount:Hide()
-    if frame.qualityOverlay then
-        frame.qualityOverlay:Hide()
-    end
 
     -- Eating override: state provides isEating as a snapshot, so the display
     -- never reads a live flag that can change mid-cycle.
     if entry.isEating then
         SetIconDesaturated(frame.icon, false)
-        frame.icon:SetTexture(entry.eatingIconID or EATING_ICON)
+        frame.icon:SetTexture(EATING_ICON)
         frame._br_eating_icon = true
         if entry.eatingExpirationTime then
             -- Seed initial text, then hand off to per-frame OnUpdate for smooth countdown
@@ -1909,15 +1928,15 @@ local function RenderVisibleEntry(frame, entry)
         frame.count:Show()
         frame:Show()
         SetExpirationGlow(frame, entry.shouldGlow, entry.category, cachedGlow)
-        -- Show food stat label for expiring food (resolve from cached items)
-        if entry.displayType == "expiring" and frame.key == "food" then
+        -- Show consumable stat label for expiring consumables (resolve from cached items)
+        if entry.displayType == "expiring" and BUFF_KEY_TO_CATEGORY[frame.key] then
             local items = frame._cachedItems
             if items == nil then
                 items = BR.SecureButtons.GetConsumableActionItems(frame.buffDef) or false
                 frame._cachedItems = items
             end
             if items and items[1] then
-                ApplyFoodFrameStyle(frame, items[1].foodLabel, items[1].foodHearty)
+                ApplyConsumableOverlays(frame, items[1])
             end
         end
     else -- "text"
@@ -1945,12 +1964,7 @@ local function RenderVisibleEntry(frame, entry)
     if not ShouldShowText(frame.buffCategory) then
         frame.count:Hide()
         frame.stackCount:Hide()
-        if frame.foodLabel then
-            frame.foodLabel:Hide()
-        end
-        if frame.foodHeartyBadge then
-            frame.foodHeartyBadge:Hide()
-        end
+        ClearConsumableOverlays(frame)
     end
     return true
 end
@@ -1968,7 +1982,7 @@ local function ApplyConsumableDisplayMode(frame, entry, frameList, parentFrame)
         end
     end
 
-    if (entry.displayType ~= "text" and entry.displayType ~= "expiring") or entry.isEating then
+    if entry.displayType ~= "text" and entry.displayType ~= "expiring" and not entry.isEating then
         return
     end
     if not BUFF_KEY_TO_CATEGORY[frame.key] or not frame:IsShown() then
@@ -1996,16 +2010,14 @@ local function ApplyConsumableDisplayMode(frame, entry, frameList, parentFrame)
             local itemCount = #items - 1
             local isSideways = subIconSide == "LEFT" or subIconSide == "RIGHT"
 
+            local cFontSize = BR.SecureButtons.ComputeConsumableFontSize(iconSize)
             for i = 2, #items do
                 local idx = i - 2
                 local extra = GetOrCreateExtraFrame(frame, i - 1)
                 extra:SetParent(frame)
                 extra:SetSize(size, size)
                 extra.icon:SetTexture(items[i].icon)
-                if extra.qualityOverlay then
-                    BR.SecureButtons.SetQualityOverlay(extra.qualityOverlay, items[i].craftedQuality, size)
-                end
-                extra.stackCount:SetFont(fontPath, max(10, floor(size * 0.45)), "OUTLINE")
+                extra.stackCount:SetFont(fontPath, cFontSize, "OUTLINE")
                 extra.stackCount:SetText(items[i].count > 1 and tostring(items[i].count) or "")
                 extra.stackCount:Show()
                 extra.count:Hide()
@@ -2054,15 +2066,14 @@ local function ApplyConsumableDisplayMode(frame, entry, frameList, parentFrame)
         BR.SecureButtons.UpdateConsumableButtons(frame, nil)
         if displayMode == "expanded" and items and #items > 1 then
             local cachedGlow = entry.category and GetCachedGlowSettings(entry.category) or nil
-            local isFood = frame.key == "food"
+            local expandedSize = frame:GetWidth()
+            local cFontSize = BR.SecureButtons.ComputeConsumableFontSize(expandedSize)
             for i = 2, #items do
                 local extra = GetOrCreateExtraFrame(frame, i - 1)
                 extra:SetParent(parentFrame)
-                extra:SetSize(frame:GetWidth(), frame:GetHeight())
+                extra:SetSize(expandedSize, frame:GetHeight())
                 extra.icon:SetTexture(items[i].icon)
-                if extra.qualityOverlay then
-                    BR.SecureButtons.SetQualityOverlay(extra.qualityOverlay, items[i].craftedQuality, frame:GetWidth())
-                end
+                extra.stackCount:SetFont(fontPath, cFontSize, "OUTLINE")
                 extra.stackCount:SetText(items[i].count)
                 extra.count:Hide()
                 local showText = ShouldShowText(frame.buffCategory)
@@ -2073,12 +2084,10 @@ local function ApplyConsumableDisplayMode(frame, entry, frameList, parentFrame)
                 end
                 extra:Show()
                 SetExpirationGlow(extra, entry.shouldGlow, entry.category, cachedGlow)
-                -- Apply food label to expanded extra frames (clear first to handle toggle-off)
-                if isFood then
-                    ClearFoodFrameStyle(extra)
-                    if showText then
-                        ApplyFoodFrameStyle(extra, items[i].foodLabel, items[i].foodHearty)
-                    end
+                -- Apply consumable overlays (clear first to handle toggle-off)
+                ClearConsumableOverlays(extra)
+                if showText then
+                    ApplyConsumableOverlays(extra, items[i], cFontSize)
                 end
                 frameList[#frameList + 1] = extra
             end
@@ -2663,6 +2672,10 @@ local function UpdateVisuals()
         frame:SetSize(width, size)
         frame.count:SetFont(fontPath, GetFrameFontSize(frame, 1), "OUTLINE")
 
+        -- Text position offset
+        frame.count:ClearAllPoints()
+        frame.count:SetPoint("CENTER", catSettings.textOffsetX or 0, catSettings.textOffsetY or 0)
+
         -- Text color and alpha
         local tc = catSettings.textColor or { 1, 1, 1 }
         local ta = catSettings.textAlpha or 1
@@ -2671,25 +2684,37 @@ local function UpdateVisuals()
         -- Frame alpha
         frame:SetAlpha(catSettings.iconAlpha or 1)
 
-        -- Food label + hearty badge font update
-        if frame.foodLabel then
-            local flSize = max(8, size * 0.22)
-            frame.foodLabel:SetFont(fontPath, flSize, "OUTLINE")
-            frame.foodHeartyBadge:SetFont(fontPath, flSize, "OUTLINE")
+        -- Consumable overlay font update
+        if frame.statLabel or frame.badgeLabel then
+            local flSize = BR.SecureButtons.ComputeConsumableFontSize(size)
+            if frame.statLabel then
+                frame.statLabel:SetFont(fontPath, flSize, "OUTLINE")
+            end
+            if frame.badgeLabel then
+                frame.badgeLabel:SetFont(fontPath, flSize, "OUTLINE")
+            end
         end
         if frame.buffText then
             -- Raid BUFF! text
-            local raidBts = BR.profile.categorySettings
-                and BR.profile.categorySettings.raid
-                and BR.profile.categorySettings.raid.buffTextSize
-            frame.buffText:SetFont(fontPath, raidBts or GetFrameFontSize(frame, 0.8), "OUTLINE")
+            local raidCs = BR.profile.categorySettings and BR.profile.categorySettings.raid
+            frame.buffText:SetFont(
+                fontPath,
+                (raidCs and raidCs.buffTextSize) or GetFrameFontSize(frame, 0.8),
+                "OUTLINE"
+            )
             frame.buffText:SetTextColor(tc[1], tc[2], tc[3], ta)
+            frame.buffText:ClearAllPoints()
+            frame.buffText:SetPoint(
+                "TOP",
+                frame,
+                "BOTTOM",
+                (raidCs and raidCs.buffTextOffsetX) or 0,
+                ((raidCs and raidCs.buffTextOffsetY) or 0) + BUFF_TEXT_BASE_Y
+            )
             -- BUFF! text: use buff's actual category (raid only)
-            local buffCat = frame.buffCategory
             local showReminder = false
-            if buffCat == "raid" then
-                local cs = BR.profile.categorySettings and BR.profile.categorySettings.raid
-                showReminder = not cs or cs.showBuffReminder ~= false
+            if frame.buffCategory == "raid" then
+                showReminder = not raidCs or raidCs.showBuffReminder ~= false
             end
             frame.buffText:SetShown(showReminder)
         end
@@ -2698,12 +2723,7 @@ local function UpdateVisuals()
         -- Per-category text visibility
         if not ShouldShowText(frame.buffCategory) then
             frame.count:Hide()
-            if frame.foodLabel then
-                frame.foodLabel:Hide()
-            end
-            if frame.foodHeartyBadge then
-                frame.foodHeartyBadge:Hide()
-            end
+            ClearConsumableOverlays(frame)
         end
 
         -- Update extra frames (expanded consumable display mode)
@@ -3007,7 +3027,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         -- ====================================================================
         -- Versioned migrations — each runs exactly once, tracked by dbVersion
         -- ====================================================================
-        local DB_VERSION = 30
+        local DB_VERSION = 32
 
         local migrations = {
             -- [1] Consolidate all pre-versioning migrations (v2.8 → v3.x)
@@ -3649,6 +3669,28 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                     end
                 end
             end,
+            -- [31] Arena consumable restriction now handled at data layer (disabledInCompetitivePvP);
+            -- re-enable the arena toggle so healthstones can show via category visibility.
+            [31] = function()
+                local vis = db.categoryVisibility and db.categoryVisibility.consumable
+                if vis and vis.pvpType and vis.pvpType.arena == false then
+                    vis.pvpType.arena = true
+                end
+            end,
+
+            -- [32] Remove sanguithorn tea (reverted by Blizzard)
+            [32] = function()
+                if db.enabledBuffs then
+                    db.enabledBuffs.sanguithorn = nil
+                end
+                if db.rememberedConsumables then
+                    for _, specMem in pairs(db.rememberedConsumables) do
+                        if type(specMem) == "table" then
+                            specMem.sanguithorn = nil
+                        end
+                    end
+                end
+            end,
         }
 
         -- Run pending migrations
@@ -3659,15 +3701,6 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             end
         end
         db.dbVersion = DB_VERSION
-
-        -- Login message for missing consumables
-        C_Timer.After(5, function()
-            if db.showLoginMessages ~= false then
-                print(
-                    "|cff00ccffBuffReminders:|r There are a lot of new consumables for Midnight, and I might have missed some of those. If you notice a missing one, please report it on Discord (|cff7289da/br|r > Join Discord)."
-                )
-            end
-        end)
 
         -- Deep copy defaults for non-defaults tables
         DeepCopyDefault(defaults, db)
@@ -3790,6 +3823,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         BR.BuffState.InvalidateContentTypeCache()
         BR.BuffState.InvalidateSpellCache()
         BR.BuffState.InvalidateSpecCache()
+        BR.BuffState.InvalidateOffHandCache()
         -- Sync flags with current state (in case of reload)
         inCombat = InCombatLockdown()
         isResting = IsResting()
@@ -3939,7 +3973,9 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         end
         -- Invalidate caches when player changes spec
         BR.BuffState.InvalidateSpellCache()
+        BR.BuffState.InvalidateOffHandCache()
         BR.PetHelpers.InvalidatePetActions()
+        BR.SecureButtons.InvalidateConsumableCache()
         BR.SecureButtons.RefreshOverlaySpells()
         UpdateDisplay() -- cache invalidation + immediate feedback
         -- Spells can become available shortly after spec swap; refresh once more
@@ -3961,6 +3997,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         BR.PetHelpers.InvalidatePetActions()
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
         BR.BuffState.InvalidateItemCache()
+        BR.BuffState.InvalidateOffHandCache()
         SetDirty()
     elseif event == "BAG_UPDATE_DELAYED" then
         BR.BuffState.InvalidateItemCache()

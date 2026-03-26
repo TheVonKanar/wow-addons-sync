@@ -181,7 +181,7 @@ Porter.TeleportData = {
         { type = "spell", id = 120146, name = "Ancient Portal: Dalaran",        classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Dalaran Crater" },
 
         -- Druid
-        { type = "spell", id = 193753, name = "Dreamwalk",                      classReq = "DRUID", region = "Other", zone = "Class Hall" },
+        { type = "spell", id = 193753, name = "Dreamwalk",                      classReq = "DRUID", autoCancelForm = true, region = "Other", zone = "Class Hall" },
 
         -- Death Knight
         { type = "spell", id = 50977,  name = "Death Gate",                     classReq = "DEATHKNIGHT", region = "Other", zone = "Class Hall" },
@@ -193,7 +193,7 @@ Porter.TeleportData = {
         { type = "spell", id = 556,    name = "Astral Recall",                  classReq = "SHAMAN", region = "Hearthstone", zone = "Inn" },
 
         -- Haranir
-        { type = "spell", id = 1238686, name = "Rootwalking",                  raceReq = "Haranir", region = "Quel'Thalas", zone = "Harandar" },
+        { type = "spell", id = 1238686, name = "Rootwalking",                  raceReq = "Harronir", region = "Quel'Thalas", zone = "Harandar" },
 
         -- Dark Iron Dwarf
         { type = "spell", id = 265225, name = "Mole Machine",                   raceReq = "DarkIronDwarf", region = "Other", zone = "Various" },
@@ -223,6 +223,7 @@ Porter.TeleportData = {
         { type = "item", id = 32757,  name = "Blessed Medallion of Karabor",    region = "Outland", zone = "Black Temple" },
         { type = "item", id = 44935,  name = "Ring of the Kirin Tor",           equippable = true, region = "Northrend", zone = "Dalaran" },
         { type = "item", id = 40586,  name = "Band of the Kirin Tor",           equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 44934,  name = "Loop of the Kirin Tor",           equippable = true, region = "Northrend", zone = "Dalaran" },
         { type = "item", id = 193000, name = "Ring-Bound Hourglass",            equippable = true, region = "Dragon Isles", zone = "Valdrakken" },
         { type = "item", id = 142469, name = "Violet Seal of the Grand Magus",  equippable = true, region = "Broken Isles", zone = "Dalaran" },
         { type = "item", id = 40585,  name = "Signet of the Kirin Tor",         equippable = true, region = "Northrend", zone = "Dalaran" },
@@ -241,7 +242,18 @@ Porter.TeleportData = {
         { type = "item", id = 50287,  name = "Boots of the Bay",              equippable = true, region = "Eastern Kingdoms", zone = "Booty Bay" },
         { type = "item", id = 166560, name = "Captain's Signet of Command",   equippable = true, region = "Kul Tiras / Zandalar", zone = "Boralus" },
         { type = "item", id = 166559, name = "Commander's Signet of Battle",  equippable = true, region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
-        { type = "item", id = 51559,  name = "Runed Ring of the Kirin Tor",   equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 45690,  name = "Inscribed Ring of the Kirin Tor",   equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 45688,  name = "Inscribed Band of the Kirin Tor",   equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 45689,  name = "Inscribed Loop of the Kirin Tor",   equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 45691,  name = "Inscribed Signet of the Kirin Tor", equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 48956,  name = "Etched Ring of the Kirin Tor",      equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 48954,  name = "Etched Band of the Kirin Tor",      equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 48955,  name = "Etched Loop of the Kirin Tor",      equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 48957,  name = "Etched Signet of the Kirin Tor",    equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 51559,  name = "Runed Ring of the Kirin Tor",       equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 51560,  name = "Runed Band of the Kirin Tor",       equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 51558,  name = "Runed Loop of the Kirin Tor",       equippable = true, region = "Northrend", zone = "Dalaran" },
+        { type = "item", id = 51557,  name = "Runed Signet of the Kirin Tor",     equippable = true, region = "Northrend", zone = "Dalaran" },
         { type = "item", id = 118662, name = "Bladespire Relic",                region = "Draenor", zone = "Frostfire Ridge" },
         { type = "item", id = 139590, name = "Scroll of Teleport: Ravenholdt",  region = "Eastern Kingdoms", zone = "Ravenholdt" },
         { type = "item", id = 95567,  name = "Kirin Tor Beacon",                region = "Pandaria", zone = "Isle of Thunder" },
@@ -250,6 +262,7 @@ Porter.TeleportData = {
         { type = "item", id = 204481, name = "Morqut Hearth Totem",             region = "Dragon Isles", zone = "Morqut Islet" },
         { type = "item", id = 252607, name = "Abundant Beacon",                 region = "Quel'Thalas", zone = "Zul'Aman" },
         { type = "item", id = 168862, name = "G.E.A.R. Tracking Beacon",        raceReq = "Gnome", region = "Other", zone = "Nearest Flight Path" },
+        { type = "item", id = 167075, name = "Ultrasafe Transporter: Mechagon", profReq = true, region = "Kul Tiras / Zandalar", zone = "Mechagon" },
     },
 
     ---------------------------------------------------------------------------
@@ -257,10 +270,10 @@ Porter.TeleportData = {
     ---------------------------------------------------------------------------
     ["Toys"] = {
         -- Unique-destination toys
-        { type = "toy", id = 253629, name = "Personal Key to the Arcantina",  region = "Quel'Thalas", zone = "Silvermoon City" },
+        { type = "toy", id = 253629, name = "Personal Key to the Arcantina",  region = "Quel'Thalas", zone = "The Arcantina" },
         { type = "toy", id = 266370, name = "Dundun's Abundant Travel Method", region = "Quel'Thalas", zone = "Abundance Event" },
         { type = "toy", id = 151016, name = "Fractured Necrolyte Skull",       region = "Outland", zone = "Shadowmoon Valley" },
-        { type = "toy", id = 37863,  name = "Direbrew's Remote",              region = "Eastern Kingdoms", zone = "Blackrock Depths" },
+        { type = "item", id = 37863,  name = "Direbrew's Remote",              region = "Eastern Kingdoms", zone = "Blackrock Depths" },
         { type = "toy", id = 211788, name = "Tess's Peacebloom",               raceReq = "Worgen", region = "Eastern Kingdoms", zone = "Gilneas" },
         { type = "toy", id = 64457,  name = "The Last Relic of Argus",        region = "Other", zone = "Random" },
         { type = "toy", id = 141605, name = "Flight Master's Whistle",        region = "Other", zone = "Nearest Flight Path" },
@@ -435,6 +448,37 @@ Porter.TeleportData = {
 ---------------------------------------------------------------------------
 Porter.ChangelogEntries = {
     {
+        version = "1.1.2",
+        notes = {
+            "Current dungeons/raids now defaults to Midnight: Season 1 - season setting removed from settings",
+        },
+    },
+    {
+        version = "1.1.1",
+        notes = {
+            "Fixed an issue where Porter was automatically creating macros on login, which could overwrite existing user macros. Apologies to anyone affected - Porter macros are now only created when you use the drag buttons in Settings > Action Bar Macros",
+            "Fixed random hearthstone macro rolling the normal Hearthstone spell for players who don't carry one in their bags",
+            "Random hearthstone macro now re-rolls immediately on each use",
+        },
+    },
+    {
+        version = "1.1.0",
+        notes = {
+            "|cff00ccffAction bar macros|r - Add Porter to your action bars! Open Settings > Action Bar Macros to place a one-click Porter button and a hearthstone button on your bars. The hearthstone macro uses your Porter hearthstone mode",
+            "New setting: \"Hide Porter window after porting\" - automatically hides the window after clicking a teleport (on by default)",
+            "New setting: \"Hide bank items\" - completely hides items stored in your bank instead of showing them greyed out",
+            "Housing teleport buttons now use a universal home icon - the game doesn't provide faction info for houses, so faction-specific icons weren't always accurate",
+            "Druid flight form support - Porter will cancel flight form before casting. Due to a Blizzard limitation, druids in flight form need to click twice (first exits form, second casts). A message will appear when this applies",
+            "Fixed Draenic Hologem appearing in random/specific hearthstone mode for non-Draenei characters",
+            "Fixed hearthstone cooldown not showing after using a cosmetic hearthstone in random/specific mode",
+            "Added all Kirin Tor ring variants (Inscribed, Etched, Runed tiers)",
+            "Added item: Ultrasafe Transporter: Mechagon (consumable engineering teleport)",
+            "Fixed Direbrew's Remote not showing (was incorrectly classified as a toy instead of a bag item)",
+            "Fixed Rootwalking not appearing for Haranir characters",
+            "Fixed Personal Key to the Arcantina zone (was Silvermoon City, should be The Arcantina)",
+        },
+    },
+    {
         version = "1.0.10",
         notes = {
             -- New features
@@ -452,7 +496,7 @@ Porter.ChangelogEntries = {
         version = "1.0.9",
         notes = {
             -- Midnight
-            "|cff00ccffMidnight support|r — Midnight Season 1 dungeon teleports added. Porter defaults to The War Within: Season 3 for now. Switch to Midnight: Season 1 in Settings \226\134\146 Sorting and Categorisation \226\134\146 Current dungeons/raids. This will automatically switch to Midnight at global launch.",
+            "|cff00ccffMidnight support|r — Midnight Season 1 dungeon teleports added. Porter defaults to The War Within: Season 3 for now. Switch to Midnight: Season 1 in Settings > Sorting and Categorisation > Current dungeons/raids. This will automatically switch to Midnight at global launch.",
             -- New features
             "Items stored in the bank are now visually indicated — desaturated icon with \"Bank\" label and greyed out name",
             "Keybinding now appears under its own \"Porter\" category in Key Bindings",

@@ -23,11 +23,26 @@ BuffRemindersDB = {
 ["consumableDisplayMode"] = "expanded",
 },
 ["buffTrackingMode"] = "my_buffs",
-["hideAllInVehicle"] = true,
-["dbVersion"] = 30,
+["enabledBuffs"] = {
+["symbioticRelationship"] = true,
+["blisteringScales"] = true,
+["soulstone"] = true,
+["atrophicNumbingPoison"] = true,
+["shamanShields"] = true,
+["bronze"] = true,
+["intellect"] = true,
+["versatility"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["attackPower"] = true,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["beacons"] = true,
+["burningRush"] = false,
+},
+["dbVersion"] = 32,
 ["readyCheckOnlyOverrides"] = {
 },
-["showLoginMessages"] = false,
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
@@ -66,6 +81,21 @@ BuffRemindersDB = {
 ["showText"] = true,
 },
 },
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+},
+["hideAllInVehicle"] = true,
+["categoryVisibility"] = {
+["custom"] = {
+["pvp"] = true,
+["hideInPvPMatch"] = true,
+},
+},
 ["customBuffs"] = {
 ["burningRush"] = {
 ["overlayText"] = "",
@@ -77,29 +107,6 @@ BuffRemindersDB = {
 ["class"] = "WARLOCK",
 ["key"] = "burningRush",
 ["spellID"] = 111400,
-},
-},
-["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["blisteringScales"] = true,
-["soulstone"] = true,
-["atrophicNumbingPoison"] = true,
-["shamanShields"] = true,
-["bronze"] = true,
-["intellect"] = true,
-["versatility"] = true,
-["attackPower"] = true,
-["devotionAura"] = true,
-["earthShieldOthers"] = false,
-["stamina"] = true,
-["sourceOfMagic"] = true,
-["beacons"] = true,
-["burningRush"] = false,
-},
-["categoryVisibility"] = {
-["custom"] = {
-["pvp"] = true,
-["hideInPvPMatch"] = true,
 },
 },
 },

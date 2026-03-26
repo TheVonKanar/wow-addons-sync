@@ -277,3 +277,4 @@ MogMount: disabled
 !ImprovedErrorFrame: disabled
 Baganator: enabled
 TalentLoadoutManager: disabled
+TwintopInsanityBar: disabled

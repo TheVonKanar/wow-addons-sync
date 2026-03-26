@@ -916,16 +916,6 @@ local function CreateOptionsPanel()
                     OnCategoryVisibilityChange()
                     Components.RefreshAll()
                 end,
-                disabledSubToggles = category == "consumable" and {
-                    pvpType = {
-                        arena = {
-                            tooltip = {
-                                title = "Arena",
-                                desc = "Consumables cannot be used in arena",
-                            },
-                        },
-                    },
-                } or nil,
             })
             catLayout:Add(visToggles, nil, SECTION_GAP)
 
@@ -1094,16 +1084,6 @@ local function CreateOptionsPanel()
                     onChange = function()
                         UpdateDisplay()
                     end,
-                    disabledSubToggles = {
-                        pvpType = {
-                            arena = {
-                                tooltip = {
-                                    title = "Arena",
-                                    desc = "Consumables cannot be used in arena",
-                                },
-                            },
-                        },
-                    },
                 })
                 local origVisRefresh = freeVisToggles.Refresh
                 function freeVisToggles:Refresh()
@@ -1156,6 +1136,29 @@ local function CreateOptionsPanel()
             catLayout:Add(showTextHolder, nil, COMPONENT_GAP)
         end
 
+        -- Missing count only (raid only)
+        if category == "raid" then
+            local missingCountHolder = Components.Checkbox(catContent, {
+                label = "Show missing count only",
+                get = function()
+                    return db.showMissingCountOnly == true
+                end,
+                tooltip = {
+                    title = "Show missing count only",
+                    desc = 'Show only the number of missing buffs (e.g., "1") instead of the full count (e.g., "19/20")',
+                },
+                enabled = function()
+                    local cs = db.categorySettings and db.categorySettings[category]
+                    return not cs or cs.showText ~= false
+                end,
+                onChange = function(checked)
+                    BR.Config.Set("showMissingCountOnly", checked)
+                    Components.RefreshAll()
+                end,
+            })
+            catLayout:Add(missingCountHolder, nil, COMPONENT_GAP)
+        end
+
         -- "BUFF!" text (raid only, grouped under Icons)
         if category == "raid" then
             local reminderHolder = Components.Checkbox(catContent, {
@@ -1198,6 +1201,45 @@ local function CreateOptionsPanel()
                 end,
             })
             buffTextSizeHolder:SetPoint("LEFT", reminderHolder, "LEFT", 210, 0)
+
+            local buffTextOffsetXHolder = Components.Slider(catContent, {
+                label = '"BUFF!" X',
+                labelWidth = 60,
+                min = -40,
+                max = 40,
+                get = function()
+                    local cs = db.categorySettings and db.categorySettings.raid
+                    return (cs and cs.buffTextOffsetX) or 0
+                end,
+                enabled = function()
+                    local cs = db.categorySettings and db.categorySettings.raid
+                    return not cs or cs.showBuffReminder ~= false
+                end,
+                onChange = function(val)
+                    BR.Config.Set("categorySettings.raid.buffTextOffsetX", val)
+                end,
+            })
+
+            local buffTextOffsetYHolder = Components.Slider(catContent, {
+                label = '"BUFF!" Y',
+                labelWidth = 60,
+                min = -40,
+                max = 40,
+                get = function()
+                    local cs = db.categorySettings and db.categorySettings.raid
+                    return (cs and cs.buffTextOffsetY) or 0
+                end,
+                enabled = function()
+                    local cs = db.categorySettings and db.categorySettings.raid
+                    return not cs or cs.showBuffReminder ~= false
+                end,
+                onChange = function(val)
+                    BR.Config.Set("categorySettings.raid.buffTextOffsetY", val)
+                end,
+            })
+
+            buffTextOffsetYHolder:SetPoint("LEFT", buffTextOffsetXHolder, "LEFT", 210, 0)
+            catLayout:Add(buffTextOffsetXHolder, nil, COMPONENT_GAP)
         end
 
         -- Click to cast checkbox
@@ -1552,6 +1594,26 @@ local function CreateOptionsPanel()
 
         -- Item display mode (consumable only, grouped with icon options)
         if category == "consumable" then
+            -- Consumable text scale (count + quality labels as % of icon size)
+            local consumableTextScaleHolder = Components.Slider(catContent, {
+                label = "Text scale",
+                min = 5,
+                max = 80,
+                step = 1,
+                suffix = "%",
+                get = function()
+                    return BR.Config.Get("defaults.consumableTextScale", 25)
+                end,
+                tooltip = {
+                    title = "Consumable text scale",
+                    desc = "Font size for item counts and quality (R1/R2/R3) labels as a percentage of icon size.",
+                },
+                onChange = function(val)
+                    BR.Config.Set("defaults.consumableTextScale", val)
+                end,
+            })
+            catLayout:Add(consumableTextScaleHolder, nil, COMPONENT_GAP)
+
             local updateDisplayModePreview -- forward declaration for preview update
             local updateSubIconSideVisibility -- forward declaration for sub-icon side visibility
             local displayModeHolder = Components.Dropdown(catContent, {
@@ -2759,7 +2821,11 @@ local function CreateOptionsPanel()
     local lockBtn = CreateButton(btnHolder, "Unlock", function()
         BR.Display.ToggleLock()
         Components.RefreshAll()
-    end, { title = "Lock / Unlock", desc = "Unlock to show anchor handles for repositioning buff frames." })
+    end, { title = "Lock / Unlock", desc = "Unlock to show anchor handles for repositioning buff frames." }, {
+        border = { 0.7, 0.58, 0, 1 },
+        borderHover = { 1, 0.82, 0, 1 },
+        text = { 1, 0.82, 0, 1 },
+    })
     lockBtn:SetSize(BTN_WIDTH, 22)
     lockBtn:SetPoint("RIGHT", btnHolder, "CENTER", -4, 0)
 
@@ -3402,6 +3468,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     local CONTENT_LEFT = 20
     local ROWS_START_Y = -60
     local editingBuff = existingKey and BR.profile.customBuffs[existingKey] or nil
+    local noop = function() end
 
     local existingSpellIDs = {}
     if editingBuff then
@@ -3422,7 +3489,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     })
 
     local spellRows, nameBox, overlayBox
-    local castSpellEditBox, castItemEditBox, macroEditBox, requireItemEditBox
+    local castSpellEditBox, castItemEditBox, macroEditBox, requireItemEditBox, requireItemModeDropdown
 
     modal:SetScript("OnHide", function()
         if spellRows then
@@ -3673,7 +3740,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
     requireSpellKnownToggle = Components.Toggle(sectionsFrame, {
         label = "Only if spell known",
         checked = editingBuff and editingBuff.requireSpellKnown or false,
-        onChange = function() end,
+        onChange = noop,
     })
     secLayout:AddRow({ { showIconToggle, 0 }, { requireSpellKnownToggle, 210 } }, COMPONENT_GAP)
 
@@ -3697,7 +3764,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             selected = selectedSpecId,
             width = 130,
             labelWidth = 70,
-            onChange = function() end,
+            onChange = noop,
         })
         specDropdownHolder:SetPoint("TOPLEFT", sectionsFrame, "TOPLEFT", 210, classRowY)
     end
@@ -3737,9 +3804,25 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         requireItemEditBox:SetText(tostring(editingBuff.requireItemID))
     end
 
+    local requireItemModeOptions = {
+        { value = "owned", label = "Equipped/Bags" },
+        { value = "equipped", label = "Equipped" },
+        { value = "bags", label = "In bags" },
+    }
+    local currentRequireItemMode = editingBuff and editingBuff.requireItemMode or "owned"
+    requireItemModeDropdown = Components.Dropdown(sectionsFrame, {
+        label = "",
+        labelWidth = 0,
+        options = requireItemModeOptions,
+        selected = currentRequireItemMode,
+        width = 120,
+        onChange = noop,
+    })
+    requireItemModeDropdown:SetPoint("LEFT", requireItemContainer, "RIGHT", 5, 0)
+
     local requireItemHint = sectionsFrame:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    requireItemHint:SetPoint("LEFT", requireItemContainer, "RIGHT", 5, 0)
-    requireItemHint:SetText("(hide if not owned)")
+    requireItemHint:SetPoint("LEFT", requireItemModeDropdown, "RIGHT", 5, 0)
+    requireItemHint:SetText("item ID — hide if not found")
 
     local glowModeOptions = {
         { value = "whenGlowing", label = "Detect when glowing" },
@@ -3756,7 +3839,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             title = "Action bar glow fallback",
             desc = "Fallback detection using action bar spell glows during M+/PvP/combat when buff API is restricted. Disable if you only want buff presence tracking.",
         },
-        onChange = function() end,
+        onChange = noop,
     })
     secLayout:Add(glowModeDropdown, nil, COMPONENT_GAP)
 
@@ -3808,7 +3891,7 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             end,
         },
         noAutoRefresh = true,
-        onChange = function() end,
+        onChange = noop,
     })
     secLayout:Add(visToggles, nil, COMPONENT_GAP)
 
@@ -4158,6 +4241,8 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
             castItemID = castItemIDValue,
             castMacro = castMacroValue,
             requireItemID = tonumber(strtrim(requireItemEditBox:GetText())) or nil,
+            requireItemMode = requireItemModeDropdown:GetValue() ~= "owned" and requireItemModeDropdown:GetValue()
+                or nil,
             loadConditions = savedLoadConditions,
         }
 
@@ -4170,6 +4255,8 @@ ShowCustomBuffModal = function(existingKey, refreshPanelCallback)
         end
 
         modal:Hide()
+        -- requireItemMode may have changed; clear cached item ownership so the new mode is evaluated
+        BR.BuffState.InvalidateItemCache()
         if refreshPanelCallback then
             refreshPanelCallback()
         end

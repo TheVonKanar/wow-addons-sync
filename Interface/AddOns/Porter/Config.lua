@@ -20,13 +20,15 @@ Porter.defaults = {
 
 -- Per-character profile defaults
 Porter.profileDefaults = {
+    hideAfterPort = true,
+    hideBankItems = false,
     showCosmeticHearthstones = false,
     hearthstoneMode = "Random",     -- "Normal", "Random", or "Specific"
     hearthstoneChoice = nil,        -- toy ID for Specific mode
     defaultView = "category",       -- "category" or "zone" — startup view & tab order
     viewMode = "category",          -- "category" or "zone"
     zoneOrder = "recent",           -- "recent" (most recent first) or "alpha" (alphabetical)
-    currentSeason = "tww",          -- "tww" or "midnight" — which season's dungeons/raids show as Current
+    currentSeason = "midnight",     -- "tww" or "midnight" — which season's dungeons/raids show as Current
     categoryVisibility = {
         ["Hearthstones"] = true,
         ["Class & Racial"] = true,
@@ -182,6 +184,16 @@ function Porter:InitDB()
     -- then from global non-table cleanup. Handle any leftover states.
     if PorterDB.lastSeenVersion and type(PorterDB.lastSeenVersion) == "table" then
         PorterDB.lastSeenVersion = nil
+    end
+
+    -- Migrate currentSeason from "tww" to "midnight" (v1.1.1)
+    if PorterDB.globalProfile and PorterDB.globalProfile.currentSeason == "tww" then
+        PorterDB.globalProfile.currentSeason = "midnight"
+    end
+    for _, profile in pairs(PorterDB.profiles) do
+        if profile.currentSeason == "tww" then
+            profile.currentSeason = "midnight"
+        end
     end
 
     -- Point self.db.settings at global or per-character profile based on the flag

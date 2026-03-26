@@ -24,6 +24,36 @@ local function PixelSnap(n, effectiveScale)
   return math.floor(n + 0.5)
 end
 
+-- Same 1-pixel rounding grid CDMGroups uses for _slotAreaW.
+local function SnapToGroupPx(n)
+  if ns.BarGroupAlign and ns.BarGroupAlign.SnapToGroupPx then
+    return ns.BarGroupAlign.SnapToGroupPx(n)
+  end
+  local _, h = GetPhysicalScreenSize()
+  local s = UIParent:GetScale()
+  if h and h > 0 and s and s > 0 then
+    local pmult = (768 / h) / s
+    return math.floor(n / pmult + 0.5) * pmult
+  end
+  return math.floor(n + 0.5)
+end
+
+-- Live X inset from container BOTTOMLEFT to first icon left edge.
+local function GetActualIconInset(group)
+  if ns.BarGroupAlign and ns.BarGroupAlign.GetIconInsetX then
+    return ns.BarGroupAlign.GetIconInsetX(group)
+  end
+  return 0
+end
+
+-- Live Y inset from container TOP to first icon top edge.
+local function GetActualIconInsetY(group)
+  if ns.BarGroupAlign and ns.BarGroupAlign.GetIconInsetY then
+    return ns.BarGroupAlign.GetIconInsetY(group)
+  end
+  return 0
+end
+
 -- ===================================================================
 -- DEBUG LOGGING
 -- ===================================================================
@@ -586,21 +616,12 @@ function ns.CooldownBars.ScanPlayerSpells()
       return
     end
     
-    -- Check for charges - chargeInfo being non-nil means it's a charge spell
-    -- NOTE: chargeInfo.maxCharges can be SECRET in WoW 12.0, use nil check for hasCharges
     local chargeInfo = C_Spell.GetSpellCharges(spellID)
-    local hasCharges = (chargeInfo ~= nil)  -- Table exists = charge spell
+    local hasCharges = (chargeInfo ~= nil)
     local maxCharges = 0
     
     if hasCharges and chargeInfo.maxCharges then
-      -- Only read actual value if NOT secret
-      if not issecretvalue or not issecretvalue(chargeInfo.maxCharges) then
-        maxCharges = chargeInfo.maxCharges
-      else
-        -- Secret value - still a charge spell, just can't get count yet
-        Log("  SECRET maxCharges (still charge spell): " .. spellName .. " (ID:" .. spellID .. ")")
-        maxCharges = 2  -- Default assumption for charge spells
-      end
+      maxCharges = chargeInfo.maxCharges
     end
     
     -- Check if it has cooldown API
@@ -615,9 +636,7 @@ function ns.CooldownBars.ScanPlayerSpells()
     
     -- Check if it's a talent spell
     local isTalent = false
-    pcall(function()
-      isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
-    end)
+    isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
     
     -- Check for resource cost
     local costInfo = C_Spell.GetSpellPowerCost(spellID)
@@ -804,12 +823,7 @@ function ns.CooldownBars.AddSpellByID(spellID)
   local maxCharges = 0
   
   if hasCharges and chargeInfo.maxCharges then
-    -- Only read actual value if NOT secret
-    if not issecretvalue or not issecretvalue(chargeInfo.maxCharges) then
-      maxCharges = chargeInfo.maxCharges
-    else
-      maxCharges = 2  -- Default assumption for charge spells
-    end
+    maxCharges = chargeInfo.maxCharges
   end
   
   -- Check for cooldown
@@ -835,9 +849,7 @@ function ns.CooldownBars.AddSpellByID(spellID)
   
   -- Check if talent
   local isTalent = false
-  pcall(function()
-    isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
-  end)
+  isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
   
   -- Get texture
   local texture = C_Spell.GetSpellTexture(spellID) or 134400
@@ -1005,7 +1017,22 @@ end
 -- ===================================================================
 -- SAVE/RESTORE BAR CONFIGURATION
 -- ===================================================================
+-- Version counter: increments when bar settings change.
+-- UpdateCooldownBar/UpdateChargeBar cache cfg on barData and skip GetBarConfig
+-- when their cached version matches — avoids a DB lookup every 0.1s tick.
+local barConfigVersion = 1
+
+function ns.CooldownBars.BumpConfigVersion()
+  barConfigVersion = barConfigVersion + 1
+end
+
+function ns.CooldownBars.GetConfigVersion()
+  return barConfigVersion
+end
+
 function ns.CooldownBars.SaveBarConfig()
+  -- Bump version so per-bar caches are invalidated on next tick
+  barConfigVersion = barConfigVersion + 1
   -- Skip save if we're in the middle of restoring (prevents mid-restore overwrites)
   if isRestoring then
     return
@@ -1332,36 +1359,14 @@ end
 -- Call this when spell info is available (out of combat, on events)
 local function CacheMaxCooldownDuration(spellID)
   if not spellID then return end
-  
-  local cdInfo = C_Spell.GetSpellCooldown(spellID)
-  if not cdInfo then return end
-  
-  -- Check if duration is secret before caching
-  if issecretvalue and issecretvalue(cdInfo.duration) then
-    return  -- Can't cache secret value
-  end
-  
-  -- Only cache if there's an actual duration (not 0, not GCD-only)
-  if cdInfo.duration and cdInfo.duration > 1.5 then
-    cachedMaxDurations[spellID] = cdInfo.duration
-  end
+  -- maxCharges is non-secret; use it as proxy to confirm spell has a real cooldown
+  -- We can't compare duration (SECRET), so we only cache via charge duration path below
 end
 
 -- Also cache from charge info for charge spells
 local function CacheMaxChargeDuration(spellID)
-  if not spellID then return end
-  
-  local chargeInfo = C_Spell.GetSpellCharges(spellID)
-  if not chargeInfo then return end
-  
-  -- Check if cooldownDuration is secret
-  if issecretvalue and issecretvalue(chargeInfo.cooldownDuration) then
-    return
-  end
-  
-  if chargeInfo.cooldownDuration and chargeInfo.cooldownDuration > 0 then
-    cachedMaxDurations[spellID] = chargeInfo.cooldownDuration
-  end
+  -- cooldownDuration from GetSpellCharges is SECRET — cannot compare or cache.
+  -- Color curve threshold "seconds mode" will use durationThresholdMaxDuration fallback.
 end
 
 -- Get cached max duration for a spell
@@ -1522,30 +1527,22 @@ local function RefreshAllChargeBarMaxCharges()
     if barData and barData.frame then
       local chargeInfo = C_Spell.GetSpellCharges(spellID)
       if chargeInfo and chargeInfo.maxCharges then
-        -- Outside combat, maxCharges should be non-secret
         local newMax = chargeInfo.maxCharges
-        if issecretvalue and issecretvalue(newMax) then
-          -- If somehow secret, skip this bar
-          Log("RefreshAllChargeBarMaxCharges: " .. spellID .. " maxCharges is secret, skipping")
-        else
-          local oldMax = barData.maxCharges
-          if oldMax ~= newMax then
-            Log("Max charges changed for " .. spellID .. ": " .. (oldMax or 0) .. " -> " .. newMax)
-            barData.maxCharges = newMax
-            
-            -- Update text display
-            if barData.maxText then
-              barData.maxText:SetText("/" .. barData.maxCharges)
-            end
-            if barData.stackMaxText then
-              barData.stackMaxText:SetText("/" .. barData.maxCharges)
-            end
-            
-            -- Recreate slots with new count
-            C_Timer.After(0.01, function()
-              ns.CooldownBars.ApplyAppearance(spellID, barTypeKey)
-            end)
+        local oldMax = barData.maxCharges
+        if oldMax ~= newMax then
+          Log("Max charges changed for " .. spellID .. ": " .. (oldMax or 0) .. " -> " .. newMax)
+          barData.maxCharges = newMax
+          -- Update text display
+          if barData.maxText then
+            barData.maxText:SetText("/" .. barData.maxCharges)
           end
+          if barData.stackMaxText then
+            barData.stackMaxText:SetText("/" .. barData.maxCharges)
+          end
+          -- Recreate slots with new count
+          C_Timer.After(0.01, function()
+            ns.CooldownBars.ApplyAppearance(spellID, barTypeKey)
+          end)
         end
       end
     end
@@ -1599,18 +1596,25 @@ end
 -- Feed shadow from live spell cooldown data (GCD filtered).
 -- Returns true=READY, false=on CD (matches old IsCooldownReadyForBar signature).
 -- For charge spells: also checks charge shadow — if a charge is recharging, not ready.
-local function IsCooldownReadyForBar(barData, spellID)
+local function IsCooldownReadyForBar(barData, spellID, isGCDTracker)
   local shadow = GetReadyShadowForBar(barData)
   barData._arcFeedingReadyShadow = (barData._arcFeedingReadyShadow or 0) + 1
   local info = spellID and C_Spell.GetSpellCooldown(spellID)
   if info then
-    if info.isOnGCD == true then
-      shadow:SetCooldown(0, 0)
+    local shouldFeed
+    if isGCDTracker then
+      shouldFeed = (info.isOnGCD == true)
     else
-      shadow:SetCooldown(info.startTime, info.duration)
+      shouldFeed = (info.isActive == true and info.isOnGCD ~= true)
+    end
+    if shouldFeed then
+      local durObj = C_Spell.GetSpellCooldownDuration(spellID)
+      if durObj then shadow:SetCooldownFromDurationObject(durObj, true) end
+    else
+      CooldownFrame_Clear(shadow)
     end
   else
-    shadow:SetCooldown(0, 0)
+    CooldownFrame_Clear(shadow)
   end
   barData._arcFeedingReadyShadow = barData._arcFeedingReadyShadow - 1
   if not shadow:IsShown() and barData.chargeShadow and barData.chargeShadow:IsShown() then
@@ -1957,6 +1961,31 @@ local function CreateChargeBar(index)
   local slotsContainer = CreateFrame("Frame", nil, frame)
   slotsContainer:SetPoint("LEFT", icon, "RIGHT", 4, 0)
   slotsContainer:SetSize(180, 14)  -- Default slots area size
+
+  -- Invisible tracker bar — spans full slots width, SetValue(secretCurrentCharges).
+  -- Its fill right-edge lands at the boundary between the last full charge and the
+  -- actively recharging slot.
+  local chargeTrackerBar = CreateFrame("StatusBar", nil, slotsContainer)
+  chargeTrackerBar:SetPoint("TOPLEFT", slotsContainer, "TOPLEFT", 0, 0)
+  chargeTrackerBar:SetSize(180, 14)  -- Resized in CreateChargeSlots to totalSize + spacing
+  chargeTrackerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  chargeTrackerBar:SetStatusBarColor(1, 1, 1, 1)
+  chargeTrackerBar:SetAlpha(0)
+  local chargeTrackerTex = chargeTrackerBar:GetStatusBarTexture()
+  chargeTrackerTex:SetSnapToPixelGrid(false)
+  chargeTrackerTex:SetTexelSnappingBias(0)
+
+  -- refreshBar anchored LEFT to chargeTrackerTex RIGHT — auto-follows as tracker fills.
+  -- One slot wide (sized in CreateChargeSlots). Duration text lives inside it.
+  local refreshBar = CreateFrame("Frame", nil, slotsContainer)
+  refreshBar:SetPoint("LEFT", chargeTrackerTex, "RIGHT", 0, 0)
+  refreshBar:SetSize(40, 14)
+  local dynamicTimerText = refreshBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  dynamicTimerText:SetPoint("CENTER", refreshBar, "CENTER", 0, 0)
+  dynamicTimerText:SetJustifyH("CENTER")
+  dynamicTimerText:SetTextColor(1, 1, 0.5, 1)
+  dynamicTimerText:SetShadowOffset(1, -1)
+  refreshBar:Hide()
   
   -- Name text container (allows independent frame level)
   local nameTextContainer = CreateFrame("Frame", nil, frame)
@@ -2023,6 +2052,10 @@ local function CreateChargeBar(index)
   local barData = {
     frame = frame,
     slotsContainer = slotsContainer,
+    chargeTrackerBar = chargeTrackerBar,
+    chargeTrackerTex = chargeTrackerTex,
+    refreshBar = refreshBar,
+    dynamicTimerText = dynamicTimerText,
     icon = icon,
     iconBorder = iconBorder,
     barBorderFrame = barBorderFrame,
@@ -2062,11 +2095,9 @@ local function CreateChargeBar(index)
       -- Feed charge shadow (same guard pattern as UpdateCooldownBar)
       local chargeShadow = GetChargeShadowForBar(bd)
       bd._arcFeedingChargeShadow = (bd._arcFeedingChargeShadow or 0) + 1
-      chargeShadow:SetCooldown(0, 0)
-      pcall(function()
-        local durObj = C_Spell.GetSpellChargeDuration(spellID)
-        if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
-      end)
+      CooldownFrame_Clear(chargeShadow)
+      local durObj = C_Spell.GetSpellChargeDuration(spellID)
+      if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
       bd._arcFeedingChargeShadow = bd._arcFeedingChargeShadow - 1
       UpdateChargeBar(bd)
     elseif event == "SPELL_UPDATE_COOLDOWN" then
@@ -2081,11 +2112,9 @@ local function CreateChargeBar(index)
       bd.needsDurationRefresh = true
       local chargeShadow = GetChargeShadowForBar(bd)
       bd._arcFeedingChargeShadow = (bd._arcFeedingChargeShadow or 0) + 1
-      chargeShadow:SetCooldown(0, 0)
-      pcall(function()
-        local durObj = C_Spell.GetSpellChargeDuration(spellID)
-        if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
-      end)
+      CooldownFrame_Clear(chargeShadow)
+      local durObj = C_Spell.GetSpellChargeDuration(spellID)
+      if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
       bd._arcFeedingChargeShadow = bd._arcFeedingChargeShadow - 1
       UpdateChargeBar(bd)
     end
@@ -2319,7 +2348,7 @@ local function CreateChargeSlots(barData, maxCharges, slotsTotalWidth, slotHeigh
     for i = 1, maxCharges do
       local yOffset = (i - 1) * (barLength + spacing)
       -- Each slot is narrow and tall, positioned from bottom
-      local slot = CreateChargeSlot(container, i, barThickness, barLength + 2, yOffset, true, displayCfg)
+      local slot = CreateChargeSlot(container, i, barThickness, barLength, yOffset, true, displayCfg)
       barData.chargeSlots[i] = slot
     end
   else
@@ -2336,6 +2365,36 @@ local function CreateChargeSlots(barData, maxCharges, slotsTotalWidth, slotHeigh
   
   -- Store orientation for later use
   barData.isVertical = isVertical
+
+  -- Tracker width = totalSize + spacing so each charge unit = barLength + spacing exactly.
+  -- This ensures the fill right-edge lands at the inter-slot boundary for every charge count,
+  -- regardless of spacing. refreshBar width = barLength (one slot) so its CENTER = slot center.
+  -- Math: tracker advances (barLength+spacing) per charge. refreshBar center offset = barLength/2.
+  -- → CENTER of refreshBar = currentCharges*(barLength+spacing) + barLength/2 = center of recharging slot ✓
+  if barData.chargeTrackerBar then
+    local trackerSize = totalSize + spacing  -- one extra spacing unit for correct per-slot alignment
+    barData.chargeTrackerBar:SetMinMaxValues(0, maxCharges)
+    barData.chargeTrackerBar:SetValue(0)
+    barData.chargeTrackerBar:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
+    if isVertical then
+      -- Vertical: tracker fills BOTTOM→TOP, anchor to BOTTOMLEFT so fill grows upward.
+      -- refreshBar sits ABOVE the fill top edge → anchor BOTTOM to TOP of tracker texture.
+      barData.chargeTrackerBar:SetSize(barThickness, trackerSize)
+      barData.chargeTrackerBar:ClearAllPoints()
+      barData.chargeTrackerBar:SetPoint("BOTTOMLEFT", barData.slotsContainer, "BOTTOMLEFT", 0, 0)
+      barData.refreshBar:SetSize(barThickness, barLength)
+      barData.refreshBar:ClearAllPoints()
+      barData.refreshBar:SetPoint("BOTTOM", barData.chargeTrackerTex, "TOP", 0, 0)
+    else
+      -- Horizontal: tracker fills LEFT→RIGHT, anchor TOPLEFT. refreshBar sits RIGHT of fill.
+      barData.chargeTrackerBar:SetSize(trackerSize, barThickness)
+      barData.chargeTrackerBar:ClearAllPoints()
+      barData.chargeTrackerBar:SetPoint("TOPLEFT", barData.slotsContainer, "TOPLEFT", 0, 0)
+      barData.refreshBar:SetSize(barLength, barThickness)
+      barData.refreshBar:ClearAllPoints()
+      barData.refreshBar:SetPoint("LEFT", barData.chargeTrackerTex, "RIGHT", 0, 0)
+    end
+  end
 end
 
 
@@ -2486,9 +2545,23 @@ UpdateCooldownBar = function(barData)
     return  -- Bar stays in activeCooldowns, will show again when spell becomes available
   end
   
-  -- Get config
+  -- Get config — cached on barData, only re-fetched when settings version changes
   local barTypeKey = GetBarTypeKey("cooldown", barData.instance or 1)
-  local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, barTypeKey)
+  if barData._cfgVersion ~= barConfigVersion then
+    barData._cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, barTypeKey)
+    barData._cfgVersion = barConfigVersion
+  end
+  local cfg = barData._cfg
+
+  -- Hard disable: Show toggle off = hide when panel closed; still previews when panel is open
+  if cfg and cfg.tracking and cfg.tracking.enabled == false and not IsOptionsPanelOpen() then
+    barData.frame:Hide()
+    if barData.durationTextFrame then barData.durationTextFrame:Hide(); barData.durationTextFrame:EnableMouse(false) end
+    if barData.readyTextFrame then barData.readyTextFrame:Hide(); barData.readyTextFrame:EnableMouse(false) end
+    if barData.bar then barData.bar:SetScript("OnUpdate", nil) end
+    return
+  end
+
   local hideWhenReady = cfg and cfg.behavior and cfg.behavior.hideWhenReady
   local hideWhen = cfg and GetHideWhen(cfg)
   
@@ -2525,16 +2598,14 @@ UpdateCooldownBar = function(barData)
   if chargeInfo then
     local chargeShadow = GetChargeShadowForBar(barData)
     barData._arcFeedingChargeShadow = (barData._arcFeedingChargeShadow or 0) + 1
-    chargeShadow:SetCooldown(0, 0)
-    pcall(function()
-      local durObj = C_Spell.GetSpellChargeDuration(spellID)
-      if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
-    end)
+    CooldownFrame_Clear(chargeShadow)
+    local durObj = C_Spell.GetSpellChargeDuration(spellID)
+    if durObj then chargeShadow:SetCooldownFromDurationObject(durObj, true) end
     barData._arcFeedingChargeShadow = barData._arcFeedingChargeShadow - 1
   end
 
   -- Visibility check - shadow Cooldown frame IsShown() is non-secret
-  local isReady = IsCooldownReadyForBar(barData, spellID)
+  local isReady = IsCooldownReadyForBar(barData, spellID, isGCDTracker)
   local shouldShow = true
   local isPreviewMode = false
   local hideWhenFadeAlpha = 1.0
@@ -2608,11 +2679,7 @@ UpdateCooldownBar = function(barData)
       if showMaxText and barData.maxText then
         local maxCharges = chargeInfo.maxCharges
         if maxCharges then
-          if issecretvalue and issecretvalue(maxCharges) then
-            barData.maxText:SetText("/??")
-          else
-            barData.maxText:SetText("/" .. maxCharges)
-          end
+          barData.maxText:SetText("/" .. maxCharges)
           barData.maxText:Show()
         end
       elseif barData.maxText then
@@ -2684,26 +2751,20 @@ UpdateCooldownBar = function(barData)
         -- IMPORTANT: Check charge duration FIRST (charge spells need this for recharge tracking)
         local freshDurObj = C_Spell.GetSpellChargeDuration(data.spellID) or C_Spell.GetSpellCooldownDuration(data.spellID)
         if freshDurObj then
-          local colorOK = pcall(function()
-            local colorResult = freshDurObj:EvaluateRemainingPercent(data.colorCurve)
-            if colorResult then
-              barTexture:SetVertexColor(colorResult:GetRGB())
-            end
-          end)
-          if not colorOK then
+          local colorResult = freshDurObj:EvaluateRemainingPercent(data.colorCurve)
+          if colorResult then
+            barTexture:SetVertexColor(colorResult:GetRGB())
+          else
             barTexture:SetVertexColor(data.baseColor.r, data.baseColor.g, data.baseColor.b, data.baseColor.a or 1)
           end
         end
       end)
       
       -- Apply initial color
-      local colorOK = pcall(function()
-        local colorResult = durObj:EvaluateRemainingPercent(colorCurve)
-        if colorResult then
-          barTexture:SetVertexColor(colorResult:GetRGB())
-        end
-      end)
-      if not colorOK then
+      local colorResult = durObj:EvaluateRemainingPercent(colorCurve)
+      if colorResult then
+        barTexture:SetVertexColor(colorResult:GetRGB())
+      else
         barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
       end
     else
@@ -2713,35 +2774,13 @@ UpdateCooldownBar = function(barData)
       barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, 1)
     end
     
-    -- Duration text with decimals formatting (same pattern as charge bars)
+    -- Duration text: SetFormattedText accepts secret values and applies format directly
     local durationDecimals = cfg and cfg.display and cfg.display.durationDecimals or 1
+    local DURATION_FMT = { [0] = "%.0f", [1] = "%.1f", [2] = "%.2f", [3] = "%.3f" }
+    local fmt = DURATION_FMT[durationDecimals] or "%.1f"
     local remaining = durObj:GetRemainingDuration()
-    local ok, result = pcall(function()
-      local num = tonumber(remaining)
-      if num then
-        if durationDecimals == 0 then
-          return string.format("%.0f", num)
-        elseif durationDecimals == 1 then
-          return string.format("%.1f", num)
-        else
-          return string.format("%.2f", num)
-        end
-      end
-      return remaining  -- Return as-is if can't convert
-    end)
-    
-    if ok then
-      barData.text:SetText(result)
-      if barData.freeDurationText then
-        barData.freeDurationText:SetText(result)
-      end
-    else
-      -- Secret value - pass through (SetText handles it)
-      barData.text:SetText(remaining)
-      if barData.freeDurationText then
-        barData.freeDurationText:SetText(remaining)
-      end
-    end
+    barData.text:SetFormattedText(fmt, remaining)
+    if barData.freeDurationText then barData.freeDurationText:SetFormattedText(fmt, remaining) end
     
     -- Use 0%+100% curve for ready fill (covers charge spell animation glitch) (EXACT COPY FROM CDT)
     local readyAlpha = durObj:EvaluateRemainingPercent(readyAlphaCurve100)
@@ -2843,8 +2882,20 @@ UpdateChargeBar = function(barData)
   
   -- Get exact charge count
   
-  -- Check hide behavior config
-  local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, GetBarTypeKey("charge", barData.instance or 1))
+  -- Check hide behavior config — cached on barData, only re-fetched when settings version changes
+  if barData._chargeCfgVersion ~= barConfigVersion then
+    barData._chargeCfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(spellID, GetBarTypeKey("charge", barData.instance or 1))
+    barData._chargeCfgVersion = barConfigVersion
+  end
+  local cfg = barData._chargeCfg
+
+  -- Hard disable: Show toggle off = hide when panel closed; still previews when panel is open
+  if cfg and cfg.tracking and cfg.tracking.enabled == false and not IsOptionsPanelOpen() then
+    barData.frame:Hide()
+    if barData.chargeTrackerBar then barData.chargeTrackerBar:SetScript("OnUpdate", nil) end
+    return
+  end
+
   local hideWhen = cfg and GetHideWhen(cfg)
   
   -- Determine visibility
@@ -2855,7 +2906,7 @@ UpdateChargeBar = function(barData)
   -- all charges full = chargeShadow:IsShown()=false = IsCooldownReadyForBar returns true
   local hideWhenReady = cfg and cfg.behavior and cfg.behavior.hideWhenReady
   local hideWhenFull  = cfg and cfg.behavior and cfg.behavior.hideWhenFullCharges
-  if (hideWhenReady or hideWhenFull) and IsCooldownReadyForBar(barData, spellID) then
+  if (hideWhenReady or hideWhenFull) and IsCooldownReadyForBar(barData, spellID, isGCDTracker) then
     shouldShow = false
   end
   if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
@@ -2941,6 +2992,11 @@ UpdateChargeBar = function(barData)
     end
   end
   
+  -- Feed tracker — must happen before text logic so refreshBar is positioned correctly
+  if barData.chargeTrackerBar then
+    barData.chargeTrackerBar:SetValue(secretCurrentCharges)
+  end
+
   -- Update display text (both normal and FREE mode if exists)
   barData.currentText:SetText(secretCurrentCharges)
   if barData.stackCurrentText then
@@ -2959,75 +3015,77 @@ UpdateChargeBar = function(barData)
   if barData.showDuration ~= false then
     if barData.cachedChargeDurObj and isRecharging then
       local remaining = barData.cachedChargeDurObj:GetRemainingDuration()
-      local textVal
-      local ok, result = pcall(function()
-        local num = tonumber(remaining)
-        if num then
-          if durationDecimals == 0 then return string.format("%.0f", num)
-          elseif durationDecimals == 1 then return string.format("%.1f", num)
-          else return string.format("%.2f", num) end
-        end
-        return remaining
-      end)
-      textVal = ok and result or remaining
+      local DURATION_FMT = { [0] = "%.0f", [1] = "%.1f", [2] = "%.2f", [3] = "%.3f" }
+      local fmt = DURATION_FMT[durationDecimals] or "%.1f"
 
-      -- Set text on all slots — cascade hides inactive slots so only the recharging one shows
-      if dynamicTextOnSlot and barData.chargeSlots then
-        for _, slot in ipairs(barData.chargeSlots) do
-          if slot.timerText then slot.timerText:SetText(textVal) end
-        end
+      if dynamicTextOnSlot and barData.refreshBar then
+        -- Dynamic mode: text lives in refreshBar which auto-follows chargeTrackerTex RIGHT edge
+        barData.dynamicTimerText:SetFormattedText(fmt, remaining)
+        barData.refreshBar:Show()
+        -- Suppress normal timer text
         barData.timerText:SetText("")
         if barData.freeTimerText then barData.freeTimerText:SetText("") end
+        if barData.timerTextContainer then barData.timerTextContainer:Hide() end
+        if barData.timerTextFrame then barData.timerTextFrame:Hide() end
       else
-        barData.timerText:SetText(textVal)
-        if barData.freeTimerText then barData.freeTimerText:SetText(textVal) end
+        barData.timerText:SetFormattedText(fmt, remaining)
+        if barData.freeTimerText then barData.freeTimerText:SetFormattedText(fmt, remaining) end
+        if barData.timerText then barData.timerText:Show() end
+        if barData.timerTextContainer then barData.timerTextContainer:Show() end
+        if barData.timerTextFrame then barData.timerTextFrame:Show() end
       end
-      if barData.timerText then barData.timerText:Show() end
-      if barData.timerTextContainer then barData.timerTextContainer:Show() end
-      if barData.timerTextFrame then barData.timerTextFrame:Show() end
     else
-      -- Not recharging — clear per-slot timer texts
+      -- Not recharging — hide dynamic refreshBar
+      if barData.refreshBar then
+        barData.refreshBar:Hide()
+        if barData.dynamicTimerText then barData.dynamicTimerText:SetText("") end
+      end
+      -- Clear per-slot timer texts
       if barData.chargeSlots then
         for _, slot in ipairs(barData.chargeSlots) do
           if slot.timerText then slot.timerText:SetText("") end
         end
       end
       if barData.showZeroWhenReady then
-        -- Show "0" when ready
-        barData.timerText:SetText("0")
-        if barData.freeTimerText then
-          barData.freeTimerText:SetText("0")
+        if dynamicTextOnSlot and barData.refreshBar then
+          -- Dynamic mode: show "0" on last slot via refreshBar
+          -- Position tracker at max so refreshBar sits on last slot
+          barData.chargeTrackerBar:SetValue(maxCharges - 1)
+          barData.dynamicTimerText:SetText("0")
+          barData.refreshBar:Show()
+          barData.timerText:SetText("")
+          if barData.timerTextContainer then barData.timerTextContainer:Hide() end
+        else
+          barData.timerText:SetText("0")
+          if barData.freeTimerText then barData.freeTimerText:SetText("0") end
+          if barData.timerText then barData.timerText:Show() end
+          if barData.timerTextContainer then barData.timerTextContainer:Show() end
+          if barData.timerTextFrame and barData.useFreeTimerText then barData.timerTextFrame:Show() end
         end
-        if dynamicTextOnSlot and barData.chargeSlots and #barData.chargeSlots > 0 then
-          local lastSlot = barData.chargeSlots[#barData.chargeSlots]
-          if barData.timerText then
-            barData.timerText:ClearAllPoints()
-            barData.timerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
-          end
-          if barData.freeTimerText then
-            barData.freeTimerText:ClearAllPoints()
-            barData.freeTimerText:SetPoint("CENTER", lastSlot.rechargeBar, "CENTER", 0, 0)
-          end
-        end
-        if barData.timerText then barData.timerText:Show() end
-        if barData.timerTextContainer then barData.timerTextContainer:Show() end
-        if barData.timerTextFrame and barData.useFreeTimerText then barData.timerTextFrame:Show() end
       else
-        -- Clear/hide timer
+        -- Not recharging, no zero — hide everything
         barData.timerText:SetText("")
         if barData.freeTimerText then barData.freeTimerText:SetText("") end
-        if dynamicTextOnSlot then
-          if barData.timerText then barData.timerText:Hide() end
-          if barData.timerTextContainer then barData.timerTextContainer:Hide() end
-          if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+        if barData.timerText then barData.timerText:Hide() end
+        if barData.timerTextContainer then barData.timerTextContainer:Hide() end
+        if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+        -- Preview: options panel open → show "0" on last slot as preview
+        if IsOptionsPanelOpen() and dynamicTextOnSlot and barData.refreshBar then
+          barData.chargeTrackerBar:SetValue(maxCharges - 1)
+          barData.dynamicTimerText:SetText("0")
+          barData.refreshBar:Show()
         end
       end
     end  -- end if cachedChargeDurObj and isRecharging
   else
-    -- showDuration disabled — hide all timer text including per-slot
+    -- showDuration disabled — hide all timer text including per-slot and refreshBar
     if barData.timerText then barData.timerText:SetText("") barData.timerText:Hide() end
     if barData.timerTextContainer then barData.timerTextContainer:Hide() end
     if barData.timerTextFrame then barData.timerTextFrame:Hide() end
+    if barData.refreshBar then
+      barData.refreshBar:Hide()
+      if barData.dynamicTimerText then barData.dynamicTimerText:SetText("") end
+    end
     if barData.chargeSlots then
       for _, slot in ipairs(barData.chargeSlots) do
         if slot.timerText then slot.timerText:SetText("") slot.timerText:SetAlpha(0) end
@@ -3078,17 +3136,12 @@ UpdateChargeBar = function(barData)
       -- Get fresh duration object for current remaining time
       local freshDurObj = C_Spell.GetSpellChargeDuration(data.spellID)
       if freshDurObj then
-        local colorOK = pcall(function()
-          local colorResult = freshDurObj:EvaluateRemainingPercent(data.colorCurve)
-          if colorResult then
-            -- Apply to all recharge textures (captured in closure)
-            for _, tex in ipairs(rechargeTextures) do
-              tex:SetVertexColor(colorResult:GetRGB())
-            end
+        local colorResult = freshDurObj:EvaluateRemainingPercent(data.colorCurve)
+        if colorResult then
+          for _, tex in ipairs(rechargeTextures) do
+            tex:SetVertexColor(colorResult:GetRGB())
           end
-        end)
-        if not colorOK then
-          -- Fallback to base color
+        else
           for _, tex in ipairs(rechargeTextures) do
             tex:SetVertexColor(data.baseColor.r, data.baseColor.g, data.baseColor.b, 1)
           end
@@ -3099,15 +3152,12 @@ UpdateChargeBar = function(barData)
     -- Apply initial color from curve (if durObj available)
     local chargeDurObj = C_Spell.GetSpellChargeDuration(spellID)
     if chargeDurObj then
-      local colorOK = pcall(function()
-        local colorResult = chargeDurObj:EvaluateRemainingPercent(colorCurve)
-        if colorResult then
-          for _, tex in ipairs(rechargeTextures) do
-            tex:SetVertexColor(colorResult:GetRGB())
-          end
+      local colorResult = chargeDurObj:EvaluateRemainingPercent(colorCurve)
+      if colorResult then
+        for _, tex in ipairs(rechargeTextures) do
+          tex:SetVertexColor(colorResult:GetRGB())
         end
-      end)
-      if not colorOK then
+      else
         for _, tex in ipairs(rechargeTextures) do
           tex:SetVertexColor(barColor.r, barColor.g, barColor.b, 1)
         end
@@ -3254,6 +3304,13 @@ local function UpdateResourceBar(barData)
   
   -- Check hide conditions
   local cfg = ns.CooldownBars.GetBarConfig and ns.CooldownBars.GetBarConfig(barData.spellID, "resource")
+
+  -- Hard disable: Show toggle off = hide when panel closed; still previews when panel is open
+  if cfg and cfg.tracking and cfg.tracking.enabled == false and not IsOptionsPanelOpen() then
+    barData.frame:Hide()
+    return
+  end
+
   local hideWhen = cfg and GetHideWhen(cfg)
   local hideWhenFadeAlpha = 1.0
   if EvaluateHideConditions(hideWhen, cfg and cfg.behavior and cfg.behavior.hideLogic) then
@@ -3384,12 +3441,17 @@ function ns.CooldownBars.RemoveCooldownBar(spellID, instance)
   
   ns.CooldownBars.activeCooldowns[barID] = nil
   
-  -- Disable in cooldownBarConfigs so import/export no longer lists it
+  -- Wipe settings entirely so a new bar starts fresh with defaults
   local barTypeKey = GetBarTypeKey("cooldown", instance)
   if ns.db and ns.db.char and ns.db.char.cooldownBarConfigs
-     and ns.db.char.cooldownBarConfigs[spellID]
-     and ns.db.char.cooldownBarConfigs[spellID][barTypeKey] then
-    ns.db.char.cooldownBarConfigs[spellID][barTypeKey].tracking.enabled = false
+     and ns.db.char.cooldownBarConfigs[spellID] then
+    ns.db.char.cooldownBarConfigs[spellID][barTypeKey] = nil
+    -- Clean up the spell entry if it's now empty
+    local hasAny = false
+    for _ in pairs(ns.db.char.cooldownBarConfigs[spellID]) do hasAny = true; break end
+    if not hasAny then
+      ns.db.char.cooldownBarConfigs[spellID] = nil
+    end
   end
   
   -- Save immediately to persist removal across character switches
@@ -3412,12 +3474,10 @@ function ns.CooldownBars.AddChargeBar(spellID, instance)
   -- If chargeInfo is nil, we still create the bar but mark it as "spec unavailable"
   local isCurrentlyAvailable = chargeInfo ~= nil
   
-  -- Get maxCharges safely (could be secret in combat, or nil if spell unavailable)
+  -- Get maxCharges (non-secret since patch 12.0.1)
   local maxCharges = 2  -- Default for charge spells
   if chargeInfo and chargeInfo.maxCharges then
-    if not issecretvalue or not issecretvalue(chargeInfo.maxCharges) then
-      maxCharges = chargeInfo.maxCharges
-    end
+    maxCharges = chargeInfo.maxCharges
   end
   
   -- If no spell name, try to get it from spell info (works even for unavailable spells)
@@ -3517,12 +3577,17 @@ function ns.CooldownBars.RemoveChargeBar(spellID, instance)
   
   ns.CooldownBars.activeCharges[barID] = nil
   
-  -- Disable in cooldownBarConfigs so import/export no longer lists it
+  -- Wipe settings entirely so a new bar starts fresh with defaults
   local barTypeKey = GetBarTypeKey("charge", instance)
   if ns.db and ns.db.char and ns.db.char.cooldownBarConfigs
-     and ns.db.char.cooldownBarConfigs[spellID]
-     and ns.db.char.cooldownBarConfigs[spellID][barTypeKey] then
-    ns.db.char.cooldownBarConfigs[spellID][barTypeKey].tracking.enabled = false
+     and ns.db.char.cooldownBarConfigs[spellID] then
+    ns.db.char.cooldownBarConfigs[spellID][barTypeKey] = nil
+    -- Clean up the spell entry if it's now empty
+    local hasAny = false
+    for _ in pairs(ns.db.char.cooldownBarConfigs[spellID]) do hasAny = true; break end
+    if not hasAny then
+      ns.db.char.cooldownBarConfigs[spellID] = nil
+    end
   end
   
   -- Save immediately to persist removal across character switches
@@ -3702,6 +3767,8 @@ local DISPLAY_DEFAULTS = {
   
   -- Dynamic Text Positioning (Charge Bars Only)
   dynamicTextOnSlot = false,                                   -- Show text centered on recharging slot
+  dynamicTextOffsetX = 0,                                      -- Fine-tune X offset for dynamic timer text
+  dynamicTextOffsetY = 0,                                      -- Fine-tune Y offset for dynamic timer text
   
   -- Background
   showBackground = true,
@@ -4253,13 +4320,7 @@ function ns.CooldownBars.UpdateBarVisibilityForSpec()
       
       -- Update max charges if spec changed
       if chargeInfo then
-        local newMax = barData.maxCharges or 2
-        if chargeInfo.maxCharges then
-          if not issecretvalue or not issecretvalue(chargeInfo.maxCharges) then
-            newMax = chargeInfo.maxCharges
-          end
-        end
-        
+        local newMax = chargeInfo.maxCharges or barData.maxCharges or 2
         local oldMax = barData.maxCharges
         barData.maxCharges = newMax
         barData.maxText:SetText("/" .. barData.maxCharges)
@@ -4478,14 +4539,9 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     -- CRITICAL: Always refresh maxCharges from API (may have changed with spec/talents)
     local chargeInfo = C_Spell.GetSpellCharges(barData.spellID)
     if chargeInfo then
-      -- Get maxCharges safely (could be secret in combat)
       if chargeInfo.maxCharges then
-        if not issecretvalue or not issecretvalue(chargeInfo.maxCharges) then
-          barData.maxCharges = chargeInfo.maxCharges
-        end
-        -- If secret, keep existing barData.maxCharges value
+        barData.maxCharges = chargeInfo.maxCharges
       end
-      -- Note: cooldownDuration is secret, accessed via cachedChargeInfo in UpdateChargeBar
       if barData.maxText and barData.maxCharges then
         barData.maxText:SetText("/" .. barData.maxCharges)
       end
@@ -4769,6 +4825,12 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
     -- Get strata settings for duration text
     local durationStrata = display.durationTextStrata or display.barFrameStrata or "HIGH"
     local durationLevel = display.durationTextLevel or (display.barFrameLevel or 10) + 25
+
+    -- Apply strata/level to refreshBar so dynamicTimerText renders above bar content
+    if barData.refreshBar then
+      barData.refreshBar:SetFrameStrata(durationStrata)
+      barData.refreshBar:SetFrameLevel(durationLevel)
+    end
     
     if barData.timerText then
       -- Only position and show timer text if showDuration is enabled
@@ -4962,7 +5024,11 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       local barWidth, barHeight
       if display.matchGroupWidth then
         local matchDimension
-        if display.matchSlotsOnly and group._slotAreaW then
+        -- Charge bars: always use _slotArea dimensions so each slot aligns with an icon.
+        -- Using container dimensions (which include rawBase padding) makes the bar too tall/wide.
+        -- Non-charge bars: respect matchSlotsOnly toggle.
+        local forceSlots = (barType == "charge") and group._slotAreaW
+        if (display.matchSlotsOnly or forceSlots) and group._slotAreaW then
           matchDimension = isSideAnchor and (group._slotAreaHRaw or group._slotAreaH) or (group._slotAreaWRaw or group._slotAreaW)
         else
           local cW, cH = container:GetWidth(), container:GetHeight()
@@ -4970,7 +5036,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         end
         if matchDimension and matchDimension > 0 then
           local sizeAdjust = display.matchWidthAdjust or 0
-          barWidth = PixelSnap(matchDimension + sizeAdjust, effScale)
+          barWidth = SnapToGroupPx(matchDimension + sizeAdjust)
           if barType == "charge" then
             barHeight = (display.frameHeight or 38) * scale
           else
@@ -4984,29 +5050,39 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         end
       end
 
-      -- Anchor: matchSlotsOnly TOP/BOTTOM uses container TOP/BOTTOM (center x)
-      -- so slots center aligns with icon row center via single-step rounding.
-      -- TOPLEFT chain causes up to 342/1001 position mismatches at default padding.
-      -- Charge bars: slotsContainer sits at frame CENTER (0,0), so frame must be
-      -- centered over the slot area — same -barWidth/2 offset applies correctly.
-      local matchSlots = display.matchGroupWidth and display.matchSlotsOnly and barWidth
+      -- Anchor: when matchGroupWidth is on, align bar to the icon area using
+      -- GetActualIconInset (X) and GetActualIconInsetY (Y) so slots land exactly
+      -- over the icon row/column. slotsContainer is at frame CENTER, so anchoring
+      -- frame BOTTOMLEFT at alignInset correctly centers slots over the icon area.
+      -- Non-matched bars fall back to simple container edge anchors.
+      local useInsetAnchor = display.matchGroupWidth and barWidth
+      local alignInset  = useInsetAnchor and GetActualIconInset(group) or 0
+      local alignInsetY = useInsetAnchor and GetActualIconInsetY(group) or 0
       frame:ClearAllPoints()
       if anchorPoint == "TOP" then
-        if matchSlots then
-          frame:SetPoint("BOTTOMLEFT", container, "TOP", -barWidth/2 + offsetX, offsetY)
+        if useInsetAnchor then
+          frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", alignInset + offsetX, offsetY)
         else
           frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", offsetX, offsetY)
         end
       elseif anchorPoint == "BOTTOM" then
-        if matchSlots then
-          frame:SetPoint("TOPLEFT", container, "BOTTOM", -barWidth/2 + offsetX, offsetY)
+        if useInsetAnchor then
+          frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", alignInset + offsetX, offsetY)
         else
           frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", offsetX, offsetY)
         end
       elseif anchorPoint == "LEFT" then
-        frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+        if useInsetAnchor then
+          frame:SetPoint("TOPRIGHT", container, "TOPLEFT", offsetX, -(alignInsetY + offsetY))
+        else
+          frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+        end
       elseif anchorPoint == "RIGHT" then
-        frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+        if useInsetAnchor then
+          frame:SetPoint("TOPLEFT", container, "TOPRIGHT", offsetX, -(alignInsetY + offsetY))
+        else
+          frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+        end
       end
 
       if display.matchGroupWidth then
@@ -5396,9 +5472,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         if f then fontPath = f end
       end
       
-      pcall(function()
-        barData.nameText:SetFont(fontPath, display.nameFontSize or 12, GetOutlineFlag(display.nameOutline))
-      end)
+      barData.nameText:SetFont(fontPath, display.nameFontSize or 12, GetOutlineFlag(display.nameOutline))
       
       local nameColor = display.nameColor or {r = 1, g = 1, b = 1, a = 1}
       local nr = nameColor.r or 1
@@ -5433,9 +5507,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       end
       
       local outlineFlag = GetOutlineFlag(display.durationOutline)
-      pcall(function()
-        barData.text:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
-      end)
+      barData.text:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
       
       local durColor = display.durationColor or {r = 1, g = 1, b = 0.5, a = 1}
       local dr = durColor.r or 1
@@ -5447,9 +5519,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       
       -- Style FREE mode duration text if it exists (for cooldown bars)
       if barData.freeDurationText then
-        pcall(function()
-          barData.freeDurationText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
-        end)
+        barData.freeDurationText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
         barData.freeDurationText:SetTextColor(dr, dg, db, da)
         ApplyTextShadow(barData.freeDurationText, display.durationShadow)
       end
@@ -5470,17 +5540,13 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       local outlineFlag = GetOutlineFlag(display.textOutline)
       
       -- Style current text
-      pcall(function()
-        barData.currentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-      end)
+      barData.currentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
       barData.currentText:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a or 1)
       ApplyTextShadow(barData.currentText, display.textShadow)
       
       -- Style max text
       if barData.maxText then
-        pcall(function()
-          barData.maxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-        end)
+        barData.maxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
         barData.maxText:SetTextColor(0.6, 0.6, 0.6, 1)  -- Dimmer
         ApplyTextShadow(barData.maxText, display.textShadow)
       end
@@ -5709,19 +5775,27 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         local outlineFlag = GetOutlineFlag(display.durationOutline)
         
         -- Style original timer text
-        pcall(function()
-          barData.timerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
-        end)
+        barData.timerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
         barData.timerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
         ApplyTextShadow(barData.timerText, display.durationShadow)
+
+        -- Style dynamic tracker text (dynamicTextOnSlot mode)
+        if barData.dynamicTimerText then
+          barData.dynamicTimerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
+          barData.dynamicTimerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
+          ApplyTextShadow(barData.dynamicTimerText, display.durationShadow)
+          -- Apply offset inside refreshBar
+          local offsetX = display.dynamicTextOffsetX or 0
+          local offsetY = display.dynamicTextOffsetY or 0
+          barData.dynamicTimerText:ClearAllPoints()
+          barData.dynamicTimerText:SetPoint("CENTER", barData.refreshBar, "CENTER", offsetX, offsetY)
+        end
 
         -- Style per-slot timerText (dynamic text on slot mode)
         if barData.chargeSlots then
           for _, slot in ipairs(barData.chargeSlots) do
             if slot.timerText then
-              pcall(function()
-                slot.timerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
-              end)
+              slot.timerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
               slot.timerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
               ApplyTextShadow(slot.timerText, display.durationShadow)
             end
@@ -5730,9 +5804,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         
         -- Style FREE mode timer text if it exists
         if barData.freeTimerText then
-          pcall(function()
-            barData.freeTimerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
-          end)
+          barData.freeTimerText:SetFont(fontPath, display.durationFontSize or 14, outlineFlag)
           barData.freeTimerText:SetTextColor(durColor.r, durColor.g, durColor.b, durColor.a or 1)
           ApplyTextShadow(barData.freeTimerText, display.durationShadow)
         end
@@ -5766,36 +5838,28 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
       
       -- Style original current text
       if barData.currentText then
-        pcall(function()
-          barData.currentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-        end)
+        barData.currentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
         barData.currentText:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a or 1)
         ApplyTextShadow(barData.currentText, display.textShadow)
       end
       
       -- Style FREE mode current text if it exists
       if barData.stackCurrentText then
-        pcall(function()
-          barData.stackCurrentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-        end)
+        barData.stackCurrentText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
         barData.stackCurrentText:SetTextColor(textColor.r, textColor.g, textColor.b, textColor.a or 1)
         ApplyTextShadow(barData.stackCurrentText, display.textShadow)
       end
       
       -- Style original max text
       if barData.maxText then
-        pcall(function()
-          barData.maxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-        end)
+        barData.maxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
         barData.maxText:SetTextColor(0.6, 0.6, 0.6, 1)  -- Dimmer
         ApplyTextShadow(barData.maxText, display.textShadow)
       end
       
       -- Style FREE mode max text if it exists
       if barData.stackMaxText then
-        pcall(function()
-          barData.stackMaxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
-        end)
+        barData.stackMaxText:SetFont(fontPath, display.fontSize or 14, outlineFlag)
         barData.stackMaxText:SetTextColor(0.6, 0.6, 0.6, 1)  -- Dimmer
         ApplyTextShadow(barData.stackMaxText, display.textShadow)
       end
@@ -5996,9 +6060,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
               local f = LSM:Fetch("font", display.nameFont)
               if f then fontPath = f end
             end
-            pcall(function()
-              barData.freeNameText:SetFont(fontPath, display.nameFontSize or display.fontSize or 14, GetOutlineFlag(display.nameOutline or display.textOutline))
-            end)
+            barData.freeNameText:SetFont(fontPath, display.nameFontSize or display.fontSize or 14, GetOutlineFlag(display.nameOutline or display.textOutline))
             local nameColor = display.nameColor or {r = 1, g = 1, b = 1, a = 1}
             barData.freeNameText:SetTextColor(nameColor.r or 1, nameColor.g or 1, nameColor.b or 1, nameColor.a or 1)
             barData.freeNameText:SetJustifyH("CENTER")
@@ -6120,9 +6182,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
             local f = LSM:Fetch("font", display.durationFont)
             if f then fontPath = f end
           end
-          pcall(function()
-            barData.freeDurationText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
-          end)
+          barData.freeDurationText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
           local durColor = display.durationColor or {r = 1, g = 1, b = 0.5, a = 1}
           barData.freeDurationText:SetTextColor(durColor.r or 1, durColor.g or 1, durColor.b or 0.5, durColor.a or 1)
           barData.freeDurationText:SetJustifyH("CENTER")
@@ -6195,9 +6255,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         local f = LSM:Fetch("font", display.durationFont)
         if f then fontPath = f end
       end
-      pcall(function()
-        barData.readyText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
-      end)
+      barData.readyText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
       -- Ready text color: use readyColor if set, otherwise use bar color
       local readyColor = display.readyColor or display.barColor or {r = 0.3, g = 1, b = 0.3, a = 1}
       barData.readyText:SetTextColor(readyColor.r or 0.3, readyColor.g or 1, readyColor.b or 0.3, readyColor.a or 1)
@@ -6279,9 +6337,7 @@ function ns.CooldownBars.ApplyAppearance(spellID, barType)
         barData.readyTextFrame:Show()
         
         -- Style and setup free ready text
-        pcall(function()
-          barData.freeReadyText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
-        end)
+        barData.freeReadyText:SetFont(fontPath, display.durationFontSize or 14, GetOutlineFlag(display.durationOutline))
         barData.freeReadyText:SetTextColor(readyColor.r or 0.3, readyColor.g or 1, readyColor.b or 0.3, readyColor.a or 1)
         ApplyTextShadow(barData.freeReadyText, display.durationShadow)
         if display.showReadyText == false then
@@ -7245,8 +7301,8 @@ UpdateTimerBar = function(barData)
   local cfg = ns.CooldownBars.GetTimerConfig(timerID)
   if not cfg then return end
   
-  -- ZERO CPU when disabled: hide bar, kill scripts, bail out
-  if not cfg.tracking.enabled then
+  -- Hard disable: Show toggle off = hide when panel closed; still previews when panel is open
+  if not cfg.tracking.enabled and not IsOptionsPanelOpen() then
     barData.frame:Hide()
     barData.bar:SetScript("OnUpdate", nil)
     if barData.nameTextFrame then barData.nameTextFrame:Hide() end
@@ -7756,13 +7812,10 @@ function ns.CooldownBars.StartTimer(timerID)
       
       -- Update color from curve
       if data.colorCurve and data.barData.durObj then
-        local colorOK = pcall(function()
-          local colorResult = data.barData.durObj:EvaluateRemainingPercent(data.colorCurve)
-          if colorResult then
-            data.barTexture:SetVertexColor(colorResult:GetRGB())
-          end
-        end)
-        if not colorOK then
+        local colorResult = data.barData.durObj:EvaluateRemainingPercent(data.colorCurve)
+        if colorResult then
+          data.barTexture:SetVertexColor(colorResult:GetRGB())
+        else
           data.barTexture:SetVertexColor(data.baseColor.r, data.baseColor.g, data.baseColor.b, data.baseColor.a or 1)
         end
       end
@@ -7771,13 +7824,10 @@ function ns.CooldownBars.StartTimer(timerID)
     end)
     
     -- Apply initial color from curve
-    local colorOK = pcall(function()
-      local colorResult = durObj:EvaluateRemainingPercent(colorCurve)
-      if colorResult then
-        barTexture:SetVertexColor(colorResult:GetRGB())
-      end
-    end)
-    if not colorOK then
+    local colorResult = durObj:EvaluateRemainingPercent(colorCurve)
+    if colorResult then
+      barTexture:SetVertexColor(colorResult:GetRGB())
+    else
       barTexture:SetVertexColor(baseColor.r, baseColor.g, baseColor.b, baseColor.a or 1)
     end
   else
@@ -8805,8 +8855,14 @@ end)
 -- state changes, all bars re-evaluate their hide conditions instantly.
 -- ===================================================================
 
-function ns.CooldownBars.RefreshAllBarVisibility()
-  -- Cooldown (duration) bars
+do
+  local _lastCBRefresh = 0
+  function ns.CooldownBars.RefreshAllBarVisibility()
+    -- Throttle: don't run on every spell cast, 4/s is enough for visibility changes
+    local now = GetTime()
+    if now - _lastCBRefresh < 0.25 then return end
+    _lastCBRefresh = now
+    -- Cooldown (duration) bars
   for barID, barIndex in pairs(ns.CooldownBars.activeCooldowns or {}) do
     local barData = ns.CooldownBars.bars and ns.CooldownBars.bars[barIndex]
     if barData then
@@ -8834,6 +8890,7 @@ function ns.CooldownBars.RefreshAllBarVisibility()
     if barData then
       UpdateTimerBar(barData)
     end
+  end
   end
 end
 
@@ -9098,9 +9155,10 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
               local effScale = container:GetEffectiveScale()
 
               -- matchSlotsOnly: _slotAreaW is plain WoW units — no _pmult needed.
-              -- matchGroupWidth (full container): always use container dimensions.
+              -- Charge bars: always use _slotArea so slots align per icon (not container+padding).
               local matchDimension
-              if cfg.display.matchSlotsOnly and group and group._slotAreaW then
+              local forceSlots = (barInfo.type == "charge") and group and group._slotAreaW
+              if (cfg.display.matchSlotsOnly or forceSlots) and group and group._slotAreaW then
                 matchDimension = isSideAnchor and (group._slotAreaHRaw or group._slotAreaH) or (group._slotAreaWRaw or group._slotAreaW)
               else
                 local cW, cH = container:GetWidth(), container:GetHeight()
@@ -9108,7 +9166,7 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
               end
 
               local sizeAdjust = cfg.display.matchWidthAdjust or 0
-              local barWidth = PixelSnap(matchDimension + sizeAdjust, effScale)
+              local barWidth = SnapToGroupPx(matchDimension + sizeAdjust)
               local barHeight
 
               if barInfo.type == "charge" then
@@ -9124,29 +9182,37 @@ local function OnContainerSizeChangedForCooldownBars(container, width, height)
                 frame:SetSize(barWidth, barHeight)
               end
 
-              -- Re-anchor frame so center-x stays correct with new barWidth.
-              -- SetSize alone is not enough: the anchor offset (-barWidth/2) was
-              -- baked at ApplyAppearance time and must be refreshed here.
+              -- Re-anchor frame using GetActualIconInset so slots align with icon area.
               local offsetX = cfg.display.anchorOffsetX or 0
               local offsetY = cfg.display.anchorOffsetY or 0
-              local matchSlots = cfg.display.matchSlotsOnly and barWidth and barInfo.type ~= "charge"
+              local useInsetAnchor = barWidth ~= nil
+              local alignInset  = useInsetAnchor and GetActualIconInset(group) or 0
+              local alignInsetY = useInsetAnchor and GetActualIconInsetY(group) or 0
               frame:ClearAllPoints()
               if anchorPoint == "TOP" then
-                if matchSlots then
-                  frame:SetPoint("BOTTOMLEFT", container, "TOP", -barWidth/2 + offsetX, offsetY)
+                if useInsetAnchor then
+                  frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", alignInset + offsetX, offsetY)
                 else
                   frame:SetPoint("BOTTOMLEFT", container, "TOPLEFT", offsetX, offsetY)
                 end
               elseif anchorPoint == "BOTTOM" then
-                if matchSlots then
-                  frame:SetPoint("TOPLEFT", container, "BOTTOM", -barWidth/2 + offsetX, offsetY)
+                if useInsetAnchor then
+                  frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", alignInset + offsetX, offsetY)
                 else
                   frame:SetPoint("TOPLEFT", container, "BOTTOMLEFT", offsetX, offsetY)
                 end
               elseif anchorPoint == "LEFT" then
-                frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+                if useInsetAnchor then
+                  frame:SetPoint("TOPRIGHT", container, "TOPLEFT", offsetX, -(alignInsetY + offsetY))
+                else
+                  frame:SetPoint("RIGHT", container, "LEFT", offsetX, offsetY)
+                end
               elseif anchorPoint == "RIGHT" then
-                frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+                if useInsetAnchor then
+                  frame:SetPoint("TOPLEFT", container, "TOPRIGHT", offsetX, -(alignInsetY + offsetY))
+                else
+                  frame:SetPoint("LEFT", container, "RIGHT", offsetX, offsetY)
+                end
               end
               
               -- For charge bars: also resize the slots container and recreate slots

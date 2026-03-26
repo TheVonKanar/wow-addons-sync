@@ -22,20 +22,24 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
+["buffTrackingMode"] = "my_buffs",
+["enabledBuffs"] = {
+["symbioticRelationship"] = true,
+["soulstone"] = true,
+["blisteringScales"] = true,
+["atrophicNumbingPoison"] = true,
+["beacons"] = true,
+["bronze"] = true,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["attackPower"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["versatility"] = true,
+["intellect"] = true,
+["shamanShields"] = true,
+["burningRush"] = false,
 },
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
-},
-["hideAllInVehicle"] = true,
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
@@ -76,32 +80,35 @@ BuffRemindersDB = {
 },
 ["readyCheckOnlyOverrides"] = {
 },
-["showLoginMessages"] = false,
-["dbVersion"] = 30,
-["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["soulstone"] = true,
-["blisteringScales"] = true,
-["atrophicNumbingPoison"] = true,
-["beacons"] = true,
-["bronze"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["earthShieldOthers"] = false,
-["devotionAura"] = true,
-["attackPower"] = true,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
-["burningRush"] = false,
+["customBuffs"] = {
+["burningRush"] = {
+["overlayText"] = "",
+["showWhenPresent"] = true,
+["name"] = "Burning Rush",
+["loadConditions"] = {
+["housing"] = false,
 },
-["buffTrackingMode"] = "my_buffs",
+["class"] = "WARLOCK",
+["key"] = "burningRush",
+["spellID"] = 111400,
+},
+},
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+},
+["hideAllInVehicle"] = true,
 ["categoryVisibility"] = {
 ["custom"] = {
 ["hideInPvPMatch"] = true,
 ["pvp"] = true,
 },
 },
+["dbVersion"] = 32,
 },
 },
 }

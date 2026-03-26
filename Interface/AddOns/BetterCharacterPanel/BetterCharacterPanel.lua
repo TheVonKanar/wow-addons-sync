@@ -300,9 +300,9 @@ else
 		["Thalassian Recovery"] = "Leech",
 
 		["Mark of Nalorakk"] = "Str & Stam",
-		["Mark of Magister"] = "Int & Mana",
-		["Mark of Rootwarden"] = "Agi & Speed",
-		["Mark of Worldsoul"] = "Primary Stat",
+		["Mark of the Magister"] = "Int & Mana",
+		["Mark of the Rootwarden"] = "Agi & Speed",
+		["Mark of the Worldsoul"] = "Primary Stat",
 
 		["Arcanoweave Spellthread"] = "Int & Mana",
 		["Blood Knight's Armor Kit"] = "Agi/Str & Armor",

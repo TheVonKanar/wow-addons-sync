@@ -8,6 +8,7 @@ local Module = Addon:NewModule(
         enabledTimers = {},
         itemCache = {},
         itemRequested = {},
+        sections = {},
         sectionFrames = {},
     },
     'AceHook-3.0'
@@ -36,10 +37,13 @@ local TASK_COUNT = Addon.L['objective:task_count']
 
 local SECTION_TO_CATEGORIES = {
     anniversary = { 'choresAnniversary' },
+    delves = { 'choresDelves' },
     dragonflight = { 'choresDragonflight' },
     events = { 'choresEvents' },
     hallowfallFishingDerby = { 'choresHallowfallFishingDerby' },
+    leveling = { 'choresLeveling' },
     midnight = { 'choresMidnight' },
+    prey = { 'choresPrey' },
     pvp = { 'choresPvp' },
     warWithin = { 'choresWarWithin' },
     professions = {
@@ -226,7 +230,7 @@ function Module:ConfigChanged()
     self.delvesEnabled = playerLevel == 90
 
     -- Events
-    self.sections = {}
+    wipe(self.sections)
     for _, sectionTemp in ipairs(self.sortedSections) do
         local sectionKey, sectionData = unpack(sectionTemp)
         if
@@ -356,10 +360,11 @@ function Module:Redraw(changed)
     for _, section in ipairs(Addon.db.profile.general.order.sections) do
         if section == 'timers' then
             self:AddTimers(changed, newChildren, seenFrames)
-        elseif section == 'delves' then
-            self:AddDelves(changed, newChildren, seenFrames)
-            -- elseif section == 'events' then
         else
+            if section == 'delves' then
+                self:AddDelves(changed, newChildren, seenFrames)
+            end
+
             local sectionCategories = SECTION_TO_CATEGORIES[section] or {}
             for _, sectionCategory in ipairs(sectionCategories) do
                 local categoryData = categoryMap[sectionCategory]
@@ -599,9 +604,14 @@ function Module:GetSections()
                 table.insert(section.entries, chore.translated)
             else
                 local quest = ScannerModule.quests[chore.data.requiredQuest]
-                if chore.data.requiredQuest == nil or (
-                    (quest ~= nil and quest.status == 2)
-                    -- chore.data.preEntries ~= nil
+                local accountQuest = ScannerModule.quests[chore.data.requiredAccountQuest]
+                if (
+                    chore.data.requiredQuest == nil and
+                    chore.data.requiredAccountQuest == nil
+                ) or (
+                    quest ~= nil and quest.status == 2
+                ) or (
+                    accountQuest ~= nil and accountQuest.accountCompleted
                 ) then
                     if chore.typeKey == 'drops' or chore.data.groupSameItem == true then
                         self:GetSectionDrops(section, chore)
@@ -651,8 +661,9 @@ function Module:GetSectionDrops(section, chore)
     for _, choreEntry in ipairs(chore.data.entries) do
         local choreState
         if chore.data.groupSameItem == true then
-            if grouped[choreEntry.item] == nil then
-                grouped[choreEntry.item] = true
+            local itemId = choreEntry.item or 0
+            if grouped[itemId] == nil then
+                grouped[itemId] = true
                 choreState = {
                     status = 0,
                     completed = 0,
@@ -660,7 +671,8 @@ function Module:GetSectionDrops(section, chore)
                 }
 
                 for _, otherEntry in ipairs(chore.data.entries) do
-                    if otherEntry.item == choreEntry.item then
+                    local otherItemId = otherEntry.item or 0
+                    if otherItemId == itemId then
                         section.total = section.total + 1
                         choreState.total = choreState.total + 1
 
@@ -742,6 +754,7 @@ function Module:GetSectionQuests(week, section, chore, showAnniversaryAccount, s
             
             for index, questId in ipairs(questIds) do
                 local entryState = ScannerModule.quests[questId]
+
                 if entryState ~= nil then
                     if entryState.accountCompleted and
                         questId ~= choreEntry.unlockQuest and
@@ -929,6 +942,8 @@ end
 function Module:GetEntryText(translated, entry, state, weekState, options)
     -- options = { inProgressQuestName, useShoppingListAsName }
 
+    local questName = nil
+
     -- This will just return the key if there's no translation entry, check for that
     local translatedName = L['questName:' .. entry.quest]
     if translatedName:find('^questName:') == nil then
@@ -967,6 +982,24 @@ function Module:GetEntryText(translated, entry, state, weekState, options)
                 ITEM_QUALITY_COLORS[itemInfo.quality].hex .. itemInfo.name
         else
             thingString = thingString .. '|cFFFFFFFFItem #' .. entry.item
+        end
+    elseif entry.currency ~= nil then
+        local currencyInfo = CCI_GetCurrencyInfo(entry.currency)
+
+        if (state.total or 0) > 1 then
+            local color = self:GetPercentColor(state.completed, state.total)
+            thingString = color .. state.completed .. '|cFF888888/|r' .. state.total .. '|r '
+        end
+
+        if currencyInfo ~= nil then
+            -- '|T4622270:0|t'
+            if currencyInfo.iconFileID ~= nil then
+                thingString = thingString .. '|T' .. currencyInfo.iconFileID .. ':0|t'
+            end
+            
+            thingString = thingString .. ITEM_QUALITY_COLORS[currencyInfo.quality or 1].hex .. currencyInfo.name
+        else
+            thingString = thingString .. '|cFFFFFFFFCurrency #' .. entry.currency
         end
     elseif state.status == 0 and options.chooseQuest then
         thingString = '|cFFFFFFFF' .. L['choose_quest']

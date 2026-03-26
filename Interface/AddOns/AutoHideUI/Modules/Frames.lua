@@ -3,8 +3,8 @@ local Main = Private.Main
 local Config = Private.Config
 local Frames = Private.Frames
 
-
-local minimapHelperFrame -- mouseover helper frame when minimap is hidden
+local minimapHelperFrameList = {} -- mouseover helpers for when minimap is hidden
+local addonLoadedStates = {}
 local FRAME_INFO_TEMPLATE = {frames = {}, args = {}}
 
 local function MINIMAPCLUSTER_CUSTOMGETTER(frameString)
@@ -15,15 +15,24 @@ local function MINIMAPCLUSTER_CUSTOMGETTER(frameString)
     end
     tinsert(frameList, minimapFrame)
 
-    if not minimapHelperFrame then
-        minimapHelperFrame = CreateFrame("Frame", "minimapHelperFrame", UIParent)
-        minimapHelperFrame:SetAllPoints(minimapFrame)
-        -- local t = minimapHelperFrame:CreateTexture()
-        -- t:SetAllPoints()
-        -- t:SetColorTexture(0,1,0,0.25)
-        Main.helperFrames[minimapHelperFrame] = {frameString = frameString}
+    local helperFrame = minimapHelperFrameList[frameString]
+    if not helperFrame then
+        helperFrame = CreateFrame("Frame", "AHUI_"..frameString, UIParent)
+        helperFrame:SetPoint("CENTER", minimapFrame,"CENTER", 0,0)
+        local w, h = minimapFrame:GetSize()
+        local padding = 40 -- to account for elements around the minimap, like buttons
+        helperFrame:SetSize(w + padding, h + padding)
+
+        local t = helperFrame:CreateTexture()
+        t:SetAllPoints()
+        t:SetColorTexture(0,1,0,0.25)
+        helperFrame.texture = t
+        helperFrame.texture:Hide()
+
+        Main.helperFrames[helperFrame] = {frameString = "MinimapCluster"}
+        minimapHelperFrameList[frameString] = helperFrame
     end
-    tinsert(frameList, minimapHelperFrame)
+    tinsert(frameList, helperFrame)
 
     Main.framesThatToggleVisibility[minimapFrame] = {threshold = 0.1}
 
@@ -67,6 +76,10 @@ local function BARTENDER_CUSTOMGETTER(frameString)
         PetActionBar = {
             bar = {"BT4BarPetBar"},
             firstButton = {"BT4PetButton1"},
+        },
+        StanceBar = {
+            bar = {"BT4BarStanceBar"},
+            firstButton = {"BT4StanceButton1"},
         },
         MicroMenu = {
             bar = {"BT4BarMicroMenu"},
@@ -171,7 +184,7 @@ local ADDON_FRAME_MAPPING = {
             MultiBar5 = {},
             MultiBar6 = {},
             MultiBar7 = {},
-            -- StanceBar = {"DominosFrameclass"},
+            StanceBar = {},
             PetActionBar = {},
             MicroMenu = {},
             BagsBar = {},
@@ -181,7 +194,7 @@ local ADDON_FRAME_MAPPING = {
         args = {forceAlpha = true},
     },
     {
-        name = "ElvUI",
+        name = "ElvUI_XpBar",
         isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1].db and ElvUI[1].DataBars and ElvUI[1].DataBars.db and ElvUI[1].DataBars.db.experience and ElvUI[1].DataBars.db.experience.enable end,
         frames = {
             MainStatusTrackingBarContainer = {"ElvUI_ExperienceBarHolder"},
@@ -189,7 +202,7 @@ local ADDON_FRAME_MAPPING = {
         args = {},
     },
     {
-        name = "ElvUI",
+        name = "ElvUI_Minimap",
         isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1]:GetModule("Minimap") and ElvUI[1]:GetModule("Minimap").Initialized end,
         frames = {
             MinimapCluster = {},
@@ -205,7 +218,7 @@ local ADDON_FRAME_MAPPING = {
         end,
     },
     {
-        name = "ElvUI",
+        name = "ElvUI_PlayerAuras",
         isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1]:GetModule("Auras") and ElvUI[1]:GetModule("Auras").Initialized end,
         frames = {
             BuffFrame = {"ElvUIPlayerBuffs"},
@@ -214,7 +227,7 @@ local ADDON_FRAME_MAPPING = {
         args = {},
     },
     {
-        name = "ElvUI",
+        name = "ElvUI_UnitFrames",
         isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1]:GetModule("UnitFrames") and ElvUI[1]:GetModule("UnitFrames").Initialized end,
         frames = {
             PlayerFrame = {"ElvUF_Player"},
@@ -227,7 +240,7 @@ local ADDON_FRAME_MAPPING = {
         args = {forceAlpha = true},
     },
     {
-        name = "ElvUI",
+        name = "ElvUI_ActionBars",
         isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1]:GetModule("ActionBars") and ElvUI[1]:GetModule("ActionBars").Initialized end,
         frames = {
             MainActionBar = {"ElvUI_Bar1", "ElvUI_Bar2", "ElvUI_Bar7", "ElvUI_Bar8", "ElvUI_Bar9", "ElvUI_Bar10"}, -- stealth and shapeshift bars
@@ -271,7 +284,46 @@ local ADDON_FRAME_MAPPING = {
         end
     },
     {
-        name = "EllesmereUI",
+        name = "EllesmereUI_ObjectivesTracker",
+        isLoaded = function()
+                local isLoaded = false
+                if EllesmereUI and C_AddOns.IsAddOnLoaded("EllesmereUIBasics") then
+                    for _, info in ipairs(EllesmereUI.Lite._dbRegistry) do
+                        if info.folder == "EllesmereUIBasics" then
+                            isLoaded = info.profile.questTracker.enabled
+                            break
+                        end
+                    end
+                end
+                return isLoaded
+            end,
+        frames = {
+            ObjectiveTrackerFrame = {"EUI_QuestTrackerFrame"},
+        },
+        args = {forceAlpha = true},
+    },
+    {
+        name = "EllesmereUI_Minimap",
+        isLoaded = function()
+                local isLoaded = false
+                if EllesmereUI and C_AddOns.IsAddOnLoaded("EllesmereUIBasics") then
+                    for _, info in ipairs(EllesmereUI.Lite._dbRegistry) do
+                        if info.folder == "EllesmereUIBasics" then
+                            isLoaded = info.profile.minimap.enabled
+                            break
+                        end
+                    end
+                end
+                return isLoaded
+            end,
+        frames = {
+            MinimapCluster = {},
+        },
+        customGetter = function() return MINIMAPCLUSTER_CUSTOMGETTER("Minimap") end,
+        args = {forceAlpha = true},
+    },
+    {
+        name = "EllesmereUI_ActionBars",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIActionBars") end,
         frames = {
             MainActionBar = {"EABBar_MainBar"},
@@ -292,7 +344,7 @@ local ADDON_FRAME_MAPPING = {
         args = {forceAlpha = true},
     },
     {
-        name = "EllesmereUI",
+        name = "EllesmereUI_UnitFrames",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIUnitFrames") end,
         frames = {
             PlayerFrame = {"EllesmereUIUnitFrames_Player", "ERB_PrimaryBar", "ERB_SecondaryFrame", "EllesmereUIResourceBarsFrame"},
@@ -302,19 +354,19 @@ local ADDON_FRAME_MAPPING = {
         },
         args = {forceAlpha = true},
     },
+    -- {
+    --     name = "EllesmereUI_CDM",
+    --     isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUICooldownManager") end,
+    --     frames = {
+    --         EssentialCooldownViewer = {"ECME_CDMBar_cooldowns"},
+    --         UtilityCooldownViewer = {"ECME_CDMBar_utility"},
+    --         BuffIconCooldownViewer = {"ECME_CDMBar_buffs"},
+    --         BuffBarCooldownViewer = {"ECME_CDMBar_buffs"},
+    --     },
+    --     args = {forceAlpha = true},
+    -- },
     {
-        name = "EllesmereUI",
-        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUICooldownManager") end,
-        frames = {
-            EssentialCooldownViewer = {"ECME_CDMBar_cooldowns"},
-            UtilityCooldownViewer = {"ECME_CDMBar_utility"},
-            BuffIconCooldownViewer = {"ECME_CDMBar_buffs"},
-            BuffBarCooldownViewer = {"ECME_CDMBar_buffs"},
-        },
-        args = {forceAlpha = true},
-    },
-    {
-        name = "EllesmereUI",
+        name = "EllesmereUI_ResourceBars",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIResourceBars") end,
         frames = {
             PlayerCastingBarFrame = {"ERB_CastBar"},
@@ -574,9 +626,21 @@ local function CheckForAddOnStrings(frameString, addonInfo)
     return {frameObject}, args
 end
 
+local function GetAddonLoadedState(addonName, addonInfo)
+    local isLoaded = addonLoadedStates[addonName]
+
+    if isLoaded == nil then
+        isLoaded = addonInfo:isLoaded()
+        addonLoadedStates[addonName] = isLoaded
+    end
+
+    return isLoaded
+end
+
 local function CheckForAddOnFrames(frameString, groupDB)
     for addonName, addonInfo in ipairs(ADDON_FRAME_MAPPING) do
-        if addonInfo:isLoaded() then
+        local isLoaded = GetAddonLoadedState(addonName, addonInfo)
+        if isLoaded then
             local frameList, args
 
             frameList, args = CheckForAddOnStrings(frameString, addonInfo)
@@ -768,6 +832,7 @@ local function HasFrames(frameList)
 end
 
 local function HandleAllGroupFrames(dbIndex, groupDB)
+    wipe(addonLoadedStates)
     local commonFrames = GetAllCommonFrames(groupDB)
     local customFrames = GetAllCustomFrames(groupDB)
 

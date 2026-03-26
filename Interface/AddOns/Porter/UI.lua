@@ -3,6 +3,8 @@
 
 local addonName, Porter = ...
 
+local isDruid = select(2, UnitClass("player")) == "DRUID"
+
 local BUTTON_SIZE = 40
 local BUTTON_SPACING = 6
 local ICONS_PER_ROW = 4        -- icons per row in column 1 (General)
@@ -238,6 +240,23 @@ function Porter:CreateMainFrame()
     end)
     self.searchBox = searchBox
 
+    -- Druid flight hint (shown when in flight form)
+    if isDruid then
+        local hintBar = CreateFrame("Frame", nil, f)
+        hintBar:SetHeight(30)
+        hintBar:SetPoint("TOPLEFT", headerBar, "BOTTOMLEFT", 0, 0)
+        hintBar:SetPoint("TOPRIGHT", headerBar, "BOTTOMRIGHT", 0, 0)
+        hintBar:SetFrameLevel(f:GetFrameLevel() + 10)
+        hintBar:Hide()
+
+        local druidHint = hintBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        druidHint:SetPoint("CENTER", hintBar, "CENTER", 0, -2)
+        druidHint:SetText("You're in flight form — click a teleport twice to cast")
+        druidHint:SetTextColor(1, 0.6, 0.2, 1)
+
+        self.druidHint = hintBar
+    end
+
     f:Hide()
     self.frame = f
     return f
@@ -294,8 +313,7 @@ end
 -----------------------------------------------------------------------
 function Porter:GetIcon(entry)
     if entry.type == "housing" then
-        local faction = UnitFactionGroup("player")
-        return faction == "Horde" and 1600314 or 1600313
+        return 7252953  -- ui_homestone-64
     elseif entry.type == "spell" then
         local info = C_Spell.GetSpellInfo(entry.id)
         return info and info.iconID or 134400
@@ -342,6 +360,16 @@ function Porter:UpdateCooldown(button, entry)
             if cdInfo then
                 start = cdInfo.startTime or 0
                 duration = cdInfo.duration or 0
+            end
+            -- Hearthstone spell cooldown may not register via spell API when used
+            -- via a cosmetic toy — fall back to the Hearthstone item cooldown
+            if entry.id == 8690 and (not start or start == 0) then
+                local iStart, iDuration, iEnabled = C_Item.GetItemCooldown(6948)
+                if iStart and iStart > 0 then
+                    start = iStart
+                    duration = iDuration
+                    enabled = iEnabled
+                end
             end
         elseif entry.cosmetic then
             -- Cosmetic hearthstones share the Hearthstone spell cooldown (respects guild perk)
@@ -408,28 +436,59 @@ function Porter:GetEquipSlots(itemID)
 end
 
 -----------------------------------------------------------------------
+-- WRAP MACRO
+-- Prepends /cancelform for druids so shapeshift is cancelled before cast.
+-----------------------------------------------------------------------
+function Porter:WrapMacro(macro)
+    if isDruid then
+        return "/stand\n/dismount\n/cancelform\n" .. macro
+    end
+    return macro
+end
+
+-----------------------------------------------------------------------
 -- CREATE BUTTON
 -----------------------------------------------------------------------
 function Porter:CreateButton(parent, entry, index)
     local btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
     btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:RegisterForClicks("AnyUp", "AnyDown")
+    btn:RegisterForClicks("AnyDown")
 
     if entry.type == "housing" then
         btn:SetAttribute("type", "teleporthome")
         btn:SetAttribute("house-neighborhood-guid", entry.neighborhoodGUID or "")
         btn:SetAttribute("house-guid", entry.houseGUID or "")
         btn:SetAttribute("house-plot-id", entry.plotID or 0)
+        -- Druids: overlay cancel-form button that hides itself after click
+        if isDruid then
+            local cancelOverlay = CreateFrame("Button", nil, btn, "SecureActionButtonTemplate")
+            cancelOverlay:SetAllPoints()
+            cancelOverlay:RegisterForClicks("AnyDown")
+            cancelOverlay:SetAttribute("type", "macro")
+            cancelOverlay:SetAttribute("macrotext", "/stand\n/dismount\n/cancelform")
+            cancelOverlay:SetFrameLevel(btn:GetFrameLevel() + 2)
+            -- Hide overlay after cancelling form, revealing the real button
+            cancelOverlay:HookScript("PostClick", function()
+                cancelOverlay:Hide()
+                Porter:UpdateDruidHint()
+            end)
+            -- Track for re-showing when form changes
+            btn.cancelOverlay = cancelOverlay
+            -- Only show when in flight form
+            if GetShapeshiftFormID() ~= 27 then
+                cancelOverlay:Hide()
+            end
+        end
     else
         local spellName = self:GetDisplayName(entry)
         btn:SetAttribute("type", "macro")
         if entry.type == "spell" then
-            btn:SetAttribute("macrotext", "/cast " .. spellName)
+            btn:SetAttribute("macrotext", self:WrapMacro("/cast " .. spellName))
         elseif entry.type == "item" or entry.type == "toy" then
             if entry.equippable then
-                btn:SetAttribute("macrotext", "/equip item:" .. entry.id .. "\n/use item:" .. entry.id)
+                btn:SetAttribute("macrotext", self:WrapMacro("/equip item:" .. entry.id .. "\n/use item:" .. entry.id))
             else
-                btn:SetAttribute("macrotext", "/use item:" .. entry.id)
+                btn:SetAttribute("macrotext", self:WrapMacro("/use item:" .. entry.id))
             end
         end
     end
@@ -440,12 +499,12 @@ function Porter:CreateButton(parent, entry, index)
         if mode == "Specific" then
             local choiceID = self.db.settings.hearthstoneChoice
             if choiceID and PlayerHasToy(choiceID) then
-                btn:SetAttribute("macrotext", "/use item:" .. choiceID)
+                btn:SetAttribute("macrotext", self:WrapMacro("/use item:" .. choiceID))
             end
         elseif mode == "Random" then
             btn:SetAttribute("macrotext", self:GetHearthstoneMacro())
             -- Re-roll on each click via PreClick
-            btn:SetScript("PreClick", function()
+            btn:HookScript("PreClick", function()
                 if not InCombatLockdown() then
                     btn:SetAttribute("macrotext", Porter:GetHearthstoneMacro())
                 end
@@ -528,7 +587,7 @@ function Porter:CreateButton(parent, entry, index)
         btn.equipStatus = statusText
 
         -- Save a snapshot of all candidate slots before the secure action fires
-        btn:SetScript("PreClick", function()
+        btn:HookScript("PreClick", function()
             local slots = Porter:GetEquipSlots(entry.id)
             if not slots then return end
             local snapshot = {}
@@ -544,6 +603,32 @@ function Porter:CreateButton(parent, entry, index)
             }
         end)
     end
+
+    -- Track flight form state before click (cancelform runs during click)
+    btn:HookScript("PreClick", function()
+        Porter.wasInFlightForm = isDruid and GetShapeshiftFormID() == 27
+    end)
+
+    -- Hide Porter window after clicking a teleport button
+    -- For druids in flight form: don't hide (need second click), except instant casts
+    btn:HookScript("PostClick", function()
+        if Porter.db.settings.hideAfterPort and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
+            if Porter.wasInFlightForm then
+                Porter.wasInFlightForm = nil
+                -- Some spells auto-cancel flight form (e.g. Dreamwalk) — close window
+                if entry.autoCancelForm then
+                    Porter.frame:Hide()
+                    Porter:UpdateDruidHint()
+                    return
+                end
+                -- Everything else needs a second click — stay open
+                Porter:UpdateDruidHint()
+                return
+            end
+            Porter.frame:Hide()
+        end
+        Porter:UpdateDruidHint()
+    end)
 
     btn.entry = entry
     return btn
@@ -595,7 +680,7 @@ function Porter:CreateFlyout(triggerBtn, entries, label)
         local row = CreateFrame("Button", nil, flyout, "SecureActionButtonTemplate")
         row:SetSize(FLYOUT_WIDTH - FLYOUT_PADDING * 2, FLYOUT_ROW_HEIGHT)
         row:SetPoint("TOPLEFT", flyout, "TOPLEFT", FLYOUT_PADDING, -FLYOUT_PADDING - (i - 1) * FLYOUT_ROW_HEIGHT)
-        row:RegisterForClicks("AnyUp", "AnyDown")
+        row:RegisterForClicks("AnyDown")
 
         local spellName = self:GetDisplayName(entry)
         row:SetAttribute("type", "macro")
@@ -727,12 +812,29 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
         local labelBtn = CreateFrame("Button", nil, self.frame, "SecureActionButtonTemplate")
         labelBtn:SetSize(COLUMN_WIDTH - LIST_ROW_HEIGHT - 10, LIST_ROW_HEIGHT)
         labelBtn:SetPoint("LEFT", btn, "RIGHT", 6, 0)
-        labelBtn:RegisterForClicks("AnyUp", "AnyDown")
+        labelBtn:RegisterForClicks("AnyDown")
         if entry.type == "housing" then
             labelBtn:SetAttribute("type", "teleporthome")
             labelBtn:SetAttribute("house-neighborhood-guid", entry.neighborhoodGUID or "")
             labelBtn:SetAttribute("house-guid", entry.houseGUID or "")
             labelBtn:SetAttribute("house-plot-id", entry.plotID or 0)
+            -- Druids: overlay cancel-form button on the label too
+            if isDruid then
+                local labelCancel = CreateFrame("Button", nil, labelBtn, "SecureActionButtonTemplate")
+                labelCancel:SetAllPoints()
+                labelCancel:RegisterForClicks("AnyDown")
+                labelCancel:SetAttribute("type", "macro")
+                labelCancel:SetAttribute("macrotext", "/stand\n/dismount\n/cancelform")
+                labelCancel:SetFrameLevel(labelBtn:GetFrameLevel() + 2)
+                labelCancel:HookScript("PostClick", function()
+                    labelCancel:Hide()
+                    Porter:UpdateDruidHint()
+                end)
+                btn.cancelOverlayLabel = labelCancel
+                if GetShapeshiftFormID() ~= 27 then
+                    labelCancel:Hide()
+                end
+            end
         else
             labelBtn:SetAttribute("type", "macro")
             labelBtn:SetAttribute("macrotext", btn:GetAttribute("macrotext"))
@@ -776,6 +878,27 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
             GameTooltip:Hide()
         end)
 
+        -- Hide window after clicking label (same logic as icon button)
+        labelBtn:HookScript("PreClick", function()
+            Porter.wasInFlightForm = isDruid and GetShapeshiftFormID() == 27
+        end)
+        labelBtn:HookScript("PostClick", function()
+            if Porter.db.settings.hideAfterPort and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
+                if Porter.wasInFlightForm then
+                    Porter.wasInFlightForm = nil
+                    if entry.autoCancelForm then
+                        Porter.frame:Hide()
+                        Porter:UpdateDruidHint()
+                        return
+                    end
+                    Porter:UpdateDruidHint()
+                    return
+                end
+                Porter.frame:Hide()
+            end
+            Porter:UpdateDruidHint()
+        end)
+
         labelBtn.entry = entry
         tinsert(self.nameLabels, labelBtn)
         btn.nameLabel = label
@@ -802,7 +925,12 @@ function Porter:GetAvailable(category)
         elseif entry.cosmetic and specificChoice and entry.id == specificChoice then
             -- skip the chosen cosmetic hearthstone (already shown as the main Hearthstone button)
         elseif self:IsAvailable(entry) then
-            tinsert(available, entry)
+            -- Skip bank-only items when hide bank items is enabled
+            if self.db.settings.hideBankItems and self:IsInBankOnly(entry) then
+                -- skip
+            else
+                tinsert(available, entry)
+            end
         end
     end
     return available
@@ -825,13 +953,42 @@ end
 -----------------------------------------------------------------------
 -- HELPER: Get owned cosmetic hearthstones
 -----------------------------------------------------------------------
+-- Toys that Blizzard flags as usable but throw errors for wrong races
+local RACE_LOCKED_HEARTHSTONES = {
+    [210455] = { "Draenei", "LightforgedDraenei" }, -- Draenic Hologem
+}
+
 function Porter:GetOwnedCosmeticHearthstones()
     local owned = {}
     local entries = self.TeleportData["Hearthstones"]
     if not entries then return owned end
+    local _, raceFile = UnitRace("player")
     for _, entry in ipairs(entries) do
         if entry.cosmetic and entry.type == "toy" and PlayerHasToy(entry.id) then
-            tinsert(owned, entry)
+            local skip = false
+            -- Hardcoded race check for toys Blizzard incorrectly flags as usable
+            local lockedRaces = RACE_LOCKED_HEARTHSTONES[entry.id]
+            if lockedRaces then
+                local allowed = false
+                for _, r in ipairs(lockedRaces) do
+                    if raceFile == r then allowed = true; break end
+                end
+                if not allowed then skip = true end
+            end
+            -- Also check raceReq from data
+            if not skip and entry.raceReq then
+                if type(entry.raceReq) == "table" then
+                    skip = true
+                    for _, r in ipairs(entry.raceReq) do
+                        if raceFile == r then skip = false; break end
+                    end
+                else
+                    skip = (raceFile ~= entry.raceReq)
+                end
+            end
+            if not skip then
+                tinsert(owned, entry)
+            end
         end
     end
     return owned
@@ -845,29 +1002,51 @@ function Porter:GetHearthstoneMacro()
     if mode == "Specific" then
         local choiceID = self.db.settings.hearthstoneChoice
         if choiceID and PlayerHasToy(choiceID) then
-            return "/use item:" .. choiceID
+            -- Verify race requirement (e.g. Draenic Hologem is Draenei-only)
+            local usable = true
+            local entries = self.TeleportData["Hearthstones"]
+            if entries then
+                for _, entry in ipairs(entries) do
+                    if entry.id == choiceID and entry.raceReq then
+                        usable = self:IsAvailable(entry)
+                        break
+                    end
+                end
+            end
+            if usable then
+                return self:WrapMacro("/use item:" .. choiceID)
+            end
         end
     elseif mode == "Random" then
         local owned = self:GetOwnedCosmeticHearthstones()
-        -- Filter to only toys not on cooldown
-        local ready = {}
-        for _, entry in ipairs(owned) do
-            local start = C_Item.GetItemCooldown(entry.id)
-            if not start or start == 0 then
-                tinsert(ready, entry)
+        -- Re-roll command appended to macro so next click gets a new random toy
+        local reroll = "/porter rr\n"
+        -- Only include normal Hearthstone if the player has one in their bags
+        local hasHearthstone = C_Item.GetItemCount(6948) > 0
+        if hasHearthstone then
+            local total = #owned + 1
+            local roll = math.random(total)
+            if roll > #owned then
+                return reroll .. self:WrapMacro("/cast Hearthstone")
+            else
+                return reroll .. self:WrapMacro("/use item:" .. owned[roll].id)
             end
-        end
-        -- Include the normal Hearthstone spell in the rotation
-        local total = #ready + 1
-        local roll = math.random(total)
-        if roll > #ready then
-            return "/cast Hearthstone"
-        else
-            return "/use item:" .. ready[roll].id
+        elseif #owned > 0 then
+            local roll = math.random(#owned)
+            return reroll .. self:WrapMacro("/use item:" .. owned[roll].id)
         end
     end
     -- Normal fallback
-    return "/cast Hearthstone"
+    local hasHearthstone = C_Item.GetItemCount(6948) > 0
+    if hasHearthstone then
+        return self:WrapMacro("/cast Hearthstone")
+    end
+    -- No hearthstone in bags, try any owned cosmetic
+    local owned = self:GetOwnedCosmeticHearthstones()
+    if #owned > 0 then
+        return self:WrapMacro("/use item:" .. owned[1].id)
+    end
+    return self:WrapMacro("/cast Hearthstone")
 end
 
 -----------------------------------------------------------------------
@@ -876,7 +1055,7 @@ end
 function Porter:GetAvailableCurrent(category)
     local entries = self.TeleportData[category]
     if not entries then return {} end
-    local activeSeason = self.db and self.db.settings.currentSeason or "tww"
+    local activeSeason = self.db and self.db.settings.currentSeason or "midnight"
     local available = {}
     for _, entry in ipairs(entries) do
         if entry.season == activeSeason and self:IsAvailable(entry) then
@@ -953,7 +1132,7 @@ function Porter:BuildTabbedColumn(category, xOffset, yStart, buttonIndex)
 
         for _, expacName in ipairs(self.ExpansionOrder) do
             local expacEntries = {}
-            local activeSeason = self.db and self.db.settings.currentSeason or "tww"
+            local activeSeason = self.db and self.db.settings.currentSeason or "midnight"
             for _, entry in ipairs(entries) do
                 -- Skip entries that belong to the active season (they show in Current tab)
                 local isActiveSeason = entry.season and entry.season == activeSeason
@@ -1048,6 +1227,9 @@ function Porter:BuildLayout()
 
     local buttonIndex = 0
     local contentTop = -(HEADER_BAR_HEIGHT + 4)
+    if self.druidHint and self.druidHint:IsShown() then
+        contentTop = contentTop - 22
+    end
     local vis = self.db.settings.categoryVisibility
 
     -- Determine which logical columns have content (enabled AND have available entries)
@@ -1232,6 +1414,9 @@ function Porter:BuildZoneLayout()
     if not self.frame then return end
 
     local contentTop = -(HEADER_BAR_HEIGHT + 4)
+    if self.druidHint and self.druidHint:IsShown() then
+        contentTop = contentTop - 22
+    end
     local ZONE_HEADER_HEIGHT = 16
     local ZONE_INDENT = 8
 
@@ -1395,6 +1580,31 @@ function Porter:BuildZoneLayout()
 end
 
 -----------------------------------------------------------------------
+-- UPDATE DRUID HINT
+-- Shows a message when a druid is in a shapeshift form
+-----------------------------------------------------------------------
+function Porter:UpdateDruidHint()
+    if not self.druidHint then return end
+    local inFlightForm = GetShapeshiftFormID() == 27
+    if inFlightForm then
+        self.druidHint:Show()
+    else
+        self.druidHint:Hide()
+    end
+    -- Show/hide cancel-form overlays on housing buttons
+    if not InCombatLockdown() then
+        for _, btn in ipairs(self.buttons) do
+            if btn.cancelOverlay then
+                if inFlightForm then btn.cancelOverlay:Show() else btn.cancelOverlay:Hide() end
+            end
+            if btn.cancelOverlayLabel then
+                if inFlightForm then btn.cancelOverlayLabel:Show() else btn.cancelOverlayLabel:Hide() end
+            end
+        end
+    end
+end
+
+-----------------------------------------------------------------------
 -- UPDATE COOLDOWNS
 -----------------------------------------------------------------------
 function Porter:UpdateAllCooldowns()
@@ -1536,7 +1746,7 @@ function Porter:ApplySearch()
                 if entries then
                     local currentMatches, legacyMatches = false, false
                     local legacyExpansion = nil
-                    local activeSeason = self.db and self.db.settings.currentSeason or "tww"
+                    local activeSeason = self.db and self.db.settings.currentSeason or "midnight"
                     for _, entry in ipairs(entries) do
                         if self:IsAvailable(entry) and self:IsSearchMatch(entry) then
                             if entry.season == activeSeason then
@@ -1758,11 +1968,13 @@ function Porter:RefreshSettingsPanel()
         end
     end
 
-    -- Current season radio buttons
-    if w.seasonButtons and w.seasonModes then
-        for i, rb in ipairs(w.seasonButtons) do
-            rb:SetChecked(self.db.settings.currentSeason == w.seasonModes[i])
-        end
+
+    -- Behaviour checkboxes
+    if w.hideAfterCB then
+        w.hideAfterCB:SetChecked(self.db.settings.hideAfterPort)
+    end
+    if w.hideBankCB then
+        w.hideBankCB:SetChecked(self.db.settings.hideBankItems)
     end
 
     -- Global profile checkbox and copy-from visibility
@@ -1977,6 +2189,47 @@ function Porter:CreateSettingsPanel()
     end)
 
     -----------------------------------------------------------------
+    -- SECTION: Behaviour
+    -----------------------------------------------------------------
+    yPos = yPos - SECTION_GAP
+
+    local behHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    behHeader:SetPoint("TOPLEFT", 12, yPos)
+    behHeader:SetText("Behaviour")
+    yPos = yPos - HEADER_GAP
+
+    -- Hide after porting checkbox
+    local hideAfterCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+    hideAfterCB:SetSize(26, 26)
+    hideAfterCB:SetPoint("TOPLEFT", 10, yPos)
+    hideAfterCB:SetChecked(self.db.settings.hideAfterPort)
+    local hideAfterLabel = hideAfterCB:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    hideAfterLabel:SetPoint("LEFT", hideAfterCB, "RIGHT", 4, 0)
+    hideAfterLabel:SetText("Hide Porter window after porting")
+    hideAfterLabel:SetTextColor(1, 1, 1, 1)
+    hideAfterCB:SetScript("OnClick", function(cb)
+        Porter.db.settings.hideAfterPort = cb:GetChecked()
+    end)
+    self.settingsWidgets.hideAfterCB = hideAfterCB
+    yPos = yPos - ITEM_GAP
+
+    -- Hide bank items checkbox
+    local hideBankCB = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+    hideBankCB:SetSize(26, 26)
+    hideBankCB:SetPoint("TOPLEFT", 10, yPos)
+    hideBankCB:SetChecked(self.db.settings.hideBankItems)
+    local hideBankLabel = hideBankCB:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    hideBankLabel:SetPoint("LEFT", hideBankCB, "RIGHT", 4, 0)
+    hideBankLabel:SetText("Hide bank items")
+    hideBankLabel:SetTextColor(1, 1, 1, 1)
+    hideBankCB:SetScript("OnClick", function(cb)
+        Porter.db.settings.hideBankItems = cb:GetChecked()
+        Porter:RefreshMainFrame()
+    end)
+    self.settingsWidgets.hideBankCB = hideBankCB
+    yPos = yPos - ITEM_GAP
+
+    -----------------------------------------------------------------
     -- SECTION: Hearthstone
     -----------------------------------------------------------------
     yPos = yPos - SECTION_GAP
@@ -2038,6 +2291,7 @@ function Porter:CreateSettingsPanel()
                 end
             end
             Porter:RefreshMainFrame()
+            Porter:UpdateHearthstoneMacro()
         end)
 
         yPos = yPos - ITEM_GAP
@@ -2176,6 +2430,7 @@ function Porter:CreateSettingsPanel()
                 UpdateChoiceDisplay()
                 dropdown:Hide()
                 Porter:RefreshMainFrame()
+                Porter:UpdateHearthstoneMacro()
             end)
         end
 
@@ -2349,42 +2604,6 @@ function Porter:CreateSettingsPanel()
     self.settingsWidgets.zoneOrderButtons = zoneOrderButtons
     self.settingsWidgets.zoneOrderModes = zoneOrderModes
 
-    yPos = yPos - SUBGROUP_GAP
-
-    local seasonDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    seasonDesc:SetPoint("TOPLEFT", 14, yPos)
-    seasonDesc:SetText("Current dungeons/raids:")
-    seasonDesc:SetTextColor(0.7, 0.7, 0.7, 1)
-    yPos = yPos - LABEL_GAP
-
-    local seasonModes = { "tww", "midnight" }
-    local seasonLabels = { "The War Within: Season 3", "Midnight: Season 1" }
-    local seasonButtons = {}
-    for i, mode in ipairs(seasonModes) do
-        local rb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
-        rb:SetSize(24, 24)
-        rb:SetPoint("TOPLEFT", 14, yPos)
-        rb:SetChecked(self.db.settings.currentSeason == mode)
-
-        local rbLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        rbLabel:SetPoint("LEFT", rb, "RIGHT", 4, 0)
-        rbLabel:SetText(seasonLabels[i])
-        rbLabel:SetTextColor(1, 1, 1, 1)
-
-        rb:SetScript("OnClick", function()
-            Porter.db.settings.currentSeason = mode
-            for _, otherRb in ipairs(seasonButtons) do
-                otherRb:SetChecked(false)
-            end
-            rb:SetChecked(true)
-            Porter:RefreshMainFrame()
-        end)
-
-        tinsert(seasonButtons, rb)
-        yPos = yPos - ITEM_GAP
-    end
-    self.settingsWidgets.seasonButtons = seasonButtons
-    self.settingsWidgets.seasonModes = seasonModes
 
     -- Refresh choice display when settings panel is shown (toy data may not be cached at login)
     f:HookScript("OnShow", function()
@@ -2392,6 +2611,90 @@ function Porter:CreateSettingsPanel()
             Porter.settingsWidgets.updateChoiceDisplay()
         end
     end)
+
+    -----------------------------------------------------------------
+    -- SECTION: Macros
+    -----------------------------------------------------------------
+    yPos = yPos - SECTION_GAP
+
+    local macroHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    macroHeader:SetPoint("TOPLEFT", 12, yPos)
+    macroHeader:SetText("Action Bar Macros")
+    yPos = yPos - HEADER_GAP
+
+    local macroDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    macroDesc:SetPoint("TOPLEFT", 14, yPos)
+    macroDesc:SetPoint("RIGHT", content, "RIGHT", -14, 0)
+    macroDesc:SetJustifyH("LEFT")
+    macroDesc:SetText("Add Porter to your action bars! Click a button below, then click an empty action bar slot to place it. The hearthstone macro uses your Porter hearthstone mode — if you're using Random, it picks a different cosmetic hearthstone each time.")
+    macroDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    local descHeight = macroDesc:GetStringHeight()
+    yPos = yPos - descHeight - LABEL_GAP
+
+    -- Porter Toggle drag button
+    local toggleDrag = CreateFrame("Button", nil, content)
+    toggleDrag:SetSize(36, 36)
+    toggleDrag:SetPoint("TOPLEFT", 14, yPos)
+
+    local toggleIcon = toggleDrag:CreateTexture(nil, "BACKGROUND")
+    toggleIcon:SetAllPoints()
+    toggleIcon:SetTexture("Interface\\AddOns\\Porter\\macro_porter")
+
+    local toggleLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    toggleLabel:SetPoint("LEFT", toggleDrag, "RIGHT", 8, 0)
+    toggleLabel:SetText("Open/Close Porter")
+    toggleLabel:SetTextColor(1, 1, 1, 1)
+
+    toggleDrag:SetScript("OnClick", function()
+        Porter:EnsurePorterMacro()
+        local idx = GetMacroIndexByName("Porter")
+        if idx > 0 and Porter:IsPorterMacro(idx) then
+            PickupMacro(idx)
+        else
+            print("|cff9966ffPorter:|r Could not create macro. Check your macro list is not full.")
+        end
+    end)
+    toggleDrag:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:AddLine("Open/Close Porter")
+        GameTooltip:AddLine("Click here, then click an action bar slot to place", 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    toggleDrag:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    yPos = yPos - 40
+
+    -- Hearthstone drag button
+    local hsDrag = CreateFrame("Button", nil, content)
+    hsDrag:SetSize(36, 36)
+    hsDrag:SetPoint("TOPLEFT", 14, yPos)
+
+    local hsDragIcon = hsDrag:CreateTexture(nil, "BACKGROUND")
+    hsDragIcon:SetAllPoints()
+    hsDragIcon:SetTexture("Interface\\AddOns\\Porter\\macro_hearthstone")
+
+    local hsLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    hsLabel:SetPoint("LEFT", hsDrag, "RIGHT", 8, 0)
+    hsLabel:SetText("Hearthstone (uses your Porter hearthstone mode)")
+    hsLabel:SetTextColor(1, 1, 1, 1)
+
+    hsDrag:SetScript("OnClick", function()
+        Porter:EnsureHSMacro()
+        local idx = GetMacroIndexByName("Porter HS")
+        if idx > 0 and Porter:IsPorterHSMacro(idx) then
+            PickupMacro(idx)
+        else
+            print("|cff9966ffPorter:|r Could not create macro. Check your macro list is not full.")
+        end
+    end)
+    hsDrag:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:AddLine("Porter: Hearthstone")
+        GameTooltip:AddLine("Click here, then click an action bar slot to place", 1, 1, 1, true)
+        GameTooltip:AddLine("Uses your hearthstone mode (Normal/Random/Specific)", 0.7, 0.7, 0.7, true)
+        GameTooltip:Show()
+    end)
+    hsDrag:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    yPos = yPos - 40
 
     -- Padding below last section
     yPos = yPos - SECTION_GAP
@@ -2595,7 +2898,7 @@ function Porter:ShowChangelog(sinceVersion)
         local notesText = ""
         for j, note in ipairs(entry.notes) do
             notesText = notesText .. "- " .. note
-            if j < #entry.notes then notesText = notesText .. "\n" end
+            if j < #entry.notes then notesText = notesText .. "\n\n" end
         end
 
         local notes = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -2639,10 +2942,12 @@ function Porter:Toggle()
     if self.frame:IsShown() then
         self.frame:Hide()
     else
+        self:UpdateDruidHint()
         self:BuildLayout()
         self:UpdateAllCooldowns()
         self:UpdateEquipStatus()
         self:HighlightKeystone()
+        self:UpdateHearthstoneMacro()
         self.frame:Show()
     end
 end

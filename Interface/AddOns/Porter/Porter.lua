@@ -3,6 +3,8 @@
 -- slash command, and minimap button setup.
 
 local addonName, Porter = ...
+-- Expose globally so /run macros can access Porter
+_G.Porter = Porter
 
 -----------------------------------------------------------------------
 -- EVENT FRAME
@@ -32,6 +34,12 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
 
         -- Set up the minimap button
         Porter:SetupMinimapButton()
+
+        -- Create named secure buttons for /click macros
+        Porter:CreateSecureButtons()
+
+        -- Refresh existing Porter macros (icon + hearthstone body)
+        Porter:RefreshMacros()
 
         -- Unregister since we only need this once
         self:UnregisterEvent("ADDON_LOADED")
@@ -155,13 +163,158 @@ function Porter:PopulateHousingData(houseInfos)
 end
 
 -----------------------------------------------------------------------
+-- SECURE BUTTONS
+-- Named secure buttons that can be triggered via /click macros.
+-- PorterToggle: opens/closes the Porter window.
+-- PorterHearthstone: uses a random cosmetic hearthstone (or normal).
+-----------------------------------------------------------------------
+function Porter:CreateSecureButtons()
+    -- Toggle button
+    local toggle = CreateFrame("Button", "PorterToggle", UIParent, "SecureActionButtonTemplate")
+    toggle:SetSize(1, 1)
+    toggle:SetAlpha(0)
+    toggle:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
+    toggle:RegisterForClicks("AnyDown")
+    toggle:SetAttribute("type", "macro")
+    toggle:SetAttribute("macrotext", "/porter")
+    toggle:Show()
+
+    -- Hearthstone button — hidden but clickable via Porter:Click()
+    local hs = CreateFrame("Button", "PorterHearthstone", UIParent, "SecureActionButtonTemplate")
+    hs:SetSize(1, 1)
+    hs:SetAlpha(0)
+    hs:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
+    hs:RegisterForClicks("AnyDown")
+    hs:SetAttribute("type", "macro")
+    local ok, macro = pcall(function() return self:GetHearthstoneMacro() end)
+    hs:SetAttribute("macrotext", ok and macro or self:WrapMacro("/cast Hearthstone"))
+    hs:SetScript("PreClick", function()
+        if not InCombatLockdown() then
+            local ok2, macro2 = pcall(function() return Porter:GetHearthstoneMacro() end)
+            if ok2 and macro2 then
+                hs:SetAttribute("macrotext", macro2)
+            end
+        end
+    end)
+    hs:Show()
+    self.hearthstoneSecureBtn = hs
+end
+
+-----------------------------------------------------------------------
+-- MACRO HELPERS
+-- Porter macros are only created when the user clicks the drag buttons
+-- in Settings. On login, we only update the icon and hearthstone body
+-- if our macros already exist (verified by checking the macro body).
+-----------------------------------------------------------------------
+local TOGGLE_NAME = "Porter"
+local HS_NAME = "Porter HS"
+
+function Porter:GetPorterIcon()
+    return GetFileIDFromPath("Interface\\AddOns\\Porter\\macro_porter")
+        or "Spell_Arcane_PortalStormwind"
+end
+
+function Porter:GetHSIcon()
+    return GetFileIDFromPath("Interface\\AddOns\\Porter\\macro_hearthstone")
+        or "Spell_Nature_Hearthstone"
+end
+
+-- Check if a macro is ours by verifying the body
+function Porter:IsPorterMacro(idx)
+    if idx == 0 then return false end
+    local _, _, body = GetMacroInfo(idx)
+    return body and body:find("/porter") ~= nil
+end
+
+function Porter:IsPorterHSMacro(idx)
+    if idx == 0 then return false end
+    local _, _, body = GetMacroInfo(idx)
+    if not body then return false end
+    return body:find("/cast Hearthstone") ~= nil or body:find("/use item:") ~= nil
+end
+
+-- Create a Porter macro (called from settings drag buttons)
+function Porter:EnsurePorterMacro()
+    if InCombatLockdown() then return false end
+    local idx = GetMacroIndexByName(TOGGLE_NAME)
+    if idx > 0 and self:IsPorterMacro(idx) then
+        -- Refresh existing macro
+        EditMacro(idx, nil, self:GetPorterIcon(), "/porter")
+        return true
+    end
+    if idx > 0 then return false end -- name taken by user macro
+    local maxMacros = MAX_ACCOUNT_MACROS or 120
+    local numGlobal = GetNumMacros()
+    if numGlobal < maxMacros then
+        CreateMacro(TOGGLE_NAME, self:GetPorterIcon(), "/porter", false)
+        return true
+    end
+    return false
+end
+
+function Porter:EnsureHSMacro()
+    if InCombatLockdown() then return false end
+    local ok, hsMacro = pcall(function() return self:GetHearthstoneMacro() end)
+    local hsBody = ok and hsMacro or "/cast Hearthstone"
+    local idx = GetMacroIndexByName(HS_NAME)
+    if idx > 0 and self:IsPorterHSMacro(idx) then
+        -- Refresh existing macro
+        EditMacro(idx, nil, self:GetHSIcon(), hsBody)
+        return true
+    end
+    if idx > 0 then return false end -- name taken by user macro
+    local maxMacros = MAX_ACCOUNT_MACROS or 120
+    local numGlobal = GetNumMacros()
+    if numGlobal < maxMacros then
+        CreateMacro(HS_NAME, self:GetHSIcon(), hsBody, false)
+        return true
+    end
+    return false
+end
+
+-- Update existing Porter macros on login (icon + hearthstone body only)
+function Porter:RefreshMacros()
+    C_Timer.After(2, function()
+        if InCombatLockdown() then return end
+
+        -- Update toggle macro icon (temporary file IDs change on restart)
+        local toggleIdx = GetMacroIndexByName(TOGGLE_NAME)
+        if toggleIdx > 0 and Porter:IsPorterMacro(toggleIdx) then
+            EditMacro(toggleIdx, nil, Porter:GetPorterIcon(), nil)
+        end
+
+        -- Update hearthstone macro icon + body
+        Porter:UpdateHearthstoneMacro()
+    end)
+end
+
+-- Update the hearthstone macro body and icon to match current mode
+function Porter:UpdateHearthstoneMacro()
+    local idx = GetMacroIndexByName(HS_NAME)
+    if idx == 0 or not self:IsPorterHSMacro(idx) then return end
+    if InCombatLockdown() then return end
+    local ok, macro = pcall(function() return self:GetHearthstoneMacro() end)
+    if ok and macro then
+        EditMacro(idx, nil, self:GetHSIcon(), macro)
+        local itemID = macro:match("/use item:(%d+)")
+        self.lastHearthID = itemID and tonumber(itemID) or nil
+    end
+end
+
+
+-----------------------------------------------------------------------
 -- SLASH COMMAND
 -- /porter toggles the main window.
 -----------------------------------------------------------------------
 SLASH_PORTER1 = "/porter"
-SlashCmdList["PORTER"] = function()
-    Porter:Toggle()
+SlashCmdList["PORTER"] = function(msg)
+    if msg == "rr" then
+        Porter:UpdateHearthstoneMacro()
+    else
+        Porter:Toggle()
+    end
 end
+
 
 
 -----------------------------------------------------------------------

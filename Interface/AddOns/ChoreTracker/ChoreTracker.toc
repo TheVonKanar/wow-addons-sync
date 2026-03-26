@@ -1,7 +1,7 @@
 ## Interface: 120000, 120001
 ## Title: ChoreTracker
 ## Notes: Keep track of your chores
-## Version: 12.0.0.13
+## Version: 12.0.0.17
 ## Author: Freddie
 ## IconTexture: Interface\AddOns\ChoreTracker\Assets\icon.blp
 ## SavedVariables: ChoreTrackerDB
@@ -51,9 +51,12 @@ Locales\zhCN.lua
 ChoreTracker.lua
 
 Data\Professions.lua
+Data\Chores\Delves.lua
 Data\Chores\Dragonflight.lua
 Data\Chores\HallowfallFishingDerby.lua
+Data\Chores\Leveling.lua
 Data\Chores\Midnight.lua
+Data\Chores\Prey.lua
 Data\Chores\PvP.lua
 Data\Chores\The_War_Within.lua
 Data\Chores\Events\Anniversary.lua

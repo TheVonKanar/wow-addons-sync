@@ -18,13 +18,13 @@ BAGANATOR_CONFIG = {
 ["currencyID"] = 3310,
 },
 {
-["currencyID"] = 2803,
-},
-{
 ["currencyID"] = 3343,
 },
 {
 ["currencyID"] = 3345,
+},
+{
+["currencyID"] = 3347,
 },
 },
 },
@@ -103,10 +103,10 @@ BAGANATOR_CONFIG = {
 ["default_armor"] = false,
 ["default_junk"] = false,
 ["5"] = false,
-["default_hearthstone"] = false,
 ["default_keystone"] = false,
-["default_profession"] = false,
+["default_hearthstone"] = false,
 ["default_auto_equipment_sets"] = false,
+["default_profession"] = false,
 ["default_key"] = false,
 ["1"] = false,
 ["3"] = false,
@@ -129,7 +129,6 @@ BAGANATOR_CONFIG = {
 "default_auto_recents",
 "1",
 "default_toy",
-"default_housing",
 "default_battlepet",
 "----",
 "2",
@@ -143,6 +142,7 @@ BAGANATOR_CONFIG = {
 "default_food",
 "default_potion",
 "default_miscellaneous",
+"default_housing",
 "default_keystone",
 "----",
 "_2",
@@ -211,18 +211,18 @@ BAGANATOR_CONFIG = {
 ["new_items_flashing"] = true,
 ["icon_equipment_set_border"] = true,
 ["sort_start_at_bottom"] = false,
+["category_migration"] = 5,
 ["saved_searches"] = {
 },
-["category_migration"] = 5,
 ["bag_icon_size"] = 44,
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
 ["i:225415"] = true,
 ["i:233799"] = true,
+["i:233794"] = true,
 ["i:201412"] = true,
 ["i:235053"] = true,
-["i:233794"] = true,
 },
 },
 ["default_armor"] = {
@@ -232,8 +232,8 @@ BAGANATOR_CONFIG = {
 ["default_itemenhancement"] = {
 ["addedItems"] = {
 ["i:222584"] = true,
-["i:213777"] = true,
 ["i:232386"] = true,
+["i:213777"] = true,
 },
 },
 ["default_hearthstone"] = {
@@ -241,43 +241,21 @@ BAGANATOR_CONFIG = {
 ["priority"] = -1,
 ["addedItems"] = {
 ["i:65274"] = true,
-["i:234389"] = true,
-["i:252607"] = true,
 ["i:249699"] = true,
+["i:252607"] = true,
+["i:234389"] = true,
 },
 },
-["default_weapon"] = {
-},
-["default_junk"] = {
-["showGroupPrefix"] = true,
-["priority"] = 2,
+["default_miscellaneous"] = {
 ["addedItems"] = {
-["i:226132"] = true,
-["i:227673"] = true,
-["i:226107"] = true,
-["i:226120"] = true,
-["i:243147"] = true,
-["i:237131"] = true,
-["i:248954"] = true,
-["i:248755"] = true,
-["i:231099"] = true,
-["i:166846"] = true,
-["i:233118"] = true,
-["i:234416"] = true,
-["i:233055"] = true,
-["i:243144"] = true,
-["i:13444"] = true,
-["i:226131"] = true,
-["i:234387"] = true,
-["i:234386"] = true,
-["i:86143"] = true,
-["i:233062"] = true,
-["i:233061"] = true,
-["i:248764"] = true,
-["i:226110"] = true,
-["i:228913"] = true,
-["i:233205"] = true,
+["i:244465"] = true,
+["i:237268"] = true,
+["i:262798"] = true,
 },
+},
+["default_recipe"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_reagent"] = {
 ["addedItems"] = {
@@ -300,7 +278,7 @@ BAGANATOR_CONFIG = {
 ["i:236756"] = true,
 ["i:236953"] = true,
 ["i:224264"] = true,
-["i:235151"] = true,
+["i:246585"] = true,
 ["i:224817"] = true,
 ["i:245755"] = true,
 ["i:238208"] = true,
@@ -316,7 +294,7 @@ BAGANATOR_CONFIG = {
 ["i:255825"] = true,
 ["i:227450"] = true,
 ["i:226045"] = true,
-["i:236096"] = true,
+["i:235151"] = true,
 ["i:237497"] = true,
 ["i:233071"] = true,
 ["i:238466"] = true,
@@ -329,7 +307,7 @@ BAGANATOR_CONFIG = {
 ["i:245761"] = true,
 ["i:268485"] = true,
 ["i:259188"] = true,
-["i:246585"] = true,
+["i:236096"] = true,
 },
 },
 ["default_gem"] = {
@@ -350,16 +328,16 @@ BAGANATOR_CONFIG = {
 ["i:258138"] = true,
 ["i:241309"] = true,
 ["i:222728"] = true,
-["i:242747"] = true,
+["i:255847"] = true,
 ["i:268679"] = true,
 ["i:242275"] = true,
-["i:212283"] = true,
+["i:241322"] = true,
 ["i:243191"] = true,
 ["i:241323"] = true,
-["i:255847"] = true,
+["i:242747"] = true,
 ["i:241305"] = true,
 ["i:222776"] = true,
-["i:241322"] = true,
+["i:212283"] = true,
 },
 },
 ["5"] = {
@@ -374,6 +352,7 @@ BAGANATOR_CONFIG = {
 ["i:71083"] = true,
 ["i:259361"] = true,
 ["i:248944"] = true,
+["i:151134"] = true,
 ["i:246951"] = true,
 ["i:21100"] = true,
 ["i:260531"] = true,
@@ -394,6 +373,18 @@ BAGANATOR_CONFIG = {
 },
 ["default_tradegoods"] = {
 },
+["default_auto_equipment_sets"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
+["default_keystone"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
+["default_food"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
 ["default_profession"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
@@ -406,18 +397,6 @@ BAGANATOR_CONFIG = {
 ["i:212308"] = true,
 },
 },
-["default_keystone"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_food"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_auto_equipment_sets"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
 ["default_potion"] = {
 ["addedItems"] = {
 ["i:5512"] = true,
@@ -428,20 +407,46 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_recipe"] = {
+["default_junk"] = {
 ["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_miscellaneous"] = {
+["priority"] = 2,
 ["addedItems"] = {
-["i:244465"] = true,
-["i:237268"] = true,
-["i:262798"] = true,
+["i:226132"] = true,
+["i:226131"] = true,
+["i:226107"] = true,
+["i:226120"] = true,
+["i:243147"] = true,
+["i:237131"] = true,
+["i:248954"] = true,
+["i:233205"] = true,
+["i:228913"] = true,
+["i:166846"] = true,
+["i:233118"] = true,
+["i:234416"] = true,
+["i:233055"] = true,
+["i:226110"] = true,
+["i:243144"] = true,
+["i:227673"] = true,
+["i:234387"] = true,
+["i:234386"] = true,
+["i:86143"] = true,
+["i:233062"] = true,
+["i:233061"] = true,
+["i:248764"] = true,
+["i:13444"] = true,
+["i:231099"] = true,
+["i:248755"] = true,
 },
+},
+["default_weapon"] = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = true,
+["2"] = false,
+["Crafting"] = true,
+},
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
@@ -452,13 +457,13 @@ BAGANATOR_CONFIG = {
 373.1668701171875,
 },
 ["icon_text_font_size"] = 14,
-["disabled_skins"] = {
-},
-["bag_view_width"] = 15,
 ["view_alpha"] = 1,
 ["sort_ignore_slots_count_2"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
+["disabled_skins"] = {
+},
+["bag_view_width"] = 15,
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
@@ -566,11 +571,7 @@ BAGANATOR_CONFIG = {
 ["currencies_tracked_imported"] = {
 },
 ["show_sort_button_2"] = true,
-["category_section_toggled"] = {
-["1"] = true,
-["2"] = false,
-["Crafting"] = true,
-},
+["sort_ignore_slots_at_end"] = false,
 ["icon_context_fading"] = true,
 ["currency_panel_position"] = {
 "RIGHT",

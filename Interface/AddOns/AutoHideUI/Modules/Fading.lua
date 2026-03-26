@@ -2,6 +2,8 @@ local _, Private = ...
 local Main = Private.Main
 local Fading = Private.Fading
 
+local  max, min = max, min
+
 local FADE_QUEUE = {}
 local totalElapsed = 0
 local FADE_THROTTLE = 0.02
@@ -63,10 +65,9 @@ function Fading.SetAllAlpha(targetAlpha)
         local newAlpha = targetAlpha or GetTargetAlpha(group)
         group.states.endAlpha = newAlpha
         for _, frame in pairs(group.frames) do
-            if frame._origSetAlpha then
-                frame:_origSetAlpha(newAlpha)
-            else
-                frame:SetAlpha(newAlpha)
+            if not Main.helperFrames[frame] then
+                local alphaFunc = frame._origSetAlpha or frame.SetAlpha
+                alphaFunc(frame, newAlpha)
             end
         end
     end
@@ -173,6 +174,7 @@ local function HandleVisibilityForFade(frame, fadeInfo)
     if not Main.framesThatToggleVisibility[frame] then
         return
     end
+
     if fadeInfo.mode == "OUT" then
         fadeInfo.finishedFunc = UpdateFrameVisibility
         fadeInfo.finishedArg1 = frame

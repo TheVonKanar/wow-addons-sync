@@ -533,6 +533,7 @@ local function ShowDeleteConfirmation(barNum, barType, barName)
         cfg.tracking.useBaseSpell = false
         cfg.tracking.trackedSpellID = nil  -- Clear tracked spell selection
         cfg.tracking.maxStacks = 10
+        if ns.API and ns.API.InvalidateActiveBarCache then ns.API.InvalidateActiveBarCache() end
         cfg.tracking.maxDuration = 30
         cfg.tracking.iconTextureID = nil
         cfg.tracking.displaySpellID = nil
@@ -571,6 +572,7 @@ local function ShowDeleteConfirmation(barNum, barType, barName)
           cfg.tracking.powerName = nil
           cfg.display.enabled = false
           if ns.Resources and ns.Resources.HideBar then ns.Resources.HideBar(barNum) end
+          if ns.API and ns.API.InvalidateActiveBarCache then ns.API.InvalidateActiveBarCache() end
         end
       end
     end
@@ -939,6 +941,32 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           if not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0 then return true end
           -- Hide if using trackedSpellID (they're mutually exclusive)
           return cfg.tracking.trackedSpellID and cfg.tracking.trackedSpellID > 0
+        end
+      },
+      highFrequencyUpdates = {
+        type = "toggle",
+        name = "|cffFF6600High Frequency Updates|r",
+        desc = "|cffFF6600High CPU usage.|r\n\nForces this bar to update on every CDM aura refresh event. Only enable if you find this bar is not updating fast enough with the default settings.",
+        get = function()
+          local cfg = ns.API.GetBarConfig(barNum)
+          return cfg and cfg.tracking and cfg.tracking.highFrequencyUpdates or false
+        end,
+        set = function(info, value)
+          local cfg = ns.API.GetBarConfig(barNum)
+          if cfg then
+            cfg.tracking.highFrequencyUpdates = value or nil
+            -- Re-register hooks so highFreqBars is updated immediately
+            if ns.API.ValidateAllBarTracking then ns.API.ValidateAllBarTracking() end
+            if ns.API.RefreshDisplay then ns.API.RefreshDisplay(barNum) end
+          end
+        end,
+        order = 4.76,
+        width = 1.0,
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking then return true end
+          return not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0
         end
       },
       trackSpellBreak = {
