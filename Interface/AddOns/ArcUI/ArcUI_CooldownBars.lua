@@ -1594,33 +1594,21 @@ local function GetReadyShadowForBar(barData)
 end
 
 -- Feed shadow from live spell cooldown data (GCD filtered).
--- Returns true=READY, false=on CD (matches old IsCooldownReadyForBar signature).
--- For charge spells: also checks charge shadow — if a charge is recharging, not ready.
+-- Returns true=READY, false=on CD.
+-- Uses isActive directly (non-secret per 12.0.1) — no shadow frames needed for detection.
+-- Charge spells (maxCharges>1): use GetSpellCharges.isActive — no GCD filter needed.
+-- Regular/1-charge spells: use GetSpellCooldown.isActive + GCD filter.
 local function IsCooldownReadyForBar(barData, spellID, isGCDTracker)
-  local shadow = GetReadyShadowForBar(barData)
-  barData._arcFeedingReadyShadow = (barData._arcFeedingReadyShadow or 0) + 1
-  local info = spellID and C_Spell.GetSpellCooldown(spellID)
-  if info then
-    local shouldFeed
-    if isGCDTracker then
-      shouldFeed = (info.isOnGCD == true)
-    else
-      shouldFeed = (info.isActive == true and info.isOnGCD ~= true)
-    end
-    if shouldFeed then
-      local durObj = C_Spell.GetSpellCooldownDuration(spellID)
-      if durObj then shadow:SetCooldownFromDurationObject(durObj, true) end
-    else
-      CooldownFrame_Clear(shadow)
-    end
-  else
-    CooldownFrame_Clear(shadow)
+  if isGCDTracker then
+    local cdInfo = C_Spell.GetSpellCooldown(spellID)
+    return not (cdInfo and cdInfo.isOnGCD == true)
   end
-  barData._arcFeedingReadyShadow = barData._arcFeedingReadyShadow - 1
-  if not shadow:IsShown() and barData.chargeShadow and barData.chargeShadow:IsShown() then
-    return false
+  local chargeInfo = C_Spell.GetSpellCharges(spellID)
+  if chargeInfo and chargeInfo.maxCharges and chargeInfo.maxCharges > 1 then
+    return chargeInfo.isActive ~= true
   end
-  return not shadow:IsShown()
+  local cdInfo = C_Spell.GetSpellCooldown(spellID)
+  return not (cdInfo and cdInfo.isActive == true and cdInfo.isOnGCD ~= true)
 end
 
 -- Charge-specific shadow: fed from GetSpellChargeDuration.
@@ -2577,8 +2565,8 @@ UpdateCooldownBar = function(barData)
   -- Check if this bar is configured for GCD tracking (spell 61304 or trackGCD enabled)
   local isGCDTracker = spellID == 61304 or (cfg and cfg.tracking and cfg.tracking.trackGCD)
   
-  if chargeInfo then
-    -- CHARGE SPELL: Use charge duration
+  if chargeInfo and chargeInfo.maxCharges and chargeInfo.maxCharges > 1 then
+    -- TRUE MULTI-CHARGE SPELL: use charge duration
     durObj = chargeDurObj
   elseif isGCDTracker then
     -- GCD TRACKER: Use duration object when GCD is active (opposite of normal behavior)
@@ -2730,12 +2718,20 @@ UpdateCooldownBar = function(barData)
     
     -- Apply color (with curve if enabled)
     if useColorCurve then
+      -- Determine which duration source this bar is actually using.
+      -- Spells with maxCharges > 1 use GetSpellChargeDuration; everything else (including
+      -- maxCharges == 1 spells) uses GetSpellCooldownDuration.  Storing this at setup time
+      -- prevents the OnUpdate from alternating between two slightly-out-of-sync duration
+      -- objects, which caused rapid color flickering for maxCharges=1 spells.
+      local useChargeDur = chargeInfo and chargeInfo.maxCharges and chargeInfo.maxCharges > 1
+
       -- Store data for OnUpdate handler
       barData.bar.colorCurveData = {
         spellID = spellID,
         colorCurve = colorCurve,
         baseColor = baseColor,
         elapsed = 0,
+        useChargeDur = useChargeDur,
       }
       
       -- Set up OnUpdate handler for continuous color updates (throttled to 20fps)
@@ -2747,9 +2743,14 @@ UpdateCooldownBar = function(barData)
         if data.elapsed < 0.05 then return end  -- 20fps for color updates
         data.elapsed = 0
         
-        -- Get fresh duration object for current remaining time
-        -- IMPORTANT: Check charge duration FIRST (charge spells need this for recharge tracking)
-        local freshDurObj = C_Spell.GetSpellChargeDuration(data.spellID) or C_Spell.GetSpellCooldownDuration(data.spellID)
+        -- Use the same duration source that the bar itself uses (set at setup time).
+        -- Never fall back to the other source mid-run; that is what caused the flicker.
+        local freshDurObj
+        if data.useChargeDur then
+          freshDurObj = C_Spell.GetSpellChargeDuration(data.spellID)
+        else
+          freshDurObj = C_Spell.GetSpellCooldownDuration(data.spellID)
+        end
         if freshDurObj then
           local colorResult = freshDurObj:EvaluateRemainingPercent(data.colorCurve)
           if colorResult then
@@ -3009,7 +3010,8 @@ UpdateChargeBar = function(barData)
   local dynamicTextOnSlot = barData.dynamicTextOnSlot
   
   -- rechargingSlotIndex: use charge shadow IsShown() (non-secret)
-  local isRecharging = barData.chargeShadow and barData.chargeShadow:IsShown() or false
+  local chargeInfoForRecharge = C_Spell.GetSpellCharges(spellID)
+  local isRecharging = chargeInfoForRecharge and chargeInfoForRecharge.isActive == true or false
   local rechargingSlotIndex = isRecharging and 1 or (maxCharges + 1)
   
   if barData.showDuration ~= false then

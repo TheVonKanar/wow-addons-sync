@@ -2,7 +2,7 @@
 ## Title: Porter
 ## Notes: A unified teleportation and portal hub
 ## Author: Druilen-Frostmourne
-## Version: 1.1.2
+## Version: 1.1.4
 ## License: GPL v2
 ## IconTexture: Interface\AddOns\Porter\porter
 ## SavedVariables: PorterDB

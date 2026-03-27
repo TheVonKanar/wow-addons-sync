@@ -7,8 +7,8 @@ DamageMeterPerCharacterSettings = {
 ["damageMeterType"] = 0,
 },
 {
-["shown"] = true,
 ["sessionType"] = 1,
+["shown"] = true,
 ["damageMeterType"] = 0,
 },
 },

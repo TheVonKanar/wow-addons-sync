@@ -452,7 +452,7 @@ end
 function Porter:CreateButton(parent, entry, index)
     local btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
     btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:RegisterForClicks("AnyDown")
+    btn:RegisterForClicks("AnyUp", "AnyDown")
 
     if entry.type == "housing" then
         btn:SetAttribute("type", "teleporthome")
@@ -463,7 +463,7 @@ function Porter:CreateButton(parent, entry, index)
         if isDruid then
             local cancelOverlay = CreateFrame("Button", nil, btn, "SecureActionButtonTemplate")
             cancelOverlay:SetAllPoints()
-            cancelOverlay:RegisterForClicks("AnyDown")
+            cancelOverlay:RegisterForClicks("AnyUp", "AnyDown")
             cancelOverlay:SetAttribute("type", "macro")
             cancelOverlay:SetAttribute("macrotext", "/stand\n/dismount\n/cancelform")
             cancelOverlay:SetFrameLevel(btn:GetFrameLevel() + 2)
@@ -604,30 +604,11 @@ function Porter:CreateButton(parent, entry, index)
         end)
     end
 
-    -- Track flight form state before click (cancelform runs during click)
-    btn:HookScript("PreClick", function()
-        Porter.wasInFlightForm = isDruid and GetShapeshiftFormID() == 27
-    end)
 
-    -- Hide Porter window after clicking a teleport button
-    -- For druids in flight form: don't hide (need second click), except instant casts
+    -- Signal that a Porter button was clicked (used by cast detection to hide/announce)
     btn:HookScript("PostClick", function()
-        if Porter.db.settings.hideAfterPort and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
-            if Porter.wasInFlightForm then
-                Porter.wasInFlightForm = nil
-                -- Some spells auto-cancel flight form (e.g. Dreamwalk) — close window
-                if entry.autoCancelForm then
-                    Porter.frame:Hide()
-                    Porter:UpdateDruidHint()
-                    return
-                end
-                -- Everything else needs a second click — stay open
-                Porter:UpdateDruidHint()
-                return
-            end
-            Porter.frame:Hide()
-        end
-        Porter:UpdateDruidHint()
+        Porter.porterClicked = entry
+        C_Timer.After(5, function() Porter.porterClicked = nil end)
     end)
 
     btn.entry = entry
@@ -680,7 +661,7 @@ function Porter:CreateFlyout(triggerBtn, entries, label)
         local row = CreateFrame("Button", nil, flyout, "SecureActionButtonTemplate")
         row:SetSize(FLYOUT_WIDTH - FLYOUT_PADDING * 2, FLYOUT_ROW_HEIGHT)
         row:SetPoint("TOPLEFT", flyout, "TOPLEFT", FLYOUT_PADDING, -FLYOUT_PADDING - (i - 1) * FLYOUT_ROW_HEIGHT)
-        row:RegisterForClicks("AnyDown")
+        row:RegisterForClicks("AnyUp", "AnyDown")
 
         local spellName = self:GetDisplayName(entry)
         row:SetAttribute("type", "macro")
@@ -812,7 +793,7 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
         local labelBtn = CreateFrame("Button", nil, self.frame, "SecureActionButtonTemplate")
         labelBtn:SetSize(COLUMN_WIDTH - LIST_ROW_HEIGHT - 10, LIST_ROW_HEIGHT)
         labelBtn:SetPoint("LEFT", btn, "RIGHT", 6, 0)
-        labelBtn:RegisterForClicks("AnyDown")
+        labelBtn:RegisterForClicks("AnyUp", "AnyDown")
         if entry.type == "housing" then
             labelBtn:SetAttribute("type", "teleporthome")
             labelBtn:SetAttribute("house-neighborhood-guid", entry.neighborhoodGUID or "")
@@ -822,7 +803,7 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
             if isDruid then
                 local labelCancel = CreateFrame("Button", nil, labelBtn, "SecureActionButtonTemplate")
                 labelCancel:SetAllPoints()
-                labelCancel:RegisterForClicks("AnyDown")
+                labelCancel:RegisterForClicks("AnyUp", "AnyDown")
                 labelCancel:SetAttribute("type", "macro")
                 labelCancel:SetAttribute("macrotext", "/stand\n/dismount\n/cancelform")
                 labelCancel:SetFrameLevel(labelBtn:GetFrameLevel() + 2)
@@ -878,27 +859,11 @@ function Porter:LayoutList(entries, xOffset, yOffset, buttonIndex)
             GameTooltip:Hide()
         end)
 
-        -- Hide window after clicking label (same logic as icon button)
-        labelBtn:HookScript("PreClick", function()
-            Porter.wasInFlightForm = isDruid and GetShapeshiftFormID() == 27
-        end)
-        labelBtn:HookScript("PostClick", function()
-            if Porter.db.settings.hideAfterPort and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
-                if Porter.wasInFlightForm then
-                    Porter.wasInFlightForm = nil
-                    if entry.autoCancelForm then
-                        Porter.frame:Hide()
-                        Porter:UpdateDruidHint()
-                        return
-                    end
-                    Porter:UpdateDruidHint()
-                    return
-                end
-                Porter.frame:Hide()
-            end
-            Porter:UpdateDruidHint()
-        end)
 
+        labelBtn:HookScript("PostClick", function()
+            Porter.porterClicked = entry
+            C_Timer.After(5, function() Porter.porterClicked = nil end)
+        end)
         labelBtn.entry = entry
         tinsert(self.nameLabels, labelBtn)
         btn.nameLabel = label

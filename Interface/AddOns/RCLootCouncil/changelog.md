@@ -1,3 +1,14 @@
+# 3.20.4
+
+## Changes
+
+More data sync improvements.
+
+### Cosmic Ritual Stone
+
+When the group leader acquires this toy it becomes unwinnable for them, which causes it to be destroyed when everyone else passes, thus it will now be completely ignored.
+
+
 # 3.20.3
 
 ## Bugfixes
@@ -15,7 +26,7 @@
 
 ## Changes
 
-#### Decor/Housing items
+### Decor/Housing items
 
 Decor items have been confirmed tradeable personal loot, so removed the option for group loot to ignore them.
 

@@ -3,8 +3,8 @@ KeyMaster_DB = {
 ["addonConfig"] = {
 ["showRatingFloat"] = false,
 ["interfaceFramePos"] = {
-["yOfs"] = -328.000244140625,
-["xOfs"] = 700.0001831054688,
+["yOfs"] = -328.0002746582031,
+["xOfs"] = 776.0001831054688,
 ["relativePoint"] = "TOPLEFT",
 },
 ["version"] = "1.5.3-release",
@@ -13,41 +13,41 @@ KeyMaster_DB = {
 ["minimapPos"] = 206,
 ["hide"] = true,
 },
+["splashViewed"] = true,
 ["characterFilters"] = {
 ["serverFilter"] = false,
 ["filterMaxLvl"] = true,
 ["filterNoKey"] = false,
 ["filterNoRating"] = false,
 },
-["splashViewed"] = true,
 ["showDebugging"] = false,
 },
 }
 KeyMaster_C_DB = {
 ["Player-1390-09230B89"] = {
+["season"] = 17,
 ["keyLevel"] = 5,
-["level"] = 90,
 ["keyId"] = 557,
 ["class"] = 7,
-["season"] = 17,
-["timestamp"] = 1774456313,
+["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸M„KmSRjq‰YjQbNÎ.˜¬KbI¢[S>P8$375#)(±$3/,_dæç§&›hù¤–¥æ°²(«]`)¹Àêv-ã»‡CI¾™ïä”›8®¤\\àýÂ”Þ\"Š.Ýú>^à(	½À)~E	(ýD!]t£{Ñ‹]ú8¶¥…¿€¤—pÁ¤,ãœ¬*’@ñ/m	`mo.ßÙÐkwC¥hé6a„©Åì¡ ”všú$=ÙÉÝ™ pãI\"PwRi^f‰gJR8'%g$½ºuRRifNJHeAjQQjNjbqê!°HXjQ10T‚õLõŒòsS›¼ËòK2RSó.å—ç¥¦x§V‚Mà^ãz¦\\QjÊH,vLIÉÏK(È­,ÉÈLÈ)-†ö‘ž ¢ÔÄœÜ Ê¬ÄÀ",
+["rating"] = 2252,
 ["vault"] = {
+11,
 10,
 10,
 10,
 10,
-8,
-8,
-5,
-5,
+10,
+9,
+9,
 },
-["expire"] = 1775026800,
 ["name"] = "Kvotheen",
-["client"] = true,
 ["teams"] = {
 },
-["rating"] = 2081,
-["data"] = "e?Kó@ÇZM[(\"qp­ÒAhi´Ï¤¥Ôÿ•X{éý0‘ë%\\.•¬\\žM¤¯ à¢ëQ»¸G§¾/‘@ÁßôÍçC¾w÷[z­^´êŽÚ&ÈV(kÕR¡TÝÑJµJuT÷èØT÷¨{«¦ó#\\~6†¦c[G5[âŽÕÓÐ·èUä™Œ6=‡Þî¶~ ÉÄf^$¸*’\r±lŠ•æ>·÷Nîñ‡P¦X¤ÖçY©;‹út\"ç](c*õ4'5ÎÆZ&eX©Ì<äÃtÌeRTM¤’[’×\"Þ\rëØÛ×eãñSžæËºñïºù_Y7ùÃâ-þ[áe†äo†G-ÞÂ†­ì®g\"=îùÎð,‚;¾ŒäÂKDþsåôrñOQ«QÔ‡àh`s€Nì\nøü¨!ó¶ð4˜È=ÀØ¦]gµïsÓêµ‰çþ¬W\rtˆôõ¦È÷",
+["client"] = true,
+["expire"] = 1775026800,
+["timestamp"] = 1774456313,
+["level"] = 90,
 ["realm"] = "Hyjal",
 },
 }

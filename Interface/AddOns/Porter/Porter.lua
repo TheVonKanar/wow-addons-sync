@@ -6,6 +6,8 @@ local addonName, Porter = ...
 -- Expose globally so /run macros can access Porter
 _G.Porter = Porter
 
+local isDruid = select(2, UnitClass("player")) == "DRUID"
+
 -----------------------------------------------------------------------
 -- EVENT FRAME
 -- A hidden frame that listens for WoW events to trigger addon logic.
@@ -17,6 +19,7 @@ eventFrame:RegisterEvent("BAG_UPDATE_COOLDOWN")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+eventFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
 eventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 eventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 eventFrame:RegisterEvent("PLAYER_HOUSE_LIST_UPDATED")
@@ -34,6 +37,9 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
 
         -- Set up the minimap button
         Porter:SetupMinimapButton()
+
+        -- Build spell lookup for cast detection
+        Porter:BuildSpellLookup()
 
         -- Create named secure buttons for /click macros
         Porter:CreateSecureButtons()
@@ -67,6 +73,58 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
                     break
                 end
             end
+        end
+
+    elseif event == "UNIT_SPELLCAST_SENT" then
+        if arg1 ~= "player" then return end
+
+        if Porter.porterClicked then
+            -- Announce teleport to party/instance chat
+            local entry = Porter.porterClicked
+            if entry and type(entry) == "table" then
+                local msg
+                if entry.type == "housing" then
+                    msg = "[Porter] Teleporting home"
+                elseif entry.mageType == "portal" then
+                    local dest = (entry.name or ""):gsub("^Ancient Portal: ", ""):gsub("^Portal: ", "")
+                    msg = "[Porter] Creating portal to " .. dest
+                elseif entry.mageType == "teleport" then
+                    local dest = (entry.name or ""):gsub("^Ancient Teleport: ", ""):gsub("^Teleport: ", "")
+                    msg = "[Porter] Teleporting to " .. dest
+                elseif entry.cosmetic or entry.name == "Hearthstone" then
+                    local bind = GetBindLocation() or "inn"
+                    msg = "[Porter] Hearthing to " .. bind
+                elseif entry.type == "toy" or entry.type == "item" then
+                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
+                elseif entry.classReq and not entry.mageType then
+                    -- Class spells (Dreamwalk, Death Gate, Zen Pilgrimage etc)
+                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
+                else
+                    -- Dungeons, raids, racials
+                    msg = "[Porter] Teleporting to " .. (entry.name or entry.zone or "unknown")
+                end
+                local channel
+                if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+                    channel = "INSTANCE_CHAT"
+                elseif IsInRaid() then
+                    channel = "RAID"
+                elseif IsInGroup() then
+                    channel = "PARTY"
+                end
+                if channel then
+                    SendChatMessage(msg, channel)
+                end
+            end
+
+            -- Hide Porter if setting is on
+            if Porter.db.settings.hideAfterPort
+               and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
+                if isDruid and GetShapeshiftFormID() == 27 then
+                    return
+                end
+                Porter.frame:Hide()
+            end
+            Porter.porterClicked = nil
         end
 
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
@@ -160,6 +218,37 @@ function Porter:PopulateHousingData(houseInfos)
         self:BuildLayout()
         self:UpdateAllCooldowns()
     end
+end
+
+-----------------------------------------------------------------------
+-- PORTER SPELL LOOKUP
+-- Checks if a spellID matches any teleport in our database.
+-- Used to detect when a Porter teleport is being cast.
+-----------------------------------------------------------------------
+function Porter:BuildSpellLookup()
+    self.porterSpells = {}
+    for _, entries in pairs(self.TeleportData) do
+        for _, entry in ipairs(entries) do
+            if entry.type == "spell" then
+                self.porterSpells[entry.id] = true
+            elseif entry.type == "item" or entry.type == "toy" then
+                -- Get the spell that fires when this item/toy is used
+                local spellName, spellID = C_Item.GetItemSpell(entry.id)
+                if spellID then
+                    self.porterSpells[spellID] = true
+                end
+            end
+        end
+    end
+    -- Also add Hearthstone spell
+    self.porterSpells[8690] = true
+end
+
+function Porter:IsPorterSpell(spellID)
+    if not self.porterSpells then
+        self:BuildSpellLookup()
+    end
+    return self.porterSpells[spellID] == true
 end
 
 -----------------------------------------------------------------------

@@ -63,3 +63,6 @@ MinimapStats: enabled
 ClickableRaidBuffs: enabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled
+BigWigs_Core: enabled
+BigWigs_Options: enabled
+BigWigs_Plugins: enabled

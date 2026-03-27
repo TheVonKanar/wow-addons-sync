@@ -482,20 +482,43 @@ local function EnsureShadowCooldown(frame)
       if not pf then return end
       if pf._arcBypassCDHook then return end
       if not pf._arcIgnoreAuraOverride then return end
-      local isAuraNow = (pf._arcAuraActive == true) or (pf.totemData ~= nil)
+      -- wasSetFromAura=true: CDM is actively displaying aura duration on the swipe.
+      -- _arcAuraActive just means an aura instance exists — CDM may not be showing it.
+      local isAuraNow = (pf.wasSetFromAura == true) or (pf.totemData ~= nil)
       if not isAuraNow then return end
       local ci = pf.cooldownInfo
       local spellID = ci and (ci.overrideSpellID or ci.spellID)
       if not spellID then return end
-      local pushObj
-      if pf._arcIsChargeSpellCached and C_Spell.GetSpellChargeDuration then
-        pushObj = C_Spell.GetSpellChargeDuration(spellID)
+      -- Shadow binary state is GCD-filtered — push duration when truly on CD, clear when ready.
+      -- For charge spells: also check GetSpellCharges().isActive as fallback when charge
+      -- shadow hasn't been created yet (IAO frames may not have gone through FeedShadow).
+      local shadowOnCD = pf._arcLastShadowShown or false
+      local chargeOnCD = pf._arcLastChargeShown or false
+      if not chargeOnCD and pf._arcIsChargeSpellCached then
+        local chargesInfo = C_Spell.GetSpellCharges(spellID)
+        if chargesInfo and chargesInfo.isActive == true then chargeOnCD = true end
       end
-      if not pushObj then pushObj = C_Spell.GetSpellCooldownDuration(spellID) end
-      if not pushObj then return end
+      local trulyOnCD = shadowOnCD or chargeOnCD
+      -- Final fallback: GetSpellCooldown().isActive when shadow binary hasn't caught up.
+      -- Only safe when NOT in a GCD window — isActive is contaminated during GCD.
+      if not trulyOnCD and not (pf._arcLastIsOnGCD == true) then
+        local cdInfoFallback = C_Spell.GetSpellCooldown(spellID)
+        if cdInfoFallback and cdInfoFallback.isActive == true then trulyOnCD = true end
+      end
       pf._arcBypassCDHook = true
       self:SetUseAuraDisplayTime(false)
-      self:SetCooldownFromDurationObject(pushObj)
+      if trulyOnCD then
+        local pushObj
+        if pf._arcIsChargeSpellCached then
+          -- _arcIsChargeSpellCached already guarantees maxCharges>1 was true at cache time.
+          -- Don't re-check maxCharges here — it can be nil at runtime (secret/timing).
+          pushObj = C_Spell.GetSpellChargeDuration and C_Spell.GetSpellChargeDuration(spellID)
+        end
+        if not pushObj then pushObj = C_Spell.GetSpellCooldownDuration(spellID) end
+        if pushObj then self:SetCooldownFromDurationObject(pushObj) end
+      else
+        CooldownFrame_Clear(self)
+      end
       pf._arcBypassCDHook = false
     end
 
@@ -557,10 +580,14 @@ FeedShadowCooldown = function(frame, spellID)
   local isChargeSpell = false
   local cdInfo = C_Spell.GetSpellCooldown(spellID)
   if cdInfo and cdInfo.isOnGCD == true then isOnGCD = true end
-  isChargeSpell = C_Spell.GetSpellCharges(spellID) ~= nil
-  if not isChargeSpell and frame.cooldownInfo and frame.cooldownInfo.charges == true then
-    isChargeSpell = true
-  end
+  local chargesInfo = C_Spell.GetSpellCharges(spellID)
+  -- maxCharges==1 treated as regular cooldown: GetSpellChargeDuration returns zero-span
+  -- for them (isActive requires maxCharges>1 per 12.0.1). Treat as regular CD throughout.
+  -- maxCharges must be explicitly >1. nil maxCharges = treat as normal spell.
+  -- maxCharges must be explicitly >1. nil or 1 = normal spell.
+  -- cooldownInfo.charges==true is NOT a reliable gate — it can be set for single-charge
+  -- spells and causes incorrect charge spell treatment. Trust maxCharges only.
+  isChargeSpell = chargesInfo ~= nil and chargesInfo.maxCharges ~= nil and chargesInfo.maxCharges > 1
 
   -- Cache BEFORE EnsureShadowCooldown — charge shadow is only created when
   -- _arcIsChargeSpellCached is true, so it must be set before EnsureShadow runs.
@@ -813,14 +840,13 @@ local function DecideAndApplySwipeEdge(frame, cfg, isOnCooldown, isRecharging, i
     if isOnCooldown then
       wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
     elseif isRecharging then
+      -- Always show swipe when recharging, even if isOnGCD=true.
+      -- ArcUI_GCDFilter.lua pushes chargeDurObj to replace GCD duration on visual frame.
       wantSwipe = not swipeWait and userWantsSwipe
       wantEdge  = not edgeWait  and userWantsEdge
     elseif isOnGCD then
-      if noGCDSwipe then
-        wantSwipe = false; wantEdge = false       -- hide GCD swipe
-      else
-        wantSwipe = nil; wantEdge = nil           -- release to CDM for GCD swipe
-      end
+      -- Release to nil — ArcUI_GCDFilter.lua owns GCD suppression on the visual frame.
+      wantSwipe = nil; wantEdge = nil
     elseif noGCDSwipe or hasWaitFlags or ownWhenReady then
       wantSwipe = false; wantEdge = false
     else
@@ -830,11 +856,8 @@ local function DecideAndApplySwipeEdge(frame, cfg, isOnCooldown, isRecharging, i
     if isOnCooldown then
       wantSwipe = userWantsSwipe; wantEdge = userWantsEdge
     elseif isOnGCD then
-      if noGCDSwipe then
-        wantSwipe = false; wantEdge = false       -- hide GCD swipe
-      else
-        wantSwipe = nil; wantEdge = nil           -- release to CDM for GCD swipe
-      end
+      -- Release to nil — ArcUI_GCDFilter.lua owns GCD suppression on the visual frame.
+      wantSwipe = nil; wantEdge = nil
     elseif ownWhenReady then
       wantSwipe = false; wantEdge = false
     else
@@ -891,23 +914,31 @@ local function HandleIgnoreAuraOverride(frame, iconTex, cfg, stateVisuals)
   -- Only fight CDM desat when aura is actually showing on this frame.
   local isAuraActive = HasAuraInstanceID(frame.auraInstanceID) or (frame.totemData ~= nil)
 
-  -- ── IAO COOLDOWN PUSH ──────────────────────────────────────────────
-  -- When aura is active CDM displays the aura duration on the swipe.
-  -- Override it by pushing the spell cooldown durationObj directly here.
-  -- This is API-agnostic — fires from OnAuraInstanceInfoSet → CooldownState.Apply,
-  -- not from a SetCooldown/SetCooldownFromDurationObject hook. Works regardless
-  -- of which CDM write path Blizzard uses before or after the 12.0.1 hotfix.
-  if isAuraActive and frame.Cooldown and not frame._arcBypassCDHook then
-    local chargeDurObj
-    if isChargeSpell then chargeDurObj = C_Spell.GetSpellChargeDuration(spellID) end
-    local durObj = C_Spell.GetSpellCooldownDuration(spellID)
-    local pushObj = (isChargeSpell and chargeDurObj) or durObj
-    if pushObj then
-      frame._arcBypassCDHook = true
-      frame.Cooldown:SetUseAuraDisplayTime(false)
-      frame.Cooldown:SetCooldownFromDurationObject(pushObj)
-      frame._arcBypassCDHook = false
+  -- IAO initial push: when wasSetFromAura first becomes true, CDM may not call
+  -- SetCooldown again for several seconds. IAOFight waits for SetCooldown — so we
+  -- do a one-shot push here to set the timer immediately.
+  -- _arcBypassCDHook prevents IAOFight from re-firing on the triggered SetCooldown.
+  -- The cascade guard: if we're already inside a bypass (prior push), skip.
+  if frame._arcIgnoreAuraOverride and frame.wasSetFromAura == true
+     and frame.Cooldown and not frame._arcBypassCDHook then
+    local trulyOnCD = (frame._arcLastShadowShown or false) or (frame._arcLastChargeShown or false)
+    if not trulyOnCD then
+      local cdFB = C_Spell.GetSpellCooldown(spellID)
+      if cdFB and cdFB.isActive == true then trulyOnCD = true end
     end
+    frame._arcBypassCDHook = true
+    frame.Cooldown:SetUseAuraDisplayTime(false)
+    if trulyOnCD then
+      local pushObj
+      if frame._arcIsChargeSpellCached then
+        pushObj = C_Spell.GetSpellChargeDuration and C_Spell.GetSpellChargeDuration(spellID)
+      end
+      if not pushObj then pushObj = C_Spell.GetSpellCooldownDuration(spellID) end
+      if pushObj then frame.Cooldown:SetCooldownFromDurationObject(pushObj) end
+    else
+      CooldownFrame_Clear(frame.Cooldown)
+    end
+    frame._arcBypassCDHook = false
   end
 
   frame:Show()
@@ -1348,6 +1379,8 @@ local function NewApplyCooldownStateVisuals(frame, cfg, normalAlpha, stateVisual
     if not ResolveDependencies() then return end
   end
   if frame._arcConfig or frame._arcAuraID then return end
+  -- Never process CDM aura viewer frames (buff/debuff icons) — they have no cooldown state
+  if frame._arcViewerType == "aura" then return end
 
   local iconTex = ResolveIconTexture(frame)
   if not iconTex then return end
@@ -1583,6 +1616,7 @@ end
 function ns.CooldownState.FeedShadow(frame, cfg)
   if not frame then return end
   if frame._arcConfig or frame._arcAuraID then return end
+  if frame._arcViewerType == "aura" then return end
   local spellID
   if frame.cooldownInfo then
     spellID = frame.cooldownInfo.overrideSpellID or frame.cooldownInfo.spellID
@@ -1604,6 +1638,7 @@ end
 
 function ns.CooldownState.EnsureShadow(frame)
   if not frame then return end
+  if frame._arcViewerType == "aura" then return end
   EnsureShadowCooldown(frame)
 end
 
@@ -1614,6 +1649,7 @@ end
 -- ═══════════════════════════════════════════════════════════════════
 function ns.CooldownState.InstallCooldownAuraHooks(frame)
   if not frame then return end
+  if frame._arcViewerType == "aura" then return end
   if frame._arcCooldownAuraHooked then return end
   frame._arcCooldownAuraHooked = true
 

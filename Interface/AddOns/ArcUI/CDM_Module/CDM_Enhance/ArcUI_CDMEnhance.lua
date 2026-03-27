@@ -2849,67 +2849,10 @@ ApplyIconStyle = function(frame, cdID)
     hooksecurefunc(frame.Cooldown, "SetCooldownFromDurationObject", ReapplyPreserveText)
   end
 
-  -- ═══════════════════════════════════════════════════════════════════
-  -- GCD INTERCEPT — shared by Masque and non-Masque paths.
-  -- Installed once, before the Masque branch, via _arcGCDInterceptHooked guard.
-  --
-  -- WHY a live GetSpellCooldown here: this hook fires synchronously inside
-  -- CDM's own SetCooldown/SetCooldownFromDurationObject call — NOT from our
-  -- OnCooldownEvent dispatch. _arcLastIsOnGCD is written by FeedShadow which
-  -- runs from OnCooldownEvent, a different call chain. At hook-fire time the
-  -- cache may be nil or stale, so we must read live here.
-  -- ═══════════════════════════════════════════════════════════════════
-  if frame.Cooldown and swipeCfg and swipeCfg.noGCDSwipe and not frame.Cooldown._arcGCDInterceptHooked then
-    frame.Cooldown._arcGCDInterceptHooked = true
-    frame.Cooldown._arcParentFrame = frame
+  -- GCD filtering on the visual Cooldown frame — ArcUI_GCDFilter.lua owns this.
+  -- Install is called below after _arcNoGCDSwipeEnabled is stored.
 
-    local function GCDIntercept(cd)
-      local pf = cd._arcParentFrame
-      if not pf then return end
-      if pf._arcBypassGCDIntercept then return end
-      if not pf._arcNoGCDSwipeEnabled then return end
-      if pf._arcConfig or pf._arcAuraID then return end
-      if pf.wasSetFromAura == true and not pf._arcIgnoreAuraOverride then return end
-      if pf._arcViewerType == "aura" then return end
-
-      local cooldownInfo = pf.cooldownInfo
-      local spellID = cooldownInfo and (cooldownInfo.overrideSpellID or cooldownInfo.spellID)
-      if not spellID then return end
-
-      -- Read CDM's own isOnGCD field — set by CacheCooldownValues() which runs
-      -- synchronously BEFORE CooldownFrame_Set() within RefreshSpellCooldownInfo().
-      -- By the time this hook fires, pf.isOnGCD is already current. Zero API calls.
-      if not pf.isOnGCD then return end
-
-      pf._arcBypassGCDIntercept = true
-
-      if pf._arcIsChargeSpellCached then
-        -- Charge spell: replace GCD feed with recharge timer (or clear if none)
-        local chargeDurObj = nil
-          if C_Spell.GetSpellChargeDuration then
-            chargeDurObj = C_Spell.GetSpellChargeDuration(spellID)
-          end
-        if chargeDurObj then
-          cd:SetCooldownFromDurationObject(chargeDurObj, true)
-        else
-          cd:SetCooldown(0, 0)
-        end
-      else
-        cd:SetCooldown(0, 0)
-      end
-
-      pf._arcBypassGCDIntercept = false
-    end
-
-    hooksecurefunc(frame.Cooldown, "SetCooldownFromDurationObject", function(self)
-      GCDIntercept(self)
-    end)
-    hooksecurefunc(frame.Cooldown, "SetCooldown", function(self)
-      GCDIntercept(self)
-    end)
-  end
-
-  -- Get swipe insets from config (only used when ArcUI controls cooldowns)
+    -- Get swipe insets from config (only used when ArcUI controls cooldowns)
   local swipeInsetX, swipeInsetY
   if swipeCfg and swipeCfg.separateInsets then
     -- Use separate X/Y insets
@@ -3068,6 +3011,8 @@ ApplyIconStyle = function(frame, cdID)
       frame._arcSwipeWaitForNoCharges = swipeCfg.swipeWaitForNoCharges
       frame._arcEdgeWaitForNoCharges = swipeCfg.edgeWaitForNoCharges
     end
+    -- GCD filter hooks on visual Cooldown frame — cooldown/utility only, never aura frames
+    if ns.GCDFilter and viewerType ~= "aura" then ns.GCDFilter.Install(frame, cdID) end
     
     -- ═══════════════════════════════════════════════════════════════════
     -- APPLY SHOW SWIPE / SHOW EDGE — Masque owns cooldown, don't enforce
@@ -3165,18 +3110,6 @@ ApplyIconStyle = function(frame, cdID)
         -- CDM template has reverse="true" by default, so we need to set it explicitly
         local auraActive = (parentFrame._arcAuraActive == true) or (parentFrame.totemData ~= nil)
         self:SetReverse((parentFrame._arcUserReverse or false) or (auraActive and (parentFrame._arcReverseWhileAura or false)))
-        
-        -- ═══════════════════════════════════════════════════════════════════
-        -- CHARGE SPELL GCD HIDING - Shadow binary controls swipe visibility
-        -- ═══════════════════════════════════════════════════════════════════
-        if parentFrame._arcNoGCDSwipeEnabled and parentFrame._arcIsChargeSpellCached then
-          local chargeShadow = parentFrame._arcCDMChargeShadow
-          local showSwipe = chargeShadow and chargeShadow:IsShown() or false
-          parentFrame._arcBypassSwipeHook = true
-          self:SetDrawSwipe(showSwipe)
-          self:SetDrawEdge(showSwipe)
-          parentFrame._arcBypassSwipeHook = false
-        end
       end)
     end
     
@@ -3274,6 +3207,8 @@ ApplyIconStyle = function(frame, cdID)
       frame._arcEdgeWaitForNoCharges = swipeCfg.edgeWaitForNoCharges
       -- Store swipe/edge settings for noGCDSwipe mode to use
     end
+    -- GCD filter hooks on visual Cooldown frame — cooldown/utility only, never aura frames
+    if ns.GCDFilter and viewerType ~= "aura" then ns.GCDFilter.Install(frame, cdID) end
     
     -- Apply cooldown swipe customization
     -- IAO frames need hooks even when Masque controls cooldowns, because IAO
@@ -3344,8 +3279,10 @@ ApplyIconStyle = function(frame, cdID)
           if frame._arcChargeCheckSpellID ~= spellID then
             frame._arcChargeCheckSpellID = spellID
             local chargeInfo = C_Spell.GetSpellCharges(spellID)
-            local chargeDurObj = chargeInfo and C_Spell.GetSpellChargeDuration and C_Spell.GetSpellChargeDuration(spellID)
-            frame._arcIsChargeSpellCached = (chargeInfo ~= nil and chargeDurObj ~= nil)
+            -- maxCharges must be explicitly >1. nil or 1 = normal spell, not a charge spell.
+            local isMultiCharge = chargeInfo ~= nil and chargeInfo.maxCharges ~= nil and chargeInfo.maxCharges > 1
+            local chargeDurObj = isMultiCharge and C_Spell.GetSpellChargeDuration and C_Spell.GetSpellChargeDuration(spellID)
+            frame._arcIsChargeSpellCached = (isMultiCharge and chargeDurObj ~= nil)
           end
         else
           frame._arcIsChargeSpellCached = false
@@ -3981,38 +3918,10 @@ ApplyIconStyle = function(frame, cdID)
         elseif parentFrame._arcNoGCDSwipeEnabled then
           -- ═══════════════════════════════════════════════════════════════════
           -- NO GCD SWIPE MODE (without IAO)
-          -- CooldownState now owns swipe/edge decisions via _arcDesiredSwipe.
-          -- This hook only handles charge spell durationObj push and swipe color.
-          -- Alpha curves for charge spells kept for Phase 2 compatibility.
+          -- Charge spell duration push and GCD suppression handled by
+          -- ArcUI_GCDFilter.lua — do NOT duplicate here.
+          -- Only apply swipe color.
           -- ═══════════════════════════════════════════════════════════════════
-          local cooldownInfo = parentFrame.cooldownInfo
-          local spellID = cooldownInfo and (cooldownInfo.overrideSpellID or cooldownInfo.spellID)
-          
-          if spellID then
-            -- Check if aura is active - if so, CDM handles display
-            local auraActive = parentFrame._arcAuraActive == true
-            
-            -- Use cached charge type (set in ApplyIconStyle, static per spellID)
-            if parentFrame._arcIsChargeSpellCached and C_Spell.GetSpellChargeDuration and not auraActive then
-              -- CHARGE SPELL (no aura): push chargeDurObj for timer display.
-              -- Only for maxCharges > 1 — for 1/1 charge spells GetSpellChargeDuration
-              -- returns zero-span (isActive requires maxCharges > 1 per 12.0.1 patch),
-              -- which would clear the animation. Let CDM's own push handle 1/1 spells.
-              local cdInfoForCharges = C_Spell.GetSpellCooldown(spellID)
-              if cdInfoForCharges and cdInfoForCharges.maxCharges and cdInfoForCharges.maxCharges > 1 then
-                local chargeDurObj = C_Spell.GetSpellChargeDuration(spellID)
-                if chargeDurObj then
-                  parentFrame._arcBypassCDHook = true
-                  self:SetCooldownFromDurationObject(chargeDurObj)
-                  parentFrame._arcBypassCDHook = false
-                end
-              end
-            end
-            -- Normal spells + aura-active charge spells: CDM's own push is fine.
-            -- CooldownState handles swipe/edge visibility via _arcDesiredSwipe.
-          end
-          
-          -- Apply custom swipe color if set (only if ArcUI controls cooldowns)
           if not masqueControlsCooldowns and swipe.swipeColor then
             local sc = swipe.swipeColor
             self:SetSwipeColor(sc.r or 0, sc.g or 0, sc.b or 0, sc.a or 0.8)
@@ -6307,10 +6216,6 @@ function ns.CDMEnhance.OnCooldownEvent(frame, fromTicker, skipIdle, forceVisuals
   -- clobber our value. This is the single place that re-enforces it.
   local cd = frame.Cooldown
   if cd then
-    if frame._arcIgnoreAuraOverride and not frame._arcNoGCDSwipeEnabled and frame._arcLastIsOnGCD then
-      frame._arcDesiredSwipe = nil
-      frame._arcDesiredEdge  = nil
-    end
     if frame._arcDesiredSwipe ~= nil then
       frame._arcBypassSwipeHook = true
       cd:SetDrawSwipe(frame._arcDesiredSwipe)

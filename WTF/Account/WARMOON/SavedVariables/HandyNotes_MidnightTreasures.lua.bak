@@ -1,5 +1,14 @@
 
 HandyNotes_MidnightTreasuresDB = {
+["char"] = {
+["Kvotheen - Hyjal"] = {
+["hidden"] = {
+[2413] = {
+[62515375] = true,
+},
+},
+},
+},
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Kvotheen - Hyjal",
 },

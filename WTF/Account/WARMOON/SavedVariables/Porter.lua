@@ -1,6 +1,6 @@
 
 PorterDB = {
-["lastSeenVersion"] = "1.1.2",
+["lastSeenVersion"] = "1.1.4",
 ["position"] = {
 ["y"] = 196.9996795654297,
 ["x"] = 37.00020599365234,
@@ -9,8 +9,27 @@ PorterDB = {
 ["useGlobalProfile"] = {
 ["Kvotheen-Hyjal"] = false,
 },
-["minimap"] = {
-["hide"] = true,
+["profiles"] = {
+["Kvotheen-Hyjal"] = {
+["zoneOrder"] = "recent",
+["hideBankItems"] = true,
+["hideAfterPort"] = true,
+["defaultView"] = "category",
+["hearthstoneMode"] = "Random",
+["categoryVisibility"] = {
+["Items"] = true,
+["Raids"] = true,
+["Dungeons"] = true,
+["Class & Racial"] = true,
+["Delves"] = true,
+["House"] = true,
+["Toys"] = true,
+["Hearthstones"] = true,
+},
+["currentSeason"] = "midnight",
+["viewMode"] = "category",
+["showCosmeticHearthstones"] = false,
+},
 },
 ["globalProfile"] = {
 ["showCosmeticHearthstones"] = false,
@@ -21,37 +40,18 @@ PorterDB = {
 ["categoryVisibility"] = {
 ["House"] = true,
 ["Raids"] = true,
-["Hearthstones"] = true,
+["Dungeons"] = true,
 ["Class & Racial"] = true,
 ["Delves"] = true,
+["Items"] = true,
 ["Toys"] = true,
-["Items"] = true,
-["Dungeons"] = true,
-},
-["currentSeason"] = "midnight",
-["zoneOrder"] = "recent",
-["hearthstoneMode"] = "Random",
-},
-["profiles"] = {
-["Kvotheen-Hyjal"] = {
-["zoneOrder"] = "recent",
-["hideBankItems"] = false,
-["hideAfterPort"] = true,
-["defaultView"] = "category",
-["hearthstoneMode"] = "Random",
-["categoryVisibility"] = {
-["Items"] = true,
-["Raids"] = true,
 ["Hearthstones"] = true,
-["Class & Racial"] = true,
-["Delves"] = true,
-["Toys"] = true,
-["House"] = true,
-["Dungeons"] = true,
 },
 ["currentSeason"] = "midnight",
-["showCosmeticHearthstones"] = false,
-["viewMode"] = "category",
+["hearthstoneMode"] = "Random",
+["zoneOrder"] = "recent",
 },
+["minimap"] = {
+["hide"] = true,
 },
 }

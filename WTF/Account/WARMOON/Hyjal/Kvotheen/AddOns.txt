@@ -271,7 +271,7 @@ EllesmereUICooldownManager: disabled
 EllesmereUIActionBars: disabled
 TellMeWhen: disabled
 TellMeWhen_Options: disabled
-MythicPlusUtility: disabled
+MythicPlusUtility: enabled
 MogMount: disabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled

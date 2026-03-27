@@ -1,0 +1,861 @@
+-- SimpleBossMods events and slash commands.
+
+local ADDON_NAME = ...
+local M = _G[ADDON_NAME]
+if not M then return end
+local C = M.Const
+local L = M.Live
+
+local MANUAL_TIMER_IDS = {
+	pull = 9101001,
+	["break"] = 9101002,
+}
+
+local function printSlashHelp()
+	print("|cFF9CDF95Simple|rBossMods: '|cFF9CDF95/sbm|r' for in-game configuration.")
+end
+
+local function getCurrentPatchKey()
+	local version, _, _, interfaceVersion = GetBuildInfo()
+	if type(version) == "string" and version ~= "" then
+		return version
+	end
+	if type(interfaceVersion) == "number" then
+		return tostring(interfaceVersion)
+	end
+	return "unknown"
+end
+
+local function maybePrintSlashHelp()
+	if type(SimpleBossModsDB) ~= "table" then
+		printSlashHelp()
+		return
+	end
+	local patchKey = getCurrentPatchKey()
+	if SimpleBossModsDB.lastSlashHelpPatch ~= patchKey then
+		SimpleBossModsDB.lastSlashHelpPatch = patchKey
+		printSlashHelp()
+	end
+end
+
+local function trim(s)
+	s = tostring(s or "")
+	s = s:gsub("^%s+", "")
+	s = s:gsub("%s+$", "")
+	return s
+end
+
+local function getServerTimeSafe()
+	if GetServerTime then return GetServerTime() end
+	if time then return time() end
+	return nil
+end
+
+local function parseTimerValue(value)
+	if type(value) == "number" then return value end
+	if type(value) ~= "string" then return nil end
+	local v = value:match("^%s*(.-)%s*$")
+	if v == "" then return nil end
+	local n = tonumber(v)
+	if n then return n end
+	local m, s = v:match("^(%d+):(%d+)$")
+	if not m then return nil end
+	return (tonumber(m) or 0) * 60 + (tonumber(s) or 0)
+end
+
+local function shouldAutoSlotKeystone()
+	if not L.AUTO_INSERT_KEYSTONE then return false end
+	if not (C_ChallengeMode and C_ChallengeMode.SlotKeystone) then return false end
+	return true
+end
+
+local function getContainerAPIs()
+	if C_Container and C_Container.GetContainerNumSlots then
+		return C_Container.GetContainerNumSlots, C_Container.GetContainerItemLink, C_Container.PickupContainerItem
+	end
+	if GetContainerNumSlots and GetContainerItemLink and PickupContainerItem then
+		return GetContainerNumSlots, GetContainerItemLink, PickupContainerItem
+	end
+	return nil, nil, nil
+end
+
+local function autoSlotKeystone()
+	if not shouldAutoSlotKeystone() then return end
+	if GetTime then
+		local now = GetTime()
+		if M._keystoneAutoSlotAt and (now - M._keystoneAutoSlotAt) < 0.5 then
+			return
+		end
+		M._keystoneAutoSlotAt = now
+	end
+
+	local GetContainerNumSlots, GetContainerItemLink, PickupContainerItem = getContainerAPIs()
+	if not GetContainerNumSlots then return end
+
+	for bag = 0, 4 do
+		local slots = GetContainerNumSlots(bag) or 0
+		for slot = 1, slots do
+			local itemLink = GetContainerItemLink(bag, slot)
+			if itemLink and itemLink:find("Hkeystone", nil, true) then
+				if not (C_ChallengeMode.HasSlottedKeystone and C_ChallengeMode.HasSlottedKeystone()) then
+					PickupContainerItem(bag, slot)
+					pcall(C_ChallengeMode.SlotKeystone)
+				end
+				return
+			end
+		end
+	end
+end
+
+local function setupKeystoneAutoInsert()
+	if M._keystoneHooked then return end
+	if not (C_ChallengeMode and C_ChallengeMode.SlotKeystone) then return end
+	local frame = _G.ChallengesKeystoneFrame
+	if not frame then
+		if C_Timer and C_Timer.After then
+			M._keystoneHookRetry = (M._keystoneHookRetry or 0) + 1
+			if M._keystoneHookRetry <= 10 then
+				C_Timer.After(0.5, setupKeystoneAutoInsert)
+			end
+		end
+		return
+	end
+
+	if not M._keystoneEventFrame then
+		local kef = CreateFrame("Frame")
+		kef:RegisterEvent("CHALLENGE_MODE_KEYSTONE_RECEPTABLE_OPEN")
+		kef:SetScript("OnEvent", function()
+			autoSlotKeystone()
+		end)
+		M._keystoneEventFrame = kef
+	end
+
+	frame:HookScript("OnShow", function()
+		autoSlotKeystone()
+	end)
+
+	M._keystoneHooked = true
+	M._keystoneHookRetry = nil
+	if frame:IsShown() then
+		autoSlotKeystone()
+	end
+end
+
+M.SetupKeystoneAutoInsert = setupKeystoneAutoInsert
+
+local function isSenderMe(sender)
+	if not sender then return false end
+	local name, realm = UnitFullName and UnitFullName("player") or UnitName("player")
+	if not name then return false end
+	if type(realm) == "string" and realm ~= "" then
+		if sender == (name .. "-" .. realm) then return true end
+	end
+	if sender == name then return true end
+	if Ambiguate and Ambiguate(sender, "none") == name then return true end
+	return false
+end
+
+local function canSendAddonMessage()
+	if not (C_ChatInfo and C_ChatInfo.SendAddonMessage) then return false end
+	if C_ChatInfo.InChatMessagingLockdown and C_ChatInfo.InChatMessagingLockdown() then return false end
+	return true
+end
+
+local function getAddonMessageChannel()
+	if IsInGroup and IsInGroup(2) and IsInInstance and IsInInstance() then
+		return "INSTANCE_CHAT"
+	end
+	if IsInRaid and IsInRaid() then
+		return "RAID"
+	end
+	if IsInGroup and IsInGroup(1) then
+		return "PARTY"
+	end
+	return nil
+end
+
+local function sendDbmBreakSync(seconds)
+	if not canSendAddonMessage() then return end
+	local channel = getAddonMessageChannel()
+	if not channel then return end
+	local secs = math.floor((tonumber(seconds) or 0) + 0.5)
+	if secs < 0 or secs > 3600 then return end
+	C_ChatInfo.SendAddonMessage("D5", "SBM\t1\tBT\t" .. tostring(secs), channel)
+end
+
+local function sendBigWigsBreakSync(seconds)
+	if not canSendAddonMessage() then return end
+	local channel = getAddonMessageChannel()
+	if not channel then return end
+	local secs = math.floor((tonumber(seconds) or 0) + 0.5)
+	if secs < 0 then return end
+	C_ChatInfo.SendAddonMessage("BigWigs", "B^" .. tostring(secs), channel)
+end
+
+local function getManualTimersStore()
+	if not SimpleBossModsDB then return nil end
+	if type(SimpleBossModsDB.manualTimers) ~= "table" then
+		SimpleBossModsDB.manualTimers = {}
+	end
+	return SimpleBossModsDB.manualTimers
+end
+
+local function buildManualTimerEventInfo(kind)
+	local icon = (M.GetManualTimerIcon and M:GetManualTimerIcon(kind))
+		or ((kind == "pull") and C.PULL_ICON or C.BREAK_ICON)
+	return {
+		name = (kind == "pull") and (C.PULL_LABEL or "Pull") or (C.BREAK_LABEL or "Break"),
+		icon = icon,
+	}
+end
+
+local function setCVarBool(name, enabled)
+	if not name then return end
+	local value = enabled and "1" or "0"
+	if C_CVar and C_CVar.GetCVar and C_CVar.SetCVar then
+		local ok, current = pcall(C_CVar.GetCVar, name)
+		if ok and tostring(current) == value then return end
+		pcall(C_CVar.SetCVar, name, value)
+	elseif SetCVar then
+		pcall(SetCVar, name, value)
+	end
+end
+
+local function trySetEncounterTimelineViewBars()
+	if not (EditModeManagerFrame and EditModeManagerFrame.IsInitialized and EditModeManagerFrame:IsInitialized()) then
+		return false
+	end
+	if not (Enum and Enum.EditModeSystem and Enum.EditModeEncounterEventsSystemIndices and Enum.EditModeEncounterEventsSetting and Enum.EncounterEventsViewType) then
+		return false
+	end
+	local systemFrame = EditModeManagerFrame:GetRegisteredSystemFrame(
+		Enum.EditModeSystem.EncounterEvents,
+		Enum.EditModeEncounterEventsSystemIndices.Timeline
+	)
+	if not systemFrame then return false end
+	EditModeManagerFrame:OnSystemSettingChange(systemFrame, Enum.EditModeEncounterEventsSetting.ViewType, Enum.EncounterEventsViewType.Bars)
+	return true
+end
+
+local function ensureBlizzardTimelineSettings()
+	-- Ensure timeline feature is enabled via CVars.
+	setCVarBool("combatWarningsEnabled", true)
+	setCVarBool("encounterTimelineEnabled", true)
+
+	-- Ensure the Encounter Timeline view type is set to Bars in Edit Mode settings.
+	if trySetEncounterTimelineViewBars() then
+		M._timelineSettingsRetries = nil
+		return
+	end
+
+	M._timelineSettingsRetries = (M._timelineSettingsRetries or 0) + 1
+	if M._timelineSettingsRetries <= 10 and C_Timer and C_Timer.After then
+		C_Timer.After(0.5, ensureBlizzardTimelineSettings)
+	end
+end
+
+local function deferredTick()
+	C_Timer.After(0, function() M:Tick() end)
+end
+
+local function getUseRecommendedTimelineSettings()
+	local cfg = SimpleBossModsDB and SimpleBossModsDB.cfg
+	local general = cfg and cfg.general
+	if type(general) == "table" and general.useRecommendedTimelineSettings ~= nil then
+		return general.useRecommendedTimelineSettings ~= false
+	end
+	return true
+end
+
+local function hideBlizzardEncounterTimeline()
+	local frame = _G.EncounterTimeline
+	if not frame then return end
+	if not frame._sbmHideHooked then
+		frame._sbmHideHooked = true
+		frame:HookScript("OnShow", function(self)
+			if getUseRecommendedTimelineSettings() then
+				self:Hide()
+			end
+		end)
+	end
+	if frame:IsShown() and getUseRecommendedTimelineSettings() then
+		frame:Hide()
+	end
+end
+
+local function applyTimelineRecommendedMode()
+	if not getUseRecommendedTimelineSettings() then
+		return
+	end
+	ensureBlizzardTimelineSettings()
+	hideBlizzardEncounterTimeline()
+end
+
+function M:ApplyTimelineRecommendedMode()
+	applyTimelineRecommendedMode()
+end
+
+local function ensureManualTimerRecord(kind)
+	local id = MANUAL_TIMER_IDS[kind]
+	if not id then return nil end
+
+	M.events = M.events or {}
+	local rec = M.events[id]
+	if not rec then
+		rec = { id = id }
+		M.events[id] = rec
+	end
+
+	rec.isManual = true
+	rec.forceBar = true
+	rec.kind = kind
+
+	return rec, id
+end
+
+local function initManualTimer(kind, seconds, opts)
+	local rec, id = ensureManualTimerRecord(kind)
+	if not rec then return nil end
+
+	local now = (opts and opts.now) or GetTime()
+	rec.suppressCountdown = not not (opts and opts.suppressCountdown)
+	rec.source = opts and opts.source or nil
+	rec.eventInfo = buildManualTimerEventInfo(kind)
+
+	rec.duration = seconds
+	rec.startTime = (opts and opts.startTime) or now
+	rec.endTime = (opts and opts.endTime) or (rec.startTime + seconds)
+	rec.remaining = (opts and opts.remaining) or seconds
+
+	return rec, id, now
+end
+
+local function persistManualTimer(kind, seconds, source, suppressCountdown)
+	local nowServer = getServerTimeSafe()
+	if not nowServer then return nil end
+	M:SaveManualTimerState(kind, nowServer + seconds, seconds, {
+		suppressCountdown = suppressCountdown,
+		source = source,
+	})
+	return nowServer
+end
+
+function M:SaveManualTimerState(kind, endServerTime, duration, opts)
+	local store = getManualTimersStore()
+	if not store or not kind then return end
+	if type(endServerTime) ~= "number" or endServerTime <= 0 then return end
+	opts = opts or {}
+	store[kind] = {
+		endTime = endServerTime,
+		duration = tonumber(duration) or 0,
+		suppressCountdown = opts.suppressCountdown or false,
+		source = opts.source,
+	}
+end
+
+function M:ClearManualTimerState(kind)
+	local store = getManualTimersStore()
+	if not store or not kind then return end
+	store[kind] = nil
+end
+
+local function cancelManualCountdown(rec)
+	if not rec then return end
+	if rec.countdownTimer and rec.countdownTimer.Cancel then
+		rec.countdownTimer:Cancel()
+	end
+	rec.countdownTimer = nil
+end
+
+local function canStartCountdown()
+	if not (C_PartyInfo and C_PartyInfo.DoCountdown) then return false end
+	if C_PartyInfo.CanStartCountdown then
+		return C_PartyInfo.CanStartCountdown()
+	end
+	return true
+end
+
+local function startCountdown(len)
+	local secs = math.floor((tonumber(len) or 0) + 0.5)
+	if secs <= 0 then return end
+	if not canStartCountdown() then return end
+	C_PartyInfo.DoCountdown(secs)
+end
+
+local function schedulePullCountdown(rec, seconds, endServerTime)
+	cancelManualCountdown(rec)
+	local secs = tonumber(seconds) or 0
+	if secs <= 0 then return end
+	if not canStartCountdown() then return end
+
+	if endServerTime then
+		local nowServer = getServerTimeSafe()
+		if nowServer and nowServer >= endServerTime then
+			return
+		end
+	end
+
+	startCountdown(secs)
+end
+
+local function handleManualTimer(kind, msg)
+	local raw = trim(msg):lower()
+	if raw == "" then
+		if kind == "pull" then
+			M:StartManualTimer("pull", 10)
+		else
+			M:StartManualTimer("break", 5 * 60)
+		end
+		return
+	end
+
+	if raw == "stop" or raw == "cancel" or raw == "end" or raw == "0" then
+		M:StopManualTimer(kind)
+		return
+	end
+
+	local n = tonumber(raw)
+	if not n then
+		print(ADDON_NAME .. " usage: /" .. kind .. " <" .. (kind == "pull" and "sec" or "min") .. "> (or 0/stop)")
+		return
+	end
+	if n <= 0 then
+		M:StopManualTimer(kind)
+		return
+	end
+
+	if kind == "pull" then
+		M:StartManualTimer("pull", n)
+	else
+		M:StartManualTimer("break", n * 60)
+	end
+end
+
+function M:StartManualTimer(kind, seconds)
+	if type(seconds) ~= "number" or seconds <= 0 then return end
+	if kind == "pull" then
+		self:StopManualTimer("break")
+	end
+
+	local rec, id, now = initManualTimer(kind, seconds, { now = GetTime(), suppressCountdown = false })
+	if not rec then return end
+
+	local nowServer = persistManualTimer(kind, seconds, rec.source, rec.suppressCountdown)
+
+	if kind == "pull" then
+		rec.ignoreCountdownUntil = now + 1
+		local endServer = nowServer and (nowServer + seconds) or nil
+		schedulePullCountdown(rec, seconds, endServer)
+	else
+		cancelManualCountdown(rec)
+		sendDbmBreakSync(seconds)
+		sendBigWigsBreakSync(seconds)
+	end
+
+	self:updateRecord(id, rec.eventInfo, seconds)
+	self:LayoutAll()
+end
+
+function M:StopManualTimer(kind, suppressBroadcast)
+	local id = MANUAL_TIMER_IDS[kind]
+	if not id then return end
+	if self.events[id] then
+		cancelManualCountdown(self.events[id])
+		self:ClearManualTimerState(kind)
+		self:removeEvent(id)
+		self:LayoutAll()
+	end
+	if not suppressBroadcast and kind == "break" then
+		sendDbmBreakSync(0)
+		sendBigWigsBreakSync(0)
+	end
+end
+
+function M:StartExternalManualTimer(kind, seconds, source, suppressCountdown)
+	if type(seconds) ~= "number" or seconds <= 0 then return end
+	if kind == "pull" then
+		self:StopManualTimer("break")
+	end
+
+	local rec, id, now = initManualTimer(kind, seconds, {
+		now = GetTime(),
+		suppressCountdown = suppressCountdown,
+		source = source,
+	})
+	if not rec then return end
+
+	local nowServer = persistManualTimer(kind, seconds, rec.source, rec.suppressCountdown)
+
+	if kind == "pull" then
+		rec.ignoreCountdownUntil = now + 1
+		if rec.suppressCountdown then
+			cancelManualCountdown(rec)
+		else
+			local endServer = nowServer and (nowServer + seconds) or nil
+			schedulePullCountdown(rec, seconds, endServer)
+		end
+	else
+		cancelManualCountdown(rec)
+	end
+
+	self:updateRecord(id, rec.eventInfo, seconds)
+	self:LayoutAll()
+end
+
+local function restoreManualTimer(kind, info)
+	if type(info) ~= "table" then return end
+	local nowServer = getServerTimeSafe()
+	if not nowServer then return end
+	local endServer = tonumber(info.endTime)
+	local duration = tonumber(info.duration)
+	local suppressCountdown = not not info.suppressCountdown
+	if type(endServer) ~= "number" or type(duration) ~= "number" or duration <= 0 then return end
+	local remaining = endServer - nowServer
+	if remaining <= 0 then
+		M:ClearManualTimerState(kind)
+		return
+	end
+	if remaining > duration then
+		remaining = duration
+	end
+
+	local now = GetTime()
+	local rec, id = initManualTimer(kind, duration, {
+		now = now,
+		startTime = now - (duration - remaining),
+		endTime = now + remaining,
+		remaining = remaining,
+		suppressCountdown = suppressCountdown,
+		source = info.source,
+	})
+	if not rec then return end
+
+	if kind == "pull" then
+		rec.ignoreCountdownUntil = now + 1
+		if rec.suppressCountdown then
+			cancelManualCountdown(rec)
+		else
+			schedulePullCountdown(rec, remaining, endServer)
+		end
+	else
+		cancelManualCountdown(rec)
+	end
+
+	M:updateRecord(id, rec.eventInfo, remaining)
+	M:LayoutAll()
+end
+
+-- =========================
+-- Events
+-- =========================
+local ef = CreateFrame("Frame")
+ef:SetScript("OnEvent", function(_, event, ...)
+	if event == "PLAYER_LOGIN" then
+		M:EnsureDefaults()
+		M.SyncLiveConfig()
+		applyTimelineRecommendedMode()
+
+		M:ApplyGeneralConfig(
+			SimpleBossModsDB.cfg.general.gap or 6,
+			SimpleBossModsDB.cfg.general.autoInsertKeystone
+		)
+		M:ApplyIconConfig(SimpleBossModsDB.cfg.icons.size, SimpleBossModsDB.cfg.icons.fontSize, SimpleBossModsDB.cfg.icons.borderThickness)
+		M:ApplyBarConfig(SimpleBossModsDB.cfg.bars.width, SimpleBossModsDB.cfg.bars.height, SimpleBossModsDB.cfg.bars.fontSize, SimpleBossModsDB.cfg.bars.borderThickness)
+		M:ApplyIndicatorConfig(SimpleBossModsDB.cfg.indicators.iconSize or 0, SimpleBossModsDB.cfg.indicators.barSize or 0)
+		if M.UpdateIconsAnchorPosition then
+			M:UpdateIconsAnchorPosition()
+		end
+		if M.UpdateBarsAnchorPosition then
+			M:UpdateBarsAnchorPosition()
+		end
+		if M.ApplyPrivateAuraConfig then
+			local pc = SimpleBossModsDB.cfg.privateAuras
+			M:ApplyPrivateAuraConfig(pc.size, pc.gap, pc.growDirection, pc.x, pc.y)
+		end
+		if M.UpdateCombatTimerAppearance then
+			M:UpdateCombatTimerAppearance()
+		end
+		if M.UpdateCombatTimerState then
+			M:UpdateCombatTimerState()
+		end
+
+		M:CreateSettingsPanel()
+		if not (InCombatLockdown and InCombatLockdown()) then
+			local now = (GetTime and GetTime()) or 0
+			M._suppressTimelineUntil = now + 0.5
+		end
+		M:Tick()
+		M:LayoutAll()
+		
+		-- Force build on login/reload
+		if M and M.BuildEncounterEventCache then
+			M:BuildEncounterEventCache()
+		end
+
+		if C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix then
+			C_ChatInfo.RegisterAddonMessagePrefix("D5")
+			C_ChatInfo.RegisterAddonMessagePrefix("BigWigs")
+		end
+		if type(SimpleBossModsDB.manualTimers) == "table" then
+			for kind, info in pairs(SimpleBossModsDB.manualTimers) do
+				restoreManualTimer(kind, info)
+			end
+		end
+
+		if type(hash_SlashCmdList) == "table" then
+			if not hash_SlashCmdList["/pull"] then
+				SLASH_SIMPLEBOSSMODSPULL1 = "/pull"
+			end
+			if not hash_SlashCmdList["/break"] then
+				SLASH_SIMPLEBOSSMODSBREAK1 = "/break"
+			end
+		else
+			SLASH_SIMPLEBOSSMODSPULL1 = "/pull"
+			SLASH_SIMPLEBOSSMODSBREAK1 = "/break"
+		end
+		maybePrintSlashHelp()
+	elseif event == "ADDON_LOADED" then
+		local name = ...
+		if name == "Blizzard_ChallengesUI" then
+			if M.SetupKeystoneAutoInsert then
+				M:SetupKeystoneAutoInsert()
+			end
+		elseif name == "Blizzard_EditMode" then
+			applyTimelineRecommendedMode()
+		elseif name == "Blizzard_EncounterTimeline" then
+			applyTimelineRecommendedMode()
+		elseif name == "Blizzard_EncounterEvents" then
+			applyTimelineRecommendedMode()
+			if M and M.EnsureEncounterEventCache then
+				M:EnsureEncounterEventCache()
+			end
+		end
+	elseif event == "ENCOUNTER_TIMELINE_EVENT_ADDED" then
+		deferredTick()
+	elseif event == "ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED" then
+		local eventID = ...
+		if M.SetTimelineEventTerminalState then
+			M:SetTimelineEventTerminalState(eventID)
+		end
+		deferredTick()
+	elseif event == "ENCOUNTER_TIMELINE_EVENT_TRACK_CHANGED"
+		or event == "ENCOUNTER_TIMELINE_EVENT_BLOCK_STATE_CHANGED" then
+		deferredTick()
+	elseif event == "ENCOUNTER_TIMELINE_EVENT_REMOVED" then
+		local eventID = ...
+		if type(eventID) == "number" then
+			M:removeEvent(eventID, "timeline-removed", false)
+		end
+		deferredTick()
+	elseif event == "ENCOUNTER_END" then
+		if M and M.ClearEncounterEventFallbackCache then
+			M:ClearEncounterEventFallbackCache()
+		end
+		if M and M.events and M.removeEvent then
+			local pendingRemovals = {}
+			for eventID, rec in pairs(M.events) do
+				if rec and not rec.isManual then
+					pendingRemovals[#pendingRemovals + 1] = eventID
+				end
+			end
+			for _, eventID in ipairs(pendingRemovals) do
+				M:removeEvent(eventID, "encounter-end", true)
+			end
+		end
+		if M and M.ClearTimelineAnimationState then
+			M:ClearTimelineAnimationState()
+		end
+		if M and M.LayoutAll then
+			M:LayoutAll()
+		end
+	elseif event == "ENCOUNTER_TIMELINE_LAYOUT_UPDATED"
+		or event == "ENCOUNTER_TIMELINE_STATE_UPDATED"
+		or event == "ENCOUNTER_TIMELINE_VIEW_ACTIVATED" then
+		deferredTick()
+	elseif event == "ENCOUNTER_TIMELINE_VIEW_DEACTIVATED" then
+		if M.clearAll then
+			M:clearAll()
+		end
+		if M.LayoutAll then
+			M:LayoutAll()
+		end
+	elseif event == "EDIT_MODE_LAYOUTS_UPDATED" then
+		applyTimelineRecommendedMode()
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
+		if M.BuildEncounterEventCache then
+			M:BuildEncounterEventCache()
+		end
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		if M.StartCombatTimer then
+			M:StartCombatTimer(true)
+		end
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		if M.StopCombatTimer then
+			M:StopCombatTimer()
+		end
+		if M.RefreshTooltipFrameMouse then
+			M:RefreshTooltipFrameMouse()
+		end
+		if M.EnsureEncounterEventCache then
+			M:EnsureEncounterEventCache()
+		end
+	elseif event == "START_PLAYER_COUNTDOWN" then
+		local _, timeSeconds = ...
+		local secs = parseTimerValue(timeSeconds)
+		if secs and secs > 0 then
+			local rec = M.events and M.events[MANUAL_TIMER_IDS.pull] or nil
+			if rec then
+				if rec.ignoreCountdownUntil and GetTime() <= rec.ignoreCountdownUntil then
+					return
+				end
+				local remaining = rec.endTime and (rec.endTime - GetTime()) or rec.remaining
+				if type(remaining) == "number" and remaining >= (secs - 0.5) then
+					return
+				end
+			end
+			M:StartExternalManualTimer("pull", secs, "blizzard", true)
+		end
+	elseif event == "CANCEL_PLAYER_COUNTDOWN" then
+		local rec = M.events and M.events[MANUAL_TIMER_IDS.pull] or nil
+		if rec and rec.source == "blizzard" then
+			M:StopManualTimer("pull", true)
+		end
+	elseif event == "CHAT_MSG_ADDON" then
+		local prefix, msg, _, sender = ...
+		if isSenderMe(sender) then
+			return
+		end
+		if prefix == "D5" then
+			local _, proto, syncPrefix, payload = strsplit("\t", msg or "")
+			if tonumber(proto) then
+				if syncPrefix == "PT" then
+					local secs = parseTimerValue(payload)
+					if secs ~= nil then
+						if secs > 0 then
+							if secs >= 3 then
+								M:StartExternalManualTimer("pull", secs, "dbm", true)
+							end
+						else
+							M:StopManualTimer("pull", true)
+						end
+					end
+				elseif syncPrefix == "BT" then
+					local secs = parseTimerValue(payload)
+					if secs ~= nil then
+						if secs > 0 then
+							if secs <= 3600 then
+								M:StartExternalManualTimer("break", secs, "dbm", true)
+							end
+						else
+							M:StopManualTimer("break", true)
+						end
+					end
+				end
+			end
+		elseif prefix == "BigWigs" then
+			local bwPrefix, bwMsg, bwExtra = strsplit("^", msg or "")
+			if bwPrefix then
+				bwPrefix = bwPrefix:upper()
+				local BW_PULL = { P = true, PULL = true, PT = true }
+				local BW_BREAK = { BT = true, BR = true, BREAK = true }
+				local function handleBWSync(kind, secsStr)
+					local secs = parseTimerValue(secsStr)
+					if secs ~= nil then
+						if secs > 0 then
+							M:StartExternalManualTimer(kind, secs, "bigwigs", true)
+						else
+							M:StopManualTimer(kind, true)
+						end
+					end
+				end
+				if BW_PULL[bwPrefix] then
+					handleBWSync("pull", bwMsg)
+				elseif BW_BREAK[bwPrefix] then
+					handleBWSync("break", bwMsg)
+				elseif bwPrefix == "B" and bwMsg then
+					local inner = bwMsg:upper()
+					if BW_PULL[inner] then
+						handleBWSync("pull", bwExtra)
+					elseif BW_BREAK[inner] or inner == "B" then
+						handleBWSync("break", bwExtra)
+					end
+				end
+			end
+		end
+	elseif event == "UNIT_AURA" then
+		local unit = ...
+		if unit == "player" and M.UpdatePrivateAuraFrames then
+			M:UpdatePrivateAuraFrames()
+		end
+	end
+end)
+ef:RegisterEvent("PLAYER_LOGIN")
+ef:RegisterEvent("PLAYER_ENTERING_WORLD")
+ef:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+ef:RegisterEvent("ADDON_LOADED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_ADDED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_REMOVED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_TRACK_CHANGED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_BLOCK_STATE_CHANGED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_LAYOUT_UPDATED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_STATE_UPDATED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_VIEW_ACTIVATED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_VIEW_DEACTIVATED")
+ef:RegisterEvent("ENCOUNTER_END")
+ef:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
+ef:RegisterEvent("PLAYER_REGEN_DISABLED")
+ef:RegisterEvent("PLAYER_REGEN_ENABLED")
+ef:RegisterEvent("START_PLAYER_COUNTDOWN")
+ef:RegisterEvent("CANCEL_PLAYER_COUNTDOWN")
+ef:RegisterEvent("CHAT_MSG_ADDON")
+ef:RegisterEvent("UNIT_AURA")
+
+-- =========================
+-- Slash
+-- =========================
+SLASH_SIMPLEBOSSMODS1 = "/sbm"
+SLASH_SIMPLEBOSSMODS2 = "/simplebossmods"
+SlashCmdList["SIMPLEBOSSMODS"] = function(msg)
+	msg = (msg or ""):lower()
+
+	if msg == "" or msg == "settings" or msg == "config" or msg == "options" then
+		M:OpenSettings()
+		return
+	end
+
+	if msg == "test" or msg == "test start" or msg == "starttest" then
+		M:StartTest()
+		return
+	end
+	if msg == "test stop" or msg == "test end" or msg == "test off" or msg == "stoptest" then
+		M:StopTest()
+		return
+	end
+	if msg:sub(1, 4) == "pull" then
+		handleManualTimer("pull", msg:sub(5))
+		return
+	end
+	if msg:sub(1, 5) == "break" then
+		handleManualTimer("break", msg:sub(6))
+		return
+	end
+
+	if msg == "color events" or msg == "set colors" or msg == "apply colors" then
+		if M.BuildEncounterEventCache then
+			M:BuildEncounterEventCache()
+			print(ADDON_NAME .. ": Applying encounter event colors")
+		else
+			print(ADDON_NAME .. ": Encounter color build not available")
+		end
+		return
+	end
+end
+
+SlashCmdList["SIMPLEBOSSMODSPULL"] = function(msg)
+	handleManualTimer("pull", msg)
+end
+
+SlashCmdList["SIMPLEBOSSMODSBREAK"] = function(msg)
+	handleManualTimer("break", msg)
+end

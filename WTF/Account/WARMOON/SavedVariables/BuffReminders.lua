@@ -2,19 +2,19 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-},
 ["profiles"] = {
 ["Default"] = {
 ["defaults"] = {
 ["fontFace"] = "Fira Sans Condensed Bold",
-["expirationThreshold"] = 10,
+["expirationThreshold"] = 5,
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
 ["textSize"] = 20,
@@ -25,32 +25,35 @@ BuffRemindersDB = {
 ["buffTrackingMode"] = "my_buffs",
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["soulstone"] = true,
 ["blisteringScales"] = true,
+["soulstone"] = true,
 ["atrophicNumbingPoison"] = true,
-["beacons"] = true,
+["shamanShields"] = true,
 ["bronze"] = true,
-["stamina"] = true,
-["sourceOfMagic"] = true,
-["attackPower"] = true,
+["intellect"] = true,
+["versatility"] = true,
 ["earthShieldOthers"] = false,
 ["devotionAura"] = true,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
+["attackPower"] = true,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
+},
+["dbVersion"] = 32,
+["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["growDirection"] = "CENTER",
-["showText"] = false,
-["textSize"] = 20,
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["spacing"] = 0.2,
-["iconSize"] = 48,
+["iconZoom"] = 0,
 ["textAlpha"] = 1,
+["borderSize"] = 2,
+["showText"] = false,
+["growDirection"] = "CENTER",
+["iconSize"] = 48,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,
@@ -63,11 +66,8 @@ BuffRemindersDB = {
 },
 ["main"] = {
 ["position"] = {
-["y"] = -526,
+["y"] = 648,
 },
-},
-["targeted"] = {
-["showText"] = true,
 },
 ["presence"] = {
 ["showText"] = true,
@@ -77,8 +77,24 @@ BuffRemindersDB = {
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
+["targeted"] = {
+["showText"] = true,
 },
-["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+},
+["hideAllInVehicle"] = true,
+["categoryVisibility"] = {
+["custom"] = {
+["pvp"] = true,
+["hideInPvPMatch"] = true,
+},
 },
 ["customBuffs"] = {
 ["burningRush"] = {
@@ -93,22 +109,6 @@ BuffRemindersDB = {
 ["spellID"] = 111400,
 },
 },
-["showLoginMessages"] = false,
-["rememberedConsumables"] = {
-[263] = {
-["rune"] = 1234969,
-["flask"] = 1235108,
-["food"] = 1233767,
-},
-},
-["hideAllInVehicle"] = true,
-["categoryVisibility"] = {
-["custom"] = {
-["hideInPvPMatch"] = true,
-["pvp"] = true,
-},
-},
-["dbVersion"] = 32,
 },
 },
 }
