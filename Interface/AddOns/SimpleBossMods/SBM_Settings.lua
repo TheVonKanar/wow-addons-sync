@@ -1723,6 +1723,23 @@ function M:CreateSettingsWindow()
 			1
 		)
 
+		addCheckBox(mythic, "Share Keystones With Party",
+			function() return SimpleBossModsDB.cfg.general.shareKeystones ~= false end,
+			function(v)
+				SimpleBossModsDB.cfg.general.shareKeystones = v
+				M.SyncLiveConfig()
+			end,
+			1
+		)
+
+		addCheckBox(mythic, "Enable /key Commands (requires reload)",
+			function() return SimpleBossModsDB.cfg.general.enableKeyCommands ~= false end,
+			function(v)
+				SimpleBossModsDB.cfg.general.enableKeyCommands = v
+			end,
+			1
+		)
+
 		local queues = AG:Create("InlineGroup")
 		queues:SetTitle("Queue Timers")
 		queues:SetLayout("Flow")

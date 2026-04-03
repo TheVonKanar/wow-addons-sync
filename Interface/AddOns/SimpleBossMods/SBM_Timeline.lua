@@ -138,21 +138,21 @@ end
 
 local function resolveEncounterEventFallback(encounterEventID)
 	if type(encounterEventID) ~= "number" or encounterEventID <= 0 then
-		return nil, nil, nil
+		return nil, nil, nil, nil, nil
 	end
 
 	local cached = encounterEventFallbackCache[encounterEventID]
 	if cached then
-		return cached.label, cached.spellID, cached.iconFileID
+		return cached.label, cached.spellID, cached.iconFileID, cached.icons, cached.severity
 	end
 
 	if not (C_EncounterEvents and type(C_EncounterEvents.GetEventInfo) == "function") then
-		return nil, nil, nil
+		return nil, nil, nil, nil, nil
 	end
 
 	local ok, info = pcall(C_EncounterEvents.GetEventInfo, encounterEventID)
 	if not ok or type(info) ~= "table" then
-		return nil, nil, nil
+		return nil, nil, nil, nil, nil
 	end
 
 	local label = nil
@@ -203,15 +203,24 @@ local function resolveEncounterEventFallback(encounterEventID)
 		end
 	end
 
-	if label or spellID or iconFileID then
+	-- Cache icons mask and severity from C_EncounterEvents (AllowedWhenUntainted)
+	-- so they can be used as fallback when C_EncounterTimeline returns secrets.
+	local icons = info.icons
+	if isSecretValue(icons) then icons = nil end
+	local severity = info.severity
+	if isSecretValue(severity) then severity = nil end
+
+	if label or spellID or iconFileID or icons or severity then
 		encounterEventFallbackCache[encounterEventID] = {
 			label = label,
 			spellID = spellID,
 			iconFileID = iconFileID,
+			icons = icons,
+			severity = severity,
 		}
 	end
 
-	return label, spellID, iconFileID
+	return label, spellID, iconFileID, icons, severity
 end
 
 function M:ClearEncounterEventFallbackCache()
@@ -288,7 +297,7 @@ function M:CollectTimelineEvents(now)
 					if not isSecretValue(rawEncounterEventID) then
 						encounterEventID = tonumber(rawEncounterEventID)
 					end
-					local fallbackLabel, fallbackSpellID, fallbackIconFileID = resolveEncounterEventFallback(encounterEventID)
+					local fallbackLabel, fallbackSpellID, fallbackIconFileID, fallbackIcons, fallbackSeverity = resolveEncounterEventFallback(encounterEventID)
 					if not spellID and fallbackSpellID then
 						spellID = fallbackSpellID
 					end
@@ -308,29 +317,35 @@ function M:CollectTimelineEvents(now)
 						iconFileID = fallbackIconFileID
 					end
 					local iconsMask = info.icons
+					if isSecretValue(iconsMask) and fallbackIcons then
+						iconsMask = fallbackIcons
+					end
+					local eventSeverity = info.severity
+					if isSecretValue(eventSeverity) and fallbackSeverity then
+						eventSeverity = fallbackSeverity
+					end
 					local eventColor = info.color
-
-					-- Store in array (faster than table.insert)
-						events[#events + 1] = {
-							id = eventID,
+					
+					events[#events + 1] = {
+						id = eventID,
 						eventInfo = {
 							name = displayName,
 							spellName = info.spellName,
 							spellID = spellID,
 							icon = iconFileID,
 							icons = iconsMask,
-							severity = info.severity,
+							severity = eventSeverity,
 							timelineEventID = eventID,
 							encounterEventID = encounterEventID,
 							source = info.source,
 							color = eventColor,
 							state = state,
 						},
-							remaining = remainingIsSecret and remaining or remainingNum,
-							isQueued = queued,
-							isPaused = paused,
-							isBlocked = blocked,
-						}
+						remaining = remainingIsSecret and remaining or remainingNum,
+						isQueued = queued,
+						isPaused = paused,
+						isBlocked = blocked,
+					}
 				end
 			end
 		end

@@ -35,9 +35,11 @@ local _, BR = ...
 
 -- Lua stdlib locals (avoid repeated global lookups in hot paths)
 local floor, max, min = math.floor, math.max, math.min
+local format = string.format
 local rad = math.rad
 local tinsert = table.insert
 
+local L = BR.L
 local Components = BR.Components
 local RefreshableComponents = BR.RefreshableComponents
 
@@ -539,7 +541,7 @@ function Components.Slider(parent, config)
         editBox:SetFocus()
         editBox:HighlightText()
     end)
-    SetupTooltip(valueBtn, "Adjust value", "Click to type or use mouse wheel", "ANCHOR_TOP")
+    SetupTooltip(valueBtn, L["Component.AdjustValue"], L["Component.AdjustValue.Desc"], "ANCHOR_TOP")
 
     -- Mouse wheel support
     holder:EnableMouseWheel(true)
@@ -1591,7 +1593,13 @@ end
 ---@return table holder Frame containing direction dropdown with .SetDirection(dir)
 function Components.DirectionButtons(parent, config)
     local directions = { "LEFT", "CENTER", "RIGHT", "UP", "DOWN" }
-    local dirLabels = { LEFT = "Left", CENTER = "Center", RIGHT = "Right", UP = "Up", DOWN = "Down" }
+    local dirLabels = {
+        LEFT = L["Direction.Left"],
+        CENTER = L["Direction.Center"],
+        RIGHT = L["Direction.Right"],
+        UP = L["Direction.Up"],
+        DOWN = L["Direction.Down"],
+    }
     local width = config.width or 90
     local labelWidth = config.labelWidth or 70
 
@@ -1610,7 +1618,7 @@ function Components.DirectionButtons(parent, config)
     label:SetPoint("LEFT", 0, 0)
     label:SetWidth(labelWidth)
     label:SetJustifyH("LEFT")
-    label:SetText(config.label or "Direction")
+    label:SetText(config.label or L["Direction.Label"])
     holder.label = label
 
     -- Initial value
@@ -1666,63 +1674,63 @@ end
 
 ---@type ToggleDef[]
 local SCENARIO_DIFF_DEFS = {
-    { key = "delves", label = "D", tooltip = { title = "Delves" } },
-    { key = "others", label = "O", tooltip = { title = "Other Scenarios (Torghast, etc.)" } },
+    { key = "delves", label = "D", tooltip = { title = L["Content.Delves"] } },
+    { key = "others", label = "O", tooltip = { title = L["Content.OtherScenarios"] } },
 }
 
 ---@type ToggleDef[]
 local DUNGEON_DIFF_DEFS = {
-    { key = "normal", label = "N", tooltip = { title = "Normal Dungeons" } },
-    { key = "heroic", label = "H", tooltip = { title = "Heroic Dungeons" } },
-    { key = "mythic", label = "M", tooltip = { title = "Mythic Dungeons" } },
-    { key = "mythicPlus", label = "M+", tooltip = { title = "Mythic+ Keystones" } },
-    { key = "timewalking", label = "TW", tooltip = { title = "Timewalking Dungeons" } },
-    { key = "follower", label = "F", tooltip = { title = "Follower Dungeons" } },
+    { key = "normal", label = "N", tooltip = { title = L["Content.NormalDungeons"] } },
+    { key = "heroic", label = "H", tooltip = { title = L["Content.HeroicDungeons"] } },
+    { key = "mythic", label = "M", tooltip = { title = L["Content.MythicDungeons"] } },
+    { key = "mythicPlus", label = "M+", tooltip = { title = L["Content.MythicPlus"] } },
+    { key = "timewalking", label = "TW", tooltip = { title = L["Content.TimewalkingDungeons"] } },
+    { key = "follower", label = "F", tooltip = { title = L["Content.FollowerDungeons"] } },
 }
 
 ---@type ToggleDef[]
 local RAID_DIFF_DEFS = {
-    { key = "lfr", label = "LFR", tooltip = { title = "Looking for Raid" } },
-    { key = "normal", label = "N", tooltip = { title = "Normal Raids" } },
-    { key = "heroic", label = "H", tooltip = { title = "Heroic Raids" } },
-    { key = "mythic", label = "M", tooltip = { title = "Mythic Raids" } },
+    { key = "lfr", label = "LFR", tooltip = { title = L["Content.LFR"] } },
+    { key = "normal", label = "N", tooltip = { title = L["Content.NormalRaids"] } },
+    { key = "heroic", label = "H", tooltip = { title = L["Content.HeroicRaids"] } },
+    { key = "mythic", label = "M", tooltip = { title = L["Content.MythicRaids"] } },
 }
 
 ---@type ToggleDef[]
 local PVP_TYPE_DEFS = {
-    { key = "arena", label = "A", tooltip = { title = "Arena" } },
-    { key = "bg", label = "B", tooltip = { title = "Battlegrounds" } },
+    { key = "arena", label = "A", tooltip = { title = L["Content.Arena"] } },
+    { key = "bg", label = "B", tooltip = { title = L["Content.Battlegrounds"] } },
 }
 
 ---@type ToggleDef[]
 local CONTENT_TOGGLE_DEFS = {
-    { key = "openWorld", label = "W", tooltip = { title = "Open World" } },
-    { key = "housing", label = "H", tooltip = { title = "Housing" } },
+    { key = "openWorld", label = "W", tooltip = { title = L["Content.OpenWorld"] } },
+    { key = "housing", label = "H", tooltip = { title = L["Content.Housing"] } },
     {
         key = "scenario",
         label = "S",
-        tooltip = { title = "Scenarios (Delves, Torghast, etc.)" },
+        tooltip = { title = L["Content.Scenarios"] },
         diffDbKey = "scenarioDifficulty",
         diffDefs = SCENARIO_DIFF_DEFS,
     },
     {
         key = "dungeon",
         label = "D",
-        tooltip = { title = "Dungeons (including M+)" },
+        tooltip = { title = L["Content.Dungeons"] },
         diffDbKey = "dungeonDifficulty",
         diffDefs = DUNGEON_DIFF_DEFS,
     },
     {
         key = "raid",
         label = "R",
-        tooltip = { title = "Raids" },
+        tooltip = { title = L["Content.Raids"] },
         diffDbKey = "raidDifficulty",
         diffDefs = RAID_DIFF_DEFS,
     },
     {
         key = "pvp",
         label = "P",
-        tooltip = { title = "PvP (Arena & Battlegrounds)" },
+        tooltip = { title = L["Content.PvP"] },
         diffDbKey = "pvpType",
         diffDefs = PVP_TYPE_DEFS,
     },
@@ -1991,7 +1999,7 @@ function Components.VisibilityToggles(parent, config)
     -- Content label (LEFT anchor centers vertically in holder)
     local contentLabel = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     contentLabel:SetPoint("LEFT", 0, 0)
-    contentLabel:SetText("Show in:")
+    contentLabel:SetText(L["Content.ShowIn"])
 
     -- Content bar
     local contentBar, contentButtons = CreateSegmentedBar(holder, {
@@ -2139,12 +2147,7 @@ function Components.VisibilityToggles(parent, config)
             showDiffBar(mapping.contentKey)
         end)
         local toggle = CONTENT_TOGGLE_DEFS[mapping.btnIndex]
-        SetupTooltip(
-            btn,
-            toggle.tooltip.title,
-            "Click to filter by " .. toggle.tooltip.title:lower() .. " difficulty",
-            "ANCHOR_TOP"
-        )
+        SetupTooltip(btn, toggle.tooltip.title, format(L["Content.ClickToFilter"], toggle.tooltip.title), "ANCHOR_TOP")
     end
 
     -- refreshAll: update all button visuals (used by onChange and Refresh)
@@ -2605,7 +2608,7 @@ function Components.NumericStepper(parent, config)
         editBox:SetFocus()
         editBox:HighlightText()
     end)
-    SetupTooltip(valueBtn, "Adjust value", "Click to type or use mouse wheel", "ANCHOR_TOP")
+    SetupTooltip(valueBtn, L["Component.AdjustValue"], L["Component.AdjustValue.Desc"], "ANCHOR_TOP")
 
     -- Hover effects (skip if button is at its limit)
     local function IsBtnAtLimit(btn)
@@ -3127,7 +3130,7 @@ function Components.AppearanceGrid(parent, config)
 
     -- Row 1: Width [link] Height
     widthHolder = Components.Slider(frame, {
-        label = "Width",
+        label = L["Appearance.Width"],
         min = 16,
         max = 128,
         labelWidth = LW,
@@ -3158,7 +3161,7 @@ function Components.AppearanceGrid(parent, config)
     linkBtn:SetPoint("TOPLEFT", LINK_X, 0)
 
     heightHolder = Components.Slider(frame, {
-        label = "Height",
+        label = L["Appearance.Height"],
         min = 16,
         max = 128,
         labelWidth = LW,
@@ -3177,7 +3180,7 @@ function Components.AppearanceGrid(parent, config)
 
     -- Row 2: Zoom, Border
     local zoomHolder = Components.Slider(frame, {
-        label = "Zoom",
+        label = L["Appearance.Zoom"],
         min = 0,
         max = 15,
         labelWidth = LW,
@@ -3193,7 +3196,7 @@ function Components.AppearanceGrid(parent, config)
     zoomHolder:SetPoint("TOPLEFT", 0, -ROW_H)
 
     local borderHolder = Components.Slider(frame, {
-        label = "Border",
+        label = L["Appearance.Border"],
         min = 0,
         max = 8,
         labelWidth = LW,
@@ -3210,7 +3213,7 @@ function Components.AppearanceGrid(parent, config)
 
     -- Row 3: Spacing, Alpha
     local spacingHolder = Components.Slider(frame, {
-        label = "Spacing",
+        label = L["Appearance.Spacing"],
         min = 0,
         max = 50,
         labelWidth = LW,
@@ -3226,7 +3229,7 @@ function Components.AppearanceGrid(parent, config)
     spacingHolder:SetPoint("TOPLEFT", 0, -ROW_H * 2)
 
     local alphaHolder = Components.Slider(frame, {
-        label = "Alpha",
+        label = L["Appearance.Alpha"],
         min = 10,
         max = 100,
         labelWidth = LW,
@@ -3243,17 +3246,12 @@ function Components.AppearanceGrid(parent, config)
 
     -- Row 4: Text size stepper + color swatch
     local textSizeHolder = Components.NumericStepper(frame, {
-        label = "Text",
+        label = L["Appearance.Text"],
         labelWidth = LW,
         min = 6,
         max = 32,
         get = function()
-            local textSize = config.get("textSize", nil)
-            if textSize then
-                return textSize
-            end
-            local iconSize = config.get("iconSize", 64)
-            return floor(iconSize * 0.32)
+            return config.get("textSize", BR.defaults.defaults.textSize)
         end,
         enabled = enabled and baseEnabled or nil,
         onChange = function(val)
@@ -3281,7 +3279,7 @@ function Components.AppearanceGrid(parent, config)
 
     -- Row 5: Text offset X / Y
     local textOffsetXHolder = Components.Slider(frame, {
-        label = "Text X",
+        label = L["Appearance.TextX"],
         labelWidth = LW,
         min = -20,
         max = 20,
@@ -3296,7 +3294,7 @@ function Components.AppearanceGrid(parent, config)
     textOffsetXHolder:SetPoint("TOPLEFT", 0, -ROW_H * 4)
 
     local textOffsetYHolder = Components.Slider(frame, {
-        label = "Text Y",
+        label = L["Appearance.TextY"],
         labelWidth = LW,
         min = -20,
         max = 20,

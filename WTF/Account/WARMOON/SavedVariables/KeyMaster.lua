@@ -3,11 +3,11 @@ KeyMaster_DB = {
 ["addonConfig"] = {
 ["showRatingFloat"] = false,
 ["interfaceFramePos"] = {
-["yOfs"] = -328.0002746582031,
-["xOfs"] = 776.0001831054688,
+["yOfs"] = -318.0003662109375,
+["xOfs"] = 40.00046539306641,
 ["relativePoint"] = "TOPLEFT",
 },
-["version"] = "1.5.3-release",
+["version"] = "1.5.4-release",
 ["showErrors"] = false,
 ["miniMapButtonPos"] = {
 ["minimapPos"] = 206,
@@ -24,30 +24,44 @@ KeyMaster_DB = {
 },
 }
 KeyMaster_C_DB = {
-["Player-1390-09230B89"] = {
+["Player-1122-019F1238"] = {
+["data"] = "m?NÃ0Æe©üCV@İZ‘TH0REAH”Ğ2ó?5–;ØqQÖ 7€#ôb¶Gà€èæí½ß÷\rï÷ÈûèrEwÌ¡BÕ÷<ßïŸxç¡çÏ–3”\"6B?ww{Ëuy3Gœ“u@	áB6tÂrÌ’J&f¿±j&)î0%ñ5Î‘“ÎQÏvˆİíff·ˆİ&v‡|ï9àç¡«é‚Çøæj~¹`b+#š­~f Ú[_êÄ0N'UJ!GĞ¸jÉ=*İXÅŞàt0	È±¾5¬PòÑÈù$^aõ§ûº^#JèJ¥x(öóªÌX:æFÿÿ*V<WSN!ñó",
+["keyLevel"] = 0,
+["keyId"] = 0,
+["class"] = 4,
 ["season"] = 17,
-["keyLevel"] = 5,
-["keyId"] = 557,
-["class"] = 7,
-["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸M„KmSRjq‰YjQbNÎ.˜¬KbI¢[S>P8$375#)(±$3/,_dæç§&›hù¤–¥æ°²(«]`)¹Àêv-ã»‡CI¾™ïä”›8®¤\\àıÂ”Ş\"Š.İú>^à(	½À)~E	(ıD!]t£{Ñ‹]ú8¶¥…¿€¤—pÁ¤,ãœ¬*’@ñ/m	`mo.ßÙĞkwC¥hé6a„©Åì¡ ”všú$=ÙÉİ™ pãI\"PwRi^f‰gJR8'%g$½ºuRRifNJHeAjQQjNjbqê!°HXjQ10T‚õLõŒòsS›¼ËòK2RSó.å—ç¥¦x§V‚Mà^ãz¦\\QjÊH,vLIÉÏK(È­,ÉÈLÈ)-†ö‘ ¢ÔÄœÜ Ê¬ÄÀ",
-["rating"] = 2252,
+["rating"] = 0,
 ["vault"] = {
-11,
-10,
-10,
-10,
-10,
-10,
-9,
-9,
 },
-["name"] = "Kvotheen",
+["name"] = "Quiproquo",
 ["teams"] = {
 },
 ["client"] = true,
-["expire"] = 1775026800,
-["timestamp"] = 1774456313,
+["expire"] = 1775631600,
+["timestamp"] = 1774792296,
+["level"] = 80,
+["realm"] = "Uldaman",
+},
+["Player-1390-09230B89"] = {
+["season"] = 17,
+["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸M„KmSRjq‰YjQbNˆ8LÖ%±$Ñ­)(’™›š‘”X’™—îáP.tRe’§*PYP$?/859$6È'µ,5G’EYíËÑ¬nØ2.°{8”®7óœróGHÈNñ/|èÒ[?ÁÇ%¡@é+J@édé½îE/v]à0‰éI«Á¤,»œ‚*’@ñ/ñ¶¢7—ïlèµ»À¡R|SôHÛdS§­‚Õ8\\¦>I§ K'Ú€ĞMé@é¤Ò¼ÌÏ”¤p8NJÎH,{uë¤¤ÒÌœ”Ê‚Ô¢¢ÔœÔÄâÔC`‘°Ô¢b`¨ê™ê™8å%æ¦6y—å—d¤¦æ]Ê/ÏKMñN­› ¾ÆõLy¢Ô”‘Xì˜’’Ÿ—P [Y’‘™SZ	s–AE©‰9¹A•Y‰9€",
+["keyId"] = 558,
+["class"] = 7,
+["keyLevel"] = 11,
+["rating"] = 2688,
+["vault"] = {
+12,
+11,
+11,
+10,
+},
+["teams"] = {
+},
+["name"] = "Kvotheen",
+["client"] = true,
+["expire"] = 1775631600,
 ["level"] = 90,
+["timestamp"] = 1774456313,
 ["realm"] = "Hyjal",
 },
 }

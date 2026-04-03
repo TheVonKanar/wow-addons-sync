@@ -42,6 +42,21 @@ VER 3 0100000000000071 " " "134400"
 #showtooltip Cleanse Spirit
 /cast [@player] Cleanse Spirit
 END
+VER 3 0100000000000072 " " "134400"
+#showtooltip
+/cast Lava Lash
+/cast Surging Totem
+END
+VER 3 0100000000000073 "+pot" "134400"
+#showtooltip
+/cast Bloodlust
+/use Light's Potential
+END
+VER 3 0100000000000074 "+tk" "134400"
+#showtooltip
+/cast Doom Winds
+/use 14
+END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle

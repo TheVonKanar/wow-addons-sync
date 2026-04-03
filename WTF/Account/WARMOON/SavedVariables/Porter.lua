@@ -8,6 +8,7 @@ PorterDB = {
 },
 ["useGlobalProfile"] = {
 ["Kvotheen-Hyjal"] = false,
+["Quiproquo-Uldaman"] = false,
 },
 ["profiles"] = {
 ["Kvotheen-Hyjal"] = {
@@ -25,6 +26,26 @@ PorterDB = {
 ["House"] = true,
 ["Toys"] = true,
 ["Hearthstones"] = true,
+},
+["currentSeason"] = "midnight",
+["viewMode"] = "category",
+["showCosmeticHearthstones"] = false,
+},
+["Quiproquo-Uldaman"] = {
+["zoneOrder"] = "recent",
+["hideBankItems"] = false,
+["hideAfterPort"] = true,
+["defaultView"] = "category",
+["hearthstoneMode"] = "Random",
+["categoryVisibility"] = {
+["House"] = true,
+["Raids"] = true,
+["Hearthstones"] = true,
+["Class & Racial"] = true,
+["Delves"] = true,
+["Toys"] = true,
+["Items"] = true,
+["Dungeons"] = true,
 },
 ["currentSeason"] = "midnight",
 ["viewMode"] = "category",

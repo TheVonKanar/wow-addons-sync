@@ -38,6 +38,7 @@ MinimapStatsDB = {
 },
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {

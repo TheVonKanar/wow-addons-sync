@@ -21,7 +21,7 @@ Addon.data.chores.choresPrey = {
                     requiredAccountQuest = 93086, -- To the Sanctum!
                     entries = {
                         { quest = 93168, item = 257023 },
-                        { quest = 93156, item = 257023 },
+                        { quest = 93853, item = 257023 },
                     },
                 },
                 {
@@ -29,7 +29,7 @@ Addon.data.chores.choresPrey = {
                     minimumLevel = 90,
                     pick = 2,
                     groupSameItem = true,
-                    requiredQuest = 92177, -- One Hero's Prey
+                    requiredQuest = 92178, -- Practical Magic
                     entries = {
                         { quest = 93169, item = 257026 },
                         { quest = 93857, item = 257026 },
@@ -52,7 +52,7 @@ Addon.data.chores.choresPrey = {
                     groupSameItem = true,
                     filter = function()
                         -- the weekly cap only applies when you're below renown 4
-                        return CMF_GetCurrentRenownLevel(2764) < 4
+                        return CMF_GetCurrentRenownLevel(2764) >= 4
                     end,
                     entries = {
                         { quest = 95000, currency = 3387 },

@@ -1,5 +1,5 @@
 ## Interface: 120001
-## Version: 1.1.6
+## Version: 1.1.8
 ## Title: Mythic Plus Utility
 ## Author: Nikyou
 ## IconTexture: Interface\Icons\spell_nature_tremortotem

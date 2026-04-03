@@ -139,7 +139,7 @@ LittleWigs_Classic: disabled
 LittleWigs_MistsOfPandaria: disabled
 LittleWigs_Shadowlands: disabled
 LittleWigs_WrathOfTheLichKing: disabled
-LoggerHead: enabled
+LoggerHead: disabled
 MacroToolkit: disabled
 MacroToolkitIcons: disabled
 MapCoords: disabled
@@ -224,9 +224,9 @@ Krowi_AchievementFilter: enabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
-AstralKeys: enabled
+AstralKeys: disabled
 ChoreTracker: enabled
-Angleur: disabled
+Angleur: enabled
 CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled
@@ -278,3 +278,8 @@ MogMount: disabled
 Baganator: enabled
 TalentLoadoutManager: disabled
 TwintopInsanityBar: disabled
+EnhanceQoL: disabled
+BliZzi_Interrupts: disabled
+RaiderIO_DB_CN_R: disabled
+RaiderIO_DB_CN_M: disabled
+RaiderIO_DB_CN_F: disabled

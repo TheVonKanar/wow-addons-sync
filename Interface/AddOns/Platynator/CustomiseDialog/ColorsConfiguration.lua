@@ -708,6 +708,7 @@ addonTable.CustomiseDialog.ColorsConfig = {
         cast = GetColor("FC8C00"),
         channel = GetColor("3EC637"),
         interrupted = GetColor("FC36E0"),
+        empowered = GetColor("05c666"),
       },
     },
     entries = {
@@ -729,6 +730,16 @@ addonTable.CustomiseDialog.ColorsConfig = {
         end,
         getter = function(details)
           return details.colors.channel
+        end,
+      },
+      {
+        label = addonTable.Locales.EMPOWERED,
+        kind = "colorPicker",
+        setter = function(details, value)
+          details.colors.empowered = value
+        end,
+        getter = function(details)
+          return details.colors.empowered
         end,
       },
       {

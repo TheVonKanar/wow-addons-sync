@@ -2,6 +2,7 @@
 MinimapStatsDB = {
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["global"] = {
 ["SystemStats"] = {

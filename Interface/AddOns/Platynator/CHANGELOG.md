@@ -1,7 +1,7 @@
 # Platynator
 
-## [352](https://github.com/TheMouseNest/Platynator/tree/352) (2026-03-24)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/351...352) [Previous Releases](https://github.com/TheMouseNest/Platynator/releases)
+## [359](https://github.com/TheMouseNest/Platynator/tree/359) (2026-04-02)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/358...359) 
 
-- Fix "From you" toggle for "Crowd Control" auras  
-- Add options to hide health % symbol and customise combinations of health values  
+- Fix adding "Casting" automatic colours to colors tab  
+- 12.0.5 only: Switch to reparenting default unit frames  

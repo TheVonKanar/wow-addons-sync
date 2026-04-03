@@ -4,6 +4,7 @@ BuffRemindersDB = {
 },
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["global"] = {
 ["minimap"] = {
@@ -15,14 +16,31 @@ BuffRemindersDB = {
 ["defaults"] = {
 ["fontFace"] = "Fira Sans Condensed Bold",
 ["expirationThreshold"] = 5,
-["showConsumableTooltips"] = true,
-["iconSize"] = 48,
-["textSize"] = 20,
+["missingGlowSize"] = 2,
 ["glowXOffset"] = -1,
+["missingGlowXOffset"] = -1,
+["glowType"] = 1,
+["missingGlowYOffset"] = -1,
+["showConsumableTooltips"] = true,
+["growDirection"] = "RIGHT",
+["iconSize"] = 48,
 ["glowYOffset"] = -1,
+["showExpirationGlow"] = false,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+["burningRush"] = {
+["overlayText"] = "",
+["showWhenPresent"] = true,
+["name"] = "Burning Rush",
+["loadConditions"] = {
+["housing"] = false,
+},
+["class"] = "WARLOCK",
+["key"] = "burningRush",
+["spellID"] = 111400,
+},
+},
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
 ["blisteringScales"] = true,
@@ -32,26 +50,26 @@ BuffRemindersDB = {
 ["bronze"] = true,
 ["intellect"] = true,
 ["versatility"] = true,
-["earthShieldOthers"] = false,
 ["devotionAura"] = true,
+["earthShieldOthers"] = false,
 ["attackPower"] = true,
-["sourceOfMagic"] = true,
 ["stamina"] = true,
+["sourceOfMagic"] = true,
 ["beacons"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 32,
-["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["spacing"] = 0.2,
 ["iconZoom"] = 0,
+["growDirection"] = "CENTER",
 ["textAlpha"] = 1,
+["position"] = {
+["x"] = -24,
+},
 ["borderSize"] = 2,
 ["showText"] = false,
-["growDirection"] = "CENTER",
+["spacing"] = 0.2,
 ["iconSize"] = 48,
 ["textSize"] = 20,
 ["textColor"] = {
@@ -61,26 +79,52 @@ BuffRemindersDB = {
 },
 },
 ["consumable"] = {
-["subIconSide"] = "TOP",
 ["showText"] = true,
+["position"] = {
+["x"] = -24,
+},
+["priority"] = 5,
 },
 ["main"] = {
 ["position"] = {
-["y"] = 648,
+["y"] = 676,
+["x"] = -998,
 },
-},
-["presence"] = {
-["showText"] = true,
 },
 ["raid"] = {
 ["showText"] = true,
+["position"] = {
+["x"] = -24,
+},
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
+["presence"] = {
+["showText"] = true,
+["position"] = {
+["x"] = -24,
+},
+},
 ["targeted"] = {
 ["showText"] = true,
+["position"] = {
+["x"] = -24,
 },
 },
+["pet"] = {
+["position"] = {
+["x"] = -24,
+},
+},
+["custom"] = {
+["position"] = {
+["x"] = -24,
+},
+},
+},
+["readyCheckOnlyOverrides"] = {
+},
+["dbVersion"] = 36,
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -96,19 +140,7 @@ BuffRemindersDB = {
 ["hideInPvPMatch"] = true,
 },
 },
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
-},
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
-},
+["buffTrackingMode"] = "my_buffs",
 },
 },
 }

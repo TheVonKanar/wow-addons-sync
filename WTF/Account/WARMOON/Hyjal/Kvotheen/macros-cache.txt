@@ -47,6 +47,11 @@ VER 3 0100000000000072 " " "134400"
 /cast Lava Lash
 /cast Surging Totem
 END
+VER 3 0100000000000074 "++" "134400"
+#showtooltip
+/cast Doom Winds
+/use 14
+END
 VER 3 0100000000000073 "+pot" "134400"
 #showtooltip
 /cast Bloodlust

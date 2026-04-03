@@ -55,6 +55,23 @@ local function getTimelineBarColor(rec)
 	if indicatorR then
 		return indicatorR, indicatorG, indicatorB, indicatorA
 	end
+
+	-- Fallback: use the event's own color (set via C_EncounterEvents.SetEventColor
+	-- before combat, or Blizzard's default). During encounters these may be
+	-- secret-wrapped values, but WoW widget functions handle secrets natively.
+	local color = eventInfo.color
+	if color then
+		if type(color.GetRGBA) == "function" then
+			local r, g, b, a = color:GetRGBA()
+			if r then return r, g, b, a end
+		elseif type(color.GetRGB) == "function" then
+			local r, g, b = color:GetRGB()
+			if r then return r, g, b, 1 end
+		elseif color.r then
+			return color.r, color.g, color.b, color.a or 1
+		end
+	end
+
 	return nil
 end
 

@@ -2,6 +2,7 @@
 LoggerHeadDB = {
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -67,6 +68,9 @@ LoggerHeadDB = {
 ["Twilight Crypts"] = {
 [208] = false,
 },
+["Parhelion Plaza"] = {
+[208] = true,
+},
 ["Collegiate Calamity"] = {
 [208] = false,
 },
@@ -87,20 +91,24 @@ LoggerHeadDB = {
 },
 },
 ["raid"] = {
-["Icecrown Citadel"] = {
-[3] = false,
-},
 ["Vault of the Incarnates"] = {
 [16] = false,
-},
-["The Voidspire"] = {
-[17] = true,
-[14] = true,
 },
 ["The Dreamrift"] = {
 [14] = true,
 [17] = true,
 [15] = true,
+},
+["Icecrown Citadel"] = {
+[3] = false,
+},
+["The Voidspire"] = {
+[14] = true,
+[17] = true,
+[15] = true,
+},
+["Firelands"] = {
+[24] = true,
 },
 },
 },

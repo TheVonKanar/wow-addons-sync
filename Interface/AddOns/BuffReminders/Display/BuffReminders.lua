@@ -7,7 +7,7 @@ local addonName, BR = ...
 ---@class DefaultSettings
 ---@field iconSize number
 ---@field iconWidth? number
----@field textSize? number
+---@field textSize number
 ---@field textOffsetX? number
 ---@field textOffsetY? number
 ---@field iconAlpha number
@@ -18,6 +18,7 @@ local addonName, BR = ...
 ---@field borderSize number
 ---@field growDirection string
 ---@field showExpirationGlow boolean
+---@field showMissingGlow boolean
 ---@field expirationThreshold number
 ---@field glowType number
 ---@field glowColor? number[]
@@ -31,8 +32,24 @@ local addonName, BR = ...
 ---@field glowBorderFrequency? number
 ---@field glowProcDuration? number
 ---@field glowProcStartAnim? boolean
+---@field glowProcUseCustomColor? boolean
 ---@field glowXOffset? number
 ---@field glowYOffset? number
+---@field missingGlowType? number
+---@field missingGlowColor? number[]
+---@field missingGlowSize? number
+---@field missingGlowPixelLines? number
+---@field missingGlowPixelFrequency? number
+---@field missingGlowPixelLength? number
+---@field missingGlowAutocastParticles? number
+---@field missingGlowAutocastFrequency? number
+---@field missingGlowAutocastScale? number
+---@field missingGlowBorderFrequency? number
+---@field missingGlowProcDuration? number
+---@field missingGlowProcStartAnim? boolean
+---@field missingGlowProcUseCustomColor? boolean
+---@field missingGlowXOffset? number
+---@field missingGlowYOffset? number
 ---@field fontFace? string
 ---@field showConsumablesWithoutItems? boolean
 ---@field delveFoodOnly? boolean
@@ -62,6 +79,7 @@ local addonName, BR = ...
 ---@field iconZoom? number
 ---@field borderSize? number
 ---@field showExpirationGlow? boolean
+---@field showMissingGlow? boolean
 ---@field expirationThreshold? number
 ---@field showBuffReminder? boolean
 ---@field buffTextSize? number
@@ -69,6 +87,37 @@ local addonName, BR = ...
 ---@field buffTextOffsetY? number
 ---@field showText? boolean
 ---@field useCustomAppearance? boolean
+---@field useCustomGlow? boolean
+---@field glowType? number
+---@field glowColor? number[]
+---@field glowSize? number
+---@field glowPixelLines? number
+---@field glowPixelFrequency? number
+---@field glowPixelLength? number
+---@field glowAutocastParticles? number
+---@field glowAutocastFrequency? number
+---@field glowAutocastScale? number
+---@field glowBorderFrequency? number
+---@field glowProcDuration? number
+---@field glowProcStartAnim? boolean
+---@field glowProcUseCustomColor? boolean
+---@field glowXOffset? number
+---@field glowYOffset? number
+---@field missingGlowType? number
+---@field missingGlowColor? number[]
+---@field missingGlowSize? number
+---@field missingGlowPixelLines? number
+---@field missingGlowPixelFrequency? number
+---@field missingGlowPixelLength? number
+---@field missingGlowAutocastParticles? number
+---@field missingGlowAutocastFrequency? number
+---@field missingGlowAutocastScale? number
+---@field missingGlowBorderFrequency? number
+---@field missingGlowProcDuration? number
+---@field missingGlowProcStartAnim? boolean
+---@field missingGlowProcUseCustomColor? boolean
+---@field missingGlowXOffset? number
+---@field missingGlowYOffset? number
 ---@field split? boolean
 ---@field clickable? boolean
 ---@field clickableHighlight? boolean
@@ -93,6 +142,11 @@ local addonName, BR = ...
 ---@field category CategoryName
 
 ---@alias SplitCategories table<CategoryName, boolean>
+
+---@class DetachedIconEntry
+---@field position {x: number, y: number}
+
+---@alias DetachedIcons table<string, DetachedIconEntry>
 
 ---@class BuffFrame: Button
 ---@field GetFrameLevel fun(self: BuffFrame): number
@@ -128,8 +182,12 @@ local addonName, BR = ...
 
 -- Lua stdlib locals (avoid repeated global lookups in hot paths)
 local floor, max, min = math.floor, math.max, math.min
+local format = string.format
 local random = math.random
 local tinsert, tremove, tsort, tconcat = table.insert, table.remove, table.sort, table.concat
+
+-- Localization
+local L = BR.L
 
 -- Shared constants (from Core.lua)
 local DEFAULT_BORDER_SIZE = BR.DEFAULT_BORDER_SIZE
@@ -264,7 +322,6 @@ local defaults = {
     hideInCombat = false,
     hideExpiringInCombat = true,
     buffTrackingMode = "all",
-    hidePetWhileMounted = true,
     hideAllInVehicle = false,
     hideWhileMounted = false,
     hideInLegacyInstances = true,
@@ -272,6 +329,18 @@ local defaults = {
     petPassiveOnlyInCombat = false,
     optionsPanelScale = 1.2, -- base scale (displayed as 100%)
     showLoginMessages = true,
+
+    -- DK runeforge preferences: [specId] = { mainhand, dw_mainhand, dw_offhand }
+    -- No runes selected = no reminder for that spec (implicit disable)
+    dkRunePreferences = {
+        [250] = { mainhand = { [6241] = true } }, -- Blood: Sanguination
+        [251] = {
+            mainhand = { [3368] = true }, -- 2H: Fallen Crusader
+            dw_mainhand = { [3370] = true }, -- DW MH: Razorice
+            dw_offhand = { [3368] = true }, -- DW OH: Fallen Crusader
+        },
+        [252] = { mainhand = { [6245] = true } }, -- Unholy: Apocalypse
+    },
 
     minimap = {
         hide = true,
@@ -283,7 +352,7 @@ local defaults = {
         -- Appearance
         iconSize = 64,
         -- iconWidth: nil = same as iconSize (square). Set explicitly for non-square icons.
-        -- textSize: nil = auto (derived from iconSize * 0.32). Only set when user explicitly overrides.
+        textSize = 20,
         iconAlpha = 1,
         textAlpha = 1,
         textColor = { 1, 1, 1 },
@@ -293,8 +362,9 @@ local defaults = {
         growDirection = "CENTER", -- "LEFT", "CENTER", "RIGHT", "UP", "DOWN"
         -- Behavior (glow settings)
         showExpirationGlow = true,
+        showMissingGlow = true,
         expirationThreshold = 15, -- minutes
-        glowType = 1, -- BR.Glow.Type: Pixel=1, AutoCast=2, Border=3, Proc=4
+        glowType = 2, -- BR.Glow.Type: Pixel=1, AutoCast=2, Border=3, Proc=4 (expiring default)
         glowSize = 2,
         showConsumablesWithoutItems = false,
         delveFoodOnly = true,
@@ -409,11 +479,11 @@ local defaults = {
     ---@type AllCategorySettings
     categorySettings = { -- Per-category settings
         main = {
-            position = { point = "CENTER", x = 0, y = 0 },
+            position = { point = "CENTER", x = 0, y = 200 },
             -- main frame always uses defaults for appearance/behavior
         },
         raid = {
-            position = { point = "CENTER", x = 0, y = 60 },
+            position = { point = "CENTER", x = 0, y = 260 },
             useCustomAppearance = false,
             showBuffReminder = true,
             split = false,
@@ -422,7 +492,7 @@ local defaults = {
             priority = 1,
         },
         presence = {
-            position = { point = "CENTER", x = 0, y = 20 },
+            position = { point = "CENTER", x = 0, y = 220 },
             useCustomAppearance = false,
             split = false,
             clickable = true,
@@ -430,7 +500,7 @@ local defaults = {
             priority = 2,
         },
         targeted = {
-            position = { point = "CENTER", x = 0, y = -20 },
+            position = { point = "CENTER", x = 0, y = 180 },
             useCustomAppearance = false,
             split = false,
             clickable = false,
@@ -438,7 +508,7 @@ local defaults = {
             priority = 3,
         },
         self = {
-            position = { point = "CENTER", x = 0, y = -60 },
+            position = { point = "CENTER", x = 0, y = 140 },
             useCustomAppearance = false,
             split = false,
             clickable = true,
@@ -446,7 +516,7 @@ local defaults = {
             priority = 4,
         },
         pet = {
-            position = { point = "CENTER", x = 0, y = -100 },
+            position = { point = "CENTER", x = 0, y = 100 },
             useCustomAppearance = false,
             split = false,
             clickable = true,
@@ -454,7 +524,7 @@ local defaults = {
             priority = 5,
         },
         consumable = {
-            position = { point = "CENTER", x = 0, y = -140 },
+            position = { point = "CENTER", x = 0, y = 60 },
             useCustomAppearance = false,
             split = false,
             clickable = true,
@@ -463,7 +533,7 @@ local defaults = {
             priority = 6,
         },
         custom = {
-            position = { point = "CENTER", x = 0, y = -180 },
+            position = { point = "CENTER", x = 0, y = 20 },
             useCustomAppearance = false,
             split = false,
             clickable = false,
@@ -474,6 +544,7 @@ local defaults = {
 }
 
 -- Constants
+local CODE_DEFAULTS = defaults.defaults
 local OVERLAY_TEXT_SCALE = 0.6 -- scale for "NO X" warning text
 local BUFF_TEXT_BASE_Y = -6 -- base Y gap between icon bottom and "BUFF!" text
 
@@ -483,8 +554,11 @@ local buffFrames = {}
 local updateTicker
 local readyCheckTimer = nil
 local instanceEntryTimer = nil
+local delveEntryTimer = nil
 local SOULWELL_SPELL_IDS = { [29893] = true, [6201] = true } -- Create Soulwell, Create Healthstone
 local ClearInstanceEntryState -- forward declaration
+local ClearDelveEntryState -- forward declaration
+local HideDismissFrames -- forward declaration
 local testMode = false
 local eventFrame -- forward declaration; created later in file, referenced by StartUpdates
 
@@ -512,9 +586,12 @@ end
 local inCombat = false
 local inEncounter = false
 local isResting = false
+local petDismountSuppressed = false -- Suppress pet eval briefly after dismount (pet respawn delay)
+local wasMounted = IsMounted()
 
 -- Category frame system
 local categoryFrames = {}
+local detachedFrames = {} -- Per-icon detached container frames (shown when an icon is detached)
 local CATEGORIES = { "raid", "presence", "targeted", "self", "pet", "consumable", "custom" }
 
 -- Track previously visible frame keys for selective hiding (Phase 3 optimization)
@@ -525,13 +602,13 @@ local previouslyVisibleKeys = {} ---@type table<string, boolean>
 local lastMainSignature = ""
 local lastSplitSignatures = {} ---@type table<string, string>
 local CATEGORY_LABELS = {
-    raid = "Raid",
-    presence = "Presence",
-    targeted = "Targeted",
-    self = "Self",
-    pet = "Pet",
-    consumable = "Consumable",
-    custom = "Custom",
+    raid = L["Category.Raid"],
+    presence = L["Category.Presence"],
+    targeted = L["Category.Targeted"],
+    self = L["Category.Self"],
+    pet = L["Category.Pet"],
+    consumable = L["Category.Consumable"],
+    custom = L["Category.Custom"],
 }
 
 -- Export for Options.lua and split modules
@@ -561,6 +638,27 @@ local function IsCategorySplit(category)
     return db.splitCategories and db.splitCategories[category] == true
 end
 
+---Check if an individual icon is detached from its container
+---@param key string Buff key
+---@return boolean
+local function IsIconDetached(key)
+    local db = BR.profile
+    return db.detachedIcons ~= nil and db.detachedIcons[key] ~= nil
+end
+
+local DETACHED_DEFAULT_POS = { x = 0, y = 0 }
+
+---Get the saved position for a detached icon
+---@param key string Buff key
+---@return table position {x, y}
+local function GetDetachedPosition(key)
+    local db = BR.profile
+    if db.detachedIcons and db.detachedIcons[key] then
+        return db.detachedIcons[key].position or DETACHED_DEFAULT_POS
+    end
+    return DETACHED_DEFAULT_POS
+end
+
 ---Get settings for a category with inheritance from defaults
 ---Uses BR.Config.GetCategorySetting for inherited values when applicable
 ---@param category string
@@ -576,7 +674,7 @@ local function GetCategorySettings(category)
             position = catSettings and catSettings.position or { point = "CENTER", x = 0, y = 0 },
             iconSize = globalDefaults.iconSize or 64,
             iconWidth = globalDefaults.iconWidth,
-            textSize = globalDefaults.textSize, -- nil = auto (derived from iconSize)
+            textSize = globalDefaults.textSize or CODE_DEFAULTS.textSize,
             textOffsetX = globalDefaults.textOffsetX or 0,
             textOffsetY = globalDefaults.textOffsetY or 0,
             iconAlpha = globalDefaults.iconAlpha or 1,
@@ -609,7 +707,7 @@ local function GetCategorySettings(category)
         -- Values are snapshotted from current defaults when useCustomAppearance is first enabled.
         result.iconSize = (catSettings and catSettings.iconSize) or 64
         result.iconWidth = catSettings and catSettings.iconWidth
-        result.textSize = (catSettings and catSettings.textSize) -- nil = auto
+        result.textSize = (catSettings and catSettings.textSize) or CODE_DEFAULTS.textSize
         result.textOffsetX = (catSettings and catSettings.textOffsetX) or 0
         result.textOffsetY = (catSettings and catSettings.textOffsetY) or 0
         result.iconAlpha = (catSettings and catSettings.iconAlpha) or 1
@@ -624,7 +722,7 @@ local function GetCategorySettings(category)
     else
         result.iconSize = globalDefaults.iconSize or 64
         result.iconWidth = globalDefaults.iconWidth
-        result.textSize = globalDefaults.textSize -- nil = auto
+        result.textSize = globalDefaults.textSize or CODE_DEFAULTS.textSize
         result.textOffsetX = globalDefaults.textOffsetX or 0
         result.textOffsetY = globalDefaults.textOffsetY or 0
         result.iconAlpha = globalDefaults.iconAlpha or 1
@@ -672,17 +770,12 @@ local function ShouldShowText(category)
     return not cs or cs.showText ~= false
 end
 
--- Fallback text scale ratio (used when textSize is not set)
-local TEXT_SCALE_RATIO = 0.32
-
----Calculate font size, preferring explicit textSize over iconSize-derived
+---Calculate font size from explicit textSize
 ---@param scale? number
----@param textSize? number
----@param iconSize? number
+---@param textSize number
 ---@return number
-local function GetFontSize(scale, textSize, iconSize)
-    local baseSize = textSize or floor((iconSize or 64) * TEXT_SCALE_RATIO)
-    return max(6, floor(baseSize * (scale or 1)))
+local function GetFontSize(scale, textSize)
+    return max(6, floor(textSize * (scale or 1)))
 end
 
 ---Get effective icon width (falls back to iconSize for square icons)
@@ -700,13 +793,28 @@ end
 local function GetFrameFontSize(frame, scale)
     local effectiveCat = GetEffectiveCategory(frame)
     local catSettings = GetCategorySettings(effectiveCat)
-    return GetFontSize(scale, catSettings.textSize, catSettings.iconSize)
+    return GetFontSize(scale, catSettings.textSize)
 end
 
 -- Use functions from State.lua
 local FormatRemainingTime = BR.StateHelpers.FormatRemainingTime
+local FormatEatingTime = BR.StateHelpers.FormatEatingTime
 
 local GetPlayerRole = BR.BuffState.GetPlayerRole
+
+-- Spell texture cache (textures are immutable per session, mirrors spellNameCache in Core.lua)
+local spellTextureCache = {}
+
+-- Reusable single-element buffer to avoid { spellID } allocations in hot loops.
+-- SAFETY: callers must consume the result immediately — the buffer is overwritten on next call.
+local singleSpellBuf = {}
+local function AsSpellList(val)
+    if type(val) == "table" then
+        return val
+    end
+    singleSpellBuf[1] = val
+    return singleSpellBuf
+end
 
 ---Get spell texture (handles table of spellIDs and role-based icons)
 ---@param spellIDs SpellID
@@ -729,10 +837,16 @@ local function GetBuffTexture(spellIDs, iconByRole)
     if IconOverrides[id] then
         return IconOverrides[id]
     end
+    -- Return cached texture or fetch and cache
+    local cached = spellTextureCache[id]
+    if cached ~= nil then
+        return cached or nil
+    end
     local texture
     pcall(function()
         texture = C_Spell.GetSpellTexture(id)
     end)
+    spellTextureCache[id] = texture or false
     return texture
 end
 
@@ -742,7 +856,7 @@ local glowSpellToBuff = {}
 
 --- Register a buff's spellID(s) in the glow fallback lookup table
 local function RegisterGlowBuff(buff, catName)
-    local ids = type(buff.spellID) == "table" and buff.spellID or { buff.spellID }
+    local ids = AsSpellList(buff.spellID)
     for _, id in ipairs(ids) do
         if id and id ~= 0 then
             glowSpellToBuff[id] = { buff = buff, category = catName }
@@ -802,6 +916,7 @@ local ResetLayoutSignatures
 -- Reusable tables for UpdateDisplay (wiped each cycle to avoid per-call allocation)
 local reusableVisibleKeys = {} ---@type table<string, boolean>
 local reusableMainBuffs = {}
+local reusableDetachedSink = {} -- Throw-away target for detached consumable post-processing
 local sortComparator = function(a, b)
     return a.sortOrder < b.sortOrder
 end
@@ -810,14 +925,17 @@ end
 local SetExpirationGlow = BR.Glow.SetExpiration
 
 -- Per-render-cycle cache for glow settings (avoids repeated DB reads)
-local glowSettingsCache = {} ---@type table<string, table>
+local expiringGlowCache = {} ---@type table<string, table>
+local missingGlowCache = {} ---@type table<string, table>
 
----Get cached glow settings for a category (populated once per render cycle)
+---Get cached glow settings for a category and glow kind (populated once per render cycle)
 ---Glow style reads from per-category overrides when useCustomGlow is enabled, otherwise from defaults.
 ---@param category string
+---@param kind "expiring"|"missing" Which glow style to resolve
 ---@return table
-local function GetCachedGlowSettings(category)
-    local cached = glowSettingsCache[category]
+local function GetCachedGlowSettings(category, kind)
+    local cache = kind == "missing" and missingGlowCache or expiringGlowCache
+    local cached = cache[category]
     if cached then
         return cached
     end
@@ -827,21 +945,39 @@ local function GetCachedGlowSettings(category)
     local useCustom = catSettings and catSettings.useCustomGlow
     local source = (useCustom and catSettings) or (db and db.defaults) or {}
 
-    local typeIndex = source.glowType or BR.Glow.Type.Pixel
-    local color = source.glowColor
-    if typeIndex == BR.Glow.Type.Proc and not source.glowProcUseCustomColor then
-        color = nil
+    local typeIndex, color, size, xOff, yOff, params
+    if kind == "missing" then
+        typeIndex = source.missingGlowType or BR.Glow.Type.Pixel
+        color = source.missingGlowColor
+        if typeIndex == BR.Glow.Type.Proc and not source.missingGlowProcUseCustomColor then
+            color = nil
+        end
+        size = source.missingGlowSize or 2
+        params = BR.Glow.BuildAdvancedParams(source, typeIndex, "missingGlow")
+        xOff = source.missingGlowXOffset or 0
+        yOff = source.missingGlowYOffset or 0
+    else
+        typeIndex = source.glowType or BR.Glow.Type.AutoCast
+        color = source.glowColor
+        if typeIndex == BR.Glow.Type.Proc and not source.glowProcUseCustomColor then
+            color = nil
+        end
+        size = source.glowSize or 2
+        params = BR.Glow.BuildAdvancedParams(source, typeIndex)
+        xOff = source.glowXOffset or 0
+        yOff = source.glowYOffset or 0
     end
+
     cached = {
         typeIndex = typeIndex,
         color = color,
-        size = source.glowSize or 2,
+        size = size,
         borderSize = BR.Config.GetCategorySetting(category, "borderSize") or DEFAULT_BORDER_SIZE,
-        params = BR.Glow.BuildAdvancedParams(source, typeIndex),
-        glowXOffset = source.glowXOffset or 0,
-        glowYOffset = source.glowYOffset or 0,
+        params = params,
+        glowXOffset = xOff,
+        glowYOffset = yOff,
     }
-    glowSettingsCache[category] = cached
+    cache[category] = cached
     return cached
 end
 
@@ -942,6 +1078,17 @@ local DIRECTION_LAYOUT = {
     DOWN = { anchor = "TOP", xMult = 0, yMult = -1 },
 }
 
+-- Create a detached container frame for an individual buff icon
+local function CreateDetachedFrame(key)
+    local pos = GetDetachedPosition(key)
+    local frame = CreateFrame("Frame", "BuffReminders_Detached_" .. key, UIParent)
+    frame:SetSize(64, 64) -- sized dynamically by PositionDetachedIcon
+    frame:SetPoint("CENTER", UIParent, "CENTER", pos.x or 0, pos.y or 0)
+    frame:EnableMouse(false)
+    frame:Hide()
+    return frame
+end
+
 -- Create a category frame for grouped display mode
 local function CreateCategoryFrame(category)
     local db = BR.profile
@@ -1037,7 +1184,17 @@ local BUFF_KEY_TO_CATEGORY = BR.BUFF_KEY_TO_CATEGORY
 
 -- Create icon frame for a buff
 local function CreateBuffFrame(buff, category)
-    local parent = (category and IsCategorySplit(category) and categoryFrames[category]) or mainFrame
+    local parent
+    if IsIconDetached(buff.key) then
+        if not detachedFrames[buff.key] then
+            detachedFrames[buff.key] = CreateDetachedFrame(buff.key)
+        end
+        parent = detachedFrames[buff.key]
+    elseif category and IsCategorySplit(category) and categoryFrames[category] then
+        parent = categoryFrames[category]
+    else
+        parent = mainFrame
+    end
     local frame = CreateFrame("Frame", "BuffReminders_" .. buff.key, parent)
     frame.key = buff.key
     frame.spellIDs = buff.spellID
@@ -1080,7 +1237,7 @@ local function CreateBuffFrame(buff, category)
     frame.count = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalLarge")
     frame.count:SetPoint("CENTER", catSettings.textOffsetX or 0, catSettings.textOffsetY or 0)
     frame.count:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
-    frame.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize, catSettings.iconSize), "OUTLINE")
+    frame.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize), "OUTLINE")
 
     -- Stack count (bottom-right, WoW-standard item count style) for consumables
     frame.stackCount = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
@@ -1104,11 +1261,11 @@ local function CreateBuffFrame(buff, category)
         )
         frame.buffText:SetFont(
             fontPath,
-            (raidCs and raidCs.buffTextSize) or GetFontSize(0.8, catSettings.textSize, catSettings.iconSize),
+            (raidCs and raidCs.buffTextSize) or GetFontSize(0.8, catSettings.textSize),
             "OUTLINE"
         )
         frame.buffText:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
-        frame.buffText:SetText("BUFF!")
+        frame.buffText:SetText(L["Overlay.Buff"])
         if raidCs and raidCs.showBuffReminder == false then
             frame.buffText:Hide()
         end
@@ -1170,7 +1327,7 @@ local function GetOrCreateExtraFrame(frame, index)
     extra.count = extra:CreateFontString(nil, "OVERLAY", "NumberFontNormalLarge")
     extra.count:SetPoint("CENTER", 0, 0)
     extra.count:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
-    extra.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize, catSettings.iconSize), "OUTLINE")
+    extra.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize), "OUTLINE")
     extra.count:Hide()
 
     extra:SetAlpha(catSettings.iconAlpha or 1)
@@ -1446,6 +1603,60 @@ local function PositionSplitCategories(visibleByCategory)
     end
 end
 
+-- Position a detached icon in its own container frame
+local function PositionDetachedIcon(key, frame)
+    local container = detachedFrames[key]
+    if not container then
+        return
+    end
+
+    local effectiveCat = GetEffectiveCategory(frame)
+    local catSettings = GetCategorySettings(effectiveCat)
+    local iconSize = catSettings.iconSize or 64
+    local iconWidth = GetEffectiveWidth(catSettings.iconWidth, iconSize)
+
+    -- Count extra frames (expanded consumables)
+    local totalFrames = 1
+    if frame.extraFrames then
+        for _, extra in ipairs(frame.extraFrames) do
+            if extra:IsShown() then
+                totalFrames = totalFrames + 1
+            end
+        end
+    end
+
+    -- Size the container to fit all visible frames (stacked horizontally)
+    local spacing = totalFrames > 1 and floor(iconWidth * (catSettings.spacing or 0.2)) or 0
+    local totalWidth = totalFrames * iconWidth + (totalFrames - 1) * spacing
+    container:SetSize(totalWidth, iconSize)
+
+    -- Position at saved coordinates
+    local pos = GetDetachedPosition(key)
+    container:ClearAllPoints()
+    container:SetPoint("CENTER", UIParent, "CENTER", pos.x or 0, pos.y or 0)
+
+    -- Anchor the icon inside the container
+    frame:SetSize(iconWidth, iconSize)
+    frame:ClearAllPoints()
+    if totalFrames > 1 then
+        frame:SetPoint("LEFT", container, "LEFT", 0, 0)
+        -- Position extra frames after the main icon
+        local offset = iconWidth + spacing
+        for _, extra in ipairs(frame.extraFrames) do
+            if extra:IsShown() then
+                extra:SetSize(iconWidth, iconSize)
+                extra:ClearAllPoints()
+                extra:SetPoint("LEFT", container, "LEFT", offset, 0)
+                offset = offset + iconWidth + spacing
+            end
+        end
+    else
+        frame:SetPoint("CENTER", container, "CENTER", 0, 0)
+    end
+
+    container:Show()
+end
+
 --- Generate fake state entries for test mode, populating BR.BuffState.entries
 --- and BR.BuffState.visibleByCategory so UpdateDisplay can render via the normal pipeline.
 local function GenerateTestEntries()
@@ -1468,7 +1679,8 @@ local function GenerateTestEntries()
 
     for _, category in ipairs(CATEGORIES) do
         -- Per-category glow settings (same pattern as State.lua:GetCategoryGlowSettings)
-        local glowEnabled = BR.Config.GetCategorySetting(category, "showExpirationGlow") ~= false
+        local exGlowEnabled = BR.Config.GetCategorySetting(category, "showExpirationGlow") ~= false
+        local missGlowEnabled = BR.Config.GetCategorySetting(category, "showMissingGlow") ~= false
         local threshold = BR.Config.GetCategorySetting(category, "expirationThreshold") or 15
         local expiringShown = false
 
@@ -1497,20 +1709,20 @@ local function GenerateTestEntries()
                     if threshold > 0 and not expiringShown then
                         entry.displayType = "expiring"
                         entry.countText = FormatRemainingTime(testModeData.fakeRemaining)
-                        entry.shouldGlow = glowEnabled
+                        entry.shouldGlow = exGlowEnabled
                         expiringShown = true
                     else
                         entry.displayType = "count"
                         local fakeBuffed = testModeData.fakeTotal - testModeData.fakeMissing[raidIndex]
                         entry.countText = fakeBuffed .. "/" .. testModeData.fakeTotal
-                        entry.shouldGlow = glowEnabled
+                        entry.shouldGlow = missGlowEnabled
                     end
                     raidIndex = raidIndex + 1
                 elseif category == "pet" then
                     entry.displayType = "text"
                     entry.overlayText = buff.overlayText
                     entry.iconByRole = buff.iconByRole
-                    entry.shouldGlow = glowEnabled
+                    entry.shouldGlow = missGlowEnabled
                     if buff.groupId == "pets" and BR.PetHelpers then
                         local actions = BR.PetHelpers.GetPetActions(playerClass)
                         if actions and #actions > 0 then
@@ -1522,13 +1734,13 @@ local function GenerateTestEntries()
                     entry.displayType = "text"
                     entry.overlayText = buff.overlayText
                     entry.iconByRole = buff.iconByRole
-                    entry.shouldGlow = glowEnabled
+                    entry.shouldGlow = missGlowEnabled
 
                     -- Show first buff as expiring to preview expiration countdown
                     if threshold > 0 and not buff.noExpirationGlow and not expiringShown then
                         entry.displayType = "expiring"
                         entry.countText = FormatRemainingTime(testModeData.fakeRemaining)
-                        entry.shouldGlow = glowEnabled
+                        entry.shouldGlow = exGlowEnabled
                         expiringShown = true
                     end
                 end
@@ -1618,6 +1830,9 @@ local function HideAllDisplayFrames()
             categoryFrames[category]:Hide()
         end
     end
+    for _, container in pairs(detachedFrames) do
+        container:Hide()
+    end
     wipe(previouslyVisibleKeys)
     -- Reset layout signatures so next PositionMainContainer/PositionSplitCategory always
     -- runs fresh. Without this, if the signature matches a previous value, positioning
@@ -1635,6 +1850,8 @@ local function HideAllDisplayFrames()
     end
     -- Hide secure click overlays and action buttons (sub-icons)
     BR.SecureButtons.HideAllSecureFrames()
+    -- Hide dismiss button
+    HideDismissFrames()
 end
 
 -- Update the fallback display (shows tracked buffs via action bar glow during PvP/Arena)
@@ -1870,7 +2087,7 @@ local function RenderVisibleEntry(frame, entry)
             local remaining = entry.eatingExpirationTime - GetTime()
             if remaining > 0 then
                 frame.count:SetFont(fontPath, GetFrameFontSize(frame), "OUTLINE")
-                frame.count:SetText(FormatRemainingTime(remaining))
+                frame.count:SetText(FormatEatingTime(remaining))
                 frame.count:Show()
             else
                 frame.count:Hide()
@@ -1881,7 +2098,7 @@ local function RenderVisibleEntry(frame, entry)
                 frame:SetScript("OnUpdate", function()
                     local rem = expTime - GetTime()
                     if rem > 0 then
-                        frame.count:SetText(FormatRemainingTime(rem))
+                        frame.count:SetText(FormatEatingTime(rem))
                     else
                         frame.count:Hide()
                         frame:SetScript("OnUpdate", nil)
@@ -1907,7 +2124,8 @@ local function RenderVisibleEntry(frame, entry)
     end
 
     -- Get cached glow settings for this entry's category (avoids repeated DB reads)
-    local cachedGlow = entry.category and GetCachedGlowSettings(entry.category) or nil
+    local glowKind = entry.displayType == "expiring" and "expiring" or "missing"
+    local cachedGlow = entry.category and GetCachedGlowSettings(entry.category, glowKind) or nil
 
     -- Apply dynamic icon overrides (e.g. rogue poison expiring soonest, role-based shields)
     if entry.dynamicIcon then
@@ -2065,7 +2283,12 @@ local function ApplyConsumableDisplayMode(frame, entry, frameList, parentFrame)
         -- Not sub_icons: hide any leftover sub-icon buttons
         BR.SecureButtons.UpdateConsumableButtons(frame, nil)
         if displayMode == "expanded" and items and #items > 1 then
-            local cachedGlow = entry.category and GetCachedGlowSettings(entry.category) or nil
+            local cachedGlow = entry.category
+                    and GetCachedGlowSettings(
+                        entry.category,
+                        entry.displayType == "expiring" and "expiring" or "missing"
+                    )
+                or nil
             local expandedSize = frame:GetWidth()
             local cFontSize = BR.SecureButtons.ComputeConsumableFontSize(expandedSize)
             for i = 2, #items do
@@ -2100,8 +2323,9 @@ end
 ---@param frame BuffFrame
 ---@param petAction PetAction?
 local function UpdatePetLabels(frame, petAction)
-    local showLabels = (BR.profile.defaults or {}).petLabels ~= false
-    local petClassVis = (BR.profile.defaults or {}).petLabelClasses
+    local defs = BR.profile.defaults or {}
+    local showLabels = defs.petLabels ~= false
+    local petClassVis = defs.petLabelClasses
     local classLabelsOff = playerClass and petClassVis and petClassVis[playerClass] == false
     if not petAction or not showLabels or classLabelsOff then
         if frame._br_pet_label_key then
@@ -2120,14 +2344,8 @@ local function UpdatePetLabels(frame, petAction)
     end
 
     -- Early out if nothing changed since last call
-    local scale = (BR.profile.defaults or {}).petLabelScale or 100
-    local cacheKey = petAction.key
-        .. ":"
-        .. (petAction.label or "")
-        .. ":"
-        .. (petAction.petFamily or "")
-        .. ":"
-        .. scale
+    local scale = defs.petLabelScale or 100
+    local cacheKey = format("%s:%s:%s:%d", petAction.key, petAction.label or "", petAction.petFamily or "", scale)
     if frame._br_pet_label_key == cacheKey then
         return
     end
@@ -2166,7 +2384,7 @@ local function UpdatePetLabels(frame, petAction)
         frame._br_pet_extra_text:SetFont(fontPath, familySize, "OUTLINE")
         frame._br_pet_extra_text:ClearAllPoints()
         frame._br_pet_extra_text:SetPoint("TOP", anchor, "BOTTOM", 0, -1)
-        frame._br_pet_extra_text:SetText("Spirit Beast")
+        frame._br_pet_extra_text:SetText(L["Pet.SpiritBeast"])
         frame._br_pet_extra_text:SetTextColor(1, 1, 1)
         frame._br_pet_extra_text:Show()
     else
@@ -2240,7 +2458,7 @@ local function ApplyPetDisplayMode(frame, entry, frameList)
     BR.SecureButtons.ReapplyPetSpecIconIfHovered(frame)
 
     -- Show extra frames for additional actions
-    local cachedGlow = entry.category and GetCachedGlowSettings(entry.category) or nil
+    local cachedGlow = entry.category and GetCachedGlowSettings(entry.category, "missing") or nil
     local extraIndex = 0
     for i, action in ipairs(entry.petActions) do
         local showAsExtra = (petMode == "expanded" and i >= 2)
@@ -2273,6 +2491,85 @@ end
 --     end
 -- end
 
+-- ============================================================================
+-- CONSUMABLE DISMISS BUTTON
+-- ============================================================================
+
+local GameTooltip = GameTooltip
+local dismissButton -- small X badge overlaid on the last consumable icon
+local reusableDismissFrameList = {} -- reused each cycle to avoid allocation in split mode
+
+local function GetOrCreateDismissButton()
+    if dismissButton then
+        return dismissButton
+    end
+    local btn = CreateFrame("Button", "BuffReminders_DismissConsumables", UIParent)
+    btn:SetSize(16, 16)
+    btn:EnableMouse(true)
+    btn:RegisterForClicks("LeftButtonUp")
+
+    local bg = btn:CreateTexture(nil, "BACKGROUND")
+    bg:SetPoint("TOPLEFT", 3, -3)
+    bg:SetPoint("BOTTOMRIGHT", -3, 3)
+    bg:SetColorTexture(0, 0, 0, 0.6)
+
+    local icon = btn:CreateTexture(nil, "OVERLAY")
+    icon:SetAllPoints()
+    icon:SetTexture([[Interface\RAIDFRAME\ReadyCheck-NotReady]])
+    icon:SetAlpha(0.8)
+
+    btn:SetScript("OnClick", function()
+        BR.BuffState.SetConsumablesDismissed(true)
+        UpdateDisplay()
+    end)
+    btn:SetScript("OnEnter", function(self)
+        icon:SetAlpha(1)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:AddLine(L["Display.DismissConsumables"], 0.8, 0.8, 0.8)
+        GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", function()
+        icon:SetAlpha(0.8)
+        GameTooltip:Hide()
+    end)
+    btn:SetFrameStrata("MEDIUM")
+    btn:Hide()
+    dismissButton = btn
+    return btn
+end
+
+--- Show the dismiss badge on the top-right corner of the last consumable frame.
+local function PositionDismissButton(frameList)
+    -- Find the last consumable frame in the list
+    local lastConsumableFrame = nil
+    for i = #frameList, 1, -1 do
+        local f = frameList[i]
+        if f.buffCategory == "consumable" then
+            lastConsumableFrame = f
+            break
+        end
+    end
+    if not lastConsumableFrame then
+        return
+    end
+
+    local btn = GetOrCreateDismissButton()
+    local iconSize = lastConsumableFrame:GetHeight()
+    local btnSize = max(floor(iconSize * 0.3), 12)
+    btn:SetSize(btnSize, btnSize)
+    btn:SetParent(lastConsumableFrame)
+    btn:SetFrameLevel(lastConsumableFrame:GetFrameLevel() + 10)
+    btn:ClearAllPoints()
+    btn:SetPoint("TOPRIGHT", lastConsumableFrame, "TOPRIGHT", 3, 3)
+    btn:Show()
+end
+
+HideDismissFrames = function()
+    if dismissButton then
+        dismissButton:Hide()
+    end
+end
+
 -- Update the display
 UpdateDisplay = function()
     if not mainFrame then
@@ -2280,7 +2577,8 @@ UpdateDisplay = function()
     end
 
     -- Clear per-cycle caches (before early exits — fallback paths also use these)
-    wipe(glowSettingsCache)
+    wipe(expiringGlowCache)
+    wipe(missingGlowCache)
     for key in pairs(BUFF_KEY_TO_CATEGORY) do
         local frame = buffFrames[key]
         if frame then
@@ -2365,12 +2663,21 @@ UpdateDisplay = function()
                     if frame then
                         local shown = RenderVisibleEntry(frame, entry)
                         if shown then
-                            frames[#frames + 1] = frame
+                            if IsIconDetached(entry.key) then
+                                PositionDetachedIcon(entry.key, frame)
+                            else
+                                frames[#frames + 1] = frame
+                            end
                             reusableVisibleKeys[entry.key] = true
                         end
                         -- Category-specific post-processing
                         if category == "consumable" then
-                            ApplyConsumableDisplayMode(frame, entry, frames, frame:GetParent())
+                            if IsIconDetached(entry.key) then
+                                wipe(reusableDetachedSink)
+                                ApplyConsumableDisplayMode(frame, entry, reusableDetachedSink, frame:GetParent())
+                            else
+                                ApplyConsumableDisplayMode(frame, entry, frames, frame:GetParent())
+                            end
                         elseif category == "pet" then
                             ApplyPetDisplayMode(frame, entry, frames)
                         end
@@ -2384,12 +2691,21 @@ UpdateDisplay = function()
                     if frame then
                         local shown = RenderVisibleEntry(frame, entry)
                         if shown then
-                            reusableMainBuffs[#reusableMainBuffs + 1] = frame
+                            if IsIconDetached(entry.key) then
+                                PositionDetachedIcon(entry.key, frame)
+                            else
+                                reusableMainBuffs[#reusableMainBuffs + 1] = frame
+                            end
                             reusableVisibleKeys[entry.key] = true
                         end
                         -- Category-specific post-processing
                         if category == "consumable" then
-                            ApplyConsumableDisplayMode(frame, entry, reusableMainBuffs, mainFrame)
+                            if IsIconDetached(entry.key) then
+                                wipe(reusableDetachedSink)
+                                ApplyConsumableDisplayMode(frame, entry, reusableDetachedSink, frame:GetParent())
+                            else
+                                ApplyConsumableDisplayMode(frame, entry, reusableMainBuffs, frame:GetParent())
+                            end
                         elseif category == "pet" then
                             ApplyPetDisplayMode(frame, entry, reusableMainBuffs)
                         end
@@ -2413,6 +2729,10 @@ UpdateDisplay = function()
                         UpdatePetLabels(extra, nil)
                     end
                 end
+                -- Hide detached container when its icon is no longer visible
+                if detachedFrames[key] then
+                    detachedFrames[key]:Hide()
+                end
             end
         end
     end
@@ -2422,11 +2742,38 @@ UpdateDisplay = function()
         previouslyVisibleKeys[key] = true
     end
 
+    -- Consumable dismiss button: show X badge on last visible consumable icon
+    local consumableEntries = not testMode and visibleByCategory["consumable"]
+    local hasConsumableFrames = consumableEntries and #consumableEntries > 0
+    local consumableSplit = IsCategorySplit("consumable")
+
     -- Position main container
     PositionMainContainer(reusableMainBuffs)
 
     -- Handle split category frames with no visible buffs
     PositionSplitCategories(visibleByCategory)
+
+    -- Show dismiss badge on the last visible consumable icon
+    if hasConsumableFrames then
+        local frameList
+        if consumableSplit then
+            wipe(reusableDismissFrameList)
+            for _, entry in ipairs(consumableEntries) do
+                local f = buffFrames[entry.key]
+                if f and f:IsShown() then
+                    reusableDismissFrameList[#reusableDismissFrameList + 1] = f
+                end
+            end
+            frameList = reusableDismissFrameList
+        else
+            frameList = reusableMainBuffs
+        end
+        PositionDismissButton(frameList)
+    else
+        if dismissButton then
+            dismissButton:Hide()
+        end
+    end
 
     if not anyVisible then
         HideAllDisplayFrames()
@@ -2516,9 +2863,17 @@ local function InitializeFrames()
         categoryFrames[category] = CreateCategoryFrame(category)
     end
 
+    -- Pre-create detached container frames for icons detached in saved variables
+    if db.detachedIcons then
+        for key in pairs(db.detachedIcons) do
+            detachedFrames[key] = CreateDetachedFrame(key)
+        end
+    end
+
     -- Export frame references for split modules (Movers, SecureButtons)
     BR.Display.mainFrame = mainFrame
     BR.Display.categoryFrames = categoryFrames
+    BR.Display.detachedFrames = detachedFrames
     BR.Display.frames = buffFrames
 
     -- Create mover frames (shown when unlocked for drag positioning)
@@ -2558,18 +2913,26 @@ local function CreateCustomBuffFrameRuntime(customBuff)
     ResetLayoutSignatures()
 end
 
--- Reparent all buff frames to appropriate parent based on split status
+-- Reparent all buff frames to appropriate parent based on split/detached status
 ReparentBuffFrames = function()
     for _, frame in pairs(buffFrames) do
+        local key = frame.key
         local category = frame.buffCategory
-        if category and IsCategorySplit(category) and categoryFrames[category] then
+        if IsIconDetached(key) then
+            -- Detached: parent to its own container frame
+            if not detachedFrames[key] then
+                detachedFrames[key] = CreateDetachedFrame(key)
+            end
+            frame:SetParent(detachedFrames[key])
+            frame:ClearAllPoints()
+        elseif category and IsCategorySplit(category) and categoryFrames[category] then
             -- This category is split - parent to its own frame
             frame:SetParent(categoryFrames[category])
-            frame:ClearAllPoints() -- Clear stale anchors after reparenting
+            frame:ClearAllPoints()
         else
             -- This category is in main frame
             frame:SetParent(mainFrame)
-            frame:ClearAllPoints() -- Clear stale anchors after reparenting
+            frame:ClearAllPoints()
         end
         if frame.extraFrames then
             for _, extra in ipairs(frame.extraFrames) do
@@ -2577,6 +2940,44 @@ ReparentBuffFrames = function()
             end
         end
     end
+end
+
+---Detach an individual icon from its container into its own frame
+---@param key string Buff key
+local function DetachIcon(key)
+    local db = BR.profile
+    if not db.detachedIcons then
+        db.detachedIcons = {}
+    end
+    -- Initialize with position snapped from the icon's current screen location
+    local frame = buffFrames[key]
+    local x, y = 0, 0
+    if frame and frame:IsShown() then
+        local cx, cy = frame:GetCenter()
+        local px, py = UIParent:GetCenter()
+        x = floor(cx - px + 0.5)
+        y = floor(cy - py + 0.5)
+    end
+    db.detachedIcons[key] = { position = { x = x, y = y } }
+    -- FramesReparent callback handles ResetLayoutSignatures + InvalidateSortedCategories
+    -- + ReparentBuffFrames + UpdateVisuals
+    BR.CallbackRegistry:TriggerEvent("FramesReparent")
+end
+
+---Reattach a detached icon back to its category/main container
+---@param key string Buff key
+local function ReattachIcon(key)
+    local db = BR.profile
+    if db.detachedIcons then
+        db.detachedIcons[key] = nil
+        if not next(db.detachedIcons) then
+            db.detachedIcons = nil
+        end
+    end
+    if detachedFrames[key] then
+        detachedFrames[key]:Hide()
+    end
+    BR.CallbackRegistry:TriggerEvent("FramesReparent")
 end
 
 ---Remove a custom buff frame (called at runtime when deleting buffs)
@@ -2616,6 +3017,14 @@ local function RemoveCustomBuffFrame(key)
         frame:Hide()
         frame:SetParent(nil)
         buffFrames[key] = nil
+    end
+    -- Clean up detached state
+    local db = BR.profile
+    if db.detachedIcons then
+        db.detachedIcons[key] = nil
+    end
+    if detachedFrames[key] then
+        detachedFrames[key]:Hide()
     end
     -- Remove from BUFF_TABLES.custom array
     for i = #CustomBuffs, 1, -1 do
@@ -2759,9 +3168,13 @@ end
 CallbackRegistry:RegisterCallback("VisualsRefresh", function()
     ResolveFontPath()
     ResetLayoutSignatures()
-    wipe(glowSettingsCache)
+    wipe(expiringGlowCache)
+    wipe(missingGlowCache)
     UpdateVisuals()
     for _, mover in pairs(BR.Movers.GetMoverFrames()) do
+        mover:UpdateSize()
+    end
+    for _, mover in pairs(BR.Movers.GetDetachedMoverFrames()) do
         mover:UpdateSize()
     end
 end)
@@ -2815,6 +3228,9 @@ BR.Helpers = {
     IsBuffEnabled = IsBuffEnabled,
     GetCategorySettings = GetCategorySettings,
     IsCategorySplit = IsCategorySplit,
+    IsIconDetached = IsIconDetached,
+    DetachIcon = DetachIcon,
+    ReattachIcon = ReattachIcon,
     GetBuffTexture = GetBuffTexture,
     DeepCopy = function(...)
         return BR.ImportExport.DeepCopy(...)
@@ -2845,6 +3261,9 @@ BR.Display.ToggleLock = ToggleLock
 BR.Display.UpdateVisuals = UpdateVisuals
 BR.Display.UpdateActionButtons = function(category)
     return BR.SecureButtons.UpdateActionButtons(category)
+end
+BR.Display.IsPetDismountSuppressed = function()
+    return petDismountSuppressed
 end
 BR.Display.IsTestMode = function()
     return testMode
@@ -2881,21 +3300,21 @@ local function SlashHandler(msg)
         BR.profile.locked = true
         BR.Movers.HideAll()
         BR.Components.RefreshAll()
-        print("|cff00ccffBuffReminders:|r Frames locked.")
+        print("|cff00ccffBuffReminders:|r " .. L["Display.FramesLocked"])
     elseif cmd == "unlock" then
         BR.profile.locked = false
         BR.Movers.UpdateAnchor()
         BR.Components.RefreshAll()
-        print("|cff00ccffBuffReminders:|r Frames unlocked.")
+        print("|cff00ccffBuffReminders:|r " .. L["Display.FramesUnlocked"])
     elseif cmd == "minimap" then
         BR.aceDB.global.minimap.hide = not BR.aceDB.global.minimap.hide
         if BR.MinimapButton then
             if BR.aceDB.global.minimap.hide then
                 BR.MinimapButton.Icon:Hide("BuffReminders")
-                print("|cff00ccffBuffReminders:|r Minimap icon hidden.")
+                print("|cff00ccffBuffReminders:|r " .. L["Display.MinimapHidden"])
             else
                 BR.MinimapButton.Icon:Show("BuffReminders")
-                print("|cff00ccffBuffReminders:|r Minimap icon shown.")
+                print("|cff00ccffBuffReminders:|r " .. L["Display.MinimapShown"])
             end
         end
         BR.Components.RefreshAll()
@@ -2942,6 +3361,14 @@ ClearInstanceEntryState = function()
     end
     BR.BuffState.SetInstanceEntryState(false)
     eventFrame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+end
+
+ClearDelveEntryState = function()
+    if delveEntryTimer then
+        delveEntryTimer:Cancel()
+        delveEntryTimer = nil
+    end
+    BR.BuffState.SetDelveEntryState(false)
 end
 
 eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
@@ -2999,8 +3426,10 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         -- Deep copy default values for missing keys (skips 'defaults' sub-table, served by metatable)
         local function DeepCopyDefault(source, target)
             for k, v in pairs(source) do
-                if k == "defaults" then
-                    -- Skip: served by metatable __index
+                if k == "minimap" then -- luacheck: ignore 542
+                    -- Skip: lives in AceDB global, not per-profile
+                elseif k == "defaults" then
+                    -- Skip value copy (served by metatable __index), but ensure the table exists
                     if target[k] == nil then
                         target[k] = {}
                     end
@@ -3027,7 +3456,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         -- ====================================================================
         -- Versioned migrations — each runs exactly once, tracked by dbVersion
         -- ====================================================================
-        local DB_VERSION = 32
+        local DB_VERSION = 36
 
         local migrations = {
             -- [1] Consolidate all pre-versioning migrations (v2.8 → v3.x)
@@ -3527,9 +3956,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end
             end,
 
-            -- [20] Clean up minimap from profile (now in AceDB global)
-            -- Note: DeepCopyDefault re-adds minimap from code defaults, so the
-            -- canonical cleanup is after DeepCopyDefault (below), not here.
+            -- [20] (no-op, minimap cleanup now handled by DeepCopyDefault skip)
             [20] = function() end,
 
             -- [21] Enable delve food by default (was opt-in, now opt-out)
@@ -3691,6 +4118,58 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                     end
                 end
             end,
+
+            -- [33] Clean up stale keys that were previously removed after DeepCopyDefault
+            [33] = function()
+                db.hidePetWhileMounted = nil
+                if db.defaults and db.defaults.textSize == 12 then
+                    db.defaults.textSize = nil
+                end
+            end,
+            [34] = function()
+                -- Split glow: existing showExpirationGlow controlled both missing + expiring glows.
+                -- Copy its value to the new showMissingGlow so users keep their current behavior.
+                if db.defaults and db.defaults.showExpirationGlow ~= nil then
+                    db.defaults.showMissingGlow = db.defaults.showExpirationGlow
+                end
+                if db.categorySettings then
+                    for _, catSettings in pairs(db.categorySettings) do
+                        if catSettings.showExpirationGlow ~= nil then
+                            catSettings.showMissingGlow = catSettings.showExpirationGlow
+                        end
+                    end
+                end
+            end,
+            [35] = function()
+                -- Change expiring glow default from Pixel (1) to AutoCast (2).
+                -- Migrate users who had the old default so they get the new one.
+                if db.defaults then
+                    if db.defaults.glowType == nil or db.defaults.glowType == 1 then
+                        db.defaults.glowType = 2
+                    end
+                end
+            end,
+            [36] = function()
+                -- textSize is now an explicit default (20) instead of auto-derived from iconSize.
+                -- Materialize the computed value for users who had a non-default iconSize,
+                -- so their text size doesn't jump to 20.
+                if db.defaults and db.defaults.textSize == nil then
+                    local iconSize = db.defaults.iconSize or 64
+                    if iconSize ~= 64 then
+                        db.defaults.textSize = floor(iconSize * 0.32)
+                    end
+                end
+                if db.categorySettings then
+                    for _, cs in pairs(db.categorySettings) do
+                        if cs.useCustomAppearance and cs.textSize == nil then
+                            local iconSize = cs.iconSize or 64
+                            if iconSize ~= 64 then
+                                cs.textSize = floor(iconSize * 0.32)
+                            end
+                        end
+                    end
+                end
+            end,
         }
 
         -- Run pending migrations
@@ -3704,17 +4183,6 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
         -- Deep copy defaults for non-defaults tables
         DeepCopyDefault(defaults, db)
-
-        -- minimap lives in AceDB global, not per-profile; DeepCopyDefault re-adds it
-        -- from the code defaults table, so clean it up after every DeepCopy.
-        db.minimap = nil
-
-        -- Migration: textSize was 12 in defaults but never used (font size was derived from
-        -- iconSize * 0.32). Now nil means "auto-derive from iconSize". Clean up the old value
-        -- so users get the auto behavior instead of a hardcoded 12.
-        if db.defaults and db.defaults.textSize == 12 then
-            db.defaults.textSize = nil
-        end
 
         -- Initialize custom buffs storage and populate BUFF_TABLES.custom
         if not db.customBuffs then
@@ -3768,12 +4236,12 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
         local desc = settingsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
         desc:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-        desc:SetText("Track missing buffs at a glance.")
+        desc:SetText(L["Display.Description"])
 
         local openBtn = CreateFrame("Button", nil, settingsPanel, "UIPanelButtonTemplate")
         openBtn:SetSize(150, 24)
         openBtn:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -16)
-        openBtn:SetText("Open Options")
+        openBtn:SetText(L["Display.OpenOptions"])
         openBtn:SetScript("OnClick", function()
             BR.Options.Toggle()
             -- Close the WoW settings panel properly (HideUIPanel handles keyboard focus cleanup)
@@ -3784,7 +4252,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
         local slashInfo = settingsPanel:CreateFontString(nil, "ARTWORK", "GameFontDisable")
         slashInfo:SetPoint("TOPLEFT", openBtn, "BOTTOMLEFT", 0, -12)
-        slashInfo:SetText("Slash commands: /br, /br lock, /br unlock, /br test, /br minimap")
+        slashInfo:SetText(L["Display.SlashCommands"])
 
         local category = Settings.RegisterCanvasLayoutCategory(settingsPanel, settingsPanel.name)
         Settings.RegisterAddOnCategory(category)
@@ -3806,8 +4274,8 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end,
                 OnTooltipShow = function(tooltip)
                     tooltip:AddLine("BuffReminders")
-                    tooltip:AddLine("|cFFCFCFCFLeft click|r: Options")
-                    tooltip:AddLine("|cFFCFCFCFRight click|r: Test mode")
+                    tooltip:AddLine(L["Display.MinimapLeftClick"])
+                    tooltip:AddLine(L["Display.MinimapRightClick"])
                     local owner = tooltip:GetOwner()
                     if owner and owner:GetParent() == Minimap then
                         tooltip:AddLine("|cFF808080/br minimap|r |cFF808080to toggle this icon|r")
@@ -3818,7 +4286,16 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             LDBIcon:AddButtonToCompartment("BuffReminders")
             BR.MinimapButton = { Icon = LDBIcon, DataObj = dataObj }
         end
+
+        -- Login messages
+        C_Timer.After(5, function()
+            if db.showLoginMessages ~= false and playerClass == "DEATHKNIGHT" then
+                print("|cff00ccffBuffReminders:|r " .. L["Display.LoginDkRunes"])
+            end
+        end)
     elseif event == "PLAYER_ENTERING_WORLD" then
+        -- Reset consumable dismiss on instance change
+        BR.BuffState.SetConsumablesDismissed(false)
         -- Invalidate caches on zone change (spec may have auto-switched on entry)
         BR.BuffState.InvalidateContentTypeCache()
         BR.BuffState.InvalidateSpellCache()
@@ -3855,9 +4332,9 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         end
         -- Delayed update to catch glow events that fire after reload
         C_Timer.After(0.5, SetDirty)
-        -- Show showOnInstanceEntry buffs briefly when entering a dungeon/raid (not M+)
+        -- Show showOnInstanceEntry self buffs briefly when entering a dungeon (not M+)
         C_Timer.After(1, function()
-            if BR.BuffState.ShouldTriggerInstanceEntry() then
+            if BR.BuffState.ShouldTriggerDungeonEntry() then
                 if instanceEntryTimer then
                     instanceEntryTimer:Cancel()
                 end
@@ -3870,6 +4347,20 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end)
             else
                 ClearInstanceEntryState()
+            end
+            -- Show showOnInstanceEntry consumables briefly when entering a delve
+            if BR.BuffState.ShouldTriggerDelveEntry() then
+                if delveEntryTimer then
+                    delveEntryTimer:Cancel()
+                end
+                BR.BuffState.SetDelveEntryState(true)
+                UpdateDisplay()
+                delveEntryTimer = C_Timer.NewTimer(30, function()
+                    ClearDelveEntryState()
+                    UpdateDisplay()
+                end)
+            else
+                ClearDelveEntryState()
             end
         end)
         -- Refresh custom buff icons after spell data is fully loaded (talent-modified icons)
@@ -3933,6 +4424,15 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         BR.PetHelpers.InvalidatePetActions()
         SetDirty()
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
+        local mounted = IsMounted()
+        if wasMounted and not mounted then
+            petDismountSuppressed = true
+            C_Timer.After(1.5, function()
+                petDismountSuppressed = false
+                SetDirty()
+            end)
+        end
+        wasMounted = mounted
         SetDirty()
     elseif event == "PLAYER_DIFFICULTY_CHANGED" then
         BR.BuffState.InvalidateContentTypeCache()
@@ -3974,6 +4474,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         -- Invalidate caches when player changes spec
         BR.BuffState.InvalidateSpellCache()
         BR.BuffState.InvalidateOffHandCache()
+
         BR.PetHelpers.InvalidatePetActions()
         BR.SecureButtons.InvalidateConsumableCache()
         BR.SecureButtons.RefreshOverlaySpells()
@@ -3998,6 +4499,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
         BR.BuffState.InvalidateItemCache()
         BR.BuffState.InvalidateOffHandCache()
+
         SetDirty()
     elseif event == "BAG_UPDATE_DELAYED" then
         BR.BuffState.InvalidateItemCache()

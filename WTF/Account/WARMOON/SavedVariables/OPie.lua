@@ -1,5 +1,4 @@
 
-OneRing_Config = nil
 OPie_SavedData = {
 ["CharProfiles"] = {
 ["Hyjal-Kvotheen"] = "Kvotheen",
@@ -7,7 +6,7 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "8.2.2 (4.139)",
+["_OPieVersion"] = "8.3.1 (4.140)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
@@ -43,10 +42,10 @@ OPie_SavedData = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["WorldMarkers"] = true,
-["CommonTrades"] = true,
-["SpecMenu"] = true,
 ["OPieAutoQuest"] = true,
+["CommonTrades"] = true,
+["WorldMarkers"] = true,
+["SpecMenu"] = true,
 ["PaladinTools"] = true,
 },
 ["OPieFlagStore"] = {
@@ -71,6 +70,11 @@ OPie_SavedData = {
 "toy",
 225556,
 ["sliceToken"] = "ABueTwA1bv1",
+},
+{
+"toy",
+88375,
+["sliceToken"] = "ABueT4sxwxw",
 },
 {
 "item",

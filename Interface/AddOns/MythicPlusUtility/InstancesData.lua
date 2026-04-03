@@ -5,7 +5,7 @@ MythicPlusUtility.instancesData = {
         -- Boss
         { -- Branch Out
             text = format(L["{spell:%d} debuff is inflicted on the first boss {npc:%d}."], 388623, 196482),
-            tags = "[bleed][physical_debuff]",
+            tags = "[important][bleed][physical_debuff]",
         }, { -- Lasher Toxin
             text = format(L["{spell:%d} debuff is inflicted by {npc:%d} on the first boss {npc:%d}."], 389033, 197398,
                           196482),
@@ -91,10 +91,6 @@ MythicPlusUtility.instancesData = {
         }, { -- Soulbind
             text = format(L["Avoid {spell:%d} when totem starts channeling on the last boss {npc:%d}."], 1252777, 248595),
             tags = "[important][targeted_avoid]",
-        }, { -- Unstable Phantom NPC
-            text = format(L["Prevent {npc:%d} from reaching players or other {npc:%d} on the second boss {npc:%d}."],
-                          250443, 250443, 248595),
-            tags = "[important][creature_slow]",
         }, { -- Cries of the Fallen
             text = format(L["{spell:%d} debuff is inflicted by contact with {npc:%d} on the last boss {npc:%d}."],
                           1254175, 1531, 248605),
@@ -245,7 +241,7 @@ MythicPlusUtility.instancesData = {
             tags = "[bleed][physical_debuff]",
         }, { -- Sunwings npc
             text = format(L["Slow {npc:%d} on the third boss {npc:%d}."], 76227, 76379),
-            tags = "[creature_slow][creature_root][creature_grip]",
+            tags = "[creature_slow][creature_grip]",
         }, { -- Solar Zealot NPC
             text = format(L["Stun {npc:%d} on the last boss {npc:%d}."], 76267, 76266),
             tags = "[creature_stun][creature_fear][creature_incapacitate]",
@@ -264,7 +260,7 @@ MythicPlusUtility.instancesData = {
             tags = "[important][targeted_avoid]",
         }, { -- Bloodcrazed
             text = format(L["{spell:%d} is cast by {npc:%d}."], 1254690, 79093),
-            tags = "[creature_slow][creature_root]",
+            tags = "[creature_slow]",
         }, { -- Rushing Winds
             text = format(L["{spell:%d} buff on {npc:%d}."], 1254670, 78096),
             tags = "[purge]",
@@ -296,6 +292,9 @@ MythicPlusUtility.instancesData = {
         }, { -- Fire Spit
             text = format(L["Avoid {spell:%d} when {npc:%d} starts channeling."], 1216848, 236891),
             tags = "[important][targeted_avoid]",
+        }, { -- Fire Spit
+            text = format(L["{spell:%d} is channeled by {npc:%d}."], 1216848, 236891),
+            tags = "[important][creature_stun][creature_fear][creature_incapacitate][creature_grip]",
         }, { -- Throw Axe
             text = format(L["{spell:%d} debuff is inflicted by {npc:%d}."], 1217094, 232447),
             tags = "[important][bleed][physical_debuff]",
@@ -308,9 +307,6 @@ MythicPlusUtility.instancesData = {
         }, { -- Arrow Rain
             text = format(L["{spell:%d} is channeled by {npc:%d}."], 1216449, 238035),
             tags = "[creature_stun][creature_incapacitate][creature_grip]",
-        }, { -- Ferocious Pounce
-            text = format(L["{spell:%d} is cast by {npc:%d}."], 1217010, 232063),
-            tags = "[creature_stun][creature_fear][creature_incapacitate][creature_grip]",
         }, { -- Gore Whirl
             text = format(L["{spell:%d} is channeled by {npc:%d}."], 1216637, 232147),
             tags = "[creature_stun][creature_incapacitate][creature_grip]",

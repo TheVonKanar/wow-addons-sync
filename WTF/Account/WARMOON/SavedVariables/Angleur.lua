@@ -1,0 +1,49 @@
+
+AngleurConfig = {
+["chosenMethod"] = "oneKey",
+["chosenCrateBobber"] = {
+["dropDownID"] = 5,
+["name"] = "Random Bobber",
+["toyID"] = 0,
+},
+["ultraFocusAutoLootEnabled"] = false,
+["chosenBait"] = {
+["dropDownID"] = 0,
+["itemID"] = 0,
+["name"] = 0,
+},
+["recastEnabled"] = false,
+["angleurKey"] = ",",
+["doubleClickChosenID"] = 2,
+["ultraFocusAudioEnabled"] = false,
+["visualHidden"] = true,
+["oversizedEnabled"] = true,
+["patientEnabled"] = false,
+["crateEnabled"] = false,
+["chosenRaft"] = {
+["dropDownID"] = 0,
+["name"] = 0,
+["toyID"] = 0,
+},
+["voidFinderEnabled"] = false,
+}
+Angleur_TinyOptions = {
+["debugLevel"] = 0,
+["errorsDisabled"] = true,
+["softTargetIcon"] = true,
+["ultraFocusMaster"] = 1,
+["doubleClickWindow"] = 0.4,
+["turnOffSoftInteract"] = false,
+["visualScale"] = 1,
+["swimRelease"] = true,
+["allowDismount"] = false,
+["softIconOff"] = false,
+["poleSleep"] = true,
+["loginDisabled"] = false,
+}
+AngleurMinimapButton = {
+["hide"] = true,
+}
+AngleurTutorial = {
+["part"] = 10,
+}
