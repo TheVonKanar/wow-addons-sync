@@ -1,6 +1,6 @@
 
 PorterDB = {
-["lastSeenVersion"] = "1.1.4",
+["lastSeenVersion"] = "1.1.5",
 ["position"] = {
 ["y"] = 196.9996795654297,
 ["x"] = 37.00020599365234,
@@ -28,6 +28,16 @@ PorterDB = {
 ["Hearthstones"] = true,
 },
 ["currentSeason"] = "midnight",
+["announcePort"] = {
+["Housing"] = true,
+["Raids"] = true,
+["Hearthstones"] = true,
+["Items"] = true,
+["Toys"] = true,
+["Class & Racials"] = true,
+["Mage Portals"] = true,
+["Dungeons"] = true,
+},
 ["viewMode"] = "category",
 ["showCosmeticHearthstones"] = false,
 },
@@ -69,6 +79,16 @@ PorterDB = {
 ["Hearthstones"] = true,
 },
 ["currentSeason"] = "midnight",
+["announcePort"] = {
+["Housing"] = true,
+["Raids"] = true,
+["Hearthstones"] = true,
+["Items"] = true,
+["Toys"] = true,
+["Class & Racials"] = true,
+["Mage Portals"] = true,
+["Dungeons"] = true,
+},
 ["hearthstoneMode"] = "Random",
 ["zoneOrder"] = "recent",
 },

@@ -109,12 +109,12 @@ BAGANATOR_CONFIG = {
 ["default_junk"] = false,
 ["4"] = false,
 ["3"] = false,
-["default_keystone"] = false,
-["1"] = false,
-["default_auto_equipment_sets"] = false,
-["default_key"] = false,
-["default_profession"] = false,
 ["default_hearthstone"] = false,
+["1"] = false,
+["default_profession"] = false,
+["default_key"] = false,
+["default_auto_equipment_sets"] = false,
+["default_keystone"] = false,
 ["5"] = false,
 },
 ["icon_mark_unusable"] = false,
@@ -246,8 +246,13 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["category_migration"] = 5,
-["sort_ignore_slots_at_end"] = false,
+["saved_searches"] = {
+},
+["category_section_toggled"] = {
+["1"] = true,
+["Crafting"] = true,
+["2"] = false,
+},
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -312,11 +317,9 @@ BAGANATOR_CONFIG = {
 ["i:232386"] = true,
 },
 },
-["default_reagent"] = {
-["addedItems"] = {
-["i:222738"] = true,
-["i:230905"] = true,
-},
+["default_recipe"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_auto_inventory_slots"] = {
 ["showGroupPrefix"] = true,
@@ -365,10 +368,10 @@ BAGANATOR_CONFIG = {
 ["i:235151"] = true,
 },
 },
-["default_gem"] = {
+["default_reagent"] = {
 ["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
+["i:222738"] = true,
+["i:230905"] = true,
 },
 },
 ["3"] = {
@@ -460,13 +463,15 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_recipe"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
 ["default_key"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
+},
+["default_gem"] = {
+["addedItems"] = {
+["i:228643"] = true,
+["i:228646"] = true,
+},
 },
 ["default_miscellaneous"] = {
 ["addedItems"] = {
@@ -477,19 +482,15 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["category_section_toggled"] = {
-["1"] = false,
-["2"] = false,
-["Crafting"] = true,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
--433.671630859375,
-364.1668395996094,
+-213.671875,
+419.1669311523438,
 },
 ["icon_text_font_size"] = 14,
 ["currencies_tracked_imported"] = {
@@ -497,10 +498,9 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["view_alpha"] = 1,
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["disabled_skins"] = {
 },
+["bag_view_width"] = 15,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
 ["skins"] = {
@@ -602,13 +602,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["bag_view_width"] = 15,
-["disabled_skins"] = {
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
+["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["saved_searches"] = {
-},
+["category_migration"] = 5,
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

@@ -139,7 +139,7 @@ LittleWigs_Classic: disabled
 LittleWigs_MistsOfPandaria: disabled
 LittleWigs_Shadowlands: disabled
 LittleWigs_WrathOfTheLichKing: disabled
-LoggerHead: disabled
+LoggerHead: enabled
 MacroToolkit: disabled
 MacroToolkitIcons: disabled
 MapCoords: disabled
@@ -247,7 +247,7 @@ MacroManager: disabled
 MacroManagerData: disabled
 UnhaltedUnitFrames: enabled
 Cell: disabled
-TrueStatValues: enabled
+TrueStatValues: disabled
 MouseoverActionSettings: disabled
 BlizzHUDTweaks: disabled
 Blizzard_CharacterFrame: enabled

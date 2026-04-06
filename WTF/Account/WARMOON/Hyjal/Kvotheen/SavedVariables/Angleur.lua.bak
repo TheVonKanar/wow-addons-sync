@@ -91,3 +91,13 @@ Angleur_CVars = {
 ["ultraFocus"] = {
 },
 }
+AngleurAudio = {
+["ultraFocusMusic"] = 0,
+["ultraFocusDialog"] = 0,
+["checkboxes"] = {
+["toggleBG"] = true,
+},
+["ultraFocusAmbience"] = 0,
+["ultraFocusMaster"] = 1,
+["ultraFocusSFX"] = 1,
+}

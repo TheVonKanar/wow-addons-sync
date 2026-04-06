@@ -1,4 +1,5 @@
-## Changed in v41
+## Changed in v42
 
-* Rewritten bits of map-handling code to make it less likely that there'll be taint errors when you mouse over Blizzard map pins
+* Dust 'Em Off: fixed the third set of moths showing too soon (6, 9, same thing, right?)
+* Give the complex treasures a different icon
 

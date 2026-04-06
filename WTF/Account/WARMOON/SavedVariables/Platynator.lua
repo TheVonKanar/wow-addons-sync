@@ -146,15 +146,15 @@ PLATYNATOR_CONFIG = {
 ["g"] = 0.5058823529411764,
 ["b"] = 0,
 },
-["friendly"] = {
-["b"] = 0,
-["g"] = 1,
-["r"] = 0,
-},
 ["hostile"] = {
 ["b"] = 0,
 ["g"] = 0,
 ["r"] = 1,
+},
+["friendly"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 0,
 },
 },
 ["kind"] = "reaction",
@@ -170,20 +170,20 @@ PLATYNATOR_CONFIG = {
 ["scale"] = 1,
 },
 {
-["anchor"] = {
-"LEFT",
--48.5,
-0,
-},
-["scale"] = 1,
-["layer"] = 2,
-["truncate"] = false,
-["align"] = "CENTER",
-["kind"] = "quest",
 ["color"] = {
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
+},
+["align"] = "CENTER",
+["layer"] = 2,
+["truncate"] = false,
+["scale"] = 1,
+["kind"] = "quest",
+["anchor"] = {
+"LEFT",
+-48.5,
+0,
 },
 ["maxWidth"] = 0,
 },
@@ -194,7 +194,7 @@ PLATYNATOR_CONFIG = {
 },
 ["specialBars"] = {
 },
-["scale"] = 1.15,
+["scale"] = 1.05,
 ["auras"] = {
 },
 ["font"] = {
@@ -263,14 +263,14 @@ PLATYNATOR_CONFIG = {
 ["g"] = 1,
 ["b"] = 0,
 },
-["friendly"] = {
-["r"] = 0,
-["g"] = 1,
-["b"] = 0,
-},
 ["hostile"] = {
 ["r"] = 1,
 ["g"] = 0,
+["b"] = 0,
+},
+["friendly"] = {
+["r"] = 0,
+["g"] = 1,
 ["b"] = 0,
 },
 },
@@ -300,12 +300,12 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 0,
 ["asset"] = "Platy: Arrow Double",
 ["width"] = 1.31,
-["height"] = 1.1,
 ["anchor"] = {
 },
-["kind"] = "target",
-["scale"] = 0.96,
+["height"] = 1.1,
 ["sliced"] = true,
+["scale"] = 0.96,
+["kind"] = "target",
 },
 {
 ["color"] = {
@@ -317,12 +317,12 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 2,
 ["asset"] = "Platy: 4px",
 ["width"] = 1,
-["height"] = 1.2,
 ["anchor"] = {
 },
-["kind"] = "target",
-["scale"] = 1,
+["height"] = 1.2,
 ["sliced"] = true,
+["scale"] = 1,
+["kind"] = "target",
 },
 {
 ["color"] = {
@@ -334,12 +334,12 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 2,
 ["asset"] = "Platy: 4px",
 ["width"] = 1,
-["height"] = 1.2,
 ["anchor"] = {
 },
-["kind"] = "focus",
-["scale"] = 1,
+["height"] = 1.2,
 ["sliced"] = true,
+["scale"] = 1,
+["kind"] = "focus",
 },
 {
 ["color"] = {
@@ -353,10 +353,10 @@ PLATYNATOR_CONFIG = {
 ["width"] = 1,
 ["scale"] = 1,
 ["height"] = 1.2,
-["kind"] = "focus",
+["sliced"] = false,
 ["anchor"] = {
 },
-["sliced"] = false,
+["kind"] = "focus",
 },
 {
 ["color"] = {
@@ -369,11 +369,11 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: White",
 ["width"] = 1,
 ["scale"] = 1,
+["height"] = 1.2,
 ["anchor"] = {
 },
-["height"] = 1.2,
-["kind"] = "mouseover",
 ["sliced"] = true,
+["kind"] = "mouseover",
 ["includeTarget"] = true,
 },
 {
@@ -406,14 +406,14 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["scale"] = 1,
+["height"] = 0.5,
+["kind"] = "animatedBorder",
+["borderWidth"] = 1.35,
 ["anchor"] = {
 "TOP",
 0,
 -9.5,
 },
-["kind"] = "animatedBorder",
-["borderWidth"] = 1.35,
-["height"] = 0.5,
 },
 {
 ["color"] = {
@@ -426,14 +426,14 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: Arrow",
 ["width"] = 1.21,
 ["scale"] = 0.96,
+["height"] = 1.1,
 ["anchor"] = {
 "BOTTOM",
 0,
 -8,
 },
-["height"] = 1.1,
-["kind"] = "mouseover",
 ["sliced"] = true,
+["kind"] = "mouseover",
 ["includeTarget"] = false,
 },
 },
@@ -454,9 +454,6 @@ PLATYNATOR_CONFIG = {
 ["auras"] = {
 {
 ["direction"] = "LEFT",
-["showType"] = false,
-["showSwipe"] = true,
-["showCountdown"] = true,
 ["texts"] = {
 ["countdown"] = {
 ["anchor"] = {
@@ -484,12 +481,16 @@ PLATYNATOR_CONFIG = {
 ["scale"] = 0.64,
 },
 },
+["showType"] = false,
+["showSwipe"] = true,
+["showCountdown"] = true,
 ["scale"] = 0.9,
 ["sorting"] = {
 ["reversed"] = false,
 ["kind"] = "duration",
 },
 ["height"] = 0.8,
+["limit"] = 30,
 ["showPandemic"] = true,
 ["anchor"] = {
 "BOTTOMRIGHT",
@@ -508,6 +509,10 @@ PLATYNATOR_CONFIG = {
 ["scale"] = 1,
 ["showSwipe"] = true,
 ["showCountdown"] = true,
+["sorting"] = {
+["reversed"] = false,
+["kind"] = "duration",
+},
 ["texts"] = {
 ["countdown"] = {
 ["anchor"] = {
@@ -536,10 +541,7 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["showType"] = true,
-["sorting"] = {
-["reversed"] = false,
-["kind"] = "duration",
-},
+["limit"] = 30,
 ["anchor"] = {
 "LEFT",
 -92,
@@ -559,6 +561,10 @@ PLATYNATOR_CONFIG = {
 ["scale"] = 1,
 ["showSwipe"] = true,
 ["showCountdown"] = true,
+["sorting"] = {
+["reversed"] = false,
+["kind"] = "duration",
+},
 ["texts"] = {
 ["countdown"] = {
 ["anchor"] = {
@@ -587,10 +593,7 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["showType"] = false,
-["sorting"] = {
-["reversed"] = false,
-["kind"] = "duration",
-},
+["limit"] = 30,
 ["anchor"] = {
 "RIGHT",
 92,
@@ -632,29 +635,30 @@ PLATYNATOR_CONFIG = {
 {
 ["combatOnly"] = true,
 ["colors"] = {
-["warning"] = {
-["b"] = 0,
-["g"] = 0.4352941513061523,
-["r"] = 0.8666667342185974,
-},
 ["transition"] = {
 ["b"] = 0.2274509966373444,
 ["g"] = 0.9137255549430848,
 ["r"] = 1,
 },
-["offtank"] = {
-["b"] = 1,
-["g"] = 0.501960813999176,
-["r"] = 0.501960813999176,
+["warning"] = {
+["b"] = 0,
+["g"] = 0.4352941513061523,
+["r"] = 0.8666667342185974,
 },
 ["safe"] = {
 ["b"] = 0.1137254983186722,
 ["g"] = 0.1882353127002716,
 ["r"] = 0.7450980544090271,
 },
+["offtank"] = {
+["b"] = 1,
+["g"] = 0.501960813999176,
+["r"] = 0.501960813999176,
 },
-["kind"] = "threat",
+},
 ["useSafeColor"] = false,
+["kind"] = "threat",
+["tanksOnly"] = false,
 ["instancesOnly"] = false,
 },
 {
@@ -735,15 +739,15 @@ PLATYNATOR_CONFIG = {
 ["g"] = 0.5058823529411764,
 ["r"] = 1,
 },
-["friendly"] = {
-["r"] = 0,
-["g"] = 0.8901961445808411,
-["b"] = 0,
-},
 ["hostile"] = {
 ["b"] = 0.1137254983186722,
 ["g"] = 0.1882353127002716,
 ["r"] = 0.7450980544090271,
+},
+["friendly"] = {
+["r"] = 0,
+["g"] = 0.8901961445808411,
+["b"] = 0,
 },
 },
 ["kind"] = "reaction",
@@ -751,9 +755,6 @@ PLATYNATOR_CONFIG = {
 },
 ["marker"] = {
 ["asset"] = "none",
-},
-["kind"] = "health",
-["anchor"] = {
 },
 ["background"] = {
 ["color"] = {
@@ -767,6 +768,9 @@ PLATYNATOR_CONFIG = {
 },
 ["foreground"] = {
 ["asset"] = "Platy: Solid White",
+},
+["kind"] = "health",
+["anchor"] = {
 },
 ["absorb"] = {
 ["color"] = {
@@ -857,10 +861,6 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["scale"] = 1,
-["kind"] = "cast",
-["foreground"] = {
-["asset"] = "Platy: Solid White",
-},
 ["background"] = {
 ["color"] = {
 ["a"] = 0.5,
@@ -875,6 +875,10 @@ PLATYNATOR_CONFIG = {
 "TOP",
 0,
 -9.5,
+},
+["kind"] = "cast",
+["foreground"] = {
+["asset"] = "Platy: Solid White",
 },
 ["interruptMarker"] = {
 ["color"] = {
@@ -968,21 +972,21 @@ PLATYNATOR_CONFIG = {
 ["scale"] = 0.8,
 },
 {
-["color"] = {
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
+["scale"] = 0.8,
+["align"] = "LEFT",
+["layer"] = 2,
+["truncate"] = true,
 ["anchor"] = {
 "TOPLEFT",
 -62,
 -17.5,
 },
-["layer"] = 2,
-["truncate"] = true,
-["align"] = "LEFT",
 ["kind"] = "castSpellName",
-["scale"] = 0.8,
+["color"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
 ["maxWidth"] = 0.56,
 },
 {
@@ -1024,20 +1028,20 @@ PLATYNATOR_CONFIG = {
 ["applyClassColors"] = true,
 },
 {
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["align"] = "CENTER",
-["layer"] = 2,
-["truncate"] = false,
-["scale"] = 1,
-["kind"] = "quest",
 ["anchor"] = {
 "TOPLEFT",
 -86,
 -9,
+},
+["scale"] = 1,
+["layer"] = 2,
+["truncate"] = false,
+["align"] = "CENTER",
+["kind"] = "quest",
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
 ["maxWidth"] = 0,
 },
@@ -1070,11 +1074,11 @@ PLATYNATOR_CONFIG = {
 ["obscured_alpha"] = 0.6,
 ["design_all"] = {
 },
-["not_target_behaviour"] = "none",
+["cast_scale"] = 1.1,
 ["mouseover_alpha"] = 1,
 ["closer_to_screen_edges"] = true,
 ["click_region_scale_x"] = 1,
-["cast_scale"] = 1.1,
+["not_target_behaviour"] = "none",
 ["simplified_nameplates"] = {
 ["minor"] = true,
 ["minion"] = true,
@@ -1110,17 +1114,17 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 0,
 ["asset"] = "Platy: Arrow",
 ["width"] = 1.23,
-["sliced"] = true,
-["anchor"] = {
-},
 ["kind"] = "target",
+["height"] = 1.22,
+["sliced"] = true,
 ["color"] = {
 ["a"] = 1,
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
 },
-["height"] = 1.22,
+["anchor"] = {
+},
 },
 {
 ["color"] = {
@@ -1133,11 +1137,11 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: 2px",
 ["width"] = 1,
 ["scale"] = 1,
+["kind"] = "mouseover",
+["height"] = 1.15,
 ["sliced"] = true,
 ["anchor"] = {
 },
-["kind"] = "mouseover",
-["height"] = 1.15,
 ["includeTarget"] = true,
 },
 {
@@ -1145,9 +1149,9 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 0,
 ["asset"] = "Platy: Glow",
 ["width"] = 1,
-["sliced"] = false,
-["height"] = 1,
 ["kind"] = "target",
+["height"] = 1,
+["sliced"] = false,
 ["anchor"] = {
 },
 ["color"] = {
@@ -1195,13 +1199,13 @@ PLATYNATOR_CONFIG = {
 ["important"] = true,
 ["defensive"] = false,
 },
-["height"] = 1,
-["kind"] = "buffs",
 ["anchor"] = {
 "LEFT",
 -98,
 0,
 },
+["kind"] = "buffs",
+["height"] = 1,
 ["showDispel"] = {
 ["enrage"] = true,
 },
@@ -1220,14 +1224,14 @@ PLATYNATOR_CONFIG = {
 },
 ["textScale"] = 1,
 ["kind"] = "crowdControl",
-["height"] = 1,
-["showDispel"] = {
-},
 ["anchor"] = {
 "RIGHT",
 98.5,
 0,
 },
+["showDispel"] = {
+},
+["height"] = 1,
 ["sorting"] = {
 ["kind"] = "duration",
 ["reversed"] = false,
@@ -1285,16 +1289,6 @@ PLATYNATOR_CONFIG = {
 {
 ["combatOnly"] = false,
 ["colors"] = {
-["safe"] = {
-["b"] = 0.9019607843137256,
-["g"] = 0.5882352941176471,
-["r"] = 0.05882352941176471,
-},
-["warning"] = {
-["b"] = 0,
-["g"] = 0,
-["r"] = 0.8,
-},
 ["offtank"] = {
 ["b"] = 0.7843137254901961,
 ["g"] = 0.6666666666666666,
@@ -1304,6 +1298,16 @@ PLATYNATOR_CONFIG = {
 ["b"] = 0,
 ["g"] = 0.6274509803921569,
 ["r"] = 1,
+},
+["safe"] = {
+["b"] = 0.9019607843137256,
+["g"] = 0.5882352941176471,
+["r"] = 0.05882352941176471,
+},
+["warning"] = {
+["b"] = 0,
+["g"] = 0,
+["r"] = 0.8,
 },
 },
 ["kind"] = "threat",
@@ -1322,26 +1326,27 @@ PLATYNATOR_CONFIG = {
 ["g"] = 0.5058823529411764,
 ["b"] = 0,
 },
-["hostile"] = {
-["b"] = 0,
-["g"] = 0.2039215862751007,
-["r"] = 1,
-},
 ["friendly"] = {
 ["b"] = 0,
 ["g"] = 1,
 ["r"] = 0,
+},
+["hostile"] = {
+["b"] = 0,
+["g"] = 0.2039215862751007,
+["r"] = 1,
 },
 },
 ["kind"] = "reaction",
 },
 },
 ["relativeTo"] = 0,
-["anchor"] = {
-},
 ["foreground"] = {
 ["asset"] = "Platy: Fade Bottom",
 },
+["anchor"] = {
+},
+["kind"] = "health",
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -1352,7 +1357,6 @@ PLATYNATOR_CONFIG = {
 ["applyColor"] = true,
 ["asset"] = "Platy: Solid Grey",
 },
-["kind"] = "health",
 ["marker"] = {
 ["asset"] = "none",
 },
@@ -1421,14 +1425,15 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["scale"] = 1,
-["foreground"] = {
-["asset"] = "Platy: Fade Bottom",
-},
 ["anchor"] = {
 "TOP",
 0,
 -9,
 },
+["foreground"] = {
+["asset"] = "Platy: Fade Bottom",
+},
+["kind"] = "cast",
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -1439,7 +1444,6 @@ PLATYNATOR_CONFIG = {
 ["applyColor"] = true,
 ["asset"] = "Platy: Solid Grey",
 },
-["kind"] = "cast",
 ["interruptMarker"] = {
 ["asset"] = "none",
 ["color"] = {
@@ -1541,20 +1545,20 @@ PLATYNATOR_CONFIG = {
 ["align"] = "LEFT",
 },
 {
-["color"] = {
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
-["scale"] = 1,
-["kind"] = "castSpellName",
-["truncate"] = false,
-["align"] = "CENTER",
-["layer"] = 2,
 ["anchor"] = {
 "TOP",
 0,
 -12,
+},
+["align"] = "CENTER",
+["kind"] = "castSpellName",
+["truncate"] = false,
+["scale"] = 1,
+["layer"] = 2,
+["color"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 ["maxWidth"] = 0,
 },
@@ -1590,17 +1594,17 @@ PLATYNATOR_CONFIG = {
 ["layer"] = 0,
 ["asset"] = "Platy: Arrow",
 ["width"] = 1.23,
-["height"] = 1.22,
 ["anchor"] = {
 },
-["sliced"] = true,
+["height"] = 1.22,
+["kind"] = "target",
 ["color"] = {
 ["a"] = 1,
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
 },
-["kind"] = "target",
+["sliced"] = true,
 },
 {
 ["color"] = {
@@ -1613,11 +1617,11 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: 2px",
 ["width"] = 1,
 ["scale"] = 1,
-["height"] = 1,
 ["anchor"] = {
 },
-["sliced"] = true,
+["height"] = 1,
 ["kind"] = "mouseover",
+["sliced"] = true,
 ["includeTarget"] = true,
 },
 {
@@ -1632,10 +1636,10 @@ PLATYNATOR_CONFIG = {
 ["b"] = 1,
 },
 ["height"] = 1,
-["sliced"] = false,
+["kind"] = "target",
 ["anchor"] = {
 },
-["kind"] = "target",
+["sliced"] = false,
 },
 },
 ["specialBars"] = {
@@ -1686,25 +1690,25 @@ PLATYNATOR_CONFIG = {
 {
 ["combatOnly"] = false,
 ["colors"] = {
-["transition"] = {
-["r"] = 1,
-["g"] = 0.6274509803921569,
-["b"] = 0,
-},
 ["warning"] = {
 ["r"] = 0.8,
 ["g"] = 0,
 ["b"] = 0,
 },
-["safe"] = {
-["r"] = 0.05882352941176471,
-["g"] = 0.5882352941176471,
-["b"] = 0.9019607843137256,
+["transition"] = {
+["r"] = 1,
+["g"] = 0.6274509803921569,
+["b"] = 0,
 },
 ["offtank"] = {
 ["r"] = 0.05882352941176471,
 ["g"] = 0.6666666666666666,
 ["b"] = 0.7843137254901961,
+},
+["safe"] = {
+["r"] = 0.05882352941176471,
+["g"] = 0.5882352941176471,
+["b"] = 0.9019607843137256,
 },
 },
 ["kind"] = "threat",
@@ -1718,15 +1722,15 @@ PLATYNATOR_CONFIG = {
 ["g"] = 0.5960784554481506,
 ["r"] = 1,
 },
-["friendly"] = {
-["r"] = 0,
-["g"] = 1,
-["b"] = 0,
-},
 ["hostile"] = {
 ["b"] = 0,
 ["g"] = 0.3019607961177826,
 ["r"] = 1,
+},
+["friendly"] = {
+["r"] = 0,
+["g"] = 1,
+["b"] = 0,
 },
 ["neutral"] = {
 ["r"] = 0.8901961445808411,
@@ -1740,9 +1744,6 @@ PLATYNATOR_CONFIG = {
 ["marker"] = {
 ["asset"] = "none",
 },
-["kind"] = "health",
-["anchor"] = {
-},
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -1755,6 +1756,9 @@ PLATYNATOR_CONFIG = {
 },
 ["foreground"] = {
 ["asset"] = "Platy: Fade Bottom",
+},
+["kind"] = "health",
+["anchor"] = {
 },
 ["absorb"] = {
 ["color"] = {
@@ -1858,9 +1862,9 @@ PLATYNATOR_CONFIG = {
 },
 ["anchor"] = {
 },
-["kind"] = "target",
-["height"] = 1.22,
 ["sliced"] = true,
+["height"] = 1.22,
+["kind"] = "target",
 },
 {
 ["color"] = {
@@ -1873,11 +1877,11 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: 7px",
 ["width"] = 1.03,
 ["scale"] = 1,
-["height"] = 1.24,
 ["anchor"] = {
 },
-["kind"] = "mouseover",
+["height"] = 1.24,
 ["sliced"] = true,
+["kind"] = "mouseover",
 ["includeTarget"] = true,
 },
 },
@@ -1931,25 +1935,25 @@ PLATYNATOR_CONFIG = {
 {
 ["combatOnly"] = false,
 ["colors"] = {
-["transition"] = {
-["r"] = 1,
-["g"] = 0.6274509803921569,
-["b"] = 0,
-},
 ["warning"] = {
 ["r"] = 0.8,
 ["g"] = 0,
 ["b"] = 0,
 },
-["offtank"] = {
-["r"] = 0.05882352941176471,
-["g"] = 0.6666666666666666,
-["b"] = 0.7843137254901961,
+["transition"] = {
+["r"] = 1,
+["g"] = 0.6274509803921569,
+["b"] = 0,
 },
 ["safe"] = {
 ["r"] = 0.05882352941176471,
 ["g"] = 0.5882352941176471,
 ["b"] = 0.9019607843137256,
+},
+["offtank"] = {
+["r"] = 0.05882352941176471,
+["g"] = 0.6666666666666666,
+["b"] = 0.7843137254901961,
 },
 },
 ["kind"] = "threat",
@@ -1968,14 +1972,14 @@ PLATYNATOR_CONFIG = {
 ["g"] = 0.5058823529411764,
 ["r"] = 1,
 },
-["friendly"] = {
-["r"] = 0,
-["g"] = 1,
-["b"] = 0,
-},
 ["hostile"] = {
 ["r"] = 1,
 ["g"] = 0,
+["b"] = 0,
+},
+["friendly"] = {
+["r"] = 0,
+["g"] = 1,
 ["b"] = 0,
 },
 },
@@ -1991,12 +1995,11 @@ PLATYNATOR_CONFIG = {
 },
 ["asset"] = "Platy: Absorb Wide",
 },
+["anchor"] = {
+},
 ["foreground"] = {
 ["asset"] = "Platy: Fade Bottom",
 },
-["anchor"] = {
-},
-["kind"] = "health",
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -2007,6 +2010,7 @@ PLATYNATOR_CONFIG = {
 ["applyColor"] = true,
 ["asset"] = "Platy: Solid Grey",
 },
+["kind"] = "health",
 ["scale"] = 1,
 },
 },
@@ -2052,9 +2056,9 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["target_behaviour"] = "enlarge",
-["target_scale"] = 1.1,
-["click_region_scale_y"] = 1,
 ["show_nameplates_only_needed"] = false,
+["click_region_scale_y"] = 1,
+["target_scale"] = 1.1,
 ["clickable_nameplates"] = {
 ["friend"] = false,
 ["enemy"] = true,
@@ -2086,13 +2090,13 @@ PLATYNATOR_CONFIG = {
 },
 ["design_all"] = {
 },
-["target_scale"] = 1.2,
+["style"] = "_hare",
 ["obscured_alpha"] = 0.4,
 ["click_region_scale_y"] = 1,
 ["mouseover_alpha"] = 1,
 ["closer_to_screen_edges"] = true,
-["style"] = "_hare",
-["cast_scale"] = 1.1,
+["target_scale"] = 1.2,
+["not_target_behaviour"] = "none",
 ["simplified_nameplates"] = {
 ["minor"] = true,
 ["minion"] = true,
@@ -2141,9 +2145,9 @@ PLATYNATOR_CONFIG = {
 },
 ["anchor"] = {
 },
-["kind"] = "target",
-["height"] = 1.22,
 ["sliced"] = true,
+["height"] = 1.22,
+["kind"] = "target",
 },
 {
 ["color"] = {
@@ -2156,11 +2160,11 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Platy: 7px",
 ["width"] = 1.03,
 ["scale"] = 1,
-["height"] = 1.24,
 ["anchor"] = {
 },
-["kind"] = "mouseover",
+["height"] = 1.24,
 ["sliced"] = true,
+["kind"] = "mouseover",
 ["includeTarget"] = true,
 },
 },
@@ -2201,13 +2205,13 @@ PLATYNATOR_CONFIG = {
 ["important"] = true,
 ["defensive"] = false,
 },
+["height"] = 1,
+["kind"] = "buffs",
 ["anchor"] = {
 "LEFT",
 -98,
 0,
 },
-["kind"] = "buffs",
-["height"] = 1,
 ["showDispel"] = {
 ["enrage"] = true,
 },
@@ -2226,14 +2230,14 @@ PLATYNATOR_CONFIG = {
 },
 ["textScale"] = 1,
 ["kind"] = "crowdControl",
+["height"] = 1,
+["showDispel"] = {
+},
 ["anchor"] = {
 "RIGHT",
 101,
 0,
 },
-["showDispel"] = {
-},
-["height"] = 1,
 ["sorting"] = {
 ["kind"] = "duration",
 ["reversed"] = false,
@@ -2285,16 +2289,6 @@ PLATYNATOR_CONFIG = {
 {
 ["combatOnly"] = false,
 ["colors"] = {
-["offtank"] = {
-["b"] = 0.7843137254901961,
-["g"] = 0.6666666666666666,
-["r"] = 0.05882352941176471,
-},
-["transition"] = {
-["b"] = 0,
-["g"] = 0.6274509803921569,
-["r"] = 1,
-},
 ["safe"] = {
 ["b"] = 0.9019607843137256,
 ["g"] = 0.5882352941176471,
@@ -2304,6 +2298,16 @@ PLATYNATOR_CONFIG = {
 ["b"] = 0,
 ["g"] = 0,
 ["r"] = 0.8,
+},
+["offtank"] = {
+["b"] = 0.7843137254901961,
+["g"] = 0.6666666666666666,
+["r"] = 0.05882352941176471,
+},
+["transition"] = {
+["b"] = 0,
+["g"] = 0.6274509803921569,
+["r"] = 1,
 },
 },
 ["kind"] = "threat",
@@ -2322,15 +2326,15 @@ PLATYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
-["friendly"] = {
-["b"] = 0,
-["g"] = 1,
-["r"] = 0,
-},
 ["hostile"] = {
 ["b"] = 0,
 ["g"] = 0,
 ["r"] = 1,
+},
+["friendly"] = {
+["b"] = 0,
+["g"] = 1,
+["r"] = 0,
 },
 },
 ["kind"] = "reaction",
@@ -2345,12 +2349,11 @@ PLATYNATOR_CONFIG = {
 },
 ["asset"] = "Platy: Absorb Wide",
 },
+["anchor"] = {
+},
 ["foreground"] = {
 ["asset"] = "Platy: Fade Bottom",
 },
-["anchor"] = {
-},
-["kind"] = "health",
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -2361,6 +2364,7 @@ PLATYNATOR_CONFIG = {
 ["applyColor"] = true,
 ["asset"] = "Platy: Solid Grey",
 },
+["kind"] = "health",
 ["scale"] = 1,
 },
 {
@@ -2432,15 +2436,14 @@ PLATYNATOR_CONFIG = {
 },
 },
 ["scale"] = 1,
+["foreground"] = {
+["asset"] = "Platy: Fade Bottom",
+},
 ["anchor"] = {
 "TOP",
 0,
 -9,
 },
-["foreground"] = {
-["asset"] = "Platy: Fade Bottom",
-},
-["kind"] = "cast",
 ["background"] = {
 ["color"] = {
 ["a"] = 1,
@@ -2451,6 +2454,7 @@ PLATYNATOR_CONFIG = {
 ["applyColor"] = true,
 ["asset"] = "Platy: Solid Grey",
 },
+["kind"] = "cast",
 ["interruptMarker"] = {
 ["asset"] = "none",
 ["color"] = {
@@ -2572,20 +2576,20 @@ PLATYNATOR_CONFIG = {
 ["align"] = "CENTER",
 },
 {
-["anchor"] = {
-"TOP",
-0,
--12,
-},
-["align"] = "CENTER",
-["kind"] = "castSpellName",
-["truncate"] = false,
-["scale"] = 1,
-["layer"] = 2,
 ["color"] = {
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
+},
+["scale"] = 1,
+["kind"] = "castSpellName",
+["truncate"] = false,
+["align"] = "CENTER",
+["layer"] = 2,
+["anchor"] = {
+"TOP",
+0,
+-12,
 },
 ["maxWidth"] = 0,
 },
@@ -2595,7 +2599,7 @@ PLATYNATOR_CONFIG = {
 ["target_behaviour"] = "enlarge",
 ["show_nameplates_only_needed"] = false,
 ["click_region_scale_x"] = 1,
-["not_target_behaviour"] = "none",
+["cast_scale"] = 1.1,
 ["clickable_nameplates"] = {
 ["friend"] = false,
 ["enemy"] = true,

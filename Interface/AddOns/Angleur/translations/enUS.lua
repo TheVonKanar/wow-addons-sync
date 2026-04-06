@@ -836,3 +836,21 @@ T["Macro-Bound Key to find and mark Void Pools easily!\n\nWhen you press it, if 
     .. "\n\nAlso plays a cool sound effect and a scan animation under your mouse cursor"] = "Macro-Bound Key to find and mark Void Pools easily!" 
 .. "\n\nWhen you press it, if there is a nearby " .. colorDarkBlu:WrapTextInColorCode("Void Pool") .. ", it will be marked on your minimap & in-game with a skull marker." 
 .. colorGrae:WrapTextInColorCode("\n\nAlso plays a cool sound effect and a scan animation under your mouse cursor")
+
+T["Ultra Focus: Audio Settings"] = "Ultra Focus: Audio Settings"
+T["Master Volume"] = "Master Volume"
+T["Effects Volume"] = "Effects Volume"
+T["Music Volume"] = "Music Volume"
+T["Dialog Volume"] = "Dialog Volume"
+T["Ambience Volume"] = "Ambience Volume"
+T["Adjust Audio Levels"] = "Adjust Audio Levels"
+T["Defaults\n(Recommended)"] = "Defaults\n(Recommended)"
+
+T["Ultra Focus: Default audio settings restored"] = "Ultra Focus: Default audio settings restored"
+T["Toggle Background Audio"] = "Toggle Background Audio"
+
+T["If enabled, Angleur will turn on \"Sound in the Background\" when awake, and restore it to its previous value when sleeping." 
+.. "\n\nOnly disable if you NEVER want background sound to be on, or there is an error due to a clash with another addon."] = "If enabled, "
+.. "Angleur will turn " .. colorGreen:WrapTextInColorCode("on ") .. colorYello:WrapTextInColorCode("\"Sound in the Background\" ") .. "when " .. colorGreen:WrapTextInColorCode("awake")
+..", and " .. colorRed:WrapTextInColorCode("restore ") .. "it to its previous value when " .. colorRed:WrapTextInColorCode("sleeping").. "."
+.. colorGrae:WrapTextInColorCode("\n\nOnly disable if you NEVER want background sound to be on, or there is an error due to a clash with another addon.")

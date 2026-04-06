@@ -1,7 +1,10 @@
 # Platynator
 
-## [359](https://github.com/TheMouseNest/Platynator/tree/359) (2026-04-02)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/358...359) 
+## [360](https://github.com/TheMouseNest/Platynator/tree/360) (2026-04-04)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/359...360) 
 
-- Fix adding "Casting" automatic colours to colors tab  
-- 12.0.5 only: Switch to reparenting default unit frames  
+- Add "Feathered Holed" highlight texture  
+- Forgot to commit options entry for previous commit  
+- Add "Limit to" option on aura widgets to limit auras displayed  
+- Fix threat colours not reversing after role change if nameplates onscreen  
+- Add option to threat "Only apply when tank" - so that no DPS see threat colors  

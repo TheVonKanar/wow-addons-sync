@@ -22,25 +22,12 @@ BuffRemindersDB = {
 ["glowType"] = 1,
 ["missingGlowYOffset"] = -1,
 ["showConsumableTooltips"] = true,
-["growDirection"] = "RIGHT",
 ["iconSize"] = 48,
-["glowYOffset"] = -1,
 ["showExpirationGlow"] = false,
+["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
-},
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
-},
+["buffTrackingMode"] = "my_buffs",
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
 ["blisteringScales"] = true,
@@ -50,13 +37,16 @@ BuffRemindersDB = {
 ["bronze"] = true,
 ["intellect"] = true,
 ["versatility"] = true,
-["devotionAura"] = true,
 ["earthShieldOthers"] = false,
+["devotionAura"] = true,
 ["attackPower"] = true,
-["stamina"] = true,
 ["sourceOfMagic"] = true,
+["stamina"] = true,
 ["beacons"] = true,
 ["burningRush"] = false,
+},
+["dbVersion"] = 37,
+["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
@@ -64,9 +54,6 @@ BuffRemindersDB = {
 ["iconZoom"] = 0,
 ["growDirection"] = "CENTER",
 ["textAlpha"] = 1,
-["position"] = {
-["x"] = -24,
-},
 ["borderSize"] = 2,
 ["showText"] = false,
 ["spacing"] = 0.2,
@@ -80,51 +67,25 @@ BuffRemindersDB = {
 },
 ["consumable"] = {
 ["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
 ["priority"] = 5,
 },
 ["main"] = {
 ["position"] = {
-["y"] = 676,
-["x"] = -998,
+["y"] = -470,
 },
-},
-["raid"] = {
-["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
-["showBuffReminder"] = false,
-["priority"] = 4,
 },
 ["presence"] = {
 ["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
 },
 ["targeted"] = {
 ["showText"] = true,
-["position"] = {
-["x"] = -24,
+},
+["raid"] = {
+["showText"] = true,
+["showBuffReminder"] = false,
+["priority"] = 4,
 },
 },
-["pet"] = {
-["position"] = {
-["x"] = -24,
-},
-},
-["custom"] = {
-["position"] = {
-["x"] = -24,
-},
-},
-},
-["readyCheckOnlyOverrides"] = {
-},
-["dbVersion"] = 36,
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -140,7 +101,8 @@ BuffRemindersDB = {
 ["hideInPvPMatch"] = true,
 },
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 },
 },
 }

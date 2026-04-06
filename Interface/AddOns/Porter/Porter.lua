@@ -82,26 +82,43 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
             -- Announce teleport to party/instance chat
             local entry = Porter.porterClicked
             if entry and type(entry) == "table" then
-                local msg
+                -- Determine announce category and message
+                local announceKey, msg
                 if entry.type == "housing" then
+                    announceKey = "Housing"
                     msg = "[Porter] Teleporting home"
                 elseif entry.mageType == "portal" then
+                    announceKey = "Mage Portals"
                     local dest = (entry.name or ""):gsub("^Ancient Portal: ", ""):gsub("^Portal: ", "")
                     msg = "[Porter] Creating portal to " .. dest
-                elseif entry.mageType == "teleport" then
-                    local dest = (entry.name or ""):gsub("^Ancient Teleport: ", ""):gsub("^Teleport: ", "")
-                    msg = "[Porter] Teleporting to " .. dest
                 elseif entry.cosmetic or entry.name == "Hearthstone" then
+                    announceKey = "Hearthstones"
                     local bind = GetBindLocation() or "inn"
                     msg = "[Porter] Hearthing to " .. bind
-                elseif entry.type == "toy" or entry.type == "item" then
-                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
-                elseif entry.classReq and not entry.mageType then
-                    -- Class spells (Dreamwalk, Death Gate, Zen Pilgrimage etc)
-                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
-                else
-                    -- Dungeons, raids, racials
+                elseif entry.season and entry.type == "spell" then
+                    -- Dungeon/raid teleports have a season field
+                    announceKey = "Dungeons"
                     msg = "[Porter] Teleporting to " .. (entry.name or entry.zone or "unknown")
+                elseif entry.type == "toy" then
+                    announceKey = "Toys"
+                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
+                elseif entry.type == "item" then
+                    announceKey = "Items"
+                    msg = "[Porter] Teleporting to " .. (entry.zone or entry.name or "unknown")
+                elseif entry.classReq or entry.raceReq then
+                    announceKey = "Class & Racials"
+                    local dest = (entry.name or ""):gsub("^Teleport: ", ""):gsub("^Ancient Teleport: ", "")
+                    msg = "[Porter] Teleporting to " .. (entry.zone or dest or "unknown")
+                else
+                    -- Legacy dungeon/raid entries without season
+                    announceKey = "Dungeons"
+                    msg = "[Porter] Teleporting to " .. (entry.name or entry.zone or "unknown")
+                end
+
+                -- Check if this announce category is enabled
+                local announce = Porter.db.settings.announcePort
+                if announce and announce[announceKey] == false then
+                    msg = nil
                 end
                 local channel
                 if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
@@ -111,7 +128,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
                 elseif IsInGroup() then
                     channel = "PARTY"
                 end
-                if channel then
+                if channel and msg then
                     SendChatMessage(msg, channel)
                 end
             end
@@ -119,6 +136,7 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, ...)
             -- Hide Porter if setting is on
             if Porter.db.settings.hideAfterPort
                and Porter.frame and Porter.frame:IsShown() and not InCombatLockdown() then
+                -- Don't hide yet if druid is still in flight form (cancelform hasn't finished)
                 if isDruid and GetShapeshiftFormID() == 27 then
                     return
                 end

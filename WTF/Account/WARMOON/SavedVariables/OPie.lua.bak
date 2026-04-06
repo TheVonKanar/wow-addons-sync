@@ -6,7 +6,7 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "8.3.1 (4.140)",
+["_OPieVersion"] = "8.3.2 (4.141)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
@@ -27,6 +27,7 @@ OPie_SavedData = {
 ["InteractionMode"] = 2,
 ["Bindings"] = {
 ["Usables"] = false,
+["Crafting"] = "CTRL-K",
 ["Utility"] = "6",
 },
 ["ShowCooldowns"] = true,
@@ -39,6 +40,9 @@ OPie_SavedData = {
 },
 ["PersistentStorage"] = {
 ["RingKeeper"] = {
+["OPieFlagStore"] = {
+["StoreVersion"] = 3,
+},
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
@@ -47,9 +51,6 @@ OPie_SavedData = {
 ["WorldMarkers"] = true,
 ["SpecMenu"] = true,
 ["PaladinTools"] = true,
-},
-["OPieFlagStore"] = {
-["StoreVersion"] = 3,
 },
 ["Utility"] = {
 {
@@ -88,6 +89,30 @@ OPie_SavedData = {
 },
 ["name"] = "Utility",
 ["save"] = true,
+},
+["Crafting"] = {
+{
+"item",
+238387,
+["sliceToken"] = "ABueTkOYBTw",
+},
+{
+"item",
+237497,
+["sliceToken"] = "ABueTkOYBTe",
+},
+{
+["sliceToken"] = "ABueTkOYBTr",
+["id"] = 1223014,
+},
+{
+"item",
+242299,
+["sliceToken"] = "ABueTkOYBT1",
+},
+["limit"] = "Kvotheen-Hyjal",
+["save"] = true,
+["name"] = "Crafting",
 },
 },
 },

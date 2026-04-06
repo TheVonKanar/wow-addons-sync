@@ -45,6 +45,10 @@ AngleurConfig = {
     voidFinderKey = nil,
 }
 
+AngleurAudio = {
+    checkboxes = {}
+}
+
 AngleurClassicConfig = {
     softInteract = {
         enabled = false,
@@ -76,7 +80,6 @@ Angleur_TinyOptions = {
     allowDismount = false,
     doubleClickWindow = 0.4,
     visualScale = 1,
-    ultraFocusMaster = 1,
     loginDisabled = false,
     errorsDisabled = true,
     softIconOff = false,
@@ -145,9 +148,7 @@ function Init_AngleurSavedVariables()
     if Angleur_TinyOptions.visualScale == nil then
         Angleur_TinyOptions.visualScale = 1
     end
-    if Angleur_TinyOptions.ultraFocusMaster == nil then
-        Angleur_TinyOptions.ultraFocusMaster = 1
-    end
+    
     if Angleur_TinyOptions.loginDisabled == nil then
         Angleur_TinyOptions.loginDisabled = false
     end
@@ -159,6 +160,31 @@ function Init_AngleurSavedVariables()
     end
     ang.debugLevel = Angleur_TinyOptions.debugLevel
     
+    if AngleurAudio == nil then
+        AngleurAudio = {}
+    end
+    if AngleurAudio.ultraFocusMaster == nil then
+        AngleurAudio.ultraFocusMaster = 1
+    end
+    if AngleurAudio.ultraFocusMusic == nil then
+        AngleurAudio.ultraFocusMusic = 0
+    end
+    if AngleurAudio.ultraFocusSFX == nil then
+        AngleurAudio.ultraFocusSFX = 1
+    end
+    if AngleurAudio.ultraFocusAmbience == nil then
+        AngleurAudio.ultraFocusAmbience = 0
+    end
+    if AngleurAudio.ultraFocusDialog == nil then
+        AngleurAudio.ultraFocusDialog = 0
+    end
+    if AngleurAudio.checkboxes == nil then
+        AngleurAudio.checkboxes = {}
+    end
+    if AngleurAudio.checkboxes.toggleBG == nil then
+        AngleurAudio.checkboxes.toggleBG = true
+    end
+
     if AngleurMinimapButton.hide == nil then
         AngleurMinimapButton.hide = false
     end
@@ -562,34 +588,50 @@ Angleur_TempCVars = {
     },
     -- Ultra Focus Audio Regular
     Sound_EnableMusic = {
-        active = false, cached = nil, setTo = "0", updating = false,
+        active = false, cached = nil, setTo = "1", updating = false,
     },
     Sound_EnableAmbience = {
-        active = false, cached = nil, setTo = "0", updating = false,
+        active = false, cached = nil, setTo = "1", updating = false,
     },
     Sound_EnableDialog = {
-        active = false, cached = nil, setTo = "0", updating = false,
+        active = false, cached = nil, setTo = "1", updating = false,
     },
     Sound_EnableSFX = {
         active = false, cached = nil, setTo = "1", updating = false,
     },
-    Sound_SFXVolume = {
-        active = false, cached = nil, setTo = "1.0", updating = false,
-    },
     Sound_EnableAllSound = {
         active = false, cached = nil, setTo = "1", updating = false,
     },
-    -- Angleur_TempCVars["Sound_MasterVolume"].setTo =  Angleur_TinyOptions.ultraFocusMaster --> must be assigned every time ultraFocusMaster is changed
+    -- Angleur_TempCVars["Sound_MasterVolume"].setTo =  Angleur_TinyOptions.ultraFocusMaster --> must be assigned every time ultraFocusMaster is changed 
+    -- Also goes for the other sliders!
     Sound_MasterVolume = {
-        active = false, cached = nil, setTo = Angleur_TinyOptions.ultraFocusMaster, updating = false,
+        active = false, cached = nil, setTo = AngleurAudio.ultraFocusMaster, updating = false,
+    },
+    Sound_MusicVolume = {
+        active = false, cached = nil, setTo = AngleurAudio.ultraFocusMusic, updating = false,
+    },
+    Sound_SFXVolume = {
+        active = false, cached = nil, setTo = AngleurAudio.ultraFocusSFX, updating = false,
+    },
+    Sound_AmbienceVolume = {
+        active = false, cached = nil, setTo = AngleurAudio.ultraFocusAmbience, updating = false,
+    },
+    Sound_DialogVolume = {
+        active = false, cached = nil, setTo = AngleurAudio.ultraFocusDialog, updating = false,
     },
 }
+
+
 Angleur_TempCVarHandler = CreateFrame("Frame", "Example_CVarHandler", UIParent, "Legolando_TempCVarHandlerTemplate_Angleur")
 Angleur_TempCVarHandler.tempCVarsTable = Angleur_TempCVars
 Angleur_TempCVarHandler:Init()
 local function cvars_load()
     -- Need to re-assign here because when table is first created Saved Vars haven't loaded yet
-    Angleur_TempCVars["Sound_MasterVolume"].setTo =  Angleur_TinyOptions.ultraFocusMaster
+    Angleur_TempCVars["Sound_MasterVolume"].setTo =  AngleurAudio.ultraFocusMaster
+    Angleur_TempCVars["Sound_MusicVolume"].setTo =  AngleurAudio.ultraFocusMusic
+    Angleur_TempCVars["Sound_SFXVolume"].setTo =  AngleurAudio.ultraFocusSFX
+    Angleur_TempCVars["Sound_AmbienceVolume"].setTo =  AngleurAudio.ultraFocusAmbience
+    Angleur_TempCVars["Sound_DialogVolume"].setTo =  AngleurAudio.ultraFocusDialog
 
     -- Order: Anywhere in PLAYER_ENTERING_WORLD
     if Angleur_TinyOptions.softIconOff == true and 	C_CVar.GetCVar("SoftTargetIconGameObject") == "1" then

@@ -178,7 +178,8 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
             firstCast = false
         end
         if AngleurConfig.ultraFocusAudioEnabled then 
-            Angleur_TempCVarHandler:Set("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_SFXVolume", "Sound_EnableAllSound", "Sound_MasterVolume")
+            Angleur_TempCVarHandler:Set("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+            Angleur_TempCVarHandler:Set("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
         end
         if AngleurConfig.ultraFocusAutoLootEnabled then
             Angleur_TempCVarHandler:Set("autoLootDefault")
@@ -187,7 +188,8 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
     elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" and not issecretvalue(unit) and unit == "player" then
         if issecretvalue(arg5) then return end
         if not CheckTable(fishingSpellTable, arg5) then return end
-        Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_SFXVolume", "Sound_EnableAllSound", "Sound_MasterVolume")
+        Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+        Angleur_TempCVarHandler:Release("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
         Angleur_TempCVarHandler:Release("autoLootDefault")
         if Angleur_TinyOptions.turnOffSoftInteract then Angleur_TempCVarHandler:Release("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard") end
         if isChosenKeyDown() == false then
@@ -447,7 +449,6 @@ function Angleur_ActionHandler(self)
     end
     --______________________________________________________________________________________________________________________________________
 
-
     local _, cooldownOversized = C_Container.GetItemCooldown(angleurToys.selectedOversizedBobberTable.toyID)
     local oversizedReady = angleurToys.selectedOversizedBobberTable.hasToy == true and AngleurConfig.oversizedEnabled and angleurToys.selectedOversizedBobberTable.loaded and not oversizedBobbered and cooldownOversized == 0
     if oversizedReady then
@@ -621,7 +622,7 @@ function Angleur_SetSleep()
         Angleur.configPanel.tab2:DesaturateHierarchy(0)
         Angleur.configPanel.wakeUpButton:Hide()
         Angleur.configPanel.decoration:Show()
-        if AngleurConfig.ultraFocusAudioEnabled == true then
+        if AngleurConfig.ultraFocusAudioEnabled == true and AngleurAudio.checkboxes.toggleBG == true then
             Angleur_TempCVarHandler:Set("Sound_EnableSoundWhenGameIsInBG")
         end
         -- Angleur's Plugin Addon, Angleur_Underlight

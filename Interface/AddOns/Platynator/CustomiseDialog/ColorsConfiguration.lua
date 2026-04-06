@@ -111,6 +111,8 @@ addonTable.CustomiseDialog.ColorsConfig = {
       },
       instancesOnly = false,
       combatOnly = true,
+      tanksOnly = false,
+      useSafeColor = false,
     },
     entries = {
       {
@@ -172,6 +174,16 @@ addonTable.CustomiseDialog.ColorsConfig = {
         end,
         getter = function(details)
           return details.instancesOnly
+        end,
+      },
+      {
+        label = addonTable.Locales.ONLY_APPLY_WHEN_TANK,
+        kind = "checkbox",
+        setter = function(details, value)
+          details.tanksOnly = value
+        end,
+        getter = function(details)
+          return details.tanksOnly
         end,
       },
       {

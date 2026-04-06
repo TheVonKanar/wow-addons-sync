@@ -55,10 +55,3 @@ X: 37
 Y: 197
 W: 664
 H: 400
-Frame: ProfessionsBookFrame
-FrameLevel: 1
-Anchor: BOTTOMRIGHT
-X: -88
-Y: 226
-W: 550
-H: 525

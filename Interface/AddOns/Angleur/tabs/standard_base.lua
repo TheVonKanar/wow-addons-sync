@@ -2,6 +2,12 @@ local T = Angleur_Translate
 
 local debugChannel = 5
 
+local DEFAULT_MASTER = 1
+local DEFAULT_SFX = 1
+local DEFAULT_MUSIC = 0
+local DEFAULT_DIALOG = 0
+local DEFAULT_AMBIENCE = 0
+
 local colorYello = CreateColor(1.0, 0.82, 0.0)
 local colorGrae = CreateColor(0.85, 0.85, 0.85)
 local colorBlu = CreateColor(0.61, 0.85, 0.92)
@@ -13,13 +19,129 @@ local mistsStandardTab = ang.mists.standardTab
 local mistsToys = ang.mists.toys
 local retailToys = ang.retail.toys
 
-function Angleur_SetTab1(self)
-    local gameVersion = Angleur_CheckVersion()
-    if gameVersion == 1 then
-        retailStandardTab:ExtraButtons(self)
-    elseif gameVersion == 2 or gameVersion == 3 then
-        mistsStandardTab:ExtraButtons(self)
+-- <Button name="$parent_Defaults" parentKey="defaults" inherits="GameMenuButtonTemplate">
+--     <Size x="72" y="42"/>
+--     <Anchors>
+--         <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="-15" y="65"/>
+--     </Anchors>
+-- </Button>
+
+local function setupAudio(self)
+    local audioConfig = CreateFrame("Button", "Angleur_UltraFocusAudio_CollapseConfig", self.ultraFocus.audio.checkbox, "Legolando_CollapseConfigTemplate_Angleur")
+    audioConfig:SetPoint("LEFT", self.ultraFocus.audio.text, "RIGHT")
+    audioConfig.icon:SetTexture("Interface/AddOns/Angleur/images/audiooptions.png")
+    audioConfig.tooltip= T["Adjust Audio Levels"]
+    audioConfig.popup:SetSize(270, 345)
+    audioConfig.popup:AdjustPointsOffset(-5, 5)
+    audioConfig.popup.title:SetText(T["Ultra Focus: Audio Settings"])
+    audioConfig:Hide()
+
+    local masterSlider = CreateFrame("Frame", "Angleur_UltraFocusAudio_MasterSlider", audioConfig.popup, "SliderAndEditControlTemplate")
+    masterSlider:SetScale(1.1)
+    masterSlider:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 20, -38)
+    masterSlider.ValueBox:SetNumericFullRange()
+    masterSlider:SetupSlider(0, 100, AngleurAudio.ultraFocusMaster * 100, 1, colorYello:WrapTextInColorCode(T["Master Volume"]))
+    masterSlider:SetCallback(function(value, isUserInput)
+        AngleurAudio.ultraFocusMaster = value/100
+        Angleur_TempCVars["Sound_MasterVolume"].setTo = AngleurAudio.ultraFocusMaster
+    end)
+
+    local musicSlider = CreateFrame("Frame", "Angleur_UltraFocusAudio_MusicSlider", audioConfig.popup, "SliderAndEditControlTemplate")
+    musicSlider:SetScale(0.9)
+    musicSlider:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 34, -97)
+    musicSlider.ValueBox:SetNumericFullRange()
+    musicSlider:SetupSlider(0, 100, AngleurAudio.ultraFocusMusic * 100, 1, colorYello:WrapTextInColorCode(T["Music Volume"]))
+    musicSlider:SetCallback(function(value, isUserInput)
+        AngleurAudio.ultraFocusMusic = value/100
+        Angleur_TempCVars["Sound_MusicVolume"].setTo = AngleurAudio.ultraFocusMusic
+    end)
+
+    local sfxSlider = CreateFrame("Frame", "Angleur_UltraFocusAudio_SFXSlider", audioConfig.popup, "SliderAndEditControlTemplate")
+    sfxSlider:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 34, -138)
+    sfxSlider:SetScale(0.9)
+    sfxSlider.ValueBox:SetNumericFullRange()
+    sfxSlider:SetupSlider(0, 100, AngleurAudio.ultraFocusSFX * 100, 1, colorYello:WrapTextInColorCode(T["Effects Volume"]))
+    sfxSlider:SetCallback(function(value, isUserInput)
+        AngleurAudio.ultraFocusSFX = value/100
+        Angleur_TempCVars["Sound_SFXVolume"].setTo = AngleurAudio.ultraFocusSFX
+    end)
+
+    local ambienceSlider = CreateFrame("Frame", "Angleur_UltraFocusAudio_AmbienceSlider", audioConfig.popup, "SliderAndEditControlTemplate")
+    ambienceSlider:SetScale(0.9)
+    ambienceSlider:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 34, -179)
+    ambienceSlider.ValueBox:SetNumericFullRange()
+    ambienceSlider:SetupSlider(0, 100, AngleurAudio.ultraFocusAmbience * 100, 1, colorYello:WrapTextInColorCode(T["Ambience Volume"]))
+    ambienceSlider:SetCallback(function(value, isUserInput)
+        AngleurAudio.ultraFocusAmbience = value/100
+        Angleur_TempCVars["Sound_AmbienceVolume"].setTo = AngleurAudio.ultraFocusAmbience
+    end)
+
+    local dialogSlider = CreateFrame("Frame", "Angleur_UltraFocusAudio_DialogSlider", audioConfig.popup, "SliderAndEditControlTemplate")
+    dialogSlider:SetScale(0.9)
+    dialogSlider:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 34, -220)
+    dialogSlider.ValueBox:SetNumericFullRange()
+    dialogSlider:SetupSlider(0, 100, AngleurAudio.ultraFocusDialog * 100, 1, colorYello:WrapTextInColorCode(T["Dialog Volume"]))
+    dialogSlider:SetCallback(function(value, isUserInput)
+        AngleurAudio.ultraFocusDialog = value/100
+        Angleur_TempCVars["Sound_DialogVolume"].setTo = AngleurAudio.ultraFocusDialog
+    end)
+
+
+    local audioCheckboxes = CreateFrame("Frame", "Angleur_UltraFocusAudio_Checkboxes", audioConfig.popup, "Legolando_CheckboxesTemplate_Angleur")
+    audioCheckboxes:SetPoint("TOPLEFT", audioConfig.popup, "TOPLEFT", 20, -255)
+    audioCheckboxes.savedVarTable = AngleurAudio.checkboxes
+
+    local backgroundToggle = CreateFrame("CheckButton", "Angleur_UltraFocusAudio_ToggleBackground", audioCheckboxes, "Legolando_CheckboxFrameTemplate_Angleur")
+    backgroundToggle:SetPoint("TOPLEFT", audioCheckboxes, "TOPLEFT")
+    backgroundToggle.text:SetText(T["Toggle Background Audio"])
+    backgroundToggle.tooltip = T["If enabled, Angleur will turn on \"Sound in the Background\" when awake, and restore it to its previous value when sleeping." 
+    .. "\n\nOnly disable if you NEVER want background sound to be on, or there is an error due to a clash with another addon."]
+    backgroundToggle.reference = "toggleBG"
+    backgroundToggle.onClickCallback = function(self, checked) 
+        if checked == true then
+            if AngleurCharacter.sleeping == false and AngleurConfig.ultraFocusAudioEnabled == true then
+                Angleur_TempCVarHandler:Set("Sound_EnableSoundWhenGameIsInBG")
+            end
+        elseif checked == false then
+            Angleur_TempCVarHandler:Release("Sound_EnableSoundWhenGameIsInBG")       
+        end
     end
+    audioCheckboxes:Update()
+
+    local defaults = CreateFrame("Button", "Angleur_UltraFocusAudio_Defaults", audioConfig.popup, "GameMenuButtonTemplate")
+    defaults:SetSize(120, 42)
+    defaults:SetPoint("BOTTOMRIGHT", audioConfig.popup, "BOTTOMRIGHT", -12, 10)
+    defaults.Text:SetFontObject("Game12Font_o1")
+    defaults.Text:SetText(colorYello:WrapTextInColorCode(T["Defaults\n(Recommended)"]))
+    defaults:SetScript("OnClick", function()
+        AngleurAudio.ultraFocusMaster = DEFAULT_MASTER
+        masterSlider:SetValue(DEFAULT_MASTER * 100)
+        Angleur_TempCVars["Sound_MasterVolume"].setTo = AngleurAudio.ultraFocusMaster
+
+        AngleurAudio.ultraFocusMusic = DEFAULT_MUSIC
+        musicSlider:SetValue(DEFAULT_MUSIC * 100)
+        Angleur_TempCVars["Sound_MusicVolume"].setTo = AngleurAudio.ultraFocusMusic
+
+        AngleurAudio.ultraFocusSFX = DEFAULT_SFX
+        sfxSlider:SetValue(DEFAULT_SFX * 100)
+        Angleur_TempCVars["Sound_SFXVolume"].setTo = AngleurAudio.ultraFocusSFX
+
+        AngleurAudio.ultraFocusAmbience = DEFAULT_AMBIENCE
+        ambienceSlider:SetValue(DEFAULT_AMBIENCE * 100)
+        Angleur_TempCVars["Sound_AmbienceVolume"].setTo = AngleurAudio.ultraFocusAmbience
+
+        AngleurAudio.ultraFocusDialog = DEFAULT_DIALOG
+        dialogSlider:SetValue(DEFAULT_DIALOG * 100)
+        Angleur_TempCVars["Sound_DialogVolume"].setTo = AngleurAudio.ultraFocusDialog
+
+
+        backgroundToggle.checkbox:SetChecked(true)
+        AngleurAudio.checkboxes.toggleBG = true
+        if AngleurCharacter.sleeping == false and AngleurConfig.ultraFocusAudioEnabled == true then
+            Angleur_TempCVarHandler:Set("Sound_EnableSoundWhenGameIsInBG")
+        end
+        print(T["Ultra Focus: Default audio settings restored"])
+    end)
 
     self.ultraFocus.title:SetText(T["Ultra Focus:"])
     self.ultraFocus.title:SetScript("OnEnter", function(self)
@@ -44,18 +166,36 @@ function Angleur_SetTab1(self)
     self.ultraFocus.audio.checkbox:SetScript("OnClick", function(self)
         if self:GetChecked() then
             AngleurConfig.ultraFocusAudioEnabled = true
-            if AngleurCharacter.sleeping == false then
+            audioConfig:Show()
+            if AngleurCharacter.sleeping == false and AngleurAudio.checkboxes.toggleBG == true then
                 Angleur_TempCVarHandler:Set("Sound_EnableSoundWhenGameIsInBG")
             end
         elseif self:GetChecked() == false then
             AngleurConfig.ultraFocusAudioEnabled = false
-            Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_SFXVolume", "Sound_EnableAllSound", "Sound_MasterVolume")
+            audioConfig:Hide()
+            Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+            Angleur_TempCVarHandler:Release("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
             Angleur_TempCVarHandler:Release("Sound_EnableSoundWhenGameIsInBG")
         end
     end)
     if AngleurConfig.ultraFocusAudioEnabled == true then
         self.ultraFocus.audio.checkbox:SetChecked(true)
+        audioConfig:Show()
     end
+
+
+end
+
+function Angleur_SetTab1(self)
+    local gameVersion = Angleur_CheckVersion()
+    if gameVersion == 1 then
+        retailStandardTab:ExtraButtons(self)
+    elseif gameVersion == 2 or gameVersion == 3 then
+        mistsStandardTab:ExtraButtons(self)
+    end
+
+    setupAudio(self)
+
 
     self.ultraFocus.autoLoot.text:SetText(T["Temp. Auto Loot "])
     self.ultraFocus.autoLoot.text:SetFontObject(SpellFont_Small)

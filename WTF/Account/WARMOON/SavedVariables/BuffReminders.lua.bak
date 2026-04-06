@@ -22,13 +22,13 @@ BuffRemindersDB = {
 ["glowType"] = 1,
 ["missingGlowYOffset"] = -1,
 ["showConsumableTooltips"] = true,
-["growDirection"] = "RIGHT",
 ["iconSize"] = 48,
-["glowYOffset"] = -1,
 ["showExpirationGlow"] = false,
+["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
 ["soulstone"] = true,
@@ -36,95 +36,20 @@ BuffRemindersDB = {
 ["atrophicNumbingPoison"] = true,
 ["beacons"] = true,
 ["bronze"] = true,
-["stamina"] = true,
 ["sourceOfMagic"] = true,
+["stamina"] = true,
 ["attackPower"] = true,
-["earthShieldOthers"] = false,
 ["devotionAura"] = true,
+["earthShieldOthers"] = false,
 ["versatility"] = true,
 ["intellect"] = true,
 ["shamanShields"] = true,
 ["burningRush"] = false,
 },
-["categorySettings"] = {
-["self"] = {
-["iconAlpha"] = 1,
-["showText"] = false,
-["spacing"] = 0.2,
-["textSize"] = 20,
-["growDirection"] = "CENTER",
-["borderSize"] = 2,
-["iconZoom"] = 0,
-["position"] = {
-["x"] = -24,
-},
-["iconSize"] = 48,
-["textAlpha"] = 1,
-["textColor"] = {
-1,
-1,
-1,
-},
-},
-["consumable"] = {
-["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
-["priority"] = 5,
-},
-["main"] = {
-["position"] = {
-["y"] = 676,
-["x"] = -998,
-},
-},
-["custom"] = {
-["position"] = {
-["x"] = -24,
-},
-},
-["targeted"] = {
-["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
-},
-["presence"] = {
-["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
-},
-["pet"] = {
-["position"] = {
-["x"] = -24,
-},
-},
-["raid"] = {
-["showText"] = true,
-["position"] = {
-["x"] = -24,
-},
-["showBuffReminder"] = false,
-["priority"] = 4,
-},
-},
+["dbVersion"] = 37,
 ["readyCheckOnlyOverrides"] = {
 },
-["customBuffs"] = {
-["burningRush"] = {
-["overlayText"] = "",
-["showWhenPresent"] = true,
-["name"] = "Burning Rush",
-["loadConditions"] = {
-["housing"] = false,
-},
-["class"] = "WARLOCK",
-["key"] = "burningRush",
-["spellID"] = 111400,
-},
-},
+["buffTrackingMode"] = "my_buffs",
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -140,7 +65,44 @@ BuffRemindersDB = {
 ["pvp"] = true,
 },
 },
-["dbVersion"] = 36,
+["categorySettings"] = {
+["self"] = {
+["iconAlpha"] = 1,
+["showText"] = false,
+["spacing"] = 0.2,
+["textSize"] = 20,
+["growDirection"] = "CENTER",
+["borderSize"] = 2,
+["iconZoom"] = 0,
+["iconSize"] = 48,
+["textAlpha"] = 1,
+["textColor"] = {
+1,
+1,
+1,
+},
+},
+["consumable"] = {
+["showText"] = true,
+["priority"] = 5,
+},
+["main"] = {
+["position"] = {
+["y"] = -470,
+},
+},
+["targeted"] = {
+["showText"] = true,
+},
+["raid"] = {
+["showText"] = true,
+["showBuffReminder"] = false,
+["priority"] = 4,
+},
+["presence"] = {
+["showText"] = true,
+},
+},
 },
 },
 }

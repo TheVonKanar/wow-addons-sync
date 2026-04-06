@@ -91,6 +91,10 @@ LoggerHeadDB = {
 },
 },
 ["raid"] = {
+["March on Quel'Danas"] = {
+[14] = true,
+[15] = true,
+},
 ["The Dreamrift"] = {
 [14] = true,
 [17] = true,

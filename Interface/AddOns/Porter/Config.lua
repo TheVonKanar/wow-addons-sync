@@ -39,6 +39,16 @@ Porter.profileDefaults = {
         ["Delves"] = true,
         ["House"] = true,
     },
+    announcePort = {
+        ["Hearthstones"] = true,
+        ["Class & Racials"] = true,
+        ["Mage Portals"] = true,
+        ["Items"] = true,
+        ["Toys"] = true,
+        ["Dungeons"] = true,
+        ["Raids"] = true,
+        ["Housing"] = true,
+    },
 }
 
 -- Deep copy a table (used for profile copying and default merging)

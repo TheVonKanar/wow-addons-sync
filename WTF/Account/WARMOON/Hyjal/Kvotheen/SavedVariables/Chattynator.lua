@@ -1,17 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/cw Xxpewpew-Dalaran on a une version locale je crois",
-"/cw Xxpewpew-Dalaran pas bien sur mais ya toute une equipe d'ubi qui se charge de tout ca, jy ai pas trop touché encore",
-"/cw Xxpewpew-Dalaran ca aide quand ta 20000 pelos dans la boite mdr",
-"/cw Khazir-Hyjal Merci a toi!",
-"/cw Khazir-Hyjal /simc",
-"/g BONJOUR!!",
-"/g /simc",
-"/g /combatlog",
-"/s /kiss",
-"/s /simc",
-"/p |cnIQ4:|Hitem:251233::::::::90:263::23:5:12779:13439:6652:12699:13577:1:28:3025:::::|h[Manipulator's Vest]|h|r",
 "/p /simc",
 "/s /simc",
 "/g JE DROP QUE DU CUIR JPP |cnIQ4:|Hitem:250457::::::::90:263::81:4:6652:13578:13333:12787:1:28:4907:::::|h[Devouring Outrider's Chausses]|h|r",
@@ -202,4 +191,15 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/p hey :)",
 "/p hey!",
 "/p wp, bye :)",
+"/cw Øskytankul-Archimonde +1",
+"/raid trop chiant le stuff champion...|cnIQ4:|Hitem:249920:7969:240900:240900:::::90:263::3:4:6652:13668:13333:12790:1:28:4240:::::|h[Eye of Midnight]|h|r",
+"/raid vendu grodar",
+"/raid grodar tu peux faire moins de degats stp?",
+"/raid merci",
+"/raid /simc",
+"/raid pour info les brassards ca me up pas mal vu que jai du champ 2, mais c'est pas mes bis stats",
+"/raid jsuis entre les deux :D",
+"/raid UP EN RAID",
+"/s 40.3 51.1",
+"/s /simc",
 }

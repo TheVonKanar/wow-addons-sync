@@ -1,6 +1,6 @@
 # MPlusTimer
 
-## [1.0.26](https://github.com/Reloe/MPlusTimer/tree/1.0.26) (2026-03-27)
-[Full Changelog](https://github.com/Reloe/MPlusTimer/compare/1.0.25...1.0.26) [Previous Releases](https://github.com/Reloe/MPlusTimer/releases)
+## [1.0.27](https://github.com/Reloe/MPlusTimer/tree/1.0.27) (2026-04-04)
+[Full Changelog](https://github.com/Reloe/MPlusTimer/compare/1.0.26...1.0.27) [Previous Releases](https://github.com/Reloe/MPlusTimer/releases)
 
-- reverting previous fix and instead removing journal opening backup code which removes the taint  
+- fix quarry timer in pit of saron. this will also delete any pb in that dungeon once to get rid off false data  

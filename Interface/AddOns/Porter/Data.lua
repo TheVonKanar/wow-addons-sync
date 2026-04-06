@@ -113,71 +113,89 @@ Porter.TeleportData = {
     -- CLASS & RACIAL
     ---------------------------------------------------------------------------
     ["Class & Racial"] = {
-        -- Mage Teleports (Alliance) — newest first
-        { type = "spell", id = 281403, name = "Teleport: Boralus",              classReq = "MAGE", mageType = "teleport", region = "Kul Tiras / Zandalar", zone = "Boralus" },
-        { type = "spell", id = 176248, name = "Teleport: Stormshield",          classReq = "MAGE", mageType = "teleport", region = "Draenor", zone = "Stormshield" },
-        { type = "spell", id = 132621, name = "Teleport: Vale (Alliance)",      classReq = "MAGE", mageType = "teleport", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
-        { type = "spell", id = 33690,  name = "Teleport: Shattrath (Alliance)", classReq = "MAGE", mageType = "teleport", region = "Outland", zone = "Shattrath" },
-        { type = "spell", id = 32271,  name = "Teleport: Exodar",               classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Exodar" },
-        { type = "spell", id = 49359,  name = "Teleport: Theramore",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Theramore" },
-        { type = "spell", id = 3561,   name = "Teleport: Stormwind",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Stormwind" },
-        { type = "spell", id = 3562,   name = "Teleport: Ironforge",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Ironforge" },
-        { type = "spell", id = 3565,   name = "Teleport: Darnassus",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Darnassus" },
-
-        -- Mage Teleports (Horde) — newest first
-        { type = "spell", id = 281404, name = "Teleport: Dazar'alor",           classReq = "MAGE", mageType = "teleport", region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
-        { type = "spell", id = 176242, name = "Teleport: Warspear",             classReq = "MAGE", mageType = "teleport", region = "Draenor", zone = "Warspear" },
-        { type = "spell", id = 132627, name = "Teleport: Vale (Horde)",         classReq = "MAGE", mageType = "teleport", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
-        { type = "spell", id = 35715,  name = "Teleport: Shattrath (Horde)",    classReq = "MAGE", mageType = "teleport", region = "Outland", zone = "Shattrath" },
-        { type = "spell", id = 32272,  name = "Teleport: Silvermoon",           classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Silvermoon" },
-        { type = "spell", id = 49358,  name = "Teleport: Stonard",              classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Stonard" },
-        { type = "spell", id = 3567,   name = "Teleport: Orgrimmar",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Orgrimmar" },
-        { type = "spell", id = 3563,   name = "Teleport: Undercity",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Undercity" },
-        { type = "spell", id = 3566,   name = "Teleport: Thunder Bluff",        classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Thunder Bluff" },
-
-        -- Mage Teleports (Neutral) — newest first
+        -- Mage Teleports — newest expansion first, mixed factions
+        -- Midnight
         { type = "spell", id = 1259190, name = "Teleport: Silvermoon City",   classReq = "MAGE", mageType = "teleport", region = "Quel'Thalas", zone = "Silvermoon City" },
+        -- The War Within
         { type = "spell", id = 446540, name = "Teleport: Dornogal",             classReq = "MAGE", mageType = "teleport", region = "Khaz Algar", zone = "Dornogal" },
+        -- Dragonflight
         { type = "spell", id = 395277, name = "Teleport: Valdrakken",           classReq = "MAGE", mageType = "teleport", region = "Dragon Isles", zone = "Valdrakken" },
+        -- Shadowlands
         { type = "spell", id = 344587, name = "Teleport: Oribos",               classReq = "MAGE", mageType = "teleport", region = "Shadowlands", zone = "Oribos" },
+        -- Battle for Azeroth
+        { type = "spell", id = 281403, name = "Teleport: Boralus",              classReq = "MAGE", mageType = "teleport", region = "Kul Tiras / Zandalar", zone = "Boralus" },
+        { type = "spell", id = 281404, name = "Teleport: Dazar'alor",           classReq = "MAGE", mageType = "teleport", region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
+        -- Legion
         { type = "spell", id = 224869, name = "Teleport: Dalaran (Broken Isles)", classReq = "MAGE", mageType = "teleport", region = "Broken Isles", zone = "Dalaran" },
         { type = "spell", id = 193759, name = "Teleport: Hall of the Guardian", classReq = "MAGE", mageType = "teleport", region = "Broken Isles", zone = "Dalaran" },
+        -- Warlords of Draenor
+        { type = "spell", id = 176248, name = "Teleport: Stormshield",          classReq = "MAGE", mageType = "teleport", region = "Draenor", zone = "Stormshield" },
+        { type = "spell", id = 176242, name = "Teleport: Warspear",             classReq = "MAGE", mageType = "teleport", region = "Draenor", zone = "Warspear" },
+        -- Mists of Pandaria
+        { type = "spell", id = 132621, name = "Teleport: Vale (Alliance)",      classReq = "MAGE", mageType = "teleport", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
+        { type = "spell", id = 132627, name = "Teleport: Vale (Horde)",         classReq = "MAGE", mageType = "teleport", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
+        -- Cataclysm
         { type = "spell", id = 88342,  name = "Teleport: Tol Barad (Alliance)", classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Tol Barad" },
         { type = "spell", id = 88344,  name = "Teleport: Tol Barad (Horde)",    classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Tol Barad" },
+        -- Wrath of the Lich King
         { type = "spell", id = 53140,  name = "Teleport: Dalaran (Northrend)",  classReq = "MAGE", mageType = "teleport", region = "Northrend", zone = "Dalaran" },
+        { type = "spell", id = 49359,  name = "Teleport: Theramore",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Theramore" },
+        { type = "spell", id = 49358,  name = "Teleport: Stonard",              classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Stonard" },
+        -- The Burning Crusade
+        { type = "spell", id = 33690,  name = "Teleport: Shattrath (Alliance)", classReq = "MAGE", mageType = "teleport", region = "Outland", zone = "Shattrath" },
+        { type = "spell", id = 35715,  name = "Teleport: Shattrath (Horde)",    classReq = "MAGE", mageType = "teleport", region = "Outland", zone = "Shattrath" },
+        { type = "spell", id = 32271,  name = "Teleport: Exodar",               classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Exodar" },
+        { type = "spell", id = 32272,  name = "Teleport: Silvermoon",           classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Silvermoon" },
+        -- Vanilla
+        { type = "spell", id = 3561,   name = "Teleport: Stormwind",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Stormwind" },
+        { type = "spell", id = 3567,   name = "Teleport: Orgrimmar",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Orgrimmar" },
+        { type = "spell", id = 3562,   name = "Teleport: Ironforge",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Ironforge" },
+        { type = "spell", id = 3563,   name = "Teleport: Undercity",            classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Undercity" },
+        { type = "spell", id = 3565,   name = "Teleport: Darnassus",            classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Darnassus" },
+        { type = "spell", id = 3566,   name = "Teleport: Thunder Bluff",        classReq = "MAGE", mageType = "teleport", region = "Kalimdor", zone = "Thunder Bluff" },
+        -- Special
         { type = "spell", id = 120145, name = "Ancient Teleport: Dalaran",      classReq = "MAGE", mageType = "teleport", region = "Eastern Kingdoms", zone = "Dalaran Crater" },
 
-        -- Mage Portals (Alliance) — newest first
-        { type = "spell", id = 281400, name = "Portal: Boralus",                classReq = "MAGE", mageType = "portal", region = "Kul Tiras / Zandalar", zone = "Boralus" },
-        { type = "spell", id = 176246, name = "Portal: Stormshield",            classReq = "MAGE", mageType = "portal", region = "Draenor", zone = "Stormshield" },
-        { type = "spell", id = 132620, name = "Portal: Vale (Alliance)",        classReq = "MAGE", mageType = "portal", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
-        { type = "spell", id = 33691,  name = "Portal: Shattrath (Alliance)",   classReq = "MAGE", mageType = "portal", region = "Outland", zone = "Shattrath" },
-        { type = "spell", id = 32266,  name = "Portal: Exodar",                 classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Exodar" },
-        { type = "spell", id = 49360,  name = "Portal: Theramore",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Theramore" },
-        { type = "spell", id = 10059,  name = "Portal: Stormwind",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Stormwind" },
-        { type = "spell", id = 11416,  name = "Portal: Ironforge",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Ironforge" },
-        { type = "spell", id = 11419,  name = "Portal: Darnassus",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Darnassus" },
-
-        -- Mage Portals (Horde) — newest first
-        { type = "spell", id = 281402, name = "Portal: Dazar'alor",             classReq = "MAGE", mageType = "portal", region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
-        { type = "spell", id = 176244, name = "Portal: Warspear",               classReq = "MAGE", mageType = "portal", region = "Draenor", zone = "Warspear" },
-        { type = "spell", id = 132626, name = "Portal: Vale (Horde)",           classReq = "MAGE", mageType = "portal", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
-        { type = "spell", id = 35717,  name = "Portal: Shattrath (Horde)",      classReq = "MAGE", mageType = "portal", region = "Outland", zone = "Shattrath" },
-        { type = "spell", id = 32267,  name = "Portal: Silvermoon",             classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Silvermoon" },
-        { type = "spell", id = 49361,  name = "Portal: Stonard",                classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Stonard" },
-        { type = "spell", id = 11417,  name = "Portal: Orgrimmar",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Orgrimmar" },
-        { type = "spell", id = 11418,  name = "Portal: Undercity",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Undercity" },
-        { type = "spell", id = 11420,  name = "Portal: Thunder Bluff",          classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Thunder Bluff" },
-
-        -- Mage Portals (Neutral) — newest first
+        -- Mage Portals — newest expansion first, mixed factions
+        -- Midnight
         { type = "spell", id = 1259194, name = "Portal: Silvermoon City",     classReq = "MAGE", mageType = "portal", region = "Quel'Thalas", zone = "Silvermoon City" },
+        -- The War Within
         { type = "spell", id = 446534, name = "Portal: Dornogal",               classReq = "MAGE", mageType = "portal", region = "Khaz Algar", zone = "Dornogal" },
+        -- Dragonflight
         { type = "spell", id = 395289, name = "Portal: Valdrakken",             classReq = "MAGE", mageType = "portal", region = "Dragon Isles", zone = "Valdrakken" },
+        -- Shadowlands
         { type = "spell", id = 344597, name = "Portal: Oribos",                 classReq = "MAGE", mageType = "portal", region = "Shadowlands", zone = "Oribos" },
+        -- Battle for Azeroth
+        { type = "spell", id = 281400, name = "Portal: Boralus",                classReq = "MAGE", mageType = "portal", region = "Kul Tiras / Zandalar", zone = "Boralus" },
+        { type = "spell", id = 281402, name = "Portal: Dazar'alor",             classReq = "MAGE", mageType = "portal", region = "Kul Tiras / Zandalar", zone = "Dazar'alor" },
+        -- Legion
         { type = "spell", id = 224871, name = "Portal: Dalaran (Broken Isles)", classReq = "MAGE", mageType = "portal", region = "Broken Isles", zone = "Dalaran" },
+        -- Warlords of Draenor
+        { type = "spell", id = 176246, name = "Portal: Stormshield",            classReq = "MAGE", mageType = "portal", region = "Draenor", zone = "Stormshield" },
+        { type = "spell", id = 176244, name = "Portal: Warspear",               classReq = "MAGE", mageType = "portal", region = "Draenor", zone = "Warspear" },
+        -- Mists of Pandaria
+        { type = "spell", id = 132620, name = "Portal: Vale (Alliance)",        classReq = "MAGE", mageType = "portal", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
+        { type = "spell", id = 132626, name = "Portal: Vale (Horde)",           classReq = "MAGE", mageType = "portal", region = "Pandaria", zone = "Vale of Eternal Blossoms" },
+        -- Cataclysm
         { type = "spell", id = 88345,  name = "Portal: Tol Barad (Alliance)",   classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Tol Barad" },
         { type = "spell", id = 88346,  name = "Portal: Tol Barad (Horde)",      classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Tol Barad" },
+        -- Wrath of the Lich King
         { type = "spell", id = 53142,  name = "Portal: Dalaran (Northrend)",    classReq = "MAGE", mageType = "portal", region = "Northrend", zone = "Dalaran" },
+        { type = "spell", id = 49360,  name = "Portal: Theramore",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Theramore" },
+        { type = "spell", id = 49361,  name = "Portal: Stonard",                classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Stonard" },
+        -- The Burning Crusade
+        { type = "spell", id = 33691,  name = "Portal: Shattrath (Alliance)",   classReq = "MAGE", mageType = "portal", region = "Outland", zone = "Shattrath" },
+        { type = "spell", id = 35717,  name = "Portal: Shattrath (Horde)",      classReq = "MAGE", mageType = "portal", region = "Outland", zone = "Shattrath" },
+        { type = "spell", id = 32266,  name = "Portal: Exodar",                 classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Exodar" },
+        { type = "spell", id = 32267,  name = "Portal: Silvermoon",             classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Silvermoon" },
+        -- Vanilla
+        { type = "spell", id = 10059,  name = "Portal: Stormwind",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Stormwind" },
+        { type = "spell", id = 11417,  name = "Portal: Orgrimmar",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Orgrimmar" },
+        { type = "spell", id = 11416,  name = "Portal: Ironforge",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Ironforge" },
+        { type = "spell", id = 11418,  name = "Portal: Undercity",              classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Undercity" },
+        { type = "spell", id = 11419,  name = "Portal: Darnassus",              classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Darnassus" },
+        { type = "spell", id = 11420,  name = "Portal: Thunder Bluff",          classReq = "MAGE", mageType = "portal", region = "Kalimdor", zone = "Thunder Bluff" },
+        -- Special
         { type = "spell", id = 120146, name = "Ancient Portal: Dalaran",        classReq = "MAGE", mageType = "portal", region = "Eastern Kingdoms", zone = "Dalaran Crater" },
 
         -- Druid
@@ -327,14 +345,14 @@ Porter.TeleportData = {
         { type = "spell", id = 354465, name = "Halls of Atonement",          season = "tww", expansion = "Shadowlands", mapID = 378, region = "Shadowlands", zone = "Revendreth" },
 
         -- Midnight Season 1 M+ Pool
-        { type = "spell", id = 1254572, name = "Magisters' Terrace",         season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Isle of Quel'Danas" },
-        { type = "spell", id = 1254400, name = "Windrunner Spire",           season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Eversong Woods" },
-        { type = "spell", id = 1254563, name = "Nexus-Point Xenas",          season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Voidstorm" },
-        { type = "spell", id = 1254559, name = "Maisara Caverns",            season = "midnight", expansion = "Midnight", region = "Quel'Thalas", zone = "Zul'Aman" },
-        { type = "spell", id = 1254555, name = "Pit of Saron",               season = "midnight", expansion = "Wrath of the Lich King", region = "Northrend", zone = "Icecrown" },
-        { type = "spell", id = 1254551, name = "Seat of the Triumvirate",    season = "midnight", expansion = "Legion", region = "Broken Isles", zone = "Eredath" },
-        { type = "spell", id = 159898, name = "Skyreach",                    season = "midnight", expansion = "Warlords of Draenor", region = "Draenor", zone = "Spires of Arak" },
-        { type = "spell", id = 393273, name = "Algeth'ar Academy",           season = "midnight", expansion = "Dragonflight", region = "Dragon Isles", zone = "Thaldraszus" },
+        { type = "spell", id = 393273, name = "Algeth'ar Academy",           season = "midnight", expansion = "Dragonflight", mapID = 402, region = "Dragon Isles", zone = "Thaldraszus" },
+        { type = "spell", id = 1254572, name = "Magisters' Terrace",         season = "midnight", expansion = "Midnight", mapID = 558, region = "Quel'Thalas", zone = "Isle of Quel'Danas" },
+        { type = "spell", id = 1254559, name = "Maisara Caverns",            season = "midnight", expansion = "Midnight", mapID = 560, region = "Quel'Thalas", zone = "Zul'Aman" },
+        { type = "spell", id = 1254563, name = "Nexus-Point Xenas",          season = "midnight", expansion = "Midnight", mapID = 559, region = "Quel'Thalas", zone = "Voidstorm" },
+        { type = "spell", id = 1254555, name = "Pit of Saron",               season = "midnight", expansion = "Wrath of the Lich King", mapID = 556, region = "Northrend", zone = "Icecrown" },
+        { type = "spell", id = 1254551, name = "Seat of the Triumvirate",    season = "midnight", expansion = "Legion", mapID = 239, region = "Broken Isles", zone = "Eredath" },
+        { type = "spell", id = 159898,  name = "Skyreach",                   season = "midnight", expansion = "Warlords of Draenor", mapID = 161, region = "Draenor", zone = "Spires of Arak" },
+        { type = "spell", id = 1254400, name = "Windrunner Spire",           season = "midnight", expansion = "Midnight", mapID = 557, region = "Quel'Thalas", zone = "Eversong Woods" },
 
         -- The War Within (legacy - S1/S2 dungeons)
         { type = "spell", id = 445416, name = "City of Threads",             expansion = "The War Within", region = "Khaz Algar", zone = "Azj-Kahet" },
@@ -447,6 +465,14 @@ Porter.TeleportData = {
 -- CHANGELOG (shown once per version, newest first)
 ---------------------------------------------------------------------------
 Porter.ChangelogEntries = {
+    {
+        version = "1.1.5",
+        notes = {
+            "New setting: Announce Ports - customise which teleport types are announced to party/instance/raid chat. Leaving this on helps support Porter and lets your party know where you're headed!",
+            "Fixed Mythic+ keystone detection for Midnight Season 1 dungeons",
+            "Current season dungeons are now displayed in alphabetical order",
+        },
+    },
     {
         version = "1.1.4",
         notes = {

@@ -2661,6 +2661,51 @@ function Porter:CreateSettingsPanel()
     hsDrag:SetScript("OnLeave", function() GameTooltip:Hide() end)
     yPos = yPos - 40
 
+    -----------------------------------------------------------------
+    -- ANNOUNCE PORTS
+    -----------------------------------------------------------------
+    yPos = yPos - SECTION_GAP
+
+    local announceHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    announceHeader:SetPoint("TOPLEFT", 14, yPos)
+    announceHeader:SetText("Announce Ports")
+    announceHeader:SetTextColor(1, 1, 1, 1)
+    yPos = yPos - HEADER_GAP
+
+    local announceDesc = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    announceDesc:SetPoint("TOPLEFT", 14, yPos)
+    announceDesc:SetWidth(540)
+    announceDesc:SetJustifyH("LEFT")
+    announceDesc:SetText("When in a group, Porter will announce your teleport destination to party, raid, or instance chat. Use the toggles below to control which types are announced.")
+    announceDesc:SetTextColor(0.7, 0.7, 0.7, 1)
+    local descHeight = announceDesc:GetStringHeight()
+    yPos = yPos - descHeight - SUBGROUP_GAP
+
+    local announceTypes = {
+        { key = "Hearthstones",    label = "Hearthstones" },
+        { key = "Class & Racials", label = "Class & Racials (includes Mage Teleports)" },
+        { key = "Mage Portals",    label = "Mage Portals" },
+        { key = "Items",           label = "Items" },
+        { key = "Toys",            label = "Toys" },
+        { key = "Dungeons",        label = "Dungeons" },
+        { key = "Raids",           label = "Raids" },
+        { key = "Housing",         label = "Housing" },
+    }
+
+    for _, aType in ipairs(announceTypes) do
+        local cb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
+        cb:SetPoint("TOPLEFT", 14, yPos)
+        cb.text = cb:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        cb.text:SetPoint("LEFT", cb, "RIGHT", 4, 0)
+        cb.text:SetText(aType.label)
+        cb.text:SetTextColor(1, 1, 1, 1)
+        cb:SetChecked(self.db.settings.announcePort[aType.key] ~= false)
+        cb:SetScript("OnClick", function(self)
+            Porter.db.settings.announcePort[aType.key] = self:GetChecked()
+        end)
+        yPos = yPos - ITEM_GAP
+    end
+
     -- Padding below last section
     yPos = yPos - SECTION_GAP
 
