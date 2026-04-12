@@ -2,14 +2,14 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -27,29 +27,27 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["customBuffs"] = {
-},
+["buffTrackingMode"] = "my_buffs",
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["soulstone"] = true,
 ["blisteringScales"] = true,
+["soulstone"] = true,
 ["atrophicNumbingPoison"] = true,
-["beacons"] = true,
+["shamanShields"] = true,
 ["bronze"] = true,
+["intellect"] = true,
+["versatility"] = true,
+["earthShieldOthers"] = false,
+["devotionAura"] = true,
+["attackPower"] = true,
 ["sourceOfMagic"] = true,
 ["stamina"] = true,
-["attackPower"] = true,
-["devotionAura"] = true,
-["earthShieldOthers"] = false,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
 },
-["dbVersion"] = 37,
+["dbVersion"] = 38,
 ["readyCheckOnlyOverrides"] = {
 },
-["buffTrackingMode"] = "my_buffs",
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -58,24 +56,17 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 },
-["hideAllInVehicle"] = true,
-["categoryVisibility"] = {
-["custom"] = {
-["hideInPvPMatch"] = true,
-["pvp"] = true,
-},
-},
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
+["growDirection"] = "CENTER",
+["iconZoom"] = 0,
+["textAlpha"] = 1,
+["borderSize"] = 2,
 ["showText"] = false,
 ["spacing"] = 0.2,
-["textSize"] = 20,
-["growDirection"] = "CENTER",
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["iconSize"] = 48,
-["textAlpha"] = 1,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,
@@ -91,9 +82,6 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
-["targeted"] = {
-["showText"] = true,
-},
 ["raid"] = {
 ["showText"] = true,
 ["showBuffReminder"] = false,
@@ -102,6 +90,18 @@ BuffRemindersDB = {
 ["presence"] = {
 ["showText"] = true,
 },
+["targeted"] = {
+["showText"] = true,
+},
+},
+["hideAllInVehicle"] = true,
+["categoryVisibility"] = {
+["custom"] = {
+["pvp"] = true,
+["hideInPvPMatch"] = true,
+},
+},
+["customBuffs"] = {
 },
 },
 },

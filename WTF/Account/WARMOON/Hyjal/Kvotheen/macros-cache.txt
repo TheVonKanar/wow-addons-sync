@@ -16,16 +16,6 @@ VER 3 0100000000000036 " " "136018"
 /stopcasting
 /cast [@focus,exists] Wind Shear; Wind Shear
 END
-VER 3 0100000000000059 " " "134400"
-#showtooltip
-/use Invigorating Healing Potion
-/use Healthstone
-END
-VER 3 010000000000006C " " "134400"
-#showtooltip Tempered Potion
-/use Fleeting Tempered Potion
-/use Tempered Potion
-END
 VER 3 0100000000000060 " " "134400"
 #showtooltip
 /cast [@cursor] Earthbind Totem
@@ -74,4 +64,5 @@ END
 VER 3 010000000000005C "RES" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Water Shield, Earth Shield, Earthliving Weapon, Trans-Dimensional Bird Whistle
+/cast Ethereal Augment Rune
 END

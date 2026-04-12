@@ -1,5 +1,9 @@
 
 MinimapStatsDB = {
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+},
 ["global"] = {
 ["SystemStats"] = {
 ["String"] = "%fps\\n%home",
@@ -35,10 +39,6 @@ MinimapStatsDB = {
 ["Time"] = {
 ["Enable"] = false,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -80,14 +80,14 @@ MinimapStatsDB = {
 },
 ["General"] = {
 ["Font"] = "Friz Quadrata TT",
+["FontFlag"] = "OUTLINE",
+["FrameStrata"] = "MEDIUM",
 ["AccentColour"] = {
 128,
 128,
 255,
 },
 ["ClassColour"] = false,
-["FontFlag"] = "OUTLINE",
-["FrameStrata"] = "MEDIUM",
 ["FontShadow"] = {
 ["OffsetY"] = 0,
 ["OffsetX"] = 0,
@@ -154,33 +154,14 @@ MinimapStatsDB = {
 ["DateString"] = "%A, %B %d, %Y",
 },
 ["Position"] = {
-["AnchorFrom"] = "TOPRIGHT",
-["OffsetY"] = -1,
 ["OffsetX"] = 0,
+["OffsetY"] = -1,
+["AnchorFrom"] = "TOPRIGHT",
 ["AnchorTo"] = "BOTTOMRIGHT",
-},
-},
-["Time"] = {
-["TimeZone"] = "Local",
-["UpdateInterval"] = 60,
-["Enable"] = true,
-["Format"] = "24H",
-["Layout"] = {
-"BOTTOMLEFT",
-"BOTTOMLEFT",
-3,
-17,
-18,
-},
-["Colour"] = {
-255,
-255,
-255,
 },
 },
 ["Durability"] = {
 ["ColourBy"] = "VALUE",
-["Enable"] = false,
 ["Thresholds"] = {
 {
 ["Percent"] = 75,
@@ -215,6 +196,7 @@ MinimapStatsDB = {
 },
 },
 },
+["Enable"] = false,
 ["Layout"] = {
 "BOTTOMRIGHT",
 "BOTTOMRIGHT",
@@ -223,6 +205,24 @@ MinimapStatsDB = {
 12,
 },
 ["Text"] = "%s%",
+["Colour"] = {
+255,
+255,
+255,
+},
+},
+["Time"] = {
+["TimeZone"] = "Local",
+["UpdateInterval"] = 60,
+["Enable"] = true,
+["Format"] = "24H",
+["Layout"] = {
+"BOTTOMLEFT",
+"BOTTOMLEFT",
+3,
+17,
+18,
+},
 ["Colour"] = {
 255,
 255,

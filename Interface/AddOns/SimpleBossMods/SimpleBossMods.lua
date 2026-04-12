@@ -128,6 +128,8 @@ M.Defaults = M.Defaults or {
 				fontSize = 32,
 				borderThickness = 2,
 				font = "SBM Expressway",
+				outline = "OUTLINE",
+				shadow = false,
 				gap = 8,
 				perRow = C.ICONS_PER_ROW,
 				limit = 0,
@@ -144,6 +146,8 @@ M.Defaults = M.Defaults or {
 				height = 36,
 				fontSize = 16,
 				borderThickness = 2,
+				outline = "OUTLINE",
+				shadow = false,
 				swapIconSide = false,
 				swapIndicatorSide = false,
 				hideIcon = false,
@@ -328,7 +332,7 @@ function M:EnsureDefaults()
 		y = M.Defaults.cfg.icons.y,
 		growDirection = M.Defaults.cfg.icons.growDirection,
 	}
-	for _, k in ipairs({"enabled", "gap", "perRow", "limit", "anchorFrom", "anchorTo", "anchorParent", "customParent", "x", "y", "growDirection"}) do
+	for _, k in ipairs({"enabled", "gap", "perRow", "limit", "anchorFrom", "anchorTo", "anchorParent", "customParent", "x", "y", "growDirection", "outline", "shadow"}) do
 		ef(cfg.icons, k, M.Defaults.cfg.icons)
 	end
 	if cfg.icons.font == nil then
@@ -356,7 +360,7 @@ function M:EnsureDefaults()
 		sortAscending = M.Defaults.cfg.bars.sortAscending,
 		fillDirection = M.Defaults.cfg.bars.fillDirection,
 	}
-	for _, k in ipairs({"swapIconSide", "swapIndicatorSide", "hideIcon", "hideIndicators", "anchorFrom", "anchorTo", "anchorParent", "customParent", "x", "y", "growDirection", "sortAscending", "fillDirection", "texture"}) do
+	for _, k in ipairs({"swapIconSide", "swapIndicatorSide", "hideIcon", "hideIndicators", "anchorFrom", "anchorTo", "anchorParent", "customParent", "x", "y", "growDirection", "sortAscending", "fillDirection", "texture", "outline", "shadow"}) do
 		ef(cfg.bars, k, M.Defaults.cfg.bars)
 	end
 	cfg.bars.color = cfg.bars.color or {
@@ -630,6 +634,14 @@ function M.SyncLiveConfig()
 	if LSM then
 		L.ICON_FONT_PATH = LSM:Fetch("font", L.ICON_FONT_KEY) or C.FONT_PATH
 	end
+	do
+		local outline = ic.outline
+		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "THICKOUTLINE" then
+			outline = M.Defaults.cfg.icons.outline
+		end
+		L.ICON_FONT_FLAGS = outline
+	end
+	L.ICON_SHADOW = ic.shadow and true or false
 
 	L.BAR_WIDTH = bc.width
 	L.BAR_HEIGHT = bc.height
@@ -666,6 +678,14 @@ function M.SyncLiveConfig()
 	if LSM then
 		L.FONT_PATH = LSM:Fetch("font", L.FONT_KEY) or C.FONT_PATH
 	end
+	do
+		local outline = bc.outline
+		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "THICKOUTLINE" then
+			outline = M.Defaults.cfg.bars.outline
+		end
+		L.BAR_FONT_FLAGS = outline
+	end
+	L.BAR_SHADOW = bc.shadow and true or false
 	L.BAR_ANCHOR_FROM = normalizeAnchorPoint(bc.anchorFrom)
 	L.BAR_ANCHOR_TO = normalizeAnchorPoint(bc.anchorTo)
 	L.BAR_ANCHOR_PARENT = (type(bc.anchorParent) == "string" and bc.anchorParent ~= "") and bc.anchorParent or "NONE"

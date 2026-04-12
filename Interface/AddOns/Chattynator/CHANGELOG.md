@@ -1,9 +1,7 @@
 # Chattynator
 
-## [201](https://github.com/TheMouseNest/Chattynator/tree/201) (2026-04-02)
-[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/200...201) 
+## [202](https://github.com/TheMouseNest/Chattynator/tree/202) (2026-04-06)
+[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/201...202) 
 
-- Fix redundant text formatting  
-- ChatLinkIcons support (#208)  
-- Restore Wago to build script  
-- [Fixes #174] Prevent lua error when channel is secret  
+- Make sure font in copy chat box is the same as the chat font  
+- Add hidden option `/chatty c force_tab_overflow true` to disable hiding overflow  

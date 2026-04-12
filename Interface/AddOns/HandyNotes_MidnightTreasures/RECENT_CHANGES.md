@@ -1,5 +1,6 @@
-## Changed in v42
+## Changed in v43
 
-* Dust 'Em Off: fixed the third set of moths showing too soon (6, 9, same thing, right?)
-* Give the complex treasures a different icon
+* Dust 'Em Off: don't show moths you've found on other characters
+* Isle of Quel'Danas: only show the Artisan's Mettle during the intro
+* Fix typo stopping quests being labeled as "completed" in tooltips
 

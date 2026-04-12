@@ -175,11 +175,12 @@ local function getAddonMessageChannel()
 end
 
 -- =========================
--- Keystone Sharing (LibKS-compatible)
+-- Keystone Sharing (LibKeystone)
 -- =========================
 local keystoneData = {} -- [playerName] = { level, mapID, rating }
-local keystoneThrottleParty = 0
-local KEYSTONE_THROTTLE = 3
+local LibKeystoneListener = {}
+local libKeystoneRegistered = false
+local formatKeystoneLine
 
 local function getDungeonName(mapID)
 	if C_ChallengeMode and C_ChallengeMode.GetMapUIInfo then
@@ -206,29 +207,112 @@ local function getOwnKeystoneInfo()
 	return keyLevel, keyChallengeMapID, playerRating
 end
 
-local function sendKeystoneToParty()
-	if not L.SHARE_KEYSTONES then return end
-	if not canSendAddonMessage() then return end
+local function getLibKeystone()
+	if not LibStub then return nil end
+	return LibStub("LibKeystone", true)
+end
+
+local function storeKeystoneInfo(playerName, keyLevel, mapID, rating)
+	if not playerName then return end
+	local senderName = playerName
+	if UnitNameUnmodified and senderName == UnitNameUnmodified("player") then
+		senderName = UnitName("player") or senderName
+	end
+	keystoneData[senderName] = { keyLevel or 0, mapID or 0, rating or 0 }
+	if M._keystonePrintLive then
+		local line = formatKeystoneLine(senderName, keyLevel, mapID, rating)
+		if line then print(line) end
+	end
+end
+
+local function registerLibKeystoneListener()
+	if libKeystoneRegistered then return true end
+	local LibKeystone = getLibKeystone()
+	if not LibKeystone then return false end
+	LibKeystone.Register(LibKeystoneListener, function(keyLevel, mapID, rating, playerName, channel)
+		if not L.SHARE_KEYSTONES then return end
+		if channel ~= "PARTY" then return end
+		storeKeystoneInfo(playerName, keyLevel, mapID, rating)
+	end)
+	libKeystoneRegistered = true
+	return true
+end
+
+-- Also send our key via LibOpenRaid / LRS protocol (used by Details) if possible
+local _lrsCommObj
+local function getLrsComm()
+	if _lrsCommObj then return _lrsCommObj end
+	if not LibStub then return nil end
+	local AceComm = LibStub("AceComm-3.0", true)
+	local LibDeflate = LibStub("LibDeflate", true)
+	if not (AceComm and LibDeflate) then return nil end
+	_lrsCommObj = { AceComm = AceComm, LibDeflate = LibDeflate, sender = {} }
+	AceComm:Embed(_lrsCommObj.sender)
+	return _lrsCommObj
+end
+
+local function buildLrsKeystonePayload()
+	local keyLevel = (C_MythicPlus and C_MythicPlus.GetOwnedKeystoneLevel and C_MythicPlus.GetOwnedKeystoneLevel()) or 0
+	local mapID = (C_MythicPlus and C_MythicPlus.GetOwnedKeystoneMapID and C_MythicPlus.GetOwnedKeystoneMapID()) or 0
+	local challengeMapID = (C_MythicPlus and C_MythicPlus.GetOwnedKeystoneChallengeMapID and C_MythicPlus.GetOwnedKeystoneChallengeMapID()) or 0
+	local _, _, classID = UnitClass("player")
+	classID = classID or 0
+	local ratingSummary = C_PlayerInfo and C_PlayerInfo.GetPlayerMythicPlusRatingSummary and C_PlayerInfo.GetPlayerMythicPlusRatingSummary("player")
+	local rating = (ratingSummary and ratingSummary.currentSeasonScore) or 0
+	local mythicPlusMapID = challengeMapID
+	local specID = 0
+	if GetSpecializationInfo and GetSpecialization then
+		specID = GetSpecializationInfo(GetSpecialization()) or 0
+	end
+	return "K," .. keyLevel .. "," .. mapID .. "," .. challengeMapID .. "," .. classID .. "," .. rating .. "," .. mythicPlusMapID .. "," .. specID
+end
+
+local function sendOwnKeystoneViaLrs()
+	local comm = getLrsComm()
+	if not comm then return end
 	if not (IsInGroup and IsInGroup()) then return end
-	local now = GetTime()
-	if now - keystoneThrottleParty < KEYSTONE_THROTTLE then return end
-	keystoneThrottleParty = now
-	local keyLevel, mapID, rating = getOwnKeystoneInfo()
-	local channel = getAddonMessageChannel()
-	if not channel then return end
-	C_ChatInfo.SendAddonMessage("LibKS", string.format("%d,%d,%d", keyLevel, mapID, rating), channel)
+
+	local data = buildLrsKeystonePayload()
+	local compressed = comm.LibDeflate:CompressDeflate(data, {level = 9})
+	local encoded = comm.LibDeflate:EncodeForWoWAddonChannel(compressed)
+
+	local channel
+	if IsInRaid() then
+		channel = (IsInRaid(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or "RAID"
+	else
+		channel = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or "PARTY"
+	end
+	comm.sender:SendCommMessage("LRS", encoded, channel, nil, "ALERT")
+end
+
+local _lrsListenerRegistered = false
+local function registerLrsKeystoneListener()
+	if _lrsListenerRegistered then return end
+	local comm = getLrsComm()
+	if not comm then return end
+
+	local playerName = UnitName("player")
+	comm.sender:RegisterComm("LRS", function(_prefix, message, _distribution, sender)
+		if Ambiguate(sender, "none") == playerName then return end
+		local decoded = comm.LibDeflate:DecodeForWoWAddonChannel(message)
+		if not decoded then return end
+		local decompressed = comm.LibDeflate:DecompressDeflate(decoded)
+		if not decompressed then return end
+		local typePrefix = decompressed:sub(1, 1)
+		if typePrefix == "J" then
+			sendOwnKeystoneViaLrs()
+		end
+	end)
+	_lrsListenerRegistered = true
 end
 
 local function requestKeystones()
-	if not L.SHARE_KEYSTONES then return end
-	if not canSendAddonMessage() then return end
-	if not (IsInGroup and IsInGroup()) then return end
-	local now = GetTime()
-	if now - keystoneThrottleParty < KEYSTONE_THROTTLE then return end
-	keystoneThrottleParty = now
-	local channel = getAddonMessageChannel()
-	if not channel then return end
-	C_ChatInfo.SendAddonMessage("LibKS", "R", channel)
+	if not L.SHARE_KEYSTONES then return false end
+	if not registerLibKeystoneListener() then return false end
+	local LibKeystone = getLibKeystone()
+	if not LibKeystone then return false end
+	LibKeystone.Request("PARTY")
+	return true
 end
 
 local function getGroupMemberNames()
@@ -295,7 +379,7 @@ local function classColoredName(name)
 	return "|cFFFFFFFF" .. shortName .. "|r"
 end
 
-local function formatKeystoneLine(name, level, mapID, rating)
+formatKeystoneLine = function(name, level, mapID, rating)
 	local coloredName = classColoredName(name)
 	if level and level > 0 and mapID and mapID > 0 then
 		local dungeonName = getDungeonName(mapID)
@@ -326,16 +410,16 @@ local function doKeysCommand()
 		return
 	end
 	wipe(keystoneData)
-	local name = UnitName("player")
-	if name then
-		local keyLevel, mapID, rating = getOwnKeystoneInfo()
-		keystoneData[name] = { keyLevel, mapID, rating }
-	end
 	print("|cFF9CDF95Simple|rBossMods: Party keystones:")
-	local line = name and formatKeystoneLine(name, keystoneData[name][1], keystoneData[name][2], keystoneData[name][3])
-	if line then print(line) end
 	M._keystonePrintLive = true
-	requestKeystones()
+	if not requestKeystones() then
+		local name = UnitName("player")
+		if name then
+			local keyLevel, mapID, rating = getOwnKeystoneInfo()
+			storeKeystoneInfo(name, keyLevel, mapID, rating)
+		end
+		print("|cFF9CDF95Simple|rBossMods: Install or update |cFFFFFFFFLibKeystone|r to request party keystones.")
+	end
 	C_Timer.After(10, function() M._keystonePrintLive = false end)
 end
 
@@ -760,8 +844,9 @@ ef:SetScript("OnEvent", function(_, event, ...)
 		if C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix then
 			C_ChatInfo.RegisterAddonMessagePrefix("D5")
 			C_ChatInfo.RegisterAddonMessagePrefix("BigWigs")
-			C_ChatInfo.RegisterAddonMessagePrefix("LibKS")
 		end
+		registerLibKeystoneListener()
+		registerLrsKeystoneListener()
 		if type(SimpleBossModsDB.manualTimers) == "table" then
 			for kind, info in pairs(SimpleBossModsDB.manualTimers) do
 				restoreManualTimer(kind, info)
@@ -864,6 +949,9 @@ ef:SetScript("OnEvent", function(_, event, ...)
 		if M.BuildEncounterEventCache then
 			M:BuildEncounterEventCache()
 		end
+		if L.SHARE_KEYSTONES and IsInGroup and IsInGroup() then
+			C_Timer.After(2, sendOwnKeystoneViaLrs)
+		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if M.StartCombatTimer then
 			M:StartCombatTimer(true)
@@ -901,30 +989,6 @@ ef:SetScript("OnEvent", function(_, event, ...)
 		end
 	elseif event == "CHAT_MSG_ADDON" then
 		local prefix, msg, channel, sender = ...
-		if prefix == "LibKS" and L.SHARE_KEYSTONES then
-			if msg == "R" then
-				if not isSenderMe(sender) then
-					sendKeystoneToParty()
-				end
-				return
-			end
-			local keyLevelStr, mapIDStr, ratingStr = msg:match("^(-?%d+),(-?%d+),(%d+)$")
-			if keyLevelStr and mapIDStr and ratingStr then
-				local senderName = Ambiguate and Ambiguate(sender, "none") or sender
-				if isSenderMe(sender) then
-					senderName = UnitName("player") or senderName
-				end
-				local keyLevel = tonumber(keyLevelStr) or 0
-				local mapID = tonumber(mapIDStr) or 0
-				local rating = tonumber(ratingStr) or 0
-				keystoneData[senderName] = { keyLevel, mapID, rating }
-				if M._keystonePrintLive then
-					local line = formatKeystoneLine(senderName, keyLevel, mapID, rating)
-					if line then print(line) end
-				end
-			end
-			return
-		end
 		if isSenderMe(sender) then
 			return
 		end

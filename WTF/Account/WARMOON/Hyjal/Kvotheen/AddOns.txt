@@ -189,7 +189,7 @@ Sorted: disabled
 WorldQuestTracker: disabled
 WorldQuestsList: disabled
 Glider: enabled
-AdvancedInterfaceOptions: enabled
+AdvancedInterfaceOptions: disabled
 SimpleItemLevel: disabled
 elWigo: enabled
 DeathNote: enabled
@@ -220,7 +220,7 @@ DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
 Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
-Krowi_AchievementFilter: enabled
+Krowi_AchievementFilter: disabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
@@ -283,3 +283,6 @@ BliZzi_Interrupts: disabled
 RaiderIO_DB_CN_R: disabled
 RaiderIO_DB_CN_M: disabled
 RaiderIO_DB_CN_F: disabled
+Ayije_CDM: disabled
+BetterCooldownManager: disabled
+CooldownManagerCentered: disabled

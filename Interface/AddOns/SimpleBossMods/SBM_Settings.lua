@@ -923,6 +923,74 @@ function M:ApplyIconFontConfig(fontKey)
 	end
 end
 
+function M:ApplyIconOutlineConfig(outline)
+	local ic = SimpleBossModsDB.cfg.icons
+	ic.outline = outline
+
+	M.SyncLiveConfig()
+
+	for _, rec in pairs(self.events) do
+		if rec.iconFrame then
+			M.applyIconFont(rec.iconFrame.timeText)
+		end
+	end
+	for _, f in ipairs(M.pools.icon) do
+		M.applyIconFont(f.timeText)
+	end
+end
+
+function M:ApplyIconShadowConfig(shadow)
+	local ic = SimpleBossModsDB.cfg.icons
+	ic.shadow = shadow and true or false
+
+	M.SyncLiveConfig()
+
+	for _, rec in pairs(self.events) do
+		if rec.iconFrame then
+			M.applyIconFont(rec.iconFrame.timeText)
+		end
+	end
+	for _, f in ipairs(M.pools.icon) do
+		M.applyIconFont(f.timeText)
+	end
+end
+
+function M:ApplyBarOutlineConfig(outline)
+	local bc = SimpleBossModsDB.cfg.bars
+	bc.outline = outline
+
+	M.SyncLiveConfig()
+
+	for _, rec in pairs(self.events) do
+		if rec.barFrame then
+			if rec.barFrame.txt then M.applyBarFont(rec.barFrame.txt) end
+			if rec.barFrame.rt then M.applyBarFont(rec.barFrame.rt) end
+		end
+	end
+	for _, f in ipairs(M.pools.bar) do
+		if f.txt then M.applyBarFont(f.txt) end
+		if f.rt then M.applyBarFont(f.rt) end
+	end
+end
+
+function M:ApplyBarShadowConfig(shadow)
+	local bc = SimpleBossModsDB.cfg.bars
+	bc.shadow = shadow and true or false
+
+	M.SyncLiveConfig()
+
+	for _, rec in pairs(self.events) do
+		if rec.barFrame then
+			if rec.barFrame.txt then M.applyBarFont(rec.barFrame.txt) end
+			if rec.barFrame.rt then M.applyBarFont(rec.barFrame.rt) end
+		end
+	end
+	for _, f in ipairs(M.pools.bar) do
+		if f.txt then M.applyBarFont(f.txt) end
+		if f.rt then M.applyBarFont(f.rt) end
+	end
+end
+
 function M:ApplyIndicatorConfig(iconSize, barSize)
 	local ic = SimpleBossModsDB.cfg.indicators
 	ic.iconSize = U.clamp(U.round(iconSize), 0, 32)
@@ -1863,6 +1931,19 @@ function M:CreateSettingsWindow()
 			label:SetFullWidth(true)
 			icons:AddChild(label)
 		end
+
+		addDropdown(icons, "Outline",
+			{ ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline", [""] = "None" },
+			function() return SimpleBossModsDB.cfg.icons.outline end,
+			function(v) addon:ApplyIconOutlineConfig(v) end,
+			0.25
+		)
+
+		addCheckBox(icons, "Shadow",
+			function() return SimpleBossModsDB.cfg.icons.shadow end,
+			function(v) addon:ApplyIconShadowConfig(v) end,
+			0.25
+		)
 	end
 
 	local function buildBarsTab(container)
@@ -2001,6 +2082,19 @@ function M:CreateSettingsWindow()
 			label:SetFullWidth(true)
 			media:AddChild(label)
 		end
+
+		addDropdown(media, "Outline",
+			{ ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline", [""] = "None" },
+			function() return SimpleBossModsDB.cfg.bars.outline end,
+			function(v) addon:ApplyBarOutlineConfig(v) end,
+			0.25
+		)
+
+		addCheckBox(media, "Shadow",
+			function() return SimpleBossModsDB.cfg.bars.shadow end,
+			function(v) addon:ApplyBarShadowConfig(v) end,
+			0.25
+		)
 
 	end
 	local function buildCombatTimerTab(container)

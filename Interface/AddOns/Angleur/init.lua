@@ -14,6 +14,11 @@ ang.loadedPlugins = {}
 ang.loadedPlugins.undang = false
 ang.loadedPlugins.niche = false
 
+ang.otherAddons = {}
+ang.otherAddons.opie = false
+ang.otherAddons.plater = false
+ang.otherAddons.toyboxEnhanced = false
+
 angleurDelayers = CreateFramePool("Frame", angleurDelayers, nil, function(framePool, frame)
     frame:ClearAllPoints()
     frame:SetScript("OnUpdate", nil)
@@ -619,6 +624,11 @@ Angleur_TempCVars = {
     Sound_DialogVolume = {
         active = false, cached = nil, setTo = AngleurAudio.ultraFocusDialog, updating = false,
     },
+
+    -- !!  INITIALIZED in bobberscanner.lua  !!
+    -- cameraDistanceMaxZoomFactor = {
+    --     active = false, cached = nil, setTo = AngleurAudio.ultraFocusDialog, updating = false,
+    -- },
 }
 
 
@@ -632,6 +642,7 @@ local function cvars_load()
     Angleur_TempCVars["Sound_SFXVolume"].setTo =  AngleurAudio.ultraFocusSFX
     Angleur_TempCVars["Sound_AmbienceVolume"].setTo =  AngleurAudio.ultraFocusAmbience
     Angleur_TempCVars["Sound_DialogVolume"].setTo =  AngleurAudio.ultraFocusDialog
+    
 
     -- Order: Anywhere in PLAYER_ENTERING_WORLD
     if Angleur_TinyOptions.softIconOff == true and 	C_CVar.GetCVar("SoftTargetIconGameObject") == "1" then
@@ -669,6 +680,15 @@ function Angleur_EventLoader(self, event, unit, ...)
         --Check if the Plugins of Angleur have loaded
         ang.loadedPlugins.undang = C_AddOns.IsAddOnLoaded("Angleur_Underlight")
         ang.loadedPlugins.niche = C_AddOns.IsAddOnLoaded("Angleur_NicheOptions")
+
+        -- Check if clashing addons have loaded
+        ang.otherAddons.opie = C_AddOns.IsAddOnLoaded("OPie")
+        ang.otherAddons.plater = C_AddOns.IsAddOnLoaded("Plater")
+        ang.otherAddons.toyboxEnhanced = C_AddOns.IsAddOnLoaded("ToyBoxEnhanced")
+        Angleur_BetaPrint(0, colorBlu:WrapTextInColorCode("Angleur_Init: ") .. ": Clashing Addon Load Status:")
+        Angleur_BetaPrint(0, colorGreen:WrapTextInColorCode("OPie: "), ang.otherAddons.opie)
+        Angleur_BetaPrint(0, colorGreen:WrapTextInColorCode("Plater: "), ang.otherAddons.plater)
+        Angleur_BetaPrint(0, colorGreen:WrapTextInColorCode("ToyBoxEnhanced: "), ang.otherAddons.toyboxEnhanced)
 
         --__________________________________________________________________________
         -- Can't set Tab 2 on "ADDON_LOADED" because we need data from NicheOptions

@@ -2,14 +2,14 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -30,35 +30,32 @@ BuffRemindersDB = {
 ["buffTrackingMode"] = "my_buffs",
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["blisteringScales"] = true,
 ["soulstone"] = true,
+["blisteringScales"] = true,
 ["atrophicNumbingPoison"] = true,
-["shamanShields"] = true,
+["beacons"] = true,
 ["bronze"] = true,
-["intellect"] = true,
-["versatility"] = true,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["attackPower"] = true,
 ["earthShieldOthers"] = false,
 ["devotionAura"] = true,
-["attackPower"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["beacons"] = true,
+["versatility"] = true,
+["intellect"] = true,
+["shamanShields"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 37,
-["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
+["spacing"] = 0.2,
+["showText"] = false,
+["textSize"] = 20,
+["borderSize"] = 2,
 ["iconZoom"] = 0,
 ["growDirection"] = "CENTER",
-["textAlpha"] = 1,
-["borderSize"] = 2,
-["showText"] = false,
-["spacing"] = 0.2,
 ["iconSize"] = 48,
-["textSize"] = 20,
+["textAlpha"] = 1,
 ["textColor"] = {
 1,
 1,
@@ -74,9 +71,6 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
-["presence"] = {
-["showText"] = true,
-},
 ["targeted"] = {
 ["showText"] = true,
 },
@@ -85,6 +79,11 @@ BuffRemindersDB = {
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
+["presence"] = {
+["showText"] = true,
+},
+},
+["readyCheckOnlyOverrides"] = {
 },
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
@@ -94,15 +93,16 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 },
+["customBuffs"] = {
+},
 ["hideAllInVehicle"] = true,
 ["categoryVisibility"] = {
 ["custom"] = {
-["pvp"] = true,
 ["hideInPvPMatch"] = true,
+["pvp"] = true,
 },
 },
-["customBuffs"] = {
-},
+["dbVersion"] = 38,
 },
 },
 }

@@ -1158,11 +1158,11 @@ local function handle_tooltip(tooltip, point, skip_label)
     end
 
     if point.quest then
-        local isComplete = ns.allQuestsComplete(point.quest)
+        local isComplete = ns.allQuestsComplete(point.quest, point.accountquest)
         local r, g, b = (isComplete and GREEN_FONT_COLOR or RED_FONT_COLOR):GetRGB()
         tooltip:AddDoubleLine(
             QUESTS_LABEL,
-            isComplete and GOAL_COMPLETE or INCOMPLETE,
+            isComplete and GOAL_COMPLETED or INCOMPLETE,
             1, 1, 1, r, g, b, true
         )
         if ns.db.tooltip_questid then

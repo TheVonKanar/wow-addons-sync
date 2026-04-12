@@ -1,12 +1,10 @@
 
 BAGANATOR_CONFIG = {
-["Version"] = 1,
 ["CharacterSpecific"] = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["currencies_tracked_imported"] = {
 },
 ["currencies_tracked"] = {
 ["Kvotheen-Hyjal"] = {
@@ -33,9 +31,11 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["currencies_tracked_imported"] = {
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
 },
+["Version"] = 1,
 ["Profiles"] = {
 ["DEFAULT"] = {
 ["guild_view_width"] = 15,
@@ -54,20 +54,20 @@ BAGANATOR_CONFIG = {
 ["default_battlepet"] = true,
 ["default_food"] = true,
 ["default_reagent"] = true,
-["default_weapon"] = true,
+["default_junk"] = true,
 ["default_special_empty"] = true,
-["default_recipe"] = true,
-["default_gem"] = true,
+["default_miscellaneous"] = true,
+["default_key"] = true,
 ["default_consumable"] = true,
 ["default_tradegoods"] = true,
-["default_potion"] = true,
-["default_keystone"] = true,
-["default_profession"] = true,
-["default_auto_equipment_sets"] = true,
 ["default_container"] = true,
-["default_key"] = true,
-["default_miscellaneous"] = true,
-["default_junk"] = true,
+["default_keystone"] = true,
+["default_auto_equipment_sets"] = true,
+["default_profession"] = true,
+["default_potion"] = true,
+["default_gem"] = true,
+["default_recipe"] = true,
+["default_weapon"] = true,
 },
 ["show_search_box"] = true,
 ["debug_categories_search"] = false,
@@ -80,7 +80,7 @@ BAGANATOR_CONFIG = {
 ["auction_house"] = true,
 ["void_storage"] = false,
 ["guild_bank"] = false,
-["trade_partner"] = false,
+["forge_of_bonds"] = false,
 ["tradeskill"] = false,
 ["item_upgrade"] = true,
 ["character_panel"] = false,
@@ -88,34 +88,36 @@ BAGANATOR_CONFIG = {
 ["item_interaction"] = true,
 ["mail"] = false,
 ["sockets"] = false,
-["forge_of_bonds"] = false,
+["trade_partner"] = false,
 ["bank"] = true,
 },
 ["icon_corners_auto_insert_applied"] = {
 ["battle_pet_level"] = true,
 ["keystone_level"] = true,
 ["enhanceqol_upgrade_arrow"] = true,
-["enhanceqol_vendor_mark"] = true,
 ["bag_type"] = true,
+["enhanceqol_vendor_mark"] = true,
 },
 ["show_recents_tabs_main_view"] = false,
 ["bag_view_show_bag_slots"] = false,
 ["category_hidden"] = {
+["default_armor"] = false,
+["default_junk"] = false,
+["default_hearthstone"] = false,
+["1"] = false,
+["default_key"] = false,
+["3"] = false,
+["2"] = false,
+["5"] = false,
+["4"] = false,
+["7"] = false,
+["6"] = false,
+["default_keystone"] = false,
+["default_profession"] = false,
 ["default_food"] = false,
 ["default_recipe"] = false,
 ["default_auto_inventory_slots"] = false,
-["2"] = false,
-["default_armor"] = false,
-["default_junk"] = false,
-["4"] = false,
-["3"] = false,
-["default_hearthstone"] = false,
-["1"] = false,
-["default_profession"] = false,
-["default_key"] = false,
 ["default_auto_equipment_sets"] = false,
-["default_keystone"] = false,
-["5"] = false,
 },
 ["icon_mark_unusable"] = false,
 ["icon_flash_similar_alt"] = false,
@@ -151,6 +153,8 @@ BAGANATOR_CONFIG = {
 "default_keystone",
 "----",
 "_2",
+"6",
+"7",
 "3",
 "4",
 "default_auto_equipment_sets",
@@ -207,60 +211,29 @@ BAGANATOR_CONFIG = {
 0,
 0,
 },
-["migrated_sort_method"] = true,
+["character_bank_view_width"] = 10,
 ["category_horizontal_spacing_2"] = 0.3,
-["custom_categories"] = {
-["1"] = {
-["name"] = "Usable",
-["search"] = "",
-},
-["3"] = {
-["name"] = "Crap Gear",
-["search"] = "#gear&<233",
-},
-["2"] = {
-["name"] = "Combat",
-["search"] = "",
-},
-["5"] = {
-["name"] = "Currency",
-["search"] = "",
-},
-["4"] = {
-["name"] = "Gear",
-["search"] = "#gear|#armor|#weapon",
-},
+["currency_headers_collapsed"] = {
 },
 ["category_default_import"] = 3,
 ["debug_categories"] = false,
 ["character_bank_current_tab"] = 0,
-["category_sections"] = {
-["1"] = {
-["name"] = "Crafting",
-},
-["2"] = {
-["name"] = "Equipment",
-},
-},
-["category_group_empty_slots"] = true,
-["lock_frames"] = false,
+["bag_empty_space_at_top"] = false,
+["new_items_flashing"] = true,
+["icon_equipment_set_border"] = true,
 ["sort_start_at_bottom"] = false,
-["icon_context_fading"] = true,
+["category_migration"] = 5,
 ["saved_searches"] = {
 },
-["category_section_toggled"] = {
-["1"] = true,
-["Crafting"] = true,
-["2"] = false,
-},
+["bag_icon_size"] = 44,
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
 ["i:225415"] = true,
 ["i:233799"] = true,
 ["i:235053"] = true,
-["i:201412"] = true,
 ["i:233794"] = true,
+["i:201412"] = true,
 },
 },
 ["default_armor"] = {
@@ -278,14 +251,14 @@ BAGANATOR_CONFIG = {
 ["i:243147"] = true,
 ["i:237131"] = true,
 ["i:248954"] = true,
-["i:248755"] = true,
-["i:231099"] = true,
+["i:233205"] = true,
+["i:228913"] = true,
 ["i:166846"] = true,
 ["i:233118"] = true,
 ["i:234416"] = true,
 ["i:233055"] = true,
 ["i:226110"] = true,
-["i:13444"] = true,
+["i:243144"] = true,
 ["i:227673"] = true,
 ["i:234387"] = true,
 ["i:234386"] = true,
@@ -293,9 +266,9 @@ BAGANATOR_CONFIG = {
 ["i:233062"] = true,
 ["i:233061"] = true,
 ["i:248764"] = true,
-["i:243144"] = true,
-["i:228913"] = true,
-["i:233205"] = true,
+["i:13444"] = true,
+["i:231099"] = true,
+["i:248755"] = true,
 },
 },
 ["default_hearthstone"] = {
@@ -303,27 +276,39 @@ BAGANATOR_CONFIG = {
 ["priority"] = -1,
 ["addedItems"] = {
 ["i:65274"] = true,
-["i:234389"] = true,
-["i:252607"] = true,
 ["i:249699"] = true,
+["i:252607"] = true,
+["i:234389"] = true,
 },
 },
-["default_weapon"] = {
-},
-["default_itemenhancement"] = {
+["default_miscellaneous"] = {
 ["addedItems"] = {
-["i:222584"] = true,
-["i:213777"] = true,
-["i:232386"] = true,
+["i:244465"] = true,
+["i:237268"] = true,
+["i:262798"] = true,
 },
 },
 ["default_recipe"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_auto_inventory_slots"] = {
+["default_gem"] = {
+["addedItems"] = {
+["i:228643"] = true,
+["i:228646"] = true,
+},
+},
+["default_key"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
+},
+["default_auto_equipment_sets"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
+["6"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
 },
 ["1"] = {
 ["showGroupPrefix"] = true,
@@ -353,7 +338,7 @@ BAGANATOR_CONFIG = {
 ["i:255825"] = true,
 ["i:227450"] = true,
 ["i:226045"] = true,
-["i:236096"] = true,
+["i:235151"] = true,
 ["i:233071"] = true,
 ["i:238466"] = true,
 ["i:226100"] = true,
@@ -365,7 +350,7 @@ BAGANATOR_CONFIG = {
 ["i:245761"] = true,
 ["i:268485"] = true,
 ["i:259188"] = true,
-["i:235151"] = true,
+["i:236096"] = true,
 },
 },
 ["default_reagent"] = {
@@ -384,18 +369,18 @@ BAGANATOR_CONFIG = {
 ["addedItems"] = {
 ["i:212264"] = true,
 ["i:258138"] = true,
-["i:241309"] = true,
+["i:241322"] = true,
 ["i:222728"] = true,
-["i:242747"] = true,
+["i:255847"] = true,
 ["i:268679"] = true,
 ["i:242275"] = true,
-["i:241322"] = true,
+["i:212283"] = true,
 ["i:243191"] = true,
 ["i:241323"] = true,
-["i:255847"] = true,
+["i:242747"] = true,
 ["i:241305"] = true,
 ["i:222776"] = true,
-["i:212283"] = true,
+["i:241309"] = true,
 },
 },
 ["5"] = {
@@ -410,16 +395,22 @@ BAGANATOR_CONFIG = {
 ["i:201411"] = true,
 ["i:71083"] = true,
 ["i:259361"] = true,
-["i:21100"] = true,
-["i:246951"] = true,
-["i:151134"] = true,
 ["i:199099"] = true,
+["i:151134"] = true,
+["i:246951"] = true,
+["i:21100"] = true,
 ["i:260531"] = true,
 },
 },
 ["4"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
+},
+["7"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
+},
+["default_tradegoods"] = {
 },
 ["default_consumable"] = {
 ["addedItems"] = {
@@ -430,7 +421,13 @@ BAGANATOR_CONFIG = {
 ["i:247882"] = true,
 },
 },
-["default_tradegoods"] = {
+["default_keystone"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
+["default_auto_inventory_slots"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_profession"] = {
 ["showGroupPrefix"] = true,
@@ -440,22 +437,10 @@ BAGANATOR_CONFIG = {
 ["i:225771"] = true,
 ["i:225770"] = true,
 ["i:237497"] = true,
-["i:214561"] = true,
 ["i:241291"] = true,
+["i:214561"] = true,
 ["i:212308"] = true,
 },
-},
-["default_keystone"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_food"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_auto_equipment_sets"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
 },
 ["default_potion"] = {
 ["addedItems"] = {
@@ -463,59 +448,46 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_key"] = {
+["default_food"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_gem"] = {
+["default_itemenhancement"] = {
 ["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
+["i:222584"] = true,
+["i:232386"] = true,
+["i:213777"] = true,
 },
 },
-["default_miscellaneous"] = {
-["addedItems"] = {
-["i:244465"] = true,
-["i:237268"] = true,
-["i:262798"] = true,
-},
+["default_weapon"] = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = false,
+["Crafting"] = true,
+["2"] = false,
+},
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
--213.671875,
-419.1669311523438,
+-473.671875,
+453.1669006347656,
 },
 ["icon_text_font_size"] = 14,
-["currencies_tracked_imported"] = {
-},
-["sort_ignore_bank_slots_count"] = {
+["view_alpha"] = 1,
+["sort_ignore_slots_count_2"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
 ["disabled_skins"] = {
 },
 ["bag_view_width"] = 15,
-["upgrade_plugin"] = "none",
+["junk_plugin_ignored"] = {
+},
 ["show_buttons_on_alt"] = false,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -531,11 +503,7 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
-["guild_current_tab"] = 6,
-["auto_sort_on_open"] = false,
-["setting_anchors"] = false,
-["upgrade_plugin_ignored"] = {
-},
+["debug_keywords"] = false,
 ["currencies_tracked"] = {
 ["Pandakv-Hyjal"] = {
 },
@@ -567,10 +535,6 @@ BAGANATOR_CONFIG = {
 ["currencyID"] = 3110,
 },
 },
-["Raptorbuyer-Hyjal"] = {
-},
-["Pandamages-Hyjal"] = {
-},
 ["Quiproquo-Uldaman"] = {
 {
 ["currencyID"] = 3028,
@@ -591,8 +555,29 @@ BAGANATOR_CONFIG = {
 ["currencyID"] = 3110,
 },
 },
+["Pandamages-Hyjal"] = {
 },
-["debug_keywords"] = false,
+["Raptorbuyer-Hyjal"] = {
+},
+},
+["auto_sort_on_open"] = false,
+["upgrade_plugin_ignored"] = {
+},
+["setting_anchors"] = false,
+["guild_current_tab"] = 6,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -600,26 +585,61 @@ BAGANATOR_CONFIG = {
 0,
 0,
 },
-["junk_plugin_ignored"] = {
-},
-["sort_ignore_slots_count_2"] = {
+["upgrade_plugin"] = "none",
+["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["view_alpha"] = 1,
+["currencies_tracked_imported"] = {
+},
 ["show_sort_button_2"] = true,
-["bag_icon_size"] = 44,
-["category_migration"] = 5,
+["sort_ignore_slots_at_end"] = false,
+["icon_context_fading"] = true,
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,
 18.83294677734375,
 },
-["icon_equipment_set_border"] = true,
-["new_items_flashing"] = true,
-["bag_empty_space_at_top"] = false,
-["currency_headers_collapsed"] = {
+["lock_frames"] = false,
+["category_group_empty_slots"] = true,
+["category_sections"] = {
+["1"] = {
+["name"] = "Crafting",
 },
-["character_bank_view_width"] = 10,
+["2"] = {
+["name"] = "Equipment",
+},
+},
+["custom_categories"] = {
+["1"] = {
+["name"] = "Usable",
+["search"] = "",
+},
+["3"] = {
+["name"] = "Low Gear",
+["search"] = "#gear&<240",
+},
+["2"] = {
+["name"] = "Combat",
+["search"] = "",
+},
+["5"] = {
+["name"] = "Currency",
+["search"] = "",
+},
+["4"] = {
+["name"] = "Gear",
+["search"] = "#gear",
+},
+["7"] = {
+["name"] = "Other Gear",
+["search"] = "#gear&(#leather|#cloth|#plate)",
+},
+["6"] = {
+["name"] = "Legacy Gear",
+["search"] = "#gear&<200",
+},
+},
+["migrated_sort_method"] = true,
 },
 },
 }

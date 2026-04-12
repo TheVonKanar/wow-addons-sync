@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 48,
 ["lastSanitation"] = 3,
+["session"] = 77,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/ChoreTracker/Modules/Display.lua:218: bad argument #3 to 'CDAT_CompareCalendarTime' (Current Field: [monthDay], Usage: local comparison = C_DateAndTime.CompareCalendarTime(lhsCalendarTime, rhsCalendarTime). Secret values are only allowed during untainted execution for this argument.)",
@@ -60,14 +60,6 @@ BugGrabberDB = {
 ["counter"] = 2,
 },
 {
-["message"] = "...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:218: attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')",
-["time"] = 1775064943,
-["locals"] = "self = Frame {\n}\nevent = \"CHAT_MSG_LOOT\"\nitemTextRecieved = <no value>\nplayerName = <no value>\n(*temporary) = \"Kvotheen\"\n(*temporary) = \"player\"\n(*temporary) = \"Kvotheen\"\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')\"\nMYTHIC_PLUS_KEY_ID = 180653\nKeyMaster = <table> {\n PlayerFrameMapping = <table> {\n }\n Factory = <table> {\n }\n Commands = <table> {\n }\n CharacterData = <table> {\n }\n week = 0\n MainInterface = <table> {\n }\n Coms = <table> {\n }\n DungeonJournal = <table> {\n }\n DungeonTools = <table> {\n }\n HeaderFrame = <table> {\n }\n WhatsNew = <table> {\n }\n CharactersFrame = <table> {\n }\n PartyFrame = <table> {\n }\n PlayerFrame = <table> {\n }\n CharacterInfo = <table> {\n }\n InfoFrame = <table> {\n }\n ConfigFrame = <table> {\n }\n openRaidStub = <table> {\n }\n HeaderFrameMapping = <table> {\n }\n WeeklyRewards = <table> {\n }\n PartyFrameMapping = <table> {\n }\n UnitData = <table> {\n }\n Theme = <table> {\n }\n EventHooks = <table> {\n }\n}\nEventHooks = <table> {\n combatEventQueue = <table> {\n }\n}\n",
-["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua]:218: in function <...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:173>\n",
-["session"] = 33,
-["counter"] = 22,
-},
-{
 ["message"] = "...hievementsObjectives/AchievementsObjectivesMixin.lua:17: attempt to compare a secret number value (tainted by 'Krowi_AchievementFilter')",
 ["time"] = 1775074337,
 ["locals"] = "self = KrowiAF_AchievementsObjectivesMeta2 {\n Label = KrowiAF_AchievementsObjectivesMeta2Label {\n }\n Id = 61197\n Border = KrowiAF_AchievementsObjectivesMeta2Border {\n }\n Completed = false\n Check = KrowiAF_AchievementsObjectivesMeta2Check {\n }\n Icon = KrowiAF_AchievementsObjectivesMeta2Icon {\n }\n}\nlink = \"|cffffff00|Hachievement:61197:Player-1390-09230B89:0:0:0:-1:0:0:0:0|h[Elite: Midnight Season 1]|h|r\"\n(*temporary) = <no value>\n(*temporary) = 1022.166443\n(*temporary) = KrowiAF_AchievementsObjectivesMeta2 {\n Label = KrowiAF_AchievementsObjectivesMeta2Label {\n }\n Id = 61197\n Border = KrowiAF_AchievementsObjectivesMeta2Border {\n }\n Completed = false\n Check = KrowiAF_AchievementsObjectivesMeta2Check {\n }\n Icon = KrowiAF_AchievementsObjectivesMeta2Icon {\n }\n}\n(*temporary) = 1022.166443\n(*temporary) = GameTooltip {\n ItemTooltip = Frame {\n }\n BottomOverlay = Texture {\n }\n NineSlice = Frame {\n }\n suppressAutomaticCompareItem = false\n textLeft1Font = \"GameTooltipHeaderText\"\n shouldRefreshData = false\n textRight2Font = \"GameTooltipText\"\n TopOverlay = Texture {\n }\n processingInfo = <table> {\n }\n infoList = <table> {\n }\n shoppingTooltips = <table> {\n }\n StatusBar = GameTooltipStatusBar {\n }\n supportsDataRefresh = true\n updateTooltipTimer = 0.078000\n TextLeft1 = GameTooltipTextLeft1 {\n }\n TextRight1 = GameTooltipTextRight1 {\n }\n widgetContainer = Frame {\n }\n layoutType = \"TooltipDefaultLayout\"\n textLeft2Font = \"GameTooltipText\"\n waitingForData = false\n TextRight2 = GameTooltipTextRight2 {\n }\n TextLeft2 = GameTooltipTextLeft2 {\n }\n supportsItemComparison = true\n textRight1Font = \"GameTooltipHeaderText\"\n}\n(*temporary) = \"attempt to compare a secret number value (tainted by 'Krowi_AchievementFilter')\"\n",
@@ -98,6 +90,22 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua]:491: in function <Interface/AddOns/Blizzard_SharedXML/LayoutFrame.lua:486>\n[tail call]: ?\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:213: in function 'DefaultWidgetLayout'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:570: in function 'layoutFunc'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:606: in function 'UpdateWidgetLayout'\n[Interface/AddOns/Blizzard_UIWidgets/Mainline/Blizzard_UIWidgetManager.lua]:295: in function 'UnregisterForWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:600: in function 'GameTooltip_ClearWidgetSet'\n[Interface/AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua]:397: in function <...AddOns/Blizzard_GameTooltip/Mainline/GameTooltip.lua:383>\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: ?\n[C]: in function 'Hide'\n[Interface/AddOns/Blizzard_POIButton/POIButton.lua]:538: in function 'OnLeave'\n[Interface/AddOns/Blizzard_SharedMapDataProviders/AreaPOIEventDataProvider.lua]:80: in function <..._SharedMapDataProviders/AreaPOIEventDataProvider.lua:79>\n",
 ["session"] = 48,
 ["counter"] = 222,
+},
+{
+["message"] = "...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:218: attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')",
+["time"] = 1775665936,
+["locals"] = "self = Frame {\n}\nevent = \"CHAT_MSG_LOOT\"\nitemTextRecieved = <no value>\nplayerName = <no value>\n(*temporary) = \"Kvotheen\"\n(*temporary) = \"player\"\n(*temporary) = \"Kvotheen\"\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')\"\nMYTHIC_PLUS_KEY_ID = 180653\nKeyMaster = <table> {\n PlayerFrameMapping = <table> {\n }\n Factory = <table> {\n }\n Commands = <table> {\n }\n CharacterData = <table> {\n }\n week = 0\n MainInterface = <table> {\n }\n Coms = <table> {\n }\n DungeonJournal = <table> {\n }\n DungeonTools = <table> {\n }\n HeaderFrame = <table> {\n }\n WhatsNew = <table> {\n }\n CharactersFrame = <table> {\n }\n PartyFrame = <table> {\n }\n PlayerFrame = <table> {\n }\n CharacterInfo = <table> {\n }\n InfoFrame = <table> {\n }\n ConfigFrame = <table> {\n }\n openRaidStub = <table> {\n }\n HeaderFrameMapping = <table> {\n }\n WeeklyRewards = <table> {\n }\n PartyFrameMapping = <table> {\n }\n UnitData = <table> {\n }\n Theme = <table> {\n }\n EventHooks = <table> {\n }\n}\nEventHooks = <table> {\n combatEventQueue = <table> {\n }\n}\n",
+["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua]:218: in function <...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:173>\n",
+["session"] = 55,
+["counter"] = 26,
+},
+{
+["message"] = "Interface/AddOns/ChoreTracker/Modules/Display.lua:227: bad argument #3 to 'CDAT_CompareCalendarTime' (Current Field: [monthDay], Usage: local comparison = C_DateAndTime.CompareCalendarTime(lhsCalendarTime, rhsCalendarTime). Secret values are only allowed during untainted execution for this argument.)",
+["time"] = 1775682488,
+["locals"] = "",
+["stack"] = "[tail call]: ?\n[C]: ?\n[Interface/AddOns/ChoreTracker/Modules/Display.lua]:227: in function <Interface/AddOns/ChoreTracker/Modules/Display.lua:190>\n[C]: ?\n[Interface/AddOns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua]:69: in function <...ns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua:67>\n[Interface/AddOns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua]:83: in function 'func'\n[Interface/AddOns/ChoreTracker/Libs/AceTimer-3.0/AceTimer-3.0.lua]:57: in function <...dOns/ChoreTracker/Libs/AceTimer-3.0/AceTimer-3.0.lua:50>\n",
+["session"] = 60,
+["counter"] = 2,
 },
 },
 }

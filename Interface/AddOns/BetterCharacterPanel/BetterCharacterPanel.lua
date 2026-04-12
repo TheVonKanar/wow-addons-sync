@@ -9,7 +9,6 @@ local function print(...)
 		oPrint("|cff6600ccBetterCharacterPanel|r: " .. GetTime() .. " :", msg);
 	end
 end
-local isMop = select(4, GetBuildInfo()) >= 50000 and select(4, GetBuildInfo()) < 60000;
 
 local GetDetailedItemLevelInfo = (C_Item and C_Item.GetDetailedItemLevelInfo) and C_Item.GetDetailedItemLevelInfo or
 		GetDetailedItemLevelInfo;
@@ -19,6 +18,109 @@ local GetInventoryItemDurability = (C_Item and C_Item.GetInventoryItemDurability
 		GetInventoryItemDurability;
 local GetInventoryItemQuality = (C_Item and C_Item.GetInventoryItemQuality) and C_Item.GetInventoryItemQuality or
 		GetInventoryItemQuality;
+
+local itemLoadQueue = {};
+
+local SPEC_ID_TO_PRIMARY_STAT = {
+	-- Death Knight
+	[250] = 1, -- Blood (STR)
+	[251] = 1, -- Frost (STR)
+	[252] = 1, -- Unholy (STR)
+
+	-- Demon Hunter
+	[577] = 2, -- Havoc (AGI)
+	[581] = 2, -- Vengeance (AGI)
+	[1480] = 4, -- Devourer (INT)
+
+	-- Druid
+	[102] = 4, -- Balance (INT)
+	[103] = 2, -- Feral (AGI)
+	[104] = 2, -- Guardian (AGI)
+	[105] = 4, -- Restoration (INT)
+
+	-- Evoker
+	[1467] = 4, -- Devastation (INT)
+	[1468] = 4, -- Preservation (INT)
+	[1473] = 4, -- Augmentation (INT)
+
+	-- Hunter
+	[253] = 2, -- Beast Mastery (AGI)
+	[254] = 2, -- Marksmanship (AGI)
+	[255] = 2, -- Survival (AGI)
+
+	-- Mage
+	[62] = 4, -- Arcane (INT)
+	[63] = 4, -- Fire (INT)
+	[64] = 4, -- Frost (INT)
+
+	-- Monk
+	[268] = 2, -- Brewmaster (AGI)
+	[270] = 4, -- Mistweaver (INT)
+	[269] = 2, -- Windwalker (AGI)
+
+	-- Paladin
+	[65] = 4, -- Holy (INT)
+	[66] = 1, -- Protection (STR)
+	[70] = 1, -- Retribution (STR)
+
+	-- Priest
+	[256] = 4, -- Discipline (INT)
+	[257] = 4, -- Holy (INT)
+	[258] = 4, -- Shadow (INT)
+
+	-- Rogue
+	[259] = 2, -- Assassination (AGI)
+	[260] = 2, -- Outlaw (AGI)
+	[261] = 2, -- Subtlety (AGI)
+
+	-- Shaman
+	[262] = 4, -- Elemental (INT)
+	[263] = 2, -- Enhancement (AGI)
+	[264] = 4, -- Restoration (INT)
+
+	-- Warlock
+	[265] = 4, -- Affliction (INT)
+	[266] = 4, -- Demonology (INT)
+	[267] = 4, -- Destruction (INT)
+
+	-- Warrior
+	[71] = 1, -- Arms (STR)
+	[72] = 1, -- Fury (STR)
+	[73] = 1, -- Protection (STR)
+};
+
+local ITEMS_STATS_WE_CARE_ABOUT = {
+	[INVSLOT_HEAD] = true,
+	[INVSLOT_SHOULDER] = true,
+	[INVSLOT_CHEST] = true,
+	[INVSLOT_BACK] = true,
+	[INVSLOT_WRIST] = true,
+	[INVSLOT_HAND] = true,
+	[INVSLOT_WAIST] = true,
+	[INVSLOT_LEGS] = true,
+	[INVSLOT_FEET] = true,
+	[INVSLOT_MAINHAND] = true,
+	[INVSLOT_OFFHAND] = true,
+};
+
+local CLASS_ARMOR = {
+	WARRIOR     = Enum.ItemArmorSubclass.Plate,
+	PALADIN     = Enum.ItemArmorSubclass.Plate,
+	DEATHKNIGHT = Enum.ItemArmorSubclass.Plate,
+
+	HUNTER      = Enum.ItemArmorSubclass.Mail,
+	SHAMAN      = Enum.ItemArmorSubclass.Mail,
+	EVOKER      = Enum.ItemArmorSubclass.Mail,
+
+	ROGUE       = Enum.ItemArmorSubclass.Leather,
+	DRUID       = Enum.ItemArmorSubclass.Leather,
+	MONK        = Enum.ItemArmorSubclass.Leather,
+	DEMONHUNTER = Enum.ItemArmorSubclass.Leather,
+
+	MAGE        = Enum.ItemArmorSubclass.Cloth,
+	PRIEST      = Enum.ItemArmorSubclass.Cloth,
+	WARLOCK     = Enum.ItemArmorSubclass.Cloth,
+}
 
 local NUM_SOCKET_TEXTURES = 4;
 
@@ -96,9 +198,6 @@ local buttonLayout =
 	[INVSLOT_OFFHAND] = "center",
 };
 
-local scanningTooltip, enchantReplacementTable;
-local GetItemEnchantAsText, GetSocketTextures, ProcessEnchantText, CanEnchantSlot;
-
 local stripEnchantPrefixs = {
 	["Enchant "] = "",
 	["Weapon %- "] = "",
@@ -123,276 +222,97 @@ local alwaysReplaceNames = {
 	["Avoidance"] = "Avoid",
 };
 
-if (isMop) then
-	buttonLayout[INVSLOT_RANGED] = "center";
-	scanningTooltip = CreateFrame("GameTooltip", "BCPScanningTooltip", nil, "GameTooltipTemplate");
-	scanningTooltip:SetOwner(UIParent, "ANCHOR_NONE");
 
-	enchantReplacementTable =
-	{
-		["Stamina"] = "Stam",
-		["Intellect"] = "Int",
-		["Agility"] = "Agi",
-		["Strength"] = "Str",
+local enchantReplacementTable =
+{
+	["Minor Speed Increase"] = "Speed",
+	["Homebound Speed"] = "Speed & HS Red.",
+	["Plainsrunner's Breeze"] = "Speed",
+	["Graceful Avoidance"] = "Avoid",
+	["Regenerative Leech"] = "Leech",
+	["Watcher's Loam"] = "Stam",
+	["Rider's Reassurance"] = "Mount Speed",
+	["Accelerated Agility"] = "Speed & Agi",
+	["Reserve of Int"] = "Mana & Int",
+	["Sustained Str"] = "Stam & Str",
+	["Waking Stats"] = "Primary Stat",
 
-		["Mastery"] = "Mast",
-		["Versatility"] = "Vers",
-		["Critical Strike"] = "Crit",
-		["Haste"] = "Haste",
-		["Avoidance"] = "Avoid",
+	["Cavalry's March"] = "Mount Speed",
+	["Scout's March"] = "Speed",
 
-		["Rating"] = "",
-		["rating"] = "",
+	["Defender's March"] = "Stam",
+	["Stormrider's Agi"] = "Agi & Speed",
+	["Council's Intellect"] = "Int & Mana",
+	["Crystalline Radiance"] = "Primary Stat",
+	["Oathsworn's Strength"] = "Str & Stam",
 
-		["Minor"] = "Min",
-		["Movement"] = "Move",
+	["Chant of Armored Avoidance"] = "Avoid",
+	["Chant of Armored Leech"] = "Leech",
+	["Chant of Armored Speed"] = "Speed",
+	["Chant of Winged Grace"] = "Avoid & FallDmg",
+	["Chant of Leeching Fangs"] = "Leech & Recup",
+	["Chant of Burrowing Rapidity"] = "Speed & HScd",
 
-		[" and "] = " ",
-	};
+	["Cursed Haste"] = "Haste & \124cffcc0000-Vers\124r",
+	["Cursed Crit"] = "Crit & \124cffcc0000-Haste\124r",
+	["Cursed Mastery"] = "Mast & \124cffcc0000-Crit\124r",
+	["Cursed Versatility"] = "Vers & \124cffcc0000-Mast\124r",
 
-	local function hasEnchant(itemLink)
-		if (not itemLink) then
-			return false;
-		end
+	["Shadowed Belt Clasp"] = "Stamina",
 
-		local itemString = itemLink:match("item[%-?%d:]+");
-		if (not itemString) then
-			return false;
-		end
+	["Incandescent Essence"] = "Essence",
 
-		local _, _, enchantId = strsplit(":", itemString);
-		return enchantId and enchantId ~= "";
-	end
+	--11
+	["Acuity of the Ren'dorei"] = "Proc Prim",
+	["Arcane Mastery"] = "Proc Mast",
+	["Berserker's Rage"] = "Proc Haste",
+	["Flames of the Sin'dorei"] = "Dot->AoE",
+	["Jan'alai's Precision"] = "Proc Crit",
+	["Strength of Halazzi"] = "Bleed",
+	["Worldsoul Aegis"] = "Shield->AoE",
+	["Worldsoul Tenacity"] = "Proc Vers",
 
+	["Empowered Blessing of Speed"] = "Speed+Vigor",
+	["Blessing of Speed"] = "Speed",
+	["Empowered Rune of Avoidance"] = "Avoid+MS",
+	["Rune of Avoidance"] = "Avoid",
+	["Empowered Hex of Leeching"] = "Leech",
+	["Hex of Leeching"] = "Leech",
 
-	function GetItemEnchantAsText(unit, slot)
-		scanningTooltip:ClearLines();
-		scanningTooltip:SetInventoryItem(unit, slot);
-		local itemLink = GetInventoryItemLink(unit, slot);
+	["Akil'zon's Swiftness"] = "Speed",
+	["Flight of the Eagle"] = "Speed",
+	["Amirdrassil's Grace"] = "Avoid",
+	["Nature's Grace"] = "Avoid",
+	["Thalassian Recovery"] = "Leech",
 
-		if (not hasEnchant(itemLink)) then
-			return nil, nil;
-		end
+	["Mark of Nalorakk"] = "Str & Stam",
+	["Mark of the Magister"] = "Int & Mana",
+	["Mark of the Rootwarden"] = "Agi & Speed",
+	["Mark of the Worldsoul"] = "Primary Stat",
 
-		for i = scanningTooltip:NumLines(), 3, -1 do
-			local fontString = _G["BCPScanningTooltipTextLeft" .. i]
-			if (fontString and fontString:GetObjectType() == "FontString") then
-				local text = fontString:GetText(); -- string or nil
-				if (text) then
-					local startsWithPlus = string.find(text, "^%+");
-					local r, g, b, a = fontString:GetTextColor();
-					-- nice red blizzard
-					if (r == 1 and (string.format("%.3f", g) == "0.125" and string.format("%.3f", b) == "0.125" and a == 1)) then
-						if (startsWithPlus) then
-							return nil, ProcessEnchantText(text);
-						end
-					elseif (r == 0 and g == 1 and b == 0 and a == 1) then
-						if (not string.find(text, "<") and not string.find(text, "Equip: ") and not string.find(text, "Socket Bonus:") and not string.find(text, "Use: ")) then
-							if (startsWithPlus) then
-								return nil, ProcessEnchantText(text);
-							elseif ((slot == INVSLOT_MAINHAND or slot == INVSLOT_OFFHAND or slot == INVSLOT_BACK)) then
-								return nil, ProcessEnchantText(text);
-							end
-						end
-					end
-				end
-			end
-		end
-	end
+	["Arcanoweave Spellthread"] = "Int & Mana",
+	["Blood Knight's Armor Kit"] = "Agi/Str & Armor",
+	["Forest Hunter's Armor Kit"] = "Ag/Str & Stam",
+	["Thalassian Scout Armor Kit"] = "Agi/Str",
+	["Bright Linen Spellthread"] = "Int",
 
-	function GetSocketTextures(unit, slot)
-		scanningTooltip:ClearLines();
-		scanningTooltip:SetInventoryItem(unit, slot);
+	["Shaladrassil's Roots"] = "Leech & Stam",
+	["Silvermoon's Mending"] = "Leech",
+	["Farstrider's Hunt"] = "Speed & Stam",
+	["Lynx's Dexterity"] = "Avoid & Stam",
 
-		local textures = {};
+	["Eyes of the Eagle"] = "Crit%+",
+	["Nature's Fury"] = "Crit",
+	["Nature's Wrath"] = "Crit",
+	["Silvermoon's Alacrity"] = "Haste%",
+	["Thalassian Haste"] = "Haste",
+	["Zul'jin's Mastery"] = "Mast",
+	["Amani Mastery"] = "Mast",
+	["Silvermoon's Tenacity"] = "Vers",
+	["Thalassian Versatility"] = "Vers",
+};
 
-		for i = 1, 10 do
-			local texture = _G["BCPScanningTooltipTexture" .. i];
-			if (texture and texture:IsShown()) then
-				table.insert(textures, texture:GetTexture());
-			end
-		end
-
-		return textures;
-	end
-
-	local slotsThatHaveEnchants = {
-		[INVSLOT_SHOULDER] = true,
-		[INVSLOT_BACK] = true,
-		[INVSLOT_CHEST] = true,
-		[INVSLOT_WRIST] = true,
-		[INVSLOT_LEGS] = true,
-		[INVSLOT_HAND] = true,
-		[INVSLOT_FEET] = true,
-		[INVSLOT_MAINHAND] = true,
-		[INVSLOT_OFFHAND] = true,
-	};
-
-	function CanEnchantSlot(unit, slot)
-		local class = select(2, UnitClass(unit));
-		if (class == "HUNTER" and slot == INVSLOT_RANGED) then
-			return true;
-		end
-
-		return slotsThatHaveEnchants[slot];
-	end
-else
-	enchantReplacementTable =
-	{
-		["Minor Speed Increase"] = "Speed",
-		["Homebound Speed"] = "Speed & HS Red.",
-		["Plainsrunner's Breeze"] = "Speed",
-		["Graceful Avoidance"] = "Avoid",
-		["Regenerative Leech"] = "Leech",
-		["Watcher's Loam"] = "Stam",
-		["Rider's Reassurance"] = "Mount Speed",
-		["Accelerated Agility"] = "Speed & Agi",
-		["Reserve of Int"] = "Mana & Int",
-		["Sustained Str"] = "Stam & Str",
-		["Waking Stats"] = "Primary Stat",
-
-		["Cavalry's March"] = "Mount Speed",
-		["Scout's March"] = "Speed",
-
-		["Defender's March"] = "Stam",
-		["Stormrider's Agi"] = "Agi & Speed",
-		["Council's Intellect"] = "Int & Mana",
-		["Crystalline Radiance"] = "Primary Stat",
-		["Oathsworn's Strength"] = "Str & Stam",
-
-		["Chant of Armored Avoidance"] = "Avoid",
-		["Chant of Armored Leech"] = "Leech",
-		["Chant of Armored Speed"] = "Speed",
-		["Chant of Winged Grace"] = "Avoid & FallDmg",
-		["Chant of Leeching Fangs"] = "Leech & Recup",
-		["Chant of Burrowing Rapidity"] = "Speed & HScd",
-
-		["Cursed Haste"] = "Haste & \124cffcc0000-Vers\124r",
-		["Cursed Crit"] = "Crit & \124cffcc0000-Haste\124r",
-		["Cursed Mastery"] = "Mast & \124cffcc0000-Crit\124r",
-		["Cursed Versatility"] = "Vers & \124cffcc0000-Mast\124r",
-
-		["Shadowed Belt Clasp"] = "Stamina",
-
-		["Incandescent Essence"] = "Essence",
-
-		--11
-		["Acuity of the Ren'dorei"] = "Proc Prim",
-		["Arcane Mastery"] = "Proc Mast",
-		["Berserker's Rage"] = "Proc Haste",
-		["Flames of the Sin'dorei"] = "Dot->AoE",
-		["Jan'alai's Precision"] = "Proc Crit",
-		["Strength of Halazzi"] = "Bleed",
-		["Worldsoul Aegis"] = "Shield->AoE",
-		["Worldsoul Tenacity"] = "Proc Vers",
-
-		["Empowered Blessing of Speed"] = "Speed+Vigor",
-		["Blessing of Speed"] = "Speed",
-		["Empowered Rune of Avoidance"] = "Avoid+MS",
-		["Rune of Avoidance"] = "Avoid",
-		["Empowered Hex of Leeching"] = "Leech",
-		["Hex of Leeching"] = "Leech",
-
-		["Akil'zon's Swiftness"] = "Speed",
-		["Flight of the Eagle"] = "Speed",
-		["Amirdrassil's Grace"] = "Avoid",
-		["Nature's Grace"] = "Avoid",
-		["Thalassian Recovery"] = "Leech",
-
-		["Mark of Nalorakk"] = "Str & Stam",
-		["Mark of the Magister"] = "Int & Mana",
-		["Mark of the Rootwarden"] = "Agi & Speed",
-		["Mark of the Worldsoul"] = "Primary Stat",
-
-		["Arcanoweave Spellthread"] = "Int & Mana",
-		["Blood Knight's Armor Kit"] = "Agi/Str & Armor",
-		["Forest Hunter's Armor Kit"] = "Ag/Str & Stam",
-		["Thalassian Scout Armor Kit"] = "Agi/Str",
-		["Bright Linen Spellthread"] = "Int",
-
-		["Shaladrassil's Roots"] = "Leech & Stam",
-		["Farstrider's Hunt"] = "Speed & Stam",
-		["Lynx's Dexterity"] = "Avoid & Stam",
-
-		["Eyes of the Eagle"] = "Crit%+",
-		["Nature's Fury"] = "Crit",
-		["Nature's Wrath"] = "Crit",
-		["Silvermoon's Alacrity"] = "Haste%",
-		["Thalassian Haste"] = "Haste",
-		["Zul'jin's Mastery"] = "Mast",
-		["Amani Mastery"] = "Mast",
-		["Silvermoon's Tenacity"] = "Vers",
-		["Thalassian Versatility"] = "Vers",
-	};
-
-
-
-	local enchantPattern = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.*)');
-	local enchantAtlasPattern = "(.*)%s*|A:(.*):20:20|a";
-	local enchatColoredPatten = "|cn(.*):(.*)|r";
-
-	function GetItemEnchantAsText(unit, slot)
-		local data = C_TooltipInfo.GetInventoryItem(unit, slot);
-		for _, line in ipairs(data.lines) do
-			local text = line.leftText;
-			local enchantText = string.match(text, enchantPattern);
-			if (enchantText) then
-				local maybeEnchantText, atlas;
-				local maybeEnchantColor, maybeEnchantTextColored = enchantText:match(enchatColoredPatten);
-				if (maybeEnchantColor) then
-					enchantText = maybeEnchantTextColored;
-				else
-					maybeEnchantText, atlas = enchantText:match(enchantAtlasPattern);
-					enchantText = maybeEnchantText or enchantText;
-				end
-
-				return atlas, ProcessEnchantText(enchantText)
-			end
-		end
-
-		return nil, nil;
-	end
-
-	function GetSocketTextures(unit, slot)
-		local data = C_TooltipInfo.GetInventoryItem(unit, slot);
-		local textures = {};
-		for i, line in ipairs(data.lines) do
-			if line.type == 3 then
-				if (line.gemIcon) then
-					table.insert(textures, line.gemIcon);
-				else
-					table.insert(textures, string.format("Interface\\ItemSocketingFrame\\UI-EmptySocket-%s", line.socketType));
-				end
-			end
-		end
-
-		return textures;
-	end
-
-	function CanEnchantSlot(unit, slot)
-		local expansion = GetExpansionForLevel(UnitLevel(unit));
-		local slotsThatHaveEnchants = expansion and expansionEnchantableSlots[expansion] or {};
-
-		-- all classes have something that increases power or survivability on chest/cloak/weapons/rings/wrist/boots/legs
-		if (slotsThatHaveEnchants[slot]) then
-			return true;
-		end
-
-		-- Offhand filtering smile :)
-		if (slot == INVSLOT_OFFHAND) then
-			local offHandItemLink = GetInventoryItemLink(unit, slot);
-			if (offHandItemLink) then
-				local itemEquipLoc = select(4, GetItemInfoInstant(offHandItemLink));
-				return itemEquipLoc ~= "INVTYPE_HOLDABLE" and itemEquipLoc ~= "INVTYPE_SHIELD";
-			end
-			return false;
-		end
-
-		return false;
-	end
-end
-
-function ProcessEnchantText(enchantText)
+local function ProcessEnchantText(enchantText)
 	for seek, replacement in pairs(enchantReplacementTable) do
 		enchantText = enchantText:gsub(seek, replacement);
 	end
@@ -406,6 +326,104 @@ function ProcessEnchantText(enchantText)
 	end
 
 	return enchantText;
+end
+
+local enchantPattern = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.*)');
+local enchantAtlasPattern = "(.*)%s*|A:(.*):20:20|a";
+local enchatColoredPatten = "|cn(.*):(.*)|r";
+
+local function GetItemEnchantAsText(unit, slot)
+	local data = C_TooltipInfo.GetInventoryItem(unit, slot);
+	for _, line in ipairs(data.lines) do
+		local text = line.leftText;
+		local enchantText = string.match(text, enchantPattern);
+		if (enchantText) then
+			local maybeEnchantText, atlas;
+			local maybeEnchantColor, maybeEnchantTextColored = enchantText:match(enchatColoredPatten);
+			if (maybeEnchantColor) then
+				enchantText = maybeEnchantTextColored;
+			else
+				maybeEnchantText, atlas = enchantText:match(enchantAtlasPattern);
+				enchantText = maybeEnchantText or enchantText;
+			end
+
+			return atlas, ProcessEnchantText(enchantText)
+		end
+	end
+
+	return nil, nil;
+end
+
+local statsWeLookFor = {
+	[ITEM_MOD_STRENGTH_SHORT] = 1,
+	[ITEM_MOD_AGILITY_SHORT] = 2,
+	[ITEM_MOD_INTELLECT_SHORT] = 4,
+};
+
+local function ExtractItemData(unit, slot)
+	local data = C_TooltipInfo.GetInventoryItem(unit, slot, true);
+	local itemData = {
+		sockets = {},
+		stats = {},
+	};
+	for i, line in ipairs(data.lines) do
+		if line.type == 3 then
+			if (line.gemIcon) then
+				table.insert(itemData.sockets, line.gemIcon);
+			else
+				table.insert(itemData.sockets, string.format("Interface\\ItemSocketingFrame\\UI-EmptySocket-%s", line.socketType));
+			end
+		elseif line.type == 0 then
+			local statValue, stat = line.leftText:match("%+(%d+) (.*)");
+			if (stat) then
+				local statId = statsWeLookFor[stat];
+				if (statId) then
+					itemData.stats[statId] = statValue;
+				end
+			end
+		end
+	end
+
+	local itemLink = GetInventoryItemLink(unit, slot);
+	local itemType, itemSubType = select(6, GetItemInfoInstant(itemLink));
+	local unitClass = UnitClassBase(unit);
+
+	-- TODO : FIX THIS
+	-- It should be different filter than general all
+	if (itemType == Enum.ItemClass.Armor and
+				(itemSubType ~= Enum.ItemArmorSubclass.Shield and
+					itemSubType ~= Enum.ItemArmorSubclass.Relic and
+					itemSubType ~= Enum.ItemArmorSubclass.Cosmetic and
+					itemSubType ~= Enum.ItemArmorSubclass.Generic)
+			) then
+		if (itemSubType ~= CLASS_ARMOR[unitClass]) then
+			itemData.invalidStats = true;
+		end
+	end
+
+	return itemData;
+end
+
+local function CanEnchantSlot(unit, slot)
+	local expansion = GetExpansionForLevel(UnitLevel(unit));
+	local slotsThatHaveEnchants = expansion and expansionEnchantableSlots[expansion] or {};
+
+	-- all classes have something that increases power or survivability on chest/cloak/weapons/rings/wrist/boots/legs
+	if (slotsThatHaveEnchants[slot]) then
+		return true;
+	end
+
+	-- Offhand filtering smile :)
+	if (slot == INVSLOT_OFFHAND) then
+		local offHandItemLink = GetInventoryItemLink(unit, slot);
+		if (offHandItemLink) then
+			local itemEquipLoc = select(4, GetItemInfoInstant(offHandItemLink));
+			return itemEquipLoc ~= "INVTYPE_HOLDABLE" and itemEquipLoc ~= "INVTYPE_SHIELD";
+		end
+		return false;
+	end
+
+	return false;
 end
 
 local function ColorGradient(perc, ...)
@@ -454,6 +472,12 @@ local function CreateAdditionalDisplayForButton(button)
 
 	additionalFrame.enchantDisplay = additionalFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightOutline");
 	additionalFrame.enchantDisplay:SetTextColor(0, 1, 0, 1);
+
+	additionalFrame.invalidSlotDisplay = button:CreateTexture(nil, "OVERLAY");
+	additionalFrame.invalidSlotDisplay:SetPoint("CENTER");
+	additionalFrame.invalidSlotDisplay:SetAtlas("common-icon-redx");
+	local scale = 0.8;
+	additionalFrame.invalidSlotDisplay:SetSize(button:GetWidth() * scale, button:GetHeight() * scale);
 
 	additionalFrame.durabilityDisplay = CreateFrame("StatusBar", nil, additionalFrame);
 	additionalFrame.durabilityDisplay:SetMinMaxValues(0, 1);
@@ -520,34 +544,12 @@ local function positonCenter(button)
 
 	additionalFrame.ilvlDisplay:SetPoint("BOTTOM", button, "TOP", 0, 7);
 
-	local buttonId = button:GetID();
-	if (isMop) then
-		if (buttonId == INVSLOT_MAINHAND) then
-			additionalFrame.enchantDisplay:SetPoint("BOTTOMRIGHT", button, "BOTTOMLEFT", -5, 0);
-
-			additionalFrame.socketDisplay[1]:SetPoint("RIGHT", button, "LEFT", -5, 0);
-			for i = 2, NUM_SOCKET_TEXTURES do
-				additionalFrame.socketDisplay[i]:SetPoint("RIGHT", additionalFrame.socketDisplay[i - 1], "LEFT", -2, 0);
-			end
-		elseif (buttonId == INVSLOT_RANGED) then
-			additionalFrame.enchantDisplay:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 5, 0);
-
-			additionalFrame.socketDisplay[1]:SetPoint("LEFT", button, "RIGHT", 5, 0);
-			for i = 2, NUM_SOCKET_TEXTURES do
-				additionalFrame.socketDisplay[i]:SetPoint("LEFT", additionalFrame.socketDisplay[i - 1], "RIGHT", 2, 0);
-			end
-		else
-			additionalFrame.enchantDisplay:SetPoint("BOTTOM", button, "TOP", 0, 20);
-			AnchorTextureLeftOfParent(additionalFrame.ilvlDisplay, additionalFrame.socketDisplay);
-		end
+	if (button:GetID() == INVSLOT_MAINHAND) then
+		additionalFrame.enchantDisplay:SetPoint("BOTTOMRIGHT", button, "BOTTOMLEFT", -5, 0);
+		AnchorTextureLeftOfParent(additionalFrame.ilvlDisplay, additionalFrame.socketDisplay);
 	else
-		if (button:GetID() == INVSLOT_MAINHAND) then
-			additionalFrame.enchantDisplay:SetPoint("BOTTOMRIGHT", button, "BOTTOMLEFT", -5, 0);
-			AnchorTextureLeftOfParent(additionalFrame.ilvlDisplay, additionalFrame.socketDisplay);
-		else
-			additionalFrame.enchantDisplay:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 5, 0);
-			AnchorTextureRightOfParent(additionalFrame.ilvlDisplay, additionalFrame.socketDisplay);
-		end
+		additionalFrame.enchantDisplay:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 5, 0);
+		AnchorTextureRightOfParent(additionalFrame.ilvlDisplay, additionalFrame.socketDisplay);
 	end
 end
 
@@ -562,6 +564,114 @@ local function AnchorAdditionalDisplay(button)
 	end
 end
 
+local function UpdateAdditionalDisplayForReal(button, unit)
+	if (not button:IsShown()) then return end
+
+	local additionalFrame = button.BCPDisplay;
+	local slot = button:GetID();
+	local itemLink = GetInventoryItemLink(unit, slot);
+
+	local itemiLvlText = "";
+	if (itemLink) then
+		local ilvl = GetDetailedItemLevelInfo(itemLink);
+		local quality = GetInventoryItemQuality(unit, slot);
+		if (quality) then
+			local hex = select(4, GetItemQualityColor(quality));
+			itemiLvlText = "|c" .. hex .. ilvl .. "|r";
+		else
+			itemiLvlText = ilvl;
+		end
+	end
+	additionalFrame.ilvlDisplay:SetText(itemiLvlText);
+
+	local atlas, enchantText
+	if itemLink then
+		atlas, enchantText = GetItemEnchantAsText(unit, slot);
+	end
+
+	local canEnchant = CanEnchantSlot(unit, slot);
+
+	if (not enchantText) then
+		local shouldDisplayEchantMissingText = canEnchant and itemLink and IsLevelAtEffectiveMaxLevel(UnitLevel(unit));
+		additionalFrame.enchantDisplay:SetText(shouldDisplayEchantMissingText and "|cffff0000No Enchant|r" or "");
+	else
+		--trim size
+		local maxSize = 18;
+		local containsColor = string.find(enchantText, "|c");
+		if (containsColor) then
+			maxSize = maxSize + strlen("|cffffffff|r");
+		end
+		enchantText = string.sub(enchantText, 1, maxSize);
+
+		local enchantQuality = "";
+		if atlas then
+			enchantQuality = "|A:" .. atlas .. ":12:12|a";
+		end
+
+		-- for symmetry, put quality on the left of offhand
+		if slot == INVSLOT_OFFHAND then
+			additionalFrame.enchantDisplay:SetText(enchantQuality .. enchantText);
+		else
+			additionalFrame.enchantDisplay:SetText(enchantText .. enchantQuality);
+		end
+	end
+
+	local itemData = ExtractItemData(unit, slot);
+	local textures = itemData.sockets;
+	for i = 1, NUM_SOCKET_TEXTURES do
+		local socketTexture = additionalFrame.socketDisplay[i];
+		if (#textures >= i) then
+			socketTexture:SetTexture(textures[i]);
+			socketTexture:SetVertexColor(1, 1, 1);
+			socketTexture:Show();
+		else
+			local expansion = GetExpansionForLevel(UnitLevel(unit));
+			local expansionSocketRequirement = expansion and expansionRequiredSockets[expansion];
+			if (expansionSocketRequirement and expansionSocketRequirement[slot] and i <= expansionSocketRequirement[slot]) then
+				socketTexture:SetTexture("Interface\\ItemSocketingFrame\\UI-EmptySocket-Red");
+				socketTexture:SetVertexColor(1, 0, 0);
+				socketTexture:Show();
+			else
+				socketTexture:Hide();
+			end
+		end
+	end
+
+	local statMatch = false;
+	if (ITEMS_STATS_WE_CARE_ABOUT[slot]) then
+		local primaryStat;
+		local isInspecting = not UnitIsUnit("player", unit);
+		if (isInspecting) then
+			local specId = GetInspectSpecialization(unit);
+			primaryStat = specId and SPEC_ID_TO_PRIMARY_STAT[specId];
+		else
+			local specId = C_SpecializationInfo.GetSpecializationInfo(GetSpecialization());
+			primaryStat = specId and SPEC_ID_TO_PRIMARY_STAT[specId];
+		end
+
+		if (primaryStat) then
+			local itemPrimaryStat = itemData.stats;
+			for stat, value in pairs(itemPrimaryStat) do
+				if (stat == primaryStat) then
+					statMatch = true;
+					break;
+				end
+			end
+		end
+		statMatch = statMatch and (not itemData.invalidStats or slot == INVSLOT_BACK);
+	else
+		statMatch = true;
+	end
+
+	if (not statMatch) then
+		additionalFrame.invalidSlotDisplay:Show();
+		button.icon:SetDesaturated(true);
+	else
+		additionalFrame.invalidSlotDisplay:Hide();
+		button.icon:SetDesaturated(false);
+	end
+end
+
 local function UpdateAdditionalDisplay(button, unit)
 	local additionalFrame = button.BCPDisplay;
 
@@ -572,73 +682,17 @@ local function UpdateAdditionalDisplay(button, unit)
 	local slot = button:GetID();
 	local itemLink = GetInventoryItemLink(unit, slot);
 
-	if (not additionalFrame.prevItemLink or itemLink ~= additionalFrame.prevItemLink) then
-		local itemiLvlText = "";
-		if (itemLink) then
-			local ilvl = GetDetailedItemLevelInfo(itemLink);
-			local quality = GetInventoryItemQuality(unit, slot);
-			if (quality) then
-				local hex = select(4, GetItemQualityColor(quality));
-				itemiLvlText = "|c" .. hex .. ilvl .. "|r";
-			else
-				itemiLvlText = ilvl;
-			end
-		end
-		additionalFrame.ilvlDisplay:SetText(itemiLvlText);
-
-		local atlas, enchantText
-		if itemLink then
-			atlas, enchantText = GetItemEnchantAsText(unit, slot);
-		end
-
-		local canEnchant = CanEnchantSlot(unit, slot);
-
-		if (not enchantText) then
-			local shouldDisplayEchantMissingText = canEnchant and itemLink and IsLevelAtEffectiveMaxLevel(UnitLevel(unit));
-			additionalFrame.enchantDisplay:SetText(shouldDisplayEchantMissingText and "|cffff0000No Enchant|r" or "");
-		else
-			--trim size
-			local maxSize = 18;
-			local containsColor = string.find(enchantText, "|c");
-			if (containsColor) then
-				maxSize = maxSize + strlen("|cffffffff|r");
-			end
-			enchantText = string.sub(enchantText, 1, maxSize);
-
-			local enchantQuality = "";
-			if atlas then
-				enchantQuality = "|A:" .. atlas .. ":12:12|a";
-			end
-
-			-- for symmetry, put quality on the left of offhand
-			if slot == INVSLOT_OFFHAND then
-				additionalFrame.enchantDisplay:SetText(enchantQuality .. enchantText);
-			else
-				additionalFrame.enchantDisplay:SetText(enchantText .. enchantQuality);
-			end
-		end
-
-		local textures = itemLink and GetSocketTextures(unit, slot) or {};
+	if (itemLink) then
+		local itemId = GetItemInfoInstant(itemLink);
+		itemLoadQueue[itemId] = { button = button, unit = unit };
+		C_Item.RequestLoadItemDataByID(itemId);
+	else
+		additionalFrame.ilvlDisplay:SetText("");
+		additionalFrame.enchantDisplay:SetText("");
 		for i = 1, NUM_SOCKET_TEXTURES do
-			local socketTexture = additionalFrame.socketDisplay[i];
-			if (#textures >= i) then
-				socketTexture:SetTexture(textures[i]);
-				socketTexture:SetVertexColor(1, 1, 1);
-				socketTexture:Show();
-			else
-				local expansion = GetExpansionForLevel(UnitLevel(unit));
-				local expansionSocketRequirement = expansion and expansionRequiredSockets[expansion];
-				if (expansionSocketRequirement and expansionSocketRequirement[slot] and i <= expansionSocketRequirement[slot]) then
-					socketTexture:SetTexture("Interface\\ItemSocketingFrame\\UI-EmptySocket-Red");
-					socketTexture:SetVertexColor(1, 0, 0);
-					socketTexture:Show();
-				else
-					socketTexture:Hide();
-				end
-			end
+			additionalFrame.socketDisplay[i]:Hide();
 		end
-
-		additionalFrame.prevItemLink = itemLink;
+		additionalFrame.invalidSlotDisplay:Hide();
 	end
 
 	local currentDurablity, maxDurability = GetInventoryItemDurability(slot);
@@ -659,14 +713,13 @@ end
 local function CreateInspectIlvlDisplay()
 	local parent = InspectPaperDollItemsFrame;
 	if (not parent.ilvlDisplay) then
-		parent.ilvlDisplay = parent:CreateFontString(nil, "OVERLAY",
-			isMop and "GameFontHighlightOutline" or "GameFontHighlightOutline22");
+		parent.ilvlDisplay = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightOutline22");
 		parent.ilvlDisplay:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0, -20);
 		parent.ilvlDisplay:SetPoint("BOTTOMLEFT", parent, "TOPRIGHT", -80, -67);
 	end
 end
 
-local LEGENDARY_ITEM_LEVEL = 165;
+local LEGENDARY_ITEM_LEVEL = 287;
 local STEP_ITEM_LEVEL = 17;
 
 local levelThresholds = {};
@@ -704,13 +757,7 @@ local updateButton = function(button, unit)
 		AnchorAdditionalDisplay(button);
 	end
 
-	if (isMop) then
-		C_Timer.After(0, function()
-			UpdateAdditionalDisplay(button, unit);
-		end);
-	else
-		UpdateAdditionalDisplay(button, unit);
-	end
+	UpdateAdditionalDisplay(button, unit);
 end
 
 hooksecurefunc("PaperDollItemSlotButton_Update", function(button) updateButton(button, "player"); end);
@@ -805,9 +852,7 @@ function addon:ADDON_LOADED(addonName)
 		hooksecurefunc("InspectPaperDollFrame_SetLevel", function()
 			if (not InspectFrame.unit) then return; end
 			CreateInspectIlvlDisplay();
-			if (not isMop) then
-				UpdateInspectIlvlDisplay(InspectFrame.unit);
-			end
+			UpdateInspectIlvlDisplay(InspectFrame.unit);
 		end);
 	end
 end
@@ -858,43 +903,11 @@ function addon:UNIT_INVENTORY_CHANGED(unit)
 	end
 end
 
--- cache list
-local gemsWeCareAbout = {
-	192991, -- Increased Primary Stat and Versatility
-	192985, -- Increased Primary Stat and Haste
-	192982, -- Increased Primary Stat and Critical Strike
-	192988, -- Increased Primary Stat and Mastery
-
-	192945, -- Increased Haste and Critical Strike
-	192948, -- Increased Haste and Mastery
-	192952, -- Increased Haste and Versatility
-	192955, -- Increased Haste
-
-	192961, -- Increased Mastery and Haste
-	192958, -- Increased Mastery and Critical Strike
-	192964, -- Increased Mastery and Versatility
-	192967, -- Increased Mastery
-
-	192919, -- Increased Critical Strike and Haste
-	192925, -- Increased Critical Strike and Versatility
-	192922, -- Increased Critical Strike and Mastery
-	192928, -- Increased Critical Strike
-
-	192935, -- Increased Versatility and Haste
-	192932, -- Increased Versatility and Critical Strike
-	192938, -- Increased Versatility and Mastery
-	192942, -- Increased Versatility
-
-	192973, -- Increased Stamina and Haste
-	192970, -- Increased Stamina and Critical Strike
-	192979, -- Increased Stamina and Versatility
-	192976, -- Increased Stamina and Mastery
-};
-
--- There is no escaping the cache!!!
-function addon:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi)
-	for _, gemID in ipairs(gemsWeCareAbout) do
-		C_Item.RequestLoadItemDataByID(gemID);
+function addon:ITEM_DATA_LOAD_RESULT(itemID, success)
+	local queuedItem = itemLoadQueue[itemID];
+	if (queuedItem) then
+		UpdateAdditionalDisplayForReal(queuedItem.button, queuedItem.unit);
+		itemLoadQueue[itemID] = nil;
 	end
 end
 
@@ -905,4 +918,4 @@ end);
 eventListener:RegisterEvent("ADDON_LOADED");
 eventListener:RegisterEvent("SOCKET_INFO_UPDATE");
 eventListener:RegisterEvent("UNIT_INVENTORY_CHANGED");
-eventListener:RegisterEvent("PLAYER_ENTERING_WORLD");
+eventListener:RegisterEvent("ITEM_DATA_LOAD_RESULT");

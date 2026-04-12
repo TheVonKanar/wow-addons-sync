@@ -1113,19 +1113,24 @@ local barPool = pools.bar
 local tooltipMousePending = M.tooltipMousePending or setmetatable({}, { __mode = "k" })
 M.tooltipMousePending = tooltipMousePending
 
-local function applyFont(fs, path, size)
+local function applyFont(fs, path, size, flags, shadow)
 	if not fs then return end
-	fs:SetFont(path, size, C.FONT_FLAGS)
-	fs:SetShadowColor(0, 0, 0, 0)
-	fs:SetShadowOffset(0, 0)
+	fs:SetFont(path, size, flags or C.FONT_FLAGS)
+	if shadow then
+		fs:SetShadowColor(0, 0, 0, 1)
+		fs:SetShadowOffset(1, -1)
+	else
+		fs:SetShadowColor(0, 0, 0, 0)
+		fs:SetShadowOffset(0, 0)
+	end
 end
 
 local function applyIconFont(fs)
-	applyFont(fs, L.ICON_FONT_PATH or L.FONT_PATH or C.FONT_PATH, L.ICON_FONT_SIZE)
+	applyFont(fs, L.ICON_FONT_PATH or L.FONT_PATH or C.FONT_PATH, L.ICON_FONT_SIZE, L.ICON_FONT_FLAGS, L.ICON_SHADOW)
 end
 
 local function applyBarFont(fs)
-	applyFont(fs, L.FONT_PATH or C.FONT_PATH, L.BAR_FONT_SIZE)
+	applyFont(fs, L.FONT_PATH or C.FONT_PATH, L.BAR_FONT_SIZE, L.BAR_FONT_FLAGS, L.BAR_SHADOW)
 end
 
 local function configureTooltipFrameMouse(frame)
@@ -1202,8 +1207,6 @@ local function acquireIcon()
 		local tt = tf:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 		tt:SetPoint("CENTER", tf, "CENTER", 0, 0)
 		tt:SetTextColor(1, 1, 1, 1)
-		tt:SetShadowColor(0, 0, 0, 1)
-		tt:SetShadowOffset(1, -1)
 		f.timeText = tt
 
 		-- indicator layer inside icon, above cooldown/text
@@ -1364,16 +1367,12 @@ local function acquireBar()
 		txt:SetPoint("LEFT", sb, "LEFT", 6, 0)
 		txt:SetJustifyH("LEFT")
 		txt:SetTextColor(1, 1, 1, 1)
-		txt:SetShadowColor(0, 0, 0, 1)
-		txt:SetShadowOffset(1, -1)
 		f.txt = txt
 
 		local rt = textFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 		rt:SetPoint("RIGHT", sb, "RIGHT", -6, 0)
 		rt:SetJustifyH("RIGHT")
 		rt:SetTextColor(1, 1, 1, 1)
-		rt:SetShadowColor(0, 0, 0, 1)
-		rt:SetShadowOffset(1, -1)
 		f.rt = rt
 	end
 

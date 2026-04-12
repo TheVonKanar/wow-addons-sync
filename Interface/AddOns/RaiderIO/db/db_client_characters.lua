@@ -1,5 +1,5 @@
 --
--- RaiderIO Client Data. Generated on Mon Apr 06 2026 18:46:27 GMT+0000 (Coordinated Universal Time)
+-- RaiderIO Client Data. Generated on Sun Apr 12 2026 15:33:36 GMT+0000 (Coordinated Universal Time)
 --
 local _, ns = ...
 ns.CLIENT_CHARACTERS = {
@@ -13,23 +13,23 @@ ns.CLIENT_CHARACTERS = {
     },
     ["mythic_keystone"] = {
       ["all"] = {
-        ["score"] = 2688.1,
-        ["color"] = "#4769e0",
+        ["score"] = 2782.4,
+        ["color"] = "#5864e2",
         ["best"] = {
-          ["zone_id"] = 6988,
-          ["level"] = 12,
+          ["zone_id"] = 4813,
+          ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.889,
-          ["score"] = 369.1762666128891,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/5433934-12-skyreach?utm_source=client"
+          ["fraction"] = 0.924,
+          ["score"] = 382.8652223016226,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
         },
         ["bestRun"] = {
-          ["zone_id"] = 6988,
-          ["level"] = 12,
+          ["zone_id"] = 4813,
+          ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.889,
-          ["score"] = 369.1762666128891,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/5433934-12-skyreach?utm_source=client"
+          ["fraction"] = 0.924,
+          ["score"] = 382.8652223016226,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
         },
         ["bestFortified"] = {
           ["zone_id"] = 8910,
@@ -40,12 +40,12 @@ ns.CLIENT_CHARACTERS = {
           ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/2227710-11-seat-of-the-triumvirate?utm_source=client"
         },
         ["bestTyrannical"] = {
-          ["zone_id"] = 6988,
-          ["level"] = 12,
+          ["zone_id"] = 4813,
+          ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.889,
-          ["score"] = 369.1762666128891,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/5433934-12-skyreach?utm_source=client"
+          ["fraction"] = 0.924,
+          ["score"] = 382.8652223016226,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
         },
         ["runs"] = {
           {
@@ -74,11 +74,11 @@ ns.CLIENT_CHARACTERS = {
           },
           {
             ["zone_id"] = 16573,
-            ["level"] = 8,
-            ["upgrades"] = 3,
-            ["fraction"] = 0.555,
-            ["score"] = 290.00000454127957,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/3458960-8-nexuspoint-xenas?utm_source=client"
+            ["level"] = 11,
+            ["upgrades"] = 2,
+            ["fraction"] = 0.684,
+            ["score"] = 346.86202074515313,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8264535-11-nexuspoint-xenas?utm_source=client"
           }
         }
       }
