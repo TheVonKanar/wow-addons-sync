@@ -1,4 +1,0 @@
-<Ui>
-    <Script file="Collections.lua"/>
-    <Include file="AchievementFrame\AchievementFrame.xml"/>
-</Ui>

@@ -652,26 +652,16 @@ Model["Dragon Turtle"] = {
     [127290] = true, -- Red Dragon Turtle
 }
 
--- This could be split into two/three
 Model["Dragonhawk"] = {
     [ 96503] = true, -- Amani Dragonhawk
     [142478] = true, -- Armored Blue Dragonhawk
     [142266] = true, -- Armored Red Dragonhawk
     [ 61996] = true, -- Blue Dragonhawk
-   [1253929] = true, -- Cerulean Sporeglider (2710)
-   [1261298] = true, -- Crimson Dragonhawk (2756)
-   [1261302] = true, -- Cobalt Dragonhawk (2758)
     [194464] = true, -- Eclipse Dragonhawk
-   [1261291] = true, -- Fiery Dragonhawk (2753)
     [ 62048] = true, -- Illidari Doomhawk
-   [1234305] = true, -- Lightwing Dragonhawk
     [ 61997] = true, -- Red Dragonhawk
-   [1253938] = true, -- Ruddy Sporeglider (2713)
     [ 66088] = true, -- Sunreaver Dragonhawk
-   [1261296] = true, -- Umbral Dragonhawk (2755)
     [351195] = true, -- Vengeance
-   [1239138] = true, -- Voidlight Surger
-   [1234303] = true, -- Voidwing Dragonhawk
 }
 
 Model["Drake"] = {
@@ -1568,7 +1558,6 @@ Model["Nether Ray"] = {
     [ 39801] = true, -- Purple Riding Nether Ray
     [ 39800] = true, -- Red Riding Nether Ray
     [ 39802] = true, -- Silver Riding Nether Ray
-   [1263635] = true, -- Spectral Hawkstrider (2805)
    [1266702] = true, -- Voidbound Stormray (2828)
 }
 
@@ -1743,6 +1732,17 @@ Model["Qiraji War Tank"] = {
     [239770] = true, -- Black Qiraji War Tank
     [239766] = true, -- Blue Qiraji War Tank
     [239767] = true, -- Red Qiraji War Tank
+}
+
+Model["Quel'Thalas Dragonhawk"] = {
+   [1261302] = true, -- Cobalt Dragonhawk (2758)
+   [1261298] = true, -- Crimson Dragonhawk (2756)
+   [1261291] = true, -- Fiery Dragonhawk (2753)
+   [1234305] = true, -- Lightwing Dragonhawk
+   [1261293] = true, -- Peridot Dragonhawk (2754)
+   [1261296] = true, -- Umbral Dragonhawk (2755)
+   [1239138] = true, -- Voidlight Surger
+   [1234303] = true, -- Voidwing Dragonhawk
 }
 
 Model["Ram"] = {
@@ -1990,7 +1990,9 @@ Model["Shreddertank"] = {
 Model["Silvermoon Hawkstrider"]= {
    [1261323] = true, -- Cerulean Hawkstrider (2762)
    [1261322] = true, -- Crimson Silvermoon Hawkstrider (2761)
+   [1265785] = true, -- Emerald Hawkstrider (2818)
    [1265784] = true, -- Lucent Hawkstrider (2817)
+   [1263635] = true, -- Spectral Hawkstrider (2805)
 }
 
 -- Merged into Mountain Horse
@@ -2106,6 +2108,11 @@ Model["Spelltome"] = {
 
 Model["Spider"] = {
     [213115] = true, -- Bloodfang Widow
+}
+
+Model["Sporeglider"] = {
+   [1253929] = true, -- Cerulean Sporeglider (2710)
+   [1253938] = true, -- Ruddy Sporeglider (2713)
 }
 
 Model["Stone Drake"] = {

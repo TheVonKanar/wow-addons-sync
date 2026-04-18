@@ -1,7 +1,6 @@
 ## Interface: 120001,120005
 ## Version: 12.0.5
 ## Title: |c000080FFWindfury UI|r
-## Category: Dungeons & Raids
 ## Notes: Collection of utilities for my UI.
 ## Author: TheVonKanar
 ## IconTexture: Interface\AddOns\WindfuryUI\Textures\Icon

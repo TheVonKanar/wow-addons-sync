@@ -1,4 +1,3 @@
--- Generated from CurseForge on Fri Apr 17 07:42:33 UTC 2026
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("koKR") then
@@ -8,7 +7,7 @@ if ns:IsSameLocale("koKR") then
 
 	L.LOCALE_NAME = "koKR"
 
-L["ALLOW_IN_LFD"] = "던전 찾기 허용"
+	L["ALLOW_IN_LFD"] = "던전 찾기 허용"
 L["ALLOW_IN_LFD_CLASSIC"] = "파티 찾기 허용"
 L["ALLOW_IN_LFD_CLASSIC_DESC"] = "파티 찾기에서 파티나 신청자를 우클릭하여 Raider.IO 프로필 URL을 복사합니다."
 L["ALLOW_IN_LFD_DESC"] = "던전 찾기에서 파티나 신청자를 우클릭하여 Raider.IO 프로필 URL을 복사합니다."
@@ -623,5 +622,6 @@ L["WARNING_LOCK_POSITION_FRAME_AUTO"] = "Raider.IO: 먼저 Raider.IO 프로필�
 L["WARNING_RWF_MODE_ENABLE"] = "|cffFFFFFF%s|r RWF 모드가 활성화되었습니다. |cffFFFFFF/raiderio rwf|r을 입력하여 비활성화 할 수 있습니다."
 L["WIPE_RWF_MODE_BUTTON"] = "초기화"
 L["WIPE_RWF_MODE_BUTTON_TOOLTIP"] = "로그를 저장 파일에서 지우려면 클릭하세요. UI가 재시작됩니다."
+
 
 end
