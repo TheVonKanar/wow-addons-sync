@@ -1,4 +1,4 @@
-WindfuryUI = LibStub("AceAddon-3.0"):NewAddon("WindfuryUI", "AceEvent-3.0", "AceConsole-3.0")
+WindfuryUI = LibStub("AceAddon-3.0"):NewAddon("WindfuryUI")
 
 local LSM = LibStub("LibSharedMedia-3.0", true)
 
@@ -13,23 +13,7 @@ function WindfuryUI:OnInitialize()
 end
 
 function WindfuryUI:OnEnable()
-	-- Register events.
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function WindfuryUI:OnDisable()
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end
-
-function WindfuryUI:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUi)
-	local _, instanceType = IsInInstance()
-	if instanceType == "party" or instanceType == "raid" then
-		SetCVar("findYourselfModeCircle", true)
-		SetCVar("findYourselfModeIcon", true)
-		self:Print("Self-highlight has been activated.")
-	else
-		SetCVar("findYourselfModeCircle", false)
-		SetCVar("findYourselfModeIcon", false)
-		self:Print("Self-highlight has been deactivated.")
-	end
 end
