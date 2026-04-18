@@ -2,14 +2,14 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -31,55 +31,32 @@ BuffRemindersDB = {
 },
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
-["soulstone"] = true,
 ["blisteringScales"] = true,
+["soulstone"] = true,
 ["atrophicNumbingPoison"] = true,
-["beacons"] = true,
+["shamanShields"] = true,
 ["bronze"] = true,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["attackPower"] = true,
+["intellect"] = true,
+["versatility"] = true,
 ["devotionAura"] = true,
 ["earthShieldOthers"] = false,
-["versatility"] = true,
-["intellect"] = true,
-["shamanShields"] = true,
+["attackPower"] = true,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 38,
-["readyCheckOnlyOverrides"] = {
-},
-["showLoginMessages"] = false,
-["rememberedConsumables"] = {
-[263] = {
-["rune"] = 1234969,
-["flask"] = 1235111,
-["food"] = 1233767,
-},
-[264] = {
-["food"] = 1232917,
-["flask"] = 1235057,
-},
-},
-["buffTrackingMode"] = "my_buffs",
-["hideAllInVehicle"] = true,
-["categoryVisibility"] = {
-["custom"] = {
-["hideInPvPMatch"] = true,
-["pvp"] = true,
-},
 },
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["spacing"] = 0.2,
-["showText"] = false,
-["textSize"] = 20,
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["growDirection"] = "CENTER",
-["iconSize"] = 48,
+["iconZoom"] = 0,
 ["textAlpha"] = 1,
+["borderSize"] = 2,
+["showText"] = false,
+["spacing"] = 0.2,
+["iconSize"] = 48,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,
@@ -107,6 +84,29 @@ BuffRemindersDB = {
 ["priority"] = 4,
 },
 },
+["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+[264] = {
+["flask"] = 1235057,
+["food"] = 1232917,
+},
+},
+["dbVersion"] = 38,
+["hideAllInVehicle"] = true,
+["categoryVisibility"] = {
+["custom"] = {
+["pvp"] = true,
+["hideInPvPMatch"] = true,
+},
+},
+["buffTrackingMode"] = "my_buffs",
 },
 },
 }

@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 102,
 ["lastSanitation"] = 3,
-["session"] = 99,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/ChoreTracker/Modules/Display.lua:218: bad argument #3 to 'CDAT_CompareCalendarTime' (Current Field: [monthDay], Usage: local comparison = C_DateAndTime.CompareCalendarTime(lhsCalendarTime, rhsCalendarTime). Secret values are only allowed during untainted execution for this argument.)",
@@ -114,6 +114,14 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua]:218: in function <...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:173>\n",
 ["session"] = 89,
 ["counter"] = 27,
+},
+{
+["message"] = "Interface/AddOns/WindfuryUI/Core.lua:1: Usage: NewAddon([object,] name, [lib, lib, lib, ...]): 'name' - Addon 'WindfuryUI' already exists.",
+["time"] = 1776535955,
+["locals"] = "self = <table> {\n initializequeue = <table> {\n }\n statuses = <table> {\n }\n embeds = <table> {\n }\n frame = AceAddon30Frame {\n }\n addons = <table> {\n }\n enablequeue = <table> {\n }\n}\nobjectorname = \"WindfuryUI\"\nobject = nil\nname = \"WindfuryUI\"\ni = 1\n",
+["stack"] = "[Interface/AddOns/ArcUI/Libs/AceAddon-3.0/AceAddon-3.0.lua]:115: in function 'NewAddon'\n[Interface/AddOns/WindfuryUI/Core.lua]:1: in main chunk\n",
+["session"] = 101,
+["counter"] = 1,
 },
 },
 }

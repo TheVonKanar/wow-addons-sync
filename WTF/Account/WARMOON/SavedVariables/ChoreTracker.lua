@@ -3,14 +3,17 @@ ChoreTrackerDB = {
 ["char"] = {
 ["Kvotheen - Hyjal"] = {
 ["skillLines"] = {
-[182] = true,
-[2906] = 100,
 [2912] = 100,
-[356] = true,
-[2823] = 75,
-[185] = true,
-[171] = true,
 [794] = true,
+[2823] = 75,
+[2906] = 100,
+[171] = true,
+[2832] = 100,
+[2871] = 100,
+[185] = true,
+[182] = true,
+[356] = true,
+[2877] = 100,
 },
 },
 ["Killeen - Archimonde"] = {
@@ -28,6 +31,22 @@ ChoreTrackerDB = {
 [185] = true,
 },
 },
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Pandamoun - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+["Pandamagee - Hyjal"] = "Default",
+["Pandakv - Hyjal"] = "Default",
+["Killeen - Archimonde"] = "Default",
+["Pandakvo - Hyjal"] = "Default",
+["Raptorbuyer - Hyjal"] = "Default",
+["Trialmagekvo - Hyjal"] = "Default",
+["Testkvotheen - Hyjal"] = "Default",
+["Pandamo - Hyjal"] = "Default",
+["Kvothyr - Hyjal"] = "Default",
+["Pandamages - Hyjal"] = "Default",
+["Pandkvé - Hyjal"] = "Default",
 },
 ["global"] = {
 ["questWeeks"] = {
@@ -56,6 +75,12 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
+[93170] = {
+["status"] = 2,
+["questId"] = 93170,
+["objectives"] = {
+},
+},
 [88995] = {
 ["status"] = 2,
 ["questId"] = 88995,
@@ -79,10 +104,10 @@ ChoreTrackerDB = {
 ["questId"] = 89289,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Invitation selected",
 ["have"] = 0,
+["text"] = "0/1 Invitation selected",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
@@ -91,16 +116,28 @@ ChoreTrackerDB = {
 ["questId"] = 84852,
 ["objectives"] = {
 {
-["need"] = 100,
 ["type"] = "progressbar",
-["have"] = 0,
 ["text"] = "Complete activities and secure the Siren Isle (0%)",
+["have"] = 0,
+["need"] = 100,
 },
+},
+},
+[93912] = {
+["status"] = 2,
+["questId"] = 93912,
+["objectives"] = {
 },
 },
 [93385] = {
 ["status"] = 2,
 ["questId"] = 93385,
+["objectives"] = {
+},
+},
+[81429] = {
+["status"] = 2,
+["questId"] = 81429,
 ["objectives"] = {
 },
 },
@@ -116,6 +153,12 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
+[95001] = {
+["status"] = 2,
+["questId"] = 95001,
+["objectives"] = {
+},
+},
 [91266] = {
 ["status"] = 1,
 ["questId"] = 91266,
@@ -125,6 +168,18 @@ ChoreTrackerDB = {
 ["text"] = "0/1 Hunt your Prey",
 ["have"] = 0,
 ["need"] = 1,
+},
+},
+},
+[91458] = {
+["status"] = 1,
+["questId"] = 91458,
+["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Chase your Prey (0%)",
+["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -139,10 +194,34 @@ ChoreTrackerDB = {
 ["questId"] = 92560,
 ["objectives"] = {
 {
-["text"] = "0/1 Lu'ashal slain",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Lu'ashal slain",
+},
+},
+},
+[92549] = {
+["status"] = 1,
+["questId"] = 92549,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/20 Void Anomalies Dispersed",
+["have"] = 0,
+["need"] = 20,
+},
+},
+},
+[92152] = {
+["status"] = 1,
+["questId"] = 92152,
+["objectives"] = {
+{
+["need"] = 100,
+["type"] = "progressbar",
+["have"] = 0,
+["text"] = "Lightbloom creatures slain (0%)",
 },
 },
 },
@@ -181,10 +260,28 @@ ChoreTrackerDB = {
 ["questId"] = 93751,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "Restless Heart defeated",
-["need"] = 1,
 ["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[91801] = {
+["status"] = 1,
+["questId"] = 91801,
+["objectives"] = {
+{
+["need"] = 12,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/12 Twilight's Blade slain",
+},
+{
+["need"] = 3,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/3 Ritual Component destroyed",
 },
 },
 },
@@ -199,16 +296,16 @@ ChoreTrackerDB = {
 ["questId"] = 48985,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 Twilight-Harbinger Tharuul slain",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 L'ura slain",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -229,88 +326,88 @@ ChoreTrackerDB = {
 ["questId"] = 94815,
 ["objectives"] = {
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 1 Heron Skygaze",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 2 Innkeeper Areyn",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 3 Kryenna",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 4 Lady Marilin",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 5 Landraelanis",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 6 Limien Bountcask",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 7 Magister Duskwither",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 8 Nara Fadebranch",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 9 Quarelestra",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 10 Sheri",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 11 Vehn Sorrelstride",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
-["text"] = "0/1 12 Zalene Firstlight",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 12 Zalene Firstlight",
 },
 },
 },
-[94457] = {
+[93529] = {
 ["status"] = 2,
-["questId"] = 94457,
+["questId"] = 93529,
 ["objectives"] = {
 },
 },
-[93766] = {
+[90735] = {
 ["status"] = 2,
-["questId"] = 93766,
+["questId"] = 90735,
 ["objectives"] = {
 },
 },
@@ -325,28 +422,34 @@ ChoreTrackerDB = {
 ["questId"] = 93704,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/10 Tranquility Bloom |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
 ["have"] = 0,
+["text"] = "0/10 Tranquility Bloom |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
 ["need"] = 10,
+["type"] = "item",
 },
 {
-["type"] = "item",
-["text"] = "0/5 Argentleaf |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
 ["have"] = 0,
+["text"] = "0/5 Argentleaf |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
 ["need"] = 5,
+["type"] = "item",
 },
 },
 },
-[93924] = {
-["status"] = 2,
-["questId"] = 93924,
-["objectives"] = {
-},
-},
-[87307] = {
+[94425] = {
 ["status"] = 1,
-["questId"] = 87307,
+["questId"] = 94425,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/1 Speak to Scout Adaephus",
+["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[89345] = {
+["status"] = 2,
+["questId"] = 89345,
 ["objectives"] = {
 },
 },
@@ -361,10 +464,10 @@ ChoreTrackerDB = {
 ["questId"] = 94625,
 ["objectives"] = {
 {
-["need"] = 3,
 ["type"] = "item",
-["have"] = 0,
 ["text"] = "0/3 Elementary Voidcore Shard",
+["have"] = 0,
+["need"] = 3,
 },
 },
 },
@@ -373,10 +476,10 @@ ChoreTrackerDB = {
 ["questId"] = 91966,
 ["objectives"] = {
 {
-["text"] = "Tend to the Soiree's cleaning and entertainment (80%)",
-["type"] = "progressbar",
 ["need"] = 100,
+["type"] = "progressbar",
 ["have"] = 0,
+["text"] = "Tend to the Soiree's cleaning and entertainment (80%)",
 },
 },
 },
@@ -392,15 +495,33 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[90736] = {
+[75280] = {
 ["status"] = 1,
-["questId"] = 90736,
+["questId"] = 75280,
 ["objectives"] = {
 {
-["text"] = "0/8 Stolen Belongings recovered",
-["type"] = "item",
-["need"] = 8,
+["type"] = "object",
+["text"] = "Suffusion Crucible looted",
 ["have"] = 0,
+["need"] = 1,
+},
+{
+["type"] = "monster",
+["text"] = "0/1 Crucible guardian slain",
+["have"] = 0,
+["need"] = 1,
+},
+{
+["type"] = "object",
+["text"] = "Suffusion Mold looted",
+["have"] = 0,
+["need"] = 1,
+},
+{
+["type"] = "monster",
+["text"] = "0/1 Forgemaster Slain",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -410,34 +531,34 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[95435] = {
+[90736] = {
 ["status"] = 1,
-["questId"] = 95435,
+["questId"] = 90736,
 ["objectives"] = {
 {
+["need"] = 8,
+["type"] = "item",
 ["have"] = 0,
-["text"] = "0/3 [DNT]",
-["need"] = 3,
+["text"] = "0/8 Stolen Belongings recovered",
+},
+},
+},
+[82146] = {
+["status"] = 1,
+["questId"] = 82146,
+["objectives"] = {
+{
 ["type"] = "object",
-},
-},
-},
-[88996] = {
-["status"] = 2,
-["questId"] = 88996,
-["objectives"] = {
-},
-},
-[92085] = {
-["status"] = 1,
-["questId"] = 92085,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Swift Grymlinx mounted",
+["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
 ["have"] = 0,
-["need"] = 1,
+["need"] = 3,
 },
+},
+},
+[87304] = {
+["status"] = 2,
+["questId"] = 87304,
+["objectives"] = {
 },
 },
 [93427] = {
@@ -446,10 +567,16 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[92887] = {
-["status"] = 2,
-["questId"] = 92887,
+[81630] = {
+["status"] = 1,
+["questId"] = 81630,
 ["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/1 Kordac slain",
+["have"] = 0,
+["need"] = 1,
+},
 },
 },
 [88998] = {
@@ -457,10 +584,10 @@ ChoreTrackerDB = {
 ["questId"] = 88998,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Meditate at the Ancient Visionstone",
 ["have"] = 0,
+["text"] = "0/1 Meditate at the Ancient Visionstone",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
@@ -469,10 +596,10 @@ ChoreTrackerDB = {
 ["questId"] = 91927,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/6 Escaping Oozes booted",
 ["have"] = 0,
+["text"] = "0/6 Escaping Oozes booted",
 ["need"] = 6,
+["type"] = "monster",
 },
 },
 },
@@ -481,10 +608,10 @@ ChoreTrackerDB = {
 ["questId"] = 82156,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/3 Complete 3 World Quests in the Ringing Deeps",
-["need"] = 3,
 ["type"] = "object",
+["need"] = 3,
+["have"] = 0,
 },
 },
 },
@@ -494,9 +621,9 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[86371] = {
+[93769] = {
 ["status"] = 2,
-["questId"] = 86371,
+["questId"] = 93769,
 ["objectives"] = {
 },
 },
@@ -524,34 +651,28 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[90737] = {
+[91118] = {
 ["status"] = 1,
-["questId"] = 90737,
+["questId"] = 91118,
 ["objectives"] = {
 {
-["text"] = "0/1 First Thiever's Nest searched",
-["type"] = "monster",
-["need"] = 1,
 ["have"] = 0,
-},
-{
-["text"] = "0/1 Second Thiever's Nest searched",
-["type"] = "monster",
+["text"] = "0/1 Hunt your Prey",
 ["need"] = 1,
-["have"] = 0,
-},
-{
-["text"] = "0/1 Third Thiever's Nest searched",
 ["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 },
 },
-[93769] = {
-["status"] = 2,
-["questId"] = 93769,
+[72560] = {
+["status"] = 1,
+["questId"] = 72560,
 ["objectives"] = {
+{
+["text"] = "0/1   slain",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [86919] = {
@@ -560,27 +681,39 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91118] = {
+[90737] = {
 ["status"] = 1,
-["questId"] = 91118,
+["questId"] = 90737,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Hunt your Prey",
-["have"] = 0,
 ["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 First Thiever's Nest searched",
+},
+{
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 Second Thiever's Nest searched",
+},
+{
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 Third Thiever's Nest searched",
 },
 },
 },
-[93528] = {
-["status"] = 2,
-["questId"] = 93528,
+[87305] = {
+["status"] = 1,
+["questId"] = 87305,
 ["objectives"] = {
 },
 },
-[93428] = {
+[81425] = {
 ["status"] = 2,
-["questId"] = 93428,
+["questId"] = 81425,
 ["objectives"] = {
 },
 },
@@ -589,10 +722,10 @@ ChoreTrackerDB = {
 ["questId"] = 74378,
 ["objectives"] = {
 {
-["have"] = 0,
-["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
-["need"] = 1,
 ["type"] = "object",
+["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -601,10 +734,22 @@ ChoreTrackerDB = {
 ["questId"] = 93690,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/2 Alchemy Orders Fulfilled",
 ["have"] = 0,
+["text"] = "0/2 Alchemy Orders Fulfilled",
 ["need"] = 2,
+["type"] = "object",
+},
+},
+},
+[89507] = {
+["status"] = 1,
+["questId"] = 89507,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/20000 Abundance earned",
+["have"] = 0,
+["need"] = 20000,
 },
 },
 },
@@ -614,21 +759,21 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91801] = {
+[95000] = {
+["status"] = 2,
+["questId"] = 95000,
+["objectives"] = {
+},
+},
+[92002] = {
 ["status"] = 1,
-["questId"] = 91801,
+["questId"] = 92002,
 ["objectives"] = {
 {
-["text"] = "0/12 Twilight's Blade slain",
-["type"] = "monster",
-["need"] = 12,
 ["have"] = 0,
-},
-{
-["text"] = "0/3 Ritual Component destroyed",
-["type"] = "monster",
-["need"] = 3,
-["have"] = 0,
+["text"] = "0/6  ",
+["need"] = 6,
+["type"] = "item",
 },
 },
 },
@@ -636,78 +781,6 @@ ChoreTrackerDB = {
 ["status"] = 2,
 ["questId"] = 91190,
 ["objectives"] = {
-},
-},
-[87303] = {
-["status"] = 2,
-["questId"] = 87303,
-["objectives"] = {
-},
-},
-[95000] = {
-["status"] = 2,
-["questId"] = 95000,
-["objectives"] = {
-},
-},
-[93889] = {
-["status"] = 1,
-["questId"] = 93889,
-["objectives"] = {
-{
-["text"] = "0/1 Soiree Guest invited",
-["type"] = "object",
-["need"] = 1,
-["have"] = 0,
-},
-{
-["text"] = "0/1 \"Fortify the Runestones\" completed",
-["type"] = "object",
-["need"] = 1,
-["have"] = 0,
-},
-{
-["text"] = "Complete two favors at the Soiree",
-["type"] = "object",
-["need"] = 1,
-["have"] = 0,
-},
-},
-},
-[81427] = {
-["status"] = 2,
-["questId"] = 81427,
-["objectives"] = {
-},
-},
-[90738] = {
-["status"] = 1,
-["questId"] = 90738,
-["objectives"] = {
-},
-},
-[95413] = {
-["status"] = 1,
-["questId"] = 95413,
-["objectives"] = {
-{
-["type"] = "object",
-["text"] = "0/1 Buy an item from an endeavor trader",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[91992] = {
-["status"] = 1,
-["questId"] = 91992,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Magister's apprentice located",
-["have"] = 0,
-["need"] = 1,
-},
 },
 },
 [93524] = {
@@ -722,16 +795,64 @@ ChoreTrackerDB = {
 },
 },
 },
+[81427] = {
+["status"] = 2,
+["questId"] = 81427,
+["objectives"] = {
+},
+},
 [93913] = {
 ["status"] = 2,
 ["questId"] = 93913,
 ["objectives"] = {
 },
 },
-[93911] = {
-["status"] = 2,
-["questId"] = 93911,
+[95413] = {
+["status"] = 1,
+["questId"] = 95413,
 ["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/1 Buy an item from an endeavor trader",
+["need"] = 1,
+["type"] = "object",
+},
+},
+},
+[91992] = {
+["status"] = 1,
+["questId"] = 91992,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/1 Magister's apprentice located",
+["need"] = 1,
+["type"] = "monster",
+},
+},
+},
+[92127] = {
+["status"] = 2,
+["questId"] = 92127,
+["objectives"] = {
+},
+},
+[90738] = {
+["status"] = 1,
+["questId"] = 90738,
+["objectives"] = {
+},
+},
+[91508] = {
+["status"] = 1,
+["questId"] = 91508,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/1 Dying Root inspected",
+["have"] = 0,
+["need"] = 1,
+},
 },
 },
 [93421] = {
@@ -746,22 +867,34 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[93892] = {
+[84252] = {
 ["status"] = 2,
-["questId"] = 93892,
+["questId"] = 84252,
 ["objectives"] = {
 },
 },
-[93767] = {
-["status"] = 2,
-["questId"] = 93767,
-["objectives"] = {
-},
-},
-[93784] = {
+[91989] = {
 ["status"] = 1,
-["questId"] = 93784,
+["questId"] = 91989,
 ["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/12  ",
+["need"] = 12,
+["type"] = "item",
+},
+},
+},
+[47148] = {
+["status"] = 1,
+["questId"] = 47148,
+["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/1 PvP Brawl won",
+["have"] = 0,
+["need"] = 1,
+},
 },
 },
 [82158] = {
@@ -776,42 +909,6 @@ ChoreTrackerDB = {
 },
 },
 },
-[92130] = {
-["status"] = 2,
-["questId"] = 92130,
-["objectives"] = {
-},
-},
-[76586] = {
-["status"] = 1,
-["questId"] = 76586,
-["objectives"] = {
-{
-["need"] = 4,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/4 Lesser Keyflames Activated",
-},
-},
-},
-[89268] = {
-["status"] = 1,
-["questId"] = 89268,
-["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Relic selected",
-["have"] = 0,
-["need"] = 1,
-},
-},
-},
-[81428] = {
-["status"] = 2,
-["questId"] = 81428,
-["objectives"] = {
-},
-},
 [94390] = {
 ["status"] = 1,
 ["questId"] = 94390,
@@ -822,6 +919,36 @@ ChoreTrackerDB = {
 ["have"] = 0,
 ["need"] = 3,
 },
+},
+},
+[76586] = {
+["status"] = 1,
+["questId"] = 76586,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/4 Lesser Keyflames Activated",
+["have"] = 0,
+["need"] = 4,
+},
+},
+},
+[87302] = {
+["status"] = 1,
+["questId"] = 87302,
+["objectives"] = {
+},
+},
+[81428] = {
+["status"] = 2,
+["questId"] = 81428,
+["objectives"] = {
+},
+},
+[75721] = {
+["status"] = 2,
+["questId"] = 75721,
+["objectives"] = {
 },
 },
 [93890] = {
@@ -835,16 +962,16 @@ ChoreTrackerDB = {
 ["questId"] = 91231,
 ["objectives"] = {
 {
-["text"] = "0/1 Hunt your Prey",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
 },
 },
 },
-[87302] = {
-["status"] = 1,
-["questId"] = 87302,
+[84254] = {
+["status"] = 2,
+["questId"] = 84254,
 ["objectives"] = {
 },
 },
@@ -853,22 +980,22 @@ ChoreTrackerDB = {
 ["questId"] = 90739,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Seila followed",
 ["have"] = 0,
+["text"] = "0/1 Seila followed",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
-[92152] = {
+[91977] = {
 ["status"] = 1,
-["questId"] = 92152,
+["questId"] = 91977,
 ["objectives"] = {
 {
-["text"] = "Lightbloom creatures slain (0%)",
-["type"] = "progressbar",
-["need"] = 100,
 ["have"] = 0,
+["text"] = "0/8 Tideborne chastised",
+["need"] = 8,
+["type"] = "monster",
 },
 },
 },
@@ -896,57 +1023,51 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91977] = {
+[87350] = {
 ["status"] = 1,
-["questId"] = 91977,
+["questId"] = 87350,
 ["objectives"] = {
 {
 ["type"] = "monster",
-["text"] = "0/8 Tideborne chastised",
-["have"] = 0,
-["need"] = 8,
-},
-},
-},
-[84254] = {
-["status"] = 2,
-["questId"] = 84254,
-["objectives"] = {
-},
-},
-[75721] = {
-["status"] = 2,
-["questId"] = 75721,
-["objectives"] = {
-},
-},
-[47148] = {
-["status"] = 1,
-["questId"] = 47148,
-["objectives"] = {
-{
-["type"] = "object",
-["text"] = "0/1 PvP Brawl won",
+["text"] = "0/1 Complete Event",
 ["have"] = 0,
 ["need"] = 1,
 },
 },
 },
-[91989] = {
+[89268] = {
 ["status"] = 1,
-["questId"] = 91989,
+["questId"] = 89268,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/12  ",
 ["have"] = 0,
-["need"] = 12,
+["text"] = "0/1 Relic selected",
+["need"] = 1,
+["type"] = "monster",
 },
 },
 },
-[84252] = {
+[92130] = {
 ["status"] = 2,
-["questId"] = 84252,
+["questId"] = 92130,
+["objectives"] = {
+},
+},
+[93784] = {
+["status"] = 1,
+["questId"] = 93784,
+["objectives"] = {
+},
+},
+[93767] = {
+["status"] = 2,
+["questId"] = 93767,
+["objectives"] = {
+},
+},
+[93892] = {
+["status"] = 2,
+["questId"] = 93892,
 ["objectives"] = {
 },
 },
@@ -955,16 +1076,16 @@ ChoreTrackerDB = {
 ["questId"] = 90573,
 ["objectives"] = {
 {
-["text"] = "0/1 Runestone defended",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Runestone defended",
 },
 },
 },
-[93912] = {
+[93911] = {
 ["status"] = 2,
-["questId"] = 93912,
+["questId"] = 93911,
 ["objectives"] = {
 },
 },
@@ -974,22 +1095,34 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[92127] = {
-["status"] = 2,
-["questId"] = 92127,
-["objectives"] = {
-},
-},
-[92002] = {
+[93889] = {
 ["status"] = 1,
-["questId"] = 92002,
+["questId"] = 93889,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/6  ",
+["need"] = 1,
+["type"] = "object",
 ["have"] = 0,
-["need"] = 6,
+["text"] = "0/1 Soiree Guest invited",
 },
+{
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
+["text"] = "0/1 \"Fortify the Runestones\" completed",
+},
+{
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
+["text"] = "Complete two favors at the Soiree",
+},
+},
+},
+[87303] = {
+["status"] = 2,
+["questId"] = 87303,
+["objectives"] = {
 },
 },
 [90740] = {
@@ -1004,15 +1137,15 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[81425] = {
+[93428] = {
 ["status"] = 2,
-["questId"] = 81425,
+["questId"] = 93428,
 ["objectives"] = {
 },
 },
-[87305] = {
-["status"] = 1,
-["questId"] = 87305,
+[93528] = {
+["status"] = 2,
+["questId"] = 93528,
 ["objectives"] = {
 },
 },
@@ -1022,105 +1155,69 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[72560] = {
-["status"] = 1,
-["questId"] = 72560,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/1   slain",
-["need"] = 1,
-["type"] = "monster",
-},
-},
-},
-[81630] = {
-["status"] = 1,
-["questId"] = 81630,
-["objectives"] = {
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Kordac slain",
-},
-},
-},
-[87304] = {
+[86371] = {
 ["status"] = 2,
-["questId"] = 87304,
+["questId"] = 86371,
 ["objectives"] = {
 },
 },
-[82146] = {
+[92887] = {
+["status"] = 2,
+["questId"] = 92887,
+["objectives"] = {
+},
+},
+[92085] = {
 ["status"] = 1,
-["questId"] = 82146,
+["questId"] = 92085,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
+["type"] = "monster",
+["text"] = "0/1 Swift Grymlinx mounted",
 ["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[88996] = {
+["status"] = 2,
+["questId"] = 88996,
+["objectives"] = {
+},
+},
+[87307] = {
+["status"] = 1,
+["questId"] = 87307,
+["objectives"] = {
+},
+},
+[95435] = {
+["status"] = 1,
+["questId"] = 95435,
+["objectives"] = {
+{
+["text"] = "0/3 [DNT]",
+["type"] = "object",
 ["need"] = 3,
-},
-},
-},
-[75280] = {
-["status"] = 1,
-["questId"] = 75280,
-["objectives"] = {
-{
-["need"] = 1,
-["type"] = "object",
 ["have"] = 0,
-["text"] = "Suffusion Crucible looted",
-},
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Crucible guardian slain",
-},
-{
-["need"] = 1,
-["type"] = "object",
-["have"] = 0,
-["text"] = "Suffusion Mold looted",
-},
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Forgemaster Slain",
 },
 },
 },
-[89345] = {
+[93924] = {
 ["status"] = 2,
-["questId"] = 89345,
+["questId"] = 93924,
 ["objectives"] = {
 },
 },
-[94425] = {
-["status"] = 1,
-["questId"] = 94425,
-["objectives"] = {
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Speak to Scout Adaephus",
-},
-},
-},
-[90735] = {
+[93766] = {
 ["status"] = 2,
-["questId"] = 90735,
+["questId"] = 93766,
 ["objectives"] = {
 },
 },
-[93529] = {
+[94457] = {
 ["status"] = 2,
-["questId"] = 93529,
+["questId"] = 94457,
 ["objectives"] = {
 },
 },
@@ -1149,10 +1246,10 @@ ChoreTrackerDB = {
 ["questId"] = 95440,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Host or attend a gathering in a player home",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -1167,28 +1264,28 @@ ChoreTrackerDB = {
 ["questId"] = 74501,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/1 Suffusion Crucible looted",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Crucible guardian slain",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/1 Suffusion Mold looted",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Forgemaster slain",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -1197,10 +1294,10 @@ ChoreTrackerDB = {
 ["questId"] = 94837,
 ["objectives"] = {
 {
-["need"] = 2,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/2 Battlegrounds won",
+["have"] = 0,
+["need"] = 2,
 },
 },
 },
@@ -1215,10 +1312,10 @@ ChoreTrackerDB = {
 ["questId"] = 93599,
 ["objectives"] = {
 {
-["need"] = 5,
 ["type"] = "player",
-["have"] = 0,
 ["text"] = "0/5 Players defeated in pet battle",
+["have"] = 0,
+["need"] = 5,
 },
 },
 },
@@ -1233,10 +1330,10 @@ ChoreTrackerDB = {
 ["questId"] = 93758,
 ["objectives"] = {
 {
-["text"] = "Lothraxion defeated",
-["type"] = "object",
 ["need"] = 1,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "Lothraxion defeated",
 },
 },
 },
@@ -1270,16 +1367,10 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[94425] = {
-["status"] = 1,
-["questId"] = 94425,
+[91186] = {
+["status"] = 2,
+["questId"] = 91186,
 ["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Speak to Scout Adaephus",
-["have"] = 0,
-["need"] = 1,
-},
 },
 },
 [94838] = {
@@ -1287,10 +1378,10 @@ ChoreTrackerDB = {
 ["questId"] = 94838,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/2 Battlegrounds won",
 ["have"] = 0,
+["text"] = "0/2 Battlegrounds won",
 ["need"] = 2,
+["type"] = "object",
 },
 },
 },
@@ -1311,10 +1402,10 @@ ChoreTrackerDB = {
 ["questId"] = 90576,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Runestone defended",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -1323,10 +1414,10 @@ ChoreTrackerDB = {
 ["questId"] = 93505,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1500 Honor Earned in Epic Battleground",
-["need"] = 1500,
 ["type"] = "object",
+["need"] = 1500,
+["have"] = 0,
 },
 },
 },
@@ -1336,40 +1427,40 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
+[90735] = {
+["status"] = 1,
+["questId"] = 90735,
+["objectives"] = {
+},
+},
 [90862] = {
 ["status"] = 1,
 ["questId"] = 90862,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 Kal'dorei delegation met",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 Shal'dorei delegation met",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 Ren'dorei delegation met",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 Quel'dorei delegation met",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
-},
-},
-[90735] = {
-["status"] = 1,
-["questId"] = 90735,
-["objectives"] = {
 },
 },
 [93410] = {
@@ -1383,76 +1474,76 @@ ChoreTrackerDB = {
 ["questId"] = 94815,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 1 Heron Skygaze",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 2 Innkeeper Areyn",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 3 Kryenna",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 4 Lady Marilin",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 5 Landraelanis",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 6 Limien Bountcask",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 7 Magister Duskwither",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 8 Nara Fadebranch",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 9 Quarelestra",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 10 Sheri",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 11 Vehn Sorrelstride",
+["have"] = 0,
+["need"] = 1,
 },
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 12 Zalene Firstlight",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -1461,17 +1552,23 @@ ChoreTrackerDB = {
 ["questId"] = 93426,
 ["objectives"] = {
 {
-["need"] = 100,
 ["type"] = "item",
-["have"] = 0,
 ["text"] = "0/100 Spark of War",
+["have"] = 0,
+["need"] = 100,
 },
 },
 },
-[95003] = {
-["status"] = 2,
-["questId"] = 95003,
+[91193] = {
+["status"] = 1,
+["questId"] = 91193,
 ["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/3 Complete World Quests in K'aresh",
+["have"] = 0,
+["need"] = 3,
+},
 },
 },
 [88997] = {
@@ -1485,34 +1582,22 @@ ChoreTrackerDB = {
 ["questId"] = 91592,
 ["objectives"] = {
 {
-["text"] = "0/5 Empowering Bloom destroyed",
-["type"] = "object",
 ["need"] = 5,
-["have"] = 0,
-},
-},
-},
-[88995] = {
-["status"] = 1,
-["questId"] = 88995,
-["objectives"] = {
-{
-["text"] = "0/1 Meditate at the Ancient Visionstone",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
-},
-{
-["text"] = "Learn about Aln'hara's Gift",
 ["type"] = "object",
-["need"] = 1,
 ["have"] = 0,
+["text"] = "0/5 Empowering Bloom destroyed",
 },
 },
 },
-[92130] = {
+[93892] = {
 ["status"] = 2,
-["questId"] = 92130,
+["questId"] = 93892,
+["objectives"] = {
+},
+},
+[81425] = {
+["status"] = 2,
+["questId"] = 81425,
 ["objectives"] = {
 },
 },
@@ -1521,10 +1606,10 @@ ChoreTrackerDB = {
 ["questId"] = 95435,
 ["objectives"] = {
 {
-["need"] = 3,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/3 [DNT]",
+["have"] = 0,
+["need"] = 3,
 },
 },
 },
@@ -1533,17 +1618,23 @@ ChoreTrackerDB = {
 ["questId"] = 94625,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/3  ",
-["need"] = 3,
 ["type"] = "item",
+["need"] = 3,
+["have"] = 0,
 },
 },
 },
-[81425] = {
-["status"] = 2,
-["questId"] = 81425,
+[91966] = {
+["status"] = 1,
+["questId"] = 91966,
 ["objectives"] = {
+{
+["type"] = "progressbar",
+["text"] = "Tend to the Soiree's cleaning and entertainment (80%)",
+["have"] = 0,
+["need"] = 100,
+},
 },
 },
 [84735] = {
@@ -1558,9 +1649,9 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[88994] = {
+[94836] = {
 ["status"] = 2,
-["questId"] = 88994,
+["questId"] = 94836,
 ["objectives"] = {
 },
 },
@@ -1575,10 +1666,10 @@ ChoreTrackerDB = {
 ["questId"] = 47148,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/1 PvP Brawl won",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
@@ -1587,23 +1678,17 @@ ChoreTrackerDB = {
 ["questId"] = 90871,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 Flame of the Covenant lit",
+["type"] = "object",
 ["need"] = 1,
-["type"] = "object",
-},
-},
-},
-[82156] = {
-["status"] = 1,
-["questId"] = 82156,
-["objectives"] = {
-{
-["need"] = 3,
-["type"] = "object",
 ["have"] = 0,
-["text"] = "0/3 Complete 3 World Quests in the Ringing Deeps",
 },
+},
+},
+[93766] = {
+["status"] = 2,
+["questId"] = 93766,
+["objectives"] = {
 },
 },
 [93427] = {
@@ -1617,17 +1702,23 @@ ChoreTrackerDB = {
 ["questId"] = 81624,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Orta slain",
+["have"] = 0,
+["need"] = 1,
 },
 },
 },
-[86919] = {
+[91229] = {
 ["status"] = 1,
-["questId"] = 86919,
+["questId"] = 91229,
 ["objectives"] = {
+{
+["text"] = "0/1 Hunt your Prey",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [92689] = {
@@ -1635,16 +1726,16 @@ ChoreTrackerDB = {
 ["questId"] = 92689,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "Assist Grand Magister Rommath",
-["need"] = 1,
 ["type"] = "object",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "Assist Aethas Sunreaver",
-["need"] = 1,
 ["type"] = "object",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -1653,10 +1744,10 @@ ChoreTrackerDB = {
 ["questId"] = 89268,
 ["objectives"] = {
 {
-["text"] = "0/1 Relic selected",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Relic selected",
 },
 },
 },
@@ -1695,23 +1786,17 @@ ChoreTrackerDB = {
 ["questId"] = 93507,
 ["objectives"] = {
 {
-["type"] = "progressbar",
+["have"] = 0,
 ["text"] = "Shadowguard operation disrupted (0%)",
-["have"] = 0,
 ["need"] = 100,
+["type"] = "progressbar",
 },
 },
 },
-[91229] = {
-["status"] = 1,
-["questId"] = 91229,
+[93769] = {
+["status"] = 2,
+["questId"] = 93769,
 ["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/1 Hunt your Prey",
-["need"] = 1,
-["type"] = "monster",
-},
 },
 },
 [91999] = {
@@ -1726,28 +1811,34 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[92887] = {
+[93428] = {
 ["status"] = 2,
-["questId"] = 92887,
+["questId"] = 93428,
 ["objectives"] = {
 },
 },
-[94476] = {
+[82157] = {
 ["status"] = 1,
-["questId"] = 94476,
+["questId"] = 82157,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/3  ",
+["type"] = "object",
+["text"] = "0/3 Complete World Quests in Hallowfall",
 ["have"] = 0,
 ["need"] = 3,
 },
 },
 },
-[93428] = {
-["status"] = 2,
-["questId"] = 93428,
+[74378] = {
+["status"] = 1,
+["questId"] = 74378,
 ["objectives"] = {
+{
+["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
+["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [93690] = {
@@ -1755,16 +1846,16 @@ ChoreTrackerDB = {
 ["questId"] = 93690,
 ["objectives"] = {
 {
-["need"] = 2,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/2 Alchemy Orders Fulfilled",
+["have"] = 0,
+["need"] = 2,
 },
 },
 },
-[87303] = {
+[92129] = {
 ["status"] = 2,
-["questId"] = 87303,
+["questId"] = 92129,
 ["objectives"] = {
 },
 },
@@ -1774,21 +1865,21 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[82157] = {
+[94476] = {
 ["status"] = 1,
-["questId"] = 82157,
+["questId"] = 94476,
 ["objectives"] = {
 {
-["need"] = 3,
-["type"] = "object",
 ["have"] = 0,
-["text"] = "0/3 Complete World Quests in Hallowfall",
+["text"] = "0/3  ",
+["need"] = 3,
+["type"] = "item",
 },
 },
 },
-[93910] = {
+[91995] = {
 ["status"] = 2,
-["questId"] = 93910,
+["questId"] = 91995,
 ["objectives"] = {
 },
 },
@@ -1810,9 +1901,9 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[90861] = {
-["status"] = 1,
-["questId"] = 90861,
+[95130] = {
+["status"] = 2,
+["questId"] = 95130,
 ["objectives"] = {
 },
 },
@@ -1822,9 +1913,9 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[93909] = {
+[84252] = {
 ["status"] = 2,
-["questId"] = 93909,
+["questId"] = 84252,
 ["objectives"] = {
 },
 },
@@ -1833,16 +1924,16 @@ ChoreTrackerDB = {
 ["questId"] = 91492,
 ["objectives"] = {
 {
-["text"] = "0/4 Strange wildlife observed",
-["type"] = "monster",
 ["need"] = 4,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/4 Strange wildlife observed",
 },
 {
-["text"] = "0/1 Resonance Stone attuned",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Resonance Stone attuned",
 },
 },
 },
@@ -1870,28 +1961,22 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[95127] = {
-["status"] = 2,
-["questId"] = 95127,
-["objectives"] = {
-},
-},
-[90876] = {
+[94457] = {
 ["status"] = 1,
-["questId"] = 90876,
+["questId"] = 94457,
 ["objectives"] = {
 {
-["have"] = 0,
-["text"] = "0/1 Harmonial dusted",
-["need"] = 1,
 ["type"] = "object",
-},
-{
+["text"] = "Participate in any Battleground",
 ["have"] = 0,
-["text"] = "0/1 Lab Bench cleaned off",
 ["need"] = 1,
-["type"] = "object",
 },
+},
+},
+[93170] = {
+["status"] = 2,
+["questId"] = 93170,
+["objectives"] = {
 },
 },
 [48951] = {
@@ -1899,28 +1984,28 @@ ChoreTrackerDB = {
 ["questId"] = 48951,
 ["objectives"] = {
 {
-["text"] = "0/1 Voidmaw slain",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Voidmaw slain",
 },
 {
-["text"] = "0/1 L'ura slain",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 L'ura slain",
 },
 },
 },
-[89345] = {
-["status"] = 2,
-["questId"] = 89345,
+[87307] = {
+["status"] = 1,
+["questId"] = 87307,
 ["objectives"] = {
 },
 },
-[94835] = {
+[88993] = {
 ["status"] = 2,
-["questId"] = 94835,
+["questId"] = 88993,
 ["objectives"] = {
 },
 },
@@ -1929,10 +2014,10 @@ ChoreTrackerDB = {
 ["questId"] = 76586,
 ["objectives"] = {
 {
-["need"] = 4,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/4 Lesser Keyflames Activated",
+["have"] = 0,
+["need"] = 4,
 },
 },
 },
@@ -1942,10 +2027,16 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[87302] = {
+[94795] = {
 ["status"] = 1,
-["questId"] = 87302,
+["questId"] = 94795,
 ["objectives"] = {
+{
+["type"] = "object",
+["text"] = "0/3 Complete World Quests in Voidstorm",
+["have"] = 0,
+["need"] = 3,
+},
 },
 },
 [75721] = {
@@ -1960,15 +2051,45 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
+[87302] = {
+["status"] = 1,
+["questId"] = 87302,
+["objectives"] = {
+},
+},
 [91239] = {
 ["status"] = 1,
 ["questId"] = 91239,
 ["objectives"] = {
 {
-["need"] = 1,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/1 Hunt your Prey",
+["have"] = 0,
+["need"] = 1,
+},
+},
+},
+[93702] = {
+["status"] = 1,
+["questId"] = 93702,
+["objectives"] = {
+{
+["type"] = "item",
+["text"] = "0/3 Azeroot |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
+["have"] = 0,
+["need"] = 3,
+},
+},
+},
+[92636] = {
+["status"] = 1,
+["questId"] = 92636,
+["objectives"] = {
+{
+["text"] = "0/1 Predaxas slain",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -1978,82 +2099,52 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[93702] = {
-["status"] = 1,
-["questId"] = 93702,
-["objectives"] = {
-{
-["need"] = 3,
-["type"] = "item",
-["have"] = 0,
-["text"] = "0/3 Azeroot |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
-},
-},
-},
-[94795] = {
-["status"] = 1,
-["questId"] = 94795,
-["objectives"] = {
-{
-["need"] = 3,
-["type"] = "object",
-["have"] = 0,
-["text"] = "0/3 Complete World Quests in Voidstorm",
-},
-},
-},
-[92636] = {
-["status"] = 1,
-["questId"] = 92636,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/1 Predaxas slain",
-["need"] = 1,
-["type"] = "monster",
-},
-},
-},
 [94446] = {
 ["status"] = 1,
 ["questId"] = 94446,
 ["objectives"] = {
 {
-["need"] = 3,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/3 Nightmare Hunts completed",
+["have"] = 0,
+["need"] = 3,
 },
 },
 },
-[88993] = {
+[94835] = {
 ["status"] = 2,
-["questId"] = 88993,
+["questId"] = 94835,
 ["objectives"] = {
 },
 },
-[87307] = {
-["status"] = 1,
-["questId"] = 87307,
-["objectives"] = {
-},
-},
-[93170] = {
+[89345] = {
 ["status"] = 2,
-["questId"] = 93170,
+["questId"] = 89345,
 ["objectives"] = {
 },
 },
-[94457] = {
+[90876] = {
 ["status"] = 1,
-["questId"] = 94457,
+["questId"] = 90876,
 ["objectives"] = {
 {
-["need"] = 1,
+["text"] = "0/1 Harmonial dusted",
 ["type"] = "object",
+["need"] = 1,
 ["have"] = 0,
-["text"] = "Participate in any Battleground",
 },
+{
+["text"] = "0/1 Lab Bench cleaned off",
+["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
+},
+},
+[95127] = {
+["status"] = 2,
+["questId"] = 95127,
+["objectives"] = {
 },
 },
 [91184] = {
@@ -2068,15 +2159,15 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[84252] = {
+[93909] = {
 ["status"] = 2,
-["questId"] = 84252,
+["questId"] = 93909,
 ["objectives"] = {
 },
 },
-[95130] = {
-["status"] = 2,
-["questId"] = 95130,
+[90861] = {
+["status"] = 1,
+["questId"] = 90861,
 ["objectives"] = {
 },
 },
@@ -2085,10 +2176,10 @@ ChoreTrackerDB = {
 ["questId"] = 94391,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/3 Complete 3 World Quests in Harandar",
 ["have"] = 0,
+["text"] = "0/3 Complete 3 World Quests in Harandar",
 ["need"] = 3,
+["type"] = "object",
 },
 },
 },
@@ -2098,15 +2189,15 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91995] = {
+[93910] = {
 ["status"] = 2,
-["questId"] = 91995,
+["questId"] = 93910,
 ["objectives"] = {
 },
 },
-[92129] = {
+[87303] = {
 ["status"] = 2,
-["questId"] = 92129,
+["questId"] = 87303,
 ["objectives"] = {
 },
 },
@@ -2115,40 +2206,40 @@ ChoreTrackerDB = {
 ["questId"] = 90867,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 Speak with Liadrin to begin the Ritual",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
-[74378] = {
+[92887] = {
+["status"] = 2,
+["questId"] = 92887,
+["objectives"] = {
+},
+},
+[86919] = {
 ["status"] = 1,
-["questId"] = 74378,
+["questId"] = 86919,
+["objectives"] = {
+},
+},
+[82156] = {
+["status"] = 1,
+["questId"] = 82156,
 ["objectives"] = {
 {
-["have"] = 0,
-["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
-["need"] = 1,
 ["type"] = "object",
+["text"] = "0/3 Complete 3 World Quests in the Ringing Deeps",
+["have"] = 0,
+["need"] = 3,
 },
 },
 },
-[93769] = {
+[88994] = {
 ["status"] = 2,
-["questId"] = 93769,
-["objectives"] = {
-},
-},
-[93766] = {
-["status"] = 2,
-["questId"] = 93766,
-["objectives"] = {
-},
-},
-[94836] = {
-["status"] = 2,
-["questId"] = 94836,
+["questId"] = 88994,
 ["objectives"] = {
 },
 },
@@ -2158,22 +2249,28 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91966] = {
+[92130] = {
+["status"] = 2,
+["questId"] = 92130,
+["objectives"] = {
+},
+},
+[88995] = {
 ["status"] = 1,
-["questId"] = 91966,
+["questId"] = 88995,
 ["objectives"] = {
 {
-["need"] = 100,
-["type"] = "progressbar",
+["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
-["text"] = "Tend to the Soiree's cleaning and entertainment (80%)",
+["text"] = "0/1 Meditate at the Ancient Visionstone",
 },
+{
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
+["text"] = "Learn about Aln'hara's Gift",
 },
-},
-[93892] = {
-["status"] = 2,
-["questId"] = 93892,
-["objectives"] = {
 },
 },
 [93598] = {
@@ -2181,23 +2278,17 @@ ChoreTrackerDB = {
 ["questId"] = 93598,
 ["objectives"] = {
 {
-["need"] = 4,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/4 Mythic dungeons completed",
-},
-},
-},
-[91193] = {
-["status"] = 1,
-["questId"] = 91193,
-["objectives"] = {
-{
-["need"] = 3,
-["type"] = "object",
 ["have"] = 0,
-["text"] = "0/3 Complete World Quests in K'aresh",
+["need"] = 4,
 },
+},
+},
+[95003] = {
+["status"] = 2,
+["questId"] = 95003,
+["objectives"] = {
 },
 },
 [84851] = {
@@ -2205,10 +2296,10 @@ ChoreTrackerDB = {
 ["questId"] = 84851,
 ["objectives"] = {
 {
-["need"] = 100,
 ["type"] = "progressbar",
-["have"] = 0,
 ["text"] = "Complete activities and secure the Siren Isle (0%)",
+["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -2217,10 +2308,10 @@ ChoreTrackerDB = {
 ["questId"] = 91590,
 ["objectives"] = {
 {
-["need"] = 5,
 ["type"] = "object",
-["have"] = 0,
 ["text"] = "0/5 Empowering Focus destroyed",
+["have"] = 0,
+["need"] = 5,
 },
 },
 },
@@ -2229,17 +2320,23 @@ ChoreTrackerDB = {
 ["questId"] = 93503,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1500 Honor earned in Rated BG Blitz or in Rated Battlegrounds",
-["need"] = 1500,
 ["type"] = "object",
+["need"] = 1500,
+["have"] = 0,
 },
 },
 },
-[91186] = {
-["status"] = 2,
-["questId"] = 91186,
+[94425] = {
+["status"] = 1,
+["questId"] = 94425,
 ["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/1 Speak to Scout Adaephus",
+["need"] = 1,
+["type"] = "monster",
+},
 },
 },
 },
@@ -2255,10 +2352,10 @@ ChoreTrackerDB = {
 ["questId"] = 93599,
 ["objectives"] = {
 {
-["text"] = "0/5 Players defeated in pet battle",
-["type"] = "player",
 ["need"] = 5,
+["type"] = "player",
 ["have"] = 0,
+["text"] = "0/5 Players defeated in pet battle",
 },
 },
 },
@@ -2267,10 +2364,10 @@ ChoreTrackerDB = {
 ["questId"] = 92085,
 ["objectives"] = {
 {
-["text"] = "0/1 Swift Grymlinx mounted",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Swift Grymlinx mounted",
 },
 },
 },
@@ -2291,10 +2388,10 @@ ChoreTrackerDB = {
 ["questId"] = 91974,
 ["objectives"] = {
 {
-["text"] = "0/10 Twilight intruders purged",
-["type"] = "monster",
 ["need"] = 10,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/10 Twilight intruders purged",
 },
 },
 },
@@ -2303,10 +2400,10 @@ ChoreTrackerDB = {
 ["questId"] = 84850,
 ["objectives"] = {
 {
-["text"] = "Complete activities and secure the Siren Isle (0%)",
-["type"] = "progressbar",
 ["need"] = 100,
+["type"] = "progressbar",
 ["have"] = 0,
+["text"] = "Complete activities and secure the Siren Isle (0%)",
 },
 },
 },
@@ -2357,10 +2454,10 @@ ChoreTrackerDB = {
 ["questId"] = 94446,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/3 Nightmare Hunts completed",
-["need"] = 3,
 ["type"] = "monster",
+["need"] = 3,
+["have"] = 0,
 },
 },
 },
@@ -2369,10 +2466,10 @@ ChoreTrackerDB = {
 ["questId"] = 91992,
 ["objectives"] = {
 {
-["text"] = "0/1 Magister's apprentice located",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Magister's apprentice located",
 },
 },
 },
@@ -2387,10 +2484,10 @@ ChoreTrackerDB = {
 ["questId"] = 91785,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/20 Lightbloom Spores slain",
 ["have"] = 0,
+["text"] = "0/20 Lightbloom Spores slain",
 ["need"] = 20,
+["type"] = "monster",
 },
 },
 },
@@ -2423,10 +2520,10 @@ ChoreTrackerDB = {
 ["questId"] = 93507,
 ["objectives"] = {
 {
-["text"] = "Shadowguard operation disrupted (0%)",
-["type"] = "progressbar",
 ["need"] = 100,
+["type"] = "progressbar",
 ["have"] = 0,
+["text"] = "Shadowguard operation disrupted (0%)",
 },
 },
 },
@@ -2441,10 +2538,10 @@ ChoreTrackerDB = {
 ["questId"] = 88710,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 March on Quel'Danas Raid completed",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -2459,10 +2556,10 @@ ChoreTrackerDB = {
 ["questId"] = 89507,
 ["objectives"] = {
 {
-["type"] = "object",
-["text"] = "0/20000 Abundance earned",
 ["have"] = 0,
+["text"] = "0/20000 Abundance earned",
 ["need"] = 20000,
+["type"] = "object",
 },
 },
 },
@@ -2471,10 +2568,10 @@ ChoreTrackerDB = {
 ["questId"] = 89268,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Relic selected",
 ["have"] = 0,
+["text"] = "0/1 Relic selected",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
@@ -2483,10 +2580,10 @@ ChoreTrackerDB = {
 ["questId"] = 92105,
 ["objectives"] = {
 {
-["text"] = "0/1 Ride the Cataloger's Disc",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Ride the Cataloger's Disc",
 },
 },
 },
@@ -2507,10 +2604,10 @@ ChoreTrackerDB = {
 ["questId"] = 93524,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/20 Knock down Voracious Harrower",
 ["have"] = 0,
+["text"] = "0/20 Knock down Voracious Harrower",
 ["need"] = 20,
+["type"] = "monster",
 },
 },
 },
@@ -2519,76 +2616,76 @@ ChoreTrackerDB = {
 ["questId"] = 94815,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 1 Heron Skygaze",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 2 Innkeeper Areyn",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 3 Kryenna",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 4 Lady Marilin",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 5 Landraelanis",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 6 Limien Bountcask",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 7 Magister Duskwither",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 8 Nara Fadebranch",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 9 Quarelestra",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 10 Sheri",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 11 Vehn Sorrelstride",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 12 Zalene Firstlight",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -2621,10 +2718,10 @@ ChoreTrackerDB = {
 ["questId"] = 94625,
 ["objectives"] = {
 {
-["text"] = "0/3  ",
-["type"] = "item",
 ["need"] = 3,
+["type"] = "item",
 ["have"] = 0,
+["text"] = "0/3  ",
 },
 },
 },
@@ -2639,10 +2736,10 @@ ChoreTrackerDB = {
 ["questId"] = 95438,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/10 Lost Animals Found",
-["need"] = 10,
 ["type"] = "monster",
+["need"] = 10,
+["have"] = 0,
 },
 },
 },
@@ -2657,10 +2754,10 @@ ChoreTrackerDB = {
 ["questId"] = 94865,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete World Quests in Zul'Aman",
-["type"] = "object",
 ["need"] = 3,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/3 Complete World Quests in Zul'Aman",
 },
 },
 },
@@ -2675,10 +2772,10 @@ ChoreTrackerDB = {
 ["questId"] = 91582,
 ["objectives"] = {
 {
-["text"] = "Blooming Lattice pruned (8%)",
-["type"] = "progressbar",
 ["need"] = 100,
+["type"] = "progressbar",
 ["have"] = 0,
+["text"] = "Blooming Lattice pruned (8%)",
 },
 },
 },
@@ -2687,10 +2784,10 @@ ChoreTrackerDB = {
 ["questId"] = 81653,
 ["objectives"] = {
 {
-["text"] = "0/1 Shurrai slain",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Shurrai slain",
 },
 },
 },
@@ -2699,10 +2796,10 @@ ChoreTrackerDB = {
 ["questId"] = 93909,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/3 Complete any delve in Midnight",
-["need"] = 3,
 ["type"] = "object",
+["need"] = 3,
+["have"] = 0,
 },
 },
 },
@@ -2717,16 +2814,16 @@ ChoreTrackerDB = {
 ["questId"] = 91981,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/4 Healing Waters of Ahl'ua",
-["need"] = 4,
 ["type"] = "item",
+["need"] = 4,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/6 Phytogenic Poison Part",
-["need"] = 6,
 ["type"] = "item",
+["need"] = 6,
+["have"] = 0,
 },
 },
 },
@@ -2735,10 +2832,10 @@ ChoreTrackerDB = {
 ["questId"] = 91264,
 ["objectives"] = {
 {
-["text"] = "0/1 Hunt your Prey",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
 },
 },
 },
@@ -2759,10 +2856,10 @@ ChoreTrackerDB = {
 ["questId"] = 76586,
 ["objectives"] = {
 {
-["text"] = "0/4 Lesser Keyflames Activated",
-["type"] = "monster",
 ["need"] = 4,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/4 Lesser Keyflames Activated",
 },
 },
 },
@@ -2777,10 +2874,10 @@ ChoreTrackerDB = {
 ["questId"] = 91966,
 ["objectives"] = {
 {
-["need"] = 100,
 ["type"] = "progressbar",
-["have"] = 0,
 ["text"] = "Tend to the Soiree's cleaning and entertainment (80%)",
+["have"] = 0,
+["need"] = 100,
 },
 },
 },
@@ -2789,10 +2886,10 @@ ChoreTrackerDB = {
 ["questId"] = 91217,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Hunt your Prey",
 ["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
@@ -2807,10 +2904,10 @@ ChoreTrackerDB = {
 ["questId"] = 89289,
 ["objectives"] = {
 {
-["text"] = "0/1 Invitation selected",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Invitation selected",
 },
 },
 },
@@ -2819,28 +2916,28 @@ ChoreTrackerDB = {
 ["questId"] = 75280,
 ["objectives"] = {
 {
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
 ["text"] = "Suffusion Crucible looted",
-["type"] = "object",
-["need"] = 1,
-["have"] = 0,
 },
 {
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 Crucible guardian slain",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 {
-["text"] = "Suffusion Mold looted",
+["need"] = 1,
 ["type"] = "object",
-["need"] = 1,
 ["have"] = 0,
+["text"] = "Suffusion Mold looted",
 },
 {
-["text"] = "0/1 Forgemaster Slain",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Forgemaster Slain",
 },
 },
 },
@@ -2855,16 +2952,16 @@ ChoreTrackerDB = {
 ["questId"] = 93704,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/10 Tranquility Bloom |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
-["need"] = 10,
 ["type"] = "item",
+["need"] = 10,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/5 Argentleaf |A:Professions-Icon-Quality-12-Tier1-Small:0:0:0:2|a",
-["need"] = 5,
 ["type"] = "item",
+["need"] = 5,
+["have"] = 0,
 },
 },
 },
@@ -2897,10 +2994,10 @@ ChoreTrackerDB = {
 ["questId"] = 93577,
 ["objectives"] = {
 {
-["text"] = "0/1 Ride the Cataloger's Disc",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Ride the Cataloger's Disc",
 },
 },
 },
@@ -2909,10 +3006,10 @@ ChoreTrackerDB = {
 ["questId"] = 91808,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/10 Stolen Equipment",
 ["have"] = 0,
+["text"] = "0/10 Stolen Equipment",
 ["need"] = 10,
+["type"] = "item",
 },
 },
 },
@@ -2927,10 +3024,10 @@ ChoreTrackerDB = {
 ["questId"] = 93386,
 ["objectives"] = {
 {
-["text"] = "Parhelion Plaza delve completed on any difficulty",
-["type"] = "object",
 ["need"] = 1,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "Parhelion Plaza delve completed on any difficulty",
 },
 },
 },
@@ -2957,10 +3054,10 @@ ChoreTrackerDB = {
 ["questId"] = 91203,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete World Quests in K'aresh",
-["type"] = "object",
 ["need"] = 3,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/3 Complete World Quests in K'aresh",
 },
 },
 },
@@ -2975,10 +3072,10 @@ ChoreTrackerDB = {
 ["questId"] = 47148,
 ["objectives"] = {
 {
-["text"] = "0/1 PvP Brawl won",
-["type"] = "object",
 ["need"] = 1,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/1 PvP Brawl won",
 },
 },
 },
@@ -2987,10 +3084,10 @@ ChoreTrackerDB = {
 ["questId"] = 91267,
 ["objectives"] = {
 {
-["text"] = "0/1 Hunt your Prey",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
 },
 },
 },
@@ -2999,10 +3096,10 @@ ChoreTrackerDB = {
 ["questId"] = 94391,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete 3 World Quests in Harandar",
-["type"] = "object",
 ["need"] = 3,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/3 Complete 3 World Quests in Harandar",
 },
 },
 },
@@ -3011,10 +3108,10 @@ ChoreTrackerDB = {
 ["questId"] = 91602,
 ["objectives"] = {
 {
-["type"] = "progressbar",
-["text"] = "Defeat enemies to lure out your Prey target (0%)",
 ["have"] = 0,
+["text"] = "Defeat enemies to lure out your Prey target (0%)",
 ["need"] = 100,
+["type"] = "progressbar",
 },
 },
 },
@@ -3029,10 +3126,10 @@ ChoreTrackerDB = {
 ["questId"] = 93690,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/2 Alchemy Orders Fulfilled",
-["need"] = 2,
 ["type"] = "object",
+["need"] = 2,
+["have"] = 0,
 },
 },
 },
@@ -3041,10 +3138,10 @@ ChoreTrackerDB = {
 ["questId"] = 91507,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/8 Combatants slain",
-["need"] = 8,
 ["type"] = "monster",
+["need"] = 8,
+["have"] = 0,
 },
 },
 },
@@ -3053,10 +3150,10 @@ ChoreTrackerDB = {
 ["questId"] = 91523,
 ["objectives"] = {
 {
-["text"] = "0/5 Empowering Voidsphere destroyed",
-["type"] = "object",
 ["need"] = 5,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/5 Empowering Voidsphere destroyed",
 },
 },
 },
@@ -3065,10 +3162,10 @@ ChoreTrackerDB = {
 ["questId"] = 91555,
 ["objectives"] = {
 {
-["need"] = 6,
 ["type"] = "monster",
-["have"] = 0,
 ["text"] = "0/6 Weary Defenders reinvigorated",
+["have"] = 0,
+["need"] = 6,
 },
 },
 },
@@ -3077,10 +3174,10 @@ ChoreTrackerDB = {
 ["questId"] = 93611,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/5 Timewalking raid bosses or dungeons defeated",
-["need"] = 5,
 ["type"] = "object",
+["need"] = 5,
+["have"] = 0,
 },
 },
 },
@@ -3096,46 +3193,40 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91802] = {
+[92152] = {
 ["status"] = 1,
-["questId"] = 91802,
+["questId"] = 92152,
 ["objectives"] = {
 {
-["type"] = "item",
-["text"] = "0/100 Leech Tick",
-["have"] = 0,
+["text"] = "Lightbloom creatures slain (88%)",
+["type"] = "progressbar",
 ["need"] = 100,
+["have"] = 0,
 },
 },
 },
-[91801] = {
+[92141] = {
 ["status"] = 1,
-["questId"] = 91801,
+["questId"] = 92141,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/12 Twilight's Blade slain",
+["text"] = "0/6 Lynx Collars collected",
+["type"] = "item",
+["need"] = 6,
 ["have"] = 0,
-["need"] = 12,
 },
 {
+["text"] = "0/10 Arcane Wyrm slain",
 ["type"] = "monster",
-["text"] = "0/3 Ritual Component destroyed",
+["need"] = 10,
 ["have"] = 0,
-["need"] = 3,
 },
 },
 },
-[92138] = {
-["status"] = 1,
-["questId"] = 92138,
+[93416] = {
+["status"] = 2,
+["questId"] = 93416,
 ["objectives"] = {
-{
-["type"] = "monster",
-["text"] = "0/1 Pick Up Flyers",
-["have"] = 0,
-["need"] = 1,
-},
 },
 },
 [94743] = {
@@ -3143,10 +3234,10 @@ ChoreTrackerDB = {
 ["questId"] = 94743,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete World Quests in Voidstorm",
-["type"] = "object",
 ["need"] = 3,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "0/3 Complete World Quests in Voidstorm",
 },
 },
 },
@@ -3155,10 +3246,10 @@ ChoreTrackerDB = {
 ["questId"] = 91490,
 ["objectives"] = {
 {
-["text"] = "0/18 Smoldering Fires doused",
-["type"] = "monster",
 ["need"] = 18,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/18 Smoldering Fires doused",
 },
 },
 },
@@ -3168,27 +3259,9 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91233] = {
-["status"] = 1,
-["questId"] = 91233,
-["objectives"] = {
-{
-["text"] = "0/1 Hunt your Prey",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
-},
-},
-},
-[94839] = {
-["status"] = 1,
-["questId"] = 94839,
-["objectives"] = {
-},
-},
-[93548] = {
+[93385] = {
 ["status"] = 2,
-["questId"] = 93548,
+["questId"] = 93385,
 ["objectives"] = {
 },
 },
@@ -3197,16 +3270,28 @@ ChoreTrackerDB = {
 ["questId"] = 92034,
 ["objectives"] = {
 {
-["type"] = "monster",
-["text"] = "0/1 Thorm'belan slain",
 ["have"] = 0,
+["text"] = "0/1 Thorm'belan slain",
 ["need"] = 1,
+["type"] = "monster",
 },
 },
 },
-[93767] = {
+[93548] = {
 ["status"] = 2,
-["questId"] = 93767,
+["questId"] = 93548,
+["objectives"] = {
+},
+},
+[94839] = {
+["status"] = 1,
+["questId"] = 94839,
+["objectives"] = {
+},
+},
+[93766] = {
+["status"] = 2,
+["questId"] = 93766,
 ["objectives"] = {
 },
 },
@@ -3216,10 +3301,16 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[89345] = {
-["status"] = 2,
-["questId"] = 89345,
+[91219] = {
+["status"] = 1,
+["questId"] = 91219,
 ["objectives"] = {
+{
+["text"] = "0/1 Hunt your Prey",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [93890] = {
@@ -3233,10 +3324,10 @@ ChoreTrackerDB = {
 ["questId"] = 91604,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "Defeat enemies to lure out your Prey target (66%)",
-["need"] = 100,
 ["type"] = "progressbar",
+["need"] = 100,
+["have"] = 0,
 },
 },
 },
@@ -3264,10 +3355,16 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[93170] = {
-["status"] = 2,
-["questId"] = 93170,
+[91268] = {
+["status"] = 1,
+["questId"] = 91268,
 ["objectives"] = {
+{
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
+},
 },
 },
 [91190] = {
@@ -3276,27 +3373,27 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91999] = {
+[92153] = {
 ["status"] = 1,
-["questId"] = 91999,
+["questId"] = 92153,
 ["objectives"] = {
 {
-["text"] = "0/5  ",
-["type"] = "item",
-["need"] = 5,
+["need"] = 15,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/15 Twilight Shadecaster slain",
 },
 },
 },
-[91590] = {
+[82155] = {
 ["status"] = 1,
-["questId"] = 91590,
+["questId"] = 82155,
 ["objectives"] = {
 {
-["text"] = "0/5 Empowering Focus destroyed",
+["need"] = 3,
 ["type"] = "object",
-["need"] = 5,
 ["have"] = 0,
+["text"] = "0/3 Complete 3 World Quests in the Ringing Deeps",
 },
 },
 },
@@ -3318,10 +3415,22 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[95127] = {
-["status"] = 2,
-["questId"] = 95127,
+[88997] = {
+["status"] = 1,
+["questId"] = 88997,
 ["objectives"] = {
+{
+["text"] = "0/1 Meditate at the Ancient Visionstone",
+["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
+},
+{
+["text"] = "Learn about the Legacy of Russula",
+["type"] = "object",
+["need"] = 1,
+["have"] = 0,
+},
 },
 },
 [91302] = {
@@ -3329,65 +3438,47 @@ ChoreTrackerDB = {
 ["questId"] = 91302,
 ["objectives"] = {
 {
-["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/1 Complete Event",
-["have"] = 0,
 ["need"] = 1,
-},
-},
-},
-[90575] = {
-["status"] = 1,
-["questId"] = 90575,
-["objectives"] = {
-{
-["text"] = "0/1 Runestone defended",
 ["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
 },
 },
 },
-[83069] = {
+[88679] = {
 ["status"] = 1,
-["questId"] = 83069,
+["questId"] = 88679,
 ["objectives"] = {
 {
-["need"] = 3,
+["need"] = 100,
+["type"] = "progressbar",
+["have"] = 0,
+["text"] = "Subdue Creatures or Kill Players (0%)",
+},
+},
+},
+[92577] = {
+["status"] = 1,
+["questId"] = 92577,
+["objectives"] = {
+{
+["text"] = "Filigree Moon Lamp Decor Purchased",
 ["type"] = "object",
-["have"] = 0,
-["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
-},
-},
-},
-[92731] = {
-["status"] = 1,
-["questId"] = 92731,
-["objectives"] = {
-{
 ["need"] = 1,
-["type"] = "monster",
 ["have"] = 0,
-["text"] = "0/1 Speak with Decimus to begin",
-},
-{
-["need"] = 1,
-["type"] = "monster",
-["have"] = 0,
-["text"] = "0/1 Blade forged",
 },
 },
 },
-[91798] = {
+[87307] = {
 ["status"] = 1,
-["questId"] = 91798,
+["questId"] = 87307,
 ["objectives"] = {
-{
-["type"] = "item",
-["text"] = "0/10 Slippery Snapper",
-["have"] = 0,
-["need"] = 10,
 },
+},
+[86918] = {
+["status"] = 1,
+["questId"] = 86918,
+["objectives"] = {
 },
 },
 [87302] = {
@@ -3401,40 +3492,40 @@ ChoreTrackerDB = {
 ["questId"] = 93438,
 ["objectives"] = {
 {
-["text"] = "0/1 Ride the War-Wyrm",
-["type"] = "monster",
 ["need"] = 1,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/1 Ride the War-Wyrm",
 },
 {
+["need"] = 10,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/10 Forces slain in lower courtyard",
-["type"] = "monster",
-["need"] = 10,
-["have"] = 0,
 },
 {
+["need"] = 10,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/10 Forces slain in upper courtyard",
-["type"] = "monster",
-["need"] = 10,
-["have"] = 0,
 },
 {
+["need"] = 5,
+["type"] = "monster",
+["have"] = 0,
 ["text"] = "0/5 High value targets eliminated",
-["type"] = "monster",
-["need"] = 5,
-["have"] = 0,
 },
 {
-["text"] = "0/7 Forces slain in Stormarion Watch",
-["type"] = "monster",
 ["need"] = 7,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/7 Forces slain in Stormarion Watch",
 },
 {
-["text"] = "0/5 Stormarion Supplies destroyed",
-["type"] = "monster",
 ["need"] = 5,
+["type"] = "monster",
 ["have"] = 0,
+["text"] = "0/5 Stormarion Supplies destroyed",
 },
 },
 },
@@ -3461,65 +3552,71 @@ ChoreTrackerDB = {
 ["questId"] = 93757,
 ["objectives"] = {
 {
+["need"] = 1,
+["type"] = "object",
+["have"] = 0,
 ["text"] = "Charonus defeated",
-["type"] = "object",
+},
+},
+},
+[91798] = {
+["status"] = 1,
+["questId"] = 91798,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/10 Slippery Snapper",
+["need"] = 10,
+["type"] = "item",
+},
+},
+},
+[92731] = {
+["status"] = 1,
+["questId"] = 92731,
+["objectives"] = {
+{
+["type"] = "monster",
+["text"] = "0/1 Speak with Decimus to begin",
+["have"] = 0,
 ["need"] = 1,
-["have"] = 0,
 },
-},
-},
-[86918] = {
-["status"] = 1,
-["questId"] = 86918,
-["objectives"] = {
-},
-},
-[87307] = {
-["status"] = 1,
-["questId"] = 87307,
-["objectives"] = {
-},
-},
-[92577] = {
-["status"] = 1,
-["questId"] = 92577,
-["objectives"] = {
 {
+["type"] = "monster",
+["text"] = "0/1 Blade forged",
 ["have"] = 0,
-["text"] = "Filigree Moon Lamp Decor Purchased",
 ["need"] = 1,
+},
+},
+},
+[83069] = {
+["status"] = 1,
+["questId"] = 83069,
+["objectives"] = {
+{
 ["type"] = "object",
+["text"] = "0/3 Complete 3 World Quests in Isle of Dorn",
+["have"] = 0,
+["need"] = 3,
 },
 },
 },
-[88679] = {
+[90575] = {
 ["status"] = 1,
-["questId"] = 88679,
+["questId"] = 90575,
 ["objectives"] = {
 {
-["text"] = "Subdue Creatures or Kill Players (0%)",
-["type"] = "progressbar",
-["need"] = 100,
-["have"] = 0,
-},
-},
-},
-[88997] = {
-["status"] = 1,
-["questId"] = 88997,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/1 Meditate at the Ancient Visionstone",
 ["need"] = 1,
 ["type"] = "monster",
-},
-{
 ["have"] = 0,
-["text"] = "Learn about the Legacy of Russula",
-["need"] = 1,
-["type"] = "object",
+["text"] = "0/1 Runestone defended",
 },
+},
+},
+[95127] = {
+["status"] = 2,
+["questId"] = 95127,
+["objectives"] = {
 },
 },
 [57637] = {
@@ -3527,16 +3624,16 @@ ChoreTrackerDB = {
 ["questId"] = 57637,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "Ragnaros defeated",
-["need"] = 1,
 ["type"] = "object",
+["need"] = 1,
+["have"] = 0,
 },
 {
-["have"] = 0,
 ["text"] = "0/1 Time-Locked Cinder",
-["need"] = 1,
 ["type"] = "item",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
@@ -3545,47 +3642,41 @@ ChoreTrackerDB = {
 ["questId"] = 88769,
 ["objectives"] = {
 {
-["have"] = 0,
 ["text"] = "0/1 The Battle of the Bridge won",
-["need"] = 1,
 ["type"] = "monster",
+["need"] = 1,
+["have"] = 0,
 },
 },
 },
-[82155] = {
+[91590] = {
 ["status"] = 1,
-["questId"] = 82155,
+["questId"] = 91590,
 ["objectives"] = {
 {
-["text"] = "0/3 Complete 3 World Quests in the Ringing Deeps",
+["need"] = 5,
 ["type"] = "object",
-["need"] = 3,
 ["have"] = 0,
+["text"] = "0/5 Empowering Focus destroyed",
 },
 },
 },
-[92153] = {
+[91999] = {
 ["status"] = 1,
-["questId"] = 92153,
+["questId"] = 91999,
 ["objectives"] = {
 {
-["text"] = "0/15 Twilight Shadecaster slain",
-["type"] = "monster",
-["need"] = 15,
+["need"] = 5,
+["type"] = "item",
 ["have"] = 0,
+["text"] = "0/5  ",
 },
 },
 },
-[91268] = {
-["status"] = 1,
-["questId"] = 91268,
+[93170] = {
+["status"] = 2,
+["questId"] = 93170,
 ["objectives"] = {
-{
-["text"] = "0/1 Hunt your Prey",
-["type"] = "monster",
-["need"] = 1,
-["have"] = 0,
-},
 },
 },
 [87303] = {
@@ -3594,21 +3685,15 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[91219] = {
-["status"] = 1,
-["questId"] = 91219,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/1 Hunt your Prey",
-["need"] = 1,
-["type"] = "monster",
-},
-},
-},
-[93766] = {
+[89345] = {
 ["status"] = 2,
-["questId"] = 93766,
+["questId"] = 89345,
+["objectives"] = {
+},
+},
+[93767] = {
+["status"] = 2,
+["questId"] = 93767,
 ["objectives"] = {
 },
 },
@@ -3618,10 +3703,16 @@ ChoreTrackerDB = {
 ["objectives"] = {
 },
 },
-[93385] = {
-["status"] = 2,
-["questId"] = 93385,
+[91233] = {
+["status"] = 1,
+["questId"] = 91233,
 ["objectives"] = {
+{
+["need"] = 1,
+["type"] = "monster",
+["have"] = 0,
+["text"] = "0/1 Hunt your Prey",
+},
 },
 },
 [74378] = {
@@ -3629,10 +3720,10 @@ ChoreTrackerDB = {
 ["questId"] = 74378,
 ["objectives"] = {
 {
-["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
-["type"] = "object",
 ["need"] = 1,
+["type"] = "object",
 ["have"] = 0,
+["text"] = "Complete \"The Storm's Fury\" event within the Primalist Future.",
 },
 },
 },
@@ -3641,46 +3732,52 @@ ChoreTrackerDB = {
 ["questId"] = 91989,
 ["objectives"] = {
 {
-["text"] = "0/12  ",
-["type"] = "item",
 ["need"] = 12,
-["have"] = 0,
-},
-},
-},
-[93416] = {
-["status"] = 2,
-["questId"] = 93416,
-["objectives"] = {
-},
-},
-[92141] = {
-["status"] = 1,
-["questId"] = 92141,
-["objectives"] = {
-{
-["have"] = 0,
-["text"] = "0/6 Lynx Collars collected",
-["need"] = 6,
 ["type"] = "item",
+["have"] = 0,
+["text"] = "0/12  ",
 },
+},
+},
+[92138] = {
+["status"] = 1,
+["questId"] = 92138,
+["objectives"] = {
 {
 ["have"] = 0,
-["text"] = "0/10 Arcane Wyrm slain",
-["need"] = 10,
+["text"] = "0/1 Pick Up Flyers",
+["need"] = 1,
 ["type"] = "monster",
 },
 },
 },
-[92152] = {
+[91801] = {
 ["status"] = 1,
-["questId"] = 92152,
+["questId"] = 91801,
 ["objectives"] = {
 {
 ["have"] = 0,
-["text"] = "Lightbloom creatures slain (88%)",
+["text"] = "0/12 Twilight's Blade slain",
+["need"] = 12,
+["type"] = "monster",
+},
+{
+["have"] = 0,
+["text"] = "0/3 Ritual Component destroyed",
+["need"] = 3,
+["type"] = "monster",
+},
+},
+},
+[91802] = {
+["status"] = 1,
+["questId"] = 91802,
+["objectives"] = {
+{
+["have"] = 0,
+["text"] = "0/100 Leech Tick",
 ["need"] = 100,
-["type"] = "progressbar",
+["type"] = "item",
 },
 },
 },
@@ -3688,30 +3785,14 @@ ChoreTrackerDB = {
 },
 ["seenAutoAcceptMessage"] = true,
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Pandamoun - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-["Pandamagee - Hyjal"] = "Default",
-["Pandakv - Hyjal"] = "Default",
-["Killeen - Archimonde"] = "Default",
-["Pandakvo - Hyjal"] = "Default",
-["Raptorbuyer - Hyjal"] = "Default",
-["Trialmagekvo - Hyjal"] = "Default",
-["Testkvotheen - Hyjal"] = "Default",
-["Pandkvé - Hyjal"] = "Default",
-["Kvothyr - Hyjal"] = "Default",
-["Pandamages - Hyjal"] = "Default",
-["Pandamo - Hyjal"] = "Default",
-},
 ["profiles"] = {
 ["Default"] = {
 ["timers"] = {
 ["warWithin"] = {
-["theaterTroupe"] = false,
 ["beledarsShadow"] = false,
-["nightfallScenario"] = false,
 ["surgePricing"] = false,
+["nightfallScenario"] = false,
+["theaterTroupe"] = false,
 },
 },
 ["general"] = {
@@ -3763,9 +3844,9 @@ ChoreTrackerDB = {
 ["cartelChoose"] = false,
 ["surge"] = false,
 ["chett"] = false,
-["worldBoss"] = false,
-["chettTurnIn"] = false,
 ["scrap"] = false,
+["chettTurnIn"] = false,
+["worldBoss"] = false,
 },
 },
 ["patch_11_2_0"] = {
@@ -3774,8 +3855,8 @@ ChoreTrackerDB = {
 ["worldBoss"] = false,
 ["makingDeposit"] = false,
 ["moreThanPhase"] = false,
-["warrant"] = false,
 ["ecologicalSuccession"] = false,
+["warrant"] = false,
 },
 },
 ["patch_11_1_5"] = {
@@ -3796,7 +3877,7 @@ ChoreTrackerDB = {
 ["awakeningTheMachine"] = false,
 ["specialAssignment"] = false,
 ["theaterTroupe"] = false,
-["spiderPact"] = false,
+["delversBounty"] = false,
 ["rollinDown"] = false,
 ["spiderWeekly"] = false,
 ["emissaryDelves"] = false,
@@ -3805,9 +3886,9 @@ ChoreTrackerDB = {
 ["delveKeys"] = false,
 ["worldBoss"] = false,
 ["delveArchaic"] = false,
-["delversBounty"] = false,
-["emissaryArchives"] = false,
+["spiderPact"] = false,
 ["delveGilded"] = false,
+["emissaryArchives"] = false,
 ["emissaryWorldsoul"] = false,
 },
 },
@@ -3830,13 +3911,13 @@ ChoreTrackerDB = {
 },
 ["holidays"] = {
 ["quests"] = {
-["worldQuests"] = false,
+["timewalkingRaids"] = false,
 ["timewalkingDungeons"] = false,
 ["pvpPetBattles"] = false,
 ["mythicDungeons"] = false,
 ["delves"] = false,
 ["timewalkingTurnIn"] = false,
-["timewalkingRaids"] = false,
+["worldQuests"] = false,
 },
 },
 ["special"] = {
@@ -3919,23 +4000,32 @@ ChoreTrackerDB = {
 ["anniversary"] = {
 ["quests"] = {
 ["dragonsOfNightmareKill"] = false,
-["shopping"] = false,
+["chromieCodex"] = false,
 ["truth"] = false,
-["doomwalkerKill"] = false,
+["azuregosKill"] = false,
 ["shaOfAngerKill"] = false,
 ["meetGreet"] = false,
-["azuregosKill"] = false,
+["doomwalkerKill"] = false,
 ["lordKazzakKill"] = false,
 ["timely"] = false,
 ["archavonKill"] = false,
 ["soldier"] = false,
 ["celebrate"] = false,
 ["reflect"] = false,
-["chromieCodex"] = false,
+["shopping"] = false,
 },
 },
 },
-["professionFishing"] = {
+["professionAlchemy"] = {
+["warWithin"] = {
+["quests"] = {
+["treatise"] = false,
+["orders"] = false,
+},
+["drops"] = {
+["mob/treasure"] = false,
+},
+},
 ["event"] = {
 ["quests"] = {
 ["darkmoonFaire"] = false,
@@ -3962,8 +4052,8 @@ ChoreTrackerDB = {
 },
 ["midnightPrey"] = {
 ["drops"] = {
-["normal"] = false,
 ["hard"] = false,
+["normal"] = false,
 },
 },
 },
@@ -3990,13 +4080,6 @@ ChoreTrackerDB = {
 },
 },
 },
-["professionCooking"] = {
-["event"] = {
-["quests"] = {
-["darkmoonFaire"] = false,
-},
-},
-},
 ["professionEngineering"] = {
 ["warWithin"] = {
 ["quests"] = {
@@ -4008,16 +4091,14 @@ ChoreTrackerDB = {
 },
 },
 },
-["professionAlchemy"] = {
-["warWithin"] = {
+["professionCooking"] = {
+["event"] = {
 ["quests"] = {
-["treatise"] = false,
-["orders"] = false,
-},
-["drops"] = {
-["mob/treasure"] = false,
+["darkmoonFaire"] = false,
 },
 },
+},
+["professionFishing"] = {
 ["event"] = {
 ["quests"] = {
 ["darkmoonFaire"] = false,

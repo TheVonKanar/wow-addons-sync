@@ -28,7 +28,7 @@ LoggerHeadDB = {
 [2] = true,
 [23] = true,
 },
-["Nexus-Point Xenas"] = {
+["Algeth'ar Academy"] = {
 [23] = true,
 [8] = true,
 },
@@ -39,7 +39,7 @@ LoggerHeadDB = {
 ["Voidscar Arena"] = {
 [23] = true,
 },
-["Algeth'ar Academy"] = {
+["Nexus-Point Xenas"] = {
 [23] = true,
 [8] = true,
 },
@@ -78,13 +78,13 @@ true,
 ["The Shadow Enclave"] = {
 [208] = false,
 },
-["The Darkway"] = {
+["Torment's Rise"] = {
 [208] = true,
 },
 ["The Gulf of Memory"] = {
 [208] = false,
 },
-["Torment's Rise"] = {
+["The Darkway"] = {
 [208] = true,
 },
 ["Atal'Aman"] = {
@@ -96,13 +96,13 @@ true,
 [14] = true,
 [15] = true,
 },
-["Vault of the Incarnates"] = {
-[16] = false,
-},
 ["The Dreamrift"] = {
 [14] = true,
 [17] = true,
 [15] = true,
+},
+["Vault of the Incarnates"] = {
+[16] = false,
 },
 ["Icecrown Citadel"] = {
 [3] = false,

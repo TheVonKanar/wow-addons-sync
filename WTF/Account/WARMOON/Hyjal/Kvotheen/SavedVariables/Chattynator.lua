@@ -1,7 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/cw Øskytankul-Archimonde UOUI",
 "/cw Øskytankul-Archimonde +1",
 "/cw Øskytankul-Archimonde /plumber",
 "/cw Øskytankul-Archimonde /ltp",
@@ -203,4 +202,9 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g ca a l'air quand meme plus simple qu'a TWW",
 "/s /etrace",
 "/s /console enable",
+"/g Parce que t'es mauvaaaais jack",
+" yoooo j'allais me chauffer pour du tft mais aller ouais une clef ou deux!",
+"/p helloooo",
+"/p you prefer bl start or after return?",
+"/p ty gg :)",
 }

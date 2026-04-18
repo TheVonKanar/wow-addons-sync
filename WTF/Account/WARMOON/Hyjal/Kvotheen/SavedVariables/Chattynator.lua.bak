@@ -1,7 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/cw Øskytankul-Archimonde UOUI",
 "/cw Øskytankul-Archimonde +1",
 "/cw Øskytankul-Archimonde /plumber",
 "/cw Øskytankul-Archimonde /ltp",
@@ -202,4 +201,5 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g non mais il etait en bas de ma liste de frames donc je le healais moins",
 "/g ca a l'air quand meme plus simple qu'a TWW",
 "/s /etrace",
+"/s /console enable",
 }
