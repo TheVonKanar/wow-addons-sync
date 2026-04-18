@@ -33,10 +33,10 @@ RaiderIO_Config = {
 ["enableCombatLogTracking"] = false,
 ["showScoreInCombat"] = true,
 ["replaySelection"] = "user_best_replay",
-["enableWhoTooltips"] = true,
+["showRaiderIOProfile"] = true,
 ["showOtherWarbandScore"] = true,
 ["showMyWarbandScore"] = false,
-["showRaiderIOProfile"] = true,
+["enableWhoTooltips"] = true,
 ["hidePersonalRaiderIOProfile"] = false,
 ["enableGuildTooltips"] = true,
 ["enableProfileModifier"] = true,
@@ -49,8 +49,8 @@ RaiderIO_Config = {
 ["showDropDownCopyURL"] = false,
 ["inverseProfileModifier"] = false,
 ["enableLFGTooltips"] = true,
-["enableClientEnhancements"] = true,
 ["showScoreModifier"] = false,
+["enableClientEnhancements"] = true,
 ["lockProfile"] = false,
 ["showSimpleScoreColors"] = false,
 ["mplusHeadlineMode"] = 0,
@@ -58,14 +58,6 @@ RaiderIO_Config = {
 }
 RaiderIO_LastCharacter = "eu-Kvotheen-hyjal"
 RaiderIO_MissingCharacters = {
-["eu-Shotgunn-dalaran"] = true,
-["eu-Mxkdk-hyjal"] = true,
-["eu-Pauvredark-hyjal"] = true,
-["eu-Sneakyflow-la-croisade-écarlate"] = true,
-["eu-Aschoka-hyjal"] = true,
-["eu-Viberdead-hyjal"] = true,
-["eu-Eûkalyptus-archimonde"] = true,
-["eu-Gorblâk-ysondre"] = true,
 }
 RaiderIO_MissingServers = {
 }

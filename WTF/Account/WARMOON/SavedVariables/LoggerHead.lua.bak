@@ -52,6 +52,7 @@ LoggerHeadDB = {
 [8] = true,
 },
 ["Murder Row"] = {
+true,
 [23] = true,
 },
 },

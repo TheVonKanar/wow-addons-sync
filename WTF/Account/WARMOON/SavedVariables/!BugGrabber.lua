@@ -1,6 +1,6 @@
 
 BugGrabberDB = {
-["session"] = 78,
+["session"] = 100,
 ["lastSanitation"] = 3,
 ["errors"] = {
 {
@@ -92,20 +92,28 @@ BugGrabberDB = {
 ["counter"] = 222,
 },
 {
-["message"] = "...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:218: attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')",
-["time"] = 1775665936,
-["locals"] = "self = Frame {\n}\nevent = \"CHAT_MSG_LOOT\"\nitemTextRecieved = <no value>\nplayerName = <no value>\n(*temporary) = \"Kvotheen\"\n(*temporary) = \"player\"\n(*temporary) = \"Kvotheen\"\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')\"\nMYTHIC_PLUS_KEY_ID = 180653\nKeyMaster = <table> {\n PlayerFrameMapping = <table> {\n }\n Factory = <table> {\n }\n Commands = <table> {\n }\n CharacterData = <table> {\n }\n week = 0\n MainInterface = <table> {\n }\n Coms = <table> {\n }\n DungeonJournal = <table> {\n }\n DungeonTools = <table> {\n }\n HeaderFrame = <table> {\n }\n WhatsNew = <table> {\n }\n CharactersFrame = <table> {\n }\n PartyFrame = <table> {\n }\n PlayerFrame = <table> {\n }\n CharacterInfo = <table> {\n }\n InfoFrame = <table> {\n }\n ConfigFrame = <table> {\n }\n openRaidStub = <table> {\n }\n HeaderFrameMapping = <table> {\n }\n WeeklyRewards = <table> {\n }\n PartyFrameMapping = <table> {\n }\n UnitData = <table> {\n }\n Theme = <table> {\n }\n EventHooks = <table> {\n }\n}\nEventHooks = <table> {\n combatEventQueue = <table> {\n }\n}\n",
-["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua]:218: in function <...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:173>\n",
-["session"] = 55,
-["counter"] = 26,
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'UnhaltedUnitFrames' tried to call the protected function 'UUF_Player:ClearAllPoints()'.",
+["time"] = 1776106053,
+["locals"] = "self = <table> {\n}\nevent = \"ADDON_ACTION_BLOCKED\"\naddonName = \"UnhaltedUnitFrames\"\naddonFunc = \"UUF_Player:ClearAllPoints()\"\nname = \"UnhaltedUnitFrames\"\nbadAddons = <table> {\n UnhaltedUnitFrames = true\n}\nL = <table> {\n NO_DISPLAY_2 = \"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED = \"%s |cffffff00captured, click the link for more information.|r\"\n BUGGRABBER_STOPPED = \"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n USAGE = \"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n STOP_NAG = \"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n NO_DISPLAY_STOP = \"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1 = \"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE = \"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED = \"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:540: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:524: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:524>\n[C]: in function 'ClearAllPoints'\n[Interface/AddOns/UnhaltedUnitFrames/Elements/HealthBar.lua]:71: in function 'UpdateUnitHealthBar'\n[Interface/AddOns/UnhaltedUnitFrames/Core/UnitFrame.lua]:129: in function 'UpdateUnitFrame'\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:2907: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:2907>\n[Interface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua]:673: in function <...erface/AddOns/UnhaltedUnitFrames/Core/Config/GUI.lua:673>\n[C]: ?\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:66: in function <...nterface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua:64>\n[Interface/AddOns/ArcUI/Libs/AceGUI-3.0/AceGUI-3.0.lua]:300: in function 'Fire'\n[Interface/AddOns/AutoHideUI/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua]:65: in function <...deUI/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua:56>\n[C]: in function 'SetValue'\n[Interface/AddOns/AutoHideUI/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua]:107: in function <...deUI/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua:95>\n",
+["session"] = 80,
+["counter"] = 1,
 },
 {
 ["message"] = "Interface/AddOns/ChoreTracker/Modules/Display.lua:227: bad argument #3 to 'CDAT_CompareCalendarTime' (Current Field: [monthDay], Usage: local comparison = C_DateAndTime.CompareCalendarTime(lhsCalendarTime, rhsCalendarTime). Secret values are only allowed during untainted execution for this argument.)",
-["time"] = 1775682488,
+["time"] = 1776283205,
 ["locals"] = "",
 ["stack"] = "[tail call]: ?\n[C]: ?\n[Interface/AddOns/ChoreTracker/Modules/Display.lua]:227: in function <Interface/AddOns/ChoreTracker/Modules/Display.lua:190>\n[C]: ?\n[Interface/AddOns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua]:69: in function <...ns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua:67>\n[Interface/AddOns/ChoreTracker/Libs/AceBucket-3.0/AceBucket-3.0.lua]:83: in function 'func'\n[Interface/AddOns/ChoreTracker/Libs/AceTimer-3.0/AceTimer-3.0.lua]:57: in function <...dOns/ChoreTracker/Libs/AceTimer-3.0/AceTimer-3.0.lua:50>\n",
-["session"] = 60,
-["counter"] = 2,
+["session"] = 87,
+["counter"] = 3,
+},
+{
+["message"] = "...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:218: attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')",
+["time"] = 1776370901,
+["locals"] = "self = Frame {\n}\nevent = \"CHAT_MSG_LOOT\"\nitemTextRecieved = <no value>\nplayerName = <no value>\n(*temporary) = \"Kvotheen\"\n(*temporary) = \"player\"\n(*temporary) = \"Kvotheen\"\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = nil\n(*temporary) = \"attempt to compare local 'playerName' (a secret string value tainted by 'KeyMaster')\"\nMYTHIC_PLUS_KEY_ID = 180653\nKeyMaster = <table> {\n PlayerFrameMapping = <table> {\n }\n Factory = <table> {\n }\n Commands = <table> {\n }\n CharacterData = <table> {\n }\n week = 0\n MainInterface = <table> {\n }\n Coms = <table> {\n }\n DungeonJournal = <table> {\n }\n DungeonTools = <table> {\n }\n HeaderFrame = <table> {\n }\n WhatsNew = <table> {\n }\n CharactersFrame = <table> {\n }\n PartyFrame = <table> {\n }\n PlayerFrame = <table> {\n }\n CharacterInfo = <table> {\n }\n InfoFrame = <table> {\n }\n ConfigFrame = <table> {\n }\n openRaidStub = <table> {\n }\n HeaderFrameMapping = <table> {\n }\n WeeklyRewards = <table> {\n }\n PartyFrameMapping = <table> {\n }\n UnitData = <table> {\n }\n Theme = <table> {\n }\n EventHooks = <table> {\n }\n}\nEventHooks = <table> {\n combatEventQueue = <table> {\n }\n}\n",
+["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua]:218: in function <...erface/AddOns/KeyMaster/Libs/Internal/EventHooks.lua:173>\n",
+["session"] = 89,
+["counter"] = 27,
 },
 },
 }

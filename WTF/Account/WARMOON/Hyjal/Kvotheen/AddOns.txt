@@ -189,7 +189,7 @@ Sorted: disabled
 WorldQuestTracker: disabled
 WorldQuestsList: disabled
 Glider: enabled
-AdvancedInterfaceOptions: disabled
+AdvancedInterfaceOptions: enabled
 SimpleItemLevel: disabled
 elWigo: enabled
 DeathNote: enabled

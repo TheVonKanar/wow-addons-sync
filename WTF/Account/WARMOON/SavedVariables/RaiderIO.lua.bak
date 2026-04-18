@@ -32,12 +32,12 @@ RaiderIO_Config = {
 ["allowClientToControlCombatLog"] = true,
 ["mplusHeadlineMode"] = 0,
 ["showSimpleScoreColors"] = false,
-["showRaiderIOProfile"] = true,
-["enableClientEnhancements"] = true,
+["enableWhoTooltips"] = true,
+["showScoreModifier"] = false,
 ["showOtherWarbandScore"] = true,
 ["showMyWarbandScore"] = false,
 ["replaySelection"] = "user_best_replay",
-["showScoreModifier"] = false,
+["enableClientEnhancements"] = true,
 ["enableGuildTooltips"] = true,
 ["enableLFGTooltips"] = true,
 ["inverseProfileModifier"] = false,
@@ -50,7 +50,7 @@ RaiderIO_Config = {
 ["showWarbandScore"] = true,
 ["enableProfileModifier"] = true,
 ["hidePersonalRaiderIOProfile"] = false,
-["enableWhoTooltips"] = true,
+["showRaiderIOProfile"] = true,
 ["lockProfile"] = false,
 ["showScoreInCombat"] = true,
 ["enableCombatLogTracking"] = false,
@@ -58,11 +58,6 @@ RaiderIO_Config = {
 }
 RaiderIO_LastCharacter = "eu-Kvotheen-hyjal"
 RaiderIO_MissingCharacters = {
-["eu-Tanocroc-archimonde"] = true,
-["eu-Venomm-hyjal"] = true,
-["eu-Engï-hyjal"] = true,
-["eu-Fëdäth-ysondre"] = true,
-["eu-Mïaoü-hyjal"] = true,
 }
 RaiderIO_MissingServers = {
 }

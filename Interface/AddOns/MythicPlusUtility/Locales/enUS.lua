@@ -22,6 +22,8 @@ L["Hides dungeon entries that are marked with %s"] = true
 L["Dungeon Preview"] = true
 L["Show in"] = true
 L["Minimap Icon"] = true
+L["Talent Highlight Settings"] = true
+L["Highlight Color"] = true
 
 -- Difficulty
 L["Normal"] = true
@@ -188,3 +190,8 @@ L["{spell:%d} debuff is inflicted by the second boss {npc:%d}. Debuff is removed
 L["Avoid {spell:%d} when {npc:%d} throws glaive."] = true
 L["Jump back to the platform if you are thrown off by {npc:%d} on the last boss {npc:%d}."] = true
 L["Skips part of the wind maze after the third boss {npc:%d}."] = true
+
+-- 1.2.1
+L["Avoid {spell:%d} when the last boss {npc:%d} targets you."] = true
+L["Prevent {npc:%d} from reaching players on the third boss {npc:%d}."] = true
+L["Skips add pack before the last boss {npc:%d}. This is route specific."] = true

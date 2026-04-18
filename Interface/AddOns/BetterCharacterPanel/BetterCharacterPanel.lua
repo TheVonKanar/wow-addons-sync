@@ -361,7 +361,7 @@ local statsWeLookFor = {
 };
 
 local function ExtractItemData(unit, slot)
-	local data = C_TooltipInfo.GetInventoryItem(unit, slot, true);
+	local data = C_TooltipInfo.GetInventoryItem(unit, slot);
 	local itemData = {
 		sockets = {},
 		stats = {},
@@ -637,10 +637,22 @@ local function UpdateAdditionalDisplayForReal(button, unit)
 		end
 	end
 
+
 	local statMatch = false;
-	if (ITEMS_STATS_WE_CARE_ABOUT[slot]) then
+	local isInspecting = not UnitIsUnit("player", unit);
+
+	-- Need to do this because wow doesent really do inspecting properlly over long range :))))))))))))))))))))))))))))))))))))))))))))
+	if (isInspecting) then
+		local playerMap = C_Map.GetBestMapForUnit("player");
+		local inspectMap = C_Map.GetBestMapForUnit(unit);
+
+		if (playerMap ~= inspectMap) then
+			statMatch = true;
+		end
+	end
+
+	if (ITEMS_STATS_WE_CARE_ABOUT[slot] and not statMatch) then
 		local primaryStat;
-		local isInspecting = not UnitIsUnit("player", unit);
 		if (isInspecting) then
 			local specId = GetInspectSpecialization(unit);
 			primaryStat = specId and SPEC_ID_TO_PRIMARY_STAT[specId];

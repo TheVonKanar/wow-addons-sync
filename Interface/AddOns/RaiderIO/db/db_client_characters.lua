@@ -1,5 +1,5 @@
 --
--- RaiderIO Client Data. Generated on Sun Apr 12 2026 15:33:36 GMT+0000 (Coordinated Universal Time)
+-- RaiderIO Client Data. Generated on Fri Apr 17 2026 17:33:57 GMT+0000 (Coordinated Universal Time)
 --
 local _, ns = ...
 ns.CLIENT_CHARACTERS = {
@@ -13,39 +13,39 @@ ns.CLIENT_CHARACTERS = {
     },
     ["mythic_keystone"] = {
       ["all"] = {
-        ["score"] = 2782.4,
-        ["color"] = "#5864e2",
+        ["score"] = 2861.9,
+        ["color"] = "#5c63e3",
         ["best"] = {
-          ["zone_id"] = 4813,
-          ["level"] = 13,
-          ["upgrades"] = 1,
-          ["fraction"] = 0.924,
-          ["score"] = 382.8652223016226,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
+          ["zone_id"] = 15829,
+          ["level"] = 14,
+          ["upgrades"] = 2,
+          ["fraction"] = 0.753,
+          ["score"] = 404.2571027717309,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/12039602-14-magisters-terrace?utm_source=client"
         },
         ["bestRun"] = {
-          ["zone_id"] = 4813,
-          ["level"] = 13,
-          ["upgrades"] = 1,
-          ["fraction"] = 0.924,
-          ["score"] = 382.8652223016226,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
+          ["zone_id"] = 15829,
+          ["level"] = 14,
+          ["upgrades"] = 2,
+          ["fraction"] = 0.753,
+          ["score"] = 404.2571027717309,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/12039602-14-magisters-terrace?utm_source=client"
         },
         ["bestFortified"] = {
-          ["zone_id"] = 8910,
-          ["level"] = 11,
+          ["zone_id"] = 15829,
+          ["level"] = 14,
           ["upgrades"] = 2,
-          ["fraction"] = 0.67,
-          ["score"] = 347.3810325237788,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/2227710-11-seat-of-the-triumvirate?utm_source=client"
+          ["fraction"] = 0.753,
+          ["score"] = 404.2571027717309,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/12039602-14-magisters-terrace?utm_source=client"
         },
         ["bestTyrannical"] = {
-          ["zone_id"] = 4813,
+          ["zone_id"] = 6988,
           ["level"] = 13,
           ["upgrades"] = 1,
-          ["fraction"] = 0.924,
-          ["score"] = 382.8652223016226,
-          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/8257096-13-pit-of-saron?utm_source=client"
+          ["fraction"] = 0.863,
+          ["score"] = 385.13081060726387,
+          ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/12894400-13-skyreach?utm_source=client"
         },
         ["runs"] = {
           {
@@ -58,11 +58,11 @@ ns.CLIENT_CHARACTERS = {
           },
           {
             ["zone_id"] = 15829,
-            ["level"] = 11,
-            ["upgrades"] = 1,
-            ["fraction"] = 0.811,
-            ["score"] = 342.0824691731843,
-            ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/5442613-11-magisters-terrace?utm_source=client"
+            ["level"] = 14,
+            ["upgrades"] = 2,
+            ["fraction"] = 0.753,
+            ["score"] = 404.2571027717309,
+            ["url"] = "https://raider.io/mythic-plus-runs/season-mn-1/12039602-14-magisters-terrace?utm_source=client"
           },
           {
             ["zone_id"] = 16395,

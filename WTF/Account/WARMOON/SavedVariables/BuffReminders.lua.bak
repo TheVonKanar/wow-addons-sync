@@ -27,7 +27,8 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 ["enabledBuffs"] = {
 ["symbioticRelationship"] = true,
 ["blisteringScales"] = true,
@@ -37,24 +38,13 @@ BuffRemindersDB = {
 ["bronze"] = true,
 ["intellect"] = true,
 ["versatility"] = true,
-["earthShieldOthers"] = false,
 ["devotionAura"] = true,
+["earthShieldOthers"] = false,
 ["attackPower"] = true,
-["sourceOfMagic"] = true,
 ["stamina"] = true,
+["sourceOfMagic"] = true,
 ["beacons"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 38,
-["readyCheckOnlyOverrides"] = {
-},
-["showLoginMessages"] = false,
-["rememberedConsumables"] = {
-[263] = {
-["rune"] = 1234969,
-["flask"] = 1235108,
-["food"] = 1233767,
-},
 },
 ["categorySettings"] = {
 ["self"] = {
@@ -82,6 +72,9 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
+["targeted"] = {
+["showText"] = true,
+},
 ["raid"] = {
 ["showText"] = true,
 ["showBuffReminder"] = false,
@@ -90,10 +83,22 @@ BuffRemindersDB = {
 ["presence"] = {
 ["showText"] = true,
 },
-["targeted"] = {
-["showText"] = true,
+},
+["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235111,
+["food"] = 1233767,
+},
+[264] = {
+["flask"] = 1235057,
+["food"] = 1232917,
 },
 },
+["dbVersion"] = 38,
 ["hideAllInVehicle"] = true,
 ["categoryVisibility"] = {
 ["custom"] = {
@@ -101,8 +106,7 @@ BuffRemindersDB = {
 ["hideInPvPMatch"] = true,
 },
 },
-["customBuffs"] = {
-},
+["buffTrackingMode"] = "my_buffs",
 },
 },
 }

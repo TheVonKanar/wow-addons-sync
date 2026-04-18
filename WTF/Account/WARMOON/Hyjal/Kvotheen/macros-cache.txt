@@ -47,6 +47,11 @@ VER 3 0100000000000073 "+pot" "134400"
 /cast Bloodlust
 /use Light's Potential
 END
+VER 3 0100000000000077 "+TK" "134400"
+#showtooltip
+/cast Nature's Swiftness
+/use 14
+END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
@@ -56,6 +61,14 @@ VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
 /stopcasting
 /cast [@focus,exists] Wind Shear; [target=mouseover,exists] Wind Shear; Wind Shear
+END
+VER 3 0100000000000076 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Riptide; Riptide
+END
+VER 3 0100000000000075 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit

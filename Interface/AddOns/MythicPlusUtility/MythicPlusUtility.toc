@@ -1,5 +1,5 @@
 ## Interface: 120001
-## Version: 1.1.10
+## Version: 1.2.1.1
 ## Title: Mythic Plus Utility
 ## Author: Nikyou
 ## IconTexture: Interface\Icons\spell_nature_tremortotem
@@ -43,3 +43,4 @@ SpellsData.lua
 InstancesData.lua
 UtilityAbilitiesFrame.lua
 MinimapIcon.lua
+TalentFrameHighlight.lua

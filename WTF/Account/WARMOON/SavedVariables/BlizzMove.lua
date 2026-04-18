@@ -31,8 +31,8 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -148.8263280614046,
-["offX"] = 178.8339799904061,
+["offY"] = -51.82650455928524,
+["offX"] = -307.165961562976,
 ["relativePoint"] = "TOP",
 },
 },
@@ -166,9 +166,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 99.66647338867188,
-["offX"] = 4.332122802734375,
+["offY"] = 98.66647338867188,
 ["relativePoint"] = "CENTER",
+["offX"] = 4.332122802734375,
 },
 },
 },
@@ -324,8 +324,8 @@ BlizzMoveDB = {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
 ["offY"] = 46.50027465820313,
-["offX"] = 152.6667022705078,
 ["relativePoint"] = "LEFT",
+["offX"] = 152.6666870117188,
 },
 },
 },
@@ -343,9 +343,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 2.335162364615826,
+["offY"] = -0.6648988356027985,
+["offX"] = -221.4690701779473,
 ["relativePoint"] = "TOP",
-["offX"] = -220.4689572078823,
 },
 },
 },
@@ -383,9 +383,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 160.1662902832031,
+["offY"] = 160.1663513183594,
 ["relativePoint"] = "LEFT",
-["offX"] = 69.66553497314453,
+["offX"] = 72.66556549072266,
 },
 },
 },
@@ -516,8 +516,8 @@ BlizzMoveDB = {
 ["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
 ["offY"] = -96.00048828125,
-["offX"] = -3.8331298828125,
 ["relativePoint"] = "TOP",
+["offX"] = -3.8331298828125,
 },
 },
 },
@@ -573,7 +573,7 @@ BlizzMoveDB = {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
 ["offY"] = 250.9998474121094,
-["offX"] = 214.1667785644531,
+["offX"] = 214.1667938232422,
 ["relativePoint"] = "LEFT",
 },
 },
@@ -651,9 +651,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "TOPLEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -108.83447265625,
-["offX"] = 38.99993896484375,
+["offY"] = -107.8345947265625,
 ["relativePoint"] = "TOPLEFT",
+["offX"] = 43.99995040893555,
 },
 },
 },
@@ -671,11 +671,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOPRIGHT",
+["anchorPoint"] = "RIGHT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -71.315673828125,
-["offX"] = -328.128662109375,
-["relativePoint"] = "TOPRIGHT",
+["offY"] = 138.6841888427734,
+["relativePoint"] = "RIGHT",
+["offX"] = -308.12890625,
 },
 },
 },
@@ -807,7 +807,7 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 170.6664733886719,
+["offY"] = 171.66650390625,
 ["relativePoint"] = "CENTER",
 ["offX"] = -154.3328552246094,
 },
@@ -853,11 +853,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOPRIGHT",
+["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -64.0013427734375,
-["offX"] = -214,
-["relativePoint"] = "TOPRIGHT",
+["offY"] = -41.000244140625,
+["offX"] = -1.52587890625e-05,
+["relativePoint"] = "TOP",
 },
 },
 },
@@ -881,7 +881,7 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 133.3331604003906,
+["offY"] = 133.3330688476563,
 ["relativePoint"] = "LEFT",
 ["offX"] = 113.3334350585938,
 },
@@ -980,9 +980,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -24.58270740038097,
-["offX"] = 75.16481513900726,
+["offY"] = -25.58277150897084,
 ["relativePoint"] = "CENTER",
+["offX"] = 75.16484870834392,
 },
 },
 },
@@ -1002,9 +1002,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 250.1661682128906,
-["offX"] = -6.33428955078125,
+["offY"] = 253.1661071777344,
 ["relativePoint"] = "CENTER",
+["offX"] = -3.33428955078125,
 },
 },
 },
@@ -1043,8 +1043,8 @@ BlizzMoveDB = {
 ["anchorPoint"] = "TOPLEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
 ["offY"] = -216.1632303099905,
-["relativePoint"] = "TOPLEFT",
 ["offX"] = 258.3020304398542,
+["relativePoint"] = "TOPLEFT",
 },
 },
 },
@@ -1084,9 +1084,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 25.00049957436204,
-["offX"] = 179.6674326764514,
+["offY"] = 24.00046901704627,
 ["relativePoint"] = "LEFT",
+["offX"] = 183.6674084213337,
 },
 },
 },
@@ -1098,7 +1098,7 @@ BlizzMoveDB = {
 },
 ["GarrisonCapacitiveDisplayFrame"] = {
 },
-["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
+["Baganator_SingleViewBankViewFrameblizzard"] = {
 },
 ["BlackMarketFrame"] = {
 },
@@ -1205,9 +1205,9 @@ BlizzMoveDB = {
 },
 ["TokenFrame"] = {
 },
-["Baganator_SingleViewBankViewFrameblizzard"] = {
-},
 ["TabardFrame"] = {
+},
+["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {
 },
 ["ChallengesKeystoneFrame"] = {
 ["startPoints"] = {
@@ -1254,11 +1254,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOPRIGHT",
+["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -156.16748046875,
-["relativePoint"] = "TOPRIGHT",
-["offX"] = -524.3360595703125,
+["offY"] = -64.16748046875,
+["offX"] = -303.8354797363281,
+["relativePoint"] = "TOP",
 },
 },
 },
@@ -1293,9 +1293,9 @@ BlizzMoveDB = {
 {
 ["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -30.00016784667969,
-["offX"] = 183.9998168945313,
+["offY"] = -47.00022888183594,
 ["relativePoint"] = "CENTER",
+["offX"] = 81.00018310546875,
 },
 },
 },

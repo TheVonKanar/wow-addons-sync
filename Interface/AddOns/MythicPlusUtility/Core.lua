@@ -42,6 +42,10 @@ function MythicPlusUtility:MigrateOldSettings()
     local db = self.db.profile
     if not db.AddonName then db.AddonName = "MythicPlusUtility" end
     if self.db.global.minimap then self.db.global.minimap = nil end
+    if self.db.profile.minimap.show ~= nil then
+        self.db.profile.minimap.hide = not self.db.profile.minimap.show
+        self.db.profile.minimap.show = nil
+    end
 
     local function migrateFrameSetting(oldSetting, newSetting)
         if db[oldSetting] then
@@ -76,7 +80,7 @@ function MythicPlusUtility:MigrateOldSettings()
 end
 
 function MythicPlusUtility:RefreshConfig()
-    if self.db.profile.minimap.show then
+    if not self.db.profile.minimap.hide then
         minimapIcon:Show("MythicPlusUtility")
     else
         minimapIcon:Hide("MythicPlusUtility")
@@ -84,11 +88,14 @@ function MythicPlusUtility:RefreshConfig()
     if self.Frame then self.Frame:ProfileChange() end
 end
 
+function MythicPlusUtility:onTalentFrameShow() MythicPlusUtility.TalentFrameHighlight.UpdateAnchers(MythicPlusUtility) end
+
 function MythicPlusUtility:OnEnable()
     self:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
     self:RegisterEvent("TRAIT_CONFIG_UPDATED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("CHALLENGE_MODE_START")
+    EventRegistry:RegisterCallback("PlayerSpellsFrame.OpenFrame", MythicPlusUtility.onTalentFrameShow)
 end
 
 function MythicPlusUtility:ACTIVE_PLAYER_SPECIALIZATION_CHANGED(event)
@@ -96,10 +103,12 @@ function MythicPlusUtility:ACTIVE_PLAYER_SPECIALIZATION_CHANGED(event)
     if self.Frame and self.Frame:IsVisible() then
         self:CreateCurrentAbilitiesList()
         self.Frame:ChangeInstance()
+        C_Timer.NewTimer(0.5, function() MythicPlusUtility.TalentFrameHighlight.UpdateAnchers(MythicPlusUtility) end)
     else
         self.db.char.changedSpec = true
     end
 
+    if self.Frame then self.TalentFrameHighlight:UpdateSpec() end
 end
 
 function MythicPlusUtility:TRAIT_CONFIG_UPDATED(event)
@@ -117,9 +126,7 @@ function MythicPlusUtility:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReload
             local _, _, difficultyID, _, _, _, _, instanceID = GetInstanceInfo()
             if MythicPlusUtility.db.profile.difficultyID[difficultyID] and MythicPlusUtility.instancesData[instanceID] then
                 MythicPlusUtility.db.profile.instanceID = instanceID
-                if not MythicPlusUtility.Frame then
-                    MythicPlusUtility.Frame = MythicPlusUtility:UtilityAbilitiesFrame()
-                end
+                if not MythicPlusUtility.Frame then MythicPlusUtility:InitializeFrames() end
                 MythicPlusUtility.Frame:SetShownHandler(true)
                 MythicPlusUtility.Frame:ChangeInstance()
             else
@@ -201,9 +208,8 @@ end
 
 function MythicPlusUtility:ToggleAbilitiesFrame()
     if not self.Frame then
-        self.Frame = self:UtilityAbilitiesFrame()
+        self:InitializeFrames()
         self.Frame:SetShownHandler(true)
-
         return
     end
     self.Frame:SetShownHandler(not self.Frame:IsVisible())

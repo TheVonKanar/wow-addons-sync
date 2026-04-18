@@ -222,18 +222,18 @@ BAGANATOR_CONFIG = {
 ["new_items_flashing"] = true,
 ["icon_equipment_set_border"] = true,
 ["sort_start_at_bottom"] = false,
-["category_migration"] = 5,
 ["saved_searches"] = {
 },
+["category_migration"] = 5,
 ["bag_icon_size"] = 44,
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
 ["i:225415"] = true,
 ["i:233799"] = true,
+["i:201412"] = true,
 ["i:235053"] = true,
 ["i:233794"] = true,
-["i:201412"] = true,
 },
 },
 ["default_armor"] = {
@@ -245,30 +245,30 @@ BAGANATOR_CONFIG = {
 ["priority"] = 2,
 ["addedItems"] = {
 ["i:226132"] = true,
-["i:226131"] = true,
+["i:227673"] = true,
 ["i:226107"] = true,
 ["i:226120"] = true,
 ["i:243147"] = true,
 ["i:237131"] = true,
 ["i:248954"] = true,
-["i:233205"] = true,
-["i:228913"] = true,
+["i:248755"] = true,
+["i:231099"] = true,
 ["i:166846"] = true,
 ["i:233118"] = true,
 ["i:234416"] = true,
 ["i:233055"] = true,
 ["i:226110"] = true,
-["i:243144"] = true,
-["i:227673"] = true,
+["i:13444"] = true,
+["i:226131"] = true,
 ["i:234387"] = true,
 ["i:234386"] = true,
 ["i:86143"] = true,
 ["i:233062"] = true,
 ["i:233061"] = true,
 ["i:248764"] = true,
-["i:13444"] = true,
-["i:231099"] = true,
-["i:248755"] = true,
+["i:243144"] = true,
+["i:228913"] = true,
+["i:233205"] = true,
 },
 },
 ["default_hearthstone"] = {
@@ -276,37 +276,42 @@ BAGANATOR_CONFIG = {
 ["priority"] = -1,
 ["addedItems"] = {
 ["i:65274"] = true,
-["i:249699"] = true,
-["i:252607"] = true,
 ["i:234389"] = true,
+["i:252607"] = true,
+["i:249699"] = true,
 },
 },
-["default_miscellaneous"] = {
+["default_weapon"] = {
+},
+["default_itemenhancement"] = {
 ["addedItems"] = {
-["i:244465"] = true,
-["i:237268"] = true,
-["i:262798"] = true,
+["i:222584"] = true,
+["i:213777"] = true,
+["i:232386"] = true,
 },
+},
+["default_food"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["default_recipe"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_gem"] = {
+["default_profession"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 ["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
+["i:136377"] = true,
+["i:225771"] = true,
+["i:225770"] = true,
+["i:237497"] = true,
+["i:214561"] = true,
+["i:241291"] = true,
+["i:212308"] = true,
 },
 },
-["default_key"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_auto_equipment_sets"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["6"] = {
+["3"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
 },
@@ -318,7 +323,7 @@ BAGANATOR_CONFIG = {
 ["i:224265"] = true,
 ["i:236757"] = true,
 ["i:248017"] = true,
-["i:236756"] = true,
+["i:236096"] = true,
 ["i:236953"] = true,
 ["i:224264"] = true,
 ["i:246585"] = true,
@@ -338,49 +343,48 @@ BAGANATOR_CONFIG = {
 ["i:255825"] = true,
 ["i:227450"] = true,
 ["i:226045"] = true,
-["i:235151"] = true,
+["i:225234"] = true,
 ["i:233071"] = true,
 ["i:238466"] = true,
 ["i:226100"] = true,
 ["i:230227"] = true,
-["i:225234"] = true,
+["i:236756"] = true,
 ["i:238465"] = true,
 ["i:225245"] = true,
 ["i:262936"] = true,
 ["i:245761"] = true,
 ["i:268485"] = true,
 ["i:259188"] = true,
-["i:236096"] = true,
+["i:235151"] = true,
 },
 },
-["default_reagent"] = {
-["addedItems"] = {
-["i:222738"] = true,
-["i:230905"] = true,
-},
-},
-["3"] = {
+["default_key"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 0,
+["priority"] = -1,
+},
+["default_auto_inventory_slots"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
 },
 ["2"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
 ["addedItems"] = {
 ["i:212264"] = true,
+["i:241301"] = true,
 ["i:258138"] = true,
-["i:241322"] = true,
+["i:212283"] = true,
 ["i:222728"] = true,
-["i:255847"] = true,
+["i:242747"] = true,
 ["i:268679"] = true,
 ["i:242275"] = true,
-["i:212283"] = true,
+["i:241309"] = true,
 ["i:243191"] = true,
 ["i:241323"] = true,
-["i:242747"] = true,
+["i:255847"] = true,
 ["i:241305"] = true,
 ["i:222776"] = true,
-["i:241309"] = true,
+["i:241322"] = true,
 },
 },
 ["5"] = {
@@ -395,10 +399,10 @@ BAGANATOR_CONFIG = {
 ["i:201411"] = true,
 ["i:71083"] = true,
 ["i:259361"] = true,
-["i:199099"] = true,
-["i:151134"] = true,
-["i:246951"] = true,
 ["i:21100"] = true,
+["i:246951"] = true,
+["i:151134"] = true,
+["i:199099"] = true,
 ["i:260531"] = true,
 },
 },
@@ -425,22 +429,13 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_auto_inventory_slots"] = {
+["6"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
+},
+["default_auto_equipment_sets"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
-},
-["default_profession"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-["addedItems"] = {
-["i:136377"] = true,
-["i:225771"] = true,
-["i:225770"] = true,
-["i:237497"] = true,
-["i:241291"] = true,
-["i:214561"] = true,
-["i:212308"] = true,
-},
 },
 ["default_potion"] = {
 ["addedItems"] = {
@@ -448,46 +443,61 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_food"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_itemenhancement"] = {
+["default_gem"] = {
 ["addedItems"] = {
-["i:222584"] = true,
-["i:232386"] = true,
-["i:213777"] = true,
+["i:228643"] = true,
+["i:228646"] = true,
 },
 },
-["default_weapon"] = {
+["default_reagent"] = {
+["addedItems"] = {
+["i:222738"] = true,
+["i:230905"] = true,
+},
+},
+["default_miscellaneous"] = {
+["addedItems"] = {
+["i:244465"] = true,
+["i:237268"] = true,
+["i:262798"] = true,
+},
 },
 },
 ["warband_bank_view_width"] = 15,
-["category_section_toggled"] = {
-["1"] = false,
-["Crafting"] = true,
-["2"] = false,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
--473.671875,
-453.1669006347656,
+-341.671875,
+677.1668701171875,
 },
 ["icon_text_font_size"] = 14,
+["disabled_skins"] = {
+},
+["bag_view_width"] = 15,
 ["view_alpha"] = 1,
 ["sort_ignore_slots_count_2"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["disabled_skins"] = {
-},
-["bag_view_width"] = 15,
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -503,7 +513,6 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
-["debug_keywords"] = false,
 ["currencies_tracked"] = {
 ["Pandakv-Hyjal"] = {
 },
@@ -565,19 +574,7 @@ BAGANATOR_CONFIG = {
 },
 ["setting_anchors"] = false,
 ["guild_current_tab"] = 6,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
+["debug_keywords"] = false,
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -592,7 +589,11 @@ BAGANATOR_CONFIG = {
 ["currencies_tracked_imported"] = {
 },
 ["show_sort_button_2"] = true,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = false,
+["Crafting"] = true,
+["2"] = false,
+},
 ["icon_context_fading"] = true,
 ["currency_panel_position"] = {
 "RIGHT",
