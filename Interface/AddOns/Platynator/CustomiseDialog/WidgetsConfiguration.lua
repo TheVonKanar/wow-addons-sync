@@ -6,7 +6,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local textureHeight = 20
 
 local function GetLabelsValues(allAssets, filter, showName, widthMod)
-  widthMod = widthMod or 0
+  widthMod = widthMod or 1
   local labels, values = {}, {}
 
   local allKeys = GetKeysArray(allAssets)
@@ -237,6 +237,85 @@ local function GetLabelsValuesHighlightsNotAnimated()
 
   return labels, values
 end
+
+local multipleValuesDisplay = {
+  label = addonTable.Locales.MULTIPLE_VALUES_DISPLAY,
+  kind = "dropdown",
+  getInitData = function(_)
+    return {
+      "11 (22)",
+      "11 | 22",
+      "11 - 22",
+      "11 22",
+    }, {
+        "%s (%s)",
+        "%s | %s",
+        "%s - %s",
+        "%s %s",
+      }
+  end,
+  setter = function(details, value)
+    details.formatMultiple = value
+  end,
+  getter = function(details)
+    return details.formatMultiple
+  end
+}
+
+local energyTypes = {
+  {
+    label = addonTable.Locales.ENERGY,
+    kind = "checkbox",
+    setter = function(details, value)
+      details.powerTypes.energy = value
+    end,
+    getter = function(details)
+      return details.powerTypes.energy
+    end,
+  },
+  {
+    label = addonTable.Locales.MANA,
+    kind = "checkbox",
+    setter = function(details, value)
+      details.powerTypes.mana = value
+    end,
+    getter = function(details)
+      return details.powerTypes.mana
+    end,
+  },
+  {
+    label = addonTable.Locales.RAGE,
+    kind = "checkbox",
+    setter = function(details, value)
+      details.powerTypes.rage = value
+    end,
+    getter = function(details)
+      return details.powerTypes.rage
+    end,
+  },
+}
+local energyMobs = {
+  {
+    label = addonTable.Locales.BOSS,
+    kind = "checkbox",
+    setter = function(details, value)
+      details.mobTypes.boss = value
+    end,
+    getter = function(details)
+      return details.mobTypes.boss
+    end,
+  },
+  {
+    label = addonTable.Locales.MINIBOSS,
+    kind = "checkbox",
+    setter = function(details, value)
+      details.mobTypes.miniboss = value
+    end,
+    getter = function(details)
+      return details.mobTypes.miniboss
+    end,
+  },
+}
 
 addonTable.CustomiseDialog.WidgetsConfig = {
   ["bars"] = {
@@ -480,6 +559,30 @@ addonTable.CustomiseDialog.WidgetsConfig = {
         },
       },
     },
+    ["energy"] = {
+      {
+        label = addonTable.Locales.COLORS,
+        entries = {
+          {
+            label = "",
+            kind = "autoColors",
+            lockedElements = {energy = true},
+            setter = function() end,
+            getter = function(details)
+              return details.autoColors
+            end,
+          },
+        },
+      },
+      {
+        label = addonTable.Locales.TYPES,
+        entries = energyTypes,
+      },
+      {
+        label = addonTable.Locales.MOBS,
+        entries = energyMobs,
+      },
+    },
   },
   ["texts"] = {
     ["*"] = {
@@ -643,29 +746,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
           },
           { kind = "spacer" },
-          {
-            label = addonTable.Locales.MULTIPLE_VALUES_DISPLAY,
-            kind = "dropdown",
-            getInitData = function(_)
-              return {
-                "11 (22)",
-                "11 | 22",
-                "11 - 22",
-                "11 22",
-              }, {
-                  "%s (%s)",
-                  "%s | %s",
-                  "%s - %s",
-                  "%s %s",
-                }
-            end,
-            setter = function(details, value)
-              details.formatMultiple = value
-            end,
-            getter = function(details)
-              return details.formatMultiple
-            end
-          },
+          multipleValuesDisplay,
         }
       }
     },
@@ -808,6 +889,85 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           },
         }
       }
+    },
+    ["mythicPlusForces"] = {
+      {
+        label = addonTable.Locales.VALUES,
+        entries = {
+          {
+            label = addonTable.Locales.ABSOLUTE,
+            kind = "checkbox",
+            setter = function(details, value)
+              if value and tIndexOf(details.displayTypes, "absolute") == nil then
+                table.insert(details.displayTypes, 1, "absolute")
+              elseif not value then
+                local index = tIndexOf(details.displayTypes, "absolute")
+                if index then
+                  table.remove(details.displayTypes, index)
+                end
+              end
+            end,
+            getter = function(details)
+              return tIndexOf(details.displayTypes, "absolute") ~= nil
+            end,
+          },
+          { kind = "spacer" },
+          {
+            label = addonTable.Locales.PERCENTAGE,
+            kind = "checkbox",
+            setter = function(details, value)
+              if value and tIndexOf(details.displayTypes, "percentage") == nil then
+                table.insert(details.displayTypes, 1, "percentage")
+              elseif not value then
+                local index = tIndexOf(details.displayTypes, "percentage")
+                if index then
+                  table.remove(details.displayTypes, index)
+                end
+              end
+            end,
+            getter = function(details)
+              return tIndexOf(details.displayTypes, "percentage") ~= nil
+            end,
+          },
+          {
+            label = addonTable.Locales.SHOW_PERCENT_SYMBOL,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.showPercentSymbol = value
+            end,
+            getter = function(details)
+              return details.showPercentSymbol
+            end,
+          },
+          { kind = "spacer" },
+          multipleValuesDisplay,
+        }
+      }
+    },
+    ["energy"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.SHOW_PERCENT_SYMBOL,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.showPercentSymbol = value
+            end,
+            getter = function(details)
+              return details.showPercentSymbol
+            end,
+          },
+        },
+      },
+      {
+        label = addonTable.Locales.TYPES,
+        entries = energyTypes,
+      },
+      {
+        label = addonTable.Locales.MOBS,
+        entries = energyMobs,
+      },
     },
   },
   ["markers"] = {
@@ -1116,7 +1276,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
         label = addonTable.Locales.GENERAL,
         entries = {
           {
-            label = addonTable.Locales.SHOW_PURGEABLE,
+            label = addonTable.Locales.SHOW_PURGEABLE_BORDER,
             kind = "checkbox",
             setter = function(details, value)
               details.showStealable = value

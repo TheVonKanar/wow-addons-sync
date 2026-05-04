@@ -156,8 +156,10 @@ local inCombat = false
 local cachedContentType = nil
 local cachedInstanceType = nil -- raw WoW instanceType, stashed alongside content type
 
--- Whether we are in the PvP prep phase (before gates open). Aura API is unrestricted during prep.
--- Defaults to false (restricted) so reloads during active matches stay safe.
+-- Whether we are in the PvP prep phase (before gates open). Used by the
+-- `hideInPvPMatch` visibility setting to gate buff display once the match starts.
+-- Note: aura API is restricted for the entire BG/arena (prep included), so this
+-- does NOT affect IsRestricted() — see that function for details.
 local inPvPPrepPhase = false
 
 -- Difficulty cache (invalidated alongside content type)
@@ -214,6 +216,61 @@ local cachedOffHandType = nil -- nil = not yet checked, "weapon" | "shield" | "n
 ---@type table<number, boolean>
 local cachedItemOwnership = {}
 
+-- Wrong-demon-pet cache. UnitCreatureFamily can return secret-value familyIDs
+-- under 12.0.5 taint rules, so the compare is pcall-guarded — a secret value
+-- becomes "unknown" (not cached, retried) instead of crashing Refresh.
+---@type boolean|nil
+local cachedWrongPetStatus = nil
+
+-- Warrior stance spell IDs (single source of truth for wrong-stance detection,
+-- expected-stance lookup, and dynamic icon resolution).
+local STANCE_BATTLE = 386164
+local STANCE_BERSERKER = 386196
+local STANCE_DEFENSIVE = 386208
+
+-- Spec → set of acceptable stances. Arms: Battle. Fury: Battle or Berserker
+-- (Berserker talent replaces Battle). Protection: Defensive.
+local WARRIOR_EXPECTED_STANCES = {
+    [71] = { [STANCE_BATTLE] = true },
+    [72] = { [STANCE_BATTLE] = true, [STANCE_BERSERKER] = true },
+    [73] = { [STANCE_DEFENSIVE] = true },
+}
+
+-- Priest shadow forms. Shadowform is the only stance shadow priests can take;
+-- Voidform is a temporary aura that visually replaces it. The stance bar API
+-- works in restricted contexts (combat/encounter/M+) where aura queries fail
+-- for non-whitelisted spells, so we read it directly.
+local SHADOWFORM = 232698
+local VOIDFORM = 194249
+
+-- Druid forms. Only Feral (Cat) and Balance (Moonkin) are spec-required forms;
+-- Guardian uses Bear Form but it's not enforced here, and Restoration has no
+-- mandatory form. Incarnation talents (King of the Jungle / Chosen of Elune)
+-- empower the existing form rather than swapping the stance bar slot, so the
+-- spec's base form ID still matches.
+local DRUID_CAT_FORM = 768
+local DRUID_MOONKIN_FORM = 24858
+local DRUID_EXPECTED_FORMS = {
+    [102] = DRUID_MOONKIN_FORM, -- Balance
+    [103] = DRUID_CAT_FORM, -- Feral
+}
+
+-- Wrong-warrior-stance cache + derived values (all invalidated together on
+-- UPDATE_SHAPESHIFT_FORM(S), PLAYER_SPECIALIZATION_CHANGED, TRAIT_CONFIG_UPDATED,
+-- SPELLS_CHANGED, PLAYER_ENTERING_WORLD).
+---@type boolean|nil
+local cachedWrongStanceStatus = nil
+---@type number|false|nil  -- false = computed and absent (non-warrior)
+local cachedExpectedStanceID = nil
+---@type number|string|false|nil  -- false = computed and absent (unstanced)
+local cachedCurrentStanceIcon = nil
+---@type boolean|nil
+local cachedShadowFormActive = nil
+---@type boolean|nil
+local cachedWrongDruidFormStatus = nil
+---@type number|false|nil  -- false = computed and absent (non-druid or non-feral/balance)
+local cachedExpectedDruidFormID = nil
+
 -- Weapon enchant info for current refresh cycle (set once per BuffState.Refresh())
 local currentWeaponEnchants = {
     hasMainHand = false,
@@ -230,6 +287,12 @@ local currentWeaponEnchants = {
 -- Each entry: { unit = "raid1", class = "WARRIOR", isPlayer = true, name = "PlayerName" }
 ---@type {unit: string, class: string, isPlayer: boolean, name: string?}[]
 local currentValidUnits = {}
+
+-- "Are we effectively alone?" snapshot from the most recent BuildValidUnitCache().
+-- True when GetNumGroupMembers() <= 1: covers both open-world solo (reports 0) and
+-- scenario solo such as rituals (reports 1 with only the player as the lone member).
+-- Real groups (>= 2 members) set this to false.
+local cachedIsAlone = true
 
 -- Spec cache: playerName -> specId (populated by LibSpecialization callbacks for allies,
 -- and by BuildValidUnitCache for the local player via GetPlayerSpecId())
@@ -493,24 +556,21 @@ local function BuildValidUnitCache()
 
     local inRaid = IsInRaid()
     local groupSize = GetNumGroupMembers()
+    cachedIsAlone = groupSize <= 1
 
-    if groupSize == 0 then
-        -- Solo player
-        currentValidUnits[1] = AcquireUnitEntry("player", playerClass, true, playerName)
-        classMaxLevels[playerClass] = playerLevel
-        return
-    end
+    -- Open-world solo (groupSize 0) has no roster but still needs the player in
+    -- the unit cache. Treat it as a 1-unit "group of player" so dead/phased/etc.
+    -- filtering via IsValidGroupMember runs uniformly for solo and grouped paths.
+    local memberCount = groupSize == 0 and 1 or groupSize
 
-    for i = 1, groupSize do
+    for i = 1, memberCount do
         local unit
         if inRaid then
             unit = "raid" .. i
+        elseif i == 1 then
+            unit = "player"
         else
-            if i == 1 then
-                unit = "player"
-            else
-                unit = "party" .. (i - 1)
-            end
+            unit = "party" .. (i - 1)
         end
 
         if IsValidGroupMember(unit) then
@@ -603,22 +663,33 @@ local function GetUnitSpellIDs(buffKey, spellIDs, class)
     return spellIDs
 end
 
----Scan player-cast buffs on a unit looking for a specific spellID.
+---Scan player-cast buffs on a unit looking for a spellID (or any of a list).
 ---Used as a fallback when GetUnitAuraBySpellID returns another player's instance
 ---(e.g., two Aug Evokers both casting Blistering Scales on the same tank).
 ---The "HELPFUL|PLAYER" filter narrows iteration to only the player's own buffs.
 ---@param unit string
----@param spellID number
+---@param spellIDs SpellID
 ---@return boolean found
 ---@return number? remainingTime
-local function UnitHasBuffFromPlayer(unit, spellID)
+local function UnitHasBuffFromPlayer(unit, spellIDs)
+    local singleId = type(spellIDs) == "number" and spellIDs or nil ---@type number?
     local i = 1
     local auraData = C_UnitAuras.GetAuraDataByIndex(unit, i, "HELPFUL|PLAYER")
     while auraData do
         -- spellId is a tainted secret value for non-whitelisted auras in restricted contexts
         -- (combat, encounters, M+). pcall avoids the error; tainted auras simply don't match.
         local ok, match = pcall(function()
-            return auraData.spellId == spellID
+            local sid = auraData.spellId
+            if singleId then
+                return sid == singleId
+            end
+            local idList = spellIDs --[[@as number[] ]]
+            for _, id in ipairs(idList) do
+                if sid == id then
+                    return true
+                end
+            end
+            return false
         end)
         if ok and match then
             local remaining
@@ -839,6 +910,29 @@ local SCOPE_HIDDEN = { show = false, playerOnly = false }
 local SCOPE_PLAYER_ONLY = { show = true, playerOnly = true }
 local SCOPE_GROUP = { show = true, playerOnly = false }
 
+---Modes that hide buffs from classes other than the player's.
+---@param trackingMode string
+---@return boolean
+local function ModeHidesOtherClasses(trackingMode)
+    return trackingMode == "my_buffs" or trackingMode == "self_only"
+end
+
+---Resolve the active tracking mode, applying the "self-only outside instances"
+---override that forces self_only in open world. Instanced content (raid,
+---dungeon, scenario, PvP) keeps the user-selected mode.
+---@param db table
+---@return string
+local function GetEffectiveTrackingMode(db)
+    local mode = db.buffTrackingMode
+    if mode ~= "self_only" and db.selfOnlyOutsideInstances then
+        local ct = GetCurrentContentType()
+        if ct ~= "raid" and ct ~= "dungeon" and ct ~= "pvp" and ct ~= "scenario" then
+            return "self_only"
+        end
+    end
+    return mode
+end
+
 ---Determine visibility and scan scope for a buff based on tracking mode.
 ---Raid buffs go on everyone, so "scan group" means showing coverage numbers.
 ---Presence buffs live on the caster, so "scan group" means finding if anyone has the aura.
@@ -852,11 +946,17 @@ local function GetTrackingScope(trackingMode, buffClass, category, hasCaster, ca
     if not hasCaster then
         return SCOPE_HIDDEN
     end
-    if trackingMode == "my_buffs" and buffClass ~= playerClass then
+    if ModeHidesOtherClasses(trackingMode) and buffClass ~= playerClass then
         return SCOPE_HIDDEN
     end
 
-    if trackingMode == "personal" then
+    if trackingMode == "self_only" then
+        -- Only my class's buffs on me. castOnOthers (e.g., Soulstone) lives on the target, not me.
+        if category == "presence" and castOnOthers then
+            return SCOPE_HIDDEN
+        end
+        return SCOPE_PLAYER_ONLY
+    elseif trackingMode == "personal" then
         -- Presence buffs from other classes exist only on the caster, not on you.
         -- castOnOthers buffs (Soulstone) are someone else's responsibility in personal mode.
         if category == "presence" and (buffClass ~= playerClass or castOnOthers) then
@@ -905,10 +1005,11 @@ end
 ---@param spellIDs SpellID
 ---@param buffKey? string Used for class benefit filtering
 ---@param playerOnly? boolean Only check the player, not the group
+---@param playersOnly? boolean Exclude NPCs from the count (e.g. buffs NPCs provide themselves)
 ---@return number missing
 ---@return number total
 ---@return number? minRemaining
-local function CountMissingBuff(spellIDs, buffKey, playerOnly)
+local function CountMissingBuff(spellIDs, buffKey, playerOnly, playersOnly)
     local missing = 0
     local total = 0
     local minRemaining = nil
@@ -930,13 +1031,14 @@ local function CountMissingBuff(spellIDs, buffKey, playerOnly)
         return missing, total, minRemaining
     end
 
+    local countNPCs = includeNPCsInCounting and not inCombat and not playersOnly
     for _, data in ipairs(currentValidUnits) do
         -- Skip NPCs unless in whitelisted content. During combat, also skip NPCs here:
         -- NPC-cast raid buff spell IDs (e.g., 432661) aren't combat-whitelisted, so
         -- UnitHasBuff returns nil causing false missing counts. Targeted buffs (HasPresenceBuff,
         -- IsPlayerBuffActive) use player-cast spell IDs that ARE whitelisted, so they
         -- still include NPCs via the unchanged includeNPCsInCounting check.
-        if data.isPlayer or (includeNPCsInCounting and not inCombat) then
+        if data.isPlayer or countNPCs then
             if UnitBenefitsFromBuff(specBeneficiaries, beneficiaries, allySpecCache[data.name], data.class) then
                 total = total + 1
                 local hasBuff, remaining = UnitHasBuff(data.unit, GetUnitSpellIDs(buffKey, spellIDs, data.class))
@@ -958,11 +1060,16 @@ end
 ---Uses currentValidUnits cache built at start of refresh cycle
 ---@param spellIDs SpellID
 ---@param playerOnly? boolean Only check the player, not the group
+---@param playerCastOnly? boolean Count only auras cast by the player (e.g. castOnOthers for the caster class)
 ---@return boolean hasBuff
 ---@return number? minRemaining
----@return table? targetEntry First non-player unit entry that has the buff (for castOnOthers tracking)
-local function HasPresenceBuff(spellIDs, playerOnly)
+---@return table? targetEntry First non-player unit entry that has the buff
+local function HasPresenceBuff(spellIDs, playerOnly, playerCastOnly)
     if playerOnly or #currentValidUnits <= 1 then
+        if playerCastOnly then
+            local hasBuff, remaining = UnitHasBuffFromPlayer("player", spellIDs)
+            return hasBuff, remaining, nil
+        end
         local hasBuff, remaining = UnitHasBuff("player", spellIDs)
         return hasBuff, remaining, nil
     end
@@ -974,7 +1081,12 @@ local function HasPresenceBuff(spellIDs, playerOnly)
     for _, data in ipairs(currentValidUnits) do
         -- Skip NPCs in content where they can't receive player buffs
         if data.isPlayer or includeNPCsInCounting then
-            local hasBuff, remaining = UnitHasBuff(data.unit, spellIDs)
+            local hasBuff, remaining, sourceUnit = UnitHasBuff(data.unit, spellIDs)
+            -- When restricted to player-cast auras, another player's cast may mask ours via
+            -- GetUnitAuraBySpellID. Fall back to a HELPFUL|PLAYER scan to find our own.
+            if playerCastOnly and hasBuff and not (sourceUnit and UnitIsUnit(sourceUnit, "player")) then
+                hasBuff, remaining = UnitHasBuffFromPlayer(data.unit, spellIDs)
+            end
             if hasBuff then
                 found = true
                 if not targetEntry and not UnitIsUnit(data.unit, "player") then
@@ -1063,8 +1175,9 @@ local function ShouldShowTargetedBuff(spellIDs, requiredClass, beneficiaryRole, 
         return nil
     end
 
-    -- Targeted buffs require a group (you cast them on others)
-    if GetNumGroupMembers() == 0 then
+    -- Targeted buffs require an ally to cast on. cachedIsAlone covers both
+    -- open-world solo (groupSize 0) and scenario solo (groupSize 1, player only).
+    if cachedIsAlone then
         return nil
     end
 
@@ -1465,8 +1578,8 @@ local function PassesPreChecks(buff, presentClasses, db)
 
     -- Class filtering
     if buff.class then
-        local trackingMode = db.buffTrackingMode
-        if trackingMode == "my_buffs" and buff.class ~= playerClass then
+        local trackingMode = GetEffectiveTrackingMode(db)
+        if ModeHidesOtherClasses(trackingMode) and buff.class ~= playerClass then
             return false
         end
         if presentClasses and not presentClasses[buff.class] then
@@ -1546,6 +1659,15 @@ local function GetCategoryGlowSettings(cat)
     local expiringGlow = BR.Config.GetCategorySetting(cat, "showExpirationGlow") ~= false
     local missingGlow = BR.Config.GetCategorySetting(cat, "showMissingGlow") ~= false
     local threshold = (BR.Config.GetCategorySetting(cat, "expirationThreshold") or 15) * 60
+    -- In M0 dungeons (before inserting a keystone), use pre-key threshold if higher
+    local defs = BR.profile and BR.profile.defaults
+    local preKey = defs and defs.preKeyThreshold or 0
+    if preKey > 0 and GetCurrentContentType() == "dungeon" and GetCurrentDifficultyKey() == "mythic" then
+        local preKeySec = preKey * 60
+        if preKeySec > threshold then
+            threshold = preKeySec
+        end
+    end
     return expiringGlow, missingGlow, threshold
 end
 
@@ -1644,10 +1766,10 @@ function BuffState.Refresh(refreshMode)
         currentWeaponEnchants.permanentOH = ohLink and tonumber(ohLink:match("item:%d+:(%d+)")) or nil
     end
 
-    local trackingMode = db.buffTrackingMode
+    local trackingMode = GetEffectiveTrackingMode(db)
     local missingCountOnly = db.showMissingCountOnly
     -- Aura API is restricted in combat/encounters (inCombat set by Display layer),
-    -- during M+ keystones, and in PvP instances (except during prep phase before gates open).
+    -- during M+ keystones, and in any PvP instance (battlegrounds and arenas, including prep).
     local isAuraRestricted = BuffState.IsRestricted()
     local hideExpiring = isAuraRestricted and db.hideExpiringInCombat ~= false
 
@@ -1666,7 +1788,8 @@ function BuffState.Refresh(refreshMode)
             and raidVisible
             and scope.show
         then
-            local missing, total, minRemaining = CountMissingBuff(buff.spellID, buff.key, scope.playerOnly)
+            local missing, total, minRemaining =
+                CountMissingBuff(buff.spellID, buff.key, scope.playerOnly, buff.playersOnly)
 
             if missing > 0 then
                 entry.visible = true
@@ -1818,7 +1941,11 @@ function BuffState.Refresh(refreshMode)
                             SetEntryText(entry, buff.overlayText, presMissGlow)
                         end
                     else
-                        local hasBuff, minRemaining, targetEntry = HasPresenceBuff(buff.spellID, scope.playerOnly)
+                        -- castOnOthers: only count our own cast for the caster class so we get
+                        -- the right target (and don't hide the icon because another caster covered it).
+                        local isOwnCaster = buff.castOnOthers and buff.class == playerClass
+                        local hasBuff, minRemaining, targetEntry =
+                            HasPresenceBuff(buff.spellID, scope.playerOnly, isOwnCaster)
                         -- customCheck gates display (e.g., soulstone CD tracking for warlocks)
                         local customOk = true
                         if not hasBuff and buff.customCheck then
@@ -1833,7 +1960,7 @@ function BuffState.Refresh(refreshMode)
                             TrySetEntryExpiring(entry, minRemaining, presThreshold, presExGlow)
                         end
                         -- Track who has castOnOthers buffs for sticky click-to-cast targeting
-                        if buff.castOnOthers and hasBuff and not inCombat then
+                        if isOwnCaster and hasBuff and not inCombat then
                             if targetEntry and targetEntry.name then
                                 local existing = lastTargets[buff.key]
                                 if existing then
@@ -1854,7 +1981,8 @@ function BuffState.Refresh(refreshMode)
     end
 
     -- Process targeted buffs (player's own buff responsibility)
-    local targetedVisible = IsCategoryVisibleForContent("targeted")
+    -- self_only mode tracks only buffs on the player; targeted buffs live on other units.
+    local targetedVisible = IsCategoryVisibleForContent("targeted") and trackingMode ~= "self_only"
     local targExGlow, targMissGlow, targThreshold = GetCategoryGlowSettings("targeted")
     for i, buff in ipairs(TargetedBuffs) do
         local entry = GetOrCreateEntry(buff.key, "targeted", i)
@@ -2041,7 +2169,7 @@ function BuffState.Refresh(refreshMode)
 
     -- Process custom buffs (user-defined, flows through ShouldShowSelfBuff like self/pet)
     if not groupOnly then
-        local customExGlow, customMissGlow, customThreshold = GetCategoryGlowSettings("custom")
+        local _, customMissGlow = GetCategoryGlowSettings("custom")
         local skipSpellKnown = SKIP_SPELL_KNOWN_CATEGORIES["custom"]
         for i, buff in ipairs(CustomBuffs) do
             local entry = GetOrCreateEntry(buff.key, "custom", i)
@@ -2074,6 +2202,18 @@ function BuffState.Refresh(refreshMode)
                 if gateItemID and not HasItemByMode(gateItemID, buff.requireItemMode) then
                     shouldProcess = false
                 end
+                if shouldProcess and gateItemID and buff.itemCooldownCondition then
+                    local ok, _, duration = pcall(C_Item.GetItemCooldown, gateItemID)
+                    if ok and duration then
+                        local isReady = duration == 0
+                        if
+                            (buff.itemCooldownCondition == "offCooldown" and not isReady)
+                            or (buff.itemCooldownCondition == "onCooldown" and isReady)
+                        then
+                            shouldProcess = false
+                        end
+                    end
+                end
             end
 
             if shouldProcess and useGlowFallback then
@@ -2102,15 +2242,16 @@ function BuffState.Refresh(refreshMode)
                 if show then
                     SetEntryText(entry, buff.overlayText, customMissGlow)
                 elseif
-                    not show
-                    and shouldShow ~= nil
+                    shouldShow == false
+                    and buff.expirationThreshold
+                    and buff.expirationThreshold > 0
                     and not buff.enchantID
                     and not hideExpiring
                     and (buff.buffIdOverride or buff.spellID)
                 then
-                    -- Buff is present (not missing), check if expiring
+                    -- Buff is present (not missing), check if expiring (per-buff threshold)
                     local _, remaining = UnitHasBuff("player", buff.buffIdOverride or buff.spellID)
-                    TrySetEntryExpiring(entry, remaining, customThreshold, customExGlow)
+                    TrySetEntryExpiring(entry, remaining, buff.expirationThreshold * 60, true)
                 end
             end
         end
@@ -2189,7 +2330,7 @@ end
 ---(grouped dungeons only, excluding M+ and follower dungeons)
 ---@return boolean
 function BuffState.ShouldTriggerDungeonEntry()
-    if GetNumGroupMembers() <= 1 then
+    if BuffState.IsAlone() then
         return false
     end
     if GetCurrentContentType() ~= "dungeon" then
@@ -2257,12 +2398,21 @@ function BuffState.SetPvPPrepPhase(state)
     inPvPPrepPhase = state
 end
 
----Whether the player is in a restricted context (combat, M+ keystone, or PvP match).
+---Whether the player is in a restricted context (combat, M+ keystone, or any PvP instance).
+---PvP instances are treated as restricted for their entire duration (prep included), since
+---Blizzard now gates the aura API the whole time the player is inside the BG/arena.
 ---@return boolean
 function BuffState.IsRestricted()
-    return inCombat
-        or GetCurrentDifficultyKey() == "mythicPlus"
-        or (GetCurrentContentType() == "pvp" and not inPvPPrepPhase)
+    return inCombat or GetCurrentDifficultyKey() == "mythicPlus" or GetCurrentContentType() == "pvp"
+end
+
+---Whether the player has no allies in the group (open-world solo or scenario solo).
+---Live check: covers both open-world solo (groupSize 0) and scenario solo such as
+---rituals (groupSize 1, player only). Internal hot paths in Refresh() should read
+---cachedIsAlone instead of calling this.
+---@return boolean
+function BuffState.IsAlone()
+    return GetNumGroupMembers() <= 1
 end
 
 -- ============================================================================
@@ -2355,6 +2505,204 @@ end
 ---Invalidate item ownership cache (call on BAG_UPDATE_DELAYED, PLAYER_EQUIPMENT_CHANGED)
 function BuffState.InvalidateItemCache()
     cachedItemOwnership = {}
+end
+
+---Check whether the player's current pet is not a Felguard (cached).
+---Returns false when there is no pet or the pet is a Felguard. If the compare
+---hits a secret value, the result is left uncached so later refreshes retry
+---(worst case: same cost as an uncached compare, but without the crash).
+---@return boolean
+function BuffState.IsWrongDemonPet()
+    if cachedWrongPetStatus ~= nil then
+        return cachedWrongPetStatus
+    end
+    if not UnitExists("pet") then
+        cachedWrongPetStatus = false
+        return false
+    end
+    local name, familyID = UnitCreatureFamily("pet")
+    if type(familyID) ~= "number" then
+        -- Pet data not resolved yet; don't cache so next Refresh retries.
+        return false
+    end
+    local ok, isWrong = pcall(function()
+        return familyID ~= 29 and name ~= "Felguard"
+    end)
+    if not ok then
+        return false
+    end
+    cachedWrongPetStatus = isWrong == true
+    return cachedWrongPetStatus
+end
+
+---Invalidate wrong-pet cache (call on UNIT_PET, PLAYER_ENTERING_WORLD,
+---PLAYER_SPECIALIZATION_CHANGED, TRAIT_CONFIG_UPDATED, SPELLS_CHANGED)
+function BuffState.InvalidatePetCache()
+    cachedWrongPetStatus = nil
+end
+
+---Resolve the active stance's spell ID, or nil if unstanced/unresolved.
+---@return number?
+local function GetActiveStanceSpellID()
+    local active = GetShapeshiftForm()
+    if not active or active == 0 then
+        return nil
+    end
+    local _, _, _, spellID = GetShapeshiftFormInfo(active)
+    return type(spellID) == "number" and spellID or nil
+end
+
+---Check whether a warrior's active stance does not match their spec's
+---expected stance(s) (cached). Returns true when the player is unstanced
+---or in a stance that doesn't fit the current spec.
+---@return boolean
+function BuffState.IsWrongWarriorStance()
+    if cachedWrongStanceStatus ~= nil then
+        return cachedWrongStanceStatus
+    end
+    if playerClass ~= "WARRIOR" then
+        cachedWrongStanceStatus = false
+        return false
+    end
+    local expected = WARRIOR_EXPECTED_STANCES[GetPlayerSpecId()]
+    if not expected then
+        cachedWrongStanceStatus = false
+        return false
+    end
+    local activeSpellID = GetActiveStanceSpellID()
+    if not activeSpellID then
+        -- Unstanced (form 0) is wrong; unresolved form data leaves cache nil to retry.
+        if GetShapeshiftForm() == 0 then
+            cachedWrongStanceStatus = true
+            return true
+        end
+        return false
+    end
+    cachedWrongStanceStatus = not expected[activeSpellID]
+    return cachedWrongStanceStatus
+end
+
+---Preferred stance spell ID for the current warrior spec (Defensive for Protection,
+---Berserker for Fury when talented, else Battle). Used for click-to-cast and the
+---fallback icon when unstanced. Returns nil for non-warriors. Cached.
+---@return number?
+function BuffState.GetExpectedWarriorStanceID()
+    if cachedExpectedStanceID ~= nil then
+        return cachedExpectedStanceID or nil
+    end
+    if playerClass ~= "WARRIOR" then
+        cachedExpectedStanceID = false
+        return nil
+    end
+    local specId = GetPlayerSpecId()
+    if specId == 73 then
+        cachedExpectedStanceID = STANCE_DEFENSIVE
+    elseif specId == 72 and IsPlayerSpell(STANCE_BERSERKER) then
+        cachedExpectedStanceID = STANCE_BERSERKER
+    else
+        cachedExpectedStanceID = STANCE_BATTLE
+    end
+    return cachedExpectedStanceID
+end
+
+---Texture for the warrior's currently active stance, or nil if unstanced. Cached.
+---@return number|string|nil
+function BuffState.GetCurrentWarriorStanceIcon()
+    if cachedCurrentStanceIcon ~= nil then
+        return cachedCurrentStanceIcon or nil
+    end
+    local activeSpellID = GetActiveStanceSpellID()
+    if not activeSpellID then
+        cachedCurrentStanceIcon = false
+        return nil
+    end
+    cachedCurrentStanceIcon = C_Spell.GetSpellTexture(activeSpellID) or false
+    return cachedCurrentStanceIcon or nil
+end
+
+---Whether the priest is currently in Shadowform (or Voidform, which lives in
+---the same stance bar slot). Cached. Reliable in restricted contexts because
+---the stance API is unaffected by combat/encounter/M+ aura restrictions.
+---@return boolean
+function BuffState.IsShadowFormActive()
+    if cachedShadowFormActive ~= nil then
+        return cachedShadowFormActive
+    end
+    if playerClass ~= "PRIEST" then
+        cachedShadowFormActive = false
+        return false
+    end
+    local activeSpellID = GetActiveStanceSpellID()
+    if not activeSpellID then
+        -- Form 0 = no shadowform (cache); non-zero with unresolved spell data
+        -- happens transiently on load — return safe default and retry next call.
+        if GetShapeshiftForm() == 0 then
+            cachedShadowFormActive = false
+            return false
+        end
+        return true
+    end
+    cachedShadowFormActive = activeSpellID == SHADOWFORM or activeSpellID == VOIDFORM
+    return cachedShadowFormActive
+end
+
+---Whether a Feral or Balance druid is in any form other than their spec's
+---expected form (Cat for Feral, Moonkin for Balance). Returns false for other
+---specs/classes. Cached.
+---@return boolean
+function BuffState.IsWrongDruidForm()
+    if cachedWrongDruidFormStatus ~= nil then
+        return cachedWrongDruidFormStatus
+    end
+    if playerClass ~= "DRUID" then
+        cachedWrongDruidFormStatus = false
+        return false
+    end
+    local expected = DRUID_EXPECTED_FORMS[GetPlayerSpecId()]
+    if not expected then
+        cachedWrongDruidFormStatus = false
+        return false
+    end
+    local activeSpellID = GetActiveStanceSpellID()
+    if not activeSpellID then
+        -- Unshifted (form 0) is wrong; non-zero with unresolved spell data is
+        -- a transient load state — return safe default and retry next call.
+        if GetShapeshiftForm() == 0 then
+            cachedWrongDruidFormStatus = true
+            return true
+        end
+        return false
+    end
+    cachedWrongDruidFormStatus = activeSpellID ~= expected
+    return cachedWrongDruidFormStatus
+end
+
+---Expected form spell ID for the current druid spec (Cat Form for Feral,
+---Moonkin Form for Balance). Returns nil for non-druids and other specs. Cached.
+---@return number?
+function BuffState.GetExpectedDruidFormID()
+    if cachedExpectedDruidFormID ~= nil then
+        return cachedExpectedDruidFormID or nil
+    end
+    if playerClass ~= "DRUID" then
+        cachedExpectedDruidFormID = false
+        return nil
+    end
+    cachedExpectedDruidFormID = DRUID_EXPECTED_FORMS[GetPlayerSpecId()] or false
+    return cachedExpectedDruidFormID or nil
+end
+
+---Invalidate all stance caches (warrior wrong-stance + priest shadowform +
+---druid wrong-form). Call on UPDATE_SHAPESHIFT_FORM, UPDATE_SHAPESHIFT_FORMS,
+---PLAYER_SPECIALIZATION_CHANGED, TRAIT_CONFIG_UPDATED, SPELLS_CHANGED,
+---PLAYER_ENTERING_WORLD.
+function BuffState.InvalidateStanceCache()
+    cachedWrongStanceStatus = nil
+    cachedExpectedStanceID = nil
+    cachedCurrentStanceIcon = nil
+    cachedShadowFormActive = nil
+    cachedWrongDruidFormStatus = nil
+    cachedExpectedDruidFormID = nil
 end
 
 -- ============================================================================

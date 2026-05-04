@@ -219,7 +219,6 @@ if C_CurveUtil then
 end
 
 local currentInterrupt = {}
-local interruptGcdRequired = false
 local currentExecute = 0
 local isSootheAvailable = false
 do
@@ -231,19 +230,9 @@ do
   frame:RegisterEvent("SPELLS_CHANGED")
   frame:SetScript("OnEvent", function()
     currentInterrupt = {}
-    interruptGcdRequired = false
     for _, s in ipairs(interruptSpells) do
       if C_SpellBook.IsSpellKnownOrInSpellBook(s) or C_SpellBook.IsSpellKnownOrInSpellBook(s, Enum.SpellBookSpellBank.Pet) then
         table.insert(currentInterrupt, s)
-      end
-    end
-
-    if class == "WARLOCK" then
-      if C_SpellBook.IsSpellKnownOrInSpellBook(132409) then
-        table.insert(currentInterrupt, 132409)
-      elseif C_SpellBook.IsSpellKnownOrInSpellBook(1276467) then
-        interruptGcdRequired = true
-        table.insert(currentInterrupt, 1276467)
       end
     end
 
@@ -271,11 +260,11 @@ do
 end
 
 function addonTable.Display.Utilities.GetInterruptSpells()
-  return currentInterrupt, interruptGcdRequired
+  return currentInterrupt
 end
 
 function addonTable.Display.Utilities.GetInterruptSpellPriority()
-  return currentInterrupt[1], interruptGcdRequired
+  return currentInterrupt[1]
 end
 
 function addonTable.Display.Utilities.GetExecuteRange()
@@ -489,7 +478,6 @@ do
 
   do
     local specializationMonitor = CreateFrame("Frame")
-    specializationMonitor:RegisterEvent("PLAYER_LOGIN")
 
     if addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath then
       if playerClass == "WARRIOR" or playerClass == "DRUID" then
@@ -500,6 +488,7 @@ do
     elseif C_EventUtils.IsEventValid("PLAYER_SPECIALIZATION_CHANGED") then
       specializationMonitor:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     end
+    specializationMonitor:RegisterEvent("PLAYER_ENTERING_WORLD")
 
     specializationMonitor:SetScript("OnEvent", function()
       local newRole = GetPlayerRole()
@@ -513,5 +502,157 @@ do
 
   function addonTable.Display.Utilities.IsTankRole()
     return isTank
+  end
+end
+
+do
+  local inRelevantInstance = false
+
+  -- Checking for party members below the player's level which indicates the mobs will be shifted down one
+  -- Except when the dungeon is already at its minimum level, in which case the level won't shift.
+  local instanceTracker = CreateFrame("Frame")
+  instanceTracker:RegisterEvent("PLAYER_ENTERING_WORLD")
+  instanceTracker:RegisterEvent("PLAYER_LEVEL_UP")
+  instanceTracker:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+  instanceTracker:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED")
+  instanceTracker:SetScript("OnEvent", function(_, event)
+    inRelevantInstance = addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true, raid = true, delve = true, pvp = true})
+    local _, _, _, _, _, _, _, _, _, lfgDungeonID = GetInstanceInfo()
+    if PLATYNATOR_LAST_INSTANCE == nil
+      or (inRelevantInstance or inRelevantInstance) ~= PLATYNATOR_LAST_INSTANCE.inInstance
+      or PLATYNATOR_LAST_INSTANCE.lastLFGInstanceID ~= lfgDungeonID
+      or not inRelevantInstance then
+      PLATYNATOR_LAST_INSTANCE = {
+        lastLFGInstanceID = lfgDungeonID,
+        inInstance = inRelevantInstance,
+        instanceLieutenantLevel = nil,
+      }
+      if lfgDungeonID and addonTable.Display.Utilities.IsInRelevantInstance({dungeon = true}) then
+        PLATYNATOR_LAST_INSTANCE.level = GetMaxLevelForExpansionLevel(GetMaximumExpansionLevel())
+      else
+        PLATYNATOR_LAST_INSTANCE.level = UnitEffectiveLevel("player")
+      end
+    end
+  end)
+
+  function addonTable.Display.Utilities.GetEliteType(unit, casterOverride)
+    local classification = UnitClassification(unit)
+    if classification == "elite" then
+      local level = UnitEffectiveLevel(unit)
+      local dungeonLevel = PLATYNATOR_LAST_INSTANCE.level
+      local isRetail = addonTable.Constants.IsRetail
+      local lieutentantLevel = PLATYNATOR_LAST_INSTANCE.instanceLieutenantLevel
+      if isRetail and (level == dungeonLevel + 1 or UnitIsLieutenant(unit)) then
+        PLATYNATOR_LAST_INSTANCE.instanceLieutenantLevel = level
+        return "miniboss"
+      elseif isRetail and (level == dungeonLevel + 2 or lieutentantLevel and level == lieutentantLevel + 1) or level == -1 then
+        return "boss"
+      else
+        local class = UnitClassBase(unit)
+        if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
+          return "caster"
+        else
+          return "melee"
+        end
+      end
+    elseif classification == "normal" or classification == "trivial" or classification == "minus" then
+      if casterOverride then
+        local class = UnitClassBase(unit)
+        if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
+          return "caster"
+        end
+      end
+      return "trivial"
+    end
+  end
+
+  function addonTable.Display.Utilities.GetDelveType(unit)
+    local classification = UnitClassification(unit)
+    if classification == "elite" then
+      local level = UnitEffectiveLevel(unit)
+      local dungeonLevel = PLATYNATOR_LAST_INSTANCE.level
+      local isRetail = addonTable.Constants.IsRetail
+      local lieutentantLevel = PLATYNATOR_LAST_INSTANCE.instanceLieutenantLevel
+      if isRetail and UnitIsLieutenant(unit) then
+        PLATYNATOR_LAST_INSTANCE.instanceLieutenantLevel = level
+        return "elite"
+      elseif isRetail and (level == dungeonLevel + 2 or lieutentantLevel and level == lieutentantLevel + 1) or level == -1 then
+        return "boss"
+      else
+        return "elite"
+      end
+    elseif classification == "rareelite" then
+      return "rare"
+    elseif classification == "normal" then
+      local class = UnitClassBase(unit)
+      if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
+        return "caster"
+      else
+        return "melee"
+      end
+    elseif classification == "trivial" or classification == "minus" then
+      return "trivial"
+    end
+  end
+end
+
+do
+  local groupTracker = CreateFrame("Frame")
+  groupTracker:RegisterEvent("PLAYER_ENTERING_WORLD")
+  groupTracker:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED")
+  groupTracker:RegisterEvent("GROUP_ROSTER_UPDATE")
+  groupTracker:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+  groupTracker:RegisterEvent("UNIT_PET")
+
+  local knownTanksAndPetsMap = {}
+  local knownTanksAndPetsList = {}
+
+  groupTracker:SetScript("OnEvent", function(_, event, unit)
+    local inRaid = IsInRaid()
+    if event == "PLAYER_SPECIALIZATION_CHANGED" then
+      if inRaid and unit:match("^raid") or not inRaid and unit:match("^party") then
+        local role = UnitGroupRolesAssigned(unit)
+        knownTanksAndPetsMap[unit] = role == "TANK" or nil
+      end
+    elseif event == "UNIT_PET" then
+      local petUnit
+      if inRaid and unit:match("^raid") then
+        petUnit = "raidpet" .. unit:gsub("raid", "")
+      elseif not inRaid and unit:match("^party") then
+        petUnit = "partypet" .. unit:gsub("party", "")
+      elseif not inRaid and unit == "player" then
+        petUnit = "pet"
+      end
+      if petUnit then
+        knownTanksAndPetsMap[petUnit] = UnitExists(petUnit) or nil
+      end
+    elseif inRaid then
+      knownTanksAndPetsMap = {}
+      for i = 1, 40 do
+        local playerUnit = "raid" .. i
+        if not UnitIsUnit(playerUnit, "player") then
+          local role = UnitGroupRolesAssigned(playerUnit)
+          knownTanksAndPetsMap[playerUnit] = role == "TANK" or nil
+          local petUnit = "raidpet" .. i
+          knownTanksAndPetsMap[petUnit] = UnitExists(petUnit) or nil
+        end
+      end
+    else
+      knownTanksAndPetsMap = {}
+      for i = 1, 4 do
+        local playerUnit = "party" .. i
+        local role = UnitGroupRolesAssigned(playerUnit)
+        knownTanksAndPetsMap[playerUnit] = role == "TANK" or nil
+        local petUnit = "partypet" .. i
+        knownTanksAndPetsMap[petUnit] = UnitExists(petUnit) or nil
+      end
+      knownTanksAndPetsMap["pet"] = UnitExists("pet") or nil
+    end
+
+    knownTanksAndPetsList = GetKeysArray(knownTanksAndPetsMap)
+  end)
+
+  function addonTable.Display.Utilities.GetOtherTanks()
+    return knownTanksAndPetsList
   end
 end

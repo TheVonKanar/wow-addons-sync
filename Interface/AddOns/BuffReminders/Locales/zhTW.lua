@@ -50,6 +50,7 @@ L["Overlay.NoES"] = "沒有\n大地盾"
 L["Overlay.NoSource"] = "沒有\n魔源"
 L["Overlay.NoScales"] = "沒有\n鱗片"
 L["Overlay.NoLink"] = "沒有\n共生"
+L["Overlay.NoTimeless"] = "沒有\n永恆"
 L["Overlay.NoAttune"] = "沒有\n同調"
 L["Overlay.NoFamiliar"] = "沒有\n魔寵"
 L["Overlay.DropWell"] = "置放\n靈魂井"
@@ -68,6 +69,8 @@ L["Overlay.NoPet"] = "沒有\n寵物"
 L["Overlay.PassivePet"] = "寵物\n被動"
 L["Overlay.WrongPet"] = "寵物\n錯誤"
 L["Overlay.NoRune"] = "沒有\n符文"
+L["Overlay.WrongStance"] = "錯誤\n姿態"
+L["Overlay.WrongForm"] = "錯誤\n形態"
 L["Overlay.DKWrongRune"] = "符文\n錯誤"
 L["Overlay.DKWrongRuneOH"] = "副手\n符文\n錯誤"
 L["Overlay.NoFlask"] = "沒有\n精鍊"
@@ -134,10 +137,12 @@ L["Buff.BlisteringScales"] = "極熾鱗片"
 L["Buff.EarthShield"] = "大地之盾"
 L["Buff.SourceOfMagic"] = "魔力之源"
 L["Buff.SymbioticRelationship"] = "共生關係"
+L["Buff.Timelessness"] = "永恆不朽"
 -- Self
 L["Buff.ArcaneFamiliar"] = "秘法魔寵"
 L["Buff.Attunement"] = "黑曜同調"
 L["Buff.CreateSoulwell"] = "製造靈魂之井"
+L["Buff.DruidForm"] = "德魯伊形態"
 L["Buff.GrimoireOfSacrifice"] = "犧牲魔典"
 L["Buff.BurningRush"] = "燃燒狂奔"
 L["Buff.RiteOfAdjuration"] = "裁決儀式"
@@ -160,6 +165,7 @@ L["Buff.UnholyGhoul"] = "穢邪食屍鬼"
 L["Buff.WarlockDemon"] = "術士惡魔"
 L["Buff.WaterElemental"] = "水元素"
 L["Buff.WrongDemon"] = "錯誤惡魔"
+L["Buff.WarriorStance"] = "戰士姿態"
 -- Consumable
 L["Buff.AugmentRune"] = "增強符文"
 L["Buff.Flask"] = "精鍊"
@@ -244,6 +250,8 @@ L["Display.DismissConsumables"] = "在下一次載入畫面前隱藏消耗品提
 L["Display.DismissConsumablesChat"] = "在下一次載入畫面前消耗品提示將隱藏。"
 L["Display.LoginFirstInstall"] =
     "感謝安裝！輸入 |cFFFFD100/br unlock|r 來移動增益顯示，或者使用 |cFFFFD100/br|r 選項面板底部的按鈕。"
+L["Display.LoginSelfOnlyOutside"] =
+    "新的預設：在開放世界中，只會追蹤您自己的職業增益。在「設定」標籤中切換|cFFFFD100強制在地下城與團隊副本之外只有自己|r來變更設定。"
 
 -- ============================================================================
 -- OPTIONS: TAB LABELS
@@ -274,6 +282,13 @@ L["Options.GlobalDefaults"] = "全局預設值"
 L["Options.GlobalDefaults.Note"] = "（套用於所有類別，除非被自定義外觀覆蓋）"
 L["Options.Default"] = "預設"
 L["Options.Font"] = "字體"
+L["Options.TextOutline"] = "外框樣式"
+L["Options.TextOutline.None"] = "無"
+L["Options.TextOutline.Outline"] = "外框"
+L["Options.TextOutline.Thick"] = "粗外框"
+L["Options.TextOutline.Monochrome"] = "單色"
+L["Options.TextOutline.OutlineMono"] = "外框 + 單色"
+L["Options.TextOutline.ThickMono"] = "粗外框 + 單色"
 
 -- ============================================================================
 -- OPTIONS: GLOW SETTINGS
@@ -296,6 +311,9 @@ L["Options.UseCustomColor"] = "使用自定義顏色"
 L["Options.UseCustomColor.Desc"] =
     "啟用後會降低觸發發光的飽和度並更改顏色。\n可能看起來不如預設觸發發光清晰。"
 L["Options.ExpirationReminder"] = "過期提示"
+L["Options.PreKeyThreshold"] = "鑰石前閾值"
+L["Options.PreKeyThreshold.Desc"] =
+    "當進入傳奇地下城(M0)於插入鑰石之前，使用較長的過期閾值。\n有助於確保在鑰石插入之前您的增益效果是新鮮的。"
 
 -- Glow params
 L["Options.Glow.Type"] = "類型:"
@@ -394,12 +412,16 @@ L["Options.ChatRequests"] = "聊天請求"
 L["Options.RequestBuffInChat"] = "在聊天中請求缺失的增益"
 L["Options.RequestBuffInChat.Desc"] =
     "點擊您的職業無法提供的缺失增益，並在聊天中請求它。自動偵測頻道（副本/團隊/隊伍/說）。每個增益有30秒冷卻時間。"
+L["Options.CustomizeChatMessages"] = "自訂訊息"
+L["Options.ChatRequestModal.Title"] = "聊天請求訊息"
+L["Options.ChatRequestModal.Desc"] = "自訂每個增益的訊息傳送。保持空白以使用預設值。"
+L["Options.ChatRequestModal.ResetAll"] = "重置全部"
 -- Chat request messages (keyed by buff.key, sent as-is via SendChatMessage)
 -- EU/US translators: leave untranslated so chat messages stay in L.
 -- Asian translators: translate these so chat messages match your locale.
 L["ChatRequest.intellect"] = "請補上祕法智力的增益"
 L["ChatRequest.attackPower"] = "請補上戰鬥怒吼的增益"
-L["ChatRequest.bronze"] = "請補上青銅龍的祝福的增益"
+L["ChatRequest.bronze"] = "請補上青銅龍的祝福增益"
 L["ChatRequest.versatility"] = "請補上野性印記的增益"
 L["ChatRequest.stamina"] = "請補上真言術：韌的增益"
 L["ChatRequest.skyfury"] = "請補上天怒增益"
@@ -444,6 +466,10 @@ L["Options.PetLabels.SizePct"] = "尺寸占比 %"
 L["Options.ConsumableTextScale"] = "文字縮放"
 L["Options.ConsumableTextScale.Title"] = "消耗品文字大小"
 L["Options.ConsumableTextScale.Desc"] = "物品數量和品質標簽相對於圖示大小的字體縮放比例。"
+L["Options.HideConsumableLabels"] = "隱藏屬性標籤"
+L["Options.HideConsumableLabels.Title"] = "隱藏消耗品屬性標籤"
+L["Options.HideConsumableLabels.Desc"] =
+    '隱藏顯示在消耗品圖示左上的小屬性標籤 (例如 "高主屬"、"低次屬")。'
 L["Options.ItemDisplay"] = "物品顯示"
 L["Options.ItemDisplay.IconOnly"] = "僅圖示"
 L["Options.ItemDisplay.IconOnlyDesc"] = "顯示數量最多的物品"
@@ -469,6 +495,10 @@ L["Options.ShowWithoutItemsReadyCheckOnly.Desc"] =
     "當啟用後，不在您背包中的消耗品僅在準備確認時顯示。對於在拉怪前快速提醒補充庫存很有用。"
 L["Options.DelveFoodOnly"] = "在探究中僅顯示探究食物"
 L["Options.DelveFoodOnly.Desc"] = "在探究中隱藏除探究食物外的所有消耗品提示。"
+L["Options.HideLegacyConsumables"] = "隱藏舊版消耗品"
+L["Options.HideLegacyConsumables.Title"] = "隱藏舊版消耗品"
+L["Options.HideLegacyConsumables.Desc"] =
+    "啟用後，先前資料片中的食物、精煉和符文將從動作按鈕中過濾掉。如果您仍然使用舊版消耗品進行時光漫遊、農舊團隊副本或裝備不足的替代品，請停用。"
 
 -- ============================================================================
 -- OPTIONS: DK RUNEFORGE PREFERENCES
@@ -480,6 +510,18 @@ L["Options.RuneMainHand"] = "主手"
 L["Options.RuneOffHand"] = "副手"
 L["Options.RuneTwoHanded"] = "雙手"
 L["Options.RuneDualWield"] = "雙持"
+
+-- ============================================================================
+-- OPTIONS: ROGUE POISON PREFERENCES
+-- ============================================================================
+L["Options.RoguePoisonPreferences"] = "盜賊毒藥偏好"
+L["Options.RoguePoisonNote"] =
+    "選擇要應用的毒藥及其優先順序（頂部=最高）。停用的毒藥永遠不會被施放，也不會觸發提醒。"
+L["Options.PoisonLethal"] = "致命"
+L["Options.PoisonNonLethal"] = "非致命"
+L["Options.PoisonMoveUp"] = "優先級上升"
+L["Options.PoisonMoveDown"] = "優先級下降"
+L["Options.PoisonReset"] = "重置回預設"
 
 -- ============================================================================
 -- OPTIONS: BUFF SETTINGS GEAR ICONS
@@ -565,15 +607,21 @@ L["Options.BuffTracking.All.Desc"] =
 L["Options.BuffTracking.MyBuffs"] = "僅我的增益，所有玩家"
 L["Options.BuffTracking.MyBuffs.Desc"] =
     "僅顯示你的職業能提供的增益，但會追蹤整個隊伍的套用情況。"
-L["Options.BuffTracking.OnlyMine"] = "僅我需要的增益"
+L["Options.BuffTracking.OnlyMine"] = "所有增益，僅我需要的"
 L["Options.BuffTracking.OnlyMine.Desc"] =
-    "顯示所有類型的增益，但僅檢查自身是否套用。不顯示隊伍數量。"
+    "顯示所有類型的增益，但僅檢查自身是否擁有。不顯示團體數量統計。"
+L["Options.BuffTracking.SelfOnly"] = "只有我的增益，僅我需要的"
+L["Options.BuffTracking.SelfOnly.Desc"] =
+    "只顯示你的職業可以提供的增益，並且僅檢查自身是否擁有。沒有團體數量統計，也沒有你對其他人施加的增益。"
 L["Options.BuffTracking.Smart"] = "智能"
 L["Options.BuffTracking.Smart.Desc"] =
     "對你的職業提供的增益追蹤整個隊伍，對其他職業的增益僅檢查自身。"
 L["Options.BuffTracking.Mode"] = "增益追蹤模式"
 L["Options.BuffTracking.Mode.Desc"] =
     "設置要顯示的團隊和職業增益，以及是追蹤整個隊伍還是僅追蹤自身。"
+L["Options.BuffTracking.SelfOnlyOutsideInstances"] = "強制在地下城與團隊副本之外只有自己"
+L["Options.BuffTracking.SelfOnlyOutsideInstances.Desc"] =
+    "當啟用以後，在開放世界中，只會追蹤您自己的職業增益。選定的追蹤模式仍然在地下城、團隊副本、場景和 PvP中使用。"
 
 -- ============================================================================
 -- OPTIONS: PROFILES TAB
@@ -643,8 +691,9 @@ L["CustomBuff.Name"] = "名稱:"
 L["CustomBuff.Text"] = "文字:"
 L["CustomBuff.LineBreakHint"] = "（使用 \\n 換行）"
 L["CustomBuff.Appearance"] = "外觀"
-L["CustomBuff.Conditions"] = "條件"
-L["CustomBuff.ShowIn"] = "顯示位置"
+L["CustomBuff.BuffTracking"] = "增益追蹤"
+L["CustomBuff.Requirements"] = "請求"
+L["CustomBuff.ShowIn"] = "顯示在"
 L["CustomBuff.ClickAction"] = "點擊動作"
 L["CustomBuff.SettingsMovedNote"] = "顯示條件和準備確認設置已移至每個增益的編輯選單中。"
 
@@ -677,6 +726,10 @@ L["CustomBuff.RequireItem.EquippedBags"] = "已裝備/背包中"
 L["CustomBuff.RequireItem.Equipped"] = "已裝備"
 L["CustomBuff.RequireItem.InBags"] = "背包中"
 L["CustomBuff.RequireItem.Hint"] = "物品ID — 缺失時隱藏"
+L["CustomBuff.ItemCooldown"] = "冷卻:"
+L["CustomBuff.ItemCooldown.Any"] = "任何"
+L["CustomBuff.ItemCooldown.OffCooldown"] = "關閉冷卻"
+L["CustomBuff.ItemCooldown.OnCooldown"] = "開啟冷卻"
 
 -- Bar glow options
 L["CustomBuff.BarGlow.WhenGlowing"] = "發光時檢測"

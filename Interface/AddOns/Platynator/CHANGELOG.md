@@ -1,8 +1,8 @@
 # Platynator
 
-## [367](https://github.com/TheMouseNest/Platynator/tree/367) (2026-04-12)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/366...367) 
+## [376](https://github.com/TheMouseNest/Platynator/tree/376) (2026-05-02)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/375...376) 
 
-- Prevent alpha creation on opening and closing color picker if not existing  
-- Prevent aura widgets going smaller than 25%  
-- Include another cvar in auto-set cvars list nameplatePlayerMaxDistance  
+- Designer: Add Middle Click shortcut to hide widgets temporarily  
+- Fix secret error in some scenarios when showing "Texts: Energy"  
+- Designer: Fix distorted markers in dropdown  

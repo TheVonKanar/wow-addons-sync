@@ -6,36 +6,36 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "8.3.2 (4.141)",
+["_OPieVersion"] = "8.3.3 (4.141)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
-["_GameVersion"] = "12.0.1",
+["_GameVersion"] = "12.0.5",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
 ["SliceBinding"] = true,
+["MotionAction"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 },
-["MotionAction"] = true,
 ["InteractionMode"] = 2,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
-["RingScale"] = 1.200000047683716,
-["ShowCooldowns"] = true,
+["InteractionMode"] = 2,
 ["Bindings"] = {
 ["Usables"] = false,
 ["Crafting"] = "CTRL-K",
 ["Utility"] = "6",
 },
+["ShowCooldowns"] = true,
+["RingScale"] = 1.200000047683716,
 ["RingOptions"] = {
 ["Utility#SliceBindingString"] = "6 7 8 9 0",
 },
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 },
 },
 ["PersistentStorage"] = {
@@ -46,10 +46,10 @@ OPie_SavedData = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["SpecMenu"] = true,
-["CommonTrades"] = true,
 ["OPieAutoQuest"] = true,
+["CommonTrades"] = true,
 ["WorldMarkers"] = true,
+["SpecMenu"] = true,
 ["PaladinTools"] = true,
 },
 ["Crafting"] = {

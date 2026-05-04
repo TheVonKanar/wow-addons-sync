@@ -79,6 +79,7 @@ Config.DEFAULT_FRAMES = {
     { frame = "BuffBarCooldownViewer", label = L["CDManager Bars"], enabled = true },
     { frame = "BuffFrame", label = L["Buff Frame"], enabled = false },
     { frame = "DebuffFrame", label = L["Debuff Frame"], enabled = false },
+    { frame = "PersonalResourceDisplayFrame", label = L["Personal Resource"], enabled = true },
     -- other
     { frame = "DamageMeter", label = L["Damage Meter"], enabled = true },
     { frame = "MinimapCluster", label = L["Minimap"], enabled = false , description = L["descr_Minimap"]},
@@ -268,6 +269,7 @@ Config.CONDITION_DEFINITIONS = {
         events = {
             "UNIT_ENTERED_VEHICLE",
             "UNIT_EXITED_VEHICLE",
+            "UPDATE_OVERRIDE_ACTIONBAR"
         },
     },
 
@@ -779,12 +781,6 @@ local OPTIONS_TAB_CONDITIONS = {
             fontSize = "medium",
             order = 5,
         },
-        -- descrPrioConditions = {
-        --     type = "description",
-        --     name = "|n"..L["descr_prioConditions"].."|n|n",
-        --     fontSize = "medium",
-        --     order = 6,
-        -- },
         group_conditionSelect = {
             name = L["group_conditions"],
             type = "group",
@@ -862,7 +858,7 @@ local EXTRA_CONDITION_ELEMENTS = {
             desc = L["descr_health"],
             type = "select",
             width = 0.8,
-            values = function() return {L["dropdownOption_health1"], L["dropdownOption_health2"]} end,
+            values = function() return {L["dropdownOption_health1"], L["dropdownOption_health2"], L["dropdownOption_health3"], L["dropdownOption_health4"]} end,
             get = function() return Private.db.profile[selectedGroup].conditions.health.style end,
             set = function(_, value) Private.db.profile[selectedGroup].conditions.health.style = value end,
             order = 10,
@@ -982,7 +978,7 @@ end
 local function SetupFrameSelection()
     local path = OPTIONS_MENU.args.setup.args.tabFrames.args.group_defaultFrames.args
 
-    local spacerLocation = {PlayerCastingBarFrame = true, PetActionBar = true, DebuffFrame = true}
+    local spacerLocation = {PlayerCastingBarFrame = true, PetActionBar = true, PersonalResourceDisplayFrame = true}
     local order = 1
     local spacerCount = 1
 

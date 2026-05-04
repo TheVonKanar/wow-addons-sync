@@ -3,8 +3,8 @@ KeyMaster_DB = {
 ["addonConfig"] = {
 ["showRatingFloat"] = false,
 ["interfaceFramePos"] = {
-["yOfs"] = -97.00038146972656,
-["xOfs"] = 397.0003051757813,
+["yOfs"] = -124.0003662109375,
+["xOfs"] = 835.0000610351562,
 ["relativePoint"] = "TOPLEFT",
 },
 ["version"] = "1.5.4-release",
@@ -13,57 +13,54 @@ KeyMaster_DB = {
 ["minimapPos"] = 206,
 ["hide"] = true,
 },
+["splashViewed"] = true,
 ["characterFilters"] = {
 ["serverFilter"] = false,
 ["filterMaxLvl"] = true,
 ["filterNoKey"] = false,
 ["filterNoRating"] = false,
 },
-["splashViewed"] = true,
 ["showDebugging"] = false,
 },
 }
 KeyMaster_C_DB = {
 ["Player-1122-019F1238"] = {
-["season"] = 17,
-["timestamp"] = 1774792296,
+["data"] = "m?NÃ0Æe©üCV@İZ‘TH0REAH”Ğ2ó?5–;ØqQÖ 7€#ôb¶Gà€èæí½ß÷\rï÷ÈûèrEwÌ¡BÕ÷<ßïŸxç¡çÏ–3”\"6B?ww{Ëuy3Gœ“u@	áB6tÂrÌ’J&f¿±j&)î0%ñ5Î‘“ÎQÏvˆİíff·ˆİ&v‡|ï9àç¡«é‚Çøæj~¹`b+#š­~f Ú[_êÄ0N'UJ!GĞ¸jÉ=*İXÅŞàt0	È±¾5¬PòÑÈù$^aõ§ûº^#JèJ¥x(öóªÌX:æFÿÿ*V<WSN!ñó",
+["keyLevel"] = 0,
 ["keyId"] = 0,
 ["class"] = 4,
-["data"] = "m?NÃ0Æe©üCV@İZ‘TH0REAH”Ğ2ó?5–;ØqQÖ 7€#ôb¶Gà€èæí½ß÷\rï÷ÈûèrEwÌ¡BÕ÷<ßïŸxç¡çÏ–3”\"6B?ww{Ëuy3Gœ“u@	áB6tÂrÌ’J&f¿±j&)î0%ñ5Î‘“ÎQÏvˆİíff·ˆİ&v‡|ï9àç¡«é‚Çøæj~¹`b+#š­~f Ú[_êÄ0N'UJ!GĞ¸jÉ=*İXÅŞàt0	È±¾5¬PòÑÈù$^aõ§ûº^#JèJ¥x(öóªÌX:æFÿÿ*V<WSN!ñó",
-["level"] = 80,
+["season"] = 17,
+["rating"] = 0,
 ["vault"] = {
 },
-["expire"] = 1776841200,
+["name"] = "Quiproquo",
 ["teams"] = {
 },
 ["client"] = true,
-["name"] = "Quiproquo",
-["rating"] = 0,
-["keyLevel"] = 0,
+["expire"] = 1777446000,
+["timestamp"] = 1774792296,
+["level"] = 80,
 ["realm"] = "Uldaman",
 },
 ["Player-1390-09230B89"] = {
-["keyLevel"] = 15,
-["level"] = 90,
-["keyId"] = 161,
-["class"] = 7,
 ["season"] = 17,
-["timestamp"] = 1774456313,
+["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸M„KmSRjq‰YjQbNˆLÖ%±$Ñ­)(’™›š‘”X’™—îáP!xRe’§*PYP$?/85yKTOjYj4‹²Ú–-¢Xİ.°e\\`÷p(]oæ;9åæœâ_ø€Ò.é\nçÃ@päGKòNé+J@édé0f³Gb€Ò_”Ğ\r_»\nV_àøâ4ü	HÚE!]éü>^àI¸À){$­‚l¸:T·H,ĞpI´8Bº\\‰.p¨$^à”L*ÍË,ñLI*ç¤äŒÄ\"°·NJ*ÍÌI	©,H-*JÍIM,N=	K-*N¡©‰S^bnj“wY~IFjjŞ¥üò¼ÔïÔJ°	²‹`\\ÏÉ¦ŒÄbÇ””ü¼„ÜÊ’ŒÌä€œÒbHĞOÙT”š˜“äQ™•˜ø",
+["keyId"] = 402,
+["class"] = 7,
+["keyLevel"] = 14,
+["rating"] = 3017,
 ["vault"] = {
-14,
 13,
 13,
-13,
-12,
-12,
+10,
 },
-["expire"] = 1776841200,
-["name"] = "Kvotheen",
-["client"] = true,
 ["teams"] = {
 },
-["rating"] = 3011,
-["data"] = "c<æäêéR “X™Z¤khli k`idlàda¹É¥4/=5?/¨4¯¸M„KmSRjq‰YjQbN#LÒ%±$Ñ­)(’™›š‘”X’™—’.²òó‚S“ƒ|RËRsY”Õ.°0^`u»À–qñãNÆ/|X¯(aS‰Mğ	6Á#ØU$±&•æe–x¦$€½?)9#±ìÖ­“’J3sRB*R‹ŠRsR‹SEÂR‹Š¾\n2Ô3Õ3qÊKÌMmò.Ë/ÉHMÍ»”_—šâZ	6A~Œë™\"ÂÕ”‘Xì˜’’Ÿ—P [Y’‘™SZ	+“=AE©‰9¹A•Y‰9€",
+["name"] = "Kvotheen",
+["client"] = true,
+["expire"] = 1777446000,
+["level"] = 90,
+["timestamp"] = 1774456313,
 ["realm"] = "Hyjal",
 },
 }

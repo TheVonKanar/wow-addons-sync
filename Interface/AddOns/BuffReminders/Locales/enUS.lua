@@ -14,6 +14,7 @@ local english = {}
 local L = setmetatable({}, {
     __index = english,
 })
+---@type table<string, string>
 BR.L = L
 
 -- ============================================================================
@@ -59,6 +60,7 @@ english["Overlay.NoES"] = "NO\nES"
 english["Overlay.NoSource"] = "NO\nSOURCE"
 english["Overlay.NoScales"] = "NO\nSCALES"
 english["Overlay.NoLink"] = "NO\nLINK"
+english["Overlay.NoTimeless"] = "NO\nTIMELESS"
 english["Overlay.NoAttune"] = "NO\nATTUNE"
 english["Overlay.NoFamiliar"] = "NO\nFAMILIAR"
 english["Overlay.DropWell"] = "DROP\nWELL"
@@ -76,6 +78,8 @@ english["Overlay.NoShield"] = "NO\nSHIELD"
 english["Overlay.NoPet"] = "NO\nPET"
 english["Overlay.PassivePet"] = "PASSIVE\nPET"
 english["Overlay.WrongPet"] = "WRONG\nPET"
+english["Overlay.WrongStance"] = "WRONG\nSTANCE"
+english["Overlay.WrongForm"] = "WRONG\nFORM"
 english["Overlay.NoRune"] = "NO\nRUNE"
 english["Overlay.DKWrongRune"] = "WRONG\nRUNE"
 english["Overlay.DKWrongRuneOH"] = "WRONG\nOH\nRUNE"
@@ -143,10 +147,12 @@ english["Buff.BlisteringScales"] = "Blistering Scales"
 english["Buff.EarthShield"] = "Earth Shield"
 english["Buff.SourceOfMagic"] = "Source of Magic"
 english["Buff.SymbioticRelationship"] = "Symbiotic Relationship"
+english["Buff.Timelessness"] = "Timelessness"
 -- Self
 english["Buff.ArcaneFamiliar"] = "Arcane Familiar"
 english["Buff.Attunement"] = "Attunement"
 english["Buff.CreateSoulwell"] = "Create Soulwell"
+english["Buff.DruidForm"] = "Druid Form"
 english["Buff.GrimoireOfSacrifice"] = "Grimoire of Sacrifice"
 english["Buff.BurningRush"] = "Burning Rush"
 english["Buff.RiteOfAdjuration"] = "Rite of Adjuration"
@@ -169,6 +175,7 @@ english["Buff.UnholyGhoul"] = "Unholy Ghoul"
 english["Buff.WarlockDemon"] = "Warlock Demon"
 english["Buff.WaterElemental"] = "Water Elemental"
 english["Buff.WrongDemon"] = "Wrong Demon"
+english["Buff.WarriorStance"] = "Warrior Stance"
 -- Consumable
 english["Buff.AugmentRune"] = "Augment Rune"
 english["Buff.Flask"] = "Flask"
@@ -253,6 +260,8 @@ english["Display.DismissConsumables"] = "Hide consumable reminders until next lo
 english["Display.DismissConsumablesChat"] = "Consumable reminders hidden until next loading screen."
 english["Display.LoginFirstInstall"] =
     "Thanks for installing! Type |cFFFFD100/br unlock|r to move the buff display, or use the button at the bottom of the |cFFFFD100/br|r options panel."
+english["Display.LoginSelfOnlyOutside"] =
+    "New default: in the open world, only your own class buffs on yourself are tracked. Toggle |cFFFFD100Force self-only outside dungeons and raids|r in the Settings tab to change this."
 
 -- ============================================================================
 -- OPTIONS: TAB LABELS
@@ -283,6 +292,13 @@ english["Options.GlobalDefaults"] = "Global Defaults"
 english["Options.GlobalDefaults.Note"] = "(All categories inherit these unless overridden with a custom appearance)"
 english["Options.Default"] = "Default"
 english["Options.Font"] = "Font"
+english["Options.TextOutline"] = "Outline Style"
+english["Options.TextOutline.None"] = "None"
+english["Options.TextOutline.Outline"] = "Outline"
+english["Options.TextOutline.Thick"] = "Thick Outline"
+english["Options.TextOutline.Monochrome"] = "Monochrome"
+english["Options.TextOutline.OutlineMono"] = "Outline + Monochrome"
+english["Options.TextOutline.ThickMono"] = "Thick + Monochrome"
 
 -- ============================================================================
 -- OPTIONS: GLOW SETTINGS
@@ -305,6 +321,9 @@ english["Options.UseCustomColor"] = "Use Custom Color"
 english["Options.UseCustomColor.Desc"] =
     "When enabled, the proc glow is desaturated and recolored.\nThis looks less vibrant than the default proc glow."
 english["Options.ExpirationReminder"] = "Expiration Reminder"
+english["Options.PreKeyThreshold"] = "Pre-Key Threshold"
+english["Options.PreKeyThreshold.Desc"] =
+    "Use a longer expiration threshold when inside a Mythic dungeon (M0) before a keystone is inserted.\nHelps ensure your buffs are fresh before the key goes in."
 
 -- Glow params
 english["Options.Glow.Type"] = "Type:"
@@ -459,6 +478,10 @@ english["Options.ConsumableTextScale"] = "Text scale"
 english["Options.ConsumableTextScale.Title"] = "Consumable text scale"
 english["Options.ConsumableTextScale.Desc"] =
     "Font size for item counts and quality (R1/R2/R3) labels as a percentage of icon size."
+english["Options.HideConsumableLabels"] = "Hide stat labels"
+english["Options.HideConsumableLabels.Title"] = "Hide consumable stat labels"
+english["Options.HideConsumableLabels.Desc"] =
+    'Hide the small stat labels (e.g. "Hi 1st", "Lo 2nd") shown on the top-left of consumable icons.'
 english["Options.ItemDisplay"] = "Item display"
 english["Options.ItemDisplay.IconOnly"] = "Icon only"
 english["Options.ItemDisplay.IconOnlyDesc"] = "Shows the item with the highest count"
@@ -484,6 +507,10 @@ english["Options.ShowWithoutItemsReadyCheckOnly.Desc"] =
     "When enabled, consumables not in your bags are only shown during a ready check. Useful for a quick reminder to restock before a pull."
 english["Options.DelveFoodOnly"] = "Only delve food in delves"
 english["Options.DelveFoodOnly.Desc"] = "When inside a delve, hide all consumable reminders except delve food."
+english["Options.HideLegacyConsumables"] = "Hide legacy consumables"
+english["Options.HideLegacyConsumables.Title"] = "Hide legacy consumables"
+english["Options.HideLegacyConsumables.Desc"] =
+    "When enabled, food, flasks, and runes from previous expansions are filtered out of the action buttons. Disable if you still use older consumables for Timewalking, old-raid farming, or undergeared alts."
 
 -- ============================================================================
 -- OPTIONS: DK RUNEFORGE PREFERENCES
@@ -495,6 +522,18 @@ english["Options.RuneMainHand"] = "Main Hand"
 english["Options.RuneOffHand"] = "Off Hand"
 english["Options.RuneTwoHanded"] = "Two-Handed"
 english["Options.RuneDualWield"] = "Dual Wield"
+
+-- ============================================================================
+-- OPTIONS: ROGUE POISON PREFERENCES
+-- ============================================================================
+english["Options.RoguePoisonPreferences"] = "Rogue Poison Preferences"
+english["Options.RoguePoisonNote"] =
+    "Choose which poisons to apply and their priority order (top = highest). Disabled poisons are never cast and do not trigger reminders."
+english["Options.PoisonLethal"] = "Lethal"
+english["Options.PoisonNonLethal"] = "Non-Lethal"
+english["Options.PoisonMoveUp"] = "Move up in priority"
+english["Options.PoisonMoveDown"] = "Move down in priority"
+english["Options.PoisonReset"] = "Reset to Default"
 
 -- ============================================================================
 -- OPTIONS: BUFF SETTINGS GEAR ICONS
@@ -582,15 +621,21 @@ english["Options.BuffTracking.All.Desc"] =
 english["Options.BuffTracking.MyBuffs"] = "Only my buffs, all players"
 english["Options.BuffTracking.MyBuffs.Desc"] =
     "Only show buffs your class can provide. Still tracks full group coverage."
-english["Options.BuffTracking.OnlyMine"] = "Only buffs I need"
+english["Options.BuffTracking.OnlyMine"] = "All buffs, just on me"
 english["Options.BuffTracking.OnlyMine.Desc"] =
     "Show all buff types, but only check whether you personally have them. No group counts."
+english["Options.BuffTracking.SelfOnly"] = "Only my buffs, just on me"
+english["Options.BuffTracking.SelfOnly.Desc"] =
+    "Only show buffs your class can provide, and only check whether you personally have them. No group counts, no buffs you cast on others."
 english["Options.BuffTracking.Smart"] = "Smart"
 english["Options.BuffTracking.Smart.Desc"] =
     "Buffs your class provides track full group coverage. Other class buffs only check you personally."
 english["Options.BuffTracking.Mode"] = "Buff tracking mode"
 english["Options.BuffTracking.Mode.Desc"] =
     "Controls which raid and presence buffs are shown, and whether they track the full group or only you."
+english["Options.BuffTracking.SelfOnlyOutsideInstances"] = "Force self-only outside dungeons and raids"
+english["Options.BuffTracking.SelfOnlyOutsideInstances.Desc"] =
+    "When enabled, only your own class buffs on yourself are tracked while in the open world. The selected tracking mode is still used inside dungeons, raids, scenarios, and PvP."
 
 -- ============================================================================
 -- OPTIONS: PROFILES TAB
@@ -662,7 +707,8 @@ english["CustomBuff.Name"] = "Name:"
 english["CustomBuff.Text"] = "Text:"
 english["CustomBuff.LineBreakHint"] = "(use \\n for line break)"
 english["CustomBuff.Appearance"] = "APPEARANCE"
-english["CustomBuff.Conditions"] = "CONDITIONS"
+english["CustomBuff.BuffTracking"] = "BUFF TRACKING"
+english["CustomBuff.Requirements"] = "REQUIREMENTS"
 english["CustomBuff.ShowIn"] = "SHOW IN"
 english["CustomBuff.ClickAction"] = "CLICK ACTION"
 english["CustomBuff.SettingsMovedNote"] = "Visibility and ready check settings moved to each buff's edit menu."
@@ -696,6 +742,10 @@ english["CustomBuff.RequireItem.EquippedBags"] = "Equipped/Bags"
 english["CustomBuff.RequireItem.Equipped"] = "Equipped"
 english["CustomBuff.RequireItem.InBags"] = "In bags"
 english["CustomBuff.RequireItem.Hint"] = "item ID — hide if not found"
+english["CustomBuff.ItemCooldown"] = "Cooldown:"
+english["CustomBuff.ItemCooldown.Any"] = "Any"
+english["CustomBuff.ItemCooldown.OffCooldown"] = "Off cooldown"
+english["CustomBuff.ItemCooldown.OnCooldown"] = "On cooldown"
 
 -- Bar glow options
 english["CustomBuff.BarGlow.WhenGlowing"] = "Detect when glowing"

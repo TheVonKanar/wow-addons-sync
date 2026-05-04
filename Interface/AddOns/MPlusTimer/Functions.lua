@@ -79,7 +79,7 @@ function MPT:ApplyTextSettings(frame, settings, text, Color, parent, num)
     end
 end
 
-function MPT:CreateText(parent, name, settings, num)    
+function MPT:CreateText(parent, name, settings, num)
     parent[name] = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     if settings.xOffset and type(settings.xOffset) == "table" then
         settings.xOffset = settings.xOffset[num] or 0
@@ -93,14 +93,14 @@ function MPT:CreateText(parent, name, settings, num)
 end
 
 function MPT:CreateStatusBar(parent, name, Backdrop, border)
-    parent[name] = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")        
-    if Backdrop then 
-        parent[name]:SetBackdrop({ 
-            bgFile = "Interface\\Buttons\\WHITE8x8", 
+    parent[name] = CreateFrame("StatusBar", nil, parent, "BackdropTemplate")
+    if Backdrop then
+        parent[name]:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8x8",
             tileSize = 0,
-        }) 
+        })
     end
-    if border then 
+    if border then
         parent[name.."Border"] = CreateFrame("Frame", nil, parent[name], "BackdropTemplate")
     end
 end
@@ -128,7 +128,7 @@ function MPT:AddBackDrop(parent, edgeSize, color)
     })
     parent:SetBackdropBorderColor(unpack(color or {1, 1, 1, 1}))
 end
-        
+
 function MPT:CreateButton(width, height, parent, Background, Border, BGColor, BorderColor, font, fontSize, fontColor, text)
     local btn = CreateFrame("Button", nil, parent)
     btn:SetSize(width, height)
@@ -198,7 +198,7 @@ function MPT:FormatTime(time, round)
             timeSec = ("0%d"):format(timeSec)
         elseif timeSec == 0 then
             timeSec = ("00")
-        end        
+        end
         if timeHour ~= 0 then
             return ("%s:%s:%s"):format(timeHour, timeMin, timeSec)
         else
@@ -292,7 +292,7 @@ function MPT:Utf8Sub(str, startChar, endChar)
             endIndex = currentIndex - 1
             break
         end
-        
+
         local c = string.byte(str, currentIndex)
         if c < 0x80 then
             currentIndex = currentIndex + 1
@@ -319,5 +319,22 @@ function MPT:Profiling(key, start)
         local color = duration > 1 and "|cFFFF0000" or "|cFFFFFFFF"
         print(L["MPT Profiling Output"]:format(color, key, duration))
         self.ProfilingTimes[key] = nil
+    end
+end
+
+function MPT:CountOnTooltip()
+    local function OnTooltipSetUnit()
+        if select(3, GetInstanceInfo()) == 8 and self.GameTooltip ~= "Off" and C_ScenarioInfo.GetUnitCriteriaProgressValues then
+            local count, _, perc = C_ScenarioInfo.GetUnitCriteriaProgressValues("mouseover")
+            local format = (self.GameTooltip == "CountOnly" and "%d") or (self.GameTooltip == "PercentageOnly" and "%s%%") or "%d (%s%%)"
+            local arg1 = self.GameTooltip == "PercentageOnly" and perc or count
+            local arg2 = self.GameTooltip == "Both" and perc or ""
+            local string = string.format(" - "..format, arg1, arg2)
+            GameTooltip:AppendText(string)
+        end
+    end
+    if not self.TooltipInit then
+        self.TooltipInit = true
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit)
     end
 end

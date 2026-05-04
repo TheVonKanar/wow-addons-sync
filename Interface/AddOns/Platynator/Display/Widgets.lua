@@ -326,6 +326,67 @@ function addonTable.Display.GetCastBar(frame, parent)
   return frame
 end
 
+function addonTable.Display.GetEnergyBar(frame, parent)
+  frame = frame or CreateFrame("Frame", nil, parent or UIParent)
+
+  frame.statusBar = CreateFrame("StatusBar", nil, frame)
+  frame.statusBar:SetPoint("CENTER")
+  frame.statusBar:SetClipsChildren(true)
+
+  frame.marker = frame.statusBar:CreateTexture()
+  frame.marker:SetSnapToPixelGrid(false)
+
+  local borderHolder = CreateFrame("Frame", nil, frame)
+  borderHolder:SetFlattensRenderLayers(true)
+  frame.border = borderHolder:CreateTexture()
+  frame.border:SetDrawLayer("OVERLAY")
+  frame.border:SetPoint("CENTER", frame)
+
+  frame.mask = frame:CreateMaskTexture()
+  frame.mask:SetPoint("CENTER")
+
+  frame.edgeMask = frame:CreateMaskTexture()
+
+  frame.background = frame:CreateTexture()
+  frame.background:SetPoint("CENTER")
+  frame.background:SetDrawLayer("BACKGROUND")
+
+  function frame:Init(details)
+    InitBar(frame, details)
+
+    if Enum.StatusBarFillStyle then
+      frame.statusBar:SetFillStyle(Enum.StatusBarFillStyle.StandardNoRangeFill)
+    else
+      frame.statusBar:SetFillStyle("STANDARD_NO_RANGE_FILL")
+    end
+
+    frame.statusBar:SetFrameLevel(frame:GetFrameLevel() + 3)
+    borderHolder:SetFrameLevel(frame:GetFrameLevel() + 5)
+
+    if details.kind == "energy" then
+      Mixin(frame, addonTable.Display.EnergyBarMixin)
+    else
+      assert(false)
+    end
+
+    frame:SetScript("OnEvent", frame.OnEvent)
+
+    if frame.PostInit then
+      frame:PostInit()
+    end
+  end
+
+  function frame:ApplyAnchor()
+    AnchorBar(frame, frame.details)
+  end
+
+  function frame:ApplySize()
+    SizeBar(frame, frame.details)
+  end
+
+  return frame
+end
+
 function addonTable.Display.GetPower(frame, parent)
   frame = frame or CreateFrame("Frame", nil, parent or UIParent)
 
@@ -672,14 +733,21 @@ function addonTable.Display.GetText(frame, parent)
 
     frame:SetAllPoints(frame.text)
 
-    frame.text:SetWidth(details.maxWidth * addonTable.Assets.BarBordersSize.width)
-
     frame.text:SetJustifyV("BOTTOM")
     if details.align ~= frame.text:GetJustifyH() then
       frame.text:SetText(" ")
     end
     frame.text:SetJustifyH(details.align)
-    frame.text:SetTextScale(details.scale * 0.85)
+    local scale = details.scale * 0.85
+    local width = details.maxWidth * addonTable.Assets.BarBordersSize.width
+    if frame.text.SetSmoothScaling then
+      frame.text:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+      frame.text:SetScale(scale)
+      frame.text:SetWidth(width / scale)
+    else
+      frame.text:SetTextScale(scale)
+      frame.text:SetWidth(width)
+    end
 
     if details.kind == "health" then
       Mixin(frame, addonTable.Display.HealthTextMixin)
@@ -703,6 +771,10 @@ function addonTable.Display.GetText(frame, parent)
       Mixin(frame, addonTable.Display.CastTimeLeftTextMixin)
     elseif details.kind == "quest" then
       Mixin(frame, addonTable.Display.QuestTextMixin)
+    elseif details.kind == "mythicPlusForces" then
+      Mixin(frame, addonTable.Display.MythicPlusForcesTextMixin)
+    elseif details.kind == "energy" then
+      Mixin(frame, addonTable.Display.EnergyTextMixin)
     else
       assert(false)
     end
@@ -735,6 +807,7 @@ end
 local livePools = {
   healthBars = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetHealthBar),
   castBars = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetCastBar),
+  energyBars = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetEnergyBar),
   texts = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetText),
   powers = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetPower),
   highlights = CreateFramePool("Frame", UIParent, nil, nil, false, addonTable.Display.GetHighlight),
@@ -745,6 +818,7 @@ local livePools = {
 local editorPools = {
   healthBars = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetHealthBar),
   castBars = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetCastBar),
+  energyBars = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetEnergyBar),
   texts = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetText),
   powers = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetPower),
   highlights = CreateFramePool("Frame", UIParent, "PlatynatorPropagateMouseTemplate", nil, false, addonTable.Display.GetHighlight),

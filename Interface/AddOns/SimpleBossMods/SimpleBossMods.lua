@@ -181,6 +181,7 @@ M.Defaults = M.Defaults or {
 				size = 48,
 				gap = 6,
 				growDirection = "RIGHT",
+				hideBorder = false,
 				x = 0,
 				y = -8,
 				anchorFrom = "TOPLEFT",
@@ -399,6 +400,7 @@ function M:EnsureDefaults()
 		size = M.Defaults.cfg.privateAuras.size,
 		gap = M.Defaults.cfg.privateAuras.gap,
 		growDirection = M.Defaults.cfg.privateAuras.growDirection,
+		hideBorder = M.Defaults.cfg.privateAuras.hideBorder,
 		x = M.Defaults.cfg.privateAuras.x,
 		y = M.Defaults.cfg.privateAuras.y,
 		anchorFrom = M.Defaults.cfg.privateAuras.anchorFrom,
@@ -406,7 +408,7 @@ function M:EnsureDefaults()
 		anchorParent = M.Defaults.cfg.privateAuras.anchorParent,
 		customParent = M.Defaults.cfg.privateAuras.customParent,
 	}
-	for _, k in ipairs({"size", "enabled", "gap", "x", "y", "anchorFrom", "anchorTo", "anchorParent", "customParent"}) do
+	for _, k in ipairs({"size", "enabled", "gap", "hideBorder", "x", "y", "anchorFrom", "anchorTo", "anchorParent", "customParent"}) do
 		ef(cfg.privateAuras, k, M.Defaults.cfg.privateAuras)
 	end
 	cfg.privateAuras.growDirection = M.Util.normalizeDirection(cfg.privateAuras.growDirection, M.Defaults.cfg.privateAuras.growDirection,
@@ -568,6 +570,7 @@ function M.SyncLiveConfig()
 	local pc = SimpleBossModsDB.cfg.privateAuras or M.Defaults.cfg.privateAuras
 	local ct = SimpleBossModsDB.cfg.combatTimer or M.Defaults.cfg.combatTimer
 	L.PRIVATE_AURA_ENABLED = pc.enabled ~= false
+	L.PRIVATE_AURA_HIDE_BORDER = pc.hideBorder == true
 	L.TIMELINE_USE_RECOMMENDED_SETTINGS = gc.useRecommendedTimelineSettings ~= false
 	L.ANIMATE_ICONS = gc.animateIcons ~= false
 	L.ANIMATE_BARS = gc.animateBars ~= false
@@ -1101,10 +1104,6 @@ function U.safeGetIconFileID(eventInfo)
 				local info = C_Spell.GetSpellInfo(eventInfo.spellID)
 				return info and info.iconID or nil
 			end
-			if GetSpellInfo then
-				local _, _, iconTex = GetSpellInfo(eventInfo.spellID)
-				return iconTex
-			end
 			return nil
 		end)
 		if ok then return iconFileID end
@@ -1159,9 +1158,6 @@ function U.safeGetLabel(eventInfo)
 		local ok, spellName = pcall(function()
 			if C_Spell and C_Spell.GetSpellName then
 				return C_Spell.GetSpellName(spellID)
-			end
-			if GetSpellInfo then
-				return GetSpellInfo(spellID)
 			end
 			return nil
 		end)

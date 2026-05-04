@@ -1,0 +1,2 @@
+### Removed (2.1)
+- MenuBuilder: Deprecated build version helpers (`CreateBuildVersionFilter`, major/minor group builders, Select/Deselect All versions) were dropped; consumers should construct version menus externally

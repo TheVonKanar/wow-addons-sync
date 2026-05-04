@@ -1,0 +1,4 @@
+
+VoidcoreAdvisorDB = {
+["reminderEnabled"] = true,
+}

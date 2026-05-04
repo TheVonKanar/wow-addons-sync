@@ -28,9 +28,11 @@ function MPT:ToggleEventRegister(On)
                 self:EventHandler("FRAME_UPDATE")
             end)
         end
+        f:RegisterEvent("UNIT_DIED")
+    else
+        f:UnregisterEvent("UNIT_DIED")
     end
 end
-
 function MPT:EventHandler(e, ...) -- internal checks whether the event comes from addon comms. We don't want to allow blizzard events to be fired manually
     if e == "INSTANCE_ABANDON_VOTE_FINISHED" and C_ChallengeMode.IsChallengeModeActive() then
         local success = ...
@@ -147,6 +149,29 @@ function MPT:EventHandler(e, ...) -- internal checks whether the event comes fro
         end
     elseif e == "GOSSIP_SHOW" and C_ChallengeMode.IsChallengeModeActive() and MPTSV.AutoGossip then
         if UnitExists("npc") and not IsControlKeyDown() then
+            local title = C_GossipInfo.GetOptions()
+            for num=1, #title do
+                local id = title[num] and title[num].gossipOptionID
+                if id and self.GossipIDs[id] and self.GossipIDs[id].number == num and self.GossipIDs[id].enabled then
+                    local popupWasShown = self:PopupIsShown()
+                    C_GossipInfo.SelectOption(title[num].gossipOptionID)
+                    local popupIsShown = self:PopupIsShown()
+                    if popupIsShown then
+                        if not popupWasShown then
+                            StaticPopup1Button1:Click()
+                        end
+                    end
+                    C_Timer.After(0.3, function()
+                            C_GossipInfo.CloseGossip()
+                    end)
+                    break
+                end
+            end
+        end
+    end
+    --[[
+    elseif e == "GOSSIP_SHOW" and C_ChallengeMode.IsChallengeModeActive() and MPTSV.AutoGossip then
+        if UnitExists("npc") and not IsControlKeyDown() then
             local GUID = UnitGUID("npc")
             if issecretvalue(GUID) then return end
             local id = select(6, strsplit("-", GUID))
@@ -169,5 +194,5 @@ function MPT:EventHandler(e, ...) -- internal checks whether the event comes fro
                 end
             end
         end
-    end
+    end]]
 end

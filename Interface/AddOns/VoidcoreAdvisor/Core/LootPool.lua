@@ -1,0 +1,606 @@
+-- VoidcoreAdvisor: LootPool
+-- Reads loot tables from the Encounter Journal for a given source and spec.
+-- The EJ filter and difficulty state is saved before each read and fully
+-- restored afterwards so normal EJ browsing is not disturbed.
+--
+-- NOTE: EJ_SelectInstance / EJ_SelectEncounter change global EJ state.
+-- Callers should avoid calling these functions while the EJ frame is animating
+-- a page transition (i.e. during an OnShow / OnHide handler).
+local _, VCA = ...
+
+VCA.LootPool = {}
+local LootPool = VCA.LootPool
+
+-- Set to true while pool reads are in progress so EJHook ignores our internal
+-- EJ_SelectEncounter / EJ_SelectInstance calls.
+LootPool._reentryGuard = false
+
+-- ── Result cache ──────────────────────────────────────────────────────────────
+-- Keyed by "fnTag:arg1:arg2:…" → cached return value.  Invalidated on season
+-- change (CHALLENGE_MODE_MAPS_UPDATE).
+
+local _cache = {}
+local GetSeasonFingerprint
+local PERSISTED_CACHE_VERSION = 18
+local _persistableCacheTags = {
+    eic = true,
+    eis = true,
+    iic = true,
+    iis = true
+}
+
+local function CopyArray(source)
+    local copy = {}
+    for i = 1, #source do
+        copy[i] = source[i]
+    end
+    return copy
+end
+
+local function GetPersistentCacheDB()
+    local db = _G[VCA.CHAR_DB_NAME]
+    if type(db) ~= "table" then
+        return nil
+    end
+
+    if type(db.lootCache) ~= "table" then
+        db.lootCache = {
+            version = PERSISTED_CACHE_VERSION,
+            fingerprint = nil,
+            entries = {}
+        }
+    end
+
+    local cacheDB = db.lootCache
+    if cacheDB.version ~= PERSISTED_CACHE_VERSION then
+        cacheDB.version = PERSISTED_CACHE_VERSION
+        cacheDB.fingerprint = nil
+        cacheDB.entries = {}
+    elseif type(cacheDB.entries) ~= "table" then
+        cacheDB.entries = {}
+    end
+
+    return cacheDB
+end
+
+local function PersistCacheEntry(key, value)
+    local tag = key:match("^([^:]+):")
+    if not _persistableCacheTags[tag] or type(value) ~= "table" then
+        return
+    end
+
+    local cacheDB = GetPersistentCacheDB()
+    if not cacheDB then
+        return
+    end
+
+    cacheDB.entries[key] = CopyArray(value)
+    if GetSeasonFingerprint then
+        local fingerprint = GetSeasonFingerprint()
+        if fingerprint and fingerprint ~= "" then
+            cacheDB.fingerprint = fingerprint
+        end
+    end
+end
+
+local function ClearPersistedCache()
+    local db = _G[VCA.CHAR_DB_NAME]
+    if type(db) == "table" then
+        db.lootCache = nil
+    end
+end
+
+local function CacheKey(...)
+    local parts = {}
+    for i = 1, select("#", ...) do
+        parts[#parts + 1] = tostring(select(i, ...) or 0)
+    end
+    return table.concat(parts, ":")
+end
+
+function LootPool.InvalidateCache()
+    wipe(_cache)
+    ClearPersistedCache()
+end
+
+-- -- Season filter -------------------------------------------------------------
+-- Determines which EJ instanceIDs belong to the current season.
+-- Shared across LootPool (for warmup) and EJHook (for panel gating).
+
+local _seasonDungeonIDs = {} -- set: { [instanceID] = true }
+local _seasonDungeonList = {} -- array of instanceIDs (for iteration)
+local _seasonDungeonByName = {} -- { [localizedName] = ejInstanceID }
+local _seasonDungeonByInstanceID = {} -- { [WoW instanceID] = ejInstanceID }  (populated from SeasonData.dungeons[id].mapID)
+local _seasonRaidIDs = {} -- set: { [instanceID] = true }
+local _seasonFilterBuilt = false
+
+GetSeasonFingerprint = function()
+    if not _seasonFilterBuilt then
+        return nil
+    end
+
+    local parts = {}
+    for _, instanceID in ipairs(_seasonDungeonList) do
+        parts[#parts + 1] = "d" .. tostring(instanceID)
+    end
+
+    local raidIDs = {}
+    for instanceID in pairs(_seasonRaidIDs) do
+        raidIDs[#raidIDs + 1] = instanceID
+    end
+    table.sort(raidIDs)
+    for _, instanceID in ipairs(raidIDs) do
+        parts[#parts + 1] = "r" .. tostring(instanceID)
+    end
+
+    return table.concat(parts, ",")
+end
+
+local function SyncPersistedSeasonFingerprint()
+    local cacheDB = GetPersistentCacheDB()
+    if not cacheDB then
+        return
+    end
+
+    local fingerprint = GetSeasonFingerprint()
+    if not fingerprint or fingerprint == "" then
+        return
+    end
+
+    if type(cacheDB.fingerprint) == "string" and cacheDB.fingerprint ~= "" and cacheDB.fingerprint ~= fingerprint then
+        wipe(_cache)
+        cacheDB.entries = {}
+    end
+
+    cacheDB.fingerprint = fingerprint
+end
+
+function LootPool.LoadPersistedCache()
+    local cacheDB = GetPersistentCacheDB()
+    if not cacheDB or type(cacheDB.entries) ~= "table" then
+        return
+    end
+
+    local fingerprint = GetSeasonFingerprint()
+    if fingerprint and fingerprint ~= "" then
+        if type(cacheDB.fingerprint) == "string" and cacheDB.fingerprint ~= "" and cacheDB.fingerprint ~= fingerprint then
+            cacheDB.entries = {}
+            cacheDB.fingerprint = fingerprint
+            return
+        end
+        cacheDB.fingerprint = fingerprint
+    end
+
+    for key, itemIDs in pairs(cacheDB.entries) do
+        local tag = key:match("^([^:]+):")
+        if _persistableCacheTags[tag] and type(itemIDs) == "table" then
+            _cache[key] = CopyArray(itemIDs)
+        end
+    end
+end
+
+function LootPool.BuildSeasonFilter()
+    wipe(_seasonDungeonIDs)
+    wipe(_seasonDungeonList)
+    wipe(_seasonDungeonByName)
+    wipe(_seasonDungeonByInstanceID)
+    wipe(_seasonRaidIDs)
+
+    -- Require static season data generated by VoidcoreAdvisorGen.
+    if not VCA.SeasonData then
+        return
+    end
+
+    local sd = VCA.SeasonData
+
+    -- Populate dungeon instance IDs from static data.
+    for _, instanceID in ipairs(sd.dungeonInstanceIDs or {}) do
+        _seasonDungeonIDs[instanceID] = true
+        _seasonDungeonList[#_seasonDungeonList + 1] = instanceID
+        -- Map WoW InstanceID → EJ instanceID when SeasonData includes mapID.
+        local dungeonData = sd.dungeons and sd.dungeons[instanceID]
+        if dungeonData and dungeonData.mapID then
+            _seasonDungeonByInstanceID[dungeonData.mapID] = instanceID
+        end
+    end
+
+    -- Populate raid instance IDs from static data.
+    for instanceID in pairs(sd.raidInstanceIDs or {}) do
+        _seasonRaidIDs[instanceID] = true
+    end
+
+    -- Build the localized name→instanceID lookup by scanning the EJ instance
+    -- list for the known instanceIDs.  This is a read-only pass (no filter or
+    -- encounter state changes), so it is safe and fast.
+    if not EncounterJournal then
+        if EncounterJournal_LoadUI then
+            EncounterJournal_LoadUI()
+        end
+    end
+
+    local numTiers = EJ_GetNumTiers and EJ_GetNumTiers() or 0
+    if numTiers > 0 then
+        local savedTier = EJ_GetCurrentTier()
+        EJ_SelectTier(numTiers)
+        local idx = 1
+        while true do
+            local instanceID, name = EJ_GetInstanceByIndex(idx, false)
+            if not instanceID then
+                break
+            end
+            if _seasonDungeonIDs[instanceID] and name then
+                _seasonDungeonByName[name] = instanceID
+            end
+            idx = idx + 1
+        end
+        if savedTier and savedTier > 0 then
+            EJ_SelectTier(savedTier)
+        end
+    end
+
+    if #_seasonDungeonList > 0 or next(_seasonRaidIDs) then
+        _seasonFilterBuilt = true
+        SyncPersistedSeasonFingerprint()
+    end
+end
+
+local function EnsureSeasonFilter()
+    if not _seasonFilterBuilt then
+        LootPool.BuildSeasonFilter()
+    end
+end
+
+function LootPool.IsSeasonFilterReady()
+    return _seasonFilterBuilt == true
+end
+
+function LootPool.GetCachedSeasonDungeonByName(name)
+    return _seasonDungeonByName[name]
+end
+
+-- Returns the EJ instanceID for a dungeon given the WoW InstanceID that
+-- GetInstanceInfo() returns as its 8th value.  More reliable than name lookup
+-- because it is locale-independent and requires no EJ scan at runtime.
+-- Returns nil when SeasonData has not been regenerated with mapID values yet.
+function LootPool.GetSeasonDungeonByInstanceID(instanceID)
+    EnsureSeasonFilter()
+    return _seasonDungeonByInstanceID[instanceID]
+end
+
+function LootPool.GetCachedSeasonDungeonInstanceIDs()
+    return _seasonDungeonList
+end
+
+function LootPool.IsCurrentSeasonDungeon(instanceID)
+    EnsureSeasonFilter()
+    return _seasonDungeonIDs[instanceID] == true
+end
+
+-- Returns the EJ instanceID for a season dungeon given its localized name,
+-- or nil if the name does not match any current-season dungeon.
+function LootPool.GetSeasonDungeonByName(name)
+    EnsureSeasonFilter()
+    return _seasonDungeonByName[name]
+end
+
+function LootPool.IsCurrentSeasonRaid(instanceID)
+    EnsureSeasonFilter()
+    return _seasonRaidIDs[instanceID] == true
+end
+
+-- Returns the ordered array of current-season dungeon EJ instanceIDs.
+function LootPool.GetSeasonDungeonInstanceIDs()
+    EnsureSeasonFilter()
+    return _seasonDungeonList
+end
+
+-- ── Item enrichment ───────────────────────────────────────────────────────────
+
+-- Builds a display-ready item table from C_Item APIs.
+-- Returns: { itemID, name, link, icon, slot, armorType }
+-- name/link/icon may be empty strings/0 until item data is loaded from the
+-- server (warmup primes this with GetItemInfo calls).
+local function EnrichItemID(itemID)
+    local name, link, _, _, _, _, subType, _, equipLoc, icon = GetItemInfo(itemID)
+    return {
+        itemID = itemID,
+        name = name or "",
+        link = link or "",
+        icon = icon or 0,
+        -- _G[equipLoc] maps internal "INVTYPE_*" tokens to localized slot names.
+        slot = (equipLoc and equipLoc ~= "" and _G[equipLoc]) or "",
+        armorType = subType or ""
+    }
+end
+
+-- ── SeasonData guard ──────────────────────────────────────────────────────────
+
+-- Prints a one-time notice when SeasonData is absent so the developer knows
+-- they need to run VoidcoreAdvisorGen.
+local _warnedMissingSeasonData = false
+local function WarnMissingSeasonData()
+    if _warnedMissingSeasonData then
+        return
+    end
+    _warnedMissingSeasonData = true
+    print("|cff66ccffVoidcoreAdvisor:|r |cffff4444SeasonData is missing.|r  " ..
+              "Enable VoidcoreAdvisorGen, type |cffffd700/vcagen run|r, then copy " ..
+              "the output into Core/SeasonData.lua and rebuild.")
+end
+
+-- ── Static loot reads ─────────────────────────────────────────────────────────
+-- ── Public: per-encounter reads ───────────────────────────────────────────────
+
+-- Returns enriched loot items for one raid boss encounter at a given difficulty.
+-- Item source is SeasonData (static, no EJ state changes).
+-- Optional classID/specID filter the results (0 / nil = no filter for that axis).
+function LootPool.GetEncounterItems(encounterID, difficultyID, classID, specID)
+    local key = CacheKey("ei", encounterID, difficultyID, classID or 0, specID or 0)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {}
+    end
+
+    local encounterData = VCA.SeasonData.raids[encounterID]
+    if not encounterData then
+        return {}
+    end
+
+    local filterBySpec = specID and specID ~= 0
+    local filterByClass = classID and classID ~= 0
+    local itemIDs
+    if filterBySpec then
+        itemIDs = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
+                      encounterData.bySpec[difficultyID][specID]) or {}
+    elseif filterByClass then
+        itemIDs = (encounterData.byClass and encounterData.byClass[difficultyID] and
+                      encounterData.byClass[difficultyID][classID]) or {}
+    else
+        itemIDs = encounterData[difficultyID] or {}
+    end
+
+    local items = {}
+    local complete = true
+    for _, itemID in ipairs(itemIDs) do
+        local item = EnrichItemID(itemID)
+        if item.name == "" then
+            complete = false
+        end
+        items[#items + 1] = item
+    end
+
+    if #items > 0 and complete then
+        _cache[key] = items
+    end
+    return items
+end
+
+-- Returns item IDs for a spec from one encounter.  instanceID param retained
+-- for API compatibility but is no longer used (SeasonData is indexed by
+-- encounterID directly).
+-- Returns item IDs for a spec from one encounter.  instanceID param retained
+-- for API compatibility but is no longer used (SeasonData is indexed by
+-- encounterID directly).
+function LootPool.GetEncounterItemsForSpec(encounterID, difficultyID, classID, specID, instanceID)
+    local key = CacheKey("eis", encounterID, difficultyID, classID, specID)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {}
+    end
+
+    local encounterData = VCA.SeasonData.raids[encounterID]
+    if not encounterData then
+        return {}
+    end
+
+    local items = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
+                      encounterData.bySpec[difficultyID][specID]) or {}
+    _cache[key] = items
+    PersistCacheEntry(key, items)
+    return items
+end
+
+-- ── Public: per-instance reads (M+ dungeons) ─────────────────────────────────
+
+-- Returns enriched loot items for an entire dungeon instance.
+-- difficultyID is accepted for API compatibility; all M+ items use the same
+-- pool regardless of key level so it does not affect the result.
+function LootPool.GetInstanceItems(instanceID, difficultyID, classID, specID)
+    local key = CacheKey("ii", instanceID, difficultyID, classID or 0, specID or 0)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {
+            all = {},
+            byEncounter = {}
+        }
+    end
+
+    local dungeonData = VCA.SeasonData.dungeons[instanceID]
+    if not dungeonData then
+        return {
+            all = {},
+            byEncounter = {}
+        }
+    end
+
+    local filterBySpec = specID and specID ~= 0
+    local filterByClass = classID and classID ~= 0
+    local itemIDs
+    if filterBySpec then
+        itemIDs = (dungeonData.bySpec and dungeonData.bySpec[specID]) or {}
+    elseif filterByClass then
+        itemIDs = (dungeonData.byClass and dungeonData.byClass[classID]) or {}
+    else
+        itemIDs = dungeonData.all or {}
+    end
+
+    local idSet = {}
+    for _, id in ipairs(itemIDs) do
+        idSet[id] = true
+    end
+
+    local result = {
+        all = {},
+        byEncounter = {}
+    }
+    local complete = true
+
+    for _, itemID in ipairs(itemIDs) do
+        local item = EnrichItemID(itemID)
+        if item.name == "" then
+            complete = false
+        end
+        result.all[#result.all + 1] = item
+    end
+
+    for encounterID, encItemIDs in pairs(dungeonData.byEncounter or {}) do
+        local encItems = {}
+        for _, itemID in ipairs(encItemIDs) do
+            if idSet[itemID] then
+                encItems[#encItems + 1] = EnrichItemID(itemID)
+            end
+        end
+        result.byEncounter[encounterID] = encItems
+    end
+
+    if #result.all > 0 and complete then
+        _cache[key] = result
+    end
+    return result
+end
+
+-- Returns item IDs for a spec across an entire dungeon instance.
+function LootPool.GetInstanceItemsForSpec(instanceID, difficultyID, classID, specID)
+    local key = CacheKey("iis", instanceID, difficultyID, classID, specID)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {}
+    end
+
+    local dungeonData = VCA.SeasonData.dungeons[instanceID]
+    if not dungeonData then
+        return {}
+    end
+
+    local items = (dungeonData.bySpec and dungeonData.bySpec[specID]) or {}
+    _cache[key] = items
+    PersistCacheEntry(key, items)
+    return items
+end
+
+-- ── Public: class-wide reads (all specs) ──────────────────────────────────────
+
+-- Returns item IDs for any spec of a class for one encounter.
+-- instanceID param retained for API compatibility but is no longer used.
+function LootPool.GetEncounterItemsForClass(encounterID, difficultyID, classID, instanceID)
+    local key = CacheKey("eic", encounterID, difficultyID, classID)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {}
+    end
+
+    local encounterData = VCA.SeasonData.raids[encounterID]
+    if not encounterData then
+        return {}
+    end
+
+    local items = (encounterData.byClass and encounterData.byClass[difficultyID] and
+                      encounterData.byClass[difficultyID][classID]) or {}
+    _cache[key] = items
+    PersistCacheEntry(key, items)
+    return items
+end
+
+-- Returns item IDs for any spec of a class across an entire dungeon instance.
+function LootPool.GetInstanceItemsForClass(instanceID, difficultyID, classID)
+    local key = CacheKey("iic", instanceID, difficultyID, classID)
+    if _cache[key] then
+        return _cache[key]
+    end
+    if not VCA.SeasonData then
+        WarnMissingSeasonData();
+        return {}
+    end
+
+    local dungeonData = VCA.SeasonData.dungeons[instanceID]
+    if not dungeonData then
+        return {}
+    end
+
+    local items = (dungeonData.byClass and dungeonData.byClass[classID]) or {}
+    _cache[key] = items
+    PersistCacheEntry(key, items)
+    return items
+end
+
+-- Dispatches to the correct Get*ItemsForSpec function based on content type.
+-- Use this when callers have a VCA.ContentType value and don't want to branch.
+--
+-- sourceType   : VCA.ContentType.RAID or VCA.ContentType.MYTHIC_PLUS
+-- sourceID     : encounterID (RAID) or instanceID (MYTHIC_PLUS)
+-- difficultyID : EJ difficulty ID
+-- classID      : numeric class ID
+-- specID       : numeric specialization ID
+-- Returns: array of itemID numbers
+function LootPool.GetItemsForSpec(sourceType, sourceID, difficultyID, classID, specID)
+    if sourceType == VCA.ContentType.RAID then
+        return LootPool.GetEncounterItemsForSpec(sourceID, difficultyID, classID, specID)
+    else
+        return LootPool.GetInstanceItemsForSpec(sourceID, difficultyID, classID, specID)
+    end
+end
+
+-- Dispatches to the correct Get*ItemsForClass function based on content type.
+--
+-- sourceType   : VCA.ContentType.RAID or VCA.ContentType.MYTHIC_PLUS
+-- sourceID     : encounterID (RAID) or instanceID (MYTHIC_PLUS)
+-- difficultyID : EJ difficulty ID
+-- classID      : numeric class ID
+-- Returns: array of itemID numbers
+function LootPool.GetItemsForClass(sourceType, sourceID, difficultyID, classID)
+    if sourceType == VCA.ContentType.RAID then
+        return LootPool.GetEncounterItemsForClass(sourceID, difficultyID, classID)
+    else
+        return LootPool.GetInstanceItemsForClass(sourceID, difficultyID, classID)
+    end
+end
+
+function LootPool.GetCachedItemsForClass(sourceType, sourceID, difficultyID, classID)
+    local key
+    if sourceType == VCA.ContentType.RAID then
+        key = CacheKey("eic", sourceID, difficultyID, classID)
+    else
+        key = CacheKey("iic", sourceID, difficultyID, classID)
+    end
+    return _cache[key]
+end
+
+function LootPool.GetCachedItemsForSpec(sourceType, sourceID, difficultyID, classID, specID)
+    local key
+    if sourceType == VCA.ContentType.RAID then
+        key = CacheKey("eis", sourceID, difficultyID, classID, specID)
+    else
+        key = CacheKey("iis", sourceID, difficultyID, classID, specID)
+    end
+    return _cache[key]
+end
+
+-- ── Internal references for LootPoolWarm.lua ──────────────────────────────────
+
+LootPool._cache = _cache
+LootPool._seasonRaidIDs = _seasonRaidIDs

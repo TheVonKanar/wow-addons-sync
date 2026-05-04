@@ -219,6 +219,19 @@ for k, v in pairs(DCS_TableData.StatData) do
 	v.frame.statKey = k
 end
 
+-- sinba/ guard all stats OnEnter
+for _, v in pairs(DCS_TableData.StatData) do
+	if v.frame and not v.category then
+		local origOnEnter = v.frame:GetScript("OnEnter")
+		if origOnEnter then
+			v.frame:SetScript("OnEnter", function(self)
+				if InCombatLockdown() then return end
+				origOnEnter(self)
+			end)
+		end
+	end
+end
+
 local function verify_sanity()
 	for k, i in ipairs(addonTab.ShownData) do
 		for l, j in ipairs(DefaultNonTankData) do
@@ -282,6 +295,7 @@ end
 addonTab.configMode = false
 
 function addonTab.ShowCharacterStats(unit)
+	if addonTab.naughthysecrets() then return end
 	if not PaperDollFrame:IsVisible() and not SettingsPanel:IsVisible() then
 		return
 	end

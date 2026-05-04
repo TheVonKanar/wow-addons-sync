@@ -1,7 +1,6 @@
 # Chattynator
 
-## [202](https://github.com/TheMouseNest/Chattynator/tree/202) (2026-04-06)
-[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/201...202) 
+## [205](https://github.com/TheMouseNest/Chattynator/tree/205) (2026-05-01)
+[Full Changelog](https://github.com/TheMouseNest/Chattynator/compare/204...205) 
 
-- Make sure font in copy chat box is the same as the chat font  
-- Add hidden option `/chatty c force_tab_overflow true` to disable hiding overflow  
+- Fix whisper tabs not generating properly  

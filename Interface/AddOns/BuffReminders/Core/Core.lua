@@ -118,6 +118,7 @@ local RootSettings = {
     frameLocked = false, -- No refresh needed
     position = false, -- Table with x, y
     buffTrackingMode = false, -- No auto-refresh, manually calls UpdateDisplay
+    selfOnlyOutsideInstances = "DisplayRefresh",
     showMissingCountOnly = "DisplayRefresh",
     -- Visibility toggles (routed through Config.Set → VisibilityRefresh)
     hideInCombat = "VisibilityRefresh",
@@ -222,6 +223,7 @@ local DefaultSettingKeys = {
     -- Behavior (glow is global-only, lives under defaults)
     showExpirationGlow = "DisplayRefresh",
     expirationThreshold = "DisplayRefresh",
+    preKeyThreshold = "DisplayRefresh",
     glowType = "VisualsRefresh",
     glowColor = "VisualsRefresh",
     glowSize = "VisualsRefresh",
@@ -269,7 +271,9 @@ local DefaultSettingKeys = {
     -- Consumable display mode
     consumableDisplayMode = "DisplayRefresh",
     consumableTextScale = "VisualsRefresh",
+    hideConsumableLabels = "VisualsRefresh",
     showConsumableTooltips = false, -- No refresh needed, read at tooltip time
+    hideLegacyConsumables = "DisplayRefresh",
     -- Pet display mode
     petDisplayMode = "DisplayRefresh",
     petLabels = "DisplayRefresh",
@@ -278,6 +282,7 @@ local DefaultSettingKeys = {
     useFelDomination = "DisplayRefresh",
     -- Font (global-only, lives under defaults)
     fontFace = "VisualsRefresh",
+    textOutline = "VisualsRefresh",
     position = false, -- No auto-refresh, saved directly by movers
 }
 

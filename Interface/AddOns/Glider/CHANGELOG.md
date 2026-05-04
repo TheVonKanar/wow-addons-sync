@@ -1,5 +1,8 @@
 # Changelog
 
+## 46
+- Version update
+
 ## 45
 - Add Custom Color
 - Draw UI at a higher strata to overlay most UI additions but not map.

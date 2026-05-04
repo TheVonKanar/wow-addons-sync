@@ -147,6 +147,8 @@ function RCLootCouncilML:AddItem(item, bagged, slotIndex, owner, entry, boss)
 	entry.typeCode = addon:GetTypeCodeForItem(item)
 	if addon:IsInstanceDataSnapshotValid() then
 		entry.instanceData = addon.instanceDataSnapshot
+	else
+		entry.instanceData = addon:SnapshotInstanceData()
 	end
 
 	local itemInfo = self:GetItemInfo(item)
@@ -430,6 +432,9 @@ function RCLootCouncilML:OnGroupRosterUpdate()
 		MLDB:Send("group")
 		self:UpdateGroupCouncil()
 		self:SendCouncil()
+		if addon.handleLoot then
+			Comms:SendGuaranteed { target = "group", command = "StartHandleLoot", }
+		end
 	end
 	self.groupSize = newGroupSize
 end
@@ -1242,7 +1247,7 @@ function RCLootCouncilML:TrackAndLogLoot(winner, link, responseID, boss, reason,
 	local typeCode = self.lootTable[session] and self.lootTable[session].typeCode
 	local response = addon:GetResponse(typeCode or equipLoc, responseID)
 	local instanceData
-	if (self.lootTable[session] and self.lootTable[session].instanceData) and addon:IsInstanceDataSnapshotValid(self.lootTable[session].instanceData) then
+	if (self.lootTable[session] and self.lootTable[session].instanceData) then
 		instanceData = self.lootTable[session].instanceData
 	else
 		instanceData = addon:GetInstanceData()

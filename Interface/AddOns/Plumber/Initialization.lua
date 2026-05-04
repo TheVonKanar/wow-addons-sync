@@ -1,5 +1,5 @@
-local VERSION_TEXT = "1.9.0 e";
-local VERSION_DATE = 1775800000;
+local VERSION_TEXT = "1.9.1 d";
+local VERSION_DATE = 1777500000;
 
 
 local addonName, addon = ...
@@ -246,6 +246,7 @@ local DefaultValues = {
 	CatalystUI = true,					--Allow Ctrl-Click to preview items in Dressing Room for UIs that don't natively support this action
 	HuntTable = true,					--Replace generic quest icons with difficulties and add achievement indicators.
 	PreyQuestSuperTrack = true,			--During the final stage, clicking the Prey widget also super track the target location.
+	BlizzFixActionBarArt = true,		--Fix Action Bar Art Reappears After Hide/Show UI
 
 
 	--Tooltip
@@ -567,6 +568,8 @@ do
 	addon.IS_CLASSIC = C_AddOns.GetAddOnMetadata(addonName, "X-Flavor") ~= "retail";
 
 	addon.IS_MOP = C_AddOns.GetAddOnMetadata(addonName, "X-Expansion") == "MOP";
+
+	addon.IS_12_0_5 = IsToCVersionEqualOrNewerThan(120005);
 
 
 	function addon.GetLastLoginTime()

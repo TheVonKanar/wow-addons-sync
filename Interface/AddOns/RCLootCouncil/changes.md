@@ -1,9 +1,8 @@
-## Changes
+Updated for patch 12.0.5
 
-More data sync improvements.
+## Bugfixes
 
-### Cosmic Ritual Stone
-
-When the group leader acquires this toy it becomes unwinnable for them, which causes it to be destroyed when everyone else passes, thus it will now be completely ignored.
-
+- *Fixed occasional issue when trading caused by secrets.*
+- *Fixed issue in version checker causing guild members to show up multiple times.*
+- *Fixed issues storing instance data for the history (#274).*
 

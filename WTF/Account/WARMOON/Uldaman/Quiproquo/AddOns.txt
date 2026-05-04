@@ -9,7 +9,7 @@ Cell: disabled
 ChoreTracker: enabled
 DejaCharacterStats: enabled
 DialogueUI: enabled
-EditModeExpanded: disabled
+EditModeExpanded: enabled
 ExtraQuestButton: disabled
 GTFO: enabled
 HandyNotes: enabled
@@ -23,7 +23,7 @@ LargerMacroIconSelection: enabled
 LargerMacroIconSelectionData: enabled
 Leatrix_Plus: enabled
 LibSharedMedia-3.0: disabled
-LiteMount: disabled
+LiteMount: enabled
 LoggerHeadLite: enabled
 ls_Glass: enabled
 MapCoords: enabled
@@ -59,7 +59,7 @@ ChonkyCharacterSheet: disabled
 ArcUI: enabled
 SenseiClassResourceBar: disabled
 UnhaltedUnitFrames: enabled
-MinimapStats: enabled
+MinimapStats: disabled
 ClickableRaidBuffs: enabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled
@@ -69,3 +69,4 @@ BigWigs_Plugins: enabled
 RaiderIO_DB_CN_R: disabled
 RaiderIO_DB_CN_M: disabled
 RaiderIO_DB_CN_F: disabled
+Krowi_AchievementFilter: enabled

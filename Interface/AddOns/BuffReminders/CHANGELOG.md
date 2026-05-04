@@ -1,6 +1,8 @@
 # BuffReminders
 
-## [v5.3.1](https://github.com/zerbiniandrea/BuffReminders/tree/v5.3.1) (2026-04-14)
-[Full Changelog](https://github.com/zerbiniandrea/BuffReminders/compare/v5.3.0...v5.3.1) [Previous Releases](https://github.com/zerbiniandrea/BuffReminders/releases)
+## [v5.5.2](https://github.com/zerbiniandrea/BuffReminders/tree/v5.5.2) (2026-05-01)
+[Full Changelog](https://github.com/zerbiniandrea/BuffReminders/compare/v5.5.1...v5.5.2) [Previous Releases](https://github.com/zerbiniandrea/BuffReminders/releases)
 
-- fix: 🚑 fix click to cast by also registering AnyUp  
+- i18n: 🌐 update koKR localization  
+- feat(debug): 🔊 expand chat verifier with seen-other events  
+- refactor(state): ♻️ unify solo detection via BuffState.IsAlone()  

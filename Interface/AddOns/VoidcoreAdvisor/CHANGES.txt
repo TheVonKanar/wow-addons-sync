@@ -1,0 +1,16 @@
+lightweight tag 6c436ceff347b1c517e0c043ff173afb9ad8386b v1.3.5-Release
+Author:	rolferik12 <rolf.erik.c@gmail.com>
+Date:	Sun May 3 08:00:37 2026 +0200
+
+commit 6c436ceff347b1c517e0c043ff173afb9ad8386b
+Author: rolferik12 <rolf.erik.c@gmail.com>
+Date:   Sun May 3 08:00:37 2026 +0200
+
+    upped version.
+
+commit f9310b96a4d9d8fe2b9f7d1b25d443f80f45833b
+Author: rolferik12 <rolf.erik.c@gmail.com>
+Date:   Sat May 2 23:49:14 2026 +0200
+
+    Fixed issue with failing to mark item as obtained immediately. It needed a /reload to detect item.
+

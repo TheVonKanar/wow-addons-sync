@@ -54,8 +54,8 @@ WeakAurasModelPaths: disabled
 WeakAurasOptions: disabled
 WeakAurasTemplates: disabled
 ACP: disabled
-ShadowedUnitFrames: disabled
-ShadowedUF_Options: disabled
+ShadowedUnitFrames: enabled
+ShadowedUF_Options: enabled
 OPie_Classic: disabled
 GSE: disabled
 GSE_LDB: disabled
@@ -196,7 +196,7 @@ DeathNote: enabled
 BigWigs_KhazAlgar: disabled
 BigWigs_NerubarPalace: disabled
 LittleWigs_Dragonflight: disabled
-KeyMaster: enabled
+KeyMaster: disabled
 AngryKeystones: enabled
 LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
@@ -220,7 +220,7 @@ DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
 Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
-Krowi_AchievementFilter: disabled
+Krowi_AchievementFilter: enabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
@@ -255,14 +255,14 @@ Blizzard_ChallengesUI: enabled
 Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 LariasWeeklyChecklist_Localization: disabled
-DejaCharacterStats: enabled
-LiteMount: enabled
+DejaCharacterStats: disabled
+LiteMount: disabled
 RareScanner: disabled
 ClickableRaidBuffs: enabled
 CityGuide: enabled
 ChonkyCharacterSheet: disabled
 SenseiClassResourceBar: enabled
-MinimapStats: enabled
+MinimapStats: disabled
 EllesmereUIUnitFrames: disabled
 EllesmereUIResourceBars: disabled
 EllesmereUINameplates: disabled
@@ -272,7 +272,7 @@ EllesmereUIActionBars: disabled
 TellMeWhen: disabled
 TellMeWhen_Options: disabled
 MythicPlusUtility: enabled
-MogMount: disabled
+MogMount: enabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled
 Baganator: enabled
@@ -286,3 +286,4 @@ RaiderIO_DB_CN_F: disabled
 Ayije_CDM: disabled
 BetterCooldownManager: disabled
 CooldownManagerCentered: disabled
+AutoHideUI: enabled

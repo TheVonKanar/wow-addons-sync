@@ -8,6 +8,94 @@ local L = addon.L;
 local changelogs = addon.ControlCenter.changelogs;
 
 
+changelogs[10901] = {
+	{
+		type = "date",
+		versionText = "1.9.1 b-d",
+		timestamp = 1777500000,
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Instance Difficulty Selector: The lockout tooltip will inform you if the difficulty cannot be changed due to a boss being defeated. Note: Applies only to pre-Siege of Orgrimmar raids.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Queue Status: It now works on queues that have no estimated wait time.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Action Bar Art: Added a new module to fix the issue where the Action Bar Art (gryphons and wyverns) reappears unexpectedly after Hiding/Showing UI or exiting House Editor or vehicles.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Outfit Collection Quick Access: You can once again Lock Appearance using the minimized outfit list.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Plumber Home Macro: If you have two houses, clicking the Teleport Home macro will now open a pop-up to let you choose.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Nameplate Quest Indicator: Fixed an error that occurred whenever you hovered over an NPC in Delves or Ritual Sites.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Fixed a critical issue that prevented this addon from loading properly if you logged in during combat or in an instance.",
+	},
+
+	{
+		type = "br",
+	},
+	{
+		type = "br",
+	},
+
+	{
+		type = "date",
+		versionText = "1.9.1",
+		timestamp = 1776700000,
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Expansion Summary: You can hide unwanted currencies by setting them as Unused in WoW's currency UI.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Drawer Macro: If you own two houses, \"Teleport Home\" will appear as two buttons on the pop-up, allowing you to teleport to the house of your choice.",
+	},
+
+	{
+		type = "tocVersionCheck",
+		minimumTocVersion = 120005,
+		breakpoint = true,
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Transmog Ensembles: This module will display your collection progress on Void-Touched Cache\'s tooltips.",
+	},
+};
+
+
 changelogs[10900] = {
 	{
 		type = "date",

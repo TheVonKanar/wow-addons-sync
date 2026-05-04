@@ -1,0 +1,24 @@
+## Interface: 120005
+## Title: Krowi's |cFF1D92C2AF|r - Khamuls Collections Plugin
+## Version: 2.2.1
+## Author: Khamûl-Antonidas
+## X-Email: khamul.antonidas@gmail.com
+## Notes: Adds additional categories to the special tab (Campsites, Decors, Meta Mounts, Pets, Toys)
+## IconTexture: interface/icons/inv_radientazeriteheart
+## Dependencies: Krowi_AchievementFilter
+## X-CurseForge: https://www.curseforge.com/wow/addons/krowis-achievement-filter-khamuls-expansion-meta
+## X-Curse-Project-ID: 1143362
+## X-Wago: https://addons.wago.io/addons/krowi-achievementfilter-khamuls-expmetaachievementfilter
+## X-Wago-Project-ID: vNAeqRNo
+## SavedVariables: Khamuls_ExpMetaAchievementFilter_Settings
+
+Libs\Files.xml
+Localization\Files.xml
+
+
+Core.lua
+Utilities.lua
+DataSources\RewardPreviewDB.lua
+RewardPreview.lua
+DataSources\Files.xml
+Options.lua

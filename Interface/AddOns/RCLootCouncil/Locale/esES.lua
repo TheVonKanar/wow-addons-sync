@@ -68,10 +68,8 @@ L["Auto extracted from whisper"] = "Auto extraer desde un susurro"
 L["Auto Open"] = "Abrir automaticamente"
 L["Auto Pass"] = "Auto pasar"
 L["Auto pass BoE"] = "Auto entregar BoE"
---[[Translation missing --]]
-L["Auto Pass Transmog"] = "Auto Pass Transmog"
---[[Translation missing --]]
-L["Auto Pass Transmog Source"] = "Auto Pass Transmog Source"
+L["Auto Pass Transmog"] = "Auto pasar transfiguraciones"
+L["Auto Pass Transmog Source"] = "Auto pasar transfiguración aprendida"
 L["Auto Pass Trinkets"] = "Auto pasar abalorios."
 L["Auto Trade"] = "Auto comerciar"
 L["auto_award_desc"] = "Activa Recompensa Automatica."
@@ -122,8 +120,7 @@ L["Candidate removed"] = "Candidato eliminado."
 L["Candidates that can't use the item"] = "Candidatos que no pueden usar el objeto"
 L["Cannot autoaward:"] = "No puede premiar automaticamente"
 L["Cannot give 'item' to 'player' due to Blizzard limitations. Gave it to you for distribution."] = "No se puede dar a %s de %s debido a las limitaciones de Blizzard.recoger para distribuir"
---[[Translation missing --]]
-L["Catalyst_Items"] = "Catalyst Items"
+L["Catalyst_Items"] = "Objetos del catalizador"
 L["Change Award"] = "Cambiar recompensa"
 L["Change Response"] = "Cambiar respuesta"
 L["Changing loot threshold to enable Auto Awarding"] = "Cambiando el modo de saqueo, para habilitar Recompensa Automatica"
@@ -134,50 +131,34 @@ L["chat tVersion string"] = "|cFF87CEFARCLootCouncil |cFFFFFFFFversion |cFFFFA50
 L["chat version String"] = "|cFF87CEFARCLootCouncil |cFFFFFFFFversion |cFFFFA500 %s"
 L["chat_cmd_add_found_items"] = "Se han encontrado %d objetos con temporizadores de comercio en tus bolsas"
 L["chat_cmd_add_invalid_owner"] = "El personaje %s no era válido o bien no era candidato."
---[[Translation missing --]]
-L["chat_command_start_error_onlyUseInRaids"] = "Cannot start: you're in a party and have the 'only use in raids' option enabled."
---[[Translation missing --]]
-L["chat_command_start_error_start_PartyIsLFG"] = "Cannot start: you are in a LFG party."
---[[Translation missing --]]
-L["chat_command_start_error_usageNever"] = "Cannot start: your 'usage' option is set to 'never'."
+L["chat_command_start_error_onlyUseInRaids"] = "No se puede iniciar: estás en un grupo y tienes activada la opción \"Solo usar en bandas\"."
+L["chat_command_start_error_start_PartyIsLFG"] = "No se puede iniciar: estás en un grupo de buscador de grupos (LFG)."
+L["chat_command_start_error_usageNever"] = "No se puede iniciar: la opción de \"uso\" está configurada en \"nunca\"."
 L["chat_commands_add"] = "Añade un objeto al cuadro de sesión"
---[[Translation missing --]]
-L["chat_commands_add_all"] = "Adds all tradable items to the session frame"
+L["chat_commands_add_all"] = "Agrega todos los objetos intercambiables al cuadro de sesión."
 L["chat_commands_award"] = "Empieza una sesion con los objetos conseguidos en tu inventario."
---[[Translation missing --]]
-L["chat_commands_clear"] = "Removes all items from the 'award later' list"
+L["chat_commands_clear"] = "Elimina todos los objetos de la lista de objetos a asignar más tarde."
 L["chat_commands_config"] = "Abre la interfaz de opciones"
 L["chat_commands_council"] = "Abrir la interfaz del consejo"
---[[Translation missing --]]
-L["chat_commands_export"] = "Exports the items currently in session"
---[[Translation missing --]]
-L["chat_commands_groupLeader_only"] = "Group Leader commands"
+L["chat_commands_export"] = "Exporta los objetos que se encuentran actualmente en sesión."
+L["chat_commands_groupLeader_only"] = "Comandos del líder de grupo"
 L["chat_commands_history"] = "Abre el cuadro de historial (alt. 'h' o 'his')"
---[[Translation missing --]]
-L["chat_commands_list"] = "Lists all items marked for 'award later'"
---[[Translation missing --]]
-L["chat_commands_ML_only"] = "Master Looter commands"
+L["chat_commands_list"] = "Enumera todos los objetos marcados para \"recompensar más tarde\"."
+L["chat_commands_ML_only"] = "Comandos de Maestro Despojador"
 L["chat_commands_open"] = "Abre el cuadro de votacion"
 L["chat_commands_profile"] = "Abrir el gestor de perfiles"
---[[Translation missing --]]
-L["chat_commands_remove"] = "Removes the item at index from the 'award later' list"
+L["chat_commands_remove"] = "Elimina el elemento en el índice de la lista 'recompensar más tarde'."
 L["chat_commands_reset"] = "Reinicia las posiciones de las ventanas del addon"
---[[Translation missing --]]
-L["chat_commands_session"] = "Open the session frame (alt. 'ses' or 's')"
---[[Translation missing --]]
-L["chat_commands_start"] = "Start handling loot"
---[[Translation missing --]]
-L["chat_commands_stop"] = "Stop handling loot"
+L["chat_commands_session"] = "Abra el cuadro de sesión (alternativamente, 'ses' o 's')."
+L["chat_commands_start"] = "Comenzar a gestionar el botín"
+L["chat_commands_stop"] = "Dejar de gestionar el botín"
 L["chat_commands_sync"] = "Abrir la vista de sincronización"
 L["chat_commands_test"] = "Emular una sesión de recompensas con n objetos, 1 si se omite el número"
---[[Translation missing --]]
-L["chat_commands_trade"] = "Open the TradeUI"
+L["chat_commands_trade"] = "Abre la interfaz de intercambios (TradeUI)"
 L["chat_commands_version"] = "Abre el Comprobador de Versión (alt. 'v' o 'ver')"
 L["chat_commands_whisper"] = "Muestra los comandos de susurro"
---[[Translation missing --]]
-L["chat_restrictions_enabled"] = "Not currently possible due to Addon Restrictions."
---[[Translation missing --]]
-L["chatCommand_stop_error_notHandlingLoot"] = "Cannot stop: not currently handling loot."
+L["chat_restrictions_enabled"] = "No es posible en estos momentos debido a restricciones de addons."
+L["chatCommand_stop_error_notHandlingLoot"] = "No se puede detener: actualmente no se está gestionando el botín."
 L["Check this to loot the items and distribute them later."] = "Marque esta para recojer los articulos y distribuirlos despues."
 L["Check to append the realmname of a player from another realm"] = "marca la casilla para ajunta el nombre del reino al que el jugador pertenece"
 L["Check to have all frames minimize when entering combat"] = "Compruebe que todas las ventanas se minimizan al entrar en combate"
@@ -212,7 +193,7 @@ L["Delete Skin"] = "Borrar apariencia"
 L["delete_skin_desc"] = "Borrar la apariencia seleccionada (que no sea por defecto) de la lista."
 L["Deselect responses to filter them"] = "Anule la selección de respuestas para filtrarlas"
 L["Diff"] = "Diferente"
-L["Discord friendly output."] = "Salida de desacuerdo amistoso."
+L["Discord friendly output."] = "Salida compatible con Discord"
 L["disenchant_desc"] = "Seleccionar para usar esta razon en la adjudicacion de un elemento a traves del boton 'Desencantar'"
 L["Do you want to keep %s for yourself or trade?"] = "¿Deseas quedarte %s para ti o comerciarlo?"
 L["Done syncing"] = "Sincronización completa"
@@ -225,10 +206,8 @@ L["enable_loot_history_desc"] = "Activado el historial. RCLootCouncil no registr
 L["enable_timeout_desc"] = "Marca la casilla para habilitar tiempo maximo en la ventana de Loot"
 L["Enter your note:"] = "Escribe tu nota"
 L["EQdkp-Plus XML output, tailored for Enjin import."] = "Exportar para EQdkp-Plus XML, hecho para importar en Enjin."
---[[Translation missing --]]
-L["error_no_autoAward_candidates"] = "You've enabled auto awarding of items, but haven't set any candidate(s) to auto award to."
---[[Translation missing --]]
-L["error_no_autoAwardBoE_candidates"] = "You've enabled auto awarding of BoE items, but haven't set any candidate(s) to auto award to."
+L["error_no_autoAward_candidates"] = "Has activado la asignación automática de objetos, pero no has configurado ningún candidato para la asignación automática."
+L["error_no_autoAwardBoE_candidates"] = "Has activado la asignación automática de objetos ligados al equipar, pero no has establecido ningún candidato para la asignación automática."
 L["error_test_as_non_leader"] = "No puedes iniciar una comprobación mientras estés en grupo si no eres el líder de grupo."
 L["Everybody is up to date."] = "Todo el mundo está actualizado."
 L["Everyone have voted"] = "Todos han votado"
@@ -282,7 +261,7 @@ L["Length"] = "Duración"
 L["Log"] = "Registro"
 L["log_desc"] = "Permite incluir botin en el historial"
 L["Loot announced, waiting for answer"] = "Botin anunciado, esperando respuesta"
-L["Loot History"] = "Hitorial de botin"
+L["Loot History"] = "Historial de botín"
 L["Loot Status"] = "Estado del botín"
 L["Loot won:"] = "objetos ganados:"
 L["loot_history_desc"] = [=[RCLootCouncil registra automaticamente informacion relevante de sesiones.
@@ -310,8 +289,7 @@ L["Missing votes from:"] = "Faltan votos de:"
 L["ML sees voting"] = "MS ve la votacion"
 L["ML_ADD_INVALID_ITEM"] = "Identificador de ítem o enlace de ítem no válido: %s"
 L["ML_ADD_ITEM_MAX_ATTEMPTS"] = "No se pudo encontrar la información del ítem %s - probablemente no sea un ítem real."
---[[Translation missing --]]
-L["ML_REQUEST_VOTES"] = "%s has requested you to vote for item #%d: %s"
+L["ML_REQUEST_VOTES"] = "%s te ha solicitado que votes por el objeto n.º %d: %s"
 L["ml_sees_voting_desc"] = "Permitir al Maestro Despojador ver quien vota por quien."
 L["module_tVersion_outdated_msg"] = "La versión de prueba del módulo %s es: %s"
 L["module_version_outdated_msg"] = "El módulo % versión %s está desactualizado. La versión más nueva el %s."
@@ -358,8 +336,7 @@ L["Open the Loot History"] = "Abrir Hitorial de botin"
 L["open_the_loot_history_desc"] = "Pulsar para abrir historial de botin"
 L["Opens the synchronizer"] = "Abrir el sincronizador"
 L["opt_addButton_desc"] = "Añade un nuevo grupo de botones para la casilla seleccionada."
---[[Translation missing --]]
-L["opt_announceAward_WHISPER_WINNER"] = "/w winner"
+L["opt_announceAward_WHISPER_WINNER"] = "/su ganador"
 L["opt_autoAddBoEs_desc"] = "Añadir automáticamente todos los BoE (Ligados al equipar) a la sesión."
 L["opt_autoAddBoEs_name"] = "Auto Añadir BoEs"
 L["opt_autoAddItems_desc"] = "Añade automáticamente todos los objetos seleccionables a una sesión."
@@ -369,24 +346,18 @@ L["opt_autoAddPets_name"] = "Añadir Mascotas"
 L["opt_autoAwardPrioList_desc"] = "Los objetos se asignan al primer candidato encontrado en tu grupo según esta lista de prioridad."
 L["opt_autoGroupLoot_desc"] = "Si se habilita, RCLootCouncil pulsará automáticamente los botones de pasar y codicia de manera que los objetos acaben en tu inventario."
 L["opt_autoGroupLoot_name"] = "Botín de Grupo Automático"
---[[Translation missing --]]
-L["opt_autoGroupLootDecor_desc"] = "Caution: Only enable this if you're certain decor items are tradeable."
---[[Translation missing --]]
-L["opt_autoGroupLootDecor_name"] = "Loot Decor"
+L["opt_autoGroupLootDecor_desc"] = "Precaución: Activa esta opción únicamente si estás seguro de que los objetos decorativos son intercambiables."
+L["opt_autoGroupLootDecor_name"] = "Botín de decoración"
 L["opt_autoGroupLootGuildGroupOnly_desc"] = "Cuando está activado, RCLootCouncil solo hará el pase automático de botín de grupo cuando estés en un grupo de hermandad."
 L["opt_autoGroupLootGuildGroupOnly_name"] = "Solo grupos de hermandad"
---[[Translation missing --]]
-L["opt_autoPass_name"] = "Enable Auto Pass"
+L["opt_autoPass_name"] = "Auto Pasar"
 L["opt_autoPassWeapons_desc"] = "Marca esta casilla para activar el pasar automáticamente las armas que tu clase no puede equipar."
 L["opt_autoPassWeapons_name"] = "Auto Pasar Armas"
 L["opt_autoTrade_desc"] = "Seleccionar para añadir automáticamente los objetos a la ventana de comercio cuando se comercie con un ganador. Si se deshabilita, se pedirá confirmación antes de añadir los objetos."
 L["opt_award_later_desc"] = "Activar para comprobar automáticamente la opción 'Recompensar más tarde' en la ventana de sesión."
---[[Translation missing --]]
-L["opt_blockTradesInVoting_desc"] = "When enabled, any trade attempts will be cancelled while the voting frame is active."
---[[Translation missing --]]
-L["opt_blockTradesInVoting_message"] = "Trade from %s blocked"
---[[Translation missing --]]
-L["opt_blockTradesInVoting_name"] = "Block Trades"
+L["opt_blockTradesInVoting_desc"] = "Cuando está activado, cualquier intento de intercambio se cancelará mientras el cuadro de votación esté activo."
+L["opt_blockTradesInVoting_message"] = "Intercambio desde %s bloqueado"
+L["opt_blockTradesInVoting_name"] = "Bloquear intercambios"
 L["opt_buttonsGroup_desc"] = "Grupo de opciones para los botones de %s y las respuestas. Ver más arriba para una explicación detallada."
 L["opt_chatFrameName_desc"] = "Selecciona en qué ventana de chat quieres que RCLootCouncil muestre la información de salida."
 L["opt_chatFrameName_name"] = "Ventana de Chat"
@@ -400,16 +371,11 @@ L["opt_deletePatch_confirm"] = "¿Seguro que quieres borrar todo lo que sea más
 L["opt_deletePatch_desc"] = "Borrar todas las entradas anteriores al parche seleccionado."
 L["opt_deleteRaid_confirm"] = "¿Seguro que quieres borrar todas las entradas de la instancia seleccionada? Esta acción no se puede deshacer."
 L["opt_deleteRaid_desc"] = "Borrar todas las entradas correspondientes a una instancia específica."
---[[Translation missing --]]
-L["opt_lootDecor_desc"] = "Automatically add tradeable decor items to a session."
---[[Translation missing --]]
-L["opt_lootDecor_name"] = "Add Decor"
+L["opt_lootDecor_desc"] = "Agregar automáticamente objetos decorativos intercambiables a la sesión."
+L["opt_lootDecor_name"] = "Añadir decoración"
 L["opt_moreButtons_desc"] = "Añade un nuevo grupo de botones para una casilla de equipo seleccionada. Se usará el tipo más específico, p. e. añadir botones para 'Cabeza' y 'Armadura de Azerita' hará que la armadura de tipo de cabeza usará los botones de cabeza en lugar de los de armadura de azerita."
---[[Translation missing --]]
-L["opt_moreInfo_onlyShowRaids_desc"] = [=[If any raids are selected, the 'More Info' window will only show awards from those raids. If nothing's selected, all raids will be shown.
-Note: This does not apply to the 'Winners of [item]' section.]=]
---[[Translation missing --]]
-L["opt_moreInfo_onlyShowRaids_name"] = "Only specific raids"
+L["opt_moreInfo_onlyShowRaids_desc"] = "Si se selecciona alguna banda, la ventana 'Más información' solo mostrará las recompensas de dichas bandas. Si no se selecciona ninguna, se mostrarán todas las bandas. Nota: Esto no se aplica a la sección 'Ganadores de [objeto]'."
+L["opt_moreInfo_onlyShowRaids_name"] = "Solo bandas específicas"
 L["opt_printCompletedTrade_Desc"] = "Activar para habilitar un mensaje cada vez que un candidato comercia un objeto asignado al ganador del mismo."
 L["opt_printCompletedTrade_Name"] = "Mensajes de objetos comerciados"
 L["opt_profileSharing_export_desc"] = "Exportar su perfil actual."
@@ -418,16 +384,13 @@ L["opt_profileSharing_import_desc"] = "Importe un nuevo perfil de RCLootCouncil.
 L["opt_profileSharing_profileExistsWarning"] = "Ya existe un perfil llamado \"%s\". ¿Desea sobrescribirlo?"
 L["opt_rejectTrade_Desc"] = "Activar para permitir a los candidatos elegir si desean 'dar' lo que les toque al consejo o no. Si se deshabilita, todos los objetos que sean comerciables por Loot Personal se añadirán automáticamente."
 L["opt_rejectTrade_Name"] = "Permitir quedarse los objetos"
---[[Translation missing --]]
-L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
---[[Translation missing --]]
-L["opt_savePersonalLoot_name"] = "Record Personal Loot"
+L["opt_savePersonalLoot_desc"] = "Si está desactivado, el botín personal no se añadirá al historial."
+L["opt_savePersonalLoot_name"] = "Registrar botín personal"
 L["opt_sharingProfile_success"] = "Perfil importado con éxito: \"%s\""
 L["opt_skipSessionFrame_desc"] = "Se salta el cuadro de sesión. NOTA: Esto causa que el addon comience una sesión nueva con todos los objetos elegibles sin dejar posibilidad de editar la lista!"
 L["opt_skipSessionFrame_name"] = "Saltar el Cuadro de Sesión"
 L["opt_timeoutFlash_desc"] = "Cuando se activa, el cuadro de botín parpadeará cuando queden 5 segundos para que se agote el tiempo del objeto."
---[[Translation missing --]]
-L["opt_timeoutFlash_name"] = "Timeout Flash"
+L["opt_timeoutFlash_name"] = "Destello al agotarse el tiempo"
 L["opt_usage_AskGroupLoot"] = "Pregúntame cada vez que se habilite el Botín de Grupo"
 L["opt_usage_GroupLoot"] = "Utilizar RCLootCouncil siempre que haya Botín de Grupo "
 L["opt_useSlashRC_desc"] = "Deshabilita esto si quieres restaurar '/rc' para hacer una comprobación de listos. Los comandos de RCLootcouncil seguirán accesibles a través de '/rclc'. Hay que hacer '/reload' para que esto tenga efecto."
@@ -440,8 +403,7 @@ L["options_requireNotes_desc"] = "Si se habilita, los candidatos no podrán mand
 L["Original Owner"] = "Propietario original"
 L["Out of instance"] = "Fuera de la instancia"
 L["Patch"] = "Parche"
---[[Translation missing --]]
-L["PAUSED"] = "Paused"
+L["PAUSED"] = "Pausado"
 L["Personal Loot - Non tradeable"] = "Loot Personal - no comerciable"
 L["Personal Loot - Rejected Trade"] = "Loot Personal - Se ha rechazado comerciar"
 L["'player' can't receive 'type'"] = "%s no puede recibir %s - versión anterior?"
@@ -459,8 +421,7 @@ L["Please wait before trying to sync again."] = "Por favor espere antes de inten
 L["Print Responses"] = "Imprimir respuestas"
 L["print_response_desc"] = "Imprimir tu respuesta en la ventana de chat"
 L["Protector Token"] = "Distintivo del Protector"
---[[Translation missing --]]
-L["Rare_Items"] = "Rare items"
+L["Rare_Items"] = "Objetos raros"
 L["Raw lua output. Doesn't work well with date selection."] = "Exportar en lua bruto. No funciona bien junto a selección por fecha."
 L["rcframe_help"] = "Haga doble clic aquí para minimizar haga clic y arrastrar para mover Ctrl+desplazamiento para cambiar la escala"
 L["RCLootCouncil - Synchronizer"] = "RCLootCouncil - Sincronizador"
@@ -493,8 +454,7 @@ L["Response options"] = "Opciones de respuesta"
 L["Response to 'item'"] = "Respuesta a %s"
 L["Response to 'item' acknowledged as 'response'"] = "Respuesta a %s reconocida como \"%s\""
 L["response_color_desc"] = "Establecer un color para la respuesta."
---[[Translation missing --]]
-L["response_NOTELIGIBLE"] = "Not eligible for this item"
+L["response_NOTELIGIBLE"] = "No cumple los requisitos para este objeto"
 L["Responses"] = "Respuestas"
 L["Responses from Chat"] = "Chat de respuestas"
 L["responses_from_chat_desc"] = [=[En caso de que alguien no ha instalado el addon (Boton 1 se utiliza si no se especifica la palabra clave).
@@ -530,13 +490,11 @@ L["Something went wrong :'("] = "Algo salio mal :("
 L["Something went wrong during syncing, please try again."] = "Algo fue mal durante la sincronización, por favor inténtalo de nuevo."
 L["Sort Items"] = "Ordenar objetos"
 L["sort_items_desc"] = "Ordena las sesiones por tipos de objeto y nivel de equipo."
---[[Translation missing --]]
-L["Special_Effects_Items"] = "Items /w special effects"
+L["Special_Effects_Items"] = "Objetos con efectos especiales"
 L["Standard .csv output."] = "Exportar en .csv estándar."
 L["Standard JSON output."] = "Cadena de texto que contiene un objeto JSON por entrada en el histórico."
 L["Status texts"] = "Textos de estado"
---[[Translation missing --]]
-L["Stop"] = "Stop"
+L["Stop"] = "Parar"
 L["Store in bag and award later"] = "Guardar en la bolsa y asignar más tarde"
 L["Succesfully deleted %d entries"] = "Se borraron %s entradas correctamente "
 L["Succesfully deleted %d entries from %s"] = "Se borraron correctamente %d entradas de %s"
@@ -608,10 +566,8 @@ L["Version"] = true
 L["Version Check"] = "Comprobar version"
 L["version_check_desc"] = "Abrir comprobador de version"
 L["version_outdated_msg"] = "Su version de %s no esta actualizada. La versión mas reciente es %s, por favor, actualice RCLootCouncil."
---[[Translation missing --]]
-L["VF_REQUEST_VOTES"] = "Request Votes"
---[[Translation missing --]]
-L["VF_REQUEST_VOTES_SENT"] = "Vote request sent"
+L["VF_REQUEST_VOTES"] = "Solicitar votos"
+L["VF_REQUEST_VOTES_SENT"] = "Solicitud de voto enviada"
 L["Vote"] = "Voto"
 L["Voters"] = "Votantes"
 L["Votes"] = "Votos"

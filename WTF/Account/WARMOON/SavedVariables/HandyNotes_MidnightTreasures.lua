@@ -3,7 +3,13 @@ HandyNotes_MidnightTreasuresDB = {
 ["char"] = {
 ["Kvotheen - Hyjal"] = {
 ["hidden"] = {
+[2395] = {
+[45873904] = true,
+},
 [2413] = {
+[40654299] = true,
+[56783422] = true,
+[28118181] = true,
 [62515375] = true,
 },
 },
@@ -16,22 +22,23 @@ HandyNotes_MidnightTreasuresDB = {
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
 ["achievementsHidden"] = {
-[61455] = false,
 [62122] = false,
-[61860] = true,
 [62125] = false,
+[62188] = false,
+[61581] = false,
+[62202] = false,
+[61860] = true,
+[61263] = true,
 [61264] = false,
+[61455] = false,
+[62289] = false,
+[62290] = true,
 [62199] = false,
 [61052] = false,
 [62200] = false,
-[61263] = true,
 [62201] = false,
-[62104] = false,
-[62202] = false,
-[62289] = false,
-[62290] = true,
-[61581] = false,
 [61582] = true,
+[62104] = false,
 },
 ["show_on_minimap"] = true,
 ["show_npcs_filter"] = "notable",

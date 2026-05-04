@@ -230,9 +230,14 @@ function BR.Profiles.RefreshAfterProfileChange()
     registry:TriggerEvent("LayoutRefresh")
     registry:TriggerEvent("DisplayRefresh")
 
-    -- Re-sort consumable cache (remembered items may differ between profiles)
+    -- Re-sort consumable cache (remembered items and legacy filter may differ between profiles)
     if BR.SecureButtons and BR.SecureButtons.InvalidateConsumableCache then
         BR.SecureButtons.InvalidateConsumableCache()
+    end
+
+    -- Refresh chat-request macrotext: per-profile chatRequestMessages may differ.
+    if BR.SecureButtons and BR.SecureButtons.RefreshChatRequestMacros then
+        BR.SecureButtons.RefreshChatRequestMacros()
     end
 
     -- Recompute buff state

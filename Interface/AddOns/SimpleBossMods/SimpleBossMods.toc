@@ -3,13 +3,14 @@
 ## Description: A lightweight timeline alternative
 ## Notes: 
 ## Author: Zapa
-## Version: 3.10.3
+## Version: 3.11
 ## Category-enUS:  |cFF9CDF95Zapa|r Development
 ## IconTexture: Interface\AddOns\SimpleBossMods\media\textures\logo.png
 ## SavedVariables: SimpleBossModsDB
-## OptionalDeps: LibKeystone
 ## X-Wago-ID: 5NR8exK3
 ## X-Curse-Project-ID: 1437959
+## OptionalDeps: Ace3, AceGUI-3.0-SharedMediaWidgets, LibKeystone, LibSharedMedia-3.0, LibDeflate
+## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibKeystone, LibSharedMedia-3.0, LibDeflate
 
 Libraries/Init.xml
 

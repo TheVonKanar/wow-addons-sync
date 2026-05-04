@@ -27,23 +27,49 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 ["enabledBuffs"] = {
-["symbioticRelationship"] = true,
-["soulstone"] = true,
+["intellect"] = true,
 ["blisteringScales"] = true,
-["atrophicNumbingPoison"] = true,
-["beacons"] = true,
 ["bronze"] = true,
-["stamina"] = true,
-["sourceOfMagic"] = true,
-["attackPower"] = true,
-["earthShieldOthers"] = false,
 ["devotionAura"] = true,
 ["versatility"] = true,
-["intellect"] = true,
+["attackPower"] = true,
+["warriorWrongStance"] = false,
+["atrophicNumbingPoison"] = true,
+["symbioticRelationship"] = true,
+["beacons"] = true,
+["soulstone"] = true,
+["earthShieldOthers"] = false,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["druidWrongForm"] = false,
 ["shamanShields"] = true,
 ["burningRush"] = false,
+},
+["dbVersion"] = 40,
+["readyCheckOnlyOverrides"] = {
+},
+["buffTrackingMode"] = "my_buffs",
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+[264] = {
+["food"] = 1232917,
+["flask"] = 1235108,
+},
+},
+["hideAllInVehicle"] = true,
+["categoryVisibility"] = {
+["custom"] = {
+["hideInPvPMatch"] = true,
+["pvp"] = true,
+},
 },
 ["categorySettings"] = {
 ["self"] = {
@@ -71,9 +97,6 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
-["targeted"] = {
-["showText"] = true,
-},
 ["raid"] = {
 ["showText"] = true,
 ["showBuffReminder"] = false,
@@ -82,31 +105,10 @@ BuffRemindersDB = {
 ["presence"] = {
 ["showText"] = true,
 },
-},
-["readyCheckOnlyOverrides"] = {
-},
-["showLoginMessages"] = false,
-["rememberedConsumables"] = {
-[263] = {
-["rune"] = 1234969,
-["flask"] = 1235111,
-["food"] = 1233767,
-},
-[264] = {
-["food"] = 1232917,
-["flask"] = 1235057,
+["targeted"] = {
+["showText"] = true,
 },
 },
-["customBuffs"] = {
-},
-["hideAllInVehicle"] = true,
-["categoryVisibility"] = {
-["custom"] = {
-["hideInPvPMatch"] = true,
-["pvp"] = true,
-},
-},
-["dbVersion"] = 38,
 },
 },
 }

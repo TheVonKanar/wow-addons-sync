@@ -40,7 +40,7 @@ local defaultTableData = {
 local Configuration = {
 }
 
-local LEM = LibStub('LibEditMode')
+local LEM = ns.LibEditMode
 ns.LEM = LEM
 
 local SPEEDCIRCLE = {
@@ -507,7 +507,7 @@ LEM:AddFrameSettings(anchorFrame, {
       end
       for i, option in ipairs(SOUND_OPTIONS) do
         if option.key and option.mountID then
-          local name, _, _, _, _, _, _, _, _, isCollected  = C_MountJournal.GetMountInfoByID(option.mountID)
+          local name, _, _, _, _, _, _, _, _, isCollected = C_MountJournal.GetMountInfoByID(option.mountID)
           if isCollected then
             CreateDividerAndTitle()
             rootDescription:CreateCheckbox(name, getFunc, setFunc, option.id)

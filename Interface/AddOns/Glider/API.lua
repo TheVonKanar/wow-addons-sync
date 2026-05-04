@@ -1,4 +1,4 @@
-local ns = select(2,...) ---@class (partial) namespace
+local ns = select(2, ...) ---@class (partial) namespace
 ---@class SkyAPI
 local API = {}
 ns.API = API
@@ -17,12 +17,12 @@ local AdvFlying = {
 
 ---@type table<integer, boolean>
 local instances = {
-  [2444] = true, -- Dragon Isles
-  [2454] = true, -- Zaralek Cavern
-  [2516] = true, -- Nokhud Offensive
-  [2522] = true, -- Vault of the Incarnates
-  [2548] = true, -- Emerald Dream
-  [2569] = true, -- Aberrus, the Shadowed Crucible
+  [2444] = true,   -- Dragon Isles
+  [2454] = true,   -- Zaralek Cavern
+  [2516] = true,   -- Nokhud Offensive
+  [2522] = true,   -- Vault of the Incarnates
+  [2548] = true,   -- Emerald Dream
+  [2569] = true,   -- Aberrus, the Shadowed Crucible
 }
 
 local GetGlidingInfo = C_PlayerInfo.GetGlidingInfo
@@ -44,13 +44,13 @@ end
 function API:GetSharedInfo()
   local data = C_Spell.GetSpellCharges(372608)
   if not data then return false, 0, 0, 0, 0, 0, false end
-  return  data.currentCharges < data.maxCharges,
-          data.currentCharges,
-          data.maxCharges,
-          data.cooldownStartTime,
-          data.cooldownDuration,
-          data.chargeModRate,
-          data.cooldownDuration <= 6.003 -- 10.35 base -42%
+  return data.currentCharges < data.maxCharges,
+      data.currentCharges,
+      data.maxCharges,
+      data.cooldownStartTime,
+      data.cooldownDuration,
+      data.chargeModRate,
+      data.cooldownDuration <= 6.003   -- 10.35 base -42%
 end
 
 ---@return boolean IsCharging
@@ -62,12 +62,12 @@ end
 function API:GetSecondWindInfo()
   local data = C_Spell.GetSpellCharges(425782)
   if not data then return false, 0, 0, 0, 0, 0 end
-  return  data.currentCharges < data.maxCharges,
-          data.currentCharges,
-          data.maxCharges,
-          data.cooldownStartTime,
-          data.cooldownDuration,
-          data.chargeModRate
+  return data.currentCharges < data.maxCharges,
+      data.currentCharges,
+      data.maxCharges,
+      data.cooldownStartTime,
+      data.cooldownDuration,
+      data.chargeModRate
 end
 
 ---@return number startTime
@@ -78,11 +78,11 @@ end
 function API:GetWhirlingSurgeInfo()
   local data = C_Spell.GetSpellCooldown(361584)
   if not data then return 0, 0, false, 0, nil end
-  return  data.startTime,
-          data.duration,
-          data.isEnabled,
-          data.modRate,
-          data.activeCategory
+  return data.startTime,
+      data.duration,
+      data.isEnabled,
+      data.modRate,
+      data.activeCategory
 end
 
 ---@return boolean Enabled
@@ -237,7 +237,8 @@ function API:FixPosition(frame)
   local point = 'TOPLEFT'
   y = -((UIParent:GetHeight() - y * scale) / scale);
   frame:ClearAllPoints()
-  frame:SetPoint(point, UIParent, point, PixelUtil.GetNearestPixelSize(x, uiScale) , PixelUtil.GetNearestPixelSize(y, uiScale))
+  frame:SetPoint(point, UIParent, point, PixelUtil.GetNearestPixelSize(x, uiScale),
+    PixelUtil.GetNearestPixelSize(y, uiScale))
   point, x, y = NormalizePosition(frame)
   frame:ClearAllPoints()
   frame:SetPoint(point, UIParent, point, x, y)

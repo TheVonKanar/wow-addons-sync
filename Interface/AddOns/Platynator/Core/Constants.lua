@@ -10,7 +10,7 @@ addonTable.Constants = {
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
-  IsMidnightNext = select(4, GetBuildInfo()) >= 120005,
+  IsMidnightNext = select(4, GetBuildInfo()) >= 120007,
 
   DeathKnightMaxRunes = 6,
 
@@ -62,4 +62,10 @@ addonTable.Constants.OldFontMapping = {
   ["Poppins-SemiBold"] = "Poppins SemiBold",
   ["DiabloHeavy"] = "Diablo Heavy",
   ["AtkinsonHyperlegible-Regular"] = "Atkinson Hyperlegible Next",
+}
+
+addonTable.Constants.PowerMap = {
+  [Enum.PowerType.Mana] = "mana",
+  [Enum.PowerType.Rage] = "rage",
+  [Enum.PowerType.Energy] = "energy",
 }

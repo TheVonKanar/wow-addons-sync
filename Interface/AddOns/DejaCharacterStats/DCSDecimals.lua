@@ -19,274 +19,284 @@ local hidemastery
 --hideatzero gets used in DCSLayouts, so there's small use to make faster access to it here.
 
 local function DCS_Decimals()
-		--version with localisation of PAPERDOLLFRAME_TOOLTIP_FORMAT, HIGHLIGHT_FONT_COLOR_CODE and FONT_COLOR_CODE_CLOSE (doll_tooltip_format, highlight_code and font_color_close)
-	-- Crit Chance
-		--setting of statformat and multiplier values is done by calling function for checkbox (in OnEvent and OnClick)
-		function PaperDollFrame_SetCritChance(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
+	--version with localisation of PAPERDOLLFRAME_TOOLTIP_FORMAT, HIGHLIGHT_FONT_COLOR_CODE and FONT_COLOR_CODE_CLOSE (doll_tooltip_format, highlight_code and font_color_close)
 
-			local rating;
-			local spellCrit, rangedCrit, meleeCrit;
-			local critChance;
-
-			-- Start at 2 to skip physical damage
-			local holySchool = 2;
-			local minCrit = GetSpellCritChance(holySchool);
-			statFrame.spellCrit = {};
-			statFrame.spellCrit[holySchool] = minCrit;
-			--local spellCrit;
-			for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-				spellCrit = GetSpellCritChance(i);
-				minCrit = min(minCrit, spellCrit);
-				statFrame.spellCrit[i] = spellCrit;
-			end
-			spellCrit = minCrit
-			rangedCrit = GetRangedCritChance();
-			meleeCrit = GetCritChance();
-
-			if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-				critChance = spellCrit;
-				rating = CR_CRIT_SPELL;
-			elseif (rangedCrit >= meleeCrit) then
-				critChance = rangedCrit;
-				rating = CR_CRIT_RANGED;
-			else
-				critChance = meleeCrit;
-				rating = CR_CRIT_MELEE;
-			end
-		-- PaperDollFrame_SetLabelAndText Format Change
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, dcs_format(statformat, critChance), false, round(multiplier*critChance)/multiplier);
-			else --in PaperDollFrame.lua true instead of false
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, dcs_format(statformat, critChance), false, critChance);
-			end
-			statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, STAT_CRITICAL_STRIKE).." "..dcs_format("%.2f%%", critChance)..font_color_close;
-			local extraCritChance = GetCombatRatingBonus(rating);
-			local extraCritRating = GetCombatRating(rating);
-			if (GetCritChanceProvidesParryEffect()) then
-				statFrame.tooltip2 = dcs_format(CR_CRIT_PARRY_RATING_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating));
-			else
-				statFrame.tooltip2 = dcs_format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance);
-			end
-			statFrame:Show();
+-- Crit Chance
+	--setting of statformat and multiplier values is done by calling function for checkbox (in OnEvent and OnClick)
+	function PaperDollFrame_SetCritChance(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
 		end
 
-	-- Haste Chance
-		function PaperDollFrame_SetHaste(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
+		local rating;
+		local spellCrit, rangedCrit, meleeCrit;
+		local critChance;
 
-			local haste = GetHaste();
-			local rating = CR_HASTE_MELEE;
+		-- Start at 2 to skip physical damage
+		local holySchool = 2;
+		local minCrit = GetSpellCritChance(holySchool);
+		statFrame.spellCrit = {};
+		statFrame.spellCrit[holySchool] = minCrit;
+		--local spellCrit;
+		for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+			spellCrit = GetSpellCritChance(i);
+			minCrit = min(minCrit, spellCrit);
+			statFrame.spellCrit[i] = spellCrit;
+		end
+		spellCrit = minCrit
+		rangedCrit = GetRangedCritChance();
+		meleeCrit = GetCritChance();
 
-			local hasteFormatString;
-			if (haste < 0 and not GetPVPGearStatRules()) then
-				hasteFormatString = RED_FONT_COLOR_CODE.."%s"..font_color_close;
-			else
-				hasteFormatString = "+%s";
-			end
-		-- PaperDollFrame_SetLabelAndText Format Change
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_HASTE, dcs_format(hasteFormatString, dcs_format(statformat, haste)), false, round(multiplier*haste)/multiplier);
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_HASTE, dcs_format(hasteFormatString, dcs_format(statformat, haste)), false, haste);
-			end
+		if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+			critChance = spellCrit;
+			rating = CR_CRIT_SPELL;
+		elseif (rangedCrit >= meleeCrit) then
+			critChance = rangedCrit;
+			rating = CR_CRIT_RANGED;
+		else
+			critChance = meleeCrit;
+			rating = CR_CRIT_MELEE;
+		end
+	-- PaperDollFrame_SetLabelAndText Format Change
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, dcs_format(statformat, critChance), false, round(multiplier*critChance)/multiplier);
+		else --in PaperDollFrame.lua true instead of false
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, dcs_format(statformat, critChance), false, critChance);
+		end
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, STAT_CRITICAL_STRIKE).." "..dcs_format("%.2f%%", critChance)..font_color_close;
+		local extraCritChance = GetCombatRatingBonus(rating);
+		local extraCritRating = GetCombatRating(rating);
+		if (GetCritChanceProvidesParryEffect()) then
+			statFrame.tooltip2 = dcs_format(CR_CRIT_PARRY_RATING_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating));
+		else
+			statFrame.tooltip2 = dcs_format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance);
+		end
+		statFrame:Show();
+	end
 
-			statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_HASTE) .. " " .. dcs_format(hasteFormatString, dcs_format("%.2f%%", haste)) .. font_color_close;
-
-			local _, class = UnitClass(unit);
-			statFrame.tooltip2 = _G["STAT_HASTE_"..class.."_TOOLTIP"];
-			if (not statFrame.tooltip2) then
-				statFrame.tooltip2 = STAT_HASTE_TOOLTIP;
-			end
-			statFrame.tooltip2 = statFrame.tooltip2 .. dcs_format(STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating));
-
-			statFrame:Show();
+-- Haste Chance
+	function PaperDollFrame_SetHaste(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
 		end
 
-	-- Versatility
-		function PaperDollFrame_SetVersatility(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
+		local haste = GetHaste();
+		local rating = CR_HASTE_MELEE;
 
-			local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
-			local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-			local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-		-- PaperDollFrame_SetLabelAndText Format Change
-			--local result
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_VERSATILITY, dcs_format(statformat, versatilityDamageBonus) .. " / " .. dcs_format(statformat, versatilityDamageTakenReduction), false, round(multiplier*versatilityDamageBonus)/multiplier);
-				--result = round(multiplier*versatilityDamageBonus)/multiplier
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_VERSATILITY, dcs_format(statformat, versatilityDamageBonus) .. " / " .. dcs_format(statformat, versatilityDamageTakenReduction), false, versatilityDamageBonus);
-				--result = versatilityDamageBonus
-			end
-			--print("vesratility",result)
-			statFrame.tooltip = highlight_code .. dcs_format(VERSATILITY_TOOLTIP_FORMAT, STAT_VERSATILITY, versatilityDamageBonus, versatilityDamageTakenReduction) .. font_color_close;
-			statFrame.tooltip2 = dcs_format(CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction);
-
-			statFrame:Show();
+		local hasteFormatString;
+		if (haste < 0 and not GetPVPGearStatRules()) then
+			hasteFormatString = RED_FONT_COLOR_CODE.."%s"..font_color_close;
+		else
+			hasteFormatString = "+%s";
+		end
+	-- PaperDollFrame_SetLabelAndText Format Change
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_HASTE, dcs_format(hasteFormatString, dcs_format(statformat, haste)), false, round(multiplier*haste)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_HASTE, dcs_format(hasteFormatString, dcs_format(statformat, haste)), false, haste);
 		end
 
-	-- Mastery
-		function PaperDollFrame_SetMastery(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
-			local color_mastery 
-			if namespace.locale == "zhTW" then
-				color_mastery = STAT_MASTERY .. "：" --Chinese colon
-			else
-				color_mastery = STAT_MASTERY ..":"
-			end
-			local color_format = statformat
-			-- Mastery is always shown now in Shadowlands
-			-- if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
-			-- 	if not namespace.configMode then
-			-- 		if hidemastery then
-			-- 			statFrame:Hide();
-			-- 			--print("hiding")
-			-- 			return;
-			-- 		end
-			-- 	end
-			-- 	color_mastery = "|cff7f7f7f" .. color_mastery .. "|r"
-			-- 	color_format = "|cff7f7f7f" .. color_format .. "|r"
-			-- end
-			local mastery = GetMasteryEffect();
-		-- PaperDollFrame_SetLabelAndText Format Change
-    
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, "", dcs_format(color_format, mastery), false, round(multiplier*mastery)/multiplier);
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, "", dcs_format(color_format, mastery), false, mastery);
-			end
-			statFrame.Label:SetText(color_mastery)
-			statFrame.onEnterFunc = Mastery_OnEnter;
-			statFrame:Show();
+		statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_HASTE) .. " " .. dcs_format(hasteFormatString, dcs_format("%.2f%%", haste)) .. font_color_close;
+
+		local _, class = UnitClass(unit);
+		statFrame.tooltip2 = _G["STAT_HASTE_"..class.."_TOOLTIP"];
+		if (not statFrame.tooltip2) then
+			statFrame.tooltip2 = STAT_HASTE_TOOLTIP;
 		end
-			
+		statFrame.tooltip2 = statFrame.tooltip2 .. dcs_format(STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating));
 
-	-- Leech (Lifesteal)
-		function PaperDollFrame_SetLifesteal(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
+		statFrame:Show();
+	end
 
-			local lifesteal = GetLifesteal();
-		-- PaperDollFrame_SetLabelAndText Format Change
-			--local result
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_LIFESTEAL, dcs_format(statformat, lifesteal), false, round(multiplier*lifesteal)/multiplier);
-				--result = round(multiplier*lifesteal)/multiplier
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_LIFESTEAL, dcs_format(statformat, lifesteal), false, lifesteal);
-				--result = lifesteal
-			end
-			--print("leech",result)
-			statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_LIFESTEAL) .. " " .. dcs_format("%.2f%%", lifesteal) .. font_color_close;
-
-			statFrame.tooltip2 = dcs_format(CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL));
-
-			statFrame:Show();
+-- Versatility
+	function PaperDollFrame_SetVersatility(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
 		end
 
-	-- Avoidance
-		function PaperDollFrame_SetAvoidance(statFrame, unit)
-			if ( unit ~= "player" ) then
-				statFrame:Hide();
-				return;
-			end
-
-			local avoidance = GetAvoidance();
-		-- PaperDollFrame_SetLabelAndText Format Change
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVOIDANCE, dcs_format(statformat, avoidance), false, round(multiplier*avoidance)/multiplier);
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVOIDANCE, dcs_format(statformat, avoidance), false, avoidance);
-			end
-			statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_AVOIDANCE) .. " " .. dcs_format("%.2f%%", avoidance) .. font_color_close;
-
-			statFrame.tooltip2 = dcs_format(CR_AVOIDANCE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE));
-
-			statFrame:Show();
+		local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
+		local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
+		local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+	-- PaperDollFrame_SetLabelAndText Format Change
+		--local result
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_VERSATILITY, dcs_format(statformat, versatilityDamageBonus) .. " / " .. dcs_format(statformat, versatilityDamageTakenReduction), false, round(multiplier*versatilityDamageBonus)/multiplier);
+			--result = round(multiplier*versatilityDamageBonus)/multiplier
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_VERSATILITY, dcs_format(statformat, versatilityDamageBonus) .. " / " .. dcs_format(statformat, versatilityDamageTakenReduction), false, versatilityDamageBonus);
+			--result = versatilityDamageBonus
 		end
+		--print("vesratility",result)
+		statFrame.tooltip = highlight_code .. dcs_format(VERSATILITY_TOOLTIP_FORMAT, STAT_VERSATILITY, versatilityDamageBonus, versatilityDamageTakenReduction) .. font_color_close;
+		statFrame.tooltip2 = dcs_format(CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction);
 
-	-- Dodge Chance
-		function PaperDollFrame_SetDodge(statFrame, unit)
-			if (unit ~= "player") then
-				statFrame:Hide();
-				return;
-			end
+		statFrame:Show();
+	end
 
-			local chance = GetDodgeChance();
-		-- PaperDollFrame_SetLabelAndText Format Change
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, dcs_format(statformat, chance), false, chance);
-			end
-			statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, DODGE_CHANCE).." "..string.format("%.2f", chance).."%"..font_color_close;
-			statFrame.tooltip2 = dcs_format(CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE));
-			statFrame:Show();
+-- Mastery
+	function PaperDollFrame_SetMastery(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
 		end
-
-	-- Parry Chance
-		function PaperDollFrame_SetParry(statFrame, unit)
-			if (unit ~= "player") then
-				statFrame:Hide();
-				return;
-			end
-
-			local chance = GetParryChance();
-		-- PaperDollFrame_SetLabelAndText Format Change
-			if notexactlyzero then
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
-			else
-				PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, dcs_format(statformat, chance), false, chance);
-			end
-			statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, PARRY_CHANCE).." "..dcs_format("%.2f", chance).."%"..font_color_close;
-			statFrame.tooltip2 = dcs_format(CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY));
-			statFrame:Show();
+		local color_mastery 
+		if namespace.locale == "zhTW" then
+			color_mastery = STAT_MASTERY .. "：" --Chinese colon
+		else
+			color_mastery = STAT_MASTERY ..":"
 		end
+		local color_format = statformat
+		-- Mastery is always shown now in Shadowlands
+		-- if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
+		-- 	if not namespace.configMode then
+		-- 		if hidemastery then
+		-- 			statFrame:Hide();
+		-- 			--print("hiding")
+		-- 			return;
+		-- 		end
+		-- 	end
+		-- 	color_mastery = "|cff7f7f7f" .. color_mastery .. "|r"
+		-- 	color_format = "|cff7f7f7f" .. color_format .. "|r"
+		-- end
+		local mastery = GetMasteryEffect();
+	-- PaperDollFrame_SetLabelAndText Format Change
 
-	-- Block Chance
-		function PaperDollFrame_SetBlock(statFrame, unit)
-			if (unit ~= "player") then
-				statFrame:Hide();
-				return;
-			end
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, "", dcs_format(color_format, mastery), false, round(multiplier*mastery)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, "", dcs_format(color_format, mastery), false, mastery);
+		end
+		statFrame.Label:SetText(color_mastery)
+		statFrame.onEnterFunc = Mastery_OnEnter;
+		statFrame:Show();
+	end
 		
-			local chance = GetBlockChance();
-			
-            if notexactlyzero then
-                PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
-            else
-                PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, dcs_format(statformat, chance), false, chance);
-			end
-			
-			statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, BLOCK_CHANCE).." "..string.format("%.2F", chance).."%"..FONT_COLOR_CODE_CLOSE;
-		
-			local shieldBlockArmor = GetShieldBlock();
-			local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit));
-			local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
-		
-			statFrame.tooltip2 = CR_BLOCK_TOOLTIP:format(blockArmorReduction);
-			if (blockArmorReductionAgainstTarget) then
-				statFrame.tooltip3 = format(STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget);
-			else
-				statFrame.tooltip3 = nil;
-			end
-			statFrame:Show();
+
+-- Leech (Lifesteal)
+	function PaperDollFrame_SetLifesteal(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
 		end
+
+		local lifesteal = GetLifesteal();
+	-- PaperDollFrame_SetLabelAndText Format Change
+		--local result
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_LIFESTEAL, dcs_format(statformat, lifesteal), false, round(multiplier*lifesteal)/multiplier);
+			--result = round(multiplier*lifesteal)/multiplier
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_LIFESTEAL, dcs_format(statformat, lifesteal), false, lifesteal);
+			--result = lifesteal
+		end
+		--print("leech",result)
+		statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_LIFESTEAL) .. " " .. dcs_format("%.2f%%", lifesteal) .. font_color_close;
+
+		statFrame.tooltip2 = dcs_format(CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL));
+
+		statFrame:Show();
+	end
+
+-- Avoidance
+	function PaperDollFrame_SetAvoidance(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+
+		local avoidance = GetAvoidance();
+	-- PaperDollFrame_SetLabelAndText Format Change
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_AVOIDANCE, dcs_format(statformat, avoidance), false, round(multiplier*avoidance)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_AVOIDANCE, dcs_format(statformat, avoidance), false, avoidance);
+		end
+		statFrame.tooltip = highlight_code .. dcs_format(doll_tooltip_format, STAT_AVOIDANCE) .. " " .. dcs_format("%.2f%%", avoidance) .. font_color_close;
+
+		statFrame.tooltip2 = dcs_format(CR_AVOIDANCE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE));
+
+		statFrame:Show();
+	end
+
+-- Dodge Chance
+	function PaperDollFrame_SetDodge(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if (unit ~= "player") then
+			statFrame:Hide();
+			return;
+		end
+
+		local chance = GetDodgeChance();
+	-- PaperDollFrame_SetLabelAndText Format Change
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, dcs_format(statformat, chance), false, chance);
+		end
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, DODGE_CHANCE).." "..string.format("%.2f", chance).."%"..font_color_close;
+		statFrame.tooltip2 = dcs_format(CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE));
+		statFrame:Show();
+	end
+
+-- Parry Chance
+	function PaperDollFrame_SetParry(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if (unit ~= "player") then
+			statFrame:Hide();
+			return;
+		end
+
+		local chance = GetParryChance();
+	-- PaperDollFrame_SetLabelAndText Format Change
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, dcs_format(statformat, chance), false, chance);
+		end
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, PARRY_CHANCE).." "..dcs_format("%.2f", chance).."%"..font_color_close;
+		statFrame.tooltip2 = dcs_format(CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY));
+		statFrame:Show();
+	end
+
+-- Block Chance
+	function PaperDollFrame_SetBlock(statFrame, unit)
+		if namespace.naughthysecrets() then return end
+		if (unit ~= "player") then
+			statFrame:Hide();
+			return;
+		end
+	
+		local chance = GetBlockChance();
+		
+		if notexactlyzero then
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, dcs_format(statformat, chance), false, round(multiplier*chance)/multiplier);
+		else
+			PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, dcs_format(statformat, chance), false, chance);
+		end
+		
+		statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, BLOCK_CHANCE).." "..string.format("%.2F", chance).."%"..FONT_COLOR_CODE_CLOSE;
+	
+		local shieldBlockArmor = GetShieldBlock();
+		local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit));
+		local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
+	
+		statFrame.tooltip2 = CR_BLOCK_TOOLTIP:format(blockArmorReduction);
+		if (blockArmorReductionAgainstTarget) then
+			statFrame.tooltip3 = format(STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget);
+		else
+			statFrame.tooltip3 = nil;
+		end
+		statFrame:Show();
+	end
 end
 
 	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowDecimalsChecked = {

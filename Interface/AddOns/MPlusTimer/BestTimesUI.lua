@@ -359,7 +359,7 @@ function MPT:CreatePBFrame()
 
         local version = "v"..C_AddOns.GetAddOnMetadata("MPlusTimer", "Version")
         --[==[@debug@
-        if version == "v1.0.28" then
+        if version == "v1.0.33" then
             version = L["Dev Build"]
         end
         --@end-debug@]==]

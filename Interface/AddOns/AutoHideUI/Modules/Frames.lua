@@ -5,7 +5,63 @@ local Frames = Private.Frames
 
 local minimapHelperFrameList = {} -- mouseover helpers for when minimap is hidden
 local addonLoadedStates = {}
-local FRAME_INFO_TEMPLATE = {frames = {}, args = {}}
+local FRAME_INFO_TEMPLATE = {frames = {}, args = {}, frameString = ""}
+local DYNAMIC_ADDON_FRAMES = {}
+
+------------------
+-- Spell Flyout Frame
+------------------
+
+local spellFlyoutFrame = SpellFlyout
+local IS_HOOKED_LABFlyoutHandlerFrame = false
+
+local function IsDescendantOf(frame, potentialParent)
+    local p = frame
+    while p do
+        if p == potentialParent then
+            return true
+        end
+        p = p:GetParent()
+    end
+    return false
+end
+
+local function SpellFlyoutOnShow()
+    -- need to find the actionbar of the button SpellFlyout is anchored to.
+    -- that bar should belong to mouseoverFrames, otherwise we don't care about it anyway.
+    -- if the bar is identified, we add the SpellFlyout to mouseoverFrames with the bar's group settings.
+    local mouseoverFrames = Main:GetMouseoverFrames()
+    for frame, groupInfo in pairs(mouseoverFrames) do
+        if IsDescendantOf(spellFlyoutFrame, frame) then
+            mouseoverFrames[spellFlyoutFrame] = groupInfo
+            break
+        end
+    end
+end
+
+local function SpellFlyoutOnHide()
+    local mouseoverFrames = Main:GetMouseoverFrames()
+    mouseoverFrames[spellFlyoutFrame] = nil
+end
+
+SpellFlyout:HookScript("OnShow", function() RunNextFrame(SpellFlyoutOnShow) end)
+SpellFlyout:HookScript("OnHide", function() RunNextFrame(SpellFlyoutOnHide) end)
+
+
+local function HookLABFlyoutHandlerFrame()
+    if IS_HOOKED_LABFlyoutHandlerFrame or not LABFlyoutHandlerFrame then
+        return
+    end
+
+    LABFlyoutHandlerFrame:HookScript("OnShow", function() RunNextFrame(SpellFlyoutOnShow) end)
+    LABFlyoutHandlerFrame:HookScript("OnHide", function() RunNextFrame(SpellFlyoutOnHide) end)
+    IS_HOOKED_LABFlyoutHandlerFrame = true
+    spellFlyoutFrame = LABFlyoutHandlerFrame
+end
+
+------------------
+-- Frames
+------------------
 
 local function MINIMAPCLUSTER_CUSTOMGETTER(frameString)
     local frameList = {}
@@ -142,7 +198,7 @@ end
 
 local ADDON_FRAME_MAPPING = {
     {
-        name = "Unhalted Unit Frames",
+        name = "UnhaltedUnitFrames",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("UnhaltedUnitFrames") end,
         frames = {
             PlayerFrame = {"UUF_Player"},
@@ -151,6 +207,14 @@ local ADDON_FRAME_MAPPING = {
             PetFrame = {"UUF_Pet", "UUF_PetTarget"},
         },
         args = {forceAlpha = true},
+    },
+    {
+        name = "UnhaltedUnitFrames_CastBar",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("UnhaltedUnitFrames") end,
+        frames = {
+            PlayerCastingBarFrame = {"UUF_Player_CastBar"}
+        },
+        args = {forceAlpha = true, includeDefaultFrames = true},
     },
     {
         name = "Dominos",
@@ -173,8 +237,24 @@ local ADDON_FRAME_MAPPING = {
         args = {},
     },
     {
+        name = "DominosCastBar",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("Dominos_Cast") end,
+        frames = {
+            PlayerCastingBarFrame = {"DominosFramecast"},
+        },
+        args = {forceAlpha = true},
+    },
+    {
         name = "Bartender",
-        isLoaded = function() return C_AddOns.IsAddOnLoaded("Bartender4") end,
+        isLoaded = function() 
+            local isLoaded = C_AddOns.IsAddOnLoaded("Bartender4")
+
+            if isLoaded then
+                HookLABFlyoutHandlerFrame()
+            end
+
+            return isLoaded
+        end,
         frames = {
             MainActionBar = {},
             MultiBarBottomLeft = {},
@@ -190,7 +270,10 @@ local ADDON_FRAME_MAPPING = {
             BagsBar = {},
             -- MainStatusTrackingBarContainer = {"DominosFrameexp"},
         },
-        customGetter = function(frameString) return BARTENDER_CUSTOMGETTER(frameString) end,
+        customGetter = function(frameString)
+            HookLABFlyoutHandlerFrame()
+            return BARTENDER_CUSTOMGETTER(frameString)
+        end,
         args = {forceAlpha = true},
     },
     {
@@ -241,7 +324,15 @@ local ADDON_FRAME_MAPPING = {
     },
     {
         name = "ElvUI_ActionBars",
-        isLoaded = function() return ElvUI and ElvUI[1] and ElvUI[1]:GetModule("ActionBars") and ElvUI[1]:GetModule("ActionBars").Initialized end,
+        isLoaded = function()
+            local isLoaded = ElvUI and ElvUI[1] and ElvUI[1]:GetModule("ActionBars") and ElvUI[1]:GetModule("ActionBars").Initialized
+
+            if isLoaded then
+                HookLABFlyoutHandlerFrame()
+            end
+
+            return isLoaded
+        end,
         frames = {
             MainActionBar = {"ElvUI_Bar1", "ElvUI_Bar2", "ElvUI_Bar7", "ElvUI_Bar8", "ElvUI_Bar9", "ElvUI_Bar10"}, -- stealth and shapeshift bars
             MultiBarBottomLeft = {"ElvUI_Bar6"},
@@ -347,29 +438,146 @@ local ADDON_FRAME_MAPPING = {
         name = "EllesmereUI_UnitFrames",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIUnitFrames") end,
         frames = {
-            PlayerFrame = {"EllesmereUIUnitFrames_Player", "ERB_PrimaryBar", "ERB_SecondaryFrame", "EllesmereUIResourceBarsFrame"},
+            PlayerFrame = {"EllesmereUIUnitFrames_Player"},
             TargetFrame = {"EllesmereUIUnitFrames_Target", "EllesmereUIUnitFrames_TargetTarget"},
             FocusFrame = {"EllesmereUIUnitFrames_Focus", "EllesmereUIUnitFrames_FocusTarget"},
             PetFrame = {"EllesmereUIUnitFrames_Pet"},
         },
         args = {forceAlpha = true},
     },
-    -- {
-    --     name = "EllesmereUI_CDM",
-    --     isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUICooldownManager") end,
-    --     frames = {
-    --         EssentialCooldownViewer = {"ECME_CDMBar_cooldowns"},
-    --         UtilityCooldownViewer = {"ECME_CDMBar_utility"},
-    --         BuffIconCooldownViewer = {"ECME_CDMBar_buffs"},
-    --         BuffBarCooldownViewer = {"ECME_CDMBar_buffs"},
-    --     },
-    --     args = {forceAlpha = true},
-    -- },
+    {
+        name = "EllesmereUI_CDM",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUICooldownManager") end,
+        frames = {
+            EssentialCooldownViewer = {"ECME_CDMBar_cooldowns"},
+            UtilityCooldownViewer = {"ECME_CDMBar_utility"},
+            BuffIconCooldownViewer = {"ECME_CDMBar_buffs"},
+        },
+        args = {forceAlpha = true, includeDefaultFrames = true, forceAlphaDefault = true},
+    },
+    {
+        name = "EllesmereUI_PlayerCastBar",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIResourceBars") end,
+        frames = {
+            PlayerCastingBarFrame = {"ERB_CastBar"},
+        },
+        args = {forceAlpha = true},
+    },
     {
         name = "EllesmereUI_ResourceBars",
         isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIResourceBars") end,
         frames = {
-            PlayerCastingBarFrame = {"ERB_CastBar"},
+            PersonalResourceDisplayFrame = {},
+        },
+        customGetter = function()
+            local frameList = {}
+
+            for _,frameString in pairs({"ERB_PrimaryBar", "ERB_SecondaryFrame", "EllesmereUIResourceBarsFrame"}) do
+                local frame = Frames.GetFrameObjectFromString(frameString)
+                if frame then
+                    tinsert(frameList, frame)
+                end
+            end
+
+            return frameList
+        end,
+        args = {forceAlpha = true, includeDefaultFrames = true},
+    },
+    {
+        name = "BasicMinimap",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("BasicMinimap") end,
+        frames = {
+            MinimapCluster = {},
+        },
+        args = {},
+        customGetter = function()
+            local frameList = MINIMAPCLUSTER_CUSTOMGETTER("Minimap")
+            return frameList
+        end,
+    },
+    {
+        name = "AyijeCDM_ResourceBars",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("Ayije_CDM") end,
+        frames = {
+            PersonalResourceDisplayFrame = {},
+        },
+        customGetter = function()
+            local Ayije_CDM = _G["Ayije_CDM"]
+            local frameList = {}
+
+            if not Ayije_CDM or not Ayije_CDM.resourceBars then
+                return frameList
+            end
+
+            for _,frame in pairs(Ayije_CDM.resourceBars) do
+                tinsert(frameList, frame)
+            end
+
+            if not DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"] then
+                hooksecurefunc(Ayije_CDM, "UpdateResources", function()
+                    C_Timer.After(0.15, Frames.UpdateAyijeResourceBars)
+                end)
+            end
+
+            DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"] = {
+                lastUpdate = GetTime(),
+                knownFrames = {},
+            }
+
+            for _, frame in ipairs(frameList) do
+                DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"].knownFrames[frame] = true
+            end
+
+            -- this is for the border when the option to wrap resource bars is checked
+            for _, v in pairs(Ayije_CDM.resourceUnifiedHosts) do
+                tinsert(frameList, v.host)
+                if v.hSeparators then
+                    for _, separator in pairs(v.hSeparators) do
+                        tinsert(frameList, separator)
+                    end
+                end
+            end
+
+            return frameList
+        end,
+        args = {forceAlpha = true, includeDefaultFrames = true},
+    },
+    {
+        name = "AyijeCDM_Trinkets",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("Ayije_CDM") and Ayije_CDM and Ayije_CDM.db.trinketsMode == "essential" end,
+        frames = {
+            EssentialCooldownViewer = {},
+        },
+        customGetter = function()
+            local Ayije_CDM = _G["Ayije_CDM"]
+            local trinketFrames = Ayije_CDM and Ayije_CDM:GetTrinketIconFrames()
+            local frameList = {}
+
+            if not trinketFrames then
+                return frameList
+            else
+                for _, trinketFrame in ipairs(trinketFrames) do
+                    tinsert(frameList, trinketFrame)
+                end
+            end
+
+            return frameList
+        end,
+        args = {forceAlpha = true, includeDefaultFrames = true, forceAlphaDefault = true,},
+    },
+    {
+        name = "AyijeCDM_CastBar",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("Ayije_CDM") and Ayije_CDM and Ayije_CDM.db.castBarEnabled end,
+        frames = {
+            PlayerCastingBarFrame = {"Ayije_CDM_CastBarContainer"},
+        },
+        args = {forceAlpha = true, includeDefaultFrames = true},
+    },
+    {
+        name = "DandersFrames",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("DandersFrames") end,
+        frames = {
+            PartyFrame = {"DandersFramesContainer", "DandersPartyContainer", "DandersPartyHeader"},
         },
         args = {forceAlpha = true},
     },
@@ -469,7 +677,11 @@ local function GetFramesByArg(arg, val, includeDefault)
         local isValidFrame = includeDefault or not frameInfo.args.isDefault
         if isInUse and isValidFrame and frameInfo.args[arg] == val then
             for _, frame in pairs(frameInfo.frames) do
-                frameList[frame] = frameInfo
+                local frameString = frame:GetName()
+                -- this may be a mix of addon and default frames. don't want to operate on default frames.
+                if (not frameString or not frameInfo.args.includeDefaultFrames) or (frameString ~= frameInfo.frameString) or (frameInfo.args[arg.."Default"]) then
+                    frameList[frame] = frameInfo
+                end
             end
         end
     end
@@ -585,8 +797,9 @@ local function CreateFrameGroup(groupDB, dbIndex)
     return groupInfo
 end
 
-local function CreateFrameInfo(frameList, args)
+local function CreateFrameInfo(frameList, frameString, args)
     local frameInfo = CopyTable(FRAME_INFO_TEMPLATE)
+    frameInfo.frameString = frameString
     frameInfo.frames = frameList
     if args then
         frameInfo.args = args
@@ -658,7 +871,7 @@ local function CheckForAddOnFrames(frameString, groupDB)
 
             frameList, args = CheckForAddOnStrings(frameString, addonInfo)
             if frameList then
-                local frameInfo = CreateFrameInfo(frameList, args)
+                local frameInfo = CreateFrameInfo(frameList, frameString, args)
                 return frameInfo
             end
 
@@ -670,8 +883,15 @@ local function CheckForAddOnFrames(frameString, groupDB)
                 args = CopyTable(addonInfo.args)
             end
 
+            if frameList and args.includeDefaultFrames then
+                local defaultFrame = Frames.GetFrameObjectFromString(frameString)
+                if defaultFrame then
+                    tinsert(frameList, defaultFrame)
+                end
+            end
+
             if frameList then
-                local frameInfo = CreateFrameInfo(frameList, args)
+                local frameInfo = CreateFrameInfo(frameList, frameString, args)
                 frameInfo.args.forceAlpha = frameInfo.args.forceAlpha and groupDB.config.forceAlpha
                 return frameInfo
             end
@@ -711,7 +931,7 @@ local function HandleSpecialFrame(frameString, specialFrame)
         specialFrame.onAdded()
     end
 
-    local frameInfo = CreateFrameInfo(frameList, args)
+    local frameInfo = CreateFrameInfo(frameList, frameString, args)
 
     return frameInfo
 end
@@ -737,7 +957,7 @@ local function GetAllFrameObjectsFromString(frameString, groupDB)
     end
 
     local frameList = {frameObject}
-    local frameInfo = CreateFrameInfo(frameList)
+    local frameInfo = CreateFrameInfo(frameList, frameString)
     frameInfo.args.isDefault = IsDefaultFrame(frameString)
 
     return frameInfo
@@ -786,7 +1006,7 @@ local function CreateActiveFramesList()
                     group = info.group,
                     isInUse = info.args.isInUse,
                     isCustom = info.args.isCustom,
-                    name = frame:GetName()
+                    name = frame:GetName() or ""
                 }
             end
         end
@@ -884,4 +1104,51 @@ function Frames.InitFrames()
     FinishVisibilityFrames()
     ReparentAllCustomFrames()
     ReplaceAllAlphaFunctions()
+end
+
+------------------
+-- Special Workarounds
+------------------
+
+-- Ayije_CDM creates resourceBars as they are needed, for example when shapeshifting or respeccing.
+-- need to update the frame lists when that happens. this is run after a 0.15s delay.
+function Frames.UpdateAyijeResourceBars()
+    if not Main.activeStrings["PersonalResourceDisplayFrame"].args.isInUse then
+        return
+    end
+
+    -- throttle because this gets called multiple times at once
+    local currentTime = GetTime()
+    if currentTime - DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"].lastUpdate < 1 then
+        return
+    end
+    DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"].lastUpdate = currentTime
+
+    local knownFrames = DYNAMIC_ADDON_FRAMES["AyijeCDM_ResourceBars"].knownFrames
+    local newFrames = {}
+
+    for _, frame in pairs(Ayije_CDM.resourceBars) do
+        if not knownFrames[frame] then
+            tinsert(newFrames, frame)
+            knownFrames[frame] = true
+        end
+    end
+
+    if #newFrames == 0 then
+        return
+    end
+
+    local groupIndex = Main.activeStrings["PersonalResourceDisplayFrame"].group.index
+    local groupInfo = Main.activeGroups[groupIndex]
+    local groupFrames = groupInfo.frames
+    local activeStringFrames = Main.activeStrings["PersonalResourceDisplayFrame"].frames
+
+    for _, newFrame in ipairs(newFrames) do
+        table.insert(groupFrames, newFrame)
+        table.insert(activeStringFrames, newFrame)
+        ReplaceAlphaFunctions(newFrame, groupInfo)
+        newFrame:_origSetAlpha(groupInfo.states.endAlpha)
+    end
+
+    Main.CreateMouseoverLists()
 end

@@ -369,9 +369,6 @@ function M:ResetAllSettings()
 	elseif self.UpdatePrivateAuraAnchorPosition then
 		self:UpdatePrivateAuraAnchorPosition()
 	end
-	if self.UpdatePrivateAuraFrames then
-		self:UpdatePrivateAuraFrames()
-	end
 	if self.UpdateCombatTimerAppearance then
 		self:UpdateCombatTimerAppearance()
 	end
@@ -399,7 +396,6 @@ local function applyFullConfig()
 	if M.UpdateBarsAnchorPosition then M:UpdateBarsAnchorPosition() end
 	if M.UpdatePrivateAuraAnchor then M:UpdatePrivateAuraAnchor()
 	elseif M.UpdatePrivateAuraAnchorPosition then M:UpdatePrivateAuraAnchorPosition() end
-	if M.UpdatePrivateAuraFrames then M:UpdatePrivateAuraFrames() end
 	if M.UpdateCombatTimerAppearance then M:UpdateCombatTimerAppearance() end
 	if M.UpdateCombatTimerState then M:UpdateCombatTimerState() end
 	requestEncounterEventColorRefresh()
@@ -1044,11 +1040,17 @@ function M:ApplyPrivateAuraEnabled(enabled)
 	if M.UpdatePrivateAuraAnchor then
 		M:UpdatePrivateAuraAnchor()
 	end
-	if M.UpdatePrivateAuraFrames then
-		M:UpdatePrivateAuraFrames()
-	end
 	if pc.enabled and M._testActive and M.ShowTestPrivateAura then
 		M:ShowTestPrivateAura(true)
+	end
+end
+
+function M:ApplyPrivateAuraHideBorder(hide)
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.hideBorder = hide and true or false
+	M.SyncLiveConfig()
+	if M.UpdatePrivateAuraAnchor then
+		M:UpdatePrivateAuraAnchor()
 	end
 end
 
@@ -2269,6 +2271,15 @@ function M:CreateSettingsWindow()
 			end,
 			1
 		)
+
+		local hideBorder = AG:Create("CheckBox")
+		hideBorder:SetLabel("Hide Border")
+		hideBorder:SetValue(SimpleBossModsDB.cfg.privateAuras.hideBorder == true)
+		hideBorder:SetFullWidth(true)
+		hideBorder:SetCallback("OnValueChanged", function(_, _, value)
+			addon:ApplyPrivateAuraHideBorder(value)
+		end)
+		layout:AddChild(hideBorder)
 	end
 
 	local status = { selected = "General" }

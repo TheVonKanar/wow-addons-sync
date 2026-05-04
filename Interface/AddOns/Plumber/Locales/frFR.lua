@@ -17,7 +17,7 @@ BINDING_NAME_PLUMBER_QUESTWATCH_PREVIOUS = "Se concentrer sur la quête précéd
 L["Addon Name Colon"] =  "Plumber : ";
 L["Module Control"] = "Contrôle du module";
 L["Quick Slot Generic Description"] = "\n\n*L'emplacement rapide est un ensemble de boutons cliquables qui apparaissent sous certaines conditions.";
-L["Quick Slot Edit Mode"] = "Mode Édition";
+L["Quick Slot Edit Mode"] = HUD_EDIT_MODE_MENU or "Mode Édition";
 L["Quick Slot High Contrast Mode"] = "Activer / désactiver le mode contraste élevé";
 L["Quick Slot Reposition"] = "Changer de position";
 L["Quick Slot Layout"] = "Mise en page";
@@ -50,7 +50,7 @@ L["Colon With Space"] = " : ";
 
 
 --Settings Category
-L["SC Signature"] = "Fonctionnalités phares";
+L["SC Signature"] = "Meilleures fonctionnalités";
 L["SC Current"] = "Contenu actuel";
 L["SC ActionBar"] = "Barres d'action";
 L["SC Chat"] = "Chat";
@@ -272,6 +272,7 @@ L["ModuleName TooltipTransmogEnsemble"] = "Ensembles de transmogrification";
 L["ModuleDescription TooltipTransmogEnsemble"] = "- Affiche le nombre d'apparences d'un ensemble à collectionner.\n\n- Correction du problème où l'infobulle indiquait « Déjà connu » mais vous pouviez quand même l'utiliser pour débloquer de nouvelles apparences.";
 L["Collected Appearances"] = "Apparences collectées";
 L["Collected Items"] = "Objets collectés";
+L["Other Player Classes"] = "Autres classes de joueurs";
 
 
 --Tooltip Housing
@@ -654,25 +655,25 @@ L["Reward Available"] = "Récompense dispo.";  --As brief as possible
 L["Paragon Reward Available"] = "Récompense de Paragon disponible";
 L["Until Next Level Format"] = "%d jusqu'au prochain niveau";   --Earn x reputation to reach the next level
 L["Until Paragon Reward Format"] = "%d jusqu'à la récompense Paragon";
-L["Instruction Click To View Renown"] = "<Cliquer pour afficher le Renom>";
+L["Instruction Click To View Renown"] = REPUTATION_BUTTON_TOOLTIP_VIEW_RENOWN_INSTRUCTION or "<Cliquer pour afficher le Renom>";
 L["Instruction Click To View Companion"] = "<Cliquer pour afficher le compagnon de Gouffre>";
 L["Not On Quest"] = "Vous n'êtes pas sur cette quête";
 L["Factions"] = "Factions";
-L["Activities"] = "Activités";
+L["Activities"] = MAP_LEGEND_CATEGORY_ACTIVITIES or "Activités";
 L["Raids"] = RAIDS or "Raids";
 L["Instruction Track Achievement"] = "<Clic + Maj pour suivre ce haut fait>";
-L["Instruction Untrack Achievement"] = "<Clic + Maj pour ne plus suivre ce haut fait>";
+L["Instruction Untrack Achievement"] = CONTENT_TRACKING_UNTRACK_TOOLTIP_PROMPT or "<Clic + Maj pour ne plus suivre ce haut fait>";
 L["No Data"] = "Aucune donnée";
 L["No Raid Boss Selected"] = "Aucun boss sélectionné";
 L["Your Class"] = "(Votre classe)";
-L["Great Vault"] = "Grande chambre forte";
-L["Item Upgrade"] = "Amélioration d'objet";
+L["Great Vault"] = DELVES_GREAT_VAULT_LABEL or "Grande chambre forte";
+L["Item Upgrade"] = ITEM_UPGRADE or "Amélioration d'objet";
 L["Resources"] = WORLD_QUEST_REWARD_FILTERS_RESOURCES or "Ressources";
 L["Plumber Experimental Feature Tooltip"] = "Une fonctionnalité expérimentale dans l'addon Plumber.";
 L["Bountiful Delves Rep Label"] = "Bonus Renoms";
 L["Bountiful Delves Rep Tooltip"] = "Ouvrir un coffre abondant a une chance d'augmenter votre réputation auprès de cette faction.";
 L["Warband Weekly Reward Tooltip"] = "Votre bataillon ne peut recevoir cette récompense qu'une fois par semaine.";
-L["Completed"] = "Complété";
+L["Completed"] = CRITERIA_COMPLETED or "Complété";
 L["Filter Hide Completed Format"] = "Masquer complété (%d)";
 L["Weekly Reset Format"] = "Réinitialisation hebdomadaire : %s";
 L["Daily Reset Format"] = "Réinitialisation quotidienne : %s";
@@ -681,10 +682,10 @@ L["Trackers"] = "Suivis";
 L["New Tracker Title"] = "Nouveau suivi";     --Create a new Tracker
 L["Edit Tracker Title"] = "Modifier le suivi";
 L["Type"] = "Type";
-L["Select Instruction"] = "Sélectionner";
+L["Select Instruction"] = LFG_LIST_SELECT or "Sélectionner";
 L["Name"] = "Nom";
 L["Difficulty"] = "Difficulté";
-L["All Difficulties"] = "Toutes les difficultés";
+L["All Difficulties"] = LFG_LIST_DIFFICULTY or "Toutes les difficultés";
 L["TrackerType Boss"] = "Boss";
 L["TrackerType Instance"] = "Instance";
 L["TrackerType Quest"] = "Quête";
@@ -703,8 +704,8 @@ L["Create New Tracker"] = "Nouveau suivi";
 L["FailureReason Already Exist"] = "Cette entrée existe déjà.";
 L["Quest ID"] = "ID de quête";
 L["Creature ID"] = "ID de créature";
-L["Edit"] = "Modifier";
-L["Delete"] = "Supprimer";
+L["Edit"] = EDIT or "Modifier";
+L["Delete"] = DELETE or "Supprimer";
 L["Visit Quest Hub To Log Quests"] = "Rendez-vous au centre de quêtes et interagissez avec les donneurs de quêtes pour enregistrer les quêtes du jour.";
 L["Quest Hub Instruction Celestials"] = "Rendez visite à l'intendant des Astres vénérables dans le Val de l'Éternel printemps pour savoir quel temple requiert votre aide.";
 L["Unavailable Klaxxi Paragons"] = "Parangons Klaxxi indisponibles :";
@@ -713,9 +714,9 @@ L["Weekly Coffer Key Shards Tooltip"] = "Les quatre premières caches hebdomadai
 L["Weekly Cap"] = "Limite hebdomadaire";
 L["Weekly Cap Reached"] = "Limite hebdomadaire atteinte.";
 L["Instruction Right Click To Use"] = "<Clic droit pour utiliser>";
-L["Join Queue"] = "Rejoindre la file";
-L["In Queue"] = "En file d'attente";
-L["Click To Switch"] = "Cliquer pour passer à |cffffffff%s|r";
+L["Join Queue"] = WOW_LABS_JOIN_QUEUE or "Rejoindre la file";
+L["In Queue"] = BATTLEFIELD_QUEUE_STATUS or "En file d'attente";
+L["Click To Switch"] = "Cliquer pour changer vrers |cffffffff%s|r";
 L["Click To Queue"] = "Cliquer pour rejoindre la file de |cffffffff%s|r";
 L["Click to Open Format"] = "Cliquer pour ouvrir %s";
 L["List Is Empty"] = "La liste est vide.";
@@ -726,13 +727,14 @@ L["Item Expire Alert Weekly"] = "Cet objet disparaîtra après la réinitialisat
 L["Delves Completion Reward Cap"] = "Récompenses de complétion";
 L["Delves Completion Reward Cap Tooltip"] = "Une fois cette limite de compte atteinte, terminer un gouffre abondant ne vous accordera plus de progression pour le Périple du Gouffre ni d'expérience de compagnon.\n\nLes récompenses des coffres abondants et des Caches de Némésis ne sont pas affectées par cette limite.\n\nLa limite augmente de 28 chaque semaine.";
 L["Near Completion Tooltip"] = "Cette entrée est visible car vous êtes sur le point d'atteindre la limite hebdomadaire.";
+L["Inactive Currencies Tooltip"] = "Ces Monnaies sont masquées car vous les avez définies comme inutilisées :";
 
 
 --ExpansionSummaryMinimapButton
 L["LandingButton Settings Title"] = "Résumé d'extension : bouton de la mini-carte";
 L["LandingButton Tooltip Format"] = "Clic gauche pour afficher / masquer %s.\nClic droit pour plus d'options.";
 L["LandingButton Customize"] = "Personnaliser";
-L["LandingButton Reposition Tooltip"] = "Maintenez |cffffffffMaj|r pour déverrouiller";
+L["LandingButton Reposition Tooltip"] = "Maintenir |cffffffffMaj|r pour déverrouiller";
 L["LandingButtonOption ShowButton"] = "Activer le bouton de la mini-carte";
 L["LandingButtonOption Unaffected"] = "Non affecté par les addons de la mini-carte";
 L["LandingButtonOption Unaffected Tooltip"] = "Empêcher ce bouton d'être modifié par d'autres addons de la mini-carte, empêchant ainsi toute modification de son apparence ou de son positionnement.\n\nUne fois activé, ce bouton ne suivra plus les mouvements de la mini-carte et n'utilisera plus son échelle ; il utilisera désormais l'échelle globale de l'interface utilisateur.\n\n|cffff4800Vous devrez peut-être recharger l'interface utilisateur après avoir modifié cette option.|r";
@@ -779,7 +781,7 @@ L["ModuleDescription1 TransmogOutfitSelect"] = "Permet d'ouvrir la collection de
 L["ModuleDescription2 TransmogOutfitSelect"] = "Pour cela : ouvrez l'interface de transmogrification, puis faites glisser le bouton |cffd7c0a3Accès rapide|r situé au-dessus de la liste des tenues vers vos barres d'action.";
 L["Outfit Collection"] = "Collection de Tenues";
 L["Quick Access Outfit Button"] = "Accès rapide";
-L["Quick Access Outfit Button Tooltip"] = "Cliquez et faites glisser ce bouton vers vos barres d'action afin de pouvoir changer de tenue n'importe où.";
+L["Quick Access Outfit Button Tooltip"] = "Cliqur et faites glisser ce bouton vers vos barres d'action afin de pouvoir changer de tenue n'importe où.";
 
 
 --QuestWatchCycle
@@ -827,8 +829,8 @@ L["ModuleDescription Housing_ItemAcquiredAlert"] = "Clic gauche sur l'alerte « 
 
 --Housing Clock
 L["ModuleName Housing_Clock"] = "Éditeur : horloge";
-L["ModuleDescription Housing_Clock"] = "Lors de l'utilisation de l'éditeur de maison, afficher une horloge en haut de l'écran.";
-L["Time Spent In Editor"] = "Temps passé dans l'éditeur";
+L["ModuleDescription Housing_Clock"] = "Pendant l'utilisation de l'Éditeur de maison, afficher une horloge en haut de l'écran.\n\nEnregistre également le temps d'utilisation.";
+L["Time Spent In Editor"] = "Temps passé dans l'Éditeur";
 L["This Session Colon"] = "Cette session : ";
 L["Time Spent Total Colon"] = "Total : ";
 L["Right Click Show Settings"] = "Clic droit pour afficher les paramètres.";
@@ -845,9 +847,8 @@ L["Match Sources"] = "Correspondance des sources";
 
 
 --SourceAchievementLink
-L["ModuleName SourceAchievementLink"] = "Information interactive sur la source";
-L["ModuleDescription SourceAchievementLink"] = "Dans certaines interfaces, rend la plupart des hauts faits cliquables pour afficher les détails ou de le suivre.\n\n- Catalogue d'éléments de décoration\n\n- Journal des montures";
-L["ModuleDescription SourceAchievementLink"] = "Makes most achievement names on the following UI become clickable, allowing you to see their details or track them.\n\n- Decor Catalog\n\n- Mount Journal";
+L["ModuleName SourceAchievementLink"] = "Informations interactives sur la source";
+L["ModuleDescription SourceAchievementLink"] = "Rend la plupart des noms de hauts faits cliquables, vous permettant d'en consulter les détails ou de les suivre.\n\n- Catalogue de décorations\n\n- Journal des montures";
 
 
 --BreakTime
@@ -894,7 +895,12 @@ L["Prey Target Has Achievement"] = "Cet objectif de Traque est une condition req
 
 --PreyQuestSuperTrack
 L["ModuleName PreyQuestSuperTrack"] = "Traque : point de passage des cibles";
-L["ModuleDescription PreyQuestSuperTrack"] = "Une fois la position de votre proie révélée, un clic sur le widget de progression de la traque définira également un point de repère vers cette position.";
+L["ModuleDescription PreyQuestSuperTrack"] = "Une fois la position de votre proie révélée, cliquer sur le widget de progression de la traque définira également un point de repère vers cette position.";
+
+
+--BlizzFixActionBarArt
+L["ModuleName BlizzFixActionBarArt"] = "Blitz Fix : illustration de la barre d'action";
+L["ModuleDescription BlizzFixActionBarArt"] = "Correction d'un problème où les illustrations de la barre d'action (Griffons et Wyvernes) réapparaissaient de manière inattendue après avoir masqué / affiché l'interface utilisateur ou quitté l'Éditeur de maison.";
 
 
 --Generic
@@ -902,14 +908,14 @@ L["Total Colon"] = FROM_TOTAL or "Total :";
 L["Reposition Button Horizontal"] = "Déplacer horizontalement";   --Move the window horizontally
 L["Reposition Button Vertical"] = "Déplacer verticalement";
 L["Reposition Button Tooltip"] = "Clic gauche et faites glisser pour déplacer la fenêtre";
-L["Font Size"] = "Taille de la police";
+L["Font Size"] = FONT_SIZE or "Taille de la police";
 L["Icon Size"] = "Taille de l'icône";
-L["Reset To Default Position"] = "Réinitialiser à la position par défaut";
+L["Reset To Default Position"] = HUD_EDIT_MODE_RESET_POSITION or "Réinitialiser à la position par défaut";
 L["Renown Level Label"] = "Renom ";  --There is a space
 L["Progress Label"] = "Progrès ";  --There is a space
 L["Paragon Reputation"] = "Paragon";
 L["Level Maxed"] = "(Maximum)";   --Reached max level
-L["Current Colon"] = "Actuel :";
+L["Current Colon"] = ITEM_UPGRADE_CURRENT or "Actuel :";
 L["Unclaimed Reward Alert"] = "Vous avez des récompenses non réclamées";
 L["Uncollected Set Counter Format"] = "Vous avez |cffffffff%d|r transmogrifications non collectées |4set:sets;.";
 L["InstructionFormat Left Click"] = "Clic gaucge pour %s";
@@ -930,14 +936,14 @@ L["Click To Show Settings"] = "Cliquer pour afficher / masquer les paramètres."
 
 
 --WIP Merchant UI
-L["ItemType Consumables"] = "Consommables";
-L["ItemType Weapons"] = "Armes";
-L["ItemType Gems"] = "Gemmes";
-L["ItemType Armor Generic"] = "Accessoires";  --Trinkets, Rings, Necks
-L["ItemType Mounts"] = "Montures";
-L["ItemType Pets"] = "Mascottes";
+L["ItemType Consumables"] = AUCTION_CATEGORY_CONSUMABLES or "Consommables";
+L["ItemType Weapons"] = AUCTION_CATEGORY_WEAPONS or "Armes";
+L["ItemType Gems"] = AUCTION_CATEGORY_GEMS or "Gemmes";
+L["ItemType Armor Generic"] = AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES or "Accessoires";  --Trinkets, Rings, Necks
+L["ItemType Mounts"] = MOUNTS or "Montures";
+L["ItemType Pets"] = PETS or "Mascottes";
 L["ItemType Toys"] = "Jouets";
-L["ItemType TransmogSet"] = "Ensemble de transmogrification";
+L["ItemType TransmogSet"] = PERKS_VENDOR_CATEGORY_TRANSMOG_SET or "Ensemble de transmogrification";
 L["ItemType Transmog"] = "Transmogrification";
 
 
@@ -997,13 +1003,13 @@ L["Upgrade Track 6"] = "Mythique";
 
 L["Match Pattern Transmog Set Partially Known"] = "^Comprend (%d+) non collectées";   --TRANSMOG_SET_PARTIALLY_KNOWN_CLASS
 
-L["DyeColorNameAbbr Black"] = "Noire";
-L["DyeColorNameAbbr Blue"] = "Bleue";
-L["DyeColorNameAbbr Brown"] = "Marron";
-L["DyeColorNameAbbr Green"] = "Verte";
+L["DyeColorNameAbbr Black"] = "Noir";
+L["DyeColorNameAbbr Blue"] = "Bleu";
+L["DyeColorNameAbbr Brown"] = "Brun";
+L["DyeColorNameAbbr Green"] = "Vert";
 L["DyeColorNameAbbr Orange"] = "Orange";
-L["DyeColorNameAbbr Purple"] = "Violette";
+L["DyeColorNameAbbr Purple"] = "Violet";
 L["DyeColorNameAbbr Red"] = "Rouge";
-L["DyeColorNameAbbr Teal"] = "Turquoise";
-L["DyeColorNameAbbr White"] = "Blanche";
+L["DyeColorNameAbbr Teal"] = "Teal";
+L["DyeColorNameAbbr White"] = "Blanc";
 L["DyeColorNameAbbr Yellow"] = "Jaune";

@@ -92,8 +92,6 @@ local combatTimerText = combatTimerFrame:CreateFontString(nil, "OVERLAY", "GameF
 combatTimerText:SetPoint("CENTER", combatTimerFrame, "CENTER", 0, 0)
 combatTimerFrame.text = combatTimerText
 
-local privateAuraBorderThickness
-local ensurePrivateAuraOverlay
 getPrivateAuraLayout = function()
 	local size = L.PRIVATE_AURA_SIZE or 0
 	local gap = L.PRIVATE_AURA_GAP or 0
@@ -129,7 +127,9 @@ local function buildPrivateAuraAnchorInfo(auraIndex, offsetX, offsetY)
 	local size = L.PRIVATE_AURA_SIZE
 	-- Calculate border scale to match icon size (formula adapted from BigWigs)
 	-- Slightly boost to better cover corners on the rounded native border texture.
-	local borderScale = size / 32 * 2.35
+	-- HideBorder uses -100 (NSRT's trick): drives Blizzard's debuffBorderSize
+	-- (= width + 5*scale) deeply negative, which clamps to 0 and hides the texture.
+	local borderScale = L.PRIVATE_AURA_HIDE_BORDER and -100 or (size / 32 * 2.35)
 
 	return {
 		unitToken = "player",
@@ -137,6 +137,7 @@ local function buildPrivateAuraAnchorInfo(auraIndex, offsetX, offsetY)
 		parent = privateAurasAnchor,
 		showCountdownFrame = true,
 		showCountdownNumbers = true,
+		isContainer = false,
 		iconInfo = {
 			iconAnchor = {
 				point = "CENTER",
@@ -183,13 +184,6 @@ local function combatTimerOnUpdate()
 	setCombatTimerText(whole)
 end
 
-local function hidePrivateAuraOverlays(self)
-	if not self._privateAuraOverlays then return end
-	for _, overlay in ipairs(self._privateAuraOverlays) do
-		overlay:Hide()
-	end
-end
-
 local function hideTestPrivateAuraFrames(self)
 	if not self._testPrivateAuraFrames then return end
 	for _, frame in ipairs(self._testPrivateAuraFrames) do
@@ -203,8 +197,6 @@ function M:UpdatePrivateAuraAnchor()
 	end
 	if not (C_UnitAuras and C_UnitAuras.AddPrivateAuraAnchor) then return end
 
-	hidePrivateAuraOverlays(self)
-
 	if self._privateAuraAnchorIDs and C_UnitAuras.RemovePrivateAuraAnchor then
 		for _, id in ipairs(self._privateAuraAnchorIDs) do
 			if id then
@@ -217,13 +209,12 @@ function M:UpdatePrivateAuraAnchor()
 	if not L.PRIVATE_AURA_ENABLED then
 		privateAurasAnchor:SetSize(1, 1)
 		privateAurasAnchor:Show()
-		hidePrivateAuraOverlays(self)
 		hideTestPrivateAuraFrames(self)
 		return
 	end
 
 	privateAurasAnchor:Show()
-	local size, _, _, _, _, startX, startY, stepX, stepY = getPrivateAuraLayout()
+	local _, _, _, _, _, startX, startY, stepX, stepY = getPrivateAuraLayout()
 	for i = 1, (C.PRIVATE_AURA_MAX or 1) do
 		local offsetX = startX + stepX * (i - 1)
 		local offsetY = startY + stepY * (i - 1)
@@ -233,212 +224,10 @@ function M:UpdatePrivateAuraAnchor()
 		if ok then
 			self._privateAuraAnchorIDs[i] = id
 		end
-
-		local overlay = ensurePrivateAuraOverlay and ensurePrivateAuraOverlay(self, i)
-		if overlay then
-			overlay:ClearAllPoints()
-			overlay:SetPoint("CENTER", privateAurasAnchor, "CENTER", offsetX, offsetY)
-			overlay:SetSize(size, size)
-			overlay:SetFrameLevel(privateAurasAnchor:GetFrameLevel() + 50)
-			M.ensureFullBorder(overlay, privateAuraBorderThickness())
-		end
-	end
-	if self._privateAuraOverlays then
-		for i = (C.PRIVATE_AURA_MAX or 1) + 1, #self._privateAuraOverlays do
-			local overlay = self._privateAuraOverlays[i]
-			if overlay then
-				overlay:Hide()
-			end
-		end
 	end
 
-	if self.UpdatePrivateAuraFrames then
-		self:UpdatePrivateAuraFrames()
-	end
 	if self.UpdateTestPrivateAura then
 		self:UpdateTestPrivateAura()
-	end
-end
-
-function M:GetPrivateAuraVisibleCount()
-	if not L.PRIVATE_AURA_ENABLED then return 0 end
-	if not privateAurasAnchor then return 0 end
-	local count = 0
-	for _, child in ipairs({ privateAurasAnchor:GetChildren() }) do
-		if child.__sbmPrivateAuraTest or child.__sbmPrivateAuraOverlay then
-			-- skip test frame
-		else
-			local ok, shown = pcall(child.IsShown, child)
-			if ok and shown then
-				count = count + 1
-			end
-		end
-	end
-	return count
-end
-
-privateAuraBorderThickness = function()
-	if not U or not U.clamp then return 2 end
-	return U.clamp(math.floor(L.PRIVATE_AURA_SIZE * 0.08 + 0.5), 1, 5)
-end
-
-local function isForbidden(obj)
-	if not obj then return false end
-	if not obj.IsForbidden then return false end
-	local ok, forbidden = pcall(obj.IsForbidden, obj)
-	return ok and forbidden
-end
-
-local function safeHideRegion(region)
-	if not region then return end
-	if region.IsForbidden and region:IsForbidden() then return end
-	if region.Hide then
-		pcall(region.Hide, region)
-	end
-	if region.SetAlpha then
-		pcall(region.SetAlpha, region, 0)
-	end
-end
-
-local function hidePrivateAuraBorders(frame)
-	if not frame then return end
-	local icon = frame.Icon
-	local function hide(obj)
-		if not obj or obj == icon then return end
-		safeHideRegion(obj)
-	end
-
-	hide(frame.Border)
-	hide(frame.IconBorder)
-	hide(frame.IconOverlay)
-	hide(frame.BorderTexture)
-	hide(frame.Overlay)
-	hide(frame.Glow)
-
-	local regions = { frame:GetRegions() }
-	for _, region in ipairs(regions) do
-		if region ~= icon and region.GetObjectType and region:GetObjectType() == "Texture" then
-			local tex = region.GetTexture and region:GetTexture()
-			local atlas = region.GetAtlas and region:GetAtlas()
-			if (type(tex) == "string" and tex:find("Debuff%-Overlays")) or
-				(type(atlas) == "string" and atlas:lower():find("debuff")) then
-				safeHideRegion(region)
-			end
-		end
-	end
-end
-
-local function bumpPrivateAuraStackFont(frame)
-	if not frame then return end
-	local countText = frame.Count or frame.count
-	if not (countText and countText.GetFont and countText.SetFont) then
-		return
-	end
-
-	local font, size, flags = countText:GetFont()
-	if not font or type(size) ~= "number" then
-		return
-	end
-
-	local targetSize = math.max(8, math.floor(size * 1.12 + 0.5))
-	if countText.__sbmSize == targetSize and countText.__sbmFont == font and countText.__sbmFlags == flags then
-		return
-	end
-
-	countText:SetFont(font, targetSize, flags)
-	countText.__sbmSize = targetSize
-	countText.__sbmFont = font
-	countText.__sbmFlags = flags
-end
-
-local function stylePrivateAuraFrame(frame)
-	if not frame then return end
-	if frame.__sbmPrivateAuraTest then return end
-	if frame.__sbmPrivateAuraOverlay then return end
-	if isForbidden(frame) then return end
-	if InCombatLockdown and InCombatLockdown() then return end
-	if frame.DebuffBorder then
-		safeHideRegion(frame.DebuffBorder)
-	end
-	if frame.TempEnchantBorder then
-		safeHideRegion(frame.TempEnchantBorder)
-	end
-	if frame.Symbol then
-		safeHideRegion(frame.Symbol)
-	end
-	hidePrivateAuraBorders(frame)
-	bumpPrivateAuraStackFont(frame)
-
-	local cooldown = frame.Cooldown or frame.cooldown or frame.cd
-	if cooldown and cooldown.SetHideCountdownNumbers then
-		cooldown:SetHideCountdownNumbers(false)
-	end
-
-	local holder = frame.__sbmPrivateAuraBorder
-	if not holder then
-		holder = CreateFrame("Frame", nil, frame)
-		frame.__sbmPrivateAuraBorder = holder
-	end
-	holder:SetFrameLevel(frame:GetFrameLevel() + 6)
-	holder:SetAllPoints(frame)
-	M.ensureFullBorder(holder, privateAuraBorderThickness())
-end
-
-ensurePrivateAuraOverlay = function(self, index)
-	self._privateAuraOverlays = self._privateAuraOverlays or {}
-	local f = self._privateAuraOverlays[index]
-	if not f then
-		f = CreateFrame("Frame", nil, privateAurasAnchor)
-		f.__sbmPrivateAuraOverlay = true
-		f:EnableMouse(false)
-		f:SetFrameStrata("HIGH")
-		f:Hide()
-		self._privateAuraOverlays[index] = f
-	end
-	return f
-end
-
-function M:UpdatePrivateAuraOverlays(visibleCount)
-	if not L.PRIVATE_AURA_ENABLED then
-		hidePrivateAuraOverlays(self)
-		return
-	end
-	if not self._privateAuraOverlays then return end
-	local count = visibleCount
-	if count == nil then
-		count = self:GetPrivateAuraVisibleCount()
-	end
-	local maxCount = #self._privateAuraOverlays
-	if count > maxCount then
-		count = maxCount
-	end
-	for i = 1, maxCount do
-		local f = self._privateAuraOverlays[i]
-		if f then
-			f:SetShown(i <= count)
-		end
-	end
-end
-
-function M:UpdatePrivateAuraFrames()
-	if not L.PRIVATE_AURA_ENABLED then
-		hidePrivateAuraOverlays(self)
-		hideTestPrivateAuraFrames(self)
-		return
-	end
-	if not privateAurasAnchor then return end
-	local count = 0
-	for _, child in ipairs({ privateAurasAnchor:GetChildren() }) do
-		if not child.__sbmPrivateAuraTest and not child.__sbmPrivateAuraOverlay then
-			local ok, shown = pcall(child.IsShown, child)
-			if ok and shown then
-				count = count + 1
-			end
-		end
-		stylePrivateAuraFrame(child)
-	end
-	if self.UpdatePrivateAuraOverlays then
-		self:UpdatePrivateAuraOverlays(count)
 	end
 end
 

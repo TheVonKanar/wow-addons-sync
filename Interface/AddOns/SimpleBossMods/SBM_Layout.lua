@@ -1754,9 +1754,6 @@ end
 function M:Tick()
 	if not self.enabled then return end
 	if self._testTicker then return end
-	if self.UpdatePrivateAuraFrames then
-		self:UpdatePrivateAuraFrames()
-	end
 
 	local now = (GetTime and GetTime()) or 0
 	local suppressUntil = self._suppressTimelineUntil

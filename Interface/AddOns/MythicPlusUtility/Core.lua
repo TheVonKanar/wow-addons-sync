@@ -88,31 +88,57 @@ function MythicPlusUtility:RefreshConfig()
     if self.Frame then self.Frame:ProfileChange() end
 end
 
-function MythicPlusUtility:onTalentFrameShow() MythicPlusUtility.TalentFrameHighlight.UpdateAnchers(MythicPlusUtility) end
+function MythicPlusUtility:onTalentFrameShow()
+    if MythicPlusUtility.Frame and MythicPlusUtility.Frame:IsShown() then
+        MythicPlusUtility.TalentFrameHighlight:UpdateAnchers()
+        MythicPlusUtility.TalentFrameHighlight:ShowRelevant()
+    end
+end
+
+function MythicPlusUtility:onUtilityWindowSetShown()
+    if MythicPlusUtility.Frame:IsShown() then
+        MythicPlusUtility.TalentFrameHighlight:UpdateAnchers()
+        MythicPlusUtility.TalentFrameHighlight:ShowRelevant()
+    else
+        MythicPlusUtility.TalentFrameHighlight:HideAll()
+    end
+end
+
+function MythicPlusUtility:onUtilityWindowChangeInstance()
+    if MythicPlusUtility.Frame then
+        MythicPlusUtility.TalentFrameHighlight:UpdateAnchers()
+        MythicPlusUtility.TalentFrameHighlight:UpdateHighlight()
+        if MythicPlusUtility.Frame:IsShown() then MythicPlusUtility.TalentFrameHighlight:ShowRelevant() end
+    end
+end
 
 function MythicPlusUtility:OnEnable()
     self:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
     self:RegisterEvent("TRAIT_CONFIG_UPDATED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("CHALLENGE_MODE_START")
+
     EventRegistry:RegisterCallback("PlayerSpellsFrame.OpenFrame", MythicPlusUtility.onTalentFrameShow)
+    EventRegistry:RegisterCallback("MPU_UtilityWindow_SetShown", MythicPlusUtility.onUtilityWindowSetShown)
+    EventRegistry:RegisterCallback("MPU_UtilityWindow_ChangeInstance", MythicPlusUtility.onUtilityWindowChangeInstance)
 end
 
 function MythicPlusUtility:ACTIVE_PLAYER_SPECIALIZATION_CHANGED(event)
     self.db.char.currentSpec = C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization())
-    if self.Frame and self.Frame:IsVisible() then
+    if self.Frame and self.Frame:IsShown() then
         self:CreateCurrentAbilitiesList()
         self.Frame:ChangeInstance()
-        C_Timer.NewTimer(0.5, function() MythicPlusUtility.TalentFrameHighlight.UpdateAnchers(MythicPlusUtility) end)
+       -- C_Timer.NewTimer(0.5, function() MythicPlusUtility.TalentFrameHighlight:UpdateAnchers() end)
+       C_Timer.NewTimer(0.5, function() MythicPlusUtility:onUtilityWindowChangeInstance() end)
     else
         self.db.char.changedSpec = true
     end
 
-    if self.Frame then self.TalentFrameHighlight:UpdateSpec() end
+    --self:onUtilityWindowChangeInstance()
 end
 
 function MythicPlusUtility:TRAIT_CONFIG_UPDATED(event)
-    if self.Frame and self.Frame:IsVisible() then
+    if self.Frame and self.Frame:IsShown() then
         self:UpdateCurrentAbilitiesList()
         self.Frame:ChangeInstance()
     else
@@ -130,7 +156,7 @@ function MythicPlusUtility:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReload
                 MythicPlusUtility.Frame:SetShownHandler(true)
                 MythicPlusUtility.Frame:ChangeInstance()
             else
-                if MythicPlusUtility.Frame and MythicPlusUtility.Frame:IsVisible() then
+                if MythicPlusUtility.Frame and MythicPlusUtility.Frame:IsShown() then
                     MythicPlusUtility.Frame:SetShownHandler(false)
                 end
             end
@@ -139,11 +165,11 @@ function MythicPlusUtility:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReload
 end
 
 function MythicPlusUtility:CHALLENGE_MODE_START(event)
-    if self.Frame and self.db.profile.hideOnStart and self.Frame:IsVisible() then self.Frame:SetShownHandler(false) end
+    if self.Frame and self.db.profile.hideOnStart and self.Frame:IsShown() then self.Frame:SetShownHandler(false) end
 end
 
 function MythicPlusUtility:UPDATE_VEHICLE_ACTIONBAR(event)
-    if self.Frame and self.Frame:IsVisible() then
+    if self.Frame and self.Frame:IsShown() then
         self:UpdateCurrentAbilitiesList(true)
         self.Frame:ChangeInstance()
     else
@@ -196,14 +222,31 @@ end
 function MythicPlusUtility:GetCharacterInfo()
     self.db.char.class = UnitClassBase("player")
     C_Timer.NewTimer(0.5, function()
+        for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesRacials) do
+            if not (entry.alternatives and #entry.alternatives > 0) then
+                entry.isKnown = MythicPlusUtility:IsSpellKnownHandler(spellId)
+                entry.spellId = spellId
+                entry.spellName = MythicPlusUtility:GetSpellNameById(spellId)
+            else
+                local known = false
+
+                for _, subSpellId in ipairs(entry.alternatives) do
+                    known = MythicPlusUtility:IsSpellKnownHandler(subSpellId)
+                    if known then
+                        entry.isKnown = true
+                        entry.altSpellId = subSpellId
+                        entry.spellName = MythicPlusUtility:GetSpellNameById(subSpellId)
+
+                        break
+                    end
+                end
+                if not known then entry.isKnown = self:IsSpellKnownHandler(spellId) end
+            end
+        end
         MythicPlusUtility.db.char.currentSpec = C_SpecializationInfo.GetSpecializationInfo(
                                                   C_SpecializationInfo.GetSpecialization())
         MythicPlusUtility:ExtractSpellsFromDB()
     end)
-
-    for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesRacials) do
-        entry.isKnown = self:IsSpellKnownHandler(spellId)
-    end
 end
 
 function MythicPlusUtility:ToggleAbilitiesFrame()
@@ -212,7 +255,7 @@ function MythicPlusUtility:ToggleAbilitiesFrame()
         self.Frame:SetShownHandler(true)
         return
     end
-    self.Frame:SetShownHandler(not self.Frame:IsVisible())
+    self.Frame:SetShownHandler(not self.Frame:IsShown())
 end
 
 function MythicPlusUtility:OpenSettings(inCombat, frame) if not inCombat then Settings.OpenToCategory(frame.name) end end

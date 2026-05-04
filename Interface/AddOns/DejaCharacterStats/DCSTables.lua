@@ -129,6 +129,7 @@ function DCS_TableData:CopyTable(tab)
 	local copy = {}
 	for k, v in pairs(tab) do
 		if k == "RUNE_REGEN" or k == "ATTACK_ATTACKSPEED" or k == "POWER" or k == "ALTERNATEMANA" then
+			-- sinba/ culprit  
 			tab [k] = nil
 		else
 			copy[k] = (type(v) == "table") and DCS_TableData:CopyTable(v) or v
@@ -174,6 +175,71 @@ function DCS_TableData:SwapStat(tab, statKey, dst)
 end
 
 DCS_TableData.StatData = DCS_TableData:CopyTable(PAPERDOLL_STATINFO)
+
+function namespace.naughthysecrets()
+	local unit = "player"
+    if InCombatLockdown(unit) then return true end
+
+    local stat;
+    local effectiveStat;
+    local posBuff;
+    local negBuff;
+
+    for i = 1, 4 do
+        stat, effectiveStat, posBuff, negBuff = UnitStat(unit, i);
+        if issecretvalue(stat) then return true end
+        if issecretvalue(effectiveStat) then return true end
+        if issecretvalue(posBuff) then return true end
+        if issecretvalue(negBuff) then return true end
+    end
+
+	local holySchool = 2; -- Start at 2 to skip physical damage
+
+    for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+        local spellCrit = GetSpellCritChance(i);
+        if issecretvalue(spellCrit) then return true end
+    end
+
+    if issecretvalue(GetRangedCritChance()) then return true end			
+    if issecretvalue(GetCritChance()) then return true end		
+    if issecretvalue(GetHaste()) then return true end			
+    if issecretvalue(GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)) then return true end
+    if issecretvalue(GetMasteryEffect()) then return true end
+    if issecretvalue(GetLifesteal()) then return true end
+    if issecretvalue(GetAvoidance()) then return true end
+    if issecretvalue(GetDodgeChance()) then return true end
+    if issecretvalue(GetParryChance()) then return true end
+    if issecretvalue(GetBlockChance()) then return true end
+end
+
+	local ripthesecrets = CreateFrame("Frame")
+		ripthesecrets:RegisterEvent("ADDON_LOADED")
+		-- ripthesecrets:RegisterEvent("PLAYER_LOGIN")
+		-- ripthesecrets:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+		ripthesecrets:SetScript("OnEvent", function(self, event)
+			-- sinba/combat check
+			-- sinba/ wrap updateFuncs for blizz's PaperDollFrame_UpdateStats and yours (DCS_TableData.StatData)
+			-- CopyTable above does tab[k]=nil directly on blizz's PAPERDOLL_STATINFO so it taints it
+			-- also avoids having to check stat by stat, it's pretty useless considering the method you use
+			-- unless you decide to scrap ppf
+			local function wrapTable(t)
+				for _, entry in pairs(t) do
+					if type(entry) == "table" then
+						local orig = entry.updateFunc
+						if type(orig) == "function" then
+							entry.updateFunc = function(statFrame, unit)
+								if namespace.naughthysecrets() then return end
+								orig(statFrame, unit)
+							end
+						end
+					end
+				end
+			end
+
+			-- blizz's
+			wrapTable(PAPERDOLL_STATINFO)
+		end)
 
 DCS_TableData.StatData.ItemLevelFrame = {
     category   = true,
@@ -300,6 +366,9 @@ DCS_TableData.StatData.HonorCategory = {
 function MovementSpeed_OnUpdate(statFrame, elapsedTime) --Added this so Vehicles update as well. Shouldn't be too bad if other addons access this function, but still not as clean as I would like.
 	local unit = statFrame.unit;
 	local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit);
+	
+	-- Sinba/GetUnitSpeed is dead in combat
+	if issecretvalue(runSpeed) then return end
 	runSpeed = runSpeed/BASE_MOVEMENT_SPEED*100;
 	flightSpeed = flightSpeed/BASE_MOVEMENT_SPEED*100;
 	swimSpeed = swimSpeed/BASE_MOVEMENT_SPEED*100;
@@ -855,3 +924,18 @@ DCS_TableData.StatData.UserCat5 = {
 	frame      = char_ctats_pane.UserCat5,
 	updateFunc = function()	end
 }
+
+-- sinba/ wrap all DCS_TableData.StatData updateFuncs after every entry has been defined.
+do
+	for _, entry in pairs(DCS_TableData.StatData) do
+		if type(entry) == "table" then
+			local orig = entry.updateFunc
+			if type(orig) == "function" then
+				entry.updateFunc = function(statFrame, unit)
+					if InCombatLockdown() then return end
+					orig(statFrame, unit)
+				end
+			end
+		end
+	end
+end

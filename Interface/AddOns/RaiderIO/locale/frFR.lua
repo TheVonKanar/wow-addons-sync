@@ -1,3 +1,4 @@
+-- Generated from CurseForge on Sat May  2 20:06:17 UTC 2026
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("frFR") then
@@ -7,7 +8,7 @@ if ns:IsSameLocale("frFR") then
 
 	L.LOCALE_NAME = "frFR"
 
-	L["ALLOW_IN_LFD"] = "Autoriser pour la Recherche de groupe"
+L["ALLOW_IN_LFD"] = "Autoriser pour la Recherche de groupe"
 L["ALLOW_IN_LFD_CLASSIC"] = "Autoriser pour la Recherche de groupe"
 L["ALLOW_IN_LFD_CLASSIC_DESC"] = "Clic droit sur les groupes ou les joueurs dans l'outil de Recherche de groupe pour copier l'URL du profil Raider.IO."
 L["ALLOW_IN_LFD_DESC"] = "Clic droit sur les groupes ou les joueurs dans l'outil de Recherche de groupe pour copier l'URL du profil Raider.IO."
@@ -672,6 +673,5 @@ L["WARNING_LOCK_POSITION_FRAME_AUTO"] = "Raider.IO : vous devez d'abord désacti
 L["WARNING_RWF_MODE_ENABLE"] = "|cffFFFFFF%s|r Le mode « Course au World First » est activé. Vous pouvez le désactiver en tapant |cffFFFFFF/raiderio rwf|r."
 L["WIPE_RWF_MODE_BUTTON"] = "Wipe"
 L["WIPE_RWF_MODE_BUTTON_TOOLTIP"] = "Cliquez pour effacer le journal du fichier de stockage. Cela entraînera le rechargement de votre interface."
-
 
 end

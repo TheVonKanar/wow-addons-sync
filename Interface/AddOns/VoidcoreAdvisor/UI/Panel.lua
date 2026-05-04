@@ -1,0 +1,1113 @@
+-- VoidcoreAdvisor: Panel
+-- The side panel frame.  Anchors to the right edge of EncounterJournal and
+-- shows context for the currently-viewed boss or dungeon.
+--
+-- Layout:
+--   ┌────────────────────────────────────────────────────┐
+--   │  VoidcoreAdvisor                               [X] │  header
+--   │  <source name>                                     │
+--   │  Raid Boss  •  2 Nebulous Voidcores                │
+--   ├─────────────────────┬──────────────────────────────┤  divider
+--   │ LOOT                │ SPEC RANKING                 │  column headers
+--   │ ┌──┐ [Item name]  □ │ #1 [icon] SpecName  3/8 37% │
+--   │ ┌──┐ [Item name]  □ │ #2 [icon] SpecName  5/8 37% │  rows
+--   │ ...                 │ ...                          │
+--   └─────────────────────┴──────────────────────────────┘
+local _, VCA = ...
+local L = VCA.L
+
+VCA.Panel = {}
+local Panel = VCA.Panel
+
+-- ── Internal state shared with PanelColumns.lua ───────────────────────────────
+-- PanelColumns.lua (loaded after this file) accesses these via Panel._s.
+-- Never reassign the tables themselves; use wipe() to clear them.
+local _s = {}
+Panel._s = _s
+
+-- Selection state
+_s.selectedItemIDs = {}
+local selectedItemIDs = _s.selectedItemIDs -- local alias for this file's closures
+_s.selectedSpecIDs = {}
+local selectedSpecIDs = _s.selectedSpecIDs -- local alias for this file's closures
+
+-- ── Sizing ────────────────────────────────────────────────────────────────────
+
+local PANEL_WIDTH = 600
+local HEADER_H = 76 -- title + source label + info label + divider
+local COL_HEADER_H = 20 -- "LOOT" / "SPEC RANKING" label row
+local PADDING = 12 -- inner horizontal padding
+local ROW_H = 26 -- height of one item / spec row
+local ICON_SIZE = 20 -- inline icon size in rows
+local COL_SPLIT = 0.52 -- left column fraction of content width
+
+-- ── Main frame ────────────────────────────────────────────────────────────────
+
+local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+Panel.frame = frame
+
+frame:SetWidth(PANEL_WIDTH)
+frame:SetFrameStrata("HIGH")
+frame:SetClampedToScreen(true)
+frame:Hide()
+
+frame:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = {
+        left = 11,
+        right = 12,
+        top = 12,
+        bottom = 11
+    }
+})
+frame:SetBackdropColor(0.05, 0.02, 0.12, 0.95) -- dark void-purple
+frame:SetBackdropBorderColor(0.58, 0.0, 0.82, 1) -- purple glow border
+
+-- ── Anchor helper ─────────────────────────────────────────────────────────────
+
+-- Positions the panel flush against the right edge of EncounterJournal.
+-- Safe to call multiple times (ClearAllPoints before re-anchoring).
+function Panel.AnchorToEJ()
+    local ej = EncounterJournal
+    if not ej then
+        return
+    end
+    frame:ClearAllPoints()
+    frame:SetPoint("TOPLEFT", ej, "TOPRIGHT", 52, 0)
+    frame:SetPoint("BOTTOMLEFT", ej, "BOTTOMRIGHT", 52, 0)
+end
+
+-- ── Header widgets ────────────────────────────────────────────────────────────
+
+-- Title
+local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+titleText:SetPoint("TOPLEFT", 18, -16)
+titleText:SetText(L["PANEL_TITLE"])
+
+-- X close button (uses the standard Blizzard close button template)
+local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+closeBtn:SetPoint("TOPRIGHT", -4, -4)
+closeBtn:SetScript("OnClick", function()
+    Panel.SetMinimized(true)
+    frame:Hide()
+end)
+
+-- Persist item selections when the panel hides (close, navigate away, logout).
+frame:SetScript("OnHide", function()
+    Panel.SaveItemSelections()
+end)
+
+-- Source name (boss or dungeon)
+local sourceLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+sourceLabel:SetPoint("TOPLEFT", 18, -42)
+sourceLabel:SetPoint("TOPRIGHT", -40, -42)
+sourceLabel:SetJustifyH("LEFT")
+sourceLabel:SetWordWrap(false)
+sourceLabel:SetText("")
+Panel.sourceLabel = sourceLabel
+
+-- Content type + Voidcore cost
+local infoLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+infoLabel:SetPoint("TOPLEFT", 18, -60)
+infoLabel:SetJustifyH("LEFT")
+infoLabel:SetText("")
+Panel.infoLabel = infoLabel
+
+-- Horizontal divider
+local divider = frame:CreateTexture(nil, "ARTWORK")
+divider:SetColorTexture(0.58, 0.0, 0.82, 0.4)
+divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -HEADER_H)
+divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -HEADER_H)
+divider:SetHeight(1)
+
+-- ── Content area ─────────────────────────────────────────────────────────────
+-- Two side-by-side columns below the divider.
+
+local contentArea = CreateFrame("Frame", nil, frame)
+contentArea:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -(HEADER_H + 1))
+contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 11)
+Panel.contentArea = contentArea
+
+-- ── Column widths ─────────────────────────────────────────────────────────────
+
+-- Recomputed each Refresh so dynamic resizing (future) is easy.
+local function ContentWidth()
+    return frame:GetWidth() - PADDING * 2
+end
+
+local function LeftColWidth()
+    return math.floor(ContentWidth() * COL_SPLIT)
+end
+
+local function RightColWidth()
+    return ContentWidth() - LeftColWidth() - 1 -- 1px for the vertical separator
+end
+
+_s.LeftColWidth = LeftColWidth
+_s.RightColWidth = RightColWidth
+
+-- ── Column header labels ──────────────────────────────────────────────────────
+
+local lootColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+lootColHeader:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -6)
+lootColHeader:SetJustifyH("LEFT")
+lootColHeader:SetText("|cffb048f8LOOT|r")
+
+-- X button to clear all spec selections (near the center divider in loot column header)
+local clearSpecBtn = CreateFrame("Button", nil, contentArea)
+clearSpecBtn:SetSize(14, 14)
+clearSpecBtn:SetNormalFontObject("GameFontNormal")
+clearSpecBtn:SetText("|cffff4444x|r")
+clearSpecBtn:SetScript("OnClick", function()
+    wipe(selectedSpecIDs)
+    wipe(selectedItemIDs)
+    Panel.SaveItemSelections()
+    Panel.RefreshSpecColumn()
+    Panel.RefreshItemColumn()
+end)
+clearSpecBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["CLEAR_SELECTED"])
+    GameTooltip:Show()
+end)
+clearSpecBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+clearSpecBtn:Hide()
+
+-- ── Key level dropdown (M+ only) ─────────────────────────────────────────────
+local selectedKeyLevel = 10 -- default to 10+
+
+local keyLevelButton = CreateFrame("Button", nil, contentArea)
+keyLevelButton:SetSize(50, 16)
+keyLevelButton:SetPoint("LEFT", lootColHeader, "RIGHT", 6, 0)
+keyLevelButton:Hide()
+
+local keyLevelText = keyLevelButton:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+keyLevelText:SetAllPoints(keyLevelButton)
+keyLevelText:SetJustifyH("LEFT")
+
+local function GetKeyLevelLabel(level)
+    return "+" .. level
+end
+
+local function GetRewardForKeyLevel(level)
+    return VCA.MythicPlusVaultRewards[math.min(level, 10)]
+end
+
+_s.GetRewardForKeyLevel = GetRewardForKeyLevel
+_s.getSelectedKeyLevel = function()
+    return selectedKeyLevel
+end
+
+local function UpdateKeyLevelText()
+    local reward = GetRewardForKeyLevel(selectedKeyLevel)
+    local track = reward and reward.track or "?"
+    keyLevelText:SetText("|cffdddddd" .. GetKeyLevelLabel(selectedKeyLevel) .. "|r |cff888888(" .. track .. ")|r")
+    -- Resize button to fit text
+    keyLevelButton:SetWidth(keyLevelText:GetStringWidth() + 8)
+end
+
+local keyLevelMenu = CreateFrame("Frame", nil, keyLevelButton, "BackdropTemplate")
+keyLevelMenu:SetFrameStrata("TOOLTIP")
+keyLevelMenu:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true,
+    tileSize = 16,
+    edgeSize = 12,
+    insets = {
+        left = 3,
+        right = 3,
+        top = 3,
+        bottom = 3
+    }
+})
+keyLevelMenu:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
+keyLevelMenu:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
+keyLevelMenu:Hide()
+
+local keyLevelOptions = {2, 3, 4, 5, 6, 7, 8, 9, 10}
+local menuButtons = {}
+for i, level in ipairs(keyLevelOptions) do
+    local btn = CreateFrame("Button", nil, keyLevelMenu)
+    btn:SetSize(70, 16)
+    btn:SetPoint("TOPLEFT", keyLevelMenu, "TOPLEFT", 4, -(4 + (i - 1) * 16))
+    local label = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    label:SetAllPoints(btn)
+    label:SetJustifyH("LEFT")
+    btn.label = label
+    btn.level = level
+
+    local highlight = btn:CreateTexture(nil, "HIGHLIGHT")
+    highlight:SetAllPoints(btn)
+    highlight:SetColorTexture(0.58, 0.0, 0.82, 0.3)
+
+    btn:SetScript("OnClick", function(self)
+        selectedKeyLevel = self.level
+        UpdateKeyLevelText()
+        keyLevelMenu:Hide()
+        Panel.Refresh()
+    end)
+    menuButtons[i] = btn
+end
+keyLevelMenu:SetSize(78, 8 + #keyLevelOptions * 16)
+
+local function ShowKeyLevelMenu()
+    for i, btn in ipairs(menuButtons) do
+        local level = btn.level
+        local reward = GetRewardForKeyLevel(level)
+        local track = reward and reward.track or "?"
+        local lbl = GetKeyLevelLabel(level) .. "  |cff888888" .. track .. "|r"
+        if level == selectedKeyLevel then
+            lbl = "|cffffff00" .. lbl .. "|r"
+        end
+        btn.label:SetText(lbl)
+    end
+    keyLevelMenu:ClearAllPoints()
+    keyLevelMenu:SetPoint("TOPLEFT", keyLevelButton, "BOTTOMLEFT", 0, -2)
+    keyLevelMenu:Show()
+end
+
+keyLevelButton:SetScript("OnClick", function()
+    if keyLevelMenu:IsShown() then
+        keyLevelMenu:Hide()
+    else
+        ShowKeyLevelMenu()
+    end
+end)
+
+-- Close menu when clicking elsewhere
+keyLevelMenu:SetScript("OnShow", function(self)
+    self:SetPropagateKeyboardInput(true)
+end)
+keyLevelMenu:SetScript("OnKeyDown", function(self, key)
+    if key == "ESCAPE" then
+        self:Hide()
+        self:SetPropagateKeyboardInput(false)
+    else
+        self:SetPropagateKeyboardInput(true)
+    end
+end)
+
+local specColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+specColHeader:SetJustifyH("LEFT")
+specColHeader:SetText("|cffb048f8" .. L["COL_SPEC_RANKING"] .. "|r")
+
+-- X button to clear all item selections (near the center divider in spec column header)
+local clearItemBtn = CreateFrame("Button", nil, contentArea)
+clearItemBtn:SetSize(14, 14)
+clearItemBtn:SetNormalFontObject("GameFontNormal")
+clearItemBtn:SetText("|cffff4444x|r")
+clearItemBtn:SetScript("OnClick", function()
+    wipe(selectedItemIDs)
+    Panel.SaveItemSelections()
+    Panel.RefreshSpecColumn()
+    Panel.RefreshItemColumn()
+end)
+clearItemBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["CLEAR_SELECTED"])
+    GameTooltip:Show()
+end)
+clearItemBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+clearItemBtn:Hide()
+
+local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+lootSpecLabel:SetJustifyH("RIGHT")
+lootSpecLabel:SetText("")
+
+-- Vertical separator between columns
+local colSep = contentArea:CreateTexture(nil, "ARTWORK")
+
+-- Expose column header widgets for PanelColumns.lua
+_s.lootColHeader = lootColHeader
+_s.clearSpecBtn = clearSpecBtn
+_s.specColHeader = specColHeader
+_s.clearItemBtn = clearItemBtn
+colSep:SetColorTexture(0.58, 0.0, 0.82, 0.3)
+colSep:SetWidth(1)
+
+-- Horizontal rule below column headers
+local colHeaderRule = contentArea:CreateTexture(nil, "ARTWORK")
+colHeaderRule:SetColorTexture(0.4, 0.4, 0.4, 0.3)
+colHeaderRule:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -(COL_HEADER_H + 2))
+colHeaderRule:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING, -(COL_HEADER_H + 2))
+colHeaderRule:SetHeight(1)
+
+-- ── Item quality color escape sequence ───────────────────────────────────────
+-- Uses |cnIQn: syntax (added in 11.1.5).
+
+local function QualityColor(quality)
+    return "|cnIQ" .. (quality or 1) .. ":"
+end
+
+_s.QualityColor = QualityColor
+
+-- ── Tooltip: M+ bonus ID injection ──────────────────────────────────────────
+-- Builds a modified item hyperlink string with bonus IDs matching the
+-- selected key level so the tooltip renders at the correct item level.
+
+local function BuildMythicPlusTooltipLink(itemLink)
+    local reward = GetRewardForKeyLevel(selectedKeyLevel)
+    if not reward then
+        return nil
+    end
+
+    local itemString = itemLink:match("item[%-?%d:]+")
+    if not itemString then
+        return nil
+    end
+
+    local fields = {}
+    for field in (itemString .. ":"):gmatch("([^:]*):") do
+        fields[#fields + 1] = field
+    end
+    -- Ensure at least 14 fields (up to numBonusIDs position)
+    while #fields < 14 do
+        fields[#fields + 1] = ""
+    end
+    -- Field 13 = context (35 = M+ context)
+    fields[13] = "35"
+
+    local numBonuses = tonumber(fields[14]) or 0
+    -- Collect existing bonus IDs, stripping 3524 if present
+    local newBonuses = {}
+    for bi = 15, 14 + numBonuses do
+        if fields[bi] ~= "3524" then
+            newBonuses[#newBonuses + 1] = fields[bi]
+        end
+    end
+
+    -- Append the M+ base bonus IDs and the key-level-specific track bonus
+    for _, b in ipairs(VCA.MythicPlusBonusIDs) do
+        newBonuses[#newBonuses + 1] = tostring(b)
+    end
+    newBonuses[#newBonuses + 1] = tostring(reward.bonusID)
+
+    -- Remove old bonus entries from fields, insert new ones
+    for _ = 1, numBonuses do
+        table.remove(fields, 15)
+    end
+    fields[14] = tostring(#newBonuses)
+    for i, b in ipairs(newBonuses) do
+        table.insert(fields, 14 + i, b)
+    end
+
+    return table.concat(fields, ":")
+end
+
+_s.BuildMythicPlusTooltipLink = BuildMythicPlusTooltipLink
+
+-- Tracks the current EJ loot filter so it can be temporarily cleared and
+-- restored without depending on a non-existent getter API.
+local _ejFilterClassID = 0
+local _ejFilterSpecID = 0
+hooksecurefunc("EJ_SetLootFilter", function(classID, specID)
+    if VCA.LootPool._reentryGuard then
+        return
+    end
+    _ejFilterClassID = classID or 0
+    _ejFilterSpecID = specID or 0
+end)
+
+-- Returns the item link for a raid item directly from the EJ so the tooltip
+-- shows the correct difficulty item level. Temporarily clears the loot filter
+-- so all items are visible regardless of the current spec filter, then restores
+-- the filter to the player's loot spec.
+--
+-- _ejFilterClassID/_ejFilterSpecID track explicit EJ_SetLootFilter calls.
+-- Blizzard sets the EJ filter internally when the journal opens without calling
+-- EJ_SetLootFilter, so those values start at 0/0. When they are 0/0 we seed
+-- the restore target from the player's actual class and loot spec so we don't
+-- accidentally leave the EJ showing "All Specializations".
+local function GetRaidEJItemLink(itemID)
+    if not C_EncounterJournal or not C_EncounterJournal.GetLootInfoByIndex then
+        return nil
+    end
+    local savedClass = _ejFilterClassID
+    local savedSpec = _ejFilterSpecID
+    if savedClass == 0 and savedSpec == 0 then
+        savedClass = VCA.SpecInfo.GetPlayerClassID() or 0
+        savedSpec = VCA.SpecInfo.GetEffectiveLootSpecID() or 0
+    end
+    VCA.LootPool._reentryGuard = true
+    EJ_SetLootFilter(0, 0)
+    local numLoot = EJ_GetNumLoot and EJ_GetNumLoot() or 0
+    local result = nil
+    for i = 1, numLoot do
+        local info = C_EncounterJournal.GetLootInfoByIndex(i)
+        if info and info.itemID == itemID and info.link and info.link ~= "" then
+            result = info.link
+            break
+        end
+    end
+    -- Update tracking before restoring so the next call remembers the spec.
+    _ejFilterClassID = savedClass
+    _ejFilterSpecID = savedSpec
+    EJ_SetLootFilter(savedClass, savedSpec)
+    VCA.LootPool._reentryGuard = false
+    return result
+end
+
+-- ── Tooltip: obtained-spec lines ───────────────────────────────────────────
+-- Appends "Obtained as:" spec lines to whatever tooltip is currently open.
+-- Called before every GameTooltip:Show() on item icon hover.
+local function AppendObtainedSpecLines(rf)
+    local specs = rf.checkbox and rf.checkbox.specs
+    if not specs or #specs == 0 then
+        return
+    end
+    if not (Panel.sourceType and Panel.sourceID and Panel.difficultyID) then
+        return
+    end
+    local itemID = rf.itemID
+    if not itemID then
+        return
+    end
+
+    local obtainedSpecs = {}
+    for _, sp in ipairs(specs) do
+        if VCA.Data.IsObtained(Panel.sourceType, Panel.sourceID, Panel.difficultyID, sp.specID, itemID) then
+            obtainedSpecs[#obtainedSpecs + 1] = sp
+        end
+    end
+    local migratedObtained = VCA.Data.IsObtainedMigrated(Panel.sourceType, Panel.sourceID, Panel.difficultyID, itemID)
+    if #obtainedSpecs == 0 and not migratedObtained then
+        return
+    end
+
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(L["SPEC_PICKER_TITLE"], 1, 1, 1)
+    for _, sp in ipairs(obtainedSpecs) do
+        GameTooltip:AddLine("|T" .. sp.icon .. ":12:12:0:0:64:64:4:60:4:60|t " .. sp.name, 0.4, 1.0, 0.4)
+    end
+    if migratedObtained then
+        GameTooltip:AddLine(L["OBTAINED_UNKNOWN_SPEC"], 1.0, 0.7, 0.1)
+    end
+end
+
+-- ── Row pool helpers ──────────────────────────────────────────────────────────
+-- We maintain two pools of recycled row frames so we never create more widgets
+-- than necessary.
+-- itemRows and specRows are exposed in Panel._s so PanelColumns.lua can
+-- pass them to GetOrCreateItemRow / GetOrCreateSpecRow.
+_s.itemRows = {}
+local itemRows = _s.itemRows
+_s.specRows = {}
+local specRows = _s.specRows
+
+local function GetOrCreateItemRow(pool, parent)
+    for _, row in ipairs(pool) do
+        if not row.frame:IsShown() then
+            return row
+        end
+    end
+    -- Create a new row.  Use Button so WoW always delivers mouse events even
+    -- when nested inside a ScrollFrame, where plain Frame hit-testing can be
+    -- unreliable.
+    local rowFrame = CreateFrame("Button", nil, parent)
+    rowFrame:SetHeight(ROW_H)
+    rowFrame:RegisterForClicks("LeftButtonUp")
+
+    -- Flash texture (used for detection highlight)
+    local flash = rowFrame:CreateTexture(nil, "HIGHLIGHT")
+    flash:SetAllPoints(rowFrame)
+    flash:SetColorTexture(0, 1, 0, 0)
+
+    -- Selection highlight (golden tint when the user clicks the row)
+    local selHighlight = rowFrame:CreateTexture(nil, "BACKGROUND")
+    selHighlight:SetAllPoints(rowFrame)
+    selHighlight:SetColorTexture(1, 0.75, 0, 0)
+    selHighlight:Hide()
+
+    -- Icon housed in its own Button so the tooltip fires only on icon hover.
+    local iconButton = CreateFrame("Button", nil, rowFrame)
+    iconButton:SetSize(ICON_SIZE, ICON_SIZE)
+    iconButton:SetPoint("LEFT", rowFrame, "LEFT", 0, 0)
+
+    local icon = iconButton:CreateTexture(nil, "ARTWORK")
+    icon:SetAllPoints(iconButton)
+    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- trim default icon border
+
+    local iconBorder = iconButton:CreateTexture(nil, "OVERLAY")
+    iconBorder:SetTexture("Interface/Common/WhiteIconFrame")
+    iconBorder:SetAllPoints(iconButton)
+    iconBorder:Hide()
+
+    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    nameLabel:SetJustifyH("LEFT")
+    nameLabel:SetPoint("LEFT", iconButton, "RIGHT", 4, 0)
+    nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", -20, 0)
+    nameLabel:SetWordWrap(false)
+
+    -- Loot icon button — replaces the CheckButton so we can use a bag icon.
+    -- SetChecked / GetChecked shims keep PanelColumns.lua compatible.
+    local checkbox = CreateFrame("Button", nil, rowFrame)
+    checkbox:SetSize(16, 16)
+    checkbox:SetPoint("RIGHT", rowFrame, "RIGHT", 0, 0)
+
+    local checkboxTex = checkbox:CreateTexture(nil, "ARTWORK")
+    checkboxTex:SetAllPoints(checkbox)
+    checkboxTex:SetTexture("Interface\\Icons\\inv_misc_bag_07")
+    checkboxTex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    checkbox.tex = checkboxTex
+
+    local checkboxHL = checkbox:CreateTexture(nil, "HIGHLIGHT")
+    checkboxHL:SetAllPoints(checkbox)
+    checkboxHL:SetColorTexture(1, 1, 1, 0.3)
+
+    checkbox._obtained = false
+    function checkbox:SetChecked(v)
+        self._obtained = v
+        if v == "migrated" then
+            -- Amber: obtained but spec unknown (migrated from pre-spec save data).
+            self.tex:SetVertexColor(1.0, 0.7, 0.1)
+            self.tex:SetAlpha(1)
+        elseif v then
+            -- Green: obtained with a known spec.
+            self.tex:SetVertexColor(0.4, 1.0, 0.4)
+            self.tex:SetAlpha(1)
+        else
+            self.tex:SetVertexColor(1, 1, 1)
+            self.tex:SetAlpha(0.30)
+        end
+    end
+    function checkbox:GetChecked()
+        return self._obtained
+    end
+    checkbox:SetChecked(false)
+
+    -- Tooltip on icon hover only
+    iconButton:SetScript("OnEnter", function(self)
+        local rf = self:GetParent()
+        local link = rf.itemLink
+        local id = rf.itemID
+        if not (link or id) then
+            return
+        end
+
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+        -- Inject Voidcore reward bonus IDs so the tooltip shows the correct
+        -- item level for the Nebulous Voidcore reward track (Myth 1/6).
+        if link and link ~= "" then
+            local modified
+            if Panel.sourceType == VCA.ContentType.MYTHIC_PLUS and rf.itemSlot ~= "" then
+                modified = BuildMythicPlusTooltipLink(link)
+            elseif Panel.sourceType == VCA.ContentType.RAID then
+                -- Use the EJ's own link for this item — it already has the
+                -- correct difficulty / Myth track bonus IDs for this boss.
+                modified = GetRaidEJItemLink(rf.itemID)
+            end
+            if modified then
+                local ok = pcall(GameTooltip.SetHyperlink, GameTooltip, modified)
+                if ok and GameTooltip:NumLines() and GameTooltip:NumLines() > 0 then
+                    AppendObtainedSpecLines(rf)
+                    GameTooltip:Show()
+                    return
+                end
+                GameTooltip:ClearLines()
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            end
+        end
+
+        if link and link ~= "" then
+            GameTooltip:SetHyperlink(link)
+        elseif id then
+            GameTooltip:SetItemByID(id)
+        end
+        AppendObtainedSpecLines(rf)
+        GameTooltip:Show()
+    end)
+    iconButton:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+
+    local row = {
+        frame = rowFrame,
+        flash = flash,
+        selHighlight = selHighlight,
+        iconButton = iconButton,
+        icon = icon,
+        iconBorder = iconBorder,
+        nameLabel = nameLabel,
+        checkbox = checkbox
+    }
+
+    -- Wire the selection click once at creation time so it is never lost when
+    -- rows are recycled from the pool.
+    rowFrame:SetScript("OnClick", function(self, btn)
+        local id = self.itemID
+        if not id then
+            return
+        end
+        if self.dimmed then
+            return
+        end
+        -- Toggle: click selects, click again deselects.
+        if selectedItemIDs[id] then
+            selectedItemIDs[id] = nil
+        else
+            selectedItemIDs[id] = true
+        end
+        -- Refresh highlight visuals on all visible rows immediately.
+        for _, r in ipairs(pool) do
+            if r.frame:IsShown() and r.frame.itemID then
+                if selectedItemIDs[r.frame.itemID] then
+                    r.selHighlight:SetColorTexture(1, 0.75, 0, 0.18)
+                    r.selHighlight:Show()
+                else
+                    r.selHighlight:Hide()
+                end
+            end
+        end
+        Panel.RefreshSpecColumn()
+        Panel.RefreshItemColumn()
+        Panel.SaveItemSelections()
+    end)
+
+    pool[#pool + 1] = row
+    return row
+end
+
+_s.GetOrCreateItemRow = GetOrCreateItemRow
+
+local function GetOrCreateSpecRow(pool, parent)
+    for _, row in ipairs(pool) do
+        if not row.frame:IsShown() then
+            return row
+        end
+    end
+    local rowFrame = CreateFrame("Button", nil, parent)
+    rowFrame:SetHeight(ROW_H)
+    rowFrame:RegisterForClicks("LeftButtonUp")
+
+    -- Selection highlight (purple tint when spec is selected)
+    local selHighlight = rowFrame:CreateTexture(nil, "BACKGROUND")
+    selHighlight:SetAllPoints(rowFrame)
+    selHighlight:SetColorTexture(0.69, 0.28, 0.97, 0)
+    selHighlight:Hide()
+
+    local rankLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    rankLabel:SetJustifyH("RIGHT")
+    rankLabel:SetWidth(24)
+    rankLabel:SetPoint("LEFT", rowFrame, "LEFT", 0, 0)
+
+    local icon = rowFrame:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(ICON_SIZE, ICON_SIZE)
+    icon:SetPoint("LEFT", rankLabel, "RIGHT", 3, 0)
+    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    nameLabel:SetJustifyH("LEFT")
+    nameLabel:SetPoint("LEFT", icon, "RIGHT", 4, 0)
+    nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", 0, 0)
+    nameLabel:SetWordWrap(false)
+
+    local statsLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    statsLabel:SetJustifyH("RIGHT")
+    statsLabel:SetPoint("RIGHT", rowFrame, "RIGHT", 0, 0)
+
+    -- Spec selection click (single-select: selecting a new spec deselects the previous one)
+    rowFrame:SetScript("OnClick", function(self, btn)
+        local specID = self.specID
+        if not specID then
+            return
+        end
+        local wasSelected = selectedSpecIDs[specID]
+        wipe(selectedSpecIDs)
+        if not wasSelected then
+            selectedSpecIDs[specID] = true
+        end
+        -- Update spec highlight visuals
+        for _, r in ipairs(pool) do
+            if r.frame:IsShown() and r.frame.specID then
+                if selectedSpecIDs[r.frame.specID] then
+                    r.selHighlight:SetColorTexture(0.69, 0.28, 0.97, 0.18)
+                    r.selHighlight:Show()
+                else
+                    r.selHighlight:Hide()
+                end
+            end
+        end
+        Panel.RefreshItemColumn()
+    end)
+
+    local row = {
+        frame = rowFrame,
+        selHighlight = selHighlight,
+        rankLabel = rankLabel,
+        icon = icon,
+        nameLabel = nameLabel,
+        statsLabel = statsLabel
+    }
+    pool[#pool + 1] = row
+    return row
+end
+
+-- ── Row hide helpers ──────────────────────────────────────────────────────────
+
+_s.GetOrCreateSpecRow = GetOrCreateSpecRow
+
+local function HideAllItemRows()
+    for _, row in ipairs(itemRows) do
+        row.frame:Hide()
+    end
+end
+
+local function HideAllSpecRows()
+    for _, row in ipairs(specRows) do
+        row.frame:Hide()
+    end
+end
+
+_s.HideAllItemRows = HideAllItemRows
+_s.HideAllSpecRows = HideAllSpecRows
+
+-- ── Slot sort order ───────────────────────────────────────────────────────────
+-- Maps INVTYPE_* equip-location strings to a numeric sort priority so the item
+-- list reads like the character sheet: head first, trinkets last.
+-- Finger/Ring and all weapon sub-types are collapsed into single categories.
+
+local SLOT_SORT_ORDER = {
+    -- Synthesis tokens (tier set tokens, Nullcores, etc.) have no equip slot;
+    -- sort them first to match EJ ordering.
+    INVTYPE_NON_EQUIP_IGNORE = 0,
+    INVTYPE_HEAD = 1,
+    INVTYPE_NECK = 2,
+    INVTYPE_SHOULDER = 3,
+    INVTYPE_CLOAK = 4,
+    INVTYPE_CHEST = 5,
+    INVTYPE_ROBE = 5,
+    INVTYPE_WRIST = 6,
+    INVTYPE_HAND = 7,
+    INVTYPE_WAIST = 8,
+    INVTYPE_LEGS = 9,
+    INVTYPE_FEET = 10,
+    INVTYPE_FINGER = 11,
+    -- All weapon / off-hand types grouped together
+    INVTYPE_WEAPON = 12,
+    INVTYPE_2HWEAPON = 12,
+    INVTYPE_WEAPONMAINHAND = 12,
+    INVTYPE_WEAPONOFFHAND = 12,
+    INVTYPE_HOLDABLE = 12,
+    INVTYPE_SHIELD = 12,
+    INVTYPE_RANGED = 12,
+    INVTYPE_RANGEDRIGHT = 12,
+    -- Trinkets last
+    INVTYPE_TRINKET = 13
+}
+
+local function GetSlotSortOrder(itemID)
+    if not itemID then
+        return 99
+    end
+    local _, _, _, equipLoc = C_Item.GetItemInfoInstant(itemID)
+    if not equipLoc or equipLoc == "" then
+        return 99
+    end
+    return SLOT_SORT_ORDER[equipLoc] or 99
+end
+
+_s.GetSlotSortOrder = GetSlotSortOrder
+
+-- ── Populate item column ──────────────────────────────────────────────────────
+
+local itemScrollChild = CreateFrame("Frame", nil, contentArea)
+local itemScrollFrame = CreateFrame("ScrollFrame", nil, contentArea)
+itemScrollFrame:SetScrollChild(itemScrollChild)
+
+-- Mouse wheel scrolling
+itemScrollFrame:EnableMouseWheel(true)
+itemScrollFrame:SetScript("OnMouseWheel", function(self, delta)
+    local current = self:GetVerticalScroll()
+    local maxScroll = math.max(0, itemScrollChild:GetHeight() - self:GetHeight())
+    local step = ROW_H * 3
+    local newScroll = math.max(0, math.min(maxScroll, current - delta * step))
+    self:SetVerticalScroll(newScroll)
+end)
+
+-- Thin scrollbar track + thumb
+local scrollTrack = itemScrollFrame:CreateTexture(nil, "BACKGROUND")
+scrollTrack:SetWidth(4)
+scrollTrack:SetColorTexture(0.1, 0.1, 0.1, 0.4)
+scrollTrack:SetPoint("TOPRIGHT", itemScrollFrame, "TOPRIGHT", 5, 0)
+scrollTrack:SetPoint("BOTTOMRIGHT", itemScrollFrame, "BOTTOMRIGHT", 5, 0)
+scrollTrack:Hide()
+
+local scrollThumb = itemScrollFrame:CreateTexture(nil, "OVERLAY")
+scrollThumb:SetWidth(4)
+scrollThumb:SetColorTexture(0.6, 0.6, 0.6, 0.6)
+scrollThumb:Hide()
+
+-- Expose scroll frame widgets and scrollbar for PanelColumns.lua
+_s.itemScrollChild = itemScrollChild
+_s.itemScrollFrame = itemScrollFrame
+_s.scrollTrack = scrollTrack
+_s.scrollThumb = scrollThumb
+
+-- UpdateScrollbar is defined in PanelColumns.lua (loaded after this file).
+-- The hook body runs at game time when PanelColumns.lua is already loaded.
+itemScrollFrame:HookScript("OnMouseWheel", function()
+    Panel.UpdateScrollbar()
+end)
+
+-- ── Populate spec column ──────────────────────────────────────────────────────
+
+local specScrollChild = CreateFrame("Frame", nil, contentArea)
+local specScrollFrame = CreateFrame("ScrollFrame", nil, contentArea)
+specScrollFrame:SetScrollChild(specScrollChild)
+
+_s.specScrollChild = specScrollChild
+_s.specScrollFrame = specScrollFrame
+-- ── Layout pass ───────────────────────────────────────────────────────────────
+-- Recalculates all column/scroll frame positions.  Called on Refresh and on
+-- frame resize (if we ever make it resizable).
+
+local function DoLayout()
+    local contentH = contentArea:GetHeight() - COL_HEADER_H - 10
+    local leftW = LeftColWidth()
+    local rightW = RightColWidth()
+    local splitX = PADDING + leftW
+
+    -- Column separator
+    colSep:ClearAllPoints()
+    colSep:SetPoint("TOP", contentArea, "TOPLEFT", splitX, -2)
+    colSep:SetPoint("BOTTOM", contentArea, "BOTTOMLEFT", splitX, 2)
+
+    -- Clear-spec-selection button (near center divider, inside loot column)
+    clearSpecBtn:ClearAllPoints()
+    clearSpecBtn:SetPoint("RIGHT", contentArea, "TOPLEFT", splitX - 4, -6 - (COL_HEADER_H / 2) + 4)
+
+    -- Spec column header position (left col header is already anchored)
+    specColHeader:ClearAllPoints()
+    specColHeader:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -6)
+
+    -- Clear-item-selection button (just left of center divider)
+    clearItemBtn:ClearAllPoints()
+    clearItemBtn:SetPoint("RIGHT", contentArea, "TOPLEFT", splitX - 22, -6 - (COL_HEADER_H / 2) + 4)
+
+    -- Loot spec label (right-aligned in the spec column header row)
+    lootSpecLabel:ClearAllPoints()
+    lootSpecLabel:SetPoint("RIGHT", contentArea, "TOPRIGHT", -PADDING, -6 - (COL_HEADER_H / 2) + 4)
+
+    -- Item scroll frame
+    itemScrollFrame:ClearAllPoints()
+    itemScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -(COL_HEADER_H + 8))
+    itemScrollFrame:SetPoint("BOTTOMLEFT", contentArea, "BOTTOMLEFT", PADDING, 4)
+    itemScrollFrame:SetWidth(leftW - PADDING)
+
+    itemScrollChild:SetWidth(leftW - PADDING)
+
+    -- Spec scroll frame
+    specScrollFrame:ClearAllPoints()
+    specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 8))
+    specScrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 4)
+    specScrollFrame:SetWidth(rightW - PADDING)
+
+    specScrollChild:SetWidth(rightW - PADDING)
+end
+
+-- ── Context update ────────────────────────────────────────────────────────────
+
+-- Persist the current item selection to the char DB.
+function Panel.SaveItemSelections()
+    if Panel.sourceType and Panel.sourceID and Panel.difficultyID then
+        VCA.Data.SaveSelectedItems(Panel.sourceType, Panel.sourceID, Panel.difficultyID, selectedItemIDs)
+    end
+end
+
+function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid)
+    -- Persist outgoing selections before switching context.
+    Panel.SaveItemSelections()
+
+    -- Restore saved item selection for this source (spec selection is transient).
+    wipe(selectedItemIDs)
+    wipe(selectedSpecIDs)
+    local saved = VCA.Data.GetSelectedItems(sourceType, sourceID, difficultyID)
+    for id in pairs(saved) do
+        selectedItemIDs[id] = true
+    end
+    HideAllItemRows()
+    HideAllSpecRows()
+
+    Panel.sourceType = sourceType
+    Panel.sourceID = sourceID
+    Panel.difficultyID = difficultyID
+
+    VCA.Detection.SetActiveSource(sourceType, sourceID, difficultyID)
+
+    sourceLabel:SetText(sourceName or "")
+    Panel.isRaid = isRaid
+
+    -- Show key level dropdown only for M+ dungeons
+    if sourceType == VCA.ContentType.MYTHIC_PLUS then
+        UpdateKeyLevelText()
+        keyLevelButton:Show()
+    else
+        keyLevelButton:Hide()
+        keyLevelMenu:Hide()
+    end
+
+    Panel.Refresh()
+end
+
+function Panel.ClearContext()
+    Panel.SaveItemSelections()
+
+    VCA.Detection.ClearActiveSource()
+
+    wipe(selectedItemIDs)
+    wipe(selectedSpecIDs)
+    HideAllItemRows()
+    HideAllSpecRows()
+
+    Panel.sourceType = nil
+    Panel.sourceID = nil
+    Panel.difficultyID = nil
+    Panel.isRaid = nil
+
+    sourceLabel:SetText("")
+    infoLabel:SetText("")
+    lootSpecLabel:SetText("")
+    lootColHeader:SetText("|cffb048f8" .. L["COL_LOOT"] .. "|r")
+    specColHeader:SetText("|cffb048f8" .. L["COL_SPEC_RANKING"] .. "|r")
+    clearSpecBtn:Hide()
+    clearItemBtn:Hide()
+    keyLevelMenu:Hide()
+end
+
+-- ── Refresh ───────────────────────────────────────────────────────────────────
+
+function Panel.Refresh()
+    if not frame:IsShown() then
+        return
+    end
+    if not Panel.sourceID then
+        return
+    end
+
+    -- Update loot spec label
+    local lootSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
+    if lootSpecID and lootSpecID > 0 then
+        local _, name, _, icon = GetSpecializationInfoByID(lootSpecID)
+        if name then
+            lootSpecLabel:SetText("|cff888888" .. L["LOOT_SPEC_LABEL"] .. "|r |cffdddddd" .. name .. "|r")
+        else
+            lootSpecLabel:SetText("")
+        end
+    else
+        lootSpecLabel:SetText("")
+    end
+
+    -- Update info label with voidcore cost; turn red when the player cannot afford it.
+    local cost = VCA.Probability.GetVoidcoreCost(Panel.sourceType)
+    local contentTag = Panel.isRaid and L["CONTENT_RAID_BOSS"] or L["CONTENT_MP_DUNGEON"]
+    local coreWord = cost == 1 and L["NEBULOUS_VOIDCORE"] or L["NEBULOUS_VOIDCORES"]
+    local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
+    local owned = currInfo and currInfo.quantity or 0
+    local costColor
+    if owned < cost then
+        costColor = "|cffff3333" -- red: cannot afford
+    elseif cost == 2 then
+        costColor = "|cffffff00" -- yellow for raids
+    else
+        costColor = "|cff00ff00" -- green for M+
+    end
+    infoLabel:SetText(contentTag .. "  •  " .. costColor .. cost .. " " .. coreWord .. "|r")
+
+    DoLayout()
+    Panel.RefreshItemColumn()
+    Panel.RefreshSpecColumn()
+end
+
+-- ── Detection callback ────────────────────────────────────────────────────────
+-- Wired to Detection module: flash the detected item row green, print to chat.
+
+VCA.Detection.SetOnItemDetectedCallback(function(itemID, source)
+    -- Chat message
+    local itemName = C_Item.GetItemNameByID(itemID) or tostring(itemID)
+    print("|cffb048f8VoidcoreAdvisor:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
+
+    -- Remove from saved selections now that it's obtained.
+    VCA.Data.RemoveSelectedItem(source.sourceType, source.sourceID, source.difficultyID, itemID)
+    selectedItemIDs[itemID] = nil
+
+    -- Flash the item row if panel is open for this source
+    if Panel.sourceID == source.sourceID and Panel.sourceType == source.sourceType and Panel.difficultyID ==
+        source.difficultyID then
+        for _, row in ipairs(itemRows) do
+            if row.checkbox.itemID == itemID and row.frame:IsShown() then
+                row.flash:SetColorTexture(0, 1, 0, 0.35)
+                -- Fade out over ~1.5 s using OnUpdate
+                local age = 0
+                row.frame:SetScript("OnUpdate", function(self, elapsed)
+                    age = age + elapsed
+                    local alpha = math.max(0, 0.35 - age * 0.23)
+                    row.flash:SetColorTexture(0, 1, 0, alpha)
+                    if age >= 1.5 then
+                        row.flash:SetColorTexture(0, 1, 0, 0)
+                        self:SetScript("OnUpdate", nil)
+                    end
+                end)
+                break
+            end
+        end
+        Panel.Refresh()
+    end
+end)
+
+-- ── Visibility helpers ────────────────────────────────────────────────────────
+
+function Panel.Show()
+    Panel.AnchorToEJ()
+    frame:Show()
+    Panel.Refresh()
+end
+
+function Panel.Hide()
+    frame:Hide()
+end
+
+function Panel.IsShown()
+    return frame:IsShown()
+end
+
+function Panel.IsMinimized()
+    local db = _G[VCA.CHAR_DB_NAME]
+    return db and db.minimized or false
+end
+
+function Panel.SetMinimized(val)
+    local db = _G[VCA.CHAR_DB_NAME]
+    if db then
+        db.minimized = val and true or false
+    end
+end
+
+-- ── Live spec-change / loot-data update ───────────────────────────────────────
+-- When the player changes their loot spec setting, or when the EJ finishes
+-- loading loot data for a newly selected instance, refresh both columns.
+
+local specChangeFrame = CreateFrame("Frame")
+specChangeFrame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
+specChangeFrame:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
+specChangeFrame:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+specChangeFrame:SetScript("OnEvent", function()
+    Panel.Refresh()
+end)
+
+local zoneResetFrame = CreateFrame("Frame")
+zoneResetFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+zoneResetFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+zoneResetFrame:SetScript("OnEvent", function()
+    Panel.ClearContext()
+    Panel.Hide()
+end)

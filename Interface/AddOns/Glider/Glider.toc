@@ -1,7 +1,7 @@
-## Interface: 120000, 120001
+## Interface: 120005
 ## Title: |cff58C6FAGlider|r
 ## Author: Yuyuli
-## Version: 45
+## Version: 46
 ## IconTexture: 4640476
 ## SavedVariables: GliderAddOnDB
 ## LoadSavedVariablesFirst: 1
@@ -20,6 +20,7 @@
 ## Category-zhTW: 使用者介面
 
 Libs\LibStub\LibStub.lua
+Libs\LibEditMode\namespaced.lua
 Libs\LibEditMode\embed.xml
 
 AtlasInfo.lua

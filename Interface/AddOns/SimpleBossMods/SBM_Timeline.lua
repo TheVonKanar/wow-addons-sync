@@ -100,11 +100,6 @@ local function resolveTimelineLabel(info, spellID)
 			if name and name ~= "" then
 				return name
 			end
-		elseif GetSpellInfo then
-			local name = GetSpellInfo(spellID)
-			if name and name ~= "" then
-				return name
-			end
 		end
 	end
 
@@ -124,11 +119,6 @@ local function resolveTimelineIcon(info, spellID)
 			local spellInfo = C_Spell.GetSpellInfo(spellID)
 			if spellInfo and spellInfo.iconID then
 				return spellInfo.iconID
-			end
-		elseif GetSpellInfo then
-			local _, _, _, icon = GetSpellInfo(spellID)
-			if icon then
-				return icon
 			end
 		end
 	end
@@ -181,11 +171,6 @@ local function resolveEncounterEventFallback(encounterEventID)
 			if type(spellName) == "string" and spellName ~= "" then
 				label = spellName
 			end
-		elseif GetSpellInfo then
-			local spellName = GetSpellInfo(spellID)
-			if type(spellName) == "string" and spellName ~= "" then
-				label = spellName
-			end
 		end
 	end
 
@@ -197,9 +182,6 @@ local function resolveEncounterEventFallback(encounterEventID)
 		if C_Spell and C_Spell.GetSpellInfo then
 			local spellInfo = C_Spell.GetSpellInfo(spellID)
 			iconFileID = spellInfo and spellInfo.iconID or nil
-		elseif GetSpellInfo then
-			local _, _, _, icon = GetSpellInfo(spellID)
-			iconFileID = icon
 		end
 	end
 

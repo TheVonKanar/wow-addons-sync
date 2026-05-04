@@ -6,10 +6,9 @@ VER 3 0100000000000023 " " "134400"
 #showtooltip
 /castsequence reset=600 Astral Recall, Cosmic Hearthstone
 END
-VER 3 0100000000000032 " " "136044"
-#showtooltip Healing Surge
-/use Healthstone
-/cast [@player] Healing Surge
+VER 3 0100000000000071 " " "134400"
+#showtooltip Cleanse Spirit
+/cast [@player] Cleanse Spirit
 END
 VER 3 0100000000000036 " " "136018"
 #showtooltip
@@ -28,10 +27,6 @@ VER 3 010000000000006F " " "5927655"
 #showtooltip
 /cast [@cursor] Surging Totem
 END
-VER 3 0100000000000071 " " "134400"
-#showtooltip Cleanse Spirit
-/cast [@player] Cleanse Spirit
-END
 VER 3 0100000000000072 " " "134400"
 #showtooltip
 /cast Lava Lash
@@ -42,24 +37,25 @@ VER 3 0100000000000074 "++" "134400"
 /cast Doom Winds
 /use 14
 END
+VER 3 0100000000000032 "+HS" "136044"
+#showtooltip Healing Surge
+/use Healthstone
+/cast [@player] Healing Surge
+END
 VER 3 0100000000000073 "+pot" "134400"
 #showtooltip
 /cast Bloodlust
 /use Light's Potential
 END
 VER 3 0100000000000077 "+TK" "134400"
-#showtooltip
+#showtooltip Nature's Swiftness
+/use Emberwing Feather
 /cast Nature's Swiftness
-/use 14
 END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
-END
-VER 3 0100000000000075 "Hover" "134400"
-#showtooltip
-/cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
 VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
@@ -69,6 +65,10 @@ END
 VER 3 0100000000000076 "Hover" "134400"
 #showtooltip
 /cast [target=mouseover,exists] Riptide; Riptide
+END
+VER 3 0100000000000075 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit

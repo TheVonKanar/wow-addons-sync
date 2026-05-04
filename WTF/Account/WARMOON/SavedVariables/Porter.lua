@@ -60,6 +60,16 @@ PorterDB = {
 ["currentSeason"] = "midnight",
 ["viewMode"] = "category",
 ["showCosmeticHearthstones"] = false,
+["announcePort"] = {
+["Housing"] = true,
+["Raids"] = true,
+["Dungeons"] = true,
+["Mage Portals"] = true,
+["Toys"] = true,
+["Class & Racials"] = true,
+["Items"] = true,
+["Hearthstones"] = true,
+},
 },
 },
 ["globalProfile"] = {
