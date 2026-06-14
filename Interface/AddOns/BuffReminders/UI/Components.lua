@@ -13,6 +13,7 @@ local _, BR = ...
 ---@class ScrollableContainerConfig
 ---@field contentHeight? number Initial content height (default 600)
 ---@field scrollbarWidth? number Width reserved for scrollbar (default 24)
+---@field width? number Explicit scroll-frame width. Required when nesting inside a parent larger than the scroll area (otherwise contentWidth is derived from parent:GetWidth() and overflows).
 
 ---@class VerticalLayoutConfig
 ---@field x? number Starting X position (default 0)
@@ -54,7 +55,7 @@ local RefreshableComponents = BR.RefreshableComponents
 --
 -- Calls must be synchronous: each Measure* call configures and reads the
 -- shared FontString within one function call. Do NOT save the FontString or
--- defer reads across event boundaries — the next caller will overwrite it.
+-- defer reads across event boundaries - the next caller will overwrite it.
 
 local _measurer
 local _measureFS
@@ -290,6 +291,24 @@ function BR.CreateButton(parent, text, onClick, tooltip, colorOverrides)
         UpdateVisual()
     end
 
+    -- Opt this button into the OnShow refresh pattern: enabledFn is re-evaluated
+    -- by Components.RefreshAll() and applied via :SetEnabled. Use this instead
+    -- of imperative :SetEnabled cascades hooked to other widgets' OnClick.
+    function btn:BindEnabled(enabledFn)
+        btn._enabledGetter = enabledFn
+        btn:SetEnabled(enabledFn() and true or false)
+        if not btn._registeredForRefresh then
+            btn._registeredForRefresh = true
+            tinsert(RefreshableComponents, btn)
+        end
+    end
+
+    function btn:Refresh()
+        if btn._enabledGetter then
+            btn:SetEnabled(btn._enabledGetter() and true or false)
+        end
+    end
+
     return btn
 end
 
@@ -405,7 +424,7 @@ function Components.Slider(parent, config)
 
     -- Label width: explicit labelWidth is treated as a HARD target so columns
     -- of sliders stay aligned (label clips/extends past the boundary if too
-    -- long; the caller is responsible for picking a value that fits — see
+    -- long; the caller is responsible for picking a value that fits - see
     -- AppearanceGrid for the measurement-based pattern). Omitting labelWidth
     -- falls back to auto-grow for ad-hoc usage.
     local labelWidth
@@ -633,38 +652,14 @@ function Components.Slider(parent, config)
         editBox:SetFocus()
         editBox:HighlightText()
     end)
-    SetupTooltip(valueBtn, L["Component.AdjustValue"], L["Component.AdjustValue.Desc"], "ANCHOR_TOP")
-
-    -- Mouse wheel support
-    holder:EnableMouseWheel(true)
-    holder:SetScript("OnMouseWheel", function(_, delta)
-        if isEnabled then
-            local newVal
-            local remainder = currentValue % step
-            if remainder == 0 then
-                -- Already aligned, move by full step
-                newVal = currentValue + (delta * step)
-            elseif delta > 0 then
-                -- Snap up to next multiple of step
-                newVal = currentValue + (step - remainder)
-            else
-                -- Snap down to previous multiple of step
-                newVal = currentValue - remainder
-            end
-            newVal = max(config.min, min(config.max, newVal))
-            currentValue = newVal
-            valueText:SetText(displayText(currentValue))
-            UpdateVisual()
-            config.onChange(floor(currentValue))
-        end
-    end)
+    SetupTooltip(valueBtn, L["Component.AdjustValue"], L["Component.AdjustValue.ClickHint"], "ANCHOR_TOP")
 
     -- Hover tooltip (on all interactive children, chained with existing scripts)
-    local wheelHint = "Use mouse wheel to adjust"
+    local clickHint = L["Component.AdjustValue.ClickHint"]
     if config.tooltip then
         local title = config.tooltip.title
         local desc = config.tooltip.desc
-        local fullDesc = desc and (desc .. "\n\n" .. wheelHint) or wheelHint
+        local fullDesc = desc and (desc .. "\n\n" .. clickHint) or clickHint
         holder:EnableMouse(true)
         local function showTip()
             ShowTooltip(holder, title, fullDesc, "ANCHOR_TOP")
@@ -682,7 +677,7 @@ function Components.Slider(parent, config)
         valueBtn:HookScript("OnLeave", hideTip)
     else
         local function showHint()
-            ShowTooltip(holder, wheelHint, nil, "ANCHOR_TOP")
+            ShowTooltip(holder, L["Component.AdjustValue"], clickHint, "ANCHOR_TOP")
         end
         thumb:HookScript("OnEnter", showHint)
         thumb:HookScript("OnLeave", HideTooltip)
@@ -1751,7 +1746,7 @@ function Components.DirectionButtons(parent, config)
     }
     local width = config.width or 90
     local labelText = config.label or L["Direction.Label"]
-    -- Explicit labelWidth → hard. Omitted → auto-grow.
+    -- Explicit labelWidth -> hard. Omitted -> auto-grow.
     local labelWidth
     if config.labelWidth ~= nil then
         labelWidth = config.labelWidth
@@ -1818,6 +1813,136 @@ function Components.DirectionButtons(parent, config)
     -- Backwards compatibility: empty buttons table (no longer used)
     holder.buttons = {}
 
+    return holder
+end
+
+-- ============================================================================
+-- ZONE PICKER (vertical + alignment dropdowns)
+-- ============================================================================
+-- Two compact dropdowns covering the same 15 zones as the old spatial picker:
+-- Vertical (Above / Inside top / Inside middle / Inside bottom / Below) +
+-- Align (Left / Center / Right). Decomposition is handled by
+-- BR.TextPositions.ToVA / FromVA so the widget speaks zone strings to its
+-- callers. Reuses Components.Dropdown for both axes - no custom widget code,
+-- ~26px per row vs the old picker's 90px.
+
+---@class ZonePickerConfig
+---@field label string Item name shown to the left of the dropdowns
+---@field labelWidth? number Default 70
+---@field verticalWidth? number Width of the Vertical dropdown (default 110)
+---@field alignWidth? number Width of the Align dropdown (default 85)
+---@field get fun(): string Returns current zone name
+---@field enabled? fun(): boolean
+---@field onChange fun(zone: string)
+
+-- Each Dropdown holder reserves an extra 10px past its `width` for the
+-- chevron + internal padding (see Components.Dropdown). The container has
+-- to include that or anything anchored to picker.RIGHT lands inside the
+-- align dropdown.
+local ZONE_PICKER_DD_PADDING = 10
+local ZONE_PICKER_LABEL_COLOR = { 1, 1, 1, 1 }
+local ZONE_PICKER_LABEL_DISABLED_COLOR = { 0.5, 0.5, 0.5, 1 }
+
+-- Localized option lists, built once at file load (locale strings are stable
+-- per session). Lifted out of Components.ZonePicker so each call doesn't
+-- re-allocate the option tables.
+local ZONE_PICKER_VERTICAL_OPTIONS = {}
+for _, opt in ipairs(BR.TextPositions.VERTICAL_OPTIONS) do
+    ZONE_PICKER_VERTICAL_OPTIONS[#ZONE_PICKER_VERTICAL_OPTIONS + 1] = {
+        value = opt.value,
+        label = BR.L[opt.labelKey],
+    }
+end
+local ZONE_PICKER_ALIGN_OPTIONS = {}
+for _, opt in ipairs(BR.TextPositions.ALIGN_OPTIONS) do
+    ZONE_PICKER_ALIGN_OPTIONS[#ZONE_PICKER_ALIGN_OPTIONS + 1] = {
+        value = opt.value,
+        label = BR.L[opt.labelKey],
+    }
+end
+
+---Create a zone picker (label + vertical + align dropdowns).
+---@param parent Frame
+---@param config ZonePickerConfig
+function Components.ZonePicker(parent, config)
+    local LW = config.labelWidth or 70
+    local V_W = config.verticalWidth or 110
+    local A_W = config.alignWidth or 85
+    local GAP = 8
+
+    local holder = CreateFrame("Frame", nil, parent)
+    holder:SetSize(LW + GAP + (V_W + ZONE_PICKER_DD_PADDING) + GAP + (A_W + ZONE_PICKER_DD_PADDING), 26)
+
+    local itemLabel = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    itemLabel:SetPoint("LEFT", 0, 0)
+    itemLabel:SetWidth(LW)
+    itemLabel:SetJustifyH("LEFT")
+    itemLabel:SetWordWrap(false)
+    itemLabel:SetText(config.label or "")
+    holder.label = itemLabel
+
+    local function currentZone()
+        return (config.get and config.get()) or "INSIDE_C"
+    end
+
+    local verticalDD = Components.Dropdown(holder, {
+        label = "",
+        labelWidth = 0,
+        width = V_W,
+        options = ZONE_PICKER_VERTICAL_OPTIONS,
+        get = function()
+            local v = BR.TextPositions.ToVA(currentZone())
+            return v
+        end,
+        enabled = config.enabled,
+        onChange = function(v)
+            local _, a = BR.TextPositions.ToVA(currentZone())
+            if config.onChange then
+                config.onChange(BR.TextPositions.FromVA(v, a))
+            end
+        end,
+    })
+    verticalDD:SetPoint("LEFT", itemLabel, "RIGHT", GAP, 0)
+
+    local alignDD = Components.Dropdown(holder, {
+        label = "",
+        labelWidth = 0,
+        width = A_W,
+        options = ZONE_PICKER_ALIGN_OPTIONS,
+        get = function()
+            local _, a = BR.TextPositions.ToVA(currentZone())
+            return a
+        end,
+        enabled = config.enabled,
+        onChange = function(a)
+            local v = BR.TextPositions.ToVA(currentZone())
+            if config.onChange then
+                config.onChange(BR.TextPositions.FromVA(v, a))
+            end
+        end,
+    })
+    alignDD:SetPoint("LEFT", verticalDD, "RIGHT", GAP, 0)
+
+    holder.verticalDropdown = verticalDD
+    holder.alignDropdown = alignDD
+
+    -- Mirror the dropdowns' enabled state on the item label so the whole row
+    -- reads as one disabled element (otherwise the label stays white while
+    -- everything to its right is greyed).
+    function holder:Refresh()
+        local enabledNow = not config.enabled or config.enabled()
+        if enabledNow then
+            itemLabel:SetTextColor(unpack(ZONE_PICKER_LABEL_COLOR))
+        else
+            itemLabel:SetTextColor(unpack(ZONE_PICKER_LABEL_DISABLED_COLOR))
+        end
+    end
+
+    if config.get or config.enabled then
+        tinsert(RefreshableComponents, holder)
+    end
+
+    holder:Refresh()
     return holder
 end
 
@@ -2357,8 +2482,8 @@ end
 ---@return table holder Frame containing dropdown with .SetValue(v), .GetValue(), .SetEnabled(bool)
 function Components.Dropdown(parent, config, _)
     local width = config.width or 100
-    -- Explicit labelWidth → hard target (preserves column alignment).
-    -- Omitted → auto-grow from measured text.
+    -- Explicit labelWidth -> hard target (preserves column alignment).
+    -- Omitted -> auto-grow from measured text.
     local labelWidth
     if config.labelWidth ~= nil then
         labelWidth = config.labelWidth
@@ -2529,7 +2654,7 @@ end
 ---@return table holder Frame with .editBox, .SetValue(v), .GetValue()
 function Components.TextInput(parent, config)
     local width = config.width or 150
-    -- Explicit labelWidth → hard. Omitted → auto-grow.
+    -- Explicit labelWidth -> hard. Omitted -> auto-grow.
     local labelWidth
     if config.labelWidth ~= nil then
         labelWidth = config.labelWidth
@@ -2572,13 +2697,14 @@ function Components.TextInput(parent, config)
         tinsert(panelEditBoxes, editBox)
     end
 
-    -- Callbacks
+    -- Callbacks. Use HookScript on OnEditFocusLost so we don't clobber
+    -- StyleEditBox's focus-color reset (SetScript would replace its hook).
     if config.onChange then
         editBox:SetScript("OnEnterPressed", function(self)
             self:ClearFocus()
             config.onChange(self:GetText())
         end)
-        editBox:SetScript("OnEditFocusLost", function(self)
+        editBox:HookScript("OnEditFocusLost", function(self)
             config.onChange(self:GetText())
         end)
     else
@@ -2633,7 +2759,7 @@ end
 function Components.NumericStepper(parent, config)
     local step = config.step or 1
     local BTN_SIZE = 16
-    -- Explicit labelWidth → hard. Omitted → auto-grow.
+    -- Explicit labelWidth -> hard. Omitted -> auto-grow.
     local labelWidth
     if config.labelWidth ~= nil then
         labelWidth = config.labelWidth
@@ -2919,7 +3045,7 @@ end
 ---@param config ColorSwatchConfig Configuration table
 ---@return table holder Frame containing color swatch with .SetColor(r,g,b,a?), .GetColor(), .SetEnabled(bool)
 function Components.ColorSwatch(parent, config)
-    -- Explicit labelWidth → hard. Omitted → auto-grow (or 0 if no label).
+    -- Explicit labelWidth -> hard. Omitted -> auto-grow (or 0 if no label).
     local labelWidth
     if config.labelWidth ~= nil then
         labelWidth = config.labelWidth
@@ -3321,8 +3447,10 @@ end
 ---@param config AppearanceGridConfig
 ---@return {frame: Frame, height: number, holders: table}
 function Components.AppearanceGrid(parent, config)
-    -- Compute label width from the longest of all 9 row labels so columns align
-    -- regardless of locale or font replacement.
+    -- Compute label width from the longest of all 7 row labels so columns align
+    -- regardless of locale or font replacement. Text offset X/Y rows moved to
+    -- the dedicated TextPositions section (per-text-item zone + nudge), so the
+    -- grid stays focused on size/zoom/border/spacing/alpha/text size/color.
     local labels = {
         L["Appearance.Width"],
         L["Appearance.Height"],
@@ -3331,8 +3459,6 @@ function Components.AppearanceGrid(parent, config)
         L["Appearance.Spacing"],
         L["Appearance.Alpha"],
         L["Appearance.Text"],
-        L["Appearance.TextX"],
-        L["Appearance.TextY"],
     }
     local LW = 50
     for _, t in ipairs(labels) do
@@ -3521,43 +3647,11 @@ function Components.AppearanceGrid(parent, config)
     })
     textColorHolder:SetPoint("LEFT", textSizeHolder, "RIGHT", 12, 0)
 
-    -- Row 5: Text offset X / Y
-    local textOffsetXHolder = Components.Slider(frame, {
-        label = L["Appearance.TextX"],
-        labelWidth = LW,
-        min = -20,
-        max = 20,
-        get = function()
-            return config.get("textOffsetX", 0)
-        end,
-        enabled = enabled and baseEnabled or nil,
-        onChange = function(val)
-            config.set("textOffsetX", val)
-        end,
-    })
-    textOffsetXHolder:SetPoint("TOPLEFT", 0, -ROW_H * 4)
-
-    local textOffsetYHolder = Components.Slider(frame, {
-        label = L["Appearance.TextY"],
-        labelWidth = LW,
-        min = -20,
-        max = 20,
-        get = function()
-            return config.get("textOffsetY", 0)
-        end,
-        enabled = enabled and baseEnabled or nil,
-        onChange = function(val)
-            config.set("textOffsetY", val)
-        end,
-    })
-    textOffsetYHolder:SetPoint("TOPLEFT", COL2, -ROW_H * 4)
-
-    local GRID_HEIGHT_FINAL = GRID_HEIGHT + ROW_H
-    frame:SetSize(FRAME_W, GRID_HEIGHT_FINAL)
+    frame:SetSize(FRAME_W, GRID_HEIGHT)
 
     return {
         frame = frame,
-        height = GRID_HEIGHT_FINAL,
+        height = GRID_HEIGHT,
         holders = {
             width = widthHolder,
             height = heightHolder,
@@ -3568,8 +3662,6 @@ function Components.AppearanceGrid(parent, config)
             alpha = alphaHolder,
             textSize = textSizeHolder,
             textColor = textColorHolder,
-            textOffsetX = textOffsetXHolder,
-            textOffsetY = textOffsetYHolder,
         },
     }
 end
@@ -3620,10 +3712,19 @@ end
 function Components.ScrollableContainer(parent, config)
     local contentHeight = config.contentHeight or 600
     local scrollbarWidth = config.scrollbarWidth or 24
+    -- Explicit width is required when this container is nested inside a
+    -- larger parent (e.g. a sub-list inside a page). Without it we'd derive
+    -- contentWidth from parent:GetWidth(), which overflows the visible
+    -- scroll area (the scroll frame itself is sized smaller than the parent
+    -- by the caller, but the inner content child wouldn't know that).
+    local explicitWidth = config.width
 
     -- Holder frame (the scroll frame itself)
     local scrollFrame = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
     scrollFrame:SetClipsChildren(true)
+    if explicitWidth then
+        scrollFrame:SetWidth(explicitWidth)
+    end
 
     -- Position scrollbar
     local scrollBar = scrollFrame.ScrollBar
@@ -3636,10 +3737,12 @@ function Components.ScrollableContainer(parent, config)
         ApplyModernScrollbarStyle(scrollBar)
     end
 
-    -- Content frame
+    -- Content frame. Width tracks the scroll frame's visible area minus the
+    -- scrollbar so anchored-RIGHT children clear the scrollbar instead of
+    -- being painted under it.
     local content = CreateFrame("Frame", nil, scrollFrame)
-    local parentWidth = parent.GetWidth and parent:GetWidth() or 540
-    local contentWidth = parentWidth - scrollbarWidth
+    local effectiveWidth = explicitWidth or (parent.GetWidth and parent:GetWidth() or 540)
+    local contentWidth = effectiveWidth - scrollbarWidth
     content:SetSize(contentWidth, contentHeight)
     scrollFrame:SetScrollChild(content)
 

@@ -8,7 +8,195 @@ local L = addon.L;
 local changelogs = addon.ControlCenter.changelogs;
 
 
+changelogs[10902] = {
+	{
+		type = "date",
+		versionText = "1.9.2 c",
+		timestamp = 1779500000,
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Loot Window: Added a highlight effect to looted pets and equipment with bonus tertiary stats.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Expansion Summary: Fixed a text display issue for \"Prey\" while on the quest \"Preferential Killing.\"",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Tooltips: Vendor location instructions now only display when hovering over items in your bags, rather than on all tooltip sources.",
+	},
+
+	{
+		type = "br",
+	},
+	{
+		type = "br",
+	},
+
+	{
+		type = "date",
+		versionText = "1.9.2 b",
+		timestamp = 1778800000,
+	},
+
+	{
+		type = "h1",
+		text = "Bug Fixes",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "House Macros: Fixed an error that occurred during the initial login.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Loot Window: The \"Take All\" hotkey indicator (Default: E) now automatically hides when entering combat, meaning the hotkey is disabled due to combat restrictions.",
+	},
+	{
+		type = "p",
+		bullet = 2,
+		text = "Note: Hotkeys bound to a single modifier key (SHIFT, CTRL, or ALT) remain functional regardless of combat status.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Tooltip Reagents: Corrected the required quantity display for Ascendant Voidcore (updated from 4 to 5).",
+	},
+	{
+		type = "p",
+		bullet = 2,
+		text = "Note: We are aware that some reagent counts may still be off by 1; these are being patched manually as they are identified.",
+	},
+
+	{
+		type = "br",
+	},
+
+	{
+		type = "h1",
+		text = "Added",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Expansion Summary UI: Added Nebulous Voidcore (bonus rolls) to the resource list.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Text Outline: Implemented Slug text rendering for certain Plumber fonts, which improves legibility and sharpness when text is displayed at smaller scales.",
+	},
+
+	{
+		type = "br",
+	},
+	{
+		type = "br",
+	},
+
+	{
+		type = "date",
+		versionText = "1.9.2",
+		timestamp = 1778200000,
+	},
+
+	{
+		type = "h1",
+		text = L["ModuleName TooltipVendorLocation"],
+		dbKey = "TooltipVendorLocation",
+	},
+
+	{
+		type = "Checkbox",
+		dbKey = "TooltipVendorLocation",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = L["ModuleDescription TooltipVendorLocation"],
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Special thanks to gjfLeo for the idea and the info.",
+	},
+
+	{
+		type = "img",
+		dbKey = "TooltipVendorLocation",
+	},
+
+	{
+		type = "h1",
+		text = "Bug Fixes",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Teleport Home Macro: Fixed an issue where the macro stopped working if you only owned one house.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Drawer Macro: Fixed an issue that prevented players from casting the Midnight Skinning spell \"Sharpen Your Knife\" due to a name conflict with the The War Within version of the spell.",
+	},
+};
+
 changelogs[10901] = {
+	{
+		type = "date",
+		versionText = "1.9.1 e",
+		timestamp = 1777900000,
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Teleport Home Macro: Now allows you to teleport to your house in the opposing faction when already inside a housing plot.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Instance Difficulty Selector: Fixed an issue where the UI failed to appear at the entrance of Vault of the Incarnates.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "Group Inviter Info: Fixed an error that occurred when receiving a group invite while in combat.",
+	},
+
+	{
+		type = "p",
+		bullet = true,
+		text = "For Enhance QoL Bags users: Plumber\'s Backpack Item Tracker now looks nicer when both addons are enabled. Special thanks to R41Z0R.",
+	},
+
+	{
+		type = "br",
+	},
+	{
+		type = "br",
+	},
+
 	{
 		type = "date",
 		versionText = "1.9.1 b-d",
@@ -1455,31 +1643,31 @@ changelogs[10804] = {
 		type = "br",
 	},
 
-	{
-		type = "h1",
-		text = "Decor Catalog: Extend Search Results",
-		dbKey = "Housing_CatalogSearch",
-	},
+	--{
+	--	type = "h1",
+	--	text = "Decor Catalog: Extend Search Results",
+	--	dbKey = "Housing_CatalogSearch",
+	--},
 
-	{
-		type = "Checkbox",
-		dbKey = "Housing_CatalogSearch",
-	},
+	--{
+	--	type = "Checkbox",
+	--	dbKey = "Housing_CatalogSearch",
+	--},
 
-	{
-		type = "p",
-		bullet = true,
-		text = "Enhances the search box on the decor catalog and storage Tab, allowing you to find items by achievement, vendor, zone, or currency.",
-	},
+	--{
+	--	type = "p",
+	--	bullet = true,
+	--	text = "Enhances the search box on the decor catalog and storage Tab, allowing you to find items by achievement, vendor, zone, or currency.",
+	--},
 
-	{
-		type = "img",
-		dbKey = "Housing_CatalogSearch",
-	},
+	--{
+	--	type = "img",
+	--	dbKey = "Housing_CatalogSearch",
+	--},
 
-	{
-		type = "br",
-	},
+	--{
+	--	type = "br",
+	--},
 
 	{
 		type = "h1",
@@ -1965,53 +2153,53 @@ changelogs[10709] = {
 		type = "br",
 	},
 
-	{
-		type = "h1",
-		text = L["ModuleName PlayerPing"],
-		dbKey = "WorldMapPin_PlayerPing",
-	},
+	--{
+	--	type = "h1",
+	--	text = L["ModuleName PlayerPing"],
+	--	dbKey = "WorldMapPin_PlayerPing",
+	--},
 
-	{
-		type = "Checkbox",
-		dbKey = "WorldMapPin_PlayerPing",
-	},
+	--{
+	--	type = "Checkbox",
+	--	dbKey = "WorldMapPin_PlayerPing",
+	--},
 
-	{
-		type = "p",
-		text = "By default, WoW only shows the player ping when you change maps or the first time you open the World Map. Whereas this module highlights the player's location with a ping effect when you:",
-	},
+	--{
+	--	type = "p",
+	--	text = "By default, WoW only shows the player ping when you change maps or the first time you open the World Map. Whereas this module highlights the player's location with a ping effect when you:",
+	--},
 
-	{
-		type = "p",
-		bullet = true,
-		text = "Open World Map.",
-	},
+	--{
+	--	type = "p",
+	--	bullet = true,
+	--	text = "Open World Map.",
+	--},
 
-	{
-		type = "p",
-		bullet = true,
-		text = "Press the ALT key.",
-	},
+	--{
+	--	type = "p",
+	--	bullet = true,
+	--	text = "Press the ALT key.",
+	--},
 
-	{
-		type = "p",
-		bullet = true,
-		text = "Click the Maximize button.",
-	},
+	--{
+	--	type = "p",
+	--	bullet = true,
+	--	text = "Click the Maximize button.",
+	--},
 
-	{
-		type = "p",
-		text = "Updated the ping texture",
-	},
+	--{
+	--	type = "p",
+	--	text = "Updated the ping texture",
+	--},
 
-	{
-		type = "img",
-		dbKey = "WorldMapPin_PlayerPing",
-	},
+	--{
+	--	type = "img",
+	--	dbKey = "WorldMapPin_PlayerPing",
+	--},
 
-	{
-		type = "br",
-	},
+	--{
+	--	type = "br",
+	--},
 
 	{
 		type = "h1",

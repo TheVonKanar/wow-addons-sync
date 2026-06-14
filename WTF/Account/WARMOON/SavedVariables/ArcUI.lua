@@ -22,8 +22,8 @@ ArcUIDB = {
 ["achAlwaysAnimate"] = false,
 ["achScale"] = 1,
 ["_migrated"] = true,
-["achStyle"] = "ants",
 ["achLevel"] = 5,
+["achStyle"] = "ants",
 ["achShowBurst"] = true,
 ["achColor"] = {
 ["a"] = 1,
@@ -56,8 +56,6 @@ ArcUIDB = {
 },
 ["onlyOnUseTrinkets"] = false,
 ["enabled"] = true,
-["positions"] = {
-},
 ["trackedItems"] = {
 ["arc_item_241305"] = {
 ["enabled"] = true,
@@ -111,6 +109,8 @@ ArcUIDB = {
 3,
 },
 },
+},
+["positions"] = {
 },
 },
 ["timerBarConfigs"] = {
@@ -480,13 +480,13 @@ ArcUIDB = {
 ["customStacksPerCast"] = 1,
 ["customMaxStacks"] = 10,
 ["dynamicMaxDuration"] = true,
-["customDuration"] = 10,
+["maxDuration"] = 0,
 ["buffName"] = "Surging Totem",
 ["trackType"] = "totem",
 ["customSpellID"] = 0,
 ["auraInstanceID"] = 0,
 ["cooldownID"] = 789,
-["maxDuration"] = 0,
+["customDuration"] = 10,
 ["spellID"] = 444995,
 },
 ["behavior"] = {
@@ -795,13 +795,13 @@ ArcUIDB = {
 ["customStacksPerCast"] = 1,
 ["customMaxStacks"] = 10,
 ["dynamicMaxDuration"] = true,
-["customDuration"] = 10,
+["maxDuration"] = 0,
 ["buffName"] = "Flame Shock",
 ["trackType"] = "debuff",
 ["customSpellID"] = 0,
 ["auraInstanceID"] = 0,
 ["cooldownID"] = 113506,
-["maxDuration"] = 0,
+["customDuration"] = 10,
 ["spellID"] = 137041,
 },
 ["behavior"] = {
@@ -1109,9 +1109,9 @@ ArcUIDB = {
 77357,
 },
 ["customStacksPerCast"] = 1,
-["customDuration"] = 10,
-["dynamicMaxDuration"] = true,
 ["maxDuration"] = 0,
+["dynamicMaxDuration"] = true,
+["customDuration"] = 10,
 ["customMaxStacks"] = 10,
 ["buffName"] = "Astral Shift",
 ["trackType"] = "buff",
@@ -1539,9 +1539,9 @@ ArcUIDB = {
 ["useBaseSpell"] = false,
 ["cooldownID"] = 82615,
 ["customStacksPerCast"] = 1,
-["maxDuration"] = 0,
-["dynamicMaxDuration"] = false,
 ["customDuration"] = 10,
+["dynamicMaxDuration"] = false,
+["maxDuration"] = 0,
 ["alternateCooldownIDs"] = {
 },
 ["auraInstanceID"] = 0,
@@ -1931,7 +1931,7 @@ ArcUIDB = {
 ["y"] = 120,
 ["pulseDuration"] = 1,
 ["point"] = "CENTER",
-["spellTriggersMigratedV2"] = true,
+["animZoomPopTime"] = 0.12,
 ["replaceGuard"] = 0.4,
 ["iconEnabled"] = true,
 ["noOverlapAlerts"] = true,
@@ -1946,7 +1946,8 @@ ArcUIDB = {
 },
 ["whitelist"] = {
 },
-["fallbackSoundKitID"] = 12867,
+["spellDelaySeconds"] = {
+},
 ["spellTriggers"] = {
 },
 ["x"] = 0,
@@ -1956,15 +1957,14 @@ ArcUIDB = {
 ["animZoomSettleTime"] = 0.08,
 ["spellTTS"] = {
 },
-["spellDelaySeconds"] = {
-},
+["fallbackSoundKitID"] = 12867,
 ["animZoomStart"] = 0.7,
 ["animFlashSpeed"] = 0.1,
 ["soundEnabled"] = true,
 ["sortByName"] = true,
 ["cutoffPreviousSound"] = false,
 ["stackDirection"] = "right",
-["animZoomPopTime"] = 0.12,
+["spellTriggersMigratedV2"] = true,
 ["animStyle"] = "fade",
 },
 ["cdmGroups"] = {
@@ -2045,12 +2045,8 @@ ArcUIDB = {
 },
 ["aspectRatio"] = 1,
 },
-["arc_item_241305"] = {
-["aspectRatio"] = 1,
-["zoom"] = 0.08,
-["chargeText"] = {
-["enabled"] = false,
-},
+["arc_spell_383013"] = {
+["alpha"] = 1,
 },
 ["16503"] = {
 ["aspectRatio"] = 1,
@@ -2063,26 +2059,14 @@ ArcUIDB = {
 ["enabled"] = false,
 },
 },
-["arc_spell_383013"] = {
-["alpha"] = 1,
+["arc_item_241305"] = {
+["aspectRatio"] = 1,
+["zoom"] = 0.08,
+["chargeText"] = {
+["enabled"] = false,
+},
 },
 ["arc_item_212264"] = {
-["chargeText"] = {
-["enabled"] = false,
-},
-},
-["16773"] = {
-["zoom"] = 0.08,
-["cooldownText"] = {
-["enabled"] = false,
-["size"] = 12,
-},
-["aspectRatio"] = 1,
-["chargeText"] = {
-["enabled"] = false,
-},
-},
-["arc_item_241309"] = {
 ["chargeText"] = {
 ["enabled"] = false,
 },
@@ -2093,6 +2077,22 @@ ArcUIDB = {
 ["size"] = 12,
 },
 ["zoom"] = 0.08,
+["aspectRatio"] = 1,
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["arc_item_241309"] = {
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["16773"] = {
+["zoom"] = 0.08,
+["cooldownText"] = {
+["enabled"] = false,
+["size"] = 12,
+},
 ["aspectRatio"] = 1,
 ["chargeText"] = {
 ["enabled"] = false,
@@ -2477,10 +2477,10 @@ ArcUIDB = {
 ["targetFrame"] = "MainActionBar",
 ["trackTarget"] = false,
 ["offsetX"] = 0,
-["useSafeAnchor"] = true,
 ["snapBack"] = false,
-["offsetY"] = 8,
+["useSafeAnchor"] = true,
 ["mode"] = "toFrame",
+["offsetY"] = 8,
 ["destPoint"] = "TOP",
 },
 ["dynamicContainerSize"] = true,
@@ -2572,22 +2572,6 @@ ArcUIDB = {
 ["enabled"] = false,
 },
 },
-["16773"] = {
-["cooldownText"] = {
-["enabled"] = false,
-["size"] = 12,
-},
-["zoom"] = 0.08,
-["aspectRatio"] = 1,
-["chargeText"] = {
-["enabled"] = false,
-},
-},
-["arc_item_241309"] = {
-["chargeText"] = {
-["enabled"] = false,
-},
-},
 ["14839"] = {
 ["zoom"] = 0.08,
 ["cooldownText"] = {
@@ -2599,8 +2583,24 @@ ArcUIDB = {
 ["enabled"] = false,
 },
 },
-["arc_item_193701"] = {
-["aspectRatio"] = 1.5,
+["arc_item_241309"] = {
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["16773"] = {
+["cooldownText"] = {
+["enabled"] = false,
+["size"] = 12,
+},
+["zoom"] = 0.08,
+["aspectRatio"] = 1,
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["arc_spell_383013"] = {
+["alpha"] = 1,
 },
 ["arc_item_241305"] = {
 ["aspectRatio"] = 1,
@@ -2625,8 +2625,8 @@ ArcUIDB = {
 ["enabled"] = false,
 },
 },
-["arc_spell_383013"] = {
-["alpha"] = 1,
+["arc_item_193701"] = {
+["aspectRatio"] = 1.5,
 },
 ["82254"] = {
 ["cooldownStateVisuals"] = {
@@ -2703,7 +2703,7 @@ ArcUIDB = {
 },
 [14920] = {
 ["type"] = "group",
-["col"] = 6,
+["col"] = 5,
 ["target"] = "Utility",
 ["row"] = 0,
 ["viewerType"] = "utility",
@@ -2744,7 +2744,7 @@ ArcUIDB = {
 },
 [15149] = {
 ["type"] = "group",
-["col"] = 5,
+["col"] = 6,
 ["target"] = "Utility",
 ["row"] = 0,
 ["viewerType"] = "utility",
@@ -2810,19 +2810,19 @@ ArcUIDB = {
 ["iconSize"] = 36,
 ["x"] = 432.0001220703125,
 },
-[11880] = {
-["type"] = "group",
-["col"] = 1,
-["target"] = "Essential",
-["row"] = 1,
-["viewerType"] = "cooldown",
-},
 [174832] = {
 ["y"] = -460.0008239746094,
 ["type"] = "free",
 ["viewerType"] = "aura",
 ["iconSize"] = 36,
 ["x"] = 434.999755859375,
+},
+[11880] = {
+["type"] = "group",
+["col"] = 1,
+["target"] = "Essential",
+["row"] = 1,
+["viewerType"] = "cooldown",
 },
 [14839] = {
 ["type"] = "group",
@@ -2954,9 +2954,9 @@ ArcUIDB = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 1,
 ["gridCols"] = 6,
@@ -2964,9 +2964,9 @@ ArcUIDB = {
 ["lockGridSize"] = false,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
 ["r"] = 0.3,
+["g"] = 0.8,
+["b"] = 0.3,
 },
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
@@ -2990,9 +2990,9 @@ ArcUIDB = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 3,
 ["gridCols"] = 5,
@@ -3006,9 +3006,9 @@ ArcUIDB = {
 ["frameStrata"] = "MEDIUM",
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.2,
-["g"] = 0.6,
 ["r"] = 0.8,
+["g"] = 0.6,
+["b"] = 0.2,
 },
 ["iconHeight"] = 36,
 ["spacing"] = 4,
@@ -3028,9 +3028,9 @@ ArcUIDB = {
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 1,
 ["gridCols"] = 10,
@@ -3043,9 +3043,9 @@ ArcUIDB = {
 ["showBackground"] = false,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.9,
-["g"] = 0.6,
 ["r"] = 0.3,
+["g"] = 0.6,
+["b"] = 0.9,
 },
 ["frameStrata"] = "MEDIUM",
 ["iconHeight"] = 38,
@@ -3054,7 +3054,7 @@ ArcUIDB = {
 ["alignment"] = "right",
 ["position"] = {
 ["y"] = -529.0001564025879,
-["x"] = -4.57763671875e-05,
+["x"] = -0.0001220703125,
 },
 ["dynamicLayout"] = false,
 ["autoReflow"] = true,
@@ -3085,6 +3085,7 @@ ArcUIDB = {
 ["class_7_spec_3"] = {
 ["characterName"] = "Kvotheen",
 ["createdAt"] = 1775597809,
+["activeProfile"] = "Default",
 ["layoutProfiles"] = {
 ["Default"] = {
 ["iconSettings"] = {
@@ -3116,13 +3117,13 @@ ArcUIDB = {
 ["zoom"] = 0.08,
 ["aspectRatio"] = 1,
 },
-["29983"] = {
-["aspectRatio"] = 1,
-},
 ["arc_item_241309"] = {
 ["chargeText"] = {
 ["enabled"] = false,
 },
+},
+["29983"] = {
+["aspectRatio"] = 1,
 },
 ["arc_item_241305"] = {
 ["aspectRatio"] = 1,
@@ -3161,13 +3162,12 @@ ArcUIDB = {
 ["row"] = 1,
 ["sortIndex"] = 9,
 },
-[29991] = {
-["type"] = "group",
-["col"] = 2,
-["target"] = "Utility",
-["viewerType"] = "utility",
-["row"] = 0,
-["sortIndex"] = 2,
+["arc_item_193701"] = {
+["y"] = 150,
+["type"] = "free",
+["viewerType"] = "cooldown",
+["iconSize"] = 36,
+["x"] = 100,
 },
 ["arc_item_264701"] = {
 ["type"] = "group",
@@ -3178,7 +3178,7 @@ ArcUIDB = {
 },
 [29990] = {
 ["type"] = "group",
-["col"] = 7,
+["col"] = 5,
 ["target"] = "Utility",
 ["viewerType"] = "utility",
 ["row"] = 0,
@@ -3192,12 +3192,13 @@ ArcUIDB = {
 ["row"] = 0,
 ["sortIndex"] = 2,
 },
-["arc_item_193701"] = {
-["y"] = 150,
-["type"] = "free",
-["viewerType"] = "cooldown",
-["iconSize"] = 36,
-["x"] = 100,
+[29991] = {
+["type"] = "group",
+["col"] = 2,
+["target"] = "Utility",
+["viewerType"] = "utility",
+["row"] = 0,
+["sortIndex"] = 2,
 },
 [29976] = {
 ["type"] = "group",
@@ -3479,7 +3480,7 @@ ArcUIDB = {
 ["alignment"] = "right",
 ["position"] = {
 ["y"] = -529.0001564025879,
-["x"] = -0.0001220703125,
+["x"] = -0.0001068115234375,
 },
 ["dynamicLayout"] = false,
 ["autoReflow"] = true,
@@ -3504,13 +3505,12 @@ ArcUIDB = {
 },
 },
 },
-["activeProfile"] = "Default",
 },
 },
 ["masqueSettings"] = {
 ["controlCount"] = false,
-["controlCooldown"] = false,
 ["controlIcon"] = true,
+["controlCooldown"] = false,
 ["enabled"] = false,
 },
 ["lastActiveSpec"] = "class_7_spec_2",
@@ -3543,89 +3543,24 @@ ArcUIDB = {
 ["globalSettings"] = {
 },
 ["onlyOnUseTrinkets"] = false,
-["trackedItems"] = {
-},
 ["positions"] = {
+},
+["trackedItems"] = {
 },
 ["enabled"] = true,
 },
-["cooldownReminder"] = {
-["cancelOnCast"] = true,
-["cutoffFadeTime"] = 0.1,
-["soundName"] = "Default",
-["enabledInArena"] = true,
-["queueMaxLen"] = 3,
-["enabledInRaids"] = true,
-["spellSounds"] = {
+["bars"] = {
 },
-["enabledInDungeons"] = true,
-["stackDirection"] = "right",
-["classFilterEnabled"] = false,
-["animFadeSmoothing"] = "OUT",
-["size"] = 64,
-["learnedGates"] = {
+["cooldownBarSetup"] = {
+["hiddenSpells"] = {
 },
-["debug"] = false,
-["enabledInWorld"] = true,
-["showSpellIDsInTooltips"] = false,
-["relPoint"] = "CENTER",
-["queueInterDelay"] = 0,
-["y"] = 120,
-["replaceGuard"] = 0.4,
-["point"] = "CENTER",
-["animZoomPopTime"] = 0.12,
-["stackSpacing"] = 4,
-["iconEnabled"] = true,
-["noOverlapAlerts"] = true,
-["spellSoundDisabled"] = {
+["manualSpells"] = {
 },
-["enabled"] = false,
-["locked"] = true,
-["soundEnabled"] = true,
-["queueMode"] = "queue",
-["animZoomPeak"] = 1.15,
-["spellDelayMode"] = {
+["activeCooldowns"] = {
 },
-["whitelist"] = {
+["activeResources"] = {
 },
-["fallbackSoundKitID"] = 12867,
-["spellTriggers"] = {
-},
-["pulseDuration"] = 1,
-["ttsVoiceOverride"] = "default",
-["spellDelaySeconds"] = {
-},
-["iconOpacity"] = 1,
-["animZoomSettleTime"] = 0.08,
-["spellTTS"] = {
-},
-["soundChannel"] = "Master",
-["animZoomStart"] = 0.7,
-["animFlashSpeed"] = 0.1,
-["spellIconDisabled"] = {
-},
-["sortByName"] = true,
-["cutoffPreviousSound"] = false,
-["animStyle"] = "fade",
-["spellTriggersMigratedV2"] = true,
-["x"] = 0,
-},
-["achSettings"] = {
-["achOnArcAuras"] = false,
-["achStrata"] = "INHERIT",
-["achCombatOnly"] = false,
-["assistedCombatHighlight"] = false,
-["achAlwaysAnimate"] = false,
-["achScale"] = 1,
-["_migrated"] = true,
-["achLevel"] = 5,
-["achStyle"] = "ants",
-["achShowBurst"] = true,
-["achColor"] = {
-["a"] = 1,
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
+["activeCharges"] = {
 },
 },
 ["bphSettings"] = {
@@ -3654,7 +3589,66 @@ ArcUIDB = {
 ["txLeft"] = 0,
 ["useCustomColor"] = false,
 },
-["bars"] = {
+["cooldownReminder"] = {
+["cancelOnCast"] = true,
+["cutoffFadeTime"] = 0.1,
+["soundName"] = "Default",
+["enabledInArena"] = true,
+["queueMaxLen"] = 3,
+["enabledInRaids"] = true,
+["spellSounds"] = {
+},
+["enabledInDungeons"] = true,
+["stackDirection"] = "right",
+["classFilterEnabled"] = false,
+["animFadeSmoothing"] = "OUT",
+["size"] = 64,
+["learnedGates"] = {
+},
+["debug"] = false,
+["enabledInWorld"] = true,
+["showSpellIDsInTooltips"] = false,
+["relPoint"] = "CENTER",
+["queueInterDelay"] = 0,
+["y"] = 120,
+["replaceGuard"] = 0.4,
+["point"] = "CENTER",
+["spellTriggersMigratedV2"] = true,
+["stackSpacing"] = 4,
+["iconEnabled"] = true,
+["noOverlapAlerts"] = true,
+["spellSoundDisabled"] = {
+},
+["enabled"] = false,
+["locked"] = true,
+["soundEnabled"] = true,
+["queueMode"] = "queue",
+["animZoomPeak"] = 1.15,
+["spellDelayMode"] = {
+},
+["soundChannel"] = "Master",
+["fallbackSoundKitID"] = 12867,
+["spellTriggers"] = {
+},
+["pulseDuration"] = 1,
+["ttsVoiceOverride"] = "default",
+["spellDelaySeconds"] = {
+},
+["iconOpacity"] = 1,
+["animZoomSettleTime"] = 0.08,
+["spellTTS"] = {
+},
+["whitelist"] = {
+},
+["animZoomStart"] = 0.7,
+["animFlashSpeed"] = 0.1,
+["spellIconDisabled"] = {
+},
+["sortByName"] = true,
+["cutoffPreviousSound"] = false,
+["animStyle"] = "fade",
+["animZoomPopTime"] = 0.12,
+["x"] = 0,
 },
 ["cdmGroups"] = {
 ["enabled"] = true,
@@ -3733,16 +3727,16 @@ ArcUIDB = {
 ["row"] = 0,
 ["viewerType"] = "utility",
 },
-[37483] = {
+[112288] = {
 ["type"] = "group",
-["col"] = 3,
+["col"] = 6,
 ["target"] = "Utility",
 ["row"] = 1,
 ["viewerType"] = "utility",
 },
-[112288] = {
+[37483] = {
 ["type"] = "group",
-["col"] = 6,
+["col"] = 3,
 ["target"] = "Utility",
 ["row"] = 1,
 ["viewerType"] = "utility",
@@ -3761,9 +3755,9 @@ ArcUIDB = {
 ["row"] = 0,
 ["viewerType"] = "utility",
 },
-[43779] = {
+[115115] = {
 ["type"] = "group",
-["col"] = 0,
+["col"] = 2,
 ["target"] = "Buffs",
 ["row"] = 0,
 ["viewerType"] = "aura",
@@ -3782,12 +3776,12 @@ ArcUIDB = {
 ["row"] = 0,
 ["viewerType"] = "cooldown",
 },
-[11861] = {
+[37553] = {
 ["type"] = "group",
-["col"] = 0,
-["target"] = "Essential",
+["col"] = 5,
+["target"] = "Utility",
 ["row"] = 1,
-["viewerType"] = "cooldown",
+["viewerType"] = "utility",
 },
 [11853] = {
 ["type"] = "group",
@@ -3796,12 +3790,12 @@ ArcUIDB = {
 ["row"] = 0,
 ["viewerType"] = "cooldown",
 },
-[37553] = {
+[11861] = {
 ["type"] = "group",
-["col"] = 5,
-["target"] = "Utility",
+["col"] = 0,
+["target"] = "Essential",
 ["row"] = 1,
-["viewerType"] = "utility",
+["viewerType"] = "cooldown",
 },
 [37399] = {
 ["type"] = "group",
@@ -3831,9 +3825,9 @@ ArcUIDB = {
 ["row"] = 1,
 ["viewerType"] = "cooldown",
 },
-[115115] = {
+[43779] = {
 ["type"] = "group",
-["col"] = 2,
+["col"] = 0,
 ["target"] = "Buffs",
 ["row"] = 0,
 ["viewerType"] = "aura",
@@ -3963,16 +3957,22 @@ ArcUIDB = {
 },
 ["disableTooltips"] = false,
 },
-["cooldownBarSetup"] = {
-["hiddenSpells"] = {
-},
-["manualSpells"] = {
-},
-["activeCooldowns"] = {
-},
-["activeResources"] = {
-},
-["activeCharges"] = {
+["achSettings"] = {
+["achOnArcAuras"] = false,
+["achStrata"] = "INHERIT",
+["achCombatOnly"] = false,
+["assistedCombatHighlight"] = false,
+["achAlwaysAnimate"] = false,
+["achScale"] = 1,
+["_migrated"] = true,
+["achStyle"] = "ants",
+["achLevel"] = 5,
+["achShowBurst"] = true,
+["achColor"] = {
+["a"] = 1,
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
 },
 },
@@ -3982,6 +3982,138 @@ ArcUIDB = {
 ["minimap"] = {
 ["minimapPos"] = 182.1382611144304,
 ["hide"] = true,
+},
+["menuBackgroundAlpha"] = 0.65,
+["groupLayouts"] = {
+["Global Profile"] = {
+["Buffs"] = {
+["horizontalGrowth"] = "LEFT",
+["containerPadding"] = -4,
+["bgColor"] = {
+["a"] = 0.6,
+["b"] = 0,
+["g"] = 0,
+["r"] = 0,
+},
+["gridRows"] = 1,
+["gridCols"] = 6,
+["iconSize"] = 36,
+["lockGridSize"] = false,
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.3,
+["g"] = 0.8,
+["r"] = 0.3,
+},
+["frameLevel"] = 1,
+["iconWidth"] = 36,
+["dynamicContainerSize"] = true,
+["showBackground"] = false,
+["frameStrata"] = "MEDIUM",
+["spacing"] = 2,
+["iconHeight"] = 36,
+["verticalGrowth"] = "UP",
+["alignment"] = "center",
+["position"] = {
+["y"] = 568,
+["x"] = 13,
+},
+["dynamicLayout"] = true,
+["autoReflow"] = true,
+["visibility"] = "always",
+["showBorder"] = false,
+},
+["Essential"] = {
+["containerPadding"] = -4,
+["bgColor"] = {
+["a"] = 0.6,
+["b"] = 0,
+["g"] = 0,
+["r"] = 0,
+},
+["gridRows"] = 3,
+["gridCols"] = 5,
+["iconSize"] = 36,
+["lockGridSize"] = true,
+["showBorder"] = false,
+["frameLevel"] = 1,
+["iconWidth"] = 54,
+["dynamicContainerSize"] = false,
+["showBackground"] = false,
+["frameStrata"] = "MEDIUM",
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.2,
+["g"] = 0.6,
+["r"] = 0.8,
+},
+["iconHeight"] = 36,
+["spacing"] = 4,
+["alignment"] = "left",
+["position"] = {
+["y"] = -261,
+["x"] = 0,
+},
+["dynamicLayout"] = false,
+["autoReflow"] = false,
+["visibility"] = {
+},
+["visibilityLogic"] = "all",
+},
+["Utility"] = {
+["horizontalGrowth"] = "LEFT",
+["containerPadding"] = -4,
+["bgColor"] = {
+["a"] = 0.6,
+["b"] = 0,
+["g"] = 0,
+["r"] = 0,
+},
+["gridRows"] = 1,
+["gridCols"] = 10,
+["iconSize"] = 36,
+["lockGridSize"] = false,
+["showBorder"] = false,
+["dynamicContainerSize"] = true,
+["frameLevel"] = 1,
+["iconWidth"] = 38,
+["showBackground"] = false,
+["borderColor"] = {
+["a"] = 1,
+["b"] = 0.9,
+["g"] = 0.6,
+["r"] = 0.3,
+},
+["frameStrata"] = "MEDIUM",
+["iconHeight"] = 38,
+["spacing"] = 6,
+["verticalGrowth"] = "UP",
+["alignment"] = "right",
+["position"] = {
+["y"] = -529.0001564025879,
+["x"] = -4.57763671875e-05,
+},
+["dynamicLayout"] = false,
+["autoReflow"] = true,
+["visibility"] = {
+},
+["anchor"] = {
+["enabled"] = true,
+["sourcePoint"] = "BOTTOM",
+["targetGroup"] = "",
+["anchoredFrames"] = {
+},
+["targetFrame"] = "MainActionBar",
+["destPoint"] = "TOP",
+["offsetX"] = 0,
+["mode"] = "toFrame",
+["useSafeAnchor"] = true,
+["offsetY"] = 12,
+["snapBack"] = false,
+["trackTarget"] = false,
+},
+},
+},
 },
 ["skinLibrary"] = {
 ["InsetBar"] = {
@@ -4151,8 +4283,8 @@ ArcUIDB = {
 },
 ["barIconShowBorder"] = true,
 ["durationOutline"] = "THICKOUTLINE",
-["iconsSpacing"] = 4,
 ["drawnBorderThickness"] = 1,
+["iconsSpacing"] = 4,
 ["durationThreshold5Color"] = {
 ["a"] = 1,
 ["b"] = 0,
@@ -4186,7 +4318,7 @@ ArcUIDB = {
 ["durationThresholdAsSeconds"] = false,
 ["iconMultiShowDesatBg"] = true,
 ["durationThreshold4Enabled"] = false,
-["iconMultiLockPositions"] = false,
+["showBarIcon"] = false,
 ["showBackground"] = true,
 ["useGradient"] = false,
 ["tickColor"] = {
@@ -4222,7 +4354,7 @@ ArcUIDB = {
 ["durationFontSize"] = 18,
 ["iconStackShadow"] = false,
 ["durationThreshold3Enabled"] = false,
-["showBarIcon"] = false,
+["iconMultiLockPositions"] = false,
 ["fragmentedChargingColor"] = {
 ["a"] = 1,
 ["b"] = 0.4,
@@ -4335,138 +4467,6 @@ ArcUIDB = {
 ["savedAt"] = 1776110775,
 },
 },
-["menuBackgroundAlpha"] = 0.65,
-["groupLayouts"] = {
-["Global Profile"] = {
-["Buffs"] = {
-["horizontalGrowth"] = "LEFT",
-["containerPadding"] = -4,
-["bgColor"] = {
-["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
-["r"] = 0,
-},
-["gridRows"] = 1,
-["gridCols"] = 6,
-["iconSize"] = 36,
-["lockGridSize"] = false,
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
-["r"] = 0.3,
-},
-["frameLevel"] = 1,
-["iconWidth"] = 36,
-["dynamicContainerSize"] = true,
-["showBackground"] = false,
-["frameStrata"] = "MEDIUM",
-["spacing"] = 2,
-["iconHeight"] = 36,
-["verticalGrowth"] = "UP",
-["alignment"] = "center",
-["position"] = {
-["y"] = 568,
-["x"] = 13,
-},
-["dynamicLayout"] = true,
-["autoReflow"] = true,
-["visibility"] = "always",
-["showBorder"] = false,
-},
-["Essential"] = {
-["containerPadding"] = -4,
-["bgColor"] = {
-["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
-["r"] = 0,
-},
-["gridRows"] = 3,
-["gridCols"] = 5,
-["iconSize"] = 36,
-["lockGridSize"] = true,
-["showBorder"] = false,
-["frameLevel"] = 1,
-["iconWidth"] = 54,
-["dynamicContainerSize"] = false,
-["showBackground"] = false,
-["frameStrata"] = "MEDIUM",
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.2,
-["g"] = 0.6,
-["r"] = 0.8,
-},
-["iconHeight"] = 36,
-["spacing"] = 4,
-["alignment"] = "left",
-["position"] = {
-["y"] = -261,
-["x"] = 0,
-},
-["dynamicLayout"] = false,
-["autoReflow"] = false,
-["visibility"] = {
-},
-["visibilityLogic"] = "all",
-},
-["Utility"] = {
-["horizontalGrowth"] = "LEFT",
-["containerPadding"] = -4,
-["bgColor"] = {
-["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
-["r"] = 0,
-},
-["gridRows"] = 1,
-["gridCols"] = 10,
-["iconSize"] = 36,
-["lockGridSize"] = false,
-["showBorder"] = false,
-["dynamicContainerSize"] = true,
-["frameLevel"] = 1,
-["iconWidth"] = 38,
-["showBackground"] = false,
-["borderColor"] = {
-["a"] = 1,
-["b"] = 0.9,
-["g"] = 0.6,
-["r"] = 0.3,
-},
-["frameStrata"] = "MEDIUM",
-["iconHeight"] = 38,
-["spacing"] = 6,
-["verticalGrowth"] = "UP",
-["alignment"] = "right",
-["position"] = {
-["y"] = -529.0001564025879,
-["x"] = -4.57763671875e-05,
-},
-["dynamicLayout"] = false,
-["autoReflow"] = true,
-["visibility"] = {
-},
-["anchor"] = {
-["enabled"] = true,
-["sourcePoint"] = "BOTTOM",
-["targetGroup"] = "",
-["anchoredFrames"] = {
-},
-["targetFrame"] = "MainActionBar",
-["destPoint"] = "TOP",
-["offsetX"] = 0,
-["offsetY"] = 12,
-["snapBack"] = false,
-["mode"] = "toFrame",
-["useSafeAnchor"] = true,
-["trackTarget"] = false,
-},
-},
-},
-},
 ["optionsPanelSize"] = {
 ["height"] = 699.9998779296875,
 ["width"] = 899.9998168945312,
@@ -4515,8 +4515,8 @@ ArcUIDB = {
 0,
 1,
 },
-["inset"] = -1,
 ["useClassColor"] = false,
+["inset"] = -1,
 ["thickness"] = 1,
 },
 ["scaleOverride"] = false,
@@ -4568,16 +4568,16 @@ ArcUIDB = {
 ["displayName"] = "Default",
 ["groups"] = {
 ["Buffs"] = {
-["gridCols"] = 4,
+["position"] = {
+["y"] = 200,
+["x"] = 0,
+},
 ["lockGridSize"] = false,
 ["iconWidth"] = 36,
 ["showBackground"] = false,
 ["containerPadding"] = 0,
 ["iconSize"] = 36,
-["position"] = {
-["y"] = 200,
-["x"] = 0,
-},
+["gridCols"] = 4,
 ["bgColor"] = {
 ["a"] = 0.6,
 ["r"] = 0,
@@ -4586,28 +4586,28 @@ ArcUIDB = {
 },
 ["iconHeight"] = 36,
 ["gridRows"] = 2,
-["spacing"] = 2,
-["showBorder"] = false,
-["autoReflow"] = false,
-["visibility"] = "always",
 ["borderColor"] = {
 ["a"] = 1,
 ["r"] = 0.3,
 ["g"] = 0.8,
 ["b"] = 0.3,
 },
+["showBorder"] = false,
+["autoReflow"] = false,
+["visibility"] = "always",
+["spacing"] = 2,
 },
 ["Essential"] = {
-["gridCols"] = 4,
+["position"] = {
+["y"] = 100,
+["x"] = 0,
+},
 ["lockGridSize"] = false,
 ["iconWidth"] = 36,
 ["showBackground"] = false,
 ["containerPadding"] = 0,
 ["iconSize"] = 36,
-["position"] = {
-["y"] = 100,
-["x"] = 0,
-},
+["gridCols"] = 4,
 ["bgColor"] = {
 ["a"] = 0.6,
 ["r"] = 0,
@@ -4616,28 +4616,28 @@ ArcUIDB = {
 },
 ["iconHeight"] = 36,
 ["gridRows"] = 2,
-["spacing"] = 2,
-["showBorder"] = false,
-["autoReflow"] = false,
-["visibility"] = "always",
 ["borderColor"] = {
 ["a"] = 1,
 ["r"] = 0.8,
 ["g"] = 0.6,
 ["b"] = 0.2,
 },
+["showBorder"] = false,
+["autoReflow"] = false,
+["visibility"] = "always",
+["spacing"] = 2,
 },
 ["Utility"] = {
-["gridCols"] = 4,
+["position"] = {
+["y"] = 0,
+["x"] = 0,
+},
 ["lockGridSize"] = false,
 ["iconWidth"] = 36,
 ["showBackground"] = false,
 ["containerPadding"] = 0,
 ["iconSize"] = 36,
-["position"] = {
-["y"] = 0,
-["x"] = 0,
-},
+["gridCols"] = 4,
 ["bgColor"] = {
 ["a"] = 0.6,
 ["r"] = 0,
@@ -4646,16 +4646,16 @@ ArcUIDB = {
 },
 ["iconHeight"] = 36,
 ["gridRows"] = 2,
-["spacing"] = 2,
-["showBorder"] = false,
-["autoReflow"] = false,
-["visibility"] = "always",
 ["borderColor"] = {
 ["a"] = 1,
 ["r"] = 0.3,
 ["g"] = 0.6,
 ["b"] = 0.9,
 },
+["showBorder"] = false,
+["autoReflow"] = false,
+["visibility"] = "always",
+["spacing"] = 2,
 },
 },
 ["createdBy"] = "System",

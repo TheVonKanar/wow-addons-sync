@@ -227,10 +227,19 @@ function addonTable.Display.NameplateMixin:OnLoad()
         if auraFrame.styleIndex ~= self.styleIndex or auraFrame.kind ~= details.kind then
           auraFrame.kind = details.kind
           auraFrame.styleIndex = self.styleIndex
+
+          auraFrame:EnableMouse(details.showTooltips)
+
           auraFrame.CountFrame.Count:SetFontObject(addonTable.CurrentFont)
           auraFrame.CountFrame.Count:ClearAllPoints()
-          addonTable.Display.ApplyAnchor(auraFrame.CountFrame.Count, details.texts.stacks.anchor)
-          auraFrame.CountFrame.Count:SetTextScale(details.texts.stacks.scale)
+          addonTable.Display.ApplyAnchor(auraFrame.CountFrame.Count, details.texts.stacks.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.stacks.scale or 1)
+          if addonTable.CurrentFontUsesSmoothing then
+            auraFrame.CountFrame.Count:SetTextScale(1)
+            auraFrame.CountFrame.Count:SetScale(details.texts.stacks.scale)
+          else
+            auraFrame.CountFrame.Count:SetTextScale(details.texts.stacks.scale)
+            auraFrame.CountFrame.Count:SetScale(1)
+          end
           local c1 = details.texts.stacks.color
           auraFrame.CountFrame.Count:SetTextColor(c1.r, c1.g, c1.b)
           auraFrame.CountFrame.Count:SetShown(details.texts.stacks.visible);
@@ -240,10 +249,21 @@ function addonTable.Display.NameplateMixin:OnLoad()
           if details.texts.countdown.visible then
             auraFrame.Cooldown.Text:SetFontObject(addonTable.CurrentFont)
             auraFrame.Cooldown.Text:ClearAllPoints()
-            addonTable.Display.ApplyAnchor(auraFrame.Cooldown.Text, details.texts.countdown.anchor)
-            auraFrame.Cooldown.Text:SetTextScale(details.texts.countdown.scale)
+            addonTable.Display.ApplyAnchor(auraFrame.Cooldown.Text, details.texts.countdown.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.countdown.scale or 1)
+            if addonTable.CurrentFontUsesSmoothing then
+              auraFrame.Cooldown.Text:SetTextScale(1)
+              auraFrame.Cooldown.Text:SetScale(details.texts.countdown.scale)
+            else
+              auraFrame.Cooldown.Text:SetTextScale(details.texts.countdown.scale)
+              auraFrame.Cooldown.Text:SetScale(1)
+            end
             local c2 = details.texts.countdown.color
             auraFrame.Cooldown.Text:SetTextColor(c2.r, c2.g, c2.b)
+          end
+
+          if auraFrame.CountFrame.Count.SetSmoothScaling then
+            auraFrame.CountFrame.Count:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+            auraFrame.Cooldown.Text:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
           end
 
           auraFrame.Cooldown:SetDrawEdge(details.showSwipe)
@@ -370,9 +390,9 @@ function addonTable.Display.NameplateMixin:ApplyPixelPerfectSizing()
   self.lastScale = self:GetEffectiveScale()
 end
 
-function addonTable.Display.NameplateMixin:InitializeWidgets(design, scale)
-  self.offsetScale = (scale or 1) * UIParent:GetEffectiveScale() * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE)
-  self.scale = design.scale
+function addonTable.Display.NameplateMixin:InitializeWidgets(design, scaleOffset, scaleMod)
+  self.offsetScale = (scaleOffset or 1) * UIParent:GetEffectiveScale() * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE)
+  self.scale = design.scale * scaleMod
 
   self.lastScale = self:GetEffectiveScale()
 
@@ -445,10 +465,10 @@ function addonTable.Display.NameplateMixin:InitializeWidgets(design, scale)
   self:SetScript("OnUpdate", nil)
 end
 
-function addonTable.Display.NameplateMixin:Install(nameplate)
+function addonTable.Display.NameplateMixin:Install(nameplate, offsetY)
   self:Show()
   self:SetFrameStrata("BACKGROUND")
-  self:SetPoint("CENTER", nameplate)
+  self:SetPoint("CENTER", nameplate, "CENTER", 0, offsetY)
   self:SetSize(10, 10)
 
   -- We force a sizing immediately to avoid 0 size widgets breaking the textures from the Blizz animations
@@ -467,6 +487,28 @@ function addonTable.Display.NameplateMixin:SetUnit(unit)
   if unit and (not UnitNameplateShowsWidgetsOnly or not UnitNameplateShowsWidgetsOnly(unit)) and not UnitIsGameObject(unit) then
     self.unit = unit
     addonTable.Display.Cache:AddUnit(unit)
+
+    if UnitCanAttack("player", self.unit) and addonTable.Config.Get(addonTable.Config.Options.OUT_OF_RANGE_ALPHA) ~= 1 then
+      addonTable.Display.Cache:RegisterCallback(self.unit, "range", function(state)
+        self.inRange = state
+        self:UpdateVisual()
+      end)
+      self.inRange = addonTable.Display.Cache:Get(self.unit, "range")
+    else
+      self.inRange = true
+    end
+
+    if UnitCanAttack("player", self.unit) and addonTable.Config.Get(addonTable.Config.Options.NOT_IN_PULL_ALPHA) ~= 1 then
+      self.inCombat = addonTable.Display.Utilities.IsInCombatWith(self.unit)
+      addonTable.CallbackRegistry:RegisterCallback("CombatStatusChange", function(_, unit2)
+        if unit2 == self.unit then
+          self.inCombat = addonTable.Display.Utilities.IsInCombatWith(self.unit)
+          self:UpdateVisual()
+        end
+      end, self)
+    else
+      self.inCombat = true
+    end
 
     for _, w in ipairs(self.widgets) do
       w:Show()
@@ -526,6 +568,7 @@ function addonTable.Display.NameplateMixin:SetUnit(unit)
     self.casting = false
 
     addonTable.CallbackRegistry:UnregisterCallback("TextOverrideUpdated", self)
+    addonTable.CallbackRegistry:UnregisterCallback("CombatStatusChange", self)
   end
 
   self:UpdateVisual()
@@ -597,6 +640,12 @@ function addonTable.Display.NameplateMixin:UpdateVisual()
     if not isMouseover and not self.casting then
       alpha = addonTable.Config.Get(addonTable.Config.Options.NOT_TARGET_ALPHA)
     end
+  end
+  if not self.inRange then
+    alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.OUT_OF_RANGE_ALPHA)
+  end
+  if not self.inCombat and UnitAffectingCombat("player") then
+    alpha = alpha * addonTable.Config.Get(addonTable.Config.Options.NOT_IN_PULL_ALPHA)
   end
   self:SetScale(self.scale * scale * addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE) * scaleMod)
   self:SetAlpha(alpha)

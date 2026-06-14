@@ -371,10 +371,13 @@ function RCLootCouncil:DoChatHook()
 	if not validateChatFrame() then
 		self:Print("Warning: Your chat frame", db.chatFrameName, "doesn't exist. ChatFrame has been reset.")
 		self.Log:e("ChatFrameName validation failed, resetting...")
-		db.chatFrameName = self.defaults.profile.chatFrameName
+		db.chatFrameName = getglobal(self.defaults.profile.chatFrameName).name
 	end
 	-- Pass our channel to the original function and magic appears.
-	self:RawHook(self, "Print", function(_, ...) self.hooks[self].Print(self, getglobal(db.chatFrameName), ...) end, true)
+	self:RawHook(self, "Print", function(_, ...)
+		self.hooks[self].Print(self, getglobal(db.chatFrameName), ...)
+		self.Log:f("<PRINT>", ...)
+	end, true)
 end
 
 function RCLootCouncil:PrintMLChatHelp()
@@ -2863,6 +2866,7 @@ function RCLootCouncil:SubscribeToPermanentComms()
 
 		n_t = function(data, sender, command) self:OnTradeableStatusReceived(sender, "not_tradeable", unpack(data)) end,
 		r_t = function(data, sender, command) self:OnTradeableStatusReceived(sender, "rejected_trade", unpack(data)) end,
+		bonus_roll = function(data, sender, command) self:OnTradeableStatusReceived(sender, "bonus_roll", data[2]) end,
 
 		session_end = function(_, sender) self:OnSessionEndReceived(sender) end,
 
@@ -2912,8 +2916,8 @@ function RCLootCouncil:SubscribeToPermanentComms()
 		StartHandleLoot = function() self:OnStartHandleLoot() end,
 
 		StopHandleLoot = function() self.handleLoot = false end,
-		history = function (data, sender)
-			if not self.Utils:UnitIsUnit(sender, self.masterLooter) then
+		history = function (data, sender, _, distri)
+			if distri == "GUILD" or not self.Utils:UnitIsUnit(sender, self.masterLooter) then
 				return self.Log:E(tostring(sender), "sent 'history' but was not ML!")
 			end
 			self:OnHistoryReceived(unpack(data))

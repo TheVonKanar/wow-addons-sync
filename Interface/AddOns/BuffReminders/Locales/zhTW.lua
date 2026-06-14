@@ -50,6 +50,7 @@ L["Overlay.NoES"] = "沒有\n大地盾"
 L["Overlay.NoSource"] = "沒有\n魔源"
 L["Overlay.NoScales"] = "沒有\n鱗片"
 L["Overlay.NoLink"] = "沒有\n共生"
+L["Overlay.NoWeyrnstone"] = "沒有\n龍隊石"
 L["Overlay.NoTimeless"] = "沒有\n永恆"
 L["Overlay.NoAttune"] = "沒有\n同調"
 L["Overlay.NoFamiliar"] = "沒有\n魔寵"
@@ -68,9 +69,9 @@ L["Overlay.NoShield"] = "沒有\n護盾"
 L["Overlay.NoPet"] = "沒有\n寵物"
 L["Overlay.PassivePet"] = "寵物\n被動"
 L["Overlay.WrongPet"] = "寵物\n錯誤"
-L["Overlay.NoRune"] = "沒有\n符文"
 L["Overlay.WrongStance"] = "錯誤\n姿態"
 L["Overlay.WrongForm"] = "錯誤\n形態"
+L["Overlay.NoRune"] = "沒有\n符文"
 L["Overlay.DKWrongRune"] = "符文\n錯誤"
 L["Overlay.DKWrongRuneOH"] = "副手\n符文\n錯誤"
 L["Overlay.NoFlask"] = "沒有\n精鍊"
@@ -138,6 +139,7 @@ L["Buff.EarthShield"] = "大地之盾"
 L["Buff.SourceOfMagic"] = "魔力之源"
 L["Buff.SymbioticRelationship"] = "共生關係"
 L["Buff.Timelessness"] = "永恆不朽"
+L["Buff.Weyrnstone"] = "龍隊石"
 -- Self
 L["Buff.ArcaneFamiliar"] = "秘法魔寵"
 L["Buff.Attunement"] = "黑曜同調"
@@ -200,6 +202,7 @@ L["Tooltip.MayShowExtraIcon.Desc"] =
 L["Tooltip.InstanceEntryReminder"] = "副本進本提示"
 L["Tooltip.InstanceEntryReminder.Desc"] =
     "進入地下城時會短暫顯示放置靈魂井的提示。施放法術或30秒後將消失。"
+L["BuffTooltip.ProvidedBy"] = "由 %s 提供"
 
 -- ============================================================================
 -- GLOW TYPE NAMES
@@ -241,6 +244,8 @@ L["Display.FramesLocked"] = "框架已鎖定。"
 L["Display.FramesUnlocked"] = "框架已解鎖。"
 L["Display.MinimapHidden"] = "小地圖圖示已隱藏。"
 L["Display.MinimapShown"] = "小地圖圖示已顯示。"
+L["Display.DebugEnabled"] = "偵錯模式已啟用。再次運行 |cFFFFD100/br debug|r 來關閉。"
+L["Display.DebugDisabled"] = "偵錯模式已停用"
 L["Display.Description"] = "一目了然地查看所有缺失的增益。"
 L["Display.OpenOptions"] = "打開選項"
 L["Display.SlashCommands"] = "使用指令: /br, /br lock, /br unlock, /br test, /br minimap"
@@ -254,13 +259,31 @@ L["Display.LoginSelfOnlyOutside"] =
     "新的預設：在開放世界中，只會追蹤您自己的職業增益。在「設定」標籤中切換|cFFFFD100強制在地下城與團隊副本之外只有自己|r來變更設定。"
 
 -- ============================================================================
--- OPTIONS: TAB LABELS
+-- OPTIONS: NAVIGATION LABELS
 -- ============================================================================
-L["Tab.Buffs"] = "增益"
-L["Tab.DisplayBehavior"] = "顯示與行為"
-L["Tab.Settings"] = "設置"
-L["Tab.Profiles"] = "設定檔"
-L["Tab.Sounds"] = "音效"
+L["Tab.DisplayBehavior"] = "顯示/行為"
+
+-- Sidebar groups
+L["Sidebar.General"] = "通用"
+L["Sidebar.Buffs"] = "增益"
+L["Sidebar.DisplayBehavior"] = "顯示與行為"
+L["Sidebar.Profiles"] = "設定檔"
+
+-- Page titles
+L["Page.General"] = "通用"
+L["Page.Defaults"] = "預設"
+L["Page.Visibility"] = "可見性"
+L["Page.ChatRequests"] = "聊天請求"
+L["Page.AnchorFrames"] = "定位框架"
+L["Page.Profiles"] = "設定檔"
+L["Page.AllBuffs"] = "所有增益"
+L["Page.DetachedIcons"] = "分離圖示"
+L["Page.Sounds"] = "音效"
+L["Page.Sounds.Desc"] =
+    "當追蹤的增益缺失時播放聲音。警報適用於所有增益類別 - 每個增益分配一個。"
+
+-- Per-category page section headers
+L["Section.Tracking"] = "追蹤"
 
 -- ============================================================================
 -- OPTIONS: SOUND ALERTS
@@ -338,9 +361,6 @@ L["Options.HidePvPMatchStart.Desc"] = "PvP比賽開始後（準備階段結束�
 L["Options.ReadyCheckOnly"] = "僅在準備確認時顯示"
 L["Options.ReadyCheckOnly.Desc"] = "僅在準備確認後的15秒內顯示此類別中的增益。"
 L["Options.Visibility"] = "顯示條件"
-L["Options.PerCategoryCustomization"] = "按類別自定義"
-L["Options.DetachIcon"] = "分離"
-L["Options.DetachIcon.Desc"] = "將此圖示移至可獨立移動的單獨框架中。"
 
 -- ============================================================================
 -- OPTIONS: HEALTHSTONE
@@ -396,9 +416,26 @@ L["Options.ShowMissingCountOnly"] = "僅顯示缺失數量"
 L["Options.ShowMissingCountOnly.Desc"] =
     "僅顯示缺失增益的數量（例如：”1“），而不是完整的分數形式（例如：”19/20“）。"
 L["Options.ShowBuffReminderText"] = "顯示“補BUFF”提示文字"
-L["Options.BuffTextOffsetX"] = "“補BUFF” X軸"
-L["Options.BuffTextOffsetY"] = "“補BUFF” Y軸"
 L["Options.Size"] = "大小"
+
+-- ============================================================================
+-- OPTIONS: TEXT POSITIONS
+-- ============================================================================
+L["Options.TextPositions"] = "文字"
+L["Options.TextPositions.Zone"] = "位置"
+L["Options.TextPositions.OffsetX.Short"] = "X"
+L["Options.TextPositions.OffsetY.Short"] = "Y"
+L["Options.TextPositions.StackCount"] = "堆疊計數"
+L["Options.TextPositions.StatLabel"] = "屬性標籤"
+L["Options.TextPositions.Badge"] = "標誌 (H / F)"
+L["Options.TextPositions.Vertical.Above"] = "上方"
+L["Options.TextPositions.Vertical.InsideTop"] = "頂部"
+L["Options.TextPositions.Vertical.InsideMiddle"] = "中央"
+L["Options.TextPositions.Vertical.InsideBottom"] = "底部"
+L["Options.TextPositions.Vertical.Below"] = "下方"
+L["Options.TextPositions.Align.Left"] = "左側"
+L["Options.TextPositions.Align.Center"] = "中央"
+L["Options.TextPositions.Align.Right"] = "右側"
 
 -- ============================================================================
 -- OPTIONS: CLICK TO CAST
@@ -408,14 +445,14 @@ L["Options.ClickToCast.DescFull"] =
     "你可以點擊增益圖示來施放對應的法術（僅限非戰鬥狀態）。只對你的角色可施放的法術有效。"
 L["Options.HoverHighlight"] = "懸停高亮"
 L["Options.HoverHighlight.Desc"] = "將鼠標懸停在可點擊的增益圖示上時，顯示微弱的高亮效果。"
-L["Options.ChatRequests"] = "聊天請求"
 L["Options.RequestBuffInChat"] = "在聊天中請求缺失的增益"
 L["Options.RequestBuffInChat.Desc"] =
-    "點擊您的職業無法提供的缺失增益，並在聊天中請求它。自動偵測頻道（副本/團隊/隊伍/說）。每個增益有30秒冷卻時間。"
-L["Options.CustomizeChatMessages"] = "自訂訊息"
-L["Options.ChatRequestModal.Title"] = "聊天請求訊息"
-L["Options.ChatRequestModal.Desc"] = "自訂每個增益的訊息傳送。保持空白以使用預設值。"
-L["Options.ChatRequestModal.ResetAll"] = "重置全部"
+    "點擊您的職業無法提供的缺失增益，並在聊天中請求它。自動偵測頻道（副本/團隊/隊伍/說）。"
+L["Options.ChatRequest.FixAttempt"] = "|cffffd200實驗性|r 嘗試修復未發送的聊天請求"
+L["Options.ChatRequest.FixAttempt.Desc"] =
+    "僅當您的聊天請求未發送時才啟用此功能。這也會停用5秒的點擊冷卻時間，以防止意外的垃圾點擊。"
+L["Options.ChatRequest.ResetAll"] = "重置全部"
+L["ChatRequests.PerBuffMessages"] = "每個增益的訊息"
 -- Chat request messages (keyed by buff.key, sent as-is via SendChatMessage)
 -- EU/US translators: leave untranslated so chat messages stay in L.
 -- Asian translators: translate these so chat messages match your locale.
@@ -438,6 +475,9 @@ L["Options.PetSpecIcon.Desc"] =
     "鼠標懸停時，寵物圖示將變為對應的專精技能（狡詐、狂野、堅韌）。"
 L["Options.ShowItemTooltips"] = "顯示物品提示訊息"
 L["Options.ShowItemTooltips.Desc"] = "將鼠標懸停在消耗品圖示上時顯示物品詳細訊息。"
+L["Options.ShowBuffTooltips"] = "顯示增益工具提示"
+L["Options.ShowBuffTooltips.Desc"] =
+    "將滑鼠懸停在團隊或職業增益圖示上時，顯示法術工具提示以及提供增益的職業。"
 L["Options.Behavior"] = "行為"
 L["Options.PetPassiveCombat"] = "僅在戰鬥中提示被動寵物"
 L["Options.PetPassiveCombat.Desc"] = "僅在戰鬥中顯示被動寵物提示。禁用時則始終顯示。"
@@ -549,11 +589,30 @@ L["Options.DelveFoodTimer.Desc"] =
 -- OPTIONS: LAYOUT
 -- ============================================================================
 L["Options.Layout"] = "布局"
-L["Options.Priority"] = "優先級"
-L["Options.Priority.Desc"] = "調整此類在整合框架中的順序。數值越小越靠前。"
 L["Options.SplitFrame"] = "分離為獨立框架"
 L["Options.SplitFrame.Desc"] = "將此類別中的增益顯示在可獨立移動的單獨框架中。"
-L["Options.DisplayPriority"] = "顯示優先級"
+
+-- Display Order section (Defaults page) - drives the same priority field the
+-- old per-category slider wrote, but as a single ordered list across all
+-- non-split categories.
+L["Options.DisplayOrder"] = "顯示順序"
+L["Options.DisplayOrder.Note"] =
+    "類別如何在組合框架內從上到下堆疊。分離的類別存在於它們自己的框架中不參與。"
+L["Options.DisplayOrder.SplitGroup"] = "分離 (獨立框架)"
+L["Options.DisplayOrder.SplitBadge"] = "分離"
+
+-- Detached Icons page (search-driven dual-list manager).
+L["DetachedIcons.PageNote"] =
+    "將單一增益從其類別中拉出到其自己的獨立定位框架中。分離的圖示保留自己的定位點，並且在框架解鎖時可以獨立移動。"
+L["DetachedIcons.Search"] = "搜尋:"
+L["DetachedIcons.Available"] = "可用"
+L["DetachedIcons.CurrentlyDetachedCount"] = "目前已分離 (%d)"
+L["DetachedIcons.NoneDetached"] = "沒有分離的圖示。找到下面的增益並點擊分離"
+L["DetachedIcons.NoMatches"] = "無符合的。"
+L["DetachedIcons.Detach"] = "分離"
+L["DetachedIcons.Reattach"] = "重新連接"
+L["DetachedIcons.ResetPos"] = "重置"
+L["DetachedIcons.ReattachAll"] = "全部重新連接"
 
 -- ============================================================================
 -- OPTIONS: APPEARANCE
@@ -570,10 +629,12 @@ L["Options.MasqueNote"] = "縮放和邊框設置由Masque管理。"
 -- ============================================================================
 L["Options.ShowLoginMessages"] = "顯示登入訊息"
 L["Options.ShowMinimapButton"] = "顯示小地圖按鈕"
-L["Options.ShowOnlyInGroup"] = "僅在小隊或團隊中顯示"
 
 -- Hide when section
 L["Options.HideWhen"] = "隱藏條件:"
+L["Options.HideWhen.Alone"] = "單獨時"
+L["Options.HideWhen.Alone.Title"] = "單獨時隱藏"
+L["Options.HideWhen.Alone.Desc"] = "當不在隊伍或團隊中時隱藏所有增益提醒"
 L["Options.HideWhen.Resting"] = "休息時"
 L["Options.HideWhen.Resting.Title"] = "休息時隱藏"
 L["Options.HideWhen.Resting.Desc"] = "在旅店或主城時隱藏增益提示。"
@@ -682,6 +743,7 @@ L["Options.Unlock"] = "解鎖"
 -- OPTIONS: CUSTOM BUFF MODAL
 -- ============================================================================
 L["CustomBuff.Edit"] = "編輯自定義增益"
+L["CustomBuff.EditShort"] = "編輯"
 L["CustomBuff.Add"] = "添加自定義增益"
 L["CustomBuff.AddButton"] = "+ 添加自定義增益"
 L["CustomBuff.SpellIDs"] = "法術ID:"
@@ -695,7 +757,6 @@ L["CustomBuff.BuffTracking"] = "增益追蹤"
 L["CustomBuff.Requirements"] = "請求"
 L["CustomBuff.ShowIn"] = "顯示在"
 L["CustomBuff.ClickAction"] = "點擊動作"
-L["CustomBuff.SettingsMovedNote"] = "顯示條件和準備確認設置已移至每個增益的編輯選單中。"
 
 -- Custom buff mode toggles
 L["CustomBuff.WhenActive"] = "啟用時"
@@ -762,10 +823,6 @@ L["CustomBuff.Action.MacroHint"] = "例：/use item:12345\n/use 13"
 L["CustomBuff.Save"] = "保存"
 L["CustomBuff.ValidateError"] = "需要至少1個有效的法術ID"
 
--- Custom buff tooltip
-L["CustomBuff.Tooltip.Title"] = "自定義增益"
-L["CustomBuff.Tooltip.Desc"] = "右鍵點擊以編輯或刪除"
-
 -- Custom buff status
 L["CustomBuff.InvalidID"] = "無效ID"
 L["CustomBuff.NotFound"] = "未找到"
@@ -782,7 +839,6 @@ L["Options.JoinDiscord.Desc"] = "有反饋、功能請求或發現BUG？\n歡迎
 -- ============================================================================
 -- OPTIONS: CUSTOM ANCHOR FRAMES
 -- ============================================================================
-L["Options.CustomAnchorFrames"] = "自定義定位點框架"
 L["Options.CustomAnchorFrames.Desc"] =
     "在定位點下拉選單中添加全局框架名稱。（例：MyAddon_PlayerFrame）\n游戲中不存在的框架會自動跳過。"
 L["Options.Add"] = "添加"
@@ -818,12 +874,11 @@ L["Appearance.Border"] = "邊框"
 L["Appearance.Spacing"] = "間距"
 L["Appearance.Alpha"] = "透明度"
 L["Appearance.Text"] = "文字"
-L["Appearance.TextX"] = "文字 X軸"
-L["Appearance.TextY"] = "文字 Y軸"
 
 -- Slider tooltip
 L["Component.AdjustValue"] = "調整數值"
 L["Component.AdjustValue.Desc"] = "點擊輸入或使用鼠標滾輪。"
+L["Component.AdjustValue.ClickHint"] = "點擊數字即可輸入具體數值"
 
 -- Direction labels
 L["Direction.Left"] = "左側"

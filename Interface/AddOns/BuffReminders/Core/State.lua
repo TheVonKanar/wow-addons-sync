@@ -35,7 +35,7 @@ local tinsert = table.insert
 local tostring = tostring
 
 -- Reusable single-element buffer to avoid { spellID } allocations in hot loops.
--- SAFETY: callers must consume the result immediately — the buffer is overwritten on next call.
+-- SAFETY: callers must consume the result immediately - the buffer is overwritten on next call.
 local singleSpellBuf = {}
 local function AsSpellList(val)
     if type(val) == "table" then
@@ -138,7 +138,7 @@ local consumablesDismissed = false
 -- within State.lua. It covers BOTH combat lockdown AND boss encounters.
 --
 -- Why not just call InCombatLockdown()? Because ENCOUNTER_START fires BEFORE
--- InCombatLockdown() returns true — the player isn't in combat until their first hostile
+-- InCombatLockdown() returns true - the player isn't in combat until their first hostile
 -- action lands on the boss. During that window (potentially hundreds of ms while a spell
 -- is traveling), the aura API is already restricted but InCombatLockdown() still returns
 -- false. Non-whitelisted spells (e.g. Devotion Aura 465) silently return nil from
@@ -159,7 +159,7 @@ local cachedInstanceType = nil -- raw WoW instanceType, stashed alongside conten
 -- Whether we are in the PvP prep phase (before gates open). Used by the
 -- `hideInPvPMatch` visibility setting to gate buff display once the match starts.
 -- Note: aura API is restricted for the entire BG/arena (prep included), so this
--- does NOT affect IsRestricted() — see that function for details.
+-- does NOT affect IsRestricted() - see that function for details.
 local inPvPPrepPhase = false
 
 -- Difficulty cache (invalidated alongside content type)
@@ -217,7 +217,7 @@ local cachedOffHandType = nil -- nil = not yet checked, "weapon" | "shield" | "n
 local cachedItemOwnership = {}
 
 -- Wrong-demon-pet cache. UnitCreatureFamily can return secret-value familyIDs
--- under 12.0.5 taint rules, so the compare is pcall-guarded — a secret value
+-- under 12.0.5 taint rules, so the compare is pcall-guarded - a secret value
 -- becomes "unknown" (not cached, retried) instead of crashing Refresh.
 ---@type boolean|nil
 local cachedWrongPetStatus = nil
@@ -228,7 +228,7 @@ local STANCE_BATTLE = 386164
 local STANCE_BERSERKER = 386196
 local STANCE_DEFENSIVE = 386208
 
--- Spec → set of acceptable stances. Arms: Battle. Fury: Battle or Berserker
+-- Spec -> set of acceptable stances. Arms: Battle. Fury: Battle or Berserker
 -- (Berserker talent replaces Battle). Protection: Defensive.
 local WARRIOR_EXPECTED_STANCES = {
     [71] = { [STANCE_BATTLE] = true },
@@ -283,9 +283,12 @@ local currentWeaponEnchants = {
     permanentOH = nil, -- permanent enchant ID from item link (OH)
 }
 
--- Valid group members for current refresh cycle (set once per BuffState.Refresh())
--- Each entry: { unit = "raid1", class = "WARRIOR", isPlayer = true, name = "PlayerName" }
----@type {unit: string, class: string, isPlayer: boolean, name: string?}[]
+-- Valid group members for current refresh cycle (set once per BuffState.Refresh()).
+-- Includes phased / out-of-broadcast-range allies (tagged via `isPhased`) so an
+-- already-active buff on an unreachable ally still registers as covered.
+-- Counting paths apply a "phased + missing -> skip" rule to keep unfixable gaps
+-- out of the missing math; presence/targeted scans just iterate everyone.
+---@type {unit: string, class: string, isPlayer: boolean, name: string?, isPhased: boolean}[]
 local currentValidUnits = {}
 
 -- "Are we effectively alone?" snapshot from the most recent BuildValidUnitCache().
@@ -303,7 +306,7 @@ local allySpecCache = {}
 local includeNPCsInCounting = false
 
 -- Note: inCombat (set via SetInCombat) is used by CountMissingBuff to skip NPCs during
--- combat/encounters — NPC buff spell IDs aren't on the Blizzard aura whitelist.
+-- combat/encounters - NPC buff spell IDs aren't on the Blizzard aura whitelist.
 
 -- Aura-safe spell whitelist loaded from Data/AuraWhitelist.lua
 local AURA_WHITELIST = BR.AURA_WHITELIST
@@ -375,7 +378,7 @@ local function GetLastTarget(buffKey)
 end
 
 -- Pool of reusable unit entry tables (avoids creating new tables each refresh)
----@type {unit: string, class: string, isPlayer: boolean, name: string?}[]
+---@type {unit: string, class: string, isPlayer: boolean, name: string?, isPhased: boolean}[]
 local unitEntryPool = {}
 local unitEntryPoolSize = 0
 
@@ -384,8 +387,9 @@ local unitEntryPoolSize = 0
 ---@param class string
 ---@param isPlayer boolean
 ---@param name string?
----@return {unit: string, class: string, isPlayer: boolean, name: string?}
-local function AcquireUnitEntry(unit, class, isPlayer, name)
+---@param isPhased boolean True when the unit is in another phase or out of broadcast range
+---@return {unit: string, class: string, isPlayer: boolean, name: string?, isPhased: boolean}
+local function AcquireUnitEntry(unit, class, isPlayer, name, isPhased)
     local entry
     if unitEntryPoolSize > 0 then
         entry = unitEntryPool[unitEntryPoolSize]
@@ -395,8 +399,9 @@ local function AcquireUnitEntry(unit, class, isPlayer, name)
         entry.class = class
         entry.isPlayer = isPlayer
         entry.name = name
+        entry.isPhased = isPhased
     else
-        entry = { unit = unit, class = class, isPlayer = isPlayer, name = name }
+        entry = { unit = unit, class = class, isPlayer = isPlayer, name = name, isPhased = isPhased }
     end
     return entry
 end
@@ -504,18 +509,24 @@ end
 -- UTILITY FUNCTIONS
 -- ============================================================================
 
----Check if a unit is a valid group member for buff tracking
----Excludes: non-existent, dead/ghost, disconnected, hostile (cross-faction in open world),
----and units phased away from the player.
+---Check if a unit is a valid group member for buff tracking.
+---Excludes: non-existent, dead/ghost, disconnected, hostile (cross-faction in open world).
+---Phased / out-of-broadcast-range allies still pass; their phase status is exposed via
+---the `isPhased` flag on the cached entry so counting paths can apply the
+---"phased + missing -> skip" rule without losing existing-buff coverage.
 ---@param unit string
 ---@return boolean
 local function IsValidGroupMember(unit)
-    return UnitExists(unit)
-        and not UnitIsDeadOrGhost(unit)
-        and UnitIsConnected(unit)
-        and UnitCanAssist("player", unit)
-        and UnitIsVisible(unit)
-        and UnitPhaseReason(unit) == nil
+    return UnitExists(unit) and not UnitIsDeadOrGhost(unit) and UnitIsConnected(unit) and UnitCanAssist("player", unit)
+end
+
+---Determine whether a unit is in a different phase from the player or out of
+---broadcast range. Used to tag entries during cache rebuild; downstream consumers
+---decide whether to include phased allies in their math.
+---@param unit string
+---@return boolean
+local function IsUnitPhased(unit)
+    return not UnitIsVisible(unit) or UnitPhaseReason(unit) ~= nil
 end
 
 ---Check if a unit benefits from a buff using spec (preferred) or class (fallback)
@@ -577,9 +588,13 @@ local function BuildValidUnitCache()
             local _, class = UnitClass(unit)
             local isPlayer = UnitIsPlayer(unit)
             local name = GetUnitName(unit, true)
-            currentValidUnits[#currentValidUnits + 1] = AcquireUnitEntry(unit, class, isPlayer, name)
-            -- Track max level per class (players only, for buff caster checks)
-            if isPlayer and class then
+            local isPhased = IsUnitPhased(unit)
+            currentValidUnits[#currentValidUnits + 1] = AcquireUnitEntry(unit, class, isPlayer, name, isPhased)
+            -- Track max level per class (players only, for buff caster checks).
+            -- Skip phased / out-of-broadcast-range allies: they can't reliably
+            -- cast on the group right now, so they shouldn't make us track buffs
+            -- no one reachable can provide (e.g. priest outside the dungeon).
+            if isPlayer and class and not isPhased then
                 local level = UnitLevel(unit)
                 if not classMaxLevels[class] or level > classMaxLevels[class] then
                     classMaxLevels[class] = level
@@ -1040,13 +1055,19 @@ local function CountMissingBuff(spellIDs, buffKey, playerOnly, playersOnly)
         -- still include NPCs via the unchanged includeNPCsInCounting check.
         if data.isPlayer or countNPCs then
             if UnitBenefitsFromBuff(specBeneficiaries, beneficiaries, allySpecCache[data.name], data.class) then
-                total = total + 1
                 local hasBuff, remaining = UnitHasBuff(data.unit, GetUnitSpellIDs(buffKey, spellIDs, data.class))
-                if not hasBuff then
-                    missing = missing + 1
-                elseif remaining then
-                    if not minRemaining or remaining < minRemaining then
-                        minRemaining = remaining
+                -- Phased / unreachable allies count only when their having the buff
+                -- contributes to coverage. A phased member who is missing the buff
+                -- would be an unfixable gap (we can't cast on them), so omit them
+                -- from both totals to keep the math actionable.
+                if not (data.isPhased and not hasBuff) then
+                    total = total + 1
+                    if not hasBuff then
+                        missing = missing + 1
+                    elseif remaining then
+                        if not minRemaining or remaining < minRemaining then
+                            minRemaining = remaining
+                        end
                     end
                 end
             end
@@ -1147,7 +1168,7 @@ local function IsPlayerBuffActive(spellID, role)
             end
         end
     end
-    -- No alive beneficiary with this role → treat as active (nothing to cast on)
+    -- No alive beneficiary with this role -> treat as active (nothing to cast on)
     if not hasBeneficiary then
         return true
     end
@@ -1228,7 +1249,7 @@ local function ShouldShowTargetedBuff(spellIDs, requiredClass, beneficiaryRole, 
                 lastTargets[buffKey] = { name = targetEntry.name, class = targetEntry.class }
             end
         elseif isActive then
-            -- Buff found but only on player — clear last target
+            -- Buff found but only on player - clear last target
             lastTargets[buffKey] = nil
         end
         -- If not active at all, keep old last target so macro still targets them after it falls off
@@ -1817,7 +1838,7 @@ function BuffState.Refresh(refreshMode)
             local settingKey = buff.groupId or buff.key
 
             if buff.showOnInstanceEntry then
-                -- Instance entry only buff (e.g., soulwell reminder) — no normal buff checks
+                -- Instance entry only buff (e.g., soulwell reminder) - no normal buff checks
                 -- Gate on cheap checks first; customCheck (API call) only when everything else passes
                 if
                     inInstanceEntry
@@ -1836,7 +1857,7 @@ function BuffState.Refresh(refreshMode)
                         if useGlowDet then
                             if IsAnySpellGlowing(buff) then
                                 SetEntryText(entry, buff.overlayText, selfMissGlow)
-                                entry.iconByRole = buff.iconByRole
+                                BR.Helpers.ApplyDynamicIcon(entry, buff)
                             end
                         else
                             local shouldShow = ShouldShowSelfBuff(
@@ -1856,14 +1877,7 @@ function BuffState.Refresh(refreshMode)
                             local show = (wantPresent and shouldShow == false) or (not wantPresent and shouldShow)
                             if show then
                                 SetEntryText(entry, buff.overlayText, selfMissGlow)
-                                entry.iconByRole = buff.iconByRole
-                                if buff.getNextCastID then
-                                    local castID = buff.getNextCastID()
-                                    entry.dynamicIcon = castID and C_Spell.GetSpellTexture(castID)
-                                end
-                                if not entry.dynamicIcon and buff.getDynamicIcon then
-                                    entry.dynamicIcon = buff.getDynamicIcon()
-                                end
+                                BR.Helpers.ApplyDynamicIcon(entry, buff)
                             elseif
                                 shouldShow == false
                                 and not wantPresent
@@ -2016,7 +2030,7 @@ function BuffState.Refresh(refreshMode)
         end
     end
 
-    -- Process pet buffs (pet summon reminders — no expiration tracking)
+    -- Process pet buffs (pet summon reminders - no expiration tracking)
     if not groupOnly then
         local petVisible = IsCategoryVisibleForContent("pet")
         if IsMounted() or BR.Display.IsPetDismountSuppressed() then
@@ -2043,7 +2057,7 @@ function BuffState.Refresh(refreshMode)
                 )
                 if shouldShow then
                     SetEntryText(entry, buff.overlayText, petMissGlow)
-                    entry.iconByRole = buff.iconByRole
+                    BR.Helpers.ApplyDynamicIcon(entry, buff)
                     -- Expanded pet actions (individual summon spell icons)
                     if buff.getPetActions then
                         local actions = buff.getPetActions()
@@ -2084,7 +2098,7 @@ function BuffState.Refresh(refreshMode)
             local settingKey = buff.groupId or buff.key
 
             if buff.showOnInstanceEntry and (db.defaults and db.defaults.delveFoodTimer) then
-                -- Instance entry only consumable (e.g., delve food) — show for 30s on entry then auto-hide
+                -- Instance entry only consumable (e.g., delve food) - show for 30s on entry then auto-hide
                 -- Combat safety handled by Display layer clearing entry state on PLAYER_REGEN_DISABLED
                 if
                     inDelveEntry
@@ -2426,7 +2440,7 @@ function BuffState.InvalidateContentTypeCache()
     cachedDifficultyKey = nil
     cachedCompetitivePvP = nil
     cachedIsLegacyInstance = nil
-    -- Note: inPvPPrepPhase is NOT reset here — it's managed explicitly by
+    -- Note: inPvPPrepPhase is NOT reset here - it's managed explicitly by
     -- SetPvPPrepPhase() calls from PLAYER_ENTERING_WORLD and PVP_MATCH_STATE_CHANGED.
     -- Resetting it here would clobber the prep state when ZONE_CHANGED_NEW_AREA's
     -- deferred invalidation fires 0.5s after entering a PvP instance.
@@ -2635,7 +2649,7 @@ function BuffState.IsShadowFormActive()
     local activeSpellID = GetActiveStanceSpellID()
     if not activeSpellID then
         -- Form 0 = no shadowform (cache); non-zero with unresolved spell data
-        -- happens transiently on load — return safe default and retry next call.
+        -- happens transiently on load - return safe default and retry next call.
         if GetShapeshiftForm() == 0 then
             cachedShadowFormActive = false
             return false
@@ -2666,7 +2680,7 @@ function BuffState.IsWrongDruidForm()
     local activeSpellID = GetActiveStanceSpellID()
     if not activeSpellID then
         -- Unshifted (form 0) is wrong; non-zero with unresolved spell data is
-        -- a transient load state — return safe default and retry next call.
+        -- a transient load state - return safe default and retry next call.
         if GetShapeshiftForm() == 0 then
             cachedWrongDruidFormStatus = true
             return true

@@ -44,6 +44,7 @@ L["HELP_COUNT"] = "  /vca count    – afficher le nombre total d'objets obtenus
 L["HELP_SPEC"] = "  /vca spec     – afficher l'ID de spécialisation de butin"
 L["HELP_SOURCE"] = "  /vca source   – afficher la source de détection active"
 L["HELP_VERSION"] = "  /vca version  – afficher la version de l'addon"
+L["HELP_RESTORE"] = "  /vca restore  – restaurer les données de butin depuis la sauvegarde"
 
 -- ── Panel UI (ajouts) ─────────────────────────────────────────────────────────
 
@@ -66,8 +67,31 @@ L["REMINDER_SELECTED_CHANCE"] = "%d%% de chance pour l'objet sélectionné"
 L["REMINDER_CHANGE_PROMPT"] = "Changer la spécialisation de butin pour |cffffff00%s|r ?"
 L["REMINDER_YES"] = "Oui, changer"
 L["REMINDER_NO"] = "Non merci"
+L["REMINDER_WARNING_ONE_ITEM"] =
+    "|cffff8000Avertissement :|r Cette spécialisation n'a plus que |cffff00001 objet|r restant dans ce donjon. Utiliser un Noyau du Vide nébuleux avec cette spécialisation |cffff0000réinitialisera le groupe de butin de toutes les spécialisations|r dans ce donjon !"
+L["REMINDER_SPEC_LIST_HEADER"] = "Objets restants par spécialisation :"
+L["REMINDER_SPEC_REMAINING"] = "%d restant(s)"
+L["REMINDER_SPEC_NONE"] = "aucun restant"
+L["SPEC_LIST_TOOLTIP_TITLE"] = "Protection du butin"
+L["SPEC_LIST_ITEM_ONE"] = "1 objet restant"
+L["SPEC_LIST_ITEM_MANY"] = "%d objets restants"
+L["SPEC_LIST_ALL_OBTAINED"] = "tous obtenus"
+
+-- ── Popup d'avertissement de réinitialisation du groupe de butin (Reminder.lua) ──
+
+L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddConseiller|r"
+L["WARNING_SUBTITLE"] = "Risque de réinitialisation du groupe de butin"
+L["WARNING_VOIDCORE_COUNT"] = "Vous avez |cffffff00%d|r Noyau(x) du Vide nébuleux"
+L["WARNING_FAVORED_SPEC"] = "Vous utilisez la spécialisation de butin favorite :"
+L["WARNING_ONE_ITEM"] =
+    "|cffff8000Avertissement :|r Cette spécialisation n'a plus que |cffff0000%d objet|r restant dans ce donjon. Utiliser un Noyau du Vide nébuleux |cffff0000réinitialisera le groupe de butin de toutes les spécialisations|r dans ce donjon !"
+L["WARNING_SPEC_LIST_HEADER"] = "Objets restants par spécialisation :"
+L["WARNING_CLOSE"] = "Fermer"
 
 -- ── Panneau d'options (Options.lua) ──────────────────────────────────────────
+
+L["OPTIONS_CAT_REMINDER"] = "Rappel de spécialisation de butin"
+L["OPTIONS_CAT_BONUS_ROLL"] = "Jet bonus"
 
 L["OPTIONS_REMINDER_ENABLE"] = "Rappel de spécialisation de butin"
 L["OPTIONS_REMINDER_TOOLTIP"] =
@@ -95,3 +119,87 @@ L["SPEC_PICKER_OK"] = "OK"
 L["OBTAINED_UNKNOWN_SPEC"] = "Obtenu (spécialisation inconnue)"
 L["UNKNOWN_KEYLEVEL"] = "niveau de clé inconnu"
 L["MANUAL_ENTRY"] = "entrée manuelle"
+
+-- ── Tiroir d'emplacements (DungeonOverview.lua) ──────────────────────────────
+
+L["SLOT_FILTER_TOGGLE"] = "Filtrer par emplacement"
+L["SLOT_FILTER_CLEAR"] = "Désélectionner tous les objets d'emplacement"
+L["SLOT_FILTER_CLEAR_CONFIRM"] = "Effacer toutes les sélections d'objets ?"
+L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] = "Tous les objets sélectionnés seront désélectionnés."
+
+L["SLOT_head"] = "Tête"
+L["SLOT_neck"] = "Cou"
+L["SLOT_shoulder"] = "Épaules"
+L["SLOT_back"] = "Dos"
+L["SLOT_chest"] = "Torse"
+L["SLOT_wrist"] = "Poignets"
+L["SLOT_hands"] = "Mains"
+L["SLOT_waist"] = "Taille"
+L["SLOT_legs"] = "Jambes"
+L["SLOT_feet"] = "Pieds"
+L["SLOT_finger"] = "Doigt"
+L["SLOT_trinket"] = "Bijou"
+L["SLOT_SELECT_ALL"] = "Tout sélectionner"
+L["SLOT_DESELECT_ALL"] = "Tout désélectionner"
+L["SLOT_NONE_SELECTED"] = "Rien de sélectionné"
+L["SLOT_weapon"] = "Arme"
+L["SLOT_offhand"] = "Main secondaire"
+
+-- ── Scan de Voidcache (VoidcacheScan.lua / DungeonOverview.lua) ───────────────
+
+L["SCAN_BTN"] = "Scanner les specs de butin"
+L["SCAN_PROGRESS"] = "Scan en cours %d/%d..."
+L["SCAN_COMPLETE"] = "✓ Scan terminé"
+L["SCAN_ABORTED"] = "Scan annulé"
+L["SCAN_CONFIRM_TITLE"] = "Scanner les specs de butin ?"
+L["SCAN_CONFIRM_BODY"] =
+    "Cela analysera l'infobulle du Voidcache nébuleux pour chacune de vos spécialisations de butin dans tous les donjons de la saison.\n\nLes données de butin existantes seront réinitialisées.\n\nN'entrez pas en combat ni dans un donjon pendant le scan."
+L["SCAN_UNAVAILABLE_COMBAT"] = "Impossible de scanner en combat."
+L["SCAN_UNAVAILABLE_INSTANCE"] = "Impossible de scanner dans un donjon."
+L["RAID_SCAN_CONFIRM_TITLE"] = "Scanner les specs de butin du raid ?"
+L["RAID_SCAN_CONFIRM_BODY"] =
+    "Cela analysera l'infobulle du Voidcache nébuleux pour chacune de vos spécialisations de butin dans tous les affrontements de raid Mythique.\n\nLes données de raid Mythique existantes seront réinitialisées.\n\nN'entrez pas en combat pendant le scan."
+
+-- ── Commandes slash (ajouts) ──────────────────────────────────────────────────
+
+L["HELP_REPLAYLOG"] = "  /vca replaylog – réappliquer toutes les entrées du journal de jets comme obtenues"
+L["RESTORE_COMPLETE"] = "%d objet(s) restauré(s) depuis la sauvegarde."
+L["RESTORE_NO_BACKUP"] = "Aucune sauvegarde disponible. Effectuez d'abord un scan."
+L["RESTORE_FAILED"] = "La restauration a échoué."
+
+-- ── Fenêtre de confirmation de jet bonus (BonusRollConfirm.lua) ───────────────
+
+L["BONUS_ROLL_CONFIRM_SUBTITLE"] = "Confirmer le jet de Noyau du Vide nébuleux"
+L["BONUS_ROLL_CONFIRM_SPEC_LABEL"] = "Spécialisation de butin active :"
+L["BONUS_ROLL_CONFIRM_POOL"] = "%d objet(s) restant dans le groupe"
+L["BONUS_ROLL_CONFIRM_CHANCE"] = "%d%% de chance (%d objets désirés)"
+L["BONUS_ROLL_CONFIRM_CHANCE_ONE"] = "%d%% de chance (1 objet désiré)"
+L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] = "Tous les objets obtenus pour cette spéc"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS"] = "Aucun objet souhaité pour cette spéc"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] = "D'autres spécialisations ont des objets souhaités"
+L["BONUS_ROLL_CONFIRM_NO_SELECTED"] = "Aucun objet désiré"
+L["BONUS_ROLL_CONFIRM_NOT_TRACKED"] = "Source non suivie — aucune estimation disponible"
+L["BONUS_ROLL_CONFIRM_WARNING_HEADER"] =
+    "|A:Ping_Chat_Warning:14:14|a |cffffff00Lancer les dés réinitialisera la protection contre la malchance|r"
+L["BONUS_ROLL_CONFIRM_WARNING_BODY"] =
+    "Après ce jet, les objets précédemment pillés peuvent à nouveau tomber pour toutes les spécialisations."
+L["BONUS_ROLL_CONFIRM_QUESTION"] = "Voulez-vous lancer pour du butin ?"
+L["BONUS_ROLL_CONFIRM_ROLL"] = "Lancer"
+L["BONUS_ROLL_CONFIRM_PASS"] = "Passer"
+L["BONUS_ROLL_CONFIRM_CONFIRM"] = "Confirmer le lancer"
+L["BONUS_ROLL_CONFIRM_PASS_CONFIRM"] = "Confirmer le passage"
+L["BONUS_ROLL_CONFIRM_CLOSE"] = "Fermer"
+L["BONUS_ROLL_POPUP_ROLL"] = "Dépenser votre Noyau du Vide nébuleux pour un jet bonus ?"
+L["BONUS_ROLL_POPUP_PASS"] = "Passer ce jet bonus ?"
+
+-- ── Panneau d'options (ajouts) ────────────────────────────────────────────────
+
+L["OPTIONS_PREVIEW_BONUS_ROLL"] = "Aperçu"
+L["BONUS_ROLL_CONFIRM_COST"] = "Coût : |cffffff00%d|r  \194\183  Vous avez |cffffff00%d|r"
+L["OPTIONS_BONUS_ROLL_CONFIRM"] = "Fenêtre de jet bonus"
+L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
+    "Affiche les informations de VoidcoreAdvisor lorsque la fenêtre de jet bonus du Noyau du Vide nébuleux apparaît, incluant votre spécialisation de butin active et les probabilités d'objets."
+L["OPTIONS_BRC_SPEC_LIST"] = "Afficher les objets restants par spécialisation"
+L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
+    "Affiche une liste des objets restants pour chacune de vos spécialisations dans la fenêtre de jet bonus."
+L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"

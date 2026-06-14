@@ -1,6 +1,52 @@
 local _, MPT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("MPlusTimer") --
 
+-- Snapshot of the original locale strings before any override is applied.
+local _localeSnapshot = nil
+
+-- Applies a user-selected language override by mutating the AceLocale table in-place.
+function MPT:ApplyLocaleOverride()
+    local lang = self.Language
+    local aceL = LibStub("AceLocale-3.0"):GetLocale("MPlusTimer")
+
+    -- Build a snapshot of the original (client) locale the first time we run.
+    if not _localeSnapshot then
+        _localeSnapshot = {}
+        -- Collect every key that any locale file defines so we know what to snapshot.
+        for _, rawTable in pairs(MPT.RawLocales or {}) do
+            for k in pairs(rawTable) do
+                if _localeSnapshot[k] == nil then
+                    local v = rawget(aceL, k)
+                    _localeSnapshot[k] = (v == nil or v == true) and k or v
+                end
+            end
+        end
+    end
+
+    if not lang or lang == "Auto" then
+        -- Restore the original client locale strings.
+        for k, v in pairs(_localeSnapshot) do
+            rawset(aceL, k, v)
+        end
+        return
+    end
+
+    if lang == "enUS" then
+        for _, rawTable in pairs(MPT.RawLocales or {}) do
+            for k in pairs(rawTable) do
+                rawset(aceL, k, k)
+            end
+        end
+    else
+        local rawTable = MPT.RawLocales and MPT.RawLocales[lang]
+        if rawTable then
+            for k, v in pairs(rawTable) do
+                rawset(aceL, k, v)
+            end
+        end
+    end
+end
+
 local SoundsToMute = {
     [567457] = true,
     [567507] = true,
@@ -237,7 +283,7 @@ function MPT:GetDateFormat(date)
 end
 
 function MPT:MoveFrame(Unlock)
-    if Unlock then        
+    if Unlock then
         if not self.Frame then self:Init(true) end
         self:ShowFrame(true)
         self.Frame:SetMovable(true)
@@ -254,7 +300,7 @@ end
 
 function MPT:ShowFrame(Show)
     if Show then
-        if self.Frame then 
+        if self.Frame then
             self.Frame:Show()
         end
     elseif self.Frame then
@@ -324,11 +370,11 @@ end
 
 function MPT:CountOnTooltip()
     local function OnTooltipSetUnit()
-        if select(3, GetInstanceInfo()) == 8 and self.GameTooltip ~= "Off" and C_ScenarioInfo.GetUnitCriteriaProgressValues then
+        if select(3, GetInstanceInfo()) == 8 and MPTSV.GameTooltip ~= "Off" and UnitExists("mouseover") and UnitIsEnemy("mouseover", "player") then
             local count, _, perc = C_ScenarioInfo.GetUnitCriteriaProgressValues("mouseover")
-            local format = (self.GameTooltip == "CountOnly" and "%d") or (self.GameTooltip == "PercentageOnly" and "%s%%") or "%d (%s%%)"
-            local arg1 = self.GameTooltip == "PercentageOnly" and perc or count
-            local arg2 = self.GameTooltip == "Both" and perc or ""
+            local format = (MPTSV.GameTooltip == "CountOnly" and "%d") or (MPTSV.GameTooltip == "PercentageOnly" and "%s%%") or "%d (%s%%)"
+            local arg1 = MPTSV.GameTooltip == "PercentageOnly" and perc or count
+            local arg2 = MPTSV.GameTooltip == "Both" and perc or ""
             local string = string.format(" - "..format, arg1, arg2)
             GameTooltip:AppendText(string)
         end

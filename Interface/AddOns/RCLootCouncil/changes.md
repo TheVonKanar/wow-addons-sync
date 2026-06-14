@@ -1,8 +1,12 @@
-Updated for patch 12.0.5
+## Changes
+
+### Bonus rolls
+
+Bonus rolls now shows up beneath the Voting Frame.
 
 ## Bugfixes
 
-- *Fixed occasional issue when trading caused by secrets.*
-- *Fixed issue in version checker causing guild members to show up multiple times.*
-- *Fixed issues storing instance data for the history (#274).*
+- *Awards sent to guild wouldn't be properly recorded for non-raid members.*
+- *Fixed issue with award later trade timer warning.*
+- *"Disabled" status wouldn't show up in the Version Frame status.*
 

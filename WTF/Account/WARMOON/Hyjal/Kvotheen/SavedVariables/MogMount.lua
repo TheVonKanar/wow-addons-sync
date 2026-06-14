@@ -7,9 +7,9 @@ MogMountCharacterSaved = {
 ["Special"] = 460,
 ["Ground"] = 0,
 },
-["Outfit36"] = {
-["Flying"] = 1,
-["Ground"] = 1,
+["Outfit3"] = {
+["Flying"] = 2512,
+["Ground"] = 2790,
 ["Title"] = 0,
 },
 ["Outfit2"] = {
@@ -17,7 +17,7 @@ MogMountCharacterSaved = {
 ["Ground"] = 1,
 ["Title"] = 0,
 },
-["Outfit5"] = {
+["Outfit36"] = {
 ["Flying"] = 1,
 ["Ground"] = 1,
 ["Title"] = 0,
@@ -27,9 +27,9 @@ MogMountCharacterSaved = {
 ["Ground"] = 1,
 ["Title"] = 0,
 },
-["Outfit3"] = {
-["Flying"] = 2512,
-["Ground"] = 2790,
+["Outfit5"] = {
+["Flying"] = 1,
+["Ground"] = 1,
 ["Title"] = 0,
 },
 }

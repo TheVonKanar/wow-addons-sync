@@ -289,6 +289,16 @@ L["Instruction Show Resilient Seeds"] = "<더블 클릭하여 회복력 있는 �
 L["No Resilient Seed"] = "회복력 있는 씨앗 없음";
 
 
+--Tooltip VendorLocation
+L["ModuleName TooltipVendorLocation"] = "상인 위치"
+L["ModuleDescription TooltipVendorLocation"] = "아이템 툴팁에 특정 토큰을 교환할 수 있는 상인 위치를 표시하고, Ctrl-클릭으로 해당 상인에게 지도 핀을 설정할 수 있습니다."
+L["Instruction Set Waypoint"] = "<Ctrl 클릭으로 지도 핀 설정>"
+L["NPC Name Location Format"] = "%s, %s"
+L["Intruction Swtich Destinations"] = "Alt 키를 눌러 목적지를 전환:"
+L["Location Note Inside Cave"] = "동굴 내부"
+L["Location Note Second Floor"] = "위층"
+
+
 --Plunderstore
 L["ModuleName Plunderstore"] = "약탈 상점";
 L["ModuleDescription Plunderstore"] = "파티 찾기를 통해 열리는 상점을 다음과 같이 변경합니다:\n\n- 수집한 아이템 숨기기 체크박스 추가\n\n- 카테고리 버튼에 미수집 아이템 수 표시\n\n- 무기 및 방어구의 착용 위치를 툴팁에 표시\n\n- 착용 가능한 아이템을 외형 미리보기에서 확인 가능";
@@ -764,6 +774,9 @@ L["Instruction Alt Click To Reset Instance"] = "Alt+우클릭: |cffffffff모든 
 L["Instruction Link Progress In Chat"] = "<채팅에 진행 상황을 공유하려면 Shift 키를 누른 상태로 클릭하세요>";
 L["Instance Name"] = "인스턴스 이름";   --Dungeon/Raid Name
 L["EditMode Instruction InstanceDifficulty"] = "프레임 너비는 사용 가능한 옵션의 수에 따라 달라집니다.";
+L["Difficulty Locked To Format"] = "보스를 처치했기 때문에 인스턴스가 |cffffffff%s|r 난이도로 잠겼습니다.";
+L["Difficulty Locked To Current Alert"] = "보스를 처치했기 때문에 인스턴스가 현재 난이도로 잠겼습니다.";
+L["Shared Difficulty Alert"] = "보스를 처치하면 인스턴스가 해당 난이도로 잠깁니다.";
 
 
 --TransmogChatCommand
@@ -785,8 +798,8 @@ L["Quick Access Outfit Button Tooltip"] = "의상을 어디서나 변경할 수 
 
 
 --QuestWatchCycle
-L["ModuleName QuestWatchCycle"] = "단축키: 퀘스트 포커스";
-L["ModuleDescription QuestWatchCycle"] = "단축키로 목표 추적기에서 다음/이전 퀘스트에 포커스를 이동할 수 있습니다.\n\n|cffd4641c단축키 설정: 설정 > 단축키 > Plumber 애드온.|r";
+L["ModuleName QuestWatchCycle"] = "단축키: 퀘스트 추적 대상 지정";
+L["ModuleDescription QuestWatchCycle"] = "단축키를 눌러 목표 추적기에서 다음/이전 퀘스트를 대상으로 지정할 수 있습니다.\n\n|cffd4641c단축키 설정은 단축키 > Plumber 애드온에서 하세요.|r";
 
 
 --CraftSearchExtended
@@ -883,19 +896,19 @@ L["BreakTime Shared Countdown Tooltip Format"] = "|cffffffff%d|r분 후 예정�
 
 
 --CatalystUI
-L["ModuleName CatalystUI"] = "Catalyst: 드레스룸에서 아이템 보기";
+L["ModuleName CatalystUI"] = "촉매: 아이템 미리보기";
 L["ModuleDescription CatalystUI"] = "Ctrl-클릭으로 결과 아이템을 드레스룸에서 확인하거나, Shift-클릭으로 채팅에 링크할 수 있습니다.";
 
 
 --HuntTable
-L["ModuleName HuntTable"] = "Prey: 사냥 테이블";
+L["ModuleName HuntTable"] = "사냥감: 사냥 목록";
 L["ModuleDescription HuntTable"] = "- 일반적인 파란색 퀘스트 아이콘을 난이도 표시로 교체합니다.\n\n- Prey 대상이 아직 획득하지 못한 업적의 조건일 경우 표시기를 보여줍니다.";
-L["Prey Target Has Achievement"] = "이 Prey 대상은 아직 획득하지 못한 업적의 조건입니다.";
+L["Prey Target Has Achievement"] = "이 사냥감 대상은 아직 획득하지 못한 업적의 조건입니다.";
 
 
 --PreyQuestSuperTrack
-L["ModuleName PreyQuestSuperTrack"] = "먹잇감: 대상 웨이포인트";
-L["ModuleDescription PreyQuestSuperTrack"] = "먹잇감 대상의 위치가 드러나면, 사냥 진행 위젯을 클릭할 때 해당 위치로 웨이포인트가 설정됩니다.";
+L["ModuleName PreyQuestSuperTrack"] = "사냥감: 목표 위치 표시";
+L["ModuleDescription PreyQuestSuperTrack"] = "사냥감 대상의 위치가 드러나면, 사냥 진행 위젯을 클릭할 때 해당 위치로 웨이포인트가 설정됩니다.";
 
 
 --BlizzFixActionBarArt

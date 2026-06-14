@@ -8,8 +8,6 @@ local addonName, BR = ...
 ---@field iconSize number
 ---@field iconWidth? number
 ---@field textSize number
----@field textOffsetX? number
----@field textOffsetY? number
 ---@field iconAlpha number
 ---@field textAlpha number
 ---@field textColor number[]
@@ -71,6 +69,7 @@ local addonName, BR = ...
 ---@field petLabels? boolean
 ---@field petLabelScale? number
 ---@field petSpecIconOnHover? boolean
+---@field textPositions? table<string, {zone: string, offsetX: number, offsetY: number}>
 
 ---@class CategorySetting
 ---@field position CategoryPosition
@@ -89,8 +88,6 @@ local addonName, BR = ...
 ---@field expirationThreshold? number
 ---@field showBuffReminder? boolean
 ---@field buffTextSize? number
----@field buffTextOffsetX? number
----@field buffTextOffsetY? number
 ---@field showText? boolean
 ---@field useCustomAppearance? boolean
 ---@field useCustomGlow? boolean
@@ -203,6 +200,7 @@ local TEXCOORD_INSET = BR.TEXCOORD_INSET
 
 -- WoW API locals
 local PlaySoundFile = PlaySoundFile
+local GetInstanceInfo = GetInstanceInfo
 
 -- LibSharedMedia for font resolution
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -215,7 +213,7 @@ local function IsMasqueActive()
     return masqueGroup ~= nil and not masqueGroup.db.Disabled
 end
 
--- Cached font path — resolved once on load and updated when the setting changes (via VisualsRefresh).
+-- Cached font path - resolved once on load and updated when the setting changes (via VisualsRefresh).
 -- All SetFont calls read this local directly instead of calling LSM:Fetch() every time.
 local fontPath = STANDARD_TEXT_FONT
 
@@ -255,7 +253,7 @@ local function ResolveFontPath()
     fontPath = STANDARD_TEXT_FONT
 end
 
--- Cached outline flag — resolved on load and updated when the setting changes (via VisualsRefresh).
+-- Cached outline flag - resolved on load and updated when the setting changes (via VisualsRefresh).
 -- "NONE" in saved settings is translated to "" at the WoW API level.
 local outlineFlag = "OUTLINE"
 
@@ -285,20 +283,7 @@ local SelfBuffs = BUFF_TABLES.self
 local PetBuffs = BUFF_TABLES.pet
 local CustomBuffs = BUFF_TABLES.custom
 
--- Build icon override lookup table (for spells replaced by talents)
-local IconOverrides = {} ---@type table<number, number>
-for _, buffArray in ipairs({ PresenceBuffs, TargetedBuffs, SelfBuffs, PetBuffs }) do
-    for _, buff in ipairs(buffArray) do
-        if buff.displayIcon and buff.spellID then
-            local spellList = (type(buff.spellID) == "table" and buff.spellID or { buff.spellID }) --[[@as number[] ]]
-            for _, id in ipairs(spellList) do
-                IconOverrides[id] = buff.displayIcon
-            end
-        end
-    end
-end
-
--- Build buff key → setting key mapping (resolves individual keys to groupId when grouped)
+-- Build buff key -> setting key mapping (resolves individual keys to groupId when grouped)
 local buffKeyToSettingKey = {}
 for _, buffArray in ipairs({ RaidBuffs, PresenceBuffs, TargetedBuffs, SelfBuffs, PetBuffs, BUFF_TABLES.consumable }) do
     for _, buff in ipairs(buffArray) do
@@ -392,6 +377,7 @@ local defaults = {
     optionsPanelScale = 1.2, -- base scale (displayed as 100%)
     showLoginMessages = true,
     requestBuffInChat = true,
+    chatRequestCooldown = true,
     chatRequestMessages = {},
 
     -- DK runeforge preferences: [specId] = { mainhand, dw_mainhand, dw_offhand }
@@ -456,6 +442,7 @@ local defaults = {
         consumableTextScale = 25,
         hideConsumableLabels = false,
         showConsumableTooltips = false,
+        showBuffTooltips = false,
         hideLegacyConsumables = true,
         petDisplayMode = "generic", -- "generic" or "expanded"
         petLabels = true,
@@ -467,6 +454,16 @@ local defaults = {
             MAGE = true,
         },
         useFelDomination = false,
+        -- Per-text-item placement (zone + pixel nudge). See Core/TextPositions.lua
+        -- for zone constants. Defaults preserve the prior hard-coded anchors so
+        -- existing users see no visual change until they edit a value.
+        textPositions = {
+            count = { zone = "INSIDE_C", offsetX = 0, offsetY = 0 },
+            stackCount = { zone = "INSIDE_BR", offsetX = 0, offsetY = 0 },
+            statLabel = { zone = "INSIDE_TL", offsetX = 0, offsetY = 0 },
+            badge = { zone = "INSIDE_L", offsetX = 0, offsetY = 0 },
+            buffReminder = { zone = "BELOW_C", offsetX = 0, offsetY = 0 },
+        },
     },
 
     ---@type CategoryVisibility
@@ -579,7 +576,7 @@ local defaults = {
             position = { point = "CENTER", x = 0, y = 180 },
             useCustomAppearance = false,
             split = false,
-            clickable = false,
+            clickable = true,
             clickableHighlight = true,
             priority = 3,
         },
@@ -622,7 +619,6 @@ local defaults = {
 -- Constants
 local CODE_DEFAULTS = defaults.defaults
 local OVERLAY_TEXT_SCALE = 0.6 -- scale for "NO X" warning text
-local BUFF_TEXT_BASE_Y = -6 -- base Y gap between icon bottom and "BUFF!" text
 
 -- Locals
 local mainFrame
@@ -632,6 +628,10 @@ local readyCheckTimer = nil
 local instanceEntryTimer = nil
 local delveEntryTimer = nil
 local SOULWELL_SPELL_IDS = { [29893] = true, [6201] = true } -- Create Soulwell, Create Healthstone
+
+-- "Decor Duel" prop-hunt brawl: hide-and-seek as furniture, buff reminders are
+-- meaningless and visually defeat the purpose. Identified by its unique difficulty ID.
+local DECOR_DUEL_DIFFICULTY_ID = 253
 local ClearInstanceEntryState -- forward declaration
 local ClearDelveEntryState -- forward declaration
 local HideDismissFrames -- forward declaration
@@ -774,8 +774,6 @@ local function GetCategorySettings(category)
             iconSize = globalDefaults.iconSize or 64,
             iconWidth = globalDefaults.iconWidth,
             textSize = globalDefaults.textSize or CODE_DEFAULTS.textSize,
-            textOffsetX = globalDefaults.textOffsetX or 0,
-            textOffsetY = globalDefaults.textOffsetY or 0,
             iconAlpha = globalDefaults.iconAlpha or 1,
             textAlpha = globalDefaults.textAlpha or 1,
             textColor = globalDefaults.textColor or { 1, 1, 1 },
@@ -807,8 +805,6 @@ local function GetCategorySettings(category)
         result.iconSize = (catSettings and catSettings.iconSize) or 64
         result.iconWidth = catSettings and catSettings.iconWidth
         result.textSize = (catSettings and catSettings.textSize) or CODE_DEFAULTS.textSize
-        result.textOffsetX = (catSettings and catSettings.textOffsetX) or 0
-        result.textOffsetY = (catSettings and catSettings.textOffsetY) or 0
         result.iconAlpha = (catSettings and catSettings.iconAlpha) or 1
         result.textAlpha = (catSettings and catSettings.textAlpha) or 1
         result.textColor = (catSettings and catSettings.textColor) or { 1, 1, 1 }
@@ -822,8 +818,6 @@ local function GetCategorySettings(category)
         result.iconSize = globalDefaults.iconSize or 64
         result.iconWidth = globalDefaults.iconWidth
         result.textSize = globalDefaults.textSize or CODE_DEFAULTS.textSize
-        result.textOffsetX = globalDefaults.textOffsetX or 0
-        result.textOffsetY = globalDefaults.textOffsetY or 0
         result.iconAlpha = globalDefaults.iconAlpha or 1
         result.textAlpha = globalDefaults.textAlpha or 1
         result.textColor = globalDefaults.textColor or { 1, 1, 1 }
@@ -907,7 +901,7 @@ local GetPlayerRole = BR.BuffState.GetPlayerRole
 local spellTextureCache = {}
 
 -- Reusable single-element buffer to avoid { spellID } allocations in hot loops.
--- SAFETY: callers must consume the result immediately — the buffer is overwritten on next call.
+-- SAFETY: callers must consume the result immediately - the buffer is overwritten on next call.
 local singleSpellBuf = {}
 local function AsSpellList(val)
     if type(val) == "table" then
@@ -917,35 +911,10 @@ local function AsSpellList(val)
     return singleSpellBuf
 end
 
----Get spell texture (handles table of spellIDs, displayIcon overrides, and role-based icons)
----@param spellIDs SpellID
----@param iconByRole? table<RoleType, number>
----@param displayIcon? number|number[] -- Explicit icon override (unwraps table automatically)
+---Resolve a spell ID to its texture, with caching. Returns nil if the API can't resolve it yet.
+---@param id number
 ---@return number? textureID
-local function GetBuffTexture(spellIDs, iconByRole, displayIcon)
-    -- Explicit displayIcon takes priority (unwrap table to first element)
-    if type(displayIcon) == "table" then
-        return displayIcon[1]
-    elseif displayIcon then
-        return displayIcon
-    end
-    local id
-    -- Check for role-based icon override
-    if iconByRole then
-        local role = GetPlayerRole()
-        if role and iconByRole[role] then
-            id = iconByRole[role]
-        end
-    end
-    -- Fall back to spellIDs
-    if not id then
-        id = type(spellIDs) == "table" and spellIDs[1] or spellIDs
-    end
-    -- Check for icon override (for spells replaced by talents)
-    if IconOverrides[id] then
-        return IconOverrides[id]
-    end
-    -- Return cached texture or fetch and cache
+local function GetSpellTextureCached(id)
     local cached = spellTextureCache[id]
     if cached ~= nil then
         return cached or nil
@@ -958,6 +927,120 @@ local function GetBuffTexture(spellIDs, iconByRole, displayIcon)
     return texture
 end
 
+---Get spell texture from a single spell ID (kept for the few raw-id callers: custom-buff
+---icon refresh, Glow preview). For buff defs use GetBuffIcons(buff)[1] instead so authoring
+---fields like buff.icon take priority over a raw spellID lookup.
+---@param spellID number
+---@return number? textureID
+local function GetBuffTexture(spellID)
+    if type(spellID) == "table" then
+        spellID = spellID[1]
+    end
+    if not spellID then
+        return nil
+    end
+    return GetSpellTextureCached(spellID)
+end
+
+---Resolve the static portion of an `icons` spec ({textures = ...} or {spells = ...}) into
+---a list of texture IDs. Caller owns dedup.
+---@param icons IconSpec?
+---@param add fun(t: number?)
+local function ResolveStaticIcons(icons, add)
+    if not icons then
+        return
+    end
+    if icons.spells then
+        for _, id in ipairs(icons.spells) do
+            add(GetSpellTextureCached(id))
+        end
+    elseif icons.textures then
+        for _, t in ipairs(icons.textures) do
+            add(t)
+        end
+    end
+end
+
+---Resolve the static icon list for a buff. Single source of truth for menus, list rows,
+---and the in-game frame's initial texture. Cached lazily on the buff (spell textures
+---sometimes return nil during early load before spell data settles, so empty results stay
+---uncached and retry on next read).
+---
+---Resolution: `buff.icons.textures` / `buff.icons.spells` if set; else `buff.spellID`
+---resolved to texture(s) as the free fallback for ordinary aura-detected buffs.
+---@param buff table Any buff def (RaidBuff, SelfBuff, ConsumableBuff, CustomBuff, ...)
+---@return number[] textures (may be empty)
+local function GetBuffIcons(buff)
+    local cached = buff._iconsCache
+    if cached then
+        return cached
+    end
+    local out = {}
+    local seen = {}
+    local function add(t)
+        if t and not seen[t] then
+            seen[t] = true
+            tinsert(out, t)
+        end
+    end
+
+    local icons = buff.icons
+    if icons and (icons.textures or icons.spells) then
+        ResolveStaticIcons(icons, add)
+    elseif buff.spellID then
+        local list = type(buff.spellID) == "table" and buff.spellID or { buff.spellID }
+        for _, id in ipairs(list) do
+            add(GetSpellTextureCached(id))
+        end
+    end
+
+    if #out > 0 then
+        buff._iconsCache = out
+    end
+    return out
+end
+
+---Apply a buff's dynamic icon spec to a state entry. Called by State.lua when an entry
+---becomes visible. Function variant is computed now; byRole is applied at render time.
+---@param entry table
+---@param buff table
+local function ApplyDynamicIcon(entry, buff)
+    local icons = buff.icons
+    if not icons then
+        return
+    end
+    if icons.dynamic then
+        entry.dynamicIcon = icons.dynamic()
+    elseif icons.byRole then
+        entry.iconByRole = icons.byRole
+    end
+end
+
+---Pre-fill `_iconsCache` for every static buff after spell data has settled. Eliminates
+---the first-render resolve latency on the user's first interaction; callers afterwards
+---hit the cached path. Buffs whose first resolve still returns empty (cosmetic overrides
+---like warlock green fire) stay uncached and retry naturally.
+local function PreFillIconCaches()
+    for _, buffArray in pairs(BR.BUFF_TABLES) do
+        for _, buff in ipairs(buffArray) do
+            GetBuffIcons(buff)
+        end
+    end
+end
+
+---Resolve the role-dependent texture for a buff at render time. Caller has already
+---verified `def.icons.byRole` is present.
+---@param def table buff def
+---@return number? textureID
+local function ResolveRoleTexture(def)
+    local role = GetPlayerRole()
+    local id = role and def.icons.byRole[role]
+    if id then
+        return GetSpellTextureCached(id)
+    end
+    return GetBuffIcons(def)[1]
+end
+
 ---Resolve the display texture for a buff frame from its buffDef.
 ---@param frame BuffFrame
 ---@return number? textureID
@@ -966,26 +1049,49 @@ local function ResolveFrameTexture(frame)
     if not def then
         return nil
     end
-    return GetBuffTexture(def.spellID, def.iconByRole, def.displayIcon)
+    if def.icons and def.icons.byRole then
+        return ResolveRoleTexture(def)
+    end
+    return GetBuffIcons(def)[1]
 end
 
----Wipe the spell texture cache and re-apply icons on all existing frames.
----Called via deferred timer after init to pick up cosmetic overrides (e.g. warlock
----green fire) that aren't available yet at login time.
-local function InvalidateTextureCache()
-    wipe(spellTextureCache)
+---Invalidate the cached texture for a spell ID and re-resolve every buff
+---frame whose def uses it. Used after spell data settles to pick up cosmetic
+---overrides (e.g. warlock green fire on Burning Rush) that
+---C_Spell.GetSpellTexture doesn't return at login time. Consumable frames
+---paint bag-item icons per-render and don't reference these spell IDs, so
+---they're left alone - no flash.
+---@param spellID number
+local function InvalidateBuffIconBySpellID(spellID)
+    spellTextureCache[spellID] = nil
     for _, frame in pairs(buffFrames) do
-        if frame.icon and frame.buffDef and not frame.buffDef.displayIcon then
-            local texture = ResolveFrameTexture(frame)
-            if texture then
-                frame.icon:SetTexture(texture)
+        local def = frame.buffDef
+        if def and frame.icon then
+            -- def.spellID is SpellID (number|number[]); match either form so
+            -- a future multi-spell buff sharing this ID is also covered.
+            local sid = def.spellID
+            local matches = sid == spellID
+            if not matches and type(sid) == "table" then
+                for _, id in ipairs(sid) do
+                    if id == spellID then
+                        matches = true
+                        break
+                    end
+                end
+            end
+            if matches then
+                def._iconsCache = nil
+                local texture = ResolveFrameTexture(frame)
+                if texture then
+                    frame.icon:SetTexture(texture)
+                end
             end
         end
     end
 end
 
 -- Action bar button names to scan for glows
--- Reverse lookup: spellID → buff entry (for glow fallback detection across all categories)
+-- Reverse lookup: spellID -> buff entry (for glow fallback detection across all categories)
 local glowSpellToBuff = {}
 
 --- Register a buff's spellID(s) in the glow fallback lookup table
@@ -1149,7 +1255,7 @@ end
 ---@param cachedGlow? {typeIndex: number, color: number[], size: number}
 ---@return boolean true (for anyVisible chaining)
 local function ShowTextFrame(frame, overlayText, shouldGlow, category, cachedGlow)
-    -- Hide stackCount/overlays — ShowTextFrame can be called from fallback paths
+    -- Hide stackCount/overlays - ShowTextFrame can be called from fallback paths
     -- (UpdateFallbackDisplay) that don't go through RenderVisibleEntry's cleanup.
     frame.stackCount:Hide()
     if frame.statLabel then
@@ -1267,7 +1373,7 @@ local function CreateCategoryFrame(category)
     return frame
 end
 
--- Create icon and border textures on a buff frame (no positioning — call UpdateIconStyling after)
+-- Create icon and border textures on a buff frame (no positioning - call UpdateIconStyling after)
 local function CreateIconTextures(frame, texture)
     frame.icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon:SetAllPoints()
@@ -1333,8 +1439,42 @@ local function UpdateIconStyling(frame, catSettings)
     end
 end
 
--- Map buff key → consumable category (derived from buff definitions in Data/Buffs.lua)
+-- Map buff key -> consumable category (derived from buff definitions in Data/Buffs.lua)
 local BUFF_KEY_TO_CATEGORY = BR.BUFF_KEY_TO_CATEGORY
+
+-- Show the spell tooltip for a buff frame (raid/presence hover), with a
+-- class-colored "Provided by" line. Gated by defaults.showBuffTooltips so
+-- hover never pops a tooltip unless the user opted in. Called from the icon
+-- frame itself when no click overlay covers it, and from the click overlay
+-- in SecureButtons.lua when click-to-cast is on - callers pass the actual
+-- hovered frame as `anchor` so the tooltip lines up with the cursor.
+local function ShowBuffSpellTooltip(frame, anchor)
+    local db = BR.profile
+    if not db or not db.defaults or db.defaults.showBuffTooltips ~= true then
+        return
+    end
+    local def = frame.buffDef
+    if not def then
+        return
+    end
+    local spellID = type(def.spellID) == "table" and def.spellID[1] or def.spellID
+    if not spellID then
+        return
+    end
+    GameTooltip:SetOwner(anchor or frame, "ANCHOR_RIGHT")
+    GameTooltip:SetSpellByID(spellID)
+    if def.class then
+        local className = (LOCALIZED_CLASS_NAMES_MALE and LOCALIZED_CLASS_NAMES_MALE[def.class]) or def.class
+        local r, g, b = 1, 1, 1
+        local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[def.class]
+        if c then
+            r, g, b = c.r, c.g, c.b
+        end
+        GameTooltip:AddLine(format(L["BuffTooltip.ProvidedBy"], className), r, g, b)
+    end
+    GameTooltip:Show()
+end
+BR.Display.ShowBuffSpellTooltip = ShowBuffSpellTooltip
 
 -- Create icon frame for a buff
 local function CreateBuffFrame(buff, category)
@@ -1369,7 +1509,7 @@ local function CreateBuffFrame(buff, category)
     -- Icon + border textures
     CreateIconTextures(frame, ResolveFrameTexture(frame))
 
-    -- Register with Masque — provide Normal texture so skins like Caith can style it
+    -- Register with Masque - provide Normal texture so skins like Caith can style it
     if masqueGroup then
         masqueGroup:AddButton(frame, {
             Icon = frame.icon,
@@ -1384,13 +1524,19 @@ local function CreateBuffFrame(buff, category)
     local textColor = catSettings.textColor or { 1, 1, 1 }
     local textAlpha = catSettings.textAlpha or 1
     frame.count = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalLarge")
-    frame.count:SetPoint("CENTER", catSettings.textOffsetX or 0, catSettings.textOffsetY or 0)
+    do
+        local cz, cx, cy = BR.TextPositions.Get("count")
+        BR.TextPositions.Apply(frame.count, frame, cz, cx, cy)
+    end
     frame.count:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
     frame.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize), outlineFlag)
 
-    -- Stack count (bottom-right, WoW-standard item count style) for consumables
+    -- Stack count (bottom-right by default; user-positionable via textPositions)
     frame.stackCount = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    frame.stackCount:SetPoint("BOTTOMRIGHT", -1, 2)
+    do
+        local sz, sx, sy = BR.TextPositions.Get("stackCount")
+        BR.TextPositions.Apply(frame.stackCount, frame, sz, sx, sy)
+    end
     frame.stackCount:Hide()
 
     -- Frame alpha
@@ -1401,13 +1547,8 @@ local function CreateBuffFrame(buff, category)
     if frame.isPlayerBuff and category == "raid" then
         frame.buffText = frame:CreateFontString(nil, "OVERLAY")
         local raidCs = db.categorySettings and db.categorySettings.raid
-        frame.buffText:SetPoint(
-            "TOP",
-            frame,
-            "BOTTOM",
-            (raidCs and raidCs.buffTextOffsetX) or 0,
-            ((raidCs and raidCs.buffTextOffsetY) or 0) + BUFF_TEXT_BASE_Y
-        )
+        local bz, bx, by = BR.TextPositions.Get("buffReminder")
+        BR.TextPositions.Apply(frame.buffText, frame, bz, bx, by)
         frame.buffText:SetFont(
             fontPath,
             (raidCs and raidCs.buffTextSize) or GetFontSize(0.8, catSettings.textSize),
@@ -1420,8 +1561,24 @@ local function CreateBuffFrame(buff, category)
         end
     end
 
-    -- Always click-through (dragging is handled by anchor handles)
-    frame:EnableMouse(false)
+    -- Always click-through (dragging is handled by anchor handles). For raid
+    -- and presence frames we still want hover events so the buff tooltip can
+    -- pop on mouseover when the user opts in - clicks remain disabled so the
+    -- mover/anchor flow stays intact. Other categories already have their own
+    -- hover paths (consumable item tooltip + targeted last-target tooltip
+    -- live on the click overlay, which sits above the icon when active).
+    if category == "raid" or category == "presence" then
+        frame:SetMouseClickEnabled(false)
+        frame:SetMouseMotionEnabled(true)
+        frame:SetScript("OnEnter", function(self)
+            ShowBuffSpellTooltip(self)
+        end)
+        frame:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+    else
+        frame:EnableMouse(false)
+    end
 
     frame:Hide()
     return frame
@@ -1465,16 +1622,22 @@ local function GetOrCreateExtraFrame(frame, index)
 
     UpdateIconStyling(extra, catSettings)
 
-    -- Stack count (bottom-right, same as main frame)
+    -- Stack count: matches main frame's per-category zone so split icons line up
     extra.stackCount = extra:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    extra.stackCount:SetPoint("BOTTOMRIGHT", -1, 2)
+    do
+        local sz, sx, sy = BR.TextPositions.Get("stackCount")
+        BR.TextPositions.Apply(extra.stackCount, extra, sz, sx, sy)
+    end
     extra.stackCount:Hide()
 
     -- Count text (for consistency, though expanded frames mainly use stackCount)
     local textColor = catSettings.textColor or { 1, 1, 1 }
     local textAlpha = catSettings.textAlpha or 1
     extra.count = extra:CreateFontString(nil, "OVERLAY", "NumberFontNormalLarge")
-    extra.count:SetPoint("CENTER", 0, 0)
+    do
+        local cz, cx, cy = BR.TextPositions.Get("count")
+        BR.TextPositions.Apply(extra.count, extra, cz, cx, cy)
+    end
     extra.count:SetTextColor(textColor[1], textColor[2], textColor[3], textAlpha)
     extra.count:SetFont(fontPath, GetFontSize(1, catSettings.textSize), outlineFlag)
     extra.count:Hide()
@@ -1568,7 +1731,7 @@ local function PositionFramesVariable(container, frames, widths, heights, spacin
     end
 
     -- Anchor points place frames at the center of the cross-axis edge,
-    -- so smaller frames are automatically centered — no manual offset needed.
+    -- so smaller frames are automatically centered - no manual offset needed.
     local offset = 0
     local isVertical = direction == "UP" or direction == "DOWN"
     local layout = DIRECTION_LAYOUT[direction]
@@ -1870,7 +2033,7 @@ local function GenerateTestEntries()
                 elseif category == "pet" then
                     entry.displayType = "text"
                     entry.overlayText = buff.overlayText
-                    entry.iconByRole = buff.iconByRole
+                    entry.iconByRole = buff.icons and buff.icons.byRole
                     entry.shouldGlow = missGlowEnabled
                     if buff.groupId == "pets" and BR.PetHelpers then
                         local actions = BR.PetHelpers.GetPetActions(playerClass)
@@ -1882,7 +2045,7 @@ local function GenerateTestEntries()
                     -- consumable, presence, targeted, self, custom
                     entry.displayType = "text"
                     entry.overlayText = buff.overlayText
-                    entry.iconByRole = buff.iconByRole
+                    entry.iconByRole = buff.icons and buff.icons.byRole
                     entry.shouldGlow = missGlowEnabled
 
                     -- Show first buff as expiring to preview expiration countdown
@@ -2012,7 +2175,7 @@ end
 --         return
 --     end
 --
---     -- Show frames for any glowing spells (skip whenNotGlowing buffs — handled in second pass)
+--     -- Show frames for any glowing spells (skip whenNotGlowing buffs - handled in second pass)
 --     local seenKeys = {}
 --     local GetPlayerSpecId = BR.StateHelpers.GetPlayerSpecId
 --     for spellID, _ in pairs(glowingSpells) do
@@ -2124,7 +2287,10 @@ local function ApplyConsumableOverlays(frame, item, fontSize)
     if item.statLabel and not hideLabels then
         if not frame.statLabel then
             frame.statLabel = frame:CreateFontString(nil, "OVERLAY")
-            frame.statLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+        end
+        do
+            local sz, sx, sy = BR.TextPositions.Get("statLabel")
+            BR.TextPositions.Apply(frame.statLabel, frame, sz, sx, sy)
         end
         frame.statLabel:SetFont(fontPath, fontSize, outlineFlag)
         frame.statLabel:SetTextColor(1, 1, 1, 1)
@@ -2133,7 +2299,7 @@ local function ApplyConsumableOverlays(frame, item, fontSize)
     elseif frame.statLabel then
         frame.statLabel:Hide()
     end
-    -- Quality atlas icon (crafted quality tier) — bottom-left corner
+    -- Quality atlas icon (crafted quality tier) - bottom-left corner
     if item.qualityAtlas then
         if not frame.qualityIcon then
             local holder = CreateFrame("Frame", nil, frame)
@@ -2152,13 +2318,16 @@ local function ApplyConsumableOverlays(frame, item, fontSize)
     elseif frame.qualityIcon then
         frame.qualityIcon:Hide()
     end
-    -- Text badge (e.g. "F" fleeting, "H" hearty) — middle-left
+    -- Text badge (e.g. "F" fleeting, "H" hearty) - default middle-left; user-positionable
     if item.badge then
         local bc = BR.SecureButtons.BADGE_COLORS[item.badge]
         if bc then
             if not frame.badgeLabel then
                 frame.badgeLabel = frame:CreateFontString(nil, "OVERLAY")
-                frame.badgeLabel:SetPoint("LEFT", frame, "LEFT", 2, 0)
+            end
+            do
+                local bz, bx, by = BR.TextPositions.Get("badge")
+                BR.TextPositions.Apply(frame.badgeLabel, frame, bz, bx, by)
             end
             frame.badgeLabel:SetFont(fontPath, fontSize, outlineFlag)
             frame.badgeLabel:SetTextColor(bc.r, bc.g, bc.b, 1)
@@ -2203,10 +2372,7 @@ end
 local function RestoreFallbackIcon(frame)
     ClearConsumableOverlays(frame)
     local def = frame.buffDef
-    local fallback = def and (def.displayIcon or def.buffIconID)
-    if type(fallback) == "table" then
-        fallback = fallback[1]
-    end
+    local fallback = def and GetBuffIcons(def)[1]
     if fallback then
         frame.icon:SetTexture(fallback)
     end
@@ -2299,7 +2465,7 @@ local function RenderVisibleEntry(frame, entry)
         SetExpirationGlow(frame, false)
         return true
     elseif frame._br_eating_icon then
-        -- Transition from eating → not eating: restore the correct consumable icon
+        -- Transition from eating -> not eating: restore the correct consumable icon
         frame._br_eating_icon = nil
         if frame._br_eating_onupdate then
             frame:SetScript("OnUpdate", nil)
@@ -2315,8 +2481,8 @@ local function RenderVisibleEntry(frame, entry)
     -- Apply dynamic icon overrides (e.g. rogue poison expiring soonest, role-based shields)
     if entry.dynamicIcon then
         frame.icon:SetTexture(entry.dynamicIcon)
-    elseif entry.iconByRole then
-        local texture = GetBuffTexture(frame.spellIDs, entry.iconByRole)
+    elseif entry.iconByRole and frame.buffDef then
+        local texture = ResolveRoleTexture(frame.buffDef)
         if texture then
             frame.icon:SetTexture(texture)
         end
@@ -2760,7 +2926,7 @@ end
 -- Play per-buff sound alert when an icon first appears.
 -- buffSounds is passed in from UpdateDisplay to avoid repeated BR.profile lookups.
 local function TryPlayBuffSound(key, buffSounds)
-    -- Resolve grouped buff keys (e.g. "beaconOfFaith" → "beacons")
+    -- Resolve grouped buff keys (e.g. "beaconOfFaith" -> "beacons")
     local settingKey = buffKeyToSettingKey[key] or key
     -- Deduplicate: don't play the same group sound twice in one cycle
     if soundPlayedThisCycle[settingKey] then
@@ -2785,7 +2951,7 @@ UpdateDisplay = function(refreshMode)
     refreshMode = refreshMode or "full"
     local groupOnly = refreshMode == "group"
 
-    -- Clear per-cycle caches (before early exits — fallback paths also use these)
+    -- Clear per-cycle caches (before early exits - fallback paths also use these)
     if not groupOnly then
         wipe(expiringGlowCache)
         wipe(missingGlowCache)
@@ -2808,6 +2974,11 @@ UpdateDisplay = function(refreshMode)
         end
 
         local db = BR.profile
+
+        if select(3, GetInstanceInfo()) == DECOR_DUEL_DIFFICULTY_ID then
+            HideAllDisplayFrames()
+            return
+        end
 
         if db.showOnlyInGroup and BR.BuffState.IsAlone() then
             HideAllDisplayFrames()
@@ -3033,7 +3204,7 @@ local function StartUpdates()
     if updateTicker then
         updateTicker:Cancel()
     end
-    -- Slow fallback ticker for expiration text staleness (e.g. "14m" → "13m")
+    -- Slow fallback ticker for expiration text staleness (e.g. "14m" -> "13m")
     updateTicker = C_Timer.NewTicker(3, SetDirty)
     -- OnUpdate checks dirty flag with throttle
     eventFrame:SetScript("OnUpdate", function()
@@ -3176,17 +3347,105 @@ ReparentBuffFrames = function()
     end
 end
 
----Detach an individual icon from its container into its own frame
+---Look up which category a buff belongs to. Prefers the live frame's
+---buffCategory, falls back to walking BUFF_TABLES (which includes the custom
+---array rebuilt at runtime).
+---@param key string Buff key or groupId
+---@return string? category
+local function GetCategoryForBuff(key)
+    local frame = buffFrames[key]
+    if frame and frame.buffCategory then
+        return frame.buffCategory
+    end
+    for catName, buffArray in pairs(BUFF_TABLES) do
+        for _, buff in ipairs(buffArray) do
+            if buff.key == key or buff.groupId == key then
+                return catName
+            end
+        end
+    end
+    return nil
+end
+
+---Resolve a user-facing display name for a buff or buff group.
+---Walks: live frame -> custom buffs -> BUFF_TABLES -> BuffGroups -> raw key.
+---@param key string Buff key or groupId
+---@return string
+local function GetBuffDisplayName(key)
+    local frame = buffFrames[key]
+    if frame and frame.displayName then
+        return frame.displayName
+    end
+    local db = BR.profile
+    if db and db.customBuffs and db.customBuffs[key] and db.customBuffs[key].name then
+        return db.customBuffs[key].name
+    end
+    for _, buffArray in pairs(BUFF_TABLES) do
+        for _, buff in ipairs(buffArray) do
+            if buff.key == key and buff.name then
+                return buff.name
+            end
+        end
+    end
+    local group = BR.BuffGroups and BR.BuffGroups[key]
+    if group and group.displayName then
+        return group.displayName
+    end
+    return key
+end
+
+local DETACH_OFFSET_X = 40
+local DETACH_OFFSET_Y = -40
+
+---Compute a sensible default position for a newly-detached icon: the source
+---category's saved CENTER-anchored position offset by (40, -40). Falls back
+---to the main frame's saved position, then to (0, 0). Keeps detached icons
+---from teleporting to absolute screen center where users can't find them.
+---@param key string Buff key
+---@return number x, number y
+local function ComputeSmartDetachPosition(key)
+    local db = BR.profile
+    local catSettings = db.categorySettings
+    local category = GetCategoryForBuff(key)
+
+    local sourcePos
+    if category and catSettings and catSettings[category] and catSettings[category].position then
+        sourcePos = catSettings[category].position
+    elseif catSettings and catSettings.main and catSettings.main.position then
+        sourcePos = catSettings.main.position
+    end
+
+    local x = (sourcePos and sourcePos.x or 0) + DETACH_OFFSET_X
+    local y = (sourcePos and sourcePos.y or 0) + DETACH_OFFSET_Y
+    return x, y
+end
+
+---Detach an individual icon from its container into its own frame.
+---Initial position is offset from the source category so the icon appears
+---next to where it came from (not at hidden screen center).
 ---@param key string Buff key
 local function DetachIcon(key)
     local db = BR.profile
     if not db.detachedIcons then
         db.detachedIcons = {}
     end
-    -- Initialize at screen center so detached icons are easy to find
-    db.detachedIcons[key] = { position = { x = 0, y = 0 } }
+    local x, y = ComputeSmartDetachPosition(key)
+    db.detachedIcons[key] = { position = { x = x, y = y } }
     -- FramesReparent callback handles ResetLayoutSignatures + InvalidateSortedCategories
     -- + ReparentBuffFrames + UpdateVisuals
+    BR.CallbackRegistry:TriggerEvent("FramesReparent")
+end
+
+---Reset a detached icon's position back to the smart default (source
+---category + offset). Preserves any other fields on the entry.
+---@param key string Buff key
+local function ResetDetachedPosition(key)
+    local db = BR.profile
+    if not db.detachedIcons or not db.detachedIcons[key] then
+        return
+    end
+    local x, y = ComputeSmartDetachPosition(key)
+    db.detachedIcons[key].position = { x = x, y = y }
     BR.CallbackRegistry:TriggerEvent("FramesReparent")
 end
 
@@ -3278,7 +3537,7 @@ BR.CustomBuffs = {
             end
             frame.displayName = displayName
             frame.spellIDs = spellIDValue
-            -- Rebuild array (modal creates a new object for db.customBuffs[key], staling the old ref)
+            -- Rebuild array (dialog creates a new object for db.customBuffs[key], staling the old ref)
             BuildCustomBuffArray()
             local customBuff = BR.profile and BR.profile.customBuffs and BR.profile.customBuffs[key]
             if customBuff then
@@ -3307,9 +3566,16 @@ local function UpdateVisuals()
         frame:SetSize(width, size)
         frame.count:SetFont(fontPath, GetFrameFontSize(frame, 1), outlineFlag)
 
-        -- Text position offset
-        frame.count:ClearAllPoints()
-        frame.count:SetPoint("CENTER", catSettings.textOffsetX or 0, catSettings.textOffsetY or 0)
+        -- Re-anchor text overlays on every VisualsRefresh so config changes
+        -- take effect immediately.
+        do
+            local cz, cx, cy = BR.TextPositions.Get("count")
+            BR.TextPositions.Apply(frame.count, frame, cz, cx, cy)
+        end
+        if frame.stackCount then
+            local sz, sx, sy = BR.TextPositions.Get("stackCount")
+            BR.TextPositions.Apply(frame.stackCount, frame, sz, sx, sy)
+        end
 
         -- Text color and alpha
         local tc = catSettings.textColor or { 1, 1, 1 }
@@ -3319,14 +3585,18 @@ local function UpdateVisuals()
         -- Frame alpha
         frame:SetAlpha(catSettings.iconAlpha or 1)
 
-        -- Consumable overlay font/size update
+        -- Consumable overlay font/size + reposition (per-category zones)
         if frame.statLabel or frame.badgeLabel or frame.qualityIcon then
             local flSize = BR.SecureButtons.ComputeConsumableFontSize(size)
             if frame.statLabel then
                 frame.statLabel:SetFont(fontPath, flSize, outlineFlag)
+                local sz, sx, sy = BR.TextPositions.Get("statLabel")
+                BR.TextPositions.Apply(frame.statLabel, frame, sz, sx, sy)
             end
             if frame.badgeLabel then
                 frame.badgeLabel:SetFont(fontPath, flSize, outlineFlag)
+                local bz, bx, by = BR.TextPositions.Get("badge")
+                BR.TextPositions.Apply(frame.badgeLabel, frame, bz, bx, by)
             end
             if frame.qualityIcon then
                 local qOffset = -floor(size * 0.125)
@@ -3345,14 +3615,8 @@ local function UpdateVisuals()
                 outlineFlag
             )
             frame.buffText:SetTextColor(tc[1], tc[2], tc[3], ta)
-            frame.buffText:ClearAllPoints()
-            frame.buffText:SetPoint(
-                "TOP",
-                frame,
-                "BOTTOM",
-                (raidCs and raidCs.buffTextOffsetX) or 0,
-                ((raidCs and raidCs.buffTextOffsetY) or 0) + BUFF_TEXT_BASE_Y
-            )
+            local bz, bx, by = BR.TextPositions.Get("buffReminder")
+            BR.TextPositions.Apply(frame.buffText, frame, bz, bx, by)
             -- BUFF! text: use buff's actual category (raid only)
             local showReminder = false
             if frame.buffCategory == "raid" then
@@ -3447,7 +3711,7 @@ CallbackRegistry:RegisterCallback("FramesReparent", function()
     UpdateVisuals()
 end)
 
--- Masque skin change callback — restore native styling when Masque is disabled.
+-- Masque skin change callback - restore native styling when Masque is disabled.
 -- Deferred because Masque modifies button regions after firing the callback.
 if masqueGroup then
     masqueGroup:RegisterCallback(function()
@@ -3470,7 +3734,13 @@ BR.Helpers = {
     IsIconDetached = IsIconDetached,
     DetachIcon = DetachIcon,
     ReattachIcon = ReattachIcon,
+    ResetDetachedPosition = ResetDetachedPosition,
+    GetCategoryForBuff = GetCategoryForBuff,
+    GetBuffDisplayName = GetBuffDisplayName,
     GetBuffTexture = GetBuffTexture,
+    GetBuffIcons = GetBuffIcons,
+    ApplyDynamicIcon = ApplyDynamicIcon,
+    PreFillIconCaches = PreFillIconCaches,
     DeepCopy = function(...)
         return BR.ImportExport.DeepCopy(...)
     end,
@@ -3575,13 +3845,9 @@ local function SlashHandler(msg)
     elseif cmd == "debug" then
         BR.profile.debugMode = not BR.profile.debugMode
         if BR.profile.debugMode then
-            print(
-                "|cff00ccffBuffReminders:|r Debug mode ENABLED. "
-                    .. "Click any chat-request buff icon and copy the |cff00ccffBR-debug|r lines to share. "
-                    .. "Run |cFFFFD100/br debug|r again to turn off."
-            )
+            print("|cff00ccffBuffReminders:|r " .. L["Display.DebugEnabled"])
         else
-            print("|cff00ccffBuffReminders:|r Debug mode disabled.")
+            print("|cff00ccffBuffReminders:|r " .. L["Display.DebugDisabled"])
         end
     else
         BR.Options.Toggle()
@@ -3728,12 +3994,12 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         local db = BR.profile
 
         -- ====================================================================
-        -- Versioned migrations — each runs exactly once, tracked by dbVersion
+        -- Versioned migrations - each runs exactly once, tracked by dbVersion
         -- ====================================================================
-        local DB_VERSION = 40
+        local DB_VERSION = 42
 
         local migrations = {
-            -- [1] Consolidate all pre-versioning migrations (v2.8 → v3.x)
+            -- [1] Consolidate all pre-versioning migrations (v2.8 -> v3.x)
             [1] = function()
                 -- Ensure db.defaults exists (DeepCopyDefault hasn't run yet)
                 if not db.defaults then
@@ -3939,7 +4205,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end
             end,
 
-            -- [7] Rename custom buff specId → requireSpecId (unify with built-in buff field names)
+            -- [7] Rename custom buff specId -> requireSpecId (unify with built-in buff field names)
             [7] = function()
                 if db.customBuffs then
                     for _, customBuff in pairs(db.customBuffs) do
@@ -4016,7 +4282,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end
                 local oldStyle = db.defaults.glowStyle
                 if oldStyle ~= nil then
-                    -- All old styles were atlas-based pulsing → map to Pixel glow with the color
+                    -- All old styles were atlas-based pulsing -> map to Pixel glow with the color
                     local colorMap = {
                         [1] = { 0.95, 0.57, 0.07, 1 }, -- Orange
                         [2] = { 1, 0.82, 0, 1 }, -- Gold
@@ -4037,7 +4303,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 local defs = db.defaults
                 local globalThreshold = defs.expirationThreshold or 15
 
-                -- Migrate consumableRebuffWarning = false → per-category override
+                -- Migrate consumableRebuffWarning = false -> per-category override
                 if defs.consumableRebuffWarning == false then
                     if not db.categorySettings then
                         db.categorySettings = {}
@@ -4119,7 +4385,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                     buff.invertGlow = nil
                 end
             end,
-            -- [16] Migrate glow color: old orange default → new yellow default,
+            -- [16] Migrate glow color: old orange default -> new yellow default,
             -- and auto-enable useCustomGlowColor for users who had a custom color
             [16] = function()
                 local oldOrange = { 0.95, 0.57, 0.07, 1 }
@@ -4278,7 +4544,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             [25] = function()
                 db.instanceEntryReminder = nil
             end,
-            -- [26] Rename missingText → overlayText on saved custom buffs
+            -- [26] Rename missingText -> overlayText on saved custom buffs
             [26] = function()
                 if db.customBuffs then
                     for _, buff in pairs(db.customBuffs) do
@@ -4318,7 +4584,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                         -- Port old overrides into useCustomGlow system
                         catSettings.useCustomGlow = true
                     else
-                        -- No meaningful overrides — clean up stale keys
+                        -- No meaningful overrides - clean up stale keys
                         catSettings.glowType = nil
                         catSettings.glowSize = nil
                         catSettings.glowColor = nil
@@ -4354,7 +4620,7 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                     db.defaults.freeConsumableReadyCheckOnly = true
                 end
             end,
-            -- [30] Rename freeConsumableReadyCheckOnly → healthstoneVisibility (string mode),
+            -- [30] Rename freeConsumableReadyCheckOnly -> healthstoneVisibility (string mode),
             -- and clean up hideInPvPMatch from free consumable visibility.
             [30] = function()
                 if db.defaults then
@@ -4511,6 +4777,83 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 end
                 if BR.aceDB and BR.aceDB.global then
                     BR.aceDB.global.legacyConsumablesNoticeShown = nil
+                end
+            end,
+
+            -- [41] Fold legacy textOffsetX/Y (count) and buffTextOffsetX/Y
+            -- (BUFF! reminder) into defaults.textPositions. Text positions are
+            -- global only: each repositionable item has one realistic consumer
+            -- (buffReminder = raid; statLabel/badge/stackCount = consumable;
+            -- count is visually identical across categories), so per-category
+            -- granularity was theatre.
+            -- BUFF! reminder Y nudge: previously the display added a -6 base
+            -- offset on top of buffTextOffsetY. The new BELOW_C zone bakes in
+            -- -4, so we preserve total Y by shifting any stored buffTextOffsetY
+            -- by -2 during migration.
+            [41] = function()
+                local function ensurePos(item, zoneFallback)
+                    if not db.defaults then
+                        db.defaults = {}
+                    end
+                    if not db.defaults.textPositions then
+                        db.defaults.textPositions = {}
+                    end
+                    if not db.defaults.textPositions[item] then
+                        db.defaults.textPositions[item] = { zone = zoneFallback, offsetX = 0, offsetY = 0 }
+                    end
+                    return db.defaults.textPositions[item]
+                end
+
+                -- defaults.textOffsetX/Y -> defaults.textPositions.count
+                if db.defaults and (db.defaults.textOffsetX ~= nil or db.defaults.textOffsetY ~= nil) then
+                    local pos = ensurePos("count", "INSIDE_C")
+                    if db.defaults.textOffsetX ~= nil then
+                        pos.offsetX = db.defaults.textOffsetX
+                        db.defaults.textOffsetX = nil
+                    end
+                    if db.defaults.textOffsetY ~= nil then
+                        pos.offsetY = db.defaults.textOffsetY
+                        db.defaults.textOffsetY = nil
+                    end
+                end
+
+                -- categorySettings.raid.buffTextOffsetX/Y -> defaults.textPositions.buffReminder
+                if db.categorySettings and db.categorySettings.raid then
+                    local raidCs = db.categorySettings.raid
+                    if raidCs.buffTextOffsetX ~= nil or raidCs.buffTextOffsetY ~= nil then
+                        local pos = ensurePos("buffReminder", "BELOW_C")
+                        if raidCs.buffTextOffsetX ~= nil then
+                            pos.offsetX = raidCs.buffTextOffsetX
+                            raidCs.buffTextOffsetX = nil
+                        end
+                        if raidCs.buffTextOffsetY ~= nil then
+                            pos.offsetY = raidCs.buffTextOffsetY - 2
+                            raidCs.buffTextOffsetY = nil
+                        end
+                    end
+                end
+
+                -- Drop any per-category text-offset / textPositions data: the
+                -- resolver no longer reads from there. Users with custom
+                -- appearance overrides lose their per-category nudge (rare).
+                if db.categorySettings then
+                    for _, cs in pairs(db.categorySettings) do
+                        if type(cs) == "table" then
+                            cs.textOffsetX = nil
+                            cs.textOffsetY = nil
+                            cs.textPositions = nil
+                        end
+                    end
+                end
+            end,
+
+            -- [42] Enable click-to-cast for targeted buffs by default.
+            -- Previous default was false, so existing users inherited "off" without
+            -- ever choosing it. Flip to true once; users who turn it back off after
+            -- this migration are respected (migrations run once per dbVersion).
+            [42] = function()
+                if db.categorySettings and db.categorySettings.targeted then
+                    db.categorySettings.targeted.clickable = true
                 end
             end,
         }
@@ -4676,9 +5019,17 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                     BR.SecureButtons.UpdateActionButtons(cat)
                 end
             end
-            -- Deferred texture refresh: cosmetic overrides (e.g. warlock green fire)
-            -- aren't available yet at login, so re-fetch after spell data settles.
-            C_Timer.After(2, InvalidateTextureCache)
+            -- Re-resolve icons for spells with cosmetic overrides that aren't
+            -- applied yet at login (e.g. warlock green fire on Burning Rush).
+            -- Covers built-in self buff and custom buffs at the same spellID.
+            C_Timer.After(2, function()
+                for _, def in ipairs(SelfBuffs) do
+                    if def.key == "burningRush" then
+                        InvalidateBuffIconBySpellID(def.spellID)
+                        return
+                    end
+                end
+            end)
         end
         BR.SecureButtons.InvalidateConsumableCache()
         -- Instance entry can flip IsInGroup(2) without firing GROUP_ROSTER_UPDATE
@@ -4723,7 +5074,10 @@ eventFrame:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             end
         end)
         -- Refresh custom buff icons after spell data is fully loaded (talent-modified icons)
+        -- and warm up the static icon cache for every buff in one pass so the next menu
+        -- open / detached-icons render hits the cached path.
         C_Timer.After(1.5, function()
+            PreFillIconCaches()
             for key, def in pairs(BR.profile.customBuffs or {}) do
                 local frame = buffFrames[key]
                 if frame and def.spellID then

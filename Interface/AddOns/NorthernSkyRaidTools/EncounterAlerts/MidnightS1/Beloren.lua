@@ -1,0 +1,98 @@
+local _, NSI = ... -- Internal namespace
+
+local encID = 3182
+-- /run NSAPI:DebugEncounter(3182)
+
+NSI.EncounterAlertStart[encID] = function(self, id) -- on ENCOUNTER_START
+    if not NSRT.EncounterAlerts[encID] then
+        NSRT.EncounterAlerts[encID] = {enabled = false}
+    end
+    if NSRT.EncounterAlerts[encID].enabled then -- text, Type, spellID, dur, phase, encID
+        id = id or self:DifficultyCheck(14) or 0
+        local timers = {
+            [15] = 6.6,
+            [16] = 6.6,
+        }
+        for phase=2, 3 do
+            local Alert = self:CreateDefaultAlert("Gateway", "Bar", 311699, timers[id], phase, encID)
+            Alert.time = 6.6
+            Alert.TTSTimer = 4
+            self:AddToReminder(Alert)
+
+            local timers = {
+                [15] = {12.2, 16.2, 20.2, 24.2, 28.2, 32.2, 36.2, 40.2},
+                [16] = {11.7, 15.2, 18.7, 22.2, 25.7, 29.2, 32.7, 36.2, 39.7, 43.2, 46.7, 50.2},
+            }
+            local Alert = self:CreateDefaultAlert("Next Hit", "Bar", 1242792, 4, phase, encID)
+            if id == 16 then Alert.dur = 3.5 end
+            Alert.TTS = false
+            self:AddRemindersFromTable(Alert, timers[id])
+        end
+        for phase = 1, 2 do
+            local timers = {
+                [16] ={
+                    {18.8, 68.8},
+                    {70.6, 120.6, 170.6},
+                }
+            }
+            local Alert = self:CreateDefaultAlert("Soaks", "Text", nil, 8, phase, encID)
+            Alert.TTS = false
+            self:AddRemindersFromTable(Alert, timers[id] and timers[id][phase])
+
+            local timers = {
+                [16] = {
+                    {27.4, 37.4, 47.4, 77.4, 87.4, 97.4},
+                    {79.2, 89.2, 99.2, 129.2, 139.2, 149.2, 179.2},
+                }
+            }
+            local Alert = self:CreateDefaultAlert("Quills", "Text", nil, 6, phase, encID)
+            Alert.TTS = false
+            self:AddRemindersFromTable(Alert, timers[id] and timers[id][phase])
+        end
+    end
+end
+
+local detectedDurations = { -- Death Drop
+    [14] = {
+        {time = 6, phase = function(num) return num+1 end},
+    },
+    [15] = {
+        {time = 6, phase = function(num) return num+1 end},
+    },
+    [16] = {
+        {time = 6, phase = function(num) return num+1 end},
+    },
+}
+
+NSI.DetectPhaseChange[encID] = function(self, e, info)
+    local now = GetTime()
+    -- not checking REMOVED event by default but may be needed for some encounters
+    if e == "ENCOUNTER_TIMELINE_EVENT_REMOVED" or (not info) or (not self.PhaseSwapTime) or (not (now > self.PhaseSwapTime+5)) or (not self.EncounterID) or (not self.Phase) then return end
+    local difficultyID = select(3, GetInstanceInfo()) or 0
+    if not difficultyID or not detectedDurations[difficultyID] then return end
+    table.insert(self.Timelines, now)
+    if self.Phase >= 2 and ApproximatelyEqual(info.duration, 40, 0.2) then
+        local diff = now - self.PhaseSwapTime
+        local offset = diff - 7.1
+        if diff <= 20 and offset > 0.3 then -- bird has delayed his landing so we extend all timers
+            self:DelayAllReminders(offset)
+        end
+    end
+    for _, phaseinfo in ipairs(detectedDurations[difficultyID]) do
+        if info.duration == phaseinfo.time then
+            local count = 0
+            for i, v in ipairs(self.Timelines) do
+                if now < v+0.1 then
+                    count = count+1
+                end
+            end
+            local newphase = phaseinfo.phase(self.Phase)
+            if newphase > self.Phase and count <= 1 then
+                self.Phase = newphase
+                self:StartReminders(self.Phase)
+                self.PhaseSwapTime = now
+                break
+            end
+        end
+    end
+end

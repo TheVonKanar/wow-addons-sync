@@ -60,6 +60,7 @@ english["Overlay.NoES"] = "NO\nES"
 english["Overlay.NoSource"] = "NO\nSOURCE"
 english["Overlay.NoScales"] = "NO\nSCALES"
 english["Overlay.NoLink"] = "NO\nLINK"
+english["Overlay.NoWeyrnstone"] = "NO\nWEYRN"
 english["Overlay.NoTimeless"] = "NO\nTIMELESS"
 english["Overlay.NoAttune"] = "NO\nATTUNE"
 english["Overlay.NoFamiliar"] = "NO\nFAMILIAR"
@@ -148,6 +149,7 @@ english["Buff.EarthShield"] = "Earth Shield"
 english["Buff.SourceOfMagic"] = "Source of Magic"
 english["Buff.SymbioticRelationship"] = "Symbiotic Relationship"
 english["Buff.Timelessness"] = "Timelessness"
+english["Buff.Weyrnstone"] = "Weyrnstone"
 -- Self
 english["Buff.ArcaneFamiliar"] = "Arcane Familiar"
 english["Buff.Attunement"] = "Attunement"
@@ -210,6 +212,7 @@ english["Tooltip.MayShowExtraIcon.Desc"] =
 english["Tooltip.InstanceEntryReminder"] = "Instance Entry Reminder"
 english["Tooltip.InstanceEntryReminder.Desc"] =
     "Briefly shown when entering a dungeon as a reminder to drop a Soulwell. Dismissed after casting or after 30 seconds."
+english["BuffTooltip.ProvidedBy"] = "Provided by %s"
 
 -- ============================================================================
 -- GLOW TYPE NAMES
@@ -251,6 +254,8 @@ english["Display.FramesLocked"] = "Frames locked."
 english["Display.FramesUnlocked"] = "Frames unlocked."
 english["Display.MinimapHidden"] = "Minimap icon hidden."
 english["Display.MinimapShown"] = "Minimap icon shown."
+english["Display.DebugEnabled"] = "Debug mode ENABLED. Run |cFFFFD100/br debug|r again to turn off."
+english["Display.DebugDisabled"] = "Debug mode disabled."
 english["Display.Description"] = "Track missing buffs at a glance."
 english["Display.OpenOptions"] = "Open Options"
 english["Display.SlashCommands"] = "Slash commands: /br, /br lock, /br unlock, /br test, /br minimap"
@@ -264,13 +269,31 @@ english["Display.LoginSelfOnlyOutside"] =
     "New default: in the open world, only your own class buffs on yourself are tracked. Toggle |cFFFFD100Force self-only outside dungeons and raids|r in the Settings tab to change this."
 
 -- ============================================================================
--- OPTIONS: TAB LABELS
+-- OPTIONS: NAVIGATION LABELS
 -- ============================================================================
-english["Tab.Buffs"] = "Buffs"
 english["Tab.DisplayBehavior"] = "Display/Behavior"
-english["Tab.Settings"] = "Settings"
-english["Tab.Profiles"] = "Profiles"
-english["Tab.Sounds"] = "Sounds"
+
+-- Sidebar groups
+english["Sidebar.General"] = "General"
+english["Sidebar.Buffs"] = "Buffs"
+english["Sidebar.DisplayBehavior"] = "Display & Behavior"
+english["Sidebar.Profiles"] = "Profiles"
+
+-- Page titles
+english["Page.General"] = "General"
+english["Page.Defaults"] = "Defaults"
+english["Page.Visibility"] = "Visibility"
+english["Page.ChatRequests"] = "Chat Requests"
+english["Page.AnchorFrames"] = "Anchor Frames"
+english["Page.Profiles"] = "Profiles"
+english["Page.AllBuffs"] = "All Buffs"
+english["Page.DetachedIcons"] = "Detached Icons"
+english["Page.Sounds"] = "Sounds"
+english["Page.Sounds.Desc"] =
+    "Play a sound when a tracked buff is missing. Alerts apply across all buff categories - assign one per buff."
+
+-- Per-category page section headers
+english["Section.Tracking"] = "Tracking"
 
 -- ============================================================================
 -- OPTIONS: SOUND ALERTS
@@ -292,7 +315,7 @@ english["Options.GlobalDefaults"] = "Global Defaults"
 english["Options.GlobalDefaults.Note"] = "(All categories inherit these unless overridden with a custom appearance)"
 english["Options.Default"] = "Default"
 english["Options.Font"] = "Font"
-english["Options.TextOutline"] = "Outline Style"
+english["Options.TextOutline"] = "Outline"
 english["Options.TextOutline.None"] = "None"
 english["Options.TextOutline.Outline"] = "Outline"
 english["Options.TextOutline.Thick"] = "Thick Outline"
@@ -309,8 +332,8 @@ english["Options.GlowReminderIcons.Desc"] =
     "Add a glow effect to reminder icons. Customize to configure expiring and missing glows independently."
 english["Options.GlowKind.Expiring"] = "Expiring"
 english["Options.GlowKind.Missing"] = "Missing"
-english["Options.GlowSettings.Expiring"] = "Glow Settings — Expiring"
-english["Options.GlowSettings.Missing"] = "Glow Settings — Missing"
+english["Options.GlowSettings.Expiring"] = "Glow Settings - Expiring"
+english["Options.GlowSettings.Missing"] = "Glow Settings - Missing"
 english["Options.Glow.Enabled"] = "Enabled"
 english["Options.Threshold"] = "Threshold"
 english["Options.GlowMissingPets"] = "Glow missing pets"
@@ -348,9 +371,6 @@ english["Options.HidePvPMatchStart.Desc"] = "Hide this category once a PvP match
 english["Options.ReadyCheckOnly"] = "Show only on ready check"
 english["Options.ReadyCheckOnly.Desc"] = "Only show this category's buffs for 15 seconds after a ready check starts"
 english["Options.Visibility"] = "Visibility"
-english["Options.PerCategoryCustomization"] = "Per-Category Customization"
-english["Options.DetachIcon"] = "Detach"
-english["Options.DetachIcon.Desc"] = "Move this icon to its own independently-positioned frame"
 
 -- ============================================================================
 -- OPTIONS: HEALTHSTONE
@@ -406,9 +426,26 @@ english["Options.ShowMissingCountOnly"] = "Show missing count only"
 english["Options.ShowMissingCountOnly.Desc"] =
     'Show only the number of missing buffs (e.g., "1") instead of the full count (e.g., "19/20")'
 english["Options.ShowBuffReminderText"] = 'Show "BUFF!" reminder text'
-english["Options.BuffTextOffsetX"] = '"BUFF!" X'
-english["Options.BuffTextOffsetY"] = '"BUFF!" Y'
 english["Options.Size"] = "Size"
+
+-- ============================================================================
+-- OPTIONS: TEXT POSITIONS
+-- ============================================================================
+english["Options.TextPositions"] = "Text"
+english["Options.TextPositions.Zone"] = "Position"
+english["Options.TextPositions.OffsetX.Short"] = "X"
+english["Options.TextPositions.OffsetY.Short"] = "Y"
+english["Options.TextPositions.StackCount"] = "Stack count"
+english["Options.TextPositions.StatLabel"] = "Stat label"
+english["Options.TextPositions.Badge"] = "Badge (H / F)"
+english["Options.TextPositions.Vertical.Above"] = "Above"
+english["Options.TextPositions.Vertical.InsideTop"] = "Top"
+english["Options.TextPositions.Vertical.InsideMiddle"] = "Center"
+english["Options.TextPositions.Vertical.InsideBottom"] = "Bottom"
+english["Options.TextPositions.Vertical.Below"] = "Below"
+english["Options.TextPositions.Align.Left"] = "Left"
+english["Options.TextPositions.Align.Center"] = "Center"
+english["Options.TextPositions.Align.Right"] = "Right"
 
 -- ============================================================================
 -- OPTIONS: CLICK TO CAST
@@ -418,14 +455,14 @@ english["Options.ClickToCast.DescFull"] =
     "Make buff icons clickable to cast the corresponding spell (out of combat only). Only works for spells your character can cast."
 english["Options.HoverHighlight"] = "Hover highlight"
 english["Options.HoverHighlight.Desc"] = "Show a subtle highlight when hovering over clickable buff icons."
-english["Options.ChatRequests"] = "Chat Requests"
 english["Options.RequestBuffInChat"] = "Request missing buffs in chat"
 english["Options.RequestBuffInChat.Desc"] =
-    "Click a missing buff your class cannot provide to request it in chat. Auto-detects channel (instance/raid/party/say). 30-second cooldown per buff."
-english["Options.CustomizeChatMessages"] = "Customize Messages"
-english["Options.ChatRequestModal.Title"] = "Chat Request Messages"
-english["Options.ChatRequestModal.Desc"] = "Customize the message sent for each buff. Leave blank to use the default."
-english["Options.ChatRequestModal.ResetAll"] = "Reset All"
+    "Click a missing buff your class cannot provide to request it in chat. Auto-detects channel (instance/raid/party/say)."
+english["Options.ChatRequest.FixAttempt"] = "|cffffd200EXPERIMENTAL|r Attempt to fix chat requests not being sent"
+english["Options.ChatRequest.FixAttempt.Desc"] =
+    "Enable this only if your chat requests aren't being sent. This also disables the 5-second click cooldown that prevents accidental spam-clicking."
+english["Options.ChatRequest.ResetAll"] = "Reset All"
+english["ChatRequests.PerBuffMessages"] = "Per-buff messages"
 -- Chat request messages (keyed by buff.key, sent as-is via SendChatMessage)
 -- EU/US translators: leave untranslated so chat messages stay in English.
 -- Asian translators: translate these so chat messages match your locale.
@@ -448,6 +485,9 @@ english["Options.PetSpecIcon.Desc"] =
     "Swap the pet icon to its specialization ability (Cunning, Ferocity, Tenacity) when hovering."
 english["Options.ShowItemTooltips"] = "Show item tooltips"
 english["Options.ShowItemTooltips.Desc"] = "When hovering over a consumable icon, show its item tooltip."
+english["Options.ShowBuffTooltips"] = "Show buff tooltips"
+english["Options.ShowBuffTooltips.Desc"] =
+    "When hovering over a raid or presence buff icon, show the spell tooltip and which class provides the buff."
 english["Options.Behavior"] = "Behavior"
 english["Options.PetPassiveCombat"] = "Pet passive only in combat"
 english["Options.PetPassiveCombat.Desc"] =
@@ -561,12 +601,30 @@ english["Options.DelveFoodTimer.Desc"] =
 -- OPTIONS: LAYOUT
 -- ============================================================================
 english["Options.Layout"] = "Layout"
-english["Options.Priority"] = "Priority"
-english["Options.Priority.Desc"] =
-    "Controls the order of this category in the combined frame. Lower values are displayed first."
 english["Options.SplitFrame"] = "Split into separate frame"
 english["Options.SplitFrame.Desc"] = "Display this category's buffs in a separate, independently movable frame"
-english["Options.DisplayPriority"] = "Display Priority"
+
+-- Display Order section (Defaults page) - drives the same priority field the
+-- old per-category slider wrote, but as a single ordered list across all
+-- non-split categories.
+english["Options.DisplayOrder"] = "Display Order"
+english["Options.DisplayOrder.Note"] =
+    "How categories stack inside the combined frame, from top to bottom. Split categories live in their own frames and don't participate."
+english["Options.DisplayOrder.SplitGroup"] = "Split (independent frames)"
+english["Options.DisplayOrder.SplitBadge"] = "split"
+
+-- Detached Icons page (search-driven dual-list manager).
+english["DetachedIcons.PageNote"] =
+    "Pull a single buff out of its category into its own independently-positioned frame. Detached icons keep their own anchor and can be moved independently when frames are unlocked."
+english["DetachedIcons.Search"] = "Search:"
+english["DetachedIcons.Available"] = "Available"
+english["DetachedIcons.CurrentlyDetachedCount"] = "Currently detached (%d)"
+english["DetachedIcons.NoneDetached"] = "No icons detached. Find a buff below and click Detach."
+english["DetachedIcons.NoMatches"] = "No matches."
+english["DetachedIcons.Detach"] = "Detach"
+english["DetachedIcons.Reattach"] = "Reattach"
+english["DetachedIcons.ResetPos"] = "Reset"
+english["DetachedIcons.ReattachAll"] = "Reattach all"
 
 -- ============================================================================
 -- OPTIONS: APPEARANCE
@@ -583,10 +641,12 @@ english["Options.MasqueNote"] = "Zoom and Border settings are managed by Masque"
 -- ============================================================================
 english["Options.ShowLoginMessages"] = "Show login messages"
 english["Options.ShowMinimapButton"] = "Show minimap button"
-english["Options.ShowOnlyInGroup"] = "Show only in group/raid"
 
 -- Hide when section
-english["Options.HideWhen"] = "Hide when:"
+english["Options.HideWhen"] = "Hide when"
+english["Options.HideWhen.Alone"] = "Alone"
+english["Options.HideWhen.Alone.Title"] = "Hide while alone"
+english["Options.HideWhen.Alone.Desc"] = "Hide all buff reminders while not in a party or raid group"
 english["Options.HideWhen.Resting"] = "Resting"
 english["Options.HideWhen.Resting.Title"] = "Hide while resting"
 english["Options.HideWhen.Resting.Desc"] = "Hide buff reminders while in inns or capital cities"
@@ -695,9 +755,10 @@ english["Options.Lock"] = "Lock"
 english["Options.Unlock"] = "Unlock"
 
 -- ============================================================================
--- OPTIONS: CUSTOM BUFF MODAL
+-- OPTIONS: CUSTOM BUFF DIALOG
 -- ============================================================================
 english["CustomBuff.Edit"] = "Edit Custom Buff"
+english["CustomBuff.EditShort"] = "Edit"
 english["CustomBuff.Add"] = "Add Custom Buff"
 english["CustomBuff.AddButton"] = "+ Add Custom Buff"
 english["CustomBuff.SpellIDs"] = "Spell IDs:"
@@ -711,7 +772,6 @@ english["CustomBuff.BuffTracking"] = "BUFF TRACKING"
 english["CustomBuff.Requirements"] = "REQUIREMENTS"
 english["CustomBuff.ShowIn"] = "SHOW IN"
 english["CustomBuff.ClickAction"] = "CLICK ACTION"
-english["CustomBuff.SettingsMovedNote"] = "Visibility and ready check settings moved to each buff's edit menu."
 
 -- Custom buff mode toggles
 english["CustomBuff.WhenActive"] = "When active"
@@ -741,7 +801,7 @@ english["CustomBuff.RequireItem"] = "Require item:"
 english["CustomBuff.RequireItem.EquippedBags"] = "Equipped/Bags"
 english["CustomBuff.RequireItem.Equipped"] = "Equipped"
 english["CustomBuff.RequireItem.InBags"] = "In bags"
-english["CustomBuff.RequireItem.Hint"] = "item ID — hide if not found"
+english["CustomBuff.RequireItem.Hint"] = "item ID - hide if not found"
 english["CustomBuff.ItemCooldown"] = "Cooldown:"
 english["CustomBuff.ItemCooldown.Any"] = "Any"
 english["CustomBuff.ItemCooldown.OffCooldown"] = "Off cooldown"
@@ -778,10 +838,6 @@ english["CustomBuff.Action.MacroHint"] = "e.g. /use item:12345\\n/use 13"
 english["CustomBuff.Save"] = "Save"
 english["CustomBuff.ValidateError"] = "Please validate at least one spell ID"
 
--- Custom buff tooltip
-english["CustomBuff.Tooltip.Title"] = "Custom Buff"
-english["CustomBuff.Tooltip.Desc"] = "Right-click to edit or delete"
-
 -- Custom buff status
 english["CustomBuff.InvalidID"] = "Invalid ID"
 english["CustomBuff.NotFound"] = "Not found"
@@ -798,7 +854,6 @@ english["Options.JoinDiscord.Desc"] = "Got feedback, feature requests, or bug re
 -- ============================================================================
 -- OPTIONS: CUSTOM ANCHOR FRAMES
 -- ============================================================================
-english["Options.CustomAnchorFrames"] = "Custom Anchor Frames"
 english["Options.CustomAnchorFrames.Desc"] =
     "Add global frame names to the anchor dropdown (e.g. MyAddon_PlayerFrame). \nFrames that don't exist in-game are silently skipped."
 english["Options.Add"] = "Add"
@@ -834,12 +889,11 @@ english["Appearance.Border"] = "Border"
 english["Appearance.Spacing"] = "Spacing"
 english["Appearance.Alpha"] = "Alpha"
 english["Appearance.Text"] = "Text"
-english["Appearance.TextX"] = "Text X"
-english["Appearance.TextY"] = "Text Y"
 
 -- Slider tooltip
 english["Component.AdjustValue"] = "Adjust value"
 english["Component.AdjustValue.Desc"] = "Click to type or use mouse wheel"
+english["Component.AdjustValue.ClickHint"] = "Click the number to input a specific value"
 
 -- Direction labels
 english["Direction.Left"] = "Left"

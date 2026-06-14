@@ -79,6 +79,42 @@ function Data.ToggleObtained(sourceType, sourceID, difficultyID, specID, itemID)
     return not current
 end
 
+-- Marks itemID as obtained for every loot-spec that can receive it from sourceID.
+-- Dungeons: SeasonData.dungeons[sourceID].bySpec is flat { [specID] = {itemIDs} }.
+-- Raids:    SeasonData.raids[sourceID].bySpec is nested { [difficultyID] = { [specID] = {itemIDs} } }.
+function Data.PropagateObtainedToAllSpecs(sourceType, sourceID, difficultyID, itemID, isHighTier)
+    -- Dungeon path (flat bySpec).
+    local dungeonData = VCA.SeasonData and VCA.SeasonData.dungeons[sourceID]
+    if dungeonData and dungeonData.bySpec then
+        for specID, itemList in pairs(dungeonData.bySpec) do
+            for _, id in ipairs(itemList) do
+                if id == itemID then
+                    Data.SetObtainedForKeyTier(sourceType, sourceID, difficultyID, specID, itemID, isHighTier, true)
+                    break
+                end
+            end
+        end
+        return
+    end
+    -- Raid path (bySpec nested by difficultyID).
+    local raidData = VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[sourceID]
+    if not raidData or not raidData.bySpec then
+        return
+    end
+    local specMap = raidData.bySpec[difficultyID]
+    if not specMap then
+        return
+    end
+    for specID, itemList in pairs(specMap) do
+        for _, id in ipairs(itemList) do
+            if id == itemID then
+                Data.SetObtainedForKeyTier(sourceType, sourceID, difficultyID, specID, itemID, isHighTier, true)
+                break
+            end
+        end
+    end
+end
+
 -- ── Pool filtering ────────────────────────────────────────────────────────────
 
 -- Given a flat array of item tables (each must have an `itemID` field),
@@ -304,11 +340,73 @@ function Data.LogBonusRoll(itemID, itemLink, specID, source)
         sourceType = source and source.sourceType or nil,
         sourceID = source and source.sourceID or nil,
         difficultyID = source and source.difficultyID or nil,
-        keyLevel = source and source.keyLevel or nil
+        keyLevel = source and source.keyLevel or nil,
+        raidInstanceID = source and source.raidInstanceID or nil
     }
     -- Trim to the last N entries.
     while #log > BONUS_ROLL_LOG_MAX do
         table.remove(log, 1)
+    end
+end
+
+-- Records a manually-checked obtained entry in the roll log so /vca rolls
+-- reflects manual panel selections.  isHighTier mirrors the tier context of
+-- the checkbox that was ticked (nil for raids / non-tiered sources).
+function Data.LogManualObtained(itemID, specID, source, isHighTier, itemLink)
+    local db = _G[VCA.CHAR_DB_NAME]
+    if not db then
+        return
+    end
+    db.bonusRollLog = db.bonusRollLog or {}
+    local log = db.bonusRollLog
+    log[#log + 1] = {
+        timestamp = time(),
+        itemID = itemID,
+        itemLink = (itemLink ~= nil and itemLink ~= "") and itemLink or nil,
+        specID = specID,
+        sourceType = source and source.sourceType or nil,
+        sourceID = source and source.sourceID or nil,
+        difficultyID = source and source.difficultyID or nil,
+        keyLevel = nil,
+        manual = true,
+        isHighTier = isHighTier
+    }
+    while #log > BONUS_ROLL_LOG_MAX do
+        table.remove(log, 1)
+    end
+end
+
+-- Removes all manual log entries that match the given item + source + spec +
+-- tier.  Called when a player unchecks an item in the spec picker.
+function Data.RemoveManualLogEntries(itemID, sourceType, sourceID, difficultyID, specID, isHighTier)
+    local db = _G[VCA.CHAR_DB_NAME]
+    if not db or not db.bonusRollLog then
+        return
+    end
+    local log = db.bonusRollLog
+    for i = #log, 1, -1 do
+        local e = log[i]
+        if e.manual and e.itemID == itemID and e.sourceType == sourceType and e.sourceID == sourceID and e.difficultyID ==
+            difficultyID and e.specID == specID and e.isHighTier == isHighTier then
+            table.remove(log, i)
+        end
+    end
+end
+
+-- Removes all manual log entries for an item + source, regardless of spec or tier.
+-- Used when a manual mark is cleared entirely (no spec/tier to filter on).
+function Data.RemoveAllManualLogEntriesForItem(itemID, sourceType, sourceID, difficultyID)
+    local db = _G[VCA.CHAR_DB_NAME]
+    if not db or not db.bonusRollLog then
+        return
+    end
+    local log = db.bonusRollLog
+    for i = #log, 1, -1 do
+        local e = log[i]
+        if e.manual and e.itemID == itemID and e.sourceType == sourceType and e.sourceID == sourceID and e.difficultyID ==
+            difficultyID then
+            table.remove(log, i)
+        end
     end
 end
 

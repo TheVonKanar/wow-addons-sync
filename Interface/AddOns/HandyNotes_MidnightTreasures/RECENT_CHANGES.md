@@ -1,4 +1,4 @@
-## Changed in v44
+## Changed in v46
 
-* TOC for 12.0.5
+* ...and do that last release properly this time
 

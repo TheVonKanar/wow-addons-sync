@@ -240,6 +240,12 @@ L["Background"] = true
 L["Enable Background"] = true
 L["Width Offset"] = true
 L["Height Offset"] = true
+L["Count on Tooltip"] = true
+L["Show Mob Count/Perc on the Game-Tooltip when mouseovering it."] = true
+L["Both"] = true
+L["Count Only"] = true
+L["Off"] = true
+L["Percentage Only"] = true
 
 -- Key Info & Text Settings
 L["Key Info Bar"] = true
@@ -475,3 +481,13 @@ L["Enemy Forces: %s\n%s\n"] = true
 L["MPlusTimer "] = true
 
 L["Quarry Camps Liberated"] = true
+
+-- Language override
+L["Addon Language"] = true
+L["Choose the language used by the addon. Preview will only update after disabling&enabling it again."] = true
+L["Automatic"] = true
+L["English (enUS)"] = true
+L["German (deDE)"] = true
+L["Korean (koKR)"] = true
+L["Russian (ruRU)"] = true
+L["Chinese Simplified (zhCN)"] = true

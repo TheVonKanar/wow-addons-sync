@@ -1,4 +1,3 @@
--- Generated from CurseForge on Sat May  2 20:06:29 UTC 2026
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("zhCN") then
@@ -8,7 +7,7 @@ if ns:IsSameLocale("zhCN") then
 
 	L.LOCALE_NAME = "zhCN"
 
-L["ALLOW_IN_LFD"] = "允许在地下城查找器里显示"
+	L["ALLOW_IN_LFD"] = "允许在地下城查找器里显示"
 L["ALLOW_IN_LFD_CLASSIC"] = "允许在队伍查找器中显示"
 L["ALLOW_IN_LFD_CLASSIC_DESC"] = "在队伍查找器中右键点击队伍或申请者来复制其Raider.IO主页链接、"
 L["ALLOW_IN_LFD_DESC"] = "右键点击地下城查找器上的队伍或申请者来复制Raider.IO人物主页的网址链接。"
@@ -623,5 +622,6 @@ L["WARNING_LOCK_POSITION_FRAME_AUTO"] = "Raider.IO：你必须先关闭Raider.IO
 L["WARNING_RWF_MODE_ENABLE"] = "|cffFFFFFF%s|r 首杀争夺赛模式已开启。你可以通过使用 |cffFFFFFF/raiderio rwf |r来关闭它。"
 L["WIPE_RWF_MODE_BUTTON"] = "清除"
 L["WIPE_RWF_MODE_BUTTON_TOOLTIP"] = "点击以从存储文件中清除日志。 这将需要重新加载您的界面。"
+
 
 end

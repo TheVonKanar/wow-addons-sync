@@ -1,7 +1,7 @@
-## Interface: 120001, 120005
+## Interface: 120005, 120007
 ## Title: VoidcoreAdvisor
 ## Notes: Attaches a panel to the Encounter Journal showing which loot specialization gives you the best chance of getting the items you want when spending Nebulous Voidcores.
-## Version: 1.3.5
+## Version: 2.2.4
 ## Author:
 ## IconTexture: Interface\AddOns\VoidcoreAdvisor\icon.tga
 ## SavedVariables: VoidcoreAdvisorDB
@@ -25,6 +25,7 @@ Core\SpecInfo.lua
 Core\SeasonData.lua
 Core\LootPool.lua
 Core\LootPoolWarm.lua
+Core\VoidcacheScan.lua
 Core\Probability.lua
 Core\Detection.lua
 Core\Init.lua
@@ -35,5 +36,6 @@ UI\DungeonOverview.lua
 UI\RaidOverview.lua
 UI\Reminder.lua
 UI\Options.lua
+UI\BonusRollConfirm.lua
 UI\EJHook.lua
 UI\EJHookView.lua

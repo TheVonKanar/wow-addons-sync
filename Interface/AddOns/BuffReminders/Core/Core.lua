@@ -120,7 +120,7 @@ local RootSettings = {
     buffTrackingMode = false, -- No auto-refresh, manually calls UpdateDisplay
     selfOnlyOutsideInstances = "DisplayRefresh",
     showMissingCountOnly = "DisplayRefresh",
-    -- Visibility toggles (routed through Config.Set → VisibilityRefresh)
+    -- Visibility toggles (routed through Config.Set -> VisibilityRefresh)
     hideInCombat = "VisibilityRefresh",
     hideExpiringInCombat = "VisibilityRefresh",
     showOnlyInGroup = "VisibilityRefresh",
@@ -132,6 +132,7 @@ local RootSettings = {
     petPassiveOnlyInCombat = "VisibilityRefresh",
     bronzeHideInCombat = "VisibilityRefresh",
     requestBuffInChat = false, -- No auto-refresh, handled manually
+    chatRequestCooldown = false, -- No auto-refresh, read live in PostClick + SyncSecureButtons
 }
 
 -- Per-category settings (path = categorySettings.{category}.{key})
@@ -142,8 +143,6 @@ local CategorySettingKeys = {
     iconZoom = "VisualsRefresh",
     borderSize = "VisualsRefresh",
     textSize = "VisualsRefresh",
-    textOffsetX = "VisualsRefresh",
-    textOffsetY = "VisualsRefresh",
     iconAlpha = "VisualsRefresh",
     textAlpha = "VisualsRefresh",
     textColor = "VisualsRefresh",
@@ -159,8 +158,6 @@ local CategorySettingKeys = {
     -- Behavior
     showBuffReminder = "VisualsRefresh",
     buffTextSize = "VisualsRefresh",
-    buffTextOffsetX = "VisualsRefresh",
-    buffTextOffsetY = "VisualsRefresh",
     showText = "VisualsRefresh",
     -- Toggles
     useCustomAppearance = "VisualsRefresh",
@@ -213,8 +210,6 @@ local DefaultSettingKeys = {
     iconZoom = "VisualsRefresh",
     borderSize = "VisualsRefresh",
     textSize = "VisualsRefresh",
-    textOffsetX = "VisualsRefresh",
-    textOffsetY = "VisualsRefresh",
     iconAlpha = "VisualsRefresh",
     textAlpha = "VisualsRefresh",
     textColor = "VisualsRefresh",
@@ -273,6 +268,7 @@ local DefaultSettingKeys = {
     consumableTextScale = "VisualsRefresh",
     hideConsumableLabels = "VisualsRefresh",
     showConsumableTooltips = false, -- No refresh needed, read at tooltip time
+    showBuffTooltips = false, -- No refresh needed, read at tooltip time
     hideLegacyConsumables = "DisplayRefresh",
     -- Pet display mode
     petDisplayMode = "DisplayRefresh",
@@ -343,6 +339,10 @@ local function ValidatePath(segments)
                 return true, DefaultSettingKeys[setting]
             end
             return false, nil
+        end
+        -- defaults.textPositions.<item>.<field> (zone | offsetX | offsetY)
+        if segments[2] == "textPositions" and #segments == 4 then
+            return true, "VisualsRefresh"
         end
         return false, nil
     end
@@ -416,14 +416,26 @@ function BR.Config.Set(path, value)
         print("|cffff6600BuffReminders:|r Invalid config path: " .. path)
     end
 
-    -- Navigate to parent and get old value
+    -- Navigate to parent and get old value.
+    --
+    -- Level 1 reads through the BR.profile proxy's __index to reach the real
+    -- AceDB profile sub-table (the proxy itself is an empty shell, so rawget
+    -- would always miss and we'd overwrite real data via __newindex).
+    --
+    -- Levels 2+ use rawget so the metatable on db.defaults (which falls back
+    -- to the shared code-defaults table for missing keys) doesn't make us
+    -- walk into that shared table and mutate it. Writes must always land in
+    -- the user's own saved table, even for nested paths like
+    -- defaults.textPositions.<item>.<field>.
     local parent = db
     for i = 1, #segments - 1 do
         local key = segments[i]
-        if parent[key] == nil then
-            parent[key] = {}
+        local child = (i == 1) and parent[key] or rawget(parent, key)
+        if child == nil then
+            child = {}
+            parent[key] = child
         end
-        parent = parent[key]
+        parent = child
     end
 
     local finalKey = segments[#segments]
@@ -494,13 +506,16 @@ function BR.Config.SetMulti(changes)
                 print("|cffff6600BuffReminders:|r Invalid config path: " .. path)
             end
 
+            -- See BR.Config.Set for why level 1 uses __index and levels 2+ use rawget.
             local parent = db
             for i = 1, #segments - 1 do
                 local key = segments[i]
-                if parent[key] == nil then
-                    parent[key] = {}
+                local child = (i == 1) and parent[key] or rawget(parent, key)
+                if child == nil then
+                    child = {}
+                    parent[key] = child
                 end
-                parent = parent[key]
+                parent = child
             end
 
             local finalKey = segments[#segments]
@@ -535,8 +550,6 @@ local AppearanceKeys = {
     iconSize = true,
     iconWidth = true,
     textSize = true,
-    textOffsetX = true,
-    textOffsetY = true,
     iconAlpha = true,
     textAlpha = true,
     textColor = true,
@@ -656,13 +669,16 @@ end
 ---@param name string? Frame name (nil for anonymous)
 ---@param width number
 ---@param height number
----@param options? {bgColor?: table, borderColor?: table, strata?: string, level?: number, escClose?: boolean, modal?: boolean}
+---@param options? {bgColor?: table, borderColor?: table, strata?: string, level?: number, escClose?: boolean, dialog?: boolean}
 ---@return table
 function BR.CreatePanel(name, width, height, options)
     options = options or {}
-    local isModal = options.modal
-    local bgColor = options.bgColor or (isModal and { 0.15, 0.15, 0.15, 0.98 } or { 0.1, 0.1, 0.1, 0.95 })
-    local borderColor = options.borderColor or (isModal and { 0.5, 0.5, 0.5, 1 } or { 0.3, 0.3, 0.3, 1 })
+    local isDialog = options.dialog
+    -- Dialogs sit visibly above the main panel: lighter, fully opaque body and
+    -- a thicker gold border so the frame reads as elevated against busy content
+    -- (e.g. the buff list grid) underneath.
+    local bgColor = options.bgColor or (isDialog and { 0.18, 0.18, 0.20, 1 } or { 0.1, 0.1, 0.1, 0.95 })
+    local borderColor = options.borderColor or (isDialog and { 0.85, 0.7, 0.25, 1 } or { 0.3, 0.3, 0.3, 1 })
 
     local panel = CreateFrame("Frame", name, UIParent, "BackdropTemplate")
     panel:SetSize(width, height)
@@ -683,9 +699,40 @@ function BR.CreatePanel(name, width, height, options)
     if options.level then
         panel:SetFrameLevel(options.level)
     end
-    if isModal then
-        -- Modal panels handle ESC via keyboard input so they close themselves
-        -- without also closing parent panels (unlike UISpecialFrames which closes all)
+    if isDialog then
+        -- Drop shadow: three stacked BACKGROUND textures at decreasing outset
+        -- and increasing alpha simulate a soft fade. Each ring overlaps the
+        -- next, so the visible alpha grows from ~15% at the outer edge to
+        -- ~60% just outside the border. Sublevels sit below the panel's own
+        -- backdrop so the body color paints over the inner overlap.
+        local shadowAlphas = { 0.15, 0.25, 0.4 }
+        local shadowOffsets = { 6, 4, 2 }
+        for i = 1, #shadowAlphas do
+            local layer = panel:CreateTexture(nil, "BACKGROUND", nil, -9 + i)
+            layer:SetPoint("TOPLEFT", -shadowOffsets[i], shadowOffsets[i])
+            layer:SetPoint("BOTTOMRIGHT", shadowOffsets[i], -shadowOffsets[i])
+            layer:SetColorTexture(0, 0, 0, shadowAlphas[i])
+        end
+
+        -- Header strip + gold accent line distinguish the dialog window from
+        -- the main options panel sitting beneath it. Title/close anchors at
+        -- y=-10..-12 land on the strip; tabs/content layouts that start at
+        -- y=-32 or lower sit just below the accent.
+        local header = panel:CreateTexture(nil, "BORDER")
+        header:SetPoint("TOPLEFT", 2, -2)
+        header:SetPoint("TOPRIGHT", -2, -2)
+        header:SetHeight(30)
+        header:SetColorTexture(0.05, 0.05, 0.07, 1)
+
+        local accent = panel:CreateTexture(nil, "BORDER", nil, 1)
+        accent:SetPoint("TOPLEFT", 2, -32)
+        accent:SetPoint("TOPRIGHT", -2, -32)
+        accent:SetHeight(1)
+        accent:SetColorTexture(0.85, 0.7, 0.25, 0.9)
+
+        -- Dialogs are modeless: ESC handled via keyboard input so closing this
+        -- dialog doesn't also close the parent options panel (unlike
+        -- UISpecialFrames, which closes every registered frame).
         panel:EnableKeyboard(true)
         panel:SetScript("OnKeyDown", function(self, key)
             if InCombatLockdown() then
@@ -697,6 +744,10 @@ function BR.CreatePanel(name, width, height, options)
             else
                 self:SetPropagateKeyboardInput(true)
             end
+        end)
+
+        panel:HookScript("OnShow", function(self)
+            UIFrameFadeIn(self, 0.12, 0, 1)
         end)
     elseif options.escClose and name then
         tinsert(UISpecialFrames, name)

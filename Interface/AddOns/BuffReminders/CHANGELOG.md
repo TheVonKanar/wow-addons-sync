@@ -1,8 +1,8 @@
 # BuffReminders
 
-## [v5.5.2](https://github.com/zerbiniandrea/BuffReminders/tree/v5.5.2) (2026-05-01)
-[Full Changelog](https://github.com/zerbiniandrea/BuffReminders/compare/v5.5.1...v5.5.2) [Previous Releases](https://github.com/zerbiniandrea/BuffReminders/releases)
+## [v6.0.5](https://github.com/zerbiniandrea/BuffReminders/tree/v6.0.5) (2026-05-22)
+[Full Changelog](https://github.com/zerbiniandrea/BuffReminders/compare/v6.0.4...v6.0.5) [Previous Releases](https://github.com/zerbiniandrea/BuffReminders/releases)
 
-- i18n: 🌐 update koKR localization  
-- feat(debug): 🔊 expand chat verifier with seen-other events  
-- refactor(state): ♻️ unify solo detection via BuffState.IsAlone()  
+- i18n(koKR): 🌐 update localization  
+- i18n(zhCN): 🌐 credit neolhfs as translator  
+- fix(icons): 🐛 refresh Burning Rush icon for custom buffs too  

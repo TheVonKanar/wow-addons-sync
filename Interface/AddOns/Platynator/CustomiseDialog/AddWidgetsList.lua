@@ -19,7 +19,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       anchor = {"TOPLEFT", -140, 50},
       scale = 1,
       layer = 1,
-      aggroColoursOnHostiles = true,
+      animate = true,
       background = {
         asset = "Platy: Fade Bottom",
         color = GetColor("FFFFFF", 1),
@@ -40,6 +40,30 @@ addonTable.CustomiseDialog.DesignWidgets = {
       },
       marker = {
         asset = "none",
+      },
+      autoColors = {
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["classColors"].default),
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["tapped"].default),
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["threat"].default),
+        CopyTable(addonTable.CustomiseDialog.ColorsConfig["reaction"].default),
+      }
+    },
+  },
+  {
+    name = addonTable.Locales.HEALTH_FILL_TEXT,
+    kind = "specialBars",
+    default = {
+      kind = "healthFillText",
+      anchor = {"TOPLEFT", -140, 50},
+      scale = 1,
+      layer = 1,
+      animate = true,
+      background = {
+        color = GetColor("4F4F4F"),
+        applyColor = false,
+      },
+      absorb = {
+        color = GetColor("21c4ff")
       },
       autoColors = {
         CopyTable(addonTable.CustomiseDialog.ColorsConfig["classColors"].default),
@@ -277,6 +301,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       },
       showType = false,
       showSwipe = true,
+      showTooltips = true,
       texts = {
         countdown = {
           anchor = {},
@@ -315,6 +340,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       },
       showType = true,
       showSwipe = true,
+      showTooltips = true,
       texts = {
         countdown = {
           anchor = {},
@@ -345,6 +371,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       direction = "RIGHT",
       showType = false,
       showSwipe = true,
+      showTooltips = true,
       sorting = {
         kind = "duration",
         reversed = false,
@@ -508,7 +535,8 @@ addonTable.CustomiseDialog.DesignWidgets = {
       truncate = false,
       autoColors = {
         CopyTable(addonTable.CustomiseDialog.ColorsConfig["difficulty"].default),
-      }
+      },
+      showModifiers = false,
     },
   },
   {
@@ -701,6 +729,26 @@ addonTable.CustomiseDialog.DesignWidgets = {
       asset = "normal/blizzard-raid",
       color = GetColor("ffffff"),
       anchor = {"TOPLEFT", -140, 50},
+    },
+  },
+  {
+    name = addonTable.Locales.REGIONS,
+    special = "header",
+  },
+  {
+    name = addonTable.Locales.CLICK,
+    kind = "regions",
+    noDuplicates = true,
+    default = {
+      kind = "click",
+    },
+  },
+  {
+    name = addonTable.Locales.STACK,
+    kind = "regions",
+    noDuplicates = true,
+    default = {
+      kind = "stack",
     },
   },
 }

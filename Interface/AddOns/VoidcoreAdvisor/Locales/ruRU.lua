@@ -47,6 +47,8 @@ L["HELP_COUNT"] = "  /vca count    – показать кол-во отмече
 L["HELP_SPEC"] = "  /vca spec     – показать ID спека добычи"
 L["HELP_SOURCE"] = "  /vca source   – показать активный источник обнаружения"
 L["HELP_VERSION"] = "  /vca version  – показать версию аддона"
+L["HELP_RESTORE"] =
+    "  /vca restore  – восстановить данные добычи из резервной копии"
 
 -- ── Панель UI (дополнения) ────────────────────────────────────────────────────
 
@@ -70,8 +72,32 @@ L["REMINDER_SELECTED_CHANCE"] = "%d%% шанс на выбранные пред�
 L["REMINDER_CHANGE_PROMPT"] = "Сменить специализацию добычи на |cffffff00%s|r?"
 L["REMINDER_YES"] = "Да, сменить"
 L["REMINDER_NO"] = "Нет, спасибо"
+L["REMINDER_WARNING_ONE_ITEM"] =
+    "|cffff8000Внимание:|r Для этой специализации в данном подземелье остался |cffff0000только 1 предмет|r. Использование Туманного ядра Бездны с этой специализацией |cffff0000сбросит пул добычи для всех специализаций|r в этом подземелье!"
+L["REMINDER_SPEC_LIST_HEADER"] = "Остаток предметов по специализациям:"
+L["REMINDER_SPEC_REMAINING"] = "%d осталось"
+L["REMINDER_SPEC_NONE"] = "не осталось"
+L["SPEC_LIST_TOOLTIP_TITLE"] = "Защита добычи"
+L["SPEC_LIST_ITEM_ONE"] = "1 предмет остался"
+L["SPEC_LIST_ITEM_MANY"] = "%d предмета(ов) осталось"
+L["SPEC_LIST_ALL_OBTAINED"] = "все получено"
+
+-- ── Всплывающее предупреждение о сбросе пула добычи (Reminder.lua) ─────────
+
+L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddСоветник|r"
+L["WARNING_SUBTITLE"] = "Риск сброса пула добычи"
+L["WARNING_VOIDCORE_COUNT"] = "У вас |cffffff00%d|r Туманное/ых ядер Бездны"
+L["WARNING_FAVORED_SPEC"] =
+    "Вы используете приоритетную специализацию добычи:"
+L["WARNING_ONE_ITEM"] =
+    "|cffff8000Внимание:|r Для этой специализации в данном подземелье осталось |cffff0000только %d предмет|r. Использование Туманного ядра Бездны |cffff0000сбросит пул добычи для всех специализаций|r в этом подземелье!"
+L["WARNING_SPEC_LIST_HEADER"] = "Остаток предметов по специализациям:"
+L["WARNING_CLOSE"] = "Закрыть"
 
 -- ── Панель настроек (Options.lua) ─────────────────────────────────────────────
+
+L["OPTIONS_CAT_REMINDER"] = "Напоминание о специализации добычи"
+L["OPTIONS_CAT_BONUS_ROLL"] = "Бонусный бросок"
 
 L["OPTIONS_REMINDER_ENABLE"] = "Напоминание о специализации добычи"
 L["OPTIONS_REMINDER_TOOLTIP"] =
@@ -99,3 +125,96 @@ L["SPEC_PICKER_OK"] = "OK"
 L["OBTAINED_UNKNOWN_SPEC"] = "Получено (специализация неизвестна)"
 L["UNKNOWN_KEYLEVEL"] = "неизвестный уровень ключа"
 L["MANUAL_ENTRY"] = "ручной ввод"
+
+-- ── Панель слотов (DungeonOverview.lua) ──────────────────────────────────────
+
+L["SLOT_FILTER_TOGGLE"] = "Фильтр по слоту"
+L["SLOT_FILTER_CLEAR"] = "Снять выбор со всех предметов слота"
+L["SLOT_FILTER_CLEAR_CONFIRM"] = "Очистить весь выбор предметов?"
+L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] =
+    "Все выбранные предметы будут сняты с выбора."
+
+L["SLOT_head"] = "Голова"
+L["SLOT_neck"] = "Шея"
+L["SLOT_shoulder"] = "Плечи"
+L["SLOT_back"] = "Спина"
+L["SLOT_chest"] = "Грудь"
+L["SLOT_wrist"] = "Запястья"
+L["SLOT_hands"] = "Руки"
+L["SLOT_waist"] = "Пояс"
+L["SLOT_legs"] = "Ноги"
+L["SLOT_feet"] = "Ступни"
+L["SLOT_finger"] = "Палец"
+L["SLOT_trinket"] = "Аксессуар"
+L["SLOT_SELECT_ALL"] = "Выбрать все"
+L["SLOT_DESELECT_ALL"] = "Снять все"
+L["SLOT_NONE_SELECTED"] = "Ничего не выбрано"
+L["SLOT_weapon"] = "Оружие"
+L["SLOT_offhand"] = "Вторая рука"
+
+-- ── Сканирование Туманного кэша (VoidcacheScan.lua / DungeonOverview.lua) ─────
+
+L["SCAN_BTN"] = "Сканировать спеки добычи"
+L["SCAN_PROGRESS"] = "Сканирование %d/%d..."
+L["SCAN_COMPLETE"] = "✓ Сканирование завершено"
+L["SCAN_ABORTED"] = "Сканирование отменено"
+L["SCAN_CONFIRM_TITLE"] = "Сканировать спеки добычи?"
+L["SCAN_CONFIRM_BODY"] =
+    "Будет выполнено сканирование подсказки Туманного кэша Пустоты для каждой специализации добычи во всех подземельях сезона.\n\nСуществующие данные о полученных предметах в подземельях будут сброшены.\n\nНе входите в бой и подземелье во время сканирования."
+L["SCAN_UNAVAILABLE_COMBAT"] = "Сканирование невозможно в бою."
+L["SCAN_UNAVAILABLE_INSTANCE"] = "Сканирование невозможно внутри подземелья."
+L["RAID_SCAN_CONFIRM_TITLE"] = "Сканировать спеки добычи рейда?"
+L["RAID_SCAN_CONFIRM_BODY"] =
+    "Будет выполнено сканирование подсказки Туманного кэша Пустоты для каждой специализации добычи во всех Мифических столкновениях рейда.\n\nСуществующие данные о Мифических рейдовых предметах будут сброшены.\n\nНе входите в бой во время сканирования."
+
+-- ── Команды (дополнения) ──────────────────────────────────────────────────────
+
+L["HELP_REPLAYLOG"] =
+    "  /vca replaylog – повторно применить все записи журнала бросков как полученные"
+L["RESTORE_COMPLETE"] = "Из резервной копии восстановлено %d предмет(ов)."
+L["RESTORE_NO_BACKUP"] =
+    "Резервная копия отсутствует. Сначала выполните сканирование."
+L["RESTORE_FAILED"] = "Восстановление не удалось."
+
+-- ── Окно подтверждения бонусного броска (BonusRollConfirm.lua) ───────────────
+
+L["BONUS_ROLL_CONFIRM_SUBTITLE"] = "Подтвердить бросок Туманного ядра Бездны"
+L["BONUS_ROLL_CONFIRM_SPEC_LABEL"] = "Активная специализация добычи:"
+L["BONUS_ROLL_CONFIRM_POOL"] = "Осталось %d предмет(ов) в пуле"
+L["BONUS_ROLL_CONFIRM_CHANCE"] = "%d%% шанс (%d нужных предмета(ов))"
+L["BONUS_ROLL_CONFIRM_CHANCE_ONE"] = "%d%% шанс (1 нужный предмет)"
+L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] =
+    "Все предметы получены для данной специализации"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS"] =
+    "Нет желаемых предметов для данной специализации"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] =
+    "У других специализаций есть желаемые предметы"
+L["BONUS_ROLL_CONFIRM_NO_SELECTED"] = "Нет желаемых предметов"
+L["BONUS_ROLL_CONFIRM_NOT_TRACKED"] =
+    "Источник не отслеживается — шансы недоступны"
+L["BONUS_ROLL_CONFIRM_WARNING_HEADER"] =
+    "|A:Ping_Chat_Warning:14:14|a |cffffff00Бросок сбросит защиту от неудач|r"
+L["BONUS_ROLL_CONFIRM_WARNING_BODY"] =
+    "После этого броска ранее полученные предметы снова могут упасть для всех специализаций."
+L["BONUS_ROLL_CONFIRM_QUESTION"] = "Хотите бросить кубик на добычу?"
+L["BONUS_ROLL_CONFIRM_ROLL"] = "Бросить"
+L["BONUS_ROLL_CONFIRM_PASS"] = "Пропустить"
+L["BONUS_ROLL_CONFIRM_CONFIRM"] = "Подтвердить бросок"
+L["BONUS_ROLL_CONFIRM_PASS_CONFIRM"] = "Подтвердить пропуск"
+L["BONUS_ROLL_CONFIRM_CLOSE"] = "Закрыть"
+L["BONUS_ROLL_POPUP_ROLL"] =
+    "Потратить Туманное ядро Бездны на бонусный бросок?"
+L["BONUS_ROLL_POPUP_PASS"] = "Пропустить этот бонусный бросок?"
+
+-- ── Панель настроек (дополнения) ─────────────────────────────────────────────
+
+L["OPTIONS_PREVIEW_BONUS_ROLL"] = "Предпросмотр"
+L["BONUS_ROLL_CONFIRM_COST"] = "Стоимость: |cffffff00%d|r  \194\183  У вас: |cffffff00%d|r"
+L["OPTIONS_BONUS_ROLL_CONFIRM"] = "Окно бонусного броска"
+L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
+    "Показывает информацию VoidcoreAdvisor при появлении окна бонусного броска Туманного ядра Бездны, включая активную специализацию добычи и шансы на предметы."
+L["OPTIONS_BRC_SPEC_LIST"] =
+    "Показывать оставшиеся предметы по специализациям"
+L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
+    "Показывает список оставшихся предметов для каждой из ваших специализаций в окне бонусного броска."
+L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"

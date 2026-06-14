@@ -44,6 +44,7 @@ L["HELP_COUNT"] = "  /vca count    – mostrar total de objetos marcados como ob
 L["HELP_SPEC"] = "  /vca spec     – mostrar ID de especialización de botín activa"
 L["HELP_SOURCE"] = "  /vca source   – mostrar fuente de detección activa"
 L["HELP_VERSION"] = "  /vca version  – mostrar versión del addon"
+L["HELP_RESTORE"] = "  /vca restore  – restaurar datos de botín del respaldo pre-escaneo"
 
 -- ── Panel UI (adiciones) ──────────────────────────────────────────────────────
 
@@ -67,8 +68,31 @@ L["REMINDER_SELECTED_CHANCE"] = "%d%% de probabilidad para objeto(s) seleccionad
 L["REMINDER_CHANGE_PROMPT"] = "¿Cambiar especialización de botín a |cffffff00%s|r?"
 L["REMINDER_YES"] = "Sí, cambiar"
 L["REMINDER_NO"] = "No, gracias"
+L["REMINDER_WARNING_ONE_ITEM"] =
+    "|cffff8000Advertencia:|r Esta especialización solo tiene |cffff00001 objeto|r restante en este calabozo. Usar un Núcleo del Vacío nebuloso con esta especialización |cffff0000reiniciará el grupo de botín de todas las especializaciones|r en este calabozo."
+L["REMINDER_SPEC_LIST_HEADER"] = "Objetos restantes por especialización:"
+L["REMINDER_SPEC_REMAINING"] = "%d restante(s)"
+L["REMINDER_SPEC_NONE"] = "ninguno restante"
+L["SPEC_LIST_TOOLTIP_TITLE"] = "Protección de botín"
+L["SPEC_LIST_ITEM_ONE"] = "1 objeto restante"
+L["SPEC_LIST_ITEM_MANY"] = "%d objetos restantes"
+L["SPEC_LIST_ALL_OBTAINED"] = "todos obtenidos"
+
+-- ── Popup de aviso de reinicio del grupo de botín (Reminder.lua) ─────────────
+
+L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_SUBTITLE"] = "Riesgo de reinicio del grupo de botín"
+L["WARNING_VOIDCORE_COUNT"] = "Tienes |cffffff00%d|r Núcleo(s) del Vacío nebuloso"
+L["WARNING_FAVORED_SPEC"] = "Estás usando la especialización de botín favorita:"
+L["WARNING_ONE_ITEM"] =
+    "|cffff8000Advertencia:|r Esta especialización solo tiene |cffff0000%d objeto|r restante en este calabozo. Usar un Núcleo del Vacío nebuloso |cffff0000reiniciará el grupo de botín de todas las especializaciones|r en este calabozo."
+L["WARNING_SPEC_LIST_HEADER"] = "Objetos restantes por especialización:"
+L["WARNING_CLOSE"] = "Cerrar"
 
 -- ── Panel de opciones (Options.lua) ──────────────────────────────────────────
+
+L["OPTIONS_CAT_REMINDER"] = "Recordatorio de especialización de botín"
+L["OPTIONS_CAT_BONUS_ROLL"] = "Tirada extra"
 
 L["OPTIONS_REMINDER_ENABLE"] = "Recordatorio de especialización de botín"
 L["OPTIONS_REMINDER_TOOLTIP"] =
@@ -96,3 +120,87 @@ L["SPEC_PICKER_OK"] = "Aceptar"
 L["OBTAINED_UNKNOWN_SPEC"] = "Obtenido (especialización desconocida)"
 L["UNKNOWN_KEYLEVEL"] = "nivel de clave desconocido"
 L["MANUAL_ENTRY"] = "entrada manual"
+
+-- ── Cajón de ranuras (DungeonOverview.lua) ───────────────────────────────────
+
+L["SLOT_FILTER_TOGGLE"] = "Filtrar por ranura"
+L["SLOT_FILTER_CLEAR"] = "Deseleccionar todos los objetos de ranura"
+L["SLOT_FILTER_CLEAR_CONFIRM"] = "¿Borrar todas las selecciones de objetos?"
+L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] = "Se anulará la selección de todos los objetos seleccionados."
+
+L["SLOT_head"] = "Cabeza"
+L["SLOT_neck"] = "Cuello"
+L["SLOT_shoulder"] = "Hombros"
+L["SLOT_back"] = "Espalda"
+L["SLOT_chest"] = "Pecho"
+L["SLOT_wrist"] = "Muñeca"
+L["SLOT_hands"] = "Manos"
+L["SLOT_waist"] = "Cintura"
+L["SLOT_legs"] = "Piernas"
+L["SLOT_feet"] = "Pies"
+L["SLOT_finger"] = "Dedo"
+L["SLOT_trinket"] = "Joya"
+L["SLOT_SELECT_ALL"] = "Seleccionar todo"
+L["SLOT_DESELECT_ALL"] = "Deseleccionar todo"
+L["SLOT_NONE_SELECTED"] = "Nada seleccionado"
+L["SLOT_weapon"] = "Arma"
+L["SLOT_offhand"] = "Mano secundaria"
+
+-- ── Escán de Vacíocache (VoidcacheScan.lua / DungeonOverview.lua) ─────────────
+
+L["SCAN_BTN"] = "Escanear espec. de botín"
+L["SCAN_PROGRESS"] = "Escaneando %d/%d..."
+L["SCAN_COMPLETE"] = "✓ Escán completado"
+L["SCAN_ABORTED"] = "Escán cancelado"
+L["SCAN_CONFIRM_TITLE"] = "¿Escanear espec. de botín?"
+L["SCAN_CONFIRM_BODY"] =
+    "Se escaneará el texto del Vacíocache nebuloso para cada una de tus especializaciones de botín en todas las mazmorras de la temporada.\n\nLos datos de botín existentes serán restablecidos.\n\nNo entres en combate ni en una mazmorra durante el escán."
+L["SCAN_UNAVAILABLE_COMBAT"] = "No se puede escanear en combate."
+L["SCAN_UNAVAILABLE_INSTANCE"] = "No se puede escanear dentro de una mazmorra."
+L["RAID_SCAN_CONFIRM_TITLE"] = "¿Escanear espec. de botín de banda?"
+L["RAID_SCAN_CONFIRM_BODY"] =
+    "Se escaneará el texto del Vacíocache nebuloso para cada una de tus especializaciones de botín en todos los encuentros de banda Mítica.\n\nLos datos de banda Mítica existentes serán restablecidos.\n\nNo entres en combate durante el escán."
+
+-- ── Comandos slash (adiciones) ────────────────────────────────────────────────
+
+L["HELP_REPLAYLOG"] = "  /vca replaylog – reaplicar todas las entradas del registro de tiradas como obtenidas"
+L["RESTORE_COMPLETE"] = "%d objeto(s) restaurado(s) desde el respaldo."
+L["RESTORE_NO_BACKUP"] = "No hay respaldo disponible. Realiza un escaneo primero."
+L["RESTORE_FAILED"] = "La restauración falló."
+
+-- ── Ventana de confirmación de tirada extra (BonusRollConfirm.lua) ────────────
+
+L["BONUS_ROLL_CONFIRM_SUBTITLE"] = "Confirmar tirada de Núcleo del Vacío nebuloso"
+L["BONUS_ROLL_CONFIRM_SPEC_LABEL"] = "Especialización de botín activa:"
+L["BONUS_ROLL_CONFIRM_POOL"] = "%d objeto(s) restante(s) en el grupo"
+L["BONUS_ROLL_CONFIRM_CHANCE"] = "%d%% de probabilidad (%d objetos deseados)"
+L["BONUS_ROLL_CONFIRM_CHANCE_ONE"] = "%d%% de probabilidad (1 objeto deseado)"
+L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] = "Todos los objetos obtenidos para esta espec."
+L["BONUS_ROLL_CONFIRM_NO_ITEMS"] = "No hay objetos deseados para esta espec."
+L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] = "Otras especializaciones tienen objetos deseados"
+L["BONUS_ROLL_CONFIRM_NO_SELECTED"] = "Sin objetos deseados"
+L["BONUS_ROLL_CONFIRM_NOT_TRACKED"] = "Fuente no rastreada — sin probabilidades disponibles"
+L["BONUS_ROLL_CONFIRM_WARNING_HEADER"] =
+    "|A:Ping_Chat_Warning:14:14|a |cffffff00Tirar reiniciará la protección de mala suerte|r"
+L["BONUS_ROLL_CONFIRM_WARNING_BODY"] =
+    "Tras esta tirada, los objetos previamente saqueados pueden volver a caer para todas las especializaciones."
+L["BONUS_ROLL_CONFIRM_QUESTION"] = "¿Deseas tirar por botín?"
+L["BONUS_ROLL_CONFIRM_ROLL"] = "Tirar"
+L["BONUS_ROLL_CONFIRM_PASS"] = "Pasar"
+L["BONUS_ROLL_CONFIRM_CONFIRM"] = "Confirmar tirada"
+L["BONUS_ROLL_CONFIRM_PASS_CONFIRM"] = "Confirmar pasar"
+L["BONUS_ROLL_CONFIRM_CLOSE"] = "Cerrar"
+L["BONUS_ROLL_POPUP_ROLL"] = "¿Gastar tu Núcleo del Vacío nebuloso en una tirada extra?"
+L["BONUS_ROLL_POPUP_PASS"] = "¿Pasar esta tirada extra?"
+
+-- ── Panel de opciones (adiciones) ────────────────────────────────────────────
+
+L["OPTIONS_PREVIEW_BONUS_ROLL"] = "Vista previa"
+L["BONUS_ROLL_CONFIRM_COST"] = "Coste: |cffffff00%d|r  \194\183  Tienes |cffffff00%d|r"
+L["OPTIONS_BONUS_ROLL_CONFIRM"] = "Ventana de tirada extra"
+L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
+    "Muestra información de VoidcoreAdvisor cuando aparece la ventana de tirada extra del Núcleo del Vacío nebuloso, incluyendo tu especialización de botín activa y las probabilidades de objetos."
+L["OPTIONS_BRC_SPEC_LIST"] = "Mostrar objetos restantes por especialización"
+L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
+    "Muestra una lista de objetos restantes para cada una de tus especializaciones en la ventana de tirada extra."
+L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"

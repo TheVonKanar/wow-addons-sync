@@ -1,6 +1,9 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("MPlusTimer", "deDE")
-
-if not L then return end
+local _, MPT = ...
+MPT.RawLocales = MPT.RawLocales or {}
+local _raw = {}
+MPT.RawLocales["deDE"] = _raw
+local _ace = LibStub("AceLocale-3.0"):NewLocale("MPlusTimer", "deDE")
+local L = setmetatable({}, { __newindex = function(_, k, v) _raw[k] = v; if _ace then _ace[k] = v end end })
 
 L["Timer Settings"] = "Timer-Einstellungen"
 L["Display PB"] = "Persönliche Bestzeit anzeigen"

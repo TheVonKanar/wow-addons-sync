@@ -36,228 +36,6 @@ end
 
 Panel.UpdateScrollbar = UpdateScrollbar
 
--- ── Spec Picker Popup ─────────────────────────────────────────────────────────
--- Floating popup shown when clicking the loot icon on an item row.
--- Multiple specializations can be selected; confirmed with OK.
-
-local SpecPickerPopup = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-SpecPickerPopup:SetFrameStrata("TOOLTIP")
-SpecPickerPopup:SetClampedToScreen(true)
-SpecPickerPopup:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile = true,
-    tileSize = 16,
-    edgeSize = 12,
-    insets = {
-        left = 3,
-        right = 3,
-        top = 3,
-        bottom = 3
-    }
-})
-SpecPickerPopup:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
-SpecPickerPopup:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
-SpecPickerPopup:Hide()
-
--- Full-screen click-catcher that dismisses the popup without saving.
-local _pickerCatchFrame = CreateFrame("Frame", nil, UIParent)
-_pickerCatchFrame:SetAllPoints(UIParent)
-_pickerCatchFrame:SetFrameStrata("DIALOG")
-_pickerCatchFrame:EnableMouse(true)
-_pickerCatchFrame:SetPropagateMouseClicks(true)
-_pickerCatchFrame:Hide()
-
-local _pickerContext = {}
-local _pickerCheckRows = {} -- pooled { frame, checkbox, iconTex, lbl, specID }
-local _pickerOkBtn
-
-local PICKER_ROW_H = 22
-local PICKER_W = 175
-local PICKER_PAD = 6
-local PICKER_TOP = 24 -- title bar height
-local PICKER_OK_H = 28 -- bottom row reserved for OK button
-
-local function HideSpecPicker()
-    SpecPickerPopup:Hide()
-    _pickerCatchFrame:Hide()
-end
-
-_pickerCatchFrame:SetScript("OnMouseDown", function()
-    HideSpecPicker()
-end)
-
-local function OnPickerOK()
-    local ctx = _pickerContext
-    HideSpecPicker()
-
-    local anyChecked = false
-    for _, row in ipairs(_pickerCheckRows) do
-        if row.frame:IsShown() then
-            local checked = row.checkbox:GetChecked()
-            if checked then
-                -- Write tier-specific obtained flag for M+, tier-less for raids.
-                VCA.Data.SetObtainedForKeyTier(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID, ctx.itemID,
-                    ctx.isHighTier, true)
-                anyChecked = true
-            else
-                if ctx.isHighTier ~= nil then
-                    -- M+: only clear the currently viewed tier's key.
-                    VCA.Data.SetObtainedForKeyTier(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID, ctx.itemID,
-                        ctx.isHighTier, false)
-                    -- If a bare (unknown-tier) key exists it falls back as obtained for
-                    -- BOTH tiers, so unchecking from here would have no visible effect.
-                    -- Promote it to the opposite tier first so the other list keeps its
-                    -- obtained state, then clear the bare key.
-                    if VCA.Data.IsObtainedBareKey(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID, ctx.itemID) then
-                        local otherTier = not ctx.isHighTier
-                        if not VCA.Data.IsObtainedTiered(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID,
-                            ctx.itemID, otherTier) then
-                            VCA.Data.SetObtainedForKeyTier(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID,
-                                ctx.itemID, otherTier, true)
-                        end
-                        -- Clear bare key only (isHighTier=nil → targets the bare key).
-                        VCA.Data.SetObtainedForKeyTier(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID, ctx.itemID,
-                            nil, false)
-                    end
-                else
-                    -- Non-M+ (raids): no tier concept, clear all variants as before.
-                    VCA.Data.SetObtained(ctx.sourceType, ctx.sourceID, ctx.diffID, row.specID, ctx.itemID, false)
-                end
-            end
-        end
-    end
-
-    if anyChecked then
-        -- At least one real spec is now checked; remove any migrated (specID=0) entry.
-        VCA.Data.SetObtained(ctx.sourceType, ctx.sourceID, ctx.diffID, 0, ctx.itemID, false)
-
-        -- Check each checked spec for pool completion and reset if all items
-        -- have been obtained (mirrors the auto-detection path).
-        if VCA.Detection and VCA.Detection.CheckAndResetIfComplete then
-            local source = {
-                sourceType = ctx.sourceType,
-                sourceID = ctx.sourceID,
-                difficultyID = ctx.diffID
-            }
-            for _, row in ipairs(_pickerCheckRows) do
-                if row.frame:IsShown() and row.checkbox:GetChecked() then
-                    VCA.Detection.CheckAndResetIfComplete(source, row.specID, ctx.isHighTier)
-                end
-            end
-        end
-    end
-
-    if not anyChecked then
-        -- All unchecked: item is fully unobtained; remove any stale selection.
-        if _s.selectedItemIDs[ctx.itemID] then
-            _s.selectedItemIDs[ctx.itemID] = nil
-            Panel.SaveItemSelections()
-        end
-    else
-        if _s.selectedItemIDs[ctx.itemID] then
-            _s.selectedItemIDs[ctx.itemID] = nil
-            Panel.SaveItemSelections()
-        end
-    end
-    Panel.Refresh()
-end
-
-local _pickerTitleLabel = SpecPickerPopup:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-_pickerTitleLabel:SetPoint("TOPLEFT", SpecPickerPopup, "TOPLEFT", PICKER_PAD, -8)
-_pickerTitleLabel:SetPoint("TOPRIGHT", SpecPickerPopup, "TOPRIGHT", -PICKER_PAD, -8)
-_pickerTitleLabel:SetJustifyH("LEFT")
-_pickerTitleLabel:SetText(L["SPEC_PICKER_TITLE"])
-
-local function BuildPickerRows(specs, sourceType, sourceID, diffID, itemID, isHighTier)
-    for _, row in ipairs(_pickerCheckRows) do
-        row.frame:Hide()
-    end
-
-    for i, spec in ipairs(specs) do
-        local row = _pickerCheckRows[i]
-        if not row then
-            local f = CreateFrame("Frame", nil, SpecPickerPopup)
-            f:SetHeight(PICKER_ROW_H)
-
-            local cb = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
-            cb:SetSize(16, 16)
-            cb:SetPoint("LEFT", f, "LEFT", 0, 0)
-
-            local iconTex = f:CreateTexture(nil, "ARTWORK")
-            iconTex:SetSize(16, 16)
-            iconTex:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-            iconTex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
-            local lbl = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            lbl:SetPoint("LEFT", iconTex, "RIGHT", 4, 0)
-            lbl:SetPoint("RIGHT", f, "RIGHT", 0, 0)
-            lbl:SetJustifyH("LEFT")
-
-            row = {
-                frame = f,
-                checkbox = cb,
-                iconTex = iconTex,
-                lbl = lbl
-            }
-            _pickerCheckRows[i] = row
-        end
-
-        row.frame:SetWidth(PICKER_W - PICKER_PAD * 2)
-        row.frame:ClearAllPoints()
-        row.frame:SetPoint("TOPLEFT", SpecPickerPopup, "TOPLEFT", PICKER_PAD, -(PICKER_TOP + (i - 1) * PICKER_ROW_H))
-        row.iconTex:SetTexture(spec.icon)
-        row.lbl:SetText(spec.name)
-        row.specID = spec.specID
-        -- Pre-check if this spec already has the item recorded as obtained for this tier.
-        local alreadyObtained = itemID and
-                                    VCA.Data
-                                        .IsObtainedForKeyTier(sourceType, sourceID, diffID, spec.specID, itemID,
-                isHighTier)
-        row.checkbox:SetChecked(alreadyObtained or false)
-        row.frame:Show()
-    end
-
-    SpecPickerPopup:SetSize(PICKER_W, PICKER_TOP + #specs * PICKER_ROW_H + PICKER_OK_H + PICKER_PAD)
-
-    if not _pickerOkBtn then
-        _pickerOkBtn = CreateFrame("Button", nil, SpecPickerPopup, "UIPanelButtonTemplate")
-        _pickerOkBtn:SetSize(70, 22)
-        _pickerOkBtn:SetText(L["SPEC_PICKER_OK"])
-        _pickerOkBtn:SetScript("OnClick", OnPickerOK)
-    end
-    _pickerOkBtn:ClearAllPoints()
-    _pickerOkBtn:SetPoint("BOTTOM", SpecPickerPopup, "BOTTOM", 0, PICKER_PAD)
-    _pickerOkBtn:Show()
-end
-
-local function ShowSpecPickerFor(anchorWidget, sourceType, sourceID, diffID, itemID, isHighTier)
-    _pickerContext.sourceType = sourceType
-    _pickerContext.sourceID = sourceID
-    _pickerContext.diffID = diffID
-    _pickerContext.itemID = itemID
-    _pickerContext.isHighTier = isHighTier
-
-    -- Only show specs that can actually loot this item.
-    local classID = VCA.SpecInfo.GetPlayerClassID()
-    local eligibleSpecs = {}
-    for _, spec in ipairs(VCA.SpecInfo.GetPlayerSpecs()) do
-        local specItems = VCA.LootPool.GetItemsForSpec(sourceType, sourceID, diffID, classID, spec.specID)
-        for _, id in ipairs(specItems) do
-            if id == itemID then
-                eligibleSpecs[#eligibleSpecs + 1] = spec
-                break
-            end
-        end
-    end
-
-    BuildPickerRows(eligibleSpecs, sourceType, sourceID, diffID, itemID, isHighTier)
-    SpecPickerPopup:ClearAllPoints()
-    SpecPickerPopup:SetPoint("BOTTOMLEFT", anchorWidget, "TOPRIGHT", 4, 0)
-    _pickerCatchFrame:Show()
-    SpecPickerPopup:Show()
-end
-
 -- ── Populate item column ───────────────────────────────────────────────────────
 
 local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier)
@@ -409,13 +187,20 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
     local rowTop = 0
     for _, item in ipairs(displayItems) do
         -- An item is considered obtained when it has been won by at least one
-        -- of the player's specs.  Probability rows track per-spec state
-        -- independently; this just drives the visual dim in the item list.
+        -- of the relevant specs.  When a spec filter is active, only check the
+        -- selected spec(s) so that items looted on a different spec appear
+        -- lootable again.  With no filter, fall back to the full spec union.
+        -- Probability rows track per-spec state independently; this just drives
+        -- the visual dim in the item list.
         local obtained = false
+        local specsToCheck = next(_s.selectedSpecIDs) and _s.selectedSpecIDs or nil
         for _, spec in ipairs(specs) do
-            if VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, spec.specID, item.itemID, isHighTier) then
-                obtained = true
-                break
+            if not specsToCheck or specsToCheck[spec.specID] then
+                if VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, spec.specID, item.itemID,
+                    isHighTier) then
+                    obtained = true
+                    break
+                end
             end
         end
         -- Amber state: obtained only under specID=0 (migrated from pre-spec data).
@@ -473,10 +258,12 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         -- Obtained checkbox
         row.checkbox:SetChecked(obtainedMigrated and "migrated" or obtained)
         row.checkbox.itemID = item.itemID
+        row.checkbox.itemLink = item.link or ""
         row.checkbox.sourceType = sourceType
         row.checkbox.sourceID = sourceID
         row.checkbox.diffID = difficultyID
         row.checkbox.isHighTier = isHighTier
+        row.checkbox.isObtained = obtained or obtainedMigrated
         -- Obtained loot icon button tooltip: list which specs have it obtained.
         row.checkbox.specs = specs
         row.checkbox:SetScript("OnEnter", function(self)
@@ -528,9 +315,70 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
             GameTooltip:Hide()
         end)
         row.checkbox:SetScript("OnClick", function(self)
-            -- Always open the spec picker, pre-checked to the current obtained state.
-            -- OK saves whatever is checked; clicking outside dismisses without changes.
-            ShowSpecPickerFor(self, self.sourceType, self.sourceID, self.diffID, self.itemID, self.isHighTier)
+            if self.isObtained then
+                -- Clear all specs, any migrated (specID=0) entry, and manual log entries.
+                local dungeonData = VCA.SeasonData and VCA.SeasonData.dungeons[self.sourceID]
+                if dungeonData and dungeonData.bySpec then
+                    for specID in pairs(dungeonData.bySpec) do
+                        VCA.Data.SetObtained(self.sourceType, self.sourceID, self.diffID, specID, self.itemID, false)
+                    end
+                end
+                local raidData = VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[self.sourceID]
+                if raidData and raidData.bySpec then
+                    local specMap = raidData.bySpec[self.diffID]
+                    if specMap then
+                        for specID in pairs(specMap) do
+                            VCA.Data
+                                .SetObtained(self.sourceType, self.sourceID, self.diffID, specID, self.itemID, false)
+                        end
+                    end
+                end
+                VCA.Data.SetObtained(self.sourceType, self.sourceID, self.diffID, 0, self.itemID, false)
+                VCA.Data.RemoveAllManualLogEntriesForItem(self.itemID, self.sourceType, self.sourceID, self.diffID)
+            else
+                -- Mark obtained for all eligible specs, log the manual action, and check completion.
+                local source = {
+                    sourceType = self.sourceType,
+                    sourceID = self.sourceID,
+                    difficultyID = self.diffID
+                }
+                local dungeonData = VCA.SeasonData and VCA.SeasonData.dungeons[self.sourceID]
+                VCA.Data.PropagateObtainedToAllSpecs(self.sourceType, self.sourceID, self.diffID, self.itemID, nil)
+                VCA.Data.SetObtained(self.sourceType, self.sourceID, self.diffID, 0, self.itemID, false)
+                if dungeonData and dungeonData.bySpec then
+                    for specID, itemList in pairs(dungeonData.bySpec) do
+                        for _, id in ipairs(itemList) do
+                            if id == self.itemID then
+                                if VCA.Detection and VCA.Detection.CheckAndResetIfComplete then
+                                    VCA.Detection.CheckAndResetIfComplete(source, specID, nil)
+                                end
+                                break
+                            end
+                        end
+                    end
+                end
+                local raidData = VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[self.sourceID]
+                if raidData and raidData.bySpec then
+                    local specMap = raidData.bySpec[self.diffID]
+                    if specMap then
+                        for specID, itemList in pairs(specMap) do
+                            for _, id in ipairs(itemList) do
+                                if id == self.itemID then
+                                    if VCA.Detection and VCA.Detection.CheckAndResetIfComplete then
+                                        VCA.Detection.CheckAndResetIfComplete(source, specID, nil)
+                                    end
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+                if _s.selectedItemIDs[self.itemID] then
+                    _s.selectedItemIDs[self.itemID] = nil
+                    Panel.SaveItemSelections()
+                end
+            end
+            Panel.Refresh()
         end)
 
         -- Dim row if obtained, filtered out by spec selection, or
@@ -633,10 +481,17 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
 
         -- Spec name (left part of nameLabel)
         local nameColor = entry.allObtained and "|cff44ff44" or (entry.noItems and "|cff888888" or "|cffdddddd")
+        local warnPrefix =
+            (entry.remainingCount == 1) and (CreateAtlasMarkup("Ping_Wheel_Icon_Warning", 14, 14) .. " ") or ""
         row.nameLabel:SetPoint("LEFT", row.icon, "RIGHT", 4, 0)
         row.nameLabel:SetPoint("RIGHT", row.frame, "RIGHT", -90, 0)
-        row.nameLabel:SetText(nameColor .. (entry.specName or "?") .. "|r")
-
+        row.nameLabel:SetText(warnPrefix .. nameColor .. (entry.specName or "?") .. "|r")
+        if entry.remainingCount == 1 then
+            row.warnHitArea.tooltipText = L["REMINDER_WARNING_ONE_ITEM"]
+            row.warnHitArea:Show()
+        else
+            row.warnHitArea:Hide()
+        end
         -- Stats: obtained/total + percentage (right side)
         local hasSelection = filterItemIDs and #filterItemIDs > 0
         local statsText

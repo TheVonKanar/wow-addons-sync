@@ -1,5 +1,5 @@
-local VERSION_TEXT = "1.9.1 d";
-local VERSION_DATE = 1777500000;
+local VERSION_TEXT = "1.9.2 c";
+local VERSION_DATE = 1779500000;
 
 
 local addonName, addon = ...
@@ -259,6 +259,7 @@ local DefaultValues = {
 	TooltipItemQuest = true,            --Show the quest of quest starting items in bags
 	TooltipTransmogEnsemble = true,     --A Raid Ensemble now unlocks outfits (tints) from 4 difficulties, but the default UI only gives one
 	TooltipRichSoil = true,             --Show QuickSlot for seeds when double click on Rich Soil (Midnight Herbalism)
+	TooltipVendorLocation = false,		--Show where you can turn in the tokens in exchange for other rewards
 
 
 	--Reduction
@@ -569,7 +570,7 @@ do
 
 	addon.IS_MOP = C_AddOns.GetAddOnMetadata(addonName, "X-Expansion") == "MOP";
 
-	addon.IS_12_0_5 = IsToCVersionEqualOrNewerThan(120005);
+	addon.IS_12_0_7 = IsToCVersionEqualOrNewerThan(120007);
 
 
 	function addon.GetLastLoginTime()

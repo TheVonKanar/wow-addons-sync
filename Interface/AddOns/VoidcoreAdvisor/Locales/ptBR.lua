@@ -44,6 +44,7 @@ L["HELP_COUNT"] = "  /vca count    – mostrar total de itens marcados como obti
 L["HELP_SPEC"] = "  /vca spec     – mostrar ID de especialização de saque"
 L["HELP_SOURCE"] = "  /vca source   – mostrar fonte de detecção ativa"
 L["HELP_VERSION"] = "  /vca version  – mostrar versão do addon"
+L["HELP_RESTORE"] = "  /vca restore  – restaurar dados de saque do backup pré-varredura"
 
 -- ── Panel UI (adições) ────────────────────────────────────────────────────────
 
@@ -66,8 +67,31 @@ L["REMINDER_SELECTED_CHANCE"] = "%d%% de chance para item(ns) selecionado(s)"
 L["REMINDER_CHANGE_PROMPT"] = "Alterar especialização de saque para |cffffff00%s|r?"
 L["REMINDER_YES"] = "Sim, alterar"
 L["REMINDER_NO"] = "Não, obrigado"
+L["REMINDER_WARNING_ONE_ITEM"] =
+    "|cffff8000Aviso:|r Esta especialização tem |cffff0000apenas 1 item|r restante nesta masmorra. Usar um Núcleo do Vazio Nebuloso com esta especialização |cffff0000redefinirá o grupo de saque de todas as especializações|r nesta masmorra!"
+L["REMINDER_SPEC_LIST_HEADER"] = "Itens restantes por especialização:"
+L["REMINDER_SPEC_REMAINING"] = "%d restante(s)"
+L["REMINDER_SPEC_NONE"] = "nenhum restante"
+L["SPEC_LIST_TOOLTIP_TITLE"] = "Proteção de Saque"
+L["SPEC_LIST_ITEM_ONE"] = "1 item restante"
+L["SPEC_LIST_ITEM_MANY"] = "%d itens restantes"
+L["SPEC_LIST_ALL_OBTAINED"] = "todos obtidos"
+
+-- ── Popup de aviso de redefinição do grupo de saque (Reminder.lua) ───────────
+
+L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_SUBTITLE"] = "Risco de redefinição do grupo de saque"
+L["WARNING_VOIDCORE_COUNT"] = "Você tem |cffffff00%d|r Núcleo(s) do Vazio Nebuloso"
+L["WARNING_FAVORED_SPEC"] = "Você está usando a especialização de saque favorita:"
+L["WARNING_ONE_ITEM"] =
+    "|cffff8000Aviso:|r Esta especialização tem |cffff0000apenas %d item|r restante nesta masmorra. Usar um Núcleo do Vazio Nebuloso |cffff0000redefinirá o grupo de saque de todas as especializações|r nesta masmorra!"
+L["WARNING_SPEC_LIST_HEADER"] = "Itens restantes por especialização:"
+L["WARNING_CLOSE"] = "Fechar"
 
 -- ── Painel de opções (Options.lua) ────────────────────────────────────────────
+
+L["OPTIONS_CAT_REMINDER"] = "Lembrete de especialização de saque"
+L["OPTIONS_CAT_BONUS_ROLL"] = "Rolagem bônus"
 
 L["OPTIONS_REMINDER_ENABLE"] = "Lembrete de especialização de saque"
 L["OPTIONS_REMINDER_TOOLTIP"] =
@@ -95,3 +119,87 @@ L["SPEC_PICKER_OK"] = "OK"
 L["OBTAINED_UNKNOWN_SPEC"] = "Obtido (especialização desconhecida)"
 L["UNKNOWN_KEYLEVEL"] = "nível de chave desconhecido"
 L["MANUAL_ENTRY"] = "entrada manual"
+
+-- ── Gaveta de slots (DungeonOverview.lua) ────────────────────────────────────
+
+L["SLOT_FILTER_TOGGLE"] = "Filtrar por slot"
+L["SLOT_FILTER_CLEAR"] = "Desmarcar todos os itens de slot"
+L["SLOT_FILTER_CLEAR_CONFIRM"] = "Limpar todas as seleções de itens?"
+L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] = "Todos os itens selecionados serão desmarcados."
+
+L["SLOT_head"] = "Cabeça"
+L["SLOT_neck"] = "Pescoço"
+L["SLOT_shoulder"] = "Ombros"
+L["SLOT_back"] = "Costas"
+L["SLOT_chest"] = "Peito"
+L["SLOT_wrist"] = "Pulso"
+L["SLOT_hands"] = "Mãos"
+L["SLOT_waist"] = "Cintura"
+L["SLOT_legs"] = "Pernas"
+L["SLOT_feet"] = "Pés"
+L["SLOT_finger"] = "Dedo"
+L["SLOT_trinket"] = "Bugiganga"
+L["SLOT_SELECT_ALL"] = "Selecionar tudo"
+L["SLOT_DESELECT_ALL"] = "Desmarcar tudo"
+L["SLOT_NONE_SELECTED"] = "Nada selecionado"
+L["SLOT_weapon"] = "Arma"
+L["SLOT_offhand"] = "Mão secundária"
+
+-- ── Escaneamento de Voidcache (VoidcacheScan.lua / DungeonOverview.lua) ───────
+
+L["SCAN_BTN"] = "Escanear Specs de Saque"
+L["SCAN_PROGRESS"] = "Escaneando %d/%d..."
+L["SCAN_COMPLETE"] = "✓ Escaneamento Concluído"
+L["SCAN_ABORTED"] = "Escaneamento Cancelado"
+L["SCAN_CONFIRM_TITLE"] = "Escanear Specs de Saque?"
+L["SCAN_CONFIRM_BODY"] =
+    "Isso irá escanear o tooltip do Voidcache Nebuloso para cada uma de suas especializações de saque em todas as masmorras da temporada.\n\nOs dados de saque existentes serão redefinidos.\n\nNão entre em combate ou em uma masmorra durante o escaneamento."
+L["SCAN_UNAVAILABLE_COMBAT"] = "Não é possível escanear em combate."
+L["SCAN_UNAVAILABLE_INSTANCE"] = "Não é possível escanear dentro de uma masmorra."
+L["RAID_SCAN_CONFIRM_TITLE"] = "Escanear Specs de Saque de Raide?"
+L["RAID_SCAN_CONFIRM_BODY"] =
+    "Isso irá escanear o tooltip do Voidcache Nebuloso para cada uma de suas especializações de saque em todos os encontros de Raide Mítico.\n\nOs dados de Raide Mítico existentes serão redefinidos.\n\nNão entre em combate durante o escaneamento."
+
+-- ── Comandos slash (adições) ──────────────────────────────────────────────────
+
+L["HELP_REPLAYLOG"] = "  /vca replaylog – reaplicar todas as entradas do registro de rolagens como obtidas"
+L["RESTORE_COMPLETE"] = "%d item(ns) restaurado(s) do backup."
+L["RESTORE_NO_BACKUP"] = "Nenhum backup disponível. Execute um escaneamento primeiro."
+L["RESTORE_FAILED"] = "A restauração falhou."
+
+-- ── Janela de confirmação de rolagem bônus (BonusRollConfirm.lua) ─────────────
+
+L["BONUS_ROLL_CONFIRM_SUBTITLE"] = "Confirmar rolagem de Núcleo do Vazio Nebuloso"
+L["BONUS_ROLL_CONFIRM_SPEC_LABEL"] = "Especialização de saque ativa:"
+L["BONUS_ROLL_CONFIRM_POOL"] = "%d item(ns) restante(s) no grupo"
+L["BONUS_ROLL_CONFIRM_CHANCE"] = "%d%% de chance (%d itens desejados)"
+L["BONUS_ROLL_CONFIRM_CHANCE_ONE"] = "%d%% de chance (1 item desejado)"
+L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] = "Todos os itens obtidos para esta espec."
+L["BONUS_ROLL_CONFIRM_NO_ITEMS"] = "Nenhum item desejado para esta espec."
+L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] = "Outras especializações têm itens desejados"
+L["BONUS_ROLL_CONFIRM_NO_SELECTED"] = "Nenhum item desejado"
+L["BONUS_ROLL_CONFIRM_NOT_TRACKED"] = "Fonte não rastreada — sem probabilidades disponíveis"
+L["BONUS_ROLL_CONFIRM_WARNING_HEADER"] =
+    "|A:Ping_Chat_Warning:14:14|a |cffffff00Rolar redefinirá a proteção contra má sorte|r"
+L["BONUS_ROLL_CONFIRM_WARNING_BODY"] =
+    "Após esta rolagem, itens previamente saqueados podem cair novamente para todas as especializações."
+L["BONUS_ROLL_CONFIRM_QUESTION"] = "Deseja rolar por saque?"
+L["BONUS_ROLL_CONFIRM_ROLL"] = "Rolar"
+L["BONUS_ROLL_CONFIRM_PASS"] = "Passar"
+L["BONUS_ROLL_CONFIRM_CONFIRM"] = "Confirmar rolagem"
+L["BONUS_ROLL_CONFIRM_PASS_CONFIRM"] = "Confirmar passagem"
+L["BONUS_ROLL_CONFIRM_CLOSE"] = "Fechar"
+L["BONUS_ROLL_POPUP_ROLL"] = "Gastar seu Núcleo do Vazio Nebuloso em uma rolagem bônus?"
+L["BONUS_ROLL_POPUP_PASS"] = "Passar esta rolagem bônus?"
+
+-- ── Painel de opções (adições) ────────────────────────────────────────────────
+
+L["OPTIONS_PREVIEW_BONUS_ROLL"] = "Pré-visualizar"
+L["BONUS_ROLL_CONFIRM_COST"] = "Custo: |cffffff00%d|r  \194\183  Você tem |cffffff00%d|r"
+L["OPTIONS_BONUS_ROLL_CONFIRM"] = "Janela de rolagem bônus"
+L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
+    "Exibe informações do VoidcoreAdvisor quando a janela de rolagem bônus do Núcleo do Vazio Nebuloso aparece, incluindo sua especialização de saque ativa e as probabilidades de itens."
+L["OPTIONS_BRC_SPEC_LIST"] = "Mostrar itens restantes por especialização"
+L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
+    "Exibe uma lista de itens restantes para cada uma de suas especializações na janela de rolagem bônus."
+L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"

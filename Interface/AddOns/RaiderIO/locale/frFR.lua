@@ -1,4 +1,3 @@
--- Generated from CurseForge on Sat May  2 20:06:17 UTC 2026
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("frFR") then
@@ -8,7 +7,7 @@ if ns:IsSameLocale("frFR") then
 
 	L.LOCALE_NAME = "frFR"
 
-L["ALLOW_IN_LFD"] = "Autoriser pour la Recherche de groupe"
+	L["ALLOW_IN_LFD"] = "Autoriser pour la Recherche de groupe"
 L["ALLOW_IN_LFD_CLASSIC"] = "Autoriser pour la Recherche de groupe"
 L["ALLOW_IN_LFD_CLASSIC_DESC"] = "Clic droit sur les groupes ou les joueurs dans l'outil de Recherche de groupe pour copier l'URL du profil Raider.IO."
 L["ALLOW_IN_LFD_DESC"] = "Clic droit sur les groupes ou les joueurs dans l'outil de Recherche de groupe pour copier l'URL du profil Raider.IO."
@@ -600,10 +599,10 @@ L["SEASON_LABEL_3"] = "S3"
 L["SEASON_LABEL_4"] = "S4"
 L["SHOW_AVERAGE_PLAYER_SCORE_INFO"] = "Afficher les scores moyens des clés réalisées dans les temps"
 L["SHOW_AVERAGE_PLAYER_SCORE_INFO_DESC"] = "Afficher le score Raider.IO moyen des joueurs ayant réussi les clés dans les temps. Ce score est visible dans les infobulles des clés et des joueurs de l'explorateur de donjons."
-L["SHOW_BEST_MAINS_SCORE"] = "Afficher le score M+ de la meilleure saison du personnage principal"
-L["SHOW_BEST_MAINS_SCORE_DESC"] = "Afficher dans l'infobulle le meilleur score Mythique+ et la progression en raid du personnage principal du joueur durant la saison. Les joueurs doivent être inscrits sur Raider.IO et avoir désigné un personnage comme personnage principal."
+L["SHOW_BEST_MAINS_SCORE"] = "Afficher le score M+ de la meilleure saison du perso. principal"
+L["SHOW_BEST_MAINS_SCORE_DESC"] = "Afficher dans l'infobulle le meilleur score Mythique+ et la progression en raid du personnage principal durant la saison. Les joueurs doivent être inscrits sur Raider.IO et avoir désigné un personnage comme personnage principal."
 L["SHOW_BEST_RUN"] = "Afficher la meilleure clé M+"
-L["SHOW_BEST_RUN_DESC"] = "Afficher la meilleure clé Mythique+ du joueur de la saison en cours sous forme de titre de l'infobulle."
+L["SHOW_BEST_RUN_DESC"] = "Afficher la meilleure clé Mythique+ de la saison en cours sous forme de titre de l'infobulle."
 L["SHOW_BEST_SEASON"] = "Afficher le meilleur score M+ de la saison"
 L["SHOW_BEST_SEASON_DESC"] = "Afficher le meilleur score de la saison Mythique+ du joueur sous forme de titre dans l'infobulle. Si le score provient d'une saison précédente, la saison sera indiquée dans le titre de l'infobulle."
 L["SHOW_CHESTS_AS_MEDALS"] = "Afficher les icônes de médaille Mythique+"
@@ -673,5 +672,6 @@ L["WARNING_LOCK_POSITION_FRAME_AUTO"] = "Raider.IO : vous devez d'abord désacti
 L["WARNING_RWF_MODE_ENABLE"] = "|cffFFFFFF%s|r Le mode « Course au World First » est activé. Vous pouvez le désactiver en tapant |cffFFFFFF/raiderio rwf|r."
 L["WIPE_RWF_MODE_BUTTON"] = "Wipe"
 L["WIPE_RWF_MODE_BUTTON_TOOLTIP"] = "Cliquez pour effacer le journal du fichier de stockage. Cela entraînera le rechargement de votre interface."
+
 
 end

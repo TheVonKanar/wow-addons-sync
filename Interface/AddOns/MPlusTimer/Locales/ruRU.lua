@@ -1,7 +1,9 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("MPlusTimer", "ruRU")
-
-if not L then return end
-
+local _, MPT = ...
+MPT.RawLocales = MPT.RawLocales or {}
+local _raw = {}
+MPT.RawLocales["ruRU"] = _raw
+local _ace = LibStub("AceLocale-3.0"):NewLocale("MPlusTimer", "ruRU")
+local L = setmetatable({}, { __newindex = function(_, k, v) _raw[k] = v; if _ace then _ace[k] = v end end })
 
 L["Timer Settings"] = "Настройки таймера"
 L["Display PB"] = "Показывать лучший результат"
@@ -240,6 +242,12 @@ L["Background"] = "Фон"
 L["Enable Background"] = "Включить фон"
 L["Width Offset"] = "Смещение по ширине"
 L["Height Offset"] = "Смещение по высоте"
+L["Count on Tooltip"] = "Счёт на подсказке"
+L["Show Mob Count/Perc on the Game-Tooltip when mouseovering it."] = "Показывать количество / процент мобов во всплывающей подсказке при наведении курсора."
+L["Both"] = "Оба варианта"
+L["Count Only"] = "Только количество"
+L["Off"] = "Выкл."
+L["Percentage Only"] = "Только процент"
 
 -- Key Info & Text Settings
 L["Key Info Bar"] = "Панель информации о ключе"
@@ -474,4 +482,14 @@ L["Runs"] = "Прохождения"
 L["Enemy Forces: %s\n%s\n"] = "Силы противника: %s\n%s\n"
 L["MPlusTimer "] = "MPlusTimer "
 
-L["Quarry Camps Liberated"] = "Освобождённые лагеря карьера"
+L["Quarry Camps Liberated"] = "Освобожденные лагеря у каменоломни"
+
+-- Language override
+L["Addon Language"] = "Язык аддона"
+L["Choose the language used by the addon. Preview will only update after disabling&enabling it again."] = "Выберите язык, используемый аддоном. Предварительный просмотр обновится только после отключения и повторного включения MPlusTimer."
+L["Automatic"] = "Автоматически"
+L["English (enUS)"] = "Английский"
+L["German (deDE)"] = "Немецкий"
+L["Korean (koKR)"] = "Корейский"
+L["Russian (ruRU)"] = "Русский"
+L["Chinese Simplified (zhCN)"] = "Китайский упрощенный"

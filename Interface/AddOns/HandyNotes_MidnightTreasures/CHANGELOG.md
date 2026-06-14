@@ -1,5 +1,13 @@
 # Changelog
 
+## Changed in v46
+
+* ...and do that last release properly this time
+
+## Changed in v45
+
+* Avoid a potential secret-values issue when in an instance and some labels were rendered
+
 ## Changed in v44
 
 * TOC for 12.0.5

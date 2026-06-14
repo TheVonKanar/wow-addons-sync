@@ -52,23 +52,32 @@ VER 3 0100000000000077 "+TK" "134400"
 /use Emberwing Feather
 /cast Nature's Swiftness
 END
+VER 3 0100000000000078 "Auto" "134400"
+#showtooltip
+/stopattack
+/stopcasting
+/cleartarget
+/targetenemy
+/cast Wind Shear
+/targetlasttarget 
+END
 VER 3 0100000000000022 "ENH" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
 END
-VER 3 0100000000000076 "Hover" "134400"
+VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
-/cast [target=mouseover,exists] Riptide; Riptide
+/stopcasting
+/cast [@focus,exists] Wind Shear; [target=mouseover,exists] Wind Shear; Wind Shear
 END
 VER 3 0100000000000075 "Hover" "134400"
 #showtooltip
 /cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
-VER 3 0100000000000070 "Hover" "134400"
+VER 3 0100000000000076 "Hover" "134400"
 #showtooltip
-/stopcasting
-/cast [@focus,exists] Wind Shear; [target=mouseover,exists] Wind Shear; Wind Shear
+/cast [target=mouseover,exists] Riptide; Riptide
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit

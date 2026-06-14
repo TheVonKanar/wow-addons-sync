@@ -1,4 +1,3 @@
--- Generated from CurseForge on Sat May  2 20:06:19 UTC 2026
 local ns = select(2, ...) ---@class ns @The addon namespace.
 
 if ns:IsSameLocale("itIT") then
@@ -8,7 +7,7 @@ if ns:IsSameLocale("itIT") then
 
 	L.LOCALE_NAME = "itIT"
 
-L["ALLOW_IN_LFD"] = "Abilita in Ricerca delle Incursioni"
+	L["ALLOW_IN_LFD"] = "Abilita in Ricerca delle Incursioni"
 --[[Translation missing --]]
 --[[ L["ALLOW_IN_LFD_CLASSIC"] = ""--]] 
 --[[Translation missing --]]
@@ -824,5 +823,6 @@ L["WARNING_LOCK_POSITION_FRAME_AUTO"] = "RaiderIO: Devi prima Disabilitare \"Pos
 L["WARNING_RWF_MODE_ENABLE"] = "|cffFFFFFF%s|r La modalità Race World First è abilitata. Puoi disabilitarlo digitando |cffFFFFFF/raiderio rwf|r."
 L["WIPE_RWF_MODE_BUTTON"] = "Cancella"
 L["WIPE_RWF_MODE_BUTTON_TOOLTIP"] = "Fare clic per cancellare il registro dal file di archiviazione. Ciò causerà il ricaricamento dell'interfaccia."
+
 
 end

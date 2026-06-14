@@ -20,7 +20,9 @@ end
 
 local function GetGlobalDefaults()
     return {
-        reminderEnabled = true
+        reminderEnabled = true,
+        bonusRollConfirmEnabled = false,
+        brcSpecListEnabled = true
     }
 end
 
@@ -44,6 +46,12 @@ local function InitDB()
         local gdb = _G[VCA.GLOBAL_DB_NAME]
         if gdb.reminderEnabled == nil then
             gdb.reminderEnabled = true
+        end
+        if gdb.bonusRollConfirmEnabled == nil then
+            gdb.bonusRollConfirmEnabled = false
+        end
+        if gdb.brcSpecListEnabled == nil then
+            gdb.brcSpecListEnabled = true
         end
     end
 
@@ -194,6 +202,9 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
                         src = src .. " key=" .. entry.keyLevel
                     end
                 end
+                if entry.manual then
+                    src = src .. " [manual]"
+                end
                 local spec = entry.specID and ("spec=" .. entry.specID) or "spec=?"
                 print(string.format("  [%d] %s  %s  %s  %s", i, ts,
                     entry.itemLink or ("itemID=" .. tostring(entry.itemID)), spec, src))
@@ -205,6 +216,32 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
 
     elseif cmd == "replaylog" then
         VCA.Detection.ReplayBonusRollLog(true)
+        -- Refresh the panel so newly-marked items are immediately hidden.
+        if VCA.Panel and VCA.Panel.Refresh then
+            VCA.Panel.Refresh()
+        end
+
+    elseif cmd == "restore" then
+        local mpTime, raidTime = VCA.VoidcacheScan.GetBackupInfo()
+        if not mpTime and not raidTime then
+            print("|cff9370DBVoidcoreAdvisor:|r " .. L["RESTORE_NO_BACKUP"])
+        else
+            local ok, result = VCA.VoidcacheScan.RestoreBackup()
+            if ok then
+                print("|cff9370DBVoidcoreAdvisor:|r " .. string.format(L["RESTORE_COMPLETE"], result))
+                if VCA.DungeonOverview and VCA.DungeonOverview.Refresh then
+                    VCA.DungeonOverview.Refresh()
+                end
+                if VCA.RaidOverview and VCA.RaidOverview.Refresh then
+                    VCA.RaidOverview.Refresh()
+                end
+                if VCA.Panel and VCA.Panel.Refresh then
+                    VCA.Panel.Refresh()
+                end
+            else
+                print("|cff9370DBVoidcoreAdvisor:|r " .. L["RESTORE_FAILED"])
+            end
+        end
 
     elseif cmd == "reminder" then
         -- Force-evaluate the reminder, ignoring the already-shown guard.
@@ -217,5 +254,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_SPEC"])
         print(L["HELP_SOURCE"])
         print(L["HELP_VERSION"])
+        print(L["HELP_REPLAYLOG"])
+        print(L["HELP_RESTORE"])
     end
 end

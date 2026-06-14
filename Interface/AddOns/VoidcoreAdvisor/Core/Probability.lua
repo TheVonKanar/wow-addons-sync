@@ -39,10 +39,47 @@ local Probability = VCA.Probability
 --     noItems        : bool    – true when this spec has no eligible items
 --   }
 -- isHighTier: nil = no tier filter (use plain obtained), true = key >= 10, false = key < 10
-function Probability.CalculateForSpec(sourceType, sourceID, difficultyID, classID, specID, isHighTier)
+function Probability.CalculateForSpec(sourceType, sourceID, difficultyID, classID, specID, isHighTier, selectedSet)
     local itemIDs = VCA.LootPool.GetItemsForSpec(sourceType, sourceID, difficultyID, classID, specID)
-    local baseCount = #itemIDs
 
+    if selectedSet then
+        -- Build the wanted subset, but keep the full pool for the odds denominator.
+        -- remainingOdds = wanted_remaining / total_remaining
+        -- (the true probability of rolling any wanted item from the full live pool)
+        local wantedIDs = {}
+        for _, itemID in ipairs(itemIDs) do
+            if selectedSet[itemID] then
+                wantedIDs[#wantedIDs + 1] = itemID
+            end
+        end
+        local baseCount = #wantedIDs
+
+        local totalRemaining = 0
+        for _, itemID in ipairs(itemIDs) do
+            if not VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, specID, itemID, isHighTier) then
+                totalRemaining = totalRemaining + 1
+            end
+        end
+
+        local wantedRemaining = 0
+        for _, itemID in ipairs(wantedIDs) do
+            if not VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, specID, itemID, isHighTier) then
+                wantedRemaining = wantedRemaining + 1
+            end
+        end
+
+        return {
+            specID = specID,
+            baseCount = baseCount,
+            remainingCount = wantedRemaining,
+            baseOdds = #itemIDs > 0 and (baseCount / #itemIDs) or 0,
+            remainingOdds = totalRemaining > 0 and (wantedRemaining / totalRemaining) or 0,
+            allObtained = baseCount > 0 and wantedRemaining == 0,
+            noItems = baseCount == 0
+        }
+    end
+
+    local baseCount = #itemIDs
     local remainingCount = 0
     for _, itemID in ipairs(itemIDs) do
         if not VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, specID, itemID, isHighTier) then

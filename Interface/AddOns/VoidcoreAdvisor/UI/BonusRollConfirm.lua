@@ -1,0 +1,1271 @@
+-- VoidcoreAdvisor: BonusRollConfirm
+-- Replaces BonusRollFrame with a custom VCA window positioned at the same
+-- screen location (+small offset so the original is still visible behind it).
+--
+-- Frame level 7 + EnableMouse(true) prevents accidental clicks on the original
+-- Roll/Pass buttons (which sit at level 5-6).
+--
+-- Roll button requires TWO clicks (confirm) â€” this is intentional and critical.
+-- Pass button fires immediately (no confirmation).
+local addonName, VCA = ...
+local L = VCA.L
+
+VCA.BonusRollConfirm = {}
+local BRC = VCA.BonusRollConfirm
+
+local isPreview = false
+local cachedItemLink = nil -- item link for icon tooltip
+local cachedDisplayItemID = nil -- numeric item ID from EJLinkButton.displayItemID
+local cachedSpecIcon = nil -- spec icon texture path for |T|t embedding
+local cachedSpecName = nil -- spec name for combined spec row text
+local cachedSource = nil -- source table for spec list tooltip
+local cachedSpecID = nil -- specID used when the window is currently displayed
+local previewTimerStart = nil -- GetTime() when ShowPreview was called (nil in live mode)
+local previewTimerDuration = 30 -- seconds; mirrors a typical bonus-roll countdown
+local cachedPromptData = nil -- structured payload from SPELL_CONFIRMATION_PROMPT
+local isSpecChangePending = false -- true while SetLootSpecialization is in-flight; suppresses Uninject
+
+-- â”€â”€ Guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+local function IsEnabled()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return gdb and gdb.bonusRollConfirmEnabled == true
+end
+
+local function IsSpecListEnabled()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return gdb and gdb.brcSpecListEnabled == true
+end
+
+-- Reverse lookup: Voidcache itemID -> { sourceType, sourceID }
+-- Built lazily on first call after Constants are loaded.
+local cacheItemSourceMap
+local function GetSourceFromDisplayItemID(itemID)
+    if not itemID then
+        return nil
+    end
+    if not cacheItemSourceMap then
+        cacheItemSourceMap = {}
+        for instanceID, cid in pairs(VCA.DungeonVoidcacheIDs or {}) do
+            cacheItemSourceMap[cid] = {
+                sourceType = VCA.ContentType.MYTHIC_PLUS,
+                sourceID = instanceID
+            }
+        end
+        for encounterID, cid in pairs(VCA.RaidEncounterCacheIDs or {}) do
+            cacheItemSourceMap[cid] = {
+                sourceType = VCA.ContentType.RAID,
+                sourceID = encounterID
+            }
+        end
+    end
+    return cacheItemSourceMap[itemID]
+end
+
+-- â”€â”€ Texture-sync helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+-- Maps Enum.ItemCreationContext values from SPELL_CONFIRMATION_PROMPT to a content
+-- type and EJ difficulty ID.  For M+/delve contexts, ejDiffID is always
+-- VCA.MythicPlusEJDifficulty (23).  For raid contexts, the game difficulty ID
+-- coincides with the EJ difficulty ID (14/15/16/17).
+local ITEM_CONTEXT_TO_SOURCE = {
+    [3] = {
+        contentType = VCA.ContentType.RAID,
+        ejDiffID = VCA.Difficulty.RAID_NORMAL
+    }, -- RaidNormal
+    [4] = {
+        contentType = VCA.ContentType.RAID,
+        ejDiffID = VCA.Difficulty.RAID_LFR
+    }, -- RaidFinder
+    [5] = {
+        contentType = VCA.ContentType.RAID,
+        ejDiffID = VCA.Difficulty.RAID_HEROIC
+    }, -- RaidHeroic
+    [6] = {
+        contentType = VCA.ContentType.RAID,
+        ejDiffID = VCA.Difficulty.RAID_MYTHIC
+    }, -- RaidMythic
+    [16] = {
+        contentType = VCA.ContentType.MYTHIC_PLUS,
+        ejDiffID = VCA.MythicPlusEJDifficulty
+    }, -- Mythic Keystone
+    [55] = {
+        contentType = VCA.ContentType.MYTHIC_PLUS,
+        ejDiffID = VCA.MythicPlusEJDifficulty
+    } -- Nightmare Prey
+}
+
+-- Resolves a complete loot source from a SPELL_CONFIRMATION_PROMPT payload.
+-- Returns { sourceType, sourceID, difficultyID, keyLevel } or nil.
+local function ResolveSourceFromPromptData(promptData)
+    if not (promptData and promptData.displayItemID and promptData.itemContext) then
+        return nil
+    end
+    local mapping = ITEM_CONTEXT_TO_SOURCE[promptData.itemContext]
+    if not mapping then
+        return nil
+    end
+    local base = GetSourceFromDisplayItemID(promptData.displayItemID)
+    if not base then
+        return nil
+    end
+    local keyLevel = nil
+    if mapping.contentType == VCA.ContentType.MYTHIC_PLUS then
+        local lvl = promptData.treasureContextLevel
+        keyLevel = (lvl and lvl > 0) and lvl or nil
+    end
+    return {
+        sourceType = mapping.contentType,
+        sourceID = base.sourceID,
+        difficultyID = mapping.ejDiffID,
+        keyLevel = keyLevel
+    }
+end
+
+-- Copies Normal/Pushed/Highlight/Disabled textures from src onto dst so an
+-- interceptor button looks identical to the real Blizzard button.
+
+local function SyncButtonAppearance(src, dst)
+    local t
+    t = src:GetNormalTexture();
+    dst:SetNormalTexture(t and t:GetTexture() or nil)
+    t = src:GetPushedTexture();
+    dst:SetPushedTexture(t and t:GetTexture() or nil)
+    t = src:GetHighlightTexture();
+    if t then
+        dst:SetHighlightTexture(t:GetTexture())
+    end
+    t = src:GetDisabledTexture();
+    if t then
+        dst:SetDisabledTexture(t:GetTexture())
+    end
+end
+
+-- â”€â”€ Custom window â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+-- Offset from BonusRollFrame TOPLEFT so the original peeks from behind.
+
+local win = CreateFrame("Frame", "VCARollWindow", UIParent, "BackdropTemplate")
+win:SetFrameLevel(7)
+win:EnableMouse(true)
+win:EnableMouseMotion(true)
+win:SetClampedToScreen(true)
+win:Hide()
+win:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = {
+        left = 11,
+        right = 12,
+        top = 12,
+        bottom = 11
+    }
+})
+win:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
+win:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
+
+-- Title – hidden in compact layout
+local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+winTitle:SetPoint("TOP", win, "TOP", 0, -14)
+winTitle:SetText("|cffb048f8VoidcoreAdvisor|r")
+winTitle:Hide()
+
+-- Subtitle – hidden in compact layout
+local winSubtitle = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+winSubtitle:SetPoint("TOP", winTitle, "BOTTOM", 0, -2)
+winSubtitle:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_SUBTITLE"] .. "|r")
+winSubtitle:Hide()
+
+-- Header divider – hidden in compact layout
+local winHeaderDiv = win:CreateTexture(nil, "ARTWORK")
+winHeaderDiv:SetColorTexture(0.58, 0.0, 0.82, 0.4)
+winHeaderDiv:SetHeight(1)
+winHeaderDiv:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
+winHeaderDiv:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
+winHeaderDiv:Hide()
+
+-- Item icon
+local winItemIcon = win:CreateTexture(nil, "ARTWORK")
+winItemIcon:SetSize(40, 40)
+winItemIcon:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -14)
+winItemIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+winItemIcon:Hide()
+
+-- Transparent button over the icon for tooltip hit-testing
+local winIconBtn = CreateFrame("Button", nil, win)
+winIconBtn:SetAllPoints(winItemIcon)
+winIconBtn:SetScript("OnEnter", function(self)
+    if cachedDisplayItemID then
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        if cachedPromptData and cachedPromptData.itemContext then
+            -- Use the exact context from SPELL_CONFIRMATION_PROMPT for a correctly
+            -- contextualized tooltip (right ilvl, affixes, track, etc.).
+            GameTooltip:SetItemByID(cachedDisplayItemID, nil, cachedPromptData.itemContext,
+                cachedPromptData.treasureContextLevel)
+        else
+            -- Preview mode or no prompt data: fall back to plain hyperlink.
+            GameTooltip:SetHyperlink(cachedItemLink or ("item:" .. cachedDisplayItemID))
+        end
+        GameTooltip:Show()
+        return
+    end
+    -- Delegate to EJLinkButton's own OnEnter if available
+    local pf = BonusRollFrame and BonusRollFrame.PromptFrame
+    local ejBtn = pf and pf.EncounterJournalLinkButton
+    if ejBtn then
+        local onEnter = ejBtn:GetScript("OnEnter")
+        if onEnter then
+            onEnter(ejBtn)
+        end
+    end
+end)
+winIconBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+
+-- Item name label
+local winItemName = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+winItemName:SetPoint("TOPLEFT", winItemIcon, "TOPRIGHT", 8, -2)
+winItemName:SetWidth(238)
+winItemName:SetJustifyH("LEFT")
+winItemName:SetWordWrap(true)
+
+-- Voidcore count + cost line (shown below item name text)
+local winVoidcoreInfo = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+winVoidcoreInfo:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -4)
+
+-- Timer bar  (value mirrored from BonusRollFrame.PromptFrame.Timer.Bar via OnUpdate)
+local timerBar = CreateFrame("StatusBar", nil, win)
+timerBar:SetHeight(8)
+timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
+timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
+timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+timerBar:SetStatusBarColor(0.58, 0.0, 0.82, 1)
+timerBar:SetMinMaxValues(0, 1)
+timerBar:SetValue(1)
+local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
+timerBg:SetAllPoints()
+timerBg:SetColorTexture(0.12, 0.04, 0.20, 0.8)
+
+-- Separator between timer and spec row
+local topSep = win:CreateTexture(nil, "ARTWORK")
+topSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+topSep:SetHeight(1)
+topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -78)
+topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -78)
+
+-- Spec row (centered: |T...|t icon + name + " - " + chance in one FontString)
+local specLabel = win:CreateFontString(nil, "OVERLAY", "GameFontNormal") -- retained as upvalue, hidden
+specLabel:Hide()
+
+local specIcon = win:CreateTexture(nil, "ARTWORK") -- retained as upvalue, hidden (icon embedded via |T|t)
+specIcon:SetSize(16, 16)
+
+local specName = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+specName:SetPoint("TOP", win, "TOP", 0, -90)
+specName:SetJustifyH("CENTER")
+specName:SetWidth(340)
+
+-- chanceText retained as upvalue, permanently hidden (merged into specName text)
+local chanceText = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+chanceText:Hide()
+
+-- Transparent hit-testing frame covering the chance text for the wanted-items tooltip.
+local chanceHitFrame = CreateFrame("Frame", nil, win)
+chanceHitFrame:SetPoint("TOP", win, "TOP", 0, -90)
+chanceHitFrame:SetSize(340, 22)
+chanceHitFrame:EnableMouse(true)
+chanceHitFrame:Hide()
+
+-- Slot sort order for the wanted-items tooltip (mirrors DungeonOverview).
+local CHANCE_TIP_SLOT_ORDER = {
+    INVTYPE_HEAD = 1,
+    INVTYPE_NECK = 2,
+    INVTYPE_SHOULDER = 3,
+    INVTYPE_CLOAK = 4,
+    INVTYPE_CHEST = 5,
+    INVTYPE_ROBE = 5,
+    INVTYPE_WRIST = 6,
+    INVTYPE_HAND = 7,
+    INVTYPE_WAIST = 8,
+    INVTYPE_LEGS = 9,
+    INVTYPE_FEET = 10,
+    INVTYPE_FINGER = 11,
+    INVTYPE_TRINKET = 12,
+    INVTYPE_WEAPON = 13,
+    INVTYPE_WEAPONMAINHAND = 13,
+    INVTYPE_2HWEAPON = 13,
+    INVTYPE_WEAPONOFFHAND = 14,
+    INVTYPE_SHIELD = 14,
+    INVTYPE_HOLDABLE = 14,
+    INVTYPE_RANGED = 15,
+    INVTYPE_RANGEDRIGHT = 15
+}
+
+-- Builds and shows the wanted-items tooltip for the chance text row.
+local function ShowChanceTooltip(owner)
+    if not (cachedSource and cachedSource.sourceType and cachedSource.sourceID) then
+        return
+    end
+    if not cachedSpecID then
+        return
+    end
+    local source = cachedSource
+    local specID = cachedSpecID
+
+    -- Items lootable by the current spec
+    local specItems = VCA.LootPool.GetItemsForSpec(source.sourceType, source.sourceID, source.difficultyID,
+        VCA.SpecInfo.GetPlayerClassID(), specID)
+    local specItemSet = {}
+    for _, itemID in ipairs(specItems) do
+        specItemSet[itemID] = true
+    end
+
+    -- Wanted items: selected + lootable by this spec + not yet obtained
+    local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
+    local rows = {}
+    for itemID in pairs(selectedSet) do
+        if specItemSet[itemID] and
+            not VCA.Data
+                .IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID, specID, itemID, nil) then
+            local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = GetItemInfo(itemID)
+            if itemName then
+                rows[#rows + 1] = {
+                    itemName = itemName,
+                    itemTexture = itemTexture,
+                    equipLoc = equipLoc,
+                    sortKey = CHANCE_TIP_SLOT_ORDER[equipLoc] or 99
+                }
+            end
+        end
+    end
+
+    if #rows == 0 then
+        return
+    end
+
+    table.sort(rows, function(a, b)
+        if a.sortKey ~= b.sortKey then
+            return a.sortKey < b.sortKey
+        end
+        return (a.itemName or "") < (b.itemName or "")
+    end)
+
+    GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"], 0.85, 0.3, 1)
+    for _, row in ipairs(rows) do
+        local iconMarkup = row.itemTexture and ("|T" .. row.itemTexture .. ":14:14:0:0:64:64:4:60:4:60|t ") or "  "
+        local nameColored = "|cnIQ4:" .. row.itemName .. "|r"
+        local slotText = (row.equipLoc and _G[row.equipLoc] and _G[row.equipLoc] ~= "") and
+                             (" |cff888888[" .. _G[row.equipLoc] .. "]|r") or ""
+        GameTooltip:AddLine("  " .. iconMarkup .. nameColored .. slotText)
+    end
+    GameTooltip:Show()
+end
+
+chanceHitFrame:SetScript("OnEnter", function(self)
+    ShowChanceTooltip(self)
+end)
+chanceHitFrame:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+
+-- Dynamic loot section (only shown when Detection recognises the source)
+local lootSep = win:CreateTexture(nil, "ARTWORK")
+lootSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+lootSep:SetHeight(1)
+lootSep:Hide()
+
+local lootLine = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+lootLine:SetWidth(320)
+lootLine:SetJustifyH("CENTER")
+lootLine:Hide()
+
+local lootCountLine = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+lootCountLine:SetWidth(320)
+lootCountLine:SetJustifyH("CENTER")
+lootCountLine:Hide()
+
+local warnHeader = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+warnHeader:SetWidth(320)
+warnHeader:SetJustifyH("CENTER")
+warnHeader:Hide()
+
+local warnBody = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+warnBody:SetWidth(320)
+warnBody:SetJustifyH("CENTER")
+warnBody:Hide()
+
+-- Per-spec remaining item counts section
+local specListSep = win:CreateTexture(nil, "ARTWORK")
+specListSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+specListSep:SetHeight(1)
+specListSep:Hide()
+
+local specListHeader = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+specListHeader:SetText("|cff888888" .. L["REMINDER_SPEC_LIST_HEADER"] .. "|r")
+specListHeader:Hide()
+
+local specListRows = {}
+for i = 1, 4 do
+    local row = {}
+    -- Clickable button; spec icon fills the button face
+    row.btn = CreateFrame("Button", nil, win)
+    row.btn:SetSize(22, 22)
+    -- Soft glow shown when this spec is the active loot spec
+    row.glow = row.btn:CreateTexture(nil, "OVERLAY")
+    row.glow:SetPoint("CENTER", row.btn, "CENTER", 0, 0)
+    row.glow:SetSize(50, 50)
+    row.glow:SetAtlas("currency-frame-glow")
+    row.glow:Hide()
+    row.icon = row.btn:CreateTexture(nil, "ARTWORK")
+    row.icon:SetAllPoints(row.btn)
+    row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    local hl = row.btn:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetAllPoints(row.btn)
+    hl:SetColorTexture(1, 1, 1, 0.2)
+    row.label = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.btn:Hide()
+    row.label:Hide()
+    specListRows[i] = row
+end
+
+-- Shared: build and show the Loot Protection tooltip from any owner frame
+local function ShowSpecListTooltip(owner, anchor)
+    if not (cachedSource and cachedSource.sourceType and cachedSource.sourceID) then
+        return
+    end
+    local specs = VCA.SpecInfo.GetPlayerSpecs()
+    if not specs or #specs == 0 then
+        return
+    end
+    local selectedSet = VCA.Data.GetSelectedItems(cachedSource.sourceType, cachedSource.sourceID,
+        cachedSource.difficultyID)
+    GameTooltip:SetOwner(owner, anchor)
+    GameTooltip:SetText(L["SPEC_LIST_TOOLTIP_TITLE"], 1, 0.82, 0)
+    GameTooltip:AddLine(" ")
+    for _, spec in ipairs(specs) do
+        local items = VCA.LootPool.GetCachedItemsForSpec(cachedSource.sourceType, cachedSource.sourceID,
+            cachedSource.difficultyID, spec.classID, spec.specID)
+        if not items then
+            items = VCA.LootPool.GetItemsForSpec(cachedSource.sourceType, cachedSource.sourceID,
+                cachedSource.difficultyID, spec.classID, spec.specID)
+        end
+        local pool = items or {}
+        local poolSet = {}
+        for _, itemID in ipairs(pool) do
+            poolSet[itemID] = true
+        end
+        local remaining = 0
+        for _, itemID in ipairs(pool) do
+            if not VCA.Data.IsObtained(cachedSource.sourceType, cachedSource.sourceID, cachedSource.difficultyID,
+                spec.specID, itemID) then
+                remaining = remaining + 1
+            end
+        end
+        local wanted = 0
+        if selectedSet then
+            for itemID in pairs(selectedSet) do
+                if poolSet[itemID] then
+                    wanted = wanted + 1
+                end
+            end
+        end
+        local _, sName = GetSpecializationInfoByID(spec.specID)
+        local iconT = "|T" .. (spec.icon or "Interface\\Icons\\INV_Misc_QuestionMark") .. ":14:14|t"
+        local wantedColor = wanted > 0 and "|cffffff00" or "|cff888888"
+        local rightStr = wantedColor .. wanted .. " wanted|r |cff888888-  " .. remaining .. " remaining|r"
+        GameTooltip:AddDoubleLine(iconT .. " " .. (sName or "?"), rightStr, 1, 1, 1, 1, 1, 1)
+    end
+    GameTooltip:Show()
+end
+
+-- Hover frame (kept for HideSpecList compatibility; always hidden now)
+local specListHitFrame = CreateFrame("Frame", nil, win)
+specListHitFrame:SetPoint("TOP", win, "TOP", 0, -82)
+specListHitFrame:SetSize(340, 26)
+specListHitFrame:EnableMouse(true)
+specListHitFrame:SetScript("OnEnter", function(self)
+    ShowSpecListTooltip(self, "ANCHOR_BOTTOMRIGHT")
+end)
+specListHitFrame:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+specListHitFrame:Hide()
+
+-- Spec icon in top-right corner — hover shows Loot Protection tooltip
+local specCornerIcon = win:CreateTexture(nil, "ARTWORK")
+specCornerIcon:SetSize(28, 28)
+specCornerIcon:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -14)
+specCornerIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+specCornerIcon:Hide()
+
+local specCornerBtn = CreateFrame("Frame", nil, win)
+specCornerBtn:SetSize(28, 28)
+specCornerBtn:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -14)
+specCornerBtn:EnableMouse(true)
+specCornerBtn:SetScript("OnEnter", function(self)
+    ShowSpecListTooltip(self, "ANCHOR_BOTTOMLEFT")
+end)
+specCornerBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+
+-- â”€â”€ Roll button â€” 2-click confirmation (EXTREMELY IMPORTANT) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+-- Pre-built button label strings (atlas markup evaluated once at load time).
+local ROLL_BTN_TEXT = CreateAtlasMarkup("lootroll-icon-need", 14, 14) .. " " .. L["BONUS_ROLL_CONFIRM_ROLL"]
+local PASS_BTN_TEXT = CreateAtlasMarkup("lootroll-icon-pass", 14, 14) .. " " .. L["BONUS_ROLL_CONFIRM_PASS"]
+
+-- Confirmation question above buttons
+local winRollPrompt = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+winRollPrompt:SetText(L["BONUS_ROLL_CONFIRM_QUESTION"])
+winRollPrompt:Hide()
+
+local rollBtn = CreateFrame("Button", nil, win, "UIPanelButtonTemplate")
+rollBtn:SetHeight(22)
+rollBtn:SetNormalTexture("")
+rollBtn:SetPushedTexture("")
+rollBtn:SetHighlightTexture("")
+rollBtn:SetDisabledTexture("")
+rollBtn:SetText(ROLL_BTN_TEXT)
+rollBtn:SetScript("OnClick", function()
+    StaticPopup_Show("VOIDCORE_BONUS_ROLL", L["BONUS_ROLL_POPUP_ROLL"])
+end)
+
+-- â”€â”€ Pass button â€” 2-click confirmation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+local passBtn = CreateFrame("Button", nil, win, "UIPanelButtonTemplate")
+passBtn:SetHeight(22)
+passBtn:SetNormalTexture("")
+passBtn:SetPushedTexture("")
+passBtn:SetHighlightTexture("")
+passBtn:SetDisabledTexture("")
+passBtn:SetText(PASS_BTN_TEXT)
+passBtn:SetScript("OnClick", function()
+    if isPreview then
+        BRC.Uninject()
+    elseif BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.PassButton then
+        BonusRollFrame.PromptFrame.PassButton:Click()
+    end
+end)
+
+-- â”€â”€ Timer mirroring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+win:SetScript("OnUpdate", function()
+    if isPreview then
+        if previewTimerStart then
+            local elapsed = (GetTime() - previewTimerStart) % previewTimerDuration
+            timerBar:SetMinMaxValues(0, previewTimerDuration)
+            timerBar:SetValue(previewTimerDuration - elapsed)
+        end
+        return
+    end
+    -- Timer is the StatusBar widget itself; .Bar is its fill Texture (no GetValue)
+    if not (BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.Timer) then
+        return
+    end
+    local src = BonusRollFrame.PromptFrame.Timer
+    if not src.GetValue then
+        return
+    end
+    local lo, hi = src:GetMinMaxValues()
+    timerBar:SetMinMaxValues(lo, hi)
+    timerBar:SetValue(src:GetValue())
+end)
+
+-- Hides per-spec list separator, header and all row widgets.
+local function HideSpecList()
+    specListSep:Hide()
+    specListHeader:Hide()
+    specListHitFrame:Hide()
+    for i = 1, 4 do
+        specListRows[i].btn:Hide()
+        specListRows[i].glow:Hide()
+        specListRows[i].label:Hide()
+    end
+end
+
+-- Renders per-spec remaining-item icon buttons into the window on a single row.
+-- Returns the updated dynY after the row.
+local function ShowSpecList(source, dynY)
+    if not (source and source.sourceType and source.sourceID) then
+        HideSpecList()
+        return dynY
+    end
+    local specs = VCA.SpecInfo.GetPlayerSpecs()
+    if not (specs and #specs > 0) then
+        HideSpecList()
+        return dynY
+    end
+
+    specListHeader:Hide()
+    specListHitFrame:Hide()
+
+    dynY = dynY - 8
+    specListSep:ClearAllPoints()
+    specListSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, dynY)
+    specListSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, dynY)
+    specListSep:Show()
+    dynY = dynY - 10
+
+    -- Horizontal layout: [icon] N (W)  [icon] N (W)  …
+    -- Cell = 22px icon + 4px gap + ~42px text ("12 (3)") + 10px between = 63px
+    local CELL_W = 60
+    local WIN_W = 360
+    local specCount = math.min(#specs, 4)
+    -- Total row width: (N-1) gaps + last cell (icon 22 + gap 4 + text ~42)
+    local rowW = (specCount - 1) * CELL_W + 68
+    local startX = math.floor((WIN_W - rowW) / 2)
+
+    local activeSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
+    local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
+
+    for i, spec in ipairs(specs) do
+        if i > 4 then
+            break
+        end
+        local row = specListRows[i]
+
+        local items = VCA.LootPool.GetCachedItemsForSpec(source.sourceType, source.sourceID, source.difficultyID,
+            spec.classID, spec.specID)
+        if not items then
+            items = VCA.LootPool.GetItemsForSpec(source.sourceType, source.sourceID, source.difficultyID, spec.classID,
+                spec.specID)
+        end
+        local poolSet = {}
+        for _, itemID in ipairs(items or {}) do
+            poolSet[itemID] = true
+        end
+        local remaining = 0
+        for _, itemID in ipairs(items or {}) do
+            if not VCA.Data.IsObtained(source.sourceType, source.sourceID, source.difficultyID, spec.specID, itemID) then
+                remaining = remaining + 1
+            end
+        end
+        local wanted = 0
+        if selectedSet then
+            for itemID in pairs(selectedSet) do
+                if poolSet[itemID] then
+                    wanted = wanted + 1
+                end
+            end
+        end
+
+        row.btn:ClearAllPoints()
+        row.btn:SetPoint("TOPLEFT", win, "TOPLEFT", startX + (i - 1) * CELL_W, dynY)
+        row.icon:SetTexture(spec.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+        if spec.specID == activeSpecID then
+            row.glow:Show()
+        else
+            row.glow:Hide()
+        end
+
+        row.label:ClearAllPoints()
+        row.label:SetPoint("LEFT", row.btn, "RIGHT", 4, 0)
+        local remColor = remaining > 0 and "|cffffffff" or "|cff666666"
+        local wantedStr = wanted > 0 and ("|cffffff00(" .. wanted .. ")|r") or "|cff666666(-)|r"
+        row.label:SetText(remColor .. remaining .. "|r " .. wantedStr)
+
+        -- Capture loop locals for closures
+        local capturedSpecID = spec.specID
+        local capturedSpecName = select(2, GetSpecializationInfoByID(spec.specID)) or "?"
+        row.btn:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(string.format(L["BRC_SWITCH_SPEC_TIP"], capturedSpecName))
+
+            if cachedSource and cachedSource.sourceType and cachedSource.sourceID then
+                local source = cachedSource
+                local specItems = VCA.LootPool.GetItemsForSpec(source.sourceType, source.sourceID, source.difficultyID,
+                    VCA.SpecInfo.GetPlayerClassID(), capturedSpecID)
+                local specItemSet = {}
+                for _, itemID in ipairs(specItems) do
+                    specItemSet[itemID] = true
+                end
+
+                local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
+                local wantedItems = {}
+                for itemID in pairs(selectedSet) do
+                    if specItemSet[itemID] and
+                        not VCA.Data
+                            .IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID,
+                            capturedSpecID, itemID, nil) then
+                        local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = GetItemInfo(itemID)
+                        if itemName then
+                            wantedItems[#wantedItems + 1] = {
+                                itemName = itemName,
+                                itemTexture = itemTexture,
+                                equipLoc = equipLoc,
+                                sortKey = CHANCE_TIP_SLOT_ORDER[equipLoc] or 99
+                            }
+                        end
+                    end
+                end
+
+                if #wantedItems > 0 then
+                    table.sort(wantedItems, function(a, b)
+                        if a.sortKey ~= b.sortKey then
+                            return a.sortKey < b.sortKey
+                        end
+                        return (a.itemName or "") < (b.itemName or "")
+                    end)
+                    GameTooltip:AddLine(" ")
+                    GameTooltip:AddLine(L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"], 0.85, 0.3, 1)
+                    for _, item in ipairs(wantedItems) do
+                        local iconMarkup = item.itemTexture and
+                                               ("|T" .. item.itemTexture .. ":14:14:0:0:64:64:4:60:4:60|t ") or "  "
+                        local nameColored = "|cnIQ4:" .. item.itemName .. "|r"
+                        local slotText = (item.equipLoc and _G[item.equipLoc] and _G[item.equipLoc] ~= "") and
+                                             (" |cff888888[" .. _G[item.equipLoc] .. "]|r") or ""
+                        GameTooltip:AddLine("  " .. iconMarkup .. nameColored .. slotText)
+                    end
+                end
+            end
+
+            GameTooltip:Show()
+        end)
+        row.btn:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        row.btn:SetScript("OnClick", function()
+            isSpecChangePending = true
+            SetLootSpecialization(capturedSpecID)
+        end)
+
+        row.btn:Show()
+        row.label:Show()
+    end
+
+    -- Hide unused slots
+    for i = (#specs + 1), 4 do
+        specListRows[i].btn:Hide()
+        specListRows[i].label:Hide()
+    end
+
+    dynY = dynY - 26 -- single row height
+    return dynY
+end
+
+-- Renders the loot-odds row, per-spec list, and the roll-prompt label onto the
+-- window, advancing `dynY` for each section shown.  Returns the final dynY.
+-- `source` must carry { sourceType, sourceID, difficultyID } or be nil.
+local function LayoutDynamicSection(source, specID, dynY)
+    local initialDynY = dynY
+    topSep:Show()
+    specName:Show()
+    specName:SetText("")
+    chanceHitFrame:Hide()
+    local selectedSet = (source and source.sourceType and source.sourceID) and
+                            VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID) or nil
+    local hasSelection = selectedSet and next(selectedSet)
+
+    local probFull = (source and source.sourceType and source.sourceID) and
+                         VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID, source.difficultyID,
+            VCA.SpecInfo.GetPlayerClassID(), specID, nil) or nil
+
+    if source and source.sourceType and source.sourceID then
+
+        lootSep:Hide()
+
+        -- ── Loot probability (filtered by selection) ──────────────────────────
+        if not hasSelection then
+            specName:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_SELECTED"] .. "|r")
+            lootLine:Hide()
+            lootCountLine:Hide()
+        else
+            local prob = VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID, source.difficultyID,
+                VCA.SpecInfo.GetPlayerClassID(), specID, nil, selectedSet)
+            if prob.noItems then
+                -- Check if any other spec has wanted items in the selection
+                local otherSpecHasItems = false
+                local specs = VCA.SpecInfo.GetPlayerSpecs()
+                if specs then
+                    for _, spec in ipairs(specs) do
+                        if spec.specID ~= specID then
+                            local op = VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID,
+                                source.difficultyID, spec.classID, spec.specID, nil, selectedSet)
+                            if not op.noItems then
+                                otherSpecHasItems = true
+                                break
+                            end
+                        end
+                    end
+                end
+                chanceText:Hide()
+                specName:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_ITEMS"] .. "|r")
+                if otherSpecHasItems then
+                    lootLine:ClearAllPoints()
+                    lootLine:SetPoint("TOP", specName, "BOTTOM", 0, -4)
+                    lootLine:SetText("|cffffff00" .. L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] .. "|r")
+                    lootLine:Show()
+                    dynY = dynY - 18
+                else
+                    lootLine:Hide()
+                end
+                lootCountLine:Hide()
+            elseif prob.allObtained then
+                dynY = dynY - 10
+                lootLine:ClearAllPoints()
+                lootLine:SetPoint("TOP", win, "TOP", 0, dynY)
+                chanceText:Hide()
+                lootLine:SetText("|cff00ff00" .. L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] .. "|r")
+                lootLine:Show()
+                lootCountLine:Hide()
+                dynY = dynY - 20
+            else
+                local pct = math.floor((prob.remainingOdds or 0) * 100 + 0.5)
+                local fmtKey = prob.remainingCount == 1 and "BONUS_ROLL_CONFIRM_CHANCE_ONE" or
+                                   "BONUS_ROLL_CONFIRM_CHANCE"
+                local chanceStr = string.format(L[fmtKey], pct, prob.remainingCount)
+                specName:SetText("|cffffff00" .. chanceStr .. "|r")
+                lootLine:Hide()
+                lootCountLine:Hide()
+                chanceHitFrame:Show()
+            end
+        end
+    else
+        lootSep:Hide()
+        lootLine:Hide()
+        lootCountLine:Hide()
+        chanceText:Hide()
+        warnHeader:Hide()
+        warnBody:Hide()
+        specName:SetText("")
+    end
+
+    -- Per-spec remaining counts (shown when option is enabled)
+    if IsSpecListEnabled() then
+        dynY = ShowSpecList(source, dynY)
+    else
+        HideSpecList()
+    end
+
+    -- ── Warning (shown last, just above buttons) ──────────────────────────────
+    if source and source.sourceType and source.sourceID then
+        if probFull and probFull.remainingCount == 1 then
+            dynY = dynY - 6 -- spacing above warning
+            warnHeader:ClearAllPoints()
+            warnHeader:SetPoint("TOP", win, "TOP", 0, dynY)
+            warnHeader:SetText(L["BONUS_ROLL_CONFIRM_WARNING_HEADER"])
+            warnHeader:Show()
+            dynY = dynY - 20 -- header height
+            warnBody:ClearAllPoints()
+            warnBody:SetPoint("TOP", win, "TOP", 0, dynY)
+            warnBody:SetText(L["BONUS_ROLL_CONFIRM_WARNING_BODY"])
+            warnBody:Show()
+            dynY = dynY - 18 - 6 -- body height + spacing below
+        else
+            warnHeader:Hide()
+            warnBody:Hide()
+        end
+    else
+        warnHeader:Hide()
+        warnBody:Hide()
+    end
+
+    -- Compact: nothing was rendered below the spec row; snap to remove the gap
+    if dynY == initialDynY then
+        if not (source and source.sourceType and source.sourceID) then
+            -- Source unknown: collapse the separator + spec-row region entirely
+            topSep:Hide()
+            specName:Hide()
+            dynY = -78
+        else
+            dynY = initialDynY + 12
+        end
+    end
+
+    return dynY
+end
+
+-- â”€â”€ BRC.Show â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+function BRC.Show()
+    if not (BonusRollFrame and BonusRollFrame.PromptFrame) then
+        return
+    end
+
+    local pf = BonusRollFrame.PromptFrame
+
+    cachedDisplayItemID = nil
+    cachedItemLink = nil
+    local ejBtn = pf.EncounterJournalLinkButton
+    -- If SPELL_CONFIRMATION_PROMPT fired before this addon loaded (e.g. after /reload),
+    -- pull the active prompt data directly.
+    if not cachedPromptData then
+        local prompts = GetSpellConfirmationPromptsInfo()
+        if prompts then
+            for _, entry in pairs(prompts) do
+                if entry.currencyID == VCA.VOIDCORE_CURRENCY_ID then
+                    cachedPromptData = entry
+                    break
+                end
+            end
+        end
+    end
+    -- SPELL_CONFIRMATION_PROMPT provides displayItemID authoritatively; EJ button is fallback.
+    cachedDisplayItemID = (cachedPromptData and cachedPromptData.displayItemID) or (ejBtn and ejBtn.displayItemID)
+    if cachedDisplayItemID then
+        cachedItemLink = select(2, GetItemInfo(cachedDisplayItemID))
+    end
+
+    local iName, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(cachedDisplayItemID or 0)
+    -- If GetItemInfo hasn't cached the item yet (common for delve voidcaches), fall back to
+    -- the texture Blizzard already placed on the EncounterJournalLinkButton's NormalTexture.
+    if not iTexture and ejBtn then
+        local t = ejBtn:GetNormalTexture()
+        iTexture = t and t:GetTexture()
+    end
+    if iTexture then
+        winItemIcon:SetTexture(iTexture)
+        winItemIcon:Show()
+    else
+        winItemIcon:Hide()
+    end
+    if iName then
+        local _, _, _, hex = GetItemQualityColor(iQuality or 1)
+        local shortName = (iName:match("^([^:]+)") or iName):gsub("%s+$", "")
+        winItemName:SetText("|c" .. hex .. shortName .. "|r")
+    elseif pf.Name and pf.Name:GetText() and pf.Name:GetText() ~= "" then
+        local bName = pf.Name:GetText()
+        winItemName:SetText("|cffffffff" .. ((bName:match("^([^:]+)") or bName):gsub("%s+$", "")) .. "|r")
+    else
+        winItemName:SetText("|cff888888Nebulous Voidcore Roll|r")
+    end
+
+    local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
+    local _, sName, _, sIcon = GetSpecializationInfoByID(specID)
+    cachedSpecIcon = sIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    cachedSpecName = sName or "?"
+    cachedSpecID = specID
+    specCornerIcon:SetTexture(cachedSpecIcon)
+    specCornerIcon:Show()
+
+    rollBtn:SetText(ROLL_BTN_TEXT)
+    passBtn:SetText(PASS_BTN_TEXT)
+
+    -- Dynamic loot odds section
+
+    -- Prefer the authoritative source from SPELL_CONFIRMATION_PROMPT; fall back to the
+    -- reverse-lookup + live GetInstanceInfo() approach when unavailable (e.g. preview).
+    local source = (cachedPromptData and ResolveSourceFromPromptData(cachedPromptData)) or
+                       GetSourceFromDisplayItemID(cachedDisplayItemID)
+    if source and not source.difficultyID then
+        -- Fallback path: GetSourceFromDisplayItemID does not set difficultyID.
+        if source.sourceType == VCA.ContentType.MYTHIC_PLUS then
+            source.difficultyID = VCA.MythicPlusEJDifficulty
+        else
+            local _, _, diffID = GetInstanceInfo()
+            source.difficultyID = (VCA.EligibleRaidDifficulties[diffID] and diffID) or VCA.Difficulty.RAID_NORMAL
+        end
+    end
+    cachedSource = source
+
+    -- Voidcore count + cost
+    local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
+    local owned = currInfo and currInfo.quantity or 0
+    local cost = (source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
+                     VCA.VoidcoreCost.MYTHIC_PLUS
+    winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
+
+    local dynY = LayoutDynamicSection(source, specID, -112)
+    local btnW, btnH = 140, 28
+    local winH = math.abs(dynY) + 8 + btnH + 16
+    win:SetSize(360, winH)
+
+    rollBtn:SetSize(btnW, btnH)
+    passBtn:SetSize(btnW, btnH)
+    rollBtn:ClearAllPoints()
+    passBtn:ClearAllPoints()
+    rollBtn:SetPoint("BOTTOM", win, "BOTTOM", -(btnW / 2 + 4), 12)
+    passBtn:SetPoint("BOTTOM", win, "BOTTOM", (btnW / 2 + 4), 12)
+
+    win:ClearAllPoints()
+    win:SetPoint("CENTER", BonusRollFrame, "CENTER", 0, 0)
+    win:SetFrameStrata(BonusRollFrame:GetFrameStrata())
+    win:SetFrameLevel(BonusRollFrame:GetFrameLevel() + 10)
+    BonusRollFrame:SetAlpha(0)
+    local pf = BonusRollFrame.PromptFrame
+    if pf then
+        if pf.RollButton then
+            pf.RollButton:EnableMouse(false)
+            pf.RollButton:EnableMouseMotion(false)
+        end
+        if pf.PassButton then
+            pf.PassButton:EnableMouse(false)
+            pf.PassButton:EnableMouseMotion(false)
+        end
+        if pf.EncounterJournalLinkButton then
+            pf.EncounterJournalLinkButton:EnableMouse(false)
+            pf.EncounterJournalLinkButton:EnableMouseMotion(false)
+        end
+    end
+    if BonusRollFrame.CurrentCountFrame then
+        BonusRollFrame.CurrentCountFrame:EnableMouse(false)
+        BonusRollFrame.CurrentCountFrame:EnableMouseMotion(false)
+    end
+    isPreview = false
+    win:Show()
+end
+
+-- â”€â”€ BRC.Hide / Uninject â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+function BRC.Uninject()
+    if isSpecChangePending then
+        return
+    end
+    if BonusRollFrame then
+        BonusRollFrame:SetAlpha(1)
+        local pf = BonusRollFrame.PromptFrame
+        if pf then
+            if pf.RollButton then
+                pf.RollButton:EnableMouse(true)
+                pf.RollButton:EnableMouseMotion(true)
+            end
+            if pf.PassButton then
+                pf.PassButton:EnableMouse(true)
+                pf.PassButton:EnableMouseMotion(true)
+            end
+            if pf.EncounterJournalLinkButton then
+                pf.EncounterJournalLinkButton:EnableMouse(true)
+                pf.EncounterJournalLinkButton:EnableMouseMotion(true)
+            end
+        end
+        if BonusRollFrame.CurrentCountFrame then
+            BonusRollFrame.CurrentCountFrame:EnableMouse(true)
+            BonusRollFrame.CurrentCountFrame:EnableMouseMotion(true)
+        end
+    end
+    win:Hide()
+    StaticPopup_Hide("VOIDCORE_BONUS_ROLL")
+    cachedItemLink = nil
+    cachedDisplayItemID = nil
+    cachedSpecIcon = nil
+    cachedSpecName = nil
+    cachedSpecID = nil
+    cachedSource = nil
+    cachedPromptData = nil
+    previewTimerStart = nil
+end
+
+-- ── Confirmation popups ──────────────────────────────────────────────────────────────────
+
+StaticPopupDialogs["VOIDCORE_BONUS_ROLL"] = {
+    text = "%s",
+    button1 = L["BONUS_ROLL_CONFIRM_ROLL"],
+    button2 = CANCEL,
+    OnAccept = function()
+        BRC.Hide()
+        if not isPreview and BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.RollButton then
+            BonusRollFrame.PromptFrame.RollButton:Click()
+        end
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
+BRC.Hide = BRC.Uninject
+
+-- Skyreach +10 Voidcache as a realistic preview stand-in (M+ keystone context).
+local PREVIEW_PROMPT_DATA = {
+    confirmType = 1,
+    currencyCost = 1,
+    currencyID = 3418,
+    difficultyID = 8,
+    displayItemID = 268470,
+    duration = 174,
+    itemContext = 16,
+    spellID = 259072,
+    text = "",
+    treasureContextLevel = 10
+}
+
+function BRC.ShowPreview()
+    isPreview = true
+    previewTimerStart = GetTime()
+    cachedPromptData = PREVIEW_PROMPT_DATA
+    cachedDisplayItemID = cachedPromptData.displayItemID
+    cachedItemLink = nil
+
+    local iName, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(cachedDisplayItemID)
+    if iTexture then
+        winItemIcon:SetTexture(iTexture)
+        winItemIcon:Show()
+    else
+        winItemIcon:Hide()
+    end
+    local iHex = iQuality and select(4, GetItemQualityColor(iQuality)) or "ffa335ee"
+    local previewName = iName and ((iName:match("^([^:]+)") or iName):gsub("%s+$", "")) or "Nebulous Voidcore Roll"
+    winItemName:SetText("|c" .. iHex .. previewName .. "|r")
+
+    local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
+    local _, sName, _, sIcon = GetSpecializationInfoByID(specID)
+    cachedSpecIcon = sIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    cachedSpecName = sName or "?"
+    cachedSpecID = specID
+    specCornerIcon:SetTexture(cachedSpecIcon)
+    specCornerIcon:Show()
+
+    rollBtn:SetText(ROLL_BTN_TEXT)
+    passBtn:SetText(PASS_BTN_TEXT)
+
+    local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
+    local owned = currInfo and currInfo.quantity or 0
+
+    local source = ResolveSourceFromPromptData(cachedPromptData)
+    if not source then
+        -- Fallback if Skyreach is not in the current season pool.
+        source = GetSourceFromDisplayItemID(cachedDisplayItemID)
+        if source then
+            source.difficultyID = VCA.MythicPlusEJDifficulty
+        end
+    end
+    cachedSource = source
+
+    local cost = (source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
+                     VCA.VoidcoreCost.MYTHIC_PLUS
+    winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
+
+    local dynY = LayoutDynamicSection(source, specID, -112)
+    local btnW, btnH = 140, 28
+    local winH = math.abs(dynY) + 8 + btnH + 16
+    win:SetSize(360, winH)
+
+    rollBtn:SetSize(btnW, btnH)
+    passBtn:SetSize(btnW, btnH)
+    rollBtn:ClearAllPoints()
+    passBtn:ClearAllPoints()
+    rollBtn:SetPoint("BOTTOM", win, "BOTTOM", -(btnW / 2 + 4), 12)
+    passBtn:SetPoint("BOTTOM", win, "BOTTOM", (btnW / 2 + 4), 12)
+
+    win:ClearAllPoints()
+    win:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+    win:Show()
+end
+
+-- â”€â”€ One-time hooks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+local hooksDone = false
+local function SetupHooks()
+    if hooksDone or not BonusRollFrame then
+        return
+    end
+    BonusRollFrame:HookScript("OnShow", function()
+        if IsEnabled() then
+            BRC.Show()
+        end
+    end)
+    BonusRollFrame:HookScript("OnHide", BRC.Uninject)
+    hooksDone = true
+end
+
+-- â”€â”€ Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("ADDON_LOADED")
+eventFrame:RegisterEvent("SPELL_CONFIRMATION_PROMPT")
+eventFrame:RegisterEvent("BONUS_ROLL_STARTED")
+eventFrame:RegisterEvent("BONUS_ROLL_ACTIVATE")
+eventFrame:RegisterEvent("BONUS_ROLL_RESULT")
+eventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+eventFrame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
+
+eventFrame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_LOGIN" then
+        SetupHooks()
+    elseif event == "ADDON_LOADED" then
+        if (...) == "Blizzard_UIPanels_Game" then
+            SetupHooks()
+        end
+    elseif event == "SPELL_CONFIRMATION_PROMPT" then
+        local spellID = ...
+        local prompts = GetSpellConfirmationPromptsInfo()
+        if prompts then
+            for _, entry in pairs(prompts) do
+                if entry.spellID == spellID and entry.currencyID == VCA.VOIDCORE_CURRENCY_ID then
+                    cachedPromptData = entry
+                    break
+                end
+            end
+        end
+    elseif event == "BONUS_ROLL_STARTED" then
+        if IsEnabled() then
+            SetupHooks()
+            BRC.Show()
+        end
+    elseif event == "PLAYER_LOOT_SPEC_UPDATED" then
+        if win:IsShown() then
+            if isPreview then
+                BRC.ShowPreview()
+            else
+                BRC.Show()
+            end
+            -- Bust the tooltip cache by requesting a different voidcache item
+            -- through C_TooltipInfo.  WoW returns stale spec data when the same
+            -- item ID is read on two consecutive tooltip calls; reading a
+            -- different ID in between forces a fresh fetch for our item the next
+            -- time the user hovers the icon (mirrors VoidcacheScan's alternating
+            -- item-ID strategy documented in its header comment).
+            if C_TooltipInfo and C_TooltipInfo.GetItemByID then
+                local bustID = nil
+                for _, id in pairs(VCA.DungeonVoidcacheIDs or {}) do
+                    if id ~= cachedDisplayItemID then
+                        bustID = id
+                        break
+                    end
+                end
+                if not bustID then
+                    for _, id in pairs(VCA.RaidEncounterCacheIDs or {}) do
+                        if id ~= cachedDisplayItemID then
+                            bustID = id
+                            break
+                        end
+                    end
+                end
+                if bustID then
+                    C_TooltipInfo.GetItemByID(bustID)
+                end
+            end
+            -- If the tooltip is already open over the icon, re-request the real
+            -- item now that the cache has been busted.
+            if GameTooltip:IsShown() and GameTooltip:GetOwner() == winIconBtn then
+                local link = cachedItemLink or (cachedDisplayItemID and ("item:" .. cachedDisplayItemID))
+                if link then
+                    GameTooltip:SetHyperlink(link)
+                end
+            end
+        end
+        -- Defer clearing the flag so any BonusRollFrame:OnHide that Blizzard fires
+        -- as part of its own PLAYER_LOOT_SPEC_UPDATED handling is still suppressed.
+        C_Timer.After(0, function()
+            isSpecChangePending = false
+        end)
+    elseif event == "BONUS_ROLL_ACTIVATE" or event == "BONUS_ROLL_RESULT" then
+        BRC.Uninject()
+    elseif event == "GET_ITEM_INFO_RECEIVED" then
+        -- If our window is open and the icon is still hidden, try again now the
+        -- item data has arrived from the server.
+        local itemID = ...
+        if win:IsShown() and itemID == cachedDisplayItemID and not winItemIcon:IsShown() then
+            local _, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(itemID)
+            if iTexture then
+                winItemIcon:SetTexture(iTexture)
+                winItemIcon:Show()
+                if not iQuality then
+                    return
+                end
+                local _, _, _, hex = GetItemQualityColor(iQuality)
+                if hex then
+                    local iName = GetItemInfo(itemID)
+                    if iName then
+                        winItemName:SetText("|c" .. hex .. iName .. "|r")
+                    end
+                end
+            end
+        end
+    end
+end)

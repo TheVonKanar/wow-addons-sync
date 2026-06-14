@@ -50,7 +50,13 @@ L["HELP_RESET"] = "  /vca reset    – clear all obtained-item data"
 L["HELP_COUNT"] = "  /vca count    – show total items marked as obtained"
 L["HELP_SPEC"] = "  /vca spec     – show effective loot spec ID"
 L["HELP_SOURCE"] = "  /vca source   – show active detection source"
-L["HELP_VERSION"] = "  /vca version  – show addon version"
+L["HELP_VERSION"] = "  /vca version   – show addon version"
+L["HELP_REPLAYLOG"] = "  /vca replaylog – re-apply all roll log entries as obtained"
+L["HELP_RESTORE"] = "  /vca restore  – restore obtained data from pre-scan backup"
+
+L["RESTORE_COMPLETE"] = "%d item(s) restored from backup."
+L["RESTORE_NO_BACKUP"] = "No backup available. Run a scan first."
+L["RESTORE_FAILED"] = "Restore failed."
 
 -- ── Reminder popup (Reminder.lua) ─────────────────────────────────────────────
 
@@ -64,13 +70,69 @@ L["REMINDER_SELECTED_CHANCE"] = "%d%% chance for selected item(s)"
 L["REMINDER_CHANGE_PROMPT"] = "Change loot spec to |cffffff00%s|r?"
 L["REMINDER_YES"] = "Yes, Change"
 L["REMINDER_NO"] = "No Thanks"
+L["REMINDER_WARNING_ONE_ITEM"] =
+    "|cffff8000Warning:|r This spec has |cffff0000only 1 item|r remaining in this dungeon. Using a Nebulous Voidcore as this spec will |cffff0000reset the loot pool for every specialization|r in this dungeon!"
+L["REMINDER_SPEC_LIST_HEADER"] = "Remaining loot by spec:"
+L["SPEC_LIST_TOOLTIP"] = "Remaining loot for each loot specialization"
+L["SPEC_LIST_TOOLTIP_TITLE"] = "Loot Protection"
+L["SPEC_LIST_ITEM_ONE"] = "1 item remaining"
+L["SPEC_LIST_ITEM_MANY"] = "%d items remaining"
+L["SPEC_LIST_ALL_OBTAINED"] = "all obtained"
+L["REMINDER_SPEC_REMAINING"] = "%d remaining"
+L["REMINDER_SPEC_NONE"] = "none remaining"
+
+-- ── Voidcore Pool Reset warning popup (Reminder.lua) ─────────────────────────
+L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_SUBTITLE"] = "Loot Pool Reset Risk"
+L["WARNING_VOIDCORE_COUNT"] = "You have |cffffff00%d|r Nebulous Voidcore(s)"
+L["WARNING_FAVORED_SPEC"] = "You are using the favored loot spec:"
+L["WARNING_ONE_ITEM"] =
+    "|cffff8000Warning:|r This spec has |cffff0000only %d item|r remaining in this dungeon. Using a Nebulous Voidcore will |cffff0000reset the loot pool for every specialization|r in this dungeon!"
+L["WARNING_SPEC_LIST_HEADER"] = "Items remaining per spec:"
+L["WARNING_CLOSE"] = "Close"
+
+-- ── Bonus Roll Confirm overlay (BonusRollConfirm.lua) ────────────────────────
+
+L["BONUS_ROLL_CONFIRM_SUBTITLE"] = "Confirm Nebulous Voidcore Roll"
+L["BONUS_ROLL_CONFIRM_SPEC_LABEL"] = "Active loot spec:"
+L["BONUS_ROLL_CONFIRM_POOL"] = "%d item(s) remaining in pool"
+L["BONUS_ROLL_CONFIRM_CHANCE"] = "%d%% chance (%d wanted items)"
+L["BONUS_ROLL_CONFIRM_CHANCE_ONE"] = "%d%% chance (1 wanted item)"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Wanted Items"
+L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] = "All items obtained for this spec"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS"] = "No wanted items for this spec"
+L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] = "Other specs have wanted items"
+L["BONUS_ROLL_CONFIRM_NO_SELECTED"] = "No wanted items"
+L["BONUS_ROLL_CONFIRM_NOT_TRACKED"] = "Source not tracked — no odds available"
+L["BONUS_ROLL_CONFIRM_WARNING_HEADER"] = "|A:Ping_Chat_Warning:14:14|a |cffffff00Rolling will reset loot protection|r"
+L["BONUS_ROLL_CONFIRM_WARNING_BODY"] = "Previously looted items may drop again for all specs."
+L["BONUS_ROLL_CONFIRM_QUESTION"] = "Do you want to roll for loot?"
+L["BONUS_ROLL_CONFIRM_ROLL"] = "Roll"
+L["BONUS_ROLL_CONFIRM_PASS"] = "Pass"
+L["BONUS_ROLL_CONFIRM_CONFIRM"] = "Confirm Roll"
+L["BONUS_ROLL_CONFIRM_PASS_CONFIRM"] = "Confirm Pass"
+L["BONUS_ROLL_CONFIRM_CLOSE"] = "Close"
+L["BONUS_ROLL_POPUP_ROLL"] = "Spend your Nebulous Voidcore on a bonus roll?"
+L["BONUS_ROLL_POPUP_PASS"] = "Pass on this bonus roll?"
 
 -- ── Options panel (Options.lua) ───────────────────────────────────────────────
+
+L["OPTIONS_CAT_REMINDER"] = "Loot Spec Reminder"
+L["OPTIONS_CAT_BONUS_ROLL"] = "Bonus Roll"
 
 L["OPTIONS_REMINDER_ENABLE"] = "Loot spec reminder"
 L["OPTIONS_REMINDER_TOOLTIP"] =
     "Show a popup when entering a current-season mythic dungeon if a different loot specialization would give better odds for your selected items."
 L["OPTIONS_PREVIEW_REMINDER"] = "Preview"
+L["OPTIONS_PREVIEW_BONUS_ROLL"] = "Preview"
+L["BONUS_ROLL_CONFIRM_COST"] = "Cost: |cffffff00%d|r  \194\183  You have |cffffff00%d|r"
+L["OPTIONS_BONUS_ROLL_CONFIRM"] = "Bonus roll window"
+L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
+    "Show VoidcoreAdvisor information when the Nebulous Voidcore bonus roll window appears, including your active loot spec and item odds."
+L["OPTIONS_BRC_SPEC_LIST"] = "Show items remaining per spec"
+L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
+    "Show a list of remaining items for each of your specializations in the bonus roll window."
+L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
 -- ── Dungeon Overview panel (DungeonOverview.lua) ─────────────────────────────
 
@@ -82,13 +144,52 @@ L["DUNGEON_OVERVIEW_COL_CHANCE"] = "CHANCE"
 L["DUNGEON_OVERVIEW_ALL_DONE"] = "All dungeon items obtained!"
 L["DUNGEON_OVERVIEW_NO_DATA"] = "Season dungeon data not yet available."
 
+-- ── Slot Filter Drawer ────────────────────────────────────────────────────────
+L["SLOT_FILTER_TOGGLE"] = "Select by slot"
+L["SLOT_FILTER_CLEAR"] = "Deselect all slot items"
+L["SLOT_FILTER_CLEAR_CONFIRM"] = "Clear all item selections?"
+L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] = "All selected items will be deselected."
+
+L["SLOT_head"] = "Head"
+L["SLOT_neck"] = "Neck"
+L["SLOT_shoulder"] = "Shoulder"
+L["SLOT_back"] = "Back"
+L["SLOT_chest"] = "Chest"
+L["SLOT_wrist"] = "Wrist"
+L["SLOT_hands"] = "Hands"
+L["SLOT_waist"] = "Waist"
+L["SLOT_legs"] = "Legs"
+L["SLOT_feet"] = "Feet"
+L["SLOT_finger"] = "Finger"
+L["SLOT_trinket"] = "Trinket"
+L["SLOT_SELECT_ALL"] = "Select All"
+L["SLOT_DESELECT_ALL"] = "Deselect All"
+L["SLOT_NONE_SELECTED"] = "Nothing selected"
+L["SLOT_weapon"] = "Weapon"
+L["SLOT_offhand"] = "Off-Hand"
+
+-- ── Voidcache Scan (VoidcacheScan.lua / DungeonOverview.lua) ─────────────────
+
+L["SCAN_BTN"] = "Scan Loot Specs"
+L["SCAN_PROGRESS"] = "Scanning %d/%d..."
+L["SCAN_COMPLETE"] = "✓ Scan Done"
+L["SCAN_ABORTED"] = "Scan Cancelled"
+L["SCAN_CONFIRM_TITLE"] = "Scan Loot Specs?"
+L["SCAN_CONFIRM_BODY"] =
+    "This will scan the Nebulous Voidcache tooltip for each of your loot specializations across all season dungeons.\n\nExisting dungeon obtained data will be backed up and reset.\n\nDo not enter combat or a dungeon during the scan."
+L["SCAN_UNAVAILABLE_COMBAT"] = "Cannot scan while in combat."
+L["SCAN_UNAVAILABLE_INSTANCE"] = "Cannot scan while inside a dungeon."
+L["RAID_SCAN_CONFIRM_TITLE"] = "Scan Raid Loot Specs?"
+L["RAID_SCAN_CONFIRM_BODY"] =
+    "This will scan the Nebulous Voidcache tooltip for each of your loot specializations across all Mythic raid encounters.\n\nExisting Mythic raid obtained data will be reset.\n\nDo not enter combat during the scan."
+
 L["RAID_OVERVIEW_SUBTITLE"] = "Raid Bosses — Loot Chance"
 L["RAID_OVERVIEW_COL_BOSS"] = "BOSS"
 L["RAID_OVERVIEW_NO_DATA"] = "No raid encounter data available."
 
 -- ── Spec Picker Popup (PanelColumns.lua) ──────────────────────────────────────
 
-L["SPEC_PICKER_TITLE"] = "Obtained as:"
+L["SPEC_PICKER_TITLE"] = "Mark as Looted"
 L["SPEC_PICKER_OK"] = "OK"
 L["OBTAINED_UNKNOWN_SPEC"] = "Obtained (spec unknown)"
 L["UNKNOWN_KEYLEVEL"] = "unknown keylevel"

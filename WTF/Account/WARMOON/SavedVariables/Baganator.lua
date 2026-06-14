@@ -258,13 +258,8 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["saved_searches"] = {
-},
-["category_section_toggled"] = {
-["1"] = true,
-["Crafting"] = true,
-["2"] = false,
-},
+["category_migration"] = 5,
+["sort_ignore_slots_at_end"] = false,
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -327,6 +322,12 @@ BAGANATOR_CONFIG = {
 ["i:262798"] = true,
 },
 },
+["default_gem"] = {
+["addedItems"] = {
+["i:228643"] = true,
+["i:228646"] = true,
+},
+},
 ["default_recipe"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
@@ -335,21 +336,56 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_gem"] = {
-["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
-},
-},
 ["default_auto_equipment_sets"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_tradegoods"] = {
-},
-["default_food"] = {
+["6"] = {
 ["showGroupPrefix"] = true,
-["priority"] = -1,
+["priority"] = 0,
+},
+["1"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
+["addedItems"] = {
+["i:246321"] = true,
+["i:224265"] = true,
+["i:236757"] = true,
+["i:248017"] = true,
+["i:236096"] = true,
+["i:236953"] = true,
+["i:224264"] = true,
+["i:235151"] = true,
+["i:224817"] = true,
+["i:245755"] = true,
+["i:238208"] = true,
+["i:245653"] = true,
+["i:263977"] = true,
+["i:225249"] = true,
+["i:238467"] = true,
+["i:274069"] = true,
+["i:255676"] = true,
+["i:236954"] = true,
+["i:236758"] = true,
+["i:246320"] = true,
+["i:231269"] = true,
+["i:255825"] = true,
+["i:227450"] = true,
+["i:226045"] = true,
+["i:246585"] = true,
+["i:233071"] = true,
+["i:238466"] = true,
+["i:226100"] = true,
+["i:230227"] = true,
+["i:236756"] = true,
+["i:238465"] = true,
+["i:225245"] = true,
+["i:262936"] = true,
+["i:245761"] = true,
+["i:268485"] = true,
+["i:259188"] = true,
+["i:225234"] = true,
+},
 },
 ["default_reagent"] = {
 ["addedItems"] = {
@@ -357,9 +393,9 @@ BAGANATOR_CONFIG = {
 ["i:230905"] = true,
 },
 },
-["default_auto_inventory_slots"] = {
+["3"] = {
 ["showGroupPrefix"] = true,
-["priority"] = -1,
+["priority"] = 0,
 },
 ["2"] = {
 ["showGroupPrefix"] = true,
@@ -411,9 +447,7 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
 },
-["6"] = {
-["showGroupPrefix"] = true,
-["priority"] = 0,
+["default_tradegoods"] = {
 },
 ["default_consumable"] = {
 ["addedItems"] = {
@@ -428,9 +462,9 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["3"] = {
+["default_auto_inventory_slots"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 0,
+["priority"] = -1,
 },
 ["default_profession"] = {
 ["showGroupPrefix"] = true,
@@ -451,48 +485,9 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["1"] = {
+["default_food"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 0,
-["addedItems"] = {
-["i:246321"] = true,
-["i:224265"] = true,
-["i:236757"] = true,
-["i:248017"] = true,
-["i:236096"] = true,
-["i:236953"] = true,
-["i:224264"] = true,
-["i:235151"] = true,
-["i:224817"] = true,
-["i:245755"] = true,
-["i:238208"] = true,
-["i:245653"] = true,
-["i:263977"] = true,
-["i:225249"] = true,
-["i:238467"] = true,
-["i:274069"] = true,
-["i:255676"] = true,
-["i:236954"] = true,
-["i:236758"] = true,
-["i:246320"] = true,
-["i:231269"] = true,
-["i:255825"] = true,
-["i:227450"] = true,
-["i:226045"] = true,
-["i:246585"] = true,
-["i:233071"] = true,
-["i:238466"] = true,
-["i:226100"] = true,
-["i:230227"] = true,
-["i:236756"] = true,
-["i:238465"] = true,
-["i:225245"] = true,
-["i:262936"] = true,
-["i:245761"] = true,
-["i:268485"] = true,
-["i:259188"] = true,
-["i:225234"] = true,
-},
+["priority"] = -1,
 },
 ["default_itemenhancement"] = {
 ["addedItems"] = {
@@ -505,15 +500,19 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = true,
+["Crafting"] = true,
+["2"] = false,
+},
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
--397.672607421875,
-242.9997863769531,
+-95.67236328125,
+431.9996337890625,
 },
 ["icon_text_font_size"] = 14,
 ["currencies_tracked_imported"] = {
@@ -521,11 +520,25 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["disabled_skins"] = {
+["view_alpha"] = 1,
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
-["bag_view_width"] = 15,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -541,7 +554,6 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
-["debug_keywords"] = false,
 ["guild_current_tab"] = 6,
 ["auto_sort_on_open"] = false,
 ["setting_anchors"] = false,
@@ -603,19 +615,7 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
+["debug_keywords"] = false,
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -625,13 +625,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["bag_view_width"] = 15,
+["disabled_skins"] = {
 },
-["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["category_migration"] = 5,
+["saved_searches"] = {
+},
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

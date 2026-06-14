@@ -210,7 +210,7 @@ function addonTable.MessagesMonitorMixin:OnLoad()
 
   hooksecurefunc(DEFAULT_CHAT_FRAME, "AddMessage", function(_, ...)
     local fullTrace = debugstack()
-    if fullTrace:find("ChatFrame_OnEvent") or fullTrace:find("Blizzard_Channels") then
+    if fullTrace:find("ChatFrame_OnEvent") or fullTrace:find("Blizzard_Channels") or fullTrace:find("MessageEventHandler") then
       return
     end
     local trace = debugstack(3, 1, 0)
@@ -385,8 +385,7 @@ function addonTable.MessagesMonitorMixin:ShowGMOTD()
     return
   end
   local motd = C_Club.GetClubInfo(guildID).broadcast
-  if motd and (issecretvalue and (not issecretvalue(motd) and motd ~= "" and motd ~= self.seenMOTD or issecretvalue(motd)) or
-      not issecretvalue and motd ~= "" and motd ~= self.seenMOTD) then
+  if motd and (not issecretvalue or not issecretvalue(motd)) and motd ~= "" and motd ~= self.seenMOTD then
     self.seenMOTD = (not issecretvalue or not issecretvalue(motd)) and motd or nil
     local info = addonTable.Config.Get(addonTable.Config.Options.CHAT_COLORS)["GUILD"] or ChatTypeInfo["GUILD"]
     local formatted = string.format(GUILD_MOTD_TEMPLATE, motd)
@@ -612,6 +611,9 @@ function addonTable.MessagesMonitorMixin:CleanStore(store, index)
     if data.text:find("reportcensoredmessage:") then
       data.text = data.text:gsub("|Hreportcensoredmessage:.-|h.-|h", "[???]")
     end
+    if data.text == nil then
+      data.text = "???"
+    end
   end
   return #store
 end
@@ -625,6 +627,9 @@ function addonTable.MessagesMonitorMixin:GetMessageProcessed(reverseIndex)
     return self.messagesProcessed[index]
   end
   local new = CopyTable(self.messages[index])
+  if new.text == nil then
+    new.text = "???"
+  end
   if not issecretvalue or not issecretvalue(new.text) then
     for _, func in ipairs(self.liveModifiers) do
       func(new)
@@ -812,7 +817,7 @@ function addonTable.MessagesMonitorMixin:GetFont() -- Compatibility with any emo
 end
 
 function addonTable.MessagesMonitorMixin:AddMessage(text, r, g, b, _, _, _, _, _, Formatter)
-  if (not issecretvalue or not issecretvalue(text)) and text == "" or type(text) ~= "string" then
+  if (not issecretvalue or not issecretvalue(text)) and (text == "" or text == CHAT_INVALID_NAME_NOTICE) or type(text) ~= "string" then
     if not self.lockType then
       self.incomingType = nil
     end
@@ -1300,9 +1305,9 @@ function addonTable.MessagesMonitorMixin:MessageEventHandler(event, ...)
         return;
       end
 
-      local showLink = 1;
+      local showLink = true;
       if ( strsub(type, 1, 7) == "MONSTER" or strsub(type, 1, 9) == "RAID_BOSS") then
-        showLink = nil;
+        showLink = false;
       elseif C_StringUtil and C_StringUtil.EscapeLuaFormatString then
         msg = C_StringUtil.EscapeLuaFormatString(msg)
       else
@@ -1415,22 +1420,7 @@ function addonTable.MessagesMonitorMixin:MessageEventHandler(event, ...)
     self:AddMessage(msg, info.r, info.g, info.b, info.id, accessID, typeID, event, eventArgs, MessageFormatter);
   end
 
-  if ( type == "WHISPER" or type == "BN_WHISPER" ) then
-    --BN_WHISPER FIXME
-    if not isSecret then
-      (ChatEdit_SetLastTellTarget or ChatFrameUtil.SetLastTellTarget)(arg2, type);
-    end
-
-    if not self.tellTimer or (GetTime() > self.tellTimer) or addonTable.Config.Get(addonTable.Config.Options.WHISPER_SOUNDS) == "all" then
-      PlaySound(SOUNDKIT.TELL_MESSAGE);
-    end
-    self.tellTimer = GetTime() + (CHAT_TELL_ALERT_TIME or ChatFrameConstants.WhisperSoundAlertCooldown);
-
-    -- We don't flash the app icon for front end chat for now.
-    if FlashClientIcon then
-      FlashClientIcon();
-    end
-  end
+  -- Sounds and tell targets handled by Blizzard code
 
   return true;
 end

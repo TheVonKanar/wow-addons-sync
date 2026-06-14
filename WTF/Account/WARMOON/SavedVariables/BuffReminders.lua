@@ -27,7 +27,8 @@ BuffRemindersDB = {
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 ["enabledBuffs"] = {
 ["intellect"] = true,
 ["blisteringScales"] = true,
@@ -46,9 +47,6 @@ BuffRemindersDB = {
 ["soulstone"] = true,
 ["beacons"] = true,
 ["burningRush"] = false,
-},
-["dbVersion"] = 40,
-["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
@@ -76,6 +74,9 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
+["presence"] = {
+["showText"] = true,
+},
 ["targeted"] = {
 ["showText"] = true,
 },
@@ -84,10 +85,10 @@ BuffRemindersDB = {
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
-["presence"] = {
-["showText"] = true,
 },
+["readyCheckOnlyOverrides"] = {
 },
+["dbVersion"] = 40,
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -107,8 +108,7 @@ BuffRemindersDB = {
 ["hideInPvPMatch"] = true,
 },
 },
-["customBuffs"] = {
-},
+["buffTrackingMode"] = "my_buffs",
 },
 },
 }
