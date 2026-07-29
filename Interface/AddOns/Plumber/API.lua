@@ -2514,7 +2514,7 @@ do  -- System
 	end
 
 
-	function API.TriggerExpansionMinimapButtonAlert(text)
+	function API.TriggerExpansionMinimapButtonAlert(text) -- unused
 		if ExpansionLandingPageMinimapButton then
 			ExpansionLandingPageMinimapButton:TriggerAlert(text);
 		end
@@ -2918,6 +2918,9 @@ do  -- Quest
 				end
 			end
 		end
+
+		function API.SuperTrackQuestMapPin(questID)
+		end
 	else
 		--Retail
 		function API.GetQuestProgressPercent(questID, asText)
@@ -3074,6 +3077,14 @@ do  -- Quest
 
 			return tbl
 		end
+
+		function API.SuperTrackQuestMapPin(questID)
+			if C_QuestLog.IsOnQuest(questID) then
+				C_SuperTrack.SetSuperTrackedQuestID(questID);
+			else
+				C_SuperTrack.SetSuperTrackedMapPin(Enum.SuperTrackingMapPinType.QuestOffer, questID);
+			end
+		end
 	end
 
 
@@ -3169,6 +3180,7 @@ do  -- Quest
 			for index, spellID in ipairs(spellRewards) do
 				info = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spellID);
 				info.id = spellID;
+				info.isSpellReward = true;
 				tinsert(spells, info);
 			end
 
@@ -4027,6 +4039,11 @@ do  -- Custom Hyperlink ItemRef
 			local args = {...};
 			local link = "|Haddon:plumber:"..typeName;
 
+			if #args == 0 then
+				-- There must be at least 1 arg
+				args = {0};
+			end
+
 			for i, v in ipairs(args) do
 				link = link..":"..v;
 			end
@@ -4036,6 +4053,8 @@ do  -- Custom Hyperlink ItemRef
 			return link
 		end
 	end
+
+	API.AddCustomLinkType("ReloadUI", C_UI.Reload);
 end
 
 do  -- 11.0 Menu Formatter

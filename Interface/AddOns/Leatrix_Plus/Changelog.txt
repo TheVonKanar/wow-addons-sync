@@ -1,4 +1,32 @@
-﻿12.0.19 - 21st May 2026
+﻿12.0.28 - 23rd July 2026
+- PTR (12.1.0): Updated deprecated functions.
+- You may need to restart your game client completely after installing this update.
+
+12.0.27 - 15th July 2026
+- For 'Mute mount sounds', the 'Rockets' setting now includes the 'Blackwater X-TREME Firework Rocket'.
+- For web link (keybindings) on a Mac, you can now use command and C to copy and close the web link window.
+- PTR (12.1.0): The 'Manage control' option ('Frames') has been removed as it's now included with Edit Mode.
+- PTR (12.1.0): Updated deprecated functions.
+
+12.0.24 - 24th June 2026
+- For 'Enhance minimap' ('Interface'), added support for the OmniumObservator addon's non-standard minimap button.
+- PTR (12.1.0): Updated for game patch 12.1.0.
+
+12.0.23 - 18th June 2026
+- Updated for game patch 12.0.7.
+- For 'Remove transforms' ('System'), you can now remove the 'Reflecting Prism' transform automatically.
+
+12.0.22 - 11th June 2026
+- For 'Enhance minimap' ('Interface'), fixed an issue which may have caused the square minimap to move slightly.
+
+12.0.21 - 5th June 2026
+- For 'Mute game sounds' ('System'), you can now mute the Piccolo of the Flaming Fire toy.
+
+12.0.20 - 27th May 2026
+- For 'Enhance dressup' ('Interface'), fixed a secrets issue with the link outfit button.
+- Fixed a secrets issue with the mount special keybinding.
+
+12.0.19 - 21st May 2026
 - The 'Increase chat history' option ('Chat') has been removed due to a secrets issue.
 
 12.0.18 - 20th May 2026

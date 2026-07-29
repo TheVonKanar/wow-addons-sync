@@ -1,7 +1,7 @@
-## Interface: 120005
+## Interface: 120005, 120007
 ## Title: |cff58C6FAGlider|r
 ## Author: Yuyuli
-## Version: 46
+## Version: 47
 ## IconTexture: 4640476
 ## SavedVariables: GliderAddOnDB
 ## LoadSavedVariablesFirst: 1

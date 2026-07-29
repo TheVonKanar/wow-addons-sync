@@ -12,8 +12,6 @@ local _, LM = ...
 
 local C_Spell = LM.C_Spell or C_Spell
 
-local issecretvalue = issecretvalue or function () return false end
-
 LM.Spell = setmetatable({ }, LM.Mount)
 LM.Spell.__index = LM.Spell
 
@@ -35,8 +33,12 @@ function LM.Spell:Get(data)
     return m
 end
 
+function LM.Spell:Refresh()
+    self.isCollected = IsPlayerSpell(self.spellID)
+end
+
 function LM.Spell:IsCollected()
-    return IsPlayerSpell(self.spellID)
+    return self.isCollected
 end
 
 function LM.Spell:IsCastable()

@@ -1,3 +1,25 @@
+# 3.22.1
+
+## Bugfixes
+
+- *Improved data syncing error recovery.*
+- *History sent to guild channel wouldn't be received properly.*
+- *Fixed nil tradeables being sent leading to lua errors for recipients.*
+
+# 3.22.0
+
+## Changes
+
+Updated for patch 12.0.7.
+
+### BoEs
+
+BoEs looted during a boss fight will now be sent to the group leader after the fight ends.
+
+## Bugfixes
+
+- *Award later now works with group loot*
+
 # 3.21.1
 
 ## Changes
@@ -5,6 +27,10 @@
 ### Bonus rolls
 
 Bonus rolls now shows up beneath the Voting Frame.
+
+### History
+
+Added option for toggling the recording of bonus rolls.
 
 ## Bugfixes
 

@@ -113,6 +113,7 @@ function RCVotingFrame:OnEnable()
 	self:UpdateItemAwardHistory()
 	self.frame = self:GetFrame()
 	guildRanks = addon:GetGuildRanks()
+	self.delayedLootAcks = {}
 	addon.Log("RCVotingFrame", "enabled")
 	updateFrame:Show()
 	needUpdate = false
@@ -279,6 +280,15 @@ function RCVotingFrame:ReceiveLootTable(lt)
 	lootTable = CopyTable(lt)
 	self:Setup(lootTable)
 	self:UpdateItemAwardHistory()
+
+	if #self.delayedLootAcks > 0 then
+		addon.Log:D("Processing delayed lootAcks. Count:", #self.delayedLootAcks)
+		for _,data in ipairs(self.delayedLootAcks) do
+			self:OnLootAckReceived(unpack(data))
+		end
+		wipe(self.delayedLootAcks)
+	end
+
 	if not addon.enabled then return end -- We just want things ready
 	if db.autoOpen then
 		self:Show()
@@ -294,6 +304,7 @@ function RCVotingFrame:EndSession(hide)
 		self:Update(true)
 		if hide then self:Hide() end -- Hide if need be
 	end
+	wipe(self.delayedLootAcks)
 end
 
 --- Removes a specific entry from the voting frame's columns
@@ -484,70 +495,43 @@ local function insertRandomRollsSession(temp, k, rolls)
 end
 
 function RCVotingFrame:DoRandomRolls(session)
-	if addon.Utils:GroupHasVersion("3.13.0") then
-		---@type TempTable<string>
-		local result = TempTable:Acquire()
-		local rolls = self:GenerateNoRepeatRollTable(addon:GetNumGroupMembers())
-		for k, v in ipairs(lootTable) do
-			if addon:ItemIsItem(lootTable[session].link, v.link) then
-				if #result == 0 then
-					insertRandomRollsSession(result, k, rolls)
-				else -- Handle duplicates
-					tinsert(result, k.."dupl"..result[1].."|")
-				end
-			end
-		end
-		addon:Send("group", "srolls", table.concat(result, ""))
-		TempTable:Release(result)
-		return
-	end
-
+	---@type TempTable<string>
+	local result = TempTable:Acquire()
 	local rolls = self:GenerateNoRepeatRollTable(addon:GetNumGroupMembers())
 	for k, v in ipairs(lootTable) do
 		if addon:ItemIsItem(lootTable[session].link, v.link) then
-			addon:Send("group", "rrolls", k, rolls)
+			if #result == 0 then
+				insertRandomRollsSession(result, k, rolls)
+			else -- Handle duplicates
+				tinsert(result, k.."dupl"..result[1].."|")
+			end
 		end
 	end
+	addon:Send("group", "srolls", table.concat(result, ""))
+	TempTable:Release(result)
 end
 
 function RCVotingFrame:DoAllRandomRolls()
 	local sessionsDone = {}
-	-- From v3.13 we send a single message with all rolls
-	if addon.Utils:GroupHasVersion("3.13.0") then
-		local temp = TempTable:Acquire()
-		for ses, t in ipairs(lootTable) do
-			if not sessionsDone[ses] and not t.hasRolls then -- Don't use auto rolls on session that requesting rolls from raid members.
-				local rolls = self:GenerateNoRepeatRollTable(addon:GetNumGroupMembers())
-				for k, v in ipairs(lootTable) do
-					if addon:ItemIsItem(t.link, v.link) then
-						sessionsDone[k] = true
-						if ses == k then
-							insertRandomRollsSession(temp, k, rolls)
-						else
-							tinsert(temp, k .. "dupl" .. ses .. "|")
-						end
-					end
-				end
-			end
-		end
-		local result = table.concat(temp, "")
-		TempTable:Release(temp)
-		addon:Send("group", "srolls", result)
-		return
-	end
-
-	-- Old way of sending 1 message per session.
+	local temp = TempTable:Acquire()
 	for ses, t in ipairs(lootTable) do
 		if not sessionsDone[ses] and not t.hasRolls then -- Don't use auto rolls on session that requesting rolls from raid members.
 			local rolls = self:GenerateNoRepeatRollTable(addon:GetNumGroupMembers())
 			for k, v in ipairs(lootTable) do
 				if addon:ItemIsItem(t.link, v.link) then
 					sessionsDone[k] = true
-					addon:Send("group", "rrolls", k, rolls)
+					if ses == k then
+						insertRandomRollsSession(temp, k, rolls)
+					else
+						tinsert(temp, k .. "dupl" .. ses .. "|")
+					end
 				end
 			end
 		end
 	end
+	local result = table.concat(temp, "")
+	TempTable:Release(temp)
+	addon:Send("group", "srolls", result)
 end
 
 -----------------------------------------------------------------
@@ -575,6 +559,13 @@ function RCVotingFrame:OnChangeToWaitReceived(data)
 end
 
 function RCVotingFrame:OnLootAckReceived (name, specID, ilvl, sessionData)
+	local sesLen = next(sessionData.gear1)
+	if sesLen and not (lootTable[sesLen] and lootTable[sesLen].candidates[name]) then
+		-- LootAck received before lootTable
+		tinsert(self.delayedLootAcks , { name, specID, ilvl, sessionData })
+		addon.Log:W("Received LootAck before lootTable, delaying processing. Name:", name, sesLen)
+		return
+	end
 	for k,d in pairs(sessionData) do
 		for ses, v in pairs(d) do
 			if k == "gear1" or k == "gear2" then
@@ -1538,6 +1529,7 @@ function RCVotingFrame:UpdateSessionButton(i, texture, link, awarded)
 end
 
 function RCVotingFrame:AddNonTradeable(owner, reason, link)
+	if not link or link == "" then return end
 	self.numNonTradeables = self.numNonTradeables + 1
 	local texture = select(5, C_Item.GetItemInfoInstant(link))
 	local b = addon.UI:New("IconBordered", self.frame.content, texture)

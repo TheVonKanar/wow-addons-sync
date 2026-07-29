@@ -110,7 +110,34 @@ local function PlayerKnowsSpell(spellID)
     return false
 end
 
+-- Like PlayerKnowsSpell, but ALSO true while spellID is a temporarily GRANTED
+-- spell: one that never enters the spellbook and only exists while its parent
+-- cooldown/window is active (e.g. SP Void Volley, WW Zenith Stomp). Those
+-- return false from IsPlayerSpell/IsSpellKnown even while castable, which
+-- marked them "not part of this spec" and forced users onto Show Always
+-- (permanently visible). Detection: the ID is the ACTIVE override of a base
+-- spell the player knows -- C_Spell.GetOverrideSpell only returns currently
+-- known overrides, so this flips true exactly for the grant window. Off-spec
+-- spells stay hidden: their GetBaseSpell(id) == id, so the branch never fires.
+-- SPELLS_CHANGED fires on grant/removal and already re-runs
+-- RefreshSpecVisibility, so the icon auto-shows for the window and auto-hides
+-- after -- no Show Always needed.
+local function PlayerKnowsOrGranted(spellID)
+    if not spellID or type(spellID) ~= "number" then return false end
+    if issecretvalue and issecretvalue(spellID) then return false end
+    if spellID <= 0 or spellID > 2147483647 then return false end
+    if PlayerKnowsSpell(spellID) then return true end
+    if C_Spell and C_Spell.GetBaseSpell and C_Spell.GetOverrideSpell then
+        local base = C_Spell.GetBaseSpell(spellID)
+        if base and base ~= spellID and PlayerKnowsSpell(base) then
+            return C_Spell.GetOverrideSpell(base) == spellID
+        end
+    end
+    return false
+end
+
 ArcAurasCooldown.PlayerKnowsSpell = PlayerKnowsSpell
+ArcAurasCooldown.PlayerKnowsOrGranted = PlayerKnowsOrGranted
 ArcAurasCooldown.GetSpellNameAndIcon = GetSpellNameAndIcon
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -198,19 +225,46 @@ end
 --   DEPLETED   (main=true,  charge=true)  → isOnCD=true,  isRecharging=false
 --   RECHARGING (main=false, charge=true)  → isOnCD=false, isRecharging=true
 --   READY      (main=false, charge=false) → isOnCD=false, isRecharging=false
-local function GetCooldownState(spellID, isChargeSpell)
-    local fd
-    local arcID = ArcAurasCooldown.spellsByID and ArcAurasCooldown.spellsByID[spellID]
-    if arcID and ArcAurasCooldown.spellData then
-        fd = ArcAurasCooldown.spellData[arcID]
+local function GetCooldownState(spellID, isChargeSpell, callerFd)
+    -- Use the CALLER's fd when provided. The spellsByID re-resolution below is
+    -- only a fallback: that map is SINGLE-VALUED per spellID, so when two arc
+    -- icons share a spellID (e.g. a custom TIMER watching the same spell as a
+    -- spell icon — the timer also registers into spellsByID), the lookup hands
+    -- back the OTHER icon's fd and this function returns the other icon's
+    -- state. FeedCooldown then applies the frame's own correct state while the
+    -- SPELL_UPDATE_USABLE refresh applies the cross-resolved one — the two
+    -- writers alternate visual buckets every event = the "random blinking,
+    -- can't decide which settings to use" bug on custom timers.
+    local fd = callerFd
+    if not fd then
+        local arcID = ArcAurasCooldown.spellsByID and ArcAurasCooldown.spellsByID[spellID]
+        if arcID and ArcAurasCooldown.spellData then
+            fd = ArcAurasCooldown.spellData[arcID]
+        end
     end
     if not fd then return false, false end
 
     -- Custom timer frame: read state from the timer engine, not shadow frames.
-    -- isOnCD = timer is running; timers never "recharge".
+    -- FLIP (matches totems): a RUNNING timer maps to the READY-state visual bucket
+    -- because only readyState owns the glow suite — so "glow while the timer is
+    -- active" works. The swipe is driven separately by the timer engine, so this
+    -- isOnCD value only selects the visual bucket:
+    --   running     → isOnCD=false → readyState   ("Active State")
+    --   not running → isOnCD=true  → cooldownState ("Not Active")
+    -- Timers never "recharge".
     if fd.isCustomTimer then
         if ns.ArcAurasTimer and ns.ArcAurasTimer.IsTimerRunning then
-            return ns.ArcAurasTimer.IsTimerRunning(fd.arcID) or false, false
+            return not (ns.ArcAurasTimer.IsTimerRunning(fd.arcID) or false), false
+        end
+        return true, false
+    end
+
+    -- Custom totem-slot frame: "active" = a totem occupies the slot. State
+    -- comes from the totem engine (GetTotemDuration → Cooldown:IsShown), not
+    -- spell shadow frames; totems never "recharge".
+    if fd.isCustomTotem then
+        if ns.ArcAurasTotems and ns.ArcAurasTotems.IsSlotActive then
+            return ns.ArcAurasTotems.IsSlotActive(fd.arcID) or false, false
         end
         return false, false
     end
@@ -225,6 +279,19 @@ local function GetCooldownState(spellID, isChargeSpell)
     if isChargeSpell then
         local isDepleted   = mainShown and chargeShown
         local isRecharging = (not mainShown) and chargeShown
+        -- IGNORE HARD ICD (per-icon opt-in, e.g. Monk Zenith): a charge spell
+        -- whose cast starts a real spell CD (hard ICD) alongside the recharge
+        -- shows main+charge together — read here as depleted/full desat while a
+        -- charge is in hand. With the toggle on, treat it as RECHARGING (the
+        -- visible-feed branch then pushes the charge durObj, not the ICD).
+        -- Trade-off: true 0-charge depletion also reads RECHARGING (the two are
+        -- indistinguishable without secret duration compares).
+        if isDepleted then
+            local s = ArcAuras.GetCachedSettings and ArcAuras.GetCachedSettings(fd.arcID)
+            if s and s.cooldownSwipe and s.cooldownSwipe.ignoreHardICD then
+                isDepleted, isRecharging = false, true
+            end
+        end
         -- isOnCD in the charge context = fully depleted
         return isDepleted, isRecharging
     end
@@ -251,7 +318,13 @@ local UpdateProcGlow    -- Proc glow state
 -- ═══════════════════════════════════════════════════════════════════════════
 
 local _GUS = function(fd, settings)
-    if not fd or not fd.spellID then return "usable", USABLE_COLOR, nil, false end
+    -- Custom timers are duration displays, not castable spells. Like totems
+    -- (which hit the nil-spellID guard), they skip usability + range entirely
+    -- so the watched spell's mana / range / usable state can NEVER override the
+    -- timer's configured Active / Not-Active alpha, tint, or desaturation.
+    -- This is the fix for the intermittent "fighting" where a running timer's
+    -- look changed as the underlying spell became unusable / out of range.
+    if not fd or not fd.spellID or fd.isCustomTimer then return "usable", USABLE_COLOR, nil, false end
 
     local su = settings and settings.spellUsability
     local suEnabled = not su or su.enabled ~= false  -- default: enabled
@@ -309,6 +382,14 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
     local frame = fd.frame
     local arcID = fd.arcID
     local iconTex = fd.icon
+
+    -- DURATION OVERRIDE: while active on this Arc spell frame, the override owns
+    -- the whole visual (treated as an aura override). Delegate and stop so we
+    -- don't paint spell cooldown-state visuals over it.
+    if frame._arcDurOvActive and ns.DurationOverride and ns.DurationOverride.ApplyVisuals then
+        ns.DurationOverride.ApplyVisuals(frame)
+        return
+    end
 
     -- Get CDMEnhance settings (READ ONLY — we decide when to apply)
     -- Accept passed settings from FeedCooldown to avoid double lookup
@@ -369,10 +450,20 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
     local rs = csv.readyState or {}
     local cs = csv.cooldownState or {}
 
-    -- Get effective state visuals from CDMEnhance (handles cascade properly)
+    -- Get effective state visuals from CDMEnhance (handles cascade properly).
+    -- Reuse the cached result while `settings` is the same table — Arc's settings
+    -- cache returns a stable object until TTL/invalidation rebuilds it (all setters
+    -- call InvalidateSettingsCache), so an identity match is staleness-proof and
+    -- skips re-allocating the ~40-field state-visuals table on every state change.
     local stateVisuals = nil
     if ns.CDMEnhance and ns.CDMEnhance.GetEffectiveStateVisuals then
-        stateVisuals = ns.CDMEnhance.GetEffectiveStateVisuals(settings)
+        if settings ~= nil and fd._arcSVSettings == settings then
+            stateVisuals = fd._arcSV
+        else
+            stateVisuals = ns.CDMEnhance.GetEffectiveStateVisuals(settings)
+            fd._arcSVSettings = settings
+            fd._arcSV = stateVisuals
+        end
     end
 
     -- ── waitForNoCharges controls alpha/desat/tint during recharge ──
@@ -418,7 +509,10 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
         -- Desaturation
         local noDesat = (stateVisuals and stateVisuals.noDesaturate)
                      or cs.noDesaturate
-        if fd.desaturate == false then noDesat = true end
+        -- Custom timers / totems (fd.desaturate == false) DEFAULT to not
+        -- desaturated, but the per-state Desaturate toggle (cooldownState.desaturate)
+        -- still turns it on — so the option keeps working both ways.
+        if fd.desaturate == false then noDesat = not (cs.desaturate == true) end
         -- During recharge (not fully depleted), suppress desat if only using CD visuals for alpha
         if isRecharging and not isOnCD then noDesat = true end
         frame._arcBypassDesatHook = true
@@ -509,12 +603,39 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
         elseif su and su.normalDesaturate then
             readyDesat = true  -- From spellUsability.normalDesaturate (cooldown options)
         end
+        -- Custom timers / totems (fd.desaturate == false) DEFAULT to not
+        -- desaturated in the ready/Active bucket (ignoring usability-driven desat),
+        -- but the readyState.desaturate toggle still turns it on.
+        if fd.desaturate == false then
+            readyDesat = (stateVisuals and stateVisuals.readyDesaturate) == true
+        end
         frame._arcBypassDesatHook = true
         iconTex:SetDesaturated(readyDesat)
         frame._arcBypassDesatHook = false
 
-        -- Reset preserve duration text (was set during cooldown state)
-        if frame._arcPreservingDurationText then
+        -- Preserve duration/stack text at full opacity while ACTIVE and dimmed,
+        -- mirroring the Not-Active branch. Lets custom-timer / totem users keep
+        -- the countdown + stack number readable when Active Alpha is reduced.
+        local readyPreserve = (stateVisuals and stateVisuals.readyPreserveDurationText)
+                           or rs.preserveDurationText
+        local rParent = frame:GetParent()
+        local rGroupHidden = frame._arcGroupHidden or (rParent and rParent._arcGroupHidden)
+        if readyPreserve and not rGroupHidden then
+            if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
+                frame.Cooldown.Text:SetIgnoreParentAlpha(true)
+                frame.Cooldown.Text:SetAlpha(1)
+            end
+            if frame._arcCooldownText and frame._arcCooldownText.SetIgnoreParentAlpha then
+                frame._arcCooldownText:SetIgnoreParentAlpha(true)
+                frame._arcCooldownText:SetAlpha(1)
+            end
+            if frame._arcStackText and frame._arcStackText.SetIgnoreParentAlpha then
+                frame._arcStackText:SetIgnoreParentAlpha(true)
+                frame._arcStackText:SetAlpha(1)
+            end
+            frame._arcPreservingDurationText = true
+        elseif frame._arcPreservingDurationText then
+            -- No longer preserving (or was set during cooldown state) — restore.
             if frame.Cooldown and frame.Cooldown.Text and frame.Cooldown.Text.SetIgnoreParentAlpha then
                 frame.Cooldown.Text:SetIgnoreParentAlpha(false)
             end
@@ -666,7 +787,7 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
     if isUsableGlowPreview then
         -- Preview always shows (regardless of CD state or usability)
         shouldShowUsableGlow = true
-    elseif not isOnCD and su and su.usableGlow then
+    elseif not isOnCD and not fd.isCustomTimer and su and su.usableGlow then
         if usabilityState == "usable" then
             local combatOnly = su.usableGlowCombatOnly
             shouldShowUsableGlow = not combatOnly or InCombatLockdown()
@@ -746,6 +867,17 @@ local _ASV = function(fd, isOnCD, passedSettings, passedIsRecharging)
         if ArcAuras.NotifyStateChanged then
             ArcAuras.NotifyStateChanged(arcID, isOnCD, 0, 0)
         end
+        -- Dynamic Cooldowns: a charge spell crosses its collapse boundary (last
+        -- charge spent / first charge restored) without the visible Cooldown's
+        -- IsShown() flipping — the recharge swipe stays up — so ns.FrameActive
+        -- misses it. Notify the layout directly (it dedupes on the rendered-alpha
+        -- bucket and only acts for frames in a Dynamic Cooldowns group).
+        if fd.isChargeSpell then
+            local DL = ns.CDMGroups and ns.CDMGroups.DynamicLayout
+            if DL and DL.NotifyCooldownCollapseChanged then
+                DL.NotifyCooldownCollapseChanged(frame)
+            end
+        end
     end
 end
 ArcAurasCooldown.ApplySpellStateVisuals = Track and Track("ArcAurasCooldown.ApplySpellStateVisuals", _ASV) or _ASV
@@ -786,12 +918,29 @@ _FeedCooldownFn = function(fd)
         if ns.ArcAurasTimer and ns.ArcAurasTimer.RefreshTimerFrame then
             ns.ArcAurasTimer.RefreshTimerFrame(fd.arcID)
         end
-        local isOnCD = false
+        local running = false
         if ns.ArcAurasTimer and ns.ArcAurasTimer.IsTimerRunning then
-            isOnCD = ns.ArcAurasTimer.IsTimerRunning(fd.arcID) or false
+            running = ns.ArcAurasTimer.IsTimerRunning(fd.arcID) or false
         end
         UpdateChargeText(fd, settings)
-        ApplySpellStateVisuals(fd, isOnCD, settings, false)
+        -- FLIP (see GetCooldownState): a running timer maps to the readyState
+        -- bucket so it reuses the glow suite ("glow while active"). The isOnCD
+        -- param passed here = not running.
+        ApplySpellStateVisuals(fd, not running, settings, false)
+        return
+    end
+
+    -- ───────────────────────────────────────────────────────────────────
+    -- CUSTOM TOTEM-SLOT FRAMES: skip shadow feed + the spell-API feed. The
+    -- totem engine feeds the visible cooldown from GetTotemDuration(slot) and
+    -- returns whether a totem currently occupies the slot ("active"); then run
+    -- the standard visual pipeline. Same shape as the custom-timer branch.
+    -- ───────────────────────────────────────────────────────────────────
+    if fd.isCustomTotem then
+        local active = ns.ArcAurasTotems and ns.ArcAurasTotems.FeedSlot
+            and ns.ArcAurasTotems.FeedSlot(fd.arcID) or false
+        UpdateChargeText(fd, settings)
+        ApplySpellStateVisuals(fd, active, settings, false)
         return
     end
 
@@ -812,7 +961,7 @@ _FeedCooldownFn = function(fd)
     --    callers (USABLE / RANGE events) don't do redundant API work.
     -- ───────────────────────────────────────────────────────────────────
     FeedShadows(fd)
-    local isOnCD, isRecharging = GetCooldownState(spellID, isChargeSpell)
+    local isOnCD, isRecharging = GetCooldownState(spellID, isChargeSpell, fd)
 
     -- ───────────────────────────────────────────────────────────────────
     -- 3. FEED VISIBLE COOLDOWN (swipe + countdown)
@@ -893,7 +1042,7 @@ _FeedCooldownFn = function(fd)
     --    The state-change guard prevents redundant visual restarts,
     --    so calling this every FeedCooldown is effectively free.
     -- ───────────────────────────────────────────────────────────────────
-    local isOnCD, isRechargingFinal = GetCooldownState(fd.spellID, fd.isChargeSpell)
+    local isOnCD, isRechargingFinal = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
     ApplySpellStateVisuals(fd, isOnCD, settings, isRechargingFinal)
 end
 
@@ -902,6 +1051,50 @@ FeedCooldown = Track and Track("ArcAurasCooldown.FeedCooldown", _FeedCooldownFn)
 FeedCooldown = Track and Track("ArcAurasCooldown.FeedCooldown", _FeedCooldownFn) or _FeedCooldownFn
 -- Expose FeedCooldown for ArcAuras hooks to call
 ArcAurasCooldown.FeedCooldown = FeedCooldown
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- ALPHA ENFORCEMENT HOOK (shared: arc_spell frames AND custom timer frames)
+--
+-- Arc Aura frames call ApplyIconStyle (not EnhanceFrame), so CDMEnhance's
+-- _arcFrameAlphaHooked SetAlpha hook is never installed. Without it, anything
+-- calling SetAlpha after ApplySpellStateVisuals applies readyAlpha=0 silently
+-- overrides it (FrameController, Show hooks, group layouts) — AND, just as
+-- important, external SetAlpha calls desync the frame's REAL alpha from
+-- _lastAppliedAlpha. A stale _lastAppliedAlpha makes ApplySpellStateVisuals
+-- skip its SetAlpha ("value unchanged") and strand the icon in the wrong
+-- state. The hook keeps _lastAppliedAlpha truthful on every external write.
+--
+-- Idempotent — guarded by _arcFrameAlphaHooked.
+-- ═══════════════════════════════════════════════════════════════════════════
+function ArcAurasCooldown.InstallAlphaEnforcementHook(frame)
+    if not frame or frame._arcFrameAlphaHooked then return end
+    frame._arcFrameAlphaHooked = true
+    hooksecurefunc(frame, "SetAlpha", function(self, alpha)
+        if self._arcBypassFrameAlphaHook then return end
+        -- Enforce ready-state alpha (e.g. readyAlpha=0 when spell is ready)
+        if self._arcEnforceReadyAlpha and self._arcReadyAlphaValue then
+            self._arcBypassFrameAlphaHook = true
+            self:SetAlpha(self._arcReadyAlphaValue)
+            self._arcBypassFrameAlphaHook = false
+            self._lastAppliedAlpha = self._arcReadyAlphaValue
+            return
+        end
+        -- Enforce cooldown-state alpha
+        if self._arcTargetAlpha ~= nil then
+            self._arcBypassFrameAlphaHook = true
+            self:SetAlpha(self._arcTargetAlpha)
+            self._arcBypassFrameAlphaHook = false
+            self._lastAppliedAlpha = self._arcTargetAlpha
+            return
+        end
+        -- Fallback: preserve whatever we last applied
+        if self._arcEnhanced and self._lastAppliedAlpha then
+            self._arcBypassFrameAlphaHook = true
+            self:SetAlpha(self._lastAppliedAlpha)
+            self._arcBypassFrameAlphaHook = false
+        end
+    end)
+end
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- CHARGE TEXT (non-secret, safe to read directly)
@@ -941,7 +1134,18 @@ UpdateChargeText = function(fd, settings)
     local chargeInfo = C_Spell.GetSpellCharges(fd.spellID)
     if chargeInfo then
         -- currentCharges is SECRET in combat — SetText accepts secrets, no comparisons!
-        fd.chargeText:SetText(chargeInfo.currentCharges or "")
+        local count = chargeInfo.currentCharges
+        -- hideAtZero (parity with CDM icons): render zero as EMPTY via the
+        -- secret-safe formatter. Never compare the count — TruncateWhenZero
+        -- returns "" for a zero (even a secret zero) and the number otherwise,
+        -- so this works in instances AND independently of the Ignore-Hard-ICD
+        -- state flip (which erases the depleted-state signal hideAtZero on CDM
+        -- icons keys off).
+        if chargeCfg and chargeCfg.hideAtZero and count ~= nil
+           and C_StringUtil and C_StringUtil.TruncateWhenZero then
+            count = C_StringUtil.TruncateWhenZero(count)
+        end
+        fd.chargeText:SetText(count or "")
         fd.chargeText:Show()
     end
     -- If chargeInfo is nil (GCD transition), keep last text — don't clear/flicker
@@ -957,12 +1161,13 @@ UpdateProcGlow = function(fd, forceShow)
     local spellID = fd.spellID
     local isOverlayed = forceShow
 
-    if isOverlayed == nil then
-        if C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed then
-            local ok, result = pcall(C_SpellActivationOverlay.IsSpellOverlayed, spellID)
-            if not ok then return end  -- pcall failed, don't change state
-            isOverlayed = result
-        end
+    -- When we weren't told the state (forceShow == nil), query it directly.
+    -- spellID is non-secret (player spell), so guard the input and call the API
+    -- straight — pcall is banned in ArcUI. No spellID = nothing to query; leave
+    -- the current proc-glow state unchanged (matches the old early-return).
+    if isOverlayed == nil and C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed then
+        if not spellID then return end
+        isOverlayed = C_SpellActivationOverlay.IsSpellOverlayed(spellID)
     end
 
     -- Read proc glow settings from CDMEnhance per-icon config
@@ -1135,40 +1340,9 @@ function ArcAurasCooldown.InitializeSpellFrame(arcID, frame, config)
 
     -- ═══════════════════════════════════════════════════════════════════
     -- ALPHA ENFORCEMENT HOOK for arc_spell frames.
-    -- Arc Aura spell frames call ApplyIconStyle (not EnhanceFrame), so
-    -- CDMEnhance's _arcFrameAlphaHooked SetAlpha hook is never installed.
-    -- Without it, anything calling SetAlpha(1) after ApplySpellStateVisuals
-    -- applies readyAlpha=0 silently overrides it (FrameController, Show
-    -- hooks, group layouts). We install the same logic here directly.
+    -- (Shared installer — custom timer frames need the identical hook.)
     -- ═══════════════════════════════════════════════════════════════════
-    if not frame._arcFrameAlphaHooked then
-        frame._arcFrameAlphaHooked = true
-        hooksecurefunc(frame, "SetAlpha", function(self, alpha)
-            if self._arcBypassFrameAlphaHook then return end
-            -- Enforce ready-state alpha (e.g. readyAlpha=0 when spell is ready)
-            if self._arcEnforceReadyAlpha and self._arcReadyAlphaValue then
-                self._arcBypassFrameAlphaHook = true
-                self:SetAlpha(self._arcReadyAlphaValue)
-                self._arcBypassFrameAlphaHook = false
-                self._lastAppliedAlpha = self._arcReadyAlphaValue
-                return
-            end
-            -- Enforce cooldown-state alpha
-            if self._arcTargetAlpha ~= nil then
-                self._arcBypassFrameAlphaHook = true
-                self:SetAlpha(self._arcTargetAlpha)
-                self._arcBypassFrameAlphaHook = false
-                self._lastAppliedAlpha = self._arcTargetAlpha
-                return
-            end
-            -- Fallback: preserve whatever we last applied
-            if self._arcEnhanced and self._lastAppliedAlpha then
-                self._arcBypassFrameAlphaHook = true
-                self:SetAlpha(self._lastAppliedAlpha)
-                self._arcBypassFrameAlphaHook = false
-            end
-        end)
-    end
+    ArcAurasCooldown.InstallAlphaEnforcementHook(frame)
 
     -- Apply structural settings from CDMEnhance (size, borders, swipe config)
     if ArcAuras.ApplySettingsToFrame then
@@ -1533,8 +1707,10 @@ function ArcAurasCooldown.ShouldFrameBeVisible(config, spellID)
     if config.forceShow then
         -- Still respect per-spell spec filter and talent conditions
     else
-        -- 1) Spell must be known in current spec
-        if not PlayerKnowsSpell(spellID) then return false end
+        -- 1) Spell must be known in current spec, OR currently granted as the
+        --    active override of a known base spell (temporary CD-window spells
+        --    like Void Volley / Zenith Stomp -- see PlayerKnowsOrGranted).
+        if not PlayerKnowsOrGranted(spellID) then return false end
     end
 
     -- 2) Per-spell spec filter (showOnSpecs = { 1, 3 } etc.)
@@ -1655,10 +1831,15 @@ local _onEventFn = function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event == "SPELL_UPDATE_USABLE" then
-        -- No payload — resource state changed, refresh icon color for all visible frames
+        -- No payload — resource state changed, refresh icon color for all visible frames.
+        -- Custom timers/totems skip: usability can never affect them (_GUS
+        -- short-circuits), so re-applying visuals here was pure churn — and
+        -- before GetCooldownState took the caller's fd, it was the blink vector
+        -- (cross-resolved state via the single-valued spellsByID map).
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
-            if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell)
+            if not fd.isCustomTimer and not fd.isCustomTotem
+               and fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
+                local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
                 ApplySpellStateVisuals(fd, isOnCD, nil, isRechargingV)
             end
         end
@@ -1671,7 +1852,7 @@ local _onEventFn = function(self, event, arg1, arg2, arg3, arg4)
         if fd and fd.needsRangeCheck then
             fd.spellOutOfRange = (checksRange == true and inRange == false)
             if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
-                local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell)
+                local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
                 ApplySpellStateVisuals(fd, isOnCD, nil, isRechargingV)
             end
         end
@@ -1750,11 +1931,19 @@ local _onEventFn = function(self, event, arg1, arg2, arg3, arg4)
         -- ApplySpellStateVisuals which re-installs all enforcement
         -- flags. Covers both spell-icon frames and timer frames since
         -- both are registered in spellData.
-        C_Timer.After(0.3, function()
-            if ArcAurasCooldown.initialized then
-                ArcAurasCooldown.RefreshAllSpellVisuals()
-            end
-        end)
+        -- COALESCE: joining a raid fires GROUP_ROSTER_UPDATE 10-20× in under a
+        -- second. Without a guard each one queued its own 0.3s timer → 10-20 full
+        -- RefreshAllSpellVisuals sweeps (each O(spell frames) × the full visual
+        -- pipeline) landing together — a real CPU spike. One pending timer suffices.
+        if not ArcAurasCooldown._rosterRefreshPending then
+            ArcAurasCooldown._rosterRefreshPending = true
+            C_Timer.After(0.3, function()
+                ArcAurasCooldown._rosterRefreshPending = false
+                if ArcAurasCooldown.initialized then
+                    ArcAurasCooldown.RefreshAllSpellVisuals()
+                end
+            end)
+        end
 
     elseif event == "SPELLS_CHANGED" or event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
         if ArcAurasCooldown.initialized and not specChangePending then
@@ -1815,7 +2004,7 @@ local function RefreshAllSpellVisuals()
         if fd.frame and fd.frame:IsShown() and not fd.frame._arcHiddenNotInSpec then
             fd.frame._lastAppliedAlpha = nil
             fd.frame._arcLastSpellState = nil
-            local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell)
+            local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
             ApplySpellStateVisuals(fd, isOnCD, nil, isRechargingV)
         end
     end
@@ -1853,10 +2042,16 @@ function ArcAurasCooldown.Initialize()
     C_Timer.After(1.5, function()
         for arcID, fd in pairs(ArcAurasCooldown.spellData) do
             if fd.frame and fd.frame:IsShown() then
-                local chargeInfo = C_Spell.GetSpellCharges(fd.spellID)
-                fd.isChargeSpell = (chargeInfo ~= nil)
-                                   and (tonumber(chargeInfo.maxCharges) or 0) > 1
-                fd.hasChargeText = (chargeInfo ~= nil)
+                -- Defensive: only query spell charges for entries that actually
+                -- have a spellID. Custom totem frames (no spellID) must never be
+                -- in spellData, but guard so a stray nil-spellID entry can't
+                -- crash GetSpellCharges (and the rest of the refresh loop).
+                if fd.spellID then
+                    local chargeInfo = C_Spell.GetSpellCharges(fd.spellID)
+                    fd.isChargeSpell = (chargeInfo ~= nil)
+                                       and (tonumber(chargeInfo.maxCharges) or 0) > 1
+                    fd.hasChargeText = (chargeInfo ~= nil)
+                end
                 FeedCooldown(fd)
                 UpdateProcGlow(fd)
             end
@@ -1922,7 +2117,7 @@ function ArcAurasCooldown.RefreshSpellVisuals(arcID)
         fd.readyGlowActive = false
         fd.readyGlowType = nil
     end
-    local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell)
+    local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
     ApplySpellStateVisuals(fd, isOnCD, nil, isRechargingV)
 end
 
@@ -1944,7 +2139,7 @@ function ArcAurasCooldown.RefreshAllSpellVisuals()
             -- during frame creation and hasn't changed, the guard short-circuits and the
             -- enforcement hook never gets _arcEnforceReadyAlpha set correctly.
             fd.frame._lastAppliedAlpha = nil
-            local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell)
+            local isOnCD, isRechargingV = GetCooldownState(fd.spellID, fd.isChargeSpell, fd)
             ApplySpellStateVisuals(fd, isOnCD, nil, isRechargingV)
         end
     end

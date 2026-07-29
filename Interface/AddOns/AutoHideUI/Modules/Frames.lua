@@ -8,9 +8,9 @@ local addonLoadedStates = {}
 local FRAME_INFO_TEMPLATE = {frames = {}, args = {}, frameString = ""}
 local DYNAMIC_ADDON_FRAMES = {}
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Spell Flyout Frame
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local spellFlyoutFrame = SpellFlyout
 local IS_HOOKED_LABFlyoutHandlerFrame = false
@@ -59,9 +59,9 @@ local function HookLABFlyoutHandlerFrame()
     spellFlyoutFrame = LABFlyoutHandlerFrame
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Frames
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local function MINIMAPCLUSTER_CUSTOMGETTER(frameString)
     local frameList = {}
@@ -384,37 +384,15 @@ local ADDON_FRAME_MAPPING = {
     },
     {
         name = "EllesmereUI_ObjectivesTracker",
-        isLoaded = function()
-                local isLoaded = false
-                if EllesmereUI and C_AddOns.IsAddOnLoaded("EllesmereUIBasics") then
-                    for _, info in ipairs(EllesmereUI.Lite._dbRegistry) do
-                        if info.folder == "EllesmereUIBasics" then
-                            isLoaded = info.profile.questTracker.enabled
-                            break
-                        end
-                    end
-                end
-                return isLoaded
-            end,
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIQuestTracker") end,
         frames = {
-            ObjectiveTrackerFrame = {"EUI_QuestTrackerFrame"},
+            ObjectiveTrackerFrame = {"EllesmereUIQTBackground"},
         },
-        args = {forceAlpha = true},
+        args = {forceAlpha = true, includeDefaultFrames = true},
     },
     {
         name = "EllesmereUI_Minimap",
-        isLoaded = function()
-                local isLoaded = false
-                if EllesmereUI and C_AddOns.IsAddOnLoaded("EllesmereUIBasics") then
-                    for _, info in ipairs(EllesmereUI.Lite._dbRegistry) do
-                        if info.folder == "EllesmereUIBasics" then
-                            isLoaded = info.profile.minimap.enabled
-                            break
-                        end
-                    end
-                end
-                return isLoaded
-            end,
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIMinimap") end,
         frames = {
             MinimapCluster = {},
         },
@@ -478,13 +456,56 @@ local ADDON_FRAME_MAPPING = {
             PersonalResourceDisplayFrame = {},
         },
         customGetter = function()
-            local frameList = {}
+            if not EllesmereUI.Lite and not EllesmereUI.Lite._dbRegistry then
+                return
+            end
 
-            for _,frameString in pairs({"ERB_PrimaryBar", "ERB_SecondaryFrame", "EllesmereUIResourceBarsFrame"}) do
-                local frame = Frames.GetFrameObjectFromString(frameString)
+            local frameList = {}
+            local erbProfile
+            Main.refreshFramesOnSpecChange = false
+
+            for _, dbInfo in pairs(EllesmereUI.Lite._dbRegistry) do
+                if dbInfo.folder == "EllesmereUIResourceBars" then
+                    erbProfile = dbInfo.profile
+                    break
+                end
+            end
+
+            local pbEnabled = erbProfile.primary.enabled
+            local sbEnabled = erbProfile.secondary.enabled
+            local hbEnabled = erbProfile.health.enabled
+
+            if not pbEnabled and not sbEnabled and not hbEnabled then
+                return
+            end
+
+            local specID = GetSpecializationInfo(GetSpecialization())
+            Main.refreshFramesOnSpecChange = true
+
+            if pbEnabled and erbProfile.primary.disabledSpecs and not erbProfile.primary.disabledSpecs[specID] then
+                local frame = Frames.GetFrameObjectFromString("ERB_PrimaryBar")
                 if frame then
                     tinsert(frameList, frame)
                 end
+            end
+
+            if sbEnabled and erbProfile.secondary.disabledSpecs and not erbProfile.secondary.disabledSpecs[specID] then
+                local frame = Frames.GetFrameObjectFromString("ERB_SecondaryFrame")
+                if frame then
+                    tinsert(frameList, frame)
+                end
+            end
+
+            if hbEnabled and erbProfile.health.disabledSpecs and not erbProfile.health.disabledSpecs[specID] then
+                local frame = Frames.GetFrameObjectFromString("ERB_HealthBar")
+                if frame then
+                    tinsert(frameList, frame)
+                end
+            end
+
+            local frame = Frames.GetFrameObjectFromString("EllesmereUIResourceBarsFrame")
+            if frame then
+                tinsert(frameList, frame)
             end
 
             return frameList
@@ -511,6 +532,14 @@ local ADDON_FRAME_MAPPING = {
             return frameList
         end,
         args = {forceAlpha = true, includeDefaultFrames = true},
+    },
+    {
+        name = "EllesmereUI_PartyFrames",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("EllesmereUIRaidFrames") end,
+        frames = {
+            PartyFrame = {"ERFPartyHeader"},
+        },
+        args = {forceAlpha = true},
     },
     {
         name = "BasicMinimap",
@@ -610,6 +639,15 @@ local ADDON_FRAME_MAPPING = {
         },
         args = {forceAlpha = true},
     },
+    {
+        name = "BetterPersonalResourceDisplay",
+        isLoaded = function() return C_AddOns.IsAddOnLoaded("BetterPersonalResourceDisplay") end,
+        frames = {
+            PersonalResourceDisplayFrame = {"PersonalResourceDisplayFrame"},
+        },
+        args = {forceAlpha = true},
+    },
+
 }
 
 -- used for frames in the GUI's frame selector
@@ -702,9 +740,9 @@ end
 local function GetFramesByArg(arg, val, includeDefault)
     local frameList = {}
     for _, frameInfo in pairs(Main.activeStrings) do
-        local isInUse = frameInfo.args.isInUse
+        --local isInUse = frameInfo.args.isInUse
         local isValidFrame = includeDefault or not frameInfo.args.isDefault
-        if isInUse and isValidFrame and frameInfo.args[arg] == val then
+        if isValidFrame and frameInfo.args[arg] == val then
             for _, frame in pairs(frameInfo.frames) do
                 local frameString = frame:GetName()
                 -- this may be a mix of addon and default frames. don't want to operate on default frames.
@@ -721,6 +759,7 @@ local function RestoreOriginalAlphaFunctions()
     local arg, val = "forceAlpha", true
     local frameList = GetFramesByArg(arg, val)
     for frame in pairs(frameList) do
+
         if frame._origSetAlpha then
             frame.SetAlpha = frame._origSetAlpha
             frame._origSetAlpha = nil
@@ -742,6 +781,8 @@ local function ReplaceAlphaFunctions(frame, groupInfo)
 
     frame._origSetAlpha = frame.SetAlpha
     frame.SetAlpha = function(self, alpha) end
+
+
 
     if frame.SetAlphaFromBoolean then
         frame._origSetAlphaFromBoolean = frame.SetAlphaFromBoolean
@@ -795,8 +836,10 @@ local function ReparentAllCustomFrames()
 
     local arg, val = "reparent", true
     local frameList = GetFramesByArg(arg, val)
-    for frame in pairs(frameList) do
-        ReparentFrame(frame)
+    for frame, frameInfo in pairs(frameList) do
+        if frameInfo.args.isInUse then
+            ReparentFrame(frame)
+        end
     end
 end
 
@@ -804,7 +847,9 @@ local function ReplaceAllAlphaFunctions()
     local arg, val = "forceAlpha", true
     local frameList = GetFramesByArg(arg, val)
     for frame, frameInfo in pairs(frameList) do
-        ReplaceAlphaFunctions(frame, frameInfo.group)
+        if frameInfo.args.isInUse then
+            ReplaceAlphaFunctions(frame, frameInfo.group)
+        end
     end
 end
 
@@ -820,8 +865,8 @@ local function CreateFrameGroup(groupDB, dbIndex)
         frames = {},
         index = dbIndex,
         config = CopyTable(groupDB.config),
-        states = CopyTable(Config.DEFAULT_STATES),
-        conditions = CopyTable(groupDB.conditions),
+        states = CopyTable(Main.DEFAULT_STATES),
+        conditions = Main.GetConditionsSettings(groupDB.conditions)
     }
     return groupInfo
 end
@@ -930,7 +975,7 @@ local function CheckForAddOnFrames(frameString, groupDB)
 end
 
 local function IsDefaultFrame(frameString)
-    for _, info in ipairs(Config.DEFAULT_FRAMES) do
+    for _, info in ipairs(Private.FramesTab.DEFAULT_FRAMES) do
         if frameString == info.frame then
             return true
         end
@@ -1011,7 +1056,7 @@ local function GetAllCustomFrames(groupDB)
     local frameList = {}
     local frameStringList = string.gmatch(groupDB.config.customFrames, "[^,]+")
     for frameString in frameStringList do
-        frameString = frameString:gsub("%s", "")
+        frameString = frameString:match("^%s*(.-)%s*$")
         if frameString ~= "" then
             local frameInfo = GetAllFrameObjectsFromString(frameString, groupDB)
             if frameInfo then
@@ -1077,30 +1122,10 @@ local function CombineFrameLists(frameString, frameInfo, framesInUse, indexedFra
     end
 end
 
-local function HasFrames(frameList)
-    if not frameList then
-        return false
-    end
-
-    for _, frameInfo in pairs(frameList) do
-        for _, frame in pairs(frameInfo.frames) do
-            if frame and frameInfo.args.isInUse then
-                return true
-            end
-        end
-    end
-
-    return false
-end
-
 local function HandleAllGroupFrames(dbIndex, groupDB)
     wipe(addonLoadedStates)
     local commonFrames = GetAllCommonFrames(groupDB)
     local customFrames = GetAllCustomFrames(groupDB)
-
-    if not HasFrames(commonFrames) and not HasFrames(customFrames) then
-        return
-    end
 
     Main.activeGroups[dbIndex] = CreateFrameGroup(groupDB, dbIndex)
 
@@ -1115,17 +1140,13 @@ local function HandleAllGroupFrames(dbIndex, groupDB)
         end
     end
 
-    if not next(framesInUse) then
-        return
-    end
-
     Main.activeGroups[dbIndex].frames = indexedFrames
 end
 
 function Frames.InitFrames()
     WipeActiveFramesLists()
 
-    for dbIndex, groupDB in ipairs(Private.db.profile) do
+    for dbIndex, groupDB in ipairs(Private.db.profile.groups) do
         HandleAllGroupFrames(dbIndex, groupDB)
     end
 
@@ -1135,9 +1156,9 @@ function Frames.InitFrames()
     ReplaceAllAlphaFunctions()
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Special Workarounds
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 -- Ayije_CDM creates resourceBars as they are needed, for example when shapeshifting or respeccing.
 -- need to update the frame lists when that happens. this is run after a 0.15s delay.
@@ -1173,8 +1194,8 @@ function Frames.UpdateAyijeResourceBars()
     local activeStringFrames = Main.activeStrings["PersonalResourceDisplayFrame"].frames
 
     for _, newFrame in ipairs(newFrames) do
-        table.insert(groupFrames, newFrame)
-        table.insert(activeStringFrames, newFrame)
+        tinsert(groupFrames, newFrame)
+        tinsert(activeStringFrames, newFrame)
         ReplaceAlphaFunctions(newFrame, groupInfo)
         newFrame:_origSetAlpha(groupInfo.states.endAlpha)
     end

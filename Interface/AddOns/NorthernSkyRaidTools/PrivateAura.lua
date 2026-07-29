@@ -51,6 +51,11 @@ local SoundListRaid = {
     [1279512] = "Targeted", -- Starsplinter
     [1286294] = "Red", -- Blue Memory Game
     [1284984] = "Blue", -- Red Memory Game
+
+    -- Sporefall
+    [1222088] = "Spread", -- Festering Vines
+    [1221639] = "Boss", -- Shroomling Fixate
+    [1299508] = "Ranged", -- Fungling Fixate
 }
 
 local SoundListMPlus = {
@@ -164,7 +169,7 @@ function NSI:InitTextPA()
         self.PATextMoverFrame:SetPoint(NSRT.PATextSettings.Anchor, self.NSRTFrame, NSRT.PATextSettings.relativeTo, NSRT.PATextSettings.xOffset, NSRT.PATextSettings.yOffset)
 
         self.PATextMoverFrame.Text = self.PATextMoverFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        self.PATextMoverFrame.Text:SetFont(self.LSM:Fetch("font", NSRT.Settings.GlobalFont), NSRT.PATextSettings.Scale*20, "OUTLINE")
+        self.PATextMoverFrame.Text:SetFont(self:GetGlobalFontPath(), NSRT.PATextSettings.Scale*20, "OUTLINE")
         self.PATextMoverFrame.Text:SetText("<secret value> targets you with the spell <secret value>")
         self.PATextMoverFrame:SetSize(self.PATextMoverFrame.Text:GetStringWidth()*1, self.PATextMoverFrame.Text:GetStringHeight()*1.5)
         self.PATextMoverFrame.Text:SetPoint("CENTER", self.PATextMoverFrame, "CENTER", 0, 0)
@@ -240,7 +245,7 @@ function NSI:InitPrivateAuraDisplay(unit, s)
                     parent = frame,
                     isContainer = false,
                     showCountdownFrame = true,
-                    showCountdownNumbers = not s.UpscaleDuration,
+                    showCountdownNumbers = not s.HideDurationText,
                     iconInfo = {
                         iconAnchor = {
                             point = "CENTER",
@@ -390,7 +395,7 @@ function NSI:PreviewPA(Show)
     self:MakeDraggable(self.PAPreviewMover, NSRT.PASettings, true)
     self.PATextMoverFrame:Show()
     self.PATextMoverFrame.Text:Show()
-    self.PATextMoverFrame.Text:SetFont(self.LSM:Fetch("font", NSRT.Settings.GlobalFont), NSRT.PATextSettings.Scale*20, "OUTLINE")
+    self.PATextMoverFrame.Text:SetFont(self:GetGlobalFontPath(), NSRT.PATextSettings.Scale*20, "OUTLINE")
     self.PATextMoverFrame:SetSize(self.PATextMoverFrame.Text:GetStringWidth()*1, self.PATextMoverFrame.Text:GetStringHeight()*1.5)
     self.PAPreviewMover:SetScript("OnDragStart", function(self)
         self:StartMoving()
@@ -499,6 +504,7 @@ function NSI:PreviewRaidPA(Show, Init)
         self.PARaidPreviewFrame:SetFrameStrata("DIALOG")
     end
     self.PARaidPreviewFrame:SetSize(NSRT.PARaidSettings.Width, NSRT.PARaidSettings.Height)
+    self.PARaidPreviewFrame:ClearAllPoints()
     self.PARaidPreviewFrame:SetPoint(NSRT.PARaidSettings.Anchor, MyFrame, NSRT.PARaidSettings.relativeTo, NSRT.PARaidSettings.xOffset, NSRT.PARaidSettings.yOffset)
     self.PARaidPreviewFrame:Show()
 
@@ -517,7 +523,7 @@ function NSI:PreviewRaidPA(Show, Init)
             self.PARaidPreviewIcons[i] = self.PARaidPreviewFrame:CreateTexture(nil, "ARTWORK")
             self.PARaidPreviewIcons[i]:SetTexture(237555)
             self.PARaidPreviewIcons[i].Text = self.PARaidPreviewFrame:CreateFontString(nil, "OVERLAY")
-            self.PARaidPreviewIcons[i].Text:SetFont(self.LSM:Fetch("font", NSRT.Settings.GlobalFont), 16, "OUTLINE")
+            self.PARaidPreviewIcons[i].Text:SetFont(self:GetGlobalFontPath(), 16, "OUTLINE")
             self.PARaidPreviewIcons[i].Text:SetPoint("CENTER", self.PARaidPreviewIcons[i], "CENTER", 0, 0)
             self.PARaidPreviewIcons[i].Text:SetText(i)
             self.PARaidPreviewIcons[i].Text:SetTextColor(1, 0, 0, 1)
@@ -558,8 +564,7 @@ function NSI:InitPrivateAuras(firstcall)
     self:RemoveAllPrivateAuraAnchors()
     self:InitTextPA()
     self:InitPrivateAuraDisplay("player", NSRT.PASettings)
-    local diff = select(3, GetInstanceInfo()) or 0
-    if diff <= 17 and diff >= 14 and UnitGroupRolesAssigned("player") == "TANK" then -- enabled in lfr, normal, heroic, mythic
+    if self:DifficultyCheck({14, 15, 16}) and UnitGroupRolesAssigned("player") == "TANK" then -- enabled in normal, heroic, mythic
         local tankUnit
         for u in self:IterateGroupMembers() do
             if UnitGroupRolesAssigned(u) == "TANK" and not UnitIsUnit("player", u) then

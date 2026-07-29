@@ -1,7 +1,6 @@
 # Auctionator
 
-## [322](https://github.com/TheMouseNest/Auctionator/tree/322) (2026-04-23)
-[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/321...322) 
+## [332](https://github.com/TheMouseNest/Auctionator/tree/332) (2026-07-22)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/331...332) 
 
-- [Fixes #1811] Prioritise vendor price warning over low-price warning  
-- [Fixes #1805] Fix tier 3 not applying to a search term  
+- Vanilla: Fix multi-post error  

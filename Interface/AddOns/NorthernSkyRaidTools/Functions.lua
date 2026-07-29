@@ -17,8 +17,44 @@ function NSI:IterateGroupMembers(reversed, forceParty)
     end
 end
 
+function NSI:IsMidnightS2()
+    local build = select(4, GetBuildInfo())
+    return build >= 120100
+end
+
 function NSI:Restricted()
     return C_Secrets.ShouldAurasBeSecret()
+end
+
+function NSI:GetPrimaryPhase(phase)
+    if type(phase) == "table" then
+        local primaryPhase
+        for _, value in ipairs(phase) do
+            value = tonumber(value)
+            if value and (not primaryPhase or value < primaryPhase) then
+                primaryPhase = value
+            end
+        end
+        return primaryPhase
+    end
+    return phase
+end
+
+function NSI:GetSortedPhaseKeys(phaseTimers)
+    local phases = {}
+    for phase, timers in pairs(phaseTimers or {}) do
+        if type(timers) == "table" then
+            phases[#phases + 1] = phase
+        end
+    end
+    table.sort(phases, function(a, b)
+        return (tonumber(a) or 0) < (tonumber(b) or 0)
+    end)
+    return phases
+end
+
+function NSI:GetActiveEncounterTimelineEventCount()
+    return C_EncounterTimeline and C_EncounterTimeline.GetEventCountBySource and C_EncounterTimeline.GetEventCountBySource(0) or 0
 end
 
 function NSI:SortTable(t, reversed)
@@ -35,7 +71,9 @@ end
 
 function NSAPI:Shorten(unit, num, specicon, AddonName, combined, roleicon) -- Returns color coded Name/Nickname
     if issecretvalue(unit) or not unit then return unit, "", "" end
-    local classFile = unit and select(2, UnitClass(unit))
+    local name = UnitName(unit)
+    if issecretvalue(name) then return unit, "", "" end
+    local classFile = select(2, UnitClass(unit))
     if specicon then
         local specid = 0
         if unit then specid = NSI:GetSpecs(unit) or 0 end
@@ -66,13 +104,12 @@ function NSAPI:Shorten(unit, num, specicon, AddonName, combined, roleicon) -- Re
         roleicon = ""
     end
     if classFile then -- basically "if unit found"
-        local name = UnitName(unit)
-        local color = GetClassColorObj(classFile)
-        name = num and NSI:Utf8Sub(NSAPI:GetName(name, AddonName), 1, num) or NSAPI:GetName(name, AddonName) -- shorten name before wrapping in color
+        local color = classFile == "PRIEST" and CreateColor(200/255, 200/255, 200/255) or GetClassColorObj(classFile)
+        local newname = num and NSI:Utf8Sub(NSAPI:GetName(name, AddonName), 1, num) or NSAPI:GetName(name, AddonName) -- shorten name before wrapping in color
         if color then -- should always be true anyway?
-            return combined and specicon..roleicon..color:WrapTextInColorCode(name) or color:WrapTextInColorCode(name), combined and "" or specicon, combined and "" or roleicon
+            return combined and specicon..roleicon..color:WrapTextInColorCode(newname) or color:WrapTextInColorCode(newname), combined and "" or specicon, combined and "" or roleicon
         else
-            return combined and specicon..roleicon..name or name, combined and "" or specicon, combined and "" or roleicon
+            return combined and specicon..roleicon..newname or newname, combined and "" or specicon, combined and "" or roleicon
         end
     else
         return unit, "", "" -- return input if nothing was found
@@ -81,7 +118,9 @@ end
 
 function NSI:GetSpecs(unit)
     if unit then
-        return self.specs[unit] or false -- return false if no information available for that unit so it goes to the next fallback
+        local G = UnitGUID(unit)
+        if issecretvalue(G) then return false end
+        return self.specs[G] or false -- return false if no information available for that unit so it goes to the next fallback
     else
         return self.specs -- if no unit is given then entire table is requested
     end
@@ -97,7 +136,6 @@ function NSI:UpdateLibSpecRegistration()
         local _, myrealm = UnitFullName("player")
         self.LS.RegisterGroup(self, function(specId, role, position, playerName)
             self.specs = self.specs or {}
-            self.GUIDS = self.GUIDS or {}
             local name, realm = strsplit("-", playerName)
             if (not realm) or (realm == "") then realm = myrealm end
             local u
@@ -110,10 +148,9 @@ function NSI:UpdateLibSpecRegistration()
                 end
             end
             if u then
-                self.specs[u] = specId
+                local G = UnitGUID(u) or ""
+                self.specs[G] = specId
                 NSAPI.specs = self.specs
-                local G = UnitGUID(u)
-                self.GUIDS[u] = issecretvalue(G) and "" or G
             end
         end)
     end
@@ -129,9 +166,10 @@ function NSI:GetNote() -- simply for note comparison now
     return _G.VMRT.Note.Text1 or ""
 end
 
-function NSI:DifficultyCheck(num) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
-    local difficultyID = select(3, GetInstanceInfo()) or 0
-    return ((difficultyID >= num and difficultyID <= 16 and difficultyID)) or (NSRT.Settings["Debug"] and 16)
+function NSI:DifficultyCheck(diffs) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
+    local diff = select(3, GetInstanceInfo()) or 0
+    if diff == 233 then diff = 16 end -- Just treat Flex myth as normal myth
+    return (tContains(diffs, diff) and diff) or (NSRT.Settings.Debug and 16)
 end
 
 function NSI:GetHash(text)
@@ -158,12 +196,42 @@ function NSAPI:TTSCountdown(num)
 end
 
 local path = "Interface\\AddOns\\NorthernSkyRaidTools\\Media\\Sounds\\"
+local function GetTTSSoundFile(sound)
+    if not NSI.LSM or not sound then return end
+
+    sound = strtrim(tostring(sound))
+    local soundPath = NSI.LSM:Fetch("sound", sound, true)
+    if soundPath then return soundPath end
+
+    if not NSI.LSMSoundCache and NSI.CacheSounds then
+        NSI:CacheSounds()
+    end
+
+    local numeric = tonumber(sound)
+    local function GetCachedKey()
+        local key = NSI.LSMSoundCache and (NSI.LSMSoundCache[sound] or NSI.LSMSoundCache[strlower(sound)])
+        if not key and numeric then
+            key = NSI.LSMSoundCache and NSI.LSMSoundCache[tostring(numeric)]
+        end
+        return key
+    end
+
+    local lsmKey = GetCachedKey()
+    if not lsmKey and NSI.CacheSounds then
+        NSI:CacheSounds()
+        lsmKey = GetCachedKey()
+    end
+    return lsmKey and NSI.LSM:Fetch("sound", lsmKey, true)
+end
+
 function NSAPI:TTS(sound, voice) -- NSAPI:TTS("Bait Frontal")
     if NSRT.Settings["TTS"] then
         local secret = issecretvalue(sound)
-        local handle = (not secret) and select(2, PlaySoundFile(path..sound..".ogg", "Master"))
+        local forceTTS = NSRT.ReminderSettings and NSRT.ReminderSettings.TTSOverSoundfile
+        local soundFile = (not forceTTS and not secret) and (GetTTSSoundFile(sound) or path..sound..".ogg")
+        local handle = soundFile and select(2, PlaySoundFile(soundFile, "Master"))
         if handle then
-            PlaySoundFile(path..sound..".ogg", "Master")
+            return
         else
             sound = tostring(sound)
             local num = voice or NSRT.Settings["TTSVoice"]
@@ -258,16 +326,16 @@ function NSI:FireCallback(event, ...)
     self.Callbacks:Fire(event, ...)
 end
 
-function NSAPI:RegisterCallback(event, callback, owner)
-    return NSI:RegisterCallback(event, callback, owner)
+function NSAPI.RegisterCallback(target, event, callback, owner)
+    return NSI.RegisterCallback(target, event, callback, owner)
 end
 
-function NSAPI:UnregisterCallback(event, callback, owner)
-    return NSI:UnregisterCallback(event, callback, owner)
+function NSAPI.UnregisterCallback(target, event)
+    return NSI.UnregisterCallback(target, event)
 end
 
-function NSAPI:UnregisterAllCallbacks(owner)
-    return NSI:UnregisterAllCallbacks(owner)
+function NSAPI.UnregisterAllCallbacks(target)
+    return NSI.UnregisterAllCallbacks(target)
 end
 
 local Serialize = LibStub("AceSerializer-3.0")
@@ -275,51 +343,6 @@ local Compress = LibStub("LibDeflate")
 
 -- Snapshot of the original locale strings before any override is applied.
 local _localeSnapshot = nil
-
--- Applies a user-selected language override by mutating the AceLocale table in-place.
--- Must be called after NSRT is loaded (ADDON_LOADED). The UI reads L lazily so
--- all strings will reflect the override the next time the options panel is opened.
-function NSI:ApplyLocaleOverride()
-    local lang = NSRT and NSRT.Settings and NSRT.Settings.Language
-    local aceL = LibStub("AceLocale-3.0"):GetLocale("NorthernSkyRaidTools")
-
-    -- Build a snapshot of the original (client) locale the first time we run.
-    if not _localeSnapshot then
-        _localeSnapshot = {}
-        for _, rawTable in pairs(NSI.RawLocales or {}) do
-            for k in pairs(rawTable) do
-                if _localeSnapshot[k] == nil then
-                    local v = rawget(aceL, k)
-                    _localeSnapshot[k] = (v == nil or v == true) and k or v
-                end
-            end
-        end
-    end
-
-    if not lang or lang == "Auto" then
-        -- Restore the original client locale strings.
-        for k, v in pairs(_localeSnapshot) do
-            rawset(aceL, k, v)
-        end
-        return
-    end
-
-    if lang == "enUS" then
-        -- Reset all known translated keys back to their English form (key == value in AceLocale)
-        for _, rawTable in pairs(NSI.RawLocales or {}) do
-            for k in pairs(rawTable) do
-                rawset(aceL, k, k)
-            end
-        end
-    else
-        local rawTable = NSI.RawLocales and NSI.RawLocales[lang]
-        if rawTable then
-            for k, v in pairs(rawTable) do
-                rawset(aceL, k, v)
-            end
-        end
-    end
-end
 
 function NSI:CreateExportString(SettingsTable) -- {"ReminderSettings", "PASettings", ...}
     local str = ""
@@ -358,9 +381,8 @@ function NSI:ImportSettingsFromString(string)
     else return nil end
 end
 
-function NSI:StopFrameMove(F, SettingsTable)
-    if not F then return end
-    F:StopMovingOrSizing()
+function NSI:SaveFramePosition(F, SettingsTable)
+    if not F or not SettingsTable then return end
     local Anchor, _, relativeTo, xOffset, yOffset = F:GetPoint()
     xOffset = Round(xOffset)
     yOffset = Round(yOffset)
@@ -368,6 +390,12 @@ function NSI:StopFrameMove(F, SettingsTable)
     SettingsTable.yOffset = yOffset
     SettingsTable.Anchor = Anchor
     SettingsTable.relativeTo = relativeTo
+end
+
+function NSI:StopFrameMove(F, SettingsTable)
+    if not F then return end
+    F:StopMovingOrSizing()
+    self:SaveFramePosition(F, SettingsTable)
 end
 
 function NSI:MakeDraggable(F, settingsTable, enable, isNote)
@@ -385,59 +413,83 @@ function NSI:MakeDraggable(F, settingsTable, enable, isNote)
             F.dragBorder:SetBackdropColor(0, 0, 0, 0)
             F.dragBorder:SetBackdropBorderColor(0.3, 0.67, 0.78, 1)
         end
-
         F:SetMovable(true)
         F:EnableMouse(true)
         F:RegisterForDrag("LeftButton")
         F:SetClampedToScreen(true)
         if not isNote then F:SetFrameStrata("DIALOG") end
-        if F.dragBorder then F.dragBorder:Show() end
-        if F.Border and isNote then F.Border:Show() end
-        if F.Text then F.Text:Show() end
         F:Show()
+        if F.Border and isNote then F.Border:Show() end
+        if F.dragBorder then F.dragBorder:Show() end
+        if F.Text then F.Text:Show() end
+        if F.TitleLabel then F.TitleLabel:Show() end
+        if F.GearButton then F.GearButton:Show() end
 
-        F:SetScript("OnDragStart", function(f) f:StartMoving() end)
+        F:SetScript("OnDragStart", function(f)
+            f:StartMoving()
+            if settingsTable and not isNote then
+                f._nsrtDragSaveElapsed = 0
+                f._nsrtLiveSaveDrag = true
+                f:SetScript("OnUpdate", function(frame, elapsed)
+                    frame._nsrtDragSaveElapsed = (frame._nsrtDragSaveElapsed or 0) + elapsed
+                    if frame._nsrtDragSaveElapsed < 0.05 then return end
+                    frame._nsrtDragSaveElapsed = 0
+                    self:SaveFramePosition(frame, settingsTable)
+                end)
+            end
+        end)
         F:SetScript("OnDragStop", function(f)
+            if f._nsrtLiveSaveDrag then
+                f:SetScript("OnUpdate", nil)
+                f._nsrtLiveSaveDrag = nil
+                f._nsrtDragSaveElapsed = nil
+            end
             self:StopFrameMove(f, settingsTable)
         end)
     else
+        if F.Border and isNote then F.Border:Hide() end
+        if F.dragBorder then F.dragBorder:Hide() end
+        if F.Text then F.Text:Hide() end
+        if F.TitleLabel then F.TitleLabel:Hide() end
+        if F.GearButton then F.GearButton:Hide() end
+        if F.SettingsWindow then F.SettingsWindow:Hide() end
+
         F:SetMovable(false)
         F:EnableMouse(false)
+        if F._nsrtLiveSaveDrag then
+            F:SetScript("OnUpdate", nil)
+            F._nsrtLiveSaveDrag = nil
+            F._nsrtDragSaveElapsed = nil
+        end
         F:SetScript("OnDragStart", nil)
         F:SetScript("OnDragStop",  nil)
-        if F.dragBorder then F.dragBorder:Hide() end
-        if F.Border and isNote then F.Border:Hide() end
-        if F.Text then F.Text:Hide() end
-    end
-end
-
-function NSI:IsMelee(unit)
-    local role = UnitGroupRolesAssigned(unit)
-    if unit == "player" then
-        local spec = self:GetMySpecID()
-        local melee = false
-        if self.meleetable[spec] or role == "TANK" then
-            melee = true
-        end
-        return melee
-    else
-        local spec = NSI:GetSpecs(unit) or 0
-        if spec and spec ~= 0 then
-            local melee = false
-            if self.meleetable[spec] or role == "TANK" then
-                melee = true
-            end
-            return melee
-        else
-            return role == "TANK"
-        end
     end
 end
 
 function NSI:LogTimeline(e, ...)
     if not NSRT.Settings.DebugLogs then return end
-    local id = select(3, GetInstanceInfo())
-    if id > 16 or id < 14 then return end
+    local id = self:DifficultyCheck({14, 15, 16})
+    if not id then return end
+    local function GetBossUnitState()
+        local bossUnits = {}
+        for i = 1, 8 do
+            local unit = "boss" .. i
+            if UnitExists(unit) then
+                local reaction = UnitReaction("player", unit)
+                local state = unit
+                if reaction then
+                    state = state .. ":r" .. reaction
+                end
+                if UnitCanAttack("player", unit) then
+                    state = state .. ":attack"
+                elseif UnitIsFriend("player", unit) then
+                    state = state .. ":friend"
+                end
+                bossUnits[#bossUnits + 1] = state
+            end
+        end
+        return #bossUnits > 0 and table.concat(bossUnits, ", ") or "none"
+    end
     if e == "ENCOUNTER_START" then
         local encID, encName, difficultyID, groupSize = ...
         local now = GetTime()
@@ -484,17 +536,27 @@ function NSI:LogTimeline(e, ...)
             data.id = info
             local stateVal = C_EncounterTimeline.GetEventState(info)
             data.state = stateNames[stateVal] or tostring(stateVal)
+        elseif e == "ENCOUNTER_WARNING" then
+            data.id = "nil"
+            data.dur = info.duration
+            data.severity = info.severity
+        elseif e == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
+            data.id = GetBossUnitState()
+        elseif e == "UNIT_FACTION" or e == "UNIT_FLAGS" or e == "UNIT_TARGETABLE_CHANGED" then
+            data.id = info or "nil"
+            data.state = GetBossUnitState()
         else
             data.id = info
         end
         data.time = now - self.CurrentEncounterData.pullTime
-        tinsert(self.CurrentEncounterData.events, string.format("[%6.2f]  %-45s  id: %-10s%s%s%s",
+        tinsert(self.CurrentEncounterData.events, string.format("[%6.2f]  %-45s  id: %-10s%s%s%s%s",
             data.time,
             e,
             tostring(data.id or "nil"),
             data.dur and string.format("  dur: %-10.4f", data.dur) or "",
             data.Queue and string.format("  queue: %.4f", data.Queue) or "",
-            data.state and string.format("  state: %s", data.state) or ""
+            data.state and string.format("  state: %s", data.state) or "",
+            data.severity and string.format("  severity: %s", data.severity) or ""
         ))
     end
 end
@@ -503,21 +565,68 @@ function NSI:GetMySpecID()
     return C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization()) or 0
 end
 
-function NSI:EncounterRegister(event, enable, units, all)
-    if not self.EncounterFrame then
-        self.EncounterFrame = CreateFrame("Frame", nil, self.NSRTFrame)
+function NSI:EncounterRegister(frameName, event, enable, units, all)
+    if not self.EncounterFrames then
+        self.EncounterFrames = {}
     end
     if all then
-        self.EncounterFrame:UnregisterAllEvents()
+        for k, v in pairs(self.EncounterFrames or {}) do
+            v:UnregisterAllEvents()
+        end
+        return
+    end
+    if not frameName then return end
+    if event and not self.EncounterFrames[frameName] then
+        self.EncounterFrames[frameName] = CreateFrame("Frame", nil, self.NSRTFrame)
+    end
+    if event and type(event) == "table" then
+        for _, e in ipairs(event) do
+            self:EncounterRegister(frameName, e, enable, units)
+        end
         return
     end
     if enable then
         if units then
-            self.EncounterFrame:RegisterUnitEvent(event, unpack(units))
+            if type(units) == "table" then
+                self.EncounterFrames[frameName]:RegisterUnitEvent(event, units[1], units[2], units[3], units[4])
+            else
+                self.EncounterFrames[frameName]:RegisterUnitEvent(event, units)
+            end
         else
-            self.EncounterFrame:RegisterEvent(event)
+            self.EncounterFrames[frameName]:RegisterEvent(event)
         end
-    else
-        self.EncounterFrame:UnregisterEvent(event)
+    elseif event then
+        self.EncounterFrames[frameName]:UnregisterEvent(event)
     end
+end
+
+function NSI:EncounterFunction(frameName, func)
+    if not frameName then return end
+    self.EncounterFrames = self.EncounterFrames or {}
+    if not self.EncounterFrames[frameName] then
+        self.EncounterFrames[frameName] = CreateFrame("Frame", nil, self.NSRTFrame)
+    end
+    self.EncounterFrames[frameName]:SetScript("OnEvent", func)
+end
+
+function NSI:IsInSameGuild(unit, playerName)
+    if not playerName then
+        local name, realm = UnitName(unit)
+        if not realm then
+            realm = select(2, UnitFullName("player"))
+        end
+        if not name then return false end
+        playerName = name.."-"..realm
+    end
+    for i=1, GetNumGuildMembers() do
+        local name = GetGuildRosterInfo(i)
+        if name == playerName then
+            return true
+        end
+    end
+    return false
+end
+
+function NSAPI:IsInSameGuild(unit, playerName)
+    return NSI:IsInSameGuild(unit, playerName)
 end

@@ -17,6 +17,17 @@ local function GetMainPoint(point, mapID)
     return point
 end
 
+-- A `related` cluster registers one route per related point, back to the main
+-- one, each tagged with _related. Don't draw one whose related point is
+-- currently filtered out. Routes without the tag -- paths, and any route
+-- written by hand in the data -- are always drawn, since a hidden endpoint
+-- there doesn't imply the route is unwanted.
+local function routeShown(route, mapID)
+    if not route._related then return true end
+    local rpoint = ns.points[mapID][route._related]
+    return not rpoint or ns.should_show_point(route._related, rpoint, mapID, false)
+end
+
 function provider:OnRefresh()
     table.wipe(self.data)
 
@@ -32,18 +43,22 @@ function provider:OnRefresh()
 
     for coord, point in pairs(ns.points[mapID]) do
         point = GetMainPoint(point, mapID)
-        if point and not already[point] and point.routes and ns.should_show_point(coord, point, mapID, false) then
+        -- coord may belong to a related point that resolved to this main one,
+        -- so test the main point against its own coord, not the one we entered on
+        if point and not already[point] and point.routes and ns.should_show_point(point._coord, point, mapID, false) then
             already[point] = true
             for i, route in ipairs(point.routes) do
-                if not routecache[route] then
-                    routecache[route] = {
-                        route = route,
-                        point = point,
-                        coord = coord,
-                        mapID = mapID,
-                    }
+                if routeShown(route, mapID) then
+                    if not routecache[route] then
+                        routecache[route] = {
+                            route = route,
+                            point = point,
+                            coord = point._coord,
+                            mapID = mapID,
+                        }
+                    end
+                    table.insert(self.data, routecache[route])
                 end
-                table.insert(self.data, routecache[route])
             end
         end
     end
@@ -71,7 +86,7 @@ function provider:HandleData(routedata)
                 line.baseThickness = line:GetThickness()
                 -- line:SetColorTexture(route.r or 1, route.g or 1, route.b or 1, route.a or 0.6)
                 line:SetVertexColor(route.r or 1, route.g or 1, route.b or 1, route.a or 0.6)
-                if route.highlightOnly and not highlights[point] then
+                if route.highlightOnly and not highlights[routedata.point] then
                     line:Hide()
                 end
                 pin.line = line

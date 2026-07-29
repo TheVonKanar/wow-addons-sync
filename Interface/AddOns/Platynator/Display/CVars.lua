@@ -20,9 +20,11 @@ local cvars = {
   ["nameplateTargetBehindMaxDistance"] = "30",
   ["nameplateTargetRadialPosition"] = "1",
   ["clampTargetNameplateToScreen"] = "1",
+  ["nameplateNotSelectedAlpha"] = "1",
+  ["nameplateShowOnlyNameForFriendlyPlayerUnits"] = "1",
 }
 
-if addonTable.Constants.IsRetail then
+if addonTable.Constants.IsModernPlates then
   cvars["nameplateOverlapH"] = "1"
   cvars["nameplateOverlapV"] = "1"
 end

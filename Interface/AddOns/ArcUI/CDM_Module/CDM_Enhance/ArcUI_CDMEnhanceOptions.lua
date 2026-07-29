@@ -54,6 +54,7 @@ local collapsedSections = {
   spellUsability = true,   -- Per-icon spell usability tinting/glow
   assistedCombatHighlight = true, -- Assisted Combat next-cast highlight (opt-in)
   buttonPressHighlight = true,    -- Button Press keybind overlay (opt-in)
+  durationOverride = true,        -- (legacy key; appearance merged into auraActiveState)
 }
 
 -- Cache for unified icon list
@@ -74,7 +75,7 @@ local RebuildUnifiedIconCache
 -- Define which fields belong to each section for per-icon indicator
 -- ===================================================================
 local SECTION_FIELDS = {
-  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "shadowSize", "keepBright", "keepBrightAllowDesat", "customIconID", "debuffBorder.enabled", "pandemicBorder.enabled" },
+  iconAppearance = { "scale", "width", "height", "aspectRatio", "zoom", "padding", "useGroupScale", "shadowSize", "keepBright", "keepBrightAllowDesat", "forceHideIcon", "customIconID", "debuffBorder.enabled", "pandemicBorder.enabled" },
   position = { "position" },
   -- Ready State / Aura Active - all actual stored fields
   activeState = { 
@@ -123,12 +124,12 @@ local SECTION_FIELDS = {
     "auraActiveState.glowFrameStrata",
     "auraActiveState.glowFrameLevel",
   },
-  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowFollowPandemic", "auraActiveState.glowWhenMissing", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly", "auraActiveState.glowFrameStrata", "auraActiveState.glowFrameLevel", "auraActiveState.glowXOffset", "auraActiveState.glowYOffset", "cooldownSwipe.auraSwipeColor", "cooldownSwipe.reverseWhileAura" },  -- Aura Active State settings
+  auraActiveState = { "auraActiveState.ignoreAuraOverride", "auraActiveState.glow", "auraActiveState.glowFollowPandemic", "auraActiveState.glowWhenMissing", "auraActiveState.glowType", "auraActiveState.glowColor", "auraActiveState.glowIntensity", "auraActiveState.glowScale", "auraActiveState.glowSpeed", "auraActiveState.glowLines", "auraActiveState.glowThickness", "auraActiveState.glowParticles", "auraActiveState.glowCombatOnly", "auraActiveState.glowFrameStrata", "auraActiveState.glowFrameLevel", "auraActiveState.glowXOffset", "auraActiveState.glowYOffset", "auraActiveState.desaturateWhenInactive", "cooldownSwipe.auraSwipeColor", "cooldownSwipe.reverseWhileAura" },  -- Aura Active State settings
   rangeIndicator = { "rangeIndicator.rangeAlpha", "rangeIndicator.showRangeOverlay", "rangeIndicator.enabled" },
   procGlow = { "procGlow.showProcGlow", "procGlow.procGlowType", "procGlow.procGlowColor", "procGlow.color", "procGlow.enabled", "procGlow.xOffset", "procGlow.yOffset", "procGlow.strata", "procGlow.frameLevel" },
   border = { "border.enabled", "border.texture", "border.color", "border.thickness", "border.inset", "border.useClassColor", "border.followDesaturation" },
-  cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.edgeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.auraSwipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride" },
-  chargeText = { "chargeText.enabled", "chargeText.showSingleStack", "chargeText.hideAtZero", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY", "chargeText.mode", "chargeText.position", "chargeText.freeX", "chargeText.freeY" },
+  cooldownSwipe = { "cooldownSwipe.showSwipe", "cooldownSwipe.showEdge", "cooldownSwipe.showBling", "cooldownSwipe.reverse", "cooldownSwipe.noGCDSwipe", "cooldownSwipe.swipeWaitForNoCharges", "cooldownSwipe.edgeWaitForNoCharges", "cooldownSwipe.swipeColor", "cooldownSwipe.auraSwipeColor", "cooldownSwipe.edgeColor", "cooldownSwipe.edgeScale", "cooldownSwipe.swipeInset", "cooldownSwipe.swipeInsetX", "cooldownSwipe.swipeInsetY", "cooldownSwipe.separateInsets", "cooldownSwipe.ignoreAuraOverride", "cooldownSwipe.ignoreHardICD" },
+  chargeText = { "chargeText.enabled", "chargeText.showSingleStack", "chargeText.hideAtZero", "chargeText.font", "chargeText.size", "chargeText.color", "chargeText.outline", "chargeText.anchor", "chargeText.offsetX", "chargeText.offsetY", "chargeText.shadow", "chargeText.shadowColor", "chargeText.shadowOffsetX", "chargeText.shadowOffsetY", "chargeText.mode", "chargeText.position", "chargeText.freeX", "chargeText.freeY", "chargeText.thresholdColorEnabled", "chargeText.thresholdBands" },
   cooldownText = { "cooldownText.enabled", "cooldownText.hideWhenHasCharges", "cooldownText.durationColor", "cooldownText.durationColorPreset", "cooldownText.durationColorCustom", "cooldownText.font", "cooldownText.size", "cooldownText.color", "cooldownText.outline", "cooldownText.anchor", "cooldownText.offsetX", "cooldownText.offsetY", "cooldownText.shadow", "cooldownText.shadowColor", "cooldownText.shadowOffsetX", "cooldownText.shadowOffsetY", "cooldownText.mmss", "cooldownText.decimals", "cooldownText.decimalThreshold", "cooldownText.abbrevThreshold", "cooldownText.mode", "cooldownText.position", "cooldownText.freeX", "cooldownText.freeY" },
   keybindText = { "keybindText.enabled", "keybindText.font", "keybindText.size", "keybindText.color", "keybindText.outline", "keybindText.anchor", "keybindText.offsetX", "keybindText.offsetY", "hideKeybind" },
   customLabel = { "customLabel.text", "customLabel.size", "customLabel.color", "customLabel.anchor", "customLabel.xOffset", "customLabel.yOffset", "customLabel.showWhenActive", "customLabel.showWhenInactive", "customLabel.showInReadyState", "customLabel.showInCooldownState", "customLabel.showWhileRecharging", "customLabel.text2", "customLabel.size2", "customLabel.color2", "customLabel.anchor2", "customLabel.xOffset2", "customLabel.yOffset2", "customLabel.showWhenActive2", "customLabel.showWhenInactive2", "customLabel.showInReadyState2", "customLabel.showInCooldownState2", "customLabel.showWhileRecharging2", "customLabel.text3", "customLabel.size3", "customLabel.color3", "customLabel.anchor3", "customLabel.xOffset3", "customLabel.yOffset3", "customLabel.showWhenActive3", "customLabel.showWhenInactive3", "customLabel.showInReadyState3", "customLabel.showInCooldownState3", "customLabel.showWhileRecharging3", "customLabel.labelCount", "customLabel.font", "customLabel.outline", "customLabel.frameStrata", "customLabel.frameLevel" },
@@ -288,6 +289,40 @@ local function IsCurrentCooldownSelectionAllCustomTimer()
     return isCustomTimerCdID(selectedCooldownIcon)
   end
 
+  return false
+end
+
+-- ───────────────────────────────────────────────────────────────────────
+-- Detect whether the currently-selected cooldown icon(s) are ALL totem-slot
+-- icons (arcType == "totem"). Totems use the active/inactive model but map
+-- OPPOSITE to timers internally (active → readyState so they reuse the glow
+-- suite). Headers therefore label readyState "Active State" and cooldownState
+-- "Not Active" for totems — the inverse of the timer relabel. Also used to hide
+-- spell-only sections (Range Indicator, Spell Usability) that don't apply to
+-- totems. Same gating rules as the timer check.
+-- ───────────────────────────────────────────────────────────────────────
+local function IsCurrentCooldownSelectionAllTotem()
+  if editAllUnifiedMode then return false end
+  if cachedUnifiedFilterMode ~= unifiedFilterMode then
+    RebuildUnifiedIconCache()
+  end
+  local function isTotemCdID(cdID)
+    for _, entry in ipairs(cachedUnifiedIcons) do
+      if entry.cooldownID == cdID then
+        return entry.arcType == "totem"
+      end
+    end
+    return false
+  end
+  if next(selectedCooldownIcons) then
+    for cdID, _ in pairs(selectedCooldownIcons) do
+      if not isTotemCdID(cdID) then return false end
+    end
+    return true
+  end
+  if selectedCooldownIcon then
+    return isTotemCdID(selectedCooldownIcon)
+  end
   return false
 end
 
@@ -1327,6 +1362,7 @@ end
 local function HideCooldownChargeText()
   if HideIfNoCooldownSelection() then return true end
   if IsEditingMixedTypes() then return true end
+  if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems have no charges/stacks
   return collapsedSections.chargeText
 end
 
@@ -1382,12 +1418,16 @@ end
 local function HideCooldownRangeIndicator()
   if HideIfNoCooldownSelection() then return true end
   if IsEditingMixedTypes() then return true end
+  if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems have no spell range
+  if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers are duration displays, not castable spells
   return collapsedSections.rangeIndicator
 end
 
 local function HideCooldownProcGlow()
   if HideIfNoCooldownSelection() then return true end
   if IsEditingMixedTypes() then return true end
+  if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems don't proc
+  if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers: proc glow not used
   return collapsedSections.procGlow
 end
 
@@ -1406,6 +1446,9 @@ local function HideCooldownInactiveState()
 end
 
 local function HideCooldownAuraActiveState()
+  if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems aren't auras
+  if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers don't use the CDM aura-active path
+
   -- Show for both cooldown AND aura icon selections - aura active glow applies to both
   local hasAura = next(selectedAuraIcons) ~= nil or selectedAuraIcon ~= nil
   local hasCooldown = not HideIfNoCooldownSelection()
@@ -1801,6 +1844,8 @@ ns.OptionsHelpers = {
   HideIfNoAuraSelection   = HideIfNoAuraSelection,
   HideIfNoCooldownSelection = HideIfNoCooldownSelection,
   IsEditingMixedTypes     = IsEditingMixedTypes,
+  IsCurrentCooldownSelectionAllTotem = IsCurrentCooldownSelectionAllTotem,
+  IsCurrentCooldownSelectionAllCustomTimer = IsCurrentCooldownSelectionAllCustomTimer,
   GetAuraHeaderName       = GetAuraHeaderName,
   GetCooldownHeaderName   = GetCooldownHeaderName,
   ResetAuraSectionSettings   = ResetAuraSectionSettings,
@@ -2092,10 +2137,13 @@ local function CreateUnifiedCatalogIconEntry(index)
       
       -- Check if this is a charge spell
       if entry.spellID then
-        local chargeInfo = nil
-        pcall(function() chargeInfo = C_Spell.GetSpellCharges(entry.spellID) end)
+        local chargeInfo = C_Spell.GetSpellCharges(entry.spellID)
         if chargeInfo then
-          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (chargeInfo.currentCharges or "?") .. "/" .. (chargeInfo.maxCharges or "?")
+          -- currentCharges is secret-when-restricted (M+/instances); maxCharges is not.
+          -- Guard the current count so concatenating it can never choke on a secret -- no pcall.
+          local cur = chargeInfo.currentCharges
+          if issecretvalue and issecretvalue(cur) then cur = nil end
+          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (cur or "?") .. "/" .. (chargeInfo.maxCharges or "?")
         end
       end
       
@@ -2224,10 +2272,13 @@ local function CreateAuraCatalogIconEntry(index)
       
       -- Check if this is a charge spell
       if entry.spellID then
-        local chargeInfo = nil
-        pcall(function() chargeInfo = C_Spell.GetSpellCharges(entry.spellID) end)
+        local chargeInfo = C_Spell.GetSpellCharges(entry.spellID)
         if chargeInfo then
-          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (chargeInfo.currentCharges or "?") .. "/" .. (chargeInfo.maxCharges or "?")
+          -- currentCharges is secret-when-restricted (M+/instances); maxCharges is not.
+          -- Guard the current count so concatenating it can never choke on a secret -- no pcall.
+          local cur = chargeInfo.currentCharges
+          if issecretvalue and issecretvalue(cur) then cur = nil end
+          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (cur or "?") .. "/" .. (chargeInfo.maxCharges or "?")
         end
       end
       
@@ -2347,10 +2398,13 @@ local function CreateCooldownCatalogIconEntry(index)
       
       -- Check if this is a charge spell
       if entry.spellID then
-        local chargeInfo = nil
-        pcall(function() chargeInfo = C_Spell.GetSpellCharges(entry.spellID) end)
+        local chargeInfo = C_Spell.GetSpellCharges(entry.spellID)
         if chargeInfo then
-          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (chargeInfo.currentCharges or "?") .. "/" .. (chargeInfo.maxCharges or "?")
+          -- currentCharges is secret-when-restricted (M+/instances); maxCharges is not.
+          -- Guard the current count so concatenating it can never choke on a secret -- no pcall.
+          local cur = chargeInfo.currentCharges
+          if issecretvalue and issecretvalue(cur) then cur = nil end
+          desc = desc .. "\n|cffff9900Charge Spell|r: " .. (cur or "?") .. "/" .. (chargeInfo.maxCharges or "?")
         end
       end
       
@@ -2471,6 +2525,33 @@ local function GetAuraFilterValues()
   end
   
   return values
+end
+
+-- Default stack-color bands (mirrors DEFAULT_ICON_SETTINGS.chargeText.thresholdBands).
+-- The band setters call EnsureStackBands to materialize the full fixed-slot array
+-- on first edit (merge-safe: fixed slots align by index across DEFAULT/global/perIcon,
+-- same pattern as cooldownText.durationColorCustom).
+local STACK_BAND_DEFAULTS = {
+  { enabled = true,  threshold = 1,  color = {r = 1,   g = 1,   b = 1,   a = 1} },
+  { enabled = true,  threshold = 3,  color = {r = 0.3, g = 1,   b = 0.3, a = 1} },
+  { enabled = true,  threshold = 6,  color = {r = 1,   g = 0.3, b = 0.3, a = 1} },
+  { enabled = false, threshold = 9,  color = {r = 1,   g = 0.6, b = 0,   a = 1} },
+  { enabled = false, threshold = 12, color = {r = 0.6, g = 0.4, b = 1,   a = 1} },
+  { enabled = false, threshold = 15, color = {r = 0.3, g = 0.7, b = 1,   a = 1} },
+}
+
+local function EnsureStackBands(c)
+  if not c.chargeText then c.chargeText = {} end
+  if not c.chargeText.thresholdBands then
+    local def = {}
+    for i = 1, #STACK_BAND_DEFAULTS do
+      local b = STACK_BAND_DEFAULTS[i]
+      def[i] = { enabled = b.enabled, threshold = b.threshold,
+                 color = { r = b.color.r, g = b.color.g, b = b.color.b, a = b.color.a } }
+    end
+    c.chargeText.thresholdBands = def
+  end
+  return c.chargeText.thresholdBands
 end
 
 function ns.GetCDMAuraIconsOptionsTable()
@@ -3073,13 +3154,6 @@ function ns.GetCDMAuraIconsOptionsTable()
       order = 106, width = 0.65, hidden = HideAuraIconAppearance,
       disabled = IsMasqueActive,
     },
-    alpha = {
-      type = "range", name = "Opacity", min = 0, max = 1.0, step = 0.05,
-      desc = "Icon visibility (0 = hidden, 1 = fully visible)",
-      get = function() local c = GetAuraCfg(); return c and c.alpha or 1.0 end,
-      set = function(_, v) ApplyAuraSetting(function(c) c.alpha = v end) end,
-      order = 107, width = 0.65, hidden = HideAuraIconAppearance,
-    },
     shadowSize = {
       type = "range", name = "Shadow Size",
       desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
@@ -3122,6 +3196,20 @@ function ns.GetCDMAuraIconsOptionsTable()
         local c = GetAuraCfg()
         return not (c and c.keepBright)
       end,
+    },
+    showIcon = {
+      type = "toggle", name = "Show Icon",
+      desc = "Show the icon. Turn OFF to hide the whole icon (artwork, cooldown swipe and flash) and keep only the stack and duration text visible.",
+      get = function()
+        return GetAuraBoolSetting(function(c) return not c.forceHideIcon end, function() local c = GetAuraCfg(); return not (c and c.forceHideIcon) end)
+      end,
+      set = function(_, v)
+        ApplyAuraSetting(function(c) if v then c.forceHideIcon = nil else c.forceHideIcon = true end end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("aura")
+        end
+      end,
+      order = 100.05, width = 0.7, hidden = HideAuraIconAppearance,
     },
     customIconID = {
       type = "input",
@@ -5319,10 +5407,168 @@ function ns.GetCDMAuraIconsOptionsTable()
       order = 143, width = 0.55, hidden = function() return HideAuraChargeText() or (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.mode == "free") end,
     },
     chargeFreeHint = {
-      type = "description", 
+      type = "description",
       name = "|cff00ff00Text Drag Mode enabled.|r |cff888888Drag the charge text in-game to position it.|r",
-      order = 144, width = "full", 
+      order = 144, width = "full",
       hidden = function() return HideAuraChargeText() or not (GetAuraCfg() and GetAuraCfg().chargeText and GetAuraCfg().chargeText.mode == "free") end,
+    },
+
+    -- ── Threshold-colored stack count (secret-safe, colors the number only) ──
+    stackColorHeader = {
+      type = "description", name = "\n|cffffd700Stack Threshold Colors|r", order = 144.5, width = "full",
+      hidden = HideAuraChargeText,
+    },
+    stackColorNote121 = {
+      type = "description",
+      name = "|cffff8800Not available on this game version (12.1 Midnight).|r Aura stack counts are protected here, so the number shows in Blizzard's default color and can't be recolored. It returns with the new aura-icon system.",
+      order = 144.55, width = "full",
+      hidden = function() if HideAuraChargeText() then return true end return not (ns.API and ns.API.IS_121) end,
+    },
+    stackColorEnable = {
+      type = "toggle", name = "Color by Stack Count",
+      desc = "Color the stack number by how many stacks are present. Each enabled band colors the number once the stack count reaches its Min Stacks; the highest band reached wins. Below the lowest enabled band the number is hidden.\n\nWorks in instances / Mythic+ where the stack count is a secret value (it recolors the number text only, never the icon image).\n\n|cffff8800Disabled on 12.1 (Midnight): stack counts are protected there and can't be colored.|r",
+      get = function() return GetAuraBoolSetting(function(c) return c and c.chargeText and c.chargeText.thresholdColorEnabled == true end, function() local c = GetAuraCfg(); return c and c.chargeText and c.chargeText.thresholdColorEnabled == true end) end,
+      set = function(_, v) ApplyAuraSetting(function(c) if not c.chargeText then c.chargeText = {} end; c.chargeText.thresholdColorEnabled = v end) end,
+      disabled = function() return (ns.API and ns.API.IS_121) or false end,
+      order = 144.6, width = 1.4, hidden = HideAuraChargeText,
+    },
+    stackColorHint = {
+      type = "description",
+      name = "|cff888888Uses the font, size, outline, shadow and position from the settings above. Toggle each band, set its Min Stacks, and pick a color.|r",
+      order = 144.7, width = "full",
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    -- Band 1
+    scb1Enable = {
+      type = "toggle", name = "Band 1", desc = "Enable color band 1.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[1] and e[1].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[1].enabled = v end) end,
+      order = 145.11, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb1Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[1] and e[1].threshold or 1 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[1].threshold = v end) end,
+      order = 145.12, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[1] and e[1].enabled) end,
+    },
+    scb1Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[1] and e[1].color; if col then return col.r or 1, col.g or 1, col.b or 1, col.a or 1 end return 1, 1, 1, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[1].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.13, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[1] and e[1].enabled) end,
+    },
+    -- Band 2
+    scb2Enable = {
+      type = "toggle", name = "Band 2", desc = "Enable color band 2.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[2] and e[2].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[2].enabled = v end) end,
+      order = 145.21, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb2Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[2] and e[2].threshold or 3 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[2].threshold = v end) end,
+      order = 145.22, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[2] and e[2].enabled) end,
+    },
+    scb2Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[2] and e[2].color; if col then return col.r or 0.3, col.g or 1, col.b or 0.3, col.a or 1 end return 0.3, 1, 0.3, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[2].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.23, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[2] and e[2].enabled) end,
+    },
+    -- Band 3
+    scb3Enable = {
+      type = "toggle", name = "Band 3", desc = "Enable color band 3.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[3] and e[3].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[3].enabled = v end) end,
+      order = 145.31, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb3Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[3] and e[3].threshold or 6 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[3].threshold = v end) end,
+      order = 145.32, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[3] and e[3].enabled) end,
+    },
+    scb3Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[3] and e[3].color; if col then return col.r or 1, col.g or 0.3, col.b or 0.3, col.a or 1 end return 1, 0.3, 0.3, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[3].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.33, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[3] and e[3].enabled) end,
+    },
+    -- Band 4
+    scb4Enable = {
+      type = "toggle", name = "Band 4", desc = "Enable color band 4.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[4] and e[4].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[4].enabled = v end) end,
+      order = 145.41, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb4Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[4] and e[4].threshold or 9 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[4].threshold = v end) end,
+      order = 145.42, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[4] and e[4].enabled) end,
+    },
+    scb4Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[4] and e[4].color; if col then return col.r or 1, col.g or 0.6, col.b or 0, col.a or 1 end return 1, 0.6, 0, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[4].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.43, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[4] and e[4].enabled) end,
+    },
+    -- Band 5
+    scb5Enable = {
+      type = "toggle", name = "Band 5", desc = "Enable color band 5.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[5] and e[5].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[5].enabled = v end) end,
+      order = 145.51, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb5Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[5] and e[5].threshold or 12 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[5].threshold = v end) end,
+      order = 145.52, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[5] and e[5].enabled) end,
+    },
+    scb5Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[5] and e[5].color; if col then return col.r or 0.6, col.g or 0.4, col.b or 1, col.a or 1 end return 0.6, 0.4, 1, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[5].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.53, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[5] and e[5].enabled) end,
+    },
+    -- Band 6
+    scb6Enable = {
+      type = "toggle", name = "Band 6", desc = "Enable color band 6.",
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[6] and e[6].enabled or false end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[6].enabled = v end) end,
+      order = 145.61, width = 0.6,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); return not (c and c.chargeText and c.chargeText.thresholdColorEnabled) end,
+    },
+    scb6Threshold = {
+      type = "range", name = "Min Stacks", min = 1, max = 50, step = 1,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; return e and e[6] and e[6].threshold or 15 end,
+      set = function(_, v) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[6].threshold = v end) end,
+      order = 145.62, width = 1.0,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[6] and e[6].enabled) end,
+    },
+    scb6Color = {
+      type = "color", name = "Color", hasAlpha = true,
+      get = function() local c = GetAuraCfg(); local e = c and c.chargeText and c.chargeText.thresholdBands; local col = e and e[6] and e[6].color; if col then return col.r or 0.3, col.g or 0.7, col.b or 1, col.a or 1 end return 0.3, 0.7, 1, 1 end,
+      set = function(_, r, g, b, a) ApplyAuraSetting(function(c) local e = EnsureStackBands(c); e[6].color = {r=r, g=g, b=b, a=a or 1} end) end,
+      order = 145.63, width = 0.7,
+      hidden = function() if HideAuraChargeText() or (ns.API and ns.API.IS_121) then return true end local c = GetAuraCfg(); if not (c and c.chargeText and c.chargeText.thresholdColorEnabled) then return true end local e = c.chargeText.thresholdBands; return not (e and e[6] and e[6].enabled) end,
     },
     resetChargeText = {
       type = "execute",
@@ -6403,13 +6649,6 @@ function ns.GetCDMCooldownIconsOptionsTable()
       order = 106, width = 0.65, hidden = HideCooldownIconAppearance,
       disabled = IsMasqueActive,
     },
-    alpha = {
-      type = "range", name = "Opacity", min = 0, max = 1.0, step = 0.05,
-      desc = "Icon visibility (0 = hidden, 1 = fully visible)",
-      get = function() local c = GetCooldownCfg(); return c and c.alpha or 1.0 end,
-      set = function(_, v) ApplySharedCooldownSetting(function(c) c.alpha = v end) end,
-      order = 107, width = 0.65, hidden = HideCooldownIconAppearance,
-    },
     shadowSize = {
       type = "range", name = "Shadow Size",
       desc = "Adjust the size of the CDM shadow overlay. 1.0 = proportional to icon size.",
@@ -6452,6 +6691,20 @@ function ns.GetCDMCooldownIconsOptionsTable()
         local c = GetCooldownCfg()
         return not (c and c.keepBright)
       end,
+    },
+    showIcon = {
+      type = "toggle", name = "Show Icon",
+      desc = "Show the icon. Turn OFF to hide the whole icon (artwork, cooldown swipe and flash) and keep only the charge and duration text visible.",
+      get = function()
+        return GetCooldownBoolSetting(function(c) return not c.forceHideIcon end, function() local c = GetCooldownCfg(); return not (c and c.forceHideIcon) end)
+      end,
+      set = function(_, v)
+        ApplySharedCooldownSetting(function(c) if v then c.forceHideIcon = nil else c.forceHideIcon = true end end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 100.05, width = 0.7, hidden = HideCooldownIconAppearance,
     },
     customIconID = {
       type = "input",
@@ -6669,7 +6922,11 @@ function ns.GetCDMCooldownIconsOptionsTable()
     readyStateHeader = {
       type = "toggle",
       name = function()
-        local label = IsCurrentCooldownSelectionAllCustomTimer() and "Not Active" or "Cooldown Ready State"
+        -- Totems AND custom timers both map their ACTIVE state to readyState
+        -- (the bucket that owns the glow suite), so this section is "Active State"
+        -- for both. Normal cooldown icons keep "Cooldown Ready State".
+        local label = (IsCurrentCooldownSelectionAllTotem() or IsCurrentCooldownSelectionAllCustomTimer())
+                   and "Active State" or "Cooldown Ready State"
         return GetCooldownHeaderName("activeState", label)
       end,
       desc = "Click to expand/collapse. Configure how the icon appears when the ability IS READY (not on cooldown). Purple dot indicates per-icon customizations.",
@@ -6682,14 +6939,27 @@ function ns.GetCDMCooldownIconsOptionsTable()
     },
     readyStateDesc = {
       type = "description",
-      name = "|cff888888Configure how the icon appears when the ability is READY to use.|r",
+      name = function()
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then
+          return "|cff888888Configure how the icon appears while it is ACTIVE (timer running / totem up).|r"
+        end
+        return "|cff888888Configure how the icon appears when the ability is READY to use.|r"
+      end,
       order = 107.82, width = "full",
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.readyState end,
     },
     readyStateAlpha = {
       type = "range",
-      name = "Ready Alpha",
-      desc = "Icon opacity when the ability is ready (0 = hidden, 1 = fully visible)",
+      name = function()
+        return (IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem())
+               and "Active Alpha" or "Ready Alpha"
+      end,
+      desc = function()
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then
+          return "Icon opacity while ACTIVE (timer running / totem up). 0 = hidden, 1 = fully visible."
+        end
+        return "Icon opacity when the ability is ready (0 = hidden, 1 = fully visible)"
+      end,
       min = 0, max = 1.0, step = 0.05,
       get = function()
         local c = GetCooldownCfg()
@@ -6707,6 +6977,74 @@ function ns.GetCDMCooldownIconsOptionsTable()
       end,
       order = 107.83, width = 0.8,
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.readyState end,
+    },
+    readyStateDesaturate = {
+      type = "toggle",
+      name = "Desaturate",
+      desc = "Desaturate (grayscale) the icon while ACTIVE.\n\nOff by default — enable to gray the icon while the timer is running / the totem is up.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.desaturate end,
+          function()
+            local c = GetCooldownCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.desaturate or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.desaturate = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.8305, width = 0.6,
+      -- Only custom timers / totems use the readyState bucket as their ACTIVE
+      -- state, so this positive Desaturate toggle is shown only for them.
+      hidden = function()
+        if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
+        return not (IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem())
+      end,
+    },
+    readyStatePreserveDurationText = {
+      type = "toggle",
+      name = "Preserve Duration Text",
+      desc = "Keep the duration / stack text at full opacity even when the Active alpha is reduced. Useful for reading the countdown on a dimmed running timer.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.preserveDurationText end,
+          function()
+            local c = GetCooldownCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState then
+              return c.cooldownStateVisuals.readyState.preserveDurationText or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.readyState then c.cooldownStateVisuals.readyState = {} end
+          c.cooldownStateVisuals.readyState.preserveDurationText = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.8306, width = 1.2,
+      -- The readyState bucket is the ACTIVE state only for timers/totems, so this
+      -- only makes sense there (normal cooldowns use the Not-Active preserve toggle).
+      hidden = function()
+        if not (IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem()) then return true end
+        return HideIfNoCooldownSelection() or collapsedSections.readyState
+      end,
     },
     readyStateProcOverride = {
       type = "toggle",
@@ -6808,7 +7146,13 @@ function ns.GetCDMCooldownIconsOptionsTable()
         end
       end,
       order = 107.833, width = 0.6,
-      hidden = function() return HideIfNoCooldownSelection() or collapsedSections.readyState end,
+      hidden = function()
+        -- Timers/totems use the positive "Desaturate" toggle (readyState.desaturate)
+        -- above; this usability-driven one is dead for them (engine ignores it),
+        -- so hide it to avoid two identical "Desaturate" toggles.
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end
+        return HideIfNoCooldownSelection() or collapsedSections.readyState
+      end,
     },
     readyStateGlow = {
       type = "toggle",
@@ -6922,6 +7266,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       end,
       order = 107.8406, width = 1.2,
       hidden = function()
+        -- Timers/totems are never charge spells — this charge-only control does nothing for them.
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end
         if HideIfNoCooldownSelection() or collapsedSections.readyState then return true end
         local c = GetCooldownCfg()
         return not (c and c.cooldownStateVisuals and c.cooldownStateVisuals.readyState and c.cooldownStateVisuals.readyState.glow)
@@ -7285,7 +7631,11 @@ function ns.GetCDMCooldownIconsOptionsTable()
     cooldownStateHeader = {
       type = "toggle",
       name = function()
-        local label = IsCurrentCooldownSelectionAllCustomTimer() and "Active State" or "On Cooldown State"
+        -- Totems AND custom timers map their INACTIVE state to cooldownState,
+        -- so this section is "Not Active" for both. Normal cooldown icons keep
+        -- "On Cooldown State".
+        local label = (IsCurrentCooldownSelectionAllTotem() or IsCurrentCooldownSelectionAllCustomTimer())
+                   and "Not Active" or "On Cooldown State"
         return GetCooldownHeaderName("inactiveState", label)
       end,
       desc = "Click to expand/collapse. Configure how the icon appears when the ability IS ON COOLDOWN. Purple dot indicates per-icon customizations.",
@@ -7298,14 +7648,27 @@ function ns.GetCDMCooldownIconsOptionsTable()
     },
     cooldownStateDesc = {
       type = "description",
-      name = "|cff888888Configure how the icon appears when on cooldown. GCD is ignored (GCD-only shows as ready).|r",
+      name = function()
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then
+          return "|cff888888Configure how the icon appears while it is NOT ACTIVE (timer idle / totem slot empty).|r"
+        end
+        return "|cff888888Configure how the icon appears when on cooldown. GCD is ignored (GCD-only shows as ready).|r"
+      end,
       order = 107.92, width = "full",
       hidden = function() return HideIfNoCooldownSelection() or collapsedSections.cooldownState end,
     },
     cooldownStateAlpha = {
       type = "range",
-      name = "Cooldown Alpha",
-      desc = "Icon opacity when on cooldown (0 = hidden, 1 = fully visible)",
+      name = function()
+        return (IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem())
+               and "Inactive Alpha" or "Cooldown Alpha"
+      end,
+      desc = function()
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then
+          return "Icon opacity while NOT ACTIVE (timer idle / totem slot empty). 0 = hidden, 1 = fully visible."
+        end
+        return "Icon opacity when on cooldown (0 = hidden, 1 = fully visible)"
+      end,
       min = 0, max = 1.0, step = 0.05,
       get = function()
         local c = GetCooldownCfg()
@@ -7354,7 +7717,47 @@ function ns.GetCDMCooldownIconsOptionsTable()
         end
       end,
       order = 107.94, width = 1.0,
-      hidden = function() return HideIfNoCooldownSelection() or collapsedSections.cooldownState end,
+      -- "No Desaturation" is the inverted control for NORMAL cooldown icons
+      -- (which desaturate by default). Custom timers / totems default to NOT
+      -- desaturated and use the positive "Desaturate" toggle below instead, so
+      -- hide this one for them to avoid two confusing controls.
+      hidden = function()
+        if HideIfNoCooldownSelection() or collapsedSections.cooldownState then return true end
+        return IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem()
+      end,
+    },
+    cooldownStateDesaturatePositive = {
+      type = "toggle",
+      name = "Desaturate",
+      desc = "Desaturate (grayscale) the icon while NOT ACTIVE.\n\nOff by default — enable to gray the icon while the timer isn't running / the totem slot is empty.",
+      get = function()
+        return GetCooldownBoolSetting(
+          function(c) return c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState and c.cooldownStateVisuals.cooldownState.desaturate end,
+          function()
+            local c = GetCooldownCfg()
+            if c and c.cooldownStateVisuals and c.cooldownStateVisuals.cooldownState then
+              return c.cooldownStateVisuals.cooldownState.desaturate or false
+            end
+            return false
+          end
+        )
+      end,
+      set = function(_, v)
+        ApplyCooldownSetting(function(c)
+          if not c.cooldownStateVisuals then c.cooldownStateVisuals = {} end
+          if not c.cooldownStateVisuals.cooldownState then c.cooldownStateVisuals.cooldownState = {} end
+          c.cooldownStateVisuals.cooldownState.desaturate = v
+        end)
+        if ns.CDMEnhance and ns.CDMEnhance.RefreshIconType then
+          ns.CDMEnhance.RefreshIconType("cooldown")
+        end
+      end,
+      order = 107.941, width = 0.6,
+      -- Shown only for custom timers / totems (positive default-off control).
+      hidden = function()
+        if HideIfNoCooldownSelection() or collapsedSections.cooldownState then return true end
+        return not (IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem())
+      end,
     },
     cooldownStateTint = {
       type = "toggle",
@@ -7462,7 +7865,11 @@ function ns.GetCDMCooldownIconsOptionsTable()
         end
       end,
       order = 107.946, width = 1.2,
-      hidden = function() return HideIfNoCooldownSelection() or collapsedSections.cooldownState end,
+      hidden = function()
+        -- Timers/totems are never charge spells — this charge-only control does nothing for them.
+        if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end
+        return HideIfNoCooldownSelection() or collapsedSections.cooldownState
+      end,
     },
     cooldownStateDimWhenEmpty = {
       type = "toggle",
@@ -7568,623 +7975,856 @@ function ns.GetCDMCooldownIconsOptionsTable()
     auraActiveStateHeader = {
       type = "toggle",
       name = function() return GetCooldownHeaderName("auraActiveState", "Aura Active State") end,
-      desc = "Click to expand/collapse. Configure how the icon appears when its associated aura/buff is active. Purple dot indicates per-icon customizations.",
+      desc = "Click to expand/collapse. Make this icon react to an aura. Contains three reactions: This Spell's Own Aura, Another Aura / Totem, and Custom Duration. Purple dot indicates per-icon customizations.",
       dialogControl = "CollapsibleHeader",
       get = function() return not collapsedSections.auraActiveState end,
       set = function(_, v) collapsedSections.auraActiveState = not v end,
       order = 107.95,
       width = "full",
-      hidden = HideIfNoCooldownSelection,
+      hidden = function()
+        if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems aren't auras
+        if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers don't use the CDM aura-active path
+        return HideIfNoCooldownSelection()
+      end,
     },
     auraActiveStateDesc = {
       type = "description",
-      name = "|cff888888Configure how the icon behaves when its associated buff/aura is active on you.|r",
-      order = 107.96, width = "full",
+      name = "|cff888888Make this icon react to an aura. |r|cffffd700Aura source|r|cff888888 picks which aura drives it -- the spell's own CDM aura, and/or a separate one you add. |r|cffffd700Look|r|cff888888 styles how the icon appears while any of them is active.|r",
+      order = 107.951, width = "full",
       hidden = HideCooldownAuraActiveState,
     },
-    auraActiveStateIgnoreOverride = {
-      type = "toggle", 
-      name = "Ignore Aura Override",
-      desc = "Show the actual spell cooldown instead of the aura/buff duration. When enabled, the icon will display your spell's cooldown even while the buff is active, with desaturation applied.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c)
-            -- Check both new location (auraActiveState) and old location (cooldownSwipe) for backward compatibility
-            if c then
-              if c.auraActiveState and c.auraActiveState.ignoreAuraOverride then
-                return true
+    auraActiveStateSeparateAura = {
+      type = "group",
+      name = "Aura source",
+      inline = true,
+      order = 107.953,
+      hidden = HideCooldownAuraActiveState,
+      args = {
+        ignoreOverride = {
+          type = "toggle",
+          name = "Ignore CDM Aura Override",
+          desc = "Show the actual spell cooldown instead of the aura/buff duration. When enabled, the icon will display your spell's cooldown even while the buff is active, with desaturation applied.",
+          get = function()
+            return GetAuraActiveStateBoolSetting(
+              function(c)
+                if c then
+                  if c.auraActiveState and c.auraActiveState.ignoreAuraOverride then return true end
+                  if c.cooldownSwipe and c.cooldownSwipe.ignoreAuraOverride then return true end
+                end
+                return false
+              end,
+              function()
+                local c = GetAuraActiveStateCfg()
+                if c then
+                  if c.auraActiveState and c.auraActiveState.ignoreAuraOverride then return true end
+                  if c.cooldownSwipe and c.cooldownSwipe.ignoreAuraOverride then return true end
+                end
+                return false
               end
+            )
+          end,
+          set = function(_, v)
+            ApplyCooldownSetting(function(c)
+              if not c.auraActiveState then c.auraActiveState = {} end
+              c.auraActiveState.ignoreAuraOverride = v
               if c.cooldownSwipe and c.cooldownSwipe.ignoreAuraOverride then
-                return true
+                c.cooldownSwipe.ignoreAuraOverride = nil
               end
-            end
-            return false
+            end)
           end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            -- Check both new location (auraActiveState) and old location (cooldownSwipe) for backward compatibility
-            if c then
-              if c.auraActiveState and c.auraActiveState.ignoreAuraOverride then
-                return true
-              end
-              if c.cooldownSwipe and c.cooldownSwipe.ignoreAuraOverride then
-                return true
-              end
-            end
-            return false
-          end
-        )
-      end,
-      set = function(_, v)
-        ApplyCooldownSetting(function(c)
-          -- Set in new location
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.ignoreAuraOverride = v
-          -- Clear from old location if present
-          if c.cooldownSwipe and c.cooldownSwipe.ignoreAuraOverride then
-            c.cooldownSwipe.ignoreAuraOverride = nil
-          end
-        end)
-      end,
-      order = 107.97, width = 1.5,
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateGlowDesc = {
-      type = "description",
-      name = "|cff888888Glow options:|r",
-      order = 107.9701, width = "full",
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateGlow = {
-      type = "toggle",
-      name = "Glow When Aura Active",
-      desc = "Show a glow effect on this cooldown icon while its associated buff/aura is active on you.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c) return c and c.auraActiveState and c.auraActiveState.glow end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            return c and c.auraActiveState and c.auraActiveState.glow or false
-          end
-        )
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glow = v
-        end)
-        if not v then
-          ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
-        end
-      end,
-      order = 107.971, width = 1.3,
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateGlowWhenMissing = {
-      type = "toggle",
-      name = "Glow When Aura Missing",
-      desc = "Show glow when the associated buff/aura is NOT active instead of when it is active. Useful as a reminder to reapply buffs. Can be used independently or together with Glow When Aura Active.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c) return c and c.auraActiveState and c.auraActiveState.glowWhenMissing end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            return c and c.auraActiveState and c.auraActiveState.glowWhenMissing or false
-          end
-        )
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowWhenMissing = v
-        end)
-        if not v then
-          ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
-        end
-      end,
-      order = 107.9705, width = 1.3,
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateGlowPreview = {
-      type = "toggle",
-      name = "Preview",
-      desc = "Toggle glow preview for selected icon(s). Preview will automatically stop when you close the options panel.",
-      get = function()
-        return ns.CDMEnhanceOptions.GetAuraGlowPreviewState()
-      end,
-      set = function(_, v)
-        ns.CDMEnhanceOptions.ToggleAuraGlowPreviewForSelection()
-      end,
-      order = 107.9711, width = 0.6,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowCombatOnly = {
-      type = "toggle",
-      name = "In Combat Only",
-      desc = "Only show the aura active glow while in combat",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c) return c and c.auraActiveState and c.auraActiveState.glowCombatOnly end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            return c and c.auraActiveState and c.auraActiveState.glowCombatOnly or false
-          end
-        )
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowCombatOnly = v
-        end)
-        if v and not InCombatLockdown() and not UnitAffectingCombat("player") then
-          local icons = GetCooldownIconsToUpdate()
-          for _, cdID in ipairs(icons) do
-            local data = ns.CDMEnhance and ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
-            if data and data.frame and ns.CDMEnhance.HideAuraActiveGlow then
-              ns.CDMEnhance.HideAuraActiveGlow(data.frame)
-            end
-          end
-        end
-      end,
-      order = 107.9712, width = 1.0,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowFollowPandemic = {
-      type = "toggle",
-      name = "Pandemic Timing",
-      desc = "When enabled, the glow fires exactly when CDM enters the pandemic window - not when the aura is applied.\n\n|cff00ff00Fixes extended-aura bugs|r like Moonfire/Sunfire with Aetherial Kindling: a % threshold fires early because the aura was extended beyond its base duration. CDMs internal pandemic calculation is always correct regardless of extension.\n\nOnly applies when |cffffd700Glow When Aura Active|r is enabled.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c) return c and c.auraActiveState and c.auraActiveState.glowFollowPandemic end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            return c and c.auraActiveState and c.auraActiveState.glowFollowPandemic or false
-          end
-        )
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowFollowPandemic = v or nil
-        end)
-      end,
-      order = 107.9713, width = 1.3,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        -- Only show when "Glow When Aura Active" is on (pandemic doesn't apply to glowWhenMissing)
-        return not (c and c.auraActiveState and c.auraActiveState.glow == true)
-      end,
-    },
-    auraActiveStateGlowType = {
-      type = "select",
-      name = "Glow Style",
-      desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
-      values = {
-        ["pixel"] = "Pixel Glow",
-        ["autocast"] = "AutoCast Sparkles",
-        ["button"] = "Button Glow (Default)",
-        ["proc"] = "Blizzard Proc",
-        ["ants"] = "Ants (Marching)",
-        ["ach_proc"] = "Proc Loop",
-        ["cdm_flash"] = "CDM Flash Pulse",
+          order = 0, width = "full",
+        },
+        enabled = {
+          type = "toggle",
+          name = "Enable Separate Aura",
+          desc = "Drive this icon's aura-active look from a separate source -- a totem, a manual timer, or a buff/debuff you pick -- alongside the spell's own CDM aura. The icon shows that source's duration while it is active, then returns to the real cooldown.",
+          get = function()
+            local c = GetCooldownCfg()
+            return c and c.durationOverride and c.durationOverride.enabled or false
+          end,
+          set = function(_, v)
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.enabled = v
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 1, width = "full",
+        },
+        mode = {
+          type = "select",
+          name = "Source",
+          desc = "|cffffd700Totem|r - the remaining time of the totem this spell drops (auto-detected from the next totem slot that fills after the cast).\n\n|cffffd700Manual|r - a fixed number of seconds you set below.\n\n|cffffd700Aura / Buff|r - the remaining time of a buff/debuff you enter by SPELL ID below, shown on this icon while it is active. Midnight 12.1 only (uses the new aura container, no aura API).",
+          values = function()
+            local v = { totem = "Totem (auto)", manual = "Manual" }
+            if ns.API and ns.API.IS_121 then v.aura = "Aura / Buff (spell ID)" end
+            return v
+          end,
+          sorting = function()
+            if ns.API and ns.API.IS_121 then return { "totem", "manual", "aura" } end
+            return { "totem", "manual" }
+          end,
+          get = function()
+            local c = GetCooldownCfg()
+            local m = c and c.durationOverride and c.durationOverride.mode or "totem"
+            -- "Aura / Buff" is 12.1-only; on live show it as Totem so the select isn't stuck on a hidden value.
+            if m == "aura" and not (ns.API and ns.API.IS_121) then return "totem" end
+            return m
+          end,
+          set = function(_, v)
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.mode = v
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 2, width = 1.1,
+          hidden = function()
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled)
+          end,
+        },
+        auraComingSoon121 = {
+          type = "description",
+          name = "|cffff8800Aura / Buff source -- coming soon in patch 12.1 (Midnight).|r Show a buff/debuff's remaining time on this cooldown icon by spell ID. It's available to try on the 12.1 PTR now (still a work in progress); it can't ship on live because it relies on 12.1's new aura container.",
+          fontSize = "medium",
+          order = 2.5,
+          hidden = function()
+            -- On 12.1 the real "Aura / Buff" option is selectable, so no note. On live show the
+            -- coming-soon note whenever the Duration Override is enabled.
+            if ns.API and ns.API.IS_121 then return true end
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled)
+          end,
+        },
+        auraSpellID = {
+          type = "input",
+          name = "Aura Spell ID",
+          desc = "The spell ID of the buff/debuff whose remaining duration is shown on this icon while it is active. Enter the AURA's spell ID (not the cooldown's). The icon shows the aura's time while it is up, then reverts to the cooldown. Midnight 12.1 only.",
+          get = function()
+            local c = GetCooldownCfg()
+            local v = c and c.durationOverride and c.durationOverride.auraSpellID
+            return v and tostring(v) or ""
+          end,
+          set = function(_, v)
+            local id = tonumber((v or ""):match("%d+"))
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.auraSpellID = id
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 3, width = 1.5,
+          hidden = function()
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled and c.durationOverride.mode == "aura")
+          end,
+        },
+        manual = {
+          type = "input",
+          name = "Manual Duration (sec)",
+          desc = "Seconds to show on the icon when the spell is cast (Manual mode only).",
+          get = function()
+            local c = GetCooldownCfg()
+            local v = c and c.durationOverride and c.durationOverride.manual
+            return v and tostring(v) or ""
+          end,
+          set = function(_, v)
+            local num = tonumber(v)
+            if num and num < 0 then num = 0 end
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.manual = num or 0
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 4, width = 1.2,
+          hidden = function()
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled
+                   and c.durationOverride.mode == "manual")
+          end,
+        },
+        endOnDeath = {
+          type = "toggle",
+          name = "End on Death",
+          desc = "End this manual timer early if you die. A fixed manual duration doesn't track an aura, so it would keep running after death (when your buffs drop) -- this stops it.",
+          get = function()
+            local c = GetCooldownCfg()
+            return c and c.durationOverride and c.durationOverride.endOnDeath or false
+          end,
+          set = function(_, v)
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.endOnDeath = v
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 4.5, width = 1.2,
+          hidden = function()
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled
+                   and c.durationOverride.mode == "manual")
+          end,
+        },
+        endSpells = {
+          type = "input",
+          name = "End on Cast Of (spell IDs)",
+          desc = "Comma-separated spell IDs whose cast ENDS this override early (a 'spender' consuming the duration). Leave blank to only end on natural expiry.",
+          get = function()
+            local c = GetCooldownCfg()
+            return c and c.durationOverride and c.durationOverride.endSpells or ""
+          end,
+          set = function(_, v)
+            ApplyCooldownSetting(function(c)
+              if not c.durationOverride then c.durationOverride = {} end
+              c.durationOverride.endSpells = v
+            end)
+            if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+          end,
+          order = 5, width = 1.5,
+          hidden = function()
+            local c = GetCooldownCfg()
+            return not (c and c.durationOverride and c.durationOverride.enabled)
+          end,
+        },
       },
-      sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowType or "button"
-        end
-        return "button"
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowType = v
-        end)
-      end,
-      order = 107.972, width = 1.0,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
     },
-    auraActiveStateGlowColor = {
-      type = "color",
-      name = "Color",
-      desc = "Glow color",
-      hasAlpha = false,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          local col = c.auraActiveState.glowColor
-          if col then return col.r or 1, col.g or 0.85, col.b or 0.1 end
-        end
-        return 1, 0.85, 0.1
-      end,
-      set = function(_, r, g, b)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowColor = {r = r, g = g, b = b}
-        end)
-      end,
-      order = 107.973, width = 0.5,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowIntensity = {
-      type = "range",
-      name = "Intensity",
-      desc = "How bright the glow appears",
-      min = 0, max = 1.0, step = 0.05,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowIntensity or 1.0
-        end
-        return 1.0
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowIntensity = v
-        end)
-      end,
-      order = 107.974, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowScale = {
-      type = "range",
-      name = "Scale",
-      desc = "Size of the glow effect",
-      min = 0.5, max = 4.0, step = 0.05,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowScale or 1.0
-        end
-        return 1.0
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowScale = v
-        end)
-      end,
-      order = 107.975, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        return false
-      end,
-    },
-    auraActiveStateGlowSpeed = {
-      type = "range",
-      name = "Speed",
-      desc = "How fast the glow animates",
-      min = 0.05, max = 1.0, step = 0.05,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowSpeed or 0.25
-        end
-        return 0.25
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowSpeed = v
-        end)
-      end,
-      order = 107.976, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        local gt = c.auraActiveState.glowType
-        return gt == "proc" or gt == "ants" or gt == "ach_proc"
-      end,
-    },
-    auraActiveStateGlowLines = {
-      type = "range",
-      name = "Lines",
-      desc = "Number of glow lines",
-      min = 1, max = 16, step = 1,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowLines or 8
-        end
-        return 8
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowLines = v
-        end)
-      end,
-      order = 107.977, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        return c.auraActiveState.glowType ~= "pixel"
-      end,
-    },
-    auraActiveStateGlowThickness = {
-      type = "range",
-      name = "Thickness",
-      desc = "Thickness of glow lines",
-      min = 1, max = 10, step = 1,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowThickness or 2
-        end
-        return 2
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowThickness = v
-        end)
-      end,
-      order = 107.978, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        return c.auraActiveState.glowType ~= "pixel"
-      end,
-    },
-    auraActiveStateGlowParticles = {
-      type = "range",
-      name = "Particles",
-      desc = "Number of particle groups",
-      min = 1, max = 8, step = 1,
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowParticles or 4
-        end
-        return 4
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSliderSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowParticles = v
-        end)
-      end,
-      order = 107.979, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        return c.auraActiveState.glowType ~= "autocast"
-      end,
-    },
-    auraActiveStateGlowFrameStrata = {
-      type = "select",
-      name = "Glow Strata",
-      desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
-      values = {
-        ["inherit"] = "Inherit (Default)",
-        ["LOW"] = "LOW",
-        ["MEDIUM"] = "MEDIUM",
-        ["HIGH"] = "HIGH",
-        ["DIALOG"] = "DIALOG",
+    auraActiveStateLook = {
+      type = "group",
+      name = "Look",
+      inline = true,
+      order = 107.96,
+      hidden = HideCooldownAuraActiveState,
+      args = {
+      auraActiveStateActiveAlphaEnabled = {
+        type = "toggle",
+        name = "Override alpha while aura active",
+        desc = "While the aura is active (this spell's own CDM aura OR a separate aura you added), force the icon to the opacity set below -- overriding the Ready State / On Cooldown alpha. Off = those state alphas apply as normal.",
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          return c and c.auraActiveState and c.auraActiveState.activeAlphaEnabled or false
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.activeAlphaEnabled = v
+          end)
+          if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+        end,
+        order = 107.96004, width = 1.5,
+        hidden = HideCooldownAuraActiveState,
       },
-      sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState then
-          return c.auraActiveState.glowFrameStrata or "inherit"
-        end
-        return "inherit"
-      end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowFrameStrata = (v ~= "inherit") and v or nil
-        end)
-      end,
-      order = 107.9791, width = 0.9,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowFrameLevel = {
-      type = "input",
-      name = "Glow Frame Level",
-      desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata. Works with both inherited and custom strata.\n\nAccepts a number from 1 to 10000.",
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        if c and c.auraActiveState and c.auraActiveState.glowFrameLevel then
-          return tostring(c.auraActiveState.glowFrameLevel)
-        end
-        return ""
-      end,
-      set = function(_, v)
-        local num = tonumber(v)
-        if not num then return end
-        num = math.floor(math.max(1, math.min(10000, num)))
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowFrameLevel = num
-        end)
-      end,
-      order = 107.9792, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
-      end,
-    },
-    auraActiveStateGlowXOffset = {
-      type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
-      min = -50, max = 50, step = 1,
-      get = function() local c = GetAuraActiveStateCfg(); return c and c.auraActiveState and c.auraActiveState.glowXOffset or 0 end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowXOffset = v
-        end)
-      end,
-      order = 107.9793, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        local gt = c.auraActiveState.glowType or "button"
-        return gt == "button"
-      end,
-    },
-    auraActiveStateGlowYOffset = {
-      type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
-      min = -50, max = 50, step = 1,
-      get = function() local c = GetAuraActiveStateCfg(); return c and c.auraActiveState and c.auraActiveState.glowYOffset or 0 end,
-      set = function(_, v)
-        ApplyCooldownAuraActiveGlowSetting(function(c)
-          if not c.auraActiveState then c.auraActiveState = {} end
-          c.auraActiveState.glowYOffset = v
-        end)
-      end,
-      order = 107.9794, width = 0.65,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
-        local gt = c.auraActiveState.glowType or "button"
-        return gt == "button"
-      end,
-    },
-    -- ── Swipe options while aura is active ──────────────────────────
-    auraActiveStateSwipeDesc = {
-      type = "description",
-      name = "|cff888888Swipe options while the aura is active:|r",
-      order = 107.9795, width = "full",
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateHideAuraSwipe = {
-      type = "toggle", name = "Use Normal Swipe Color",
-      desc = "Replace the yellow aura swipe with the normal black cooldown swipe color.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c)
-            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
-            return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0
-          end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
-            return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0 or false
+      auraActiveStateActiveAlpha = {
+        type = "range",
+        name = "Alpha while aura active",
+        desc = "Icon opacity to force while the aura is active. 0 = hidden, 1 = fully visible.",
+        min = 0, max = 1, step = 0.05,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState and c.auraActiveState.activeAlpha ~= nil then
+            return c.auraActiveState.activeAlpha
           end
-        )
-      end,
-      set = function(_, v)
-        ApplySharedCooldownSetting(function(c)
-          if not c.cooldownSwipe then c.cooldownSwipe = {} end
-          c.cooldownSwipe.auraSwipeColor = v and {r=0, g=0, b=0, a=0.7} or nil
-        end)
-      end,
-      order = 107.9796, width = 1.5,
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateAuraSwipeColorEnabled = {
-      type = "toggle", name = "Custom Aura Swipe Color",
-      desc = "Set a custom color for the swipe CDM shows when the aura/buff is active. Overrides the default yellow.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c)
-            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
-            return sc ~= nil and sc.a ~= 0
-          end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
-            return sc ~= nil and sc.a ~= 0 or false
+          return 1
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.activeAlpha = v
+          end)
+          if ns.DurationOverride and ns.DurationOverride.RefreshAll then ns.DurationOverride.RefreshAll() end
+        end,
+        order = 107.96005, width = 1.5,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and c.auraActiveState.activeAlphaEnabled)
+        end,
+      },
+      auraActiveStateGlowDesc = {
+        type = "description",
+        name = "|cff888888Glow|r",
+        order = 107.9701, width = "full",
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateGlow = {
+        type = "toggle",
+        name = "Glow When Aura Active",
+        desc = "Show a glow effect on this cooldown icon while its associated buff/aura is active on you.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.auraActiveState and c.auraActiveState.glow end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.auraActiveState and c.auraActiveState.glow or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glow = v
+          end)
+          if not v then
+            ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
           end
-        )
-      end,
-      set = function(_, v)
-        ApplySharedCooldownSetting(function(c)
-          if not c.cooldownSwipe then c.cooldownSwipe = {} end
-          c.cooldownSwipe.auraSwipeColor = v and {r=1, g=0.95, b=0.57, a=0.7} or nil
-        end)
-      end,
-      order = 107.9797, width = 1.3,
-      hidden = HideCooldownAuraActiveState,
-    },
-    auraActiveStateAuraSwipeColor = {
-      type = "color", name = "", hasAlpha = true,
-      desc = "Swipe color when the aura/buff is active",
-      get = function()
-        local c = GetAuraActiveStateCfg()
-        local col = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor or {r=1,g=0.95,b=0.57,a=0.7}
-        return col.r or 1, col.g or 0.95, col.b or 0.57, col.a or 0.7
-      end,
-      set = function(_, r, g, b, a)
-        ApplySharedCooldownSetting(function(c)
-          if not c.cooldownSwipe then c.cooldownSwipe = {} end
-          c.cooldownSwipe.auraSwipeColor = {r=r, g=g, b=b, a=a}
-        end)
-      end,
-      order = 107.9798, width = 0.3,
-      hidden = function()
-        if HideCooldownAuraActiveState() then return true end
-        local c = GetAuraActiveStateCfg()
-        local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
-        return not (sc and sc.a ~= 0)
-      end,
-    },
-    auraActiveStateReverseSwipe = {
-      type = "toggle", name = "Reverse Swipe While Aura Active",
-      desc = "Reverse the cooldown swipe direction while the aura is active on this icon.",
-      get = function()
-        return GetAuraActiveStateBoolSetting(
-          function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverseWhileAura == true end,
-          function()
-            local c = GetAuraActiveStateCfg()
-            return c and c.cooldownSwipe and c.cooldownSwipe.reverseWhileAura == true or false
+        end,
+        order = 107.971, width = 1.3,
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateGlowWhenMissing = {
+        type = "toggle",
+        name = "Glow When Aura Missing",
+        desc = "Show glow when the associated buff/aura is NOT active instead of when it is active. Useful as a reminder to reapply buffs. Can be used independently or together with Glow When Aura Active.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.auraActiveState and c.auraActiveState.glowWhenMissing end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.auraActiveState and c.auraActiveState.glowWhenMissing or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowWhenMissing = v
+          end)
+          if not v then
+            ns.CDMEnhanceOptions.ClearAuraGlowPreviews()
           end
-        )
-      end,
-      set = function(_, v)
-        ApplySharedCooldownSetting(function(c)
-          if not c.cooldownSwipe then c.cooldownSwipe = {} end
-          c.cooldownSwipe.reverseWhileAura = v or nil
-        end)
-      end,
-      order = 107.9799, width = 1.8,
-      hidden = HideCooldownAuraActiveState,
-    },
-    resetAuraActiveState = {
-      type = "execute",
-      name = "Reset Section",
-      desc = "Reset Aura Active State settings to defaults for selected icon(s)",
-      order = 107.99,
-      width = 0.7,
-      hidden = HideCooldownAuraActiveState,
-      func = function() ResetCooldownSectionSettings("auraActiveState") end,
+        end,
+        order = 107.97105, width = 1.3,
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateDesatDesc = {
+        type = "description",
+        name = "|cff888888Desaturation|r",
+        order = 107.97943, width = "full",
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateDesatInactive = {
+        type = "toggle", name = "Desaturate When Aura Inactive",
+        desc = "Desaturate (grayscale) this cooldown icon whenever its tracked buff/aura is NOT active on you. Supersedes other desaturation so it always wins. A clear at-a-glance signal that the buff has dropped.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.auraActiveState and c.auraActiveState.desaturateWhenInactive end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.auraActiveState and c.auraActiveState.desaturateWhenInactive or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.desaturateWhenInactive = v
+          end)
+        end,
+        order = 107.97944, width = 1.5, hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateGlowPreview = {
+        type = "toggle",
+        name = "Preview",
+        desc = "Toggle glow preview for selected icon(s). Preview will automatically stop when you close the options panel.",
+        get = function()
+          return ns.CDMEnhanceOptions.GetAuraGlowPreviewState()
+        end,
+        set = function(_, v)
+          ns.CDMEnhanceOptions.ToggleAuraGlowPreviewForSelection()
+        end,
+        order = 107.9711, width = 0.6,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowCombatOnly = {
+        type = "toggle",
+        name = "In Combat Only",
+        desc = "Only show the aura active glow while in combat",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.auraActiveState and c.auraActiveState.glowCombatOnly end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.auraActiveState and c.auraActiveState.glowCombatOnly or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowCombatOnly = v
+          end)
+          if v and not InCombatLockdown() and not UnitAffectingCombat("player") then
+            local icons = GetCooldownIconsToUpdate()
+            for _, cdID in ipairs(icons) do
+              local data = ns.CDMEnhance and ns.CDMEnhance.GetEnhancedFrameData and ns.CDMEnhance.GetEnhancedFrameData(cdID)
+              if data and data.frame and ns.CDMEnhance.HideAuraActiveGlow then
+                ns.CDMEnhance.HideAuraActiveGlow(data.frame)
+              end
+            end
+          end
+        end,
+        order = 107.9712, width = 1.0,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowFollowPandemic = {
+        type = "toggle",
+        name = "Pandemic Timing",
+        desc = "When enabled, the glow fires exactly when CDM enters the pandemic window - not when the aura is applied.\n\n|cff00ff00Fixes extended-aura bugs|r like Moonfire/Sunfire with Aetherial Kindling: a % threshold fires early because the aura was extended beyond its base duration. CDMs internal pandemic calculation is always correct regardless of extension.\n\nOnly applies when |cffffd700Glow When Aura Active|r is enabled.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.auraActiveState and c.auraActiveState.glowFollowPandemic end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.auraActiveState and c.auraActiveState.glowFollowPandemic or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowFollowPandemic = v or nil
+          end)
+        end,
+        order = 107.9713, width = 1.3,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          -- Only show when "Glow When Aura Active" is on (pandemic doesn't apply to glowWhenMissing)
+          return not (c and c.auraActiveState and c.auraActiveState.glow == true)
+        end,
+      },
+      auraActiveStateGlowType = {
+        type = "select",
+        name = "Glow Style",
+        desc = "Select the glow animation style\n\n|cffffd700Button|r - Classic button glow (default)\n|cffffd700Pixel|r - Rotating pixel lines\n|cffffd700AutoCast|r - Sparkle particles\n|cffffd700Blizzard Proc|r - Blizzard proc flipbook animation\n|cffffd700Ants|r - Marching ants highlight\n|cffffd700Proc Loop|r - Continuous proc loop (no burst intro)\n|cffffd700CDM Flash|r - Pulsing glow overlay",
+        values = {
+          ["pixel"] = "Pixel Glow",
+          ["autocast"] = "AutoCast Sparkles",
+          ["button"] = "Button Glow (Default)",
+          ["proc"] = "Blizzard Proc",
+          ["ants"] = "Ants (Marching)",
+          ["ach_proc"] = "Proc Loop",
+          ["cdm_flash"] = "CDM Flash Pulse",
+        },
+        sorting = {"button", "pixel", "autocast", "proc", "ants", "ach_proc", "cdm_flash"},
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowType or "button"
+          end
+          return "button"
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowType = v
+          end)
+        end,
+        order = 107.972, width = 1.0,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowColor = {
+        type = "color",
+        name = "Color",
+        desc = "Glow color",
+        hasAlpha = false,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            local col = c.auraActiveState.glowColor
+            if col then return col.r or 1, col.g or 0.85, col.b or 0.1 end
+          end
+          return 1, 0.85, 0.1
+        end,
+        set = function(_, r, g, b)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowColor = {r = r, g = g, b = b}
+          end)
+        end,
+        order = 107.973, width = 0.5,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowIntensity = {
+        type = "range",
+        name = "Intensity",
+        desc = "How bright the glow appears",
+        min = 0, max = 1.0, step = 0.05,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowIntensity or 1.0
+          end
+          return 1.0
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowIntensity = v
+          end)
+        end,
+        order = 107.974, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowScale = {
+        type = "range",
+        name = "Scale",
+        desc = "Size of the glow effect",
+        min = 0.5, max = 4.0, step = 0.05,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowScale or 1.0
+          end
+          return 1.0
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowScale = v
+          end)
+        end,
+        order = 107.975, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          return false
+        end,
+      },
+      auraActiveStateGlowSpeed = {
+        type = "range",
+        name = "Speed",
+        desc = "How fast the glow animates",
+        min = 0.05, max = 1.0, step = 0.05,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowSpeed or 0.25
+          end
+          return 0.25
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowSpeed = v
+          end)
+        end,
+        order = 107.976, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          local gt = c.auraActiveState.glowType
+          return gt == "proc" or gt == "ants" or gt == "ach_proc"
+        end,
+      },
+      auraActiveStateGlowLines = {
+        type = "range",
+        name = "Lines",
+        desc = "Number of glow lines",
+        min = 1, max = 16, step = 1,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowLines or 8
+          end
+          return 8
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowLines = v
+          end)
+        end,
+        order = 107.977, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          return c.auraActiveState.glowType ~= "pixel"
+        end,
+      },
+      auraActiveStateGlowThickness = {
+        type = "range",
+        name = "Thickness",
+        desc = "Thickness of glow lines",
+        min = 1, max = 10, step = 1,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowThickness or 2
+          end
+          return 2
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowThickness = v
+          end)
+        end,
+        order = 107.978, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          return c.auraActiveState.glowType ~= "pixel"
+        end,
+      },
+      auraActiveStateGlowParticles = {
+        type = "range",
+        name = "Particles",
+        desc = "Number of particle groups",
+        min = 1, max = 8, step = 1,
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowParticles or 4
+          end
+          return 4
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSliderSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowParticles = v
+          end)
+        end,
+        order = 107.979, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          return c.auraActiveState.glowType ~= "autocast"
+        end,
+      },
+      auraActiveStateGlowFrameStrata = {
+        type = "select",
+        name = "Glow Strata",
+        desc = "Override the frame strata of the glow effect.\n\n|cffffd700Inherit (Default)|r - Uses the icon's frame strata\n|cffffd700LOW|r - Below standard UI level\n|cffffd700MEDIUM|r - Standard UI level\n|cffffd700HIGH|r - Above most UI elements\n|cffffd700DIALOG|r - Above HIGH frames\n\nThis only changes the glow's strata, NOT the icon itself.",
+        values = {
+          ["inherit"] = "Inherit (Default)",
+          ["LOW"] = "LOW",
+          ["MEDIUM"] = "MEDIUM",
+          ["HIGH"] = "HIGH",
+          ["DIALOG"] = "DIALOG",
+        },
+        sorting = {"inherit", "LOW", "MEDIUM", "HIGH", "DIALOG"},
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState then
+            return c.auraActiveState.glowFrameStrata or "inherit"
+          end
+          return "inherit"
+        end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowFrameStrata = (v ~= "inherit") and v or nil
+          end)
+        end,
+        order = 107.9791, width = 0.9,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowFrameLevel = {
+        type = "input",
+        name = "Glow Frame Level",
+        desc = "Set the frame level of the glow.\n\nHigher values render above other frames in the same strata. Works with both inherited and custom strata.\n\nAccepts a number from 1 to 10000.",
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          if c and c.auraActiveState and c.auraActiveState.glowFrameLevel then
+            return tostring(c.auraActiveState.glowFrameLevel)
+          end
+          return ""
+        end,
+        set = function(_, v)
+          local num = tonumber(v)
+          if not num then return end
+          num = math.floor(math.max(1, math.min(10000, num)))
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowFrameLevel = num
+          end)
+        end,
+        order = 107.9792, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          return not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing))
+        end,
+      },
+      auraActiveStateGlowXOffset = {
+        type = "range", name = "X Offset", desc = "Horizontal glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local c = GetAuraActiveStateCfg(); return c and c.auraActiveState and c.auraActiveState.glowXOffset or 0 end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowXOffset = v
+          end)
+        end,
+        order = 107.9793, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          local gt = c.auraActiveState.glowType or "button"
+          return gt == "button"
+        end,
+      },
+      auraActiveStateGlowYOffset = {
+        type = "range", name = "Y Offset", desc = "Vertical glow size adjustment",
+        min = -50, max = 50, step = 1,
+        get = function() local c = GetAuraActiveStateCfg(); return c and c.auraActiveState and c.auraActiveState.glowYOffset or 0 end,
+        set = function(_, v)
+          ApplyCooldownAuraActiveGlowSetting(function(c)
+            if not c.auraActiveState then c.auraActiveState = {} end
+            c.auraActiveState.glowYOffset = v
+          end)
+        end,
+        order = 107.9794, width = 0.65,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          if not (c and c.auraActiveState and (c.auraActiveState.glow or c.auraActiveState.glowWhenMissing)) then return true end
+          local gt = c.auraActiveState.glowType or "button"
+          return gt == "button"
+        end,
+      },
+      -- ── Swipe options while aura is active ──────────────────────────
+      auraActiveStateSwipeDesc = {
+        type = "description",
+        name = "|cff888888Cooldown swipe|r",
+        order = 107.9795, width = "full",
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateHideAuraSwipe = {
+        type = "toggle", name = "Use Normal Swipe Color",
+        desc = "Replace the yellow aura swipe with the normal black cooldown swipe color.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c)
+              local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+              return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0
+            end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+              return sc and sc.r == 0 and sc.g == 0 and sc.b == 0 and (sc.a or 0) > 0 or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplySharedCooldownSetting(function(c)
+            if not c.cooldownSwipe then c.cooldownSwipe = {} end
+            c.cooldownSwipe.auraSwipeColor = v and {r=0, g=0, b=0, a=0.7} or nil
+          end)
+        end,
+        order = 107.9796, width = 1.5,
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateAuraSwipeColorEnabled = {
+        type = "toggle", name = "Custom Aura Swipe Color",
+        desc = "Set a custom color for the swipe CDM shows when the aura/buff is active. Overrides the default yellow.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c)
+              local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+              return sc ~= nil and sc.a ~= 0
+            end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+              return sc ~= nil and sc.a ~= 0 or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplySharedCooldownSetting(function(c)
+            if not c.cooldownSwipe then c.cooldownSwipe = {} end
+            c.cooldownSwipe.auraSwipeColor = v and {r=1, g=0.95, b=0.57, a=0.7} or nil
+          end)
+        end,
+        order = 107.9797, width = 1.3,
+        hidden = HideCooldownAuraActiveState,
+      },
+      auraActiveStateAuraSwipeColor = {
+        type = "color", name = "", hasAlpha = true,
+        desc = "Swipe color when the aura/buff is active",
+        get = function()
+          local c = GetAuraActiveStateCfg()
+          local col = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor or {r=1,g=0.95,b=0.57,a=0.7}
+          return col.r or 1, col.g or 0.95, col.b or 0.57, col.a or 0.7
+        end,
+        set = function(_, r, g, b, a)
+          ApplySharedCooldownSetting(function(c)
+            if not c.cooldownSwipe then c.cooldownSwipe = {} end
+            c.cooldownSwipe.auraSwipeColor = {r=r, g=g, b=b, a=a}
+          end)
+        end,
+        order = 107.9798, width = 0.3,
+        hidden = function()
+          if HideCooldownAuraActiveState() then return true end
+          local c = GetAuraActiveStateCfg()
+          local sc = c and c.cooldownSwipe and c.cooldownSwipe.auraSwipeColor
+          return not (sc and sc.a ~= 0)
+        end,
+      },
+      auraActiveStateReverseSwipe = {
+        type = "toggle", name = "Reverse Swipe While Aura Active",
+        desc = "Reverse the cooldown swipe direction while the aura is active on this icon.",
+        get = function()
+          return GetAuraActiveStateBoolSetting(
+            function(c) return c and c.cooldownSwipe and c.cooldownSwipe.reverseWhileAura == true end,
+            function()
+              local c = GetAuraActiveStateCfg()
+              return c and c.cooldownSwipe and c.cooldownSwipe.reverseWhileAura == true or false
+            end
+          )
+        end,
+        set = function(_, v)
+          ApplySharedCooldownSetting(function(c)
+            if not c.cooldownSwipe then c.cooldownSwipe = {} end
+            c.cooldownSwipe.reverseWhileAura = v or nil
+          end)
+        end,
+        order = 107.9799, width = 1.8,
+        hidden = HideCooldownAuraActiveState,
+      },
+      resetAuraActiveState = {
+        type = "execute",
+        name = "Reset Section",
+        desc = "Reset Aura Active State settings to defaults for selected icon(s)",
+        order = 107.99,
+        width = 0.7,
+        hidden = HideCooldownAuraActiveState,
+        func = function() ResetCooldownSectionSettings("auraActiveState") end,
+      },
+      },
     },
     
     -- ═══════════════════════════════════════════════════════════════════
@@ -8202,6 +8842,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideIfNoCooldownSelection() then return true end
         if IsEditingMixedTypes() then return true end
+        if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems have no range
+        if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers don't use range
         return false
       end,
     },
@@ -8237,6 +8879,8 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideIfNoCooldownSelection() then return true end
         if IsEditingMixedTypes() then return true end
+        if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems don't proc
+        if IsCurrentCooldownSelectionAllCustomTimer() then return true end  -- timers: proc glow not used
         return false
       end,
     },
@@ -8518,7 +9162,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = HideCooldownBorder,
       func = function() ResetCooldownSectionSettings("border") end,
     },
-    
+
     -- ═══════════════════════════════════════════════════════════════════
     -- COOLDOWN SWIPE SECTION
     -- ═══════════════════════════════════════════════════════════════════
@@ -8580,14 +9224,21 @@ function ns.GetCDMCooldownIconsOptionsTable()
       desc = "For charge spells: Only show swipe when ALL charges are consumed. On CDM frames this hides the full cooldown animation during recharge.",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.swipeWaitForNoCharges or false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.swipeWaitForNoCharges = v end) end,
-      order = 120.4, width = 0.55, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
+      order = 120.4, width = 0.55, hidden = function() if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end return HideCooldownCooldownSwipe() end, disabled = DisableCooldownCooldownSwipe,
     },
     edgeWaitForNoCharges = {
       type = "toggle", name = "Edge Wait",
       desc = "For charge spells: Only show edge when ALL charges are consumed. Only affects custom cooldown frames (Arc Auras).",
       get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.edgeWaitForNoCharges end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.edgeWaitForNoCharges or false end) end,
       set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.edgeWaitForNoCharges = v end) end,
-      order = 120.5, width = 0.55, hidden = HideCooldownCooldownSwipe, disabled = DisableCooldownCooldownSwipe,
+      order = 120.5, width = 0.55, hidden = function() if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end return HideCooldownCooldownSwipe() end, disabled = DisableCooldownCooldownSwipe,
+    },
+    ignoreHardICD = {
+      type = "toggle", name = "Ignore Hard ICD",
+      desc = "For charge spells that start a REAL cooldown alongside the recharge when cast (e.g. Monk's Zenith: a 16s lockout plus the 70s charge recharge). Without this, the icon reads that lockout as 'all charges spent' and fully desaturates while you still hold a charge. With this on, the icon treats it as recharging and the swipe shows the charge recharge instead of the lockout.\n\nTrade-off: with this on, having truly 0 charges ALSO displays as recharging (the two states cannot be told apart safely in instances).",
+      get = function() return GetCooldownBoolSetting(function(c) return c and c.cooldownSwipe and c.cooldownSwipe.ignoreHardICD end, function() local c = GetCooldownCfg(); return c and c.cooldownSwipe and c.cooldownSwipe.ignoreHardICD or false end) end,
+      set = function(_, v) ApplySharedCooldownSetting(function(c) if not c.cooldownSwipe then c.cooldownSwipe = {} end; c.cooldownSwipe.ignoreHardICD = v end) end,
+      order = 120.6, width = 0.8, hidden = function() if IsCurrentCooldownSelectionAllCustomTimer() or IsCurrentCooldownSelectionAllTotem() then return true end return HideCooldownCooldownSwipe() end, disabled = DisableCooldownCooldownSwipe,
     },
     
     -- ═══════════════════════════════════════════════════════════════════
@@ -8815,6 +9466,7 @@ function ns.GetCDMCooldownIconsOptionsTable()
       hidden = function()
         if HideIfNoCooldownSelection() then return true end
         if IsEditingMixedTypes() then return true end
+        if IsCurrentCooldownSelectionAllTotem() then return true end  -- totems have no charges/stacks
         return false
       end,
     },

@@ -482,7 +482,8 @@ L["ignore_input_usage"] = "This function only accepts itemIDs (number), itemName
 --[[Translation missing --]]
 L["ignore_list_desc"] = "Items RCLootCouncil is ignoring. Click on a item to remove it."
 --[[Translation missing --]]
-L["ignore_options_desc"] = "Control which items RCLootCouncil should ignore. If you add an item that isn't cached, you need switch to another tab and back before you'll see it in the list."
+L["ignore_options_desc"] = [=[Control which items RCLootCouncil should ignore. If you add an item that isn't cached, you need switch to another tab and back before you'll see it in the list.
+Note: This only works for Master Loot.]=]
 --[[Translation missing --]]
 L["Import"] = "Import"
 --[[Translation missing --]]
@@ -618,6 +619,8 @@ L["No recipients available"] = "No recipients available"
 L["No session running"] = "No session running"
 --[[Translation missing --]]
 L["No winners registered"] = "No winners registered"
+--[[Translation missing --]]
+L["non_tradeable_reason_bonus_roll"] = "Bonus Roll"
 --[[Translation missing --]]
 L["non_tradeable_reason_nil"] = "Unknown"
 --[[Translation missing --]]
@@ -776,6 +779,10 @@ L["opt_profileSharing_profileExistsWarning"] = "A profile named \"%s\" already e
 L["opt_rejectTrade_Desc"] = "Check to enable candidates to choose whether they want to 'give' the item to the council or not. If unchecked, all tradeable PL items are added automatically."
 --[[Translation missing --]]
 L["opt_rejectTrade_Name"] = "Allow Keeping"
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Desc"] = "Check to save all bonus rolls from candidates to the Loot History."
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 --[[Translation missing --]]
 L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
 --[[Translation missing --]]

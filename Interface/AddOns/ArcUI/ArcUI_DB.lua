@@ -8,6 +8,18 @@
 local ADDON, ns = ...
 ns.API = ns.API or {}  -- Initialize API table
 
+-- 12.1-forward compat: the global SetDesaturation(region, bool) helper was REMOVED in
+-- 12.1 (the texture methods SetDesaturated/SetDesaturation still exist). AceGUI's
+-- CheckBox (and other libs) call the global -> "attempt to call a nil value" when the
+-- options panel opens. Polyfill it once. Inert on 12.0.7 where the global still exists.
+if not SetDesaturation then
+  function SetDesaturation(region, desaturation)
+    if region and region.SetDesaturated then
+      region:SetDesaturated(desaturation)
+    end
+  end
+end
+
 -- ===================================================================
 -- DEFAULT THRESHOLD PRESETS
 -- ===================================================================
@@ -44,6 +56,11 @@ ns.DB_DEFAULTS = {
     masterCDMPending = nil,
     -- Skin preset library (shared across all characters)
     skinLibrary = {},
+    -- Global Font & Texture (Settings tab): last font/texture pushed via
+    -- ns.API.ApplyGlobalFontTexture. Not a live override -- per-bar settings
+    -- stay independently editable after the push.
+    globalFont       = "Friz Quadrata TT",
+    globalBarTexture = "Blizzard",
   },
   
   -- Profile storage (shared across characters using same profile)
@@ -83,6 +100,7 @@ ns.DB_DEFAULTS = {
     selectedBar = 1,
     selectedResourceBar = 1,
     selectedCooldownBar = 1,
+    selectedTexture = 1,
     
     -- Array of buff/debuff bar configurations (up to 30 bars)
     bars = {
@@ -194,6 +212,9 @@ ns.DB_DEFAULTS = {
           borderStyle = "Drawn",
           drawnBorderThickness = 2,
           borderColor = {r=0, g=0, b=0, a=1},
+          -- Per-side fill inset (aura bars only): insets the fill texture from each background
+          -- edge so custom fill textures need no baked-in transparent margins. 0 = original look.
+          barPaddingL = 0, barPaddingR = 0, barPaddingT = 0, barPaddingB = 0,
           showTickMarks = true,
           tickMode = "all",
           tickThickness = 1,
@@ -313,7 +334,129 @@ ns.DB_DEFAULTS = {
         events = {},
       },
     },
-    
+
+    -- ===============================================================
+    -- AURA TEXTURES
+    -- Freely-placeable images that flip between active and inactive
+    -- styling based on a tracked buff/debuff. Mirrors the buff/debuff
+    -- bar trigger model (tracking block is intentionally shaped the same
+    -- so it can reuse the CDM aura resolution); rendering is its own
+    -- texture-display engine (ns.Textures).
+    -- ===============================================================
+    textures = {
+      [1] = {
+        tracking = {
+          enabled = false,
+          trackType = "buff",          -- "buff" or "debuff"
+          spellID = 0,
+          buffName = "",
+          iconTextureID = 0,
+          cooldownID = 0,
+          alternateCooldownIDs = {},   -- Additional cooldownIDs for cross-spec support
+          excludedCooldownIDs = {},    -- CooldownIDs manually removed; never auto-discovered
+          slotNumber = 0,
+          auraInstanceID = 0,
+          useBaseSpell = false,
+        },
+        display = {
+          enabled = true,
+
+          -- SOURCE
+          textureSource = "library",   -- "library" (FileDataID / atlas) or "custom" (file path)
+          textureID = 0,               -- FileDataID number OR atlas string when source = "library"
+          customTexturePath = "",      -- file path when source = "custom"
+
+          -- SIZE / POSITION
+          width = 64,
+          height = 64,
+          position = {
+            point = "CENTER",
+            relPoint = "CENTER",
+            x = 0,
+            y = 0,
+          },
+          frameStrata = "MEDIUM",
+          frameLevel = 10,
+          movable = true,
+
+          -- RENDER (shared by both states)
+          blendMode = "BLEND",         -- "BLEND" (opaque) or "ADD" (glow)
+          rotateEnabled = false,
+          rotation = 0,                -- degrees (-180..180)
+          mirrorH = false,
+          mirrorV = false,
+          zoomEnabled = false,
+          zoomPct = 0,                 -- 0..50
+          cropEnabled = false,
+          cropL = 0,                   -- per-side crop percent (0..100)
+          cropR = 0,
+          cropT = 0,
+          cropB = 0,
+
+          -- ACTIVE STATE STYLE (aura present)
+          activeColor = {r=1, g=1, b=1, a=1},
+          activeAlpha = 1,
+          activeDesaturate = false,
+          activeDesaturatePct = 100,
+
+          -- INACTIVE STATE STYLE (aura absent)
+          showWhenInactive = false,    -- false = hide when inactive; true = show with inactive style
+          inactiveColor = {r=1, g=1, b=1, a=1},
+          inactiveAlpha = 0.5,
+          inactiveDesaturate = true,
+          inactiveDesaturatePct = 100,
+
+          -- DURATION FADE-OUT (active state; secret-safe via ColorCurve alpha)
+          fadeOutEnabled = false,
+          fadeStartPct = 50,           -- begin fading once remaining drops below this %
+
+          -- RESIZE
+          lockAspect = false,          -- on-screen resize keeps the width/height ratio
+
+          -- LOOPING PULSE (size) + GLOW (active state)
+          pulseEnabled = false,
+          pulseScale = 1.15,           -- target scale for the size pulse
+          pulseSpeed = 0.5,            -- seconds per pulse half-cycle
+          glowEnabled = false,
+          glowType = "pixel",          -- pixel / autocast / button / proc
+
+          -- DURATION DRAIN (active state): the texture depletes directionally
+          -- like a bar, driven secret-safely by StatusBar:SetTimerDuration.
+          progressEnabled = false,
+          progressDir = "TOP_TO_BOTTOM",  -- TOP_TO_BOTTOM / BOTTOM_TO_TOP / LEFT_TO_RIGHT / RIGHT_TO_LEFT
+          progressHideGhost = false,      -- the dim full-texture "ghost" shows by default (WeakAuras look); true hides it
+          -- DRAIN REGION: inset fractions (0..0.49) from each edge defining the
+          -- sub-rectangle that drains. All 0 = whole texture (default). When any
+          -- inset > 0, only that band depletes and the rest of the texture stays solid.
+          drainInsetL = 0,
+          drainInsetR = 0,
+          drainInsetT = 0,
+          drainInsetB = 0,
+
+          -- DURATION TEXT (countdown) -- mirrors the Aura Bars' duration-text options.
+          showDuration = false,
+          durationFont = "2002 Bold",
+          durationFontSize = 18,
+          durationColor = { r = 1, g = 1, b = 1, a = 1 },
+          durationOutline = "THICKOUTLINE",
+          durationShadow = false,
+          durationDecimals = 1,
+          durationAnchor = "CENTER",
+          durationAnchorOffsetX = 0,
+          durationAnchorOffsetY = 0,
+          durationTextStrata = "HIGH",
+          durationTextLevel = 13,
+        },
+        behavior = {
+          hideWhen = {},          -- shared "Hide When..." conditions (same evaluator as the Aura Bars)
+          hideLogic = "any",      -- "any" = hide if ANY condition met; "all" = only if ALL met
+          hideWhenAlpha = 0,      -- opacity when a hide condition is active (0 = fully hidden)
+          showOnSpec = 0,         -- spec restriction lives in the catalog row now; runtime gate stays
+          showOnSpecs = {},
+        },
+      },
+    },
+
     -- ===============================================================
     -- RESOURCE BARS (Primary AND Secondary resources with threshold color layers)
     -- v2.6.0: Added resourceCategory, secondaryType for secondary resource support
@@ -393,6 +536,22 @@ ns.DB_DEFAULTS = {
           -- Frame strata settings
           barFrameStrata = "MEDIUM",
           barFrameLevel = 10,
+          -- Text color thresholds (resource bars only; all off by default)
+          textColorThresholdEnabled = false,
+          textColorThresholdFill = false,
+          textColorThresholdBaseColor = {r=1, g=1, b=1, a=1},
+          textColorThresholdT1Enabled = false,
+          textColorThresholdT1Value = 15,
+          textColorThresholdT1Color = {r=1, g=0.6, b=0.8, a=1},
+          textColorThresholdT2Enabled = false,
+          textColorThresholdT2Value = 30,
+          textColorThresholdT2Color = {r=0.5, g=1, b=0.5, a=1},
+          textColorThresholdT3Enabled = false,
+          textColorThresholdT3Value = 90,
+          textColorThresholdT3Color = {r=1, g=0.3, b=0.3, a=1},
+          textColorThresholdT4Enabled = false,
+          textColorThresholdT4Value = 100,
+          textColorThresholdT4Color = {r=1, g=1, b=0.3, a=1},
         },
         behavior = {
           hideOutOfCombat = false,
@@ -553,6 +712,117 @@ ns.DB_DEFAULTS = {
       }
     },
     
+    -- ===============================================================
+    -- CASTBAR
+    -- Multi-instance player castbars (resource-bar style). ["*"] gives every index full
+    -- defaults; instance 1 is the default bar. castType filters which casts an instance shows.
+    -- ===============================================================
+    castbars = {
+      ["*"] = {
+      enabled = false,
+      castType = "all",   -- "all" | "hardcast" | "channel" | "empower"
+      width = 250,
+      height = 20,
+      barColor = {r=0.2, g=0.8, b=1, a=1},  -- base/fallback; per-type colors live in profiles
+      -- Conditional (threshold) coloring: bar color changes as the cast nears completion,
+      -- based on how much is REMAINING (percent by default, or seconds when AsSec).
+      conditionalColorEnabled = false,
+      conditionalColorAsSec = false,
+      colorThresholds = {},  -- array of { enabled, percent (= remaining value), color }
+      texture = "Blizzard",
+      opacity = 1.0,
+      showBackground = true,
+      backgroundColor = {r=0.1, g=0.1, b=0.1, a=0.9},
+      showBorder = true,
+      borderColor = {r=0, g=0, b=0, a=1},
+      drawnBorderThickness = 2,
+      showIcon = true,
+      iconSize = 20,
+      showText = true,
+      showTimer = true,
+      timerFormat = "remaining",  -- "remaining" | "elapsed" | "both" (elapsed/total)
+      font = "2002 Bold",
+      fontSize = 14,
+      textColor = {r=1, g=1, b=1, a=1},
+      textOutline = "THICKOUTLINE",
+      barMovable = true,
+      barPosition = {point="CENTER", relPoint="CENTER", x=0, y=0},
+      barFrameStrata = "MEDIUM",
+      barFrameLevel = 10,
+      hideOutOfCombat = false,
+      hideChannels = false,
+      empowerSegmentColorsEnabled = false,
+      empowerStageDividers = true,   -- dividers at each empowered stage boundary
+      empowerDividerPerColor = false, -- color each stage divider with its stage's segment color
+      empowerMaxStages = 4,
+      empowerSegmentColors = {
+        [1] = {r=0.6, g=0.2, b=1.0, a=1},
+        [2] = {r=0.9, g=0.1, b=0.6, a=1},
+        [3] = {r=1.0, g=0.3, b=0.1, a=1},
+        [4] = {r=1.0, g=0.7, b=0.1, a=1},
+        [5] = {r=0.1, g=0.9, b=0.3, a=1},
+        [6] = {r=0.1, g=0.7, b=1.0, a=1},
+        [7] = {r=1.0, g=1.0, b=0.2, a=1},
+        [8] = {r=0.8, g=0.8, b=0.8, a=1},
+      },
+      -- Uninterruptible cast styling
+      uninterruptibleEnabled = false,
+      uninterruptibleColor = {r=0.5, g=0.5, b=0.5, a=1},
+      uninterruptibleBorderColor = {r=0.3, g=0.3, b=0.5, a=1},
+      -- Channel tick marks (aura-bar style: Per % interval or Custom positions)
+      tickMarksEnabled = false,
+      tickShowOn = "channels",         -- "channels" | "all" (empowered always uses stage segments)
+      tickMode = "percent",            -- "percent" | "custom"
+      tickPercent = 10,                -- Per % mode: a divider every N%
+      tickCustom = "",                 -- Custom mode: comma-separated %s, e.g. "20, 40, 55"
+      tickMarksColor = {r=1, g=1, b=1, a=0.6},
+      tickMarksThickness = 2,
+      tickMarksHeightFraction = 1.0,
+      tickHeightAnchor = "center",     -- center | top | bottom
+      tickThicknessAnchor = "center",  -- center | start | end
+      -- Per-spell appearance overrides: array of {spellID, barColorEnabled, barColor, textureOverrideEnabled, texture, tickCount}
+      spellOverrides = {},
+      -- Anchor to CDM group
+      anchorToGroup = false,
+      anchorGroupName = "",
+      anchorPoint = "BOTTOM",
+      anchorOffsetX = 0,
+      anchorOffsetY = -2,
+      matchGroupWidth = false,
+      matchSlotsOnly = false,
+      matchWidthAdjust = 0,
+      -- Reverse fill direction: channels fill instead of drain; casts drain instead of fill
+      reverseFill = false,
+      -- Latency "safe zone" overlay at the finishing edge (auto = world latency, or manual ms)
+      latencyEnabled = false,
+      latencyManual = false,
+      latencyManualMs = 100,
+      latencyColor = {r=1, g=0, b=0, a=0.4},
+      -- Interrupt / cancel feedback: flash the bar red with a label, then fade out
+      interruptFeedbackEnabled = false,
+      interruptColor = {r=1, g=0.15, b=0.15, a=1},
+      interruptFadeDuration = 1.0,
+      -- Hide the default Blizzard castbar (PlayerCastingBarFrame)
+      hideCastBar = false,
+      -- Spell name shortening (display only; off by default)
+      spellShortenEnabled = false,
+      spellShortenLength = 20,
+      -- Movable spell icon (off = default left-of-bar position)
+      iconMovable = false,
+      iconPosition = nil,
+      -- Cast-type appearance profiles + Auto Share. Checked category = shared across all
+      -- cast types; unchecked = customised per type. All categories default OFF (per-type),
+      -- so each cast type has its own colors/border/text/etc. out of the box.
+      autoShareCategories = {},
+      profiles = {
+        hardcast = { barColor = {r=0.2, g=0.8, b=1,   a=1} },
+        channel  = { barColor = {r=0.2, g=1,   b=0.4, a=1} },
+        empower  = { barColor = {r=0.6, g=0.2, b=1,   a=1} },
+      },
+      presets = {},
+      },  -- end ["*"] per-instance template
+    },
+
     -- LEGACY: CDM Enhancement settings were moved to profile storage
     -- This stub exists only for migration purposes (CDMEnhance.lua migrates to profile)
     -- DO NOT add new fields here - use profile.cdmEnhance instead
@@ -577,6 +847,145 @@ ns.DB_DEFAULTS = {
 
 -- Store presets for easy access
 ns.ThresholdPresets = DEFAULT_THRESHOLDS
+
+-- ===================================================================
+-- ACCOUNT-WIDE SHARED CASTBAR (opt-in, default OFF)
+-- When ns.db.global.castbarShared is true, the castbar accessors (ns.API.GetCastbarStore)
+-- return global.castbars instead of the per-character char.castbars, so ONE castbar config
+-- applies to every character. global.castbars is its OWN deep copy of the per-instance
+-- template, so it never aliases the per-character store and the two stay independent.
+-- ===================================================================
+ns.DB_DEFAULTS.global.castbarShared        = false
+ns.DB_DEFAULTS.global.castbarShareLocation = false  -- when sharing, keep the bar POSITION per-character unless opted in
+ns.DB_DEFAULTS.global.castbarSharedInit    = false
+ns.DB_DEFAULTS.global.castbars             = { ["*"] = CopyTable(ns.DB_DEFAULTS.char.castbars["*"]) }
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- ADVANCED DEBUFFS / EXTERNALS (standalone draggable icon trackers, default off)
+-- Per-character (ns.db.char). Ported from contributor PR; UI placement: Debuffs
+-- under the Buffs/Debuffs section, Externals top-level for now.
+-- ═══════════════════════════════════════════════════════════════════════════
+ns.DB_DEFAULTS.char.advancedDebuffs = {
+  enabled = false,
+  iconSize = 40,
+  iconSpacing = 4,
+  iconsPerRow = 8,
+  maxRows = 2,
+  showSwipe = true,
+  reverseSwipe = true,
+  showTooltips = true,
+  growHorizontal = "RIGHT",
+  growVertical = "DOWN",
+  borderColorMode = "dispel",
+  borderColor = { r = 0.8, g = 0.8, b = 0.8, a = 1 },
+  borderWidth = 2,
+  borderGlow = false,
+  glowWidth = 2,
+  strata = "MEDIUM",
+  position = { point = "CENTER", relativePoint = "CENTER", x = 0, y = -200, relativeFrame = "UIParent" },
+  filters = {
+    PLAYER = false,
+    RAID = false,
+    CROWD_CONTROL = false,
+    RAID_IN_COMBAT = false,
+    RAID_PLAYER_DISPELLABLE = false,
+    IMPORTANT = false,
+  },
+  hideDebuffs = { bloodlust = false, timeWarp = false, drums = false, timeTrial = false },
+}
+ns.DB_DEFAULTS.char.advancedExternals = {
+  enabled = false,
+  iconSize = 40,
+  iconSpacing = 4,
+  iconsPerRow = 8,
+  maxRows = 1,
+  showSwipe = true,
+  reverseSwipe = true,
+  showTooltips = true,
+  growHorizontal = "RIGHT",
+  growVertical = "DOWN",
+  borderColor = { r = 0.2, g = 0.8, b = 0.2, a = 1 },
+  borderWidth = 2,
+  borderGlow = false,
+  glowWidth = 2,
+  strata = "MEDIUM",
+  position = { point = "CENTER", relativePoint = "CENTER", x = 0, y = -260, relativeFrame = "UIParent" },
+  showBigDefensives = false,
+}
+
+-- ===================================================================
+-- FOCUS CASTBAR (tracks the focus target's casts)
+-- ===================================================================
+ns.DB_DEFAULTS.char.focusCastbar = {
+  enabled             = false,
+  width               = 220,
+  height              = 18,
+  barPosition         = { point = "CENTER", relPoint = "CENTER", x = 0, y = -120 },
+  barAnchorPoint      = "CENTER",
+  anchorToFrame       = false,
+  anchorFrameName     = "",
+  anchorPoint         = "CENTER",
+  anchorRelativePoint = "CENTER",
+  anchorOffsetX       = 0,
+  anchorOffsetY       = 0,
+  barFrameStrata      = "MEDIUM",
+  barColor            = { r = 1, g = 0.65, b = 0, a = 1 },
+  showBackground      = true,
+  backgroundColor     = { r = 0.1, g = 0.1, b = 0.1, a = 0.9 },
+  showBorder          = true,
+  borderColor         = { r = 0, g = 0, b = 0, a = 1 },
+  drawnBorderThickness = 2,
+  -- Glow outline defaults ON for a fresh focus castbar (matches the dev's intent);
+  -- the castbar itself is still opt-in via focusCastbar.enabled = false.
+  showGlow            = true,
+  glowType            = "pixel",
+  glowColor           = { r = 1, g = 0.65, b = 0, a = 1 },
+  glowWidth           = 2,
+  glowLines           = 8,
+  glowFrequency       = 0.25,
+  showSpellName       = true,
+  spellNameMaxWidth   = 0,
+  showTimer           = true,
+  showCasterName      = true,
+  casterNameColor     = { r = 1, g = 0.82, b = 0, a = 1 },
+  casterNameOffsetX   = 0,
+  casterNameOffsetY   = 0,
+  casterNameAnchor    = "RIGHT",
+  showFocusTarget     = false,
+  focusTargetColor    = { r = 0.6, g = 0.8, b = 1, a = 1 },
+  focusTargetOffsetX  = 0,
+  focusTargetOffsetY  = 0,
+  focusTargetAnchor   = "RIGHT",
+  showRaidMarker      = true,
+  raidMarkerSize      = 32,
+  raidMarkerAnchor    = "LEFT",
+  raidMarkerOffsetX   = -36,
+  raidMarkerOffsetY   = 0,
+  font                = "Friz Quadrata TT",
+  fontSize            = 11,
+  textOutline         = "THICKOUTLINE",
+  textColor           = { r = 1, g = 1, b = 1, a = 1 },
+  texture             = "Blizzard",
+  uninterruptibleEnabled = false,
+  uninterruptibleColor   = { r = 0.5, g = 0.5, b = 0.5, a = 1 },
+  raidMarkerDefault    = 8,      -- index shown in preview (moon=8); 0 = off
+  hideNotInterruptible = false,
+  hideNotImportant     = false,  -- opt-in: only show focus casts Blizzard marks important
+  importantGlowEnabled   = false,
+  importantGlowType      = "pixel",
+  importantGlowColor     = { r = 1, g = 0.2, b = 0.2, a = 1 },
+  importantGlowLines     = 8,
+  importantGlowFrequency = 0.25,
+  importantGlowThickness = 2,
+  kickEnabled       = false,
+  kickNotReadyColor = { r = 0.55, g = 0.55, b = 0.55, a = 1 },
+  kickTickColor     = { r = 1, g = 1, b = 1, a = 1 },
+  holdEnabled          = false,
+  holdDuration         = 0.8,
+  holdSuccessColor     = { r = 0.2, g = 1.0, b = 0.2, a = 1 },
+  holdFailColor        = { r = 1.0, g = 0.5, b = 0.0, a = 1 },
+  holdInterruptedColor = { r = 0.2, g = 0.4, b = 1.0, a = 1 },
+}
 
 -- ===================================================================
 -- HELPER: Get Bar Config (Buff/Debuff bars)
@@ -952,11 +1361,16 @@ end
 local activeBarCache         = nil  -- [barNum, ...] or nil (dirty)
 local activeResourceBarCache = nil
 local activeCooldownBarCache = nil
+local activeTextureCache     = nil  -- [textureNum, ...] or nil (dirty)
 
 function ns.API.InvalidateActiveBarCache()
   activeBarCache         = nil
   activeResourceBarCache = nil
   activeCooldownBarCache = nil
+end
+
+function ns.API.InvalidateActiveTextureCache()
+  activeTextureCache = nil
 end
 
 function ns.API.GetActiveBars()
@@ -1005,6 +1419,94 @@ function ns.API.GetActiveCooldownBars()
   end
   activeCooldownBarCache = activeBars
   return activeCooldownBarCache
+end
+
+-- ===================================================================
+-- HELPER: Aura Textures (config / active list / create / bind)
+-- Mirrors the buff/debuff bar helpers. The tracking block is shaped the
+-- same as a bar's so the texture engine can reuse the CDM aura resolution.
+-- ===================================================================
+function ns.API.GetTextureConfig(textureNumber)
+  local db = ns.db and ns.db.char
+  if not db then return nil end
+  db.textures = db.textures or {}
+
+  textureNumber = textureNumber or db.selectedTexture or 1
+
+  if not db.textures[textureNumber] then
+    db.textures[textureNumber] = CopyTable(ns.DB_DEFAULTS.char.textures[1])
+    -- Stagger default position so newly created textures don't stack exactly.
+    local off = (textureNumber - 1) * 20
+    db.textures[textureNumber].display.position.x = off
+    db.textures[textureNumber].display.position.y = -off
+  end
+
+  return db.textures[textureNumber]
+end
+
+function ns.API.GetActiveTextures()
+  if activeTextureCache then return activeTextureCache end
+  local db = ns.API.GetDB()
+  if not db or not db.textures then activeTextureCache = {}; return activeTextureCache end
+  local active = {}
+  for i = 1, 500 do
+    if db.textures[i] and db.textures[i].tracking and db.textures[i].tracking.enabled then
+      table.insert(active, i)
+    end
+  end
+  activeTextureCache = active
+  return activeTextureCache
+end
+
+-- Enable the first free texture slot (makes it appear in the UI list).
+function ns.API.InitializeNewTexture()
+  local db = ns.API.GetDB()
+  if not db then return nil end
+  db.textures = db.textures or {}
+
+  for i = 1, 500 do
+    local cfg = db.textures[i]
+    if not cfg or not cfg.tracking or not cfg.tracking.enabled then
+      cfg = ns.API.GetTextureConfig(i)
+      cfg.tracking.enabled = true
+      cfg.tracking.buffName = "(Not configured yet)"
+      cfg.tracking.spellID = 0
+      cfg.tracking.cooldownID = 0
+      ns.API.InvalidateActiveTextureCache()
+
+      if ns.Textures and ns.Textures.ShowTexture then
+        ns.Textures.ShowTexture(i)
+      end
+
+      return i
+    end
+  end
+
+  return nil
+end
+
+-- Bind a catalog buff (from ns.API.ScanAvailableBuffs) to a texture slot.
+function ns.API.SelectBuffForTexture(buffInfo, textureNumber)
+  local db = ns.API.GetDB()
+  if not db or not buffInfo then return false end
+
+  textureNumber = textureNumber or db.selectedTexture or 1
+  local cfg = ns.API.GetTextureConfig(textureNumber)
+  if not cfg then return false end
+
+  cfg.tracking.spellID = buffInfo.spellID
+  cfg.tracking.buffName = buffInfo.buffName
+  cfg.tracking.iconTextureID = buffInfo.iconTextureID
+  cfg.tracking.cooldownID = buffInfo.cooldownID
+  cfg.tracking.slotNumber = buffInfo.slotNumber
+  cfg.tracking.enabled = true
+  ns.API.InvalidateActiveTextureCache()
+
+  if ns.Textures and ns.Textures.UpdateTexture then
+    ns.Textures.UpdateTexture(textureNumber)
+  end
+
+  return true
 end
 
 -- ===================================================================
@@ -1251,6 +1753,136 @@ function ns.API.InitializeNewCooldownBar(cooldownID, spellID, spellName, maxChar
   end
   
   return nil
+end
+
+-- ===================================================================
+-- HELPER: Apply Global Font / Texture
+-- Pushes a chosen font and/or statusbar texture onto every existing aura,
+-- resource, cooldown, timer bar and both castbars in one shot, AND pushes
+-- the font onto every CDM icon group (Groups/Icon Catalog/Arc Icons/totems)
+-- cooldown text, charge/stack text, custom labels, and keybind text.
+--
+-- Bars/castbars have no global-default layer, so those are a direct,
+-- one-time push (like pasting a skin) -- every bar stays fully,
+-- independently editable afterward. Pass nil for either argument to skip
+-- that half (e.g. font-only or texture-only push).
+--
+-- CDM icons DO have a DEFAULT -> global -> per-icon merge already (see
+-- ns.CDMEnhance.GetEffectiveIconSettings), so the font is written to that
+-- global layer via SetGlobalSetting; any icon with its own explicit font
+-- override is then overwritten too so the push is total, not just a new
+-- default for un-customized icons.
+--
+-- Per-spell/per-cast-type override tables (e.g. castbar spellOverrides,
+-- profiles) are left untouched since those are deliberate overrides, as are
+-- CDM icons that don't use LSM textures at all (no "texture" push there).
+-- ===================================================================
+local function ApplyFontTextureToTable(t, font, texture)
+  if not t then return end
+  for k, v in pairs(t) do
+    if type(v) == "string" then
+      if font and (k == "font" or k:match("Font$")) then
+        t[k] = font
+      elseif texture and k == "texture" then
+        t[k] = texture
+      end
+    end
+  end
+end
+
+function ns.API.ApplyGlobalFontTexture(font, texture)
+  local db = ns.API.GetDB()
+  if not db then return end
+
+  if db.bars then
+    for _, cfg in pairs(db.bars) do
+      if type(cfg) == "table" then ApplyFontTextureToTable(cfg.display, font, texture) end
+    end
+  end
+
+  if db.resourceBars then
+    for _, cfg in pairs(db.resourceBars) do
+      if type(cfg) == "table" then ApplyFontTextureToTable(cfg.display, font, texture) end
+    end
+  end
+
+  if db.cooldownBarConfigs then
+    for _, configs in pairs(db.cooldownBarConfigs) do
+      for _, cfg in pairs(configs) do
+        if type(cfg) == "table" then ApplyFontTextureToTable(cfg.display, font, texture) end
+      end
+    end
+  end
+
+  if db.timerBarConfigs then
+    for _, cfg in pairs(db.timerBarConfigs) do
+      if type(cfg) == "table" then ApplyFontTextureToTable(cfg.display, font, texture) end
+    end
+  end
+
+  local cbStore = ns.API.GetCastbarStore and ns.API.GetCastbarStore()
+  if cbStore and cbStore.castbars then
+    for _, cb in pairs(cbStore.castbars) do
+      if type(cb) == "table" then ApplyFontTextureToTable(cb, font, texture) end
+    end
+  end
+
+  if db.focusCastbar then
+    ApplyFontTextureToTable(db.focusCastbar, font, texture)
+  end
+
+  -- Refresh visuals
+  if ns.Display and ns.Display.ApplyAllBars then ns.Display.ApplyAllBars() end
+  if ns.Resources and ns.Resources.ApplyAllBars then ns.Resources.ApplyAllBars() end
+  if db.cooldownBarConfigs and ns.CooldownBars and ns.CooldownBars.ApplyAppearance then
+    for spellID, configs in pairs(db.cooldownBarConfigs) do
+      for barType in pairs(configs) do
+        ns.CooldownBars.ApplyAppearance(spellID, barType)
+      end
+    end
+  end
+  if db.timerBarConfigs and ns.TimerBars and ns.TimerBars.ApplyAppearance then
+    for timerID in pairs(db.timerBarConfigs) do
+      ns.TimerBars.ApplyAppearance(timerID)
+    end
+  end
+  if ns.Castbar and ns.Castbar.ApplyAppearance then ns.Castbar.ApplyAppearance() end
+  if ns.FocusCastbar and ns.FocusCastbar.ApplyAppearance then ns.FocusCastbar.ApplyAppearance() end
+
+  -- CDM icon groups: cooldown text + charge/stack text global defaults,
+  -- overwriting any per-icon font override too, plus custom labels and
+  -- keybind text. Covers Groups, Icon Catalog, Arc Icons, and totem icons
+  -- since they all share the same per-icon settings store (keyed by
+  -- cooldownID or arcID) and DEFAULT_ICON_SETTINGS merge.
+  if font and ns.CDMEnhance and ns.CDMEnhance.SetGlobalSetting then
+    ns.CDMEnhance.SetGlobalSetting("aura", "chargeText.font", font)
+    ns.CDMEnhance.SetGlobalSetting("aura", "cooldownText.font", font)
+    ns.CDMEnhance.SetGlobalSetting("cooldown", "chargeText.font", font)
+    ns.CDMEnhance.SetGlobalSetting("cooldown", "cooldownText.font", font)
+
+    if ns.CDMShared and ns.CDMShared.GetSpecIconSettings then
+      local iconSettings = ns.CDMShared.GetSpecIconSettings()
+      if iconSettings then
+        for _, cfg in pairs(iconSettings) do
+          if type(cfg) == "table" then
+            if cfg.chargeText and cfg.chargeText.font then cfg.chargeText.font = font end
+            if cfg.cooldownText and cfg.cooldownText.font then cfg.cooldownText.font = font end
+            if cfg.customLabel and cfg.customLabel.font then cfg.customLabel.font = font end
+          end
+        end
+      end
+    end
+
+    if ns.CDMEnhance.RefreshIconType then ns.CDMEnhance.RefreshIconType("all") end
+  end
+
+  if font and ns.Keybinds and ns.Keybinds.SetSetting then
+    ns.Keybinds.SetSetting("font", font)
+    if ns.Keybinds.RefreshAll then ns.Keybinds.RefreshAll() end
+  end
+
+  local reg = LibStub and LibStub("AceConfigRegistry-3.0", true)
+  if reg then reg:NotifyChange("ArcUI") end
 end
 
 -- ===================================================================

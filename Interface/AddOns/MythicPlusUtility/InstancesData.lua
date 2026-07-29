@@ -76,7 +76,7 @@ MythicPlusUtility.instancesData = {
         }, { -- Terror Wave
             text = format(
               L["{spell:%d} debuff is inflicted by {npc:%d} (trash before {npc:%d}). Also, this cast can be interrupted and LoS."],
-              1264693, 231552, 231864), -- First NpcId is wrong but has the same name 
+              1264693, 249086, 231864),
             tags = "[important][fear]",
         }, { -- Arcane Beam
             text = format(L["Avoid {spell:%d} when {npc:%d} casts on last seconds."], 1282050, 257476),
@@ -287,7 +287,7 @@ MythicPlusUtility.instancesData = {
             text = format(L["{spell:%d} is cast by {npc:%d}."], 1254690, 79093),
             tags = "[creature_slow]",
         }, { -- Rushing Winds
-            text = format(L["{spell:%d} buff on {npc:%d}."], 1254670, 78096),
+            text = format(L["{spell:%d} buff on {npc:%d}."], 1254670, 76205),
             tags = "[purge]",
         }, { -- Solar Barrier
             text = format(L["{spell:%d} buff is cast by {npc:%d}."], 1273356, 79462),

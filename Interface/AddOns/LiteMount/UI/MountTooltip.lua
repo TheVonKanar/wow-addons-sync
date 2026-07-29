@@ -72,8 +72,8 @@ function LiteMountTooltipMixin:SetMount(m, hasMenu)
     self:AddLine("|cffffffff"..SUMMONS..":|r "..tostring(m:GetSummonCount()))
 
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-        if m.family then
-            self:AddLine("|cffffffff"..L.LM_FAMILY..":|r "..m.family)
+        if m.modelGroup then
+            self:AddLine("|cffffffff"..MODEL..":|r "..m.modelGroup)
         end
 
         if m.expansion then
@@ -81,9 +81,8 @@ function LiteMountTooltipMixin:SetMount(m, hasMenu)
             self:AddLine("|cffffffff"..EXPANSION_FILTER_TEXT..":|r "..text)
         end
 
-        local r = m:GetRarity()
-        if r then
-            self:AddLine("|cffffffff"..RARITY..":|r "..string.format(L.LM_RARITY_FORMAT, r))
+        if m.rarity then
+            self:AddLine("|cffffffff"..RARITY..":|r "..string.format(L.LM_RARITY_FORMAT, m.rarity))
         end
     end
 

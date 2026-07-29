@@ -3,8 +3,10 @@ local _, BR = ...
 -- ============================================================================
 -- VISIBILITY PAGE
 -- ============================================================================
--- "What do I see?" - gating rules for when the panel hides plus the buff
--- tracking mode that controls which auras count as missing.
+-- "What do I see?" - the global gating rules for when the panel hides plus the
+-- buff tracking mode that controls which auras count as missing. Per-category
+-- content visibility (W/S/D/R) lives on each category's own tab (Categories
+-- page), not here.
 --
 -- The Hide When list folds the legacy "Show only in group" toggle in as a
 -- "When alone" entry. The DB key (showOnlyInGroup) is reused as-is - checked
@@ -17,11 +19,13 @@ local Helpers = BR.Options.Helpers
 local UpdateDisplay = BR.Display.Update
 
 local LayoutSectionHeader = Helpers.LayoutSectionHeader
+local LayoutSectionNote = Helpers.LayoutSectionNote
 local MakeProfileGetter = Helpers.MakeProfileGetter
 local MakeProfileSetter = Helpers.MakeProfileSetter
 
 local COMPONENT_GAP = BR.Options.Constants.COMPONENT_GAP
 local COL_PADDING = BR.Options.Constants.COL_PADDING
+local PAGE_TOP_PADDING = BR.Options.Constants.PAGE_TOP_PADDING
 
 local abs = math.abs
 
@@ -55,6 +59,7 @@ local HIDE_WHEN_ROWS = {
         enabled = function()
             return BR.profile.hideInCombat ~= true
         end,
+        disabledReason = "DisabledReason.ExpiringInCombat",
     },
     {
         key = "hideWhileMounted",
@@ -90,6 +95,9 @@ local HIDE_WHEN_ROWS = {
         labelKey = "Options.HideWhen.Leveling",
         tooltipTitle = "Options.HideWhen.Leveling.Title",
         tooltipDesc = "Options.HideWhen.Leveling.Desc",
+        extraOnChange = function()
+            Components.RefreshAll()
+        end,
     },
 }
 
@@ -110,6 +118,7 @@ local function BuildHideWhenSection(content, layout)
             get = MakeProfileGetter(row.key, row.default),
             onChange = onChange,
             enabled = row.enabled,
+            disabledReason = row.disabledReason and L[row.disabledReason] or nil,
         }
         if row.tooltipTitle then
             cfg.tooltip = { title = L[row.tooltipTitle], desc = L[row.tooltipDesc] }
@@ -153,7 +162,7 @@ local function BuildTrackingSection(content, layout)
             },
         },
         get = function()
-            return BR.Config.Get("buffTrackingMode", "all")
+            return BR.Config.Get("buffTrackingMode")
         end,
         tooltip = {
             title = L["Options.BuffTracking.Mode"],
@@ -166,31 +175,106 @@ local function BuildTrackingSection(content, layout)
         end,
     })
     layout:Add(trackingModeHolder, nil, COMPONENT_GAP)
+end
 
-    local selfOnlyOutsideHolder = Components.Checkbox(content, {
-        label = L["Options.BuffTracking.SelfOnlyOutsideInstances"],
-        tooltip = {
-            title = L["Options.BuffTracking.SelfOnlyOutsideInstances"],
-            desc = L["Options.BuffTracking.SelfOnlyOutsideInstances.Desc"],
+-- Per-context override dropdowns share one option list: "Default" (no override)
+-- plus the narrowing modes. Overrides only ever narrow the base mode, so wider
+-- modes ("all"/"smart") are intentionally omitted.
+local function OverrideOptions()
+    return {
+        { value = "default", label = L["Options.BuffTracking.Override.Default"] },
+        {
+            value = "my_buffs",
+            label = L["Options.BuffTracking.MyBuffs"],
+            desc = L["Options.BuffTracking.MyBuffs.Desc"],
         },
-        get = function()
-            return BR.Config.Get("selfOnlyOutsideInstances", true)
-        end,
-        enabled = function()
-            return BR.Config.Get("buffTrackingMode", "all") ~= "self_only"
-        end,
-        onChange = function(checked)
-            BR.Config.Set("selfOnlyOutsideInstances", checked)
-        end,
+        {
+            value = "personal",
+            label = L["Options.BuffTracking.OnlyMine"],
+            desc = L["Options.BuffTracking.OnlyMine.Desc"],
+        },
+        {
+            value = "self_only",
+            label = L["Options.BuffTracking.SelfOnly"],
+            desc = L["Options.BuffTracking.SelfOnly.Desc"],
+        },
+    }
+end
+
+local function BuildTrackingOverridesSection(content, layout)
+    LayoutSectionHeader(layout, content, L["Section.TrackingOverrides"])
+    LayoutSectionNote(layout, content, L["Section.TrackingOverrides.Desc"])
+
+    -- Shared label column so all three override dropdowns line up vertically.
+    local overrideLW = Components.MeasureSharedLabelWidth({
+        L["Options.BuffTracking.Override.OutsideInstances"],
+        L["Options.BuffTracking.Override.Combat"],
+        L["Options.BuffTracking.Override.Leveling"],
     })
-    layout:Add(selfOnlyOutsideHolder, nil, COMPONENT_GAP)
+
+    local function OverrideDropdown(cfg)
+        local holder = Components.Dropdown(content, {
+            label = cfg.label,
+            labelWidth = overrideLW,
+            width = 220,
+            options = OverrideOptions(),
+            tooltip = cfg.tooltip,
+            get = function()
+                return BR.Config.Get(cfg.path)
+            end,
+            enabled = cfg.enabled,
+            disabledReason = cfg.disabledReason,
+            onChange = function(val)
+                BR.Config.Set(cfg.path, val)
+            end,
+        })
+        layout:Add(holder, nil, COMPONENT_GAP)
+    end
+
+    OverrideDropdown({
+        label = L["Options.BuffTracking.Override.OutsideInstances"],
+        path = "outsideInstancesMode",
+        tooltip = {
+            title = L["Options.BuffTracking.Override.OutsideInstances"],
+            desc = L["Options.BuffTracking.Override.OutsideInstances.Desc"],
+        },
+    })
+
+    OverrideDropdown({
+        label = L["Options.BuffTracking.Override.Combat"],
+        path = "combatMode",
+        tooltip = {
+            title = L["Options.BuffTracking.Override.Combat"],
+            desc = L["Options.BuffTracking.Override.Combat.Desc"],
+        },
+        -- Narrowing in combat is moot if the whole display already hides in combat.
+        enabled = function()
+            return BR.profile.hideInCombat ~= true
+        end,
+        disabledReason = L["DisabledReason.CombatOverride"],
+    })
+
+    OverrideDropdown({
+        label = L["Options.BuffTracking.Override.Leveling"],
+        path = "levelingMode",
+        tooltip = {
+            title = L["Options.BuffTracking.Override.Leveling"],
+            desc = L["Options.BuffTracking.Override.Leveling.Desc"],
+        },
+        -- Likewise moot if the display already hides entirely while leveling.
+        enabled = function()
+            return BR.profile.hideWhileLeveling ~= true
+        end,
+        disabledReason = L["DisabledReason.LevelingOverride"],
+    })
 end
 
 local function Build(content)
-    local layout = Components.VerticalLayout(content, { x = COL_PADDING, y = -10 })
+    local layout = Components.VerticalLayout(content, { x = COL_PADDING, y = PAGE_TOP_PADDING })
 
     BuildHideWhenSection(content, layout)
     BuildTrackingSection(content, layout)
+    BuildTrackingOverridesSection(content, layout)
 
     content:SetHeight(abs(layout:GetY()) + 20)
 end

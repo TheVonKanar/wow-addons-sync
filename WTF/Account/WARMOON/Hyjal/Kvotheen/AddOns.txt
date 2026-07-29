@@ -88,7 +88,7 @@ ArkInventory: disabled
 ArkInventoryRules_Example: disabled
 BetterVendorPrice: enabled
 OribosExchange: enabled
-idTip: enabled
+idTip: disabled
 Hekili: disabled
 OPie: enabled
 Bagnon_ItemInfo: disabled
@@ -219,14 +219,14 @@ TalentTreeTweaks: disabled
 DBM-Test-Dungeons: disabled
 AchievementsBackButton: disabled
 TalentLoadoutsEx: disabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
 Krowi_AchievementFilter: enabled
 TrufiGCD: disabled
 OmniAuras: disabled
 MRT: enabled
 AstralKeys: disabled
 ChoreTracker: enabled
-Angleur: enabled
+Angleur: disabled
 CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled
@@ -245,7 +245,7 @@ TweaksUI_Cooldowns: disabled
 BlizzardBars_Mouseover: disabled
 MacroManager: disabled
 MacroManagerData: disabled
-UnhaltedUnitFrames: enabled
+UnhaltedUnitFrames: disabled
 Cell: disabled
 TrueStatValues: disabled
 MouseoverActionSettings: disabled
@@ -256,7 +256,7 @@ Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 LariasWeeklyChecklist_Localization: disabled
 DejaCharacterStats: disabled
-LiteMount: disabled
+LiteMount: enabled
 RareScanner: disabled
 ClickableRaidBuffs: enabled
 CityGuide: enabled
@@ -287,3 +287,7 @@ Ayije_CDM: disabled
 BetterCooldownManager: disabled
 CooldownManagerCentered: disabled
 AutoHideUI: enabled
+NorthernSkyRaidTools: disabled
+MidnightSimpleUnitFrames: disabled
+Coolinator: disabled
+MidnightSimpleUnitFrames_UUFImporter: disabled

@@ -12,6 +12,10 @@ local options_dropdown_template = Core.options_dropdown_template
 local options_switch_template   = Core.options_switch_template
 local options_button_template   = Core.options_button_template
 
+local function T(key)
+    return NSI:Loc(key)
+end
+
 -- Version check state
 local component_type = "Addon"
 local checkable_components = {"Addon", "Note", "Reminder"}
@@ -20,7 +24,8 @@ local function build_checkable_components_options()
     local t = {}
     for i = 1, #checkable_components do
         tinsert(t, {
-            label = checkable_components[i],
+            label = T(checkable_components[i]),
+            phraseId = checkable_components[i],
             value = checkable_components[i],
             onclick = function(_, _, value)
                 component_type = value
@@ -37,23 +42,25 @@ local function BuildVersionCheckUI(parent)
     local hide_version_response_button = DF:CreateSwitch(parent,
         function(self, _, value) NSRT.Settings["VersionCheckRemoveResponse"] = value end,
         NSRT.Settings["VersionCheckRemoveResponse"], 20, 20, nil, nil, nil, "VersionCheckResponseToggle", nil, nil, nil,
-        "Hide Version Check Responses", options_switch_template, options_text_template)
+        T("Hide Version Check Responses"), options_switch_template, options_text_template)
     hide_version_response_button:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10)
     hide_version_response_button:SetAsCheckBox()
     hide_version_response_button:SetTooltip(
-        "Hides Version Check Responses of Users that are on the correct version")
-    local hide_version_response_label = DF:CreateLabel(parent, "Hide Version Check Responses", 10, "white", "", nil,
+        T("Hides Version Check Responses of Users that are on the correct version"))
+    local hide_version_response_label = DF:CreateLabel(parent, T("Hide Version Check Responses"), 10, "white", "", nil,
         "VersionCheckResponseLabel", "overlay")
     hide_version_response_label:SetTemplate(options_text_template)
     hide_version_response_label:SetPoint("LEFT", hide_version_response_button, "RIGHT", 2, 0)
-    local component_type_label = DF:CreateLabel(parent, "Component Type", 9.5, "white")
+    local component_type_label = DF:CreateLabel(parent, T("Component Type"), 9.5, "white")
     component_type_label:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -40)
 
     local component_type_dropdown = DF:CreateDropDown(parent, function() return build_checkable_components_options() end, checkable_components[1])
+    component_type_dropdown.addonId = addonId
+    component_type_dropdown:Select(checkable_components[1])
     component_type_dropdown:SetTemplate(options_dropdown_template)
     component_type_dropdown:SetPoint("LEFT", component_type_label, "RIGHT", 5, 0)
 
-    local component_name_label = DF:CreateLabel(parent, "Addon Name", 9.5, "white")
+    local component_name_label = DF:CreateLabel(parent, T("Addon Name"), 9.5, "white")
     component_name_label:SetPoint("LEFT", component_type_dropdown, "RIGHT", 10, 0)
 
     local component_name_entry = DF:CreateTextEntry(parent, function(_, _, value) component_name = value end, 250, 18)
@@ -63,12 +70,12 @@ local function BuildVersionCheckUI(parent)
         component_name_entry.AddonAutoCompleteList = NSRT.NSUI.AutoComplete["Addon"] or {}
         local component_type = component_type_dropdown:GetValue()
         if component_type == "Addon" then
-            component_name_entry:SetAsAutoComplete("AddonAutoCompleteList", _, true)
+            component_name_entry:SetAsAutoComplete("AddonAutoCompleteList", nil, true)
         end
     end)
 
     local version_check_button = DF:CreateButton(parent, function()
-    end, 120, 18, "Check Versions")
+    end, 120, 18, T("Check Versions"))
     version_check_button:SetTemplate(options_button_template)
     version_check_button:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -30, -40)
     version_check_button:SetHook("OnShow", function(self)
@@ -79,30 +86,38 @@ local function BuildVersionCheckUI(parent)
         end
     end)
 
-    local character_name_header = DF:CreateLabel(parent, "Character Name", 11)
+    local character_name_header = DF:CreateLabel(parent, T("Character Name"), 11)
     character_name_header:SetPoint("TOPLEFT", component_type_label, "BOTTOMLEFT", 10, -20)
 
-    local version_number_header = DF:CreateLabel(parent, "Version Number", 11)
+    local version_number_header = DF:CreateLabel(parent, T("Version Number"), 11)
     version_number_header:SetPoint("LEFT", character_name_header, "RIGHT", 120, 0)
 
-    local ignore_header = DF:CreateLabel(parent, "Ignore Check", 11)
+    local ignore_header = DF:CreateLabel(parent, T("Ignore Check"), 11)
     ignore_header:SetPoint("LEFT", version_number_header, "RIGHT", 50, 0)
+
+    local function RebuildNameMap(scrollbox)
+        wipe(scrollbox.name_map)
+        for index, data in ipairs(scrollbox:GetData()) do
+            if data.name then
+                scrollbox.name_map[data.name] = index
+            end
+        end
+    end
 
     local function refresh(self, data, offset, totalLines)
         for i = 1, totalLines do
             local index = i + offset
             local thisData = data[index]
+            local line = self:GetLine(i)
             if thisData then
-                local line = self:GetLine(i)
-
                 local name = thisData.name
                 local version = thisData.version
                 local ignore = thisData.ignoreCheck
                 local nickname = NSAPI:Shorten(name)
 
                 line.name:SetText(nickname)
-                line.version:SetText(version)
-                line.ignorelist:SetText(ignore and "Yes" or "No")
+                line.version:SetText(version and T(version) or "")
+                line.ignorelist:SetText(ignore and T("Yes") or T("No"))
 
                 if version and version == "Offline" then
                     line.version:SetTextColor(0.5, 0.5, 0.5, 1)
@@ -142,13 +157,20 @@ local function BuildVersionCheckUI(parent)
                     NSI.VersionCheckData.lastclick[name] = GetTime()
                     SendChatMessage(message, "WHISPER", nil, name)
                 end)
+            elseif line then
+                line.name:SetText("")
+                line.version:SetText("")
+                line.ignorelist:SetText("")
+                line.version:SetTextColor(1, 1, 1, 1)
+                line.ignorelist:SetTextColor(1, 1, 1, 1)
+                line:SetScript("OnClick", nil)
             end
         end
     end
 
     local function createLineFunc(self, index)
         local line = CreateFrame("button", "$parentLine" .. index, self, "BackdropTemplate")
-        line:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -((index-1) * (self.LineHeight+1)) - 1)
+        line:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -((index-1) * self.LineHeight) - 1)
         line:SetSize(self:GetWidth() - 2, self.LineHeight)
         DF:ApplyStandardBackdrop(line)
         DF:CreateHighlightTexture(line)
@@ -157,28 +179,28 @@ local function BuildVersionCheckUI(parent)
         local name = line:CreateFontString(nil, "OVERLAY")
         name:SetWidth(100)
         name:SetJustifyH("LEFT")
-        name:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 12, "OUTLINE")
+        NSI:SetUIFont(name, 12, "OUTLINE")
         name:SetPoint("LEFT", line, "LEFT", 5, 0)
         line.name = name
 
         local version = line:CreateFontString(nil, "OVERLAY")
         version:SetWidth(100)
         version:SetJustifyH("LEFT")
-        version:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 12, "OUTLINE")
+        NSI:SetUIFont(version, 12, "OUTLINE")
         version:SetPoint("LEFT", name, "RIGHT", 115, 0)
         line.version = version
 
         local ignorelist = line:CreateFontString(nil, "OVERLAY")
         ignorelist:SetWidth(100)
         ignorelist:SetJustifyH("LEFT")
-        ignorelist:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 12, "OUTLINE")
+        NSI:SetUIFont(ignorelist, 12, "OUTLINE")
         ignorelist:SetPoint("LEFT", version, "RIGHT", 50, 0)
         line.ignorelist = ignorelist
 
         return line
     end
 
-    local scrollLines = 19
+    local scrollLines = 22
     local sample_data = {
         { name = "Player1",  version = "1.0.0" },
         { name = "Player2",  version = "1.0.5" },
@@ -205,7 +227,6 @@ local function BuildVersionCheckUI(parent)
         content_width - 36,
         tab_content_height - 90, scrollLines, 20, createLineFunc)
     DF:ReskinSlider(version_check_scrollbox)
-    version_check_scrollbox.ReajustNumFrames = true
     version_check_scrollbox:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -80)
     for i = 1, scrollLines do
         version_check_scrollbox:CreateLine(createLineFunc)
@@ -218,20 +239,14 @@ local function BuildVersionCheckUI(parent)
         if self.name_map[data.name] then
             if NSRT.Settings["VersionCheckRemoveResponse"] and currentData[1] and currentData[1].version and data.version and data.version == currentData[1].version and data.version ~= "Addon Missing" and data.version ~= "Note Missing" and data.version ~= "Reminder Missing" and (not data.ignoreCheck) then
                 local removedIndex = self.name_map[data.name]
-                self.name_map[data.name] = nil
                 table.remove(currentData, removedIndex)
-                for k, v in pairs(self.name_map) do
-                    if v > removedIndex then
-                        self.name_map[k] = v - 1
-                    end
-                end
             else
                 currentData[self.name_map[data.name]] = data
             end
         else
-            self.name_map[data.name] = #currentData + 1
             tinsert(currentData, data)
         end
+        RebuildNameMap(self)
         self:Refresh()
     end
 
@@ -266,7 +281,7 @@ local function BuildVersionCheckUI(parent)
     end)
 
     -- version check presets
-    local preset_label = DF:CreateLabel(parent, "Preset:", 9.5, "white")
+    local preset_label = DF:CreateLabel(parent, T("Preset:"), 9.5, "white")
 
     local sample_presets = {
         { "Addon: Plater",                            { "Addon", "Plater" } }
@@ -292,7 +307,7 @@ local function BuildVersionCheckUI(parent)
         function() return build_version_check_presets_options() end)
     version_check_preset_dropdown:SetTemplate(options_dropdown_template)
 
-    local version_presets_edit_frame = DF:CreateSimplePanel(parent, 400, window_height / 2, "Version Preset Management",
+    local version_presets_edit_frame = DF:CreateSimplePanel(parent, 400, window_height / 2, T("Version Preset Management"),
         "VersionPresetsEditFrame", {
             DontRightClickClose = true,
             NoScripts = true
@@ -307,7 +322,7 @@ local function BuildVersionCheckUI(parent)
         else
             version_presets_edit_frame:Show()
         end
-    end, 120, 18, "Edit Version Presets")
+    end, 120, 18, T("Edit Version Presets"))
     version_presets_edit_button:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -30, -10)
     version_presets_edit_button:SetTemplate(options_button_template)
     version_check_preset_dropdown:SetPoint("RIGHT", version_presets_edit_button, "LEFT", -10, 0)
@@ -331,7 +346,7 @@ local function BuildVersionCheckUI(parent)
                 line.component_type = component_type
                 line.component_name = component_name
 
-                line.type:SetText(component_type)
+                line.type:SetText(T(component_type))
                 line.name:SetText(component_name)
             end
         end
@@ -383,15 +398,17 @@ local function BuildVersionCheckUI(parent)
 
     version_presets_edit_scrollbox:Refresh()
 
-    local new_preset_type_label = DF:CreateLabel(version_presets_edit_frame, "Type:", 11)
+    local new_preset_type_label = DF:CreateLabel(version_presets_edit_frame, T("Type:"), 11)
     new_preset_type_label:SetPoint("TOPLEFT", version_presets_edit_scrollbox, "BOTTOMLEFT", 0, -20)
 
     local new_preset_type_dropdown = DF:CreateDropDown(version_presets_edit_frame,
         function() return build_checkable_components_options() end, checkable_components[1], 65)
+    new_preset_type_dropdown.addonId = addonId
+    new_preset_type_dropdown:Select(checkable_components[1])
     new_preset_type_dropdown:SetPoint("LEFT", new_preset_type_label, "RIGHT", 5, 0)
     new_preset_type_dropdown:SetTemplate(options_dropdown_template)
 
-    local new_preset_name_label = DF:CreateLabel(version_presets_edit_frame, "Name:", 11)
+    local new_preset_name_label = DF:CreateLabel(version_presets_edit_frame, T("Name:"), 11)
     new_preset_name_label:SetPoint("LEFT", new_preset_type_dropdown, "RIGHT", 10, 0)
 
     local new_preset_name_entry = DF:CreateTextEntry(version_presets_edit_frame, function() end, 165, 20)
@@ -407,7 +424,7 @@ local function BuildVersionCheckUI(parent)
         version_check_preset_dropdown:Refresh()
         new_preset_name_entry:SetText("")
         new_preset_type_dropdown:Select(checkable_components[1])
-    end, 60, 20, "New")
+    end, 60, 20, T("New"))
     add_button:SetPoint("LEFT", new_preset_name_entry, "RIGHT", 10, 0)
     add_button:SetTemplate(options_button_template)
     return version_check_scrollbox

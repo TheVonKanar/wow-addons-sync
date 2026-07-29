@@ -258,21 +258,6 @@ function NSI:ParseCategoryForDisplay(categoryStr)
     return color or {0.7, 0.7, 0.7}, order, primaryCategory
 end
 
--- Encounter name lookup
-NSI.BossTimelineNames = {
-    [3176] = "Imperator Averzian",
-    [3177] = "Vorasius",
-    [3178] = "Vaelgor & Ezzorak",
-    [3179] = "Fallen King Salhadaar",
-    [3180] = "Lightblinded Vanguard",
-    [3181] = "Crown of the Cosmos",
-    [3182] = "Belo'ren",
-    [3183] = "Midnight Falls",
-    [3306] = "Chimaerus",
-    [3134] = "Nexus King Saladhaar",
-    [3135] = "Dimensius the All Devouring",
-}
-
 --------------------------------------------------------------------------------
 -- HELPER FUNCTIONS
 --------------------------------------------------------------------------------
@@ -285,8 +270,8 @@ NSI.DifficultyNames = {
 
 -- Get current difficulty name, defaults to "Mythic" if unknown
 function NSI:GetCurrentDifficultyName()
-    local _, _, difficultyID = GetInstanceInfo()
-    return self.DifficultyNames[difficultyID] or "Mythic"
+    local diff = self:DifficultyCheck({14, 15, 16})
+    return self.DifficultyNames[diff] or "Mythic"
 end
 
 -- Get the timeline data for a specific encounter and difficulty
@@ -447,5 +432,5 @@ end
 
 -- Get encounter name from ID
 function NSI:GetEncounterName(encounterID)
-    return self.BossTimelineNames[encounterID] or ("Encounter " .. encounterID)
+    return self.BossNames[encounterID] or ("Encounter " .. encounterID)
 end

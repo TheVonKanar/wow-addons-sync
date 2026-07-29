@@ -51,7 +51,8 @@ AngleurConfig = {
 }
 
 AngleurAudio = {
-    checkboxes = {}
+    checkboxes = {},
+    ultraFocusWhen = nil,
 }
 
 AngleurClassicConfig = {
@@ -183,15 +184,23 @@ function Init_AngleurSavedVariables()
     if AngleurAudio.ultraFocusDialog == nil then
         AngleurAudio.ultraFocusDialog = 0
     end
+    -- Dropdown --
+    if AngleurAudio.ultraFocusWhen == nil then
+        AngleurAudio.ultraFocusWhen = 1
+    end
+    --------------
     if AngleurAudio.checkboxes == nil then
         AngleurAudio.checkboxes = {}
     end
     if AngleurAudio.checkboxes.toggleBG == nil then
         AngleurAudio.checkboxes.toggleBG = true
     end
+    if AngleurAudio.checkboxes.recastReminder == nil then
+        AngleurAudio.checkboxes.recastReminder = false
+    end
 
-    if AngleurMinimapButton.hide == nil then
-        AngleurMinimapButton.hide = false
+    if AngleurMinimapButton.show == nil then
+        AngleurMinimapButton.show = true
     end
 
     if AngleurTutorial.part == nil then
@@ -497,6 +506,19 @@ function Angleur_BetaTableToString(debugChannel, tbl)
     end
 end
 
+function Angleur_IsSecret(value)
+    if ang.gameVersion == 1 then
+        if issecretvalue(value) then return true end
+    end
+    return false
+end
+function Angleur_ScrubSecret(...)
+    if ang.gameVersion == 1 then
+        return scrubsecretvalues(...)
+    end
+    return ...
+end
+
 
 
 --**************************[1]****************************
@@ -630,8 +652,6 @@ Angleur_TempCVars = {
     --     active = false, cached = nil, setTo = AngleurAudio.ultraFocusDialog, updating = false,
     -- },
 }
-
-
 Angleur_TempCVarHandler = CreateFrame("Frame", "Example_CVarHandler", UIParent, "Legolando_TempCVarHandlerTemplate_Angleur")
 Angleur_TempCVarHandler.tempCVarsTable = Angleur_TempCVars
 Angleur_TempCVarHandler:Init()
@@ -642,17 +662,38 @@ local function cvars_load()
     Angleur_TempCVars["Sound_SFXVolume"].setTo =  AngleurAudio.ultraFocusSFX
     Angleur_TempCVars["Sound_AmbienceVolume"].setTo =  AngleurAudio.ultraFocusAmbience
     Angleur_TempCVars["Sound_DialogVolume"].setTo =  AngleurAudio.ultraFocusDialog
-    
-
     -- Order: Anywhere in PLAYER_ENTERING_WORLD
     if Angleur_TinyOptions.softIconOff == true and 	C_CVar.GetCVar("SoftTargetIconGameObject") == "1" then
         C_CVar.SetCVar("SoftTargetIconGameObject", "0")
     end
-
-
     if GetCVar("autoLootDefault") == "1" then
         Angleur.configPanel.tab1.contents.ultraFocus.autoLoot:greyOut()
         AngleurConfig.ultraFocusAutoLootEnabled = false
+    end
+end
+
+local enum_Triggers = {
+    [1] = "Cast/Reel",
+    [2] = "Sleep/Wake"
+}
+-- trigger: "Cast/Reel" | "Sleep/Wake"
+function Angleur_TempCVars_ToggleUltraFocusAudio(enable, trigger)
+    if trigger == "ForceRelease" then
+        Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+        Angleur_TempCVarHandler:Release("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
+        return
+    end
+    if trigger ~= enum_Triggers[AngleurAudio.ultraFocusWhen] then return end
+    -- When trigger is "Sleep/Wake"
+        -- if: Sleeping:False AND enable:False(Release) --> Return. We don't want to release when awake      
+        -- if: Sleeping:True AND enable:True(Activate) --> Return. We don't want to activate when asleep
+    if trigger == "Sleep/Wake" and AngleurCharacter.sleeping == enable then return end
+    if enable == true and AngleurConfig.ultraFocusAudioEnabled == true then
+        Angleur_TempCVarHandler:Set("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+        Angleur_TempCVarHandler:Set("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
+    elseif enable == false then
+        Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
+        Angleur_TempCVarHandler:Release("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
     end
 end
 
@@ -710,10 +751,10 @@ function Angleur_EventLoader(self, event, unit, ...)
         Init_AngleurVisual()
         HelpTip:Hide(UIParent, helpTipCloseText)
         Angleur_ExtraItemAuras()
-        if AngleurMinimapButton.hide == false then
+        if AngleurMinimapButton.show then
             Angleur_InitMinimapButton()
         end
-
+        Angleur_LoadAddonsTab()
         ---------------------------------------------------------
         Angleur_EquipmentManager()
         if ang.gameVersion ~= 1 then

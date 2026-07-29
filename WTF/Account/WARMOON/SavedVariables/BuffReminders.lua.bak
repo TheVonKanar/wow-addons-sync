@@ -2,32 +2,32 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
+},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
-},
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
 ["defaults"] = {
 ["fontFace"] = "Fira Sans Condensed Bold",
 ["expirationThreshold"] = 5,
-["missingGlowSize"] = 2,
 ["glowXOffset"] = -1,
 ["missingGlowXOffset"] = -1,
 ["glowType"] = 1,
 ["missingGlowYOffset"] = -1,
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
-["showExpirationGlow"] = false,
 ["glowYOffset"] = -1,
+["missingGlowSize"] = 2,
 ["consumableDisplayMode"] = "expanded",
 },
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
 ["enabledBuffs"] = {
 ["intellect"] = true,
 ["blisteringScales"] = true,
@@ -38,14 +38,17 @@ BuffRemindersDB = {
 ["warriorWrongStance"] = false,
 ["atrophicNumbingPoison"] = true,
 ["symbioticRelationship"] = true,
-["beacons"] = true,
-["soulstone"] = true,
-["earthShieldOthers"] = false,
-["stamina"] = true,
-["sourceOfMagic"] = true,
-["druidWrongForm"] = false,
 ["shamanShields"] = true,
+["druidWrongForm"] = false,
+["earthShieldOthers"] = false,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["soulstone"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
+},
+["dbVersion"] = 49,
+["readyCheckOnlyOverrides"] = {
 },
 ["categorySettings"] = {
 ["self"] = {
@@ -64,6 +67,9 @@ BuffRemindersDB = {
 1,
 },
 },
+["presence"] = {
+["showText"] = true,
+},
 ["consumable"] = {
 ["showText"] = true,
 ["priority"] = 5,
@@ -81,13 +87,6 @@ BuffRemindersDB = {
 ["showBuffReminder"] = false,
 ["priority"] = 4,
 },
-["presence"] = {
-["showText"] = true,
-},
-},
-["readyCheckOnlyOverrides"] = {
-},
-["customBuffs"] = {
 },
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
@@ -97,18 +96,18 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 [264] = {
-["food"] = 1232917,
 ["flask"] = 1235108,
+["food"] = 1232917,
 },
 },
 ["hideAllInVehicle"] = true,
+["buffTrackingMode"] = "my_buffs",
 ["categoryVisibility"] = {
 ["custom"] = {
-["hideInPvPMatch"] = true,
 ["pvp"] = true,
+["hideInPvPMatch"] = true,
 },
 },
-["dbVersion"] = 40,
 },
 },
 }

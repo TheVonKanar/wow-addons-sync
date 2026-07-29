@@ -107,6 +107,7 @@ Porter.TeleportData = {
         { type = "toy", id = 236687, name = "Explosive Hearthstone",                  cosmetic = true, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 210455, name = "Draenic Hologem",                       cosmetic = true, raceReq = {"Draenei", "LightforgedDraenei"}, region = "Hearthstone", zone = "Inn" },
         { type = "toy", id = 263489, name = "Naaru's Enfold",                        cosmetic = true, region = "Hearthstone", zone = "Inn" },
+        { type = "toy", id = 264367, name = "Mycomancer's Hearthspore",              cosmetic = true, region = "Hearthstone", zone = "Inn" },
     },
 
     ---------------------------------------------------------------------------
@@ -290,6 +291,7 @@ Porter.TeleportData = {
         -- Unique-destination toys
         { type = "toy", id = 253629, name = "Personal Key to the Arcantina",  region = "Quel'Thalas", zone = "The Arcantina" },
         { type = "toy", id = 266370, name = "Dundun's Abundant Travel Method", region = "Quel'Thalas", zone = "Abundance Event" },
+        { type = "toy", id = 276371, name = "Lightveil Recall Beacon",         region = "Quel'Thalas", zone = "Umbral Base Camp" },
         { type = "toy", id = 151016, name = "Fractured Necrolyte Skull",       region = "Outland", zone = "Shadowmoon Valley" },
         { type = "item", id = 37863,  name = "Direbrew's Remote",              region = "Eastern Kingdoms", zone = "Blackrock Depths" },
         { type = "toy", id = 211788, name = "Tess's Peacebloom",               raceReq = "Worgen", region = "Eastern Kingdoms", zone = "Gilneas" },
@@ -465,6 +467,19 @@ Porter.TeleportData = {
 -- CHANGELOG (shown once per version, newest first)
 ---------------------------------------------------------------------------
 Porter.ChangelogEntries = {
+    {
+        version = "1.1.7",
+        notes = {
+            "Added cosmetic hearthstone: Mycomancer's Hearthspore (drops from Rotmire in Sporefall)",
+        },
+    },
+    {
+        version = "1.1.6",
+        notes = {
+            "Updated for patch 12.0.7",
+            "Added toy: Lightveil Recall Beacon (recall to the active Umbral Base Camp on Naigtal or Val)",
+        },
+    },
     {
         version = "1.1.5",
         notes = {

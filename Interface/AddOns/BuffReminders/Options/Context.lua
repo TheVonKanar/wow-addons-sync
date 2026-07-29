@@ -13,11 +13,11 @@ BR.Options.Helpers = BR.Options.Helpers or {}
 
 BR.Options.Constants = {
     PANEL_WIDTH = 920,
-    PANEL_HEIGHT = 650,
-    SIDEBAR_WIDTH = 188,
+    PANEL_HEIGHT = 670,
+    SIDEBAR_WIDTH = 160,
     SIDEBAR_X = 14,
-    CONTENT_TOP_OFFSET = 64, -- Y offset from panel top to content top (below header bar)
-    BOTTOM_BAR_HEIGHT = 46,
+    CONTENT_TOP_OFFSET = 48, -- Y offset from panel top to content top (below the single-row header bar)
+    PANEL_BOTTOM_MARGIN = 14, -- breathing room between the content/sidebar and the panel's bottom edge
     -- Used for both the page-internal x-inset (where headers + content start
     -- inside each scrollable page) and the panel chrome's right margin.
     -- 28 aligns the panel title with the sidebar button labels.
@@ -25,9 +25,10 @@ BR.Options.Constants = {
     SECTION_SPACING = 12,
     ITEM_HEIGHT = 22,
     SCROLLBAR_WIDTH = 24,
-    COMPONENT_GAP = 4, -- standard gap between components
+    COMPONENT_GAP = 6, -- standard gap between components
     SECTION_GAP = 8, -- gap before/after section boundaries
     DROPDOWN_EXTRA = 8, -- extra clearance after dropdowns (menu overlay space)
+    PAGE_TOP_PADDING = -16, -- y offset where each page's top VerticalLayout cursor starts
 
     -- Dialog shell metrics (see Helpers.CreateDialogShell). Widths bucketed by
     -- content density: NARROW for 1-3 simple controls, MEDIUM for dropdown +
@@ -39,8 +40,10 @@ BR.Options.Constants = {
     DIALOG_MARGIN = 16, -- inner padding for dialog content
     DIALOG_TITLE_TOP = -12, -- y offset of the dialog title FontString from TOP
     DIALOG_LAYOUT_TOP = -36, -- y offset where the content layout cursor starts
+    DIALOG_ACCENT_OFFSET = 32, -- distance from top to the title separator (CreatePanel); body starts below it
     DIALOG_CLOSE_SIZE = 22, -- close-button square size
     DIALOG_CLOSE_INSET = -5, -- close-button TOPRIGHT inset (x and y)
+    DIALOG_ICON_SIZE = 18, -- optional header icon square (CreateDialogShell opts.icon)
     DIALOG_MIN_HEIGHT = 80, -- floor for dialogs with very few controls
     DIALOG_LEVEL = 200, -- frame level used by all dialogs
 }
@@ -52,66 +55,60 @@ BR.Options.Constants = {
 -- Frame.lua iterates this list to render the sidebar; pages register themselves
 -- on BR.Options.Pages.<id> so the IDs here must match.
 
+-- Each group answers one user question:
+--   Buffs & Reminders - WHAT do I track? (per-buff enable + the user editors)
+--   Appearance        - HOW does it look? (global defaults + per-category overrides)
+--   Display           - WHEN/WHERE does it show? (hide rules + tracking on the
+--                       Visibility page, lock/order/frames on the Layout page)
+--   Alerts            - HOW am I told? (sounds, chat requests)
+--   Addon Settings    - the addon itself: misc meta toggles (General) + profiles
 BR.Options.Groups = {
     {
-        -- Per-buff list surfaces: both pages iterate every tracked buff and
-        -- let the user toggle something at the buff-key level (enabled vs.
-        -- detached). Grouping them keeps Display Behavior reserved for the
-        -- per-category pages, so that group's pattern (Defaults + one entry
-        -- per render category) stays uniform.
         id = "buffs",
-        titleKey = "Sidebar.Buffs",
-        pages = { "allBuffs", "detachedIcons" },
+        titleKey = "Sidebar.BuffsReminders",
+        pages = { "allBuffs", "custom", "loadout" },
     },
     {
-        -- Defaults heads this group as the parent (the per-category pages
-        -- inherit appearance / glow / threshold defaults from it). Built-in
-        -- categories follow the same default priority order used by the
-        -- Display Order section on Defaults, so the sidebar reads as the
-        -- combined frame stacks top-to-bottom. Custom sits last because it's
-        -- qualitatively different (user-defined entries with a list editor).
-        id = "displayBehavior",
-        titleKey = "Sidebar.DisplayBehavior",
-        pages = { "defaults", "raid", "presence", "targeted", "self", "pet", "consumable", "custom" },
+        id = "appearance",
+        titleKey = "Sidebar.Appearance",
+        pages = { "defaults", "categories" },
     },
     {
-        -- General pinned on top; remaining pages alphabetical by display name.
-        id = "general",
-        titleKey = "Sidebar.General",
-        pages = { "general", "anchorFrames", "chatRequests", "sounds", "visibility" },
+        id = "display",
+        titleKey = "Sidebar.Display",
+        pages = { "visibility", "layout" },
     },
     {
-        id = "profiles",
-        titleKey = "Sidebar.Profiles",
-        pages = { "profiles" },
+        id = "alerts",
+        titleKey = "Sidebar.Alerts",
+        pages = { "chatRequests" },
+    },
+    {
+        id = "addonSettings",
+        titleKey = "Sidebar.AddonSettings",
+        pages = { "general", "profiles" },
     },
 }
 
--- Categories that map 1:1 to sidebar pages under the "buffs" group.
-BR.Options.CategoryPages = {
-    raid = "raid",
-    presence = "presence",
-    targeted = "targeted",
-    self = "self",
-    pet = "pet",
-    consumable = "consumable",
-    custom = "custom",
-}
-
--- Ordered list of the built-in (non-custom) categories that have entries in
+-- Ordered list of the built-in (non-virtual) categories that have entries in
 -- BR.BUFF_TABLES. Iterating this is the right way to walk every static buff
--- without hardcoding the category set in each consumer (see SoundAlert).
+-- without hardcoding the category set in each consumer.
 -- Custom buffs live in db.customBuffs and must be iterated separately.
-BR.Options.StaticCategories = { "raid", "presence", "targeted", "self", "pet", "consumable" }
+BR.Options.StaticCategories = BR.STATIC_CATEGORIES
 
 -- ============================================================================
 -- SHARED HELPERS
 -- ============================================================================
 
 local ceil = math.ceil
+local abs = math.abs
+local tinsert = table.insert
+local L = BR.L
 local Helpers = BR.Options.Helpers
 local COMPONENT_GAP = BR.Options.Constants.COMPONENT_GAP
 local COL_PADDING = BR.Options.Constants.COL_PADDING
+local SECTION_GAP = BR.Options.Constants.SECTION_GAP
+local PAGE_TOP_PADDING = BR.Options.Constants.PAGE_TOP_PADDING
 
 -- Section header: gold text + thin gold accent line beneath, spanning the
 -- content area's width. Mirrors the sidebar group header style so page
@@ -126,10 +123,11 @@ local COL_PADDING = BR.Options.Constants.COL_PADDING
 -- The first call on a layout skips the before-gap; the page's top margin
 -- (the negative y the caller set when constructing VerticalLayout) provides
 -- enough breathing room above the first section.
+local BORDER_R, BORDER_G, BORDER_B = unpack(BR.Colors.Border)
 local SEP_OFFSET = 4
 local SEP_HEIGHT = 1
 local AFTER_HEADER_GAP = 8 -- between the accent line and the first content row
-local BEFORE_HEADER_GAP = 12 -- between the previous section's last item and this header
+local BEFORE_HEADER_GAP = 16 -- between the previous section's last item and this header
 local CONTENT_INDENT = 10 -- how far content nests under each section header
 
 function Helpers.LayoutSectionHeader(layout, parent, text)
@@ -246,6 +244,192 @@ function Helpers.LayoutSectionNote(layout, parent, text)
     layout:AddText(note, h, COMPONENT_GAP)
     layout:SetX(prevX)
     return note
+end
+
+-- ============================================================================
+-- LIST EDITOR
+-- ============================================================================
+-- Shared skeleton for the entry-list editor pages (Custom Buffs, Loadout
+-- Reminders, Sound Alerts). Each is the same shape - an optional section header
+-- + note, an Add button, then a flowing, pooled list of rows with an
+-- empty-state placeholder - differing only in row content and data source.
+-- This helper owns the skeleton (layout, Add button pinned above the list, row
+-- pool, render loop, empty state, page content-height, refresh-on-show hook) so
+-- the pages declare only what varies. Rows flow directly in the page's own
+-- scroll container (no nested scroll box); the Add button sits at the top so it
+-- stays reachable no matter how long the list grows.
+
+local LIST_ADD_BUTTON_HEIGHT = 22
+local LIST_ROW_HOVER_ALPHA = 0.04
+
+-- Default row frame: a plain, full-width hover strip. Pages that need a richer
+-- row (persistent child widgets) pass their own config.createRow instead.
+local function DefaultListRow(parent)
+    local row = CreateFrame("Frame", nil, parent)
+
+    local hover = row:CreateTexture(nil, "BACKGROUND")
+    hover:SetAllPoints()
+    hover:SetColorTexture(1, 1, 1, 0)
+    row.hover = hover
+
+    row:SetScript("OnEnter", function(self)
+        self.hover:SetColorTexture(1, 1, 1, LIST_ROW_HOVER_ALPHA)
+    end)
+    row:SetScript("OnLeave", function(self)
+        self.hover:SetColorTexture(1, 1, 1, 0)
+    end)
+    row:EnableMouse(true)
+
+    return row
+end
+
+---Build a list-editor page body. Returns the Render function (already invoked
+---once and wired to refresh when the page is shown).
+---@param content table Page content frame (scroll child)
+---@param scrollFrame table Page ScrollableContainer (for GetContentWidth)
+---@param config table {
+---  header?     string   - section header text (omit for no header)
+---  note?       string   - section note text (omit for none)
+---  addLabel    string   - Add button label
+---  addWidth?   number   - Add button width (default 160)
+---  onAdd       function(render) - opens the editor dialog; pass render as its refresh cb
+---  rowHeight   number   - fixed row height in px
+---  emptyText   string   - placeholder shown when the list is empty
+---  createRow?  function(parent)->row - row frame factory (default: plain hover strip)
+---  getItems    function()->array - sorted list of opaque item objects
+---  fillRow     function(row, item, render) - populate a pooled row for one item
+--- }
+---@return function render
+function Helpers.ListEditor(content, scrollFrame, config)
+    local Components = BR.Components
+    local contentWidth = scrollFrame:GetContentWidth()
+    local layout = Components.VerticalLayout(content, { x = COL_PADDING, y = PAGE_TOP_PADDING })
+
+    if config.header then
+        Helpers.LayoutSectionHeader(layout, content, config.header)
+    end
+    if config.note then
+        Helpers.LayoutSectionNote(layout, content, config.note)
+    end
+
+    local rowHeight = config.rowHeight
+    local createRow = config.createRow or DefaultListRow
+
+    -- Add button above the list; the page's own scroll handles overflow.
+    local Render -- forward decl; onAdd + fillRow callbacks reference it
+    local addBtn = BR.CreateButton(content, config.addLabel, function()
+        config.onAdd(Render)
+    end)
+    addBtn:SetSize(config.addWidth or 160, LIST_ADD_BUTTON_HEIGHT)
+    layout:Add(addBtn, LIST_ADD_BUTTON_HEIGHT, SECTION_GAP)
+
+    -- Rows flow directly in the page content; the container's height tracks the
+    -- row count and UpdateContentHeight resizes the page scroll accordingly.
+    local listX = layout:GetX()
+    local listWidth = contentWidth - listX - COL_PADDING
+    local listTopY = layout:GetY()
+    local listContainer = CreateFrame("Frame", nil, content)
+    listContainer:SetPoint("TOPLEFT", content, "TOPLEFT", listX, listTopY)
+    listContainer:SetWidth(listWidth)
+    listContainer:SetHeight(1)
+
+    local rowPool = {}
+    local rowCount = 0
+
+    local emptyText = listContainer:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    emptyText:SetPoint("TOPLEFT", 8, -8)
+    emptyText:SetJustifyH("LEFT")
+    emptyText:SetText(config.emptyText)
+    emptyText:Hide()
+
+    local function UpdateContentHeight()
+        content:SetHeight(abs(listTopY) + listContainer:GetHeight() + 30)
+    end
+
+    local function AcquireRow(index)
+        local row = rowPool[index]
+        if not row then
+            row = createRow(listContainer)
+            rowPool[index] = row
+        end
+        row:SetHeight(rowHeight)
+        row:SetWidth(listWidth)
+        row:ClearAllPoints()
+        row:Show()
+        return row
+    end
+
+    Render = function()
+        for i = 1, rowCount do
+            rowPool[i]:Hide()
+        end
+        rowCount = 0
+
+        local items = config.getItems()
+
+        if #items == 0 then
+            emptyText:Show()
+            listContainer:SetHeight(rowHeight)
+            UpdateContentHeight()
+            return
+        end
+        emptyText:Hide()
+
+        local y = 0
+        for _, item in ipairs(items) do
+            rowCount = rowCount + 1
+            local row = AcquireRow(rowCount)
+            row:SetPoint("TOPLEFT", listContainer, "TOPLEFT", 0, y)
+            config.fillRow(row, item, Render)
+            y = y - rowHeight
+        end
+
+        listContainer:SetHeight(-y)
+        UpdateContentHeight()
+    end
+
+    Render()
+
+    -- Re-render when the page becomes active so changes made elsewhere (slash
+    -- command, dialog opened from another page) are reflected on show.
+    local refreshHook = CreateFrame("Frame", nil, listContainer)
+    refreshHook:SetSize(1, 1)
+    function refreshHook:Refresh()
+        Render()
+    end
+    tinsert(BR.RefreshableComponents, refreshHook)
+
+    return Render
+end
+
+-- ============================================================================
+-- SCOPE TAG
+-- ============================================================================
+-- Category pages host a few controls whose storage is genuinely global
+-- (defaults.* or profile-root) even though they sit among per-category
+-- widgets. A small "GLOBAL" tag next to the control's label makes that blast
+-- radius visible without relocating the setting.
+
+local GLOBAL_TAG_COLOR = { 0.45, 0.7, 0.95 }
+
+---Attach a "GLOBAL" scope tag after a component's label. Use on any category
+---page control that writes defaults.* or a profile-root key.
+---@param holder table Component holder exposing .label (and optionally .infoIcon)
+function Helpers.AttachGlobalTag(holder)
+    local anchor = holder.infoIcon or holder.label or holder
+    local tag = CreateFrame("Frame", nil, holder)
+    tag:SetPoint("LEFT", anchor, "RIGHT", 6, 0)
+    local text = tag:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    text:SetPoint("LEFT")
+    text:SetText(L["Options.GlobalTag"])
+    text:SetTextColor(GLOBAL_TAG_COLOR[1], GLOBAL_TAG_COLOR[2], GLOBAL_TAG_COLOR[3])
+    tag:SetSize(text:GetStringWidth() + 2, 14)
+    tag:EnableMouse(true)
+    tag:SetScript("OnEnter", function()
+        BR.ShowTooltip(tag, L["Options.GlobalTag.Title"], L["Options.GlobalTag.Desc"], "ANCHOR_TOP")
+    end)
+    tag:SetScript("OnLeave", BR.HideTooltip)
+    return tag
 end
 
 -- ============================================================================
@@ -371,7 +555,9 @@ end
 -- opts.titleText overrides the localized title (used by Glow which appends
 -- the targeted category). opts.titleColor wraps the title in a color escape.
 -- opts.width defaults to DIALOG_WIDTH_NARROW; pass a Constants.DIALOG_WIDTH_*
--- to opt into a wider bucket.
+-- to opt into a wider bucket. opts.icon (a texture path / fileID) shows a small
+-- icon at the left of the header and left-aligns the title next to it, so the
+-- dialog reads as a titled card; without it the title stays centered.
 ---@class DialogShell
 ---@field dialog table panel frame (also returned as the first table value)
 ---@field layout table VerticalLayout anchored under the title
@@ -391,12 +577,27 @@ function Helpers.CreateDialogShell(name, titleKey, opts)
     })
 
     local title = dialog:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    title:SetPoint("TOP", 0, C.DIALOG_TITLE_TOP)
     local titleText = opts.titleText or BR.L[titleKey]
     if opts.titleColor then
         titleText = "|cff" .. opts.titleColor .. titleText .. "|r"
     end
     title:SetText(titleText)
+
+    if opts.icon then
+        -- Header icon + left-aligned title: the icon sits in the header strip and
+        -- the title hangs off its right edge, so the dialog reads as a titled card.
+        local icon = dialog:CreateTexture(nil, "OVERLAY")
+        icon:SetSize(C.DIALOG_ICON_SIZE, C.DIALOG_ICON_SIZE)
+        -- LEFT anchor = vertical center; pin it to the 30px header strip's midpoint
+        -- (top inset 2 + 15) so both the icon and the title that hangs off it sit
+        -- centered in the header band.
+        icon:SetPoint("LEFT", dialog, "TOPLEFT", C.DIALOG_MARGIN, -17)
+        icon:SetTexture(opts.icon)
+        icon:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- trim the default icon border
+        title:SetPoint("LEFT", icon, "RIGHT", 8, 0)
+    else
+        title:SetPoint("TOP", 0, C.DIALOG_TITLE_TOP)
+    end
 
     local closeBtn = CreateButton(dialog, "x", function()
         dialog:Hide()
@@ -404,9 +605,10 @@ function Helpers.CreateDialogShell(name, titleKey, opts)
     closeBtn:SetSize(C.DIALOG_CLOSE_SIZE, C.DIALOG_CLOSE_SIZE)
     closeBtn:SetPoint("TOPRIGHT", C.DIALOG_CLOSE_INSET, C.DIALOG_CLOSE_INSET)
 
+    local layoutTop = opts.layoutY or C.DIALOG_LAYOUT_TOP
     local layout = BR.Components.VerticalLayout(dialog, {
         x = opts.layoutX or C.DIALOG_MARGIN,
-        y = opts.layoutY or C.DIALOG_LAYOUT_TOP,
+        y = layoutTop,
     })
 
     local shell = {
@@ -417,7 +619,17 @@ function Helpers.CreateDialogShell(name, titleKey, opts)
     }
     function shell:Finalize(extraPadding)
         local pad = extraPadding or C.DIALOG_MARGIN
-        dialog:SetHeight(math.max(-layout:GetY() + pad, C.DIALOG_MIN_HEIGHT))
+        local contentBottom = layout:GetY()
+        local height = math.max(-contentBottom + pad, C.DIALOG_MIN_HEIGHT)
+        dialog:SetHeight(height)
+
+        -- Vertically center the content within the body region (below the title
+        -- separator down to the bottom edge). For a single short control this
+        -- centers it in the min-height body instead of pinning it to the top;
+        -- for taller content it just balances the top/bottom gaps.
+        local bodyCenter = (-C.DIALOG_ACCENT_OFFSET - height) / 2
+        local contentCenter = (layoutTop + contentBottom) / 2
+        layout:ShiftAllBy(bodyCenter - contentCenter)
     end
     return shell
 end
@@ -427,9 +639,9 @@ end
 -- The builder receives any args passed to Show and must return the dialog frame.
 --
 -- Use this for dialogs whose contents only depend on profile data - they can
--- be cached and refreshed in place. Dialogs whose option lists or layout
--- depend on Show args (SoundAlert, RoguePoison) keep their own destroy/rebuild
--- pattern instead.
+-- be cached and refreshed in place. Dialogs whose body varies per invocation
+-- (BuffPanel, CustomBuff, LoadoutReminder) rebuild their body on each Show
+-- instead.
 function Helpers.SingletonDialog(builder)
     local cached
     return {
@@ -450,7 +662,7 @@ end
 function Helpers.LayoutSeparator(layout, parent)
     local sep = parent:CreateTexture(nil, "ARTWORK")
     sep:SetHeight(1)
-    sep:SetColorTexture(0.3, 0.3, 0.3, 0.6)
+    sep:SetColorTexture(BORDER_R, BORDER_G, BORDER_B, 0.6)
     layout:Add(sep, 1, COMPONENT_GAP)
     sep:SetWidth((parent.GetWidth and parent:GetWidth() or 600) - 40)
 end
@@ -465,7 +677,6 @@ local function GetCategoryLabels()
     if categoryLabelsCache then
         return categoryLabelsCache
     end
-    local L = BR.L
     categoryLabelsCache = {
         raid = L["Category.RaidBuffs"],
         presence = L["Category.PresenceBuffs"],
@@ -473,7 +684,9 @@ local function GetCategoryLabels()
         self = L["Category.SelfBuffs"],
         pet = L["Category.PetReminders"],
         consumable = L["Category.Consumables"],
+        utility = L["Category.UtilityReminders"],
         custom = L["Category.CustomBuffs"],
+        loadout = L["Category.LoadoutReminders"],
     }
     return categoryLabelsCache
 end

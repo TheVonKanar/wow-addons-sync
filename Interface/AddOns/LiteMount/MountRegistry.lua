@@ -11,6 +11,7 @@
 local _, LM = ...
 
 local C_Spell = LM.C_Spell
+local C_Secrets = C_Secrets
 
 local CallbackHandler = LibStub:GetLibrary("CallbackHandler-1.0", true)
 
@@ -201,10 +202,7 @@ local RefreshEvents = {
     -- for units other than "player" and triggers constantly.
     ["COMPANION_LEARNED"] = true,
     ["COMPANION_UNLEARNED"] = true,
-    -- This fires when something is favorited or unfavorited
-    -- ["MOUNT_JOURNAL_SEARCH_UPDATED"] = true,
-    -- Talents (might have mount abilities). Glyphs that teach spells
-    -- fire PLAYER_TALENT_UPDATE too, don't need to watch GLYPH_ events.
+    -- Talents (might have mount abilities).
     ["ACTIVE_TALENT_GROUP_CHANGED"] = true,
     ["PLAYER_LEVEL_UP"] = true,
     ["PLAYER_TALENT_UPDATE"] = true,
@@ -212,6 +210,11 @@ local RefreshEvents = {
     ["BAG_UPDATE_DELAYED"] = true,
     -- Some flying unlocks are an achievement
     ["ACHIEVEMENT_EARNED"] = true,
+    -- Needed for usability on journal mounts
+    ["MOUNT_JOURNAL_USABILITY_CHANGED"] = true,
+    -- If we refreshed the usability in combat due to another event we need to
+    -- update it once combat ends.
+    ["PLAYER_REGEN_ENABLED"] = true,
 }
 
 function LM.MountRegistry:OnEvent(event, ...)
@@ -276,7 +279,7 @@ local CopyAttributesFromJournal = {
     'creatureDisplayID', 'descriptionText', 'sourceText', 'isSelfMount',
     'mountTypeID', 'modelSceneID', 'animID', 'spellVisualKitID', 'disablePlayerMountPreview',
     -- Other
-    'family', 'expansion',
+    'modelGroup', 'expansion',
 }
 
 function LM.MountRegistry:AddMount(m)
@@ -289,8 +292,6 @@ function LM.MountRegistry:AddMount(m)
     else
         tinsert(self.mounts, m)
     end
-
-    LM.UIFilter.RegisterUsedTypeID(m.mountTypeID or 0)
 end
 
 local CollectedFilterSettings = {
@@ -388,8 +389,8 @@ function LM.MountRegistry:AddExtraMounts()
     end
 end
 
-function LM.MountRegistry:RefreshMounts()
-    if self.needRefresh then
+function LM.MountRegistry:RefreshMounts(force)
+    if self.needRefresh or force then
         LM.Debug("Refreshing status of all mounts.")
         for _,m in ipairs(self.mounts) do
             m:Refresh()
@@ -419,9 +420,10 @@ local function MatchMountToBuff(m, buffNames)
     if spellName and buffNames[spellName] then return true end
 end
 
-local issecretvalue = issecretvalue or function () return false end
-
 function LM.MountRegistry:GetMountFromUnitAura(unitid)
+    if C_Secrets.ShouldAurasBeSecret() then
+        return
+    end
     local buffNames = { }
     local i = 1
     while true do

@@ -11,6 +11,7 @@ local wodTimewalkingIds = { 1056, 1063, 1065, 1068 }
 local legionTimewalkingIds = { 1263, 1265, 1267, 1269, 1271, 1273, 1275, 1277 }
 local bfaTimewalkingIds = { 1666, 1667, 1668, 1669 }
 local slTimewalkingIds = { 1703, 1704, 1705, 1706, 1707, 1708, 1709, 1710 }
+local dfTimewalkingIds = { 1719, 1720, 1721, 1722 }
 
 Addon.data.chores.choresEvents = {
     key = 'events',
@@ -30,7 +31,7 @@ Addon.data.chores.choresEvents = {
                 },
                 {
                     key = 'mythicDungeons',
-                    minimumLevel = 80,
+                    minimumLevel = 90,
                     requiredEventIds = { 1558, 1563, 1564, 1565 }, -- The War Within Dungeon Event
                     entries = {
                         { quest = 93598 }, -- Emissary of War
@@ -46,7 +47,7 @@ Addon.data.chores.choresEvents = {
                 },
                 {
                     key = 'worldQuests',
-                    minimumLevel = 80,
+                    minimumLevel = 90,
                     requiredEventIds = { 592, 613, 614, 615 }, -- World Quest Bonus Event
                     entries = {
                         { quest = 93605 }, -- The World Awaits
@@ -253,6 +254,24 @@ Addon.data.chores.choresEvents = {
                     requiredEventIds = slTimewalkingIds,
                     entries = {
                         { quest = 92650, item = 253517 }, -- [SL] The Flickering Anima
+                    },
+                },
+                -- Dragonflight
+                {
+                    key = 'dungeons',
+                    minimumLevel = 10,
+                    requiredEventIds = dfTimewalkingIds,
+                    entries = {
+                        { quest = 93495 }, -- A Soaring Journey Through Time
+                        { quest = 93497 }, -- A Soaring Path Through Time
+                    },
+                },
+                {
+                    key = 'item',
+                    minimumLevel = 30,
+                    requiredEventIds = dfTimewalkingIds,
+                    entries = {
+                        { quest = 93852, item = 262918 }, -- [DF] Lost Iridescent Flightstone
                     },
                 },
             },

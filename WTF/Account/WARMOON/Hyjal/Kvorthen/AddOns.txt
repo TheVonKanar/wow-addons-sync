@@ -15,10 +15,10 @@ GTFO: enabled
 HandyNotes: enabled
 HandyNotes_Dragonflight: disabled
 HandyNotes_TheWarWithin: enabled
-idTip: enabled
+idTip: disabled
 Kong: enabled
 KongConfig: enabled
-Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: enabled
+Krowi_AchievementFilter_Khamuls_ExpMetaAchievementFilter: disabled
 LargerMacroIconSelection: enabled
 LargerMacroIconSelectionData: enabled
 Leatrix_Plus: enabled
@@ -58,7 +58,7 @@ Blizzard_CombatText: enabled
 ChonkyCharacterSheet: disabled
 ArcUI: enabled
 SenseiClassResourceBar: disabled
-UnhaltedUnitFrames: enabled
+UnhaltedUnitFrames: disabled
 MinimapStats: disabled
 ClickableRaidBuffs: enabled
 !Swatter: disabled

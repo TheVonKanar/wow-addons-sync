@@ -64,7 +64,7 @@ local function Build(ctx, layout)
         local specIconHolder = Components.Checkbox(parent, {
             label = L["Options.PetSpecIcon"],
             get = function()
-                return BR.Config.Get("defaults.petSpecIconOnHover", true)
+                return BR.Config.Get("defaults.petSpecIconOnHover")
             end,
             enabled = isClickable,
             tooltip = {
@@ -82,7 +82,7 @@ local function Build(ctx, layout)
         local showTooltipsHolder = Components.Checkbox(parent, {
             label = L["Options.ShowItemTooltips"],
             get = function()
-                return BR.Config.Get("defaults.showConsumableTooltips", false) ~= false
+                return BR.Config.Get("defaults.showConsumableTooltips") ~= false
             end,
             enabled = isClickable,
             tooltip = {
@@ -94,6 +94,8 @@ local function Build(ctx, layout)
             end,
         })
         layout:Add(showTooltipsHolder, nil, COMPONENT_GAP)
+
+        Helpers.LayoutSubsectionNote(layout, parent, L["Options.ClickToCast.SnoozeNote"])
     end
 
     if category == "raid" or category == "presence" then
@@ -102,7 +104,7 @@ local function Build(ctx, layout)
         local showBuffTooltipsHolder = Components.Checkbox(parent, {
             label = L["Options.ShowBuffTooltips"],
             get = function()
-                return BR.Config.Get("defaults.showBuffTooltips", false) ~= false
+                return BR.Config.Get("defaults.showBuffTooltips") ~= false
             end,
             tooltip = {
                 title = L["Options.ShowBuffTooltips"],
@@ -112,6 +114,8 @@ local function Build(ctx, layout)
                 BR.Config.Set("defaults.showBuffTooltips", checked)
             end,
         })
+        -- One key shared by the raid AND presence pages: flag the blast radius.
+        BR.Options.Helpers.AttachGlobalTag(showBuffTooltipsHolder)
         layout:Add(showBuffTooltipsHolder, nil, COMPONENT_GAP)
     end
 

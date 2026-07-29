@@ -560,59 +560,57 @@ local function ReturnFrameToCDM(frame, entry)
         return
     end
     
-    pcall(function()
-        -- CRITICAL: Clean up all drag state and custom properties
-        -- These can cause issues if CDM reuses this frame for a different cooldownID
-        frame:SetMovable(false)
-        frame:EnableMouse(false)
-        frame:RegisterForDrag()  -- Unregister drag
-        frame:SetScript("OnDragStart", nil)
-        frame:SetScript("OnDragStop", nil)
-        frame:SetScript("OnUpdate", nil)
-        
-        -- Clean up visual elements (borders, overlays, glows)
-        -- Border edges extend outside frame bounds, must hide explicitly
-        if frame._arcBorderEdges then
-            if frame._arcBorderEdges.top then frame._arcBorderEdges.top:Hide() end
-            if frame._arcBorderEdges.bottom then frame._arcBorderEdges.bottom:Hide() end
-            if frame._arcBorderEdges.left then frame._arcBorderEdges.left:Hide() end
-            if frame._arcBorderEdges.right then frame._arcBorderEdges.right:Hide() end
-        end
-        
-        -- Hide text overlay
-        if frame._arcTextOverlay then
-            frame._arcTextOverlay:Hide()
-        end
-        
-        -- Stop any glow effects
-        if ns.CDMEnhance and ns.CDMEnhance.StopAllGlows then
-            ns.CDMEnhance.StopAllGlows(frame)
-        end
-        
-        -- Clear all our custom properties
-        frame._groupDragging = nil
-        frame._sourceGroup = nil
-        frame._sourceCdID = nil
-        frame._cdmgTargetPoint = nil
-        frame._cdmgTargetRelPoint = nil
-        frame._cdmgTargetX = nil
-        frame._cdmgTargetY = nil
-        frame._cdmgTargetSize = nil
-        frame._cdmgSlotW = nil  -- Clear GROUP's slot dimensions
-        frame._cdmgSlotH = nil
-        frame._cdmgSettingPosition = nil
-        frame._cdmgSettingScale = nil
-        frame._cdmgSettingSize = nil
-        frame._cdmgSettingParent = nil
-        frame._cdmgIsFreeIcon = nil  -- CRITICAL: Clear free icon flag so hooks don't fight
-        frame._cdmgTargetContainer = nil  -- Clear target so SetParent hook doesn't fight
-        frame.frameLostAt = nil
-        
-        -- Return to original parent
-        frame:SetParent(entry and entry.originalParent or UIParent)
-        frame:ClearAllPoints()
-        frame:Hide()
-    end)
+    -- CRITICAL: Clean up all drag state and custom properties
+    -- These can cause issues if CDM reuses this frame for a different cooldownID
+    frame:SetMovable(false)
+    frame:EnableMouse(false)
+    frame:RegisterForDrag()  -- Unregister drag
+    frame:SetScript("OnDragStart", nil)
+    frame:SetScript("OnDragStop", nil)
+    frame:SetScript("OnUpdate", nil)
+
+    -- Clean up visual elements (borders, overlays, glows)
+    -- Border edges extend outside frame bounds, must hide explicitly
+    if frame._arcBorderEdges then
+        if frame._arcBorderEdges.top then frame._arcBorderEdges.top:Hide() end
+        if frame._arcBorderEdges.bottom then frame._arcBorderEdges.bottom:Hide() end
+        if frame._arcBorderEdges.left then frame._arcBorderEdges.left:Hide() end
+        if frame._arcBorderEdges.right then frame._arcBorderEdges.right:Hide() end
+    end
+
+    -- Hide text overlay
+    if frame._arcTextOverlay then
+        frame._arcTextOverlay:Hide()
+    end
+
+    -- Stop any glow effects
+    if ns.CDMEnhance and ns.CDMEnhance.StopAllGlows then
+        ns.CDMEnhance.StopAllGlows(frame)
+    end
+
+    -- Clear all our custom properties
+    frame._groupDragging = nil
+    frame._sourceGroup = nil
+    frame._sourceCdID = nil
+    frame._cdmgTargetPoint = nil
+    frame._cdmgTargetRelPoint = nil
+    frame._cdmgTargetX = nil
+    frame._cdmgTargetY = nil
+    frame._cdmgTargetSize = nil
+    frame._cdmgSlotW = nil  -- Clear GROUP's slot dimensions
+    frame._cdmgSlotH = nil
+    frame._cdmgSettingPosition = nil
+    frame._cdmgSettingScale = nil
+    frame._cdmgSettingSize = nil
+    frame._cdmgSettingParent = nil
+    frame._cdmgIsFreeIcon = nil  -- CRITICAL: Clear free icon flag so hooks don't fight
+    frame._cdmgTargetContainer = nil  -- Clear target so SetParent hook doesn't fight
+    frame.frameLostAt = nil
+
+    -- Return to original parent
+    frame:SetParent(entry and entry.originalParent or UIParent)
+    frame:ClearAllPoints()
+    frame:Hide()
     if entry then
         entry.manipulated = false
         entry.group = nil
@@ -911,6 +909,10 @@ local function SerializeDefaultGroupToLayoutData(groupData)
         showBackground = groupData.showBackground or false,
         autoReflow = groupData.autoReflow ~= false,  -- Default true, user can disable
         dynamicLayout = groupData.dynamicLayout or false,
+        dynamicCooldowns = groupData.dynamicCooldowns or false,
+        smoothMovement = groupData.smoothMovement,
+        smoothMoveDuration = groupData.smoothMoveDuration,
+        dynamicOrderMode = groupData.dynamicOrderMode,
         dynamicContainerSize = groupData.dynamicContainerSize,
         lockGridSize = groupData.lockGridSize or false,
         containerPadding = groupData.containerPadding or -4,
@@ -2611,6 +2613,10 @@ local function SerializeGroupToData(group, overrideLayout)
         showBackground = group.showBackground,
         autoReflow = group.autoReflow,
         dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
         lockGridSize = group.lockGridSize,
         containerPadding = group.containerPadding,
         visibility = type(group.visibility) == "table" and DeepCopy(group.visibility) or (group.visibility or "always"),
@@ -2666,6 +2672,10 @@ local function SerializeGroupToLayoutData(group)
         showBackground = group.showBackground,
         autoReflow = group.autoReflow,
         dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
         dynamicContainerSize = group.dynamicContainerSize,
         lockGridSize = group.lockGridSize,
         containerPadding = group.containerPadding,
@@ -2961,6 +2971,10 @@ GetDefaultSpecData = function()
                             showBackground = layoutData.showBackground,
                             autoReflow = layoutData.autoReflow ~= false,
                             dynamicLayout = layoutData.dynamicLayout,
+                            dynamicCooldowns = layoutData.dynamicCooldowns,
+                            smoothMovement = layoutData.smoothMovement,
+                            smoothMoveDuration = layoutData.smoothMoveDuration,
+                            dynamicOrderMode = layoutData.dynamicOrderMode,
                             dynamicContainerSize = layoutData.dynamicContainerSize,
                             lockGridSize = layoutData.lockGridSize,
                             containerPadding = layoutData.containerPadding,
@@ -3219,6 +3233,10 @@ local function EnsureLayoutProfiles(specData)
                         showBackground = group.showBackground,
                         autoReflow = group.autoReflow,
                         dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
                         lockGridSize = group.lockGridSize,
                         containerPadding = group.containerPadding,
                         borderColor = group.borderColor and DeepCopy(group.borderColor),
@@ -3256,6 +3274,10 @@ local function EnsureLayoutProfiles(specData)
                         showBackground = groupData.showBackground,
                         autoReflow = groupData.autoReflow ~= false,
                         dynamicLayout = groupData.dynamicLayout,
+                        dynamicCooldowns = groupData.dynamicCooldowns,
+                        smoothMovement = groupData.smoothMovement,
+                        smoothMoveDuration = groupData.smoothMoveDuration,
+                        dynamicOrderMode = groupData.dynamicOrderMode,
                         lockGridSize = groupData.lockGridSize,
                         containerPadding = groupData.containerPadding,
                         borderColor = groupData.borderColor and DeepCopy(groupData.borderColor),
@@ -3431,6 +3453,10 @@ local function EnsureLayoutProfiles(specData)
                         showBackground = groupData.showBackground,
                         autoReflow = groupData.autoReflow ~= false,
                         dynamicLayout = groupData.dynamicLayout,
+                        dynamicCooldowns = groupData.dynamicCooldowns,
+                        smoothMovement = groupData.smoothMovement,
+                        smoothMoveDuration = groupData.smoothMoveDuration,
+                        dynamicOrderMode = groupData.dynamicOrderMode,
                         dynamicContainerSize = groupData.dynamicContainerSize,
                         lockGridSize = groupData.lockGridSize,
                         containerPadding = groupData.containerPadding,
@@ -3630,6 +3656,10 @@ function ns.CDMGroups.CreateProfile(profileName)
                 showBackground = group.showBackground,
                 autoReflow = group.autoReflow,
                 dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
                 dynamicContainerSize = group.dynamicContainerSize,
                 lockGridSize = group.lockGridSize,
                 containerPadding = group.containerPadding,
@@ -3945,6 +3975,10 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
                 showBackground = group.showBackground,
                 autoReflow = group.autoReflow,
                 dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
                 dynamicContainerSize = group.dynamicContainerSize,
                 lockGridSize = group.lockGridSize,
                 containerPadding = group.containerPadding,
@@ -4248,7 +4282,47 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             profile.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
         end
     end
-    
+
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- SAFETY NET: materialize groups that saved icons reference but the layout
+    -- source is missing. Group creation is driven by the layout source
+    -- (groupLayouts / linked layout / DEFAULT_GROUPS), while icon-to-group
+    -- membership lives separately in savedPositions[cdID].target. Nothing
+    -- guarantees every referenced target exists. When it doesn't, the icon falls
+    -- through to the orphan branch in the placement loop below and is scattered
+    -- loose above screen center ("the addon didn't know where to put them") -- the
+    -- import symptom when an exported profile's groupLayouts didn't carry a group
+    -- its savedPositions still point at. Recreating the referenced group honors the
+    -- saved intent (icons stay grouped) instead of orphaning them. Runs on every
+    -- load but only acts on the bug condition, so it is self-healing and a no-op
+    -- in the normal case. DeleteGroup clears savedPositions for its members, so a
+    -- normally-deleted group leaves no reference here and is not resurrected.
+    if profile.savedPositions then
+        local isLinked = profile.groupLayoutName ~= nil
+        local recovered = 0
+        for _cdID, saved in pairs(profile.savedPositions) do
+            local target = saved and saved.type == "group" and saved.target
+            if target and target ~= "" and not profileGroups[target] then
+                profileGroups[target] = true
+                -- Persist for non-linked profiles so the recovered group survives
+                -- future loads. Linked profiles read groups from the SHARED global
+                -- layout, which we must not mutate; the net re-runs each load and
+                -- stays self-healing for them.
+                if not isLinked then
+                    if not profile.groupLayouts then profile.groupLayouts = {} end
+                    if not profile.groupLayouts[target] then
+                        profile.groupLayouts[target] = {
+                            position = { x = 0, y = -100 - (recovered * 60) },
+                            gridRows = 2, gridCols = 4, iconSize = 36, spacing = 2,
+                        }
+                    end
+                end
+                recovered = recovered + 1
+                PrintMsg("|cff00ff00[LoadProfile]|r Recreated missing group '" .. tostring(target) .. "' referenced by saved icons (import safety net)")
+            end
+        end
+    end
+
     -- Destroy groups NOT in the profile
     local groupsToDestroy = {}
     for groupName, group in pairs(ns.CDMGroups.groups) do
@@ -4371,9 +4445,26 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                     newGroup.container:SetPoint("CENTER", UIParent, "CENTER", layoutData.position.x, layoutData.position.y)
                 end
             end
+        else
+            -- EXISTING group: re-apply its container POSITION from the layout source
+            -- so a re-import / re-load of a LINKED layout updates groups that already
+            -- exist. Previously only NEW groups were positioned, so a re-import left
+            -- the OLD container position (the "Strikes group position didn't load"
+            -- symptom). Skip anchor-positioned groups: the anchor system owns their
+            -- placement and re-runs right after this (ResetAllHookState below).
+            local existGroup = ns.CDMGroups.groups[groupName]
+            local _exDB = profile.groupLayoutName and ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+            local _exSrc = (_exDB and _exDB[profile.groupLayoutName]) or profile.groupLayouts
+            local _exData = _exSrc and _exSrc[groupName]
+            local _exAnchored = _exData and _exData.anchor and _exData.anchor.enabled
+            if _exData and _exData.position and existGroup and existGroup.container and not _exAnchored then
+                existGroup.position = { x = _exData.position.x, y = _exData.position.y }
+                existGroup.container:ClearAllPoints()
+                existGroup.container:SetPoint("CENTER", UIParent, "CENTER", _exData.position.x, _exData.position.y)
+            end
         end
     end
-    
+
     local destroyedCount = #groupsToDestroy
     if destroyedCount > 0 or createdCount > 0 then
     end
@@ -4647,6 +4738,18 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 if layoutData.dynamicLayout ~= nil then
                     group.dynamicLayout = layoutData.dynamicLayout
                 end
+                if layoutData.dynamicCooldowns ~= nil then
+                    group.dynamicCooldowns = layoutData.dynamicCooldowns
+                end
+                if layoutData.smoothMovement ~= nil then
+                    group.smoothMovement = layoutData.smoothMovement
+                end
+                if layoutData.smoothMoveDuration ~= nil then
+                    group.smoothMoveDuration = layoutData.smoothMoveDuration
+                end
+                if layoutData.dynamicOrderMode ~= nil then
+                    group.dynamicOrderMode = layoutData.dynamicOrderMode
+                end
                 if layoutData.dynamicContainerSize ~= nil then
                     group.dynamicContainerSize = layoutData.dynamicContainerSize
                 end
@@ -4906,12 +5009,16 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             if group.Layout then group:Layout() end
         end
         
-        -- CRITICAL: Setup dynamic layout hooks for ALL groups with Dynamic Auras enabled
-        -- This ensures instant layout works for ALL alignments after profile load
+        -- CRITICAL: Setup dynamic layout hooks for ALL groups with a dynamic mode
+        -- (Dynamic Auras OR Dynamic Cooldowns) enabled. This ensures instant layout
+        -- works for ALL alignments after profile load. A dynamicCooldowns-only group
+        -- that was skipped here had its cooldowns collapsed on load (by the ReflowIcons
+        -- pass below) with no hooks to ever restore them -- the "group with dynamic
+        -- cooldowns didn't load after import" bug, only fixed by a /reload.
         local DL = ns.CDMGroups.DynamicLayout
         if DL and DL.SetupDynamicLayoutHooks then
             for groupName, group in pairs(ns.CDMGroups.groups) do
-                if group.dynamicLayout then
+                if group.dynamicLayout or group.dynamicCooldowns then
                     DL.SetupDynamicLayoutHooks(group)
                 end
             end
@@ -5283,6 +5390,7 @@ SavePositionToSpec = function(cdID, positionData, forceSave)
     -- ═══════════════════════════════════════════════════════════════════════════
     local profileSavedPositions = GetProfileSavedPositions()
     if profileSavedPositions then
+        if _G.ArcUI_SaveDebug then _G.ArcUI_SaveDebug("SavePositionToSpec", cdID, positionData and positionData.target, positionData and positionData.row, positionData and positionData.col, forceSave) end  -- [TEMP DEBUG]
         profileSavedPositions[cdID] = positionData
     end
 end
@@ -5355,6 +5463,7 @@ local function SaveGroupPosition(cdID, groupName, row, col, forceSave, sortIndex
     }
     
     -- Write to the verified profile table
+    if _G.ArcUI_SaveDebug then _G.ArcUI_SaveDebug("SaveGroupPosition", cdID, groupName, row, col, forceSave) end  -- [TEMP DEBUG]
     profileSavedPositions[cdID] = positionData
 end
 ns.CDMGroups.SaveGroupPosition = SaveGroupPosition
@@ -6122,6 +6231,10 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                         showBackground = layoutData.showBackground,
                         autoReflow = layoutData.autoReflow ~= false,
                         dynamicLayout = layoutData.dynamicLayout,
+                            dynamicCooldowns = layoutData.dynamicCooldowns,
+                            smoothMovement = layoutData.smoothMovement,
+                            smoothMoveDuration = layoutData.smoothMoveDuration,
+                            dynamicOrderMode = layoutData.dynamicOrderMode,
                         dynamicContainerSize = layoutData.dynamicContainerSize,
                         lockGridSize = layoutData.lockGridSize,
                         containerPadding = layoutData.containerPadding,
@@ -6591,6 +6704,10 @@ function ns.CDMGroups.CreateGroup(name)
             showBackground = defaultTemplate.showBackground or false,
             autoReflow = defaultTemplate.autoReflow ~= false,
             dynamicLayout = defaultTemplate.dynamicLayout or false,
+            dynamicCooldowns = defaultTemplate.dynamicCooldowns or false,
+            smoothMovement = defaultTemplate.smoothMovement,
+            smoothMoveDuration = defaultTemplate.smoothMoveDuration,
+            dynamicOrderMode = defaultTemplate.dynamicOrderMode,
             dynamicContainerSize = defaultTemplate.dynamicContainerSize or false,  -- Explicit default
             lockGridSize = defaultTemplate.lockGridSize or false,
             containerPadding = defaultTemplate.containerPadding or -4,
@@ -6637,6 +6754,10 @@ function ns.CDMGroups.CreateGroup(name)
         position = layoutData.position and DeepCopy(layoutData.position) or { x = 0, y = 100 },
         autoReflow = layoutData.autoReflow ~= false,
         dynamicLayout = layoutData.dynamicLayout or false,
+        dynamicCooldowns = layoutData.dynamicCooldowns or false,
+        smoothMovement = layoutData.smoothMovement,
+        smoothMoveDuration = layoutData.smoothMoveDuration,
+        dynamicOrderMode = layoutData.dynamicOrderMode,
         dynamicContainerSize = layoutData.dynamicContainerSize,
         lockGridSize = layoutData.lockGridSize or false,
         containerPadding = layoutData.containerPadding or -4,
@@ -6666,6 +6787,10 @@ function ns.CDMGroups.CreateGroup(name)
         position = DeepCopy(db.position),  -- Use copy
         autoReflow = db.autoReflow ~= false,
         dynamicLayout = db.dynamicLayout,
+        dynamicCooldowns = db.dynamicCooldowns,
+        smoothMovement = db.smoothMovement,
+        smoothMoveDuration = db.smoothMoveDuration,
+        dynamicOrderMode = db.dynamicOrderMode,
         dynamicContainerSize = db.dynamicContainerSize,
         lockGridSize = db.lockGridSize,
         containerPadding = db.containerPadding,
@@ -8904,13 +9029,25 @@ function ns.CDMGroups.CreateGroup(name)
     function group:RestoreToSavedPositions()
         local maxRows = self.layout.gridRows
         local maxCols = self.layout.gridCols
-        
+
         -- Clear grid
         self.grid = {}
         for row = 0, maxRows - 1 do
             self.grid[row] = {}
         end
-        
+
+        -- Read-only free-cell finder over the grid being rebuilt. (Deliberately NOT
+        -- group:FindNextFreeSlot, which mutates self.members and would corrupt this pairs() loop.)
+        local function nextFreeCell()
+            for r = 0, maxRows - 1 do
+                local gr = self.grid[r]
+                for c = 0, maxCols - 1 do
+                    if not (gr and gr[c]) then return r, c end
+                end
+            end
+            return nil, nil
+        end
+
         -- Restore each member to their saved position
         for cdID, member in pairs(self.members) do
             -- Skip placeholders - they don't occupy grid during reflow
@@ -8919,24 +9056,31 @@ function ns.CDMGroups.CreateGroup(name)
                 if saved and saved.type == "group" and saved.target == self.name then
                     local row = saved.row or 0
                     local col = saved.col or 0
-                    
+
                     -- Clamp to grid bounds
                     row = math.min(row, maxRows - 1)
                     col = math.min(col, maxCols - 1)
-                    
+
+                    -- COLLISION-SAFE: if this saved slot is already claimed (legacy duplicate
+                    -- saved positions), move this icon to the next free cell instead of stacking
+                    -- it on top of the other - prevents the visible icon-over-icon overlap.
+                    if self.grid[row][col] and self.grid[row][col] ~= cdID then
+                        local fr, fc = nextFreeCell()
+                        if fr then row, col = fr, fc end
+                    end
+
                     -- Update member position from saved
                     member.row = row
                     member.col = col
-                    
+
                     -- Place in grid (if position not already taken)
-                    -- If multiple icons saved at same position, first one wins
                     if not self.grid[row][col] then
                         self.grid[row][col] = cdID
                     end
                 end
             end
         end
-        
+
         self:MarkGridDirty()
     end
     
@@ -10036,10 +10180,26 @@ function ns.CDMGroups.CreateGroup(name)
                     end
 
                     if needsReposition then
-                        frame._cdmgSettingPosition = true
-                        frame:ClearAllPoints()
-                        frame:SetPoint("CENTER", self.container, "CENTER", targetX, targetY)
-                        frame._cdmgSettingPosition = false
+                        -- SMOOTH MOVE: when a dynamic group (Dynamic Auras or Dynamic
+                        -- Cooldowns) repositions an already-CENTER-anchored icon, glide
+                        -- it to the new slot instead of snapping. First placement /
+                        -- re-parent / non-dynamic groups still snap instantly.
+                        local canGlide = DL and DL.SmoothMoveTo and not optionsPanelOpen
+                            and self.smoothMovement
+                            and self.autoReflow and (self.dynamicLayout or self.dynamicCooldowns)
+                            and point == "CENTER" and relativeTo == self.container
+                            and relativePoint == "CENTER" and currentX ~= nil and currentY ~= nil
+                        if canGlide then
+                            -- Convert the user's duration (95%-close time) to an ease rate.
+                            local dur = self.smoothMoveDuration or 0.18
+                            if dur < 0.02 then dur = 0.02 end
+                            DL.SmoothMoveTo(frame, self.container, currentX, currentY, targetX, targetY, 3 / dur)
+                        else
+                            frame._cdmgSettingPosition = true
+                            frame:ClearAllPoints()
+                            frame:SetPoint("CENTER", self.container, "CENTER", targetX, targetY)
+                            frame._cdmgSettingPosition = false
+                        end
                         if ns.DynamicLayoutDebug and ns.DynamicLayoutDebug.IsAlphaTraceEnabled and ns.DynamicLayoutDebug.IsAlphaTraceEnabled() then
                             ns.DynamicLayoutDebug.AddAlphaTrace("SETPOINT_CENTER", cdID, string.format("x=%.1f y=%.1f", targetX, targetY))
                         end
@@ -11897,6 +12057,10 @@ function ns.CDMGroups.CreateGroup(name)
                     showBackground = group.showBackground,
                     autoReflow = group.autoReflow,
                     dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
                     dynamicContainerSize = group.dynamicContainerSize,
                     lockGridSize = group.lockGridSize,
                     containerPadding = group.containerPadding,
@@ -14061,7 +14225,16 @@ CDMGroupsInitFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "GROUP_ROSTER_UPDATE" then
         ns.CDMGroups.inGroup = IsInGroup()
         ns.CDMGroups.inRaid = IsInRaid()
-        ns.CDMGroups.UpdateGroupVisibility()
+        -- COALESCE: joining a raid fires GROUP_ROSTER_UPDATE 10-20× in under a
+        -- second. State is captured synchronously above; collapse the visibility
+        -- pass into a single next-frame call instead of running it 10-20×.
+        if not ns.CDMGroups._rosterVisPending then
+            ns.CDMGroups._rosterVisPending = true
+            C_Timer.After(0, function()
+                ns.CDMGroups._rosterVisPending = false
+                ns.CDMGroups.UpdateGroupVisibility()
+            end)
+        end
     elseif event == "PLAYER_UPDATE_RESTING" then
         ns.CDMGroups.isResting = IsResting()
         ns.CDMGroups.UpdateGroupVisibility()
@@ -14687,6 +14860,10 @@ local function SaveGroupLayoutsToActiveProfile()
                 showBackground = group.showBackground,
                 autoReflow = group.autoReflow,
                 dynamicLayout = group.dynamicLayout,
+        dynamicCooldowns = group.dynamicCooldowns,
+        smoothMovement = group.smoothMovement,
+        smoothMoveDuration = group.smoothMoveDuration,
+        dynamicOrderMode = group.dynamicOrderMode,
                 dynamicContainerSize = group.dynamicContainerSize,
                 lockGridSize = group.lockGridSize,
                 containerPadding = group.containerPadding,

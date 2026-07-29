@@ -260,9 +260,8 @@ T["And lastly, the " .. colorYello:WrapTextInColorCode("Create & Add ") .. "butt
 .. colorYello:WrapTextInColorCode("sleep.")
 
 --thanks
-T["You can support the project\nby donating on " .. colorYello:WrapTextInColorCode("Ko-Fi ")
-.. "or " .. colorYello:WrapTextInColorCode("Patreon!")] = "You can support the project\nby donating on " 
-.. colorYello:WrapTextInColorCode("Ko-Fi ") .. "or " .. colorYello:WrapTextInColorCode("Patreon!")
+T["You can support the project\nby donating on " .. colorYello:WrapTextInColorCode("Ko-Fi! ")] = "You can support the project   \nby donating on " 
+.. colorYello:WrapTextInColorCode("Ko-Fi!")
 
 T["THANK YOU!"] = "THANK YOU!"
 
@@ -860,3 +859,30 @@ T["How far out the camera will zoom out before starting the scan. Higher value =
 T["Recommended Value: 2\n"] = colorGrae:WrapTextInColorCode("Recommended Value: 2\n")
 T["If there is an object BEHIND your character that forces your camera angle to change, try setting it to a lower value."] = colorWhite:WrapTextInColorCode("If there is an object BEHIND your character that forces your camera angle to change, try setting it to a ") 
 .. colorRed:WrapTextInColorCode("lower ") .. colorWhite:WrapTextInColorCode("value.")
+
+
+T["Show Minimap Button"] = "Show Minimap Button"
+T["Uncheck to hide minimap, or middle-mouse-click on the minimap button."] = "Uncheck to hide minimap, or middle-mouse-click on the minimap button."
+
+
+T["Open Config Panel"] = "Open Config Panel"
+T["You need to open the Config Panel to change Angleur's settings!"
+.. "\n\n(Hint) You can also:\n - type /ang\n - Double-Click the Angleur Visual\n - Click the Minimap/AddonCompartment Button\nto open it."] = colorWhite:WrapTextInColorCode("You need to open the Config Panel to change Angleur's settings!")
+.. colorGrae:WrapTextInColorCode("\n\n(Hint) You can also:\n - type ") .. colorYello:WrapTextInColorCode("/ang") .. colorGrae:WrapTextInColorCode("\n - Double-Click the ") 
+.. colorYello:WrapTextInColorCode("Angleur Visual\n") .. colorGrae:WrapTextInColorCode(" - Click the ") .. colorYello:WrapTextInColorCode("Minimap/AddonCompartment Button") 
+.. colorGrae:WrapTextInColorCode("\nto open it.")
+
+T["Angleur: Minimap Button Shown"] = colorBlu:WrapTextInColorCode("Angleur: ") .. "Minimap Button Shown"
+T["Angleur: Minimap Button Hidden"] = colorBlu:WrapTextInColorCode("Angleur: ") .. "Minimap Button Hidden"
+
+T["Angleur: Ultra Focus will trigger on "] = colorBlu:WrapTextInColorCode("Angleur: ") .. "Ultra Focus will trigger on "
+T["Activation Mode:"] = "Activation Mode:"
+T["Choose when Angleur's Ultra Focus Activates/Releases.\n\n" .. "Cast/Reel : Will activate/release with every single cast (DEFAULT)\n\n" 
+.. "Sleep/Wake : Will only activate/release when you wake/sleep the addon\n"] = "Choose when Angleur's Ultra Focus " .. colorGreen:WrapTextInColorCode("Activates") .. "/" .. colorRed:WrapTextInColorCode("Releases") .. ".\n\n" 
+.. colorYello:WrapTextInColorCode("Cast/Reel : ") .. "Will activate/release with every single cast " .. colorGrae:WrapTextInColorCode("(DEFAULT)\n\n") 
+.. colorYello:WrapTextInColorCode("Sleep/Wake : ") .. "Will only activate/release when you wake/sleep the addon\n"
+
+T["Recast Reminder"] = "Recast Reminder"
+T["If enabled, Angleur will play a sound effect when your fishing cast runs out to remind you to cast again!" 
+.. "\n\nRecommended when fishing on the side while doing something else."] = "If enabled, Angleur will play a ".. colorYello:WrapTextInColorCode("sound effect ")
+.. "when your fishing cast runs out to remind you to cast again!" .. colorGrae:WrapTextInColorCode("\n\nRecommended when fishing on the side while doing something else.")

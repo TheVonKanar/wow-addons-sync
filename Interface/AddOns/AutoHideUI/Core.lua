@@ -1,27 +1,33 @@
 local _, Private = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoHideUI")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 Private.Main = {}
 Private.Config = {}
 Private.Frames = {}
 Private.Fading = {}
 Private.FrameFinder = {}
 Private.MouseoverAreas = {}
-Private.isAceHooked = false
+Private.Changelog = {}
+Private.ManualControl = {}
+Private.ConditionsTab = {}
+Private.FramesTab = {}
 
--- namespaces for functions that are called between files
 local Main = Private.Main
 local Config = Private.Config
 local Frames = Private.Frames
 local Fading = Private.Fading
+local ManualControl = Private.ManualControl
+local ConditionsTab = Private.ConditionsTab
 local MouseoverAreas = Private.MouseoverAreas
-local internal = {}
+local DB_SCHEMA_VERSION = 2
 
 -- unlike systemFrame, Main.frame's events are registered based on which conditions are enabled
-Main.frame = CreateFrame("Frame")
+Main.frame = CreateFrame("Frame", "AutoHideUI")
 local systemFrame = CreateFrame("Frame")
 systemFrame:RegisterEvent("PLAYER_LOGIN")
 systemFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 systemFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+systemFrame:RegisterEvent("FIRST_FRAME_RENDERED")
 
 -- these are what we read and write to on runtime
 Main.activeStrings = {} -- [frameString] = { frames = {frameObject, ...}, args = {} , group = reference to parent group}
@@ -55,19 +61,43 @@ local PARTY_UNITS = {
     party4 = true,
 }
 
+local INSTANCE_TYPE_MAPPING = {
+    pvp = "instanceBattleground",
+    arena = "instanceArena",
+    party = "instanceDungeon",
+    raid = "instanceRaid",
+    scenario = "instanceScenario",
+    neighborhood = "instanceNeighborhood",
+    interior = "instanceHousing",
+}
+
+Main.DEFAULT_STATES = {
+    startAlpha = 1,
+    endAlpha = 1,
+    fadeEndTime = 0, -- if GetTime() < fadeEndTime we measure and use currentAlpha as startAlpha
+    lastMouseover = nil, -- mouseover is polled constantly. only updating when current and last are different.
+    fadeMode = "",
+    priorityFade = false, -- if fadeMode == "OUT" and priority, we fade out without delay
+    activeConditions = { -- key: name of condition -- value: false or alpha of condition
+        normal = {},
+        priority = {},
+    },
+}
 
 Main.inCombat = InCombatLockdown()
-local hasHostileTarget, hasFriendlyTarget, hasHostileFocus, hasFriendlyFocus
 local isMounted = IsMounted()
+local isFlightShape = false
 local isFlying = IsFlying()
 local isGliding = C_PlayerInfo.GetGlidingInfo()
 local isFlyingTicker
 local lastLowHealthVis = LowHealthFrame:IsVisible()
 local lastInstanceCheck = 0
+local lastDelve = C_DelvesUI.HasActiveDelve()
 local INSTANCE_THROTTLE = 1
 Main.runAfterCombat = {} -- {{fn, arg1, arg2, ...}, ...}
 Main.framesThatToggleVisibility = {} -- {frame = {threshold = 0.1, group = groupTable }, ...}
 Main.helperFrames = {} -- generic helper frames for mouseover
+Main.refreshFramesOnSpecChange = false
 
 local DRUID_FORMS= {
     {
@@ -86,29 +116,43 @@ local DRUID_FORMS= {
 
 local GetTime, pairs, ipairs, C_Timer
     = GetTime, pairs, ipairs, C_Timer
-local IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle, HasOverrideActionBar
-    = IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle, C_ActionBar.HasOverrideActionBar
-local UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
-    = UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack
+local IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle,             HasOverrideActionBar, CanExitVehicle, UnitInVehicleControlSeat, UnitHasVehicleUI
+    = IsInInstance, IsMounted, GetShapeshiftFormID, UnitInVehicle, C_ActionBar.HasOverrideActionBar, CanExitVehicle, UnitInVehicleControlSeat, UnitHasVehicleUI
+local UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack,            HasActiveDelve
+    = UnitCastingInfo, UnitChannelInfo, IsResting, IsFlying, UnitExists, UnitCanAttack, C_DelvesUI.HasActiveDelve
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Setup
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
+
+function Main.frame:SetProfile(newProfile)
+    Config.SetProfile(newProfile)
+end
 
 function Private:OnProfileChanged()
     Config.SetSelectedGroup(true)
+    Config.RebuildUI()
+end
+
+function Private:OnNewProfile(_, AceTable)
+    -- defaultGroup is not part of defaultProfile anymore.
+    -- adding defaultGroup to profile after profile creation.
+    local profileName = AceTable:GetCurrentProfile()
+    local profile = AceTable.profiles[profileName]
+    local defaultGroup = Config.GetDefaultGroup(L["name_defaultGroup"])
+    tinsert(profile.groups, defaultGroup)
+    Config.SetSelectedGroup(true)
+    Config.RebuildUI()
 end
 
 local function InitDB()
-    local defaultGroup = Config.GetDefaultGroup(L["name_defaultGroup"])
-    local defaultProfile = { profile = {defaultGroup} }
-
+    local defaultProfile = Config.GetDefaultProfile()
     Private.db = LibStub("AceDB-3.0"):New("AutoHideUIDB", defaultProfile, true)
-    Config.CheckGroupsForMissingEntries(defaultGroup)
 
+    Private.db.RegisterCallback(Private, "OnNewProfile", "OnNewProfile")
+    Private.db.RegisterCallback(Private, "OnProfileReset", "OnNewProfile")
     Private.db.RegisterCallback(Private, "OnProfileChanged", "OnProfileChanged")
     Private.db.RegisterCallback(Private, "OnProfileCopied", "OnProfileChanged")
-    Private.db.RegisterCallback(Private, "OnProfileReset", "OnProfileChanged")
 
     Config.RegisterOptions()
 end
@@ -118,13 +162,28 @@ local function InitOptions()
     Config.CreateOptionsMenu()
 end
 
+local function UpdateVersion()
+    Private.db.global.version_last = Private.db.global.version or "1.0.0"
+    Private.db.global.version = C_AddOns.GetAddOnMetadata("AutoHideUI", "version")
+end
+
 local function RegisterEventsInCondition(condition)
-    for _, info in pairs(Config.CONDITION_DEFINITIONS) do
-        if info.name == condition then
-            for _, event in pairs(info.events) do
-                Main.frame:RegisterEvent(event)
-            end
+    local events
+    local parents = {}
+
+    for _, info in ipairs(ConditionsTab.CONDITION_DEFINITIONS) do
+        if info.name == condition and info.events then
+            events = info.events
+            break
+        elseif info.type == "parent" then
+            parents[info.name] = info
+        elseif info.name == condition and info.type == "child" then
+            events = parents[info.parent].events
         end
+    end
+
+    for _, event in pairs(events) do
+        Main.frame:RegisterEvent(event)
     end
 end
 
@@ -150,9 +209,9 @@ end
 local function ResetGroupStates(states)
     for k, v in pairs(states) do
         if type(v) == "table" then
-            states[k] = CopyTable(Config.DEFAULT_STATES[k])
+            states[k] = CopyTable(Main.DEFAULT_STATES[k])
         else
-            states[k] = Config.DEFAULT_STATES[k]
+            states[k] = Main.DEFAULT_STATES[k]
         end
     end
 end
@@ -245,36 +304,40 @@ end
 
 local function InitAddon()
     Frames.InitFrames()
+    Fading.SaveOriginalAlphas()
     Fading.ResetPendingFades()
     RegisterAllEvents()
     MouseoverAreas.CreateAreas()
     Main.CreateMouseoverLists()
-    internal.CreateMouseoverTicker()
-    internal.UpdateAllConditions()
+    Main.CreateMouseoverTicker()
+    Main.UpdateAllConditions()
     Fading.SetAllAlpha()
     Frames.ToggleHelperFrames()
+    ManualControl.StartListening()
 end
 
 function Main.SuspendAddon()
     UnregisterAllEvents()
     CancelTickers()
     ClearQueues()
+    ManualControl.StopListening()
+    ManualControl.DisableAllOverrides()
     Fading.SetAllAlpha(1)
 end
 
-function Main.ResumeAddon()
+function Main.ReInitAddon()
     ResetAddon()
     InitAddon()
 end
 
 function Main.GetErrorTitleString()
-    return "|cff80ffffAuto Hide UI: |r"
+    return "|cff80ffffAutoHideUI: |r"
 end
 
 function Main.ColorString(string, clr)
     local clrTable = {
-        red = "|cffff3b3b",
-        green = "|cff3bff3b",
+        red = "|cffff5959",
+        green = "|cff59ff59",
         blue = "|cff80ffff",
         gold = "|cFFFFD100",
     }
@@ -297,27 +360,271 @@ local function RunAfterCombatQueue()
     wipe(Main.runAfterCombat)
 end
 
-local function UpdateTargetStatesForUnitToken(unitToken, valHostile, valFriendly)
-    if unitToken == "target" then
-        hasHostileTarget = valHostile
-        hasFriendlyTarget = valFriendly
-    elseif unitToken == "focus" then
-        hasHostileFocus = valHostile
-        hasFriendlyFocus = valFriendly
+local function GetConditionRelationships(conditionName)
+    for _, conditionInfo in ipairs(ConditionsTab.CONDITION_DEFINITIONS) do
+        if conditionInfo.name == conditionName then
+            return conditionInfo.type, conditionInfo.parent
+        end
     end
 end
 
-local function GetOtherTargetStates(unitToken)
-    if unitToken == "target" then
-        return hasHostileFocus, hasFriendlyFocus
-    elseif unitToken == "focus" then
-        return hasHostileTarget, hasFriendlyTarget
+function Main.GetConditionsSettings(conditionsDB)
+    -- some conditions may inherit their settings from their parent-condition.
+    -- or they may use their own override settings.
+    -- so we can't use the db directly and instead need to determine the actual values first.
+    local conditions = {}
+
+    for conditionName, conditionInfo in pairs(conditionsDB) do
+        local conditionType, parentName = GetConditionRelationships(conditionName)
+
+        if conditionType == "default" then
+            conditions[conditionName] = CopyTable(conditionInfo)
+        elseif conditionType == "child" then
+            local childInfo
+            local parentInfo = conditionsDB[parentName]
+            local isChildEnabled = conditionInfo.enabled and parentInfo.enabled
+            local useOverride = conditionInfo.customize
+
+            if isChildEnabled and not useOverride then
+                -- inheriting parent settings
+                childInfo = CopyTable(parentInfo)
+            elseif isChildEnabled and useOverride then
+                -- using child's override settings
+                childInfo = CopyTable(conditionInfo)
+            else
+                -- child is not enabled
+                childInfo = CopyTable(conditionInfo)
+                childInfo.enabled = false
+            end
+
+            conditions[conditionName] = childInfo
+        end
     end
+
+    return conditions
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Repairing DB
+-- ─────────────────────────────────────────────────────────────────────────────
+
+local MigrateDB = {
+    -- when parent/child conditions were introduced
+    [1] = function(profile)
+        local OLD_CONDITION_DEFAULTS = {
+            housing        = { enabled = false, alpha = 0, priority = true },
+            instance       = { enabled = true,  alpha = 1, priority = false },
+            targetFriendly = { enabled = true,  alpha = 1, priority = false, softTarget = false },
+            targetHostile  = { enabled = true,  alpha = 1, priority = false, softTarget = false },
+        }
+
+        local DEFAULT_GROUP = Config.GetDefaultGroup(L["name_defaultGroup"])
+
+        local function ResolveOldCondition(c, name)
+            local result = CopyTable(OLD_CONDITION_DEFAULTS[name])
+            if c[name] then
+                for k, v in pairs(c[name]) do
+                    result[k] = v
+                end
+            end
+            return result
+        end
+
+        function MergeGroups(defaultGroup, userGroup)
+            local result = CopyTable(defaultGroup)
+
+            for key, value in pairs(userGroup) do
+                if type(value) == "table" and type(result[key]) == "table" then
+                    result[key] = MergeGroups(result[key], value)
+                else
+                    result[key] = value
+                end
+            end
+
+            return result
+        end
+
+        local function MigrateGroup(group)
+            local c = group.conditions
+            if not c then
+                -- is using defaults
+                return
+            end
+
+            local housing  = ResolveOldCondition(c, "housing")
+            local instance = ResolveOldCondition(c, "instance")
+            local tFriendly = ResolveOldCondition(c, "targetFriendly")
+            local tHostile  = ResolveOldCondition(c, "targetHostile")
+
+            -- instance and housing
+            c.instanceNeighborhood = CopyTable(housing)
+            c.instanceHousing      = CopyTable(housing)
+
+            if housing.alpha ~= instance.alpha or housing.priority ~= instance.priority then
+                c.instanceNeighborhood.customize = true
+                c.instanceHousing.customize      = true
+            else
+                c.instanceNeighborhood.customize = false
+                c.instanceHousing.customize      = false
+            end
+
+            if housing.enabled and not instance.enabled then
+                c.instance = c.instance or {}
+                c.instance.enabled = true
+                for _, name in ipairs({ "instanceDungeon", "instanceRaid", "instanceBattleground", "instanceArena", "instanceScenario" }) do
+                    c[name] = c[name] or {}
+                    c[name].enabled = false
+                end
+            end
+
+            c.housing = nil
+
+            -- target and focus
+            local targetEnabled = tFriendly.enabled or tHostile.enabled
+
+            local targetSettingsMatch = tFriendly.alpha == tHostile.alpha
+                            and tFriendly.priority  == tHostile.priority
+                            and tFriendly.softTarget == tHostile.softTarget
+
+            if targetSettingsMatch then
+                c.target = CopyTable(tFriendly)
+                c.focus  = CopyTable(tFriendly)
+                c.targetFriendly = c.targetFriendly or {}
+                c.targetHostile  = c.targetHostile  or {}
+                c.targetFriendly.customize = false
+                c.targetHostile.customize  = false
+                c.focusFriendly = CopyTable(tFriendly)
+                c.focusHostile  = CopyTable(tHostile)
+                c.focusFriendly.customize = false
+                c.focusHostile.customize  = false
+            else
+                c.target = CopyTable(Config.GetDefaultConditionByName("target").db)
+                c.focus  = CopyTable(Config.GetDefaultConditionByName("focus").db)
+                c.targetFriendly = c.targetFriendly or {}
+                c.targetHostile  = c.targetHostile  or {}
+                c.targetFriendly.customize = true
+                c.targetHostile.customize  = true
+                c.focusFriendly = CopyTable(tFriendly)
+                c.focusHostile  = CopyTable(tHostile)
+                c.focusFriendly.customize = true
+                c.focusHostile.customize  = true
+            end
+
+            c.target.enabled = targetEnabled
+            c.focus.enabled  = targetEnabled
+            c.focusFriendly.softTarget = nil
+            c.focusHostile.softTarget  = nil
+        end
+
+        local function CheckGroupForMissingEntries(group)
+            -- AceDB would not keep user's groups up to date with updates to conditions.
+            -- doing a one-time check here to update everything and use migration feature in the future.
+
+            -- looking for missing settings
+            for k,v in pairs(DEFAULT_GROUP) do
+                if not group[k] then
+                    if type(v) == "table" then
+                        group[k] = CopyTable(v)
+                    else
+                        group[k] = v
+                    end
+                end
+            end
+
+            -- looking for missing conditions
+            for conditionName, conditionInfo in pairs(DEFAULT_GROUP.conditions) do
+                if not group.conditions[conditionName] then
+                    group.conditions[conditionName] = CopyTable(conditionInfo)
+                else
+                    for setting, value in pairs(conditionInfo) do
+                        if group.conditions[conditionName][setting] == nil then
+                            group.conditions[conditionName][setting] = value
+                        end
+                    end
+                end
+            end
+
+            -- checking for settings that are no longer in use
+            for k,v in pairs(group) do
+                if DEFAULT_GROUP[k] == nil then
+                    group[k] = nil
+                end
+            end
+        end
+
+        local newProfile = {
+            groups= {},
+            manualControl = {}
+        }
+
+        -- not doing ipairs because first entry will be nil if it's a default group, stoppig the loop
+        for i, group in pairs(profile) do
+            MigrateGroup(group)
+            CheckGroupForMissingEntries(group)
+        end
+
+        -- going forward, defaultGroup is not included in defaultProfile anymore.
+        -- therefore we need to hard assign it's values here. 
+        if profile[1] == nil then
+            profile[1] = CopyTable(DEFAULT_GROUP)
+        else
+            local mergedTable = MergeGroups(DEFAULT_GROUP, profile[1])
+            profile[1] = mergedTable
+        end
+
+
+        newProfile.groups = profile
+
+        return newProfile
+    end,
+
+    -- handling override hotkeys differently. middle mouse button is no longer supported.
+    [2] = function(profile, profileName)
+        if not profile.manualControl then
+            return profile
+        end
+
+        local printMessage = false
+        for _, info in ipairs(profile.manualControl) do
+            if string.match(info.keybind, "MiddleButton") then
+                info.keybind = ""
+                info.keybindDisplay = ""
+                printMessage = true
+            end
+        end
+
+        if printMessage then
+            local title = Main.GetErrorTitleString()
+            local message = L["warning_schema2"]
+            print(title..message..Main.ColorString(profileName, "red"))
+        end
+
+        return profile
+    end
+}
+
+local function UpdateDB()
+    local lastSchemaVersion = Private.db.global.db_schema or 0
+
+    for i = lastSchemaVersion + 1, DB_SCHEMA_VERSION do
+        local migration = MigrateDB[i]
+        if migration then
+            -- migrating every profile
+            for profileName, profileData in pairs(Private.db.profiles) do
+                local newProfile = migration(profileData, profileName)
+                if newProfile then
+                    Private.db.profiles[profileName] = newProfile
+                end
+            end
+        end
+    end
+
+    Private.db.global.db_schema = DB_SCHEMA_VERSION
+end
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Conditions
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local function UpdateActiveConditions(group, condition, value)
     if not group.conditions[condition].enabled then
@@ -353,31 +660,26 @@ local function ConditionCombat()
 end
 
 local function ConditionTarget(unitToken)
-    local otherHostileTarget, otherFriendlyTarget = GetOtherTargetStates(unitToken)
-    local thisHostileTarget, thisFriendlyTarget
+    local isFriendly, isHostile = false, false
 
     if UnitExists(unitToken) then
-        if not otherHostileTarget and UnitCanAttack("player", unitToken) then
-            thisHostileTarget = true
+        if UnitCanAttack("player", unitToken) then
+            isHostile = true
         else
-            thisFriendlyTarget = true
+            isFriendly = true
         end
     end
-    
-    UpdateTargetStatesForUnitToken(unitToken, thisHostileTarget, thisFriendlyTarget)
 
-    UpdateConditionForAllGroups("targetHostile", thisHostileTarget or otherHostileTarget)
-    UpdateConditionForAllGroups("targetFriendly", thisFriendlyTarget or otherFriendlyTarget)
+    UpdateConditionForAllGroups(unitToken .. "Hostile", isHostile)
+    UpdateConditionForAllGroups(unitToken .. "Friendly", isFriendly)
 end
 
 local function ConditionSoftTarget()
-    local anyTarget = hasHostileTarget or hasHostileFocus or hasFriendlyTarget or hasFriendlyFocus
-
-    if anyTarget then
+    if UnitExists("target") then
         return
     end
 
-    local hasHostileSoftTarget, hasFriendlySoftTarget
+    local hasHostileSoftTarget, hasFriendlySoftTarget = false, false
 
     for _, group in pairs(Main.activeGroups) do
         if group.conditions.targetHostile.softTarget and UnitExists("softenemy") then
@@ -406,11 +708,23 @@ local function ConditionInteractable(canInteract)
 end
 
 local function ConditionInstance()
-    local isInInstance, instanceType = IsInInstance()
-    isInInstance = isInInstance or instanceType == "scenario"
-    local isHousing = instanceType == "neighborhood" or instanceType == "interior"
-    UpdateConditionForAllGroups("instance", isInInstance and not isHousing)
-    UpdateConditionForAllGroups("housing", isHousing)
+    local isInInstance, currentInstanceType = IsInInstance()
+    lastDelve = HasActiveDelve()
+
+    if not isInInstance and currentInstanceType ~= "scenario" then
+        for _, instanceCondition in pairs(INSTANCE_TYPE_MAPPING) do
+            UpdateConditionForAllGroups(instanceCondition, false)
+        end
+    else
+        for instanceType, instanceCondition in pairs(INSTANCE_TYPE_MAPPING) do
+            if instanceType == currentInstanceType then
+                UpdateConditionForAllGroups(instanceCondition, true)
+            else
+                UpdateConditionForAllGroups(instanceCondition, false)
+            end
+        end
+    end
+
 end
 
 local function ConditionMouseover()
@@ -473,11 +787,16 @@ local function StartIsFlyingTicker()
 end
 
 local function HandleIsFlyingTicker()
-    if not isMounted then
+    if not isMounted and not isFlightShape then
         if isFlyingTicker then
             isFlyingTicker:Cancel()
             isFlyingTicker = nil
         end
+
+        isFlying = false
+        ConditionFlying()
+        Fading.FadeAllGroups()
+
         return
     end
 
@@ -492,20 +811,22 @@ end
 
 local function ConditionMounted()
     isMounted = IsMounted()
+
     UpdateConditionForAllGroups("mounted", isMounted)
     RunNextFrame(HandleIsFlyingTicker)
 end
 
 local function ConditionShapeshift()
-    local shapeId = GetShapeshiftFormID()
+    local shapeID = GetShapeshiftFormID()
 
     for _, group in ipairs(Main.activeGroups) do
         local formsKey = group.conditions.mounted.druidForms
         local validShapes = DRUID_FORMS[formsKey]
-        local isMountShape = validShapes[shapeId]
+        local isMountShape = validShapes[shapeID]
         UpdateActiveConditions(group, "mounted", isMounted or isMountShape)
     end
 
+    isFlightShape = shapeID == 27 or shapeID == 29
     RunNextFrame(HandleIsFlyingTicker)
 end
 
@@ -561,7 +882,14 @@ local function CheckMissingHealthChange(key)
 end
 
 local function ConditionVehicle()
-    UpdateConditionForAllGroups("inVehicle", UnitInVehicle("player") or HasOverrideActionBar())
+    -- print( "inVehicle:", UnitInVehicle("player"), "canExit:", CanExitVehicle(), "inControl:", UnitInVehicleControlSeat("player"), "vehicleUI:", UnitHasVehicleUI("player"), "vehiclePlayerUI:", UnitHasVehiclePlayerFrameUI("player"), "isOverride:", HasOverrideActionBar())
+    -- print("  isActive:", ( UnitInVehicle("player") and ( CanExitVehicle() or UnitInVehicleControlSeat("player") or UnitHasVehiclePlayerFrameUI("player") )) -- player controls a vehicle
+    --     or HasOverrideActionBar())
+    UpdateConditionForAllGroups(
+        "inVehicle",
+        ( UnitInVehicle("player") and ( CanExitVehicle() or UnitInVehicleControlSeat("player") or UnitHasVehicleUI("player") )) -- player controls a vehicle
+        or HasOverrideActionBar() -- player is unable to use their spells. playing a puzzle game or controlled in some way
+    )
 end
 
 local function ConditionCasting(castState)
@@ -580,7 +908,7 @@ local function ConditionResting()
     UpdateConditionForAllGroups("resting", IsResting())
 end
 
-function internal.UpdateAllConditions()
+function Main.UpdateAllConditions()
     ConditionCombat()
     ConditionTarget("target")
     ConditionTarget("focus")
@@ -597,20 +925,24 @@ function internal.UpdateAllConditions()
     ConditionFlying()
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Events
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local function OnLogin()
-    -- deferred to ensure all AddOn frames have been created.
-    C_Timer.After(3, function()
-        InitDB()
-        InitOptions()
-        InitAddon()
-    end)
+    InitDB()
+    UpdateVersion()
+    UpdateDB()
+    InitOptions()
+    ManualControl.StartListening()
+end
 
-    -- on very slow logins minimap pins don't remain hidden.
-    C_Timer.After(10, function()
+local function OnFirstFrame()
+    C_Timer.After(1, function()
+        if Config.isOptionsOpen then
+            return
+        end
+        InitAddon()
         Fading.UpdateAllFrameVisibility()
     end)
 end
@@ -670,7 +1002,7 @@ local function OnMouseover()
     end
 end
 
-function internal.CreateMouseoverTicker()
+function Main.CreateMouseoverTicker()
     if (not mouseoverTicker) and next(mouseoverFrames) then
         mouseoverTicker = C_Timer.NewTicker(MOUSE_TICKER_INTERVAL, OnMouseover)
         return
@@ -682,10 +1014,17 @@ local function OnInstanceChange()
     if currentTime - lastInstanceCheck < INSTANCE_THROTTLE then
         return
     end
-    ResetStates()
-    internal.UpdateAllConditions()
-    Fading.SetAllAlpha()
+
+    Main.ReInitAddon()
     lastInstanceCheck = currentTime
+end
+
+local function OnZoneChange()
+    local currentDelve = HasActiveDelve()
+    if currentDelve ~= lastDelve then
+        lastDelve = currentDelve
+        Main.ReInitAddon()
+    end
 end
 
 local function OnMountChange()
@@ -771,9 +1110,15 @@ local function OnRestingChange()
     Fading.FadeAllGroups()
 end
 
-------------------
+local function OnSpecChange()
+    if Main.refreshFramesOnSpecChange then
+        Main.ReInitAddon()
+    end
+end
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Event Handler
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local EVENT_HANDLER = {
     PLAYER_TARGET_CHANGED = function() OnTargetChange("target") end,
@@ -785,7 +1130,7 @@ local EVENT_HANDLER = {
     PLAYER_REGEN_ENABLED = function() OnCombatChange(false) end,
     PLAYER_ENTERING_WORLD = OnInstanceChange,
     LOADING_SCREEN_DISABLED = OnInstanceChange,
-    ZONE_CHANGED_NEW_AREA = OnInstanceChange,
+    ZONE_CHANGED_NEW_AREA = OnZoneChange,
     WORLD_CURSOR_TOOLTIP_UPDATE = OnMouseover,
     UPDATE_MOUSEOVER_UNIT = OnMouseover,
     PLAYER_MOUNT_DISPLAY_CHANGED = OnMountChange,
@@ -808,6 +1153,8 @@ local SYSTEM_EVENT_HANDLER = {
     PLAYER_LOGIN = OnLogin,
     PLAYER_REGEN_ENABLED = OnCombatEnd,
     PLAYER_REGEN_DISABLED = OnCombatStart,
+    FIRST_FRAME_RENDERED = OnFirstFrame,
+    ACTIVE_PLAYER_SPECIALIZATION_CHANGED = function() RunNextFrame(OnSpecChange) end
 }
 
 function systemFrame:OnEvent(event, ...)

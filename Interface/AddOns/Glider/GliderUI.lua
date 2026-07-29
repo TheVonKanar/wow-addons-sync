@@ -1,7 +1,7 @@
-local addonName = ... ---@type string "Glider"
-local ns = select(2,...) ---@class (partial) ns
+local addonName = ... ---@type string
+local ns = select(2,...) ---@type addonNamespace
 local API = ns.API
----@class (partial) Glider : Frame
+---@class Glider : Frame
 local Glider = CreateFrame("Frame", "GliderAddOn", UIParent)
 ns.GliderUI = Glider
 
@@ -13,7 +13,7 @@ Glider:Hide()
 local pulseTexture = Glider:CreateTexture(nil, "BACKGROUND", nil, 1)
 pulseTexture:SetAlpha(0)
 pulseTexture:SetTexture("Interface/AddOns/Glider/Media/Atlas")
-pulseTexture:SetTexelSnappingBias(0) ---@diagnostic disable-line
+pulseTexture:SetTexelSnappingBias(0)
 pulseTexture:SetSnapToPixelGrid(false)
 pulseTexture:SetAllPoints()
 pulseTexture:SetVertexColor(1, 0.85, 0, 0)
@@ -27,7 +27,7 @@ Glider.Background = backgroundTexture
 local flashTexture = Glider:CreateTexture(nil, "OVERLAY")
 flashTexture:SetAlpha(0)
 flashTexture:SetTexture("Interface/AddOns/Glider/Media/Atlas")
-flashTexture:SetTexelSnappingBias(0) ---@diagnostic disable-line
+flashTexture:SetTexelSnappingBias(0)
 flashTexture:SetSnapToPixelGrid(false)
 flashTexture:SetAllPoints()
 Glider.Flash = flashTexture
@@ -83,7 +83,7 @@ Glider.TextDisplay = textDisplay
 local textBackground = textDisplay:CreateTexture(nil, "BACKGROUND")
 textBackground:SetAllPoints()
 textBackground:SetTexture("Interface/AddOns/Glider/Media/Atlas")
-textBackground:SetTexelSnappingBias(0) ---@diagnostic disable-line
+textBackground:SetTexelSnappingBias(0)
 textBackground:SetSnapToPixelGrid(false)
 Glider.TextDisplay.TextBackground = textBackground
 
@@ -100,7 +100,7 @@ local surgeArc = Glider:CreateTexture(nil, "OVERLAY", nil, 1)
 surgeArc:SetSize(36, 12)
 surgeArc:SetPoint("CENTER", Glider, "CENTER", 0, -22)
 surgeArc:SetTexture("Interface/AddOns/Glider/Media/Atlas")
-surgeArc:SetTexelSnappingBias(0) ---@diagnostic disable-line
+surgeArc:SetTexelSnappingBias(0)
 surgeArc:SetSnapToPixelGrid(false)
 surgeArc:Hide()
 Glider.SurgeArc = surgeArc
@@ -109,7 +109,7 @@ local surgePill = Glider:CreateTexture(nil, "OVERLAY", nil, 1)
 surgePill:SetSize(20, 5)
 surgePill:SetPoint("CENTER", Glider, "CENTER", -0.5, -27)
 surgePill:SetTexture("Interface/AddOns/Glider/Media/Atlas")
-surgePill:SetTexelSnappingBias(0) ---@diagnostic disable-line
+surgePill:SetTexelSnappingBias(0)
 surgePill:SetSnapToPixelGrid(false)
 surgePill:Hide()
 Glider.SurgePill = surgePill

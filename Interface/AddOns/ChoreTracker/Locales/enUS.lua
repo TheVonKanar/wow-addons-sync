@@ -87,6 +87,8 @@ L['category:patch_11_1_5'] = 'Patch 11.1.5'
 L['category:patch_11_2_0'] = 'Patch 11.2.0'
 L['category:patch_12_0_0'] = 'Patch 12.0.0'
 L['category:patch_12_0_5'] = 'Patch 12.0.5'
+L['category:patch_12_0_7'] = 'Patch 12.0.7'
+L['category:patch_12_1_0'] = 'Patch 12.1.0'
 L['category:timewalking'] = 'Timewalking'
 L['category:weekly'] = 'Weekly'
 L['category:worldBosses'] = 'World Bosses'
@@ -105,6 +107,14 @@ L['chore:prey:midnightPrey:drops:normal'] = 'Normal'
 L['chore:prey:midnightPrey:drops:hard'] = 'Hard'
 L['chore:prey:midnightPrey:drops:nightmare'] = 'Nightmare'
 L['chore:prey:midnightPrey:quests:nightmarishTask'] = 'A Nightmarish Task'
+
+L['chore:midnight:patch_12_0_7:quests:showdownLevel'] = 'Showdown [80+]'
+L['chore:midnight:patch_12_0_7:quests:showdownNormal'] = 'Showdown [N]'
+L['chore:midnight:patch_12_0_7:quests:showdownHeroic'] = 'Showdown [H]'
+L['chore:midnight:patch_12_0_7:quests:dangerousNormal'] = 'Dangerous [N]'
+L['chore:midnight:patch_12_0_7:quests:dangerousHeroic'] = 'Dangerous [H]'
+L['chore:midnight:patch_12_0_7:quests:disruptionNormal'] = 'Disruption [N]'
+L['chore:midnight:patch_12_0_7:quests:disruptionHeroic'] = 'Disruption [H]'
 
 L['chore:midnight:patch_12_0_5:quests:voidAssaults'] = 'Void Assault'
 
@@ -306,7 +316,7 @@ L['chore:pvp:brawls:quests:warsongScramble'] = 'Warsong Scramble'
 
 L['chore:pvp:weekly:quests:arenaSkirmishes'] = 'Arena Skirmishes'
 L['chore:pvp:weekly:quests:battlegrounds'] = 'Battlegrounds'
-L['chore:pvp:weekly:quests:preserving'] = 'Preserving'
+L['chore:pvp:weekly:quests:preserving'] = 'Enshrouded'
 L['chore:pvp:weekly:quests:sparks'] = 'Sparks of War'
 
 L['timer:beledarsShadow'] = "Beledar's Shadow"

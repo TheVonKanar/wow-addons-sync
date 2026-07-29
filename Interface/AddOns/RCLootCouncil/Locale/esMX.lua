@@ -299,6 +299,8 @@ L["No items to award later registered"] = "No se registran objetos para otorgar 
 L["No recipients available"] = "No hay destinatarios disponibles"
 L["No session running"] = "No hay sesión en ejecución"
 L["No winners registered"] = "No hay ganadores registrados"
+--[[Translation missing --]]
+L["non_tradeable_reason_bonus_roll"] = "Bonus Roll"
 L["non_tradeable_reason_nil"] = "Desconocido"
 L["non_tradeable_reason_not_tradeable"] = "No intercambiable"
 L["non_tradeable_reason_rejected_trade"] = "Quería conservar el objeto"
@@ -387,6 +389,10 @@ L["opt_profileSharing_import_desc"] = "Importar un nuevo perfil de RCLootCouncil
 L["opt_profileSharing_profileExistsWarning"] = "Ya existe un perfil llamado \"%s\", ¿desea sobrescribirlo?"
 L["opt_rejectTrade_Desc"] = "Marque para permitir que los candidatos elijan si quieren \"dar\" el objeto al consejo o no. Si no está marcado, todos los artículos de BP intercambiables se agregan automáticamente."
 L["opt_rejectTrade_Name"] = "Permitir mantener"
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Desc"] = "Check to save all bonus rolls from candidates to the Loot History."
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 L["opt_savePersonalLoot_desc"] = "Si está deshabilitado, el botín personal no se agregará al historial."
 L["opt_savePersonalLoot_name"] = "Registrar botín personal"
 L["opt_sharingProfile_success"] = "Perfil importado con éxito: \"%s\""

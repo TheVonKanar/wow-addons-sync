@@ -1,6 +1,6 @@
 
 PorterDB = {
-["lastSeenVersion"] = "1.1.5",
+["lastSeenVersion"] = "1.1.7",
 ["position"] = {
 ["y"] = 196.9996795654297,
 ["x"] = 37.00020599365234,
@@ -9,39 +9,6 @@ PorterDB = {
 ["useGlobalProfile"] = {
 ["Kvotheen-Hyjal"] = false,
 ["Quiproquo-Uldaman"] = false,
-},
-["minimap"] = {
-["hide"] = true,
-},
-["globalProfile"] = {
-["showCosmeticHearthstones"] = false,
-["hideBankItems"] = false,
-["hideAfterPort"] = true,
-["defaultView"] = "category",
-["viewMode"] = "category",
-["categoryVisibility"] = {
-["House"] = true,
-["Raids"] = true,
-["Hearthstones"] = true,
-["Class & Racial"] = true,
-["Delves"] = true,
-["Toys"] = true,
-["Items"] = true,
-["Dungeons"] = true,
-},
-["currentSeason"] = "midnight",
-["zoneOrder"] = "recent",
-["hearthstoneMode"] = "Random",
-["announcePort"] = {
-["Housing"] = true,
-["Raids"] = true,
-["Dungeons"] = true,
-["Mage Portals"] = true,
-["Toys"] = true,
-["Class & Racials"] = true,
-["Items"] = true,
-["Hearthstones"] = true,
-},
 },
 ["profiles"] = {
 ["Kvotheen-Hyjal"] = {
@@ -53,16 +20,46 @@ PorterDB = {
 ["categoryVisibility"] = {
 ["Items"] = true,
 ["Raids"] = true,
+["Dungeons"] = true,
+["Class & Racial"] = true,
+["Delves"] = true,
+["House"] = true,
+["Toys"] = true,
+["Hearthstones"] = true,
+},
+["currentSeason"] = "midnight",
+["announcePort"] = {
+["Housing"] = false,
+["Raids"] = false,
+["Hearthstones"] = false,
+["Items"] = false,
+["Toys"] = false,
+["Class & Racials"] = false,
+["Mage Portals"] = false,
+["Dungeons"] = false,
+},
+["viewMode"] = "category",
+["showCosmeticHearthstones"] = false,
+},
+["Quiproquo-Uldaman"] = {
+["zoneOrder"] = "recent",
+["hideBankItems"] = false,
+["hideAfterPort"] = true,
+["defaultView"] = "category",
+["hearthstoneMode"] = "Random",
+["categoryVisibility"] = {
+["House"] = true,
+["Raids"] = true,
 ["Hearthstones"] = true,
 ["Class & Racial"] = true,
 ["Delves"] = true,
 ["Toys"] = true,
-["House"] = true,
+["Items"] = true,
 ["Dungeons"] = true,
 },
 ["currentSeason"] = "midnight",
-["showCosmeticHearthstones"] = false,
 ["viewMode"] = "category",
+["showCosmeticHearthstones"] = false,
 ["announcePort"] = {
 ["Housing"] = true,
 ["Raids"] = true,
@@ -74,12 +71,13 @@ PorterDB = {
 ["Hearthstones"] = true,
 },
 },
-["Quiproquo-Uldaman"] = {
-["zoneOrder"] = "recent",
+},
+["globalProfile"] = {
+["showCosmeticHearthstones"] = false,
 ["hideBankItems"] = false,
 ["hideAfterPort"] = true,
 ["defaultView"] = "category",
-["hearthstoneMode"] = "Random",
+["viewMode"] = "category",
 ["categoryVisibility"] = {
 ["House"] = true,
 ["Raids"] = true,
@@ -101,8 +99,10 @@ PorterDB = {
 ["Mage Portals"] = true,
 ["Dungeons"] = true,
 },
-["showCosmeticHearthstones"] = false,
-["viewMode"] = "category",
+["hearthstoneMode"] = "Random",
+["zoneOrder"] = "recent",
 },
+["minimap"] = {
+["hide"] = true,
 },
 }

@@ -63,7 +63,8 @@ function BR.Profiles.OnProfileEvent()
 end
 
 ---Suppress refresh callbacks for the duration of fn(), then fire one refresh.
----Used to batch SetProfile + CopyProfile into a single refresh cycle.
+---Used to batch several profile mutations (e.g. SetProfile + import writes)
+---into a single refresh cycle.
 ---@param fn function
 function BR.Profiles.BatchOperation(fn)
     suppressRefresh = true
@@ -188,9 +189,39 @@ end
 -- REFRESH AFTER PROFILE CHANGE
 -- ============================================================================
 
+---Fill missing keys in `target` from code `source`, recursively. Skips `minimap`
+---(lives in AceDB global, not per-profile) and the `defaults` sub-table (served by
+---the metatable __index - only ensures the table exists). Used by the bootstrap on
+---login and on every profile switch/copy/reset.
+---@param source table code defaults (BR.defaults)
+---@param target table profile table to fill
+local function DeepCopyDefault(source, target)
+    for k, v in pairs(source) do
+        if k == "minimap" then -- luacheck: ignore 542
+            -- Skip: lives in AceDB global, not per-profile
+        elseif k == "defaults" then
+            -- Skip value copy (served by metatable __index), but ensure the table exists
+            if target[k] == nil then
+                target[k] = {}
+            end
+        elseif target[k] == nil then
+            if type(v) == "table" then
+                target[k] = {}
+                DeepCopyDefault(v, target[k])
+            else
+                target[k] = v
+            end
+        elseif type(v) == "table" and type(target[k]) == "table" then
+            -- Recursively fill in missing nested keys
+            DeepCopyDefault(v, target[k])
+        end
+    end
+end
+BR.Profiles.DeepCopyDefault = DeepCopyDefault
+
 ---Re-apply the defaults metatable on the active profile's defaults table
 function BR.Profiles.ReapplyDefaultsMetatable()
-    local codeDefaults = BR.Display and BR.Display.defaults
+    local codeDefaults = BR.defaults
     if not codeDefaults then
         return
     end
@@ -209,13 +240,26 @@ function BR.Profiles.RefreshAfterProfileChange()
     BR.Profiles.ReapplyDefaultsMetatable()
 
     -- Deep copy defaults into the new profile (materializes keys for pairs() iteration)
-    if BR.Display and BR.Display.DeepCopyDefault and BR.Display.defaults then
-        BR.Display.DeepCopyDefault(BR.Display.defaults, BR.profile)
+    if BR.defaults then
+        DeepCopyDefault(BR.defaults, BR.profile)
     end
 
     -- Rebuild custom buffs if present
     if BR.Display and BR.Display.BuildCustomBuffArray then
         BR.Display.BuildCustomBuffArray()
+    end
+
+    -- Rebuild loadout reminders if present
+    if BR.Display and BR.Display.BuildLoadoutRulesArray then
+        BR.Display.BuildLoadoutRulesArray()
+    end
+
+    -- The category-settings memo may still hold the PREVIOUS profile's values
+    -- (nothing has fired a refresh event yet); wipe it before SyncDirectionCache
+    -- reads grow directions through it, or the LayoutRefresh below would see a
+    -- spurious direction change and convert (corrupt) the new profile's positions.
+    if BR.Display and BR.Display.InvalidateCategorySettingsCache then
+        BR.Display.InvalidateCategorySettingsCache()
     end
 
     -- Sync direction cache before firing LayoutRefresh to prevent spurious position conversions

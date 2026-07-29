@@ -56,39 +56,8 @@ function addonTable.Display.Utilities.GetUnitDifficulty(unit)
 end
 
 do
-  local function IsInCombatWith(unit)
-    return UnitAffectingCombat(unit) and
-      (
-        UnitIsFriend("player", unit) and (UnitInParty(unit) == true or UnitInRaid(unit)== true ) or
-        UnitThreatSituation("player", unit) ~= nil or
-        UnitInParty(unit .. "target") == true or UnitInRaid(unit .. "target") == true
-      )
-  end
-
-  local watching = {}
-  C_Timer.NewTicker(0.08, function()
-    local units = GetKeysArray(watching)
-    for _, unit in ipairs(units) do
-      local newState = IsInCombatWith(unit)
-      if newState ~= watching[unit] then
-        watching[unit] = newState
-        addonTable.CallbackRegistry:TriggerEvent("CombatStatusChange", unit)
-      end
-    end
-  end)
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-  frame:SetScript("OnEvent", function(_, _, unit)
-    watching[unit] = nil
-  end)
-
   function addonTable.Display.Utilities.IsInCombatWith(unit)
-    if watching[unit] ~= nil then
-      return watching[unit]
-    else
-      watching[unit] = IsInCombatWith(unit)
-      return watching[unit]
-    end
+    return addonTable.Cache:Get(unit, "combat")
   end
 end
 
@@ -130,7 +99,7 @@ if addonTable.Constants.IsClassic then
     ["DEATHKNIGHT"] = {47528},
     ["WARRIOR"] = {6552},
     ["WARLOCK"] = {19647, 89766},
-    ["SHAMAN"] = {57994},
+    ["SHAMAN"] = {57994, --[[Earth Shock, ranks 10-1:]] 49231, 49230, 25454, 10414, 10413, 10412, 8046, 8045, 8044, 8042},
     ["ROGUE"] = {1766},
     ["PRIEST"] = {15487},
     ["PALADIN"] = {31935, 96231},
@@ -214,7 +183,7 @@ local sootheSpells = {
 
 local executeCurve
 if C_CurveUtil then
-  executeCurve = C_CurveUtil.CreateCurve()
+  executeCurve = C_CurveUtil.CreateColorCurve()
   executeCurve:SetType(Enum.LuaCurveType.Step)
 end
 
@@ -243,12 +212,6 @@ do
       end
     end
 
-    if executeCurve and currentExecute > 0 then
-      executeCurve:ClearPoints()
-      executeCurve:AddPoint(0, 1)
-      executeCurve:AddPoint(currentExecute, 0)
-    end
-
     isSootheAvailable = false
     for _, spellID in ipairs(sootheSpells) do
       if C_SpellBook.IsSpellKnown(spellID) then
@@ -263,8 +226,21 @@ function addonTable.Display.Utilities.GetInterruptSpells()
   return currentInterrupt
 end
 
-function addonTable.Display.Utilities.GetInterruptSpellPriority()
-  return currentInterrupt[1]
+if C_Spell.GetSpellCooldownDuration then
+  local duration
+  local lastDurationTime = 0
+  function addonTable.Display.Utilities.GetInterruptSpellPriority()
+    local interrupt = currentInterrupt[1]
+    if interrupt and lastDurationTime ~= GetTime() then
+      duration = C_Spell.GetSpellCooldownDuration(interrupt)
+      lastDurationTime = GetTime()
+    end
+    return interrupt, duration
+  end
+else
+  function addonTable.Display.Utilities.GetInterruptSpellPriority()
+    return currentInterrupt[1]
+  end
 end
 
 function addonTable.Display.Utilities.GetExecuteRange()
@@ -434,6 +410,7 @@ function addonTable.Display.Utilities.TintAutoColors(autoColors, mod)
         for class, c in pairs(RAID_CLASS_COLORS) do
           s.colors[class] = {r = mod.r * c.r, g = mod.g * c.g, b = mod.b * c.b, a = mod.a}
         end
+        s.colors.class = CopyTable(mod)
       end
     end
 
@@ -457,7 +434,14 @@ do
   local role = roleType.Damage
   local isTank = false
   local rangeLimit = 0
+  local lastSpecialization = 0
+  local harmChecker
   local _, playerClass = UnitClass("player")
+
+  local RangeCheck = LibStub("LibRangeCheck-3.0")
+  RangeCheck.RegisterCallback("Platynator", RangeCheck.CHECKERS_CHANGED, function() harmChecker = RangeCheck:GetHarmMaxChecker(addonTable.Display.Utilities.GetRangedLimit() or RangeCheck.MeleeRange) end)
+
+  local isDiscovery = C_Seasons and C_Seasons.GetActiveSeason() == Enum.SeasonID.SeasonOfDiscovery or false
 
   local function GetPlayerRole()
     if addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath then
@@ -465,7 +449,16 @@ do
       local form = GetShapeshiftForm()
       if (playerClass == "WARRIOR" and form == 2) or (playerClass == "DRUID" and form == 1) then
         return roleType.Tank
-      elseif playerClass == "PALADIN" and C_UnitAuras.GetUnitAuraBySpellID("player", 25780) ~= nil then
+      elseif playerClass == "PALADIN" and (
+        C_UnitAuras.GetUnitAuraBySpellID("player", 25780) ~= nil or
+        isDiscovery and C_UnitAuras.GetUnitAuraBySpellID("player", 407627)
+      ) then
+        return roleType.Tank
+      elseif isDiscovery and playerClass == "SHAMAN" and C_UnitAuras.GetUnitAuraBySpellID("player", 408680) then
+        return roleType.Tank
+      elseif isDiscovery and playerClass == "WARLOCK" and C_UnitAuras.GetUnitAuraBySpellID("player", 403789) then
+        return roleType.Tank
+      elseif isDiscovery and playerClass == "ROGUE" and C_UnitAuras.GetUnitAuraBySpellID("player", 400014) then
         return roleType.Tank
       end
     else
@@ -479,12 +472,20 @@ do
 
   local function AssignRange()
     if addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath then
-      rangeLimit = addonTable.Constants.DefaultRange[playerClass] - 3
+      rangeLimit = addonTable.Constants.DefaultRange[playerClass]
     else
-      local specIndex = C_SpecializationInfo.GetSpecialization()
+      local specIndex = C_SpecializationInfo.GetSpecialization() or lastSpecialization
+      lastSpecialization = specIndex
       local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
-      rangeLimit = addonTable.Constants.DefaultRange[specID] - 3
+      rangeLimit = addonTable.Constants.DefaultRange[specID]
+      for spellID, range in pairs(addonTable.Constants.RangeModifier) do
+        if C_SpellBook.IsSpellKnown(spellID) then
+          rangeLimit = range
+          break
+        end
+      end
     end
+    harmChecker = RangeCheck:GetHarmMaxChecker(addonTable.Display.Utilities.GetRangedLimit() or RangeCheck.MeleeRange)
   end
 
   do
@@ -493,22 +494,25 @@ do
     if addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath then
       if playerClass == "WARRIOR" or playerClass == "DRUID" then
         specializationMonitor:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-      elseif playerClass == "PALADIN" then
+      elseif playerClass == "PALADIN" or isDiscovery and (playerClass == "SHAMAN" or playerClass == "WARLOCK" or playerClass == "ROGUE") then
         specializationMonitor:RegisterUnitEvent("UNIT_AURA", "player")
       end
     elseif C_EventUtils.IsEventValid("PLAYER_SPECIALIZATION_CHANGED") then
       specializationMonitor:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     end
     specializationMonitor:RegisterEvent("PLAYER_ENTERING_WORLD")
+    specializationMonitor:RegisterEvent("SPELLS_CHANGED")
 
-    specializationMonitor:SetScript("OnEvent", function()
-      local newRole = GetPlayerRole()
-      if newRole ~= role then
-        role = newRole
-        isTank = role == roleType.Tank
-        addonTable.CallbackRegistry:TriggerEvent("RoleChange")
-      end
+    specializationMonitor:SetScript("OnEvent", function(_, e)
       AssignRange()
+      if e ~= "SPELLS_CHANGED" then
+        local newRole = GetPlayerRole()
+        if newRole ~= role then
+          role = newRole
+          isTank = role == roleType.Tank
+          addonTable.CallbackRegistry:TriggerEvent("RoleChange")
+        end
+      end
     end)
   end
 
@@ -518,6 +522,10 @@ do
 
   function addonTable.Display.Utilities.GetRangedLimit()
     return rangeLimit
+  end
+
+  function addonTable.Display.Utilities.GetRangeChecker()
+    return harmChecker
   end
 end
 
@@ -547,6 +555,17 @@ do
     end
   end)
 
+  local HasMana
+  if UnitHasPowerType then
+    HasMana = function(unit)
+      return UnitHasPowerType(unit, Enum.PowerType.Mana)
+    end
+  else
+    HasMana = function(unit)
+      return UnitPowerType(unit) == Enum.PowerType.Mana
+    end
+  end
+
   function addonTable.Display.Utilities.GetEliteType(unit, casterOverride)
     local classification = UnitClassification(unit)
     if classification == "elite" then
@@ -560,21 +579,10 @@ do
       elseif isRetail and (level == dungeonLevel + 2 or lieutentantLevel and level == lieutentantLevel + 1) or level == -1 then
         return "boss"
       else
-        local class = UnitClassBase(unit)
-        if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
-          return "caster"
-        else
-          return "melee"
-        end
+        return HasMana(unit) and "caster" or "melee"
       end
     elseif classification == "normal" or classification == "trivial" or classification == "minus" then
-      if casterOverride then
-        local class = UnitClassBase(unit)
-        if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
-          return "caster"
-        end
-      end
-      return "trivial"
+      return casterOverride and HasMana(unit) and "caster" or "trivial"
     end
   end
 
@@ -596,12 +604,7 @@ do
     elseif classification == "rareelite" then
       return "rare"
     elseif classification == "normal" then
-      local class = UnitClassBase(unit)
-      if class == "PALADIN" or class == "MAGE" or class == "PRIEST" then
-        return "caster"
-      else
-        return "melee"
-      end
+      return HasMana(unit) and "caster" or "melee"
     elseif classification == "trivial" or classification == "minus" then
       return "trivial"
     end
@@ -701,5 +704,38 @@ do
 
   function addonTable.Display.Utilities.ShouldShowEnergy()
     return showEnergy
+  end
+end
+
+do
+  local auraFormatter
+  if C_StringUtil and C_StringUtil.CreateNumericRuleFormatter then
+    auraFormatter = C_StringUtil.CreateNumericRuleFormatter()
+    auraFormatter:SetBreakpoints({
+      {
+        threshold = 0,
+        step = 0.1,
+        format = "%.1f",
+      },
+      {
+        threshold = 3,
+        step = 1,
+        format = "%d",
+      },
+      {
+        threshold = 60,
+        format = COOLDOWN_DURATION_MIN,
+        components = {
+          {
+            div = 60,
+            step = 1,
+          }
+        }
+      }
+    })
+  end
+
+  function addonTable.Display.Utilities.GetAuraNumericFormatter()
+    return auraFormatter
   end
 end

@@ -30,7 +30,7 @@ local function SetArgFromPickerFunction(owner)
         function (m)
             owner:SetArg(m.name)
         end)
-    LiteMountOptionsPanel_PopOver(LiteMountPicker, LiteMountRulesPanel)
+    LiteMountRulesPanel:PopOver(LiteMountPicker)
 end
 
 local function ArgsGenerate(dropdown, rootDescription, data)
@@ -158,7 +158,7 @@ end
 
 local conditionHelp = DISABLED_FONT_COLOR:WrapTextInColorCode(NONE:upper())
 
-function LiteMountRuleEditConditionMixin:Update()
+function LiteMountRuleEditConditionMixin:RefreshDisplay()
     local info = LM.Conditions:GetCondition(self.type)
 
     self.Negated:SetChecked(self.isNegated)
@@ -204,12 +204,12 @@ function LiteMountRuleEditConditionMixin:SetType(type)
         self.arg = nil
     end
     self.type = type
-    self:GetParent():Update()
+    self:GetParent():RefreshDisplay()
 end
 
 function LiteMountRuleEditConditionMixin:SetArg(arg)
     self.arg = arg
-    self:GetParent():Update()
+    self:GetParent():RefreshDisplay()
 end
 
 function LiteMountRuleEditConditionMixin:OnLoad()
@@ -283,7 +283,7 @@ end
 local function MountToInfo(m) return { val = m.spellID, text = m.name } end
 local function GroupToInfo(v) return { val = v, text = LM.UIFilter.GetGroupText(v) } end
 local function FlagToInfo(v) return { val = v, text = LM.UIFilter.GetFlagText(v) } end
-local function FamilyToInfo(v) return { val = "family:"..v, text = LM.UIFilter.GetFamilyText(v) } end
+local function ModelToInfo(v) return { val = "model:"..v, text = LM.UIFilter.GetModelText(v) } end
 local function ExpansionToInfo(v) return { val = "expansion:"..v, text = LM.UIFilter.GetExpansionText(v) } end
 local function PriorityToInfo(v) return { val = "prio:"..v, text = LM.UIFilter.GetPriorityText(v) } end
 local function TypeToInfo(v) return { val = "mt:"..v, text = LM.UIFilter.GetTypeText(v) } end
@@ -310,9 +310,9 @@ local function MountArgsMenu()
 --  typeMenuList.text = TYPE
 --  table.insert(menuList, typeMenuList)
 
---  local familyMenuList = LM.tMap(LM.UIFilter.GetFamilies(), FamilyToInfo)
---  familyMenuList.text = L.LM_FAMILY
---  table.insert(menuList, familyMenuList)
+--  local modelMenuList = LM.tMap(LM.UIFilter.GetModels(), ModelToInfo)
+--  modelMenuList.text = MODEL
+--  table.insert(menuList, modelMenuList)
 
     if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         local expansionMenuList = LM.tMap(LM.UIFilter.GetExpansions(), ExpansionToInfo)
@@ -338,7 +338,7 @@ end
 
 function LiteMountRuleEditActionMixin:SetArg(arg)
     self.arg = arg
-    self:GetParent():Update()
+    self:GetParent():RefreshDisplay()
 end
 
 function LiteMountRuleEditActionMixin:SetType(type)
@@ -346,12 +346,12 @@ function LiteMountRuleEditActionMixin:SetType(type)
         self.type = type
         self.arg = nil
     end
-    self:GetParent():Update()
+    self:GetParent():RefreshDisplay()
 end
 
 local actionHelp = DISABLED_FONT_COLOR:WrapTextInColorCode(LFGWIZARD_TITLE)
 
-function LiteMountRuleEditActionMixin:Update()
+function LiteMountRuleEditActionMixin:RefreshDisplay()
     if not self.type then
         self.TypeDropDown:SetText(actionHelp)
         self.ArgDropDown:Hide()
@@ -465,14 +465,6 @@ function LiteMountRuleEditMixin:Okay()
     self:Hide()
 end
 
-function LiteMountRuleEditMixin:OnLoad()
-    LiteMountOptionsPanel_AutoLocalize(self)
-    for i = 2, #self.Conditions do
-        self.Conditions[i]:SetPoint('TOPLEFT', self.Conditions[i-1], 'BOTTOMLEFT', 0, -4)
-        self.Conditions[i]:SetPoint('RIGHT', self.Conditions[i-1], 'RIGHT')
-    end
-end
-
 function LiteMountRuleEditMixin:SetCallback(callback, frame)
     self.callback = callback
     self.callbackFrame = frame
@@ -503,22 +495,28 @@ function LiteMountRuleEditMixin:SetRule(ruletext)
     self.Action.arg = rule.args[1]
 end
 
-function LiteMountRuleEditMixin:Update()
-    self.Action:Update()
-    LM.tMap(self.Conditions, function (f) f:Update() end)
+function LiteMountRuleEditMixin:RefreshDisplay()
+    self.Action:RefreshDisplay()
+    LM.tMap(self.Conditions, function (f) f:RefreshDisplay() end)
 
     if self:IsValidRule() then
         self.OkayButton:Enable()
     else
         self.OkayButton:Disable()
     end
+    LiteMountPopOverPanelMixin.RefreshDisplay(self)
 end
 
-function LiteMountRuleEditMixin:OnShow()
-    self:Update()
+function LiteMountRuleEditMixin:OnLoad()
+    for i = 2, #self.Conditions do
+        self.Conditions[i]:SetPoint('TOPLEFT', self.Conditions[i-1], 'BOTTOMLEFT', 0, -4)
+        self.Conditions[i]:SetPoint('RIGHT', self.Conditions[i-1], 'RIGHT')
+    end
+    LiteMountPopOverPanelMixin.OnLoad(self)
 end
 
 function LiteMountRuleEditMixin:OnHide()
     self.callback = nil
     self.callbackFrame = nil
+    LiteMountPopOverPanelMixin.OnHide(self)
 end

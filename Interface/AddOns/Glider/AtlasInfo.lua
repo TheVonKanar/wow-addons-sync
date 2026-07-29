@@ -1,4 +1,4 @@
-local ns = select(2,...) ---@class (partial) ns
+local ns = select(2,...) ---@type addonNamespace
 
 ns.AtlasInfo = {
   ["VigorCerise"] = {128, 128, 0.0078125, 0.1328125, 0.015625, 0.265625},

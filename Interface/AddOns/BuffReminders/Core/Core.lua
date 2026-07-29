@@ -10,7 +10,7 @@ local _, BR = ...
 -- TYPE DEFINITIONS
 -- ============================================================================
 
----@alias CategoryName "raid"|"presence"|"targeted"|"self"|"pet"|"consumable"|"custom"
+---@alias CategoryName "raid"|"presence"|"targeted"|"self"|"pet"|"consumable"|"utility"|"custom"|"loadout"
 
 ---@class CategoryPosition
 ---@field point string
@@ -73,6 +73,122 @@ BR.DEFAULT_BORDER_SIZE = 2
 BR.DEFAULT_ICON_ZOOM = 0 -- percentage; base crop (TEXCOORD_INSET) is always applied separately
 BR.OPTIONS_BASE_SCALE = 1.2
 
+-- Shared UI palette. Defined here (before Components/Options load) so every layer
+-- references the same tokens instead of copy-pasting raw literals. Callers that
+-- need a non-opaque variant index into [1..3] and pass their own alpha.
+-- Border: the cool-biased neutral hairline used for panel chrome, dialog
+-- separators, and widget borders. The slight blue tint over a flat grey reads as
+-- a chosen ground against the warm gold accent (see CreatePanel).
+-- Accent: the bright brand gold for active/hover/focus cues (active tabs, focused
+-- borders, scale steppers). AccentMuted: the softer gold for "on"/checked fills
+-- (checkmarks, linked toggles) that shouldn't shout as loud as the bright accent.
+-- NOTE: these are chrome tokens only - never point a value persisted into
+-- SavedVariables (e.g. glow color defaults) at them, or a palette tweak would
+-- silently rewrite users' saved data.
+BR.Colors = {
+    Border = { 0.27, 0.27, 0.32, 1 },
+    Accent = { 1, 0.82, 0, 1 },
+    AccentMuted = { 0.9, 0.75, 0.2, 1 },
+}
+
+-- ============================================================================
+-- SECRET-SAFE READS
+-- ============================================================================
+-- WoW tags combat data (auras, unit identity, stats) as "secret" values: a
+-- secret is truthy but throws on compare / arithmetic / ipairs / # / indexing a
+-- table with it. These read helpers use issecretvalue to turn "would throw" into
+-- "reads as nil / empty", so callers stay plain Lua instead of hand-rolling a
+-- pcall around every operation. Fail-closed by design: a secret reads as absent.
+-- Callers that must fail OPEN (e.g. GroupAuraUpdateMatters, which rescans when it
+-- can't prove a payload irrelevant) check issecretvalue explicitly instead.
+-- Defined here in Core so every layer shares one implementation. See
+-- docs/SecretValues.md.
+
+local issecretvalue = issecretvalue
+local EMPTY_LIST = {}
+
+---Return v when it is a plain (non-secret) value, else nil. Use before any
+---compare / arithmetic / table-index-by-key on combat data (aura fields, unit
+---identity returns like UnitIsUnit / UnitCreatureFamily, stat APIs, ...).
+---@param v any
+---@return any
+local function Plain(v)
+    if issecretvalue(v) then
+        return nil
+    end
+    return v
+end
+
+---Return a UNIT_AURA list field (addedAuras, removedAuraInstanceIDs, ...) as a
+---real iterable, or a shared empty list when the container itself is a secret
+---value - truthy, but ipairs/# would throw on it. Never mutate the result.
+---@param container any
+---@return table
+local function AuraList(container)
+    if container == nil or issecretvalue(container) then
+        return EMPTY_LIST
+    end
+    return container
+end
+
+---Read a field off an aura entry, returning nil if the entry OR the field is a
+---secret value (the two-level guard: the entry can be secret, or the entry can
+---be a plain table holding a secret field).
+---@param aura any
+---@param key string
+---@return any
+local function AuraField(aura, key)
+    if aura == nil or issecretvalue(aura) then
+        return nil
+    end
+    return Plain(aura[key])
+end
+
+-- Aura ENUMERATION APIs (GetAuraDataByIndex / GetAuraDataByAuraInstanceID) THROW -
+-- they do not merely return a secret - in restricted contexts on 12.1 (verified on
+-- the PTR: combat, and M+ even out of combat). The call raises before returning, so
+-- there is no value for issecretvalue to inspect; pcall is the correct (and only)
+-- guard - a genuine call-error, not a secret-value operation. A throw means "can't
+-- enumerate here", so callers treat nil as end-of-scan and fall back to targeted
+-- GetUnitAuraBySpellID queries (which stay whitelist-readable) plus the 3s ticker.
+-- GetUnitAuraBySpellID itself does NOT throw, so it needs no wrapper - its return is
+-- read through AuraField.
+
+---Enumerate an aura by index; nil if the call throws (restricted context) or past
+---the last aura.
+---@param unit string
+---@param index integer
+---@param filter string
+---@return any
+local function AuraByIndex(unit, index, filter)
+    local ok, data = pcall(C_UnitAuras.GetAuraDataByIndex, unit, index, filter)
+    if not ok then
+        return nil
+    end
+    return data
+end
+
+---Look up an aura by instance ID; nil if the call throws (restricted context) or
+---the instance is gone.
+---@param unit string
+---@param instanceID number
+---@return any
+local function AuraByInstanceID(unit, instanceID)
+    local ok, data = pcall(C_UnitAuras.GetAuraDataByAuraInstanceID, unit, instanceID)
+    if not ok then
+        return nil
+    end
+    return data
+end
+
+BR.Secret = {
+    Plain = Plain,
+    AuraList = AuraList,
+    AuraField = AuraField,
+    AuraByIndex = AuraByIndex,
+    AuraByInstanceID = AuraByInstanceID,
+}
+
 -- ============================================================================
 -- CALLBACK REGISTRY (Event System)
 -- ============================================================================
@@ -115,10 +231,11 @@ BR.Config.DebugMode = false
 -- Root-level settings (path = key directly)
 local RootSettings = {
     splitCategories = "FramesReparent",
-    frameLocked = false, -- No refresh needed
     position = false, -- Table with x, y
     buffTrackingMode = false, -- No auto-refresh, manually calls UpdateDisplay
-    selfOnlyOutsideInstances = "DisplayRefresh",
+    outsideInstancesMode = "DisplayRefresh",
+    combatMode = "DisplayRefresh",
+    levelingMode = "DisplayRefresh",
     showMissingCountOnly = "DisplayRefresh",
     -- Visibility toggles (routed through Config.Set -> VisibilityRefresh)
     hideInCombat = "VisibilityRefresh",
@@ -131,6 +248,7 @@ local RootSettings = {
     hideWhileLeveling = "VisibilityRefresh",
     petPassiveOnlyInCombat = "VisibilityRefresh",
     bronzeHideInCombat = "VisibilityRefresh",
+    druidIgnoreTravelForm = "DisplayRefresh", -- recompute wrong-form state, then render
     requestBuffInChat = false, -- No auto-refresh, handled manually
     chatRequestCooldown = false, -- No auto-refresh, read live in PostClick + SyncSecureButtons
 }
@@ -256,19 +374,25 @@ local DefaultSettingKeys = {
     showWithoutItemsOnlyOnReadyCheck = "DisplayRefresh",
     delveFoodOnly = "DisplayRefresh",
     delveFoodTimer = "DisplayRefresh",
+    mageFoodContent = "DisplayRefresh",
     freeConsumableMode = "DisplayRefresh",
     freeConsumableVisibility = "DisplayRefresh",
     healthstoneVisibility = "DisplayRefresh",
     healthstoneLowStock = "DisplayRefresh",
     healthstoneThreshold = "DisplayRefresh",
+    repairThreshold = "DisplayRefresh",
+    repairHideInCombat = "VisibilityRefresh",
     soulstoneVisibility = "DisplayRefresh",
     soulstoneHideCooldown = "DisplayRefresh",
+    soulstonePinnedTarget = false, -- nil when unset (no Defaults entry); macro rebuilds on PreClick
+
     -- Consumable display mode
     consumableDisplayMode = "DisplayRefresh",
+    consumableBadgeOnSubIcons = "DisplayRefresh",
     consumableTextScale = "VisualsRefresh",
     hideConsumableLabels = "VisualsRefresh",
     showConsumableTooltips = false, -- No refresh needed, read at tooltip time
-    showBuffTooltips = false, -- No refresh needed, read at tooltip time
+    showBuffTooltips = "VisualsRefresh", -- Toggles raid/presence hover capture vs click-through
     hideLegacyConsumables = "DisplayRefresh",
     -- Pet display mode
     petDisplayMode = "DisplayRefresh",
@@ -282,17 +406,40 @@ local DefaultSettingKeys = {
     position = false, -- No auto-refresh, saved directly by movers
 }
 
--- Valid category names
-local ValidCategories = {
-    main = true,
-    raid = true,
-    presence = true,
-    targeted = true,
-    self = true,
-    pet = true,
-    consumable = true,
-    custom = true,
-}
+-- Canonical buff category list (single source of truth).
+--
+-- Order here is the canonical category order used everywhere it matters:
+-- display stacking, the Defaults "Display Order" UI, the movers, and config
+-- validation. Adding a category here automatically wires it into config-path
+-- validation (ValidCategories below), the display loop (BR.CATEGORIES), the
+-- reorder UI (ALL_CATEGORIES), and the Categories page tab strip -- all
+-- of which derive from this list instead of repeating it. Forgetting to extend
+-- one of those parallel lists is what silently breaks live config updates, so
+-- there is exactly one list to maintain.
+BR.CATEGORY_ORDER = { "raid", "presence", "targeted", "self", "pet", "consumable", "utility", "custom", "loadout" }
+
+-- Virtual categories: user-defined entries that live in db.customBuffs /
+-- db.loadoutReminders rather than BR.BUFF_TABLES. Consumers that walk only the
+-- built-in buff tables (chat requests, static-buff iteration) skip these.
+BR.VIRTUAL_CATEGORIES = { custom = true, loadout = true }
+
+-- Built-in (non-virtual) categories that have entries in BR.BUFF_TABLES, in
+-- display order. Derived from BR.CATEGORY_ORDER minus the virtual categories so
+-- there is still exactly one ordered list to maintain.
+BR.STATIC_CATEGORIES = {}
+for _, cat in ipairs(BR.CATEGORY_ORDER) do
+    if not BR.VIRTUAL_CATEGORIES[cat] then
+        BR.STATIC_CATEGORIES[#BR.STATIC_CATEGORIES + 1] = cat
+    end
+end
+
+-- Valid category names for config paths (categorySettings.<category>.<key>).
+-- Derived from BR.CATEGORY_ORDER plus "main", the shared/global frame whose
+-- settings live under categorySettings.main but which is not a buff category.
+local ValidCategories = { main = true }
+for _, cat in ipairs(BR.CATEGORY_ORDER) do
+    ValidCategories[cat] = true
+end
 
 -- Dynamic tables (path = {root}.{anyKey})
 -- These allow any second-level key (buff names, visibility contexts, etc.)
@@ -302,6 +449,7 @@ local DynamicRoots = {
     splitCategories = "FramesReparent",
     readyCheckOnlyOverrides = "DisplayRefresh",
     detachedIcons = "FramesReparent",
+    loadoutReminders = "DisplayRefresh",
 }
 
 ---Check if a config path is valid
@@ -557,13 +705,18 @@ local AppearanceKeys = {
     iconZoom = true,
     borderSize = true,
     growDirection = true,
+}
+-- NOTE: expirationThreshold is deliberately NOT an appearance key. It is a timing/behavior
+-- setting and uses the standard per-key fallback (category value if set, else defaults),
+-- independent of useCustomAppearance. Stale pre-2.5 values stored while the appearance
+-- flag was off are cleaned up in Migrations.lua.
+
+-- Keys that are glow-related (inherit from defaults when useCustomGlow is false).
+-- Includes the per-kind ENABLE flags: the Glow override owns both whether each
+-- glow kind fires and how it looks, independent of the appearance override.
+local GlowKeys = {
     showExpirationGlow = true,
     showMissingGlow = true,
-    expirationThreshold = true,
-}
-
--- Keys that are glow-style-related (inherit from defaults when useCustomGlow is false)
-local GlowKeys = {
     glowType = true,
     glowColor = true,
     glowSize = true,
@@ -622,9 +775,11 @@ function BR.Config.GetCategorySetting(category, key)
         return catSettings[key]
     end
 
-    -- Glow style keys: inherit from defaults unless BOTH useCustomAppearance and useCustomGlow are true
+    -- Glow keys: inherit from defaults unless useCustomGlow is true.
+    -- Independent of useCustomAppearance - glow and appearance are separate
+    -- override switches.
     if GlowKeys[key] then
-        if not catSettings.useCustomAppearance or not catSettings.useCustomGlow then
+        if not catSettings.useCustomGlow then
             return db.defaults and db.defaults[key]
         end
         return catSettings[key]
@@ -649,7 +804,7 @@ function BR.Config.HasCustomAppearance(category)
     return db.categorySettings[category].useCustomAppearance == true
 end
 
----Check if a category has custom glow style enabled (requires custom appearance)
+---Check if a category has custom glow enabled (independent of custom appearance)
 ---@param category string
 ---@return boolean
 function BR.Config.HasCustomGlow(category)
@@ -657,8 +812,7 @@ function BR.Config.HasCustomGlow(category)
     if not db or not db.categorySettings or not db.categorySettings[category] then
         return false
     end
-    local cat = db.categorySettings[category]
-    return cat.useCustomAppearance == true and cat.useCustomGlow == true
+    return db.categorySettings[category].useCustomGlow == true
 end
 
 -- ============================================================================
@@ -674,11 +828,14 @@ end
 function BR.CreatePanel(name, width, height, options)
     options = options or {}
     local isDialog = options.dialog
-    -- Dialogs sit visibly above the main panel: lighter, fully opaque body and
-    -- a thicker gold border so the frame reads as elevated against busy content
-    -- (e.g. the buff list grid) underneath.
-    local bgColor = options.bgColor or (isDialog and { 0.18, 0.18, 0.20, 1 } or { 0.1, 0.1, 0.1, 0.95 })
-    local borderColor = options.borderColor or (isDialog and { 0.85, 0.7, 0.25, 1 } or { 0.3, 0.3, 0.3, 1 })
+    -- Dialogs echo the main options panel's restrained palette - dark body, gray
+    -- hairline border - and rely on the soft drop shadow (below) rather than a
+    -- loud gold frame to read as elevated above the content underneath. Gold is
+    -- reserved for accents (active tabs), mirroring the panel's active-nav cue.
+    -- Cool-biased neutrals: a slight blue tint over flat grey reads as a chosen
+    -- ground against the warm gold accent (a pure mid-grey reads as unconsidered).
+    local bgColor = options.bgColor or (isDialog and { 0.098, 0.098, 0.118, 1 } or { 0.09, 0.09, 0.107, 0.97 })
+    local borderColor = options.borderColor or BR.Colors.Border
 
     local panel = CreateFrame("Frame", name, UIParent, "BackdropTemplate")
     panel:SetSize(width, height)
@@ -695,40 +852,48 @@ function BR.CreatePanel(name, width, height, options)
     panel:RegisterForDrag("LeftButton")
     panel:SetScript("OnDragStart", panel.StartMoving)
     panel:SetScript("OnDragStop", panel.StopMovingOrSizing)
-    panel:SetFrameStrata(options.strata or "DIALOG")
+    -- Dialogs default to FULLSCREEN_DIALOG so they always sit above the main
+    -- options panel (which is on DIALOG); plain panels stay on DIALOG.
+    panel:SetFrameStrata(options.strata or (isDialog and "FULLSCREEN_DIALOG" or "DIALOG"))
     if options.level then
         panel:SetFrameLevel(options.level)
     end
     if isDialog then
-        -- Drop shadow: three stacked BACKGROUND textures at decreasing outset
-        -- and increasing alpha simulate a soft fade. Each ring overlaps the
-        -- next, so the visible alpha grows from ~15% at the outer edge to
-        -- ~60% just outside the border. Sublevels sit below the panel's own
-        -- backdrop so the body color paints over the inner overlap.
-        local shadowAlphas = { 0.15, 0.25, 0.4 }
-        local shadowOffsets = { 6, 4, 2 }
-        for i = 1, #shadowAlphas do
+        -- Soft drop shadow: a fine stack of rings with a smooth alpha falloff so
+        -- the dialog reads as a raised card lifted off the busy content beneath
+        -- it. The outermost ring is barely visible (~4%) and each inner ring
+        -- darkens gradually; sublevels sit below the panel's own backdrop so the
+        -- body color paints over the inner overlap.
+        local SHADOW_STEPS = 6
+        for i = 1, SHADOW_STEPS do
+            local outset = SHADOW_STEPS - i + 1 -- 6,5,4,3,2,1 px out
+            local alpha = 0.04 + (i - 1) * 0.045 -- ~0.04 (outer) -> ~0.26 (inner)
             local layer = panel:CreateTexture(nil, "BACKGROUND", nil, -9 + i)
-            layer:SetPoint("TOPLEFT", -shadowOffsets[i], shadowOffsets[i])
-            layer:SetPoint("BOTTOMRIGHT", shadowOffsets[i], -shadowOffsets[i])
-            layer:SetColorTexture(0, 0, 0, shadowAlphas[i])
+            layer:SetPoint("TOPLEFT", -outset, outset)
+            layer:SetPoint("BOTTOMRIGHT", outset, -outset)
+            layer:SetColorTexture(0, 0, 0, alpha)
         end
 
-        -- Header strip + gold accent line distinguish the dialog window from
-        -- the main options panel sitting beneath it. Title/close anchors at
-        -- y=-10..-12 land on the strip; tabs/content layouts that start at
-        -- y=-32 or lower sit just below the accent.
-        local header = panel:CreateTexture(nil, "BORDER")
-        header:SetPoint("TOPLEFT", 2, -2)
-        header:SetPoint("TOPRIGHT", -2, -2)
-        header:SetHeight(30)
-        header:SetColorTexture(0.05, 0.05, 0.07, 1)
+        -- Body gradient: a faint top->bottom falloff over the flat backdrop color
+        -- gives the card subtle depth instead of a dead-flat fill, while staying
+        -- in the main panel's dark range. Sits above the shadow/backdrop but below
+        -- the title separator (BORDER layer 0+).
+        local body = panel:CreateTexture(nil, "BORDER", nil, -7)
+        body:SetPoint("TOPLEFT", 2, -2)
+        body:SetPoint("BOTTOMRIGHT", -2, 2)
+        body:SetColorTexture(1, 1, 1, 1)
+        body:SetGradient("VERTICAL", CreateColor(0.094, 0.094, 0.112, 1), CreateColor(0.130, 0.130, 0.152, 1))
 
-        local accent = panel:CreateTexture(nil, "BORDER", nil, 1)
-        accent:SetPoint("TOPLEFT", 2, -32)
-        accent:SetPoint("TOPRIGHT", -2, -32)
-        accent:SetHeight(1)
-        accent:SetColorTexture(0.85, 0.7, 0.25, 0.9)
+        -- A thin gray separator under the title mirrors the main panel's header
+        -- divider, so the dialog reads as a titled card in the same family. The
+        -- title (GameFontNormalLarge, gold) sits above it; content layouts start
+        -- just below. The -32 offset is load-bearing - dialogs hardcode content
+        -- positions relative to it, so restyle the line but don't move it.
+        local titleSep = panel:CreateTexture(nil, "BORDER", nil, 1)
+        titleSep:SetPoint("TOPLEFT", 2, -32)
+        titleSep:SetPoint("TOPRIGHT", -2, -32)
+        titleSep:SetHeight(1)
+        titleSep:SetColorTexture(unpack(BR.Colors.Border))
 
         -- Dialogs are modeless: ESC handled via keyboard input so closing this
         -- dialog doesn't also close the parent options panel (unlike

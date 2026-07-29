@@ -369,6 +369,8 @@ L["No items to award later registered"] = "沒有物品登記"
 L["No recipients available"] = "沒有可分配人選"
 L["No session running"] = "目前沒有分配進行中"
 L["No winners registered"] = "沒有贏家登記"
+--[[Translation missing --]]
+L["non_tradeable_reason_bonus_roll"] = "Bonus Roll"
 L["non_tradeable_reason_nil"] = "不明"
 L["non_tradeable_reason_not_tradeable"] = "無法交易"
 L["non_tradeable_reason_rejected_trade"] = "想要保留裝備"
@@ -493,6 +495,10 @@ L["opt_profileSharing_profileExistsWarning"] = "A profile named \"%s\" already e
 --[[Translation missing --]]
 L["opt_rejectTrade_Desc"] = "Check to enable candidates to choose whether they want to 'give' the item to the council or not. If unchecked, all tradeable PL items are added automatically."
 L["opt_rejectTrade_Name"] = "允許保留裝備"
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Desc"] = "Check to save all bonus rolls from candidates to the Loot History."
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 --[[Translation missing --]]
 L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
 --[[Translation missing --]]

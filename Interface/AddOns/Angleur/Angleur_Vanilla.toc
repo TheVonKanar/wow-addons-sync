@@ -1,8 +1,8 @@
-## Interface: 11508
+## Interface: 11508, 11509
 ## Title: Angleur - Classic Era/SoD
 ## Notes: Classic Version of the Ultimate One Button Fishing AddOn, Angleur!
 ## Notes-ruRU: Версия Classic Era/SoD лучшего дополнения для рыбалки одной кнопкой, Angleur!
-## Version: Angleur Classic 2.9.52
+## Version: Angleur Classic 2.9.6
 ## Author: LegolandoBloom
 ## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial, AngleurClassicConfig, AngleurBobberScannerUI
 ## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars, AngleurClassic_CVars, AngleurAudio
@@ -50,7 +50,9 @@ firstInstall.lua
 advancedAngling.lua
 slashcommands.lua
 minimap.lua
+addonsTab.lua
 animations.xml
+audio.lua
 
 bobberScanner\Legolando_CheckboxTemplate\Legolando_CheckboxTemplate.xml
 bobberScanner\Legolando_CollapseConfigTemplate\Legolando_CollapseConfigTemplate.xml
@@ -58,5 +60,6 @@ bobberScanner\bobberScanner.lua
 
 AngleurVanilla.xml
 
+thanks\thanksTemplates.xml
 thanks\thanks.lua
 thanks\thanks.xml

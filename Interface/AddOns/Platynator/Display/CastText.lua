@@ -7,8 +7,8 @@ function addonTable.Display.CastTextMixin:SetUnit(unit)
   self.unit = unit
   if self.unit then
 
-    addonTable.Display.Cache:RegisterCallback(self.unit, "cast", function(state)
-      if state.interrupted then
+    addonTable.Cache:RegisterCallback(self.unit, "cast", function(state)
+      if state.interrupted and self.details.showInterrupted then
         self:ApplyInterrupt()
       elseif state.cast[1] == nil and state.channel[1] == nil then
         self:ClearCast()
@@ -17,7 +17,7 @@ function addonTable.Display.CastTextMixin:SetUnit(unit)
       end
     end)
 
-    self:ApplyCasting(addonTable.Display.Cache:Get(self.unit, "cast"))
+    self:ApplyCasting(addonTable.Cache:Get(self.unit, "cast"))
   else
     self:Strip()
   end

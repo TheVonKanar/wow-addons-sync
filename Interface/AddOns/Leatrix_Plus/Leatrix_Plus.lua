@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 12.0.19 (21st May 2026)
+-- 	Leatrix Plus 12.0.28 (23rd July 2026)
 ----------------------------------------------------------------------
 
 --	01:Functions 02:Locks,  03:Restart 40:Player
@@ -18,7 +18,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "12.0.19"
+	LeaPlusLC["AddonVer"] = "12.0.28"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -34,7 +34,7 @@
 			end)
 			return
 		end
-		if gametocversion and gametocversion >= 120007 then -- 12.0.7
+		if gametocversion and gametocversion >= 120100 then -- 12.1.0
 			LeaPlusLC.NewPatch = true
 		end
 	end
@@ -186,7 +186,7 @@
 			eFrame.t:SetBackdropColor(1.0, 1.0, 1.0, 0.3)
 			-- Handler
 			eFrame.b:SetScript("OnKeyDown", function(void, key)
-				if key == "C" and IsControlKeyDown() then
+				if key == "C" and (IsControlKeyDown() or IsMetaKeyDown()) then
 					C_Timer.After(0.1, function()
 						eFrame:Hide()
 						LeaPlusLC:DisplayMessage(L["Copied to clipboard."], true)
@@ -828,12 +828,22 @@
 			local function DeclineReqs()
 				if LeaPlusLC["NoFriendRequests"] == "On" then
 					for i = BNGetNumFriendInvites(), 1, -1 do
-						local id, player = BNGetFriendInviteInfo(i)
-						if id and player then
-							BNDeclineFriendInvite(id)
-							C_Timer.After(0.1, function()
-								LeaPlusLC:Print(L["A friend request from"] .. " " .. player .. " " .. L["was automatically declined."])
-							end)
+						if LeaPlusLC.NewPatch then
+							local inviteInfo = C_BattleNet.GetFriendInviteInfo(i)
+							if inviteInfo.inviteID and inviteInfo.accountName then
+								BNDeclineFriendInvite(inviteInfo.inviteID)
+								C_Timer.After(0.1, function()
+									LeaPlusLC:Print(L["A friend request from"] .. " " .. inviteInfo.accountName .. " " .. L["was automatically declined."])
+								end)
+							end
+						else
+							local id, player = BNGetFriendInviteInfo(i)
+							if id and player then
+								BNDeclineFriendInvite(id)
+								C_Timer.After(0.1, function()
+									LeaPlusLC:Print(L["A friend request from"] .. " " .. player .. " " .. L["was automatically declined."])
+								end)
+							end
 						end
 					end
 				end
@@ -990,7 +1000,7 @@
 									local gameAccountInfo = accountInfo.gameAccountInfo
 									local gameAccountID = gameAccountInfo.gameAccountID
 									if gameAccountID then
-										BNInviteFriend(gameAccountID)
+										C_BattleNet.InviteFriend(gameAccountID)
 									end
 								end
 							end
@@ -1484,10 +1494,11 @@
 			LeaPlusLC:MakeCB(SoundPanel, "MuteBalls", "Balls", 284, -112, false, "If checked, the Foot Ball sounds will be muted.")
 			LeaPlusLC:MakeCB(SoundPanel, "MuteHarp", "Harp", 284, -132, false, "If checked, the Fae Harp toy will be muted.")
 			LeaPlusLC:MakeCB(SoundPanel, "MuteMeerah", "Meerah", 284, -152, false, "If checked, Meerah's Jukebox wil be muted.")
+			LeaPlusLC:MakeCB(SoundPanel, "MutePiccolo", "Piccolo", 284, -172, false, "If checked, Piccolo of the Flaming Fire wil be muted.|n|nNote that enabling this will also mute the harp sound of the warlock seduction spell.")
 
-			LeaPlusLC:MakeTx(SoundPanel, "Combat", 284, -192)
-			LeaPlusLC:MakeCB(SoundPanel, "MuteArena", "Arena", 284, -212, false, "If checked, arena announcers will be muted.")
-			LeaPlusLC:MakeCB(SoundPanel, "MuteBattleShouts", "Shouts", 284, -232, false, "If checked, your character will not shout and wail during combat.")
+			LeaPlusLC:MakeTx(SoundPanel, "Combat", 284, -212)
+			LeaPlusLC:MakeCB(SoundPanel, "MuteArena", "Arena", 284, -232, false, "If checked, arena announcers will be muted.")
+			LeaPlusLC:MakeCB(SoundPanel, "MuteBattleShouts", "Shouts", 284, -252, false, "If checked, your character will not shout and wail during combat.")
 
 			LeaPlusLC:MakeTx(SoundPanel, "Misc", 418, -72)
 			LeaPlusLC:MakeCB(SoundPanel, "MuteDucks", "Ducks", 418, -92, false, "If checked, duck greetings will be muted.|n|nUse this if you like to do your Valdrakken banking in peace.")
@@ -1962,10 +1973,17 @@
 					-- Slot button tooltip
 					slotBtn:SetScript("OnClick", function(self, btn)
 						if btn == "LeftButton" then
-							local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
-							local slotID = GetInventorySlotInfo(self.slot)
-							playerActor:UndressSlot(slotID)
-							playerActor:SetSheathed(true)
+							if LeaPlusLC.NewPatch then
+								local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
+								local slotID = C_PaperDollInfo.GetInventorySlotInfo(self.slot)
+								playerActor:UndressSlot(slotID)
+								playerActor:SetSheathed(true)
+							else
+								local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
+								local slotID = GetInventorySlotInfo(self.slot)
+								playerActor:UndressSlot(slotID)
+								playerActor:SetSheathed(true)
+							end
 						end
 					end)
 
@@ -2013,23 +2031,46 @@
 					local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
 					if playerActor then
 						for slot, slotButtons in pairs(buttons) do
-							if slotTable[slot] and GetInventorySlotInfo(slotTable[slot]) then
-								local slotID, slotTexture = GetInventorySlotInfo(slotTable[slot])
-								local itemTransmogInfo = playerActor:GetItemTransmogInfo(slotID)
-								if itemTransmogInfo == nil then
-									buttons[slot].item = nil
-									buttons[slot].text = nil
-									buttons[slot].t:SetTexture(slotTexture)
-								else
-									local appearanceSourceInfo = C_TransmogCollection.GetAppearanceSourceInfo(itemTransmogInfo.appearanceID)
-									buttons[slot].item = appearanceSourceInfo.itemLink
-									buttons[slot].text = UNKNOWN
-									if C_TransmogCollection.IsAppearanceHiddenVisual(itemTransmogInfo.appearanceID) then
-										-- Hidden item
-										buttons[slot].t:SetAtlas("transmog-icon-hidden")
+							if LeaPlusLC.NewPatch then
+								if slotTable[slot] and C_PaperDollInfo.GetInventorySlotInfo(slotTable[slot]) then
+									local slotID, slotTexture = C_PaperDollInfo.GetInventorySlotInfo(slotTable[slot])
+									local itemTransmogInfo = playerActor:GetItemTransmogInfo(slotID)
+									if itemTransmogInfo == nil then
+										buttons[slot].item = nil
+										buttons[slot].text = nil
+										buttons[slot].t:SetTexture(slotTexture)
 									else
-										-- Visible item
-										buttons[slot].t:SetTexture(appearanceSourceInfo.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+										local appearanceSourceInfo = C_TransmogCollection.GetAppearanceSourceInfo(itemTransmogInfo.appearanceID)
+										buttons[slot].item = appearanceSourceInfo.itemLink
+										buttons[slot].text = UNKNOWN
+										if C_TransmogCollection.IsAppearanceHiddenVisual(itemTransmogInfo.appearanceID) then
+											-- Hidden item
+											buttons[slot].t:SetAtlas("transmog-icon-hidden")
+										else
+											-- Visible item
+											buttons[slot].t:SetTexture(appearanceSourceInfo.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+										end
+									end
+								end
+							else
+								if slotTable[slot] and GetInventorySlotInfo(slotTable[slot]) then
+									local slotID, slotTexture = GetInventorySlotInfo(slotTable[slot])
+									local itemTransmogInfo = playerActor:GetItemTransmogInfo(slotID)
+									if itemTransmogInfo == nil then
+										buttons[slot].item = nil
+										buttons[slot].text = nil
+										buttons[slot].t:SetTexture(slotTexture)
+									else
+										local appearanceSourceInfo = C_TransmogCollection.GetAppearanceSourceInfo(itemTransmogInfo.appearanceID)
+										buttons[slot].item = appearanceSourceInfo.itemLink
+										buttons[slot].text = UNKNOWN
+										if C_TransmogCollection.IsAppearanceHiddenVisual(itemTransmogInfo.appearanceID) then
+											-- Hidden item
+											buttons[slot].t:SetAtlas("transmog-icon-hidden")
+										else
+											-- Visible item
+											buttons[slot].t:SetTexture(appearanceSourceInfo.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+										end
 									end
 								end
 							end
@@ -2143,6 +2184,7 @@
 
 			SetButton(DressUpFrameCancelButton, "C", "Close")
 			SetButton(DressUpFrameResetButton, "R", "Reset")
+			SetButton(DressUpFrame.LinkButton, "L", "Link outfit")
 
 			-- Remove all items button (parented to reset button so they show with reset button)
 			LeaPlusLC:CreateButton("DressUpNudeBtn", DressUpFrameResetButton, "N", "BOTTOMLEFT", 106, 79, 80, 22, false, "")
@@ -2240,117 +2282,10 @@
 				end
 			end)
 
-			-- Hide link button
-			DressUpFrame.LinkButton:HookScript("OnShow", DressUpFrame.LinkButton.Hide)
-
-			-- Create editbox for link to slash command
-			local pFrame = CreateFrame("Frame", nil, DressUpFrame)
-			pFrame:ClearAllPoints()
-			pFrame:SetPoint("CENTER", DressUpFrame, "CENTER", 0, -10)
-			pFrame:SetSize(230,300)
-			pFrame:Hide()
-			pFrame:SetFrameLevel(5000)
-			pFrame:SetScript("OnMouseDown", function(self, btn)
-				if btn == "RightButton" then
-					pFrame:Hide()
-				end
-			end)
-
-			-- Add text
-			LeaPlusLC:MakeTx(pFrame, "Share outfit online", 16, -72)
-			pFrame.txt = LeaPlusLC:MakeWD(pFrame, "Press CTRL/C to copy this command to the clipboard for sharing your outfit online.", 16, -136)
-			pFrame.txt:SetWordWrap(true)
-			pFrame.txt:SetWidth(200)
-
-			pFrame.btn = LeaPlusLC:CreateButton("ShareOutfitDone", pFrame, "Okay", "TOPLEFT", 16, -212, 0, 25, true, "")
-			pFrame.btn:ClearAllPoints()
-			pFrame.btn:SetPoint("BOTTOMRIGHT", pFrame, "BOTTOMRIGHT", -10, 10)
-
-			pFrame.btn:SetScript("OnClick", function()
-				pFrame:Hide()
-			end)
-
-			-- Hide frame when outfit changes
-			hooksecurefunc(DressUpFrame.CustomSetDropdown, "UpdateSaveButton", function() pFrame:Hide() end)
-
-			-- Add background color
-			pFrame.t = pFrame:CreateTexture(nil, "BACKGROUND")
-			pFrame.t:SetAllPoints()
-			pFrame.t:SetColorTexture(0.05, 0.05, 0.05, 0.8)
-
-			-- Create editbox
-			local petEB = CreateFrame("EditBox", nil, pFrame)
-			petEB:SetPoint("TOPLEFT", 15, -100)
-			petEB:SetSize(200, 16)
-			petEB:SetTextInsets(2, 2, 2, 2)
-			petEB:SetFontObject("GameFontNormal")
-			petEB:SetTextColor(1.0, 1.0, 1.0, 1)
-			petEB:SetBlinkSpeed(0)
-			petEB:SetAltArrowKeyMode(true)
-
-			-- Create tooltip
-			petEB.tiptext = L["Press CTRL/C to copy."]
-			petEB:HookScript("OnEnter", function()
-				GameTooltip:SetOwner(petEB, "ANCHOR_TOP", 0, 10)
-				GameTooltip:SetText(petEB.tiptext, nil, nil, nil, nil, true)
-			end)
-			petEB:HookScript("OnLeave", GameTooltip_Hide)
-
-			-- Prevent changes
-			petEB:SetScript("OnEscapePressed", function() pFrame:Hide() end)
-			petEB:SetScript("OnEnterPressed", function() petEB:HighlightText() end)
-			petEB:SetScript("OnMouseDown", function(self, btn)
-				petEB:ClearFocus()
-				if btn == "RightButton" then
-					pFrame:Hide()
-				end
-			end)
-			petEB:SetScript("OnMouseUp", function() petEB:HighlightText() end)
-
-			-- Link to chat
-			LeaPlusLC:CreateButton("DressUpLinkChatBtn", DressUpFrameResetButton, "L", "BOTTOMLEFT", 26, 79, 80, 22, false, "")
-			LeaPlusCB["DressUpLinkChatBtn"]:ClearAllPoints()
-			LeaPlusCB["DressUpLinkChatBtn"]:SetPoint("BOTTOMLEFT", DressUpFrame, "BOTTOMLEFT", 2, 4)
-			SetButton(LeaPlusCB["DressUpLinkChatBtn"], "L", "Link outfit in chat")
-			LeaPlusCB["DressUpLinkChatBtn"]:SetScript("OnClick", function()
-				local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
-				local itemTransmogInfoList = playerActor and playerActor:GetItemTransmogInfoList()
-				local hyperlink = C_TransmogCollection.GetCustomSetHyperlinkFromItemTransmogInfoList(itemTransmogInfoList)
-				if not ChatFrameUtil.InsertLink(hyperlink) then
-					ChatFrame_OpenChat(hyperlink)
-				end
-			end)
-
-			-- Share outfit online
-			LeaPlusLC:CreateButton("DressUpLinkSlashBtn", DressUpFrameResetButton, "W", "BOTTOMLEFT", 26, 79, 80, 22, false, "")
-			LeaPlusCB["DressUpLinkSlashBtn"]:ClearAllPoints()
-			LeaPlusCB["DressUpLinkSlashBtn"]:SetPoint("LEFT", LeaPlusCB["DressUpLinkChatBtn"], "RIGHT", 0, 0)
-			SetButton(LeaPlusCB["DressUpLinkSlashBtn"], "W", "Share outfit online")
-			LeaPlusCB["DressUpLinkSlashBtn"]:SetScript("OnClick", function()
-				local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
-				local itemTransmogInfoList = playerActor and playerActor:GetItemTransmogInfoList()
-				local slashCommand = TransmogUtil.CreateCustomSetSlashCommand(itemTransmogInfoList)
-
-				-- Function to refresh editbox text
-				local function RefreshEditBoxText()
-					petEB:SetText(slashCommand)
-					petEB:HighlightText()
-					petEB:SetFocus()
-					petEB:SetCursorPosition(0)
-				end
-
-				-- Prevent changes to editbox value
-				petEB:SetScript("OnChar", RefreshEditBoxText)
-				petEB:SetScript("OnKeyUp", RefreshEditBoxText)
-				RefreshEditBoxText()
-
-				if pFrame:IsShown() then pFrame:Hide() else pFrame:Show() end
-			end)
-
 			-- Toggle buttons
 			LeaPlusLC:CreateButton("DressUpButonsBtn", DressUpFrameResetButton, "B", "BOTTOMLEFT", 26, 79, 80, 22, false, "")
 			LeaPlusCB["DressUpButonsBtn"]:ClearAllPoints()
-			LeaPlusCB["DressUpButonsBtn"]:SetPoint("LEFT", LeaPlusCB["DressUpLinkSlashBtn"], "RIGHT", 0, 0)
+			LeaPlusCB["DressUpButonsBtn"]:SetPoint("LEFT", DressUpFrame.LinkButton, "RIGHT", 0, 0)
 			SetButton(LeaPlusCB["DressUpButonsBtn"], "B", "Toggle buttons")
 			LeaPlusCB["DressUpButonsBtn"]:SetScript("OnClick", function()
 				if LeaPlusLC["DressupItemButtons"] == "On" then LeaPlusLC["DressupItemButtons"] = "Off" else LeaPlusLC["DressupItemButtons"] = "On" end
@@ -2383,12 +2318,6 @@
 
 				_G.LeaPlusGlobalDressUpOutfitOnTargetBtn = LeaPlusCB["DressUpOutfitOnTargetBtn"]
 				LeaPlusLC.ElvUI:GetModule("Skins"):HandleButton(_G.LeaPlusGlobalDressUpOutfitOnTargetBtn)
-
-				_G.LeaPlusGlobalDressUpLinkChatBtn = LeaPlusCB["DressUpLinkChatBtn"]
-				LeaPlusLC.ElvUI:GetModule("Skins"):HandleButton(_G.LeaPlusGlobalDressUpLinkChatBtn)
-
-				_G.LeaPlusGlobalDressUpLinkSlashBtn = LeaPlusCB["DressUpLinkSlashBtn"]
-				LeaPlusLC.ElvUI:GetModule("Skins"):HandleButton(_G.LeaPlusGlobalDressUpLinkSlashBtn)
 			end
 
 			----------------------------------------------------------------------
@@ -3740,8 +3669,14 @@
 				if eb.Text.tiptext == L["Exclusions"] .. "|n" then eb.Text.tiptext = "-" end
 
 				if GameTooltip:IsShown() then
-					if MouseIsOver(eb) or MouseIsOver(eb.Text) then
-						GameTooltip:SetText(eb.tiptext, nil, nil, nil, nil, false)
+					if LeaPlusLC.NewPatch then
+						if eb:IsMouseOver() or eb.Text:IsMouseOver() then
+							GameTooltip:SetText(eb.tiptext, nil, nil, nil, nil, false)
+						end
+					else
+						if MouseIsOver(eb) or MouseIsOver(eb.Text) then
+							GameTooltip:SetText(eb.tiptext, nil, nil, nil, nil, false)
+						end
 					end
 				end
 
@@ -4394,25 +4329,49 @@
 
 				-- Traverse equipment slots
 				for k, slotName in ipairs(Slots) do
-					if GetInventorySlotInfo(slotName) then
-						id = GetInventorySlotInfo(slotName)
-						duraval, duramax = GetInventoryItemDurability(id)
-						if duraval ~= nil then
+					if LeaPlusLC.NewPatch then
+						if C_PaperDollInfo.GetInventorySlotInfo(slotName) then
+							id = C_PaperDollInfo.GetInventorySlotInfo(slotName)
+							duraval, duramax = GetInventoryItemDurability(id)
+							if duraval ~= nil then
 
-							-- At least one item has durability stat
-							validItems = true
+								-- At least one item has durability stat
+								validItems = true
 
-							-- Add to tooltip
-							if where == "tip" then
-								durapercent = tonumber(format("%.0f", duraval / duramax * 100))
-								valcol = (durapercent >= 80 and "|cff00FF00") or (durapercent >= 60 and "|cff99FF00") or (durapercent >= 40 and "|cffFFFF00") or (durapercent >= 20 and "|cffFF9900") or (durapercent >= 0 and "|cffFF2000") or ("|cffFFFFFF")
-								_G["GameTooltipTextLeft1"]:SetText(L["Durability"])
-								_G["GameTooltipTextLeft2"]:SetText(_G["GameTooltipTextLeft2"]:GetText() .. SlotsFriendly[k] .. "|n")
-								_G["GameTooltipTextRight2"]:SetText(_G["GameTooltipTextRight2"]:GetText() ..  valcol .. durapercent .. "%" .. "|r|n")
+								-- Add to tooltip
+								if where == "tip" then
+									durapercent = tonumber(format("%.0f", duraval / duramax * 100))
+									valcol = (durapercent >= 80 and "|cff00FF00") or (durapercent >= 60 and "|cff99FF00") or (durapercent >= 40 and "|cffFFFF00") or (durapercent >= 20 and "|cffFF9900") or (durapercent >= 0 and "|cffFF2000") or ("|cffFFFFFF")
+									_G["GameTooltipTextLeft1"]:SetText(L["Durability"])
+									_G["GameTooltipTextLeft2"]:SetText(_G["GameTooltipTextLeft2"]:GetText() .. SlotsFriendly[k] .. "|n")
+									_G["GameTooltipTextRight2"]:SetText(_G["GameTooltipTextRight2"]:GetText() ..  valcol .. durapercent .. "%" .. "|r|n")
+								end
+
+								duravaltotal = duravaltotal + duraval
+								duramaxtotal = duramaxtotal + duramax
 							end
+						end
+					else
+						if GetInventorySlotInfo(slotName) then
+							id = GetInventorySlotInfo(slotName)
+							duraval, duramax = GetInventoryItemDurability(id)
+							if duraval ~= nil then
 
-							duravaltotal = duravaltotal + duraval
-							duramaxtotal = duramaxtotal + duramax
+								-- At least one item has durability stat
+								validItems = true
+
+								-- Add to tooltip
+								if where == "tip" then
+									durapercent = tonumber(format("%.0f", duraval / duramax * 100))
+									valcol = (durapercent >= 80 and "|cff00FF00") or (durapercent >= 60 and "|cff99FF00") or (durapercent >= 40 and "|cffFFFF00") or (durapercent >= 20 and "|cffFF9900") or (durapercent >= 0 and "|cffFF2000") or ("|cffFFFFFF")
+									_G["GameTooltipTextLeft1"]:SetText(L["Durability"])
+									_G["GameTooltipTextLeft2"]:SetText(_G["GameTooltipTextLeft2"]:GetText() .. SlotsFriendly[k] .. "|n")
+									_G["GameTooltipTextRight2"]:SetText(_G["GameTooltipTextRight2"]:GetText() ..  valcol .. durapercent .. "%" .. "|r|n")
+								end
+
+								duravaltotal = duravaltotal + duraval
+								duramaxtotal = duramaxtotal + duramax
+							end
 						end
 					end
 				end
@@ -5661,9 +5620,7 @@
 			if LeaPlusLC["SquareMinimap"] == "On" then
 
 				-- Set button layout
-				AddonCompartmentFrame:SetFrameStrata("MEDIUM")
-				AddonCompartmentFrame:ClearAllPoints()
-				AddonCompartmentFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -2, -2)
+				AddonCompartmentFrame:SetFrameLevel(4)
 
 				-- Debug
 				-- AddonCompartmentFrame:SetText("56")
@@ -5687,20 +5644,9 @@
 				LeaPlusCB["MinimapBorderWidth"]:HookScript("OnValueChanged", SetMinimapBorderWidth)
 				SetMinimapBorderWidth()
 
-				-- Nudge calendar button to the left
-				GameTimeFrame:ClearAllPoints()
-				GameTimeFrame:SetPoint("TOPLEFT", TimeManagerClockButton, "TOPRIGHT", 0, 0)
-
-				-- Function to set minimap position
-				local function SetHeaderThing()
-					-- local setting = MinimapCluster:GetSettingValueBool(Enum.EditModeMinimapSetting.HeaderUnderneath)
-					Minimap:ClearAllPoints()
-					Minimap:SetPoint("CENTER", MinimapCluster, "TOP", 14, -124)
-				end
-
-				-- Set minimap position when header position is changed and on startup
-				hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", SetHeaderThing)
-				SetHeaderThing()
+				-- Set minimap position (local setting = MinimapCluster:GetSettingValueBool(Enum.EditModeMinimapSetting.HeaderUnderneath))
+				Minimap:ClearAllPoints()
+				Minimap:SetPoint("CENTER", MinimapCluster, "TOP", 14, -124)
 
 				-- Hide the default compass border
 				MinimapCompassTexture:Hide()
@@ -5754,10 +5700,6 @@
 				ExpansionLandingPageMinimapButton.AlertText:ClearAllPoints()
 				ExpansionLandingPageMinimapButton.AlertText:SetPoint("RIGHT", ExpansionLandingPageMinimapButton, "LEFT", -8, 0)
 				ExpansionLandingPageMinimapButton:SetHitRectInsets(0, 0, 0, 0)
-
-				-- Set instance difficulty layout
-				MinimapCluster.InstanceDifficulty:ClearAllPoints()
-				MinimapCluster.InstanceDifficulty:SetPoint("TOPRIGHT", MinimapCluster, "TOPRIGHT", -10, -22)
 
 				-- Setup hybrid minimap when available
 				EventUtil.ContinueOnAddOnLoaded("Blizzard_HybridMinimap",function()
@@ -5865,6 +5807,15 @@
 						myButton:HookScript("OnEnter", function()
 							_G[name]:GetScript("OnEnter")(_G[name], true)
 							ReanchorTooltip(GameTooltip, myButton)
+						end)
+						myButton:HookScript("OnLeave", function()
+							_G[name]:GetScript("OnLeave")()
+						end)
+					elseif name == "OOMinimapButton" then
+						-- OmniumObservator
+						local myButton = LibStub("LibDBIcon-1.0"):GetMinimapButton("LeaPlusCustomIcon_" .. name)
+						myButton:HookScript("OnEnter", function()
+							_G[name]:GetScript("OnEnter")(_G[name], true)
 						end)
 						myButton:HookScript("OnLeave", function()
 							_G[name]:GetScript("OnLeave")()
@@ -5981,6 +5932,7 @@
 				-- Some buttons have less than 3 regions.  These need to be manually defined below.
 				local LowRegionCountButtons = {
 					"AllTheThings-Minimap", -- AllTheThings
+					"OOMinimapButton", -- OmniumObservator
 				}
 
 				-- Function to loop through minimap children to find non-standard addon buttons
@@ -6347,6 +6299,11 @@
 					--[[You feel smaller]] 16595, 1223629,
 				},
 
+				-- Reflecting Prism
+				["TransReflectingPrism"] = {
+					--[[Prismatic Reflection]] 163267,
+				},
+
 			}
 
 			-- Give table file level scope (its used during logout and for admin command)
@@ -6408,6 +6365,7 @@
 			row = row + 2; LeaPlusLC:MakeTx(transPanel.scrollChild, "Items", 16,  -(row - 1) * 20 - 2)
 			row = row + 1; LeaPlusLC:MakeCB(transPanel.scrollChild, "TransCursedPickaxe", "Cursed Pickaxe", 16,  -((row - 1) * 20) - 2, false, "If checked, the Cursed Pickaxe transform will be removed when applied.|n|nYou can mute the associated sounds with the mute game sounds combat shouts option.")
 			row = row + 1; LeaPlusLC:MakeCB(transPanel.scrollChild, "TransNoggenfogger", "Noggenfogger Elixir", 16,  -((row - 1) * 20) - 2, false, "If checked, the slow fall and shrink effects of Noggenfogger Elixir will be removed when applied while keeping the skeleton transform intact.")
+			row = row + 1; LeaPlusLC:MakeCB(transPanel.scrollChild, "TransReflectingPrism", "Reflecting Prism", 16,  -((row - 1) * 20) - 2, false, "If checked, the Reflecting Prism transform will be removed when applied.")
 
 			-- Debug
 			-- RemoveCommentToEnableDebug = true
@@ -8277,8 +8235,14 @@
 
 			-- Manage focus
 			editBox:HookScript("OnEditFocusLost", function()
-				if MouseIsOver(titleFrame) and IsMouseButtonDown("LeftButton") then
-					editBox:SetFocus()
+				if LeaPlusLC.NewPatch then
+					if titleFrame:IsMouseOver() and IsMouseButtonDown("LeftButton") then
+						editBox:SetFocus()
+					end
+				else
+					if MouseIsOver(titleFrame) and IsMouseButtonDown("LeftButton") then
+						editBox:SetFocus()
+					end
 				end
 			end)
 
@@ -10208,8 +10172,13 @@
 					willPlay, musicHandle = PlaySoundFile(soundID, "Master", false, true)
 				else
 					-- Sound kit without track time
-					file, soundID = playlist[tracknumber]:match("([^,]+)%#([^,]+)")
-					willPlay, musicHandle = PlaySound(soundID, "Master", false, true)
+					if LeaPlusLC.NewPatch then
+						file, soundID = playlist[tracknumber]:match("([^,]+)%#([^,]+)")
+						willPlay, musicHandle = C_Sound.PlaySound(soundID, "Master", false, true)
+					else
+						file, soundID = playlist[tracknumber]:match("([^,]+)%#([^,]+)")
+						willPlay, musicHandle = PlaySound(soundID, "Master", false, true)
+					end
 				end
 				-- Cancel existing music timer for a sound file
 				if LeaPlusLC.TrackTimer then LeaPlusLC.TrackTimer:Cancel() end
@@ -11173,7 +11142,7 @@
 
 				if LeaPlusLC.NewPatch then
 					-- Disable bag automation (enter Stockade, go vendor with transmog items Lisbeth Schneider 58.2 67.0 Stormwind, auto sell, close and shift reopen)
-					-- LockDF("NoBagAutomation", "This option is not currently available.")
+					LockDF("ManageControl", "You can manage this with Edit Mode now.")
 				end
 
 				-- Run other startup items
@@ -12436,7 +12405,11 @@
 					GameTooltip:HookScript("OnUpdate", function()
 						local a = _G["GameTooltipTextLeft1"]:GetText() or ""
 						if a == "Dark Soil" or a == "Jelly Deposit" or a == "Gersahl Shrub" then
-							PlaySound(8959, "Master")
+							if LeaPlusLC.NewPatch then
+								C_Sound.PlaySound(8959, "Master")
+							else
+								PlaySound(8959, "Master")
+							end
 						end
 					end)
 					-- Add Friendly Alpaca spawn locations to Uldum map
@@ -12512,15 +12485,6 @@
 					LeaPlusLC:Print("GetAllowLowLevelRaid: |cffffffff" .. "False")
 				end
 				return
-			elseif str == "move" then
-				-- Move minimap
-				MinimapZoneTextButton:Hide()
-				MinimapBorderTop:SetTexture("")
-				MiniMapWorldMapButton:Hide()
-				MinimapBackdrop:ClearAllPoints()
-				MinimapBackdrop:SetPoint("CENTER", UIParent, "CENTER", -330, -75)
-				Minimap:SetPoint("CENTER", UIParent, "CENTER", -320, -50)
-				return
 			elseif str == "tipcol" then
 				-- Show default tooltip title color
 				if GameTooltipTextLeft1:IsShown() then
@@ -12537,8 +12501,18 @@
 				-- Enumerate frames
 				local frame = EnumerateFrames()
 				while frame do
-					if (frame:IsVisible() and MouseIsOver(frame)) then
-						LeaPlusLC:Print(frame:GetName() or string.format("[Unnamed Frame: %s]", tostring(frame)))
+					if LeaPlusLC.NewPatch then
+						if not frame:IsAnchoringSecret() then
+							if (frame:IsVisible() and frame:IsMouseOver()) then
+								LeaPlusLC:Print(frame:GetName() or string.format("[Unnamed Frame: %s]", tostring(frame)))
+							end
+						else
+							LeaPlusLC:Print(L["[Secret frame: SECRET FRAME]"])
+						end
+					else
+						if (frame:IsVisible() and MouseIsOver(frame)) then
+							LeaPlusLC:Print(frame:GetName() or string.format("[Unnamed Frame: %s]", tostring(frame)))
+						end
 					end
 					frame = EnumerateFrames(frame)
 				end
@@ -12602,7 +12576,11 @@
 							StopSound(LeaPlusLC.SNDcanitHandle)
 						end
 						-- Play sound ID
-						LeaPlusLC.SNDcanitPlay, LeaPlusLC.SNDcanitHandle = PlaySound(arg1, "Master", false, false)
+						if LeaPlusLC.NewPatch then
+							LeaPlusLC.SNDcanitPlay, LeaPlusLC.SNDcanitHandle = C_Sound.PlaySound(arg1, "Master", false, false)
+						else
+							LeaPlusLC.SNDcanitPlay, LeaPlusLC.SNDcanitHandle = PlaySound(arg1, "Master", false, false)
+						end
 						if not LeaPlusLC.SNDcanitPlay then LeaPlusLC:Print(L["Invalid sound ID"] .. ": |cffffffff" .. arg1) end
 					else
 						LeaPlusLC:Print(L["Invalid sound ID"] .. ": |cffffffff" .. arg1)
@@ -12731,7 +12709,11 @@
 				return
 			elseif str == "skit" then
 				-- Play a test sound kit
-				PlaySound("1020", "Master", false, true)
+				if LeaPlusLC.NewPatch then
+					C_Sound.PlaySound("1020", "Master", false, true)
+				else
+					PlaySound("1020", "Master", false, true)
+				end
 				return
 			elseif str == "dup" then
 				-- Print music track duplicates
@@ -12747,14 +12729,26 @@
 										if not v:match("([^,]+)%#([^,]+)%#([^,]+)") then
 											local temFile, temSoundID = v:match("([^,]+)%#([^,]+)")
 											if temSoundID then
-												local temPlay, temHandle = PlaySound(temSoundID, "Master", false, true)
-												if temHandle then StopSound(temHandle) end
-												temPlay, temHandle = PlaySound(temSoundID, "Master", false, true)
-												if not temPlay and not temHandle then
-													print("|cffff5400" .. L["Bad ID"] .. ": |r" .. e, v)
-													badidfound = true
-												else
+												if LeaPlusLC.NewPatch then
+													local temPlay, temHandle = C_Sound.PlaySound(temSoundID, "Master", false, true)
 													if temHandle then StopSound(temHandle) end
+													temPlay, temHandle = C_Sound.PlaySound(temSoundID, "Master", false, true)
+													if not temPlay and not temHandle then
+														print("|cffff5400" .. L["Bad ID"] .. ": |r" .. e, v)
+														badidfound = true
+													else
+														if temHandle then StopSound(temHandle) end
+													end
+												else
+													local temPlay, temHandle = PlaySound(temSoundID, "Master", false, true)
+													if temHandle then StopSound(temHandle) end
+													temPlay, temHandle = PlaySound(temSoundID, "Master", false, true)
+													if not temPlay and not temHandle then
+														print("|cffff5400" .. L["Bad ID"] .. ": |r" .. e, v)
+														badidfound = true
+													else
+														if temHandle then StopSound(temHandle) end
+													end
 												end
 											end
 										end
@@ -12892,7 +12886,11 @@
 								-- Select current button
 								bt[eBtn].line:Show()
 								selectedBtn = b
-								PlaySound(115, "Master", false, true)
+								if LeaPlusLC.NewPatch then
+									C_Sound.PlaySound(115, "Master", false, true)
+								else
+									PlaySound(115, "Master", false, true)
+								end
 								-- Print button data
 								eFrame.f:SetText(L["Enigma"] .. " " .. eBtn .. ": |cffffffff" .. eData[eBtn][#eData[eBtn]])
 							end
@@ -13035,7 +13033,7 @@
 				-- Show list of connected realms
 				local titleRealm = GetRealmName()
 				local userRealm = GetNormalizedRealmName()
-				local connectedServers = GetAutoCompleteRealms()
+				local connectedServers = C_AutoComplete.GetAutoCompleteRealms()
 				if titleRealm and userRealm and connectedServers then
 					LeaPlusLC:Print(L["Connections for"] .. "|cffffffff " .. titleRealm)
 					if #connectedServers > 0 then
@@ -13222,7 +13220,11 @@
 				end
 				LeaPlusLC.BlanchyFrame:SetScript("OnEvent", function(self, event, void, pname)
 					if pname == L["Dead Blanchy"] then
-						C_Timer.NewTicker(1, function()	PlaySound(8959, "Master") end, 20)
+						if LeaPlusLC.NewPatch then
+							C_Timer.NewTicker(1, function()	C_Sound.PlaySound(8959, "Master") end, 20)
+						else
+							C_Timer.NewTicker(1, function()	PlaySound(8959, "Master") end, 20)
+						end
 					end
 				end)
 				return
@@ -13410,7 +13412,7 @@
 						if GetNumGroupMembers() > 0 then
 							local name = GetRaidRosterInfo(i)
 							if name and name ~= UnitName("player") then
-								UninviteUnit(name)
+								C_PartyInfo.UninviteUnit(name)
 							end
 						end
 					end
@@ -13429,7 +13431,7 @@
 							if GetNumGroupMembers() > 0 then
 								local name = GetRaidRosterInfo(i)
 								if name and name ~= UnitName("player") then
-									UninviteUnit(name)
+									C_PartyInfo.UninviteUnit(name)
 									tinsert(groupNames, name)
 								end
 							end

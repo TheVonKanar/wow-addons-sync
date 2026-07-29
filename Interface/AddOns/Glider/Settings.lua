@@ -1,7 +1,7 @@
-local addonName = ... ---@type string "Glider"
-local ns = select(2,...) ---@class (partial) ns
+local addonName = ... ---@type string
+local ns = select(2,...) ---@type addonNamespace
 
----@class (partial) Glider
+---@type Glider
 local Glider = ns.GliderUI
 ---@class GliderSettings
 local GliderSettings = {}
@@ -289,8 +289,9 @@ function GliderSettings:SetupLayout(layoutName)
   anchorFrame:ClearAllPoints()
   anchorFrame:SetPoint(layout.point, Round(layout.x), Round(layout.y))
   Glider:SetScale(layout.scale or 1)
+  ---@diagnostic disable-next-line
   Glider.VigorCharge:SetEdgeTexture(layout.scale > 1 and [[Interface\AddOns\Glider\Media\VigorEdge2x.tga]] or
-    [[Interface\AddOns\Glider\Media\VigorEdge.tga]]) ---@diagnostic disable-line
+    [[Interface\AddOns\Glider\Media\VigorEdge.tga]])
 
   Glider.VigorCharge:SetSwipeColor(1, 1, 1, 1)
   Glider.secondWindCharge:SetSwipeColor(1, 1, 1, 0.4)
@@ -398,7 +399,7 @@ LEM:AddFrameSettings(anchorFrame, {
     get = function(layoutName)
       layoutName = GliderSettings:GetCurrentLayoutName(layoutName)
       local c = GliderAddOnDB.Settings[layoutName].customColor
-      return CreateColor(c.r, c.g, c.b, c.a) ---@diagnostic disable-line
+      return CreateColor(c.r, c.g, c.b, c.a)
     end,
     set = function(layoutName, value)
       layoutName = GliderSettings:GetCurrentLayoutName(layoutName)

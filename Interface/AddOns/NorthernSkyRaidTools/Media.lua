@@ -47,6 +47,12 @@ NSI.LSM:Register("sound","|cFF4BAAC8DropPool|r", [[Interface\Addons\NorthernSkyR
 NSI.LSM:Register("sound","|cFF4BAAC8Obelisk|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Obelisk.ogg]])
 NSI.LSM:Register("sound","|cFF4BAAC8HealAbsorb|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\HealAbsorb.ogg]])
 NSI.LSM:Register("sound","|cFF4BAAC8Feather|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Feather.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Shroom|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Shroom.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Fung|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Fung.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Right|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Right.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Left|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Left.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Ranged|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Ranged.ogg]])
+NSI.LSM:Register("sound","|cFF4BAAC8Boss|r", [[Interface\Addons\NorthernSkyRaidTools\Media\Sounds\Boss.ogg]])
 --Fonts
 NSI.LSM:Register("font","Expressway", [[Interface\Addons\NorthernSkyRaidTools\Media\Fonts\Expressway.TTF]])
 --StatusBars

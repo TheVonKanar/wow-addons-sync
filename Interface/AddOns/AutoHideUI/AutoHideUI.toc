@@ -1,5 +1,5 @@
-## Interface: 120005
-## Version: 1.1.13
+## Interface: 120007
+## Version: 1.2.13
 ## Title: Auto Hide UI
 ## Notes: Automatically fades out UI elements of your choice.|nFades them back in when certain conditions (like combat or mouseover) are met.|n|n/autohide or /autohideui or|n Esc => Options => AddOns => AutoHideUI
 ## Author: Thovald
@@ -12,10 +12,23 @@
 embeds.xml
 Locales/Locales.xml
 
+Widgets/AutoHideUI_ToggleHover.lua
+Widgets/WidgetTemplate-ToggleIcon.lua
+Widgets/AutoHideUI_ToggleCog.lua
+Widgets/AutoHideUI_ToggleExpand.lua
+Widgets/AutoHideUI_ToggleStar.lua
+Widgets/AutoHideUI_ChangelogAnchor.lua
+Widgets/AutoHideUI_TabTracker.lua
+
 Core.lua
-Options.lua
+
+Options\Options.lua
+Options\Options-Changelog.lua
+Options\Options-ManualControl.lua
+Options\Options-Conditions.lua
+Options\Options-Frames.lua
+
 Modules\Fading.lua
 Modules\Frames.lua
 Modules\FrameFinder.lua
 Modules\MouseoverAreas.lua
-

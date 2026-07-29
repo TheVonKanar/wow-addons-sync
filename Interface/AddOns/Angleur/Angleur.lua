@@ -60,7 +60,6 @@ local function CheckTable(table ,spell)
     return matchFound
 end
 
-
 local function isChosenKeyDown()
     if AngleurConfig.chosenMethod == "doubleClick"  then
         if not AngleurConfig.doubleClickChosenID then
@@ -177,19 +176,18 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
             Angleur_TempCVarHandler:Set("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard")
             firstCast = false
         end
-        if AngleurConfig.ultraFocusAudioEnabled then 
-            Angleur_TempCVarHandler:Set("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
-            Angleur_TempCVarHandler:Set("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
+        if AngleurConfig.ultraFocusAudioEnabled then
+            Angleur_TempCVars_ToggleUltraFocusAudio(true, "Cast/Reel")
         end
         if AngleurConfig.ultraFocusAutoLootEnabled then
             Angleur_TempCVarHandler:Set("autoLootDefault")
         end
         if Angleur_TinyOptions.turnOffSoftInteract then Angleur_TempCVarHandler:Set("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard") end
+        Angleur_RecastReminder_Start(arg5)
     elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" and not issecretvalue(unit) and unit == "player" then
         if issecretvalue(arg5) then return end
         if not CheckTable(fishingSpellTable, arg5) then return end
-        Angleur_TempCVarHandler:Release("Sound_EnableMusic", "Sound_EnableAmbience", "Sound_EnableDialog", "Sound_EnableSFX", "Sound_EnableAllSound")
-        Angleur_TempCVarHandler:Release("Sound_MasterVolume", "Sound_SFXVolume", "Sound_MusicVolume", "Sound_DialogVolume", "Sound_AmbienceVolume")
+        Angleur_TempCVars_ToggleUltraFocusAudio(false, "Cast/Reel")
         Angleur_TempCVarHandler:Release("autoLootDefault")
         if Angleur_TinyOptions.turnOffSoftInteract then Angleur_TempCVarHandler:Release("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard") end
         if isChosenKeyDown() == false then
@@ -207,6 +205,7 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
                 EventRegistry:TriggerEvent("Angleur_StopFishing")
             end)
         end
+        Angleur_RecastReminder_Stop()
     elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" or event == "UPDATE_SHAPESHIFT_FORM" then
         if checkMounted() then
             mounted = true
@@ -413,7 +412,6 @@ function Angleur_ActionHandler(self)
         return
     end
     
-    
     --______________________________________________________________________________________________________________________________________
     --              Interaction of Raft & Swimming - A bit more complex logic structure, hence the grouping together 
     --______________________________________________________________________________________________________________________________________
@@ -590,8 +588,8 @@ function Angleur_ActionHandler_ExtraItems(self, assignKey)
     end
     return returnValue
 end
-
 --***********[~]**********
+
 function Angleur_FishingForAttentionAura()
     if InCombatLockdown() then return end
     local fishingAura = C_UnitAuras.GetPlayerAuraBySpellID(394009)
@@ -606,7 +604,6 @@ function Angleur_FishingForAttentionAura()
     end
 end
 
-
 function Angleur_SetSleep()
     if AngleurCharacter.sleeping == true then
         --no need to do combat delay, angleur clears override bindings when entering combat anyway
@@ -620,6 +617,7 @@ function Angleur_SetSleep()
         if Angleur_TinyOptions.turnOffSoftInteract == true then
             Angleur_TempCVarHandler:Release("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard")
         end
+        Angleur_TempCVars_ToggleUltraFocusAudio(false, "Sleep/Wake")
         if AngleurConfig.ultraFocusAudioEnabled == true then
             Angleur_TempCVarHandler:Release("Sound_EnableSoundWhenGameIsInBG")
         end
@@ -631,6 +629,7 @@ function Angleur_SetSleep()
         Angleur.configPanel.tab2:DesaturateHierarchy(0)
         Angleur.configPanel.wakeUpButton:Hide()
         Angleur.configPanel.decoration:Show()
+        Angleur_TempCVars_ToggleUltraFocusAudio(true, "Sleep/Wake")
         if AngleurConfig.ultraFocusAudioEnabled == true and AngleurAudio.checkboxes.toggleBG == true then
             Angleur_TempCVarHandler:Set("Sound_EnableSoundWhenGameIsInBG")
         end

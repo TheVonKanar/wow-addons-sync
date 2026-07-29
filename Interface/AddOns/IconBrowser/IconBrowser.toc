@@ -1,6 +1,6 @@
-## Interface: 120000, 120001, 120005
+## Interface: 120005, 120007
 ## Author: Keyboardturner
-## Version: 0.0.6
+## Version: 0.0.7
 ## Title: Icon Browser
 ## Notes: A replacement icon browser for macros, bank, and transmog with a search bar and preset filters.
 ## IconTexture: Interface/MacroFrame/MacroFrame-Icon.blp

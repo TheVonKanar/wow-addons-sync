@@ -287,6 +287,10 @@ end
 
 
 function DUIDialogSettingsMixin:DisplayOptionInfo(optionData, choiceTooltip)
+    if not optionData then
+        optionData = {};
+    end
+
     local hasPreview;
 
     if optionData.preview then
@@ -542,7 +546,12 @@ local function UseItemHotkey_Tooltip()
     elseif deviceID == 4 then
         return L["Press Key To Use Item Desc Switch"]
     else
-        return L["Press Key To Use Item Desc PC"]
+        local key = addon.DeviceUtil:GetKeyByFunction("Action");
+        if key == "SPACE" then
+            return L["Press Key To Use Item Desc PC"]
+        else
+            return L["Press Key To Use Item Desc Generic"]:format(key or L["Not Bound"])
+        end
     end
 end
 
@@ -1422,6 +1431,7 @@ end
 function DUIDialogSettingsOptionMixin:OnLeave()
     if not self:IsMouseOver() then
         MainFrame:HighlightButton(nil);
+        MainFrame:DisplayOptionInfo();
     end
 end
 
@@ -2002,7 +2012,11 @@ do  --DropdownButton
 
     function DUIDialogSettingsDropdownButtonMixin:SetValueTextByID(id)
         if self.valueTextFormatter then
-            self.valueTextFormatter(self, self.choices[id].dbValue, INPUT_DEVICE_GAME_PAD);
+            if self.choices and self.choices[id] then
+                self.valueTextFormatter(self, self.choices[id].dbValue, INPUT_DEVICE_GAME_PAD);
+            else
+                self.ValueText:SetText("-"); -- Invalid Choice
+            end
         else
             self.ValueText:SetText(id);
         end

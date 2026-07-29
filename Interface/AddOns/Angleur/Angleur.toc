@@ -1,8 +1,8 @@
-## Interface: 120001, 120005
+## Interface: 120001, 120005, 120007
 ## Title: Angleur
 ## Notes: The Ultimate One Button Fishing AddOn - Now with an Auto-Equip Feature!
 ## Notes-ruRU: Лучший однокнопочный рыболовный аддон — теперь с функцией автоматического оснащения!
-## Version: Angleur 2.9.52
+## Version: Angleur 2.9.6
 ## Author: LegolandoBloom
 ## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial
 ## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars, AngleurAudio
@@ -57,12 +57,16 @@ firstInstall.lua
 advancedAngling.lua
 slashcommands.lua
 minimap.lua
+addonsTab.lua
 addonCompartment.lua
 animations.xml
 platerClash.lua
+audio.lua
 midnight.lua
 
 Angleur.xml
 
+
+thanks\thanksTemplates.xml
 thanks\thanks.lua
 thanks\thanks.xml

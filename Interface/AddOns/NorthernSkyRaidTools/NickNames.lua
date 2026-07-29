@@ -35,10 +35,6 @@ function NSAPI:GetName(str, AddonName) -- Returns Nickname
         return unitname
     end
 
-    if not str then
-        error("NSAPI:GetName(str), str is nil")
-        return
-    end
     if UnitExists(str) then
         local name, realm = UnitFullName(str)
         if not realm then
@@ -87,6 +83,14 @@ function NSAPI:GetChar(name, nick, AddonName) -- Returns Char in Raid from Nickn
         end
     end
     return name -- Return input if nothing was found
+end
+
+function NSAPI:ImportNickNames(importString) -- string format is charactername-realm:nickname;charactername-realm:nickname;...
+    return NSI:ImportNickNames(importString)
+end
+
+function NSAPI:SyncNickNames()
+    return NSI:SyncNickNames()
 end
 
 -- Own NickName Change
@@ -435,7 +439,6 @@ function NSI:InitNickNames()
         end
     end
 
-    C_AddOns.LoadAddOn("UnhaltedUnitFrames")
     if UUFG then
         UUFG:AddTag("NSNickName", "UNIT_NAME_UPDATE", function(unit)
             local name = UnitName(unit)
@@ -443,7 +446,6 @@ function NSI:InitNickNames()
         end, "Name", "[NSRT] NickName")
     end
 
-    C_AddOns.LoadAddOn("VuhDo")
     self:VuhDoNickNameUpdated()
 end
 

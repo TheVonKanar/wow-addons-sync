@@ -2,52 +2,32 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-},
 ["global"] = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
 ["defaults"] = {
 ["fontFace"] = "Fira Sans Condensed Bold",
 ["expirationThreshold"] = 5,
-["missingGlowSize"] = 2,
 ["glowXOffset"] = -1,
 ["missingGlowXOffset"] = -1,
 ["glowType"] = 1,
 ["missingGlowYOffset"] = -1,
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
-["showExpirationGlow"] = false,
 ["glowYOffset"] = -1,
+["missingGlowSize"] = 2,
 ["consumableDisplayMode"] = "expanded",
 },
-["customBuffs"] = {
-},
-["enabledBuffs"] = {
-["intellect"] = true,
-["blisteringScales"] = true,
-["bronze"] = true,
-["devotionAura"] = true,
-["versatility"] = true,
-["attackPower"] = true,
-["warriorWrongStance"] = false,
-["atrophicNumbingPoison"] = true,
-["symbioticRelationship"] = true,
-["shamanShields"] = true,
-["druidWrongForm"] = false,
-["earthShieldOthers"] = false,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["soulstone"] = true,
-["beacons"] = true,
-["burningRush"] = false,
-},
+["buffTrackingMode"] = "my_buffs",
+["hideAllInVehicle"] = true,
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
@@ -65,6 +45,9 @@ BuffRemindersDB = {
 1,
 },
 },
+["targeted"] = {
+["showText"] = true,
+},
 ["consumable"] = {
 ["showText"] = true,
 ["priority"] = 5,
@@ -77,9 +60,6 @@ BuffRemindersDB = {
 ["presence"] = {
 ["showText"] = true,
 },
-["targeted"] = {
-["showText"] = true,
-},
 ["raid"] = {
 ["showText"] = true,
 ["showBuffReminder"] = false,
@@ -88,7 +68,12 @@ BuffRemindersDB = {
 },
 ["readyCheckOnlyOverrides"] = {
 },
-["dbVersion"] = 40,
+["categoryVisibility"] = {
+["custom"] = {
+["hideInPvPMatch"] = true,
+["pvp"] = true,
+},
+},
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -97,18 +82,32 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 [264] = {
-["flask"] = 1235108,
 ["food"] = 1232917,
+["flask"] = 1235108,
 },
 },
-["hideAllInVehicle"] = true,
-["categoryVisibility"] = {
-["custom"] = {
-["pvp"] = true,
-["hideInPvPMatch"] = true,
+["enabledBuffs"] = {
+["intellect"] = true,
+["blisteringScales"] = true,
+["bronze"] = true,
+["devotionAura"] = true,
+["versatility"] = true,
+["attackPower"] = true,
+["warriorWrongStance"] = false,
+["atrophicNumbingPoison"] = true,
+["symbioticRelationship"] = true,
+["beacons"] = true,
+["soulstone"] = true,
+["earthShieldOthers"] = false,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["druidWrongForm"] = false,
+["shamanShields"] = true,
+["burningRush"] = false,
 },
+["customBuffs"] = {
 },
-["buffTrackingMode"] = "my_buffs",
+["dbVersion"] = 49,
 },
 },
 }

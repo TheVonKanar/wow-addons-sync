@@ -10,6 +10,27 @@ ns.Options = ns.Options or {}
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceDB = LibStub("AceDB-3.0")
+local LSM = LibStub("LibSharedMedia-3.0", true)
+
+local function GetGlobalFontValues()
+  local fonts = { ["Friz Quadrata TT"] = "Friz Quadrata TT" }
+  if LSM then
+    for _, name in pairs(LSM:List("font")) do
+      fonts[name] = name
+    end
+  end
+  return fonts
+end
+
+local function GetGlobalStatusBarTextureValues()
+  local textures = { ["Blizzard"] = "Blizzard", ["Smooth"] = "Smooth" }
+  if LSM then
+    for _, name in pairs(LSM:List("statusbar")) do
+      textures[name] = name
+    end
+  end
+  return textures
+end
 
 -- Profile browser collapsed state (defaults closed)
 local profileBrowserCollapsed = true
@@ -26,6 +47,14 @@ if not AceConfigDialog._arcUIHooked then
     hooksecurefunc(AceConfigDialog, "Close", function(self, appName)
         if appName == "ArcUI" then
             ns._arcUIOptionsOpen = false
+            -- Re-evaluate aura textures (hide previews, disable movers)
+            if ns.Textures and ns.Textures.OnOptionsClosed then
+                ns.Textures.OnOptionsClosed()
+            end
+            -- Make cooldown bars click-through again
+            if ns.CooldownBars and ns.CooldownBars.RefreshMouseInteractivity then
+                ns.CooldownBars.RefreshMouseInteractivity()
+            end
             -- Fire registered panel callbacks (ArcAurasCooldown, SpellUsability, etc.)
             if ns.CDMShared and ns.CDMShared.FirePanelCallbacks then
                 ns.CDMShared.FirePanelCallbacks(false)
@@ -196,7 +225,17 @@ ns.API.OpenOptions = function()
   if ns.Resources and ns.Resources.RefreshAllBars then
     ns.Resources.RefreshAllBars()
   end
-  
+
+  -- Refresh aura textures so they preview (and become draggable) while open
+  if ns.Textures and ns.Textures.RefreshAll then
+    ns.Textures.RefreshAll()
+  end
+
+  -- Cooldown bars become draggable while open; click-through when closed
+  if ns.CooldownBars and ns.CooldownBars.RefreshMouseInteractivity then
+    ns.CooldownBars.RefreshMouseInteractivity()
+  end
+
   -- Show "Hidden by Bar" overlays on CDM icons that are being hidden
   C_Timer.After(0.1, function()
     if ns.API.ShowHiddenByBarOverlays then
@@ -263,6 +302,13 @@ ns.API.OpenOptions = function()
           
           -- Clear options open flag (backup - Close hook also does this)
           ns._arcUIOptionsOpen = false
+          -- Backup: re-evaluate textures + cooldown bar click-through
+          if ns.Textures and ns.Textures.OnOptionsClosed then
+              ns.Textures.OnOptionsClosed()
+          end
+          if ns.CooldownBars and ns.CooldownBars.RefreshMouseInteractivity then
+              ns.CooldownBars.RefreshMouseInteractivity()
+          end
           -- Fire registered panel callbacks (backup path)
           if ns.CDMShared and ns.CDMShared.FirePanelCallbacks then
               ns.CDMShared.FirePanelCallbacks(false)
@@ -345,7 +391,7 @@ local function GetOptionsTable()
     args = {
       icons = {
         type = "group",
-        name = "Icons (CDM)",
+        name = "Icons",
         order = 1,
         childGroups = "tab",
         args = {
@@ -363,10 +409,10 @@ local function GetOptionsTable()
           cdmIcons = (function()
             local tbl = ns.GetCDMIconsOptionsTable and ns.GetCDMIconsOptionsTable() or {
               type = "group",
-              name = "CDM Icons",
+              name = "Icon Catalog",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "CDM Icons"
+            tbl.name = "Icon Catalog"
             tbl.order = 2
             return tbl
           end)(),
@@ -374,7 +420,7 @@ local function GetOptionsTable()
           defaults = {
             type = "group",
             name = "Globals",
-            order = 3,
+            order = 5,
             childGroups = "tab",
             args = {
               auraDefaults = (function()
@@ -409,19 +455,41 @@ local function GetOptionsTable()
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
             tbl.name = "Extras"
-            tbl.order = 4
+            tbl.order = 6
             return tbl
           end)(),
           
-          -- Arc Auras tab (Custom Item Tracking)
+          -- Arc Icons tab (tracked trinkets / items / spells)
           arcAuras = (function()
             local tbl = ns.GetArcAurasOptionsTable and ns.GetArcAurasOptionsTable() or {
               type = "group",
-              name = "Arc Auras",
+              name = "Arc Icons",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "Arc Auras"
-            tbl.order = 5
+            -- Custom Icons is now its OWN top-level tab (below). Strip the nested
+            -- copy, and flatten the lone "Main" child so Arc Icons shows its
+            -- catalog directly instead of behind a redundant sub-tab.
+            if tbl.args then
+              tbl.args.customIcons = nil
+              if tbl.args.main and tbl.args.main.args then
+                tbl.args = tbl.args.main.args
+                tbl.childGroups = nil
+              end
+            end
+            tbl.name = "Arc Icons"
+            tbl.order = 3
+            return tbl
+          end)(),
+
+          -- Custom Icons tab (timers) — pulled up out of Arc Icons for visibility
+          customIcons = (function()
+            local tbl = ns.GetCustomIconsOptionsTable and ns.GetCustomIconsOptionsTable() or {
+              type = "group",
+              name = "Custom Icons",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Custom Icons"
+            tbl.order = 4
             return tbl
           end)(),
           
@@ -478,7 +546,7 @@ local function GetOptionsTable()
             return {
               type = "group",
               name = "Profiles",
-              order = 6,
+              order = 7,
               args = mergedArgs,
             }
           end)(),
@@ -487,54 +555,51 @@ local function GetOptionsTable()
             if ns.CDMSharedProfiles and ns.CDMSharedProfiles.GetOptionsTable then
               local tbl = ns.CDMSharedProfiles.GetOptionsTable()
               tbl.name = "Account Sharing"
-              tbl.order = 7
+              tbl.order = 8
               return tbl
             end
             return {
               type = "group",
               name = "Account Sharing",
-              order = 7,
+              order = 8,
               args = { loading = { type = "description", name = "Loading...", order = 1 } },
             }
           end)(),
         },
       },
       
-      bars = {
+      -- ═══════════════════════════════════════════════════════════════
+      -- AURAS: buff/debuff tracking. One catalog (Bars) where you pick an
+      -- aura and create a bar or a texture, plus the shared Appearance.
+      -- ═══════════════════════════════════════════════════════════════
+      auras = {
         type = "group",
-        name = "Bars",
+        name = "Buffs/Debuffs",
         order = 2,
         childGroups = "tab",
         args = {
-          auraBars = ns.TrackingOptions and ns.TrackingOptions.GetBuffDebuffSetupTable() or {
-            type = "group",
-            name = "Aura Bars",
-            order = 1,
-            args = { loading = { type = "description", name = "Loading...", order = 1 } }
-          },
-          
-          cooldownBars = (function()
-            local tbl = ns.CooldownBarOptions and ns.CooldownBarOptions.GetOptionsTable() or {
+          auraBars = (function()
+            local tbl = ns.TrackingOptions and ns.TrackingOptions.GetBuffDebuffSetupTable() or {
               type = "group",
-              name = "Cooldown Bars",
+              name = "Catalog",
               args = { loading = { type = "description", name = "Loading...", order = 1 } }
             }
-            tbl.name = "Cooldown Bars"
+            tbl.name = "Catalog"
+            tbl.order = 1
+            return tbl
+          end)(),
+
+          textures = (function()
+            local tbl = ns.GetTexturesOptionsTable and ns.GetTexturesOptionsTable() or {
+              type = "group",
+              name = "Textures",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Textures"
             tbl.order = 2
             return tbl
           end)(),
-          
-          timerBars = (function()
-            local tbl = ns.TimerBarOptions and ns.TimerBarOptions.GetOptionsTable() or {
-              type = "group",
-              name = "Custom Bars",
-              args = { loading = { type = "description", name = "Loading...", order = 1 } }
-            }
-            tbl.name = "Custom Bars"
-            tbl.order = 2.5
-            return tbl
-          end)(),
-          
+
           appearance = (function()
             local tbl = ns.AppearanceOptions and ns.AppearanceOptions.GetOptionsTable() or {
               type = "group",
@@ -545,13 +610,69 @@ local function GetOptionsTable()
             tbl.order = 3
             return tbl
           end)(),
+
         },
       },
-      
+
+      -- ═══════════════════════════════════════════════════════════════
+      -- COOLDOWNS: spell cooldown / charge / custom-timer bars + castbar.
+      -- ═══════════════════════════════════════════════════════════════
+      cooldowns = {
+        type = "group",
+        name = "Cooldowns",
+        order = 3,
+        childGroups = "tab",
+        args = {
+          cooldownBars = (function()
+            local tbl = ns.CooldownBarOptions and ns.CooldownBarOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Cooldown Bars",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Cooldown Bars"
+            tbl.order = 1
+            return tbl
+          end)(),
+
+          timerBars = (function()
+            local tbl = ns.TimerBarOptions and ns.TimerBarOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Custom Bars",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Custom Bars"
+            tbl.order = 2
+            return tbl
+          end)(),
+
+          cooldownReminder = (function()
+            local tbl = ns.GetCooldownReminderOptionsTable and ns.GetCooldownReminderOptionsTable() or {
+              type = "group",
+              name = "Cooldown Reminder",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Cooldown Reminder"
+            tbl.order = 3
+            return tbl
+          end)(),
+
+          appearance = (function()
+            local tbl = ns.AppearanceOptions and ns.AppearanceOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Appearance",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Appearance"
+            tbl.order = 4
+            return tbl
+          end)(),
+        },
+      },
+
       resources = {
         type = "group",
         name = "Resources",
-        order = 3,
+        order = 4,
         childGroups = "tab",
         args = {
           setup = (function()
@@ -585,7 +706,7 @@ local function GetOptionsTable()
       importExport = {
         type = "group",
         name = "Import/Export",
-        order = 4,
+        order = 7,
         childGroups = "tab",
         args = {
           cdmExport = (function()
@@ -632,6 +753,17 @@ local function GetOptionsTable()
             return tbl
           end)(),
 
+          castbarExport = (function()
+            local tbl = ns.GetCastbarExportOnlyOptionsTable and ns.GetCastbarExportOnlyOptionsTable() or {
+              type = "group",
+              name = "Castbar Export",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name = "Castbar Export"
+            tbl.order = 3.7
+            return tbl
+          end)(),
+
           unifiedImport = (function()
             local tbl = ns.GetUnifiedImportExportOptionsTable and ns.GetUnifiedImportExportOptionsTable() or {
               type = "group",
@@ -652,25 +784,54 @@ local function GetOptionsTable()
           args = { loading = { type = "description", name = "Loading...", order = 1 } }
         }
         tbl.name  = "Migration"
-        tbl.order = 5
+        tbl.order = 8
         return tbl
       end)(),
 
-      cooldownReminder = (function()
-        local tbl = ns.GetCooldownReminderOptionsTable and ns.GetCooldownReminderOptionsTable() or {
+      castbar = {
+        type        = "group",
+        name        = "Castbar",
+        order       = 5,
+        childGroups = "tab",
+        args        = {
+          playerCastbar = (function()
+            local tbl = ns.CastbarOptions and ns.CastbarOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Player Castbar",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name  = "Player Castbar"
+            tbl.order = 1
+            return tbl
+          end)(),
+          focusCastbar = (function()
+            local tbl = ns.FocusCastbarOptions and ns.FocusCastbarOptions.GetOptionsTable() or {
+              type = "group",
+              name = "Focus Castbar",
+              args = { loading = { type = "description", name = "Loading...", order = 1 } }
+            }
+            tbl.name  = "Focus Castbar"
+            tbl.order = 2
+            return tbl
+          end)(),
+        },
+      },
+
+      setMyKick = (function()
+        local tbl = ns.GetSetMyKickOptionsTable and ns.GetSetMyKickOptionsTable() or {
           type = "group",
-          name = "Cooldown Reminder",
+          name = "Kick Assist",
           args = { loading = { type = "description", name = "Loading...", order = 1 } }
         }
-        tbl.name  = "Cooldown Reminder"
-        tbl.order = 3.5
+        tbl.name  = "Kick Assist"
+        tbl.order = 6
         return tbl
       end)(),
 
       settings = {
         type = "group",
         name = "Settings",
-        order = 6,
+        order = 9,
         args = {
           menuHeader = {
             type = "header",
@@ -703,6 +864,67 @@ local function GetOptionsTable()
             end,
           },
           
+          fontTextureHeader = {
+            type = "header",
+            name = "Global Font & Texture",
+            order = 3,
+          },
+          fontTextureDesc = {
+            type = "description",
+            name = "|cffaaaaaaPick a font and statusbar texture once, then push them onto everything: every aura, resource, cooldown, and timer bar, both castbars, and every CDM icon group's cooldown/stack text, custom labels, and keybind text -- no need to set it in each group individually. This updates everything in place; anything can still be customized afterward.|r",
+            order = 4,
+            fontSize = "medium",
+          },
+          globalFont = {
+            type = "select",
+            dialogControl = "LSM30_Font",
+            name = "Font",
+            order = 5,
+            width = 1.2,
+            values = GetGlobalFontValues,
+            get = function()
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              return g and g.globalFont or "Friz Quadrata TT"
+            end,
+            set = function(_, val)
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              if g then g.globalFont = val end
+            end,
+          },
+          globalBarTexture = {
+            type = "select",
+            dialogControl = "LSM30_Statusbar",
+            name = "Statusbar Texture",
+            order = 6,
+            width = 1.2,
+            values = GetGlobalStatusBarTextureValues,
+            get = function()
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              return g and g.globalBarTexture or "Blizzard"
+            end,
+            set = function(_, val)
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              if g then g.globalBarTexture = val end
+            end,
+          },
+          globalFontTextureApply = {
+            type = "execute",
+            name = "Apply to All Bars",
+            desc = "Push the font and texture above onto every existing aura, resource, cooldown, and timer bar, the player and focus castbars, and the font onto every CDM icon group's cooldown/stack text, custom labels, and keybind text.",
+            order = 7,
+            width = 1.5,
+            confirm = true,
+            confirmText = "This will overwrite the font and statusbar texture on every bar, castbar, and icon group you have configured. Continue?",
+            func = function()
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              local font = g and g.globalFont or "Friz Quadrata TT"
+              local texture = g and g.globalBarTexture or "Blizzard"
+              if ns.API.ApplyGlobalFontTexture then
+                ns.API.ApplyGlobalFontTexture(font, texture)
+              end
+            end,
+          },
+
           minimapHeader = {
             type = "header",
             name = "Minimap",
@@ -731,6 +953,40 @@ local function GetOptionsTable()
             end,
           },
           
+          changelogHeader = {
+            type = "header",
+            name = "Changelog",
+            order = 20
+          },
+          changelogShow = {
+            type = "toggle",
+            name = "Show Changelog on Update",
+            desc = "Automatically pop up the 'What's New' window once after each ArcUI update.",
+            order = 21,
+            width = 1.8,
+            get = function()
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              return not (g and g.changelog and g.changelog.disabled)
+            end,
+            set = function(_, val)
+              local g = ns.API.GetGlobalDB and ns.API.GetGlobalDB()
+              if g then
+                g.changelog = g.changelog or {}
+                g.changelog.disabled = not val
+              end
+            end,
+          },
+          changelogView = {
+            type = "execute",
+            name = "View Changelog",
+            desc = "Open the 'What's New' window now.",
+            order = 22,
+            width = 1.2,
+            func = function()
+              if ns.Changelog and ns.Changelog.Show then ns.Changelog.Show() end
+            end,
+          },
+
           aboutHeader = {
             type = "header",
             name = "About",
@@ -766,7 +1022,13 @@ end
 -- OPTIONS REGISTRATION
 -- ===================================================================
 local function RegisterOptions()
-  AceConfig:RegisterOptionsTable("ArcUI", GetOptionsTable)
+  -- skipValidation=true (3rd arg, AceConfigRegistry direct): every edit in an
+  -- open panel triggers NotifyChange → re-fetch → full recursive VALIDATION of
+  -- the entire tree on top of the rebuild. The lib documents skipValidation as
+  -- "primarily useful for extremely huge options, with a noticeable slowdown"
+  -- — which is exactly this tree. (AceConfig:RegisterOptionsTable's 3rd arg is
+  -- a slash command, not skipValidation, hence the direct registry call.)
+  LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("ArcUI", GetOptionsTable, true)
   AceConfigDialog:SetDefaultSize("ArcUI", 900, 700)
   optionsRegistered = true
 end
@@ -941,6 +1203,130 @@ SlashCmdList["ARCBARS"] = function(msg)
 end
 
 -- ===================================================================
+-- /arcdebug  — full system overview
+-- ===================================================================
+SLASH_ARCDEBUG1 = "/arcdebug"
+SlashCmdList["ARCDEBUG"] = function()
+  local ver = C_AddOns.GetAddOnMetadata(ADDON, "Version") or "?"
+  local db  = ns.db and ns.db.char
+
+  local sep = "|cff444444" .. string.rep("-", 44) .. "|r"
+  local function yn(v)  return v and "|cff00ff00yes|r" or "|cffff5555no|r" end
+  local function hi(s)  return "|cffffd100" .. tostring(s) .. "|r" end
+  local function dim(s) return "|cff888888" .. tostring(s) .. "|r" end
+
+  print(sep)
+  print("|cff00ccffArcUI|r v" .. hi(ver) .. "   " .. dim(date("%H:%M:%S")) .. "   combat=" .. yn(InCombatLockdown()))
+  print(sep)
+
+  -- Castbar
+  if ns.Castbar and ns.Castbar.GetStatus then
+    local s = ns.Castbar.GetStatus()
+    local detail = ""
+    if s.enabled and s.castActive then
+      local stages = s.castEmpowerStages > 0 and (" x" .. s.castEmpowerStages) or ""
+      detail = "  " .. dim("[" .. s.castKind .. stages .. "]")
+    end
+    print("  Castbar       " .. yn(s.enabled) .. detail)
+    if s.enabled then
+      local flags = {}
+      if s.hideChannels    then flags[#flags+1] = "hide-channels" end
+      if s.hideOutOfCombat then flags[#flags+1] = "hide-ooc"      end
+      if #flags > 0 then print("    " .. dim(table.concat(flags, "  "))) end
+    end
+  else
+    print("  Castbar       " .. dim("module not loaded"))
+  end
+
+  -- Aura bars — tracking.enabled is the active flag (same logic as GetActiveBars)
+  do
+    local activeCount = ns.API.GetActiveBars and #ns.API.GetActiveBars() or 0
+    local total = 0
+    if db and db.bars then
+      for i = 1, 500 do if db.bars[i] then total = total + 1 end end
+    end
+    print("  Aura Bars     " .. hi(activeCount) .. " enabled / " .. dim(total .. " configured"))
+  end
+
+  -- Resource bars — tracking.enabled (same logic as GetActiveResourceBars)
+  do
+    local activeCount = ns.API.GetActiveResourceBars and #ns.API.GetActiveResourceBars() or 0
+    local total = 0
+    if db and db.resourceBars then
+      for i = 1, 50 do if db.resourceBars[i] then total = total + 1 end end
+    end
+    print("  Resource Bars " .. hi(activeCount) .. " enabled / " .. dim(total .. " configured"))
+  end
+
+  -- Cooldown bars (nested: cooldownBarConfigs[spellID][barType])
+  do
+    local cdTotal = 0
+    if db and db.cooldownBarConfigs then
+      for _, configs in pairs(db.cooldownBarConfigs) do
+        for _, cfg in pairs(configs) do
+          if type(cfg) == "table" then cdTotal = cdTotal + 1 end
+        end
+      end
+    end
+    print("  Cooldown Bars " .. hi(cdTotal) .. " configured")
+  end
+
+  -- Timer bars
+  do
+    local total = 0
+    if db and db.timerBarConfigs then
+      for _, cfg in pairs(db.timerBarConfigs) do
+        if type(cfg) == "table" then total = total + 1 end
+      end
+    end
+    print("  Timer Bars    " .. hi(total) .. " configured")
+  end
+
+  -- Cooldown Reminder
+  do
+    local crDB = db and db.cooldownReminder
+    print("  CD Reminder   " .. yn(crDB and crDB.enabled))
+  end
+
+  print(sep)
+
+  -- CDM Enhancement
+  if ns.CDMShared then
+    print("  CDM Enhance   " .. yn(ns.CDMShared.IsCDMStylingEnabled()))
+  else
+    print("  CDM Enhance   " .. dim("module not loaded"))
+  end
+
+  -- CDM Groups
+  if ns.CDMGroups then
+    local groupCount, freeCount = 0, 0
+    if ns.CDMGroups.groups then
+      for _ in pairs(ns.CDMGroups.groups) do groupCount = groupCount + 1 end
+    end
+    if ns.CDMGroups.freeIcons then
+      for _ in pairs(ns.CDMGroups.freeIcons) do freeCount = freeCount + 1 end
+    end
+    print("  CDM Groups    " .. hi(groupCount) .. " groups / " .. hi(freeCount) .. " free icons")
+  else
+    print("  CDM Groups    " .. dim("module not loaded"))
+  end
+
+  -- Arc Auras
+  if ns.ArcAuras then
+    local arcCount = 0
+    local frames = ns.ArcAuras.frames or {}
+    for _ in pairs(frames) do arcCount = arcCount + 1 end
+    print("  Arc Auras     " .. hi(arcCount) .. " tracked")
+  else
+    print("  Arc Auras     " .. dim("module not loaded"))
+  end
+
+  print(sep)
+  print(dim("  /arcui  /arccastdebug  /arcmasque  /arcrepair"))
+  print(sep)
+end
+
+-- ===================================================================
 -- MAIN INITIALIZATION
 -- ===================================================================
 local initFrame = CreateFrame("Frame")
@@ -974,33 +1360,19 @@ initFrame:SetScript("OnEvent", function(self, event)
   
   if event == "PLAYER_LOGIN" then
     -- ═══════════════════════════════════════════════════════════════════
-    -- ACEDB INITIALIZATION WITH ERROR HANDLING
+    -- ACEDB INITIALIZATION
+    -- pcall is banned in ArcUI, so instead of catching an AceDB failure we
+    -- pre-sanitize the raw SavedVariable: a corrupted, non-table ArcUIDB is the
+    -- one thing that makes AceDB:New throw. Reset it to nil and let AceDB rebuild
+    -- from defaults. Valid saved data is left untouched.
     -- ═══════════════════════════════════════════════════════════════════
-    local dbSuccess, dbError = pcall(function()
-      ns.db = AceDB:New("ArcUIDB", ns.DB_DEFAULTS, true)
-    end)
-    
-    if not dbSuccess then
-      -- Database failed to load - likely corrupted
-      print("|cff00ccffArc UI|r |cffff0000ERROR:|r Database failed to load!")
-      print("|cff00ccffArc UI|r Error: " .. tostring(dbError))
-      print("|cff00ccffArc UI|r Type |cffff0000/arcui reset-db|r to reset settings and fix this.")
-      
-      -- Create a minimal database so the addon doesn't completely break
-      ns.db = {
-        char = {},
-        profile = {},
-        global = ns.DB_DEFAULTS.global,
-      }
-      
-      -- Still register options so the UI can open (even if limited)
-      C_Timer.After(0.1, function()
-        RegisterOptions()
-        print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded with LIMITED functionality.")
-      end)
-      return
+    if ArcUIDB ~= nil and type(ArcUIDB) ~= "table" then
+      print("|cff00ccffArc UI|r |cffff0000WARNING:|r Saved settings were corrupted and have been reset to defaults.")
+      print("|cff00ccffArc UI|r Type |cffff0000/arcui reset-db|r if problems persist.")
+      ArcUIDB = nil
     end
-    
+    ns.db = AceDB:New("ArcUIDB", ns.DB_DEFAULTS, true)
+
     -- ═══════════════════════════════════════════════════════════════════
     -- CLEANUP: Remove empty/unconfigured bar configs to reduce memory
     -- Replaces old sparse array hole-filling which was adding bloat
@@ -1027,7 +1399,19 @@ initFrame:SetScript("OnEvent", function(self, event)
       if ns.CustomTracking and ns.CustomTracking.Init then
         ns.CustomTracking.Init()
       end
-      
+      if ns.Castbar and ns.Castbar.Init then
+        ns.Castbar.Init()
+      end
+      if ns.FocusCastbar and ns.FocusCastbar.Init then
+        ns.FocusCastbar.Init()
+      end
+      if ns.SetMyKick and ns.SetMyKick.Init then
+        ns.SetMyKick.Init()
+      end
+      if ns.Textures and ns.Textures.Init then
+        ns.Textures.Init()
+      end
+
       print("|cff00ccffArc UI|r v" .. ns.AddonInfo.Version .. " loaded. Type /arcui for options, /cdm for CDM settings, /arcui recenter to move panel back to screen.")
     end)
   end

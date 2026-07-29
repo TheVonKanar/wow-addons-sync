@@ -33,7 +33,7 @@ end
 
 -- Font
 C.FONT_PATH = "Interface\\AddOns\\SimpleBossMods\\media\\fonts\\Expressway.ttf"
-C.FONT_FLAGS = "OUTLINE" -- or "THICKOUTLINE"
+C.FONT_FLAGS = "OUTLINE, SLUG" -- or "OUTLINE", "THICKOUTLINE"
 
 -- Bar texture (flat)
 C.BAR_TEX_DEFAULT = "Interface\\TARGETINGFRAME\\UI-StatusBar"
@@ -83,7 +83,6 @@ M.Defaults = M.Defaults or {
 				general = {
 					gap = 8,
 					autoInsertKeystone = false,
-					shareKeystones = true,
 					queueTimers = true,
 					thresholdToBar = C.THRESHOLD_TO_BAR,
 					useRecommendedTimelineSettings = true,
@@ -120,7 +119,6 @@ M.Defaults = M.Defaults or {
 					useCustomPlayerRoleColor = false,
 					customPlayerRoleColor = { r = 1.0, g = 0.84, b = 0.0, a = 1.0 },
 					font = "SBM Expressway",
-					enableKeyCommands = true,
 			},
 			icons = {
 				enabled = true,
@@ -128,7 +126,7 @@ M.Defaults = M.Defaults or {
 				fontSize = 32,
 				borderThickness = 2,
 				font = "SBM Expressway",
-				outline = "OUTLINE",
+				outline = "OUTLINE, SLUG",
 				shadow = false,
 				gap = 8,
 				perRow = C.ICONS_PER_ROW,
@@ -146,7 +144,7 @@ M.Defaults = M.Defaults or {
 				height = 36,
 				fontSize = 16,
 				borderThickness = 2,
-				outline = "OUTLINE",
+				outline = "OUTLINE, SLUG",
 				shadow = false,
 				swapIconSide = false,
 				swapIndicatorSide = false,
@@ -283,9 +281,7 @@ function M:EnsureDefaults()
 
 	local ef = M.Util.ensureField
 	ef(cfg.general, "autoInsertKeystone", M.Defaults.cfg.general)
-	ef(cfg.general, "shareKeystones", M.Defaults.cfg.general)
 	ef(cfg.general, "queueTimers", M.Defaults.cfg.general)
-	ef(cfg.general, "enableKeyCommands", M.Defaults.cfg.general)
 	ef(cfg.general, "thresholdToBar", M.Defaults.cfg.general)
 	ef(cfg.general, "useRecommendedTimelineSettings", M.Defaults.cfg.general)
 	cfg.general.useRecommendedTimelineSettings = cfg.general.useRecommendedTimelineSettings and true or false
@@ -612,7 +608,6 @@ function M.SyncLiveConfig()
 
 	L.GAP = tonumber(gc.gap) or 6
 	L.AUTO_INSERT_KEYSTONE = gc.autoInsertKeystone and true or false
-	L.SHARE_KEYSTONES = gc.shareKeystones ~= false
 	L.QUEUE_TIMERS = gc.queueTimers ~= false
 	L.THRESHOLD_TO_BAR = U.clamp(tonumber(gc.thresholdToBar) or C.THRESHOLD_TO_BAR, 0, 600)
 
@@ -639,7 +634,7 @@ function M.SyncLiveConfig()
 	end
 	do
 		local outline = ic.outline
-		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "THICKOUTLINE" then
+		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "OUTLINE, SLUG" and outline ~= "THICKOUTLINE" then
 			outline = M.Defaults.cfg.icons.outline
 		end
 		L.ICON_FONT_FLAGS = outline
@@ -683,7 +678,7 @@ function M.SyncLiveConfig()
 	end
 	do
 		local outline = bc.outline
-		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "THICKOUTLINE" then
+		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "OUTLINE, SLUG" and outline ~= "THICKOUTLINE" then
 			outline = M.Defaults.cfg.bars.outline
 		end
 		L.BAR_FONT_FLAGS = outline
@@ -980,30 +975,32 @@ local function processEvent(eventID, info)
 	local severity = normalizeSeverityValue(info.severity)
 
 	local r, g, b, a = pickEventColor(mask, severity)
-	
-	-- If no specific indicator color, use default bar color
 	if not r then
-		if L.BAR_FG_R and L.BAR_FG_G and L.BAR_FG_B then
-			r, g, b, a = L.BAR_FG_R, L.BAR_FG_G, L.BAR_FG_B, (L.BAR_FG_A or 1.0)
-		else
-			-- No color to apply
-			return
+		-- No indicator match: leave Blizzard's per-event default in place so varied
+		-- colors show through (the layout fallback queries GetEventColor).
+		return
+	end
+
+	local triggers = Enum and Enum.EncounterEventColorTrigger
+	if not triggers then return end
+
+	-- Optimization: skip if the TimelineEvent color already matches (we set all three triggers together)
+	if C_EncounterEvents.GetEventColor then
+		local okCur, cur = pcall(C_EncounterEvents.GetEventColor, eventID, triggers.TimelineEvent)
+		if okCur and type(cur) == "table" then
+			local curR = cur.r or 0
+			local curG = cur.g or 0
+			local curB = cur.b or 0
+			if math.abs(curR - r) < 0.01 and math.abs(curG - g) < 0.01 and math.abs(curB - b) < 0.01 then
+				return
+			end
 		end
 	end
 
-	-- Optimization: Check if color is already set to what we want
-	-- info.color is {r, g, b} usually, sometimes {r, g, b, a}
-	if info.color then
-		local curR = info.color.r or 0
-		local curG = info.color.g or 0
-		local curB = info.color.b or 0
-		-- Simple delta comparison to avoid floating point issues
-		if math.abs(curR - r) < 0.01 and math.abs(curG - g) < 0.01 and math.abs(curB - b) < 0.01 then
-			return
-		end
-	end
-
-	C_EncounterEvents.SetEventColor(eventID, { r = r, g = g, b = b, a = a })
+	local color = { r = r, g = g, b = b, a = a }
+	C_EncounterEvents.SetEventColor(eventID, triggers.TextWarning, color)
+	C_EncounterEvents.SetEventColor(eventID, triggers.TimelineEvent, color)
+	C_EncounterEvents.SetEventColor(eventID, triggers.TimelineEventHighlight, color)
 end
 
 function M:BuildEncounterEventCache()

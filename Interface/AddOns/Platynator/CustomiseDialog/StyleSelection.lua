@@ -24,10 +24,6 @@ local contextCriteria = {
   {key = "npc", label = addonTable.Locales.NPC},
   {key = "minion", label = addonTable.Locales.MINION},
 
-  {title = addonTable.Locales.MINION},
-  {key = "pet", label = addonTable.Locales.PET},
-  {key = "totem", label = addonTable.Locales.TOTEM},
-
   {title = addonTable.Locales.MOB_CLASSIFICATION},
   {key = "class-rare", label = addonTable.Locales.RARE},
   {key = "class-elite", label = addonTable.Locales.ELITE},
@@ -269,7 +265,6 @@ local function GetCustomOptions(container)
   ScrollUtil.InitScrollBoxWithScrollBar(ScrollBox, ScrollBar, CreateScrollBoxLinearView())
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(ScrollBox, ScrollBar)
   ScrollBox:SetPanExtent(100)
-  local allFrames = {}
   local Refresh
 
   local holderPool = CreateFramePool("Frame", ScrollChild, nil, nil, false, function(frame)
@@ -421,13 +416,15 @@ local function GetCustomOptions(container)
       frame.shiftUp:SetShown(index > 1)
       frame.shiftDown:SetShown(index < #assignments)
 
+      frame.removeEntryButton:SetShown(#assignments > 1)
+
       frame.simplifiedCheckbox:SetValue(frame.entry.simplified)
       frame.scaleSlider:SetValue(frame.entry.scale * 100)
       frame:Show()
     end
   end)
 
-  local addButton = CreateFrame("Button", nil, customContainer, "UIPanelButtonTemplate")
+  local addButton = CreateFrame("Button", nil, customContainer, "UIPanelDynamicResizeButtonTemplate")
   addButton:SetText(addonTable.Locales.ADD)
   DynamicResizeButton_Resize(addButton)
   addButton:SetPoint("BOTTOM", 0, 25)
@@ -439,7 +436,7 @@ local function GetCustomOptions(container)
     Announce()
   end)
 
-  local resetButton = CreateFrame("Button", nil, customContainer, "UIPanelButtonTemplate")
+  local resetButton = CreateFrame("Button", nil, customContainer, "UIPanelDynamicResizeButtonTemplate")
   resetButton:SetText(addonTable.Locales.DEFAULT)
   DynamicResizeButton_Resize(resetButton)
   resetButton:SetPoint("BOTTOM", 0, 25)
@@ -457,7 +454,6 @@ local function GetCustomOptions(container)
 
   Refresh = function()
     holderPool:ReleaseAll()
-    allFrames = {}
 
     local assignments = addonTable.Config.Get(addonTable.Config.Options.DESIGN_ASSIGNMENTS)
 
@@ -465,7 +461,6 @@ local function GetCustomOptions(container)
     for _, entry in ipairs(assignments) do
       if addonTable.Constants.IsSimplifiedAvailable or not entry.simplified then
         local holder = holderPool:Acquire()
-        table.insert(allFrames, holder)
         holder:SetEntry(entry)
         holder:SetPoint("TOP", 0, offsetY)
         holder:SetPoint("LEFT", 30, 0)

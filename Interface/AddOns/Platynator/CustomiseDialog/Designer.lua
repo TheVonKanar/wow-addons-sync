@@ -357,12 +357,19 @@ local function GetAurasTextPositioning(rootParent, iconID)
   wrapper.Border:SetVertexColor(0, 0, 0)
   wrapper.Border:SetAllPoints()
 
-  local widgetOptionsContainer = CreateFrame("Frame", nil, container)
-  widgetOptionsContainer:SetPoint("TOP", preview, "BOTTOM", 0, -30)
-  widgetOptionsContainer:SetPoint("LEFT")
-  widgetOptionsContainer:SetPoint("RIGHT")
-  widgetOptionsContainer:SetHeight(10)
-  local allFrames = GenerateOptions(widgetOptionsContainer, 0, 0, addonTable.CustomiseDialog.AurasConfig)
+  local expectedTexts = {"countdown", "stacks"}
+
+  local widgetOptions = {}
+  for _, kind in ipairs(expectedTexts) do
+    local optionsContainer = CreateFrame("Frame", nil, container)
+    optionsContainer:SetPoint("TOP", preview, "BOTTOM", 0, -30)
+    optionsContainer:SetPoint("LEFT")
+    optionsContainer:SetPoint("RIGHT")
+    optionsContainer:SetHeight(10)
+    optionsContainer.allFrames = GenerateOptions(optionsContainer, 0, 0, addonTable.CustomiseDialog.AurasTextsConfig[kind])
+
+    widgetOptions[kind] = optionsContainer
+  end
 
   local titleText = container:CreateFontString(nil, nil, "GameFontHighlightLarge")
   titleText:SetPoint("TOP", previewInset, "BOTTOM", 0, -10)
@@ -422,13 +429,19 @@ local function GetAurasTextPositioning(rootParent, iconID)
       selectedMarker:SetPoint("TOPLEFT", selection, "TOPLEFT", -2, 2)
       selectedMarker:SetPoint("BOTTOMRIGHT", selection, "BOTTOMRIGHT", 2, -2)
 
-      widgetOptionsContainer:Show()
-      widgetOptionsContainer.details = selection.details
-      for _, f in ipairs(allFrames) do
-        if f.getInitData then
-          f:Init(f.getInitData(selection.details))
+      for kind, optionsContainer in pairs(widgetOptions) do
+        if kind == selection.kind then
+          optionsContainer:Show()
+          optionsContainer.details = selection.details
+          for _, f in ipairs(optionsContainer.allFrames) do
+            if f.getInitData then
+              f:Init(f.getInitData(selection.details))
+            end
+            f:SetValue(f.Getter())
+          end
+        else
+          optionsContainer:Hide()
         end
-        f:SetValue(f.Getter())
       end
 
       titleText:Show()
@@ -436,7 +449,9 @@ local function GetAurasTextPositioning(rootParent, iconID)
       keyboardTrap:SetShown(not InCombatLockdown())
     else
       titleText:Hide()
-      widgetOptionsContainer:Hide()
+      for _, optionsContainer in pairs(widgetOptions) do
+        optionsContainer:Hide()
+      end
       selectedMarker:Hide()
       keyboardTrap:Hide()
     end
@@ -454,8 +469,6 @@ local function GetAurasTextPositioning(rootParent, iconID)
     selection = w
     UpdateSelection()
   end
-
-  local expectedTexts = {"countdown", "stacks"}
 
   preview.widgets = {}
 
@@ -515,6 +528,13 @@ local function GetAurasTextPositioning(rootParent, iconID)
       end
       text:SetPoint(textDetails.anchor[1] or "CENTER")
       text:SetTextColor(textDetails.color.r, textDetails.color.g, textDetails.color.b)
+      if key == "countdown" and addonTable.Constants.IsCooldownFormattingAvailable then
+        if textDetails.showFractions then
+          text:SetText("2.9")
+        else
+          text:SetText("3")
+        end
+      end
       if textDetails.visible then
         preview.widgets[key]:SetAlpha(1)
       else
@@ -551,7 +571,7 @@ GenerateOptions = function(parent, yOffset, xOffset, entries)
       local oldValue = e.getter(parent.details)
       e.setter(parent.details, value)
       if type(oldValue) == "table" then
-        if not tCompare(oldValue, e.getter(parent.details)) then
+        if not tCompare(oldValue, e.getter(parent.details), 5) then
           Announce()
         end
       elseif oldValue ~= e.getter(parent.details) then
@@ -849,11 +869,7 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       newCursorY = newCursorY / preview:GetEffectiveScale()
       for _, index in ipairs(backupSelectionIndexes) do
         local w = widgets[index]
-        if w.Wrapper and w.kind ~= "auras" then -- Because the Wrapper determines the base position
-          w.Wrapper:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
-        else
-          w:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
-        end
+        w:AdjustPointsOffset(newCursorX - cursorX, newCursorY - cursorY)
       end
       cursorX = newCursorX
       cursorY = newCursorY
@@ -1103,11 +1119,19 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         NotifyMouseDown()
       end)
       w:SetScript("OnDragStart", function()
-        ForceSelection(fociOnDown)
-        StartMovingSelection()
+        if addonTable.Utilities.IsChangesRestricted() then
+          addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.CANNOT_ALTER_AURAS_IN_COMBAT)
+        else
+          ForceSelection(fociOnDown)
+          StartMovingSelection()
+        end
       end)
       w:SetScript("OnMouseUp", function(_, button)
-        ToggleSelection(GetMouseFoci(), button)
+        if addonTable.Utilities.IsChangesRestricted() then
+          addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.CANNOT_ALTER_AURAS_IN_COMBAT)
+        else
+          ToggleSelection(GetMouseFoci(), button)
+        end
       end)
     end
   end
@@ -1170,6 +1194,7 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
     end
     local design = addonTable.CustomiseDialog.GetCurrentDesign()
     widgets = addonTable.Display.GetWidgets(design, preview, true)
+    addonTable.Display.LayerWidgets(widgets)
     for _, w in ipairs(widgets) do
       w:SetClampedToScreen(true)
       if w.kind == "bars" then
@@ -1233,8 +1258,13 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
           end
         elseif w.details.kind == "damageAbsorb" then
           w.text:SetText("+" .. AbbreviateNumbers(10290))
-        elseif w.details.kind == "creatureName" or w.details.kind == "target" or w.details.kind == "castTarget" or w.details.kind == "castInterrupter" then
-          display = "Cheesanator" .. (w.details.kind ~= "creatureName" and "2?" or "")
+        elseif w.details.kind == "creatureName" or w.details.kind == "guild" or w.details.kind == "target" or w.details.kind == "castTarget" or w.details.kind == "castInterrupter" then
+          if w.details.kind == "guild" then
+            display = "Surge of Awesome"
+          else
+            display = "Cheesanator" .. (w.details.kind ~= "creatureName" and "2?" or "")
+          end
+
           if w.details.applyClassColors then
             local c = RAID_CLASS_COLORS["MAGE"]
             w.text:SetTextColor(c.r, c.g, c.b)
@@ -1252,13 +1282,15 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
                 local c = s.colors.hostile
                 w.text:SetTextColor(c.r, c.g, c.b)
                 break
+              elseif s.kind == "guild" then
+                local c = s.colors.guild
+                w.text:SetTextColor(c.r, c.g, c.b)
+                break
               end
             end
           end
         elseif w.details.kind == "castTimeLeft" then
-          w.text:SetText("1.2")
-        elseif w.details.kind == "guild" then
-          display = "Surge of Awesome"
+          display = "1.2"
         elseif w.details.kind == "castSpellName" then
           display = addonTable.Locales.ARCANE_FLURRY
         elseif w.details.kind == "level" then
@@ -1287,6 +1319,8 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         end
         if display then
           w.text:SetText(display)
+          local width, height = w.text:GetSize()
+          w:SetSize(width*w.text:GetScale(), height*w.text:GetScale())
         end
 
       elseif w.kind == "specialBars" and w.details.kind == "power" then
@@ -1306,6 +1340,8 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         w.statusBar:SetValue(70)
         w.statusBarAbsorb:SetMinMaxValues(0, 100)
         w.statusBarAbsorb:SetValue(10)
+        local width, height = w.foreground:GetSize()
+        w:SetSize(width*w.foreground:GetScale(), height*w.foreground:GetScale())
         local defaultColor
         for _, s in ipairs(w.details.autoColors) do
           if s.kind == "classColors" then
@@ -1334,6 +1370,9 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         end
       elseif w.kind == "highlights" then
         w:Show()
+        if w.details.kind == "animatedBorder" then
+          w.Animation:Play()
+        end
       end
 
       w:SetScript("OnEnter", function()
@@ -1394,8 +1433,11 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
       if cdText.SetSmoothScaling then
         cdText:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
       end
-      container.auras[1].Cooldown:SetCooldown(GetTime() - 2, 5)
+      container.auras[1].Cooldown:SetCooldown(GetTime() - 2.1, 5)
       container.auras[1].Cooldown:Pause()
+      if container.auras[1].Cooldown.SetCountdownFormatter then
+        container.auras[1].Cooldown:SetCountdownFormatter(details.texts.countdown.showFractions and addonTable.Display.Utilities.GetAuraNumericFormatter() or nil)
+      end
       container.auras[1].Cooldown:SetHideCountdownNumbers(not details.texts.countdown.visible)
       container.auras[1].Cooldown:SetDrawSwipe(details.showSwipe)
       container.auras[1].Cooldown:SetDrawEdge(details.showSwipe)
@@ -1451,8 +1493,6 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
     UpdateHiding()
   end
 
-  GenerateWidgets()
-
   local previousDesign = addonTable.Config.Get(addonTable.Config.Options.STYLE)
 
   addonTable.CallbackRegistry:RegisterCallback("RefreshStateChange", function(_, state)
@@ -1469,6 +1509,19 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
         for index, w in ipairs(widgets) do
           if w.details == autoSelectedDetails then
             selectionIndexes = {index}
+
+            -- Update hidden widget indexes
+            local keys = GetKeysArray(hiddenIndexes)
+            hiddenIndexes = {}
+            for _, k in ipairs(keys) do
+              if k >= index then
+                hiddenIndexes[k + 1] = true
+              elseif k ~= index then
+                hiddenIndexes[k] = true
+              end
+            end
+            UpdateHiding()
+
             break
           end
         end
@@ -1655,7 +1708,25 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
     end
   end
 
-  Generate()
+  if C_Secrets and C_Secrets.HasSecretRestrictions() then
+    local noAurasInCombat = CreateFrame("Frame")
+    noAurasInCombat:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED")
+    noAurasInCombat:SetScript("OnEvent", function(_, event)
+      C_Timer.After(0, function()
+        if addonTable.Utilities.IsChangesRestricted() then
+          for _, index in ipairs(selectionIndexes) do
+            if widgets[index].kind == "auras" then
+              selectionIndexes = {}
+              break
+            end
+          end
+          if container:IsVisible() then
+            UpdateSelection()
+          end
+        end
+      end)
+    end)
+  end
 
   UpdateSelection = function()
     selectionIndexes = tFilter(selectionIndexes, function(i) return i <= #widgets end, true)
@@ -1740,6 +1811,11 @@ function addonTable.CustomiseDialog.GetMainDesigner(parent)
 
     selectionIndexes = {}
     SetPreviewMaximised(false)
+
+    GenerateWidgets()
+    if not next(settingsFrames) then
+      Generate()
+    end
   end)
   container:SetScript("OnHide", function()
     shouldShowRegions = false

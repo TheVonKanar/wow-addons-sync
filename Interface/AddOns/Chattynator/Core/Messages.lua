@@ -199,7 +199,7 @@ function addonTable.MessagesMonitorMixin:OnLoad()
       if lineID == formatter.lineID then
         local message = self.messages[index]
         found = message.id
-        message.text = formatter.Formatter(C_ChatInfo.GetChatLineText(lineID))
+        message.text = formatter.Formatter(C_ChatInfo.GetChatLineText(lineID)) or ""
         break
       end
     end
@@ -263,7 +263,7 @@ function addonTable.MessagesMonitorMixin:OnLoad()
     if settingName == addonTable.Config.Options.MESSAGE_SPACING then
       self.spacing = addonTable.Config.Get(addonTable.Config.Options.MESSAGE_SPACING)
       renderNeeded = true
-    elseif settingName == addonTable.Config.Options.TIMESTAMP_FORMAT then
+    elseif settingName == addonTable.Config.Options.TIMESTAMP_FORMAT or settingName == addonTable.Config.Options.TIMESTAMP_SPACING then
       self.timestampFormat = addonTable.Config.Get(addonTable.Config.Options.TIMESTAMP_FORMAT)
       self:SetInset()
       renderNeeded = true
@@ -377,6 +377,7 @@ function addonTable.MessagesMonitorMixin:SetInset()
   if self.timestampFormat == " " then
     self.inset = 6
   end
+  self.inset = self.inset * addonTable.Config.Get(addonTable.Config.Options.TIMESTAMP_SPACING)
 end
 
 function addonTable.MessagesMonitorMixin:ShowGMOTD()
@@ -598,6 +599,9 @@ function addonTable.MessagesMonitorMixin:CleanStore(store, index)
   end
   for i = index + 1, #store do
     local data = store[i]
+    if data.text == nil then
+      data.text = "???"
+    end
     if data.text:find("|K.-|k") or (data.typeInfo.player and data.typeInfo.player.name:find("|K.-|k")) then
       data.text = data.text:gsub("|K.-|k", "???")
       data.text = data.text:gsub("|HBNplayer.-|h(.-)|h", "%1")
@@ -610,9 +614,6 @@ function addonTable.MessagesMonitorMixin:CleanStore(store, index)
     end
     if data.text:find("reportcensoredmessage:") then
       data.text = data.text:gsub("|Hreportcensoredmessage:.-|h.-|h", "[???]")
-    end
-    if data.text == nil then
-      data.text = "???"
     end
   end
   return #store
@@ -968,45 +969,55 @@ local function GetOutMessageFormatKey(chatEventSubtype, isSecret)
 end
 
 local function GetCommunityAndStreamFromChannel(communityChannel)
-	local clubId, streamId = communityChannel:match("(%d+)%:(%d+)");
-	return tonumber(clubId), tonumber(streamId);
+  if not communityChannel then
+    return nil, nil
+  end
+  local clubId, streamId = communityChannel:match("(%d+)%:(%d+)");
+  return tonumber(clubId), tonumber(streamId);
 end
 
 local function GetCommunityAndStreamName(clubId, streamId)
-	local streamInfo = C_Club.GetStreamInfo(clubId, streamId);
+  local streamInfo = C_Club.GetStreamInfo(clubId, streamId);
 
-	if streamInfo and (streamInfo.streamType == Enum.ClubStreamType.Guild or streamInfo.streamType == Enum.ClubStreamType.Officer) then
-		return streamInfo.name;
-	end
+  if streamInfo and (streamInfo.streamType == Enum.ClubStreamType.Guild or streamInfo.streamType == Enum.ClubStreamType.Officer) then
+    return streamInfo.name;
+  end
 
-	local streamName = streamInfo and streamInfo.name or "";
+  local streamName = streamInfo and streamInfo.name or "";
 
-	local clubInfo = C_Club.GetClubInfo(clubId);
-	if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
-		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
-		return communityName;
-	else
-		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
-		return communityName.." - "..streamName;
-	end
+  local clubInfo = C_Club.GetClubInfo(clubId);
+  if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
+    local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
+    return communityName;
+  else
+    local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or "";
+    return communityName.." - "..streamName;
+  end
 end
 
 local function ResolveChannelName(communityChannel)
-	local clubId, streamId = GetCommunityAndStreamFromChannel(communityChannel);
-	if not clubId or not streamId then
-		return communityChannel;
-	end
+  local clubId, streamId = GetCommunityAndStreamFromChannel(communityChannel);
+  if not clubId or not streamId then
+    return communityChannel;
+  end
 
-	return GetCommunityAndStreamName(clubId, streamId);
+  return GetCommunityAndStreamName(clubId, streamId);
 end
 
-function ResolvePrefixedChannelName(communityChannelArg)
-	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
-	return prefix..ResolveChannelName(communityChannel);
+local function ResolvePrefixedChannelName(communityChannelArg)
+  local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
+  if not prefix then
+    return nil
+  end
+  return prefix..ResolveChannelName(communityChannel);
 end
 
 local function GetChannelDecorated(zoneID, channelID, channelName, isSecret)
-  local decorated = "|Hchannel:channel:"..channelID.."|h[" .. ResolvePrefixedChannelName(channelName) .. "]|h "
+  local resolved = ResolvePrefixedChannelName(channelName)
+  if not resolved then
+    resolved = channelID .. ". " .. channelName
+  end
+  local decorated = "|Hchannel:channel:"..channelID.."|h[" .. resolved .. "]|h "
 
   if isSecret and addonTable.Modifiers.ShortenPatterns and not issecretvalue(decorated) then -- TODO: Only show prefix from ResolvePrefixedChannelName if pattern is set to that
     return decorated:gsub(addonTable.Modifiers.ShortenPatterns.channel.p, addonTable.Modifiers.ShortenPatterns.channel.r({typeInfo = {channel = {index = channelID, zoneID = zoneID}}}), 1)
@@ -1229,7 +1240,7 @@ function addonTable.MessagesMonitorMixin:MessageEventHandler(event, ...)
       end
 
       if channelLength > 0 then
-        self:AddMessage(string.format(globalstring, arg8, (ChatFrame_ResolvePrefixedChannelName or ChatFrameUtil.ResolvePrefixedChannelName)(arg4)), info.r, info.g, info.b, info.id, accessID, typeID);
+        self:AddMessage(string.format(globalstring, arg8, ResolvePrefixedChannelName(arg4)), info.r, info.g, info.b, info.id, accessID, typeID);
       end
     end
   elseif ( type == "BN_INLINE_TOAST_ALERT" ) then

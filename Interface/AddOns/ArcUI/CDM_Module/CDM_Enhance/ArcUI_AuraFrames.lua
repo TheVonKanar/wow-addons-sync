@@ -167,22 +167,34 @@ local function EvaluateThresholdGlows()
               local function evalDurObj(durObj)
                 if threshSec then
                   local curve = AF.GetGlowThresholdCurveSeconds(threshSec)
-                  if curve then
-                    local ok, val = pcall(durObj.EvaluateRemainingDuration, durObj, curve)
-                    return ok and val or nil
-                  end
+                  -- Direct call (no pcall): EvaluateRemainingDuration returns a NON-secret
+                  -- result and does not throw on a valid durObj -- same contract the
+                  -- EvaluateRemainingPercent branch below already relies on.
+                  if curve then return durObj:EvaluateRemainingDuration(curve) end
                 else
                   local curve = AF.GetGlowThresholdCurve(stateVisuals.glowThreshold)
                   if curve then return durObj:EvaluateRemainingPercent(curve) end
                 end
               end
 
-              local durObj = C_UnitAuras and C_UnitAuras.GetAuraDuration
-                and C_UnitAuras.GetAuraDuration(trackedUnit, auraID)
-              if not durObj then
-                local fallback = trackedUnit == "player" and "target" or "player"
-                durObj = C_UnitAuras and C_UnitAuras.GetAuraDuration
-                  and C_UnitAuras.GetAuraDuration(fallback, auraID)
+              -- Use the frame's ACTUAL aura unit (not a category guess) and VALIDATE
+              -- the instance before calling GetAuraDuration. That API is
+              -- RequiresValidUnitAuraInstance, so it THROWS (not returns nil) when the
+              -- (unit, auraInstanceID) pair isn't a live aura -- a nil/0 self-aura
+              -- instance, an expired aura, or a wrong-unit guess. The old code assumed
+              -- a nil return and "fell back" to the other unit, but the first bad call
+              -- already errored ("bad argument to GetAuraDuration"). GetAuraDataByAuraInstanceID
+              -- is a non-throwing lookup (nil when absent), so it gates the call safely.
+              local glowUnit = frame.auraDataUnit or trackedUnit
+              local durObj
+              -- 12.1: the aura APIs THROW while the unit's auras are secret (auraID stays NON-secret),
+              -- so gate on the ns.API.AurasSecret probe, placed BEFORE the API call. When secret,
+              -- durObj stays nil -> plain ready glow (no threshold fade). Inert on live.
+              if glowUnit and auraID and not (ns.API and ns.API.AurasSecret and ns.API.AurasSecret(glowUnit)) and auraID ~= 0 and C_UnitAuras
+                and C_UnitAuras.GetAuraDataByAuraInstanceID
+                and C_UnitAuras.GetAuraDataByAuraInstanceID(glowUnit, auraID)
+                and C_UnitAuras.GetAuraDuration then
+                durObj = C_UnitAuras.GetAuraDuration(glowUnit, auraID)
               end
 
               if durObj then
@@ -367,7 +379,14 @@ function AF.UpdateAuraFrame(frame)
   local now           = GetTime()
   local lastCall      = frame._arcLastOptimizedCall or 0
   local lastAuraActive= frame._arcLastAuraActive
+  -- "Aura present" must include a self-aura: CD Manager reports auraInstanceID == 0
+  -- (NOT nil) for self-auras like Voidfall, and HasAuraInstanceID rejects 0 the same
+  -- as nil. FrameActive.IsActive rides the OnAuraInstanceInfoSet event (so it counts
+  -- the 0-id self-aura) AND smooths CDM's rebind churn (the frame dips to nil for a
+  -- tick during each rebind) — it's the same signal DynamicLayout uses, which is why
+  -- placement stays correct while the old value-only check hid the icon.
   local currentAuraActive = HasAuraInstanceID(frame.auraInstanceID)
+                         or (ns.FrameActive and ns.FrameActive.IsActive(frame)) or false
   local cdID          = frame.cooldownID
 
   local hasDelay = frame._arcDelayAlphaUntil and now < frame._arcDelayAlphaUntil
@@ -430,7 +449,10 @@ function AF.UpdateAuraFrame(frame)
     if not hasAuraActiveGlow and not frame._arcAuraActiveGlowActive then return end
   end
 
+  -- self-aura (auraInstanceID == 0) counts as present via FrameActive — see the note
+  -- on currentAuraActive above. 0 = exists, nil = gone.
   local hasAuraOrTotem = HasAuraInstanceID(frame.auraInstanceID) or (frame.totemData ~= nil)
+                      or (ns.FrameActive and ns.FrameActive.IsActive(frame)) or false
   -- _arcAuraStateHooked: frame is a real aura type, buff just not currently active
   local isAura         = cfg._isAura or hasAuraOrTotem or (frame._arcAuraStateHooked == true)
   local isReady        = false
@@ -734,7 +756,9 @@ function AF.InstallHooks(frame, cdID)
     -- Single-stack text refresh — was inline in OnAuraInstanceInfoSet/Cleared
     if self._arcSingleStackText then
       local auraID = self.auraInstanceID
-      if isActive and HasAuraInstanceID(auraID) then
+      -- 12.1: GetAuraApplicationDisplayCount THROWS while the unit's auras are secret (auraID stays
+      -- NON-secret), so gate on the ns.API.AurasSecret probe. Clear the stack text under secrecy. Inert on live.
+      if isActive and HasAuraInstanceID(auraID) and not (ns.API and ns.API.AurasSecret and ns.API.AurasSecret(self.auraDataUnit or "player")) then
         local unit = self.auraDataUnit or "player"
         local count = C_UnitAuras.GetAuraApplicationDisplayCount(unit, auraID, 1)
         self._arcSingleStackText:SetText(count)
@@ -775,7 +799,9 @@ function AF.InstallHooks(frame, cdID)
   local function UpdateSingleStackText(self)
     if not self._arcSingleStackText then return end
     local auraID = self.auraInstanceID
-    if not HasAuraInstanceID(auraID) then
+    -- 12.1: GetAuraApplicationDisplayCount THROWS while the unit's auras are secret (auraID stays
+    -- NON-secret) -> gate on the ns.API.AurasSecret probe.
+    if not HasAuraInstanceID(auraID) or (ns.API and ns.API.AurasSecret and ns.API.AurasSecret(self.auraDataUnit or "player")) then
       self._arcSingleStackText:SetText("")
       return
     end
@@ -990,4 +1016,71 @@ if ns.FrameController and ns.FrameController.OnFrameRebind then
     frame._arcLastAuraActive         = nil
     frame._arcPandemicGlowActive     = nil
   end)
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- FULL-UPDATE VISUAL SWEEP (RefreshLayout hook)
+--
+-- Beta 4 / WoW 12.0: when CDM does a full RefreshLayout (zone change,
+-- vehicle exit, mind control, taxi, post-spec settle, login, spell-override
+-- chain etc.) it does ReleaseAll → reacquire → RefreshData. The per-frame
+-- AII Set/Cleared hooks DO fire during the churn — but a race window can
+-- leave the glow eligibility stale: SetAuraInstanceInfo early-returns when
+-- auraInstanceID is unchanged, so OnAuraInstanceInfoSet doesn't dispatch,
+-- and a previously-shown glow can stay visible against a now-inactive
+-- aura (or vice versa).
+--
+-- Belt-and-suspenders: after CDM finishes RefreshLayout, walk every hooked
+-- aura frame, re-seed throttle caches, and re-evaluate the auraActiveState
+-- glow against live state. Deferred one frame so RefreshData (and any
+-- AII hooks it dispatches) finishes settling before we re-evaluate.
+-- Coalesces multiple viewers calling RefreshLayout in the same tick.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local _refreshLayoutVisualSweepPending = false
+
+local function RunPostRefreshLayoutVisualSweep()
+  _refreshLayoutVisualSweepPending = false
+  if not IsCDMEnabled() then return end
+
+  for frame in pairs(hookedAuraFrames) do
+    -- Clear UpdateAuraFrame throttle so it actually re-evaluates
+    frame._arcLastOptimizedCall = nil
+    frame._arcLastAuraActive    = nil
+
+    -- Re-apply alpha/desat/glow based on live aura state.
+    -- UpdateAuraFrame guards against missing config / disabled CDM internally.
+    AF.UpdateAuraFrame(frame)
+
+    -- Re-evaluate auraActiveState glow directly — UpdateAuraFrame's glow
+    -- path depends on cfg presence and several routing branches; this
+    -- catches the case where a prior Cleared hook left a glow visible
+    -- or a missed Set hook left it hidden.
+    local cfg = GetEffectiveIconSettingsForFrame(frame)
+    local aaCfg = cfg and cfg.auraActiveState
+    if aaCfg and (aaCfg.glow or aaCfg.glowWhenMissing) then
+      local hasAura = ns.FrameActive and ns.FrameActive.IsActive(frame)
+                   or HasAuraInstanceID(frame.auraInstanceID)
+      if AF.ShouldShowAuraActiveGlow(aaCfg, frame, hasAura) then
+        AF.ShowAuraActiveGlow(frame, aaCfg)
+      else
+        AF.HideAuraActiveGlow(frame)
+      end
+    end
+  end
+end
+
+if CooldownViewerMixin and CooldownViewerMixin.RefreshLayout then
+  hooksecurefunc(CooldownViewerMixin, "RefreshLayout", function(self)
+    if _refreshLayoutVisualSweepPending then return end
+    _refreshLayoutVisualSweepPending = true
+    C_Timer.After(0, RunPostRefreshLayoutVisualSweep)
+  end)
+end
+
+-- Expose for manual triggering (debug / spec change settlement, etc.)
+AF.RunPostRefreshLayoutVisualSweep = function()
+  if _refreshLayoutVisualSweepPending then return end
+  _refreshLayoutVisualSweepPending = true
+  C_Timer.After(0, RunPostRefreshLayoutVisualSweep)
 end

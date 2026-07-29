@@ -1,8 +1,8 @@
-## Interface: 50503
+## Interface: 50504
 ## Title: Angleur - Mists of Pandaria Classic
 ## Notes: Mists of Pandaria Version of the Ultimate One Button Fishing AddOn, Angleur!
 ## Notes-ruRU: Версия Mists of Pandaria лучшего дополнения для рыбалки одной кнопкой, Angleur!
-## Version: Angleur MoP 2.9.52
+## Version: Angleur MoP 2.9.6
 ## Author: LegolandoBloom
 ## SavedVariables: AngleurConfig, Angleur_TinyOptions, AngleurMinimapButton, AngleurTutorial, AngleurClassicConfig, AngleurBobberScannerUI
 ## SavedVariablesPerCharacter: AngleurCharacter, Angleur_SlottedExtraToys, Angleur_SlottedExtraItems, Angleur_SwapoutItemsSaved, Angleur_CVars, AngleurClassic_CVars, AngleurAudio
@@ -53,7 +53,9 @@ firstInstall.lua
 advancedAngling.lua
 slashcommands.lua
 minimap.lua
+addonsTab.lua
 animations.xml
+audio.lua
 
 bobberScanner\Legolando_CheckboxTemplate\Legolando_CheckboxTemplate.xml
 bobberScanner\Legolando_CollapseConfigTemplate\Legolando_CollapseConfigTemplate.xml
@@ -61,5 +63,6 @@ bobberScanner\bobberScanner.lua
 
 AngleurMists.xml
 
+thanks\thanksTemplates.xml
 thanks\thanks.lua
 thanks\thanks.xml

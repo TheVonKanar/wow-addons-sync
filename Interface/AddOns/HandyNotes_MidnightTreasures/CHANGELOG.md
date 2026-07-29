@@ -1,5 +1,37 @@
 # Changelog
 
+## Changed in v50
+
+* Routes to the parts of a multi-step treasure now hide as you collect them
+* Delves: fix the "Sturdy Chest" label not showing
+* Treasures could stay visible after you'd collected everything, if one of the items had an appearance the game can't track
+* Hovering a treasure could show none of its routes, or leave the wrong one highlighted
+* Small tooltip and menu fixes
+
+## Changed in v49
+
+* Zul'Aman: show the Amani Warrior's Spear in the shared loot
+* Shift-left-click to send link to chat was broken
+* Lots of small bugfixes
+
+## Changed in v48
+
+* Voidstorm Invasion Val:
+	* Add loot to rares
+	* Gave some rares coordinates
+	* Added the Enchanted Hilt
+* Voidstorm Invasions Naigtal:
+	* Added a few missing pieces of loot
+	* Added the Sleepy Mandrake pet
+* Updated Krowi_WorldMapButtons-1.4 embed to v10
+
+## Changed in v47
+
+* Updated for 12.0.7
+* Voidstorm Invasions: add Naigtal and Val; data on Val is sparse still
+* Harandar: don't add the portals in the Den, they have built-in map icons now
+* Lore Hunter: the Tablet of the Ruling Family in Zul'Aman is lootable again, though still removed from the achievement
+
 ## Changed in v46
 
 * ...and do that last release properly this time

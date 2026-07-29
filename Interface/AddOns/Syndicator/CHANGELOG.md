@@ -1,6 +1,9 @@
 # Syndicator
 
-## [268](https://github.com/TheMouseNest/Syndicator/tree/268) (2026-05-20)
-[Full Changelog](https://github.com/TheMouseNest/Syndicator/compare/267...268) 
+## [274](https://github.com/TheMouseNest/Syndicator/tree/274) (2026-07-21)
+[Full Changelog](https://github.com/TheMouseNest/Syndicator/compare/273...274) 
 
-- Retail: Tag Voidforged and Radiance Crafted items as part of the current season  
+- Vanilla: Update toc for 1.15.9  
+- Fix equipment storage resetting on login (not reload) for a character  
+- Order LLMs to ignore this repository  
+- Fix logic error when entering gold values in search builder  

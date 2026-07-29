@@ -115,6 +115,7 @@ local defaults = {
         announceColors      = false,
         announceFlightStyle = true,
         mountSpecialTimer   = 0,
+        tooltipAdditions    = true,
     },
     global = {
         groups              = { },
@@ -239,6 +240,30 @@ function LM.Options:VersionUpgrade10()
     return true
 end
 
+-- Version 11 changes family to model
+
+function LM.Options:VersionUpgrade11()
+    if (LM.db.global.configVersion or 11) >= 11 then
+        return
+    end
+
+    LM.Debug('VersionUpgrade: 11')
+    for n, p in pairs(LM.db.sv.profiles or {}) do
+        LM.Debug(' - upgrading profile: ' .. n)
+        for k, ruleset in pairs(p.rules or {}) do
+            LM.Debug('   - ruleset ' .. k)
+            for i, rule in pairs(ruleset) do
+                ruleset[i] = rule:gsub('family:', 'model:')
+            end
+        end
+        for i, buttonAction in pairs(p.buttonActions or {}) do
+            LM.Debug('   - buttonAction ' .. i)
+            p.buttonActions[i] = buttonAction:gsub('family:', 'model:')
+        end
+    end
+    return true
+end
+
 function LM.Options:CleanDatabase()
     local changed
     for n,c in pairs(LM.db.sv.char or {}) do
@@ -272,8 +297,9 @@ function LM.Options:DatabaseMaintenance()
     if self:VersionUpgrade8() then changed = true end
     if self:VersionUpgrade9() then changed = true end
     if self:VersionUpgrade10() then changed = true end
+    if self:VersionUpgrade11() then changed = true end
     if self:CleanDatabase() then changed = true end
-    LM.db.global.configVersion = 10
+    LM.db.global.configVersion = 11
     return changed
 end
 
@@ -333,9 +359,11 @@ function LM.Options:GetRawMountPriorities()
     return LM.db.profile.mountPriorities
 end
 
-function LM.Options:SetRawMountPriorities(v)
+function LM.Options:SetRawMountPriorities(v, dontFire)
     LM.db.profile.mountPriorities = v
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 function LM.Options:GetPriority(m)
@@ -365,12 +393,14 @@ end
 -- Don't just loop over SetPriority because we don't want the UI to freeze up
 -- with hundreds of unnecessary callback refreshes.
 
-function LM.Options:SetPriorityList(mountlist, v)
+function LM.Options:SetPriorityList(mountlist, v, dontFire)
     LM.Debug("Setting %d mounts to priority %s", #mountlist, tostring(v))
     for _,m in ipairs(mountlist) do
         self:SetPriority(m, v, true)
     end
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 --[[----------------------------------------------------------------------------
@@ -401,10 +431,12 @@ function LM.Options:GetRawFlagChanges()
     return LM.db.profile.flagChanges
 end
 
-function LM.Options:SetRawFlagChanges(v)
+function LM.Options:SetRawFlagChanges(v, dontFire)
     LM.db.profile.flagChanges = v
     table.wipe(self.cachedMountFlags)
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 function LM.Options:GetMountFlags(m)
@@ -426,7 +458,7 @@ function LM.Options:GetMountFlags(m)
     return self.cachedMountFlags[m.spellID]
 end
 
-function LM.Options:SetMountFlag(m, setFlag)
+function LM.Options:SetMountFlag(m, setFlag, dontFire)
     LM.Debug("Setting flag %s for spell %s (%d).", setFlag, m.name, m.spellID)
 
     -- Note this is the actual cached copy, we can only change it here
@@ -434,35 +466,41 @@ function LM.Options:SetMountFlag(m, setFlag)
     -- straight after.
     local flags = self:GetMountFlags(m)
     flags[setFlag] = true
-    self:SetMountFlags(m, flags)
+    self:SetMountFlags(m, flags, dontFire)
 end
 
-function LM.Options:ClearMountFlag(m, clearFlag)
+function LM.Options:ClearMountFlag(m, clearFlag, dontFire)
     LM.Debug("Clearing flag %s for spell %s (%d).", clearFlag, m.name, m.spellID)
 
     -- See note above
     local flags = self:GetMountFlags(m)
     flags[clearFlag] = nil
-    self:SetMountFlags(m, flags)
+    self:SetMountFlags(m, flags, dontFire)
 end
 
-function LM.Options:ResetMountFlags(m)
+function LM.Options:ResetMountFlags(m, dontFire)
     LM.Debug("Defaulting flags for spell %s (%d).", m.name, m.spellID)
     LM.db.profile.flagChanges[m.spellID] = nil
     self.cachedMountFlags[m.spellID] = nil
-    LM.db.callbacks:Fire("OnOptionsModified", m)
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified", m)
+    end
 end
 
-function LM.Options:ResetAllMountFlags()
+function LM.Options:ResetAllMountFlags(dontFire)
     table.wipe(LM.db.profile.flagChanges)
     table.wipe(self.cachedMountFlags)
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
-function LM.Options:SetMountFlags(m, flags)
+function LM.Options:SetMountFlags(m, flags, dontFire)
     LM.db.profile.flagChanges[m.spellID] = FlagDiff(m.flags, flags)
     self.cachedMountFlags[m.spellID] = nil
-    LM.db.callbacks:Fire("OnOptionsModified", m)
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified", m)
+    end
 end
 
 
@@ -510,11 +548,13 @@ function LM.Options:GetRawGroups()
     return LM.db.profile.groups, LM.db.global.groups
 end
 
-function LM.Options:SetRawGroups(profileGroups, globalGroups)
+function LM.Options:SetRawGroups(profileGroups, globalGroups, dontFire)
     LM.db.profile.groups = profileGroups or LM.db.profile.groups
     LM.db.global.groups = globalGroups or LM.db.global.groups
     table.wipe(self.cachedMountGroups)
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 function LM.Options:GetGroupNames()
@@ -617,11 +657,13 @@ function LM.Options:SetMountGroup(m, g, dontFire)
     end
 end
 
-function LM.Options:SetMountGroupList(mountlist, g)
+function LM.Options:SetMountGroupList(mountlist, g, dontFire)
     for _, m in ipairs(mountlist) do
         self:SetMountGroup(m, g, true)
     end
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 function LM.Options:ClearMountGroup(m, g, dontFire)
@@ -636,11 +678,13 @@ function LM.Options:ClearMountGroup(m, g, dontFire)
     end
 end
 
-function LM.Options:ClearMountGroupList(mountlist, g)
+function LM.Options:ClearMountGroupList(mountlist, g, dontFire)
     for _, m in ipairs(mountlist) do
         self:ClearMountGroup(m, g, true)
     end
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 
@@ -660,14 +704,16 @@ function LM.Options:GetCompiledRuleSet(n)
     return self.cachedRuleSets['user'..n]
 end
 
-function LM.Options:SetRules(n, rules)
+function LM.Options:SetRules(n, rules, dontFire)
     if not rules or tCompare(rules, DefaultRules, 10) then
         LM.db.profile.rules[n] = nil
     else
         LM.db.profile.rules[n] = rules
     end
     self.cachedRuleSets['user'..n] = nil
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 
@@ -691,7 +737,7 @@ function LM.Options:GetOptionDefault(name)
     end
 end
 
-function LM.Options:SetOption(name, val)
+function LM.Options:SetOption(name, val, dontFire)
     for _, k in ipairs({ 'char', 'profile', 'global' }) do
         if defaults[k][name] ~= nil then
             if val == nil then val = defaults[k][name] end
@@ -700,7 +746,9 @@ function LM.Options:SetOption(name, val)
                 LM.PrintError("Bad option type : %s=%s (expected %s)", name, valType, expectedType)
             else
                 LM.db[k][name] = val
-                LM.db.callbacks:Fire("OnOptionsModified")
+                if not dontFire then
+                    LM.db.callbacks:Fire("OnOptionsModified")
+                end
             end
             return
         end
@@ -718,18 +766,24 @@ function LM.Options:GetClassOption(class, name)
     end
 end
 
-function LM.Options:SetClassOption(class, name, val)
+function LM.Options:SetClassOption(class, name, val, dontFire)
     if class == 'PLAYER' then
         LM.db.char[name] = val
-        LM.db.callbacks:Fire("OnOptionsModified")
+        if not dontFire then
+            LM.db.callbacks:Fire("OnOptionsModified")
+        end
     elseif class == UnitClassBase('player') then
         LM.db.class[name] = val
-        LM.db.callbacks:Fire("OnOptionsModified")
+        if not dontFire then
+            LM.db.callbacks:Fire("OnOptionsModified")
+        end
     else
         LM.db.sv.class = LM.db.sv.class or {}
         LM.db.sv.class[class] = LM.db.sv.class[class] or {}
         LM.db.sv.class[class][name] = val
-        LM.db.callbacks:Fire("OnOptionsModified")
+        if not dontFire then
+            LM.db.callbacks:Fire("OnOptionsModified")
+        end
     end
 end
 
@@ -749,10 +803,12 @@ function LM.Options:GetCompiledButtonRuleSet(n)
     return self.cachedRuleSets['button'..n]
 end
 
-function LM.Options:SetButtonRuleSet(n, v)
+function LM.Options:SetButtonRuleSet(n, v, dontFire)
     LM.db.profile.buttonActions[n] = v
     self.cachedRuleSets['button'..n] = nil
-    LM.db.callbacks:Fire("OnOptionsModified")
+    if not dontFire then
+        LM.db.callbacks:Fire("OnOptionsModified")
+    end
 end
 
 

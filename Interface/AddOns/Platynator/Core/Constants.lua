@@ -10,9 +10,13 @@ addonTable.Constants = {
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
-  IsMidnightNext = select(4, GetBuildInfo()) >= 120007,
+  IsMidnightNext = select(4, GetBuildInfo()) >= 120100,
   IsHitTestPointsAvailable = C_NamePlate.SetNamePlateSize ~= nil,
   IsSimplifiedAvailable = C_NamePlateManager and C_NamePlateManager.SetNamePlateSimplified ~= nil,
+  IsModernPlates = C_NamePlate and C_NamePlate.SetNamePlateSize ~= nil,
+  -- Restricted to secrets clients due to MoP bug where the duration objects don't work properly
+  IsCooldownFormattingAvailable = CreateFrame("Cooldown").SetCountdownFormatter ~= nil and C_Secrets.HasSecretRestrictions(),
+  IsSecretsActive = C_Secrets and C_Secrets.HasSecretRestrictions() or false,
 
   DeathKnightMaxRunes = 6,
 
@@ -42,11 +46,11 @@ addonTable.Constants.Events = {
 
   "LegacyInterrupter",
   "QuestInfoUpdate",
-  "CombatStatusChange",
   "MouseoverUpdate",
 
   "RoleChange",
   "EncounterUpdate",
+  "PowerChange",
 
   "CustomiseDesignsAssigned",
   "UnitDesignChange",
@@ -162,4 +166,12 @@ addonTable.Constants.DefaultRange = {
   [72] = 30, -- Fury
   [73] = 30, -- Protection
   [1446] = 30,
+}
+addonTable.Constants.RangeModifier = {
+  [276079] = 40, -- Death Knight, Death's Reach
+  [429211] = 40, -- Demon Hunter, Champion of the Glaive
+  [197524] = 45, -- Druid, Astral Influence
+  [459559] = 46, -- Priest, Phantom Reach
+  [428377] = 46, -- Rogue - Outlaw, Precision Shot
+  [1271948] = 35, -- Warrior, Javelineer
 }

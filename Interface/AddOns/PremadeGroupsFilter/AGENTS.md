@@ -9,7 +9,7 @@ UI-based filtering and powerful Lua expression-based filtering.
 ## Development Notes
 
 ### Architecture and Code Style
-* Try to keep the architecture free of cycles (files should reference each other)
+* Try to keep the architecture free of cycles (files must not reference each other)
 * Avoid tainting Blizzard functions whenever possible
 * Indent with 4 spaces
 
@@ -45,4 +45,4 @@ The file loading order is defined in `PremadeGroupsFilter.toc`
 and in `PremadeGroupsFilter_Mists.toc` for the Classic version.
 
 ### Lua Interpreter
-A Lua interpreter should be available on the PATH as `lua5.1`.
+A Lua interpreter should be available as `.bin/lua` or as `lua5.1`, same for `luac`.

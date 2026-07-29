@@ -104,20 +104,53 @@ specializationMonitor:SetScript("OnEvent", function()
   powerColor = specializationToColor[specID]
   powerDivisor = specializationToDivisor[specID]
   chargedColor = CreateColorFromRGBHexString("00aaff")
+
+  addonTable.CallbackRegistry:TriggerEvent("PowerChange")
 end)
 
 addonTable.Display.PowerBarMixin = {}
 
 function addonTable.Display.PowerBarMixin:Strip()
   self.asset = nil
+  self.registered = nil
+  self:UnregisterAllEvents()
+  addonTable.CallbackRegistry:UnregisterCallback("PowerChange", self)
 end
 
 function addonTable.Display.PowerBarMixin:SetUnit(unit)
   self.unit = unit
+  if unit then
+    self:ApplyTarget()
+    addonTable.Cache:RegisterCallback(unit, "target", function()
+      self:ApplyTarget()
+    end)
+  else
+    self:UnregisterAllEvents()
+    addonTable.CallbackRegistry:UnregisterCallback("PowerChange", self)
+    self.registered = nil
+  end
 end
 
 function addonTable.Display.PowerBarMixin:ApplyTarget()
-  if powerKind and UnitIsUnit("target", self.unit) and UnitCanAttack("player", self.unit) then
+  local isTarget = addonTable.Cache:Get(self.unit, "target")
+  local canAttack = addonTable.Cache:Get(self.unit, "canAttack")
+  if isTarget and canAttack and not self.registeredForPower then
+    self.registeredForPower = true
+    addonTable.CallbackRegistry:RegisterCallback("PowerChange", self.ApplyTarget, self)
+  elseif not isTarget and self.registeredForPower then
+    self.registeredForPower = nil
+    addonTable.CallbackRegistry:UnregisterCallback("PowerChange", self)
+  end
+
+  if powerKind and isTarget and canAttack then
+    if not self.registered then
+      self:RegisterEvent("UNIT_POWER_UPDATE")
+      self:RegisterEvent("RUNE_POWER_UPDATE")
+      if addonTable.Constants.IsRetail then
+        self:RegisterEvent("UNIT_POWER_POINT_CHARGE")
+      end
+    end
+
     local maxPower
     local currentPower = 0
     if powerKind == Enum.PowerType.Runes then
@@ -162,6 +195,12 @@ function addonTable.Display.PowerBarMixin:ApplyTarget()
 
     self:SetValue(points)
   else
+    self.registered = nil
+    self:UnregisterAllEvents()
     self:Hide()
   end
+end
+
+function addonTable.Display.PowerBarMixin:OnEvent()
+  self:ApplyTarget()
 end

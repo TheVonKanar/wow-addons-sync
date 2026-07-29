@@ -304,6 +304,7 @@ MythicPlusUtility.utilityAbilities = {
     }, -- Holy
     [258] = {
         [213634] = {tags = "[disease]"}, -- Purify Disease
+        [47585] = {tags = "[self_only][slow][snare][root]"}, -- Dispersion
     }, -- Shadow
     ROGUE = {
         [1856] = {tags = "[self_only][slow][snare][root][targeted_avoid]", baseline = true}, -- Vanish
@@ -362,8 +363,8 @@ MythicPlusUtility.utilityAbilities = {
     WARRIOR = {
         [107570] = {tags = "[creature_stun]", baseline = true}, -- Storm Bolt
         [12323] = {tags = "[creature_slow]"}, -- Piercing Howl
-        [18499] = {tags = "[self_only][fear][incapacitate]", baseline = true}, -- Berserker Rage
-        -- [23920] = {tags = "[spell_reflect]"}, -- Spell Reflection
+        [1271925] = {tags = "[self_only][slow][snare][root]", baseline = true}, -- Fearless
+        [18499] = {tags = "[self_only][fear][incapacitate]", alternatives = {384100}, baseline = true}, -- Berserker Rage
         [384100] = {tags = "[fear]"}, -- Berserker Shout
         [46968] = {tags = "[creature_stun]", baseline = true}, -- Shockwave
         [5246] = {tags = "[creature_fear]"}, -- Intimidating Shout

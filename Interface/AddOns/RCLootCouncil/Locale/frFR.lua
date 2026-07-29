@@ -340,6 +340,8 @@ L["No items to award later registered"] = "Aucun objet devant être attribué pl
 L["No recipients available"] = "Pas de destinataire disponible"
 L["No session running"] = "Aucune session en cours"
 L["No winners registered"] = "Aucun vainqueur répertorié"
+--[[Translation missing --]]
+L["non_tradeable_reason_bonus_roll"] = "Bonus Roll"
 L["non_tradeable_reason_nil"] = "Inconnue"
 L["non_tradeable_reason_not_tradeable"] = "Non-échangeable"
 L["non_tradeable_reason_rejected_trade"] = "Souhaitait garder l'objet"
@@ -439,6 +441,10 @@ L["opt_profileSharing_import_desc"] = "Import a new RCLootCouncil profile. Impor
 L["opt_profileSharing_profileExistsWarning"] = "A profile named \"%s\" already exists - do you want to overwrite it?"
 L["opt_rejectTrade_Desc"] = "Cochez pour autoriser les candidats à choisir entre \"donner\" l'objet au conseil ou non. Si cette option n'est pas cochée, tous les objets PL échangeables sont ajoutés automatiquement."
 L["opt_rejectTrade_Name"] = "Autoriser à garder"
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Desc"] = "Check to save all bonus rolls from candidates to the Loot History."
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 --[[Translation missing --]]
 L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
 --[[Translation missing --]]

@@ -2,7 +2,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("MythicPlusUtility", "enUS", true)
 
 -- Options
 L["Toggle Window"] = true
-L["Window Position and Size Settings"] = true
+L["Window Settings"] = true
 L["Width"] = true
 L["Height"] = true
 L["Lock Window"] = true
@@ -24,6 +24,7 @@ L["Show in"] = true
 L["Minimap Icon"] = true
 L["Talent Highlight Settings"] = true
 L["Highlight Color"] = true
+L["Tooltip NPC Model Settings"] = true
 
 -- Difficulty
 L["Normal"] = true
@@ -35,8 +36,8 @@ L["Open Settings"] = true
 L["Disable Minimap Button"] = true
 
 -- Dungeons
-L["Algeth\'ar Academy"] = true
-L["Magisters\' Terrace"] = true
+L["Algeth'ar Academy"] = true
+L["Magisters' Terrace"] = true
 L["Maisara Caverns"] = true
 L["Nexus-Point Xenas"] = true
 L["Pit of Saron"] = true

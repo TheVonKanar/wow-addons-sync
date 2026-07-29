@@ -46,10 +46,10 @@ L["Stance Bar"] = true
 L["Pet Bar"] = true
 L["Micro Menu"] = true
 L["Bags Bar"] = true
-L["CDManager Bars"] = true
-L["CDManager Buffs"] = true
-L["CDManager Essential"] = true
-L["CDManager Utility"] = true
+L["CDM Bars"] = true
+L["CDM Buffs"] = true
+L["CDM Essential"] = true
+L["CDM Utility"] = true
 L["Buff Frame"] = true
 L["Debuff Frame"] = true
 L["Player Castbar"] = true
@@ -84,16 +84,20 @@ L["descr_conditions"] = "Enable which Conditions should fade the Frames and what
 L["descr_prioConditions"] = "Conditions can be promoted to Priority-Conditions.|nIf a Priority-Condition is active, their Alpha only competes with other Priority-Conditions.|nThe Alpha of any normal Conditions isn't even considered in that case."
 L["enable"] = "Enable"
 L["alpha"] = "Alpha"
-L["priority"] = "Prio"
+L["priority"] = "Priority Condition"
 
 L["label_combat"] = "In Combat"
 L["label_instance"] = "In Instance"
 L["label_mouseover"] = "On Mouseover"
-L["label_targetFriendly"] = "Friendly Target/Focus"
-L["label_targetHostile"] = "Hostile Target/Focus"
+L["label_target"] = "Has Target"
+L["label_targetFriendly"] = "Friendly"
+L["label_targetHostile"] = "Hostile"
+L["label_focus"] = "Has Focus"
+L["label_focusFriendly"] = "Friendly"
+L["label_focusHostile"] = "Hostile"
 L["label_casting"] = "Casting"
 L["label_resting"] = "Resting"
-L["label_health"] = "Health"
+L["label_health"] = "Missing Health"
 L["label_mounted"] = "Mounted"
 L["label_inVehicle"] = "In Vehicle"
 L["descr_health"] = "Due to AddOn restrictions, this relies entirely on workarounds."..
@@ -131,7 +135,7 @@ L["descr_interactable"] = "When something interactable is in reach of the player
 L["checkbox_excludeNPCs"] = "Exclude NPCs"
 L["descr_excludeNPCs"] = "Will ignore interactable objects that can be targeted, like NPCs."
 L["button_disableAll"] = "Disable All"
-L["button_reset"] = "Reset Group to Default"
+L["button_reset"] = "Reset to Defaults"
 
 L["frameFinder"] = "Frame Finder"
 L["descr_frameFinder"] = "Launches a Tool to help you find and add Frames that aren't listed above."
@@ -157,6 +161,7 @@ L["dropdownOption_mouseover2"] = "any Group"
 L["descr_mouseover"] = "Should this only respond to mousing over Frames of this Group?".."|n|n"..
                         "Or should this respond to mouseover events from any Group?"
 
+L["checkbox_priority"] = "Priority Condition"
 L["description_priority"] = "The Alpha of active Priority Conditions always wins out against the Alpha of normal Conditions".."|n|n"..
                             "For example, if the 'Instance' Condition is a priority and its Alpha is 0, your Frames will fade out when you're in a Dungeon.".."|n|n"..
                             "Even when 'Combat' or 'Mouseover' want to set it to 1, it will remain at 0.".."|n|n"..
@@ -174,4 +179,85 @@ L["ffDescr_howToMouseoverAreas"] = "Create a new area.".."|n|n"..
                                 "Left click to move/resize.".."|n|n"..
                                 "Right click to delete."
 
+L["label_instanceDungeon"] = "Dungeon"
+L["label_instanceRaid"] = "Raid"
+L["label_instanceBattleground"] = "Battleground"
+L["label_instanceArena"] = "Arena"
+L["label_instanceScenario"] = "Delve/Scenario"
+L["label_instanceNeighborhood"] = "Neighborhood"
+L["label_instanceHousing"] = "House Interior"
 
+L["customize"] = "Customize"
+L["description_override"] = "When enabled, this Condition will ignore the settings of the parent and instead use its own settings."
+L["expand"] = "Expand"
+L["collapse"] = "Collapse"
+L["buttonChangelog"] = "View Changelog"
+L["tab_manualControl"] = "Manual Control"
+L["descr_manualControl"] = "Define a Keybind or Macro to manually set the Alpha of your Groups.".."|n|n"..
+                            "While an override is engaged, affected Groups will be set to that Alpha and ignore Conditions.".."|n|n"..
+                            "When disengaged, the Groups will go back to using Conditions to determine their Alpha."
+L["button_newOverride"] = "New Override"
+L["name_newGroup"] = "New Group"
+L["popup_createOverride"] = "Name of new Override:"
+L["name_newOverride"] = "New Override"
+L["popup_renameOverride"] = "Rename Override"
+L["popup_deleteOverride"] = "Delete Override"
+L["button_setHotkey"] = "No Keybind"
+L["button_setHotkeyRecording"] = "Recording ..."
+L["description_setHotkey"] = "Click to set a new Keybind.".."|n"..
+                             "Esc or Right-Click to clear."
+L["input_macro"] = "Macro (optional)"
+L["description_macro"] = "In addition or instead of a keybind, you can use a macro to toggle this override.".."|n|n"..
+                         "Make the following macro and replace 'MyMacro' with your custom word:".."|n|n"..
+                         "/autohide override MyMacro"
+L["dropdown_affectedGroups"] = "Affected Groups"
+L["dropdownOption_affectedGroups1"] = "All"
+L["dropdownOption_affectedGroups2"] = "Customize"
+L["print_overrideResult"] = "AutoHideUI Override: "
+L["checkbox_printOverride"] = "Print Results"
+L["description_printOverride"] = "Prints out a message in your chat showing which groups are now controlled by an override."
+L["print_duplicateKeybind"] = "Duplicate keybind '%s' removed from Override '%s' !"
+L["print_duplicateMacro"] = "Duplicate macro '%s' removed from Override '%s' !"
+
+L["mouseMiddle"] = "MiddleMouse"
+L["mouseBtn4"] = "Mouse4"
+L["mouseBtn5"] = "Mouse5"
+L["num+"] = "NumPlus"
+L["num-"] = "NumMinus"
+L["pageUp"] = "PageUp"
+L["pageDown"] = "PageDown"
+L["ctrl"] = "Ctrl"
+L["alt"] = "Alt"
+L["shift"] = "Shift"
+
+L["print_resetSuccess"] = "Current Profile has been reset!"
+L["header_viewingGroup"] = "Viewing Group: "
+
+L["print_switchMissing"] = "Profile does not exist: "
+L["print_switchSame"] = "Already set to Profile: "
+L["print_switchSuccess"] = "Switched to Profile: "
+L["print_toggleError1"] = "Need to provide two profile names!"
+L["print_toggleError2"] = "Both profiles are the same!"
+L["print_toggleError3"] = "These profiles don't exist: "
+L["warning_schema2"] = "Middle Mouse Button is no longer supported!|nA Hotkey in the following Profile has been reset: "
+
+L["Show active Frames:"] = true
+L["Common"] = true
+L["Custom"] = true
+L["Mouseover"] = true
+
+L["tab_hotkeys"] = "Alpha Override"
+L["tab_commands"] = "All Commands"
+L["cmd_options"] = "/autohide|n/autohideui"
+L["descr_options"] = "Opens the options menu."
+L["cmd_override"] = "/autohide override MACRO"
+L["descr_override"] = "Engages the specified Alpha Override."
+L["cmd_setProfile"] = "/autohide setProfile PROFILE"
+L["descr_setProfile"] = "Switches to the specified profile."
+L["cmd_toggleProfile"] = "/autohide toggleProfile PROFILE1 PROFILE2"
+L["descr_toggleProfile"] = "Switches between the two specified profiles."
+L["cmd_resetProfile"] = "/autohide resetProfile"
+L["descr_resetProfile"] = "Resets the current profile to default."
+L["cmd_setProfileLua"] = 'AutoHideUI:SetProfile("PROFILE")'
+L["descr_setProfileLua"] = "Lua command to switch to specified profile.".."|n"..
+                           "Can be used by AddOns to automatice profile-switching."

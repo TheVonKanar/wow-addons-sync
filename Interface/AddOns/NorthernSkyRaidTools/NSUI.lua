@@ -1,6 +1,9 @@
-local _, NSI = ...
+local addonId, NSI = ...
 local DF = _G["DetailsFramework"]
-local L = LibStub("AceLocale-3.0"):GetLocale("NorthernSkyRaidTools")
+
+local function GetLocalizedText(key)
+    return NSI:Loc(key)
+end
 
 -- Get references from Core module
 local Core = NSI.UI.Core
@@ -19,6 +22,7 @@ local options_slider_template      = Core.options_slider_template
 local options_button_template      = Core.options_button_template
 
 -- Get UI builder functions from modules
+local BuildEncounterAlertsUI       = NSI.UI.EncounterAlerts.BuildEncounterAlertsUI
 local BuildVersionCheckUI          = NSI.UI.VersionCheck.BuildVersionCheckUI
 local BuildNicknameEditUI          = NSI.UI.Nicknames.BuildNicknameEditUI
 local BuildRemindersEditUI         = NSI.UI.Reminders.BuildRemindersEditUI
@@ -27,10 +31,12 @@ local BuildCooldownsEditUI         = NSI.UI.Cooldowns.BuildCooldownsEditUI
 local BuildPASoundEditUI           = NSI.UI.PrivateAuras.BuildPASoundEditUI
 local BuildExportStringUI          = NSI.UI.General.BuildExportStringUI
 local BuildImportStringUI          = NSI.UI.General.BuildImportStringUI
+local BuildGroupExportUI           = NSI.UI.General.BuildGroupExportUI
 
 -- Get options builders from modules
 local BuildGeneralOptions          = NSI.UI.Options.General.BuildOptions
 local BuildGeneralCallback         = NSI.UI.Options.General.BuildCallback
+local BuildLanguageSelector        = NSI.UI.Options.General.BuildLanguageSelector
 local BuildNicknamesOptions        = NSI.UI.Options.Nicknames.BuildOptions
 local BuildNicknamesCallback       = NSI.UI.Options.Nicknames.BuildCallback
 local BuildReminderOptions         = NSI.UI.Options.Reminders.BuildOptions
@@ -48,6 +54,8 @@ local BuildRaidBuffMenu            = NSI.UI.Options.ReadyCheck.BuildRaidBuffMenu
 local BuildReadyCheckCallback      = NSI.UI.Options.ReadyCheck.BuildCallback
 local BuildPrivateAurasOptions     = NSI.UI.Options.PrivateAuras.BuildOptions
 local BuildPrivateAurasCallback    = NSI.UI.Options.PrivateAuras.BuildCallback
+local BuildAuraTrackingOptions     = NSI.UI.Options.AuraTracking and NSI.UI.Options.AuraTracking.BuildOptions
+local BuildAuraTrackingCallback    = NSI.UI.Options.AuraTracking and NSI.UI.Options.AuraTracking.BuildCallback
 local BuildQoLOptions              = NSI.UI.Options.QoL.BuildOptions
 local BuildQoLCallback             = NSI.UI.Options.QoL.BuildCallback
 local BuildWAImportsOptions        = NSI.UI.Options.WAImports.BuildOptions
@@ -59,26 +67,29 @@ local BuildWACallback              = NSI.UI.Options.WAImports.BuildCallback
 -- Tab groups – blank strings become visual spacers between groups
 local TABS_GROUPS                  = {
     {
-        { name = "General",    text = L["General"] },
-        { name = "QoL",        text = L["Quality of Life"] },
-        { name = "ReadyCheck", text = L["Ready Check"] },
+        { name = "General",    textKey = "General" },
+        { name = "QoL",        textKey = "Quality of Life" },
+        { name = "ReadyCheck", textKey = "Ready Check" },
     },
     {
-        { name = "Reminders",       text = L["Reminders"] },
-        { name = "Reminders-Note",  text = L["Note-Display"] },
-        { name = "EncounterAlerts",   text = L["Encounter Alerts"] },
-        { name = "InterruptDisplay", text = L["Interrupt Display"] },
-        { name = "Assignments",      text = L["Assignments"] },
+        { name = "Reminders",        textKey = "Reminders" },
+        { name = "Reminders-Note",   textKey = "Note-Display" },
+        { name = "EncounterAlerts",  textKey = "Encounter Alerts" },
+        { name = "InterruptDisplay", textKey = "Interrupt Display" },
+        { name = "Assignments",      textKey = "Assignments" },
     },
     {
-        { name = "PrivateAura", text = L["Private Auras"] },
-        { name = "WAImports",   text = L["WA Imports"] },
+        { name = "PrivateAura", textKey = "Private Auras" },
+        { name = "WAImports",   textKey = "WA Imports" },
     },
     {
-        { name = "Nicknames", text = L["Nicknames"] },
-        { name = "Versions",  text = L["Version Check"] },
+        { name = "Nicknames", textKey = "Nicknames" },
+        { name = "Versions",  textKey = "Version Check" },
     },
 }
+if NSI:IsMidnightS2() and BuildAuraTrackingOptions then
+    table.insert(TABS_GROUPS[3], 2, { name = "AuraTracking", textKey = "Aura Tracking" })
+end
 
 -- Sidebar visual constants
 local SIDEBAR_BTN_WIDTH            = 148
@@ -94,8 +105,9 @@ local CreateButton                 = NSI.UI.Components.CreateButton
 function NSUI:Init()
     NSI.IsBuilding = true
     -- Scale bar
-    DF:CreateScaleBar(NSUI, NSRT.NSUI)
-    local scale = math.max(NSRT.NSUI.scale, 0.6)
+    local scale = NSRT.NSUI.scale
+    NSRT.NSUI.scale = scale
+    DF:CreateScaleBar(NSUI, NSRT.NSUI, true)
     NSUI:SetScale(scale)
 
     -- Forward declaration – buttons below need to call SelectTab before it is defined
@@ -118,6 +130,15 @@ function NSUI:Init()
 
     function tabSystem:SelectTabByName(name)
         SelectTab(name)
+    end
+
+    function tabSystem:RefreshTabLabels()
+        for _, btn in ipairs(self.AllButtons) do
+            if btn._textKey then
+                btn:SetText(GetLocalizedText(btn._textKey))
+                NSI:SetUIFont(btn, nil, NSRT.Settings.GlobalFontFlags)
+            end
+        end
     end
 
     -- --------------------------------------------------------
@@ -159,23 +180,22 @@ function NSUI:Init()
             contentFrame:Hide()
             contentFrame:EnableMouse(false)
 
-            -- Register by both name and display text for maximum compat
+            -- Register by name; textKey is resolved lazily so locale switches are picked up
             tabSystem.AllFramesByName[tab.name] = contentFrame
-            tabSystem.AllFramesByName[tab.text] = contentFrame
             table.insert(tabSystem.AllFrames, contentFrame)
 
             -- Sidebar button
             local btn = CreateButton(
                 sidebarBg,
-                tab.text,
+                GetLocalizedText(tab.textKey),
                 function() SelectTab(tab.name) end,
                 SIDEBAR_BTN_WIDTH, SIDEBAR_BTN_HEIGHT,
                 "NSUITabBtn_" .. tab.name
             )
             btn:SetPoint("TOPLEFT", sidebarBg, "TOPLEFT", 5, btnY)
+            btn._textKey = tab.textKey
 
             tabSystem.AllButtonsByName[tab.name] = btn
-            tabSystem.AllButtonsByName[tab.text] = btn
             table.insert(tabSystem.AllButtons, btn)
 
             btnY = btnY - SIDEBAR_BTN_HEIGHT - SIDEBAR_BTN_GAP
@@ -198,8 +218,8 @@ function NSUI:Init()
     local NOTES_HEADER_BTN_Y = -38
 
     local notesTabs = {
-        { name = "SharedNotes",   text = L["Shared Notes"],   icon = "users_icon" },
-        { name = "PersonalNotes", text = L["Personal Notes"], icon = "user_icon" },
+        { name = "SharedNotes",   textKey = "Shared Notes",   icon = "users_icon" },
+        { name = "PersonalNotes", textKey = "Personal Notes", icon = "user_icon" },
     }
 
     for i, nt in ipairs(notesTabs) do
@@ -211,28 +231,63 @@ function NSUI:Init()
         notesFrame:EnableMouse(false)
 
         tabSystem.AllFramesByName[nt.name] = notesFrame
-        tabSystem.AllFramesByName[nt.text] = notesFrame
         table.insert(tabSystem.AllFrames, notesFrame)
 
         -- Persistent header button (lives on NSUI, always visible)
         local hdrBtn = CreateButton(
             NSUI,
-            nt.text,
+            GetLocalizedText(nt.textKey),
             function() SelectTab(nt.name) end,
             NOTES_HEADER_BTN_W, NOTES_HEADER_BTN_H,
             "NSUIHeaderBtn_" .. nt.name,
-            nt.icon
+            nt.icon,
+            18
         )
         hdrBtn:SetPoint(
             "TOPLEFT", NSUI, "TOPLEFT",
             162 + 10 + (i - 1) * (NOTES_HEADER_BTN_W + 6),
             NOTES_HEADER_BTN_Y
         )
+        hdrBtn._textKey = nt.textKey
 
         tabSystem.AllButtonsByName[nt.name] = hdrBtn
-        tabSystem.AllButtonsByName[nt.text] = hdrBtn
         table.insert(tabSystem.AllButtons, hdrBtn)
     end
+
+    -- --------------------------------------------------------
+    -- Anchor/Preview button (icon-only, far right of header)
+    -- --------------------------------------------------------
+    local ANCHOR_BTN_SIZE = 26
+    local anchorBtn = CreateButton(
+        NSUI,
+        "",  -- icon-only, no text
+        function() NSI:TogglePreviewMode() end,
+        ANCHOR_BTN_SIZE, ANCHOR_BTN_SIZE,
+        "NSUIAnchorBtn",
+        [[Interface\AddOns\NorthernSkyRaidTools\Media\Icons\anchor.png]],
+        nil,  -- textSize
+        { title = GetLocalizedText("Preview Alerts"), desc = GetLocalizedText("Preview Reminders and unlock their anchors to move them around") }
+    )
+    anchorBtn:SetPoint("TOPRIGHT", NSUI, "TOPRIGHT", -10, NOTES_HEADER_BTN_Y)
+
+    -- Export Group button (icon-only, immediately left of anchor button)
+    local exportGroupBtn = CreateButton(
+        NSUI,
+        "",  -- icon-only, no text
+        function()
+            if NSUI.group_export_popup then
+                NSUI.group_export_popup:Show()
+            end
+        end,
+        ANCHOR_BTN_SIZE, ANCHOR_BTN_SIZE,
+        "NSUIExportGroupBtn",
+        [[Interface\AddOns\NorthernSkyRaidTools\Media\Icons\external-link.png]],
+        nil,  -- textSize
+        { title = GetLocalizedText("Export Group"), desc = GetLocalizedText("Export your current raid composition to use with wowutils.com") },
+        function() return not InCombatLockdown() and IsInGroup() end
+    )
+    exportGroupBtn:SetPoint("TOPRIGHT", NSUI, "TOPRIGHT", -(10 + ANCHOR_BTN_SIZE + 6), NOTES_HEADER_BTN_Y)
+
     -- --------------------------------------------------------
     -- Tab selection logic (matches Details' SelectOptionsSection)
     -- --------------------------------------------------------
@@ -284,6 +339,7 @@ function NSUI:Init()
     local interruptdisplay_tab    = tabSystem:GetTabFrameByName("InterruptDisplay")
     local readycheck_tab          = tabSystem:GetTabFrameByName("ReadyCheck")
     local privateaura_tab         = tabSystem:GetTabFrameByName("PrivateAura")
+    local auratracking_tab        = tabSystem:GetTabFrameByName("AuraTracking")
     local QoL_tab                 = tabSystem:GetTabFrameByName("QoL")
     local WAImports_tab           = tabSystem:GetTabFrameByName("WAImports")
 
@@ -294,7 +350,7 @@ function NSUI:Init()
     NSI.NSRTFrame.generic_display:Hide()
     NSI.NSRTFrame.generic_display:SetPoint(NSRT.Settings.GenericDisplay.Anchor, NSI.NSRTFrame, NSRT.Settings.GenericDisplay.relativeTo, NSRT.Settings.GenericDisplay.xOffset, NSRT.Settings.GenericDisplay.yOffset)
     NSI.NSRTFrame.generic_display.Text = NSI.NSRTFrame.generic_display:CreateFontString(nil, "OVERLAY")
-    NSI.NSRTFrame.generic_display.Text:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), NSRT.Settings.GlobalFontSize, "OUTLINE")
+    NSI.NSRTFrame.generic_display.Text:SetFont(NSI:GetGlobalFontPath(), NSRT.Settings.GlobalFontSize, "OUTLINE")
     NSI.NSRTFrame.generic_display.Text:SetPoint("TOPLEFT", NSI.NSRTFrame.generic_display, "TOPLEFT", 0, 0)
     NSI.NSRTFrame.generic_display.Text:SetJustifyH("LEFT")
     NSI.NSRTFrame.generic_display.Text:SetText("Things that might be displayed here:\nReady Check Module\nAssignments on Pull\n")
@@ -304,7 +360,7 @@ function NSUI:Init()
     NSI.NSRTFrame.SecretDisplay:Hide()
     NSI.NSRTFrame.SecretDisplay:SetPoint(NSRT.Settings.GenericDisplay.Anchor, NSI.NSRTFrame, NSRT.Settings.GenericDisplay.relativeTo, NSRT.Settings.GenericDisplay.xOffset, NSRT.Settings.GenericDisplay.yOffset)
     NSI.NSRTFrame.SecretDisplay.Text = NSI.NSRTFrame.SecretDisplay:CreateFontString(nil, "OVERLAY")
-    NSI.NSRTFrame.SecretDisplay.Text:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), NSRT.Settings.GlobalEncounterFontSize, "OUTLINE")
+    NSI.NSRTFrame.SecretDisplay.Text:SetFont(NSI:GetGlobalFontPath(), NSRT.Settings.GlobalEncounterFontSize, "OUTLINE")
     NSI.NSRTFrame.SecretDisplay.Text:SetPoint("TOPLEFT", NSI.NSRTFrame.generic_display, "TOPLEFT", 0, 0)
     NSI.NSRTFrame.SecretDisplay.Text:SetJustifyH("LEFT")
     NSI.NSRTFrame.SecretDisplay.Text:SetText("")
@@ -323,8 +379,29 @@ function NSUI:Init()
     local readycheck_options1_table      = BuildReadyCheckOptions()
     local RaidBuffMenu                   = BuildRaidBuffMenu()
     local privateaura_options1_table     = BuildPrivateAurasOptions()
+    local auratracking_options1_table    = auratracking_tab and BuildAuraTrackingOptions and BuildAuraTrackingOptions()
     local QoL_options1_table             = BuildQoLOptions()
     local WAImports_options1_table       = BuildWAImportsOptions()
+    local option_tables = {
+        general_options1_table,
+        nicknames_options1_table,
+        reminder_options1_table,
+        reminder_note_options1_table,
+        assignments_options1_table,
+        encounteralerts_options1_table,
+        interruptdisplay_options1_table,
+        readycheck_options1_table,
+        RaidBuffMenu,
+        privateaura_options1_table,
+        QoL_options1_table,
+        WAImports_options1_table,
+    }
+    if auratracking_options1_table then
+        table.insert(option_tables, auratracking_options1_table)
+    end
+    for _, options in ipairs(option_tables) do
+        options.language_addonId = addonId
+    end
 
     -- --------------------------------------------------------
     -- Build callbacks
@@ -338,6 +415,7 @@ function NSUI:Init()
     local interruptdisplay_callback      = BuildInterruptDisplayCallback()
     local readycheck_callback            = BuildReadyCheckCallback()
     local privateaura_callback           = BuildPrivateAurasCallback()
+    local auratracking_callback          = auratracking_tab and BuildAuraTrackingCallback and BuildAuraTrackingCallback()
     local QoL_callback                   = BuildQoLCallback()
     local WAImports_callback             = BuildWACallback()
 
@@ -349,6 +427,10 @@ function NSUI:Init()
     DF:BuildMenu(general_tab, general_options1_table, 10, -10, tab_content_height, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         general_callback)
+    if general_tab.widgetids and general_tab.widgetids.current_profile_label then
+        NSI:SetUIFont(general_tab.widgetids.current_profile_label.widget, 10)
+    end
+    BuildLanguageSelector(general_tab)
     DF:BuildMenu(nicknames_tab, nicknames_options1_table, 10, -10, tab_content_height, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         nicknames_callback)
@@ -375,18 +457,27 @@ function NSUI:Init()
     DF:BuildMenu(privateaura_tab, privateaura_options1_table, 10, -10, tab_content_height, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         privateaura_callback)
+    if auratracking_tab and auratracking_options1_table then
+        DF:BuildMenu(auratracking_tab, auratracking_options1_table, 10, -10, tab_content_height, false, options_text_template,
+            options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
+            auratracking_callback)
+    end
     DF:BuildMenu(QoL_tab, QoL_options1_table, 10, -10, tab_content_height, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         QoL_callback)
     DF:BuildMenu(WAImports_tab, WAImports_options1_table, 10, -10, tab_content_height, false, options_text_template,
         options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template,
         WAImports_callback)
+    C_Timer.After(0.1, function()
+        NSI:ApplySelectedLanguage()
+    end)
     NSI.RaidBuffCheck:SetMovable(false)
     NSI.RaidBuffCheck:EnableMouse(false)
 
     -- --------------------------------------------------------
     -- Build custom UI components
     -- --------------------------------------------------------
+    NSUI.encounters_frame         = BuildEncounterAlertsUI(encounteralerts_tab)
     NSUI.version_scrollbox        = BuildVersionCheckUI(versions_tab)
     NSUI.nickname_frame           = BuildNicknameEditUI()
     NSUI.cooldowns_frame          = BuildCooldownsEditUI()
@@ -395,13 +486,14 @@ function NSUI:Init()
     NSUI.personal_reminders_frame = BuildPersonalRemindersEditUI(tabSystem:GetTabFrameByName("PersonalNotes"))
     NSUI.export_string_popup      = BuildExportStringUI()
     NSUI.import_string_popup      = BuildImportStringUI()
+    NSUI.group_export_popup       = BuildGroupExportUI()
 
     -- --------------------------------------------------------
     -- Status bar text
     -- --------------------------------------------------------
     local versionNumber           = " v" .. C_AddOns.GetAddOnMetadata("NorthernSkyRaidTools", "Version")
     --[==[@debug@
-        if versionNumber == " v12.0.94" then
+        if versionNumber == " v12.0.114" then
             versionNumber = " Dev Build"
         end
     --@end-debug@]==]
@@ -424,25 +516,25 @@ function NSUI:ToggleOptions()
 end
 
 function NSI:NickNamesSyncPopup(unit, nicknametable)
-    local popup = DF:CreateSimplePanel(UIParent, 300, 120, L["Sync Nicknames"], "SyncNicknamesPopup", {
+    local popup = DF:CreateSimplePanel(UIParent, 300, 120, GetLocalizedText("Sync Nicknames"), "SyncNicknamesPopup", {
         DontRightClickClose = true
     })
     popup:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 
-    local label = DF:CreateLabel(popup, format(L["%s is attempting to sync their nicknames with you."], NSAPI:Shorten(unit)), 11)
+    local label = DF:CreateLabel(popup, format(GetLocalizedText("%s is attempting to sync their nicknames with you."), NSAPI:Shorten(unit)), 11)
 
     label:SetPoint("TOPLEFT", popup, "TOPLEFT", 10, -30)
     label:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -10, 40)
     label:SetJustifyH("CENTER")
 
-    local cancel_button = DF:CreateButton(popup, function() popup:Hide() end, 130, 20, L["Cancel"])
+    local cancel_button = DF:CreateButton(popup, function() popup:Hide() end, 130, 20, GetLocalizedText("Cancel"))
     cancel_button:SetPoint("BOTTOMLEFT", popup, "BOTTOMLEFT", 10, 10)
     cancel_button:SetTemplate(options_button_template)
 
     local accept_button = DF:CreateButton(popup, function()
         NSI:SyncNickNamesAccept(nicknametable)
         popup:Hide()
-    end, 130, 20, L["Accept"])
+    end, 130, 20, GetLocalizedText("Accept"))
     accept_button:SetPoint("BOTTOMRIGHT", popup, "BOTTOMRIGHT", -10, 10)
     accept_button:SetTemplate(options_button_template)
 

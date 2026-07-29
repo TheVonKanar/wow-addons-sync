@@ -78,6 +78,7 @@ function provider.OnPinCreated(pin)
     pin.highlight:SetAlpha(0.4)
 end
 
+local default_backdrop
 function provider.OnPinAcquire(pin, coord)
     local mapID = WorldMapFrame:GetMapID()
     local point = ns.points[mapID] and ns.points[mapID][coord]
@@ -169,7 +170,7 @@ provider.Proxy = {
         pin.highlight:SetShown(highlights[point._main])
 
         if point.route and ns.points[mapID] and ns.points[mapID][point.route] then
-            highlights[ns.points[mapID][point.route]] = highlights[point]
+            highlights[ns.points[mapID][point.route]] = highlights[point._main]
             local routePin = pin.provider:GetPinByID(point.route)
             if routePin then
                 routePin.highlight:SetShown(highlights[point._main])

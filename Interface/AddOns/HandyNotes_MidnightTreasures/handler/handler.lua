@@ -136,8 +136,22 @@ do
             if ns.IsObject(item.requires) then
                 table.insert(available, item.requires)
             else
+                -- were any conditions already added from class/covenant/expansion?
+                local combined = #available > 0
                 for i,v in ipairs(item.requires) do
                     table.insert(available, v)
+                end
+                if item.requires.any or item.requires.all then
+                    if combined then
+                        -- conditions can't nest, so "(class) and (a or b)" isn't
+                        -- expressible; fall back to requiring everything
+                        if ns.DEBUG then
+                            print(myname, "loot requires: can't mix any/all with class/covenant/expansion", item[1])
+                        end
+                    else
+                        available.any = item.requires.any
+                        available.all = item.requires.all
+                    end
                 end
             end
         end
@@ -186,7 +200,7 @@ do
             table.insert(route, 1, coord)
             ns.points[zone][route[#route]] = setmetatable({
                 label=route.label or (point.npc and ("Path to {npc:%s}"):format(point.npc) or "Path to treasure"),
-                atlas=route.atlas or "poi-door", scale=route.scale or 0.95, texture=false,
+                atlas=route.atlas or "poi-door", scale=route.scale or 0.9, texture=false,
                 minimap=true, worldmap=route.worldmap,
                 note=route.note or false,
                 loot=upgradeloot(route.loot),
@@ -198,12 +212,12 @@ do
         end
         if point.nearby then
             local nearby = type(point.nearby) == "table" and point.nearby or {point.nearby}
-            for _, ncoord in ipairs(point.nearby) do
+            for _, ncoord in ipairs(nearby) do
                 local npoint = setmetatable({
                     label=nearby.label or (point.npc and "Related to nearby NPC" or "Related to nearby treasure"),
                     atlas=nearby.atlas or "playerpartyblip",
                     texture=nearby.texture or false,
-                    minimap=true, worldmap=nearby.worldmap, scale=0.95,
+                    minimap=true, worldmap=nearby.worldmap, scale=0.9,
                     note=nearby.note or false,
                     loot=upgradeloot(nearby.loot), active=nearby.active,
                     related=nearby.related or false, nearby=nearby.nearby or false,
@@ -225,7 +239,9 @@ do
             for rcoord, related in pairs(point.related) do
                 if type(rcoord) == "number" then -- defaults are mixed in on this table...
                     if not point.routes then point.routes = {} end
-                    table.insert(point.routes, {rcoord, coord, highlightOnly=true})
+                    -- _related marks this as a generated cluster route, so the
+                    -- provider can drop it when that related point is filtered out
+                    table.insert(point.routes, {rcoord, coord, highlightOnly=true, _related=rcoord})
                     registerPoint(zone, rcoord, relatedNode(related))
                 end
             end 
@@ -330,6 +346,7 @@ function ns.RegisterVignettes(zone, vignettes, defaults)
         point.always = true
         point.label = false
         point.loot = upgradeloot(point.loot)
+        point.loot_shared = upgradeloot(point.loot_shared)
 
         intotable(ns.POIsToPoints, point.areaPoi, point)
         intotable(ns.VignetteIDsToPoints, point.vignette, point)
@@ -566,7 +583,7 @@ local function render_replacer(variant, id, fallback)
         end
         if name then
             if subid then
-                return TEXT_MODE_A_STRING_VALUE_TYPE:format(name, GetText("FACTION_STANDING_LABEL"..subid, UnitSex("player")) or string(subid))
+                return TEXT_MODE_A_STRING_VALUE_TYPE:format(name, GetText("FACTION_STANDING_LABEL"..subid, UnitSex("player")) or tostring(subid))
             end
             return name
         end
@@ -698,7 +715,7 @@ local trimmed_icon = function(texture)
     return icon_cache[texture]
 end
 local atlas_texture = function(atlas, extra, left, right, top, bottom)
-    atlasInfo = C_Texture.GetAtlasInfo(atlas)
+    local atlasInfo = C_Texture.GetAtlasInfo(atlas)
     if not atlasInfo then
         if ns.DEBUG then
             if not ns.DEBUG_missing_atlas_cache then ns.DEBUG_missing_atlas_cache = {} end
@@ -815,7 +832,7 @@ local function work_out_texture(point)
     end
     if point.atlas then
         if not icon_cache[point.atlas] then
-            icon_cache[point.atlas] = atlas_texture(point.atlas, point.scale)
+            icon_cache[point.atlas] = atlas_texture(point.atlas)
         end
         return icon_cache[point.atlas]
     end
@@ -1476,7 +1493,7 @@ do
                 return
             end
             if button == "LeftButton" and IsShiftKeyDown() and _G.MAP_PIN_HYPERLINK then
-                sendToChat(button, uiMapID, coord)
+                sendToChat(uiMapID, coord)
                 return
             end
             if point.OnClick then

@@ -462,7 +462,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
         label = addonTable.Locales.GENERAL,
         entries = {
           {
-            label = addonTable.Locales.ANIMATE,
+            label = addonTable.Locales.ANIMATE_X,
             kind = "checkbox",
             setter = function(details, value)
               details.animate = value
@@ -518,7 +518,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
     },
     ["cast"] = {
       {
-        label = addonTable.Locales.TEXTURES,
+        label = addonTable.Locales.GENERAL,
         entries = {
           {
             label = addonTable.Locales.MARK_INTERRUPT_READY_POINT,
@@ -796,6 +796,23 @@ addonTable.CustomiseDialog.WidgetsConfig = {
         }
       }
     },
+    ["castSpellName"] = {
+      {
+        label = addonTable.Locales.GENERAL,
+        entries = {
+          {
+            label = addonTable.Locales.SHOW_ON_INTERRUPT,
+            kind = "checkbox",
+            setter = function(details, value)
+              details.showInterrupted = value
+            end,
+            getter = function(details)
+              return details.showInterrupted
+            end,
+          },
+        }
+      }
+    },
     ["castTarget"] = {
       {
         label = addonTable.Locales.COLORS,
@@ -901,6 +918,20 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
           },
         }
+      },
+      {
+        label = addonTable.Locales.COLORS,
+        entries = {
+          {
+            label = "",
+            kind = "autoColors",
+            lockedElements = {},
+            setter = function() end,
+            getter = function(details)
+              return details.autoColors
+            end,
+          },
+        },
       }
     },
     ["mythicPlusForces"] = {
@@ -1134,6 +1165,18 @@ addonTable.CustomiseDialog.WidgetsConfig = {
             end,
           },
           {
+            label = addonTable.Locales.PADDING,
+            kind = "slider",
+            min = 0, max = 200,
+            valuePattern = "%d%%",
+            setter = function(details, value)
+              details.padding = value / 100
+            end,
+            getter = function(details)
+              return details.padding * 100
+            end,
+          },
+          {
             label = addonTable.Locales.DIRECTION,
             kind = "dropdown",
             getInitData = function()
@@ -1166,7 +1209,6 @@ addonTable.CustomiseDialog.WidgetsConfig = {
               return details.limit
             end,
           },
-          { kind = "spacer" },
           {
             label = addonTable.Locales.SHOW_TYPE_BORDER,
             kind = "checkbox",
@@ -1649,7 +1691,7 @@ addonTable.CustomiseDialog.WidgetsConfig = {
           },
           { kind = "spacer" },
           {
-            label = addonTable.Locales.ANIMATE,
+            label = addonTable.Locales.ANIMATE_X,
             kind = "checkbox",
             setter = function(details, value)
               details.animate = value
@@ -1743,37 +1785,85 @@ addonTable.CustomiseDialog.WidgetsConfig = {
   }
 }
 
-addonTable.CustomiseDialog.AurasConfig = {
-  {
-    label = addonTable.Locales.VISIBLE,
-    kind = "checkbox",
-    setter = function(details, value)
-      details.visible = value
-    end,
-    getter = function(details)
-      return details.visible
-    end,
+addonTable.CustomiseDialog.AurasTextsConfig = {
+  ["countdown"] = {
+    {
+      label = addonTable.Locales.VISIBLE,
+      kind = "checkbox",
+      setter = function(details, value)
+        details.visible = value
+      end,
+      getter = function(details)
+        return details.visible
+      end,
+    },
+    {
+      label = addonTable.Locales.SCALE,
+      kind = "slider",
+      min = 1, max = 300,
+      valuePattern = "%d%%",
+      setter = function(details, value)
+        details.scale = value / 100
+      end,
+      getter = function(details)
+        return details.scale * 100
+      end,
+    },
+    {
+      label = addonTable.Locales.COLOR,
+      kind = "colorPicker",
+      setter = function(details, value)
+        details.color = value
+      end,
+      getter = function(details)
+        return details.color
+      end,
+    },
+    { kind = "spacer" },
+    {
+      label = addonTable.Locales.SHOW_FRACTIONS,
+      kind = "checkbox",
+      setter = function(details, value)
+        details.showFractions = value
+      end,
+      getter = function(details)
+        return details.showFractions
+      end,
+      hide = not addonTable.Constants.IsCooldownFormattingAvailable,
+    },
   },
-  {
-    label = addonTable.Locales.SCALE,
-    kind = "slider",
-    min = 1, max = 300,
-    valuePattern = "%d%%",
-    setter = function(details, value)
-      details.scale = value / 100
-    end,
-    getter = function(details)
-      return details.scale * 100
-    end,
-  },
-  {
-    label = addonTable.Locales.COLOR,
-    kind = "colorPicker",
-    setter = function(details, value)
-      details.color = value
-    end,
-    getter = function(details)
-      return details.color
-    end,
-  },
+  ["stacks"] = {
+    {
+      label = addonTable.Locales.VISIBLE,
+      kind = "checkbox",
+      setter = function(details, value)
+        details.visible = value
+      end,
+      getter = function(details)
+        return details.visible
+      end,
+    },
+    {
+      label = addonTable.Locales.SCALE,
+      kind = "slider",
+      min = 1, max = 300,
+      valuePattern = "%d%%",
+      setter = function(details, value)
+        details.scale = value / 100
+      end,
+      getter = function(details)
+        return details.scale * 100
+      end,
+    },
+    {
+      label = addonTable.Locales.COLOR,
+      kind = "colorPicker",
+      setter = function(details, value)
+        details.color = value
+      end,
+      getter = function(details)
+        return details.color
+      end,
+    },
+  }
 }

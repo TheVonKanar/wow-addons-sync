@@ -340,7 +340,8 @@ L["ignore_input_desc"] = "Введите itemID что бы RCLootCouncil доб
 L["ignore_input_usage"] = "Эта функция принимает только itemIDs (цифры), itemName или itemLink."
 L["ignore_list_desc"] = "Предметы которые игнорирует RCLootCouncil. Нажмите на предмет что бы убрать."
 --[[Translation missing --]]
-L["ignore_options_desc"] = "Control which items RCLootCouncil should ignore. If you add an item that isn't cached, you need switch to another tab and back before you'll see it in the list."
+L["ignore_options_desc"] = [=[Control which items RCLootCouncil should ignore. If you add an item that isn't cached, you need switch to another tab and back before you'll see it in the list.
+Note: This only works for Master Loot.]=]
 --[[Translation missing --]]
 L["Import"] = "Import"
 L["Import aborted"] = "Импорт прерван"
@@ -433,6 +434,8 @@ L["No items to award later registered"] = "No items to award later registered"
 L["No recipients available"] = "No recipients available"
 L["No session running"] = "Нет запущенных сессий"
 L["No winners registered"] = "Победителей не зарегистрировано"
+--[[Translation missing --]]
+L["non_tradeable_reason_bonus_roll"] = "Bonus Roll"
 L["non_tradeable_reason_nil"] = "Неизвестно"
 L["non_tradeable_reason_not_tradeable"] = "Не передается"
 L["non_tradeable_reason_rejected_trade"] = "Хотел оставить предмет"
@@ -560,6 +563,10 @@ L["opt_profileSharing_profileExistsWarning"] = "A profile named \"%s\" already e
 --[[Translation missing --]]
 L["opt_rejectTrade_Desc"] = "Check to enable candidates to choose whether they want to 'give' the item to the council or not. If unchecked, all tradeable PL items are added automatically."
 L["opt_rejectTrade_Name"] = "Разрешить оставить"
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Desc"] = "Check to save all bonus rolls from candidates to the Loot History."
+--[[Translation missing --]]
+L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 --[[Translation missing --]]
 L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
 --[[Translation missing --]]

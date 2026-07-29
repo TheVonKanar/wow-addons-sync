@@ -1,6 +1,6 @@
-## Interface: 120001, 50503
+## Interface: 120100, 120007, 50504
 ## Title: LiteMount
-## Version: 12.0.1-8
+## Version: 12.0.7-4
 ## Author: Xodiv-Nagrand
 ## Email: mib@post.com
 ## IconTexture: 132247
@@ -61,6 +61,8 @@ Rule.lua
 RuleSet.lua
 Actions.lua
 ActionButton.lua
+TooltipAdditions.lua
+UIFilter.lua
 Core.lua
 
 KeyBindingStrings.lua

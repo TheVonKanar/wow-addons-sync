@@ -99,7 +99,7 @@ end
 -- Export settings to a serialized string (only includes valid settings from defaults + customBuffs)
 -- If sourceProfile is provided, exports from that table instead of the active profile.
 local function ExportSettings(sourceProfile)
-    local defaults = BR.Display.defaults
+    local defaults = BR.defaults
     local prof = sourceProfile or BR.profile
     local export = {}
 
@@ -129,7 +129,7 @@ end
 
 -- Import settings from a prefixed import string (full replacement of exported keys)
 local function ImportSettings(prefixedStr)
-    local defaults = BR.Display.defaults
+    local defaults = BR.defaults
     local data, err = DeserializeTable(prefixedStr)
     if not data then
         return false, err
@@ -150,6 +150,26 @@ local function ImportSettings(prefixedStr)
     for k, v in pairs(data) do
         BR.profile[k] = DeepCopy(v)
     end
+
+    -- Back-compat: pre-v44 export strings carry the legacy boolean tracking
+    -- overrides instead of the per-context mode enums. Migrations don't re-run on
+    -- import, so map them here (mirrors migration [44]) and clear the stale keys.
+    -- Guard on the OLD key only: the new mode keys already hold a value in the
+    -- profile (AceDB defaults), so a `p.outsideInstancesMode == nil` check would
+    -- never fire and the legacy boolean would be dropped without converting.
+    local p = BR.profile
+    if p.selfOnlyOutsideInstances ~= nil then
+        p.outsideInstancesMode = p.selfOnlyOutsideInstances and "self_only" or "default"
+    end
+    if p.hideOthersInCombat ~= nil then
+        p.combatMode = p.hideOthersInCombat and "my_buffs" or "default"
+    end
+    if p.myBuffsOnlyWhileLeveling ~= nil then
+        p.levelingMode = p.myBuffsOnlyWhileLeveling and "my_buffs" or "default"
+    end
+    p.selfOnlyOutsideInstances = nil
+    p.hideOthersInCombat = nil
+    p.myBuffsOnlyWhileLeveling = nil
 
     -- Ensure defaults sub-table exists and has the metatable (DeepCopy produces
     -- a plain table, and old export strings may not include a defaults key at all).

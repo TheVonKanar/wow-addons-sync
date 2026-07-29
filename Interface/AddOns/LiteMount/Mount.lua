@@ -16,10 +16,6 @@ local C_Spell = LM.C_Spell or C_Spell
 
 local L = LM.L
 
--- Rarity data repackaged daily from DataForAzeroth by Sören Gade
---  https://github.com/sgade/MountsRarity
-local MountsRarity = LibStub("MountsRarity-2.0")
-
 LM.Mount = { }
 LM.Mount.__index = LM.Mount
 
@@ -33,8 +29,8 @@ function LM.Mount:Get(className, ...)
     local class = LM[className]
     local m = class:Get(...)
     if m then
-        if not m.family then
-            m.family = NONE
+        if not m.modelGroup then
+            m.modelGroup = NONE
         end
     end
     return m
@@ -70,9 +66,9 @@ function LM.Mount.FilterToDisplay(f)
     elseif f:match('^id:%d+$') then
         local _, id = string.split(':', f, 2)
         return C_MountJournal.GetMountInfoByID(tonumber(id))
-    elseif f:match('^family:') then
-        local _, family = string.split(':', f, 2)
-        return L.LM_FAMILY .. ' : ' .. family
+    elseif f:match('^model:') then
+        local _, modelGroup = string.split(':', f, 2)
+        return MODEL .. ' : ' .. modelGroup
     elseif f:match('^expansion:') then
         local _, expansion = string.split(':', f, 2)
         return EXPANSION_FILTER_TEXT .. ' : ' .. GetExpansionName(expansion)
@@ -129,8 +125,8 @@ function LM.Mount:MatchesOneFilter(flags, groups, f)
         return self.mountTypeID == tonumber(f:sub(4))
     elseif f:sub(1, 10) == 'expansion:' then
         return self.expansion == tonumber(f:sub(11))
-    elseif f:sub(1, 7) == 'family:' then
-        return self.family == f:sub(8)
+    elseif f:sub(1, 6) == 'model:' then
+        return self.modelGroup == f:sub(7)
     elseif f:sub(1, 5) == 'prio:' then
         return self:GetPriority() == tonumber(f:sub(6))
     elseif f:sub(1, 1) == '~' then
@@ -283,8 +279,7 @@ function LM.Mount:OnSummon()
     if not LM.Options:GetOption('announceViaChat') then return end
 
     if LM.Options:GetOption('randomWeightStyle') == 'Rarity' then
-        local rarity = self:GetRarity()
-        rarity = string.format(L.LM_RARITY_FORMAT, rarity or 0)
+        local rarity = string.format(L.LM_RARITY_FORMAT, self.rarity or 0)
         LM.Print(L.LM_SUMMON_CHAT_MESSAGE_RARITY, self.name, rarity, n)
     else
         LM.Print(L.LM_SUMMON_CHAT_MESSAGE, self.name, self:GetPriority(), n)
@@ -297,12 +292,6 @@ end
 
 function LM.Mount:GetPriority()
     return LM.Options:GetPriority(self)
-end
-
-function LM.Mount:GetRarity()
-    if self.mountID then
-        return MountsRarity:GetRarityByID(self.mountID) or 0
-    end
 end
 
 function LM.Mount:GetTypeString()
@@ -364,7 +353,7 @@ function LM.Mount:Dump(prefix)
                    )
             )
     LM.Print(prefix .. " mountID: " .. tostring(self.mountID))
-    LM.Print(prefix .. " family: " .. tostring(self.family))
+    LM.Print(prefix .. " model: " .. tostring(self.modelGroup))
     LM.Print(prefix .. " isCollected: " .. tostring(self:IsCollected()))
     LM.Print(prefix .. " isUsable: " .. tostring(self:IsUsable()))
     LM.Print(prefix .. " isMountable: " .. tostring(self:IsMountable()))

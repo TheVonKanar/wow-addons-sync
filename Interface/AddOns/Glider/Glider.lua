@@ -1,11 +1,11 @@
-local addonName = ... ---@type string # Glider
----@class (partial) ns
----@field AtlasInfo table
----@field API SkyAPI
+local addonName = ...
+
+--- @class addonNamespace
+--- @field LEM table
 local ns = select(2,...)
 
 local abs = math.abs
----@class (partial) Glider
+---@type Glider
 local Glider = ns.GliderUI
 local API = ns.API
 
@@ -32,8 +32,6 @@ Glider:SetPoint("CENTER", anchorFrame)
 ---@field vigorWidgetSetID number
 ---@field percentageMulti table<number, number>
 ---@field rotations table<number, number>
----@field SecretAuras number
----@field SecretCooldowns number
 local Configuration = {
   updateSpeedRate = 0.02,
   updateVigorRate = 0.0167,
@@ -102,12 +100,12 @@ function Glider:GetAddOnAtlasInfo(atlasName, returnTable)
 end
 
 function Glider:SetupTextures()
-  self.Background:SetTexCoord(self:GetAddOnAtlasInfo("Background"))   ---@diagnostic disable-line
-  self.Pulse:SetTexCoord(self:GetAddOnAtlasInfo("Pulse"))   ---@diagnostic disable-line
-  self.Flash:SetTexCoord(self:GetAddOnAtlasInfo("Flash"))   ---@diagnostic disable-line
-  self.TextDisplay.TextBackground:SetTexCoord(self:GetAddOnAtlasInfo("TextBackground")) ---@diagnostic disable-line
-  self.SurgePill:SetTexCoord(self:GetAddOnAtlasInfo("SurgePill")) ---@diagnostic disable-line
-  self.SurgeArc:SetTexCoord(self:GetAddOnAtlasInfo("SurgeGlow")) ---@diagnostic disable-line
+  self.Background:SetTexCoord(self:GetAddOnAtlasInfo("Background"))
+  self.Pulse:SetTexCoord(self:GetAddOnAtlasInfo("Pulse"))
+  self.Flash:SetTexCoord(self:GetAddOnAtlasInfo("Flash"))
+  self.TextDisplay.TextBackground:SetTexCoord(self:GetAddOnAtlasInfo("TextBackground"))
+  self.SurgePill:SetTexCoord(self:GetAddOnAtlasInfo("SurgePill"))
+  self.SurgeArc:SetTexCoord(self:GetAddOnAtlasInfo("SurgeGlow"))
 end
 
 ---@param elapsed number
@@ -205,6 +203,7 @@ end
 
 function Glider:ProcessWidgets()
   local isShown = 0
+  ---@diagnostic disable-next-line
   for _, widget in pairs(UIWidgetPowerBarContainerFrame.widgetFrames) do
     if widget then
       if widget.widgetType == 24 and widget.widgetSetID == 283 then
@@ -429,7 +428,7 @@ Glider:OnLoad()
 local function AddMessage(...) _G.DEFAULT_CHAT_FRAME:AddMessage(strjoin(" ", tostringall(...))) end;
 function Glider:Help(msg)
   local fName = "|cff58C6FAGlider:|r ";
-  local _, _, cmd, args = string.find(msg, "%s?(%w+)%s?(.*)");
+  local cmd, args = string.match(msg, "%s?(%w+)%s?(.*)")
   if not cmd or cmd == "" or cmd == "help" then
     AddMessage("|cff58C6FAGlider: /glider   /vigor|r");
     AddMessage("Settings for Glider can be found in Game Menu > Edit Mode and clicking on the Glider window");

@@ -26,7 +26,7 @@ local settings = {
   SIMPLIFIED_ASSIGNED_FALLBACK = {key = "simplified_assigned_fallback", default = "_hare_simplified"},
 
   TARGET_SCALE = {key = "target_scale", default = 1.2, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
-  CAST_SCALE = {key = "cast_scale", default = 1.1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
+  CAST_SCALE = {key = "cast_scale", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
   CAST_ALPHA = {key = "cast_alpha", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
   NOT_TARGET_ALPHA = {key = "not_target_alpha", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
   MOUSEOVER_ALPHA = {key = "mouseover_alpha", default = 1, refresh = {addonTable.Constants.RefreshReason.TargetBehaviour}},
@@ -54,6 +54,7 @@ local settings = {
     friendlyNPC = true, friendlyPlayer = true, friendlyMinion = false, enemy = true, enemyMinion = true, enemyMinor = true
   }, refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
   SHOW_FRIENDLY_IN_INSTANCES = {key = "show_friendly_in_instances_1", default = "always", refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
+  INSTANCES_NAME_ONLY_SIZE = {key = "instances_name_only_size", default = 2, refresh = {addonTable.Constants.RefreshReason.ShowBehaviour}},
   NAMEPLATE_POSITION = {key = "nameplate_position", default = "top"},
 
   SIMPLIFIED_SCALE = {key = "simplified_scale", default = 0.6, refresh = {addonTable.Constants.RefreshReason.SimplifiedScale}},

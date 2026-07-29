@@ -1,13 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/s mdr",
-"/s heureusement que tu tank mieux que tu décores osky",
-"/g |cnIQ4:|Hitem:258438:8039:::::::90:263::35:4:13440:41:12701:12806::::::|h[Blazing Sunclaws]|h|r",
-"/s /ltp",
-"/cw Sânghr-Hyjal jlai deja fait mais si vous manque des gens jpeux passer ouais!",
-"/cw Sânghr-Hyjal chez qui?",
-"/p ah c'est sur c'est mieux que chez osky ptdr",
 "/p c'est 1+4 non?",
 "/p <3",
 "/p ouais c'est bien stylé!",
@@ -207,4 +200,6 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/cw Xpewpew-Dalaran lol ouais c'est nimp les logs",
 "/cw Xpewpew-Dalaran on doit manquer de buffs",
 "/cw Xpewpew-Dalaran /porter",
+"/s /msuf",
+"/s /cooli",
 }

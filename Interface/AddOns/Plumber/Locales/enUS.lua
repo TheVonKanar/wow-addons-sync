@@ -47,6 +47,9 @@ L["Return To Module List"] = "Return to List";
 L["Generic Addon Conflict"] = "This module might be incompatible with addons of similar functionalities:";
 L["Work In Progress Tag"] = "[WIP]";
 L["Colon With Space"] = ": ";
+L["Disabled Module Requires Reload Format"] = "You must %s to apply the changes.";	--We'll replace %s with a clickable "reload the UI"
+L["Reload The UI"] = "reload the UI";
+L["Click To Reload UI"] = "Click to reload the UI.";
 
 
 --Settings Category
@@ -738,6 +741,8 @@ L["Delves Completion Reward Cap"] = "Completion Rewards";
 L["Delves Completion Reward Cap Tooltip"] = "Once you reach this account-wide cap, completing a Bountiful Delve will no longer grant Delver's Journey or Companion EXP.\n\nRewards from Bountiful Coffers and Nemesis Caches will not be affected by this cap.\n\nThe cap will be raised by 28 per week.";
 L["Near Completion Tooltip"] = "This entry is visible to you because you are about to reach the weekly cap.";
 L["Inactive Currencies Tooltip"] = "These currencies are hidden because you have set them as Unused:";
+L["New Quest"] = "New Quest";
+L["Trait Points Available"] = "Points Available";
 
 
 --ExpansionSummaryMinimapButton
@@ -790,7 +795,7 @@ L["Press Key To Copy Format"] = "Press |cffffd100%s|r to Copy";
 
 --TransmogOutfitSelect
 L["ModuleName TransmogOutfitSelect"] = "Outfit Collection: Quick Access";
-L["ModuleDescription1 TransmogOutfitSelect"] = "Allows you open the outfit collection and enable saved appearance anywhere.";
+L["ModuleDescription1 TransmogOutfitSelect"] = "Allows you to open the outfit collection and enable saved appearance anywhere.";
 L["ModuleDescription2 TransmogOutfitSelect"] = "To do this: open the Transmog UI, then drag the |cffd7c0a3Quick Access|r button above the outfit list to your action bars.";
 L["Outfit Collection"] = "Outfit Collection";
 L["Quick Access Outfit Button"] = "Quick Access";
@@ -914,6 +919,12 @@ L["ModuleDescription PreyQuestSuperTrack"] = "Once your Prey target's location i
 --BlizzFixActionBarArt
 L["ModuleName BlizzFixActionBarArt"] = "Blitz Fix: Action Bar Art";
 L["ModuleDescription BlizzFixActionBarArt"] = "Fixed an issue where Action Bar Art (gryphons and wyverns) reappears unexpectedly after Hiding/Showing UI or exiting House Editor.";
+
+
+--HouseList
+L["ModuleName Housing_HouseList"] = "House List";
+L["ModuleDescription Housing_HouseList"] = "Improve the House List UI:\n\n- Indicate the house's faction with an image on the right.\n\n- Show both Visit House buttons if the player has two houses.";
+L["View Houses In Combat Warning"] = "You cannot view houses while in combat.";
 
 
 --Generic

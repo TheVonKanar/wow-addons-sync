@@ -191,7 +191,6 @@ end
 ---@param overrideIsSent boolean @Ignores .isSent status and adds the item anyway.
 ---@return table LootTable
 function RCLootCouncilML:GetLootTableForTransmit(overrideIsSent)
-	local skipDefaultTypeCode = addon.Utils:GroupHasVersion("3.15.4")
 	local ret = {}
 	for k, v in pairs(self.lootTable) do
 		ret[k] = {}
@@ -199,9 +198,7 @@ function RCLootCouncilML:GetLootTableForTransmit(overrideIsSent)
 			ret[k] = nil
 		else
 			-- Don't send "default", we recreate it when receiving
-			if skipDefaultTypeCode and v.typeCode == "default" then
-				-- Don't add typecode
-			else
+			if v.typeCode ~= "default" then
 				ret[k].typeCode = v.typeCode
 			end
 			ret[k].string = v.string
@@ -291,7 +288,15 @@ end
 function RCLootCouncilML:AddUserItem(item, username)
 	if type(tonumber(item)) == "number" or string.find(item, "item:") then -- Ensure we can handle it
 		self:AddItem(item, false, nil, username) -- The item is neither bagged nor in the loot slot.
-		self:ShowSessionFrame()
+		if db.autoStart and addon.candidatesInGroup[addon.playerName] and Council:GetNum() > 0 then -- Auto start only if data is ready
+			if db.awardLater then
+				self:DoAwardLater(self.lootTable)
+			else
+				self:StartSession()
+			end
+		else
+			self:ShowSessionFrame(self.lootTable)
+		end
 	else
 		addon:Print(format(L["ML_ADD_INVALID_ITEM"], tostring(item)))
 	end
@@ -755,6 +760,7 @@ end
 
 function RCLootCouncilML:UpdateLootSlots()
 	if not addon.lootOpen then return self.Log:d("ML:UpdateLootSlots() without loot window open!!") end
+	if addon.lootMethod ~= Enum.LootMethod.Masterlooter then return end
 	local updatedLootSlot = {}
 	for i = 1, GetNumLootItems() do
 		local item = GetLootSlotLink(i)
@@ -1701,6 +1707,7 @@ end
 
 function RCLootCouncilML:OnReconnectReceived (sender)
 	-- Someone asks for mldb and council
+	self.Log("Responding to reconnect from", sender)
 	local requestPlayer = Player:Get(sender)
 	MLDB:Send(requestPlayer)
 	local council = Council:GetForTransmit()
@@ -1709,9 +1716,13 @@ function RCLootCouncilML:OnReconnectReceived (sender)
 	if addon.handleLoot then
 		self:Send(requestPlayer, "StartHandleLoot")
 	end
-
+	self.Log:D("State:", addon.handleLoot, self.running)
 	if self.running then -- Resend lootTable
-		self:ScheduleTimer("Send", 4, requestPlayer, "lootTable", self:GetLootTableForTransmit(true))
+		local lt = self:GetLootTableForTransmit(true)
+		local count = 0
+		for _ in pairs(lt) do count = count + 1 end
+		self.Log:d("Sending lootTable size:", count)
+		self:ScheduleTimer("Send", 4, requestPlayer, "lootTable", lt)
 		-- REVIEW v2.2.6 For backwards compability we're just sending avotingFrame's lootTable
 		-- This is quite redundant and should be removed in the future
 		-- if db.observe or Council:Contains(requestPlayer) then -- Only send all data to councilmen
@@ -1727,7 +1738,6 @@ function RCLootCouncilML:OnReconnectReceived (sender)
 		-- 	self:ScheduleTimer("Send", 5, requestPlayer, "reconnectData", table)
 		-- end
 	end
-	self.Log("Responded to reconnect from", sender)
 end
 
 function RCLootCouncilML:OnMLDBRequestReceived (sender)

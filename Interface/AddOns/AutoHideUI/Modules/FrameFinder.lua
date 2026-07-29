@@ -8,7 +8,6 @@ local ffWindow -- reference to the frame
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoHideUI")
 
-local selectedGroup
 local HELPER_FRAME_POOL = {}
 local VISIBILITY_TICKER -- periodically checks frame visibility to toggle helper frames
 local mouseoverFrame
@@ -21,13 +20,11 @@ local uiSurface = UIParent:GetWidth() * UIParent:GetHeight()
 -- only needed if we decide to enable clickthrough
 local lastClickTime = 0
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Toggle Frame Finder
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
-function FrameFinder.Start(groupID)
-    selectedGroup = groupID
-
+function FrameFinder.Start()
     if Main.blizzFrame and Main.blizzFrame:IsVisible() then
         HideUIPanel(SettingsPanel)
     else
@@ -73,7 +70,7 @@ function FrameFinder.ConfirmSelection()
     -- preserving user's strings that were not found at all, ie from unloaded addons
     local newString = ""
     local frameStrings = {}
-    local userStrings = string.gmatch(Private.db.profile[selectedGroup].config.customFrames, "[^,]+")
+    local userStrings = string.gmatch(Private.db.profile.groups[Config.selectedGroup].config.customFrames, "[^,]+")
 
     for _, helperFrame in ipairs(helperFrameList) do
         frameStrings[helperFrame.name] = {selected = helperFrame.selected}
@@ -83,19 +80,19 @@ function FrameFinder.ConfirmSelection()
     end
 
     for userString in userStrings do
-        userString = userString:gsub("%s", "")
+        userString = userString:match("^%s*(.-)%s*$")
         if userString ~= "" and not frameStrings[userString] then
             newString = newString..userString..", "
         end
     end
-    Private.db.profile[selectedGroup].config.customFrames = newString
+    Private.db.profile.groups[Config.selectedGroup].config.customFrames = newString
     FrameFinder:HideWindow()
     AceConfigDialog:Open("AutoHideUI")
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Helper Frames
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local COLORS = {
     bodySelected = {0, 1, 0, 0.2},
@@ -174,7 +171,8 @@ do
     b:SetVertexColor(1,1,1,1)
     f.border = b
     local t = f:CreateFontString()
-    t:SetFont(GameFontNormal:GetFont(), 35, "THICKOUTLINE")
+---@diagnostic disable-next-line: param-type-mismatch
+    t:SetFont(GameFontNormal:GetFont(), 20, "SLUG,OUTLINE")
     t:SetPoint("BOTTOM", f, "TOP")
     f.text = t
     mouseoverFrame = f
@@ -271,7 +269,7 @@ local function GetFramesUnderCursor()
 
     for _, frame in ipairs(helperFrameList) do
         if frame:IsMouseOver() then
-            table.insert(frames, frame)
+            tinsert(frames, frame)
         end
     end
 
@@ -605,7 +603,7 @@ end
 
 function FrameFinder.UpdateIgnoredFrames()
     for frame, frameInfo in pairs(Main.activeFrames) do
-        local isInSelectedGroup = frameInfo.group.index == selectedGroup
+        local isInSelectedGroup = frameInfo.group.index == Config.selectedGroup
         local isCustomFrame = frameInfo.isCustom
         if frameInfo.name and (not isCustomFrame or not isInSelectedGroup) then
             ignoredFrames[frameInfo.name] = {
@@ -624,9 +622,9 @@ function FrameFinder.StartVisibilityTicker()
     VISIBILITY_TICKER = C_Timer.NewTicker(0.25, FrameFinder.UpdateHelperFramesVisibility)
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- FrameFinder Window
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 do
     local CreateHeader = Config.CreateHeader
 
@@ -656,14 +654,14 @@ do
 
     frame:Hide()
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Header
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     CreateHeader(frame)
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Left Container
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
 
     local leftGroup = Config.CreateAceLikeGroup(frame, L["ffTitle_available"], 240, 228)
     leftGroup:SetPoint("TOPLEFT", 20, -50)
@@ -688,9 +686,9 @@ do
         frame:ClearSelections()
     end)
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Right Container
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
 
     local rightGroup = Config.CreateAceLikeGroup(frame, L["title_howTo"], 290, 190)
     rightGroup:SetPoint("TOPLEFT", leftGroup, "TOPRIGHT", 20, 0)
@@ -723,9 +721,9 @@ do
         FrameFinder:Cancel()
     end)
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Button Logic
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
 
     local function CreateRow()
         local row = CreateFrame("Button", nil, scrollChild)
@@ -770,7 +768,7 @@ do
         local keys = {}
 
         for k in pairs(frame.entries) do
-            table.insert(keys, k)
+            tinsert(keys, k)
         end
 
         table.sort(keys, function(a,b)

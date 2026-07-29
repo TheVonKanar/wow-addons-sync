@@ -16,42 +16,38 @@ local OverrideFactionInfo = {
 	---- MID ----
 	[2710] = {  --Silvermoon Court
 		barColor = {206/255, 164/255, 56/255},
-		rewardQuestID = 0,
+		rewardQuestID = 93811,
 	},
 
 	[2711] = {  --Magisters
 		barColor = {155/255, 173/255, 204/255},
-		rewardQuestID = 0,
 	},
 
 	[2712] = {  --Blood Knights
 		barColor = {206/255, 159/255, 159/255},
-		rewardQuestID = 0,
 	},
 
 	[2713] = {  --Farstriders
 		barColor = {145/255, 181/255, 128/255},
-		rewardQuestID = 0,
 	},
 
 	[2714] = {  --Shades of the Row
 		barColor = {206/255, 164/255, 56/255},
-		rewardQuestID = 0,
 	},
 
 	[2696] = {  --Amani
 		barColor = {206/255, 162/255, 123/255},
-		rewardQuestID = 0,
+		rewardQuestID = 93566,
 	},
 
 	[2704] = {  --Hara'ti
 		barColor = {254/255, 132/255, 97/255},
-		rewardQuestID = 0,
+		rewardQuestID = 89035,
 	},
 
 	[2699] = {  --Singularity
 		barColor = {159/255, 169/255, 222/255},
-		rewardQuestID = 0,
+		rewardQuestID = 89032,
 	},
 
 	[2764] = {  --Prey S1
@@ -68,10 +64,12 @@ local OverrideFactionInfo = {
 
 	[2770] = {  --Slayer's Duellum
 		barColor = {56/255, 184/255, 255/255},
+		rewardQuestID = 94492,
 	},
 
 	[2792] = {  --Ritual Sites
 		barColor = {197/255, 142/255, 255/255},
+		rewardQuestID = 95391,
 	},
 
 	---- TWW ----
@@ -295,8 +293,44 @@ function FactionUtil:GetFactionsWithRewardPending(viewedExpansionOnly)
 	return tbl
 end
 
+function FactionUtil:GetBestExpansionIDWithRewardPending()
+	local IsOnQuest = C_QuestLog.IsOnQuest;
+	local expansionIDs = {12, 11}; -- newer expansion first
+
+	for _, expansionID in ipairs(expansionIDs) do
+		local factionLayout = LandingPageUtil.GetExpansionData(expansionID, "factionLayout");
+		if factionLayout then
+			local questID;
+			for row, rowInfo in ipairs(factionLayout) do
+				for _, factionInfo in ipairs(rowInfo) do
+					if OverrideFactionInfo[factionInfo.factionID] then
+						questID = OverrideFactionInfo[factionInfo.factionID].rewardQuestID;
+						if questID and IsOnQuest(questID) then
+							return expansionID;
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 function FactionUtil:IsAnyParagonRewardPending(viewedExpansionOnly)
 	return self:GetFactionsWithRewardPending(viewedExpansionOnly) ~= nil
+end
+
+function FactionUtil:GetRewardPendingFactioName()
+	local factions = self:GetFactionsWithRewardPending();
+	if factions then
+		local firstFactionName = self:GetFactionName(factions[1]);
+		if firstFactionName then
+			if #factions == 1 then
+				return firstFactionName;
+			else
+				return firstFactionName.." ...";
+			end
+		end
+	end
 end
 
 function FactionUtil:GetParagonRewardQuestFaction(questID)

@@ -216,7 +216,7 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 		npc=256821,
 		loot={
 			264912, -- Void-Channeler's Spire
-            264913, -- Focused Netherslicer
+	    264913, -- Focused Netherslicer
 			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94755}),
 		},
 		vignette=7428,
@@ -295,14 +295,14 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 		vignette=7129,
 	},
 	[24806780] = { -- Blackcore
-        quest=94463, -- v
-        npc=248823,
-        loot={
-            264519, -- Repurposed Voidwalker's Chestplate
-            264606, -- Netherlocus Amulet
-            -- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
-        },
-        vignette=7142,
+		quest=94463, -- v
+		npc=248823,
+		loot={
+			264519, -- Repurposed Voidwalker's Chestplate
+			264606, -- Netherlocus Amulet
+			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+		},
+		vignette=7142,
 	},
 }, {
 	loot_shared=loot_shared,
@@ -336,4 +336,345 @@ ns.RegisterPoints(ns.SLAYERSRISE, {
 }, {
 	parent=true,
 	loot_shared=loot_shared,
+})
+
+-- Invasions
+
+ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
+	[29106290] = { -- Auredar's Chassis
+		criteria=114009,
+		quest=96316, -- v
+		npc=264569,
+		loot={
+			274873, -- Funeral Attendant's Spire
+			275143, -- Draeni Ceremonial Cuffs
+			275159, -- Construct Manipulator Bracers
+			275167, -- Intact Construct Plates
+			274827, -- Draenic Drive Chain
+			-- 278116, -- Player Experience
+		},
+		vignette=7668,
+	},
+	[76203960] = { -- Swalewing Matriarch
+		criteria=114007,
+		quest=96207, -- v
+		npc=263954,
+		loot={
+			274874, -- Flickering Wing Separator
+			275137, -- Flickering Soft-Steppers
+			275153, -- Flickering Scale Sabatons
+			275145, -- Swalewing Skin Footpads
+			275161, -- Swamp-Resistant Stompers
+			-- 276288, -- Forgotten Sword of Vilaldoun
+		},
+		vignette=7660,
+	},
+	[39904270] = { -- Broxion
+		-- [39904270, 41304680, 42004830, 42604800, 44905440, 45505340, 45805370, 46205600]
+		criteria=114006,
+		quest=96206, -- v
+		npc=263950,
+		loot={
+			275138, -- Spore-Handler's Handwraps
+			275146, -- Spore-Membrane Gloves
+			275154, -- Swamp Trekker's Grips
+			275162, -- Spore-Shined Gloves
+			274890, -- Enchanted Spore
+			-- 276288, -- Forgotten Sword of Vilaldoun
+			-- 278116, -- Player Experience
+		},
+		vignette=7659,
+	},
+	[37606240] = { -- Interminable Uarn
+		criteria=114005,
+		quest=96205, -- v
+		npc=263947,
+		loot={
+			274862, -- Corrupted Draenei Priest's Kris
+			275139, -- Crown of Fungal Spores
+			275147, -- Bioluminescent Swamp Mask
+			275155, -- Interminable Fungal Helmet
+			-- no plate helm?
+			274876, -- Reinforced Fungalhide Bulwark
+		},
+		vignette=7658,
+	},
+	[65906210] = { -- Lomelith
+		criteria=114008,
+		quest=96208, -- v
+		npc=263955,
+		loot={
+			274860, -- Ancient Spore-Coated Axe
+			274819, -- Fungal Fold Frock
+			274823, -- Spongy Gill Loop
+			-- 278116, -- Player Experience
+		},
+		vignette=7661,
+	},
+	[69407720] = { -- Warp Agent Xi'grivr
+		criteria=114010,
+		quest=96319, -- v
+		npc=264574,
+		loot={
+			274870, -- Assassin's Void-String Bow
+			274821, -- Drape of the Hal'hadar Assassin
+			274825, -- Hal'hadar Assassin's Signet
+		},
+		vignette=7670,
+	},
+	[54206240] = { -- Slaipaan
+		criteria=114012,
+		quest=96320, -- v
+		npc=264576,
+		loot={
+			274871, -- Giant Worm Piercer
+			275136, -- Leaf-Woven Blouse
+			275144, -- Leafy-Hide Coat
+			275152, -- Burrower's Linked Hauberk
+			275160, -- Slaipaan's Carapace
+			-- 276288, -- Forgotten Sword of Vilaldoun
+		},
+		vignette=7671,
+	},
+	[48006880] = { -- Indomitable Mk XII
+		criteria=114011,
+		quest=96317, -- v
+		npc=264571,
+		loot={
+			276298, -- Forgotten Fel-Shard Talon
+			275140, -- Leggings of Tainted Stuffing
+			275148, -- Reaver's Padded Trousers
+			275156, -- Gear-Linked Leggings
+			275164, -- Indomitable Mechanized Legplates
+			274891, -- Mk XII Gear Drive
+			-- 276288, -- Forgotten Sword of Vilaldoun
+			-- 278116, -- Player Experience
+		},
+		route={48006880, 49006576, 49005920, 52425751, 53215440, 53534842, 54254436},
+		vignette=7669,
+	},
+}, {
+	achievement=62883, -- Showdown Slugger: Naigtal
+})
+ns.RegisterPoints(2646, { -- Naigral (Vilaldoun)
+	[73608020] = { -- Auredar's Chassis
+		criteria=114009,
+		quest=96316, -- v
+		npc=264569,
+		loot={
+			274873, -- Funeral Attendant's Spire
+			275143, -- Draeni Ceremonial Cuffs
+			275159, -- Construct Manipulator Bracers
+			275167, -- Intact Construct Plates
+			274827, -- Draenic Drive Chain
+			-- 278116, -- Player Experience
+		},
+		vignette=7668,
+	},
+}, {
+	achievement=62883, -- Showdown Slugger: Naigtal
+})
+ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
+	[29201840] = { -- Warbringer Thal'kuur
+		quest=97014, -- v
+		npc=267422,
+		loot={
+			276298, -- Forgotten Fel-Shard Talon
+			274864, -- Sporebloom Gavel
+			275141, -- Spore-Speckled Shoulderpads
+			275149, -- Fungal Draped Epaulets
+			275157, -- Swampwalker's Spaulders
+			275165, -- Petrified Mushroom Shoulderplates
+		},
+		vignette=7744,
+	},
+	[48404760] = { -- Voidwarped Sporebat
+		quest=96566, -- v
+		npc=265698,
+		loot={
+			274866, -- Voidwarped Edge
+			275142, -- Voidwarped Sash
+			275150, -- Sporebat Leather Belt
+			275158, -- Voidwarped Scale Girdle
+			275166, -- Voidwarped Greatbelt
+			-- 278116, -- Player Experience
+		},
+		vignette=7699,
+	},
+	[68255161] = { -- Sleepy Mandrake
+		label="{npc:267910:Sleepy Mandrake}",
+		loot={
+			{262768, pet=true}, -- Sleepy Mandrake
+		},
+		note=function()
+			local function done(q) return C_QuestLog.IsQuestFlaggedCompletedOnAccount(q) and "{a:common-icon-checkmark}" or "{a:common-icon-redx}" end
+			return "Feed five mushrooms:\n"..
+				done(97091).." {item:276365:Highland Redcap}\n"..
+				done(97092).." {item:276366:Dusty Redcap}\n"..
+				done(97093).." {item:276367:Marshy Redcap}\n"..
+				done(97094).." {item:276368:Partially-Digested Redcap} (mob drop)\n"..
+				done(97095).." {item:276369:Airy Redcap}"
+		end,
+		related={
+			[28906176] = {quest=97091, loot={276365}, label="{item:276365}", path=33405970}, -- Highland Redcap
+			[27914996] = {quest=97092, loot={276366}, label="{item:276366}", note="In the crypts"}, -- Dusty Redcap
+			[71423705] = {quest=97093, loot={276367}, label="{item:276367}", path=75643814}, -- Marshy Redcap
+			-- [] = {quest=97094, loot={276368}}, -- Partially-Digested Redcap
+			[95092667] = {quest=97095, loot={276369}, label="{item:276369}", path=88812597, note="On top of the tallest mushroom, bounce up"}, -- Airy Redcap
+			atlas="TeleportationNetwork-Ardenweald-32x32", minimap=true,
+		},
+	},
+})
+ns.RegisterPoints(2646, { -- Naigral (Vilaldoun)
+	[22726130] = {
+		quest=97092,
+		loot={276366}, -- Dusty Redcap
+		-- translate={[ns.VOIDSTORM_NAIGTAL]=true}, -- confusing
+		atlas="TeleportationNetwork-Ardenweald-32x32", minimap=true,
+	},
+})
+
+ns.RegisterPoints(ns.VOIDSTORM_VAL, {
+	[33005700] = { -- Nelgothar
+		criteria=114002,
+		quest=96374, -- v
+		npc=264869,
+		loot={
+			276298, -- Forgotten Fel-Shard Talon
+			274840, -- Pants of the Lost Legion
+			274832, -- Fel-Tainted Trousers
+			274848, -- Legguards of Fel-Corruption
+			274856, -- Felguard's Frozen Greaves
+			274892, -- Resilient Felblood Vial
+			-- 276354, -- Frozen Fel Core
+			-- 278116, -- Player Experience
+		},
+		vignette=7679,
+	},
+	[54006700] = { -- Sleet-Rune
+		criteria=113995,
+		quest=95939, -- v
+		npc=261965,
+		loot={
+			274869, -- Void-Iced Warglaives
+			274828, -- Domanaar Subjugator's Vestments
+			274836, -- Sleet-Resistant Jerkin
+			274844, -- Sleetlink Hauberk
+			274852, -- Sleetstone Chestplate
+		},
+		vignette=7605,
+	},
+	[23004100] = { -- The Horror Below
+		criteria=114003,
+		quest=96375, -- v
+		npc=264870,
+		loot={
+			274872, -- Darkness' Horrific Barb
+			274826, -- Coiling Smoke Chain
+			274818, -- Drape of Intense Darkness
+		},
+		vignette=7680,
+	},
+	[37007600] = { -- Atomus
+		criteria=113996,
+		quest=95940, -- v
+		npc=262421,
+		loot={
+			274868, -- Portal Master's Shortblade
+			274831, -- Portal Shaper's Circlet
+			274839, -- Cold-World Cover
+			274847, -- Atomus's Headcover
+			274855, -- Portal-Keeper's Helm
+		},
+		vignette=7606,
+	},
+	[49007800] = { -- Mercilus
+		criteria=113998,
+		quest=96371, -- v
+		npc=264865,
+		loot={
+			274867, -- Inscribed Domanaar's Sword
+			274834, -- Cord of Domineering Resolve
+			274842, -- Gatekeeper's Leather Waistguard
+			274850, -- Mercilus's Chain Waistguard
+			274858, -- Domanaar Battle Belt
+		},
+		vignette=7676,
+	},
+	[28007300] = { -- Xirah
+		criteria=113999,
+		quest=96370, -- v
+		npc=264864,
+		loot={
+			274875, -- Riftwalker's Lanter
+			274820, -- Cloak of the Voracious Gorge
+			274824, -- Worldeater's Bone Ring
+		},
+		vignette=7675,
+	},
+	[33004200] = { -- Opprimius
+		criteria=114001,
+		quest=96373, -- v
+		npc=264868,
+		loot={
+			274863, -- Cudgel of the Twisted Reaper
+			274829, -- Creature Corruptor Slippers
+			274837, -- Corrupted Hide Boots
+			274845, -- Greaves of Corrupted Scale
+			274853, -- Creature Crushers
+			-- 278116, -- Player Experience
+		},
+		vignette=7678,
+	},
+	[44005840] = { -- Krilkan
+		criteria=114000,
+		quest=96372, -- v
+		npc=264866,
+		loot={
+			274835, -- Bands of Pincher Sinew
+			274843, -- Pincher-Proof Wristguards
+			274851, -- Glittering Frostscale Wraps
+			274859, -- Klaxid Plate Vambraces
+			274893, -- Frosty Klaxid Stinger
+			-- 278116, -- Player Experience
+		},
+		vignette=7677,
+	},
+	[67104180] = { -- Glacial Broodmother
+		criteria=113997,
+		quest=95559, -- v
+		npc=261716,
+		loot={
+			274861, -- Frosty Broodmother's Fang
+			274833, -- Icy Spidersilk Mantle
+			274841, -- Frigid Cavedweller's Shoulderpads
+			274849, -- Frostscale Spider's Monnion
+			274857, -- Chitonous Broodmother's Spaulders
+		},
+		vignette=7558,
+	},
+	-- Unknown location, displayed to the side
+	[11001700] = { -- Shadowguard Destroyer
+		criteria=114004,
+		quest=96465, -- v
+		npc=265269,
+		loot={
+			274865, -- Destroyer's Drop Hammer
+			274830, -- Ice-Glazed Gloves
+			274854, -- Shadowguard Plate Gauntlets
+		},
+		vignette=7690,
+		note="Seems to spawn after other rares are killed",
+	},
+}, {
+	achievement=62881, -- Showdown Slugger: Val
+})
+
+ns.RegisterPoints(ns.VOIDSTORM_VAL, {
+	[70508429] = {
+		label="Enchanted Hilt",
+		loot={276290}, -- Ice Guardian's Sleetblade
+		note="In {spell:1238870:Heroic World Tier}, use the Hilt to gain {spell:1300397:Testament}, then kill any two rares to gain 2x {spell:1299509:Vanquishing}. Return here for the reward before they expire.",
+		path=61457875,
+	},
 })

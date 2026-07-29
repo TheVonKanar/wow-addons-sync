@@ -8,6 +8,7 @@ local FADE_QUEUE = {}
 local totalElapsed = 0
 local FADE_THROTTLE = 0.02
 local pendingFades = {}
+local originalAlpha = {}
 Fading.offsetForFadeDelay = 0
 
 local function PickPreferredAlpha(a1, a2, mode)
@@ -60,23 +61,46 @@ local function GetTargetAlpha(group)
     return alpha or group.config.idleAlpha
 end
 
-function Fading.SetAllAlpha(targetAlpha)
-    for _, group in ipairs(Main.activeGroups) do
-        local newAlpha = targetAlpha or GetTargetAlpha(group)
-        group.states.endAlpha = newAlpha
-        for _, frame in pairs(group.frames) do
-            if not Main.helperFrames[frame] then
-                local alphaFunc = frame._origSetAlpha or frame.SetAlpha
-                alphaFunc(frame, newAlpha)
-            end
+function Fading.SetGroupAlpha(group, targetAlpha)
+    if group.overrideDB then
+        targetAlpha = group.overrideDB.alpha
+    end
+
+    local newAlpha = targetAlpha or GetTargetAlpha(group)
+    group.states.endAlpha = newAlpha
+    for _, frame in pairs(group.frames) do
+        if not Main.helperFrames[frame] then
+            local alphaFunc = frame._origSetAlpha or frame.SetAlpha
+            alphaFunc(frame, newAlpha)
         end
     end
-    Fading.UpdateAllFrameVisibility()
 end
 
-------------------
+function Fading.SetAllAlpha(targetAlpha)
+    for _, group in ipairs(Main.activeGroups) do
+        Fading.SetGroupAlpha(group, targetAlpha)
+    end
+    Fading.UpdateAllFrameVisibility()
+
+    for frame, frameInfo in pairs(Main.activeFrames) do
+        if originalAlpha[frame] and not frameInfo.isInUse then
+            local alphaFunc = frame._origSetAlpha or frame.SetAlpha
+            alphaFunc(frame, originalAlpha[frame])
+        end
+    end
+end
+
+function Fading.SaveOriginalAlphas()
+    for frame in pairs(Main.activeFrames) do
+        if not originalAlpha[frame] then
+            originalAlpha[frame] = frame:GetAlpha()
+        end
+    end
+end
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Fade Stuff
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local function AutoHide_FrameFade_OnUpdate(self, elapsed)
     totalElapsed = totalElapsed + elapsed
@@ -129,6 +153,12 @@ end
 function Fading.WipeFadeQueue()
     wipe(FADE_QUEUE)
     Main.frame:SetScript("OnUpdate", nil)
+end
+
+function Fading.RemoveGroupFromFadeQueue(group)
+    for _, frame in ipairs(group.frames) do
+        tDeleteItem(FADE_QUEUE, frame)
+    end
 end
 
 function Fading.SetVisibilityFromAlpha(frame, endAlpha, threshold)
@@ -189,7 +219,7 @@ function Fading.IsFadeInProgress(states)
     return GetTime() < states.fadeEndTime
 end
 
-local function CancelPendingFade(group)
+function Fading.CancelPendingFade(group)
     if pendingFades[group] and pendingFades[group].timer then
         pendingFades[group].timer:Cancel()
         pendingFades[group] = nil
@@ -237,7 +267,7 @@ function Fading.GetRequiredSteps(timeToFade)
 end
 
 local function ApplyFade(group, targetAlpha)
-    CancelPendingFade(group)
+    Fading.CancelPendingFade(group)
 
     local states = group.states
 
@@ -265,7 +295,7 @@ end
 local function ScheduleFade(group, targetAlpha, delay, fadeMode)
     local pendingFade = pendingFades[group]
     if pendingFade and pendingFade.fadeMode ~= fadeMode then
-        CancelPendingFade(group)
+        Fading.CancelPendingFade(group)
     elseif pendingFade then
         pendingFade.targetAlpha = targetAlpha
         return
@@ -305,10 +335,14 @@ local function ShouldDelayFade(group)
 end
 
 function Fading.FadeGroup(group)
+    if group.overrideDB then
+        return
+    end
+
     local targetAlpha = GetTargetAlpha(group)
 
     if targetAlpha == group.states.endAlpha then
-        CancelPendingFade(group)
+        Fading.CancelPendingFade(group)
         return
     end
 
@@ -330,7 +364,7 @@ function Fading.FadeAllGroups()
 end
 
 function Fading.ResetPendingFades()
-    for _, fadeInfo in ipairs(pendingFades) do
+    for _, fadeInfo in pairs(pendingFades) do
         if fadeInfo and fadeInfo.timer then
             fadeInfo.timer:Cancel()
         end

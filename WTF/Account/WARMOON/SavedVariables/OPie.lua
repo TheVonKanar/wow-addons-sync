@@ -6,20 +6,20 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "8.3.3 (4.141)",
+["_OPieVersion"] = "8.6.3 (4.143)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
-["_GameVersion"] = "12.0.5",
+["_GameVersion"] = "12.0.7",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 ["MotionAction"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 },
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
@@ -46,35 +46,11 @@ OPie_SavedData = {
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
 ["CommonHearth"] = true,
-["SpecMenu"] = true,
-["CommonTrades"] = true,
 ["OPieAutoQuest"] = true,
+["CommonTrades"] = true,
 ["WorldMarkers"] = true,
+["SpecMenu"] = true,
 ["PaladinTools"] = true,
-},
-["Crafting"] = {
-{
-"item",
-238387,
-["sliceToken"] = "ABueTkOYBTw",
-},
-{
-"item",
-237497,
-["sliceToken"] = "ABueTkOYBTe",
-},
-{
-["sliceToken"] = "ABueTkOYBTr",
-["id"] = 1223014,
-},
-{
-"item",
-242299,
-["sliceToken"] = "ABueTkOYBT1",
-},
-["limit"] = "Kvotheen-Hyjal",
-["save"] = true,
-["name"] = "Crafting",
 },
 ["Utility"] = {
 {
@@ -113,6 +89,30 @@ OPie_SavedData = {
 },
 ["name"] = "Utility",
 ["save"] = true,
+},
+["Crafting"] = {
+{
+"item",
+238387,
+["sliceToken"] = "ABueTkOYBTw",
+},
+{
+"item",
+237497,
+["sliceToken"] = "ABueTkOYBTe",
+},
+{
+["sliceToken"] = "ABueTkOYBTr",
+["id"] = 1223014,
+},
+{
+"item",
+242299,
+["sliceToken"] = "ABueTkOYBT1",
+},
+["name"] = "Crafting",
+["save"] = true,
+["limit"] = "Kvotheen-Hyjal",
 },
 },
 },

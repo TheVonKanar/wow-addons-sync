@@ -9,14 +9,13 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoHideUI")
 
 MouseoverAreas.ActiveAreas = {}
-local selectedGroup
 local MOUSEOVER_FRAME_POOL = {}
 local MIN_SIZE = 50
 local pi = math.pi
 
 local COLORS = {
     bodySelected = {0.5, 1, 1, 0.3},
-    bodyUnselected = {0.5, 1, 1, 0.15},
+    bodyUnselected = {0.5, 1, 1, 0.2},
     borderSelected = {0.5, 1, 1, 1},
     borderUnselected = {0.5, 1, 1, 0.5},
     selected = {1, 1, 1},
@@ -34,13 +33,12 @@ local RESIZE_BUTTON_MAPPING = {
     { point = "RIGHT",       name = "r",    rotation = 0,          tex = "resizeEdgeV",   anchors = {"BOTTOMRIGHT", "TOPRIGHT", "br", "TOPLEFT", "BOTTOMLEFT", "tr"} },
 }
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Toggle MouseoverAreas Window
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
-function MouseoverAreas.Start(groupID)
-    selectedGroup = groupID
-    if not selectedGroup then
+function MouseoverAreas.Start()
+    if not Config.selectedGroup then
         return
     end
 
@@ -72,9 +70,9 @@ function MouseoverAreas.HideWindow()
     AceConfigDialog:Open("AutoHideUI")
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- MouseoverArea Frames
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 local function HighlightFrame(self, show)
     if show then
@@ -93,7 +91,7 @@ local function OnMouseoverAreaClick(self, button)
 end
 
 local function UpdateAreaDB(frame)
-    local db = Private.db.profile[selectedGroup].mouseoverAreas[frame.index]
+    local db = Private.db.profile.groups[Config.selectedGroup].mouseoverAreas[frame.index]
 
     if not db then
         return
@@ -111,25 +109,26 @@ local function UpdateAreaDB(frame)
 end
 
 local function AddAreaToDB(frame)
-    local db = Private.db.profile[selectedGroup].mouseoverAreas
+    local db = Private.db.profile.groups[Config.selectedGroup].mouseoverAreas
+    local point,_,relativePoint,x,y = frame:GetPoint()
 
     local areaData = {
         width = frame:GetWidth(),
         height = frame:GetHeight(),
-        point = "CENTER",
-        relativePoint = "CENTER",
-        xOffset = 0,
-        yOffset = 0,
+        point = point,
+        relativePoint = relativePoint,
+        xOffset = x,
+        yOffset = y,
     }
 
-    table.insert(db, areaData)
+    tinsert(db, areaData)
 
     return #db
 end
 
 local function RemoveAreaFromDB(index)
-    local db = Private.db.profile[selectedGroup].mouseoverAreas
-    table.remove(db, index)
+    local db = Private.db.profile.groups[Config.selectedGroup].mouseoverAreas
+    tremove(db, index)
 end
 
 local CreateMouseoverFrame = function()
@@ -257,7 +256,7 @@ function MouseoverAreas:CreateNewArea()
     frame.mover:Show()
     local index = AddAreaToDB(frame)
     frame.index = index
-    frame.group = selectedGroup
+    frame.group = Config.selectedGroup
     tinsert(MouseoverAreas.ActiveAreas, frame)
 end
 
@@ -270,7 +269,7 @@ end
 
 function MouseoverAreas:CreateAreas()
     wipe(MouseoverAreas.ActiveAreas)
-    for groupIndex, groupDate in ipairs(Private.db.profile) do
+    for groupIndex, groupDate in ipairs(Private.db.profile.groups) do
         if groupDate.mouseoverAreas then
              for i, areaData in ipairs(groupDate.mouseoverAreas) do
                 local frame = GetNextFrame()
@@ -303,7 +302,7 @@ end
 
 function MouseoverAreas:ShowMovers()
     for _, frame in ipairs(MouseoverAreas.ActiveAreas) do
-        if frame.group == selectedGroup then
+        if frame.group == Config.selectedGroup then
             frame.mover:Show()
         end
     end
@@ -315,9 +314,9 @@ function MouseoverAreas:HideMovers()
     end
 end
 
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 -- MouseoverAreas Window
-------------------
+-- ─────────────────────────────────────────────────────────────────────────────
 
 do
     local CreateHeader = Config.CreateHeader
@@ -348,14 +347,14 @@ do
 
     frame:Hide()
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Header
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     CreateHeader(frame)
 
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
     -- Left Container
-    ------------------
+    -- ─────────────────────────────────────────────────────────────────────────────
 
     local rightGroup = Config.CreateAceLikeGroup(frame, L["title_howTo"], 310, 90)
     rightGroup:SetPoint("TOPLEFT", 20, -50)

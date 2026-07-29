@@ -19,7 +19,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       anchor = {"TOPLEFT", -140, 50},
       scale = 1,
       layer = 1,
-      animate = true,
+      animate = false,
       background = {
         asset = "Platy: Fade Bottom",
         color = GetColor("FFFFFF", 1),
@@ -57,7 +57,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       anchor = {"TOPLEFT", -140, 50},
       scale = 1,
       layer = 1,
-      animate = true,
+      animate = false,
       background = {
         color = GetColor("4F4F4F"),
         applyColor = false,
@@ -290,6 +290,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       layer = 1,
       height = 1,
       limit = 30,
+      padding = 0.1,
       direction = "RIGHT",
       sorting = {
         kind = "duration",
@@ -308,6 +309,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
           scale = Round(14/12 * 100) / 100,
           color = GetColor("FFFFFF"),
           visible = true,
+          showFractions = false,
         },
         stacks = {
           anchor = {"TOPRIGHT", 12, -1},
@@ -329,6 +331,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       layer = 1,
       height = 1,
       limit = 30,
+      padding = 0.1,
       direction = "LEFT",
       sorting = {
         kind = "duration",
@@ -347,6 +350,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
           scale = Round(14/12 * 100) / 100,
           color = GetColor("FFFFFF"),
           visible = true,
+          showFractions = false,
         },
         stacks = {
           anchor = {"TOPRIGHT", 12, -1},
@@ -368,6 +372,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       layer = 1,
       height = 1,
       limit = 30,
+      padding = 0.1,
       direction = "RIGHT",
       showType = false,
       showSwipe = true,
@@ -385,6 +390,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
           scale = Round(14/12 * 100) / 100,
           color = GetColor("FFFFFF"),
           visible = true,
+          showFractions = false,
         },
         stacks = {
           anchor = {"TOPRIGHT", 12, -1},
@@ -430,6 +436,7 @@ addonTable.CustomiseDialog.DesignWidgets = {
       truncate = false,
       playerGuild = true,
       npcRole = true,
+      autoColors = {}
     },
   },
   {
@@ -703,18 +710,6 @@ addonTable.CustomiseDialog.DesignWidgets = {
       scale = 1,
       layer = 3,
       asset = "faction-icon",
-      color = GetColor("ffffff"),
-      anchor = {"TOPLEFT", -140, 50},
-    },
-  },
-  {
-    name = addonTable.Locales.CLASS,
-    kind = "markers",
-    default = {
-      kind = "class",
-      scale = 1,
-      layer = 3,
-      asset = "normal/class",
       color = GetColor("ffffff"),
       anchor = {"TOPLEFT", -140, 50},
     },

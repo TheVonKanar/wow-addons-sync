@@ -23,8 +23,10 @@ local function getIndicatorBarColor(rec)
 	local eventInfo = rec.eventInfo
 	if type(eventInfo) ~= "table" then return nil end
 
+	-- During active encounters eventInfo.icons is secret-wrapped (not nil), so fall
+	-- back to the pre-combat cached value that the indicator dirty-check keeps fresh.
 	local rawMask = eventInfo.icons
-	if rawMask == nil then
+	if rawMask == nil or isSecretValue(rawMask) then
 		rawMask = rec._indicatorMask
 	end
 	local mask = U.toNumberSafe(rawMask)
@@ -56,19 +58,24 @@ local function getTimelineBarColor(rec)
 		return indicatorR, indicatorG, indicatorB, indicatorA
 	end
 
-	-- Fallback: use the event's own color (set via C_EncounterEvents.SetEventColor
-	-- before combat, or Blizzard's default). During encounters these may be
-	-- secret-wrapped values, but WoW widget functions handle secrets natively.
-	local color = eventInfo.color
-	if color then
-		if type(color.GetRGBA) == "function" then
-			local r, g, b, a = color:GetRGBA()
-			if r then return r, g, b, a end
-		elseif type(color.GetRGB) == "function" then
-			local r, g, b = color:GetRGB()
-			if r then return r, g, b, 1 end
-		elseif color.r then
-			return color.r, color.g, color.b, color.a or 1
+	-- Fallback: ask the timeline for the event's effective rendered color (includes
+	-- Blizzard's per-event default + any SetEventColor override). SBM stores the
+	-- timeline event ID (NeverSecret) on rec.id and rec.eventInfo.timelineEventID; the
+	-- returned color is secret-wrapped during real encounters but :GetRGBA() values
+	-- pass through SetStatusBarColor / SetVertexColor.
+	local timelineEventID = rec.id or eventInfo.timelineEventID or eventInfo.id
+	if type(timelineEventID) == "number" and C_EncounterTimeline and C_EncounterTimeline.GetEventColor then
+		local ok, color = pcall(C_EncounterTimeline.GetEventColor, timelineEventID)
+		if ok and type(color) == "table" then
+			if type(color.GetRGBA) == "function" then
+				local r, g, b, a = color:GetRGBA()
+				if r then return r, g, b, a end
+			elseif type(color.GetRGB) == "function" then
+				local r, g, b = color:GetRGB()
+				if r then return r, g, b, 1 end
+			elseif color.r then
+				return color.r, color.g, color.b, color.a or 1
+			end
 		end
 	end
 

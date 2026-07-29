@@ -1122,7 +1122,6 @@ end
 -- Settings Window
 -- =========================
 function M:OpenSettings()
-	if InCombatLockdown() then return end
 	local frame = self._settingsWindow
 	if not frame then
 		frame = self:CreateSettingsWindow()
@@ -1149,8 +1148,10 @@ function M:OpenSettings()
 end
 
 function M:CreateSettingsWindow()
-	if isGUIOpen then return self._settingsWindow end
-	if InCombatLockdown() then return end
+	if isGUIOpen and self._settingsWindow then
+		return self._settingsWindow
+	end
+	isGUIOpen = false
 	if self.EnsureDefaults then
 		self:EnsureDefaults()
 	end
@@ -1793,23 +1794,6 @@ function M:CreateSettingsWindow()
 			1
 		)
 
-		addCheckBox(mythic, "Share Keystones With Party",
-			function() return SimpleBossModsDB.cfg.general.shareKeystones ~= false end,
-			function(v)
-				SimpleBossModsDB.cfg.general.shareKeystones = v
-				M.SyncLiveConfig()
-			end,
-			1
-		)
-
-		addCheckBox(mythic, "Enable /key Commands (requires reload)",
-			function() return SimpleBossModsDB.cfg.general.enableKeyCommands ~= false end,
-			function(v)
-				SimpleBossModsDB.cfg.general.enableKeyCommands = v
-			end,
-			1
-		)
-
 		local queues = AG:Create("InlineGroup")
 		queues:SetTitle("Queue Timers")
 		queues:SetLayout("Flow")
@@ -1935,10 +1919,11 @@ function M:CreateSettingsWindow()
 		end
 
 		addDropdown(icons, "Outline",
-			{ ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline", [""] = "None" },
+			{ [""] = "None", ["OUTLINE"] = "Outline", ["OUTLINE, SLUG"] = "Outline (Slug)", ["THICKOUTLINE"] = "Thick Outline" },
 			function() return SimpleBossModsDB.cfg.icons.outline end,
 			function(v) addon:ApplyIconOutlineConfig(v) end,
-			0.25
+			0.25,
+			{ "", "OUTLINE", "OUTLINE, SLUG", "THICKOUTLINE" }
 		)
 
 		addCheckBox(icons, "Shadow",
@@ -2086,10 +2071,11 @@ function M:CreateSettingsWindow()
 		end
 
 		addDropdown(media, "Outline",
-			{ ["OUTLINE"] = "Outline", ["THICKOUTLINE"] = "Thick Outline", [""] = "None" },
+			{ [""] = "None", ["OUTLINE"] = "Outline", ["OUTLINE, SLUG"] = "Outline (Slug)", ["THICKOUTLINE"] = "Thick Outline" },
 			function() return SimpleBossModsDB.cfg.bars.outline end,
 			function(v) addon:ApplyBarOutlineConfig(v) end,
-			0.25
+			0.25,
+			{ "", "OUTLINE", "OUTLINE, SLUG", "THICKOUTLINE" }
 		)
 
 		addCheckBox(media, "Shadow",

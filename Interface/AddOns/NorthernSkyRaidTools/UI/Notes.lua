@@ -12,6 +12,10 @@ local PAD     = 8    -- inner padding
 local ROW_H   = 24   -- height of each note-list row
 local ROW_GAP = 1
 
+local function SetLocalizedText(object, key)
+    NSI.UI.Components.RegisterLocalizedText(object, key)
+end
+
 -- ─────────────────────────────────────────────────────────────────────────────
 -- BuildNotesTabUI
 -- Populates `parent` (a tab content frame) with a Details-style split layout:
@@ -94,7 +98,7 @@ local function BuildNotesTabUI(parent, notesTable)
 
             -- Row label
             local lbl = btn:CreateFontString(nil, "overlay")
-            lbl:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 14, "")
+            NSI:SetUIFont(lbl, 14, "")
             lbl:SetPoint("LEFT",  btn, "LEFT",  8,  0)
             lbl:SetPoint("RIGHT", btn, "RIGHT", -4, 0)
             lbl:SetJustifyH("LEFT")
@@ -136,9 +140,9 @@ local function BuildNotesTabUI(parent, notesTable)
 
     -- Header label
     local hdr = listBg:CreateFontString(nil, "overlay")
-    hdr:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 14, "")
+    NSI:SetUIFont(hdr, 14, "")
     hdr:SetTextColor(0, 1, 1, 1)
-    hdr:SetText("Notes")
+    SetLocalizedText(hdr, "Notes")
     hdr:SetPoint("TOPLEFT", listBg, "TOPLEFT", PAD, -PAD)
 
     local hdrSep = listBg:CreateTexture(nil, "artwork")
@@ -152,10 +156,11 @@ local function BuildNotesTabUI(parent, notesTable)
 
     local newBtn = DF:CreateButton(listBg, function()
         flushCurrent()
-        table.insert(notesTable, { name = "New Note", text = "" })
+        table.insert(notesTable, { name = NSI:Loc("New Note"), text = "" })
         rebuildList()
         selectNote(#notesTable)
-    end, btnW, 22, "New Note")
+    end, btnW, 22, NSI:Loc("New Note"))
+    SetLocalizedText(newBtn, "New Note")
     newBtn:SetTemplate(options_button_template)
     newBtn:SetPoint("BOTTOMLEFT", listBg, "BOTTOMLEFT", PAD, PAD)
 
@@ -166,7 +171,8 @@ local function BuildNotesTabUI(parent, notesTable)
         nameBox:SetText("")
         textBox:SetText("")
         rebuildList()
-    end, btnW, 22, "Delete")
+    end, btnW, 22, NSI:Loc("Delete"))
+    SetLocalizedText(delBtn, "Delete")
     delBtn:SetTemplate(options_button_template)
     delBtn:SetPoint("BOTTOMRIGHT", listBg, "BOTTOMRIGHT", -PAD, PAD)
 
@@ -216,7 +222,7 @@ local function BuildNotesTabUI(parent, notesTable)
     nameBox = CreateFrame("EditBox", nil, editorBg, "InputBoxTemplate")
     nameBox:SetPoint("TOPLEFT", editorBg, "TOPLEFT", PAD, -PAD)
     nameBox:SetSize(edW - PAD * 2, 22)
-    nameBox:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 14, "")
+    NSI:SetUIFont(nameBox, 14, "")
     nameBox:SetAutoFocus(false)
     nameBox:SetMaxLetters(128)
     nameBox:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
@@ -242,7 +248,7 @@ local function BuildNotesTabUI(parent, notesTable)
     textBox = CreateFrame("EditBox", nil, edScroll)
     textBox:SetMultiLine(true)
     textBox:SetAutoFocus(false)
-    textBox:SetFont(NSI.LSM:Fetch("font", NSRT.Settings.GlobalFont), 14, "")
+    NSI:SetUIFont(textBox, 14, "")
     textBox:SetMaxLetters(0)
     textBox:SetWidth(edW - PAD * 2 - 18)  -- initial safe width; corrected by OnSizeChanged
     textBox:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
@@ -259,7 +265,8 @@ local function BuildNotesTabUI(parent, notesTable)
     local saveBtn = DF:CreateButton(editorBg, function()
         flushCurrent()
         rebuildList()
-    end, 120, 22, "Save Note")
+    end, 120, 22, NSI:Loc("Save Note"))
+    SetLocalizedText(saveBtn, "Save Note")
     saveBtn:SetTemplate(options_button_template)
     saveBtn:SetPoint("BOTTOMRIGHT", editorBg, "BOTTOMRIGHT", -PAD, PAD)
 
