@@ -279,6 +279,8 @@ L["hide_votes_desc"] = "隱藏投票數直到有人投票"
 L["history_export_excel_international_tip"] = "Tab delimited export for international version of Excel that uses ',' as formula delimiter."
 --[[Translation missing --]]
 L["history_export_sheets_tip"] = "Tab delimited export for Google Sheets and English version of Excel that uses ';' as formula delimiter."
+--[[Translation missing --]]
+L["history_sessionResponses_tip"] = "Click to show everyone's response to this item."
 L["How to sync"] = "如何同步"
 L["huge_export_desc"] = "大量數據。隻顯示第一行以避免游戲卡頓。可以使用Ctrl+C復制全部內容。"
 L["Ignore List"] = "忽略列表"
@@ -503,6 +505,14 @@ L["opt_saveBonusRolls_Name"] = "Record Bonus Rolls"
 L["opt_savePersonalLoot_desc"] = "If disabled, personal loot will not be added to the history."
 --[[Translation missing --]]
 L["opt_savePersonalLoot_name"] = "Record Personal Loot"
+--[[Translation missing --]]
+L["opt_saveSessionResponses_desc"] = "Check to store everyone's response to awarded items in the loot history, when received from the leader. The Master Looter will have to enable 'Send Session Responses' for this to work. This will increase the storage used by the loot history significantly."
+--[[Translation missing --]]
+L["opt_saveSessionResponses_name"] = "Save Session Responses"
+--[[Translation missing --]]
+L["opt_sendSessionResponses_desc"] = "Check to send everyone's responses when awarding items, so it can be stored in the history. Note: can hurt comms performance."
+--[[Translation missing --]]
+L["opt_sendSessionResponses_name"] = "Send Session Responses"
 --[[Translation missing --]]
 L["opt_sharingProfile_success"] = "Succesfully imported profile: \"%s\""
 --[[Translation missing --]]

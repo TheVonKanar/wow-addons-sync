@@ -69,7 +69,7 @@ speedCooldown:SetReverse(true)
 speedCooldown:SetUsingParentLevel(true)
 speedCooldown:SetSize(64, 64)
 speedCooldown:SetPoint("CENTER", speedDisplay, "CENTER")
-speedCooldown:SetRotation(-117 * (math.pi/180))
+speedCooldown:SetRotation(117 * (math.pi/180))
 speedCooldown.noCooldownCount = true
 Glider.SpeedDisplay.Speed = speedCooldown
 

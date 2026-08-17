@@ -1,8 +1,10 @@
-## Changed in v50
+## Changed in v57
 
-* Routes to the parts of a multi-step treasure now hide as you collect them
-* Delves: fix the "Sturdy Chest" label not showing
-* Treasures could stay visible after you'd collected everything, if one of the items had an appearance the game can't track
-* Hovering a treasure could show none of its routes, or leave the wrong one highlighted
-* Small tooltip and menu fixes
+* Coiled Isle:
+	* Show *all* the shared loot (there's a lot)
+	* Add combination information for Mysterious Mix Master
+* Silvermoon City: show Andra on the minimap
+* Shared loot now respects the "this character only" setting
+* Use the correct translation of "mount" in the notability settings as well
+* Route lines on the map look better, don't get weird when you zoom in
 

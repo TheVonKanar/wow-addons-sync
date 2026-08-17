@@ -45,28 +45,28 @@ NSI.AddAssignments[encID] = function(self, id) -- on ENCOUNTER_START
     if not diff then return end
     if diff == 16 and self.Assignments[encID].Soaks then
         local subgroup = self:GetSubGroup("player")
-        local Alert = self:CreateDefaultAlert("", "text", nil, nil, 1, encID)
+        local Alert = self:CreateDefaultAlert("", "Text", nil, nil, 1, encID)
         Alert.dur, Alert.TTSTimer = 10, 5
         for phase = 1, 3 do
             Alert.phase = phase
-            Alert.time, Alert.text  = 18.7, subgroup <= 2 and "|cFF00FF00SOAK" or "|cFFFF0000DON'T SOAK"
-            Alert.TTS = subgroup <= 2 and "Soak" or "Don't soak"
+            Alert.time, Alert.text  = 18.7, subgroup <= 2 and NSI:EncounterAlertLoc("|cFF00FF00SOAK") or NSI:EncounterAlertLoc("|cFFFF0000DON'T SOAK")
+            Alert.TTS = subgroup <= 2 and NSI:EncounterAlertLoc("Soak") or NSI:EncounterAlertLoc("Don't soak")
             self:AddToReminder(Alert)
-            Alert.time, Alert.text = 91.4, subgroup >= 3 and "|cFF00FF00SOAK" or "|cFFFF0000DON'T SOAK"
-            Alert.TTS = subgroup >= 3 and "Soak" or "Don't soak"
+            Alert.time, Alert.text = 91.4, subgroup >= 3 and NSI:EncounterAlertLoc("|cFF00FF00SOAK") or NSI:EncounterAlertLoc("|cFFFF0000DON'T SOAK")
+            Alert.TTS = subgroup >= 3 and NSI:EncounterAlertLoc("Soak") or NSI:EncounterAlertLoc("Don't soak")
             self:AddToReminder(Alert)
-            Alert.time, Alert.text = 155.2, subgroup <= 2 and "|cFF00FF00SOAK" or "|cFFFF0000DON'T SOAK"
-            Alert.TTS = subgroup <= 2 and "Soak" or "Don't soak"
+            Alert.time, Alert.text = 155.2, subgroup <= 2 and NSI:EncounterAlertLoc("|cFF00FF00SOAK") or NSI:EncounterAlertLoc("|cFFFF0000DON'T SOAK")
+            Alert.TTS = subgroup <= 2 and NSI:EncounterAlertLoc("Soak") or NSI:EncounterAlertLoc("Don't soak")
             self:AddToReminder(Alert)
         end
         if NSRT.AssignmentSettings.OnPull then
             local group = subgroup <= 2 and "First" or "Second"
-            self:DisplayText("You are assigned to soak |cFF00FF00Alndust Upheaval|r in the |cFF00FF00" .. group .. "|r Group", 5)
+            self:DisplayText(string.format(NSI:EncounterAlertLoc("You are assigned to soak |cFF00FF00Alndust Upheaval|r in the |cFF00FF00%s|r Group"), NSI:EncounterAlertLoc(group)), 5)
         end
     elseif self.Assignments[encID].SplitSoaks and diff ~= 16 then
         if UnitGroupRolesAssigned("player") == "TANK" then return end
         local _, first = self:GetSortedGroup(true, false, false)
-        local Alert = self:CreateDefaultAlert("", "text", nil, nil, 1, encID)
+        local Alert = self:CreateDefaultAlert("", "Text", nil, nil, 1, encID)
         local group = 2
         for i, v in ipairs(first) do
             if UnitIsUnit(v.unitid, "player") then group = 1; break end
@@ -74,16 +74,16 @@ NSI.AddAssignments[encID] = function(self, id) -- on ENCOUNTER_START
         Alert.dur, Alert.TTSTimer = 10, 5
         for phase = 1, 3 do
             Alert.phase = phase
-            Alert.time, Alert.text  = 18.7, group <= 1 and "|cFF00FF00SOAK" or "|cFFFF0000DON'T SOAK"
-            Alert.TTS = group <= 1 and "Soak" or "Don't soak"
+            Alert.time, Alert.text  = 18.7, group <= 1 and NSI:EncounterAlertLoc("|cFF00FF00SOAK") or NSI:EncounterAlertLoc("|cFFFF0000DON'T SOAK")
+            Alert.TTS = group <= 1 and NSI:EncounterAlertLoc("Soak") or NSI:EncounterAlertLoc("Don't soak")
             self:AddToReminder(Alert)
-            Alert.time, Alert.text = 91.4, group >= 2 and "|cFF00FF00SOAK" or "|cFFFF0000DON'T SOAK"
-            Alert.TTS = group >= 2 and "Soak" or "Don't soak"
+            Alert.time, Alert.text = 91.4, group >= 2 and NSI:EncounterAlertLoc("|cFF00FF00SOAK") or NSI:EncounterAlertLoc("|cFFFF0000DON'T SOAK")
+            Alert.TTS = group >= 2 and NSI:EncounterAlertLoc("Soak") or NSI:EncounterAlertLoc("Don't soak")
             self:AddToReminder(Alert)
         end
         if NSRT.AssignmentSettings.OnPull then
             local group = group <= 1 and "First" or "Second"
-            self:DisplayText("You are assigned to soak |cFF00FF00Alndust Upheaval|r in the |cFF00FF00" .. group .. "|r Group", 5)
+            self:DisplayText(string.format(NSI:EncounterAlertLoc("You are assigned to soak |cFF00FF00Alndust Upheaval|r in the |cFF00FF00%s|r Group"), NSI:EncounterAlertLoc(group)), 5)
         end
     end
 end

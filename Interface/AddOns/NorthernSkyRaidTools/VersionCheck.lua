@@ -16,7 +16,9 @@ function NSI:RequestVersionNumber(type, name) -- type == "Addon" or "WA" or "Not
     end
 end
 function NSI:VersionResponse(data)
-    self.NSUI.version_scrollbox:AddData(data)
+    if self.NSUI and self.NSUI.version_scrollbox then
+        self.NSUI.version_scrollbox:AddData(data)
+    end
 end
 
 

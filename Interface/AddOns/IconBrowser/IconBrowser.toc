@@ -1,6 +1,6 @@
-## Interface: 120005, 120007
+## Interface: 120007, 120100
 ## Author: Keyboardturner
-## Version: 0.0.7
+## Version: 0.0.8
 ## Title: Icon Browser
 ## Notes: A replacement icon browser for macros, bank, and transmog with a search bar and preset filters.
 ## IconTexture: Interface/MacroFrame/MacroFrame-Icon.blp
@@ -46,6 +46,8 @@
 
 Libs\LibStub\LibStub.lua
 Libs\LibRPMedia\lib.xml
+
+MissingIcons.lua
 
 Localization.lua
 IconBrowserConstants.lua

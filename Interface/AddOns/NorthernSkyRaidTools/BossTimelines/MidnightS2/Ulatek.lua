@@ -1,28 +1,28 @@
 local _, NSI = ... -- Internal namespace
 
--- Ula'tek (3492)
+-- Ulatek (3492)
 
-local heroicAbilities = {
+local heroicData = {
+    duration = 600,
+    phases = {
+        [1] = {start = 0},
+        [2] = {start = 600},
+    },
+    abilities = {
+    },
 }
 
-local heroicPhases = {
-}
-
-local mythicAbilities = {
-}
-
-local mythicPhases = {
+local mythicData = {
+    duration = 600,
+    phases = {
+        [1] = {start = 0},
+        [2] = {start = 600},
+    },
+    abilities = {
+    },
 }
 
 NSI.BossTimelines[3492] = {
-    Heroic = {
-        duration = 600,
-        phases = heroicPhases,
-        abilities = heroicAbilities,
-    },
-    Mythic = {
-        duration = 600,
-        phases = mythicPhases,
-        abilities = mythicAbilities,
-    },
+    Heroic = heroicData,
+    Mythic = mythicData,
 }

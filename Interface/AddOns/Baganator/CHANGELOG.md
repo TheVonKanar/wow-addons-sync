@@ -1,6 +1,9 @@
 # Baganator
 
-## [814](https://github.com/TheMouseNest/Baganator/tree/814) (2026-07-21)
-[Full Changelog](https://github.com/TheMouseNest/Baganator/compare/813...814) 
+## [821](https://github.com/TheMouseNest/Baganator/tree/821) (2026-08-14)
+[Full Changelog](https://github.com/TheMouseNest/Baganator/compare/820...821) 
 
-- Vanilla: Update toc for 1.15.9  
+- Add compatibility function for bank type detection for other addons  
+- Remove skins loading early triggers, no longer needed  
+- Retail: Auto-hide reagent bag tutorial  
+- Retail: Fix money/item history display in guild bank  

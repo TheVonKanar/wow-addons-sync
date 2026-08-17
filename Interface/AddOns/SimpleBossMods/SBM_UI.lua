@@ -22,12 +22,6 @@ local barsParent = CreateFrame("Frame", ADDON_NAME .. "_Bars", UIParent)
 barsParent:SetSize(1, 1)
 frames.barsParent = barsParent
 
-local privateAurasAnchor = CreateFrame("Frame", ADDON_NAME .. "_PrivateAuras", UIParent)
-privateAurasAnchor:SetSize(1, 1)
-frames.privateAurasAnchor = privateAurasAnchor
-
-local getPrivateAuraLayout
-
 local function applyAnchorToFrame(frame, parentNameKey, fromKey, toKey, xKey, yKey, defaultFrom, defaultTo)
 	frame:ClearAllPoints()
 	local parent = UIParent
@@ -52,13 +46,6 @@ end
 function M:UpdateBarsAnchorPosition()
 	if not barsParent then return end
 	applyAnchorToFrame(barsParent, "BAR_PARENT_NAME", "BAR_ANCHOR_FROM", "BAR_ANCHOR_TO", "BAR_ANCHOR_X", "BAR_ANCHOR_Y", "BOTTOMLEFT", "TOPLEFT")
-end
-
-function M:UpdatePrivateAuraAnchorPosition()
-	if not privateAurasAnchor then return end
-	local _, _, _, width, height = getPrivateAuraLayout()
-	privateAurasAnchor:SetSize(width or 1, height or 1)
-	applyAnchorToFrame(privateAurasAnchor, "PRIVATE_AURA_PARENT_NAME", "PRIVATE_AURA_ANCHOR_FROM", "PRIVATE_AURA_ANCHOR_TO", "PRIVATE_AURA_X", "PRIVATE_AURA_Y", "CENTER", "CENTER")
 end
 
 local COMBAT_TIMER_PAD_X = 8
@@ -92,66 +79,8 @@ local combatTimerText = combatTimerFrame:CreateFontString(nil, "OVERLAY", "GameF
 combatTimerText:SetPoint("CENTER", combatTimerFrame, "CENTER", 0, 0)
 combatTimerFrame.text = combatTimerText
 
-getPrivateAuraLayout = function()
-	local size = L.PRIVATE_AURA_SIZE or 0
-	local gap = L.PRIVATE_AURA_GAP or 0
-	local step = size + gap
-	local maxCount = C.PRIVATE_AURA_MAX or 1
-	local dir = L.PRIVATE_AURA_GROW or "RIGHT"
-	local width, height, startX, startY, stepX, stepY
-
-	if dir == "LEFT" or dir == "RIGHT" then
-		width = size + step * (maxCount - 1)
-		height = size
-		stepX = (dir == "RIGHT") and step or -step
-		stepY = 0
-		startX = (dir == "RIGHT") and (-width * 0.5 + size * 0.5) or (width * 0.5 - size * 0.5)
-		startY = 0
-	else
-		width = size
-		height = size + step * (maxCount - 1)
-		stepX = 0
-		stepY = (dir == "UP") and step or -step
-		startX = 0
-		startY = (dir == "UP") and (-height * 0.5 + size * 0.5) or (height * 0.5 - size * 0.5)
-	end
-
-	return size, step, maxCount, width, height, startX, startY, stepX, stepY
-end
-
 M:UpdateIconsAnchorPosition()
 M:UpdateBarsAnchorPosition()
-M:UpdatePrivateAuraAnchorPosition()
-
-local function buildPrivateAuraAnchorInfo(auraIndex, offsetX, offsetY)
-	local size = L.PRIVATE_AURA_SIZE
-	-- Calculate border scale to match icon size (formula adapted from BigWigs)
-	-- Slightly boost to better cover corners on the rounded native border texture.
-	-- HideBorder uses -100 (NSRT's trick): drives Blizzard's debuffBorderSize
-	-- (= width + 5*scale) deeply negative, which clamps to 0 and hides the texture.
-	local borderScale = L.PRIVATE_AURA_HIDE_BORDER and -100 or (size / 32 * 2.35)
-
-	return {
-		unitToken = "player",
-		auraIndex = auraIndex,
-		parent = privateAurasAnchor,
-		showCountdownFrame = true,
-		showCountdownNumbers = true,
-		isContainer = false,
-		iconInfo = {
-			iconAnchor = {
-				point = "CENTER",
-				relativeTo = privateAurasAnchor,
-				relativePoint = "CENTER",
-				offsetX = offsetX,
-				offsetY = offsetY,
-			},
-			iconWidth = size,
-			iconHeight = size,
-			borderScale = borderScale,
-		},
-	}
-end
 
 local function formatCombatTimer(secs)
 	if not secs or secs < 0 then secs = 0 end
@@ -182,131 +111,6 @@ local function combatTimerOnUpdate()
 	if combatTimerFrame._lastSeconds == whole then return end
 	combatTimerFrame._lastSeconds = whole
 	setCombatTimerText(whole)
-end
-
-local function hideTestPrivateAuraFrames(self)
-	if not self._testPrivateAuraFrames then return end
-	for _, frame in ipairs(self._testPrivateAuraFrames) do
-		frame:Hide()
-	end
-end
-
-function M:UpdatePrivateAuraAnchor()
-	if self.UpdatePrivateAuraAnchorPosition then
-		self:UpdatePrivateAuraAnchorPosition()
-	end
-	if not (C_UnitAuras and C_UnitAuras.AddPrivateAuraAnchor) then return end
-
-	if self._privateAuraAnchorIDs and C_UnitAuras.RemovePrivateAuraAnchor then
-		for _, id in ipairs(self._privateAuraAnchorIDs) do
-			if id then
-				pcall(C_UnitAuras.RemovePrivateAuraAnchor, id)
-			end
-		end
-	end
-	self._privateAuraAnchorIDs = {}
-
-	if not L.PRIVATE_AURA_ENABLED then
-		privateAurasAnchor:SetSize(1, 1)
-		privateAurasAnchor:Show()
-		hideTestPrivateAuraFrames(self)
-		return
-	end
-
-	privateAurasAnchor:Show()
-	local _, _, _, _, _, startX, startY, stepX, stepY = getPrivateAuraLayout()
-	for i = 1, (C.PRIVATE_AURA_MAX or 1) do
-		local offsetX = startX + stepX * (i - 1)
-		local offsetY = startY + stepY * (i - 1)
-
-		local info = buildPrivateAuraAnchorInfo(i, offsetX, offsetY)
-		local ok, id = pcall(C_UnitAuras.AddPrivateAuraAnchor, info)
-		if ok then
-			self._privateAuraAnchorIDs[i] = id
-		end
-	end
-
-	if self.UpdateTestPrivateAura then
-		self:UpdateTestPrivateAura()
-	end
-end
-
-local function ensureTestPrivateAuraFrames(self)
-	if self._testPrivateAuraFrames then return self._testPrivateAuraFrames end
-	local frames = {}
-	for i = 1, 4 do
-		local f = CreateFrame("Frame", nil, privateAurasAnchor)
-		f:SetSize(L.PRIVATE_AURA_SIZE, L.PRIVATE_AURA_SIZE)
-		f.__sbmPrivateAuraTest = true
-
-		local bg = f:CreateTexture(nil, "ARTWORK")
-		bg:SetAllPoints()
-		f.bg = bg
-
-		local text = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-		text:SetPoint("CENTER", f, "CENTER", 0, 0)
-		text:SetJustifyH("CENTER")
-		text:SetJustifyV("MIDDLE")
-		text:SetTextColor(1, 1, 1, 1)
-		text:SetShadowColor(0, 0, 0, 1)
-		text:SetShadowOffset(1, -1)
-		f.text = text
-
-		f:Hide()
-		frames[i] = f
-	end
-	self._testPrivateAuraFrames = frames
-	return frames
-end
-
-function M:UpdateTestPrivateAura()
-	if not L.PRIVATE_AURA_ENABLED then return end
-	local frames = self._testPrivateAuraFrames
-	if not frames then return end
-	local size, _, _, _, _, startX, startY, stepX, stepY = getPrivateAuraLayout()
-	local fontSize = math.max(9, math.min(16, math.floor(size * 0.16 + 0.5) + 2))
-
-	for i, f in ipairs(frames) do
-		f:SetSize(size, size)
-		f:ClearAllPoints()
-		local offsetX = startX + stepX * (i - 1)
-		local offsetY = startY + stepY * (i - 1)
-		f:SetPoint("CENTER", privateAurasAnchor, "CENTER", offsetX, offsetY)
-
-		if f.bg then
-			f.bg:SetAllPoints()
-			f.bg:SetColorTexture(0, 0, 0, 1)
-			f.bg:SetAlpha(0.75)
-		end
-		if f.text then
-			f.text:SetFont(L.FONT_PATH or C.FONT_PATH, fontSize, C.FONT_FLAGS)
-			f.text:SetWidth(math.max(1, size - 4))
-			f.text:SetText("Private\nAura\n" .. tostring(i))
-		end
-
-		if i == 1 then
-			M.ensureFullBorder(f, 1, 1, 0, 0, 1)
-		else
-			M.ensureFullBorder(f, 1, 0, 0, 0, 1)
-		end
-	end
-end
-
-function M:ShowTestPrivateAura(show)
-	if not L.PRIVATE_AURA_ENABLED then
-		show = false
-	end
-	local frames = ensureTestPrivateAuraFrames(self)
-	if show then
-		for _, f in ipairs(frames) do
-			f:Show()
-		end
-		self:UpdateTestPrivateAura()
-	else
-		for _, f in ipairs(frames) do
-			f:Hide()
-		end
-	end
 end
 
 -- =========================
@@ -718,10 +522,31 @@ M.applyBarMirror = applyBarMirror
 -- =========================
 -- Bar fill
 -- =========================
+
+-- Applies the configured background to a bar's base texture. In match mode
+-- the base is opaque black; the fill-colored tint layered on top of it in
+-- setBarFillFlat then renders as a darkened copy of the fill color.
+local function applyBarBackground(f)
+	if not f or not f.bg then return end
+	if L.BAR_BG_MATCH then
+		f.bg:SetColorTexture(0, 0, 0, 1)
+		f.bg:SetAlpha(L.BAR_BG_BASE_ALPHA)
+	else
+		f.bg:SetColorTexture(L.BAR_BG_R, L.BAR_BG_G, L.BAR_BG_B, 1)
+		f.bg:SetAlpha(L.BAR_BG_A)
+		if f.bgTint then
+			f.bgTint:Hide()
+		end
+	end
+end
+
+M.applyBarBackground = applyBarBackground
+
 local function setBarFillFlat(barFrame, r, g, b, a)
 	if not barFrame or not barFrame.sb then return end
 	local texPath = L.BAR_TEX or C.BAR_TEX_DEFAULT or "Interface\\Buttons\\WHITE8X8"
 	local aa = a or 1
+	local tintKey = L.BAR_BG_MATCH and L.BAR_BG_TINT_ALPHA or false
 	local hasSecret = type(issecretvalue) == "function" and (
 		issecretvalue(r) or issecretvalue(g) or issecretvalue(b) or issecretvalue(aa)
 	)
@@ -731,6 +556,7 @@ local function setBarFillFlat(barFrame, r, g, b, a)
 			and barFrame.__sbmBarG == g
 			and barFrame.__sbmBarB == b
 			and barFrame.__sbmBarA == aa
+			and barFrame.__sbmBarTint == tintKey
 			and barFrame.sbTex then
 			return
 		end
@@ -739,12 +565,14 @@ local function setBarFillFlat(barFrame, r, g, b, a)
 		barFrame.__sbmBarG = g
 		barFrame.__sbmBarB = b
 		barFrame.__sbmBarA = aa
+		barFrame.__sbmBarTint = tintKey
 	else
 		barFrame.__sbmBarTex = nil
 		barFrame.__sbmBarR = nil
 		barFrame.__sbmBarG = nil
 		barFrame.__sbmBarB = nil
 		barFrame.__sbmBarA = nil
+		barFrame.__sbmBarTint = nil
 	end
 
 	barFrame.sb:SetStatusBarTexture(texPath)
@@ -754,6 +582,18 @@ local function setBarFillFlat(barFrame, r, g, b, a)
 	if tex then
 		tex:SetDrawLayer("ARTWORK")
 		tex:SetVertexColor(r, g, b, aa)
+	end
+
+	local bgTint = barFrame.bgTint
+	if bgTint then
+		if L.BAR_BG_MATCH then
+			-- The fill color may be secret; SetVertexColor accepts it while
+			-- the fixed alpha does the darkening via compositing.
+			bgTint:SetVertexColor(r, g, b, L.BAR_BG_TINT_ALPHA)
+			bgTint:Show()
+		else
+			bgTint:Hide()
+		end
 	end
 end
 
@@ -1104,6 +944,12 @@ local function acquireBar()
 		bg:SetAlpha(L.BAR_BG_A)
 		f.bg = bg
 
+		local bgTint = f:CreateTexture(nil, "BACKGROUND", nil, 1)
+		bgTint:SetAllPoints()
+		bgTint:SetColorTexture(1, 1, 1, 1)
+		bgTint:Hide()
+		f.bgTint = bgTint
+
 		local leftFrame = CreateFrame("Frame", nil, f)
 		leftFrame:SetPoint("LEFT", f, "LEFT", 0, 0)
 		leftFrame:SetPoint("TOP", f, "TOP", 0, 0)
@@ -1168,10 +1014,7 @@ local function acquireBar()
 	f:SetSize(L.BAR_WIDTH, L.BAR_HEIGHT)
 	f:SetAlpha(1)
 	ensureFullBorder(f, L.BAR_BORDER_THICKNESS)
-	if f.bg then
-		f.bg:SetColorTexture(L.BAR_BG_R, L.BAR_BG_G, L.BAR_BG_B, 1)
-		f.bg:SetAlpha(L.BAR_BG_A)
-	end
+	applyBarBackground(f)
 
 	applyBarMirror(f)
 

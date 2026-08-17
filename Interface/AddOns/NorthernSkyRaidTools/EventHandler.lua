@@ -4,6 +4,7 @@ local debugLogFrame = CreateFrame("Frame")
 f:RegisterEvent("ENCOUNTER_START")
 f:RegisterEvent("ENCOUNTER_END")
 f:RegisterEvent("READY_CHECK")
+f:RegisterEvent("READY_CHECK_FINISHED")
 f:RegisterEvent("GROUP_FORMED")
 f:RegisterEvent("ADDON_LOADED")
 f:RegisterEvent("PLAYER_LOGIN")
@@ -15,6 +16,7 @@ f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_LOGOUT")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
+f:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
 
 function NSI:UpdateDebugLogEvents()
     if NSRT.Settings.DebugLogs then
@@ -53,8 +55,6 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             self.BlizzardNickNamesHook = false
             self.MRTNickNamesHook = false
             self.ReminderTimer = {}
-            self.PlayedSound = {}
-            self.StartedCountdown = {}
             self.GlowStarted = {}
             self:InitNickNames()
             if self:GetProfileKey() then
@@ -69,7 +69,7 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             self:LoadMyProfile()
             self:CreateMoveFrames()
         end
-        self.NSUI:Init()
+        self:CreateGenericDisplays()
         self:InitLDB()
         self:InitQoL()
         self:CacheSounds()
@@ -77,16 +77,8 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         local MyFrame = self.LGF.GetUnitFrame("player") -- need to call this once to init the library properly I think
         self:InitAuraSystem(true)
         self:UpdateLibSpecRegistration()
-        if NSRT.PASounds.UseDefaultPASounds then self:ApplyDefaultPASounds() end
-        if NSRT.PASounds.UseDefaultMPlusPASounds then self:ApplyDefaultPASounds(false, true) end
-        for spellID, info in pairs(NSRT.PASounds) do
-            if type(info) == "table" and info.sound then -- prevents user settings
-                self:AddPASound(spellID, info.sound)
-            end
-        end
+        self:RebuildAuraSounds(true)
         self:UpdateDebugLogEvents()
-        -- only running this on login if enabled. It will only run with false when actively disabling the setting. Doing it this way should prevent conflicts with other addons.
-        if NSRT.PASettings.DebuffTypeBorder then C_UnitAuras.TriggerPrivateAuraShowDispelType(true) end
         if NSRT.StoredSharedReminder then
             self.Reminder = NSRT.StoredSharedReminder
         else
@@ -122,7 +114,9 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
                 self:UpdateNoteFrame("ExtraReminderFrame", NSRT.ReminderSettings.ExtraReminderFrame, "skip")
             end
         end)
-    elseif e == "ENCOUNTER_START" and wowevent then -- allow sending fake encounter_start if in debug mode
+    elseif e == "READY_CHECK_FINISHED" and wowevent then
+        self:HideReadyCheckConsumables()
+    elseif e == "ENCOUNTER_START" and wowevent then
         local diff = self:DifficultyCheck({14, 15, 16, 220})
         if internal then diff = 16 end
         if not internal then self:LogTimeline(e, ...) end
@@ -135,6 +129,7 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         end
         self.TestingReminder = false
         self.IsInPreview = false
+        self:UpdateAuraTrackingEncounterVisibility()
         for _, v in ipairs({"IconMover", "BarMover", "TextMover", "CircleMover"}) do
             self:MakeDraggable(self[v], nil, false)
         end
@@ -145,8 +140,6 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         self.ReminderBar = self.ReminderBar or {}
         self.ReminderTimer = self.ReminderTimer or {}
         self.AllGlows = self.AllGlows or {}
-        self.PlayedSound = {}
-        self.StartedCountdown = {}
         self.GlowStarted = {}
         self.Timelines = {}
         self.RemovedTimelines = {}
@@ -156,8 +149,8 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         if self.AddAssignments[self.EncounterID] then self.AddAssignments[self.EncounterID](self) end
         if self.EncounterAlertStart[self.EncounterID] then self.EncounterAlertStart[self.EncounterID](self) end
         self:FireEncounterAlerts(self.EncounterID, diff)
+        self:StartPaceComparison(self.EncounterID, diff)
         self:StartReminders(self.Phase)
-        self:InitAuraSystem()
         if NSRT.ReminderSettings.NoteCountdown then
             local frames = {"ReminderFrame", "PersonalReminderFrame"}
             for i, name in ipairs(frames) do
@@ -183,15 +176,10 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         self.CustomEvents = {}
         if not diff then return end
         self:EncounterRegister(nil, nil, nil, nil, true)
+        self:StopPaceComparison()
         self:InitAuraSystem()
         self:HideAllReminders(true)
-        C_Timer.After(1, function()
-            if self:Restricted() then return end
-            if self.SyncNickNamesStore then
-                self:EventHandler("NSI_NICKNAMES_SYNC", false, true, self.SyncNickNamesStore.unit, self.SyncNickNamesStore.nicknametable, self.SyncNickNamesStore.channel)
-                self.SyncNickNamesStore = nil
-            end
-        end)
+        self:UpdateAuraTrackingEncounterVisibility()
         if NSRT.ReminderSettings.NoteCountdown then
             self:UpdateReminderFrame(true) -- need to recalculate reminders if the user has countdown enabled
             local frames = {"ReminderFrame", "PersonalReminderFrame"}
@@ -230,8 +218,10 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             self.Assignments = NSRT.AssignmentSettings
         end
     elseif e == "READY_CHECK" and wowevent then
+        local initiator = ...
         self.ProcessDone = false
         if self:DifficultyCheck({14, 15, 16, 23}) then
+            self:ShowReadyCheckConsumables(initiator)
             C_Timer.After(1, function()
                 self:EventHandler("NSI_READY_CHECK", false, true)
             end)
@@ -267,7 +257,8 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             if assigntable then self.Assignments = assigntable end
         end
     elseif e == "NSI_READY_CHECK" and internal then
-        self:ApplyPendingAuraTracking()
+        self:InitAuraSystem()
+        self:RebuildAuraSounds()
         if not self.ProcessDone then -- fallback do this here if no addon comms were received because the setting is disabled
             self:ProcessReminder()
             self:UpdateReminderFrame(true)
@@ -318,7 +309,9 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
     elseif e == "GROUP_FORMED" and wowevent then
         if self:Restricted() then return end
         if NSRT.Settings["MyNickName"] then self:SendNickName("Any", true) end -- only send nickname if it exists. If user has ever interacted with it it will create an empty string instead which will serve as deleting the nickname
-        if NSRT.NSUI and NSRT.NSUI.reminders_frame then NSUI.reminders_frame.UpdateButtonAccess() end
+        if self.NSUI and self.NSUI.reminders_frame and self.NSUI.reminders_frame.UpdateButtonAccess then
+            self.NSUI.reminders_frame.UpdateButtonAccess()
+        end
     elseif e == "NSI_VERSION_CHECK" and internal then
         if self:Restricted() then return end
         if not self.VersionCheckData then return end -- ignore stale responses from a previous check
@@ -337,17 +330,6 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't add new nickname if it's yourself because already adding it to the database when you edit it
         if requestback and (UnitInRaid(unit) or UnitInParty(unit)) then self:SendNickName(channel, false) end -- send nickname back to the person who requested it
         self:NewNickName(unit, nickname, name, realm, channel)
-    elseif e == "NSI_NICKNAMES_SYNC" and internal then
-        local unit, nicknametable, channel = ...
-        local setting = NSRT.Settings["NickNamesSyncAccept"]
-        if (setting == 3 or (setting == 2 and channel == "GUILD") or (setting == 1 and channel == "RAID") and (not C_ChallengeMode.IsChallengeModeActive())) then
-            if UnitExists(unit) and UnitIsUnit("player", unit) then return end -- don't accept sync requests from yourself
-            if self:Restricted() or UnitAffectingCombat("player") then
-                self.SyncNickNamesStore = {unit = unit, nicknametable = nicknametable, channel = channel}
-            else
-                self:NickNamesSyncPopup(unit, nicknametable)
-            end
-        end
     elseif e == "GROUP_ROSTER_UPDATE" and wowevent then
         self:ArrangeGroups()
         if self.GroupUpdateTimer then self.GroupUpdateTimer:Cancel() end
@@ -369,9 +351,13 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
             end
         end
     elseif e == "PLAYER_REGEN_ENABLED" and wowevent then
-        self:ApplyPendingAuraTracking()
+        if self.PendingAuraTrackingUpdate then
+            self:InitAuraTracking(false, self.PendingAuraTrackingReconfigure)
+        end
+    elseif e == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" and wowevent then
+        self:InitAuraTracking()
     elseif e == "ENCOUNTER_TIMELINE_EVENT_ADDED" and wowevent then
-        if not self:DifficultyCheck({14, 15, 16}) then return end
+        if not self:DifficultyCheck({8, 14, 15, 16}) then return end
         local info = ...
         if info.source ~= Enum.EncounterTimelineEventSource.Encounter then
             self.CustomEvents = self.CustomEvents or {}
@@ -381,7 +367,7 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         self:LogTimeline(e, ...)
         if self:Restricted() and self.EncounterID and self.DetectPhaseChange[self.EncounterID] then self.DetectPhaseChange[self.EncounterID](self, e, info) end
     elseif e == "ENCOUNTER_TIMELINE_EVENT_REMOVED" and wowevent then
-        if not self:DifficultyCheck({14, 15, 16}) then return end
+        if not self:DifficultyCheck({8, 14, 15, 16}) then return end
         local eventID = ...
         if self.CustomEvents and self.CustomEvents[eventID] then
             return
@@ -390,7 +376,7 @@ function NSI:EventHandler(e, wowevent, internal, ...) -- internal checks whether
         if self:Restricted() and self.EncounterID and self.DetectPhaseChange[self.EncounterID] then self.DetectPhaseChange[self.EncounterID](self, e, info) end
     elseif e == "ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED" and wowevent then
         local eventID = ...
-        if not self:DifficultyCheck({14, 15, 16}) then return end
+        if not self:DifficultyCheck({8, 14, 15, 16}) then return end
         if self.CustomEvents and self.CustomEvents[eventID] then
             return
         end

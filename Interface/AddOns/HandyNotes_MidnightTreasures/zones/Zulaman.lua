@@ -1,5 +1,8 @@
 local myname, ns = ...
 
+-- During Abyss Anglers: 89044 is complete
+-- Zul'jan's rant during Broken Bridges: 92108
+
 --[[ TODO:
 A Most Violent Loa: 62267
 ]]
@@ -95,11 +98,11 @@ ns.RegisterPoints(ns.ZULAMAN, {
 
 -- Shadowpine Scattered
 ns.RegisterPoints(ns.ZULAMAN, {
-	[52687933] = {criteria=109749, label="{npc:254808:Songseeker Baz'wa}"},
+	[52687933] = {criteria=109749, label="{npc:254808:Songseeker Baz'wa}", requires=ns.conditions.Achievement(41803)}, -- Temple's only restored after [For Zul'Aman!]
 	[47328190] = {criteria=109750, label="{npc:254807:Songseeker Far'lan}"},
 	[31624653] = {
 		criteria=109751, label="{npc:254840:Songseeker Jebanda}",
-		route={31624653, 33074390, 33204354, 33184061, 33214041, 33184004, 33023952, 32943936, 32613903, 32493896, 32363893, 32293875, 31973841, 31893824, 31763817, 31623813},
+		routes={{31624653, 33074390, 33204354, 33184061, 33214041, 33184004, 33023952, 32943936, 32613903, 32493896, 32363893, 32293875, 31973841, 31893824, 31763817, 31623813}},
 	},
 	[39175638] = {criteria=109752, label="{npc:254839:Songseeker Dova}", translate={[ns.ATALAMAN]=true}},
 	[55031798] = {criteria=109753, label="{npc:254841:Songseeker Ikaja}"},

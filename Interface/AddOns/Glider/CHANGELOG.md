@@ -1,5 +1,9 @@
 # Changelog
 
+## 48
+- Version update
+- Fix rotation on cooldown that blizzard reversed for some reason.
+
 ## 47
 - Version update
 

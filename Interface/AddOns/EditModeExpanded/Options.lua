@@ -7,18 +7,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 local defaults = {
     char = {
-        EssentialCooldownViewerSpellIDs = {
-            ["*"] = {},
-        },
-        UtilityCooldownViewerSpellIDs = {
-            ["*"] = {},
-        },
-        BuffIconCooldownViewerSpellIDs = {
-            ["*"] = {},
-        },
-        BuffBarCooldownViewerSpellIDs = {
-            ["*"] = {},
-        },
         AutoLayoutSwitching = {},
     },
     global = {
@@ -29,9 +17,7 @@ local defaults = {
             soulShards = true,
             achievementAlert = true, -- alertFrame, using the name acheivement for backward compatibility
             targetOfTarget = true,
-            targetCast = true,
             focusTargetOfTarget = true,
-            focusCast = true,
             compactRaidFrameContainer = false,
             talkingHead = true,
             minimap = true,
@@ -82,6 +68,7 @@ local defaults = {
             battlefieldMap = false,
             anchorToEnabled = false,
             reparentEnabled = false,
+            targetCast = true,
         },
         QueueStatusButton = {},
         TotemFrame = {},
@@ -125,9 +112,6 @@ local defaults = {
         ContainerFrameCombinedBags = {},
         MinimapZoneName = {},
         MinimapSeparated = {},
-        TargetDebuffs = {},
-        TargetBuffs = {},
-        FocusBuffs = {},
         GameMenuFrame = {},
         LOC = {},
         PetFrame = {},
@@ -146,6 +130,7 @@ local defaults = {
         ChatFrame1EditBox = {},
         GeneralDockManager = {},
         BattlefieldMapFrame = {},
+        TargetBuffs = {},
     }
 }
 
@@ -220,11 +205,6 @@ local options = {
                     desc = string.format(L["TOGGLE_SUPPORT_STRING"], L["Focus ToT"]),
                     type = "toggle",
                 },
-                focusCast = {
-                    name = L["Focus Cast Bar"],
-                    desc = string.format(L["TOGGLE_SUPPORT_STRING"], L["Focus Cast Bar"]),
-                    type = "toggle",
-                },
                 targetFrame = {
                     name = TARGET,
                     desc = string.format(L["TOGGLE_ADDITIONAL_OPTIONS_SUPPORT_STRING"], TARGET),
@@ -238,11 +218,6 @@ local options = {
                 focusFrame = {
                     name = BINDING_NAME_FOCUSTARGET,
                     desc = string.format(L["TOGGLE_ADDITIONAL_OPTIONS_SUPPORT_STRING"], BINDING_NAME_FOCUSTARGET),
-                    type = "toggle",
-                },
-                focusFrameBuffs = {
-                    name = BINDING_NAME_FOCUSTARGET.." "..BUFFOPTIONS_LABEL,
-                    desc = string.format(L["TOGGLE_SUPPORT_STRING"], BINDING_NAME_FOCUSTARGET.." "..BUFFOPTIONS_LABEL),
                     type = "toggle",
                 },
                 targetFrameResize = {

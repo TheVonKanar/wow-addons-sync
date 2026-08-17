@@ -288,7 +288,7 @@ do
   totemMonitor:SetScript("OnEvent", function(_, eventName, ...)
     if eventName == "UNIT_SPELLCAST_SUCCEEDED" then
       local _, _, spellID = ...
-      if addonTable.Constants.Totems[spellID] then
+      if addonTable.Constants.TotemSpells[spellID] then
         queued = spellID
       end
     elseif eventName == "PLAYER_TOTEM_UPDATE" then
@@ -325,7 +325,7 @@ do
   end
 end
 
-if addonTable.Constants.IsMidnightNext then
+do
   local index = 0
   local helpful = CreateFrame("AuraContainer", nil, UIParent, "CustomAuraContainerTemplate")
   helpful:SetUnit("player")
@@ -333,9 +333,22 @@ if addonTable.Constants.IsMidnightNext then
   harmful:SetUnit("target")
 
   local monitor = CreateFrame("Frame")
+  monitor:RegisterUnitEvent("UNIT_FACTION", "player", "target")
+  monitor:RegisterUnitEvent("UNIT_TARGETABLE_CHANGED", "player", "target")
   monitor:RegisterEvent("PLAYER_TARGET_CHANGED")
-  monitor:SetScript("OnEvent", function()
-    harmful:UpdateAllAuras()
+  monitor:SetScript("OnEvent", function(_, eventName, data)
+    if eventName == "PLAYER_TARGET_CHANGED" then
+      harmful:SetEnabled(not UnitCanAssist("player", "target"))
+      harmful:UpdateAllAuras()
+    else
+      if data == "target" then
+        harmful:SetEnabled(not UnitCanAssist("player", "target"))
+        harmful:UpdateAllAuras()
+      else
+        helpful:SetEnabled(UnitCanAssist("player", "player"))
+        helpful:UpdateAllAuras()
+      end
+    end
   end)
 
   function addonTable.Display.GenerateAuraSlots(selfSettings, targetSettings)
@@ -348,5 +361,10 @@ if addonTable.Constants.IsMidnightNext then
   function addonTable.Display.SetAuraSlotsFilters(key, selfSettings, targetSettings)
     helpful:SetAuraSlotCandidateFilters(key, selfSettings)
     harmful:SetAuraSlotCandidateFilters(key, targetSettings)
+  end
+
+  function addonTable.Display.SetAuraSlotsEnabled(key, enabled)
+    helpful:SetAuraSlotFilterString(key, enabled and "HELPFUL" or "")
+    harmful:SetAuraSlotFilterString(key, enabled and "HARMFUL|PLAYER" or "")
   end
 end

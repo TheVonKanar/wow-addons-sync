@@ -1,4 +1,4 @@
---Coutesy of ZamestoTV. Thank you!    --Translator: ZamestoTV as of 1.9.2 d
+--Coutesy of ZamestoTV. Thank you!    --Translator: ZamestoTV as of 1.9.3 c
 
 if not (GetLocale() == "ruRU") then return end;
 
@@ -47,6 +47,9 @@ L["Return To Module List"] = "Вернуться к списку";
 L["Generic Addon Conflict"] = "Этот модуль может быть несовместим с аддонами, обладающими аналогичными функциональными возможностями:";
 L["Work In Progress Tag"] = "[ВТЗ]";
 L["Colon With Space"] = ": ";
+L["Disabled Module Requires Reload Format"] = "Вы должны %s, чтобы применить изменения.";	--We'll replace %s with a clickable "reload the UI"
+L["Reload The UI"] = "перезагрузить интерфейс";
+L["Click To Reload UI"] = "Нажмите, чтобы перезагрузить интерфейс.";
 
 
 --Settings Category
@@ -739,6 +742,7 @@ L["Delves Completion Reward Cap Tooltip"] = "Как только вы дости
 L["Near Completion Tooltip"] = "Эта запись видна вам, так как вы почти достигли еженедельного лимита.";
 L["Inactive Currencies Tooltip"] = "Эти валюты скрыты, так как вы пометили их как «Неиспользуемые»:";
 L["New Quest"] = "Новое задание";
+L["Trait Points Available"] = "Доступно очков";
 
 
 --ExpansionSummaryMinimapButton
@@ -915,6 +919,12 @@ L["ModuleDescription PreyQuestSuperTrack"] = "Как только местопо
 --BlizzFixActionBarArt
 L["ModuleName BlizzFixActionBarArt"] = "Blitz Fix: Оформление панелей команд";
 L["ModuleDescription BlizzFixActionBarArt"] = "Исправляет ошибку, из-за которой художественное оформление панелей команд (грифоны и виверны) неожиданно появлялось снова после скрытия/показа интерфейса или выхода из режима редактирования дома.";
+
+
+--HouseList
+L["ModuleName Housing_HouseList"] = "Список домов";
+L["ModuleDescription Housing_HouseList"] = "Улучшение интерфейса списка домов:\n\n- Отображение фракции дома с помощью изображения справа.\n\n- Показ обеих кнопок «Посетить дом», если у игрока два дома.";
+L["View Houses In Combat Warning"] = "Вы не можете просматривать дома в бою.";
 
 
 --Generic

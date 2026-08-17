@@ -15,10 +15,11 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 	},
 	[25766728] = { -- Void-Shielded Tomb
 		criteria=111864, quest=92414,
-		loot={246951, SINGULARITY}, -- Stormarion Core x20
+		loot={ns.rewards.Item(246951, 20), SINGULARITY}, -- Stormarion Core x20
 		note="Drink the potion, then fetch {item:251519:Key of Fused Darkness} from the adjacent building",
 		nearby={25976863, worldmap=false, label="{item:251519:Key of Fused Darkness}"},
 		vignette=7498,
+		atlas="VignetteLootElite", scale=1.1,
 	},
 	[64537547] = { -- Bloody Sack
 		criteria=111866, quest=93431,
@@ -71,7 +72,7 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 	[24837001] = {
 		quest=94742,
 		label="Stormarion Cache", -- or "Void-hoarder's Corpse"
-		loot={246951}, -- Stormarion Core x10
+		loot={ns.rewards.Item(246951, 10)}, -- Stormarion Core x10
 		vignette=7497,
 	},
 	[39306383] = {
@@ -79,6 +80,12 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 		label="Lost Shadowstep Supplies",
 		loot={208856}, -- Pocket Lint
 		vignette=7000,
+	},
+	[53406801] = {
+		quest=91699,
+		label="Unpublished Manuscript",
+		loot={246268}, -- A Steamy Romance Novel: Voidlust
+		texture=ns.atlas_texture("profession", {r=0.6, g=0, b=1}),
 	},
 })
 
@@ -216,7 +223,7 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 		npc=256821,
 		loot={
 			264912, -- Void-Channeler's Spire
-	    264913, -- Focused Netherslicer
+			264913, -- Focused Netherslicer
 			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94755}),
 		},
 		vignette=7428,
@@ -254,53 +261,57 @@ ns.RegisterPoints(ns.SLAYERSRISE, {
 })
 
 ns.RegisterPoints(ns.VOIDSTORM, {
-	[30576661] = { -- Voidseer Orivane
-		quest=94459, -- v
+	[30066921] = { -- Voidseer Orivane
+		quest=94459,
 		npc=248791,
 		loot={
 			264556, -- Voidforged Cinch
 			264628, -- Spear of Nothingness
-			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94765}),
 		},
 		vignette=7140,
 	},
 	[28827024] = { -- The Many-Broken
-		quest=94458, -- v
+		quest=94458,
 		npc=248459, -- 248461, 248462
 		loot={
 			264577, -- Crystalforged Boots
 			264651, -- Resonating Traumatizer
-			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94764}),
 		},
 		vignette=7133,
 	},
 	[28156593] = { -- Abysslick
-		quest=94462, -- v
+		quest=94462,
 		npc=248700,
 		loot={
 			264596, -- Voidthread Veil
 			264634, -- Spire of Flowing Void
-			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94750}),
 		},
 		vignette=7138,
 	},
-	[29806787] = { -- Nullspiral
-		quest=94460, -- v
+	[29796799] = { -- Nullspiral
+		quest=94460,
 		npc=248068,
 		loot={
 			264531, -- Shadowthread Slippers
 			264588, -- Shawl of Cosmic Whispers
-			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94760}),
 		},
 		vignette=7129,
 	},
-	[24806780] = { -- Blackcore
-		quest=94463, -- v
+	[24736793] = { -- Blackcore
+		quest=94463,
 		npc=248823,
 		loot={
 			264519, -- Repurposed Voidwalker's Chestplate
 			264606, -- Netherlocus Amulet
-			-- ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=}),
+			ns.rewards.Currency(ns.CURRENCY_SINGULARITY, 50, {quest=94753}),
+		},
+		note="Gather 3x {item:248680:Unstable Focusing Crystal} from chests and {npc:248483:Crystal Fragment} to the east",
+		related={
+			[28257044]={label="{npc:248483:Crystal Fragment}", loot={248680}},
 		},
 		vignette=7142,
 	},
@@ -385,9 +396,9 @@ ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
 		},
 		vignette=7659,
 	},
-	[37606240] = { -- Interminable Uarn
+	[39516103] = { -- Interminable Uarn
 		criteria=114005,
-		quest=96205, -- v
+		quest=96205,
 		npc=263947,
 		loot={
 			274862, -- Corrupted Draenei Priest's Kris
@@ -399,9 +410,9 @@ ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
 		},
 		vignette=7658,
 	},
-	[65906210] = { -- Lomelith
+	[68546229] = { -- Lomelith
 		criteria=114008,
-		quest=96208, -- v
+		quest=96208,
 		npc=263955,
 		loot={
 			274860, -- Ancient Spore-Coated Axe
@@ -450,7 +461,7 @@ ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
 			-- 276288, -- Forgotten Sword of Vilaldoun
 			-- 278116, -- Player Experience
 		},
-		route={48006880, 49006576, 49005920, 52425751, 53215440, 53534842, 54254436},
+		routes={{48006880, 49006576, 49005920, 52425751, 53215440, 53534842, 54254436}},
 		vignette=7669,
 	},
 }, {
@@ -475,8 +486,8 @@ ns.RegisterPoints(2646, { -- Naigral (Vilaldoun)
 	achievement=62883, -- Showdown Slugger: Naigtal
 })
 ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
-	[29201840] = { -- Warbringer Thal'kuur
-		quest=97014, -- v
+	[29751928] = { -- Warbringer Thal'kuur
+		quest=97014,
 		npc=267422,
 		loot={
 			276298, -- Forgotten Fel-Shard Talon
@@ -501,7 +512,7 @@ ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
 		},
 		vignette=7699,
 	},
-	[68255161] = { -- Sleepy Mandrake
+	[68235161] = { -- Sleepy Mandrake
 		label="{npc:267910:Sleepy Mandrake}",
 		loot={
 			{262768, pet=true}, -- Sleepy Mandrake
@@ -516,17 +527,22 @@ ns.RegisterPoints(ns.VOIDSTORM_NAIGTAL, {
 				done(97095).." {item:276369:Airy Redcap}"
 		end,
 		related={
-			[28906176] = {quest=97091, loot={276365}, label="{item:276365}", path=33405970}, -- Highland Redcap
+			[28906176] = { -- Highland Redcap
+				quest=97091, loot={276365}, label="{item:276365}",
+				path={28906176, 29786262, 30156525, 30426609, 32676921, 33417072, 36217266, 36637216, 36407136, 31146332, 31316254, 31816023, 33475950},
+			},
 			[27914996] = {quest=97092, loot={276366}, label="{item:276366}", note="In the crypts"}, -- Dusty Redcap
 			[71423705] = {quest=97093, loot={276367}, label="{item:276367}", path=75643814}, -- Marshy Redcap
 			-- [] = {quest=97094, loot={276368}}, -- Partially-Digested Redcap
 			[95092667] = {quest=97095, loot={276369}, label="{item:276369}", path=88812597, note="On top of the tallest mushroom, bounce up"}, -- Airy Redcap
 			atlas="TeleportationNetwork-Ardenweald-32x32", minimap=true,
 		},
+		path=67505416,
+		atlas="VignetteLootElite", scale=1.1, minimap=true,
 	},
 })
 ns.RegisterPoints(2646, { -- Naigral (Vilaldoun)
-	[22726130] = {
+	[22626135] = {
 		quest=97092,
 		loot={276366}, -- Dusty Redcap
 		-- translate={[ns.VOIDSTORM_NAIGTAL]=true}, -- confusing

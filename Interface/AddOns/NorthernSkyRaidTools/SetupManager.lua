@@ -476,16 +476,17 @@ function NSI:UpdateRaidBuffFrame()
     end
     self.RaidBuffCheck.Title:SetText(L("[NSRT] Missing Raid Buffs"))
     local RaidFrame = FriendsFrame:IsShown() and FriendsFrameTab3:IsShown() and PanelTemplates_GetSelectedTab(FriendsFrame) == 3
+    local SocialRaidFrame = SocialUIFrame and SocialUIFrame.RaidFrame and SocialUIFrame.RaidFrame:IsShown() and SocialUIFrame.RaidFrame
     if PVEFrame:IsShown() and PanelTemplates_GetSelectedTab(PVEFrame) == nil then -- first time opening PVE frame, tab info is not yet available
         C_Timer.After(0.1, function() NSI:UpdateRaidBuffFrame() end)
         return
     end
     local LFGFrame = PVEFrame:IsShown() and PanelTemplates_GetSelectedTab(PVEFrame) == 1
     local parent, height = FindRegisteredRaidBuffPanelParent()
-    parent = parent or (LFGFrame and PVEFrame) or (RaidFrame and PVEFrame:IsShown() and PVEFrame) or (RaidFrame and FriendsFrame) or nil
+    parent = parent or SocialRaidFrame or (LFGFrame and PVEFrame) or (RaidFrame and PVEFrame:IsShown() and PVEFrame) or (RaidFrame and FriendsFrame) or nil
     if parent then
         self.RaidBuffCheck:ClearAllPoints()
-        self.RaidBuffCheck:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -1)
+        self.RaidBuffCheck:SetPoint("TOPLEFT", parent, "TOPRIGHT", 45, -1)
         self.RaidBuffCheck:SetHeight(height or (parent:GetHeight()*parent:GetScale()-4))
         self.RaidBuffCheck:Show()
         local count = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -537,17 +538,13 @@ function NSI:UpdateRaidBuffFrame()
     end
 end
 
-FriendsFrame:HookScript("OnShow", function() NSI:UpdateRaidBuffFrame() end)
-FriendsFrame:HookScript("OnHide", function() NSI:UpdateRaidBuffFrame() end)
 PVEFrame:HookScript("OnShow", function() NSI:UpdateRaidBuffFrame() end)
 PVEFrame:HookScript("OnHide", function() NSI:UpdateRaidBuffFrame() end)
 PVEFrameTab1:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
 PVEFrameTab2:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
 PVEFrameTab3:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
-FriendsFrameTab1:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
-FriendsFrameTab2:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
-FriendsFrameTab3:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
-FriendsFrameTab4:HookScript("OnClick", function() NSI:UpdateRaidBuffFrame() end)
+SocialUIFrame:HookScript("OnHide", function() NSI:UpdateRaidBuffFrame() end)
+SocialUIFrame.RaidFrame:HookScript("OnShow", function() NSI:UpdateRaidBuffFrame() end)
 
 function NSI:GetInviteListFromReminderInput(str)
     if not str then return end
@@ -580,15 +577,17 @@ function NSI:InviteList(list)
     if not list then return end
     local myrealm = GetRealmName()
     for _, name in ipairs(list) do
-        local fullname = ""
-        local name, realm = strsplit("-", name)
-        if realm == nil or realm == "" or realm == myrealm then
-            fullname = name
-        else
-            fullname = name.."-"..realm
-        end
-        if (not UnitIsUnit("player", name)) and (not UnitInRaid(name)) then
-            C_PartyInfo.InviteUnit(fullname)
+        if name and name ~= "" then
+            local fullname = ""
+            local name, realm = strsplit("-", name)
+            if realm == nil or realm == "" or realm == myrealm then
+                fullname = name
+            else
+                fullname = name.."-"..realm
+            end
+            if (not UnitIsUnit("player", name)) and (not UnitInRaid(name)) then
+                C_PartyInfo.InviteUnit(fullname)
+            end
         end
     end
 end
@@ -611,18 +610,23 @@ function NSI:ArrangeFromReminder(str)
     local count = 0
     local missingPlayers = ""
     for i, name in ipairs(list) do
-        local name, realm = strsplit("-", name)
-        local pos = UnitInRaid(name)
+        local entryName = name ~= "" and strsplit("-", name)
+        entryName = entryName and NSAPI:GetChar(entryName, true, "GlobalNickNames")
+        local pos = entryName and UnitInRaid(entryName)
         local unit = pos and "raid"..pos
         local role = unit and UnitGroupRolesAssigned(unit)
         count = count + 1
-        if name and unit and role then
-            self.Groups.units[i] = {sort = i, name = name, unitid = unit, role = role}
+        if entryName and unit and role then
+            self.Groups.units[i] = {sort = i, name = entryName, unitid = unit, role = role}
             self.Groups.total = self.Groups.total + 1
         else
-            self.Groups.units[i] = {sort = (math.ceil(i/5)*5)+0.5, processed = true}
+            -- Keep empty and missing entries at their imported absolute slot.
+            -- ArrangeGroups will consequently leave those subgroup positions open.
+            self.Groups.units[i] = {sort = i, processed = true}
             self.Groups.total = self.Groups.total + 1
-            missingPlayers = missingPlayers..name.." "
+            if entryName and entryName ~= "" then
+                missingPlayers = missingPlayers..entryName.." "
+            end
         end
         table.sort(self.Groups.units, function(a, b) return a.sort < b.sort end)
     end

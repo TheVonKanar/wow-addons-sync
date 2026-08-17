@@ -55,6 +55,7 @@ local function Degroup(groupDetails)
       groupDetails.alignment = entry.alignment
       groupDetails.entries = entry.entries
       groupDetails.preset = entry.preset
+      tAppendAll(groupDetails.visibility, entry.visibility)
       if groupDetails.anchor then
         SavePresetAnchor(groupDetails)
       end
@@ -130,6 +131,7 @@ local function GroupSimilar(groupDetails)
       groupDetails.alignment = groupDetails.entries[1].alignment
       groupDetails.padding = groupDetails.entries[1].padding
       groupDetails.entries = groupDetails.entries[1].entries
+      tAppendAll(groupDetails.visibility, groupDetails.entries[1].visibility)
     end
   end
 
@@ -256,6 +258,7 @@ end
 function addonTable.Designer.LayoutManagerMixin:OnLoad()
   addonTable.Display.BaseLayoutManagerMixin.OnLoad(self)
   self.relativeLayoutMode = false
+  self.autoSize = false
   self:SetScript("OnEvent", self.OnEvent)
 
   self.pools = {
@@ -1163,7 +1166,7 @@ end
 function addonTable.Designer.LayoutManagerMixin:Layout()
   self.pending = true
 
-  self.autoSize = addonTable.Config.Get(addonTable.Config.Options.COMPRESS_LAYOUT)
+  self.autoSize = false
 
   self.currentLayout = addonTable.Designer.GetCurrent()
 

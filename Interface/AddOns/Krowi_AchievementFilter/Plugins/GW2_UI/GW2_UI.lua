@@ -892,16 +892,18 @@ local function SkinHeader()
     AchievementFrameFilterDropdown:SetPoint("BOTTOMLEFT", AchievementFrame.SearchBox, "TOPLEFT", 0, 10)
     AchievementFrameFilterDropdown:SetPoint("BOTTOMRIGHT", AchievementFrame.SearchBox, "TOPRIGHT", 0, 10)
 
-    AchievementFrameFilterDropdown.backdrop:ClearAllPoints()
-    AchievementFrameFilterDropdown.backdrop:SetPoint("TOPLEFT", AchievementFrameFilterDropdown, "TOPLEFT", 0, 0)
-    AchievementFrameFilterDropdown.backdrop:SetPoint("BOTTOMRIGHT", AchievementFrameFilterDropdown, "BOTTOMRIGHT", 0, 0)
-    AchievementFrameFilterDropdown.backdrop:SetAlpha(0.5)
+    if AchievementFrameFilterDropdown.backdrop then -- 12.1.0's HeaderDetails.Filters.FilterDropdown has no backdrop
+        AchievementFrameFilterDropdown.backdrop:ClearAllPoints()
+        AchievementFrameFilterDropdown.backdrop:SetPoint("TOPLEFT", AchievementFrameFilterDropdown, "TOPLEFT", 0, 0)
+        AchievementFrameFilterDropdown.backdrop:SetPoint("BOTTOMRIGHT", AchievementFrameFilterDropdown, "BOTTOMRIGHT", 0, 0)
+        AchievementFrameFilterDropdown.backdrop:SetAlpha(0.5)
+    end
 
     GW2_ADDON.HandleNextPrevButton(KrowiAF_AchievementFrameBrowsingHistoryPrevAchievementButton);
     GW2_ADDON.HandleNextPrevButton(KrowiAF_AchievementFrameBrowsingHistoryNextAchievementButton);
     KrowiAF_AchievementFrameBrowsingHistoryPrevAchievementButton:ClearPoint("RIGHT");
     KrowiAF_AchievementFrameBrowsingHistoryNextAchievementButton:ClearPoint("RIGHT");
-    KrowiAF_AchievementFrameBrowsingHistoryPrevAchievementButton:SetPoint("LEFT", AchievementFrameHeader.breadCrumb, "RIGHT", 10, -2);
+    KrowiAF_AchievementFrameBrowsingHistoryPrevAchievementButton:SetPoint("LEFT", AchievementFrame.Header.breadCrumb, "RIGHT", 10, -2);
     KrowiAF_AchievementFrameBrowsingHistoryNextAchievementButton:SetPoint("LEFT", KrowiAF_AchievementFrameBrowsingHistoryPrevAchievementButton, "RIGHT");
 end
 
@@ -948,9 +950,9 @@ local function SkinAll()
         SkinGameTooltipProgressBar();
         SkinAchievementsFrame();
         SkinAchievementSummary();
+        SkinSearchBoxFrame(); -- must run before SkinFilterButton to avoid a circular anchor (SearchBoxFrame may start anchored to FilterButton)
         SkinFilterButton();
         SkinSearchOptionsButton();
-        SkinSearchBoxFrame();
         SkinSearchPreviewFrame();
         SkinHeader();
         ReskinBlizzard();

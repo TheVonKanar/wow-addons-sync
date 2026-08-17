@@ -3,29 +3,34 @@ local _, NSI = ... -- Internal namespace
 SLASH_NSUI1 = "/ns"
 SLASH_NSUI2 = "/nsrt"
 SlashCmdList["NSUI"] = function(msg)
+    local function OpenUI(tabName)
+        if not NSI:LoadUI(true, tabName) then return end
+        NSI.NSUI:Show()
+        if tabName then NSI.NSUI.MenuFrame:SelectTabByName(tabName) end
+    end
+
     if msg == "wipe" then
         wipe(NSRT)
         ReloadUI()
     elseif msg == "debug" then
         if NSRT.Settings["Debug"] then
             NSRT.Settings["Debug"] = false
-            print("|cFF00FFFFNSRT|r Debug mode is now disabled")
+            print(NSI:Loc("|cFF00FFFFNSRT|r Debug mode is now disabled"))
         else
             NSRT.Settings["Debug"] = true
-            print("|cFF00FFFFNSRT|r Debug mode is now enabled, please disable it when you are done testing.")
+            print(NSI:Loc("|cFF00FFFFNSRT|r Debug mode is now enabled, please disable it when you are done testing."))
         end
     elseif msg == "cd" then
+        if not NSI:LoadUI() then return end
         if NSI.NSUI.cooldowns_frame:IsShown() then
             NSI.NSUI.cooldowns_frame:Hide()
         else
             NSI.NSUI.cooldowns_frame:Show()
         end
     elseif msg == "reminders" or msg == "r" then
-        NSI.NSUI:Show()
-        NSI.NSUI.MenuFrame:SelectTabByName("SharedNotes")
+        OpenUI("SharedNotes")
     elseif msg == "preminders" or msg == "pr" then
-        NSI.NSUI:Show()
-        NSI.NSUI.MenuFrame:SelectTabByName("PersonalNotes")
+        OpenUI("PersonalNotes")
     elseif msg == "note" or msg == "n" then -- Toggle Showing/Hiding ALL Notes
         local ShouldShow = not (NSRT.ReminderSettings.ReminderFrame.enabled or NSRT.ReminderSettings.PersonalReminderFrame.enabled or NSRT.ReminderSettings.ExtraReminderFrame.enabled)
         NSRT.ReminderSettings.ReminderFrame.enabled = ShouldShow
@@ -51,7 +56,9 @@ SlashCmdList["NSUI"] = function(msg)
     elseif msg == "pclear" or msg == "pc" then -- Clear Active Personal Reminder
         NSI:SetReminder(nil, true)
     elseif msg == "timeline" or msg == "tl" then
-        NSI:ToggleTimelineWindow()
+        if NSI:LoadUI() then
+            NSI:ToggleTimelineWindow()
+        end
     elseif msg == "invite" then
         NSI:InviteFromReminder(NSRT.ActiveReminder, true)
     elseif msg == "arrange" then
@@ -60,13 +67,13 @@ SlashCmdList["NSUI"] = function(msg)
         NSRT.Settings.DebugLogs = not NSRT.Settings.DebugLogs
         NSI:UpdateDebugLogEvents()
         if NSRT.Settings.DebugLogs then
-            print("|cFF00FFFFNSRT|r Debug logs are now enabled")
+            print(NSI:Loc("|cFF00FFFFNSRT|r Debug logs are now enabled"))
         else
-            print("|cFF00FFFFNSRT|r Debug logs are now disabled.")
+            print(NSI:Loc("|cFF00FFFFNSRT|r Debug logs are now disabled."))
         end
     elseif msg == "resetlogs" then
         NSRTTimelineData = {}
-        print("|cFF00FFFFNSRT|r Timeline logs have been reset.")
+        print(NSI:Loc("|cFF00FFFFNSRT|r Timeline logs have been reset."))
     elseif msg == "help" then
         print(NSI:Loc("|cFF00FFFFNSRT|r Available commands: (either '/ns' or '/nsrt' work)\n"))
         print(NSI:Loc("  |cFF00FFFF/ns debug|r - Toggle debug mode - mainly used for development"))
@@ -84,10 +91,10 @@ SlashCmdList["NSUI"] = function(msg)
         print(NSI:Loc("  |cFF00FFFF/ns invite|r - Invite players from active reminder to group"))
         print(NSI:Loc("  |cFF00FFFF/ns arrange|r - Arrange players from active reminder in group"))
     elseif msg == "" then
-        NSI.NSUI:ToggleOptions()
+        if NSI:LoadUI(true) then NSI.NSUI:ToggleOptions() end
     elseif msg then
-        print("|cFF00FFFFNSRT|r Unknown command. Type |cFF00FFFF/ns help|r for a list of commands.")
+        print(NSI:Loc("|cFF00FFFFNSRT|r Unknown command. Type |cFF00FFFF/ns help|r for a list of commands."))
     else
-        NSI.NSUI:ToggleOptions()
+        if NSI:LoadUI(true) then NSI.NSUI:ToggleOptions() end
     end
 end

@@ -1,5 +1,6 @@
-MythicPlusUtility = LibStub("AceAddon-3.0"):NewAddon("MythicPlusUtility", "AceEvent-3.0", "AceConsole-3.0",
-                                                     "AceSerializer-3.0")
+MythicPlusUtility = LibStub("AceAddon-3.0"):NewAddon("MythicPlusUtility", "AceEvent-3.0", "AceConsole-3.0", "AceSerializer-3.0")
+MythicPlusUtility.Variables = {}
+local Variables = MythicPlusUtility.Variables
 local AC = LibStub("AceConfig-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("MythicPlusUtility")
@@ -14,6 +15,9 @@ function MythicPlusUtility:OnInitialize()
     -- ACD:SetDefaultSize("MythicPlusUtility_Options", 800, 630)
 
     self.profiles = self.Profiles:CreateOptions()
+    self.db.profile.seasonSelect = Variables.dungeonGlobals.currentSeason
+    self.ModelContainer:SetSize(self.db.profile.windowSettings.tooltipModelWidth,
+                                self.db.profile.windowSettings.tooltipModelHeight)
     self.profilesFrame = ACD:AddToBlizOptions("MythicPlusUtility_Profiles", L["Profiles"], "Mythic Plus Utility")
 
     self.ModelContainer:SetSize(self.db.profile.windowSettings.tooltipModelWidth,
@@ -43,43 +47,18 @@ end
 function MythicPlusUtility:MigrateOldSettings()
     -- Will clean up / change in a few updates
     local db = self.db.profile
-    if not db.AddonName then db.AddonName = "MythicPlusUtility" end
-    if self.db.global.minimap then self.db.global.minimap = nil end
-    if self.db.profile.minimap.show ~= nil then
-        self.db.profile.minimap.hide = not self.db.profile.minimap.show
-        self.db.profile.minimap.show = nil
+    if db.hideOnStart then
+        db.generalSettings.hideOnStart = db.hideOnStart
+        db.hideOnStart = nil
     end
-
-    local function migrateFrameSetting(oldSetting, newSetting)
-        if db[oldSetting] then
-            db.windowSettings[newSetting] = db[oldSetting]
-            db[oldSetting] = nil
-        end
+    if db.hideNotImportant then
+        db.generalSettings.hideNotImportant = db.hideNotImportant
+        db.hideNotImportant = nil
     end
-    local migrateFrameSettingTable = {
-        {"frameWidth", "width"}, {"frameHeight", "height"}, {"frameXOffset", "xOffset"}, {"frameYOffset", "yOffset"},
-        {"selectFramePoint", "framePoint"},
-    }
-    for _, setting in pairs(migrateFrameSettingTable) do migrateFrameSetting(setting[1], setting[2]) end
-
-    if db.buttonSize then
-        db.textAndIcon.icon.size = db.buttonSize
-        db.buttonSize = nil
+    if db.difficultyID then
+        db.generalSettings.difficultyID = db.difficultyID
+        db.difficultyID = nil
     end
-    if db.labelFontSize then
-        db.textAndIcon.icon.labelSize = db.labelFontSize
-        db.textFontSize = nil
-    end
-    if db.textFontSize then
-        db.textAndIcon.bodyText.labelSize = db.textFontSize
-        db.textFontSize = nil
-    end
-    if db.dungeonNameSize then
-        db.textAndIcon.dungeonName.labelSize = db.dungeonNameSize
-        db.dungeonNameSize = nil
-    end
-
-    db.font = nil
 end
 
 function MythicPlusUtility:RefreshConfig()
@@ -102,9 +81,7 @@ function MythicPlusUtility:onTalentFrameShow()
 end
 
 function MythicPlusUtility:onTalentFrameClose()
-    if MythicPlusUtility.Frame and MythicPlusUtility.Frame:IsShown() then
-        MythicPlusUtility.TalentFrameHighlight:HideAll()
-    end
+    if MythicPlusUtility.Frame and MythicPlusUtility.Frame:IsShown() then MythicPlusUtility.TalentFrameHighlight:HideAll() end
 end
 
 function MythicPlusUtility:onUtilityWindowSetShown()
@@ -160,7 +137,8 @@ function MythicPlusUtility:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReload
     C_Timer.NewTimer(0.5, function()
         if not (isInitialLogin or isReloadingUi) then
             local _, _, difficultyID, _, _, _, _, instanceID = GetInstanceInfo()
-            if MythicPlusUtility.db.profile.difficultyID[difficultyID] and MythicPlusUtility.instancesData[instanceID] then
+            if MythicPlusUtility.db.profile.generalSettings.difficultyID[difficultyID]
+              and MythicPlusUtility.instancesData[instanceID] then
                 MythicPlusUtility.db.profile.instanceID = instanceID
                 if not MythicPlusUtility.Frame then MythicPlusUtility:InitializeFrames() end
                 MythicPlusUtility.Frame:SetShownHandler(true)
@@ -175,7 +153,9 @@ function MythicPlusUtility:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReload
 end
 
 function MythicPlusUtility:CHALLENGE_MODE_START(event)
-    if self.Frame and self.db.profile.hideOnStart and self.Frame:IsShown() then self.Frame:SetShownHandler(false) end
+    if self.Frame and self.db.profile.generalSettings.hideOnStart and self.Frame:IsShown() then
+        self.Frame:SetShownHandler(false)
+    end
 end
 
 function MythicPlusUtility:UPDATE_VEHICLE_ACTIONBAR(event)
@@ -216,9 +196,8 @@ function MythicPlusUtility:ExtractSpellsFromDB()
     for specId, _ in pairs(self.classSpecialisations[self.db.char.class]) do
         for spellId, entry in pairs(self.utilityAbilities[specId]) do extract(spellId, entry) end
     end
-    for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesRacials) do
-        if entry.isKnown then extract(spellId, entry) end
-    end
+    for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesRacials) do if entry.isKnown then extract(spellId, entry) end end
+    for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesProfessions) do extract(spellId, entry) end
 end
 
 function MythicPlusUtility:PopulateLocalisation()
@@ -253,6 +232,13 @@ function MythicPlusUtility:GetCharacterInfo()
                 if not known then entry.isKnown = self:IsSpellKnownHandler(spellId) end
             end
         end
+
+        for spellId, entry in pairs(MythicPlusUtility.utilityAbilitiesProfessions) do
+            entry.isKnown = MythicPlusUtility:IsSpellKnownHandler(spellId)
+            entry.spellId = spellId
+            entry.spellName = MythicPlusUtility:GetSpellNameById(spellId)
+        end
+
         MythicPlusUtility.db.char.currentSpec = C_SpecializationInfo.GetSpecializationInfo(
                                                   C_SpecializationInfo.GetSpecialization())
         MythicPlusUtility:ExtractSpellsFromDB()

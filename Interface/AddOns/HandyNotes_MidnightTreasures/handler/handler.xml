@@ -4,13 +4,20 @@
 <Script file="lib\Krowi_WorldMapButtons-1.4.lua"/>
 
 <Script file="class.lua"/>
+<Script file="formatting.lua"/>
+<Script file="icons.lua"/>
+<Script file="points.lua"/>
 <Script file="handler.lua"/>
+<Script file="tooltip.lua"/>
 <Script file="conditions.lua"/>
+<Script file="notable.lua"/>
+<Script file="visibility.lua"/>
 <Script file="config.lua"/>
 <Script file="overlay.lua"/>
 
 <Script file="rewards\base.lua"/>
 <Script file="rewards\item.lua"/>
+<Script file="rewards\upgradeloot.lua"/>
 
 <Script file="providers\system\pins.lua"/>
 <Script file="providers\system\lines.lua"/>

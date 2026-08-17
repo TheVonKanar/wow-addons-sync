@@ -170,7 +170,7 @@ function BaganatorItemViewCommonBankViewMixin:OnHide()
     CloseBankFrame()
   end
 
-  if Syndicator.Constants.CharacterBankTabsActive then
+  if BankFrame.BankPanel then
     BankFrame.BankPanel:Hide()
   end
 
@@ -215,11 +215,16 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
 
   self.currentTab:UpdateView()
 
-  if Syndicator.Constants.CharacterBankTabsActive then
+  if BankFrame.BankPanel then
     BankFrame.BankPanel:SetShown(self.currentTab.isLive)
+    Addon_SetBankType(self:GetBankType())
   end
 
   addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
+end
+
+function BaganatorItemViewCommonBankViewMixin:GetBankType()
+  return self.currentTab and self.currentTab.bankType
 end
 
 

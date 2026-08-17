@@ -638,7 +638,7 @@ function lib:CreateInput(cat, data)
 	)
 
 	local initializer = Settings.CreateControlInitializer(
-		"LibEQOL1fe5271_InputControlTemplate",
+		"LibEQOLca214ff_InputControlTemplate",
 		setting,
 		nil,
 		data.desc
@@ -798,7 +798,7 @@ function lib:CreateScrollDropdown(cat, data)
 		return container:GetData()
 	end
 
-	local initializer = Settings.CreateElementInitializer("LibEQOL1fe5271_ScrollDropdownTemplate", {
+	local initializer = Settings.CreateElementInitializer("LibEQOLca214ff_ScrollDropdownTemplate", {
 		label = data.name or data.text or data.key,
 		optionsFunc = optionsFunc,
 		generator = data.generator,
@@ -831,7 +831,7 @@ function lib:CreateSoundDropdown(cat, data)
 		data.set,
 		data
 		)
-		local initializer = Settings.CreateElementInitializer("LibEQOL1fe5271_SoundDropdownTemplate", {
+		local initializer = Settings.CreateElementInitializer("LibEQOLca214ff_SoundDropdownTemplate", {
 			setting = setting,
 			options = data.values or data.options,
 			optionfunc = data.optionfunc,
@@ -1095,7 +1095,7 @@ end
 
 function lib:CreateColorOverrides(cat, data)
 	assert(cat and data and data.entries, "category and entries required")
-	local initializer = Settings.CreateElementInitializer("LibEQOL1fe5271_ColorOverridesPanelNoHead", {
+	local initializer = Settings.CreateElementInitializer("LibEQOLca214ff_ColorOverridesPanelNoHead", {
 		categoryID = cat:GetID(),
 		entries = data.entries,
 		getColor = data.getColor,
@@ -1145,7 +1145,7 @@ function lib:CreateSortableList(cat, data)
 	if notifyTag then
 		notifyTag = prefixNotifyTag(notifyTag)
 	end
-	local initializer = Settings.CreateElementInitializer("LibEQOL1fe5271_SortableListTemplate", {
+	local initializer = Settings.CreateElementInitializer("LibEQOLca214ff_SortableListTemplate", {
 		name = data.name or data.text or data.key or "List",
 		tooltip = data.desc or data.tooltip,
 		key = data.key,
@@ -1278,7 +1278,7 @@ function lib:CreateMultiDropdown(cat, data)
 		function() end,
 		data
 	)
-	local initializer = Settings.CreateElementInitializer("LibEQOL1fe5271_MultiDropdownTemplate", {
+	local initializer = Settings.CreateElementInitializer("LibEQOLca214ff_MultiDropdownTemplate", {
 		label = data.name or data.text or data.key,
 		tooltip = data.desc or data.cbDesc or data.tooltip,
 		options = data.values,
@@ -1451,7 +1451,7 @@ function lib:CreateText(cat, text, extra)
 	local data = normalizeNameData(text, extra)
 	local name = data.name or data.text
 	local init = Settings.CreateElementInitializer(
-		"LibEQOL1fe5271_SettingsListSectionHintTemplate",
+		"LibEQOLca214ff_SettingsListSectionHintTemplate",
 		{ name = name }
 	)
 	addSearchTags(init, data.searchtags or name, name)

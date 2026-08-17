@@ -60,15 +60,19 @@ end
 
 local function OnSetScale(self, scale)
     if self._cdmgSettingScale then return end
-    
+
     -- Skip Arc Aura frames - they manage their own scale via ArcAuras.ApplySettingsToFrame
     if self._arcAuraID then return end
-    
+
     local parent = self:GetParent()
     -- Check if in container OR if it's a free icon (check frame flag directly, not cdID lookup)
     local isInContainer = parent and parent._isCDMGContainer
     local isFreeIcon = self._cdmgIsFreeIcon
-    
+
+    -- NO free-flag heal here (the 3.7.12 vanishing-icons lesson): clearing
+    -- _cdmgIsFreeIcon on a transient lookup failure disarmed the hide fight.
+    -- Forcing scale 1 on a stale-flag frame is harmless; leave state alone.
+
     if not isInContainer and not isFreeIcon then return end
     
     -- Force scale to 1 (both container and free icons)
@@ -81,18 +85,35 @@ end
 
 local function OnSetSize(self, w, h)
     if self._cdmgSettingSize then return end
-    
+
     local parent = self:GetParent()
     -- Check if in container OR if it's a free icon (check frame flag directly)
     local isInContainer = parent and parent._isCDMGContainer
     local isFreeIcon = self._cdmgIsFreeIcon
-    
+
     -- Arc Aura frames: Only enforce size if they're in a group container
     -- Free Arc Auras manage their own size via ArcAuras.ApplySettingsToFrame
     if self._arcAuraID and not isInContainer then return end
-    
+
     if not isInContainer and not isFreeIcon then return end
-    
+
+    -- STALE FREE-FLAG HEAL — IN-CONTAINER ONLY (the 3.7.12 vanishing-icons
+    -- lesson): a frame inside a group container is DEFINITIONALLY not free,
+    -- so clearing leftover recycled-pool flags there is safe and fixes the
+    -- giant-grouped-icon bug (a previous occupant's free size stamped onto a
+    -- grouped icon). A NOT-in-container frame must NEVER be healed from this
+    -- hook: CDM refresh waves put legit free icons through transient states
+    -- where the freeIcons lookup fails (ClearCooldownID-then-hide pool
+    -- windows, mid-rebind occupant swaps), and clearing _cdmgIsFreeIcon on
+    -- that signal DISARMED DeferredHideFight — free icons vanished the
+    -- moment combat started and stayed gone until reload (3.7.12 code red).
+    -- Lookup failure below falls back to the stored size, exactly as 3.7.11.
+    if isFreeIcon and isInContainer then
+        self._cdmgIsFreeIcon = nil
+        self._cdmgFreeTargetSize = nil
+        isFreeIcon = false
+    end
+
     -- Get target size - for free icons, get from freeIcons table using frame ID
     local targetW, targetH
     if isFreeIcon then
@@ -151,6 +172,12 @@ local function OnSetSize(self, w, h)
         end
     end
     
+    -- CORRUPTION GUARD: never stamp a nonsensical size onto a frame — a
+    -- nil/NaN/absurd target means our bookkeeping is wrong, and skipping the
+    -- correction is strictly safer than enforcing garbage.
+    if not (targetW and targetW == targetW and targetW > 0 and targetW <= 512) then return end
+    if not (targetH and targetH == targetH and targetH > 0 and targetH <= 512) then return end
+
     -- Use 0.5 pixel tolerance (tight like reference CDMGroups)
     if math.abs((w or 0) - targetW) > 0.5 or math.abs((h or 0) - targetH) > 0.5 then
         self._cdmgSettingSize = true
@@ -159,23 +186,90 @@ local function OnSetSize(self, w, h)
     end
 end
 
+-- Resolve a free icon's Stack Priority (per-icon strata/frameLevel) LIVE from
+-- settings — never cached on the frame. Early-login resolves can see an
+-- incomplete spec store; a frame-cached value taken then would be stale
+-- forever (the "loads as MEDIUM" bug), while a live read self-heals as soon
+-- as the settings cache is correct. GetIconSettings is cache-backed, so this
+-- is a table lookup in the hot paths, not a rebuild.
+local function GetFreeIconStackPriority(frame, cdIDOverride)
+    local cdID = cdIDOverride or frame.cooldownID or frame._arcAuraID
+    local cfg = cdID and ns.CDMEnhance and ns.CDMEnhance.GetIconSettings
+        and ns.CDMEnhance.GetIconSettings(cdID)
+    local fp = cfg and cfg.freePosition
+    if not fp then return nil, nil end
+    return fp.strata, tonumber(fp.frameLevel)
+end
+
+-- Children that PIN a strata don't follow a later parent strata change: glow
+-- frames capture the parent's strata when the glow STARTS (ns.Glows), keybind
+-- containers when they refresh. After a free icon's strata actually changes,
+-- restart/refresh them so the whole icon stack moves together — otherwise the
+-- icon drops to LOW while its active glow keeps drawing at the old MEDIUM
+-- (the "still looks wrong until I click it in the panel" symptom).
+local function ResyncPinnedChildren(frame)
+    if ns.Glows and ns.Glows.ResizeAll then ns.Glows.ResizeAll(frame) end
+    if ns.Keybinds and ns.Keybinds.QueueRefresh then ns.Keybinds.QueueRefresh() end
+end
+ns.CDMGroups.ResyncStrataChildren = ResyncPinnedChildren
+
 local function OnSetFrameStrata(self, strata)
     if self._cdmgSettingStrata then return end
-    
+
     local parent = self:GetParent()
     -- Check if in container OR if it's a free icon
     local isInContainer = parent and parent._isCDMGContainer
     local isFreeIcon = self._cdmgIsFreeIcon
-    
+
     if not isInContainer and not isFreeIcon then return end
-    
-    -- Determine expected strata: container's configured strata, or MEDIUM for free icons
-    local expectedStrata = (isInContainer and parent._cdmgFrameStrata) or "MEDIUM"
-    
+
+    -- Determine expected strata: container's configured strata, the free icon's
+    -- own Stack Priority strata (per-icon option), or MEDIUM as the default
+    local freeStrata, freeLevel
+    if isFreeIcon and not isInContainer then
+        freeStrata, freeLevel = GetFreeIconStackPriority(self)
+    end
+    local expectedStrata = (isInContainer and parent._cdmgFrameStrata)
+        or freeStrata
+        or "MEDIUM"
+
     if strata ~= expectedStrata then
         self._cdmgSettingStrata = true
         self:SetFrameStrata(expectedStrata)
         self._cdmgSettingStrata = false
+    end
+
+    -- Piggyback level enforcement: SetParent recalculates frame levels WITHOUT
+    -- calling SetFrameLevel (no hook fires), so the strata writes that follow
+    -- every reposition sweep are our chance to re-assert the configured level.
+    if freeLevel and self:GetFrameLevel() ~= freeLevel then
+        self._cdmgSettingLevel = true
+        self:SetFrameLevel(freeLevel)
+        self._cdmgSettingLevel = false
+    end
+
+    -- Change detection (any writer): if this write ended up ACTUALLY changing
+    -- the icon's strata, re-sync strata-pinned children (glows, keybind text).
+    if isFreeIcon then
+        local now = self:GetFrameStrata()
+        if self._cdmgLastSeenStrata ~= now then
+            self._cdmgLastSeenStrata = now
+            ResyncPinnedChildren(self)
+        end
+    end
+end
+
+-- Fight frame-level changes on free icons that have a Stack Priority level set.
+-- Resolves live (see GetFreeIconStackPriority); icons without a configured
+-- level are never fought.
+local function OnSetFrameLevel(self, level)
+    if self._cdmgSettingLevel then return end
+    if not self._cdmgIsFreeIcon then return end
+    local _, expected = GetFreeIconStackPriority(self)
+    if expected and level ~= expected then
+        self._cdmgSettingLevel = true
+        self:SetFrameLevel(expected)
+        self._cdmgSettingLevel = false
     end
 end
 
@@ -216,32 +310,143 @@ end
 -- CDM calls these during rearrangement while its settings panel is open.
 -- Post-hooks immediately re-Show the frame if it should be visible.
 -- ═══════════════════════════════════════════════════════════════════════════
-local function OnSetShown_Managed(self, shown)
-    if shown then return end  -- Only fight SetShown(false)
+-- RELEASED-FRAME GUARD (the "clone icon" bug, 2 reports + Arc's import repro):
+-- CDM releases a pooled item frame by ClearCooldownID() FIRST (source-verified:
+-- RefreshData walks the pool and clears every frame beyond the current id list),
+-- THEN hides it via UpdateShownState. A managed frame with NO cooldownID is
+-- therefore CDM's corpse being legitimately reclaimed — fighting that hide kept
+-- it on screen as an unclickable styled clone in the group row (and, once CDM
+-- reparented it, as the floating empty square at the native viewer). Arc's own
+-- icons carry _arcAuraID instead of cooldownID and are still defended.
+local function IsReleasedCDMFrame(self)
+    return self.cooldownID == nil and self._arcAuraID == nil
+end
+
+-- DEFERRED VERDICT (timeline-proven pool race, 2026-08-12): the pool resetter
+-- runs Hide FIRST and only then clears cooldown data + layoutIndex
+-- (CooldownViewer OnLoad itemResetCallback, source-verified) — so at the
+-- moment our hook fires, a pool RELEASE is indistinguishable from the
+-- reclamation hides this fight exists for; the trace caught us resurrecting a
+-- corpse whose id was still set for one more instant (Hide <- Pools.lua:520,
+-- Show <- Maintain). Verdict therefore waits ONE FRAME: by then a released
+-- CDM frame has layoutIndex nil (and usually cooldownID nil) → let it die;
+-- a genuinely reclaimed member still has both → fight as before. A frame CDM
+-- re-acquired in the meantime is already shown → moot. Arc's own icons have
+-- no GetCooldownID and skip the release checks entirely.
+local function DeferredHideFight(self)
     if self._arcAllowHide then return end  -- ArcUI cleanup
     if self._arcHiddenByBar or self._arcHiddenUnequipped or self._arcSlotEmpty then return end
     if self._groupDragging or self._freeDragging then return end
-    
-    -- Check: is this frame still managed by us?
+    if IsReleasedCDMFrame(self) then return end  -- id already cleared: let it die
+
+    -- Only fight for frames we manage
     local parent = self:GetParent()
     local isGrouped = parent and parent._isCDMGContainer
     local isFree = self._cdmgIsFreeIcon
     if not isGrouped and not isFree then return end
-    
-    self:Show()
+
+    C_Timer.After(0, function()
+        -- ROLLBACK for the INSTANT resurrect (see InstantResurrect below). Must
+        -- run BEFORE the IsShown early-out: the instant Show makes IsShown true,
+        -- which would skip every check and leave a genuinely-released frame
+        -- alive = the duplicate-icon clone bug. Now that the pool resetter has
+        -- run, the release signals are trustworthy, so verify and undo if wrong.
+        local instant = self._arcInstantResurrect
+        self._arcInstantResurrect = nil
+        if instant then
+            local released = false
+            if self.GetCooldownID then
+                if self.cooldownID == nil or self.layoutIndex == nil then released = true end
+            end
+            local p0 = self:GetParent()
+            if not ((p0 and p0._isCDMGContainer) or self._cdmgIsFreeIcon) then released = true end
+            if self._arcAllowHide or self._arcHiddenByBar or self._arcHiddenUnequipped
+               or self._arcSlotEmpty then released = true end
+            if released then
+                self._arcRollbackHiding = true   -- stops InstantResurrect re-firing on this Hide
+                self:Hide()
+                self._arcRollbackHiding = nil
+            end
+            return   -- verdict delivered either way
+        end
+        if self:IsShown() then return end                     -- re-acquired/re-shown: moot
+        if self._arcAllowHide then return end                 -- state may have moved a frame
+        if self._arcHiddenByBar or self._arcHiddenUnequipped or self._arcSlotEmpty then return end
+        if self._groupDragging or self._freeDragging then return end
+        if self.GetCooldownID then
+            if self.cooldownID == nil then return end         -- released (id cleared)
+            if self.layoutIndex == nil then return end        -- released (pool resetter finished)
+        end
+        -- NO DEFERENCE TO BLIZZARD'S "Hide When Inactive" (3.8.0 regression,
+        -- removed 3.8.0.b). 3.8.0 added a bail here when hideWhenInactive was on
+        -- and isActive was false, so CDM's hide would stand. That was the wrong
+        -- layer: this resurrect is the ONLY reason "show the icon while its aura
+        -- is MISSING" works for users who have Hide When Inactive enabled in CDM,
+        -- and honouring the hide silently killed that feature in 3.8.0 (two
+        -- Discord reports, both "worked before 8/15", both fixed by downgrading;
+        -- unreproducible for anyone whose CDM setting is off).
+        --
+        -- ARCUI OWNS VISIBILITY FOR MANAGED FRAMES; ALPHA IS THE CONTROL.
+        -- CDM must never get a vote on show/hide for a frame we reparented:
+        --   aura-missing alpha > 0 -> icon stays visible while the aura is gone
+        --   aura-missing alpha = 0 -> icon renders invisible and DynamicLayout
+        --                             collapses the slot (GAP(faded), verified)
+        -- That serves BOTH complaints -- including the "debuff should disappear
+        -- when not applied" one that motivated the 3.8.0 block -- through the
+        -- icon's own setting instead of by surrendering ownership.
+        --
+        -- The C_Timer.After(0) defer above is LOAD-BEARING, do not inline this:
+        -- cooldownID/layoutIndex only settle after CDM's pool resetter runs, and
+        -- those checks are what separate "CDM is RELEASING this frame" from
+        -- "CDM is HIDING a frame we own". A synchronous resurrect brings released
+        -- pool frames back -> the duplicate-icon clone bug.
+        local p = self:GetParent()
+        if (p and p._isCDMGContainer) or self._cdmgIsFreeIcon then
+            self:Show()
+        end
+    end)
 end
 
-local function OnHide_Managed(self)
+-- INSTANT RESURRECT — kills the visible flicker.
+-- The deferred fight alone always costs a rendered gap: measured 13 ms on a
+-- plain aura drop (Maintain wins the race) and 48 ms when a spell override
+-- rebinds the frame (the deferred pass declines on the transiently-nil
+-- cooldownID, so nothing restores it until AuraFrames' next pass). Both are
+-- visible to the user, and the whole point of owning visibility is that CDM's
+-- hide should never RENDER.
+--
+-- So act first, verify after: re-Show synchronously in the same frame as the
+-- hide, mark the frame, and let the deferred pass above roll it back if the
+-- release signals do materialise. That inverts the cost correctly -- a
+-- guaranteed gap on every inactive-hide becomes a possible one-frame FLASH of a
+-- frame that was genuinely being released mid-rebuild (rare, already noisy).
+--
+-- Deliberately does NOT check layoutIndex: that is the slow-settling signal the
+-- rollback exists to evaluate. cooldownID == nil is checked because an already
+-- cleared id means the frame is gone right now, not "maybe".
+-- No recursion: Maintain hooks Hide/SetShown, and Show() triggers neither.
+local function InstantResurrect(self)
+    if self._arcRollbackHiding then return end   -- our own rollback Hide
     if self._arcAllowHide then return end
     if self._arcHiddenByBar or self._arcHiddenUnequipped or self._arcSlotEmpty then return end
     if self._groupDragging or self._freeDragging then return end
-    
-    local parent = self:GetParent()
-    local isGrouped = parent and parent._isCDMGContainer
-    local isFree = self._cdmgIsFreeIcon
-    if not isGrouped and not isFree then return end
-    
+    if IsReleasedCDMFrame(self) then return end
+    if self.GetCooldownID and self.cooldownID == nil then return end
+    local p = self:GetParent()
+    if not ((p and p._isCDMGContainer) or self._cdmgIsFreeIcon) then return end
+    self._arcInstantResurrect = true
     self:Show()
+end
+
+local function OnSetShown_Managed(self, shown)
+    if shown then return end  -- Only fight SetShown(false)
+    InstantResurrect(self)
+    DeferredHideFight(self)
+end
+
+local function OnHide_Managed(self)
+    InstantResurrect(self)
+    DeferredHideFight(self)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -251,6 +456,7 @@ local TrackedClearAllPoints  = Track and Track("Maintain.ClearAllPoints",  OnCle
 local TrackedSetScale        = Track and Track("Maintain.SetScale",        OnSetScale) or OnSetScale
 local TrackedSetSize         = Track and Track("Maintain.SetSize",         OnSetSize) or OnSetSize
 local TrackedSetFrameStrata  = Track and Track("Maintain.SetFrameStrata",  OnSetFrameStrata) or OnSetFrameStrata
+local TrackedSetFrameLevel   = Track and Track("Maintain.SetFrameLevel",   OnSetFrameLevel) or OnSetFrameLevel
 local TrackedSetParent       = Track and Track("Maintain.SetParent",       OnSetParent) or OnSetParent
 local TrackedClearAllPointsF = Track and Track("Maintain.ClearAllPointsF", OnClearAllPoints_Free) or OnClearAllPoints_Free
 local TrackedSetShown        = Track and Track("Maintain.SetShown",        OnSetShown_Managed) or OnSetShown_Managed
@@ -286,6 +492,13 @@ local function HookFrameStrata(frame)
     if frame._cdmgStrataHooked then return end
     hooksecurefunc(frame, "SetFrameStrata", TrackedSetFrameStrata)
     frame._cdmgStrataHooked = true
+end
+
+-- Hook SetFrameLevel - force level back to the free icon's Stack Priority level
+local function HookFrameLevel(frame)
+    if frame._cdmgLevelHooked then return end
+    hooksecurefunc(frame, "SetFrameLevel", TrackedSetFrameLevel)
+    frame._cdmgLevelHooked = true
 end
 
 -- Hook SetParent - fight CDM trying to reparent free icons
@@ -372,83 +585,44 @@ local function FindFrameInViewers(cdID)
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════
--- SHARED HELPER: Setup a frame as a free icon
--- Used by both reassignment handling and savedPositions restoration
--- Returns true if setup succeeded, false otherwise
+-- FREE ICON STACK PRIORITY (per-icon strata/frameLevel for stacked free icons)
+-- Installs the fight-back hooks and applies the CURRENT setting to the frame.
+-- The hooks resolve live from settings on every write (GetFreeIconStackPriority),
+-- so this apply is only the "right now" push — there is no frame-cached state
+-- to go stale. No freePosition config = default MEDIUM, level never fought —
+-- identical to pre-feature behavior.
 -- ═══════════════════════════════════════════════════════════════════════════
-local function SetupFreeIconFrame(cdID, frame, x, y, iconSize, viewerType, viewerName, existingData)
-    if not frame or not cdID then return false end
-    
-    -- Setup frame properties
-    frame:SetParent(UIParent)
-    frame:ClearAllPoints()
-    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
-    frame:SetFrameStrata("MEDIUM")
-    frame:SetScale(1)
-    frame:SetSize(iconSize, iconSize)
-    
-    -- Only show if not hidden due to hideWhenUnequipped setting
-    if not frame._arcHiddenUnequipped then
-        frame:Show()
-    end
-    
-    -- Create or update freeIcons entry
-    if existingData then
-        -- Update existing entry
-        existingData.frame = frame
-        existingData.viewerType = viewerType
-        existingData.originalViewerName = viewerName
-    else
-        -- Create new entry
-        ns.CDMGroups.freeIcons[cdID] = {
-            frame = frame,
-            entry = Registry.byAddress[tostring(frame)],
-            x = x,
-            y = y,
-            iconSize = iconSize,
-            viewerType = viewerType,
-            originalViewerName = viewerName,
-        }
-    end
-    
-    -- Install hooks
-    frame._cdmgIsFreeIcon = true
-    frame._cdmgFreeTargetSize = iconSize
-    frame._arcAllowHide = nil  -- Re-enable visibility guard
-    HookFrameScale(frame)
-    HookFrameSize(frame, iconSize)
-    HookFrameParent(frame)
+local function ApplyFreeIconStrata(cdID, frame)
+    if not frame then return end
+    -- Self-contained: install the strata/level fight-back hooks here (idempotent),
+    -- because the various free-icon setup sites install differing hook subsets.
     HookFrameStrata(frame)
-    HookFrameClearAllPointsFree(frame)
-    HookFrameSetShown(frame)
-    HookFrameHide(frame)
-    
-    -- Update registry
-    local entry = Registry.byAddress[tostring(frame)]
-    if entry then
-        entry.manipulated = true
-        entry.manipulationType = "free"
+    HookFrameLevel(frame)
+    local strata, level = GetFreeIconStackPriority(frame, cdID)
+    local changed = false
+    if strata and frame:GetFrameStrata() ~= strata then
+        frame._cdmgSettingStrata = true
+        frame:SetFrameStrata(strata)
+        frame._cdmgSettingStrata = false
+        changed = true
     end
-    
-    -- Set recovery protection
-    frame._arcRecoveryProtection = GetTime() + 0.5
-    
-    -- Re-enhance if this is a reassignment (existingData means we're updating)
-    if existingData and ns.CDMEnhance and ns.CDMEnhance.EnhanceFrame then
-        ns.CDMEnhance.EnhanceFrame(frame, cdID, viewerType)
+    if level and frame:GetFrameLevel() ~= level then
+        frame._cdmgSettingLevel = true
+        frame:SetFrameLevel(level)
+        frame._cdmgSettingLevel = false
     end
-    
-    -- Setup drag if in edit mode
-    if ns.CDMGroups.dragModeEnabled and ns.CDMGroups.SetupFreeIconDrag then
-        ns.CDMGroups.SetupFreeIconDrag(cdID)
+    -- Guarded writes bypass the hooks (shared guard), so re-sync strata-pinned
+    -- children (glows, keybind text) here when the strata actually changed.
+    if changed then
+        frame._cdmgLastSeenStrata = frame:GetFrameStrata()
+        ResyncPinnedChildren(frame)
     end
-    
-    return true
 end
+ns.CDMGroups.ApplyFreeIconStrata = ApplyFreeIconStrata
+ns.CDMGroups.GetFreeIconStackPriority = GetFreeIconStackPriority
 
 -- Export helpers
 ns.CDMGroups.FindFrameInViewers = FindFrameInViewers
-ns.CDMGroups.SetupFreeIconFrame = SetupFreeIconFrame
 
 
 -- ═══════════════════════════════════════════════════════════════════════════

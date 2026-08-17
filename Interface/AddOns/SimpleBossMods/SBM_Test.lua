@@ -50,6 +50,9 @@ end
 
 function M:StopTest()
 	self._testActive = nil
+	if self.ShowTestPrivateAuras then
+		self:ShowTestPrivateAuras(false)
+	end
 
 	if self._testCombatTimer then
 		self._testCombatTimer = nil
@@ -63,22 +66,17 @@ function M:StopTest()
 	if self.ClearEditModeTimelineEvents then
 		self:ClearEditModeTimelineEvents()
 	end
-	
-	if self.ShowTestPrivateAura then
-		self:ShowTestPrivateAura(false)
-	end
-	
+
 	self:clearAll()
 end
 
 function M:StartTest()
 	self:StopTest()
 	self._testActive = true
-	
-	if self.ShowTestPrivateAura then
-		self:ShowTestPrivateAura(true)
+	if self.ShowTestPrivateAuras then
+		self:ShowTestPrivateAuras(true)
 	end
-	
+
 	if L.COMBAT_TIMER_ENABLED and self.StartCombatTimer then
 		self._testCombatTimer = true
 		self:StartCombatTimer(true)

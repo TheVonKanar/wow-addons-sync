@@ -3,55 +3,52 @@ local addonTable = select(2, ...)
 
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local auraFormatter = addonTable.Display.Utilities.GetAuraNumericFormatter()
+local auraFormatter, auraPlainFormatter = addonTable.Display.Utilities.GetAuraNumericFormatter()
 
-function addonTable.Display.StyleAura(auraFrame, details)
+local function StyleAura(auraFrame, details)
   auraFrame.kind = details.kind
 
   auraFrame:EnableMouseMotion(details.showTooltips)
 
-  auraFrame.CountFrame.Count:SetFontObject(addonTable.CurrentFont)
-  auraFrame.CountFrame.Count:ClearAllPoints()
-  addonTable.Display.ApplyAnchor(auraFrame.CountFrame.Count, details.texts.stacks.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.stacks.scale or 1)
+  auraFrame.TextsContainer.Applications:SetFontObject(addonTable.CurrentFont)
+  auraFrame.TextsContainer.Applications:ClearAllPoints()
+  addonTable.Display.ApplyAnchor(auraFrame.TextsContainer.Applications, details.texts.stacks.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.stacks.scale or 1)
   if addonTable.CurrentFontUsesSmoothing then
-    auraFrame.CountFrame.Count:SetTextScale(1)
-    auraFrame.CountFrame.Count:SetScale(details.texts.stacks.scale)
+    auraFrame.TextsContainer.Applications:SetTextScale(1)
+    auraFrame.TextsContainer.Applications:SetScale(details.texts.stacks.scale)
   else
-    auraFrame.CountFrame.Count:SetTextScale(details.texts.stacks.scale)
-    auraFrame.CountFrame.Count:SetScale(1)
+    auraFrame.TextsContainer.Applications:SetTextScale(details.texts.stacks.scale)
+    auraFrame.TextsContainer.Applications:SetScale(1)
   end
   local c1 = details.texts.stacks.color
-  auraFrame.CountFrame.Count:SetTextColor(c1.r, c1.g, c1.b)
-  auraFrame.CountFrame.Count:SetShown(details.texts.stacks.visible);
+  auraFrame.TextsContainer.Applications:SetTextColor(c1.r, c1.g, c1.b)
+  auraFrame.TextsContainer.Applications:SetShown(details.texts.stacks.visible);
 
-  auraFrame.Cooldown:SetHideCountdownNumbers(not details.texts.countdown.visible)
-
+  auraFrame.TextsContainer.Countdown:SetShown(details.texts.countdown.visible)
   if details.texts.countdown.visible then
-    auraFrame.Cooldown.Text:SetFontObject(addonTable.CurrentFont)
-    auraFrame.Cooldown.Text:ClearAllPoints()
-    addonTable.Display.ApplyAnchor(auraFrame.Cooldown.Text, details.texts.countdown.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.countdown.scale or 1)
+    auraFrame.TextsContainer.Countdown:SetFontObject(addonTable.CurrentFont)
+    auraFrame.TextsContainer.Countdown:ClearAllPoints()
+    addonTable.Display.ApplyAnchor(auraFrame.TextsContainer.Countdown, details.texts.countdown.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.countdown.scale or 1)
     if addonTable.CurrentFontUsesSmoothing then
-      auraFrame.Cooldown.Text:SetTextScale(1)
-      auraFrame.Cooldown.Text:SetScale(details.texts.countdown.scale)
+      auraFrame.TextsContainer.Countdown:SetTextScale(1)
+      auraFrame.TextsContainer.Countdown:SetScale(details.texts.countdown.scale)
     else
-      auraFrame.Cooldown.Text:SetTextScale(details.texts.countdown.scale)
-      auraFrame.Cooldown.Text:SetScale(1)
+      auraFrame.TextsContainer.Countdown:SetTextScale(details.texts.countdown.scale)
+      auraFrame.TextsContainer.Countdown:SetScale(1)
     end
     local c2 = details.texts.countdown.color
-    auraFrame.Cooldown.Text:SetTextColor(c2.r, c2.g, c2.b)
-    if addonTable.Constants.IsCooldownFormattingAvailable then
-      if details.texts.countdown.showFractions then
-        auraFrame.Cooldown:SetCountdownFormatter(auraFormatter)
-      else
-        auraFrame.Cooldown:SetCountdownFormatter(nil)
-        auraFrame.Cooldown:SetCountdownAbbrevThreshold(20)
-      end
+    auraFrame.TextsContainer.Countdown:SetTextColor(c2.r, c2.g, c2.b)
+    auraFrame:ClearDurationText()
+    if details.texts.countdown.showFractions then
+      auraFrame:SetDurationText(auraFrame.TextsContainer.Countdown, {textFormatter = auraFormatter})
+    else
+      auraFrame:SetDurationText(auraFrame.TextsContainer.Countdown, {textFormatter = auraPlainFormatter})
     end
   end
 
-  if auraFrame.CountFrame.Count.SetSmoothScaling then
-    auraFrame.CountFrame.Count:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
-    auraFrame.Cooldown.Text:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+  if auraFrame.TextsContainer.Applications.SetSmoothScaling then
+    auraFrame.TextsContainer.Applications:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+    auraFrame.TextsContainer.Countdown:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
   end
 
   auraFrame.Cooldown:SetDrawEdge(details.showSwipe)
@@ -78,14 +75,17 @@ local function GetAurasInitializerModern(container)
     frame.Icon:SetPoint("CENTER")
     frame.Cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
     frame.Cooldown:SetDrawBling(false)
-    frame.Cooldown:SetHideCountdownNumbers(false)
+    frame.Cooldown:SetHideCountdownNumbers(true)
     frame.Cooldown:SetDrawEdge(true)
     frame.Cooldown:SetReverse(true)
-    frame.CountFrame = CreateFrame("Frame", nil, frame)
-    frame.CountFrame:SetAllPoints()
-    frame.CountFrame:SetFrameLevel(500)
-    frame.CountFrame.Count = frame.CountFrame:CreateFontString(nil, nil, "GameFontHighlight")
-    frame.CountFrame.Count:SetPoint("BOTTOMRIGHT", 3, -2)
+    frame.TextsContainer = CreateFrame("Frame", nil, frame)
+    frame.TextsContainer:SetAllPoints()
+    frame.TextsContainer.Countdown = frame.TextsContainer:CreateFontString(nil, nil, "GameFontHighlight")
+    frame.TextsContainer.Countdown:SetDrawLayer("OVERLAY", 1)
+    frame.TextsContainer.Countdown:SetPoint("CENTER")
+    frame.TextsContainer.Applications = frame.TextsContainer:CreateFontString(nil, nil, "GameFontHighlight")
+    frame.TextsContainer.Applications:SetDrawLayer("OVERLAY", 2)
+    frame.TextsContainer.Applications:SetPoint("BOTTOMRIGHT", 3, -2)
 
     frame.Border = frame:CreateTexture(nil, "OVERLAY")
     frame.Border:SetAllPoints(true)
@@ -93,7 +93,6 @@ local function GetAurasInitializerModern(container)
     frame.Border:SetTexture(borderAsset.file)
     frame.Border:SetTextureSliceMargins(borderAsset.margins.left, borderAsset.margins.top, borderAsset.margins.right, borderAsset.margins.bottom)
     frame.Border:SetVertexColor(0, 0, 0)
-    frame.Cooldown.Text = frame.Cooldown:GetCountdownFontString()
     frame.Dispel = CreateFrame("Frame", nil, frame)
     frame.Dispel:SetAllPoints()
     do
@@ -106,13 +105,13 @@ local function GetAurasInitializerModern(container)
       frame.Dispel.Border = dispelTexture
     end
 
-    frame:SetApplicationCount(frame.CountFrame.Count, {})
+    frame:SetApplicationCount(frame.TextsContainer.Applications, {})
     frame:SetIcon(frame.Icon)
     frame:SetDurationCooldown(frame.Cooldown)
-    frame:SetAuraBorder(frame.Dispel.Border, {showIcon = false, showWhenHarmful = true, showWhenHelpful = true, style = 1})
+    frame:SetAuraBorder(frame.Dispel.Border, {showIcon = false, showWhenHarmful = true, showWhenHelpful = true, style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset})
 
     if container.details then
-      addonTable.Display.StyleAura(frame, container.details)
+      StyleAura(frame, container.details)
     end
   end
 end
@@ -128,27 +127,10 @@ function addonTable.Display.AurasManagerNextMixin:OnLoad()
   self.debuffs:SetEnabled(false)
   self.crowdControl:SetEnabled(false)
 
-  self.addedGroups = false
+  self.initialSetup = true
 
   self.crowdControl.frames = {}
-
   self.buffs.frames = {}
-
-  self.buffs.candidateIMPORTANTDefault = {}
-  self.buffs.candidateIMPORTANTNoEnrage = {
-    excludeDispelTypes = {[""] = true},
-  }
-  self.buffs.candidateENRAGEDefault = {
-    includeDispelTypes = {[""] = true},
-  }
-  self.buffs.candidateSTEALABLEDefault = {
-    isStealable = true,
-  }
-  self.buffs.candidateSTEALABLENoEnrage = {
-    isStealable = true,
-    excludeDispelTypes = {[""] = true},
-  }
-
   self.debuffs.frames = {}
 end
 
@@ -164,6 +146,109 @@ local anchorMap = {
   RIGHT = "TOPLEFT",
 }
 
+local function ProcessSpells(kind)
+  local settings = addonTable.Config.Get(addonTable.Config.Options.AURA_FILTERS)[addonTable.Display.Utilities.GetSpecializationID()][kind]
+
+  local include = {}
+  local exclude = {}
+
+  for spellID, priority in pairs(settings.include) do
+    exclude[spellID] = true
+    if not include[priority] then
+      include[priority] = {}
+    end
+    include[priority][spellID] = true
+  end
+
+  for spellID in pairs(settings.exclude) do
+    exclude[spellID] = true
+  end
+
+  return include, exclude
+end
+
+function addonTable.Display.AurasManagerNextMixin:GetFilters(kind, settings)
+  local output = table.create(6)
+  local include, exclude = ProcessSpells(kind)
+  local includeFilter
+  if kind == "buffs" then
+    includeFilter = "HELPFUL|PLAYER"
+  elseif kind == "debuffs" then
+    includeFilter = settings.fromYou and "HARMFUL|PLAYER" or "HARMFUL"
+  elseif kind == "crowdControl" then
+    includeFilter = settings.fromYou and "HARMFUL|PLAYER" or "HARMFUL"
+  end
+  local start, tail = 0, 0
+  for i = 1, 2 do
+    if include[i] then
+      start = start + 1
+      table.insert(output, {includeFilter, {includeSpellIDs = include[i]}})
+    end
+  end
+
+  if kind == "buffs" then
+    table.insert(output, {"HELPFUL|PLAYER", {excludeSpellIDs = exclude}})
+    if settings.filters.defensive then
+      table.insert(output, {"HELPFUL|BIG_DEFENSIVE|!PLAYER", {excludeSpellIDs = exclude}})
+      table.insert(output, {"HELPFUL|EXTERNAL_DEFENSIVE|!PLAYER", {excludeSpellIDs = exclude}})
+      table.insert(output, {"HELPFUL|RAID_IN_COMBAT|!PLAYER", {excludeSpellIDs = exclude}})
+    elseif settings.filters.important then
+      if settings.filters.enrage then
+        table.insert(output, {"HELPFUL|IMPORTANT|!PLAYER", {excludeSpellIDs = exclude, excludeDispelTypes = {[""] = true}}})
+        table.insert(output, {"HELPFUL|!PLAYER", {
+          includeDispelTypes = {[""] = true},
+          excludeSpellIDs = exclude,
+        }})
+        if settings.filters.dispelable then
+          table.insert(output, {"HELPFUL|!IMPORTANT|!PLAYER", {excludeSpellIDs = exclude, excludeDispelTypes = {[""] = true}, isStealable = true}})
+        end
+      else
+        table.insert(output, {"HELPFUL|IMPORTANT|!PLAYER", {excludeSpellIDs = exclude}})
+        if settings.filters.dispelable then
+          table.insert(output, {"HELPFUL|!IMPORTANT|!PLAYER", {excludeSpellIDs = exclude, isStealable = true}})
+        end
+      end
+    else
+      if settings.filters.enrage then
+        table.insert(output, {"HELPFUL|!PLAYER", {includeDispelTypes = {[""] = true}}})
+      elseif settings.filters.dispelable then
+        table.insert(output, {"HELPFUL|!PLAYER", {excludeSpellIDs = exclude, isStealable = true}})
+      else
+        table.insert(output, {"HELPFUL|!PLAYER", {excludeSpellIDs = exclude}})
+      end
+    end
+  elseif kind == "debuffs" then
+    if settings.filters.fromYou then
+      if settings.filters.important then
+        table.insert(output, {"HARMFUL|IMPORTANT|PLAYER|!CROWD_CONTROL", {excludeSpellIDs = exclude}})
+        table.insert(output, {"HARMFUL|!IMPORTANT|PLAYER|!CROWD_CONTROL", {excludeSpellIDs = exclude, nameplateShowPersonal = true}})
+      else
+        table.insert(output, {"HARMFUL|PLAYER|!CROWD_CONTROL", {excludeSpellIDs = exclude}})
+      end
+    else
+      if settings.filters.important then
+        table.insert(output, {"HARMFUL|IMPORTANT|!CROWD_CONTROL", {excludeSpellIDs = exclude}})
+        table.insert(output, {"HARMFUL|!IMPORTANT|!CROWD_CONTROL", {excludeSpellIDs = exclude, nameplateShowPersonal = true}})
+      else
+        table.insert(output, {"HARMFUL|!CROWD_CONTROL", {excludeSpellIDs = exclude}})
+      end
+    end
+  elseif kind == "crowdControl" then
+    if settings.filters.fromYou then
+      table.insert(output, {"HARMFUL|CROWD_CONTROL|PLAYER", {excludeSpellIDs = exclude}})
+    else
+      table.insert(output, {"HARMFUL|CROWD_CONTROL", {excludeSpellIDs = exclude}})
+    end
+  end
+
+  if include[3] then
+    table.insert(output, {includeFilter, {includeSpellIDs = include[3]}})
+    tail = tail + 1
+  end
+
+  return output, start, tail
+end
+
 function addonTable.Display.AurasManagerNextMixin:InitializeWidgets(parent, auraDetails)
   self.buffs:ClearAllPoints()
   self.debuffs:ClearAllPoints()
@@ -173,178 +258,79 @@ function addonTable.Display.AurasManagerNextMixin:InitializeWidgets(parent, aura
   self.debuffs.details = auraDetails.debuffs
   self.crowdControl.details = auraDetails.crowdControl
 
-  if not self.addedGroups then
-    self.addedGroups = true
+  self.buffs:Hide()
+  self.buffs:SetParent(parent.BuffDisplay)
+  self.debuffs:Hide()
+  self.debuffs:SetParent(parent.DebuffDisplay)
+  self.crowdControl:Hide()
+  self.crowdControl:SetParent(parent.CrowdControlDisplay)
 
-    self.crowdControl:AddAuraGroup("ALL", "HARMFUL|CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.crowdControl)})
-    self.crowdControl:AddAuraGroup("PLAYER_ONLY", "HARMFUL|CROWD_CONTROL|PLAYER", {initializeFrame = GetAurasInitializerModern(self.crowdControl)})
+  self.buffs:SetEnabled(false)
+  self.debuffs:SetEnabled(false)
+  self.crowdControl:SetEnabled(false)
 
-    self.buffs:AddAuraGroup("ALL", "HELPFUL|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("PLAYER_ASSIST", "HELPFUL|PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("IMPORTANT", "HELPFUL|IMPORTANT|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("ENRAGE", "HELPFUL|!IMPORTANT|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("STEALABLE", "HELPFUL|!IMPORTANT|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("DEFENSIVE1", "HELPFUL|BIG_DEFENSIVE|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("DEFENSIVE2", "HELPFUL|EXTERNAL_DEFENSIVE|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
-    self.buffs:AddAuraGroup("DEFENSIVE3", "HELPFUL|RAID_IN_COMBAT|!PLAYER", {initializeFrame = GetAurasInitializerModern(self.buffs)})
+  for kind, details in pairs(auraDetails) do
+    local groups, start, tail = self:GetFilters(kind, details)
 
-    self.debuffs:AddAuraGroup("PLAYER_IMPORTANT", "HARMFUL|IMPORTANT|PLAYER|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs)})
-    self.debuffs:AddAuraGroup("ANY_PLAYER_IMPORTANT", "HARMFUL|IMPORTANT|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs)})
-    self.debuffs:AddAuraGroup("PLAYER_PERSONAL", "HARMFUL|!IMPORTANT|INCLUDE_NAME_PLATE_ONLY|PLAYER|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs), candidateFilters = {
-      nameplateShowPersonal = true,
-    }})
-    self.debuffs:AddAuraGroup("ANY_PLAYER_PERSONAL", "HARMFUL|!IMPORTANT|INCLUDE_NAME_PLATE_ONLY|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs), candidateFilters = {
-      nameplateShowPersonal = true,
-    }})
-    self.debuffs:AddAuraGroup("ALL_PLAYER", "HARMFUL|PLAYER|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs)})
-    self.debuffs:AddAuraGroup("ALL", "HARMFUL|!CROWD_CONTROL", {initializeFrame = GetAurasInitializerModern(self.debuffs)})
+    self[kind].groupLiveCount = #groups
+    self[kind].manualStart = start
+    self[kind].manualTail = tail
+
+    if not self[kind].groupsCount or self[kind].groupsCount < #groups then
+      for i = self[kind].groupsCount and self[kind].groupsCount + 1 or 1, #groups do
+        self[kind]:AddAuraGroup(tostring(i), "", {initializeFrame = GetAurasInitializerModern(self[kind])})
+      end
+      self[kind].groupsCount = #groups
+    end
+
+    self[kind]:SetScale(details.scale)
+    self[kind]:SetPoint(directionMap[details.direction])
+    self[kind]:SetFlowLayoutAnchorPoint(anchorMap[details.direction])
+
+    local padding = PixelUtil.ConvertPixelsToUIForRegion(20 * details.padding, self[kind])
+
+    for index, group in ipairs(groups) do
+      local key = tostring(index)
+      self[kind]:SetAuraGroupFilterString(key, group[1])
+      self[kind]:SetAuraGroupLayout(key, {elementSpacing = padding, lineSpacing = padding})
+      self[kind]:SetAuraGroupCandidateFilters(key, group[2])
+      self[kind]:SetAuraGroupMaxFrameCount(key, details.limit)
+    end
+
+    if self[kind].groupsCount > #groups then
+      for i = #groups + 1, self[kind].groupsCount do
+        self[kind]:SetAuraGroupMaxFrameCount(tostring(i), 0)
+      end
+    end
+
+    if not addonTable.Utilities.IsChangesRestricted() and not self.initialSetup then
+      for _, f in ipairs(self[kind].frames) do
+        StyleAura(f, details)
+      end
+    end
+
+    if details.direction == "LEFT" then
+      self[kind]:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Up)
+    else
+      self[kind]:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Right, AnchorUtil.FlowDirection.Up)
+    end
+
+    self[kind]:Show()
   end
 
+  self.initialSetup = false
+end
 
-  if auraDetails.crowdControl then
-    self.crowdControl:SetParent(parent.CrowdControlDisplay)
-    self.crowdControl:SetScale(auraDetails.crowdControl.scale)
-    self.crowdControl:SetPoint(directionMap[auraDetails.crowdControl.direction])
-    self.crowdControl:SetFlowLayoutAnchorPoint(anchorMap[auraDetails.crowdControl.direction])
-    local padding = PixelUtil.ConvertPixelsToUIForRegion(20 * auraDetails.crowdControl.padding, self.crowdControl)
-    if auraDetails.crowdControl.filters.fromYou then
-      self.crowdControl:SetAuraGroupMaxFrameCount("ALL", 0)
-      self.crowdControl:SetAuraGroupMaxFrameCount("PLAYER_ONLY", auraDetails.crowdControl.limit)
-    else
-      self.crowdControl:SetAuraGroupMaxFrameCount("ALL", auraDetails.crowdControl.limit)
-      self.crowdControl:SetAuraGroupMaxFrameCount("PLAYER_ONLY", 0)
+local function ApplyStartTailCount(auras, count)
+  if auras.manualStart > 0 then
+    for i = 1, auras.manualStart do
+      auras:SetAuraGroupMaxFrameCount(tostring(i), count)
     end
-    self.crowdControl:SetAuraGroupLayout("ALL", {elementSpacingX = padding, elementSpacingY = padding})
-    self.crowdControl:SetAuraGroupLayout("PLAYER_ONLY", {elementSpacingX = padding, elementSpacingY = padding})
-    if not addonTable.Utilities.IsChangesRestricted() then
-      for _, f in ipairs(self.crowdControl.frames) do
-        addonTable.Display.StyleAura(f, auraDetails.crowdControl)
-      end
-    end
-
-    if auraDetails.crowdControl.direction == "LEFT" then
-      self.crowdControl:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Up)
-    else
-      self.crowdControl:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Right, AnchorUtil.FlowDirection.Up)
-    end
-
-    self.crowdControl:Show()
-  else
-    self.crowdControl:Hide()
   end
-
-  if auraDetails.debuffs then
-    self.debuffs:SetParent(parent.DebuffDisplay)
-    self.debuffs:SetScale(auraDetails.debuffs.scale)
-    self.debuffs:SetPoint(directionMap[auraDetails.debuffs.direction])
-    self.debuffs:SetFlowLayoutAnchorPoint(anchorMap[auraDetails.debuffs.direction])
-    local padding = PixelUtil.ConvertPixelsToUIForRegion(20 * auraDetails.debuffs.padding, self.debuffs)
-    local setup = {
-      ["PLAYER_IMPORTANT"] = 0,
-      ["ANY_PLAYER_IMPORTANT"] = 0,
-      ["PLAYER_PERSONAL"] = 0,
-      ["ANY_PLAYER_PERSONAL"] = 0,
-      ["ALL_PLAYER"] = 0,
-      ["ALL"] = 0,
-    }
-    if auraDetails.debuffs.filters.fromYou then
-      if auraDetails.debuffs.filters.important then
-        setup.PLAYER_IMPORTANT = auraDetails.debuffs.limit
-        setup.PLAYER_PERSONAL = auraDetails.debuffs.limit
-      else
-        setup.ALL_PLAYER = auraDetails.debuffs.limit
-      end
-    else
-      if auraDetails.debuffs.filters.important then
-        setup.ANY_PLAYER_IMPORTANT = auraDetails.debuffs.limit
-        setup.ANY_PLAYER_PERSONAL = auraDetails.debuffs.limit
-      else
-        setup.ALL = auraDetails.debuffs.limit
-      end
+  if auras.manualTail > 0 then
+    for i = auras.groupLiveCount, auras.groupLiveCount - auras.manualTail do
+      auras:SetAuraGroupMaxFrameCount(tostring(i), count)
     end
-    for key, count in pairs(setup) do
-      self.debuffs:SetAuraGroupMaxFrameCount(key, count)
-      self.debuffs:SetAuraGroupLayout(key, {elementSpacingX = padding, elementSpacingY = padding})
-    end
-    if not addonTable.Utilities.IsChangesRestricted() then
-      for _, f in ipairs(self.debuffs.frames) do
-        addonTable.Display.StyleAura(f, auraDetails.debuffs)
-      end
-    end
-
-    if auraDetails.debuffs.direction == "LEFT" then
-      self.debuffs:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Up)
-    else
-      self.debuffs:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Right, AnchorUtil.FlowDirection.Up)
-    end
-
-    self.debuffs:Show()
-  else
-    self.debuffs:Hide()
-  end
-
-  if auraDetails.buffs then
-    self.buffs:SetParent(parent.BuffDisplay)
-    self.buffs:SetScale(auraDetails.buffs.scale)
-    self.buffs:SetPoint(directionMap[auraDetails.buffs.direction])
-    self.buffs:SetFlowLayoutAnchorPoint(anchorMap[auraDetails.buffs.direction])
-    local padding = PixelUtil.ConvertPixelsToUIForRegion(20 * auraDetails.buffs.padding, self.buffs)
-    local setup = {
-      ["ALL"] = {0, {}},
-      ["PLAYER_ASSIST"] = {0, {}},
-      ["IMPORTANT"] = {0, {self.buffs.candidateIMPORTANTDefault}},
-      ["ENRAGE"] = {0, {self.buffs.candidateENRAGEDefault}},
-      ["STEALABLE"] = {0, {self.buffs.candidateSTEALABLEDefault}},
-      ["DEFENSIVE1"] = {0, {}},
-      ["DEFENSIVE2"] = {0, {}},
-      ["DEFENSIVE3"] = {0, {}},
-    }
-    setup.PLAYER_ASSIST[1] = auraDetails.buffs.limit
-    if auraDetails.buffs.filters.defensive then
-      setup.DEFENSIVE1[1] = auraDetails.buffs.limit
-      setup.DEFENSIVE2[1] = auraDetails.buffs.limit
-      setup.DEFENSIVE3[1] = auraDetails.buffs.limit
-    elseif auraDetails.buffs.filters.important then
-      setup.IMPORTANT[1] = auraDetails.buffs.limit
-      if auraDetails.buffs.filters.enrage then
-        setup.ENRAGE[1] = auraDetails.buffs.limit
-        setup.IMPORTANT[2] = self.buffs.candidateIMPORTANTNoEnrage
-        setup.STEALABLE[2] = self.buffs.candidateIMPORTANTNoEnrage
-      end
-      if auraDetails.buffs.filters.dispelable then
-        setup.STEALABLE[1] = auraDetails.buffs.limit
-      end
-    else
-      if auraDetails.buffs.filters.enrage then
-        setup.ENRAGE[1] = auraDetails.buffs.limit
-        setup.IMPORTANT[2] = self.buffs.candidateIMPORTANTNoEnrage
-        setup.STEALABLE[2] = self.buffs.candidateIMPORTANTNoEnrage
-      elseif auraDetails.buffs.filters.dispelable then
-        setup.STEALABLE[1] = auraDetails.buffs.limit
-      else
-        setup.ALL[1] = auraDetails.buffs.limit
-      end
-    end
-    for key, info in pairs(setup) do
-      self.buffs:SetAuraGroupMaxFrameCount(key, info[1])
-      self.buffs:SetAuraGroupCandidateFilters(key, info[2])
-      self.buffs:SetAuraGroupLayout(key, {elementSpacingX = padding, elementSpacingY = padding})
-    end
-    if not addonTable.Utilities.IsChangesRestricted() then
-      for _, f in ipairs(self.buffs.frames) do
-        addonTable.Display.StyleAura(f, auraDetails.buffs)
-      end
-    end
-
-    if auraDetails.buffs.direction == "LEFT" then
-      self.buffs:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Left, AnchorUtil.FlowDirection.Up)
-    else
-      self.buffs:SetFlowLayoutGrowthDirection(AnchorUtil.FlowDirection.Right, AnchorUtil.FlowDirection.Up)
-    end
-
-    self.buffs:Show()
-  else
-    self.buffs:Hide()
   end
 end
 
@@ -356,9 +342,39 @@ function addonTable.Display.AurasManagerNextMixin:SetUnit(unit, parent, auraDeta
     return
   end
 
-  self.buffs:SetEnabled(true)
-  self.debuffs:SetEnabled(true)
-  self.crowdControl:SetEnabled(true)
+  if UnitCanAssist("player", unit) then
+    if self.debuffs.details then
+      ApplyStartTailCount(self.debuffs, 0)
+    end
+    if self.crowdControl.details then
+      ApplyStartTailCount(self.crowdControl, 0)
+    end
+    if self.buffs.details then
+      ApplyStartTailCount(self.buffs, self.buffs.details.limit)
+      self.buffs:SetAuraGroupMaxFrameCount(tostring(self.buffs.manualStart + 1), self.buffs.details.limit)
+      for i = self.buffs.manualStart + 2, self.buffs.groupLiveCount - self.buffs.manualTail do
+        self.buffs:SetAuraGroupMaxFrameCount(tostring(i), 0)
+      end
+    end
+  else
+    if self.debuffs.details then
+      ApplyStartTailCount(self.debuffs, self.debuffs.details.limit)
+    end
+    if self.crowdControl.details then
+      ApplyStartTailCount(self.crowdControl, self.crowdControl.details.limit)
+    end
+    if self.buffs.details then
+      ApplyStartTailCount(self.buffs, 0)
+      self.buffs:SetAuraGroupMaxFrameCount(tostring(self.buffs.manualStart + 1), 0)
+      for i = self.buffs.manualStart + 2, self.buffs.groupLiveCount - self.buffs.manualTail do
+        self.buffs:SetAuraGroupMaxFrameCount(tostring(i), self.buffs.details.limit)
+      end
+    end
+  end
+
+  self.buffs:SetEnabled(self.buffs.details ~= nil and (not UnitTreatAsPlayerForDisplay(unit) or not addonTable.Display.Utilities.IsInRelevantInstance({delve = true})))
+  self.debuffs:SetEnabled(self.debuffs.details ~= nil)
+  self.crowdControl:SetEnabled(self.crowdControl.details ~= nil)
 
   self.auraDetails = auraDetails
 

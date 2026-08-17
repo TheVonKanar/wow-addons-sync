@@ -177,6 +177,23 @@ local function SyncAllAnchorProxies()
 end
 ns.CDMGroups.SyncAllAnchorProxies = SyncAllAnchorProxies
 
+-- Proxies are SNAPSHOTS, not live mirrors (deliberate: keeps external
+-- consumers out of our container's anchor chain). Loading screens and UI
+-- scale changes move/rescale containers through paths that skip Layout, so
+-- without these re-syncs everything anchored to the proxies (MSUF and other
+-- unit-frame addons via the public anchors) sat at STALE positions after
+-- login/reload/portals ("frames in new spot after login" reports). Two
+-- deferred passes: an early one for the common case, a late one after the
+-- login/zone restore has fully settled.
+local proxySyncEventFrame = CreateFrame("Frame")
+proxySyncEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+proxySyncEventFrame:RegisterEvent("UI_SCALE_CHANGED")
+proxySyncEventFrame:RegisterEvent("DISPLAY_SIZE_CHANGED")
+proxySyncEventFrame:SetScript("OnEvent", function()
+    C_Timer.After(0.5, SyncAllAnchorProxies)
+    C_Timer.After(2.5, SyncAllAnchorProxies)
+end)
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- COMBAT-SAFE VISIBILITY
 -- CDM icon frames (secure action buttons) get parented to group containers,
@@ -226,7 +243,15 @@ local function SafeShowContainer(container, targetAlpha)
         for _, child in ipairs(children) do
             -- Mark frame so CooldownState/CDMEnhance hooks know not to re-enable
             child._arcGroupHidden = true
-            
+
+            -- FORCE-HIDDEN icons (Show Icon off): their frame renders at alpha 0
+            -- permanently, so un-floating their text here would erase it instead of
+            -- fading it with the group. Let ApplyForceHideText decide: it keeps the
+            -- float while the container is partially visible and only un-floats when
+            -- the container alpha is ~0 (truly hidden).
+            if child._arcForceHideActive and ns.CDMEnhance and ns.CDMEnhance.ApplyForceHideText then
+                ns.CDMEnhance.ApplyForceHideText(child, true)
+            else
             -- Force cooldown text to respect parent alpha
             if child._arcCooldownText and child._arcCooldownText.SetIgnoreParentAlpha then
                 child._arcCooldownText:SetIgnoreParentAlpha(false)
@@ -264,12 +289,20 @@ local function SafeShowContainer(container, targetAlpha)
                     cl:SetIgnoreParentAlpha(false)
                 end
             end
+            end
         end
     else
         -- Clear hidden flag so CooldownState can re-enable IgnoreParentAlpha
         local children = {container:GetChildren()}
         for _, child in ipairs(children) do
             child._arcGroupHidden = nil
+            -- Re-float force-hidden icons' text immediately: a ready icon (full
+            -- charges, nothing counting down) may get no CooldownState dispatch
+            -- for a long time, so waiting for "the normal update cycle" leaves
+            -- its charge/duration text invisible after a fade cycle.
+            if child._arcForceHideActive and ns.CDMEnhance and ns.CDMEnhance.ApplyForceHideText then
+                ns.CDMEnhance.ApplyForceHideText(child, true)
+            end
         end
     end
 end
@@ -489,11 +522,25 @@ end
 local function EnsureSpecTables(specIndex)
     -- If specIndex is nil, try to get current spec
     if not specIndex then
-        -- GetCurrentSpec may not be defined yet during early load, so inline the logic
-        local specIdx = GetSpecialization() or 1
+        -- GetCurrentSpec may not be defined yet during early load, so inline the
+        -- logic — INCLUDING the early-login race guard: never fabricate "spec_1"
+        -- while GetSpecialization() is nil; prefer the character's last known
+        -- spec key (see GetCurrentSpec for the full story).
+        local specIdx = GetSpecialization()
         local _, _, classID = UnitClass("player")
         classID = classID or 0
-        specIndex = "class_" .. classID .. "_spec_" .. specIdx
+        if specIdx then
+            specIndex = "class_" .. classID .. "_spec_" .. specIdx
+        else
+            local sh = ns.CDMShared
+            local db = sh and sh.GetCDMGroupsDB and sh.GetCDMGroupsDB()
+            local last = db and db.lastActiveSpec
+            if last and last ~= "" then
+                specIndex = last
+            else
+                specIndex = "class_" .. classID .. "_spec_1"
+            end
+        end
     end
     if not ns.CDMGroups.specGroups[specIndex] then ns.CDMGroups.specGroups[specIndex] = {} end
     -- NOTE: Do NOT create empty specSavedPositions here!
@@ -1094,6 +1141,11 @@ function ns.CDMGroups.TrackFreeIcon(cooldownID, x, y, iconSize, optionalFrame)
     ns.CDMGroups.HookFrameSize(frame, iconSize)
     ns.CDMGroups.HookFrameParent(frame)
     ns.CDMGroups.HookFrameClearAllPointsFree(frame)
+
+    -- Apply per-icon Stack Priority strata/level (installs its own hooks)
+    if ns.CDMGroups.ApplyFreeIconStrata then
+        ns.CDMGroups.ApplyFreeIconStrata(cooldownID, frame)
+    end
     
     entry.manipulated = true
     entry.manipulationType = "free"
@@ -1140,21 +1192,36 @@ function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
     local frame = data.frame
     
     -- Helper to disable mouse on ALL descendants recursively
+    -- Engine-owned descendants (AuraContainer slot buttons, e.g. the
+    -- stack-count overlay's) throw on ANY method call while inaccessible.
+    -- CanBeAccessedInContext is the ONLY accurate probe — aura secrecy and
+    -- classic forbidden are DIFFERENT states (joining a party makes the
+    -- buttons inaccessible while IsForbidden still reports false; same
+    -- probe order as StackColor's IsButtonAccessible). They are
+    -- mouse-disabled at creation, so skipping them loses nothing.
     local function DisableAllChildMouse(f)
         for _, child in pairs({f:GetChildren()}) do
-            if child.EnableMouse then
-                child:EnableMouse(false)
+            local accessible = true
+            if child.CanBeAccessedInContext then
+                accessible = child:CanBeAccessedInContext()
+            elseif child.IsForbidden then
+                accessible = not child:IsForbidden()
             end
-            if child.SetMovable then
-                child:SetMovable(false)
+            if accessible then
+                if child.EnableMouse then
+                    child:EnableMouse(false)
+                end
+                if child.SetMovable then
+                    child:SetMovable(false)
+                end
+                if child.RegisterForDrag then
+                    child:RegisterForDrag()
+                end
+                DisableAllChildMouse(child)
             end
-            if child.RegisterForDrag then
-                child:RegisterForDrag()
-            end
-            DisableAllChildMouse(child)
         end
     end
-    
+
     -- CRITICAL: Disable mouse on ALL children FIRST
     DisableAllChildMouse(frame)
     
@@ -1310,7 +1377,8 @@ function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
         self:StartMoving()
         self._freeDragging = true
         self._sourceCdID = cdID
-        
+        ns.CDMGroups._dragCdID = cdID   -- FindDropTarget eligibility (aura groups)
+
         self:SetScript("OnUpdate", function(self)
             if self._freeDragging then
                 local cx, cy = self:GetCenter()
@@ -1327,6 +1395,7 @@ function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
             self._freeDragging = false
             self:SetScript("OnUpdate", nil)
             ns.CDMGroups.HideDropIndicator()
+            ns.CDMGroups._dragCdID = nil
             
             local cx, cy = self:GetCenter()
             local ux, uy = UIParent:GetCenter()
@@ -1339,7 +1408,7 @@ function ns.CDMGroups.SetupFreeIconDrag(cooldownID)
                 return
             end
             
-            local targetGroup, targetRow, targetCol, mode, insertCol, insertRow = ns.CDMGroups.FindDropTarget(cx, cy)
+            local targetGroup, targetRow, targetCol, mode, insertCol, insertRow = ns.CDMGroups.FindDropTarget(cx, cy, cdID)
             if targetGroup then
                 -- CRITICAL: Save frame reference BEFORE ReleaseFreeIcon clears it
                 -- Otherwise AddMemberAt/etc can't find the frame via Registry
@@ -2194,8 +2263,6 @@ function ns.CDMGroups.AutoAssignNewIcons()
     -- This code path is DEPRECATED and will be removed in a future version
     -- ═══════════════════════════════════════════════════════════════════════════
     
-    PrintMsg("|cffFF0000[DEPRECATED]|r AutoAssignNewIcons fallback running - FrameController should be handling this!")
-    
     local assigned = 0
     
     -- Just do a basic scan and assign to default groups
@@ -2243,14 +2310,23 @@ function ns.CDMGroups.AutoAssignNewIcons()
                                         assigned = assigned + 1
                                     end
                                 else
-                                    -- No saved position - add to default group
+                                    -- No saved position - honour the per-category
+                                    -- routing (group by stable id / free / none),
+                                    -- falling back to the shipped default group.
                                     local defaultGroup = viewerInfo.defaultGroup or "Essential"
-                                    local group = ns.CDMGroups.groups[defaultGroup]
-                                    if group and group.AddMember then
+                                    local kind, group = ns.CDMGroups.ResolveNewIconDestination(defaultGroup)
+                                    if kind == "free" then
+                                        if ns.CDMGroups.TrackFreeIcon then
+                                            local ffx, ffy = ns.CDMGroups.NextFreeDropPosition(36)
+                                            ns.CDMGroups.TrackFreeIcon(cdID, ffx, ffy, 36)
+                                            assigned = assigned + 1
+                                        end
+                                    elseif kind == "group" and group and group.AddMember then
                                         if group:AddMember(cdID) then
                                             assigned = assigned + 1
                                         end
                                     end
+                                    -- kind == "none" (or nothing resolved): leave it be
                                 end
                             end
                         end
@@ -2649,9 +2725,19 @@ end
 
 -- Serialize group to LAYOUT DATA ONLY (no runtime data like grid/members)
 -- This is what gets saved to profile.groupLayouts
+-- Forward declaration: the stable-id helper needs GetGroupLayoutFromProfile
+-- (defined below), but the serializer below needs the helper, so the body is
+-- assigned further down. See the STABLE GROUP IDs block.
+local EnsureGroupID
+
 local function SerializeGroupToLayoutData(group)
     if not group then return nil end
     return {
+        -- Stable identity. SaveGroupLayoutToProfile REPLACES the stored table
+        -- wholesale, so a nil here would erase an already-assigned id and the
+        -- group would silently get a new identity on the next save; fall back
+        -- to the assigning accessor rather than writing nil.
+        id = group.id or (group.name and EnsureGroupID and EnsureGroupID(group.name)) or nil,
         -- Position
         position = group.position and { x = group.position.x, y = group.position.y },
         -- Grid settings
@@ -2667,6 +2753,9 @@ local function SerializeGroupToLayoutData(group)
         alignment = group.layout and group.layout.alignment,
         horizontalGrowth = group.layout and group.layout.horizontalGrowth,
         verticalGrowth = group.layout and group.layout.verticalGrowth,
+        -- Group type
+        groupType = group.groupType,
+        auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
         -- Appearance
         showBorder = group.showBorder,
         showBackground = group.showBackground,
@@ -2753,12 +2842,320 @@ local function GetGroupLayoutFromProfile(groupName, specData)
     return profile.groupLayouts[groupName]
 end
 
+-- ═══════════════════════════════════════════════════════════════════
+-- STABLE GROUP IDs
+-- A group's NAME is its storage key, so a rename used to break every
+-- reference to it: name-keyed state was orphaned (the ghost group that
+-- could not be selected or deleted) and the by-name base-group lookup in
+-- FrameController rebuilt a fresh "Utility" every login because the one
+-- the user renamed no longer answered to that name.
+-- Each group therefore also carries an `id` that NEVER changes. Renames
+-- move the name; the id stays put, so anything that must survive a rename
+-- (icon routing, "is this the Essential group?") references the id.
+-- The three shipped groups get WELL-KNOWN ids, so a renamed default is
+-- still recognised as that default instead of being duplicated.
+-- Ids live in the group's layout data and are assigned on first use, so
+-- existing installs adopt them with no migration and no rewrite of any
+-- existing key: the name remains the storage key exactly as before.
+-- ═══════════════════════════════════════════════════════════════════
+local WELL_KNOWN_GROUP_IDS = {
+    Essential = "arc_essential",
+    Utility   = "arc_utility",
+    Buffs     = "arc_buffs",
+}
+ns.CDMGroups.WELL_KNOWN_GROUP_IDS = WELL_KNOWN_GROUP_IDS
+
+-- assigns the forward-declared local (see the top of this section)
+EnsureGroupID = function(groupName, specData)
+    if not groupName then return nil end
+    local group = ns.CDMGroups.groups and ns.CDMGroups.groups[groupName]
+    if group and group.id then return group.id end
+
+    -- layoutData is a LIVE reference into the saved variables, so writing the
+    -- id here persists it without any extra save call.
+    local layoutData = GetGroupLayoutFromProfile(groupName, specData)
+    local id = layoutData and layoutData.id
+    if not id then
+        id = WELL_KNOWN_GROUP_IDS[groupName]
+            or string.format("g%d_%d",
+                math.floor((GetTime() or 0) * 1000) % 100000000,
+                math.random(1000, 9999))
+        if layoutData then layoutData.id = id end
+    end
+    if group then group.id = id end
+    return id
+end
+
+-- Public: stable id for a group NAME (assigns one on first use).
+function ns.CDMGroups.GetGroupID(groupName, specData)
+    return EnsureGroupID(groupName, specData)
+end
+
+-- Public: resolve a stable id back to whichever group currently owns it.
+-- Returns group, groupName (nil, nil when that group no longer exists).
+function ns.CDMGroups.FindGroupByID(id)
+    if not id or not ns.CDMGroups.groups then return nil, nil end
+    for groupName, group in pairs(ns.CDMGroups.groups) do
+        if EnsureGroupID(groupName) == id then
+            return group, groupName
+        end
+    end
+    return nil, nil
+end
+
+-- ═══════════════════════════════════════════════════════════════════
+-- NEW-ICON ROUTING
+-- Where an icon goes when CDM hands it to us and we have NO saved
+-- position for it. Per CDM category, the user picks a destination:
+--   <stable group id>  send them to that group (survives renames)
+--   "free"             drop them in as free-position icons
+--   "none"             leave them alone, no destination
+--   nil (default)      the shipped group for that category
+-- Stored per layout profile, so switching profiles switches routing.
+-- Unset by default: existing setups keep their exact current behaviour.
+-- ═══════════════════════════════════════════════════════════════════
+local ROUTING_CATEGORY = {
+    Essential = "essential",
+    Utility   = "utility",
+    Buffs     = "buffs",
+}
+ns.CDMGroups.ROUTING_CATEGORY = ROUTING_CATEGORY
+
+-- ── SCOPED STORAGE (same model as Arc Pings) ────────────────────────────
+-- ONE account-wide base plus SPARSE per-character and per-spec patches:
+--
+--   global.iconRouting          = the base values, shared by every character
+--   global.iconRouting._ov[key] = only the categories you changed there
+--
+-- A patch is not a copy of the config, it is the one or two categories you
+-- wanted different here, so a dozen specs cost a dozen tiny tables. Anything
+-- you never touch keeps following the account value, including later changes
+-- to it. Resolution runs most specific first: this char + this spec, then
+-- this char, then the account base, then the shipped default (nil).
+local ROUTING_SCOPE_ACCOUNT, ROUTING_SCOPE_CHAR, ROUTING_SCOPE_SPEC = "account", "char", "spec"
+ns.CDMGroups.ROUTING_SCOPE_ACCOUNT = ROUTING_SCOPE_ACCOUNT
+ns.CDMGroups.ROUTING_SCOPE_CHAR    = ROUTING_SCOPE_CHAR
+ns.CDMGroups.ROUTING_SCOPE_SPEC    = ROUTING_SCOPE_SPEC
+
+local function RoutingCharKey()
+    local n = UnitName("player") or "?"
+    local r = (GetRealmName and GetRealmName()) or "?"
+    return n .. "-" .. r
+end
+
+-- Derived from the Blizzard API rather than this file's internal spec key, so
+-- the patch keys match Arc Pings exactly and do not move if ArcUI ever changes
+-- its own "class_X_spec_Y" key format (which WOULD orphan every patch).
+local function RoutingSpecKey()
+    if not (GetSpecialization and GetSpecializationInfo) then return nil end
+    local i = GetSpecialization()
+    local id = i and GetSpecializationInfo(i)
+    if not id then return nil end
+    return RoutingCharKey() .. "|" .. id
+end
+
+-- The account-wide base table. Also folds forward the original per-layout-profile
+-- storage this feature shipped with, so an early setting is not silently lost.
+local function RoutingBase(create)
+    if not (ns.db and ns.db.global) then return nil end
+    local base = ns.db.global.iconRouting
+    if not base then
+        if not create then return nil end
+        base = {}
+        ns.db.global.iconRouting = base
+        local profile = GetActiveProfile()
+        local legacy = profile and profile.iconRouting
+        if legacy then
+            for k, v in pairs(legacy) do base[k] = v end
+            profile.iconRouting = nil
+        end
+    end
+    return base
+end
+
+local function RoutingScopeKey(scope)
+    if scope == ROUTING_SCOPE_CHAR then return RoutingCharKey() end
+    if scope == ROUTING_SCOPE_SPEC then return RoutingSpecKey() end
+    return nil   -- account = the base table itself
+end
+
+-- create=false is the READ path: never spawn empty patch tables just by looking
+local function RoutingOv(scope, create)
+    local base = RoutingBase(create)
+    if not base then return nil end
+    local key = RoutingScopeKey(scope)
+    if not key then return nil end
+    if not base._ov then
+        if not create then return nil end
+        base._ov = {}
+    end
+    local t = base._ov[key]
+    if not t and create then t = {}; base._ov[key] = t end
+    return t
+end
+
+-- RUNTIME resolution: most specific wins. Never previews an edit scope, so what
+-- the icons actually do can never disagree with what the game is doing.
+function ns.CDMGroups.GetIconRouting(categoryKey)
+    if not categoryKey then return nil end
+    local spec = RoutingOv(ROUTING_SCOPE_SPEC, false)
+    if spec and spec[categoryKey] ~= nil then return spec[categoryKey] end
+    local char = RoutingOv(ROUTING_SCOPE_CHAR, false)
+    if char and char[categoryKey] ~= nil then return char[categoryKey] end
+    local base = RoutingBase(false)
+    if base and base[categoryKey] ~= nil then return base[categoryKey] end
+    return nil
+end
+
+-- Raw value stored AT one scope (nil = inherits from the scope above it).
+function ns.CDMGroups.GetIconRoutingAtScope(categoryKey, scope)
+    if not categoryKey then return nil end
+    if scope == ROUTING_SCOPE_ACCOUNT then
+        local base = RoutingBase(false)
+        return base and base[categoryKey] or nil
+    end
+    local t = RoutingOv(scope, false)
+    return t and t[categoryKey] or nil
+end
+
+-- value == nil CLEARS the patch at that scope (back to inheriting).
+function ns.CDMGroups.SetIconRoutingAtScope(categoryKey, scope, value)
+    if not categoryKey then return false end
+    if scope == ROUTING_SCOPE_ACCOUNT then
+        local base = RoutingBase(true)
+        if not base then return false end
+        base[categoryKey] = value
+        return true
+    end
+    local t = RoutingOv(scope, value ~= nil)
+    if not t then return value == nil end
+    t[categoryKey] = value
+    -- drop the patch table entirely once nothing is overridden there
+    if value == nil then
+        local empty = true
+        for _ in pairs(t) do empty = false break end
+        if empty then
+            local base = RoutingBase(false)
+            local key = RoutingScopeKey(scope)
+            if base and base._ov and key then base._ov[key] = nil end
+        end
+    end
+    return true
+end
+
+-- Whole-table access for import/export.
+function ns.CDMGroups.GetIconRoutingStore()
+    return RoutingBase(false)
+end
+
+function ns.CDMGroups.SetIconRoutingStore(store)
+    if type(store) ~= "table" then return false end
+    if not (ns.db and ns.db.global) then return false end
+    ns.db.global.iconRouting = DeepCopy(store)
+    return true
+end
+
+-- Apply an imported set of category values at the CURRENT spec scope. Import
+-- lands here (not on the account base) so pulling somebody's layout cannot
+-- silently rewrite the routing on every other character you own.
+function ns.CDMGroups.ApplyImportedIconRouting(values)
+    if type(values) ~= "table" then return false end
+    for _, categoryKey in pairs(ROUTING_CATEGORY) do
+        local v = values[categoryKey]
+        ns.CDMGroups.SetIconRoutingAtScope(categoryKey, ROUTING_SCOPE_SPEC, v)
+    end
+    return true
+end
+
+-- The EFFECTIVE routing for this spec, for exports.
+function ns.CDMGroups.GetEffectiveIconRouting()
+    local out, any = {}, false
+    for _, categoryKey in pairs(ROUTING_CATEGORY) do
+        local v = ns.CDMGroups.GetIconRouting(categoryKey)
+        if v ~= nil then out[categoryKey] = v; any = true end
+    end
+    if not any then return nil end
+    return out
+end
+
+-- Drop point for icons routed to "free": the MIDDLE of the screen, fanned out
+-- in a small grid so a whole batch does not land in one unreadable stack.
+-- Free icons are anchored SetPoint("CENTER", UIParent, "CENTER", x, y), so these
+-- are offsets FROM SCREEN CENTRE. Never feed a frame's own GetCenter() in here:
+-- that returns ABSOLUTE screen coordinates, and used as a centre-offset it flings
+-- the icon off the top-right corner (which is exactly what it did).
+local freeDropIndex = 0
+local FREE_DROP_PER_ROW = 8
+local FREE_DROP_ROWS    = 4
+function ns.CDMGroups.NextFreeDropPosition(iconSize)
+    local step = (iconSize or 36) + 8
+    local i = freeDropIndex
+    freeDropIndex = freeDropIndex + 1
+    local col = i % FREE_DROP_PER_ROW
+    local row = math.floor(i / FREE_DROP_PER_ROW) % FREE_DROP_ROWS
+    -- centre the whole block on the screen centre
+    local x = (col - (FREE_DROP_PER_ROW - 1) / 2) * step
+    local y = ((FREE_DROP_ROWS - 1) / 2 - row) * step
+    return x, y
+end
+
+-- Returns: "group", group, groupName | "free" | "none" | nil (nothing exists)
+function ns.CDMGroups.ResolveNewIconDestination(defaultGroupName)
+    local categoryKey = defaultGroupName and ROUTING_CATEGORY[defaultGroupName]
+    local choice = categoryKey and ns.CDMGroups.GetIconRouting(categoryKey) or nil
+
+    if choice == "none" then choice = nil end       -- retired option, treat as unset
+    -- "default" is a REAL stored choice below the account scope: it means
+    -- "use the shipped group here" and exists to override an inherited value.
+    if choice == "default" then choice = nil end
+    if choice == "free" then return "free" end
+    if choice then
+        local group, groupName = ns.CDMGroups.FindGroupByID(choice)
+        if group then return "group", group, groupName end
+        -- The chosen group does not exist in THIS profile/spec (group ids are
+        -- per layout profile, so a destination picked elsewhere may not resolve
+        -- here). Free position is the backup: visible and movable, rather than
+        -- silently dumping the icons into a group the user did not pick.
+        return "free"
+    end
+
+    if defaultGroupName then
+        -- Resolve the shipped group by its STABLE id FIRST, so a default the
+        -- user RENAMED is still found. Looking it up by name was what made
+        -- FrameController rebuild a fresh empty "Utility" every single login.
+        local wellKnown = WELL_KNOWN_GROUP_IDS[defaultGroupName]
+        if wellKnown then
+            local group, groupName = ns.CDMGroups.FindGroupByID(wellKnown)
+            if group then return "group", group, groupName end
+        end
+        local group = ns.CDMGroups.groups and ns.CDMGroups.groups[defaultGroupName]
+        if group then return "group", group, defaultGroupName end
+    end
+    return nil
+end
+
 -- Get the current spec KEY (class-specific to prevent cross-class contamination)
 -- Returns a string like "class_7_spec_2" for Enhancement Shaman
 GetCurrentSpec = function()
-    local specIndex = GetSpecialization() or 1
+    local specIndex = GetSpecialization()
     local _, _, classID = UnitClass("player")
     classID = classID or 0
+    if not specIndex then
+        -- EARLY-LOGIN RACE GUARD: GetSpecialization() can return nil before spec
+        -- info is available. The old `or 1` fallback FABRICATED "class_X_spec_1"
+        -- as the data key — the first time it happened the addon created a real
+        -- spec-data entry for a spec the player doesn't play (inheriting the
+        -- true spec's layouts via specInheritedFrom), and from then on each
+        -- login randomly read/wrote either the phantom or the real entry
+        -- depending on timing: layouts appeared to "reset on every relog"
+        -- (bug report: resto shaman with a never-played Elemental entry).
+        -- Fall back to this character's own last known spec key instead —
+        -- only a genuinely new character with no history defaults to spec 1.
+        local db = GetCDMGroupsDB and GetCDMGroupsDB()
+        local last = db and db.lastActiveSpec
+        if last and last ~= "" then return last end
+        specIndex = 1
+    end
     return "class_" .. classID .. "_spec_" .. specIndex
 end
 
@@ -3229,6 +3626,8 @@ local function EnsureLayoutProfiles(specData)
                         alignment = group.layout.alignment,
                         horizontalGrowth = group.layout.horizontalGrowth,
                         verticalGrowth = group.layout.verticalGrowth,
+                        groupType = group.groupType,
+                        auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
                         showBorder = group.showBorder,
                         showBackground = group.showBackground,
                         autoReflow = group.autoReflow,
@@ -3320,7 +3719,6 @@ local function EnsureLayoutProfiles(specData)
                                         existingGroupLayouts[gName] = DeepCopy(gData)
                                     end
                                     usedTemplate = true
-                                    PrintMsg("|cff00ff00[EnsureLayoutProfiles]|r Applied default group template from '" .. tmpl.profileName .. "'")
                                 end
                             end
                         end
@@ -3328,7 +3726,6 @@ local function EnsureLayoutProfiles(specData)
                 end
             end
             if not usedTemplate then
-                PrintMsg("|cff00ff00[EnsureLayoutProfiles]|r No existing groups - creating default groups (Essential, Utility, Buffs)")
                 for groupName, groupData in pairs(DEFAULT_GROUPS) do
                     existingGroupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
                 end
@@ -3501,7 +3898,6 @@ local function EnsureLayoutProfiles(specData)
         
         -- REPAIR: If "Default" profile has empty groupLayouts and is not linked, populate from DEFAULT_GROUPS
         if profileName == "Default" and not profile.groupLayoutName and (not profile.groupLayouts or not next(profile.groupLayouts)) then
-            PrintMsg("|cff00ff00[Repair]|r Populating Default profile groupLayouts from DEFAULT_GROUPS")
             for groupName, groupData in pairs(DEFAULT_GROUPS) do
                 profile.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
             end
@@ -3518,7 +3914,6 @@ local function EnsureLayoutProfiles(specData)
     if activeProfile and not activeProfile.groupLayoutName and (not activeProfile.groupLayouts or not next(activeProfile.groupLayouts)) then
         -- Check if we have runtime groups to save
         if ns.CDMGroups and ns.CDMGroups.groups and next(ns.CDMGroups.groups) then
-            PrintMsg("|cff00ff00[Repair]|r Populating empty groupLayouts for profile '" .. activeProfileName .. "' from runtime groups")
             activeProfile.groupLayouts = {}
             for groupName, group in pairs(ns.CDMGroups.groups) do
                 if group.layout then
@@ -3651,6 +4046,9 @@ function ns.CDMGroups.CreateProfile(profileName)
                 alignment = group.layout.alignment,
                 horizontalGrowth = group.layout.horizontalGrowth,
                 verticalGrowth = group.layout.verticalGrowth,
+                -- Group type
+                groupType = group.groupType,
+                auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
                 -- Appearance
                 showBorder = group.showBorder,
                 showBackground = group.showBackground,
@@ -3846,9 +4244,24 @@ end
 
 -- Save current layout to a profile
 function ns.CDMGroups.SaveCurrentToProfile(profileName)
-    
+
     if not profileName or profileName == "" then return false end
-    
+
+    -- tracer: snapshot what is ABOUT to be persisted — the slot-ratchet
+    -- evidence (a save carrying more members than the user configured is
+    -- the smoking gun for "5 slots became 8 after reload")
+    if ns.TraceTap then
+        local parts = {}
+        for gname, g in pairs(ns.CDMGroups.groups or {}) do
+            local n = 0
+            for _ in pairs(g.members or {}) do n = n + 1 end
+            parts[#parts + 1] = tostring(gname) .. "=" .. n
+        end
+        table.sort(parts)
+        ns.TraceTap("GRP", "SAVE -> " .. tostring(profileName)
+            .. "  members: " .. table.concat(parts, " "))
+    end
+
     -- CRITICAL: Don't save during restoration/transitions
     if IsRestoring() then
         PrintMsg("Cannot save profile during restoration - please wait")
@@ -3970,6 +4383,9 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
                 alignment = group.layout.alignment,
                 horizontalGrowth = group.layout.horizontalGrowth,
                 verticalGrowth = group.layout.verticalGrowth,
+                -- Group type
+                groupType = group.groupType,
+                auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
                 -- Appearance
                 showBorder = group.showBorder,
                 showBackground = group.showBackground,
@@ -4025,10 +4441,6 @@ function ns.CDMGroups.SaveCurrentToProfile(profileName)
         end
         -- Clean up legacy storage
         specData.iconSettings = nil
-        if migratedCount > 0 then
-            PrintMsg("|cff00ff00[SaveProfile]|r Migrated " .. migratedCount .. " iconSettings to profile")
-        end
-        PrintMsg("|cffff8800[SaveProfile]|r Cleared legacy specData.iconSettings")
     end
     
     -- NOTE: iconSettings is now accessed via Shared.GetSpecIconSettings() which
@@ -4072,9 +4484,22 @@ end
 
 -- Load a profile's layout
 function ns.CDMGroups.LoadProfile(profileName, skipActivation)
-    
+
     if not profileName or profileName == "" then return false end
-    
+
+    if ns.TraceTap then
+        local parts = {}
+        for gname, g in pairs(ns.CDMGroups.groups or {}) do
+            local n = 0
+            for _ in pairs(g.members or {}) do n = n + 1 end
+            parts[#parts + 1] = tostring(gname) .. "=" .. n
+        end
+        table.sort(parts)
+        ns.TraceTap("GRP", "LOAD " .. tostring(profileName)
+            .. " skipActivation=" .. tostring(skipActivation)
+            .. "  pre-load members: " .. table.concat(parts, " "))
+    end
+
     -- Prevent re-entry during load
     if ns.CDMGroups.profileLoadInProgress then
         return false
@@ -4140,9 +4565,6 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
             saved.isPlaceholder = nil
             cleanedStaleFlags = cleanedStaleFlags + 1
         end
-    end
-    if cleanedStaleFlags > 0 then
-        print("|cff00ff00[ArcUI]|r Cleaned " .. cleanedStaleFlags .. " stale placeholder flags from saved data")
     end
     
     local savedPosCountAfter = 0
@@ -4242,7 +4664,6 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     
     -- Clean up legacy specData.iconSettings if it exists
     if specData.iconSettings then
-        PrintMsg("|cffff8800[LoadProfile]|r Cleared legacy specData.iconSettings")
         specData.iconSettings = nil
     end
     
@@ -4276,7 +4697,6 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
     -- If we're using DEFAULT_GROUPS, also save them to the profile so future loads work
     -- (only when NOT linked to a Group Layout)
     if not hasGroupLayouts and not profile.groupLayoutName then
-        PrintMsg("|cff00ff00[LoadProfile]|r Profile has no groups - creating default groups (Essential, Utility, Buffs)")
         profile.groupLayouts = {}
         for groupName, groupData in pairs(DEFAULT_GROUPS) do
             profile.groupLayouts[groupName] = SerializeDefaultGroupToLayoutData(groupData)
@@ -4318,7 +4738,6 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                     end
                 end
                 recovered = recovered + 1
-                PrintMsg("|cff00ff00[LoadProfile]|r Recreated missing group '" .. tostring(target) .. "' referenced by saved icons (import safety net)")
             end
         end
     end
@@ -4577,6 +4996,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                     viewerType = frameData.viewerType,
                     originalViewerName = frameData.originalViewerName,
                 }
+
+                -- Apply per-icon Stack Priority strata/level (installs its own hooks)
+                if ns.CDMGroups.ApplyFreeIconStrata then
+                    ns.CDMGroups.ApplyFreeIconStrata(cdID, frame)
+                end
                 
                 if entry then
                     entry.manipulated = true
@@ -4619,6 +5043,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 viewerType = frameData.viewerType,
                 originalViewerName = frameData.originalViewerName,
             }
+
+            -- Apply per-icon Stack Priority strata/level (installs its own hooks)
+            if ns.CDMGroups.ApplyFreeIconStrata then
+                ns.CDMGroups.ApplyFreeIconStrata(cdID, frame)
+            end
             
             if entry then
                 entry.manipulated = true
@@ -4664,6 +5093,11 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 viewerType = frameData.viewerType,
                 originalViewerName = frameData.originalViewerName,
             }
+
+            -- Apply per-icon Stack Priority strata/level (installs its own hooks)
+            if ns.CDMGroups.ApplyFreeIconStrata then
+                ns.CDMGroups.ApplyFreeIconStrata(cdID, frame)
+            end
             
             if entry then
                 entry.manipulated = true
@@ -4734,6 +5168,13 @@ function ns.CDMGroups.LoadProfile(profileName, skipActivation)
                 end
                 if layoutData.autoReflow ~= nil then
                     group.autoReflow = layoutData.autoReflow ~= false
+                end
+                if layoutData.groupType ~= nil then
+                    group.groupType = layoutData.groupType
+                    group.isAuraGroup = layoutData.groupType == "aura"
+                end
+                if layoutData.auraLayout ~= nil then
+                    group.auraLayout = DeepCopy(layoutData.auraLayout)
                 end
                 if layoutData.dynamicLayout ~= nil then
                     group.dynamicLayout = layoutData.dynamicLayout
@@ -5900,9 +6341,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
     
     -- Track when spec change started (for Layout behavior)
     ns.CDMGroups.lastSpecChangeTime = GetTime()
-    
-    PrintMsg("Switching from spec " .. oldSpec .. " to " .. newSpec)
-    
+
     -- Step 0: SAVE old spec's runtime state TO PROFILE (single source of truth)
     if not skipSave and ns.CDMGroups.specGroups[oldSpec] and next(ns.CDMGroups.specGroups[oldSpec]) then
         local specData = EnsureSpecData(oldSpec)
@@ -5931,8 +6370,6 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
             
             -- NOTE: savedPositions IS the profile.savedPositions table (direct reference)
             -- It's already correct from SavePositionToSpec() calls - no rebuild needed
-            
-            PrintMsg("Saved spec " .. oldSpec .. " layout to profile")
         end
     end
     
@@ -6226,6 +6663,9 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                     profile.groupLayouts[groupName] = {
                         -- Position
                         position = layoutData.position and { x = layoutData.position.x, y = layoutData.position.y } or { x = 0, y = 0 },
+                        -- Group type
+                        groupType = layoutData.groupType,
+                        auraLayout = layoutData.auraLayout and DeepCopy(layoutData.auraLayout) or nil,
                         -- Appearance
                         showBorder = layoutData.showBorder,
                         showBackground = layoutData.showBackground,
@@ -6430,8 +6870,7 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
                 if group.Layout then group:Layout() end
             end
             local count = CountRestoredIcons()
-            PrintMsg("Retry " .. attempt .. ": " .. count .. " icons restored")
-            
+
             -- Refresh Masque after retry layouts
             if ns.Masque and ns.Masque.QueueRefresh then
                 ns.Masque.QueueRefresh()
@@ -6442,11 +6881,9 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
         
         -- Count and retry if needed (CDM creates frames gradually)
         local restoredCount = CountRestoredIcons()
-        PrintMsg("Initial restoration: " .. restoredCount .. " icons")
-        
+
         -- Multiple retry attempts with increasing delays
         if restoredCount < 8 then
-            PrintMsg("Few icons restored, starting retry sequence...")
             C_Timer.After(0.5, function()
                 local count = RetryRestoration(1)
                 if count < 8 then
@@ -6648,14 +7085,6 @@ local function OnSpecChange(newSpec, oldSpecOverride, skipSave)
             end)
         end)
     end)
-    
-    local specName = newSpec
-    if GetSpecializationInfo then
-        local specIndex = GetSpecialization() or 1  -- Use numeric index for API
-        local _, name = GetSpecializationInfo(specIndex)
-        if name then specName = name end
-    end
-    PrintMsg("Now using " .. specName .. " layout")
 end
 
 -- Expose functions to namespace for external access
@@ -6671,11 +7100,14 @@ ns.CDMGroups.SaveFreeIconToSpec = SaveFreeIconToSpec  -- For Arc Auras OnDragSto
 
 -- GROUP CREATION - Sparse Grid System
 
-function ns.CDMGroups.CreateGroup(name)
+function ns.CDMGroups.CreateGroup(name, groupType)
     -- MASTER TOGGLE: Do nothing if CDMGroups is disabled
-    if not _cdmGroupsEnabled then 
-        PrintMsg("|cffff0000[CreateGroup]|r SKIPPED '" .. name .. "' - CDMGroups is disabled")
-        return nil 
+    -- groupType: nil = normal group; "aura" = Spell-ID Aura Group (engine
+    -- flow-layout display of Arc aura icons; ns.AuraIconGroups attaches the
+    -- engine rows). Persisted as layoutData.groupType — load paths recreate
+    -- the type from the profile without passing the arg.
+    if not _cdmGroupsEnabled then
+        return nil
     end
     
     if ns.CDMGroups.groups[name] then
@@ -6686,7 +7118,6 @@ function ns.CDMGroups.CreateGroup(name)
     local specData = GetSpecData()
     if not specData then
         -- Fallback - shouldn't happen
-        PrintMsg("|cffff8800[CreateGroup]|r No specData, calling EnsureSpecData")
         specData = EnsureSpecData(GetCurrentSpec())
     end
     
@@ -6724,13 +7155,20 @@ function ns.CDMGroups.CreateGroup(name)
             spacing = defaultTemplate.layout and defaultTemplate.layout.spacing or 2,
         }
         
+        -- New-group type: aura groups reflow engine-side, so the addon-side
+        -- reflow machinery stays off
+        if groupType then
+            layoutData.groupType = groupType
+            if groupType == "aura" then layoutData.autoReflow = false end
+        end
+
         -- Save new group to profile immediately
         local profile = GetActiveProfile(specData)
         if profile then
             local _t = GetLayoutTarget(profile)
             if _t then _t[name] = DeepCopy(layoutData) end
         end
-        
+
     end
     
     -- Build layout table from layoutData
@@ -6771,8 +7209,10 @@ function ns.CDMGroups.CreateGroup(name)
         frameStrata = layoutData.frameStrata,
         frameLevel = layoutData.frameLevel,
         anchor = layoutData.anchor,
+        groupType = layoutData.groupType,
+        auraLayout = layoutData.auraLayout,
     }
-    
+
     local color = GROUP_COLORS[name] or { r = 0.5, g = 0.5, b = 0.5 }
     
     -- Ensure borderColor and bgColor have defaults
@@ -6805,6 +7245,10 @@ function ns.CDMGroups.CreateGroup(name)
         bgColor = DeepCopy(bgColor),
         container = nil,
         color = color,
+        -- Group type ("aura" = engine-flow Aura Group; nil = normal)
+        groupType = db.groupType,
+        isAuraGroup = db.groupType == "aura",
+        auraLayout = db.auraLayout and DeepCopy(db.auraLayout) or nil,
         -- Anchoring
         anchor = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.Deserialize(db.anchor) or { enabled = false, mode = "none" },
     }
@@ -6896,7 +7340,11 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- Sync the decoupled proxy to the container's new position
         SyncAnchorProxy(group)
-        
+
+        -- Refresh the position-tracking stamp: the pooled container's SetPoint
+        -- hook must sync THIS group object, not the one from a previous spec
+        container._arcProxySyncGroup = group
+
         -- Remove from pool (it's now actively used)
         ContainerPool[name] = nil
         
@@ -6950,6 +7398,28 @@ function ns.CDMGroups.CreateGroup(name)
             C_Timer.After(0.01, function() SyncAnchorProxy(group) end)
         end)
         container:HookScript("OnHide", function() anchorProxy:Hide() end)
+
+        -- POSITION TRACKING: any SetPoint on the container (profile restore,
+        -- drag, pixel snap, ContainerSync pull, group anchoring) re-syncs the
+        -- proxy next frame. Without this, container moves outside Layout()
+        -- left the proxy - and every external addon anchored to it - stale.
+        -- Debounced per group; SyncAnchorProxy writes only the proxy, so no
+        -- recursion. The owning group is read from a stamp (not the closure)
+        -- because pooled containers are handed to fresh group objects on spec
+        -- swaps; the stamp is refreshed in the pool-reuse branch too.
+        container._arcProxySyncGroup = group
+        if not container._arcProxySyncHooked then
+            container._arcProxySyncHooked = true
+            hooksecurefunc(container, "SetPoint", function(self)
+                local g = self._arcProxySyncGroup
+                if not g or g._proxySyncPending then return end
+                g._proxySyncPending = true
+                C_Timer.After(0.05, function()
+                    g._proxySyncPending = nil
+                    SyncAnchorProxy(g)
+                end)
+            end)
+        end
         
         -- Initial size/position for the decoupled proxy (no SetAllPoints!)
         anchorProxy:SetSize(container:GetSize())
@@ -7528,9 +7998,9 @@ function ns.CDMGroups.CreateGroup(name)
     end
     
     -- FIND NEXT FREE SLOT (can expand grid for new members)
-    function group:FindNextFreeSlot(allowExpand)
+    function group:FindNextFreeSlot(allowExpand, preserveRegisteredFrames)
         -- Default to true unless blocked by namespace flag OR group has locked grid size
-        if allowExpand == nil then 
+        if allowExpand == nil then
             allowExpand = not ns.CDMGroups.blockGridExpansion and not self.lockGridSize
         end
         
@@ -7566,9 +8036,16 @@ function ns.CDMGroups.CreateGroup(name)
         while (rowStep > 0 and row <= rowEnd) or (rowStep < 0 and row >= rowEnd) do
             local col = colStart
             while (colStep > 0 and col <= colEnd) or (colStep < 0 and col >= colEnd) do
-                -- Check if slot is truly free (no grid entry OR member has no valid frame)
+                -- Check if slot is truly free (no grid entry OR member has no valid frame).
+                -- During restoration a slot's occupant may not be assigned to its member
+                -- yet while its frame already exists in the registry; preserve that
+                -- future occupant when requested so restored icons keep their home cells.
                 local cdID = self.grid[row] and self.grid[row][col]
-                if not cdID or not hasValidFrame(cdID) then
+                local slotTaken = cdID and hasValidFrame(cdID)
+                if cdID and not slotTaken and preserveRegisteredFrames then
+                    slotTaken = Registry:GetValidFrameForCooldownID(cdID) ~= nil
+                end
+                if not slotTaken then
                     -- Clear stale grid entry if exists
                     if cdID then
                         self.grid[row][col] = nil
@@ -7605,7 +8082,33 @@ function ns.CDMGroups.CreateGroup(name)
             return nil, nil
         end
     end
-    
+
+    -- Saved row/col values outlive manual grid shrinking (an icon inactive when
+    -- the user shrank the grid keeps its old out-of-bounds home, and re-placing
+    -- it there re-expands the grid on every login). For an auto-reflow group the
+    -- configured grid is authoritative: when restoring an icon to a cell outside
+    -- it, fold the icon into a free in-bounds cell instead and only expand when
+    -- every configured cell is held by a live (or registered, about-to-restore)
+    -- frame. Reflow decides the visual order anyway, so the exact home cell
+    -- doesn't matter for these groups. (Adopted from a user-contributed patch.)
+    local function ConstrainAutoReflowRestorationSlot(self, cooldownID, row, col, frame)
+        local outsideConfiguredGrid = row < 0 or col < 0
+            or row >= self.layout.gridRows or col >= self.layout.gridCols
+        if not (frame and self.autoReflow and outsideConfiguredGrid) then
+            return row, col
+        end
+        local saved = ns.CDMGroups.savedPositions and ns.CDMGroups.savedPositions[cooldownID]
+        local restoringSavedSlot = saved and saved.type == "group" and saved.target == self.name
+            and (saved.row or 0) == row and (saved.col or 0) == col
+        if IsRestoring() or restoringSavedSlot then
+            local freeRow, freeCol = self:FindNextFreeSlot(false, true)
+            if freeRow ~= nil and freeCol ~= nil then
+                return freeRow, freeCol
+            end
+        end
+        return row, col
+    end
+
     -- ═══════════════════════════════════════════════════════════════════════════
     -- FIND ADJACENT FREE SLOT - Smart collision displacement
     -- Finds the next free slot starting from a specific position, following growth direction.
@@ -7679,7 +8182,13 @@ function ns.CDMGroups.CreateGroup(name)
         -- PHASE 3: Grid is full in growth direction - expand if allowed
         if allowExpand then
             local db = getDB()
-            
+            -- Persist only after profile load completes (ratchet guard: this
+            -- runs from AddMemberAt collision handling during the login/reload
+            -- restore race, and transient growth must not touch the saved grid).
+            local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                                       not ns.CDMGroups._profileNotLoaded and
+                                       not IsRestoring()
+
             -- Expand in the primary growth direction
             if hGrowth == "LEFT" then
                 -- Growing left means we want to add space at col 0
@@ -7687,13 +8196,13 @@ function ns.CDMGroups.CreateGroup(name)
                 -- For simplicity, expand right and return the new rightmost slot
                 local newCol = cols
                 self.layout.gridCols = cols + 1
-                if db then db.gridCols = self.layout.gridCols end
+                if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
                 return fromRow, newCol
             else
                 -- Growing right - add column on right side
                 local newCol = cols
                 self.layout.gridCols = cols + 1
-                if db then db.gridCols = self.layout.gridCols end
+                if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
                 return fromRow, newCol
             end
         end
@@ -7947,10 +8456,12 @@ function ns.CDMGroups.CreateGroup(name)
         end
         
         local frame, entry = Registry:GetValidFrameForCooldownID(cooldownID)
-        
+
         -- Skip frames that are actual status bars (have Bar element) - these aren't icon-based
         if frame and frame.Bar and frame.Bar.IsObjectType and frame.Bar:IsObjectType("StatusBar") then return end
-        
+
+        row, col = ConstrainAutoReflowRestorationSlot(self, cooldownID, row, col, frame)
+
         -- Check bounds BEFORE doing anything
         -- IMPORTANT: Only block placement for frameless placeholders during spec switch
         -- If we have a frame, we MUST place it and expand grid to fit
@@ -8038,10 +8549,13 @@ function ns.CDMGroups.CreateGroup(name)
             if existingCdID ~= cooldownID then
                 -- Check if the existing entry actually has a member
                 if self.members[existingCdID] then
-                    -- CRITICAL: During restoration, check if existing icon has saved position for this slot
-                    -- If it does, it has priority - we should NOT displace it
+                    -- CRITICAL: If the existing icon's SAVED position is this exact
+                    -- slot, it OWNS it - never displace it; the incoming icon takes
+                    -- an adjacent slot instead. Previously restore-only (IsRestoring),
+                    -- which let LIVE auto-placements (e.g. equipping a second on-use
+                    -- trinket) evict a saved owner and persist the eviction.
                     local existingSaved = ns.CDMGroups.savedPositions[existingCdID]
-                    local existingHasPriority = IsRestoring() and existingSaved and 
+                    local existingHasPriority = existingSaved and
                         existingSaved.type == "group" and existingSaved.target == self.name and
                         existingSaved.row == row and existingSaved.col == col
                     
@@ -8081,32 +8595,39 @@ function ns.CDMGroups.CreateGroup(name)
         if not self.grid[row] then self.grid[row] = {} end
         self.grid[row][col] = cooldownID
         
+        -- CRITICAL: ONLY persist layout/position changes AFTER profile loading is complete!
+        -- During initial load, savedPositions might be empty just because profile hasn't loaded yet
+        -- We must NOT overwrite the profile with default positions in this case
+        local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                                   not ns.CDMGroups._profileNotLoaded and
+                                   not IsRestoring()
+
         -- Expand grid if needed
         -- ALWAYS expand if member has a frame - icons must never be hidden
         -- Only respect blockGridExpansion/lockGridSize for frameless placeholder entries
+        -- The expansion persists to the profile ONLY once loading is complete:
+        -- during the login/reload restore race icons can land in sequential
+        -- slots before their saved positions arrive, and persisting that
+        -- transient growth ratcheted a 3-column group to 6 columns. In-memory
+        -- growth is corrected by the profile's own gridRows/gridCols when the
+        -- layout data is applied.
         local db = getDB()
         local hasFrame = member.frame ~= nil
         local expansionBlocked = ns.CDMGroups.blockGridExpansion or self.lockGridSize
         if row >= self.layout.gridRows then
             if hasFrame or not expansionBlocked then
                 self.layout.gridRows = row + 1
-                if db then db.gridRows = self.layout.gridRows end
+                if db and profileFullyLoaded then db.gridRows = self.layout.gridRows end
             end
         end
         if col >= self.layout.gridCols then
             if hasFrame or not expansionBlocked then
                 self.layout.gridCols = col + 1
-                if db then db.gridCols = self.layout.gridCols end
+                if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
             end
         end
-        
+
         -- Force save if this icon didn't have a saved position (new/legacy icons)
-        -- CRITICAL: ONLY force save AFTER profile loading is complete!
-        -- During initial load, savedPositions might be empty just because profile hasn't loaded yet
-        -- We must NOT overwrite the profile with default positions in this case
-        local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and 
-                                   not ns.CDMGroups._profileNotLoaded and
-                                   not IsRestoring()
         local shouldForceSave = not hadSavedPosition and profileFullyLoaded
         
         SaveGroupPosition(cooldownID, self.name, row, col, shouldForceSave)
@@ -8178,6 +8699,12 @@ function ns.CDMGroups.CreateGroup(name)
     
     -- ADD MEMBER AT POSITION WITH EXISTING FRAME (for cross-group transfers)
     function group:AddMemberAtWithFrame(cooldownID, row, col, frame, entry)
+        -- AURA GROUPS accept ONLY Arc aura icons (drop path already filters
+        -- via FindDropTarget; this guards login-restore / stale savedPositions)
+        if self.isAuraGroup
+           and not (type(cooldownID) == "string" and cooldownID:match("^arc_aura_")) then
+            return
+        end
         -- Check if this type is enabled FIRST
         local viewerType = GetViewerTypeForCooldownID(cooldownID)
         if viewerType and not IsViewerTypeEnabled(viewerType) then
@@ -8186,10 +8713,12 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- Track if this icon had a saved position BEFORE we add it
         local hadSavedPosition = ns.CDMGroups.savedPositions[cooldownID] ~= nil
-        
+
         -- Skip frames that are actual status bars (have Bar element) - these aren't icon-based
         if frame and frame.Bar and frame.Bar.IsObjectType and frame.Bar:IsObjectType("StatusBar") then return end
-        
+
+        row, col = ConstrainAutoReflowRestorationSlot(self, cooldownID, row, col, frame)
+
         if self.members[cooldownID] then
             self:PlaceMemberAt(cooldownID, row, col)
             return
@@ -8216,20 +8745,46 @@ function ns.CDMGroups.CreateGroup(name)
             local existingCdID = self.grid[row][col]
             if existingCdID ~= cooldownID then
                 local existingMember = self.members[existingCdID]
-                if existingMember and HasValidFrame(existingMember, existingCdID) then
+                -- SAVED-HOME PRIORITY: if the occupant's SAVED position is this
+                -- exact cell, it OWNS the cell - the INCOMING icon yields to an
+                -- adjacent slot instead of evicting it. Without this, equipping a
+                -- second on-use trinket whose stale saved cell matched an existing
+                -- icon's home displaced that icon AND saved the eviction as its
+                -- new home, so it never returned (trinket slot 13/14 report).
+                local occupantSaved = ns.CDMGroups.savedPositions
+                    and ns.CDMGroups.savedPositions[existingCdID]
+                local occupantOwnsCell = existingMember
+                    and HasValidFrame(existingMember, existingCdID)
+                    and occupantSaved and occupantSaved.type == "group"
+                    and occupantSaved.target == self.name
+                    and occupantSaved.row == row and occupantSaved.col == col
+                if occupantOwnsCell then
+                    local yieldRow, yieldCol = self:FindAdjacentFreeSlot(row, col, true)
+                    if yieldRow and yieldCol then
+                        row, col = yieldRow, yieldCol
+                    end
+                    -- (no free slot: fall through and overlap, matching the old
+                    -- no-slot fallback behavior)
+                elseif existingMember and HasValidFrame(existingMember, existingCdID) then
                     -- SMART DISPLACEMENT: Find adjacent slot in growth direction, allowing expansion
                     local newRow, newCol = self:FindAdjacentFreeSlot(row, col, true)
                     if newRow and newCol then
                         -- CRITICAL: If the new position is outside current grid, expand FIRST
                         -- (FindAdjacentFreeSlot already handles expansion, but double-check)
+                        -- Persist only after profile load completes (same ratchet
+                        -- guard as AddMemberAt - transient login/restore
+                        -- displacement must not grow the saved grid).
                         local db = getDB()
+                        local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                                                   not ns.CDMGroups._profileNotLoaded and
+                                                   not IsRestoring()
                         if newRow >= self.layout.gridRows then
                             self.layout.gridRows = newRow + 1
-                            if db then db.gridRows = self.layout.gridRows end
+                            if db and profileFullyLoaded then db.gridRows = self.layout.gridRows end
                         end
                         if newCol >= self.layout.gridCols then
                             self.layout.gridCols = newCol + 1
-                            if db then db.gridCols = self.layout.gridCols end
+                            if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
                         end
                         
                         -- Now move the existing member (grid is big enough)
@@ -8285,14 +8840,18 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- Handle grid expansion - ALWAYS expand since this function always has a frame
         -- Icons with frames must never be hidden
+        -- (persist only after profile load completes - same ratchet guard as AddMemberAt)
         local db = getDB()
+        local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                                   not ns.CDMGroups._profileNotLoaded and
+                                   not IsRestoring()
         if row >= self.layout.gridRows then
             self.layout.gridRows = row + 1
-            if db then db.gridRows = self.layout.gridRows end
+            if db and profileFullyLoaded then db.gridRows = self.layout.gridRows end
         end
         if col >= self.layout.gridCols then
             self.layout.gridCols = col + 1
-            if db then db.gridCols = self.layout.gridCols end
+            if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
         end
         
         -- Force save if this icon didn't have a saved position (new/legacy icons)
@@ -8620,22 +9179,29 @@ function ns.CDMGroups.CreateGroup(name)
     function group:PlaceMemberAt(cooldownID, targetRow, targetCol)
         local member = self.members[cooldownID]
         if not member then return false end
-        
+
+        targetRow, targetCol = ConstrainAutoReflowRestorationSlot(
+            self, cooldownID, targetRow, targetCol, member.frame)
+
         local maxRows = self.layout.gridRows
         local maxCols = self.layout.gridCols
         local db = getDB()
-        
+
         -- If member has a valid frame, expand grid if needed instead of clamping
         -- This ensures icons are never lost due to grid being too small
+        -- (persist only after profile load completes - same ratchet guard as AddMemberAt)
         if member.frame and HasValidFrame(member, cooldownID) then
+            local profileFullyLoaded = not ns.CDMGroups.initialLoadInProgress and
+                                       not ns.CDMGroups._profileNotLoaded and
+                                       not IsRestoring()
             if targetRow >= maxRows then
                 self.layout.gridRows = targetRow + 1
-                if db then db.gridRows = self.layout.gridRows end
+                if db and profileFullyLoaded then db.gridRows = self.layout.gridRows end
                 maxRows = self.layout.gridRows
             end
             if targetCol >= maxCols then
                 self.layout.gridCols = targetCol + 1
-                if db then db.gridCols = self.layout.gridCols end
+                if db and profileFullyLoaded then db.gridCols = self.layout.gridCols end
                 maxCols = self.layout.gridCols
             end
         end
@@ -9144,9 +9710,22 @@ function ns.CDMGroups.CreateGroup(name)
             local cascadeOffsetY = self._rowCumulativeOffset and self._rowCumulativeOffset[row] or 0
             local lo = leftOverflow or 0
             local to = topOverflow or 0
+            -- CENTERING with per-icon size overrides (/afi-group-proven): the
+            -- container is sized content + cascade + left/right (top/bottom)
+            -- overflow and anchored by CENTER, so the grid shifts by HALF the
+            -- per-axis ASYMMETRY — (lo - ro)/2 minus half the total cascade —
+            -- NOT by the full left/top overflow in the outward direction. The
+            -- old "- lo"/"+ to" pushed oversized icons OUT the top-left corner
+            -- while the slack space collected bottom-right. Every term is 0
+            -- for groups without size overrides — placement is byte-identical
+            -- in the normal case.
+            local ro = self._rightOverflow or 0
+            local bo = self._bottomOverflow or 0
+            local tEW = self._colCumulativeOffset and self._colCumulativeOffset[cols - 1] or 0
+            local tEH = self._rowCumulativeOffset and self._rowCumulativeOffset[rows - 1] or 0
             -- CENTER of slot [row,col] relative to container CENTER
-            local cx = -contentW / 2 - lo + col * stepX + snapSlotW / 2 + cascadeOffsetX
-            local cy =  contentH / 2 + to - row * stepY - snapSlotH / 2 - cascadeOffsetY
+            local cx = -contentW / 2 + (lo - ro) / 2 - tEW / 2 + col * stepX + snapSlotW / 2 + cascadeOffsetX
+            local cy =  contentH / 2 - (to - bo) / 2 + tEH / 2 - row * stepY - snapSlotH / 2 - cascadeOffsetY
             return cx, cy
         end
         
@@ -9803,9 +10382,15 @@ function ns.CDMGroups.CreateGroup(name)
         local effectiveTopOverflow = topOverflow > 0 and (topOverflow + overflowMargin) or 0
         local effectiveBottomOverflow = bottomOverflow > 0 and (bottomOverflow + overflowMargin) or 0
         
-        -- Store edge overflows for positioning calculations (use effective values)
+        -- Store edge overflows for positioning calculations (use effective values).
+        -- ALL FOUR: right/bottom were never stored, so every reader of
+        -- self._rightOverflow/_bottomOverflow (dynamic compact sizing, and the
+        -- centering share in getSlotPosition) silently got 0 — oversized icons
+        -- at the right/bottom edge clipped the container.
         self._leftOverflow = effectiveLeftOverflow
         self._topOverflow = effectiveTopOverflow
+        self._rightOverflow = effectiveRightOverflow
+        self._bottomOverflow = effectiveBottomOverflow
         
         -- Store per-column and per-row max effective sizes for cascade positioning
         -- This allows oversized icons to push only their neighbors by the correct amount
@@ -9997,8 +10582,7 @@ function ns.CDMGroups.CreateGroup(name)
                         local baseX = self.position.x or 0
                         local baseY = self.position.y or 0
                         self.container:ClearAllPoints()
-                        self.container:SetPoint("CENTER", UIParent, "CENTER",
-                            baseX + newCenterX, baseY + newCenterY)
+                        self.container:SetPoint("CENTER", UIParent, "CENTER", baseX + newCenterX, baseY + newCenterY)
                         self._appliedOffsetX = newCenterX
                         self._appliedOffsetY = newCenterY
                     else
@@ -10616,6 +11200,7 @@ function ns.CDMGroups.CreateGroup(name)
         -- Apply position offset if needed
         local _isAnchored = ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.IsGroupAnchored(self)
         if not _isAnchored and (posOffsetX ~= 0 or posOffsetY ~= 0) then
+            -- snap the WRITE too, so the persisted position is grid-aligned
             self.position.x = self.position.x + posOffsetX
             self.position.y = self.position.y + posOffsetY
             if db then
@@ -11422,21 +12007,34 @@ function ns.CDMGroups.CreateGroup(name)
         
         -- Helper to disable mouse on ALL descendants recursively
         -- This is CRITICAL for aura icons which have Applications subframes at high frame levels
+        -- Engine-owned descendants (AuraContainer slot buttons) throw on ANY
+        -- method call while inaccessible. CanBeAccessedInContext is the ONLY
+        -- accurate probe — aura secrecy and classic forbidden are DIFFERENT
+        -- states (a party makes buttons inaccessible while IsForbidden still
+        -- reports false). Mouse-disabled at creation; skipping loses nothing.
         local function DisableAllChildMouse(f)
             for _, child in pairs({f:GetChildren()}) do
-                if child.EnableMouse then
-                    child:EnableMouse(false)
+                local accessible = true
+                if child.CanBeAccessedInContext then
+                    accessible = child:CanBeAccessedInContext()
+                elseif child.IsForbidden then
+                    accessible = not child:IsForbidden()
                 end
-                if child.SetMovable then
-                    child:SetMovable(false)
+                if accessible then
+                    if child.EnableMouse then
+                        child:EnableMouse(false)
+                    end
+                    if child.SetMovable then
+                        child:SetMovable(false)
+                    end
+                    if child.RegisterForDrag then
+                        child:RegisterForDrag()
+                    end
+                    DisableAllChildMouse(child)
                 end
-                if child.RegisterForDrag then
-                    child:RegisterForDrag()
-                end
-                DisableAllChildMouse(child)
             end
         end
-        
+
         -- CRITICAL: Disable mouse on ALL children FIRST before enabling parent
         DisableAllChildMouse(frame)
         
@@ -11611,6 +12209,7 @@ function ns.CDMGroups.CreateGroup(name)
             self._groupDragging = true
             self._sourceGroup = srcGroup
             self._sourceCdID = cdID
+            ns.CDMGroups._dragCdID = cdID   -- FindDropTarget eligibility (aura groups)
             ns.CDMGroups._dragSourceGroup = srcGroup
             self:SetFrameStrata("TOOLTIP")
             
@@ -11632,11 +12231,12 @@ function ns.CDMGroups.CreateGroup(name)
                 self:SetScript("OnUpdate", nil)
                 ns.CDMGroups.HideDropIndicator()
                 ns.CDMGroups._dragSourceGroup = nil
-                
+                ns.CDMGroups._dragCdID = nil
+
                 local cx, cy = self:GetCenter()
                 local cdID = self._sourceCdID
                 local srcGroup = self._sourceGroup
-                
+
                 -- Validate that srcGroup still has this cdID
                 if not srcGroup or not srcGroup.members[cdID] then
                     -- Group no longer has this member - just reposition
@@ -11644,8 +12244,8 @@ function ns.CDMGroups.CreateGroup(name)
                     self._sourceCdID = nil
                     return
                 end
-                
-                local targetGroup, targetRow, targetCol, mode, insertCol, insertRow = ns.CDMGroups.FindDropTarget(cx, cy)
+
+                local targetGroup, targetRow, targetCol, mode, insertCol, insertRow = ns.CDMGroups.FindDropTarget(cx, cy, cdID)
                 
                 -- When options panel is open, use simple placement (edit mode)
                 -- Reflow will happen when panel closes
@@ -12053,6 +12653,8 @@ function ns.CDMGroups.CreateGroup(name)
                     alignment = group.layout.alignment,
                     horizontalGrowth = group.layout.horizontalGrowth,
                     verticalGrowth = group.layout.verticalGrowth,
+                    groupType = group.groupType,
+                    auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
                     showBorder = group.showBorder,
                     showBackground = group.showBackground,
                     autoReflow = group.autoReflow,
@@ -12103,7 +12705,24 @@ function ns.CDMGroups.CreateGroup(name)
     if ns.FrameController and ns.FrameController.ScheduleReconcile then
         ns.FrameController.ScheduleReconcile(0.15)  -- Short debounce for group creation
     end
-    
+
+    -- ═══════════════════════════════════════════════════════════════════════════
+    -- ENSURE PROFILE ENTRY EXISTS for this group in the active profile.
+    -- getDB() resolves to profile.groupLayouts[name] and ~15 setter methods
+    -- (SetGridSize, spacing, icon size, growth, auto-expand...) write through
+    -- `local db = getDB() if db then ... end` — when the entry was MISSING
+    -- (e.g. the user deleted their profiles and a fresh one was regenerated,
+    -- so groups were built from DEFAULT_GROUPS with no profile entries), every
+    -- one of those writes was SILENTLY DROPPED: layout edits lived only in the
+    -- session and "reset on every reload/relog" until the user happened to
+    -- press Save Layout (which serializes all groups into the profile and
+    -- thereby created the entries). Creating the entry here — one chokepoint,
+    -- runs for every group at build time — makes getDB() never nil for a live
+    -- group, so all writers persist again. No-op when the entry already exists.
+    if not GetGroupLayoutFromProfile(name) then
+        SaveGroupLayoutToProfile(name, group)
+    end
+
     return group
 end
 
@@ -12308,9 +12927,16 @@ insertRowLineGlow:SetColorTexture(0, 1, 0, 0.3)
 ns.InsertRowLine = InsertRowLine
 
 -- Returns group, row, col, mode, insertCol, insertRow
-function ns.CDMGroups.FindDropTarget(screenX, screenY)
+function ns.CDMGroups.FindDropTarget(screenX, screenY, dragID)
+    -- dragID: the cooldownID being dragged (falls back to the live drag stamp
+    -- set by the drag handlers). AURA GROUPS only accept Arc aura icons
+    -- (arc_aura_*) — for anything else they are not a drop target at all, so
+    -- CDM/spell/item icons pass over them and land free/back where they were.
+    dragID = dragID or ns.CDMGroups._dragCdID
+    local auraEligible = type(dragID) == "string" and dragID:match("^arc_aura_") and true or false
     for groupName, group in pairs(ns.CDMGroups.groups) do
-        if group.container and group.container:IsVisible() then
+        if group.container and group.container:IsVisible()
+           and (not group.isAuraGroup or auraEligible) then
             local left, bottom, width, height = group.container:GetRect()
             if left and screenX >= left and screenX <= left + width and
                screenY >= bottom and screenY <= bottom + height then
@@ -13076,9 +13702,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         
         if needsReload then
             -- Layout issue detected! Use the existing OnSpecChange function to fix it.
-            PrintMsg("|cffff8800[ZoneChange]|r Layout issue detected: " .. (reloadReason or "unknown"))
-            PrintMsg("|cff00ff00[ZoneChange]|r Triggering full spec change to reload layout...")
-            
             -- Clear any stale state from the failed spec change attempt
             ns.CDMGroups.specChangeInProgress = false
             ns.CDMGroups._pendingSpecChange = nil
@@ -13266,10 +13889,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
                     end
                     -- Clean up legacy storage after migration
                     specData.iconSettings = nil
-                    if migratedCount > 0 then
-                        PrintMsg("|cff00ff00[InitialLoad]|r Migrated " .. migratedCount .. " iconSettings to profile")
-                    end
-                    PrintMsg("|cffff8800[InitialLoad]|r Cleared legacy specData.iconSettings")
                 end
                 -- NOTE: iconSettings is now accessed via Shared.GetSpecIconSettings()
                 -- which returns profile.iconSettings directly - no reference needed
@@ -13381,7 +14000,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
                                 -- No need to also write to specData.freeIcons (legacy location)
                                 
                                 migratedCount = migratedCount + 1
-                                PrintMsg("Migrated free icon cdID " .. cdID .. " to CDMGroups")
                             end
                         end
                     end
@@ -13390,9 +14008,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
             
             -- Mark as migrated
             specData.migratedFromCDMEnhance = true
-            if migratedCount > 0 then
-                PrintMsg("Migrated " .. migratedCount .. " free icons from CDMEnhance")
-            end
         end
         
         -- Restore saved free icons from spec data
@@ -13416,21 +14031,18 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         -- We keep this cleanup here to remove redundant data from old SavedVariables
         -- ═══════════════════════════════════════════════════════════════════════════
         if specData.groups then
-            PrintMsg("|cffff8800[Cleanup]|r Cleared legacy specData.groups")
             specData.groups = nil
         end
         
         -- CLEANUP: Remove specData.arcAuras if present - arcAuras is character-wide, not per-spec
         -- This was accidentally created by some migration code
         if specData.arcAuras then
-            PrintMsg("|cffff8800[Cleanup]|r Cleared legacy specData.arcAuras")
             specData.arcAuras = nil
         end
         
         -- CLEANUP: Remove legacy specData.savedPositions if present
         -- All position data should be in profile.savedPositions (inside layoutProfiles), not at spec level
         if specData.savedPositions then
-            PrintMsg("|cffff8800[Cleanup]|r Cleared legacy specData.savedPositions")
             specData.savedPositions = nil
         end
         
@@ -13456,13 +14068,9 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
                         migratedCount = migratedCount + 1
                     end
                 end
-                if migratedCount > 0 then
-                    PrintMsg("|cff00ff00[Cleanup]|r Migrated " .. migratedCount .. " iconSettings to profile")
-                end
             end
             -- Clean up legacy storage
             if specData.iconSettings then
-                PrintMsg("|cffff8800[Cleanup]|r Cleared legacy specData.iconSettings")
                 specData.iconSettings = nil
             end
         end
@@ -13474,7 +14082,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         -- ═══════════════════════════════════════════════════════════════════════════
         if specData.freeIcons and specData.layoutProfiles then
             if profile and profile.freeIcons then
-                PrintMsg("|cffff8800[Cleanup]|r Cleared legacy specData.freeIcons")
                 specData.freeIcons = nil
             end
         end
@@ -13644,13 +14251,6 @@ function ns.CDMGroups.PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUI
         local cdmDb = GetCDMGroupsDB()
         if cdmDb then cdmDb.lastActiveSpec = ns.CDMGroups.currentSpec end
         
-        local specName = ns.CDMGroups.currentSpec
-        if GetSpecializationInfo then
-            local specIndex = GetSpecialization() or 1  -- Use numeric index for API
-            local _, name = GetSpecializationInfo(specIndex)
-            if name then specName = name end
-        end
-        print("|cff00ff00CDMGroups|r loaded for " .. specName .. ". /cdmg for options.")
         -- Apply group anchors (deferred so all groups/proxies are fully positioned)
         if ns.CDMGroupsAnchors and ns.CDMGroupsAnchors.ReapplyAll then
             C_Timer.After(0.2, function() ns.CDMGroupsAnchors.ReapplyAll() end)
@@ -14355,8 +14955,6 @@ function ns.CDMGroups.Initialize()
     local shouldMigrate = hasProfileData and not alreadyHasCharData and not isKnownCharacter and not otherCharactersExist
     
     if shouldMigrate then
-        PrintMsg("Migrating CDMGroups data from profile to character storage...")
-        
         -- Initialize char storage
         ns.db.char.cdmGroups = {
             specData = {},
@@ -14382,7 +14980,6 @@ function ns.CDMGroups.Initialize()
             -- Only migrate data for this character's class
             if type(specKey) == "string" and specKey:find(classPrefix) then
                 ns.db.char.cdmGroups.specData[specKey] = DeepCopy(specData)
-                PrintMsg("  Migrated " .. specKey)
             end
         end
         
@@ -14395,7 +14992,6 @@ function ns.CDMGroups.Initialize()
                 -- Only migrate if target doesn't already exist
                 if not ns.db.char.cdmGroups.specData[newKey] then
                     ns.db.char.cdmGroups.specData[newKey] = DeepCopy(oldSpecData)
-                    PrintMsg("  Migrated spec " .. i .. " -> " .. newKey)
                     -- Mark as migrated so the later numeric key migration doesn't duplicate
                     ns.db.char.cdmGroups.migratedOldKeys[i] = newKey
                 end
@@ -14410,8 +15006,6 @@ function ns.CDMGroups.Initialize()
                 end
             end
         end
-        
-        PrintMsg("Migration complete! Character-specific layouts now active.")
         
         -- ═══════════════════════════════════════════════════════════════════════════
         -- CLEANUP: Remove old profile storage for this class to prevent ghost groups
@@ -14433,13 +15027,7 @@ function ns.CDMGroups.Initialize()
                     cleanedCount = cleanedCount + 1
                 end
             end
-            if cleanedCount > 0 then
-                PrintMsg("  Cleaned up " .. cleanedCount .. " old profile entries")
-            end
         end
-    elseif not alreadyHasCharData and not isKnownCharacter then
-        -- New character - start fresh, no migration
-        PrintMsg("New character detected - starting with fresh layout")
     end
     
     -- Mark this character as initialized (so future logins don't try to migrate)
@@ -14515,12 +15103,6 @@ function ns.CDMGroups.Initialize()
                 end
             end
             
-            if rescuedProfiles > 0 then
-                PrintMsg("Rescued " .. rescuedProfiles .. " layout profiles from old storage")
-            end
-            if cleanedCount > 0 then
-                PrintMsg("Cleaned up " .. cleanedCount .. " stale profile entries (ghost groups fix)")
-            end
             ns.db.char.cdmGroups.cleanedProfileStorageV2 = true
         end
     end
@@ -14553,7 +15135,6 @@ function ns.CDMGroups.Initialize()
             if oldSpecData and not existingNewData and not alreadyMigrated then
                 db.specData[migratedKey] = DeepCopy(oldSpecData)
                 db.migratedOldKeys[i] = migratedKey  -- Mark as migrated
-                PrintMsg("Migrated layout data to " .. migratedKey)
             end
         end
     end
@@ -14639,13 +15220,9 @@ function ns.CDMGroups.Initialize()
                     migratedCount = migratedCount + 1
                 end
             end
-            if migratedCount > 0 then
-                PrintMsg("|cff00ff00[Initialize]|r Migrated " .. migratedCount .. " iconSettings to profile")
-            end
         end
         -- Clean up legacy specData.iconSettings (no longer needed)
         if specData and specData.iconSettings then
-            PrintMsg("|cffff8800[Initialize]|r Cleared legacy specData.iconSettings")
             specData.iconSettings = nil
         end
     end
@@ -14671,13 +15248,6 @@ function ns.CDMGroups.Initialize()
     local _initSrc = profile and GetLayoutSource(profile)
     local groupsToCreate = (_initSrc and next(_initSrc) and _initSrc) or DEFAULT_GROUPS
     
-    -- Debug: What are we creating groups from?
-    if _initSrc and next(_initSrc) then
-        PrintMsg("|cff88ccff[Init]|r Creating groups from " .. (profile and profile.groupLayoutName and ("Group Layout '" .. profile.groupLayoutName .. "'") or "profile.groupLayouts"))
-    else
-        PrintMsg("|cff88ccff[Init]|r Creating groups from DEFAULT_GROUPS (profile=" .. tostring(profile ~= nil) .. ")")
-    end
-    
     for groupName, layoutData in pairs(groupsToCreate) do
         -- Skip disabled groups (layoutData might be from DEFAULT_GROUPS which has enabled field)
         if type(layoutData) ~= "table" or layoutData.enabled ~= false then
@@ -14697,9 +15267,7 @@ function ns.CDMGroups.Initialize()
     -- CreateGroup can fail for valid reasons (CDM not ready, styling disabled, etc)
     if #brokenGroups > 0 then
     end
-    
-    PrintMsg("Initial restoration: " .. groupCount .. " groups, " .. posCount .. " positions, " .. freeCount .. " free icons")
-    
+
     -- ═══════════════════════════════════════════════════════════════════════════
     -- CRITICAL: Deactivate ImportRestore after successful profile load
     -- The profile was already written during import (before reload).
@@ -14855,6 +15423,9 @@ local function SaveGroupLayoutsToActiveProfile()
                 alignment = group.layout.alignment,
                 horizontalGrowth = group.layout.horizontalGrowth,
                 verticalGrowth = group.layout.verticalGrowth,
+                -- Group type
+                groupType = group.groupType,
+                auraLayout = group.auraLayout and DeepCopy(group.auraLayout) or nil,
                 -- Appearance
                 showBorder = group.showBorder,
                 showBackground = group.showBackground,
@@ -14945,6 +15516,41 @@ function ns.CDMGroups.UnlinkProfileFromGroupLayout()
     profile.groupLayoutName = nil
     PrintMsg("Profile '" .. activeProfileName .. "' unlinked from Group Layout '" .. oldName .. "' (snapshot taken)")
     return true
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- LINKED-LAYOUT WRITE WARNING (shown once per character)
+-- Live-linked Group Layouts are shared account-wide BY REFERENCE: anything
+-- loaded or changed while linked updates the layout for EVERY linked profile
+-- on EVERY character. Loading a wrong profile on an alt therefore overwrites
+-- the shared layout everywhere (bug report: all specs on a main bricked from
+-- a "bucket" character). The first dangerous action on each character shows
+-- this education popup; after "I understand" it never shows again there.
+-- ═══════════════════════════════════════════════════════════════════════════
+function ns.CDMGroups.WarnLinkedLayoutWrite(proceedFn, layoutNameOverride)
+    local linkedName = layoutNameOverride
+    if not linkedName and ns.CDMGroups.GetActiveProfileGroupLayoutName then
+        linkedName = ns.CDMGroups.GetActiveProfileGroupLayoutName()
+    end
+    local db = GetCDMGroupsDB and GetCDMGroupsDB()
+    if not linkedName or not db or db.linkedLayoutWarningAck then
+        proceedFn()
+        return
+    end
+    StaticPopupDialogs["ARCUI_LINKED_LAYOUT_WRITE"] = {
+        text = "|cff00ccffArcUI|r\n\nThis profile is LIVE-LINKED to the shared Group Layout |cffffd100"
+            .. linkedName .. "|r.\n\nAnything you load or change while linked updates that layout for"
+            .. " EVERY linked profile on ALL your characters. Loading the wrong profile here"
+            .. " overwrites it everywhere.\n\n|cff888888This warning is shown once per character.|r",
+        button1 = "I understand",
+        button2 = CANCEL,
+        OnAccept = function()
+            db.linkedLayoutWarningAck = true
+            proceedFn()
+        end,
+        timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
+    }
+    StaticPopup_Show("ARCUI_LINKED_LAYOUT_WRITE")
 end
 
 -- Get the Group Layout name the active profile is linked to (or nil)

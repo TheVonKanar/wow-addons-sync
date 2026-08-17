@@ -5,6 +5,7 @@ local M = _G[ADDON_NAME]
 if not M then return end
 local C = M.Const
 local L = M.Live
+local isSecretValue = M.Util.isSecretValue
 
 local MANUAL_TIMER_IDS = {
 	pull = 9101001,
@@ -257,6 +258,60 @@ end
 
 local function deferredTick()
 	C_Timer.After(0, function() M:Tick() end)
+end
+
+local currentEncounterStart
+
+local function formatFightDuration(secs)
+	secs = math.max(0, math.floor(secs + 0.5))
+	return string.format("%d:%02d", math.floor(secs / 60), secs % 60)
+end
+
+-- encounterUnitStatus lists engaged boss units (12.1.0+); remainingHealthPercent is 0-100.
+local function formatBossHealth(encounterUnitStatus)
+	if type(encounterUnitStatus) ~= "table" then return nil end
+	local parts = {}
+	for _, unit in ipairs(encounterUnitStatus) do
+		if type(unit) == "table" and not isSecretValue(unit.remainingHealthPercent) then
+			local pct = tonumber(unit.remainingHealthPercent)
+			if pct and pct > 0 then
+				local pctText = pct < 10 and string.format("%.1f%%", pct) or string.format("%.0f%%", pct)
+				local name = not isSecretValue(unit.creatureName) and unit.creatureName or nil
+				if #encounterUnitStatus > 1 and type(name) == "string" and name ~= "" then
+					parts[#parts + 1] = name .. " " .. pctText
+				else
+					parts[#parts + 1] = pctText
+				end
+			end
+		end
+	end
+	if #parts == 0 then return nil end
+	return table.concat(parts, ", ")
+end
+
+local function printEncounterSummary(encounterName, success, encounterUnitStatus)
+	local name = encounterName
+	if isSecretValue(name) or type(name) ~= "string" or name == "" then
+		name = "boss"
+	end
+	local duration
+	if currentEncounterStart then
+		duration = " after " .. formatFightDuration(GetTime() - currentEncounterStart)
+	else
+		duration = ""
+	end
+	local msg
+	if success == 1 then
+		msg = "Defeated " .. name .. duration .. "."
+	else
+		msg = "Wiped on " .. name .. duration
+		local health = formatBossHealth(encounterUnitStatus)
+		if health then
+			msg = msg .. " (boss health " .. health .. ")"
+		end
+		msg = msg .. "."
+	end
+	print("|cFF9CDF95Simple|rBossMods: " .. msg)
 end
 
 local function getUseRecommendedTimelineSettings()
@@ -569,10 +624,6 @@ ef:SetScript("OnEvent", function(_, event, ...)
 		if M.UpdateBarsAnchorPosition then
 			M:UpdateBarsAnchorPosition()
 		end
-		if M.ApplyPrivateAuraConfig then
-			local pc = SimpleBossModsDB.cfg.privateAuras
-			M:ApplyPrivateAuraConfig(pc.size, pc.gap, pc.growDirection, pc.x, pc.y)
-		end
 		if M.UpdateCombatTimerAppearance then
 			M:UpdateCombatTimerAppearance()
 		end
@@ -640,7 +691,8 @@ ef:SetScript("OnEvent", function(_, event, ...)
 		end
 		deferredTick()
 	elseif event == "ENCOUNTER_TIMELINE_EVENT_TRACK_CHANGED"
-		or event == "ENCOUNTER_TIMELINE_EVENT_BLOCK_STATE_CHANGED" then
+		or event == "ENCOUNTER_TIMELINE_EVENT_BLOCK_STATE_CHANGED"
+		or event == "ENCOUNTER_TIMELINE_EVENT_COLOR_CHANGED" then
 		deferredTick()
 	elseif event == "ENCOUNTER_TIMELINE_EVENT_REMOVED" then
 		local eventID = ...
@@ -648,7 +700,12 @@ ef:SetScript("OnEvent", function(_, event, ...)
 			M:removeEvent(eventID, "timeline-removed", false)
 		end
 		deferredTick()
+	elseif event == "ENCOUNTER_START" then
+		currentEncounterStart = GetTime()
 	elseif event == "ENCOUNTER_END" then
+		local _, encounterName, _, _, success, encounterUnitStatus = ...
+		printEncounterSummary(encounterName, success, encounterUnitStatus)
+		currentEncounterStart = nil
 		if M and M.ClearEncounterEventFallbackCache then
 			M:ClearEncounterEventFallbackCache()
 		end
@@ -794,10 +851,12 @@ ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_REMOVED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_TRACK_CHANGED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_BLOCK_STATE_CHANGED")
+ef:RegisterEvent("ENCOUNTER_TIMELINE_EVENT_COLOR_CHANGED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_LAYOUT_UPDATED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_STATE_UPDATED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_VIEW_ACTIVATED")
 ef:RegisterEvent("ENCOUNTER_TIMELINE_VIEW_DEACTIVATED")
+ef:RegisterEvent("ENCOUNTER_START")
 ef:RegisterEvent("ENCOUNTER_END")
 ef:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
 ef:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -833,6 +892,13 @@ SlashCmdList["SIMPLEBOSSMODS"] = function(msg)
 	end
 	if msg:sub(1, 5) == "break" then
 		handleManualTimer("break", msg:sub(6))
+		return
+	end
+
+	if msg == "auras" or msg == "aurafilters" or msg == "debug auras" then
+		if M.DebugAuraFilters then
+			M:DebugAuraFilters()
+		end
 		return
 	end
 

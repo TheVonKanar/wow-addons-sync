@@ -28,7 +28,7 @@ local ANCHOR_PARENT_OPTIONS = {
 	{ label = "UIParent", value = "NONE" },
 	{ label = "SBM: Icons", value = "SimpleBossMods_Icons" },
 	{ label = "SBM: Bars", value = "SimpleBossMods_Bars" },
-	{ label = "SBM: Private Auras", value = "SimpleBossMods_PrivateAuras" },
+	{ label = "SBM: Debuffs", value = "SimpleBossMods_PrivateAuras" },
 	{ label = "Blizzard: Player Frame", value = "PlayerFrame" },
 	{ label = "Blizzard: Target Frame", value = "TargetFrame" },
 	{ label = "Blizzard: Focus Frame", value = "FocusFrame" },
@@ -364,10 +364,8 @@ function M:ResetAllSettings()
 	if self.UpdateBarsAnchorPosition then
 		self:UpdateBarsAnchorPosition()
 	end
-	if self.UpdatePrivateAuraAnchor then
-		self:UpdatePrivateAuraAnchor()
-	elseif self.UpdatePrivateAuraAnchorPosition then
-		self:UpdatePrivateAuraAnchorPosition()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
 	end
 	if self.UpdateCombatTimerAppearance then
 		self:UpdateCombatTimerAppearance()
@@ -394,8 +392,7 @@ local function applyFullConfig()
 	if M.ApplyTimelineRecommendedMode then M:ApplyTimelineRecommendedMode() end
 	if M.UpdateIconsAnchorPosition then M:UpdateIconsAnchorPosition() end
 	if M.UpdateBarsAnchorPosition then M:UpdateBarsAnchorPosition() end
-	if M.UpdatePrivateAuraAnchor then M:UpdatePrivateAuraAnchor()
-	elseif M.UpdatePrivateAuraAnchorPosition then M:UpdatePrivateAuraAnchorPosition() end
+	if M.UpdatePrivateAuraDisplay then M:UpdatePrivateAuraDisplay() end
 	if M.UpdateCombatTimerAppearance then M:UpdateCombatTimerAppearance() end
 	if M.UpdateCombatTimerState then M:UpdateCombatTimerState() end
 	requestEncounterEventColorRefresh()
@@ -852,19 +849,41 @@ function M:ApplyBarBgColor(r, g, b, a)
 	bc.bgColor.a = U.clamp(tonumber(a) or L.BAR_BG_A, 0, 1)
 
 	M.SyncLiveConfig()
+	self:RefreshBarBackgrounds()
+end
 
+function M:RefreshBarBackgrounds()
 	for _, rec in pairs(self.events) do
-		if rec.barFrame and rec.barFrame.bg then
-			rec.barFrame.bg:SetColorTexture(L.BAR_BG_R, L.BAR_BG_G, L.BAR_BG_B, 1)
-			rec.barFrame.bg:SetAlpha(L.BAR_BG_A)
+		if rec.barFrame then
+			M.applyBarBackground(rec.barFrame)
 		end
 	end
 	for _, f in ipairs(M.pools.bar) do
-		if f.bg then
-			f.bg:SetColorTexture(L.BAR_BG_R, L.BAR_BG_G, L.BAR_BG_B, 1)
-			f.bg:SetAlpha(L.BAR_BG_A)
-		end
+		M.applyBarBackground(f)
 	end
+end
+
+function M:ApplyBarBgMatch(enabled, brightness)
+	local bc = SimpleBossModsDB.cfg.bars
+	if enabled ~= nil then
+		bc.bgMatchBarColor = enabled and true or false
+	end
+	if brightness ~= nil then
+		bc.bgMatchBrightness = U.clamp(tonumber(brightness) or M.Defaults.cfg.bars.bgMatchBrightness, 0.05, 0.9)
+	end
+
+	M.SyncLiveConfig()
+	self:RefreshBarBackgrounds()
+
+	-- Re-resolve fill colors so setBarFillFlat re-applies the tint with the
+	-- new mode (its dirty-check keys on the tint state).
+	for id, rec in pairs(self.events) do
+		self:updateRecord(id, rec.eventInfo, rec.remaining)
+	end
+	for _, f in ipairs(M.pools.bar) do
+		M.setBarFillFlat(f, L.BAR_FG_R, L.BAR_FG_G, L.BAR_FG_B, L.BAR_FG_A)
+	end
+	self:LayoutAll()
 end
 
 function M:ApplyFontConfig(fontKey)
@@ -882,9 +901,6 @@ function M:ApplyFontConfig(fontKey)
 	for _, f in ipairs(M.pools.bar) do
 		if f.txt then M.applyBarFont(f.txt) end
 		if f.rt then M.applyBarFont(f.rt) end
-	end
-	if self.UpdateTestPrivateAura then
-		self:UpdateTestPrivateAura()
 	end
 end
 
@@ -951,6 +967,92 @@ function M:ApplyIconShadowConfig(shadow)
 	end
 end
 
+function M:ApplyPrivateAuraEnabled(enabled)
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.enabled = enabled and true or false
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraConfig(size, fontSize, borderThickness)
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.size = U.clamp(U.round(tonumber(size) or pc.size), 16, 128)
+	pc.fontSize = U.clamp(U.round(tonumber(fontSize) or pc.fontSize), 10, 48)
+	pc.borderThickness = U.clamp(U.round(tonumber(borderThickness) or pc.borderThickness), 0, 6)
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraLayoutConfig(gap, perRow, limit)
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.gap = U.clamp(U.round(tonumber(gap) or pc.gap), 0, 50)
+	pc.perRow = U.clamp(U.round(tonumber(perRow) or pc.perRow), 1, 20)
+	pc.limit = U.clamp(U.round(tonumber(limit) or pc.limit), 0, 200)
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+local PRIVATE_AURA_FILTER_KEYS = {
+	raidInCombat = true,
+	raid = true,
+	raidPlayerDispellable = true,
+	dispellable = true,
+	crowdControl = true,
+	bossOrRole = true,
+}
+
+function M:ApplyPrivateAuraFilter(filterKey, enabled)
+	if not PRIVATE_AURA_FILTER_KEYS[filterKey] then return end
+
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.filters = pc.filters or {}
+	pc.filters[filterKey] = enabled and true or false
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraGrowDirection(direction)
+	local pc = SimpleBossModsDB.cfg.privateAuras
+	pc.growDirection = U.normalizeDirection(direction, pc.growDirection,
+		{ LEFT_DOWN = true, LEFT_UP = true, RIGHT_DOWN = true, RIGHT_UP = true })
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraFontConfig(fontKey)
+	SimpleBossModsDB.cfg.privateAuras.font = fontKey or M.Defaults.cfg.privateAuras.font
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraOutlineConfig(outline)
+	SimpleBossModsDB.cfg.privateAuras.outline = outline
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
+function M:ApplyPrivateAuraShadowConfig(shadow)
+	SimpleBossModsDB.cfg.privateAuras.shadow = shadow and true or false
+	M.SyncLiveConfig()
+	if self.UpdatePrivateAuraDisplay then
+		self:UpdatePrivateAuraDisplay()
+	end
+end
+
 function M:ApplyBarOutlineConfig(outline)
 	local bc = SimpleBossModsDB.cfg.bars
 	bc.outline = outline
@@ -1005,56 +1107,6 @@ function M:ApplyIndicatorConfig(iconSize, barSize)
 
 	self:LayoutAll()
 end
-
-function M:ApplyPrivateAuraConfig(size, gap, growDirection, x, y)
-	local pc = SimpleBossModsDB.cfg.privateAuras
-	pc.size = U.clamp(U.round(size), 16, 128)
-	pc.gap = U.clamp(U.round(gap), 0, 50)
-	if type(growDirection) == "string" then
-		local dir = growDirection:upper()
-		if dir == "LEFT" or dir == "RIGHT" or dir == "UP" or dir == "DOWN" then
-			pc.growDirection = dir
-		end
-	end
-	pc.x = tonumber(x) or pc.x or 0
-	pc.y = tonumber(y) or pc.y or 0
-
-	M.SyncLiveConfig()
-	if M.UpdatePrivateAuraAnchorPosition then
-		M:UpdatePrivateAuraAnchorPosition()
-	end
-	if M.UpdatePrivateAuraAnchor then
-		M:UpdatePrivateAuraAnchor()
-	end
-end
-
-function M:ApplyPrivateAuraEnabled(enabled)
-	local pc = SimpleBossModsDB.cfg.privateAuras
-	pc.enabled = enabled and true or false
-	M.SyncLiveConfig()
-	if not pc.enabled then
-		if M.ShowTestPrivateAura then
-			M:ShowTestPrivateAura(false)
-		end
-	end
-	if M.UpdatePrivateAuraAnchor then
-		M:UpdatePrivateAuraAnchor()
-	end
-	if pc.enabled and M._testActive and M.ShowTestPrivateAura then
-		M:ShowTestPrivateAura(true)
-	end
-end
-
-function M:ApplyPrivateAuraHideBorder(hide)
-	local pc = SimpleBossModsDB.cfg.privateAuras
-	pc.hideBorder = hide and true or false
-	M.SyncLiveConfig()
-	if M.UpdatePrivateAuraAnchor then
-		M:UpdatePrivateAuraAnchor()
-	end
-end
-
--- PrivateAura anchor functions generated by createAnchorApplySet above
 
 -- =========================
 -- Combat Timer config
@@ -1516,6 +1568,18 @@ function M:CreateSettingsWindow()
 			addColorPicker(defaults, "Background Color",
 				function() return L.BAR_BG_R, L.BAR_BG_G, L.BAR_BG_B, L.BAR_BG_A end,
 				function(r, g, b, a) addon:ApplyBarBgColor(r, g, b, a) end,
+				0.33
+			)
+
+			addCheckBox(defaults, "Background matches bar color",
+				function() return SimpleBossModsDB.cfg.bars.bgMatchBarColor and true or false end,
+				function(v) addon:ApplyBarBgMatch(v, nil) end,
+				0.33
+			)
+
+			addNumberInput(defaults, "Background brightness (0.05 - 0.9)",
+				function() return SimpleBossModsDB.cfg.bars.bgMatchBrightness or M.Defaults.cfg.bars.bgMatchBrightness end,
+				function(v) addon:ApplyBarBgMatch(nil, v) end,
 				0.33
 			)
 
@@ -2179,35 +2243,98 @@ function M:CreateSettingsWindow()
 		)
 	end
 
-	local function buildPrivateTab(container)
+	local function buildPrivateAuraTab(container)
 		local enabled = SimpleBossModsDB.cfg.privateAuras.enabled ~= false
 		local enable = AG:Create("InlineGroup")
-		enable:SetTitle("Private Auras")
+		enable:SetTitle("Debuffs")
 		enable:SetLayout("Flow")
 		enable:SetFullWidth(true)
 		container:AddChild(enable)
 
 		local toggle = AG:Create("CheckBox")
-		toggle:SetLabel("Enable Tracking")
+		toggle:SetLabel("Enable Debuff Tracking")
 		toggle:SetValue(enabled)
 		toggle:SetFullWidth(true)
 		toggle:SetCallback("OnValueChanged", function(_, _, value)
 			addon:ApplyPrivateAuraEnabled(value)
 			container:ReleaseChildren()
-			buildPrivateTab(container)
+			buildPrivateAuraTab(container)
 		end)
 		enable:AddChild(toggle)
 
+		local description = AG:Create("Label")
+		description:SetText("Shows harmful auras on the player, including debuffs from dungeon trash, bosses, and supported private encounter auras.")
+		description:SetFullWidth(true)
+		enable:AddChild(description)
+
 		if not enabled then
 			local note = AG:Create("Label")
-			note:SetText("Private aura tracking is currently disabled.")
+			note:SetText("Debuff tracking is currently disabled.")
 			note:SetFullWidth(true)
 			container:AddChild(note)
 			return
 		end
 
-		local _, privateAnchorParentMap = buildAnchorParentLists(SimpleBossModsDB.cfg.privateAuras.anchorParent)
-		buildAnchorSection(container, privateAnchorParentMap, "privateAuras", "PrivateAura", "ApplyPrivateAuraPosition")
+		local filtering = AG:Create("InlineGroup")
+		filtering:SetTitle("Filtering")
+		filtering:SetLayout("Flow")
+		filtering:SetFullWidth(true)
+		container:AddChild(filtering)
+
+		local filterDescription = AG:Create("Label")
+		filterDescription:SetText("HARMFUL is always applied. Enabled categories are combined as OR; if none are enabled, all harmful auras are shown.")
+		filterDescription:SetFullWidth(true)
+		filtering:AddChild(filterDescription)
+
+		local filterOptions = {
+			{
+				key = "raidInCombat",
+				label = "Raid-frame relevant",
+				description = "Debuffs the Blizzard raid frames would display: boss and role mechanics, dispellables, and anything not hidden by spell visibility data.",
+			},
+			{
+				key = "raid",
+				label = "Dispellable by you",
+				description = "Harmful auras your current character can dispel.",
+			},
+			{
+				key = "raidPlayerDispellable",
+				label = "Dispellable by group",
+				description = "Harmful auras that someone in your group can dispel.",
+			},
+			{
+				key = "dispellable",
+				label = "Any dispellable",
+				description = "Any debuff with a dispel type (Magic, Curse, Disease, Poison, Bleed), whether or not anyone in the group can dispel it.",
+			},
+			{
+				key = "crowdControl",
+				label = "Crowd control",
+				description = "Stuns, fears, and other crowd-control effects.",
+			},
+			{
+				key = "bossOrRole",
+				label = "Boss or role",
+				description = "Auras Blizzard marks as boss mechanics or tank/healer/DPS role mechanics.",
+			},
+		}
+
+		for _, option in ipairs(filterOptions) do
+			local filterKey = option.key
+			local checkbox = AG:Create("CheckBox")
+			checkbox:SetLabel(option.label)
+			checkbox:SetDescription(option.description)
+			checkbox:SetValue(SimpleBossModsDB.cfg.privateAuras.filters[filterKey] and true or false)
+			checkbox:SetRelativeWidth(0.5)
+			checkbox:SetCallback("OnValueChanged", function(_, _, value)
+				addon:ApplyPrivateAuraFilter(filterKey, value)
+			end)
+			filtering:AddChild(checkbox)
+		end
+
+		local _, auraAnchorParentMap = buildAnchorParentLists(SimpleBossModsDB.cfg.privateAuras.anchorParent)
+		auraAnchorParentMap["SimpleBossMods_PrivateAuras"] = nil
+		buildAnchorSection(container, auraAnchorParentMap, "privateAuras", "PrivateAura", "ApplyPrivateAuraPosition")
 
 		local layout = AG:Create("InlineGroup")
 		layout:SetTitle("Layout")
@@ -2215,57 +2342,121 @@ function M:CreateSettingsWindow()
 		layout:SetFullWidth(true)
 		container:AddChild(layout)
 
-		addNumberInput(layout, "Icon Size",
+		addNumberInput(layout, "Size",
 			function() return SimpleBossModsDB.cfg.privateAuras.size end,
 			function(v)
 				addon:ApplyPrivateAuraConfig(
 					v,
-					SimpleBossModsDB.cfg.privateAuras.gap,
-					SimpleBossModsDB.cfg.privateAuras.growDirection,
-					SimpleBossModsDB.cfg.privateAuras.x,
-					SimpleBossModsDB.cfg.privateAuras.y
+					SimpleBossModsDB.cfg.privateAuras.fontSize,
+					SimpleBossModsDB.cfg.privateAuras.borderThickness
 				)
 			end,
-			0.5
+			0.33
 		)
 
-		addNumberInput(layout, "Icon Gap",
-			function() return SimpleBossModsDB.cfg.privateAuras.gap end,
+		addNumberInput(layout, "Font Size",
+			function() return SimpleBossModsDB.cfg.privateAuras.fontSize end,
 			function(v)
 				addon:ApplyPrivateAuraConfig(
 					SimpleBossModsDB.cfg.privateAuras.size,
 					v,
-					SimpleBossModsDB.cfg.privateAuras.growDirection,
-					SimpleBossModsDB.cfg.privateAuras.x,
-					SimpleBossModsDB.cfg.privateAuras.y
+					SimpleBossModsDB.cfg.privateAuras.borderThickness
 				)
 			end,
-			0.5
+			0.33
+		)
+
+		addNumberInput(layout, "Border Thickness",
+			function() return SimpleBossModsDB.cfg.privateAuras.borderThickness end,
+			function(v)
+				addon:ApplyPrivateAuraConfig(
+					SimpleBossModsDB.cfg.privateAuras.size,
+					SimpleBossModsDB.cfg.privateAuras.fontSize,
+					v
+				)
+			end,
+			0.33
+		)
+
+		addNumberInput(layout, "Gap",
+			function() return SimpleBossModsDB.cfg.privateAuras.gap end,
+			function(v)
+				addon:ApplyPrivateAuraLayoutConfig(
+					v,
+					SimpleBossModsDB.cfg.privateAuras.perRow,
+					SimpleBossModsDB.cfg.privateAuras.limit
+				)
+			end,
+			0.33
+		)
+
+		addNumberInput(layout, "Per Row",
+			function() return SimpleBossModsDB.cfg.privateAuras.perRow end,
+			function(v)
+				addon:ApplyPrivateAuraLayoutConfig(
+					SimpleBossModsDB.cfg.privateAuras.gap,
+					v,
+					SimpleBossModsDB.cfg.privateAuras.limit
+				)
+			end,
+			0.33
+		)
+
+		addNumberInput(layout, "Max (0 = unlimited)",
+			function() return SimpleBossModsDB.cfg.privateAuras.limit end,
+			function(v)
+				addon:ApplyPrivateAuraLayoutConfig(
+					SimpleBossModsDB.cfg.privateAuras.gap,
+					SimpleBossModsDB.cfg.privateAuras.perRow,
+					v
+				)
+			end,
+			0.33
 		)
 
 		addDropdown(layout, "Grow Direction",
-			{ RIGHT = "Right", LEFT = "Left", UP = "Up", DOWN = "Down" },
+			{
+				LEFT_DOWN = "Left down",
+				LEFT_UP = "Left up",
+				RIGHT_DOWN = "Right down",
+				RIGHT_UP = "Right up",
+			},
 			function() return SimpleBossModsDB.cfg.privateAuras.growDirection end,
-			function(v)
-				addon:ApplyPrivateAuraConfig(
-					SimpleBossModsDB.cfg.privateAuras.size,
-					SimpleBossModsDB.cfg.privateAuras.gap,
-					v,
-					SimpleBossModsDB.cfg.privateAuras.x,
-					SimpleBossModsDB.cfg.privateAuras.y
-				)
-			end,
-			1
+			function(v) addon:ApplyPrivateAuraGrowDirection(v) end,
+			0.5
 		)
 
-		local hideBorder = AG:Create("CheckBox")
-		hideBorder:SetLabel("Hide Border")
-		hideBorder:SetValue(SimpleBossModsDB.cfg.privateAuras.hideBorder == true)
-		hideBorder:SetFullWidth(true)
-		hideBorder:SetCallback("OnValueChanged", function(_, _, value)
-			addon:ApplyPrivateAuraHideBorder(value)
-		end)
-		layout:AddChild(hideBorder)
+		if LSM then
+			local fontDropdown = AG:Create("LSM30_Font")
+			fontDropdown:SetLabel("Font")
+			fontDropdown:SetList(LSM:HashTable("font"))
+			fontDropdown:SetValue(SimpleBossModsDB.cfg.privateAuras.font)
+			fontDropdown:SetRelativeWidth(0.5)
+			fontDropdown:SetCallback("OnValueChanged", function(widget, _, value)
+				addon:ApplyPrivateAuraFontConfig(value)
+				widget:SetValue(SimpleBossModsDB.cfg.privateAuras.font)
+			end)
+			layout:AddChild(fontDropdown)
+		else
+			local label = AG:Create("Label")
+			label:SetText("LibSharedMedia is not available.")
+			label:SetFullWidth(true)
+			layout:AddChild(label)
+		end
+
+		addDropdown(layout, "Outline",
+			{ [""] = "None", ["OUTLINE"] = "Outline", ["OUTLINE, SLUG"] = "Outline (Slug)", ["THICKOUTLINE"] = "Thick Outline" },
+			function() return SimpleBossModsDB.cfg.privateAuras.outline end,
+			function(v) addon:ApplyPrivateAuraOutlineConfig(v) end,
+			0.25,
+			{ "", "OUTLINE", "OUTLINE, SLUG", "THICKOUTLINE" }
+		)
+
+		addCheckBox(layout, "Shadow",
+			function() return SimpleBossModsDB.cfg.privateAuras.shadow end,
+			function(v) addon:ApplyPrivateAuraShadowConfig(v) end,
+			0.25
+		)
 	end
 
 	local status = { selected = "General" }
@@ -2280,9 +2471,9 @@ function M:CreateSettingsWindow()
 			{ text = "Colors", value = "Colors" },
 			{ text = "Large Icons", value = "Icons" },
 			{ text = "Bars", value = "Bars" },
+			{ text = "Debuffs", value = "Private" },
 			{ text = "Dungeon", value = "Dungeon" },
 			{ text = "Combat Timer", value = "Combat" },
-		{ text = "Private Auras", value = "Private" },
 	})
 	tabs:SetStatusTable(status)
 		local validTabs = {
@@ -2290,9 +2481,9 @@ function M:CreateSettingsWindow()
 			Colors = true,
 			Icons = true,
 			Bars = true,
+			Private = true,
 			Dungeon = true,
 			Combat = true,
-		Private = true,
 	}
 	if status.selected == "Media" then
 		status.selected = "Bars"
@@ -2315,12 +2506,12 @@ function M:CreateSettingsWindow()
 			buildIconsTab(scroll)
 	elseif group == "Bars" then
 		buildBarsTab(scroll)
+	elseif group == "Private" then
+		buildPrivateAuraTab(scroll)
 	elseif group == "Dungeon" then
 		buildDungeonTab(scroll)
 	elseif group == "Combat" then
 		buildCombatTimerTab(scroll)
-	elseif group == "Private" then
-		buildPrivateTab(scroll)
 		end
 		scroll:DoLayout()
 		if scroll.FixScroll then

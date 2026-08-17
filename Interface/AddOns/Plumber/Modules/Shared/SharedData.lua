@@ -24,7 +24,7 @@ do  --Item Upgrade Track
 			3383,   --Adventurer (LFR, H)
 		},
 
-		CrestSources = {    --TODO: Midnight S1: Dawncrest
+		CrestSources = {
 			(PLAYER_DIFFICULTY6 or "Mythic") .. ", +9",
 			(PLAYER_DIFFICULTY2 or "Heroic") .. ", +4",
 			(PLAYER_DIFFICULTY1 or "Normal") .. ", +2",
@@ -33,15 +33,34 @@ do  --Item Upgrade Track
 		};
 	};
 
+	if addon.IS_12_1_0 then
+		ItemUpgradeConstant.CatalystCurrencyID = 3465; -- Venomblight Manaflux
+
+		ItemUpgradeConstant.Crests = {
+			3446,
+			3445,
+			3444,
+			3443,
+			3442,
+		};
+	end
+
 
 	addon.ItemUpgradeConstant = ItemUpgradeConstant;
 
+	local CrestNameAbbreviation = {
+		L["Upgrade Track 6"],
+		L["Upgrade Track 5"],
+		L["Upgrade Track 4"],
+		L["Upgrade Track 3"],
+		L["Upgrade Track 1"],
+	};
 
-	L["currency-3347"] = L["Upgrade Track 6"];
-	L["currency-3345"] = L["Upgrade Track 5"];
-	L["currency-3343"] = L["Upgrade Track 4"];
-	L["currency-3341"] = L["Upgrade Track 3"];
-	L["currency-3383"] = L["Upgrade Track 1"];
+	for index, currencyID in ipairs(ItemUpgradeConstant.Crests) do
+		L["currency-"..currencyID] = CrestNameAbbreviation[index];
+	end
+
+	CrestNameAbbreviation = nil;
 end
 
 
@@ -246,6 +265,13 @@ end
 --]]
 
 addon.PreyQuestData = {	--[questID] = {difficulty, criteriaID};
+-- 12.1.0 --
+[95021] = {3, 115704}, -- Janoa the Fang
+[95022] = {3, 115705}, -- Kursak the Coiled
+[95023] = {3, 115706}, -- Batani the Scaled
+[95024] = {3, 115707}, -- Kadani the Claw
+
+-- Pre 12.1.0 --
 [91098] = {
 1,
 105915,

@@ -22,14 +22,14 @@ function NSAPI:GetAllCharacters()
     return CopyTable(fullCharList)
 end
 
-function NSAPI:GetName(str, AddonName) -- Returns Nickname
+function NSAPI:GetName(str, AddonName, skiptranslit) -- Returns Nickname
     if (not str) or issecretvalue(str) then return str end
     local unitname = UnitExists(str) and UnitName(str) or str
     if issecretvalue(unitname) then return unitname end
     -- check if setting for the requesting addon is enabled, if not return the original name.
     -- if no AddonName is given we assume it's from an old WeakAura as they never specified
     if ((not NSRT.Settings["GlobalNickNames"]) or (AddonName and not NSRT.Settings[AddonName])) and AddonName ~= "Note" then
-        if NSRT.Settings["Translit"] then
+        if NSRT.Settings["Translit"] and not skiptranslit then
             unitname = LibTranslit:Transliterate(unitname)
         end
         return unitname
@@ -42,10 +42,10 @@ function NSAPI:GetName(str, AddonName) -- Returns Nickname
         end
         if (issecretvalue(name) or issecretvalue(realm)) then return name end
         local nickname = name and realm and fullCharList[name.."-"..realm]
-        if nickname and NSRT.Settings["Translit"] then
+        if nickname and NSRT.Settings["Translit"] and not skiptranslit then
             nickname = LibTranslit:Transliterate(nickname)
         end
-        if NSRT.Settings["Translit"] and not nickname then
+        if NSRT.Settings["Translit"] and not nickname and not skiptranslit then
             name = issecretvalue(name) and name or LibTranslit:Transliterate(name)
         end
         return nickname or name
@@ -54,7 +54,7 @@ function NSAPI:GetName(str, AddonName) -- Returns Nickname
         if not nickname then
             nickname = fullNameList[str]
         end
-        if nickname and NSRT.Settings["Translit"] then
+        if nickname and NSRT.Settings["Translit"] and not skiptranslit then
             nickname = LibTranslit:Transliterate(nickname)
         end
         return nickname or unitname
@@ -63,7 +63,7 @@ end
 
 function NSAPI:GetChar(name, nick, AddonName) -- Returns Char in Raid from Nickname or Character Name with nick = true
     if UnitExists(name) and UnitIsConnected(name) then return name end
-    name = nick and NSAPI:GetName(name, AddonName) or name
+    name = nick and NSAPI:GetName(name, AddonName, true) or name
     if UnitExists(name) and UnitIsConnected(name) then return name end
     local chars = NSAPI:GetCharacters(name)
     local newname, newrealm = nil
@@ -87,10 +87,6 @@ end
 
 function NSAPI:ImportNickNames(importString) -- string format is charactername-realm:nickname;charactername-realm:nickname;...
     return NSI:ImportNickNames(importString)
-end
-
-function NSAPI:SyncNickNames()
-    return NSI:SyncNickNames()
 end
 
 -- Own NickName Change
@@ -444,6 +440,13 @@ function NSI:InitNickNames()
             local name = UnitName(unit)
             return name and NSAPI:GetName(name, "Unhalted") or name
         end, "Name", "[NSRT] NickName")
+        for i=1, 12 do
+            UUFG:AddTag("NSNickName:"..i, "UNIT_NAME_UPDATE", function(unit)
+                local name = UnitName(unit)
+                name = name and NSAPI:GetName(name, "Unhalted") or name
+                return NSI:Utf8Sub(name, 1, i)
+            end, "Name", "[NSRT] NickName Shortened "..i)
+        end
     end
 
     self:VuhDoNickNameUpdated()
@@ -522,21 +525,6 @@ function NSI:ImportNickNames(string) -- string format is charactername-realm:nic
         end
         self:GlobalNickNameUpdate()
     end
-end
-
-function NSI:SyncNickNames()
-    local now = GetTime()
-    if (self.LastNickNameSync and self.LastNickNameSync > now-4) or (NSRT.Settings["NickNamesSyncSend"] == 3) then return end -- don't let user spam syncs / end early if set to none
-    self.LastNickNameSync = now
-    local channel = NSRT.Settings["NickNamesSyncSend"] == 1 and "RAID" or "GUILD"
-    self:Broadcast("NSI_NICKNAMES_SYNC", channel, NSRT.NickNames, channel) -- channel is either GUILD or RAID
-end
-
-function NSI:SyncNickNamesAccept(nicknametable)
-    for name, nickname in pairs(nicknametable) do
-        NSRT.NickNames[name] = nickname
-    end
-    self:GlobalNickNameUpdate()
 end
 
 function NSI:AddNickName(name, realm, nickname) -- keeping the nickname empty acts as removing the nickname for that character

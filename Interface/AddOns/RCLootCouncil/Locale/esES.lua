@@ -231,6 +231,8 @@ L["Hide Votes"] = "Ocultar Votos"
 L["hide_votes_desc"] = "Oculta el numero de votos hasta que se haya votado."
 L["history_export_excel_international_tip"] = "Exportación delimitada para la versión internacional de Excel que utiliza ',' como delimitador de fórmula."
 L["history_export_sheets_tip"] = "Exportación delimitada para Google Sheets y la versión inglesa de Excel que utiliza ';' como delimitador de fórmula."
+--[[Translation missing --]]
+L["history_sessionResponses_tip"] = "Click to show everyone's response to this item."
 L["How to sync"] = "Como sincronizar"
 L["huge_export_desc"] = "Exportación muy grande. Sólo se muestra la primera línea para evitar que el juego se cuelgue. Pulsa Ctrl+C para copiar todo el contenido."
 L["Ignore List"] = "Ignorar lista"
@@ -389,6 +391,14 @@ L["opt_saveBonusRolls_Desc"] = "Marca esta casilla para guardar todas las tirada
 L["opt_saveBonusRolls_Name"] = "Registrar tiradas de bonus"
 L["opt_savePersonalLoot_desc"] = "Si está desactivado, el botín personal no se añadirá al historial."
 L["opt_savePersonalLoot_name"] = "Registrar botín personal"
+--[[Translation missing --]]
+L["opt_saveSessionResponses_desc"] = "Check to store everyone's response to awarded items in the loot history, when received from the leader. The Master Looter will have to enable 'Send Session Responses' for this to work. This will increase the storage used by the loot history significantly."
+--[[Translation missing --]]
+L["opt_saveSessionResponses_name"] = "Save Session Responses"
+--[[Translation missing --]]
+L["opt_sendSessionResponses_desc"] = "Check to send everyone's responses when awarding items, so it can be stored in the history. Note: can hurt comms performance."
+--[[Translation missing --]]
+L["opt_sendSessionResponses_name"] = "Send Session Responses"
 L["opt_sharingProfile_success"] = "Perfil importado con éxito: \"%s\""
 L["opt_skipSessionFrame_desc"] = "Se salta el cuadro de sesión. NOTA: Esto causa que el addon comience una sesión nueva con todos los objetos elegibles sin dejar posibilidad de editar la lista!"
 L["opt_skipSessionFrame_name"] = "Saltar el Cuadro de Sesión"

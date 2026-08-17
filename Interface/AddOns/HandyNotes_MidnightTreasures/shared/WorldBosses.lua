@@ -7,7 +7,7 @@ local boss = {
 ns.RegisterPoints(ns.EVERSONGWOODS, {
     [45245997] = { -- Lu'ashal
         npc=244762,
-        quest=92560,
+        quest=92560, -- also 92127
         worldquest=92560,
         loot={
             250447, -- Radiant Eversong Scepter
@@ -24,7 +24,7 @@ ns.RegisterPoints(ns.EVERSONGWOODS, {
 
 ns.RegisterPoints(ns.ZULAMAN, {
     [45244790] = { -- Cragpine
-        quest=92123,
+        quest=92123, -- also 92128
         worldquest=92123,
         npc=244424,
         loot={
@@ -75,3 +75,27 @@ ns.RegisterPoints(ns.VOIDSTORM, {
         },
     },
 }, boss)
+
+ns.RegisterPoints(ns.COILEDISLE, {
+    [51605400] = { -- Nymrissa Wavecaller
+        quest=97128,
+        worldquest=97128,
+        -- areaPoi=8896,
+        npc=252959,
+        loot={
+            268199, -- Tidepiercer's Bubble Popper
+            268217, -- Rising Tide Wristguards
+            268221, -- Tidebound Sorcereress's Robes
+            268226, -- Swelling Sea Spaulders
+            268232, -- Cincture of the Abyssal Grotto
+            268238, -- Grips of Swirling Fury
+            268244, -- Forgotten Grotto Girdle
+            268247, -- Breakwater Boots
+            268262, -- Bubblefin Splash Guard
+            268263, -- Frostscale's Mystic Frond
+            268266, -- Alluring Bubbleband
+            270167, -- Wavecaller's Seastone
+            {279112, decor=true}, -- Clumped Asteroidea
+        },
+    },
+})

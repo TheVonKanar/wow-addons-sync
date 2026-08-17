@@ -1,11 +1,11 @@
 ---@class addonTablePlatynator
 local addonTable = select(2, ...)
 
+local auraFormatter, _auraPlainFormatter = addonTable.Display.Utilities.GetAuraNumericFormatter()
+
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local pandemicCurve
 local pandemicPercentage = 0.3
-local dispelCurve
 local dispelColorMap = {
   ["Magic"] = CreateColorFromHexString("ff007ffb"),
   ["Curse"] = CreateColorFromHexString("ffb534ed"),
@@ -14,24 +14,6 @@ local dispelColorMap = {
   [""] = CreateColorFromHexString("ffff0000"),
   ["Bleed"] = CreateColorFromHexString("fffc0318"),
 }
-if C_CurveUtil then
-  pandemicCurve = C_CurveUtil.CreateCurve()
-  pandemicCurve:SetType(Enum.LuaCurveType.Step)
-  pandemicCurve:AddPoint(0, 1)
-  pandemicCurve:AddPoint(pandemicPercentage, 0)
-
-  dispelCurve = C_CurveUtil.CreateColorCurve()
-  dispelCurve:SetType(Enum.LuaCurveType.Step)
-  dispelCurve:AddPoint(0, CreateColor(0, 0, 0, 0))
-  dispelCurve:AddPoint(1, dispelColorMap["Magic"])
-  dispelCurve:AddPoint(2, dispelColorMap["Curse"])
-  dispelCurve:AddPoint(3, dispelColorMap["Disease"])
-  dispelCurve:AddPoint(4, dispelColorMap["Poison"])
-  dispelCurve:AddPoint(5, CreateColor(0, 0, 0, 0))
-  dispelCurve:AddPoint(9, dispelColorMap[""])
-  dispelCurve:AddPoint(10, CreateColor(0, 0, 0, 0))
-  dispelCurve:AddPoint(11, dispelColorMap["Bleed"])
-end
 
 local function GetAurasPoolLegacy(self)
   local borderAsset = LSM:Fetch("nineslice", "Platy: 1px")
@@ -144,6 +126,67 @@ local function GetAurasPoolLegacy(self)
   end)
 end
 
+local function StyleAura(auraFrame, details)
+  auraFrame.kind = details.kind
+
+  auraFrame:EnableMouseMotion(details.showTooltips)
+
+  auraFrame.CountFrame.Count:SetFontObject(addonTable.CurrentFont)
+  auraFrame.CountFrame.Count:ClearAllPoints()
+  addonTable.Display.ApplyAnchor(auraFrame.CountFrame.Count, details.texts.stacks.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.stacks.scale or 1)
+  if addonTable.CurrentFontUsesSmoothing then
+    auraFrame.CountFrame.Count:SetTextScale(1)
+    auraFrame.CountFrame.Count:SetScale(details.texts.stacks.scale)
+  else
+    auraFrame.CountFrame.Count:SetTextScale(details.texts.stacks.scale)
+    auraFrame.CountFrame.Count:SetScale(1)
+  end
+  local c1 = details.texts.stacks.color
+  auraFrame.CountFrame.Count:SetTextColor(c1.r, c1.g, c1.b)
+  auraFrame.CountFrame.Count:SetShown(details.texts.stacks.visible);
+
+  auraFrame.Cooldown:SetHideCountdownNumbers(not details.texts.countdown.visible)
+
+  if details.texts.countdown.visible then
+    auraFrame.Cooldown.Text:SetFontObject(addonTable.CurrentFont)
+    auraFrame.Cooldown.Text:ClearAllPoints()
+    addonTable.Display.ApplyAnchor(auraFrame.Cooldown.Text, details.texts.countdown.anchor, addonTable.CurrentFontUsesSmoothing and 1/details.texts.countdown.scale or 1)
+    if addonTable.CurrentFontUsesSmoothing then
+      auraFrame.Cooldown.Text:SetTextScale(1)
+      auraFrame.Cooldown.Text:SetScale(details.texts.countdown.scale)
+    else
+      auraFrame.Cooldown.Text:SetTextScale(details.texts.countdown.scale)
+      auraFrame.Cooldown.Text:SetScale(1)
+    end
+    local c2 = details.texts.countdown.color
+    auraFrame.Cooldown.Text:SetTextColor(c2.r, c2.g, c2.b)
+    if addonTable.Constants.IsCooldownFormattingAvailable then
+      if details.texts.countdown.showFractions then
+        auraFrame.Cooldown:SetCountdownFormatter(auraFormatter)
+      else
+        auraFrame.Cooldown:SetCountdownFormatter(nil)
+        auraFrame.Cooldown:SetCountdownAbbrevThreshold(20)
+      end
+    end
+  end
+
+  if auraFrame.CountFrame.Count.SetSmoothScaling then
+    auraFrame.CountFrame.Count:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+    auraFrame.Cooldown.Text:SetSmoothScaling(addonTable.CurrentFontUsesSmoothing)
+  end
+
+  auraFrame.Cooldown:SetDrawEdge(details.showSwipe)
+  auraFrame.Cooldown:SetDrawSwipe(details.showSwipe)
+
+  PixelUtil.SetSize(auraFrame, 20, 20 * details.height)
+  PixelUtil.SetSize(auraFrame.Border, 20, 20 * details.height)
+  PixelUtil.SetSize(auraFrame.Icon, 20, 20 * details.height)
+  local texBase = 0.95 * (1 - details.height) / 2
+  auraFrame.Icon:SetTexCoord(0.05, 0.95, 0.05 + texBase, 0.95 - texBase)
+
+  auraFrame.Dispel:SetShown(details.showType)
+end
+
 function addonTable.Display.SetupLegacyAuras(self)
   self.AurasPools = {
     buffs = GetAurasPoolLegacy(self),
@@ -201,19 +244,15 @@ function addonTable.Display.SetupLegacyAuras(self)
         auraFrame.auraInstanceID = auraInstanceID
         auraFrame.auraIndex = nil
         auraFrame.auraFilter = auraFilter
-        if addonTable.Constants.IsSecretsActive then
-          auraFrame.durationSecret = aura.durationSecret
-        else
-          auraFrame.duration = aura.duration
-          auraFrame.expirationTime = aura.expirationTime
-        end
+        auraFrame.duration = aura.duration
+        auraFrame.expirationTime = aura.expirationTime
 
         auraFrame.Icon:SetTexture(aura.icon);
         auraFrame.CountFrame.Count:SetText(aura.applicationsString)
 
         if auraFrame.styleIndex ~= self.styleIndex then
           auraFrame.styleIndex = self.styleIndex
-          addonTable.Display.StyleAura(auraFrame, details)
+          StyleAura(auraFrame, details)
           if details.showStealable then
             auraFrame.Pandemic:SetVertexColor(1, 171/255, 26/255)
           elseif details.showPandemic then
@@ -229,19 +268,7 @@ function addonTable.Display.SetupLegacyAuras(self)
           end
         end
 
-        if auraFrame.durationSecret then
-          auraFrame.Cooldown:SetCooldownFromDurationObject(auraFrame.durationSecret)
-          if details.showPandemic then
-            auraFrame.Pandemic:SetAlpha(C_CurveUtil.EvaluateColorValueFromBoolean(auraFrame.durationSecret:IsZero(), 0, auraFrame.durationSecret:EvaluateRemainingPercent(pandemicCurve)))
-          end
-          if details.showType then
-            local color = C_UnitAuras.GetAuraDispelTypeColor(self.unit, auraFrame.auraInstanceID, dispelCurve)
-            auraFrame.Dispel.Border:SetVertexColor(color:GetRGBA())
-          end
-          if details.showStealable then
-            auraFrame.Pandemic:SetAlphaFromBoolean(aura.isStealable)
-          end
-        elseif auraFrame.expirationTime then
+        if auraFrame.expirationTime then
           CooldownFrame_Set(auraFrame.Cooldown, aura.expirationTime - aura.duration, aura.duration, aura.duration > 0, true);
           if details.showPandemic then
             auraFrame.Pandemic:SetAlpha(aura.duration > 0 and aura.expirationTime - GetTime() <= aura.duration * pandemicPercentage and 1 or 0)

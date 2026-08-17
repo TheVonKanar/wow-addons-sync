@@ -23,8 +23,8 @@ function addonTable.Display.Utilities.IsTappedUnit(unit)
   return not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)
 end
 
-function addonTable.Display.Utilities.GetUnitDifficulty(unit)
-  if addonTable.Constants.IsRetail then
+if addonTable.Constants.IsRetail then
+  function addonTable.Display.Utilities.GetUnitDifficulty(unit)
     local rawDifficulty = C_PlayerInfo.GetContentDifficultyCreatureForPlayer(unit)
     if rawDifficulty == Enum.RelativeContentDifficulty.Trivial then
       return  "trivial"
@@ -39,9 +39,12 @@ function addonTable.Display.Utilities.GetUnitDifficulty(unit)
     else
       return "difficult"
     end
-  else
-    local levelDiff = UnitLevel(unit) - UnitEffectiveLevel("player");
-    if levelDiff >= 5 then
+  end
+else
+  function addonTable.Display.Utilities.GetUnitDifficulty(unit)
+    local level = UnitLevel(unit)
+    local levelDiff = level - UnitEffectiveLevel("player");
+    if levelDiff >= 5 or level == -1 then
       return "impossible"
     elseif levelDiff >= 3 then
       return "verydifficult"
@@ -434,7 +437,8 @@ do
   local role = roleType.Damage
   local isTank = false
   local rangeLimit = 0
-  local lastSpecialization = 0
+  local lastSpecializationIndex = 0
+  local specializationID = 0
   local harmChecker
   local _, playerClass = UnitClass("player")
 
@@ -462,8 +466,7 @@ do
         return roleType.Tank
       end
     else
-      local specIndex = C_SpecializationInfo.GetSpecialization()
-      local _, _, _, _, role = C_SpecializationInfo.GetSpecializationInfo(specIndex)
+      local _, _, _, _, role = C_SpecializationInfo.GetSpecializationInfo(lastSpecializationIndex)
 
       return roleMap[role]
     end
@@ -474,10 +477,7 @@ do
     if addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath then
       rangeLimit = addonTable.Constants.DefaultRange[playerClass]
     else
-      local specIndex = C_SpecializationInfo.GetSpecialization() or lastSpecialization
-      lastSpecialization = specIndex
-      local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
-      rangeLimit = addonTable.Constants.DefaultRange[specID]
+      rangeLimit = addonTable.Constants.DefaultRange[specializationID]
       for spellID, range in pairs(addonTable.Constants.RangeModifier) do
         if C_SpellBook.IsSpellKnown(spellID) then
           rangeLimit = range
@@ -486,6 +486,23 @@ do
       end
     end
     harmChecker = RangeCheck:GetHarmMaxChecker(addonTable.Display.Utilities.GetRangedLimit() or RangeCheck.MeleeRange)
+  end
+
+  local function UpdateAuraFilters()
+    local allFilters = addonTable.Config.Get(addonTable.Config.Options.AURA_FILTERS)
+    if not allFilters[specializationID] then
+      allFilters[specializationID] = {
+        buffs = { include = {}, exclude = {} },
+        debuffs = { include = {}, exclude = {} },
+        crowdControl = { include = {}, exclude = {} },
+      }
+    end
+  end
+
+  function addonTable.Display.Utilities.MigrateAuraFilters()
+    if specializationID then
+      UpdateAuraFilters()
+    end
   end
 
   do
@@ -504,7 +521,19 @@ do
     specializationMonitor:RegisterEvent("SPELLS_CHANGED")
 
     specializationMonitor:SetScript("OnEvent", function(_, e)
+      if not (addonTable.Constants.IsEra or addonTable.Constants.IsBC or addonTable.Constants.IsWrath) then
+        local specIndex = C_SpecializationInfo.GetSpecialization() or lastSpecializationIndex
+        local hasChanged = specIndex ~= lastSpecializationIndex
+        lastSpecializationIndex = specIndex
+        specializationID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
+        if hasChanged then
+          addonTable.CallbackRegistry:TriggerEvent("SpecializationChanged")
+        end
+      end
+
       AssignRange()
+      UpdateAuraFilters()
+
       if e ~= "SPELLS_CHANGED" then
         local newRole = GetPlayerRole()
         if newRole ~= role then
@@ -526,6 +555,19 @@ do
 
   function addonTable.Display.Utilities.GetRangeChecker()
     return harmChecker
+  end
+
+  function addonTable.Display.Utilities.GetSpecializationID()
+    if specializationID == 0 then
+      local specIndex = C_SpecializationInfo.GetSpecialization() or lastSpecializationIndex
+      lastSpecializationIndex = specIndex
+      specializationID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
+      UpdateAuraFilters()
+
+      return specializationID
+    else
+      return specializationID
+    end
   end
 end
 
@@ -647,7 +689,8 @@ do
         local playerUnit = "raid" .. i
         if not UnitIsUnit(playerUnit, "player") then
           local role = UnitGroupRolesAssigned(playerUnit)
-          knownTanksAndPetsMap[playerUnit] = role == "TANK" or nil
+          local isAssigned = GetPartyAssignment("MAINTANK", playerUnit) or GetPartyAssignment("MAINASSIST", playerUnit)
+          knownTanksAndPetsMap[playerUnit] = isAssigned or role == "TANK" or nil
           local petUnit = "raidpet" .. i
           knownTanksAndPetsMap[petUnit] = UnitExists(petUnit) or nil
         end
@@ -657,7 +700,8 @@ do
       for i = 1, 4 do
         local playerUnit = "party" .. i
         local role = UnitGroupRolesAssigned(playerUnit)
-        knownTanksAndPetsMap[playerUnit] = role == "TANK" or nil
+        local isAssigned = GetPartyAssignment("MAINTANK", playerUnit) or GetPartyAssignment("MAINASSIST", playerUnit)
+        knownTanksAndPetsMap[playerUnit] = isAssigned or role == "TANK" or nil
         local petUnit = "partypet" .. i
         knownTanksAndPetsMap[petUnit] = UnitExists(petUnit) or nil
       end
@@ -708,34 +752,50 @@ do
 end
 
 do
-  local auraFormatter
-  if C_StringUtil and C_StringUtil.CreateNumericRuleFormatter then
-    auraFormatter = C_StringUtil.CreateNumericRuleFormatter()
-    auraFormatter:SetBreakpoints({
-      {
-        threshold = 0,
-        step = 0.1,
-        format = "%.1f",
-      },
-      {
-        threshold = 3,
-        step = 1,
-        format = "%d",
-      },
-      {
-        threshold = 60,
-        format = COOLDOWN_DURATION_MIN,
-        components = {
-          {
-            div = 60,
-            step = 1,
-          }
+  local auraFormatter = C_StringUtil.CreateNumericRuleFormatter()
+  auraFormatter:SetBreakpoints({
+    {
+      threshold = 0,
+      step = 0.1,
+      format = "%.1f",
+    },
+    {
+      threshold = 3,
+      step = 1,
+      format = "%d",
+    },
+    {
+      threshold = 60,
+      format = COOLDOWN_DURATION_MIN,
+      components = {
+        {
+          div = 60,
+          step = 1,
         }
       }
-    })
-  end
+    }
+  })
+
+  local auraPlainFormatter = C_StringUtil.CreateNumericRuleFormatter()
+  auraPlainFormatter:SetBreakpoints({
+    {
+      threshold = 0,
+      step = 1,
+      format = "%d",
+    },
+    {
+      threshold = 60,
+      format = COOLDOWN_DURATION_MIN,
+      components = {
+        {
+          div = 60,
+          step = 1,
+        }
+      }
+    }
+  })
 
   function addonTable.Display.Utilities.GetAuraNumericFormatter()
-    return auraFormatter
+    return auraFormatter, auraPlainFormatter
   end
 end

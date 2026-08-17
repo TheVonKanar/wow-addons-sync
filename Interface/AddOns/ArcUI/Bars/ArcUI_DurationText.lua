@@ -145,6 +145,9 @@ local function SecondsColorKey(d)
   end
   return table.concat(parts, "|")
 end
+-- exported: BarDuration's ApplyStyle uses it to detect band edits (values or
+-- colors changed while Color by Remaining Time stays on) and rewire the slot
+DT.SecondsColorKey = SecondsColorKey
 
 -- Build a NumericRuleFormatter whose breakpoints switch the text colour by the
 -- remaining-seconds value. Band [0, t1) uses the lowest threshold's colour; each
@@ -164,6 +167,42 @@ function DT.BuildSecondsColorFormatter(d, decimals)
     f:AddBreakpoint({ threshold = t[i].value, format = fmt })
   end
   return f
+end
+
+-- LIVE variant: ONE persistent formatter per fontstring whose breakpoints are
+-- REWRITTEN in place when the bands change (the live-formatter pattern from
+-- the stack-count system). The engine binding holds the OBJECT and formats
+-- with its current rules on every tick — so if the binding kept our
+-- reference, a band edit recolors on the next tick even MID-COMBAT, with
+-- zero slot work. The combat-end recreate (colorKey change detection in
+-- BD.ApplyStyle) stays as the guaranteed fallback either way.
+local liveSecFmt = {}   -- [fs] = { fmt = NumericRuleFormatter, sig = "dec:key" }
+function DT.GetLiveSecondsColorFormatter(fs, d, decimals)
+  if not fs then return DT.BuildSecondsColorFormatter(d, decimals) end
+  if not (C_StringUtil and C_StringUtil.CreateNumericRuleFormatter) then return nil end
+  local t = CollectSecondsThresholds(d)
+  if #t == 0 then return nil end
+  local rec = liveSecFmt[fs]
+  if not rec then rec = {}; liveSecFmt[fs] = rec end
+  if not rec.fmt then
+    rec.fmt = C_StringUtil.CreateNumericRuleFormatter()
+    if not rec.fmt then return nil end
+    rec.sig = nil
+  end
+  local sig = tostring(decimals or 1) .. ":" .. SecondsColorKey(d)
+  if rec.sig ~= sig then
+    rec.sig = sig
+    local numFmt = "%." .. (decimals or 1) .. "f"
+    local bps = {}
+    bps[#bps + 1] = { threshold = 0, format = ColorEscape(t[1].color) .. numFmt .. "|r" }
+    for i = 1, #t do
+      local nextColor = t[i + 1] and t[i + 1].color
+      bps[#bps + 1] = { threshold = t[i].value,
+        format = nextColor and (ColorEscape(nextColor) .. numFmt .. "|r") or numFmt }
+    end
+    rec.fmt:SetBreakpoints(bps)
+  end
+  return rec.fmt
 end
 
 -- Shared 20fps colour ticker. colorBindings maps FontString -> {unit, auraID,

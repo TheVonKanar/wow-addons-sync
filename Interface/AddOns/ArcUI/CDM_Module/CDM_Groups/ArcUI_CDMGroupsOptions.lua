@@ -109,9 +109,16 @@ local DEFAULT_GROUPS = {
 
 -- UI STATE FOR OPTIONS (ns.CDMGroups.selectedGroup stored globally)
 
+-- Which scope the New Icons section is WRITING to. MUST live at file scope:
+-- GetOptionsTable() rebuilds its entire closure on every panel refresh, so a
+-- local inside it was recreated as "account" the moment the picker fired
+-- NotifyChange, and the selection snapped back every time.
+local routingEditScope = "account"
+
 local collapsedSections = {
     groupLayouts = true,   -- Load Group Layout - start collapsed
     placeholders = true,   -- Placeholders section - start collapsed
+    newIcons = true,       -- New Icon Routing section - start collapsed
     globalOptions = true,
     grid = false,
     layout = false,
@@ -153,6 +160,13 @@ local function GetOptionsTable()
     local function HideIfNoGroup()
         return not GetSelectedGroup()
     end
+
+    -- Spell-ID Aura Group selected? (engine flow layout — the addon-side
+    -- dynamic layout machinery does not apply to these groups)
+    local function IsAuraGroupSelected()
+        local g = GetSelectedGroup()
+        return g and g.isAuraGroup or false
+    end
     
     -- Helper for fine tuning mode
     local function IsFineTuning()
@@ -165,8 +179,12 @@ local function GetOptionsTable()
         local values = {}
         
         -- Primary: Use runtime groups (authoritative for active session)
-        for groupName, _ in pairs(ns.CDMGroups.groups or {}) do
-            values[groupName] = groupName
+        for groupName, g in pairs(ns.CDMGroups.groups or {}) do
+            if g.isAuraGroup then
+                values[groupName] = groupName .. " |cffff88ff(Aura)|r"
+            else
+                values[groupName] = groupName
+            end
         end
         
         -- Secondary: Check profile.groupLayouts for groups not yet loaded
@@ -196,19 +214,20 @@ local function GetOptionsTable()
     end
     
     -- Create a new group with default settings (in current spec)
-    local function CreateNewGroup(groupName)
+    -- groupType: nil = normal, "aura" = Spell-ID Aura Group
+    local function CreateNewGroup(groupName, groupType)
         if not groupName or groupName == "" then return false end
-        
+
         -- Check if group already exists in runtime
         if ns.CDMGroups.groups and ns.CDMGroups.groups[groupName] then
             return false -- Already exists
         end
-        
+
         -- CreateGroup handles everything:
         -- 1. Reads from profile.groupLayouts (or creates defaults)
         -- 2. Saves new group to profile.groupLayouts
         -- 3. Creates runtime group object
-        local group = ns.CDMGroups.CreateGroup(groupName)
+        local group = ns.CDMGroups.CreateGroup(groupName, groupType)
         if not group then return false end
         
         -- Select the new group
@@ -223,6 +242,80 @@ local function GetOptionsTable()
     end
     
     -- Rename a group (in current spec)
+    -- ── NEW ICON ROUTING helpers ─────────────────────────────────────────
+    -- Destinations are stored as a group's STABLE ID (never its name), so a
+    -- rename cannot silently redirect or orphan the routing. "default" is the
+    -- sentinel for "unset", because a select cannot carry a nil value.
+    local ROUTING_DEFAULT = "default"
+    local ROUTING_INHERIT = "inherit"
+
+    -- routingEditScope lives at FILE scope (see its declaration): it is a UI
+    -- mode, not a setting, so it is never captured into a scope, but it also
+    -- must survive the table rebuild that every panel refresh performs.
+
+    local function BuildRoutingValues()
+        local values = {
+            [ROUTING_DEFAULT] = "|cff888888Default (shipped group)|r",
+            free = "Free Position",
+        }
+        -- Below the account scope, a category can also simply INHERIT, which
+        -- clears the patch instead of pinning a value here.
+        if routingEditScope ~= "account" then
+            values[ROUTING_INHERIT] = "|cff888888Inherit|r"
+        end
+        if ns.CDMGroups and ns.CDMGroups.groups and ns.CDMGroups.GetGroupID then
+            for groupName in pairs(ns.CDMGroups.groups) do
+                local id = ns.CDMGroups.GetGroupID(groupName)
+                if id then values[id] = groupName end
+            end
+        end
+        return values
+    end
+
+    -- Shows the value stored AT the scope being edited (not the resolved one),
+    -- so selecting a scope previews that layer rather than whatever currently
+    -- wins. Without this, editing "All Characters" while a spec patch existed
+    -- looked like nothing happened.
+    local function GetRoutingValue(categoryKey)
+        if not (ns.CDMGroups and ns.CDMGroups.GetIconRoutingAtScope) then return ROUTING_DEFAULT end
+        local v = ns.CDMGroups.GetIconRoutingAtScope(categoryKey, routingEditScope)
+        if v == "none" then v = nil end   -- retired option
+        if v == nil then
+            return (routingEditScope == "account") and ROUTING_DEFAULT or ROUTING_INHERIT
+        end
+        return v
+    end
+
+    local function SetRoutingValue(categoryKey, v)
+        if not (ns.CDMGroups and ns.CDMGroups.SetIconRoutingAtScope) then return end
+        if v == ROUTING_INHERIT then v = nil end
+        if v == ROUTING_DEFAULT then
+            -- "Default" at the account scope means no value anywhere; below it,
+            -- it is a real choice that must OVERRIDE an inherited destination.
+            v = (routingEditScope == "account") and nil or ROUTING_DEFAULT
+        end
+        ns.CDMGroups.SetIconRoutingAtScope(categoryKey, routingEditScope, v)
+    end
+
+    -- One line describing what the icons will ACTUALLY do right now, resolved
+    -- through every layer, so the scope picker can never mislead.
+    local function RoutingEffectiveText()
+        if not (ns.CDMGroups and ns.CDMGroups.GetIconRouting) then return "" end
+        local labels = BuildRoutingValues()
+        local parts = {}
+        for _, pair in ipairs({ { "essential", "Essential" }, { "utility", "Utility" }, { "buffs", "Buffs" } }) do
+            local v = ns.CDMGroups.GetIconRouting(pair[1])
+            local text
+            if v == nil or v == ROUTING_DEFAULT or v == "none" then
+                text = "Default"
+            else
+                text = labels[v] or "|cffff6666missing group -> Free Position|r"
+            end
+            parts[#parts + 1] = pair[2] .. ": " .. text
+        end
+        return "|cff888888In effect now:|r " .. table.concat(parts, "   |cff444444|||r   ")
+    end
+
     local function RenameGroup(oldName, newName)
         if not oldName or not newName or oldName == "" or newName == "" then return false end
         if oldName == newName then return false end
@@ -254,6 +347,30 @@ local function GetOptionsTable()
             end
         end
         
+        -- ── NAME-KEYED STATE HAND-OFF (must run while groups[oldName] lives) ──
+        -- A group is identified by its display NAME in several modules that keep
+        -- their own name-keyed tables. Renaming only the group table ORPHANS that
+        -- state under a name no longer in ns.CDMGroups.groups, and nothing ever
+        -- visits it again: the Edit Mode drag wrapper keeps rendering (its enabled
+        -- flag is PERSISTED, so it returns every login), the container-sync flag
+        -- keeps a viewer bound to a dead name, and the slot badges keep floating
+        -- (they live on UIParent at FULLSCREEN_DIALOG / level 10000, so nothing can
+        -- cover them). That is the ghost group that cannot be selected or deleted.
+        -- Retire the old name's state here, re-apply it under the new name below.
+        local emcWasEnabled = ns.EditModeContainers and ns.EditModeContainers.IsEnabled
+            and ns.EditModeContainers.IsEnabled(oldName) or false
+        local syncWasEnabled = ns.CDMContainerSync and ns.CDMContainerSync.IsEnabled
+            and ns.CDMContainerSync.IsEnabled(oldName) or false
+        if emcWasEnabled and ns.EditModeContainers.SetEnabled then
+            ns.EditModeContainers.SetEnabled(oldName, false)
+        end
+        if syncWasEnabled and ns.CDMContainerSync.SetEnabled then
+            ns.CDMContainerSync.SetEnabled(oldName, false)
+        end
+        if ns.CDMGroups.Placeholders and ns.CDMGroups.Placeholders.ClearSlotBadges then
+            ns.CDMGroups.Placeholders.ClearSlotBadges(oldName)
+        end
+
         -- Update the actual runtime group object
         local group = ns.CDMGroups.groups[oldName]
         group.name = newName
@@ -299,9 +416,19 @@ local function GetOptionsTable()
             end
         end
         
+        -- Re-apply the captured name-keyed state under the NEW name, so a renamed
+        -- group keeps its Edit Mode wrapper and container sync instead of losing
+        -- them to the orphan above.
+        if emcWasEnabled and ns.EditModeContainers and ns.EditModeContainers.SetEnabled then
+            ns.EditModeContainers.SetEnabled(newName, true)
+        end
+        if syncWasEnabled and ns.CDMContainerSync and ns.CDMContainerSync.SetEnabled then
+            ns.CDMContainerSync.SetEnabled(newName, true)
+        end
+
         -- Update selection
         ns.CDMGroups.selectedGroup = newName
-        
+
         -- Trigger auto-save to linked template
         if ns.CDMGroups.TriggerTemplateAutoSave then
             ns.CDMGroups.TriggerTemplateAutoSave()
@@ -355,8 +482,9 @@ local function GetOptionsTable()
             ns.CDMGroups.savedPositions[cdID] = nil
             ClearPositionFromSpec(cdID)
             
-            -- Track as free icon
-            ns.CDMGroups.TrackFreeIcon(cdID, xPos, yPos, 36)
+            -- Track as free icon (pass the frame: Registry can't resolve
+            -- arc_* string IDs — same guard as the drag-out path)
+            ns.CDMGroups.TrackFreeIcon(cdID, xPos, yPos, 36, info.frame)
         end
         
         -- Hide and clean up the container
@@ -918,6 +1046,93 @@ local function GetOptionsTable()
             },
             
             -- ════════════════════════════════════════════════════════════════
+            -- ════════════════════════════════════════════════════════════════
+            -- NEW ICON ROUTING SECTION (collapsible)
+            -- Where icons land when the Cooldown Manager hands them over and
+            -- no saved position exists. Destinations are stored as the group's
+            -- STABLE ID, so renaming the destination never breaks the routing.
+            -- ════════════════════════════════════════════════════════════════
+            newIconsToggle = {
+                type = "toggle",
+                name = "New Icons",
+                desc = "Click to expand/collapse",
+                dialogControl = "CollapsibleHeader",
+                disabled = function() return not IsCDMEnabled() end,
+                order = 4.95,
+                width = "full",
+                get = function() return not collapsedSections.newIcons end,
+                set = function(_, v) collapsedSections.newIcons = not v end,
+            },
+            newIconsDesc = {
+                type = "description",
+                name = "|cff888888Where icons go when the Cooldown Manager adds them and they have no saved position.|r",
+                order = 4.951,
+                width = "full",
+                hidden = function() return collapsedSections.newIcons end,
+            },
+            newIconsScope = {
+                type = "select",
+                name = "Editing",
+                desc = "Which characters the settings below apply to.\n\n|cffffd700All Characters|r is the shared base.\n|cffffd700This Character|r and |cffffd700This Spec|r store only what you change here, on top of that base.\n\nAnything left on Inherit keeps following the level above it, including later changes to it.",
+                order = 4.9515,
+                width = 1.0,
+                hidden = function() return collapsedSections.newIcons end,
+                values = function()
+                    return {
+                        account = "All Characters",
+                        char    = "This Character",
+                        spec    = "This Spec",
+                    }
+                end,
+                sorting = function() return { "account", "char", "spec" } end,
+                get = function() return routingEditScope end,
+                set = function(_, v)
+                    routingEditScope = v
+                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                end,
+            },
+            newIconsEffective = {
+                type = "description",
+                name = function() return RoutingEffectiveText() end,
+                order = 4.9518,
+                width = "full",
+                hidden = function() return collapsedSections.newIcons end,
+            },
+            newIconRoutingEssential = {
+                type = "select",
+                name = "Essential Icons",
+                desc = "Destination for NEW Essential cooldown icons.\n\n|cffffd700Default|r keeps the current behaviour (the Essential group).\n|cffffd700Free Position|r drops them in as free icons you can place anywhere.\n|cffffd700Nowhere|r leaves them unassigned.\n\nThe destination is remembered by group, not by name, so renaming that group keeps working.",
+                order = 4.952,
+                width = 1.0,
+                hidden = function() return collapsedSections.newIcons end,
+                values = function() return BuildRoutingValues() end,
+                get = function() return GetRoutingValue("essential") end,
+                set = function(_, v) SetRoutingValue("essential", v) end,
+            },
+            newIconRoutingUtility = {
+                type = "select",
+                name = "Utility Icons",
+                desc = "Destination for NEW Utility cooldown icons.\n\n|cffffd700Default|r keeps the current behaviour (the Utility group).\n|cffffd700Free Position|r drops them in as free icons you can place anywhere.\n|cffffd700Nowhere|r leaves them unassigned.\n\nThe destination is remembered by group, not by name, so renaming that group keeps working.",
+                order = 4.953,
+                width = 1.0,
+                hidden = function() return collapsedSections.newIcons end,
+                values = function() return BuildRoutingValues() end,
+                get = function() return GetRoutingValue("utility") end,
+                set = function(_, v) SetRoutingValue("utility", v) end,
+            },
+            newIconRoutingBuffs = {
+                type = "select",
+                name = "Buff Icons",
+                desc = "Destination for NEW tracked-buff icons.\n\n|cffffd700Default|r keeps the current behaviour (the Buffs group).\n|cffffd700Free Position|r drops them in as free icons you can place anywhere.\n|cffffd700Nowhere|r leaves them unassigned.\n\nThe destination is remembered by group, not by name, so renaming that group keeps working.",
+                order = 4.954,
+                width = 1.0,
+                hidden = function() return collapsedSections.newIcons end,
+                values = function() return BuildRoutingValues() end,
+                get = function() return GetRoutingValue("buffs") end,
+                set = function(_, v) SetRoutingValue("buffs", v) end,
+            },
+
+            -- ════════════════════════════════════════════════════════════════
             -- LOAD GROUP LAYOUT SECTION
             -- ════════════════════════════════════════════════════════════════
             groupLayoutsToggle = {
@@ -1031,7 +1246,16 @@ local function GetOptionsTable()
                         end,
                         timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
                     }
-                    StaticPopup_Show("ARCUI_GROUPS_LOAD_PROFILE")
+                    -- Linked-layout safety: loading while live-linked writes the
+                    -- loaded layout through to the shared Group Layout for every
+                    -- linked profile on all characters. Educate once per character.
+                    if ns.CDMGroups and ns.CDMGroups.WarnLinkedLayoutWrite then
+                        ns.CDMGroups.WarnLinkedLayoutWrite(function()
+                            StaticPopup_Show("ARCUI_GROUPS_LOAD_PROFILE")
+                        end)
+                    else
+                        StaticPopup_Show("ARCUI_GROUPS_LOAD_PROFILE")
+                    end
                 end,
             },
             glProfilesNoData = {
@@ -1143,11 +1367,22 @@ local function GetOptionsTable()
                 func = function()
                     local sel = ns._glLinkSelected
                     if not sel or sel == "" then return end
-                    if ns.CDMGroups and ns.CDMGroups.LinkProfileToGroupLayout then
-                        ns.CDMGroups.LinkProfileToGroupLayout(sel)
+                    local function doLink()
+                        if ns.CDMGroups and ns.CDMGroups.LinkProfileToGroupLayout then
+                            ns.CDMGroups.LinkProfileToGroupLayout(sel)
+                        end
+                        ns._glLinkSelected = nil
+                        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
                     end
-                    ns._glLinkSelected = nil
-                    LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+                    -- Linked-layout safety: linking to an EXISTING shared layout
+                    -- enters live write-through mode. Educate once per character.
+                    -- (Linking to a NEW name only seeds it - nothing shared yet.)
+                    local ldb = ns.CDMShared and ns.CDMShared.GetGroupLayoutsDB and ns.CDMShared.GetGroupLayoutsDB()
+                    if ldb and ldb[sel] and ns.CDMGroups and ns.CDMGroups.WarnLinkedLayoutWrite then
+                        ns.CDMGroups.WarnLinkedLayoutWrite(doLink, sel)
+                    else
+                        doLink()
+                    end
                 end,
             },
             glUnlinkBtn = {
@@ -1344,6 +1579,22 @@ local function GetOptionsTable()
                     end
                 end,
             },
+            showIconIDs = {
+                type = "toggle",
+                name = "Show IDs on Hover",
+                desc = "Adds an ID block to the tooltip of any icon ArcUI can identify.\n\n"
+                    .. "|cffffd100Cooldown Manager icons:|r cooldown ID, spell ID, override and linked spells, equip slot, spell category (combat potion, healthstone) and the last item used for that category.\n"
+                    .. "|cffffd100Arc icons:|r the arcID.\n"
+                    .. "Both also show the icon's texture file ID - the number the Custom Icon box takes.\n\n"
+                    .. "|cffaaaaaaSame setting as in the CDM Icons panel.|r",
+                order = 16.3,
+                width = 1.2,
+                hidden = function() return collapsedSections.globalOptions end,
+                get = function() return ns.IconIDs and ns.IconIDs.IsEnabled() or false end,
+                set = function(_, val)
+                    if ns.IconIDs then ns.IconIDs.SetEnabled(val) end
+                end,
+            },
             containerSyncHeader = {
                 type = "description",
                 name = "\n|cff88ffffContainer Sync|r - Anchor CDM viewers to ArcUI group positions",
@@ -1465,6 +1716,29 @@ local function GetOptionsTable()
                     local newName = baseName .. num
                     if CreateNewGroup(newName) then
                         PrintMsg("Created '" .. newName .. "'")
+                        ns.CDMGroups.UpdateGroupSelectionVisuals()
+                    end
+                end,
+            },
+            newAuraGroupBtn = {
+                type = "execute",
+                name = "|cffff88ff+ Aura Group|r",
+                desc = "Create a Spell-ID Aura Group: a group for Arc aura icons where an icon only appears while its aura is active and the row compacts automatically — even in dungeons and raids.\n\n|cff888888Drag aura icons into it while this panel is open. Only spell-ID aura icons can join (CDM and spell icons use normal groups). Up to 10 icons per Aura Group.|r",
+                order = 22.3,
+                width = 0.8,
+                hidden = function()
+                    return not (ns.AuraIconGroups and (select(4, GetBuildInfo()) or 0) >= 120100)
+                end,
+                func = function()
+                    local baseName = "Aura Group"
+                    local num = 1
+                    local groups = ns.CDMGroups.groups or {}
+                    while groups[baseName .. num] do
+                        num = num + 1
+                    end
+                    local newName = baseName .. num
+                    if CreateNewGroup(newName, "aura") then
+                        PrintMsg("Created '" .. newName .. "' (Aura Group)")
                         ns.CDMGroups.UpdateGroupSelectionVisuals()
                     end
                 end,
@@ -1654,7 +1928,12 @@ local function GetOptionsTable()
                 order = 33.5,
                 width = 0.7,
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
-                values = { DOWN = "Down", UP = "Up" },
+                values = function()
+                    if IsAuraGroupSelected() then
+                        return { DOWN = "Down", UP = "Up", CENTER = "Center" }
+                    end
+                    return { DOWN = "Down", UP = "Up" }
+                end,
                 get = function()
                     local g = GetSelectedGroup()
                     if not g then return "DOWN" end
@@ -1729,10 +2008,45 @@ local function GetOptionsTable()
                 width = "full",
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
             },
+            auraGroupInfo = {
+                type = "description",
+                name = "|cffff88ffAura Group|r|cff888888 — drag aura icons in while this panel is open. Enable Dynamic Layout for the live compact view (icons show only while active, keeping your grid order and each icon's own styling). Up to 10 icons per Aura Group.|r",
+                order = 30.5,
+                width = "full",
+                fontSize = "small",
+                hidden = function()
+                    return HideIfNoGroup() or collapsedSections.grid or not IsAuraGroupSelected()
+                end,
+            },
+            groupPingable = {
+                type = "toggle",
+                name = "Icons Pingable",
+                desc = "Let every icon in this group receive pings. Turn OFF and pings pass straight through them to the world, instead of announcing whichever spell your cursor happens to be over."
+                    .. "\n\n|cff8298b4A per-icon setting overrides this.|r",
+                order = 35.5,
+                width = 1.0,
+                hidden = function() return HideIfNoGroup() end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return not (g and g.noPing)
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g then return end
+                    g.noPing = (not val) and true or nil
+                    if ns.CDMEnhance and ns.CDMEnhance.InvalidateCache then ns.CDMEnhance.InvalidateCache() end
+                    if ns.Pings and ns.Pings.RefreshPingable then ns.Pings.RefreshPingable() end
+                end,
+            },
             autoReflow = {
                 type = "toggle",
                 name = "Dynamic Layout",
-                desc = "Automatically compacts icons together with no gaps. Uses alignment setting to control positioning direction. When disabled, icons stay at their assigned grid positions.",
+                desc = function()
+                    if IsAuraGroupSelected() then
+                        return "Live compact view: icons show only while their aura is active and the row closes gaps automatically (works in dungeons and raids). When disabled, icons hold their grid slots like a normal group."
+                    end
+                    return "Automatically compacts icons together with no gaps. Uses alignment setting to control positioning direction. When disabled, icons stay at their assigned grid positions."
+                end,
                 order = 36,
                 width = 1.0,
                 hidden = function() return HideIfNoGroup() or collapsedSections.grid end,
@@ -1755,28 +2069,68 @@ local function GetOptionsTable()
                                 db.alignment = defaultAlignment
                             end
                         end
-                        g:SetAutoReflow(val) 
+                        g:SetAutoReflow(val)
+                        -- aura groups: Dynamic Layout IS the engine live-view
+                        -- switch — resync the engine rows + member parking
+                        if g.isAuraGroup and ns.AuraIconGroups and ns.AuraIconGroups.QueueSync then
+                            ns.AuraIconGroups.QueueSync()
+                        end
                     end
                 end,
             },
+            -- ── AURA GROUP live-view options (engine layout) ──
+            auraDebuffRow = {
+                type = "select",
+                name = "Debuff Row",
+                desc = "Where target debuff icons go in the live view.\n\n|cffffd100Continue Row|r — debuffs extend the same line as your buffs.\n\n|cffffd100New Row|r — debuffs get their own line under (or above, with Row Growth Up) the buff row.\n\n|cff888888Centered growth always uses New Row.|r",
+                order = 36.05,
+                width = 0.85,
+                values = { chain = "Continue Row", newline = "New Row" },
+                sorting = { "chain", "newline" },
+                hidden = function()
+                    local g = GetSelectedGroup()
+                    return HideIfNoGroup() or collapsedSections.grid
+                        or not (g and g.isAuraGroup and g.autoReflow)
+                end,
+                get = function()
+                    local g = GetSelectedGroup()
+                    return (g and g.auraLayout and g.auraLayout.debuffRow) or "chain"
+                end,
+                set = function(_, val)
+                    local g = GetSelectedGroup()
+                    if not g then return end
+                    g.auraLayout = g.auraLayout or {}
+                    g.auraLayout.debuffRow = (val ~= "chain") and val or nil
+                    local db = g.getDB and g.getDB()
+                    if db then db.auraLayout = CopyTable(g.auraLayout) end
+                    if ns.CDMGroups.TriggerTemplateAutoSave then ns.CDMGroups.TriggerTemplateAutoSave() end
+                end,
+            },
+            -- (Icon Sort removed: per-member engine slots render in the
+            -- GRID order — arrange the icons in the grid to set the order.)
             alignmentAnchor = {
                 type = "select",
                 name = "Alignment",
-                desc = "Where icons align within the group when Dynamic Layout is enabled.",
+                desc = function()
+                    if IsAuraGroupSelected() then
+                        return "Where the live row is pinned: Left grows right, Right grows left, Center grows evenly both ways."
+                    end
+                    return "Where icons align within the group when Dynamic Layout is enabled."
+                end,
                 order = 36.5,
                 width = 0.8,
-                hidden = function() 
+                hidden = function()
                     local g = GetSelectedGroup()
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
                 end,
                 values = function()
                     local g = GetSelectedGroup()
                     if not g then return {} end
-                    
+
                     local rows = g.layout.gridRows or 1
                     local cols = g.layout.gridCols or 1
                     local gridShape = ns.CDMGroups.DetectGridShape(rows, cols)
-                    
+
                     if gridShape == "horizontal" then
                         return { left = "Left", center = "Center", right = "Right" }
                     elseif gridShape == "vertical" then
@@ -1788,7 +2142,7 @@ local function GetOptionsTable()
                 get = function()
                     local g = GetSelectedGroup()
                     if not g then return "center" end
-                    
+
                     local rows = g.layout.gridRows or 1
                     local cols = g.layout.gridCols or 1
                     local gridShape = ns.CDMGroups.DetectGridShape(rows, cols)
@@ -1841,14 +2195,18 @@ local function GetOptionsTable()
                             db.alignment = val
                         end
                         -- Trigger layout to reposition icons with new alignment
-                        if g.autoReflow and g.ReflowIcons then 
-                            g:ReflowIcons() 
-                        elseif g.Layout then 
-                            g:Layout() 
+                        if g.autoReflow and g.ReflowIcons then
+                            g:ReflowIcons()
+                        elseif g.Layout then
+                            g:Layout()
                         end
                         -- Trigger auto-save to linked template
                         if ns.CDMGroups.TriggerTemplateAutoSave then
                             ns.CDMGroups.TriggerTemplateAutoSave()
+                        end
+                        -- aura groups: alignment is the live-view pin
+                        if g.isAuraGroup and ns.AuraIconGroups and ns.AuraIconGroups.QueueSync then
+                            ns.AuraIconGroups.QueueSync()
                         end
                     end
                 end,
@@ -1862,6 +2220,7 @@ local function GetOptionsTable()
                 hidden = function() 
                     local g = GetSelectedGroup()
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
+                        or IsAuraGroupSelected()   -- engine compacts aura groups; addon reflow options don't apply
                 end,
                 get = function()
                     local g = GetSelectedGroup()
@@ -1961,6 +2320,7 @@ local function GetOptionsTable()
                 hidden = function()
                     local g = GetSelectedGroup()
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
+                        or IsAuraGroupSelected()   -- engine compacts aura groups; addon reflow options don't apply
                 end,
                 get = function()
                     local g = GetSelectedGroup()
@@ -2000,6 +2360,19 @@ local function GetOptionsTable()
                     end
                     local reg = LibStub("AceConfigRegistry-3.0", true)
                     if reg then reg:NotifyChange("ArcUI") end
+                end,
+            },
+            auraIconGroupNote = {
+                type = "description",
+                name = "|cff888888Aura icons keep their slot here while the aura is down — for compact-on-fade, use an |cffff88ffAura Group|r (+ Aura Group above).|r",
+                order = 36.755,
+                width = "full",
+                fontSize = "small",
+                hidden = function()
+                    local g = GetSelectedGroup()
+                    return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
+                        or not ns.AuraIconGroups
+                        or IsAuraGroupSelected()   -- the note is for NORMAL groups
                 end,
             },
             smoothMovement = {
@@ -2101,6 +2474,7 @@ local function GetOptionsTable()
                 hidden = function() 
                     local g = GetSelectedGroup()
                     return HideIfNoGroup() or collapsedSections.grid or not (g and g.autoReflow)
+                        or IsAuraGroupSelected()   -- engine compacts aura groups; addon reflow options don't apply
                 end,
                 get = function()
                     local g = GetSelectedGroup()

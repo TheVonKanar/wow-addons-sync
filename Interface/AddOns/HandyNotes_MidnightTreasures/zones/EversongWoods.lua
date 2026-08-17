@@ -70,6 +70,7 @@ ns.RegisterPoints(ns.EVERSONGWOODS, {
 	[40481361] = {criteria=111484, npc=245611, vignette=7130}, -- Sunstrider Isle Runestone, Claw of the Void
 }, {
 	achievement=61961,
+	-- quest=96527, -- completes when you kill the boss regardless of which runestone
 	note="Charge the runestone, complete the event",
 	atlas="poi-saltherilssoiree", scale=1.2, minimap=true,
 })

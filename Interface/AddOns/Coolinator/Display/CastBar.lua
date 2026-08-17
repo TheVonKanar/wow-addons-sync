@@ -98,7 +98,8 @@ function addonTable.Display.CastBarMixin:OnEvent(eventName, ...)
       self:UpdateForCastEnd(false)
     end
   elseif eventName == "UNIT_SPELLCAST_DELAYED" or eventName == "UNIT_SPELLCAST_CHANNEL_UPDATE" or eventName == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
-    if self.castID then
+    local _unitTarget, _castGUID, _spellID, castID = ...
+    if self.castID == castID then
       self:UpdateForCast()
     end
   elseif eventName == "UNIT_SPELLCAST_INTERRUPTIBLE" or eventName == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" then
@@ -166,10 +167,6 @@ function addonTable.Display.CastBarMixin:UpdateForCast()
 
   self:Show()
 
-  if self:GetParent().TriggerLayout then
-    self:GetParent():TriggerLayout()
-  end
-
   self.castID = castID
 
   self.TextsContainer.Name:SetText(displayName)
@@ -233,10 +230,6 @@ end
 
 function addonTable.Display.CastBarMixin:ClearCast()
   self:Hide()
-
-  if self:GetParent().TriggerLayout then
-    self:GetParent():TriggerLayout()
-  end
 end
 
 function addonTable.Display.CastBarMixin:GetDefaultSize()

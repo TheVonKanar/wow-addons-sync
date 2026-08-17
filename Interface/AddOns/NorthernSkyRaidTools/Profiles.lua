@@ -1,13 +1,13 @@
 local _, NSI = ...
 
 local function CopyAuraTrackingSetting(source, target, key)
-    if source[key] ~= nil then
+    if source and target and source[key] ~= nil then
         target[key] = source[key]
     end
 end
 
 local function CopyPrivateAuraSettingsToAuraTracking(source, target)
-    if not source or not target then return end
+    if not source or not target or source.enabled ~= true then return end
     for _, key in ipairs({
         "Spacing",
         "Limit",
@@ -19,13 +19,14 @@ local function CopyPrivateAuraSettingsToAuraTracking(source, target)
         "relativeTo",
         "xOffset",
         "yOffset",
-        "HideBorder",
         "HideTooltip",
         "HideDurationText",
     }) do
         CopyAuraTrackingSetting(source, target, key)
     end
-
+    if source.HideBorder ~= nil then
+        target.DispelBorderMode = source.HideBorder and "None" or "ColoredWithIcon"
+    end
     if source.StackScale then
         local fontSize = math.max(6, math.floor((source.StackScale * 16) + 0.5))
         target.DurationFontSize = fontSize
@@ -33,17 +34,98 @@ local function CopyPrivateAuraSettingsToAuraTracking(source, target)
     end
 end
 
-function NSI:ConvertPrivateAuraSettingsToAuraTracking()
-    if not self:IsMidnightS2() or NSRT.AuraTrackingSettingsConverted then return end
-    NSRT.AuraTrackingSettings = NSRT.AuraTrackingSettings or {}
-    NSRT.AuraTrackingSettings.Player = NSRT.AuraTrackingSettings.Player or {}
-    NSRT.AuraTrackingSettings.Tank = NSRT.AuraTrackingSettings.Tank or {}
+local AuraTrackingBuiltinDefaultOverrides = {
+    Player = {
+        Name = "Player Debuffs",
+        builtin = "Player",
+        HideLongDurationAuras = false,
+        ShowWhitelistedPlayerBuffs = true,
+        DispelBorderMode = "ColoredWithIcon",
+        DispelBorderSize = 3,
+    },
+    Tank = {
+        Name = "Co-Tank Debuffs",
+        builtin = "Tank",
+        GrowDirection = "LEFT",
+        xOffset = -242,
+        yOffset = -590,
+        NameEnabled = true,
+        Unit = "cotank",
+        OnlyShowFirstTank = false,
+        MultiTankGrow = "RIGHT",
+        MultiTankXOffset = 500,
+        MultiTankYOffset = 0,
+        HideLongDurationAuras = false,
+        DispelBorderMode = "ColoredWithIcon",
+        DispelBorderSize = 3,
+    },
+    External = {
+        Name = "External & Immunity",
+        builtin = "External",
+        Width = 120,
+        Height = 120,
+        GrowDirection = "UP",
+        xOffset = 319,
+        yOffset = 152,
+        DurationFontSize = 50,
+        StackFontSize = 50,
+        HideStackText = true,
+        HideTooltip = true,
+        IncludeImmunities = true,
+        NameEnabled = true,
+        NamePosition = "LEFT",
+        NameXOffset = 0,
+        NameYOffset = 0,
+    },
+}
 
-    CopyPrivateAuraSettingsToAuraTracking(NSRT.PASettings, NSRT.AuraTrackingSettings.Player)
-    CopyPrivateAuraSettingsToAuraTracking(NSRT.PATankSettings, NSRT.AuraTrackingSettings.Tank)
-    NSRT.AuraTrackingSettingsConverted = true
+function NSI:GetDefaultAuraTrackingSettings(settingsKey)
+    local overrides = AuraTrackingBuiltinDefaultOverrides[settingsKey]
+    return overrides and self:CreateAuraTrackingSettingsDefaults(overrides)
 end
 
+function NSI:ResetBuiltinAuraTracking(settingsKey)
+    local settings = self:GetAuraTrackingSettings(settingsKey)
+    local defaults = self:GetDefaultAuraTrackingSettings(settingsKey)
+    if not settings or not settings.builtin or not defaults then return end
+    for key in pairs(settings) do
+        settings[key] = nil
+    end
+    for key, value in pairs(defaults) do
+        settings[key] = value
+    end
+    self:InitAuraTracking()
+    self:RefreshAuraTrackingUI()
+end
+
+function NSI:ConvertPrivateAuraSettingsToAuraTracking()
+    if NSRT.PASounds then
+        if NSRT.PASounds.UseDefaultPASounds ~= nil then
+            NSRT.AuraSounds.UseDefaultRaidAuraSounds = NSRT.PASounds.UseDefaultPASounds
+        end
+        if NSRT.PASounds.UseDefaultMPlusPASounds ~= nil then
+            NSRT.AuraSounds.UseDefaultDungeonAuraSounds = NSRT.PASounds.UseDefaultMPlusPASounds
+        end
+    end
+    CopyPrivateAuraSettingsToAuraTracking(NSRT.PASettings, NSRT.AuraTrackingSettings.Player)
+    CopyPrivateAuraSettingsToAuraTracking(NSRT.PATankSettings, NSRT.AuraTrackingSettings.Tank)
+    NSRT.ReminderSettings.BarSettings.HideTimerText = nil
+    NSRT.ReminderSettings.TextSettings.HideTimerText = nil
+    NSRT.ReminderSettings.CircleSettings.HideTimerText = nil
+    NSRT.PASettings = nil
+    NSRT.PATankSettings = nil
+    NSRT.PARaidSettings = nil
+    NSRT.PATextSettings = nil
+    NSRT.PASounds = nil
+end
+
+function NSI:RunProfileMigrations()
+    local profileVersion = tonumber(NSRT.ProfileVersion) or 0
+    if profileVersion < 2 then
+        self:ConvertPrivateAuraSettingsToAuraTracking()
+        NSRT.ProfileVersion = 2
+    end
+end
 
 function NSI:AddMissingDefaults()
     local defaults = {
@@ -54,9 +136,13 @@ function NSI:AddMissingDefaults()
         InviteList = {},
         AssignmentSettings = {},
         CooldownList = {},
-        PASounds = {
-            UseDefaultPASounds = false,
-            UseDefaultMPlusPASounds = false,
+        AuraSounds = {
+            UseDefaultRaidAuraSounds = false,
+            UseDefaultDungeonAuraSounds = false,
+            SoundChannel = "Master",
+            CustomGroups = {},
+            CustomCategories = {},
+            NextCustomCategoryID = 1,
         },
         PhaseTimings = {},
 
@@ -88,8 +174,6 @@ function NSI:AddMissingDefaults()
             MyNickName = nil,
             ShareNickNames = 4,
             AcceptNickNames = 4,
-            NickNamesSyncAccept = 2,
-            NickNamesSyncSend = 3,
             GlobalNickNames = false,
             TTS = true,
             TTSVolume = 50,
@@ -112,6 +196,7 @@ function NSI:AddMissingDefaults()
 
         Alerts = {
             ReloeReminders = false,
+            Language = "Auto",
             Groups = {},
         },
 
@@ -132,6 +217,8 @@ function NSI:AddMissingDefaults()
             TextTTSTimer = 5,
             AutoShare = false,
             OnlyReceiveGuild = false,
+            OverwriteSharedNoteOnImport = false,
+            OverwritePersonalNoteOnImport = false,
             NoteCountdown = false,
             ClearOnKill = true,
             PersonalReminderFrame = {
@@ -143,6 +230,7 @@ function NSI:AddMissingDefaults()
                 xOffset = 500,
                 yOffset = 0,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 14,
                 BGcolor = { 0, 0, 0, 0.3 },
             },
@@ -155,6 +243,7 @@ function NSI:AddMissingDefaults()
                 xOffset = 0,
                 yOffset = 0,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 14,
                 BGcolor = { 0, 0, 0, 0.3 },
             },
@@ -167,6 +256,7 @@ function NSI:AddMissingDefaults()
                 xOffset = 0,
                 yOffset = 0,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 14,
                 BGcolor = { 0, 0, 0, 0.3 },
             },
@@ -184,6 +274,7 @@ function NSI:AddMissingDefaults()
                 xTimer = 0,
                 yTimer = 0,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 30,
                 TimerFontSize = 40,
                 Width = 80,
@@ -197,6 +288,10 @@ function NSI:AddMissingDefaults()
             },
             BarSettings = {
                 GrowDirection = "Up",
+                TextFormat = "%text",
+                TimerFormat = "%p",
+                HiddenTextFormat = "%text",
+                HiddenTimerFormat = "",
                 Anchor = "CENTER",
                 relativeTo = "CENTER",
                 Sticky = 5,
@@ -216,14 +311,16 @@ function NSI:AddMissingDefaults()
                 xTimer = -2,
                 yTimer = 0,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 22,
                 TimerFontSize = 22,
                 Spacing = -1,
-                HideTimerText = false,
                 Decimals = 3,
             },
             TextSettings = {
                 textColors = { 1, 1, 1, 1 },
+                TextFormat = "%icon%text (%p)",
+                HiddenTextFormat = "%icon%text",
                 GrowDirection = "Up",
                 Anchor = "CENTER",
                 relativeTo = "CENTER",
@@ -231,13 +328,15 @@ function NSI:AddMissingDefaults()
                 xOffset = 0,
                 yOffset = 200,
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 50,
                 Spacing = 1,
-                HideTimerText = false,
                 Decimals = 3,
             },
             CircleSettings = {
                 GrowDirection = "Up",
+                TextFormat = "%icon%text (%p)",
+                HiddenTextFormat = "%icon%text",
                 Anchor = "CENTER",
                 relativeTo = "CENTER",
                 Sticky = 0,
@@ -248,13 +347,13 @@ function NSI:AddMissingDefaults()
                 Size = 80,
                 Texture = [[Interface\AddOns\NorthernSkyRaidTools\Media\Textures\circle_8px.png]],
                 Font = "Expressway",
+                FontFlags = "OUTLINE",
                 FontSize = 18,
                 TextPosition = "Top",
                 xTextOffset = 0,
                 yTextOffset = 4,
                 Spacing = 5,
                 showBackground = false,
-                HideTimerText = false,
                 Decimals = 3,
             },
             UnitIconSettings = {
@@ -283,139 +382,44 @@ function NSI:AddMissingDefaults()
 
         },
 
-        -- Private Aura Settings
-        PASettings = {
-            Spacing = -1,
-            Limit = 5,
-            GrowDirection = "RIGHT",
-            enabled = false,
-            Width = 100,
-            Height = 100,
-            Anchor = "CENTER",
-            relativeTo = "CENTER",
-            xOffset = -450,
-            yOffset = -100,
-            PerRow = 10,
-            RowGrowDirection = "UP",
-            DebuffTypeBorder = false,
-            HideBorder = false,
-            StackScale = 2,
-            HideTooltip = false,
-            HideDurationText = false,
-        },
-        PATankSettings = {
-            Spacing = -1,
-            Limit = 5,
-            MultiTankGrowDirection = "UP",
-            GrowDirection = "LEFT",
-            enabled = false,
-            Width = 100,
-            Height = 100,
-            Anchor = "CENTER",
-            relativeTo = "CENTER",
-            xOffset = -549,
-            yOffset = -199,
-            HideBorder = false,
-            StackScale = 2,
-            HideTooltip = false,
-            HideDurationText = false,
-        },
-        PARaidSettings = {
-            PerRow = 3,
-            RowGrowDirection = "UP",
-            Spacing = -1,
-            Limit = 5,
-            GrowDirection = "RIGHT",
-            enabled = false,
-            Width = 25,
-            Height = 25,
-            Anchor = "BOTTOMLEFT",
-            relativeTo = "BOTTOMLEFT",
-            xOffset = 0,
-            yOffset = 0,
-            HideBorder = false,
-            StackScale = 1,
-            HideDurationText = false,
-        },
-        PATextSettings = {
-            Scale = 2.5,
-            xOffset = 0,
-            yOffset = -200,
-            enabled = false,
-            Anchor = "TOP",
-            relativeTo = "TOP",
-        },
         AuraTrackingSettings = {
-            Player = {
-                Spacing = -1,
-                Limit = 5,
-                GrowDirection = "RIGHT",
-                enabled = false,
-                Width = 100,
-                Height = 100,
-                Zoom = 0,
-                Anchor = "CENTER",
-                relativeTo = "CENTER",
-                xOffset = -450,
-                yOffset = -100,
-                HideBorder = false,
-                BorderSize = 1,
-                HideTooltip = false,
-                HideDurationText = false,
-                EnableCooldownSwipe = true,
-                InverseCooldownSwipe = true,
-                DurationColor = {1, 1, 0.25, 1},
-                StackColor = {1, 1, 1, 1},
-                DurationFontSize = 16,
-                StackFontSize = 16,
-                TextFont = "Expressway",
-                TextFontFlags = "OUTLINE",
-                DurationXOffset = 0,
-                DurationYOffset = 0,
-                StackXOffset = -1,
-                StackYOffset = 1,
-                NameEnabled = true,
-                NamePosition = "TOP",
-                NameXOffset = 0,
-                NameYOffset = 4,
-                NameFontSize = 30,
+            UI = {
+                Selected = "Player",
+                StyleCopySource = "Player",
             },
-            Tank = {
-                Spacing = -1,
-                Limit = 5,
-                GrowDirection = "LEFT",
-                enabled = false,
-                Width = 100,
-                Height = 100,
-                Zoom = 0,
-                Anchor = "CENTER",
-                relativeTo = "CENTER",
-                xOffset = -549,
-                yOffset = -199,
-                HideBorder = false,
-                BorderSize = 1,
-                HideTooltip = false,
-                HideDurationText = false,
-                EnableCooldownSwipe = true,
-                InverseCooldownSwipe = true,
-                DurationColor = {1, 1, 0.25, 1},
-                StackColor = {1, 1, 1, 1},
-                DurationFontSize = 16,
-                StackFontSize = 16,
-                TextFont = "Expressway",
-                TextFontFlags = "OUTLINE",
-                DurationXOffset = 0,
-                DurationYOffset = 0,
-                StackXOffset = -1,
-                StackYOffset = 1,
-                NameEnabled = true,
-                NamePosition = "TOP",
-                NameXOffset = 0,
-                NameYOffset = 4,
-                NameFontSize = 30,
+            Player = self:GetDefaultAuraTrackingSettings("Player"),
+            Tank = self:GetDefaultAuraTrackingSettings("Tank"),
+            External = self:GetDefaultAuraTrackingSettings("External"),
+            Custom = {},
+            Groups = {
+                ["Built-in"] = { collapsed = false },
             },
         },
-        AuraTrackingSettingsConverted = false,
+        PaceComparison = {
+            SelectedBoss = 0,
+            NewThreshold = {
+                phase = 1,
+                time = 0,
+                unit = "boss1",
+                expected = 100,
+            },
+            Display = {
+                Anchor = "CENTER",
+                relativeTo = "CENTER",
+                xOffset = -400,
+                yOffset = 400,
+                Font = "Expressway",
+                FontSize = 28,
+                FontFlags = "OUTLINE",
+                LineSpacing = 4,
+                RefreshInterval = 1,
+                AheadColor = {0, 1, 0, 1},
+                CloseBehindColor = {1, 1, 0, 1},
+                BehindColor = {1, 0.5, 0, 1},
+                FarBehindColor = {1, 0, 0, 1},
+            },
+            Bosses = {},
+        },
 
         -- Ready Check Settings
         ReadyCheckSettings = {
@@ -433,6 +437,7 @@ function NSI:AddMissingDefaults()
             SourceOfMagicCheck = false,
             BlisteringScalesCheck = false,
             SymbioticRelationshipCheck = false,
+            ConsumablesDisplay = true,
         },
 
         -- QoL Settings
@@ -442,6 +447,15 @@ function NSI:AddMissingDefaults()
             LootBossReminder = false,
             AutoRepair = false,
             AutoInvite = false,
+            AutoInviteKeywords = "inv",
+            AutoInviteGuildOnly = true,
+            AutoPromote = false,
+            AutoPromoteOfficers = true,
+            AutoPromoteNames = "",
+            AutoPromoteRankIndex = 1,
+            AutoInviteGuildRankIndex = 1,
+            AutoAcceptGuildInvite = false,
+            AddSpellIDToTooltips = false,
             ConsumableNotificationDurationSeconds = 5,
             TextDisplay = {
                 Anchor = "CENTER",
@@ -449,16 +463,7 @@ function NSI:AddMissingDefaults()
                 xOffset = 0,
                 yOffset = 0,
                 FontSize = 30,
-            },
-            IconDisplay = {
-                Anchor = "TOP",
-                relativeTo = "TOP",
-                GrowDirection = "DOWN",
-                Scpaing = 5,
-                xOffset = 0,
-                yOffset = -350,
-                Width = 40,
-                Height = 40,
+                FontFlags = "OUTLINE",
             },
         },
 
@@ -510,6 +515,7 @@ function NSI:AddMissingDefaults()
         ProfileKeys = {},
         CurrentProfile = "default",
         MainProfile = "default",
+        ProfileVersion = 0,
 
         AutoLoadNote = {},
         HasNewAlertStructure = true,
@@ -537,7 +543,8 @@ function NSI:AddMissingDefaults()
             end
         end
     end
-    self:ConvertPrivateAuraSettingsToAuraTracking()
+    self:RunProfileMigrations()
+    self:ApplyDefaultPaceComparisonData()
 end
 
 function NSI:AddMissingTableDefaults(NSRTTable, defaultsTable)
@@ -560,7 +567,18 @@ local ignored = {
     ["CurrentProfile"]   = true,
     ["MainProfile"]      = true,
     ["EncounterAlerts"]  = true,
+    ["AuraTrackingSettings"] = true,
+    ["AuraSounds"]       = true,
+    ["NickNames"]        = true,
 }
+
+local function CopyProfileValue(key, value)
+    local copy = type(value) == "table" and CopyTable(value) or value
+    if key == "Settings" and type(copy) == "table" then
+        copy.MyNickName = nil
+    end
+    return copy
+end
 
 function NSI:GetProfileKey()
     local CharName, Realm = UnitFullName("player")
@@ -597,9 +615,11 @@ function NSI:CreateProfile(name, init)
     end
     self:AddMissingDefaults()
     local ProfileKey = self:GetProfileKey()
-    NSRT.ProfileKeys[ProfileKey] = name
+    if ProfileKey then
+        NSRT.ProfileKeys[ProfileKey] = name
+    end
     NSRT.CurrentProfile = name
-    if not init then self:SetReminder(NSRT.StoredPersonalReminder[ProfileKey], true) end
+    if not init and ProfileKey then self:SetReminder(NSRT.StoredPersonalReminder[ProfileKey], true) end
     self:SaveProfile()
 end
 
@@ -608,13 +628,19 @@ function NSI:LoadProfile(name, skipsave, init)
     if NSRT.Profiles[name] then
         for k, v in pairs(NSRT.Profiles[name]) do
             if not ignored[k] then
-                NSRT[k] = type(v) == "table" and CopyTable(v) or v
+                local myNickName = k == "Settings" and NSRT.Settings and NSRT.Settings.MyNickName
+                NSRT[k] = CopyProfileValue(k, v)
+                if myNickName and k == "Settings" and type(NSRT.Settings) == "table" then
+                    NSRT.Settings.MyNickName = myNickName
+                end
             end
         end
     local ProfileKey = self:GetProfileKey()
-    NSRT.ProfileKeys[ProfileKey] = name
+    if ProfileKey then
+        NSRT.ProfileKeys[ProfileKey] = name
+    end
     NSRT.CurrentProfile = name
-    if not init then self:SetReminder(NSRT.StoredPersonalReminder[ProfileKey], true) end
+    if not init and ProfileKey then self:SetReminder(NSRT.StoredPersonalReminder[ProfileKey], true) end
     self:AddMissingDefaults()
     self:SaveProfile()
     end
@@ -625,7 +651,7 @@ function NSI:SaveProfile()
         NSRT.Profiles[NSRT.CurrentProfile] = {}
         for k, v in pairs(NSRT) do
             if not ignored[k] then
-                NSRT.Profiles[NSRT.CurrentProfile][k] = type(v) == "table" and CopyTable(v) or v
+                NSRT.Profiles[NSRT.CurrentProfile][k] = CopyProfileValue(k, v)
             end
         end
     end
@@ -662,30 +688,24 @@ function NSI:CopyFromProfile(name)
 end
 
 function NSI:ExportProfileString()
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate = LibStub("LibDeflate")
     local profileData = NSRT.Profiles[NSRT.CurrentProfile]
     if not profileData then return nil end
+    local exportData = {}
+    for key, value in pairs(profileData) do
+        if not ignored[key] then
+            exportData[key] = CopyProfileValue(key, value)
+        end
+    end
     local exportTable = {
         profileName = NSRT.CurrentProfile,
-        data = profileData,
+        data = exportData,
     }
-    local serialized = LibSerialize:Serialize(exportTable)
-    local compressed = LibDeflate:CompressDeflate(serialized)
-    local encoded = LibDeflate:EncodeForPrint(compressed)
-    return encoded
+    return self:EncodeExportData(exportTable)
 end
 
 function NSAPI:ImportProfileString(importString, name) -- name is optional
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate = LibStub("LibDeflate")
-    if not importString or importString == "" then return nil end
-    local decoded = LibDeflate:DecodeForPrint(importString)
-    if not decoded then return nil end
-    local decompressed = LibDeflate:DecompressDeflate(decoded)
-    if not decompressed then return nil end
-    local success, exportTable = LibSerialize:Deserialize(decompressed)
-    if not success or type(exportTable) ~= "table" then return nil end
+    local exportTable = NSI:DecodeExportData(importString)
+    if type(exportTable) ~= "table" then return nil end
     local name = name or exportTable.profileName or "Imported"
     local function EnsureUniqueName(name)
         if NSRT.Profiles[name] then
@@ -695,14 +715,19 @@ function NSAPI:ImportProfileString(importString, name) -- name is optional
         return name
     end
     name = EnsureUniqueName(name)
-    NSRT.Profiles[name] = type(exportTable.data) == "table" and CopyTable(exportTable.data) or {}
+    NSRT.Profiles[name] = {}
+    if type(exportTable.data) == "table" then
+        for key, value in pairs(exportTable.data) do
+            if not ignored[key] then
+                NSRT.Profiles[name][key] = CopyProfileValue(key, value)
+            end
+        end
+    end
     NSI:LoadProfile(name)
     return name
 end
 
 function NSI:ExportAlertsString(encID, diffID)
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate = LibStub("LibDeflate")
     local source = encID and NSRT.EncounterAlerts[encID] or NSRT.EncounterAlerts
     local encounterAlerts
     if diffID then
@@ -729,14 +754,10 @@ function NSI:ExportAlertsString(encID, diffID)
         diffID          = diffID,
         encounterAlerts = encounterAlerts,
     }
-    local serialized = LibSerialize:Serialize(exportTable)
-    local compressed = LibDeflate:CompressDeflate(serialized)
-    return LibDeflate:EncodeForPrint(compressed)
+    return self:EncodeExportData(exportTable)
 end
 
 function NSI:ExportSingleAlertString(alertType, encID, diffID, alertKey, data)
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate = LibStub("LibDeflate")
     local exportTable = {
         version   = 1,
         type      = "single_alert",
@@ -746,15 +767,11 @@ function NSI:ExportSingleAlertString(alertType, encID, diffID, alertKey, data)
         alertKey  = alertKey,
         data      = data,
     }
-    local serialized = LibSerialize:Serialize(exportTable)
-    local compressed = LibDeflate:CompressDeflate(serialized)
-    return LibDeflate:EncodeForPrint(compressed)
+    return self:EncodeExportData(exportTable)
 end
 
 function NSI:ExportGroupString(encID, groupName, diffID)
     if not encID or not groupName then return nil end
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate   = LibStub("LibDeflate")
     local encounterAlerts = {}
     local encTable = encID and NSRT.EncounterAlerts and NSRT.EncounterAlerts[encID]
     if not encTable then return nil end
@@ -779,21 +796,12 @@ function NSI:ExportGroupString(encID, groupName, diffID)
         groupMeta       = (NSRT.Alerts and NSRT.Alerts.Groups and NSRT.Alerts.Groups[gk]) or {},
         encounterAlerts = encounterAlerts,
     }
-    local serialized = LibSerialize:Serialize(exportTable)
-    local compressed = LibDeflate:CompressDeflate(serialized)
-    return LibDeflate:EncodeForPrint(compressed)
+    return self:EncodeExportData(exportTable)
 end
 
 function NSAPI:ImportAlertsString(importString)
-    local LibSerialize = LibStub("LibSerialize")
-    local LibDeflate = LibStub("LibDeflate")
-    if not importString or importString == "" then return nil end
-    local decoded = LibDeflate:DecodeForPrint(importString)
-    if not decoded then return nil end
-    local decompressed = LibDeflate:DecompressDeflate(decoded)
-    if not decompressed then return nil end
-    local success, t = LibSerialize:Deserialize(decompressed)
-    if not success or type(t) ~= "table" then return nil end
+    local t = NSI:DecodeExportData(importString)
+    if type(t) ~= "table" then return nil end
 
     if t.type == "alerts" then
         local count = 0
@@ -915,8 +923,8 @@ end
 function NSI:LoadMyProfile()
     local ProfileKey = self:GetProfileKey()
     local ProfileToLoad = "default"
-    self:AddMissingDefaults()
-    if NSRT.ProfileKeys and NSRT.ProfileKeys[ProfileKey] then
+    NSRT = NSRT or {}
+    if ProfileKey and NSRT.ProfileKeys and NSRT.ProfileKeys[ProfileKey] then
         ProfileToLoad = NSRT.ProfileKeys[ProfileKey]
     elseif NSRT.MainProfile then
         ProfileToLoad = NSRT.MainProfile

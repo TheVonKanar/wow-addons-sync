@@ -569,7 +569,8 @@ function addon.LoadBlizzardApiChanges()
 
     if not RemoveTrackedAchievement then
         RemoveTrackedAchievement = function(achievementId)
-            C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementId, Enum.ContentTrackingStopType.Manual);
+            -- securecall: StopTracking synchronously refreshes Blizzard's ObjectiveTracker (Issue #300 taint)
+            securecall(C_ContentTracking.StopTracking, Enum.ContentTrackingType.Achievement, achievementId, Enum.ContentTrackingStopType.Manual);
         end
     end
 
@@ -585,7 +586,8 @@ function addon.LoadBlizzardApiChanges()
 
     if not AddTrackedAchievement then
         AddTrackedAchievement = function(achievementId)
-            return C_ContentTracking.StartTracking(Enum.ContentTrackingType.Achievement, achievementId);
+            -- securecall: StartTracking synchronously refreshes Blizzard's ObjectiveTracker (Issue #300 taint)
+            return securecall(C_ContentTracking.StartTracking, Enum.ContentTrackingType.Achievement, achievementId);
         end
     end
 
@@ -611,23 +613,31 @@ function addon.HookFunctions()
         end);
         hooksecurefunc("AchievementFrame_SetRestrictedMode", function(frame, subFrame)
             addon.Gui:ShowHideTabs();
+            -- AchievementFrame_SetRestrictedMode always shows AchievementFrame.SearchBox; re-hide it if our own search box is active
+            if KrowiAF_SearchBoxFrame and KrowiAF_SearchBoxFrame:IsShown() then
+                AchievementFrame.SearchBox:Hide();
+            end
         end);
     end
 
     AchievementFrameFilterDropdown:HookScript("OnShow", function()
         if addon.Util.IsClassicWithAchievements then
-            AchievementFrame.Header.RightDDLInset:Show();
+            if AchievementFrame.Header.RightDDLInset then
+                AchievementFrame.Header.RightDDLInset:Show();
+            end
         else
-            AchievementFrame.Header.LeftDDLInset:Show();
+            if AchievementFrame.Header.LeftDDLInset then
+                AchievementFrame.Header.LeftDDLInset:Show();
+            end
         end
     end);
     AchievementFrameFilterDropdown:HookScript("OnHide", function()
         if addon.Util.IsClassicWithAchievements then
-            if not KrowiAF_SearchBoxFrame:IsShown() then
+            if AchievementFrame.Header.RightDDLInset and not KrowiAF_SearchBoxFrame:IsShown() then
                 AchievementFrame.Header.RightDDLInset:Hide();
             end
         else
-            if not KrowiAF_AchievementFrameFilterButton:IsShown() then
+            if AchievementFrame.Header.LeftDDLInset and not KrowiAF_AchievementFrameFilterButton:IsShown() then
                 AchievementFrame.Header.LeftDDLInset:Hide();
             end
         end

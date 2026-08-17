@@ -1,6 +1,6 @@
 # BlizzMove
 
-## [v3.7.40](https://github.com/Kiatra/BlizzMove/tree/v3.7.40) (2026-07-22)
-[Full Changelog](https://github.com/Kiatra/BlizzMove/compare/v3.7.39...v3.7.40) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
+## [v3.7.42](https://github.com/Kiatra/BlizzMove/tree/v3.7.42) (2026-08-15)
+[Full Changelog](https://github.com/Kiatra/BlizzMove/compare/v3.7.41...v3.7.42) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
 
-- Added several frames to classic (era and mop)  
+- Add 12.1 blueprint frames (#185)  

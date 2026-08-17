@@ -1,7 +1,7 @@
 ## X-Flavor: retail
 ## X-Expansion: TWW
 ## Interface: 120007, 120100
-## Version: 1.9.3
+## Version: 1.9.4
 
 ## Title: Plumber
 
@@ -64,7 +64,6 @@ Modules\ExpansionLandingPage.xml
 Modules\GameTooltipExtension.xml
 Modules\LootUI.xml
 Modules\UnderlightAngler.lua
-Modules\SpellcastInfo.lua
 Modules\ChatOptions.lua
 Modules\NameplateResources.lua
 Modules\NameplateQuestIndicator.lua
@@ -75,13 +74,11 @@ Modules\ItemUpgradeUI.xml
 Modules\Macros.lua
 Modules\ProfessionsBook.lua
 Modules\ExpansionLandingPage\ExpansionLandingPage_Retail.xml
-Modules\BlizzFix_ModelLoading.lua
 Modules\HolidayDungeon.lua
 Modules\QueueStatus.lua
 Modules\RaidCheck\RaidCheck.xml
 Modules\TransmogUtil.lua
 Modules\QuestWatchCycle.lua
-Modules\CraftSearchExtended.lua
 Modules\SourceAchievementLink.lua
 Modules\OutfitSelect.xml
 Modules\BreakTime.xml
@@ -104,3 +101,6 @@ Modules\PreyQuestSuperTrack.lua
 #Modules\ObjectiveTrackerModule.xml
 #Modules\BlizzFix_EndCaps.lua
 #Modules\Timerunning\LegionRemix.xml
+#Modules\SpellcastInfo.lua
+#Modules\BlizzFix_ModelLoading.lua
+#Modules\CraftSearchExtended.lua

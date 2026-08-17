@@ -306,8 +306,6 @@ function M:CollectTimelineEvents(now)
 					if isSecretValue(eventSeverity) and fallbackSeverity then
 						eventSeverity = fallbackSeverity
 					end
-					local eventColor = info.color
-					
 					events[#events + 1] = {
 						id = eventID,
 						eventInfo = {
@@ -320,7 +318,6 @@ function M:CollectTimelineEvents(now)
 							timelineEventID = eventID,
 							encounterEventID = encounterEventID,
 							source = info.source,
-							color = eventColor,
 							state = state,
 						},
 						remaining = remainingIsSecret and remaining or remainingNum,

@@ -1,5 +1,61 @@
 # Changelog
 
+## Changed in v57
+
+* Coiled Isle:
+	* Show *all* the shared loot (there's a lot)
+	* Add combination information for Mysterious Mix Master
+* Silvermoon City: show Andra on the minimap
+* Shared loot now respects the "this character only" setting
+* Use the correct translation of "mount" in the notability settings as well
+* Route lines on the map look better, don't get weird when you zoom in
+
+## Changed in v56
+
+* Coiled Isle: updated rare loot, add the shared mounts
+
+## Changed in v55
+
+* Voidstorm Invasion Naigtal:
+	* The Sleepy Mandrake shows on the minimap now, and the entrance to its cave is shown
+	* The route to the Highland Redcap follows the ground instead of cutting across it
+	* Better coordinates for Interminable Uarn, Lomelith and Warbringer Thal'kuur
+* A related point with a route of its own, like that Highland Redcap, didn't draw it on the world map
+* Tooltips could label mount rewards with the verb "mount" instead of the noun "mount", in languages where the two differ
+
+## Changed in v54
+
+* 12.1:
+	* Added Delves data for Gnarldor Isle and Ring of Glory
+	* World boss data for Nymrissa Wavecaller
+* Voidstorm: add currency quests to the Stormarion Assault rares
+
+## Changed in v53
+
+* Updated for 12.1.0
+* Coiled Isle: treasures, rares and the Honored Dead, plus the Glyph Hunter and Student of Hissstory achievements
+* Achievement rewards that name a single criteria now count as earned once that criteria is done, rather than waiting for the whole achievement
+
+## Changed in v52
+
+* Zul'Aman: note that Baz'wa isn't available until the temple's restored
+* Herbalism: corrected the position of Peculiar Lotus in Voidstorm
+* Minor coordinate tweaks
+* Turning on "Transmog exact items" didn't take effect until you reloaded
+* Points placed near another one ignored the colour and scale asked for in the data
+
+## Changed in v51
+
+* Points you can't reach yet because of your level or your covenant now show as inaccessible with an explanation of what's missing, rather than being hidden outright -- the "show inaccessible" option reveals them
+* Fixed an error that happened every time you entered a dungeon, caused by creature names the game now keeps hidden
+* Points that only appear while you have a particular buff, like Mechagon's mechanized chests or Korthia's rift portals, vanished the moment you entered combat
+* Creature names could stay stuck at "Unknown" for the rest of the session
+* Fixed errors when checking points of interest, both once a second zone was involved and on maps that have none at all
+* Routes to nearby and related points could corrupt the route of the point they belong to
+* A point with a criteria but no achievement could error while working out its label
+* Tooltips no longer list requirements that have nothing useful to say
+* Less work per frame: the same requirement isn't asked about twice in a frame, and caching loot no longer spends its time on points that have none
+
 ## Changed in v50
 
 * Routes to the parts of a multi-step treasure now hide as you collect them

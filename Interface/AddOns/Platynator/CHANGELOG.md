@@ -1,8 +1,6 @@
 # Platynator
 
-## [448](https://github.com/TheMouseNest/Platynator/tree/448) (2026-07-24)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/447...448) 
+## [464](https://github.com/TheMouseNest/Platynator/tree/464) (2026-08-14)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/463...464) 
 
-- Retail: Fix auras persisting on interact-only nameplates  
-- Fix auras initialization skipping settings if aura restricted on startup  
-- 12.1 PTR: Fixes for API renames  
+- Fix typo breaking auras if buffs or debuffs removed  

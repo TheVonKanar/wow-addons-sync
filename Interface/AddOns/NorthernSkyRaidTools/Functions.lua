@@ -17,9 +17,40 @@ function NSI:IterateGroupMembers(reversed, forceParty)
     end
 end
 
-function NSI:IsMidnightS2()
-    local build = select(4, GetBuildInfo())
-    return build >= 120100
+function NSI:GetCoTankUnits()
+    local tanks = {}
+    for member in self:IterateGroupMembers() do
+        if UnitGroupRolesAssigned(member) == "TANK" and not UnitIsUnit("player", member) then
+            tanks[#tanks + 1] = member
+        end
+    end
+    return tanks
+end
+
+function NSI:ResolveGroupMemberUnit(unit)
+    if type(unit) ~= "string" or unit == "" then return end
+
+    local inputName, inputRealm = strsplit("-", unit)
+    if not inputName or inputName == "" then return end
+
+    inputName = strlower(Ambiguate(inputName, "none"))
+    if inputRealm == "" then inputRealm = nil end
+    if inputRealm then inputRealm = strlower(inputRealm) end
+
+    local _, playerRealm = UnitFullName("player")
+    playerRealm = playerRealm and strlower(playerRealm)
+
+    for member in self:IterateGroupMembers() do
+        local name, realm = UnitFullName(member)
+        if name then
+            local compareName = strlower(name)
+            local compareShortName = strlower(Ambiguate(name, "none"))
+            local compareRealm = strlower(realm or playerRealm or "")
+            if (compareName == inputName or compareShortName == inputName) and (not inputRealm or inputRealm == compareRealm) then
+                return member
+            end
+        end
+    end
 end
 
 function NSI:Restricted()
@@ -54,7 +85,7 @@ function NSI:GetSortedPhaseKeys(phaseTimers)
 end
 
 function NSI:GetActiveEncounterTimelineEventCount()
-    return C_EncounterTimeline and C_EncounterTimeline.GetEventCountBySource and C_EncounterTimeline.GetEventCountBySource(0) or 0
+    return C_EncounterTimeline.GetEventCountBySource(0)
 end
 
 function NSI:SortTable(t, reversed)
@@ -116,6 +147,12 @@ function NSAPI:Shorten(unit, num, specicon, AddonName, combined, roleicon) -- Re
     end
 end
 
+function NSAPI:GetRange(unit)
+    if not unit or not UnitExists(unit) then return false end
+
+    return LibStub("LibRangeCheck-3.0"):GetRange(unit, true)
+end
+
 function NSI:GetSpecs(unit)
     if unit then
         local G = UnitGUID(unit)
@@ -166,7 +203,7 @@ function NSI:GetNote() -- simply for note comparison now
     return _G.VMRT.Note.Text1 or ""
 end
 
-function NSI:DifficultyCheck(diffs) -- check if current difficulty is a Normal/Heroic/Mythic raid and also allow checking if we are currently in an encounter
+function NSI:DifficultyCheck(diffs) -- check if current difficulty is a Normal/Heroic/Mythic raid. Mythic Flex is treated as Mythic, atleast for now.
     local diff = select(3, GetInstanceInfo()) or 0
     if diff == 233 then diff = 16 end -- Just treat Flex myth as normal myth
     return (tContains(diffs, diff) and diff) or (NSRT.Settings.Debug and 16)
@@ -208,18 +245,10 @@ local function GetTTSSoundFile(sound)
     end
 
     local numeric = tonumber(sound)
-    local function GetCachedKey()
-        local key = NSI.LSMSoundCache and (NSI.LSMSoundCache[sound] or NSI.LSMSoundCache[strlower(sound)])
-        if not key and numeric then
-            key = NSI.LSMSoundCache and NSI.LSMSoundCache[tostring(numeric)]
-        end
-        return key
-    end
-
-    local lsmKey = GetCachedKey()
-    if not lsmKey and NSI.CacheSounds then
-        NSI:CacheSounds()
-        lsmKey = GetCachedKey()
+    local cache = NSI.LSMSoundCache
+    local lsmKey = cache and (cache[sound] or cache[strlower(sound)])
+    if cache and not lsmKey and numeric then
+        lsmKey = cache[tostring(numeric)]
     end
     return lsmKey and NSI.LSM:Fetch("sound", lsmKey, true)
 end
@@ -235,21 +264,26 @@ function NSAPI:TTS(sound, voice) -- NSAPI:TTS("Bait Frontal")
         else
             sound = tostring(sound)
             local num = voice or NSRT.Settings["TTSVoice"]
-            local voices = C_VoiceChat.GetTtsVoices()
-            local validVoice = false
-            if voices then
-                for i, v in ipairs(voices) do
-                    if v.voiceID == num then
-                        validVoice = true
-                        break
+            NSI.TTSVoiceValidity = NSI.TTSVoiceValidity or {}
+            local validVoice = NSI.TTSVoiceValidity[num]
+            if validVoice == nil then
+                validVoice = false
+                local voices = C_VoiceChat.GetTtsVoices()
+                if voices then
+                    for i, v in ipairs(voices) do
+                        if v.voiceID == num then
+                            validVoice = true
+                            break
+                        end
                     end
                 end
+                NSI.TTSVoiceValidity[num] = validVoice
             end
             if not validVoice then num = 0 end
             C_VoiceChat.SpeakText(
                 num,
                 sound,
-                C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
+                C_TTSSettings.GetSpeechRate(),
                 NSRT.Settings.TTSVolume,
                 NSRT.Settings.TTSOverlap
             )
@@ -268,7 +302,7 @@ function NSI:GetSubGroup(unit)
 end
 
 function NSI:SpecToName(specid)
-    if specid == 1 then return "\124T" .. 135724 .. ":10:10:0:0:64:64:4:60:4:60\124t" .. " " .. "All Specs" end
+    if specid == 1 then return "\124T" .. 135724 .. ":10:10:0:0:64:64:4:60:4:60\124t" .. " " .. NSI:Loc("All Specs") end
     local _, specName, _, icon, _, classFile = GetSpecializationInfoByID(specid)
     if not specName then return "" end
     local color = GetClassColorObj(classFile)
@@ -338,47 +372,22 @@ function NSAPI.UnregisterAllCallbacks(target)
     return NSI.UnregisterAllCallbacks(target)
 end
 
-local Serialize = LibStub("AceSerializer-3.0")
-local Compress = LibStub("LibDeflate")
+local ExportSerializer = LibStub("LibSerialize")
+local ExportDeflate = LibStub("LibDeflate")
 
--- Snapshot of the original locale strings before any override is applied.
-local _localeSnapshot = nil
-
-function NSI:CreateExportString(SettingsTable) -- {"ReminderSettings", "PASettings", ...}
-    local str = ""
-    local ExportTable = {}
-    for k, Settings in pairs(SettingsTable) do
-        if Settings.enabled then
-            ExportTable[k] = Settings
-        end
-    end
-    local serialized = Serialize:Serialize(ExportTable)
-    local compressed = serialized and Compress:CompressDeflate(serialized)
-    local encoded = compressed and Compress:EncodeForPrint(compressed)
-    return encoded or ""
+function NSI:EncodeExportData(data, serializer)
+    local serialized = (serializer or ExportSerializer):Serialize(data)
+    local compressed = serialized and ExportDeflate:CompressDeflate(serialized)
+    return compressed and ExportDeflate:EncodeForPrint(compressed)
 end
 
-function NSI:ImportFromTable(ImportTable)
-    local changed = false
-    for k, v in pairs(ImportTable) do
-        if v.enabled then
-            changed = true
-            NSRT[k] = v.data
-        end
-    end
-    if changed then
-        ReloadUI()
-    end
-end
-
-function NSI:ImportSettingsFromString(string)
-    local decoded = Compress:DecodeForPrint(string)
-    local decompressed = decoded and Compress:DecompressDeflate(decoded)
-    if not decompressed then return nil end
-    local success, data = Serialize:Deserialize(decompressed)
-    if success and data then
-        return data
-    else return nil end
+function NSI:DecodeExportData(text, serializer)
+    if type(text) ~= "string" or text == "" then return end
+    local decoded = ExportDeflate:DecodeForPrint(text)
+    local decompressed = decoded and ExportDeflate:DecompressDeflate(decoded)
+    if not decompressed then return end
+    local success, data = (serializer or ExportSerializer):Deserialize(decompressed)
+    return success and data or nil
 end
 
 function NSI:SaveFramePosition(F, SettingsTable)
@@ -468,7 +477,7 @@ end
 
 function NSI:LogTimeline(e, ...)
     if not NSRT.Settings.DebugLogs then return end
-    local id = self:DifficultyCheck({14, 15, 16})
+    local id = self:DifficultyCheck({8, 14, 15, 16})
     if not id then return end
     local function GetBossUnitState()
         local bossUnits = {}
@@ -497,7 +506,7 @@ function NSI:LogTimeline(e, ...)
         self.CurrentEncounterData = {
             Name = encName,
             encID = encID,
-            difficulty = difficultyID == 16 and "Mythic" or difficultyID == 15 and "Heroic" or difficultyID == 14 and "Normal",
+            difficulty = difficultyID == 8 and "Mythic+" or difficultyID == 16 and "Mythic" or difficultyID == 15 and "Heroic" or difficultyID == 14 and "Normal",
             pullTime = now,
             startTime = string.format("%02d:%02d", date.hour, date.minute),
             success = false,

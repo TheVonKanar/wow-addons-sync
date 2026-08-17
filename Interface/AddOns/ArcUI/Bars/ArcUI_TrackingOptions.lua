@@ -13,12 +13,32 @@ ns.TrackingOptions = ns.TrackingOptions or {}
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+-- Totem / pet / ground bars are driven entirely by ArcUI off GetTotemDuration,
+-- never by the 12.1 aura-slot engine, so a custom max IS expressible for them
+-- (Display maps remaining seconds through our own curve). Every other duration
+-- bar goes through the engine timer, which takes no maximum -- those stay locked
+-- to Auto. See IsTotemLikeBar in ArcUI_Display.lua.
+local TOTEM_LIKE_TRACKTYPES = { pet = true, totem = true, ground = true }
+local function MaxDurationLocked(cfg)
+  if not (ns.API and ns.API.IS_121) then return false end
+  local tt = cfg and cfg.tracking and cfg.tracking.trackType
+  return not (tt and TOTEM_LIKE_TRACKTYPES[tt])
+end
+
 -- ===================================================================
 -- UI STATE
 -- ===================================================================
 local showOnlyCurrentSpec = true
 local catalogConfigFilter = "all"  -- "all", "configured", "notconfigured"
 local selectedCatalogEntry = nil
+
+-- Add Aura by Spell ID (custom, non-CDM — 12.1 engine lane) input state.
+-- The green "+" tile in the catalog grid toggles customAuraAddMode, which
+-- reveals the type + spell-ID inputs; entering an ID adds a CATALOG ENTRY
+-- (selected like any CDM aura) — creation happens via the shared buttons.
+local pendingCustomAuraID = ""
+local pendingCustomAuraType = "buff"   -- "buff" | "debuff"
+local customAuraAddMode = false
 
 -- Track which bars are expanded (collapsed by default)
 local expandedBars = {}  -- expandedBars["buff_1"] = true means bar 1 is expanded
@@ -277,9 +297,12 @@ end
 -- Helper to get selected entry info
 local function GetSelectedCatalogEntry()
   if not selectedCatalogEntry then return nil end
-  
 
-  
+  -- Custom aura entry ("custom_<spellID>" key)
+  if type(selectedCatalogEntry) == "string" and selectedCatalogEntry:find("^custom_") then
+    return ns.Catalog and ns.Catalog.GetCustomEntry and ns.Catalog.GetCustomEntry(selectedCatalogEntry)
+  end
+
   -- It's a CDM cooldownID (numeric or stringified number)
   local cooldownID = tonumber(selectedCatalogEntry) or selectedCatalogEntry
   return ns.Catalog and ns.Catalog.GetEntry and ns.Catalog.GetEntry(cooldownID)
@@ -473,6 +496,75 @@ local function CreateCatalogIconEntry(index)
 end
 
 -- ===================================================================
+-- CUSTOM AURA TILES (non-CDM auras added by spell ID — 12.1 only)
+-- Rendered in the same grid, after the CDM tiles; selecting one flows
+-- into the same Create Duration Bar / Create Texture buttons.
+-- ===================================================================
+local MAX_CUSTOM_TILES = 20
+
+local function GetCustomEntryByIndex(index)
+  if not (ns.Catalog and ns.Catalog.GetCustomEntries) then return nil end
+  return ns.Catalog.GetCustomEntries()[index]
+end
+
+local function CreateCustomCatalogTileEntry(index)
+  return {
+    type = "execute",
+    name = " ",
+    desc = function()
+      local entry = GetCustomEntryByIndex(index)
+      if not entry then return "" end
+      local desc = "|cffffd700" .. entry.name .. "|r  |cff3fc9f2(Custom)|r"
+      desc = desc .. "\nSpell ID: " .. entry.spellID
+      desc = desc .. "\nType: " .. (entry.trackType == "debuff" and "Debuff (on target)" or "Buff (on you)")
+      local spellDesc = C_Spell.GetSpellDescription(entry.spellID)
+      if spellDesc and spellDesc ~= "" then
+        desc = desc .. "\n\n|cff00ff00" .. spellDesc .. "|r"
+      end
+      local existingBars = ns.Catalog.FindCustomAuraBars and ns.Catalog.FindCustomAuraBars(entry.spellID) or {}
+      if #existingBars > 0 then
+        local barsList = {}
+        for _, barInfo in ipairs(existingBars) do
+          table.insert(barsList, string.format("Bar %d (%s)", barInfo.barNum, barInfo.mode))
+        end
+        desc = desc .. "\n\n|cff00ccffAlready in ArcUI:|r\n" .. table.concat(barsList, "\n")
+      else
+        desc = desc .. "\n\n|cff888888Click to select|r"
+      end
+      desc = desc .. "\n|cff888888Ctrl+Click to remove from the catalog (bars are kept)|r"
+      return desc
+    end,
+    func = function()
+      local entry = GetCustomEntryByIndex(index)
+      if not entry then return end
+      if IsControlKeyDown() then
+        if ns.Catalog.RemoveCustomEntry then ns.Catalog.RemoveCustomEntry(entry.key) end
+        if selectedCatalogEntry == entry.key then selectedCatalogEntry = nil end
+        LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        return
+      end
+      if selectedCatalogEntry == entry.key then
+        selectedCatalogEntry = nil
+      else
+        selectedCatalogEntry = entry.key
+      end
+      LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+    end,
+    image = function()
+      local entry = GetCustomEntryByIndex(index)
+      return entry and entry.icon or nil
+    end,
+    imageWidth = 36,
+    imageHeight = 36,
+    order = 7.05 + (index * 0.001),
+    width = 0.25,
+    hidden = function()
+      return GetCustomEntryByIndex(index) == nil
+    end
+  }
+end
+
+-- ===================================================================
 -- DELETE CONFIRMATION FRAME
 -- ===================================================================
 local deleteConfirmFrame = nil
@@ -618,6 +710,8 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
             local typeLabel
             if trackType == "debuff" then
               typeLabel = "|cffff6b6bDebuff|r"
+            elseif trackType == "petbuff" then
+              typeLabel = "|cffaa88ffPet Buff|r"
             elseif trackType == "pet" then
               typeLabel = "|cffaa88ffPet|r"
             else
@@ -741,9 +835,20 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           end
           return "Type"
         end,
-        desc = "Track as buff, debuff, pet, totem, or ground effect duration\n\n|cffFFD100Buff|r - Player buffs (Maelstrom Weapon, procs, etc.)\n|cffFFD100Debuff|r - Target debuffs (DoTs, applied effects)\n|cffFFD100Pet|r - Guardians/pets (Dreadstalkers, Wild Imps, Spirit Wolves)\n|cffFFD100Totem|r - Actual totems (Healing Stream, Capacitor)\n|cffFFD100Ground Effect|r - Placed effects (Consecration, Efflorescence, Death and Decay)",
-        values = { [""] = "-- Select Type --", ["buff"] = "Buff", ["debuff"] = "Debuff", ["pet"] = "Pet", ["totem"] = "Totem", ["ground"] = "Ground Effect" },
-        sorting = { "", "buff", "debuff", "pet", "totem", "ground" },
+        desc = "Track as buff, debuff, pet, totem, or ground effect duration\n\n|cffFFD100Buff|r - Player buffs (Maelstrom Weapon, procs, etc.)\n|cffFFD100Debuff|r - Target debuffs (DoTs, applied effects)\n|cffFFD100Buff on Pet|r - Buffs your pet carries (Dark Transformation)\n|cffFFD100Pet|r - Guardians/pets (Dreadstalkers, Wild Imps, Spirit Wolves)\n|cffFFD100Totem|r - Actual totems (Healing Stream, Capacitor)\n|cffFFD100Ground Effect|r - Placed effects (Consecration, Efflorescence, Death and Decay)",
+        values = function()
+          local v = { [""] = "-- Select Type --", ["buff"] = "Buff", ["debuff"] = "Debuff", ["pet"] = "Pet", ["totem"] = "Totem", ["ground"] = "Ground Effect" }
+          -- Buff on Pet rides the 12.1 engine lane (pet-unit aura slots); on
+          -- older clients there is no working path, so the choice is not offered
+          if ns.API and ns.API.IS_121 then v["petbuff"] = "Buff on Pet" end
+          return v
+        end,
+        sorting = function()
+          if ns.API and ns.API.IS_121 then
+            return { "", "buff", "debuff", "petbuff", "pet", "totem", "ground" }
+          end
+          return { "", "buff", "debuff", "pet", "totem", "ground" }
+        end,
         get = function()
           local cfg = ns.API.GetBarConfig(barNum)
           return cfg and cfg.tracking.trackType or ""
@@ -861,17 +966,35 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
         hidden = function()
           if not expandedBars[barKey] then return true end
           local cfg = ns.API.GetBarConfig(barNum)
-          -- Hide for duration bars with Auto enabled (Max Ticks moved to Appearance panel)
-          if cfg and cfg.tracking.useDurationBar and cfg.tracking.dynamicMaxDuration then return true end
+          -- Hide for duration bars with Auto enabled (Max Ticks moved to Appearance panel).
+          -- On 12.1 Auto is forced on, so a manual max could never apply -- do not
+          -- offer a field that does nothing.
+          if cfg and cfg.tracking.useDurationBar
+            and (cfg.tracking.dynamicMaxDuration or MaxDurationLocked(cfg)) then return true end
           return false
         end
       },
       dynamicMax = {
         type = "toggle",
         name = "Auto",
-        desc = "Automatically get max duration from the CDM bar (adapts to haste, talents, etc.). Set Max (Ticks) in the Appearance panel for tick mark positioning.",
+        -- 12.1: a custom maximum is no longer expressible. The engine timer takes
+        -- SetTimerDuration(duration, interpolation, direction) with no max, the
+        -- duration-bar options table is only {interpolation, direction}, and the
+        -- aura's real length is secret so the fraction cannot be computed either.
+        -- Locked to Auto and disclaimed rather than silently ignored. Flip these
+        -- three functions back if Blizzard restores the parameter.
+        desc = function()
+          if MaxDurationLocked(ns.API.GetBarConfig(barNum)) then
+            return "|cffff9900Locked to Auto.|r Blizzard's 12.1 aura timer no longer accepts a custom maximum, and an aura's real length is hidden from addons.\nBars fill over the aura's own full duration until Blizzard restores it."
+          end
+          return "Automatically get max duration from the CDM bar (adapts to haste, talents, etc.). Set Max (Ticks) in the Appearance panel for tick mark positioning."
+        end,
+        disabled = function()
+          return MaxDurationLocked(ns.API.GetBarConfig(barNum))
+        end,
         get = function()
           local cfg = ns.API.GetBarConfig(barNum)
+          if MaxDurationLocked(cfg) then return true end
           return cfg and cfg.tracking.dynamicMaxDuration
         end,
         set = function(info, value)
@@ -892,9 +1015,26 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           return not (cfg and cfg.tracking.useDurationBar)
         end
       },
+      -- The desc above can never render while the toggle is disabled: AceGUI's
+      -- checkbox is a Button and calls frame:Disable(), and a disabled Button does
+      -- not run OnEnter/OnLeave unless SetMotionScriptsWhileDisabled(true) is set
+      -- (AceGUI never does). So the disclaimer has to be visible text, not a tooltip.
+      dynamicMaxNote = {
+        type = "description",
+        name = "|cffff9900Locked to Auto.|r 12.1 removed the API for a custom maximum, so bars fill over the aura's own full duration.",
+        fontSize = "small",
+        order = 4.6,
+        width = "full",
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not MaxDurationLocked(cfg) then return true end
+          return not (cfg and cfg.tracking.useDurationBar)
+        end
+      },
       hideCDM = {
         type = "toggle",
-        name = "Hide CDM Icon",
+        name = "Hide CDM Icon/Bar",
         desc = "Hide the CD Manager icon/bar for this aura",
         get = function()
           local cfg = ns.API.GetBarConfig(barNum)
@@ -909,7 +1049,27 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           end
         end,
         order = 4.7,
-        width = 0.7,
+        width = 0.95,
+        hidden = function() return not expandedBars[barKey] end
+      },
+      hideInactive = {
+        type = "toggle",
+        name = "Hide When Inactive",
+        desc = "Hide the bar/icon when the buff/debuff is not active.\n\nSame setting as in the Appearance tab's Behavior section.",
+        get = function()
+          local cfg = ns.API.GetBarConfig(barNum)
+          return cfg and cfg.behavior and cfg.behavior.hideWhenInactive
+        end,
+        set = function(info, value)
+          local cfg = ns.API.GetBarConfig(barNum)
+          if cfg then
+            if not cfg.behavior then cfg.behavior = {} end
+            cfg.behavior.hideWhenInactive = value
+            if ns.API.RefreshDisplay then ns.API.RefreshDisplay(barNum) end
+          end
+        end,
+        order = 4.72,
+        width = 1.0,
         hidden = function() return not expandedBars[barKey] end
       },
       useBaseSpell = {
@@ -967,6 +1127,34 @@ local function CreateActiveBarEntry(barNum, orderBase, filterDisplayType, labelP
           if not expandedBars[barKey] then return true end
           local cfg = ns.API.GetBarConfig(barNum)
           if not cfg or not cfg.tracking then return true end
+          return not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0
+        end
+      },
+      cdmMirror = {
+        type = "toggle",
+        name = "CDM Timer Mirror",
+        desc = "Drives this duration bar by mirroring the Cooldown Manager entry's own bar timer. Use for internal timers that normal aura tracking cannot see (for example Crusading Strikes' weapon swing timer).\n\nRequires the entry to be displayed as a BAR in the Cooldown Manager and visible.\n\n|cffff8800Mirrored timers repeat the game's own pushes as-is, so some options can't apply while this is on: the bar always DRAINS (Fill mode is ignored), Smoothing and Conditional Color are off, and the duration text shows whole seconds.|r",
+        get = function()
+          local cfg = ns.API.GetBarConfig(barNum)
+          return cfg and cfg.tracking and cfg.tracking.cdmMirror or false
+        end,
+        set = function(info, value)
+          local cfg = ns.API.GetBarConfig(barNum)
+          if cfg then
+            cfg.tracking.cdmMirror = value or nil
+            if ns.API.RefreshDisplay then ns.API.RefreshDisplay(barNum) end
+          end
+        end,
+        order = 4.765,
+        width = 1.1,
+        hidden = function()
+          if not expandedBars[barKey] then return true end
+          -- 12.1-only lane (combat-first: on live the normal engine handles
+          -- everything this can, so the option would be a no-op there)
+          if not (ns.API and ns.API.IS_121) then return true end
+          local cfg = ns.API.GetBarConfig(barNum)
+          if not cfg or not cfg.tracking then return true end
+          if not cfg.tracking.useDurationBar then return true end
           return not cfg.tracking.cooldownID or cfg.tracking.cooldownID <= 0
         end
       },
@@ -1705,20 +1893,30 @@ local function CreateActiveTextureEntry(num, orderBase)
         local nm = (cfg and cfg.tracking and cfg.tracking.buffName) or "(Not configured)"
         local icon = (cfg and cfg.tracking and cfg.tracking.iconTextureID) or 134400
 
-        -- Buff/Debuff type (textures track buff/debuff), same colors as bars
-        local trackType = (cfg and cfg.tracking and cfg.tracking.trackType) or "buff"
-        local typeLabel = (trackType == "debuff") and "|cffff6b6bDebuff|r" or "|cff00ff00Buff|r"
+        -- Tracking type — same labels as bars, plus the new texture types.
+        -- UNSET is loud: new textures require a type pick (no silent "buff").
+        local trackType = (cfg and cfg.tracking and cfg.tracking.trackType) or ""
+        local typeLabel
+        if trackType == "debuff" then typeLabel = "|cffff6b6bDebuff|r"
+        elseif trackType == "petbuff" then typeLabel = "|cffaa88ffPet Buff|r"
+        elseif trackType == "pet" then typeLabel = "|cffaa88ffPet|r"
+        elseif trackType == "totem" then typeLabel = "|cffff9900Totem|r"
+        elseif trackType == "ground" then typeLabel = "|cffff9900Ground|r"
+        elseif trackType == "buff" then typeLabel = "|cff00ff00Buff|r"
+        else typeLabel = "|cffffff00Type Not Set|r" end
 
         -- Textures are duration-driven (they drain with the aura)
         local modeLabel = " |cffff9900[Duration]|r"
 
-        -- OK / FAIL / MISSING SETUP, mirroring the bar rows
+        -- OK / FAIL / MISSING SETUP, mirroring the bar rows: a texture needs
+        -- BOTH an aura identification AND a tracking type (same rule as bars'
+        -- hasSpellIdentification + hasTrackType).
         local statusLabel = ""
         local cooldownID = cfg and cfg.tracking and cfg.tracking.cooldownID
         local spellID = cfg and cfg.tracking and cfg.tracking.spellID
         local buffName = cfg and cfg.tracking and cfg.tracking.buffName
         local hasAura = (spellID and spellID > 0) or (cooldownID and cooldownID > 0) or (buffName and buffName ~= "")
-        if not hasAura then
+        if not hasAura or trackType == "" then
           statusLabel = " |cffffff00[MISSING SETUP]|r"
         elseif cooldownID and cooldownID > 0 and ns.API._FindCDMFrameForCooldownID then
           local trackingOK = ns.API._FindCDMFrameForCooldownID(cooldownID) ~= nil
@@ -1756,15 +1954,35 @@ local function CreateActiveTextureEntry(num, orderBase)
     },
   }
 
-  -- Aura Type (buff/debuff) -- relocated here from the removed Textures > Trigger tab.
+  -- Tracking Type -- the SAME choice set as the bars (one mental model):
+  -- aura lanes (Buff / Debuff / Buff on Pet) route to their unit's aura
+  -- engine; Pet / Totem / Ground Effect route to the totem-slot duration
+  -- path (secret-safe, works in combat and instances). Unset = orange
+  -- "Type" + forced "-- Select Type --" entry, exactly like the bars.
   args.auraType = {
     type = "select",
-    name = "Aura Type",
-    desc = "Track this aura as a Buff (on you) or a Debuff (on your target).",
-    values = { buff = "Buff", debuff = "Debuff" },
+    name = function()
+      local cfg = texCfg()
+      if cfg and (not cfg.tracking or not cfg.tracking.trackType or cfg.tracking.trackType == "") then
+        return "|cffFF6600Type|r"
+      end
+      return "Type"
+    end,
+    desc = "What this texture tracks.\n\n|cffffd700Buff|r - a buff on you\n|cffffd700Debuff|r - your debuff on the target\n|cffffd700Buff on Pet|r - a buff on your pet\n|cffffd700Pet / Totem / Ground Effect|r - a summon's remaining duration, read from the totem slots (works in combat and instances)",
+    values = function()
+      local v = { [""] = "-- Select Type --", ["buff"] = "Buff", ["debuff"] = "Debuff", ["pet"] = "Pet", ["totem"] = "Totem", ["ground"] = "Ground Effect" }
+      if ns.API and ns.API.IS_121 then v["petbuff"] = "Buff on Pet" end
+      return v
+    end,
+    sorting = function()
+      if ns.API and ns.API.IS_121 then
+        return { "", "buff", "debuff", "petbuff", "pet", "totem", "ground" }
+      end
+      return { "", "buff", "debuff", "pet", "totem", "ground" }
+    end,
     get = function()
       local cfg = texCfg()
-      return (cfg and cfg.tracking and cfg.tracking.trackType) or "buff"
+      return (cfg and cfg.tracking and cfg.tracking.trackType) or ""
     end,
     set = function(_, v)
       local cfg = texCfg()
@@ -2034,7 +2252,71 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
         order = 4,
         width = 0.9
       },
-      
+
+      -- ═══════════════════════════════════════════════════════════════════
+      -- ADD AURA BY SPELL ID (custom, NOT in the CD Manager — 12.1 only)
+      -- The green "+" tile sits at the end of the aura grid (same look as
+      -- the Icon Catalog's Add tile). Clicking it reveals the type +
+      -- spell-ID inputs; entering an ID adds a catalog entry and selects
+      -- it, so the shared Create buttons below do the actual creation.
+      -- ═══════════════════════════════════════════════════════════════════
+      catalogAddTile = {
+        type = "execute",
+        name = "|cff3fc9f2Add|r",
+        desc = "|cffffd700Add Aura by Spell ID|r\nTrack an aura that is not in the CD Manager.\n\nClick to enter the Spell ID.",
+        image = "Interface\\AddOns\\ArcUI\\Textures\\add_tile.tga",
+        imageWidth = 32,
+        imageHeight = 32,
+        order = 7.08,
+        width = 0.25,
+        hidden = function()
+          return not (ns.BarDuration and ns.BarDuration.IsAvailable and ns.BarDuration.IsAvailable())
+        end,
+        func = function()
+          customAuraAddMode = not customAuraAddMode
+          LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+      },
+      customAuraAddType = {
+        type = "select",
+        name = "Aura Type",
+        desc = "Buff = tracks the aura on YOU.\nDebuff = tracks the aura on your TARGET.",
+        order = 7.081,
+        width = 0.9,
+        values = { buff = "Buff (on you)", debuff = "Debuff (on target)" },
+        get = function() return pendingCustomAuraType end,
+        set = function(_, v) pendingCustomAuraType = v end,
+        hidden = function()
+          return not customAuraAddMode
+            or not (ns.BarDuration and ns.BarDuration.IsAvailable and ns.BarDuration.IsAvailable())
+        end,
+      },
+      customAuraAddID = {
+        type = "input",
+        name = "Aura Spell ID",
+        desc = "Enter the buff/debuff Spell ID and press Enter.\nIf the buff has a different ID than the cast, use the buff's own ID.",
+        order = 7.082,
+        width = 0.9,
+        get = function() return pendingCustomAuraID end,
+        set = function(_, val)
+          val = val:gsub("[^%d]", "")
+          local spellID = tonumber(val)
+          pendingCustomAuraID = ""
+          if not spellID or spellID <= 0 then return end
+          local key, err = ns.Catalog.AddCustomEntry(spellID, pendingCustomAuraType)
+          if not key then
+            print("|cff00ccffArc UI|r: " .. tostring(err))
+            return
+          end
+          selectedCatalogEntry = key
+          customAuraAddMode = false
+          LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+        end,
+        hidden = function()
+          return not customAuraAddMode
+            or not (ns.BarDuration and ns.BarDuration.IsAvailable and ns.BarDuration.IsAvailable())
+        end,
+      },
       -- ═══════════════════════════════════════════════════════════════════
       -- AURA ICON GRID
       -- ═══════════════════════════════════════════════════════════════════
@@ -2077,8 +2359,8 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
           if not selectedCatalogEntry then return "" end
           local entry = GetSelectedCatalogEntry()
           if entry then
-            local prefix = ""
-            return string.format("%s|T%d:20:20:0:0|t %s", prefix, entry.icon, entry.name)
+            local suffix = entry.isCustomAura and " |cff3fc9f2(Custom)|r" or ""
+            return string.format("|T%d:20:20:0:0|t %s%s", entry.icon, entry.name, suffix)
           end
           return "Selected Aura"
         end,
@@ -2091,10 +2373,28 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
           if not selectedCatalogEntry then return "" end
           local entry = GetSelectedCatalogEntry()
           if not entry then return "" end
-          
-          
+
+          -- Custom aura entry (non-CDM, engine-driven)
+          if entry.isCustomAura then
+            local existingBars = ns.Catalog.FindCustomAuraBars and
+                                 ns.Catalog.FindCustomAuraBars(entry.spellID) or {}
+            local barsText = ""
+            if #existingBars > 0 then
+              local barsList = {}
+              for _, barInfo in ipairs(existingBars) do
+                table.insert(barsList, string.format("Bar %d (%s)", barInfo.barNum, barInfo.mode))
+              end
+              barsText = "\n|cff00ff00ArcUI Bars:|r " .. table.concat(barsList, ", ")
+            end
+            return string.format(
+              "|cffffd700Spell ID:|r %d    |cffffd700Type:|r %s    |cff3fc9f2Custom|r%s\n|cff00ff00Can create:|r Stack Bar, Duration Bar, or Texture",
+              entry.spellID or 0,
+              entry.trackType == "debuff" and "Debuff (on target)" or "Buff (on you)",
+              barsText)
+          end
+
           -- CDM entries
-          local existingBars = ns.Catalog.FindAllArcUIBarsByCooldownID and 
+          local existingBars = ns.Catalog.FindAllArcUIBarsByCooldownID and
                                ns.Catalog.FindAllArcUIBarsByCooldownID(selectedCatalogEntry) or {}
           local barsText = ""
           if #existingBars > 0 then
@@ -2122,11 +2422,29 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
       createStackBarBtn = {
         type = "execute",
         name = "Create Stack Bar",
-        desc = "Create a bar that fills based on stack count.\nYou will need to configure Type and Max Stacks after creation.",
+        desc = function()
+          local entry = GetSelectedCatalogEntry()
+          if entry and entry.isCustomAura then
+            return "Create a bar that fills based on stack count.\nSet Max Stacks after creation to activate it."
+          end
+          return "Create a bar that fills based on stack count.\nYou will need to configure Type and Max Stacks after creation."
+        end,
         func = function()
           if not selectedCatalogEntry then return end
           local entry = GetSelectedCatalogEntry()
-          
+
+          -- Custom aura entry: engine-driven stack bar, no CDM source
+          if entry and entry.isCustomAura then
+            local success, result = ns.Catalog.CreateCustomAuraBar(entry.spellID, entry.trackType, false)
+            if success then
+              print(string.format("|cff00ccffArc UI|r: Created custom stack bar #%d — |cffFF6600set Max Stacks to activate it|r", result))
+            else
+              print("|cff00ccffArc UI|r: " .. tostring(result))
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+            return
+          end
+
                     -- CDM entries
           -- Use bar source if available (Tracked Bars), otherwise use icon source (Tracked Buffs)
           local sourceType = (entry and entry.isTrackedBar) and "bar" or "icon"
@@ -2149,8 +2467,8 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
         disabled = function()
           if not selectedCatalogEntry then return true end
           local entry = GetSelectedCatalogEntry()
-          -- Enable if in Tracked Buffs OR Tracked Bars
-          return not entry or (not entry.isTrackedBuff and not entry.isTrackedBar)
+          -- Enable for customs, and for CDM entries in Tracked Buffs OR Tracked Bars
+          return not entry or (not entry.isCustomAura and not entry.isTrackedBuff and not entry.isTrackedBar)
         end
       },
       createDurationBarBtn = {
@@ -2171,6 +2489,11 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
           end
           local entry = GetSelectedCatalogEntry()
 
+          -- Custom aura entry
+          if entry and entry.isCustomAura then
+            return "Create a duration bar that depletes as the aura expires."
+          end
+
           -- Enable for any CDM entry
           if entry and (entry.isDisplayedAsBar or entry.isDisplayedAsBuff or entry.isDisplayed) then
             return "Create a bar that depletes as the buff expires.\nYou will need to configure Type and Max Duration after creation."
@@ -2181,11 +2504,19 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
         func = function()
           if not selectedCatalogEntry then return end
           local entry = GetSelectedCatalogEntry()
-          
 
-          
+          -- Custom aura entry: engine-driven duration bar, no CDM source
+          if entry and entry.isCustomAura then
+            local success, result = ns.Catalog.CreateCustomAuraBar(entry.spellID, entry.trackType)
+            if success then
+              print(string.format("|cff00ccffArc UI|r: Created custom aura bar #%d — |cffFF6600configure Max Duration or leave Auto|r", result))
+            else
+              print("|cff00ccffArc UI|r: " .. tostring(result))
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+            return
+          end
 
-          
           -- Check if we can actually create a duration bar (CDM entries)
           if not entry or not (entry.isDisplayedAsBar or entry.isDisplayedAsBuff or entry.isDisplayed) then
             print("|cff00ccffArc UI|r: |cffff6b6bAura must be tracked in CD Manager.|r")
@@ -2221,11 +2552,33 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
       createTextureBtn = {
         type = "execute",
         name = "Create Texture",
-        desc = "Create an Aura Texture for the selected aura. Configure its look in the Textures tab.",
+        desc = function()
+          local entry = GetSelectedCatalogEntry()
+          if entry and entry.isCustomAura then
+            return "Create an Aura Texture for this aura.\nUse the Progress/Drain display mode; static mode cannot hide when the aura is missing."
+          end
+          return "Create an Aura Texture for the selected aura. Configure its look in the Textures tab."
+        end,
         func = function()
           if not selectedCatalogEntry then return end
           local entry = GetSelectedCatalogEntry()
           if not entry then return end
+
+          -- Custom aura entry: engine-driven texture, no CDM source.
+          -- NO tab jump (Arc's call): stay here with the new texture's setup
+          -- row expanded so the user confirms its Type first, same as bars.
+          if entry.isCustomAura then
+            local ok, result = ns.Catalog.CreateCustomAuraTexture(entry.spellID, entry.trackType)
+            if ok then
+              expandedTextures["tex_" .. result] = true
+              print(string.format("|cff00ccffArc UI|r: Created texture #%d — set it up below (use Progress mode), then Edit Texture for looks.", result))
+            else
+              print("|cff00ccffArc UI|r: " .. tostring(result))
+            end
+            LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
+            return
+          end
+
           if not (ns.API and ns.API.InitializeNewTexture and ns.API.SelectBuffForTexture) then return end
           local num = ns.API.InitializeNewTexture()
           if not num then
@@ -2239,14 +2592,13 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
             cooldownID = entry.cooldownID,
             slotNumber = 0,
             maxStacks = 10,
+            trackType = entry.trackType,   -- bakes when the entry knows its type
           }, num)
           local db = ns.API.GetDB and ns.API.GetDB()
           if db then db.selectedTexture = num end
-          print(string.format("|cff00ccffArc UI|r: Created texture for |cffffd700%s|r - configure it in Buffs/Debuffs > Textures.", entry.name or "aura"))
-          if LibStub then
-            local acd = LibStub("AceConfigDialog-3.0", true)
-            if acd and acd.SelectGroup then acd:SelectGroup("ArcUI", "auras", "textures") end
-          end
+          -- NO tab jump: expand the setup row so the Type choice comes first.
+          expandedTextures["tex_" .. num] = true
+          print(string.format("|cff00ccffArc UI|r: Created texture for |cffffd700%s|r - set it up below, then Edit Texture for looks.", entry.name or "aura"))
           LibStub("AceConfigRegistry-3.0"):NotifyChange("ArcUI")
         end,
         order = 8.8,
@@ -2255,7 +2607,7 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
         disabled = function()
           if not selectedCatalogEntry then return true end
           local entry = GetSelectedCatalogEntry()
-          return not entry or not entry.cooldownID
+          return not entry or not (entry.cooldownID or entry.isCustomAura)
         end
       },
 
@@ -2349,6 +2701,11 @@ function ns.TrackingOptions.GetBuffDebuffSetupTable()
   -- Add pre-created catalog icon entries (slots 1-50)
   for i = 1, MAX_CATALOG_ICONS do
     args["catalogIcon" .. i] = CreateCatalogIconEntry(i)
+  end
+
+  -- Custom aura tiles (non-CDM, added by spell ID) render after the CDM tiles
+  for i = 1, MAX_CUSTOM_TILES do
+    args["customTile" .. i] = CreateCustomCatalogTileEntry(i)
   end
 
   -- Active texture rows (slots 1-30) for the shared catalog.

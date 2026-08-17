@@ -26,9 +26,14 @@ end
 local LSM = LibStub and LibStub("LibSharedMedia-3.0", true)
 M.LSM = LSM
 if LSM then
-	LSM:Register("font", "SBM Expressway", "Interface\\AddOns\\SimpleBossMods\\media\\fonts\\Expressway.ttf")
-	LSM:Register("statusbar", "SBM Flat", "Interface\\Buttons\\WHITE8X8")
-	LSM:Register("statusbar", "SBM Default", "Interface\\TARGETINGFRAME\\UI-StatusBar")
+	-- Canonical suite media names ("SBM *" duplicates were retired; saved
+	-- values are migrated in EnsureDefaults).
+	LSM:Register("font", "Expressway", "Interface\\AddOns\\SimpleBossMods\\media\\fonts\\Expressway.ttf")
+	LSM:Register("statusbar", "Better Blizzard", "Interface\\AddOns\\SimpleBossMods\\media\\textures\\BetterBlizzard.blp")
+	LSM:Register("statusbar", "Dragonflight", "Interface\\AddOns\\SimpleBossMods\\media\\textures\\Dragonflight.tga")
+	LSM:Register("statusbar", "Skyline", "Interface\\AddOns\\SimpleBossMods\\media\\textures\\Skyline.tga")
+	LSM:Register("statusbar", "Stripes", "Interface\\AddOns\\SimpleBossMods\\media\\textures\\Stripes.png")
+	LSM:Register("statusbar", "Thin Stripes", "Interface\\AddOns\\SimpleBossMods\\media\\textures\\ThinStripes.png")
 end
 
 -- Font
@@ -60,8 +65,6 @@ C.BLOCKED_STATE_ICON = "Interface\\AddOns\\SimpleBossMods\\media\\icons\\dnd.png
 -- Indicators
 C.INDICATOR_MAX = 6
 C.INDICATOR_MASK = 1023 -- all bits
--- Private aura anchor slots (max icons in the group)
-C.PRIVATE_AURA_MAX = 8
 
 -- Bars: indicator icons outside to the right
 C.BAR_END_INDICATOR_GAP_X = 6
@@ -118,14 +121,14 @@ M.Defaults = M.Defaults or {
 						},
 					useCustomPlayerRoleColor = false,
 					customPlayerRoleColor = { r = 1.0, g = 0.84, b = 0.0, a = 1.0 },
-					font = "SBM Expressway",
+					font = "Expressway",
 			},
 			icons = {
 				enabled = true,
 				size = 64,
 				fontSize = 32,
 				borderThickness = 2,
-				font = "SBM Expressway",
+				font = "Expressway",
 				outline = "OUTLINE, SLUG",
 				shadow = false,
 				gap = 8,
@@ -172,20 +175,36 @@ M.Defaults = M.Defaults or {
 					b = C.BAR_BG_B,
 					a = C.BAR_BG_A,
 				},
+				bgMatchBarColor = true,
+				bgMatchBrightness = 0.15,
 			},
 			indicators = { iconSize = 13, barSize = 24 },
 			privateAuras = {
 				enabled = true,
 				size = 48,
+				fontSize = 24,
+				borderThickness = 2,
+				font = "Expressway",
+				outline = "OUTLINE, SLUG",
+				shadow = false,
 				gap = 6,
-				growDirection = "RIGHT",
-				hideBorder = false,
-				x = 0,
-				y = -8,
+				perRow = C.ICONS_PER_ROW,
+				limit = 0,
+				filters = {
+					raidInCombat = false,
+					raid = false,
+					raidPlayerDispellable = false,
+					dispellable = false,
+					crowdControl = false,
+					bossOrRole = false,
+				},
 				anchorFrom = "TOPLEFT",
 				anchorTo = "BOTTOMLEFT",
 				anchorParent = "SimpleBossMods_Icons",
 				customParent = "",
+				x = 0,
+				y = -8,
+				growDirection = "RIGHT_DOWN",
 			},
 			combatTimer = {
 				enabled = false,
@@ -193,9 +212,9 @@ M.Defaults = M.Defaults or {
 				y = -8,
 				anchorFrom = "TOPLEFT",
 				anchorTo = "BOTTOMLEFT",
-				anchorParent = "SimpleBossMods_PrivateAuras",
+				anchorParent = "SimpleBossMods_Icons",
 				customParent = "",
-				font = "SBM Expressway",
+				font = "Expressway",
 				fontSize = 18,
 				color = { r = 1, g = 1, b = 1, a = 1 },
 				borderColor = { r = 0, g = 0, b = 0, a = 1 },
@@ -251,10 +270,29 @@ end
 M.NormalizeIndicatorPriorityGroups = normalizeIndicatorPriorityGroups
 M.IndicatorPriorityGroupDefault = INDICATOR_PRIORITY_GROUP_DEFAULT
 
+local MEDIA_NAME_MIGRATIONS = {
+	["SBM Expressway"] = "Expressway",
+	["SBM Flat"] = "Solid", -- both were WHITE8X8
+	["SBM Default"] = "Blizzard", -- both were UI-StatusBar
+}
+
+local function migrateMediaNames(tbl, seen)
+	if type(tbl) ~= "table" or seen[tbl] then return end
+	seen[tbl] = true
+	for k, v in pairs(tbl) do
+		if type(v) == "string" and MEDIA_NAME_MIGRATIONS[v] then
+			tbl[k] = MEDIA_NAME_MIGRATIONS[v]
+		elseif type(v) == "table" then
+			migrateMediaNames(v, seen)
+		end
+	end
+end
+
 function M:EnsureDefaults()
 	SimpleBossModsDB = SimpleBossModsDB or {}
 	SimpleBossModsDB.cfg = SimpleBossModsDB.cfg or {}
 	SimpleBossModsDB.manualTimers = SimpleBossModsDB.manualTimers or {}
+	migrateMediaNames(SimpleBossModsDB.cfg, {})
 
 	local cfg = SimpleBossModsDB.cfg
 		cfg.general = cfg.general or {
@@ -373,6 +411,12 @@ function M:EnsureDefaults()
 		a = M.Defaults.cfg.bars.bgColor.a,
 	}
 	repairColor(cfg.bars.bgColor, M.Defaults.cfg.bars.bgColor.r, M.Defaults.cfg.bars.bgColor.g, M.Defaults.cfg.bars.bgColor.b, M.Defaults.cfg.bars.bgColor.a)
+	if cfg.bars.bgMatchBarColor == nil then
+		cfg.bars.bgMatchBarColor = M.Defaults.cfg.bars.bgMatchBarColor
+	end
+	if type(cfg.bars.bgMatchBrightness) ~= "number" then
+		cfg.bars.bgMatchBrightness = M.Defaults.cfg.bars.bgMatchBrightness
+	end
 	for _, key in ipairs(GENERAL_INDICATOR_COLOR_KEYS) do
 		local defaults = M.Defaults.cfg.general.indicatorColors[key]
 		if type(cfg.general.indicatorColors[key]) ~= "table" then
@@ -394,21 +438,50 @@ function M:EnsureDefaults()
 	cfg.privateAuras = cfg.privateAuras or {
 		enabled = M.Defaults.cfg.privateAuras.enabled,
 		size = M.Defaults.cfg.privateAuras.size,
+		fontSize = M.Defaults.cfg.privateAuras.fontSize,
+		borderThickness = M.Defaults.cfg.privateAuras.borderThickness,
+		font = M.Defaults.cfg.privateAuras.font,
+		outline = M.Defaults.cfg.privateAuras.outline,
+		shadow = M.Defaults.cfg.privateAuras.shadow,
 		gap = M.Defaults.cfg.privateAuras.gap,
-		growDirection = M.Defaults.cfg.privateAuras.growDirection,
-		hideBorder = M.Defaults.cfg.privateAuras.hideBorder,
-		x = M.Defaults.cfg.privateAuras.x,
-		y = M.Defaults.cfg.privateAuras.y,
+		perRow = M.Defaults.cfg.privateAuras.perRow,
+		limit = M.Defaults.cfg.privateAuras.limit,
+		filters = {},
 		anchorFrom = M.Defaults.cfg.privateAuras.anchorFrom,
 		anchorTo = M.Defaults.cfg.privateAuras.anchorTo,
 		anchorParent = M.Defaults.cfg.privateAuras.anchorParent,
 		customParent = M.Defaults.cfg.privateAuras.customParent,
+		x = M.Defaults.cfg.privateAuras.x,
+		y = M.Defaults.cfg.privateAuras.y,
+		growDirection = M.Defaults.cfg.privateAuras.growDirection,
 	}
-	for _, k in ipairs({"size", "enabled", "gap", "hideBorder", "x", "y", "anchorFrom", "anchorTo", "anchorParent", "customParent"}) do
+	for _, k in ipairs({"enabled", "size", "fontSize", "borderThickness", "outline", "shadow", "gap", "perRow", "limit", "anchorFrom", "anchorTo", "anchorParent", "customParent", "x", "y"}) do
 		ef(cfg.privateAuras, k, M.Defaults.cfg.privateAuras)
 	end
+	if type(cfg.privateAuras.filters) ~= "table" then
+		cfg.privateAuras.filters = {}
+	end
+	for filterKey, defaultValue in pairs(M.Defaults.cfg.privateAuras.filters) do
+		if type(cfg.privateAuras.filters[filterKey]) ~= "boolean" then
+			cfg.privateAuras.filters[filterKey] = defaultValue
+		end
+	end
+	if cfg.privateAuras.font == nil then
+		cfg.privateAuras.font = cfg.general.font or M.Defaults.cfg.privateAuras.font
+	end
+	do
+		local legacyGrow = {
+			LEFT = "LEFT_DOWN",
+			RIGHT = "RIGHT_DOWN",
+			UP = "RIGHT_UP",
+			DOWN = "RIGHT_DOWN",
+		}
+		if legacyGrow[cfg.privateAuras.growDirection] then
+			cfg.privateAuras.growDirection = legacyGrow[cfg.privateAuras.growDirection]
+		end
+	end
 	cfg.privateAuras.growDirection = M.Util.normalizeDirection(cfg.privateAuras.growDirection, M.Defaults.cfg.privateAuras.growDirection,
-		{ LEFT = true, RIGHT = true, UP = true, DOWN = true })
+		{ LEFT_DOWN = true, LEFT_UP = true, RIGHT_DOWN = true, RIGHT_UP = true })
 
 	cfg.combatTimer = cfg.combatTimer or {
 		enabled = M.Defaults.cfg.combatTimer.enabled,
@@ -565,8 +638,6 @@ function M.SyncLiveConfig()
 	local inc = SimpleBossModsDB.cfg.indicators
 	local pc = SimpleBossModsDB.cfg.privateAuras or M.Defaults.cfg.privateAuras
 	local ct = SimpleBossModsDB.cfg.combatTimer or M.Defaults.cfg.combatTimer
-	L.PRIVATE_AURA_ENABLED = pc.enabled ~= false
-	L.PRIVATE_AURA_HIDE_BORDER = pc.hideBorder == true
 	L.TIMELINE_USE_RECOMMENDED_SETTINGS = gc.useRecommendedTimelineSettings ~= false
 	L.ANIMATE_ICONS = gc.animateIcons ~= false
 	L.ANIMATE_BARS = gc.animateBars ~= false
@@ -641,6 +712,36 @@ function M.SyncLiveConfig()
 	end
 	L.ICON_SHADOW = ic.shadow and true or false
 
+	L.PRIVATE_AURA_ENABLED = pc.enabled ~= false
+	L.PRIVATE_AURA_SIZE = U.clamp(U.round(tonumber(pc.size) or M.Defaults.cfg.privateAuras.size), 16, 128)
+	L.PRIVATE_AURA_FONT_SIZE = U.clamp(U.round(tonumber(pc.fontSize) or M.Defaults.cfg.privateAuras.fontSize), 10, 48)
+	L.PRIVATE_AURA_BORDER_THICKNESS = U.clamp(U.round(tonumber(pc.borderThickness) or M.Defaults.cfg.privateAuras.borderThickness), 0, 6)
+	L.PRIVATE_AURA_GAP = U.clamp(U.round(tonumber(pc.gap) or M.Defaults.cfg.privateAuras.gap), 0, 50)
+	L.PRIVATE_AURAS_PER_ROW = U.clamp(U.round(tonumber(pc.perRow) or C.ICONS_PER_ROW), 1, 20)
+	L.PRIVATE_AURAS_LIMIT = U.clamp(U.round(tonumber(pc.limit) or 0), 0, 200)
+	L.PRIVATE_AURA_FILTERS = pc.filters or M.Defaults.cfg.privateAuras.filters
+	L.PRIVATE_AURA_GROW_DIR = U.normalizeDirection(pc.growDirection, M.Defaults.cfg.privateAuras.growDirection,
+		{ LEFT_DOWN = true, LEFT_UP = true, RIGHT_DOWN = true, RIGHT_UP = true })
+	L.PRIVATE_AURA_ANCHOR_FROM = normalizeAnchorPoint(pc.anchorFrom)
+	L.PRIVATE_AURA_ANCHOR_TO = normalizeAnchorPoint(pc.anchorTo)
+	L.PRIVATE_AURA_ANCHOR_PARENT = (type(pc.anchorParent) == "string" and pc.anchorParent ~= "") and pc.anchorParent or "NONE"
+	L.PRIVATE_AURA_ANCHOR_CUSTOM_PARENT, L.PRIVATE_AURA_PARENT_NAME = U.resolveCustomParent(pc.customParent, L.PRIVATE_AURA_ANCHOR_PARENT)
+	L.PRIVATE_AURA_X = tonumber(pc.x) or 0
+	L.PRIVATE_AURA_Y = tonumber(pc.y) or 0
+	L.PRIVATE_AURA_FONT_KEY = pc.font or M.Defaults.cfg.privateAuras.font
+	L.PRIVATE_AURA_FONT_PATH = C.FONT_PATH
+	if LSM then
+		L.PRIVATE_AURA_FONT_PATH = LSM:Fetch("font", L.PRIVATE_AURA_FONT_KEY) or C.FONT_PATH
+	end
+	do
+		local outline = pc.outline
+		if outline ~= "" and outline ~= "OUTLINE" and outline ~= "OUTLINE, SLUG" and outline ~= "THICKOUTLINE" then
+			outline = M.Defaults.cfg.privateAuras.outline
+		end
+		L.PRIVATE_AURA_FONT_FLAGS = outline
+	end
+	L.PRIVATE_AURA_SHADOW = pc.shadow and true or false
+
 	L.BAR_WIDTH = bc.width
 	L.BAR_HEIGHT = bc.height
 	L.BAR_FONT_SIZE = bc.fontSize
@@ -707,19 +808,20 @@ function M.SyncLiveConfig()
 	L.BAR_BG_B = U.clamp(tonumber(barBg.b) or C.BAR_BG_B, 0, 1)
 	L.BAR_BG_A = U.clamp(tonumber(barBg.a) or C.BAR_BG_A, 0, 1)
 
+	-- Background-matches-bar-color mode. Bar fill colors can be secret during
+	-- encounters, so the darkened background is produced by compositing: a
+	-- fill-colored tint texture at the brightness factor over an opaque black
+	-- base renders as fill*brightness, without any arithmetic on the color
+	-- values. The matched background is always fully opaque; BAR_BG_A only
+	-- applies to the plain configured background.
+	L.BAR_BG_MATCH = bc.bgMatchBarColor and true or false
+	local bgBrightness = U.clamp(tonumber(bc.bgMatchBrightness) or M.Defaults.cfg.bars.bgMatchBrightness, 0.05, 0.9)
+	L.BAR_BG_MATCH_BRIGHTNESS = bgBrightness
+	L.BAR_BG_TINT_ALPHA = bgBrightness
+	L.BAR_BG_BASE_ALPHA = 1
+
 	L.ICON_INDICATOR_SIZE = tonumber(inc.iconSize) or 0
 	L.BAR_INDICATOR_SIZE = tonumber(inc.barSize) or 0
-
-	L.PRIVATE_AURA_SIZE = U.clamp(U.round(tonumber(pc.size) or M.Defaults.cfg.privateAuras.size), 16, 128)
-	L.PRIVATE_AURA_GAP = U.clamp(U.round(tonumber(pc.gap) or 0), 0, 50)
-	L.PRIVATE_AURA_GROW = U.normalizeDirection(pc.growDirection, M.Defaults.cfg.privateAuras.growDirection,
-		{ LEFT = true, RIGHT = true, UP = true, DOWN = true })
-	L.PRIVATE_AURA_ANCHOR_FROM = normalizeAnchorPoint(pc.anchorFrom)
-	L.PRIVATE_AURA_ANCHOR_TO = normalizeAnchorPoint(pc.anchorTo)
-	L.PRIVATE_AURA_ANCHOR_PARENT = (type(pc.anchorParent) == "string" and pc.anchorParent ~= "") and pc.anchorParent or "NONE"
-	L.PRIVATE_AURA_ANCHOR_CUSTOM_PARENT, L.PRIVATE_AURA_PARENT_NAME = U.resolveCustomParent(pc.customParent, L.PRIVATE_AURA_ANCHOR_PARENT)
-	L.PRIVATE_AURA_X = tonumber(pc.x) or 0
-	L.PRIVATE_AURA_Y = tonumber(pc.y) or 0
 
 	L.COMBAT_TIMER_ENABLED = ct.enabled and true or false
 	L.COMBAT_TIMER_X = tonumber(ct.x) or 0
@@ -1195,4 +1297,3 @@ M._testTicker = nil
 M._testTimelineEventIDs = nil
 M._testTimelineEventIDSet = nil
 M._testEditModeEventTimer = nil
-M._privateAuraAnchorIDs = nil
