@@ -1,7 +1,0 @@
-## Interface: 120007,120100
-## Title: Screen Overlay: |cff69ccf0Enhanced|r
-## Version: 2.6.0 - Patch: 12.1
-## Author: HiroYakamura
-## Notes: Variable Screen Overlay (Grid) used for Addon alignment - Type /soe for help
-
-Screen Overlay Enhanced.lua

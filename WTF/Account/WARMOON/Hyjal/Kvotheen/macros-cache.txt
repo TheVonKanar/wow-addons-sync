@@ -32,6 +32,10 @@ VER 3 0100000000000072 " " "134400"
 /cast Lava Lash
 /cast Surging Totem
 END
+VER 3 0100000000000079 " " "136013"
+#showtooltip
+/cast [@cursor] Capacitor Totem
+END
 VER 3 0100000000000074 "++" "134400"
 #showtooltip
 /cast Doom Winds
@@ -66,6 +70,10 @@ VER 3 0100000000000022 "ENH" "134400"
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
 END
+VER 3 0100000000000076 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Riptide; Riptide
+END
 VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
 /stopcasting
@@ -74,10 +82,6 @@ END
 VER 3 0100000000000075 "Hover" "134400"
 #showtooltip
 /cast [target=mouseover,exists] Unleash Life; Unleash Life
-END
-VER 3 0100000000000076 "Hover" "134400"
-#showtooltip
-/cast [target=mouseover,exists] Riptide; Riptide
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit

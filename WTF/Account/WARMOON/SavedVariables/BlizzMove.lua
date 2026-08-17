@@ -675,11 +675,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "RIGHT",
+["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 140.6841735839844,
-["offX"] = -309.12890625,
-["relativePoint"] = "RIGHT",
+["offY"] = -75.351806640625,
+["offX"] = 212.9323120117188,
+["relativePoint"] = "TOP",
 },
 },
 },
@@ -857,11 +857,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "CENTER",
+["anchorPoint"] = "TOP",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = 37.53448486328125,
-["relativePoint"] = "CENTER",
-["offX"] = 231.0725402832031,
+["offY"] = -87.0003662109375,
+["relativePoint"] = "TOP",
+["offX"] = 15.05882263183594,
 },
 },
 },
@@ -1102,11 +1102,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOP",
+["anchorPoint"] = "LEFT",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -127.3331414100539,
-["relativePoint"] = "TOP",
-["offX"] = 253.58389455414,
+["offY"] = 134.6049704826801,
+["relativePoint"] = "LEFT",
+["offX"] = 28.862075319214,
 },
 },
 },
@@ -1172,10 +1172,10 @@ BlizzMoveDB = {
 ["dragPoints"] = {
 {
 ["anchorPoint"] = "LEFT",
-["relativeFrame"] = "UIParent",
-["offY"] = 82.16659545898438,
-["offX"] = 171.6665496826172,
+["relativeFrame"] = "BlizzMove_FakeUIParent",
+["offY"] = 82.16673278808594,
 ["relativePoint"] = "LEFT",
+["offX"] = 171.6665496826172,
 },
 },
 },
@@ -1258,11 +1258,11 @@ BlizzMoveDB = {
 ["dragged"] = true,
 ["dragPoints"] = {
 {
-["anchorPoint"] = "TOPLEFT",
+["anchorPoint"] = "CENTER",
 ["relativeFrame"] = "BlizzMove_FakeUIParent",
-["offY"] = -148.16796875,
-["offX"] = 101.6502532958984,
-["relativePoint"] = "TOPLEFT",
+["offY"] = 179.3715515136719,
+["relativePoint"] = "CENTER",
+["offX"] = 23.1329345703125,
 },
 },
 },

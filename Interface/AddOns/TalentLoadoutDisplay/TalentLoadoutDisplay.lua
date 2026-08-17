@@ -23,7 +23,7 @@ TalentLoadoutDisplayDB = TalentLoadoutDisplayDB or {}
 
 -- Create frame
 local frame = CreateFrame("Frame", "TalentLoadoutDisplayFrame", UIParent)
-frame:SetSize(250, 30)
+frame:SetSize(297, 30)
 
 -- Set saved position or default
 local function RestorePosition()

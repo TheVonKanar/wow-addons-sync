@@ -43,7 +43,7 @@ Immersion: disabled
 Pawn: enabled
 Plater: enabled
 RaiderIO_DB_EU_M: enabled
-RaiderIO: enabled
+RaiderIO: disabled
 RaiderIO_DB_EU_R: enabled
 RaiderIO_DB_EU_F: enabled
 Scrap: disabled
@@ -140,8 +140,8 @@ LittleWigs_MistsOfPandaria: disabled
 LittleWigs_Shadowlands: disabled
 LittleWigs_WrathOfTheLichKing: disabled
 LoggerHead: enabled
-MacroToolkit: disabled
-MacroToolkitIcons: disabled
+MacroToolkit: enabled
+MacroToolkitIcons: enabled
 MapCoords: disabled
 Masque: enabled
 Masque_FlatSquares: disabled
@@ -174,7 +174,7 @@ SharedMediaAdditionalFonts: disabled
 SharedMedia: disabled
 Dejunk: enabled
 DialogueUI: enabled
-ExtraQuestButton: enabled
+ExtraQuestButton: disabled
 Leatrix_Plus: enabled
 HandyNotes_DragonGlyphs: disabled
 Masque_Diablo_III: disabled
@@ -226,7 +226,7 @@ OmniAuras: disabled
 MRT: enabled
 AstralKeys: disabled
 ChoreTracker: enabled
-Angleur: disabled
+Angleur: enabled
 CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled
@@ -255,7 +255,7 @@ Blizzard_ChallengesUI: enabled
 Blizzard_EncounterJournal: enabled
 Blizzard_Transmog: enabled
 LariasWeeklyChecklist_Localization: disabled
-DejaCharacterStats: disabled
+DejaCharacterStats: enabled
 LiteMount: enabled
 RareScanner: disabled
 ClickableRaidBuffs: enabled
@@ -291,3 +291,8 @@ NorthernSkyRaidTools: disabled
 MidnightSimpleUnitFrames: disabled
 Coolinator: disabled
 MidnightSimpleUnitFrames_UUFImporter: disabled
+EUICoreStandaloneMinimapBags: disabled
+EUIStandaloneMinimap: enabled
+BasicMinimap: disabled
+BasicMinimap_Options: disabled
+Porter: disabled

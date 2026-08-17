@@ -6,36 +6,36 @@ OPie_SavedData = {
 ["Uldaman-Quiproquo-2"] = "Kvotheen",
 ["Hyjal-Kvotheen-3"] = "Kvotheen",
 },
-["_OPieVersion"] = "8.6.3 (4.143)",
+["_OPieVersion"] = "8.8.1 (4.144)",
 ["_StoreVersion"] = 122,
 ["_GameLocale"] = "enUS",
 ["_StoreVersion2"] = 122,
-["_GameVersion"] = "12.0.7",
+["_GameVersion"] = "12.1.0",
 ["ProfileStorage"] = {
 ["default"] = {
 ["IndicatorFactory"] = "mirage",
 ["InteractionMode"] = 2,
-["MotionAction"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 },
+["MotionAction"] = true,
 ["SliceBinding"] = true,
 ["RingScale"] = 1.200000047683716,
 },
 ["Kvotheen"] = {
 ["IndicatorFactory"] = "mirage",
-["InteractionMode"] = 2,
+["SliceBinding"] = true,
+["RingScale"] = 1.200000047683716,
+["ShowCooldowns"] = true,
 ["Bindings"] = {
 ["Usables"] = false,
 ["Crafting"] = "CTRL-K",
 ["Utility"] = "6",
 },
-["ShowCooldowns"] = true,
-["RingScale"] = 1.200000047683716,
 ["RingOptions"] = {
 ["Utility#SliceBindingString"] = "6 7 8 9 0",
 },
-["SliceBinding"] = true,
+["InteractionMode"] = 2,
 },
 },
 ["PersistentStorage"] = {

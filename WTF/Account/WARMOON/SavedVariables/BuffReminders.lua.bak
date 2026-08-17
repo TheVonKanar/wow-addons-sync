@@ -7,6 +7,11 @@ BuffRemindersDB = {
 ["Quiproquo - Uldaman"] = "Default",
 },
 ["global"] = {
+["seenVersions"] = {
+["6.5.1"] = true,
+["6.4.0"] = true,
+["6.3.0"] = true,
+},
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
@@ -26,30 +31,8 @@ BuffRemindersDB = {
 ["missingGlowSize"] = 2,
 ["consumableDisplayMode"] = "expanded",
 },
-["customBuffs"] = {
-},
-["enabledBuffs"] = {
-["intellect"] = true,
-["blisteringScales"] = true,
-["bronze"] = true,
-["devotionAura"] = true,
-["versatility"] = true,
-["attackPower"] = true,
-["warriorWrongStance"] = false,
-["atrophicNumbingPoison"] = true,
-["symbioticRelationship"] = true,
-["shamanShields"] = true,
-["druidWrongForm"] = false,
-["earthShieldOthers"] = false,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["soulstone"] = true,
-["beacons"] = true,
-["burningRush"] = false,
-},
-["dbVersion"] = 49,
-["readyCheckOnlyOverrides"] = {
-},
+["buffTrackingMode"] = "my_buffs",
+["hideAllInVehicle"] = true,
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
@@ -88,6 +71,27 @@ BuffRemindersDB = {
 ["priority"] = 4,
 },
 },
+["enabledBuffs"] = {
+["intellect"] = true,
+["blisteringScales"] = true,
+["bronze"] = true,
+["devotionAura"] = true,
+["versatility"] = true,
+["attackPower"] = true,
+["warriorWrongStance"] = false,
+["atrophicNumbingPoison"] = true,
+["symbioticRelationship"] = true,
+["shamanShields"] = true,
+["druidWrongForm"] = false,
+["earthShieldOthers"] = false,
+["sourceOfMagic"] = true,
+["stamina"] = true,
+["soulstone"] = true,
+["beacons"] = true,
+["burningRush"] = false,
+},
+["readyCheckOnlyOverrides"] = {
+},
 ["showLoginMessages"] = false,
 ["rememberedConsumables"] = {
 [263] = {
@@ -100,8 +104,9 @@ BuffRemindersDB = {
 ["food"] = 1232917,
 },
 },
-["hideAllInVehicle"] = true,
-["buffTrackingMode"] = "my_buffs",
+["customBuffs"] = {
+},
+["dbVersion"] = 49,
 ["categoryVisibility"] = {
 ["custom"] = {
 ["pvp"] = true,

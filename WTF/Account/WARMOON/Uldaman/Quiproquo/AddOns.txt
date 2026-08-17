@@ -7,10 +7,10 @@ BugSack: enabled
 CauseseDB: enabled
 Cell: disabled
 ChoreTracker: enabled
-DejaCharacterStats: enabled
+DejaCharacterStats: disabled
 DialogueUI: enabled
 EditModeExpanded: enabled
-ExtraQuestButton: disabled
+ExtraQuestButton: enabled
 GTFO: enabled
 HandyNotes: enabled
 HandyNotes_Dragonflight: disabled
@@ -57,7 +57,7 @@ Blizzard_Transmog: enabled
 Blizzard_CombatText: enabled
 ChonkyCharacterSheet: disabled
 ArcUI: enabled
-SenseiClassResourceBar: disabled
+SenseiClassResourceBar: enabled
 UnhaltedUnitFrames: disabled
 MinimapStats: disabled
 ClickableRaidBuffs: enabled
@@ -70,3 +70,4 @@ RaiderIO_DB_CN_R: disabled
 RaiderIO_DB_CN_M: disabled
 RaiderIO_DB_CN_F: disabled
 Krowi_AchievementFilter: enabled
+EUICoreStandaloneMinimapBags: disabled

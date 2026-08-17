@@ -1,9 +1,9 @@
 
 TalentLoadoutDisplayDB = {
 ["position"] = {
-["yOfs"] = -4.999949932098389,
-["xOfs"] = 5.000248432159424,
-["point"] = "TOPLEFT",
-["relativePoint"] = "TOPLEFT",
+["yOfs"] = -273.0163879394531,
+["xOfs"] = -11.02090454101563,
+["point"] = "TOPRIGHT",
+["relativePoint"] = "TOPRIGHT",
 },
 }

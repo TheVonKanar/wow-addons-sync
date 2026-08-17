@@ -19,6 +19,7 @@ HandyNotesDB = {
 },
 ["profiles"] = {
 ["Kvotheen - Hyjal"] = {
+["icon_scale_minimap"] = 1.5,
 },
 ["Pandamoun - Hyjal"] = {
 },

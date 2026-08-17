@@ -1,5 +1,0 @@
-<Bindings>
-    <Binding name="PORTER_TOGGLE" category="Porter" runOnUp="false">
-        Porter:Toggle()
-    </Binding>
-</Bindings>

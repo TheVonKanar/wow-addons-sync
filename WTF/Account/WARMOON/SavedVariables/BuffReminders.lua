@@ -6,6 +6,11 @@ BuffRemindersDB = {
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+["seenVersions"] = {
+["6.4.0"] = true,
+["6.5.1"] = true,
+["6.3.0"] = true,
+},
 },
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
@@ -66,26 +71,6 @@ BuffRemindersDB = {
 ["priority"] = 4,
 },
 },
-["readyCheckOnlyOverrides"] = {
-},
-["categoryVisibility"] = {
-["custom"] = {
-["hideInPvPMatch"] = true,
-["pvp"] = true,
-},
-},
-["showLoginMessages"] = false,
-["rememberedConsumables"] = {
-[263] = {
-["rune"] = 1234969,
-["flask"] = 1235108,
-["food"] = 1233767,
-},
-[264] = {
-["food"] = 1232917,
-["flask"] = 1235108,
-},
-},
 ["enabledBuffs"] = {
 ["intellect"] = true,
 ["blisteringScales"] = true,
@@ -105,9 +90,29 @@ BuffRemindersDB = {
 ["shamanShields"] = true,
 ["burningRush"] = false,
 },
+["readyCheckOnlyOverrides"] = {
+},
+["showLoginMessages"] = false,
+["rememberedConsumables"] = {
+[263] = {
+["rune"] = 1234969,
+["flask"] = 1235108,
+["food"] = 1233767,
+},
+[264] = {
+["food"] = 1232917,
+["flask"] = 1235108,
+},
+},
 ["customBuffs"] = {
 },
 ["dbVersion"] = 49,
+["categoryVisibility"] = {
+["custom"] = {
+["hideInPvPMatch"] = true,
+["pvp"] = true,
+},
+},
 },
 },
 }

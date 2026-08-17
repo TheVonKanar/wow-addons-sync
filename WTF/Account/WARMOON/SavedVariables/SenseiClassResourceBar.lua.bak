@@ -114,7 +114,7 @@ SenseiClassResourceBarDB = {
 ["b"] = 0.3490196168422699,
 },
 ["width"] = 172,
-["foregroundStyle"] = "Better Blizzard",
+["foregroundStyle"] = "Platy: Solid White",
 ["useResourceAtlas"] = false,
 ["widthMode"] = "Manual",
 ["hideWhileMountedOrVehicule"] = false,
@@ -518,7 +518,7 @@ SenseiClassResourceBarDB = {
 ["g"] = 0,
 ["b"] = 0.2117647230625153,
 },
-["foregroundStyle"] = "Better Blizzard",
+["foregroundStyle"] = "Platy: Solid White",
 ["useResourceAtlas"] = false,
 ["widthMode"] = "Manual",
 ["borderColor"] = {

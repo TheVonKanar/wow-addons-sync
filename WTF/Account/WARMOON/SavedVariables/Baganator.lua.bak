@@ -19,18 +19,6 @@ BAGANATOR_CONFIG = {
 {
 ["currencyID"] = 3310,
 },
-{
-["currencyID"] = 3343,
-},
-{
-["currencyID"] = 3345,
-},
-{
-["currencyID"] = 3347,
-},
-{
-["currencyID"] = 3378,
-},
 },
 },
 ["currencies_tracked_imported"] = {

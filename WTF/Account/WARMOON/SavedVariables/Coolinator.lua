@@ -8,7 +8,7 @@ COOLINATOR_CONFIG = {
 ["use_blizzard_widgets"] = false,
 ["compress_layout"] = true,
 ["presets"] = {
-["version"] = 25,
+["version"] = 27,
 ["group"] = {
 ["ESSENTIAL"] = {
 ["direction"] = "right",
@@ -82,14 +82,59 @@ COOLINATOR_CONFIG = {
 ["icon"] = {
 ["ability"] = {
 ["UTILITY"] = {
+["texts"] = {
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
 ["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["cooldown"] = {
+["showFractions"] = false,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["visible"] = true,
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+["showSwipe"] = true,
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 192077,
 },
-["showSwipe"] = true,
-["whenReady"] = "none",
 ["preset"] = "UTILITY",
+["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -107,7 +152,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["whenCooldown"] = "desaturate",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+["ESSENTIAL"] = {
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -153,16 +201,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-["ESSENTIAL"] = {
-["scale"] = 1,
+["showSwipe"] = true,
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 188196,
 },
-["showSwipe"] = true,
-["whenReady"] = "none",
 ["preset"] = "ESSENTIAL",
+["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -180,52 +226,8 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["whenCooldown"] = "desaturate",
-["texts"] = {
-["count"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"BOTTOMRIGHT",
-18,
--18,
-},
-["scale"] = 1,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-},
-["cooldown"] = {
-["showFractions"] = false,
-["widthLimit"] = 0.9,
-["anchor"] = {
-},
-["scale"] = 1.4,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["visible"] = true,
-},
-["keybinding"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"TOPRIGHT",
-18,
-18,
-},
-["scale"] = 1.08,
-["color"] = {
-["r"] = 0.7019607843137254,
-["g"] = 0.7019607843137254,
-["b"] = 0.7019607843137254,
-},
-},
-},
+["whenReady"] = "none",
+["showRange"] = true,
 },
 },
 ["aura"] = {
@@ -368,21 +370,21 @@ COOLINATOR_CONFIG = {
 ["duration"] = {
 ["visible"] = true,
 ["widthLimit"] = 0.4,
+["display"] = {
+"remaining",
+},
 ["anchor"] = {
 "RIGHT",
 -8,
 0,
 },
-["scale"] = 0.83,
 ["showFractions"] = false,
 ["color"] = {
 ["b"] = 0.8117647058823529,
 ["g"] = 0.8117647058823529,
 ["r"] = 0.8117647058823529,
 },
-["display"] = {
-"remaining",
-},
+["scale"] = 0.83,
 },
 },
 },
@@ -397,7 +399,7 @@ COOLINATOR_CONFIG = {
 ["DEFAULT"] = {
 ["layout"] = "standalone",
 ["kind"] = "group",
-["version"] = 25,
+["version"] = 27,
 ["entries"] = {
 {
 ["scale"] = 1,
@@ -2381,6 +2383,79 @@ COOLINATOR_CONFIG = {
 },
 },
 },
+{
+["preset"] = "UTILITY",
+["resource"] = {
+["kind"] = "ability",
+["spellID"] = 291944,
+},
+["showSwipe"] = true,
+["scale"] = 1,
+["whenCooldown"] = "desaturate",
+["alpha"] = 1,
+["swipeColor"] = {
+["a"] = 0.8,
+["r"] = 0,
+["g"] = 0,
+["b"] = 0,
+},
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
+["style"] = "blizzard",
+["showIcon"] = true,
+["reverse"] = false,
+["height"] = 1,
+["kind"] = "icon",
+["whenReady"] = "none",
+["texts"] = {
+["cooldown"] = {
+["showFractions"] = false,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["visible"] = true,
+},
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
+["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+},
 },
 ["alignment"] = "CENTER",
 ["kind"] = "group",
@@ -2543,7 +2618,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 73899,
+["spellID"] = 17364,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -2689,7 +2764,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 470411,
+["spellID"] = 470057,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -2981,7 +3056,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 384352,
+["spellID"] = 114051,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -3738,7 +3813,7 @@ COOLINATOR_CONFIG = {
 ["direction"] = "right",
 ["resource"] = {
 ["kind"] = "aura",
-["spellID"] = 384352,
+["spellID"] = 114051,
 },
 ["scale"] = 1.5,
 ["layout"] = "horizontal",
@@ -3993,7 +4068,7 @@ COOLINATOR_CONFIG = {
 ["DEFAULT"] = {
 ["layout"] = "standalone",
 ["kind"] = "group",
-["version"] = 25,
+["version"] = 27,
 ["entries"] = {
 {
 ["scale"] = 1,
@@ -5977,6 +6052,79 @@ COOLINATOR_CONFIG = {
 },
 },
 },
+{
+["preset"] = "UTILITY",
+["resource"] = {
+["kind"] = "ability",
+["spellID"] = 291944,
+},
+["showSwipe"] = true,
+["scale"] = 1,
+["whenCooldown"] = "desaturate",
+["alpha"] = 1,
+["swipeColor"] = {
+["a"] = 0.8,
+["r"] = 0,
+["g"] = 0,
+["b"] = 0,
+},
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
+["style"] = "blizzard",
+["showIcon"] = true,
+["reverse"] = false,
+["height"] = 1,
+["kind"] = "icon",
+["whenReady"] = "none",
+["texts"] = {
+["cooldown"] = {
+["showFractions"] = false,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["visible"] = true,
+},
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
+["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+},
 },
 ["alignment"] = "CENTER",
 ["kind"] = "group",
@@ -6139,7 +6287,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 73899,
+["spellID"] = 17364,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -6285,7 +6433,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 470411,
+["spellID"] = 470057,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -6577,7 +6725,7 @@ COOLINATOR_CONFIG = {
 ["preset"] = "ESSENTIAL",
 ["resource"] = {
 ["kind"] = "ability",
-["spellID"] = 384352,
+["spellID"] = 114051,
 },
 ["showSwipe"] = true,
 ["scale"] = 1,
@@ -7334,7 +7482,7 @@ COOLINATOR_CONFIG = {
 ["direction"] = "right",
 ["resource"] = {
 ["kind"] = "aura",
-["spellID"] = 384352,
+["spellID"] = 114051,
 },
 ["scale"] = 1.5,
 ["layout"] = "horizontal",
@@ -7587,7 +7735,7 @@ COOLINATOR_CONFIG = {
 ["Imported \"Enhancement\""] = {
 ["kind"] = "group",
 ["layout"] = "standalone",
-["version"] = 25,
+["version"] = 27,
 ["entries"] = {
 {
 ["scale"] = 1,
@@ -7601,28 +7749,29 @@ COOLINATOR_CONFIG = {
 ["alpha"] = 1,
 ["entries"] = {
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 58875,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -7675,28 +7824,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 192058,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -7749,28 +7899,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 196884,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -7823,28 +7974,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 192077,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -7897,28 +8049,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 108287,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -7971,28 +8124,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 383013,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8045,28 +8199,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 51886,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8119,28 +8274,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 57994,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "UTILITY",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "UTILITY",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8207,28 +8363,29 @@ COOLINATOR_CONFIG = {
 ["alpha"] = 1,
 ["entries"] = {
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 73899,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8281,28 +8438,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 60103,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8355,28 +8513,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 470411,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8429,28 +8588,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 187874,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8503,28 +8663,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 197214,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8577,28 +8738,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 444995,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8651,28 +8813,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 384352,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8725,28 +8888,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 108271,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8799,28 +8963,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 198103,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -8873,28 +9038,29 @@ COOLINATOR_CONFIG = {
 },
 },
 {
-["glowReverse"] = false,
-["scale"] = 1,
 ["resource"] = {
 ["spellID"] = 2825,
 ["kind"] = "ability",
 },
-["alpha"] = 1,
 ["whenReady"] = "none",
 ["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["glowReverse"] = false,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["scale"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
 ["swipeColor"] = {
 ["a"] = 0.8,
 ["r"] = 0,
 ["g"] = 0,
 ["b"] = 0,
 },
-["preset"] = "ESSENTIAL",
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["showIcon"] = true,
 ["style"] = "blizzard",
 ["reverse"] = false,
 ["height"] = 1,
@@ -9654,7 +9820,7 @@ COOLINATOR_CONFIG = {
 ["Kvotheen"] = {
 ["layout"] = "standalone",
 ["kind"] = "group",
-["version"] = 25,
+["version"] = 27,
 ["entries"] = {
 {
 ["scale"] = 1,
@@ -9668,14 +9834,59 @@ COOLINATOR_CONFIG = {
 ["alpha"] = 1,
 ["entries"] = {
 {
+["texts"] = {
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
 ["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["cooldown"] = {
+["visible"] = true,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["showFractions"] = false,
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 192077,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -9693,7 +9904,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -9739,16 +9953,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 192063,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -9766,7 +9978,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -9812,16 +10027,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 58875,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -9839,7 +10052,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -9885,16 +10101,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 196884,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -9912,7 +10126,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -9958,16 +10175,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 108271,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -9985,7 +10200,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10031,16 +10249,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 409293,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10058,7 +10274,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10104,16 +10323,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 192058,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10131,7 +10348,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10177,16 +10397,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 305483,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10204,7 +10422,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10250,16 +10471,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 57994,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10277,7 +10496,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10323,16 +10545,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 108287,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10350,7 +10570,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10396,16 +10619,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 5394,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10423,7 +10644,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10469,16 +10693,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 51514,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10496,7 +10718,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10542,16 +10767,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 2484,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10569,7 +10792,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10615,16 +10841,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 196840,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10642,7 +10866,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10688,16 +10915,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 51886,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10715,7 +10940,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10761,16 +10989,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 383013,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10788,7 +11014,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10834,16 +11063,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 8143,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10861,7 +11088,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10907,16 +11137,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 378773,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -10934,7 +11162,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -10980,16 +11211,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 370,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11007,7 +11236,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11053,16 +11285,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 204362,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11080,7 +11310,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11126,16 +11359,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 204361,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11153,7 +11384,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11199,16 +11433,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 2825,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11226,7 +11458,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11272,16 +11507,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 32182,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11299,7 +11532,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11345,16 +11581,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 204336,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11372,7 +11606,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11418,16 +11655,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 204331,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11445,7 +11680,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11491,16 +11729,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 355580,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11518,7 +11754,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11564,16 +11803,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 198103,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "UTILITY",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11591,52 +11828,8 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "UTILITY",
-["texts"] = {
-["count"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"BOTTOMRIGHT",
-18,
--18,
-},
-["scale"] = 1,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-},
-["cooldown"] = {
-["visible"] = true,
-["widthLimit"] = 0.9,
-["anchor"] = {
-},
-["scale"] = 1.4,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["showFractions"] = false,
-},
-["keybinding"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"TOPRIGHT",
-18,
-18,
-},
-["scale"] = 1.08,
-["color"] = {
-["r"] = 0.7019607843137254,
-["g"] = 0.7019607843137254,
-["b"] = 0.7019607843137254,
-},
-},
-},
+["whenReady"] = "none",
+["showRange"] = true,
 },
 },
 ["alignment"] = "CENTER",
@@ -11651,14 +11844,59 @@ COOLINATOR_CONFIG = {
 ["alpha"] = 1,
 ["entries"] = {
 {
+["texts"] = {
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
 ["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["cooldown"] = {
+["visible"] = true,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["showFractions"] = false,
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 188196,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11676,7 +11914,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11722,16 +11963,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 188443,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11749,7 +11988,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11795,16 +12037,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 73899,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11822,7 +12062,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11868,16 +12111,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 60103,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -11895,7 +12136,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -11941,89 +12185,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
-["resource"] = {
-["kind"] = "ability",
-["spellID"] = 470411,
-},
 ["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
-["showSwipe"] = true,
-["alpha"] = 1,
-["swipeColor"] = {
-["a"] = 0.8,
-["r"] = 0,
-["g"] = 0,
-["b"] = 0,
-},
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["style"] = "blizzard",
-["showIcon"] = true,
-["reverse"] = false,
-["height"] = 1,
-["kind"] = "icon",
-["preset"] = "ESSENTIAL",
-["texts"] = {
-["count"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"BOTTOMRIGHT",
-18,
--18,
-},
-["scale"] = 1,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-},
-["cooldown"] = {
-["visible"] = true,
-["widthLimit"] = 0.9,
-["anchor"] = {
-},
-["scale"] = 1.4,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["showFractions"] = false,
-},
-["keybinding"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"TOPRIGHT",
-18,
-18,
-},
-["scale"] = 1.08,
-["color"] = {
-["r"] = 0.7019607843137254,
-["g"] = 0.7019607843137254,
-["b"] = 0.7019607843137254,
-},
-},
-},
-},
-{
-["scale"] = 1,
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 197214,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -12041,7 +12210,10 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
+["whenReady"] = "none",
+["showRange"] = true,
+},
+{
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -12087,16 +12259,14 @@ COOLINATOR_CONFIG = {
 },
 },
 },
-},
-{
-["scale"] = 1,
+["whenCooldown"] = "desaturate",
 ["resource"] = {
 ["kind"] = "ability",
 ["spellID"] = 444995,
 },
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
 ["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
 ["alpha"] = 1,
 ["swipeColor"] = {
 ["a"] = 0.8,
@@ -12114,130 +12284,15 @@ COOLINATOR_CONFIG = {
 ["reverse"] = false,
 ["height"] = 1,
 ["kind"] = "icon",
-["preset"] = "ESSENTIAL",
-["texts"] = {
-["count"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"BOTTOMRIGHT",
-18,
--18,
-},
-["scale"] = 1,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-},
-["cooldown"] = {
-["visible"] = true,
-["widthLimit"] = 0.9,
-["anchor"] = {
-},
-["scale"] = 1.4,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["showFractions"] = false,
-},
-["keybinding"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"TOPRIGHT",
-18,
-18,
-},
-["scale"] = 1.08,
-["color"] = {
-["r"] = 0.7019607843137254,
-["g"] = 0.7019607843137254,
-["b"] = 0.7019607843137254,
-},
-},
-},
-},
-{
-["scale"] = 1,
-["resource"] = {
-["kind"] = "ability",
-["spellID"] = 384352,
-},
-["whenCooldown"] = "desaturate",
 ["whenReady"] = "none",
-["showSwipe"] = true,
-["alpha"] = 1,
-["swipeColor"] = {
-["a"] = 0.8,
-["r"] = 0,
-["g"] = 0,
-["b"] = 0,
-},
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["style"] = "blizzard",
-["showIcon"] = true,
-["reverse"] = false,
-["height"] = 1,
-["kind"] = "icon",
-["preset"] = "ESSENTIAL",
-["texts"] = {
-["count"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"BOTTOMRIGHT",
-18,
--18,
-},
-["scale"] = 1,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-},
-["cooldown"] = {
-["visible"] = true,
-["widthLimit"] = 0.9,
-["anchor"] = {
-},
-["scale"] = 1.4,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["showFractions"] = false,
-},
-["keybinding"] = {
-["visible"] = true,
-["widthLimit"] = 0.8,
-["anchor"] = {
-"TOPRIGHT",
-18,
-18,
-},
-["scale"] = 1.08,
-["color"] = {
-["r"] = 0.7019607843137254,
-["g"] = 0.7019607843137254,
-["b"] = 0.7019607843137254,
-},
-},
-},
+["showRange"] = true,
 },
 },
 ["alignment"] = "CENTER",
-["kind"] = "group",
 ["preset"] = "ESSENTIAL",
+["kind"] = "group",
+["visibility"] = {
+},
 ["padding"] = 0.1,
 },
 {
@@ -12930,32 +12985,6 @@ COOLINATOR_CONFIG = {
 ["alpha"] = 1,
 ["entries"] = {
 {
-["scale"] = 1,
-["resource"] = {
-["kind"] = "ability",
-["spellID"] = 187874,
-},
-["whenCooldown"] = "desaturate",
-["whenReady"] = "none",
-["showSwipe"] = true,
-["alpha"] = 1,
-["swipeColor"] = {
-["a"] = 0.8,
-["r"] = 0,
-["g"] = 0,
-["b"] = 0,
-},
-["glowColor"] = {
-["r"] = 1,
-["g"] = 0.8823529411764706,
-["b"] = 0.0784313725490196,
-},
-["style"] = "blizzard",
-["showIcon"] = true,
-["reverse"] = false,
-["height"] = 1,
-["kind"] = "icon",
-["preset"] = "ESSENTIAL",
 ["texts"] = {
 ["count"] = {
 ["visible"] = true,
@@ -13001,6 +13030,33 @@ COOLINATOR_CONFIG = {
 },
 },
 },
+["whenCooldown"] = "desaturate",
+["resource"] = {
+["kind"] = "ability",
+["spellID"] = 187874,
+},
+["showSwipe"] = true,
+["scale"] = 1,
+["preset"] = "ESSENTIAL",
+["alpha"] = 1,
+["swipeColor"] = {
+["a"] = 0.8,
+["r"] = 0,
+["g"] = 0,
+["b"] = 0,
+},
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
+["style"] = "blizzard",
+["showIcon"] = true,
+["reverse"] = false,
+["height"] = 1,
+["kind"] = "icon",
+["whenReady"] = "none",
+["showRange"] = true,
 },
 },
 ["alignment"] = "CENTER",
@@ -13083,20 +13139,20 @@ COOLINATOR_CONFIG = {
 ["duration"] = {
 ["visible"] = true,
 ["widthLimit"] = 0.4,
-["scale"] = 0.83,
-["display"] = {
-"remaining",
+["anchor"] = {
+"RIGHT",
+-8,
+0,
 },
+["scale"] = 0.83,
 ["showFractions"] = false,
 ["color"] = {
 ["b"] = 0.8117647058823529,
 ["g"] = 0.8117647058823529,
 ["r"] = 0.8117647058823529,
 },
-["anchor"] = {
-"RIGHT",
--8,
-0,
+["display"] = {
+"remaining",
 },
 },
 },
@@ -13182,20 +13238,20 @@ COOLINATOR_CONFIG = {
 ["duration"] = {
 ["visible"] = true,
 ["widthLimit"] = 0.4,
-["scale"] = 0.83,
-["display"] = {
-"remaining",
+["anchor"] = {
+"RIGHT",
+-8,
+0,
 },
+["scale"] = 0.83,
 ["showFractions"] = false,
 ["color"] = {
 ["b"] = 0.8117647058823529,
 ["g"] = 0.8117647058823529,
 ["r"] = 0.8117647058823529,
 },
-["anchor"] = {
-"RIGHT",
--8,
-0,
+["display"] = {
+"remaining",
 },
 },
 },
@@ -13216,7 +13272,7 @@ COOLINATOR_CONFIG = {
 },
 {
 ["scale"] = 1,
-["layout"] = "horizontal",
+["layout"] = "vertical",
 ["alpha"] = 1,
 ["entries"] = {
 {
@@ -13281,20 +13337,191 @@ COOLINATOR_CONFIG = {
 ["duration"] = {
 ["visible"] = true,
 ["widthLimit"] = 0.4,
-["scale"] = 0.83,
-["display"] = {
-"remaining",
+["anchor"] = {
+"RIGHT",
+-8,
+0,
 },
+["scale"] = 0.83,
 ["showFractions"] = false,
 ["color"] = {
 ["b"] = 0.8117647058823529,
 ["g"] = 0.8117647058823529,
 ["r"] = 0.8117647058823529,
 },
+["display"] = {
+"remaining",
+},
+},
+},
+},
+},
+["alignment"] = "CENTER",
 ["anchor"] = {
-"RIGHT",
--8,
+"CENTER",
+"UIParent",
+"CENTER",
+163.0087127685547,
+-173.01123046875,
+},
+["kind"] = "group",
+["visibility"] = {
+},
+["padding"] = 0.2,
+},
+{
+["scale"] = 1,
+["layout"] = "horizontal",
+["alpha"] = 1,
+["entries"] = {
+{
+["resource"] = {
+["kind"] = "ability",
+["spellID"] = 470411,
+},
+["whenReady"] = "none",
+["showSwipe"] = true,
+["showIcon"] = true,
+["showRange"] = true,
+["preset"] = "ESSENTIAL",
+["swipeColor"] = {
+["a"] = 0.8,
+["r"] = 0,
+["g"] = 0,
+["b"] = 0,
+},
+["alpha"] = 1,
+["glowColor"] = {
+["r"] = 1,
+["g"] = 0.8823529411764706,
+["b"] = 0.0784313725490196,
+},
+["whenCooldown"] = "desaturate",
+["style"] = "blizzard",
+["reverse"] = false,
+["height"] = 1,
+["kind"] = "icon",
+["scale"] = 1,
+["texts"] = {
+["count"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"BOTTOMRIGHT",
+18,
+-18,
+},
+["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["cooldown"] = {
+["visible"] = true,
+["widthLimit"] = 0.9,
+["anchor"] = {
+},
+["scale"] = 1.4,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["showFractions"] = false,
+},
+["keybinding"] = {
+["visible"] = true,
+["widthLimit"] = 0.8,
+["anchor"] = {
+"TOPRIGHT",
+18,
+18,
+},
+["scale"] = 1.08,
+["color"] = {
+["r"] = 0.7019607843137254,
+["g"] = 0.7019607843137254,
+["b"] = 0.7019607843137254,
+},
+},
+},
+},
+{
+["direction"] = "right",
+["resource"] = {
+["kind"] = "aura",
+["spellID"] = 188389,
+},
+["scale"] = 2.07,
+["layout"] = "vertical",
+["alpha"] = 1,
+["width"] = 1,
+["border"] = {
+["asset"] = "Cooli: Blizzard Midnight",
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+},
+["height"] = 1,
+["kind"] = "bar",
+["foreground"] = {
+["asset"] = "Cooli: Fade Bottom",
+["color"] = {
+["r"] = 0,
+["g"] = 1,
+["b"] = 0,
+},
+},
+["background"] = {
+["asset"] = "Cooli: Solid White",
+["color"] = {
+["a"] = 0.3,
+["r"] = 0.5803921568627451,
+["g"] = 1,
+["b"] = 0.1294117647058824,
+},
+},
+["icon"] = {
+["show"] = true,
+["position"] = "left",
+},
+["texts"] = {
+["name"] = {
+["visible"] = true,
+["widthLimit"] = 0.6,
+["anchor"] = {
+"BOTTOM",
 0,
+8,
+},
+["scale"] = 0.83,
+["color"] = {
+["r"] = 0.8117647058823529,
+["g"] = 0.8117647058823529,
+["b"] = 0.8117647058823529,
+},
+},
+["duration"] = {
+["visible"] = true,
+["widthLimit"] = 0.4,
+["scale"] = 0.83,
+["display"] = {
+"remaining",
+},
+["color"] = {
+["r"] = 0.8117647058823529,
+["g"] = 0.8117647058823529,
+["b"] = 0.8117647058823529,
+},
+["showFractions"] = false,
+["anchor"] = {
+"TOP",
+0,
+-8,
 },
 },
 },
@@ -13305,8 +13532,8 @@ COOLINATOR_CONFIG = {
 "BOTTOM",
 "UIParent",
 "BOTTOM",
-499.03173828125,
-612.0381469726562,
+-5.5018310546875,
+511.0330505371094,
 },
 ["kind"] = "group",
 ["visibility"] = {
@@ -13315,6 +13542,12 @@ COOLINATOR_CONFIG = {
 },
 },
 },
+},
+},
+["sounds"] = {
+["abilities"] = {
+},
+["auras"] = {
 },
 },
 ["design_assignments"] = {

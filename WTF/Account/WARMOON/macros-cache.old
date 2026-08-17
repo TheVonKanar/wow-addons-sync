@@ -1,7 +1,3 @@
-VER 3 0000000000000083 " " "134400"
-#showtooltip
-/cast [@cursor] Capacitor Totem
-END
 VER 3 0000000000000075 " " "450907"
 END
 VER 3 0000000000000078 " " "450908"
@@ -59,12 +55,12 @@ END
 VER 3 0000000000000050 "Platynator" "132750"
 /platynator
 END
-VER 3 000000000000007F "Porter" "-6043"
+VER 3 000000000000007F "Porter" "-7108"
 /porter
 END
-VER 3 0000000000000086 "Porter HS" "-6042"
+VER 3 0000000000000086 "Porter HS" "-7107"
 /porter rr
-/use item:245970
+/use item:246565
 END
 VER 3 000000000000005B "Reload" "136213"
 /reload

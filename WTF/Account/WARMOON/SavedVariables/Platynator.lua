@@ -8,7 +8,7 @@ PLATYNATOR_CONFIG = {
 ["stack_region_scale_y"] = 2.8,
 ["design_all"] = {
 },
-["migration"] = 6,
+["migration"] = 8,
 ["not_in_combat_alpha"] = 1,
 ["not_target_behaviour"] = "fade",
 ["simplified_nameplates"] = {
@@ -71,13 +71,14 @@ PLATYNATOR_CONFIG = {
 ["style"] = "Enemy Players",
 },
 },
-["mouseover_alpha"] = 1,
-["closer_to_screen_edges"] = true,
 ["designs_enabled"] = {
 ["pvpInstance"] = false,
 ["combat"] = false,
 ["pvpWorld"] = false,
 },
+["mouseover_alpha"] = 1,
+["closer_to_screen_edges"] = true,
+["instances_name_only_size"] = 2,
 ["cast_scale"] = 1.05,
 ["closer_nameplates"] = false,
 ["nameplate_position"] = "top",
@@ -91,12 +92,12 @@ PLATYNATOR_CONFIG = {
 ["enemySimplified"] = "Enemy Nameplates",
 ["enemyCombat"] = "_deer",
 },
-["instances_name_only_size"] = 2,
-["style"] = "Enemy Players",
+["style"] = "Friendly Nameplates",
+["out_of_range_alpha"] = 1,
 ["target_scale"] = 1.05,
-["simplified_assigned_fallback"] = "Enemy Nameplates",
-["cast_interrupted_timeout"] = 0.3,
 ["cast_alpha"] = 1,
+["cast_interrupted_timeout"] = 0.3,
+["obscured_alpha"] = 0.5,
 ["apply_cvars"] = true,
 ["current_skin"] = "blizzard",
 ["designs"] = {
@@ -136,7 +137,7 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "RobotoCondensed-Bold",
 ["slug"] = true,
 },
-["version"] = 14,
+["version"] = 17,
 ["bars"] = {
 },
 ["markers"] = {
@@ -265,24 +266,26 @@ PLATYNATOR_CONFIG = {
 },
 ["regions"] = {
 ["stack"] = {
+["width"] = 1.13,
 ["anchor"] = {
 "BOTTOM",
 0,
-5.9,
+5.74,
 },
+["kind"] = "stack",
+["height"] = 0.97,
 ["autoSized"] = true,
-["height"] = 0.84,
-["width"] = 1.13,
 },
 ["click"] = {
+["width"] = 1.03,
 ["anchor"] = {
 "BOTTOM",
 0,
 7,
 },
+["kind"] = "click",
+["height"] = 0.81,
 ["autoSized"] = true,
-["height"] = 0.7,
-["width"] = 1.03,
 },
 },
 ["font"] = {
@@ -291,7 +294,7 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Fira Sans Condensed Medium",
 ["slug"] = true,
 },
-["version"] = 14,
+["version"] = 17,
 ["bars"] = {
 },
 ["markers"] = {
@@ -372,7 +375,7 @@ PLATYNATOR_CONFIG = {
 },
 ["kind"] = "creatureName",
 ["align"] = "CENTER",
-["scale"] = 1,
+["scale"] = 1.15,
 },
 },
 },
@@ -527,14 +530,20 @@ PLATYNATOR_CONFIG = {
 },
 ["specialBars"] = {
 {
-["layer"] = 3,
+["useSpecColors"] = true,
 ["anchor"] = {
 0,
 -7,
 },
+["layer"] = 3,
+["scale"] = 0.01,
 ["kind"] = "power",
 ["asset"] = "Platy: Soft Circle",
-["scale"] = 0.01,
+["fixedColor"] = {
+["r"] = 0.9411764705882353,
+["g"] = 0.788235294117647,
+["b"] = 0,
+},
 },
 },
 ["scale"] = 1.5,
@@ -611,6 +620,7 @@ PLATYNATOR_CONFIG = {
 ["dispelable"] = true,
 ["important"] = true,
 ["defensive"] = false,
+["enrage"] = false,
 },
 ["showType"] = true,
 ["layer"] = 1,
@@ -735,7 +745,7 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Fira Sans Condensed Medium",
 ["slug"] = true,
 },
-["version"] = 14,
+["version"] = 17,
 ["bars"] = {
 {
 ["relativeTo"] = 0,
@@ -1188,7 +1198,7 @@ PLATYNATOR_CONFIG = {
 ["g"] = 1,
 ["b"] = 1,
 },
-["layer"] = 0,
+["layer"] = 2,
 ["asset"] = "Platy: Arrow Double",
 ["width"] = 1.31,
 ["anchor"] = {
@@ -1309,11 +1319,11 @@ PLATYNATOR_CONFIG = {
 {
 ["color"] = {
 ["a"] = 1,
-["r"] = 0.6666666666666666,
-["g"] = 0.6666666666666666,
-["b"] = 0.6666666666666666,
+["r"] = 0.7960785031318665,
+["g"] = 0.7960785031318665,
+["b"] = 0.7960785031318665,
 },
-["layer"] = 0,
+["layer"] = 1,
 ["asset"] = "Platy: Arrow",
 ["width"] = 1.21,
 ["scale"] = 0.96,
@@ -1327,17 +1337,40 @@ PLATYNATOR_CONFIG = {
 ["kind"] = "mouseover",
 ["includeTarget"] = false,
 },
+{
+["color"] = {
+["a"] = 1,
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 0.6666666865348816,
+},
+["layer"] = 0,
+["asset"] = "Platy: Arrow",
+["width"] = 1.21,
+["scale"] = 0.96,
+["anchor"] = {
+},
+["kind"] = "softTarget",
+["height"] = 1.08,
+["sliced"] = true,
+},
 },
 ["specialBars"] = {
 {
-["kind"] = "power",
+["useSpecColors"] = true,
 ["anchor"] = {
 0,
 -7,
 },
+["kind"] = "power",
+["scale"] = 0.01,
 ["layer"] = 3,
 ["asset"] = "Platy: Soft Circle",
-["scale"] = 0.01,
+["fixedColor"] = {
+["r"] = 0.9411764705882353,
+["g"] = 0.788235294117647,
+["b"] = 0,
+},
 },
 },
 ["scale"] = 1.5,
@@ -1414,6 +1447,7 @@ PLATYNATOR_CONFIG = {
 ["dispelable"] = true,
 ["important"] = true,
 ["defensive"] = false,
+["enrage"] = false,
 },
 ["showType"] = true,
 ["layer"] = 1,
@@ -1512,24 +1546,26 @@ PLATYNATOR_CONFIG = {
 },
 ["regions"] = {
 ["stack"] = {
+["width"] = 1.1,
 ["anchor"] = {
 "TOP",
 0,
 12.04,
 },
-["autoSized"] = true,
+["kind"] = "stack",
 ["height"] = 2.05,
-["width"] = 1.1,
+["autoSized"] = true,
 },
 ["click"] = {
+["width"] = 1,
 ["anchor"] = {
 "TOP",
 0,
 9.38,
 },
-["autoSized"] = true,
+["kind"] = "click",
 ["height"] = 1.71,
-["width"] = 1,
+["autoSized"] = true,
 },
 },
 ["font"] = {
@@ -1538,7 +1574,7 @@ PLATYNATOR_CONFIG = {
 ["asset"] = "Fira Sans Condensed Medium",
 ["slug"] = true,
 },
-["version"] = 14,
+["version"] = 17,
 ["bars"] = {
 {
 ["relativeTo"] = 0,
@@ -1896,9 +1932,50 @@ PLATYNATOR_CONFIG = {
 },
 ["global_scale"] = 1.1,
 ["target_behaviour"] = "none",
-["obscured_alpha"] = 0.5,
+["simplified_assigned_fallback"] = "Enemy Nameplates",
 ["click_region_scale_y"] = 1.1,
-["out_of_range_alpha"] = 1,
+["aura_filters"] = {
+[0] = {
+["buffs"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+["crowdControl"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+["debuffs"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+},
+[263] = {
+["buffs"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+["crowdControl"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+["debuffs"] = {
+["include"] = {
+},
+["exclude"] = {
+},
+},
+},
+},
 ["clickable_nameplates"] = {
 ["friend"] = false,
 ["enemy"] = true,

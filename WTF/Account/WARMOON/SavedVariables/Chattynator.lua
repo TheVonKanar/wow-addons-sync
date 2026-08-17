@@ -10,8 +10,8 @@ CHATTYNATOR_CONFIG = {
 ["enable_message_fade"] = true,
 ["message_fade_time"] = 25,
 ["locked"] = true,
-["message_spacing"] = 5,
-["message_font"] = "default",
+["message_spacing"] = 4,
+["message_font"] = "Fira Sans Condensed Regular",
 ["debug"] = false,
 ["show_timestamp_separator"] = true,
 ["remove_old_messages"] = true,
@@ -21,6 +21,11 @@ CHATTYNATOR_CONFIG = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
+},
+["ENCOUNTER_RAID_BOSS_WHISPER"] = {
+["r"] = 1,
+["g"] = 0.8666667342185974,
+["b"] = 0,
 },
 ["CHANNEL6"] = {
 ["b"] = 0.7529412508010864,
@@ -87,6 +92,11 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.6666666865348816,
 ["r"] = 0,
 },
+["ENCOUNTER_RAID_BOSS_EMOTE"] = {
+["r"] = 1,
+["g"] = 0.8666667342185974,
+["b"] = 0,
+},
 ["CHANNEL14"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
@@ -152,6 +162,11 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
+["CHANNEL_Commerce"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
+},
 ["WHISPER_FOREIGN"] = {
 ["b"] = 1,
 ["g"] = 0.501960813999176,
@@ -167,7 +182,12 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0,
 ["r"] = 1,
 },
-["CHANNEL_Commerce"] = {
+["CHANNEL_LocalDefense"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
+},
+["CHANNEL_LookingForGroup"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
@@ -192,19 +212,19 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.501960813999176,
 ["r"] = 1,
 },
-["CHANNEL_Général"] = {
+["CHANNEL3"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["CHANNEL_LocalDefense"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
+["RESTRICTED"] = {
+["b"] = 0,
+["g"] = 0,
 ["r"] = 1,
 },
-["TRADESKILLS"] = {
-["b"] = 1,
-["g"] = 1,
+["CHANNEL15"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
 ["COMBAT_HONOR_GAIN"] = {
@@ -217,25 +237,25 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["RESTRICTED"] = {
-["b"] = 0,
-["g"] = 0,
-["r"] = 1,
-},
-["CHANNEL3"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
-},
-["CHANNEL15"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
+["TRADESKILLS"] = {
+["b"] = 1,
+["g"] = 1,
 ["r"] = 1,
 },
 ["CHANNEL20"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
+},
+["INSTANCE_CHAT_LEADER"] = {
+["b"] = 0.03921568766236305,
+["g"] = 0.2784313857555389,
+["r"] = 1,
+},
+["BN_WHISPER"] = {
+["b"] = 0.9647059440612793,
+["g"] = 1,
+["r"] = 0,
 },
 ["GUILD_ITEM_LOOTED"] = {
 ["b"] = 0.250980406999588,
@@ -267,14 +287,14 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["INSTANCE_CHAT_LEADER"] = {
-["b"] = 0.03921568766236305,
-["g"] = 0.2784313857555389,
-["r"] = 1,
-},
-["CHANNEL16"] = {
+["CHANNEL13"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
+["r"] = 1,
+},
+["MONEY"] = {
+["b"] = 0,
+["g"] = 1,
 ["r"] = 1,
 },
 ["GUILD"] = {
@@ -292,15 +312,15 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.6666666865348816,
 ["r"] = 0.6666666865348816,
 },
-["CHANNEL13"] = {
+["CHANNEL11"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["MONEY"] = {
-["b"] = 0,
-["g"] = 1,
-["r"] = 1,
+["GUILD_DISCORD"] = {
+["r"] = 0.4470588564872742,
+["g"] = 0.4941176772117615,
+["b"] = 1,
 },
 ["COMBAT_FACTION_CHANGE"] = {
 ["b"] = 1,
@@ -317,19 +337,19 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.501960813999176,
 ["r"] = 0.7529412508010864,
 },
-["CHANNEL11"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
-},
 ["CHANNEL_Services"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["CHANNEL_DéfenseLocale"] = {
+["CHANNEL18"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
+["r"] = 1,
+},
+["ACHIEVEMENT"] = {
+["b"] = 0,
+["g"] = 1,
 ["r"] = 1,
 },
 ["PET_INFO"] = {
@@ -342,14 +362,14 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["BN_WHISPER_INFORM"] = {
-["b"] = 0.9647059440612793,
-["g"] = 1,
-["r"] = 0,
+["AFK"] = {
+["b"] = 1,
+["g"] = 0.501960813999176,
+["r"] = 1,
 },
-["ACHIEVEMENT"] = {
-["b"] = 0,
-["g"] = 1,
+["CHANNEL_DéfenseLocale"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
 ["INSTANCE_CHAT"] = {
@@ -372,17 +392,17 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.4352941513061523,
 ["r"] = 0.4352941513061523,
 },
-["AFK"] = {
-["b"] = 1,
-["g"] = 0.501960813999176,
-["r"] = 1,
+["BN_WHISPER_INFORM"] = {
+["b"] = 0.9647059440612793,
+["g"] = 1,
+["r"] = 0,
 },
 ["CHANNEL2"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["CHANNEL8"] = {
+["COMMUNITIES_CHANNEL"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
@@ -402,7 +422,7 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7843137979507446,
 ["r"] = 0.4627451300621033,
 },
-["COMMUNITIES_CHANNEL"] = {
+["CHANNEL8"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
@@ -432,15 +452,15 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
+["DISCORD_PLAYER_NAME"] = {
+["r"] = 0.8784314393997192,
+["g"] = 0.8901961445808411,
+["b"] = 1,
+},
 ["CHANNEL_NOTICE_USER"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 0.7529412508010864,
-},
-["CHANNEL18"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
 },
 ["ENCOUNTER_EVENT"] = {
 ["r"] = 1,
@@ -452,17 +472,17 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
-["BN_WHISPER"] = {
-["b"] = 0.9647059440612793,
-["g"] = 1,
-["r"] = 0,
+["CHANNEL_Trade"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
 },
 ["BN_INLINE_TOAST_CONVERSATION"] = {
 ["b"] = 1,
 ["g"] = 0.7725490927696228,
 ["r"] = 0.5098039507865906,
 },
-["CHANNEL_Trade"] = {
+["CHANNEL16"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
@@ -497,27 +517,27 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.6666666865348816,
 ["r"] = 0,
 },
-["CHANNEL_LookingForGroup"] = {
+["CHANNEL_Général"] = {
 ["b"] = 0.7529412508010864,
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
 },
 ["reduce_redundant_text"] = false,
-["show_tabs_1"] = "always",
+["show_tabs_1"] = "hover",
 ["enable_smooth_scrolling_combat"] = false,
-["show_font_shadow"] = false,
+["show_font_shadow"] = true,
 ["disabled_skins"] = {
 },
-["show_buttons"] = "always",
+["show_buttons"] = "hover",
 ["windows"] = {
 {
 ["position"] = {
 "BOTTOMLEFT",
 "UIParent",
 "BOTTOMLEFT",
-4.166661262512207,
-4.166516780853272,
+13.00081443786621,
+-0,
 },
 ["tabs"] = {
 {
@@ -569,8 +589,8 @@ CHATTYNATOR_CONFIG = {
 },
 },
 ["size"] = {
-500.0004272460938,
-280.0000610351563,
+585.0045776367188,
+269.9993896484375,
 },
 },
 },
@@ -582,7 +602,7 @@ CHATTYNATOR_CONFIG = {
 },
 ["dark"] = {
 ["tab_transparency"] = 0,
-["chat_transparency"] = 0.2,
+["chat_transparency"] = 1,
 ["solid_chat_background"] = false,
 },
 },
@@ -599,17 +619,17 @@ CHATTYNATOR_CONFIG = {
 ["message_font_size"] = 15,
 ["button_position"] = "outside_left",
 ["timestamp_spacing"] = 1,
-["new_whisper_new_tab"] = 0,
+["new_whisper_new_tab"] = 1,
 ["store_messages"] = true,
 ["line_spacing_2"] = 0,
 ["show_combat_log"] = true,
-["keep_edit_box_visible"] = true,
+["keep_edit_box_visible"] = false,
 ["force_tab_overflow"] = false,
 },
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 4004,
+["cleanIndex"] = 4479,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -79951,6 +79971,11343 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Neryth-ConfrérieduThorium:35:GUILD:|h[|cffffffffNeryth-ConfrérieduThorium|r]|h: Hello les gens !",
 ["id"] = "s18_4004",
 ["timestamp"] = 1785343969,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:61388:Player-1390-09230B89:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Prey: Hard Mode II]|h|r!",
+["timestamp"] = 1786957051,
+["id"] = "s18_4005",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:61386:Player-1390-09230B89:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Prey: Normal Mode II]|h|r!",
+["timestamp"] = 1786957051,
+["id"] = "s18_4006",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:61388:Player-1390-09230B89:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Prey: Hard Mode II]|h|r!",
+["timestamp"] = 1786957051,
+["id"] = "s18_4007",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:61386:Player-1390-09230B89:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Prey: Normal Mode II]|h|r!",
+["timestamp"] = 1786957051,
+["id"] = "s18_4008",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "ROGUE",
+["race"] = "Human",
+["name"] = "Mangousto",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Mangousto-Hyjal|h[|cfffff468Mangousto|r]|h a accompli le haut fait |cffffff00|Hachievement:63610:Player-1390-06DC4442:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[The Honored Dead]|h|r !",
+["timestamp"] = 1786957227,
+["id"] = "s18_4009",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:13:GUILD:|h[|cff0070ddØskycham|r]|h: falut",
+["id"] = "s18_4010",
+["timestamp"] = 1786957394,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "MONK",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:15:GUILD:|h[|cff00ff98Porko|r]|h: yo",
+["id"] = "s18_4011",
+["timestamp"] = 1786957400,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:16:GUILD:|h[|cff0070ddKvotheen|r]|h: HEYO",
+["id"] = "s18_4012",
+["timestamp"] = 1786957405,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:17:GUILD:|h[|cff0070ddØskycham|r]|h: MAINON Y'A KVO",
+["id"] = "s18_4013",
+["timestamp"] = 1786957407,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "ROGUE",
+["name"] = "Mangousto",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Mangousto-Hyjal:18:GUILD:|h[|cfffff468Mangousto|r]|h: cc",
+["id"] = "s18_4014",
+["timestamp"] = 1786957407,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:19:GUILD:|h[|cff0070ddKvotheen|r]|h: EHOUI",
+["id"] = "s18_4015",
+["timestamp"] = 1786957416,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:20:GUILD:|h[|cff0070ddØskycham|r]|h: Comment y vont ?",
+["id"] = "s18_4016",
+["timestamp"] = 1786957427,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:21:GUILD:|h[|cff0070ddKvotheen|r]|h: fini les vacances :(",
+["id"] = "s18_4017",
+["timestamp"] = 1786957442,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:23:GUILD:|h[|cff0070ddØskycham|r]|h: encore 2 semaines =D",
+["id"] = "s18_4018",
+["timestamp"] = 1786957449,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "MONK",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:24:GUILD:|h[|cff00ff98Porko|r]|h: ca va j'essaie de stuff le moine et le comprendr ",
+["id"] = "s18_4019",
+["timestamp"] = 1786957454,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["id"] = "s18_4020",
+["timestamp"] = 1786957459,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "VoidElf",
+["class"] = "MAGE",
+["name"] = "Leriana-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Leriana-LaCroisadeécarlate:26:GUILD:|h[|cff3fc7ebLeriana|r]|h: Hello",
+["id"] = "s18_4021",
+["timestamp"] = 1786957461,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236950::::::::90:263:::::::::|h[Mote of Primal Energy]|h|rx2",
+["id"] = "s18_4022",
+["timestamp"] = 1786957463,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236761::::::::90:263::::1:38:13:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx6",
+["id"] = "s18_4023",
+["timestamp"] = 1786957463,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "MONK",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:30:GUILD:|h[|cff00ff98Porko|r]|h: salut ",
+["id"] = "s18_4024",
+["timestamp"] = 1786957479,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:31:GUILD:|h[|cff0070ddØskycham|r]|h: yo",
+["id"] = "s18_4025",
+["timestamp"] = 1786957492,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:32:GUILD:|h[|cff0070ddØskycham|r]|h: si je me rapelle quelque peut le moine dps ( j'ai jamais trop poncé ) faut jamais enchainer deux fois la meme technique ",
+["id"] = "s18_4026",
+["timestamp"] = 1786957574,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "MONK",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:33:GUILD:|h[|cff00ff98Porko|r]|h: oui j'ai vue sa mais j'arrive pas a monter en dps ",
+["id"] = "s18_4027",
+["timestamp"] = 1786957605,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:34:GUILD:|h[|cff0070ddØskycham|r]|h: tu a activer l'aide a la rotation blizzard ?",
+["id"] = "s18_4028",
+["timestamp"] = 1786957625,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "MONK",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:35:GUILD:|h[|cff00ff98Porko|r]|h: sur mon ticket j'ai etait voir sur le lien il me manque 50k dps ",
+["id"] = "s18_4029",
+["timestamp"] = 1786957642,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:36:GUILD:|h[|cff0070ddØskycham|r]|h: oui j'ia vu ",
+["id"] = "s18_4030",
+["timestamp"] = 1786957663,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "BloodElf",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:37:GUILD:|h[|cff00ff98Porko|r]|h: bah l'aide bliz sa utilise pas tout les sort ",
+["timestamp"] = 1786957689,
+["id"] = "s18_4031",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:39:GUILD:|h[|cff0070ddØskycham|r]|h: béh c'est que ta pas besoin de tous les sorts ",
+["timestamp"] = 1786957728,
+["id"] = "s18_4032",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:40:GUILD:|h[|cff0070ddKvotheen|r]|h: oh bordel back to stormbringer en amelio",
+["timestamp"] = 1786957742,
+["id"] = "s18_4033",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:42:GUILD:|h[|cff0070ddØskycham|r]|h: j'ai deja vu un dk impie qui avait intégré le Taunt a sa rota ",
+["timestamp"] = 1786957746,
+["id"] = "s18_4034",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:43:GUILD:|h[|cff0070ddKvotheen|r]|h: ca va encore etre braindead",
+["timestamp"] = 1786957748,
+["id"] = "s18_4035",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:45:GUILD:|h[|cff0070ddØskycham|r]|h: c'pas pour autant que c'etait une bonne idée ",
+["timestamp"] = 1786957758,
+["id"] = "s18_4036",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:46:GUILD:|h[|cff0070ddØskycham|r]|h: Farseer pour l'elem =D",
+["timestamp"] = 1786957769,
+["id"] = "s18_4037",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "BloodElf",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:47:GUILD:|h[|cff00ff98Porko|r]|h: ah j'ai confondu ",
+["timestamp"] = 1786957778,
+["id"] = "s18_4038",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "Pandaren",
+["name"] = "Jinling-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Jinling-LaCroisadeécarlate:49:GUILD:|h[|cff00ff98Jinling|r]|h: Je vais intégrer le taunt à ma rota en vindict pour voir, je sens qu'on va passer un bon moment jeudi soir xD",
+["timestamp"] = 1786957833,
+["id"] = "s18_4039",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:50:GUILD:|h[|cff0070ddØskycham|r]|h: surtout fait bin ca quand je suis pas la =D",
+["timestamp"] = 1786957886,
+["id"] = "s18_4040",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MONK",
+["race"] = "BloodElf",
+["name"] = "Porko",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Porko-Hyjal:52:GUILD:|h[|cff00ff98Porko|r]|h: mais pour le moment sa part mal de mon cote pour jeudi ",
+["timestamp"] = 1786957918,
+["id"] = "s18_4041",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["timestamp"] = 1786957929,
+["id"] = "s18_4042",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["timestamp"] = 1786958848,
+["id"] = "s18_4043",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:63437:Player-1127-09547AED:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Gnarldor Isle Stories]|h|r !",
+["timestamp"] = 1786959411,
+["id"] = "s18_4044",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskycham-Archimonde|h[|cff0070ddØskycham-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:61922:Player-1302-0A0D3087:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Ninety Percent is Good Enough]|h|r !",
+["timestamp"] = 1786959878,
+["id"] = "s18_4045",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["timestamp"] = 1786960379,
+["id"] = "s18_4046",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:61310:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Casual Collector]|h|r !",
+["timestamp"] = 1786960552,
+["id"] = "s18_4047",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:97:GUILD:|h[|cff0070ddØskycham|r]|h: j'ai un bug micro delondra",
+["id"] = "s18_4048",
+["timestamp"] = 1786961098,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DRUID",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:62894:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Delves: Tier 9 (Season 2)]|h|r !",
+["id"] = "s18_4049",
+["timestamp"] = 1786961274,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskycham-Archimonde|h[|cff0070ddØskycham-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:62105:Player-1302-0A0D3087:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Lysikas Would Be Proud]|h|r !",
+["id"] = "s18_4050",
+["timestamp"] = 1786961415,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "ROGUE",
+["name"] = "Mangousto",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Mangousto-Hyjal|h[|cfffff468Mangousto|r]|h a accompli le haut fait |cffffff00|Hachievement:63599:Player-1390-06DC4442:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Submerge the Incursion]|h|r !",
+["id"] = "s18_4051",
+["timestamp"] = 1786961585,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DRUID",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Riøsky-Hyjal:105:GUILD:|h[|cffff7c0aRiøsky|r]|h: les gouffre sa stuff ?",
+["id"] = "s18_4052",
+["timestamp"] = 1786961742,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Harronir",
+["class"] = "SHAMAN",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:106:GUILD:|h[|cff0070ddØskycham|r]|h: non",
+["id"] = "s18_4053",
+["timestamp"] = 1786961760,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DRUID",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Riøsky-Hyjal:107:GUILD:|h[|cffff7c0aRiøsky|r]|h: d'accord ",
+["id"] = "s18_4054",
+["timestamp"] = 1786961773,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["id"] = "s18_4055",
+["timestamp"] = 1786962819,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "NightElf",
+["class"] = "DRUID",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:16268:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: Ruby Life Pools]|h|r !",
+["id"] = "s18_4056",
+["timestamp"] = 1786962964,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The proof lies in one of the paintings within.",
+["timestamp"] = 1786963317,
+["id"] = "s18_4057",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Bah! You expect me to believe some scratches on a wall?",
+["timestamp"] = 1786963352,
+["id"] = "s18_4058",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Our magic only works for memories of our kin. How can we find paintings of Amani memories if you are not kin?",
+["timestamp"] = 1786963357,
+["id"] = "s18_4059",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Give me your hand. Touch the visionstone and bear witness.",
+["timestamp"] = 1786963361,
+["id"] = "s18_4060",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Dis land looks familiar... dis is Zul'Aman!",
+["timestamp"] = 1786963369,
+["id"] = "s18_4061",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Yes. A desperate battle long ago, between the Amani and ancient enemies.",
+["timestamp"] = 1786963379,
+["id"] = "s18_4062",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963389,
+["id"] = "s18_4063",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: Victory at any cost!",
+["timestamp"] = 1786963401,
+["id"] = "s18_4064",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963412,
+["id"] = "s18_4065",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963418,
+["id"] = "s18_4066",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: There are too many of them!",
+["timestamp"] = 1786963427,
+["id"] = "s18_4067",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: De Amani never die!",
+["timestamp"] = 1786963436,
+["id"] = "s18_4068",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: I know dis battle! Dis is our great victory I heard stories of when I was a child!",
+["timestamp"] = 1786963443,
+["id"] = "s18_4069",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: We are almost ready!",
+["timestamp"] = 1786963443,
+["id"] = "s18_4070",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963447,
+["id"] = "s18_4071",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: We Amani stood alone, no gokinye, no loa, and we defeated de greatest enemy de trolls had ever known.",
+["timestamp"] = 1786963452,
+["id"] = "s18_4072",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: I get back in de fight!",
+["timestamp"] = 1786963453,
+["id"] = "s18_4073",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963457,
+["id"] = "s18_4074",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: De Amani never die!",
+["timestamp"] = 1786963472,
+["id"] = "s18_4075",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963491,
+["id"] = "s18_4076",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The trolls would have lost but a few took a desperate risk.",
+["timestamp"] = 1786963494,
+["id"] = "s18_4077",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Injured Amani Warrior",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Injured Amani Warrior says: What chance do we have?",
+["timestamp"] = 1786963496,
+["id"] = "s18_4078",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260637::::::::90:263:::::::::|h[Rotting Insect Eggs]|h|r",
+["timestamp"] = 1786963533,
+["id"] = "s18_4079",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260671::::::::90:263:::::::::|h[Oversized Gland]|h|r",
+["timestamp"] = 1786963533,
+["id"] = "s18_4080",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260637::::::::90:263:::::::::|h[Rotting Insect Eggs]|h|r",
+["timestamp"] = 1786963533,
+["id"] = "s18_4081",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:16346:Player-1127-09547AED:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: Eranog]|h|r !",
+["timestamp"] = 1786963538,
+["id"] = "s18_4082",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: They sought the most powerful presence they could find... and pulled.",
+["timestamp"] = 1786963540,
+["id"] = "s18_4083",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: And summoned a creature from a place none should disturb: the Rift of Aln.",
+["timestamp"] = 1786963546,
+["id"] = "s18_4084",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The Rift of Aln is a place of madness and pain, but the Amani found something greater.",
+["timestamp"] = 1786963555,
+["id"] = "s18_4085",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: They called it...",
+["timestamp"] = 1786963563,
+["id"] = "s18_4086",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Ula'tek.",
+["timestamp"] = 1786963568,
+["id"] = "s18_4087",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Summoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Summoner says: Ula'tek! Ula'tek! Ula'tek!",
+["timestamp"] = 1786963569,
+["id"] = "s18_4088",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Summoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Summoner says: Ula'tek! Ula'tek! Ula'tek!",
+["timestamp"] = 1786963569,
+["id"] = "s18_4089",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Summoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Summoner says: Ula'tek! Ula'tek! Ula'tek!",
+["timestamp"] = 1786963569,
+["id"] = "s18_4090",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fabled Priestess",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fabled Priestess says: Ula'tek! Ula'tek! Ula'tek!",
+["timestamp"] = 1786963569,
+["id"] = "s18_4091",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: No! This must be lies! De Amani alone won this victory!",
+["timestamp"] = 1786963582,
+["id"] = "s18_4092",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: We will discover de truth of this, gokinye.",
+["timestamp"] = 1786963654,
+["id"] = "s18_4093",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: What he means to say is you have our thanks for sharing dis with us. And we must return to Zul'Aman to investigate.",
+["timestamp"] = 1786963658,
+["id"] = "s18_4094",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: I can speed your return. Roots guide your path.",
+["timestamp"] = 1786963666,
+["id"] = "s18_4095",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Kvotheen! Help me search through Uncle's things while he communes with de loa.",
+["timestamp"] = 1786963711,
+["id"] = "s18_4096",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Akil'zon says dey know nothing of Ula'tek. Strange.",
+["timestamp"] = 1786963736,
+["id"] = "s18_4097",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Because de Amani alone earned de victory.",
+["timestamp"] = 1786963743,
+["id"] = "s18_4098",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Numazon? Yes! Those tablets are ancient and worth searching for clues.",
+["timestamp"] = 1786963886,
+["id"] = "s18_4099",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: See! De Amani stood alone. No loa! No gokinye!",
+["timestamp"] = 1786963924,
+["id"] = "s18_4100",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Lamboi",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Lamboi-Hyjal|h[|cffaad372Lamboi|r]|h a accompli le haut fait |cffffff00|Hachievement:1795:Player-1390-088FF5D8:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Lunch Lady]|h|r !",
+["timestamp"] = 1786963929,
+["id"] = "s18_4101",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: And how many Amani died dat day, Jan-boy?",
+["timestamp"] = 1786963933,
+["id"] = "s18_4102",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:16348:Player-1127-09547AED:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: The Primal Council]|h|r !",
+["id"] = "s18_4103",
+["timestamp"] = 1786964280,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:16350:Player-1127-09547AED:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: Dathea, Ascended]|h|r !",
+["id"] = "s18_4104",
+["timestamp"] = 1786964454,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:17110:Player-1127-09547AED:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[The Primal Bulwark]|h|r !",
+["id"] = "s18_4105",
+["timestamp"] = 1786964454,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: Get away! Leave me alone!",
+["timestamp"] = 1786973173,
+["id"] = "s18_4106",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: A spirit mask! Grab it!",
+["timestamp"] = 1786973177,
+["id"] = "s18_4107",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: I never owned a mask like that. Where did it come from? Bring it here, Kvotheen.",
+["timestamp"] = 1786973182,
+["id"] = "s18_4108",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: Who are you? Don't hurt me!",
+["timestamp"] = 1786973193,
+["id"] = "s18_4109",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: You are damaged, friend! Kvotheen, grab my tools and some supplies.",
+["timestamp"] = 1786973197,
+["id"] = "s18_4110",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: Dey attacked de city. Dey tried to destroy me!",
+["timestamp"] = 1786973214,
+["id"] = "s18_4111",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Who did?",
+["timestamp"] = 1786973220,
+["id"] = "s18_4112",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: My... my memory is foggy...",
+["timestamp"] = 1786973222,
+["id"] = "s18_4113",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: De haranir lied. There is no mention of Ula'tek.",
+["timestamp"] = 1786973233,
+["id"] = "s18_4114",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: Ula'tek? De ultimate weapon of de Amani?",
+["timestamp"] = 1786973239,
+["id"] = "s18_4115",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: What do you mean a weapon? What do you know?",
+["timestamp"] = 1786973239,
+["id"] = "s18_4116",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: Hm?... I am not sure...",
+["timestamp"] = 1786973243,
+["id"] = "s18_4117",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Numazon is our only lead about Ula'tek. At least until dis mask remembers more.",
+["timestamp"] = 1786973282,
+["id"] = "s18_4118",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: We are searching for knowledge, Jan-boy. Not weapons.",
+["timestamp"] = 1786973309,
+["id"] = "s18_4119",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: If Ula'tek is our weapon, we would be fools not to reclaim it.",
+["timestamp"] = 1786973315,
+["id"] = "s18_4120",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Can de Vilebranch hex sticks restore de mask's memory?",
+["timestamp"] = 1786973358,
+["id"] = "s18_4121",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Not directly, but reinforcing de magic within may help.",
+["timestamp"] = 1786973362,
+["id"] = "s18_4122",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973363,
+["id"] = "s18_4123",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Between de tablets and de mask, let's hope we find a clue to Ula'tek.",
+["timestamp"] = 1786973368,
+["id"] = "s18_4124",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|r",
+["timestamp"] = 1786973378,
+["id"] = "s18_4125",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973378,
+["id"] = "s18_4126",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|r",
+["timestamp"] = 1786973378,
+["id"] = "s18_4127",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: I'll... come... back...",
+["timestamp"] = 1786973393,
+["id"] = "s18_4128",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786973413,
+["id"] = "s18_4129",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:251923::::::::90:263:::::::::|h[Thalassian Essence of the Faire]|h|r",
+["timestamp"] = 1786973413,
+["id"] = "s18_4130",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|r",
+["timestamp"] = 1786973413,
+["id"] = "s18_4131",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|rx2",
+["timestamp"] = 1786973413,
+["id"] = "s18_4132",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262659::::::::90:263:::::::::|h[Vilebranch Hex Fetish]|h|rx2",
+["timestamp"] = 1786973413,
+["id"] = "s18_4133",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973424,
+["id"] = "s18_4134",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260687::::::::90:263:::::::::|h[Decaying Leather]|h|r",
+["timestamp"] = 1786973430,
+["id"] = "s18_4135",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|r",
+["timestamp"] = 1786973430,
+["id"] = "s18_4136",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973430,
+["id"] = "s18_4137",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262659::::::::90:263:::::::::|h[Vilebranch Hex Fetish]|h|r",
+["timestamp"] = 1786973430,
+["id"] = "s18_4138",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973433,
+["id"] = "s18_4139",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: No! De ritual isn't ready yet!",
+["timestamp"] = 1786973448,
+["id"] = "s18_4140",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|r",
+["timestamp"] = 1786973449,
+["id"] = "s18_4141",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|rx2",
+["timestamp"] = 1786973449,
+["id"] = "s18_4142",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973449,
+["id"] = "s18_4143",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262659::::::::90:263:::::::::|h[Vilebranch Hex Fetish]|h|rx3",
+["timestamp"] = 1786973449,
+["id"] = "s18_4144",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973486,
+["id"] = "s18_4145",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973493,
+["id"] = "s18_4146",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973497,
+["id"] = "s18_4147",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Siphoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Siphoner says: Ya won't feel my blade if ya stay still!",
+["timestamp"] = 1786973501,
+["id"] = "s18_4148",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: You're weak just like dem Witherbark!",
+["timestamp"] = 1786973506,
+["id"] = "s18_4149",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: Numazon is ours!",
+["timestamp"] = 1786973506,
+["id"] = "s18_4150",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Siphoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Siphoner says: Are ya ready to be my next sacrifice?",
+["timestamp"] = 1786973507,
+["id"] = "s18_4151",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Siphoner",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Siphoner says: No! De ritual isn't ready yet!",
+["timestamp"] = 1786973512,
+["id"] = "s18_4152",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786973513,
+["id"] = "s18_4153",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260660::::::::90:263:::::::::|h[Putrid Mushroom Spores]|h|rx3",
+["timestamp"] = 1786973513,
+["id"] = "s18_4154",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|rx5",
+["timestamp"] = 1786973513,
+["id"] = "s18_4155",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: A hex on ya!",
+["timestamp"] = 1786973519,
+["id"] = "s18_4156",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:258917::::::::90:263::134:3:13901:6652:13663:2:9:90:28:3321:::::|h[Tarnished Dawnlit Spellbinder's Pads]|h|r",
+["timestamp"] = 1786973526,
+["id"] = "s18_4157",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|rx2",
+["timestamp"] = 1786973526,
+["id"] = "s18_4158",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260687::::::::90:263:::::::::|h[Decaying Leather]|h|r",
+["timestamp"] = 1786973526,
+["id"] = "s18_4159",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262654::::::::90:263:::::::::|h[Amani Tablet Rubbing]|h|r",
+["timestamp"] = 1786973528,
+["id"] = "s18_4160",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilebranch Hexwarder",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilebranch Hexwarder says: Numazon is ours!",
+["timestamp"] = 1786973540,
+["id"] = "s18_4161",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973544,
+["id"] = "s18_4162",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Dis tablet here says de first shrine built in Atal'Aman was dedicated to de serpent's victory.",
+["timestamp"] = 1786973560,
+["id"] = "s18_4163",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Are dey talking about Ula'tek?",
+["timestamp"] = 1786973569,
+["id"] = "s18_4164",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Befuddled Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Befuddled Amani Mask says: De path to Ula'tek lies in de Maisara Deeps. With Hex Lord Malacrass.",
+["timestamp"] = 1786973609,
+["id"] = "s18_4165",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Malacrass! This is madness! He betrayed and enslaved our loa!",
+["timestamp"] = 1786973618,
+["id"] = "s18_4166",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Vilebranch? Malacrass? We must tell Zul'jarra.",
+["timestamp"] = 1786973635,
+["id"] = "s18_4167",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: She will try to stop me from finding Ula'tek, just like with de lightwood. But we needed de lightwood, and we will need Ula'tek.",
+["timestamp"] = 1786973640,
+["id"] = "s18_4168",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: If de ancient Amani sealed Ula'tek away, it may be too dangerous to unleash.",
+["timestamp"] = 1786973651,
+["id"] = "s18_4169",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Or it may be de weapon we need. For when de elves make war on us. For when de loa abandon us.",
+["timestamp"] = 1786973656,
+["id"] = "s18_4170",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: De loa will not abandon us!",
+["timestamp"] = 1786973666,
+["id"] = "s18_4171",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: How can you be sure? They have done it before, ah? Why not put some of that faith in me, Uncle?",
+["timestamp"] = 1786973668,
+["id"] = "s18_4172",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Dis is a fool's errand. Malacrass is dead!",
+["timestamp"] = 1786973752,
+["id"] = "s18_4173",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: Even so, it is his knowledge that we seek.",
+["timestamp"] = 1786973757,
+["id"] = "s18_4174",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Jan-boy, no good can come from dat villain's writings.",
+["timestamp"] = 1786973799,
+["id"] = "s18_4175",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Knowledge is not good or bad, Uncle. It's what you do with it that matters.",
+["timestamp"] = 1786973803,
+["id"] = "s18_4176",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Uy'okan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Uy'okan says: Little Zul'jan, come to do his sister's bidding!",
+["timestamp"] = 1786973805,
+["id"] = "s18_4177",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Uy'okan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Uy'okan says: You will always be... in your sister's shadow...",
+["timestamp"] = 1786973815,
+["id"] = "s18_4178",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260687::::::::90:263:::::::::|h[Decaying Leather]|h|r",
+["timestamp"] = 1786973823,
+["id"] = "s18_4179",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|rx2",
+["timestamp"] = 1786973823,
+["id"] = "s18_4180",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786973823,
+["id"] = "s18_4181",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 6 Gold, 22 Silver, 30 Copper (+12 Silver, 44 Copper)",
+["timestamp"] = 1786973824,
+["id"] = "s18_4182",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Uy'okan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Uy'okan says: Malacrass always said dat binding de loa was just de first step. He had bigger plans than dat.",
+["timestamp"] = 1786973834,
+["id"] = "s18_4183",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Jintagga",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Jintagga says: Malacrass was de greatest of de Vilebranch!",
+["timestamp"] = 1786973865,
+["id"] = "s18_4184",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Jintagga",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Jintagga says: Hex Lord... return to us...",
+["timestamp"] = 1786973891,
+["id"] = "s18_4185",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786973892,
+["id"] = "s18_4186",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 7 Gold, 27 Silver, 47 Copper (+14 Silver, 54 Copper)",
+["timestamp"] = 1786973893,
+["id"] = "s18_4187",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 11 Gold, 9 Silver, 26 Copper (+22 Silver, 18 Copper)",
+["timestamp"] = 1786973916,
+["id"] = "s18_4188",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:259189::::::::90:263::::1:28:3321:::::|h[Aged Cruor]|h|r",
+["timestamp"] = 1786973920,
+["id"] = "s18_4189",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:258138::::::::90:263:::::::::|h[Potent Healing Potion]|h|rx2",
+["timestamp"] = 1786973920,
+["id"] = "s18_4190",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx9",
+["timestamp"] = 1786973921,
+["id"] = "s18_4191",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Soye'mal",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Soye'mal says: De loa have failed us for generations!",
+["timestamp"] = 1786973949,
+["id"] = "s18_4192",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Soye'mal",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Soye'mal says: We will never... serve de loa...",
+["timestamp"] = 1786973958,
+["id"] = "s18_4193",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 10 Gold, 79 Silver, 37 Copper (+21 Silver, 58 Copper)",
+["timestamp"] = 1786973961,
+["id"] = "s18_4194",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Soye'mal",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Soye'mal says: Ula'tek was Malacrass's obsession. A way to return to de Amani empire!",
+["timestamp"] = 1786973966,
+["id"] = "s18_4195",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Riøsky-Hyjal:114:GUILD:|h[|cffff7c0aRiøsky|r]|h: re ",
+["timestamp"] = 1786973976,
+["id"] = "s18_4196",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786973984,
+["id"] = "s18_4197",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786973984,
+["id"] = "s18_4198",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Jintagga",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Jintagga says: Malacrass was de greatest of de Vilebranch!",
+["timestamp"] = 1786973992,
+["id"] = "s18_4199",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Jintagga",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Jintagga says: Hex Lord... return to us...",
+["timestamp"] = 1786974002,
+["id"] = "s18_4200",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 3 Gold, 85 Silver, 70 Copper (+7 Silver, 71 Copper)",
+["timestamp"] = 1786974004,
+["id"] = "s18_4201",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Heliotrope-Archimonde:120:GUILD:|h[|cff0070ddHeliotrope|r]|h: coucou ",
+["timestamp"] = 1786974008,
+["id"] = "s18_4202",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hex Master Jintagga",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hex Master Jintagga says: Vordaza was de Hex Lord's favored apprentice. If any have Malacrass's scrolls, it is her.",
+["timestamp"] = 1786974012,
+["id"] = "s18_4203",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786974054,
+["id"] = "s18_4204",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786974054,
+["id"] = "s18_4205",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 11 Gold, 31 Silver, 18 Copper (+22 Silver, 62 Copper)",
+["timestamp"] = 1786974055,
+["id"] = "s18_4206",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974055,
+["id"] = "s18_4207",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: You do not share your uncle's faith in de loa?",
+["timestamp"] = 1786974056,
+["id"] = "s18_4208",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974061,
+["id"] = "s18_4209",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: I have lived my entire life without dem. Why should I?",
+["timestamp"] = 1786974063,
+["id"] = "s18_4210",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: True. Dey were here for generations, yet our empire has crumbled.",
+["timestamp"] = 1786974069,
+["id"] = "s18_4211",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786974089,
+["id"] = "s18_4212",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|rx2",
+["timestamp"] = 1786974089,
+["id"] = "s18_4213",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 10 Gold, 40 Silver, 11 Copper (+20 Silver, 80 Copper)",
+["timestamp"] = 1786974090,
+["id"] = "s18_4214",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974092,
+["id"] = "s18_4215",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974118,
+["id"] = "s18_4216",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: What did Malacrass do to de loa?",
+["timestamp"] = 1786974118,
+["id"] = "s18_4217",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: Your grandfather asked de loa to help fight de elves and other gokinye. Dey refused.",
+["timestamp"] = 1786974122,
+["id"] = "s18_4218",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786974131,
+["id"] = "s18_4219",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786974131,
+["id"] = "s18_4220",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: So Zul'jin and Malacrass decided to take de power dey needed, instead of begging for it.",
+["timestamp"] = 1786974132,
+["id"] = "s18_4221",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786974143,
+["id"] = "s18_4222",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786974143,
+["id"] = "s18_4223",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974145,
+["id"] = "s18_4224",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786974187,
+["id"] = "s18_4225",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786974187,
+["id"] = "s18_4226",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|r",
+["timestamp"] = 1786974187,
+["id"] = "s18_4227",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 5 Gold, 35 Silver, 81 Copper (+10 Silver, 71 Copper)",
+["timestamp"] = 1786974188,
+["id"] = "s18_4228",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974189,
+["id"] = "s18_4229",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["timestamp"] = 1786974246,
+["id"] = "s18_4230",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260687::::::::90:263:::::::::|h[Decaying Leather]|h|r",
+["timestamp"] = 1786974246,
+["id"] = "s18_4231",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|rx3",
+["timestamp"] = 1786974246,
+["id"] = "s18_4232",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 3 Gold, 73 Silver, 89 Copper (+7 Silver, 47 Copper)",
+["timestamp"] = 1786974247,
+["id"] = "s18_4233",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974251,
+["id"] = "s18_4234",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: Malacrass infused avatars with de loa's power--avatars like your grandfather.",
+["timestamp"] = 1786974252,
+["id"] = "s18_4235",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: So he researched Ula'tek. If Grandfather could wield de power of our greatest weapon, then...",
+["timestamp"] = 1786974261,
+["id"] = "s18_4236",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Enchanted Amani Mask",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Enchanted Amani Mask says: He could reclaim stolen lands. Rebuild de empire. Realize his dream.",
+["timestamp"] = 1786974270,
+["id"] = "s18_4237",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["timestamp"] = 1786974367,
+["id"] = "s18_4238",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|rx2",
+["timestamp"] = 1786974367,
+["id"] = "s18_4239",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:264593::::::::90:263::135:4:12817:6652:13663:11311:1:28:4281:::::|h[Warcloak of the Butcher]|h|r",
+["timestamp"] = 1786974367,
+["id"] = "s18_4240",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:259361::::::::90:263:::::::::|h[Vile Essence]|h|rx4",
+["timestamp"] = 1786974367,
+["id"] = "s18_4241",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx50",
+["timestamp"] = 1786974367,
+["id"] = "s18_4242",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:262752::::::::90:263:::::::::|h[Vilebranch Scroll]|h|r",
+["timestamp"] = 1786974371,
+["id"] = "s18_4243",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Uncle! The scrolls are with Vordaza in de Maisara Caverns.",
+["timestamp"] = 1786974385,
+["id"] = "s18_4244",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Our best lead to Ula'tek are those notes in Vordaza's possession. Don't get blood on dem.",
+["timestamp"] = 1786974431,
+["id"] = "s18_4245",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Jan-boy, dis has gone far enough. We must stop following Malacrass's footsteps! Lest we anger de loa.",
+["timestamp"] = 1786974442,
+["id"] = "s18_4246",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: De loa? If we can harness Ula'tek's power, we will not need de loa.",
+["timestamp"] = 1786974450,
+["id"] = "s18_4247",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskycham-Archimonde|h[|cff0070ddØskycham-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:63390:Player-1302-0A0D3087:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Turn the Surge]|h|r !",
+["timestamp"] = 1786974451,
+["id"] = "s18_4248",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: How can you say dat? De loa made your sister hash'ey! Dey helped us defeat de Twilight's Blade!",
+["timestamp"] = 1786974456,
+["id"] = "s18_4249",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: What about when de elves invaded our lands? When de Trollbanes hunted our people? When my grandfather was tortured?",
+["timestamp"] = 1786974464,
+["id"] = "s18_4250",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: And still, we had to beg them to aid us against the Twilight's Blade.",
+["timestamp"] = 1786974474,
+["id"] = "s18_4251",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: No, Uncle. We must take the power we need to protect the Amani, like my grandfather did.",
+["timestamp"] = 1786974481,
+["id"] = "s18_4252",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Your grandfather led de Amani to catastrophe, Zul'jan!",
+["timestamp"] = 1786974492,
+["id"] = "s18_4253",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: My grandfather did what was needed. The Amani stand alone. And the Amani never die.",
+["timestamp"] = 1786974496,
+["id"] = "s18_4254",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Harronir",
+["name"] = "Øskycham-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Øskycham-Archimonde:182:GUILD:|h[|cff0070ddØskycham|r]|h: |cffffff00|Hworldmap:2512:7144:5720|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a Emplacement marqué sur la carte]|h|r",
+["timestamp"] = 1786974640,
+["id"] = "s18_4255",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ1:|Hitem:262791::::::::90:263:::::::::|h[Malacrass's Notes]|h|r",
+["timestamp"] = 1786974878,
+["id"] = "s18_4256",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: We haven't had any luck here. Did you succeed in getting Malacrass's notes?",
+["timestamp"] = 1786974879,
+["id"] = "s18_4257",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: De key to Ula'tek is hidden in de serpent shrine of Atal'Aman! Let's go!",
+["timestamp"] = 1786974915,
+["id"] = "s18_4258",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Zul'jan, wait! We need to tell Zul'jarra!",
+["timestamp"] = 1786974925,
+["id"] = "s18_4259",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Zul'jan! Stop!",
+["timestamp"] = 1786974931,
+["id"] = "s18_4260",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Unknown",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Unknown says: If de key is within, we will have to smash de shrine open.",
+["timestamp"] = 1786974957,
+["id"] = "s18_4261",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Let me know when you're ready.",
+["timestamp"] = 1786974987,
+["id"] = "s18_4262",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Zul'jan, something's happening!",
+["timestamp"] = 1786974993,
+["id"] = "s18_4263",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Strongblood Jak'mo",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Strongblood Jak'mo yells: Death to all who seek de serpent's power!",
+["timestamp"] = 1786974999,
+["id"] = "s18_4264",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Stop! We don't need to do this!",
+["timestamp"] = 1786975011,
+["id"] = "s18_4265",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: Yes we do, uncle! De Amani must stand strong! We carve our own path!",
+["timestamp"] = 1786975015,
+["id"] = "s18_4266",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Do not be tempted by power like your grandfather! He brought ruin to us all!",
+["timestamp"] = 1786975022,
+["id"] = "s18_4267",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: He tried to unite de tribes! To take back de land dat was stolen from us!",
+["timestamp"] = 1786975029,
+["id"] = "s18_4268",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: You do not need Ula'tek's power, Jan-boy! We have Zul'jarra, de hash'ey, to protect us!",
+["timestamp"] = 1786975034,
+["id"] = "s18_4269",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jan",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jan says: And when de loa abandon us again? We cannot rely on dem!",
+["timestamp"] = 1786975041,
+["id"] = "s18_4270",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Strongblood Jak'mo",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Strongblood Jak'mo says: I promised de Amani... Never again...",
+["timestamp"] = 1786975049,
+["id"] = "s18_4271",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Kinduru",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Kinduru says: Our ancestors are warning us! Kvotheen, help me stop this!",
+["timestamp"] = 1786975054,
+["id"] = "s18_4272",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: You're awake! You were out for quite a while.",
+["timestamp"] = 1786975188,
+["id"] = "s18_4273",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Zul'jarra is at the loa shrine attending to Kinduru. Come.",
+["timestamp"] = 1786975220,
+["id"] = "s18_4274",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: What will we do without you, Uncle?",
+["timestamp"] = 1786975226,
+["id"] = "s18_4275",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I see. Kvotheen, would you honor us by helping with de death rites? De herbs are on de cart.",
+["timestamp"] = 1786975230,
+["id"] = "s18_4276",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: As for Zul'jan, he has always obsessed over our ancestors' legacy. And our grandfather's glory.",
+["timestamp"] = 1786975238,
+["id"] = "s18_4277",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: But to join forces with Malacrass? Dat fool! I warned him about dat villain. He manipulated Grandfather, and now...",
+["timestamp"] = 1786975248,
+["id"] = "s18_4278",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Malacrass did this. He killed my uncle. I know it in my bones. And now he has my brother in his clutches.",
+["timestamp"] = 1786975258,
+["id"] = "s18_4279",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: We have to find dem. I have to save him. Zul'jan is a dolt but he is my brother... and de only family I have left.",
+["timestamp"] = 1786975268,
+["id"] = "s18_4280",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ3:|Hitem:268557::::::::90:263::11::1:28:373:::::|h[Akiki]|h|r",
+["timestamp"] = 1786975287,
+["id"] = "s18_4281",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: Zul'jarra! The Witherbark are under attack! Their village is overrun!",
+["timestamp"] = 1786975287,
+["id"] = "s18_4282",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Uncle, I'm sorry I wasn't there to protect you. I should not have made Zul'jan your responsibility.",
+["timestamp"] = 1786975304,
+["id"] = "s18_4283",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: He's always trouble. Remember our trip to de coast? Little Zul'jan tried to swim across de strait! You were so mad!",
+["timestamp"] = 1786975311,
+["id"] = "s18_4284",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: When our father died, you helped our mother raise us. Told us stories of de loa, taught us what it means to be Amani.",
+["timestamp"] = 1786975322,
+["id"] = "s18_4285",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Then when de Twilight's Blade nearly beat us, you were de one to put me on de path of de hash'ey.",
+["timestamp"] = 1786975332,
+["id"] = "s18_4286",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3150:0|h[Midnight Alchemy Knowledge]|h|rx1",
+["timestamp"] = 1786975335,
+["id"] = "s18_4287",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ3:|Hcurrency:3256:0|h[Artisan Alchemist's Moxie]|h|rx5",
+["timestamp"] = 1786975335,
+["id"] = "s18_4288",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: You are de reason why de loa came back to us. You never lost faith in dem. And you never lost faith in me.",
+["timestamp"] = 1786975338,
+["id"] = "s18_4289",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: You were a second father to me, Uncle Kinduru. I will miss you. And I hope dat I have made you proud.",
+["timestamp"] = 1786975347,
+["id"] = "s18_4290",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Dis could be de Vilebranch taking revenge... but I have a feeling it's something else. Let's go!",
+["timestamp"] = 1786975383,
+["id"] = "s18_4291",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx2000",
+["timestamp"] = 1786975424,
+["id"] = "s18_4292",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ4:|Hitem:257219::::::::90:263::14::1:28:872:::::|h[Amani Blessed Bear]|h|r",
+["timestamp"] = 1786975444,
+["id"] = "s18_4293",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Torundo The Grizzled",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Torundo The Grizzled says: Our beasts favor bloodthirsty insects from de Leech Bog. Help gather some more for de hunt.",
+["timestamp"] = 1786975482,
+["id"] = "s18_4294",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:238465::::::::90:263:::::::::|h[Thalassian Phoenix Plume]|h|r",
+["timestamp"] = 1786975508,
+["id"] = "s18_4295",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236780::::::::90:263:::::::::|h[Nocturnal Lotus]|h|r",
+["timestamp"] = 1786975508,
+["id"] = "s18_4296",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236761::::::::90:263::::1:38:13:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx9",
+["timestamp"] = 1786975508,
+["id"] = "s18_4297",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260664::::::::90:263:::::::::|h[Bioluminescent Flower Petals]|h|r",
+["timestamp"] = 1786975518,
+["id"] = "s18_4298",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260689::::::::90:263:::::::::|h[Fine Bioluminescent Powder]|h|r",
+["timestamp"] = 1786975518,
+["id"] = "s18_4299",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:275289::::::::90:263:::::::::|h[Winged Stalk]|h|r",
+["timestamp"] = 1786975518,
+["id"] = "s18_4300",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260664::::::::90:263:::::::::|h[Bioluminescent Flower Petals]|h|rx2",
+["timestamp"] = 1786975518,
+["id"] = "s18_4301",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236761::::::::90:263::::1:38:13:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx3",
+["timestamp"] = 1786975523,
+["id"] = "s18_4302",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:236776::::::::90:263::::1:38:13:::::|h[Argentleaf |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx4",
+["timestamp"] = 1786975523,
+["id"] = "s18_4303",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242640::::::::90:263:::::::::|h[Plant Protein]|h|r",
+["timestamp"] = 1786975523,
+["id"] = "s18_4304",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236951::::::::90:263:::::::::|h[Mote of Wild Magic]|h|rx2",
+["timestamp"] = 1786975523,
+["id"] = "s18_4305",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236767::::::::90:263::::1:38:14:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier2:17:15::1|a]|h|rx2",
+["timestamp"] = 1786975524,
+["id"] = "s18_4306",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242640::::::::90:263:::::::::|h[Plant Protein]|h|r",
+["timestamp"] = 1786975524,
+["id"] = "s18_4307",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236951::::::::90:263:::::::::|h[Mote of Wild Magic]|h|r",
+["timestamp"] = 1786975524,
+["id"] = "s18_4308",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:236770::::::::90:263::::1:38:13:::::|h[Sanguithorn |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2",
+["timestamp"] = 1786975526,
+["id"] = "s18_4309",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242640::::::::90:263:::::::::|h[Plant Protein]|h|r",
+["timestamp"] = 1786975526,
+["id"] = "s18_4310",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236951::::::::90:263:::::::::|h[Mote of Wild Magic]|h|rx2",
+["timestamp"] = 1786975526,
+["id"] = "s18_4311",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:236761::::::::90:263::::1:38:13:::::|h[Tranquility Bloom |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx3",
+["timestamp"] = 1786975528,
+["id"] = "s18_4312",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:236774::::::::90:263::::1:38:13:::::|h[Azeroot |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2",
+["timestamp"] = 1786975528,
+["id"] = "s18_4313",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242640::::::::90:263:::::::::|h[Plant Protein]|h|r",
+["timestamp"] = 1786975528,
+["id"] = "s18_4314",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:236951::::::::90:263:::::::::|h[Mote of Wild Magic]|h|r",
+["timestamp"] = 1786975528,
+["id"] = "s18_4315",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: De Vilebranch have awoken a terrible creature! Cragpine de Grand has risen!",
+["timestamp"] = 1786975540,
+["id"] = "s18_4316",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: I've never seen these creatures before. Where did they come from?",
+["timestamp"] = 1786975573,
+["id"] = "s18_4317",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: Zul'jarra will protect the lodge. Save as many lives as you can.",
+["timestamp"] = 1786975606,
+["id"] = "s18_4318",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Still hungry...",
+["timestamp"] = 1786975633,
+["id"] = "s18_4319",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Bring you back!",
+["timestamp"] = 1786975635,
+["id"] = "s18_4320",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Binding Hexspitter",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Binding Hexspitter says: Cold...",
+["timestamp"] = 1786975642,
+["id"] = "s18_4321",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786975656,
+["id"] = "s18_4322",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx2",
+["timestamp"] = 1786975656,
+["id"] = "s18_4323",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 3 Gold, 79 Silver, 13 Copper (+7 Silver, 55 Copper)",
+["timestamp"] = 1786975657,
+["id"] = "s18_4324",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786975665,
+["id"] = "s18_4325",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 40 Silver, 72 Copper (+2 Silver, 81 Copper)",
+["timestamp"] = 1786975666,
+["id"] = "s18_4326",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Toxic Cursespewer",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Toxic Cursespewer says: Bring you back!",
+["timestamp"] = 1786975667,
+["id"] = "s18_4327",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|r",
+["timestamp"] = 1786975677,
+["id"] = "s18_4328",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 49 Silver, 96 Copper (+99 Copper)",
+["timestamp"] = 1786975678,
+["id"] = "s18_4329",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: What in Halazzi's shadow are dese things?!",
+["timestamp"] = 1786975688,
+["id"] = "s18_4330",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey took de others!",
+["timestamp"] = 1786975693,
+["id"] = "s18_4331",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Dak'zor says: You damn snakes! Let go of me!",
+["timestamp"] = 1786975702,
+["id"] = "s18_4332",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:61641:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[The Blinding Vale]|h|r !",
+["timestamp"] = 1786975709,
+["id"] = "s18_4333",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:61649:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Mythic: The Blinding Vale]|h|r !",
+["timestamp"] = 1786975709,
+["id"] = "s18_4334",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Riøsky-Hyjal|h[|cffff7c0aRiøsky|r]|h a accompli le haut fait |cffffff00|Hachievement:61648:Player-1390-0D28DCE6:1:8:17:26:4294967295:4294967295:4294967295:4294967295|h[Heroic: The Blinding Vale]|h|r !",
+["timestamp"] = 1786975709,
+["id"] = "s18_4335",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey tried to take me!",
+["timestamp"] = 1786975713,
+["id"] = "s18_4336",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 73 Silver, 13 Copper (+1 Silver, 46 Copper)",
+["timestamp"] = 1786975715,
+["id"] = "s18_4337",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Binding Hexspitter",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Binding Hexspitter says: New smell. New meal.",
+["timestamp"] = 1786975717,
+["id"] = "s18_4338",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey came from de sky!",
+["timestamp"] = 1786975729,
+["id"] = "s18_4339",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 93 Silver, 76 Copper (+1 Silver, 87 Copper)",
+["timestamp"] = 1786975731,
+["id"] = "s18_4340",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: What in Halazzi's shadow are dese things?!",
+["timestamp"] = 1786975737,
+["id"] = "s18_4341",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Binding Hexspitter",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Binding Hexspitter says: Bring you back!",
+["timestamp"] = 1786975740,
+["id"] = "s18_4342",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey came from de sky!",
+["timestamp"] = 1786975747,
+["id"] = "s18_4343",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 89 Silver, 81 Copper (+1 Silver, 79 Copper)",
+["timestamp"] = 1786975749,
+["id"] = "s18_4344",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Cold...",
+["timestamp"] = 1786975764,
+["id"] = "s18_4345",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey tried to take me!",
+["timestamp"] = 1786975766,
+["id"] = "s18_4346",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ensnared Villager",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Ensnared Villager says: Dey came from de sky!",
+["timestamp"] = 1786975775,
+["id"] = "s18_4347",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Malacrass! I know you're behind dis! Show yourself!",
+["timestamp"] = 1786975775,
+["id"] = "s18_4348",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Still hungry...",
+["timestamp"] = 1786975790,
+["id"] = "s18_4349",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 6 Copper (+1 Silver, 99 Copper)",
+["timestamp"] = 1786975791,
+["id"] = "s18_4350",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 27 Copper (+1 Silver, 99 Copper)",
+["timestamp"] = 1786975814,
+["id"] = "s18_4351",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'll guard de lodge! Kill their leader and save my people!",
+["timestamp"] = 1786975827,
+["id"] = "s18_4352",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Cold...",
+["timestamp"] = 1786975832,
+["id"] = "s18_4353",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 58 Silver, 62 Copper (+1 Silver, 17 Copper)",
+["timestamp"] = 1786975834,
+["id"] = "s18_4354",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Nutek the Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Nutek the Abductor says: Take them all! Take you too!",
+["timestamp"] = 1786975847,
+["id"] = "s18_4355",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Riøsky",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Riøsky-Hyjal:311:GUILD:|h[|cffff7c0aRiøsky|r]|h: je go moi ",
+["timestamp"] = 1786975847,
+["id"] = "s18_4356",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Nutek the Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Nutek the Abductor says: She... will awaken...",
+["timestamp"] = 1786975852,
+["id"] = "s18_4357",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 1 Gold, 87 Silver, 33 Copper (+3 Silver, 74 Copper)",
+["timestamp"] = 1786975854,
+["id"] = "s18_4358",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Cold...",
+["timestamp"] = 1786975863,
+["id"] = "s18_4359",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Bring you back!",
+["timestamp"] = 1786975868,
+["id"] = "s18_4360",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Fanged Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Fanged Abductor says: Bring you back!",
+["timestamp"] = 1786975929,
+["id"] = "s18_4361",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Unknown",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Unknown says: We've healed the wounded, but many were abducted.",
+["timestamp"] = 1786975968,
+["id"] = "s18_4362",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'll bring dem back, along with my brother.",
+["timestamp"] = 1786975972,
+["id"] = "s18_4363",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278882::::::::90:263::60:1:13844:1:28:5381:::::|h[Ophidian General's Barbute]|h|r",
+["timestamp"] = 1786975972,
+["id"] = "s18_4364",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Lady Liadrin says: I will return to Silvermoon and secure reinforcements.",
+["timestamp"] = 1786975989,
+["id"] = "s18_4365",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Go quickly! De rest of us will take de fight to Malacrass right now!",
+["timestamp"] = 1786975993,
+["id"] = "s18_4366",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Push forward! We will save our people!",
+["timestamp"] = 1786976034,
+["id"] = "s18_4367",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Zul'jarra yells: With me, Amani! Carve a path to the other end of the bridge!",
+["timestamp"] = 1786976056,
+["id"] = "s18_4368",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|r",
+["timestamp"] = 1786976068,
+["id"] = "s18_4369",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Take back our people!",
+["timestamp"] = 1786976069,
+["id"] = "s18_4370",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: For Zul'Aman!",
+["timestamp"] = 1786976069,
+["id"] = "s18_4371",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Defend Zul'Aman!",
+["timestamp"] = 1786976069,
+["id"] = "s18_4372",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Take back our people!",
+["timestamp"] = 1786976069,
+["id"] = "s18_4373",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786976093,
+["id"] = "s18_4374",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|rx3",
+["timestamp"] = 1786976093,
+["id"] = "s18_4375",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx7",
+["timestamp"] = 1786976093,
+["id"] = "s18_4376",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Defend Zul'Aman!",
+["timestamp"] = 1786976097,
+["id"] = "s18_4377",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Kill de invaders!",
+["timestamp"] = 1786976097,
+["id"] = "s18_4378",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Defend Zul'Aman!",
+["timestamp"] = 1786976097,
+["id"] = "s18_4379",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786976122,
+["id"] = "s18_4380",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Take back our people!",
+["timestamp"] = 1786976135,
+["id"] = "s18_4381",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786976136,
+["id"] = "s18_4382",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: For Zul'Aman!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4383",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Protect de elders!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4384",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Take back our people!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4385",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Protect de elders!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4386",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Defend Zul'Aman!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4387",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: For Zul'Aman!",
+["timestamp"] = 1786976147,
+["id"] = "s18_4388",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|r",
+["timestamp"] = 1786976164,
+["id"] = "s18_4389",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786976164,
+["id"] = "s18_4390",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Defend Zul'Aman!",
+["timestamp"] = 1786976165,
+["id"] = "s18_4391",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Amani Talon",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Amani Talon says: Protect de elders!",
+["timestamp"] = 1786976165,
+["id"] = "s18_4392",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Malacrass! I'll break dat mask of yours in half!",
+["timestamp"] = 1786976175,
+["id"] = "s18_4393",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I will show dem de winds of Akil'zon. Come, Kvotheen.",
+["timestamp"] = 1786976341,
+["id"] = "s18_4394",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx2",
+["timestamp"] = 1786976353,
+["id"] = "s18_4395",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|rx2",
+["timestamp"] = 1786976353,
+["id"] = "s18_4396",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278894::::::::90:263::60:1:13844:1:28:5381:::::|h[Faithleaper's Sabatons]|h|r",
+["timestamp"] = 1786976531,
+["id"] = "s18_4397",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'll leave word for Liadrin to bring her reinforcements to de island. Let's move.",
+["timestamp"] = 1786976543,
+["id"] = "s18_4398",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Loa Speaker Brek",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Loa Speaker Brek says: De children of fire seek fresh food! Swim! Dive! Hunt! Find us many fish to feast upon!",
+["timestamp"] = 1786976549,
+["id"] = "s18_4399",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786976575,
+["id"] = "s18_4400",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786976636,
+["id"] = "s18_4401",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Captain Tokka",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Captain Tokka says: Amani warriors! Finally, someone who isn't a giant snake!",
+["timestamp"] = 1786976641,
+["id"] = "s18_4402",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: We didn't expect anyone to be here. De Amani believe de island is cursed.",
+["timestamp"] = 1786976681,
+["id"] = "s18_4403",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Captain Tokka",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Captain Tokka says: Oh, it most certainly is! Let me tell you what I saw.",
+["timestamp"] = 1786976687,
+["id"] = "s18_4404",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Zul'jarra yells: Show them our strength, Amani! For Zul'Aman!",
+["timestamp"] = 1786976762,
+["id"] = "s18_4405",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'll scout ahead to find de prisoners... and Zul'jan.",
+["timestamp"] = 1786976767,
+["id"] = "s18_4406",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786976859,
+["id"] = "s18_4407",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Talon Commander Zela",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Talon Commander Zela says: Cut de heads off these snakes, Kvotheen.",
+["timestamp"] = 1786976876,
+["id"] = "s18_4408",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786976933,
+["id"] = "s18_4409",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:268113::::::::90:263::::1:28:5381:::::|h[Jan'alai's Breath]|h|r",
+["timestamp"] = 1786976990,
+["id"] = "s18_4410",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:267376::::::::90:263:::::::::|h[Jan'alai's Cinder]|h|r",
+["timestamp"] = 1786977004,
+["id"] = "s18_4411",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Shadowpine Wing",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Shadowpine Wing says: De hash'ey is counting on us! We can't let these snakes reach de mainland!",
+["timestamp"] = 1786977013,
+["id"] = "s18_4412",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: Curse. You.",
+["timestamp"] = 1786977027,
+["id"] = "s18_4413",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Shadowpine Wing",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Shadowpine Wing says: How could Zul'jan let these things loose? And on his own people!",
+["timestamp"] = 1786977098,
+["id"] = "s18_4414",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: Cut you. Swallow you.",
+["timestamp"] = 1786977104,
+["id"] = "s18_4415",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: More will come...",
+["timestamp"] = 1786977110,
+["id"] = "s18_4416",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Caustic Abductor",
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "Caustic Abductor cries out to signal an ambush!",
+["timestamp"] = 1786977116,
+["id"] = "s18_4417",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 2 Gold, 31 Silver, 21 Copper (+4 Silver, 62 Copper)",
+["timestamp"] = 1786977128,
+["id"] = "s18_4418",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:281569::::::::90:263::::1:28:5381:::::|h[Quiver of the Drowned Marksman]|h|r",
+["timestamp"] = 1786977149,
+["id"] = "s18_4419",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:258138::::::::90:263:::::::::|h[Potent Healing Potion]|h|rx5",
+["timestamp"] = 1786977149,
+["id"] = "s18_4420",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:271851::::::::90:263::11::1:28:5381:::::|h[Oozing Vilescar Barricade]|h|r",
+["id"] = "s18_4421",
+["timestamp"] = 1786977580,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:2:GUILD:|h[|cffa330c9Voltface|r]|h: un kvo sauvage apparait !",
+["timestamp"] = 1786981417,
+["id"] = "s18_4422",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:3:GUILD:|h[|cff0070ddKvotheen|r]|h: BONJOUR",
+["timestamp"] = 1786981436,
+["id"] = "s18_4423",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:4:GUILD:|h[|cffa330c9Voltface|r]|h: comment va ?",
+["timestamp"] = 1786981446,
+["id"] = "s18_4424",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Acolyte",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Acolyte says: Back to... darkness.",
+["timestamp"] = 1786981461,
+["id"] = "s18_4425",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: Still hungry...",
+["timestamp"] = 1786981463,
+["id"] = "s18_4426",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:7:GUILD:|h[|cff0070ddKvotheen|r]|h: encore plus fatigué qu'avant mes vacances ",
+["timestamp"] = 1786981479,
+["id"] = "s18_4427",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Striker",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Striker says: Must... fight...",
+["timestamp"] = 1786981492,
+["id"] = "s18_4428",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Striker",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Striker says: Melt you. Feed to young.",
+["timestamp"] = 1786981497,
+["id"] = "s18_4429",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|r",
+["timestamp"] = 1786981527,
+["id"] = "s18_4430",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:12:GUILD:|h[|cffa330c9Voltface|r]|h: lol c'est pas normal ça ! XD",
+["timestamp"] = 1786981529,
+["id"] = "s18_4431",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260639::::::::90:263:::::::::|h[Fractured Bone]|h|r",
+["timestamp"] = 1786981541,
+["id"] = "s18_4432",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278898::::::::90:263::60:1:13844:1:28:5381:::::|h[Fangsmasher Gauntlets]|h|r",
+["timestamp"] = 1786981597,
+["id"] = "s18_4433",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tak'lejo",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Tak'lejo says: Hash'ey, Zul'jan is doing dis willingly. I don't think he wants to be \"rescued.\"",
+["timestamp"] = 1786981629,
+["id"] = "s18_4434",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'm bringing him home, Tak'lejo. Even if I have to drag him by his tusks.",
+["timestamp"] = 1786981636,
+["id"] = "s18_4435",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:27:GUILD:|h[|cff0070ddKvotheen|r]|h: physiquement surtout, mais jai une semaine de teletravail forcé la donc ca va chill hehe",
+["timestamp"] = 1786981687,
+["id"] = "s18_4436",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:28:GUILD:|h[|cffa330c9Voltface|r]|h: ça va geek j'entend j'entend",
+["timestamp"] = 1786981713,
+["id"] = "s18_4437",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:29:GUILD:|h[|cff0070ddKvotheen|r]|h: ca fait bizarre de rejouer stormbringer après tout un patch en totemic",
+["timestamp"] = 1786981721,
+["id"] = "s18_4438",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: Crush bones. Eat marrow.",
+["timestamp"] = 1786981730,
+["id"] = "s18_4439",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Lurker",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Lurker says: Got you. Mine now.",
+["timestamp"] = 1786981730,
+["id"] = "s18_4440",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Spiteful Broodsister",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Spiteful Broodsister says: Mother's fury... persists...",
+["timestamp"] = 1786981736,
+["id"] = "s18_4441",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: More will come...",
+["timestamp"] = 1786981738,
+["id"] = "s18_4442",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Lurker",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Lurker says: Poison flesh. Then eat it.",
+["timestamp"] = 1786981738,
+["id"] = "s18_4443",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:35:GUILD:|h[|cffa330c9Voltface|r]|h: c'est pas celui que tu deteste ?",
+["timestamp"] = 1786981740,
+["id"] = "s18_4444",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Brawler",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Brawler says: Your flesh. Want to taste.",
+["timestamp"] = 1786981768,
+["id"] = "s18_4445",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Vilescar Striker",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Vilescar Striker says: Want to feed...",
+["timestamp"] = 1786981772,
+["id"] = "s18_4446",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:38:GUILD:|h[|cff0070ddKvotheen|r]|h: un peu, avant, mais ils ont fixés les trucs horribles",
+["timestamp"] = 1786981787,
+["id"] = "s18_4447",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kvotheen-Hyjal:39:GUILD:|h[|cff0070ddKvotheen|r]|h: ca reste ultra centré sur un CD a 2min, ca j'aime pas trop",
+["timestamp"] = 1786981812,
+["id"] = "s18_4448",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786981836,
+["id"] = "s18_4449",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tanna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Tanna says: Dey left us here as food for de hatchlings! Malacrass took de others to de temple!",
+["timestamp"] = 1786981845,
+["id"] = "s18_4450",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786981850,
+["id"] = "s18_4451",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Dak'zor says: Dis is some pango dung! These snakes are gonna regret messing with de Amani!",
+["timestamp"] = 1786981851,
+["id"] = "s18_4452",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1786981870,
+["id"] = "s18_4453",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx2",
+["timestamp"] = 1786981870,
+["id"] = "s18_4454",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|r",
+["timestamp"] = 1786981870,
+["id"] = "s18_4455",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:47:GUILD:|h[|cffa330c9Voltface|r]|h: hum",
+["timestamp"] = 1786981930,
+["id"] = "s18_4456",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786982011,
+["id"] = "s18_4457",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Spiteful Broodsister",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Spiteful Broodsister says: Spread mother's venom.",
+["timestamp"] = 1786982011,
+["id"] = "s18_4458",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786982528,
+["id"] = "s18_4459",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Brood Fury Ulia",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Brood Fury Ulia says: More will spawn... anger eternal...",
+["timestamp"] = 1786982545,
+["id"] = "s18_4460",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Witherbark Civilian",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Witherbark Civilian says: De venom... be careful!",
+["timestamp"] = 1786982554,
+["id"] = "s18_4461",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:280377::::::::90:263::60:1:13844:1:28:5381:::::|h[Breath of Jan'alai]|h|r",
+["timestamp"] = 1786982569,
+["id"] = "s18_4462",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786982605,
+["id"] = "s18_4463",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Brood Fury Lasha",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Brood Fury Lasha says: Mother... rage... pain!",
+["timestamp"] = 1786982611,
+["id"] = "s18_4464",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Brood Fury Ulia",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Brood Fury Ulia says: More will spawn... anger eternal...",
+["timestamp"] = 1786982615,
+["id"] = "s18_4465",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:258853::::::::90:263:::1:13611:2:9:90:28:3322:::::|h[Stained Sabatons]|h|r",
+["timestamp"] = 1786982616,
+["id"] = "s18_4466",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 6 Gold, 51 Silver, 34 Copper (+13 Silver, 1 Copper)",
+["timestamp"] = 1786982617,
+["id"] = "s18_4467",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: There he is! Quickly, Kvotheen!",
+["timestamp"] = 1786982621,
+["id"] = "s18_4468",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:279196::::::::90:263::60:2:13844:13668:1:28:5381:::::|h[Chain of Vengeance]|h|r",
+["timestamp"] = 1786982631,
+["id"] = "s18_4469",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I let him get away...",
+["timestamp"] = 1786982712,
+["id"] = "s18_4470",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: I'm fine. It's just a scratch. We should regroup at de village.",
+["timestamp"] = 1786982723,
+["id"] = "s18_4471",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["timestamp"] = 1786982735,
+["id"] = "s18_4472",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:270268::::::::90:263:::::::::|h[Crumpled Note]|h|r",
+["timestamp"] = 1786982752,
+["id"] = "s18_4473",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:281566::::::::90:263::::1:28:5381:::::|h[Amani Warrior's Cleaver]|h|r",
+["timestamp"] = 1786982752,
+["id"] = "s18_4474",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx150",
+["timestamp"] = 1786982753,
+["id"] = "s18_4475",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Delondra-LaCroisadeécarlate:86:GUILD:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: re",
+["id"] = "s18_4476",
+["timestamp"] = 1786983519,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "BloodElf",
+["class"] = "DEMONHUNTER",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Voltface-Dalaran:87:GUILD:|h[|cffa330c9Voltface|r]|h: re, et c'est moi qui file ^^",
+["id"] = "s18_4477",
+["timestamp"] = 1786983595,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Troll",
+["name"] = "Darkpewpew",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Darkpewpew-Hyjal:91:GUILD:|h[|cffff7c0aDarkpewpew-Hyjal|r]|h: ola",
+["timestamp"] = 1786983705,
+["id"] = "s18_4478",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Delondra-LaCroisadeécarlate:92:GUILD:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: hello",
+["timestamp"] = 1786983714,
+["id"] = "s18_4479",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: I am the one who set Zul'jan in pursuit of Ula'tek. I will do whatever I can to help bring him home.",
+["id"] = "s18_4480",
+["timestamp"] = 1786985980,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: He's always chased de Amani's ancient glory. But dis time he's found more than he bargained for.",
+["id"] = "s18_4481",
+["timestamp"] = 1786985988,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: You're right, Kvotheen. We can't fight dis threat without more knowledge of Ula'tek. And I need you to find it.",
+["id"] = "s18_4482",
+["timestamp"] = 1786986029,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: I will aid your search. Perhaps what we uncover can convince Zul'jan to see reason.",
+["id"] = "s18_4483",
+["timestamp"] = 1786986038,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: I will meet you outside the crypt, Kvotheen.",
+["id"] = "s18_4484",
+["timestamp"] = 1786986100,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: Akil'zon's winds guide you. We'll get ready to fight when everyone stops fussing over dis little cut.",
+["id"] = "s18_4485",
+["timestamp"] = 1786986103,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: Hold. I hear... the goddess's voice! She is reaching out to us...",
+["id"] = "s18_4486",
+["timestamp"] = 1786986177,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: We beseech you, goddess. Show us what you mean for us to see.",
+["id"] = "s18_4487",
+["timestamp"] = 1786986217,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Priestess",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Priestess says: Pick up ya spear, Jak'mo. Our people are dyin'. De Amani need ya.",
+["id"] = "s18_4488",
+["timestamp"] = 1786986226,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: A vision of the past! We are listening, goddess!",
+["id"] = "s18_4489",
+["timestamp"] = 1786986232,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: Let her wisdom guide your way. I will find you ahead.",
+["id"] = "s18_4490",
+["timestamp"] = 1786986267,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Priestess",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Priestess says: Run back to de Zandalari and their loa? No. Put your faith in me.",
+["id"] = "s18_4491",
+["timestamp"] = 1786986286,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Warlord",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Warlord says: What have you done, Nek'zali?",
+["id"] = "s18_4492",
+["timestamp"] = 1786986332,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Priestess",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Priestess says: I defended our people. I took this land for de Amani!",
+["id"] = "s18_4493",
+["timestamp"] = 1786986348,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Priestess",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Priestess says: Ya think ya can bury me? I curse de Amani! I don't forget, I don't surrender, and I never die!",
+["id"] = "s18_4494",
+["timestamp"] = 1786986355,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: She must have led us here for a reason.",
+["id"] = "s18_4495",
+["timestamp"] = 1786986366,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: With nature's strength. Together!",
+["id"] = "s18_4496",
+["timestamp"] = 1786986369,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278906::::::::90:263::60:1:13844:1:28:5381:::::|h[Tomb-Sealed Girdle]|h|r",
+["id"] = "s18_4497",
+["timestamp"] = 1786986399,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The goddess guides our steps. We must follow the path and learn what we can from the dead.",
+["id"] = "s18_4498",
+["timestamp"] = 1786986436,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tortured Risen",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Tortured Risen says: The guilty wake us...",
+["id"] = "s18_4499",
+["timestamp"] = 1786986452,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4500",
+["timestamp"] = 1786986458,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The mural depicts a great foe. The Amani fought this monster in exchange for land.",
+["id"] = "s18_4501",
+["timestamp"] = 1786986465,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: No doubt, the very land we are standing on.",
+["id"] = "s18_4502",
+["timestamp"] = 1786986472,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4503",
+["timestamp"] = 1786986486,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Entombed Summoner",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Entombed Summoner says: She stirs.",
+["id"] = "s18_4504",
+["timestamp"] = 1786986497,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260651::::::::90:263:::::::::|h[Lustrous Wildlife Pelt]|h|r",
+["id"] = "s18_4505",
+["timestamp"] = 1786986508,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4506",
+["timestamp"] = 1786986508,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Entombed Summoner",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Entombed Summoner says: She called it Ula'tek!",
+["id"] = "s18_4507",
+["timestamp"] = 1786986517,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4508",
+["timestamp"] = 1786986528,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: A mural of two beasts, as we saw in the Den of Echoes. One slew the other, then died of its wounds.",
+["id"] = "s18_4509",
+["timestamp"] = 1786986548,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: But this isn't depicted as a victory for the Amani. Is this not what began their empire?",
+["id"] = "s18_4510",
+["timestamp"] = 1786986557,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Entombed Summoner",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Entombed Summoner says: They buried her. And I bury ya!",
+["id"] = "s18_4511",
+["timestamp"] = 1786986568,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Ancient Wiseman",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Ancient Wiseman says: We buried Ula'tek. She must not awaken!",
+["id"] = "s18_4512",
+["timestamp"] = 1786986572,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: Wait! We seek answers!",
+["id"] = "s18_4513",
+["timestamp"] = 1786986577,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4514",
+["timestamp"] = 1786986582,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278878::::::::90:263::60:1:13844:1:28:5381:::::|h[Crypt Cleanser Chestguard]|h|r",
+["id"] = "s18_4515",
+["timestamp"] = 1786986590,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: These murals are not just recorded history. They are warnings of a past the Amani tried to forget.",
+["id"] = "s18_4516",
+["timestamp"] = 1786986611,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Yan'ti the Bold",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Yan'ti the Bold says: Ya will not pass. Ya must not see.",
+["id"] = "s18_4517",
+["timestamp"] = 1786986644,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Yan'ti the Bold",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Yan'ti the Bold says: It cannot be worshipped! It must be forgotten!",
+["id"] = "s18_4518",
+["timestamp"] = 1786986653,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Yan'ti the Bold",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Yan'ti the Bold says: Sacrifice... is her power...",
+["id"] = "s18_4519",
+["timestamp"] = 1786986660,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4520",
+["timestamp"] = 1786986661,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The barrier is down. This way.",
+["id"] = "s18_4521",
+["timestamp"] = 1786986665,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The summoning of Ula'tek. Something is scrawled beneath it: \"Our empire will rise.\"",
+["id"] = "s18_4522",
+["timestamp"] = 1786986672,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Warlord",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Warlord says: De Amani must never repeat what happened in that swamp. Bury everything.",
+["id"] = "s18_4523",
+["timestamp"] = 1786986681,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: Another vision. The goddess points us to where the ritual took place...",
+["id"] = "s18_4524",
+["timestamp"] = 1786986688,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:256963::::::::90:263:::::::::|h[Thalassian Lumber]|h|r",
+["id"] = "s18_4525",
+["timestamp"] = 1786986705,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:256963::::::::90:263:::::::::|h[Thalassian Lumber]|h|r",
+["id"] = "s18_4526",
+["timestamp"] = 1786986740,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: Try a different anti-venom. We need to find-- Kvotheen! Orweyna!",
+["id"] = "s18_4527",
+["timestamp"] = 1786986746,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:279452::::::::90:263::11::1:28:5381:::::|h[\"Summoning of Ula'tek\" Mural]|h|r",
+["id"] = "s18_4528",
+["timestamp"] = 1786986923,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: Tak'lejo, we need that cure!",
+["id"] = "s18_4529",
+["timestamp"] = 1786986963,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ1:|Hitem:267269::::::::90:263::::1:28:3084:::::|h[Fire-Blessed Poultice]|h|r",
+["id"] = "s18_4530",
+["timestamp"] = 1786986972,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tak'lejo",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Tak'lejo says: Jan'alai's flames gonna burn it right outta ya, hash'ey.",
+["id"] = "s18_4531",
+["timestamp"] = 1786986972,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: Tell me what you found in dat crypt.",
+["id"] = "s18_4532",
+["timestamp"] = 1786986978,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The Amani buried all knowledge of Ula'tek. But there is more for us to learn in the swamp.",
+["id"] = "s18_4533",
+["timestamp"] = 1786986983,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: Then that's where you're headed next.",
+["id"] = "s18_4534",
+["timestamp"] = 1786986991,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: The cure isn't working. Zul'jarra, you can't--",
+["id"] = "s18_4535",
+["timestamp"] = 1786986994,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: I won't let Malacrass's lies take my brother! Go!",
+["id"] = "s18_4536",
+["timestamp"] = 1786986997,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_EMOTE",
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 0.501960813999176,
+["r"] = 1,
+},
+["text"] = "Dak'zor takes up his axe and storms off.",
+["id"] = "s18_4537",
+["timestamp"] = 1786986997,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tak'lejo",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Tak'lejo says: De hash'ey has given her orders. Our scouts are still looking for Zul'jan.",
+["id"] = "s18_4538",
+["timestamp"] = 1786987018,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Tak'lejo",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Tak'lejo says: Zul'jarra wants to believe he can be brought home. Maybe. But he's still gonna answer for what he's done.",
+["id"] = "s18_4539",
+["timestamp"] = 1786987023,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "Human",
+["class"] = "PALADIN",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["type"] = "GUILD",
+["event"] = "CHAT_MSG_GUILD",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Delondra-LaCroisadeécarlate:109:GUILD:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: A plus tard",
+["id"] = "s18_4540",
+["timestamp"] = 1786987109,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Captain Tokka",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Captain Tokka says: My First Mate led a small crew into that bog. They never returned. It's haunted, I tell ya.",
+["id"] = "s18_4541",
+["timestamp"] = 1786987902,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Captain Tokka",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Captain Tokka says: If you're going that way, keep an eye out for 'em. Maybe they've seen what yer lookin' for.",
+["id"] = "s18_4542",
+["timestamp"] = 1786987911,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: Can you hear that? The hissing... It's getting closer...",
+["id"] = "s18_4543",
+["timestamp"] = 1786987924,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: Listen to me, Zul'jarra. Zul'jan dealt you this wound. He's set himself against you, your people, and your loa.",
+["id"] = "s18_4544",
+["timestamp"] = 1786987931,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: He's my brother. It's my job to protect him. And I let him down.",
+["id"] = "s18_4545",
+["timestamp"] = 1786987941,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: He blames himself for our uncle's death. He needs it to not be in vain.",
+["id"] = "s18_4546",
+["timestamp"] = 1786987948,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: Malacrass is using dat guilt to control Zul'jan. He wants Ula'tek's power for himself.",
+["id"] = "s18_4547",
+["timestamp"] = 1786987953,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: No doubt Silvermoon will be his next target. If only Lor'themar would set aside his grudges...",
+["id"] = "s18_4548",
+["timestamp"] = 1786987961,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: De Amani never die. We will survive.",
+["id"] = "s18_4549",
+["timestamp"] = 1786987970,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: We need you to survive. Fight this, Zul'jarra.",
+["id"] = "s18_4550",
+["timestamp"] = 1786987975,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Dak'zor says: Ay! Who de-- Oh! You as fired up as I am, hash'ura?",
+["id"] = "s18_4551",
+["timestamp"] = 1786987977,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Zul'jarra says: I won't give up on Zul'jan! You find dat brother of mine...",
+["id"] = "s18_4552",
+["timestamp"] = 1786987980,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Dak'zor says: I can't just sit around doing nothing for Zul'jarra. I'm coming with you.",
+["id"] = "s18_4553",
+["timestamp"] = 1786987982,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lady Liadrin",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lady Liadrin says: Zul'jarra! Easy. Conserve your strength.",
+["id"] = "s18_4554",
+["timestamp"] = 1786987988,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "MONSTER_EMOTE",
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 0.501960813999176,
+["r"] = 1,
+},
+["text"] = "You sense a nearby Skyriding Glyph.",
+["id"] = "s18_4555",
+["timestamp"] = 1786988017,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Dak'zor says: You and me, Small Tusks! We gonna pull de secrets outta dis swamp!",
+["id"] = "s18_4556",
+["timestamp"] = 1786988018,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: We will find the answers we seek here. The goddess wills it.",
+["id"] = "s18_4557",
+["timestamp"] = 1786988060,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Dak'zor says: Let's find de missing tortollans, too. I bet dey got some answers for us!",
+["id"] = "s18_4558",
+["timestamp"] = 1786988065,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "First Mate Nama",
+},
+["type"] = "MONSTER_YELL",
+["event"] = "CHAT_MSG_MONSTER_YELL",
+},
+["color"] = {
+["b"] = 0.250980406999588,
+["g"] = 0.250980406999588,
+["r"] = 1,
+},
+["text"] = "First Mate Nama yells: Hah! This body is dancing on my strings!",
+["id"] = "s18_4559",
+["timestamp"] = 1786988083,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "First Mate Nama",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "First Mate Nama says: This soul will make a good sacrifice. Heh heh...",
+["id"] = "s18_4560",
+["timestamp"] = 1786988090,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:275284::::::::90:263:::::::::|h[Slobbery Tongue]|h|r",
+["id"] = "s18_4561",
+["timestamp"] = 1786988097,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260688::::::::90:263:::::::::|h[Insect Exoskeleton]|h|r",
+["id"] = "s18_4562",
+["timestamp"] = 1786988097,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260637::::::::90:263:::::::::|h[Rotting Insect Eggs]|h|r",
+["id"] = "s18_4563",
+["timestamp"] = 1786988113,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:275284::::::::90:263:::::::::|h[Slobbery Tongue]|h|r",
+["id"] = "s18_4564",
+["timestamp"] = 1786988113,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4565",
+["timestamp"] = 1786988121,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx4",
+["id"] = "s18_4566",
+["timestamp"] = 1786988121,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260637::::::::90:263:::::::::|h[Rotting Insect Eggs]|h|r",
+["id"] = "s18_4567",
+["timestamp"] = 1786988149,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4568",
+["timestamp"] = 1786988149,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|r",
+["id"] = "s18_4569",
+["timestamp"] = 1786988149,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260666::::::::90:263:::::::::|h[Earthy Mushroom]|h|r",
+["id"] = "s18_4570",
+["timestamp"] = 1786988152,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:258949::::::::90:263::133:1:13900:2:9:90:28:5381:::::|h[Tarnished Dawnlit Mace]|h|r",
+["id"] = "s18_4571",
+["timestamp"] = 1786988152,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260636::::::::90:263:::::::::|h[Algae Covered Stone]|h|r",
+["id"] = "s18_4572",
+["timestamp"] = 1786988166,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|r",
+["id"] = "s18_4573",
+["timestamp"] = 1786988166,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: It's out of my head! Finally. Some peace and quiet.",
+["id"] = "s18_4574",
+["timestamp"] = 1786988175,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: I won't be the next sacrifice! Thank you, stranger.",
+["id"] = "s18_4575",
+["timestamp"] = 1786988289,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: Dis body be mine now!",
+["id"] = "s18_4576",
+["timestamp"] = 1786988297,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: Oough... The voice is gone.",
+["id"] = "s18_4577",
+["timestamp"] = 1786988309,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:256963::::::::90:263:::::::::|h[Thalassian Lumber]|h|r",
+["id"] = "s18_4578",
+["timestamp"] = 1786988314,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4579",
+["timestamp"] = 1786988327,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260614::::::::90:263:::::::::|h[Unrecognizable Organ]|h|r",
+["id"] = "s18_4580",
+["timestamp"] = 1786988340,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx3",
+["id"] = "s18_4581",
+["timestamp"] = 1786988340,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: It's out of my head! Finally. Some peace and quiet.",
+["id"] = "s18_4582",
+["timestamp"] = 1786988348,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260616::::::::90:263:::::::::|h[Soft Marine Fungi]|h|r",
+["id"] = "s18_4583",
+["timestamp"] = 1786988362,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx2",
+["id"] = "s18_4584",
+["timestamp"] = 1786988362,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260637::::::::90:263:::::::::|h[Rotting Insect Eggs]|h|r",
+["id"] = "s18_4585",
+["timestamp"] = 1786988362,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: De tortollan obeys me now!",
+["id"] = "s18_4586",
+["timestamp"] = 1786988368,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: A ghost wanted my soul! I felt it!",
+["id"] = "s18_4587",
+["timestamp"] = 1786988380,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:260654::::::::90:263:::::::::|h[Abrasive Sand]|h|r",
+["id"] = "s18_4588",
+["timestamp"] = 1786988381,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:275284::::::::90:263:::::::::|h[Slobbery Tongue]|h|r",
+["id"] = "s18_4589",
+["timestamp"] = 1786988381,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: Dis body be mine now!",
+["id"] = "s18_4590",
+["timestamp"] = 1786988397,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Lost Tortollan",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Lost Tortollan says: This shell's too old for a roommate...",
+["id"] = "s18_4591",
+["timestamp"] = 1786988404,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Dak'zor",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Dak'zor says: De tortollans seemed like dey were possessed. What's going on in dis swamp?",
+["id"] = "s18_4592",
+["timestamp"] = 1786988419,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:278902::::::::90:263::60:1:13844:1:28:5381:::::|h[Swampdredger Legguards]|h|r",
+["id"] = "s18_4593",
+["timestamp"] = 1786988421,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["race"] = "ZandalariTroll",
+["class"] = "SHAMAN",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["type"] = "LOOT",
+["event"] = "CHAT_MSG_LOOT",
+},
+["color"] = {
+["b"] = 0,
+["g"] = 0.6666666865348816,
+["r"] = 0,
+},
+["text"] = "You receive item: |cnIQ2:|Hitem:279285::::::::90:263::11::1:28:5381:::::|h[Lost Tortollan Scroll]|h|r",
+["id"] = "s18_4594",
+["timestamp"] = 1786988425,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Memory of a Warlord",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Memory of a Warlord says: Stand strong, Amani! They come!",
+["id"] = "s18_4595",
+["timestamp"] = 1786988426,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["type"] = "MONSTER_SAY",
+["event"] = "CHAT_MSG_MONSTER_SAY",
+},
+["color"] = {
+["b"] = 0.6235294342041016,
+["g"] = 1,
+["r"] = 1,
+},
+["text"] = "Orweyna says: The song of the goddess! But it is... pained, somehow.",
+["id"] = "s18_4596",
+["timestamp"] = 1786988430,
 },
 },
 ["version"] = 1,
