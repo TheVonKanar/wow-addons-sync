@@ -45,25 +45,6 @@ ArcUIDB = {
 ["onlyOnUseTrinkets"] = false,
 ["enabled"] = true,
 ["trackedItems"] = {
-["arc_item_241305"] = {
-["enabled"] = true,
-["type"] = "item",
-["itemID"] = 241305,
-["isAutoTrackSlot"] = false,
-["hideWhenUnequipped"] = false,
-["isPassive"] = false,
-},
-["arc_item_241301"] = {
-["enabled"] = true,
-["type"] = "item",
-["itemID"] = 241301,
-["isAutoTrackSlot"] = false,
-["showOnSpecs"] = {
-3,
-},
-["hideWhenUnequipped"] = false,
-["isPassive"] = false,
-},
 ["arc_item_241309"] = {
 ["enabled"] = false,
 ["type"] = "item",
@@ -75,17 +56,6 @@ ArcUIDB = {
 ["hideWhenUnequipped"] = false,
 ["isPassive"] = false,
 },
-["arc_item_193701"] = {
-["enabled"] = true,
-["type"] = "item",
-["itemID"] = 193701,
-["isAutoTrackSlot"] = false,
-["isPassive"] = false,
-["hideWhenUnequipped"] = false,
-["showOnSpecs"] = {
-2,
-},
-},
 ["arc_item_264701"] = {
 ["enabled"] = true,
 ["type"] = "item",
@@ -96,6 +66,17 @@ ArcUIDB = {
 ["showOnSpecs"] = {
 3,
 },
+},
+["arc_item_241301"] = {
+["enabled"] = true,
+["type"] = "item",
+["itemID"] = 241301,
+["isAutoTrackSlot"] = false,
+["showOnSpecs"] = {
+3,
+},
+["hideWhenUnequipped"] = false,
+["isPassive"] = false,
 },
 },
 ["positions"] = {
@@ -252,7 +233,6 @@ ArcUIDB = {
 },
 ["width"] = 288,
 ["matchGroupWidth"] = true,
-["enabled"] = true,
 ["profiles"] = {
 ["hardcast"] = {
 ["font"] = "Fira Sans Condensed Bold",
@@ -272,6 +252,7 @@ ArcUIDB = {
 ["texture"] = "SCRB FG Fade Left",
 },
 },
+["enabled"] = true,
 },
 },
 ["achSettings"] = {
@@ -365,7 +346,147 @@ ArcUIDB = {
 },
 },
 },
-nil,
+{
+["_configVersion"] = 5,
+["presets"] = {
+["activeProfile"] = "InsetBar",
+},
+["thresholds"] = {
+{
+["color"] = {
+["a"] = 1,
+["b"] = 1,
+["g"] = 0.9568628072738647,
+["r"] = 0.1411764770746231,
+},
+["enabled"] = true,
+["minValue"] = 0,
+["maxValue"] = 10,
+},
+{
+["color"] = {
+["a"] = 1,
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["enabled"] = false,
+["minValue"] = 5,
+["maxValue"] = 10,
+},
+{
+["color"] = {
+["a"] = 1,
+["r"] = 0,
+["g"] = 1,
+["b"] = 0,
+},
+["enabled"] = false,
+["minValue"] = 8,
+["maxValue"] = 10,
+},
+},
+["_migrated"] = 3,
+["display"] = {
+["textPosition"] = {
+["y"] = 200,
+["relPoint"] = "CENTER",
+["point"] = "CENTER",
+["x"] = 0,
+},
+["backgroundColor"] = {
+["a"] = 1,
+["b"] = 0.250980406999588,
+["g"] = 0.2196078598499298,
+["r"] = 0.1960784494876862,
+},
+["enableSmoothing"] = true,
+["texture"] = "Platy: Fade Left",
+["barPosition"] = {
+["y"] = -286.0178854771913,
+["relPoint"] = "CENTER",
+["point"] = "CENTER",
+["x"] = 116.0072542494902,
+},
+["enabled"] = true,
+["drawnBorderThickness"] = 1,
+["iconMultiPositions"] = {
+},
+["showText"] = false,
+["height"] = 7,
+["barColor"] = {
+["a"] = 1,
+["b"] = 1,
+["g"] = 0.9568628072738647,
+["r"] = 0.1411764770746231,
+},
+["width"] = 56,
+["showTickMarks"] = false,
+},
+["colorRanges"] = {
+{
+["color"] = {
+["a"] = 1,
+["b"] = 1,
+["g"] = 0.9568628072738647,
+["r"] = 0.1411764770746231,
+},
+["to"] = 4,
+["from"] = 1,
+},
+{
+["color"] = {
+["a"] = 1,
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["enabled"] = false,
+["to"] = 8,
+["from"] = 5,
+},
+{
+["color"] = {
+["a"] = 1,
+["r"] = 0,
+["g"] = 1,
+["b"] = 0,
+},
+["enabled"] = false,
+["to"] = 12,
+["from"] = 9,
+},
+},
+["tracking"] = {
+["trackType"] = "buff",
+["buffName"] = "Tempest",
+["displaySpellID"] = 454015,
+["slotNumber"] = 0,
+["alternateCooldownIDs"] = {
+},
+["maxStacks"] = 0,
+["enabled"] = true,
+["useBaseSpell"] = false,
+["dynamicMaxDuration"] = true,
+["maxDuration"] = 0,
+["sourceType"] = "icon",
+["useDurationBar"] = true,
+["auraInstanceID"] = 0,
+["cooldownID"] = 82398,
+["iconTextureID"] = 5927653,
+["excludedCooldownIDs"] = {
+},
+["spellID"] = 454015,
+},
+["behavior"] = {
+["hideBuffIcon"] = true,
+["hideWhenInactive"] = true,
+["showOnSpec"] = 0,
+["showOnSpecs"] = {
+2,
+},
+},
+},
 nil,
 {
 ["_configVersion"] = 57,
@@ -1998,29 +2119,6 @@ nil,
 },
 ["Stormbringer"] = {
 ["iconSettings"] = {
-["15919"] = {
-["zoom"] = 0.08,
-["cooldownText"] = {
-["enabled"] = false,
-["size"] = 10,
-},
-["aspectRatio"] = 1,
-["chargeText"] = {
-["enabled"] = false,
-},
-},
-["arc_spell_8004"] = {
-["chargeText"] = {
-["enabled"] = false,
-},
-["cooldownText"] = {
-["enabled"] = false,
-},
-["cooldownSwipe"] = {
-["noGCDSwipe"] = true,
-},
-["hideKeybind"] = true,
-},
 ["15950"] = {
 ["zoom"] = 0.08,
 ["aspectRatio"] = 1,
@@ -2031,13 +2129,23 @@ nil,
 ["enabled"] = false,
 },
 },
-["14920"] = {
+["15118"] = {
 ["aspectRatio"] = 1,
+},
+["arc_item_241305"] = {
+["aspectRatio"] = 1,
+["zoom"] = 0.08,
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["16773"] = {
+["zoom"] = 0.08,
 ["cooldownText"] = {
 ["enabled"] = false,
 ["size"] = 12,
 },
-["zoom"] = 0.08,
+["aspectRatio"] = 1,
 ["chargeText"] = {
 ["enabled"] = false,
 },
@@ -2050,6 +2158,53 @@ nil,
 },
 ["aspectRatio"] = 1,
 },
+["15919"] = {
+["zoom"] = 0.08,
+["cooldownText"] = {
+["enabled"] = false,
+["size"] = 10,
+},
+["aspectRatio"] = 1,
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["11880"] = {
+["cooldownStateVisuals"] = {
+["cooldownState"] = {
+["waitForNoCharges"] = true,
+},
+},
+},
+["arc_spell_383013"] = {
+["alpha"] = 1,
+},
+["14920"] = {
+["aspectRatio"] = 1,
+["cooldownText"] = {
+["enabled"] = false,
+["size"] = 12,
+},
+["zoom"] = 0.08,
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["12665"] = {
+["cooldownStateVisuals"] = {
+["readyState"] = {
+["glowColor"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
+["glow"] = true,
+["glowWhileChargesAvailable"] = true,
+["glowType"] = "pixel",
+["glowCombatOnly"] = true,
+},
+},
+},
 ["15149"] = {
 ["aspectRatio"] = 1,
 ["cooldownText"] = {
@@ -2061,30 +2216,12 @@ nil,
 ["enabled"] = false,
 },
 },
-["arc_item_212264"] = {
-["chargeText"] = {
-["enabled"] = false,
-},
-},
 ["16503"] = {
 ["aspectRatio"] = 1,
 ["cooldownText"] = {
 ["enabled"] = false,
 ["size"] = 12,
 },
-["zoom"] = 0.08,
-["chargeText"] = {
-["enabled"] = false,
-},
-},
-["arc_spell_383013"] = {
-["alpha"] = 1,
-},
-["arc_item_193701"] = {
-["aspectRatio"] = 1.5,
-},
-["arc_item_241305"] = {
-["aspectRatio"] = 1,
 ["zoom"] = 0.08,
 ["chargeText"] = {
 ["enabled"] = false,
@@ -2101,21 +2238,59 @@ nil,
 ["enabled"] = false,
 },
 },
+["arc_item_193701"] = {
+["aspectRatio"] = 1.5,
+},
+["arc_item_212264"] = {
+["chargeText"] = {
+["enabled"] = false,
+},
+},
+["198701"] = {
+["aspectRatio"] = 1,
+},
+["11890"] = {
+["cooldownStateVisuals"] = {
+["readyState"] = {
+["glowColor"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
+["glow"] = true,
+["glowWhileChargesAvailable"] = true,
+["glowType"] = "pixel",
+["glowCombatOnly"] = true,
+},
+["cooldownState"] = {
+["waitForNoCharges"] = true,
+},
+},
+["procGlow"] = {
+["enabled"] = false,
+},
+},
+["12764"] = {
+["procGlow"] = {
+["enabled"] = false,
+},
+},
 ["arc_item_241309"] = {
 ["chargeText"] = {
 ["enabled"] = false,
 },
 },
-["16773"] = {
-["zoom"] = 0.08,
-["cooldownText"] = {
-["enabled"] = false,
-["size"] = 12,
-},
-["aspectRatio"] = 1,
+["arc_spell_8004"] = {
 ["chargeText"] = {
 ["enabled"] = false,
 },
+["cooldownText"] = {
+["enabled"] = false,
+},
+["cooldownSwipe"] = {
+["noGCDSwipe"] = true,
+},
+["hideKeybind"] = true,
 },
 ["arc_item_244838"] = {
 ["chargeText"] = {
@@ -2155,13 +2330,6 @@ nil,
 ["row"] = 1,
 ["sortIndex"] = 6,
 },
-["arc_item_241305"] = {
-["type"] = "group",
-["col"] = 0,
-["target"] = "Utility",
-["row"] = 0,
-["viewerType"] = "cooldown",
-},
 [11890] = {
 ["type"] = "group",
 ["col"] = 3,
@@ -2191,6 +2359,13 @@ nil,
 ["row"] = 0,
 ["sortIndex"] = 4,
 },
+[82398] = {
+["y"] = -373.0269165039063,
+["type"] = "free",
+["viewerType"] = "aura",
+["iconSize"] = 36,
+["x"] = 477.0399169921875,
+},
 [16864] = {
 ["type"] = "group",
 ["col"] = 4,
@@ -2198,12 +2373,12 @@ nil,
 ["row"] = 0,
 ["viewerType"] = "utility",
 },
-[82363] = {
-["y"] = -496.0031433105469,
+[82615] = {
+["y"] = -430.9981689453125,
 ["type"] = "free",
 ["viewerType"] = "aura",
 ["iconSize"] = 36,
-["x"] = 525.005126953125,
+["x"] = 487.00244140625,
 },
 ["arc_item_241301"] = {
 ["y"] = -417.0011291503906,
@@ -2241,6 +2416,13 @@ nil,
 ["sortIndex"] = 1,
 ["row"] = 0,
 ["viewerType"] = "utility",
+},
+[198700] = {
+["type"] = "group",
+["col"] = 3,
+["target"] = "Essential",
+["row"] = 0,
+["sortIndex"] = 3,
 },
 [16503] = {
 ["type"] = "group",
@@ -2284,6 +2466,13 @@ nil,
 ["iconSize"] = 36,
 ["x"] = 442.0008544921875,
 },
+[198701] = {
+["type"] = "group",
+["col"] = 8,
+["target"] = "Utility",
+["row"] = 0,
+["sortIndex"] = 8,
+},
 [174832] = {
 ["y"] = -471.0010528564453,
 ["type"] = "free",
@@ -2299,19 +2488,12 @@ nil,
 ["row"] = 1,
 ["viewerType"] = "cooldown",
 },
-["arc_item_193701"] = {
-["type"] = "group",
-["col"] = 3,
-["target"] = "Essential",
-["row"] = 0,
-["sortIndex"] = 3,
-},
-[82615] = {
-["y"] = -430.9981689453125,
+[82363] = {
+["y"] = -496.0031433105469,
 ["type"] = "free",
 ["viewerType"] = "aura",
 ["iconSize"] = 36,
-["x"] = 487.00244140625,
+["x"] = 525.005126953125,
 },
 [16955] = {
 ["type"] = "group",
@@ -2328,19 +2510,19 @@ nil,
 ["row"] = 2,
 ["sortIndex"] = 10,
 },
-[82369] = {
-["y"] = -424.9979858398438,
-["type"] = "free",
-["viewerType"] = "aura",
-["iconSize"] = 36,
-["x"] = 443.9998779296875,
-},
 [82621] = {
 ["y"] = -480.0026550292969,
 ["type"] = "free",
 ["viewerType"] = "aura",
 ["iconSize"] = 36,
 ["x"] = 486.0025634765625,
+},
+[82369] = {
+["y"] = -424.9979858398438,
+["type"] = "free",
+["viewerType"] = "aura",
+["iconSize"] = 36,
+["x"] = 443.9998779296875,
 },
 ["arc_item_241309"] = {
 ["y"] = -13,
@@ -2379,6 +2561,11 @@ nil,
 ["x"] = 442.0008544921875,
 ["iconSize"] = 36,
 },
+[82398] = {
+["y"] = -373.0269165039063,
+["x"] = 477.0399169921875,
+["iconSize"] = 36,
+},
 ["arc_item_264701"] = {
 ["y"] = 150,
 ["x"] = 200,
@@ -2399,19 +2586,24 @@ nil,
 ["x"] = 79.999755859375,
 ["iconSize"] = 36,
 },
-[82615] = {
-["y"] = -430.9981689453125,
-["x"] = 487.00244140625,
-["iconSize"] = 36,
-},
 [82624] = {
 ["y"] = -549.0062561035156,
 ["x"] = 533.005126953125,
 ["iconSize"] = 36,
 },
+[82615] = {
+["y"] = -430.9981689453125,
+["x"] = 487.00244140625,
+["iconSize"] = 36,
+},
 [82621] = {
 ["y"] = -480.0026550292969,
 ["x"] = 486.0025634765625,
+["iconSize"] = 36,
+},
+[198864] = {
+["y"] = 66,
+["x"] = -154,
 ["iconSize"] = 36,
 },
 },
@@ -2421,29 +2613,29 @@ nil,
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 2,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.3,
-["g"] = 0.8,
 ["r"] = 0.3,
+["g"] = 0.8,
+["b"] = 0.3,
 },
 ["iconSize"] = 36,
 ["hiddenAlpha"] = 0,
 ["spacing"] = 2,
-["iconHeight"] = 36,
+["showBorder"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 36,
 ["id"] = "arc_buffs",
 ["dynamicCooldowns"] = false,
 ["frameStrata"] = "MEDIUM",
 ["showBackground"] = false,
-["showBorder"] = false,
 ["dynamicContainerSize"] = false,
+["iconHeight"] = 36,
 ["lockGridSize"] = false,
 ["position"] = {
 ["y"] = 200,
@@ -2458,29 +2650,29 @@ nil,
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 3,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.2,
-["g"] = 0.6,
 ["r"] = 0.8,
+["g"] = 0.6,
+["b"] = 0.2,
 },
 ["iconSize"] = 36,
 ["lockGridSize"] = true,
-["showBackground"] = false,
-["iconHeight"] = 36,
 ["spacing"] = 4,
+["showBorder"] = false,
+["showBackground"] = false,
 ["frameLevel"] = 1,
 ["iconWidth"] = 54,
 ["id"] = "arc_essential",
 ["dynamicCooldowns"] = false,
 ["frameStrata"] = "MEDIUM",
-["showBorder"] = false,
 ["dynamicContainerSize"] = false,
+["iconHeight"] = 36,
 ["visibilityLogic"] = "all",
 ["alignment"] = "left",
 ["position"] = {
@@ -2498,16 +2690,16 @@ nil,
 ["containerPadding"] = -4,
 ["bgColor"] = {
 ["a"] = 0.6,
-["b"] = 0,
-["g"] = 0,
 ["r"] = 0,
+["g"] = 0,
+["b"] = 0,
 },
 ["gridRows"] = 1,
 ["borderColor"] = {
 ["a"] = 1,
-["b"] = 0.9,
-["g"] = 0.6,
 ["r"] = 0.3,
+["g"] = 0.6,
+["b"] = 0.9,
 },
 ["anchor"] = {
 ["enabled"] = true,
@@ -2526,15 +2718,15 @@ nil,
 },
 ["showBorder"] = false,
 ["lockGridSize"] = false,
-["iconHeight"] = 38,
 ["spacing"] = 6,
 ["showBackground"] = false,
+["dynamicContainerSize"] = true,
 ["frameLevel"] = 1,
 ["iconWidth"] = 38,
 ["id"] = "arc_utility",
 ["dynamicCooldowns"] = false,
 ["frameStrata"] = "MEDIUM",
-["dynamicContainerSize"] = true,
+["iconHeight"] = 38,
 ["iconSize"] = 36,
 ["verticalGrowth"] = "UP",
 ["alignment"] = "right",
@@ -2546,7 +2738,7 @@ nil,
 ["autoReflow"] = true,
 ["visibility"] = {
 },
-["gridCols"] = 18,
+["gridCols"] = 10,
 },
 },
 },
@@ -4015,7 +4207,7 @@ nil,
 },
 ["global"] = {
 ["changelog"] = {
-["lastSeen"] = "3.8.0",
+["lastSeen"] = "3.8.1",
 },
 ["setMyKick"] = {
 ["enabled"] = false,

@@ -485,7 +485,7 @@ function NSUI:Init()
     -- --------------------------------------------------------
     local versionNumber           = " v" .. C_AddOns.GetAddOnMetadata("NorthernSkyRaidTools", "Version")
     --[==[@debug@
-        if versionNumber == " v12.1.5" then
+        if versionNumber == " v12.1.7" then
             versionNumber = " Dev Build"
         end
     --@end-debug@]==]

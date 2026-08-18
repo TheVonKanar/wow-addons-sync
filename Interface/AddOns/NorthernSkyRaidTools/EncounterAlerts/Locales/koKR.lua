@@ -140,6 +140,14 @@ L[3159] = {
 -- ============================================================================
 -- Nymrissa Wavecaller (3379)
 L[3379] = {
+    ["Adds"]          = {group = "님리사", name = "쫄 등장", text = "쫄"},
+    ["Waves"]         = {group = "님리사", name = "파도", text = "파도"},
+    ["Knockback"]     = {group = "님리사", name = "넉백", text = "넉백"},
+    ["ChillingFrost"] = {group = "님리사", name = "오싹한 서리", text = "디버프"},
+    ["AbyssalRain"]   = {group = "님리사", name = "심연의 비", text = "광역뎀"},
+    ["WaterJet"]      = {group = "님리사", name = "물 분출", text = "전방스킬"},
+    ["WaterFlurry"]   = {group = "님리사", name = "질풍의 얼음칼날", text = "탱커 공격"},
+    ["Taunt"]         = {group = "님리사", name = "도발", text = "도발"},
 }
 
 -- Nek'zali the Soulcoiler (3470)
@@ -170,7 +178,7 @@ L[3445] = {
 -- Vashnik the Malignant (3455)
 L[3455] = {
     ["TankHits"]    = {group = "바쉬니크", name = "탱커 공격", text = "탱커 공격"},
-    ["Taunts"]      = {group = "바쉬니크", name = "Taunt", text = "도발"},
+    ["Taunts"]      = {group = "바쉬니크", name = "도발", text = "도발"},
     ["Adds"]        = {group = "바쉬니크", name = "쫄", text = "쫄"},
     ["Infection"]   = {group = "바쉬니크", name = "감염", text = "감염"},
     ["AoE"]         = {group = "바쉬니크", name = "광역뎀", text = "광역뎀"},
@@ -231,6 +239,15 @@ L[3429] = {
     ["P2Debuffs"]       = {group = "똬리의 제단 2페", name = "2페 디버프", text = "디버프"},
     ["P2Shield"]        = {group = "똬리의 제단 2페", name = "2페 보호막", text = "보호막"},
     ["InterruptAdds"] = {group = "똬리의 제단 2페", name = "2페 쫄 차단", text = "유령"},
+    -- ["DreadmarchTargeted"] = {group = "Coiled Altar P1", name = "Dreadmarch Target", text = "Targeted"},
+    -- ["P3Frontal"] = {group = "Coiled Altar P3", name = "P3 Frontal", text = "Frontal"},
+    -- ["P3Soak"] = {group = "Coiled Altar P3", name = "P3 Soak", text = "Soak"},
+    -- ["DreadmarchTargetedP3"] = {group = "Coiled Altar P3", name = "Dreadmarch Target", text = "Targeted"},
+    -- ["P3Shield"] = {group = "Coiled Altar P3", name = "P3 Shield", text = "Shield"},
+    -- ["P3Debuffs"] = {group = "Coiled Altar P3", name = "P3 Debuffs", text = "Debuffs"},
+    -- ["P3InterruptAdds"] = {group = "Coiled Altar P3", name = "P3 Interrupt Adds", text = "Ghosts"},
+    -- ["P3MindControls"] = {group = "Coiled Altar P3", name = "P3 Mind Controls", text = "Mind Controls"},
+    -- ["P3Taunt"] = {group = "Coiled Altar Tanks", name = "P3 Taunt", text = "Taunt"},
 }
 
 -- Ula'tek (3492)

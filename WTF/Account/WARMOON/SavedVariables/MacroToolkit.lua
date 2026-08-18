@@ -109,23 +109,23 @@ MacroToolkitDB = {
 },
 },
 },
-["global"] = {
-["backups"] = {
-},
-["ebackups"] = {
-},
-},
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "profile",
 },
+["global"] = {
+["ebackups"] = {
+},
+["backups"] = {
+},
+},
 ["profiles"] = {
 ["profile"] = {
-["y"] = 416.8671264648438,
-["x"] = 188.7657318115234,
+["y"] = 552.8756713867188,
+["x"] = 152.0967864990234,
 ["height"] = 423.9999389648438,
 ["override"] = true,
 ["width"] = 638.0001831054688,
-["scale"] = 1.5,
+["scale"] = 1.35,
 },
 },
 }

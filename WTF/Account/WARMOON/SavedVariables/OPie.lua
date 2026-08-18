@@ -72,9 +72,9 @@ OPie_SavedData = {
 242299,
 ["sliceToken"] = "ABueTkOYBT1",
 },
-["name"] = "Crafting",
-["save"] = true,
 ["limit"] = "Kvotheen-Hyjal",
+["save"] = true,
+["name"] = "Crafting",
 },
 ["Utility"] = {
 {

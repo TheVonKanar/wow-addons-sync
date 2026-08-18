@@ -1874,7 +1874,8 @@ do
         "showMythicRating", "showItemLevel", "showUpgradeTrack", "showGems",
         "showEnchants", "showPvpItemLevel", "charSheetSocketPanel",
         "charSheetIconZoom", "charSheetEnchantNames", "charSheetEnchantSize",
-        "flyoutItemLevels", "showSecondaryRaw", "showSecondaryBoth",
+        "flyoutItemLevels", "showCharSheetDurability", "charSheetDurabilityLocation",
+        "charSheetDurabilityShowLabel", "showSecondaryRaw", "showSecondaryBoth",
         "showTertiaryRaw", "showTertiaryBoth", "showAdjustedStats",
         "showManaStat",
         -- Inspect card

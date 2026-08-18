@@ -19,6 +19,7 @@ EUICoreStandaloneMinimapDB = {
 ["profileOrder"] = {
 "Default",
 },
+["sidebarUnlockTipSeen"] = true,
 ["ppUIScale"] = 0.53329998254776,
 ["profiles"] = {
 ["Default"] = {
@@ -87,15 +88,15 @@ EUICoreStandaloneMinimapDB = {
 ["outlineMode"] = "shadow",
 },
 ["unlockTipSeen"] = true,
-["sidebarUnlockTipSeen"] = true,
+["lastSpecByChar"] = {
+["Kvotheen - Hyjal"] = 263,
+},
 ["customColors"] = {
 },
 ["panelScale"] = 1,
 ["unlockSnapEnabled"] = false,
-["lastLoginVersion"] = "8.9.1",
-["lastSpecByChar"] = {
-["Kvotheen - Hyjal"] = 263,
-},
+["lastLoginVersion"] = "8.9.2",
+["patchDotPending"] = true,
 }
 EUIStandaloneMinimapDB = {
 }

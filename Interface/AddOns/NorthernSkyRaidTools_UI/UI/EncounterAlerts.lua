@@ -255,10 +255,54 @@ local function BuildEncounterAlertsUI(parentFrame)
     local searchText         = ""
     local groupsByEnc        = {}    -- [encID] = { [groupName] = true } — populated each RebuildScrollData
     local copiedAlertSection = nil
+    local SharedAlertDataKeys = {
+        enabled = true,
+        DisplayType = true,
+        text = true,
+        spellID = true,
+        isTaunt = true,
+        customIcon = true,
+        dur = true,
+        sticky = true,
+        HideTimer = true,
+        HideSwipe = true,
+        glowunit = true,
+        glowColors = true,
+        textColors = true,
+        ringColors = true,
+        showBackground = true,
+        Texture = true,
+        Ticks = true,
+        barColors = true,
+        TTS = true,
+        TTSTimer = true,
+        countdown = true,
+        sound = true,
+        loadConditions = true,
+    }
 
     function NSI:SaveAlertData(alert, dataKey, newData)
         if alert then
             alert[dataKey] = newData
+            if alert.internalID and SharedAlertDataKeys[dataKey] then
+                local encounterID = alert.encID or selectedEncID
+                local encounterAlerts = NSRT.EncounterAlerts and NSRT.EncounterAlerts[encounterID]
+                if encounterAlerts then
+                    for difficultyID, difficultyAlerts in pairs(encounterAlerts) do
+                        for alertKey, sibling in pairs(difficultyAlerts) do
+                            if sibling ~= alert and sibling.internalID == alert.internalID then
+                                sibling[dataKey] = type(newData) == "table" and CopyTable(newData) or newData
+                                if dataKey == "text" and sibling.ReloeReminder == true then
+                                    sibling.UserModifiedText = true
+                                end
+                                if dataKey == "enabled" and sibling.ReloeReminder == true then
+                                    sibling.UserModifiedEnabled = true
+                                end
+                            end
+                        end
+                    end
+                end
+            end
             if dataKey == "text" and alert.ReloeReminder == true then
                 alert.UserModifiedText = true
             end
@@ -2939,7 +2983,8 @@ local function BuildEncounterAlertsUI(parentFrame)
     )
     local soundDD = CreateDropdown(sndF, nil, soundGetItems, soundGetSelected,
         rightW, 22, "NSUIEncAlertSound",
-        { title = "Sound File", desc = "If you select a sound here it will take priority over any configured TTS. It will still use the TTS-Timer field to determine when to play" })
+        { title = "Sound File", desc = "If you select a sound here it will take priority over any configured TTS. It will still use the TTS-Timer field to determine when to play" },
+        nil, nil, true)
     soundDD:SetPoint("TOPLEFT", sndF, "TOPLEFT", 0, -178)
     sndF.soundDD = soundDD
     end -- SOUND TAB

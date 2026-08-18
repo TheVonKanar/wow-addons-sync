@@ -1,4 +1,11 @@
 Version: 1
+Frame: DamageMeterSessionWindow2
+FrameLevel: 2
+Anchor: BOTTOMRIGHT
+X: -9
+Y: 211
+W: 300
+H: 161
 Frame: TalentLoadoutDisplayFrame
 FrameLevel: 1
 Anchor: TOPRIGHT
@@ -6,13 +13,6 @@ X: -9
 Y: -276
 W: 297
 H: 30
-Frame: DamageMeterSessionWindow2
-FrameLevel: 2
-Anchor: BOTTOMLEFT
-X: 86
-Y: 242
-W: 348
-H: 158
 Frame: GroupLootHistoryFrame
 FrameLevel: 1
 Anchor: TOPLEFT
@@ -41,3 +41,10 @@ X: 183
 Y: -109
 W: 1012
 H: 550
+Frame: LariasWeeklyChecklistFrame
+FrameLevel: 100
+Anchor: TOP
+X: 471
+Y: -54
+W: 520
+H: 737

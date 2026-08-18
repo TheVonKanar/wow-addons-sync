@@ -1,0 +1,37 @@
+
+AztarecHelperDB = {
+["mapArtOffOnce"] = true,
+["roomSlim"] = false,
+["arrow"] = true,
+["cueMarks"] = false,
+["callStyle"] = "markers",
+["cueChannel"] = "Master",
+["locks"] = {
+},
+["roomView"] = true,
+["ttsVolume"] = 100,
+["follow"] = false,
+["callRoute"] = false,
+["enabled"] = true,
+["arrowColor"] = "gold",
+["arrowCompass"] = false,
+["waveText"] = true,
+["keysMark"] = false,
+["relativeTurns"] = false,
+["cues"] = true,
+["mapArt"] = false,
+["nameFilter"] = "",
+["autoRecord"] = true,
+["quadIconsSeeded"] = true,
+["quadIcons"] = {
+["E"] = 6,
+["S"] = 4,
+["W"] = 2,
+["N"] = 1,
+},
+["log"] = {
+},
+["posOnCast"] = true,
+["callVoice"] = true,
+["anywhere"] = false,
+}

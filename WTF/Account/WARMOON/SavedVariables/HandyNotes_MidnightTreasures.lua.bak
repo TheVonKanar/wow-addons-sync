@@ -3,14 +3,14 @@ HandyNotes_MidnightTreasuresDB = {
 ["char"] = {
 ["Kvotheen - Hyjal"] = {
 ["hidden"] = {
-[2395] = {
-[45873904] = true,
-},
 [2413] = {
 [40654299] = true,
 [56783422] = true,
 [28118181] = true,
 [62515375] = true,
+},
+[2395] = {
+[45873904] = true,
 },
 },
 },

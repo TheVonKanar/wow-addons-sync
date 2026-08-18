@@ -4,14 +4,14 @@ local encID = 3420
 -- /run NSAPI:DebugEncounter(3420)
 
 local tankComboTimers = {
-    [14] = {5.5, 55.7, 141.7, 195.9, 281.8, 334.1},
-    [15] = {5.5, 55.7, 141.7, 195.9, 281.8, 334.1},
+    [14] = {5.5, 57.7, 143.7, 196, 282, 334},
+    [15] = {5.5, 57.7, 143.7, 196, 282, 334},
     [16] = {4.9, 52, 132, 179, 259, 306.1},
 }
 
 local damageAmpTimers = {
-    [14] = {111.1, 249.3},
-    [15] = {111.1, 249.3},
+    [14] = {111.1, 249.3, 387.5},
+    [15] = {111.1, 249.3, 387.5},
     [16] = {100, 227.1, 354.2},
 }
 
@@ -27,13 +27,15 @@ NSI.InitializeAlerts[encID] = function(self)
     local data = {group = "Sszorak", internalID = "TankCombo", name = "Tank Combo", text = "Tank Combo", DisplayType = "Text", encID = encID, phase = 1, TTS = false, dur = 6, spellID = 1277002,
         loadConditions = tankConditions,
         textColors = {1, 0, 0, 1},
-        timers = tankComboTimers,
+        timers = {
+            [15] = tankComboTimers[15],
+            [16] = tankComboTimers[16],
+        },
     }
     self:AddEncounterAlert(data)
 
     local data = {group = "Sszorak", internalID = "DamageAmp", name = "Damage Amp", text = "Damage Amp", DisplayType = "Text", encID = encID, phase = 1, TTS = false, dur = 6, spellID = 1286033,
         timers = {
-            [14] = damageAmpTimers[14],
             [15] = damageAmpTimers[15],
             [16] = damageAmpTimers[16],
         },
@@ -51,7 +53,7 @@ NSI.InitializeAlerts[encID] = function(self)
 
     local data = {group = "Sszorak", internalID = "WindDebuffs", text = "Wind-Debuffs", DisplayType = "Text", encID = encID, phase = 1, TTS = false, dur = 6, spellID = 1285419,
         timers = {
-            [15] = {43.4, 95.5, 181.5, 233.7, 319.7, 371.9},
+            [15] = {44, 96, 182, 234, 320, 372},
             [16] = {39.7, 86.7, 166.8, 213.8, 293.9, 340.9},
         },
     }
@@ -109,7 +111,6 @@ NSI.InitializeAlerts[encID] = function(self)
                 tooltip = {title = "ShowSenderNames", desc = "Shows the sender next to each entered number."}},
             { Type = "Button", label = "Create Macros", width = 150,
                 func = [[return function()
-                    
                     local iconIDs = {"137001", "137002", "137003", "137004", "137005", "137006", "137007", "137008"}
                     for i=1, 8 do
                         local macroName = "NSRT_SSZORAK_" .. i

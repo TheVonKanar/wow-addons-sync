@@ -2,7 +2,7 @@
 MythicPlusUtilityDB = {
 ["locale"] = {
 ["enus"] = {
-["buildNumber"] = "69299",
+["buildNumber"] = "69382",
 ["spellIdToName"] = {
 [1266488] = "Open Wound",
 [1238439] = "Razor Dive",
@@ -1080,7 +1080,7 @@ MythicPlusUtilityDB = {
 ["Quiproquo - Uldaman"] = "Default",
 },
 ["global"] = {
-["buildNumber"] = "69299",
+["buildNumber"] = "69382",
 },
 ["char"] = {
 ["Kvotheen - Hyjal"] = {

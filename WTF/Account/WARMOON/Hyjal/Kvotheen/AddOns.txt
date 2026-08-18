@@ -140,7 +140,7 @@ LittleWigs_MistsOfPandaria: disabled
 LittleWigs_Shadowlands: disabled
 LittleWigs_WrathOfTheLichKing: disabled
 LoggerHead: enabled
-MacroToolkit: enabled
+MacroToolkit: disabled
 MacroToolkitIcons: enabled
 MapCoords: disabled
 Masque: enabled

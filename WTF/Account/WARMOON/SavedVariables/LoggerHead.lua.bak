@@ -66,19 +66,22 @@ true,
 ["The Grudge Pit"] = {
 [208] = false,
 },
-["Shadowguard Point"] = {
+["Atal'Aman"] = {
+[208] = false,
+},
+["The Ring of Glory"] = {
 [208] = false,
 },
 ["Twilight Crypts"] = {
 [208] = false,
 },
-["Parhelion Plaza"] = {
+["Shadowguard Point"] = {
+[208] = false,
+},
+["The Darkway"] = {
 [208] = true,
 },
 ["Collegiate Calamity"] = {
-[208] = false,
-},
-["The Shadow Enclave"] = {
 [208] = false,
 },
 ["Torment's Rise"] = {
@@ -87,10 +90,13 @@ true,
 ["The Gulf of Memory"] = {
 [208] = false,
 },
-["The Darkway"] = {
+["The Shadow Enclave"] = {
+[208] = false,
+},
+["Parhelion Plaza"] = {
 [208] = true,
 },
-["Atal'Aman"] = {
+["Gnarldor Isle"] = {
 [208] = false,
 },
 },
