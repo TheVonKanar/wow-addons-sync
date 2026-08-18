@@ -2,19 +2,19 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-},
 ["global"] = {
-["seenVersions"] = {
-["6.5.1"] = true,
-["6.4.0"] = true,
-["6.3.0"] = true,
-},
 ["minimap"] = {
 ["showInCompartment"] = true,
 },
+["seenVersions"] = {
+["6.4.0"] = true,
+["6.5.1"] = true,
+["6.3.0"] = true,
+},
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -36,21 +36,21 @@ BuffRemindersDB = {
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["spacing"] = 0.2,
-["showText"] = false,
-["textSize"] = 20,
-["borderSize"] = 2,
-["iconZoom"] = 0,
 ["growDirection"] = "CENTER",
-["iconSize"] = 48,
+["iconZoom"] = 0,
 ["textAlpha"] = 1,
+["borderSize"] = 2,
+["showText"] = false,
+["spacing"] = 0.2,
+["iconSize"] = 48,
+["textSize"] = 20,
 ["textColor"] = {
 1,
 1,
 1,
 },
 },
-["presence"] = {
+["targeted"] = {
 ["showText"] = true,
 },
 ["consumable"] = {
@@ -62,7 +62,7 @@ BuffRemindersDB = {
 ["y"] = -470,
 },
 },
-["targeted"] = {
+["presence"] = {
 ["showText"] = true,
 },
 ["raid"] = {
@@ -81,13 +81,13 @@ BuffRemindersDB = {
 ["warriorWrongStance"] = false,
 ["atrophicNumbingPoison"] = true,
 ["symbioticRelationship"] = true,
-["shamanShields"] = true,
-["druidWrongForm"] = false,
-["earthShieldOthers"] = false,
-["sourceOfMagic"] = true,
-["stamina"] = true,
-["soulstone"] = true,
 ["beacons"] = true,
+["soulstone"] = true,
+["earthShieldOthers"] = false,
+["stamina"] = true,
+["sourceOfMagic"] = true,
+["druidWrongForm"] = false,
+["shamanShields"] = true,
 ["burningRush"] = false,
 },
 ["readyCheckOnlyOverrides"] = {
@@ -100,8 +100,8 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 [264] = {
-["flask"] = 1235108,
 ["food"] = 1232917,
+["flask"] = 1235108,
 },
 },
 ["customBuffs"] = {
@@ -109,8 +109,8 @@ BuffRemindersDB = {
 ["dbVersion"] = 49,
 ["categoryVisibility"] = {
 ["custom"] = {
-["pvp"] = true,
 ["hideInPvPMatch"] = true,
+["pvp"] = true,
 },
 },
 },

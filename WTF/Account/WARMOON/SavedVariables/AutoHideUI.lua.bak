@@ -1,13 +1,13 @@
 
 AutoHideUIDB = {
-["profileKeys"] = {
-["Kvotheen - Hyjal"] = "Default",
-["Quiproquo - Uldaman"] = "Default",
-},
 ["global"] = {
 ["version_last"] = "1.2.15",
 ["version"] = "1.2.15",
 ["db_schema"] = 2,
+},
+["profileKeys"] = {
+["Kvotheen - Hyjal"] = "Default",
+["Quiproquo - Uldaman"] = "Default",
 },
 ["profiles"] = {
 ["Default"] = {
@@ -18,11 +18,11 @@ AutoHideUIDB = {
 ["customFrames"] = "",
 ["idleAlpha"] = 0,
 ["fadeOutDelay"] = 0,
-["timeToFade"] = 0.15,
-["forceAlpha"] = true,
-["prioAlphaPref"] = 1,
-["fadeInDelay"] = 0,
 ["normalAlphaPref"] = 1,
+["fadeInDelay"] = 0,
+["prioAlphaPref"] = 1,
+["forceAlpha"] = true,
+["timeToFade"] = 0.15,
 },
 ["name"] = "ControlBar",
 ["mouseoverAreas"] = {
@@ -69,11 +69,10 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["softTarget"] = false,
 },
-["flying"] = {
+["inVehicle"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
 },
 ["focusFriendly"] = {
 ["enabled"] = false,
@@ -81,7 +80,7 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["instanceArena"] = {
+["instanceDungeon"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
@@ -99,24 +98,22 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
+["instance"] = {
+["enabled"] = false,
+["priority"] = false,
+["alpha"] = 1,
+},
 ["instanceHousing"] = {
 ["enabled"] = false,
 ["priority"] = true,
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
-["trigger"] = 1,
-},
-["targetHostile"] = {
+["instanceNeighborhood"] = {
 ["enabled"] = false,
-["customize"] = false,
-["priority"] = false,
-["alpha"] = 1,
-["softTarget"] = false,
+["priority"] = true,
+["alpha"] = 0,
+["customize"] = true,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -136,32 +133,35 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["style"] = 2,
 },
-["instanceNeighborhood"] = {
+["targetHostile"] = {
 ["enabled"] = false,
-["priority"] = true,
-["alpha"] = 0,
-["customize"] = true,
-},
-["instance"] = {
-["enabled"] = false,
+["customize"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
+["softTarget"] = false,
+},
+["mouseover"] = {
+["enabled"] = true,
+["priority"] = false,
+["alpha"] = 1,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 0.5,
 },
-["instanceDungeon"] = {
+["instanceArena"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["inVehicle"] = {
+["flying"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -175,24 +175,24 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["MainActionBar"] = false,
 ["FocusFrame"] = false,
-["PlayerCastingBarFrame"] = false,
-["PlayerFrame"] = false,
+["PetFrame"] = false,
+["MainStatusTrackingBarContainer"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["BuffFrame"] = false,
+["MultiBar7"] = false,
 ["DamageMeter"] = false,
 ["MultiBarLeft"] = true,
 ["MinimapCluster"] = false,
-["DebuffFrame"] = false,
-["MainStatusTrackingBarContainer"] = false,
-["MultiBar7"] = false,
-["PartyFrame"] = false,
-["BuffIconCooldownViewer"] = false,
-["MultiBar6"] = true,
 ["MicroMenu"] = false,
+["BuffFrame"] = false,
+["PlayerCastingBarFrame"] = false,
+["MultiBar6"] = true,
+["BuffIconCooldownViewer"] = false,
+["DebuffFrame"] = false,
+["PartyFrame"] = false,
 ["MultiBarBottomRight"] = false,
 ["StanceBar"] = false,
-["PetFrame"] = false,
+["PlayerFrame"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {
@@ -204,11 +204,11 @@ AutoHideUIDB = {
 ["forceAlpha"] = true,
 ["idleAlpha"] = 0.7460320591926575,
 ["fadeOutDelay"] = 0,
-["normalAlphaPref"] = 1,
+["customFrames"] = "CDMGroups_Utility, ",
+["timeToFade"] = 0.15,
 ["prioAlphaPref"] = 1,
 ["fadeInDelay"] = 0,
-["timeToFade"] = 0.15,
-["customFrames"] = "CDMGroups_Utility, ",
+["normalAlphaPref"] = 1,
 },
 ["name"] = "ActionBars",
 ["mouseoverAreas"] = {
@@ -254,11 +254,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["flying"] = {
-["enabled"] = false,
+["instanceBattleground"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
+["customize"] = false,
 },
 ["focusFriendly"] = {
 ["enabled"] = false,
@@ -266,12 +266,16 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["targetHostile"] = {
-["softTarget"] = false,
-["customize"] = false,
+["mounted"] = {
+["enabled"] = false,
+["druidForms"] = 1,
+["alpha"] = 1,
+["priority"] = false,
+},
+["instance"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["enabled"] = true,
 },
 ["focusHostile"] = {
 ["enabled"] = true,
@@ -279,10 +283,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["instance"] = {
+["instanceDungeon"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceHousing"] = {
 ["enabled"] = false,
@@ -290,17 +295,11 @@ AutoHideUIDB = {
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
+["instanceArena"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["trigger"] = 1,
-},
-["focus"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
-["softTarget"] = false,
+["customize"] = false,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -321,34 +320,35 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = true,
 },
-["instanceArena"] = {
+["focus"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["softTarget"] = false,
 },
-["instanceDungeon"] = {
+["mouseover"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 0.5,
 },
-["mounted"] = {
-["enabled"] = false,
-["druidForms"] = 1,
-["alpha"] = 1,
-["priority"] = false,
-},
-["instanceBattleground"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
+["targetHostile"] = {
+["softTarget"] = false,
 ["customize"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["enabled"] = true,
+},
+["flying"] = {
+["enabled"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -361,23 +361,23 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["FocusFrame"] = false,
 ["MainActionBar"] = true,
-["MicroMenu"] = false,
+["PetFrame"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["BuffFrame"] = false,
+["MainStatusTrackingBarContainer"] = false,
 ["DamageMeter"] = false,
 ["MultiBarLeft"] = false,
 ["MinimapCluster"] = false,
-["MultiBar7"] = false,
-["MainStatusTrackingBarContainer"] = false,
 ["PlayerFrame"] = false,
-["DebuffFrame"] = false,
-["BuffIconCooldownViewer"] = false,
-["MultiBar6"] = false,
+["BuffFrame"] = false,
+["MicroMenu"] = false,
 ["PlayerCastingBarFrame"] = false,
+["BuffIconCooldownViewer"] = false,
+["DebuffFrame"] = false,
+["MultiBar6"] = false,
 ["MultiBarBottomRight"] = true,
 ["StanceBar"] = false,
-["PetFrame"] = false,
+["MultiBar7"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {
@@ -389,11 +389,11 @@ AutoHideUIDB = {
 ["forceAlpha"] = true,
 ["idleAlpha"] = 0.7460320591926575,
 ["fadeOutDelay"] = 0,
-["normalAlphaPref"] = 1,
+["customFrames"] = "",
+["timeToFade"] = 0.15,
 ["prioAlphaPref"] = 1,
 ["fadeInDelay"] = 0,
-["timeToFade"] = 0.15,
-["customFrames"] = "",
+["normalAlphaPref"] = 1,
 },
 ["name"] = "UnitFrames",
 ["mouseoverAreas"] = {
@@ -439,11 +439,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = true,
 },
-["flying"] = {
-["enabled"] = false,
+["instanceBattleground"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
+["customize"] = false,
 },
 ["focusFriendly"] = {
 ["enabled"] = true,
@@ -451,12 +451,16 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["targetHostile"] = {
-["softTarget"] = false,
-["customize"] = false,
+["mounted"] = {
+["enabled"] = false,
+["druidForms"] = 1,
+["alpha"] = 1,
+["priority"] = false,
+},
+["instance"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["enabled"] = true,
 },
 ["focusHostile"] = {
 ["enabled"] = true,
@@ -464,10 +468,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["instance"] = {
+["instanceDungeon"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceHousing"] = {
 ["enabled"] = false,
@@ -475,17 +480,11 @@ AutoHideUIDB = {
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
+["instanceArena"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["trigger"] = 1,
-},
-["focus"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
-["softTarget"] = false,
+["customize"] = false,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -506,34 +505,35 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = true,
 },
-["instanceArena"] = {
+["focus"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["softTarget"] = false,
 },
-["instanceDungeon"] = {
+["mouseover"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
 },
-["mounted"] = {
-["enabled"] = false,
-["druidForms"] = 1,
-["alpha"] = 1,
-["priority"] = false,
-},
-["instanceBattleground"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
+["targetHostile"] = {
+["softTarget"] = false,
 ["customize"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["enabled"] = true,
+},
+["flying"] = {
+["enabled"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -546,23 +546,23 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["FocusFrame"] = true,
 ["MainActionBar"] = false,
-["MicroMenu"] = false,
+["PetFrame"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["BuffFrame"] = false,
+["MainStatusTrackingBarContainer"] = false,
 ["DamageMeter"] = false,
 ["MultiBarLeft"] = false,
 ["MinimapCluster"] = false,
-["MultiBar7"] = false,
-["MainStatusTrackingBarContainer"] = false,
 ["PlayerFrame"] = true,
-["DebuffFrame"] = false,
-["BuffIconCooldownViewer"] = false,
-["MultiBar6"] = false,
+["BuffFrame"] = false,
+["MicroMenu"] = false,
 ["PlayerCastingBarFrame"] = false,
+["BuffIconCooldownViewer"] = false,
+["DebuffFrame"] = false,
+["MultiBar6"] = false,
 ["MultiBarBottomRight"] = false,
 ["StanceBar"] = false,
-["PetFrame"] = false,
+["MultiBar7"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {
@@ -574,11 +574,11 @@ AutoHideUIDB = {
 ["forceAlpha"] = true,
 ["idleAlpha"] = 0,
 ["fadeOutDelay"] = 0,
-["normalAlphaPref"] = 1,
+["customFrames"] = "HealthBar, PrimaryResourceBar, CDMGroups_Essential, ArcUIBarFrame12, ArcUIBarFrame3, ArcUIBarFrame5, ArcUIBarFrame7, ArcUIBarFrame11, SecondaryResourceBar, ArcUIBarFrame1, ArcUIBarFrame2, ArcUIBarFrame4, ArcUIBarFrame6, ArcUIBarFrame8, ArcUIBarFrame9, ArcUIBarFrame10, ArcUITimerBar1, ArcUITimerBar2, ArcUITimerBar3, ArcUITimerBar4, ArcUITimerBar5, ArcUITimerBar6, ",
+["timeToFade"] = 0.15,
 ["prioAlphaPref"] = 1,
 ["fadeInDelay"] = 0,
-["timeToFade"] = 0.15,
-["customFrames"] = "HealthBar, PrimaryResourceBar, CDMGroups_Essential, ArcUIBarFrame12, ArcUIBarFrame3, ArcUIBarFrame5, ArcUIBarFrame7, ArcUIBarFrame11, SecondaryResourceBar, ArcUIBarFrame1, ArcUIBarFrame2, ArcUIBarFrame4, ArcUIBarFrame6, ArcUIBarFrame8, ArcUIBarFrame9, ArcUIBarFrame10, ArcUITimerBar1, ArcUITimerBar2, ArcUITimerBar3, ArcUITimerBar4, ArcUITimerBar5, ArcUITimerBar6, ",
+["normalAlphaPref"] = 1,
 },
 ["name"] = "EssentialCooldowns",
 ["mouseoverAreas"] = {
@@ -624,11 +624,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["flying"] = {
-["enabled"] = false,
+["instanceBattleground"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
+["customize"] = false,
 },
 ["focusFriendly"] = {
 ["enabled"] = false,
@@ -636,12 +636,16 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = true,
 },
-["targetHostile"] = {
-["softTarget"] = false,
-["customize"] = true,
-["priority"] = true,
-["alpha"] = 1,
+["mounted"] = {
+["enabled"] = false,
+["druidForms"] = 1,
+["alpha"] = 0,
+["priority"] = false,
+},
+["instance"] = {
 ["enabled"] = true,
+["priority"] = false,
+["alpha"] = 0.8,
 },
 ["focusHostile"] = {
 ["enabled"] = true,
@@ -649,10 +653,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = true,
 },
-["instance"] = {
+["instanceDungeon"] = {
 ["enabled"] = true,
 ["priority"] = false,
-["alpha"] = 0.8,
+["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceHousing"] = {
 ["enabled"] = true,
@@ -660,16 +665,11 @@ AutoHideUIDB = {
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
-["enabled"] = false,
-["priority"] = false,
-["alpha"] = 1,
-["trigger"] = 1,
-},
-["focus"] = {
+["instanceArena"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -690,34 +690,34 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["instanceArena"] = {
+["focus"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
 },
-["instanceDungeon"] = {
-["enabled"] = true,
+["mouseover"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 0.5,
 },
-["mounted"] = {
-["enabled"] = false,
-["druidForms"] = 1,
-["alpha"] = 0,
-["priority"] = false,
-},
-["instanceBattleground"] = {
+["targetHostile"] = {
+["softTarget"] = false,
+["customize"] = true,
+["priority"] = true,
+["alpha"] = 1,
 ["enabled"] = true,
+},
+["flying"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -730,23 +730,23 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["FocusFrame"] = false,
 ["MainActionBar"] = false,
-["MicroMenu"] = false,
+["PetFrame"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["BuffFrame"] = false,
+["MainStatusTrackingBarContainer"] = false,
 ["DamageMeter"] = false,
 ["MultiBarLeft"] = false,
 ["MinimapCluster"] = false,
-["MultiBar7"] = false,
-["MainStatusTrackingBarContainer"] = false,
 ["PlayerFrame"] = false,
-["DebuffFrame"] = false,
-["BuffIconCooldownViewer"] = false,
-["MultiBar6"] = false,
+["BuffFrame"] = false,
+["MicroMenu"] = false,
 ["PlayerCastingBarFrame"] = false,
+["BuffIconCooldownViewer"] = false,
+["DebuffFrame"] = false,
+["MultiBar6"] = false,
 ["MultiBarBottomRight"] = false,
 ["StanceBar"] = false,
-["PetFrame"] = false,
+["MultiBar7"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {
@@ -758,11 +758,11 @@ AutoHideUIDB = {
 ["forceAlpha"] = true,
 ["idleAlpha"] = 0,
 ["fadeOutDelay"] = 0,
-["customFrames"] = "DamageMeterSessionWindow1",
-["timeToFade"] = 0.15,
-["fadeInDelay"] = 0,
-["prioAlphaPref"] = 1,
 ["normalAlphaPref"] = 1,
+["prioAlphaPref"] = 1,
+["fadeInDelay"] = 0,
+["timeToFade"] = 0.15,
+["customFrames"] = "DamageMeterSessionWindow1",
 },
 ["name"] = "DamageMeter",
 ["mouseoverAreas"] = {
@@ -808,11 +808,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["flying"] = {
-["enabled"] = false,
+["instanceBattleground"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
+["customize"] = false,
 },
 ["focusFriendly"] = {
 ["enabled"] = false,
@@ -820,12 +820,16 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["targetHostile"] = {
-["softTarget"] = false,
-["customize"] = false,
+["mounted"] = {
+["enabled"] = false,
+["druidForms"] = 1,
+["alpha"] = 1,
+["priority"] = false,
+},
+["instance"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["enabled"] = false,
 },
 ["focusHostile"] = {
 ["enabled"] = false,
@@ -833,10 +837,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["instance"] = {
+["instanceDungeon"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceHousing"] = {
 ["enabled"] = false,
@@ -844,17 +849,11 @@ AutoHideUIDB = {
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
-["enabled"] = false,
+["instanceArena"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["trigger"] = 1,
-},
-["focus"] = {
-["enabled"] = false,
-["priority"] = false,
-["alpha"] = 1,
-["softTarget"] = false,
+["customize"] = false,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -875,34 +874,35 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["instanceArena"] = {
-["enabled"] = true,
+["focus"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["softTarget"] = false,
 },
-["instanceDungeon"] = {
-["enabled"] = true,
+["mouseover"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 0.5,
 },
-["mounted"] = {
-["enabled"] = false,
-["druidForms"] = 1,
-["alpha"] = 1,
-["priority"] = false,
-},
-["instanceBattleground"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
+["targetHostile"] = {
+["softTarget"] = false,
 ["customize"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["enabled"] = false,
+},
+["flying"] = {
+["enabled"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -915,23 +915,23 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["FocusFrame"] = false,
 ["MainActionBar"] = false,
-["MultiBarLeft"] = false,
+["MicroMenu"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["MainStatusTrackingBarContainer"] = false,
-["DamageMeter"] = true,
-["PetFrame"] = false,
-["MinimapCluster"] = false,
-["PlayerFrame"] = false,
 ["BuffFrame"] = false,
+["DamageMeter"] = true,
+["MultiBarLeft"] = false,
+["MinimapCluster"] = false,
 ["MultiBar7"] = false,
-["PlayerCastingBarFrame"] = false,
+["MainStatusTrackingBarContainer"] = false,
+["PlayerFrame"] = false,
+["DebuffFrame"] = false,
 ["BuffIconCooldownViewer"] = false,
 ["MultiBar6"] = false,
-["DebuffFrame"] = false,
+["PlayerCastingBarFrame"] = false,
 ["MultiBarBottomRight"] = false,
 ["StanceBar"] = false,
-["MicroMenu"] = false,
+["PetFrame"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {
@@ -943,11 +943,11 @@ AutoHideUIDB = {
 ["forceAlpha"] = true,
 ["idleAlpha"] = 0,
 ["fadeOutDelay"] = 0,
-["customFrames"] = "",
-["timeToFade"] = 0.15,
-["fadeInDelay"] = 0,
-["prioAlphaPref"] = 1,
 ["normalAlphaPref"] = 1,
+["prioAlphaPref"] = 1,
+["fadeInDelay"] = 0,
+["timeToFade"] = 0.15,
+["customFrames"] = "",
 },
 ["name"] = "ExpBar",
 ["mouseoverAreas"] = {
@@ -993,11 +993,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["flying"] = {
-["enabled"] = false,
+["instanceBattleground"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["style"] = 3,
+["customize"] = false,
 },
 ["focusFriendly"] = {
 ["enabled"] = false,
@@ -1005,12 +1005,16 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["targetHostile"] = {
-["softTarget"] = false,
-["customize"] = false,
+["mounted"] = {
+["enabled"] = false,
+["druidForms"] = 1,
+["alpha"] = 1,
+["priority"] = false,
+},
+["instance"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["enabled"] = false,
 },
 ["focusHostile"] = {
 ["enabled"] = false,
@@ -1018,10 +1022,11 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["customize"] = false,
 },
-["instance"] = {
-["enabled"] = false,
+["instanceDungeon"] = {
+["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
+["customize"] = false,
 },
 ["instanceHousing"] = {
 ["enabled"] = false,
@@ -1029,17 +1034,11 @@ AutoHideUIDB = {
 ["alpha"] = 0,
 ["customize"] = true,
 },
-["mouseover"] = {
+["instanceArena"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["trigger"] = 1,
-},
-["focus"] = {
-["enabled"] = false,
-["priority"] = false,
-["alpha"] = 1,
-["softTarget"] = false,
+["customize"] = false,
 },
 ["instanceRaid"] = {
 ["enabled"] = true,
@@ -1060,34 +1059,35 @@ AutoHideUIDB = {
 ["alpha"] = 1,
 ["enabled"] = false,
 },
-["instanceArena"] = {
-["enabled"] = true,
+["focus"] = {
+["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["softTarget"] = false,
 },
-["instanceDungeon"] = {
+["mouseover"] = {
 ["enabled"] = true,
 ["priority"] = false,
 ["alpha"] = 1,
-["customize"] = false,
+["trigger"] = 1,
 },
 ["casting"] = {
 ["enabled"] = false,
 ["priority"] = false,
 ["alpha"] = 0.5,
 },
-["mounted"] = {
-["enabled"] = false,
-["druidForms"] = 1,
-["alpha"] = 1,
-["priority"] = false,
-},
-["instanceBattleground"] = {
-["enabled"] = true,
-["priority"] = false,
-["alpha"] = 1,
+["targetHostile"] = {
+["softTarget"] = false,
 ["customize"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["enabled"] = false,
+},
+["flying"] = {
+["enabled"] = false,
+["priority"] = false,
+["alpha"] = 1,
+["style"] = 3,
 },
 },
 ["frames"] = {
@@ -1100,23 +1100,23 @@ AutoHideUIDB = {
 ["BagsBar"] = false,
 ["FocusFrame"] = false,
 ["MainActionBar"] = false,
-["MultiBarLeft"] = false,
+["MicroMenu"] = false,
 ["BuffBarCooldownViewer"] = false,
 ["ObjectiveTrackerFrame"] = false,
-["MainStatusTrackingBarContainer"] = true,
-["DamageMeter"] = false,
-["PetFrame"] = false,
-["MinimapCluster"] = false,
-["PlayerFrame"] = false,
 ["BuffFrame"] = false,
+["DamageMeter"] = false,
+["MultiBarLeft"] = false,
+["MinimapCluster"] = false,
 ["MultiBar7"] = false,
-["PlayerCastingBarFrame"] = false,
+["MainStatusTrackingBarContainer"] = true,
+["PlayerFrame"] = false,
+["DebuffFrame"] = false,
 ["BuffIconCooldownViewer"] = false,
 ["MultiBar6"] = false,
-["DebuffFrame"] = false,
+["PlayerCastingBarFrame"] = false,
 ["MultiBarBottomRight"] = false,
 ["StanceBar"] = false,
-["MicroMenu"] = false,
+["PetFrame"] = false,
 ["EssentialCooldownViewer"] = false,
 },
 ["states"] = {

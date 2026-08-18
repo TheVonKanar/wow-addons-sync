@@ -41,9 +41,9 @@ EUICoreStandaloneMinimapDB = {
 ["borderUseClassColor"] = false,
 ["customTooltipScale"] = 1.35,
 ["locationPosition"] = "topLeft",
-["coordsPosition"] = "bottomLeft",
-["elementRowDistance"] = 2,
 ["btnRowDistance"] = 2,
+["elementRowDistance"] = 2,
+["coordsPosition"] = "bottomLeft",
 ["mapSize"] = 265,
 ["ungroupedButtons"] = {
 ["LibDBIcon10_BugSack"] = 1,
@@ -68,6 +68,8 @@ EUICoreStandaloneMinimapDB = {
 },
 ["customColors"] = {
 },
+["darkMode"] = {
+},
 ["unlockLayout"] = {
 ["anchors"] = {
 },
@@ -78,8 +80,6 @@ EUICoreStandaloneMinimapDB = {
 ["phantomBounds"] = {
 },
 },
-["darkMode"] = {
-},
 },
 },
 ["fonts"] = {
@@ -87,15 +87,15 @@ EUICoreStandaloneMinimapDB = {
 ["outlineMode"] = "shadow",
 },
 ["unlockTipSeen"] = true,
-["sidebarUnlockTipSeen"] = true,
-["customColors"] = {
-},
-["panelScale"] = 1,
-["unlockSnapEnabled"] = false,
-["lastLoginVersion"] = "8.9.1",
 ["lastSpecByChar"] = {
 ["Kvotheen - Hyjal"] = 263,
 },
+["panelScale"] = 1,
+["customColors"] = {
+},
+["unlockSnapEnabled"] = false,
+["lastLoginVersion"] = "8.9.1",
+["sidebarUnlockTipSeen"] = true,
 }
 EUIStandaloneMinimapDB = {
 }

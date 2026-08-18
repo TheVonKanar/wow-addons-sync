@@ -109,14 +109,14 @@ MacroToolkitDB = {
 },
 },
 },
-["global"] = {
-["backups"] = {
-},
-["ebackups"] = {
-},
-},
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "profile",
+},
+["global"] = {
+["ebackups"] = {
+},
+["backups"] = {
+},
 },
 ["profiles"] = {
 ["profile"] = {
