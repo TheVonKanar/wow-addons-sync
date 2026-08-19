@@ -11,14 +11,15 @@ local _, AZT = ...
 
 local box
 
-local NERF_TITLE = "What changed in 12.1"
-local NERF = "Since a 12.1 build the game hands out no coordinates inside this delve. "
-    .. "Nothing can read where you stand in there, this addon included, so automatic "
-    .. "recording and the dot that showed you on the map are out.\n\n"
-    .. "Recording is manual now. During the Sermon, press a quarter key or click the quarter "
-    .. "on the room view for the quarter you run to, one press per wave, and the "
-    .. "echoes play your recording back. Waves you skip show as unknown.\n\n"
-    .. "The Instructions button on the room view has the rest.\n\n"
+local NERF_TITLE = "Automatic recording is back"
+local NERF = "A 12.1 build stopped the game handing out coordinates inside this delve, which "
+    .. "took the automatic recording with it and left you keying the route by hand.\n\n"
+    .. "It can record itself again. Dodge the visible waves the way you always would and the "
+    .. "route is yours at the end of the channel, no key presses during the Sermon. It "
+    .. "needs your minimap set to rotate with you, and the addon offers the whole thing "
+    .. "once when you enter the delve. Recording by hand stays the default and the "
+    .. "Recording switch in the settings flips between the two any time. The Instructions "
+    .. "button on the room view has the rest.\n\n"
     .. "Also, sorry for shouting in your ear with the new spoken cues, I wanted to use "
     .. "real voice instead of TTS for some personality. Whichever sound channel you point "
     .. "the cues at has a volume slider in the settings, and /azt cue shuts me up for good.\n\n"
@@ -36,7 +37,11 @@ local INSTR = "Azta'rec slams three quarters of the room at once during Sermon o
     .. "Press that quarter's key, or click the quarter on the room view. One answer per "
     .. "wave. The countdown window says which wave it is waiting for and how long you "
     .. "have, because the boss's own channel gives away the timing.\n\n"
-    .. "Answers land in order, so a late one still counts. Miss the third wave and your "
+    .. "Or let it record on its own. Set Recording to Automatic in the settings and it "
+    .. "writes down where you stood for each wave while you dodge, nothing to press during "
+    .. "the Sermon. That needs your minimap set to rotate with you, and the keys, marking "
+    .. "and calling stand down while it is on.\n\n"
+    .. "By hand, answers land in order, so a late one still counts. Miss the third wave and your "
     .. "next press takes the third slot, which means two quick taps get you level again. "
     .. "You cannot answer a wave that has not happened yet, and a wave left blank when "
     .. "the echoes begin can still be filled right up until its own echo plays. Anything "
@@ -51,17 +56,17 @@ local INSTR = "Azta'rec slams three quarters of the room at once during Sermon o
     .. "When the echoes start, the room view lights the quarter you are due in green and the "
     .. "one after it yellow. The arrow shows the move to make from where the last wave "
     .. "left you and the voice calls it out loud.\n\n"
-    .. "The arrow and the voice both talk as if you are looking at the boss in the middle "
-    .. "of the room. Forward means straight through him. Left and right are your left and "
-    .. "right from there, and stay means the route keeps you where you are. Turn "
-    .. "your back on him and they will be backwards, so keep him in front of you.\n\n"
+    .. "The arrow points where the move really is, whichever way you are looking, as long "
+    .. "as your minimap rotates. Without that it falls back to talking as if you face the "
+    .. "boss, where up means straight through him. The voice always talks that way, so "
+    .. "keep him in front of you when you are going by ear.\n\n"
     .. "Your four keys live in the settings panel and in the game's Key Bindings screen "
     .. "under AddOns. Each quarter on the room view shows its own key. The quarters wear "
-    .. "markers rather than compass letters. drop the matching world markers in the room. Click a marker out of combat "
-    .. "to change it. Between pulls, /azt replay walks "
-    .. "the last route again at "
-    .. "its real speed, /azt review says what it recorded, and /azt practice runs a whole "
-    .. "pretend sermon for you to answer and get echoed, no boss needed."
+    .. "markers rather than compass letters, so you can drop the matching world markers in "
+    .. "the room, and clicking a marker out of combat changes it. Between pulls, /azt replay "
+    .. "walks the last route again at its real speed, /azt review says what it recorded, and "
+    .. "/azt practice runs a whole pretend sermon for you to answer and get echoed, no boss "
+    .. "needed."
 
 local function build()
     box = CreateFrame("Frame", "AztarecHelperNotice", UIParent, "BackdropTemplate")
@@ -106,13 +111,33 @@ local function build()
     left:SetPoint("RIGHT", right, "LEFT", -8, 0)
     box.left = left
 
+    -- a new frame starts shown, and the queue below reads shown as busy
+    box:Hide()
     table.insert(UISpecialFrames, "AztarecHelperNotice")
 end
 
 -- text with one dismiss button, or a question with a choice on either side
-local function show(title, text, ask)
+-- One box, so asks that land together queue up behind it and take their
+-- turn as it closes. Delve entry raises up to two at once, the automatic
+-- offer and a party role ask.
+local queue = {}
+local show
+
+local function showNext()
+    local nxt = table.remove(queue, 1)
+    if nxt then
+        show(nxt.title, nxt.text, nxt.ask)
+    end
+end
+
+function show(title, text, ask)
     if not box then
         build()
+        box:SetScript("OnHide", showNext)
+    end
+    if box:IsShown() then
+        queue[#queue + 1] = { title = title, text = text, ask = ask }
+        return
     end
     box.title:SetText(title)
     box.body:SetText(text)
@@ -223,13 +248,85 @@ function AZT.ShowFollowAsk()
     })
 end
 
+-- Automatic recording is offered once, in the delve and out of combat,
+-- rather than switched on behind the player's back. It needs the minimap
+-- set to rotate, so saying yes turns that on too when it is off.
+local AUTO_TITLE = "Record the route automatically?"
+local AUTO = "This addon can record the route on its own while you dodge, so you never touch a key "
+    .. "during the Sermon. It reads which way you face off the minimap, which means your minimap "
+    .. "has to rotate with you. Saying yes turns that on for the delve if yours does not, and "
+    .. "puts it back the way it was when you leave. Nothing else changes.\n\n"
+    .. "One rule: keep the boss in front of you while you dodge. The quarter behind you, the "
+    .. "one glowing at the bottom of the room view, is what each wave records as safe.\n\n"
+    .. "The quarter keys, marking and calling belong to recording by hand and stand down while "
+    .. "the route records itself. The Recording switch in the settings flips between the two "
+    .. "whenever you like."
+
+function AZT.ShowAutoOffer()
+    show(AUTO_TITLE, AUTO, {
+        leftText = "Record automatically",
+        left = function()
+            AZT.LendRotation()
+            AZT.SetManualMode(false)
+        end,
+        rightText = "Keep recording by hand",
+        right = function()
+            AztarecHelperDB.autoAsked = true
+            -- the party role ask stood aside for this box, its turn now
+            if AZT.Follow then
+                AZT.Follow.Sync()
+            end
+        end,
+    })
+end
+
+-- Automatic recording with a minimap that does not rotate records nothing.
+-- Comes up when the switch is flipped with rotation off, and on entering
+-- the delve if rotation went off since and the addon is not already
+-- turning it on for the visit, once a session so it does not nag
+local ROTATE_TITLE = "One setting to turn on"
+local ROTATE = "The route records itself only while your minimap rotates with you, and yours does "
+    .. "not right now.\n\n"
+    .. "Turning it on changes nothing else. Your minimap spins as you turn instead of holding north "
+    .. "up while you are in here, and it goes back to the way it was when you leave.\n\n"
+    .. "If you would rather leave it alone, the addon records by hand instead and you press a "
+    .. "quarter key for each wave. Either way the callouts work the same."
+
+function AZT.ShowRotateOffer()
+    show(ROTATE_TITLE, ROTATE, {
+        leftText = "Turn rotation on",
+        left = function()
+            AZT.LendRotation()
+        end,
+        rightText = "Record by hand",
+        right = function()
+            AZT.SetManualMode(true)
+        end,
+    })
+end
+
+local rotateOffered -- this session
+
 local ef = CreateFrame("Frame")
 ef:RegisterEvent("PLAYER_ENTERING_WORLD")
 ef:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 ef:SetScript("OnEvent", function()
-    if AztarecHelperDB.nerfNoticeSeen or not AZT.InDelve() then
+    if not AZT.InDelve() then
         return
     end
-    AztarecHelperDB.nerfNoticeSeen = true
-    AZT.ShowNotice()
+    if not AztarecHelperDB.nerfNoticeSeen then
+        AztarecHelperDB.nerfNoticeSeen = true
+        AZT.ShowNotice()
+        return
+    end
+    -- the offers wait their turn, one box at a time
+    if not AztarecHelperDB.autoAsked and not AZT.Safe.IsAuto() then
+        AZT.ShowAutoOffer()
+    elseif AZT.Safe.IsAuto() and not AztarecHelperDB.autoRotate and not rotateOffered then
+        -- past this point the addon is not lending the rotation itself
+        if GetCVar("rotateMinimap") ~= "1" then
+            rotateOffered = true
+            AZT.ShowRotateOffer()
+        end
+    end
 end)

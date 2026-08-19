@@ -42,7 +42,7 @@ local function buildWave()
         end
         local msg
         if w.phase == "record" then
-            msg = ("answer wave %d"):format(w.idx)
+            msg = ((AZT.Safe and AZT.Safe.IsAuto() and "recording wave %d") or "answer wave %d"):format(w.idx)
         elseif w.total then
             msg = ("wave %d of %d"):format(w.idx, w.total)
         else

@@ -5,7 +5,7 @@
 
 local ADDON, AZT = ...
 
-AZT.VERSION = "1.7.3"
+AZT.VERSION = "2.0.0"
 
 -- Venomfall Deeps boss room, measured on PTR 12.1.0.
 -- UnitPosition returns (a, b, z, inst). The addon prints them as world=b,a.
@@ -34,12 +34,14 @@ local DEFAULTS = {
     roomSlim = false, -- room view without its title and buttons
     mapArt = false, -- draw Blizzard's map art tiles behind the room view
     waveText = true, -- floating wave countdown window
+    manualMode = true, -- key the route in yourself, off means it records off the minimap facing
     arrow = true, -- quest-style arrow showing the move for each echo
     arrowColor = "gold", -- key into AZT.ARROW_COLORS
     arrowCompass = false, -- arrow points the way the room view does, no spoken cues
     relativeTurns = false, -- quarter keys answer turns instead, after the first wave
     cues = true, -- the recorded solo cues during your own echoes
     cueMarks = false, -- cues name the safe quarter's marker over tts instead of the turn
+    cueColors = false, -- the marker voice says the marker's colour rather than its shape
     ttsVolume = 100, -- how loud everything the addon says over tts is
     callVoice = true, -- follower: read the leader's direction calls out loud
     keysMark = false, -- answer keys also mark the player for the party
@@ -86,9 +88,7 @@ f:SetScript("OnEvent", function(_, event, ...)
                 end
             end
         end
-        -- 1.3.0 removed everything position-fed: auto sampling, the manual
-        -- toggle, the move warning and the view modes. Clear their leftovers
-        AztarecHelperDB.manualMode = nil
+        -- 1.3.0 removed the position-fed pieces, so clear their leftovers
         AztarecHelperDB.moveWarn = nil
         AztarecHelperDB.viewMode = nil
         AztarecHelperDB.viewModeMigrated = nil
@@ -194,7 +194,8 @@ end
 local HELP = {
     "/azt room          - toggle the room view (auto-shows in the delve)",
     "/azt map           - toggle the map art backdrop behind the room view",
-    "/azt n|e|s|w       - answer a wave with that quarter (bindable keys too)",
+    "/azt manual        - record the route by hand instead of automatically",
+    "/azt n|e|s|w       - answer a wave with that quarter, when recording by hand (bindable keys too)",
     "/azt replay        - replay the last recorded route with real timings",
     "/azt practice      - a pretend sermon to record and get echoed, no boss needed",
     "/azt cue           - toggle the solo spoken cues during the echoes",
@@ -220,6 +221,8 @@ SlashCmdList["AZT"] = function(msg)
         AZT.ToggleRoomView()
     elseif cmd == "map" then
         AZT.ToggleMapArt()
+    elseif cmd == "manual" then
+        AZT.SetManualMode(not AztarecHelperDB.manualMode)
     elseif cmd == "n" or cmd == "e" or cmd == "s" or cmd == "w" then
         AZT.Safe.AnswerKey(cmd:upper())
     elseif cmd == "replay" then
@@ -258,7 +261,9 @@ SlashCmdList["AZT"] = function(msg)
     elseif cmd == "call" then
         -- calling belongs to the leader alone. The command refuses
         -- anyone else so two routes never fight over the boards
-        if not AztarecHelperDB.callRoute and AztarecHelperDB.relativeTurns then
+        if not AztarecHelperDB.callRoute and not AztarecHelperDB.manualMode then
+            chat("recording is automatic and the calls ride the answer keys - /azt manual first")
+        elseif not AztarecHelperDB.callRoute and AztarecHelperDB.relativeTurns then
             chat("your keys answer relative turns, and a turn has no quarter to call - /azt turns first")
         elseif not AztarecHelperDB.callRoute and not (AZT.InPlayerParty() and UnitIsGroupLeader("player")) then
             chat("route calling is for the party leader - take the lead first")

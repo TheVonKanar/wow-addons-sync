@@ -183,7 +183,7 @@ end
 -- CreateVectorGraphics and gets flat squares with the same behavior.
 local SWITCH_MEDIA = "Interface\\AddOns\\AztarecHelper\\Media\\"
 local SWITCH_W, SWITCH_H, KNOB = 46, 22, 16
-local WORD_W = 48 -- the widest side word, Relative or Compass in the small font
+local WORD_W = 52 -- the widest side word, Automatic in the small font
 
 local function switchArt(parent, file, layer)
     if parent.CreateVectorGraphics then
@@ -459,7 +459,26 @@ local function addBindRow(label, cmd)
     end
 end
 
--- Left column: everything the addon draws
+-- Left column: how the route gets recorded, then everything the addon draws
+
+section("Recording")
+
+addSwitch(
+    "Recording",
+    "By hand",
+    "Automatic",
+    "By hand, you press a quarter key or click the room view for each wave while the ground still"
+        .. " shows it. Automatic, the addon reads which way you face off the minimap and writes the"
+        .. " route down on its own while you dodge, which needs your minimap set to rotate with you."
+        .. " The keys, marking and calling stand down while it is automatic. Switching either way"
+        .. " clears the current route.",
+    function()
+        return not AztarecHelperDB.manualMode
+    end,
+    function(v)
+        AZT.SetManualMode(not v)
+    end
+)
 
 section("Windows")
 
@@ -500,8 +519,9 @@ end)
 
 followGated[#followGated + 1] = addCheck(
     "Safe-spot arrow",
-    "An arrow that shows the move for each echo, as if you were facing the boss in the middle,"
-        .. " so up means straight through him and down means stay where you are."
+    "An arrow that shows the move for each echo. While your minimap rotates it points where the"
+        .. " move really is, whichever way you look. Without that it reads as if you were facing"
+        .. " the boss, so up means straight through him and down means stay where you are."
         .. " It sits dimmed in the delve before the pull so you can drag it into place.",
     function()
         return AztarecHelperDB.arrow and not AztarecHelperDB.follow
@@ -554,10 +574,11 @@ followGated[#followGated + 1] = addSwitch(
     "Arrow mode",
     "Relative",
     "Compass",
-    "Relative is the move to make as if you were facing the boss, and the voice calls the"
-        .. " same move. Compass points the way the room view points and carries that"
-        .. " quarter's marker inside it. The spoken cues keep talking as if you face the boss either way,"
-        .. " so turn them off below if the two readings mix badly for you.",
+    "Relative is the move to make, live from your facing when the minimap rotates and as if you"
+        .. " were facing the boss when it does not, and the voice calls the same move. Compass points"
+        .. " the way the room view points and carries that quarter's marker inside it. The spoken"
+        .. " cues keep talking as if you face the boss either way, so turn them off below if the"
+        .. " two readings mix badly for you.",
     function()
         return AztarecHelperDB.arrowCompass and not AztarecHelperDB.follow
     end,
@@ -605,6 +626,23 @@ cueGated[#cueGated + 1] = addSwitch(
         refreshAll()
     end
 )
+
+-- only means something on the marker voice, so it takes a second gate under
+-- the cue one
+local colorCheck = addCheck(
+    "Say marker colors",
+    "The marker voice names the colour instead of the shape, yellow for star, orange for"
+        .. " circle, purple, green, silver, blue and red for the rest. Skull has no colour and"
+        .. " stays skull. The test buttons follow.",
+    function()
+        return AztarecHelperDB.cueColors
+    end,
+    function(v)
+        AztarecHelperDB.cueColors = v
+        refreshAll()
+    end
+)
+cueGated[#cueGated + 1] = colorCheck
 
 -- Audition cluster, so the cue sounds can be judged without a pull. Laid
 -- out the way the words mean: forward up top, left and right on their
@@ -792,6 +830,9 @@ local function applyCueGate()
     for _, w in ipairs(cueGated) do
         enableLook(w, on, why)
     end
+    if on and not AztarecHelperDB.cueMarks then
+        enableLook(colorCheck, false, "Locked while the cue voice is Relative. It only names markers.")
+    end
     tintLabel(cueLabel, on)
     tintLabel(volText, on)
     if on then
@@ -968,14 +1009,18 @@ local voiceCb = addCheck(
 -- that is already on stays clickable, going off is always allowed
 local TURNS_WHY = "Locked while Answer keys is set to Turns. A turn names no quarter, so there is"
     .. " nothing to mark or call. Set the switch back to Quarters to use this."
+local AUTO_WHY = "Locked while the route records on its own. Marking and calling ride the answer keys,"
+    .. " which only answer while Recording is set to By hand. Switch that to use this."
 local NOT_LEADER_WHY = "Locked because you are not leading a party. Only the party leader calls the route."
 local LEADER_WHY = "Locked because you lead the party. The leader calls the route and the others follow it."
 local NOT_FOLLOWING_WHY = "Locked until Follow the leader is on. It only reads the leader's calls."
 local function applyRoleGate()
     local leading = AZT.InPlayerParty() and UnitIsGroupLeader("player")
     local turns = AztarecHelperDB.relativeTurns
-    enableLook(callCb, (leading or AztarecHelperDB.callRoute) and not turns, turns and TURNS_WHY or NOT_LEADER_WHY)
-    enableLook(markCb, not turns, TURNS_WHY)
+    local auto = not AztarecHelperDB.manualMode
+    local keysWhy = (auto and AUTO_WHY) or (turns and TURNS_WHY)
+    enableLook(callCb, (leading or AztarecHelperDB.callRoute) and not keysWhy, keysWhy or NOT_LEADER_WHY)
+    enableLook(markCb, not keysWhy, keysWhy)
     enableLook(followCb, not leading or AztarecHelperDB.follow, LEADER_WHY)
     -- the voice only ever speaks the leader's calls, so it rides the follow
     -- toggle rather than the live role. Follow off locks it even when it is

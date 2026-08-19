@@ -483,8 +483,17 @@ function Follow.Sync()
             askedRole = nil
         elseif InCombatLockdown() then
             ev:RegisterEvent("PLAYER_REGEN_ENABLED")
+        elseif not AztarecHelperDB.autoAsked then
+            -- the automatic recording offer goes first. Declining it comes
+            -- back through here, so the role waits its turn unasked
+            return
         else
             askedRole = role
+            -- party play rides the answer keys, so the roles are only
+            -- offered while the route is recorded by hand
+            if not AztarecHelperDB.manualMode then
+                return
+            end
             if role == "leader" and not AztarecHelperDB.callRoute then
                 AZT.ShowCallAsk()
             elseif role == "member" and not AztarecHelperDB.follow then

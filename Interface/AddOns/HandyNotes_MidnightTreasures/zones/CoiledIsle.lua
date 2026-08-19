@@ -48,7 +48,7 @@ ns.RegisterPoints(ns.COILEDISLE, {
 		related={
 			-- extreme lack of helpful quest progression here; they just stand up and walk away
 			[69045270] = {label="{npc:263241:Zuzan}"},
-			-- [70405840] = {label="{npc:263242:Zan'ja}"}, -- wowhead swears, but I didn't talk to this one...
+			[70425839] = {label="{npc:263242:Zan'ja}"},
 			[66425725] = {label="{npc:263243:Ru'ko}"},
 			minimap=true, worldmap=true,
 		},
@@ -479,7 +479,7 @@ ns.RegisterPoints(ns.COILEDISLE, {
 		vignette={7764, 7413}, -- Soucaller Ski'thari / Ss'akrithos
 		areaPoi={8889, 8939}, -- murloc sacrifice event
 	},
-	[26406480] = { -- Looming Mutagenitor
+	[26646489] = { -- Looming Mutagenitor
 		criteria=115368, quest=93718,
 		npc=255088,
 		loot={
@@ -491,7 +491,7 @@ ns.RegisterPoints(ns.COILEDISLE, {
 		vignette={7414, 7686},
 		areaPoi={8936},
 	},
-	[44702593] = { -- Vassti, the Exalted Broodmother
+	[46192717] = { -- Vassti, the Exalted Broodmother
 		criteria=115369, quest=93676,
 		npc=257863,
 		loot={
