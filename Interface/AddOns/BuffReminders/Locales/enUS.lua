@@ -339,12 +339,24 @@ english["Sidebar.Display"] = "Display"
 english["Sidebar.Alerts"] = "Alerts"
 -- Externals (present-based display)
 english["Externals.Title"] = "External Buffs"
-english["Externals.PageNote"] =
-    "The game marks these buffs secret and draws the icons itself, so the addon never sees their data. That is why they stay visible in combat - and why only buffs on you can be shown, with nothing to customize beyond size and spacing."
-english["Externals.Enable"] = "Enable external buffs"
-english["Externals.EnableTooltip"] = "Show a row of icons for the buffs selected below while they are active on you."
-english["Externals.DisabledReason"] = "Enable external buffs first."
-english["Externals.EnableElsewhere"] = "Enable external buffs on the Buffs > External Buffs page first."
+english["Externals.PageNote"] = "The game draws these icons, so they stay visible in combat. Only buffs on you can be shown."
+english["Externals.NoneTracked"] = "Track at least one buff on the Buffs > External Buffs page first."
+english["Externals.Sound"] = "Sound alert"
+english["Externals.Sound.Tooltip"] =
+    "Every buff you track plays this sound when it lands on you. Select None for silence.|nTo give one buff its own sound, put the pointer on the glyph at the end of its row.|nA change during a boss fight applies when the fight ends."
+english["Externals.Sound.Change"] = "Click to change it."
+english["Externals.Sound.NeedsEntry"] = "Track this buff first."
+english["Externals.Sound.Plays"] = "The game plays %s when this buff lands on you."
+english["Externals.Sound.Silenced"] = "This buff plays no sound."
+english["Externals.Sound.SilentByDefault"] = "This buff lands too often for the shared sound. Override it to add one."
+english["Externals.Sound.NoAlert"] = "No sound alert is set. Click to give this buff its own sound."
+english["Externals.Sound.Override.Desc"] =
+    "Give this buff its own sound. While this is off, the buff plays the sound alert of the page."
+english["DisabledReason.SoundOverride"] = "Turn on Override to select a sound for this buff."
+english["Externals.SelectAll"] = "All"
+english["Externals.SelectAll.Tooltip"] = "Track every buff in this group."
+english["Externals.SelectNone"] = "None"
+english["Externals.SelectNone.Tooltip"] = "Stop tracking every buff in this group."
 english["Externals.Defensives"] = "External Defensives"
 english["Externals.GroupBuffs"] = "Group Buffs"
 english["Externals.Movement"] = "Movement"
@@ -537,8 +549,11 @@ english["Options.TextPositions.Align.Right"] = "Right"
 english["Options.ClickToCast"] = "Click to cast"
 english["Options.ClickToCast.DescFull"] =
     "Make buff icons clickable to cast the corresponding spell (out of combat only). Only works for spells your character can cast."
+english["Options.RightClickSnooze"] = "Right-click to snooze"
+english["Options.RightClickSnooze.Desc"] =
+    "Right-click a consumable icon to snooze its reminders. If this option is off, right-click uses the consumable, like left-click."
 english["Options.ClickToCast.SnoozeNote"] =
-    "Right-click a consumable to snooze its reminders until the next loading screen (|cFFFFD100/br snooze|r always works)."
+    "A snooze hides the consumable reminders until the next loading screen. The |cFFFFD100/br snooze|r command always works."
 english["Options.HoverHighlight"] = "Hover highlight"
 english["Options.HoverHighlight.Desc"] = "Show a subtle highlight when hovering over clickable buff icons."
 english["Options.RequestBuffInChat"] = "Request missing buffs in chat"
@@ -1020,6 +1035,8 @@ english["Options.SupportKofi.Desc"] = "Enjoying BuffReminders?\nConsider support
 -- ============================================================================
 english["Options.CustomAnchorFrames.Desc"] =
     "Add global frame names to the anchor dropdown (e.g. MyAddon_PlayerFrame). \nFrames that don't exist in-game are silently skipped."
+english["Options.CustomAnchorFrames.PickNote"] =
+    "Every frame you pick with the Pick button lands here, so it stays one click away."
 english["Options.Add"] = "Add"
 english["Options.New"] = "New"
 english["Options.ResetToDefaults"] = "Reset to Defaults"
@@ -1041,6 +1058,28 @@ english["Content.ClickToFilter"] = "Click to filter by %s difficulty"
 -- Mover labels
 english["Mover.AnchorGrowth"] = "Anchor · Growth %s"
 english["Mover.AnchorGrowthFrame"] = "Anchor · Growth %s · > %s"
+-- Anchor dropdown: "%s %s" takes the owner (Blizzard, Cell, ...) and the role.
+-- "%s (%s)" takes the role and the frame's own name, for a discovered unit frame.
+english["Mover.AnchorFrameEntry"] = "%s %s"
+english["Mover.UnitFrameEntry"] = "%s (%s)"
+english["Mover.Role.Player"] = "Player Frame"
+english["Mover.Role.Target"] = "Target Frame"
+english["Mover.Role.Focus"] = "Focus Frame"
+english["Mover.Role.Pet"] = "Pet Frame"
+english["Mover.Role.Party"] = "Party Frames"
+english["Mover.Role.Raid"] = "Raid Frames"
+english["Mover.Role.Boss"] = "Boss Frame"
+english["Mover.Frame.Minimap"] = "Minimap"
+english["Mover.Frame.ObjectiveTracker"] = "Objective Tracker"
+english["Mover.PickFrame"] = "Pick"
+english["Mover.PickHint"] = "Point at a frame and click it. Right click or press Escape to cancel."
+english["Mover.PickNone"] = "No frame under the cursor"
+english["Mover.Frame.EssentialCooldowns"] = "Essential Cooldowns"
+english["Mover.Frame.UtilityCooldowns"] = "Utility Cooldowns"
+english["Mover.Frame.TrackedBuffIcons"] = "Tracked Buff Icons"
+english["Mover.Frame.TrackedBuffBars"] = "Tracked Buff Bars"
+english["Mover.AnchorHidden"] = "(hidden)"
+english["Mover.AnchorNotFound"] = "(not found)"
 
 -- Pet labels
 english["Pet.SpiritBeast"] = "Spirit Beast"
@@ -1079,6 +1118,7 @@ english["DisabledReason.LevelingOverride"] =
 english["DisabledReason.ExpiringInCombat"] =
     '"In combat" hiding is enabled, so everything is already hidden during combat.'
 english["DisabledReason.HealthstoneThreshold"] = 'Enable "Warn when low" first.'
+english["DisabledReason.ClickToCast"] = 'Turn on "Click to cast" first.'
 english["DisabledReason.UseDefaultThreshold"] = 'Uncheck "Use default threshold" to set a category-specific value.'
 
 -- Direction labels

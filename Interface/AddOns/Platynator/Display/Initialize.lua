@@ -21,7 +21,6 @@ end
 addonTable.Display.ManagerMixin = {}
 function addonTable.Display.ManagerMixin:OnLoad()
   self.styleIndex = 0
-  self.pools = {}
   self.clickRegionPool = CreateFramePool("Frame")
 
   self.preallocatedDisplaysByIndex = {}
@@ -31,10 +30,41 @@ function addonTable.Display.ManagerMixin:OnLoad()
   self.nameplateClickRegions = {}
   self.nameplateStackRegions = {}
 
+  for i = 1, 40 do
+    local clickRegion = CreateFrame("Frame")
+    self.nameplateClickRegions["NamePlate" .. i] = clickRegion
+    if addonTable.Constants.IsMists then
+      clickRegion:SetScale(UIParent:GetScale())
+    end
+    clickRegion.visual = clickRegion:CreateTexture()
+    clickRegion.visual:SetColorTexture(addonTable.Constants.ClickRegionColor.r, addonTable.Constants.ClickRegionColor.g, addonTable.Constants.ClickRegionColor.b, addonTable.Constants.ClickRegionColor.a)
+    clickRegion.visual:SetAllPoints()
+
+    if C_XMLUtil.GetTemplateInfo("PingableUnitFrameTemplate") then
+      local pingRegion = CreateFrame("Frame", nil, clickRegion, "PingableUnitFrameTemplate")
+      pingRegion:SetAllPoints()
+
+      clickRegion.ping = pingRegion
+    end
+
+    local stackRegion = CreateFrame("Frame")
+    local tex = stackRegion:CreateTexture()
+    tex:SetColorTexture(1, 0, 0, 0)
+    tex:SetAllPoints(stackRegion)
+    stackRegion.visual = stackRegion:CreateTexture()
+    stackRegion.visual:SetColorTexture(addonTable.Constants.StackRegionColor.r, addonTable.Constants.StackRegionColor.g, addonTable.Constants.StackRegionColor.b, addonTable.Constants.StackRegionColor.a)
+    stackRegion.visual:SetPoint("CENTER", stackRegion)
+    if addonTable.Constants.IsMists then
+      stackRegion:SetScale(UIParent:GetScale())
+    end
+    self.nameplateStackRegions["NamePlate" .. i] = stackRegion
+  end
+
   self:SetScript("OnEvent", self.OnEvent)
 
   self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
   self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+  self:RegisterEvent("NAME_PLATE_CREATED")
   self:RegisterEvent("PLAYER_LOGIN")
   self:RegisterEvent("PLAYER_ENTERING_WORLD")
   if C_EventUtils.IsEventValid("GARRISON_UPDATE") then
@@ -193,20 +223,16 @@ function addonTable.Display.ManagerMixin:OnLoad()
   end)
 end
 
-function addonTable.Display.ManagerMixin:GetPool(index)
-  assert(self.pools[index], "Missing pool")
-  return self.pools[index]
-end
-
 function addonTable.Display.ManagerMixin:GeneratePoolForIndex(index)
-  self.preallocatedDisplaysByIndex[index] = {}
-  self.pools[index] = CreateFramePool("Frame", UIParent, nil, nil, false, function(frame)
+  self.preallocatedDisplaysByIndex[index] = table.create(40)
+  for i = 1, 40 do
+    local frame = CreateFrame("Frame", nil, _G["NamePlate" .. i] or UIParent)
     Mixin(frame, addonTable.Display.NameplateMixin)
     frame.kind = index
     frame:OnLoad()
     table.insert(self.preallocatedDisplays, frame)
     table.insert(self.preallocatedDisplaysByIndex[index], frame)
-  end, 40)
+  end
 end
 
 function addonTable.Display.ManagerMixin:GeneratePools()
@@ -222,11 +248,11 @@ end
 function addonTable.Display.ManagerMixin:RestylePools()
   local assignments = addonTable.Config.Get(addonTable.Config.Options.DESIGN_ASSIGNMENTS)
 
-  while #self.pools < #assignments do
-    self:GeneratePoolForIndex(#self.pools + 1)
+  while #self.preallocatedDisplaysByIndex < #assignments do
+    self:GeneratePoolForIndex(#self.preallocatedDisplaysByIndex + 1)
   end
 
-  for index, list in pairs(self.preallocatedDisplaysByIndex) do
+  for index, list in ipairs(self.preallocatedDisplaysByIndex) do
     local settings = assignments[index]
     if settings then
       local design, scaleMod, scaleOffset = addonTable.Core.GetDesignByName(settings.style), settings.scale, addonTable.Core.GetDesignScale(settings.simplified or false)
@@ -253,8 +279,8 @@ function addonTable.Display.ManagerMixin:RestylePoolsStaggered()
 
   local assignments = addonTable.Config.Get(addonTable.Config.Options.DESIGN_ASSIGNMENTS)
 
-  while #self.pools < #assignments do
-    self:GeneratePoolForIndex(#self.pools + 1)
+  while #self.preallocatedDisplaysByIndex < #assignments do
+    self:GeneratePoolForIndex(#self.preallocatedDisplaysByIndex + 1)
   end
 
   local index = 1
@@ -473,19 +499,15 @@ function addonTable.Display.ManagerMixin:UpdateClickRegion(unit)
   local nameplate = C_NamePlate.GetNamePlateForUnit(unit, issecure())
   if nameplate and addonTable.Constants.IsHitTestPointsAvailable and nameplate:CanChangeHitTestPoints() then
     local clickRegion = self.nameplateClickRegions[nameplate:GetName()]
-    if not clickRegion then
-      clickRegion = self.clickRegionPool:Acquire()
-      if addonTable.Constants.IsMists then
-        clickRegion:SetScale(UIParent:GetScale())
-      end
+    if not clickRegion.parented then
+      clickRegion.parented = true
       clickRegion:SetParent(nameplate)
-      clickRegion.visual = clickRegion:CreateTexture()
-      clickRegion.visual:SetColorTexture(addonTable.Constants.ClickRegionColor.r, addonTable.Constants.ClickRegionColor.g, addonTable.Constants.ClickRegionColor.b, addonTable.Constants.ClickRegionColor.a)
-      clickRegion.visual:SetAllPoints()
-      self.nameplateClickRegions[nameplate:GetName()] = clickRegion
     end
     clickRegion:Show()
     clickRegion:ClearAllPoints()
+    if clickRegion.ping then
+      clickRegion.ping:SetAttribute("unit", unit)
+    end
     local globalScale = addonTable.Config.Get(addonTable.Config.Options.GLOBAL_SCALE)
     local region, clickScale, scale = addonTable.Display.Context:GetClickRegion(unit)
     local width = region.width * clickScale * scale * globalScale * addonTable.Assets.BarBordersSize.width
@@ -537,25 +559,16 @@ function addonTable.Display.ManagerMixin:Install(unit)
       return
     end
     local design = addonTable.Core.GetDesignByName(designName)
-    local newDisplay = self:GetPool(index):Acquire()
+    local nameplateIndex = tonumber(nameplate:GetName():match("%d+"))
+    local newDisplay = self.preallocatedDisplaysByIndex[index][nameplateIndex]
     if C_NamePlateManager and C_NamePlateManager.SetNamePlateSimplified then
       C_NamePlateManager.SetNamePlateSimplified(unit, shouldSimplify)
     end
     self.nameplateDisplays[unit] = newDisplay
-    newDisplay:SetParent(nameplate)
     if nameplate.SetStackingBoundsFrame then
-      if not self.nameplateStackRegions[nameplate:GetName()] then
-        local stackRegion = CreateFrame("Frame", nil, nameplate)
-        local tex = stackRegion:CreateTexture()
-        tex:SetColorTexture(1, 0, 0, 0)
-        tex:SetAllPoints(stackRegion)
-        stackRegion.visual = stackRegion:CreateTexture()
-        stackRegion.visual:SetColorTexture(addonTable.Constants.StackRegionColor.r, addonTable.Constants.StackRegionColor.g, addonTable.Constants.StackRegionColor.b, addonTable.Constants.StackRegionColor.a)
-        stackRegion.visual:SetPoint("CENTER", stackRegion)
-        if addonTable.Constants.IsMists then
-          stackRegion:SetScale(UIParent:GetScale())
-        end
-        self.nameplateStackRegions[nameplate:GetName()] = stackRegion
+      if not self.nameplateStackRegions[nameplate:GetName()].parented then
+        self.nameplateStackRegions[nameplate:GetName()].parented = true
+        self.nameplateStackRegions[nameplate:GetName()]:SetParent(nameplate)
       end
       newDisplay.stackRegion = self.nameplateStackRegions[nameplate:GetName()]
       newDisplay.stackRegion.rect = addonTable.Utilities.GetRectFromRegion(design.regions.stack, scale * design.scale * globalScale, design.regions.stack.anchor, true)
@@ -584,8 +597,6 @@ function addonTable.Display.ManagerMixin:Uninstall(unit)
     display:SetUnit(nil)
     display:ClearAllPoints()
     display:Hide()
-    display:SetParent(UIParent)
-    self.pools[display.kind]:Release(display)
     self.nameplateDisplays[unit] = nil
   end
 end
@@ -883,9 +894,16 @@ function addonTable.Display.ManagerMixin:OnEvent(eventName, ...)
       nameplate.UnitFrame.WidgetContainer:SetScale(addonTable.Config.Get(addonTable.Config.Options.BLIZZARD_WIDGET_SCALE))
     end
     self:Install(unit)
-  elseif  eventName == "NAME_PLATE_UNIT_REMOVED" then
+  elseif eventName == "NAME_PLATE_UNIT_REMOVED" then
     local unit = ...
     self:Uninstall(unit)
+  elseif eventName == "NAME_PLATE_CREATED" then
+    local nameplate = ...
+    local index = tonumber(nameplate:GetName():match("%d+"))
+    for _, list in ipairs(self.preallocatedDisplaysByIndex) do
+      list[index]:Hide()
+      list[index]:SetParent(nameplate)
+    end
   elseif eventName == "PLAYER_SOFT_INTERACT_CHANGED" then
     if self.lastInteract and self.lastInteract.interactUnit then
       self.lastInteract:UpdateSoftInteract()

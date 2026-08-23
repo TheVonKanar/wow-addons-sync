@@ -20,7 +20,7 @@ EUICoreStandaloneMinimapDB = {
 "Default",
 },
 ["patchDotPending"] = true,
-["sidebarUnlockTipSeen"] = true,
+["ppUIScale"] = 0.53329998254776,
 ["profiles"] = {
 ["Default"] = {
 ["fonts"] = {
@@ -95,8 +95,8 @@ EUICoreStandaloneMinimapDB = {
 ["customColors"] = {
 },
 ["unlockSnapEnabled"] = false,
-["lastLoginVersion"] = "8.9.2",
-["ppUIScale"] = 0.53329998254776,
+["lastLoginVersion"] = "8.9.8",
+["sidebarUnlockTipSeen"] = true,
 }
 EUIStandaloneMinimapDB = {
 }

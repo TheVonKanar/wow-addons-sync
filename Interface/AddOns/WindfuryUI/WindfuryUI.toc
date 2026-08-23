@@ -4,7 +4,9 @@
 ## Notes: Collection of utilities for my UI.
 ## Author: TheVonKanar
 ## IconTexture: Interface\AddOns\WindfuryUI\Textures\Icon
+## SavedVariables: TalentLoadoutDisplayDB
 
 embeds.xml
 
 Core.lua
+TalentLoadoutDisplay.lua

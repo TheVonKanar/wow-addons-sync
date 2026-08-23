@@ -1,8 +1,7 @@
-## Changed in v59
+## Changed in v62
 
-* Coiled Isle:
-	* Tweaked the map locations for Looming Mutagenitor and Vassti the Exalted Broodmother
-	* Grave of Someone Forgotten: added Zan'ja's location, since they seem to actually be needed off-PTR
-* Timers on points tied to a world event now keep counting down while you have the tooltip open, instead of freezing at whatever they said when you first hovered
-* Added a "notice period" option for how many minutes before a timed event starts its point gets marked as imminent
+* Coiled Isle: show a link from Vaults to the Underbelly
+* Eversong Woods: during void invasions, show Bloated Snapdragon in its new location
+* Harandar: a few minor adjustments to Dust 'Em Off moths
+* Try to avoid widget-related taint when inserting on world map pins
 

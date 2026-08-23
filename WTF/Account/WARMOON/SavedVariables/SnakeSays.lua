@@ -1,0 +1,38 @@
+
+SnakeSaysDB = {
+["mapID"] = 2634,
+["popupSubtitle"] = true,
+["shown"] = true,
+["ttsVoice"] = 0,
+["locked"] = false,
+["ttsVolume"] = 50,
+["autoReset"] = true,
+["restrictToMap"] = true,
+["announceStyle"] = "color",
+["hudScale"] = 1,
+["position"] = {
+["y"] = -85.01190948486328,
+["relPoint"] = "CENTER",
+["point"] = "CENTER",
+["x"] = 298.0207824707031,
+},
+["ttsOverlap"] = true,
+["timelineEnabled"] = true,
+["ttsEnabled"] = true,
+["timelinePosition"] = {
+["y"] = -219.0091247558594,
+["relPoint"] = "TOP",
+["point"] = "TOP",
+["x"] = -37.00101470947266,
+},
+["autoResetTime"] = 40,
+["popupEnabled"] = true,
+["markers"] = {
+["E"] = 3,
+["S"] = 6,
+["W"] = 7,
+["N"] = 2,
+},
+["timelineScale"] = 1,
+["popupScale"] = 1,
+}

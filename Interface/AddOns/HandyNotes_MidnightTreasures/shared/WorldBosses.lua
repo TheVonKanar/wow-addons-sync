@@ -42,7 +42,7 @@ ns.RegisterPoints(ns.ZULAMAN, {
 
 ns.RegisterPoints(ns.HARANDAR, {
     [39026691] = { -- Thorm'belan
-        quest=92034,
+        quest=92034, -- also 92129
         worldquest=92034,
         npc=249776,
         loot={
@@ -77,7 +77,7 @@ ns.RegisterPoints(ns.VOIDSTORM, {
 }, boss)
 
 ns.RegisterPoints(ns.COILEDISLE, {
-    [51605400] = { -- Nymrissa Wavecaller
+    [59996622] = { -- Nymrissa Wavecaller
         quest=97128,
         worldquest=97128,
         -- areaPoi=8896,
@@ -98,4 +98,4 @@ ns.RegisterPoints(ns.COILEDISLE, {
             {279112, decor=true}, -- Clumped Asteroidea
         },
     },
-})
+}, boss)

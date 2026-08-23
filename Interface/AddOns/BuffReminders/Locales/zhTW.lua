@@ -77,6 +77,9 @@ L["Loadout.Scope.Battleground"] = "戰場"
 L["Loadout.SpecClass"] = "%s %s"
 L["Loadout.Require.Gear"] = "裝備套裝"
 L["Loadout.Require.Talent"] = "天賦"
+-- Requirement dropdown only. The check asks whether the player knows the spell,
+-- so it also covers granted passives. "Talent" above stays short for the rule list.
+L["Loadout.Require.TalentOption"] = "天賦或已知法術"
 L["Loadout.Require.Loadout"] = "天賦構建"
 -- On-icon "what's wrong" tags (newline wraps them to two lines on the icon)
 L["Loadout.Tag.Gear"] = "錯誤\n裝備"
@@ -225,11 +228,11 @@ L["Buff.WarriorStance"] = "戰士姿態"
 L["Buff.AugmentRune"] = "增強符文"
 L["Buff.Flask"] = "精鍊"
 L["Buff.DelveFood"] = "探究食物"
-L["Buff.Food"] = "食物增益"
-L["Buff.MageFood"] = "法師餐點桌"
+L["Buff.Food"] = "食物"
+L["Buff.MageFood"] = "法師餐點"
 L["Buff.Healthstone"] = "治療石"
-L["Buff.Weapon"] = "武器增益"
-L["Buff.WeaponOH"] = "副手武器增益"
+L["Buff.Weapon"] = "武器"
+L["Buff.WeaponOH"] = "副手武器"
 
 -- ============================================================================
 -- BUFF GROUP DISPLAY NAMES
@@ -326,12 +329,20 @@ L["Sidebar.Display"] = "顯示"
 L["Sidebar.Alerts"] = "警告"
 -- Externals (present-based display)
 L["Externals.Title"] = "外來增益"
-L["Externals.PageNote"] =
-    "遊戲將這些增益標記為秘密並自行繪製圖示，因此插件永遠不會看到他們的數據。這就是為什麼它們在戰鬥中保持可見的原因 - 以及為什麼只能顯示對你的增益，除了大小和間距之外沒有任何可自訂的內容。"
-L["Externals.Enable"] = "啟用外來增益"
-L["Externals.EnableTooltip"] = "當下方選擇的增益效果在您身上啟用時，顯示一行圖示。"
-L["Externals.DisabledReason"] = "首先啟用外來增益。"
-L["Externals.EnableElsewhere"] = "首先在增益 > 外來增益頁面上啟用外來增益。"
+L["Externals.PageNote"] = "遊戲繪製了這些圖示，因此它們在戰鬥中保持可見。只能顯示對你的增益效果。"
+L["Externals.NoneTracked"] = "首先在「增益」>「外來增益」頁面上追蹤至少一個增益。"
+L["Externals.Sound"] = "聲音警報"
+L["Externals.Sound.Tooltip"] =
+    "您追蹤的每個增益效果落在您身上時都會播放此聲音。選擇「無」以保持靜音。|n若要為某個增益效果提供自己的聲音，請將指標放在其行末尾的標誌上。|n首領戰鬥期間的更改會在戰鬥結束時生效。"
+L["Externals.Sound.Change"] = "點擊以更改它。"
+L["Externals.Sound.NeedsEntry"] = "首先追蹤這個增益。"
+L["Externals.Sound.Plays"] = "當這個增益效果落在你身上時，遊戲播放%s。"
+L["Externals.Sound.Silenced"] = "此增益效果不發出任何聲音。"
+L["Externals.Sound.SilentByDefault"] = "對於共享聲音來說，這個增益效果太頻繁了。覆蓋它以添加一個。"
+L["Externals.Sound.NoAlert"] = "未設定聲音警報。點選可賦予該增益其自己的聲音。"
+L["Externals.Sound.Override.Desc"] =
+    "為這個增益賦予自己的聲音。當此功能關閉時，增益會播放頁面的聲音警報。"
+L["DisabledReason.SoundOverride"] = "開啟「覆蓋」來選擇該增益效果的聲音。"
 L["Externals.Defensives"] = "外來減傷"
 L["Externals.GroupBuffs"] = "群體增益"
 L["Externals.Movement"] = "移動"
@@ -1001,6 +1012,8 @@ L["Options.SupportKofi.Desc"] = "喜歡BuffReminders嗎？\n考慮在Ko-fi支持
 -- ============================================================================
 L["Options.CustomAnchorFrames.Desc"] =
     "在定位點下拉選單中添加全局框架名稱。（例：MyAddon_PlayerFrame）\n游戲中不存在的框架會自動跳過。"
+L["Options.CustomAnchorFrames.PickNote"] =
+    "您使用“挑選”按鈕選擇的每一框架都會落在此處，因此只需單擊一下即可。"
 L["Options.Add"] = "添加"
 L["Options.New"] = "新建"
 L["Options.ResetToDefaults"] = "重置為預設值"
@@ -1022,6 +1035,28 @@ L["Content.ClickToFilter"] = "點擊以按 %s 難度過濾"
 -- Mover labels
 L["Mover.AnchorGrowth"] = "定位點 \194\183 增長方向 %s"
 L["Mover.AnchorGrowthFrame"] = "定位點 \194\183 增長方向 %s \194\183 > %s"
+-- Anchor dropdown: "%s %s" takes the owner (Blizzard, Cell, ...) and the role.
+-- "%s (%s)" takes the role and the frame's own name, for a discovered unit frame.
+L["Mover.AnchorFrameEntry"] = "%s %s"
+L["Mover.UnitFrameEntry"] = "%s (%s)"
+L["Mover.Role.Player"] = "玩家框架"
+L["Mover.Role.Target"] = "目標框架"
+L["Mover.Role.Focus"] = "焦點框架"
+L["Mover.Role.Pet"] = "寵物框架"
+L["Mover.Role.Party"] = "隊伍框架"
+L["Mover.Role.Raid"] = "團隊框架"
+L["Mover.Role.Boss"] = "首領框架"
+L["Mover.Frame.Minimap"] = "小地圖"
+L["Mover.Frame.ObjectiveTracker"] = "目標追蹤器"
+L["Mover.PickFrame"] = "挑選"
+L["Mover.PickHint"] = "指向一個框架並點擊它。右鍵或按Esc鍵取消。"
+L["Mover.PickNone"] = "鼠標下沒有框架"
+L["Mover.Frame.EssentialCooldowns"] = "基本冷卻時間"
+L["Mover.Frame.UtilityCooldowns"] = "功能冷卻時間"
+L["Mover.Frame.TrackedBuffIcons"] = "追蹤增益圖示"
+L["Mover.Frame.TrackedBuffBars"] = "追蹤增益條"
+L["Mover.AnchorHidden"] = "(隱藏)"
+L["Mover.AnchorNotFound"] = "(未找到)"
 
 -- Pet labels
 L["Pet.SpiritBeast"] = "靈獸"

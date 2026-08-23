@@ -1,10 +1,11 @@
-VER 3 0000000000000075 " " "450907"
-END
 VER 3 0000000000000078 " " "450908"
 END
 VER 3 0000000000000077 " " "450905"
+/buffrem
 END
 VER 3 0000000000000076 " " "450906"
+END
+VER 3 0000000000000075 " " "450907"
 END
 VER 3 0000000000000081 "BR" "132112"
 /br
@@ -27,12 +28,19 @@ END
 VER 3 0000000000000062 "Edit Mode" "134063"
 /editmode
 END
+VER 3 000000000000008A "EUI_Health" "INV_MISC_QUESTIONMARK"
+#showtooltip item:241304
+/stopcasting
+/cast [nocombat] Recuperate
+/use [combat] item:241304
+/use [combat] item:241305
+END
 VER 3 0000000000000065 "Focus" "132345"
 /clearfocus
 /focus [@mouseover,exists,harm][]
 END
 VER 3 000000000000007B "Frames" "132089"
-/uuf
+/msuf
 END
 VER 3 0000000000000080 "Hide" "132160"
 /autohide

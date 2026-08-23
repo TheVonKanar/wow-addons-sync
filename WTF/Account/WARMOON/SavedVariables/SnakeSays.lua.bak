@@ -1,0 +1,26 @@
+
+SnakeSaysDB = {
+["mapID"] = 2634,
+["popupSubtitle"] = true,
+["shown"] = true,
+["ttsVoice"] = 0,
+["locked"] = false,
+["ttsVolume"] = 50,
+["autoReset"] = true,
+["restrictToMap"] = true,
+["announceStyle"] = "color",
+["popupScale"] = 1,
+["timelineEnabled"] = true,
+["ttsEnabled"] = true,
+["markers"] = {
+["E"] = 3,
+["W"] = 7,
+["S"] = 6,
+["N"] = 2,
+},
+["autoResetTime"] = 40,
+["popupEnabled"] = true,
+["hudScale"] = 1,
+["timelineScale"] = 1,
+["ttsOverlap"] = true,
+}

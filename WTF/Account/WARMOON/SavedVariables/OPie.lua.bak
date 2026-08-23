@@ -26,6 +26,7 @@ OPie_SavedData = {
 ["IndicatorFactory"] = "mirage",
 ["InteractionMode"] = 2,
 ["Bindings"] = {
+["WorldMarkers"] = "ALT-P",
 ["Usables"] = false,
 ["Crafting"] = "CTRL-K",
 ["Utility"] = "6",
@@ -45,11 +46,10 @@ OPie_SavedData = {
 },
 ["OPieDeletedRings"] = {
 ["RaidSymbols"] = true,
-["CommonHearth"] = true,
 ["SpecMenu"] = true,
 ["CommonTrades"] = true,
+["CommonHearth"] = true,
 ["OPieAutoQuest"] = true,
-["WorldMarkers"] = true,
 ["PaladinTools"] = true,
 },
 ["Crafting"] = {

@@ -324,12 +324,6 @@ L["Sidebar.Alerts"] = "警报"
 
 -- Externals (present-based display)
 L["Externals.Title"] = "外部增益"
-L["Externals.PageNote"] =
-    "暴雪将此类增益标记为秘密值，并由系统对图标进行渲染，因此插件无法读取其内部数据。这也是它们能在战斗中持续显示的原因——仅支持显示你自身获得的增益，且除尺寸和间距外无其他外观自定义选项。"
-L["Externals.Enable"] = "启用外部增益"
-L["Externals.EnableTooltip"] = "当你身上有下方选中的增益时，显示一排图标。"
-L["Externals.DisabledReason"] = "请先启用外部增益。"
-L["Externals.EnableElsewhere"] = "请先在 增益 > 外部增益 页面中启用外部增益。"
 L["Externals.Defensives"] = "外部减伤"
 L["Externals.GroupBuffs"] = "团队增益"
 L["Externals.Movement"] = "移动加速"
@@ -512,8 +506,6 @@ L["Options.TextPositions.Align.Right"] = "靠右"
 L["Options.ClickToCast"] = "点击施法"
 L["Options.ClickToCast.DescFull"] =
     "你可以点击增益图标来施放对应的法术（仅限非战斗状态）。只对你的角色可施放的法术有效。"
-L["Options.ClickToCast.SnoozeNote"] =
-    "右键点击消耗品图标可暂时隐藏提示，直到下一次加载界面（输入 |cFFFFD100/br snooze|r 同样有效）。"
 L["Options.HoverHighlight"] = "悬停高亮"
 L["Options.HoverHighlight.Desc"] = "将鼠标悬停在可点击的增益图标上时，显示微弱的高亮效果。"
 L["Options.RequestBuffInChat"] = "在聊天频道中请求缺失的增益"

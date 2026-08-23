@@ -5,7 +5,7 @@ NOTE: This is the canonical enUS dataset; other locales must keep IDs identical
 so completion tracking stays consistent across locales.
 ]]
 
--- @sheet-version: 10
+-- @sheet-version: 11
 
 local LOCALE = "enUS"
 
@@ -17,13 +17,13 @@ if type(reg) ~= "table" then
     _G[LOCALE_REGISTRY_KEY] = reg
 end
 if type(reg.data) ~= "table" then reg.data = {} end
-reg.sheet_version = "10"
+reg.sheet_version = "11"
 
 local DATASET = {
 
     {
-        id = "46b99ca0",
-        title = "Week 0 - Aug 11 - Pre-Season - CURRENT WEEK",
+        id = "21fa8e1b",
+        title = "Week 0 - Aug 11 - Pre-Season",
         items = {
             { id = "1fb55f58", text = "You can freely spend any champion and below crests at any time." },
             { id = "e3f0c2bd", text = "Complete the new zone intro campaign." },
@@ -40,14 +40,15 @@ local DATASET = {
         },
     },
     {
-        id = "ebc836d8",
-        title = "Week 1 - Aug 18 - Season Starts - UPDATED",
+        id = "29f0211e",
+        title = "Week 1 - Aug 18 - Season Starts - UPDATED - Current Week",
         items = {
             { id = "ed3ed033", text = "Take a tier piece if your guild doesn't do splits. Take a socket if your guild does splits. WARNING: THIS MAY GIVE YOU A KEY - MAKE SURE TO GET A +10 KEY BEFORE TAKING AN ITEM." },
             { id = "1fb55f58", text = "You can freely spend any champion and below crests at any time." },
             { id = "1ad52558", text = "Do LFR for tier pieces." },
+            { id = "bada8c98", text = "Start the Season 2 Bonus roll questline in the Voidstorm" },
             { id = "479fea56", text = "Complete 2x weekly spark quests for a total of 4" },
-            { id = "87bf0a54", text = "Complete ?? Azta'rec for 60 uncapped hero Crests and 30 uncapped Myth Crests. Confirmed for S2" },
+            { id = "e20bf519", text = "Complete ?? Azta'rec for 60 uncapped hero Crests and 30 uncapped Myth Crests. Confirmed for S2. Recommend Snakesays addon to make it really easy." },
             { id = "d786018f", text = "If you have a premade group, you can get a +10 key for everyone. You can have a team of 4 alts + 1 main, get a key from the lady you downgrade your key at, level it up to +11 then run it on mains and everyone gets a +10. There is a better way, though, that worked in S1: fill your inventory completely with items (blacksmith hammers are a good choice). Get one person to get a +2 and push it to an 11 without anyone else looting the chest. The loot will be mailed to you. Once you get to a +11, unclog your inventory and then loot the +11." },
             { id = "1798a832", text = "Complete 1 Tier 11 delve with a map for a quick hero item and the season 2 Cracked Keystone quest for 20 uncapped Hero and Myth crests. Azta'rec has a high chance of dropping a map but if he doesn't drop you one, an easy source of the \"boss summoning\" for delves is doing the weekly nightmare prey quest. It's guaranteed to give you one. If you have friends/guildies with extra time, they can do it, then you summon the boss in a 5-man delve and everyone loots a map. WARNING: This gives a keystone for m+. If you plan on using the \"fill your inventory\" trick to get a higher tier key, do that before doing this." },
             { id = "c20c805a", text = "Do not pug the new \"world/lair boss\" on normal+ difficulties. You'll be doing this with your guild." },

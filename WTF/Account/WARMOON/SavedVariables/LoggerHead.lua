@@ -63,14 +63,14 @@ true,
 ["Sunkiller Sanctum"] = {
 [208] = false,
 },
-["Venomfall Deeps"] = {
-[208] = true,
+["Atal'Aman"] = {
+[208] = false,
 },
 ["The Grudge Pit"] = {
 [208] = false,
 },
-["Atal'Aman"] = {
-[208] = false,
+["Venomfall Deeps"] = {
+[208] = true,
 },
 ["The Ring of Glory"] = {
 [208] = false,
@@ -90,11 +90,11 @@ true,
 ["The Shadow Enclave"] = {
 [208] = false,
 },
-["The Gulf of Memory"] = {
-[208] = false,
-},
 ["The Darkway"] = {
 [208] = true,
+},
+["The Gulf of Memory"] = {
+[208] = false,
 },
 ["Parhelion Plaza"] = {
 [208] = true,
@@ -108,13 +108,17 @@ true,
 [14] = true,
 [15] = true,
 },
+["The Venomous Abyss"] = {
+[17] = true,
+[14] = true,
+},
+["Vault of the Incarnates"] = {
+[16] = false,
+},
 ["The Dreamrift"] = {
 [14] = true,
 [17] = true,
 [15] = true,
-},
-["Vault of the Incarnates"] = {
-[16] = false,
 },
 ["Icecrown Citadel"] = {
 [3] = false,

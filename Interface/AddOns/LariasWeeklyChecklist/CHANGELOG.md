@@ -1,20 +1,10 @@
 # Larias' Weekly Checklist
 
-## [v2.1.60](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.60) (2026-08-17)
-[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v2.1.59...v2.1.60) 
+## [v2.1.63](https://github.com/Devbezos/Larias-Weekly-Checklist/tree/v2.1.63) (2026-08-20)
+[Full Changelog](https://github.com/Devbezos/Larias-Weekly-Checklist/compare/v2.1.62...v2.1.63) 
 
-- Release v2.1.60  
-- Merge branch 'main' of github.com:Devbezos/Larias-Weekly-Checklist  
-- Update README.md  
-- Pinned week keeps change-week affordance even once complete (#43)  
-    GetPickerSectionId only honored an explicit startAtSectionId pin while  
-    that week was still incomplete, so navigating back to a finished week  
-    via the picker left the change-week affordance on the (unrelated) real  
-    current week instead of following you there.  
-    It now just defers to GetCurrentSectionId, whose own stored-start  
-    check already returns the pin unconditionally -- matching what  
-    HandlePick already does when it sets the pin. Also updates the picker  
-    population comment in Header.lua that described the old restriction.  
-- Fix/change week not advancing after completion (#42)  
-    Auto-advance the checklist to the next incomplete week when the current week is fully checked, moving the change-week header along with it while keeping finished weeks reachable and expandable via change-week; also fixes the crest trade-up tooltip showing without the unlock achievement, the header tooltip only covering the expand button instead of the whole header, Hide Finished Tasks blanking out fully-completed weeks, restores checklist data wiped by a bad Google Sheets fetch, and hardens the release workflow to fail instead of publishing bad data when that fetch errors.  
-- Post-release: bump version to 2.1.60  
+- Feature/20260820 (#44)  
+    Alt Summary gets a new Stats section with two rows: Keys This Week and Keys This Season, each showing completed Mythic+ run counts with a tooltip. Both pull from C\_MythicPlus.GetRunHistory(true, false, true) — completed runs only, current season only — so aborted/failed keys don't inflate the counts.  
+    Crest, catalyst, sparks, coffer-key, and misc currency cells now share one ColorForXY/ColorForXYRGB progress rule (green at cap, yellow from 50%, red below) instead of several near-duplicate inline calculations. Crest cells now color by crests earned this week against the weekly cap rather than total wallet balance, so a bank carried over from a prior week no longer misreads as "done."  
+    Adds the matching enUS + all-locale translations for the new UI strings.  
+- Post-release: bump version to 2.1.63  

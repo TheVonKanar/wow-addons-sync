@@ -19,8 +19,8 @@ EUICoreStandaloneMinimapDB = {
 ["profileOrder"] = {
 "Default",
 },
-["ppUIScale"] = 0.53329998254776,
 ["sidebarUnlockTipSeen"] = true,
+["ppUIScale"] = 0.53329998254776,
 ["profiles"] = {
 ["Default"] = {
 ["fonts"] = {
@@ -38,7 +38,7 @@ EUICoreStandaloneMinimapDB = {
 },
 ["_capturedOnce"] = true,
 ["interactableBtnSize"] = 30,
-["savedZoom"] = 4,
+["savedZoom"] = 1,
 ["borderUseClassColor"] = false,
 ["customTooltipScale"] = 1.35,
 ["locationPosition"] = "topLeft",
@@ -95,7 +95,7 @@ EUICoreStandaloneMinimapDB = {
 },
 ["panelScale"] = 1,
 ["unlockSnapEnabled"] = false,
-["lastLoginVersion"] = "8.9.3",
+["lastLoginVersion"] = "8.9.8",
 ["patchDotPending"] = true,
 }
 EUIStandaloneMinimapDB = {

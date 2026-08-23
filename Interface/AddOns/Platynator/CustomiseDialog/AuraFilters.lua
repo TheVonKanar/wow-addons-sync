@@ -6,7 +6,11 @@ local function Announce()
 end
 
 local function GetSettings(kind)
-  return addonTable.Config.Get(addonTable.Config.Options.AURA_FILTERS)[addonTable.Display.Utilities.GetSpecializationID()][kind]
+  if kind == "crowdControl" then
+    return addonTable.Config.Get(addonTable.Config.Options.AURA_FILTERS).crowdControl
+  else
+    return addonTable.Config.Get(addonTable.Config.Options.AURA_FILTERS)[addonTable.Display.Utilities.GetSpecializationID()][kind]
+  end
 end
 
 local function IsExcludedSpell(kind, spellID)
@@ -64,6 +68,15 @@ local function GetAuraOptions(parent, kind)
       GetSettings(kind).exclude[spellID] = true
       Announce()
       Refresh()
+    end)
+
+    local tooltipsCheckbox = addonTable.CustomiseDialog.Components.GetCheckbox(container, addonTable.Locales.ID_IN_TOOLTIPS, -30, function(value)
+      C_CVar.SetCVar("tooltipShowAuraSpellIDs", value and 1 or 0)
+    end)
+    tooltipsCheckbox:SetPoint("LEFT", excludeButton, "RIGHT", 10, 0)
+    tooltipsCheckbox:SetPoint("RIGHT")
+    tooltipsCheckbox:SetScript("OnShow", function()
+      tooltipsCheckbox:SetValue(C_CVar.GetCVarBool("tooltipShowAuraSpellIDs"))
     end)
   end
 

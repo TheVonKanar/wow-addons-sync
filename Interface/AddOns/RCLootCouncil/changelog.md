@@ -1,3 +1,13 @@
+# 3.23.2
+
+## Changes
+
+Demon Hunters no longer auto passes daggers.
+
+## Bugfixes
+
+- *Fixed issue causing BoE items not to be sent.*
+
 # 3.23.1
 
 ## Changes

@@ -4,203 +4,210 @@ KrowiAF_DebugTable = {
 ["Sessions"] = {
 {
 ["Character"] = "Kvotheen-Hyjal",
-["StartedAt"] = "2026-08-18 23:48:05",
+["StartedAt"] = "2026-08-23 22:14:12",
 ["Addons"] = {
 "Angleur (Angleur 2.9.615)",
-"ArcUI (3.8.1)",
+"ArcUI (3.8.2)",
 "Auctionator (334)",
-"AutoHideUI (1.2.15)",
-"AztarecHelper (1.7.3)",
 "Baganator (821)",
-"BetterCharacterPanel (2.5.1)",
 "BlizzMove (v3.7.42)",
-"BuffReminders (v6.5.1)",
-"!BugGrabber (v12.0.21)",
-"BugSack (v12.0.13)",
-"Chattynator (220)",
-"ChoreTracker (12.1.0.3)",
-"DialogueUI (1.0.5)",
-"EditModeExpanded (12.1-007)",
-"EUIStandaloneMinimap (8.9.2)",
-"Glider (48)",
-"HandyNotes (v1.6.31)",
-"HandyNotes_MidnightTreasures (v58)",
-"IconBrowser (0.0.8)",
-"!KalielsTracker (8.7.1)",
-"Krowi_AchievementFilter (99.7)",
-"Masque (12.0.8)",
-"Syndicator (276)",
-},
-["Errors"] = {
-},
-["Client"] = "12.1.0.69382",
-["Detections"] = {
-{
-["AchievementFrameShown"] = false,
-["Key"] = "processingInfo",
-["Zone"] = "The Ring of Glory",
-["Target"] = "GameTooltip",
-["WallClock"] = "2026-08-19 00:02:47",
-["TaintedBy"] = "!KalielsTracker",
-["WorldMapShown"] = false,
-},
-},
-["Baseline"] = {
-},
-},
-{
-["Character"] = "Kvotheen-Hyjal",
-["StartedAt"] = "2026-08-19 00:38:20",
-["Addons"] = {
-"Angleur (Angleur 2.9.615)",
-"ArcUI (3.8.1)",
-"Auctionator (334)",
-"AutoHideUI (1.2.15)",
-"AztarecHelper (1.7.3)",
-"Baganator (821)",
-"BetterCharacterPanel (2.5.1)",
-"BlizzMove (v3.7.42)",
-"BuffReminders (v6.5.1)",
-"!BugGrabber (v12.0.21)",
-"BugSack (v12.0.13)",
-"Chattynator (220)",
-"ChoreTracker (12.1.0.3)",
-"DialogueUI (1.0.5)",
-"EditModeExpanded (12.1-007)",
-"EUIStandaloneMinimap (8.9.2)",
-"Glider (48)",
-"HandyNotes (v1.6.31)",
-"HandyNotes_MidnightTreasures (v58)",
-"IconBrowser (0.0.8)",
-"!KalielsTracker (8.7.1)",
-"Krowi_AchievementFilter (99.7)",
-"Masque (12.0.8)",
-"Syndicator (276)",
-},
-["Baseline"] = {
-},
-["Client"] = "12.1.0.69382",
-["Detections"] = {
-},
-["Errors"] = {
-},
-},
-{
-["Character"] = "Kvotheen-Hyjal",
-["StartedAt"] = "2026-08-19 00:39:39",
-["Addons"] = {
-"Angleur (Angleur 2.9.615)",
-"ArcUI (3.8.1)",
-"Auctionator (334)",
-"AutoHideUI (1.2.15)",
-"AztarecHelper (1.7.3)",
-"Baganator (821)",
-"BetterCharacterPanel (2.5.1)",
-"BlizzMove (v3.7.42)",
-"BuffReminders (v6.5.1)",
-"!BugGrabber (v12.0.21)",
-"BugSack (v12.0.13)",
-"Chattynator (220)",
-"ChoreTracker (12.1.0.3)",
-"DialogueUI (1.0.5)",
-"EditModeExpanded (12.1-007)",
-"EUIStandaloneMinimap (8.9.2)",
-"Glider (48)",
-"HandyNotes (v1.6.31)",
-"HandyNotes_MidnightTreasures (v58)",
-"IconBrowser (0.0.8)",
-"!KalielsTracker (8.7.1)",
-"Krowi_AchievementFilter (99.7)",
-"Masque (12.0.8)",
-"Syndicator (276)",
-},
-["Errors"] = {
-},
-["Client"] = "12.1.0.69382",
-["Detections"] = {
-},
-["Baseline"] = {
-},
-},
-{
-["Character"] = "Kvotheen-Hyjal",
-["StartedAt"] = "2026-08-19 00:50:36",
-["Addons"] = {
-"Angleur (Angleur 2.9.615)",
-"ArcUI (3.8.1)",
-"Auctionator (334)",
-"AutoHideUI (1.2.15)",
-"AztarecHelper (1.7.3)",
-"Baganator (821)",
-"BetterCharacterPanel (2.5.1)",
-"BlizzMove (v3.7.42)",
-"BuffReminders (v6.5.1)",
-"!BugGrabber (v12.0.21)",
-"BugSack (v12.0.13)",
-"Chattynator (220)",
-"ChoreTracker (12.1.0.3)",
-"DialogueUI (1.0.5)",
-"EditModeExpanded (12.1-007)",
-"EUIStandaloneMinimap (8.9.2)",
-"Glider (48)",
-"HandyNotes (v1.6.31)",
-"HandyNotes_MidnightTreasures (v58)",
-"IconBrowser (0.0.8)",
-"!KalielsTracker (8.7.1)",
-"Krowi_AchievementFilter (99.7)",
-"Masque (12.0.8)",
-"Syndicator (276)",
-},
-["Baseline"] = {
-},
-["Client"] = "12.1.0.69382",
-["Detections"] = {
-},
-["Errors"] = {
-},
-},
-{
-["Character"] = "Kvotheen-Hyjal",
-["StartedAt"] = "2026-08-19 08:46:54",
-["Addons"] = {
-"Angleur (Angleur 2.9.615)",
-"ArcUI (3.8.1)",
-"Auctionator (334)",
-"AutoHideUI (1.2.15)",
-"AztarecHelper (2.0.0)",
-"Baganator (821)",
-"BetterCharacterPanel (2.5.1)",
-"BlizzMove (v3.7.42)",
-"BuffReminders (v6.5.2)",
+"BuffReminders (v6.6.0)",
 "!BugGrabber (v12.0.21)",
 "BugSack (v12.0.13)",
 "Chattynator (221)",
 "ChoreTracker (12.1.0.4)",
 "DialogueUI (1.0.5)",
-"EditModeExpanded (12.1-007)",
-"EUIStandaloneMinimap (8.9.3)",
+"EditModeExpanded (12.1-008)",
+"EllesmereUI (8.9.8)",
+"EllesmereUIActionBars (8.9.8)",
+"EllesmereUIBlizzardSkin (8.9.8)",
+"EllesmereUIDamageMeters (8.9.8)",
+"EllesmereUIMinimap (8.9.8)",
+"EllesmereUIQoL (8.9.8)",
+"EllesmereUIRaidFrames (8.9.8)",
+"EllesmereUIResourceBars (8.9.8)",
+"EllesmereUIUnitFrames (8.9.8)",
 "Glider (48)",
 "HandyNotes (v1.6.31)",
-"HandyNotes_MidnightTreasures (v59)",
+"HandyNotes_MidnightTreasures (v62)",
 "IconBrowser (0.0.8)",
-"!KalielsTracker (8.7.1)",
-"Krowi_AchievementFilter (99.9)",
+"!KalielsTracker (8.7.2)",
+"Krowi_AchievementFilter (99.10)",
 "Masque (12.0.8)",
 "Syndicator (276)",
 },
 ["Errors"] = {
 },
-["Client"] = "12.1.0.69382",
+["Client"] = "12.1.0.69404",
 ["Detections"] = {
-{
-["AchievementFrameShown"] = false,
-["Key"] = "processingInfo",
-["Zone"] = "Venomfall Deeps",
-["Target"] = "GameTooltip",
-["WallClock"] = "2026-08-19 09:26:14",
-["TaintedBy"] = "!KalielsTracker",
-["WorldMapShown"] = false,
 },
+["Baseline"] = {
+},
+},
+{
+["Character"] = "Kvotheen-Hyjal",
+["StartedAt"] = "2026-08-23 22:14:56",
+["Addons"] = {
+"Angleur (Angleur 2.9.615)",
+"ArcUI (3.8.2)",
+"Auctionator (334)",
+"Baganator (821)",
+"BlizzMove (v3.7.42)",
+"BuffReminders (v6.6.0)",
+"!BugGrabber (v12.0.21)",
+"BugSack (v12.0.13)",
+"Chattynator (221)",
+"ChoreTracker (12.1.0.4)",
+"DialogueUI (1.0.5)",
+"EditModeExpanded (12.1-008)",
+"EllesmereUI (8.9.8)",
+"EllesmereUIActionBars (8.9.8)",
+"EllesmereUIBlizzardSkin (8.9.8)",
+"EllesmereUIDamageMeters (8.9.8)",
+"EllesmereUIMinimap (8.9.8)",
+"EllesmereUIQoL (8.9.8)",
+"EllesmereUIRaidFrames (8.9.8)",
+"EllesmereUIResourceBars (8.9.8)",
+"EllesmereUIUnitFrames (8.9.8)",
+"Glider (48)",
+"HandyNotes (v1.6.31)",
+"HandyNotes_MidnightTreasures (v62)",
+"IconBrowser (0.0.8)",
+"!KalielsTracker (8.7.2)",
+"Krowi_AchievementFilter (99.10)",
+"Masque (12.0.8)",
+"Syndicator (276)",
+},
+["Baseline"] = {
+},
+["Client"] = "12.1.0.69404",
+["Detections"] = {
+},
+["Errors"] = {
+},
+},
+{
+["Character"] = "Kvotheen-Hyjal",
+["StartedAt"] = "2026-08-23 22:16:32",
+["Addons"] = {
+"Angleur (Angleur 2.9.615)",
+"ArcUI (3.8.2)",
+"Auctionator (334)",
+"Baganator (821)",
+"BlizzMove (v3.7.42)",
+"BuffReminders (v6.6.0)",
+"!BugGrabber (v12.0.21)",
+"BugSack (v12.0.13)",
+"Chattynator (221)",
+"ChoreTracker (12.1.0.4)",
+"DialogueUI (1.0.5)",
+"EditModeExpanded (12.1-008)",
+"EllesmereUI (8.9.8)",
+"EllesmereUIActionBars (8.9.8)",
+"EllesmereUIBlizzardSkin (8.9.8)",
+"EllesmereUIDamageMeters (8.9.8)",
+"EllesmereUIMinimap (8.9.8)",
+"EllesmereUIQoL (8.9.8)",
+"EllesmereUIRaidFrames (8.9.8)",
+"EllesmereUIResourceBars (8.9.8)",
+"EllesmereUIUnitFrames (8.9.8)",
+"Glider (48)",
+"HandyNotes (v1.6.31)",
+"HandyNotes_MidnightTreasures (v62)",
+"IconBrowser (0.0.8)",
+"!KalielsTracker (8.7.2)",
+"Krowi_AchievementFilter (99.10)",
+"Masque (12.0.8)",
+"Syndicator (276)",
+},
+["Errors"] = {
+},
+["Client"] = "12.1.0.69404",
+["Detections"] = {
+},
+["Baseline"] = {
+},
+},
+{
+["Character"] = "Kvotheen-Hyjal",
+["StartedAt"] = "2026-08-23 22:32:21",
+["Addons"] = {
+"Angleur (Angleur 2.9.615)",
+"Auctionator (334)",
+"Baganator (821)",
+"BlizzMove (v3.7.42)",
+"BuffReminders (v6.6.0)",
+"!BugGrabber (v12.0.21)",
+"BugSack (v12.0.13)",
+"Chattynator (221)",
+"ChoreTracker (12.1.0.4)",
+"DialogueUI (1.0.5)",
+"EditModeExpanded (12.1-008)",
+"EllesmereUI (8.9.8)",
+"EllesmereUIActionBars (8.9.8)",
+"EllesmereUIBlizzardSkin (8.9.8)",
+"EllesmereUICooldownManager (8.9.8)",
+"EllesmereUIDamageMeters (8.9.8)",
+"EllesmereUIMinimap (8.9.8)",
+"EllesmereUIQoL (8.9.8)",
+"EllesmereUIRaidFrames (8.9.8)",
+"EllesmereUIResourceBars (8.9.8)",
+"EllesmereUIUnitFrames (8.9.8)",
+"Glider (48)",
+"HandyNotes (v1.6.31)",
+"HandyNotes_MidnightTreasures (v62)",
+"IconBrowser (0.0.8)",
+"!KalielsTracker (8.7.2)",
+"Krowi_AchievementFilter (99.10)",
+"Masque (12.0.8)",
+"Syndicator (276)",
+},
+["Baseline"] = {
+},
+["Client"] = "12.1.0.69404",
+["Detections"] = {
+},
+["Errors"] = {
+},
+},
+{
+["Character"] = "Kvotheen-Hyjal",
+["StartedAt"] = "2026-08-23 22:32:39",
+["Addons"] = {
+"Angleur (Angleur 2.9.615)",
+"Auctionator (334)",
+"Baganator (821)",
+"BlizzMove (v3.7.42)",
+"BuffReminders (v6.6.0)",
+"!BugGrabber (v12.0.21)",
+"BugSack (v12.0.13)",
+"Chattynator (221)",
+"ChoreTracker (12.1.0.4)",
+"DialogueUI (1.0.5)",
+"EditModeExpanded (12.1-008)",
+"EllesmereUI (8.9.8)",
+"EllesmereUIActionBars (8.9.8)",
+"EllesmereUIBlizzardSkin (8.9.8)",
+"EllesmereUICooldownManager (8.9.8)",
+"EllesmereUIDamageMeters (8.9.8)",
+"EllesmereUIMinimap (8.9.8)",
+"EllesmereUIQoL (8.9.8)",
+"EllesmereUIRaidFrames (8.9.8)",
+"EllesmereUIResourceBars (8.9.8)",
+"EllesmereUIUnitFrames (8.9.8)",
+"Glider (48)",
+"HandyNotes (v1.6.31)",
+"HandyNotes_MidnightTreasures (v62)",
+"IconBrowser (0.0.8)",
+"!KalielsTracker (8.7.2)",
+"Krowi_AchievementFilter (99.10)",
+"Masque (12.0.8)",
+"Syndicator (276)",
+},
+["Errors"] = {
+},
+["Client"] = "12.1.0.69404",
+["Detections"] = {
 },
 ["Baseline"] = {
 },
@@ -312,7 +319,7 @@ KrowiAF_SavedData = {
 ["Name"] = "Kvotheen",
 ["Faction"] = 2,
 ["Class"] = "SHAMAN",
-["Points"] = 16230,
+["Points"] = 16350,
 ["Realm"] = "Hyjal",
 },
 ["Player-1390-0D20B30E"] = {
@@ -369,7 +376,7 @@ KrowiAF_SavedData = {
 ["PageViewed"] = {
 },
 },
-["Version"] = "99.9",
+["Version"] = "99.10",
 ["Tabs"] = {
 {
 ["AddonName"] = "Blizzard_AchievementUI",
@@ -502,46 +509,46 @@ KrowiAF_SavedData = {
 },
 },
 ["PopoutLifecycleLog"] = {
-"2026-08-17 18:13:58 Load:start empty",
-"2026-08-17 18:14:11 PLAYER_LOGOUT empty",
-"2026-08-17 18:14:20 Load:start empty",
-"2026-08-17 18:21:35 PLAYER_LOGOUT empty",
-"2026-08-17 18:21:45 Load:start empty",
-"2026-08-17 18:22:38 PLAYER_LOGOUT empty",
-"2026-08-17 18:43:36 Load:start empty",
-"2026-08-17 18:55:28 PLAYER_LOGOUT empty",
-"2026-08-17 18:55:37 Load:start empty",
-"2026-08-17 18:55:46 PLAYER_LOGOUT empty",
-"2026-08-17 18:55:56 Load:start empty",
-"2026-08-17 19:40:38 PLAYER_LOGOUT empty",
-"2026-08-18 08:56:20 Load:start empty",
-"2026-08-18 09:16:11 PLAYER_LOGOUT empty",
-"2026-08-18 12:20:04 Load:start empty",
-"2026-08-18 12:48:35 PLAYER_LOGOUT empty",
-"2026-08-18 12:48:44 Load:start empty",
-"2026-08-18 13:11:43 PLAYER_LOGOUT empty",
-"2026-08-18 13:11:52 Load:start empty",
-"2026-08-18 13:12:39 PLAYER_LOGOUT empty",
-"2026-08-18 13:12:48 Load:start empty",
-"2026-08-18 13:16:22 PLAYER_LOGOUT empty",
-"2026-08-18 13:23:13 Load:start empty",
-"2026-08-18 13:28:04 PLAYER_LOGOUT empty",
-"2026-08-18 18:13:53 Load:start empty",
-"2026-08-18 19:36:04 PLAYER_LOGOUT empty",
-"2026-08-18 21:05:28 Load:start empty",
-"2026-08-18 21:35:37 PLAYER_LOGOUT empty",
-"2026-08-18 21:35:46 Load:start empty",
-"2026-08-18 21:51:14 PLAYER_LOGOUT empty",
-"2026-08-18 23:48:20 Load:start empty",
-"2026-08-19 00:38:17 PLAYER_LOGOUT empty",
-"2026-08-19 00:38:28 Load:start empty",
-"2026-08-19 00:38:37 PLAYER_LOGOUT empty",
-"2026-08-19 00:39:56 Load:start empty",
-"2026-08-19 00:48:59 PLAYER_LOGOUT empty",
-"2026-08-19 00:50:53 Load:start empty",
-"2026-08-19 01:16:38 PLAYER_LOGOUT empty",
-"2026-08-19 08:47:10 Load:start empty",
-"2026-08-19 09:46:21 PLAYER_LOGOUT empty",
+"2026-08-23 20:04:53 Load:start empty",
+"2026-08-23 20:07:31 PLAYER_LOGOUT empty",
+"2026-08-23 20:07:42 Load:start empty",
+"2026-08-23 20:08:46 PLAYER_LOGOUT empty",
+"2026-08-23 20:08:57 Load:start empty",
+"2026-08-23 20:11:54 PLAYER_LOGOUT empty",
+"2026-08-23 20:12:03 Load:start empty",
+"2026-08-23 20:16:04 PLAYER_LOGOUT empty",
+"2026-08-23 20:16:13 Load:start empty",
+"2026-08-23 20:17:04 PLAYER_LOGOUT empty",
+"2026-08-23 20:17:13 Load:start empty",
+"2026-08-23 20:19:26 PLAYER_LOGOUT empty",
+"2026-08-23 20:19:35 Load:start empty",
+"2026-08-23 20:20:21 PLAYER_LOGOUT empty",
+"2026-08-23 20:20:31 Load:start empty",
+"2026-08-23 20:30:58 PLAYER_LOGOUT empty",
+"2026-08-23 22:02:03 Load:start empty",
+"2026-08-23 22:02:50 PLAYER_LOGOUT empty",
+"2026-08-23 22:02:59 Load:start empty",
+"2026-08-23 22:05:19 PLAYER_LOGOUT empty",
+"2026-08-23 22:05:27 Load:start empty",
+"2026-08-23 22:09:27 PLAYER_LOGOUT empty",
+"2026-08-23 22:09:36 Load:start empty",
+"2026-08-23 22:09:45 PLAYER_LOGOUT empty",
+"2026-08-23 22:09:53 Load:start empty",
+"2026-08-23 22:10:06 PLAYER_LOGOUT empty",
+"2026-08-23 22:10:14 Load:start empty",
+"2026-08-23 22:12:28 PLAYER_LOGOUT empty",
+"2026-08-23 22:12:37 Load:start empty",
+"2026-08-23 22:14:09 PLAYER_LOGOUT empty",
+"2026-08-23 22:14:18 Load:start empty",
+"2026-08-23 22:14:52 PLAYER_LOGOUT empty",
+"2026-08-23 22:15:01 Load:start empty",
+"2026-08-23 22:16:29 PLAYER_LOGOUT empty",
+"2026-08-23 22:16:38 Load:start empty",
+"2026-08-23 22:32:18 PLAYER_LOGOUT empty",
+"2026-08-23 22:32:27 Load:start empty",
+"2026-08-23 22:32:36 PLAYER_LOGOUT empty",
+"2026-08-23 22:32:45 Load:start empty",
+"2026-08-23 23:10:18 PLAYER_LOGOUT empty",
 },
 ["AchievementPopouts"] = {
 },
@@ -1077,6 +1084,12 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
+[62410] = {
+["FirstCompletedOn"] = 1787220000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787220000,
+},
+},
 [62541] = {
 ["FirstCompletedOn"] = 1777024800,
 ["EarnedBy"] = {
@@ -1089,14 +1102,35 @@ nil,
 [42199] = {
 ["FirstCompletedOn"] = 1754474400,
 },
+[62282] = {
+["FirstCompletedOn"] = 1787047200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787047200,
+},
+},
+[19507] = {
+["FirstCompletedOn"] = 1739358000,
+},
 [40344] = {
 ["FirstCompletedOn"] = 1754215200,
 },
 [18165] = {
 ["FirstCompletedOn"] = 1722852000,
 },
+[61258] = {
+["FirstCompletedOn"] = 1776506400,
+},
 [40536] = {
 ["FirstCompletedOn"] = 1731754800,
+},
+[61836] = {
+["FirstCompletedOn"] = 1772276400,
+},
+[61899] = {
+["FirstCompletedOn"] = 1772622000,
+},
+[61710] = {
+["FirstCompletedOn"] = 1776592800,
 },
 [61262] = {
 ["FirstCompletedOn"] = 1774778400,
@@ -1155,6 +1189,15 @@ nil,
 [18645] = {
 ["FirstCompletedOn"] = 1731150000,
 },
+[61901] = {
+["FirstCompletedOn"] = 1775037600,
+},
+[41176] = {
+["FirstCompletedOn"] = 1735383600,
+},
+[62154] = {
+["FirstCompletedOn"] = 1773831600,
+},
 [41624] = {
 ["FirstCompletedOn"] = 1759312800,
 ["EarnedBy"] = {
@@ -1164,13 +1207,28 @@ nil,
 [1817] = {
 ["FirstCompletedOn"] = 1247047200,
 },
-[12509] = {
-["FirstCompletedOn"] = 1535796000,
-},
 [8463] = {
 ["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1516878000,
+},
+},
+[12509] = {
+["FirstCompletedOn"] = 1535796000,
+},
+[62542] = {
+["FirstCompletedOn"] = 1777024800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1777024800,
+},
+},
+[1833] = {
+["FirstCompletedOn"] = 1238580000,
+},
+[5257] = {
+["FirstCompletedOn"] = 1775642400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1775642400,
 },
 },
 [8479] = {
@@ -1179,19 +1237,31 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[12589] = {
-["FirstCompletedOn"] = 1534759200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534759200,
+[62606] = {
+["FirstCompletedOn"] = 1787220000,
 },
+[42200] = {
+["FirstCompletedOn"] = 1754474400,
 },
-[1833] = {
-["FirstCompletedOn"] = 1238580000,
+[61451] = {
+["FirstCompletedOn"] = 1773486000,
 },
 [8543] = {
 ["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1516878000,
+},
+},
+[61519] = {
+["FirstCompletedOn"] = 1774522800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1774522800,
+},
+},
+[11996] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
 },
 },
 [40473] = {
@@ -1217,6 +1287,9 @@ nil,
 },
 [8671] = {
 ["FirstCompletedOn"] = 1499767200,
+},
+[61711] = {
+["FirstCompletedOn"] = 1775037600,
 },
 [61391] = {
 ["FirstCompletedOn"] = 1776592800,
@@ -1270,21 +1343,26 @@ nil,
 [12957] = {
 ["FirstCompletedOn"] = 1539338400,
 },
+[62159] = {
+["FirstCompletedOn"] = 1773831600,
+},
 [12989] = {
 ["FirstCompletedOn"] = 1537524000,
 },
 [62223] = {
 ["FirstCompletedOn"] = 1776247200,
 },
-[63416] = {
-["FirstCompletedOn"] = 1787133600,
-},
-[62621] = {
-["FirstCompletedOn"] = 1777197600,
+[16346] = {
+["FirstCompletedOn"] = 1772967600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1777629600,
-["Player-1390-09230B89"] = 1777197600,
+["Player-1390-09230B89"] = 1772967600,
 },
+},
+[61452] = {
+["FirstCompletedOn"] = 1773572400,
+},
+[61263] = {
+["FirstCompletedOn"] = 1773572400,
 },
 [8991] = {
 ["FirstCompletedOn"] = 1533722400,
@@ -1292,11 +1370,14 @@ nil,
 ["Player-1390-09230B89"] = 1533722400,
 },
 },
-[63326] = {
-["FirstCompletedOn"] = 1787133600,
+[62543] = {
+["FirstCompletedOn"] = 1777024800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1787133600,
+["Player-1390-09230B89"] = 1777024800,
 },
+},
+[61581] = {
+["FirstCompletedOn"] = 1772362800,
 },
 [42201] = {
 ["FirstCompletedOn"] = 1755511200,
@@ -1307,23 +1388,14 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[14364] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+[41815] = {
+["FirstCompletedOn"] = 1758103200,
 },
+[479] = {
+["FirstCompletedOn"] = 1247047200,
 },
-[62543] = {
-["FirstCompletedOn"] = 1777024800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777024800,
-},
-},
-[62542] = {
-["FirstCompletedOn"] = 1777024800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777024800,
-},
+[41171] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [477] = {
 ["FirstCompletedOn"] = 1238752800,
@@ -1334,11 +1406,11 @@ nil,
 [478] = {
 ["FirstCompletedOn"] = 1238925600,
 },
-[61710] = {
-["FirstCompletedOn"] = 1776592800,
+[482] = {
+["FirstCompletedOn"] = 1240221600,
 },
-[479] = {
-["FirstCompletedOn"] = 1247047200,
+[11214] = {
+["FirstCompletedOn"] = 1500199200,
 },
 [61264] = {
 ["FirstCompletedOn"] = 1776679200,
@@ -1359,20 +1431,17 @@ nil,
 [15388] = {
 ["FirstCompletedOn"] = 1726912800,
 },
-[482] = {
-["FirstCompletedOn"] = 1240221600,
+[61584] = {
+["FirstCompletedOn"] = 1772622000,
 },
-[20597] = {
-["FirstCompletedOn"] = 1725444000,
+[61648] = {
+["FirstCompletedOn"] = 1772708400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1725444000,
+["Player-1390-09230B89"] = 1772708400,
 },
 },
-[483] = {
-["FirstCompletedOn"] = 1240308000,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1240308000,
-},
+[61712] = {
+["FirstCompletedOn"] = 1775037600,
 },
 [16567] = {
 ["FirstCompletedOn"] = 1739358000,
@@ -1380,17 +1449,14 @@ nil,
 [484] = {
 ["FirstCompletedOn"] = 1248084000,
 },
-[62288] = {
-["FirstCompletedOn"] = 1772276400,
+[13133] = {
+["FirstCompletedOn"] = 1535623200,
 },
 [485] = {
 ["FirstCompletedOn"] = 1246788000,
 },
-[5257] = {
-["FirstCompletedOn"] = 1775642400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1775642400,
-},
+[488] = {
+["FirstCompletedOn"] = 1246874400,
 },
 [486] = {
 ["FirstCompletedOn"] = 1248256800,
@@ -1404,11 +1470,14 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[41818] = {
-["FirstCompletedOn"] = 1752660000,
+[62288] = {
+["FirstCompletedOn"] = 1772276400,
 },
-[488] = {
-["FirstCompletedOn"] = 1246874400,
+[62352] = {
+["FirstCompletedOn"] = 1773918000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1773918000,
+},
 },
 [9471] = {
 ["FirstCompletedOn"] = 1533549600,
@@ -1416,8 +1485,11 @@ nil,
 [489] = {
 ["FirstCompletedOn"] = 1247047200,
 },
-[19507] = {
-["FirstCompletedOn"] = 1739358000,
+[62544] = {
+["FirstCompletedOn"] = 1787220000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787220000,
+},
 },
 [490] = {
 ["FirstCompletedOn"] = 1248170400,
@@ -1428,14 +1500,11 @@ nil,
 [491] = {
 ["FirstCompletedOn"] = 1248256800,
 },
-[61519] = {
-["FirstCompletedOn"] = 1774522800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1774522800,
+[17207] = {
+["FirstCompletedOn"] = 1742036400,
 },
-},
-[61836] = {
-["FirstCompletedOn"] = 1772276400,
+[42778] = {
+["FirstCompletedOn"] = 1756288800,
 },
 [9599] = {
 ["FirstCompletedOn"] = 1775296800,
@@ -1443,14 +1512,14 @@ nil,
 [493] = {
 ["FirstCompletedOn"] = 1248084000,
 },
-[17207] = {
-["FirstCompletedOn"] = 1742036400,
+[9631] = {
+["FirstCompletedOn"] = 1721728800,
 },
-[42200] = {
-["FirstCompletedOn"] = 1754474400,
+[40731] = {
+["FirstCompletedOn"] = 1728554400,
 },
-[61899] = {
-["FirstCompletedOn"] = 1772622000,
+[40723] = {
+["FirstCompletedOn"] = 1738494000,
 },
 [495] = {
 ["FirstCompletedOn"] = 1248084000,
@@ -1461,8 +1530,8 @@ nil,
 [496] = {
 ["FirstCompletedOn"] = 1247220000,
 },
-[499] = {
-["FirstCompletedOn"] = 1518951600,
+[61583] = {
+["FirstCompletedOn"] = 1772622000,
 },
 [497] = {
 ["FirstCompletedOn"] = 1248256800,
@@ -1473,8 +1542,8 @@ nil,
 ["Player-1390-09230B89"] = 1496656800,
 },
 },
-[40731] = {
-["FirstCompletedOn"] = 1728554400,
+[499] = {
+["FirstCompletedOn"] = 1518951600,
 },
 [61649] = {
 ["FirstCompletedOn"] = 1772708400,
@@ -1485,23 +1554,20 @@ nil,
 [61713] = {
 ["FirstCompletedOn"] = 1776592800,
 },
-[61901] = {
-["FirstCompletedOn"] = 1775037600,
+[40531] = {
+["FirstCompletedOn"] = 1728554400,
 },
 [500] = {
 ["FirstCompletedOn"] = 1247047200,
 },
-[40987] = {
-["FirstCompletedOn"] = 1731409200,
+[62158] = {
+["FirstCompletedOn"] = 1772622000,
 },
-[11996] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+[42328] = {
+["FirstCompletedOn"] = 1772449200,
 },
-},
-[62154] = {
-["FirstCompletedOn"] = 1773831600,
+[62289] = {
+["FirstCompletedOn"] = 1772881200,
 },
 [41627] = {
 ["FirstCompletedOn"] = 1743328800,
@@ -1551,19 +1617,20 @@ nil,
 [508] = {
 ["FirstCompletedOn"] = 1500112800,
 },
-[62159] = {
-["FirstCompletedOn"] = 1773831600,
-},
-[61643] = {
-["FirstCompletedOn"] = 1773140400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773140400,
-},
-},
 [12366] = {
 ["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1728554400,
+},
+},
+[518] = {
+["FirstCompletedOn"] = 1735556400,
+},
+[40147] = {
+["FirstCompletedOn"] = 1726480800,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1726480800,
 },
 },
 [40604] = {
@@ -1572,8 +1639,12 @@ nil,
 ["Player-1390-09230B89"] = 1726308000,
 },
 },
-[41176] = {
-["FirstCompletedOn"] = 1735383600,
+[6193] = {
+["FirstCompletedOn"] = 1438509600,
+["EarnedBy"] = {
+["Player-1302-078A2412"] = 1438509600,
+["Player-1390-09230B89"] = 1499680800,
+},
 },
 [14285] = {
 ["FirstCompletedOn"] = 1727085600,
@@ -1581,14 +1652,14 @@ nil,
 ["Player-1390-09230B89"] = 1727085600,
 },
 },
-[32] = {
-["FirstCompletedOn"] = 1516618800,
-},
-[2047] = {
-["FirstCompletedOn"] = 1516705200,
+[16348] = {
+["FirstCompletedOn"] = 1772967600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516705200,
+["Player-1390-09230B89"] = 1772967600,
 },
+},
+[40860] = {
+["FirstCompletedOn"] = 1731495600,
 },
 [513] = {
 ["FirstCompletedOn"] = 1239962400,
@@ -1618,12 +1689,8 @@ nil,
 ["Player-1390-09230B89"] = 1726912800,
 },
 },
-[6193] = {
-["FirstCompletedOn"] = 1438509600,
-["EarnedBy"] = {
-["Player-1302-078A2412"] = 1438509600,
-["Player-1390-09230B89"] = 1499680800,
-},
+[519] = {
+["FirstCompletedOn"] = 1607598000,
 },
 [520] = {
 ["FirstCompletedOn"] = 1541934000,
@@ -1646,17 +1713,17 @@ nil,
 [12478] = {
 ["FirstCompletedOn"] = 1534327200,
 },
-[8480] = {
-["FirstCompletedOn"] = 1516878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
-},
 [33] = {
 ["FirstCompletedOn"] = 1239876000,
 },
-[61451] = {
-["FirstCompletedOn"] = 1773486000,
+[12510] = {
+["FirstCompletedOn"] = 1535796000,
+},
+[62546] = {
+["FirstCompletedOn"] = 1777024800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1777024800,
+},
 },
 [8448] = {
 ["FirstCompletedOn"] = 1533722400,
@@ -1667,10 +1734,10 @@ nil,
 [12558] = {
 ["FirstCompletedOn"] = 1534672800,
 },
-[62546] = {
-["FirstCompletedOn"] = 1777024800,
+[8480] = {
+["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777024800,
+["Player-1390-09230B89"] = 1516878000,
 },
 },
 [12590] = {
@@ -1679,17 +1746,11 @@ nil,
 ["Player-1390-09230B89"] = 1534759200,
 },
 },
-[61644] = {
-["FirstCompletedOn"] = 1772708400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
+[61582] = {
+["FirstCompletedOn"] = 1772622000,
 },
-},
-[16346] = {
-["FirstCompletedOn"] = 1772967600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772967600,
-},
+[41173] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [10591] = {
 ["FirstCompletedOn"] = 1501408800,
@@ -1697,8 +1758,8 @@ nil,
 [2142] = {
 ["FirstCompletedOn"] = 1516705200,
 },
-[41171] = {
-["FirstCompletedOn"] = 1735383600,
+[17334] = {
+["FirstCompletedOn"] = 1754560800,
 },
 [2150] = {
 ["FirstCompletedOn"] = 1705316400,
@@ -1706,10 +1767,10 @@ nil,
 ["Player-1390-09230B89"] = 1705316400,
 },
 },
-[16348] = {
-["FirstCompletedOn"] = 1772967600,
+[42780] = {
+["FirstCompletedOn"] = 1755943200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772967600,
+["Player-1390-09230B89"] = 1755943200,
 },
 },
 [10671] = {
@@ -1733,10 +1794,10 @@ nil,
 ["Player-1390-09230B89"] = 1774436400,
 },
 },
-[62352] = {
-["FirstCompletedOn"] = 1773918000,
+[14411] = {
+["FirstCompletedOn"] = 1608116400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773918000,
+["Player-1390-09230B89"] = 1608116400,
 },
 },
 [14845] = {
@@ -1745,11 +1806,8 @@ nil,
 ["Player-1390-09230B89"] = 1607166000,
 },
 },
-[546] = {
-["FirstCompletedOn"] = 1497175200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1497175200,
-},
+[40989] = {
+["FirstCompletedOn"] = 1731322800,
 },
 [10783] = {
 ["FirstCompletedOn"] = 1500717600,
@@ -1763,11 +1821,11 @@ nil,
 ["Player-1390-09230B89"] = 1534932000,
 },
 },
-[61263] = {
-["FirstCompletedOn"] = 1773572400,
+[8302] = {
+["FirstCompletedOn"] = 1744884000,
 },
-[62289] = {
-["FirstCompletedOn"] = 1772881200,
+[12734] = {
+["FirstCompletedOn"] = 1721815200,
 },
 [10847] = {
 ["FirstCompletedOn"] = 1703588400,
@@ -1775,20 +1833,20 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[61581] = {
-["FirstCompletedOn"] = 1772362800,
+[15930] = {
+["FirstCompletedOn"] = 1722420000,
+},
+[61896] = {
+["FirstCompletedOn"] = 1772967600,
+},
+[12942] = {
+["FirstCompletedOn"] = 1534500000,
 },
 [557] = {
 ["FirstCompletedOn"] = 1500026400,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1500026400,
 },
-},
-[12942] = {
-["FirstCompletedOn"] = 1534500000,
-},
-[40723] = {
-["FirstCompletedOn"] = 1738494000,
 },
 [556] = {
 ["FirstCompletedOn"] = 1516791600,
@@ -1799,14 +1857,14 @@ nil,
 [62163] = {
 ["FirstCompletedOn"] = 1773313200,
 },
-[61452] = {
-["FirstCompletedOn"] = 1773572400,
+[42197] = {
+["FirstCompletedOn"] = 1754474400,
 },
 [62291] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[41815] = {
-["FirstCompletedOn"] = 1758103200,
+[41812] = {
+["FirstCompletedOn"] = 1756375200,
 },
 [8960] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -1823,8 +1881,8 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[40531] = {
-["FirstCompletedOn"] = 1728554400,
+[41170] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [13118] = {
 ["FirstCompletedOn"] = 1535104800,
@@ -1841,20 +1899,8 @@ nil,
 [568] = {
 ["FirstCompletedOn"] = 1248170400,
 },
-[61648] = {
-["FirstCompletedOn"] = 1772708400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
-},
-},
-[61268] = {
-["FirstCompletedOn"] = 1775556000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1775556000,
-},
-},
-[40542] = {
-["FirstCompletedOn"] = 1737889200,
+[41106] = {
+["FirstCompletedOn"] = 1752660000,
 },
 [11183] = {
 ["FirstCompletedOn"] = 1517828400,
@@ -1863,42 +1909,54 @@ nil,
 ["Player-1390-09230B89"] = 1517828400,
 },
 },
-[42778] = {
-["FirstCompletedOn"] = 1756288800,
+[40542] = {
+["FirstCompletedOn"] = 1737889200,
 },
-[11215] = {
-["FirstCompletedOn"] = 1500890400,
+[40606] = {
+["FirstCompletedOn"] = 1731322800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731322800,
+},
 },
 [36] = {
 ["FirstCompletedOn"] = 1721815200,
 },
-[13294] = {
-["FirstCompletedOn"] = 1534327200,
-},
-[42780] = {
+[42781] = {
 ["FirstCompletedOn"] = 1755943200,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1755943200,
 },
 },
+[61268] = {
+["FirstCompletedOn"] = 1775556000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1775556000,
+},
+},
+[13294] = {
+["FirstCompletedOn"] = 1534327200,
+},
+[8304] = {
+["FirstCompletedOn"] = 1744884000,
+},
 [40990] = {
 ["FirstCompletedOn"] = 1731236400,
 },
-[13133] = {
-["FirstCompletedOn"] = 1535623200,
-},
-[40147] = {
-["FirstCompletedOn"] = 1726480800,
+[545] = {
+["FirstCompletedOn"] = 1235732400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1726480800,
+["Player-1122-019F1238"] = 1235732400,
+["Player-1390-09230B89"] = 1519297200,
 },
 },
-[62155] = {
-["FirstCompletedOn"] = 1772794800,
+[20596] = {
+["FirstCompletedOn"] = 1727949600,
 },
-[61389] = {
-["FirstCompletedOn"] = 1772622000,
+[11212] = {
+["FirstCompletedOn"] = 1500544800,
+},
+[547] = {
+["FirstCompletedOn"] = 1497952800,
 },
 [16569] = {
 ["FirstCompletedOn"] = 1707649200,
@@ -1906,32 +1964,38 @@ nil,
 ["Player-1390-09230B89"] = 1707649200,
 },
 },
-[518] = {
-["FirstCompletedOn"] = 1735556400,
+[9133] = {
+["FirstCompletedOn"] = 1499767200,
 },
-[42328] = {
-["FirstCompletedOn"] = 1772449200,
+[40530] = {
+["FirstCompletedOn"] = 1731754800,
 },
-[41173] = {
-["FirstCompletedOn"] = 1735383600,
+[12572] = {
+["FirstCompletedOn"] = 1534672800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534672800,
+},
 },
 [16761] = {
 ["FirstCompletedOn"] = 1703070000,
 },
-[17334] = {
-["FirstCompletedOn"] = 1754560800,
-},
 [62164] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[14411] = {
-["FirstCompletedOn"] = 1608116400,
+[6753] = {
+["FirstCompletedOn"] = 1778148000,
+},
+[13771] = {
+["FirstCompletedOn"] = 1604314800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1608116400,
+["Player-1390-09230B89"] = 1604314800,
 },
 },
-[8302] = {
-["FirstCompletedOn"] = 1744884000,
+[9037] = {
+["FirstCompletedOn"] = 1721815200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721815200,
+},
 },
 [41886] = {
 ["FirstCompletedOn"] = 1755684000,
@@ -1939,11 +2003,18 @@ nil,
 ["Player-1390-09230B89"] = 1755684000,
 },
 },
-[12734] = {
-["FirstCompletedOn"] = 1721815200,
+[40146] = {
+["FirstCompletedOn"] = 1726048800,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1726048800,
 },
-[40799] = {
-["FirstCompletedOn"] = 1725530400,
+},
+[2765] = {
+["FirstCompletedOn"] = 1248429600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1500631200,
+},
 },
 [62548] = {
 ["FirstCompletedOn"] = 1777197600,
@@ -1951,50 +2022,16 @@ nil,
 ["Player-1390-09230B89"] = 1777197600,
 },
 },
-[61896] = {
-["FirstCompletedOn"] = 1772967600,
-},
-[42782] = {
-["FirstCompletedOn"] = 1755943200,
+[8989] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1755943200,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
-[4850] = {
-["FirstCompletedOn"] = 1606129200,
+[40730] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
-},
-},
-[40863] = {
-["FirstCompletedOn"] = 1724666400,
-},
-[41170] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[19192] = {
-["FirstCompletedOn"] = 1700391600,
-},
-[41106] = {
-["FirstCompletedOn"] = 1752660000,
-},
-[61646] = {
-["FirstCompletedOn"] = 1772708400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
-},
-},
-[4826] = {
-["FirstCompletedOn"] = 1438509600,
-["EarnedBy"] = {
-["Player-1302-078A2412"] = 1438509600,
-["Player-1390-09230B89"] = 1499335200,
-},
-},
-[605] = {
-["FirstCompletedOn"] = 1518951600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518951600,
+["Player-1390-09230B89"] = 1740567600,
 },
 },
 [4842] = {
@@ -2009,17 +2046,51 @@ nil,
 ["Player-1390-09230B89"] = 1774436400,
 },
 },
-[11759] = {
-["FirstCompletedOn"] = 1533808800,
+[606] = {
+["FirstCompletedOn"] = 1739012400,
+},
+[19192] = {
+["FirstCompletedOn"] = 1700391600,
+},
+[4850] = {
+["FirstCompletedOn"] = 1606129200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606129200,
+},
+},
+[609] = {
+["FirstCompletedOn"] = 1739012400,
+},
+[4826] = {
+["FirstCompletedOn"] = 1438509600,
+["EarnedBy"] = {
+["Player-1302-078A2412"] = 1438509600,
+["Player-1390-09230B89"] = 1499335200,
+},
+},
+[605] = {
+["FirstCompletedOn"] = 1518951600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1518951600,
+},
+},
+[42782] = {
+["FirstCompletedOn"] = 1755943200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1755943200,
+},
+},
+[40799] = {
+["FirstCompletedOn"] = 1725530400,
+},
+[40863] = {
+["FirstCompletedOn"] = 1724666400,
 },
 [4866] = {
 ["FirstCompletedOn"] = 1728036000,
 },
-[14062] = {
-["FirstCompletedOn"] = 1604401200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1604401200,
-},
+[1737] = {
+["FirstCompletedOn"] = 1247220000,
 },
 [9760] = {
 ["FirstCompletedOn"] = 1496656800,
@@ -2027,29 +2098,26 @@ nil,
 ["Player-1390-09230B89"] = 1496656800,
 },
 },
-[62549] = {
-["FirstCompletedOn"] = 1777197600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777197600,
-},
+[5456] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [15933] = {
 ["FirstCompletedOn"] = 1722420000,
 },
-[40606] = {
-["FirstCompletedOn"] = 1731322800,
+[16269] = {
+["FirstCompletedOn"] = 1703847600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731322800,
+["Player-1390-09230B89"] = 1703847600,
 },
 },
-[634] = {
-["FirstCompletedOn"] = 1236078000,
+[62165] = {
+["FirstCompletedOn"] = 1772622000,
+},
+[14062] = {
+["FirstCompletedOn"] = 1604401200,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1236078000,
+["Player-1390-09230B89"] = 1604401200,
 },
-},
-[11212] = {
-["FirstCompletedOn"] = 1500544800,
 },
 [19704] = {
 ["FirstCompletedOn"] = 1726826400,
@@ -2057,20 +2125,23 @@ nil,
 [4938] = {
 ["FirstCompletedOn"] = 1496397600,
 },
-[641] = {
-["FirstCompletedOn"] = 1237114800,
+[634] = {
+["FirstCompletedOn"] = 1236078000,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1237114800,
+["Player-1122-019F1238"] = 1236078000,
 },
 },
-[9133] = {
-["FirstCompletedOn"] = 1499767200,
+[5122] = {
+["FirstCompletedOn"] = 1537783200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1537783200,
+},
 },
 [621] = {
 ["FirstCompletedOn"] = 1235905200,
 },
-[40530] = {
-["FirstCompletedOn"] = 1731754800,
+[41169] = {
+["FirstCompletedOn"] = 1735556400,
 },
 [4978] = {
 ["FirstCompletedOn"] = 1496311200,
@@ -2087,10 +2158,10 @@ nil,
 ["Player-1122-019F1238"] = 1248256800,
 },
 },
-[14478] = {
-["FirstCompletedOn"] = 1609498800,
+[12351] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1609498800,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
 [627] = {
@@ -2102,14 +2173,14 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[62166] = {
-["FirstCompletedOn"] = 1773399600,
-},
-[659] = {
-["FirstCompletedOn"] = 1703502000,
+[12827] = {
+["FirstCompletedOn"] = 1542538800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703502000,
+["Player-1390-09230B89"] = 1542538800,
 },
+},
+[40977] = {
+["FirstCompletedOn"] = 1731150000,
 },
 [631] = {
 ["FirstCompletedOn"] = 1238580000,
@@ -2129,10 +2200,10 @@ nil,
 ["Player-1122-019F1238"] = 1236078000,
 },
 },
-[16269] = {
-["FirstCompletedOn"] = 1703847600,
+[5066] = {
+["FirstCompletedOn"] = 1538215200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703847600,
+["Player-1390-09230B89"] = 1538215200,
 },
 },
 [635] = {
@@ -2159,10 +2230,10 @@ nil,
 ["Player-1122-019F1238"] = 1236769200,
 },
 },
-[639] = {
-["FirstCompletedOn"] = 1236769200,
+[61270] = {
+["FirstCompletedOn"] = 1774436400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1236769200,
+["Player-1390-09230B89"] = 1774436400,
 },
 },
 [640] = {
@@ -2171,10 +2242,10 @@ nil,
 ["Player-1122-019F1238"] = 1236855600,
 },
 },
-[5122] = {
-["FirstCompletedOn"] = 1537783200,
+[641] = {
+["FirstCompletedOn"] = 1237114800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1537783200,
+["Player-1122-019F1238"] = 1237114800,
 },
 },
 [642] = {
@@ -2189,13 +2260,16 @@ nil,
 ["Player-1390-09230B89"] = 1606302000,
 },
 },
-[42197] = {
-["FirstCompletedOn"] = 1754474400,
-},
-[12351] = {
-["FirstCompletedOn"] = 1728554400,
+[14478] = {
+["FirstCompletedOn"] = 1609498800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1609498800,
+},
+},
+[645] = {
+["FirstCompletedOn"] = 1741777200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1741777200,
 },
 },
 [14414] = {
@@ -2235,26 +2309,22 @@ nil,
 ["Player-1122-019F1238"] = 1237978800,
 },
 },
-[9037] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
-},
+[12559] = {
+["FirstCompletedOn"] = 1534759200,
 },
 [12479] = {
 ["FirstCompletedOn"] = 1534672800,
 },
-[40146] = {
-["FirstCompletedOn"] = 1726048800,
+[62550] = {
+["FirstCompletedOn"] = 1777197600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1726048800,
+["Player-1390-09230B89"] = 1777197600,
 },
 },
-[2765] = {
-["FirstCompletedOn"] = 1248429600,
+[42768] = {
+["FirstCompletedOn"] = 1775642400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500631200,
+["Player-1390-09230B89"] = 1775642400,
 },
 },
 [41888] = {
@@ -2269,20 +2339,20 @@ nil,
 ["Player-1390-09230B89"] = 1703329200,
 },
 },
-[12559] = {
-["FirstCompletedOn"] = 1534759200,
-},
-[62550] = {
-["FirstCompletedOn"] = 1777197600,
+[8465] = {
+["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777197600,
+["Player-1390-09230B89"] = 1516878000,
 },
 },
-[8989] = {
-["FirstCompletedOn"] = 1721728800,
+[659] = {
+["FirstCompletedOn"] = 1703502000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1703502000,
 },
+},
+[10684] = {
+["FirstCompletedOn"] = 1518001200,
 },
 [661] = {
 ["FirstCompletedOn"] = 1703329200,
@@ -2290,14 +2360,11 @@ nil,
 ["Player-1390-09230B89"] = 1703329200,
 },
 },
-[10672] = {
-["FirstCompletedOn"] = 1529056800,
+[10668] = {
+["FirstCompletedOn"] = 1517137200,
 },
-[61271] = {
-["FirstCompletedOn"] = 1775037600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1775037600,
-},
+[40529] = {
+["FirstCompletedOn"] = 1731063600,
 },
 [5306] = {
 ["FirstCompletedOn"] = 1606129200,
@@ -2308,8 +2375,11 @@ nil,
 [14718] = {
 ["FirstCompletedOn"] = 1731063600,
 },
-[14894] = {
-["FirstCompletedOn"] = 1609326000,
+[61271] = {
+["FirstCompletedOn"] = 1775037600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1775037600,
+},
 },
 [14750] = {
 ["FirstCompletedOn"] = 1606129200,
@@ -2329,17 +2399,16 @@ nil,
 [42] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[41185] = {
+[41052] = {
 ["FirstCompletedOn"] = 1735470000,
 },
 [14846] = {
 ["FirstCompletedOn"] = 1607511600,
 },
-[545] = {
-["FirstCompletedOn"] = 1235732400,
+[10816] = {
+["FirstCompletedOn"] = 1531476000,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235732400,
-["Player-1390-09230B89"] = 1519297200,
+["Player-1390-09230B89"] = 1531476000,
 },
 },
 [12831] = {
@@ -2354,11 +2423,8 @@ nil,
 ["Player-1390-09230B89"] = 1726999200,
 },
 },
-[10816] = {
-["FirstCompletedOn"] = 1531476000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531476000,
-},
+[41185] = {
+["FirstCompletedOn"] = 1735470000,
 },
 [12879] = {
 ["FirstCompletedOn"] = 1540724400,
@@ -2375,35 +2441,32 @@ nil,
 ["Player-1390-09230B89"] = 1703502000,
 },
 },
-[41812] = {
-["FirstCompletedOn"] = 1756375200,
+[41172] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [12943] = {
 ["FirstCompletedOn"] = 1535968800,
 },
-[609] = {
-["FirstCompletedOn"] = 1739012400,
+[515] = {
+["FirstCompletedOn"] = 1248429600,
 },
-[5456] = {
-["FirstCompletedOn"] = 1739012400,
+[16499] = {
+["FirstCompletedOn"] = 1703847600,
 },
-[645] = {
-["FirstCompletedOn"] = 1741777200,
+[41180] = {
+["FirstCompletedOn"] = 1735383600,
+},
+[40791] = {
+["FirstCompletedOn"] = 1737111600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1741777200,
+["Player-1390-09230B89"] = 1737111600,
 },
-},
-[41626] = {
-["FirstCompletedOn"] = 1742727600,
 },
 [43] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[9041] = {
-["FirstCompletedOn"] = 1721728800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
-},
+[8461] = {
+["FirstCompletedOn"] = 1516878000,
 },
 [8961] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -2418,13 +2481,16 @@ nil,
 ["Player-1390-09230B89"] = 1499680800,
 },
 },
-[606] = {
-["FirstCompletedOn"] = 1739012400,
-},
 [13103] = {
 ["FirstCompletedOn"] = 1535104800,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1535104800,
+},
+},
+[40098] = {
+["FirstCompletedOn"] = 1742036400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1742036400,
 },
 },
 [13119] = {
@@ -2441,8 +2507,8 @@ nil,
 ["EarnedBy"] = {
 },
 },
-[547] = {
-["FirstCompletedOn"] = 1497952800,
+[1311] = {
+["FirstCompletedOn"] = 1497348000,
 },
 [697] = {
 ["FirstCompletedOn"] = 1726912800,
@@ -2450,17 +2516,22 @@ nil,
 ["Player-1390-09230B89"] = 1726912800,
 },
 },
-[41169] = {
-["FirstCompletedOn"] = 1735556400,
+[10460] = {
+["FirstCompletedOn"] = 1533117600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1533117600,
 },
-[40475] = {
-["FirstCompletedOn"] = 1737889200,
 },
 [11184] = {
 ["FirstCompletedOn"] = 1518519600,
 ["EarnedBy"] = {
 ["Player-1122-019F1238"] = 1745316000,
 ["Player-1390-09230B89"] = 1518519600,
+},
+},
+[700] = {
+["FirstCompletedOn"] = 1237892400,
+["EarnedBy"] = {
 },
 },
 [701] = {
@@ -2481,40 +2552,34 @@ nil,
 ["Player-1390-09230B89"] = 1775037600,
 },
 },
-[12827] = {
-["FirstCompletedOn"] = 1542538800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1542538800,
+[40859] = {
+["FirstCompletedOn"] = 1735729200,
 },
+[41045] = {
+["FirstCompletedOn"] = 1735383600,
 },
-[40977] = {
-["FirstCompletedOn"] = 1731150000,
+[40994] = {
+["FirstCompletedOn"] = 1731322800,
 },
-[16411] = {
-["FirstCompletedOn"] = 1703934000,
+[3917] = {
+["FirstCompletedOn"] = 1501408800,
 },
-[17977] = {
-["FirstCompletedOn"] = 1704193200,
-},
-[13771] = {
-["FirstCompletedOn"] = 1604314800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1604314800,
-},
+[608] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [41186] = {
 ["FirstCompletedOn"] = 1735729200,
 },
-[13503] = {
-["FirstCompletedOn"] = 1730977200,
+[16626] = {
+["FirstCompletedOn"] = 1721815200,
 },
 [16571] = {
 ["FirstCompletedOn"] = 1744452000,
 },
-[42768] = {
-["FirstCompletedOn"] = 1775642400,
+[12877] = {
+["FirstCompletedOn"] = 1536660000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1775642400,
+["Player-1390-09230B89"] = 1536660000,
 },
 },
 [61912] = {
@@ -2523,17 +2588,20 @@ nil,
 ["Player-1390-09230B89"] = 1774350000,
 },
 },
-[10684] = {
-["FirstCompletedOn"] = 1518001200,
+[62168] = {
+["FirstCompletedOn"] = 1775037600,
 },
-[10668] = {
-["FirstCompletedOn"] = 1517137200,
+[14410] = {
+["FirstCompletedOn"] = 1607770800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607770800,
+},
 },
 [62104] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[62168] = {
-["FirstCompletedOn"] = 1775037600,
+[13503] = {
+["FirstCompletedOn"] = 1730977200,
 },
 [9425] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -2541,29 +2609,35 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[40529] = {
-["FirstCompletedOn"] = 1731063600,
-},
-[40730] = {
-["FirstCompletedOn"] = 1740567600,
+[12347] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
-[5066] = {
-["FirstCompletedOn"] = 1538215200,
+[12735] = {
+["FirstCompletedOn"] = 1534672800,
+},
+[61510] = {
+["FirstCompletedOn"] = 1773140400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1538215200,
+["Player-1390-09230B89"] = 1773140400,
 },
 },
-[40994] = {
-["FirstCompletedOn"] = 1731322800,
+[12556] = {
+["FirstCompletedOn"] = 1535882400,
 },
-[515] = {
-["FirstCompletedOn"] = 1248429600,
+[62552] = {
+["FirstCompletedOn"] = 1787220000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787220000,
 },
-[19194] = {
-["FirstCompletedOn"] = 1704106800,
+},
+[1281] = {
+["FirstCompletedOn"] = 1739012400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1739012400,
+},
 },
 [5794] = {
 ["FirstCompletedOn"] = 1534240800,
@@ -2578,17 +2652,20 @@ nil,
 ["Player-1390-09230B89"] = 1757066400,
 },
 },
-[41172] = {
-["FirstCompletedOn"] = 1735383600,
+[60889] = {
+["FirstCompletedOn"] = 1758189600,
 },
 [728] = {
 ["FirstCompletedOn"] = 1237719600,
 },
-[60889] = {
-["FirstCompletedOn"] = 1758189600,
+[19194] = {
+["FirstCompletedOn"] = 1704106800,
 },
-[480] = {
-["FirstCompletedOn"] = 1240221600,
+[1277] = {
+["FirstCompletedOn"] = 1497780000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1497780000,
+},
 },
 [731] = {
 ["FirstCompletedOn"] = 1235905200,
@@ -2627,13 +2704,11 @@ nil,
 [61401] = {
 ["FirstCompletedOn"] = 1756116000,
 },
-[700] = {
-["FirstCompletedOn"] = 1237892400,
-["EarnedBy"] = {
+[14798] = {
+["FirstCompletedOn"] = 1607166000,
 },
-},
-[8461] = {
-["FirstCompletedOn"] = 1516878000,
+[40992] = {
+["FirstCompletedOn"] = 1735470000,
 },
 [15918] = {
 ["FirstCompletedOn"] = 1701774000,
@@ -2641,16 +2716,16 @@ nil,
 [41187] = {
 ["FirstCompletedOn"] = 1737889200,
 },
-[765] = {
-["FirstCompletedOn"] = 1236769200,
+[60934] = {
+["FirstCompletedOn"] = 1755511200,
 },
-[1311] = {
-["FirstCompletedOn"] = 1497348000,
+[2537] = {
+["FirstCompletedOn"] = 1713866400,
 },
-[10460] = {
-["FirstCompletedOn"] = 1533117600,
+[5064] = {
+["FirstCompletedOn"] = 1538301600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1533117600,
+["Player-1390-09230B89"] = 1538301600,
 },
 },
 [61913] = {
@@ -2659,14 +2734,17 @@ nil,
 ["Player-1390-09230B89"] = 1772622000,
 },
 },
-[16334] = {
-["FirstCompletedOn"] = 1701601200,
+[20594] = {
+["FirstCompletedOn"] = 1740826800,
 },
-[773] = {
-["FirstCompletedOn"] = 1236942000,
+[8976] = {
+["FirstCompletedOn"] = 1721728800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721728800,
 },
-[12560] = {
-["FirstCompletedOn"] = 1534327200,
+},
+[60890] = {
+["FirstCompletedOn"] = 1756893600,
 },
 [62169] = {
 ["FirstCompletedOn"] = 1775037600,
@@ -2686,14 +2764,14 @@ nil,
 ["Player-1390-09230B89"] = 1604660400,
 },
 },
-[61638] = {
-["FirstCompletedOn"] = 1772362800,
+[14271] = {
+["FirstCompletedOn"] = 1604228400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772362800,
+["Player-1390-09230B89"] = 1604228400,
 },
 },
-[41180] = {
-["FirstCompletedOn"] = 1735383600,
+[61402] = {
+["FirstCompletedOn"] = 1756116000,
 },
 [62553] = {
 ["FirstCompletedOn"] = 1777197600,
@@ -2708,8 +2786,8 @@ nil,
 ["Player-1390-09230B89"] = 1726221600,
 },
 },
-[16626] = {
-["FirstCompletedOn"] = 1721815200,
+[770] = {
+["FirstCompletedOn"] = 1246442400,
 },
 [8105] = {
 ["FirstCompletedOn"] = 1606302000,
@@ -2720,8 +2798,8 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[14799] = {
-["FirstCompletedOn"] = 1607338800,
+[41188] = {
+["FirstCompletedOn"] = 1737889200,
 },
 [761] = {
 ["FirstCompletedOn"] = 1236337200,
@@ -2732,23 +2810,17 @@ nil,
 ["Player-1390-09230B89"] = 1703847600,
 },
 },
-[42788] = {
-["FirstCompletedOn"] = 1774609200,
+[781] = {
+["FirstCompletedOn"] = 1236855600,
 },
-[14410] = {
-["FirstCompletedOn"] = 1607770800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607770800,
+[12560] = {
+["FirstCompletedOn"] = 1534327200,
 },
+[765] = {
+["FirstCompletedOn"] = 1236769200,
 },
-[14271] = {
-["FirstCompletedOn"] = 1604228400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1604228400,
-},
-},
-[766] = {
-["FirstCompletedOn"] = 1237546800,
+[16334] = {
+["FirstCompletedOn"] = 1701601200,
 },
 [14303] = {
 ["FirstCompletedOn"] = 1607684400,
@@ -2756,14 +2828,17 @@ nil,
 [768] = {
 ["FirstCompletedOn"] = 1236510000,
 },
-[61402] = {
-["FirstCompletedOn"] = 1756116000,
-},
-[770] = {
-["FirstCompletedOn"] = 1246442400,
-},
-[771] = {
+[769] = {
 ["FirstCompletedOn"] = 1246528800,
+},
+[40996] = {
+["FirstCompletedOn"] = 1731150000,
+},
+[14367] = {
+["FirstCompletedOn"] = 1607684400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607684400,
+},
 },
 [772] = {
 ["FirstCompletedOn"] = 1236337200,
@@ -2774,8 +2849,8 @@ nil,
 ["Player-1390-09230B89"] = 1728554400,
 },
 },
-[61722] = {
-["FirstCompletedOn"] = 1773831600,
+[774] = {
+["FirstCompletedOn"] = 1237287600,
 },
 [775] = {
 ["FirstCompletedOn"] = 1237374000,
@@ -2783,8 +2858,11 @@ nil,
 [776] = {
 ["FirstCompletedOn"] = 1235732400,
 },
-[777] = {
-["FirstCompletedOn"] = 1236942000,
+[14463] = {
+["FirstCompletedOn"] = 1607511600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607511600,
+},
 },
 [778] = {
 ["FirstCompletedOn"] = 1236250800,
@@ -2804,10 +2882,10 @@ nil,
 [782] = {
 ["FirstCompletedOn"] = 1236942000,
 },
-[12347] = {
-["FirstCompletedOn"] = 1728554400,
+[10561] = {
+["FirstCompletedOn"] = 1495360800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1495360800,
 },
 },
 [41892] = {
@@ -2828,55 +2906,10 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[8482] = {
-["FirstCompletedOn"] = 1516878000,
+[62554] = {
+["FirstCompletedOn"] = 1787220000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
-},
-[802] = {
-["FirstCompletedOn"] = 1235818800,
-},
-[42212] = {
-["FirstCompletedOn"] = 1754215200,
-},
-[8530] = {
-["FirstCompletedOn"] = 1516878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
-},
-[61510] = {
-["FirstCompletedOn"] = 1773140400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773140400,
-},
-},
-[10785] = {
-["FirstCompletedOn"] = 1519124400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1519124400,
-},
-},
-[60891] = {
-["FirstCompletedOn"] = 1772967600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772967600,
-},
-},
-[1281] = {
-["FirstCompletedOn"] = 1739012400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1739012400,
-},
-},
-[10657] = {
-["FirstCompletedOn"] = 1495188000,
-},
-[10801] = {
-["FirstCompletedOn"] = 1530093600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1530093600,
+["Player-1390-09230B89"] = 1787220000,
 },
 },
 [14783] = {
@@ -2890,14 +2923,44 @@ nil,
 ["Player-1390-0D20B303"] = 1739876400,
 },
 },
+[42212] = {
+["FirstCompletedOn"] = 1754215200,
+},
+[8530] = {
+["FirstCompletedOn"] = 1516878000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516878000,
+},
+},
 [61211] = {
 ["FirstCompletedOn"] = 1769166000,
 },
-[1277] = {
-["FirstCompletedOn"] = 1497780000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1497780000,
+[14799] = {
+["FirstCompletedOn"] = 1607338800,
 },
+[60891] = {
+["FirstCompletedOn"] = 1772967600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1772967600,
+},
+},
+[802] = {
+["FirstCompletedOn"] = 1235818800,
+},
+[10657] = {
+["FirstCompletedOn"] = 1495188000,
+},
+[14895] = {
+["FirstCompletedOn"] = 1609326000,
+},
+[10689] = {
+["FirstCompletedOn"] = 1497780000,
+},
+[42788] = {
+["FirstCompletedOn"] = 1774609200,
+},
+[61957] = {
+["FirstCompletedOn"] = 1772967600,
 },
 [40869] = {
 ["FirstCompletedOn"] = 1731063600,
@@ -2914,14 +2977,17 @@ nil,
 ["Player-1390-09230B89"] = 1705834800,
 },
 },
-[12832] = {
-["FirstCompletedOn"] = 1537005600,
+[10785] = {
+["FirstCompletedOn"] = 1519124400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1537005600,
+["Player-1390-09230B89"] = 1519124400,
 },
 },
-[14895] = {
-["FirstCompletedOn"] = 1609326000,
+[10801] = {
+["FirstCompletedOn"] = 1530093600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1530093600,
+},
 },
 [41189] = {
 ["FirstCompletedOn"] = 1737889200,
@@ -2938,23 +3004,26 @@ nil,
 [6458] = {
 ["FirstCompletedOn"] = 1611054000,
 },
-[40725] = {
-["FirstCompletedOn"] = 1725012000,
+[61893] = {
+["FirstCompletedOn"] = 1775037600,
 },
 [12944] = {
 ["FirstCompletedOn"] = 1534759200,
 },
-[40859] = {
-["FirstCompletedOn"] = 1735729200,
+[628] = {
+["FirstCompletedOn"] = 1235818800,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235818800,
 },
-[1267] = {
-["FirstCompletedOn"] = 1498384800,
 },
-[40528] = {
-["FirstCompletedOn"] = 1726826400,
+[11216] = {
+["FirstCompletedOn"] = 1518346800,
 },
-[60934] = {
-["FirstCompletedOn"] = 1755511200,
+[19030] = {
+["FirstCompletedOn"] = 1718359200,
+},
+[41167] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [8930] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -2962,31 +3031,26 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[607] = {
-["FirstCompletedOn"] = 1739012400,
-},
 [13056] = {
 ["FirstCompletedOn"] = 1534327200,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1534327200,
 },
 },
-[40729] = {
-["FirstCompletedOn"] = 1731236400,
+[8962] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731236400,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
-[14782] = {
-["FirstCompletedOn"] = 1602669600,
+[61509] = {
+["FirstCompletedOn"] = 1773140400,
 ["EarnedBy"] = {
-["Player-1390-0D20B310"] = 1739876400,
-["Player-1390-0D20B307"] = 1739876400,
-["Player-1390-09230B89"] = 1602669600,
-["Player-1390-0D20B30E"] = 1739876400,
-["Player-1122-019F1238"] = 1744452000,
-["Player-1390-0D20B303"] = 1739876400,
+["Player-1390-09230B89"] = 1773140400,
 },
+},
+[13440] = {
+["FirstCompletedOn"] = 1603882800,
 },
 [13104] = {
 ["FirstCompletedOn"] = 1535104800,
@@ -3003,11 +3067,20 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[41045] = {
-["FirstCompletedOn"] = 1735383600,
+[61916] = {
+["FirstCompletedOn"] = 1771498800,
 },
-[608] = {
-["FirstCompletedOn"] = 1739012400,
+[19408] = {
+["FirstCompletedOn"] = 1725012000,
+},
+[849] = {
+["FirstCompletedOn"] = 1237114800,
+},
+[19344] = {
+["FirstCompletedOn"] = 1703847600,
+},
+[850] = {
+["FirstCompletedOn"] = 1236682800,
 },
 [40614] = {
 ["FirstCompletedOn"] = 1739962800,
@@ -3015,21 +3088,11 @@ nil,
 ["Player-1390-09230B89"] = 1739962800,
 },
 },
-[61916] = {
-["FirstCompletedOn"] = 1771498800,
-},
-[40082] = {
-["FirstCompletedOn"] = 1728122400,
-},
-[11185] = {
-["FirstCompletedOn"] = 1704711600,
+[62556] = {
+["FirstCompletedOn"] = 1777197600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745488800,
-["Player-1390-09230B89"] = 1704711600,
+["Player-1390-09230B89"] = 1777197600,
 },
-},
-[12735] = {
-["FirstCompletedOn"] = 1534672800,
 },
 [61212] = {
 ["FirstCompletedOn"] = 1772449200,
@@ -3043,29 +3106,32 @@ nil,
 [40870] = {
 ["FirstCompletedOn"] = 1735556400,
 },
-[13440] = {
-["FirstCompletedOn"] = 1603882800,
+[63451] = {
+["FirstCompletedOn"] = 1787133600,
 },
-[849] = {
-["FirstCompletedOn"] = 1237114800,
+[42278] = {
+["FirstCompletedOn"] = 1777456800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1777456800,
 },
-[850] = {
-["FirstCompletedOn"] = 1236682800,
 },
-[851] = {
+[40463] = {
+["FirstCompletedOn"] = 1742036400,
+},
+[857] = {
 ["FirstCompletedOn"] = 1237460400,
 },
-[854] = {
-["FirstCompletedOn"] = 1237287600,
+[40335] = {
+["FirstCompletedOn"] = 1740308400,
 },
 [61724] = {
 ["FirstCompletedOn"] = 1776852000,
 },
-[4827] = {
-["FirstCompletedOn"] = 1516618800,
+[13776] = {
+["FirstCompletedOn"] = 1603969200,
 },
-[61957] = {
-["FirstCompletedOn"] = 1772967600,
+[40807] = {
+["FirstCompletedOn"] = 1728036000,
 },
 [841] = {
 ["FirstCompletedOn"] = 1235991600,
@@ -3073,8 +3139,8 @@ nil,
 [842] = {
 ["FirstCompletedOn"] = 1237114800,
 },
-[61893] = {
-["FirstCompletedOn"] = 1775037600,
+[19420] = {
+["FirstCompletedOn"] = 1740567600,
 },
 [844] = {
 ["FirstCompletedOn"] = 1236423600,
@@ -3100,23 +3166,20 @@ nil,
 [42022] = {
 ["FirstCompletedOn"] = 1758189600,
 },
-[62556] = {
-["FirstCompletedOn"] = 1777197600,
+[851] = {
+["FirstCompletedOn"] = 1237460400,
+},
+[40103] = {
+["FirstCompletedOn"] = 1726567200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777197600,
+["Player-1390-09230B89"] = 1726567200,
 },
-},
-[852] = {
-["FirstCompletedOn"] = 1237374000,
 },
 [853] = {
 ["FirstCompletedOn"] = 1237374000,
 },
-[42278] = {
-["FirstCompletedOn"] = 1777456800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777456800,
-},
+[854] = {
+["FirstCompletedOn"] = 1237287600,
 },
 [855] = {
 ["FirstCompletedOn"] = 1237374000,
@@ -3124,8 +3187,8 @@ nil,
 [856] = {
 ["FirstCompletedOn"] = 1237546800,
 },
-[857] = {
-["FirstCompletedOn"] = 1237460400,
+[62940] = {
+["FirstCompletedOn"] = 1787220000,
 },
 [858] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -3133,8 +3196,8 @@ nil,
 [859] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[860] = {
-["FirstCompletedOn"] = 1246528800,
+[4827] = {
+["FirstCompletedOn"] = 1516618800,
 },
 [861] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -3145,8 +3208,11 @@ nil,
 ["Player-1390-09230B89"] = 1772622000,
 },
 },
-[40807] = {
-["FirstCompletedOn"] = 1728036000,
+[4851] = {
+["FirstCompletedOn"] = 1537783200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1537783200,
+},
 },
 [40871] = {
 ["FirstCompletedOn"] = 1735556400,
@@ -3157,11 +3223,8 @@ nil,
 [40999] = {
 ["FirstCompletedOn"] = 1731322800,
 },
-[10082] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
-},
+[17492] = {
+["FirstCompletedOn"] = 1722592800,
 },
 [868] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -3169,29 +3232,27 @@ nil,
 [41191] = {
 ["FirstCompletedOn"] = 1741172400,
 },
-[12369] = {
+[13712] = {
+["FirstCompletedOn"] = 1603882800,
+},
+[62109] = {
+["FirstCompletedOn"] = 1773399600,
+},
+[40808] = {
 ["FirstCompletedOn"] = 1728554400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
-},
-},
-[41167] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[40997] = {
-["FirstCompletedOn"] = 1731150000,
 },
 [4931] = {
 ["FirstCompletedOn"] = 1496656800,
 },
-[61509] = {
-["FirstCompletedOn"] = 1773140400,
+[62621] = {
+["FirstCompletedOn"] = 1777197600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773140400,
+["Player-1122-019F1238"] = 1777629600,
+["Player-1390-09230B89"] = 1777197600,
 },
 },
-[40872] = {
-["FirstCompletedOn"] = 1735470000,
+[1181] = {
+["FirstCompletedOn"] = 1606129200,
 },
 [9906] = {
 ["FirstCompletedOn"] = 1519038000,
@@ -3199,8 +3260,11 @@ nil,
 [62173] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[40808] = {
-["FirstCompletedOn"] = 1728554400,
+[12129] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
+},
 },
 [12001] = {
 ["FirstCompletedOn"] = 1731063600,
@@ -3208,34 +3272,46 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[19408] = {
-["FirstCompletedOn"] = 1725012000,
+[889] = {
+["FirstCompletedOn"] = 1237719600,
+["EarnedBy"] = {
+["Player-1390-0D20B310"] = 1739876400,
+["Player-1390-0D20B307"] = 1739876400,
+["Player-1390-09230B89"] = 1496138400,
+["Player-1390-0D20B30E"] = 1739876400,
+["Player-1122-019F1238"] = 1237719600,
+["Player-1302-078A2412"] = 1438509600,
+["Player-1390-0D20B303"] = 1739876400,
+},
 },
 [4995] = {
 ["FirstCompletedOn"] = 1516618800,
 },
-[40936] = {
-["FirstCompletedOn"] = 1743501600,
+[61406] = {
+["FirstCompletedOn"] = 1764759600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1764759600,
 },
-[19344] = {
-["FirstCompletedOn"] = 1703847600,
+},
+[14304] = {
+["FirstCompletedOn"] = 1726912800,
 },
 [12081] = {
 ["FirstCompletedOn"] = 1530957600,
 },
-[14367] = {
-["FirstCompletedOn"] = 1607684400,
+[5115] = {
+["FirstCompletedOn"] = 1606129200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607684400,
+["Player-1390-09230B89"] = 1606129200,
 },
 },
 [40232] = {
 ["FirstCompletedOn"] = 1740567600,
 },
-[12129] = {
-["FirstCompletedOn"] = 1731063600,
+[10082] = {
+["FirstCompletedOn"] = 1721815200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1390-09230B89"] = 1721815200,
 },
 },
 [40360] = {
@@ -3259,8 +3335,8 @@ nil,
 ["Player-1390-0D20B303"] = 1739876400,
 },
 },
-[61726] = {
-["FirstCompletedOn"] = 1773918000,
+[40936] = {
+["FirstCompletedOn"] = 1743501600,
 },
 [892] = {
 ["FirstCompletedOn"] = 1438509600,
@@ -3278,14 +3354,11 @@ nil,
 ["Player-1390-09230B89"] = 1772708400,
 },
 },
-[14304] = {
-["FirstCompletedOn"] = 1726912800,
+[63325] = {
+["FirstCompletedOn"] = 1787220000,
 },
-[5115] = {
-["FirstCompletedOn"] = 1606129200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
-},
+[40872] = {
+["FirstCompletedOn"] = 1735470000,
 },
 [5123] = {
 ["FirstCompletedOn"] = 1537783200,
@@ -3293,26 +3366,32 @@ nil,
 ["Player-1390-09230B89"] = 1537783200,
 },
 },
-[2537] = {
-["FirstCompletedOn"] = 1713866400,
-},
 [12321] = {
 ["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1728554400,
 },
 },
-[40463] = {
-["FirstCompletedOn"] = 1742036400,
+[14368] = {
+["FirstCompletedOn"] = 1609239600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1609239600,
 },
-[41192] = {
-["FirstCompletedOn"] = 1741172400,
 },
 [14416] = {
 ["FirstCompletedOn"] = 1607857200,
 ["EarnedBy"] = {
 ["Player-1122-019F1238"] = 1745229600,
 ["Player-1390-09230B89"] = 1607857200,
+},
+},
+[41192] = {
+["FirstCompletedOn"] = 1741172400,
+},
+[12369] = {
+["FirstCompletedOn"] = 1728554400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1728554400,
 },
 },
 [12385] = {
@@ -3324,32 +3403,32 @@ nil,
 [61854] = {
 ["FirstCompletedOn"] = 1772881200,
 },
-[62174] = {
-["FirstCompletedOn"] = 1775642400,
+[61636] = {
+["FirstCompletedOn"] = 1774263600,
 },
-[40335] = {
-["FirstCompletedOn"] = 1740308400,
+[63683] = {
+["FirstCompletedOn"] = 1787047200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787047200,
 },
-[41188] = {
-["FirstCompletedOn"] = 1737889200,
+},
+[4624] = {
+["FirstCompletedOn"] = 1738839600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1738839600,
+},
 },
 [62110] = {
 ["FirstCompletedOn"] = 1773572400,
 },
-[12481] = {
-["FirstCompletedOn"] = 1534672800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534672800,
+[62174] = {
+["FirstCompletedOn"] = 1775642400,
 },
+[1157] = {
+["FirstCompletedOn"] = 1235732400,
 },
 [12561] = {
 ["FirstCompletedOn"] = 1534500000,
-},
-[8976] = {
-["FirstCompletedOn"] = 1721728800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
-},
 },
 [912] = {
 ["FirstCompletedOn"] = 1739012400,
@@ -3366,20 +3445,29 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[41050] = {
-["FirstCompletedOn"] = 1736679600,
+[19414] = {
+["FirstCompletedOn"] = 1727172000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1727172000,
+},
 },
 [12593] = {
 ["FirstCompletedOn"] = 1534327200,
 },
-[41193] = {
-["FirstCompletedOn"] = 1741172400,
+[12833] = {
+["FirstCompletedOn"] = 1537005600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1537005600,
+},
 },
 [42280] = {
 ["FirstCompletedOn"] = 1764759600,
 },
-[61727] = {
-["FirstCompletedOn"] = 1774609200,
+[10802] = {
+["FirstCompletedOn"] = 1530093600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1530093600,
+},
 },
 [5307] = {
 ["FirstCompletedOn"] = 1606129200,
@@ -3387,20 +3475,14 @@ nil,
 ["Player-1390-09230B89"] = 1606129200,
 },
 },
-[937] = {
-["FirstCompletedOn"] = 1739012400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1739012400,
+[61727] = {
+["FirstCompletedOn"] = 1774609200,
 },
+[63171] = {
+["FirstCompletedOn"] = 1787133600,
 },
-[8465] = {
-["FirstCompletedOn"] = 1516878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
-},
-[1181] = {
-["FirstCompletedOn"] = 1606129200,
+[5443] = {
+["FirstCompletedOn"] = 1496743200,
 },
 [7386] = {
 ["FirstCompletedOn"] = 1738494000,
@@ -3411,8 +3493,11 @@ nil,
 [10706] = {
 ["FirstCompletedOn"] = 1500199200,
 },
-[40809] = {
-["FirstCompletedOn"] = 1731063600,
+[63326] = {
+["FirstCompletedOn"] = 1787133600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787133600,
+},
 },
 [62239] = {
 ["FirstCompletedOn"] = 1776247200,
@@ -3432,8 +3517,8 @@ nil,
 [12849] = {
 ["FirstCompletedOn"] = 1535450400,
 },
-[10818] = {
-["FirstCompletedOn"] = 1531044000,
+[41193] = {
+["FirstCompletedOn"] = 1741172400,
 },
 [12881] = {
 ["FirstCompletedOn"] = 1536660000,
@@ -3449,14 +3534,14 @@ nil,
 [61855] = {
 ["FirstCompletedOn"] = 1772276400,
 },
-[5443] = {
-["FirstCompletedOn"] = 1496743200,
-},
-[41961] = {
-["FirstCompletedOn"] = 1772708400,
+[937] = {
+["FirstCompletedOn"] = 1739012400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
+["Player-1390-09230B89"] = 1739012400,
 },
+},
+[40462] = {
+["FirstCompletedOn"] = 1728036000,
 },
 [939] = {
 ["FirstCompletedOn"] = 1497088800,
@@ -3470,10 +3555,10 @@ nil,
 [13009] = {
 ["FirstCompletedOn"] = 1738926000,
 },
-[8962] = {
-["FirstCompletedOn"] = 1721728800,
+[41961] = {
+["FirstCompletedOn"] = 1772708400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1772708400,
 },
 },
 [10994] = {
@@ -3488,23 +3573,23 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[628] = {
-["FirstCompletedOn"] = 1235818800,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235818800,
-},
+[14334] = {
+["FirstCompletedOn"] = 1606215600,
 },
 [947] = {
 ["FirstCompletedOn"] = 1500717600,
 },
-[3798] = {
-["FirstCompletedOn"] = 1501408800,
+[62531] = {
+["FirstCompletedOn"] = 1777024800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1501408800,
+["Player-1390-09230B89"] = 1777024800,
 },
 },
-[11216] = {
-["FirstCompletedOn"] = 1518346800,
+[9036] = {
+["FirstCompletedOn"] = 1721815200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721815200,
+},
 },
 [9043] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -3512,11 +3597,15 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
+[964] = {
+["FirstCompletedOn"] = 1238151600,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1238151600,
+["Player-1390-09230B89"] = 1494756000,
+},
+},
 [62176] = {
 ["FirstCompletedOn"] = 1774436400,
-},
-[19478] = {
-["FirstCompletedOn"] = 1722679200,
 },
 [18174] = {
 ["FirstCompletedOn"] = 1722679200,
@@ -3527,11 +3616,8 @@ nil,
 [9107] = {
 ["FirstCompletedOn"] = 1499767200,
 },
-[4624] = {
-["FirstCompletedOn"] = 1738839600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1738839600,
-},
+[4496] = {
+["FirstCompletedOn"] = 1721728800,
 },
 [40618] = {
 ["FirstCompletedOn"] = 1728554400,
@@ -3551,8 +3637,11 @@ nil,
 [40938] = {
 ["FirstCompletedOn"] = 1743501600,
 },
-[61636] = {
-["FirstCompletedOn"] = 1774263600,
+[8972] = {
+["FirstCompletedOn"] = 1721728800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721728800,
+},
 },
 [11298] = {
 ["FirstCompletedOn"] = 1529488800,
@@ -3560,12 +3649,8 @@ nil,
 ["Player-1390-09230B89"] = 1529488800,
 },
 },
-[964] = {
-["FirstCompletedOn"] = 1238151600,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1238151600,
-["Player-1390-09230B89"] = 1494756000,
-},
+[41130] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [41194] = {
 ["FirstCompletedOn"] = 1741172400,
@@ -3582,10 +3667,10 @@ nil,
 [13441] = {
 ["FirstCompletedOn"] = 1603882800,
 },
-[18867] = {
-["FirstCompletedOn"] = 1703674800,
+[41962] = {
+["FirstCompletedOn"] = 1772708400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703674800,
+["Player-1390-09230B89"] = 1772708400,
 },
 },
 [11426] = {
@@ -3606,8 +3691,8 @@ nil,
 [975] = {
 ["FirstCompletedOn"] = 1517223600,
 },
-[13553] = {
-["FirstCompletedOn"] = 1604314800,
+[976] = {
+["FirstCompletedOn"] = 1538215200,
 },
 [977] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -3615,11 +3700,8 @@ nil,
 [978] = {
 ["FirstCompletedOn"] = 1534240800,
 },
-[61508] = {
-["FirstCompletedOn"] = 1773140400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773140400,
-},
+[8940] = {
+["FirstCompletedOn"] = 1531044000,
 },
 [40107] = {
 ["FirstCompletedOn"] = 1726826400,
@@ -3627,14 +3709,17 @@ nil,
 ["Player-1390-09230B89"] = 1726826400,
 },
 },
-[5875] = {
-["FirstCompletedOn"] = 1757671200,
+[8924] = {
+["FirstCompletedOn"] = 1499940000,
 },
-[40875] = {
-["FirstCompletedOn"] = 1733050800,
+[19326] = {
+["FirstCompletedOn"] = 1704884400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1704884400,
 },
-[41195] = {
-["FirstCompletedOn"] = 1741258800,
+},
+[40811] = {
+["FirstCompletedOn"] = 1732618800,
 },
 [40363] = {
 ["FirstCompletedOn"] = 1725098400,
@@ -3652,11 +3737,14 @@ nil,
 [9619] = {
 ["FirstCompletedOn"] = 1721815200,
 },
-[7994] = {
-["FirstCompletedOn"] = 1499508000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1499508000,
+[41195] = {
+["FirstCompletedOn"] = 1741258800,
 },
+[40812] = {
+["FirstCompletedOn"] = 1728813600,
+},
+[17279] = {
+["FirstCompletedOn"] = 1722420000,
 },
 [14417] = {
 ["FirstCompletedOn"] = 1741345200,
@@ -3665,26 +3753,20 @@ nil,
 ["Player-1390-09230B89"] = 1741345200,
 },
 },
-[42730] = {
-["FirstCompletedOn"] = 1757325600,
-},
-[63171] = {
-["FirstCompletedOn"] = 1787133600,
-},
-[40811] = {
-["FirstCompletedOn"] = 1732618800,
+[5875] = {
+["FirstCompletedOn"] = 1757671200,
 },
 [11762] = {
 ["FirstCompletedOn"] = 1533376800,
+},
+[1038] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [1021] = {
 ["FirstCompletedOn"] = 1531044000,
 },
 [1022] = {
 ["FirstCompletedOn"] = 1246528800,
-},
-[40462] = {
-["FirstCompletedOn"] = 1728036000,
 },
 [41131] = {
 ["FirstCompletedOn"] = 1736679600,
@@ -3695,34 +3777,28 @@ nil,
 [61729] = {
 ["FirstCompletedOn"] = 1773658800,
 },
-[1023] = {
-["FirstCompletedOn"] = 1246528800,
+[14305] = {
+["FirstCompletedOn"] = 1610017200,
 },
 [61857] = {
 ["FirstCompletedOn"] = 1772881200,
 },
+[61635] = {
+["FirstCompletedOn"] = 1773831600,
+},
+[41101] = {
+["FirstCompletedOn"] = 1743760800,
+},
 [40876] = {
 ["FirstCompletedOn"] = 1738321200,
 },
-[1030] = {
-["FirstCompletedOn"] = 1246528800,
-},
-[9036] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
-},
-},
-[12338] = {
-["FirstCompletedOn"] = 1728554400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
-},
+[20510] = {
+["FirstCompletedOn"] = 1735470000,
 },
 [1005] = {
 ["FirstCompletedOn"] = 1239962400,
 },
-[1036] = {
+[1032] = {
 ["FirstCompletedOn"] = 1246528800,
 },
 [12002] = {
@@ -3731,8 +3807,8 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[4496] = {
-["FirstCompletedOn"] = 1721728800,
+[1034] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [6019] = {
 ["FirstCompletedOn"] = 1496656800,
@@ -3740,20 +3816,23 @@ nil,
 ["Player-1390-09230B89"] = 1496656800,
 },
 },
-[8972] = {
-["FirstCompletedOn"] = 1721728800,
+[61730] = {
+["FirstCompletedOn"] = 1775037600,
+},
+[62561] = {
+["FirstCompletedOn"] = 1787220000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1787220000,
 },
-},
-[12066] = {
-["FirstCompletedOn"] = 1518346800,
 },
 [1012] = {
 ["FirstCompletedOn"] = 1248170400,
 },
-[1038] = {
+[271] = {
 ["FirstCompletedOn"] = 1246528800,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1246528800,
+},
 },
 [1014] = {
 ["FirstCompletedOn"] = 1773918000,
@@ -3764,15 +3843,11 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[8940] = {
-["FirstCompletedOn"] = 1531044000,
+[16576] = {
+["FirstCompletedOn"] = 1701774000,
 },
-[40428] = {
-["FirstCompletedOn"] = 1741172400,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1746352800,
-["Player-1390-09230B89"] = 1741172400,
-},
+[1017] = {
+["FirstCompletedOn"] = 1235732400,
 },
 [16272] = {
 ["FirstCompletedOn"] = 1701860400,
@@ -3780,8 +3855,11 @@ nil,
 ["Player-1390-09230B89"] = 1701860400,
 },
 },
-[8924] = {
-["FirstCompletedOn"] = 1499940000,
+[2157] = {
+["FirstCompletedOn"] = 1518951600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1518951600,
+},
 },
 [1020] = {
 ["FirstCompletedOn"] = 1516618800,
@@ -3792,8 +3870,8 @@ nil,
 [16336] = {
 ["FirstCompletedOn"] = 1702206000,
 },
-[40812] = {
-["FirstCompletedOn"] = 1728813600,
+[1023] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [1024] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -3801,8 +3879,8 @@ nil,
 [1026] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[20510] = {
-["FirstCompletedOn"] = 1735470000,
+[1028] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [14369] = {
 ["FirstCompletedOn"] = 1607166000,
@@ -3810,17 +3888,23 @@ nil,
 ["Player-1390-09230B89"] = 1607166000,
 },
 },
-[1032] = {
+[12338] = {
+["FirstCompletedOn"] = 1728554400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1728554400,
+},
+},
+[41196] = {
+["FirstCompletedOn"] = 1741518000,
+},
+[1036] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[1034] = {
-["FirstCompletedOn"] = 1246528800,
+[12386] = {
+["FirstCompletedOn"] = 1755511200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1755511200,
 },
-[61730] = {
-["FirstCompletedOn"] = 1775037600,
-},
-[16576] = {
-["FirstCompletedOn"] = 1701774000,
 },
 [61858] = {
 ["FirstCompletedOn"] = 1775037600,
@@ -3831,33 +3915,29 @@ nil,
 ["Player-1390-09230B89"] = 1772622000,
 },
 },
-[40803] = {
-["FirstCompletedOn"] = 1731063600,
+[40525] = {
+["FirstCompletedOn"] = 1731322800,
+},
+[19196] = {
+["FirstCompletedOn"] = 1738062000,
 },
 [41708] = {
 ["FirstCompletedOn"] = 1740913200,
 },
-[682] = {
-["FirstCompletedOn"] = 1703329200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703329200,
-},
-},
 [62178] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[13712] = {
-["FirstCompletedOn"] = 1603882800,
+[40333] = {
+["FirstCompletedOn"] = 1743501600,
 },
-[10691] = {
-["FirstCompletedOn"] = 1746180000,
-},
-[20118] = {
-["FirstCompletedOn"] = 1724493600,
+[40361] = {
+["FirstCompletedOn"] = 1725098400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745056800,
-["Player-1390-09230B89"] = 1724493600,
+["Player-1390-09230B89"] = 1725098400,
 },
+},
+[4520] = {
+["FirstCompletedOn"] = 1519038000,
 },
 [12546] = {
 ["FirstCompletedOn"] = 1535191200,
@@ -3871,45 +3951,11 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[14206] = {
-["FirstCompletedOn"] = 1606561200,
-},
-[17280] = {
-["FirstCompletedOn"] = 1722420000,
-},
-[14801] = {
-["FirstCompletedOn"] = 1607770800,
-},
-[8532] = {
-["FirstCompletedOn"] = 1516878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
-},
-[61635] = {
-["FirstCompletedOn"] = 1773831600,
-},
-[2143] = {
-["FirstCompletedOn"] = 1533204000,
-},
 [40429] = {
 ["FirstCompletedOn"] = 1741172400,
 ["EarnedBy"] = {
 ["Player-1122-019F1238"] = 1746352800,
 ["Player-1390-09230B89"] = 1741172400,
-},
-},
-[41101] = {
-["FirstCompletedOn"] = 1743760800,
-},
-[41130] = {
-["FirstCompletedOn"] = 1739012400,
-},
-[40621] = {
-["FirstCompletedOn"] = 1724493600,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745056800,
-["Player-1390-09230B89"] = 1724493600,
 },
 },
 [12738] = {
@@ -3921,88 +3967,53 @@ nil,
 ["Player-1390-09230B89"] = 1773572400,
 },
 },
-[40813] = {
-["FirstCompletedOn"] = 1731495600,
-},
-[8988] = {
-["FirstCompletedOn"] = 1721728800,
+[8532] = {
+["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1516878000,
+},
+},
+[41804] = {
+["FirstCompletedOn"] = 1772362800,
+},
+[2143] = {
+["FirstCompletedOn"] = 1533204000,
+},
+[10627] = {
+["FirstCompletedOn"] = 1532253600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1532253600,
 },
 },
 [41133] = {
 ["FirstCompletedOn"] = 1737111600,
 },
-[8980] = {
-["FirstCompletedOn"] = 1533722400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1533722400,
-},
-},
-[19414] = {
-["FirstCompletedOn"] = 1727172000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1727172000,
-},
-},
-[10803] = {
-["FirstCompletedOn"] = 1531476000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531476000,
-},
-},
 [41197] = {
 ["FirstCompletedOn"] = 1742036400,
 },
-[61731] = {
-["FirstCompletedOn"] = 1773831600,
-},
-[271] = {
-["FirstCompletedOn"] = 1246528800,
+[40621] = {
+["FirstCompletedOn"] = 1724493600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1246528800,
+["Player-1122-019F1238"] = 1745056800,
+["Player-1390-09230B89"] = 1724493600,
 },
 },
-[61859] = {
-["FirstCompletedOn"] = 1772967600,
+[17280] = {
+["FirstCompletedOn"] = 1722420000,
 },
-[62371] = {
-["FirstCompletedOn"] = 1772622000,
+[14801] = {
+["FirstCompletedOn"] = 1607770800,
 },
-[2157] = {
-["FirstCompletedOn"] = 1518951600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518951600,
+[40813] = {
+["FirstCompletedOn"] = 1731495600,
 },
+[10459] = {
+["FirstCompletedOn"] = 1533290400,
 },
-[40525] = {
-["FirstCompletedOn"] = 1731322800,
-},
-[62499] = {
-["FirstCompletedOn"] = 1777197600,
-},
-[41709] = {
-["FirstCompletedOn"] = 1745488800,
-},
-[9044] = {
-["FirstCompletedOn"] = 1704020400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1704020400,
-},
-},
-[8932] = {
-["FirstCompletedOn"] = 1721728800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
-},
+[61506] = {
+["FirstCompletedOn"] = 1772535600,
 },
 [8948] = {
-["FirstCompletedOn"] = 1721728800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
-},
-},
-[8964] = {
 ["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1721728800,
@@ -4014,11 +4025,71 @@ nil,
 ["Player-1390-09230B89"] = 1752660000,
 },
 },
+[10803] = {
+["FirstCompletedOn"] = 1531476000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1531476000,
+},
+},
+[10819] = {
+["FirstCompletedOn"] = 1531044000,
+},
+[61731] = {
+["FirstCompletedOn"] = 1773831600,
+},
+[9044] = {
+["FirstCompletedOn"] = 1704020400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1704020400,
+},
+},
+[61859] = {
+["FirstCompletedOn"] = 1772967600,
+},
+[2085] = {
+["FirstCompletedOn"] = 1247047200,
+},
+[2081] = {
+["FirstCompletedOn"] = 1731150000,
+},
+[1039] = {
+["FirstCompletedOn"] = 1246528800,
+},
+[1029] = {
+["FirstCompletedOn"] = 1246528800,
+},
+[41709] = {
+["FirstCompletedOn"] = 1745488800,
+},
+[14409] = {
+["FirstCompletedOn"] = 1610535600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1610535600,
+},
+},
+[8932] = {
+["FirstCompletedOn"] = 1721728800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721728800,
+},
+},
+[62371] = {
+["FirstCompletedOn"] = 1772622000,
+},
+[8964] = {
+["FirstCompletedOn"] = 1721728800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721728800,
+},
+},
+[62499] = {
+["FirstCompletedOn"] = 1777197600,
+},
 [6547] = {
 ["FirstCompletedOn"] = 1532685600,
 },
-[40333] = {
-["FirstCompletedOn"] = 1743501600,
+[1033] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [4516] = {
 ["FirstCompletedOn"] = 1705316400,
@@ -4062,8 +4133,11 @@ nil,
 [40814] = {
 ["FirstCompletedOn"] = 1731754800,
 },
-[19196] = {
-["FirstCompletedOn"] = 1738062000,
+[12330] = {
+["FirstCompletedOn"] = 1728554400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1728554400,
+},
 },
 [40942] = {
 ["FirstCompletedOn"] = 1741777200,
@@ -4071,20 +4145,17 @@ nil,
 ["Player-1390-09230B89"] = 1741777200,
 },
 },
-[6763] = {
-["FirstCompletedOn"] = 1531476000,
+[2057] = {
+["FirstCompletedOn"] = 1248084000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531476000,
+["Player-1122-019F1238"] = 1248084000,
 },
 },
-[42030] = {
-["FirstCompletedOn"] = 1532599200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1752660000,
+[16400] = {
+["FirstCompletedOn"] = 1701601200,
 },
-},
-[1190] = {
-["FirstCompletedOn"] = 1497088800,
+[1025] = {
+["FirstCompletedOn"] = 1246442400,
 },
 [41198] = {
 ["FirstCompletedOn"] = 1741172400,
@@ -4101,11 +4172,14 @@ nil,
 ["Player-1390-09230B89"] = 1773054000,
 },
 },
-[40815] = {
-["FirstCompletedOn"] = 1731236400,
+[62180] = {
+["FirstCompletedOn"] = 1774004400,
 },
-[61413] = {
-["FirstCompletedOn"] = 1519124400,
+[6763] = {
+["FirstCompletedOn"] = 1531476000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1531476000,
+},
 },
 [6739] = {
 ["FirstCompletedOn"] = 1773399600,
@@ -4128,15 +4202,14 @@ nil,
 [1182] = {
 ["FirstCompletedOn"] = 1500112800,
 },
-[4956] = {
-["FirstCompletedOn"] = 1516618800,
+[2078] = {
+["FirstCompletedOn"] = 1529229600,
+},
+[19008] = {
+["FirstCompletedOn"] = 1703329200,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1516705200,
 ["Player-1390-09230B89"] = 1703329200,
 },
-},
-[62373] = {
-["FirstCompletedOn"] = 1773486000,
 },
 [18976] = {
 ["FirstCompletedOn"] = 1703847600,
@@ -4145,29 +4218,32 @@ nil,
 ["Player-1390-09230B89"] = 1703847600,
 },
 },
-[19008] = {
-["FirstCompletedOn"] = 1703329200,
+[1190] = {
+["FirstCompletedOn"] = 1497088800,
+},
+[653] = {
+["FirstCompletedOn"] = 1238238000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703329200,
+["Player-1122-019F1238"] = 1238320800,
 },
 },
-[12506] = {
-["FirstCompletedOn"] = 1535623200,
+[563] = {
+["FirstCompletedOn"] = 1248256800,
+},
+[14361] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1535623200,
+["Player-1390-09230B89"] = 1731063600,
 },
-},
-[1250] = {
-["FirstCompletedOn"] = 1539338400,
-},
-[61734] = {
-["FirstCompletedOn"] = 1772535600,
 },
 [9572] = {
 ["FirstCompletedOn"] = 1602842400,
 },
-[4520] = {
-["FirstCompletedOn"] = 1519038000,
+[12365] = {
+["FirstCompletedOn"] = 1728554400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1728554400,
+},
 },
 [40431] = {
 ["FirstCompletedOn"] = 1727776800,
@@ -4175,11 +4251,14 @@ nil,
 ["Player-1390-09230B89"] = 1727776800,
 },
 },
-[40816] = {
-["FirstCompletedOn"] = 1728554400,
+[40332] = {
+["FirstCompletedOn"] = 1743501600,
 },
-[2085] = {
-["FirstCompletedOn"] = 1247047200,
+[4852] = {
+["FirstCompletedOn"] = 1606129200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606129200,
+},
 },
 [40623] = {
 ["FirstCompletedOn"] = 1728727200,
@@ -4193,14 +4272,11 @@ nil,
 [11731] = {
 ["FirstCompletedOn"] = 1529056800,
 },
-[4852] = {
-["FirstCompletedOn"] = 1606129200,
+[63332] = {
+["FirstCompletedOn"] = 1787220000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
+["Player-1390-09230B89"] = 1787220000,
 },
-},
-[2081] = {
-["FirstCompletedOn"] = 1731150000,
 },
 [40943] = {
 ["FirstCompletedOn"] = 1742382000,
@@ -4208,20 +4284,26 @@ nil,
 ["Player-1390-09230B89"] = 1742382000,
 },
 },
-[1039] = {
-["FirstCompletedOn"] = 1246528800,
+[61413] = {
+["FirstCompletedOn"] = 1519124400,
 },
-[40944] = {
-["FirstCompletedOn"] = 1743588000,
+[523] = {
+["FirstCompletedOn"] = 1530698400,
+},
+[18201] = {
+["FirstCompletedOn"] = 1722679200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1743588000,
+["Player-1390-09230B89"] = 1722679200,
 },
 },
 [15921] = {
 ["FirstCompletedOn"] = 1702206000,
 },
-[41228] = {
-["FirstCompletedOn"] = 1741258800,
+[10011] = {
+["FirstCompletedOn"] = 1531476000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1531476000,
+},
 },
 [61733] = {
 ["FirstCompletedOn"] = 1774350000,
@@ -4238,20 +4320,21 @@ nil,
 ["Player-1390-09230B89"] = 1499335200,
 },
 },
-[1033] = {
-["FirstCompletedOn"] = 1246528800,
+[9908] = {
+["FirstCompletedOn"] = 1519038000,
 },
 [4940] = {
 ["FirstCompletedOn"] = 1496656800,
 },
-[12330] = {
-["FirstCompletedOn"] = 1728554400,
+[4996] = {
+["FirstCompletedOn"] = 1516618800,
+},
+[4956] = {
+["FirstCompletedOn"] = 1516618800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1122-019F1238"] = 1516705200,
+["Player-1390-09230B89"] = 1703329200,
 },
-},
-[9908] = {
-["FirstCompletedOn"] = 1519038000,
 },
 [41711] = {
 ["FirstCompletedOn"] = 1741777200,
@@ -4259,10 +4342,10 @@ nil,
 ["Player-1390-09230B89"] = 1741777200,
 },
 },
-[2057] = {
-["FirstCompletedOn"] = 1248084000,
+[11994] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248084000,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
 [4980] = {
@@ -4271,20 +4354,17 @@ nil,
 [1248] = {
 ["FirstCompletedOn"] = 1516964400,
 },
-[4996] = {
-["FirstCompletedOn"] = 1516618800,
+[1250] = {
+["FirstCompletedOn"] = 1539338400,
 },
-[16400] = {
-["FirstCompletedOn"] = 1701601200,
+[62273] = {
+["FirstCompletedOn"] = 1772190000,
 },
-[1025] = {
-["FirstCompletedOn"] = 1246442400,
+[16600] = {
+["FirstCompletedOn"] = 1706180400,
 },
-[61798] = {
-["FirstCompletedOn"] = 1774436400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1774436400,
-},
+[16498] = {
+["FirstCompletedOn"] = 1703156400,
 },
 [1258] = {
 ["FirstCompletedOn"] = 1248429600,
@@ -4292,8 +4372,11 @@ nil,
 ["Player-1122-019F1238"] = 1248429600,
 },
 },
-[16546] = {
-["FirstCompletedOn"] = 1704970800,
+[63333] = {
+["FirstCompletedOn"] = 1787220000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787220000,
+},
 },
 [10084] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -4304,8 +4387,8 @@ nil,
 [1264] = {
 ["FirstCompletedOn"] = 1531044000,
 },
-[16578] = {
-["FirstCompletedOn"] = 1703070000,
+[61414] = {
+["FirstCompletedOn"] = 1764759600,
 },
 [1268] = {
 ["FirstCompletedOn"] = 1246874400,
@@ -4322,11 +4405,8 @@ nil,
 [42799] = {
 ["FirstCompletedOn"] = 1755511200,
 },
-[5108] = {
-["FirstCompletedOn"] = 1606129200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
-},
+[40816] = {
+["FirstCompletedOn"] = 1728554400,
 },
 [5116] = {
 ["FirstCompletedOn"] = 1606129200,
@@ -4334,11 +4414,17 @@ nil,
 ["Player-1390-09230B89"] = 1606129200,
 },
 },
-[61414] = {
-["FirstCompletedOn"] = 1764759600,
+[40944] = {
+["FirstCompletedOn"] = 1743588000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1743588000,
 },
-[40231] = {
-["FirstCompletedOn"] = 1725876000,
+},
+[11999] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
+},
 },
 [14370] = {
 ["FirstCompletedOn"] = 1607079600,
@@ -4346,14 +4432,14 @@ nil,
 ["Player-1390-09230B89"] = 1607079600,
 },
 },
-[42736] = {
-["FirstCompletedOn"] = 1758189600,
-},
-[42032] = {
-["FirstCompletedOn"] = 1519124400,
-},
 [14418] = {
 ["FirstCompletedOn"] = 1608030000,
+},
+[16578] = {
+["FirstCompletedOn"] = 1703070000,
+},
+[16546] = {
+["FirstCompletedOn"] = 1704970800,
 },
 [12387] = {
 ["FirstCompletedOn"] = 1755511200,
@@ -4373,35 +4459,29 @@ nil,
 ["Player-1390-0D20B303"] = 1739876400,
 },
 },
-[41201] = {
-["FirstCompletedOn"] = 1737889200,
-},
-[10692] = {
-["FirstCompletedOn"] = 1519038000,
-},
-[40332] = {
-["FirstCompletedOn"] = 1743501600,
-},
-[14834] = {
-["FirstCompletedOn"] = 1607166000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607166000,
-},
-},
 [12483] = {
 ["FirstCompletedOn"] = 1534586400,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1534586400,
 },
 },
-[10756] = {
-["FirstCompletedOn"] = 1519556400,
+[12739] = {
+["FirstCompletedOn"] = 1534672800,
 },
-[12835] = {
-["FirstCompletedOn"] = 1534586400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534586400,
+[12771] = {
+["FirstCompletedOn"] = 1534413600,
 },
+[61313] = {
+["FirstCompletedOn"] = 1776592800,
+},
+[62182] = {
+["FirstCompletedOn"] = 1775037600,
+},
+[10692] = {
+["FirstCompletedOn"] = 1519038000,
+},
+[40817] = {
+["FirstCompletedOn"] = 1743588000,
 },
 [62374] = {
 ["FirstCompletedOn"] = 1774436400,
@@ -4421,22 +4501,19 @@ nil,
 [19009] = {
 ["FirstCompletedOn"] = 1704625200,
 },
+[10788] = {
+["FirstCompletedOn"] = 1530698400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1530698400,
+},
+},
+[40843] = {
+["FirstCompletedOn"] = 1739876400,
+},
 [10804] = {
 ["FirstCompletedOn"] = 1517742000,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1517742000,
-},
-},
-[10011] = {
-["FirstCompletedOn"] = 1531476000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531476000,
-},
-},
-[40361] = {
-["FirstCompletedOn"] = 1725098400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1725098400,
 },
 },
 [5300] = {
@@ -4457,8 +4534,11 @@ nil,
 ["Player-1390-09230B89"] = 1727776800,
 },
 },
-[12947] = {
-["FirstCompletedOn"] = 1537524000,
+[19342] = {
+["FirstCompletedOn"] = 1740567600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1740567600,
+},
 },
 [14754] = {
 ["FirstCompletedOn"] = 1607252400,
@@ -4469,19 +4549,19 @@ nil,
 [40625] = {
 ["FirstCompletedOn"] = 1737889200,
 },
-[12739] = {
-["FirstCompletedOn"] = 1534672800,
+[42736] = {
+["FirstCompletedOn"] = 1758189600,
 },
-[1358] = {
-["FirstCompletedOn"] = 1239876000,
+[12867] = {
+["FirstCompletedOn"] = 1735383600,
 },
-[40817] = {
-["FirstCompletedOn"] = 1743588000,
+[63334] = {
+["FirstCompletedOn"] = 1787220000,
 },
-[5372] = {
-["FirstCompletedOn"] = 1516791600,
+[14834] = {
+["FirstCompletedOn"] = 1607166000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516791600,
+["Player-1390-09230B89"] = 1607166000,
 },
 },
 [40945] = {
@@ -4496,23 +4576,23 @@ nil,
 ["Player-1390-09230B89"] = 1531044000,
 },
 },
-[10788] = {
-["FirstCompletedOn"] = 1530698400,
+[12835] = {
+["FirstCompletedOn"] = 1534586400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1530698400,
+["Player-1390-09230B89"] = 1534586400,
 },
 },
 [12851] = {
 ["FirstCompletedOn"] = 1534759200,
 },
-[12867] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[11994] = {
-["FirstCompletedOn"] = 1731063600,
+[10820] = {
+["FirstCompletedOn"] = 1519556400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1390-09230B89"] = 1519556400,
 },
+},
+[1358] = {
+["FirstCompletedOn"] = 1239876000,
 },
 [61799] = {
 ["FirstCompletedOn"] = 1774695600,
@@ -4523,32 +4603,26 @@ nil,
 [61863] = {
 ["FirstCompletedOn"] = 1773572400,
 },
-[62183] = {
-["FirstCompletedOn"] = 1775296800,
+[12995] = {
+["FirstCompletedOn"] = 1534932000,
 },
 [5452] = {
 ["FirstCompletedOn"] = 1499248800,
 },
-[62273] = {
-["FirstCompletedOn"] = 1772190000,
+[246] = {
+["FirstCompletedOn"] = 1239962400,
 },
-[12844] = {
-["FirstCompletedOn"] = 1534413600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534413600,
+[62375] = {
+["FirstCompletedOn"] = 1787047200,
 },
-},
-[12995] = {
-["FirstCompletedOn"] = 1534932000,
+[62183] = {
+["FirstCompletedOn"] = 1775296800,
 },
 [62247] = {
 ["FirstCompletedOn"] = 1774436400,
 },
-[2767] = {
-["FirstCompletedOn"] = 1534672800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534672800,
-},
+[7862] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [8949] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -4562,29 +4636,11 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[563] = {
-["FirstCompletedOn"] = 1248256800,
-},
-[14361] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
-},
-},
 [13107] = {
 ["FirstCompletedOn"] = 1534845600,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1534845600,
 },
-},
-[13123] = {
-["FirstCompletedOn"] = 1534845600,
-},
-[11124] = {
-["FirstCompletedOn"] = 1519556400,
-},
-[11188] = {
-["FirstCompletedOn"] = 1518778800,
 },
 [40370] = {
 ["FirstCompletedOn"] = 1725098400,
@@ -4592,11 +4648,35 @@ nil,
 ["Player-1390-09230B89"] = 1725098400,
 },
 },
+[2767] = {
+["FirstCompletedOn"] = 1534672800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534672800,
+},
+},
+[13123] = {
+["FirstCompletedOn"] = 1534845600,
+},
+[9141] = {
+["FirstCompletedOn"] = 1499680800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1499680800,
+},
+},
+[10693] = {
+["FirstCompletedOn"] = 1519470000,
+},
+[2783] = {
+["FirstCompletedOn"] = 1248429600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1500199200,
+},
+},
 [40434] = {
 ["FirstCompletedOn"] = 1731322800,
 },
-[523] = {
-["FirstCompletedOn"] = 1530698400,
+[15640] = {
+["FirstCompletedOn"] = 1675162800,
 },
 [9125] = {
 ["FirstCompletedOn"] = 1499940000,
@@ -4604,11 +4684,8 @@ nil,
 ["Player-1390-09230B89"] = 1499940000,
 },
 },
-[9141] = {
-["FirstCompletedOn"] = 1499680800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1499680800,
-},
+[11188] = {
+["FirstCompletedOn"] = 1518778800,
 },
 [42737] = {
 ["FirstCompletedOn"] = 1755511200,
@@ -4619,38 +4696,32 @@ nil,
 ["Player-1390-09230B89"] = 1516791600,
 },
 },
-[11999] = {
-["FirstCompletedOn"] = 1731063600,
+[62184] = {
+["FirstCompletedOn"] = 1775037600,
+},
+[9477] = {
+["FirstCompletedOn"] = 1533549600,
+},
+[13545] = {
+["FirstCompletedOn"] = 1741172400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1390-09230B89"] = 1741172400,
 },
 },
-[16498] = {
-["FirstCompletedOn"] = 1703156400,
-},
-[9707] = {
-["FirstCompletedOn"] = 1501408800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1501408800,
-},
-},
-[41714] = {
-["FirstCompletedOn"] = 1743588000,
+[40435] = {
+["FirstCompletedOn"] = 1735556400,
 },
 [15394] = {
 ["FirstCompletedOn"] = 1701774000,
 },
-[19010] = {
-["FirstCompletedOn"] = 1705489200,
+[9573] = {
+["FirstCompletedOn"] = 1602842400,
 },
-[61313] = {
-["FirstCompletedOn"] = 1776592800,
+[5876] = {
+["FirstCompletedOn"] = 1725012000,
 },
-[11700] = {
-["FirstCompletedOn"] = 1529834400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1529834400,
-},
+[15794] = {
+["FirstCompletedOn"] = 1701514800,
 },
 [61800] = {
 ["FirstCompletedOn"] = 1772622000,
@@ -4676,32 +4747,26 @@ nil,
 [62120] = {
 ["FirstCompletedOn"] = 1775469600,
 },
-[62184] = {
-["FirstCompletedOn"] = 1775037600,
+[41714] = {
+["FirstCompletedOn"] = 1743588000,
 },
 [41778] = {
 ["FirstCompletedOn"] = 1758103200,
 },
-[19342] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
+[14499] = {
+["FirstCompletedOn"] = 1607338800,
 },
-},
-[40819] = {
-["FirstCompletedOn"] = 1725012000,
+[19331] = {
+["FirstCompletedOn"] = 1703934000,
 },
 [41970] = {
 ["FirstCompletedOn"] = 1758189600,
 },
-[14339] = {
-["FirstCompletedOn"] = 1607684400,
+[15795] = {
+["FirstCompletedOn"] = 1701774000,
 },
-[15650] = {
-["FirstCompletedOn"] = 1755856800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1755943200,
-},
+[19010] = {
+["FirstCompletedOn"] = 1705489200,
 },
 [40115] = {
 ["FirstCompletedOn"] = 1726826400,
@@ -4709,8 +4774,8 @@ nil,
 ["Player-1390-09230B89"] = 1726826400,
 },
 },
-[19331] = {
-["FirstCompletedOn"] = 1703934000,
+[17284] = {
+["FirstCompletedOn"] = 1722420000,
 },
 [41587] = {
 ["FirstCompletedOn"] = 1740740400,
@@ -4718,8 +4783,11 @@ nil,
 [40307] = {
 ["FirstCompletedOn"] = 1725530400,
 },
-[62121] = {
-["FirstCompletedOn"] = 1776247200,
+[10085] = {
+["FirstCompletedOn"] = 1721815200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721815200,
+},
 },
 [11652] = {
 ["FirstCompletedOn"] = 1531476000,
@@ -4728,68 +4796,65 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[40331] = {
-["FirstCompletedOn"] = 1743501600,
+[14339] = {
+["FirstCompletedOn"] = 1607684400,
 },
-[61802] = {
-["FirstCompletedOn"] = 1772794800,
+[61568] = {
+["FirstCompletedOn"] = 1773140400,
 },
-[15794] = {
-["FirstCompletedOn"] = 1701514800,
+[11700] = {
+["FirstCompletedOn"] = 1529834400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1529834400,
+},
 },
 [42738] = {
 ["FirstCompletedOn"] = 1755943200,
 },
-[41588] = {
-["FirstCompletedOn"] = 1740913200,
+[61802] = {
+["FirstCompletedOn"] = 1772794800,
 },
-[5876] = {
+[40819] = {
 ["FirstCompletedOn"] = 1725012000,
 },
-[10085] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
-},
+[16580] = {
+["FirstCompletedOn"] = 1701946800,
 },
 [17411] = {
 ["FirstCompletedOn"] = 1703156400,
 },
-[11796] = {
-["FirstCompletedOn"] = 1532685600,
+[15890] = {
+["FirstCompletedOn"] = 1704106800,
 },
-[17284] = {
-["FirstCompletedOn"] = 1722420000,
+[1556] = {
+["FirstCompletedOn"] = 1235732400,
 },
 [15922] = {
 ["FirstCompletedOn"] = 1702206000,
 },
-[15640] = {
-["FirstCompletedOn"] = 1675162800,
+[6844] = {
+["FirstCompletedOn"] = 1611054000,
 },
-[10693] = {
-["FirstCompletedOn"] = 1519470000,
+[62250] = {
+["FirstCompletedOn"] = 1774436400,
 },
 [61801] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[62891] = {
-["FirstCompletedOn"] = 1787133600,
+[1576] = {
+["FirstCompletedOn"] = 1246788000,
 },
-[13545] = {
-["FirstCompletedOn"] = 1741172400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1741172400,
+[42678] = {
+["FirstCompletedOn"] = 1771930800,
 },
-},
-[40631] = {
-["FirstCompletedOn"] = 1724493600,
+[12740] = {
+["FirstCompletedOn"] = 1535191200,
 },
 [62057] = {
 ["FirstCompletedOn"] = 1772881200,
 },
-[9909] = {
-["FirstCompletedOn"] = 1531044000,
+[62121] = {
+["FirstCompletedOn"] = 1776247200,
 },
 [62185] = {
 ["FirstCompletedOn"] = 1772967600,
@@ -4797,26 +4862,32 @@ nil,
 [11988] = {
 ["FirstCompletedOn"] = 1518951600,
 },
-[1558] = {
-["FirstCompletedOn"] = 1235905200,
+[1722] = {
+["FirstCompletedOn"] = 1248429600,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1248429600,
+},
 },
 [12020] = {
 ["FirstCompletedOn"] = 1735470000,
 },
-[1556] = {
-["FirstCompletedOn"] = 1235732400,
+[9099] = {
+["FirstCompletedOn"] = 1531044000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1531044000,
 },
-[1576] = {
-["FirstCompletedOn"] = 1246788000,
 },
-[62250] = {
-["FirstCompletedOn"] = 1774436400,
+[40949] = {
+["FirstCompletedOn"] = 1741345200,
 },
-[19011] = {
-["FirstCompletedOn"] = 1707130800,
+[40330] = {
+["FirstCompletedOn"] = 1743501600,
 },
-[10053] = {
-["FirstCompletedOn"] = 1721901600,
+[63530] = {
+["FirstCompletedOn"] = 1787220000,
+},
+[8099] = {
+["FirstCompletedOn"] = 1606302000,
 },
 [40244] = {
 ["FirstCompletedOn"] = 1731495600,
@@ -4834,15 +4905,14 @@ nil,
 ["Player-1390-09230B89"] = 1724493600,
 },
 },
-[19459] = {
-["FirstCompletedOn"] = 1724666400,
+[41973] = {
+["FirstCompletedOn"] = 1756202400,
+},
+[40118] = {
+["FirstCompletedOn"] = 1731582000,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1724666400,
+["Player-1390-09230B89"] = 1731582000,
 },
-},
-[61803] = {
-["FirstCompletedOn"] = 1772881200,
 },
 [40628] = {
 ["FirstCompletedOn"] = 1737889200,
@@ -4853,17 +4923,20 @@ nil,
 [12244] = {
 ["FirstCompletedOn"] = 1529488800,
 },
-[62892] = {
-["FirstCompletedOn"] = 1787133600,
+[11125] = {
+["FirstCompletedOn"] = 1531476000,
 },
-[61739] = {
-["FirstCompletedOn"] = 1773572400,
+[17486] = {
+["FirstCompletedOn"] = 1722592800,
 },
-[12292] = {
-["FirstCompletedOn"] = 1533031200,
+[40948] = {
+["FirstCompletedOn"] = 1740740400,
 },
-[15795] = {
-["FirstCompletedOn"] = 1701774000,
+[40374] = {
+["FirstCompletedOn"] = 1725098400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1725098400,
+},
 },
 [14371] = {
 ["FirstCompletedOn"] = 1607166000,
@@ -4871,17 +4944,26 @@ nil,
 ["Player-1390-09230B89"] = 1607166000,
 },
 },
-[61568] = {
-["FirstCompletedOn"] = 1773140400,
+[14356] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
 },
-[41973] = {
-["FirstCompletedOn"] = 1756202400,
 },
-[42742] = {
-["FirstCompletedOn"] = 1756288800,
+[1798] = {
+["FirstCompletedOn"] = 1705316400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1705316400,
 },
-[16580] = {
-["FirstCompletedOn"] = 1701946800,
+},
+[13017] = {
+["FirstCompletedOn"] = 1534932000,
+},
+[12388] = {
+["FirstCompletedOn"] = 1755511200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1755511200,
+},
 },
 [1552] = {
 ["FirstCompletedOn"] = 1739012400,
@@ -4889,11 +4971,8 @@ nil,
 ["Player-1390-09230B89"] = 1739012400,
 },
 },
-[13108] = {
-["FirstCompletedOn"] = 1534845600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534845600,
-},
+[41081] = {
+["FirstCompletedOn"] = 1743501600,
 },
 [14483] = {
 ["FirstCompletedOn"] = 1607511600,
@@ -4901,8 +4980,8 @@ nil,
 ["Player-1390-09230B89"] = 1607511600,
 },
 },
-[14499] = {
-["FirstCompletedOn"] = 1607338800,
+[1558] = {
+["FirstCompletedOn"] = 1235905200,
 },
 [1560] = {
 ["FirstCompletedOn"] = 1533376800,
@@ -4916,17 +4995,17 @@ nil,
 ["Player-1390-09230B89"] = 1534500000,
 },
 },
-[62893] = {
-["FirstCompletedOn"] = 1787133600,
-},
-[19397] = {
-["FirstCompletedOn"] = 1707130800,
+[13572] = {
+["FirstCompletedOn"] = 1603101600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1707130800,
+["Player-1390-09230B89"] = 1603101600,
 },
 },
-[19109] = {
-["FirstCompletedOn"] = 1722679200,
+[62270] = {
+["FirstCompletedOn"] = 1772535600,
+},
+[13700] = {
+["FirstCompletedOn"] = 1604314800,
 },
 [8470] = {
 ["FirstCompletedOn"] = 1516878000,
@@ -4934,11 +5013,8 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[14627] = {
-["FirstCompletedOn"] = 1606993200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606993200,
-},
+[19011] = {
+["FirstCompletedOn"] = 1707130800,
 },
 [12596] = {
 ["FirstCompletedOn"] = 1535104800,
@@ -4949,11 +5025,8 @@ nil,
 [40245] = {
 ["FirstCompletedOn"] = 1732014000,
 },
-[13572] = {
-["FirstCompletedOn"] = 1603101600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1603101600,
-},
+[40631] = {
+["FirstCompletedOn"] = 1724493600,
 },
 [62890] = {
 ["FirstCompletedOn"] = 1787047200,
@@ -4961,11 +5034,8 @@ nil,
 [40437] = {
 ["FirstCompletedOn"] = 1728813600,
 },
-[6348] = {
-["FirstCompletedOn"] = 1500026400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500026400,
-},
+[60971] = {
+["FirstCompletedOn"] = 1764759600,
 },
 [14755] = {
 ["FirstCompletedOn"] = 1607598000,
@@ -4982,11 +5052,8 @@ nil,
 [1596] = {
 ["FirstCompletedOn"] = 1721815200,
 },
-[40375] = {
-["FirstCompletedOn"] = 1726308000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1726308000,
-},
+[17349] = {
+["FirstCompletedOn"] = 1703674800,
 },
 [14835] = {
 ["FirstCompletedOn"] = 1607511600,
@@ -4994,14 +5061,15 @@ nil,
 ["Player-1390-09230B89"] = 1607511600,
 },
 },
-[40949] = {
-["FirstCompletedOn"] = 1741345200,
-},
-[10773] = {
-["FirstCompletedOn"] = 1519470000,
+[19459] = {
+["FirstCompletedOn"] = 1724666400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1519470000,
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1724666400,
 },
+},
+[41013] = {
+["FirstCompletedOn"] = 1731236400,
 },
 [10789] = {
 ["FirstCompletedOn"] = 1532340000,
@@ -5021,8 +5089,8 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[10837] = {
-["FirstCompletedOn"] = 1532599200,
+[61739] = {
+["FirstCompletedOn"] = 1773572400,
 },
 [10853] = {
 ["FirstCompletedOn"] = 1516186800,
@@ -5030,14 +5098,11 @@ nil,
 ["Player-1390-09230B89"] = 1516186800,
 },
 },
-[13700] = {
-["FirstCompletedOn"] = 1604314800,
+[19460] = {
+["FirstCompletedOn"] = 1745229600,
 },
-[9099] = {
-["FirstCompletedOn"] = 1531044000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531044000,
-},
+[8795] = {
+["FirstCompletedOn"] = 1493719200,
 },
 [12948] = {
 ["FirstCompletedOn"] = 1601200800,
@@ -5045,23 +5110,20 @@ nil,
 [41589] = {
 ["FirstCompletedOn"] = 1740913200,
 },
-[5309] = {
-["FirstCompletedOn"] = 1606129200,
+[12873] = {
+["FirstCompletedOn"] = 1536660000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
+["Player-1390-09230B89"] = 1536660000,
 },
 },
-[40330] = {
-["FirstCompletedOn"] = 1743501600,
+[41161] = {
+["FirstCompletedOn"] = 1735383600,
 },
-[42678] = {
-["FirstCompletedOn"] = 1771930800,
+[61567] = {
+["FirstCompletedOn"] = 1773140400,
 },
-[19396] = {
-["FirstCompletedOn"] = 1707130800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1707130800,
-},
+[10778] = {
+["FirstCompletedOn"] = 1529488800,
 },
 [4477] = {
 ["FirstCompletedOn"] = 1518951600,
@@ -5072,32 +5134,35 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[41591] = {
-["FirstCompletedOn"] = 1743073200,
+[62507] = {
+["FirstCompletedOn"] = 1787220000,
 },
-[40825] = {
-["FirstCompletedOn"] = 1725098400,
-},
-[40118] = {
-["FirstCompletedOn"] = 1731582000,
+[14772] = {
+["FirstCompletedOn"] = 1607425200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731582000,
+["Player-1390-09230B89"] = 1607425200,
+},
+},
+[13108] = {
+["FirstCompletedOn"] = 1534845600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534845600,
 },
 },
 [4517] = {
 ["FirstCompletedOn"] = 1519038000,
 },
+[10746] = {
+["FirstCompletedOn"] = 1516791600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516791600,
+},
+},
 [17286] = {
 ["FirstCompletedOn"] = 1722420000,
 },
-[12069] = {
-["FirstCompletedOn"] = 1518260400,
-},
-[40374] = {
-["FirstCompletedOn"] = 1725098400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1725098400,
-},
+[62891] = {
+["FirstCompletedOn"] = 1787133600,
 },
 [40438] = {
 ["FirstCompletedOn"] = 1732618800,
@@ -5105,8 +5170,11 @@ nil,
 [11157] = {
 ["FirstCompletedOn"] = 1519556400,
 },
-[40504] = {
-["FirstCompletedOn"] = 1735729200,
+[19397] = {
+["FirstCompletedOn"] = 1707130800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1707130800,
+},
 },
 [11189] = {
 ["FirstCompletedOn"] = 1519556400,
@@ -5120,20 +5188,17 @@ nil,
 [40822] = {
 ["FirstCompletedOn"] = 1725876000,
 },
-[42679] = {
-["FirstCompletedOn"] = 1757152800,
+[17294] = {
+["FirstCompletedOn"] = 1722420000,
 },
 [40950] = {
 ["FirstCompletedOn"] = 1741690800,
 },
-[13017] = {
-["FirstCompletedOn"] = 1534932000,
+[10682] = {
+["FirstCompletedOn"] = 1516878000,
 },
-[7100] = {
-["FirstCompletedOn"] = 1775642400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1775642400,
-},
+[10666] = {
+["FirstCompletedOn"] = 1516964400,
 },
 [20579] = {
 ["FirstCompletedOn"] = 1743933600,
@@ -5141,31 +5206,25 @@ nil,
 ["Player-1390-09230B89"] = 1743933600,
 },
 },
-[5117] = {
-["FirstCompletedOn"] = 1606129200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
+[41591] = {
+["FirstCompletedOn"] = 1743073200,
 },
-},
-[1798] = {
-["FirstCompletedOn"] = 1705316400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1705316400,
-},
+[5319] = {
+["FirstCompletedOn"] = 1499335200,
 },
 [61804] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[12325] = {
-["FirstCompletedOn"] = 1728554400,
+[1862] = {
+["FirstCompletedOn"] = 1518951600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1518951600,
 },
 },
-[61678] = {
-["FirstCompletedOn"] = 1772622000,
+[1766] = {
+["FirstCompletedOn"] = 1251799200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772622000,
+["Player-1122-019F1238"] = 1251799200,
 },
 },
 [18724] = {
@@ -5174,12 +5233,8 @@ nil,
 [41590] = {
 ["FirstCompletedOn"] = 1741172400,
 },
-[1834] = {
-["FirstCompletedOn"] = 1248256800,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248256800,
-["Player-1390-09230B89"] = 1705316400,
-},
+[62893] = {
+["FirstCompletedOn"] = 1787133600,
 },
 [6756] = {
 ["FirstCompletedOn"] = 1531476000,
@@ -5187,11 +5242,14 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[42296] = {
-["FirstCompletedOn"] = 1764759600,
+[42679] = {
+["FirstCompletedOn"] = 1757152800,
 },
-[8795] = {
-["FirstCompletedOn"] = 1493719200,
+[14324] = {
+["FirstCompletedOn"] = 1607511600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607511600,
+},
 },
 [13556] = {
 ["FirstCompletedOn"] = 1735383600,
@@ -5199,23 +5257,28 @@ nil,
 [9478] = {
 ["FirstCompletedOn"] = 1533549600,
 },
-[12873] = {
-["FirstCompletedOn"] = 1536660000,
+[1796] = {
+["FirstCompletedOn"] = 1238493600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1536660000,
+["Player-1122-019F1238"] = 1238493600,
+["Player-1390-09230B89"] = 1603796400,
 },
 },
-[41161] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[12841] = {
-["FirstCompletedOn"] = 1535882400,
+[14372] = {
+["FirstCompletedOn"] = 1607338800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1535882400,
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1607338800,
 },
 },
-[10778] = {
-["FirstCompletedOn"] = 1529488800,
+[16518] = {
+["FirstCompletedOn"] = 1703070000,
+},
+[14628] = {
+["FirstCompletedOn"] = 1608116400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1608116400,
+},
 },
 [40247] = {
 ["FirstCompletedOn"] = 1726394400,
@@ -5223,22 +5286,26 @@ nil,
 [40311] = {
 ["FirstCompletedOn"] = 1728122400,
 },
-[6844] = {
-["FirstCompletedOn"] = 1611054000,
+[40375] = {
+["FirstCompletedOn"] = 1726308000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1726308000,
+},
 },
 [9606] = {
 ["FirstCompletedOn"] = 1531044000,
 },
-[10582] = {
-["FirstCompletedOn"] = 1500717600,
+[1834] = {
+["FirstCompletedOn"] = 1248256800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500717600,
+["Player-1122-019F1238"] = 1248256800,
+["Player-1390-09230B89"] = 1705316400,
 },
 },
-[10746] = {
-["FirstCompletedOn"] = 1516791600,
+[12505] = {
+["FirstCompletedOn"] = 1535623200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516791600,
+["Player-1390-09230B89"] = 1535623200,
 },
 },
 [11701] = {
@@ -5247,11 +5314,8 @@ nil,
 ["Player-1390-09230B89"] = 1529834400,
 },
 },
-[1722] = {
-["FirstCompletedOn"] = 1248429600,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248429600,
-},
+[42742] = {
+["FirstCompletedOn"] = 1756288800,
 },
 [40377] = {
 ["FirstCompletedOn"] = 1725012000,
@@ -5259,23 +5323,29 @@ nil,
 ["Player-1390-09230B89"] = 1725012000,
 },
 },
-[17349] = {
-["FirstCompletedOn"] = 1703674800,
-},
-[10458] = {
-["FirstCompletedOn"] = 1518433200,
+[19396] = {
+["FirstCompletedOn"] = 1707130800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518433200,
+["Player-1390-09230B89"] = 1707130800,
+},
+},
+[5215] = {
+["FirstCompletedOn"] = 1533376800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1533376800,
 },
 },
 [4869] = {
 ["FirstCompletedOn"] = 1499335200,
 },
-[17294] = {
-["FirstCompletedOn"] = 1722420000,
+[62894] = {
+["FirstCompletedOn"] = 1787133600,
 },
-[10682] = {
-["FirstCompletedOn"] = 1516878000,
+[40633] = {
+["FirstCompletedOn"] = 1728640800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1728640800,
+},
 },
 [15923] = {
 ["FirstCompletedOn"] = 1707649200,
@@ -5289,16 +5359,16 @@ nil,
 [61805] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[10666] = {
-["FirstCompletedOn"] = 1516964400,
+[40825] = {
+["FirstCompletedOn"] = 1725098400,
 },
 [19716] = {
 ["FirstCompletedOn"] = 1735470000,
 },
-[10678] = {
-["FirstCompletedOn"] = 1606302000,
+[14836] = {
+["FirstCompletedOn"] = 1610967600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606302000,
+["Player-1390-09230B89"] = 1610967600,
 },
 },
 [11941] = {
@@ -5316,32 +5386,23 @@ nil,
 [4981] = {
 ["FirstCompletedOn"] = 1496052000,
 },
-[5319] = {
-["FirstCompletedOn"] = 1499335200,
+[61487] = {
+["FirstCompletedOn"] = 1773831600,
 },
-[12741] = {
-["FirstCompletedOn"] = 1534327200,
+[10790] = {
+["FirstCompletedOn"] = 1500112800,
+},
+[14408] = {
+["FirstCompletedOn"] = 1607857200,
 ["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607857200,
 },
 },
-[116] = {
-["FirstCompletedOn"] = 1235732400,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235732400,
-["Player-1390-09230B89"] = 1495447200,
+[12069] = {
+["FirstCompletedOn"] = 1518260400,
 },
-},
-[1766] = {
-["FirstCompletedOn"] = 1251799200,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1251799200,
-},
-},
-[1862] = {
-["FirstCompletedOn"] = 1518951600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518951600,
-},
+[12869] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [12101] = {
 ["FirstCompletedOn"] = 1517137200,
@@ -5352,10 +5413,10 @@ nil,
 [40312] = {
 ["FirstCompletedOn"] = 1725012000,
 },
-[40376] = {
-["FirstCompletedOn"] = 1725012000,
+[7100] = {
+["FirstCompletedOn"] = 1775642400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1725012000,
+["Player-1390-09230B89"] = 1775642400,
 },
 },
 [5061] = {
@@ -5391,36 +5452,35 @@ nil,
 ["Player-1390-09230B89"] = 1606129200,
 },
 },
-[14324] = {
-["FirstCompletedOn"] = 1607511600,
+[5117] = {
+["FirstCompletedOn"] = 1606129200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607511600,
+["Player-1390-09230B89"] = 1606129200,
 },
 },
 [40952] = {
 ["FirstCompletedOn"] = 1743415200,
 },
-[14356] = {
-["FirstCompletedOn"] = 1731063600,
+[12309] = {
+["FirstCompletedOn"] = 1728554400,
+},
+[12325] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
-[14372] = {
-["FirstCompletedOn"] = 1607338800,
+[12329] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1607338800,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
-[1864] = {
-["FirstCompletedOn"] = 1248516000,
+[61678] = {
+["FirstCompletedOn"] = 1772622000,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248516000,
+["Player-1390-09230B89"] = 1772622000,
 },
-},
-[16518] = {
-["FirstCompletedOn"] = 1703070000,
 },
 [16550] = {
 ["FirstCompletedOn"] = 1704020400,
@@ -5428,29 +5488,32 @@ nil,
 [61806] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[10822] = {
-["FirstCompletedOn"] = 1703588400,
+[14360] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703588400,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
-[12869] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[41529] = {
-["FirstCompletedOn"] = 1742900400,
+[61438] = {
+["FirstCompletedOn"] = 1773226800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1742900400,
+["Player-1390-09230B89"] = 1773226800,
 },
 },
-[41593] = {
-["FirstCompletedOn"] = 1744365600,
+[14328] = {
+["FirstCompletedOn"] = 1606302000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606302000,
+},
+},
+[40840] = {
+["FirstCompletedOn"] = 1727863200,
 },
 [62126] = {
 ["FirstCompletedOn"] = 1773572400,
 },
-[40250] = {
-["FirstCompletedOn"] = 1725012000,
+[18150] = {
+["FirstCompletedOn"] = 1703502000,
 },
 [12501] = {
 ["FirstCompletedOn"] = 1534845600,
@@ -5458,17 +5521,14 @@ nil,
 ["Player-1390-09230B89"] = 1534845600,
 },
 },
-[61809] = {
-["FirstCompletedOn"] = 1773658800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773658800,
-},
+[12949] = {
+["FirstCompletedOn"] = 1541070000,
 },
 [5245] = {
 ["FirstCompletedOn"] = 1775642400,
 },
-[62270] = {
-["FirstCompletedOn"] = 1772535600,
+[41593] = {
+["FirstCompletedOn"] = 1744365600,
 },
 [8471] = {
 ["FirstCompletedOn"] = 1516878000,
@@ -5476,11 +5536,8 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[14628] = {
-["FirstCompletedOn"] = 1608116400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1608116400,
-},
+[62574] = {
+["FirstCompletedOn"] = 1787220000,
 },
 [1832] = {
 ["FirstCompletedOn"] = 1236510000,
@@ -5488,58 +5545,71 @@ nil,
 [19077] = {
 ["FirstCompletedOn"] = 1703502000,
 },
-[40249] = {
-["FirstCompletedOn"] = 1731495600,
+[10582] = {
+["FirstCompletedOn"] = 1500717600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1500717600,
+},
 },
 [40313] = {
 ["FirstCompletedOn"] = 1726826400,
 },
-[62894] = {
-["FirstCompletedOn"] = 1787133600,
-},
-[11222] = {
-["FirstCompletedOn"] = 1518346800,
-},
-[5215] = {
-["FirstCompletedOn"] = 1533376800,
+[5309] = {
+["FirstCompletedOn"] = 1606129200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1533376800,
+["Player-1390-09230B89"] = 1606129200,
 },
+},
+[8919] = {
+["FirstCompletedOn"] = 1499940000,
+},
+[40250] = {
+["FirstCompletedOn"] = 1725012000,
 },
 [7380] = {
 ["FirstCompletedOn"] = 1602669600,
 },
-[14772] = {
-["FirstCompletedOn"] = 1607425200,
+[10678] = {
+["FirstCompletedOn"] = 1606302000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607425200,
+["Player-1390-09230B89"] = 1606302000,
 },
 },
-[10694] = {
-["FirstCompletedOn"] = 1746180000,
+[12741] = {
+["FirstCompletedOn"] = 1534327200,
+["EarnedBy"] = {
+},
 },
 [12757] = {
 ["FirstCompletedOn"] = 1604055600,
 },
-[8679] = {
-["FirstCompletedOn"] = 1516878000,
+[116] = {
+["FirstCompletedOn"] = 1235732400,
 ["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235732400,
+["Player-1390-09230B89"] = 1495447200,
 },
 },
-[14836] = {
-["FirstCompletedOn"] = 1610967600,
+[10742] = {
+["FirstCompletedOn"] = 1532599200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1610967600,
+["Player-1390-09230B89"] = 1532599200,
 },
 },
 [19461] = {
 ["FirstCompletedOn"] = 1721469600,
 },
-[61487] = {
-["FirstCompletedOn"] = 1773831600,
+[1860] = {
+["FirstCompletedOn"] = 1248429600,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1248429600,
 },
-[41081] = {
-["FirstCompletedOn"] = 1743501600,
+},
+[12837] = {
+["FirstCompletedOn"] = 1534672800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534672800,
+},
 },
 [10806] = {
 ["FirstCompletedOn"] = 1518519600,
@@ -5547,10 +5617,10 @@ nil,
 ["Player-1390-09230B89"] = 1518519600,
 },
 },
-[61679] = {
-["FirstCompletedOn"] = 1773918000,
+[10822] = {
+["FirstCompletedOn"] = 1703588400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773918000,
+["Player-1390-09230B89"] = 1703588400,
 },
 },
 [10838] = {
@@ -5559,20 +5629,19 @@ nil,
 [61807] = {
 ["FirstCompletedOn"] = 1773831600,
 },
-[40634] = {
-["FirstCompletedOn"] = 1724839200,
+[5063] = {
+["FirstCompletedOn"] = 1538215200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1724839200,
+["Player-1390-09230B89"] = 1538215200,
 },
 },
-[16423] = {
-["FirstCompletedOn"] = 1705921200,
+[62895] = {
+["FirstCompletedOn"] = 1787133600,
 },
-[1876] = {
-["FirstCompletedOn"] = 1248343200,
+[41529] = {
+["FirstCompletedOn"] = 1742900400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248343200,
-["Player-1390-09230B89"] = 1516705200,
+["Player-1390-09230B89"] = 1742900400,
 },
 },
 [17734] = {
@@ -5590,11 +5659,11 @@ nil,
 ["Player-1390-09230B89"] = 1703502000,
 },
 },
-[42299] = {
-["FirstCompletedOn"] = 1767783600,
+[11222] = {
+["FirstCompletedOn"] = 1518346800,
 },
-[7862] = {
-["FirstCompletedOn"] = 1739012400,
+[16423] = {
+["FirstCompletedOn"] = 1705921200,
 },
 [8967] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -5602,24 +5671,24 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[11558] = {
-["FirstCompletedOn"] = 1519124400,
+[121] = {
+["FirstCompletedOn"] = 1235732400,
 ["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235732400,
 },
 },
-[40379] = {
-["FirstCompletedOn"] = 1726048800,
+[61809] = {
+["FirstCompletedOn"] = 1773658800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1726048800,
+["Player-1390-09230B89"] = 1773658800,
 },
 },
 [42169] = {
 ["FirstCompletedOn"] = 1755856800,
 },
-[14408] = {
-["FirstCompletedOn"] = 1607857200,
+[11558] = {
+["FirstCompletedOn"] = 1519124400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607857200,
 },
 },
 [3799] = {
@@ -5634,26 +5703,26 @@ nil,
 [11126] = {
 ["FirstCompletedOn"] = 1517223600,
 },
-[7860] = {
-["FirstCompletedOn"] = 1739012400,
+[40379] = {
+["FirstCompletedOn"] = 1726048800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1726048800,
+},
 },
 [40506] = {
 ["FirstCompletedOn"] = 1732618800,
 },
-[12329] = {
-["FirstCompletedOn"] = 1728554400,
+[10071] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
 [11190] = {
 ["FirstCompletedOn"] = 1529056800,
 },
-[14360] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
-},
+[7860] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [40762] = {
 ["FirstCompletedOn"] = 1739703600,
@@ -5661,16 +5730,16 @@ nil,
 [40826] = {
 ["FirstCompletedOn"] = 1724752800,
 },
-[61438] = {
-["FirstCompletedOn"] = 1773226800,
+[14357] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773226800,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
-[14328] = {
-["FirstCompletedOn"] = 1606302000,
+[11993] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606302000,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
 [61488] = {
@@ -5691,20 +5760,23 @@ nil,
 ["Player-1390-09230B89"] = 1742900400,
 },
 },
-[40840] = {
-["FirstCompletedOn"] = 1727863200,
-},
-[121] = {
-["FirstCompletedOn"] = 1235732400,
+[6117] = {
+["FirstCompletedOn"] = 1538388000,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235732400,
+["Player-1390-09230B89"] = 1538388000,
 },
+},
+[41338] = {
+["FirstCompletedOn"] = 1743588000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1743588000,
+},
+},
+[17773] = {
+["FirstCompletedOn"] = 1703329200,
 },
 [19334] = {
 ["FirstCompletedOn"] = 1740567600,
-},
-[40635] = {
-["FirstCompletedOn"] = 1728554400,
 },
 [41530] = {
 ["FirstCompletedOn"] = 1741518000,
@@ -5718,11 +5790,8 @@ nil,
 [11446] = {
 ["FirstCompletedOn"] = 1529056800,
 },
-[124] = {
-["FirstCompletedOn"] = 1237546800,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1237546800,
-},
+[62193] = {
+["FirstCompletedOn"] = 1773140400,
 },
 [62256] = {
 ["FirstCompletedOn"] = 1775296800,
@@ -5733,10 +5802,10 @@ nil,
 ["Player-1122-019F1238"] = 1235905200,
 },
 },
-[61490] = {
-["FirstCompletedOn"] = 1774436400,
+[1998] = {
+["FirstCompletedOn"] = 1495274400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1774436400,
+["Player-1390-09230B89"] = 1495274400,
 },
 },
 [41978] = {
@@ -5745,11 +5814,8 @@ nil,
 ["Player-1390-09230B89"] = 1755770400,
 },
 },
-[11846] = {
-["FirstCompletedOn"] = 1517655600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1517655600,
-},
+[42299] = {
+["FirstCompletedOn"] = 1767783600,
 },
 [15652] = {
 ["FirstCompletedOn"] = 1755856800,
@@ -5760,11 +5826,8 @@ nil,
 [42170] = {
 ["FirstCompletedOn"] = 1756116000,
 },
-[5063] = {
-["FirstCompletedOn"] = 1538215200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1538215200,
-},
+[40316] = {
+["FirstCompletedOn"] = 1739876400,
 },
 [19110] = {
 ["FirstCompletedOn"] = 1722679200,
@@ -5781,29 +5844,8 @@ nil,
 ["Player-1390-09230B89"] = 1775037600,
 },
 },
-[62385] = {
-["FirstCompletedOn"] = 1774695600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1774695600,
-},
-},
-[41723] = {
-["FirstCompletedOn"] = 1758103200,
-},
-[6061] = {
-["FirstCompletedOn"] = 1735470000,
-},
-[15796] = {
-["FirstCompletedOn"] = 1702810800,
-},
-[9671] = {
-["FirstCompletedOn"] = 1533376800,
-},
-[40763] = {
-["FirstCompletedOn"] = 1726221600,
-},
-[5877] = {
-["FirstCompletedOn"] = 1735470000,
+[62897] = {
+["FirstCompletedOn"] = 1787133600,
 },
 [2042] = {
 ["FirstCompletedOn"] = 1248256800,
@@ -5814,11 +5856,29 @@ nil,
 ["Player-1122-019F1238"] = 1240308000,
 },
 },
-[14357] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+[40635] = {
+["FirstCompletedOn"] = 1728554400,
 },
+[9671] = {
+["FirstCompletedOn"] = 1533376800,
+},
+[40763] = {
+["FirstCompletedOn"] = 1726221600,
+},
+[5877] = {
+["FirstCompletedOn"] = 1735470000,
+},
+[17485] = {
+["FirstCompletedOn"] = 1722592800,
+},
+[41340] = {
+["FirstCompletedOn"] = 1741172400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1741172400,
+},
+},
+[61683] = {
+["FirstCompletedOn"] = 1775642400,
 },
 [41083] = {
 ["FirstCompletedOn"] = 1743501600,
@@ -5826,13 +5886,16 @@ nil,
 [15924] = {
 ["FirstCompletedOn"] = 1702983600,
 },
-[61681] = {
-["FirstCompletedOn"] = 1772881200,
-},
-[12326] = {
-["FirstCompletedOn"] = 1728554400,
+[11846] = {
+["FirstCompletedOn"] = 1517655600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1517655600,
+},
+},
+[12502] = {
+["FirstCompletedOn"] = 1536832800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1536832800,
 },
 },
 [125] = {
@@ -5841,8 +5904,12 @@ nil,
 ["Player-1122-019F1238"] = 1238580000,
 },
 },
-[12870] = {
-["FirstCompletedOn"] = 1536487200,
+[132] = {
+["FirstCompletedOn"] = 1235905200,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235905200,
+["Player-1390-09230B89"] = 1496311200,
+},
 },
 [61937] = {
 ["FirstCompletedOn"] = 1772967600,
@@ -5853,17 +5920,14 @@ nil,
 [41531] = {
 ["FirstCompletedOn"] = 1743501600,
 },
-[14610] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
-},
+[62450] = {
+["FirstCompletedOn"] = 1776852000,
 },
 [9911] = {
 ["FirstCompletedOn"] = 1519038000,
 },
-[62193] = {
-["FirstCompletedOn"] = 1773140400,
+[41723] = {
+["FirstCompletedOn"] = 1758103200,
 },
 [11990] = {
 ["FirstCompletedOn"] = 1519038000,
@@ -5875,8 +5939,11 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[2016] = {
-["FirstCompletedOn"] = 1246615200,
+[62385] = {
+["FirstCompletedOn"] = 1774695600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1774695600,
+},
 },
 [41979] = {
 ["FirstCompletedOn"] = 1756980000,
@@ -5887,23 +5954,30 @@ nil,
 [62513] = {
 ["FirstCompletedOn"] = 1777024800,
 },
-[16808] = {
-["FirstCompletedOn"] = 1722506400,
-},
-[11993] = {
-["FirstCompletedOn"] = 1731063600,
+[19340] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1390-09230B89"] = 1740567600,
+},
+},
+[133] = {
+["FirstCompletedOn"] = 1236510000,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1236510000,
+["Player-1390-09230B89"] = 1496829600,
 },
 },
 [12102] = {
 ["FirstCompletedOn"] = 1519297200,
 },
-[40252] = {
-["FirstCompletedOn"] = 1727085600,
+[6061] = {
+["FirstCompletedOn"] = 1735470000,
 },
-[40316] = {
-["FirstCompletedOn"] = 1739876400,
+[127] = {
+["FirstCompletedOn"] = 1235991600,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235991600,
+},
 },
 [14197] = {
 ["FirstCompletedOn"] = 1607684400,
@@ -5917,8 +5991,12 @@ nil,
 ["Player-1390-09230B89"] = 1703242800,
 },
 },
-[62450] = {
-["FirstCompletedOn"] = 1776852000,
+[134] = {
+["FirstCompletedOn"] = 1237374000,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1237374000,
+["Player-1390-09230B89"] = 1497866400,
+},
 },
 [16292] = {
 ["FirstCompletedOn"] = 1744538400,
@@ -5926,14 +6004,15 @@ nil,
 [40636] = {
 ["FirstCompletedOn"] = 1727949600,
 },
-[6117] = {
-["FirstCompletedOn"] = 1538388000,
+[12230] = {
+["FirstCompletedOn"] = 1529056800,
+},
+[40637] = {
+["FirstCompletedOn"] = 1741172400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1538388000,
+["Player-1122-019F1238"] = 1745488800,
+["Player-1390-09230B89"] = 1741172400,
 },
-},
-[17773] = {
-["FirstCompletedOn"] = 1703329200,
 },
 [40828] = {
 ["FirstCompletedOn"] = 1731236400,
@@ -5944,26 +6023,19 @@ nil,
 ["Player-1390-09230B89"] = 1608202800,
 },
 },
-[133] = {
-["FirstCompletedOn"] = 1236510000,
+[19335] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1236510000,
-["Player-1390-09230B89"] = 1496829600,
+["Player-1390-09230B89"] = 1740567600,
 },
 },
-[16424] = {
-["FirstCompletedOn"] = 1738321200,
+[12310] = {
+["FirstCompletedOn"] = 1728554400,
 },
 [14373] = {
 ["FirstCompletedOn"] = 1607857200,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1607857200,
-},
-},
-[2140] = {
-["FirstCompletedOn"] = 1248256800,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248256800,
 },
 },
 [19559] = {
@@ -5973,17 +6045,23 @@ nil,
 ["Player-1390-09230B89"] = 1725012000,
 },
 },
-[61683] = {
-["FirstCompletedOn"] = 1775642400,
+[6838] = {
+["FirstCompletedOn"] = 1500112800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1500112800,
+},
+},
+[40263] = {
+["FirstCompletedOn"] = 1740567600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1740567600,
+},
 },
 [2076] = {
 ["FirstCompletedOn"] = 1500112800,
 },
-[6469] = {
-["FirstCompletedOn"] = 1531476000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1531476000,
-},
+[12870] = {
+["FirstCompletedOn"] = 1536487200,
 },
 [61938] = {
 ["FirstCompletedOn"] = 1772881200,
@@ -6004,20 +6082,20 @@ nil,
 [62130] = {
 ["FirstCompletedOn"] = 1775210400,
 },
-[41533] = {
-["FirstCompletedOn"] = 1742382000,
-},
-[12502] = {
-["FirstCompletedOn"] = 1536832800,
+[6469] = {
+["FirstCompletedOn"] = 1531476000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1536832800,
+["Player-1390-09230B89"] = 1531476000,
 },
+},
+[16808] = {
+["FirstCompletedOn"] = 1722506400,
 },
 [12518] = {
 ["FirstCompletedOn"] = 1588500000,
 },
-[62387] = {
-["FirstCompletedOn"] = 1769684400,
+[41533] = {
+["FirstCompletedOn"] = 1742382000,
 },
 [41980] = {
 ["FirstCompletedOn"] = 1758103200,
@@ -6046,15 +6124,15 @@ nil,
 [19111] = {
 ["FirstCompletedOn"] = 1722679200,
 },
-[134] = {
-["FirstCompletedOn"] = 1237374000,
+[40317] = {
+["FirstCompletedOn"] = 1739876400,
+},
+[2256] = {
+["FirstCompletedOn"] = 1246701600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1237374000,
+["Player-1122-019F1238"] = 1246701600,
 ["Player-1390-09230B89"] = 1497866400,
 },
-},
-[17485] = {
-["FirstCompletedOn"] = 1722592800,
 },
 [40445] = {
 ["FirstCompletedOn"] = 1726135200,
@@ -6078,11 +6156,8 @@ nil,
 [14773] = {
 ["FirstCompletedOn"] = 1607511600,
 },
-[19335] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
+[17288] = {
+["FirstCompletedOn"] = 1722420000,
 },
 [10711] = {
 ["FirstCompletedOn"] = 1518519600,
@@ -6159,11 +6234,11 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[13206] = {
-["FirstCompletedOn"] = 1603623600,
+[40318] = {
+["FirstCompletedOn"] = 1739876400,
 },
-[17288] = {
-["FirstCompletedOn"] = 1722420000,
+[11159] = {
+["FirstCompletedOn"] = 1529488800,
 },
 [8920] = {
 ["FirstCompletedOn"] = 1500026400,
@@ -6183,11 +6258,8 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[8984] = {
-["FirstCompletedOn"] = 1533722400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1533722400,
-},
+[42045] = {
+["FirstCompletedOn"] = 1772535600,
 },
 [141] = {
 ["FirstCompletedOn"] = 1246442400,
@@ -6213,11 +6285,8 @@ nil,
 ["Player-1390-09230B89"] = 1773054000,
 },
 },
-[40382] = {
-["FirstCompletedOn"] = 1716285600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1716285600,
-},
+[11127] = {
+["FirstCompletedOn"] = 1522231200,
 },
 [40446] = {
 ["FirstCompletedOn"] = 1726653600,
@@ -6225,14 +6294,20 @@ nil,
 ["Player-1390-09230B89"] = 1726653600,
 },
 },
-[11159] = {
-["FirstCompletedOn"] = 1529488800,
+[13206] = {
+["FirstCompletedOn"] = 1603623600,
 },
-[40317] = {
-["FirstCompletedOn"] = 1739876400,
+[8481] = {
+["FirstCompletedOn"] = 1516878000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516878000,
 },
-[40318] = {
-["FirstCompletedOn"] = 1739876400,
+},
+[13770] = {
+["FirstCompletedOn"] = 1604228400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1604228400,
+},
 },
 [40702] = {
 ["FirstCompletedOn"] = 1725876000,
@@ -6243,23 +6318,23 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[19027] = {
-["FirstCompletedOn"] = 1713434400,
+[670] = {
+["FirstCompletedOn"] = 1703502000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1703502000,
+},
 },
 [40894] = {
 ["FirstCompletedOn"] = 1741518000,
 },
-[19340] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
-},
-[11127] = {
-["FirstCompletedOn"] = 1522231200,
+[40585] = {
+["FirstCompletedOn"] = 1727863200,
 },
 [41086] = {
 ["FirstCompletedOn"] = 1744365600,
+},
+[16457] = {
+["FirstCompletedOn"] = 1701774000,
 },
 [20583] = {
 ["FirstCompletedOn"] = 1743328800,
@@ -6270,26 +6345,17 @@ nil,
 [41214] = {
 ["FirstCompletedOn"] = 1742295600,
 },
-[8481] = {
-["FirstCompletedOn"] = 1516878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516878000,
-},
+[5755] = {
+["FirstCompletedOn"] = 1539511200,
 },
 [16585] = {
 ["FirstCompletedOn"] = 1723284000,
 },
-[10799] = {
-["FirstCompletedOn"] = 1518951600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518951600,
+[14800] = {
+["FirstCompletedOn"] = 1607338800,
 },
-},
-[670] = {
-["FirstCompletedOn"] = 1703502000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703502000,
-},
+[41033] = {
+["FirstCompletedOn"] = 1731927600,
 },
 [18728] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -6297,8 +6363,11 @@ nil,
 [41598] = {
 ["FirstCompletedOn"] = 1755770400,
 },
-[40319] = {
-["FirstCompletedOn"] = 1739876400,
+[41854] = {
+["FirstCompletedOn"] = 1753005600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1753005600,
+},
 },
 [6757] = {
 ["FirstCompletedOn"] = 1531476000,
@@ -6306,10 +6375,10 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[6838] = {
-["FirstCompletedOn"] = 1500112800,
+[40255] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500112800,
+["Player-1390-09230B89"] = 1740567600,
 },
 },
 [62324] = {
@@ -6336,41 +6405,35 @@ nil,
 [9528] = {
 ["FirstCompletedOn"] = 1499940000,
 },
-[40263] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
-},
-[40255] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
-},
 [150] = {
 ["FirstCompletedOn"] = 1237719600,
 },
 [19112] = {
 ["FirstCompletedOn"] = 1722679200,
 },
+[40319] = {
+["FirstCompletedOn"] = 1739876400,
+},
+[9672] = {
+["FirstCompletedOn"] = 1703674800,
+},
 [40447] = {
 ["FirstCompletedOn"] = 1731495600,
 },
-[40703] = {
-["FirstCompletedOn"] = 1725098400,
-},
-[41854] = {
-["FirstCompletedOn"] = 1753005600,
+[19336] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1753005600,
+["Player-1390-09230B89"] = 1740567600,
 },
+},
+[40831] = {
+["FirstCompletedOn"] = 1724493600,
 },
 [15797] = {
 ["FirstCompletedOn"] = 1701946800,
 },
-[9672] = {
-["FirstCompletedOn"] = 1703674800,
+[40703] = {
+["FirstCompletedOn"] = 1725098400,
 },
 [4846] = {
 ["FirstCompletedOn"] = 1538215200,
@@ -6378,13 +6441,26 @@ nil,
 ["Player-1390-09230B89"] = 1538215200,
 },
 },
-[40831] = {
-["FirstCompletedOn"] = 1724493600,
-},
-[13770] = {
-["FirstCompletedOn"] = 1604228400,
+[4854] = {
+["FirstCompletedOn"] = 1530525600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1604228400,
+["Player-1390-09230B89"] = 1530525600,
+},
+},
+[11394] = {
+["FirstCompletedOn"] = 1533376800,
+},
+[61308] = {
+["FirstCompletedOn"] = 1768993200,
+},
+[41038] = {
+["FirstCompletedOn"] = 1731236400,
+},
+[153] = {
+["FirstCompletedOn"] = 1235818800,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1235818800,
+["Player-1390-09230B89"] = 1531216800,
 },
 },
 [19560] = {
@@ -6394,28 +6470,14 @@ nil,
 ["Player-1390-09230B89"] = 1724580000,
 },
 },
-[678] = {
-["FirstCompletedOn"] = 1703329200,
+[5107] = {
+["FirstCompletedOn"] = 1606129200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703329200,
+["Player-1390-09230B89"] = 1606129200,
 },
 },
-[153] = {
-["FirstCompletedOn"] = 1235818800,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235818800,
-["Player-1390-09230B89"] = 1531216800,
-},
-},
-[13878] = {
-["FirstCompletedOn"] = 1606906800,
-},
-[18977] = {
-["FirstCompletedOn"] = 1704884400,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1704884400,
-},
+[2476] = {
+["FirstCompletedOn"] = 1247220000,
 },
 [4918] = {
 ["FirstCompletedOn"] = 1499680800,
@@ -6423,15 +6485,12 @@ nil,
 ["Player-1390-09230B89"] = 1499680800,
 },
 },
-[154] = {
-["FirstCompletedOn"] = 1236164400,
+[9130] = {
+["FirstCompletedOn"] = 1438855200,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1236164400,
-["Player-1390-09230B89"] = 1773399600,
+["Player-1302-078A2412"] = 1438855200,
+["Player-1390-09230B89"] = 1499680800,
 },
-},
-[41033] = {
-["FirstCompletedOn"] = 1731927600,
 },
 [61941] = {
 ["FirstCompletedOn"] = 1772535600,
@@ -6439,20 +6498,20 @@ nil,
 ["Player-1390-09230B89"] = 1772535600,
 },
 },
+[12007] = {
+["FirstCompletedOn"] = 1518346800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1518346800,
+},
+},
 [41599] = {
 ["FirstCompletedOn"] = 1759312800,
-},
-[2476] = {
-["FirstCompletedOn"] = 1247220000,
 },
 [62133] = {
 ["FirstCompletedOn"] = 1775296800,
 },
-[16261] = {
-["FirstCompletedOn"] = 1704106800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1704106800,
-},
+[40448] = {
+["FirstCompletedOn"] = 1731495600,
 },
 [11991] = {
 ["FirstCompletedOn"] = 1519124400,
@@ -6460,17 +6519,17 @@ nil,
 [4982] = {
 ["FirstCompletedOn"] = 1499335200,
 },
-[5755] = {
-["FirstCompletedOn"] = 1539511200,
+[9082] = {
+["FirstCompletedOn"] = 1721815200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721815200,
+},
 },
 [62453] = {
 ["FirstCompletedOn"] = 1777024800,
 },
-[5062] = {
-["FirstCompletedOn"] = 1611226800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1611226800,
-},
+[40512] = {
+["FirstCompletedOn"] = 1724493600,
 },
 [12071] = {
 ["FirstCompletedOn"] = 1519988400,
@@ -6478,14 +6537,20 @@ nil,
 ["Player-1390-09230B89"] = 1519988400,
 },
 },
-[40512] = {
-["FirstCompletedOn"] = 1724493600,
+[40262] = {
+["FirstCompletedOn"] = 1740567600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1740567600,
+},
 },
 [2516] = {
 ["FirstCompletedOn"] = 1697191200,
 },
-[14800] = {
-["FirstCompletedOn"] = 1607338800,
+[14326] = {
+["FirstCompletedOn"] = 1607252400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1607252400,
+},
 },
 [40320] = {
 ["FirstCompletedOn"] = 1739876400,
@@ -6496,8 +6561,11 @@ nil,
 ["Player-1390-09230B89"] = 1607684400,
 },
 },
-[40448] = {
-["FirstCompletedOn"] = 1731495600,
+[16261] = {
+["FirstCompletedOn"] = 1704106800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1704106800,
+},
 },
 [2536] = {
 ["FirstCompletedOn"] = 1713866400,
@@ -6508,14 +6576,23 @@ nil,
 ["Player-1122-019F1238"] = 1236164400,
 },
 },
-[12311] = {
-["FirstCompletedOn"] = 1728554400,
+[5118] = {
+["FirstCompletedOn"] = 1606129200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606129200,
 },
-[40704] = {
-["FirstCompletedOn"] = 1724666400,
 },
-[41152] = {
-["FirstCompletedOn"] = 1736938800,
+[5094] = {
+["FirstCompletedOn"] = 1606129200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606129200,
+},
+},
+[13096] = {
+["FirstCompletedOn"] = 1534759200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534759200,
+},
 },
 [40832] = {
 ["FirstCompletedOn"] = 1731063600,
@@ -6523,11 +6600,8 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[5118] = {
-["FirstCompletedOn"] = 1606129200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
-},
+[61366] = {
+["FirstCompletedOn"] = 1774436400,
 },
 [40960] = {
 ["FirstCompletedOn"] = 1539684000,
@@ -6538,10 +6612,10 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[12343] = {
-["FirstCompletedOn"] = 1728554400,
+[8986] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
 [20584] = {
@@ -6553,17 +6627,11 @@ nil,
 [41216] = {
 ["FirstCompletedOn"] = 1740740400,
 },
-[14326] = {
-["FirstCompletedOn"] = 1607252400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607252400,
+[12311] = {
+["FirstCompletedOn"] = 1728554400,
 },
-},
-[20595] = {
-["FirstCompletedOn"] = 1725530400,
-},
-[41038] = {
-["FirstCompletedOn"] = 1731236400,
+[40704] = {
+["FirstCompletedOn"] = 1724666400,
 },
 [15805] = {
 ["FirstCompletedOn"] = 1701860400,
@@ -6572,45 +6640,41 @@ nil,
 ["Player-1390-09230B89"] = 1701860400,
 },
 },
+[41152] = {
+["FirstCompletedOn"] = 1736938800,
+},
 [18729] = {
 ["FirstCompletedOn"] = 1721815200,
 },
-[61308] = {
-["FirstCompletedOn"] = 1768993200,
-},
-[10456] = {
-["FirstCompletedOn"] = 1529920800,
+[5062] = {
+["FirstCompletedOn"] = 1611226800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1529920800,
+["Player-1390-09230B89"] = 1611226800,
 },
 },
-[5107] = {
-["FirstCompletedOn"] = 1606129200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
+[8345] = {
+["FirstCompletedOn"] = 1493719200,
 },
+[13161] = {
+["FirstCompletedOn"] = 1601200800,
 },
 [62262] = {
 ["FirstCompletedOn"] = 1775642400,
 },
-[5318] = {
-["FirstCompletedOn"] = 1499335200,
-},
-[9130] = {
-["FirstCompletedOn"] = 1438855200,
+[166] = {
+["FirstCompletedOn"] = 1236164400,
 ["EarnedBy"] = {
-["Player-1302-078A2412"] = 1438855200,
-["Player-1390-09230B89"] = 1499680800,
+["Player-1122-019F1238"] = 1236164400,
 },
+},
+[40449] = {
+["FirstCompletedOn"] = 1753092000,
 },
 [62454] = {
 ["FirstCompletedOn"] = 1777197600,
 },
-[19337] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
+[40705] = {
+["FirstCompletedOn"] = 1725876000,
 },
 [14630] = {
 ["FirstCompletedOn"] = 1731063600,
@@ -6618,11 +6682,10 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[40833] = {
-["FirstCompletedOn"] = 1728640800,
+[168] = {
+["FirstCompletedOn"] = 1236164400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745229600,
-["Player-1390-09230B89"] = 1728640800,
+["Player-1122-019F1238"] = 1236164400,
 },
 },
 [8521] = {
@@ -6631,11 +6694,8 @@ nil,
 ["Player-1390-09230B89"] = 1516878000,
 },
 },
-[9082] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
-},
+[41153] = {
+["FirstCompletedOn"] = 1737025200,
 },
 [40321] = {
 ["FirstCompletedOn"] = 1740308400,
@@ -6646,19 +6706,19 @@ nil,
 ["Player-1390-09230B89"] = 1606129200,
 },
 },
-[40449] = {
-["FirstCompletedOn"] = 1753092000,
+[5318] = {
+["FirstCompletedOn"] = 1499335200,
 },
-[10824] = {
+[10825] = {
 ["FirstCompletedOn"] = 1703588400,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[40262] = {
-["FirstCompletedOn"] = 1740567600,
+[10809] = {
+["FirstCompletedOn"] = 1517828400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
+["Player-1390-09230B89"] = 1517828400,
 },
 },
 [12727] = {
@@ -6667,16 +6727,17 @@ nil,
 ["Player-1390-09230B89"] = 1726653600,
 },
 },
-[40705] = {
-["FirstCompletedOn"] = 1725876000,
+[14790] = {
+["FirstCompletedOn"] = 1610967600,
 },
-[41153] = {
-["FirstCompletedOn"] = 1737025200,
+[17484] = {
+["FirstCompletedOn"] = 1722592800,
 },
-[168] = {
-["FirstCompletedOn"] = 1236164400,
+[40833] = {
+["FirstCompletedOn"] = 1728640800,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1236164400,
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1728640800,
 },
 },
 [61367] = {
@@ -6691,8 +6752,11 @@ nil,
 ["Player-1390-09230B89"] = 1531216800,
 },
 },
-[41217] = {
-["FirstCompletedOn"] = 1740826800,
+[17546] = {
+["FirstCompletedOn"] = 1705921200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1705921200,
+},
 },
 [10808] = {
 ["FirstCompletedOn"] = 1517137200,
@@ -6700,11 +6764,8 @@ nil,
 ["Player-1390-09230B89"] = 1517137200,
 },
 },
-[17546] = {
-["FirstCompletedOn"] = 1705921200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1705921200,
-},
+[41217] = {
+["FirstCompletedOn"] = 1740826800,
 },
 [10840] = {
 ["FirstCompletedOn"] = 1703588400,
@@ -6718,10 +6779,10 @@ nil,
 ["Player-1122-019F1238"] = 1240221600,
 },
 },
-[13096] = {
-["FirstCompletedOn"] = 1534759200,
+[10824] = {
+["FirstCompletedOn"] = 1703588400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534759200,
+["Player-1390-09230B89"] = 1703588400,
 },
 },
 [61943] = {
@@ -6751,6 +6812,9 @@ nil,
 [8937] = {
 ["FirstCompletedOn"] = 1531044000,
 },
+[11064] = {
+["FirstCompletedOn"] = 1493719200,
+},
 [2756] = {
 ["FirstCompletedOn"] = 1247047200,
 ["EarnedBy"] = {
@@ -6758,16 +6822,10 @@ nil,
 ["Player-1390-09230B89"] = 1498989600,
 },
 },
-[8969] = {
-["FirstCompletedOn"] = 1721728800,
+[11144] = {
+["FirstCompletedOn"] = 1516446000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
-},
-},
-[9033] = {
-["FirstCompletedOn"] = 1721815200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721815200,
+["Player-1390-09230B89"] = 1516446000,
 },
 },
 [2764] = {
@@ -6776,11 +6834,17 @@ nil,
 ["Player-1122-019F1238"] = 1248429600,
 },
 },
-[11064] = {
-["FirstCompletedOn"] = 1493719200,
+[13111] = {
+["FirstCompletedOn"] = 1535104800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1535104800,
 },
-[42241] = {
-["FirstCompletedOn"] = 1753178400,
+},
+[2772] = {
+["FirstCompletedOn"] = 1248084000,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1248084000,
+},
 },
 [9049] = {
 ["FirstCompletedOn"] = 1770807600,
@@ -6794,19 +6858,16 @@ nil,
 [11128] = {
 ["FirstCompletedOn"] = 1535018400,
 },
-[11144] = {
-["FirstCompletedOn"] = 1516446000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516446000,
-},
+[40450] = {
+["FirstCompletedOn"] = 1726135200,
 },
 [40514] = {
 ["FirstCompletedOn"] = 1724580000,
 },
-[2772] = {
-["FirstCompletedOn"] = 1248084000,
+[9033] = {
+["FirstCompletedOn"] = 1721815200,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248084000,
+["Player-1390-09230B89"] = 1721815200,
 },
 },
 [40642] = {
@@ -6816,8 +6877,44 @@ nil,
 ["Player-1390-09230B89"] = 1741172400,
 },
 },
-[40450] = {
-["FirstCompletedOn"] = 1726135200,
+[10698] = {
+["FirstCompletedOn"] = 1500717600,
+},
+[19307] = {
+["FirstCompletedOn"] = 1704970800,
+},
+[10665] = {
+["FirstCompletedOn"] = 1516618800,
+},
+[16256] = {
+["FirstCompletedOn"] = 1703761200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1703761200,
+},
+},
+[10686] = {
+["FirstCompletedOn"] = 1530525600,
+},
+[1178] = {
+["FirstCompletedOn"] = 1519038000,
+},
+[40325] = {
+["FirstCompletedOn"] = 1739876400,
+},
+[41154] = {
+["FirstCompletedOn"] = 1738494000,
+},
+[2836] = {
+["FirstCompletedOn"] = 1499421600,
+},
+[10585] = {
+["FirstCompletedOn"] = 1516446000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516446000,
+},
+},
+[16587] = {
+["FirstCompletedOn"] = 1707217200,
 },
 [13095] = {
 ["FirstCompletedOn"] = 1534759200,
@@ -6831,65 +6928,11 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[13161] = {
-["FirstCompletedOn"] = 1601200800,
-},
-[1178] = {
-["FirstCompletedOn"] = 1519038000,
-},
-[16256] = {
-["FirstCompletedOn"] = 1703761200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703761200,
-},
-},
-[41154] = {
-["FirstCompletedOn"] = 1738494000,
-},
-[20585] = {
-["FirstCompletedOn"] = 1732878000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1732878000,
-},
-},
-[2836] = {
-["FirstCompletedOn"] = 1499421600,
-},
-[16502] = {
-["FirstCompletedOn"] = 1704884400,
-},
-[16587] = {
-["FirstCompletedOn"] = 1707217200,
-},
-[10686] = {
-["FirstCompletedOn"] = 1530525600,
-},
 [18730] = {
 ["FirstCompletedOn"] = 1721815200,
 },
-[16683] = {
-["FirstCompletedOn"] = 1703329200,
-},
 [41602] = {
 ["FirstCompletedOn"] = 1755770400,
-},
-[10825] = {
-["FirstCompletedOn"] = 1703588400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703588400,
-},
-},
-[62200] = {
-["FirstCompletedOn"] = 1773572400,
-},
-[10809] = {
-["FirstCompletedOn"] = 1517828400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1517828400,
-},
-},
-[17484] = {
-["FirstCompletedOn"] = 1722592800,
 },
 [4476] = {
 ["FirstCompletedOn"] = 1517482800,
@@ -6897,7 +6940,43 @@ nil,
 ["Player-1390-09230B89"] = 1517482800,
 },
 },
-[6830] = {
+[62200] = {
+["FirstCompletedOn"] = 1773572400,
+},
+[10798] = {
+["FirstCompletedOn"] = 1518951600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1518951600,
+},
+},
+[16683] = {
+["FirstCompletedOn"] = 1703329200,
+},
+[20585] = {
+["FirstCompletedOn"] = 1732878000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1732878000,
+},
+},
+[10543] = {
+["FirstCompletedOn"] = 1532340000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1532340000,
+},
+},
+[12504] = {
+["FirstCompletedOn"] = 1534327200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534327200,
+},
+},
+[62202] = {
+["FirstCompletedOn"] = 1772276400,
+},
+[9529] = {
+["FirstCompletedOn"] = 1499940000,
+},
+[9545] = {
 ["FirstCompletedOn"] = 1499680800,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1499680800,
@@ -6909,29 +6988,14 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[16398] = {
-["FirstCompletedOn"] = 1702810800,
-},
-[9529] = {
-["FirstCompletedOn"] = 1499940000,
-},
-[9545] = {
-["FirstCompletedOn"] = 1499680800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1499680800,
-},
+[40323] = {
+["FirstCompletedOn"] = 1739876400,
 },
 [10807] = {
 ["FirstCompletedOn"] = 1516359600,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1516359600,
 },
-},
-[40323] = {
-["FirstCompletedOn"] = 1739876400,
-},
-[17534] = {
-["FirstCompletedOn"] = 1703156400,
 },
 [5830] = {
 ["FirstCompletedOn"] = 1757066400,
@@ -6942,8 +7006,8 @@ nil,
 [40515] = {
 ["FirstCompletedOn"] = 1726048800,
 },
-[19307] = {
-["FirstCompletedOn"] = 1704970800,
+[17534] = {
+["FirstCompletedOn"] = 1703156400,
 },
 [40643] = {
 ["FirstCompletedOn"] = 1725098400,
@@ -6954,8 +7018,8 @@ nil,
 [9673] = {
 ["FirstCompletedOn"] = 1739012400,
 },
-[10665] = {
-["FirstCompletedOn"] = 1516618800,
+[16502] = {
+["FirstCompletedOn"] = 1704884400,
 },
 [40835] = {
 ["FirstCompletedOn"] = 1732359600,
@@ -6966,35 +7030,23 @@ nil,
 [61369] = {
 ["FirstCompletedOn"] = 1779098400,
 },
-[19306] = {
-["FirstCompletedOn"] = 1703761200,
-},
-[40451] = {
-["FirstCompletedOn"] = 1726826400,
-},
-[17483] = {
-["FirstCompletedOn"] = 1722592800,
-},
-[16544] = {
-["FirstCompletedOn"] = 1703934000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703934000,
-},
-},
-[40325] = {
-["FirstCompletedOn"] = 1739876400,
-},
-[10585] = {
+[10795] = {
 ["FirstCompletedOn"] = 1516446000,
 ["EarnedBy"] = {
 ["Player-1390-09230B89"] = 1516446000,
 },
 },
-[41084] = {
-["FirstCompletedOn"] = 1743501600,
+[41348] = {
+["FirstCompletedOn"] = 1743415200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1743415200,
 },
-[40456] = {
-["FirstCompletedOn"] = 1728036000,
+},
+[17483] = {
+["FirstCompletedOn"] = 1722592800,
+},
+[19115] = {
+["FirstCompletedOn"] = 1722679200,
 },
 [2058] = {
 ["FirstCompletedOn"] = 1248084000,
@@ -7003,14 +7055,29 @@ nil,
 ["Player-1390-09230B89"] = 1518951600,
 },
 },
-[19338] = {
-["FirstCompletedOn"] = 1740567600,
+[20586] = {
+["FirstCompletedOn"] = 1731754800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
+["Player-1390-09230B89"] = 1731754800,
 },
+},
+[16460] = {
+["FirstCompletedOn"] = 1702206000,
+},
+[14359] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
+},
+},
+[40456] = {
+["FirstCompletedOn"] = 1728036000,
 },
 [41603] = {
 ["FirstCompletedOn"] = 1755770400,
+},
+[17739] = {
+["FirstCompletedOn"] = 1703502000,
 },
 [62137] = {
 ["FirstCompletedOn"] = 1772535600,
@@ -7030,11 +7097,8 @@ nil,
 ["Player-1390-09230B89"] = 1774350000,
 },
 },
-[14473] = {
-["FirstCompletedOn"] = 1607252400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607252400,
-},
+[19306] = {
+["FirstCompletedOn"] = 1703761200,
 },
 [6022] = {
 ["FirstCompletedOn"] = 1496656800,
@@ -7042,19 +7106,22 @@ nil,
 ["Player-1390-09230B89"] = 1496656800,
 },
 },
-[6550] = {
-["FirstCompletedOn"] = 1606647600,
+[62521] = {
+["FirstCompletedOn"] = 1787220000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1787220000,
+},
 },
 [12072] = {
 ["FirstCompletedOn"] = 1518346800,
 },
-[41859] = {
-["FirstCompletedOn"] = 1752832800,
+[61498] = {
+["FirstCompletedOn"] = 1767783600,
 },
-[12504] = {
-["FirstCompletedOn"] = 1534327200,
+[12344] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534327200,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
 [40260] = {
@@ -7081,8 +7148,8 @@ nil,
 [40516] = {
 ["FirstCompletedOn"] = 1726048800,
 },
-[62202] = {
-["FirstCompletedOn"] = 1772276400,
+[40451] = {
+["FirstCompletedOn"] = 1726826400,
 },
 [40644] = {
 ["FirstCompletedOn"] = 1725098400,
@@ -7093,26 +7160,23 @@ nil,
 [12232] = {
 ["FirstCompletedOn"] = 1529056800,
 },
-[19115] = {
-["FirstCompletedOn"] = 1722679200,
+[41859] = {
+["FirstCompletedOn"] = 1752832800,
 },
-[61626] = {
-["FirstCompletedOn"] = 1779098400,
+[19338] = {
+["FirstCompletedOn"] = 1740567600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1779098400,
+["Player-1390-09230B89"] = 1740567600,
 },
 },
 [40900] = {
 ["FirstCompletedOn"] = 1741345200,
 },
-[16460] = {
-["FirstCompletedOn"] = 1702206000,
+[6550] = {
+["FirstCompletedOn"] = 1606647600,
 },
-[14359] = {
-["FirstCompletedOn"] = 1731063600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
-},
+[16428] = {
+["FirstCompletedOn"] = 1723284000,
 },
 [12328] = {
 ["FirstCompletedOn"] = 1728554400,
@@ -7120,10 +7184,10 @@ nil,
 ["Player-1390-09230B89"] = 1728554400,
 },
 },
-[12344] = {
-["FirstCompletedOn"] = 1728554400,
+[61626] = {
+["FirstCompletedOn"] = 1779098400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1779098400,
 },
 },
 [41220] = {
@@ -7132,20 +7196,8 @@ nil,
 ["Player-1390-09230B89"] = 1730977200,
 },
 },
-[61498] = {
-["FirstCompletedOn"] = 1767783600,
-},
-[41348] = {
-["FirstCompletedOn"] = 1743415200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1743415200,
-},
-},
-[20586] = {
-["FirstCompletedOn"] = 1731754800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731754800,
-},
+[41084] = {
+["FirstCompletedOn"] = 1743501600,
 },
 [18635] = {
 ["FirstCompletedOn"] = 1702465200,
@@ -7153,11 +7205,20 @@ nil,
 ["Player-1390-09230B89"] = 1702465200,
 },
 },
+[16544] = {
+["FirstCompletedOn"] = 1703934000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1703934000,
+},
+},
+[63416] = {
+["FirstCompletedOn"] = 1787133600,
+},
 [18731] = {
 ["FirstCompletedOn"] = 1772881200,
 },
-[16428] = {
-["FirstCompletedOn"] = 1723284000,
+[16398] = {
+["FirstCompletedOn"] = 1702810800,
 },
 [62138] = {
 ["FirstCompletedOn"] = 1775037600,
@@ -7171,8 +7232,11 @@ nil,
 [62266] = {
 ["FirstCompletedOn"] = 1773313200,
 },
-[17739] = {
-["FirstCompletedOn"] = 1703502000,
+[6830] = {
+["FirstCompletedOn"] = 1499680800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1499680800,
+},
 },
 [3136] = {
 ["FirstCompletedOn"] = 1248429600,
@@ -7195,11 +7259,8 @@ nil,
 ["Player-1390-09230B89"] = 1731754800,
 },
 },
-[10795] = {
-["FirstCompletedOn"] = 1516446000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1516446000,
-},
+[41097] = {
+["FirstCompletedOn"] = 1741345200,
 },
 [14663] = {
 ["FirstCompletedOn"] = 1611399600,
@@ -7238,19 +7299,16 @@ nil,
 ["Player-1390-09230B89"] = 1740567600,
 },
 },
-[10543] = {
-["FirstCompletedOn"] = 1532340000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1532340000,
-},
+[42241] = {
+["FirstCompletedOn"] = 1753178400,
 },
 [40837] = {
 ["FirstCompletedOn"] = 1728554400,
 },
-[10798] = {
-["FirstCompletedOn"] = 1518951600,
+[8969] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518951600,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
 [40965] = {
@@ -7288,8 +7346,11 @@ nil,
 [41349] = {
 ["FirstCompletedOn"] = 1753783200,
 },
-[10698] = {
-["FirstCompletedOn"] = 1500717600,
+[19337] = {
+["FirstCompletedOn"] = 1740567600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1740567600,
+},
 },
 [6470] = {
 ["FirstCompletedOn"] = 1531476000,
@@ -7303,8 +7364,11 @@ nil,
 ["Player-1390-09230B89"] = 1531476000,
 },
 },
-[41097] = {
-["FirstCompletedOn"] = 1741345200,
+[10456] = {
+["FirstCompletedOn"] = 1529920800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1529920800,
+},
 },
 [62139] = {
 ["FirstCompletedOn"] = 1772622000,
@@ -7321,10 +7385,10 @@ nil,
 [62331] = {
 ["FirstCompletedOn"] = 1774350000,
 },
-[13111] = {
-["FirstCompletedOn"] = 1535104800,
+[12343] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1535104800,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
 [8970] = {
@@ -7333,10 +7397,10 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[8986] = {
-["FirstCompletedOn"] = 1721728800,
+[62523] = {
+["FirstCompletedOn"] = 1787220000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1787220000,
 },
 },
 [42117] = {
@@ -7378,14 +7442,15 @@ nil,
 ["Player-1390-09230B89"] = 1499680800,
 },
 },
-[166] = {
+[154] = {
 ["FirstCompletedOn"] = 1236164400,
 ["EarnedBy"] = {
 ["Player-1122-019F1238"] = 1236164400,
+["Player-1390-09230B89"] = 1773399600,
 },
 },
-[14790] = {
-["FirstCompletedOn"] = 1610967600,
+[13878] = {
+["FirstCompletedOn"] = 1606906800,
 },
 [208] = {
 ["FirstCompletedOn"] = 1247220000,
@@ -7393,8 +7458,8 @@ nil,
 ["Player-1122-019F1238"] = 1247220000,
 },
 },
-[8345] = {
-["FirstCompletedOn"] = 1493719200,
+[41100] = {
+["FirstCompletedOn"] = 1740913200,
 },
 [40966] = {
 ["FirstCompletedOn"] = 1743328800,
@@ -7405,8 +7470,8 @@ nil,
 [20523] = {
 ["FirstCompletedOn"] = 1726653600,
 },
-[11394] = {
-["FirstCompletedOn"] = 1533376800,
+[20595] = {
+["FirstCompletedOn"] = 1725530400,
 },
 [20587] = {
 ["FirstCompletedOn"] = 1738321200,
@@ -7417,20 +7482,18 @@ nil,
 [41222] = {
 ["FirstCompletedOn"] = 1741258800,
 },
-[61366] = {
-["FirstCompletedOn"] = 1774436400,
+[62388] = {
+["FirstCompletedOn"] = 1772708400,
 },
 [3356] = {
 ["FirstCompletedOn"] = 1498384800,
 },
-[5094] = {
-["FirstCompletedOn"] = 1606129200,
+[18977] = {
+["FirstCompletedOn"] = 1704884400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1606129200,
+["Player-1122-019F1238"] = 1745229600,
+["Player-1390-09230B89"] = 1704884400,
 },
-},
-[41100] = {
-["FirstCompletedOn"] = 1740913200,
 },
 [238] = {
 ["FirstCompletedOn"] = 1236164400,
@@ -7439,10 +7502,16 @@ nil,
 ["Player-1390-09230B89"] = 1532340000,
 },
 },
-[12007] = {
-["FirstCompletedOn"] = 1518346800,
+[678] = {
+["FirstCompletedOn"] = 1703329200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1518346800,
+["Player-1390-09230B89"] = 1703329200,
+},
+},
+[10799] = {
+["FirstCompletedOn"] = 1518951600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1518951600,
 },
 },
 [62140] = {
@@ -7460,26 +7529,26 @@ nil,
 [212] = {
 ["FirstCompletedOn"] = 1247220000,
 },
-[40585] = {
-["FirstCompletedOn"] = 1727863200,
+[40382] = {
+["FirstCompletedOn"] = 1716285600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1716285600,
 },
-[62388] = {
-["FirstCompletedOn"] = 1772708400,
+},
+[8984] = {
+["FirstCompletedOn"] = 1533722400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1533722400,
+},
 },
 [11545] = {
 ["FirstCompletedOn"] = 1529056800,
 },
-[4854] = {
-["FirstCompletedOn"] = 1530525600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1530525600,
+[62387] = {
+["FirstCompletedOn"] = 1769684400,
 },
-},
-[19336] = {
-["FirstCompletedOn"] = 1740567600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1740567600,
-},
+[19719] = {
+["FirstCompletedOn"] = 1705748400,
 },
 [9546] = {
 ["FirstCompletedOn"] = 1533463200,
@@ -7496,8 +7565,8 @@ nil,
 [40327] = {
 ["FirstCompletedOn"] = 1740308400,
 },
-[7382] = {
-["FirstCompletedOn"] = 1602669600,
+[41149] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [40455] = {
 ["FirstCompletedOn"] = 1725184800,
@@ -7505,14 +7574,17 @@ nil,
 [40519] = {
 ["FirstCompletedOn"] = 1726135200,
 },
-[14363] = {
-["FirstCompletedOn"] = 1731063600,
+[2140] = {
+["FirstCompletedOn"] = 1248256800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1731063600,
+["Player-1122-019F1238"] = 1248256800,
 },
 },
-[16457] = {
-["FirstCompletedOn"] = 1701774000,
+[40253] = {
+["FirstCompletedOn"] = 1732014000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1732014000,
+},
 },
 [4839] = {
 ["FirstCompletedOn"] = 1538388000,
@@ -7532,15 +7604,14 @@ nil,
 [4863] = {
 ["FirstCompletedOn"] = 1728036000,
 },
-[2256] = {
-["FirstCompletedOn"] = 1246701600,
+[12326] = {
+["FirstCompletedOn"] = 1728554400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1246701600,
-["Player-1390-09230B89"] = 1497866400,
+["Player-1390-09230B89"] = 1728554400,
 },
 },
-[42045] = {
-["FirstCompletedOn"] = 1772535600,
+[16424] = {
+["FirstCompletedOn"] = 1738321200,
 },
 [61565] = {
 ["FirstCompletedOn"] = 1755943200,
@@ -7563,15 +7634,11 @@ nil,
 ["Player-1122-019F1238"] = 1248084000,
 },
 },
-[41149] = {
-["FirstCompletedOn"] = 1735383600,
+[40252] = {
+["FirstCompletedOn"] = 1727085600,
 },
-[40637] = {
-["FirstCompletedOn"] = 1741172400,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1745488800,
-["Player-1390-09230B89"] = 1741172400,
-},
+[2016] = {
+["FirstCompletedOn"] = 1246615200,
 },
 [11929] = {
 ["FirstCompletedOn"] = 1529834400,
@@ -7579,21 +7646,17 @@ nil,
 ["Player-1390-09230B89"] = 1529834400,
 },
 },
-[40253] = {
-["FirstCompletedOn"] = 1732014000,
+[41339] = {
+["FirstCompletedOn"] = 1741172400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1732014000,
+["Player-1390-09230B89"] = 1741172400,
 },
 },
 [62141] = {
 ["FirstCompletedOn"] = 1776592800,
 },
-[132] = {
-["FirstCompletedOn"] = 1235905200,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235905200,
-["Player-1390-09230B89"] = 1496311200,
-},
+[61681] = {
+["FirstCompletedOn"] = 1772881200,
 },
 [62269] = {
 ["FirstCompletedOn"] = 1772362800,
@@ -7601,14 +7664,14 @@ nil,
 [62333] = {
 ["FirstCompletedOn"] = 1772881200,
 },
-[19719] = {
-["FirstCompletedOn"] = 1705748400,
-},
-[41340] = {
-["FirstCompletedOn"] = 1741172400,
+[124] = {
+["FirstCompletedOn"] = 1237546800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1741172400,
+["Player-1122-019F1238"] = 1237546800,
 },
+},
+[15796] = {
+["FirstCompletedOn"] = 1702810800,
 },
 [10010] = {
 ["FirstCompletedOn"] = 1531476000,
@@ -7619,13 +7682,13 @@ nil,
 [12073] = {
 ["FirstCompletedOn"] = 1518001200,
 },
-[12230] = {
-["FirstCompletedOn"] = 1529056800,
+[18726] = {
+["FirstCompletedOn"] = 1725444000,
 },
-[127] = {
-["FirstCompletedOn"] = 1235991600,
+[61490] = {
+["FirstCompletedOn"] = 1774436400,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1235991600,
+["Player-1390-09230B89"] = 1774436400,
 },
 },
 [40264] = {
@@ -7637,10 +7700,10 @@ nil,
 [40328] = {
 ["FirstCompletedOn"] = 1743501600,
 },
-[41339] = {
-["FirstCompletedOn"] = 1741172400,
+[40634] = {
+["FirstCompletedOn"] = 1724839200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1741172400,
+["Player-1390-09230B89"] = 1724839200,
 },
 },
 [16263] = {
@@ -7664,10 +7727,10 @@ nil,
 [14280] = {
 ["FirstCompletedOn"] = 1607770800,
 },
-[10071] = {
-["FirstCompletedOn"] = 1721728800,
+[61679] = {
+["FirstCompletedOn"] = 1773918000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1721728800,
+["Player-1390-09230B89"] = 1773918000,
 },
 },
 [61310] = {
@@ -7688,8 +7751,11 @@ nil,
 [61566] = {
 ["FirstCompletedOn"] = 1755943200,
 },
-[12310] = {
-["FirstCompletedOn"] = 1728554400,
+[1864] = {
+["FirstCompletedOn"] = 1248516000,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1248516000,
+},
 },
 [12361] = {
 ["FirstCompletedOn"] = 1728554400,
@@ -7703,20 +7769,19 @@ nil,
 ["Player-1390-09230B89"] = 1772708400,
 },
 },
-[1998] = {
-["FirstCompletedOn"] = 1495274400,
+[5373] = {
+["FirstCompletedOn"] = 1500026400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1495274400,
+["Player-1390-09230B89"] = 1500026400,
 },
 },
-[18726] = {
-["FirstCompletedOn"] = 1725444000,
-},
-[41338] = {
-["FirstCompletedOn"] = 1743588000,
+[8679] = {
+["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1743588000,
 },
+},
+[10694] = {
+["FirstCompletedOn"] = 1746180000,
 },
 [14488] = {
 ["FirstCompletedOn"] = 1607252400,
@@ -7733,20 +7798,24 @@ nil,
 [62142] = {
 ["FirstCompletedOn"] = 1777629600,
 },
-[18150] = {
-["FirstCompletedOn"] = 1703502000,
+[42296] = {
+["FirstCompletedOn"] = 1764759600,
 },
-[12505] = {
-["FirstCompletedOn"] = 1535623200,
+[10458] = {
+["FirstCompletedOn"] = 1518433200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1535623200,
+["Player-1390-09230B89"] = 1518433200,
 },
 },
 [12521] = {
 ["FirstCompletedOn"] = 1537092000,
 },
-[8919] = {
-["FirstCompletedOn"] = 1499940000,
+[1876] = {
+["FirstCompletedOn"] = 1248343200,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1248343200,
+["Player-1390-09230B89"] = 1516705200,
+},
 },
 [8459] = {
 ["FirstCompletedOn"] = 1516878000,
@@ -7760,23 +7829,17 @@ nil,
 [229] = {
 ["FirstCompletedOn"] = 1247220000,
 },
-[12837] = {
-["FirstCompletedOn"] = 1534672800,
+[40504] = {
+["FirstCompletedOn"] = 1735729200,
+},
+[40376] = {
+["FirstCompletedOn"] = 1725012000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534672800,
+["Player-1390-09230B89"] = 1725012000,
 },
 },
-[1860] = {
-["FirstCompletedOn"] = 1248429600,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1248429600,
-},
-},
-[10742] = {
-["FirstCompletedOn"] = 1532599200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1532599200,
-},
+[14164] = {
+["FirstCompletedOn"] = 1606734000,
 },
 [40329] = {
 ["FirstCompletedOn"] = 1743501600,
@@ -7829,8 +7892,11 @@ nil,
 ["Player-1390-09230B89"] = 1534759200,
 },
 },
-[61567] = {
-["FirstCompletedOn"] = 1773140400,
+[12841] = {
+["FirstCompletedOn"] = 1535882400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1535882400,
+},
 },
 [12857] = {
 ["FirstCompletedOn"] = 1535191200,
@@ -7847,10 +7913,10 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[12949] = {
-["FirstCompletedOn"] = 1541070000,
+[19109] = {
+["FirstCompletedOn"] = 1722679200,
 },
-[10790] = {
+[9670] = {
 ["FirstCompletedOn"] = 1500112800,
 },
 [8843] = {
@@ -7862,12 +7928,8 @@ nil,
 [5455] = {
 ["FirstCompletedOn"] = 1707822000,
 },
-[1796] = {
-["FirstCompletedOn"] = 1238493600,
-["EarnedBy"] = {
-["Player-1122-019F1238"] = 1238493600,
-["Player-1390-09230B89"] = 1603796400,
-},
+[62892] = {
+["FirstCompletedOn"] = 1787133600,
 },
 [62143] = {
 ["FirstCompletedOn"] = 1774263600,
@@ -7878,14 +7940,11 @@ nil,
 [8923] = {
 ["FirstCompletedOn"] = 1499940000,
 },
-[14164] = {
-["FirstCompletedOn"] = 1606734000,
+[7382] = {
+["FirstCompletedOn"] = 1602669600,
 },
-[5373] = {
-["FirstCompletedOn"] = 1500026400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500026400,
-},
+[42677] = {
+["FirstCompletedOn"] = 1755511200,
 },
 [8971] = {
 ["FirstCompletedOn"] = 1721728800,
@@ -7899,17 +7958,14 @@ nil,
 ["Player-1390-09230B89"] = 1721728800,
 },
 },
-[40633] = {
-["FirstCompletedOn"] = 1728640800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728640800,
+[40249] = {
+["FirstCompletedOn"] = 1731495600,
 },
+[61803] = {
+["FirstCompletedOn"] = 1772881200,
 },
-[19460] = {
-["FirstCompletedOn"] = 1745229600,
-},
-[9670] = {
-["FirstCompletedOn"] = 1500112800,
+[10837] = {
+["FirstCompletedOn"] = 1532599200,
 },
 [40266] = {
 ["FirstCompletedOn"] = 1740567600,
@@ -7942,23 +7998,32 @@ nil,
 ["Player-1390-09230B89"] = 1499767200,
 },
 },
-[17486] = {
-["FirstCompletedOn"] = 1722592800,
+[6348] = {
+["FirstCompletedOn"] = 1500026400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1500026400,
+},
 },
 [42761] = {
 ["FirstCompletedOn"] = 1758189600,
 },
-[12309] = {
-["FirstCompletedOn"] = 1728554400,
+[14627] = {
+["FirstCompletedOn"] = 1606993200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1606993200,
+},
 },
 [61312] = {
 ["FirstCompletedOn"] = 1773399600,
 },
-[42677] = {
-["FirstCompletedOn"] = 1755511200,
+[12484] = {
+["FirstCompletedOn"] = 1534672800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534672800,
 },
-[11125] = {
-["FirstCompletedOn"] = 1531476000,
+},
+[41588] = {
+["FirstCompletedOn"] = 1740913200,
 },
 [20525] = {
 ["FirstCompletedOn"] = 1729072800,
@@ -7972,14 +8037,17 @@ nil,
 [41226] = {
 ["FirstCompletedOn"] = 1741172400,
 },
-[41013] = {
-["FirstCompletedOn"] = 1731236400,
+[10053] = {
+["FirstCompletedOn"] = 1721901600,
 },
-[12740] = {
-["FirstCompletedOn"] = 1535191200,
+[10773] = {
+["FirstCompletedOn"] = 1519470000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1519470000,
 },
-[60971] = {
-["FirstCompletedOn"] = 1764759600,
+},
+[9909] = {
+["FirstCompletedOn"] = 1531044000,
 },
 [18702] = {
 ["FirstCompletedOn"] = 1700132400,
@@ -7990,20 +8058,14 @@ nil,
 [18734] = {
 ["FirstCompletedOn"] = 1726480800,
 },
-[12484] = {
-["FirstCompletedOn"] = 1534672800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534672800,
-},
+[11796] = {
+["FirstCompletedOn"] = 1532685600,
 },
 [62144] = {
 ["FirstCompletedOn"] = 1773140400,
 },
-[12388] = {
-["FirstCompletedOn"] = 1755511200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1755511200,
-},
+[12292] = {
+["FirstCompletedOn"] = 1533031200,
 },
 [41802] = {
 ["FirstCompletedOn"] = 1772276400,
@@ -8011,8 +8073,11 @@ nil,
 [62336] = {
 ["FirstCompletedOn"] = 1772794800,
 },
-[40948] = {
-["FirstCompletedOn"] = 1740740400,
+[15650] = {
+["FirstCompletedOn"] = 1755856800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1755943200,
+},
 },
 [18958] = {
 ["FirstCompletedOn"] = 1704970800,
@@ -8026,14 +8091,14 @@ nil,
 [40139] = {
 ["FirstCompletedOn"] = 1741690800,
 },
-[8099] = {
-["FirstCompletedOn"] = 1606302000,
+[11124] = {
+["FirstCompletedOn"] = 1519556400,
 },
 [19118] = {
 ["FirstCompletedOn"] = 1722679200,
 },
-[246] = {
-["FirstCompletedOn"] = 1239962400,
+[40331] = {
+["FirstCompletedOn"] = 1743501600,
 },
 [3936] = {
 ["FirstCompletedOn"] = 1501408800,
@@ -8047,11 +8112,11 @@ nil,
 [40523] = {
 ["FirstCompletedOn"] = 1727776800,
 },
-[15890] = {
-["FirstCompletedOn"] = 1704106800,
+[12947] = {
+["FirstCompletedOn"] = 1537524000,
 },
-[40435] = {
-["FirstCompletedOn"] = 1735556400,
+[41201] = {
+["FirstCompletedOn"] = 1737889200,
 },
 [13769] = {
 ["FirstCompletedOn"] = 1604228400,
@@ -8059,14 +8124,20 @@ nil,
 ["Player-1390-09230B89"] = 1604228400,
 },
 },
-[9573] = {
-["FirstCompletedOn"] = 1602842400,
+[10756] = {
+["FirstCompletedOn"] = 1519556400,
 },
-[40843] = {
-["FirstCompletedOn"] = 1739876400,
+[9707] = {
+["FirstCompletedOn"] = 1501408800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1501408800,
 },
-[9477] = {
-["FirstCompletedOn"] = 1533549600,
+},
+[5372] = {
+["FirstCompletedOn"] = 1516791600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516791600,
+},
 },
 [19470] = {
 ["FirstCompletedOn"] = 1724666400,
@@ -8080,10 +8151,10 @@ nil,
 [41099] = {
 ["FirstCompletedOn"] = 1742382000,
 },
-[18201] = {
-["FirstCompletedOn"] = 1722679200,
+[14610] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1722679200,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
 [41227] = {
@@ -8095,35 +8166,35 @@ nil,
 ["Player-1390-09230B89"] = 1772708400,
 },
 },
-[2783] = {
-["FirstCompletedOn"] = 1248429600,
+[42032] = {
+["FirstCompletedOn"] = 1519124400,
+},
+[61798] = {
+["FirstCompletedOn"] = 1774436400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1500199200,
+["Player-1390-09230B89"] = 1774436400,
 },
 },
-[16600] = {
-["FirstCompletedOn"] = 1706180400,
+[61734] = {
+["FirstCompletedOn"] = 1772535600,
 },
-[12365] = {
-["FirstCompletedOn"] = 1728554400,
+[14306] = {
+["FirstCompletedOn"] = 1608202800,
+},
+[5108] = {
+["FirstCompletedOn"] = 1606129200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1728554400,
+["Player-1390-09230B89"] = 1606129200,
 },
 },
-[653] = {
-["FirstCompletedOn"] = 1238238000,
+[14363] = {
+["FirstCompletedOn"] = 1731063600,
 ["EarnedBy"] = {
-["Player-1122-019F1238"] = 1238320800,
+["Player-1390-09230B89"] = 1731063600,
 },
 },
-[62375] = {
-["FirstCompletedOn"] = 1787047200,
-},
-[2078] = {
-["FirstCompletedOn"] = 1529229600,
-},
-[10459] = {
-["FirstCompletedOn"] = 1533290400,
+[19027] = {
+["FirstCompletedOn"] = 1713434400,
 },
 [41803] = {
 ["FirstCompletedOn"] = 1772362800,
@@ -8131,14 +8202,11 @@ nil,
 [62337] = {
 ["FirstCompletedOn"] = 1774090800,
 },
-[1035] = {
-["FirstCompletedOn"] = 1246528800,
+[62373] = {
+["FirstCompletedOn"] = 1773486000,
 },
-[10820] = {
-["FirstCompletedOn"] = 1519556400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1519556400,
-},
+[62181] = {
+["FirstCompletedOn"] = 1774436400,
 },
 [62529] = {
 ["FirstCompletedOn"] = 1776852000,
@@ -8158,8 +8226,8 @@ nil,
 [10059] = {
 ["FirstCompletedOn"] = 1516446000,
 },
-[12771] = {
-["FirstCompletedOn"] = 1534413600,
+[40815] = {
+["FirstCompletedOn"] = 1731236400,
 },
 [8118] = {
 ["FirstCompletedOn"] = 1606302000,
@@ -8176,11 +8244,17 @@ nil,
 [40524] = {
 ["FirstCompletedOn"] = 1725876000,
 },
-[62182] = {
-["FirstCompletedOn"] = 1775037600,
+[18703] = {
+["FirstCompletedOn"] = 1704193200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1704193200,
 },
-[20526] = {
-["FirstCompletedOn"] = 1738494000,
+},
+[42030] = {
+["FirstCompletedOn"] = 1532599200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1752660000,
+},
 },
 [14281] = {
 ["FirstCompletedOn"] = 1606302000,
@@ -8197,8 +8271,8 @@ nil,
 [1027] = {
 ["FirstCompletedOn"] = 1246528800,
 },
-[61506] = {
-["FirstCompletedOn"] = 1772535600,
+[20526] = {
+["FirstCompletedOn"] = 1738494000,
 },
 [1031] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -8206,11 +8280,8 @@ nil,
 [41164] = {
 ["FirstCompletedOn"] = 1735383600,
 },
-[14409] = {
-["FirstCompletedOn"] = 1610535600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1610535600,
-},
+[41228] = {
+["FirstCompletedOn"] = 1741258800,
 },
 [1037] = {
 ["FirstCompletedOn"] = 1246528800,
@@ -8221,10 +8292,10 @@ nil,
 [16624] = {
 ["FirstCompletedOn"] = 1704020400,
 },
-[18703] = {
-["FirstCompletedOn"] = 1704193200,
+[14473] = {
+["FirstCompletedOn"] = 1607252400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1704193200,
+["Player-1390-09230B89"] = 1607252400,
 },
 },
 [18735] = {
@@ -8233,7 +8304,7 @@ nil,
 [10411] = {
 ["FirstCompletedOn"] = 1517828400,
 },
-[1029] = {
+[1035] = {
 ["FirstCompletedOn"] = 1246528800,
 },
 [263] = {
@@ -8242,14 +8313,20 @@ nil,
 ["Player-1122-019F1238"] = 1246528800,
 },
 },
-[41804] = {
-["FirstCompletedOn"] = 1772362800,
+[12506] = {
+["FirstCompletedOn"] = 1535623200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1535623200,
+},
 },
 [12522] = {
 ["FirstCompletedOn"] = 1537264800,
 },
-[62181] = {
-["FirstCompletedOn"] = 1774436400,
+[8980] = {
+["FirstCompletedOn"] = 1533722400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1533722400,
+},
 },
 [41996] = {
 ["FirstCompletedOn"] = 1746180000,
@@ -8260,23 +8337,26 @@ nil,
 ["Player-1390-09230B89"] = 1777024800,
 },
 },
-[14306] = {
-["FirstCompletedOn"] = 1608202800,
+[10691] = {
+["FirstCompletedOn"] = 1746180000,
 },
 [42188] = {
 ["FirstCompletedOn"] = 1753005600,
 },
-[62180] = {
-["FirstCompletedOn"] = 1774004400,
+[62498] = {
+["FirstCompletedOn"] = 1777802400,
 },
-[12557] = {
-["FirstCompletedOn"] = 1534759200,
+[12844] = {
+["FirstCompletedOn"] = 1534413600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534413600,
+},
 },
 [2141] = {
 ["FirstCompletedOn"] = 1497952800,
 },
-[14334] = {
-["FirstCompletedOn"] = 1606215600,
+[40231] = {
+["FirstCompletedOn"] = 1725876000,
 },
 [40461] = {
 ["FirstCompletedOn"] = 1743588000,
@@ -8308,8 +8388,8 @@ nil,
 ["Player-1122-019F1238"] = 1246528800,
 },
 },
-[10819] = {
-["FirstCompletedOn"] = 1531044000,
+[1030] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [10763] = {
 ["FirstCompletedOn"] = 1501408800,
@@ -8341,23 +8421,15 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[10627] = {
-["FirstCompletedOn"] = 1532253600,
+[40428] = {
+["FirstCompletedOn"] = 1741172400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1532253600,
+["Player-1122-019F1238"] = 1746352800,
+["Player-1390-09230B89"] = 1741172400,
 },
 },
-[889] = {
-["FirstCompletedOn"] = 1237719600,
-["EarnedBy"] = {
-["Player-1390-0D20B310"] = 1739876400,
-["Player-1390-0D20B307"] = 1739876400,
-["Player-1390-09230B89"] = 1496138400,
-["Player-1390-0D20B30E"] = 1739876400,
-["Player-1122-019F1238"] = 1237719600,
-["Player-1302-078A2412"] = 1438509600,
-["Player-1390-0D20B303"] = 1739876400,
-},
+[12066] = {
+["FirstCompletedOn"] = 1518346800,
 },
 [8844] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -8365,20 +8437,20 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[62498] = {
-["FirstCompletedOn"] = 1777802400,
-},
-[19030] = {
-["FirstCompletedOn"] = 1718359200,
-},
-[19326] = {
-["FirstCompletedOn"] = 1704884400,
+[7994] = {
+["FirstCompletedOn"] = 1499508000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1704884400,
+["Player-1390-09230B89"] = 1499508000,
 },
 },
-[17492] = {
-["FirstCompletedOn"] = 1722592800,
+[1011] = {
+["FirstCompletedOn"] = 1705316400,
+},
+[40875] = {
+["FirstCompletedOn"] = 1733050800,
+},
+[42730] = {
+["FirstCompletedOn"] = 1757325600,
 },
 [41805] = {
 ["FirstCompletedOn"] = 1772449200,
@@ -8395,14 +8467,14 @@ nil,
 [41997] = {
 ["FirstCompletedOn"] = 1773486000,
 },
-[62531] = {
-["FirstCompletedOn"] = 1777024800,
+[8988] = {
+["FirstCompletedOn"] = 1721728800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1777024800,
+["Player-1390-09230B89"] = 1721728800,
 },
 },
-[41196] = {
-["FirstCompletedOn"] = 1741518000,
+[13553] = {
+["FirstCompletedOn"] = 1604314800,
 },
 [40142] = {
 ["FirstCompletedOn"] = 1740567600,
@@ -8413,14 +8485,17 @@ nil,
 ["Player-1390-09230B89"] = 1755856800,
 },
 },
-[1028] = {
-["FirstCompletedOn"] = 1246528800,
+[3798] = {
+["FirstCompletedOn"] = 1501408800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1501408800,
+},
 },
 [40334] = {
 ["FirstCompletedOn"] = 1739962800,
 },
-[14305] = {
-["FirstCompletedOn"] = 1610017200,
+[12557] = {
+["FirstCompletedOn"] = 1534759200,
 },
 [9100] = {
 ["FirstCompletedOn"] = 1499680800,
@@ -8443,8 +8518,39 @@ nil,
 ["Player-1122-019F1238"] = 1246528800,
 },
 },
-[1017] = {
-["FirstCompletedOn"] = 1235732400,
+[10818] = {
+["FirstCompletedOn"] = 1531044000,
+},
+[40809] = {
+["FirstCompletedOn"] = 1731063600,
+},
+[14206] = {
+["FirstCompletedOn"] = 1606561200,
+},
+[20118] = {
+["FirstCompletedOn"] = 1724493600,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1745056800,
+["Player-1390-09230B89"] = 1724493600,
+},
+},
+[16401] = {
+["FirstCompletedOn"] = 1723284000,
+},
+[61508] = {
+["FirstCompletedOn"] = 1773140400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1773140400,
+},
+},
+[12481] = {
+["FirstCompletedOn"] = 1534672800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534672800,
+},
+},
+[41166] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [40599] = {
 ["FirstCompletedOn"] = 1726308000,
@@ -8452,40 +8558,13 @@ nil,
 ["Player-1390-09230B89"] = 1726308000,
 },
 },
-[1011] = {
-["FirstCompletedOn"] = 1705316400,
+[61726] = {
+["FirstCompletedOn"] = 1773918000,
 },
-[12386] = {
-["FirstCompletedOn"] = 1755511200,
+[682] = {
+["FirstCompletedOn"] = 1703329200,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1755511200,
-},
-},
-[16401] = {
-["FirstCompletedOn"] = 1723284000,
-},
-[1157] = {
-["FirstCompletedOn"] = 1235732400,
-},
-[17279] = {
-["FirstCompletedOn"] = 1722420000,
-},
-[41166] = {
-["FirstCompletedOn"] = 1735383600,
-},
-[41962] = {
-["FirstCompletedOn"] = 1772708400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
-},
-},
-[976] = {
-["FirstCompletedOn"] = 1538215200,
-},
-[63683] = {
-["FirstCompletedOn"] = 1787047200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1787047200,
+["Player-1390-09230B89"] = 1703329200,
 },
 },
 [61892] = {
@@ -8500,10 +8579,10 @@ nil,
 [13466] = {
 ["FirstCompletedOn"] = 1588413600,
 },
-[12833] = {
-["FirstCompletedOn"] = 1537005600,
+[16271] = {
+["FirstCompletedOn"] = 1703847600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1537005600,
+["Player-1390-09230B89"] = 1703847600,
 },
 },
 [1177] = {
@@ -8527,17 +8606,14 @@ nil,
 [41998] = {
 ["FirstCompletedOn"] = 1771498800,
 },
-[10802] = {
-["FirstCompletedOn"] = 1530093600,
+[62532] = {
+["FirstCompletedOn"] = 1787220000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1530093600,
+["Player-1390-09230B89"] = 1787220000,
 },
 },
-[40103] = {
-["FirstCompletedOn"] = 1726567200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1726567200,
-},
+[40803] = {
+["FirstCompletedOn"] = 1731063600,
 },
 [42190] = {
 ["FirstCompletedOn"] = 1756288800,
@@ -8545,8 +8621,8 @@ nil,
 ["Player-1390-09230B89"] = 1756288800,
 },
 },
-[20594] = {
-["FirstCompletedOn"] = 1740826800,
+[863] = {
+["FirstCompletedOn"] = 1497088800,
 },
 [11611] = {
 ["FirstCompletedOn"] = 1529834400,
@@ -8560,11 +8636,8 @@ nil,
 ["Player-1390-09230B89"] = 1606561200,
 },
 },
-[10784] = {
-["FirstCompletedOn"] = 1517310000,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1517310000,
-},
+[860] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [60933] = {
 ["FirstCompletedOn"] = 1755511200,
@@ -8572,11 +8645,8 @@ nil,
 [40527] = {
 ["FirstCompletedOn"] = 1728813600,
 },
-[14368] = {
-["FirstCompletedOn"] = 1609239600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1609239600,
-},
+[852] = {
+["FirstCompletedOn"] = 1237374000,
 },
 [19312] = {
 ["FirstCompletedOn"] = 1704106800,
@@ -8608,10 +8678,11 @@ nil,
 ["Player-1390-09230B89"] = 1742382000,
 },
 },
-[16271] = {
-["FirstCompletedOn"] = 1703847600,
+[11185] = {
+["FirstCompletedOn"] = 1704711600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1703847600,
+["Player-1122-019F1238"] = 1745488800,
+["Player-1390-09230B89"] = 1704711600,
 },
 },
 [9756] = {
@@ -8626,17 +8697,17 @@ nil,
 [61637] = {
 ["FirstCompletedOn"] = 1774436400,
 },
-[61406] = {
-["FirstCompletedOn"] = 1764759600,
+[19478] = {
+["FirstCompletedOn"] = 1722679200,
+},
+[18867] = {
+["FirstCompletedOn"] = 1703674800,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1764759600,
+["Player-1390-09230B89"] = 1703674800,
 },
 },
-[62109] = {
-["FirstCompletedOn"] = 1773399600,
-},
-[12556] = {
-["FirstCompletedOn"] = 1535882400,
+[41050] = {
+["FirstCompletedOn"] = 1736679600,
 },
 [6975] = {
 ["FirstCompletedOn"] = 1531216800,
@@ -8644,17 +8715,20 @@ nil,
 [4936] = {
 ["FirstCompletedOn"] = 1498557600,
 },
-[19420] = {
-["FirstCompletedOn"] = 1740567600,
-},
-[4851] = {
-["FirstCompletedOn"] = 1537783200,
+[12848] = {
+["FirstCompletedOn"] = 1535450400,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1537783200,
+["Player-1390-09230B89"] = 1535450400,
 },
 },
-[13776] = {
-["FirstCompletedOn"] = 1603969200,
+[12832] = {
+["FirstCompletedOn"] = 1537005600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1537005600,
+},
+},
+[40997] = {
+["FirstCompletedOn"] = 1731150000,
 },
 [1243] = {
 ["FirstCompletedOn"] = 1236250800,
@@ -8669,23 +8743,23 @@ nil,
 ["Player-1390-09230B89"] = 1731063600,
 },
 },
-[863] = {
-["FirstCompletedOn"] = 1497088800,
-},
-[781] = {
-["FirstCompletedOn"] = 1236855600,
-},
-[40992] = {
-["FirstCompletedOn"] = 1735470000,
-},
-[14798] = {
-["FirstCompletedOn"] = 1607166000,
-},
-[12877] = {
-["FirstCompletedOn"] = 1536660000,
+[8482] = {
+["FirstCompletedOn"] = 1516878000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1536660000,
+["Player-1390-09230B89"] = 1516878000,
 },
+},
+[777] = {
+["FirstCompletedOn"] = 1236942000,
+},
+[61722] = {
+["FirstCompletedOn"] = 1773831600,
+},
+[773] = {
+["FirstCompletedOn"] = 1236942000,
+},
+[771] = {
+["FirstCompletedOn"] = 1246528800,
 },
 [42191] = {
 ["FirstCompletedOn"] = 1754474400,
@@ -8694,8 +8768,8 @@ nil,
 ["Player-1390-09230B89"] = 1754474400,
 },
 },
-[3917] = {
-["FirstCompletedOn"] = 1501408800,
+[766] = {
+["FirstCompletedOn"] = 1237546800,
 },
 [10076] = {
 ["FirstCompletedOn"] = 1721815200,
@@ -8703,20 +8777,17 @@ nil,
 ["Player-1390-09230B89"] = 1721815200,
 },
 },
-[14463] = {
-["FirstCompletedOn"] = 1607511600,
+[10784] = {
+["FirstCompletedOn"] = 1517310000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1607511600,
+["Player-1390-09230B89"] = 1517310000,
 },
 },
 [1265] = {
 ["FirstCompletedOn"] = 1240308000,
 },
-[5064] = {
-["FirstCompletedOn"] = 1538301600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1538301600,
-},
+[1267] = {
+["FirstCompletedOn"] = 1498384800,
 },
 [1269] = {
 ["FirstCompletedOn"] = 1246960800,
@@ -8728,11 +8799,8 @@ nil,
 ["Player-1390-09230B89"] = 1741690800,
 },
 },
-[40791] = {
-["FirstCompletedOn"] = 1737111600,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1737111600,
-},
+[40528] = {
+["FirstCompletedOn"] = 1726826400,
 },
 [42767] = {
 ["FirstCompletedOn"] = 1774436400,
@@ -8764,8 +8832,11 @@ nil,
 [61574] = {
 ["FirstCompletedOn"] = 1776852000,
 },
-[41168] = {
-["FirstCompletedOn"] = 1735383600,
+[61638] = {
+["FirstCompletedOn"] = 1772362800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1772362800,
+},
 },
 [12363] = {
 ["FirstCompletedOn"] = 1728554400,
@@ -8773,11 +8844,8 @@ nil,
 ["Player-1390-09230B89"] = 1728554400,
 },
 },
-[12848] = {
-["FirstCompletedOn"] = 1535450400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1535450400,
-},
+[41168] = {
+["FirstCompletedOn"] = 1735383600,
 },
 [12395] = {
 ["FirstCompletedOn"] = 1728554400,
@@ -8788,23 +8856,31 @@ nil,
 [61894] = {
 ["FirstCompletedOn"] = 1774090800,
 },
-[10689] = {
-["FirstCompletedOn"] = 1497780000,
-},
-[10561] = {
-["FirstCompletedOn"] = 1495360800,
+[14782] = {
+["FirstCompletedOn"] = 1602669600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1495360800,
+["Player-1390-0D20B310"] = 1739876400,
+["Player-1390-0D20B307"] = 1739876400,
+["Player-1390-09230B89"] = 1602669600,
+["Player-1390-0D20B30E"] = 1739876400,
+["Player-1122-019F1238"] = 1744452000,
+["Player-1390-0D20B303"] = 1739876400,
 },
 },
-[774] = {
-["FirstCompletedOn"] = 1237287600,
+[40082] = {
+["FirstCompletedOn"] = 1728122400,
 },
-[40996] = {
-["FirstCompletedOn"] = 1731150000,
+[16411] = {
+["FirstCompletedOn"] = 1703934000,
 },
-[769] = {
-["FirstCompletedOn"] = 1246528800,
+[40729] = {
+["FirstCompletedOn"] = 1731236400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731236400,
+},
+},
+[607] = {
+["FirstCompletedOn"] = 1739012400,
 },
 [41808] = {
 ["FirstCompletedOn"] = 1757844000,
@@ -8812,20 +8888,23 @@ nil,
 [12523] = {
 ["FirstCompletedOn"] = 1539684000,
 },
-[60890] = {
-["FirstCompletedOn"] = 1756893600,
+[9041] = {
+["FirstCompletedOn"] = 1721728800,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1721728800,
+},
 },
 [12555] = {
 ["FirstCompletedOn"] = 1534240800,
 },
-[16499] = {
-["FirstCompletedOn"] = 1703847600,
+[40725] = {
+["FirstCompletedOn"] = 1725012000,
 },
 [12587] = {
 ["FirstCompletedOn"] = 1539770400,
 },
-[40535] = {
-["FirstCompletedOn"] = 1732618800,
+[480] = {
+["FirstCompletedOn"] = 1240221600,
 },
 [5288] = {
 ["FirstCompletedOn"] = 1538301600,
@@ -8833,11 +8912,11 @@ nil,
 ["Player-1390-09230B89"] = 1538301600,
 },
 },
-[41052] = {
-["FirstCompletedOn"] = 1735470000,
+[40535] = {
+["FirstCompletedOn"] = 1732618800,
 },
-[1737] = {
-["FirstCompletedOn"] = 1247220000,
+[14894] = {
+["FirstCompletedOn"] = 1609326000,
 },
 [5312] = {
 ["FirstCompletedOn"] = 1606129200,
@@ -8845,11 +8924,8 @@ nil,
 ["Player-1390-09230B89"] = 1606129200,
 },
 },
-[12572] = {
-["FirstCompletedOn"] = 1534672800,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1534672800,
-},
+[10672] = {
+["FirstCompletedOn"] = 1529056800,
 },
 [14746] = {
 ["FirstCompletedOn"] = 1610190000,
@@ -8874,8 +8950,8 @@ nil,
 [19409] = {
 ["FirstCompletedOn"] = 1727776800,
 },
-[40533] = {
-["FirstCompletedOn"] = 1731322800,
+[62166] = {
+["FirstCompletedOn"] = 1773399600,
 },
 [10764] = {
 ["FirstCompletedOn"] = 1516791600,
@@ -8901,8 +8977,11 @@ nil,
 ["Player-1390-09230B89"] = 1772362800,
 },
 },
-[20596] = {
-["FirstCompletedOn"] = 1727949600,
+[639] = {
+["FirstCompletedOn"] = 1236769200,
+["EarnedBy"] = {
+["Player-1122-019F1238"] = 1236769200,
+},
 },
 [10844] = {
 ["FirstCompletedOn"] = 1703588400,
@@ -8910,10 +8989,10 @@ nil,
 ["Player-1390-09230B89"] = 1703588400,
 },
 },
-[40098] = {
-["FirstCompletedOn"] = 1742036400,
+[62549] = {
+["FirstCompletedOn"] = 1777197600,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1742036400,
+["Player-1390-09230B89"] = 1777197600,
 },
 },
 [61895] = {
@@ -8925,14 +9004,11 @@ nil,
 [12955] = {
 ["FirstCompletedOn"] = 1542193200,
 },
-[15930] = {
-["FirstCompletedOn"] = 1722420000,
+[17977] = {
+["FirstCompletedOn"] = 1704193200,
 },
-[40732] = {
-["FirstCompletedOn"] = 1726567200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1726567200,
-},
+[11759] = {
+["FirstCompletedOn"] = 1533808800,
 },
 [15050] = {
 ["FirstCompletedOn"] = 1743246000,
@@ -8982,8 +9058,8 @@ nil,
 ["Player-1390-09230B89"] = 1499335200,
 },
 },
-[8304] = {
-["FirstCompletedOn"] = 1744884000,
+[40533] = {
+["FirstCompletedOn"] = 1731322800,
 },
 [2781] = {
 ["FirstCompletedOn"] = 1248429600,
@@ -9008,11 +9084,8 @@ nil,
 [18258] = {
 ["FirstCompletedOn"] = 1753264800,
 },
-[61270] = {
-["FirstCompletedOn"] = 1774436400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1774436400,
-},
+[40475] = {
+["FirstCompletedOn"] = 1737889200,
 },
 [42769] = {
 ["FirstCompletedOn"] = 1777629600,
@@ -9023,14 +9096,17 @@ nil,
 [61256] = {
 ["FirstCompletedOn"] = 1774436400,
 },
-[41820] = {
-["FirstCompletedOn"] = 1752660000,
+[41626] = {
+["FirstCompletedOn"] = 1742727600,
 },
-[62165] = {
-["FirstCompletedOn"] = 1772622000,
+[40732] = {
+["FirstCompletedOn"] = 1726567200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1726567200,
 },
-[61520] = {
-["FirstCompletedOn"] = 1772622000,
+},
+[11215] = {
+["FirstCompletedOn"] = 1500890400,
 },
 [41042] = {
 ["FirstCompletedOn"] = 1736679600,
@@ -9065,23 +9141,26 @@ nil,
 [61960] = {
 ["FirstCompletedOn"] = 1772967600,
 },
-[522] = {
-["FirstCompletedOn"] = 1248084000,
+[41820] = {
+["FirstCompletedOn"] = 1752660000,
 },
-[42781] = {
-["FirstCompletedOn"] = 1755943200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1755943200,
-},
-},
-[61582] = {
+[61520] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[40989] = {
-["FirstCompletedOn"] = 1731322800,
+[546] = {
+["FirstCompletedOn"] = 1497175200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1497175200,
 },
-[6753] = {
-["FirstCompletedOn"] = 1778148000,
+},
+[61646] = {
+["FirstCompletedOn"] = 1772708400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1772708400,
+},
+},
+[522] = {
+["FirstCompletedOn"] = 1248084000,
 },
 [5752] = {
 ["FirstCompletedOn"] = 1529402400,
@@ -9095,8 +9174,8 @@ nil,
 ["Player-1390-09230B89"] = 1772622000,
 },
 },
-[519] = {
-["FirstCompletedOn"] = 1607598000,
+[62290] = {
+["FirstCompletedOn"] = 1772622000,
 },
 [19026] = {
 ["FirstCompletedOn"] = 1703847600,
@@ -9107,11 +9186,14 @@ nil,
 ["Player-1390-09230B89"] = 1756288800,
 },
 },
-[62158] = {
-["FirstCompletedOn"] = 1772622000,
+[2047] = {
+["FirstCompletedOn"] = 1516705200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1516705200,
 },
-[61583] = {
-["FirstCompletedOn"] = 1772622000,
+},
+[32] = {
+["FirstCompletedOn"] = 1516618800,
 },
 [11628] = {
 ["FirstCompletedOn"] = 1704711600,
@@ -9119,20 +9201,17 @@ nil,
 [1457] = {
 ["FirstCompletedOn"] = 1247220000,
 },
-[9631] = {
-["FirstCompletedOn"] = 1721728800,
+[61389] = {
+["FirstCompletedOn"] = 1772622000,
 },
 [13723] = {
 ["FirstCompletedOn"] = 1741690800,
 },
-[42198] = {
-["FirstCompletedOn"] = 1754474400,
+[62155] = {
+["FirstCompletedOn"] = 1772794800,
 },
-[61645] = {
-["FirstCompletedOn"] = 1772708400,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1772708400,
-},
+[40987] = {
+["FirstCompletedOn"] = 1731409200,
 },
 [19346] = {
 ["FirstCompletedOn"] = 1703847600,
@@ -9149,16 +9228,16 @@ nil,
 ["Player-1390-09230B89"] = 1516446000,
 },
 },
-[62290] = {
-["FirstCompletedOn"] = 1772622000,
+[41818] = {
+["FirstCompletedOn"] = 1752660000,
 },
 [41043] = {
 ["FirstCompletedOn"] = 1735470000,
 },
-[61642] = {
-["FirstCompletedOn"] = 1773140400,
+[483] = {
+["FirstCompletedOn"] = 1240308000,
 ["EarnedBy"] = {
-["Player-1390-09230B89"] = 1773140400,
+["Player-1122-019F1238"] = 1240308000,
 },
 },
 [61641] = {
@@ -9167,20 +9246,26 @@ nil,
 ["Player-1390-09230B89"] = 1772708400,
 },
 },
-[11214] = {
-["FirstCompletedOn"] = 1500199200,
+[20597] = {
+["FirstCompletedOn"] = 1725444000,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1725444000,
+},
 },
 [11868] = {
 ["FirstCompletedOn"] = 1534500000,
 },
-[12510] = {
-["FirstCompletedOn"] = 1535796000,
+[42198] = {
+["FirstCompletedOn"] = 1754474400,
 },
 [61897] = {
 ["FirstCompletedOn"] = 1772622000,
 },
-[40860] = {
-["FirstCompletedOn"] = 1731495600,
+[61645] = {
+["FirstCompletedOn"] = 1772708400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1772708400,
+},
 },
 [41555] = {
 ["FirstCompletedOn"] = 1735556400,
@@ -9200,14 +9285,20 @@ nil,
 [41811] = {
 ["FirstCompletedOn"] = 1757844000,
 },
-[61707] = {
-["FirstCompletedOn"] = 1775037600,
+[61455] = {
+["FirstCompletedOn"] = 1774778400,
 },
-[61711] = {
-["FirstCompletedOn"] = 1775037600,
+[61642] = {
+["FirstCompletedOn"] = 1773140400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1773140400,
 },
-[61712] = {
-["FirstCompletedOn"] = 1775037600,
+},
+[12589] = {
+["FirstCompletedOn"] = 1534759200,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1534759200,
+},
 },
 [6032] = {
 ["FirstCompletedOn"] = 1725357600,
@@ -9215,11 +9306,17 @@ nil,
 [12076] = {
 ["FirstCompletedOn"] = 1531476000,
 },
-[61584] = {
-["FirstCompletedOn"] = 1772622000,
+[61644] = {
+["FirstCompletedOn"] = 1772708400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1772708400,
 },
-[61455] = {
-["FirstCompletedOn"] = 1774778400,
+},
+[61643] = {
+["FirstCompletedOn"] = 1773140400,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1773140400,
+},
 },
 [8111] = {
 ["FirstCompletedOn"] = 1606302000,
@@ -9227,8 +9324,11 @@ nil,
 ["Player-1390-09230B89"] = 1606302000,
 },
 },
-[61258] = {
-["FirstCompletedOn"] = 1776506400,
+[14364] = {
+["FirstCompletedOn"] = 1731063600,
+["EarnedBy"] = {
+["Player-1390-09230B89"] = 1731063600,
+},
 },
 [18163] = {
 ["FirstCompletedOn"] = 1722852000,
@@ -9255,11 +9355,8 @@ nil,
 ["Player-1390-09230B89"] = 1729072800,
 },
 },
-[62282] = {
-["FirstCompletedOn"] = 1787047200,
-["EarnedBy"] = {
-["Player-1390-09230B89"] = 1787047200,
-},
+[61707] = {
+["FirstCompletedOn"] = 1775037600,
 },
 },
 ["Watched"] = {
@@ -14331,7 +14428,7 @@ false,
 },
 [63636] = {
 ["Player-1390-09230B89"] = {
-1,
+4,
 },
 },
 [12010] = {
@@ -26638,8 +26735,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61492] = {
+[41017] = {
 ["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
 },
 ["Player-1390-09230B89"] = {
 },
@@ -26866,20 +26965,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[1411] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61492] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+["Player-1390-09230B89"] = {
 },
 },
 [1415] = {
@@ -29557,10 +29646,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61625] = {
-["Player-1122-019F1238"] = {
+[129] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
 },
 ["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [8067] = {
@@ -29722,8 +29821,6 @@ false,
 [62521] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1390-09230B89"] = {
-},
 },
 [8090] = {
 ["Player-1390-0D20B310"] = {
@@ -29875,32 +29972,16 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[12339] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
+[61625] = {
+["Player-1122-019F1238"] = {
 },
 ["Player-1390-09230B89"] = {
 },
-["Player-1390-0D20B30E"] = {
 },
+[42174] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
-[133] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+["Player-1390-09230B89"] = {
 },
 },
 [130] = {
@@ -29993,8 +30074,16 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[62649] = {
-["Player-1390-09230B89"] = {
+[133] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [8532] = {
@@ -30901,7 +30990,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[168] = {
+[5371] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -30909,6 +30998,8 @@ false,
 ["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -30978,8 +31069,6 @@ false,
 },
 [62523] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1390-09230B89"] = {
 },
 },
 [165] = {
@@ -31090,14 +31179,14 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14835] = {
+[168] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
 },
-["Player-1390-0D20B30E"] = {
+["Player-1390-09230B89"] = {
 },
-["Player-1122-019F1238"] = {
+["Player-1390-0D20B30E"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -32177,10 +32266,12 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9141] = {
+[207] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -32223,7 +32314,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[40643] = {
+[9141] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -32482,12 +32573,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[207] = {
+[40643] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -33127,8 +33216,18 @@ false,
 false,
 },
 },
-[63679] = {
-["Player-1390-09230B89"] = {
+[10805] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [227] = {
@@ -33229,10 +33328,12 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[10805] = {
+[233] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -33309,20 +33410,8 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[233] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
+[63679] = {
 ["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
 },
 },
 [12526] = {
@@ -34236,10 +34325,34 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[41031] = {
-["Player-1122-019F1238"] = {
+[9238] = {
+["Player-1390-0D20B310"] = {
+0,
+0,
+},
+["Player-1390-0D20B307"] = {
+0,
+0,
 },
 ["Player-1390-09230B89"] = {
+0,
+0,
+},
+["Player-1390-0D20B30E"] = {
+0,
+0,
+},
+["Player-1122-019F1238"] = {
+0,
+0,
+},
+["Player-1302-078A2412"] = {
+0,
+0,
+},
+["Player-1390-0D20B303"] = {
+0,
+0,
 },
 },
 [18152] = {
@@ -34330,7 +34443,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[289] = {
+[4620] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -34641,7 +34754,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[4620] = {
+[289] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -34684,18 +34797,10 @@ false,
 ["Player-1122-019F1238"] = {
 },
 },
-[5116] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61379] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+["Player-1390-09230B89"] = {
 },
 },
 [293] = {
@@ -34927,8 +35032,20 @@ false,
 false,
 },
 },
-[61638] = {
+[6684] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
 ["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [4924] = {
@@ -35074,7 +35191,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[6860] = {
+[429] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -35126,7 +35243,7 @@ false,
 false,
 },
 },
-[14325] = {
+[5116] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -35665,7 +35782,7 @@ false,
 ["Player-1122-019F1238"] = {
 },
 },
-[429] = {
+[9623] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -35744,8 +35861,6 @@ false,
 },
 [62532] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1390-09230B89"] = {
 },
 },
 [14038] = {
@@ -35881,27 +35996,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[16427] = {
+[449] = {
 ["Player-1390-0D20B310"] = {
-false,
 },
 ["Player-1390-0D20B307"] = {
-false,
 },
 ["Player-1390-09230B89"] = {
-false,
 },
 ["Player-1390-0D20B30E"] = {
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
 },
 },
 [15957] = {
@@ -35927,24 +36035,20 @@ false,
 0,
 },
 },
-[20586] = {
+[450] = {
 ["Player-1390-0D20B310"] = {
-false,
 },
 ["Player-1390-0D20B307"] = {
-false,
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
 },
 },
 [467] = {
@@ -36732,7 +36836,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[16429] = {
+[642] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -36740,8 +36844,6 @@ false,
 ["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -36780,20 +36882,8 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[418] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61638] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
 },
 },
 [13398] = {
@@ -36955,7 +37045,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9623] = {
+[6860] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -37364,22 +37454,47 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14358] = {
+[16427] = {
 ["Player-1390-0D20B310"] = {
+false,
 },
 ["Player-1390-0D20B307"] = {
+false,
+},
+["Player-1390-09230B89"] = {
+false,
 },
 ["Player-1390-0D20B30E"] = {
+false,
 },
 ["Player-1122-019F1238"] = {
+false,
 },
 ["Player-1302-078A2412"] = {
+false,
 },
 ["Player-1390-0D20B303"] = {
+false,
 },
 },
-[61639] = {
+[20586] = {
+["Player-1390-0D20B310"] = {
+false,
+},
+["Player-1390-0D20B307"] = {
+false,
+},
+["Player-1390-0D20B30E"] = {
+false,
+},
 ["Player-1122-019F1238"] = {
+false,
+},
+["Player-1302-078A2412"] = {
+false,
+},
+["Player-1390-0D20B303"] = {
+false,
 },
 },
 [451] = {
@@ -37780,8 +37895,24 @@ false,
 false,
 },
 },
-[61641] = {
+[20587] = {
+["Player-1390-0D20B310"] = {
+false,
+},
+["Player-1390-0D20B307"] = {
+false,
+},
+["Player-1390-0D20B30E"] = {
+false,
+},
 ["Player-1122-019F1238"] = {
+false,
+},
+["Player-1302-078A2412"] = {
+false,
+},
+["Player-1390-0D20B303"] = {
+false,
 },
 },
 [15222] = {
@@ -37800,12 +37931,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[8248] = {
+[12343] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -37864,18 +37993,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[8472] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[62537] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+["Player-1390-09230B89"] = {
 },
 },
 [18539] = {
@@ -37959,7 +38080,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9240] = {
+[4621] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -38080,21 +38201,7 @@ false,
 false,
 },
 },
-[2359] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
+[62282] = {
 },
 [11703] = {
 ["Player-1390-0D20B310"] = {
@@ -38232,12 +38339,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[10104] = {
+[14199] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -38468,22 +38573,55 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[642] = {
+[14359] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
 },
-["Player-1390-09230B89"] = {
-},
 ["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
 ["Player-1390-0D20B303"] = {
 },
 },
-[61643] = {
+[644] = {
+["Player-1390-0D20B310"] = {
+false,
+false,
+false,
+},
+["Player-1390-0D20B307"] = {
+false,
+false,
+false,
+},
+["Player-1390-09230B89"] = {
+false,
+false,
+false,
+},
+["Player-1390-0D20B30E"] = {
+false,
+false,
+false,
+},
 ["Player-1122-019F1238"] = {
+false,
+false,
+false,
+},
+["Player-1302-078A2412"] = {
+false,
+false,
+false,
+},
+["Player-1390-0D20B303"] = {
+false,
+false,
+false,
 },
 },
 [12183] = {
@@ -38580,10 +38718,12 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[12343] = {
+[8248] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -38690,12 +38830,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[12567] = {
+[8472] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -38850,7 +38988,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[692] = {
+[5533] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -39060,12 +39198,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61514] = {
-["Player-1122-019F1238"] = {
-false,
+[9240] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
 },
 ["Player-1390-09230B89"] = {
-false,
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [61642] = {
@@ -39159,7 +39305,7 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[9432] = {
+[2359] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -39176,8 +39322,6 @@ false,
 },
 },
 [62410] = {
-["Player-1390-09230B89"] = {
-},
 },
 [62538] = {
 ["Player-1122-019F1238"] = {
@@ -39550,7 +39694,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[632] = {
+[10104] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -39558,6 +39702,8 @@ false,
 ["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -39622,41 +39768,24 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14359] = {
+[16429] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
-[20588] = {
-["Player-1390-0D20B310"] = {
-false,
-},
-["Player-1390-0D20B307"] = {
-false,
 },
 ["Player-1390-09230B89"] = {
-false,
 },
 ["Player-1390-0D20B30E"] = {
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
+},
+},
+[61643] = {
+["Player-1122-019F1238"] = {
 },
 },
 [6045] = {
@@ -39989,30 +40118,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[2767] = {
+[692] = {
 ["Player-1390-0D20B310"] = {
-400,
-false,
 },
 ["Player-1390-0D20B307"] = {
-400,
-false,
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
-400,
-false,
 },
 ["Player-1122-019F1238"] = {
-0,
-false,
 },
 ["Player-1302-078A2412"] = {
-0,
-false,
 },
 ["Player-1390-0D20B303"] = {
-400,
-false,
 },
 },
 [15191] = {
@@ -40111,8 +40230,18 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61645] = {
+[12344] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
 ["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [61644] = {
@@ -40143,27 +40272,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[8537] = {
+[6317] = {
 ["Player-1390-0D20B310"] = {
-false,
 },
 ["Player-1390-0D20B307"] = {
-false,
 },
 ["Player-1390-09230B89"] = {
-false,
 },
 ["Player-1390-0D20B30E"] = {
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
 },
 },
 [14371] = {
@@ -40588,10 +40710,12 @@ false,
 false,
 },
 },
-[12344] = {
+[8249] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -40666,7 +40790,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[6317] = {
+[3159] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -40705,20 +40829,8 @@ false,
 0,
 },
 },
-[8249] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61645] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
 },
 },
 [41298] = {
@@ -40808,20 +40920,27 @@ false,
 ["Player-1122-019F1238"] = {
 },
 },
-[3159] = {
+[8537] = {
 ["Player-1390-0D20B310"] = {
+false,
 },
 ["Player-1390-0D20B307"] = {
+false,
 },
 ["Player-1390-09230B89"] = {
+false,
 },
 ["Player-1390-0D20B30E"] = {
+false,
 },
 ["Player-1122-019F1238"] = {
+false,
 },
 ["Player-1302-078A2412"] = {
+false,
 },
 ["Player-1390-0D20B303"] = {
+false,
 },
 },
 [62925] = {
@@ -41544,14 +41663,18 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[892] = {
+[10169] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
 },
+["Player-1390-09230B89"] = {
+},
 ["Player-1390-0D20B30E"] = {
 },
 ["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
 },
 ["Player-1390-0D20B303"] = {
 },
@@ -41845,40 +41968,39 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61519] = {
-["Player-1122-019F1238"] = {
-},
-},
-[40660] = {
+[41044] = {
 ["Player-1390-0D20B310"] = {
-0,
-false,
 0,
 },
 ["Player-1390-0D20B307"] = {
 0,
-false,
+},
+["Player-1390-09230B89"] = {
 0,
 },
 ["Player-1390-0D20B30E"] = {
 0,
-false,
-0,
 },
 ["Player-1122-019F1238"] = {
-0,
-false,
 0,
 },
 ["Player-1302-078A2412"] = {
 0,
-false,
-0,
 },
 ["Player-1390-0D20B303"] = {
 0,
-false,
-0,
+},
+},
+[892] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [14296] = {
@@ -41918,18 +42040,8 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14360] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61519] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
 },
 },
 [61647] = {
@@ -42646,8 +42758,6 @@ false,
 },
 [62544] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1390-09230B89"] = {
 },
 },
 [7853] = {
@@ -43456,7 +43566,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[4622] = {
+[9242] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -43675,15 +43785,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[41047] = {
-["Player-1122-019F1238"] = {
-0,
+[4622] = {
+["Player-1390-0D20B310"] = {
 },
-["Player-1302-078A2412"] = {
-0,
+["Player-1390-0D20B307"] = {
 },
 ["Player-1390-09230B89"] = {
-0,
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [1160] = {
@@ -43725,27 +43840,18 @@ false,
 false,
 },
 },
-[13753] = {
+[19312] = {
 ["Player-1390-0D20B310"] = {
-0,
 },
 ["Player-1390-0D20B307"] = {
-0,
-},
-["Player-1390-09230B89"] = {
-0,
 },
 ["Player-1390-0D20B30E"] = {
-0,
 },
 ["Player-1122-019F1238"] = {
-0,
 },
 ["Player-1302-078A2412"] = {
-0,
 },
 ["Player-1390-0D20B303"] = {
-0,
 },
 },
 [13465] = {
@@ -43764,20 +43870,41 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[5262] = {
+[14617] = {
 ["Player-1390-0D20B310"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B307"] = {
+false,
+false,
+false,
 },
 ["Player-1390-09230B89"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B30E"] = {
+false,
+false,
+false,
 },
 ["Player-1122-019F1238"] = {
+false,
+false,
+false,
 },
 ["Player-1302-078A2412"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B303"] = {
+false,
+false,
+false,
 },
 },
 [9434] = {
@@ -43935,20 +44062,27 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9658] = {
+[13753] = {
 ["Player-1390-0D20B310"] = {
+0,
 },
 ["Player-1390-0D20B307"] = {
+0,
 },
 ["Player-1390-09230B89"] = {
+0,
 },
 ["Player-1390-0D20B30E"] = {
+0,
 },
 ["Player-1122-019F1238"] = {
+0,
 },
 ["Player-1302-078A2412"] = {
+0,
 },
 ["Player-1390-0D20B303"] = {
+0,
 },
 },
 [4846] = {
@@ -44035,7 +44169,7 @@ false,
 0,
 },
 },
-[1308] = {
+[5230] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -44051,41 +44185,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14617] = {
-["Player-1390-0D20B310"] = {
-false,
-false,
-false,
-},
-["Player-1390-0D20B307"] = {
-false,
-false,
-false,
+[62547] = {
+["Player-1122-019F1238"] = {
 },
 ["Player-1390-09230B89"] = {
-false,
-false,
-false,
-},
-["Player-1390-0D20B30E"] = {
-false,
-false,
-false,
-},
-["Player-1122-019F1238"] = {
-false,
-false,
-false,
-},
-["Player-1302-078A2412"] = {
-false,
-false,
-false,
-},
-["Player-1390-0D20B303"] = {
-false,
-false,
-false,
 },
 },
 [5342] = {
@@ -44409,10 +44512,12 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[10458] = {
+[1308] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -44435,10 +44540,20 @@ false,
 false,
 },
 },
-[62547] = {
-["Player-1122-019F1238"] = {
+[5262] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
 },
 ["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [10554] = {
@@ -47088,20 +47203,12 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[1936] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61912] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+false,
+false,
+false,
+false,
 },
 },
 [11195] = {
@@ -47202,7 +47309,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[15482] = {
+[1936] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -47284,8 +47391,6 @@ false,
 },
 [62552] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1390-09230B89"] = {
 },
 },
 [11579] = {
@@ -48352,8 +48457,6 @@ false,
 },
 [62554] = {
 ["Player-1122-019F1238"] = {
-},
-["Player-1390-09230B89"] = {
 },
 },
 [62426] = {
@@ -49476,7 +49579,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[2904] = {
+[11612] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -49599,7 +49702,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[5807] = {
+[2904] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -49980,6 +50083,36 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
+[6175] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
+},
+},
+[12316] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
+},
+},
 [20597] = {
 ["Player-1390-0D20B310"] = {
 false,
@@ -50022,36 +50155,6 @@ false,
 false,
 false,
 false,
-},
-},
-[12316] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
-[12348] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
 },
 },
 [16566] = {
@@ -52742,8 +52845,6 @@ false,
 [62561] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1390-09230B89"] = {
-},
 },
 [62433] = {
 ["Player-1390-09230B89"] = {
@@ -54396,10 +54497,6 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[41961] = {
-["Player-1122-019F1238"] = {
-},
-},
 [5760] = {
 ["Player-1390-0D20B310"] = {
 },
@@ -54414,6 +54511,10 @@ false,
 ["Player-1302-078A2412"] = {
 },
 ["Player-1390-0D20B303"] = {
+},
+},
+[62436] = {
+["Player-1390-09230B89"] = {
 },
 },
 [5744] = {
@@ -54488,8 +54589,8 @@ false,
 false,
 },
 },
-[62436] = {
-["Player-1390-09230B89"] = {
+[41961] = {
+["Player-1122-019F1238"] = {
 },
 },
 [6420] = {
@@ -54634,8 +54735,6 @@ false,
 },
 },
 [63332] = {
-["Player-1390-09230B89"] = {
-},
 },
 [11774] = {
 ["Player-1390-0D20B310"] = {
@@ -55240,8 +55339,6 @@ false,
 },
 },
 [63333] = {
-["Player-1390-09230B89"] = {
-},
 },
 [6400] = {
 ["Player-1390-0D20B310"] = {
@@ -56784,48 +56881,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[8049] = {
+[19903] = {
 ["Player-1390-0D20B310"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1390-0D20B307"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1390-09230B89"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1390-0D20B30E"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
-false,
-false,
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
-false,
-false,
-false,
 },
 },
 [12065] = {
@@ -56867,12 +56936,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[19903] = {
+[12001] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -57622,7 +57689,7 @@ false,
 ["Player-1122-019F1238"] = {
 },
 },
-[2057] = {
+[12319] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -57630,6 +57697,8 @@ false,
 ["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -58293,7 +58362,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[13727] = {
+[4817] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -58313,7 +58382,7 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[4817] = {
+[9632] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -58372,7 +58441,7 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[9632] = {
+[13727] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -58919,41 +58988,18 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[18173] = {
+[2785] = {
 ["Player-1390-0D20B310"] = {
-false,
-false,
-false,
 },
 ["Player-1390-0D20B307"] = {
-false,
-false,
-false,
-},
-["Player-1390-09230B89"] = {
-false,
-false,
-false,
 },
 ["Player-1390-0D20B30E"] = {
-false,
-false,
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
-false,
-false,
 },
 ["Player-1302-078A2412"] = {
-false,
-false,
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
-false,
-false,
 },
 },
 [62443] = {
@@ -59038,7 +59084,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[15135] = {
+[11040] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -59074,7 +59120,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[2785] = {
+[40433] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -59183,7 +59229,7 @@ false,
 0,
 },
 },
-[5809] = {
+[19133] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -59229,34 +59275,20 @@ false,
 0,
 },
 },
-[2761] = {
+[15135] = {
 ["Player-1390-0D20B310"] = {
-0,
-false,
 },
 ["Player-1390-0D20B307"] = {
-0,
-false,
 },
 ["Player-1390-09230B89"] = {
-0,
-false,
 },
 ["Player-1390-0D20B30E"] = {
-0,
-false,
 },
 ["Player-1122-019F1238"] = {
-23888,
-false,
 },
 ["Player-1302-078A2412"] = {
-3100,
-false,
 },
 ["Player-1390-0D20B303"] = {
-0,
-false,
 },
 },
 [2769] = {
@@ -59305,18 +59337,41 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[40433] = {
+[18173] = {
 ["Player-1390-0D20B310"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B307"] = {
+false,
+false,
+false,
+},
+["Player-1390-09230B89"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B30E"] = {
+false,
+false,
+false,
 },
 ["Player-1122-019F1238"] = {
+false,
+false,
+false,
 },
 ["Player-1302-078A2412"] = {
+false,
+false,
+false,
 },
 ["Player-1390-0D20B303"] = {
+false,
+false,
+false,
 },
 },
 [11168] = {
@@ -59480,7 +59535,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[2905] = {
+[5809] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -59629,7 +59684,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[19133] = {
+[2905] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -60137,18 +60192,14 @@ false,
 false,
 },
 },
-[12384] = {
+[6193] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
 },
-["Player-1390-09230B89"] = {
-},
 ["Player-1390-0D20B30E"] = {
 },
 ["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
 },
 ["Player-1390-0D20B303"] = {
 },
@@ -60984,18 +61035,6 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[6193] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
 [3097] = {
 ["Player-1390-0D20B310"] = {
 0,
@@ -61017,6 +61056,22 @@ false,
 },
 ["Player-1390-0D20B303"] = {
 0,
+},
+},
+[12384] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [6129] = {
@@ -61366,20 +61421,34 @@ false,
 false,
 },
 },
-[11040] = {
+[2761] = {
 ["Player-1390-0D20B310"] = {
+0,
+false,
 },
 ["Player-1390-0D20B307"] = {
+0,
+false,
 },
 ["Player-1390-09230B89"] = {
+0,
+false,
 },
 ["Player-1390-0D20B30E"] = {
+0,
+false,
 },
 ["Player-1122-019F1238"] = {
+23888,
+false,
 },
 ["Player-1302-078A2412"] = {
+3100,
+false,
 },
 ["Player-1390-0D20B303"] = {
+0,
+false,
 },
 },
 [5393] = {
@@ -61970,38 +62039,6 @@ false,
 false,
 },
 },
-[12319] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
-[2049] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
-},
-},
 [16444] = {
 ["Player-1390-0D20B310"] = {
 false,
@@ -62023,6 +62060,36 @@ false,
 },
 ["Player-1390-0D20B303"] = {
 false,
+},
+},
+[2049] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
+},
+},
+[2057] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [673] = {
@@ -62270,18 +62337,48 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[12001] = {
+[8049] = {
 ["Player-1390-0D20B310"] = {
+false,
+false,
+false,
+false,
 },
 ["Player-1390-0D20B307"] = {
+false,
+false,
+false,
+false,
+},
+["Player-1390-09230B89"] = {
+false,
+false,
+false,
+false,
 },
 ["Player-1390-0D20B30E"] = {
+false,
+false,
+false,
+false,
 },
 ["Player-1122-019F1238"] = {
+false,
+false,
+false,
+false,
 },
 ["Player-1302-078A2412"] = {
+false,
+false,
+false,
+false,
 },
 ["Player-1390-0D20B303"] = {
+false,
+false,
+false,
+false,
 },
 },
 [19967] = {
@@ -65257,7 +65354,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[6175] = {
+[12348] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -65369,7 +65466,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[11612] = {
+[5807] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -66156,12 +66253,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61912] = {
+[15482] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
 ["Player-1122-019F1238"] = {
-false,
-false,
-false,
-false,
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [1837] = {
@@ -67221,12 +67326,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[5230] = {
+[10458] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -67331,10 +67434,12 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[19312] = {
+[9658] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -67361,20 +67466,15 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9242] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[41047] = {
 ["Player-1122-019F1238"] = {
+0,
 },
 ["Player-1302-078A2412"] = {
+0,
 },
-["Player-1390-0D20B303"] = {
+["Player-1390-09230B89"] = {
+0,
 },
 },
 [8644] = {
@@ -67909,27 +68009,18 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[41044] = {
+[14360] = {
 ["Player-1390-0D20B310"] = {
-0,
 },
 ["Player-1390-0D20B307"] = {
-0,
-},
-["Player-1390-09230B89"] = {
-0,
 },
 ["Player-1390-0D20B30E"] = {
-0,
 },
 ["Player-1122-019F1238"] = {
-0,
 },
 ["Player-1302-078A2412"] = {
-0,
 },
 ["Player-1390-0D20B303"] = {
-0,
 },
 },
 [4851] = {
@@ -67958,20 +68049,36 @@ false,
 false,
 },
 },
-[10169] = {
+[40660] = {
 ["Player-1390-0D20B310"] = {
+0,
+false,
+0,
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
+0,
+false,
+0,
 },
 ["Player-1390-0D20B30E"] = {
+0,
+false,
+0,
 },
 ["Player-1122-019F1238"] = {
+0,
+false,
+0,
 },
 ["Player-1302-078A2412"] = {
+0,
+false,
+0,
 },
 ["Player-1390-0D20B303"] = {
+0,
+false,
+0,
 },
 },
 [9764] = {
@@ -68474,20 +68581,30 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[5533] = {
+[2767] = {
 ["Player-1390-0D20B310"] = {
+400,
+false,
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
+400,
+false,
 },
 ["Player-1390-0D20B30E"] = {
+400,
+false,
 },
 ["Player-1122-019F1238"] = {
+0,
+false,
 },
 ["Player-1302-078A2412"] = {
+0,
+false,
 },
 ["Player-1390-0D20B303"] = {
+400,
+false,
 },
 },
 [14851] = {
@@ -68660,40 +68777,26 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[644] = {
+[20588] = {
 ["Player-1390-0D20B310"] = {
-false,
-false,
 false,
 },
 ["Player-1390-0D20B307"] = {
 false,
-false,
-false,
 },
 ["Player-1390-09230B89"] = {
-false,
-false,
 false,
 },
 ["Player-1390-0D20B30E"] = {
 false,
-false,
-false,
 },
 ["Player-1122-019F1238"] = {
-false,
-false,
 false,
 },
 ["Player-1302-078A2412"] = {
 false,
-false,
-false,
 },
 ["Player-1390-0D20B303"] = {
-false,
-false,
 false,
 },
 },
@@ -68729,14 +68832,14 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[14199] = {
+[632] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
 },
-["Player-1390-0D20B30E"] = {
+["Player-1390-09230B89"] = {
 },
-["Player-1122-019F1238"] = {
+["Player-1390-0D20B30E"] = {
 },
 ["Player-1302-078A2412"] = {
 },
@@ -68761,7 +68864,21 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[62282] = {
+[9432] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
+},
 },
 [15607] = {
 ["Player-1390-0D20B310"] = {
@@ -68779,20 +68896,12 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[4621] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
+[61514] = {
+["Player-1122-019F1238"] = {
+false,
 },
 ["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
-["Player-1122-019F1238"] = {
-},
-["Player-1302-078A2412"] = {
-},
-["Player-1390-0D20B303"] = {
+false,
 },
 },
 [40911] = {
@@ -68823,10 +68932,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[62537] = {
-["Player-1122-019F1238"] = {
+[12567] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
 },
 ["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
+["Player-1122-019F1238"] = {
+},
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [8312] = {
@@ -69143,28 +69262,14 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[450] = {
-["Player-1390-0D20B310"] = {
-},
-["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
-},
-["Player-1390-0D20B30E"] = {
-},
+[61639] = {
 ["Player-1122-019F1238"] = {
 },
-["Player-1302-078A2412"] = {
 },
-["Player-1390-0D20B303"] = {
-},
-},
-[449] = {
+[14358] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -69259,7 +69364,7 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[6684] = {
+[418] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -69431,24 +69536,8 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[20587] = {
-["Player-1390-0D20B310"] = {
-false,
-},
-["Player-1390-0D20B307"] = {
-false,
-},
-["Player-1390-0D20B30E"] = {
-false,
-},
+[61641] = {
 ["Player-1122-019F1238"] = {
-false,
-},
-["Player-1302-078A2412"] = {
-false,
-},
-["Player-1390-0D20B303"] = {
-false,
 },
 },
 [3178] = {
@@ -69655,10 +69744,18 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[61379] = {
+[14325] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
 ["Player-1122-019F1238"] = {
 },
-["Player-1390-09230B89"] = {
+["Player-1302-078A2412"] = {
+},
+["Player-1390-0D20B303"] = {
 },
 },
 [14197] = {
@@ -69859,34 +69956,10 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[9238] = {
-["Player-1390-0D20B310"] = {
-0,
-0,
-},
-["Player-1390-0D20B307"] = {
-0,
-0,
+[41031] = {
+["Player-1122-019F1238"] = {
 },
 ["Player-1390-09230B89"] = {
-0,
-0,
-},
-["Player-1390-0D20B30E"] = {
-0,
-0,
-},
-["Player-1122-019F1238"] = {
-0,
-0,
-},
-["Player-1302-078A2412"] = {
-0,
-0,
-},
-["Player-1390-0D20B303"] = {
-0,
-0,
 },
 },
 [13572] = {
@@ -70889,12 +70962,10 @@ false,
 ["Player-1390-09230B89"] = {
 },
 },
-[5371] = {
+[14835] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
-},
-["Player-1390-09230B89"] = {
 },
 ["Player-1390-0D20B30E"] = {
 },
@@ -71225,13 +71296,11 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[42174] = {
-["Player-1122-019F1238"] = {
-},
+[62649] = {
 ["Player-1390-09230B89"] = {
 },
 },
-[129] = {
+[12339] = {
 ["Player-1390-0D20B310"] = {
 },
 ["Player-1390-0D20B307"] = {
@@ -72322,12 +72391,20 @@ false,
 ["Player-1390-0D20B303"] = {
 },
 },
-[41017] = {
+[1411] = {
+["Player-1390-0D20B310"] = {
+},
+["Player-1390-0D20B307"] = {
+},
+["Player-1390-09230B89"] = {
+},
+["Player-1390-0D20B30E"] = {
+},
 ["Player-1122-019F1238"] = {
 },
 ["Player-1302-078A2412"] = {
 },
-["Player-1390-09230B89"] = {
+["Player-1390-0D20B303"] = {
 },
 },
 [19912] = {

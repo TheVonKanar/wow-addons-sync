@@ -14,6 +14,7 @@ local myname, ns = ...
 API:
 status = ns.areaPoi.GetStatus(areaPoiID[, uiMapID]) -- nil if nothing is known
     status.active       -- bool, it is running now
+    status.timed        -- bool, whether .active is backed by real timing evidence
     status.secondsLeft  -- number?, how much longer it runs
     status.secondsUntil -- number?, how long until the next one starts
 
@@ -253,15 +254,21 @@ function areaPoi.GetStatus(areaPoiID, uiMapID)
     local status = wipe(statuses[areaPoiID])
     status.areaPoiID = areaPoiID
     status.uiMapID = uiMapID
-    status.active = (uiMapID and presence(uiMapID)[areaPoiID]) or ongoing(areaPoiID) or false
+    local isOngoing = ongoing(areaPoiID)
+    status.active = (uiMapID and presence(uiMapID)[areaPoiID]) or isOngoing or false
     if status.active then
         status.secondsLeft = secondsLeftFor(areaPoiID)
     end
+    -- Presence alone isn't proof: the same key also feeds the tooltip-grafting
+    -- index for any area POI, timed or not, so .active can be true with nothing
+    -- behind it. secondsLeft and the scheduler are each independent evidence.
+    status.timed = status.secondsLeft ~= nil or isOngoing
 
     local event = scheduledFor(areaPoiID)
     -- The schedule is rebuilt on an interval, so an entry can finish between
     -- refreshes. Using one then would count backwards.
     if event and event.endTime > now then
+        status.timed = true
         if event.startTime > now then
             status.secondsUntil = event.startTime - now
         else
@@ -275,12 +282,14 @@ function areaPoi.GetStatus(areaPoiID, uiMapID)
     return status
 end
 
--- Running beats upcoming, and a countdown beats no countdown. Where both count,
--- the nearer deadline wins: the ids for one event measure slightly different
--- things, so this has to order them the same way whichever comes first.
+-- Running beats upcoming, timed beats untimed, and a countdown beats no
+-- countdown. Where both count, the nearer deadline wins: the ids for one
+-- event measure slightly different things, so this has to order them the
+-- same way whichever comes first.
 local function betterThan(status, best)
     if status.active ~= best.active then return status.active end
     if not status.active then return status.secondsUntil < best.secondsUntil end
+    if status.timed ~= best.timed then return status.timed end
     if not best.secondsLeft then return status.secondsLeft ~= nil end
     if not status.secondsLeft then return false end
     return status.secondsLeft < best.secondsLeft
@@ -335,6 +344,9 @@ function areaPoi.Describe(pois, uiMapID, fallbackName)
     if not status then return end
     if status.active and status.secondsLeft then
         return TIME_LEFT:format(SecondsToTime(status.secondsLeft)), GREEN_FONT_COLOR
+    end
+    if status.active and not status.timed then
+        return -- active but not a tracked event; see .timed above
     end
     -- the two remaining lines are sentences about the POI, so they need its name
     local name = areaPoi.GetName(status.areaPoiID, status.uiMapID) or fallbackName

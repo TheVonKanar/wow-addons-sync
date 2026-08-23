@@ -1,4 +1,8 @@
 ## Changes
 
-Updated auto passing with latest Blizzard changes.
+Demon Hunters no longer auto passes daggers.
+
+## Bugfixes
+
+- *Fixed issue causing BoE items not to be sent.*
 

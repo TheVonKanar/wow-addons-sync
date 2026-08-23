@@ -8,7 +8,7 @@ PLATYNATOR_CONFIG = {
 ["stack_region_scale_y"] = 2.8,
 ["design_all"] = {
 },
-["migration"] = 8,
+["migration"] = 9,
 ["not_in_combat_alpha"] = 1,
 ["not_target_behaviour"] = "fade",
 ["simplified_nameplates"] = {
@@ -51,7 +51,7 @@ PLATYNATOR_CONFIG = {
 "can-attack",
 "class-minor",
 },
-["style"] = "Enemy Players",
+["style"] = "Enemy Nameplates",
 },
 {
 ["scale"] = 1,
@@ -60,7 +60,7 @@ PLATYNATOR_CONFIG = {
 "can-attack",
 "minion",
 },
-["style"] = "Enemy Players",
+["style"] = "Enemy Nameplates",
 },
 {
 ["scale"] = 1,
@@ -68,7 +68,7 @@ PLATYNATOR_CONFIG = {
 ["criteria"] = {
 "can-attack",
 },
-["style"] = "Enemy Players",
+["style"] = "Enemy Nameplates",
 },
 },
 ["designs_enabled"] = {
@@ -78,7 +78,7 @@ PLATYNATOR_CONFIG = {
 },
 ["mouseover_alpha"] = 1,
 ["closer_to_screen_edges"] = true,
-["instances_name_only_size"] = 2,
+["instances_name_only_size"] = 3,
 ["cast_scale"] = 1.05,
 ["closer_nameplates"] = false,
 ["nameplate_position"] = "top",
@@ -110,25 +110,27 @@ PLATYNATOR_CONFIG = {
 ["auras"] = {
 },
 ["regions"] = {
-["stack"] = {
-["anchor"] = {
-"BOTTOM",
-0,
-5.9,
-},
-["autoSized"] = true,
-["height"] = 0.84,
-["width"] = 1.14,
-},
 ["click"] = {
+["width"] = 1.04,
 ["anchor"] = {
 "BOTTOM",
 0,
 7,
 },
-["autoSized"] = true,
+["kind"] = "click",
 ["height"] = 0.7,
-["width"] = 1.04,
+["autoSized"] = true,
+},
+["stack"] = {
+["width"] = 1.14,
+["anchor"] = {
+"BOTTOM",
+0,
+5.9,
+},
+["kind"] = "stack",
+["height"] = 0.84,
+["autoSized"] = true,
 },
 },
 ["font"] = {
@@ -142,36 +144,36 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
-["scale"] = 0.9,
-["layer"] = 3,
 ["anchor"] = {
 "BOTTOMLEFT",
 -45.5,
 2,
 },
 ["kind"] = "quest",
-["asset"] = "normal/quest-blizzard",
 ["color"] = {
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
+["layer"] = 3,
+["asset"] = "normal/quest-blizzard",
+["scale"] = 0.9,
 },
 {
-["scale"] = 1.2,
-["layer"] = 3,
 ["anchor"] = {
 "BOTTOM",
 0,
 17,
 },
 ["kind"] = "raid",
-["asset"] = "normal/blizzard-raid",
 ["color"] = {
-["r"] = 1,
-["g"] = 1,
 ["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
+["layer"] = 3,
+["asset"] = "normal/blizzard-raid",
+["scale"] = 1.2,
 },
 },
 ["texts"] = {
@@ -179,9 +181,9 @@ PLATYNATOR_CONFIG = {
 ["showWhenWowDoes"] = true,
 ["truncate"] = false,
 ["color"] = {
-["b"] = 0.9686275124549866,
-["g"] = 0.9686275124549866,
 ["r"] = 0.9686275124549866,
+["g"] = 0.9686275124549866,
+["b"] = 0.9686275124549866,
 },
 ["layer"] = 2,
 ["maxWidth"] = 1.04,
@@ -194,34 +196,34 @@ PLATYNATOR_CONFIG = {
 {
 ["colors"] = {
 ["tapped"] = {
-["b"] = 0.4313725490196079,
-["g"] = 0.4313725490196079,
 ["r"] = 0.4313725490196079,
+["g"] = 0.4313725490196079,
+["b"] = 0.4313725490196079,
 },
 },
 ["kind"] = "tapped",
 },
 {
 ["colors"] = {
-["unfriendly"] = {
+["neutral"] = {
 ["b"] = 0,
-["g"] = 0.5058823529411764,
+["g"] = 1,
 ["r"] = 1,
+},
+["unfriendly"] = {
+["r"] = 1,
+["g"] = 0.5058823529411764,
+["b"] = 0,
 },
 ["hostile"] = {
-["r"] = 1,
-["g"] = 0,
 ["b"] = 0,
+["g"] = 0,
+["r"] = 1,
 },
 ["friendly"] = {
+["b"] = 0,
+["g"] = 1,
 ["r"] = 0,
-["g"] = 1,
-["b"] = 0,
-},
-["neutral"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 0,
 },
 },
 ["kind"] = "reaction",
@@ -233,25 +235,25 @@ PLATYNATOR_CONFIG = {
 7,
 },
 ["kind"] = "creatureName",
-["scale"] = 1,
 ["align"] = "CENTER",
+["scale"] = 1,
 },
 {
-["scale"] = 1,
 ["color"] = {
-["b"] = 1,
-["g"] = 1,
 ["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
-["kind"] = "quest",
+["align"] = "CENTER",
+["layer"] = 2,
 ["truncate"] = false,
+["scale"] = 1,
+["kind"] = "quest",
 ["anchor"] = {
 "LEFT",
 -48.5,
 0,
 },
-["layer"] = 2,
-["align"] = "CENTER",
 ["maxWidth"] = 0,
 },
 },
@@ -266,26 +268,26 @@ PLATYNATOR_CONFIG = {
 },
 ["regions"] = {
 ["stack"] = {
-["width"] = 1.13,
+["autoSized"] = true,
 ["anchor"] = {
 "BOTTOM",
 0,
-5.74,
+3.07,
 },
 ["kind"] = "stack",
-["height"] = 0.97,
-["autoSized"] = true,
+["height"] = 1.1,
+["width"] = 1.13,
 },
 ["click"] = {
-["width"] = 1.03,
+["autoSized"] = true,
 ["anchor"] = {
 "BOTTOM",
 0,
-7,
+4.5,
 },
 ["kind"] = "click",
-["height"] = 0.81,
-["autoSized"] = true,
+["height"] = 0.92,
+["width"] = 1.03,
 },
 },
 ["font"] = {
@@ -299,19 +301,19 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
-["scale"] = 1.2,
-["kind"] = "raid",
-["color"] = {
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
-["layer"] = 3,
-["asset"] = "normal/blizzard-raid",
 ["anchor"] = {
 "BOTTOM",
 0,
 19.5,
+},
+["kind"] = "raid",
+["scale"] = 1.2,
+["layer"] = 3,
+["asset"] = "normal/blizzard-raid",
+["color"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
 },
 },
 },
@@ -320,62 +322,22 @@ PLATYNATOR_CONFIG = {
 ["showWhenWowDoes"] = true,
 ["truncate"] = false,
 ["color"] = {
-["r"] = 0.9686275124549866,
-["g"] = 0.9686275124549866,
-["b"] = 0.9686275124549866,
+["b"] = 0.9137255549430847,
+["g"] = 0.9137255549430847,
+["r"] = 0.9137255549430847,
 },
 ["layer"] = 1,
 ["maxWidth"] = 1.03,
 ["autoColors"] = {
-{
-["colors"] = {
-},
-["kind"] = "classColors",
-},
-{
-["colors"] = {
-["tapped"] = {
-["r"] = 0.4313725490196079,
-["g"] = 0.4313725490196079,
-["b"] = 0.4313725490196079,
-},
-},
-["kind"] = "tapped",
-},
-{
-["colors"] = {
-["unfriendly"] = {
-["r"] = 1,
-["g"] = 0.5058823529411764,
-["b"] = 0,
-},
-["friendly"] = {
-["b"] = 0,
-["g"] = 1,
-["r"] = 0,
-},
-["hostile"] = {
-["b"] = 0,
-["g"] = 0,
-["r"] = 1,
-},
-["neutral"] = {
-["b"] = 0,
-["g"] = 1,
-["r"] = 1,
-},
-},
-["kind"] = "reaction",
-},
 },
 ["anchor"] = {
 "BOTTOM",
 0,
-7,
+4.5,
 },
 ["kind"] = "creatureName",
 ["align"] = "CENTER",
-["scale"] = 1.15,
+["scale"] = 1.3,
 },
 },
 },
@@ -720,22 +682,24 @@ PLATYNATOR_CONFIG = {
 },
 ["regions"] = {
 ["stack"] = {
+["autoSized"] = true,
 ["anchor"] = {
 "TOP",
 0,
 12.04,
 },
-["autoSized"] = true,
+["kind"] = "stack",
 ["height"] = 2.05,
 ["width"] = 1.1,
 },
 ["click"] = {
+["autoSized"] = true,
 ["anchor"] = {
 "TOP",
 0,
 9.38,
 },
-["autoSized"] = true,
+["kind"] = "click",
 ["height"] = 1.71,
 ["width"] = 1,
 },
@@ -1035,36 +999,36 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
+["kind"] = "quest",
 ["anchor"] = {
 "LEFT",
 -83.5,
 0,
 },
-["kind"] = "quest",
-["scale"] = 1,
 ["layer"] = 3,
 ["asset"] = "normal/quest-blizzard",
+["scale"] = 1,
+},
+{
 ["color"] = {
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
 },
-},
-{
+["kind"] = "raid",
 ["anchor"] = {
 "BOTTOMRIGHT",
 10,
 -2,
 },
-["kind"] = "raid",
-["scale"] = 1,
 ["layer"] = 3,
 ["asset"] = "normal/blizzard-raid",
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
+["scale"] = 1,
 },
 },
 ["texts"] = {
@@ -1776,36 +1740,36 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
+["scale"] = 1,
+["layer"] = 3,
 ["color"] = {
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
 },
-["layer"] = 3,
+["kind"] = "quest",
+["asset"] = "normal/quest-blizzard",
 ["anchor"] = {
 "LEFT",
 -83.5,
 0,
 },
-["kind"] = "quest",
-["asset"] = "normal/quest-blizzard",
-["scale"] = 1,
 },
 {
+["scale"] = 1,
+["layer"] = 3,
 ["color"] = {
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
 },
-["layer"] = 3,
+["kind"] = "raid",
+["asset"] = "normal/blizzard-raid",
 ["anchor"] = {
 "BOTTOMRIGHT",
 10,
 3.5,
 },
-["kind"] = "raid",
-["asset"] = "normal/blizzard-raid",
-["scale"] = 1,
 },
 },
 ["texts"] = {
@@ -1937,14 +1901,8 @@ PLATYNATOR_CONFIG = {
 ["simplified_assigned_fallback"] = "Enemy Nameplates",
 ["click_region_scale_y"] = 1.1,
 ["aura_filters"] = {
-[0] = {
+[263] = {
 ["buffs"] = {
-["include"] = {
-},
-["exclude"] = {
-},
-},
-["crowdControl"] = {
 ["include"] = {
 },
 ["exclude"] = {
@@ -1957,14 +1915,14 @@ PLATYNATOR_CONFIG = {
 },
 },
 },
-[263] = {
-["buffs"] = {
+["crowdControl"] = {
 ["include"] = {
 },
 ["exclude"] = {
 },
 },
-["crowdControl"] = {
+[0] = {
+["buffs"] = {
 ["include"] = {
 },
 ["exclude"] = {
@@ -2479,69 +2437,69 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
+["scale"] = 0.8,
+["layer"] = 3,
 ["anchor"] = {
 "LEFT",
 -68,
 0,
 },
-["layer"] = 3,
+["kind"] = "quest",
+["asset"] = "normal/quest-blizzard",
 ["color"] = {
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
 },
-["kind"] = "quest",
-["asset"] = "normal/quest-blizzard",
-["scale"] = 0.8,
 },
 {
+["scale"] = 0.5,
+["layer"] = 3,
 ["anchor"] = {
 "TOPRIGHT",
 -50,
 -12,
 },
-["layer"] = 3,
+["kind"] = "cannotInterrupt",
+["asset"] = "normal/shield-soft",
 ["color"] = {
 ["r"] = 0.3921568627450981,
 ["g"] = 0.4823529411764706,
 ["b"] = 0.4980392156862745,
 },
-["kind"] = "cannotInterrupt",
-["asset"] = "normal/shield-soft",
-["scale"] = 0.5,
 },
 {
 ["openWorldOnly"] = false,
-["scale"] = 0.8,
-["layer"] = 3,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["kind"] = "elite",
-["asset"] = "special/blizzard-elite-midnight",
 ["anchor"] = {
 "BOTTOMRIGHT",
 70,
 4,
 },
-},
-{
-["anchor"] = {
-"BOTTOM",
-0,
-5,
-},
 ["layer"] = 3,
+["scale"] = 0.8,
+["kind"] = "elite",
+["asset"] = "special/blizzard-elite-midnight",
 ["color"] = {
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
 },
+},
+{
+["scale"] = 1,
+["layer"] = 3,
+["anchor"] = {
+"BOTTOM",
+0,
+5,
+},
 ["kind"] = "raid",
 ["asset"] = "normal/blizzard-raid",
-["scale"] = 1,
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
 },
 },
 ["texts"] = {
@@ -2800,52 +2758,52 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
-["scale"] = 0.8,
+["color"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
 ["kind"] = "quest",
+["scale"] = 0.8,
+["layer"] = 3,
+["asset"] = "normal/quest-blizzard",
 ["anchor"] = {
 "LEFT",
 -68,
 0,
 },
-["layer"] = 3,
-["asset"] = "normal/quest-blizzard",
-["color"] = {
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
 },
 {
 ["openWorldOnly"] = false,
-["color"] = {
-["b"] = 1,
-["g"] = 1,
-["r"] = 1,
-},
-["kind"] = "elite",
-["scale"] = 0.8,
-["layer"] = 3,
-["asset"] = "special/blizzard-elite-midnight",
 ["anchor"] = {
 "BOTTOMRIGHT",
 70,
 4,
 },
-},
-{
-["scale"] = 1,
-["kind"] = "raid",
-["anchor"] = {
-"BOTTOM",
-0,
-5,
-},
-["layer"] = 3,
-["asset"] = "normal/blizzard-raid",
+["kind"] = "elite",
 ["color"] = {
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
+},
+["layer"] = 3,
+["asset"] = "special/blizzard-elite-midnight",
+["scale"] = 0.8,
+},
+{
+["color"] = {
+["b"] = 1,
+["g"] = 1,
+["r"] = 1,
+},
+["kind"] = "raid",
+["scale"] = 1,
+["layer"] = 3,
+["asset"] = "normal/blizzard-raid",
+["anchor"] = {
+"BOTTOM",
+0,
+5,
 },
 },
 },
@@ -3045,20 +3003,20 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
+["scale"] = 1.6,
+["layer"] = 3,
 ["anchor"] = {
 "BOTTOM",
 0,
 18,
 },
-["layer"] = 3,
+["kind"] = "raid",
+["asset"] = "normal/blizzard-raid",
 ["color"] = {
 ["b"] = 1,
 ["g"] = 1,
 ["r"] = 1,
 },
-["kind"] = "raid",
-["asset"] = "normal/blizzard-raid",
-["scale"] = 1.6,
 },
 },
 ["texts"] = {
@@ -3572,68 +3530,68 @@ PLATYNATOR_CONFIG = {
 },
 ["markers"] = {
 {
-["scale"] = 0.8,
-["layer"] = 3,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["kind"] = "quest",
-["asset"] = "normal/quest-blizzard",
 ["anchor"] = {
 "RIGHT",
 -64,
 0,
 },
+["layer"] = 3,
+["scale"] = 0.8,
+["kind"] = "quest",
+["asset"] = "normal/quest-blizzard",
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
+},
 },
 {
-["scale"] = 0.5,
-["layer"] = 3,
-["color"] = {
-["r"] = 0.3921568627450981,
-["g"] = 0.4823529411764706,
-["b"] = 0.4980392156862745,
-},
-["kind"] = "cannotInterrupt",
-["asset"] = "normal/shield-soft",
 ["anchor"] = {
 "TOPRIGHT",
 -50,
 -12,
 },
+["layer"] = 3,
+["scale"] = 0.5,
+["kind"] = "cannotInterrupt",
+["asset"] = "normal/shield-soft",
+["color"] = {
+["r"] = 0.3921568627450981,
+["g"] = 0.4823529411764706,
+["b"] = 0.4980392156862745,
+},
 },
 {
 ["openWorldOnly"] = false,
-["scale"] = 0.8,
-["layer"] = 3,
-["color"] = {
-["r"] = 1,
-["g"] = 1,
-["b"] = 1,
-},
-["kind"] = "elite",
-["asset"] = "special/blizzard-elite-midnight",
 ["anchor"] = {
 "LEFT",
 -61,
 0,
 },
-},
-{
-["scale"] = 1,
 ["layer"] = 3,
+["scale"] = 0.8,
+["kind"] = "elite",
+["asset"] = "special/blizzard-elite-midnight",
 ["color"] = {
 ["r"] = 1,
 ["g"] = 1,
 ["b"] = 1,
 },
-["kind"] = "raid",
-["asset"] = "normal/blizzard-raid",
+},
+{
 ["anchor"] = {
 "BOTTOM",
 0,
 20,
+},
+["layer"] = 3,
+["scale"] = 1,
+["kind"] = "raid",
+["asset"] = "normal/blizzard-raid",
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 1,
 },
 },
 },

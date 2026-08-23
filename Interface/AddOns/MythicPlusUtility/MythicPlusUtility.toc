@@ -1,5 +1,5 @@
 ## Interface: 120100
-## Version: 1.4.0
+## Version: 1.4.1
 ## Title: Mythic Plus Utility
 ## Author: Nikyou (Megabelly-Silvermoon EU)
 ## IconTexture: Interface\AddOns\MythicPlusUtility\logo

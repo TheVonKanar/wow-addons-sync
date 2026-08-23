@@ -1,5 +1,31 @@
 # Changelog
 
+## Changed in v62
+
+* Coiled Isle: show a link from Vaults to the Underbelly
+* Eversong Woods: during void invasions, show Bloated Snapdragon in its new location
+* Harandar: a few minor adjustments to Dust 'Em Off moths
+* Try to avoid widget-related taint when inserting on world map pins
+
+## Changed in v61
+
+* Coiled Isle:
+	* Nymrissa Wavecaller now behaves like the other world bosses: hidden by default, and affected by the "World Boss" visibility toggle
+	* Gnarldor Isle and Ring of Glory now show their Discoveries progress in their map tooltip, like the other delves already did
+* Hovering Blizzard's own map pin for a treasure with related points nearby could show a different treasure's info instead
+* A point tied to more than one timed event could fail to show its countdown or glow if only one of those events had timing information available
+* Delve entrance markers could occasionally be drawn at the wrong location
+* Harandar: minor coordinate tweak for a Dust 'Em Off moth
+
+## Changed in v60
+
+* Coiled Isle: fixed Nymrissa Wavecaller's map location
+* Voidstorm:
+	* Hardin Steellock and Gar'chak Skullcleave now correctly list their currency reward
+	* Removed Stormarion Cores from the shared loot list
+* The glow and tooltip countdown for timed events could show up on event-related points that weren't timed
+* Cosmetic set loot wasn't properly counting as knowable. This manifested as Andra in Silvermoon City not showing up on your map after you'd obtained one set from her, rather than all sets.
+
 ## Changed in v59
 
 * Coiled Isle:

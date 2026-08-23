@@ -8,9 +8,10 @@ DamageMeterPerCharacterSettings = {
 ["damageMeterType"] = 0,
 },
 {
+["minimized"] = false,
+["locked"] = true,
 ["sessionType"] = 1,
 ["shown"] = true,
-["locked"] = true,
 ["damageMeterType"] = 0,
 },
 },
