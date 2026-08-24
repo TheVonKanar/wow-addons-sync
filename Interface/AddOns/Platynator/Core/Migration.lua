@@ -859,10 +859,11 @@ local function MigrateSettingsv7()
   local globalCrowdControl = {include = {}, exclude = {}}
 
   for key, val in pairs(filters) do
-    Mixin(globalCrowdControl.include, val.crowdControl.include)
-    Mixin(globalCrowdControl.exclude, val.crowdControl.exclude)
-
-    val.crowdControl = nil
+    if val.crowdControl then
+      Mixin(globalCrowdControl.include, val.crowdControl.include)
+      Mixin(globalCrowdControl.exclude, val.crowdControl.exclude)
+      val.crowdControl = nil
+    end
   end
 
   filters.crowdControl = globalCrowdControl

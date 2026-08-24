@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 10,
 ["lastSanitation"] = 3,
+["session"] = 47,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/AutoHideUI/Modules/Frames.lua:448: attempt to index local 'frame' (a nil value)",
@@ -10,6 +10,52 @@ BugGrabberDB = {
 ["stack"] = "[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:448: in function 'customGetter'\n[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:989: in function <Interface/AddOns/AutoHideUI/Modules/Frames.lua:976>\n[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:1050: in function <Interface/AddOns/AutoHideUI/Modules/Frames.lua:1049>\n[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:1080: in function <Interface/AddOns/AutoHideUI/Modules/Frames.lua:1076>\n[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:1164: in function <Interface/AddOns/AutoHideUI/Modules/Frames.lua:1162>\n[Interface/AddOns/AutoHideUI/Modules/Frames.lua]:1187: in function 'InitFrames'\n[Interface/AddOns/AutoHideUI/Core.lua]:306: in function <Interface/AddOns/AutoHideUI/Core.lua:305>\n[Interface/AddOns/AutoHideUI/Core.lua]:945: in function <Interface/AddOns/AutoHideUI/Core.lua:941>\n",
 ["session"] = 3,
 ["counter"] = 17,
+},
+{
+["message"] = "LUA_WARNING: Interface/AddOns/WindfuryUI/WindfuryUI.toc:11 Error loading Interface/AddOns/WindfuryUI/TalentLoadoutDisplay.lua",
+["session"] = 12,
+["time"] = 1787565960,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/WindfuryUI/TalentsFrame.lua:87: attempt to index field 'text' (a nil value)",
+["time"] = 1787565983,
+["locals"] = "text=\"R\"\noffsetX=-90\nloadoutName=\"Raid\"\nframe=WUITalentsFrame_SwapToRaidButton <TalentsFrame.lua:80>\n(*temporary)=nil\n(*temporary)=nil\n(*temporary)=\"RIGHT\"\n(*temporary)=UIParent <UnknownFile:0>{\n Angleur=Angleur <Angleur.xml:4>\n Tabs=<table>\n PhotoSharingFrame=PhotoSharingFrame <Blizzard_PhotoSharing.xml:3>\n}\n(*temporary)=\"RIGHT\"\n(*temporary)=-90\n(*temporary)=0\n(*temporary)=\"attempt to index field 'text' (a nil value)\"\nmainFrame=WUITalentsFrame <TalentsFrame.lua:4>{\n text=FontString <TalentsFrame.lua:50>\n bg=Texture <TalentsFrame.lua:45>\n}\n",
+["stack"] = "[Interface/AddOns/WindfuryUI/TalentsFrame.lua]:87: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsFrame.lua]:102: in main chunk\n",
+["session"] = 13,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/WindfuryUI/TalentsWidget.lua:87: attempt to index field 'text' (a nil value)",
+["time"] = 1787566052,
+["locals"] = "text=\"R\"\noffsetX=-90\nloadoutName=\"Raid\"\nframe=WUITalentsFrame_SwapToRaidButton <TalentsWidget.lua:80>\n(*temporary)=nil\n(*temporary)=nil\n(*temporary)=\"RIGHT\"\n(*temporary)=UIParent <UnknownFile:0>{\n Angleur=Angleur <Angleur.xml:4>\n Tabs=<table>\n PhotoSharingFrame=PhotoSharingFrame <Blizzard_PhotoSharing.xml:3>\n}\n(*temporary)=\"RIGHT\"\n(*temporary)=-90\n(*temporary)=0\n(*temporary)=\"attempt to index field 'text' (a nil value)\"\nmainFrame=WUITalentsFrame <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\n",
+["stack"] = "[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:87: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:102: in main chunk\n",
+["session"] = 14,
+["counter"] = 1,
+},
+{
+["message"] = "WUI_TalentsWidget_-90_Button:SetPoint(): Couldn't find region named 'Raid'",
+["time"] = 1787586051,
+["locals"] = "text=\"R\"\nloadoutName=-90\noffsetX=\"Raid\"\nframe=WUI_TalentsWidget_-90_Button <TalentsWidget.lua:80>\nmainFrame=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\n",
+["stack"] = "[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:84: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:104: in main chunk\n",
+["session"] = 24,
+["counter"] = 1,
+},
+{
+["message"] = "Interface/AddOns/WindfuryUI/TalentsWidget.lua:80: attempt to call a nil value",
+["time"] = 1787586502,
+["locals"] = "parent=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\ntext=\"R\"\nloadoutName=\"Raid\"\noffsetX=-90\n(*temporary)=nil\n(*temporary)=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\n(*temporary)=\"Button\"\n(*temporary)=\"WUI_TalentsWidget_Raid_Button\"\n(*temporary)=\"attempt to call a nil value\"\n",
+["stack"] = "[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:80: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:104: in main chunk\n",
+["session"] = 29,
+["counter"] = 2,
+},
+{
+["message"] = "WUI_TalentsWidget_Raid_Button:CreateFontString(): Couldn't find inherited node \"Fira Mono Bold\"\nLua Taint: WindfuryUI",
+["time"] = 1787587180,
+["locals"] = "parent=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\ntext=\"R\"\nloadoutName=\"Raid\"\noffsetX=-6\nframe=WUI_TalentsWidget_Raid_Button <TalentsWidget.lua:80>\nmainFrame=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\n",
+["stack"] = "[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:87: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:104: in main chunk\n",
+["session"] = 34,
+["counter"] = 1,
 },
 },
 }

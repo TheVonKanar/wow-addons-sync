@@ -18,13 +18,13 @@ AngleurConfig = {
 ["ultraFocusAudioEnabled"] = false,
 ["visualHidden"] = true,
 ["oversizedEnabled"] = true,
-["patientEnabled"] = false,
-["crateEnabled"] = false,
 ["chosenRaft"] = {
 ["dropDownID"] = 0,
 ["name"] = 0,
 ["toyID"] = 0,
 },
+["crateEnabled"] = false,
+["patientEnabled"] = false,
 ["voidFinderEnabled"] = false,
 }
 Angleur_TinyOptions = {
@@ -32,13 +32,13 @@ Angleur_TinyOptions = {
 ["errorsDisabled"] = true,
 ["softTargetIcon"] = true,
 ["ultraFocusMaster"] = 1,
+["visualScale"] = 1,
+["poleSleep"] = true,
 ["doubleClickWindow"] = 0.4,
 ["turnOffSoftInteract"] = false,
-["visualScale"] = 1,
-["swimRelease"] = true,
-["allowDismount"] = false,
 ["softIconOff"] = false,
-["poleSleep"] = true,
+["allowDismount"] = false,
+["swimRelease"] = true,
 ["loginDisabled"] = false,
 }
 AngleurMinimapButton = {

@@ -2,19 +2,19 @@
 BuffRemindersDB = {
 ["namespaces"] = {
 },
-["global"] = {
-["minimap"] = {
-["showInCompartment"] = true,
-},
-["seenVersions"] = {
-["6.4.0"] = true,
-["6.5.1"] = true,
-["6.3.0"] = true,
-},
-},
 ["profileKeys"] = {
 ["Kvotheen - Hyjal"] = "Default",
 ["Quiproquo - Uldaman"] = "Default",
+},
+["global"] = {
+["seenVersions"] = {
+["6.5.1"] = true,
+["6.4.0"] = true,
+["6.3.0"] = true,
+},
+["minimap"] = {
+["showInCompartment"] = true,
+},
 },
 ["profiles"] = {
 ["Default"] = {
@@ -23,11 +23,11 @@ BuffRemindersDB = {
 ["expirationThreshold"] = 5,
 ["glowXOffset"] = -1,
 ["missingGlowXOffset"] = -1,
-["missingGlowSize"] = 2,
 ["glowType"] = 1,
 ["missingGlowYOffset"] = -1,
 ["showConsumableTooltips"] = true,
 ["iconSize"] = 48,
+["missingGlowSize"] = 2,
 ["glowYOffset"] = -1,
 ["consumableDisplayMode"] = "expanded",
 },
@@ -36,21 +36,21 @@ BuffRemindersDB = {
 ["categorySettings"] = {
 ["self"] = {
 ["iconAlpha"] = 1,
-["growDirection"] = "CENTER",
-["iconZoom"] = 0,
-["textAlpha"] = 1,
-["borderSize"] = 2,
-["showText"] = false,
 ["spacing"] = 0.2,
-["iconSize"] = 48,
+["showText"] = false,
 ["textSize"] = 20,
+["borderSize"] = 2,
+["iconZoom"] = 0,
+["growDirection"] = "CENTER",
+["iconSize"] = 48,
+["textAlpha"] = 1,
 ["textColor"] = {
 1,
 1,
 1,
 },
 },
-["targeted"] = {
+["presence"] = {
 ["showText"] = true,
 },
 ["consumable"] = {
@@ -59,10 +59,10 @@ BuffRemindersDB = {
 },
 ["main"] = {
 ["position"] = {
-["y"] = -470,
+["y"] = -158,
 },
 },
-["presence"] = {
+["targeted"] = {
 ["showText"] = true,
 },
 ["raid"] = {
@@ -81,14 +81,14 @@ BuffRemindersDB = {
 ["warriorWrongStance"] = false,
 ["atrophicNumbingPoison"] = true,
 ["food"] = true,
-["beacons"] = true,
-["soulstone"] = true,
-["stamina"] = true,
+["shamanShields"] = true,
+["symbioticRelationship"] = true,
+["sourceOfMagic"] = true,
 ["earthShieldOthers"] = false,
 ["druidWrongForm"] = false,
-["sourceOfMagic"] = true,
-["symbioticRelationship"] = true,
-["shamanShields"] = true,
+["stamina"] = true,
+["soulstone"] = true,
+["beacons"] = true,
 ["burningRush"] = false,
 },
 ["readyCheckOnlyOverrides"] = {
@@ -101,8 +101,8 @@ BuffRemindersDB = {
 ["food"] = 1233767,
 },
 [264] = {
-["food"] = 1232917,
 ["flask"] = 1235108,
+["food"] = 1232917,
 },
 },
 ["customBuffs"] = {
@@ -110,8 +110,8 @@ BuffRemindersDB = {
 ["dbVersion"] = 50,
 ["categoryVisibility"] = {
 ["custom"] = {
-["hideInPvPMatch"] = true,
 ["pvp"] = true,
+["hideInPvPMatch"] = true,
 },
 },
 },

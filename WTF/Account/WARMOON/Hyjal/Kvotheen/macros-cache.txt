@@ -56,6 +56,10 @@ VER 3 0100000000000077 "+TK" "134400"
 /use Emberwing Feather
 /cast Nature's Swiftness
 END
+VER 3 010000000000007B "A" "134400"
+#showtooltip
+/cast [mounted] Second Wind; Healing Surge
+END
 VER 3 0100000000000078 "Auto" "134400"
 #showtooltip
 /stopattack
@@ -70,10 +74,6 @@ VER 3 0100000000000022 "ENH" "134400"
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
 END
-VER 3 0100000000000076 "Hover" "134400"
-#showtooltip
-/cast [target=mouseover,exists] Riptide; Riptide
-END
 VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
 /stopcasting
@@ -83,6 +83,10 @@ VER 3 0100000000000075 "Hover" "134400"
 #showtooltip
 /cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
+VER 3 0100000000000076 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Riptide; Riptide
+END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit
 /click PLMR_OUTFIT
@@ -91,4 +95,8 @@ VER 3 010000000000005C "RES" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Water Shield, Earth Shield, Earthliving Weapon, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
+END
+VER 3 010000000000007A "Space" "134400"
+#showtooltip
+/cast [mounted] Surge Forward; Stormstrike
 END

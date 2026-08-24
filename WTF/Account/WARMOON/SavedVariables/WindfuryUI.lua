@@ -1,8 +1,8 @@
 
-TalentLoadoutDisplayDB = {
+TalentsWidgetDB = {
 ["position"] = {
-["yOfs"] = -275.0114135742188,
-["xOfs"] = -9.516597747802734,
+["yOfs"] = -275.0109558105469,
+["xOfs"] = -10.01383209228516,
 ["point"] = "TOPRIGHT",
 ["relativePoint"] = "TOPRIGHT",
 },

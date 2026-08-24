@@ -1,9 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/g |cnIQ4:|Hitem:193701::::::::90:263::35:4:12801:13440:6652:12699::::::|h[Algeth'ar Puzzle Box]|h|r :( :)",
-"/g la giga flemme de l'utiliser mais c'est si fort mdr",
-"/g /simc",
 "/g oh nice",
 "/g https://www.wowhead.com/achievement=62121/altar-of-blessings-sacred-buffet-devotee#comments",
 "/s /simc",
@@ -202,4 +199,7 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/s /eui",
 "/s /eui unlock",
 "/s /eui help",
+"/s /fstack",
+"/s /glider",
+"/cw Voltface-Dalaran +1",
 }

@@ -271,7 +271,7 @@ EllesmereUICooldownManager: enabled
 EllesmereUIActionBars: enabled
 TellMeWhen: disabled
 TellMeWhen_Options: disabled
-MythicPlusUtility: enabled
+MythicPlusUtility: disabled
 MogMount: enabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled
@@ -310,7 +310,7 @@ MidnightSimpleUnitFrames_Assistant: disabled
 MidnightSimpleUnitFrames_Options: disabled
 EllesmereUI: enabled
 EUIStandaloneUnitFrames: disabled
-EllesmereUIAuraBuffReminders: disabled
+EllesmereUIAuraBuffReminders: enabled
 EllesmereUIBags: disabled
 EllesmereUIChat: disabled
 EllesmereUIDataBars: disabled
@@ -323,3 +323,4 @@ EllesmereUIRaidFrames: enabled
 EllesmereUIQoL: enabled
 EllesmereUIBlizzardSkin: enabled
 Leatrix_Maps: enabled
+BuffReminders: disabled

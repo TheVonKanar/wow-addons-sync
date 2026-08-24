@@ -1,7 +1,6 @@
 # Platynator
 
-## [470](https://github.com/TheMouseNest/Platynator/tree/470) (2026-08-23)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/469...470) 
+## [471](https://github.com/TheMouseNest/Platynator/tree/471) (2026-08-23)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/470...471) 
 
-- Add missing fields  
-- Attempt to resolve anchors/sizing breaking occasionally when showing a nameplate  
+- Fix import error  
