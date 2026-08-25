@@ -1,10 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/g oh nice",
-"/g https://www.wowhead.com/achievement=62121/altar-of-blessings-sacred-buffet-devotee#comments",
-"/s /simc",
-"/cw Xpewpew-Dalaran vu quoi",
 "/cw Xpewpew-Dalaran enculé",
 "/s |cnIQ4:|Hkeystone:180653:161:15:9:10:147:0:0|h[Keystone: Skyreach (15)]|h|r",
 "/g ._.",

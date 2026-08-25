@@ -1,7 +1,8 @@
-## Changed in v62
+## Changed in v63
 
-* Coiled Isle: show a link from Vaults to the Underbelly
-* Eversong Woods: during void invasions, show Bloated Snapdragon in its new location
-* Harandar: a few minor adjustments to Dust 'Em Off moths
-* Try to avoid widget-related taint when inserting on world map pins
+* New setting: shared loot can count toward whether a rare counts as "notable" (on by default)
+* Elite treasures now show a slightly larger map icon
+* The "Requires" line in tooltips now colors each condition green or red, showing whether you've already met it
+* Voidstorm: Star Metal Deposit moved to Slayer's Rise
+* Further attempt to fix a source of taint from tooltips
 

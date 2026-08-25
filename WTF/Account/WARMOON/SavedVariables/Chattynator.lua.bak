@@ -217,9 +217,9 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["TRADESKILLS"] = {
-["b"] = 1,
-["g"] = 1,
+["RESTRICTED"] = {
+["b"] = 0,
+["g"] = 0,
 ["r"] = 1,
 },
 ["CHANNEL15"] = {
@@ -237,9 +237,9 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["RESTRICTED"] = {
-["b"] = 0,
-["g"] = 0,
+["TRADESKILLS"] = {
+["b"] = 1,
+["g"] = 1,
 ["r"] = 1,
 },
 ["CHANNEL20"] = {
@@ -257,14 +257,14 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 0,
 },
-["CHANNEL9"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
+["GUILD_ITEM_LOOTED"] = {
+["b"] = 0.250980406999588,
+["g"] = 1,
+["r"] = 0.250980406999588,
 },
-["CHANNEL_Trade"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
+["BG_SYSTEM_NEUTRAL"] = {
+["b"] = 0.03921568766236305,
+["g"] = 0.4705882668495178,
 ["r"] = 1,
 },
 ["FILTERED"] = {
@@ -282,10 +282,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.501960813999176,
 ["r"] = 1,
 },
-["GUILD_ITEM_LOOTED"] = {
-["b"] = 0.250980406999588,
-["g"] = 1,
-["r"] = 0.250980406999588,
+["CHANNEL9"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
 },
 ["CHANNEL13"] = {
 ["b"] = 0.7529412508010864,
@@ -317,30 +317,30 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
-["CHANNEL_Services"] = {
-["b"] = 0.7529412508010864,
-["g"] = 0.7529412508010864,
-["r"] = 1,
+["GUILD_DISCORD"] = {
+["r"] = 0.4470588564872742,
+["g"] = 0.4941176772117615,
+["b"] = 1,
 },
 ["COMBAT_FACTION_CHANGE"] = {
 ["b"] = 1,
 ["g"] = 0.501960813999176,
 ["r"] = 0.501960813999176,
 },
-["DISCORD_PLAYER_NAME"] = {
-["r"] = 0.8784314393997192,
-["g"] = 0.8901961445808411,
-["b"] = 1,
+["MONSTER_EMOTE"] = {
+["b"] = 0.250980406999588,
+["g"] = 0.501960813999176,
+["r"] = 1,
 },
 ["CHANNEL_LEAVE"] = {
 ["b"] = 0.501960813999176,
 ["g"] = 0.501960813999176,
 ["r"] = 0.7529412508010864,
 },
-["GUILD_DISCORD"] = {
-["r"] = 0.4470588564872742,
-["g"] = 0.4941176772117615,
-["b"] = 1,
+["CHANNEL_Services"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
+["r"] = 1,
 },
 ["CHANNEL18"] = {
 ["b"] = 0.7529412508010864,
@@ -452,10 +452,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
-["MONSTER_EMOTE"] = {
-["b"] = 0.250980406999588,
-["g"] = 0.501960813999176,
-["r"] = 1,
+["DISCORD_PLAYER_NAME"] = {
+["r"] = 0.8784314393997192,
+["g"] = 0.8901961445808411,
+["b"] = 1,
 },
 ["CHANNEL_NOTICE_USER"] = {
 ["b"] = 0.7529412508010864,
@@ -472,9 +472,9 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["r"] = 1,
 },
-["BG_SYSTEM_NEUTRAL"] = {
-["b"] = 0.03921568766236305,
-["g"] = 0.4705882668495178,
+["CHANNEL_Trade"] = {
+["b"] = 0.7529412508010864,
+["g"] = 0.7529412508010864,
 ["r"] = 1,
 },
 ["BN_INLINE_TOAST_CONVERSATION"] = {
@@ -556,10 +556,10 @@ CHATTYNATOR_CONFIG = {
 ["invert"] = true,
 ["name"] = "GENERAL",
 ["groups"] = {
-["COMBAT_MISC_INFO"] = false,
-["OPENING"] = false,
-["COMBAT_XP_GAIN"] = false,
 ["PET_BATTLE_COMBAT_LOG"] = false,
+["COMBAT_MISC_INFO"] = false,
+["COMBAT_XP_GAIN"] = false,
+["OPENING"] = false,
 ["VOICE_TEXT"] = false,
 ["PET_INFO"] = false,
 ["TRADESKILLS"] = false,
@@ -629,7 +629,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 2585,
+["cleanIndex"] = 2997,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -51853,8 +51853,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -51874,8 +51874,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -51895,8 +51895,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -51916,8 +51916,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni",
 ["sex"] = 2,
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -51937,8 +51937,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Anvbis-KirinTor",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -51955,8 +51955,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -51973,8 +51973,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -51991,8 +51991,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -52009,8 +52009,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -52030,8 +52030,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52048,8 +52048,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -52066,8 +52066,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -52087,8 +52087,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Anvbis-KirinTor",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52108,8 +52108,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52129,8 +52129,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52150,8 +52150,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52171,8 +52171,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52192,8 +52192,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52210,8 +52210,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52231,8 +52231,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52252,8 +52252,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52273,8 +52273,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52294,8 +52294,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52315,8 +52315,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52336,8 +52336,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52357,8 +52357,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra",
 ["sex"] = 3,
 },
-["type"] = "EMOTE",
 ["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52378,8 +52378,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni",
 ["sex"] = 2,
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52399,8 +52399,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52420,8 +52420,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52441,8 +52441,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52462,8 +52462,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52483,8 +52483,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52504,8 +52504,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52525,8 +52525,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52546,8 +52546,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie",
 ["sex"] = 3,
 },
-["type"] = "EMOTE",
 ["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -52567,8 +52567,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52588,8 +52588,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52609,8 +52609,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52630,8 +52630,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52651,8 +52651,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52672,8 +52672,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52693,8 +52693,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52714,8 +52714,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52735,8 +52735,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52756,8 +52756,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52777,8 +52777,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52798,8 +52798,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52819,8 +52819,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52840,8 +52840,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52861,8 +52861,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52882,8 +52882,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52903,8 +52903,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52924,8 +52924,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52945,8 +52945,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52966,8 +52966,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -52987,8 +52987,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53005,8 +53005,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -53023,8 +53023,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53041,8 +53041,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53062,8 +53062,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53080,8 +53080,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53098,8 +53098,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53116,8 +53116,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53137,8 +53137,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53158,8 +53158,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53179,8 +53179,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53200,8 +53200,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53221,8 +53221,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53242,8 +53242,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53263,8 +53263,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53284,8 +53284,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53305,8 +53305,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53326,8 +53326,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53347,8 +53347,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53368,8 +53368,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53389,8 +53389,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53410,8 +53410,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53431,8 +53431,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53452,8 +53452,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53473,8 +53473,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53494,8 +53494,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53515,8 +53515,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53536,8 +53536,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53557,8 +53557,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53578,8 +53578,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53599,8 +53599,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53620,8 +53620,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53641,8 +53641,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53662,8 +53662,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53683,8 +53683,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53704,8 +53704,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53722,8 +53722,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -53743,8 +53743,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53764,8 +53764,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53785,8 +53785,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53806,8 +53806,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53827,8 +53827,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53848,8 +53848,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53869,8 +53869,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53890,8 +53890,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53911,8 +53911,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53929,8 +53929,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "[Tank] |Hplayer:Øskydk|h[Øskydk]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53950,8 +53950,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -53968,8 +53968,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "[Tank] |Hplayer:Øskydk|h[Øskydk]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -53989,8 +53989,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54010,8 +54010,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54031,8 +54031,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54052,8 +54052,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface",
 ["sex"] = 3,
 },
-["type"] = "EMOTE",
 ["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -54073,8 +54073,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54094,8 +54094,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54115,8 +54115,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54136,8 +54136,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54147,6 +54147,5958 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2.",
 ["id"] = "s21_2697",
 ["timestamp"] = 1787599978,
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|r.",
+["timestamp"] = 1787599987,
+["id"] = "s21_2698",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2.",
+["timestamp"] = 1787599987,
+["id"] = "s21_2699",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2.",
+["timestamp"] = 1787599987,
+["id"] = "s21_2700",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|rx2.",
+["timestamp"] = 1787599989,
+["id"] = "s21_2701",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Sszorak",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Sszorak yells: They run... <hiss>",
+["timestamp"] = 1787600264,
+["id"] = "s21_2702",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1204:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: j'ai dérapé",
+["timestamp"] = 1787600358,
+["id"] = "s21_2703",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1205:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: non la délondra",
+["timestamp"] = 1787600364,
+["id"] = "s21_2704",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1206:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: t",
+["timestamp"] = 1787600364,
+["id"] = "s21_2705",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1207:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: t'abuse",
+["timestamp"] = 1787600366,
+["id"] = "s21_2706",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1209:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: les gros la",
+["timestamp"] = 1787600372,
+["id"] = "s21_2707",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1210:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: c toi",
+["timestamp"] = 1787600373,
+["id"] = "s21_2708",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1212:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: jme suis sacri pour toi",
+["timestamp"] = 1787600396,
+["id"] = "s21_2709",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1213:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: pas mieux le bl pull ? ",
+["timestamp"] = 1787600408,
+["id"] = "s21_2710",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:238513::::::::90:263::::1:38:13:::::|h[Void-Tempered Scales |A:Professions-ChatIcon-Quality-12-Tier1:17:15::1|a]|h|r.",
+["timestamp"] = 1787600435,
+["id"] = "s21_2711",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1215:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: nope",
+["timestamp"] = 1787600486,
+["id"] = "s21_2712",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1216:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: a la phase de Bl ta juste a tapé les tank font le bump",
+["timestamp"] = 1787600499,
+["id"] = "s21_2713",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1219:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787600509,
+["id"] = "s21_2714",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1220:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787600509,
+["id"] = "s21_2715",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1221:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Tous",
+["timestamp"] = 1787600509,
+["id"] = "s21_2716",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Øskydk-Archimonde receives loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx4.",
+["timestamp"] = 1787600814,
+["id"] = "s21_2717",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Øskydk-Archimonde receives loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx11.",
+["timestamp"] = 1787600815,
+["id"] = "s21_2718",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Øskydk-Archimonde receives loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|rx2.",
+["timestamp"] = 1787600815,
+["id"] = "s21_2719",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|rx2",
+["timestamp"] = 1787600815,
+["id"] = "s21_2720",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx5",
+["timestamp"] = 1787600815,
+["id"] = "s21_2721",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx25",
+["timestamp"] = 1787600815,
+["id"] = "s21_2722",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|rx2.",
+["timestamp"] = 1787600816,
+["id"] = "s21_2723",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx3.",
+["timestamp"] = 1787600816,
+["id"] = "s21_2724",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx13.",
+["timestamp"] = 1787600816,
+["id"] = "s21_2725",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Heliotrope-Archimonde receives loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx9.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2726",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Heliotrope-Archimonde receives loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|r.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2727",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Heliotrope-Archimonde receives loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx2.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2728",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Madarattv-Dalaran receives loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx3.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2729",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Madarattv-Dalaran receives loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx4.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2730",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Madarattv-Dalaran receives loot: |cnIQ0:|Hitem:274953::::::::90:263:::::::::|h[Serpentine Iris]|h|rx3.",
+["timestamp"] = 1787600817,
+["id"] = "s21_2731",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Delondra-LaCroisadeécarlate receives loot: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx10.",
+["timestamp"] = 1787600818,
+["id"] = "s21_2732",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Delondra-LaCroisadeécarlate receives loot: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|rx2.",
+["timestamp"] = 1787600818,
+["id"] = "s21_2733",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Delondra-LaCroisadeécarlate receives loot: |cnIQ0:|Hitem:274954::::::::90:263:::::::::|h[Pristine Fang]|h|rx2.",
+["timestamp"] = 1787600818,
+["id"] = "s21_2734",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1268:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787600899,
+["id"] = "s21_2735",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1269:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787600899,
+["id"] = "s21_2736",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1270:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Intelligence (2)",
+["timestamp"] = 1787600899,
+["id"] = "s21_2737",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787600908,
+["id"] = "s21_2738",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Worgen",
+["name"] = "Anvbis-KirinTor",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Anvbis-KirinTor|h[|cffff7c0aAnvbis-KirinTor|r]|h a accompli le haut fait |cffffff00|Hachievement:5794:Player-1127-0B1EF5B2:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[Time Flies When You're Having Fun]|h|r !",
+["timestamp"] = 1787600927,
+["id"] = "s21_2739",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Sszorak",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Sszorak yells: Need more meat...",
+["timestamp"] = 1787601267,
+["id"] = "s21_2740",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1320:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: ouais ca crée la surprise",
+["timestamp"] = 1787601279,
+["id"] = "s21_2741",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1321:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: rip",
+["timestamp"] = 1787601287,
+["id"] = "s21_2742",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1322:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: oooooooohhh",
+["timestamp"] = 1787601335,
+["id"] = "s21_2743",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1324:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787601376,
+["id"] = "s21_2744",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1325:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787601376,
+["id"] = "s21_2745",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1326:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Intelligence (12), Polyvalence (2)",
+["timestamp"] = 1787601376,
+["id"] = "s21_2746",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Sszorak",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Sszorak yells: Need more meat...",
+["timestamp"] = 1787601960,
+["id"] = "s21_2747",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1409:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: regarde maj carte graphique",
+["timestamp"] = 1787601978,
+["id"] = "s21_2748",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1411:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: xDDDDDDDDD",
+["timestamp"] = 1787602001,
+["id"] = "s21_2749",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1412:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: ahaaaahhahahaa",
+["timestamp"] = 1787602004,
+["id"] = "s21_2750",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1413:RAID:|h[|cff0070ddKvotheen|r]|h: je te haaaaais",
+["timestamp"] = 1787602011,
+["id"] = "s21_2751",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1414:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: je suis dead mdr",
+["timestamp"] = 1787602012,
+["id"] = "s21_2752",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1415:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: ?",
+["timestamp"] = 1787602019,
+["id"] = "s21_2753",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1416:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: je te tend la main ",
+["timestamp"] = 1787602023,
+["id"] = "s21_2754",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1417:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: prend la ",
+["timestamp"] = 1787602027,
+["id"] = "s21_2755",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1418:RAID:|h[|cff0070ddKvotheen|r]|h: ma meuf qui est aussi mdr derriere moi",
+["timestamp"] = 1787602028,
+["id"] = "s21_2756",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1419:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: ptdrrrr",
+["timestamp"] = 1787602034,
+["id"] = "s21_2757",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "Worgen",
+["name"] = "Anvbis-KirinTor",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Anvbis-KirinTor|h[|cffff7c0aAnvbis-KirinTor|r]|h a accompli le haut fait |cffffff00|Hachievement:63457:Player-1127-0B1EF5B2:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[Let Sleeping Skulls Lie]|h|r !",
+["timestamp"] = 1787602073,
+["id"] = "s21_2758",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1421:RAID:|h[|cff0070ddKvotheen|r]|h: John Traveltime?",
+["timestamp"] = 1787602088,
+["id"] = "s21_2759",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra:1422:TEXT_EMOTE:|h|cfff48cbaDelondra|r|h-LaCroisadeécarlate laughs at Florrie-LaCroisadeécarlate.",
+["timestamp"] = 1787602112,
+["id"] = "s21_2760",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra:1423:TEXT_EMOTE:|h|cfff48cbaDelondra|r|h-LaCroisadeécarlate cheers at Florrie-LaCroisadeécarlate!",
+["timestamp"] = 1787602120,
+["id"] = "s21_2761",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1424:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: |cnIQ1:|Hitem:248409::::::::90:250:::::::::|h[C-H1EN D3 G4RDE]|h|r",
+["timestamp"] = 1787602247,
+["id"] = "s21_2762",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "Hitni sets out a Toy Train Set!",
+["timestamp"] = 1787602250,
+["id"] = "s21_2763",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "Voltface places a cozy Harandar Celebration for everyone to enjoy!",
+["timestamp"] = 1787602292,
+["id"] = "s21_2764",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787602292,
+["id"] = "s21_2765",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787602296,
+["id"] = "s21_2766",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1435:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787602328,
+["id"] = "s21_2767",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1436:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (1): Florrie-LaCroisadeécarlate",
+["timestamp"] = 1787602328,
+["id"] = "s21_2768",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1437:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Intelligence (1)",
+["timestamp"] = 1787602328,
+["id"] = "s21_2769",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Sszorak",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Sszorak yells: They run... <hiss>",
+["timestamp"] = 1787602451,
+["id"] = "s21_2770",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1473:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787602535,
+["id"] = "s21_2771",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1474:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (1): Delondra-LaCroisadeécarlate, Lannax-Dalaran(<1)",
+["timestamp"] = 1787602535,
+["id"] = "s21_2772",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1475:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Puissance d'attaque (3), Intelligence (12), Polyvalence (2), Maîtrise (12)",
+["timestamp"] = 1787602535,
+["id"] = "s21_2773",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1476:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: bah la c'est pas grave c'etait cote a cote",
+["timestamp"] = 1787602539,
+["id"] = "s21_2774",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Heliotrope-Archimonde|h[|cff0070ddHeliotrope-Archimonde|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1302-0D6BB2E0:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2775",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1390-09230B89:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2776",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Heliotrope-Archimonde|h[|cff0070ddHeliotrope-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1302-0D6BB2E0:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2777",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1390-09230B89:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2778",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Florrie-LaCroisadeécarlate|h[|cffff7c0aFlorrie-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1127-0B27AFFB:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2779",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Florrie-LaCroisadeécarlate|h[|cffff7c0aFlorrie-LaCroisadeécarlate|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1127-0B27AFFB:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2780",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1127-09547AED:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2781",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1127-09547AED:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2782",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Lannax-Dalaran|h[|cffff7c0aLannax-Dalaran|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1621-0BBB643D:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2783",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Lannax-Dalaran|h[|cffff7c0aLannax-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1621-0BBB643D:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2784",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Wellhung-Archimonde|h[|cff8788eeWellhung-Archimonde|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1302-0C5E6FEA:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2785",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Voltface-Dalaran|h[|cffa330c9Voltface-Dalaran|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1621-0BB60314:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2786",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "NightElf",
+["name"] = "Vorrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Vorrie-LaCroisadeécarlate|h[|cffc69b6dVorrie-LaCroisadeécarlate|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1127-0B27AFFC:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787603008,
+["id"] = "s21_2787",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Wellhung-Archimonde|h[|cff8788eeWellhung-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1302-0C5E6FEA:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2788",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Voltface-Dalaran|h[|cffa330c9Voltface-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1621-0BB60314:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2789",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARRIOR",
+["race"] = "NightElf",
+["name"] = "Vorrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Vorrie-LaCroisadeécarlate|h[|cffc69b6dVorrie-LaCroisadeécarlate|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1127-0B27AFFC:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787603008,
+["id"] = "s21_2790",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: |cnIQ4:|Hitem:268257::::::::90:263::3:5:6652:13696:13662:13333:12835::::::|h[Caustic Chain-Wrapped Sash]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2791",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2792",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: |cnIQ4:|Hitem:268201::::::::90:263::3:3:6652:13333:12835::::::|h[Venomous Boneglaive]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2793",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: You passed on: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r |HlootHistory:3420|h|cnLOOT_LINK_COLOR:[View Loot Rolls]|r|h",
+["timestamp"] = 1787603008,
+["id"] = "s21_2794",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: Voltface (Transmogrification - 27) Won: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2795",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: You passed on: |cnIQ4:|Hitem:268201::::::::90:263::3:3:6652:13333:12835::::::|h[Venomous Boneglaive]|h|r |HlootHistory:3420|h|cnLOOT_LINK_COLOR:[View Loot Rolls]|r|h",
+["timestamp"] = 1787603008,
+["id"] = "s21_2796",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: Voltface (Need - 39, Main-Spec) Won: |cnIQ4:|Hitem:268201::::::::90:263::3:3:6652:13333:12835::::::|h[Venomous Boneglaive]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2797",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: You passed on: |cnIQ4:|Hitem:268257::::::::90:263::3:5:6652:13696:13662:13333:12835::::::|h[Caustic Chain-Wrapped Sash]|h|r |HlootHistory:3420|h|cnLOOT_LINK_COLOR:[View Loot Rolls]|r|h",
+["timestamp"] = 1787603008,
+["id"] = "s21_2798",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3420|h[Loot]|h: Voltface (Transmogrification - 65) Won: |cnIQ4:|Hitem:268257::::::::90:263::3:5:6652:13696:13662:13333:12835::::::|h[Caustic Chain-Wrapped Sash]|h|r",
+["timestamp"] = 1787603008,
+["id"] = "s21_2799",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r.",
+["timestamp"] = 1787603008,
+["id"] = "s21_2800",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:268201::::::::90:263::3:3:6652:13333:12835::::::|h[Venomous Boneglaive]|h|r.",
+["timestamp"] = 1787603008,
+["id"] = "s21_2801",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:268257::::::::90:263::3:5:6652:13696:13662:13333:12835::::::|h[Caustic Chain-Wrapped Sash]|h|r.",
+["timestamp"] = 1787603009,
+["id"] = "s21_2802",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:244343::::::::90:263::3::1:28:7359:::::|h[Vessel of the Howling Ossuary]|h|r",
+["timestamp"] = 1787603009,
+["id"] = "s21_2803",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 372 Gold, 35 Silver, 10 Copper (+7 Gold, 44 Silver, 70 Copper)",
+["timestamp"] = 1787603010,
+["id"] = "s21_2804",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ4:|Hcurrency:3443:0|h[Veteran Mistcrest]|h|rx20 (You've earned the maximum amount of |cnIQ4:|Hcurrency:3444:0|h[Champion Mistcrest]|h|r)",
+["timestamp"] = 1787603010,
+["id"] = "s21_2805",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ1:|Hitem:265695::::::::90:263:::::::::|h[Elementary Voidcore Shard]|h|r.",
+["timestamp"] = 1787603011,
+["id"] = "s21_2806",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ4:|Hitem:268201::::::::90:263::150:4:6652:13332:12827:11215:1:28:7359:::::|h[Venomous Boneglaive]|h|r.",
+["timestamp"] = 1787603011,
+["id"] = "s21_2807",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ1:|Hitem:265695::::::::90:263:::::::::|h[Elementary Voidcore Shard]|h|r.",
+["timestamp"] = 1787603013,
+["id"] = "s21_2808",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Florrie-LaCroisadeécarlate receives loot: |cnIQ4:|Hitem:268257::::::::90:263::150:6:6652:13696:13662:13332:12827:11215:1:28:7359:::::|h[Caustic Chain-Wrapped Sash]|h|r.",
+["timestamp"] = 1787603020,
+["id"] = "s21_2809",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1555:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787603043,
+["id"] = "s21_2810",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1556:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787603043,
+["id"] = "s21_2811",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1557:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Puissance d'attaque (3), Intelligence (3)",
+["timestamp"] = 1787603043,
+["id"] = "s21_2812",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: De venom has stopped. De path to Ula'tek is open!",
+["timestamp"] = 1787603094,
+["id"] = "s21_2813",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Wait... the venom stopped but the door is still closed.",
+["timestamp"] = 1787603099,
+["id"] = "s21_2814",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Zul'jarra",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Zul'jarra says: Somethin' happenin'. Get ready!",
+["timestamp"] = 1787603104,
+["id"] = "s21_2815",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603159,
+["id"] = "s21_2816",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603160,
+["id"] = "s21_2817",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603161,
+["id"] = "s21_2818",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_assist:0:0:0:0|aAssist",
+["timestamp"] = 1787603165,
+["id"] = "s21_2819",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603169,
+["id"] = "s21_2820",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Lannax-Dalaran:1566:RAID:|h[|cffff7c0aLannax-Dalaran|r]|h: ya flaque en nm",
+["timestamp"] = 1787603234,
+["id"] = "s21_2821",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Lannax-Dalaran:1567:RAID:|h[|cffff7c0aLannax-Dalaran|r]|h: les flaques rouges",
+["timestamp"] = 1787603250,
+["id"] = "s21_2822",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way to: Ithraz",
+["timestamp"] = 1787603314,
+["id"] = "s21_2823",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787603318,
+["id"] = "s21_2824",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603319,
+["id"] = "s21_2825",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787603320,
+["id"] = "s21_2826",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603329,
+["id"] = "s21_2827",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787603331,
+["id"] = "s21_2828",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_assist:0:0:0:0|aAssist",
+["timestamp"] = 1787603332,
+["id"] = "s21_2829",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1575:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: l'aoe soak enleve -1 venin ? ",
+["timestamp"] = 1787603373,
+["id"] = "s21_2830",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603399,
+["id"] = "s21_2831",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Madarattv-Dalaran:1578:RAID:|h[|cffa330c9Madarattv-Dalaran|r]|h: yep",
+["timestamp"] = 1787603407,
+["id"] = "s21_2832",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787603411,
+["id"] = "s21_2833",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787603412,
+["id"] = "s21_2834",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787603413,
+["id"] = "s21_2835",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1583:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787603428,
+["id"] = "s21_2836",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1584:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787603428,
+["id"] = "s21_2837",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1585:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Intelligence (3)",
+["timestamp"] = 1787603428,
+["id"] = "s21_2838",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603434,
+["id"] = "s21_2839",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603435,
+["id"] = "s21_2840",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603435,
+["id"] = "s21_2841",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Delondra-LaCroisadeécarlate:1593:RAID:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: Je repasse dps ou on reste à 3 heal ?",
+["timestamp"] = 1787603446,
+["id"] = "s21_2842",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Lannax-Dalaran:1595:RAID:|h[|cffff7c0aLannax-Dalaran|r]|h: tu devrais rester en heal avec les stacks poison j'pense",
+["timestamp"] = 1787603463,
+["id"] = "s21_2843",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787603470,
+["id"] = "s21_2844",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Katy Stampwhistle",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Katy Stampwhistle says: Katy Stampwhistle, reporting for duty!",
+["timestamp"] = 1787603479,
+["id"] = "s21_2845",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1599:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: ouais reste dans ton meilleur role  délondra :p",
+["timestamp"] = 1787603482,
+["id"] = "s21_2846",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_warning:0:0:0:0|aWarning: Voltface",
+["timestamp"] = 1787603487,
+["id"] = "s21_2847",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1601:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: ça te va bien jtrouve ",
+["timestamp"] = 1787603488,
+["id"] = "s21_2848",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603508,
+["id"] = "s21_2849",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603510,
+["id"] = "s21_2850",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787603511,
+["id"] = "s21_2851",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1608:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787603552,
+["id"] = "s21_2852",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1609:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787603552,
+["id"] = "s21_2853",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1610:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Tous",
+["timestamp"] = 1787603552,
+["id"] = "s21_2854",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Delondra-LaCroisadeécarlate:1646:RAID:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: Hitni passe heal, tu fais pas de dps de toute façon",
+["timestamp"] = 1787603849,
+["id"] = "s21_2855",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1649:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: rageuse va",
+["timestamp"] = 1787603876,
+["id"] = "s21_2856",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787603876,
+["id"] = "s21_2857",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1652:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787603885,
+["id"] = "s21_2858",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1653:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787603885,
+["id"] = "s21_2859",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1654:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Intelligence (12), Polyvalence (1)",
+["timestamp"] = 1787603885,
+["id"] = "s21_2860",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Delondra yells: Ye be as repulsive as a monkey in a negligee!",
+["timestamp"] = 1787603892,
+["id"] = "s21_2861",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aAuto-Hammer",
+["timestamp"] = 1787604318,
+["id"] = "s21_2862",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "[Tank] |Hplayer:Øskydk|h[Øskydk]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "[Tank] |Hplayer:Øskydk|h[Øskydk]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way to: Auto-Hammer",
+["timestamp"] = 1787604319,
+["id"] = "s21_2863",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787604320,
+["id"] = "s21_2864",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aAuto-Hammer",
+["timestamp"] = 1787604320,
+["id"] = "s21_2865",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787604341,
+["id"] = "s21_2866",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_attack:0:0:0:0|aAttack",
+["timestamp"] = 1787604342,
+["id"] = "s21_2867",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Voltface|h[Voltface]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Voltface|h[Voltface]|h: |A:ping_chat_onmyway:0:0:0:0|aOn my way",
+["timestamp"] = 1787604344,
+["id"] = "s21_2868",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
+},
+["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
+},
+["color"] = {
+["r"] = 0.6666666865348816,
+["g"] = 0.6666666865348816,
+["b"] = 1,
+},
+["text"] = "|Hplayer:Wellhung|h[Wellhung]|h: |A:ping_chat_nonthreat:0:0:0:0|aLook here",
+["timestamp"] = 1787604349,
+["id"] = "s21_2869",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1705:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No food (0): ",
+["timestamp"] = 1787604354,
+["id"] = "s21_2870",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1706:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: No flask (0): ",
+["timestamp"] = 1787604354,
+["id"] = "s21_2871",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Øskydk-Archimonde:1707:RAID:|h[|cffc41e3aØskydk-Archimonde|r]|h: Améliorations de groupe Tous",
+["timestamp"] = 1787604354,
+["id"] = "s21_2872",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Unknown",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Unknown says: Look! De door is finally open! I'm comin', Zul'jan. Just hold on...",
+["timestamp"] = 1787604884,
+["id"] = "s21_2873",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Hitni-Archimonde|h[|cff3fc7ebHitni-Archimonde|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1302-0C3B1C87:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787604885,
+["id"] = "s21_2874",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Madarattv-Dalaran|h[|cffa330c9Madarattv-Dalaran|r]|h has earned the achievement |cffffff00|Hachievement:63531:Player-1621-0B0F8ADA:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r!",
+["timestamp"] = 1787604885,
+["id"] = "s21_2875",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Hitni-Archimonde|h[|cff3fc7ebHitni-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1302-0C3B1C87:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787604885,
+["id"] = "s21_2876",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Madarattv-Dalaran|h[|cffa330c9Madarattv-Dalaran|r]|h a accompli le haut fait |cffffff00|Hachievement:63531:Player-1621-0B0F8ADA:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[The Venomous Abyss: Beasts of Ula'tek]|h|r !",
+["timestamp"] = 1787604885,
+["id"] = "s21_2877",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ2:|Hcurrency:3363:0|h[Community Coupons]|h|rx9",
+["timestamp"] = 1787604885,
+["id"] = "s21_2878",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx9 (You've earned the maximum amount of |cnIQ3:|Hcurrency:3442:0|h[Adventurer Mistcrest]|h|r)",
+["timestamp"] = 1787604885,
+["id"] = "s21_2879",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Venomfang Juggernaut",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Venomfang Juggernaut yells: They must not reach Ula'tek!",
+["timestamp"] = 1787604890,
+["id"] = "s21_2880",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: I hope we're not too late.",
+["timestamp"] = 1787604895,
+["id"] = "s21_2881",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: |cnIQ4:|Hitem:270916::::::::90:263::3:3:13703:13692:13333:1:28:7359:::::|h[Venomcast Effigy]|h|r",
+["timestamp"] = 1787604895,
+["id"] = "s21_2882",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: |cnIQ4:|Hitem:268241::::::::90:263::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornaments of the Eternal Coil]|h|r",
+["timestamp"] = 1787604895,
+["id"] = "s21_2883",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: You passed on: |cnIQ4:|Hitem:270916::::::::90:263::3:3:13703:13692:13333:1:28:7359:::::|h[Venomcast Effigy]|h|r |HlootHistory:3421|h|cnLOOT_LINK_COLOR:[View Loot Rolls]|r|h",
+["timestamp"] = 1787604895,
+["id"] = "s21_2884",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: You passed on: |cnIQ4:|Hitem:268241::::::::90:263::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornaments of the Eternal Coil]|h|r |HlootHistory:3421|h|cnLOOT_LINK_COLOR:[View Loot Rolls]|r|h",
+["timestamp"] = 1787604895,
+["id"] = "s21_2885",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: Voltface (Transmogrification - 99) Won: |cnIQ4:|Hitem:268241::::::::90:263::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornaments of the Eternal Coil]|h|r",
+["timestamp"] = 1787604895,
+["id"] = "s21_2886",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "|HlootHistory:3421|h[Loot]|h: Voltface (Greed - 6) Won: |cnIQ4:|Hitem:270916::::::::90:263::3:3:13703:13692:13333:1:28:7359:::::|h[Venomcast Effigy]|h|r",
+["timestamp"] = 1787604895,
+["id"] = "s21_2887",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:268241::::::::90:263::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornaments of the Eternal Coil]|h|r.",
+["timestamp"] = 1787604895,
+["id"] = "s21_2888",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:270916::::::::90:263::3:3:13703:13692:13333:1:28:7359:::::|h[Venomcast Effigy]|h|r.",
+["timestamp"] = 1787604895,
+["id"] = "s21_2889",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ1:|Hitem:265695::::::::90:263:::::::::|h[Elementary Voidcore Shard]|h|r.",
+["timestamp"] = 1787604896,
+["id"] = "s21_2890",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ3:|Hitem:279122::::::::90:263::3::1:28:7359:::::|h[Venom-Fanged Font]|h|r",
+["timestamp"] = 1787604898,
+["id"] = "s21_2891",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 371 Gold, 21 Silver, 10 Copper",
+["timestamp"] = 1787604899,
+["id"] = "s21_2892",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ4:|Hcurrency:3443:0|h[Veteran Mistcrest]|h|rx20 (You've earned the maximum amount of |cnIQ4:|Hcurrency:3444:0|h[Champion Mistcrest]|h|r)",
+["timestamp"] = 1787604899,
+["id"] = "s21_2893",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Wellhung-Archimonde receives loot: |cnIQ1:|Hitem:265695::::::::90:263:::::::::|h[Elementary Voidcore Shard]|h|r.",
+["timestamp"] = 1787604905,
+["id"] = "s21_2894",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1787:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: les épau de zinzin",
+["timestamp"] = 1787604913,
+["id"] = "s21_2895",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1789:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: j'ai deja start le hm",
+["timestamp"] = 1787604944,
+["id"] = "s21_2896",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1790:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: tel un bon eleve",
+["timestamp"] = 1787604955,
+["id"] = "s21_2897",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1793:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Voltface a fait 50 pour : |cnIQ4:|Hitem:268201::::::::90:1480::3:3:6652:13333:12835::::::|h[Glaive d’os venimeux]|h|r",
+["timestamp"] = 1787604993,
+["id"] = "s21_2898",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "NightElf",
+["name"] = "Madarattv-Dalaran",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Madarattv-Dalaran:1795:RAID:|h[|cffa330c9Madarattv-Dalaran|r]|h: Madarattv a fait 66 pour : |cnIQ4:|Hitem:268201::::::::90:581::3:3:6652:13333:12835::::::|h[Glaive d’os venimeux]|h|r",
+["timestamp"] = 1787604995,
+["id"] = "s21_2899",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1797:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Madarattv a reçu |cnIQ4:|Hitem:268201::::::::90:1480::3:3:6652:13333:12835::::::|h[Glaive d’os venimeux]|h|r pour Boost ilvl / seconde spé !",
+["timestamp"] = 1787605002,
+["id"] = "s21_2900",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1799:RAID:|h[|cff0070ddKvotheen|r]|h: Kvotheen has rolled 2 for: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r",
+["timestamp"] = 1787605012,
+["id"] = "s21_2901",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1803:RAID:|h[|cff0070ddKvotheen|r]|h: Kvotheen has rolled 71 for: |cnIQ4:|Hitem:268233::::::::90:263::3:4:6652:13662:13333:12835::::::|h[Ferocious Scaleboots]|h|r",
+["timestamp"] = 1787605029,
+["id"] = "s21_2902",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1805:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: Kry a fait 21 pour : |cnIQ4:|Hitem:268233::::::::90:254::3:4:6652:13662:13333:12835::::::|h[Bottes à écailles féroces]|h|r",
+["timestamp"] = 1787605033,
+["id"] = "s21_2903",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Wellhung-Archimonde:1807:RAID:|h[|cff8788eeWellhung-Archimonde|r]|h: Wellhung a fait 70 pour : |cnIQ4:|Hitem:268257::::::::90:265::3:5:6652:13696:13662:13333:12835::::::|h[Écharpe caustique cerclée de chaînes]|h|r",
+["timestamp"] = 1787605043,
+["id"] = "s21_2904",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1809:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: Hitni a fait 27 pour : |cnIQ4:|Hitem:268257::::::::90:64::3:5:6652:13696:13662:13333:12835::::::|h[Écharpe caustique cerclée de chaînes]|h|r",
+["timestamp"] = 1787605044,
+["id"] = "s21_2905",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1811:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: Hitni a fait 34 pour : |cnIQ4:|Hitem:268241::::::::90:64::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornements de l’anneau éternel]|h|r",
+["timestamp"] = 1787605049,
+["id"] = "s21_2906",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "WARLOCK",
+["race"] = "Scourge",
+["name"] = "Wellhung-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Wellhung-Archimonde:1813:RAID:|h[|cff8788eeWellhung-Archimonde|r]|h: Wellhung a fait 33 pour : |cnIQ4:|Hitem:268241::::::::90:265::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornements de l’anneau éternel]|h|r",
+["timestamp"] = 1787605056,
+["id"] = "s21_2907",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1814:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Hitni a reçu |cnIQ4:|Hitem:268241::::::::90:1480::3:4:6652:13662:13333:12835:1:28:7359:::::|h[Ornements de l’anneau éternel]|h|r pour BIS stats !",
+["timestamp"] = 1787605061,
+["id"] = "s21_2908",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1815:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: la saison me pisse au cul",
+["timestamp"] = 1787605062,
+["id"] = "s21_2909",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1816:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Wellhung a reçu |cnIQ4:|Hitem:268257::::::::90:1480::3:5:6652:13696:13662:13333:12835::::::|h[Écharpe caustique cerclée de chaînes]|h|r pour BIS stats !",
+["timestamp"] = 1787605072,
+["id"] = "s21_2910",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1817:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: je fait que des jet de catin ",
+["timestamp"] = 1787605073,
+["id"] = "s21_2911",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1818:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Kry a reçu |cnIQ4:|Hitem:268233::::::::90:1480::3:4:6652:13662:13333:12835::::::|h[Bottes à écailles féroces]|h|r pour Boost ilvl / seconde spé !",
+["timestamp"] = 1787605089,
+["id"] = "s21_2912",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Delondra-LaCroisadeécarlate:1819:RAID:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: Bah au final c'est sympa de heal en raid, plus que de tanker xD",
+["timestamp"] = 1787605091,
+["id"] = "s21_2913",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_YELL",
+["type"] = "YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate:1820:YELL:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h yells: HITNI PORTAIL STP",
+["timestamp"] = 1787605100,
+["id"] = "s21_2914",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_YELL",
+["type"] = "YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Delondra-LaCroisadeécarlate:1821:YELL:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h yells: MERCI",
+["timestamp"] = 1787605125,
+["id"] = "s21_2915",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni-Archimonde",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Hitni-Archimonde:1822:RAID:|h[|cff3fc7ebHitni-Archimonde|r]|h: mercii",
+["timestamp"] = 1787605164,
+["id"] = "s21_2916",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1825:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: tu pourras mdonner du coup ? ",
+["timestamp"] = 1787605193,
+["id"] = "s21_2917",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1826:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: yep",
+["timestamp"] = 1787605201,
+["id"] = "s21_2918",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1827:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: 2/4",
+["timestamp"] = 1787605202,
+["id"] = "s21_2919",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kvotheen-Hyjal:1829:RAID:|h[|cff0070ddKvotheen|r]|h: Kvotheen has rolled 44 for: |cnIQ4:|Hitem:270916::::::::90:263::3:3:13703:13692:13333:1:28:7359:::::|h[Venomcast Effigy]|h|r",
+["timestamp"] = 1787605212,
+["id"] = "s21_2920",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1830:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: façon j'ai deja fait ",
+["timestamp"] = 1787605214,
+["id"] = "s21_2921",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Heliotrope-Archimonde:1832:RAID:|h[|cff0070ddHeliotrope-Archimonde|r]|h: Heliotrope a fait 66 pour : |cnIQ4:|Hitem:270916::::::::90:264::3:3:13703:13692:13333:1:28:7359:::::|h[Effigie coulée dans le venin]|h|r",
+["timestamp"] = 1787605226,
+["id"] = "s21_2922",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.2784313857555389,
+["b"] = 0.03921568766236305,
+},
+["text"] = "|Hchannel:RAID|h[Raid Leader]|h |Hplayer:Voltface-Dalaran:1834:RAID:|h[|cffa330c9Voltface-Dalaran|r]|h: Heliotrope a reçu |cnIQ4:|Hitem:270916::::::::90:1480::3:3:13703:13692:13333:1:28:7359:::::|h[Effigie coulée dans le venin]|h|r pour BIS stats !",
+["timestamp"] = 1787605233,
+["id"] = "s21_2923",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1836:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: bad stats facon",
+["timestamp"] = 1787605260,
+["id"] = "s21_2924",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Heliotrope-Archimonde receives item: |cnIQ4:|Hitem:271483::::::::90:263::3:6:12835:13333:13692:6652:13696:13698:1:28:1040:::::|h[Serpent Crown of the Ophidian Oracle]|h|r.",
+["timestamp"] = 1787605279,
+["id"] = "s21_2925",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1839:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: question ",
+["timestamp"] = 1787605311,
+["id"] = "s21_2926",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1840:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: on fera du myth cette saison ? ",
+["timestamp"] = 1787605318,
+["id"] = "s21_2927",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.4980392456054688,
+["b"] = 0,
+},
+["text"] = "|Hchannel:RAID|h[Raid]|h |Hplayer:Kry-MarécagedeZangar:1843:RAID:|h[|cffaad372Kry-MarécagedeZangar|r]|h: parce que sinon focus brelok",
+["timestamp"] = 1787605352,
+["id"] = "s21_2928",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Lannax-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Lannax-Dalaran:1844:GUILD:|h[|cffff7c0aLannax|r]|h: qui veut faire le ?? j'galere solo ^^",
+["timestamp"] = 1787605413,
+["id"] = "s21_2929",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kry-MarécagedeZangar:1845:GUILD:|h[|cffaad372Kry|r]|h: parce que c'est asser important pour savoir si faut aller chercher full brelok dans le vault ou pas ",
+["timestamp"] = 1787605432,
+["id"] = "s21_2930",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DRUID",
+["race"] = "NightElf",
+["name"] = "Florrie-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Florrie-LaCroisadeécarlate:1847:GUILD:|h[|cffff7c0aFlorrie|r]|h: Bonne nuit ",
+["timestamp"] = 1787605527,
+["id"] = "s21_2931",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskydk-Archimonde|h[|cffc41e3aØskydk-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:40098:Player-1302-0A09D9BE:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[Immortal Spelunker]|h|r !",
+["timestamp"] = 1787605693,
+["id"] = "s21_2932",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "HUNTER",
+["race"] = "Human",
+["name"] = "Kry-MarécagedeZangar",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Kry-MarécagedeZangar:1927:GUILD:|h[|cffaad372Kry|r]|h: bon tchuss la team",
+["timestamp"] = 1787605736,
+["id"] = "s21_2933",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hchannel:GUILD|h[Guild]|h |Hplayer:Delondra-LaCroisadeécarlate:2019:GUILD:|h[|cfff48cbaDelondra-LaCroisadeécarlate|r]|h: +1",
+["timestamp"] = 1787605816,
+["id"] = "s21_2934",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_WHISPER_INFORM",
+["type"] = "WHISPER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 1,
+},
+["text"] = "To |Hplayer:Øskydk-Archimonde:2034:WHISPER:ØSKYDK-ARCHIMONDE|h[|cffc41e3aØskydk-Archimonde|r]|h: +1",
+["timestamp"] = 1787605828,
+["id"] = "s21_2935",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hagar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hagar says: Some meddlesome miscreants have spread acorns around the Cradle. Clean them up, won't you?",
+["timestamp"] = 1787605916,
+["id"] = "s21_2936",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Hagar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Hagar says: Lightbloom spores are spilling out of The Blinding Bloom. Get rid of them before they spread.",
+["timestamp"] = 1787605975,
+["id"] = "s21_2937",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: Alndust is limited, so we must cull the areas where the Lightbloom is most active.",
+["timestamp"] = 1787606011,
+["id"] = "s21_2938",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: A large attack only causes the Lightbloom to spread. A few, striking the most dangerous--that is best.",
+["timestamp"] = 1787606021,
+["id"] = "s21_2939",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2148:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Ready Check! My Focus Icon is |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",
+["timestamp"] = 1787606039,
+["id"] = "s21_2940",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2149:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 10 sec.",
+["timestamp"] = 1787606050,
+["id"] = "s21_2941",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2150:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: >>> CANCELED <<<",
+["timestamp"] = 1787606051,
+["id"] = "s21_2942",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "Voltface places a cozy Silvermoon Parade for everyone to enjoy!",
+["timestamp"] = 1787606058,
+["id"] = "s21_2943",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "MAGE",
+["race"] = "Human",
+["name"] = "Hitni",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
+},
+["text"] = "Hitni sets out a Toy Train Set!",
+["timestamp"] = 1787606060,
+["id"] = "s21_2944",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2153:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 10 sec.",
+["timestamp"] = 1787606094,
+["id"] = "s21_2945",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2154:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 7 sec.",
+["timestamp"] = 1787606097,
+["id"] = "s21_2946",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2155:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 5 sec.",
+["timestamp"] = 1787606099,
+["id"] = "s21_2947",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2156:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 4 sec.",
+["timestamp"] = 1787606100,
+["id"] = "s21_2948",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2157:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 3 sec.",
+["timestamp"] = 1787606101,
+["id"] = "s21_2949",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2158:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 2 sec.",
+["timestamp"] = 1787606102,
+["id"] = "s21_2950",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2159:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 1 sec.",
+["timestamp"] = 1787606103,
+["id"] = "s21_2951",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2160:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: >>> Pull <<<",
+["timestamp"] = 1787606104,
+["id"] = "s21_2952",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Xal'atath",
+},
+["event"] = "CHAT_MSG_MONSTER_WHISPER",
+["type"] = "MONSTER_WHISPER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.7098039388656616,
+["b"] = 0.9215686917304993,
+},
+["text"] = "Xal'atath whispers: You won't be so lucky next time.",
+["timestamp"] = 1787607519,
+["id"] = "s21_2953",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62445:Player-1390-09230B89:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Keystone Explorer: Season 2]|h|r!",
+["timestamp"] = 1787607519,
+["id"] = "s21_2954",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Kvotheen-Hyjal|h[|cff0070ddKvotheen|r]|h has earned the achievement |cffffff00|Hachievement:62445:Player-1390-09230B89:1:8:24:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Keystone Explorer: Season 2]|h|r!",
+["timestamp"] = 1787607519,
+["id"] = "s21_2955",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Orweyna",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Orweyna says: The Lightbloom is persistent--we too must be.",
+["timestamp"] = 1787607520,
+["id"] = "s21_2956",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2276:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: <AlterEgo> New Keystone: |cnIQ4:|Hkeystone:180653:249:8:162:10:0:0:0|h[Clé : Repos des rois (8)]|h|r",
+["timestamp"] = 1787607521,
+["id"] = "s21_2957",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ1:|Hitem:265695::::::::90:263:::::::::|h[Elementary Voidcore Shard]|h|r.",
+["timestamp"] = 1787607528,
+["id"] = "s21_2958",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEMONHUNTER",
+["race"] = "BloodElf",
+["name"] = "Voltface-Dalaran",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Voltface-Dalaran receives loot: |cnIQ4:|Hitem:251189::::::::90:263::16:6:12841:13440:42:13696:13662:12699:1:28:1279:::::|h[Rootwalker Harness]|h|r.",
+["timestamp"] = 1787607529,
+["id"] = "s21_2959",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ4:|Hitem:251200::::::::90:263::33:6:12841:13440:6652:13696:13662:12699:1:28:1279:::::|h[Saptorbane Guards]|h|r",
+["timestamp"] = 1787607529,
+["id"] = "s21_2960",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ2:|Hitem:253451::::::::90:263::16::1:28:1279:::::|h[Veilroot Fountain]|h|r",
+["timestamp"] = 1787607529,
+["id"] = "s21_2961",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 85 Gold, 30 Silver, 45 Copper",
+["timestamp"] = 1787607530,
+["id"] = "s21_2962",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ4:|Hcurrency:3443:0|h[Veteran Mistcrest]|h|rx9 (You've earned the maximum amount of |cnIQ4:|Hcurrency:3445:0|h[Hero Mistcrest]|h|r)",
+["timestamp"] = 1787607530,
+["id"] = "s21_2963",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx7 (You've earned the maximum amount of |cnIQ4:|Hcurrency:3445:0|h[Hero Mistcrest]|h|r)",
+["timestamp"] = 1787607530,
+["id"] = "s21_2964",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ4:|Hcurrency:3441:0|h[Myth Mistcrest]|h|rx20",
+["timestamp"] = 1787607596,
+["id"] = "s21_2965",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ4:|Hcurrency:3440:0|h[Hero Mistcrest]|h|rx20",
+["timestamp"] = 1787607596,
+["id"] = "s21_2966",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ0:|Hitem:274951::::::::90:263:::::::::|h[Corroded Scale]|h|r",
+["timestamp"] = 1787607797,
+["id"] = "s21_2967",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ1:|Hitem:242639::::::::90:263:::::::::|h[Practically Pork]|h|rx4",
+["timestamp"] = 1787607797,
+["id"] = "s21_2968",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive item: |cnIQ3:|Hitem:243953::::::::90:263:::::::::|h[Enchant Boots - Lynx's Dexterity |A:Professions-ChatIcon-Quality-12-Tier2:17:15::1|a]|h|r",
+["timestamp"] = 1787607873,
+["id"] = "s21_2969",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Kor Dawnchaser",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Kor Dawnchaser says: If the Horde and Alliance can stand together here, maybe this is what peace is supposed to look like.",
+["timestamp"] = 1787607887,
+["id"] = "s21_2970",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Kor Dawnchaser",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "Kor Dawnchaser says: You think everything is temporary. That makes it impossible to build anything.",
+["timestamp"] = 1787607898,
+["id"] = "s21_2971",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2429:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Ready Check! My Focus Icon is |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",
+["timestamp"] = 1787608029,
+["id"] = "s21_2972",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2430:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 10 sec.",
+["timestamp"] = 1787608056,
+["id"] = "s21_2973",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2431:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 7 sec.",
+["timestamp"] = 1787608059,
+["id"] = "s21_2974",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2432:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 5 sec.",
+["timestamp"] = 1787608061,
+["id"] = "s21_2975",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2433:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 4 sec.",
+["timestamp"] = 1787608062,
+["id"] = "s21_2976",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2434:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 3 sec.",
+["timestamp"] = 1787608063,
+["id"] = "s21_2977",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2435:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 2 sec.",
+["timestamp"] = 1787608064,
+["id"] = "s21_2978",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2436:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: Pull in 1 sec.",
+["timestamp"] = 1787608065,
+["id"] = "s21_2979",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2437:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: >>> Pull <<<",
+["timestamp"] = 1787608066,
+["id"] = "s21_2980",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Xal'atath",
+},
+["event"] = "CHAT_MSG_MONSTER_WHISPER",
+["type"] = "MONSTER_WHISPER",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.7098039388656616,
+["b"] = 0.9215686917304993,
+},
+["text"] = "Xal'atath whispers: You won't be so lucky next time.",
+["timestamp"] = 1787609567,
+["id"] = "s21_2981",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "|Hplayer:Øskydk-Archimonde|h[|cffc41e3aØskydk-Archimonde|r]|h has earned the achievement |cffffff00|Hachievement:62446:Player-1302-0A09D9BE:1:8:25:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Keystone Conqueror: Season 2]|h|r!",
+["timestamp"] = 1787609567,
+["id"] = "s21_2982",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
+},
+["color"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
+},
+["text"] = "|Hplayer:Øskydk-Archimonde|h[|cffc41e3aØskydk-Archimonde|r]|h a accompli le haut fait |cffffff00|Hachievement:62446:Player-1302-0A09D9BE:1:8:25:26:4294967295:4294967295:4294967295:4294967295|h[Midnight Keystone Conqueror: Season 2]|h|r !",
+["timestamp"] = 1787609567,
+["id"] = "s21_2983",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "Xal'atath",
+},
+["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 0.250980406999588,
+["b"] = 0.250980406999588,
+},
+["text"] = "Xal'atath yells: Yes. Feed. All of you. Feed on the void. Let its darkness fill you.",
+["timestamp"] = 1787609567,
+["id"] = "s21_2984",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "King Dazar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "King Dazar says: You have freed me from a cruel fate, but Zul is merely a puppet in a larger plan.",
+["timestamp"] = 1787609573,
+["id"] = "s21_2985",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "DEATHKNIGHT",
+["race"] = "BloodElf",
+["name"] = "Øskydk-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
+},
+["color"] = {
+["r"] = 0.4627451300621033,
+["g"] = 0.7843137979507446,
+["b"] = 1,
+},
+["text"] = "|Hchannel:PARTY|h[Party Leader]|h |Hplayer:Øskydk-Archimonde:2552:PARTY:|h[|cffc41e3aØskydk-Archimonde|r]|h: <AlterEgo> New Keystone: |cnIQ4:|Hkeystone:180653:584:10:162:10:9:0:0|h[Clé : Le val Aveuglant (10)]|h|r",
+["timestamp"] = 1787609575,
+["id"] = "s21_2986",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "PALADIN",
+["race"] = "Human",
+["name"] = "Delondra-LaCroisadeécarlate",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Delondra-LaCroisadeécarlate receives loot: |cnIQ4:|Hitem:273649::::::::90:263::16:4:12842:13440:6652:12699:1:28:1279:::::|h[Stormbound Emblem of Dazar]|h|r.",
+["timestamp"] = 1787609577,
+["id"] = "s21_2987",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive loot: |cnIQ4:|Hitem:159459::::::::90:263::33:5:12842:13440:6652:13668:12699:1:28:1279:::::|h[Ritual Binder's Ring]|h|r",
+["timestamp"] = 1787609578,
+["id"] = "s21_2988",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0,
+},
+["text"] = "You loot 99 Gold, 39 Silver, 81 Copper",
+["timestamp"] = 1787609579,
+["id"] = "s21_2989",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "You receive currency: |cnIQ1:|Hcurrency:3316:0|h[Voidlight Marl]|h|rx18 (You've earned the maximum amount of |cnIQ4:|Hcurrency:3445:0|h[Hero Mistcrest]|h|r)",
+["timestamp"] = 1787609579,
+["id"] = "s21_2990",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "Draenei",
+["name"] = "Heliotrope-Archimonde",
+["sex"] = 3,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Heliotrope-Archimonde receives loot: |cnIQ2:|Hitem:278245::::::::90:263::16::1:28:1279:::::|h[Royal Attendant's Coffin]|h|r.",
+["timestamp"] = 1787609579,
+["id"] = "s21_2991",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "King Dazar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "King Dazar says: Even now his master gathers power. Zul will not rest until all de world is in de Blood God's grip.",
+["timestamp"] = 1787609580,
+["id"] = "s21_2992",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["name"] = "King Dazar",
+},
+["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
+},
+["color"] = {
+["r"] = 1,
+["g"] = 1,
+["b"] = 0.6235294342041016,
+},
+["text"] = "King Dazar says: For de sake of Zandalar... and for your kingdoms as well... you must stop him.",
+["timestamp"] = 1787609588,
+["id"] = "s21_2993",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Your |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12834:1:28:5236:::::|h[Preyhunter's Signet]|h|r was changed to |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12835:1:28:5236:::::|h[Preyhunter's Signet]|h|r.",
+["timestamp"] = 1787609702,
+["id"] = "s21_2994",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Your |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12835:1:28:5236:::::|h[Preyhunter's Signet]|h|r was changed to |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12836:1:28:5236:::::|h[Preyhunter's Signet]|h|r.",
+["timestamp"] = 1787609702,
+["id"] = "s21_2995",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Your |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12836:1:28:5236:::::|h[Preyhunter's Signet]|h|r was changed to |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12837:1:28:5236:::::|h[Preyhunter's Signet]|h|r.",
+["timestamp"] = 1787609703,
+["id"] = "s21_2996",
+},
+{
+["recordedBy"] = "Kvotheen-Hyjal",
+["typeInfo"] = {
+["player"] = {
+["class"] = "SHAMAN",
+["race"] = "ZandalariTroll",
+["name"] = "Kvotheen",
+["sex"] = 2,
+},
+["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
+},
+["color"] = {
+["r"] = 0,
+["g"] = 0.6666666865348816,
+["b"] = 0,
+},
+["text"] = "Your |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12837:1:28:5236:::::|h[Preyhunter's Signet]|h|r was changed to |cnIQ4:|Hitem:275527::::::::90:263::42:3:6652:13668:12838:1:28:5236:::::|h[Preyhunter's Signet]|h|r.",
+["timestamp"] = 1787609703,
+["id"] = "s21_2997",
 },
 },
 ["version"] = 1,

@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
 ["lastSanitation"] = 3,
-["session"] = 47,
+["session"] = 49,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/AutoHideUI/Modules/Frames.lua:448: attempt to index local 'frame' (a nil value)",

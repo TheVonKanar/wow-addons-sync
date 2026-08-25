@@ -237,10 +237,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
 },
-["TRADESKILLS"] = {
+["RESTRICTED"] = {
 ["r"] = 1,
-["g"] = 1,
-["b"] = 1,
+["g"] = 0,
+["b"] = 0,
 },
 ["CHANNEL20"] = {
 ["r"] = 1,
@@ -257,15 +257,15 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["b"] = 0.9647059440612793,
 },
-["BG_SYSTEM_NEUTRAL"] = {
-["r"] = 1,
-["g"] = 0.4705882668495178,
-["b"] = 0.03921568766236305,
-},
 ["CHANNEL_Trade"] = {
 ["r"] = 1,
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
+},
+["BG_SYSTEM_NEUTRAL"] = {
+["r"] = 1,
+["g"] = 0.4705882668495178,
+["b"] = 0.03921568766236305,
 },
 ["FILTERED"] = {
 ["r"] = 1,
@@ -282,10 +282,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.501960813999176,
 ["b"] = 1,
 },
-["CHANNEL9"] = {
-["r"] = 1,
-["g"] = 0.7529412508010864,
-["b"] = 0.7529412508010864,
+["GUILD_ITEM_LOOTED"] = {
+["r"] = 0.250980406999588,
+["g"] = 1,
+["b"] = 0.250980406999588,
 },
 ["MONSTER_SAY"] = {
 ["r"] = 1,
@@ -317,20 +317,20 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
 },
-["MONSTER_EMOTE"] = {
-["r"] = 1,
-["g"] = 0.501960813999176,
-["b"] = 0.250980406999588,
+["DISCORD_PLAYER_NAME"] = {
+["b"] = 1,
+["g"] = 0.8901961445808411,
+["r"] = 0.8784314393997192,
 },
 ["COMBAT_FACTION_CHANGE"] = {
 ["r"] = 0.501960813999176,
 ["g"] = 0.501960813999176,
 ["b"] = 1,
 },
-["DISCORD_PLAYER_NAME"] = {
-["b"] = 1,
-["g"] = 0.8901961445808411,
-["r"] = 0.8784314393997192,
+["MONSTER_EMOTE"] = {
+["r"] = 1,
+["g"] = 0.501960813999176,
+["b"] = 0.250980406999588,
 },
 ["CHANNEL_LEAVE"] = {
 ["r"] = 0.7529412508010864,
@@ -342,10 +342,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
 },
-["CHANNEL_Services"] = {
-["r"] = 1,
-["g"] = 0.7529412508010864,
-["b"] = 0.7529412508010864,
+["GUILD_DISCORD"] = {
+["b"] = 1,
+["g"] = 0.4941176772117615,
+["r"] = 0.4470588564872742,
 },
 ["CHANNEL_DéfenseLocale"] = {
 ["r"] = 1,
@@ -452,10 +452,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 1,
 ["b"] = 0,
 },
-["GUILD_DISCORD"] = {
-["b"] = 1,
-["g"] = 0.4941176772117615,
-["r"] = 0.4470588564872742,
+["CHANNEL_Services"] = {
+["r"] = 1,
+["g"] = 0.7529412508010864,
+["b"] = 0.7529412508010864,
 },
 ["CHANNEL11"] = {
 ["r"] = 1,
@@ -472,10 +472,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
 },
-["GUILD_ITEM_LOOTED"] = {
-["r"] = 0.250980406999588,
-["g"] = 1,
-["b"] = 0.250980406999588,
+["CHANNEL9"] = {
+["r"] = 1,
+["g"] = 0.7529412508010864,
+["b"] = 0.7529412508010864,
 },
 ["BN_INLINE_TOAST_CONVERSATION"] = {
 ["r"] = 0.5098039507865906,
@@ -497,10 +497,10 @@ CHATTYNATOR_CONFIG = {
 ["g"] = 0.7529412508010864,
 ["b"] = 0.7529412508010864,
 },
-["RESTRICTED"] = {
+["TRADESKILLS"] = {
 ["r"] = 1,
-["g"] = 0,
-["b"] = 0,
+["g"] = 1,
+["b"] = 1,
 },
 ["PET_BATTLE_COMBAT_LOG"] = {
 ["r"] = 0.9058824181556702,
@@ -583,10 +583,10 @@ CHATTYNATOR_CONFIG = {
 ["isTemporary"] = false,
 ["backgroundColor"] = "1a1a1a",
 ["groups"] = {
-["OPENING"] = false,
-["PET_BATTLE_COMBAT_LOG"] = false,
-["VOICE_TEXT"] = false,
 ["COMBAT_MISC_INFO"] = false,
+["OPENING"] = false,
+["VOICE_TEXT"] = false,
+["PET_BATTLE_COMBAT_LOG"] = false,
 ["COMBAT_XP_GAIN"] = false,
 ["PET_INFO"] = false,
 ["TRADESKILLS"] = false,
@@ -615,23 +615,6 @@ CHATTYNATOR_CONFIG = {
 ["filters"] = {
 },
 },
-{
-["tabColor"] = "FF80FF",
-["channels"] = {
-},
-["whispersTemp"] = {
-["Øskydk-Archimonde"] = true,
-},
-["name"] = "Øskydk",
-["isTemporary"] = true,
-["groups"] = {
-},
-["addons"] = {
-},
-["backgroundColor"] = "1a1a1a",
-["filters"] = {
-},
-},
 },
 ["position"] = {
 "TOPLEFT",
@@ -646,7 +629,7 @@ CHATTYNATOR_CONFIG = {
 },
 }
 CHATTYNATOR_MESSAGE_LOG = {
-["cleanIndex"] = 2697,
+["cleanIndex"] = 2997,
 ["current"] = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
@@ -54174,8 +54157,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54195,8 +54178,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54216,8 +54199,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54237,8 +54220,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54255,8 +54238,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -54276,8 +54259,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54297,8 +54280,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54318,8 +54301,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54339,8 +54322,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54360,8 +54343,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54381,8 +54364,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54402,8 +54385,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54423,8 +54406,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54444,8 +54427,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54465,8 +54448,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54486,8 +54469,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54507,8 +54490,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54528,8 +54511,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54549,8 +54532,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54570,8 +54553,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54591,8 +54574,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54612,8 +54595,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54633,8 +54616,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54654,8 +54637,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54675,8 +54658,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54696,8 +54679,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54717,8 +54700,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54738,8 +54721,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54759,8 +54742,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54780,8 +54763,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54801,8 +54784,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54822,8 +54805,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54843,8 +54826,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54864,8 +54847,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54885,8 +54868,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54906,8 +54889,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54927,8 +54910,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54948,8 +54931,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54969,8 +54952,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -54990,8 +54973,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55008,8 +54991,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -55029,8 +55012,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Anvbis-KirinTor",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55047,8 +55030,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55068,8 +55051,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55089,8 +55072,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55110,8 +55093,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55131,8 +55114,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55152,8 +55135,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55173,8 +55156,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55191,8 +55174,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55212,8 +55195,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55233,8 +55216,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55254,8 +55237,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55275,8 +55258,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55296,8 +55279,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55317,8 +55300,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55338,8 +55321,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55359,8 +55342,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55380,8 +55363,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55401,8 +55384,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55422,8 +55405,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Anvbis-KirinTor",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55443,8 +55426,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55464,8 +55447,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra",
 ["sex"] = 3,
 },
-["type"] = "EMOTE",
 ["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55485,8 +55468,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra",
 ["sex"] = 3,
 },
-["type"] = "EMOTE",
 ["event"] = "CHAT_MSG_TEXT_EMOTE",
+["type"] = "EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55506,8 +55489,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55527,8 +55510,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni",
 ["sex"] = 2,
 },
-["type"] = "MONSTER_EMOTE",
 ["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55548,8 +55531,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface",
 ["sex"] = 3,
 },
-["type"] = "MONSTER_EMOTE",
 ["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55566,8 +55549,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -55584,8 +55567,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -55605,8 +55588,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55626,8 +55609,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55647,8 +55630,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55665,8 +55648,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Sszorak",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55686,8 +55669,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55707,8 +55690,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55728,8 +55711,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55749,8 +55732,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55770,8 +55753,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55791,8 +55774,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55812,8 +55795,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55833,8 +55816,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55854,8 +55837,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55875,8 +55858,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55896,8 +55879,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55917,8 +55900,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55938,8 +55921,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -55959,8 +55942,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -55980,8 +55963,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56001,8 +55984,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56022,8 +56005,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56043,8 +56026,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -56064,8 +56047,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -56085,8 +56068,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Vorrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -56100,8 +56083,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56115,8 +56098,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56130,8 +56113,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56145,8 +56128,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56160,8 +56143,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56175,8 +56158,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56190,8 +56173,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56205,8 +56188,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56220,8 +56203,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56241,8 +56224,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56262,8 +56245,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56283,8 +56266,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56304,8 +56287,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56319,8 +56302,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "MONEY",
 ["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56334,8 +56317,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56355,8 +56338,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56376,8 +56359,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56397,8 +56380,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56418,8 +56401,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56439,8 +56422,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56460,8 +56443,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56481,8 +56464,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56499,8 +56482,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Zul'jarra",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -56517,8 +56500,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Orweyna",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -56535,8 +56518,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Zul'jarra",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -56553,8 +56536,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56571,8 +56554,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56589,8 +56572,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56607,8 +56590,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56625,8 +56608,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56646,8 +56629,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56667,8 +56650,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56685,8 +56668,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56703,8 +56686,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56721,8 +56704,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56739,8 +56722,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56757,8 +56740,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56775,8 +56758,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56793,8 +56776,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56814,8 +56797,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56832,8 +56815,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56853,8 +56836,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56871,8 +56854,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56889,8 +56872,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56907,8 +56890,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -56928,8 +56911,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56949,8 +56932,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56970,8 +56953,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -56988,8 +56971,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57006,8 +56989,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57024,8 +57007,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57045,8 +57028,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57066,8 +57049,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57084,8 +57067,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57102,8 +57085,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Katy Stampwhistle",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -57123,8 +57106,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57141,8 +57124,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57162,8 +57145,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57180,8 +57163,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57198,8 +57181,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57216,8 +57199,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57237,8 +57220,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57258,8 +57241,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57279,8 +57262,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57300,8 +57283,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57321,8 +57304,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57339,8 +57322,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57360,8 +57343,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57381,8 +57364,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57402,8 +57385,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57423,8 +57406,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra",
 ["sex"] = 3,
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -57441,8 +57424,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57459,8 +57442,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "[Tank] |Hplayer:Øskydk|h[Øskydk]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57477,8 +57460,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57495,8 +57478,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57513,8 +57496,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57531,8 +57514,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57549,8 +57532,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Voltface|h[Voltface]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57567,8 +57550,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "|Hplayer:Wellhung|h[Wellhung]|h",
 },
-["type"] = "PING",
 ["event"] = "CHAT_MSG_PING",
+["type"] = "PING",
 },
 ["color"] = {
 ["b"] = 1,
@@ -57588,8 +57571,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57609,8 +57592,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57630,8 +57613,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57648,8 +57631,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Unknown",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -57669,8 +57652,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57690,8 +57673,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57711,8 +57694,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -57732,8 +57715,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -57747,8 +57730,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57762,8 +57745,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57780,8 +57763,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Venomfang Juggernaut",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -57798,8 +57781,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Orweyna",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -57813,8 +57796,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57828,8 +57811,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57843,8 +57826,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57858,8 +57841,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57873,8 +57856,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57888,8 +57871,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57909,8 +57892,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57930,8 +57913,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57951,8 +57934,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57972,8 +57955,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -57987,8 +57970,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "MONEY",
 ["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58002,8 +57985,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58023,8 +58006,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58044,8 +58027,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58065,8 +58048,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58086,8 +58069,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58107,8 +58090,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58128,8 +58111,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Madarattv-Dalaran",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58149,8 +58132,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58170,8 +58153,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58191,8 +58174,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58212,8 +58195,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58233,8 +58216,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58254,8 +58237,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58275,8 +58258,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58296,8 +58279,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Wellhung-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58317,8 +58300,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58338,8 +58321,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58359,8 +58342,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58380,8 +58363,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58401,8 +58384,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58422,8 +58405,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58443,8 +58426,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "YELL",
 ["event"] = "CHAT_MSG_YELL",
+["type"] = "YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58464,8 +58447,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "YELL",
 ["event"] = "CHAT_MSG_YELL",
+["type"] = "YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58485,8 +58468,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni-Archimonde",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58506,8 +58489,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58527,8 +58510,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58548,8 +58531,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58569,8 +58552,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58590,8 +58573,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58611,8 +58594,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58632,8 +58615,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "RAID_LEADER",
 ["event"] = "CHAT_MSG_RAID_LEADER",
+["type"] = "RAID_LEADER",
 },
 ["color"] = {
 ["b"] = 0.03921568766236305,
@@ -58653,8 +58636,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58674,8 +58657,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58695,8 +58678,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58716,8 +58699,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58737,8 +58720,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "RAID",
 ["event"] = "CHAT_MSG_RAID",
+["type"] = "RAID",
 },
 ["color"] = {
 ["b"] = 0,
@@ -58758,8 +58741,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Lannax-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58779,8 +58762,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58800,8 +58783,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Florrie-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58821,8 +58804,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58842,8 +58825,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kry-MarécagedeZangar",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58863,8 +58846,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "GUILD",
 ["event"] = "CHAT_MSG_GUILD",
+["type"] = "GUILD",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -58884,8 +58867,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "WHISPER",
 ["event"] = "CHAT_MSG_WHISPER_INFORM",
+["type"] = "WHISPER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -58902,8 +58885,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Hagar",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -58920,8 +58903,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Hagar",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -58938,8 +58921,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Orweyna",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -58956,8 +58939,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Orweyna",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -58977,8 +58960,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -58998,8 +58981,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59019,8 +59002,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59040,8 +59023,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface",
 ["sex"] = 3,
 },
-["type"] = "MONSTER_EMOTE",
 ["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -59061,8 +59044,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Hitni",
 ["sex"] = 2,
 },
-["type"] = "MONSTER_EMOTE",
 ["event"] = "CHAT_MSG_MONSTER_EMOTE",
+["type"] = "MONSTER_EMOTE",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -59082,8 +59065,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59103,8 +59086,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59124,8 +59107,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59145,8 +59128,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59166,8 +59149,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59187,8 +59170,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59208,8 +59191,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59229,8 +59212,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59247,8 +59230,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Xal'atath",
 },
-["type"] = "MONSTER_WHISPER",
 ["event"] = "CHAT_MSG_MONSTER_WHISPER",
+["type"] = "MONSTER_WHISPER",
 },
 ["color"] = {
 ["b"] = 0.9215686917304993,
@@ -59268,8 +59251,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59289,8 +59272,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -59307,8 +59290,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Orweyna",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -59328,8 +59311,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59349,8 +59332,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59370,8 +59353,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Voltface-Dalaran",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59391,8 +59374,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59412,8 +59395,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59427,8 +59410,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "MONEY",
 ["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59442,8 +59425,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59457,8 +59440,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59472,8 +59455,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59487,8 +59470,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59508,8 +59491,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59529,8 +59512,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59550,8 +59533,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59568,8 +59551,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Kor Dawnchaser",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -59586,8 +59569,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Kor Dawnchaser",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -59607,8 +59590,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59628,8 +59611,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59649,8 +59632,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59670,8 +59653,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59691,8 +59674,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59712,8 +59695,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59733,8 +59716,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59754,8 +59737,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59775,8 +59758,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59793,8 +59776,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Xal'atath",
 },
-["type"] = "MONSTER_WHISPER",
 ["event"] = "CHAT_MSG_MONSTER_WHISPER",
+["type"] = "MONSTER_WHISPER",
 },
 ["color"] = {
 ["b"] = 0.9215686917304993,
@@ -59814,8 +59797,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "ACHIEVEMENT",
 ["event"] = "CHAT_MSG_ACHIEVEMENT",
+["type"] = "ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59835,8 +59818,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "GUILD_ACHIEVEMENT",
 ["event"] = "CHAT_MSG_GUILD_ACHIEVEMENT",
+["type"] = "GUILD_ACHIEVEMENT",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -59853,8 +59836,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "Xal'atath",
 },
-["type"] = "MONSTER_YELL",
 ["event"] = "CHAT_MSG_MONSTER_YELL",
+["type"] = "MONSTER_YELL",
 },
 ["color"] = {
 ["b"] = 0.250980406999588,
@@ -59871,8 +59854,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "King Dazar",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -59892,8 +59875,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Øskydk-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "PARTY_LEADER",
 ["event"] = "CHAT_MSG_PARTY_LEADER",
+["type"] = "PARTY_LEADER",
 },
 ["color"] = {
 ["b"] = 1,
@@ -59913,8 +59896,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Delondra-LaCroisadeécarlate",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59934,8 +59917,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59949,8 +59932,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "MONEY",
 ["event"] = "CHAT_MSG_MONEY",
+["type"] = "MONEY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59964,8 +59947,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 {
 ["recordedBy"] = "Kvotheen-Hyjal",
 ["typeInfo"] = {
-["type"] = "CURRENCY",
 ["event"] = "CHAT_MSG_CURRENCY",
+["type"] = "CURRENCY",
 },
 ["color"] = {
 ["b"] = 0,
@@ -59985,8 +59968,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Heliotrope-Archimonde",
 ["sex"] = 3,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -60003,8 +59986,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "King Dazar",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -60021,8 +60004,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["player"] = {
 ["name"] = "King Dazar",
 },
-["type"] = "MONSTER_SAY",
 ["event"] = "CHAT_MSG_MONSTER_SAY",
+["type"] = "MONSTER_SAY",
 },
 ["color"] = {
 ["b"] = 0.6235294342041016,
@@ -60042,8 +60025,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -60063,8 +60046,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -60084,8 +60067,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,
@@ -60105,8 +60088,8 @@ CHATTYNATOR_MESSAGE_LOG = {
 ["name"] = "Kvotheen",
 ["sex"] = 2,
 },
-["type"] = "LOOT",
 ["event"] = "CHAT_MSG_LOOT",
+["type"] = "LOOT",
 },
 ["color"] = {
 ["b"] = 0,

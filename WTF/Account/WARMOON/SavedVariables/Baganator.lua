@@ -258,8 +258,13 @@ BAGANATOR_CONFIG = {
 ["lock_frames"] = false,
 ["sort_start_at_bottom"] = false,
 ["icon_context_fading"] = true,
-["category_migration"] = 5,
-["sort_ignore_slots_at_end"] = false,
+["saved_searches"] = {
+},
+["category_section_toggled"] = {
+["1"] = true,
+["Crafting"] = true,
+["2"] = false,
+},
 ["category_modifications"] = {
 ["default_questitem"] = {
 ["addedItems"] = {
@@ -324,6 +329,33 @@ BAGANATOR_CONFIG = {
 ["i:232386"] = true,
 },
 },
+["default_food"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
+["default_reagent"] = {
+["addedItems"] = {
+["i:222738"] = true,
+["i:230905"] = true,
+},
+},
+["default_profession"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+["addedItems"] = {
+["i:136377"] = true,
+["i:225771"] = true,
+["i:225770"] = true,
+["i:237497"] = true,
+["i:214561"] = true,
+["i:241291"] = true,
+["i:212308"] = true,
+},
+},
+["default_auto_inventory_slots"] = {
+["showGroupPrefix"] = true,
+["priority"] = -1,
+},
 ["1"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
@@ -370,42 +402,13 @@ BAGANATOR_CONFIG = {
 ["i:235151"] = true,
 },
 },
-["default_reagent"] = {
-["addedItems"] = {
-["i:222738"] = true,
-["i:230905"] = true,
-},
-},
-["default_profession"] = {
+["default_key"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
-["addedItems"] = {
-["i:136377"] = true,
-["i:225771"] = true,
-["i:225770"] = true,
-["i:237497"] = true,
-["i:214561"] = true,
-["i:241291"] = true,
-["i:212308"] = true,
-},
 },
 ["3"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
-},
-["default_food"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
-},
-["default_gem"] = {
-["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
-},
-},
-["default_auto_inventory_slots"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
 },
 ["2"] = {
 ["showGroupPrefix"] = true,
@@ -459,7 +462,9 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
 },
-["default_tradegoods"] = {
+["6"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
 },
 ["default_consumable"] = {
 ["addedItems"] = {
@@ -474,9 +479,7 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["6"] = {
-["showGroupPrefix"] = true,
-["priority"] = 0,
+["default_tradegoods"] = {
 },
 ["default_auto_equipment_sets"] = {
 ["showGroupPrefix"] = true,
@@ -488,11 +491,13 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_recipe"] = {
-["showGroupPrefix"] = true,
-["priority"] = -1,
+["default_gem"] = {
+["addedItems"] = {
+["i:228643"] = true,
+["i:228646"] = true,
 },
-["default_key"] = {
+},
+["default_recipe"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
@@ -506,11 +511,7 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["category_section_toggled"] = {
-["1"] = true,
-["Crafting"] = true,
-["2"] = false,
-},
+["sort_ignore_slots_at_end"] = false,
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
@@ -526,28 +527,11 @@ BAGANATOR_CONFIG = {
 ["sort_ignore_bank_slots_count"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
-["view_alpha"] = 1,
-["sort_ignore_slots_count_2"] = {
-["Kvotheen-Hyjal"] = 0,
+["disabled_skins"] = {
 },
+["bag_view_width"] = 15,
 ["upgrade_plugin"] = "none",
 ["show_buttons_on_alt"] = false,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["blizzard_black"] = {
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
 ["recent_characters_main_view"] = {
 "Kvotheen-Hyjal",
 "Quiproquo-Uldaman",
@@ -563,6 +547,7 @@ BAGANATOR_CONFIG = {
 "Kvothyr-Hyjal",
 "Trialmagekvo-Hyjal",
 },
+["debug_keywords"] = false,
 ["guild_current_tab"] = 6,
 ["auto_sort_on_open"] = false,
 ["setting_anchors"] = false,
@@ -624,7 +609,22 @@ BAGANATOR_CONFIG = {
 },
 },
 },
-["debug_keywords"] = false,
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["blizzard_black"] = {
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
+},
 ["guild_view_dialog_position"] = {
 "BOTTOM",
 "Baganator_GuildViewFrame",
@@ -634,13 +634,13 @@ BAGANATOR_CONFIG = {
 },
 ["junk_plugin_ignored"] = {
 },
-["bag_view_width"] = 15,
-["disabled_skins"] = {
+["sort_ignore_slots_count_2"] = {
+["Kvotheen-Hyjal"] = 0,
 },
+["view_alpha"] = 1,
 ["show_sort_button_2"] = true,
 ["bag_icon_size"] = 44,
-["saved_searches"] = {
-},
+["category_migration"] = 5,
 ["currency_panel_position"] = {
 "RIGHT",
 -1281.968322753906,

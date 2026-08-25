@@ -324,3 +324,5 @@ EllesmereUIQoL: enabled
 EllesmereUIBlizzardSkin: enabled
 Leatrix_Maps: enabled
 BuffReminders: disabled
+NoAutoClose: disabled
+BlizzMove: disabled

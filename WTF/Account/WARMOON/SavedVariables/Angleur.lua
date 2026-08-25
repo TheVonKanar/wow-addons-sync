@@ -33,12 +33,12 @@ Angleur_TinyOptions = {
 ["softTargetIcon"] = true,
 ["ultraFocusMaster"] = 1,
 ["visualScale"] = 1,
-["poleSleep"] = true,
-["doubleClickWindow"] = 0.4,
 ["turnOffSoftInteract"] = false,
+["doubleClickWindow"] = 0.4,
+["swimRelease"] = true,
 ["softIconOff"] = false,
 ["allowDismount"] = false,
-["swimRelease"] = true,
+["poleSleep"] = true,
 ["loginDisabled"] = false,
 }
 AngleurMinimapButton = {
