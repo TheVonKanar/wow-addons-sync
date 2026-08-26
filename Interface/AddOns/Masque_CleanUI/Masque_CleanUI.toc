@@ -1,9 +1,0 @@
-## Interface: 120007
-## Title: Masque_CleanUI
-## Author: Seharad
-## Version: 12.0.4
-## IconTexture: Interface\AddOns\Masque\Textures\Icon
-## Notes: Masque Skin for the CleanUI look and feel
-## Dependencies: Masque
-
-Masque_CleanUI.lua
