@@ -1,5 +1,0 @@
-<Ui>
-    <Script file="CategoryData.lua" />
-    <Script file="EventData.lua" />
-    <Script file="ZoneData.lua" />
-</Ui>

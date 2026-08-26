@@ -1,11 +1,4 @@
 Version: 1
-Frame: WUI_TalentsWidget
-FrameLevel: 1
-Anchor: TOPRIGHT
-X: -10
-Y: -275
-W: 297
-H: 30
 Frame: GroupLootHistoryFrame
 FrameLevel: 1
 Anchor: TOPRIGHT
@@ -41,10 +34,3 @@ X: -9
 Y: 211
 W: 300
 H: 161
-Frame: EllesmereUIFrame
-FrameLevel: 100
-Anchor: TOPRIGHT
-X: 4
-Y: 133
-W: 1500
-H: 1154

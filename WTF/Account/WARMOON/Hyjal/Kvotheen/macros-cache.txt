@@ -36,15 +36,19 @@ VER 3 0100000000000079 " " "136013"
 #showtooltip
 /cast [@cursor] Capacitor Totem
 END
+VER 3 010000000000007A " " "134400"
+#showtooltip
+/cast [mounted] Surge Forward; Stormstrike
+END
 VER 3 0100000000000074 "++" "134400"
 #showtooltip
 /cast Doom Winds
 /use 14
 END
-VER 3 0100000000000032 "+HS" "136044"
+VER 3 010000000000007B "+HS" "134400"
 #showtooltip Healing Surge
 /use Healthstone
-/cast [@player] Healing Surge
+/cast [mounted] Second Wind; Healing Surge
 END
 VER 3 0100000000000073 "+pot" "134400"
 #showtooltip
@@ -55,10 +59,6 @@ VER 3 0100000000000077 "+TK" "134400"
 #showtooltip Nature's Swiftness
 /use Emberwing Feather
 /cast Nature's Swiftness
-END
-VER 3 010000000000007B "A" "134400"
-#showtooltip
-/cast [mounted] Second Wind; Healing Surge
 END
 VER 3 0100000000000078 "Auto" "134400"
 #showtooltip
@@ -74,18 +74,23 @@ VER 3 0100000000000022 "ENH" "134400"
 /castsequence [@player] reset=10 Skyfury, Lightning Shield, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
 END
+VER 3 010000000000007C "Focus" "134400"
+#showtooltip
+/stopcasting
+/cast [@focus,exists] Wind Shear; Wind Shear
+END
 VER 3 0100000000000070 "Hover" "134400"
 #showtooltip
 /stopcasting
 /cast [@focus,exists] Wind Shear; [target=mouseover,exists] Wind Shear; Wind Shear
 END
-VER 3 0100000000000075 "Hover" "134400"
-#showtooltip
-/cast [target=mouseover,exists] Unleash Life; Unleash Life
-END
 VER 3 0100000000000076 "Hover" "134400"
 #showtooltip
 /cast [target=mouseover,exists] Riptide; Riptide
+END
+VER 3 0100000000000075 "Hover" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Unleash Life; Unleash Life
 END
 VER 3 010000000000006E "Outfit Collection" "2869702"
 #plumber:outfit
@@ -95,8 +100,4 @@ VER 3 010000000000005C "RES" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Water Shield, Earth Shield, Earthliving Weapon, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
-END
-VER 3 010000000000007A "Space" "134400"
-#showtooltip
-/cast [mounted] Surge Forward; Stormstrike
 END

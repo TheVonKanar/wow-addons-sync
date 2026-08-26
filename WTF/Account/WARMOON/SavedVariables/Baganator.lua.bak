@@ -222,9 +222,9 @@ BAGANATOR_CONFIG = {
 ["new_items_flashing"] = true,
 ["icon_equipment_set_border"] = true,
 ["sort_start_at_bottom"] = false,
+["category_migration"] = 5,
 ["saved_searches"] = {
 },
-["category_migration"] = 5,
 ["bag_icon_size"] = 44,
 ["category_modifications"] = {
 ["default_questitem"] = {
@@ -289,6 +289,12 @@ BAGANATOR_CONFIG = {
 ["i:237268"] = true,
 },
 },
+["default_gem"] = {
+["addedItems"] = {
+["i:228643"] = true,
+["i:228646"] = true,
+},
+},
 ["default_key"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
@@ -297,65 +303,15 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_gem"] = {
-["addedItems"] = {
-["i:228643"] = true,
-["i:228646"] = true,
-},
-},
 ["default_auto_equipment_sets"] = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["6"] = {
-["showGroupPrefix"] = true,
-["priority"] = 0,
+["default_tradegoods"] = {
 },
-["1"] = {
+["default_food"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 0,
-["addedItems"] = {
-["i:246321"] = true,
-["i:224265"] = true,
-["i:236757"] = true,
-["i:248017"] = true,
-["i:236756"] = true,
-["i:279287"] = true,
-["i:236953"] = true,
-["i:224264"] = true,
-["i:246585"] = true,
-["i:224817"] = true,
-["i:245755"] = true,
-["i:238208"] = true,
-["i:245653"] = true,
-["i:263977"] = true,
-["i:225249"] = true,
-["i:238467"] = true,
-["i:274069"] = true,
-["i:255676"] = true,
-["i:236954"] = true,
-["i:236758"] = true,
-["i:246320"] = true,
-["i:231269"] = true,
-["i:235151"] = true,
-["i:227450"] = true,
-["i:226045"] = true,
-["i:275910"] = true,
-["i:263454"] = true,
-["i:225234"] = true,
-["i:233071"] = true,
-["i:238466"] = true,
-["i:226100"] = true,
-["i:230227"] = true,
-["i:279382"] = true,
-["i:238465"] = true,
-["i:225245"] = true,
-["i:262936"] = true,
-["i:245761"] = true,
-["i:268485"] = true,
-["i:259188"] = true,
-["i:236096"] = true,
-},
+["priority"] = -1,
 },
 ["default_reagent"] = {
 ["addedItems"] = {
@@ -363,9 +319,9 @@ BAGANATOR_CONFIG = {
 ["i:230905"] = true,
 },
 },
-["3"] = {
+["default_auto_inventory_slots"] = {
 ["showGroupPrefix"] = true,
-["priority"] = 0,
+["priority"] = -1,
 },
 ["2"] = {
 ["showGroupPrefix"] = true,
@@ -419,7 +375,9 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = 0,
 },
-["default_tradegoods"] = {
+["6"] = {
+["showGroupPrefix"] = true,
+["priority"] = 0,
 },
 ["default_consumable"] = {
 ["addedItems"] = {
@@ -434,9 +392,9 @@ BAGANATOR_CONFIG = {
 ["showGroupPrefix"] = true,
 ["priority"] = -1,
 },
-["default_auto_inventory_slots"] = {
+["3"] = {
 ["showGroupPrefix"] = true,
-["priority"] = -1,
+["priority"] = 0,
 },
 ["default_profession"] = {
 ["showGroupPrefix"] = true,
@@ -457,9 +415,51 @@ BAGANATOR_CONFIG = {
 ["i:212239"] = true,
 },
 },
-["default_food"] = {
+["1"] = {
 ["showGroupPrefix"] = true,
-["priority"] = -1,
+["priority"] = 0,
+["addedItems"] = {
+["i:246321"] = true,
+["i:224265"] = true,
+["i:236757"] = true,
+["i:248017"] = true,
+["i:236756"] = true,
+["i:279287"] = true,
+["i:236953"] = true,
+["i:224264"] = true,
+["i:246585"] = true,
+["i:224817"] = true,
+["i:245755"] = true,
+["i:238208"] = true,
+["i:245653"] = true,
+["i:263977"] = true,
+["i:225249"] = true,
+["i:238467"] = true,
+["i:274069"] = true,
+["i:255676"] = true,
+["i:236954"] = true,
+["i:236758"] = true,
+["i:246320"] = true,
+["i:231269"] = true,
+["i:235151"] = true,
+["i:227450"] = true,
+["i:226045"] = true,
+["i:275910"] = true,
+["i:263454"] = true,
+["i:225234"] = true,
+["i:233071"] = true,
+["i:238466"] = true,
+["i:226100"] = true,
+["i:230227"] = true,
+["i:279382"] = true,
+["i:238465"] = true,
+["i:225245"] = true,
+["i:262936"] = true,
+["i:245761"] = true,
+["i:268485"] = true,
+["i:259188"] = true,
+["i:236096"] = true,
+},
 },
 ["default_itemenhancement"] = {
 ["addedItems"] = {
@@ -472,44 +472,47 @@ BAGANATOR_CONFIG = {
 },
 },
 ["warband_bank_view_width"] = 15,
-["sort_ignore_slots_at_end"] = false,
+["category_section_toggled"] = {
+["1"] = true,
+["2"] = false,
+["Crafting"] = true,
+},
 ["add_to_category_buttons_2"] = "drag",
 ["view_type"] = "unset",
 ["bank_current_tab"] = 1,
 ["icon_text_quality_colors"] = false,
 ["bag_view_position"] = {
 "BOTTOMRIGHT",
--497.697265625,
-613.0109252929688,
+-307.685302734375,
+580.0088500976562,
 },
 ["icon_text_font_size"] = 14,
-["disabled_skins"] = {
-},
-["bag_view_width"] = 15,
 ["view_alpha"] = 1,
 ["sort_ignore_slots_count_2"] = {
 ["Kvotheen-Hyjal"] = 0,
 },
+["disabled_skins"] = {
+},
+["bag_view_width"] = 15,
 ["junk_plugin_ignored"] = {
 },
 ["show_buttons_on_alt"] = false,
+["recent_characters_main_view"] = {
+"Kvotheen-Hyjal",
+"Quiproquo-Uldaman",
+"Killeen-Archimonde",
+"Pandamages-Hyjal",
+"Pandamagee-Hyjal",
+"Pandamo-Hyjal",
+"Pandamoun-Hyjal",
+"Raptorbuyer-Hyjal",
+"Pandkvé-Hyjal",
+"Pandakv-Hyjal",
+"Pandakvo-Hyjal",
+"Kvothyr-Hyjal",
+"Trialmagekvo-Hyjal",
+},
 ["debug_keywords"] = false,
-["skins"] = {
-["blizzard"] = {
-["no_frame_borders"] = false,
-["view_transparency"] = 0,
-["empty_slot_background"] = false,
-},
-["blizzard_black"] = {
-["empty_slot_background"] = false,
-},
-["dark"] = {
-["no_frame_borders"] = false,
-["square_icons"] = false,
-["view_transparency"] = 0.3,
-["empty_slot_background"] = false,
-},
-},
 ["currencies_tracked"] = {
 ["Pandakv-Hyjal"] = {
 },
@@ -571,20 +574,21 @@ BAGANATOR_CONFIG = {
 },
 ["setting_anchors"] = false,
 ["guild_current_tab"] = 6,
-["recent_characters_main_view"] = {
-"Kvotheen-Hyjal",
-"Quiproquo-Uldaman",
-"Killeen-Archimonde",
-"Pandamages-Hyjal",
-"Pandamagee-Hyjal",
-"Pandamo-Hyjal",
-"Pandamoun-Hyjal",
-"Raptorbuyer-Hyjal",
-"Pandkvé-Hyjal",
-"Pandakv-Hyjal",
-"Pandakvo-Hyjal",
-"Kvothyr-Hyjal",
-"Trialmagekvo-Hyjal",
+["skins"] = {
+["blizzard"] = {
+["no_frame_borders"] = false,
+["view_transparency"] = 0,
+["empty_slot_background"] = false,
+},
+["blizzard_black"] = {
+["empty_slot_background"] = false,
+},
+["dark"] = {
+["no_frame_borders"] = false,
+["square_icons"] = false,
+["view_transparency"] = 0.3,
+["empty_slot_background"] = false,
+},
 },
 ["guild_view_dialog_position"] = {
 "BOTTOM",
@@ -600,11 +604,7 @@ BAGANATOR_CONFIG = {
 ["currencies_tracked_imported"] = {
 },
 ["show_sort_button_2"] = true,
-["category_section_toggled"] = {
-["1"] = true,
-["2"] = false,
-["Crafting"] = true,
-},
+["sort_ignore_slots_at_end"] = false,
 ["icon_context_fading"] = true,
 ["currency_panel_position"] = {
 "RIGHT",

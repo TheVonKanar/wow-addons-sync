@@ -60,7 +60,7 @@ OPie_Classic: disabled
 GSE: disabled
 GSE_LDB: disabled
 GSE_GUI: disabled
-MasqueBlizzBars: enabled
+MasqueBlizzBars: disabled
 MasqueBlizzInv: disabled
 OPieMasque: enabled
 Kui_Media: disabled
@@ -68,7 +68,7 @@ Kui_Nameplates: disabled
 Kui_Nameplates_Core: disabled
 Kui_Nameplates_Core_Config: disabled
 MoveAny: disabled
-EditModeExpanded: enabled
+EditModeExpanded: disabled
 WagoAnalytics: enabled
 WagoAppCompanion: disabled
 Windfury: enabled
@@ -79,7 +79,7 @@ Bagnon_Config: disabled
 BagBrother: disabled
 Masque_Squat: enabled
 Masque_Raeli: disabled
-Masque_Caith: enabled
+Masque_Caith: disabled
 PixelPerfectAlign: disabled
 ArkInventorySearch: disabled
 ArkInventoryRules: disabled
@@ -143,7 +143,7 @@ LoggerHead: disabled
 MacroToolkit: disabled
 MacroToolkitIcons: disabled
 MapCoords: disabled
-Masque: enabled
+Masque: disabled
 Masque_FlatSquares: disabled
 SavedInstances: disabled
 Simulationcraft: enabled
@@ -230,7 +230,7 @@ Angleur: enabled
 CauseseDB: enabled
 HandyNotes_TheWarWithin: enabled
 LoggerHeadLite: enabled
-Masque_CleanUI: enabled
+Masque_CleanUI: disabled
 BigWigs_LiberationOfUndermine: disabled
 BigWigs_ManaforgeOmega: disabled
 GTFO: disabled
@@ -275,7 +275,7 @@ MythicPlusUtility: disabled
 MogMount: enabled
 !Swatter: disabled
 !ImprovedErrorFrame: disabled
-Baganator: enabled
+Baganator: disabled
 TalentLoadoutManager: disabled
 TwintopInsanityBar: disabled
 EnhanceQoL: disabled
@@ -311,9 +311,9 @@ MidnightSimpleUnitFrames_Options: disabled
 EllesmereUI: enabled
 EUIStandaloneUnitFrames: disabled
 EllesmereUIAuraBuffReminders: enabled
-EllesmereUIBags: disabled
-EllesmereUIChat: disabled
-EllesmereUIDataBars: disabled
+EllesmereUIBags: enabled
+EllesmereUIChat: enabled
+EllesmereUIDataBars: enabled
 EllesmereUIFriends: disabled
 EllesmereUIMythicTimer: disabled
 EllesmereUIQuestTracker: disabled
@@ -322,7 +322,9 @@ EllesmereUIDamageMeters: enabled
 EllesmereUIRaidFrames: enabled
 EllesmereUIQoL: enabled
 EllesmereUIBlizzardSkin: enabled
-Leatrix_Maps: enabled
+Leatrix_Maps: disabled
 BuffReminders: disabled
 NoAutoClose: disabled
 BlizzMove: disabled
+Auctionator: enabled
+Chattynator: disabled

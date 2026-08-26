@@ -9,4 +9,5 @@
 embeds.xml
 
 Core.lua
-TalentsWidget.lua
+
+## TalentsWidget.lua

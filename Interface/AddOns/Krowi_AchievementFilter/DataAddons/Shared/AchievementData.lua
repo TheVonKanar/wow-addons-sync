@@ -1,3 +1,0 @@
-local _, addon = ...
-addon.Data.AchievementData = {}
-addon.Data.AchievementData.Shared = {}

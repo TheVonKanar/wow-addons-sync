@@ -1,16 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/cw Xpewpew-Dalaran enculé",
-"/s |cnIQ4:|Hkeystone:180653:161:15:9:10:147:0:0|h[Keystone: Skyreach (15)]|h|r",
-"/g ._.",
-"/g merci haha",
-"/g en vrai ca va",
-"/g pewpew suait a grande gouttes mais ca va",
-"/g des que ya du mouvement c'est un peu l'enfer et je claque jamais mes cd quand il faut mais ca viendra a force",
-"/g non mais il etait en bas de ma liste de frames donc je le healais moins",
-"/g ca a l'air quand meme plus simple qu'a TWW",
-"/s /etrace",
 "/s /console enable",
 "/g Parce que t'es mauvaaaais jack",
 " yoooo j'allais me chauffer pour du tft mais aller ouais une clef ou deux!",
@@ -202,4 +192,14 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/raid ma meuf qui est aussi mdr derriere moi",
 "/raid John Traveltime?",
 "/cw Øskydk-Archimonde +1",
+"/p hey",
+"/p yeah, thanks :)",
+"/p bye",
+"/g ah que coucou",
+"/g jme ferais bien un ptit m+ rapido pour en avoir 4 pour le vault demain si ya des gens chaud :)",
+"/g /ltm",
+"/p heyo",
+"/p ty, bye :)",
+"/cw Bloodlùst-Draenor yeah sorry, had worst :(",
+"/s /simc",
 }

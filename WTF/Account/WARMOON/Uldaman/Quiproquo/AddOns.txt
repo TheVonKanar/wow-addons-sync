@@ -78,12 +78,12 @@ EUIStandaloneMinimap: disabled
 EllesmereUIUnitFrames: enabled
 EllesmereUIResourceBars: enabled
 EllesmereUIAuraBuffReminders: disabled
-EllesmereUIBags: disabled
-EllesmereUIChat: disabled
-EllesmereUIDataBars: disabled
+EllesmereUIBags: enabled
+EllesmereUIChat: enabled
+EllesmereUIDataBars: enabled
 EllesmereUIFriends: disabled
 EllesmereUIMythicTimer: disabled
-EllesmereUIQuestTracker: disabled
+EllesmereUIQuestTracker: enabled
 EllesmereUIQuickdraw: disabled
 EllesmereUIDamageMeters: disabled
 EllesmereUIActionBars: enabled

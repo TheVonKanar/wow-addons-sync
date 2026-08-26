@@ -1,6 +1,6 @@
 # Platynator
 
-## [471](https://github.com/TheMouseNest/Platynator/tree/471) (2026-08-23)
-[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/470...471) 
+## [474](https://github.com/TheMouseNest/Platynator/tree/474) (2026-08-26)
+[Full Changelog](https://github.com/TheMouseNest/Platynator/compare/473...474) 
 
-- Fix import error  
+- Automatically enable "Dispellable" for buffs  

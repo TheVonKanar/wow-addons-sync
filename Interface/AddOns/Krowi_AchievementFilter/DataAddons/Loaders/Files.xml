@@ -1,8 +1,0 @@
-<Ui>
-    <Script file="CustomCriteriaData.lua" />
-    <Script file="EventData.lua" />
-    <Script file="PetBattleLinkData.lua" />
-    <Script file="TabData.lua" />
-    <Script file="TooltipData.lua" />
-    <Script file="TransmogSetData.lua" />
-</Ui>

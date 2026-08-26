@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
+["session"] = 80,
 ["lastSanitation"] = 3,
-["session"] = 49,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/AutoHideUI/Modules/Frames.lua:448: attempt to index local 'frame' (a nil value)",
@@ -13,8 +13,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "LUA_WARNING: Interface/AddOns/WindfuryUI/WindfuryUI.toc:11 Error loading Interface/AddOns/WindfuryUI/TalentLoadoutDisplay.lua",
-["session"] = 12,
 ["time"] = 1787565960,
+["session"] = 12,
 ["counter"] = 1,
 },
 {

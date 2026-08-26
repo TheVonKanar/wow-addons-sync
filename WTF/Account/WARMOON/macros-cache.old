@@ -1,11 +1,11 @@
+VER 3 0000000000000077 " " "450905"
+/buffrem
+END
 VER 3 0000000000000076 " " "450906"
 END
 VER 3 0000000000000075 " " "450907"
 END
 VER 3 0000000000000078 " " "450908"
-END
-VER 3 0000000000000077 " " "450905"
-/buffrem
 END
 VER 3 0000000000000081 "BR" "132112"
 /br
@@ -34,6 +34,10 @@ VER 3 000000000000008A "EUI_Health" "INV_MISC_QUESTIONMARK"
 /cast [nocombat] Recuperate
 /use [combat] item:241304
 /use [combat] item:241305
+END
+VER 3 000000000000008B "EUI_WindShear" "INV_MISC_QUESTIONMARK"
+#showtooltip Wind Shear
+/cast [@focus,harm,nodead][] Wind Shear
 END
 VER 3 0000000000000065 "Focus" "132345"
 /clearfocus
