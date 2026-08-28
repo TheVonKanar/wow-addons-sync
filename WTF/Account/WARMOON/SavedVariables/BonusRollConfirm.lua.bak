@@ -1,0 +1,4 @@
+
+BonusRollConfirmDB = {
+["passPromptEnabled"] = true,
+}

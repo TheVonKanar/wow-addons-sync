@@ -272,10 +272,14 @@ function addonTable.Display.ManagerMixin:RestylePools()
       local design, scaleMod, scaleOffset = addonTable.Core.GetDesignByName(settings.style), settings.scale, addonTable.Core.GetDesignScale(settings.simplified or false)
       for _, display in ipairs(list) do
         if display.styleIndex ~= self.styleIndex then
+          local parent = display:GetParent()
+          display:SetParent(UIParent)
+          display:Show()
           display:SetPoint("CENTER")
           display:InitializeWidgets(design, scaleOffset, scaleMod)
           display.styleIndex = self.styleIndex
           display:Hide()
+          display:SetParent(parent)
         end
       end
     end
@@ -304,9 +308,14 @@ function addonTable.Display.ManagerMixin:RestylePoolsStaggered(step)
       if settings then
         local design, scaleMod, scaleOffset = addonTable.Core.GetDesignByName(settings.style), settings.scale, addonTable.Core.GetDesignScale(settings.simplified or false)
         if display.styleIndex ~= self.styleIndex then
+          local parent = display:GetParent()
+          display:SetParent(UIParent)
+          display:Show()
+          display:SetPoint("CENTER")
           display:InitializeWidgets(design, scaleOffset, scaleMod)
           display.styleIndex = self.styleIndex
           display:Hide()
+          display:SetParent(parent)
         end
       end
     end

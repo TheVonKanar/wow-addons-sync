@@ -1,0 +1,9 @@
+## Interface: 120100
+## Title: BonusRollConfirm
+## Notes: Prompts for confirmation before using a bonus roll, and shows your loot spec
+## Version: 1.1.2
+## Author: Cludes
+## IconTexture: Interface\Icons\inv_misc_curiouscoin
+## SavedVariables: BonusRollConfirmDB
+
+BonusRollConfirm.lua
