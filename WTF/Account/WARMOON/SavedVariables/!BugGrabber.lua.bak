@@ -1,7 +1,7 @@
 
 BugGrabberDB = {
-["session"] = 94,
 ["lastSanitation"] = 3,
+["session"] = 117,
 ["errors"] = {
 {
 ["message"] = "Interface/AddOns/AutoHideUI/Modules/Frames.lua:448: attempt to index local 'frame' (a nil value)",
@@ -13,8 +13,8 @@ BugGrabberDB = {
 },
 {
 ["message"] = "LUA_WARNING: Interface/AddOns/WindfuryUI/WindfuryUI.toc:11 Error loading Interface/AddOns/WindfuryUI/TalentLoadoutDisplay.lua",
-["time"] = 1787565960,
 ["session"] = 12,
+["time"] = 1787565960,
 ["counter"] = 1,
 },
 {
@@ -55,6 +55,30 @@ BugGrabberDB = {
 ["locals"] = "parent=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\ntext=\"R\"\nloadoutName=\"Raid\"\noffsetX=-6\nframe=WUI_TalentsWidget_Raid_Button <TalentsWidget.lua:80>\nmainFrame=WUI_TalentsWidget <TalentsWidget.lua:4>{\n text=FontString <TalentsWidget.lua:50>\n bg=Texture <TalentsWidget.lua:45>\n}\n",
 ["stack"] = "[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:87: in function 'CreateSwapButtonFrame'\n[Interface/AddOns/WindfuryUI/TalentsWidget.lua]:104: in main chunk\n",
 ["session"] = 34,
+["counter"] = 1,
+},
+{
+["message"] = "...ce/AddOns/KeyMaster/Libs/Internal/DungeonJournal.lua:63: attempt to call a nil value",
+["time"] = 1788033260,
+["locals"] = "self=<table>\nmapName=\"Voidscar Arena\"\nmythicPlusDifficultiyId=8\ninstanceID=1313\n(*temporary)=nil\n(*temporary)=\"Blizzard_EncounterJournal\"\n(*temporary)=\"attempt to call a nil value\"\nDungeonJournal=<table>\n",
+["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/DungeonJournal.lua]:63: in function 'ShowDungeonMap'\n[Interface/AddOns/KeyMaster/Core/UI/PlayerFrame.lua]:337: in function <Interface/AddOns/KeyMaster/Core/UI/PlayerFrame.lua:332>\n",
+["session"] = 114,
+["counter"] = 2,
+},
+{
+["message"] = "...ce/AddOns/KeyMaster/Libs/Internal/DungeonJournal.lua:54: attempt to call a nil value",
+["time"] = 1788033259,
+["locals"] = "self=<table>\nmapName=\"Voidscar Arena\"\nmythicPlusDifficultiyId=8\ninstanceID=1313\n(*temporary)=nil\n(*temporary)=\"Blizzard_EncounterJournal\"\n(*temporary)=\"attempt to call a nil value\"\nDungeonJournal=<table>\n",
+["stack"] = "[Interface/AddOns/KeyMaster/Libs/Internal/DungeonJournal.lua]:54: in function 'ShowDungeonJournal'\n[Interface/AddOns/KeyMaster/Core/UI/PlayerFrame.lua]:303: in function <Interface/AddOns/KeyMaster/Core/UI/PlayerFrame.lua:297>\n",
+["session"] = 114,
+["counter"] = 1,
+},
+{
+["message"] = "[ADDON_ACTION_BLOCKED] AddOn 'EllesmereUIOptions' tried to call the protected function 'EUINPFilterPopup:SetPropagateKeyboardInput()'.",
+["time"] = 1788035968,
+["locals"] = "self=<table>\nevent=\"ADDON_ACTION_BLOCKED\"\naddonName=\"EllesmereUIOptions\"\naddonFunc=\"EUINPFilterPopup:SetPropagateKeyboardInput()\"\nname=\"EllesmereUIOptions\"\nbadAddons=<table>{\n EllesmereUIOptions=true\n}\nL=<table>{\n NO_DISPLAY_2=\"|cffffff00The standard display is called BugSack, and can probably be found on the same site where you found !BugGrabber.|r\"\n ERROR_DETECTED=\"%s |cffffff00captured, click the link for more information.|r\"\n BUGGRABBER_STOPPED=\"|cffffff00There are too many errors in your UI. As a result, your game experience may be degraded. Disable or update the failing addons if you don't want to see this message again.|r\"\n USAGE=\"|cffffff00Usage: /buggrabber <1-%d>.|r\"\n STOP_NAG=\"|cffffff00!BugGrabber will not nag about missing a display addon again until next patch.|r\"\n NO_DISPLAY_STOP=\"|cffffff00If you don't want to be reminded about this again, run /stopnag.|r\"\n NO_DISPLAY_1=\"|cffffff00You seem to be running !BugGrabber with no display addon to go along with it. Although a slash command is provided for accessing error reports, a display can help you manage these errors in a more convenient way.|r\"\n ERROR_UNABLE=\"|cffffff00!BugGrabber is unable to retrieve errors from other players by itself. Please install BugSack or a similar display addon that might give you this functionality.|r\"\n ADDON_CALL_PROTECTED=\"[%s] AddOn '%s' tried to call the protected function '%s'.\"\n}\n",
+["stack"] = "[Interface/AddOns/!BugGrabber/BugGrabber.lua]:554: in function '?'\n[Interface/AddOns/!BugGrabber/BugGrabber.lua]:538: in function <Interface/AddOns/!BugGrabber/BugGrabber.lua:538>\n[C]: in function 'SetPropagateKeyboardInput'\n[Interface/AddOns/EllesmereUIOptions/EUI_Nameplates_Options.lua]:5803: in function <...AddOns/EllesmereUIOptions/EUI_Nameplates_Options.lua:5802>\n",
+["session"] = 115,
 ["counter"] = 1,
 },
 },

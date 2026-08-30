@@ -1,273 +1,465 @@
 # EllesmereUI
 
-## [v9.0.7](https://github.com/EllesmereGaming/EllesmereUI/tree/v9.0.7) (2026-08-27)
-[Full Changelog](https://github.com/EllesmereGaming/EllesmereUI/compare/v9.0.6...v9.0.7) [Previous Releases](https://github.com/EllesmereGaming/EllesmereUI/releases)
+## [v9.0.8](https://github.com/EllesmereGaming/EllesmereUI/tree/v9.0.8) (2026-08-29)
+[Full Changelog](https://github.com/EllesmereGaming/EllesmereUI/compare/v9.0.7...v9.0.8) [Previous Releases](https://github.com/EllesmereGaming/EllesmereUI/releases)
 
-- Release v9.0.7  
-- Merge pull request #1772 from delasteve/feat/mythic-plus-strict-compare  
-    feat(mythictimer): add strict comparison mode for split compare  
-- Merge pull request #1771 from dfrisone/fix/actionbar-gamepad-keybind-icons  
-    Fix gamepad keybinds showing raw button names instead of controller icons  
-- feat(mythictimer): add strict comparison mode for split compare  
-- Merge remote-tracking branch 'upstream/main' into fix/actionbar-gamepad-keybind-icons  
-- Resolve gamepad keybinds by markup rather than a binding-type test  
-    A gamepad bind is rarely alone on the key: with a shoulder button set as the  
-    emulated modifier, GetBindingKey returns "SHIFT-PAD4", and gating the whole  
-    format on IsBindingForGamePad left that chord's modifier spelled out in front  
-    of the icon on the one path controller users actually hit. Take GetBindingText's  
-    answer whenever it came back carrying icon markup instead, and let the existing  
-    substitutions run over it -- keyboard binds are untouched because their text has  
-    no markup to match, and no gamepad atlas name contains one of the search  
-    strings, so the modifier condenses and the icon survives.  
-- Merge pull request #1770 from dfrisone/fix/databars-currency-season-cap  
-    fix(databars): use season-earned total for capped currency tooltips  
-- Fix gamepad keybinds showing raw button names instead of controller icons  
-    GetBindingKey returns a gamepad binding as its raw id (PADDUP, PADLSHOULDER).  
-    Both keybind formatters treated that as keyboard text and ran their condensing  
-    substitutions over it, so a controller user saw "PADUP" where Blizzard's own  
-    buttons draw the controller's icon. GetBindingText is what resolves the id to  
-    the icon markup, and the condensing pass is skipped for those bindings since  
-    its BUTTON/NUMPAD substitutions would corrupt the atlas names in the markup.  
-- Merge pull request #1769 from dfrisone/fix/cdm-pvp-provider-taint  
-    fix(cdm): never rebuild Blizzard's shared cooldown data on our stack  
-- Merge pull request #1768 from JuJuFX-dev/fix/damagemeter-spacing-pixel-snap  
-    fix(Damage Meter): bar spacing being double-scaled by UI scale  
-- fix(databars): use season-earned total for capped currency tooltips  
-    Currencies whose cap applies to what you earned this season rather than what  
-    you hold (crests) were rendered as quantity / maxQuantity, so a wallet holding  
-    99 Myth Mistcrests read "99 / 100" while the season cap was actually at 49/100.  
-    Split the two figures the way the Crests block already does: the wallet total,  
-    then the season progress dimmed in parentheses.  
-- fix(cdm): keep the per-entry id guard when reading the display table  
-    6ab561dd swapped pcall(provider.GetCooldownInfoForID, ...) for a direct  
-    infoByID[cdID] index in EnumerateCDMSettingsCatalog and  
-    BuildBuffFamilyPresentSet, which dropped the per-entry error boundary the  
-    hidden-channel reader documents: "every provider read here is pcall-degraded  
-    ... so the drop pass this feeds never over-drops on a bad read". A secret or  
-    non-numeric cooldownID now raises on the table key instead of skipping one  
-    entry -- in the picker that aborts the whole catalog for all nine bare  
-    callers, and in the drop pass it escapes past ReconcileBuffFamilyDrops'  
-    fail-open "return sd".  
-    Gate both loops on \_IsUsableSID, already a file-local in each file and  
-    already covering the third call site via CDMEntryHiddenOrRemoved. The falsy  
-    branch leaves category nil/false exactly as the old okI-false path did, so a  
-    skipped entry behaves as before.  
-- fix(cdm): never rebuild Blizzard's shared cooldown data on our stack  
-    Three call sites read the CDM settings provider via GetOrderedCooldownIDs()/  
-    GetCooldownInfoForID(), which run Blizzard's CheckBuildDisplayData first and  
-    REBUILD the shared cooldownInfoByID/orderedCooldownIDs tables whenever the  
-    provider is dirty. Building the client's own shared state inside addon  
-    execution poisons it for the client's later use, and the provider goes dirty  
-    on exactly what changes at a PvP match boundary (talents (de)activating), so  
-    the CDM bricks after leaving a BG/arena with no apparent trigger and only a  
-    reload clearing it (reported by Factor, EllesmereUI-helper Discord, 8/5-8/15).  
-    Added ns.CDMGetProviderDisplayData, which reads provider:GetDisplayData()  
-    instead -- a plain field read that only ever observes what Blizzard already  
-    built, never triggers a rebuild -- and used it in EnumerateCDMSettingsCatalog,  
-    CDMEntryHiddenOrRemoved, and BuildBuffFamilyPresentSet. All three already  
-    treat a nil/unavailable provider as "not ready" and fall back to keep-all or  
-    live-pool behavior, so this changes nothing on the happy path.  
-- Merge pull request #1766 from svart2521/mouseover-logic-gap  
-    Fix Show All on Mouseover triggering from non-Mouseover bars  
-- Merge pull request #1765 from vcherneny/feature/np-important-cast-glow-styles  
-    Add all six glow styles plus a live preview to Important Cast Glow  
-- Merge pull request #1762 from Barbiero/locale/ptbr-since-903  
-    ptBR: Targeted Spell Bars interrupt/visibility, Player Housing menu fallback  
-- Merge pull request #1755 from 0x963D/codex/raid-tools-compact-band  
-    feat(qol): add Compact Band layout to Raid Tools  
-- Merge pull request #1764 from svart2521/mirror-key-presses  
-    Fix Mirror Key Presses not matching item-based actions  
-- Merge pull request #1718 from uNBEx/crests\_and\_ilvl  
-    feat(databars): crests and ilvl  
-- Merge pull request #1763 from uNBEx/arcane\_soul  
-    feat: arcane surge tracker  
-- Fix Damage Meter bar spacing being double-scaled by UI scale  
-    barSpacing and iconSpacing are pixel=true sliders, so the WidgetFactory  
-    already converts them to coordinate units via PP.FromPixels() on save.  
-    The module's own PhysicalPixels() helper multiplied by PP.mult a second  
-    time, squaring the scale factor for any UI scale other than 1:1 native.  
-    At non-native scales this collapsed small spacing values (e.g. 1) to a  
-    fraction of a physical pixel, rendering as no gap at all, while larger  
-    values lost proportionally less.  
-    Use the stored config value directly for barSpacing/iconSpacing instead  
-    of re-converting it. barHeight/iconSize are not pixel=true sliders and  
-    still go through PhysicalPixels() as before. Also route the hover  
-    tooltip's own hardcoded row spacing through the tooltip frame's actual  
-    effective scale, since its scale is independent of the addon-wide UI  
-    scale PP.mult is derived from.  
-- Merge pull request #1761 from LoChinAn/locale-zhtw-tsb-markers-housing  
-    zhTW: translate 54 new keys for cast bars, tooltip modes, markers and houses  
-- Merge pull request #1760 from LoChinAn/fix-raidframes-modifier-warning-l10n  
-    fix(raidframes): localize the Debuff Manager "Select a Modifier" warning  
-- Merge pull request #1758 from svart2521/warbound-failure  
-    Fix Auto Open Containers opening Warbound Until Equipped items  
-- Merge pull request #1757 from JuJuFX-dev/claude/menu-visibility-simplification-a951f7  
-    Simplify: Unify Visibility and Visibility Options into one control  
-- Fix new visibility lanes going stale on Action Bars and three other gates  
-    The four lanes added with the unified Visibility row were only half wired  
-    on secure Action Bars. The target/enemy pair is macro-expressible and did  
-    reach the state driver, but Instances and Skyriding Mount are Lua-only,  
-    and the live re-evaluation path never learned about them: ShouldHideNonMacro  
-    carried a hand-written list of five option keys, and the \_anyNonMacroVis  
-    gate in front of it was built from the same five. Net effect was that  
-    clicking one of those lanes applied once, through ApplyCombatVisibility's  
-    shared evaluator, and then went stale on every zone and mount edge after;  
-    a bar using only a new lane skipped the pass entirely.  
-    ShouldHideNonMacro now delegates to the shared CheckVisibilityOptionsNonMacro  
-    and keeps only its two deliberate extras: the soft-target check that  
-    [noexists] cannot express, and the shapeshift-only mount check that must  
-    not clobber the live [mounted] driver with a constant string. The shared  
-    evaluator grew a skipMountAxis flag so that carve-out stays explicit.  
-    The same hand-written-subset bug class turned up in three more places, all  
-    now driven off the new EllesmereUI.VisHasAnyOption predicate or  
-    VIS\_OPT\_KEYS directly: the Action Bars spell-drag surface (a bar hidden by  
-    a new lane could not be dropped onto), the Unit Frames mouse-leave keep-  
-    shown check (frame faded out instead of staying visible), and the CDM  
-    Tracking Bars style copy (new lanes silently left behind on the source  
-    bar). This also repairs visHideDragonriding, which predates the unified  
-    row and never reached the Action Bars lists either.  
-    Also fixes the Damage Meters "(seconds)" suffix: Refresh Rate moved into  
-    the Visibility row's right slot, but that row's handle was discarded and  
-    the suffix was anchored to the Background Opacity row instead, so it  
-    landed beside Always Show Player and the slider lost its suffix.  
-    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>  
-- Merge pull request #1754 from JuJuFX-dev/feature/tsb-icon-right-divider  
-    Feature(Mythic+ Tools): add Icon on Right / Show Icon Divider to Targeted Spell Bars  
-- Merge pull request #1753 from Crazyyoungs/main  
-    koKR : Add new localization strings for UI options  
-- Fix Show All on Mouseover triggering from non-Mouseover bars  
-    AttachHoverHooks wires the hover fade handler onto every action bar  
-    regardless of its own visibility mode, so FadeIn's "show all" broadcast  
-    fired whenever mouseoverShowAll was on -- even when the bar actually  
-    hovered was set to Always, not Mouseover.  
-    FadeIn now only broadcasts when the entered bar itself has  
-    mouseoverEnabled set, matching what the setting's tooltip promises.  
-- Add all six glow styles plus a live preview to Important Cast Glow  
-    The Important Cast Glow dropdown offered only Pixel Glow and Auto-Cast  
-    Shine, under an ad-hoc numbering (1 and 4) that matched neither the shared  
-    Glows list nor PANDEMIC\_GLOW\_STYLES. UpdateImportantCastGlow hardcoded the  
-    two engines instead of using the shared dispatcher.  
-    It now offers the same six styles as the Pandemic Glow row, built by  
-    iterating PANDEMIC\_GLOW\_STYLES, and renders via Glows.StartGlow. The Pixel  
-    Glow path is unchanged in output: StartGlow applies the same lineLen  
-    formula, and an unset background alpha resolves to 1 there exactly as  
-    omitting the argument did.  
-    NP\_TO\_SHARED\_GLOW moves next to the style list it translates from and is  
-    published on the module ns, so the aura containers and the cast glow share  
-    one copy rather than drifting.  
-    Saved style 4 meant Auto-Cast Shine under the old numbering but means GCD  
-    under the new one, so np\_important\_cast\_glow\_style\_reindex\_v1 re-points it  
-    to 3. 4 is the only reachable stale value: 1 is Pixel Glow in both. The  
-    flag rides on profile data, so profiles imported from older builds are  
-    fixed up on the pass after they land.  
-    The row also gains a live preview icon, left of the cog. It calls the same  
-    dispatcher with the same stored options the nameplate uses, so it cannot  
-    drift from the real cast bar, and refreshes on style, colour and all five  
-    cog settings.  
-    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>  
-- Fix Mirror Key Presses not matching item-based actions  
-    SlotSpellID only resolved spell and macro actions; a trinket, potion,  
-    or healthstone placed directly on the action bar reports actionType  
-    "item" and fell through to nil, silently no-oping the press mirror  
-    for every item-tracked bar icon.  
-    Item-based bar icons key off a negative identity (-itemID for item  
-    presets, -invSlot for equipment-slot tracking like trinkets -13/-14),  
-    not a spell ID, so OnPress now builds those same negative keys from  
-    the pressed item alongside its on-use spell as a fallback.  
-- fix(qol): preserve Compact Band position  
-- feat: arcane surge tracker  
-    - Adds an opt-in Arcane Soul Helper for Sunfury Arcane Mages (Resource Bars): a movable text showing "Soul in X.X" over the final seconds of Arcane Surge (threshold 1-15s, default 5) and the time remaining once the Arcane Soul window opens.  
-    - Countdown format is switchable three ways — Seconds, GCD Count, or Seconds + GCD in Soul — so counting down to the window and counting Barrages inside it are set independently. In GCD modes the in-Soul counter reads as remaining Arcane Barrages and flips to a coloured LAST on the final one.  
-    - Tracks the live Arcane Surge buff through an AuraKit engine slot instead of predicting the window from the cast, so the Spellfire-Sphere-dependent Surge length is exact — and the text is engine-rendered, so it keeps working where aura values are secret. No OnUpdate, no polling, no duration ever read in Lua.  
-    - Fully customizable: font, outline, text size, three colours, Unlock Mode positioning with an inline X/Y cog. Defaults OFF, section only builds for Mages, and the display only activates on Arcane + Sunfury.  
-- ptBR: Targeted Spell Bars interrupt/visibility, Player Housing menu fallback  
-- zhTW: translate 54 new keys for cast bars, tooltip modes, markers and houses  
-    Additions only, no existing line rewritten. Four groups:  
-    - Mythic+ Timer, Targeted Spell Bars page: the new INTERRUPT AND VISIBILITY  
-      block (cast colour swatches, important-cast glow, interrupt-range fade,  
-      raid target marker).  
-    - Raid Frames: the Debuff Manager tooltip mode "Shown on Modifier" plus its  
-      cog hint, requirement tooltip and empty-selection warning.  
-    - Quickdraw: the 32 raid/world marker entry labels. These are assembled at  
-      runtime ("Target Marker: " .. MARKER\_NAMES[id]) and only the finished  
-      string reaches L(), so a source scan never surfaces them; deDE and koKR  
-      already carried all four families.  
-    - Core: the housing unit-menu fallback (view/visit houses, list status text).  
-    Wording follows the client's own zhTW strings where they exist: RAID\_TARGET\_1..8  
-    for the marker shapes, UNIT\_VIEW\_HOUSES for View Houses,  
-    VIEW\_HOUSES\_VISIT\_BUTTON for Visit, and the active-voice INTERRUPT rendering  
-    rather than the passive INTERRUPTED one, matching the Interruptible Cast /  
-    Interrupt on CD keys already in the file. Sentences that have a near twin  
-    elsewhere in the catalog reuse that twin's wording verbatim.  
-    Compiles under Lua 5.1 and round-trips through the catalog parser.  
-- fix(raidframes): localize the Debuff Manager "Select a Modifier" warning  
-    The red "Select a Modifier" bubble above the Use Modifier cog was passed to  
-    AttachEmptyFilterWarn as a bare literal, so it rendered in English on every  
-    client no matter what the locale file contained. The other five  
-    AttachEmptyFilterWarn call sites (Player Aura Bars, Unit Frames, the Debuff  
-    Manager's own filter dropdown) already wrap their warn text, so this was the  
-    odd one out rather than a deliberate exception.  
-    String-only change: the bubble text is the sole argument touched, and on an  
-    English client L() returns the key unchanged.  
-- Fix Auto Open Containers opening Warbound Until Equipped items  
-    IsWarboundExcluded only matched bindType against ToWoWAccount/  
-    ToBnetAccount/ToBnetAccountUntilEquipped, but a Warbound Until Equipped  
-    container reports bindType == OnEquip (same as an ordinary BoE item,  
-    no dedicated GetItemInfo enum), so that branch never matched and  
-    Exclude Warbound Containers let these through to be auto-opened.  
-    Fall back to C\_Item.IsBoundToAccountUntilEquip on the item's location  
-    when bindType is OnEquip -- the same API EUI\_Bags.SetBindTypeText  
-    already uses to detect WuE gear. Field-tested against Cache of  
-    Void-Touched Armaments.  
-- Fix CDM Bars section-end violation: pair Vertical Orientation with Keep Buffs in Same Place  
-    Vertical Orientation stood alone with an empty right slot even though  
-    buff bars render "Keep Buffs in Same Place" right after it, so the  
-    empty slot was not on the section's actual last row for that bar type.  
-    Buff bars now get Keep Buffs in Same Place | Vertical Orientation in  
-    one row; cooldown/utility bars keep Vertical Orientation alone, which  
-    is genuinely their last row.  
-    Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>  
-- Unify Visibility and Visibility Options into one control  
-    Replaces the "Visibility" mode dropdown and the separate "Visibility  
-    Options" checkbox dropdown with a single checklist row. Every condition  
-    is now an axis with a Show and a Hide lane (the same two-lane pattern  
-    already used by the Debuff Manager), so Never/Always/Mouseover, the  
-    combat/group/skyriding modes, and the instance/housing/mount/target  
-    options all live in one dropdown instead of two.  
-    Storage stays split by design: mode axes still read and write the  
-    legacy scalar plus visibilityModes through the shared engine, option  
-    axes still read and write their existing per-axis booleans. No  
-    evaluator, secure-driver, profile-sync or spec-override path changes,  
-    so this is not a migration and needs no SavedVariables handling.  
-    Four axes gained a counter-lane that had no equivalent before  
-    (visHideInstances, visOnlySkyriding, visHideWithTarget,  
-    visHideWithEnemy), wired into both the Lua evaluator and the Action  
-    Bars secure macro compiler.  
-    All 10 call sites (Chat, Minimap, Quest Tracker, Damage Meters, Data  
-    Bars, CDM Bars, CDM Tracking Bars, Resource Bars, Action Bars x2, Unit  
-    Frames) converted to the new EllesmereUI.BuildVisibilityRow. Sync icons  
-    on Unit Frames, CDM Bars and Action Bars now copy both halves through  
-    VisFullCopy/VisFullEquals. Page layouts recompacted so the freed slot  
-    carries a related setting instead of sitting empty.  
-    Fixes two behavior bugs found during the migration: resetting a Data  
-    Bar to default only cleared the old 8 option keys, leaving the new  
-    lanes stuck on; and CDM Tracking Bars' sleeper wake check only knew  
-    about the old 8 keys too, so a bar using only a new lane would never  
-    refresh its visibility.  
-    Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>  
-- feat(qol): add compact Raid Tools band  
-- Add localization for content and combat state limits  
-- QoL: add Icon on Right / Show Icon Divider to Targeted Spell Bars  
-    Give the Targeted Spell Bars Show Icon setting the same cog popup as  
-    the resource bars cast bar: attach the spell icon to the right side  
-    instead of the left, and optionally draw a 1px divider at the  
-    icon/bar seam matching the border color.  
-- Remove a line from Korean localization file  
-- Add Korean translations for UI changes and tooltips  
-- Add new localization strings for UI options  
-- feat(databars): crests and ilvl  
-    - New DataBars block: Crests — all five of the season's Mistcrests in one readout, with a checklist for which tiers show, a separator dropdown (slash / line / dash / space), and toggles for icons, cap, hiding crests you own none of, and ladder order.  
-    - Crest Colors text mode — a 4th Text Color swatch that tints each amount with its own tier colour; it's the block's nothing-stored default, resolved through ns.CrestColorMode rather than a forced write, so no migration and Custom/Class/Accent still take over cleanly.  
-    - New DataBars block: Item Level — prefix of none / ILVL / Item Level / character icon, showing equipped (default), total, or both, with 0–2 decimal places.  
-    - Band colouring — an optional 4th Text Color swatch on Item Level tinting the number by the upgrade track it sits in, reusing the crest tier colours.  
-    - Season maintenance — crest IDs, tints and item-level band floors sit in two commented SEASON UPDATE tables next to the factory, mirroring EUI\_UpgradeCalc.lua's existing convention; crest names and icons come live from C\_CurrencyInfo, and the checklist stores tier slots (t1..t5) rather than currency IDs so a season's ID swap preserves each player's selection.  
+- Release v9.0.8  
+- Merge pull request #1819 from saadjwabin-dot/patch-2  
+    Update koKR.lua  
+- Merge pull request #1816 from dfrisone/fix/quickdraw-icon-question-marks  
+    Fix Quickdraw entries drawing as question marks on the first open  
+- Merge pull request #1814 from dfrisone/fix/pab-filter-spell-family-alts  
+    Fix multi-state buffs dropping out of Player Aura Bars filters  
+- Merge pull request #1812 from svart2521/sense-power-missing  
+    Fix Sense Power not tracked, and its options-menu name collision  
+- Merge pull request #1811 from Nnoggie/codex/augment-rune-empty-bags  
+    Fix(Aura Buff Reminders): show out-of-stock Augment Rune  
+- Merge pull request #1810 from JuJuFX-dev/bugfix/cdm-housing-default-reset  
+    Fix(CDM): housing-hide default resetting on the three built-in bars  
+- Merge pull request #1804 from manaste/raidframes-update-status-icons  
+    refactor(raidframes): update status icons to newest version  
+- Merge pull request #1803 from manaste/raidframes-fix-status-text-preview  
+    fix(raidframes): respect status text setting in preview mode  
+- Merge pull request #1801 from dfrisone/fix/pab-vehicle-suppression-combat-restore  
+    fix(unitframes): restore player aura bars after a vehicle ride like Kings' Rest Entomb  
+- Merge pull request #1800 from dfrisone/fix/chat-hidden-in-house-editor  
+    Fix chat disappearing inside the house editor  
+- Merge pull request #1799 from dfrisone/fix/databars-loadout-configid-race  
+    Fix spec data bar swap confirmation racing unrelated trait updates  
+- Merge pull request #1798 from svart2521/mirror-key-presses-revisited  
+    Fix Mirror Key Presses not matching current-tier potions  
+- Merge pull request #1795 from dfrisone/fix/cdm-lust-debuff-coverage  
+    fix(cdm): arm the lust preset again after a death  
+- Merge pull request #1792 from svart2521/chat-lua  
+    Fix taint error from secret mouse-channel values during combat in raid  
+- Merge pull request #1791 from svart2521/queue-skin-bug  
+    Fix Missing skin for the party role-check popup (LFDRoleCheckPopup)  
+- Merge pull request #1790 from svart2521/visibility-combat-bug  
+    Fix action bars staying hidden through combat after a mount-triggered hide condition (Druid forms + Skyriding Mount)  
+- Merge pull request #1788 from dfrisone/fix/unlock-fps-counter-disabled  
+    fix(qol): hide the FPS Counter mover when Show FPS Counter is off  
+- Merge pull request #1787 from dfrisone/fix/rf-dispel-fill-overlay-vertical  
+    fix(dispels): anchor the Fill Overlay to the fill on both axes  
+- Merge pull request #1785 from svart2521/vanishing-class-resource-after-cutscene  
+    Fix class resource bar vanishing after cutscenes  
+- Update koKR.lua  
+    I updated the existing translation to match the in-game localization  
+- Merge pull request #1784 from dfrisone/fix/riptide-hot-tank-buff-round2  
+    Fix party/raid buff monitor icons sticking after a unit un-ghosts  
+- Merge pull request #1781 from JuJuFX-dev/feature/visibility-combine-or  
+    Feature(Visibility Options): Adds a Match Mode choice to the unified Visibility row  
+- Merge pull request #1780 from Barbiero/feat/databars-gold-abbreviate  
+    Add gold amount abbreviation option to Databars  
+- Retest the pending Quickdraw entries rather than re-requesting them  
+    AdvancePendingIcons used WarmSlot as its predicate, so an entry whose  
+    data never resolves re-issued the load on every frame of the open --  
+    up to the latch timeout. Split the cache test into ns.SlotDataReady and  
+    leave the request to WarmSlot.  
+    Warm the nested children in PushPalette's claim loop too: a palette  
+    reached only by being nested carries no keybind of its own, so it gets  
+    no push, and its entries were warmed for the first time by the open  
+    that drew them.  
+- Load Quickdraw entry data before the palette draws it  
+    A palette paints its icons once per open. Spell, item and toy display  
+    data is loaded on demand, so any entry whose data had not been cached  
+    this session drew the question mark and kept it for the whole of that  
+    open -- the second open looked right only because the first one's failed  
+    lookup had fetched the data in the meantime.  
+    Request the load for every bound palette's entries at push time, which  
+    runs at login and on every spellbook or macro change, and collect the  
+    cells that are still waiting so an open palette repaints them as their  
+    loads land.  
+- Apply spell families to the hide lane and to filter edits  
+    The catch-all's excludeSpellIDs, the two preview mirrors of that lane, and the  
+    Filter Editor's own toggle and delete now treat a curated family as one buff,  
+    so hiding or removing one state cannot leave its siblings behind.  
+- Track every state of a multi-state buff in Player Aura Bars  
+    Filters and Extra Spells resolve curated buff families (a primary plus its  
+    alts) instead of the single id the UI can offer, so a buff whose aura swaps  
+    spell ID as it advances keeps showing.  
+- fix(auras): show out-of-stock rune reminder  
+- Fix Sense Power tracking and name collision in buff options  
+    Sense Power was keyed to a secret-fingerprint spell ID (361022) whose sig  
+    never matched in testing, so it never appeared as trackable at all. Switch  
+    to 361021, the caster's own confirmed non-secret buff, and keep 361022  
+    alongside it as the separate "(Ally)" effect, both registered in the buff  
+    presets and off by default.  
+    Blizzard's client reports the same name for both spell IDs, so every spot  
+    that built a dropdown/list label straight from GetSpellName couldn't tell  
+    them apart. Route those through the existing curated-name lookup  
+    (SPELL\_NAME\_BY\_ID), exported to EUI\_RaidFrames\_ManagerPages.lua too since  
+    it had its own independent copies of the same raw-API pattern.  
+- ptBR: translate the new gold abbreviation options  
+- feat(databars): add Force English Units option for gold abbreviation  
+    Mirrors Damage Meters' forceEnglishUnits toggle: CJK clients (zhCN/zhTW/koKR)  
+    group abbreviated gold by 万/萬/만 by default, and can opt into K/M instead.  
+    The option row only appears for those three locales, same as the Damage  
+    Meters options page.  
+- feat(databars): add gold amount abbreviation option  
+    Adds an "Abbreviate Amount" toggle to the Databars Gold block that  
+    displays large balances with K/M suffixes (e.g. 284,208g -> 284.2Kg)  
+    instead of the fully grouped number. The gold tooltip breakdown always  
+    keeps full precision. CJK clients group by 万/萬/만 instead of K/M.  
+- Fix CDM housing-hide default resetting on the three built-in bars  
+    Unchecking a visibility option axis always persisted as nil, which is  
+    correct for axes that default off but wrong for visHideHousing on the  
+    built-in Cooldowns/Utility/Buffs bars, whose DEFAULTS entry ships true.  
+    On login, DeepMergeDefaults filled the nil back in, silently  
+    re-enabling housing-hide even after the user turned it off. Custom  
+    bars were unaffected since they sit outside the DEFAULTS array that  
+    gets merged.  
+    SetOpt in AttachVisibilityChecklist now accepts an optional  
+    trueDefaultOpts set; keys listed there persist an explicit false on  
+    uncheck instead of nil, so the merge can no longer mistake "explicitly  
+    off" for "never set". CDM wires this up for visHideHousing.  
+- refactor(raidframes): update status icons to newest version  
+- fix(raidframes): respect status text setting in preview mode  
+- Merge upstream/main into the Any match branch  
+    Brings in the Never/Always option-axis fix (#1776) plus the koKR, ptBR and  
+    zhCN locale updates. One conflict, in AttachVisibilityChecklist: both sides  
+    inserted a helper directly after SetOpt. Resolved by keeping both.  
+    The two features compose without further change. AnyShowOptActive unchecks  
+    Always while a Show lane is set because always is not one of the axes  
+    TallyVisibilityModeAxes counts, so under Any it contributes no disjunct and  
+    the Show lane is left as the only one -- the same narrowing the All path  
+    reconciles, reached by a different route. The modifier rows carry no axis  
+    field, so the opt-axis walks in AnyShowOptActive and the Always branch of  
+    SetChecked never see them.  
+- Merge pull request #1778 from Barbiero/locale/ptbr-since-907  
+    ptBR: Arcane Soul, Crests block, Debuff Filter modes, Compact Band, markers  
+- Merge pull request #1777 from Crazyyoungs/main  
+    KoKR: Add Korean translations for various UI elements  
+- Merge pull request #1776 from JuJuFX-dev/fix/visibility-never-always-option-axes  
+    Fix(Visiblity Options): Never and Always interplay with the visibility option axes  
+- Merge pull request #1773 from tenngoxars/locale/zhcn-90-localization  
+    locale(zhCN): translate 9.0 housing, cast bar, and marker strings  
+- Add Korean translation for Combat Status text  
+- Keep the portal flyout clickable after leaving the house editor  
+    The toggle keyed off the shown flag, which survives the host frame being  
+    hidden out from under the flyout when the editor closes, so the next click  
+    took the hide branch and nothing opened.  
+- Seat the chat popups and late-built chrome on the house editor host too  
+    Review follow-up: the URL copy popup, the Copy Chat window and the M+ portal  
+    flyout are built on first use, so they can be created on either side of an  
+    editor session and the panel pass cannot own them -- they now seat themselves  
+    on show. A profile or spec swap made inside the editor can also build panel  
+    chrome (borders, the tab-band extension) that did not exist when the editor  
+    opened, so the refresh ends with a host pass.  
+- Fix chat disappearing inside the house editor  
+    The house editor is a full-screen UI panel: it hides UIParent and reparents the  
+    chat frames onto itself so chat stays readable while decorating. Blizzard's  
+    FCF\_SetFullScreenFrame only moves widgets still parented to UIParent, so our  
+    chat panel frames -- background, message frames, tabs, sidebar, borders -- were  
+    left behind on the hidden UIParent and the whole visible chat vanished.  
+    Follow the chat frames onto whichever host Blizzard picked when the editor  
+    opens, and back to UIParent when it closes.  
+- Fix spec data bar swap confirmation racing unrelated trait updates  
+    The pending-swap resolver treated any TRAIT\_CONFIG\_UPDATED as proof the  
+    tracked swap had landed, without checking which config the event was  
+    about. Group content generates far more background trait churn (other  
+    loadouts syncing, hero-talent data) than solo play, so an unrelated  
+    update was routinely mistaken for commit confirmation and the pointer  
+    got written to a swap that was still stuck behind combat -- reproducing  
+    as "reverts fine solo, sticks on the new loadout in dungeons/raids".  
+    Match the event's configID against the pending swap before acting on it.  
+- Fix Mirror Key Presses not matching current-tier potions  
+    OnPress keyed pressed items off their literal itemID, but pot-family  
+    bar icons (Health Potion, Light's Potential, etc.) always key off a  
+    fixed primary itemID that stays pinned as an identity anchor while the  
+    current-tier item ships as an altItemIDs entry. Pressing the potion  
+    players actually carry never populated the matching key, so the mirror  
+    overlay never lit up. Resolve alt-tier itemIDs back to their preset's  
+    primary id before building the pressed set.  
+- Fix action bars staying hidden through combat with Hide - Skyriding Mount  
+    "Hide - Skyriding Mount" (visHideDragonriding) is evaluated purely in Lua for  
+    every caller, since no secure macro token can express its "ground included"  
+    semantics (the airborne-only [advflyable,flying] pair used for the separate  
+    Skyriding (Airborne) mode is a different check). This exposed it to the same  
+    bug as the earlier Druid mount-form fix: a bare "hide" written by the  
+    non-secure fallback is a dead constant once InCombatLockdown() defers the  
+    next Lua pass, freezing the bar hidden through an entire fight after a  
+    skyriding dismount into combat, for any class.  
+    The shared evaluator now flags this axis with a "mountaxis" marker instead  
+    of a plain true, and Action Bars maps it to the same "combathide" signal the  
+    Druid-form case already uses, so the write site bakes in the same [combat]  
+    show escape hatch. Confirmed on a regular mount with matching toggles.  
+- fix(cdm): treat both faction lust ids as one preset identity  
+    Review follow-ups to the faction resolve. The preset only ever declared the  
+    current character's lust id, so on a profile shared with a character of the  
+    other faction the picker read the stored icon as absent: the entry showed as  
+    addable, and clicking it appended the second id next to the first, leaving two  
+    identical lust icons on the bar.  
+    The preset now lists both ids with this character's first, which is what every  
+    store site takes, and the picker's "already added" test moved to  
+    ns.IsPresetOnBar so it greys exactly what AddPresetToBar's guard would reject.  
+    That guard already scanned every member, so the same mismatch was visible on  
+    the invisibility potions, whose five ids made the entry look addable whenever a  
+    variant other than the primary was stored.  
+    Tracking Bar labels now read the live preset name the way the icon already did,  
+    since the copy saved at pick time can name the other faction's lust and those  
+    labels are never user-edited.  
+- fix(cdm): resolve the lust preset's faction after the player loads  
+    The Bloodlust/Heroism preset baked its name, icon and spell id from  
+    UnitFactionGroup at file load. That call can read nil early in a client  
+    session, which took the Alliance branch and left a Horde player looking at a  
+    "Heroism" entry in the picker, with the Alliance art and id stored on whatever  
+    bar they added it to. The table now carries the Horde form and is re-resolved  
+    from OnEnable, alongside the existing race/class cache.  
+    Stored ids are left alone: a profile shared between a Horde and an Alliance  
+    character keeps whichever id was added first, and the Sated edge already arms  
+    on both, so the displays resolve their art through the current character's  
+    faction instead. Covers the options preview strip, the injected buff-family  
+    frame and the Custom Auras frame; the picker and Tracking Bars read the  
+    refreshed preset directly.  
+- fix(cdm): re-read the lust lockout after death so the next lust arms  
+    The Sated listener pins the lockout debuff for 590s after a rising edge it  
+    armed on, skipping the aura probe on the assumption that nothing lifts the  
+    debuff early. Death does: a player who dies loses Sated, which is why a wipe  
+    frees the raid to lust again on the next pull. Inside the pin the probe never  
+    runs, \_satedPresent stays true, and the fresh lust produces no rising edge, so  
+    the Bloodlust preset shows nothing for the rest of the stamped window.  
+    It bites hardest with two lusters in the group, where the second lust lands a  
+    minute or two after the first rather than a full lockout later. Re-read  
+    presence and drop the stamp on PLAYER\_DEAD/PLAYER\_ALIVE so the next aura event  
+    sees the truth.  
+- Address review findings on the Any match path (round 3)  
+    - BuildAnyMatchTail: return liveAxes as a third value (count of axes  
+      compiled as live macro terms, not the lower bound constrained). Unit  
+      Frames gates on liveAxes > 0 so a target/enemy-only Any selection  
+      does not register a frozen-constant driver during combat.  
+    - BuildVisibilityDriverStringAny: generalise the luaOnly filter via  
+      VisAxisIsLuaOnly instead of hard-coding the softTarget edge name.  
+    - EUI\_ActionBars\_Options: call \_RefreshSoftTargetGate first in both  
+      onOptionChanged closures so the gate flags are current before the  
+      driver string is rebuilt.  
+- Fix taint error from secret mouse-channel values during combat in raid  
+    GetMouseChannels read IsMouseClickEnabled/IsMouseMotionEnabled directly and  
+    immediately boolean-tested the result. Under WoW 12.1's secret-value system,  
+    these can return a secret boolean once execution is combat-tainted (e.g. in  
+    a raid), and testing a secret value throws. Sanitize each value with  
+    issecretvalue() before use, defaulting to false when secret, matching the  
+    same pattern already used elsewhere in this file for other secret booleans.  
+- Skin the party role-check popup (LFDRoleCheckPopup)  
+    Only the later "group found" and "queue missed" queue popups were wired into  
+    the reskin system; the initial "Confirm your role" popup shown to the whole  
+    party when anyone queues was never touched, so it stayed stock Blizzard  
+    regardless of who initiated the queue. Strips the outer chrome and applies  
+    the same dark background/border as the other queue popups, hooked on the  
+    frame's OnShow so it applies universally rather than depending on who  
+    triggered the queue.  
+- Fix action bars staying hidden through combat after dropping out of Druid mount-like forms  
+    Hide-when-Mounted relies on the secure [mounted] macro conditional for real  
+    mounts, which self-updates even in combat. Druid Travel/Flight Form isn't a  
+    real mount, so it falls back to a non-secure Lua clobber that wrote a bare  
+    "hide" string. Shifting out of form to attack fires UPDATE\_SHAPESHIFT\_FORM  
+    into combat almost immediately, the deferred handler bails on  
+    InCombatLockdown(), and the bare "hide" constant never re-evaluates until  
+    combat ends. The fallback now writes "[combat] show; hide" instead, so the  
+    secure engine can self-correct mid-fight the same way real mounts do.  
+- fix(qol): re-register the FPS mover so an open unlock session tracks the toggle  
+- fix(qol): hide the FPS Counter mover when the counter is off  
+    The EUI\_FPS unlock element only reported itself hidden while attached to  
+    Secondary Stats, so a profile with Show FPS Counter off still got a  
+    draggable FPS Counter box in unlock mode. Gate isHidden on showFPS as  
+    well.  
+- fix(dispels): anchor the Fill Overlay to the fill on both axes  
+    The fill-mode dispel overlay anchored TOPLEFT to the health bar and only  
+    BOTTOMRIGHT to the fill texture, which tracks a left-to-right bar and nothing  
+    else. With Vertical Fill the fill texture keeps the bar's own BOTTOMRIGHT, so  
+    the overlay spanned the whole frame and read as Full Overlay. Both corners now  
+    come off the fill texture, covering vertical and reverse fills for raid, party  
+    and unit frames plus their option previews.  
+- fix(unitframes): catch ClearAllPoints stripping Blizzard class power bar anchors  
+    During in-engine cutscenes/UI transitions something calls ClearAllPoints  
+    directly on the Blizzard class power frame without reparenting or hiding  
+    it, so the existing SetParent/Hide hooks never see it and the bar renders  
+    with zero points. Add a ClearAllPoints hook and widen ReassertClassPower's  
+    trigger condition to also fire on GetNumPoints() == 0.  
+- Merge remote-tracking branch 'upstream/main' into fix/riptide-hot-tank-buff-round2  
+- Guard the new assist-gate re-check against the same stale-map hazard  
+    RFC\_ApplyAssistGate was called with the loop's unit key directly,  
+    missing the same live-attribute reconfirmation the resync block right  
+    below it already does. unitToButton et al. can carry a stale token ->  
+    button mapping (entries are only ever added, not dropped, between  
+    full wipes), so a probe against the wrong token could write its  
+    assist verdict onto a button that's actually showing a different,  
+    live occupant -- hiding that occupant's real dispel/BM containers  
+    until their next genuine reassignment.  
+    Hoist the live-attribute read once and gate both call sites on it.  
+- Re-drive the assist/identity gate on the ghost ticker's cadence  
+    ApplyAssistGate already forces a full container UpdateAllAuras on its  
+    own false->true edge, correctly self-healing whatever the identity  
+    gate parsed wrong while it was down. But the only thing that ever  
+    calls it is a real unit (re)assignment -- so a trip and clear from  
+    faction/phase/filter-streaming causes, with no accompanying token  
+    change or render-visibility loss, never gets re-evaluated at all.  
+    Piggyback it onto the existing 1s ghost-check ticker so the gate gets  
+    re-driven regularly regardless of what triggered it. Cheap: it's  
+    already a same-state no-op past one pcall'd read.  
+- Fix soft-target and druid-form staleness on the Any driver path  
+    Two macro tokens knowingly disagree with their own Lua probe -- [exists]  
+    counts a soft target, [mounted] cannot see a druid travel or flight  
+    form -- and the all-match path reconciles both with a Lua force-hide.  
+    Under Any a veto is wrong, since one axis must not silence the others,  
+    so AnyDriverLaneFixups resolves each per axis: a token that would  
+    wrongly pass loses its disjunct, one that would wrongly fail shows  
+    outright.  
+    Action Bars had a second, independent soft-target path  
+    (ImmediateSoftTargetCheck) that still wrote a literal hide under Any;  
+    it now defers to the shared tail builder for that lane, and its gate  
+    now arms for the counter lane too so the Hide-lane correction gets its  
+    own immediate rebuild instead of going stale until an unrelated event.  
+    Unit Frames and the Minimap have no soft-target event edge, so a  
+    compiled [exists]/[noexists] token there would drift the moment a soft  
+    target changed with nothing to rebuild it. Option axes now declare  
+    needsEdge, and a consumer passes the edges it actually watches --  
+    Action Bars gets the live macro token because it rebuilds on the  
+    soft-target events, everyone else resolves that axis in Lua, matching  
+    what the all-match path always did with it.  
+    Also: gate the fixup probes behind their own lanes and run them after  
+    the cheap luaP early-out, since Action Bars was hitting them on every  
+    soft-target flip and every 0.1s poll tick regardless of whether a bar  
+    even used mounted/target visibility; the four building blocks that  
+    each secure consumer repeated collapse into EUI.BuildAnyMatchTail; a  
+    spec-override capture of an orphan scalar now clears the match the way  
+    the row's own orphan branch already does, so the state the UI locks  
+    cannot come back through that path; and the two identical Any tail  
+    builds in AttachVisibilityChecklist are just one now.  
+- Address review findings on the Any match path  
+    Secure driver correctness: two macro tokens knowingly disagree with their  
+    own Lua probe -- [exists] counts a soft target, [mounted] cannot see a  
+    druid travel or flight form. The all-match path reconciles both with a  
+    Lua force-hide, which is wrong under Any, where one axis must not silence  
+    the rest. AnyDriverLaneFixups now resolves it per axis instead: a token  
+    that would wrongly pass loses its disjunct, one that would wrongly fail  
+    shows outright. Limited to those two axes; [harm]'s treatment of soft  
+    enemies is not established here and is left alone.  
+    The four steps every secure consumer repeated to build an Any tail move  
+    into EUI.BuildAnyMatchTail, so Action Bars, Unit Frames and the Minimap  
+    share one implementation instead of three copies. It also reports how  
+    many axes actually constrain the element, which lets Unit Frames keep a  
+    frame on its unit watch when an Any selection constrains nothing -- the  
+    modifier alone changed no visibility but used to change the mechanism  
+    delivering it.  
+    An orphan scalar combined with Any silently dropped the option lanes,  
+    reachable by clicking a Match Mode row while a legacy value was stored.  
+    The Match Mode rows now lock in that state; Never and Always stay  
+    clickable, so it is never a dead end.  
+    Also: short-circuit both tallies once the verdict is fixed (the option  
+    probes walk druid form auras), keep visibilityMatch frame-local in the  
+    unit-frame group copy the way barVisibility already is, restate the  
+    Mouseover tooltip under Any, stop repainting a hovered modifier row, and  
+    drop the unused GetVisibilityMatch wrapper.  
+- ptBR: Arcane Soul, Crests block, Debuff Filter modes, Compact Band, markers  
+    Translates the new Sunfury Arcane Mage Arcane Soul countdown, the Data  
+    Bars Crests block and item level display, the target/focus/boss Debuff  
+    Filter's expanded mode dropdown, the Raid Tools Compact Band layout and  
+    its marker/pull-timer tooltips, the visibility checklist's Skyriding  
+    and Housing rows, raid/world target marker names, and a few smaller  
+    strings across Chat, Minimap, and Raid Frames options. Also drops nine  
+    ptBR entries whose English text was reworded or removed upstream,  
+    leaving them dead.  
+- Split Match Any Condition into an exclusive Match Mode pair  
+    Replaces the single Match Any Condition toggle with two radio-style  
+    rows, Match All Conditions and Match Any Condition, under their own  
+    Match Mode header. Both write the same store.visibilityMatch scalar,  
+    so picking one is what unpicks the other.  
+    Only the active row now reads in accent color; the inactive one looks  
+    like any other unchecked row, and the color updates live when the  
+    other row in the pair is clicked.  
+- Add Korean translations for various UI elements  
+- Fix Never and Always interplay with the visibility option axes  
+    The option axes (Skyriding Mount, Instances, Housing, Mounted, Target,  
+    Enemy Target) are stored as their own booleans outside the mode selection,  
+    so Never and Always were never reconciled with them.  
+    Checking an option axis while Never was picked was a silent no-op, because  
+    Never hides before any option is consulted. Such a click now clears Never,  
+    which empties the selection and lands on Always through WriteSel's  
+    never-empty invariant. That is the base state a Hide lane needs, and the  
+    one a Show lane then narrows. Unchecking a lane leaves Never alone.  
+    Always and a Show lane could also read as checked at the same time, which  
+    is a contradiction: Always claims to be unrestricted while a Show lane  
+    narrows showing to a subset. Always now reads unchecked while any Show  
+    lane is active, and clicking it clears those lanes so that the click is  
+    not a no-op itself. Hide lanes are exceptions on top of showing and  
+    survive both Never and Always.  
+    Both cases write a mode and an option in a single click, so AfterChange  
+    runs both callback chains. Neither is a subset of the other: Action Bars  
+    recompiles the housing driver only in its option chain, and rebuilds the  
+    options page on a Never flip only in its mode chain.  
+- Add Match Any Condition option to the unified Visibility row  
+    Adds a per-element toggle (stored as store.visibilityMatch = "any") that  
+    switches the Visibility row's conditions from AND to OR. Off (default)  
+    keeps the existing behavior byte-identical.  
+    Under Any, mode axes (combat, group, dragonriding) and option lanes  
+    (instances, housing, mounted, target, enemy target) are evaluated  
+    together as disjuncts instead of independent vetoes, since a veto chain  
+    cannot express OR. The secure state-visibility driver compiler gets a  
+    matching Any-mode builder for Action Bars, Unit Frames and the Minimap,  
+    compiling each constrained axis into its own bracket group; the  
+    dragonriding-hide axis, which has no single positive macro token, is  
+    compiled as a trailing hide gate instead.  
+    Sync icons, Myslot backups and profile copies carry the match flag  
+    alongside the rest of the visibility selection so it never desyncs from  
+    the conditions it governs.  
+- locale(zhCN): translate 9.0 housing, cast bar, and marker strings  
+- fix(unitframes): keep the aura stand-down latch tied to its recovery lane  
+    Review follow-up on the alpha stand-down. Two consequences of leaving the  
+    containers live behind alpha 0:  
+    A vehicle exit un-dimmed on the raw event edge, one frame ahead of the  
+    repair, so the ride's filter-degraded parse painted for a frame. The exit  
+    now hands the stand-down to the degraded lane, which un-dims and forces  
+    the clean re-parse in a single execution.  
+    The latch could also outlive the lane that clears it: with the settle  
+    watcher no longer giving up, a module disabled mid-window stranded it  
+    true and every later bar was rebuilt dimmed. Both lane exits and the  
+    enable path now hand it back.  
+- fix(unitframes): restore player aura bars after a vehicle ride ends in combat  
+    The vehicle/degraded suppression stood the bar parents down with a real  
+    Hide whenever it was reached out of combat. The parent's Show is  
+    ADDON\_ACTION\_BLOCKED in lockdown (the engine aura container is an  
+    anchored protected child), so a suppression that lifted mid-combat could  
+    not be undone until the next PLAYER\_REGEN\_ENABLED replay.  
+    Kings' Rest hits that exactly: Entomb is a vehicle and sitting in the  
+    tomb drops the player's combat, so the ride's queued hide replayed for  
+    real at that regen edge and the exit's show landed inside the next pull.  
+    Reported by Thylaei: buffs and debuffs vanish on entomb and stay gone for  
+    the whole boss pulled afterwards, returning only when combat ends.  
+    Suppression now rides on alpha in and out of combat, leaving the shown  
+    state to carry the durable render verdict (master enable, per-bar toggle,  
+    Use Blizzard Buffs), so it is always reversible. The settle watcher no  
+    longer gives up after 15s either: nothing else re-shows an alpha-hidden  
+    bar, so a watcher that stopped early would strand it for the session.  
+- Fix review findings on the ghost-aura resync  
+    Trusting unitToButton's loop key as the button's real unit was wrong:  
+    OnAttributeChanged only ever adds a new entry on reassignment, never  
+    drops the old one, so a stale oldToken -> btn mapping can survive  
+    until the next RebuildUnitMap wipe -- the same UnitExists() race  
+    PR #1726 fixed for d.rfcUnit can leave this map stale too. Re-confirm  
+    against the button's own live unit attribute before touching anything.  
+    Also drop the d.rfcUnit = nil trick used to force RFC\_OnUnitAssigned's  
+    full SetUnit + container rebuild + DM re-point + assist-gate path.  
+    The unit token never changed here, so that's the exact "raid-wide  
+    UpdateAllAuras storm" its own same-unit guard exists to prevent, just  
+    reached through ghost-recovery instead of a real reassignment. Call  
+    UpdateAllAuras() directly on each container instead, same shape as  
+    ApplyAssistGate's own regain refresh -- and add the Debuff Manager  
+    tiles explicitly, since DM\_OnUnitAssigned's own per-tile cache never  
+    saw a unit change either and would otherwise skip them silently.  
+- Clear stale party/raid aura indicators after a unit un-ghosts  
+    GhostAuraCheck's ticker still tracks d.ghostCleared for every raid/party  
+    button whose unit goes invisible or disconnects, but v8.8's rewrite onto  
+    the 12.1 aura containers dropped the actual clearing call -- it left  
+    Blizzard's real-time UNIT\_AURA-driven containers with whatever they last  
+    painted before the unit ghosted, and nothing ever revisits it.  
+    UNIT\_AURA stops firing for an invisible/disconnected unit, so a HoT or  
+    debuff that falls off during that window (a LoS break, a loading screen)  
+    never reaches the container as a removal. The Cooldown widget's own  
+    countdown still finishes and drops its text on schedule -- that timer is  
+    client-side and needs no confirmation -- but the icon itself stays  
+    assigned to the now-stale aura instance until something forces a full  
+    re-parse, which nothing did.  
+    On regain, force the same full container resync RebuildUnitMap already  
+    uses to repair a stale unit binding: clear d.rfcUnit and re-drive  
+    RFC\_OnUnitAssigned, which re-registers every container against the  
+    current unit and reprocesses its live aura list from scratch.  

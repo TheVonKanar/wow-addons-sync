@@ -51,13 +51,6 @@ local function work_out_label(point)
         end
         fallback = 'achievement:'..point.achievement..'.'..string.join('+', unpack(ids))
     end
-    if point.follower then
-        local follower = C_Garrison.GetFollowerInfo(point.follower)
-        if follower then
-            return follower.name
-        end
-        fallback = 'follower:'..point.follower
-    end
     if point.npc then
         local name = mob_name(point.npc)
         if name then
@@ -79,16 +72,6 @@ local function work_out_label(point)
             return achievement
         end
         fallback = 'achievement:'..point.achievement
-    end
-    if point.currency then
-        if ns.currencies[point.currency] then
-            return ns.currencies[point.currency].name
-        end
-        local info = C_CurrencyInfo.GetCurrencyInfo(point.currency)
-        if info then
-            return info.name
-        end
-        fallback = 'currency:'..point.currency
     end
     return fallback or UNKNOWN
 end

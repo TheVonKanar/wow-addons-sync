@@ -82,7 +82,7 @@ EllesmereUIBags: enabled
 EllesmereUIChat: enabled
 EllesmereUIDataBars: enabled
 EllesmereUIFriends: disabled
-EllesmereUIMythicTimer: disabled
+EllesmereUIMythicTimer: enabled
 EllesmereUIQuestTracker: enabled
 EllesmereUIQuickdraw: disabled
 EllesmereUIDamageMeters: disabled

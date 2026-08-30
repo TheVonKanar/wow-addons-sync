@@ -421,6 +421,14 @@ do  --QuestRewardItemButtonMixin
         WidgetManager.WidgetBaseMixin.SavePosition(self);
     end
 
+    function QuestRewardItemButtonMixin:OnDragStart()
+        -- Left empty to override original OnDragStart
+    end
+
+    function QuestRewardItemButtonMixin:OnDragStop()
+        -- Left empty to override original OnDragStop
+    end
+
     function QuestRewardItemButtonMixin:OnItemEquipped()
         self:ShowUpgradeIcon(false);
         self:SetCountdown(COUNTDOWN_COMPLETE_MANUAL, true);

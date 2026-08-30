@@ -1,0 +1,670 @@
+Key Master AddOn for World of Warcraft
+(c) 2024 – Released under the GNU General Public License
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.5.7
+--------------------------------------------------
+Updates:
+- Added new season 2 dungeons and portals.
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.5.6
+--------------------------------------------------
+Updates:
+- Added LibKeystone library support.  Replaces LibOpenRaid for getting key information and rating from players who don't use the Key Master addon.
+
+Fixes:
+- Addressed further "secret string" bugs.
+
+Known Bugs/Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.5.5
+--------------------------------------------------
+Updates:
+- Updated localizations
+- Updated to WoW interface 120005
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.5.4
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Fixed portal spell id of Seat of the Triumvirate.
+- Fixed private secret string tainted issues.
+
+Known Bugs/Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.5.3
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Fixed localization bug that caused non enUS languages to break the Keymaster UI.
+
+Known Bugs/Issues:
+- Please be aware Blizzard updated the max level before the Midnight expansion release.  If you cannot see your alternate characters goto KM configuration tab and uncheck "Only show maximum level characters."
+
+--------------------------------------------------
+Key Master v1.5.2
+--------------------------------------------------
+Updates:
+- Added new Midnight season one dungeon data to addon.
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- Some users may still experience the secret string value error.  Fix coming soon.
+
+--------------------------------------------------
+Key Master v1.5.1
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Fixed deprecated blizzard function related to completing a mythic plus dungeon.
+- Fixed new secret values regarding chat loot functions.
+- Fixed new spell cooldown check for portals.
+
+
+Known Bugs/Issues:
+- Please be aware Blizzard updated the max level before the Midnight expansion release.  If you cannot see your alternate characters goto KM configuration tab and uncheck "Only show maximum level characters."
+
+--------------------------------------------------
+Key Master v1.5.0
+--------------------------------------------------
+Updates:
+- Updated to Interface build 120000
+
+Fixes:
+- Fixed deprecated blizzard function related to weekly vault rewards.
+- Removed deprecated library LibRangeCheck depency.
+
+Known Bugs/Issues:
+- Please be aware Blizzard updated the max level before the Midnight expansion release.  If you cannot see your alternate characters goto KM configuration tab and uncheck "Only show maximum level characters."
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.9
+--------------------------------------------------
+Updates:
+- Updated to Interface build 110207
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- None
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.8
+--------------------------------------------------
+Updates:
+- Updated to WoW build 110205
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- None
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.7
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Reverted previous patch for individual dungeon rating calculation error for level 12+. This is/was a game bug that is being addressed.
+
+Known Bugs/Issues:
+- None
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.6
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Corrected individual dungeon rating calculation error for level 12+.
+
+Known Bugs/Issues:
+- None
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.5
+--------------------------------------------------
+Updates:
+- Updated dungeons translations for non-us languages.
+
+Fixes:
+- Gambit and Streets were accidently swapped while reading a players key.
+
+Known Bugs/Issues:
+- None
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.4
+--------------------------------------------------
+Updates:
+- Updated to WoW interface version 11.2.0
+- Added season 3, s3 dungeons, dungeon abbreviations and dungeon portal spells for season 3 dungeons in War Within.
+
+Fixes:
+-
+
+Known Bugs/Issues:
+-
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.3
+--------------------------------------------------
+Updates:
+- 
+
+Fixes:
+- Fixed Motherlode portal for horde characters (thanks to snaysix on github for catching this).
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+PATCH NOTES:
+--------------------------------------------------
+Key Master v1.4.2
+--------------------------------------------------
+Updates:
+- Added simplified Chinese translations for S2 dungeons.  (Thanks vj234013 on github)
+- Updated DE localization
+
+Fixes:
+- Fixed score calulations for TWW S2 (special thanks to OMGTotem)
+- Fixed chest ++ calculation for dungeons since the 90s addition to dungeon timers is gone.
+- Fixed portal spell ids for Motherlode and Operation: Floodgate dungeons.  (Thanks snaysix on github)
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.4.1
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.4.0
+--------------------------------------------------
+Updates:
+- Updated to interface version 11.1
+- Added spell portal ids for new dungeons in TWW S2.
+- Added new TWW S2 dungeon names and abbreviations in for US localization.
+- Added new TWW S2 dungeon names and abbreviations for IT localization.
+- Added new TWW S2 dungeon names and abbreviations for RU localization.
+- Added new TWW S2 dungeon names and abbreviations for FR localization.
+- Added new TWW S2 dungeon names and abbreviations for TWW localization.
+- Added new TWW S2 dungeon names and abbreviations for DE localization.
+- Added new TWW S2 dungeon names and abbreviations for ptBR localization.
+- Added new TWW S2 dungeon names and abbreviations for KR localization.
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.9
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.8
+--------------------------------------------------
+Updates:
+- Adjusted run threshold calculations (+1,2,3 etc).
+
+Fixes:
+- None
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.7
+--------------------------------------------------
+Updates:
+- None
+
+Fixes:
+- Fixed an error with Simplified Chinese that stoped KM from loading.
+- Fixed miscalculations with IO and chest levels (+1, +2, +3) for dungeon runs due to addition of 90s to level 7 affix.
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.6
+--------------------------------------------------
+Updates:
+- Updated to WoW Interface version 11.0.5
+
+Fixes:
+None
+
+Known Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.5
+--------------------------------------------------
+Updates:
+- Added a dungeon tools buttons row on the Player frame that simplifies access to WoW features and other addons:
+> Open the dungeon journal to the selected dungeon.
+> Open the instance map of the selected dungeon.
+> Open the group finder window.
+> Open Mythic Dungeon Tools (MDT) (if installed).
+> Portal to selected dungeon if unlocked and not on cooldown.
+- Moved weekly affixes back into the header frame.
+- Added affix tooltip functionality.
+- Rearranged the Player frame to be more conducive to the new M+ rating system.
+- Changed rating calculator functionality to now keep the key level entered and re-calculate automatically for each map row being selected.
+- Updated some vault graphics (more updates to come).
+- Disabled rating pending verification system message.
+- Temporarily disabled Russian translation due to lack of translator participation. (See us if interested!)
+- Updated a few dungeon name abbreviations to better separate meaning.
+
+Fixes:
+- None
+
+Know Bugs/Issues:
+- A player's vault display may not update immediately. Changing tabs should correct the display if inaccurate.
+
+--------------------------------------------------
+Key Master v1.3.4
+--------------------------------------------------
+- Fixed an issue where the week by week ratings were not properly updating.
+
+--------------------------------------------------
+Key Master v1.3.0-3
+--------------------------------------------------
+HOTFIX 1.3.3
+- Fixed French clients having problems loading Key Master.
+
+HOTFIX 1.3.1
+- Fixed an error for new users of keymaster that would cause Key Master not to load properly.
+
+Fixes (1.3.0):
+- Fixed lua error when joining a party with someone that has a newer version of Key Master.
+
+Updates:
+- Due to drastic API changes - all character data is reset/removed on first load of 1.3.0. Log into each character to refresh.
+- Changed data structure since mythic plus data no longer is kept by tran/fort criteria.
+- Remapped UI elements on player and party frame to use newly created data structure.
+- Added backward compatibility check to 1.2.5 and older to ignore data since structures are different.
+- Changed player and party data frames to update when an score gained event happens from a mythic plus dungeon.
+- Updated rating calculator on player frame for the new mythic plus rating system (Big thanks to OMGTOTEM's contribution!).
+- Temporality changed the player frame to a new layout since tyran/fort is no longer a thing.
+- Adjusted the "What's New" content for easier readability.
+
+Known Bugs/Issues:
+- Party members running an older version of KM may experience LUA errors when grouped with someone running 1.3.0 or greater. Ask them to update!
+
+--------------------------------------------------
+Key Master v1.2.5
+--------------------------------------------------
+Fixes:
+- Fixed portals so they work properly if you already have it unlocked.
+- Fixed character list cleanup to purge last seasons characters correctly.
+
+Updates:
+- Updated IT Localization
+
+Known Bugs/Issues:
+- Season 1 mythic plus ratings and other functions are being verified and may not be accurate on day one.  We will do our best to update ASAP.
+- Mythic plus vaults may not update immediately when completing a dungeon.  For now just do /reloadui to see the update properly.
+- Due to a tight timeline to fix several critical bugs, some language translations are not completed. We will be updating those ASAP.
+
+Special Note:
+- If you have any issues with the character list not function make sure you login to the character and logout one time.  If this doesn't work purge the characters on the config tab and relogging to each one.  If this doesn't work then please delete the file in your WTF folder: <GameInstallPath>\WTF\Account[ACCOUNT_NAME]\SavedVariables\KeyMaster.lua
+
+--------------------------------------------------
+Key Master v1.2.4
+--------------------------------------------------
+Fixes:
+- Fixed errors related to missing affixes from Blizzard.  This affected things like missing minimap icons, party frame not show player data, excessive error messages in chat window, etc.
+- Fixed scroll bar on character list, as it wasn't scrolling properly previously.
+- Fixed lua errors while entering combat
+- Fixed minor cosmetic UI changes related to season/expansion
+
+Updates:
+- Characters of any level will now show up in the character list, previously it was max level only.. but since Blizzard decided to change the max level before it was achievable we've decided it was easier to add a checkbox filter (in the config tab) and allow all characters to show up in the list.
+
+Known Bugs/Issues:
+- Season 1 mythic plus ratings and other functions are being verified and may not be accurate on day one.  We will do our best to update ASAP.
+- Mythic plus vaults may not update immediately when completing a dungeon.  For now just do /reloadui to see the update properly.
+- Due to a tight timeline to fix several critical bugs, some language translations are not completed. We will be updating those ASAP.
+
+Special Note:
+- If you have any issues with the character list not function make sure you login to the character and logout one time.  If this doesn't work purge the characters on the config tab and relogging to each one.  If this doesn't work then please delete the file in your WTF folder: <GameInstallPath>\WTF\Account[ACCOUNT_NAME]\SavedVariables\KeyMaster.lua
+
+--------------------------------------------------
+Key Master v1.2.3
+--------------------------------------------------
+Updates:
+- Updated LibRangeCheck-3.0 library to latest version 26 from version 9 to fix Spell reference from Blizzard API changing.
+
+Fixes:
+- Fixed version checking during communications between players returning nil on players with 1.1.9 to players with 1.2.x
+- Fixed error when no affixes are found in DungeonTools.lua
+
+Known Bugs:
+
+--------------------------------------------------
+Key Master v1.2.2
+--------------------------------------------------
+Updates:
+- Updated KR localization
+
+Fixes:
+
+Known Bugs:
+
+--------------------------------------------------
+Key Master v1.2.1
+--------------------------------------------------
+Updates:
+- Added French Translation
+- Added further compatibility fixes for The War Within expansion.
+- Updated translations for TWW S1
+- Added system message for TWW S1 rating inaccuracies until they are verified
+
+Known Bugs:
+- KR and CN clients have some content in English until we receive contributor updates.
+- Vault data doesn't update properly once completing a dungeon.  Currently you have to reload your client by doing /reload or /rl to get the data updated.
+- Season displayed as "The War Within Season 4" if client owns TWW expansion and the last expansion M+ season is still active.
+
+--------------------------------------------------
+Key Master v1.2.0
+--------------------------------------------------
+Updates:
+- Added ability to auto insert mythic keystone in a mythic plus dungeon
+- Updated addon to Wow Build version 11.0.2
+
+Known Bugs:
+- Vault data doesn't update properly once completing a dungeon.  Currently you have to reload your client by doing /reload or /rl to get the data updated.
+
+--------------------------------------------------
+Key Master v1.1.9
+--------------------------------------------------
+Fixes:
+- Fixed bug not properly storing character data.  The character list wasn't showing the right information for alts.  You will need to login/logout of characters to get the data updated properly.
+- Fixed lua error with LibCustomGlow-1.0.
+
+Known Bugs:
+- Vault data doesn't update properly once completing a dungeon.  Currently you have to reload your client by doing /reload or /rl to get the data updated.
+
+--------------------------------------------------
+Key Master v1.1.8
+--------------------------------------------------
+Updates:
+- Added 简体中文 (CN) - Chinese Translation
+- Added preliminary TWW S1 Data
+- Updated to WoW Build version 11.0.0
+
+Fixes:
+- Fixed bug where fortified ratings on the party screen did not correctly display decimal places.
+
+Known Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.1.7
+--------------------------------------------------
+Updates:
+- Updated Ace3 libraries.
+- Updated KR localization.
+- Changed the auto-closing of the Key Master interface so it can be opened with
+  a macro. Side effect: The interface no longer closes automatically when using
+  an action. This option may be added to the mconfiguration later.
+  (Does not apply to spells unless they are within a macro.)
+
+Fixes:
+- Another fix for real-time portal updating.
+
+Know Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.1.6
+--------------------------------------------------
+Updates:
+- Added a lock icon above dungeon maps in the party frame when a portal
+  is not yet unlocked for you.
+- Added Korean localization.
+
+Fixes:
+- Fixed bug introduced in 1.1.5 when logging into a character under max level.
+- Dungeon portal buttons now update on dungeon completion.
+- Mythic plus vault progression now updates on dungeon completion.
+- Mythic zeros added to vault progression.
+- Fixed empty player frame when in Group/Raid finder groups.
+
+Known Issues:
+- None
+
+--------------------------------------------------
+Key Master v1.1.5
+--------------------------------------------------
+Updates:
+- Updated to WoW Interface 100207
+- Added version information to command line options. /km version
+- Removed the rating system notification.
+- Added Italian localization.
+
+Fixes:
+- More fixes for the "Show" error sometimes recieved when completing a dungeon.
+- Fixed WoW 10.2.7 code change errors.
+
+Known Issues:
+- Portals do not update immediately when gaining a portal spell. /reload is required.
+  We will address this issue in the next release.
+
+--------------------------------------------------
+Key Master v1.1.4
+--------------------------------------------------
+- Fixed portal click issue (FINALLY!) This was due to a CVAR setting from OPie
+  (or any addon that changes the way mouse-clicks happen in WoW)..
+- Updates to TW localization.
+
+--------------------------------------------------
+Key Master v1.1.3
+--------------------------------------------------
+Updates:
+- Added alternate characters to player tab.
+-- Selecting an alternate character turns the Player tab into a Characters tab.
+-- All functionality of the Player tab updates and works as the selection character; which
+   includes the calculator and vault progress.
+-- The character list only shows max level characters.
+-- All keys are reset with regional server weekly reset.
+-- The character list is reset with each new season.
+
+- Added character list filter options to configuration tab.
+- Added "What's New" splash screen to display recent news, updates, and patch notes.
+- Added a "Show What's New" button to the about tab header to display patch notes on-demand.
+
+- Improved Key Master interface open/close functionality.
+-- It now closes automatically when entering combat.
+-- If opening the interface during combat, it will open automatically after exiting combat.
+-- It now closes automatically when casting a spell or using an ability.
+
+- Clicking on the Key Master Notice frame now dismisses the message until next reload/relog.
+
+Fixes:
+- Fixed a bug when receiving a new or updated keystone under certain conditions, your key information
+  didn't update in real-time without a reload or relog.
+- Fixed a bug where non-English client keys were sometimes not updating real-time.
+- [ADDON_ACTION_BLOCKED] AddOn 'KeyMaster' tried to call a protected function 'KM_PlayerRow1:Show()'
+  should no longer be an issue.
+- Removed empty quotation marks in specialization on the player page header when a player does not have a
+  current active specialization or it is otherwise unknown.
+- Fixed issue where some clients were not able to use the portal icons.
+
+Open Items:
+- Still validating season 4 rating calculation (We are cautiously optimistic that the ratings are accurate.)
+
+  If you experience any other issues, please report them with as much detail as possible in the
+  Key Master Issues GitHub. https://github.com/Puresyn/KeyMaster/issues or visit us on Discord.
+  
+--------------------------------------------------
+Key Master v1.0.2
+--------------------------------------------------
+Updates:
+- When you are a party member of the matchmaking group system: Looking for Raid (LFR),
+  Looking for Group (LFG), Battle Ground, Arena, or Follower dungeon, party member information
+  is no longer displayed in the party tab for that party. This does not apply to custom
+  (user created) groups or normal party members outside of your instance group.
+- Added notification when party information is not displayed.
+
+Fixes:
+- Fixed GitHub issue #30 - When joining an LFR, LFG, or follower dungeon you would see many
+  "You are not in a party" messages in chat.
+- Fixed rare case when party member data would vanish after briefly being displayed.
+
+Open Items:
+- Known: [ADDON_ACTION_BLOCKED] AddOn 'KeyMaster' tried to call a protected function 'KM_PlayerRow1:Show()'.
+- Reported: Dungeon portals buttons not casting the portal spell when the spell is available (known/off CD) and clicked.
+
+  If you experience any of these open item unicorns, please report them with as much detail as possible in the
+  Key Master Issues GitHub. https://github.com/Puresyn/KeyMaster/issues
+
+--------------------------------------------------
+Key Master v1.0.1
+--------------------------------------------------
+- Updated season 4 rating calculations.
+- Corrected 正體中文 (zhTW) localization typo.
+- Added localization for Deutsch (DE) - (Thanks Feedy88 and Rumorix!)
+
+--------------------------------------------------
+Key Master v1.0.0
+--------------------------------------------------
+- Fixed forward compatibility issue where party members with versions older than
+  v0.0.94 could cause errors in clients with newer versions. It will now ignore those
+  users until they update to 0.0.94b or higher.
+- Verified Dragonflight Season 4 compatibility
+- Several UI enhancements.
+- There are some changes to the rating system for Dragonflight Season 4. We have added
+  preliminary calculation changes that will account for some changes but not all. Due to the somewhat
+  complex and obscure nature of the rating system, there is a notice at the top of the
+  addon that will display until we are confident that all DF S4 rating calculations are correctly
+  displayed. Please visit our Discord https://discord.gg/bbMaUpfgn8 or GitHub 
+  https://github.com/Puresyn/KeyMaster to report or check the status on any new or ongoing corrections.
+- Adjusted party frame data columns to leave more room for player name and class information.
+- Fixed party frame map icon underline color.
+- Added localization for [Chinese (traditional)] 正體中文 (zhTW) - (Thanks BNS3388 / 三皈依!)
+
+--------------------------------------------------
+Key Master Beta release v0.0.97-beta
+--------------------------------------------------
+- Added weekly affix selection to the rating calculator.
+- Corrected an issue where party members using a different language client would
+  receive incorrect data from others.
+- Fixed incorrect highlights in party frame that could occur from localization
+- Standardized weekly affix data for consistency in data transport
+- Fixed missing dependency that caused a mini-map icon issue.
+- Modified party frame layout to be more consistent with the rest of the addon.
+- Added localization support for Português (ptBR) - (Thanks Cyph!)
+- Added localization support for Русский (ruRU) - (Thanks Hollicsh!)
+
+--------------------------------------------------
+Key Master Beta release v0.0.96-beta
+--------------------------------------------------
+- Fixed grammatical errors
+- Update interface version 100206 for 10.2.6
+- Set up a Discord server for Key Master https://discord.gg/bbMaUpfgn8
+
+--------------------------------------------------
+Key Master Beta release v0.0.95-beta
+--------------------------------------------------
+- Added decimal preferences to several locations: score calculator, tally data,
+  and personal gain row.
+- Reset score calculator when re-opening the player panel
+- Added QOL querying of keystone and overall rating information for party members without
+  Key Master installed from the commonly used Open Raid library (if they have another
+  addon with openRaid installed: i.e. Details, etc.). This is not always dependable or
+  guaranteed to be accurate, but it's the best alternative for non-addon party member 
+  information; at least, for the time being.
+- Replaced "Key Master Not Detected!" text with an icon on the party frame for
+  party members without Key Master installed.
+- Fixed Key Master icon showing up as a "?" in the in-game AddOn List. Now shows correct icon.
+- The Key Master window's position is now saved between logins/reloads.
+- Updated the Key Master main "Theme" color to Key Master Gold.
+- Added a minimap icon
+- Added minimap icon show/hide option to configuration screen.
+- Changed the season display in the main header to reflect the current expansion season
+  instead of the WoW lifetime season.
+- Added additional back-end functionality for upcoming language localization.
+- Cleaned up some cross-server compatibility concerns - Key Master "should" now work no differently
+  between same server and cross-server parties.
+
+--------------------------------------------------
+Key Master Beta release v0.0.94-beta
+--------------------------------------------------
+!! This patch IS NOT backwards compatible! !!
+- Fixed Spelling mistakes on information panel
+- Fixed key highlights when you have two of the same key at different levels
+- Fixed score gained when having two keys of the same dungeon and the lower is processed after the higher
+- Changed displayed data for players from base score to rating and added decimal point rounding to a single digit
+- Fixed dungeon rating calculations to be more accurate since they use rating vs score now
+- Added configuration screen which allows additional options
+- Updated the About screen to be more consistent with the rest of the addon
+- Added further localization
+
+--------------------------------------------------
+Key Master Beta release v0.0.93-beta
+--------------------------------------------------
+-Fixed a couple grammatical errors.
+
+--------------------------------------------------
+Key Master Beta release v0.0.92-beta
+--------------------------------------------------
+Initial public beta release.

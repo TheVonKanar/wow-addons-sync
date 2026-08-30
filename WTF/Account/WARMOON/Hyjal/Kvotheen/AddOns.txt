@@ -196,7 +196,7 @@ DeathNote: enabled
 BigWigs_KhazAlgar: disabled
 BigWigs_NerubarPalace: disabled
 LittleWigs_Dragonflight: disabled
-KeyMaster: disabled
+KeyMaster: enabled
 AngryKeystones: enabled
 LibSharedMedia-3.0: disabled
 SharedMedia_MyMedia: disabled
@@ -235,7 +235,7 @@ BigWigs_LiberationOfUndermine: disabled
 BigWigs_ManaforgeOmega: disabled
 GTFO: disabled
 WeakAurasStopMotion: enabled
-Platynator: enabled
+Platynator: disabled
 Krowi_AchievementFilter_Khamuls_HouseDecorAchievementFilter: disabled
 !TweaksUI: disabled
 ArcUI: disabled
@@ -265,7 +265,7 @@ SenseiClassResourceBar: disabled
 MinimapStats: disabled
 EllesmereUIUnitFrames: enabled
 EllesmereUIResourceBars: enabled
-EllesmereUINameplates: disabled
+EllesmereUINameplates: enabled
 EllesmereUICursor: disabled
 EllesmereUICooldownManager: enabled
 EllesmereUIActionBars: enabled
@@ -312,10 +312,10 @@ EllesmereUI: enabled
 EUIStandaloneUnitFrames: disabled
 EllesmereUIAuraBuffReminders: enabled
 EllesmereUIBags: enabled
-EllesmereUIChat: enabled
+EllesmereUIChat: disabled
 EllesmereUIDataBars: enabled
 EllesmereUIFriends: disabled
-EllesmereUIMythicTimer: disabled
+EllesmereUIMythicTimer: enabled
 EllesmereUIQuestTracker: disabled
 EllesmereUIQuickdraw: disabled
 EllesmereUIDamageMeters: enabled
@@ -327,4 +327,6 @@ BuffReminders: disabled
 NoAutoClose: disabled
 BlizzMove: disabled
 Auctionator: enabled
-Chattynator: disabled
+Chattynator: enabled
+LariasWeeklyChecklist: disabled
+Syndicator: enabled

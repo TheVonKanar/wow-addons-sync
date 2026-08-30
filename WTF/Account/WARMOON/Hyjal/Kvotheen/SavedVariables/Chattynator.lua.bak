@@ -1,17 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/s /console enable",
-"/g Parce que t'es mauvaaaais jack",
-" yoooo j'allais me chauffer pour du tft mais aller ouais une clef ou deux!",
-"/p helloooo",
-"/p you prefer bl start or after return?",
-"/p ty gg :)",
-"/g zogzog",
-"/cw Øskytankul-Archimonde +1",
-"/cw Øskytankul-Archimonde le sang j'en avais plus",
-"/cw Øskytankul-Archimonde pk t'en as autant",
-"/cw Øskytankul-Archimonde ah putin faut que je fasse les ordre ouais",
 "/s si t'en as trop tu peux me les donner",
 "/s NON",
 "/s TOI",
@@ -202,4 +191,15 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/p ty, bye :)",
 "/cw Bloodlùst-Draenor yeah sorry, had worst :(",
 "/s /simc",
+"/s /chatty",
+"/s /simc",
+"/s /ak",
+"/g re",
+"/g bijoule",
+"/g /eui",
+"/g /eui help",
+"/g /eui unlock",
+"/g /eui edit",
+"/g /unlock",
+"/g si ya un place qui se libère pour du m+ plus tard dans l'aprem, jsuis dispo, pingez moi sur discord si jsuis afk :)",
 }

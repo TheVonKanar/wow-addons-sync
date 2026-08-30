@@ -1,8 +1,5 @@
-## Changed in v63
+## Changed in v64
 
-* New setting: shared loot can count toward whether a rare counts as "notable" (on by default)
-* Elite treasures now show a slightly larger map icon
-* The "Requires" line in tooltips now colors each condition green or red, showing whether you've already met it
-* Voidstorm: Star Metal Deposit moved to Slayer's Rise
-* Further attempt to fix a source of taint from tooltips
+* When Blizzard's own map pin already shows extra content, the plugin now attaches its tooltip below instead of showing nothing
+* Noted that one of the "Dust Em Off" collectibles in Harandar is inside a cave
 

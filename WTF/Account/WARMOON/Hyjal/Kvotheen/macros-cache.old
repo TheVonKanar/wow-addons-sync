@@ -36,15 +36,27 @@ VER 3 0100000000000079 " " "136013"
 #showtooltip
 /cast [@cursor] Capacitor Totem
 END
+VER 3 010000000000007A " " "134400"
+#showtooltip
+/cast [mounted] Surge Forward; Stormstrike
+END
+VER 3 010000000000007D " " "134400"
+#showtooltip
+/cast [mounted] Whirling Surge; Feral Lunge
+END
+VER 3 010000000000007E " " "134400"
+#showtooltip
+/cast [mounted] Second Wind; Ghost Wolf
+END
 VER 3 0100000000000074 "++" "134400"
 #showtooltip
 /cast Doom Winds
 /use 14
 END
-VER 3 0100000000000032 "+HS" "136044"
+VER 3 010000000000007B "+HS" "134400"
 #showtooltip Healing Surge
 /use Healthstone
-/cast [@player] Healing Surge
+/cast Healing Surge
 END
 VER 3 0100000000000073 "+pot" "134400"
 #showtooltip
@@ -55,10 +67,6 @@ VER 3 0100000000000077 "+TK" "134400"
 #showtooltip Nature's Swiftness
 /use Emberwing Feather
 /cast Nature's Swiftness
-END
-VER 3 010000000000007B "A" "134400"
-#showtooltip
-/cast [mounted] Second Wind; Healing Surge
 END
 VER 3 0100000000000078 "Auto" "134400"
 #showtooltip
@@ -100,8 +108,4 @@ VER 3 010000000000005C "RES" "134400"
 #showtooltip
 /castsequence [@player] reset=10 Skyfury, Water Shield, Earth Shield, Earthliving Weapon, Trans-Dimensional Bird Whistle
 /cast Ethereal Augment Rune
-END
-VER 3 010000000000007A "Space" "134400"
-#showtooltip
-/cast [mounted] Surge Forward; Stormstrike
 END
