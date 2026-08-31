@@ -444,10 +444,8 @@ function RCVotingFrame:GenerateNoRepeatRollTable(numberToGenerate)
 			t[i] = roll
 		end
 	end
-	local result = table.concat(t, ",")
 	TempTable:Release(rolls)
-	TempTable:Release(t)
-	return result
+	return TempTable:ConcatAndRelease(t, ",")
 end
 
 local function insertRandomRollsSession(temp, k, rolls)
@@ -470,8 +468,7 @@ function RCVotingFrame:DoRandomRolls(session)
 			end
 		end
 	end
-	addon:Send("group", "srolls", table.concat(result, ""))
-	TempTable:Release(result)
+	addon:Send("group", "srolls", TempTable:ConcatAndRelease(result))
 end
 
 function RCVotingFrame:DoAllRandomRolls()
@@ -492,9 +489,7 @@ function RCVotingFrame:DoAllRandomRolls()
 			end
 		end
 	end
-	local result = table.concat(temp, "")
-	TempTable:Release(temp)
-	addon:Send("group", "srolls", result)
+	addon:Send("group", "srolls", TempTable:ConcatAndRelease(temp))
 end
 
 -----------------------------------------------------------------

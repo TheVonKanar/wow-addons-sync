@@ -44,7 +44,7 @@ end
 
 --- Releases a temporary table for recycling.
 --- Don't access the table after calling this.
---- @param tbl TempTable The temorary table to release.
+--- @param tbl TempTable The temporary table to release.
 function TempTable:Release (tbl)
    private:Release(tbl)
 end
@@ -52,8 +52,16 @@ end
 --- Releases a TempTable and returns it's content.
 --- @param tbl TempTable @The temporary table.
 --- @return List<any> @The tables' contents.
-function TempTable:UnpackAndRelease (tbl)
-   return private:Release(tbl, unpack(tbl))
+function TempTable:UnpackAndRelease(tbl)
+	return private:Release(tbl, unpack(tbl))
+end
+
+--- Releases a TempTable and returns it's concatenation
+---@param tbl TempTable
+---@param seperator string?
+---@return string @The tables' concatenation
+function TempTable:ConcatAndRelease(tbl, seperator)
+	return private:Release(tbl, table.concat(tbl, seperator))
 end
 
 function TempTable:DumpAvailableTablesCount()

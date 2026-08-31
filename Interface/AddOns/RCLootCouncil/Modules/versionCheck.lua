@@ -268,8 +268,7 @@ function RCVersionCheck:UpdateTotals()
         colors.green:WrapTextInColorCode(normal),
         total
     )
-    self.frame.totals:SetText(table.concat(text, "/"))
-    TT:Release(text)
+    self.frame.totals:SetText(TT:ConcatAndRelease(text, "/"))
 end
 
 --- Comms receiver
@@ -500,8 +499,7 @@ function RCVersionCheck:GetFrame()
         colors.green:WrapTextInColorCode("Up-to-date"),
         "Total"
     )
-    local totalsTooltipText = table.concat(temp, " / ")
-    TT:Release(temp)
+    local totalsTooltipText = TT:ConcatAndRelease(temp, " / ")
     totals:SetMultipleScripts{
         OnEnter = function()
             addon:CreateTooltip("Overview", totalsTooltipText)

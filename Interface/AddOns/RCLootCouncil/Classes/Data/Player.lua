@@ -224,7 +224,7 @@ function private:IsCached(guid)
 	if not self.cache[guid] then return false end
 	if self.cache[guid].isCouncil then return true end -- Never expire council members
 	if not self.cache[guid].cache_time or self.cache[guid].cache_time + MAX_CACHE_TIME < GetServerTime() then
-		Log:D("removing old cache for", self.cache[guid].name)
+		Log:D("removing old cache for", self.cache[guid].name, guid)
 		self.cache[guid] = nil
 		return false
 	end

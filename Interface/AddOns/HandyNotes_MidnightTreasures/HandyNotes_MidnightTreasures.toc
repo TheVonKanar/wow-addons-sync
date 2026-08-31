@@ -2,7 +2,7 @@
 ## Title: HandyNotes: Midnight Treasures and Rares
 ## Notes: Where are the hidden treasures in Midnight?
 ## Author: Kemayo
-## Version: v64
+## Version: v65
 ## IconTexture: Interface\Icons\Ability_Spy
 ## DefaultState: enabled
 ## X-Category: Map
@@ -11,9 +11,11 @@
 ## X-Wago-ID: kGr0me6y
 ## SavedVariables: HandyNotes_MidnightTreasuresDB
 ## RequiredDeps: HandyNotes
+## AllowLoadGameType: standard
 
 handler\handler.xml
 
+constants.lua
 midnight.lua
 
 zones\Quelthalas.lua

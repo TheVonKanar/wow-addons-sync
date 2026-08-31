@@ -235,7 +235,7 @@ function RCLootCouncil:OnInitialize()
 	local numLogs = self.tVersion and 2 * self.db.global.logMaxEntries or self.db.global.logMaxEntries
 	local UtilsLog = self.Require "Utils.Log"
 	UtilsLog:InitLogging(self.db.global.log, numLogs)
-	self.Log = UtilsLog:New(nil, numLogs)
+	self.Log = UtilsLog:New()
 	self.lootDB = LibStub("AceDB-3.0"):New("RCLootCouncilLootDB")
 	--[[ Format:
 	"playerName" = {
@@ -644,11 +644,10 @@ function RCLootCouncil:ChatCommand(msg)
 	elseif input == "sv" or input == "saved" or input == "savedvariables" then
 		local exportFrame = self.UI:New("RCHugeExportFrame")
 		local temp = TT:Acquire("-- ", addonname, " Saved Variables\n",
-			table.concat(select(2, self.Utils:DumpLuaFormat(_G.RCLootCouncilDB or {}, "RCLootCouncilDB")), "\n"),
+			table.concat(select(2, self.Utils:DumpConfig(_G.RCLootCouncilDB or {}, "RCLootCouncilDB")), "\n"),
 			"\n\n"
 		)
-		local export = table.concat(temp)
-		TT:Release(temp)
+		local export = TT:ConcatAndRelease(temp)
 
 		if args[1] and (args[1] == "his" or args[1] == "history") then
 			if args[2] and args[2] == "only" then
@@ -657,8 +656,7 @@ function RCLootCouncil:ChatCommand(msg)
 			temp = TT:Acquire(export,
 				table.concat(select(2, self.Utils:DumpLuaFormat(_G.RCLootCouncilLootDB or {}, "RCLootCouncilLootDB")), "\n")
 			)
-			export = table.concat(temp)
-			TT:Release(temp)
+			export = TT:ConcatAndRelease(temp)
 		end
 		exportFrame.edit:SetText(export)
 		exportFrame:Show()
@@ -1401,8 +1399,7 @@ function RCLootCouncil:GetClassNamesFromFlag(classesFlag)
 		end
 	end
 	result[#result] = nil -- Remove last ", "
-	local text = table.concat(result, "")
-	TT:Release(result)
+	local text = TT:ConcatAndRelease(result)
 	classNamesFromFlagCache[classesFlag] = text
 	return text
 end
@@ -1561,6 +1558,7 @@ function RCLootCouncil:GetPlayerInfo()
 end
 
 function RCLootCouncil:OnGroupJoined()
+	if C_PartyInfo.IsDelveInProgress and C_PartyInfo.IsDelveInProgress() then return end
 	self:SendPlayerInfo("group")
 end
 
@@ -1673,7 +1671,7 @@ function RCLootCouncil:OnEvent(event, ...)
 				self:SnapshotInstanceData()
 			end
 		end, 5)
-
+		if C_PartyInfo.IsDelveInProgress and C_PartyInfo.IsDelveInProgress() then return end -- Don't do anything in delves
 		if isReload then
 			self.Log("Player relog...")
 
@@ -3216,6 +3214,10 @@ end
 function RCLootCouncil:GetEJLatestInstanceID()
 	local numTiers = EJ_GetNumTiers()
 	if numTiers == 0 then return end
+	-- EJ_SelectTier() overwrites the "EJSelectedTier" cvar, which is how the Adventure Guide
+	-- remembers the player's selected season/expansion across login and reload. Save it here
+	-- and restore it once we're done, so we don't clobber the player's own selection.
+	local previousTier = EJ_GetCurrentTier()
 	EJ_SelectTier(numTiers - (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and 1 or 0)) -- Last tier is Mythic+
 	local index = 1
 	local instanceId = EJ_GetInstanceByIndex(index, true)
@@ -3228,6 +3230,10 @@ function RCLootCouncil:GetEJLatestInstanceID()
 		else
 			index = nil
 		end
+	end
+
+	if previousTier and previousTier > 0 then
+		EJ_SelectTier(previousTier)
 	end
 
 	if not instanceId then instanceId = 1190 end -- default to Castle Nathria if no ID is found

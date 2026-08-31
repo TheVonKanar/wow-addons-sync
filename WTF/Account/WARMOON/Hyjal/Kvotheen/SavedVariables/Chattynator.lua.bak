@@ -1,13 +1,6 @@
 
 CHATTYNATOR_CURRENT_PROFILE = "DEFAULT"
 CHATTYNATOR_COMMAND_HISTORY = {
-"/s si t'en as trop tu peux me les donner",
-"/s NON",
-"/s TOI",
-"/s ok",
-"/raid si c'est bis pour quelqu'un faites un roll |cnIQ4:|Hitem:249303::::::::90:263::5:5:6652:12667:13577:13334:12795:1:28:3606:::::|h[Waistcord of the Judged]|h|r",
-"/raid (j'ai need pour ma double spé)",
-"/raid non t'es pewpew",
 "/raid une fois que vous etes sortis de la zone, ne bougez plus",
 "/raid (quand vous etes ciblés par les obelisques)",
 "/raid je veux bien un ptiit massage dans le dos aussi stp ellyo",
@@ -202,4 +195,11 @@ CHATTYNATOR_COMMAND_HISTORY = {
 "/g /eui edit",
 "/g /unlock",
 "/g si ya un place qui se libère pour du m+ plus tard dans l'aprem, jsuis dispo, pingez moi sur discord si jsuis afk :)",
+"/s /ready",
+"/s /readycheck",
+"/g c'est quand meme bien cool le story mode",
+"/g bonne nuit!",
+"/g c'est surtout ca te permet de te concentrer sur les dialogues et le lore et tout, sans etre en mode focus raid avec 20 degens qui hurlent kakou kakou :)",
+"/g quand est-ce qu'il ne l'est pas?",
+"/g mdr",
 }

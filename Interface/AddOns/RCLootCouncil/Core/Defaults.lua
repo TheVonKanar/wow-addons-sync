@@ -180,6 +180,8 @@ addon.defaults = {
 		showAutoGroupLootWarning = true, -- Show warning OnMLDBReceived if autoGroupLoot is on.
 		defaultHistoryExport = "player",
 
+		disableLogging = nil,
+
 		UI = { -- stores all ui information
 			["**"] = { -- Defaults
 				y           = 0,

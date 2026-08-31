@@ -32,10 +32,11 @@ KeyMaster_C_DB = {
 ["season"] = 18,
 ["client"] = true,
 ["vault"] = {
+13,
+12,
 11,
 11,
 11,
-10,
 10,
 10,
 10,
